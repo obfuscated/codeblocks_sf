@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.cpp 74 2007-05-03 20:57:17Z Pecan $
+// RCS-ID: $Id: editsnippetframe.cpp 89 2007-06-25 00:55:06Z Pecan $
 
 #include "editsnippetframe.h"
 
@@ -143,9 +143,11 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
     m_SnippetItemId = TreeItemId;
     m_EditSnippetText = GetConfig()->GetSnippetsTreeCtrl()->GetSnippet(TreeItemId);
 
-    m_EditFileName = wxEmptyString;
-    if ( (m_EditSnippetText.Length() < 129) && (::wxFileExists(m_EditSnippetText)) )
-        m_EditFileName = m_EditSnippetText;
+    m_EditFileName = m_EditSnippetText.BeforeFirst('\r');
+    m_EditFileName = m_EditFileName.BeforeFirst('\n');
+    if ( (m_EditFileName.Length() < 129) && (::wxFileExists(m_EditFileName)) )
+        /*OK*/;
+    else m_EditFileName = wxEmptyString;
 
     m_EditSnippetLabel = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetLabel(TreeItemId);
     m_pReturnCode = pRetcode;

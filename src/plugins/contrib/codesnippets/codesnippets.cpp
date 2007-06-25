@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 86 2007-06-07 19:09:25Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"

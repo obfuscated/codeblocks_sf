@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: snippetitemdata.h 84 2007-05-21 18:15:43Z Pecan $
+// RCS-ID: $Id: snippetitemdata.h 89 2007-06-25 00:55:06Z Pecan $
 
 #ifndef SNIPPETITEMDATA_H
 #define SNIPPETITEMDATA_H
@@ -51,7 +51,8 @@ class SnippetItemData : public wxTreeItemData
         bool IsSnippetFile()
             {	// verify snippet is file type snippet
                 if (not IsSnippet() ) return false ;
-                wxString FileName = GetSnippet();
+                wxString FileName = GetSnippet().BeforeFirst('\r');
+                         FileName = FileName.BeforeFirst('\n');
                 if (FileName.Length() > 128)
                     return false ;
                 if ( (FileName.IsEmpty())

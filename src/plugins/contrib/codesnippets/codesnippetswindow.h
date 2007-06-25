@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 89 2007-06-25 00:55:06Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
@@ -56,6 +56,8 @@ class CodeSnippetsWindow : public wxPanel
             { return GetSnippetsTreeCtrl()->IsSnippet(item); }
         bool IsFileSnippet(wxTreeItemId itemId=(void*)0)
             { return GetSnippetsTreeCtrl()->IsFileSnippet(itemId); }
+        bool IsUrlSnippet(wxTreeItemId itemId=(void*)0)
+            { return GetSnippetsTreeCtrl()->IsUrlSnippet(itemId); }
 
         //Getter helper routines
         CodeSnippetsTreeCtrl*   GetSnippetsTreeCtrl(){ return m_SnippetsTreeCtrl ;}
@@ -116,6 +118,7 @@ class CodeSnippetsWindow : public wxPanel
 		void OnItemGetToolTip(wxTreeEvent& event);
         void OnMnuProperties(wxCommandEvent& event);
         void OnMnuEditSnippetAsFileLink(wxCommandEvent& event);
+        void OnMnuOpenFileLink(wxCommandEvent& event);
         void OnMnuSaveSnippetAsFileLink(wxCommandEvent& event);
         void OnMnuSettings(wxCommandEvent& event);
         void OnMnuAbout(wxCommandEvent& event);

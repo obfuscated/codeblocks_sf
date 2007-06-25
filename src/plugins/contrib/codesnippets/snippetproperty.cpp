@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetproperty.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: snippetproperty.cpp 89 2007-06-25 00:55:06Z Pecan $
 // ----------------------------------------------------------------------------
 //  SnippetProperty.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
@@ -357,7 +357,7 @@ void SnippetProperty::InvokeEditOnSnippetFile()
     if (not IsSnippetFile() ) return;
 
 	// If snippet is file, open it
-	wxString FileName = GetSnippet();
+	wxString FileName = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetFileLink();
 
     // we have an actual file name, not just text
     wxString pgmName = GetConfig()->SettingsExternalEditor;

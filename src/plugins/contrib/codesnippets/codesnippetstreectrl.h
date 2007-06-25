@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 84 2007-05-21 18:15:43Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 89 2007-06-25 00:55:06Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -27,6 +27,8 @@ class TiXmlElement;
 
 #include <wx/treectrl.h>
 #include <wx/dynarray.h>
+#include "wx/mimetype.h"
+
 #include "snippetitemdata.h"
 #include <tinyxml/tinyxml.h>
 #include "snippetproperty.h"
@@ -72,6 +74,8 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void        EditSnippetAsFileLink();
         void        SaveSnippetAsFileLink();
         void        EditSnippetAsText();
+        void        EditSnippetWithMIME();
+
         CodeSnippetsTreeCtrl*
                     GetSnippetsTreeCtrl(){return m_pSnippetsTreeCtrl;}
 
@@ -94,6 +98,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 itemData = pItem->GetSnippet();
                 return itemData;
             }
+
         wxString GetSnippetLabel(wxTreeItemId treeItemId=(void*)0)
             {   wxTreeItemId itemId = treeItemId;
                 if (not itemId.IsOk()) itemId = GetSelection();
@@ -109,6 +114,16 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 SetFileChanged(true);
                 return;
             }
+        wxString GetSnippetFileLink(wxTreeItemId treeItemId = (void*)0 )
+            {   wxTreeItemId itemId = treeItemId;
+                if ( itemId == (void*)0) itemId = GetSelection();
+                if (not itemId.IsOk()) return wxEmptyString;
+                if (not IsSnippet(itemId) ) return wxEmptyString;
+                wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+                fileName = fileName.BeforeFirst('\n');
+                return fileName;
+            }
+
 
         bool IsCategory(wxTreeItemId treeItemId = (void*)0)
             {   wxTreeItemId itemId = treeItemId;
@@ -129,7 +144,19 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 if ( itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return false;
                 if (not IsSnippet(itemId) ) return false;
-                if ( not ::wxFileExists( GetSnippet(itemId))) return false;
+                wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+                fileName = fileName.BeforeFirst('\n');
+                if ( not ::wxFileExists( fileName) ) return false;
+                return true;
+            }
+        bool IsUrlSnippet (wxTreeItemId treeItemId = (void*)0 )
+            {   wxTreeItemId itemId = treeItemId;
+                if ( itemId == (void*)0) itemId = GetSelection();
+                if (not itemId.IsOk()) return false;
+                if (not IsSnippet(itemId) ) return false;
+                wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+                fileName = fileName.BeforeFirst('\n');
+                if ( not fileName.StartsWith(wxT("http://")) ) return false;
                 return true;
             }
         bool IsTreeBusy(){return (m_pPropertiesDialog != 0);}
@@ -138,6 +165,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         wxTreeItemId    GetAssociatedItemID(){return m_MnuAssociatedItemID;}
         void            SetAssociatedItemID(wxTreeItemId id){m_MnuAssociatedItemID = id;}
         bool            EditSnippetProperties(wxTreeItemId& itemId);
+        void            OpenSnippetAsFileLink();
         int             ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem);
 
 	private:
@@ -158,6 +186,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
    		bool                    m_bShutDown;
    		DlgPtrArray             m_aDlgPtrs;
    		DlgRetcodeArray         m_aDlgRetcodes;
+   		wxMimeTypesManager*     m_mimeDatabase;
 
        #if defined(__WXMSW__)
         void MSW_MouseMove(int x, int y );

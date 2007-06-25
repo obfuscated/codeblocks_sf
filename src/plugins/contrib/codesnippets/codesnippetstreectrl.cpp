@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 90 2007-06-25 02:40:41Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -29,6 +29,7 @@
     #include <wx/dataobj.h>
     #include <wx/dnd.h>
     #include <wx/filename.h>
+    #include "wx/mimetype.h"
 
 #if defined(BUILDING_PLUGIN)
     #include "sdk.h"
@@ -55,7 +56,6 @@
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
 
 BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
-    //FIXME: EVT_TREE_ITEM_ACTIVATED(idSnippetsTreeCtrl,     CodeSnippetsTreeCtrl::OnItemActivated)
 	EVT_TREE_BEGIN_DRAG(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnBeginTreeItemDrag)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnEndTreeItemDrag)
 	EVT_LEAVE_WINDOW(                       CodeSnippetsTreeCtrl::OnLeaveWindow)
@@ -76,6 +76,7 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     m_bMouseLeftWindow = false;
     m_pPropertiesDialog = 0;
     m_bShutDown = false;
+    m_mimeDatabase = 0;
 
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
@@ -596,7 +597,9 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
     {
         // if FileLink, memorize the filename
         wxString filename = wxEmptyString;
-        if (IsFileSnippet(itemId)) filename = GetSnippet(itemId);
+        if ( IsFileSnippet(itemId) )
+           filename = GetSnippetFileLink(itemId);
+
         // if this was a FileLink, ask if user wants to delete file
         if ( not filename.IsEmpty() ) {
             int answer = messageBox( wxT("Delete physical file?\n\n")+filename,
@@ -808,8 +811,9 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
     textData->SetText( GetSnippet(m_MnuAssociatedItemID) );
     wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
-    fileData->AddFile( (GetSnippet(m_MnuAssociatedItemID).Len() > 128) ?
-              wxString(wxEmptyString) : GetSnippet(m_MnuAssociatedItemID) );
+    wxString fileName = GetSnippetFileLink(m_MnuAssociatedItemID);
+    if (not ::wxFileExists(fileName) ) fileName = wxEmptyString;
+    fileData->AddFile( (fileName.Len() > 128) ? wxString(wxEmptyString) : fileName );
         // set composite data object to contain both text and file data
     wxDataObjectComposite *data = new wxDataObjectComposite();
     data->Add( (wxDataObjectSimple*)textData );
@@ -1114,41 +1118,72 @@ void CodeSnippetsTreeCtrl::EditSnippetAsFileLink()
 
 	// If snippet is file, open it
 	wxTreeItemId itemId = GetAssociatedItemID();
-	wxString FileName = GetSnippet( itemId );
 	SnippetItemData* pSnippetItemData = (SnippetItemData*)GetItemData(GetAssociatedItemID());
+	wxString FileName = GetSnippetFileLink( itemId );
+    LOGIT( _T("EditSnippetsAsFileLlink()FileName[%s]"),FileName.c_str() );
 
     if (FileName.Length() > 128)
     {   // if text is > 128 characters, open a temp file with snippet text as data.
         EditSnippetAsText();
         return;
     }
-	if ( (FileName.IsEmpty())
+
+
+    // no filename, edit text file
+    if ( (FileName.IsEmpty())
         || (not ::wxFileExists( FileName)) )
     {   // if, non-existent file, open snippet text as data
         EditSnippetAsText();
         return;
     }
 
-    // we have an actual file name, not just text.
+    // we have an actual file link, not just text.
     // use user specified editor, else hard coded pgms.
     wxString pgmName = GetConfig()->SettingsExternalEditor;
-    if ( pgmName.IsEmpty() || (not ::wxFileExists(pgmName)) )
-    {
-        //        #if defined(__WXMSW__)
-        //                pgmName = wxT("notepad");
-        //        #elif defined(__UNIX__)
-        //                pgmName = wxT("xterm -e less");
-        //        #endif
-        EditSnippet( pSnippetItemData, FileName);
-    }
-    else    // edit file with external program
-    {   // file name must be surrounded with quotes when using wxExecute
-        wxString execString = pgmName + wxT(" \"") + FileName + wxT("\"");
+    LOGIT( _T("PgmName[%s]"),pgmName.c_str() );
+
+    // Do: if external pgm name is blank, or file link doesn't exists
+    // must be text only
+        if ( pgmName.IsEmpty() || ( not ::wxFileExists(pgmName)) )
+        {
+            EditSnippet( pSnippetItemData, FileName);
+            return;
+        }
+
+    // edit file link with user settings external program.
+    // file name must be surrounded with quotes when using wxExecute
+    if ( ::wxFileExists(pgmName) )
+    {   wxString execString = pgmName + wxT(" \"") + FileName + wxT("\"");
         #ifdef LOGGING
-         LOGIT( _T("OpenAsFileLink[%s]"), execString.GetData() );
+        LOGIT( _T("OpenAsFileLink[%s]"), execString.GetData() );
         #endif //LOGGING
         ::wxExecute( execString);
     }
+
+    return;
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OpenSnippetAsFileLink()
+// ----------------------------------------------------------------------------
+{
+    // Open snippet text as a file name. Ie, the first text line should contain a filename.
+
+    if (not IsSnippet() ) return;
+
+	// If snippet is file, open it
+	wxTreeItemId itemId = GetAssociatedItemID();
+	wxString FileName = GetSnippetFileLink( itemId );
+    LOGIT( _T("OpenSnippetsAsFileLlink()FileName[%s]"),FileName.c_str() );
+
+    if (FileName.Length() > 128)
+    {   // if text is > 128 characters, open a temp file with snippet text as data.
+        EditSnippetAsText();
+        return;
+    }
+
+    // user requested "MIME" type to open file
+    EditSnippetWithMIME();
+
     return;
 }
 // ----------------------------------------------------------------------------
@@ -1259,17 +1294,19 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     // Dump Snippet field into a temporary file
     wxString snippetLabel = GetSnippetLabel();
     wxString snippetData = GetSnippet();
+    wxString fileName = GetSnippetFileLink();
     int answer = wxYES;
+
     // if file already exists preserve the old data
-    if ( ::wxFileExists( snippetData) )
+    if ( ::wxFileExists( fileName ) )
     {   // item snippet is already a filename
         answer = messageBox(
-            wxT("Item is already a file link named:\n")+snippetData
-                + wxT(" \nAre you sure you want to rewrite the file?\n"),
+            wxT("Item is already a file link named:\n")+fileName
+                + wxT(" \n\nAre you sure you want to rewrite the file?\n"),
             wxT("Warning"),wxYES|wxNO); //, GetMainFrame(), mousePosn.x, mousePosn.y);
         if ( wxYES == answer)
         {   // read data from old file
-            wxFile oldFile( snippetData, wxFile::read);
+            wxFile oldFile( fileName, wxFile::read);
             if (not oldFile.IsOpened() )
             {   messageBox(wxT("Abort.Error reading data file."));
                 return;
@@ -1404,6 +1441,108 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
 }
 
 // ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
+// ----------------------------------------------------------------------------
+{
+    wxTreeItemId itemId = GetAssociatedItemID();
+    if (not itemId.IsOk()) return;
+    if ( not IsSnippet()) return;
+
+    wxString snippetLabel = GetSnippetLabel();
+    wxString snippetData = GetSnippet();
+    wxString fileName = GetSnippetFileLink();
+    LOGIT( _T("EditSnippetWithMime[%s]"), fileName.c_str() );
+    if ( fileName.IsEmpty() ) return;
+
+    // MIME search fails on a url. Do it brute force
+    if ( fileName.StartsWith(wxT("http://")) )
+    {   wxLaunchDefaultBrowser( fileName);
+        return;
+    }
+
+    if ( not ::wxFileExists(fileName) ) return;
+
+    wxString fileNameExt;
+    ::wxSplitPath( fileName, /*path*/0, /*name*/0, &fileNameExt);
+    if ( fileNameExt.IsEmpty() ) return;
+
+    wxString s_defaultExt = _T("xyz");
+    wxString msg;
+
+    if ( !!fileNameExt )
+    {
+        s_defaultExt = fileNameExt;
+
+        // init MIME database if not done yet
+        if ( !m_mimeDatabase )
+        {
+            ////m_mimeDatabase = new wxMimeTypesManager;
+            // use global pointer instead of above instantiation
+            m_mimeDatabase = wxTheMimeTypesManager;
+
+            ////static const wxFileTypeInfo fallbacks[] =
+            ////{
+            ////    wxFileTypeInfo(_T("application/xyz"),
+            ////                   _T("XyZ %s"),
+            ////                   _T("XyZ -p %s"),
+            ////                   _T("The one and only XYZ format file"),
+            ////                   _T("xyz"), _T("123"), NULL),
+            ////    wxFileTypeInfo(_T("text/html"),
+            ////                   _T("lynx %s"),
+            ////                   _T("lynx -dump %s | lpr"),
+            ////                   _T("HTML document (from fallback)"),
+            ////                   _T("htm"), _T("html"), NULL),
+            ////
+            ////    // must terminate the table with this!
+            ////    wxFileTypeInfo()
+            ////};
+            ////
+            ////m_mimeDatabase->AddFallbacks(fallbacks);
+        }//if
+
+        wxFileType *filetype = m_mimeDatabase->GetFileTypeFromExtension(fileNameExt);
+        if ( !filetype )
+        {
+            msg << _T("Unknown extension '") << fileNameExt << _T("'\n");
+        }
+        else
+        {
+            wxString type, desc, open;
+            filetype->GetMimeType(&type);
+            filetype->GetDescription(&desc);
+
+            //wxString filename = _T("filename");
+            wxString filename = fileName;
+            //filename << _T(".") << fileNameExt;
+            wxFileType::MessageParameters params(filename, type);
+            filetype->GetOpenCommand(&open, params);
+
+           #if LOGGING
+            msg << _T("MIME information about extension '") << fileNameExt << _T('\n')
+                     << _T("\tMIME type: ") << ( !type ? wxT("unknown")
+                                                   : type.c_str() ) << _T('\n')
+                     << _T("\tDescription: ") << ( !desc ? wxEmptyString : desc.c_str() )
+                        << _T('\n')
+                     << _T("\tCommand to open: ") << ( !open ? wxT("no") : open.c_str() )
+                        << _T('\n');
+           #endif
+
+            delete filetype;
+            if ( open )
+                ::wxExecute( open, wxEXEC_ASYNC);
+        }
+    }
+    #ifdef LOGGING
+        LOGIT( _T("EditSnippetWithMIME()[%s]"),msg.c_str() );
+    #endif //LOGGING
+
+    // Do not use these when using global wxTheMimeTypesManager pointer
+    ////if ( m_mimeDatabase ) delete m_mimeDatabase;
+    ////m_mimeDatabase = 0;
+
+    return;
+}
+// ----------------------------------------------------------------------------
 int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
 // ----------------------------------------------------------------------------
 {
@@ -1536,30 +1675,30 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
 void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
-//    // Here because our Connect() intercepted wxTheApp EVT_CLOSE
-//    // Blink this modeless dialog just like it was a modal dialog
-//        //    wxWindow* oldTop = wxTheApp->GetTopWindow();
-//        //    wxDialog* pdlg = this->m_pTopDialog;
-//        //    wxTheApp->SetTopWindow( pdlg );
-//        //    pdlg->RequestUserAttention();
-//        //    wxTheApp->SetTopWindow(oldTop);
-//        //    event.Veto();
-//        //    //event.Skip(); causes app to crash
-//
-//    // This bool prevents crash when CodeBlocks is shutdown;
-//    this->m_bShutDown = true;
-//    for (size_t i = 0; i < this->m_aDlgPtrs.GetCount(); ++i )
-//    {
-//        wxDialog* pdlg = this->m_aDlgPtrs.Item(i);
-//        if (pdlg) pdlg->ProcessEvent(event);
-//    }
-//    #if defined(BUILDING_PLUGIN)
-//      // Enable the plugin View menu item
-//        asm("int3");
-//        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
-//    #endif
-//
-//    event.Skip();
-//    return;
+////    // Here because our Connect() intercepted wxTheApp EVT_CLOSE
+////    // Blink this modeless dialog just like it was a modal dialog
+////        //    wxWindow* oldTop = wxTheApp->GetTopWindow();
+////        //    wxDialog* pdlg = this->m_pTopDialog;
+////        //    wxTheApp->SetTopWindow( pdlg );
+////        //    pdlg->RequestUserAttention();
+////        //    wxTheApp->SetTopWindow(oldTop);
+////        //    event.Veto();
+////        //    //event.Skip(); causes app to crash
+////
+////    // This bool prevents crash when CodeBlocks is shutdown;
+////    this->m_bShutDown = true;
+////    for (size_t i = 0; i < this->m_aDlgPtrs.GetCount(); ++i )
+////    {
+////        wxDialog* pdlg = this->m_aDlgPtrs.Item(i);
+////        if (pdlg) pdlg->ProcessEvent(event);
+////    }
+////    #if defined(BUILDING_PLUGIN)
+////      // Enable the plugin View menu item
+////        asm("int3");
+////        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
+////    #endif
+////
+////    event.Skip();
+////    return;
 }
 // ----------------------------------------------------------------------------

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 90 2007-06-25 02:40:41Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -99,6 +99,7 @@ int idMnuFileBackup             = wxNewId();
 int idMnuRemoveAll              = wxNewId();
 int idMnuCopyToClipboard        = wxNewId();
 int idMnuEditSnippet            = wxNewId();
+int idMnuOpenFileLink           = wxNewId();
 int idMnuConvertToFileLink      = wxNewId();
 int idMnuProperties             = wxNewId();
 int idMnuSettings               = wxNewId();
@@ -130,6 +131,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuRemoveAll,        CodeSnippetsWindow::OnMnuRemoveAll)
 	EVT_MENU(idMnuCopyToClipboard,  CodeSnippetsWindow::OnMnuCopyToClipboard)
 	EVT_MENU(idMnuEditSnippet,      CodeSnippetsWindow::OnMnuEditSnippet)
+	EVT_MENU(idMnuOpenFileLink,     CodeSnippetsWindow::OnMnuOpenFileLink)
 	EVT_MENU(idMnuConvertToFileLink,CodeSnippetsWindow::OnMnuSaveSnippetAsFileLink)
 	EVT_MENU(idMnuProperties,       CodeSnippetsWindow::OnMnuProperties)
 	EVT_MENU(idMnuSettings,         CodeSnippetsWindow::OnMnuSettings)
@@ -152,7 +154,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndDrag)
 	EVT_TREE_BEGIN_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnBeginLabelEdit)
 	EVT_TREE_END_LABEL_EDIT(idSnippetsTreeCtrl, CodeSnippetsWindow::OnEndLabelEdit)
-	//EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
+	EVT_TREE_ITEM_GETTOOLTIP(idSnippetsTreeCtrl, CodeSnippetsWindow::OnItemGetToolTip)
 	// ---
 	// EVT_CLOSE Doesn't work on wxAUI windows, this is called from a Connect()
 	EVT_CLOSE( CodeSnippetsWindow::OnClose) //never occurs with wxAUI
@@ -391,7 +393,14 @@ void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
     {    ApplySnippet(event.GetItem());
         return;
     }
+
     wxCommandEvent ev;
+
+    if (::wxGetKeyState(WXK_ALT) )
+    {   OnMnuOpenFileLink( ev );
+        return;
+    }
+
     OnMnuEditSnippet( ev )        ;
     return;
 }
@@ -483,9 +492,14 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
             // --------------------
 			case SnippetItemData::TYPE_SNIPPET:
                 if ( IsFileSnippet(itemId) )
-                    snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit File"));
-                else
-                    snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit Text"));
+                {   snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit File"));
+                    snippetsTreeMenu->Append(idMnuOpenFileLink,_("Open File"));
+                }
+                else // it's a text snippet
+                {   snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit Text"));
+                    if ( IsUrlSnippet() )
+                        snippetsTreeMenu->Append(idMnuOpenFileLink,_("Open Url"));
+                }
 
                 #if defined(BUILDING_PLUGIN)
                 if (GetConfig()->IsPlugin())
@@ -873,12 +887,14 @@ void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
 {
 
     if (not IsSnippet() ) return;
+    CodeSnippetsTreeCtrl* pTree = GetConfig()->GetSnippetsTreeCtrl();
 	if (SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID() )))
 	{
         if (not itemData){;} //variable unused
 
         wxTreeItemId itemId = GetAssociatedItemID();
-        wxString FileName = GetSnippet( itemId );
+        wxString FileName = pTree->GetSnippetFileLink( itemId );
+        LOGIT( _T("OnMnuEditSnipet FileName[%s]"),FileName.c_str() );
 
         // If snippet is text, edit it as text
         if (FileName.Length() > 128)
@@ -886,14 +902,42 @@ void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
             GetSnippetsTreeCtrl()->EditSnippetAsText();
             return;
         }
+
         // If snippet is non-existent file, edit as text
-        if ( (FileName.IsEmpty())
-            || (not ::wxFileExists( FileName)) )
-        {   // if, non-existent file, open snippet text as data
+            if ( (FileName.IsEmpty())
+                || (not ::wxFileExists( FileName)) )
+            {   // if, non-existent file, open snippet text as data
+                GetSnippetsTreeCtrl()->EditSnippetAsText();
+                return;
+            }
+
+        // else edit snippet as file link
+        GetSnippetsTreeCtrl()->EditSnippetAsFileLink();
+	}
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuOpenFileLink(wxCommandEvent& WXUNUSED(event))
+// ----------------------------------------------------------------------------
+{
+
+    if (not IsSnippet() ) return;
+    CodeSnippetsTreeCtrl* pTree = GetConfig()->GetSnippetsTreeCtrl();
+	if (SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID() )))
+	{
+        if (not itemData){;} //variable unused
+
+        wxTreeItemId itemId = GetAssociatedItemID();
+        wxString FileName = pTree->GetSnippetFileLink( itemId );
+        LOGIT( _T("OnMnuOpenFileLink FileName[%s]"),FileName.c_str() );
+
+        // If snippet is text, edit it as text
+        if (FileName.Length() > 128)
+        {   // if text is > 128 characters, open a temp file with snippet text as data.
             GetSnippetsTreeCtrl()->EditSnippetAsText();
             return;
         }
-        GetSnippetsTreeCtrl()->EditSnippetAsFileLink();
+
+        GetSnippetsTreeCtrl()->OpenSnippetAsFileLink();
 	}
 }
 // ----------------------------------------------------------------------------
@@ -943,10 +987,14 @@ void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
 			wxString snippetToolTip = itemData->GetSnippet();
 			size_t originalLength = snippetToolTip.Len();
 
-			// Take the first 255 characters or less, note that the
-			// wxWidgets documentation doesn't say what is maximum lenght of
-			// the tooltip so this can be increased if needed.
-			size_t charsInToolTip = 255;
+			//// Take the first 255 characters or less, note that the
+			//// wxWidgets documentation doesn't say what is maximum lenght of
+			//// the tooltip so this can be increased if needed.
+
+			// Use only first line of snippet
+			snippetToolTip = snippetToolTip.BeforeFirst('\r');
+			snippetToolTip = snippetToolTip.BeforeFirst('\n');
+			size_t charsInToolTip = 128;
 			snippetToolTip = snippetToolTip.Mid(0, charsInToolTip);
 
 			// Replace all tabs with spaces; tabs break the tooltips

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: version.cpp 90 2007-06-25 02:40:41Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -269,8 +269,16 @@ AppVersion::~AppVersion()
 //              Ok: saves done by OnClose SnippetsWindow & Tree routines
 //          76) Fix "Apply" menu item, misspelled _WX... preprocessor
 // ----------------------------------------------------------------------------
-//  Commit  1.2.77
+//  Commit  1.2.77 2007/06/7
 //          77) Prepend CodeBlocks --personality= argument to codesnippets.ini
+// ----------------------------------------------------------------------------
+//  Commit  1.2.82 2007/06/25
+//          78) Use text up to first '\r' to determine if snippet is file link.
+//              Allows notes to accompany file link.
+//          79) Added MIME open support using Alt-double-click & "Open File" menu
+//          80) Refactored EditSnippet and OpenFileLink
+//          81) Add "Open Url" support
+//          82) ReInstate ToolTips for wx284 using first line of snippet
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
@@ -284,12 +292,13 @@ AppVersion::~AppVersion()
 //              floating window with system X. Open external window with View/CodeSnippets.
 //              View a text file, Close CB. You'll get the "file changed" when none has.
 //              AND, window stays up even tho CB is gone.
-//          Add option for ToolTips and max chars shown (tool tips is currently disabled)
+//          Add option for ToolTips and max chars shown
 //          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
 //              Maybe just a line instead of a spacer will work
 //          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
 //          Docked wxAUI (MSW) window still bombs when using system [x] to close
+//          Add "U" type icon for url type snippets
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
