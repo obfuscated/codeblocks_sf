@@ -25,15 +25,36 @@
 
 namespace
 {
-    wxsItemInfo Info =
+    class InfoHandler: public wxsItemInfo
     {
-        _T("wxToolBarToolBase"),
-        wxsTTool,
-        _T(""), _T(""), _T(""), _T(""), _T(""),
-        0, _T("ToolBarItem"),
-        wxsCPP,
-        0, 0, wxBitmap(), wxBitmap(), true, 0
-    };
+        public:
+
+            InfoHandler(): m_TreeImage(_T("images/wxsmith/wxToolBarItem16.png"),true)
+            {
+                ClassName      = _T("wxToolBarToolBase");
+                Type           = wxsTTool;
+                License        = _("wxWidgets license");
+                Author         = _("wxWidgets team");
+                Email          = _T("");
+                Site           = _T("www.wxwidgets.org");
+                Category       = _T("");
+                Priority       = 0;
+                DefaultVarName = _T("ToolBarItem");
+                Languages      = wxsCPP;
+                VerHi          = 2;
+                VerLo          = 8;
+                AllowInXRC     = true;
+
+                // TODO: This code should be more generic since it may quickly
+                //       become invalid
+                wxString DataPath = ConfigManager::GetDataFolder() + _T("/images/wxsmith/");
+                Icon32.LoadFile(DataPath+_T("wxToolBarItem32.png"),wxBITMAP_TYPE_PNG);
+                Icon16.LoadFile(DataPath+_T("wxToolBarItem16.png"),wxBITMAP_TYPE_PNG);
+                TreeIconId = m_TreeImage.GetIndex();
+            };
+
+            wxsAutoResourceTreeImage m_TreeImage;
+    } Info;
 
     WXS_EV_BEGIN(wxsToolBarItemEvents)
         WXS_EVI(EVT_TOOL,wxEVT_COMMAND_TOOL_CLICKED,wxCommandEvent,Clicked)

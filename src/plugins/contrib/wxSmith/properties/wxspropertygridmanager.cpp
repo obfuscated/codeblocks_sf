@@ -46,7 +46,10 @@ wxsPropertyGridManager::~wxsPropertyGridManager()
     PGIndexes.Clear();
     PGContainers.Clear();
     PGContainersSet.clear();
-    ClearPage(0);
+    for ( size_t i=0; i<GetPageCount(); i++ )
+    {
+        ClearPage(i);
+    }
     PreviousIndex = -1;
     PreviousProperty = 0;
     if ( Singleton == this )
@@ -104,7 +107,10 @@ void wxsPropertyGridManager::UnbindAll()
     PGIndexes.Clear();
     PGContainers.Clear();
     PGContainersSet.clear();
-    ClearPage(0);
+    for ( size_t i=0; i<GetPageCount(); i++ )
+    {
+        ClearPage(i);
+    }
     PreviousIndex = -1;
     PreviousProperty = 0;
     SetNewMainContainer(0);
@@ -142,6 +148,10 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC)
     // If there are no properties, we have unbinded main property container
     if ( !PGIDs.Count() )
     {
+        for ( size_t i=0; i<GetPageCount(); i++ )
+        {
+            ClearPage(i);
+        }
         SetNewMainContainer(0);
     }
 }

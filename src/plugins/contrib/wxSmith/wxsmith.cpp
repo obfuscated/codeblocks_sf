@@ -37,6 +37,28 @@
 namespace
 {
     int ConfigureId = wxNewId();
+
+    /* XPM */
+    static char * Events_xpm[] = {
+    "16 16 2 1",
+    " 	c None",
+    ".	c #000000",
+    "                ",
+    "    ..    ..    ",
+    "   .        .   ",
+    "   .        .   ",
+    "   .        .   ",
+    "   .        .   ",
+    "   .        .   ",
+    " ..          .. ",
+    "   .        .   ",
+    "   .        .   ",
+    "   .        .   ",
+    "   .        .   ",
+    "   .        .   ",
+    "    ..    ..    ",
+    "                ",
+    "                "};
 }
 
 wxSmith* wxSmith::m_Singleton = 0;
@@ -84,7 +106,7 @@ void wxSmith::OnAttach()
     Sizer = new wxGridSizer(1);
     wxsPropertyGridManager* PGManager = new wxsPropertyGridManager(PropertiesContainer,-1,wxDefaultPosition,wxDefaultSize,wxPG_TOOLBAR|wxTAB_TRAVERSAL);
     PGManager->AddPage(_("Properties"));
-    PGManager->AddPage(_("Events"));
+    PGManager->AddPage(_("Events"),wxBitmap(Events_xpm));
     PGManager->SelectPage(0);
     Sizer->Add(PGManager,1,wxGROW);
     PropertiesContainer->SetSizer(Sizer);
