@@ -142,7 +142,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_EDITOR_CLOSE(CodeCompletion::OnEditorClosed)
 
     EVT_APP_STARTUP_DONE(CodeCompletion::OnAppDoneStartup)
-    EVT_WORKSPACE_LOADED(CodeCompletion::OnWorkspaceLoaded)
+    EVT_WORKSPACE_CHANGED(CodeCompletion::OnWorkspaceChanged)
     EVT_PROJECT_ACTIVATE(CodeCompletion::OnProjectActivated)
     EVT_PROJECT_CLOSE(CodeCompletion::OnProjectClosed)
     EVT_PROJECT_FILE_ADDED(CodeCompletion::OnProjectFileAdded)
@@ -1000,9 +1000,9 @@ void CodeCompletion::ParseActiveProjects()
     m_InitDone = true;
 }
 
-void CodeCompletion::OnWorkspaceLoaded(CodeBlocksEvent& event)
+void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
 {
-    // EVT_WORKSPACE_LOADED is a powerful event, it's sent after any project
+    // EVT_WORKSPACE_CHANGED is a powerful event, it's sent after any project
     // has finished loading or closing. It's the *LAST* event to be sent when
     // the workspace has been changed, and it's not sent if the application is
     // shutting down. So it's the ideal time to parse files and update your
@@ -1024,7 +1024,7 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
     // The Class browser shouldn't be updated if we're in the middle of loading/closing
     // a project/workspace, because the class browser would need to be updated again.
-    // So we need to update it with the EVT_WORKSPACE_LOADED event, which gets
+    // So we need to update it with the EVT_WORKSPACE_CHANGED event, which gets
     // triggered after everything's finished loading/closing.
 
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)

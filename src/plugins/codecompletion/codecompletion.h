@@ -86,7 +86,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnOpenIncludeFile(wxCommandEvent& event);
         void OnAppDoneStartup(CodeBlocksEvent& event);
         void OnCodeCompleteTimer(wxTimerEvent& event);
-        void OnWorkspaceLoaded(CodeBlocksEvent& event);
+        void OnWorkspaceChanged(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
         void OnProjectFileAdded(CodeBlocksEvent& event);

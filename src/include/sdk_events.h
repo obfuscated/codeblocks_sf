@@ -205,8 +205,8 @@ DECLARE_CB_EVENT_TYPE(cbEVT_PROJECT_TARGETS_MODIFIED)
 #define EVT_PROJECT_TARGETS_MODIFIED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_TARGETS_MODIFIED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 DECLARE_CB_EVENT_TYPE(cbEVT_PROJECT_RENAMED)
 #define EVT_PROJECT_RENAMED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_RENAMED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-DECLARE_CB_EVENT_TYPE(cbEVT_WORKSPACE_LOADED)
-#define EVT_WORKSPACE_LOADED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_LOADED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+DECLARE_CB_EVENT_TYPE(cbEVT_WORKSPACE_CHANGED)
+#define EVT_WORKSPACE_CHANGED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_CHANGED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // pipedprocess events
 DECLARE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_STDOUT)

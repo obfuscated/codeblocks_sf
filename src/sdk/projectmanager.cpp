@@ -208,6 +208,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuViewFileMasks, ProjectManager::OnViewFileMasks)
     EVT_MENU(idMenuFindFile, ProjectManager::OnFindFile)
     EVT_IDLE(ProjectManager::OnIdle)
+    EVT_APP_STARTUP_DONE(ProjectManager::OnAppDoneStartup)
 END_EVENT_TABLE()
 
 // class constructor
@@ -222,7 +223,8 @@ ProjectManager::ProjectManager()
     m_IsClosingProject(false),
     m_IsClosingWorkspace(false),
     m_InitialDir(_T("")),
-    m_isCheckingForExternallyModifiedProjects(false)
+    m_isCheckingForExternallyModifiedProjects(false),
+    m_CanSendWorkspaceChanged(false)
 {
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), idNB);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/project_tabs_style"), wxFNB_NO_X_BUTTON));
@@ -845,11 +847,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
     {
         Manager::Get()->GetUserVariableManager()->Arrogate();
     }
-    if (!IsBusy())
-    {
-        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-    }
+    WorkspaceChanged();
 
     s_CanShutdown = true;
     return result;
@@ -940,15 +938,7 @@ bool ProjectManager::CloseAllProjects(bool dontsave)
     if(!m_InitialDir.IsEmpty())
         wxFileName::SetCwd(m_InitialDir);
     m_IsClosingProject = false;
-    if(!IsBusy())
-    {
-        // If we're closing the workspace, CloseWorkspace() will send the event
-        // Otherwise, send it here.
-        // NOTE: Perhaps we should change the name to EVT_WORKSPACE_CHANGED ?
-        // Because that's what we're doing.
-        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-    }
+    WorkspaceChanged();
     return true;
 }
 
@@ -1001,13 +991,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
     if(!m_InitialDir.IsEmpty()) // Restore the working directory
         wxFileName::SetCwd(m_InitialDir);
     m_IsClosingProject = isClosingOtherProjects;
-    if(!IsBusy())
-    {
-        // If we're not loading/closing the workspace, or closing other projects,
-        // tell the plugins that the workspace has been updated.
-        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-    }
+    WorkspaceChanged();
     return true;
 }
 
@@ -1212,12 +1196,7 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         CloseWorkspace();
     }
     m_IsLoadingWorkspace=false;
-    {
-        // We need to update the plugins to tell that we've finished loading
-        // the workspace.
-        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-    }
+    WorkspaceChanged();
 
     return success;
 }
@@ -1292,18 +1271,7 @@ bool ProjectManager::CloseWorkspace()
     else
         result = CloseAllProjects(false);
     m_IsClosingWorkspace = false;
-    if(!IsBusy())
-    {
-        // EVT_WORKSPACE_LOADED must also be sent to the plugins in case
-        // we close the workspace, for example, to update the class browser.
-        // But we MUST NOT send the event if we're called by LoadWorkspace(),
-        // because the event would get sent twice.
-        // To detect this case, we use IsBusy(), which will also check if the
-        // app's shutting down. In either case, the event is not sent.
-
-        CodeBlocksEvent event(cbEVT_WORKSPACE_LOADED);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-    }
+    WorkspaceChanged();
     return result;
 }
 
@@ -2587,6 +2555,15 @@ void ProjectManager::OnIdle(wxIdleEvent& event)
     event.Skip();
 }
 
+void ProjectManager::OnAppDoneStartup(CodeBlocksEvent& event)
+{
+    // we do not send the workspace loaded event yet because: a) We don't know
+    // if there's a workspace yet, and b) app.cpp hasn't finished init'ing yet.
+    // We'll let app.cpp send the workspace changed for us when it's done.
+    m_CanSendWorkspaceChanged = true;
+    event.Skip();
+}
+
 void ProjectManager::OnRenameFile(wxCommandEvent& event)
 {
     wxTreeItemId sel = m_pTree->GetSelection();
@@ -2637,6 +2614,19 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
             RebuildTree();
             prj->SetModified(true);
         }
+    }
+}
+
+void ProjectManager::WorkspaceChanged()
+{
+    // We use IsBusy() to check *ALL* the conditions: If we're in the process of
+    // opening or closing a project, we cannot send the event yet.
+    // Specifically, *DO NOT* send the event if the application hasn't been
+    // initialized yet!!
+    if(!IsBusy() && m_CanSendWorkspaceChanged)
+    {
+        CodeBlocksEvent event(cbEVT_WORKSPACE_CHANGED);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(event);
     }
 }
 

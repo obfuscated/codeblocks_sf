@@ -555,6 +555,7 @@ bool CodeBlocksApp::OnInit()
         s_Loading = false;
 
         LoadDelayedFiles(frame);
+        Manager::Get()->GetProjectManager()->WorkspaceChanged();
 
         return true;
     }

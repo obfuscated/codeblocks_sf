@@ -386,6 +386,9 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         /** Check if one of the open projects has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedProjects();
+
+        /** Sends message to the plugins that the workspace has been changed */
+        void WorkspaceChanged();
     private:
         ProjectManager();
         ~ProjectManager();
@@ -436,6 +439,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnDeleteVirtualFolder(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnIdle(wxIdleEvent& event);
+        void OnAppDoneStartup(CodeBlocksEvent& event);
+
         void DoOpenSelectedFile();
         void DoOpenFile(ProjectFile* pf, const wxString& filename);
         int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
@@ -460,6 +465,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         wxString m_InitialDir;
         wxTreeItemId m_DraggingItem;
         bool m_isCheckingForExternallyModifiedProjects;
+        bool m_CanSendWorkspaceChanged;
 
         DECLARE_EVENT_TABLE()
 };
