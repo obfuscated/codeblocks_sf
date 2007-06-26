@@ -40,7 +40,7 @@ namespace
 
 
     WXS_EV_BEGIN(wxsDatePickerCtrlEvents)
-        WXS_EVI(EVT_DATE_CHANGED,wxEVT_DATE_CHANGED,wxDataEvent,Changed)
+        WXS_EVI(EVT_DATE_CHANGED,wxEVT_DATE_CHANGED,wxDateEvent,Changed)
     WXS_EV_END()
 }
 
@@ -85,7 +85,12 @@ void wxsDatePickerCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,w
 {
     switch ( Language )
     {
-        case wxsCPP: Decl.Add(_T("<wx/datectrl.h>")); return;
+        case wxsCPP:
+        {
+            Decl.Add(_T("<wx/datectrl.h>"));
+            Decl.Add(_T("<wx/dateevt.h>"));
+            return;
+        }
         default: wxsCodeMarks::Unknown(_T("wxsDatePickerCtrl::OnEnumDeclFiles"),Language);
     }
 }
