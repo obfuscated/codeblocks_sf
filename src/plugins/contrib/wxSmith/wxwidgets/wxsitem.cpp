@@ -230,15 +230,15 @@ void wxsItem::BuildItemTree(wxsResourceTree* Tree,wxsResourceItemId Parent,int P
             ParentItem->GetChild(i)->BuildItemTree(Tree,m_LastTreeId);
         }
     }
-
-    if ( GetIsExpanded() )
-    {
-        Tree->Expand(m_LastTreeId);
-    }
-    else
-    {
-        Tree->Collapse(m_LastTreeId);
-    }
+//
+//    if ( GetIsExpanded() )
+//    {
+//        Tree->Expand(m_LastTreeId);
+//    }
+//    else
+//    {
+//        Tree->Collapse(m_LastTreeId);
+//    }
 }
 
 wxObject* wxsItem::BuildPreview(wxWindow* Parent,long Flags)

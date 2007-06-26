@@ -299,6 +299,8 @@ class wxsItemResData
         bool AnySelectedReq(wxsItem* Item);
         void StoreTreeExpandState();
         void StoreTreeExpandStateReq(wxsItem* Item);
+        void RestoreTreeExpandAndSelectionState();
+        void RestoreTreeExpandAndSelectionStateReq(wxsItem* Item);
         void DeleteSelectedReq(wxsItem* Item);
         void RebuildTree();
         void StoreTreeIds();
@@ -330,6 +332,8 @@ class wxsItemResData
         wxString m_ClassType;
         wxsCodingLang m_Language;
         wxsResourceItemId m_TreeId;
+        wxsResourceItemId m_ToolsId;
+        bool m_ToolsNodeIsExpanded;
         ItemToIdMapT m_IdMap;
         wxsItemEditor* m_Editor;
         wxsItemResFunctions* m_Functions;

@@ -55,6 +55,8 @@ wxsItemResData::wxsItemResData(
         m_ClassType(ClassType),
         m_Language(Language),
         m_TreeId(TreeId),
+        m_ToolsId(),
+        m_ToolsNodeIsExpanded(false),
         m_Editor(Editor),
         m_Functions(Functions),
         m_RootItem(0),
@@ -990,7 +992,6 @@ void wxsItemResData::EndChange()
         m_Editor->UpdateModified();
         RebuildFiles();
         m_Editor->RebuildPreview();
-        RebuildTree();
         if ( ValidateRootSelection() )
         {
             m_RootSelection->NotifyPropertyChange(false);
@@ -1000,6 +1001,7 @@ void wxsItemResData::EndChange()
             m_RootSelection->ShowInPropertyGrid();
             m_Editor->RebuildQuickProps(m_RootSelection);
         }
+        RebuildTree();
         wxsResourceTree::Get()->UnblockSelect();
     }
 }
@@ -1180,6 +1182,10 @@ bool wxsItemResData::AnySelectedReq(wxsItem* Item)
 void wxsItemResData::StoreTreeExpandState()
 {
     StoreTreeExpandStateReq(m_RootItem);
+    if ( GetToolsCount() && m_ToolsId.IsOk() )
+    {
+        m_ToolsNodeIsExpanded = wxsResourceTree::Get()->IsExpanded(m_ToolsId);
+    }
     for ( int i=0; i<GetToolsCount(); i++ )
     {
         StoreTreeExpandStateReq(m_Tools[i]);
@@ -1203,6 +1209,61 @@ void wxsItemResData::StoreTreeExpandStateReq(wxsItem* Item)
         for ( int i=0; i<AsParent->GetChildCount(); i++ )
         {
             StoreTreeExpandStateReq(AsParent->GetChild(i));
+        }
+    }
+}
+
+void wxsItemResData::RestoreTreeExpandAndSelectionState()
+{
+    RestoreTreeExpandAndSelectionStateReq(m_RootItem);
+    if ( GetToolsCount() && m_ToolsId.IsOk() )
+    {
+        if ( m_ToolsNodeIsExpanded )
+        {
+            wxsResourceTree::Get()->Expand(m_ToolsId);
+        }
+        else
+        {
+            wxsResourceTree::Get()->Collapse(m_ToolsId);
+        }
+    }
+
+    for ( int i=0; i<GetToolsCount(); i++ )
+    {
+        RestoreTreeExpandAndSelectionStateReq(m_Tools[i]);
+    }
+
+    wxsResourceItemId Id;
+    if ( FindId(Id,m_RootSelection) )
+    {
+        wxsResourceTree::Get()->SelectItem(Id,true);
+    }
+}
+
+void wxsItemResData::RestoreTreeExpandAndSelectionStateReq(wxsItem* Item)
+{
+    wxsParent* AsParent = Item->ConvertToParent();
+    if ( AsParent )
+    {
+        for ( int i=0; i<AsParent->GetChildCount(); i++ )
+        {
+            RestoreTreeExpandAndSelectionStateReq(AsParent->GetChild(i));
+        }
+    }
+
+    if ( m_IdMap.find(Item) != m_IdMap.end() )
+    {
+        wxTreeItemId Id = m_IdMap[Item];
+        if ( Id.IsOk() )
+        {
+            if ( Item->GetIsExpanded() )
+            {
+                wxsResourceTree::Get()->Expand(Id);
+            }
+            else
+            {
+                wxsResourceTree::Get()->Collapse(Id);
+            }
         }
     }
 }
@@ -1444,13 +1505,14 @@ void wxsItemResData::RebuildTree()
     m_RootItem->BuildItemTree(wxsResourceTree::Get(),m_TreeId,-1);
     if ( GetToolsCount() )
     {
-        wxsResourceItemId ToolsId = wxsResourceTree::Get()->AppendItem(m_TreeId,_("Tools"),ToolsTreeImageId,ToolsTreeImageId);
+        m_ToolsId = wxsResourceTree::Get()->AppendItem(m_TreeId,_("Tools"),ToolsTreeImageId,ToolsTreeImageId);
         for ( int i=0; i<GetToolsCount(); i++ )
         {
-            m_Tools[i]->BuildItemTree(wxsResourceTree::Get(),ToolsId,-1);
+            m_Tools[i]->BuildItemTree(wxsResourceTree::Get(),m_ToolsId,-1);
         }
     }
     StoreTreeIds();
+    RestoreTreeExpandAndSelectionState();
 }
 
 void wxsItemResData::StoreTreeIds()
