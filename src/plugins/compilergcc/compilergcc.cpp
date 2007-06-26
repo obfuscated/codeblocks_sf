@@ -109,7 +109,12 @@ namespace
     static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_console_runner.exe") : _T("cb_console_runner"));
     static const wxString strSLASH(_T("/"));
     static const wxString strSPACE(_T(" "));
+
+#if defined(__WXMSW__)
+    static const wxString strQUOTE(_T("\""));
+#else
     static const wxString strQUOTE(_T("'"));
+#endif
 }
 
 // menu IDS
@@ -1731,7 +1736,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
                 command << DEFAULT_CONSOLE_SHELL << strSPACE;
             }
         }
-        
+
         // should console runner be used?
         if (target->GetUseConsoleRunner())
         {
