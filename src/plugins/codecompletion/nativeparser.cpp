@@ -406,7 +406,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             gcc_compiler_dirs = GetGCCCompilerDirs(((Compilers[idxCompiler])->GetPrograms()).CPP, base);
           }
 
-          Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount());
+          // Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount());
           for (size_t i=0; i<gcc_compiler_dirs.GetCount(); i++)
             parser->AddIncludeDir(gcc_compiler_dirs[i]);
         }
