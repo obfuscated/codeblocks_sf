@@ -109,6 +109,7 @@ namespace
     static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_console_runner.exe") : _T("cb_console_runner"));
     static const wxString strSLASH(_T("/"));
     static const wxString strSPACE(_T(" "));
+    static const wxString strQUOTE(_T("'"));
 }
 
 // menu IDS
@@ -1187,7 +1188,7 @@ int CompilerGCC::DoRunQueue()
 				newLibPath << libPathSep;
 			newLibPath << oldLibPath;
 			wxSetEnv(LIBRARY_ENVVAR, newLibPath);
-//			LogMessage(_T("LIBRARY_ENVVAR=") + newLibPath, cltInfo);
+//			LogMessage(LIBRARY_ENVVAR _T("=") + newLibPath, cltInfo);
 		}
     }
 
@@ -1716,8 +1717,9 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         {
             // for non-win platforms, use m_ConsoleTerm to run the console app
             wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-            term.Replace(_T("$TITLE"), _T("'") + m_Project->GetTitle() + _T("'"));
-            cmd << term;
+            term.Replace(_T("$TITLE"), strQUOTE + m_Project->GetTitle() + strQUOTE);
+            term.Replace(_T("$WORKDIR"), strQUOTE + m_CdRun + strQUOTE);
+            cmd << term << strSPACE;
 
             wxString shell;
             wxGetEnv(_T("SHELL"), &shell);
@@ -1729,13 +1731,14 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
                 command << DEFAULT_CONSOLE_SHELL << strSPACE;
             }
         }
+        
         // should console runner be used?
         if (target->GetUseConsoleRunner())
         {
             wxString baseDir = ConfigManager::GetExecutableFolder();
 
             if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
-                command << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
+                command << strQUOTE << baseDir << strSLASH << strCONSOLE_RUNNER << strQUOTE << strSPACE;
         }
     }
 
@@ -1751,13 +1754,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
         wxString tmp = target->GetHostApplication();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
-        command << tmp << strSPACE;
+        command << strQUOTE << tmp << strQUOTE << strSPACE;
         command << target->GetExecutionParameters();
     }
     else if (target->GetTargetType() != ttCommandsOnly)
     {
         wxString tmp = f.GetFullPath();
-        command << tmp << strSPACE;
+        command << strQUOTE << tmp << strQUOTE << strSPACE;
         command << target->GetExecutionParameters();
     }
     else
