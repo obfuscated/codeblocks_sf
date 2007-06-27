@@ -566,6 +566,7 @@ wxTreeItemId CodeSnippetsTreeCtrl::AddCategory(const wxTreeItemId& parent, wxStr
 		// Let the user edit the category
 		EnsureVisible(newCategoryID);
 		EditLabel(newCategoryID);
+        SetFileChanged(true);
 	}
 
 	return newCategoryID;

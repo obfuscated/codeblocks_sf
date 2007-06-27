@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 90 2007-06-25 02:40:41Z Pecan $
+// RCS-ID: $Id: version.cpp 91 2007-06-25 19:24:43Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -280,6 +280,11 @@ AppVersion::~AppVersion()
 //          81) Add "Open Url" support
 //          82) ReInstate ToolTips for wx284 using first line of snippet
 // ----------------------------------------------------------------------------
+//  Commit  1.2.83 2007/06/27
+//          83) Fixed: Index might not be saved when changing category label
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          Help should invoke browser for wiki article
@@ -299,6 +304,7 @@ AppVersion::~AppVersion()
 //          Enter key should open/close categories like left/right key
 //          Docked wxAUI (MSW) window still bombs when using system [x] to close
 //          Add "U" type icon for url type snippets
+//          Allow absolute delete with SHIFT Remove
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;

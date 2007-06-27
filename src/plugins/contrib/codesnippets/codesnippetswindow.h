@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 89 2007-06-25 00:55:06Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 91 2007-06-25 19:24:43Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
