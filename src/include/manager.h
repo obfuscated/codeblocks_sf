@@ -9,6 +9,11 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
+#ifndef WX_PRECOMP
+#   ifdef __WXMSW__
+#       include <wx/msw/wrapwin.h>  // Needed to prevent Yield define bug.
+#   endif
+#endif
 #include <wx/event.h>
 #include <wx/cmdline.h>
 #include "settings.h"
@@ -123,7 +128,7 @@ public:
 
     static void AddonToolBar(wxToolBar* toolBar,wxString resid);
     static bool isToolBar16x16(wxToolBar* toolBar);
-    
+
     static wxCmdLineParser* GetCmdLineParser();
 };
 

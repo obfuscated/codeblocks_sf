@@ -26,6 +26,8 @@
 
 #include <sdk.h>
 #include <prep.h>
+#include <wx/gauge.h>     // Needs to be before compilergcc.h if NOPCH on wxMSW
+#include <wx/listctrl.h>
 #include "compilergcc.h"
 #include <manager.h>
 #include <sdk_events.h>
@@ -46,7 +48,6 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/statline.h>
-#include <wx/gauge.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"

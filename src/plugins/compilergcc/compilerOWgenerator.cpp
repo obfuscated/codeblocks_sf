@@ -1,6 +1,13 @@
 #ifdef __WXMSW__ // For Windows Only
 
 #include <sdk.h>
+#ifndef CB_PRECOMP
+#   include "compiler.h"
+#   include "cbproject.h"
+#   include "projectbuildtarget.h"
+#   include "messagemanager.h"
+#   include "macrosmanager.h"
+#endif
 #include "compileoptionsbase.h"
 #include "compilerOWgenerator.h"
 

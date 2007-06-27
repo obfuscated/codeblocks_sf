@@ -6,6 +6,7 @@
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/msw/registry.h>
+#include <wx/log.h>             // wxLogNull
 
 CompilerBCC::CompilerBCC()
     : Compiler(_("Borland C++ Compiler (5.5, 5.82)"), _T("bcc"))

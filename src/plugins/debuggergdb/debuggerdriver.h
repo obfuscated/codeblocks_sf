@@ -1,6 +1,12 @@
 #ifndef DEBUGGERDRIVER_H
 #define DEBUGGERDRIVER_H
 
+#ifndef WX_PRECOMP
+#   ifdef __WXMSW__
+#       include <wx/msw/wrapwin.h>  // Needed to prevent GetCommandLine define bug.
+#   endif
+#endif
+
 #include "debugger_defs.h"
 #include <wx/regex.h>
 #include <globals.h>

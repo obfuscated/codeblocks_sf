@@ -1,4 +1,5 @@
 #include <sdk.h>
+#include <wx/listctrl.h>
 #include "breakpointsdlg.h"
 #include <manager.h>
 #include <editormanager.h>

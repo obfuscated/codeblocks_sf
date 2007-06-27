@@ -8,6 +8,7 @@
 
 class wxChoice;
 class wxListCtrl;
+class wxListEvent;
 class ProjectTemplateLoader;
 
 class NewFromTemplateDlg : public wxDialog
