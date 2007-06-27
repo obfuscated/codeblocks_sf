@@ -41,7 +41,7 @@ wxString CompilerOWGenerator::SetupLibrariesDirs(Compiler* compiler, ProjectBuil
         }
         // Now for project
         const wxArrayString projectArr = target->GetParentProject()->GetLibDirs();
-        for (size_t i = 0; i < targetArr.GetCount(); ++i)
+        for (size_t i = 0; i < projectArr.GetCount(); ++i)
         {
             tmp = projectArr[i];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
