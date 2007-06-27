@@ -18,6 +18,7 @@
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
+
 //*)
 #include "configurationpanel.h"
 #include <wx/settings.h>
@@ -108,6 +109,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxRadioBox* ScrollDirection;
 		wxStaticText* StaticText2;
 		wxChoice* MouseKeyChoice;
+
+        // Mouse adjustment sliders
 		wxStaticText* StaticText3;
 		wxSlider* Sensitivity;
         wxStaticText* StaticText4;

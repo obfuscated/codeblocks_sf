@@ -97,7 +97,7 @@ void cbDragScroll::OnAttach()
     MouseDragSensitivity    = 5;
     MouseToLineRatio        = 30;
     MouseRightKeyCtrl       = 0 ;
-    MouseContextDelay       = 192;
+    MouseContextDelay       = 10;
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
@@ -146,8 +146,8 @@ void cbDragScroll::OnAttach()
 	cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
 	cfgFile.Read(_T("MouseContextDelay"),       &MouseContextDelay) ;
 
-	// Don't allow less than 100 mils on context/scroll delay.
-	if ( MouseContextDelay < 100) { MouseContextDelay = 100;}
+	// Don't allow less than 10 mils on context/scroll delay.
+	if ( MouseContextDelay < 10) { MouseContextDelay = 10;}
 
     #ifdef LOGGING
         LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled ) ;

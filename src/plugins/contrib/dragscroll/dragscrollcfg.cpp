@@ -6,119 +6,127 @@ BEGIN_EVENT_TABLE(cbDragScrollCfg,cbConfigurationPanel)
 //	//*)
 END_EVENT_TABLE()
 
+// ----------------------------------------------------------------------------
 cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindowID id)
+// ----------------------------------------------------------------------------
     :pOwnerClass(pOwner)
 {
     cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
 		wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
 
-	//(*Initialize(cbDragScrollCfg)
-	//Create(parent,id,_T(""),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE);
-	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
-	//FlexGridSizer1->AddGrowableCol(0);
-	//FlexGridSizer1->AddGrowableRow(0);
+	wxBoxSizer* bSizer1;
+	bSizer1 = new wxBoxSizer( wxVERTICAL );
 
-	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Mouse Drag Scrolling Configuration"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	//StaticText1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DLIGHT));
-	//StaticText1->SetFont(wxFont(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	wxBoxSizer* bSizer2;
+	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
-	ScrollEnabled = new wxCheckBox(this,ID_ENABLEDCHECKBOX,_("Scrolling Enabled"),wxPoint(-1,-1),wxDefaultSize,0);
-	ScrollEnabled->SetValue(true);
-	//ScrollEnabled->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	bSizer2->SetMinSize(wxSize( -1,50 ));
+	StaticText1 = new wxStaticText( this, wxID_ANY, wxT("Mouse Drag Scrolling Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer2->Add( StaticText1, 0, wxALIGN_CENTER|wxALL, 5 );
 
-    //Focus editor when mouse in editor window
-	EditorFocusEnabled = new wxCheckBox(this,ID_EDITORENABLEDFOCUS,_("Auto Editor Focus Enabled"),wxPoint(-1,-1),wxDefaultSize,0);
-	EditorFocusEnabled->SetValue(false);
-	//EditorFocusEnabled->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
 
-    //Focus follows Mouse
-	MouseFocusEnabled = new wxCheckBox(this,ID_MOUSEENABLEDFOCUS,_("Focus follows Mouse"),wxPoint(-1,-1),wxDefaultSize,0);
-	MouseFocusEnabled->SetValue(false);
+	bSizer1->Add( bSizer2, 0, wxEXPAND, 5 );
 
-////    //Hide Right keydown events from ListCtrl windows
-////	MouseRightKeyCtrl = new wxCheckBox(this,ID_EDITORENABLEDFOCUS,_("Smooth Message List Scrolling"),wxPoint(-1,-1),wxDefaultSize,0);
-////	MouseRightKeyCtrl->SetValue(false);
-////	//MouseRightKeyCtrl->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
-////	StaticTextMRKC = new wxStaticText(this,ID_STATICTEXTMRKC,_("(Conflicts with some Context Menus)"),wxDefaultPosition,wxDefaultSize,0);
-////	//StaticTextMRKC->SetFont(wxFont(7,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	wxBoxSizer* bSizer5;
+	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxString wxRadioBoxChoices_ScrollDirection[2];
-	wxRadioBoxChoices_ScrollDirection[0] = _("With Mouse");
-	wxRadioBoxChoices_ScrollDirection[1] = _("Opposite Mouse");
-	//ScrollDirection = new wxRadioBox(this,ID_RADIOBOX1,_("Scroll Direction"),wxDefaultPosition,wxSize(229,116),2,wxRadioBoxChoices_ScrollDirection,1,wxRA_VERTICAL);
-	ScrollDirection = new wxRadioBox(this,ID_RADIOBOX1,_("Scroll Direction"),wxDefaultPosition,wxSize(290,70),2,wxRadioBoxChoices_ScrollDirection,1,wxRA_VERTICAL);
-	//ScrollDirection->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	ScrollEnabled = new wxCheckBox( this, wxID_ANY, wxT("Scrolling Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
 
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Mouse_Key_To_Use"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE);
-	//StaticText2->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	bSizer5->Add( ScrollEnabled, 0, wxALL, 5 );
 
-	MouseKeyChoice = new wxChoice(this,ID_KEYCHOICE,wxDefaultPosition,wxDefaultSize,0,NULL,0);
-	MouseKeyChoice->Append(_(" Right"));
-	MouseKeyChoice->Append(_(" Middle"));
-	MouseKeyChoice->SetSelection(0);
-	//MouseKeyChoice->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
+	bSizer1->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
-	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("-- Adaptive Mouse Speed Sensitivity --"),wxDefaultPosition,wxDefaultSize,0);
-	//StaticText3->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
-	Sensitivity = new wxSlider(this,ID_SENSITIVITY,5,1,10,wxDefaultPosition,wxDefaultSize,wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_LABELS);
+	wxBoxSizer* bSizer6;
+	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
+
+	EditorFocusEnabled = new wxCheckBox( this, wxID_ANY, wxT("Auto Focus Editors"), wxDefaultPosition, wxDefaultSize, 0 );
+
+	bSizer6->Add( EditorFocusEnabled, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	MouseFocusEnabled = new wxCheckBox( this, wxID_ANY, wxT("Focus follows Mouse"), wxDefaultPosition, wxDefaultSize, 0 );
+
+	bSizer6->Add( MouseFocusEnabled, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	bSizer1->Add( bSizer6, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+
+	wxBoxSizer* bSizer3;
+	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
+
+	wxString ScrollDirectionChoices[] = { wxT("With Mouse"), wxT("Opposite Mouse") };
+	int ScrollDirectionNChoices = sizeof( ScrollDirectionChoices ) / sizeof( wxString );
+	ScrollDirection = new wxRadioBox( this, wxID_ANY, wxT("Scroll Direction"), wxDefaultPosition, wxDefaultSize, ScrollDirectionNChoices, ScrollDirectionChoices, 2, wxRA_SPECIFY_COLS );
+	bSizer3->Add( ScrollDirection, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	bSizer1->Add( bSizer3, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+
+	wxBoxSizer* bSizer4;
+	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
+
+	StaticText2 = new wxStaticText( this, wxID_ANY, wxT("Mouse Key To Use:"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer4->Add( StaticText2, 0, wxALL, 5 );
+
+	wxString MouseKeyChoiceChoices[] = { wxT("Right"), wxT("Middle") };
+	int MouseKeyChoiceNChoices = sizeof( MouseKeyChoiceChoices ) / sizeof( wxString );
+	MouseKeyChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, MouseKeyChoiceNChoices, MouseKeyChoiceChoices, 0 );
+	bSizer4->Add( MouseKeyChoice, 0, wxALL, 5 );
+
+	bSizer1->Add( bSizer4, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+
+	wxBoxSizer* bSizer7;
+	bSizer7 = new wxBoxSizer( wxVERTICAL );
+
+	bSizer7->SetMinSize(wxSize( 300,-1 ));
+	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
+
+	StaticText3 = new wxStaticText( this, wxID_ANY, wxT("-- Adaptive Mouse Speed Sensitivity --"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer7->Add( StaticText3, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	Sensitivity = new wxSlider( this, wxID_ANY, 8, 1, 10, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
 	if ( 1 ) Sensitivity->SetTickFreq(1,0);
 	if ( 1 ) Sensitivity->SetPageSize(1);
 	if ( 0 ) Sensitivity->SetLineSize(0);
 	if ( 0 ) Sensitivity->SetThumbLength(0);
 	if ( 1 ) Sensitivity->SetTick(1);
-	if ( 1 || 10 ) Sensitivity->SetSelection(1,10);
-    //
-	StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("-- Mouse Movement to Text Scroll Ratio --"),wxDefaultPosition,wxDefaultSize,0);
-	//StaticText4->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
-	MouseToLineRatio = new wxSlider(this,ID_MOUSETOLINERATIO,30,10,100,wxDefaultPosition,wxDefaultSize,wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_LABELS);
-	if ( 1 ) MouseToLineRatio->SetTickFreq(10,0);
+	if ( 1 ) Sensitivity->SetSelection(1,10);
+	bSizer7->Add( Sensitivity, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+
+	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
+
+	StaticText4 = new wxStaticText( this, wxID_ANY, wxT("-- Mouse Movement to Text Scroll Ratio --"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer7->Add( StaticText4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	MouseToLineRatio = new wxSlider( this, wxID_ANY, 30, 10, 100, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
+	if ( 1 ) MouseToLineRatio->SetTickFreq(10,10);
 	if ( 1 ) MouseToLineRatio->SetPageSize(10);
 	if ( 0 ) MouseToLineRatio->SetLineSize(0);
 	if ( 0 ) MouseToLineRatio->SetThumbLength(0);
-	if ( 1 ) MouseToLineRatio->SetTick(1);
-	if ( 10 || 100 ) MouseToLineRatio->SetSelection(10,100);
-    //
-	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("-- Context Menu Wait for Drag (millisecs) --"),wxDefaultPosition,wxDefaultSize,0);
-	//StaticText4->SetFont(wxFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_("Arial")));
-	MouseContextDelay = new wxSlider(this,ID_MOUSECONTEXTDELAY,100,100,1000,wxDefaultPosition,wxDefaultSize,wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_LABELS);
-	if ( 1 ) MouseContextDelay->SetTickFreq(10,0);
+	if ( 1 ) MouseToLineRatio->SetTick(10);
+	if ( 1 ) MouseToLineRatio->SetSelection(10,100);
+	bSizer7->Add( MouseToLineRatio, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+
+	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
+
+	StaticText5 = new wxStaticText( this, wxID_ANY, wxT("-- Unix Context Menu Watch for Drag (millisecs) --"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer7->Add( StaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	MouseContextDelay = new wxSlider( this, wxID_ANY, 50, 10, 500, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
+	// Above values are: default mil delay, min, max
+	if ( 1 ) MouseContextDelay->SetTickFreq(10,10);
 	if ( 1 ) MouseContextDelay->SetPageSize(10);
-	if ( 0 ) MouseContextDelay->SetLineSize(0);
-	if ( 0 ) MouseContextDelay->SetThumbLength(0);
+	if ( 1 ) MouseContextDelay->SetLineSize(10);
+	if ( 1 ) MouseContextDelay->SetThumbLength(10);
 	if ( 1 ) MouseContextDelay->SetTick(100);
-	if ( 100 || 1000 ) MouseContextDelay->SetSelection(10,100);
-	//FlexGridSizer1->Add(-1,-1,1);
-    //
-	FlexGridSizer1->Add(StaticText1,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(ScrollEnabled,1,wxALL|wxALIGN_CENTER,5);
+	if ( 1 ) MouseContextDelay->SetSelection(10,500);
+	bSizer7->Add( MouseContextDelay, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
 
-	FlexGridSizer1->Add(EditorFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(MouseFocusEnabled,1,wxALL|wxALIGN_CENTER,5);
+	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
-////	FlexGridSizer1->Add(MouseRightKeyCtrl,1,(wxALL&~wxBOTTOM)|wxALIGN_CENTER,5);
-////	FlexGridSizer1->Add(StaticTextMRKC,1,(wxALL&~wxTOP)|wxALIGN_CENTER,0);
+	bSizer1->Add( bSizer7, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-	FlexGridSizer1->AddSpacer(2);
-	FlexGridSizer1->Add(ScrollDirection,1,wxALL|wxALIGN_CENTER,5);
+	this->SetSizer( bSizer1 );
+	this->Layout();
 
-	FlexGridSizer1->AddSpacer(1);
-	FlexGridSizer1->Add(StaticText2,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(MouseKeyChoice,1,wxALL|wxALIGN_CENTER,5);
-
-	FlexGridSizer1->Add(StaticText3,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(Sensitivity,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-
-	FlexGridSizer1->Add(StaticText4,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(MouseToLineRatio,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-
-	FlexGridSizer1->Add(StaticText5,1,wxALL|wxALIGN_CENTER,5);
-	FlexGridSizer1->Add(MouseContextDelay,1,wxALL|wxALIGN_CENTER|wxEXPAND,5);
-
-	this->SetSizer(FlexGridSizer1);
-	FlexGridSizer1->Fit(this);
-	FlexGridSizer1->SetSizeHints(this);
-	Centre();
-	//*)
 }
 // ----------------------------------------------------------------------------
 void cbDragScrollCfg::OnApply()
