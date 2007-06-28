@@ -7,8 +7,7 @@
  * License:
  **************************************************************/
 
-#include "wx_pch.h"
-#include "[FILENAME_PREFIX]App.h"
+[PCH_INCLUDE]#include "[FILENAME_PREFIX]App.h"
 
 //(*AppHeaders
 //*)

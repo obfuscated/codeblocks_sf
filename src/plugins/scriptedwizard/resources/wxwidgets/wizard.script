@@ -1206,6 +1206,7 @@ function SubstituteMacros(buffer)
 
     // create class name from project name which is valid c++ identifier
     local Prefix = GetFixedProjectName();
+    local PchInclude = WantPCH ? ( _T("#include \"") + PCHFileName + _T("\"\n") ) : _T("");
 
     // macros substitution
     buffer.Replace(_T("[PROJECT_HDR]"), Prefix.Upper() );
@@ -1216,6 +1217,7 @@ function SubstituteMacros(buffer)
     buffer.Replace(_T("[AUTHOR_EMAIL]"), ProjEmail);
     buffer.Replace(_T("[AUTHOR_WWW]"), ProjWebsite);
     buffer.Replace(_T("[NOW]"), ReplaceMacros(_T("$(TODAY)"), false));
+    buffer.Replace(_T("[PCH_INCLUDE]"), PchInclude);
 
     return buffer;
 }

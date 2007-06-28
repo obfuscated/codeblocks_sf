@@ -7,8 +7,7 @@
  * License:
  **************************************************************/
 
-#include "wx_pch.h"
-#include "[FILENAME_PREFIX]Main.h"
+[PCH_INCLUDE]#include "[FILENAME_PREFIX]Main.h"
 #include <wx/msgdlg.h>
 
 //(*InternalHeaders([CLASS_PREFIX][IF WXFRAME]Frame[ENDIF WXFRAME][IF WXDIALOG]Dialog[ENDIF WXDIALOG])
