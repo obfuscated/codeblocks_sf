@@ -80,5 +80,6 @@ noinst_HEADERS = \
 ./wxchart/wxchart-1.0/include/wx/chart.h \
 ./wxchart/wxchart-1.0/include/wx/chartpoints.h \
 ./wxthings/wxthings/include/wx/things/toggle.h \
+./wxthings/wxthings/include/wx/things/thingdef.h \
 ./wxthings/wxscustombutton.h \
 ./wxSmithContribItems.h
