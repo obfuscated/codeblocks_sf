@@ -79,7 +79,9 @@ void wxsResource::EditOpen()
     }
     else
     {
+        wxsResourceTree::Get()->BlockSelect();
         m_Editor = OnCreateEditor(Manager::Get()->GetEditorManager()->GetNotebook());
+        wxsResourceTree::Get()->UnblockSelect();
     }
 }
 
