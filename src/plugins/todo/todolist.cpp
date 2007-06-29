@@ -60,7 +60,8 @@ END_EVENT_TABLE()
 
 ToDoList::ToDoList() :
 m_InitDone(false),
-m_ParsePending(false)
+m_ParsePending(false),
+m_StandAlone(true)
 {
 	//ctor
     if(!Manager::LoadResource(_T("todo.zip")))
@@ -86,19 +87,34 @@ void ToDoList::OnAttach()
 	titles.Add(_("Line"));
 	titles.Add(_("File"));
 
-//    MessageManager* msgMan = Manager::Get()->GetMessageManager();
 	m_pListLog = new ToDoListView(6, widths, titles, m_Types);
-//	m_ListPageIndex = msgMan->AddLog(m_pListLog, m_PluginInfo.title);
+	m_pListLog->SetSize(wxSize(352,94));
+    #if wxCHECK_VERSION(2, 8, 0)
+    m_pListLog->SetInitialSize(wxSize(352,94));
+    #else
+    m_pListLog->SetBestFittingSize(wxSize(352,94));
+    #endif
 
-    CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-    evt.name = _T("TodoListPane");
-    evt.title = _("To-Do list");
-    evt.pWindow = m_pListLog;
-    evt.dockSide = CodeBlocksDockEvent::dsFloating;
-    evt.desiredSize.Set(400, 150);
-    evt.floatingSize.Set(400, 150);
-    evt.minimumSize.Set(400, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    bool standalone = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("stand_alone"), true);
+    m_StandAlone = standalone;
+
+    if(!standalone)
+    {
+        MessageManager* msgMan = Manager::Get()->GetMessageManager();
+        m_ListPageIndex = msgMan->AddLog(m_pListLog, _("To-Do"));
+    }
+    else
+    {
+        CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+        evt.name = _T("TodoListPanev2.0.0");
+        evt.title = _("To-Do list");
+        evt.pWindow = m_pListLog;
+        evt.dockSide = CodeBlocksDockEvent::dsFloating;
+        evt.desiredSize.Set(352, 94);
+        evt.floatingSize.Set(352, 94);
+        evt.minimumSize.Set(352, 94);
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    }
 
     m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
     LoadTypes();
@@ -106,14 +122,19 @@ void ToDoList::OnAttach()
 
 void ToDoList::OnRelease(bool appShutDown)
 {
-    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-    evt.pWindow = m_pListLog;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-
-    m_pListLog->Destroy();
-
-//    if (Manager::Get()->GetMessageManager())
-//        Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
+    if(m_StandAlone)
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pListLog;
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        m_pListLog->Destroy();
+    }
+    else
+    {
+        if (Manager::Get()->GetMessageManager())
+            Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
+    }
+    m_pListLog = 0;
 }
 
 void ToDoList::BuildMenu(wxMenuBar* menuBar)
@@ -153,13 +174,20 @@ bool ToDoList::BuildToolBar(wxToolBar* toolBar)
 	return false;
 }
 
+cbConfigurationPanel* ToDoList::GetConfigurationPanel(wxWindow* parent)
+{
+    ToDoSettingsDlg* dlg = new ToDoSettingsDlg(parent);
+    return dlg;
+}
+
 int ToDoList::Configure()
 {
-    ToDoSettingsDlg dlg;
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-        m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
-	return 0;
+    return 0;
+//    ToDoSettingsDlg dlg;
+//    PlaceWindow(&dlg);
+//    if (dlg.ShowModal() == wxID_OK)
+//        m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
+//	return 0;
 }
 
 void ToDoList::LoadTypes()

@@ -1,51 +1,28 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxDialog" name="ToDoSettingsDlg">
-    <title>To-Do list settings</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxCheckBox" name="chkAutoRefresh">
-          <label>Auto-refresh To-Do list</label>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>For large projects, it is advised to turn auto-refresh off
-because it will result in sluggish performance of the IDE...</label>
-          <fg>#800000</fg>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
+    <object class="wxPanel" name="ToDoSettingsDlg">
+        <size>560,127</size>
         <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;OK</label>
-              <default>1</default>
+            <orient>wxVERTICAL</orient>
+            <object class="sizeritem">
+                <object class="wxCheckBox" name="chkAutoRefresh">
+                    <label>Auto-refresh To-Do list (NOT recommended for large projects)</label>
+                </object>
+                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
             </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
+            <object class="sizeritem">
+                <object class="wxCheckBox" name="chkMessagesPane">
+                    <label>Include the To-do list in the messages pane (will take place after restart)</label>
+                </object>
+                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+                <border>8</border>
             </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
+            <object class="sizeritem">
+                <object class="wxStaticLine" name="ID_STATICLINE1" />
+                <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                <border>8</border>
+            </object>
         </object>
-        <flag>wxALL|wxALIGN_CENTRE</flag>
-        <border>8</border>
-      </object>
     </object>
-  </object>
 </resource>

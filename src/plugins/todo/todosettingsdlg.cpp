@@ -9,12 +9,14 @@
 #endif
 #include "todosettingsdlg.h"
 
-ToDoSettingsDlg::ToDoSettingsDlg()
+ToDoSettingsDlg::ToDoSettingsDlg(wxWindow* parent)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, 0L, _T("ToDoSettingsDlg"));
+	wxXmlResource::Get()->LoadPanel(this, parent, _T("ToDoSettingsDlg"));
 	bool checked = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
+	bool standalone = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("stand_alone"), true);
 	XRCCTRL(*this, "chkAutoRefresh", wxCheckBox)->SetValue(checked);
+	XRCCTRL(*this, "chkMessagesPane", wxCheckBox)->SetValue(!standalone);
 }
 
 ToDoSettingsDlg::~ToDoSettingsDlg()
@@ -22,13 +24,10 @@ ToDoSettingsDlg::~ToDoSettingsDlg()
 	//dtor
 }
 
-void ToDoSettingsDlg::EndModal(int retCode)
+void ToDoSettingsDlg::OnApply()
 {
-    if (retCode == wxID_OK)
-    {
-        bool checked = XRCCTRL(*this, "chkAutoRefresh", wxCheckBox)->GetValue();
-        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("auto_refresh"), checked);
-    }
-
-    wxDialog::EndModal(retCode);
+    bool checked = XRCCTRL(*this, "chkAutoRefresh", wxCheckBox)->GetValue();
+    bool standalone = !(XRCCTRL(*this, "chkMessagesPane", wxCheckBox)->GetValue());
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("auto_refresh"), checked);
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("stand_alone"), standalone);
 }

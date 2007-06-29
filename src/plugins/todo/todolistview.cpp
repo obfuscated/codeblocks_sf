@@ -50,6 +50,12 @@ ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& title
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ToDoListView::OnDoubleClick);
 
+    #if wxCHECK_VERSION(2, 8, 0)
+    m_pList->SetInitialSize(wxSize(342,56));
+    #else
+    m_pList->SetBestFittingSize(wxSize(342,56));
+    #endif
+	m_pList->SetMinSize(wxSize(342,56));
 	wxSizer* bs = m_pList->GetContainingSizer();
 	if (bs)
 	{
@@ -70,12 +76,12 @@ ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& title
         m_pUser = new wxComboBox(this, idUser, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_READONLY);
         m_pUser->Append(_("<All users>"));
         m_pUser->SetSelection(0);
-        hbs->Add(m_pUser, 0, wxLEFT, 8);
+        hbs->Add(m_pUser, 0, wxLEFT, 4);
 
-        m_pRefresh = new wxButton(this, idButtonRefresh, _("Refresh list"));
-        hbs->Add(m_pRefresh, 0, wxLEFT, 8);
+        m_pRefresh = new wxButton(this, idButtonRefresh, _("Refresh"));
+        hbs->Add(m_pRefresh, 0, wxLEFT, 4);
 
-        bs->Add(hbs, 0, wxGROW | wxALL, 8);
+        bs->Add(hbs, 0, wxGROW | wxALL, 4);
 	}
 }
 

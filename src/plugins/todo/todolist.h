@@ -33,6 +33,7 @@ class ToDoList : public cbPlugin
 	public:
 		ToDoList();
 		~ToDoList();
+		virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
 		int Configure();
 		void BuildMenu(wxMenuBar* menuBar);
 		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
@@ -57,6 +58,7 @@ class ToDoList : public cbPlugin
 		bool m_AutoRefresh;
 		bool m_InitDone;
 		bool m_ParsePending;
+		bool m_StandAlone;
 		wxArrayString m_Types;
 		wxTimer m_timer;
 
