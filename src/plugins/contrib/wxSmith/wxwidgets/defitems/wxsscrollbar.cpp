@@ -31,6 +31,7 @@ namespace
         WXS_ST_CATEGORY("wxScrollBar")
         WXS_ST(wxSB_HORIZONTAL)
         WXS_ST(wxSB_VERTICAL)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

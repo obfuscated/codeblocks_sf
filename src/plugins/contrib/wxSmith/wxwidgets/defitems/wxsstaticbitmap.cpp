@@ -29,6 +29,7 @@ namespace
 
     WXS_ST_BEGIN(wxsStaticBitmapStyles,_T(""))
         WXS_ST_CATEGORY("wxStaticBitmap")
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

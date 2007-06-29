@@ -33,12 +33,9 @@ namespace
         WXS_ST(wxCAPTION)
         WXS_ST(wxDEFAULT_DIALOG_STYLE)
         WXS_ST(wxDEFAULT_FRAME_STYLE)
-     //   WXS_ST(wxTHICK_FRAME)// replaced by wxRESIZE_BORDER in 2.6
         WXS_ST(wxSYSTEM_MENU)
         WXS_ST(wxRESIZE_BORDER)
-     //   WXS_ST(wxRESIZE_BOX) // replaced by wxMAXIMIZE_BOX in 2.6
         WXS_ST(wxCLOSE_BOX)
-
         WXS_ST(wxFRAME_NO_TASKBAR)
         WXS_ST(wxFRAME_SHAPED)
         WXS_ST(wxFRAME_TOOL_WINDOW)
@@ -46,20 +43,11 @@ namespace
         WXS_ST(wxMAXIMIZE_BOX)
         WXS_ST(wxMINIMIZE_BOX)
         WXS_ST(wxSTAY_ON_TOP)
-
-     //   WXS_ST(wxNO_3D)
         WXS_ST(wxTAB_TRAVERSAL)
-        WXS_EXST_MASK(wxWS_EX_VALIDATE_RECURSIVELY, wxsSFAll, 0, true);
-        WXS_EXST_MASK(wxDIALOG_EX_CONTEXTHELP,wxsSFWin,0,true)
-        WXS_EXST_MASK(wxDIALOG_EX_METAL,wxsSFOSX,0,true)
-
-    // NOTE (cyberkoa##): wxMINIMIZE, wxMAXIMIZE are in the HELP file but not in XRC
-    //#ifdef __WXMSW__
-    // NOTE (cyberkoa##): There is a style wxICONIZE which is identical to wxMINIMIZE , not included.
-    //    WXS_ST(wxMINIMIZE)
-    //    WXS_ST(wxMAXIMIZE)
-    //#endif
-
+        WXS_ST(wxWS_EX_VALIDATE_RECURSIVELY)
+        WXS_ST(wxFRAME_EX_METAL)
+        WXS_ST(wxFRAME_EX_CONTEXTHELP)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsFrameEvents)

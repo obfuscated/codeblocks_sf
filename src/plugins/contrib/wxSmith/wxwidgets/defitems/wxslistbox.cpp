@@ -29,13 +29,14 @@ namespace
 
     WXS_ST_BEGIN(wxsListBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxListBox")
-        WXS_ST_MASK(wxLB_HSCROLL,wxsSFWin,0,true) // Windows ONLY
         WXS_ST(wxLB_SINGLE)
         WXS_ST(wxLB_MULTIPLE)
         WXS_ST(wxLB_EXTENDED)
+        WXS_ST(wxLB_HSCROLL)
         WXS_ST(wxLB_ALWAYS_SB)
         WXS_ST(wxLB_NEEDED_SB)
         WXS_ST(wxLB_SORT)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsListBoxEvents)

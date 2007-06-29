@@ -29,10 +29,11 @@ namespace
 
     WXS_ST_BEGIN(wxsStaticTextStyles,_T(""))
         WXS_ST_CATEGORY("wxStaticText")
+        WXS_ST(wxST_NO_AUTORESIZE)
         WXS_ST(wxALIGN_LEFT)
         WXS_ST(wxALIGN_RIGHT)
         WXS_ST(wxALIGN_CENTRE)
-        WXS_ST(wxST_NO_AUTORESIZE)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsStaticTextEvents)

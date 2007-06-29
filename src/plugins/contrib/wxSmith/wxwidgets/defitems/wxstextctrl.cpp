@@ -28,7 +28,6 @@ namespace
     wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"),wxsTWidget,_T("Standard"),75);
 
     WXS_ST_BEGIN(wxsTextCtrlStyles,_T(""))
-        WXS_ST_CATEGORY("wxTextCtrl")
         WXS_ST(wxTE_NO_VSCROLL)
         WXS_ST(wxTE_AUTO_SCROLL)
         WXS_ST(wxTE_PROCESS_ENTER)
@@ -36,32 +35,18 @@ namespace
         WXS_ST(wxTE_MULTILINE)
         WXS_ST(wxTE_PASSWORD)
         WXS_ST(wxTE_READONLY)
-    //Help file : No effect under GTK1
         WXS_ST(wxHSCROLL)
         WXS_ST(wxTE_RICH)
         WXS_ST(wxTE_RICH2)
+        WXS_ST(wxTE_AUTO_URL)
         WXS_ST(wxTE_NOHIDESEL)
         WXS_ST(wxTE_LEFT)
-        WXS_ST_MASK(wxTE_AUTO_URL,wxsSFWin|wxsSFGTK20,0,true)
-        WXS_ST_MASK(wxTE_CENTRE,wxsSFWin|wxsSFGTK20,0,true)
-        WXS_ST_MASK(wxTE_RIGHT,wxsSFWin|wxsSFGTK20,0,true)
-        WXS_ST_MASK(wxTE_CENTRE,wxsSFWin|wxsSFGTK20,0,true)
-        WXS_ST_MASK(wxTE_CHARWRAP,wxsSFUNIV|wxsSFGTK20,0,true)
-        WXS_ST_MASK(wxTE_WORDWRAP,wxsSFUNIV|wxsSFGTK20,0,true)
-        WXS_ST(wxTE_BESTWRAP)
-
-    // Help file :On PocketPC and Smartphone, causes the first letter to be capitalized
-        WXS_ST_MASK(wxTE_CAPITALIZE,wxsSFWinCE,0,true)
-    // Help file : same as wxTE_HSCROLL, so ignore
-    //    WXS_ST(wxTE_DONTWRAP)
-
-    // Not in Help file but in XRC file, assume applying to all platform
-
-#if WXWIN_COMPATIBILITY_2_6
-        WXS_ST(wxTE_LINEWRAP)
-#else
+        WXS_ST(wxTE_CENTRE)
+        WXS_ST(wxTE_RIGHT)
+        WXS_ST(wxTE_DONTWRAP)
         WXS_ST(wxTE_CHARWRAP)
-#endif // WXWIN_COMPATIBILITY_2_6
+        WXS_ST(wxTE_WORDWRAP)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

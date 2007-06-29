@@ -32,10 +32,7 @@ namespace
         WXS_ST(wxTR_EDIT_LABELS)
         WXS_ST(wxTR_NO_BUTTONS)
         WXS_ST(wxTR_HAS_BUTTONS)
-
-    // NOTE (cyberkoa##): wxTR_TWIST_BUTTONS found in wxMSW's XRC but not in HELP , maybe is new style
         WXS_ST(wxTR_TWIST_BUTTONS)
-
         WXS_ST(wxTR_NO_LINES)
         WXS_ST(wxTR_FULL_ROW_HIGHLIGHT)
         WXS_ST(wxTR_LINES_AT_ROOT)
@@ -46,6 +43,7 @@ namespace
         WXS_ST(wxTR_MULTIPLE)
         WXS_ST(wxTR_EXTENDED)
         WXS_ST(wxTR_DEFAULT_STYLE)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsTreeCtrlEvents)

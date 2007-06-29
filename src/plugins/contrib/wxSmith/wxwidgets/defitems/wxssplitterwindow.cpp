@@ -60,14 +60,12 @@ namespace
         WXS_ST(wxSP_3D)
         WXS_ST(wxSP_3DSASH)
         WXS_ST(wxSP_3DBORDER)
-#if WXWIN_COMPATIBILITY_2_6
-        WXS_ST(wxSP_FULLSASH)
-#endif
         WXS_ST(wxSP_BORDER)
         WXS_ST(wxSP_NOBORDER)
         WXS_ST(wxSP_PERMIT_UNSPLIT)
         WXS_ST(wxSP_LIVE_UPDATE)
-        WXS_ST_MASK(wxSP_NO_XP_THEME,wxsSFWin,0,true)
+        WXS_ST(wxSP_NO_XP_THEME)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsSplitterWindowEvents)

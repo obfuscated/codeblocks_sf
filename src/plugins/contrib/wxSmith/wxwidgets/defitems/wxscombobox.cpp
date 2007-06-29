@@ -30,10 +30,11 @@ namespace
 
     WXS_ST_BEGIN(wxsComboBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxComboBox")
-        WXS_ST_MASK(wxCB_SIMPLE,wxsSFWin,0,true)
-        WXS_ST(wxCB_READONLY)
+        WXS_ST(wxCB_SIMPLE)
         WXS_ST(wxCB_SORT)
+        WXS_ST(wxCB_READONLY)
         WXS_ST(wxCB_DROPDOWN)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsComboBoxEvents)

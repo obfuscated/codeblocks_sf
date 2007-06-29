@@ -31,8 +31,7 @@ namespace
         WXS_ST_CATEGORY("wxScrolledWindow")
         WXS_ST(wxHSCROLL)
         WXS_ST(wxVSCROLL)
-        WXS_ST(wxTAB_TRAVERSAL)
-        WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsScrolledWindowEvents)

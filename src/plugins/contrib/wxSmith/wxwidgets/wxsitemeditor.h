@@ -78,6 +78,7 @@ class wxsItemEditor : public wxsEditor
         void OnDelete(wxCommandEvent& event);
         void OnPreview(wxCommandEvent& event);
         void OnQuickProps(wxCommandEvent& event);
+        void OnKeyDown(wxKeyEvent& event);
 
         void InitializeVisualStuff();
         void InitializeResourceData();

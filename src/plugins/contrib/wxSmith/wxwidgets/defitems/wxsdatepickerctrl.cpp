@@ -36,6 +36,7 @@ namespace
         WXS_ST(wxDP_DROPDOWN)
         WXS_ST(wxDP_ALLOWNONE)
         WXS_ST(wxDP_SHOWCENTURY)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

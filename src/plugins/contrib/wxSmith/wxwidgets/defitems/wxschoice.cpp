@@ -30,6 +30,7 @@ namespace
     WXS_ST_BEGIN(wxsChoiceStyles,_T(""))
         WXS_ST_CATEGORY("wxChoice")
         WXS_ST(wxCB_SORT)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

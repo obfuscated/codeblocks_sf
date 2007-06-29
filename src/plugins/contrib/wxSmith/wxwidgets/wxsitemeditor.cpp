@@ -765,6 +765,19 @@ wxsItem* wxsItemEditor::GetReferenceItem(int& InsertionType)
     return Reference;
 }
 
+void wxsItemEditor::OnKeyDown(wxKeyEvent& event)
+{
+    switch ( event.GetKeyCode() )
+    {
+        case WXK_DELETE:
+            if ( !m_Data ) break;
+            m_Data->BeginChange();
+            m_Data->DeleteSelected();
+            m_Data->EndChange();
+            break;
+    }
+}
+
 wxImage wxsItemEditor::m_InsIntoImg;
 wxImage wxsItemEditor::m_InsBeforeImg;
 wxImage wxsItemEditor::m_InsAfterImg;
@@ -784,4 +797,5 @@ BEGIN_EVENT_TABLE(wxsItemEditor,wxsEditor)
     EVT_BUTTON(wxsPreviewId,wxsItemEditor::OnPreview)
     EVT_BUTTON(wxsQuickPropsId,wxsItemEditor::OnQuickProps)
     EVT_BUTTON(-1,wxsItemEditor::OnButton)
+    EVT_KEY_DOWN(wxsItemEditor::OnKeyDown)
 END_EVENT_TABLE()

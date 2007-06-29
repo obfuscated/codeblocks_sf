@@ -188,6 +188,8 @@ class wxsStyleSet
     WXS_ST(wxHSCROLL)                           \
     WXS_ST(wxALWAYS_SHOW_SB)                    \
     WXS_ST(wxCLIP_CHILDREN)                     \
-    WXS_ST(wxFULL_REPAINT_ON_RESIZE)
+    WXS_ST(wxFULL_REPAINT_ON_RESIZE)            \
+    WXS_EXST(wxWS_EX_BLOCK_EVENTS)              \
+    WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
 
 #endif

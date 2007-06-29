@@ -29,12 +29,7 @@ namespace
 
     WXS_ST_BEGIN(wxsStaticBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxStaticBox")
-        WXS_ST(wxBU_LEFT)
-        WXS_ST(wxBU_TOP)
-        WXS_ST(wxBU_RIGHT)
-        WXS_ST(wxBU_BOTTOM)
-        WXS_ST(wxBU_EXACTFIT)
-        WXS_ST_MASK(wxNO_BORDER,wxsSFWin| wxsSFGTK ,0,true)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsStaticBoxEvents)

@@ -31,6 +31,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsArrayStringCheckEditorDlg)

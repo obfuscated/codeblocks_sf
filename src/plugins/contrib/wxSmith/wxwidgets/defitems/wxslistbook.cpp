@@ -173,6 +173,7 @@ namespace
         WXS_ST(wxLB_RIGHT)
         WXS_ST(wxLB_TOP)
         WXS_ST(wxLB_BOTTOM)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsListbookEvents)

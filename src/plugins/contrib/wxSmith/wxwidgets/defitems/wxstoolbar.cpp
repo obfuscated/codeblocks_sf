@@ -74,6 +74,10 @@ namespace
         WXS_ST(wxTB_NOALIGN)
         WXS_ST(wxTB_HORZ_LAYOUT)
         WXS_ST(wxTB_HORZ_TEXT)
+        WXS_ST(wxTB_TOP)
+        WXS_ST(wxTB_LEFT)
+        WXS_ST(wxTB_RIGHT)
+        WXS_ST(wxTB_BOTTOM)
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 }

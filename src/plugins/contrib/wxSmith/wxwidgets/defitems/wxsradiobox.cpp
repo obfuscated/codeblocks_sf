@@ -29,12 +29,11 @@ namespace
 
     WXS_ST_BEGIN(wxsRadioBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxRadioBox")
-        WXS_ST(wxRA_SPECIFY_ROWS)
         WXS_ST(wxRA_SPECIFY_COLS)
-    // NOTE (cyberkoa##): wxRA_HORIZONTAL & wxRA_VERTICAL is not in HELP file but in wxMSW's XRC
-        WXS_ST_MASK(wxRA_HORIZONTAL,wxsSFAll,0,false)
-        WXS_ST_MASK(wxRA_VERTICAL,wxsSFAll,0,false)
-        WXS_ST_MASK(wxRA_USE_CHECKBOX,wxsSFPALMOS,0,true)
+        WXS_ST(wxRA_HORIZONTAL)
+        WXS_ST(wxRA_SPECIFY_ROWS)
+        WXS_ST(wxRA_VERTICAL)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

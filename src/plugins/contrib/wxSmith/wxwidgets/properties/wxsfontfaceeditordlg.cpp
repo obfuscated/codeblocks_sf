@@ -32,6 +32,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsFontFaceEditorDlg)
@@ -48,7 +49,7 @@ wxsFontFaceEditorDlg::wxsFontFaceEditorDlg(wxWindow* parent,wxString& _Face,wxWi
     Face(_Face)
 {
 	//(*Initialize(wxsFontFaceEditorDlg)
-	Create(parent,id,_("Selecting font face"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
+	Create(parent,id,_("Selecting font face"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Face name"));
 	FaceName = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
@@ -68,7 +69,7 @@ wxsFontFaceEditorDlg::wxsFontFaceEditorDlg(wxWindow* parent,wxString& _Face,wxWi
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	Centre();
+	Center();
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsFontFaceEditorDlg::OnButton1Click);
 	Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsFontFaceEditorDlg::OnButton2Click);
 	//*)

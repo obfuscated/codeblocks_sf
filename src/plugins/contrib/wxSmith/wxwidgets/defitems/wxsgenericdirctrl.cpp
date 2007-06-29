@@ -35,9 +35,9 @@ namespace
         WXS_ST(wxDIRCTRL_3D_INTERNAL)
         WXS_ST(wxDIRCTRL_SELECT_FIRST)
         WXS_ST(wxDIRCTRL_SHOW_FILTERS)
-        WXS_ST_MASK(wxDIRCTRL_EDIT_LABELS,wxsSFAll,0,false)
+        WXS_ST(wxDIRCTRL_EDIT_LABELS)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
-
 
     WXS_EV_BEGIN(wxsGenericDirCtrlEvents)
     WXS_EV_END()

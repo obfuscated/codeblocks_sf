@@ -31,6 +31,7 @@ namespace
     WXS_ST_BEGIN(wxsStatusBarStyles,_T(""))
         WXS_ST_CATEGORY("wxStatusBar")
         WXS_ST(wxST_SIZEGRIP)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     const wxChar* FieldStyles[] = { _T("wxSB_NORMAL"), _T("wxSB_FLAT"), _T("wxSB_RAISED"), 0 };

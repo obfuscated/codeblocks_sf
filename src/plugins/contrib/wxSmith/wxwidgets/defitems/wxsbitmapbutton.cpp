@@ -29,13 +29,14 @@ namespace
 
     WXS_ST_BEGIN(wxsBitmapButtonStyles,_T("wxBU_AUTODRAW"))
         WXS_ST_CATEGORY("wxBitmapButton")
-        WXS_ST_MASK(wxBU_LEFT,wxsSFWin,0,true)
-        WXS_ST_MASK(wxBU_TOP,wxsSFWin,0,true)
-        WXS_ST_MASK(wxBU_RIGHT,wxsSFWin,0,true)
-        WXS_ST_MASK(wxBU_BOTTOM,wxsSFWin,0,true)
-        WXS_ST_MASK(wxBU_AUTODRAW,wxsSFWin,0,true)
+        WXS_ST(wxBU_LEFT)
+        WXS_ST(wxBU_TOP)
+        WXS_ST(wxBU_RIGHT)
+        WXS_ST(wxBU_BOTTOM)
+        WXS_ST(wxBU_AUTODRAW)
         // cyberkoa: "The help mentions that wxBU_EXACTFIX is not used but the XRC code yes
         //  WXS_ST(wxBU_EXACTFIX)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

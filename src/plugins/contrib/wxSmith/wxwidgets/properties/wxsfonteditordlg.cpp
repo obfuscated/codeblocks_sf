@@ -46,6 +46,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsFontEditorDlg)
@@ -92,7 +93,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 {
     Initialized = false;
 	//(*Initialize(wxsFontEditorDlg)
-	Create(parent,id,_("Advanced font settings"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("id"));
+	Create(parent,id,_("Advanced font settings"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	BoxSizer5 = new wxBoxSizer(wxVERTICAL);
@@ -125,6 +126,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	BaseFontVal->Append(_("wxSYS_DEFAULT_GUI_FONT"));
 	FlexGridSizer2->Add(BaseFontVal,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FamUse = new wxCheckBox(this,ID_CHECKBOX2,_("Family:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+	FamUse->SetValue(false);
 	FlexGridSizer2->Add(FamUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	FamVal = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	FamVal->SetSelection( FamVal->Append(_("Decorative")) );
@@ -135,15 +137,18 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	FamVal->Append(_("Teletype"));
 	FlexGridSizer2->Add(FamVal,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	EncodUse = new wxCheckBox(this,ID_CHECKBOX1,_("Font encoding:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+	EncodUse->SetValue(false);
 	FlexGridSizer2->Add(EncodUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	EncodVal = new wxChoice(this,ID_CHOICE3,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CHOICE3"));
 	FlexGridSizer2->Add(EncodVal,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	SizeUse = new wxCheckBox(this,ID_CHECKBOX7,_("Size:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX7"));
+	SizeUse->SetValue(false);
 	FlexGridSizer2->Add(SizeUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	SizeVal = new wxSpinCtrl(this,ID_SPINCTRL1,_("0"),wxDefaultPosition,wxDefaultSize,0,-1000,1000,0,_T("ID_SPINCTRL1"));
-	SizeVal->SetValue(_("0"));
+	SizeVal = new wxSpinCtrl(this,ID_SPINCTRL1,_T("0"),wxDefaultPosition,wxDefaultSize,0,-1000,1000,0,_T("ID_SPINCTRL1"));
+	SizeVal->SetValue(_T("0"));
 	FlexGridSizer2->Add(SizeVal,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	RelSizeUse = new wxCheckBox(this,ID_CHECKBOX6,_("Relative size:"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX6"));
+	RelSizeUse->SetValue(false);
 	FlexGridSizer2->Add(RelSizeUse,1,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	RelSizeVal = new wxTextCtrl(this,ID_TEXTCTRL1,_("1.0"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
 	FlexGridSizer2->Add(RelSizeVal,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -152,6 +157,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL,this,wxEmptyString);
 	StyleUse = new wxCheckBox(this,ID_CHECKBOX3,_("Style"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX3"));
+	StyleUse->SetValue(false);
 	StaticBoxSizer3->Add(StyleUse,0,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StyleNorm = new wxRadioButton(this,ID_RADIOBUTTON1,_("Normal"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP,wxDefaultValidator,_T("ID_RADIOBUTTON1"));
 	StaticBoxSizer3->Add(StyleNorm,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -162,6 +168,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	BoxSizer2->Add(StaticBoxSizer3,1,wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	StaticBoxSizer4 = new wxStaticBoxSizer(wxVERTICAL,this,wxEmptyString);
 	WeightUse = new wxCheckBox(this,ID_CHECKBOX4,_("Weight"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX4"));
+	WeightUse->SetValue(false);
 	StaticBoxSizer4->Add(WeightUse,0,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	WeightLight = new wxRadioButton(this,ID_RADIOBUTTON4,_("Light"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP,wxDefaultValidator,_T("ID_RADIOBUTTON4"));
 	StaticBoxSizer4->Add(WeightLight,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -172,6 +179,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 	BoxSizer2->Add(StaticBoxSizer4,1,wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer5 = new wxStaticBoxSizer(wxVERTICAL,this,wxEmptyString);
 	UnderUse = new wxCheckBox(this,ID_CHECKBOX5,_("Underlined"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX5"));
+	UnderUse->SetValue(false);
 	StaticBoxSizer5->Add(UnderUse,0,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	UnderYes = new wxRadioButton(this,ID_RADIOBUTTON7,_("Yes"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP,wxDefaultValidator,_T("ID_RADIOBUTTON7"));
 	StaticBoxSizer5->Add(UnderYes,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);

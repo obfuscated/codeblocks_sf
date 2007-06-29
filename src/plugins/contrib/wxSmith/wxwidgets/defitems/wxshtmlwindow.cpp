@@ -33,6 +33,7 @@ namespace
         WXS_ST(wxHW_SCROLLBAR_NEVER)
         WXS_ST(wxHW_SCROLLBAR_AUTO)
         WXS_ST(wxHW_NO_SELECTION)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsHtmlWindowEvents)

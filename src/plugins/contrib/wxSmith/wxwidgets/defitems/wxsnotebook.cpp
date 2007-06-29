@@ -175,11 +175,10 @@ namespace
         WXS_ST(wxNB_RIGHT)
         WXS_ST(wxNB_TOP)
         WXS_ST(wxNB_BOTTOM)
-        WXS_ST_MASK(wxNB_FIXEDWIDTH,wxsSFWin,0,true)
-        WXS_ST_MASK(wxNB_MULTILINE,wxsSFWin,0,true)
-        WXS_ST_MASK(wxNB_NOPAGETHEME,wxsSFWin,0,true)
-        // NOTE (cyberkoa##): wxNB_FLAT is in HELP (WinCE only) file but not in wxMSW's XRC
-        WXS_ST_MASK(wxNB_FLAT,wxsSFWinCE,0,true)
+        WXS_ST(wxNB_FIXEDWIDTH)
+        WXS_ST(wxNB_MULTILINE)
+        WXS_ST(wxNB_NOPAGETHEME)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsNotebookEvents)

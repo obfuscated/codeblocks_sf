@@ -30,7 +30,6 @@ namespace
     wxsRegisterItem<wxsSlider> Reg(_T("Slider"),wxsTWidget,_T("Standard"),50);
 
     WXS_ST_BEGIN(wxsSliderStyles,_T(""))
-        WXS_ST_CATEGORY("wxSlider")
         WXS_ST(wxSL_HORIZONTAL)
         WXS_ST(wxSL_VERTICAL)
         WXS_ST(wxSL_AUTOTICKS)
@@ -40,23 +39,9 @@ namespace
         WXS_ST(wxSL_RIGHT)
         WXS_ST(wxSL_BOTTOM)
         WXS_ST(wxSL_BOTH)
-        WXS_ST_MASK(wxSL_SELRANGE,wxsSFWin,0,true)
+        WXS_ST(wxSL_SELRANGE)
         WXS_ST(wxSL_INVERSE)
-        WXS_ST_CATEGORY("wxWindow")
-        WXS_ST_MASK(wxCLIP_CHILDREN,wxsSFWin,0,true)
-        WXS_ST(wxSIMPLE_BORDER)
-        WXS_ST(wxSUNKEN_BORDER)
-        WXS_ST_MASK(wxDOUBLE_BORDER,wxsSFWin|wxsSFOSX|wxsSFCOCOA|wxsSFCARBON,0,true)
-        WXS_ST(wxRAISED_BORDER)
-        WXS_ST_MASK(wxSTATIC_BORDER,wxsSFWin,0,true)
-        WXS_ST(wxNO_BORDER)
-        WXS_ST_MASK(wxTRANSPARENT_WINDOW,wxsSFWin,0,true)
-        WXS_ST(wxWANTS_CHARS)
-        WXS_ST(wxTAB_TRAVERSAL)
-        WXS_ST(wxNO_FULL_REPAINT_ON_RESIZE)
-        WXS_ST(wxFULL_REPAINT_ON_RESIZE)
-        WXS_EXST(wxWS_EX_BLOCK_EVENTS)
-        WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

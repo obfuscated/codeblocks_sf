@@ -31,6 +31,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsSizerParentQP)
@@ -68,8 +69,8 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWind
 	wxFlexGridSizer* FlexGridSizer2;
 	wxGridSizer* GridSizer1;
 	wxStaticBoxSizer* StaticBoxSizer2;
-
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("id"));
+	
+	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
 	FlexGridSizer1->AddGrowableCol(1);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL,this,_("Border"));
@@ -78,22 +79,27 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWind
 	GridSizer1 = new wxGridSizer(0,3,0,0);
 	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BrdTop = new wxCheckBox(this,ID_CHECKBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+	BrdTop->SetValue(false);
 	GridSizer1->Add(BrdTop,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BrdLeft = new wxCheckBox(this,ID_CHECKBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+	BrdLeft->SetValue(false);
 	GridSizer1->Add(BrdLeft,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BrdRight = new wxCheckBox(this,ID_CHECKBOX3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX3"));
+	BrdRight->SetValue(false);
 	GridSizer1->Add(BrdRight,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	GridSizer1->Add(0,0,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BrdBottom = new wxCheckBox(this,ID_CHECKBOX4,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX4"));
+	BrdBottom->SetValue(false);
 	GridSizer1->Add(BrdBottom,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer2->Add(GridSizer1,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	BrdSize = new wxSpinCtrl(this,ID_SPINCTRL1,_("0"),wxDefaultPosition,wxSize(51,-1),0,0,100,0,_T("ID_SPINCTRL1"));
-	BrdSize->SetValue(_("0"));
+	BrdSize = new wxSpinCtrl(this,ID_SPINCTRL1,_T("0"),wxDefaultPosition,wxSize(51,-1),0,0,100,0,_T("ID_SPINCTRL1"));
+	BrdSize->SetValue(_T("0"));
 	FlexGridSizer2->Add(BrdSize,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer1->Add(FlexGridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
 	BrdDlg = new wxCheckBox(this,ID_CHECKBOX7,_("Dialog Units"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX7"));
+	BrdDlg->SetValue(false);
 	StaticBoxSizer1->Add(BrdDlg,0,wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Placement"));
@@ -120,15 +126,17 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWind
 	FlexGridSizer3->Add(GridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	PlaceShp = new wxCheckBox(this,ID_CHECKBOX6,_("Shaped"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX6"));
+	PlaceShp->SetValue(false);
 	BoxSizer1->Add(PlaceShp,1,wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,2);
 	PlaceExp = new wxCheckBox(this,ID_CHECKBOX5,_("Expand"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX5"));
+	PlaceExp->SetValue(false);
 	BoxSizer1->Add(PlaceExp,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
 	FlexGridSizer3->Add(BoxSizer1,1,wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,10);
 	StaticBoxSizer2->Add(FlexGridSizer3,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
 	FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL,this,_("Proportion"));
-	Proportion = new wxSpinCtrl(this,ID_SPINCTRL2,_("0"),wxDefaultPosition,wxSize(65,21),0,0,100,0,_T("ID_SPINCTRL2"));
-	Proportion->SetValue(_("0"));
+	Proportion = new wxSpinCtrl(this,ID_SPINCTRL2,_T("0"),wxDefaultPosition,wxSize(65,21),0,0,100,0,_T("ID_SPINCTRL2"));
+	Proportion->SetValue(_T("0"));
 	StaticBoxSizer3->Add(Proportion,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer1->Add(StaticBoxSizer3,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	SetSizer(FlexGridSizer1);

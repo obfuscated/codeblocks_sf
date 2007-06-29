@@ -30,10 +30,8 @@ namespace
     WXS_ST_BEGIN(wxsGaugeStyles,_T(""))
         WXS_ST(wxGA_HORIZONTAL)
         WXS_ST(wxGA_VERTICAL)
-    // NOTE (cyberkoa#1#): according to Help file , wxGA_SMOOTH is not support by all platform but does not mention which platform is not support.
         WXS_ST(wxGA_SMOOTH)
-    // NOTE (cyberkoa##): wxGA_PROGRESSBAR not in HELP file but in XRC code
-    //    WXS_ST(wxGA_PROGRESSBAR)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 

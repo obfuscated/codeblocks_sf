@@ -34,7 +34,7 @@ namespace
         WXS_ST(wxBU_RIGHT)
         WXS_ST(wxBU_BOTTOM)
         WXS_ST(wxBU_EXACTFIT)
-        WXS_ST_MASK(wxNO_BORDER,wxsSFWin| wxsSFGTK ,0,true)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsButtonEvents)

@@ -29,10 +29,7 @@ namespace
 
     WXS_ST_BEGIN(wxsPanelStyles,_T("wxTAB_TRAVERSAL"))
         WXS_ST_CATEGORY("wxPanel")
-     //   WXS_ST(wxNO_3D)      // removed in 2.6
-        WXS_ST(wxTAB_TRAVERSAL)
-        WXS_ST(wxWANTS_CHARS)
-        WXS_EXST(wxWS_EX_VALIDATE_RECURSIVELY)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsPanelEvents)

@@ -30,9 +30,10 @@ namespace
     WXS_ST_BEGIN(wxsCheckBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxCheckBox")
         WXS_ST(wxCHK_2STATE)
+        WXS_ST(wxCHK_3STATE)
+        WXS_ST(wxCHK_ALLOW_3RD_STATE_FOR_USER)
         WXS_ST(wxALIGN_RIGHT)
-        WXS_ST_MASK(wxCHK_3STATE,wxsSFAll,wxsSFMGL |wxsSFGTK12 | wxsSFOS2,true)
-        WXS_ST_MASK(wxCHK_ALLOW_3RD_STATE_FOR_USER,wxsSFAll,wxsSFMGL |wxsSFGTK12 | wxsSFOS2,true)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsCheckBoxEvents)

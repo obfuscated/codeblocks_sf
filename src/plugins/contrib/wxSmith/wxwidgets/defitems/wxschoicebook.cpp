@@ -167,11 +167,13 @@ namespace
 
     WXS_ST_BEGIN(wxsChoicebookStyles,_T(""))
         WXS_ST_CATEGORY("wxChoicebook")
+        // TODO: XRC in wx 2.8 uses wxBK_ prefix, docs stay at wxCHB_
         WXS_ST(wxCHB_DEFAULT)
         WXS_ST(wxCHB_LEFT)
         WXS_ST(wxCHB_RIGHT)
         WXS_ST(wxCHB_TOP)
         WXS_ST(wxCHB_BOTTOM)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsChoicebookEvents)

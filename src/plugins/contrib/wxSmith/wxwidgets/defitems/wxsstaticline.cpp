@@ -33,6 +33,7 @@ namespace
         WXS_ST_CATEGORY("wxStaticLine")
         WXS_ST(wxLI_HORIZONTAL)
         WXS_ST(wxLI_VERTICAL)
+        WXS_ST_DEFAULTS()
     WXS_ST_END()
 
 
