@@ -71,6 +71,7 @@
 #include "appglobals.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/dir.h>
     #include "xtra_res.h"
     #include "filemanager.h" // LoaderBase
 #endif

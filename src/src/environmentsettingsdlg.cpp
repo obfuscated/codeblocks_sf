@@ -37,6 +37,7 @@
 #endif
 
 #ifndef CB_PRECOMP
+    #include <wx/dir.h>
     #include "cbplugin.h" // cgCompiler, cgDebugger...
 #endif
 
