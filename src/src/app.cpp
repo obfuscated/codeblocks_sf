@@ -380,46 +380,36 @@ void CodeBlocksApp::InitLocale()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    bool i18n=cfg->ReadBool(_T("/environment/I18N"), true);
+    if(cfg->ReadBool(_T("/locale/enable"), true) == false)
+        return;
 
-    if(!i18n)
-        return; // Localisation turned off? Skip the rest!
+    wxString path(ConfigManager::GetDataFolder() + _T("/locale"));
+    wxString lang(cfg->Read(_T("/locale/language")));
 
-    int lng = cfg->ReadInt(_T("/locale/language"),(int)0);
+    wxLocale::AddCatalogLookupPathPrefix(path);
 
-    int catalogNum = cfg->ReadInt(_T("/locale/catalogNum"), (int)0);
-    if (catalogNum == 0)
+
+    const wxLanguageInfo *info;
+
+    if(lang)
+        info = wxLocale::FindLanguageInfo(lang);
+    else
+        info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
+
+    m_locale.Init(info->Language);
+
+    path.Alloc(path.length() + 10);
+    path.Append(_T("/"));
+    path.Append(info->CanonicalName);
+
+    wxDir dir(path);
+    wxString moName;
+
+    if(dir.GetFirst(&moName, _T("*.mo"), wxDIR_FILES))
+    do
     {
-        catalogNum = 1;
-        cfg->Write(_T("/locale/Domain1"), "codeblocks");
-    }
-
-    if (lng>=0)
-    {
-        m_locale.Init(appglobals::languages[lng].locale_code);
-        wxLocale::AddCatalogLookupPathPrefix(ConfigManager::GetDataFolder() + _T("/locale"));
-        wxLocale::AddCatalogLookupPathPrefix(wxT("."));
-        wxLocale::AddCatalogLookupPathPrefix(wxT(".."));
-        for (int i = 1; i <= catalogNum; ++i)
-        {
-            wxString tempStr = wxString::Format(_T("/locale/Domain%d"), i);
-            wxString catalogName = cfg->Read(tempStr, wxEmptyString);
-            if (catalogName.IsEmpty())
-            {
-                cfg->Write(tempStr,
-                        cfg->Read(wxString::Format(_T("/locale/Domain%d"), catalogNum)));
-                catalogNum--;
-            }
-            else if (cfg->Read(_T("/plugins/") + catalogName))
-                m_locale.AddCatalog(catalogName);
-        }
-
-    }
-    cfg->Write(_T("/locale/catalogNum"), (int)catalogNum);
-    //these don't ever change in this function, no need to write them out
-    //if non-existent, defaults will be used, which is just as good
-    //cfg->Write(_T("/environment/I18N"),  (bool)i18n);
-    //cfg->Write(_T("/locale/language"), (int)lng);
+        m_locale.AddCatalog(moName);
+    }while(dir.GetNext(&moName));
 }
 
 bool CodeBlocksApp::OnInit()

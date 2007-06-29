@@ -138,22 +138,28 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
 
-    bool i18n=cfg->ReadBool(_T("/environment/I18N"), false);
+    bool i18n=cfg->ReadBool(_T("/locale/enable"), false);
         XRCCTRL(*this, "chkI18N", wxCheckBox)->SetValue(i18n);
-    for(size_t i=0; i < array_size(appglobals::languages); i++)
-    {
-        XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(appglobals::languages[i].name);
-    }
-    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
-    if(i18n)
-    {
-        int lng = cfg->ReadInt(_T("/locale/language"),-1);
 
-        if (lng >= 0 && static_cast<unsigned int>(lng) < array_size(appglobals::languages))
+    wxDir locDir(ConfigManager::GetDataFolder() + _T("/locale"));
+    wxString locFName;
+
+    if(locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/))
+    do
+    {
+        const wxLanguageInfo *info = wxLocale::FindLanguageInfo(locFName);
+        if(info)
         {
-            XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetSelection(lng+1);
+            XRCCTRL(*this, "cbxLanguage", wxComboBox)->Append(info->Description);
         }
-    }
+    }while(locDir.GetNext(&locFName));
+
+    XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
+
+    const wxLanguageInfo *info = wxLocale::FindLanguageInfo(cfg->Read(_T("/locale/language")));
+    if(info);
+        XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetStringSelection(info->Description);
+
 
     // tab "Notebook"
     XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->SetSelection(cfg->ReadInt(_T("/environment/tabs_style"), 0));
@@ -382,8 +388,14 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         mcfg->Write(_T("/auto_show_build_warnings"),         (bool) XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->GetValue());
         mcfg->Write(_T("/auto_show_build_errors"),           (bool) XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/start_here_page"),       (bool) XRCCTRL(*this, "chkShowStartPage", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/I18N"),                  (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
-        cfg->Write(_T("/locale/language"),                   (int)  XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetSelection()-1);
+
+        cfg->Write(_T("/locale/enable"),                     (bool) XRCCTRL(*this, "chkI18N", wxCheckBox)->GetValue());
+        const wxLanguageInfo *info = wxLocale::FindLanguageInfo(XRCCTRL(*this, "cbxLanguage", wxComboBox)->GetStringSelection());
+        if(info)
+            cfg->Write(_T("/locale/language"), info->CanonicalName);
+        else
+            cfg->Write(_T("/locale/language"), wxEmptyString);
+
         mcfg->Write(_T("/log_font_size"),                    (int)  XRCCTRL(*this, "spnLogFontSize", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/dialog_placement/do_place"),         (bool) XRCCTRL(*this, "chkDoPlace", wxCheckBox)->GetValue());
         cfg->Write(_T("/dialog_placement/dialog_position"),  (int)  XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->GetValue() ? pdlHead : pdlCentre);
