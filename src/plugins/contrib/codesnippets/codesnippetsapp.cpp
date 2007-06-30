@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 93 2007-06-30 21:22:19Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -36,6 +36,7 @@
 
 #include <wx/stdpaths.h>
 #include <wx/process.h>
+#include <wx/filename.h>
 
 #include "version.h"
 #include "codesnippetsapp.h"
@@ -366,11 +367,8 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
         // Find the "semaphore" file and map it to memory, when the plugin
         // clears the KeepAlivePid string, we'll terminate.
         // To memory map a file there must exists a non-zero length file
-        #if defined(__WXMSW__)
-            wxString mappedFileName = wxT("/temp/cbsnippetspid") +keepAlivePid+ wxT(".plg");
-        #else
-            wxString mappedFileName = wxT("/tmp/cbsnippetspid") +keepAlivePid+  wxT(".plg");
-        #endif
+        wxString tempDir = GetConfig()->GetTempDir();
+        wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
          LOGIT( _T("mappedFileName[%s]"),mappedFileName.GetData() );
         // Map the file
         m_pMappedFile = new  wxMemoryMappedFile( mappedFileName, true);
@@ -657,13 +655,9 @@ bool CodeSnippetsAppFrame::ReleaseMemoryMappedFile()
         m_pMappedFile->UnmapFile();
     delete m_pMappedFile;
     m_pMappedFile = 0;
-
+    wxString tempDir = GetConfig()->GetTempDir();
     wxString keepAlivePid(wxString::Format(wxT("%lu"), m_lKeepAlivePid));
-    #if defined(__WXMSW__)
-        wxString mappedFileName = wxT("/temp/cbsnippetspid") +keepAlivePid+ wxT(".plg");
-    #else
-        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +keepAlivePid+  wxT(".plg");
-    #endif
+    wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
     bool result = ::wxRemoveFile( mappedFileName );
     return result;
 }

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 91 2007-06-25 19:24:43Z Pecan $
+// RCS-ID: $Id: version.cpp 93 2007-06-30 21:22:19Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -282,6 +282,9 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit  1.2.83 2007/06/27
 //          83) Fixed: Index might not be saved when changing category label
+// ----------------------------------------------------------------------------
+//  Commit  1.2.84 2007/06/30
+//          84) Fixed: Get temp directory name from system; don't assume.
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------

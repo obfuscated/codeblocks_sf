@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 93 2007-06-30 21:22:19Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -24,6 +24,7 @@
     #include <wx/fileconf.h>
     #include <wx/stdpaths.h>
     #include <wx/app.h>
+    #include <wx/filename.h>
 
 #include <sstream>
 
@@ -481,4 +482,17 @@ bool CodeSnippetsConfig::IsExternalWindow()
   	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
         return true;
     return false;
+}
+// ----------------------------------------------------------------------------
+wxString CodeSnippetsConfig::GetTempDir()
+// ----------------------------------------------------------------------------
+{
+    #if wxCHECK_VERSION(2, 8, 0)
+        return wxFileName::GetTempDir();
+    #else
+        wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
+        wxString temp_folder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+        ::wxRemoveFile(tempFile);
+        return temp_folder;
+    #endif
 }

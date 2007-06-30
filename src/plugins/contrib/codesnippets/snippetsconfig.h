@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 85 2007-05-29 15:40:31Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 93 2007-06-30 21:22:19Z Pecan $
 
 
 #ifndef GLOBAL_H
@@ -65,6 +65,8 @@ class CodeSnippetsConfig
     void                    SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
     wxString                GetVersion(){return m_VersionStr;}
     wxFileConfig*           GetCfgFile(){return m_pCfgFile;}
+    wxString                GetTempDir();
+
 
     void CenterChildOnParent(wxWindow* child);
 

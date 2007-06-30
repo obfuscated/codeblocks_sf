@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 86 2007-06-07 19:09:25Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 93 2007-06-30 21:22:19Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -206,11 +206,8 @@ void CodeSnippets::OnRelease(bool appShutDown)
     ReleaseMemoryMappedFile();
 
     wxString myPid(wxString::Format(wxT("%lu"),::wxGetProcessId()));
-    #if defined(__WXMSW__)
-        wxString mappedFileName = wxT("/temp/cbsnippetspid") +myPid+ wxT(".plg");
-    #else
-        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +myPid+  wxT(".plg");
-    #endif
+    wxString tempDir = GetConfig()->GetTempDir();
+    wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +myPid+ wxT(".plg");
     bool result = ::wxRemoveFile( mappedFileName );
     wxUnusedVar(result);
     // ----------------------------------
@@ -375,13 +372,9 @@ bool CodeSnippets::ReleaseMemoryMappedFile()
         m_pMappedFile->UnmapFile();
     delete m_pMappedFile;
     m_pMappedFile = 0;
-
+    wxString tempDir = GetConfig()->GetTempDir();
     wxString myPid(wxString::Format(wxT("%lu"),::wxGetProcessId()));
-    #if defined(__WXMSW__)
-        wxString mappedFileName = wxT("/temp/cbsnippetspid") +myPid+ wxT(".plg");
-    #else
-        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +myPid+  wxT(".plg");
-    #endif
+    wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +myPid+ wxT(".plg");
     bool result = ::wxRemoveFile( mappedFileName );
     return result;
 }
@@ -1358,11 +1351,8 @@ long CodeSnippets::LaunchExternalSnippets()
     // make a unique mapped file name with my pid
     wxString myPid(wxString::Format(wxT("%lu"),::wxGetProcessId()));
     // To memory map a file there must exists a non-zero length file
-    #if defined(__WXMSW__)
-        wxString mappedFileName = wxT("/temp/cbsnippetspid") +myPid+ wxT(".plg");
-    #else
-        wxString mappedFileName = wxT("/tmp/cbsnippetspid") +myPid+  wxT(".plg");
-    #endif
+    wxString tempDir = GetConfig()->GetTempDir();
+    wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +myPid+ wxT(".plg");
     wxFile mappedFile;
     mappedFile.Create( mappedFileName, true);
     char buf[1024] = {0};
