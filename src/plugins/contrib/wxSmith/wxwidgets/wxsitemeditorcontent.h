@@ -34,6 +34,9 @@ class wxsItemEditorContent: public wxsDrawingWindow
         /** \brief painting additional stuff */
         virtual void PaintExtra(wxDC* DC);
 
+        /** \brief Using post-screenshoot procedure to get item's placement */
+        virtual void ScreenShootTaken();
+
     private:
 
         /** \brief Enum type describing placement of drag box */
@@ -104,7 +107,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
 
 
         /** \brief Processing mouse events */
-        void MouseExtra(wxMouseEvent& event);
+        void OnMouse(wxMouseEvent& event);
 
         void OnMouseIdle(wxMouseEvent& event);
         void OnMouseDraggingPoint(wxMouseEvent& event);

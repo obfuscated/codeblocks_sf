@@ -57,161 +57,104 @@ namespace
 
     inline RepaintDelayType GetDelayType()
     {
-        if ( platform::macosx ) return Yield;
         return TimerNormal;
     }
 }
 
-
-/** \brief Drawing panel
- *
- * This panel is put over all other items in wxsDrawingWindow class. It's
- * responsible for fetching background and handling mouse and keyboard events
- */
-class wxsDrawingWindow::DrawingPanel: public wxPanel
-{
-    public:
-
-        /** \brief Ctor */
-        DrawingPanel(wxsDrawingWindow* Parent): wxPanel(Parent,DrawingPanelId), m_Parent(Parent)
-        {
-            // Connecting event handlers of drawing window
-            Connect(DrawingPanelId,wxEVT_PAINT,(wxObjectEventFunction)&wxsDrawingWindow::PanelPaint,0,Parent);
-            Connect(DrawingPanelId,wxEVT_LEFT_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_LEFT_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_MIDDLE_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_MIDDLE_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_MIDDLE_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_RIGHT_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_RIGHT_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_RIGHT_DCLICK,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_MOTION,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_ENTER_WINDOW,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_LEAVE_WINDOW,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_MOUSEWHEEL,(wxObjectEventFunction)&wxsDrawingWindow::PanelMouse,0,Parent);
-            Connect(DrawingPanelId,wxEVT_KEY_DOWN,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,0,Parent);
-            Connect(DrawingPanelId,wxEVT_KEY_UP,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,0,Parent);
-            Connect(DrawingPanelId,wxEVT_CHAR,(wxObjectEventFunction)&wxsDrawingWindow::PanelKeyboard,0,Parent);
-
-            // Connecting handler for empty erase event handler
-            Connect(DrawingPanelId,wxEVT_ERASE_BACKGROUND,(wxObjectEventFunction)&wxsDrawingWindow::DrawingPanel::OnEraseBack);
-        }
-
-        /** \brief Dctor */
-        virtual ~DrawingPanel()
-        {
-            m_Parent->Panel = 0;
-        }
-
-        void OnEraseBack(wxEraseEvent& event)
-        {
-        }
-
-        wxsDrawingWindow* m_Parent;
-};
-
 BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
+    EVT_PAINT(wxsDrawingWindow::OnPaint)
+    EVT_ERASE_BACKGROUND(wxsDrawingWindow::OnEraseBack)
 END_EVENT_TABLE()
 
 wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
     wxScrolledWindow(Parent,id),
-    Panel(0),
-    Bitmap(0),
-    IsBlockFetch(false),
-    DuringFetch(false),
-    DuringChangeCnt(0),
-    LastSizeX(0),
-    LastSizeY(0),
-    LastVirtX(0),
-    LastVirtY(0),
-    WasContentChanged(false),
-    IsDestroyed(false),
-    RefreshTimer(this,RefreshTimerId)
+    m_Bitmap(0),
+    m_IsBlockFetch(false),
+    m_DuringFetch(false),
+    m_DuringChangeCnt(0),
+    m_LastSizeX(0),
+    m_LastSizeY(0),
+    m_LastVirtX(0),
+    m_LastVirtY(0),
+    m_WasContentChanged(false),
+    m_IsDestroyed(false),
+    m_RefreshTimer(this,RefreshTimerId)
 {
     // Strange - it seems that by declaring this event in event table, it's not processed
     Connect(-1,wxEVT_FETCH_SEQUENCE,(wxObjectEventFunction)&wxsDrawingWindow::OnFetchSequence);
     Connect(RefreshTimerId,wxEVT_TIMER,(wxObjectEventFunction)&wxsDrawingWindow::OnRefreshTimer);
-    Panel = new DrawingPanel(this);
-    Panel->Hide();
     SetScrollbars(5,5,1,1,0,0,true);
 }
 
 wxsDrawingWindow::~wxsDrawingWindow()
 {
-    IsDestroyed = true;
-    if ( Bitmap ) delete Bitmap;
-    Panel = 0;
+    m_IsDestroyed = true;
+    delete m_Bitmap;
+    m_Bitmap = 0;
 }
 
 void wxsDrawingWindow::BeforeContentChanged()
 {
-    if ( !DuringChangeCnt++ && Panel )
-    {
-        Panel->Hide();
-    }
+    m_DuringChangeCnt++;
 }
 
 void wxsDrawingWindow::AfterContentChanged()
 {
-    if ( !--DuringChangeCnt && Panel )
+    if ( !--m_DuringChangeCnt )
     {
-        WasContentChanged = true;
+        m_WasContentChanged = true;
         wxSize Size = GetVirtualSize();
 
         // Generating new bitmap
-        if ( Bitmap ) delete Bitmap;
-        Bitmap = new wxBitmap(Size.GetWidth(),Size.GetHeight());
+        delete m_Bitmap;
+        m_Bitmap = new wxBitmap(Size.GetWidth(),Size.GetHeight());
 
         // Resizing panel to cover whole window
         int X, Y;
         CalcScrolledPosition(0,0,&X,&Y);
-        Panel->SetSize(X,Y,Size.GetWidth(),Size.GetHeight());
         StartFetchingSequence();
     }
 }
 
-void wxsDrawingWindow::PanelPaint(wxPaintEvent& event)
+void wxsDrawingWindow::OnPaint(wxPaintEvent& event)
 {
-    if ( !Panel ) return;
-
-    wxPaintDC PaintDC(Panel);
-    if ( !DuringFetch )
+    if ( !m_DuringFetch )
     {
-        if ( IsBlockFetch || NoNeedToRefetch() )
+        wxPaintDC PaintDC(this);
+        PrepareDC(PaintDC);
+        if ( m_IsBlockFetch || NoNeedToRefetch() )
         {
-            wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
-            wxBufferedDC DC(&PaintDC,BmpCopy);
-            PaintExtra(&DC);
+            if ( m_Bitmap )
+            {
+                wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0,0,m_Bitmap->GetWidth(),m_Bitmap->GetHeight()));
+                wxBufferedDC DC(&PaintDC,BmpCopy);
+                PaintExtra(&DC);
+            }
         }
         else
         {
             StartFetchingSequence();
         }
     }
+    else
+    {
+        event.Skip();
+    }
 }
 
-void wxsDrawingWindow::PanelMouse(wxMouseEvent& event)
+void wxsDrawingWindow::OnEraseBack(wxEraseEvent& event)
 {
-    event.SetEventObject(this);
-    event.SetId(GetId());
-    MouseExtra(event);
-}
-
-void wxsDrawingWindow::PanelKeyboard(wxKeyEvent& event)
-{
-    event.SetEventObject(this);
-    event.SetId(GetId());
-    ProcessEvent(event);
+    // Let the background be cleared when screenshoot is in progress
+    if ( m_DuringFetch ) event.Skip();
 }
 
 void wxsDrawingWindow::StartFetchingSequence()
 {
-    if ( DuringFetch )
+    if ( m_DuringFetch )
     {
         return;
     }
-    DuringFetch = true;
+    m_DuringFetch = true;
 
     // Fetching sequence will end after quitting
     // this event handler. This will be done
@@ -223,18 +166,9 @@ void wxsDrawingWindow::StartFetchingSequence()
 
 void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
 {
-    if ( !Panel ) return;
-    if ( IsDestroyed ) return;
+    if ( m_IsDestroyed ) return;
 
-    // Hiding panel to show content under it
-    // If panel is hidden, there's no need to hide it and show children
-    // because fetching sequence has been raised from AfterContentChanged()
-    // and is actually correct
-    if ( Panel->IsShown() )
-    {
-        Panel->Hide();
-        ShowChildren();
-    }
+    ShowChildren();
     Refresh();
     Update();
 
@@ -262,7 +196,7 @@ void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
             // We start timer that will send event after some time.
             // We assume here that before timer event is processed,
             // all events used to udpate screen will be processed.
-            RefreshTimer.Start(50,true);
+            m_RefreshTimer.Start(50,true);
             break;
 
         case TimerFast:
@@ -273,7 +207,7 @@ void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
             // any pending events on queue. In such situation, it may lead to
             // some unprocessed events which should update screen's content
             // while fetching bitmap.
-            RefreshTimer.Start(1,true);
+            m_RefreshTimer.Start(1,true);
             break;
     }
 
@@ -286,34 +220,32 @@ void wxsDrawingWindow::OnRefreshTimer(wxTimerEvent& event)
 
 void wxsDrawingWindow::FetchSequencePhase2()
 {
-    if ( !Panel ) return;
-    if ( IsDestroyed ) return;
+    if ( m_IsDestroyed ) return;
     FetchScreen();
+    ScreenShootTaken();
     HideChildren();
-    DuringFetch = false;
-    Panel->Show();
+    m_DuringFetch = false;
 }
 
 void wxsDrawingWindow::FetchScreen()
 {
-    if ( !Bitmap ) return;
+    if ( !m_Bitmap ) return;
 
-    // Fetching preview directly from screen
-	wxScreenDC DC;
-	wxMemoryDC DestDC;
+    wxClientDC DC(this);
+    wxMemoryDC DestDC;
     int X = 0, Y = 0;
     int DX = 0, DY = 0;
-    ClientToScreen(&X,&Y);
     CalcUnscrolledPosition(0,0,&DX,&DY);
-    DestDC.SelectObject(*Bitmap);
+    DestDC.SelectObject(*m_Bitmap);
     DestDC.Blit(DX,DY,GetSize().GetWidth(),GetSize().GetHeight(),&DC,X,Y);
+    DestDC.SelectObject(wxNullBitmap);
 }
 
 void wxsDrawingWindow::FastRepaint()
 {
-    if ( !Panel ) return;
-    wxClientDC ClientDC(Panel);
-    wxBitmap BmpCopy = Bitmap->GetSubBitmap(wxRect(0,0,Bitmap->GetWidth(),Bitmap->GetHeight()));
+    wxClientDC ClientDC(this);
+    PrepareDC(ClientDC);
+    wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0,0,m_Bitmap->GetWidth(),m_Bitmap->GetHeight()));
     wxBufferedDC DC(&ClientDC,BmpCopy);
     PaintExtra(&DC);
 }
@@ -323,10 +255,7 @@ void wxsDrawingWindow::ShowChildren()
     wxWindowList& Children = GetChildren();
     for ( size_t i=0; i<Children.GetCount(); i++ )
     {
-        if ( Children[i] != Panel )
-        {
-            Children[i]->Show();
-        }
+        Children[i]->Show();
     }
 }
 
@@ -335,10 +264,7 @@ void wxsDrawingWindow::HideChildren()
     wxWindowList& Children = GetChildren();
     for ( size_t i=0; i<Children.GetCount(); i++ )
     {
-        if ( Children[i] != Panel )
-        {
-            Children[i]->Hide();
-        }
+        Children[i]->Hide();
     }
 }
 
@@ -349,7 +275,7 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     // of other application
     if ( wxTheApp && !wxTheApp->IsActive() )
     {
-        WasContentChanged = true;
+        m_WasContentChanged = true;
         return true;
     }
 
@@ -362,7 +288,7 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     {
         if ( !Window->IsEnabled() || !Window->IsShown() )
         {
-            WasContentChanged = true;
+            m_WasContentChanged = true;
             return true;
         }
     }
@@ -376,17 +302,17 @@ bool wxsDrawingWindow::NoNeedToRefetch()
     GetClientSize(&NewSizeX,&NewSizeY);
     GetViewStart(&NewVirtX,&NewVirtY);
 
-    if ( WasContentChanged ||
-         NewSizeX != LastSizeX ||
-         NewSizeY != LastSizeY ||
-         NewVirtX != LastVirtX ||
-         NewVirtY != LastVirtY )
+    if ( m_WasContentChanged ||
+         NewSizeX != m_LastSizeX ||
+         NewSizeY != m_LastSizeY ||
+         NewVirtX != m_LastVirtX ||
+         NewVirtY != m_LastVirtY )
     {
-        WasContentChanged = false;
-        LastSizeX = NewSizeX;
-        LastSizeY = NewSizeY;
-        LastVirtX = NewVirtX;
-        LastVirtY = NewVirtY;
+        m_WasContentChanged = false;
+        m_LastSizeX = NewSizeX;
+        m_LastSizeY = NewSizeY;
+        m_LastVirtX = NewVirtX;
+        m_LastVirtY = NewVirtY;
         return false;
     }
 
@@ -395,6 +321,6 @@ bool wxsDrawingWindow::NoNeedToRefetch()
 
 bool wxsDrawingWindow::Destroy()
 {
-    IsDestroyed = true;
+    m_IsDestroyed = true;
     return wxScrolledWindow::Destroy();
 }

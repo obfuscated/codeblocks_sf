@@ -29,6 +29,7 @@
 #include "wxsitemeditor.h"
 
 BEGIN_EVENT_TABLE(wxsItemEditorContent,wxsDrawingWindow)
+    EVT_MOUSE_EVENTS(wxsItemEditorContent::OnMouse)
 END_EVENT_TABLE()
 
 wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data,wxsItemEditor* Editor):
@@ -275,8 +276,13 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointFromItem
     return 0;
 }
 
-void wxsItemEditorContent::MouseExtra(wxMouseEvent& event)
+void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
 {
+    int NewX = event.m_x;
+    int NewY = event.m_y;
+    CalcUnscrolledPosition(NewX,NewY,&NewX,&NewY);
+    event.m_x = NewX;
+    event.m_y = NewY;
     switch ( m_MouseState )
     {
         case msDraggingPointInit: OnMouseDraggingPointInit (event); break;
@@ -794,12 +800,13 @@ void wxsItemEditorContent::BeforePreviewChanged()
 
 void wxsItemEditorContent::AfterPreviewChanged()
 {
-    // Giving some time for items to recalculate positions
-    // TODO: This function need to lock itself since there can be recursive yield
-    Manager::Yield();
+    AfterContentChanged();
+}
+
+void wxsItemEditorContent::ScreenShootTaken()
+{
     RecalculateMaps();
     RebuildDragPoints();
-    AfterContentChanged();
 }
 
 wxWindow* wxsItemEditorContent::GetPreviewWindow(wxsItem* Item)
