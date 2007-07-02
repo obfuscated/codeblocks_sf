@@ -15,19 +15,6 @@ namespace appglobals
 {
     typedef struct { int locale_code; wxString name; } Localisation;
 
-    static const Localisation languages[] = /* TODO: Some day in the future, remove that hardcoded stuff alltogether */
-    {
-        { wxLANGUAGE_DEFAULT,            _T("(System default)") },  // don't translate system default
-    //    { wxLANGUAGE_ENGLISH,          _("English") },
-    //    { wxLANGUAGE_ENGLISH_US,       _("English (US)") },
-    //    { wxLANGUAGE_FRENCH,           _("French") },
-    //    { wxLANGUAGE_GERMAN,           _("German") },
-    //    { wxLANGUAGE_SPANISH,          _("Spanish") },
-    //    { wxLANGUAGE_RUSSIAN,          _("Russian") },
-        { wxLANGUAGE_CHINESE_SIMPLIFIED, _("Chinese (Simplified)") }
-    };
-
-
     extern const wxString AppVendor;
     extern const wxString AppName;
     extern const wxString AppVersion;

@@ -381,10 +381,14 @@ void CodeBlocksApp::InitLocale()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
 
+    wxLogNull lognull;
+
+    wxString path(ConfigManager::GetDataFolder() + _T("/locale"));
+    ::CreateDir(path);
+
     if(cfg->ReadBool(_T("/locale/enable"), true) == false)
         return;
 
-    wxString path(ConfigManager::GetDataFolder() + _T("/locale"));
     wxString lang(cfg->Read(_T("/locale/language")));
 
     wxLocale::AddCatalogLookupPathPrefix(path);
