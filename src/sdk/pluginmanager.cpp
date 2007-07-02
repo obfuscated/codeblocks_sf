@@ -328,18 +328,29 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     pd.Update(3, _("Extracting plugin icons for \"Settings\" dialog"));
 
     // extract resources from bundle
-    if (!ExtractFile(actualName,
-                    settingsOnName,
-                    resourceDir + _T("/images/settings/") + settingsOnName))
-        return false;
+    ExtractFile(actualName,
+				settingsOnName,
+				resourceDir + _T("/images/settings/") + settingsOnName,
+				false);
 //    DBGLOG(_T("Extracted resources"));
 
     // extract resources from bundle
-    if (!ExtractFile(actualName,
-                    settingsOffName,
-                    resourceDir + _T("/images/settings/") + settingsOffName))
-        return false;
+    ExtractFile(actualName,
+				settingsOffName,
+				resourceDir + _T("/images/settings/") + settingsOffName,
+				false);
 //    DBGLOG(_T("Extracted resources"));
+
+	// extract extra files
+	wxArrayString extraFiles;
+	ReadExtraFilesFromManifestFile(localName, extraFiles);
+	for (size_t i = 0; i < extraFiles.GetCount(); ++i)
+	{
+		ExtractFile(actualName,
+					extraFiles[i],
+					resourceDir + _T("/") + extraFiles[i],
+					false);
+	}
 
     pd.Update(4, _("Loading plugin"));
 
@@ -376,6 +387,7 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
     wxString resourceFilename;
     wxString settingsOnFilename;
     wxString settingsOffFilename;
+    wxArrayString extrafiles;
 
     // find the plugin element
     for (size_t i = 0; i < m_Plugins.GetCount(); ++i)
@@ -400,6 +412,12 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             settingsOnFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOnFilename, sdDataGlobal | sdDataUser);
             settingsOffFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOffFilename, sdDataGlobal | sdDataUser);
+			
+			ReadExtraFilesFromManifestFile(resourceFilename, extrafiles);
+			for (size_t n = 0; n < extrafiles.GetCount(); ++n)
+			{
+				extrafiles[n] = ConfigManager::LocateDataFile(extrafiles[n], sdDataGlobal | sdDataUser);
+			}
             break;
         }
     }
@@ -463,6 +481,14 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
                 if (!wxRemoveFile(settingsOffFilename))
                     LOG_WARN(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOffFilename);
             }
+            for (size_t i = 0; i < extrafiles.GetCount(); ++i)
+            {
+            	if (!extrafiles[i].IsEmpty() && wxFileExists(extrafiles[i]))
+            	{
+					if (!wxRemoveFile(extrafiles[i]))
+						LOG_WARN(_T("Failed to remove extra file: ") + extrafiles[i]);
+            	}
+            }
             return true;
         }
         else
@@ -493,6 +519,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         return false;
 
     wxArrayString sourcefiles;
+    wxArrayString extrafiles;
     wxFileName fname;
     wxString resourceFilename;
 
@@ -532,6 +559,16 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             if (!resourceFilename.IsEmpty())
 				sourcefiles.Add(resourceFilename);
+
+			// export extra files
+            resourceFilename = fname.GetName() + _T(".zip");
+            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
+                resourceFilename.Remove(0, 3);
+			ReadExtraFilesFromManifestFile(resourceFilename, extrafiles);
+			for (size_t n = 0; n < extrafiles.GetCount(); ++n)
+			{
+				extrafiles[n] = ConfigManager::LocateDataFile(extrafiles[n], sdDataGlobal | sdDataUser);
+			}
             
             break;
         }
@@ -552,8 +589,27 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
     wxZipOutputStream zip(out, 9); // max compression
     for (size_t i = 0; i < sourcefiles.GetCount(); ++i)
     {
+    	if (sourcefiles[i].IsEmpty())
+			continue;
+
         wxFileInputStream in(sourcefiles[i]);
         zip.PutNextEntry(wxFileName(sourcefiles[i]).GetFullName());
+        zip << in;
+    }
+    for (size_t i = 0; i < extrafiles.GetCount(); ++i)
+    {
+    	if (extrafiles[i].IsEmpty())
+			continue;
+
+        wxFileInputStream in(extrafiles[i]);
+        
+        wxString f = extrafiles[i];
+        if (f.StartsWith(ConfigManager::GetFolder(sdDataUser)))
+			f.Remove(0, ConfigManager::GetFolder(sdDataUser).Length());
+        else if (f.StartsWith(ConfigManager::GetFolder(sdDataGlobal)))
+			f.Remove(0, ConfigManager::GetFolder(sdDataGlobal).Length());
+
+        zip.PutNextEntry(f);
         zip << in;
     }
     zip.SetComment(_T("This is a redistributable plugin for the Code::Blocks IDE.\n"
@@ -564,7 +620,8 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
 
 bool PluginManager::ExtractFile(const wxString& bundlename,
                                 const wxString& src_filename,
-                                const wxString& dst_filename)
+                                const wxString& dst_filename,
+                                bool isMandatory)
 {
 //    DBGLOG(_T("ExtractFile:"));
 //    DBGLOG(_T("Plugin filename: ") + bundlename);
@@ -616,11 +673,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
     else
     {
 //        DBGLOG(_T("File not found in plugin"));
-		
-		// I 'm too lazy to add an 'isMandatory' param in this function
-		// and so, because we know what we expect to find inside a .cbplugin,
-		// we only display an error if the file is not an image
-    	if (wxFileName(src_filename).GetExt() != _T("png"))
+    	if (isMandatory)
     	{
 			wxString msg = wxString::Format(_T("File '%s' not found in plugin '%s'"),
 											src_filename.c_str(), bundlename.c_str());
@@ -821,6 +874,75 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
     }
 
     return true;
+}
+
+void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
+													wxArrayString& extraFiles)
+{
+	extraFiles.Clear();
+
+	// find and load plugin's resource file
+	// (pluginFilename contains no path info)
+	wxFileName fname(pluginFilename);
+	fname.SetExt(_T("zip"));
+	wxString actual = fname.GetFullName();
+
+	// remove 'lib' prefix from plugin name (if any)
+	if (!platform::windows && actual.StartsWith(_T("lib")))
+		actual.Remove(0, 3);
+
+	actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
+	if (actual.IsEmpty())
+	{
+		LOG_ERROR(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
+		return; // not found
+	}
+
+	// load XML from ZIP
+	wxLogNull lognull;
+	wxString contents;
+	wxFileSystem* fs = new wxFileSystem;
+	wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
+	if (f)
+	{
+		wxInputStream* is = f->GetStream();
+		char tmp[1024] = {};
+		while (!is->Eof() && is->CanRead())
+		{
+			memset(tmp, 0, sizeof(tmp));
+			is->Read(tmp, sizeof(tmp) - 1);
+			contents << cbC2U((const char*)tmp);
+		}
+		delete f;
+	}
+	else
+	{
+		LOG_ERROR(_T("No plugin manifest file in resource: %s"), actual.c_str());
+		delete fs;
+		return;
+	}
+	delete fs;
+
+	// actually load XML document
+	TiXmlDocument doc;
+	if (!doc.Parse(cbU2C(contents)))
+		return;
+
+    TiXmlElement* root = doc.FirstChildElement("CodeBlocks_plugin_manifest_file");
+    if (!root)
+        return;
+
+    TiXmlElement* extra = root->FirstChildElement("Extra");
+    while (extra)
+    {
+        const char* file = extra->Attribute("file");
+        if (file && *file)
+        {
+        	extraFiles.Add(cbC2U(file));
+        }
+        
+        extra = extra->NextSiblingElement("Extra");
+    }
 }
 
 int PluginManager::ScanForPlugins(const wxString& path)

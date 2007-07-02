@@ -127,9 +127,12 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         bool ReadManifestFile(const wxString& pluginFilename,
                                 const wxString& pluginName = wxEmptyString,
                                 PluginInfo* infoOut = 0);
+		void ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
+											wxArrayString& extraFiles);
         bool ExtractFile(const wxString& bundlename,
                         const wxString& src_filename,
-                        const wxString& dst_filename);
+                        const wxString& dst_filename,
+                        bool isMandatory = true);
 
         PluginElementsArray m_Plugins;
         wxString m_CurrentlyLoadingFilename;
