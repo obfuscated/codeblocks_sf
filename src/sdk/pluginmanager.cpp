@@ -291,14 +291,18 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         resourceDir = ConfigManager::GetFolder(sdDataUser);
     }
 
-    wxProgressDialog pd(_("Installing: ") + basename, _T("A description wide enough for the dialog ;)"), 4);
+    wxProgressDialog pd(_("Installing: ") + basename, _T("A description wide enough for the dialog ;)"), 5);
 
     wxString localName = basename + FileFilters::DYNAMICLIB_DOT_EXT;
     wxString resourceName = basename + _T(".zip");
-    #ifndef __WXMSW__
-    if (resourceName.StartsWith(_T("lib")))
+    wxString settingsOnName = basename + _T(".png");
+    wxString settingsOffName = basename + _T("-off.png");
+    if (!platform::windows && resourceName.StartsWith(_T("lib")))
         resourceName.Remove(0, 3);
-    #endif
+    if (!platform::windows && settingsOnName.StartsWith(_T("lib")))
+        settingsOnName.Remove(0, 3);
+    if (!platform::windows && settingsOffName.StartsWith(_T("lib")))
+        settingsOffName.Remove(0, 3);
     wxString pluginFilename = pluginDir + _T('/') + localName;
 //    DBGLOG(_T("Plugin filename: ") + pluginFilename);
 //    DBGLOG(_T("Plugin resources: ") + ConfigManager::GetDataFolder() + _T('/') + resourceName);
@@ -321,7 +325,23 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         return false;
 //    DBGLOG(_T("Extracted resources"));
 
-    pd.Update(3, _("Loading plugin"));
+    pd.Update(3, _("Extracting plugin icons for \"Settings\" dialog"));
+
+    // extract resources from bundle
+    if (!ExtractFile(actualName,
+                    settingsOnName,
+                    resourceDir + _T("/images/settings/") + settingsOnName))
+        return false;
+//    DBGLOG(_T("Extracted resources"));
+
+    // extract resources from bundle
+    if (!ExtractFile(actualName,
+                    settingsOffName,
+                    resourceDir + _T("/images/settings/") + settingsOffName))
+        return false;
+//    DBGLOG(_T("Extracted resources"));
+
+    pd.Update(4, _("Loading plugin"));
 
     // bundle extracted; now load the plugin on-the-fly
 //    DBGLOG(_T("Loading plugin..."));
@@ -337,7 +357,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
 //    DBGLOG(_T("Succeeded"));
 
     // inform app to update menus and toolbars
-    pd.Update(4, _("Updating menus and toolbars"));
+    pd.Update(5, _("Updating menus and toolbars"));
     CodeBlocksEvent evt(cbEVT_PLUGIN_INSTALLED);
     evt.SetPlugin(plugin);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
@@ -354,6 +374,8 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
     wxString title;
     wxString pluginFilename;
     wxString resourceFilename;
+    wxString settingsOnFilename;
+    wxString settingsOffFilename;
 
     // find the plugin element
     for (size_t i = 0; i < m_Plugins.GetCount(); ++i)
@@ -367,11 +389,17 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             // now get the resource name
             wxFileName fname(pluginFilename);
             resourceFilename = fname.GetName() + _T(".zip");
-            #ifndef __WXMSW__
-            if (resourceFilename.StartsWith(_T("lib")))
+            settingsOnFilename = fname.GetName() + _T(".png");
+            settingsOffFilename = fname.GetName() + _T("-off.png");
+            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
                 resourceFilename.Remove(0, 3);
-            #endif
+            if (!platform::windows && settingsOnFilename.StartsWith(_T("lib")))
+                settingsOnFilename.Remove(0, 3);
+            if (!platform::windows && settingsOffFilename.StartsWith(_T("lib")))
+                settingsOffFilename.Remove(0, 3);
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+            settingsOnFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOnFilename, sdDataGlobal | sdDataUser);
+            settingsOffFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOffFilename, sdDataGlobal | sdDataUser);
             break;
         }
     }
@@ -425,6 +453,16 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
                 if (!wxRemoveFile(resourceFilename))
                     LOG_WARN(_T("Failed to remove plugin resources: ") + resourceFilename);
             }
+            if (!settingsOnFilename.IsEmpty() && wxFileExists(settingsOnFilename))
+            {
+                if (!wxRemoveFile(settingsOnFilename))
+                    LOG_WARN(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOnFilename);
+            }
+            if (!settingsOffFilename.IsEmpty() && wxFileExists(settingsOffFilename))
+            {
+                if (!wxRemoveFile(settingsOffFilename))
+                    LOG_WARN(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOffFilename);
+            }
             return true;
         }
         else
@@ -439,7 +477,9 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
                             "(manually) when you shut down Code::Blocks.\n"
                             "The files that could not be deleted are:\n\n") +
                             pluginFilename + _T('\n') +
-                            resourceFilename,
+                            resourceFilename + _T('\n') +
+                            settingsOnFilename + _T('\n') +
+                            settingsOffFilename,
                             _("Warning"), wxICON_WARNING);
             return false;
         }
@@ -453,6 +493,8 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         return false;
 
     wxArrayString sourcefiles;
+    wxFileName fname;
+    wxString resourceFilename;
 
     // find the plugin element
     for (size_t i = 0; i < m_Plugins.GetCount(); ++i)
@@ -461,16 +503,36 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         if (elem && elem->plugin == plugin)
         {
             // got it
+            
+            // plugin file
             sourcefiles.Add(elem->fileName);
-            // now get the resource name
-            wxFileName fname(elem->fileName);
-            wxString resourceFilename = fname.GetName() + _T(".zip");
-            #ifndef __WXMSW__
-            if (resourceFilename.StartsWith(_T("lib")))
+            fname.Assign(elem->fileName);
+            
+            // now get the resource zip filename
+            resourceFilename = fname.GetName() + _T(".zip");
+            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
                 resourceFilename.Remove(0, 3);
-            #endif
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             sourcefiles.Add(resourceFilename);
+            
+            // the highlighted icon the plugin may have for its "settings" page
+            resourceFilename = fname.GetName() + _T(".png");
+            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
+                resourceFilename.Remove(0, 3);
+			resourceFilename.Prepend(_T("images/settings/"));
+            resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+            if (!resourceFilename.IsEmpty())
+				sourcefiles.Add(resourceFilename);
+            
+            // the non-highlighted icon the plugin may have for its "settings" page
+            resourceFilename = fname.GetName() + _T("-off.png");
+            if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
+                resourceFilename.Remove(0, 3);
+			resourceFilename.Prepend(_T("images/settings/"));
+            resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
+            if (!resourceFilename.IsEmpty())
+				sourcefiles.Add(resourceFilename);
+            
             break;
         }
     }
@@ -516,6 +578,9 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
         cbMessageBox(_("The destination file is in use.\nAborting..."), _("Warning"), wxICON_WARNING);
         return false;
     }
+    
+    // make sure destination dir exists
+    CreateDirRecursively(wxFileName(dst_filename).GetPath(wxPATH_GET_SEPARATOR));
 
     // actually extract file
 //    DBGLOG(_T("Extracting..."));
@@ -551,11 +616,18 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
     else
     {
 //        DBGLOG(_T("File not found in plugin"));
-        wxString msg = wxString::Format(_T("File '%s' not found in plugin '%s'"),
-                                        src_filename.c_str(), bundlename.c_str());
-        cbMessageBox(msg, _("Error"), wxICON_ERROR);
-        delete fs;
-        return false;
+		
+		// I 'm too lazy to add an 'isMandatory' param in this function
+		// and so, because we know what we expect to find inside a .cbplugin,
+		// we only display an error if the file is not an image
+    	if (wxFileName(src_filename).GetExt() != _T("png"))
+    	{
+			wxString msg = wxString::Format(_T("File '%s' not found in plugin '%s'"),
+											src_filename.c_str(), bundlename.c_str());
+			cbMessageBox(msg, _("Error"), wxICON_ERROR);
+			delete fs;
+			return false;
+    	}
     }
     delete fs;
     return true;
@@ -631,10 +703,8 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         wxString actual = fname.GetFullName();
 
         // remove 'lib' prefix from plugin name (if any)
-        #ifndef __WXMSW__
-        if (actual.StartsWith(_T("lib")))
+        if (!platform::windows && actual.StartsWith(_T("lib")))
             actual.Remove(0, 3);
-        #endif
 
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
@@ -755,11 +825,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
 
 int PluginManager::ScanForPlugins(const wxString& path)
 {
-#ifdef __WXMSW__
-    #define PLUGINS_MASK _T("*.dll")
-#else
-    #define PLUGINS_MASK _T("*.so")
-#endif
+	static const wxString PluginsMask = platform::windows ? _T("*.dll") : _T("*.so");
     wxLogNull zero;
     int count = 0;
     if(!wxDirExists(path))
@@ -787,7 +853,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
 
     wxString filename;
     wxString failed;
-    bool ok = dir.GetFirst(&filename, PLUGINS_MASK, wxDIR_FILES);
+    bool ok = dir.GetFirst(&filename, PluginsMask, wxDIR_FILES);
     while (ok)
     {
         if (batch)
@@ -835,8 +901,6 @@ int PluginManager::ScanForPlugins(const wxString& path)
                             15000, 3000);
     }
     return count;
-
-#undef PLUGINS_MASK
 }
 
 bool PluginManager::LoadPlugin(const wxString& pluginName)

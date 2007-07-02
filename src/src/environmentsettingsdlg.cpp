@@ -214,7 +214,8 @@ EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 
 void EnvironmentSettingsDlg::AddPluginPanels()
 {
-    const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
+    const wxString base = _T("images/settings/");
+    const wxString noimg = _T("images/settings/generic-plugin");
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     // get all configuration panels which are *not* about compiler, debugger and editor.
@@ -224,9 +225,16 @@ void EnvironmentSettingsDlg::AddPluginPanels()
     {
         cbConfigurationPanel* panel = m_PluginPanels[i];
         lb->AddPage(panel, panel->GetTitle());
+        
+        wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
+        if (onFile.IsEmpty())
+			onFile = ConfigManager::LocateDataFile(noimg + _T(".png"), sdDataGlobal | sdDataUser);
+        wxString offFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T("-off.png"), sdDataGlobal | sdDataUser);
+        if (offFile.IsEmpty())
+			offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
 
-        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T(".png")));
-        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        lb->GetImageList()->Add(cbLoadBitmap(onFile));
+        lb->GetImageList()->Add(cbLoadBitmap(offFile));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
     }
 

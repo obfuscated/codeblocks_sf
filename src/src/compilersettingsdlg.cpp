@@ -111,7 +111,8 @@ CompilerSettingsDlg::~CompilerSettingsDlg()
 
 void CompilerSettingsDlg::AddPluginPanels()
 {
-    const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
+    const wxString base = _T("images/settings/");
+    const wxString noimg = _T("images/settings/generic-plugin");
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
 
     // we 'll remove the existing page and add it when appropriate
@@ -132,8 +133,15 @@ void CompilerSettingsDlg::AddPluginPanels()
         cbConfigurationPanel* panel = local[i];
         lb->AddPage(panel, panel->GetTitle());
 
-        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T(".png")));
-        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
+        if (onFile.IsEmpty())
+			onFile = ConfigManager::LocateDataFile(noimg + _T(".png"), sdDataGlobal | sdDataUser);
+        wxString offFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T("-off.png"), sdDataGlobal | sdDataUser);
+        if (offFile.IsEmpty())
+			offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
+
+        lb->GetImageList()->Add(cbLoadBitmap(onFile));
+        lb->GetImageList()->Add(cbLoadBitmap(offFile));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
 
         // add it in our central container too
@@ -142,11 +150,15 @@ void CompilerSettingsDlg::AddPluginPanels()
 
     // now load the builtin pages' images
     lb->AddPage(existingPage, existingTitle);
-    wxBitmap bmp;
-    bmp = cbLoadBitmap(base + base_imgs[0] + _T(".png"), wxBITMAP_TYPE_PNG);
-    lb->GetImageList()->Add(bmp);
-    bmp = cbLoadBitmap(base + base_imgs[0] + _T("-off.png"), wxBITMAP_TYPE_PNG);
-    lb->GetImageList()->Add(bmp);
+	wxString onFile = ConfigManager::LocateDataFile(base + base_imgs[0] + _T(".png"), sdDataGlobal | sdDataUser);
+	if (onFile.IsEmpty())
+		onFile = ConfigManager::LocateDataFile(noimg + _T(".png"), sdDataGlobal | sdDataUser);
+	wxString offFile = ConfigManager::LocateDataFile(base + base_imgs[0] + _T("-off.png"), sdDataGlobal | sdDataUser);
+	if (offFile.IsEmpty())
+		offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
+
+	lb->GetImageList()->Add(cbLoadBitmap(onFile));
+	lb->GetImageList()->Add(cbLoadBitmap(offFile));
     lb->SetPageImage(lb->GetPageCount() -1, lb->GetImageList()->GetImageCount() - 2);
 
     // step 2
@@ -156,8 +168,15 @@ void CompilerSettingsDlg::AddPluginPanels()
         cbConfigurationPanel* panel = local[i];
         lb->AddPage(panel, panel->GetTitle());
 
-        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T(".png")));
-        lb->GetImageList()->Add(cbLoadBitmap(base + panel->GetBitmapBaseName() + _T("-off.png")));
+        wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
+        if (onFile.IsEmpty())
+			onFile = ConfigManager::LocateDataFile(noimg + _T(".png"), sdDataGlobal | sdDataUser);
+        wxString offFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T("-off.png"), sdDataGlobal | sdDataUser);
+        if (offFile.IsEmpty())
+			offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
+
+        lb->GetImageList()->Add(cbLoadBitmap(onFile));
+        lb->GetImageList()->Add(cbLoadBitmap(offFile));
         lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
 
         // add it in our central container too
