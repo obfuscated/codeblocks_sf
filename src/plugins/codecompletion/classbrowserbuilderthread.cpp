@@ -244,7 +244,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                 wxTreeItemId parent = tree->GetItemParent(existing);
                 bool isLastChild = tree->GetChildrenCount(parent) == 1;
                 // we have to do this in two steps: first collapse and then set haschildren to false
-                if (isLastChild)
+                if (isLastChild && parent.IsOk() && tree == m_pTreeTop)
                 {
                     CollapseItem(parent);
                     return;
