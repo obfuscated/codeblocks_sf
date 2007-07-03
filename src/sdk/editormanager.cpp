@@ -150,6 +150,8 @@ struct EditorManagerInternalData
         m_pImages->Add(bmp);
         bmp = cbLoadBitmap(prefix + _T("modified_file.png"), wxBITMAP_TYPE_PNG); // modified file
         m_pImages->Add(bmp);
+        bmp = cbLoadBitmap(prefix + _T("file-readonly.png"), wxBITMAP_TYPE_PNG); // read only file
+        m_pImages->Add(bmp);
         pTree->SetImageList(m_pImages);
         m_TreeOpenedFiles=pTree->AddRoot(_T("Opened Files"), 0, 0);
         pTree->SetItemBold(m_TreeOpenedFiles);
@@ -2078,8 +2080,15 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         }
         if (pos != -1 && data->start!=data->end)
         {
-            control->GotoPos(pos);
-            control->EnsureVisible(control->LineFromPosition(pos));
+            int line = control->LineFromPosition(pos);
+			int onScreen = control->LinesOnScreen() >> 1;
+			int l1 = line - onScreen;
+			int l2 = line + onScreen;
+			for(int l=l1; l<=l2;l+=2)		// unfold visible lines on screen
+				control->EnsureVisible(l);
+			control->GotoLine(l1);			// center selection on screen
+			control->GotoLine(l2);
+            control->GotoLine(line);
             control->SetSelection(pos, pos + lengthFound);
             //            Manager::Get()->GetMessageManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
             data->start = pos;
@@ -2740,7 +2749,8 @@ void EditorManager::AddFiletoTree(EditorBase* ed)
         return;
     if(!m_pData->m_TreeOpenedFiles)
         return;
-    int mod = ed->GetModified() ? 2 : 1;
+
+    int mod = GetOpenFilesListIcon(ed);
     tree->AppendItem(m_pData->m_TreeOpenedFiles,shortname,mod,mod,
                      new EditorTreeData(this,filename));
     tree->SortChildren(m_pData->m_TreeOpenedFiles);
@@ -2795,7 +2805,7 @@ bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newn
         if(ed)
         {
             shortname=ed->GetShortName();
-            int mod = ed->GetModified() ? 2 : 1;
+            int mod = GetOpenFilesListIcon(ed);
             if(tree->GetItemText(item)!=shortname)
                 tree->SetItemText(item,shortname);
             if (tree->GetItemImage(item) != mod)
@@ -2840,7 +2850,7 @@ void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
 
     if(m_pTree)
         return;
-    m_pTree = new wxTreeCtrl(parent, ID_EditorManager,wxDefaultPosition,wxSize(150, 100),wxTR_HAS_BUTTONS | wxNO_BORDER);
+    m_pTree = new wxTreeCtrl(parent, ID_EditorManager,wxDefaultPosition,wxSize(150, 100),wxTR_HAS_BUTTONS | wxNO_BORDER | wxTR_HIDE_ROOT);
     m_pData->BuildTree(m_pTree);
     RebuildOpenedFilesTree(m_pTree);
 }
@@ -2872,7 +2882,7 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
         if(!ed->VisibleToTree())
             continue;
         wxString shortname=ed->GetShortName();
-        int mod = ed->GetModified() ? 2 : 1;
+        int mod = GetOpenFilesListIcon(ed);
         wxTreeItemId item=tree->AppendItem(m_pData->m_TreeOpenedFiles,shortname,mod,mod,
                                            new EditorTreeData(this,ed->GetFilename()));
         if(GetActiveEditor()==ed)
@@ -2923,7 +2933,7 @@ void EditorManager::RefreshOpenedFilesTree(bool force)
             if(ed)
             {
                 shortname=ed->GetShortName();
-                int mod = ed->GetModified() ? 2 : 1;
+                int mod = GetOpenFilesListIcon(ed);
                 if(m_pTree->GetItemText(item)!=shortname)
                     m_pTree->SetItemText(item,shortname);
                 if (m_pTree->GetItemImage(item) != mod)
@@ -2996,6 +3006,15 @@ int EditorManager::GetZoom() const
 {
     return m_zoom;
 }
+
+int EditorManager::GetOpenFilesListIcon(EditorBase* ed)
+{
+    int mod = 1;                            // ascii
+    if (ed->IsReadOnly()) mod = 3;          // read only
+    else if (ed->GetModified()) mod =2;     // modified
+	return mod;
+}
+
 
 
 

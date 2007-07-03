@@ -187,6 +187,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int FindInFiles(cbFindReplaceData* data);
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int ReplaceInFiles(cbFindReplaceData* data);
+        int GetOpenFilesListIcon(EditorBase* ed);
 
         wxFlatNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
@@ -206,4 +207,5 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 };
 
 #endif // EDITORMANAGER_H
+
 
