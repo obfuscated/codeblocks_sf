@@ -1047,7 +1047,8 @@ bool ProjectManager::SaveAllProjects()
     for (int i = 0; i < prjCount; ++i)
     {
         cbProject* project = m_pProjects->Item(i);
-        if (SaveProject(project))
+        bool isModified = project->GetModified();
+        if (isModified && SaveProject(project))
             ++count;
     }
     UnfreezeTree(true);

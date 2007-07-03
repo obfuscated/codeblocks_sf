@@ -59,7 +59,7 @@ cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspac
     else
     {
         m_Filename = filename;
-        m_IsDefault = false;
+        m_IsDefault = filename.IsEmpty();
     }
     m_IsOK = false;
     m_Modified = false;

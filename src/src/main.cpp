@@ -127,6 +127,7 @@ int idFileSaveProjectTemplate = XRCID("idFileSaveProjectTemplate");
 int idFileOpenDefWorkspace = XRCID("idFileOpenDefWorkspace");
 int idFileSaveWorkspace = XRCID("idFileSaveWorkspace");
 int idFileSaveWorkspaceAs = XRCID("idFileSaveWorkspaceAs");
+int idFileSaveAll = XRCID("idFileSaveAll");
 int idFileCloseWorkspace = XRCID("idFileCloseWorkspace");
 int idFileClose = XRCID("idFileClose");
 int idFileCloseAll = XRCID("idFileCloseAll");
@@ -264,6 +265,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileSaveProjectAs, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveProjectTemplate, MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveAll, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseProject, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseAllProjects, MainFrame::OnProjectMenuUpdateUI)
 
@@ -339,6 +341,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileOpenDefWorkspace,  MainFrame::OnFileOpenDefWorkspace)
     EVT_MENU(idFileSaveWorkspace,  MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,  MainFrame::OnFileSaveWorkspaceAs)
+    EVT_MENU(idFileSaveAll,  MainFrame::OnFileSaveAll)
     EVT_MENU(idFileCloseWorkspace,  MainFrame::OnFileCloseWorkspace)
     EVT_MENU(idFileClose,  MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,  MainFrame::OnFileCloseAll)
@@ -2337,6 +2340,21 @@ void MainFrame::OnFileSaveProjectAllProjects(wxCommandEvent& event)
     DoUpdateAppTitle();
 }
 
+void MainFrame::OnFileSaveAll(wxCommandEvent& event)
+{
+    Manager::Get()->GetEditorManager()->SaveAll();
+    Manager::Get()->GetProjectManager()->SaveAllProjects();
+
+    if (Manager::Get()->GetProjectManager()->GetWorkspace()->GetModified()
+		&& !Manager::Get()->GetProjectManager()->GetWorkspace()->IsDefault()
+        && Manager::Get()->GetProjectManager()->SaveWorkspace())
+    {
+        AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
+    }
+    DoUpdateStatusBar();
+    DoUpdateAppTitle();
+}
+
 void MainFrame::OnFileSaveProjectTemplate(wxCommandEvent& event)
 {
     TemplateManager::Get()->SaveUserTemplate(Manager::Get()->GetProjectManager()->GetActiveProject());
@@ -3289,12 +3307,15 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0;
     cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+    cbWorkspace* wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown())
                             && prj && !prj->GetCurrentlyCompilingTarget();
     bool canClose = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
     bool canSaveFiles = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
+    
+    bool canSaveAll = (prj && prj->GetModified()) || canSaveFiles || (wksp && !wksp->IsDefault() && wksp->GetModified());
 
     mbar->Enable(idFileCloseProject,canCloseProject);
     mbar->Enable(idFileOpenRecentFileClearHistory, m_pFilesHistory->GetCount());
@@ -3310,11 +3331,13 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileSaveWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
     mbar->Enable(idFileSaveWorkspaceAs, Manager::Get()->GetProjectManager() && canCloseProject);
     mbar->Enable(idFileCloseWorkspace, Manager::Get()->GetProjectManager() && canCloseProject);
+    mbar->Enable(idFileSaveAll, canSaveAll);
     mbar->Enable(idFilePrint, Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
 
     if (m_pToolbar)
     {
         m_pToolbar->EnableTool(idFileSave, ed && ed->GetModified());
+        m_pToolbar->EnableTool(idFileSaveAll, canSaveAll);
         m_pToolbar->EnableTool(idFilePrint, Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
     }
 

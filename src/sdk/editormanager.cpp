@@ -914,7 +914,7 @@ bool EditorManager::SaveAll()
     for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         EditorBase* ed = InternalGetEditorBase(i);
-        if (ed && !ed->Save())
+        if (ed && ed->GetModified() && !ed->Save())
         {
             wxString msg;
             msg.Printf(_("File %s could not be saved..."), ed->GetFilename().c_str());

@@ -81,6 +81,7 @@ class MainFrame : public wxFrame
         void OnFileOpenDefWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspaceAs(wxCommandEvent& event);
+        void OnFileSaveAll(wxCommandEvent& event);
         void OnFileCloseWorkspace(wxCommandEvent& event);
         void OnFileClose(wxCommandEvent& event);
         void OnFileCloseAll(wxCommandEvent& event);

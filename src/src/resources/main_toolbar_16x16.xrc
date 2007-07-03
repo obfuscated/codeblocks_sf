@@ -18,10 +18,10 @@
   <longhelp>Save current file</longhelp>
   <bitmap>images/16x16/filesave.png</bitmap>
  </object>
- <object class="tool" name="idFilePrint">
-  <tooltip>Print</tooltip>
-  <longhelp>Print current file or all files</longhelp>
-  <bitmap>images/16x16/fileprint.png</bitmap>
+ <object class="tool" name="idFileSaveAll">
+  <tooltip>Save all</tooltip>
+  <longhelp>Save all files, projects and the workspace</longhelp>
+  <bitmap>images/16x16/filesaveall.png</bitmap>
  </object>
  <object class="separator"/>
   <object class="tool" name="idEditUndo">
