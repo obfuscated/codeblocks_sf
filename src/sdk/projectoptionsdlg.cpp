@@ -337,15 +337,10 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 		int p = GetPlatformsFromString(platforms);
 		target->SetPlatforms(p);
 
-        target->SetUseConsoleRunner(XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->GetValue());
-        target->SetCreateDefFile(XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->GetValue());
-        target->SetCreateStaticLib(XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->GetValue());
-
         target->SetTargetFilenameGenerationPolicy(
             XRCCTRL(*this, "chkAutoGenPrefix", wxCheckBox)->GetValue() ? tgfpPlatformDefault : tgfpNone,
             XRCCTRL(*this, "chkAutoGenExt", wxCheckBox)->GetValue() ? tgfpPlatformDefault : tgfpNone);
 
-		// global project options
 		target->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
 		wxFileName fname(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
 //		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
@@ -361,6 +356,10 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 //		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, m_Project->GetBasePath());
 //		fname.MakeRelativeTo(m_Project->GetBasePath());
 		target->SetObjectOutput(fname.GetFullPath());
+
+        target->SetUseConsoleRunner(XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->GetValue());
+        target->SetCreateDefFile(XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->GetValue());
+        target->SetCreateStaticLib(XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->GetValue());
 
 		// files options
 		wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
@@ -399,7 +398,7 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     XRCCTRL(*this, "chkUseConsoleRunner", wxCheckBox)->Enable(cmb->GetSelection() == ttConsoleOnly);
     XRCCTRL(*this, "chkCreateDefFile", wxCheckBox)->Enable(cmb->GetSelection() == ttDynamicLib);
     XRCCTRL(*this, "chkCreateStaticLib", wxCheckBox)->Enable(cmb->GetSelection() == ttDynamicLib);
-
+    
     txt->Enable(true);
     txtW->SetValue(target->GetWorkingDir());
     txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
