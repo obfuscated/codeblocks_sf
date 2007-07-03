@@ -16,6 +16,12 @@ namespace ScriptBindings
         return cbC2U(str);
     }
 
+    // the _() function for scripts
+    wxString static_(const SQChar* str)
+    {
+        return wxGetTranslation(cbC2U(str));
+    }
+
     // wxString operator+
     SQInteger wxString_OpAdd(HSQUIRRELVM v)
     {
@@ -160,6 +166,7 @@ namespace ScriptBindings
     void Register_wxTypes()
     {
         SqPlus::RegisterGlobal(&static_T, "_T");
+        SqPlus::RegisterGlobal(&static_, "_");
 
         typedef int(wxString::*WXSTR_FIRST_STR)(const wxString&)const;
         typedef wxString&(wxString::*WXSTR_REMOVE_2)(size_t pos, size_t len);
