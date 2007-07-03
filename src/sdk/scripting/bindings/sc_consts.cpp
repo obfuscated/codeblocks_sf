@@ -157,6 +157,10 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(spMac);
         BIND_INT_CONSTANT(spAll);
 
+		// TargetFilenameGenerationPolicy
+        BIND_INT_CONSTANT(tgfpPlatformDefault);
+        BIND_INT_CONSTANT(tgfpNone);
+		
         // ModuleType
         BIND_INT_CONSTANT(mtProjectManager);
         BIND_INT_CONSTANT(mtEditorManager);

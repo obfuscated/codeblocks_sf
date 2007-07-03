@@ -401,6 +401,8 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::UnsetAllVars, "UnsetAllVars");
 
         SqPlus::SQClassDef<CompileTargetBase>("CompileTargetBase", "CompileOptionsBase").
+                func(&CompileTargetBase::SetTargetFilenameGenerationPolicy, "SetTargetFilenameGenerationPolicy").
+//                func(&CompileTargetBase::GetTargetFilenameGenerationPolicy, "GetTargetFilenameGenerationPolicy"). // not exposed because its args are non-const references
                 func(&CompileTargetBase::GetFilename, "GetFilename").
                 func(&CompileTargetBase::GetTitle, "GetTitle").
                 func(&CompileTargetBase::SetTitle, "SetTitle").

@@ -61,6 +61,7 @@ DECLARE_ENUM_TYPE(TemplateOutputType);
 DECLARE_ENUM_TYPE(SearchDirs);
 DECLARE_ENUM_TYPE(ModuleType);
 DECLARE_ENUM_TYPE(FileTreeData::FileTreeDataKind);
+DECLARE_ENUM_TYPE(TargetFilenameGenerationPolicy);
 
 namespace SqPlus
 {
