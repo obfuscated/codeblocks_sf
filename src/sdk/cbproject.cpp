@@ -53,6 +53,7 @@
 #endif
 
 #include <map>
+#include "prep.h"
 #include "projectoptionsdlg.h"
 #include "projectloader.h"
 #include "devcpploader.h"
@@ -372,40 +373,58 @@ void cbProject::CalculateCommonTopLevelPath()
     // for projects where the project file is in a subdir, files will have ..
     // in their paths
     wxString sep = wxFileName::GetPathSeparator();
-    wxFileName base = GetBasePath() + sep;
+    wxFileName base = GetBasePath();
+    wxString baseVolume = base.GetVolume();
     Manager::Get()->GetMessageManager()->DebugLog(_T("Project's base path: %s"), base.GetFullPath().c_str());
 
     // this loop takes ~30ms for 1000 project files
     // it's as fast as it can get, considered that it used to take ~1200ms ;)
     // don't even bother making it faster - you can't :)
+
+// NOTE (Biplab#1#): The following modified code is bit slower (handles ~550 files in 30 ms).
+    /* We should calculate the CommonTopLevelPath first *
+     * and then we'll calculate the common path for the *
+     * project files. */
+    bool volCheck = !baseVolume.IsEmpty(); // To ensure a volume check on Windows
     for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
     {
         ProjectFile* f = node->GetData();
-        wxString tmp = f->relativeFilename;
+        if ((base.GetDirCount() > f->file.GetDirCount())
+            && volCheck
+            && (baseVolume.IsSameAs(f->file.GetVolume())))
+            base = f->file;
+    }
+    m_CommonTopLevelPath = base.GetPathWithSep();
+
+    size_t cltp_length = m_CommonTopLevelPath.Len();
+    for (FilesList::Node* node = m_Files.GetFirst(); node; node = node->GetNext())
+    {
+        ProjectFile* f = node->GetData();
+        wxString tmp = f->file.GetFullPath();
         wxString tmpbase = m_BasePath;
 
-        size_t pos = 0;
-        while (pos < tmp.Length() &&
-			(tmp.GetChar(pos) == _T('.') || tmp.GetChar(pos) == _T('/') || tmp.GetChar(pos) == _T('\\')))
-		{
-			++pos;
-		}
-		if (pos > 0 && pos < tmp.Length())
-		{
-			tmpbase << sep << tmp.Left(pos) << sep;
-			f->relativeToCommonTopLevelPath = tmp.Right(tmp.Length() - pos);
-		}
-		else
-			f->relativeToCommonTopLevelPath = tmp;
+        if (tmp.Len() <= cltp_length)
+            f->relativeToCommonTopLevelPath = tmp;
+        else
+        {
+            if (platform::windows)
+            {
+                // Check if they belong to same drive or not
+                if (tmp.Left(2).Matches(m_CommonTopLevelPath.Left(2)))
+                    tmpbase = tmp.Right(tmp.Len() - cltp_length);
+                else
+                    tmpbase = tmp;
+            }
+            else
+                tmpbase = tmp.Right(tmp.Len() - cltp_length);
+            // Now check for any '\\' or '/'
+            if (tmpbase.GetChar(0) == _T('\\') || tmpbase.GetChar(0) == _T('/'))
+                tmpbase = tmpbase.Right(tmpbase.Len() - 1);
+            f->relativeToCommonTopLevelPath = tmpbase;
+        }
         f->SetObjName(f->relativeToCommonTopLevelPath);
-
-        wxFileName tmpbaseF(tmpbase);
-        tmpbaseF.Normalize(wxPATH_NORM_DOTS);
-        if (tmpbaseF.GetDirCount() < base.GetDirCount())
-            base = tmpbaseF;
     }
 
-    m_CommonTopLevelPath = base.GetFullPath();
     Manager::Get()->GetMessageManager()->DebugLog(_T("Project's common toplevel path: %s"), m_CommonTopLevelPath.c_str());
 }
 
@@ -755,7 +774,6 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
 {
     if (!tree)
         return;
-    CalculateCommonTopLevelPath();
 
     int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
     int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
@@ -802,9 +820,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         ftd->SetProjectFile(f);
         ftd->SetFolder(f->file.GetFullPath());
 
-        wxFileName nodefile = f->file;
-        nodefile.MakeRelativeTo(GetCommonTopLevelPath());
-        wxString nodetext = nodefile.GetFullPath();
+        wxString nodetext = f->relativeToCommonTopLevelPath;
         FileTreeData::FileTreeDataKind folders_kind = FileTreeData::ftdkFolder;
 
         wxTreeItemId parentNode = m_ProjectNode;
