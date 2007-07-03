@@ -1427,6 +1427,8 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         return -1;
 
     bool AdvRegex=false;
+    int replacecount=0;
+    int foundcount=0;
     int flags = 0;
     CalculateFindReplaceStartEnd(control, data);
 
@@ -1535,6 +1537,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         else
             break; // done - already wrapped around once
 
+        foundcount++;
 
         if (confirm)
         {
@@ -1580,6 +1583,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
             if (replace)
             {
                 int lengthReplace = data->replaceText.Length();
+                replacecount++;
                 if (data->regEx)
                 {
                     // set target same as selection
@@ -1633,6 +1637,15 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         }
     }
     control->EndUndoAction();
+    wxString msg;
+    if (foundcount == 0)
+		msg = _T("No matches found for \"") + data->findText + _T("\"");
+    else if (replacecount == 0 && foundcount == 1)
+		msg = _T("One match found but not replaced");
+    else
+		msg.Printf(_("Replaced %i of %i matches"), replacecount, foundcount);
+    cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
+    control->SetSCIFocus(true);
 
     return pos;
 }
