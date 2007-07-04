@@ -110,12 +110,6 @@ namespace
     static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_console_runner.exe") : _T("cb_console_runner"));
     static const wxString strSLASH(_T("/"));
     static const wxString strSPACE(_T(" "));
-
-#if defined(__WXMSW__)
-    static const wxString strQUOTE(_T("\""));
-#else
-    static const wxString strQUOTE(_T("'"));
-#endif
 }
 
 // menu IDS
@@ -1723,8 +1717,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         {
             // for non-win platforms, use m_ConsoleTerm to run the console app
             wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-            term.Replace(_T("$TITLE"), strQUOTE + m_Project->GetTitle() + strQUOTE);
-            term.Replace(_T("$WORKDIR"), strQUOTE + m_CdRun + strQUOTE);
+            term.Replace(_T("$TITLE"), EscapeSpaces(m_Project->GetTitle()));
+            term.Replace(_T("$WORKDIR"), EscapeSpaces(m_CdRun));
             cmd << term << strSPACE;
 
             wxString shell;
@@ -1744,7 +1738,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             wxString baseDir = ConfigManager::GetExecutableFolder();
 
             if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
-                command << strQUOTE << baseDir << strSLASH << strCONSOLE_RUNNER << strQUOTE << strSPACE;
+                command << EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER) << strSPACE;
         }
     }
 
@@ -1760,13 +1754,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
         wxString tmp = target->GetHostApplication();
         Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
-        command << strQUOTE << tmp << strQUOTE << strSPACE;
+        command << EscapeSpaces(tmp) << strSPACE;
         command << target->GetExecutionParameters();
     }
     else if (target->GetTargetType() != ttCommandsOnly)
     {
         wxString tmp = f.GetFullPath();
-        command << strQUOTE << tmp << strQUOTE << strSPACE;
+        command << EscapeSpaces(tmp) << strSPACE;
         command << target->GetExecutionParameters();
     }
     else

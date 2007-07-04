@@ -160,6 +160,9 @@ extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);
 extern DLLIMPORT wxString UnixFilename(const wxString& filename);
 extern DLLIMPORT void QuoteStringIfNeeded(wxString& str);
 
+/// Escapes spaces and tabs (NOT quoting the string)
+extern DLLIMPORT wxString EscapeSpaces(const wxString& str);
+
 extern DLLIMPORT FileType FileTypeOf(const wxString& filename);
 
 extern DLLIMPORT void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths);

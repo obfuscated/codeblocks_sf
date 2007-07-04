@@ -188,6 +188,18 @@ void QuoteStringIfNeeded(wxString& str)
         str = wxString(_T("\"")) + str + _T("\"");
 }
 
+wxString EscapeSpaces(const wxString& str)
+{
+	wxString ret = str;
+	if (!ret.IsEmpty() && ret[0] != _T('"') && ret[0] != _T('\''))
+	{
+		// TODO: make it faster
+		ret.Replace(_T(" "), _T("\\ "));
+		ret.Replace(_T("\t"), _T("\\\t"));
+	}
+	return ret;
+}
+
 FileType FileTypeOf(const wxString& filename)
 {
     wxString ext = filename.AfterLast(_T('.')).Lower();

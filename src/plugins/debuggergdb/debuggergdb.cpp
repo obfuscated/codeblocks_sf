@@ -71,6 +71,14 @@
     #include "cbproject.h"
 #endif
 
+#if defined(__APPLE__) && defined(__MACH__)
+    #define LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
+#elif !defined(__WXMSW__)
+    #define LIBRARY_ENVVAR _T("LD_LIBRARY_PATH")
+#else
+    #define LIBRARY_ENVVAR _T("PATH")
+#endif
+
 #define implement_debugger_toolbar
 
 // function pointer to DebugBreakProcess under windows (XP+)
@@ -732,15 +740,6 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
     if (m_pProcess)
         return -1;
 
-    #ifndef __WXMSW__
-        // setup dynamic linker path
-    #if defined(__APPLE__) && defined(__MACH__)
-        wxSetEnv(_T("DYLD_LIBRARY_PATH"), _T(".:$DYLD_LIBRARY_PATH"));
-    #else
-        wxSetEnv(_T("LD_LIBRARY_PATH"), _T(".:$LD_LIBRARY_PATH"));
-    #endif // __APPLE__ && __MACH__
-    #endif
-
     // start the gdb process
     wxLogNull ln; // we perform our own error handling and logging
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, cwd);
@@ -1092,11 +1091,32 @@ int DebuggerGDB::Debug()
     else // m_PidToAttach != 0
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach);
 
+	wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
+	wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
+
+	// setup dynamic linker path
+	if (actualCompiler && target)
+	{
+		wxString newLibPath;
+		const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+		newLibPath << _T(".") << libPathSep;
+		newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
+		if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+			newLibPath << libPathSep;
+		newLibPath << oldLibPath;
+		wxSetEnv(LIBRARY_ENVVAR, newLibPath);
+		DebugLog(LIBRARY_ENVVAR _T("=") + newLibPath);
+	}
+
     // start the gdb process
     wxString wdir = project ? project->GetBasePath() : _T(".");
     DebugLog(_T("Command-line: ") + cmdline);
     DebugLog(_T("Working dir : ") + wdir);
     int ret = LaunchProcess(cmdline, wdir);
+
+	// restore dynamic linker path
+	wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
+
     if (ret != 0)
         return ret;
 
