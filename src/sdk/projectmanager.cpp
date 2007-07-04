@@ -1252,7 +1252,7 @@ bool ProjectManager::CloseWorkspace()
             m_IsClosingWorkspace = false;
             return false;
         }
-        if (!CloseAllProjects(true))
+        if (!CloseAllProjects(false))
         {
             m_IsClosingWorkspace = false;
             return false;
