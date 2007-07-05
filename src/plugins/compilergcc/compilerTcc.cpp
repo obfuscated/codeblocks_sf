@@ -14,7 +14,6 @@
 #include <prep.h>
 #ifndef CB_PRECOMP
     #include <wx/intl.h>
-    #include <wx/log.h>
     #include <wx/regex.h>
     #include <wx/string.h>
 #endif

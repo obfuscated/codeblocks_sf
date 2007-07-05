@@ -3,7 +3,6 @@
 
 #include <sdk.h>
 #include <prep.h>
-#include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/config.h>

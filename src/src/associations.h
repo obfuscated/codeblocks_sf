@@ -12,7 +12,6 @@
     #ifdef __CBDEBUG__
         #include <windows.h>
         #include <wincon.h>
-        #include <wx/log.h>
     #endif
 #endif
 class wxCheckListBox;

@@ -1,7 +1,6 @@
 #include "mytar.h"
 #include <io.h>
 #include <globals.h>
-#include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(ReplacersArray);

@@ -802,7 +802,7 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
         ftd->SetFolder(f->file.GetFullPath());
 
         wxFileName nodefile = f->file;
-        nodefile.MakeRelativeTo(GetCommonTopLevelPath());
+        nodefile.MakeRelativeTo(m_CommonTopLevelPath);
         wxString nodetext = nodefile.GetFullPath();
         FileTreeData::FileTreeDataKind folders_kind = FileTreeData::ftdkFolder;
 

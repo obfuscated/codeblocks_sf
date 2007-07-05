@@ -16,7 +16,6 @@
     #include <wx/confbase.h>
     #include <wx/fileconf.h>
     #include <wx/intl.h>
-    #include <wx/log.h>
     #include "manager.h"
     #include "projectmanager.h"
     #include "messagemanager.h"

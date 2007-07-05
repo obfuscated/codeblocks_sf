@@ -7,7 +7,6 @@
 #include <wx/file.h>
 #include <wx/intl.h>
 #include <wx/listctrl.h>
-#include <wx/log.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/utils.h>

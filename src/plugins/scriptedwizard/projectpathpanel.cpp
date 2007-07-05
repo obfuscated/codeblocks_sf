@@ -1,4 +1,5 @@
 #include "projectpathpanel.h"
+#include <prep.h>
 #include <filefilters.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
@@ -76,6 +77,7 @@ void ProjectPathPanel::UpdateFromResulting()
 {
     if (m_LockUpdates || !txtPrjPath || !txtPrjName || !txtFinalDir || txtFinalDir->GetValue().IsEmpty())
         return; // not ready yet
+
     m_LockUpdates = true;
     wxFileName fn = txtFinalDir->GetValue();
     txtPrjPath->SetValue(fn.GetPath(wxPATH_GET_VOLUME));
@@ -93,11 +95,12 @@ void ProjectPathPanel::Update()
     {
         wxFileName fname(txtPrjName->GetValue());
         wxFileName prjpath(final, wxEmptyString);
-        fname.MakeAbsolute(prjpath.GetPathWithSep() + fname.GetName());
+        fname.MakeAbsolute(prjpath.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + fname.GetName());
         final = fname.GetFullPath();
     }
     if (final.IsEmpty() || txtPrjName->GetValue().IsEmpty())
         final = _("<invalid path>");
+
     m_LockUpdates = true;
     txtFinalDir->SetValue(final);
     m_LockUpdates = false;
@@ -122,8 +125,8 @@ void ProjectPathPanel::OntxtPrjTitleText(wxCommandEvent& event)
         !prjtitle.Right(4).IsSameAs(FileFilters::CODEBLOCKS_DOT_EXT))
         prjtitle = prjtitle + FileFilters::CODEBLOCKS_DOT_EXT;
     txtPrjName->SetValue(prjtitle);
+
 // FIXME (Biplab#1#): In Linux, text update event is not thrown
-    #ifndef __WXMSW__
-    Update();
-    #endif
+    if (!platform::windows)
+        Update();
 }

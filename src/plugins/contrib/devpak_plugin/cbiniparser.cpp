@@ -1,7 +1,6 @@
 #include "cbiniparser.h"
 #include <wx/utils.h>
 #include <wx/file.h>
-#include <wx/log.h>
 
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(IniKeyValuePairArray);

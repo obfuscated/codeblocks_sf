@@ -31,7 +31,6 @@
     #include <wx/menu.h>
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
-    #include <wx/log.h>
     #include <wx/dir.h>
 
     #include "templatemanager.h"

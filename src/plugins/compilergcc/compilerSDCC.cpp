@@ -18,7 +18,6 @@
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/msgdlg.h>
-#include <wx/log.h>
 
 #ifdef __WXMSW__
     #include <wx/msw/registry.h>

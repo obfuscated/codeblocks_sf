@@ -21,6 +21,7 @@
     #include "cbexception.h"
     #include <wx/file.h>
     #include <wx/dir.h>
+    #include <wx/log.h> // for wxSafeShowMessage()
 #endif
 
 #include "crc32.h"

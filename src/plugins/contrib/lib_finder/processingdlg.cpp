@@ -3,7 +3,6 @@
 #include <wx/arrstr.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
-#include <wx/log.h>
 #include <wx/tokenzr.h>
 
 #include "libraryconfigmanager.h"

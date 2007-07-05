@@ -16,6 +16,7 @@
     #include "cbexception.h"
     #include "globals.h"
     #include "configmanager.h"
+    #include <wx/log.h> // for wxSafeShowMessage()
 #endif
 
 #include <wx/intl.h>

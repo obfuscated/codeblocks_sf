@@ -1,5 +1,4 @@
 #include <sdk.h>
-#include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/filename.h>
 #include <wx/msgdlg.h>

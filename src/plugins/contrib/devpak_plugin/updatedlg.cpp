@@ -9,7 +9,6 @@
 #include <wx/checkbox.h>
 #include <wx/file.h>
 #include <wx/menu.h>
-#include <wx/log.h>
 #include "devpakinstaller.h"
 #include "crc32.h"
 

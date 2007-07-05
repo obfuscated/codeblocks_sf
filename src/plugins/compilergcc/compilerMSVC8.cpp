@@ -4,7 +4,6 @@
 #include <sdk.h>
 #include "compilerMSVC8.h"
 #include <wx/wx.h>
-#include <wx/log.h>
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/config.h>

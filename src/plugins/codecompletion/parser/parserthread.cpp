@@ -28,7 +28,6 @@
 #include "parserthread.h"
 #include "parser.h"
 #include <wx/app.h>
-#include <wx/log.h>
 #include <wx/msgdlg.h>
 #include <manager.h>
 #include <globals.h>

@@ -33,7 +33,6 @@
 #include <wx/file.h>
 #include <wx/filename.h>
 #include <wx/intl.h>
-#include <wx/log.h>
 #include <wx/textctrl.h>
 #include <wx/xrc/xmlres.h>
 #include "cbeditor.h"

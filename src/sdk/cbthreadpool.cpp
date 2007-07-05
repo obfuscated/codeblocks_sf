@@ -4,7 +4,6 @@
  #include "sdk_events.h"
  #include "manager.h"
  #include "messagemanager.h"
- #include <wx/log.h>
 #endif
 
 #include "cbthreadpool.h"

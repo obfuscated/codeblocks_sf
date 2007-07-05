@@ -1,14 +1,13 @@
 #if (__WXMSW__)
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/filefn.h>
-#include <wx/filename.h>
-#include <wx/log.h>
-#include <wx/string.h>
-#include "cbeditor.h"
-#include "configmanager.h"
-#include "editormanager.h"
-#include "globals.h"
+    #include <wx/filefn.h>
+    #include <wx/filename.h>
+    #include <wx/string.h>
+    #include "cbeditor.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "globals.h"
 #endif //CB_PRECOMP
 #include "crashhandler.h"
 #include <shlobj.h>

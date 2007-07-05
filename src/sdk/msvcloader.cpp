@@ -29,7 +29,6 @@
     #include "compilerfactory.h"
     #include "compiler.h"
     #include <wx/wfstream.h>
-    #include <wx/log.h>
 #endif
 
 #include <wx/stream.h>

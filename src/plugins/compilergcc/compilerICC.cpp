@@ -12,7 +12,6 @@
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/msgdlg.h>
-#include <wx/log.h>
 #include "manager.h"
 #include "messagemanager.h"
 

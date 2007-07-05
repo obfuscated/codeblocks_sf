@@ -17,7 +17,6 @@
     #include <wx/confbase.h>
     #include <wx/intl.h>
     #include <wx/filename.h>
-    #include <wx/log.h>
 
     #include "manager.h"
     #include "projectmanager.h"

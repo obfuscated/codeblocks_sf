@@ -32,6 +32,7 @@
 #include <wx/cmdline.h>
 #include <wx/regex.h>
 #include <wx/filefn.h>
+#include <wx/log.h> // for wxSafeShowMessage()
 #include <wx/msgdlg.h>
 #include <wx/choicdlg.h>
 #include <wx/notebook.h>

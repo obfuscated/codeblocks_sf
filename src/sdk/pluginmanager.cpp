@@ -1141,8 +1141,6 @@ void PluginManager::LoadAllPlugins()
         }
     }
     Manager::Get()->GetMessageManager()->Log(_T(""));
-
-    wxLogNull ln;
     Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
 }
 
