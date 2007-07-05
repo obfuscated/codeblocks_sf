@@ -13,7 +13,7 @@ class ToDoSettingsDlg : public cbConfigurationPanel
 		~ToDoSettingsDlg();
 
         virtual wxString GetTitle() const { return _("To-do list"); }
-        virtual wxString GetBitmapBaseName() const { return _T("generic-plugin"); }
+        virtual wxString GetBitmapBaseName() const { return _T("todo"); }
         virtual void OnApply();
         virtual void OnCancel(){}
 };
