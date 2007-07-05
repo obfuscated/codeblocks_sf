@@ -101,7 +101,8 @@
         <help>Save the active file under a different name</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveAllFiles">
-        <label>Save all files</label>
+        <label>Save a&amp;ll files</label>
+	<bitmap>images\16x16\filesaveall.png</bitmap>
         <accel>Ctrl-Shift-S</accel>
         <help>Save all modified files</help>
       </object>
@@ -137,7 +138,7 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveAll">
-        <label>Save a&amp;ll</label>
+        <label>Save everything</label>
         <bitmap>images\16x16\filesaveall.png</bitmap>
         <accel>Alt-Shift-S</accel>
         <help>Save all files, projects and the workspace</help>
