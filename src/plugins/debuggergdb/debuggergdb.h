@@ -129,6 +129,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnStep(wxCommandEvent& event);
         void OnStepOut(wxCommandEvent& event);
         void OnToggleBreakpoint(wxCommandEvent& event);
+        void OnRemoveAllBreakpoints(wxCommandEvent& event);
         void OnAddDataBreakpoint(wxCommandEvent& event);
         void OnRunToCursor(wxCommandEvent& event);
         void OnBreakpointAdd(CodeBlocksEvent& event);

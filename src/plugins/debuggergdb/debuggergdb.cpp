@@ -115,6 +115,7 @@ int idMenuStepOut = XRCID("idDebuggerMenuStepOut");
 int idMenuStop = XRCID("idDebuggerMenuStop");
 int idMenuContinue = XRCID("idDebuggerMenuContinue");
 int idMenuToggleBreakpoint = XRCID("idDebuggerMenuToggleBreakpoint");
+int idMenuRemoveAllBreakpoints = XRCID("idDebuggerMenuRemoveAllBreakpoints");
 int idMenuAddDataBreakpoint = XRCID("idMenuAddDataBreakpoint");
 int idMenuSendCommandToGDB = XRCID("idDebuggerMenuSendCommandToGDB");
 int idMenuAddSymbolFile = XRCID("idDebuggerMenuAddSymbolFile");
@@ -176,6 +177,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuNextInstr, DebuggerGDB::OnNextInstr)
     EVT_MENU(idMenuStepOut, DebuggerGDB::OnStepOut)
     EVT_MENU(idMenuToggleBreakpoint, DebuggerGDB::OnToggleBreakpoint)
+    EVT_MENU(idMenuRemoveAllBreakpoints, DebuggerGDB::OnRemoveAllBreakpoints)
     EVT_MENU(idMenuAddDataBreakpoint, DebuggerGDB::OnAddDataBreakpoint)
     EVT_MENU(idMenuRunToCursor, DebuggerGDB::OnRunToCursor)
     EVT_MENU(idMenuStop, DebuggerGDB::OnStop)
@@ -1750,27 +1752,28 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuNextInstr, m_pProcess && en && stopped);
         mbar->Enable(idMenuStep, en && stopped);
         mbar->Enable(idMenuStepOut, m_pProcess && en && stopped);
-         mbar->Enable(idMenuRunToCursor, en && ed && stopped);
+        mbar->Enable(idMenuRunToCursor, en && ed && stopped);
         mbar->Enable(idMenuToggleBreakpoint, en && ed && stopped);
+        mbar->Enable(idMenuRemoveAllBreakpoints, en && ed && stopped);
         mbar->Enable(idMenuSendCommandToGDB, m_pProcess && stopped);
-         mbar->Enable(idMenuAddSymbolFile, m_pProcess && stopped);
+        mbar->Enable(idMenuAddSymbolFile, m_pProcess && stopped);
         mbar->Enable(idMenuStop, m_pProcess && en);
         mbar->Enable(idMenuAttachToProcess, !m_pProcess);
         mbar->Enable(idMenuDetach, m_pProcess && m_PidToAttach != 0);
 
-         mbar->Enable(idMenuInfoFrame, m_pProcess && stopped);
-         mbar->Enable(idMenuInfoDLL, m_pProcess && stopped);
-         mbar->Enable(idMenuInfoFiles, m_pProcess && stopped);
-         mbar->Enable(idMenuInfoFPU, m_pProcess && stopped);
-         mbar->Enable(idMenuInfoSignals, m_pProcess && stopped);
+        mbar->Enable(idMenuInfoFrame, m_pProcess && stopped);
+        mbar->Enable(idMenuInfoDLL, m_pProcess && stopped);
+        mbar->Enable(idMenuInfoFiles, m_pProcess && stopped);
+        mbar->Enable(idMenuInfoFPU, m_pProcess && stopped);
+        mbar->Enable(idMenuInfoSignals, m_pProcess && stopped);
 
-         mbar->Check(idMenuThreads, IsWindowReallyShown(m_pThreadsDlg));
-         mbar->Check(idMenuMemory, IsWindowReallyShown(m_pExamineMemoryDlg));
-         mbar->Check(idMenuBacktrace, IsWindowReallyShown(m_pBacktrace));
-         mbar->Check(idMenuCPU, IsWindowReallyShown(m_pDisassembly));
-         mbar->Check(idMenuWatches, IsWindowReallyShown(m_pTree));
-         mbar->Check(idMenuRegisters, IsWindowReallyShown(m_pCPURegisters));
-         mbar->Check(idMenuBreakpoints, IsWindowReallyShown(m_pBreakpointsWindow));
+        mbar->Check(idMenuThreads, IsWindowReallyShown(m_pThreadsDlg));
+        mbar->Check(idMenuMemory, IsWindowReallyShown(m_pExamineMemoryDlg));
+        mbar->Check(idMenuBacktrace, IsWindowReallyShown(m_pBacktrace));
+        mbar->Check(idMenuCPU, IsWindowReallyShown(m_pDisassembly));
+        mbar->Check(idMenuWatches, IsWindowReallyShown(m_pTree));
+        mbar->Check(idMenuRegisters, IsWindowReallyShown(m_pCPURegisters));
+        mbar->Check(idMenuBreakpoints, IsWindowReallyShown(m_pBreakpointsWindow));
     }
 
     #ifdef implement_debugger_toolbar
@@ -1841,6 +1844,24 @@ void DebuggerGDB::OnRunToCursor(wxCommandEvent& event)
 void DebuggerGDB::OnToggleBreakpoint(wxCommandEvent& event)
 {
     ToggleBreakpoint();
+}
+
+void DebuggerGDB::OnRemoveAllBreakpoints(wxCommandEvent& event)
+{
+    if (IsStopped()) // Code from BreakpointsDlg has been used
+    {
+        while (m_State.GetBreakpoints().GetCount())
+        {
+            // if not valid breakpoint, continue with the next one
+            DebuggerBreakpoint* bp = m_State.GetBreakpoints()[0];
+            if (!bp)
+                continue;
+            cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(bp->filenameAsPassed);
+            if (ed)
+                ed->RemoveBreakpoint(bp->line, false);
+            m_State.RemoveBreakpoint(0);
+        }
+    }
 }
 
 void DebuggerGDB::OnAddDataBreakpoint(wxCommandEvent& event)

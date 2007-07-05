@@ -79,6 +79,12 @@
       
       <help>Toggle breakpoint in current line</help>
     </object>
+    <object class="wxMenuItem" name="idDebuggerMenuRemoveAllBreakpoints">
+      
+      <label>Remove all breakpoints</label>
+    
+      <help>Remove all breakpoints</help>
+    </object>
     <object class="wxMenuItem" name="idDebuggerMenuRunToCursor">
       
       <label>Run to cursor</label>
