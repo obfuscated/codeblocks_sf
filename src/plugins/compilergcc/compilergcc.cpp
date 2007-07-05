@@ -110,6 +110,7 @@ namespace
     static const wxString strCONSOLE_RUNNER(platform::windows ? _T("cb_console_runner.exe") : _T("cb_console_runner"));
     static const wxString strSLASH(_T("/"));
     static const wxString strSPACE(_T(" "));
+    static const wxString strQUOTE(platform::windows ? _T("\"") : _T("'"));
 }
 
 // menu IDS
@@ -1708,6 +1709,23 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     if (cd.IsRelative())
         cd.MakeAbsolute(m_Project->GetBasePath());
     m_CdRun = cd.GetFullPath();
+	wxString baseDir = ConfigManager::GetExecutableFolder();
+
+    wxString titleStr = platform::windows
+						? strQUOTE + m_Project->GetTitle() + strQUOTE
+						: EscapeSpaces(m_Project->GetTitle());
+    wxString dirStr = platform::windows
+						? strQUOTE + m_CdRun + strQUOTE
+						: EscapeSpaces(m_CdRun);
+    wxString crunnStr = platform::windows
+						? strQUOTE + baseDir + strSLASH + strCONSOLE_RUNNER + strQUOTE
+						: EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER);
+    wxString hostapStr = platform::windows
+						? strQUOTE + target->GetHostApplication() + strQUOTE
+						: EscapeSpaces(target->GetHostApplication());
+    wxString execStr = platform::windows
+						? strQUOTE + f.GetFullPath() + strQUOTE
+						: EscapeSpaces(f.GetFullPath());
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
@@ -1717,8 +1735,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         {
             // for non-win platforms, use m_ConsoleTerm to run the console app
             wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-            term.Replace(_T("$TITLE"), EscapeSpaces(m_Project->GetTitle()));
-            term.Replace(_T("$WORKDIR"), EscapeSpaces(m_CdRun));
+            term.Replace(_T("$TITLE"), titleStr);
+            term.Replace(_T("$WORKDIR"), dirStr);
             cmd << term << strSPACE;
 
             wxString shell;
@@ -1735,10 +1753,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // should console runner be used?
         if (target->GetUseConsoleRunner())
         {
-            wxString baseDir = ConfigManager::GetExecutableFolder();
-
             if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
-                command << EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER) << strSPACE;
+                command << crunnStr << strSPACE;
         }
     }
 
@@ -1752,15 +1768,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             m_Project->SetCurrentlyCompilingTarget(0);
             return -1;
         }
-        wxString tmp = target->GetHostApplication();
-        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(tmp);
-        command << EscapeSpaces(tmp) << strSPACE;
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(hostapStr);
+        command << hostapStr << strSPACE;
         command << target->GetExecutionParameters();
     }
     else if (target->GetTargetType() != ttCommandsOnly)
     {
-        wxString tmp = f.GetFullPath();
-        command << EscapeSpaces(tmp) << strSPACE;
+        command << execStr << strSPACE;
         command << target->GetExecutionParameters();
     }
     else
