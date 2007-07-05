@@ -310,10 +310,9 @@ int DebuggerTree::FindCommaPos(const wxString& str)
 
 void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& text, long array_index)
 {
-#define MIN(a,b) (a < b ? a : b)
     if (text.IsEmpty())
         return;
-//    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::ParseEntry(): Parsing '%s' (itemId=%p)", text.c_str(), &parent);
+//    DBGLOG(_T("DebuggerTree::ParseEntry(): %s"), text.c_str());
     while (1)
     {
         // trim the string from left and right
@@ -328,7 +327,7 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
         if (braceClosePos == -1) braceClosePos = 0xFFFFFE;
         int commaPos = FindCommaPos(text);
         if (commaPos == -1) commaPos = 0xFFFFFE;
-        int pos = MIN(commaPos, MIN(braceOpenPos, braceClosePos));
+        int pos = std::min(commaPos, std::min(braceOpenPos, braceClosePos));
 
         if (pos == 0xFFFFFE)
         {
@@ -409,7 +408,6 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
                 break; // return one level up
         }
     }
-#undef MIN
 }
 
 void DebuggerTree::BuildTreeGDB(Watch* watch, const wxString& infoText)
@@ -436,45 +434,45 @@ void DebuggerTree::BuildTreeGDB(Watch* watch, const wxString& infoText)
 
 void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
 {
-    new wxTipWindow(m_pTree, _T("Watches are currently disabled for CDB.\n"
-                                "We are sorry for the inconvenience..."), 250);
+//Local variables
+// hThisInstance = 0x00400000
+// hPrevInstance = 0x00000000
+// lpszArgument = 0x00151ef5 ""
+// nCmdShow = 10
+// hwnd = 0x7ffd8000
+// messages = struct tagMSG
+// wincl = struct tagWNDCLASSEXA
 
-//    wxTreeItemId parent = m_pTree->GetRootItem();
-//    wxTreeItemId node = parent;
-//
-//    wxArrayString lines = GetArrayFromString(infoText, _T('\n'), false);
-//    size_t col = 0;
-//    for (unsigned int i = 0; i < lines.GetCount(); ++i)
-//    {
-//        size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
-//        size_t nextcol = i < lines.GetCount() - 1 ? lines[i + 1].find_first_not_of(_T(" \t")) : wxString::npos;
-//        if (thiscol > col)
-//        {
-//            // add child node
-//            parent = node;
-//            col = thiscol;
-//        }
-//        else if (thiscol < col)
-//        {
-//            // go one level up
-//            parent = m_pTree->GetItemParent(parent);
-//            col = thiscol;
-//        }
-//        wxString actual;
-//        int sep = lines[i].First(_T(" = "));
-//        if (sep != -1)
-//            actual = lines[i].SubString(0, sep).Strip(wxString::both) +
-//                    _T(" = ") +
-//                    lines[i].SubString(sep + 2, lines[i].Length()).Strip(wxString::both);
-//        else
-//            actual = lines[i].Strip(wxString::both);
-//
-//        node = AddItem(parent, actual, watch);
-//
-//        // if this node doesn't have any children, delete any existing
-//        if (nextcol == thiscol || nextcol == wxString::npos)
-//            m_pTree->DeleteChildren(node);
-//    }
+    wxTreeItemId parent = m_pTree->GetRootItem();
+    wxTreeItemId node = parent;
+
+    wxArrayString lines = GetArrayFromString(infoText, _T('\n'), false);
+    for (unsigned int i = 0; i < lines.GetCount(); ++i)
+    {
+        size_t thiscol = lines[i].find_first_not_of(_T(" \t"));
+        size_t nextcol = i < lines.GetCount() - 1 ? lines[i + 1].find_first_not_of(_T(" \t")) : wxString::npos;
+        bool opbrace = false;
+        bool clbrace = false;
+        if (thiscol < nextcol)
+        {
+            // add child node
+            parent = node;
+            opbrace = true;
+        }
+        else if (thiscol > nextcol)
+        {
+            // go one level up
+            parent = m_pTree->GetItemParent(parent);
+            clbrace = true;
+        }
+		
+		if (opbrace)
+			lines[i].Append(_T(" = {"));
+		if (clbrace)
+			lines[i].Append(_T("}"));
+    }
+    wxString str = GetStringFromArray(lines, _T(","));
+    ParseEntry(m_RootEntry, watch, str);
 }
 
 void DebuggerTree::ClearWatches()
