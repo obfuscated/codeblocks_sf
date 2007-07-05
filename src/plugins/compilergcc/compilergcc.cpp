@@ -1061,8 +1061,6 @@ int CompilerGCC::GetActiveProcessCount() const
 
 int CompilerGCC::DoRunQueue()
 {
-    wxLogNull ln;
-
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
 //    msgMan->SwitchTo(m_PageIndex);
 

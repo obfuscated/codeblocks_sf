@@ -592,7 +592,6 @@ void MainFrame::ShowTips(bool forceShow)
     bool showAtStartup = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_tips"), true);
     if (forceShow || showAtStartup)
     {
-        wxLogNull null; // disable error message if tips file does not exist
         wxString tipsFile = ConfigManager::GetDataFolder() + _T("/tips.txt");
         long tipsIndex = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/next_tip"), 0);
         wxTipProvider* tipProvider = wxCreateFileTipProvider(tipsFile, tipsIndex);
@@ -1039,8 +1038,6 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 
 void MainFrame::LoadWindowState()
 {
-    wxLogNull ln; // no logging needed
-
     wxArrayString subs = Manager::Get()->GetConfigManager(_T("app"))->EnumerateSubPaths(_T("/main_frame/layout"));
     for (size_t i = 0; i < subs.GetCount(); ++i)
     {
@@ -1081,7 +1078,6 @@ void MainFrame::LoadWindowState()
 
 void MainFrame::SaveWindowState()
 {
-    wxLogNull ln; // no logging needed
     DoCheckCurrentLayoutForChanges(false);
 
     int count = 0;
@@ -3314,7 +3310,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
                             && prj && !prj->GetCurrentlyCompilingTarget();
     bool canClose = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
     bool canSaveFiles = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
-    
+
     bool canSaveAll = (prj && prj->GetModified()) || canSaveFiles || (wksp && !wksp->IsDefault() && wksp->GetModified());
 
     mbar->Enable(idFileCloseProject,canCloseProject);

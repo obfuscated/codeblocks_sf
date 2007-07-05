@@ -325,7 +325,6 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 {
                     wxString out = compiler->GetCompilerSearchDirs(target)[ti];
                     wxFileName dir(out);
-                    wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                     if(NormalizePath(dir,base))
                     {
                         parser->AddIncludeDir(dir.GetFullPath());
@@ -343,7 +342,6 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 wxString out = target->GetIncludeDirs()[ti];
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
                 wxFileName dir(out);
-                wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                 if(NormalizePath(dir,base))
                 {
                     parser->AddIncludeDir(dir.GetFullPath());
@@ -384,7 +382,6 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             wxString out = dirs[i];
             Manager::Get()->GetMacrosManager()->ReplaceMacros(out);
             wxFileName dir(out);
-            wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
             if (NormalizePath(dir,base))
             {
                 parser->AddIncludeDir(dir.GetFullPath());
@@ -423,7 +420,6 @@ wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, con
     wxArrayString gcc_compiler_dirs;
 
     // for starters , only do this for gnu compiler
-    wxLogNull ln; // spare us the error messages; we 'll deal with them on our own
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("CompilerID ") + CompilerID);
     //    wxString Command("mingw32-g++ -v -E -x c++ - < nul");
     // specifying "< nul", does not seem to work
@@ -465,7 +461,6 @@ wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, con
                     if(!out.IsEmpty())
                     {
                         wxFileName dir(out);
-                        wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
                         if (NormalizePath(dir,base))
                             gcc_compiler_dirs.Add(dir.GetFullPath());
                         else
@@ -510,7 +505,6 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
         Manager::Get()->GetMacrosManager()->ReplaceMacros(path);
         wxFileName dir(path);
 
-        wxLogNull ln; // hide the error log about "too many ..", if the relative path is invalid
         if (NormalizePath(dir, base))
             parser->AddIncludeDir(dir.GetFullPath());
         else
@@ -617,7 +611,6 @@ bool NativeParser::LoadCachedData(Parser* parser, cbProject* project)
     wxFileName projectCache = project->GetFilename();
     projectCache.SetExt(_T("cbCache"));
 
-    wxLogNull ln;
     wxFile f(projectCache.GetFullPath(), wxFile::read);
     if (!f.IsOpened())
         return false;
@@ -660,7 +653,6 @@ bool NativeParser::SaveCachedData(Parser* parser, const wxString& projectFilenam
     wxFileName projectCache = projectFilename;
     projectCache.SetExt(_T("cbCache"));
 
-    wxLogNull ln;
     wxFile f(projectCache.GetFullPath(), wxFile::write);
     if (!f.IsOpened())
     {

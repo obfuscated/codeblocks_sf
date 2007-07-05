@@ -46,7 +46,6 @@ AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 
     // look in registry for Cygwin
 
-    wxLogNull ln;
     wxRegKey key; // defaults to HKCR
     key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/"));
     if (key.Open())

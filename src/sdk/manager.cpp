@@ -312,8 +312,6 @@ bool Manager::LoadResource(const wxString& file)
     // Currently unused...
 
 //    {
-//        // don't tell us if the file is not already loaded
-//        wxLogNull ln;
 //        wxMemoryFSHandler::RemoveFile(file);
 //    }
 //#if wxABI_VERSION > 20601
@@ -330,8 +328,6 @@ bool Manager::LoadResource(const wxString& file)
         buf = new char[len];
         f.Read(buf, len);
         {
-            // don't tell us if the file already exists in memory
-            wxLogNull ln;
             wxMemoryFSHandler::AddFile(file, buf, len);
         }
         wxXmlResource::Get()->Load(memoryFile);

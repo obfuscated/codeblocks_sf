@@ -380,8 +380,6 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 
 bool CreateDirRecursively(const wxString& full_path, int perms)
 {
-    wxLogNull null_logger; // we do all file checks ourselves
-
     if(wxDirExists(full_path)) // early out
         return true;
 
@@ -405,8 +403,6 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
 
 bool CreateDir(const wxString& full_path, int perms)
 {
-    wxLogNull null_logger; // we do all file checks ourselves
-
     if (!wxDirExists(full_path) && !wxMkdir(full_path, perms))
         return false;
 
@@ -627,7 +623,6 @@ bool NormalizePath(wxFileName& f,const wxString& base)
     bool result = true;
 //    if(!f.IsAbsolute())
     {
-        wxLogNull null_logger; // we do all file checks ourselves
         f.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         result = f.IsOk();
     }
@@ -911,7 +906,6 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 
 DirAccessCheck cbDirAccessCheck(const wxString& dir)
 {
-    wxLogNull null_logger; // we do all file checks ourselves
     wxString actualDir = dir;
     // append ending path separator if needed
     if (actualDir.Last() != _T('/') && actualDir.Last() != _T('\\'))

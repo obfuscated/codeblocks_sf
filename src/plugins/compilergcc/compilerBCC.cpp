@@ -6,7 +6,6 @@
 #include <wx/intl.h>
 #include <wx/regex.h>
 #include <wx/msw/registry.h>
-#include <wx/log.h>             // wxLogNull
 
 CompilerBCC::CompilerBCC()
     : Compiler(_("Borland C++ Compiler (5.5, 5.82)"), _T("bcc"))
@@ -169,8 +168,6 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
     l_MasterPath_Arr.Add(_T("C:\\Borland\\BCC55"));
     l_RegKey_Arr.Add(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\BDS\\4.0"));
     l_RegKey_Arr.Add(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Borland\\C++Builder\\5.0"));
-
-    wxLogNull no_log_here;
 
     // try to detect Installation dir
     int match = -1;

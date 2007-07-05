@@ -175,7 +175,6 @@ void CompilerMSVC8::LoadDefaultRegExArray()
 AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
-    wxLogNull ln;
     wxString idepath;
 
     // Read the VCToolkitInstallDir environment variable
@@ -208,7 +207,6 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 
     if (!m_MasterPath.IsEmpty())
     {
-        wxLogNull no_log_here;
         wxRegKey key; // defaults to HKCR
         bool sdkfound = false;
         wxString dir;

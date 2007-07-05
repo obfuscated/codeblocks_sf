@@ -1076,7 +1076,6 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
         return;
     m_isCheckingForExternallyModifiedFiles = true;
 
-    //-wxLogNull ln;
     //-bool reloadAll = false; // flag to stop bugging the user
     bool failedFiles = false;  // file failed to reload
     bool b_modified = false;

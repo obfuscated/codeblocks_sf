@@ -129,7 +129,6 @@ void CompilerMSVC::LoadDefaultRegExArray()
 AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
-    wxLogNull ln;
 
     // Read the VCToolkitInstallDir environment variable
     wxGetEnv(_T("VCToolkitInstallDir"), &m_MasterPath);
@@ -150,7 +149,6 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
         AddLibDir(m_MasterPath + sep + _T("lib"));
 
         // add include dirs for MS Platform SDK too
-        wxLogNull no_log_here;
         wxRegKey key; // defaults to HKCR
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\Win32SDK\\Directories"));
         if (key.Open())

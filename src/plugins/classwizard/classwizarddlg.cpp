@@ -149,8 +149,6 @@ void ClassWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
 void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 {
-    wxLogNull null_logger; // we do all file checks ourselves
-
     // set some variable for easy reference
     wxString Name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
     wxArrayString NameSpaces;

@@ -101,7 +101,6 @@ void ScriptingManager::RegisterScriptFunctions()
 bool ScriptingManager::LoadScript(const wxString& filename)
 {
 //    wxCriticalSectionLocker c(cs);
-    wxLogNull ln;
 
     wxString fname = filename;
     wxFile f;
@@ -381,9 +380,9 @@ void ScriptingManager::OnScriptMenu(wxCommandEvent& event)
         cbMessageBox(_("No script associated with this menu?!?"), _("Error"), wxICON_ERROR);
         return;
     }
-    
+
     MenuBoundScript& mbs = it->second;
-    
+
     // is it a function?
     if (mbs.isFunc)
     {

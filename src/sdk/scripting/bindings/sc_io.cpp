@@ -174,7 +174,6 @@ namespace ScriptBindings
         {
             if (!SecurityAllows(_T("Execute"), command))
                 return -1;
-            wxLogNull ln;
             wxArrayString output;
             return wxExecute(command, output, wxEXEC_NODISABLE);
         }
@@ -183,7 +182,6 @@ namespace ScriptBindings
         {
             if (!SecurityAllows(_T("Execute"), command))
                 return wxEmptyString;
-            wxLogNull ln;
             wxArrayString output;
             wxExecute(command, output, wxEXEC_NODISABLE);
             return GetStringFromArray(output, _T("\n"));

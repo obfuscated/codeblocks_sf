@@ -141,7 +141,6 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
 
     wxString node(_T("CodeBlocks.") + ext);
 
-    wxLogNull ln;
     wxRegKey key; // defaults to HKCR
     key.SetName(BaseKeyName + _T(".") + ext);
     key.Create();
@@ -191,7 +190,6 @@ void Associations::DoClearAssociation(const wxString& ext)
     if(platform::WindowsVersion() == platform::winver_Windows9598ME)
         BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
-    wxLogNull ln;
     wxRegKey key; // defaults to HKCR
     key.SetName(BaseKeyName + _T(".") + ext);
     if(key.Exists())
@@ -215,7 +213,6 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
     if(platform::WindowsVersion() == platform::winver_Windows9598ME)
         BaseKeyName = _T("HKEY_CLASSES_ROOT\\");
 
-    wxLogNull ln;
     wxRegKey key; // defaults to HKCR
     key.SetName(BaseKeyName + _T(".") + ext);
     if (!key.Exists())

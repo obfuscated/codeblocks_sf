@@ -110,7 +110,6 @@ void EditorColourSet::LoadAvailableSets()
 	if (Manager::IsBatchBuild())
 		return;
 
-    wxLogNull ln;
 	EditorLexerLoader lex(this);
     wxDir dir;
     wxString filename;
@@ -710,7 +709,6 @@ void EditorColourSet::Reset(HighlightLanguage lang)
 	if (Manager::IsBatchBuild())
 		return;
 
-    wxLogNull ln;
     wxString key;
     key << _T("/colour_sets/") << m_Name << _T('/') << lang;
     if (Manager::Get()->GetConfigManager(_T("editor"))->Exists(key + _T("/name")))

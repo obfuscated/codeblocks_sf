@@ -213,7 +213,6 @@ bool TAR::ExtractFile(Record* rec, const wxString& dirname, wxString& status, wx
     if (!rec)
         return false;
 
-    wxLogNull ln;
     if (convertedFile)
         convertedFile->Clear();
     wxString path;

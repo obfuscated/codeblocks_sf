@@ -79,8 +79,6 @@ void TemplateManager::BuildToolsMenu(wxMenu* menu)
 
 void TemplateManager::LoadUserTemplates()
 {
-    wxLogNull zero; // disable error logging
-
     m_UserTemplates.Clear();
     wxString baseDir = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("UserTemplates");
 
@@ -156,7 +154,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     {
         path.RemoveLast();
     }
-    
+
     // check for existing files; if found, notify about overwriting them
     wxDir dir(path);
     if (dir.HasFiles() || dir.HasSubDirs())
@@ -238,8 +236,6 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
 
 void TemplateManager::SaveUserTemplate(cbProject* prj)
 {
-    wxLogNull ln; // we check everything ourselves
-
     if (!prj)
         return;
 

@@ -87,7 +87,7 @@ public:
     };
     ~DelayedDelete()
     {
-        wxLogNull nullLog;
+        wxLogNull nullLog; // leave this in place, DelayedDelete could in theory run after CodeBlocksApp::OnRun returns
         if(wxFile::Exists(target))
             wxRemove(target);
     };

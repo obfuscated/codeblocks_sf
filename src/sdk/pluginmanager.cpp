@@ -412,7 +412,7 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             settingsOnFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOnFilename, sdDataGlobal | sdDataUser);
             settingsOffFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOffFilename, sdDataGlobal | sdDataUser);
-			
+
 			ReadExtraFilesFromManifestFile(resourceFilename, extrafiles);
 			for (size_t n = 0; n < extrafiles.GetCount(); ++n)
 			{
@@ -530,18 +530,18 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         if (elem && elem->plugin == plugin)
         {
             // got it
-            
+
             // plugin file
             sourcefiles.Add(elem->fileName);
             fname.Assign(elem->fileName);
-            
+
             // now get the resource zip filename
             resourceFilename = fname.GetName() + _T(".zip");
             if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
                 resourceFilename.Remove(0, 3);
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             sourcefiles.Add(resourceFilename);
-            
+
             // the highlighted icon the plugin may have for its "settings" page
             resourceFilename = fname.GetName() + _T(".png");
             if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
@@ -550,7 +550,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             if (!resourceFilename.IsEmpty())
 				sourcefiles.Add(resourceFilename);
-            
+
             // the non-highlighted icon the plugin may have for its "settings" page
             resourceFilename = fname.GetName() + _T("-off.png");
             if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
@@ -569,7 +569,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
 			{
 				extrafiles[n] = ConfigManager::LocateDataFile(extrafiles[n], sdDataGlobal | sdDataUser);
 			}
-            
+
             break;
         }
     }
@@ -602,7 +602,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
 			continue;
 
         wxFileInputStream in(extrafiles[i]);
-        
+
         wxString f = extrafiles[i];
         if (f.StartsWith(ConfigManager::GetFolder(sdDataUser)))
 			f.Remove(0, ConfigManager::GetFolder(sdDataUser).Length());
@@ -635,7 +635,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
         cbMessageBox(_("The destination file is in use.\nAborting..."), _("Warning"), wxICON_WARNING);
         return false;
     }
-    
+
     // make sure destination dir exists
     CreateDirRecursively(wxFileName(dst_filename).GetPath(wxPATH_GET_SEPARATOR));
 
@@ -767,7 +767,6 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         }
 
         // load XML from ZIP
-        wxLogNull lognull;
         wxString contents;
         wxFileSystem* fs = new wxFileSystem;
         wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
@@ -899,7 +898,6 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
 	}
 
 	// load XML from ZIP
-	wxLogNull lognull;
 	wxString contents;
 	wxFileSystem* fs = new wxFileSystem;
 	wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
@@ -940,7 +938,7 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
         {
         	extraFiles.Add(cbC2U(file));
         }
-        
+
         extra = extra->NextSiblingElement("Extra");
     }
 }
@@ -948,7 +946,6 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
 int PluginManager::ScanForPlugins(const wxString& path)
 {
 	static const wxString PluginsMask = platform::windows ? _T("*.dll") : _T("*.so");
-    wxLogNull zero;
     int count = 0;
     if(!wxDirExists(path))
     	return count;
@@ -1027,8 +1024,6 @@ int PluginManager::ScanForPlugins(const wxString& path)
 
 bool PluginManager::LoadPlugin(const wxString& pluginName)
 {
-    wxLogNull zero; // no need for error messages; we check everything ourselves...
-
     // clear registration temporary vector
     m_RegisteredPlugins.clear();
 

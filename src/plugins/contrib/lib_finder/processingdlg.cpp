@@ -63,7 +63,6 @@ void ProcessingDlg::OnButton1Click(wxCommandEvent& event)
 
 bool ProcessingDlg::ReadDirs(const wxArrayString& Dirs)
 {
-    wxLogNull LogNull;
     Gauge1->SetRange(Dirs.Count());
     for ( size_t i = 0; i<Dirs.Count(); i++ )
     {

@@ -348,7 +348,6 @@ void CompilerOW::LoadDefaultRegExArray()
 
 AutoDetectResult CompilerOW::AutoDetectInstallationDir()
 {
-    wxLogNull ln;
     /* Following code is Not necessary as OpenWatcom does not write to
        Registry anymore */
     /*wxRegKey key; // defaults to HKCR

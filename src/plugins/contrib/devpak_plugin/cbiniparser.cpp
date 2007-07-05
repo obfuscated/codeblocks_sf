@@ -21,7 +21,6 @@ bool IniParser::ParseFile(const wxString& filename)
         return false;
 
     // open file
-    wxLogNull ln;
     wxString buffer;
     wxFile file(filename);
     if (!file.IsOpened())

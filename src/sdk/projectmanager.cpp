@@ -2637,7 +2637,6 @@ void ProjectManager::CheckForExternallyModifiedProjects()
         return;
     m_isCheckingForExternallyModifiedProjects = true;
 
-    wxLogNull ln;
     // check also the projects (TO DO : what if we gonna reload while compiling/debugging)
     // TODO : make sure the same project is the active one again
     ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();

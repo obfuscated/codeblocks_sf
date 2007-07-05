@@ -186,7 +186,6 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 
 wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
 {
-    wxLogNull ln;
     wxPathList searchPaths;
 
     wxString u(wxStandardPathsBase::Get().GetUserDataDir() + wxFILE_SEP_PATH + filename);
@@ -496,7 +495,6 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 
 wxString ConfigManager::LocateDataFile(const wxString& filename, int search_dirs)
 {
-    wxLogNull ln;
     wxPathList searchPaths;
 
     // user dirs have precedence
@@ -1367,7 +1365,6 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
 
 void ConfigManager::InitPaths()
 {
-    wxLogNull ln;
     ConfigManager::config_folder = wxStandardPathsBase::Get().GetUserDataDir();
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
     ConfigManager::app_path = ::DetermineExecutablePath();

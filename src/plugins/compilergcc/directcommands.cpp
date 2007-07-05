@@ -149,7 +149,6 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
 
 wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, ProjectFile* pf)
 {
-    wxLogNull ln;
     wxArrayString ret;
 
     // is it compilable?
@@ -248,7 +247,6 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 /// This is to be used *only* for files not belonging to a project!!!
 wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filename)
 {
-    wxLogNull ln;
     wxArrayString ret;
 
     // lookup file's type
@@ -328,7 +326,6 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
 /// This is to be used *only* for files not belonging to a project!!!
 wxArrayString DirectCommands::GetCleanSingleFileCommand(const wxString& filename)
 {
-    wxLogNull ln;
     wxArrayString ret;
 
     // lookup file's type
@@ -500,7 +497,6 @@ wxArrayString DirectCommands::GetLinkCommands(ProjectBuildTarget* target, bool f
 
 wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, bool force)
 {
-    wxLogNull ln;
     wxArrayString ret;
 
     wxString output = target->GetOutputFilename();

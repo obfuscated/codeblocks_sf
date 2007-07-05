@@ -825,11 +825,7 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
     if (!wxControl::Create(parent, id, pos, size, style, wxDefaultValidator, name))
         return false;
 
-    // disable the log in case image handlers have already been initialized
-    {
-        wxLogNull logNull;
-        wxInitAllImageHandlers(); // need this for the icons
-    }
+    wxInitAllImageHandlers(); // need this for the icons
 
     // Find what directory to start with
     if (!GetPathFromFilePath(dir, m_path))
@@ -2156,7 +2152,6 @@ void wxFileBrowser::OnListMenu(wxCommandEvent &event)
             wxFileData *fd = GetFocusedListItem();
             if (!fd) return;
 
-            wxLogNull logNull;
             wxImage image(fd->GetFilePath());
             if (image.Ok())
             {

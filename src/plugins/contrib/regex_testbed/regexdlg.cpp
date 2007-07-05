@@ -122,8 +122,6 @@ void RegExDlg::OnRegExItemActivated(wxListEvent& event)
 
 wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
 {
-    wxLogNull fuckThis;
-
     wxArrayString ret;
 
     int flags = m_library->GetSelection();

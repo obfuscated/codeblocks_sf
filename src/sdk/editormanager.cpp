@@ -626,7 +626,6 @@ cbEditor* EditorManager::New(const wxString& newFileName)
     // create a dummy file
     if (!newFileName.IsEmpty() && !wxFileExists(newFileName) && wxDirExists(wxPathOnly(newFileName)))
     {
-        wxLogNull ln; // we don't care if this fails...
         wxFile f(newFileName, wxFile::write);
         if (!f.IsOpened())
             return 0;
@@ -960,7 +959,6 @@ void EditorManager::CheckForExternallyModifiedFiles()
         return;
     m_isCheckingForExternallyModifiedFiles = true;
 
-    wxLogNull ln;
     bool reloadAll = false; // flag to stop bugging the user
     wxArrayString failedFiles; // list of files failed to reload
     for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
@@ -2233,7 +2231,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         if (!masks.GetCount())
             masks.Add(_T("*"));
         unsigned int count = masks.GetCount();
-        wxLogNull ln; // no logging
+
         for (unsigned int i = 0; i < count; ++i)
         {
             // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)

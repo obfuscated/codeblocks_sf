@@ -381,10 +381,7 @@ void CodeBlocksApp::InitLocale()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
 
-    wxLogNull lognull;
-
     wxString path(ConfigManager::GetDataFolder() + _T("/locale"));
-    ::CreateDir(path);
 
     if(cfg->ReadBool(_T("/locale/enable"), true) == false)
         return;
@@ -401,10 +398,13 @@ void CodeBlocksApp::InitLocale()
     else
         info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
 
+    if(info == 0) // should never happen, but who knows...
+        return;
+
     m_locale.Init(info->Language);
 
     path.Alloc(path.length() + 10);
-    path.Append(_T("/"));
+    path.Append(_T('/'));
     path.Append(info->CanonicalName);
 
     wxDir dir(path);
@@ -419,6 +419,8 @@ void CodeBlocksApp::InitLocale()
 
 bool CodeBlocksApp::OnInit()
 {
+    wxLog::EnableLogging(false);
+
     SetAppName(_T("codeblocks"));
     s_Loading = true;
 

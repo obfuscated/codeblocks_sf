@@ -496,7 +496,6 @@ void UpdateDlg::InstallFile()
 
 void UpdateDlg::InstallMirrors(const wxString& file)
 {
-    wxLogNull ln;
     if (!wxCopyFile(file, GetMirrorsFilename(), true))
         wxMessageBox(_("Can't install mirrors file: ") + file, _("Error"), wxICON_ERROR);
     else

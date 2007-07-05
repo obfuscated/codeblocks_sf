@@ -231,8 +231,6 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
 
 bool FileManager::Save(const wxString& name, const char* data, size_t len)
 {
-    wxLogNull jwfsk;
-
     if(wxFileExists(name) == false) // why bother if we don't need to
     {
         wxFile f(name, wxFile::write);
@@ -268,8 +266,6 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
 
 bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
 {
-    wxLogNull jwfsk;
-
     if(wxFileExists(name) == false) // why bother if we don't need to
     {
         wxFile f(name, wxFile::write);

@@ -2173,7 +2173,6 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
             m_pControl->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
             break;
     }
-    wxLogNull ln;
     InitPrinting();
     wxPrintout* printout = new cbEditorPrintout(m_Filename, m_pControl, selectionOnly);
     if (!g_printer->Print(this, printout, true))

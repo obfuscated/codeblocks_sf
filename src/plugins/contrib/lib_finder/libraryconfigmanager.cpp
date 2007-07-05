@@ -25,8 +25,6 @@ void LibraryConfigManager::Clear()
 
 void LibraryConfigManager::LoadXmlConfig(const wxString& Path)
 {
-    wxLogNull LogNull;
-
     wxDir Dir(Path);
     wxString Name;
     if ( !Dir.IsOpened() ) return;
