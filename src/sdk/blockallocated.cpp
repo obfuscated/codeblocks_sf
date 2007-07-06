@@ -13,7 +13,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/log.h>
+    #include <wx/log.h> // for wxSafeShowMessage()
     #include <wx/regex.h>
 #endif
 #include "blockallocated.h"

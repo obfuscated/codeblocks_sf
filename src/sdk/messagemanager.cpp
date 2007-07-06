@@ -30,7 +30,7 @@
     #include <wx/intl.h>
     #include <wx/datetime.h>
     #include <wx/menu.h>
-    #include <wx/log.h>
+    #include <wx/log.h> // for wxSafeShowMessage()
     #include "manager.h"
     #include "messagemanager.h" // class's header file
     #include "editormanager.h"
