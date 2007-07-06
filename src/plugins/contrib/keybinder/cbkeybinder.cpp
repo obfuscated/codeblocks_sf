@@ -45,14 +45,6 @@ namespace
 BEGIN_EVENT_TABLE(cbKeyBinder, cbPlugin)
 	// add events here...
 
-	EVT_PROJECT_CLOSE   (cbKeyBinder::OnProjectClosed)
-	EVT_EDITOR_OPEN     (cbKeyBinder::OnEditorOpen)
-	EVT_EDITOR_CLOSE    (cbKeyBinder::OnEditorClose)
-	EVT_PROJECT_OPEN    (cbKeyBinder::OnProjectOpened)
-	EVT_APP_STARTUP_DONE(cbKeyBinder::OnAppStartupDone)
-    EVT_APP_START_SHUTDOWN(cbKeyBinder::OnAppStartShutdown)
-    EVT_MENUBAR_CREATE_BEGIN(cbKeyBinder::OnMenuBarModify) //never invoked
-    EVT_MENUBAR_CREATE_END  (cbKeyBinder::OnMenuBarModify) //never invoked
     EVT_IDLE            (cbKeyBinder::OnIdle)
     EVT_TIMER           (-1, cbKeyBinder::OnTimerAlarm)
 END_EVENT_TABLE()
@@ -152,6 +144,16 @@ void cbKeyBinder::OnAttach()
     //  set it here.
 	m_OldKeyFilename = wxEmptyString;
 	m_OldKeyFilename = wxT("cbKeyBinder10v111.ini");
+
+	// register event sink
+	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectClosed));
+	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorOpen));
+	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorClose));
+	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectOpened));
+	Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartupDone));
+    Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartShutdown));
+    Manager::Get()->RegisterEventSink(cbEVT_MENUBAR_CREATE_BEGIN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnMenuBarModify)); //never invoked
+    Manager::Get()->RegisterEventSink(cbEVT_MENUBAR_CREATE_END, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnMenuBarModify)); //never invoked
 
 	return;
 
@@ -1083,7 +1085,7 @@ void cbKeyBinder::OnIdle(wxIdleEvent& event)
 
 }//OnMergeTimer
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
+void cbKeyBinder::OnAppStartShutdown(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     // currently this is defined in the sdk, but not implemented
@@ -1104,7 +1106,7 @@ void cbKeyBinder::OnAppStartShutdown(wxCommandEvent& event)
     event.Skip(); // allow others to process it too
 }
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnMenuBarModify(wxCommandEvent& event)
+void cbKeyBinder::OnMenuBarModify(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     // CodeBlocks is beginning or ending menu modification

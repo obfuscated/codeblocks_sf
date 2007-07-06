@@ -510,6 +510,12 @@
 		<Unit filename="include\cbexception.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\cbexecute.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include\cbfunctor.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\cbplugin.h">
 			<Option target="sdk" />
 		</Unit>

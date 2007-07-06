@@ -46,7 +46,6 @@ namespace
 };
 
 BEGIN_EVENT_TABLE(EnvVars, cbPlugin)
-  EVT_PROJECT_ACTIVATE(EnvVars::OnProjectActivated)
 END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -151,6 +150,7 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+// NOTE (mandrav#1#): You do know that this event has not been registered?
 void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 {
 #if TRACE_ENVVARS
@@ -184,6 +184,9 @@ void EnvVars::OnAttach()
     return;
 
   nsEnvVars::EnvvarSetApply(); // will apply the currently active envvar set
+
+  // register event sink
+  Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<EnvVars, CodeBlocksEvent>(this, &EnvVars::OnProjectActivated));
 }// OnAttach
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----

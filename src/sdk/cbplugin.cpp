@@ -61,15 +61,15 @@ void cbPlugin::Attach()
     {
 		// push ourself in the application's event handling chain...
         frame->PushEventHandler(this);
-
-        CodeBlocksEvent event(cbEVT_PLUGIN_ATTACHED);
-        event.SetPlugin(this);
-        // post event in the host's event queue
-        wxPostEvent(frame, event);
     }
     m_IsAttached = true;
 	OnAttach();
 	SetEvtHandlerEnabled(true);
+
+	CodeBlocksEvent event(cbEVT_PLUGIN_ATTACHED);
+	event.SetPlugin(this);
+	// post event in the host's event queue
+	Manager::Get()->ProcessEvent(event);
 }
 
 void cbPlugin::Release(bool appShutDown)
@@ -80,20 +80,20 @@ void cbPlugin::Release(bool appShutDown)
 	SetEvtHandlerEnabled(false);
 	OnRelease(appShutDown);
 
+	CodeBlocksEvent event(cbEVT_PLUGIN_RELEASED);
+	event.SetPlugin(this);
+	// ask the host to process this event immediately
+	// it must be done this way, because if the host references
+	// us (through event.GetEventObject()), we might not be valid at that time
+	// (while, now, we are...)
+	Manager::Get()->ProcessEvent(event);
+
 	if (appShutDown)
         return; // nothing more to do, if the app is shutting down
 
     wxFrame* frame = Manager::Get()->GetAppWindow();
     if (frame)
     {
-        CodeBlocksEvent event(cbEVT_PLUGIN_RELEASED);
-        event.SetPlugin(this);
-        // ask the host to process this event immediately
-        // it must be done this way, because if the host references
-        // us (through event.GetEventObject()), we might not be valid at that time
-        // (while, now, we are...)
-        frame->ProcessEvent(event);
-
 		// remove ourself from the application's event handling chain...
 		frame->RemoveEventHandler(this);
     }

@@ -445,6 +445,9 @@
 		<Unit filename="include/cbexecute.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cbfunctor.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/cbplugin.h">
 			<Option target="sdk" />
 		</Unit>
@@ -3115,6 +3118,7 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
+			<envvars />
 			<wxsmith version="1">
 				<resources>
 					<wxDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" name="VirtualBuildTargetsDlg" language="CPP" />

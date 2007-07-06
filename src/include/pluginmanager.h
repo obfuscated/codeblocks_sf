@@ -110,12 +110,15 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         PluginsArray GetCodeCompletionOffers();
         PluginsArray GetOffersFor(PluginType type);
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
-        void NotifyPlugins(CodeBlocksEvent& event);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
         void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
         int Configure();
         void SetupLocaleDomain(const wxString& DomainName);
+
+        void NotifyPlugins(CodeBlocksEvent& event);
+        void NotifyPlugins(CodeBlocksDockEvent& event);
+        void NotifyPlugins(CodeBlocksLayoutEvent& event);
     private:
         PluginManager();
         ~PluginManager();
@@ -164,7 +167,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
             PluginInfo info;
         };
         std::vector<PluginRegistration> m_RegisteredPlugins;
-
+        
 		DECLARE_EVENT_TABLE()
 };
 

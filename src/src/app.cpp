@@ -202,7 +202,6 @@ IMPLEMENT_APP(CodeBlocksApp)
 
 BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
     EVT_ACTIVATE_APP(CodeBlocksApp::OnAppActivate)
-    EVT_COMPILER_FINISHED(CodeBlocksApp::OnBatchBuildDone)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
@@ -496,6 +495,7 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
+			Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<CodeBlocksApp, CodeBlocksEvent>(this, &CodeBlocksApp::OnBatchBuildDone));
             s_Loading = false;
             LoadDelayedFiles(frame);
 
@@ -517,10 +517,6 @@ bool CodeBlocksApp::OnInit()
         }
 
         CheckVersion();
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
-
-        CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
-        Manager::Get()->ProcessEvent(event);
 
         // run startup script
         try

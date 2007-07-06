@@ -127,10 +127,10 @@ class cbKeyBinder : public cbPlugin
         void OnWindowDestroyEvent(wxEvent& event);
         void DetachEditor(wxWindow* pWindow);
         void MergeDynamicMenus();
-        void OnAppStartShutdown(wxCommandEvent& event);
+        void OnAppStartShutdown(CodeBlocksEvent& event);
         void OnIdle(wxIdleEvent& event);
         void OnTimerAlarm(wxTimerEvent& event);
-        void OnMenuBarModify(wxCommandEvent& event);
+        void OnMenuBarModify(CodeBlocksEvent& event);
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
 
 
@@ -386,7 +386,7 @@ private:
 //
 //  closed  1/11/2006 1:20 PM opened 1/11/2006 1:20 PM
 //          Re: wxKeyBinder problems/solutions discussion
-//          « Reply #7 on: Today at 01:06:03 PM »
+//          Â« Reply #7 on: Today at 01:06:03 PM Â»
 //      	Reply with quote
 //          Quote from: Pecan on January 10, 2006, 06:40:49 PM
 //          ...Have commited KeyBinder v0.4.8 (svn 1708)...

@@ -247,7 +247,7 @@ EditorManager::~EditorManager()
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pTree;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pTree->Destroy();
     }
 
@@ -2649,7 +2649,7 @@ void EditorManager::ShowOpenFilesTree(bool show)
 
     CodeBlocksDockEvent evt(show ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pTree;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     // update user prefs
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/show_opened_files_tree"), show);
@@ -2837,7 +2837,7 @@ void EditorManager::InitPane()
     evt.floatingSize.Set(100, 150);
     evt.dockSide = CodeBlocksDockEvent::dsLeft;
     evt.stretch = true;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void EditorManager::BuildOpenedFilesTree(wxWindow* parent)

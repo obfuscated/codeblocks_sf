@@ -31,6 +31,7 @@ ALLHEADERS = annoyingdialog.h \
 				cbeditor.h \
 				cbeditorprintout.h \
 				cbexception.h \
+				cbfunctor.h \
 				cbplugin.h \
 				cbproject.h \
 				cbthreadedtask.h \

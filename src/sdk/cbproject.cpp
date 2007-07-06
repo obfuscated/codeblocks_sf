@@ -133,7 +133,7 @@ void cbProject::NotifyPlugins(wxEventType type)
 {
     CodeBlocksEvent event(type);
     event.SetProject(this);
-    Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    Manager::Get()->ProcessEvent(event);
 }
 
 void cbProject::SetCompilerID(const wxString& id)

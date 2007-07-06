@@ -9,6 +9,9 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
+#include <map>
+#include <vector>
+
 #ifndef WX_PRECOMP
 #   ifdef __WXMSW__
 #       include <wx/msw/wrapwin.h>  // Needed to prevent Yield define bug.
@@ -17,6 +20,8 @@
 #include <wx/event.h>
 #include <wx/cmdline.h>
 #include "settings.h"
+#include "sdk_events.h"
+#include "cbfunctor.h"
 
 // forward decls
 class wxFrame;
@@ -34,12 +39,10 @@ class UserVariableManager;
 class ScriptingManager;
 class ConfigManager;
 class FileManager;
-class CodeBlocksEvent;
 
 
 class DLLIMPORT Manager
 {
-    bool SendEventTo(wxEvtHandler* handler, CodeBlocksEvent& event);
     void OnMenu(wxCommandEvent& event);
     wxFrame* m_pAppWindow;
     static bool appShuttingDown;
@@ -59,7 +62,10 @@ public:
     static void Yield();
     static void ProcessPendingEvents();
     static void Shutdown();
+    
     bool ProcessEvent(CodeBlocksEvent& event);
+    bool ProcessEvent(CodeBlocksDockEvent& event);
+    bool ProcessEvent(CodeBlocksLayoutEvent& event);
 
 
     /** Use Manager::Get() to get a pointer to its instance
@@ -130,6 +136,25 @@ public:
     static bool isToolBar16x16(wxToolBar* toolBar);
 
     static wxCmdLineParser* GetCmdLineParser();
+
+	// event sinks        
+	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>* functor);
+	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>* functor);
+	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
+	void RemoveAllEventSinksFor(void* owner);
+
+private:
+	// event sinks
+	typedef std::vector< IEventFunctorBase<CodeBlocksEvent>* > EventSinksArray;
+	typedef std::map< wxEventType, EventSinksArray > EventSinksMap;
+	typedef std::vector< IEventFunctorBase<CodeBlocksDockEvent>* > DockEventSinksArray;
+	typedef std::map< wxEventType, DockEventSinksArray > DockEventSinksMap;
+	typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
+	typedef std::map< wxEventType, LayoutEventSinksArray > LayoutEventSinksMap;
+	
+	EventSinksMap m_EventSinks;
+	DockEventSinksMap m_DockEventSinks;
+	LayoutEventSinksMap m_LayoutEventSinks;
 };
 
 template <class MgrT> class Mgr

@@ -769,7 +769,7 @@ void GDB_driver::ParseOutput(const wxString& output)
 					// show the backtrace window
 					CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
 					evt.pWindow = m_pBacktrace;
-					Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+					Manager::Get()->ProcessEvent(evt);
 					m_forceUpdate = true;
 				}
 				m_needsUpdate = true;

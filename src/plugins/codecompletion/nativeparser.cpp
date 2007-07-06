@@ -149,7 +149,7 @@ void NativeParser::CreateClassBrowser()
             evt.minimumSize.Set(150, 150);
             evt.shown = true;
             evt.hideable = true;
-            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            Manager::Get()->ProcessEvent(evt);
         }
         m_ClassBrowserIsFloating = isFloating;
 
@@ -171,7 +171,7 @@ void NativeParser::RemoveClassBrowser(bool appShutDown)
         {
             CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
             evt.pWindow = m_pClassBrowser;
-            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            Manager::Get()->ProcessEvent(evt);
         }
         m_pClassBrowser->Destroy();
     }

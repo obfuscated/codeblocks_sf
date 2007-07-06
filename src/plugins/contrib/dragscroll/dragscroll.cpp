@@ -32,7 +32,6 @@ int ID_DLG_DONE = wxNewId();
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(cbDragScroll, cbPlugin)
 	// add events here...
-    EVT_APP_STARTUP_DONE(cbDragScroll::OnAppStartupDone)
     EVT_UPDATE_UI(ID_DLG_DONE, cbDragScroll::OnDoConfigRequests)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
@@ -177,6 +176,9 @@ void cbDragScroll::OnAttach()
     // Set current plugin version
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
 	pInfo->version = wxT(VERSION);
+
+	// register event sink
+    Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<cbDragScroll, CodeBlocksEvent>(this, &cbDragScroll::OnAppStartupDone));
 
 	return ;
 }

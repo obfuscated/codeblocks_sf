@@ -226,11 +226,6 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 
     EVT_CHOICE(idToolTarget,                      CompilerGCC::OnSelectTarget)
 
-    EVT_PROJECT_ACTIVATE(CompilerGCC::OnProjectActivated)
-    EVT_PROJECT_OPEN(CompilerGCC::OnProjectLoaded)
-    //EVT_PROJECT_POPUP_MENU(CompilerGCC::OnProjectPopupMenu)
-    EVT_PROJECT_TARGETS_MODIFIED(CompilerGCC::OnProjectActivated)
-
     EVT_PIPEDPROCESS_STDOUT_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCOutput)
     EVT_PIPEDPROCESS_STDERR_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCError)
     EVT_PIPEDPROCESS_TERMINATED_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCTerminated)
@@ -388,6 +383,11 @@ void CompilerGCC::OnAttach()
     }
     else
         ScriptBindings::gBuildLogId = -1;
+
+	// register event sink
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_TARGETS_MODIFIED, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
 }
 
 void CompilerGCC::OnRelease(bool appShutDown)

@@ -135,19 +135,6 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_TIMER(idCodeCompleteTimer, CodeCompletion::OnCodeCompleteTimer)
     EVT_TIMER(idFunctionsParsingTimer, CodeCompletion::OnStartParsingFunctions)
 
-    EVT_EDITOR_SAVE(CodeCompletion::OnReparseActiveEditor)
-    EVT_EDITOR_OPEN(CodeCompletion::OnEditorOpen)
-    EVT_EDITOR_ACTIVATED(CodeCompletion::OnEditorActivated)
-    EVT_EDITOR_TOOLTIP(CodeCompletion::OnValueTooltip)
-    EVT_EDITOR_CLOSE(CodeCompletion::OnEditorClosed)
-
-    EVT_APP_STARTUP_DONE(CodeCompletion::OnAppDoneStartup)
-    EVT_WORKSPACE_CHANGED(CodeCompletion::OnWorkspaceChanged)
-    EVT_PROJECT_ACTIVATE(CodeCompletion::OnProjectActivated)
-    EVT_PROJECT_CLOSE(CodeCompletion::OnProjectClosed)
-    EVT_PROJECT_FILE_ADDED(CodeCompletion::OnProjectFileAdded)
-    EVT_PROJECT_FILE_REMOVED(CodeCompletion::OnProjectFileRemoved)
-
 //    EVT_CHOICE(XRCID("chcCodeCompletionScope"),  CodeCompletion::OnScope)
     EVT_CHOICE(XRCID("chcCodeCompletionFunction"),  CodeCompletion::OnFunction)
 
@@ -386,6 +373,22 @@ void CodeCompletion::OnAttach()
     // hook to editors
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
+
+	// register event sinks
+	Manager* pm = Manager::Get();
+	
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnReparseActiveEditor));
+    pm->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
+    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
+    pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnValueTooltip));
+    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
+
+    pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnAppDoneStartup));
+    pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
+    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectActivated));
+    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectClosed));
+    pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
+    pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
 
     m_InitDone = true;
 }
@@ -958,7 +961,7 @@ void CodeCompletion::OnViewClassBrowser(wxCommandEvent& event)
     }
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = (wxWindow*)m_NativeParsers.GetClassBrowser();
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
@@ -1200,8 +1203,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if(!ed)
     {
-        m_Function->Clear();
-        m_Scope->Clear();
+    	if (m_Function)
+			m_Function->Clear();
+		if (m_Scope)
+			m_Scope->Clear();
         return;
     }
     wxString filename = ed->GetFilename();

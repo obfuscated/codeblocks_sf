@@ -64,9 +64,6 @@ namespace
 wxSmith* wxSmith::m_Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
-    EVT_PROJECT_OPEN(wxSmith::OnProjectOpened)
-	EVT_PROJECT_CLOSE(wxSmith::OnProjectClose)
-	EVT_PROJECT_RENAMED(wxSmith::OnProjectRenamed)
 	EVT_MENU(ConfigureId,wxSmith::OnConfigure)
 	EVT_MENU(-1,wxSmith::OnMenu)
 END_EVENT_TABLE()
@@ -119,6 +116,11 @@ void wxSmith::OnAttach()
     m_Singleton = this;
 
     wxsResourceFactory::OnAttachAll();
+
+	// register event sink
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectOpened));
+	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectClose));
+	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectRenamed));
 }
 
 void wxSmith::OnRelease(bool appShutDown)

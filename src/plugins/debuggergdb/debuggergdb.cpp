@@ -205,15 +205,6 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_MENU(idMenuInfoFPU, DebuggerGDB::OnInfoFPU)
     EVT_MENU(idMenuInfoSignals, DebuggerGDB::OnInfoSignals)
 
-    EVT_EDITOR_BREAKPOINT_ADD(DebuggerGDB::OnBreakpointAdd)
-    EVT_EDITOR_BREAKPOINT_EDIT(DebuggerGDB::OnBreakpointEdit)
-    EVT_EDITOR_BREAKPOINT_DELETE(DebuggerGDB::OnBreakpointDelete)
-    EVT_EDITOR_TOOLTIP(DebuggerGDB::OnValueTooltip)
-    EVT_EDITOR_OPEN(DebuggerGDB::OnEditorOpened)
-
-    EVT_PROJECT_ACTIVATE(DebuggerGDB::OnProjectActivated)
-    EVT_PROJECT_CLOSE(DebuggerGDB::OnProjectClosed)
-
     EVT_PIPEDPROCESS_STDOUT(idGDBProcess, DebuggerGDB::OnGDBOutput)
     EVT_PIPEDPROCESS_STDERR(idGDBProcess, DebuggerGDB::OnGDBError)
     EVT_PIPEDPROCESS_TERMINATED(idGDBProcess, DebuggerGDB::OnGDBTerminated)
@@ -313,7 +304,7 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(350, 250);
     evt.floatingSize.Set(350, 250);
     evt.minimumSize.Set(150, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     evt.name = _T("CPURegistersPane");
     evt.title = _("CPU Registers");
@@ -322,7 +313,7 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(350, 250);
     evt.floatingSize.Set(350, 250);
     evt.minimumSize.Set(150, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     evt.name = _T("CallStackPane");
     evt.title = _("Call stack");
@@ -331,7 +322,7 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(150, 150);
     evt.floatingSize.Set(450, 150);
     evt.minimumSize.Set(150, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     evt.name = _T("WatchesPane");
     evt.title = _("Watches");
@@ -340,7 +331,7 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(150, 250);
     evt.floatingSize.Set(150, 250);
     evt.minimumSize.Set(150, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     evt.name = _T("BreakpointsPane");
     evt.title = _("Breakpoints");
@@ -349,7 +340,7 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(350, 250);
     evt.floatingSize.Set(350, 250);
     evt.minimumSize.Set(150, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     evt.name = _T("ExamineMemoryPane");
     evt.title = _("Memory");
@@ -358,7 +349,7 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(450, 250);
     evt.floatingSize.Set(450, 250);
     evt.minimumSize.Set(350, 150);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     evt.name = _T("ThreadsPane");
     evt.title = _("Running threads");
@@ -367,11 +358,21 @@ void DebuggerGDB::OnAttach()
     evt.desiredSize.Set(350, 75);
     evt.floatingSize.Set(450, 75);
     evt.minimumSize.Set(250, 75);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     // hook to project loading procedure
     ProjectLoaderHooks::HookFunctorBase* myhook = new ProjectLoaderHooks::HookFunctor<DebuggerGDB>(this, &DebuggerGDB::OnProjectLoadingHook);
     m_HookId = ProjectLoaderHooks::RegisterHook(myhook);
+
+	// register event sink
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_BREAKPOINT_ADD, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnBreakpointAdd));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_BREAKPOINT_EDIT, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnBreakpointEdit));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_BREAKPOINT_DELETE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnBreakpointDelete));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnValueTooltip));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnEditorOpened));
+
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectActivated));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectClosed));
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
@@ -385,7 +386,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pThreadsDlg;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pThreadsDlg->Destroy();
     }
     m_pThreadsDlg = 0;
@@ -394,7 +395,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pExamineMemoryDlg;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pExamineMemoryDlg->Destroy();
     }
     m_pExamineMemoryDlg = 0;
@@ -403,7 +404,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pBreakpointsWindow;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pBreakpointsWindow->Destroy();
     }
     m_pBreakpointsWindow = 0;
@@ -412,7 +413,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pDisassembly;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pDisassembly->Destroy();
     }
     m_pDisassembly = 0;
@@ -421,7 +422,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pCPURegisters;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pCPURegisters->Destroy();
     }
     m_pCPURegisters = 0;
@@ -430,7 +431,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pBacktrace;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pBacktrace->Destroy();
     }
     m_pBacktrace = 0;
@@ -439,7 +440,7 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pTree;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pTree->Destroy();
     }
     m_pTree = 0L;
@@ -671,7 +672,7 @@ void DebuggerGDB::DoSwitchLayout(const wxString& config_key)
     {
         Manager::Get()->GetMessageManager()->DebugLog(_T("Switching layout to \"%s\""), layout.c_str());
         CodeBlocksLayoutEvent evt(cbEVT_SWITCH_VIEW_LAYOUT, layout);
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
     }
 }
 
@@ -1487,7 +1488,7 @@ void DebuggerGDB::Registers()
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pCPURegisters;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     RunCommand(CMD_REGISTERS);
 }
@@ -1497,7 +1498,7 @@ void DebuggerGDB::Disassemble()
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pDisassembly;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     RunCommand(CMD_DISASSEMBLE);
 }
@@ -1509,7 +1510,7 @@ void DebuggerGDB::Backtrace()
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pBacktrace;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     RunCommand(CMD_BACKTRACE);
 }
@@ -1521,7 +1522,7 @@ void DebuggerGDB::MemoryDump()
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pExamineMemoryDlg;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     RunCommand(CMD_MEMORYDUMP);
 }
@@ -1533,7 +1534,7 @@ void DebuggerGDB::RunningThreads()
     // show it
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pThreadsDlg;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     RunCommand(CMD_RUNNINGTHREADS);
 }
@@ -1903,7 +1904,7 @@ void DebuggerGDB::OnBacktrace(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pBacktrace;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     if (event.IsChecked())
         Backtrace();
@@ -1914,7 +1915,7 @@ void DebuggerGDB::OnDisassemble(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pDisassembly;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     if (event.IsChecked())
         Disassemble();
@@ -1925,7 +1926,7 @@ void DebuggerGDB::OnRegisters(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pCPURegisters;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     if (event.IsChecked())
         Registers();
@@ -1936,7 +1937,7 @@ void DebuggerGDB::OnViewWatches(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pTree;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     if (event.IsChecked())
         DoWatches();
@@ -1947,7 +1948,7 @@ void DebuggerGDB::OnBreakpoints(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pBreakpointsWindow;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void DebuggerGDB::OnExamineMemory(wxCommandEvent& event)
@@ -1955,7 +1956,7 @@ void DebuggerGDB::OnExamineMemory(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pExamineMemoryDlg;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     if (event.IsChecked())
         MemoryDump();
@@ -1966,7 +1967,7 @@ void DebuggerGDB::OnRunningThreads(wxCommandEvent& event)
     // show it
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pThreadsDlg;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     if (event.IsChecked())
         RunningThreads();

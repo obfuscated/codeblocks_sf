@@ -311,8 +311,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idViewFocusEditor, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewFullScreen, MainFrame::OnViewMenuUpdateUI)
 
-    EVT_EDITOR_UPDATE_UI(MainFrame::OnEditorUpdateUI)
-
     EVT_MENU(idFileNewEmpty, MainFrame::OnFileNewWhat)
     EVT_MENU(idFileNewProject, MainFrame::OnFileNewWhat)
     EVT_MENU(idFileNewTarget, MainFrame::OnFileNewWhat)
@@ -441,30 +439,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idStartHerePageLink, MainFrame::OnStartHereLink)
     EVT_MENU(idStartHerePageVarSubst, MainFrame::OnStartHereVarSubst)
 
-    EVT_PROJECT_ACTIVATE(MainFrame::OnProjectActivated)
-    EVT_PROJECT_OPEN(MainFrame::OnProjectOpened)
-    EVT_PROJECT_CLOSE(MainFrame::OnProjectClosed)
-    EVT_EDITOR_CLOSE(MainFrame::OnEditorClosed)
-    EVT_EDITOR_OPEN(MainFrame::OnEditorOpened)
-    EVT_EDITOR_ACTIVATED(MainFrame::OnEditorActivated)
-    EVT_EDITOR_SAVE(MainFrame::OnEditorSaved)
-    EVT_EDITOR_MODIFIED(MainFrame::OnEditorModified)
-
-    // dock a window
-    EVT_ADD_DOCK_WINDOW(MainFrame::OnRequestDockWindow)
-    EVT_REMOVE_DOCK_WINDOW(MainFrame::OnRequestUndockWindow)
-    EVT_SHOW_DOCK_WINDOW(MainFrame::OnRequestShowDockWindow)
-    EVT_HIDE_DOCK_WINDOW(MainFrame::OnRequestHideDockWindow)
-    EVT_DOCK_WINDOW_VISIBILITY(MainFrame::OnDockWindowVisibility)
-
-    // plugin events
-    EVT_PLUGIN_ATTACHED(MainFrame::OnPluginLoaded)
-    EVT_PLUGIN_RELEASED(MainFrame::OnPluginUnloaded)
-    EVT_PLUGIN_INSTALLED(MainFrame::OnPluginInstalled)
-    EVT_PLUGIN_UNINSTALLED(MainFrame::OnPluginUninstalled)
-
-    EVT_SWITCH_VIEW_LAYOUT(MainFrame::OnLayoutSwitch)
-
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
     /// CloseFullScreen event handling
@@ -504,6 +478,9 @@ MainFrame::MainFrame(wxWindow* parent)
     //tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
     _CrtSetDbgFlag( tmpFlag );
 #endif
+
+	// register event sinks
+	RegisterEvents();
 
     // New: Allow drag and drop of files into the editor
     SetDropTarget(new wxMyFileDropTarget(this));
@@ -576,6 +553,11 @@ MainFrame::MainFrame(wxWindow* parent)
                                                     "the Code::Blocks startup process.\n\n"
                                                     "Please review them in the logs...\n\n"), 8000, 1000);
     }
+
+	Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
+
+	CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+	Manager::Get()->ProcessEvent(event);
 }
 
 MainFrame::~MainFrame()
@@ -585,6 +567,35 @@ MainFrame::~MainFrame()
 
     DeInitPrinting();
     //Manager::Get()->Free();
+}
+
+void MainFrame::RegisterEvents()
+{
+	Manager* pm = Manager::Get();
+
+    pm->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorUpdateUI));
+    
+    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectActivated));
+    pm->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectOpened));
+    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectClosed));
+    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorClosed));
+    pm->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorOpened));
+    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorActivated));
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorSaved));
+    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorModified));
+    
+    pm->RegisterEventSink(cbEVT_ADD_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestDockWindow));
+    pm->RegisterEventSink(cbEVT_REMOVE_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestUndockWindow));
+    pm->RegisterEventSink(cbEVT_SHOW_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestShowDockWindow));
+    pm->RegisterEventSink(cbEVT_HIDE_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestHideDockWindow));
+    pm->RegisterEventSink(cbEVT_DOCK_WINDOW_VISIBILITY, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnDockWindowVisibility));
+    
+    pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginLoaded));
+    pm->RegisterEventSink(cbEVT_PLUGIN_RELEASED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUnloaded));
+    pm->RegisterEventSink(cbEVT_PLUGIN_INSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
+    pm->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
+    
+    pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
 }
 
 void MainFrame::ShowTips(bool forceShow)
@@ -1129,7 +1140,7 @@ void MainFrame::LoadViewLayout(const wxString& name)
 
 	CodeBlocksLayoutEvent evt(cbEVT_SWITCHED_VIEW_LAYOUT);
 	evt.layout = name;
-	ProcessEvent(evt);
+	Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, bool select)
@@ -1305,7 +1316,8 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
         // menu
         try
         {
-            plugin->BuildMenu(GetMenuBar());
+        	wxMenuBar* mbar = GetMenuBar();
+            plugin->BuildMenu(mbar);
         }
         catch (cbException& e)
         {
@@ -2522,6 +2534,10 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         Manager::BlockYields(false);
         return;
     }
+
+	Manager::Get()->GetMessageManager()->DebugLog(_T("Deinitializing plugins..."));
+	CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
+	Manager::Get()->ProcessEvent(evtShutdown);
 
     if (Manager::IsBatchBuild() == false)
         SaveWindowState();
@@ -3832,7 +3848,7 @@ void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
 
 	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
 	evt.pWindow = event.pWindow;
-	ProcessEvent(evt);
+	Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
@@ -3842,7 +3858,7 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 
 	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
 	evt.pWindow = event.pWindow;
-	ProcessEvent(evt);
+	Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& event)

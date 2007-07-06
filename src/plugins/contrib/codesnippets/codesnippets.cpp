@@ -224,7 +224,7 @@ void CodeSnippets::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = GetSnippetsWindow();
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
 
         GetSnippetsWindow()->Destroy();
         SetSnippetsWindow(0);
@@ -311,7 +311,7 @@ void CodeSnippets::CreateSnippetWindow()
 	}
 
      //LOGIT( _T("CreateSnippetWindow[%s]"), GetConfig()->GetSettingsWindowState().c_str() );
-	Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+	Manager::Get()->ProcessEvent(evt);
 
 
     #if defined(__WXMSW__)
@@ -453,7 +453,7 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
 
 	CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
 	evt.pWindow = GetSnippetsWindow();
-	Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+	Manager::Get()->ProcessEvent(evt);
 
     // connect to the wxAUI EVT_CLOSE event
     if ( event.IsChecked() && GetConfig()->IsFloatingWindow()  )
@@ -543,7 +543,7 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
 
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = GetSnippetsWindow();
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
 
         GetSnippetsWindow()->Destroy();
         SetSnippetsWindow(0);

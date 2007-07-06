@@ -47,15 +47,6 @@ BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
 	EVT_UPDATE_UI(idViewTodo, ToDoList::OnUpdateUI)
 	EVT_MENU(idViewTodo, ToDoList::OnViewList)
 	EVT_MENU(idAddTodo, ToDoList::OnAddItem)
-    EVT_APP_STARTUP_DONE(ToDoList::OnAppDoneStartup)
-    EVT_EDITOR_OPEN(ToDoList::OnReparseCurrent)
-    EVT_EDITOR_SAVE(ToDoList::OnReparseCurrent)
-    EVT_EDITOR_ACTIVATED(ToDoList::OnReparseCurrent)
-	EVT_EDITOR_CLOSE(ToDoList::OnReparseCurrent)
-    EVT_PROJECT_CLOSE(ToDoList::OnReparse)
-    EVT_PROJECT_ACTIVATE(ToDoList::OnReparse)
-    EVT_PROJECT_FILE_ADDED(ToDoList::OnReparse)
-    EVT_PROJECT_FILE_REMOVED(ToDoList::OnReparse)
 END_EVENT_TABLE()
 
 ToDoList::ToDoList() :
@@ -113,11 +104,22 @@ void ToDoList::OnAttach()
         evt.desiredSize.Set(352, 94);
         evt.floatingSize.Set(352, 94);
         evt.minimumSize.Set(352, 94);
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
     }
 
     m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
     LoadTypes();
+
+	// register event sink
+    Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnAppDoneStartup));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
+	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
 }
 
 void ToDoList::OnRelease(bool appShutDown)
@@ -126,7 +128,7 @@ void ToDoList::OnRelease(bool appShutDown)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pListLog;
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pListLog->Destroy();
     }
     else
@@ -232,7 +234,7 @@ void ToDoList::OnViewList(wxCommandEvent& event)
 {
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pListLog;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void ToDoList::OnAddItem(wxCommandEvent& event)

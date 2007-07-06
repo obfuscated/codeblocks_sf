@@ -208,7 +208,6 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuViewFileMasks, ProjectManager::OnViewFileMasks)
     EVT_MENU(idMenuFindFile, ProjectManager::OnFindFile)
     EVT_IDLE(ProjectManager::OnIdle)
-    EVT_APP_STARTUP_DONE(ProjectManager::OnAppDoneStartup)
 END_EVENT_TABLE()
 
 // class constructor
@@ -249,6 +248,9 @@ ProjectManager::ProjectManager()
     m_TreeUseFolders = cfg->ReadBool(_T("/use_folders"), true);
 
     RebuildTree();
+
+	// register event sinks
+    Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<ProjectManager, CodeBlocksEvent>(this, &ProjectManager::OnAppDoneStartup));
 
     // Event handling. This must be THE LAST THING activated on startup.
     // Constructors and destructors must always follow the LIFO rule:

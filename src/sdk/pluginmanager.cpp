@@ -169,10 +169,6 @@ namespace LibLoader
     }
 };
 
-// this is used by NotifyPlugins
-// it just keeps a pointer to the last active plugin in the chain...
-static cbPlugin* s_LastKnownActivePlugin = 0;
-
 BEGIN_EVENT_TABLE(PluginManager, wxEvtHandler)
 //
 END_EVENT_TABLE()
@@ -207,7 +203,6 @@ bool PluginManager::AttachPlugin(cbPlugin* plugin)
         return true;
 
     plugin->Attach();
-    s_LastKnownActivePlugin = plugin;
     return true;
 }
 
@@ -219,13 +214,7 @@ bool PluginManager::DetachPlugin(cbPlugin* plugin)
         return true;
 
     plugin->Release(Manager::IsAppShuttingDown());
-    if (s_LastKnownActivePlugin == plugin)
-    {
-        if (m_Plugins.GetCount())
-            s_LastKnownActivePlugin = m_Plugins[m_Plugins.GetCount() - 1]->plugin;
-        else
-            s_LastKnownActivePlugin = 0;
-    }
+    Manager::Get()->RemoveAllEventSinksFor(plugin);
     return true;
 }
 
@@ -371,7 +360,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     pd.Update(5, _("Updating menus and toolbars"));
     CodeBlocksEvent evt(cbEVT_PLUGIN_INSTALLED);
     evt.SetPlugin(plugin);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 //    DBGLOG(_T("Menus updated"));
 
     return true;
@@ -445,7 +434,7 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
     pd.Update(2, _("Updating menus and toolbars"));
     CodeBlocksEvent event(cbEVT_PLUGIN_UNINSTALLED);
     event.SetPlugin(plugin);
-    Manager::Get()->GetAppWindow()->ProcessEvent(event);
+    Manager::Get()->ProcessEvent(event);
 //    DBGLOG(_T("Menus updated"));
 
     pd.Update(3, _("Unloading plugin"));
@@ -1148,8 +1137,6 @@ void PluginManager::UnloadAllPlugins()
 {
 //    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
 
-    s_LastKnownActivePlugin = 0;
-
     while (m_Plugins.GetCount())
     {
         UnloadPlugin(m_Plugins[0]->plugin);
@@ -1184,13 +1171,6 @@ void PluginManager::UnloadPlugin(cbPlugin* plugin)
             delete plugElem;
             m_Plugins.RemoveAt(i);
 
-            if (s_LastKnownActivePlugin == plugin)
-            {
-                if (m_Plugins.GetCount())
-                    s_LastKnownActivePlugin = m_Plugins[m_Plugins.GetCount() - 1]->plugin;
-                else
-                    s_LastKnownActivePlugin = 0;
-            }
             break;
         }
     }
@@ -1436,32 +1416,6 @@ void PluginManager::OnScriptModuleMenu(wxCommandEvent& event)
 	ScriptBindings::ScriptPluginWrapper::OnScriptModuleMenu(event.GetId());
 }
 
-void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
-{
-    if (Manager::IsAppShuttingDown())
-        return;
-
-    /* Things are simpler than before.
-     * Just ask the last active plugin to process this event.
-     * Because plugins are linked to the main app's event handler,
-     * the event will travel up the chain normally.
-     */
-    if (s_LastKnownActivePlugin)
-        s_LastKnownActivePlugin->ProcessEvent(event);
-    else
-        Manager::Get()->GetAppWindow()->ProcessEvent(event);
-//    // notify plugins
-//    for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
-//    {
-//        cbPlugin* plug = m_Plugins[i]->plugin;
-//        if (plug && plug->IsAttached())
-//            plug->ProcessEvent(event);
-//    }
-//
-//    // notify the app too
-//    Manager::Get()->GetAppWindow()->ProcessEvent(event);
-}
-
 cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)
 {
     PluginsArray mimes = GetMimeOffers();
@@ -1497,4 +1451,19 @@ void PluginManager::SetupLocaleDomain(const wxString& DomainName)
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/locale/catalogNum"), (int)catalogNum);
         Manager::Get()->GetConfigManager(_T("app"))->Write(wxString::Format(_T("/locale/Domain%d"), i), DomainName);
     }
+}
+
+void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
+{
+	Manager::Get()->ProcessEvent(event);
+}
+
+void PluginManager::NotifyPlugins(CodeBlocksDockEvent& event)
+{
+	Manager::Get()->ProcessEvent(event);
+}
+
+void PluginManager::NotifyPlugins(CodeBlocksLayoutEvent& event)
+{
+	Manager::Get()->ProcessEvent(event);
 }

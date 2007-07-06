@@ -595,7 +595,7 @@ void MessageManager::Open()
 
     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
     evt.pWindow = m_pNotebook;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void MessageManager::Close(bool force)
@@ -608,7 +608,7 @@ void MessageManager::Close(bool force)
     m_LockCounter = 0;
     CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
     evt.pWindow = m_pNotebook;
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void MessageManager::LockOpen()
@@ -673,7 +673,7 @@ void MessageManager::OnShowHideLog(wxCommandEvent& event)
             ShowLog(it->second->log, !it->second->visible);
             CodeBlocksDockEvent e(cbEVT_DOCK_WINDOW_VISIBILITY);
             e.SetId(idx);
-            Manager::Get()->GetAppWindow()->ProcessEvent(e);
+            Manager::Get()->ProcessEvent(e);
             break;
         }
     }
