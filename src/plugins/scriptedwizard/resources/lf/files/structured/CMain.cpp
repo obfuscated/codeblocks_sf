@@ -3,11 +3,11 @@
 using namespace lf;
 
 CMain::CMain(render::IRenderWindow* win)
-	: rwin(win),
-	smgr(win->getSceneManager(0)),
-	cam(0),
-	camController(0),
-	quitNow(false)
+    : rwin(win),
+    smgr(win->getSceneManager(0)),
+    cam(0),
+    camController(0),
+    quitNow(false)
 {
     rwin->addKeyListener(this);
     setupScene();
@@ -33,7 +33,7 @@ void CMain::run()
     {
         if (!CLFRoot::getInstance().update())
             break;
-	}
+    }
 }
 
 void CMain::setupScene()
@@ -48,10 +48,10 @@ void CMain::setupScene()
     cam->setPosition(core::vector3df(0.0f, 0.0f, -30.0f));
     cam->setTarget(core::vector3df(0.0f, 0.0f, 0.0f));
 
-	smgr->add(cam);
-	smgr->addSceneNode(cam);
+    smgr->add(cam);
+    smgr->addSceneNode(cam);
 
-	// handle camera control
+    // handle camera control
     camController = new scene::CFPSController(rwin, cam);
     smgr->add( camController );
 }
@@ -63,5 +63,5 @@ void CMain::keyPressed(input::CKeyEvent& event)
         case input::KEY_ESCAPE:
             quitNow = true;
             break;
-	}
+    }
 }

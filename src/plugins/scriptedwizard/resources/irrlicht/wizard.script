@@ -47,7 +47,7 @@ function OnLeave_IrrPath(fwd)
         if (dir_nomacro_inc.IsEmpty())
             return false;
         if (PLATFORM != PLATFORM_MSW)
-        	dir_nomacro_inc = dir_nomacro_inc + _T("/irrlicht");
+            dir_nomacro_inc = dir_nomacro_inc + _T("/irrlicht");
         if (!VerifyFile(dir_nomacro_inc, _T("irrlicht.h"), _T("Irrlicht's include"))) return false;
 
         // verify library dependencies
@@ -94,8 +94,8 @@ function OnLeave_IrrPath(fwd)
         }
         else
         {
-        	if (PLATFORM != PLATFORM_MSW)
-        		IrrlichtPathDefaultInc = IrrlichtPathDefaultInc + _T("/irrlicht");
+            if (PLATFORM != PLATFORM_MSW)
+                IrrlichtPathDefaultInc = IrrlichtPathDefaultInc + _T("/irrlicht");
         }
 
         // try to resolve the library directory as macro

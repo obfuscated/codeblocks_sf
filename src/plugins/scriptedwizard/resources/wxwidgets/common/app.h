@@ -14,8 +14,8 @@
 
 class [CLASS_PREFIX]App : public wxApp
 {
-	public:
-		virtual bool OnInit();
+    public:
+        virtual bool OnInit();
 };
 
 #endif // [PROJECT_HDR]APP_H

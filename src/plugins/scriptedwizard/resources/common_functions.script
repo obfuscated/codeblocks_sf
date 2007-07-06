@@ -81,10 +81,10 @@ function OptimizationsOn(base, compilerID)
     if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
         if (!GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8")))
-		{
-			base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8
-		}
-		base.AddCompilerOption(_T("/Ox"));
+        {
+            base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8
+        }
+        base.AddCompilerOption(_T("/Ox"));
         base.AddCompilerOption(_T("/DNDEBUG"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
@@ -112,7 +112,7 @@ function OptimizationsOn(base, compilerID)
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
         base.AddCompilerOption(_T("-ot")); // optimize for time
-		base.AddCompilerOption(_T("-ox")); // Maximum optimization
+        base.AddCompilerOption(_T("-ox")); // Maximum optimization
     }
     else
     {
@@ -404,8 +404,8 @@ function VerifyLibFile(dir, file, type)
         && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file))
         && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a")))
         && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib")))
-		&& (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la")))
-		&& (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so"))))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la")))
+        && (!IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so"))))
 
     {
         ShowError(_T("The path you entered seems valid, but this wizard\n" +

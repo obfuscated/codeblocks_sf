@@ -31,7 +31,7 @@ function BeginWizard()
     Wizard.AddInfoPage(_T("FltkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
     if (PLATFORM == PLATFORM_MSW)
-	    Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
+        Wizard.AddGenericSelectPathPage(_T("FltkPath"), fltkpath_descr, _T("Please select FLTK's location:"), FltkPathDefault);
     Wizard.AddGenericSingleChoiceListPage(_T("FLTKPrjType"), fltkprjtype_descr, fltkprj_choices, 0);
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
 }
@@ -102,9 +102,9 @@ function OnLeave_FLTKPrjType(fwd)
 // return the files this project contains
 function GetFilesDir()
 {
-	if (FLTKQuickProject)
-		return _T("fltk/files");
-	return _T("fltk/fluid");
+    if (FLTKQuickProject)
+        return _T("fltk/files");
+    return _T("fltk/fluid");
 }
 
 // setup the already created project
@@ -112,30 +112,30 @@ function SetupProject(project)
 {
     if (PLATFORM == PLATFORM_MSW)
     {
-	    // set project options
-	    project.AddIncludeDir(FltkPathDefaultInc);
-	    project.AddLibDir(FltkPathDefaultLib);
+        // set project options
+        project.AddIncludeDir(FltkPathDefaultInc);
+        project.AddLibDir(FltkPathDefaultLib);
 
-	    // add link libraries
-	    project.AddLinkLib(_T("fltk"));
-	    project.AddLinkLib(_T("ole32"));
-	    project.AddLinkLib(_T("uuid"));
-	    project.AddLinkLib(_T("comctl32"));
-	    project.AddLinkLib(_T("wsock32"));
-	    project.AddLinkLib(_T("m"));
-	    project.AddLinkLib(_T("gdi32"));
-	    project.AddLinkLib(_T("user32"));
-	    project.AddLinkLib(_T("kernel32"));
+        // add link libraries
+        project.AddLinkLib(_T("fltk"));
+        project.AddLinkLib(_T("ole32"));
+        project.AddLinkLib(_T("uuid"));
+        project.AddLinkLib(_T("comctl32"));
+        project.AddLinkLib(_T("wsock32"));
+        project.AddLinkLib(_T("m"));
+        project.AddLinkLib(_T("gdi32"));
+        project.AddLinkLib(_T("user32"));
+        project.AddLinkLib(_T("kernel32"));
 
-	    project.AddCompilerOption(_T("-DWIN32"))
-	    project.AddCompilerOption(_T("-mms-bitfields"))
-	}
-	else // PLATFORM != PLATFORM_MSW
-	{
-		// fltk-config based: things are ultra-simple :)
-		project.AddCompilerOption(_T("`fltk-config --cxxflags`"));
-		project.AddLinkerOption(_T("`fltk-config --ldstaticflags`"));
-	}
+        project.AddCompilerOption(_T("-DWIN32"))
+        project.AddCompilerOption(_T("-mms-bitfields"))
+    }
+    else // PLATFORM != PLATFORM_MSW
+    {
+        // fltk-config based: things are ultra-simple :)
+        project.AddCompilerOption(_T("`fltk-config --cxxflags`"));
+        project.AddLinkerOption(_T("`fltk-config --ldstaticflags`"));
+    }
 
     // Debug
     local target = project.GetBuildTarget(Wizard.GetDebugName());

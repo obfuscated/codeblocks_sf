@@ -55,18 +55,18 @@ function OnLeave_ConsoleLanguagePage(fwd)
     if (fwd)
     {
         ConsoleLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
-		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-		 || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
-		{
-			local msg = _T("Wizard will setup the Project in Multi-threaded Dynamic CRT mode by default.\n\n");
-			msg = msg + _T("Click Yes to continue with Multi-threaded Dynamic CRT mode\n\n");
-			msg = msg + _T("Click No to continue with Multi-threaded Static CRT mode");
-			local thread = Message(msg, _T("Console Wizard"), wxICON_QUESTION | wxYES_NO);
-			if (thread == wxID_YES)
-				multi_thread_dynamic = true;
-			else
-				multi_thread_dynamic = false;
-		}
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+        {
+            local msg = _T("Wizard will setup the Project in Multi-threaded Dynamic CRT mode by default.\n\n");
+            msg = msg + _T("Click Yes to continue with Multi-threaded Dynamic CRT mode\n\n");
+            msg = msg + _T("Click No to continue with Multi-threaded Static CRT mode");
+            local thread = Message(msg, _T("Console Wizard"), wxICON_QUESTION | wxYES_NO);
+            if (thread == wxID_YES)
+                multi_thread_dynamic = true;
+            else
+                multi_thread_dynamic = false;
+        }
     }
     return true;
 }
@@ -98,8 +98,8 @@ function SetupProject(project)
     // These functions are located in <templates_path>/common_functions.script.
     // If you add other commonly used functions or bug-fix anything in that file,
     // please share it with us :)
-	
-	// enable compiler warnings (project-wide)
+    
+    // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
 
     // add additional libs for special compilers
@@ -116,7 +116,7 @@ function SetupProject(project)
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());
     if (!IsNull(target))
-		SetupTarget(target, true);
+        SetupTarget(target, true);
 
     // Release build target
     target = project.GetBuildTarget(Wizard.GetReleaseName());
@@ -124,8 +124,8 @@ function SetupProject(project)
         SetupTarget(target, false);
 
     //Add CPP Exception handling support
-	CppExceptionsOn(project, Wizard.GetCompilerID());
-	// all done!
+    CppExceptionsOn(project, Wizard.GetCompilerID());
+    // all done!
     return true;
 }
 //
@@ -141,56 +141,56 @@ function SetupTarget(target,is_debug)
     if (is_debug)
     {
         if (target.GetWorkingDir().Matches(_T("")))
-			target.SetOutputFilename(target.SuggestOutputFilename());
-		else
-			target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-		// enable debugging symbols for this target
+            target.SetOutputFilename(target.SuggestOutputFilename());
+        else
+            target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable debugging symbols for this target
         // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         DebugSymbolsOn(target, Wizard.GetCompilerID());
-		//Special consideration for MSVC 7.1
-		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-		 || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
-		{
-			if (!multi_thread_dynamic)
-			{
-				target.AddCompilerOption(_T("/MTd"));
-				target.AddLinkLib(_T("libcmtd.lib"));
-				target.AddLinkLib(_T("libcpmtd.lib"));
-			}
-			else
-			{
-				target.AddCompilerOption(_T("/MDd"));
-				target.AddLinkLib(_T("msvcrtd.lib"));
-				target.AddLinkLib(_T("msvcprtd.lib"));
-			}
-		}
+        //Special consideration for MSVC 7.1
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+        {
+            if (!multi_thread_dynamic)
+            {
+                target.AddCompilerOption(_T("/MTd"));
+                target.AddLinkLib(_T("libcmtd.lib"));
+                target.AddLinkLib(_T("libcpmtd.lib"));
+            }
+            else
+            {
+                target.AddCompilerOption(_T("/MDd"));
+                target.AddLinkLib(_T("msvcrtd.lib"));
+                target.AddLinkLib(_T("msvcprtd.lib"));
+            }
+        }
     }
     else
     {
         if (target.GetWorkingDir().Matches(_T("")))
-			target.SetOutputFilename(target.SuggestOutputFilename());
-		else
-			target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-		// enable optimizations for this target
+            target.SetOutputFilename(target.SuggestOutputFilename());
+        else
+            target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for this target
         // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         OptimizationsOn(target, Wizard.GetCompilerID());
-		//Special consideration for MSVC 7.1
-		if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
-		 || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
-		{
-			if (!multi_thread_dynamic)
-			{
-				target.AddCompilerOption(_T("/MT"));
-				target.AddLinkLib(_T("libcmt.lib"));
-				target.AddLinkLib(_T("libcpmt.lib"));
-			}
-			else
-			{
-				target.AddCompilerOption(_T("/MD"));
-				target.AddLinkLib(_T("msvcrt.lib"));
-				target.AddLinkLib(_T("msvcprt.lib"));
-			}
-		}
+        //Special consideration for MSVC 7.1
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
+         || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+        {
+            if (!multi_thread_dynamic)
+            {
+                target.AddCompilerOption(_T("/MT"));
+                target.AddLinkLib(_T("libcmt.lib"));
+                target.AddLinkLib(_T("libcpmt.lib"));
+            }
+            else
+            {
+                target.AddCompilerOption(_T("/MD"));
+                target.AddLinkLib(_T("msvcrt.lib"));
+                target.AddLinkLib(_T("msvcprt.lib"));
+            }
+        }
     }
 
     // all done!

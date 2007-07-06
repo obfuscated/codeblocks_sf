@@ -47,17 +47,17 @@ function OnLeave_QtPath(fwd)
         if (dir_nomacro_inc.IsEmpty())
             return false;
         if (PLATFORM == PLATFORM_MSW
-			&& !VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("QtGui"), _T("QApplication"), _T("Qt's include")))
-			return false;
+            && !VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("QtGui"), _T("QApplication"), _T("Qt's include")))
+            return false;
 
         // verify library dependencies
         local dir_nomacro_lib = GetCompilerLibDir(dir, QtPathDefault, QtPathDefaultLib);
         if (dir_nomacro_lib.IsEmpty())
             return false;
-		if (PLATFORM == PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore4"), _T("Qt's")))
-			return false;
-		else if (PLATFORM != PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore"), _T("Qt's")))
-			return false;
+        if (PLATFORM == PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore4"), _T("Qt's")))
+            return false;
+        else if (PLATFORM != PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore"), _T("Qt's")))
+            return false;
 
 
         QtPath = dir; // Remember the original selection.
@@ -100,14 +100,14 @@ function SetupProject(project)
     // add link libraries
     if (PLATFORM == PLATFORM_MSW)
     {
-	    project.AddLinkLib(_T("QtCore4"));
-	    project.AddLinkLib(_T("QtGui4"));
-	}
-	else
-	{
-		project.AddLinkLib(_T("QtCore"));
-	    project.AddLinkLib(_T("QtGui"));
-	}
+        project.AddLinkLib(_T("QtCore4"));
+        project.AddLinkLib(_T("QtGui4"));
+    }
+    else
+    {
+        project.AddLinkLib(_T("QtCore"));
+        project.AddLinkLib(_T("QtGui"));
+    }
 
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());

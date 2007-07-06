@@ -14,7 +14,7 @@
 #include <wx/wxprec.h>
 
 #ifndef WX_PRECOMP
-	#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <cbplugin.h> // for "class cbMimePlugin"
@@ -22,12 +22,12 @@
 class [PLUGIN_NAME] : public cbMimePlugin
 {
     public:
-		/** Constructor. */
+        /** Constructor. */
         [PLUGIN_NAME]();
-		/** Destructor. */
+        /** Destructor. */
         virtual ~[PLUGIN_NAME]();
 [IF HAS_CONFIGURE]
-		/** Invoke configuration dialog. */
+        /** Invoke configuration dialog. */
         virtual int Configure();
 
         /** Return the plugin's configuration priority.
@@ -43,19 +43,19 @@ class [PLUGIN_NAME] : public cbMimePlugin
           */
         virtual int GetConfigurationGroup() const { return cgUnknown; }
 
-		/** Return plugin's configuration panel.
-		  * @param parent The parent window.
-		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
-		  */
+        /** Return plugin's configuration panel.
+          * @param parent The parent window.
+          * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
+          */
         virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
         
-		/** Return plugin's configuration panel for projects.
-		  * The panel returned from this function will be added in the project's
-		  * configuration dialog.
-		  * @param parent The parent window.
-		  * @param project The project that is being edited.
-		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
-		  */
+        /** Return plugin's configuration panel for projects.
+          * The panel returned from this function will be added in the project's
+          * configuration dialog.
+          * @param parent The parent window.
+          * @param project The project that is being edited.
+          * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
+          */
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }[ENDIF HAS_CONFIGURE]
         /** @brief Can a file be handled by this plugin?
           *
@@ -84,27 +84,27 @@ class [PLUGIN_NAME] : public cbMimePlugin
           */
         virtual bool HandlesEverything() const;
     protected:
-		/** Any descendent plugin should override this virtual method and
-		  * perform any necessary initialization. This method is called by
-		  * Code::Blocks (PluginManager actually) when the plugin has been
-		  * loaded and should attach in Code::Blocks. When Code::Blocks
-		  * starts up, it finds and <em>loads</em> all plugins but <em>does
-		  * not</em> activate (attaches) them. It then activates all plugins
-		  * that the user has selected to be activated on start-up.\n
-		  * This means that a plugin might be loaded but <b>not</b> activated...\n
-		  * Think of this method as the actual constructor...
-		  */
+        /** Any descendent plugin should override this virtual method and
+          * perform any necessary initialization. This method is called by
+          * Code::Blocks (PluginManager actually) when the plugin has been
+          * loaded and should attach in Code::Blocks. When Code::Blocks
+          * starts up, it finds and <em>loads</em> all plugins but <em>does
+          * not</em> activate (attaches) them. It then activates all plugins
+          * that the user has selected to be activated on start-up.\n
+          * This means that a plugin might be loaded but <b>not</b> activated...\n
+          * Think of this method as the actual constructor...
+          */
         virtual void OnAttach();
 
-		/** Any descendent plugin should override this virtual method and
-		  * perform any necessary de-initialization. This method is called by
-		  * Code::Blocks (PluginManager actually) when the plugin has been
-		  * loaded, attached and should de-attach from Code::Blocks.\n
-		  * Think of this method as the actual destructor...
-		  * @param appShutDown If true, the application is shutting down. In this
-		  *         case *don't* use Manager::Get()->Get...() functions or the
-		  *         behaviour is undefined...
-		  */
+        /** Any descendent plugin should override this virtual method and
+          * perform any necessary de-initialization. This method is called by
+          * Code::Blocks (PluginManager actually) when the plugin has been
+          * loaded, attached and should de-attach from Code::Blocks.\n
+          * Think of this method as the actual destructor...
+          * @param appShutDown If true, the application is shutting down. In this
+          *         case *don't* use Manager::Get()->Get...() functions or the
+          *         behaviour is undefined...
+          */
         virtual void OnRelease(bool appShutDown);
 };
 

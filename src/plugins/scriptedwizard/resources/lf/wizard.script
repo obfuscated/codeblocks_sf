@@ -29,13 +29,13 @@ function BeginWizard()
     Wizard.AddGenericSelectPathPage(_T("LFPath"), lfpath_descr, _T("Please select Lightfeather's location:"), _T(""));
     Wizard.AddGenericSingleChoiceListPage(_T("LFPrjType"), lfprjtype_descr, lfprj_choices, 0);
 //    Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false); // no target selections
-	Wizard.SetCompilerDefault(_T("gcc"));
+    Wizard.SetCompilerDefault(_T("gcc"));
     Wizard.SetDebugTargetDefaults(true, _T("Debug"), _T("DebugLib/"), _T("DebugLib/"));
     Wizard.SetReleaseTargetDefaults(false, _T(""), _T(""), _T(""));
-//	Wizard.AddBuildTarget(_T("gcc"), _T("Debug"), _T("DebugLib/"), _T("DebugLib/"));
-//	Wizard.AddBuildTarget(_T("gcc"), _T("Debug (DLL)"), _T("Debug/"), _T("Debug/"));
-//	Wizard.AddBuildTarget(_T("gcc"), _T("Release"), _T("ReleaseLib/"), _T("ReleaseLib/"));
-//	Wizard.AddBuildTarget(_T("gcc"), _T("Release (DLL)"), _T("Release/"), _T("Release/"));
+//  Wizard.AddBuildTarget(_T("gcc"), _T("Debug"), _T("DebugLib/"), _T("DebugLib/"));
+//  Wizard.AddBuildTarget(_T("gcc"), _T("Debug (DLL)"), _T("Debug/"), _T("Debug/"));
+//  Wizard.AddBuildTarget(_T("gcc"), _T("Release"), _T("ReleaseLib/"), _T("ReleaseLib/"));
+//  Wizard.AddBuildTarget(_T("gcc"), _T("Release (DLL)"), _T("Release/"), _T("Release/"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,9 +46,9 @@ function OnLeave_LFPath(fwd)
 {
     if (fwd)
     {
-    	// error string
-		local error =_T("The path you entered seems valid, but this wizard " +
-						"can't locate Lightfeather's files in it...");
+        // error string
+        local error =_T("The path you entered seems valid, but this wizard " +
+                        "can't locate Lightfeather's files in it...");
 
         local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
         local dir_nomacro = ReplaceMacros(dir, true);
@@ -83,71 +83,71 @@ function GetFilesDir()
 {
     local ret = _T("lf/files/common;");
     if (LFQuickProject)
-		ret = ret + _T("lf/files/quick");
-	else
-		ret = ret + _T("lf/files/structured");
-	return ret;
+        ret = ret + _T("lf/files/quick");
+    else
+        ret = ret + _T("lf/files/structured");
+    return ret;
 }
 
 // setup the already created project
 function SetupProject(project)
 {
-	// set a variable to reference lf's dir
-	project.SetVar(_T("lf"), LFPath, false);
+    // set a variable to reference lf's dir
+    project.SetVar(_T("lf"), LFPath, false);
 
-	// first rename "default" target (index 0 - could do it by name too) to "Debug"
-	project.RenameBuildTarget(0, _T("Debug"));
+    // first rename "default" target (index 0 - could do it by name too) to "Debug"
+    project.RenameBuildTarget(0, _T("Debug"));
 
-	// and now duplicate it to create the rest of the targets
-	// (easier than creating new targets and adding files manually)
-	project.DuplicateBuildTarget(0, _T("Debug (DLL)"));
-	project.DuplicateBuildTarget(0, _T("Release"));
-	project.DuplicateBuildTarget(0, _T("Release (DLL)"));
+    // and now duplicate it to create the rest of the targets
+    // (easier than creating new targets and adding files manually)
+    project.DuplicateBuildTarget(0, _T("Debug (DLL)"));
+    project.DuplicateBuildTarget(0, _T("Release"));
+    project.DuplicateBuildTarget(0, _T("Release (DLL)"));
 
-	local debugTarget = project.GetBuildTarget(0);
-	local debugDllTarget = project.GetBuildTarget(1);
-	local releaseTarget = project.GetBuildTarget(2);
-	local releaseDllTarget = project.GetBuildTarget(3);
+    local debugTarget = project.GetBuildTarget(0);
+    local debugDllTarget = project.GetBuildTarget(1);
+    local releaseTarget = project.GetBuildTarget(2);
+    local releaseDllTarget = project.GetBuildTarget(3);
 
-	// Debug
-	debugTarget.SetTargetType(ttConsoleOnly);
-	debugTarget.SetOutputFilename(_T("DebugLib/") + Wizard.GetProjectTitle());
-	debugTarget.SetObjectOutput(_T("DebugLib"));
-//	debugTarget.SetWorkingDir(_T("DebugLib"));
-	debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/debug.script"));
-	debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/staticlib.script"));
-	debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
+    // Debug
+    debugTarget.SetTargetType(ttConsoleOnly);
+    debugTarget.SetOutputFilename(_T("DebugLib/") + Wizard.GetProjectTitle());
+    debugTarget.SetObjectOutput(_T("DebugLib"));
+//  debugTarget.SetWorkingDir(_T("DebugLib"));
+    debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/debug.script"));
+    debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/staticlib.script"));
+    debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
 
-	// Debug (DLL)
-	debugDllTarget.SetTargetType(ttConsoleOnly);
-	debugDllTarget.SetOutputFilename(_T("Debug/") + Wizard.GetProjectTitle());
-	debugDllTarget.SetObjectOutput(_T("Debug"));
-	debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/debug.script"));
-	debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/dll.script"));
-	debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
+    // Debug (DLL)
+    debugDllTarget.SetTargetType(ttConsoleOnly);
+    debugDllTarget.SetOutputFilename(_T("Debug/") + Wizard.GetProjectTitle());
+    debugDllTarget.SetObjectOutput(_T("Debug"));
+    debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/debug.script"));
+    debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/dll.script"));
+    debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
 
-	// Release
-	releaseTarget.SetTargetType(ttConsoleOnly);
-	releaseTarget.SetOutputFilename(_T("ReleaseLib/") + Wizard.GetProjectTitle());
-	releaseTarget.SetObjectOutput(_T("ReleaseLib"));
-	releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/release.script"));
-	releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/staticlib.script"));
-	releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
+    // Release
+    releaseTarget.SetTargetType(ttConsoleOnly);
+    releaseTarget.SetOutputFilename(_T("ReleaseLib/") + Wizard.GetProjectTitle());
+    releaseTarget.SetObjectOutput(_T("ReleaseLib"));
+    releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/release.script"));
+    releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/staticlib.script"));
+    releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
 
-	// Release (DLL)
-	releaseDllTarget.SetTargetType(ttConsoleOnly);
-	releaseDllTarget.SetOutputFilename(_T("Release/") + Wizard.GetProjectTitle());
-	releaseDllTarget.SetObjectOutput(_T("Release"));
-	releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/release.script"));
-	releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/dll.script"));
-	releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
+    // Release (DLL)
+    releaseDllTarget.SetTargetType(ttConsoleOnly);
+    releaseDllTarget.SetOutputFilename(_T("Release/") + Wizard.GetProjectTitle());
+    releaseDllTarget.SetObjectOutput(_T("Release"));
+    releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/release.script"));
+    releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/dll.script"));
+    releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
 
     // Project options
-	project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/config.script"));
-	project.AddBuildScript(_T("buildscripts/config.script")); // local version overriding global
-	project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/base_settings.script"));
-	project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_cg.script"));
-	project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_freetype.script"));
+    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/config.script"));
+    project.AddBuildScript(_T("buildscripts/config.script")); // local version overriding global
+    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/base_settings.script"));
+    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_cg.script"));
+    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_freetype.script"));
 
     return true;
 }

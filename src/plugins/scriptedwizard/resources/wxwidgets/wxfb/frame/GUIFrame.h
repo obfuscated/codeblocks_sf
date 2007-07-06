@@ -31,28 +31,28 @@
 ///////////////////////////////////////////////////////////////////////////////
 class GUIFrame : public wxFrame 
 {
-	DECLARE_EVENT_TABLE()
-	private:
-		
-		// Private event handlers
-		void _wxFB_OnClose( wxCloseEvent& event ){ OnClose( event ); }
-		void _wxFB_OnQuit( wxCommandEvent& event ){ OnQuit( event ); }
-		void _wxFB_OnAbout( wxCommandEvent& event ){ OnAbout( event ); }
-		
-	
-	protected:
-		wxMenuBar* mbar;
-		wxStatusBar* statusBar;
-		
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnClose( wxCloseEvent& event ){ event.Skip(); }
-		virtual void OnQuit( wxCommandEvent& event ){ event.Skip(); }
-		virtual void OnAbout( wxCommandEvent& event ){ event.Skip(); }
-		
-	
-	public:
-		GUIFrame( wxWindow* parent, int id = wxID_ANY, wxString title = wxT("wxWidgets Application Template"), wxPoint pos = wxDefaultPosition, wxSize size = wxSize( 481,466 ), int style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
-	
+    DECLARE_EVENT_TABLE()
+    private:
+        
+        // Private event handlers
+        void _wxFB_OnClose( wxCloseEvent& event ){ OnClose( event ); }
+        void _wxFB_OnQuit( wxCommandEvent& event ){ OnQuit( event ); }
+        void _wxFB_OnAbout( wxCommandEvent& event ){ OnAbout( event ); }
+        
+    
+    protected:
+        wxMenuBar* mbar;
+        wxStatusBar* statusBar;
+        
+        // Virtual event handlers, overide them in your derived class
+        virtual void OnClose( wxCloseEvent& event ){ event.Skip(); }
+        virtual void OnQuit( wxCommandEvent& event ){ event.Skip(); }
+        virtual void OnAbout( wxCommandEvent& event ){ event.Skip(); }
+        
+    
+    public:
+        GUIFrame( wxWindow* parent, int id = wxID_ANY, wxString title = wxT("wxWidgets Application Template"), wxPoint pos = wxDefaultPosition, wxSize size = wxSize( 481,466 ), int style = wxDEFAULT_FRAME_STYLE|wxTAB_TRAVERSAL );
+    
 };
 
 #endif //__GUIFrame__

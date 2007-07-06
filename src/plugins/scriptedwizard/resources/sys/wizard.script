@@ -50,14 +50,14 @@ function SetupProject(project)
     if (!IsNull(target))
         SetupTarget(target, true);
 
-	project.AddLinkLib(_T("ntoskrnl"));
-	project.AddLinkerOption(_T("-nostartfiles"));
-	project.AddLinkerOption(_T("-Wl,--nostdlib"));
-	project.AddLinkerOption(_T("-shared"));
-	project.AddLinkerOption(_T("-Wl,--entry,_DriverEntry@8"));
-	project.AddLinkerOption(_T("-Wl,--file-alignment,0x1000"));
-	project.AddLinkerOption(_T("-Wl,--section-alignment,0x1000"));
-	project.AddLinkerOption(_T("-Wl,--image-base,0x00010000"));
+    project.AddLinkLib(_T("ntoskrnl"));
+    project.AddLinkerOption(_T("-nostartfiles"));
+    project.AddLinkerOption(_T("-Wl,--nostdlib"));
+    project.AddLinkerOption(_T("-shared"));
+    project.AddLinkerOption(_T("-Wl,--entry,_DriverEntry@8"));
+    project.AddLinkerOption(_T("-Wl,--file-alignment,0x1000"));
+    project.AddLinkerOption(_T("-Wl,--section-alignment,0x1000"));
+    project.AddLinkerOption(_T("-Wl,--image-base,0x00010000"));
 
     // Release build target
     target = project.GetBuildTarget(Wizard.GetReleaseName());

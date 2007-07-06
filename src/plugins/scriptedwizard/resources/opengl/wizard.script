@@ -33,9 +33,9 @@ function SetupProject(project)
         // add link libraries
         project.AddLinkLib(_T("GL"));
         project.AddLinkLib(_T("X11"));
-   	}
-   	else
-   	{
+    }
+    else
+    {
         // add link libraries
         project.AddLinkLib(_T("opengl32"));
         project.AddLinkLib(_T("glu32"));
@@ -44,11 +44,11 @@ function SetupProject(project)
         {
             project.AddLinkLib(_T("user32"));
         }
-		else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
-		{
-			project.AddLinkLib(_T("cw32mt.lib"));
-			project.AddLinkLib(_T("import32.lib"));
-		}
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+        {
+            project.AddLinkLib(_T("cw32mt.lib"));
+            project.AddLinkLib(_T("import32.lib"));
+        }
     }
 
     // enable compiler warnings (project-wide)
@@ -59,9 +59,9 @@ function SetupProject(project)
     if (!IsNull(target))
     {
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc")))
-			target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
-		else
-			target.SetTargetType(ttExecutable); // For others, keep it GUI
+            target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        else
+            target.SetTargetType(ttExecutable); // For others, keep it GUI
         target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
         // enable generation of debugging symbols for target
         DebugSymbolsOn(target, Wizard.GetCompilerID());

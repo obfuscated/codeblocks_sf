@@ -46,26 +46,26 @@ function SetupProject(project)
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
 
-	// Now define BUILD_DLL to export the functions
-	if (	GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc"))
-		||	GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("dmc")))
-		project.AddCompilerOption(_T("-DBUILD_DLL"));
-	else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
-	{
-		project.AddCompilerOption(_T("-DBUILD_DLL"));
-		project.AddCompilerOption(_T("-tWR")); // To use Dynamic RTL
-		project.AddLinkerOption(_T("-Gi")); // To create an import library
-	}
-	else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+    // Now define BUILD_DLL to export the functions
+    if (    GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc"))
+        ||  GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("dmc")))
+        project.AddCompilerOption(_T("-DBUILD_DLL"));
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+    {
+        project.AddCompilerOption(_T("-DBUILD_DLL"));
+        project.AddCompilerOption(_T("-tWR")); // To use Dynamic RTL
+        project.AddLinkerOption(_T("-Gi")); // To create an import library
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         project.AddCompilerOption(_T("/DBUILD_DLL"));
-	else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
-	{
-		project.AddCompilerOption(_T("-dBUILD_DLL"));
-		project.AddLinkerOption(_T("OPTION IMPLIB")); // To create an import library
-	}
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+    {
+        project.AddCompilerOption(_T("-dBUILD_DLL"));
+        project.AddLinkerOption(_T("OPTION IMPLIB")); // To create an import library
+    }
 
-	// Add user32.lib for MessageBox()
-	project.AddLinkLib(_T("user32"));
+    // Add user32.lib for MessageBox()
+    project.AddLinkLib(_T("user32"));
 
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());

@@ -16,8 +16,8 @@ IMPLEMENT_APP([CLASS_PREFIX]App);
 
 bool [CLASS_PREFIX]App::OnInit()
 {
-	//(*AppInitialize
-	//*)
-	return wxsOK;
+    //(*AppInitialize
+    //*)
+    return wxsOK;
 
 }

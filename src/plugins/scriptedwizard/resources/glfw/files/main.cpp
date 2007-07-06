@@ -2,9 +2,9 @@
 
 int main()
 {
-    int		width, height;
-    int		frame = 0;
-    bool	running = true;
+    int     width, height;
+    int     frame = 0;
+    bool    running = true;
 
     glfwInit();
 
@@ -36,8 +36,8 @@ int main()
         glMatrixMode( GL_MODELVIEW );
         glLoadIdentity();
         gluLookAt(0.0f, -10.0f, 0.0f,
-				0.0f, 0.0f, 0.0f,
-				0.0f, 0.0f, 1.0f );
+                0.0f, 0.0f, 0.0f,
+                0.0f, 0.0f, 1.0f );
 
         //glTranslatef( 1.0f, 1.0f, 0.0f );
         glRotatef(frame, 0.25f, 1.0f, 0.75f);

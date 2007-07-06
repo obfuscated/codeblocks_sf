@@ -43,20 +43,20 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 //*)
 
 BEGIN_EVENT_TABLE([CLASS_PREFIX]Frame,wxFrame)
-	//(*EventTable([CLASS_PREFIX]Frame)
-	//*)
+    //(*EventTable([CLASS_PREFIX]Frame)
+    //*)
 END_EVENT_TABLE()
 
 [CLASS_PREFIX]Frame::[CLASS_PREFIX]Frame(wxWindow* parent,wxWindowID id)
 {
-	//(*Initialize([CLASS_PREFIX]Frame)
-	//*)
+    //(*Initialize([CLASS_PREFIX]Frame)
+    //*)
 }
 
 [CLASS_PREFIX]Frame::~[CLASS_PREFIX]Frame()
 {
-	//(*Destroy([CLASS_PREFIX]Frame)
-	//*)
+    //(*Destroy([CLASS_PREFIX]Frame)
+    //*)
 }
 
 void [CLASS_PREFIX]Frame::OnQuit(wxCommandEvent& event)
@@ -72,20 +72,20 @@ void [CLASS_PREFIX]Frame::OnAbout(wxCommandEvent& event)
 //*)
 
 BEGIN_EVENT_TABLE([CLASS_PREFIX]Dialog,wxDialog)
-	//(*EventTable([CLASS_PREFIX]Dialog)
-	//*)
+    //(*EventTable([CLASS_PREFIX]Dialog)
+    //*)
 END_EVENT_TABLE()
 
 [CLASS_PREFIX]Dialog::[CLASS_PREFIX]Dialog(wxWindow* parent,wxWindowID id)
 {
-	//(*Initialize([CLASS_PREFIX]Dialog)
-	//*)
+    //(*Initialize([CLASS_PREFIX]Dialog)
+    //*)
 }
 
 [CLASS_PREFIX]Dialog::~[CLASS_PREFIX]Dialog()
 {
-	//(*Destroy([CLASS_PREFIX]Dialog)
-	//*)
+    //(*Destroy([CLASS_PREFIX]Dialog)
+    //*)
 }
 
 void [CLASS_PREFIX]Dialog::OnQuit(wxCommandEvent& event)

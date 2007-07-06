@@ -12,8 +12,8 @@ class CMain : public lf::input::IKeyListener
 
     private:
 
-		lf::render::IRenderWindow* rwin;
-		lf::scene::CSceneManager* smgr;
+        lf::render::IRenderWindow* rwin;
+        lf::scene::CSceneManager* smgr;
 
         lf::scene::C3DCamera *cam;
         lf::scene::CSceneNodeController *camController;

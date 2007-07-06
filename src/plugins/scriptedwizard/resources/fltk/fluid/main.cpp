@@ -5,9 +5,9 @@
 
 void bt_callback(Fl_Widget*, void* userdata) {
   if(userdata == "test")
-	std::cout << "Testing" << std::endl;
+    std::cout << "Testing" << std::endl;
 else if (userdata == "close")
-	exit(0);
+    exit(0);
 }
 
 Fl_Double_Window *window_main=(Fl_Double_Window *)0;

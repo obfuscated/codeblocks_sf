@@ -15,51 +15,51 @@
 
 class [CLASS_PREFIX]Frame: public wxFrame
 {
-	public:
+    public:
 
-		[CLASS_PREFIX]Frame(wxWindow* parent,wxWindowID id = -1);
-		virtual ~[CLASS_PREFIX]Frame();
+        [CLASS_PREFIX]Frame(wxWindow* parent,wxWindowID id = -1);
+        virtual ~[CLASS_PREFIX]Frame();
 
-	private:
+    private:
 
-		//(*Handlers([CLASS_PREFIX]Frame)
-		void OnQuit(wxCommandEvent& event);
-		void OnAbout(wxCommandEvent& event);
-		//*)
+        //(*Handlers([CLASS_PREFIX]Frame)
+        void OnQuit(wxCommandEvent& event);
+        void OnAbout(wxCommandEvent& event);
+        //*)
 
-		//(*Identifiers([CLASS_PREFIX]Frame)
-		//*)
+        //(*Identifiers([CLASS_PREFIX]Frame)
+        //*)
 
-		//(*Declarations([CLASS_PREFIX]Frame)
-		//*)
+        //(*Declarations([CLASS_PREFIX]Frame)
+        //*)
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };[ENDIF WXFRAME][IF WXDIALOG]//(*Headers([CLASS_PREFIX]Dialog)
 //*)
 
 class [CLASS_PREFIX]Dialog: public wxDialog
 {
-	public:
+    public:
 
-		[CLASS_PREFIX]Dialog(wxWindow* parent,wxWindowID id = -1);
-		virtual ~[CLASS_PREFIX]Dialog();
+        [CLASS_PREFIX]Dialog(wxWindow* parent,wxWindowID id = -1);
+        virtual ~[CLASS_PREFIX]Dialog();
 
-	private:
+    private:
 
-		//(*Handlers([CLASS_PREFIX]Dialog)
-		void OnQuit(wxCommandEvent& event);
-		void OnAbout(wxCommandEvent& event);
-		//*)
+        //(*Handlers([CLASS_PREFIX]Dialog)
+        void OnQuit(wxCommandEvent& event);
+        void OnAbout(wxCommandEvent& event);
+        //*)
 
-		//(*Identifiers([CLASS_PREFIX]Dialog)
+        //(*Identifiers([CLASS_PREFIX]Dialog)
 
-		//*)
+        //*)
 
-		//(*Declarations([CLASS_PREFIX]Dialog)
+        //(*Declarations([CLASS_PREFIX]Dialog)
 
-		//*)
+        //*)
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };[ENDIF WXDIALOG]
 
 #endif // [PROJECT_HDR]MAIN_H
