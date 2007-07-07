@@ -107,6 +107,7 @@ class ParserThread : public cbThreadedTask
         ParserThreadOptions m_Options;
 		std::queue<wxString> m_EncounteredNamespaces; // for member funcs implementation
 		std::queue<wxString> m_EncounteredTypeNamespaces; // namespaces in types
+		wxString m_LastUnnamedClassName;
 
 		int m_PreprocessorIfCount; // handle nesting of #if...#if...#else...#endif...#endif
 

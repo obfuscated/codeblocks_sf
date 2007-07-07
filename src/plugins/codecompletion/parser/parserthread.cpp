@@ -252,6 +252,7 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
 
     result.Clear();
 	m_Str.Clear();
+	m_LastUnnamedClassName.Clear();
 	while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
 
@@ -359,6 +360,7 @@ void ParserThread::DoParse()
 {
 	m_Str.Clear();
 	m_LastToken.Clear();
+	m_LastUnnamedClassName.Clear();
 	while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
 	while (m_Tokenizer.NotEOF())
@@ -1138,9 +1140,16 @@ void ParserThread::HandleClass(bool isClass)
 
 			if (current==ParserConsts::opbrace) // unnamed class/struct
 			{
+				static size_t num = 0;
+				wxString unnamedTmp;
+				unnamedTmp.Printf(_T("<Unnamed%d>"), num++);
+
+				Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
+
 				Token* lastParent = m_pLastParent;
 				TokenScope lastScope = m_LastScope;
 
+				m_pLastParent = newToken;
 				// default scope is: private for classes, public for structs
 				m_LastScope = isClass ? tsPrivate : tsPublic;
 
@@ -1148,6 +1157,10 @@ void ParserThread::HandleClass(bool isClass)
 
 				m_pLastParent = lastParent;
 				m_LastScope = lastScope;
+				
+				m_LastUnnamedClassName = unnamedTmp; // used for typedef'ing anonymous class/struct/union
+				
+				// we should now be right after the closing brace: read the var name
                 break;
 			}
 			else if (next==ParserConsts::opbrace)
@@ -1381,17 +1394,20 @@ void ParserThread::HandleTypedef()
 	    if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
 
-	    if (token == ParserConsts::kw_class ||
-            token == ParserConsts::kw_struct ||
-            token == ParserConsts::kw_enum ||
+	    if (token == ParserConsts::kw_enum ||
             token == ParserConsts::kw_union)
 	    {
-	        // "typedef struct" is not supported
-	        // "typedef class" is not supported
 	        // "typedef enum" is not supported
-	        // "typedef union" is not supported
+	        // "typedef union" is not supported (?)
 	        SkipToOneOfChars(ParserConsts::semicolon, true);
             break;
+	    }
+
+	    else if (token == ParserConsts::kw_class ||
+            token == ParserConsts::kw_struct)
+	    {
+			HandleClass(token == ParserConsts::kw_class);
+			token = m_LastUnnamedClassName;
 	    }
 
         // keep namespaces together
