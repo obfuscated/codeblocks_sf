@@ -244,6 +244,8 @@ bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
             {
                 if (CurrentChar() == '{')
                     SkipBlock('{');
+                else if (CurrentChar() == '<')
+                    SkipBlock('<');
             }
         }
         if (PreviousChar() != '\\')
