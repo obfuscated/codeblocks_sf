@@ -626,7 +626,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
     }
 
     // make sure destination dir exists
-    CreateDirRecursively(wxFileName(dst_filename).GetPath(wxPATH_GET_SEPARATOR));
+    CreateDirRecursively(wxFileName(dst_filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
     // actually extract file
 //    DBGLOG(_T("Extracting..."));
