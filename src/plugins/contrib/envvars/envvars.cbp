@@ -67,7 +67,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 $(#cb)/devel/share/codeblocks/envvars.zip manifest.xml *.xrc" />
+			<Add after="zip -j9 $(#cb)\devel\share\codeblocks\envvars.zip manifest.xml *.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="envvars.cpp" />
@@ -83,6 +83,7 @@
 		<Unit filename="project_settings.xrc" />
 		<Extensions>
 			<code_completion />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
