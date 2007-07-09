@@ -622,7 +622,7 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
     }
 }
 
-bool MSVC7Loader::ParseInputString(wxString& Input, wxArrayString& Output)
+bool MSVC7Loader::ParseInputString(const wxString& Input, wxArrayString& Output)
 {
     /* This function will parse an input string recursively
     *  with separators (',' and ';') */
