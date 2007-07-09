@@ -1,3 +1,4 @@
-pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/win32gui/files
+SUBDIRS =   frame \
+            dialog
 
-dist_pkgdata_DATA = main.cpp
+pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/win32gui/files

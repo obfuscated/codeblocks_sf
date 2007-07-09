@@ -4,43 +4,75 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+/*  Define few Global Variables     */
+
+/** ProjectType: 0 - Frame, 1 - Dialog and 2 - MDI
+*   Default: 0
+*/
+ProjectType <- 0;
+PsdkPath <- _T("$(#psdk)");
+
 function BeginWizard()
 {
     local intro_msg = _T("Welcome to the new Win32 GUI project wizard!\n\n" +
                          "This wizard will guide you to create a new Win32 GUI project.\n\n" +
                          "When you 're ready to proceed, please click \"Next\"...");
+    local psdk_msg = _T("Please define Platform SDK directory.\n\n" +
+                        "Project will not compile without the necessary system\n" +
+                        "libraries");
 
     Wizard.AddInfoPage(_T("Win32Intro"), intro_msg);
+    Wizard.AddGenericSingleChoiceListPage(_T("Win32ProjType"),
+            _T("Please select type of project."),
+            _T("Frame based;Dialog based"),
+            ProjectType); // select wxwidgets version
     Wizard.AddProjectPathPage();
     Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    Wizard.AddGenericSelectPathPage(_T("PsdkPath"), psdk_msg, _T("Platform SDK's location:"), _T("$(#psdk)"));
 }
 
-function OnLeave_CompilerPage(fwd)
+////////////////////////////////////////////////////////////////////////////////
+// Project Type page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_Win32ProjType(fwd)
 {
     if (fwd)
     {
-        // check for selectino of MS VC++ Toolkit
-        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
-        {
-            // see if psdk global variable exists which is required for this compiler
-            if (GetUserVariableManager().Exists(_T("#psdk")))
-            {
-                ShowError(_T("You have selected the MS VC++ Toolkit for compilation.\n" +
-                             "For this compiler the global variable \"psdk\" pointing to\n" +
-                             "the path of the MS platform SDK has to be setup.\n\n" +
-                             "Unfortunately this wizard could not detect this\n" +
-                             "variable and cannot continue."));
-                return false;
-            }
-        }
+        ProjectType = Wizard.GetListboxSelection(_T("GenericChoiceList"));
     }
     return true;
+}
+
+function OnLeave_Win32ProjType(fwd)
+{
+    if (fwd)
+    {
+        ProjectType = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Determines the next page of compiler page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnGetNextPage_CompilerPage()
+{
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+        return _T("PsdkPath");
+    else
+        return _T("");
 }
 
 // return the files this project contains
 function GetFilesDir()
 {
-    return _T("win32gui/files");
+    local file_loc = _T("");
+    if (ProjectType == 0)
+        return _T("win32gui/files/frame");
+    else if (ProjectType == 1)
+        return _T("win32gui/files/dialog");
 }
 
 // setup the already created project
