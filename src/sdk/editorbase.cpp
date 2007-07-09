@@ -34,6 +34,19 @@ int editorbase_RegisterId(int id)
     return id;
 }
 
+struct EditorBaseInternalData
+{
+	EditorBaseInternalData(EditorBase* owner)
+		: m_pOwner(owner),
+		m_DisplayingPopupMenu(false),
+		m_CloseMe(false)
+	{}
+
+	EditorBase* m_pOwner;
+	bool m_DisplayingPopupMenu;
+	bool m_CloseMe;
+};
+
 // The following lines reserve 255 consecutive id's
 const int EditorMaxSwitchTo = 255;
 const int idSwitchFile1 = wxNewId();
@@ -100,6 +113,8 @@ EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
         m_Filename(_T("")),
         m_WinTitle(filename)
 {
+	m_pData = new EditorBaseInternalData(this);
+
     Manager::Get()->GetEditorManager()->AddCustomEditor(this);
     InitFilename(filename);
     SetTitle(m_Shortname);
@@ -109,6 +124,8 @@ EditorBase::~EditorBase()
 {
     if (Manager::Get()->GetEditorManager()) // sanity check
         Manager::Get()->GetEditorManager()->RemoveCustomEditor(this);
+	
+	delete m_pData;
 }
 
 const wxString& EditorBase::GetTitle()
@@ -284,8 +301,15 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   
         clientpos = ScreenToClient(position);
     }
 
+	m_pData->m_DisplayingPopupMenu = true;
     PopupMenu(popup, clientpos);
     delete popup;
+    m_pData->m_DisplayingPopupMenu = false;
+    
+    // this code *must* be the last code executed by this function
+    // because it *will* invalidate 'this'
+    if (m_pData->m_CloseMe)
+		Manager::Get()->GetEditorManager()->Close(this);
 }
 
 void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
@@ -295,14 +319,24 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     // Switch to, close, save, etc.
 
     const int id = event.GetId();
+    m_pData->m_CloseMe = false;
 
     if (id == idCloseMe)
     {
-        Manager::Get()->GetEditorManager()->Close(this);
+    	if (m_pData->m_DisplayingPopupMenu)
+			m_pData->m_CloseMe = true; // defer delete 'this' until after PopupMenu() call returns
+		else
+			Manager::Get()->GetEditorManager()->Close(this);
     }
     else if (id == idCloseAll)
     {
-        Manager::Get()->GetEditorManager()->CloseAll();
+    	if (m_pData->m_DisplayingPopupMenu)
+    	{
+			Manager::Get()->GetEditorManager()->CloseAllExcept(this);
+			m_pData->m_CloseMe = true; // defer delete 'this' until after PopupMenu() call returns
+    	}
+		else
+			Manager::Get()->GetEditorManager()->CloseAll();
     }
     else if (id == idCloseAllOthers)
     {

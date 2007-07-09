@@ -10,6 +10,7 @@
 
 class wxMenu;
 class EditorBase;
+struct EditorBaseInternalData;
 
 WX_DECLARE_HASH_MAP(int, EditorBase*, wxIntegerHash, wxIntegerEqual, SwitchToMap);
 
@@ -282,6 +283,7 @@ class DLLIMPORT EditorBase : public wxPanel
         bool m_IsBuiltinEditor; // do not mess with it!
         wxString m_Shortname;
         wxString m_Filename;
+        EditorBaseInternalData* m_pData; ///< Use this to add new vars/functions w/out breaking the ABI
     private:
 
         /** one event handler for all popup menu entries */
