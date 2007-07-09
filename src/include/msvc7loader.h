@@ -9,13 +9,13 @@ class ProjectFile;
 
 class MSVC7Loader : public IBaseLoader
 {
-	public:
-		MSVC7Loader(cbProject* project);
-		virtual ~MSVC7Loader();
+    public:
+        MSVC7Loader(cbProject* project);
+        virtual ~MSVC7Loader();
 
-		bool Open(const wxString& filename);
-		bool Save(const wxString& filename);
-	protected:
+        bool Open(const wxString& filename);
+        bool Save(const wxString& filename);
+    protected:
         cbProject* m_pProject;
         bool m_ConvertSwitches;
         // macros used in Visual Studio projects
@@ -26,13 +26,15 @@ class MSVC7Loader : public IBaseLoader
         wxString m_OutDir;
         wxString m_IntDir;
         int m_Version;
-	private:
+    private:
+        wxString m_PlatformName;
+
         wxString ReplaceMSVCMacros(const wxString& str);
         void HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf);
         bool DoSelectConfiguration(TiXmlElement* root);
         bool DoImport(TiXmlElement* conf);
         bool DoImportFiles(TiXmlElement* root, int numConfigurations);
-        bool ParseInputString(wxString Input, wxArrayString& Output);
+        bool ParseInputString(wxString& Input, wxArrayString& Output);
 };
 
 #endif // MSVC7LOADER_H

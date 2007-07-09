@@ -26,6 +26,7 @@
 
 #include <wx/choicdlg.h>
 
+#include "prep.h"
 #include "msvc7loader.h"
 #include "multiselectdlg.h"
 #include "importers_globals.h"
@@ -36,12 +37,20 @@ MSVC7Loader::MSVC7Loader(cbProject* project)
     m_ConvertSwitches(false),
     m_Version(0)
 {
-	//ctor
+    //ctor
+    if (platform::windows)
+        m_PlatformName = _T("Win32");
+    else if (platform::linux)
+        m_PlatformName = _T("Linux");
+    else if (platform::macosx)
+        m_PlatformName = _T("MacOSX");
+    else
+        m_PlatformName = _T("Unknown");
 }
 
 MSVC7Loader::~MSVC7Loader()
 {
-	//dtor
+    //dtor
 }
 
 wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
@@ -51,6 +60,7 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
     ret.Replace(_T("$(IntDir)"), m_IntDir);
     ret.Replace(_T("$(INTDIR)"), m_IntDir);
     ret.Replace(_T("$(ConfigurationName)"), m_ConfigurationName);
+    ret.Replace(_T("$(PlatformName)"), m_PlatformName);
     ret.Replace(_T("$(ProjectName)"), m_ProjectName);
     ret.Replace(_T("$(ProjectDir)"), m_pProject->GetBasePath());
     ret.Replace(_T("$(TargetPath)"), m_TargetPath);
@@ -143,10 +153,10 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
     while (confs)
     {
         /*Replace all '|' with '_' so that compilation does not fail.
-		* This is vital as object directory names will be derived from target names
-		*/
+        * This is vital as object directory names will be derived from target names
+        */
         ConfigName = cbC2U(confs->Attribute("Name"));
-        ConfigName.Replace(_T("|"), _T("_"), true);
+        ConfigName.Replace(_T("|"), _T(" "), true);
         configurations.Add(ConfigName);
         confs = confs->NextSiblingElement();
     }
@@ -248,7 +258,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         if (strcmp(tool->Attribute("Name"), "VCLinkerTool") == 0 ||
             strcmp(tool->Attribute("Name"), "VCLibrarianTool") == 0)
         {
-		    // linker
+            // linker
             wxString tmp;
 
             if ((bt->GetTargetType()==ttExecutable) || (bt->GetTargetType()==ttNative)) {
@@ -353,9 +363,9 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         }
         else if (strcmp(tool->Attribute("Name"), "VCCLCompilerTool") == 0)
         {
-        	unsigned int i;
-        	wxString tmp;
-        	wxArrayString arr;
+            unsigned int i;
+            wxString tmp;
+            wxArrayString arr;
 
             // compiler
             tmp = cbC2U(tool->Attribute("AdditionalIncludeDirectories"));
@@ -484,8 +494,8 @@ AdditionalOptions=" /Zm1000 /GR  -DCMAKE_INTDIR=\&quot;Debug\&quot;"
 ObjectFile="Debug\"
 /Zm<n> max memory alloc (% of default)
 */
-        	  tmp = cbC2U(tool->Attribute("AdditionalOptions"));
-          	//tmp = ReplaceMSVCMacros(tmp);
+              tmp = cbC2U(tool->Attribute("AdditionalOptions"));
+            //tmp = ReplaceMSVCMacros(tmp);
             arr = GetArrayFromString(tmp, _T(" "));
             for (i=0; i<arr.GetCount(); ++i) {
               if (arr[i].IsSameAs(_T("/D")) || arr[i].IsSameAs(_T("-D"))) {
@@ -493,9 +503,9 @@ ObjectFile="Debug\"
                   ++i;
               }
               else if (arr[i].StartsWith(_T("/D")) || arr[i].StartsWith(_T("-D")))
-                	bt->AddCompilerOption((m_ConvertSwitches? _T("-D"):_T("/D")) + arr[i].Mid(2));
+                    bt->AddCompilerOption((m_ConvertSwitches? _T("-D"):_T("/D")) + arr[i].Mid(2));
               else if (arr[i].IsSameAs(_T("/Zi")))
-                	bt->AddCompilerOption(m_ConvertSwitches? _T("-g"):_T("/Zi"));
+                    bt->AddCompilerOption(m_ConvertSwitches? _T("-g"):_T("/Zi"));
               else if (!m_ConvertSwitches)
                   bt->AddCompilerOption(arr[i]);
             }
@@ -546,8 +556,8 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
             wxString fname = ReplaceMSVCMacros(cbC2U(file->Attribute("RelativePath")));
             if ((!fname.IsEmpty()) && (fname != _T(".\\")))
             {
-            	if (fname.StartsWith(_T(".\\")))
-					fname.erase(0, 2);
+                if (fname.StartsWith(_T(".\\")))
+                    fname.erase(0, 2);
 
                 #ifndef __WXMSW__
                 fname.Replace(_T("\\"), _T("/"), true);
@@ -557,10 +567,10 @@ bool MSVC7Loader::DoImportFiles(TiXmlElement* root, int numConfigurations)
                 {
                     // add it to all configurations, not just the first
                     for (int i = 1; i < numConfigurations; ++i)
-					{
-						pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
-						HandleFileConfiguration(file, pf); // We need to do this for all files
-					}
+                    {
+                        pf->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+                        HandleFileConfiguration(file, pf); // We need to do this for all files
+                    }
                 }
             }
             file = file->NextSiblingElement("File");
@@ -601,7 +611,7 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
             if (exclude.IsSameAs(_T("TRUE")))
             {
                 wxString name = cbC2U(fconf->Attribute("Name"));
-                name.Replace(_T("|"), _T("_"), true); // Replace '|' to ensure proper check
+                name.Replace(_T("|"), _T(" "), true); // Replace '|' to ensure proper check
                 pf->RemoveBuildTarget(name);
                 Manager::Get()->GetMessageManager()->DebugLog(
                     _("removed %s from %s"),
@@ -612,7 +622,7 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
     }
 }
 
-bool MSVC7Loader::ParseInputString(wxString Input, wxArrayString& Output)
+bool MSVC7Loader::ParseInputString(wxString& Input, wxArrayString& Output)
 {
     /* This function will parse an input string recursively
     *  with separators (',' and ';') */
