@@ -2000,10 +2000,13 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "spnLibs",     wxSpinButton)->Enable(en);
 
     // edit/delete/clear/copy/moveup/movedown extra path
-    en = XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnExtraEdit",   wxButton)->Enable(en);
-    XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnExtraClear",  wxButton)->Enable(XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetCount() != 0);
+    if (XRCCTRL(*this, "lstExtraPaths", wxListBox))
+    {
+      en = XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetSelection() >= 0;
+      XRCCTRL(*this, "btnExtraEdit",   wxButton)->Enable(en);
+      XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en);
+      XRCCTRL(*this, "btnExtraClear",  wxButton)->Enable(XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetCount() != 0);
+    }
 
     // add/edit/delete/clear vars
     if (XRCCTRL(*this, "lstVars", wxListBox))
