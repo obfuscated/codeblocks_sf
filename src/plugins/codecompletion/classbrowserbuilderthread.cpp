@@ -182,36 +182,36 @@ void ClassBrowserBuilderThread::BuildTree()
         m_pTreeTop->SetItemHasChildren(root);
     }
 
+    m_pTreeTop->Hide();
+    m_pTreeBottom->Hide();
     m_pTreeTop->Freeze();
     m_pTreeBottom->Freeze();
 
 	RemoveInvalidNodes(m_pTreeTop, root);
 	RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
 
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if (!TestDestroy() && !Manager::IsAppShuttingDown())
     {
-		m_pTreeBottom->Thaw();
-		m_pTreeTop->Thaw();
-        return;
-    }
+        // the tree is completely dynamic: it is populated when a node expands/collapses.
+        // so, by expanding the root node, we already instruct it to fill the top level :)
+        //
+        // this technique makes it really fast to draw (we only draw what's expanded) and
+        // has very minimum memory overhead since it contains as few items as possible.
+        // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
+        m_pTreeTop->Expand(root);
 
-    // the tree is completely dynamic: it is populated when a node expands/collapses.
-    // so, by expanding the root node, we already instruct it to fill the top level :)
-    //
-    // this technique makes it really fast to draw (we only draw what's expanded) and
-    // has very minimum memory overhead since it contains as few items as possible.
-    // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
-    m_pTreeTop->Expand(root);
-
-    if(platform::gtk)
-    {
-        // seems like the "expand" event comes too late in wxGTK,
-        // so make it happen now
-        ExpandItem(root);
+        if(platform::gtk)
+        {
+            // seems like the "expand" event comes too late in wxGTK,
+            // so make it happen now
+            ExpandItem(root);
+        }
     }
 
     m_pTreeBottom->Thaw();
     m_pTreeTop->Thaw();
+    m_pTreeBottom->Show();
+    m_pTreeTop->Show();
 
     SelectNode(m_pTreeTop->GetSelection()); // refresh selection
 }
