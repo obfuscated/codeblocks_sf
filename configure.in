@@ -290,6 +290,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/sys/files/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/files/Makefile
+    src/plugins/scriptedwizard/resources/win32gui/files/dialog/Makefile
+    src/plugins/scriptedwizard/resources/win32gui/files/frame/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/common/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/pch/Makefile
