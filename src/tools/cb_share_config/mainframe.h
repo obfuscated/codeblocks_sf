@@ -39,6 +39,7 @@ class MainFrame: public wxFrame
 		static const long ID_CFG_SRC;
 		static const long ID_LST_CFG;
 		static const long ID_BTN_TRANSFER;
+		static const long ID_BTN_UNCHECK;
 		static const long ID_BTN_EXPORT;
 		static const long ID_BTN_SAVE;
 		static const long ID_BTN_CLOSE;
@@ -52,6 +53,7 @@ class MainFrame: public wxFrame
 		void OnBtnFileSrcClick(wxCommandEvent& event);
 		void OnBtnFileDstClick(wxCommandEvent& event);
 		void OnBtnTransferClick(wxCommandEvent& event);
+		void OnBtnUncheckClick(wxCommandEvent& event);
 		void OnBtnExportClick(wxCommandEvent& event);
 		void OnBtnSaveClick(wxCommandEvent& event);
 		void OnBtnCloseClick(wxCommandEvent& event);
@@ -78,6 +80,7 @@ class MainFrame: public wxFrame
 		wxListBox* lstCfgDst;
 		wxGridSizer* grsAction;
 		wxButton* btnTransfer;
+		wxButton* btnUncheck;
 		wxButton* btnExport;
 		wxButton* btnSave;
 		wxButton* btnClose;

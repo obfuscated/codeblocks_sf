@@ -30,6 +30,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(MainFrame)
@@ -43,6 +44,7 @@ const long MainFrame::ID_BTN_FILE_DST = wxNewId();
 const long MainFrame::ID_CFG_SRC = wxNewId();
 const long MainFrame::ID_LST_CFG = wxNewId();
 const long MainFrame::ID_BTN_TRANSFER = wxNewId();
+const long MainFrame::ID_BTN_UNCHECK = wxNewId();
 const long MainFrame::ID_BTN_EXPORT = wxNewId();
 const long MainFrame::ID_BTN_SAVE = wxNewId();
 const long MainFrame::ID_BTN_CLOSE = wxNewId();
@@ -60,13 +62,13 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
   mFileDst(wxT("")), mCfgDst(0), mCfgDstValid(false), mNodesDst()
 {
 	//(*Initialize(MainFrame)
-	Create(parent,id,_("Welcome to Code::Blocks Share Config"),wxDefaultPosition,wxDefaultSize,wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxCLOSE_BOX|wxMINIMIZE_BOX,_T("wxFrame"));
+	Create(parent,id,_("Welcome to Code::Blocks Share Config"),wxDefaultPosition,wxDefaultSize,wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX|wxMINIMIZE_BOX,_T("wxFrame"));
 	SetMinSize(wxSize(640,480));
 	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	bszMain = new wxBoxSizer(wxVERTICAL);
 	bszSteps = new wxBoxSizer(wxHORIZONTAL);
 	sbsSteps = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Steps to do:"));
-	lblSteps = new wxStaticText(this,ID_LBL_STEPS,_("- select the C::B source configuration file on the left\n- select the C::B destination configuration file on the right\n- select the sections you would like to transfer\n- verify again and do the transfer\n- save the modified (right) configuration"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_STEPS"));
+	lblSteps = new wxStaticText(this,ID_LBL_STEPS,_("- make sure C::B is *not* running\n- select the C::B source configuration file on the left\n- select the C::B destination configuration file on the right\n- select the sections you would like to transfer\n- verify again and do the transfer\n- save the modified (right) configuration"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_STEPS"));
 	sbsSteps->Add(lblSteps,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	bszSteps->Add(sbsSteps,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	bszMain->Add(bszSteps,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
@@ -95,26 +97,29 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
 	grsFile->Add(flsFileDst,0,wxLEFT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,5);
 	bszMain->Add(grsFile,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	grsCfg = new wxGridSizer(1,2,0,0);
-	clbCfgSrc = new wxCheckListBox(this,ID_CFG_SRC,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CFG_SRC"));
+	clbCfgSrc = new wxCheckListBox(this,ID_CFG_SRC,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CFG_SRC"));
 	grsCfg->Add(clbCfgSrc,0,wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	lstCfgDst = new wxListBox(this,ID_LST_CFG,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_LST_CFG"));
 	grsCfg->Add(lstCfgDst,0,wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	bszMain->Add(grsCfg,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
-	grsAction = new wxGridSizer(1,6,0,0);
+	grsAction = new wxGridSizer(1,8,0,0);
 	btnTransfer = new wxButton(this,ID_BTN_TRANSFER,_("Transfer >>"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_TRANSFER"));
 	btnTransfer->SetToolTip(_("Transfer the selection on the left to right."));
-	grsAction->Add(btnTransfer,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
-	grsAction->Add(-1,-1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	grsAction->Add(btnTransfer,0,wxALIGN_LEFT|wxALIGN_TOP,0);
+	btnUncheck = new wxButton(this,ID_BTN_UNCHECK,_("Uncheck all"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_UNCHECK"));
+	grsAction->Add(btnUncheck,0,wxALIGN_LEFT|wxALIGN_TOP,0);
+	grsAction->Add(0,0,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
 	btnExport = new wxButton(this,ID_BTN_EXPORT,_("Export"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_EXPORT"));
 	btnExport->SetToolTip(_("Export the selection on the left to a C::B config backup file."));
-	grsAction->Add(btnExport,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	grsAction->Add(btnExport,0,wxALIGN_LEFT|wxALIGN_TOP,0);
 	btnSave = new wxButton(this,ID_BTN_SAVE,_("Save"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_SAVE"));
 	btnSave->SetToolTip(_("Save the selection on the right into the C::B destination config file."));
 	grsAction->Add(btnSave,0,wxLEFT|wxALIGN_LEFT|wxALIGN_TOP,5);
-	grsAction->Add(-1,-1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	grsAction->Add(-1,-1,1,wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	grsAction->Add(0,0,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
 	btnClose = new wxButton(this,ID_BTN_CLOSE,_("Close"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_CLOSE"));
 	btnClose->SetToolTip(_("Close the application."));
-	grsAction->Add(btnClose,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP,0);
+	grsAction->Add(btnClose,0,wxALIGN_RIGHT|wxALIGN_TOP,0);
 	bszMain->Add(grsAction,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	SetSizer(bszMain);
 	bszMain->Fit(this);
@@ -123,6 +128,7 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
 	Connect(ID_BTN_FILE_SRC,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileSrcClick);
 	Connect(ID_BTN_FILE_DST,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileDstClick);
 	Connect(ID_BTN_TRANSFER,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnTransferClick);
+	Connect(ID_BTN_UNCHECK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnUncheckClick);
 	Connect(ID_BTN_EXPORT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnExportClick);
 	Connect(ID_BTN_SAVE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnSaveClick);
 	Connect(ID_BTN_CLOSE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnCloseClick);
@@ -234,6 +240,14 @@ void MainFrame::OnBtnTransferClick(wxCommandEvent& event)
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);
   }
 }// OnBtnTransferClick
+
+//***********************************************************************
+
+void MainFrame::OnBtnUncheckClick(wxCommandEvent& event)
+{
+  for (int i=0; i<clbCfgSrc->GetCount(); ++i)
+    clbCfgSrc->Check(i, false);
+}// OnBtnUncheckClick
 
 //***********************************************************************
 
