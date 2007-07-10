@@ -6,12 +6,12 @@
 // forward decls
 class cbProject;
 
-class DLLIMPORT DevCppLoader : public IBaseLoader
+class DevCppLoader : public IBaseLoader
 {
 	public:
 		DevCppLoader(cbProject* project);
 		virtual ~DevCppLoader();
-		
+
 		bool Open(const wxString& filename);
 		bool Save(const wxString& filename);
 	protected:

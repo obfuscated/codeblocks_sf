@@ -45,6 +45,7 @@ echo Packing plugins UI resources
 %ZIPCMD% -j9 %RESDIR%\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc > nul
+%ZIPCMD% -j9 %RESDIR%\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml > nul
 %ZIPCMD% -j9 %RESDIR%\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml > nul
 %ZIPCMD% -j9 %RESDIR%\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc > nul
 %ZIPCMD% -j9 %RESDIR%\xpmanifest.zip plugins\xpmanifest\manifest.xml > nul

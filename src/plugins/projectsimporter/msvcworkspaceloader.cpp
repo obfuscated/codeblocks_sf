@@ -10,7 +10,7 @@
 * $HeadURL$
 */
 
-#include "sdk_precomp.h"
+#include "sdk.h"
 
 #ifndef CB_PRECOMP
     #include <wx/string.h>
