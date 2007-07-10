@@ -239,6 +239,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/debuggergdb/resources/images/16x16/Makefile
 	src/plugins/defaultmimehandler/Makefile
 	src/plugins/defaultmimehandler/resources/Makefile
+	src/plugins/projectsimporter/Makefile
+	src/plugins/projectsimporter/resources/Makefile
 	src/plugins/scriptedwizard/Makefile
 	src/plugins/scriptedwizard/resources/Makefile
 	src/plugins/scriptedwizard/resources/c_file/Makefile

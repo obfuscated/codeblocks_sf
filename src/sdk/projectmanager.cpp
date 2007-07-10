@@ -739,20 +739,11 @@ wxMenu* ProjectManager::GetProjectMenu()
 
 cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
 {
-    if (m_IsLoadingProject)
-        return 0L;
-
-    if(!Manager::Get()->GetPluginManager()->FindPluginByName(_T("Compiler")))
-    {
-        cbMessageBox(_("Deactivating the compiler plugin is most unwise.\n\nIf you intend to open a project, you have to re-activate the compiler plugin first."), _("Error"));
-        return 0;
-    }
     cbProject* result = 0;
-
-    // disallow application shutdown while opening files
-    // WARNING: remember to set it to true, when exiting this function!!!
-    s_CanShutdown = false;
-    cbProject* project = IsOpen(filename);
+    if (!BeginLoadingProject())
+    {
+    	return 0;
+    }
 
     // "Try" block (loop which only gets executed once)
     // These blocks are extremely useful in constructs that need
@@ -761,97 +752,49 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
     // you just break out of the loop (which only gets executed once) to exit.
     do
     {
+		cbProject* project = IsOpen(filename);
         if (project)
         {
-            if (m_pWorkspace)
-                m_pWorkspace->SetModified(true);
-            // we 're done
+            // already open
             result = project;
             break;
         }
-//        if (!wxFileExists(filename))
-//            return 0;
-        m_IsLoadingProject=true;
-        project = new cbProject(filename);
 
-        // We need to do this because creating cbProject allows the app to be
-        // closed in the middle of the operation. So the class destructor gets
-        // called in the middle of a method call.
+		if (FileTypeOf(filename) == ftCodeBlocksProject)
+		{
+			project = new cbProject(filename);
 
-        if (!project->IsLoaded())
-        {
-            delete project;
-            break;
-        }
+			// We need to do this because creating cbProject allows the app to be
+			// closed in the middle of the operation. So the class destructor gets
+			// called in the middle of a method call.
 
-        m_pProjects->Add(project);
+			if (!project->IsLoaded())
+			{
+				delete project;
+				break;
+			}
 
-        // to avoid tree flickering, we 'll manually call here the project's BuildTree
-        // but before we do it, remove bold from current active project (if any)
-// Commented it by Heromyth. I don't think it is a good thing to activate the project imediately after opening one.
-//        if (m_pActiveProject)
-//            m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
-        // ok, set the new project
-
-        project->LoadLayout();
-
-        if (!m_IsLoadingWorkspace)
-        {
-            project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
-            m_pTree->Expand(project->GetProjectNode());
-            m_pTree->Expand(m_TreeRoot); // make sure the root node is open
-        }
-        if (activateIt)
-            SetProject(project, !m_IsLoadingWorkspace);
-
-        if (m_pWorkspace)
-            m_pWorkspace->SetModified(true);
-        // we 're done
-
-        result = project;
-
-        // if loading a workspace, avoid sending the event now
-        // we 'll send them after all projects have been loaded
-        // (look in LoadWorkspace)
-        if (!m_IsLoadingWorkspace)
-        {
-            // notify plugins that the project is loaded
-            // moved here from cbProject::Open() because code-completion
-            // kicks in too early and the perceived loading time is long...
-            CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-            event.SetProject(project);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-        }
-
-        // finally, if not loading a workspace, display project notes (if appropriate)
-        if (!m_IsLoadingWorkspace)
-        {
-            if (project->GetShowNotesOnLoad())
-                project->ShowNotes(true);
-        }
+			result = project;
+		}
+		else // !ftCodeBlocksProject
+		{
+			// the plugin handler should call begin/end on its own...
+			EndLoadingProject(0);
+			
+            cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
+            if (plugin)
+            {
+                plugin->OpenFile(filename);
+            }
+		}
 
         break;
     } while(false);
     // we 're done
-
-    m_IsLoadingProject=false;
-
-    #ifdef USE_OPENFILES_TREE
-    Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
-    #endif
-    // Restore child windows' display
-    // if(mywin)
-    //    mywin->Show();
-
-    // sort out any global user vars that need to be defined now (in a batch) :)
-    // but only if not loading workspace (else LoadWorkspace() will handle this)
-    if (!m_IsLoadingWorkspace)
-    {
-        Manager::Get()->GetUserVariableManager()->Arrogate();
-    }
-    WorkspaceChanged();
-
-    s_CanShutdown = true;
+    
+    EndLoadingProject(result);
+	if (activateIt)
+		SetProject(result, !m_IsLoadingWorkspace);
     return result;
 }
 
@@ -872,7 +815,15 @@ cbProject* ProjectManager::NewProject(const wxString& filename)
         else
             return 0;
     }
-    return LoadProject(filename);
+    
+	cbProject* prj = IsOpen(filename);
+	if (!prj && BeginLoadingProject())
+    {
+		prj = new cbProject(filename);
+		EndLoadingProject(prj);
+		SetProject(prj, !m_IsLoadingWorkspace);
+    }
+	return prj;
 }
 
 bool ProjectManager::QueryCloseAllProjects()
@@ -1127,81 +1078,12 @@ cbWorkspace* ProjectManager::GetWorkspace()
 
 bool ProjectManager::LoadWorkspace(const wxString& filename)
 {
-    m_IsLoadingWorkspace=true;
-    if (!CloseWorkspace())
-    {
-        m_IsLoadingWorkspace=false;
-        return false; // didn't close
-    }
-
-    FreezeTree();
-    m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
-    m_pTree->Expand(m_pTree->GetRootItem());
-    UnfreezeTree();
+	if (!BeginLoadingWorkspace())
+		return false;
     m_pWorkspace = new cbWorkspace(filename);
-    bool success = m_pWorkspace->IsOK();
-    if (success)
-    {
-        RebuildTree();
-        if (m_pActiveProject)
-            m_pTree->Expand(m_pActiveProject->GetProjectNode());
-        m_pTree->Expand(m_TreeRoot); // make sure the root node is open
-        m_IsLoadingWorkspace=false;
-        Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
-        m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
+    EndLoadingWorkspace();
 
-        Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
-        UnfreezeTree(true);
-        // sort out any global user vars that need to be defined now (in a batch) :)
-        Manager::Get()->GetUserVariableManager()->Arrogate();
-
-        int numNotes = 0;
-
-        // and now send the project loaded events
-        // since we were loading a workspace, these events were not sent before
-        for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
-        {
-            cbProject* project = m_pProjects->Item(i);
-
-            // notify plugins that the project is loaded
-            // moved here from cbProject::Open() because code-completion
-            // kicks in too early and the perceived loading time is long...
-            CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
-            event.SetProject(project);
-            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
-
-            // since we 're iterating anyway, let's count the project notes that should be displayed
-            if (project->GetShowNotesOnLoad() && !project->GetNotes().IsEmpty())
-                ++numNotes;
-        }
-
-        // finally, display projects notes (if appropriate)
-        if (numNotes)
-        {
-            if (numNotes == 1 || // if only one project has notes, don't bother asking
-                cbMessageBox(wxString::Format(_("%d projects contain notes that should be displayed on-load.\n"
-                                                "Do you want to display them now, one after the other?"),
-                                                numNotes),
-                                                _("Display project notes?"),
-                                                wxICON_QUESTION | wxYES_NO) == wxID_YES)
-            {
-                for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
-                {
-                    cbProject* project = m_pProjects->Item(i);
-                    if (project->GetShowNotesOnLoad())
-                        project->ShowNotes(true);
-                }
-            }
-        }
-    }
-    else
-    {
-        CloseWorkspace();
-    }
-    m_IsLoadingWorkspace=false;
-    WorkspaceChanged();
-
-    return success;
+    return m_pWorkspace && m_pWorkspace->IsOK();
 }
 
 bool ProjectManager::SaveWorkspace()
@@ -2737,5 +2619,174 @@ void ProjectManager::RemoveFilesRecursively(wxTreeItemId& sel_id)
         }
         else
             break;
+    }
+}
+
+bool ProjectManager::BeginLoadingProject()
+{
+    if (m_IsLoadingProject)
+        return false;
+
+    if(!Manager::Get()->GetPluginManager()->FindPluginByName(_T("Compiler")))
+    {
+        cbMessageBox(_("Deactivating the compiler plugin is most unwise.\n\nIf you intend to open a project, you have to re-activate the compiler plugin first."), _("Error"));
+        return false;
+    }
+    
+    // disallow application shutdown while opening files
+    s_CanShutdown = false;
+    // flag project loading
+	m_IsLoadingProject = true;
+
+    return true;
+}
+
+void ProjectManager::EndLoadingProject(cbProject* project)
+{
+    s_CanShutdown = true;
+	if (!m_IsLoadingProject)
+		return;
+    m_IsLoadingProject = false;
+
+	if (project)
+	{
+		bool newAddition = m_pProjects->Index(project) == -1;
+		if (newAddition)
+		{
+			m_pProjects->Add(project);
+			project->LoadLayout();
+		}
+
+		if (!m_IsLoadingWorkspace)
+		{
+			if (newAddition)
+				project->BuildTree(m_pTree, m_TreeRoot, m_TreeCategorize, m_TreeUseFolders, m_pFileGroups);
+			else
+				RebuildTree();
+			m_pTree->Expand(project->GetProjectNode());
+			m_pTree->Expand(m_TreeRoot); // make sure the root node is open
+		}
+
+		if (m_pWorkspace)
+			m_pWorkspace->SetModified(true);
+
+		// if loading a workspace, avoid sending the event now
+		// we 'll send them after all projects have been loaded
+		// (look in LoadWorkspace)
+		if (!m_IsLoadingWorkspace)
+		{
+			// notify plugins that the project is loaded
+			// moved here from cbProject::Open() because code-completion
+			// kicks in too early and the perceived loading time is long...
+			CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+			event.SetProject(project);
+			Manager::Get()->ProcessEvent(event);
+
+			// finally, display project notes (if appropriate)
+			if (project->GetShowNotesOnLoad())
+				project->ShowNotes(true);
+		}
+	}
+
+    #ifdef USE_OPENFILES_TREE
+    Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
+    #endif
+
+    // sort out any global user vars that need to be defined now (in a batch) :)
+    // but only if not loading workspace (else LoadWorkspace() will handle this)
+    if (!m_IsLoadingWorkspace)
+    {
+        Manager::Get()->GetUserVariableManager()->Arrogate();
+    }
+    WorkspaceChanged();
+}
+
+bool ProjectManager::BeginLoadingWorkspace()
+{
+    if (m_IsLoadingWorkspace)
+        return false;
+
+    m_IsLoadingWorkspace = true;
+    if (!CloseWorkspace())
+    {
+        m_IsLoadingWorkspace = false;
+        return false; // didn't close
+    }
+    
+    FreezeTree();
+    m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
+    m_pTree->Expand(m_pTree->GetRootItem());
+    UnfreezeTree();
+
+    return true;
+}
+
+void ProjectManager::EndLoadingWorkspace()
+{
+	if (!m_IsLoadingWorkspace)
+		return;
+		
+    m_IsLoadingWorkspace = false;
+	if (!m_pWorkspace)
+		return;
+
+    if (m_pWorkspace->IsOK())
+    {
+        RebuildTree();
+        if (m_pActiveProject)
+            m_pTree->Expand(m_pActiveProject->GetProjectNode());
+        m_pTree->Expand(m_TreeRoot); // make sure the root node is open
+        Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
+        m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
+
+        Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
+        UnfreezeTree(true);
+        // sort out any global user vars that need to be defined now (in a batch) :)
+        Manager::Get()->GetUserVariableManager()->Arrogate();
+
+        int numNotes = 0;
+
+        // and now send the project loaded events
+        // since we were loading a workspace, these events were not sent before
+        for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+        {
+            cbProject* project = m_pProjects->Item(i);
+
+            // notify plugins that the project is loaded
+            // moved here from cbProject::Open() because code-completion
+            // kicks in too early and the perceived loading time is long...
+            CodeBlocksEvent event(cbEVT_PROJECT_OPEN);
+            event.SetProject(project);
+            Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+
+            // since we 're iterating anyway, let's count the project notes that should be displayed
+            if (project->GetShowNotesOnLoad() && !project->GetNotes().IsEmpty())
+                ++numNotes;
+        }
+
+        // finally, display projects notes (if appropriate)
+        if (numNotes)
+        {
+            if (numNotes == 1 || // if only one project has notes, don't bother asking
+                cbMessageBox(wxString::Format(_("%d projects contain notes that should be displayed on-load.\n"
+                                                "Do you want to display them now, one after the other?"),
+                                                numNotes),
+                                                _("Display project notes?"),
+                                                wxICON_QUESTION | wxYES_NO) == wxID_YES)
+            {
+                for (size_t i = 0; i < m_pProjects->GetCount(); ++i)
+                {
+                    cbProject* project = m_pProjects->Item(i);
+                    if (project->GetShowNotesOnLoad())
+                        project->ShowNotes(true);
+                }
+            }
+        }
+		
+		WorkspaceChanged();
+    }
+    else
+    {
+        CloseWorkspace();
     }
 }

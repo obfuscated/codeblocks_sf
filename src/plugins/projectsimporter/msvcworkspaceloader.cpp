@@ -30,6 +30,7 @@
 #endif
 
 #include <wx/stream.h>
+#include <wx/progdlg.h>
 
 #include "msvcworkspaceloader.h"
 #include "importers_globals.h"
@@ -101,6 +102,8 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
+    wxProgressDialog progress(_("Importing MSVC 6 workspace"), _("Please wait while importing MSVC 6 workspace..."), 100, 0, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+
     int count = 0;
     cbProject* project = 0;
     cbProject* firstproject = 0;
@@ -156,6 +159,8 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
           wxFileName fname(UnixFilename(prjFile));
           fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
           Manager::Get()->GetMessageManager()->DebugLog(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
+          if (!progress.Pulse(_("Importing project: ") + prjTitle))
+			break;
           project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath(), false);
           if (!firstproject) firstproject = project;
           if (project) registerProject(project->GetTitle(), project);
@@ -173,8 +178,9 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
         }
     }
 
-    Manager::Get()->GetProjectManager()->SetProject(firstproject);
-    updateProjects();
+	if (firstproject)
+		Manager::Get()->GetProjectManager()->SetProject(firstproject);
+	updateProjects();
     ImportersGlobals::ResetDefaults();
 
     Title = wxFileName(filename).GetName() + _(" workspace");

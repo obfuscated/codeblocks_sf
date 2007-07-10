@@ -1365,13 +1365,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
     switch(FileTypeOf(filename))
     {
         //
-        // Workspaces
+        // Workspace
         //
         case ftCodeBlocksWorkspace:
-            // fallthrough
-        case ftMSVC6Workspace:
-            // fallthrough
-        case ftMSVC7Workspace:
             // verify that it's not the same as the one already open
             if (filename != Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename() &&
                 DoCloseCurrentWorkspace())
@@ -1379,7 +1375,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                 bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
                 if (ret && addToHistory)
-                    AddToRecentProjectsHistory(filename);
+                    AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
                 return ret;
             }
             else
@@ -1387,15 +1383,9 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             break;
 
         //
-        // Projects
+        // Project
         //
         case ftCodeBlocksProject:
-            // fallthrough
-        case ftDevCppProject:
-            // fallthrough
-        case ftMSVC6Project:
-            // fallthrough
-        case ftMSVC7Project:
             // Make a check whether the project exists in current workspace
             if (Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath()) == NULL)
             {
@@ -1426,7 +1416,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             // warn user that "Files extension handler" is disabled
             if (!plugin)
             {
-                cbMessageBox(_("Could not open file ") + filename + _(",\nbecause \"Files extention handler\" plugin is disabled."), _("Error"), wxICON_ERROR);
+                cbMessageBox(_("Could not open file ") + filename + _(",\nbecause no extension handler could be found."), _("Error"), wxICON_ERROR);
                 return false;
             }
             if (plugin->OpenFile(filename) == 0)

@@ -30,6 +30,7 @@
 #endif
 
 #include <wx/stream.h>
+#include <wx/progdlg.h>
 
 #include "msvc7workspaceloader.h"
 #include "importers_globals.h"
@@ -115,6 +116,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
+    wxProgressDialog progress(_("Importing MSVC 7 solution"), _("Please wait while importing MSVC 7 solution..."), 100, 0, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+
     int count = 0;
     wxArrayString keyvalue;
     cbProject* project = 0;
@@ -175,6 +178,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             wxFileName fname(UnixFilename(prjFile));
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             Manager::Get()->GetMessageManager()->DebugLog(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
+			if (!progress.Pulse(_("Importing project: ") + prjTitle))
+				break;
             project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath(), false);
             if (!firstproject) firstproject = project;
             if (project) registerProject(uuid, project);

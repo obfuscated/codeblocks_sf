@@ -37,8 +37,6 @@
     #include <wx/intl.h>
 #endif
 
-#include "msvcworkspaceloader.h"
-#include "msvc7workspaceloader.h"
 #include <wx/filedlg.h>
 #include "filefilters.h"
 
@@ -61,7 +59,7 @@ cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspac
         m_Filename = filename;
         m_IsDefault = filename.IsEmpty();
     }
-    m_IsOK = false;
+    m_IsOK = true;
     m_Modified = false;
     Load();
 }
@@ -91,26 +89,22 @@ void cbWorkspace::Load()
         }
     }
 
-    bool modified = false;
-    IBaseWorkspaceLoader* pWsp = 0;
-    switch (FileTypeOf(fname))
+    if (FileTypeOf(fname) == ftCodeBlocksWorkspace)
     {
-        case ftCodeBlocksWorkspace: pWsp = new WorkspaceLoader; modified = false; break;
-        case ftMSVC6Workspace: pWsp = new MSVCWorkspaceLoader; modified = true; break;
-        case ftMSVC7Workspace: pWsp = new MSVC7WorkspaceLoader; modified = true; break;
-        default: break;
-    }
-    wxString Title;
-    m_IsOK = pWsp && (pWsp->Open(fname, Title) || m_IsDefault);
-    if(!Title.IsEmpty())
-    {
-        m_Title = Title;
+    	IBaseWorkspaceLoader* pWsp = new WorkspaceLoader;
+
+		wxString Title;
+		m_IsOK = pWsp && (pWsp->Open(fname, Title) || m_IsDefault);
+		if(!Title.IsEmpty())
+		{
+			m_Title = Title;
+		}
+		
+		delete pWsp;
     }
 
     m_Filename.SetExt(FileFilters::WORKSPACE_EXT);
-    SetModified(modified);
-
-    delete pWsp;
+    SetModified(false);
 }
 
 bool cbWorkspace::Save(bool force)

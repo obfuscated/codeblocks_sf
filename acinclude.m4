@@ -153,6 +153,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the foreign projects importer plugin)
+pimport_default="yes"
+AC_ARG_ENABLE(projects-importer, [AC_HELP_STRING([--enable-projects-importer], [build the foreign projects importer plugin (default YES)])],,
+                       enable_pimport=$pimport_default)
+AM_CONDITIONAL([BUILD_PROJECTSIMPORTER], [test "x$enable_pimport" = "xyes"])
+if test "x$enable_pimport" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the scripted wizard plugin)
 prw_default="yes"
 AC_ARG_ENABLE(scripted-wizard, [AC_HELP_STRING([--enable-scripted-wizard], [build the scripted wizard plugin (default YES)])],,

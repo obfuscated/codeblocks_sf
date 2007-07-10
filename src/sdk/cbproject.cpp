@@ -55,14 +55,10 @@
 #include <map>
 #include "projectoptionsdlg.h"
 #include "projectloader.h"
-#include "devcpploader.h"
-#include "msvcloader.h"
-#include "msvc7loader.h"
 #include "projectlayoutloader.h"
 #include "selecttargetdlg.h"
 #include "filegroupsandmasks.h"
 #include "filefilters.h"
-#include "importers_globals.h"
 #include "annoyingdialog.h"
 #include "genericmultilinenotesdlg.h"
 
@@ -289,80 +285,32 @@ void cbProject::Open()
         fileUpgraded = loader.FileUpgraded();
         fileModified = loader.FileModified();
         m_CurrentlyLoading = false;
+
+		if (m_Loaded)
+		{
+			CalculateCommonTopLevelPath();
+			Manager::Get()->GetMessageManager()->Log(_("done"));
+			if (!m_Targets.GetCount())
+				AddDefaultBuildTarget();
+			// in case of batch build discard upgrade messages
+			fileUpgraded = fileUpgraded && !Manager::IsBatchBuild();
+			SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
+
+			// moved to ProjectManager::LoadProject()
+			// see explanation there...
+	//        NotifyPlugins(cbEVT_PROJECT_OPEN);
+
+			if (fileUpgraded)
+			{
+				InfoWindow::Display(m_Title,
+				  _("The loaded project file was generated\n"
+					"with an older version of Code::Blocks.\n\n"
+					"Code::Blocks can import older project files,\n"
+					"but will always save in the current format."), 12000, 2000);
+			}
+			m_LastModified = fname.GetModificationTime();
+		}
     }
-    else
-    {
-        Manager::Get()->GetMessageManager()->AppendLog(_("Importing %s: "), m_Filename.c_str());
-        IBaseLoader* loader = 0L;
-        switch (ft)
-        {
-             case ftDevCppProject: loader = new DevCppLoader(this); break;
-             case ftMSVC6Project: loader = new MSVCLoader(this); break;
-             case ftMSVC7Project: loader = new MSVC7Loader(this); break;
-             case ftXcode1Project: /* placeholder, fallthrough (for now) */
-             case ftXcode2Project: /* placeholder, fallthrough (for now) */
-             default:
-                 Manager::Get()->GetMessageManager()->Log(_("failed."));
-                 return;
-        }
-
-        wxString compilerID;
-        if (ImportersGlobals::UseDefaultCompiler)
-            compilerID = CompilerFactory::GetDefaultCompilerID();
-        else
-        {
-            // select compiler for the imported project
-            // need to do it before actual import, because the importer might need
-            // project's compiler information (like the object files extension etc).
-            Compiler* compiler = CompilerFactory::SelectCompilerUI(_("Select compiler for ") + wxFileName(m_Filename).GetFullName());
-            if (compiler)
-                compilerID = compiler->GetID();
-        }
-
-        if (!compilerID.IsEmpty())
-        {
-            SetCompilerID(compilerID);
-
-            // actually import project file
-            m_CurrentlyLoading = true;
-            m_Loaded = loader->Open(m_Filename);
-            fname.SetExt(FileFilters::CODEBLOCKS_EXT);
-            m_Filename = fname.GetFullPath();
-            Save(); // Save it now to avoid project file opening error
-            SetModified(true);
-            m_CurrentlyLoading = false;
-        }
-        else
-            m_Loaded = false;
-        delete loader;
-    }
-
-    if (m_Loaded)
-    {
-        CalculateCommonTopLevelPath();
-        Manager::Get()->GetMessageManager()->Log(_("done"));
-        if (!m_Targets.GetCount())
-            AddDefaultBuildTarget();
-        // in case of batch build discard upgrade messages
-        fileUpgraded = fileUpgraded && !Manager::IsBatchBuild();
-        SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
-
-        // moved to ProjectManager::LoadProject()
-        // see explanation there...
-//        NotifyPlugins(cbEVT_PROJECT_OPEN);
-
-        if (fileUpgraded)
-        {
-            InfoWindow::Display(m_Title,
-              _("The loaded project file was generated\n"
-                "with an older version of Code::Blocks.\n\n"
-                "Code::Blocks can import older project files,\n"
-                "but will always save in the current format."), 12000, 2000);
-        }
-        m_LastModified = fname.GetModificationTime();
-    }
-    else
-        Manager::Get()->GetMessageManager()->Log(_("failed"));
 } // end of Open
 
 void cbProject::CalculateCommonTopLevelPath()

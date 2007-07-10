@@ -389,6 +389,29 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         /** Sends message to the plugins that the workspace has been changed */
         void WorkspaceChanged();
+        
+        /** Begins the project loading process. Only to be used by code that needs it (e.g. project importers).
+          * @return True on success, false on failure.
+          * @note This call *must* be "closed" by a call to EndLoadingProject()!
+          */
+        bool BeginLoadingProject();
+
+        /** Ends the project loading process. Only to be used by code that needs it (e.g. project importers).
+          * @param project The loaded project.
+          * @note A call to BeginLoadingProject() must have preceded.
+          */
+        void EndLoadingProject(cbProject* project);
+
+        /** Begins the workspace loading process. Only to be used by code that needs it (e.g. workspace importers).
+          * @return True on success, false on failure.
+          * @note This call *must* be "closed" by a call to EndLoadingWorkspace()!
+          */
+        bool BeginLoadingWorkspace();
+
+        /** Ends the workspace loading process. Only to be used by code that needs it (e.g. workspace importers).
+          * @note A call to BeginLoadingWorkspace() must have preceded.
+          */
+        void EndLoadingWorkspace();
     private:
         ProjectManager();
         ~ProjectManager();

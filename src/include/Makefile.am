@@ -50,7 +50,6 @@ ALLHEADERS = annoyingdialog.h \
 				configuretoolsdlg.h \
 				confirmreplacedlg.h \
 				crc32.h \
-				devcpploader.h \
 				editarrayfiledlg.h \
 				editarrayorderdlg.h \
 				editarraystringdlg.h \
@@ -86,11 +85,6 @@ ALLHEADERS = annoyingdialog.h \
 				menuitemsmanager.h \
 				messagelog.h \
 				messagemanager.h \
-				msvc7loader.h \
-				msvc7workspaceloader.h \
-				msvcloader.h \
-				msvcworkspacebase.h \
-				msvcworkspaceloader.h \
 				multiselectdlg.h \
 				newfromtemplatedlg.h \
 				openfilestree.h \

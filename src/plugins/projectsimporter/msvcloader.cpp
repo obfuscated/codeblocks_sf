@@ -574,7 +574,7 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                         ProcessLinkerOptions(target, options[i]);
                 } // else ignore
             }
-            else
+            else if (opt.Find(_T(".lib")) == -1) // don't add linking lib (added below, in common options)
                 Manager::Get()->GetMessageManager()->DebugLog(_T("Unknown linker option: " + opt));
         }
         else // !m_ConvertSwitches

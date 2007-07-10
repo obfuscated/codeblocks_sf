@@ -46,7 +46,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						configuretoolsdlg.cpp \
 						confirmreplacedlg.cpp \
 						crc32.cpp \
-						devcpploader.cpp \
 						editarrayfiledlg.cpp \
 						editarrayorderdlg.cpp \
 						editarraystringdlg.cpp \
@@ -77,11 +76,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						menuitemsmanager.cpp \
 						messagelog.cpp \
 						messagemanager.cpp \
-						msvc7loader.cpp \
-						msvc7workspaceloader.cpp \
-						msvcloader.cpp \
-						msvcworkspacebase.cpp \
-						msvcworkspaceloader.cpp \
 						multiselectdlg.cpp \
 						newfromtemplatedlg.cpp \
 						personalitymanager.cpp \

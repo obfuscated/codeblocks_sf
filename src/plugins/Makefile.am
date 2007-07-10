@@ -26,6 +26,10 @@ if BUILD_MIMEHANDLER
 MAYBE_MIMEHANDLER=defaultmimehandler
 endif
 
+if BUILD_PROJECTSIMPORTER
+MAYBE_PROJECTSIMPORTER=projectsimporter
+endif
+
 if BUILD_SCRIPTEDWIZARD
 MAYBE_SCRIPTEDWIZARD=scriptedwizard
 endif
@@ -50,6 +54,7 @@ SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_DEBUGGER) \
 		$(MAYBE_MIMEHANDLER) \
 		$(MAYBE_SCRIPTEDWIZARD) \
+		$(MAYBE_PROJECTSIMPORTER) \
 		$(MAYBE_TODO) \
 		$(MAYBE_MANIFEST) \
 		$(MAYBE_CONSTRIB)
@@ -61,6 +66,7 @@ DIST_SUBDIRS = astyle \
 		compilergcc \
 		debuggergdb \
 		defaultmimehandler \
+		projectsimporter \
 		scriptedwizard \
 		todo \
 		xpmanifest \
