@@ -4,35 +4,41 @@
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
       <object class="sizeritem">
+        <object class="wxStaticText" name="lblSet">
+          <label>Select/Create/Clone/Remove envvar - set:</label>
+        </object>
+        <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
         <object class="wxBoxSizer">
           <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxStaticText" name="lblSet">
-              <label>Select/Create/Remove envvar - set:</label>
-            </object>
-            <flag>wxTOP|wxEXPAND|wxGROW</flag>
-            <border>4</border>
-          </object>
           <object class="sizeritem">
             <object class="wxChoice" name="choSet">
               <content/>
             </object>
             <option>1</option>
-            <flag>wxLEFT|wxRIGHT|wxEXPAND|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <flag>wxRIGHT|wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
             <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="btnCreateSet">
               <label>Create...</label>
             </object>
-            <flag>wxALL|wxEXPAND|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <flag>wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+          </object>
+          <object class="sizeritem">
+            <object class="wxButton" name="btnCloneSet">
+              <label>Clone...</label>
+            </object>
+            <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
+            <border>8</border>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="btnRemoveSet">
               <label>Remove</label>
             </object>
-            <flag>wxLEFT|wxEXPAND|wxGROW|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
-            <border>8</border>
+            <flag>wxEXPAND|wxALIGN_CENTRE_VERTICAL|wxALIGN_CENTRE_HORIZONTAL</flag>
           </object>
         </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
@@ -67,7 +73,7 @@
         <object class="wxBoxSizer">
           <object class="spacer">
             <option>1</option>
-            <flag>wxALL|wxEXPAND|wxGROW</flag>
+            <flag>wxALL|wxEXPAND</flag>
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="btnAddEnvVar">
@@ -101,7 +107,7 @@
           <orient>wxHORIZONTAL</orient>
           <object class="spacer">
             <option>1</option>
-            <flag>wxALL|wxEXPAND|wxGROW</flag>
+            <flag>wxALL|wxEXPAND</flag>
           </object>
         </object>
         <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>

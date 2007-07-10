@@ -38,7 +38,7 @@ public:
   virtual wxString GetTitle() const
   { return _T("Environment variables"); }
 
-  /// returns the title of the plugin's bitmap to use for settings
+  /// returns the title of the plugin's bitmap to use for configuration dialog
   virtual wxString GetBitmapBaseName() const
   { return _T("envvars"); }
 
@@ -62,15 +62,30 @@ private:
   /// Save settings (of specific active envvar set) to global C::B config
   void SaveSettingsActiveSet(wxString active_set);
 
-  void OnAddEnvVarClick   (wxCommandEvent&  event);
-  void OnEditEnvVarClick  (wxCommandEvent&  event);
-  void OnToggleEnvVarClick(wxCommandEvent&  event);
+  /// Fires when a (new) envvar set is selected
   void OnSetClick         (wxCommandEvent&  event);
+  /// Fires when the button to create an envvar set is pressed
   void OnCreateSetClick   (wxCommandEvent&  event);
+  /// Fires when the button to clone an envvar set is pressed
+  void OnCloneSetClick    (wxCommandEvent&  event);
+  /// Fires when the button to remove an envvar set is pressed
   void OnRemoveSetClick   (wxCommandEvent&  event);
+
+  /// Fires when the checkbox to toggle an envvar is changed
+  void OnToggleEnvVarClick(wxCommandEvent&  event);
+  /// Fires when the button to add an envvar is pressed
+  void OnAddEnvVarClick   (wxCommandEvent&  event);
+  /// Fires when the button to edit an envvar is pressed
+  void OnEditEnvVarClick  (wxCommandEvent&  event);
+  /// Fires when the button to delete an envvar is pressed
   void OnDeleteEnvVarClick(wxCommandEvent&  event);
+  /// Fires when the button to clear all envvars is pressed
   void OnClearEnvVarsClick(wxCommandEvent&  event);
+  /// Fires when the button to set all envvars is pressed
   void OnSetEnvVarsClick  (wxCommandEvent&  event);
+
+  /// Verifies that an envvar set is unique
+  bool VerifySetUnique(const wxChoice* choSet, wxString set);
 
   EnvVars* m_pPlugin; //!< pointer to the EnvVars plugin (the parent)
 

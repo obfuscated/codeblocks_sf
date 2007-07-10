@@ -150,7 +150,6 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-// NOTE (mandrav#1#): You do know that this event has not been registered?
 void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 {
 #if TRACE_ENVVARS
