@@ -20,6 +20,7 @@
     #include <wx/filename.h>
     #include <wx/txtstrm.h>
     #include <wx/dynarray.h>
+    #include <wx/wfstream.h>
 
     #include "manager.h"
     #include "projectmanager.h"
@@ -28,35 +29,35 @@
     #include "globals.h"
     #include "compilerfactory.h"
     #include "compiler.h"
-    #include <wx/wfstream.h>
 #endif
 
 #include <wx/stream.h>
 
+#include "prep.h"
 #include "importers_globals.h"
 #include "msvcloader.h"
 #include "multiselectdlg.h"
 
 /* NOTE:- Replacing all wxString::Remove(size_t, size_t) with wxString::Mid()
-*  and Truncate() functions. This function has been marked as a wx-1.xx
-*  compatibility function in wxWidgets-2.8. So in future it will be dropped.
-*/
+ * and Truncate() functions. This function has been marked as a wx-1.xx
+ * compatibility function in wxWidgets-2.8. So in future it will be dropped.
+ */
 
 MSVCLoader::MSVCLoader(cbProject* project)
     : m_pProject(project),
     m_ConvertSwitches(true)
 {
-	//ctor
+    //ctor
 }
 
 MSVCLoader::~MSVCLoader()
 {
-	//dtor
+    //dtor
 }
 
 bool MSVCLoader::Open(const wxString& filename)
 {
- /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
+    /* NOTE (mandrav#1#): not necessary to ask for switches conversion... */
     m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
 
     m_Filename = filename;
@@ -130,11 +131,11 @@ bool MSVCLoader::ReadConfigurations()
         int size = -1;
         if (line.StartsWith(_T("# TARGTYPE")))
         {
-          	// # TARGTYPE "Win32 (x86) Application" 0x0103
+            // # TARGTYPE "Win32 (x86) Application" 0x0103
             int idx = line.Find(' ', true);
             if (idx != -1)
             {
-            	TargetType type;
+                TargetType type;
                 wxString targtype = line.Mid(12, idx-1-12);
                 wxString projcode = line.Mid(idx+3, 4);
                 if      (projcode.Matches(_T("0101"))) type = ttExecutable;
@@ -142,9 +143,10 @@ bool MSVCLoader::ReadConfigurations()
                 else if (projcode.Matches(_T("0103"))) type = ttConsoleOnly;
                 else if (projcode.Matches(_T("0104"))) type = ttStaticLib;
                 else if (projcode.Matches(_T("010a"))) type = ttCommandsOnly;
-                else {
-                  type = ttCommandsOnly;
-                  Manager::Get()->GetMessageManager()->DebugLog(_T("unrecognized target type"));
+                else
+                {
+                    type = ttCommandsOnly;
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("unrecognized target type"));
                 }
 
                 //Manager::Get()->GetMessageManager()->DebugLog(_T("TargType '%s' is %d"), targtype.c_str(), type);
@@ -152,15 +154,17 @@ bool MSVCLoader::ReadConfigurations()
             }
             continue;
         }
-        else if (line.StartsWith(_T("!MESSAGE \""))) {
-        //  !MESSAGE "anothertest - Win32 Release" (based on "Win32 (x86) Application")
+        else if (line.StartsWith(_T("!MESSAGE \"")))
+        {
+            //  !MESSAGE "anothertest - Win32 Release" (based on "Win32 (x86) Application")
             int pos;
             pos = line.Find('\"');
             line = line.Mid(pos + 1);
             pos = line.Find('\"');
             wxArrayString projectTarget = GetArrayFromString(line.Left(pos), _T("-"));
             wxString target = projectTarget[1];
-            if (projectTarget.GetCount() != 2) {
+            if (projectTarget.GetCount() != 2)
+            {
                 Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: bad target format"));
                 return false;
             }
@@ -171,8 +175,10 @@ bool MSVCLoader::ReadConfigurations()
             wxString basedon = line.Left(pos);
             TargetType type = ttCommandsOnly;
             HashTargetType::iterator it = m_TargType.find(basedon);
-            if (it != m_TargType.end()) type = it->second;
-            else {
+            if (it != m_TargType.end())
+                type = it->second;
+            else
+            {
                 Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: target type not found"));
                 return false;
             }
@@ -198,9 +204,10 @@ bool MSVCLoader::ReadConfigurations()
             wxString tmp = RemoveQuotes(line);
             // remove the project name part, i.e "anothertest - "
             int idx = tmp.Find('-');
-            if (idx != -1) {
-              tmp = tmp.Mid(idx + 1);
-              tmp.Trim(false);
+            if (idx != -1)
+            {
+                tmp = tmp.Mid(idx + 1);
+                tmp.Trim(false);
             }
             if (m_Configurations.Index(tmp) == wxNOT_FOUND)
             {
@@ -368,9 +375,8 @@ bool MSVCLoader::ParseSourceFiles()
                 if (fname.StartsWith(_T(".\\")))
                     fname.erase(0, 2);
 
-                #ifndef __WXMSW__
-                fname.Replace(_T("\\"), _T("/"), true);
-                #endif
+                if (!platform::windows)
+                    fname.Replace(_T("\\"), _T("/"), true);
 
                 ProjectFile* pf = m_pProject->AddFile(0, fname);
                 if (pf)
@@ -416,13 +422,17 @@ bool MSVCLoader::ParseSourceFiles()
                 {
                     ProjectFile* pf = m_pProject->GetFileByFilename(LastProcessedFile);
                     if (pf)
+                    {
                         for (int j = 0; j < m_pProject->GetBuildTargetsCount(); ++j)
+                        {
                             if (m_pProject->GetBuildTarget(j)->GetTitle().IsSameAs(CurCFG))
                             {
                                 pf->RemoveBuildTarget(CurCFG);
                                 DBGLOG(wxString::Format(_T("Buid target %s has been excluded from %s"),
-                                    CurCFG.c_str(), LastProcessedFile.c_str()));
+                                                        CurCFG.c_str(), LastProcessedFile.c_str()));
                             }
+                        }
+                    }
                 }
             }
         }
@@ -453,12 +463,12 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
             else if (opt.Matches(_T("/W0")))
                 target->AddCompilerOption(_T("-w"));
             else if (opt.Matches(_T("/O1")) ||
-                    opt.Matches(_T("/O2")) ||
-                    opt.Matches(_T("/O3")))
+                     opt.Matches(_T("/O2")) ||
+                     opt.Matches(_T("/O3")))
                 target->AddCompilerOption(_T("-O2"));
             else if (opt.Matches(_T("/W1")) ||
-                    opt.Matches(_T("/W2")) ||
-                    opt.Matches(_T("/W3")))
+                     opt.Matches(_T("/W2")) ||
+                     opt.Matches(_T("/W3")))
                 target->AddCompilerOption(_T("-W"));
             else if (opt.Matches(_T("/W4")))
                 target->AddCompilerOption(_T("-Wall"));
@@ -490,7 +500,10 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
             {
                 // do nothing (ignore silently)
             }
-            else if (opt.Matches(_T("/c"))) {} // do nothing
+            else if (opt.Matches(_T("/c")))
+            {
+                // do nothing (ignore silently)
+            }
             else if (opt.StartsWith(_T("@")))
             {
                 wxArrayString options;
@@ -518,7 +531,10 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
                 target->AddCompilerOption(_T("/U") + RemoveQuotes(array[++i]));
             else if (opt.StartsWith(_T("/Yu")))
                 Manager::Get()->GetMessageManager()->DebugLog(_T("Ignoring precompiled headers option (/Yu)"));
-            else if (opt.Matches(_T("/c")) || opt.Matches(_T("/nologo"))) {} // do nothing
+            else if (opt.Matches(_T("/c")) || opt.Matches(_T("/nologo")))
+            {
+                // do nothing (ignore silently)
+            }
             else
                 target->AddCompilerOption(opt);
         }
@@ -613,9 +629,9 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
             opt = RemoveQuotes(opt);
             if (m_Type == ttStaticLib)
             {
-              // convert lib filename based on compiler
-/* NOTE (mandrav#1#): I think I should move this code somewhere more accessible...
-I need it here and there... */
+                // convert lib filename based on compiler
+                /* NOTE (mandrav#1#): I think I should move this code somewhere more accessible...
+                I need it here and there... */
                 wxFileName orig = target->GetOutputFilename();
                 wxFileName newf = opt;
                 if (newf.IsRelative())
@@ -714,7 +730,7 @@ wxString MSVCLoader::RemoveQuotes(const wxString& src)
 bool MSVCLoader::ParseResponseFile(const wxString filename, wxArrayString& output)
 {
     /* Note: MSDN says user cannot call another response file
-    *  from a response file. Thus it's quite safe to parse the file. */
+     * from a response file. Thus it's quite safe to parse the file. */
     bool success = false;
     wxFileInputStream inp_file(filename);
     if (inp_file.Ok())

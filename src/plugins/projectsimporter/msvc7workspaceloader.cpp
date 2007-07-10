@@ -19,6 +19,7 @@
     #include <wx/dynarray.h>
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
+    #include <wx/wfstream.h>
 
     #include "globals.h"
     #include "manager.h"
@@ -26,7 +27,6 @@
     #include "projectmanager.h"
     #include "compilerfactory.h"
     #include "compiler.h"
-    #include <wx/wfstream.h>
 #endif
 
 #include <wx/stream.h>
@@ -38,12 +38,12 @@
 
 MSVC7WorkspaceLoader::MSVC7WorkspaceLoader()
 {
-	//ctor
+    //ctor
 }
 
 MSVC7WorkspaceLoader::~MSVC7WorkspaceLoader()
 {
-	//dtor
+    //dtor
 }
 
 bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
@@ -51,21 +51,29 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     bool askForCompiler = false;
     bool askForTargets = false;
     switch (cbMessageBox(_("Do you want the imported projects to use the default compiler?\n"
-                        "(If you answer No, you will be asked for each and every project"
-                        " which compiler to use...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+                           "(If you answer No, you will be asked for each and every project"
+                           " which compiler to use...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxID_YES: askForCompiler = false; break;
-        case wxID_NO: askForCompiler = true; break;
-        case wxID_CANCEL: return false;
+        case wxID_YES:
+            askForCompiler = false; break;
+        case wxID_NO:
+            askForCompiler = true; break;
+        case wxID_CANCEL:
+            return false;
     }
     switch (cbMessageBox(_("Do you want to import all configurations (e.g. Debug/Release) from the "
-                        "imported projects?\n"
-                        "(If you answer No, you will be asked for each and every project"
-                        " which configurations to import...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+                           "imported projects?\n"
+                           "(If you answer No, you will be asked for each and every project"
+                           " which configurations to import...)"), _("Question"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
     {
-        case wxID_YES: askForTargets = false; break;
-        case wxID_NO: askForTargets = true; break;
-        case wxID_CANCEL: return false;
+        case wxID_YES:
+            askForTargets = false;
+            break;
+        case wxID_NO:
+            askForTargets = true;
+            break;
+        case wxID_CANCEL:
+            return false;
     }
 
     wxFileInputStream file(filename);
@@ -116,7 +124,9 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
-    wxProgressDialog progress(_("Importing MSVC 7 solution"), _("Please wait while importing MSVC 7 solution..."), 100, 0, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+    wxProgressDialog progress(_("Importing MSVC 7 solution"),
+                              _("Please wait while importing MSVC 7 solution..."),
+                              100, 0, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
     int count = 0;
     wxArrayString keyvalue;
@@ -136,7 +146,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         line.Trim(true);
         line.Trim(false);
 
-        if (line.StartsWith(_T("Project("))) {
+        if (line.StartsWith(_T("Project(")))
+        {
             // example wanted line:
             //Project("{UUID of the solution}") = "project name to display", "project filename", "project UUID".
             // UUID type 4 for projects (i.e. random based), UUID type 1 for solutions (i.e. time+host based)
@@ -178,47 +189,59 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             wxFileName fname(UnixFilename(prjFile));
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
             Manager::Get()->GetMessageManager()->DebugLog(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
-			if (!progress.Pulse(_("Importing project: ") + prjTitle))
-				break;
+
+            int percentage = ((int)file.TellI())*100 / (int)(file.GetLength());
+            if (!progress.Update(percentage, _("Importing project: ") + prjTitle))
+                break;
+
             project = Manager::Get()->GetProjectManager()->LoadProject(fname.GetFullPath(), false);
             if (!firstproject) firstproject = project;
             if (project) registerProject(uuid, project);
         }
-        else if (line.StartsWith(_T("GlobalSection(ProjectDependencies)"))) {
-        	depSection = true;
-        	global = true;
+        else if (line.StartsWith(_T("GlobalSection(ProjectDependencies)")))
+        {
+            depSection = true;
+            global = true;
         }
-        else if (line.StartsWith(_T("ProjectSection(ProjectDependencies)"))) {
-        	depSection = true;
-        	global = false;
+        else if (line.StartsWith(_T("ProjectSection(ProjectDependencies)")))
+        {
+            depSection = true;
+            global = false;
         }
-        else if (line.StartsWith(_T("GlobalSection(ProjectConfiguration)"))) {
+        else if (line.StartsWith(_T("GlobalSection(ProjectConfiguration)")))
+        {
             projConfSection = true;
         }
-        else if (line.StartsWith(_T("GlobalSection(SolutionConfiguration)"))) {
+        else if (line.StartsWith(_T("GlobalSection(SolutionConfiguration)")))
+        {
             slnConfSection = true;
         }
-        else if (line.StartsWith(_T("EndGlobalSection")) || line.StartsWith(_T("EndProjectSection"))) {
-        	depSection = false;
-        	projConfSection = false;
-        	slnConfSection = false;
+        else if (line.StartsWith(_T("EndGlobalSection")) || line.StartsWith(_T("EndProjectSection")))
+        {
+            depSection = false;
+            projConfSection = false;
+            slnConfSection = false;
         }
-        else if (depSection) { // start reading a dependency
-        	keyvalue = GetArrayFromString(line, _T("="));
-        	if (keyvalue.GetCount() != 2) continue;
-        	if (global) {
-        	    // {31635C8-67BF-4808-A918-0FBF822771BD}.0 = {658BFA12-8417-49E5-872A-33F0973544DC}
-              // i.e. project on the left of '=' depend on the project on the right
-              keyvalue[0]= keyvalue[0].BeforeFirst(_T('.'));
-              addDependency(keyvalue[0], keyvalue[1]);
-          }
-          else {
-              // {F87429BF-4583-4A67-BD6F-6CA8AA27702A} = {F87429BF-4583-4A67-BD6F-6CA8AA27702A}
-              // i.e. both uuid are the dependency
-              addDependency(uuid, keyvalue[1]);
-          }
+        else if (depSection)
+        {
+            // start reading a dependency
+            keyvalue = GetArrayFromString(line, _T("="));
+            if (keyvalue.GetCount() != 2) continue;
+            if (global) {
+                // {31635C8-67BF-4808-A918-0FBF822771BD}.0 = {658BFA12-8417-49E5-872A-33F0973544DC}
+                // i.e. project on the left of '=' depend on the project on the right
+                keyvalue[0]= keyvalue[0].BeforeFirst(_T('.'));
+                addDependency(keyvalue[0], keyvalue[1]);
+            }
+            else
+            {
+                // {F87429BF-4583-4A67-BD6F-6CA8AA27702A} = {F87429BF-4583-4A67-BD6F-6CA8AA27702A}
+                // i.e. both uuid are the dependency
+                addDependency(uuid, keyvalue[1]);
+            }
         }
-        else if (slnConfSection) {
+        else if (slnConfSection)
+        {
             // either "Debug = Debug" in V8 or "ConfigName.0 = Debug" in V7
             // ignore every on the left of equal sign
             line = line.AfterLast('=');
@@ -226,7 +249,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             line.Trim(false);
             addWorkspaceConfiguration(line);
         }
-        else if (projConfSection && line.StartsWith(_T("{"))) {
+        else if (projConfSection && line.StartsWith(_T("{")))
+        {
             // {X}.Debug TA.ActiveCfg = Debug TA|Win32     ---> match solution configuration to project configuration or just say what is the active config?
             // {X}.Debug TA.Build.0 = Debug TA|Win32       ---> we have to build (others are not build)
             keyvalue = GetArrayFromString(line, _T("="));
