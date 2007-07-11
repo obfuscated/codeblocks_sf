@@ -91,7 +91,8 @@ class DLLIMPORT CompilerCommandGenerator
 		SearchDirsMap m_CompilerSearchDirs; ///< array of final compiler search dirs, per-target
 		SearchDirsMap m_LinkerSearchDirs; ///< array of final linker search dirs, per-target
     private:
-        void ExpandBackticks(wxString& str);
+        wxString ExpandBackticks(wxString& str);
+		void SearchDirsFromBackticks(Compiler* compiler, ProjectBuildTarget* target, const wxString& btOutput);
         BackticksMap m_Backticks;
         wxArrayString m_NotLoadedScripts;
         wxArrayString m_ScriptsWithErrors;

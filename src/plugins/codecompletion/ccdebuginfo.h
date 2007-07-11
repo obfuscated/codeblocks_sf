@@ -34,6 +34,7 @@ class CCDebugInfo: public wxDialog
 		Token* m_pToken;
 
 		void FillFiles();
+		void FillDirs();
 		void DisplayTokenInfo();
 		void FillChildren();
 		void FillAncestors();
@@ -88,6 +89,8 @@ class CCDebugInfo: public wxDialog
 		static const long ID_STATICTEXT35;
 		static const long ID_PANEL2;
 		static const long ID_LISTBOX1;
+		static const long ID_PANEL3;
+		static const long ID_LISTBOX2;
 		static const long ID_STATICTEXT31;
 		static const long ID_STATICLINE2;
 		//*)
@@ -159,6 +162,8 @@ class CCDebugInfo: public wxDialog
 		wxPanel* Panel2;
 		wxBoxSizer* BoxSizer3;
 		wxListBox* lstFiles;
+		wxBoxSizer* BoxSizer9;
+		wxListBox* lstDirs;
 		wxStaticText* lblInfo;
 		wxStaticLine* StaticLine2;
 		wxStdDialogButtonSizer* StdDialogButtonSizer1;

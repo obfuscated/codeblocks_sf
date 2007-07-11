@@ -650,7 +650,8 @@ wxString CompilerCommandGenerator::SetupCompilerOptions(Compiler* compiler, Proj
     // compiler options
     result << GetStringFromArray(compiler->GetCompilerOptions(), _T(' '));
 
-    ExpandBackticks(result);
+	wxString bt = ExpandBackticks(result);
+    SearchDirsFromBackticks(compiler, target, bt);
 
     // add in array
     return result;
@@ -676,7 +677,8 @@ wxString CompilerCommandGenerator::SetupLinkerOptions(Compiler* compiler, Projec
     // linker options
     result << GetStringFromArray(compiler->GetLinkerOptions(), _T(' '));
 
-    ExpandBackticks(result);
+	wxString bt = ExpandBackticks(result);
+    SearchDirsFromBackticks(compiler, target, bt);
 
     // add in array
     return result;
@@ -858,46 +860,103 @@ wxArrayString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarg
 }
 
 /** Adds support for backtick'd expressions under windows. */
-void CompilerCommandGenerator::ExpandBackticks(wxString& str)
+wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 {
-    if(platform::windows)
-    {
-        size_t start = str.find(_T('`'));
-        if (start == wxString::npos)
-            return; // no backticks here
-        size_t end = str.find(_T('`'), start + 1);
-        if (end == wxString::npos)
-            return; // no ending backtick; error?
+	wxString ret;
+	
+	// this function is not windows-only anymore because we parse the backticked command's output
+	// for compiler/linker search dirs
 
-        while (start != wxString::npos && end != wxString::npos)
-        {
-            wxString cmd = str.substr(start + 1, end - start - 1);
-            if (cmd.IsEmpty())
-                break;
+	size_t start = str.find(_T('`'));
+	if (start == wxString::npos)
+		return ret; // no backticks here
+	size_t end = str.find(_T('`'), start + 1);
+	if (end == wxString::npos)
+		return ret; // no ending backtick; error?
 
-            wxString bt;
-            BackticksMap::iterator it = m_Backticks.find(cmd);
-            if (it != m_Backticks.end())
-            {
-                // in cache :)
-                bt = it->second;
-            }
-            else
-            {
-                wxArrayString output;
-                if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
-                    wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
-                else
-                    wxExecute(cmd, output, wxEXEC_NODISABLE);
-                bt = GetStringFromArray(output, _T(" "));
-                // add it in the cache
-                m_Backticks[cmd] = bt;
-            }
-            str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
+	while (start != wxString::npos && end != wxString::npos)
+	{
+		wxString cmd = str.substr(start + 1, end - start - 1);
+		if (cmd.IsEmpty())
+			break;
 
-            // find next occurrence
-            start = str.find(_T('`'));
-            end = str.find(_T('`'), start + 1);
-        }
-    }
+		wxString bt;
+		BackticksMap::iterator it = m_Backticks.find(cmd);
+		if (it != m_Backticks.end())
+		{
+			// in cache :)
+			bt = it->second;
+		}
+		else
+		{
+			wxArrayString output;
+			if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
+				wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
+			else
+				wxExecute(cmd, output, wxEXEC_NODISABLE);
+			bt = GetStringFromArray(output, _T(" "));
+			// add it in the cache
+			m_Backticks[cmd] = bt;
+		}
+		ret << bt << _T(' ');
+		str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
+
+		// find next occurrence
+		start = str.find(_T('`'));
+		end = str.find(_T('`'), start + 1);
+	}
+
+    return ret;
+}
+
+// parse the result of a backticked expression for compiler/linker search dirs
+void CompilerCommandGenerator::SearchDirsFromBackticks(Compiler* compiler, ProjectBuildTarget* target, const wxString& btOutput)
+{
+	if (btOutput.IsEmpty())
+		return;
+
+	// NOTE: this ignores spaces in search dirs
+	// but usually backticks are only used under non-windows platforms by
+	// large libs and they never use spaces in paths.
+	// so, nobody should notice this :)
+
+	// compiler search dirs
+	size_t pos = 0;
+	while (true)
+	{
+		pos = btOutput.find(compiler->GetSwitches().includeDirs, pos);
+		if (pos == wxString::npos)
+			break;
+		
+		pos += compiler->GetSwitches().includeDirs.Length();
+		size_t pos2 = btOutput.find(_T(' '), pos);
+		if (pos2 != pos)
+		{
+			if (pos2 == wxString::npos) // whole remaining string
+				m_CompilerSearchDirs[target].Add(btOutput.Mid(pos, btOutput.Length() - pos));
+			else
+				m_CompilerSearchDirs[target].Add(btOutput.Mid(pos, pos2 - pos));
+		}
+		++pos;
+	}
+
+	// linker search dirs
+	pos = 0;
+	while (true)
+	{
+		pos = btOutput.find(compiler->GetSwitches().libDirs, pos);
+		if (pos == wxString::npos)
+			break;
+		
+		pos += compiler->GetSwitches().libDirs.Length();
+		size_t pos2 = btOutput.find(_T(' '), pos);
+		if (pos2 != pos)
+		{
+			if (pos2 == wxString::npos) // whole remaining string
+				m_LinkerSearchDirs[target].Add(btOutput.Mid(pos, btOutput.Length() - pos));
+			else
+				m_LinkerSearchDirs[target].Add(btOutput.Mid(pos, pos2 - pos));
+		}
+		++pos;
+	}
 }

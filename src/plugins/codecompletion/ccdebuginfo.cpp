@@ -12,6 +12,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(CCDebugInfo)
@@ -63,6 +64,8 @@ const long CCDebugInfo::ID_STATICTEXT34 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT35 = wxNewId();
 const long CCDebugInfo::ID_PANEL2 = wxNewId();
 const long CCDebugInfo::ID_LISTBOX1 = wxNewId();
+const long CCDebugInfo::ID_PANEL3 = wxNewId();
+const long CCDebugInfo::ID_LISTBOX2 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT31 = wxNewId();
 const long CCDebugInfo::ID_STATICLINE2 = wxNewId();
 //*)
@@ -80,6 +83,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	//(*Initialize(CCDebugInfo)
 	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* BoxSizer2;
+	wxPanel* Panel3;
 	
 	Create(parent,id,_("Code-completion debug tool"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -154,7 +158,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	StaticText30 = new wxStaticText(Panel1,ID_STATICTEXT30,_("Children:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT30"));
 	FlexGridSizer1->Add(StaticText30,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
 	BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-	cmbChildren = new wxComboBox(Panel1,ID_COMBOBOX3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX3"));
+	cmbChildren = new wxComboBox(Panel1,ID_COMBOBOX3,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX3"));
 	BoxSizer8->Add(cmbChildren,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
 	btnGoChildren = new wxButton(Panel1,ID_BUTTON5,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON5"));
 	BoxSizer8->Add(btnGoChildren,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
@@ -162,7 +166,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	StaticText21 = new wxStaticText(Panel1,ID_STATICTEXT21,_("Ancestors:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT21"));
 	FlexGridSizer1->Add(StaticText21,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
 	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
-	cmbAncestors = new wxComboBox(Panel1,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX2"));
+	cmbAncestors = new wxComboBox(Panel1,ID_COMBOBOX2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX2"));
 	BoxSizer6->Add(cmbAncestors,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
 	btnGoAsc = new wxButton(Panel1,ID_BUTTON3,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON3"));
 	BoxSizer6->Add(btnGoAsc,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
@@ -170,7 +174,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	StaticText23 = new wxStaticText(Panel1,ID_STATICTEXT23,_("Descendants:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT23"));
 	FlexGridSizer1->Add(StaticText23,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
 	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-	cmbDescendants = new wxComboBox(Panel1,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,NULL,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	cmbDescendants = new wxComboBox(Panel1,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
 	BoxSizer5->Add(cmbDescendants,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
 	btnGoDesc = new wxButton(Panel1,ID_BUTTON2,_("Go"),wxDefaultPosition,wxSize(36,23),0,wxDefaultValidator,_T("ID_BUTTON2"));
 	BoxSizer5->Add(btnGoDesc,0,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,0);
@@ -198,8 +202,16 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	Panel2->SetSizer(BoxSizer3);
 	BoxSizer3->Fit(Panel2);
 	BoxSizer3->SetSizeHints(Panel2);
+	Panel3 = new wxPanel(Notebook1,ID_PANEL3,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("ID_PANEL3"));
+	BoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
+	lstDirs = new wxListBox(Panel3,ID_LISTBOX2,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_LISTBOX2"));
+	BoxSizer9->Add(lstDirs,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+	Panel3->SetSizer(BoxSizer9);
+	BoxSizer9->Fit(Panel3);
+	BoxSizer9->SetSizeHints(Panel3);
 	Notebook1->AddPage(Panel1,_("Tokens"),false);
 	Notebook1->AddPage(Panel2,_("Files list"),false);
+	Notebook1->AddPage(Panel3,_("Search dirs"),false);
 	BoxSizer1->Add(Notebook1,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
 	lblInfo = new wxStaticText(this,ID_STATICTEXT31,_("The parser contains 0 tokens found in 0 files"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT31"));
 	BoxSizer1->Add(lblInfo,0,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
@@ -213,6 +225,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
+	Connect(wxID_ANY,wxEVT_INIT_DIALOG,(wxObjectEventFunction)&CCDebugInfo::OnInit);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnFindClick);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoParentClick);
 	Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoChildrenClick);
@@ -242,6 +255,22 @@ void CCDebugInfo::FillFiles()
     }
 
     lstFiles->Thaw();
+}
+
+void CCDebugInfo::FillDirs()
+{
+    lstDirs->Freeze();
+    lstDirs->Clear();
+
+    const wxArrayString& dirs = m_pParser->GetIncludeDirs();
+    for (size_t i = 0; i < dirs.GetCount(); ++i)
+    {
+        const wxString& file = dirs[i];
+        if (!file.IsEmpty())
+            lstDirs->Append(file);
+    }
+
+    lstDirs->Thaw();
 }
 
 void CCDebugInfo::DisplayTokenInfo()
@@ -349,6 +378,7 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& event)
     lblInfo->SetLabel(wxString::Format(_T("The parser contains %d tokens, found in %d files"), m_pParser->GetTokens()->size(), m_pParser->GetFilesCount()));
     DisplayTokenInfo();
     FillFiles();
+    FillDirs();
 
     txtFilter->SetFocus();
 }

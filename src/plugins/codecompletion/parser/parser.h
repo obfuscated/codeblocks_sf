@@ -126,6 +126,7 @@ class Parser : public wxEvtHandler
 
 		void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
 		void AddIncludeDir(const wxString& dir);
+		const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
         wxString GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal);
         wxString FindFirstFileInIncludeDirs(const wxString& file);
 		wxArrayString FindFileInIncludeDirs(const wxString& file,bool firstonly = false);
