@@ -113,6 +113,7 @@ ParserThread::ParserThread(Parser* parent,
 	m_File(0),
 	m_IsLocal(isLocal),
 	m_Options(options),
+	m_ParsingTypedef(false),
 	m_PreprocessorIfCount(0),
 	m_IsBuffer(options.useBuffer),
 	m_Buffer(bufferOrFilename)
@@ -252,7 +253,8 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
 
     result.Clear();
 	m_Str.Clear();
-	m_LastUnnamedClassName.Clear();
+	m_LastUnnamedTokenName.Clear();
+	m_ParsingTypedef = false;
 	while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
 
@@ -327,6 +329,7 @@ bool ParserThread::Parse()
     if (!InitTokenizer())
         return false;
     bool result = false;
+	m_ParsingTypedef = false;
 
     do
     {
@@ -360,7 +363,7 @@ void ParserThread::DoParse()
 {
 	m_Str.Clear();
 	m_LastToken.Clear();
-	m_LastUnnamedClassName.Clear();
+	m_LastUnnamedTokenName.Clear();
 	while (!m_EncounteredNamespaces.empty())
         m_EncounteredNamespaces.pop();
 	while (m_Tokenizer.NotEOF())
@@ -1142,7 +1145,7 @@ void ParserThread::HandleClass(bool isClass)
 			{
 				static size_t num = 0;
 				wxString unnamedTmp;
-				unnamedTmp.Printf(_T("<Unnamed%d>"), num++);
+				unnamedTmp.Printf(_T("Unnamed-%s-%d"), isClass ? _T("Class") : _T("Struct"), num++);
 
 				Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
 
@@ -1158,7 +1161,7 @@ void ParserThread::HandleClass(bool isClass)
 				m_pLastParent = lastParent;
 				m_LastScope = lastScope;
 				
-				m_LastUnnamedClassName = unnamedTmp; // used for typedef'ing anonymous class/struct/union
+				m_LastUnnamedTokenName = unnamedTmp; // used for typedef'ing anonymous class/struct/union
 				
 				// we should now be right after the closing brace: read the var name
                 break;
@@ -1293,7 +1296,14 @@ void ParserThread::HandleEnum()
     else if (token==ParserConsts::opbrace)
 	{
         // we have an un-named enum
-		token = ParserConsts::unnamed;
+        if (m_ParsingTypedef)
+        {
+			static size_t num = 0;
+			token.Printf(_T("Unnamed-Enum-%d"), num++);
+			m_LastUnnamedTokenName = token;
+        }
+        else
+			token = ParserConsts::unnamed;
 		m_Tokenizer.UngetToken(); // return '{' back
 		isUnnamed = true;
     }
@@ -1305,7 +1315,7 @@ void ParserThread::HandleEnum()
 		if (m_Tokenizer.PeekToken().GetChar(0) != '{')
 			return;
 
-        if (isUnnamed)
+        if (isUnnamed && !m_ParsingTypedef)
         {
             // for unnamed enums, look if we already have "Unnamed", so we don't
             // add a new one for every unnamed enum we encounter, in this scope...
@@ -1370,6 +1380,7 @@ void ParserThread::HandleTypedef()
     // relatively easy:
     // typedef unsigned int uint32;
     // typedef std::map<String, StringVector> AnimableDictionaryMap;
+    // typedef class|struct|enum {...} type;
     //
     // harder:
     // typedef void dMessageFunction (int errnum, const char *msg, va_list ap);
@@ -1386,6 +1397,8 @@ void ParserThread::HandleTypedef()
     wxString args;
     wxString token;
     wxString peek;
+    m_ParsingTypedef = true;
+    
 	while (true)
 	{
 	    token = m_Tokenizer.GetToken();
@@ -1394,11 +1407,9 @@ void ParserThread::HandleTypedef()
 	    if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
 
-	    if (token == ParserConsts::kw_enum ||
-            token == ParserConsts::kw_union)
+	    if (token == ParserConsts::kw_union)
 	    {
-	        // "typedef enum" is not supported
-	        // "typedef union" is not supported (?)
+	        // "typedef union" is not supported
 	        SkipToOneOfChars(ParserConsts::semicolon, true);
             break;
 	    }
@@ -1406,8 +1417,15 @@ void ParserThread::HandleTypedef()
 	    else if (token == ParserConsts::kw_class ||
             token == ParserConsts::kw_struct)
 	    {
+	    	// "typedef struct|class"
 			HandleClass(token == ParserConsts::kw_class);
-			token = m_LastUnnamedClassName;
+			token = m_LastUnnamedTokenName;
+	    }
+	    else if (token == ParserConsts::kw_enum)
+	    {
+	    	// "typedef enum"
+			HandleEnum();
+			token = m_LastUnnamedTokenName;
 	    }
 
         // keep namespaces together
@@ -1467,7 +1485,8 @@ void ParserThread::HandleTypedef()
 //        Manager::Get()->GetMessageManager()->DebugLog(_T(" + '%s'"), token.c_str());
 	}
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef done"));
-
+	m_ParsingTypedef = false;
+	
     if (components.empty())
         return; // invalid typedef
 

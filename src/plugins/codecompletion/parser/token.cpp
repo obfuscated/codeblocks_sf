@@ -780,7 +780,7 @@ void TokensTree::RecalcData()
         if (!token)
             continue;
 
-        if (!(token->m_TokenKind & (tkClass | tkTypedef)))
+        if (!(token->m_TokenKind & (tkClass | tkTypedef | tkEnum)))
             continue;
         if (token->m_AncestorsString.IsEmpty())
             continue;
@@ -836,7 +836,7 @@ void TokensTree::RecalcData()
                 {
                     Token* ancestorToken = at(*it);
                     // only classes take part in inheritance
-                    if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass)// && !ancestorToken->m_IsTypedef)
+                    if (ancestorToken && ancestorToken != token && (ancestorToken->m_TokenKind == tkClass || ancestorToken->m_TokenKind == tkEnum))// && !ancestorToken->m_IsTypedef)
                     {
                         token->m_Ancestors.insert(*it);
                         ancestorToken->m_Descendants.insert(i);
@@ -864,7 +864,7 @@ void TokensTree::RecalcData()
         if (!token)
             continue;
 
-        if (!(token->m_TokenKind & (tkClass | tkTypedef)))
+        if (!(token->m_TokenKind & (tkClass | tkTypedef | tkEnum)))
             continue;
 
         // recalc
