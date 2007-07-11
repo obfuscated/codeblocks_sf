@@ -84,6 +84,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		wxString GetTokenScopeString() const;
         wxString GetFilename() const;
 		wxString GetImplFilename() const;
+		unsigned long GetTicket() const;
 		bool MatchesFiles(const TokenFilesSet& files);
 
 		bool SerializeIn(wxInputStream* f);
@@ -123,6 +124,9 @@ class Token  : public BlockAllocated<Token, 10000>
 	protected:
         TokensTree* m_pTree;
 		int m_Self; // current index in the tree
+		unsigned long m_Ticket;
+		static unsigned long GetTokenTicket();
+
 	private:
 };
 

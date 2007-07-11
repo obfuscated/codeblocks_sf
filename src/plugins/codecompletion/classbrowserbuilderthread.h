@@ -29,7 +29,8 @@ class CBTreeData : public wxTreeItemData
             m_TokenIndex(token ? token->GetSelf() : -1),
             m_TokenKind(token ? token->m_TokenKind : tkUndefined),
             m_TokenName(token ? token->m_Name : _T("")),
-            m_ParentIndex(parentIdx)
+            m_ParentIndex(parentIdx),
+            m_Ticket(token ? token->GetTicket() : 0)
         {
         }
         Token* m_pToken;
@@ -39,6 +40,7 @@ class CBTreeData : public wxTreeItemData
         TokenKind m_TokenKind;
         wxString m_TokenName;
         int m_ParentIndex;
+        unsigned long m_Ticket;
 };
 
 class ClassBrowserBuilderThread : public wxThread

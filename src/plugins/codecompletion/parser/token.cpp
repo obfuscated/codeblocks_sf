@@ -86,6 +86,7 @@ Token::Token()
     m_pTree(0),
     m_Self(-1)
 {
+    m_Ticket = GetTokenTicket();
 }
 
 Token::Token(const wxString& name, unsigned int file, unsigned int line)
@@ -107,11 +108,26 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line)
     m_Self(-1)
 {
     //ctor
+    m_Ticket = GetTokenTicket();
+
 }
 
 Token::~Token()
 {
     //dtor
+}
+
+unsigned long Token::GetTicket() const
+{
+    return m_Ticket;
+}
+
+unsigned long Token::GetTokenTicket()
+{
+    static wxCriticalSection s_TicketProtection;
+    static unsigned long ticket = 256; // Reserve some space for the class browser
+    wxCriticalSectionLocker lock(s_TicketProtection);
+    return ticket++;
 }
 
 wxString Token::GetParentName()

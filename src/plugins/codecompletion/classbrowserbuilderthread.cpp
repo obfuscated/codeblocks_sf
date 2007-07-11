@@ -216,6 +216,61 @@ void ClassBrowserBuilderThread::BuildTree()
     SelectNode(m_pTreeTop->GetSelection()); // refresh selection
 }
 
+#if 1
+void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemId parent)
+{
+    if (TestDestroy() || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
+        return;
+
+    // recursively enters all existing nodes and deletes the node if the token it references
+    // is invalid (i.e. m_pTokens->at() != token_in_data)
+
+    // we 'll loop backwards so we can delete nodes without problems
+    wxTreeItemId existing = tree->GetLastChild(parent);
+    wxTreeItemId root = tree->GetRootItem();
+    while (parent.IsOk() && existing.IsOk())
+    {
+        bool removeCurrent = false;
+        bool hasChildren = (tree->GetChildrenCount(existing) > 0);
+        CBTreeData* data = (CBTreeData*)(tree->GetItemData(existing));
+
+        if (tree == m_pTreeBottom)
+            removeCurrent = true;
+        else if (data && data->m_pToken)
+        {
+            if (m_pTokens->at(data->m_TokenIndex) != data->m_pToken ||
+                (data->m_Ticket && data->m_Ticket != data->m_pToken->GetTicket()) ||
+                !TokenMatchesFilter(data->m_pToken))
+            {
+                removeCurrent = true;
+            }
+        }
+        if(removeCurrent)
+        {
+            if(hasChildren)
+                tree->DeleteChildren(existing);
+            wxTreeItemId next = tree->GetPrevSibling(existing);
+            if(!next.IsOk() && parent.IsOk() && tree == m_pTreeTop && tree->GetChildrenCount(parent, false) == 1 )
+            {
+                CollapseItem(parent);
+                // tree->SetItemHasChildren(parent, false);
+            }
+            else
+            {
+                tree->Delete(existing);
+                existing = next;
+                continue;
+            }
+        }
+        else
+        {
+            RemoveInvalidNodes(tree, existing); // recurse
+        }
+        if(existing.IsOk())
+            existing = tree->GetPrevSibling(existing);
+    }
+}
+#else
 void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemId parent)
 {
     if (TestDestroy() || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
@@ -271,7 +326,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
 //    if (parent != tree->GetRootItem() && tree->GetChildrenCount(parent) == 0)
 //        tree->Delete(parent);
 }
-
+#endif
 wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CBTreeData* data, bool sorted)
 {
     sorted = sorted & tree == m_pTreeTop && data; // sorting only for the top tree
