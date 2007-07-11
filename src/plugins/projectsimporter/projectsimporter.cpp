@@ -18,7 +18,12 @@
 
     #include "globals.h"
     #include "manager.h"
+    #include "messagemanager.h"
     #include "projectmanager.h"
+    #include "messagemanager.h"
+    #include "compilerfactory.h"
+    #include "cbproject.h"
+    #include "cbworkspace.h"
 #endif
 
 #include "projectsimporter.h"
