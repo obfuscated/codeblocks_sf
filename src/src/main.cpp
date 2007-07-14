@@ -1386,6 +1386,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         // Project
         //
         case ftCodeBlocksProject:
+        {
             // Make a check whether the project exists in current workspace
             cbProject* prj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
             if (!prj)
@@ -1399,7 +1400,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 Manager::Get()->GetProjectManager()->SetProject(prj, false);
                 return true;
             }
-            break;
+        }
         //
         // Source files
         //
