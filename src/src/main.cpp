@@ -479,8 +479,8 @@ MainFrame::MainFrame(wxWindow* parent)
     _CrtSetDbgFlag( tmpFlag );
 #endif
 
-	// register event sinks
-	RegisterEvents();
+    // register event sinks
+    RegisterEvents();
 
     // New: Allow drag and drop of files into the editor
     SetDropTarget(new wxMyFileDropTarget(this));
@@ -535,8 +535,8 @@ MainFrame::MainFrame(wxWindow* parent)
     if (m_ScriptConsoleID != -1)
         Manager::Get()->GetMessageManager()->ShowLog(m_ScriptConsoleID, m_ScriptConsoleVisible);
 
-	RegisterScriptFunctions();
-	RunStartupScripts();
+    RegisterScriptFunctions();
+    RunStartupScripts();
 
     m_StartupDone = true;
     DoUpdateLayout();
@@ -554,10 +554,10 @@ MainFrame::MainFrame(wxWindow* parent)
                                                     "Please review them in the logs...\n\n"), 8000, 1000);
     }
 
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
 
-	CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+    Manager::Get()->ProcessEvent(event);
 }
 
 MainFrame::~MainFrame()
@@ -571,10 +571,10 @@ MainFrame::~MainFrame()
 
 void MainFrame::RegisterEvents()
 {
-	Manager* pm = Manager::Get();
+    Manager* pm = Manager::Get();
 
     pm->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorUpdateUI));
-    
+
     pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectActivated));
     pm->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectOpened));
     pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnProjectClosed));
@@ -583,18 +583,18 @@ void MainFrame::RegisterEvents()
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorActivated));
     pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorSaved));
     pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnEditorModified));
-    
+
     pm->RegisterEventSink(cbEVT_ADD_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestDockWindow));
     pm->RegisterEventSink(cbEVT_REMOVE_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestUndockWindow));
     pm->RegisterEventSink(cbEVT_SHOW_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestShowDockWindow));
     pm->RegisterEventSink(cbEVT_HIDE_DOCK_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnRequestHideDockWindow));
     pm->RegisterEventSink(cbEVT_DOCK_WINDOW_VISIBILITY, new cbEventFunctor<MainFrame, CodeBlocksDockEvent>(this, &MainFrame::OnDockWindowVisibility));
-    
+
     pm->RegisterEventSink(cbEVT_PLUGIN_ATTACHED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginLoaded));
     pm->RegisterEventSink(cbEVT_PLUGIN_RELEASED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUnloaded));
     pm->RegisterEventSink(cbEVT_PLUGIN_INSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
     pm->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
-    
+
     pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
 }
 
@@ -664,9 +664,9 @@ DECLARE_INSTANCE_TYPE(MainFrame);
 void MainFrame::RegisterScriptFunctions()
 {
     // The "App" object currently does not provide any functions
-	SqPlus::SQClassDef<MainFrame>("MainFrame");
+    SqPlus::SQClassDef<MainFrame>("MainFrame");
 
-	SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
+    SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
 }
 
 void MainFrame::RunStartupScripts()
@@ -766,8 +766,8 @@ void MainFrame::RecreateMenuBar()
 
 void MainFrame::CreateMenubar()
 {
-	CodeBlocksEvent event(cbEVT_MENUBAR_CREATE_BEGIN);
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_MENUBAR_CREATE_BEGIN);
+    Manager::Get()->ProcessEvent(event);
 
     int tmpidx;
     wxMenuBar* mbar=0L;
@@ -863,8 +863,8 @@ void MainFrame::CreateMenubar()
     SetMenuBar(mbar);
     InitializeRecentFilesHistory();
 
-	CodeBlocksEvent event2(cbEVT_MENUBAR_CREATE_END);
-	Manager::Get()->ProcessEvent(event2);
+    CodeBlocksEvent event2(cbEVT_MENUBAR_CREATE_END);
+    Manager::Get()->ProcessEvent(event2);
 }
 
 void MainFrame::CreateToolbars()
@@ -1138,9 +1138,9 @@ void MainFrame::LoadViewLayout(const wxString& name)
     m_LastLayoutName = name;
     m_LastLayoutData = layout;
 
-	CodeBlocksLayoutEvent evt(cbEVT_SWITCHED_VIEW_LAYOUT);
-	evt.layout = name;
-	Manager::Get()->ProcessEvent(evt);
+    CodeBlocksLayoutEvent evt(cbEVT_SWITCHED_VIEW_LAYOUT);
+    evt.layout = name;
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, bool select)
@@ -1316,7 +1316,7 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
         // menu
         try
         {
-        	wxMenuBar* mbar = GetMenuBar();
+            wxMenuBar* mbar = GetMenuBar();
             plugin->BuildMenu(mbar);
         }
         catch (cbException& e)
@@ -1387,7 +1387,8 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
         //
         case ftCodeBlocksProject:
             // Make a check whether the project exists in current workspace
-            if (Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath()) == NULL)
+            cbProject* prj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
+            if (!prj)
             {
                 wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                 return DoOpenProject(filename, addToHistory);
@@ -1395,7 +1396,8 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             else
             {
                 // NOTE (Morten#1#): A message here will prevent batch-builds from working and is shown sometimes even if correct
-                return false;
+                Manager::Get()->GetProjectManager()->SetProject(prj, false);
+                return true;
             }
             break;
         //
@@ -2084,7 +2086,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
             else
                 AddToRecentFilesHistory(filename);
         }
-		if (prj && tot == totProject) // Created project should be parsed
+        if (prj && tot == totProject) // Created project should be parsed
         {
             CodeBlocksEvent evt(cbEVT_PROJECT_OPEN, 0, prj);
             Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
@@ -2177,7 +2179,7 @@ void MainFrame::OnFileNew(wxCommandEvent& event)
 // but as said don't force the 'last used type of files' to change, that should
 // only change when an open file is carried out (so (source) file <---> project (file) )
 // TODO : when regular file open and user manually sets filter to project files --> will change
-//		the last type : is that expected behaviour ???
+//      the last type : is that expected behaviour ???
 void MainFrame::DoOnFileOpen(bool bProject)
 {
     wxString Filters = FileFilters::GetFilterString();
@@ -2187,19 +2189,19 @@ void MainFrame::DoOnFileOpen(bool bProject)
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
     if(mgr)
     {
-    	if(!bProject)
-    	{
-			wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"));
-			if(!Filter.IsEmpty())
-			{
-				FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
-			}
-			Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
-    	}
-    	else
-    	{
-    		FileFilters::GetFilterIndexFromName(Filters, _("Code::Blocks project files"), StoredIndex);
-    	}
+        if(!bProject)
+        {
+            wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"));
+            if(!Filter.IsEmpty())
+            {
+                FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
+            }
+            Path = mgr->Read(_T("/file_dialogs/file_new_open/directory"), Path);
+        }
+        else
+        {
+            FileFilters::GetFilterIndexFromName(Filters, _("Code::Blocks project files"), StoredIndex);
+        }
     }
     wxFileDialog* dlg = new wxFileDialog(this,
                             _("Open file"),
@@ -2235,7 +2237,7 @@ void MainFrame::DoOnFileOpen(bool bProject)
 
 void MainFrame::OnFileOpen(wxCommandEvent& event)
 {
-	DoOnFileOpen(false); // through file menu (not sure if we are opening a project)
+    DoOnFileOpen(false); // through file menu (not sure if we are opening a project)
 } // end of OnFileOpen
 
 void MainFrame::OnFileReopenProject(wxCommandEvent& event)
@@ -2344,7 +2346,7 @@ void MainFrame::OnFileSaveAll(wxCommandEvent& event)
     Manager::Get()->GetProjectManager()->SaveAllProjects();
 
     if (Manager::Get()->GetProjectManager()->GetWorkspace()->GetModified()
-		&& !Manager::Get()->GetProjectManager()->GetWorkspace()->IsDefault()
+        && !Manager::Get()->GetProjectManager()->GetWorkspace()->IsDefault()
         && Manager::Get()->GetProjectManager()->SaveWorkspace())
     {
         AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
@@ -2487,9 +2489,9 @@ void MainFrame::OnSize(wxSizeEvent& event)
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
-	CodeBlocksEvent evt(cbEVT_APP_START_SHUTDOWN);
-	Manager::Get()->ProcessEvent(evt);
-	Manager::Yield();
+    CodeBlocksEvent evt(cbEVT_APP_START_SHUTDOWN);
+    Manager::Get()->ProcessEvent(evt);
+    Manager::Yield();
 
 
     m_InitiatedShutdown = true;
@@ -2525,9 +2527,9 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         return;
     }
 
-	Manager::Get()->GetMessageManager()->DebugLog(_T("Deinitializing plugins..."));
-	CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
-	Manager::Get()->ProcessEvent(evtShutdown);
+    Manager::Get()->GetMessageManager()->DebugLog(_T("Deinitializing plugins..."));
+    CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
+    Manager::Get()->ProcessEvent(evtShutdown);
 
     if (Manager::IsBatchBuild() == false)
         SaveWindowState();
@@ -2907,9 +2909,9 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
             while( curLine <= endLine )
             {
                 // For each line: comment.
-				stc->InsertText( stc->PositionFromLine( curLine ), comment );
+                stc->InsertText( stc->PositionFromLine( curLine ), comment );
                 ++curLine;
-			} // end while
+            } // end while
             stc->SetSelection(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
         }
         stc->EndUndoAction();
@@ -3396,7 +3398,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditEOLMode, ed);
     mbar->Enable(idEditEncoding, ed);
     mbar->Enable(idEditSpecialCommands, ed);
-	mbar->Enable(idEditSpecialCommandsCase, ed && hasSel);
+    mbar->Enable(idEditSpecialCommandsCase, ed && hasSel);
     mbar->Enable(idEditCommentSelected, ed);
     mbar->Enable(idEditAutoComplete, ed);
     mbar->Enable(idEditUncommentSelected, ed);
@@ -3836,9 +3838,9 @@ void MainFrame::OnRequestShowDockWindow(CodeBlocksDockEvent& event)
     m_LayoutManager.GetPane(event.pWindow).Show();
     DoUpdateLayout();
 
-	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
-	evt.pWindow = event.pWindow;
-	Manager::Get()->ProcessEvent(evt);
+    CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
+    evt.pWindow = event.pWindow;
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
@@ -3846,9 +3848,9 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
     m_LayoutManager.GetPane(event.pWindow).Hide();
     DoUpdateLayout();
 
-	CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
-	evt.pWindow = event.pWindow;
-	Manager::Get()->ProcessEvent(evt);
+    CodeBlocksDockEvent evt(cbEVT_DOCK_WINDOW_VISIBILITY);
+    evt.pWindow = event.pWindow;
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& event)
