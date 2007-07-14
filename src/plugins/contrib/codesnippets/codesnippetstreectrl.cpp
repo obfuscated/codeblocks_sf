@@ -538,17 +538,22 @@ void CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent,
 	// Sort 'em
 	SortChildren(parent);
 
+    bool ok = false;
+    if ( newItemID && newItemID.IsOk() ) ok = true;
 	if (editNow)
 	{
-		// Let the user to edit the item
+		// Let the user edit the item
 		EnsureVisible(newItemID);
-		EditLabel(newItemID);
+		////-EditLabel(newItemID);
+		ok = EditSnippetProperties( newItemID );
+		if (not ok) RemoveItem(newItemID);
+		else SelectItem( newItemID );
 	}
 
-	if ( newItemID.IsOk() )
-        SetSnippetImage(newItemID);
-
-    SetFileChanged(true);
+	if ( ok && newItemID.IsOk() )
+    {   SetSnippetImage(newItemID);
+        SetFileChanged(true);
+    }
 
 }
 
@@ -580,21 +585,34 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
 	// Sanity check
 	if (itemId==GetRootItem() ) return false;
 
+    bool shiftKeyIsDown = ::wxGetKeyState(WXK_SHIFT);
+
     SnippetItemData* pItemData = (SnippetItemData*)(GetItemData(itemId));
+    bool trashItem = false;
 
-    // put deleted items in .trash category
-    wxTreeItemId trashId = FindItemByLabel(wxT(".trash"), GetRootItem(), CodeSnippetsConfig::SCOPE_CATEGORIES);
-    if ( trashId==(void*)0 )
-        trashId = AddCategory(GetRootItem(), wxT(".trash"), false);
-
-    // if item is NOT already in the trash, copy item to .trash category
-    if (not ( FindItemById( itemId, trashId, pItemData->GetType()) ))
+    // if shift key is up, copy item to .trash category
+    if (not shiftKeyIsDown)
     {
-        TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemId);
-        CopyXmlDocToTreeNode(pDoc, trashId);
-        delete pDoc;
-    }
-    else // item already in .trash
+        // put deleted items in .trash category
+        wxTreeItemId trashId = FindItemByLabel(wxT(".trash"), GetRootItem(), CodeSnippetsConfig::SCOPE_CATEGORIES);
+        if ( trashId==(void*)0 )
+            trashId = AddCategory(GetRootItem(), wxT(".trash"), false);
+
+        // if item is NOT already in the trash, copy item to .trash category
+        if (not ( FindItemById( itemId, trashId, pItemData->GetType()) ))
+        {
+            TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemId);
+            CopyXmlDocToTreeNode(pDoc, trashId);
+            delete pDoc;
+        }
+        else // item already in .trash, delete it
+        {
+            trashItem = true;
+        }
+    }//if not shiftKeyIsDown
+
+    // when in trash already, or immediate delete requested, check for fileLink delete too
+    if (trashItem || shiftKeyIsDown)
     {
         // if FileLink, memorize the filename
         wxString filename = wxEmptyString;
@@ -608,9 +626,9 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
             if ( answer == wxYES)
                 /*int done =*/ ::wxRemoveFile(filename);
         }
-    }
+    }//if trashItem
 
-    // Delete the Snippet Tree Item
+    // Delete the original Snippet Tree Item
     DeleteChildren(itemId);
     Delete(itemId);
     SetFileChanged(true);

@@ -195,6 +195,7 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
     GetConfig()->AppName = wxT("codesnippets");
     #if LOGGING
      wxWindow* m_pAppWin = this;
+     wxLog::EnableLogging(true);
      m_pLog = new wxLogWindow( m_pAppWin, _T(" CodeSnippets Log"),true,false);
      wxLog::SetActiveTarget( m_pLog);
      m_pLog->Flush();

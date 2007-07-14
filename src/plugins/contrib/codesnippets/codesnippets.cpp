@@ -108,6 +108,7 @@ void CodeSnippets::OnAttach()
     AppVersion pgmVersion;
 
     #if LOGGING
+     wxLog::EnableLogging(true);
      m_pLog = new wxLogWindow( m_pAppWin, _T(" CodeSnippets Plugin"),true,false);
      wxLog::SetActiveTarget( m_pLog);
      m_pLog->Flush();

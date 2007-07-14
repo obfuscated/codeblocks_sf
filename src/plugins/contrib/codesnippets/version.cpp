@@ -286,6 +286,11 @@ AppVersion::~AppVersion()
 //  Commit  1.2.84 2007/06/30
 //          84) Fixed: Get temp directory name from system; don't assume.
 // ----------------------------------------------------------------------------
+//  Commit  1.2.87 2007/07/14
+//          85) changes for sdk RegisterEventSink
+//          86) invoke properties dialog on "new snippet"
+//          87) do not copy removed snippet to .trash when shift key down
+// ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
 //  ToDo    All
@@ -306,8 +311,8 @@ AppVersion::~AppVersion()
 //          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
 //          Docked wxAUI (MSW) window still bombs when using system [x] to close
+//          Switch icon loading to .zip xml LoadResource() etc.
 //          Add "U" type icon for url type snippets
-//          Allow absolute delete with SHIFT Remove
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
