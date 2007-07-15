@@ -46,27 +46,27 @@ const wxString Compiler::FilePathWithSpaces = _T("[][{}() \t#%$~A-Za-z0-9_:+/\\.
 const wxString CompilerSettingsVersion = _T("0.0.2");
 
 CompilerSwitches::CompilerSwitches()
-{	// default based upon gnu
-	includeDirs = _T("-I");
-	libDirs = _T("-L");
-	linkLibs = _T("-l");
-	defines = _T("-D");
-	genericSwitch = _T("-");
-	objectExtension = _T("o");
-	needDependencies = true;
-	forceFwdSlashes = false;
-	forceCompilerUseQuotes = false;
-	forceLinkerUseQuotes = false;
-	logging = clogSimple;
-	libPrefix = _T("lib");
-	libExtension = _T("a");
-	linkerNeedsLibPrefix = false;
-	linkerNeedsLibExtension = false;
-	buildMethod = cbmDirect;
-	supportsPCH = true;
-	PCHExtension = _T("h.gch");
-	UseFlatObjects = false;
-	UseFullSourcePaths = false;
+{   // default based upon gnu
+    includeDirs = _T("-I");
+    libDirs = _T("-L");
+    linkLibs = _T("-l");
+    defines = _T("-D");
+    genericSwitch = _T("-");
+    objectExtension = _T("o");
+    needDependencies = true;
+    forceFwdSlashes = false;
+    forceCompilerUseQuotes = false;
+    forceLinkerUseQuotes = false;
+    logging = clogSimple;
+    libPrefix = _T("lib");
+    libExtension = _T("a");
+    linkerNeedsLibPrefix = false;
+    linkerNeedsLibExtension = false;
+    buildMethod = cbmDirect;
+    supportsPCH = true;
+    PCHExtension = _T("h.gch");
+    UseFlatObjects = false;
+    UseFullSourcePaths = false;
 } // end of constructor
 
 
@@ -93,11 +93,12 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_NeedValidityCheck(true),
     m_Mirrored(false)
 {
-	//ctor
+    //ctor
     MakeValidID();
 
     m_Switches.supportsPCH = false;
     m_Switches.forceFwdSlashes = false;
+    m_VersionString = wxEmptyString;
 
     Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), m_Name.c_str());
 }
@@ -129,6 +130,7 @@ Compiler::Compiler(const Compiler& other)
     m_CmdsBefore = other.m_CmdsBefore;
     m_CmdsAfter = other.m_CmdsAfter;
     m_RegExes = other.m_RegExes;
+    m_VersionString = other.m_VersionString;
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
         m_Commands[i] = other.m_Commands[i];
@@ -140,8 +142,8 @@ Compiler::Compiler(const Compiler& other)
 
 Compiler::~Compiler()
 {
-	//dtor
-	delete m_pGenerator;
+    //dtor
+    delete m_pGenerator;
 }
 
 bool Compiler::IsValid()
@@ -156,17 +158,17 @@ bool Compiler::IsValid()
 
     if (!SupportsCurrentPlatform())
     {
-    	m_Valid = false;
-    	return false;
+        m_Valid = false;
+        return false;
     }
 
     wxString tmp = m_MasterPath + _T("/bin/") + m_Programs.C;
     Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
     m_Valid = wxFileExists(tmp);
     if (!m_Valid)
-    {	// and try witout appending the 'bin'
-    	tmp = m_MasterPath + _T("/") + m_Programs.C;
-    	Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+    {   // and try witout appending the 'bin'
+        tmp = m_MasterPath + _T("/") + m_Programs.C;
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
         m_Valid = wxFileExists(tmp);
     }
     if (!m_Valid)
@@ -174,8 +176,8 @@ bool Compiler::IsValid()
         // look in extra paths too
         for (size_t i = 0; i < m_ExtraPaths.GetCount(); ++i)
         {
-        	tmp = m_ExtraPaths[i] + _T("/") + m_Programs.C;
-        	Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+            tmp = m_ExtraPaths[i] + _T("/") + m_Programs.C;
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
             m_Valid = wxFileExists(tmp);
             if (m_Valid)
                 break;
@@ -224,8 +226,8 @@ void Compiler::MakeValidID()
     }
     m_ID = newID.Lower();
 
-	// check for unique ID
-	if (!IsUniqueID(m_ID))
+    // check for unique ID
+    if (!IsUniqueID(m_ID))
         cbThrow(_T("Compiler ID already exists for ") + m_Name);
     m_CompilerIDs.Add(m_ID);
 }
@@ -257,62 +259,62 @@ void Compiler::GenerateCommandLine(wxString& macro,
 
 const wxArrayString& Compiler::GetCompilerSearchDirs(ProjectBuildTarget* target)
 {
-	static wxArrayString retIfError;
-	retIfError.Clear();
-	if (!m_pGenerator)
-		return retIfError;
+    static wxArrayString retIfError;
+    retIfError.Clear();
+    if (!m_pGenerator)
+        return retIfError;
 
-	return m_pGenerator->GetCompilerSearchDirs(target);
+    return m_pGenerator->GetCompilerSearchDirs(target);
 }
 
 const wxArrayString& Compiler::GetLinkerSearchDirs(ProjectBuildTarget* target)
 {
-	static wxArrayString retIfError;
-	retIfError.Clear();
-	if (!m_pGenerator)
-		return retIfError;
+    static wxArrayString retIfError;
+    retIfError.Clear();
+    if (!m_pGenerator)
+        return retIfError;
 
-	return m_pGenerator->GetLinkerSearchDirs(target);
+    return m_pGenerator->GetLinkerSearchDirs(target);
 }
 
 void Compiler::MirrorCurrentSettings()
 {
-	// run just once
-	if (m_Mirrored)
-		return;
+    // run just once
+    if (m_Mirrored)
+        return;
 
-	// keep the current settings safe
-	// so we can compare them when saving: this way we can only save what's
-	// different from the defaults
+    // keep the current settings safe
+    // so we can compare them when saving: this way we can only save what's
+    // different from the defaults
 
-	m_Mirror.Name = m_Name;
-	m_Mirror.MasterPath = m_MasterPath;
-	m_Mirror.ExtraPaths = m_ExtraPaths;
-	for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
-		m_Mirror.Commands[i] = m_Commands[i];
-	m_Mirror.Programs = m_Programs;
-	m_Mirror.Switches = m_Switches;
-	m_Mirror.Options = m_Options;
-	m_Mirror.RegExes = m_RegExes;
+    m_Mirror.Name = m_Name;
+    m_Mirror.MasterPath = m_MasterPath;
+    m_Mirror.ExtraPaths = m_ExtraPaths;
+    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+        m_Mirror.Commands[i] = m_Commands[i];
+    m_Mirror.Programs = m_Programs;
+    m_Mirror.Switches = m_Switches;
+    m_Mirror.Options = m_Options;
+    m_Mirror.RegExes = m_RegExes;
 
-	m_Mirror.CompilerOptions_ = m_CompilerOptions;
-	m_Mirror.LinkerOptions = m_LinkerOptions;
-	m_Mirror.IncludeDirs = m_IncludeDirs;
-	m_Mirror.ResIncludeDirs = m_ResIncludeDirs;
-	m_Mirror.LibDirs = m_LibDirs;
-	m_Mirror.LinkLibs = m_LinkLibs;
-	m_Mirror.CmdsBefore = m_CmdsBefore;
-	m_Mirror.CmdsAfter = m_CmdsAfter;
+    m_Mirror.CompilerOptions_ = m_CompilerOptions;
+    m_Mirror.LinkerOptions = m_LinkerOptions;
+    m_Mirror.IncludeDirs = m_IncludeDirs;
+    m_Mirror.ResIncludeDirs = m_ResIncludeDirs;
+    m_Mirror.LibDirs = m_LibDirs;
+    m_Mirror.LinkLibs = m_LinkLibs;
+    m_Mirror.CmdsBefore = m_CmdsBefore;
+    m_Mirror.CmdsAfter = m_CmdsAfter;
 
-	m_Mirrored = true;
+    m_Mirrored = true;
 }
 
 void Compiler::SaveSettings(const wxString& baseKey)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
 
-	// save settings version
-	cfg->Write(_T("settings_version"), CompilerSettingsVersion);
+    // save settings version
+    cfg->Write(_T("settings_version"), CompilerSettingsVersion);
 
     wxString tmp;
 
@@ -322,124 +324,124 @@ void Compiler::SaveSettings(const wxString& baseKey)
 
     tmp.Printf(_T("%s/%s"), baseKey.c_str(), m_ID.c_str());
 
-	cfg->Write(tmp + _T("/name"), m_Name);
-	cfg->Write(tmp + _T("/parent"), m_ParentID, true);
+    cfg->Write(tmp + _T("/name"), m_Name);
+    cfg->Write(tmp + _T("/parent"), m_ParentID, true);
 
-	if (m_Mirror.CompilerOptions_ != m_CompilerOptions)
-	{
-		wxString key = GetStringFromArray(m_CompilerOptions);
-		cfg->Write(tmp + _T("/compiler_options"), key, false);
-	}
-	if (m_Mirror.LinkerOptions != m_LinkerOptions)
-	{
-		wxString key = GetStringFromArray(m_LinkerOptions);
-		cfg->Write(tmp + _T("/linker_options"), key, false);
-	}
-	if (m_Mirror.IncludeDirs != m_IncludeDirs)
-	{
-		wxString key = GetStringFromArray(m_IncludeDirs);
-		cfg->Write(tmp + _T("/include_dirs"), key, false);
-	}
-	if (m_Mirror.ResIncludeDirs != m_ResIncludeDirs)
-	{
-		wxString key = GetStringFromArray(m_ResIncludeDirs);
-		cfg->Write(tmp + _T("/res_include_dirs"), key, false);
-	}
-	if (m_Mirror.LibDirs != m_LibDirs)
-	{
-		wxString key = GetStringFromArray(m_LibDirs);
-		cfg->Write(tmp + _T("/library_dirs"), key, false);
-	}
-	if (m_Mirror.LinkLibs != m_LinkLibs)
-	{
-		wxString key = GetStringFromArray(m_LinkLibs);
-		cfg->Write(tmp + _T("/libraries"), key, false);
-	}
-	if (m_Mirror.CmdsBefore != m_CmdsBefore)
-	{
-		wxString key = GetStringFromArray(m_CmdsBefore);
-		cfg->Write(tmp + _T("/commands_before"), key, true);
-	}
-	if (m_Mirror.CmdsAfter != m_CmdsAfter)
-	{
-		wxString key = GetStringFromArray(m_CmdsAfter);
-		cfg->Write(tmp + _T("/commands_after"), key, true);
-	}
+    if (m_Mirror.CompilerOptions_ != m_CompilerOptions)
+    {
+        wxString key = GetStringFromArray(m_CompilerOptions);
+        cfg->Write(tmp + _T("/compiler_options"), key, false);
+    }
+    if (m_Mirror.LinkerOptions != m_LinkerOptions)
+    {
+        wxString key = GetStringFromArray(m_LinkerOptions);
+        cfg->Write(tmp + _T("/linker_options"), key, false);
+    }
+    if (m_Mirror.IncludeDirs != m_IncludeDirs)
+    {
+        wxString key = GetStringFromArray(m_IncludeDirs);
+        cfg->Write(tmp + _T("/include_dirs"), key, false);
+    }
+    if (m_Mirror.ResIncludeDirs != m_ResIncludeDirs)
+    {
+        wxString key = GetStringFromArray(m_ResIncludeDirs);
+        cfg->Write(tmp + _T("/res_include_dirs"), key, false);
+    }
+    if (m_Mirror.LibDirs != m_LibDirs)
+    {
+        wxString key = GetStringFromArray(m_LibDirs);
+        cfg->Write(tmp + _T("/library_dirs"), key, false);
+    }
+    if (m_Mirror.LinkLibs != m_LinkLibs)
+    {
+        wxString key = GetStringFromArray(m_LinkLibs);
+        cfg->Write(tmp + _T("/libraries"), key, false);
+    }
+    if (m_Mirror.CmdsBefore != m_CmdsBefore)
+    {
+        wxString key = GetStringFromArray(m_CmdsBefore);
+        cfg->Write(tmp + _T("/commands_before"), key, true);
+    }
+    if (m_Mirror.CmdsAfter != m_CmdsAfter)
+    {
+        wxString key = GetStringFromArray(m_CmdsAfter);
+        cfg->Write(tmp + _T("/commands_after"), key, true);
+    }
 
-	if (m_Mirror.MasterPath != m_MasterPath)
-		cfg->Write(tmp + _T("/master_path"), m_MasterPath, true);
+    if (m_Mirror.MasterPath != m_MasterPath)
+        cfg->Write(tmp + _T("/master_path"), m_MasterPath, true);
     if (m_Mirror.ExtraPaths != m_ExtraPaths)
-		cfg->Write(tmp + _T("/extra_paths"), GetStringFromArray(m_ExtraPaths, _T(";")), true);
+        cfg->Write(tmp + _T("/extra_paths"), GetStringFromArray(m_ExtraPaths, _T(";")), true);
     if (m_Mirror.Programs.C != m_Programs.C)
-		cfg->Write(tmp + _T("/c_compiler"), m_Programs.C, true);
+        cfg->Write(tmp + _T("/c_compiler"), m_Programs.C, true);
     if (m_Mirror.Programs.CPP != m_Programs.CPP)
-		cfg->Write(tmp + _T("/cpp_compiler"), m_Programs.CPP, true);
+        cfg->Write(tmp + _T("/cpp_compiler"), m_Programs.CPP, true);
     if (m_Mirror.Programs.LD != m_Programs.LD)
-		cfg->Write(tmp + _T("/linker"), m_Programs.LD, true);
+        cfg->Write(tmp + _T("/linker"), m_Programs.LD, true);
     if (m_Mirror.Programs.LIB != m_Programs.LIB)
-		cfg->Write(tmp + _T("/lib_linker"), m_Programs.LIB, true);
+        cfg->Write(tmp + _T("/lib_linker"), m_Programs.LIB, true);
     if (m_Mirror.Programs.WINDRES != m_Programs.WINDRES)
-		cfg->Write(tmp + _T("/res_compiler"), m_Programs.WINDRES, true);
+        cfg->Write(tmp + _T("/res_compiler"), m_Programs.WINDRES, true);
     if (m_Mirror.Programs.MAKE != m_Programs.MAKE)
-		cfg->Write(tmp + _T("/make"), m_Programs.MAKE, true);
+        cfg->Write(tmp + _T("/make"), m_Programs.MAKE, true);
     if (m_Mirror.Programs.DBG != m_Programs.DBG)
-		cfg->Write(tmp + _T("/debugger"), m_Programs.DBG, true);
+        cfg->Write(tmp + _T("/debugger"), m_Programs.DBG, true);
 
     for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
     {
-    	if (m_Mirror.Commands[i] != m_Commands[i])
-			cfg->Write(tmp + _T("/macros/") + CommandTypeDescriptions[i], m_Commands[i], true);
+        if (m_Mirror.Commands[i] != m_Commands[i])
+            cfg->Write(tmp + _T("/macros/") + CommandTypeDescriptions[i], m_Commands[i], true);
     }
 
     // switches
     if (m_Mirror.Switches.includeDirs != m_Switches.includeDirs)
-		cfg->Write(tmp + _T("/switches/includes"), m_Switches.includeDirs, true);
+        cfg->Write(tmp + _T("/switches/includes"), m_Switches.includeDirs, true);
     if (m_Mirror.Switches.libDirs != m_Switches.libDirs)
-	    cfg->Write(tmp + _T("/switches/libs"), m_Switches.libDirs, true);
+        cfg->Write(tmp + _T("/switches/libs"), m_Switches.libDirs, true);
     if (m_Mirror.Switches.linkLibs != m_Switches.linkLibs)
-	    cfg->Write(tmp + _T("/switches/link"), m_Switches.linkLibs, true);
+        cfg->Write(tmp + _T("/switches/link"), m_Switches.linkLibs, true);
     if (m_Mirror.Switches.defines != m_Switches.defines)
-	    cfg->Write(tmp + _T("/switches/define"), m_Switches.defines, true);
+        cfg->Write(tmp + _T("/switches/define"), m_Switches.defines, true);
     if (m_Mirror.Switches.genericSwitch != m_Switches.genericSwitch)
-	    cfg->Write(tmp + _T("/switches/generic"), m_Switches.genericSwitch, true);
+        cfg->Write(tmp + _T("/switches/generic"), m_Switches.genericSwitch, true);
     if (m_Mirror.Switches.objectExtension != m_Switches.objectExtension)
-	    cfg->Write(tmp + _T("/switches/objectext"), m_Switches.objectExtension, true);
+        cfg->Write(tmp + _T("/switches/objectext"), m_Switches.objectExtension, true);
     if (m_Mirror.Switches.needDependencies != m_Switches.needDependencies)
-	    cfg->Write(tmp + _T("/switches/deps"), m_Switches.needDependencies);
+        cfg->Write(tmp + _T("/switches/deps"), m_Switches.needDependencies);
     if (m_Mirror.Switches.forceCompilerUseQuotes != m_Switches.forceCompilerUseQuotes)
-	    cfg->Write(tmp + _T("/switches/forceCompilerQuotes"), m_Switches.forceCompilerUseQuotes);
+        cfg->Write(tmp + _T("/switches/forceCompilerQuotes"), m_Switches.forceCompilerUseQuotes);
     if (m_Mirror.Switches.forceLinkerUseQuotes != m_Switches.forceLinkerUseQuotes)
-	    cfg->Write(tmp + _T("/switches/forceLinkerQuotes"), m_Switches.forceLinkerUseQuotes);
+        cfg->Write(tmp + _T("/switches/forceLinkerQuotes"), m_Switches.forceLinkerUseQuotes);
     if (m_Mirror.Switches.logging != m_Switches.logging)
-	    cfg->Write(tmp + _T("/switches/logging"), m_Switches.logging);
+        cfg->Write(tmp + _T("/switches/logging"), m_Switches.logging);
     if (m_Mirror.Switches.buildMethod != m_Switches.buildMethod)
-	    cfg->Write(tmp + _T("/switches/buildMethod"), m_Switches.buildMethod);
+        cfg->Write(tmp + _T("/switches/buildMethod"), m_Switches.buildMethod);
     if (m_Mirror.Switches.libPrefix != m_Switches.libPrefix)
-	    cfg->Write(tmp + _T("/switches/libPrefix"), m_Switches.libPrefix, true);
+        cfg->Write(tmp + _T("/switches/libPrefix"), m_Switches.libPrefix, true);
     if (m_Mirror.Switches.libExtension != m_Switches.libExtension)
-	    cfg->Write(tmp + _T("/switches/libExtension"), m_Switches.libExtension, true);
+        cfg->Write(tmp + _T("/switches/libExtension"), m_Switches.libExtension, true);
     if (m_Mirror.Switches.linkerNeedsLibPrefix != m_Switches.linkerNeedsLibPrefix)
-	    cfg->Write(tmp + _T("/switches/linkerNeedsLibPrefix"), m_Switches.linkerNeedsLibPrefix);
+        cfg->Write(tmp + _T("/switches/linkerNeedsLibPrefix"), m_Switches.linkerNeedsLibPrefix);
     if (m_Mirror.Switches.linkerNeedsLibExtension != m_Switches.linkerNeedsLibExtension)
-	    cfg->Write(tmp + _T("/switches/linkerNeedsLibExtension"), m_Switches.linkerNeedsLibExtension);
+        cfg->Write(tmp + _T("/switches/linkerNeedsLibExtension"), m_Switches.linkerNeedsLibExtension);
     if (m_Mirror.Switches.forceFwdSlashes != m_Switches.forceFwdSlashes)
-	    cfg->Write(tmp + _T("/switches/forceFwdSlashes"), m_Switches.forceFwdSlashes);
+        cfg->Write(tmp + _T("/switches/forceFwdSlashes"), m_Switches.forceFwdSlashes);
     if (m_Mirror.Switches.supportsPCH != m_Switches.supportsPCH)
-	    cfg->Write(tmp + _T("/switches/supportsPCH"), m_Switches.supportsPCH);
+        cfg->Write(tmp + _T("/switches/supportsPCH"), m_Switches.supportsPCH);
     if (m_Mirror.Switches.PCHExtension != m_Switches.PCHExtension)
-	    cfg->Write(tmp + _T("/switches/pchExtension"), m_Switches.PCHExtension);
+        cfg->Write(tmp + _T("/switches/pchExtension"), m_Switches.PCHExtension);
     if (m_Mirror.Switches.UseFlatObjects != m_Switches.UseFlatObjects)
-	    cfg->Write(tmp + _T("/switches/UseFlatObjects"), m_Switches.UseFlatObjects);
+        cfg->Write(tmp + _T("/switches/UseFlatObjects"), m_Switches.UseFlatObjects);
     if (m_Mirror.Switches.UseFullSourcePaths != m_Switches.UseFullSourcePaths)
-	    cfg->Write(tmp + _T("/switches/UseFullSourcePaths"), m_Switches.UseFullSourcePaths);
+        cfg->Write(tmp + _T("/switches/UseFullSourcePaths"), m_Switches.UseFullSourcePaths);
 
     // regexes
     cfg->DeleteSubPath(tmp + _T("/regex"));
     wxString group;
     for (size_t i = 0; i < m_RegExes.Count(); ++i)
     {
-    	if (i < m_Mirror.RegExes.GetCount() && m_Mirror.RegExes[i] == m_RegExes[i])
-			continue;
+        if (i < m_Mirror.RegExes.GetCount() && m_Mirror.RegExes[i] == m_RegExes[i])
+            continue;
 
         group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), i + 1);
         RegExStruct& rs = m_RegExes[i];
@@ -461,7 +463,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
 
     // custom vars
     wxString configpath = tmp + _T("/custom_variables/");
-	cfg->DeleteSubPath(configpath);
+    cfg->DeleteSubPath(configpath);
     const StringHash& v = GetAllVars();
     for (StringHash::const_iterator it = v.begin(); it != v.end(); ++it)
     {
@@ -471,16 +473,16 @@ void Compiler::SaveSettings(const wxString& baseKey)
 
 void Compiler::LoadSettings(const wxString& baseKey)
 {
-	// before loading any compiler settings, keep the current settings safe
-	// so we can compare them when saving: this way we can only save what's
-	// different from the defaults
-	MirrorCurrentSettings();
+    // before loading any compiler settings, keep the current settings safe
+    // so we can compare them when saving: this way we can only save what's
+    // different from the defaults
+    MirrorCurrentSettings();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
 
-	// read settings version
-	wxString version = cfg->Read(_T("settings_version"));
-	bool versionMismatch = version != CompilerSettingsVersion;
+    // read settings version
+    wxString version = cfg->Read(_T("settings_version"));
+    bool versionMismatch = version != CompilerSettingsVersion;
 
     wxString tmp;
 
@@ -558,26 +560,26 @@ void Compiler::LoadSettings(const wxString& baseKey)
 
     // regexes
 
-	// because we 're only saving changed regexes, we can't just iterate like before.
-	// instead, we must iterate all child-keys and deduce the regex index number from
-	// the key name
-	wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/regex/"));
+    // because we 're only saving changed regexes, we can't just iterate like before.
+    // instead, we must iterate all child-keys and deduce the regex index number from
+    // the key name
+    wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/regex/"));
     wxString group;
     long index;
-	for (size_t i = 0; i < keys.GetCount(); ++i)
+    for (size_t i = 0; i < keys.GetCount(); ++i)
     {
-    	wxString key = keys[i];
+        wxString key = keys[i];
 
-    	// reNNN
-    	if (!key.StartsWith(_T("re")))
-			continue;
-		key.Remove(0, 2);
-		if (!key.ToLong(&index, 10))
-			continue;
+        // reNNN
+        if (!key.StartsWith(_T("re")))
+            continue;
+        key.Remove(0, 2);
+        if (!key.ToLong(&index, 10))
+            continue;
 
-		// 'index' now holds the regex index.
-		// read everything and either assign it to an existing regex
-		// if the index exists, or add a new regex
+        // 'index' now holds the regex index.
+        // read everything and either assign it to an existing regex
+        // if the index exists, or add a new regex
 
         group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), index);
         if (!cfg->Exists(group+_T("/description")))
@@ -594,39 +596,39 @@ void Compiler::LoadSettings(const wxString& baseKey)
         rs.line = cfg->ReadInt(group + _T("/line"), 0);
 
         if (index <= (long)m_RegExes.GetCount())
-			m_RegExes[index - 1] = rs;
-		else
-			m_RegExes.Add(rs);
+            m_RegExes[index - 1] = rs;
+        else
+            m_RegExes.Add(rs);
     }
 
     // custom vars
     wxString configpath = tmp + _T("/custom_variables/");
-	UnsetAllVars();
-	wxArrayString list = cfg->EnumerateKeys(configpath);
-	for (unsigned int i = 0; i < list.GetCount(); ++i)
-		SetVar(list[i], cfg->Read(configpath + _T('/') + list[i]), false);
+    UnsetAllVars();
+    wxArrayString list = cfg->EnumerateKeys(configpath);
+    for (unsigned int i = 0; i < list.GetCount(); ++i)
+        SetVar(list[i], cfg->Read(configpath + _T('/') + list[i]), false);
 
-	if (versionMismatch)
-	{
-		wxString msg;
-		msg << _("Some compiler settings defaults have changed in this version.\n"
-				"It is recommended that you allow updating of your settings to "
-				"the new defaults.\n"
-				"Only disallow this if you don't want to lose any customizations "
-				"you have done to this compiler's settings.\n\n"
-				"Note that the only settings that are affected are those found in "
-				"\"Advanced compiler options\"...\n\n"
-				"Do you want to update your current settings to the new defaults?");
-		// don't ask if the compiler is not valid (i.e. not installed), just update
-		if (!IsValid() || cbMessageBox(msg, m_Name, wxICON_QUESTION | wxYES_NO) == wxID_YES)
-		{
-			for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
-				m_Commands[i] = m_Mirror.Commands[i];
-			m_Switches = m_Mirror.Switches;
-			m_Options = m_Mirror.Options;
-			m_RegExes = m_Mirror.RegExes;
-		}
-	}
+    if (versionMismatch)
+    {
+        wxString msg;
+        msg << _("Some compiler settings defaults have changed in this version.\n"
+                "It is recommended that you allow updating of your settings to "
+                "the new defaults.\n"
+                "Only disallow this if you don't want to lose any customizations "
+                "you have done to this compiler's settings.\n\n"
+                "Note that the only settings that are affected are those found in "
+                "\"Advanced compiler options\"...\n\n"
+                "Do you want to update your current settings to the new defaults?");
+        // don't ask if the compiler is not valid (i.e. not installed), just update
+        if (!IsValid() || cbMessageBox(msg, m_Name, wxICON_QUESTION | wxYES_NO) == wxID_YES)
+        {
+            for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+                m_Commands[i] = m_Mirror.Commands[i];
+            m_Switches = m_Mirror.Switches;
+            m_Options = m_Mirror.Options;
+            m_RegExes = m_Mirror.RegExes;
+        }
+    }
 }
 
 CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)

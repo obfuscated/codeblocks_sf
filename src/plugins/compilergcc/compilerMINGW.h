@@ -17,6 +17,7 @@ class CompilerMINGW : public Compiler
         virtual CompilerCommandGenerator* GetCommandGenerator();
     protected:
         virtual Compiler* CreateCopy();
+        virtual void SetVersionString();
     private:
 };
 

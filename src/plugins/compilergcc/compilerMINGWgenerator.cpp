@@ -14,6 +14,7 @@
 CompilerMINGWGenerator::CompilerMINGWGenerator()
 {
     //ctor
+    m_VerStr = wxEmptyString;
 }
 
 CompilerMINGWGenerator::~CompilerMINGWGenerator()
@@ -24,7 +25,9 @@ CompilerMINGWGenerator::~CompilerMINGWGenerator()
 wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target)
 {
     wxString result = CompilerCommandGenerator::SetupIncludeDirs(compiler, target);
+    m_VerStr = compiler->GetVersionString();
     wxString pch_prepend;
+    bool IsGcc4 = m_VerStr.Left(1).IsSameAs(_T("4"));
 
     // for PCH to work, the very first include dir *must* be the object output dir
     // *only* if PCH is generated in the object output dir
@@ -47,14 +50,18 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
                 {
                     includedDirs.Add(dir);
                     QuoteStringIfNeeded(dir);
-                    pch_prepend << compiler->GetSwitches().includeDirs << dir << _T(' ');
+                    if (!IsGcc4)
+                        pch_prepend << compiler->GetSwitches().includeDirs << dir << _T(' ');
+                    else
+                        pch_prepend << _T("-iquote") << dir << _T(' ');
                 }
             }
         }
         // for gcc-4.0+, use the following:
         // pch_prepend << _T("-iquote") << dir << _T(' ');
         // for earlier versions, -I- must be used
-        pch_prepend << _T("-I- ");
+        if (!IsGcc4)
+            pch_prepend << _T("-I- ");
         count = (int)includedDirs.GetCount();
         for (int i = 0; i < count; ++i)
         {

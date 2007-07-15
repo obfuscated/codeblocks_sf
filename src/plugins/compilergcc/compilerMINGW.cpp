@@ -178,6 +178,7 @@ void CompilerMINGW::Reset()
     m_LinkLibs.Clear();
     m_CmdsBefore.Clear();
     m_CmdsAfter.Clear();
+    SetVersionString();
 }
 
 void CompilerMINGW::LoadDefaultRegExArray()
@@ -257,5 +258,42 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     // don't add lib/include dirs. GCC knows where its files are located
 
+    SetVersionString();
     return ret;
+}
+
+void CompilerMINGW::SetVersionString()
+{
+    wxArrayString output, errors;
+    wxString sep = wxFileName::GetPathSeparator();
+    DBGLOG(m_MasterPath);
+    wxString masterpath;
+    if (m_MasterPath.IsEmpty())
+    {
+        if (platform::windows)
+            masterpath = _T("C:\\MinGW");
+        else
+            masterpath = _T("/usr");
+    }
+    wxString gcc_command = masterpath + sep + _T("bin") + sep + m_Programs.C + _T(" --version");
+    long result = wxExecute(gcc_command, output, errors, wxEXEC_NODISABLE);
+    if (result > 0)
+    {
+        DBGLOG(_T("Error in executing command"));
+    }
+    else
+    {
+        if (output.GetCount() > 0)
+        {
+            wxRegEx reg_exp;
+            if (reg_exp.Compile(_T("[0-9].[0-9].[0-9]")) && reg_exp.Matches(output[0]))
+                m_VersionString = reg_exp.GetMatch(output[0]);
+            else
+            {
+                m_VersionString = output[0].Mid(10);
+                m_VersionString = m_VersionString.Left(5);
+                m_VersionString.Trim(false);
+            }
+        }
+    }
 }

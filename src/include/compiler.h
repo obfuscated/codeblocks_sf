@@ -81,18 +81,18 @@ struct RegExStruct
     }
     bool operator!=(const RegExStruct& other)
     {
-    	return !(*this == other);
+        return !(*this == other);
     }
     bool operator==(const RegExStruct& other)
     {
-    	return desc == other.desc &&
-				lt == other.lt &&
-				regex == other.regex &&
-				msg[0] == other.msg[0] &&
-				msg[1] == other.msg[1] &&
-				msg[2] == other.msg[2] &&
-				filename == other.filename &&
-				line == other.line;
+        return desc == other.desc &&
+                lt == other.lt &&
+                regex == other.regex &&
+                msg[0] == other.msg[0] &&
+                msg[1] == other.msg[1] &&
+                msg[2] == other.msg[2] &&
+                filename == other.filename &&
+                line == other.line;
     }
     wxString desc; // title of this regex
     CompilerLineType lt; // classify the line, if regex matches
@@ -177,9 +177,9 @@ struct CompilerSwitches
     wxString PCHExtension; // precompiled headers extension
     bool UseFlatObjects; // Use Flat object file names (no extra subdirs)?
     bool UseFullSourcePaths; // This is mainly a workaround for the GDB debugger, apparantly I doesn't deal
-			// well with relative paths, therefor for GCC it is better to specify the source full to the compiler in
-			// a full path notation, for all other compilers it is suggested to keep this switch at false
-    CompilerSwitches();		// constructor initializing the members, specific compilers should overrule if needed
+            // well with relative paths, therefor for GCC it is better to specify the source full to the compiler in
+            // a full path notation, for all other compilers it is suggested to keep this switch at false
+    CompilerSwitches();     // constructor initializing the members, specific compilers should overrule if needed
 };
 
 /**
@@ -189,57 +189,57 @@ struct CompilerSwitches
   */
 class DLLIMPORT Compiler : public CompileOptionsBase
 {
-	public:
-		static const wxString FilePathWithSpaces;
-		Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString);
-		virtual ~Compiler();
+    public:
+        static const wxString FilePathWithSpaces;
+        Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString);
+        virtual ~Compiler();
 
-		/** @brief Check if the compiler is actually valid (installed). */
-		virtual bool IsValid();
+        /** @brief Check if the compiler is actually valid (installed). */
+        virtual bool IsValid();
 
-		/** @brief Check if the supplied string is a compiler warning/error */
-		virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
-		/** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
-		virtual wxString GetLastErrorFilename(){ return m_ErrorFilename; }
-		/** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
-		virtual wxString GetLastErrorLine(){ return m_ErrorLine; }
-		/** @brief Returns warning/error actual string. Use it after a call to CheckForWarningsAndErrors() */
-		virtual wxString GetLastError(){ return m_Error; }
+        /** @brief Check if the supplied string is a compiler warning/error */
+        virtual CompilerLineType CheckForWarningsAndErrors(const wxString& line);
+        /** @brief Returns warning/error filename. Use it after a call to CheckForWarningsAndErrors() */
+        virtual wxString GetLastErrorFilename(){ return m_ErrorFilename; }
+        /** @brief Returns warning/error line number (as a string). Use it after a call to CheckForWarningsAndErrors() */
+        virtual wxString GetLastErrorLine(){ return m_ErrorLine; }
+        /** @brief Returns warning/error actual string. Use it after a call to CheckForWarningsAndErrors() */
+        virtual wxString GetLastError(){ return m_Error; }
         /** @brief Get the compiler's name */
-		virtual const wxString& GetName() const { return m_Name; }
+        virtual const wxString& GetName() const { return m_Name; }
         /** @brief Get the compiler's master path (must contain "bin", "include" and "lib") */
-		virtual const wxString& GetMasterPath() const { return m_MasterPath; }
+        virtual const wxString& GetMasterPath() const { return m_MasterPath; }
         /** @brief Get the compiler's extra paths */
-		virtual const wxArrayString& GetExtraPaths() const { return m_ExtraPaths; }
+        virtual const wxArrayString& GetExtraPaths() const { return m_ExtraPaths; }
         /** @brief Get the compiler's programs */
-		virtual const CompilerPrograms& GetPrograms() const { return m_Programs; }
+        virtual const CompilerPrograms& GetPrograms() const { return m_Programs; }
         /** @brief Get the compiler's generic switches */
-		virtual const CompilerSwitches& GetSwitches() const { return m_Switches; }
+        virtual const CompilerSwitches& GetSwitches() const { return m_Switches; }
         /** @brief Get the compiler's options */
-		virtual const CompilerOptions& GetOptions() const { return m_Options; }
+        virtual const CompilerOptions& GetOptions() const { return m_Options; }
         /** @brief Get a command based on CommandType */
-		virtual const wxString& GetCommand(CommandType ct) const { return m_Commands[(int)ct]; }
-		/** @brief Get the array of regexes used in errors/warnings recognition */
-		virtual const RegExArray& GetRegExArray(){ return m_RegExes; }
-		/** @brief Load the default (preset) array of regexes used in errors/warnings recognition */
-		virtual void LoadDefaultRegExArray() = 0;
+        virtual const wxString& GetCommand(CommandType ct) const { return m_Commands[(int)ct]; }
+        /** @brief Get the array of regexes used in errors/warnings recognition */
+        virtual const RegExArray& GetRegExArray(){ return m_RegExes; }
+        /** @brief Load the default (preset) array of regexes used in errors/warnings recognition */
+        virtual void LoadDefaultRegExArray() = 0;
 
         /** @brief Set the compiler's name */
-		virtual void SetName(const wxString& name){ m_Name = name; }
+        virtual void SetName(const wxString& name){ m_Name = name; }
         /** @brief Set the compiler's master path (must contain "bin", "include" and "lib") */
-		virtual void SetMasterPath(const wxString& path){ m_MasterPath = path; m_NeedValidityCheck = true; }
+        virtual void SetMasterPath(const wxString& path){ m_MasterPath = path; m_NeedValidityCheck = true; }
         /** @brief Set the compiler's extra paths */
-		virtual void SetExtraPaths(const wxArrayString& paths){ m_ExtraPaths = paths; m_NeedValidityCheck = true; }
+        virtual void SetExtraPaths(const wxArrayString& paths){ m_ExtraPaths = paths; m_NeedValidityCheck = true; }
         /** @brief Set the compiler's programs */
-		virtual void SetPrograms(const CompilerPrograms& programs){ m_Programs = programs; m_NeedValidityCheck = true; }
+        virtual void SetPrograms(const CompilerPrograms& programs){ m_Programs = programs; m_NeedValidityCheck = true; }
         /** @brief Set the compiler's generic switches */
-		virtual void SetSwitches(const CompilerSwitches& switches){ m_Switches = switches; }
+        virtual void SetSwitches(const CompilerSwitches& switches){ m_Switches = switches; }
         /** @brief Set the compiler's options */
-		virtual void SetOptions(const CompilerOptions& options){ m_Options = options; }
+        virtual void SetOptions(const CompilerOptions& options){ m_Options = options; }
         /** @brief Set a command based on CommandType */
-		virtual void SetCommand(CommandType ct, const wxString& cmd){ m_Commands[(int)ct] = cmd; }
-		/** @brief Set the array of regexes used in errors/warnings recognition */
-		virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
+        virtual void SetCommand(CommandType ct, const wxString& cmd){ m_Commands[(int)ct] = cmd; }
+        /** @brief Set the array of regexes used in errors/warnings recognition */
+        virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
 
         /** Initialize for use with the specified @c project.
           * Transfers the call to the generator returned by GetCommandGenerator()*/
@@ -255,25 +255,25 @@ class DLLIMPORT Compiler : public CompileOptionsBase
                                         const wxString& FlatObject,
                                         const wxString& deps);
 
-		/** @brief Get the full include dirs used in the actuall command line.
-		  *
-		  * These are the actual include dirs that will be used for building
-		  * and might be different than target->GetIncludeDirs(). This is
-		  * because it's the sum of target include dirs + project include dirs +
-		  * build-script include dirs.
-		  * @note This is only valid after Init() has been called.
-		  */
-		virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
+        /** @brief Get the full include dirs used in the actuall command line.
+          *
+          * These are the actual include dirs that will be used for building
+          * and might be different than target->GetIncludeDirs(). This is
+          * because it's the sum of target include dirs + project include dirs +
+          * build-script include dirs.
+          * @note This is only valid after Init() has been called.
+          */
+        virtual const wxArrayString& GetCompilerSearchDirs(ProjectBuildTarget* target);
 
-		/** @brief Get the full linker dirs used in the actual command line.
-		  *
-		  * These are the actual linker dirs that will be used for building
-		  * and might be different than target->GetLibDirs(). This is
-		  * because it's the sum of target linker dirs + project linker dirs +
-		  * build-script linker dirs.
-		  * @note This is only valid after Init() has been called.
-		  */
-		virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
+        /** @brief Get the full linker dirs used in the actual command line.
+          *
+          * These are the actual linker dirs that will be used for building
+          * and might be different than target->GetLibDirs(). This is
+          * because it's the sum of target linker dirs + project linker dirs +
+          * build-script linker dirs.
+          * @note This is only valid after Init() has been called.
+          */
+        virtual const wxArrayString& GetLinkerSearchDirs(ProjectBuildTarget* target);
 
         /** @brief Save settings */
         virtual void SaveSettings(const wxString& baseKey);
@@ -293,9 +293,18 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
         /** @brief Get the command type descriptions (used in advanced compiler options) */
         static wxString CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT];
-	protected:
+
+        /** @brief Set the compiler version string. Please override this virtual function
+          * with your own compiler-version detection code if you want to use this.
+          *
+          * By default this function does nothing. */
+        virtual void SetVersionString() { return; };
+
+        /** @brief Get the compiler version string */
+        const wxString GetVersionString() const { return m_VersionString; };
+    protected:
         friend class CompilerFactory;
-		Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
+        Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
 
         /** This is to be overriden, if compiler needs to alter the default
           * command line generation.
@@ -310,7 +319,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         // converts, if needed, m_ID to something that is valid
         void MakeValidID();
 
-		// keeps a copy of current settings (works only the first time it's called)
+        // keeps a copy of current settings (works only the first time it's called)
         void MirrorCurrentSettings();
 
         // set the following members in your class
@@ -325,7 +334,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString m_ErrorFilename;
         wxString m_ErrorLine;
         wxString m_Error;
-	private:
+        wxString m_VersionString;
+    private:
         wxString m_ID;
         wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...
         static wxArrayString m_CompilerIDs; // map to guarantee unique IDs
@@ -336,26 +346,26 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         // "mirror" default settings for comparing when saving (to save only those that differ from defaults)
         struct MirrorSettings
         {
-			wxString Name;
-			wxString MasterPath;
-			wxArrayString ExtraPaths;
-			CompilerPrograms Programs;
+            wxString Name;
+            wxString MasterPath;
+            wxArrayString ExtraPaths;
+            CompilerPrograms Programs;
 
-			// these are the CompileOptionsBase settings that each compiler keeps on a global level
-			wxArrayString CompilerOptions_;
-			wxArrayString LinkerOptions;
-			wxArrayString IncludeDirs;
-			wxArrayString ResIncludeDirs;
-			wxArrayString LibDirs;
-			wxArrayString LinkLibs;
-			wxArrayString CmdsBefore;
-			wxArrayString CmdsAfter;
+            // these are the CompileOptionsBase settings that each compiler keeps on a global level
+            wxArrayString CompilerOptions_;
+            wxArrayString LinkerOptions;
+            wxArrayString IncludeDirs;
+            wxArrayString ResIncludeDirs;
+            wxArrayString LibDirs;
+            wxArrayString LinkLibs;
+            wxArrayString CmdsBefore;
+            wxArrayString CmdsAfter;
 
-			// below are the settings that the user is asked to revert to defaults (if defaults have changed)
-			wxString Commands[COMPILER_COMMAND_TYPES_COUNT];
-			CompilerSwitches Switches;
-			CompilerOptions Options;
-			RegExArray RegExes;
+            // below are the settings that the user is asked to revert to defaults (if defaults have changed)
+            wxString Commands[COMPILER_COMMAND_TYPES_COUNT];
+            CompilerSwitches Switches;
+            CompilerOptions Options;
+            RegExArray RegExes;
         };
         MirrorSettings m_Mirror;
         bool m_Mirrored; // flag to only mirror the settings once

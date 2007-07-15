@@ -12,6 +12,7 @@ class CompilerMINGWGenerator : public CompilerCommandGenerator
     protected:
         virtual wxString SetupIncludeDirs(Compiler* compiler, ProjectBuildTarget* target);
     private:
+        wxString m_VerStr;
 };
 
 #endif // COMPILERMINGWGENERATOR_H
