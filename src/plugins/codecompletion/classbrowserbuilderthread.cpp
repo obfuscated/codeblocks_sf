@@ -50,26 +50,50 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
     m_pTokens = pTokens;
 
     m_CurrentFileSet.clear();
+    m_CurrentTokenSet.clear();
 
+    TokensTree* tree = m_pParser->GetTokens();
     // fill filter set for current-file-filter
     if (m_Options.displayFilter == bdfFile && !m_ActiveFilename.IsEmpty())
     {
         // m_ActiveFilename is the full filename up to the extension dot. No extension though.
-        TokensTree* tree = m_pParser->GetTokens();
-
         // get all filenames' indices matching our mask
-        std::set<size_t> result;
-        tree->m_FilenamesMap.FindMatches(m_ActiveFilename, result, true, true);
+        tree->m_FilenamesMap.FindMatches(m_ActiveFilename, m_CurrentFileSet, true, true);
+    }
 
-        // loop matching files, and append their tokens in the filter
-        for (std::set<size_t>::iterator itf = result.begin(); itf != result.end(); ++itf)
+    if(m_Options.displayFilter == bdfProject && (user_data != 0))
+    {
+        cbProject* prj = (cbProject*)user_data;
+        for(int i = 0; i < prj->GetFilesCount(); i++)
         {
-            TokenIdxSet& tokens = tree->m_FilesMap[*itf];
-//            // doesn't work?
-//            std::copy(tokens.begin(), tokens.end(), m_CurrentFileSet.begin());
-            for (TokenIdxSet::iterator it = tokens.begin(); it != tokens.end(); ++it)
+            ProjectFile* curfile = prj->GetFile(i);
+            if(!curfile)
+                continue;
+            wxString filename = curfile->file.GetFullPath();
+            size_t fileIdx = tree->m_FilenamesMap.GetItemNo(filename);
+            if(fileIdx)
             {
-                m_CurrentFileSet.insert(*it);
+                m_CurrentFileSet.insert(fileIdx);
+            }
+        }
+    }
+
+    if (!m_CurrentFileSet.empty())
+    {
+        m_CurrentTokenSet.clear();
+        m_CurrentGlobalTokensSet.clear();
+        for(TokenFilesSet::iterator it = m_CurrentFileSet.begin();it != m_CurrentFileSet.end(); it++)
+        {
+            TokenIdxSet* curset = &(tree->m_FilesMap[*it]);
+            for(TokenIdxSet::iterator it2 = curset->begin(); it2 != curset->end(); it2++)
+            {
+                Token* curtoken = tree->at(*it2);
+                if(curtoken)
+                {
+                    m_CurrentTokenSet.insert(*it2);
+                    if(curtoken->m_ParentIndex == -1)
+                        m_CurrentGlobalTokensSet.insert(*it2);
+                }
             }
         }
     }
@@ -402,8 +426,16 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
 
     if (parentTokenIdx == -1)
     {
-        it = m_pTokens->m_GlobalNameSpace.begin();
-        it_end = m_pTokens->m_GlobalNameSpace.end();
+        if(m_Options.displayFilter == bdfWorkspace)
+        {
+            it = m_pTokens->m_GlobalNameSpace.begin();
+            it_end = m_pTokens->m_GlobalNameSpace.end();
+        }
+        else
+        {
+            it = m_CurrentGlobalTokensSet.begin();
+            it_end = m_CurrentGlobalTokensSet.end();
+        }
     }
     else
     {
@@ -453,6 +485,23 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId 
 bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask, bool allowGlobals)
 {
     int count = 0;
+    set<unsigned long, less<unsigned long> > tickets;
+
+    // Build temporary list of Token tickets - if the token's ticket is present
+    // among the parent node's children, it's a dupe, and we'll skip it.
+    if(parent.IsOk() && tree == m_pTreeTop)
+    {
+        wxTreeItemIdValue cookie;
+        wxTreeItemId curchild = tree->GetFirstChild(parent,cookie);
+        while(curchild.IsOk())
+        {
+            CBTreeData* data = (CBTreeData*)(tree->GetItemData(curchild));
+            curchild = tree->GetNextSibling(curchild);
+            if(data && data->m_Ticket)
+                tickets.insert(data->m_Ticket);
+        }
+    }
+
     for ( ; start != end; ++start)
     {
         Token* token = m_pTokens->at(*start);
@@ -461,6 +510,8 @@ bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, 
             (allowGlobals || token->m_IsLocal) &&
             TokenMatchesFilter(token))
         {
+            if(tree == m_pTreeTop && tickets.find(token->GetTicket()) != tickets.end())
+                continue; // dupe
             ++count;
             int img = m_pParser->GetTokenKindImage(token);
 
@@ -498,9 +549,9 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     if (m_Options.displayFilter == bdfWorkspace)
         return true;
 
-    if (m_Options.displayFilter == bdfFile && !m_CurrentFileSet.empty())
+    if (m_Options.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
     {
-        if (m_CurrentFileSet.find(token->GetSelf()) != m_CurrentFileSet.end())
+        if (m_CurrentTokenSet.find(token->GetSelf()) != m_CurrentTokenSet.end())
             return true;
 
         // we got to check all children of this token (recursively)

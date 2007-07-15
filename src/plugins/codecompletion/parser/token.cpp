@@ -117,11 +117,6 @@ Token::~Token()
     //dtor
 }
 
-unsigned long Token::GetTicket() const
-{
-    return m_Ticket;
-}
-
 unsigned long Token::GetTokenTicket()
 {
     static wxCriticalSection s_TicketProtection;

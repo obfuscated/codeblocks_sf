@@ -88,7 +88,10 @@ class ClassBrowserBuilderThread : public wxThread
         ClassBrowserBuilderThread** m_ppThreadVar;
 
         // pair of current-file-filter
-        TokenIdxSet m_CurrentFileSet;
+        TokenFilesSet m_CurrentFileSet;
+        TokenIdxSet m_CurrentTokenSet;
+        TokenIdxSet m_CurrentGlobalTokensSet;
+
 
         wxMutex m_BuildMutex;
     private:

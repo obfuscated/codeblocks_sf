@@ -84,7 +84,7 @@ class Token  : public BlockAllocated<Token, 10000>
 		wxString GetTokenScopeString() const;
         wxString GetFilename() const;
 		wxString GetImplFilename() const;
-		unsigned long GetTicket() const;
+		inline unsigned long GetTicket() const { return m_Ticket; }
 		bool MatchesFiles(const TokenFilesSet& files);
 
 		bool SerializeIn(wxInputStream* f);
