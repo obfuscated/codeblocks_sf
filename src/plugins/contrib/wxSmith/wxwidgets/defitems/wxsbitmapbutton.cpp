@@ -59,18 +59,18 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            Codef(_T("%C(%W,%I,%i,%P,%S,%T,%V,%N);\n"),&BitmapLabel,wxART_BUTTON);
+            Codef(_T("%C(%W, %I, %i, %P, %S, %T, %V, %N);\n"), &BitmapLabel, wxART_BUTTON);
             if ( !BitmapDisabled.IsEmpty() )
             {
-                Codef(_T("%ASetBitmapDisabled(%i);\n"),&BitmapDisabled,wxART_BUTTON);
+                Codef(_T("%ASetBitmapDisabled(%i);\n"), &BitmapDisabled, wxART_BUTTON);
             }
             if ( !BitmapSelected.IsEmpty() )
             {
-                Codef(_T("%ASetBitmapSelected(%i);\n"),&BitmapSelected,wxART_BUTTON);
+                Codef(_T("%ASetBitmapSelected(%i);\n"), &BitmapSelected, wxART_BUTTON);
             }
             if ( !BitmapFocus.IsEmpty() )
             {
-                Codef(_T("%ASetBitmapFocus(%i);\n"),&BitmapFocus,wxART_BUTTON);
+                Codef(_T("%ASetBitmapFocus(%i);\n"), &BitmapFocus, wxART_BUTTON);
             }
 
             if ( IsDefault )

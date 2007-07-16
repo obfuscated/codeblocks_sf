@@ -64,9 +64,9 @@ void wxsSpinButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowPar
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
-            if ( Value ) Code << Codef(Language,_T("%ASetValue(%d);\n"),Value);
-            if ( Max > Min ) Code << Codef(Language,_T("%ASetRange(%d,%d);\n"),Min,Max);
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            if ( Value ) Code << Codef(Language,_T("%ASetValue(%d);\n"), Value);
+            if ( Max > Min ) Code << Codef(Language,_T("%ASetRange(%d, %d);\n"), Min, Max);
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

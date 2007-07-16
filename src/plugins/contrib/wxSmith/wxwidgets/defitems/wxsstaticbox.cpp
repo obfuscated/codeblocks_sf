@@ -52,7 +52,7 @@ void wxsStaticBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%N);\n"),Label.c_str());
+            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.c_str());
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

@@ -81,7 +81,7 @@ void wxsMenuBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
             {
                 GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
             }
-            Code << Codef(Language,_T("SetMenuBar(%v);\n"),GetVarName().c_str());
+            Code << Codef(Language, _T("SetMenuBar(%v);\n"), GetVarName().c_str());
             BuildSetupWindowCode(Code, WindowParent, Language);
             break;
 

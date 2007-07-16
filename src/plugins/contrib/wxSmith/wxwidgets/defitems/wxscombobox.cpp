@@ -59,7 +59,7 @@ void wxsComboBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,wxEmptyString,%P,%S,0,0,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, wxEmptyString, %P, %S, 0, 0, %T, %V, %N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
@@ -67,7 +67,7 @@ void wxsComboBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                 {
                     Code << Codef(Language,_T("%ASetSelection( "));;
                 }
-                Code << Codef(Language,_T("%AAppend(%t)"),ArrayChoices[i].c_str());
+                Code << Codef(Language, _T("%AAppend(%t)"), ArrayChoices[i].c_str());
                 if ( DefaultSelection == (int)i )
                 {
                     Code << _T(" )");

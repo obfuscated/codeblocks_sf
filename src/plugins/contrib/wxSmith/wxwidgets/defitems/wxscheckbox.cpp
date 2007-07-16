@@ -58,7 +58,7 @@ void wxsCheckBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%T,%V,%N);\n"),Label.c_str());
+            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
             Code << Codef(Language,_T("%ASetValue(%b);\n"),IsChecked);
             SetupWindowCode(Code,WindowParent,Language);
             return;

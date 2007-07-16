@@ -62,7 +62,7 @@ void wxsStaticLine::OnBuildCreatingCode(wxString& Code,const wxString& WindowPar
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

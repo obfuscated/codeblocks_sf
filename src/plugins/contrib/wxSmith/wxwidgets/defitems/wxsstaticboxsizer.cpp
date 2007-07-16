@@ -48,7 +48,7 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& 
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%s,%W,%t);\n"),
+            Code << Codef(Language,_T("%C(%s, %W, %t);\n"),
                     (Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"),
                     Label.c_str());
             return;

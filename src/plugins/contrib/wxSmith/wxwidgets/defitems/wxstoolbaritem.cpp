@@ -99,7 +99,7 @@ void wxsToolBarItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowPa
                     if ( BitmapCode.IsEmpty() )  BitmapCode  = _T("wxNullBitmap");
                     if ( Bitmap2Code.IsEmpty() ) Bitmap2Code = _T("wxNullBitmap");
 
-                    Codef(_T("%v = %MAddTool(%I,%t,%s,%s,%s,%t,%t);\n"),
+                    Codef(_T("%v = %MAddTool(%I, %t, %s, %s, %s, %t, %t);\n"),
                         GetVarName().c_str(),
                         m_Label.c_str(),
                         BitmapCode.c_str(),

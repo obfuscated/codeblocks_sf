@@ -66,7 +66,7 @@ void wxsGrid::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

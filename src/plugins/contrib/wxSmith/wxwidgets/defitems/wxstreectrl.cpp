@@ -84,7 +84,7 @@ void wxsTreeCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

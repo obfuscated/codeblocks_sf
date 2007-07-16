@@ -59,7 +59,7 @@ void wxsGauge::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%d,%P,%S,%T,%V,%N);\n"),Range);
+            Code << Codef(Language,_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"),Range);
             if ( Value )  Code << Codef(Language,_T("%ASetValue(%d);\n"),Value);
             if ( Shadow ) Code << Codef(Language,_T("%ASetShadowWidth(%d);\n"),Shadow);
             if ( Bezel )  Code << Codef(Language,_T("%ASetBezelFace(%d);\n"),Bezel);

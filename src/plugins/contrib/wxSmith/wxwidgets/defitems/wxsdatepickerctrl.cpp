@@ -59,7 +59,7 @@ void wxsDatePickerCtrl::OnBuildCreatingCode(wxString& Code,const wxString& Windo
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,wxDefaultDateTime,%P,%S,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %V, %N);\n"));
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

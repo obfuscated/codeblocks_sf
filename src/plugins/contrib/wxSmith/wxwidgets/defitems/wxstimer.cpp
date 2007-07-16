@@ -53,8 +53,8 @@ void wxsTimer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%ASetOwner(this,%I);\n"));
-            if ( m_Interval > 0 ) Code << Codef(Language,_T("%AStart(%d,%b);\n"),m_Interval,m_OneShoot);
+            Code << Codef(Language,_T("%ASetOwner(this, %I);\n"));
+            if ( m_Interval > 0 ) Code << Codef(Language,_T("%AStart(%d, %b);\n"),m_Interval,m_OneShoot);
             BuildSetupWindowCode(Code, WindowParent, Language);
             return;
         }

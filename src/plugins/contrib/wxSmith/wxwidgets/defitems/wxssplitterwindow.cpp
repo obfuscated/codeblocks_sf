@@ -130,7 +130,7 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             SetupWindowCode(Code,WindowParent,wxsCPP);
             if ( MinSize != -1 ) Code << Codef(Language,_T("%ASetMinimumPaneSize(%d);\n"),MinSize);
             AddChildrenCode(Code,wxsCPP);
@@ -143,7 +143,7 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
             }
             else
             {
-                Code << Codef(Language,_T("%ASplit%s(%v,%v);\n"),
+                Code << Codef(Language,_T("%ASplit%s(%v, %v);\n"),
                             (Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically"),
                             GetChild(0)->GetVarName().c_str(),
                             GetChild(1)->GetVarName().c_str());

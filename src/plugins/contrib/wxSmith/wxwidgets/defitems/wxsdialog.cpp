@@ -69,7 +69,7 @@ void wxsDialog::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%t,wxDefaultPosition,wxDefaultSize,%T,%N);\n"),Title.c_str());
+            Code << Codef(Language,_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.c_str());
             if ( !GetBaseProps()->m_Size.IsDefault )
             {
                 Codef(_T("%ASetClientSize(%S);\n"));

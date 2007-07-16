@@ -101,7 +101,7 @@ void wxsFlexGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& W
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%d,%d,%s,%s);\n"),Rows,Cols,
+            Code << Codef(Language,_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
                  VGap.GetPixelsCode(WindowParent,wxsCPP).c_str(),
                  HGap.GetPixelsCode(WindowParent,wxsCPP).c_str());
 

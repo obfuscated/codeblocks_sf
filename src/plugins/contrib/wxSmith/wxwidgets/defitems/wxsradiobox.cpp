@@ -77,14 +77,14 @@ void wxsRadioBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
 
             if ( Dimension < 1 ) Dimension = 1;
 
-            Code << Codef(Language,_T("%C(%W,%I,%t,%P,%S,%d,%s,%d,%T,%V,%N);\n"),
+            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
                         Label.c_str(),ArrayChoices.GetCount(),
                         (ArrayChoices.IsEmpty()?_T("0"):(_T("wxRadioBoxChoices_")+GetVarName()).c_str()),
                         Dimension);
 
             if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
             {
-                Code << Codef(Language,_T("%ASetSelection(%d);\n"),DefaultSelection);
+                Code << Codef(Language, _T("%ASetSelection(%d);\n"), DefaultSelection);
             }
             SetupWindowCode(Code,WindowParent,Language);
             return;

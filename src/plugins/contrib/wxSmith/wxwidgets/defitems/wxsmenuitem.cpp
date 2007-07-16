@@ -87,14 +87,14 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                     if ( GetChildCount() )
                     {
                         // Creating new wxMenu
-                        Codef(_T("%v = new wxMenu();\n"),GetVarName().c_str());
+                        Codef(_T("%v = new wxMenu();\n"), GetVarName().c_str());
                         for ( int i=0; i<GetChildCount(); i++ )
                         {
                             GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
                         }
                         // Many parameters are passed in wxMenu::Append, so we call this function
                         // here, not in wxMenu
-                        Codef(_T("%MAppend(%I,%t,%v,%t)%s;\n"),
+                        Codef(_T("%MAppend(%I, %t, %v, %t)%s;\n"),
                             m_Label.c_str(),
                             GetVarName().c_str(),
                             m_Help.c_str(),
@@ -123,7 +123,7 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                         default:     ItemType = _T("wxITEM_CHECK");  break;
                     }
 
-                    Codef(_T("%C(%E,%I,%t,%t,%s);\n"),
+                    Codef(_T("%C(%E, %I, %t, %t, %s);\n"),
                         Text.c_str(),
                         m_Help.c_str(),
                         ItemType);
@@ -134,7 +134,7 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                         Codef(_T("%ASetBitmap(%s);\n"), BmpCode.c_str());
                     }
 
-                    Codef(_T("%MAppend(%v);\n"),GetVarName().c_str());
+                    Codef(_T("%MAppend(%v);\n"), GetVarName().c_str());
                     if ( !m_Enabled )
                     {
                         Codef(_T("%AEnable(false);\n"));

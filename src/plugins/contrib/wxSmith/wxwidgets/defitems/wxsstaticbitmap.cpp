@@ -56,7 +56,7 @@ void wxsStaticBitmap::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
             wxString SizeCodeStr = SizeCode(WindowParent,wxsCPP);
             wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,wxsCPP,wxART_OTHER);
 
-            Code << Codef(Language,_T("%C(%W,%I,%s,%P,%S,%T,%N);\n"),BmpCode.c_str());
+            Code << Codef(Language,_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.c_str());
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

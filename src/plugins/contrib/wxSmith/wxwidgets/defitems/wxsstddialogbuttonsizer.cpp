@@ -166,7 +166,7 @@ void wxsStdDialogButtonSizer::OnBuildCreatingCode(wxString& Code,const wxString&
             {
                 if ( m_Use[i] )
                 {
-                    Code << Codef(Language,_T("%AAddButton(new wxButton(%W,%v,%t));\n"),IdNames[i],m_Label[i].c_str());
+                    Code << Codef(Language,_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].c_str());
                 }
             }
             Code << Codef(Language,_T("%ARealize();\n"));

@@ -50,7 +50,7 @@ void wxsStatusBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
     switch ( Language )
     {
         case wxsCPP:
-            Codef(_T("%C(%W,%I,%T,%N);\n"));
+            Codef(_T("%C(%W, %I, %T, %N);\n"));
             if ( m_Fields>0 )
             {
                 wxString WidthsVarName = GetVarName() + _T("__widths");

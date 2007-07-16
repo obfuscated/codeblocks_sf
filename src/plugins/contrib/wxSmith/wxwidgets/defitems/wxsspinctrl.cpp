@@ -63,7 +63,7 @@ void wxsSpinCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
         {
             long ValueLong = 0;
             Value.ToLong(&ValueLong);
-            Code << Codef(Language,_T("%C(%W,%I,%n,%P,%S,%T,%d,%d,%d,%N);\n"),Value.c_str(),Min,Max,ValueLong);
+            Code << Codef(Language,_T("%C(%W, %I, %n, %P, %S, %T, %d, %d, %d, %N);\n"),Value.c_str(),Min,Max,ValueLong);
             if ( !Value.empty() ) Code << Codef(Language,_T("%ASetValue(%n);\n"),Value.c_str());
             SetupWindowCode(Code,WindowParent,Language);
             return;

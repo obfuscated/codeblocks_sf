@@ -60,15 +60,15 @@ void wxsCheckListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,0,0,%T,%V,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
                 if ( ArrayChecks[i] )
                 {
-                    Code << Codef(Language,_T("%ACheck("));
+                    Code << Codef(Language, _T("%ACheck("));
                 }
-                Code << Codef(Language,_T("%AAppend(%t)"),ArrayChoices[i].c_str());
+                Code << Codef(Language, _T("%AAppend(%t)"), ArrayChoices[i].c_str());
                 if ( ArrayChecks[i] )
                 {
                     Code << _T(")");

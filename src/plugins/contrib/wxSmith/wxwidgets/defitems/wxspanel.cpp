@@ -51,7 +51,7 @@ void wxsPanel::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             SetupWindowCode(Code,WindowParent,wxsCPP);
             AddChildrenCode(Code,wxsCPP);
             return;

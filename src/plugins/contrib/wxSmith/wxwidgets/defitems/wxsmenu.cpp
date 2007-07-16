@@ -215,7 +215,7 @@ void wxsMenu::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
             }
             if ( GetParent() && GetParent()->GetClassName()==_T("wxMenuBar") )
             {
-                Code << Codef(Language,_T("%sAppend(%v,%t);\n"),
+                Code << Codef(Language,_T("%sAppend(%v, %t);\n"),
                     GetParent()->GetAccessPrefix(Language).c_str(),
                     GetVarName().c_str(),
                     m_Label.c_str());

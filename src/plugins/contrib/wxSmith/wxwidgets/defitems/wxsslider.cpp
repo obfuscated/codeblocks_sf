@@ -85,14 +85,14 @@ void wxsSlider::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%d,%d,%d,%P,%S,%T,%V,%N);\n"),Value,Min,Max);
+            Code << Codef(Language,_T("%C(%W, %I, %d, %d, %d, %P, %S, %T, %V, %N);\n"),Value,Min,Max);
 
-            if ( TickFrequency )    Code << Codef(Language,_T("%ASetTickFreq(%d);\n"),TickFrequency);
-            if ( PageSize )         Code << Codef(Language,_T("%ASetPageSize(%d);\n"),PageSize);
-            if ( LineSize )         Code << Codef(Language,_T("%ASetLineSize(%d);\n"),LineSize);
-            if ( ThumbLength )      Code << Codef(Language,_T("%ASetThumbLength(%d);\n"),ThumbLength);
-            if ( Tick )             Code << Codef(Language,_T("%ASetTick(%d);\n"),Tick);
-            if ( SelMin || SelMax ) Code << Codef(Language,_T("%ASetSelection(%d,%d);\n"),SelMin,SelMax);
+            if ( TickFrequency )    Code << Codef(Language, _T("%ASetTickFreq(%d);\n"), TickFrequency);
+            if ( PageSize )         Code << Codef(Language, _T("%ASetPageSize(%d);\n"), PageSize);
+            if ( LineSize )         Code << Codef(Language, _T("%ASetLineSize(%d);\n"), LineSize);
+            if ( ThumbLength )      Code << Codef(Language, _T("%ASetThumbLength(%d);\n"), ThumbLength);
+            if ( Tick )             Code << Codef(Language, _T("%ASetTick(%d);\n"), Tick);
+            if ( SelMin || SelMax ) Code << Codef(Language, _T("%ASetSelection(%d, %d);\n"), SelMin, SelMax);
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }

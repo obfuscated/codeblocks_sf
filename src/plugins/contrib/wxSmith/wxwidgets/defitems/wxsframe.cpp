@@ -73,7 +73,7 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
     {
         case wxsCPP:
         {
-            Codef(_T("%C(%W,%I,%t,wxDefaultPosition,wxDefaultSize,%T,%N);\n"),Title.c_str());
+            Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.c_str());
             if ( !GetBaseProps()->m_Size.IsDefault )
             {
                 Codef(_T("%ASetClientSize(%S);\n"));

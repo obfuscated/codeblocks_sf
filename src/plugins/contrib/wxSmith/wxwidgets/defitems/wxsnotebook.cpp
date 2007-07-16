@@ -274,14 +274,14 @@ void wxsNotebook::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W,%I,%P,%S,%T,%N);\n"));
+            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
             SetupWindowCode(Code,WindowParent,wxsCPP);
             AddChildrenCode(Code,wxsCPP);
 
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-                Code << Codef(Language,_T("%AAddPage(%v,%t,%b);\n"),
+                Code << Codef(Language,_T("%AAddPage(%v, %t, %b);\n"),
                         GetChild(i)->GetVarName().c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
