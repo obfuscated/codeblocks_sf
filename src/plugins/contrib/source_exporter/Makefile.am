@@ -34,5 +34,5 @@ EXTRA_DIST = $(srcdir)/*.cbp manifest.xml
 pkgdata_DATA = exporter.zip
 CLEANFILES = $(pkgdata_DATA)
 
-exporter.zip:
+exporter.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/exporter.zip manifest.xml > /dev/null

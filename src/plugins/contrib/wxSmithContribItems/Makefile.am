@@ -30,7 +30,7 @@ EXTRA_DIST = ./wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
 pkgdata_DATA = wxsmithcontribitems.zip
 CLEANFILES = $(pkgdata_DATA)
 
-wxsmithcontribitems.zip:
+wxsmithcontribitems.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmithcontribitems.zip manifest.xml > /dev/null
 
 libwxsmithcontribitems_la_SOURCES = \

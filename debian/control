@@ -2,27 +2,91 @@ Source: codeblocks
 Section: x11
 Priority: optional
 Maintainer: Yiannis Mandravellos <mandrav@codeblocks.org>
-Build-Depends: debhelper, autotools-dev, libc6-dev, libstdc++6-dev, libwxgtk2.6-dev, wx-common, libgtk2.0-dev, zip, pkg-config
+Build-Depends: debhelper, autotools-dev, libc6-dev, libstdc++6-4.0-dev, libwxgtk2.6-dev, wx-common, zip
 Standards-Version: 3.6.1
+
+Package: libcodeblocks0
+Architecture: any
+Depends: binutils (>= 2.14.90.0.7), coreutils, file, libc6, libgcc1 (>= 1 ), libmagic1, libncurses5, libstdc++6, zlib1g
+Description: Code::Blocks shared library
+ This package contains the Code::Blocks shared library
+ .
+ http://www.codeblocks.org
 
 Package: codeblocks
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, binutils, coreutils, file, libc6, libgcc1 (>= 1 ), libmagic1, libncurses5, libstdc++6, zlib1g
+Depends: libcodeblocks0
+Recommends: gcc | g++, gdb, codeblocks-contrib
+Suggests: libwxgtk2.6-dev, wx-common
 Description: Code::Blocks integrated development environment (IDE)
- Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
- It is based on a self-developed plugin framework allowing unlimited extensibility.
- Most of its functionality is already provided by plugins.
- Most important official available plugins (included) are:
+ Code::Blocks is the open-source, cross-platform Integrated Development
+ Environment (IDE).
+ It is based on a self-developed plugin framework allowing unlimited
+ extensibility. Most of its functionality is already provided by plugins.
+ Plugins included in the base package are:
     * Compiler frontend to many free compilers
     * Debugger frontend for GDB (and CDB for windows platforms)
     * Source formatter (based on AStyle)
+    * Wizard to create new C++ classes
+    * Code-completion / symbols-browser (work in progress)
+    * Default MIME handler
+    * Wizard to create new Code::Blocks plugins
+    * To-do list
+    * Extensible wizard based on scripts (for creating new projects/targets/etc)
+    * Autosave (saves your work in the unfortunate case of a crash)
+ .
+ http://www.codeblocks.org
+
+Package: codeblocks-dbg
+Architecture: any
+Depends: codeblocks
+Description: Code::Blocks debugging libraries
+ These are the debugging libraries for the 'codeblocks' package.
+ .
+ http://www.codeblocks.org
+
+Package: libwxsmithlib0
+Architecture: any
+Depends: libcodeblocks0
+Description: wxSmith shared library (wxSmith is a Code::Blocks plugin for RAD GUI editing)
+ This package contains the wxSmith shared library.
+ .
+ http://www.codeblocks.org
+
+Package: codeblocks-contrib
+Architecture: any
+Depends: codeblocks, libwxsmithlib0
+Description: Contrib plugins for Code::Blocks IDE
+ This package extends Code::Blocks functionality a great deal with the included
+ plugins. These are:
     * Code profiler (based on gprof)
-    * Wizard to create new classes
-    * Code-completion / class-browser (work in progress)
     * Code statistics (SLOCs etc)
+    * DragScroll (enhances mouse operations)
+    * Setting of environment variables
     * Source exporter to PDF/HTML/ODT/RTF
     * Help
     * Keyboard shortcuts configuration
-    * Wizard to create new Code::Blocks plugins
-    * To-do list
     * GUI RAD builder (wxSmith)
+    * Selection of small games for relaxing between coding sessions! (BYOGames)
+    * WYSIWYG forms designer for wxWidgets (wxSmith)
+ .
+ http://www.codeblocks.org
+
+Package: codeblocks-devel
+Architecture: any
+Section: devel
+Depends: libcodeblocks0
+Description: Code::Blocks development files (SDK)
+ Contains the development files (headers and libraries) for creating
+ Code::Blocks plugins.
+ .
+ http://www.codeblocks.org
+
+Package: libwxsmithlib0-devel
+Architecture: any
+Section: devel
+Depends: libcodeblocks0
+Description: wxSmith development files
+ Contains the development libraries for wxSmith (Code::Blocks plugin)
+ .
+ http://www.codeblocks.org

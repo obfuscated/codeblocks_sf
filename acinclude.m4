@@ -205,16 +205,127 @@ case $host in
 		;;
 esac
 
-AC_MSG_CHECKING(whether to build the contrib plugins)
-contrib_default="no"
-AC_ARG_ENABLE(contrib, [AC_HELP_STRING([--enable-contrib], [build the contrib plugins (default NO)])],,
-                       enable_contrib=$contrib_default)
-AM_CONDITIONAL([BUILD_CONTRIB], [test "x$enable_contrib" = "xyes"])
-if test "x$enable_contrib" = "xyes"; then
-	AC_MSG_RESULT(yes)
+AC_DEFUN([BUILD_CONTRIB_NONE], [
+	AM_CONDITIONAL([BUILD_BYOGAMES], [false])
+	AM_CONDITIONAL([BUILD_CBKODERS], [false])
+	AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
+	AM_CONDITIONAL([BUILD_CODESTAT], [false])
+	AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
+	AM_CONDITIONAL([BUILD_ENVVARS], [false])
+	AM_CONDITIONAL([BUILD_HELP], [false])
+	AM_CONDITIONAL([BUILD_KEYBINDER], [false])
+	AM_CONDITIONAL([BUILD_LIBFINDER], [false])
+	AM_CONDITIONAL([BUILD_PROFILER], [false])
+	AM_CONDITIONAL([BUILD_REGEX], [false])
+	AM_CONDITIONAL([BUILD_EXPORTER], [false])
+	AM_CONDITIONAL([BUILD_SYMTAB], [false])
+	AM_CONDITIONAL([BUILD_WXSMITH], [false])
+])
+
+AC_DEFUN([BUILD_CONTRIB_ALL], [
+	AM_CONDITIONAL([BUILD_BYOGAMES], [true])
+	AM_CONDITIONAL([BUILD_CBKODERS], [true])
+	AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
+	AM_CONDITIONAL([BUILD_CODESTAT], [true])
+	AM_CONDITIONAL([BUILD_DRAGSCROLL], [true])
+	AM_CONDITIONAL([BUILD_ENVVARS], [true])
+	AM_CONDITIONAL([BUILD_HELP], [true])
+	AM_CONDITIONAL([BUILD_KEYBINDER], [true])
+	AM_CONDITIONAL([BUILD_LIBFINDER], [true])
+	AM_CONDITIONAL([BUILD_PROFILER], [true])
+	AM_CONDITIONAL([BUILD_REGEX], [true])
+	AM_CONDITIONAL([BUILD_EXPORTER], [true])
+	AM_CONDITIONAL([BUILD_SYMTAB], [true])
+	AM_CONDITIONAL([BUILD_WXSMITH], [true])
+])
+
+# default to 'none'
+BUILD_CONTRIB_NONE
+
+AC_MSG_CHECKING(which (if any) contrib plugins to build)
+AC_ARG_WITH(contrib-plugins,
+  [  --with-contrib-plugins=<list>     compile contrib plugins in <list>. ]
+  [                        plugins may be separated with commas. ]
+  [                        "all" compiles all contrib plugins ]
+  [                        By default, no contrib plugins are compiled ]
+  [                        Plugin names are: byogames,cbkoders,codesnippets,]
+  [                        		     codestat,dragscroll,envvars, ]
+  [                        		     help,keybinder,libfinder,profiler, ]
+  [                        		     regex,exporter,symtab,wxsmith ],
+  plugins="$withval", plugins="none")
+if test "x$plugins" = "xall"; then
+  BUILD_CONTRIB_ALL
+  AC_MSG_RESULT(all)
 else
-	AC_MSG_RESULT(no)
+  plugins=`echo $plugins | sed 's/,/ /g'`
+  for plugin in $plugins
+  do
+    case "$plugin" in
+	byogames)
+		AM_CONDITIONAL([BUILD_BYOGAMES], [true])
+		;;
+	cbkoders)
+		AM_CONDITIONAL([BUILD_CBKODERS], [true])
+		;;
+	codesnippets)
+		AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
+		;;
+	codestat)
+		AM_CONDITIONAL([BUILD_CODESTAT], [true])
+		;;
+	dragscroll)
+		AM_CONDITIONAL([BUILD_DRAGSCROLL], [true])
+		;;
+	envvars)
+		AM_CONDITIONAL([BUILD_ENVVARS], [true])
+		;;
+	help)
+		AM_CONDITIONAL([BUILD_HELP], [true])
+		;;
+	keybinder)
+		AM_CONDITIONAL([BUILD_KEYBINDER], [true])
+		;;
+	libfinder)
+		AM_CONDITIONAL([BUILD_LIBFINDER], [true])
+		;;
+	profiler)
+		AM_CONDITIONAL([BUILD_PROFILER], [true])
+		;;
+	regex)
+		AM_CONDITIONAL([BUILD_REGEX], [true])
+		;;
+	exporter)
+		AM_CONDITIONAL([BUILD_EXPORTER], [true])
+		;;
+	symtab)
+		AM_CONDITIONAL([BUILD_SYMTAB], [true])
+		;;
+	wxsmith)
+		AM_CONDITIONAL([BUILD_WXSMITH], [true])
+		;;
+	*)
+		echo "Unknown contrib plugin $plugin, ignoring"
+		;;
+    esac
+  done
+  AC_MSG_RESULT($plugins)
 fi
+
+AC_SUBST(BUILD_BYOGAMES)
+AC_SUBST(BUILD_CBKODERS)
+AC_SUBST(BUILD_CODESNIPPETS)
+AC_SUBST(BUILD_CODESTAT)
+AC_SUBST(BUILD_COPYSTRINGS)
+AC_SUBST(BUILD_DRAGSCROLL)
+AC_SUBST(BUILD_ENVVARS)
+AC_SUBST(BUILD_HELP)
+AC_SUBST(BUILD_KEYBINDER)
+AC_SUBST(BUILD_LIBFINDER)
+AC_SUBST(BUILD_PROFILER)
+AC_SUBST(BUILD_REGEX)
+AC_SUBST(BUILD_EXPORTER)
+AC_SUBST(BUILD_SYMTAB)
+AC_SUBST(BUILD_WXSMITH)
 
 GCC_PCH=0
 PCH_FLAGS=

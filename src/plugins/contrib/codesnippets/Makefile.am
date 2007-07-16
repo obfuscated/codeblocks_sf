@@ -56,9 +56,13 @@ noinst_HEADERS =  	codesnippets.h \
 			version.h \
 			wx_pch.h
 
+man_MANS = codesnippets.1
+
 EXTRA_DIST = 	codesnippets.cbp \
 		codesnippets-unix.cbp \
 		update.bat \
 		update \
 		readme.html \
-		license.txt
+		license.txt \
+		$(man_MANS)
+

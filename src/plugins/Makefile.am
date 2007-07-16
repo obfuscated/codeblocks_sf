@@ -42,10 +42,6 @@ if BUILD_MANIFEST
 MAYBE_MANIFEST=xpmanifest
 endif
 
-if BUILD_CONTRIB
-MAYBE_CONSTRIB=contrib
-endif
-
 SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_AUTOSAVE) \
 		$(MAYBE_CLASSWIZARD) \
@@ -57,7 +53,8 @@ SUBDIRS=$(MAYBE_ASTYLE) \
 		$(MAYBE_PROJECTSIMPORTER) \
 		$(MAYBE_TODO) \
 		$(MAYBE_MANIFEST) \
-		$(MAYBE_CONSTRIB)
+		contrib
+# the 'contrib' subdir contains its own filtering
 
 DIST_SUBDIRS = astyle \
 		autosave \

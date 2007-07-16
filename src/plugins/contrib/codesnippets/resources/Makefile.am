@@ -67,7 +67,7 @@ dist_pkgdata_DATA = 	allsnippets.png \
 
 EXTRA_DIST = manifest.xml
 
-codesnippets.zip:
+codesnippets.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/codesnippets.zip manifest.xml > /dev/null
 
 install-data-local: codesnippets.zip

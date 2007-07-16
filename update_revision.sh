@@ -22,8 +22,11 @@ fi
 
 if [ "x$REV" != "x$OLD_REV" -o ! -r $REV_FILE ]; then
 	echo "m4_define([SVN_REV], $REV)" > $REV_FILE
-	echo "m4_define([SVN_REVISION], trunk-r$REV)" >> $REV_FILE
+	echo "m4_define([SVN_REVISION], 1.0svn$REV)" >> $REV_FILE
 	echo "m4_define([SVN_DATE], $LCD)" >> $REV_FILE
+
+	# Also change the revision number in debian/changelog for package versioning
+	sed -i "1 s/(1.0svn[^-)]*/(1.0svn$REV/" debian/changelog
 fi
 
 echo "OLD_REV=$REV" > ./.last_revision

@@ -89,6 +89,15 @@ AM_PATH_WXCONFIG(2.6.0, wxWin=1)
                 is in LD_LIBRARY_PATH or equivalent variable and
                 wxWindows version is 2.6.0 or above.
                 ])
+	else
+		# check for wx2.8.3 which is known to behave badly for us
+		if test "$WX_VERSION" = "2.8.3"; then
+			AC_MSG_ERROR([
+		wxWidgets version 2.8.3 is known to behave badly with
+		Code::Blocks. Please upgrade to a newer (or downgrade to an 
+		earlier) wxWidgets version...
+			])
+		fi
         fi
 
 dnl		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"

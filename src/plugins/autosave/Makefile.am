@@ -16,5 +16,5 @@ EXTRA_DIST = autosave.xrc manifest.xml
 pkgdata_DATA = autosave.zip
 CLEANFILES = $(pkgdata_DATA)
 
-autosave.zip:
+autosave.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/autosave.zip manifest.xml *.xrc > /dev/null

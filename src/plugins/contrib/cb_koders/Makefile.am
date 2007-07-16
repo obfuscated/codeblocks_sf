@@ -23,5 +23,5 @@ EXTRA_DIST = wxsmith/KodersDialog.wxs \
 pkgdata_DATA = cb_koders.zip
 CLEANFILES = $(pkgdata_DATA)
 
-cb_koders.zip:
+cb_koders.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/cb_koders.zip manifest.xml > /dev/null

@@ -19,5 +19,5 @@ EXTRA_DIST = envvars.cbp envvars-unix.cbp envvars.xrc project_settings.xrc manif
 
 CLEANFILES = $(pkgdata_DATA)
 
-envvars.zip:
+envvars.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/envvars.zip manifest.xml *.xrc > /dev/null

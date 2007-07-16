@@ -7,7 +7,7 @@ dist_pkgdata_DATA = common_functions.script \
 
 EXTRA_DIST = manifest.xml
 
-scriptedwizard.zip:
+scriptedwizard.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/scriptedwizard.zip manifest.xml > /dev/null
 
 install-data-local: scriptedwizard.zip

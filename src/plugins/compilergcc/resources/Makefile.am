@@ -1,9 +1,6 @@
 pkgdata_DATA = compiler.zip
 CLEANFILES = $(pkgdata_DATA)
 
-compiler.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/compiler.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null
-
 EXTRA_DIST = advanced_compiler_options.xrc \
 	compiler_menu.xrc \
 	compiler_options.xrc \
@@ -20,3 +17,7 @@ EXTRA_DIST = advanced_compiler_options.xrc \
 	images/16x16/rebuild.png \
 	images/16x16/run.png \
 	images/16x16/stop.png
+
+compiler.zip: $(EXTRA_DIST)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/compiler.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null
+

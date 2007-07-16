@@ -66,5 +66,5 @@ manifest.xml
 pkgdata_DATA = wxsmith.zip
 CLEANFILES = $(pkgdata_DATA)
 
-wxsmith.zip:
+wxsmith.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/wxsmith.zip manifest.xml > /dev/null

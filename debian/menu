@@ -1,2 +1,0 @@
-?package(codeblocks):needs="X11|vc|wm" section="Apps/Programming"\
-  title="codeblocks" command="/usr/bin/codeblocks"

@@ -26,14 +26,15 @@ endif
 
 config.status: configure
 	dh_testdir
-	
 	# Add here commands to configure the package.
-	if [ -f ./update_revision.sh ]; then \
-		./update_revision.sh; \
-	elif [ ! -f ./revision.m4 ]; then \
-		echo "m4_define([SVN_REVISION], trunk-r0)" > ./revision.m4; \
-	fi
-	CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info --enable-contrib
+	CFLAGS="$(CFLAGS)" \
+		./configure \
+		--with-contrib-plugins=all \
+		--host=$(DEB_HOST_GNU_TYPE) \
+		--build=$(DEB_BUILD_GNU_TYPE) \
+		--prefix=/usr \
+		--mandir=\$${prefix}/share/man \
+		--infodir=\$${prefix}/share/info
 
 
 build: build-stamp
@@ -43,7 +44,6 @@ build-stamp:  config.status
 
 	# Add here commands to compile the package.
 	$(MAKE)
-
 	#docbook-to-man debian/codeblocks.sgml > codeblocks.1
 
 	touch build-stamp
@@ -69,11 +69,9 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_clean -k 
-	dh_installdirs
+	dh_installdirs -ptmp usr/share/doc
 
-	# Add here commands to install the package into debian/codeblocks.
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/codeblocks
-
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -86,25 +84,24 @@ binary-arch: build install
 	dh_installchangelogs ChangeLog
 	dh_installdocs
 	dh_installexamples
-#	dh_install
+	dh_install --fail-missing --sourcedir=debian/tmp
 	dh_installmenu
 #	dh_installdebconf	
 #	dh_installlogrotate
 #	dh_installemacsen
 #	dh_installpam
-	dh_installmime
-	dh_iconcache
+#	dh_installmime
 #	dh_installinit
 #	dh_installcron
 #	dh_installinfo
 	dh_installman
 	dh_link
-	dh_strip
+	dh_strip --dbg-package=codeblocks
 	dh_compress
 	dh_fixperms
 #	dh_perl
 #	dh_python
-#	dh_makeshlibs
+	dh_makeshlibs
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol

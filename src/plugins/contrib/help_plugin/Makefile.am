@@ -27,5 +27,5 @@ EXTRA_DIST = $(srcdir)/*.cbp \
 pkgdata_DATA = help_plugin.zip
 CLEANFILES = $(pkgdata_DATA)
 
-help_plugin.zip:
+help_plugin.zip: manifest.xml help_plugin.xrc
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip manifest.xml *.xrc > /dev/null

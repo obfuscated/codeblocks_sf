@@ -14,3 +14,9 @@ cb_share_config_SOURCES = app.cpp \
 
 noinst_HEADERS = app.h \
 			mainframe.h
+
+man_MANS = cb_share_config.1
+
+EXTRA_DIST = cb_share_config.cbp \
+		cb_share_config-unix.cbp \
+		$(man_MANS)

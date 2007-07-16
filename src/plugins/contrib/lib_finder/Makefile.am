@@ -34,5 +34,5 @@ EXTRA_DIST = 	lib_finder.cbp \
 pkgdata_DATA = lib_finder.zip
 CLEANFILES = $(pkgdata_DATA)
 
-lib_finder.zip:
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/lib_finder.zip manifest.xml *.xrc > /dev/null
+lib_finder.zip: manifest.xml
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/lib_finder.zip manifest.xml > /dev/null

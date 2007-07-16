@@ -35,5 +35,5 @@ EXTRA_DIST = wxsmith/byoGameSelect.wxs \
 pkgdata_DATA = byogames.zip
 CLEANFILES = $(pkgdata_DATA)
 
-byogames.zip:
+byogames.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/byogames.zip manifest.xml > /dev/null

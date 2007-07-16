@@ -17,5 +17,5 @@ EXTRA_DIST = manifest.xml
 pkgdata_DATA = xpmanifest.zip
 CLEANFILES = $(pkgdata_DATA)
 
-xpmanifest.zip:
+xpmanifest.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/xpmanifest.zip manifest.xml > /dev/null

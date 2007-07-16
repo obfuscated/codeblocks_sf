@@ -23,5 +23,5 @@ EXTRA_DIST = DragScroll.cbp \
 pkgdata_DATA = dragscroll.zip
 CLEANFILES = $(pkgdata_DATA)
 
-dragscroll.zip:
+dragscroll.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/dragscroll.zip manifest.xml > /dev/null

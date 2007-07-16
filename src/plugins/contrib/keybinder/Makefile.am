@@ -25,5 +25,5 @@ EXTRA_DIST = keybinder.cbp manifest.xml
 pkgdata_DATA = keybinder.zip
 CLEANFILES = $(pkgdata_DATA)
 
-keybinder.zip:
+keybinder.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/keybinder.zip manifest.xml > /dev/null
