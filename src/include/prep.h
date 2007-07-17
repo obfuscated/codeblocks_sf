@@ -236,19 +236,13 @@ namespace compatibility
 
 /*  ---------------------------------------------------------------------------------------------------------
     Utility function for an incrementing (unique per instance) unsigned integer ID.
-        - ID is a class wrapping an unsigned integer, starting at zero (best choice for many cases, e.g. for use as array index)
-        - if an ID _must_ start with 1 for some odd reason, simply add one extra call to GetID()<YourClass>
+        - ID is unsigned, starting at zero (best choice for many cases, e.g. for use as array index)
+        - if it _must_ start with 1 for some odd reason, simply add one extra call to GetID()<YourClass>
         - use GetID() for an application-wide unique integer ID (alias for GetID<void>())
         - use GetID<YourClass>() for your own private class-internal ID
         - use GetID<SomeStruct>() for your own private cross-class shareable ID
-		- an ID cannot accidentially be assigned an arbitrary integer (or any other type) - IDs can only
-		  be constructed from and be assigned other IDs, i.e. via GetID() or GetID<>()
-		- use ConstructID() if you absolutely must assign an integer to an ID, however,
-		  please note that you're probably doing something wrong, if you really need to do that
-		- the ID value 0xffffffff is considered "invalid" (assigned by the default constructor)
-		- validity can be assessed via the Valid() member function and operator!
 
-        ((  This implementation is more general and uses one less temporary copy
+        ((  This is implementation is more general and uses one less temporary copy
             than the implementation found in several places of the SDK.
             NOTE: remove this paragraph once the SDK has been updated  ))
 
@@ -259,91 +253,30 @@ namespace compatibility
         class A
         {
         public:
-			         ID X(){return GetID(); };         // application-global
-                     ID Y(){return GetID<A>(); };      // private for A
-            unsigned int Z(){return GetID<foo>(); };   // shared with B, and converting ID to int
+            unsigned int X(){return GetID(); };         // application-global
+            unsigned int Y(){return GetID<A>(); };      // private for A
+            unsigned int Z(){return GetID<foo>(); };    // shared with B
 
         };
 
         class B
         {
         public:
-            ID Y(){return GetID<B>(); };      // private for B
-            ID Z(){return GetID<foo>(); };    // shared with A
+            unsigned int Y(){return GetID<B>(); };      // private for B
+            unsigned int Z(){return GetID<foo>(); };    // shared with A
         };
 
         In this example, A::X() will return a counter that is globally unique througout the lifetime of the application.
         A::Y() and B::Y() will return counters that increment independently for A and B. In other words,
         B does not know about A's counter, nor can it influence it.
         A::Z() and B::Z() will return a shared counter that increments if either A or B is asked to return a value.
-
-
-        int main()
-        {
-            bool b;
-            ID my_id;
-            ID my_id_2;
-
-            b = my_id.Valid();       // false
-            b = !my_id;              // true
-            my_id = GetID();
-            b = my_id.Valid();       // true
-            b = !my_id;              // false
-
-            my_id = 5;               // compile error
-            ++my_id;                 // compile error
-            my_id_2 = my_id - 3;     // compile error
-
-            my_id_2 = my_id;         // ok
-
-            my_id = GetID();         // legal, but my_id now has a different value!
-
-            my_id = ConstructID(76); // you better know what you're doing, if you do this!
-
-            if(my_id == my_id_2)     // false
-                return my_id;        // cast ID to integer
-
-            if(my_id_2 != 8)         // true
-                return 0;
-
-            return -1;
-        };
-
 */
-
-class ID
-{
-    unsigned int value;
-
-    ID(unsigned int in) : value(in) {};
-    template<typename> friend ID GetID();
-    friend ID ConstructID(unsigned int);
-
-public:
-    ID() : value ((unsigned) -1) {};
-
-    operator unsigned int() const { return value; };
-    operator signed int() const { return (signed) value; };
-    operator void*() const { return (void*) value; };
-
-    bool Valid() const { return value != ((unsigned) -1); };
-    bool operator!() const { return !Valid(); };
-
-    bool operator==(ID cmp) const { return value == cmp.value; };
-    bool operator!=(ID cmp) const { return value != cmp.value; };
-};
-
-template<typename T> bool operator==(ID id, T cmp)   { return ((unsigned int) id) == (unsigned) cmp; };
-template<typename T> bool operator!=(ID id, T cmp)   { return ((unsigned int) id) != (unsigned) cmp; };
-template<typename T> bool operator==(T cmp, ID id)   { return ((unsigned int) id) == (unsigned) cmp; };
-template<typename T> bool operator!=(T cmp, ID id)   { return ((unsigned int) id) != (unsigned) cmp; };
-
-template<typename whatever> inline ID GetID()
+template<typename whatever> inline unsigned int GetID()
 {
     static unsigned int id = (unsigned int) -1;
-    return ID(++id);
+    return ++id;
 };
-inline ID GetID() { return GetID<void>(); };
-inline ID ConstructID(unsigned int i) { return ID(i); };
+inline unsigned int GetID() { return GetID<void>(); };
+
 
 #endif
