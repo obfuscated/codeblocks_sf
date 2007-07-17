@@ -61,6 +61,7 @@ function SetupProject(project)
     else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
     {
         project.AddCompilerOption(_T("-dBUILD_DLL"));
+        project.AddCompilerOption(_T("-bt=nt"));
         project.AddLinkerOption(_T("OPTION IMPLIB")); // To create an import library
     }
 

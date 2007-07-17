@@ -92,6 +92,10 @@ function SetupProject(project)
         project.AddIncludeDir(_T("$(#psdk.include)"));
         project.AddLibDir(_T("$(#psdk.lib)"));
     }
+    
+    // Additional code to support OpenWatcom
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+        project.AddCompilerOption(_T("-bt=nt"));
 
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
