@@ -18,9 +18,9 @@ class CompilerOWGenerator : public CompilerCommandGenerator
     protected:
     private:
         // This maps target type to wlink.exe options
-        wxString MapTargetType(int Opt);
+        wxString MapTargetType(const wxString& Opt, int target_type);
         // This maps debug related compiler options to wlink.exe options
-        wxString MapDebugOptions(wxString Opt);
+        wxString MapDebugOptions(const wxString& Opt);
 };
 
 

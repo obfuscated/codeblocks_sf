@@ -103,45 +103,7 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
                 //Let's not scan all the options unnecessarily
                 if (Temp.Matches(_T("-b*")))
                 {
-                    if (Temp.IsSameAs(_T("-bc")))
-                    {
-                        if (target->GetTargetType() == ttConsoleOnly)
-                        {
-                            LinkerOptions = LinkerOptions + MapTargetType(target->GetTargetType());
-                            break;
-                        }
-                        else
-                        {
-                            LOG_ERROR(_T("Compiler Option and Target Type are incompatible. Please check your project settings."));
-                            break;
-                        }
-                    }
-                    else if (Temp.IsSameAs(_T("-bg")))
-                    {
-                        if (target->GetTargetType() == ttExecutable)
-                        {
-                            LinkerOptions = LinkerOptions + MapTargetType(target->GetTargetType());
-                            break;
-                        }
-                        else
-                        {
-                            LOG_ERROR(_T("Compiler Option and Target Type are incompatible. Please check your project settings."));
-                            break;
-                        }
-                    }
-                    else if (Temp.IsSameAs(_T("-bd")))
-                    {
-                        if (target->GetTargetType() == ttDynamicLib)
-                        {
-                            LinkerOptions = LinkerOptions + MapTargetType(target->GetTargetType());
-                            break;
-                        }
-                        else
-                        {
-                            LOG_ERROR(_T("Compiler Option and Target Type are incompatible. Please check your project settings."));
-                            break;
-                        }
-                    }
+                    LinkerOptions += MapTargetType(Temp, target->GetTargetType());
                 }
 
                 // TODO: Map and Set All Debug Flags
@@ -171,14 +133,7 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
     // Now append compiler level options
     Result << LinkerOptionsArr[2];
 
-    /* If the system flag couldn't be resolved due to conflict or
-       other reasons, following code will ensure that the system flag
-       is specified to linker to ensure linking
-    */
-    if (Result.Find(_T("system")) == wxNOT_FOUND)
-        return Result + MapTargetType(target->GetTargetType());
-    else
-        return Result;
+    return Result;
 }
 
 wxString CompilerOWGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuildTarget* target)
@@ -187,7 +142,6 @@ wxString CompilerOWGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuil
     wxString targetStr, projectStr, compilerStr;
     wxArrayString Libs;
 
-    Result = _T("library ");
     if (target)
     {
         // Start with target first
@@ -213,25 +167,28 @@ wxString CompilerOWGenerator::SetupLinkLibraries(Compiler* compiler, ProjectBuil
     if (Result.Right(1).IsSameAs(_T(',')))
         Result = Result.RemoveLast();
 
+    if (!Result.IsEmpty())
+        Result.Prepend(_T("library "));
     return Result;
 }
 
-wxString CompilerOWGenerator::MapTargetType(int Opt)
+wxString CompilerOWGenerator::MapTargetType(const wxString& Opt, int target_type)
 {
-    switch (Opt)
+    if (Opt.IsSameAs(_T("-bt=nt")) || Opt.IsSameAs(_T("-bcl=nt")))
     {
-        case 0: // Win32 Executable
+        if (target_type == ttExecutable || target_type == ttStaticLib) // Win32 Executable
             return _T("system nt_win ");
-            break;
-        case 1: // Console
+        else if (target_type == ttConsoleOnly) // Console
             return _T("system nt ");
-            break;
-        case 3: // DLL
+        else if (target_type == ttDynamicLib) // DLL
             return _T("system nt_dll ");
-            break;
-        default:
+        else
             return _T("system nt_win ref '_WinMain@16' "); // Default to Win32 executables
-            break;
+    }
+    else if (Opt.IsSameAs(_T("-bt=linux")) || Opt.IsSameAs(_T("-bcl=linux")))
+    {
+        /* The support is experimental. Need proper manual to improve it. */
+        return _T("system linux ");
     }
     return wxEmptyString;
 }
@@ -239,7 +196,7 @@ wxString CompilerOWGenerator::MapTargetType(int Opt)
 /* The following function will be expanded later
    to incorporate detailed debug options
 */
-wxString CompilerOWGenerator::MapDebugOptions(wxString Opt)
+wxString CompilerOWGenerator::MapDebugOptions(const wxString& Opt)
 {
     if (Opt.IsSameAs(_T("-d0"))) // No Debug
         return wxEmptyString;
