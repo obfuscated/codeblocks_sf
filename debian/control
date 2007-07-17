@@ -72,7 +72,7 @@ Description: Contrib plugins for Code::Blocks IDE
  .
  http://www.codeblocks.org
 
-Package: codeblocks-devel
+Package: codeblocks-dev
 Architecture: any
 Section: devel
 Depends: libcodeblocks0
@@ -82,7 +82,7 @@ Description: Code::Blocks development files (SDK)
  .
  http://www.codeblocks.org
 
-Package: libwxsmithlib0-devel
+Package: libwxsmithlib0-dev
 Architecture: any
 Section: devel
 Depends: libcodeblocks0

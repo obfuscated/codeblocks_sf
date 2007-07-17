@@ -266,9 +266,9 @@ void CompilerMINGW::SetVersionString()
 {
     wxArrayString output, errors;
     wxString sep = wxFileName::GetPathSeparator();
-    DBGLOG(m_MasterPath);
-    wxString masterpath;
-    if (m_MasterPath.IsEmpty())
+//    DBGLOG(m_MasterPath);
+    wxString masterpath = m_MasterPath;
+    if (masterpath.IsEmpty())
     {
         if (platform::windows)
             masterpath = _T("C:\\MinGW");
@@ -296,4 +296,5 @@ void CompilerMINGW::SetVersionString()
             }
         }
     }
+//    DBGLOG(_T("Compiler version: %s"), m_VersionString.c_str());
 }
