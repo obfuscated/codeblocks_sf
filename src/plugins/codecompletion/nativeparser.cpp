@@ -685,7 +685,7 @@ void NativeParser::DisplayStatus(Parser* parser)
                     tim % 1000);
 }
 
-bool NativeParser::ParseFunctionArguments(cbEditor* ed)
+bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
 {
     if (!ed)
         return false;
@@ -703,7 +703,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed)
 #endif
 
     TokenIdxSet proc_result;
-    if (FindCurrentFunctionToken(ed, proc_result) != 0)
+    if (FindCurrentFunctionToken(ed, proc_result, caretPos) != 0)
     {
         for (TokenIdxSet::iterator it = proc_result.begin(); it != proc_result.end(); ++it)
         {
@@ -749,7 +749,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed)
     return false;
 }
 
-bool NativeParser::ParseLocalBlock(cbEditor* ed)
+bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
 {
     if (!ed)
         return false;
@@ -766,11 +766,13 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
         Manager::Get()->GetMessageManager()->DebugLog(_T("Parse local block"));
 #endif
 
-    int blockStart = FindCurrentFunctionStart(ed);
+    int blockStart = FindCurrentFunctionStart(ed, 0, 0, caretPos);
     if (blockStart != -1)
     {
         ++blockStart; // skip {
-        int blockEnd = ed->GetControl()->GetCurrentPos();
+        int blockEnd = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
+		if (blockEnd < 0 || blockEnd >= ed->GetControl()->GetLength())
+			return false;
 
         if (blockStart >= blockEnd)
             blockStart = blockEnd;
@@ -789,7 +791,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
 #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
             {
-//               DBGLOG(_T("Block:\n%s"), buffer.c_str());
+//				DBGLOG(_T("Block:\n%s"), buffer.c_str());
                 DBGLOG(_T("Local tokens:"));
                 for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
                 {
@@ -812,7 +814,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed)
     return false;
 }
 
-bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope)
+bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, int caretPos)
 {
     if (!ed)
         return false;
@@ -828,7 +830,10 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope)
 #endif
 
     wxArrayString ns;
-    wxString buffer = ed->GetControl()->GetTextRange(0, ed->GetControl()->GetCurrentPos());
+    int pos = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
+    if (pos < 0 || pos >= ed->GetControl()->GetLength())
+		return false;
+    wxString buffer = ed->GetControl()->GetTextRange(0, pos);
     parser->ParseBufferForUsingNamespace(buffer, ns);
 
     for (size_t i = 0; i < ns.GetCount(); ++i)
@@ -863,7 +868,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope)
     return true;
 }
 
-size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
+size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI, bool noPartialMatch, bool caseSensitive, int caretPos)
 {
     result.clear();
 
@@ -885,13 +890,13 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
 
         // find "using namespace" directives in the file
         TokenIdxSet search_scope;
-        ParseUsingNamespace(ed, search_scope);
+        ParseUsingNamespace(ed, search_scope, caretPos);
 
         // parse function's arguments
-        ParseFunctionArguments(ed);
+        ParseFunctionArguments(ed, caretPos);
 
         // parse current code block (from the start of function up to the cursor)
-        ParseLocalBlock(ed);
+        ParseLocalBlock(ed, caretPos);
 
         if (!reallyUseAI)
         {
@@ -902,7 +907,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI)
             return result.size();
         }
 
-        return AI(result, ed, parser, wxEmptyString, false, false, &search_scope);
+        return AI(result, ed, parser, wxEmptyString, noPartialMatch, caseSensitive, &search_scope, caretPos);
     }
     return 0;
 }
@@ -1301,15 +1306,18 @@ size_t NativeParser::AI(TokenIdxSet& result,
                         const wxString& lineText,
                         bool noPartialMatch,
                         bool caseSensitive,
-                        TokenIdxSet* search_scope)
+                        TokenIdxSet* search_scope,
+                        int caretPos)
 {
     m_LastAISearchWasGlobal = false;
     m_LastAIGlobalSearch.Clear();
 
-    int pos = editor->GetControl()->GetCurrentPos();
+    int pos = caretPos == -1 ? editor->GetControl()->GetCurrentPos() : caretPos;
+    if (pos < 0 || pos >= editor->GetControl()->GetLength())
+		return 0;
     m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
     m_EditorEndWord = pos;//editor->GetControl()->WordEndPosition(pos, true);
-    int line = editor->GetControl()->GetCurrentLine();
+    int line = editor->GetControl()->LineFromPosition(pos);
 
     wxString searchtext;
     //Manager::Get()->GetMessageManager()->DebugLog("********* START **********");
@@ -1853,7 +1861,7 @@ bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
 }
 
 // returns current function's position (not line) in the editor
-int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace, wxString* procName)
+int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace, wxString* procName, int caretPos)
 {
     cbStyledTextCtrl* control = editor->GetControl();
     if (!control)
@@ -1866,8 +1874,10 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
     static wxString s_LastPROC;
 
     // cache last result for optimization
-    int pos = control->GetCurrentPos();
-    int line = control->GetCurrentLine() + 1;
+    int pos = caretPos == -1 ? control->GetCurrentPos() : caretPos;
+    if (pos < 0 || pos >= control->GetLength())
+		return -1;
+    int line = control->LineFromPosition(pos) + 1;
     if (line == s_LastLine && editor == s_LastEditor)
     {
         if (nameSpace) *nameSpace = s_LastNS;
@@ -1895,11 +1905,11 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
                 // got it :)
 #ifdef DEBUG_CC_AI
                 if (s_DebugSmartSense)
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Current function: %s"), token->DisplayName().c_str());
+                    Manager::Get()->GetMessageManager()->DebugLog(_T("Current function: %s (at line %d)"), token->DisplayName().c_str(), token->m_ImplLine);
 #endif
                 s_LastNS = token->GetNamespace();
                 s_LastPROC = token->m_Name;
-                s_LastResult = control->PositionFromLine(token->m_ImplLine);
+                s_LastResult = control->PositionFromLine(token->m_ImplLine - 1);
 
                 // locate function's opening brace
                 while (s_LastResult < control->GetTextLength())
@@ -1927,7 +1937,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
     return -1;
 }
 
-size_t NativeParser::FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& result)
+size_t NativeParser::FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& result, int caretPos)
 {
     if (!editor)
         return 0;
@@ -1942,7 +1952,7 @@ size_t NativeParser::FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& res
     TokenIdxSet scope_result;
     wxString procName;
     wxString scopeName;
-    FindCurrentFunctionStart(editor, &scopeName, &procName);
+    FindCurrentFunctionStart(editor, &scopeName, &procName, caretPos);
 
     if (procName.IsEmpty())
         return 0;

@@ -242,10 +242,13 @@ bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
             MoveToNextChar();
             if (supportNesting)
             {
-                if (CurrentChar() == '{')
-                    SkipBlock('{');
-                else if (CurrentChar() == '<')
-                    SkipBlock('<');
+                switch (CurrentChar())
+                {
+                	case '{': SkipBlock('{'); break;
+                	case '(': SkipBlock('('); break;
+					case '<': SkipBlock('<'); break;
+					default: break;
+				}
             }
         }
         if (PreviousChar() != '\\')

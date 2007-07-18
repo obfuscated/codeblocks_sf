@@ -1375,83 +1375,65 @@ void CodeCompletion::OnStartParsingFunctions(wxTimerEvent& event)
 
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 {
-    event.Skip();
-//    if (IsAttached() && m_InitDone)
-//    {
-////        if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("eval_tooltip"), false))
-////            return;
-//
-//        EditorBase* base = event.GetEditor();
-//        cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
-//        if (!ed)
-//            return;
-//
-//        int style = event.GetInt();
-//        if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
-//            return;
-//
-//        wxPoint pt;
-//        pt.x = event.GetX();
-//        pt.y = event.GetY();
-//        int pos = ed->GetControl()->PositionFromPoint(pt);
-//        int start = ed->GetControl()->WordStartPosition(pos, true);
-//        int end = ed->GetControl()->WordEndPosition(pos, true);
-//
-//        int line = ed->GetControl()->LineFromPosition(pos);
-//        int startline = ed->GetControl()->PositionFromLine(line);
-//        int tempstart = start - startline;
-//
-//        wxString lineText = ed->GetControl()->GetLine(line);
-//        while (tempstart >= 0)
-//        {
-//            wxChar c = lineText.GetChar(tempstart);
-//            if (!wxIsalnum(c) && c != _T('_') && c != _T('.') && c != _T('>') && c != _T('-') && c != _T(':'))
-//                break;
-//            --tempstart;
-//        }
-//        start = tempstart + startline;
-//
-//        wxString token_str;
-//        if (start >= ed->GetControl()->GetSelectionStart() &&
-//            end <= ed->GetControl()->GetSelectionEnd())
-//        {
-//            token_str = ed->GetControl()->GetSelectedText();
-//        }
-//        else
-//            token_str = ed->GetControl()->GetTextRange(start,end);
-//
-//        if (!token_str.IsEmpty())
-//        {
-//            Manager::Get()->GetMessageManager()->DebugLog(_T("CodeCompletion::OnValueTooltip for %s"), token_str.c_str());
-//            Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
-//            if (parser)
-//            {
-//                TokenIdxSet result;
-//                if (m_NativeParsers.AI(result, ed, parser, token_str, true, true))
-//                {
-//                    wxString msg;
-//                    for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
-//                    {
-//                        Token* token = parser->GetTokens()->at(*it);
-//                        if (token)
-//                        {
-//                            msg << token->m_Type << _T(' ');
-//                            msg << token->DisplayName();
-//                            if (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
-//                                msg << _T('(') << token->m_Args << _T(')') << _T('\n') << _T('\n');
-//                            msg << _("Kind:  ") << token->GetTokenKindString() << _T('\n');
-//                            msg << _("Scope: ") << token->GetTokenScopeString() << _T('\n');
-//                            msg << _("Declared in: ") << token->GetFilename() << _T(':') << token->m_Line << _T('\n');
-//                            if (token->m_ImplLine > 0)
-//                                msg << _("Implemented in: ") << token->GetImplFilename() << _T(':') << token->m_ImplLine << _T('\n');
-//                        }
-//                    }
-//                    if (!msg.IsEmpty())
-//                        new wxTipWindow(ed, msg);
-//                }
-//            }
-//        }
-//    }
+	event.Skip();
+	
+    if (IsAttached() && m_InitDone)
+    {
+        if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
+            return;
+
+        EditorBase* base = event.GetEditor();
+        cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
+        if (!ed)
+            return;
+
+		if (ed->GetControl()->CallTipActive())
+			ed->GetControl()->CallTipCancel();
+
+		// ignore comments, strings, preprocesor, etc
+        int style = event.GetInt();
+        if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
+            return;
+
+        wxPoint pt;
+        pt.x = event.GetX();
+        pt.y = event.GetY();
+        int pos = ed->GetControl()->PositionFromPoint(pt);
+        if (pos < 0 || pos >= ed->GetControl()->GetLength())
+			return;
+        int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
+
+		Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
+		if (parser)
+		{
+			TokenIdxSet result;
+			if (m_NativeParsers.MarkItemsByAI(result, true, true, true, endOfWord))
+			{
+				wxString msg;
+				int count = 0; // allow max 32 matches (else something is definitely wrong)
+				for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+				{
+					Token* token = parser->GetTokens()->at(*it);
+					if (token)
+					{
+						msg << token->DisplayName() << _T("\n");
+						++count;
+						if (count > 32)
+						{
+							msg = _("More than 32 matches: internal error...\n");
+							break;
+						}
+					}
+				}
+				if (!msg.IsEmpty())
+				{
+					msg.RemoveLast(); // last \n
+					ed->GetControl()->CallTipShow(pos, msg);
+//					DBGLOG(msg);
+				}
+			}
+		}
+    }
 }
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)

@@ -1204,8 +1204,8 @@ void ParserThread::HandleClass(bool isClass)
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
 //    DBGLOG(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'"));
-        wxString args = m_Tokenizer.GetToken();
-        wxString peek = m_Tokenizer.PeekToken();
+	wxString args = m_Tokenizer.GetToken();
+	wxString peek = m_Tokenizer.PeekToken();
 	if (!m_Str.StartsWith(ParserConsts::kw_friend))
 	{
         int lineNr = m_Tokenizer.GetLineNumber();

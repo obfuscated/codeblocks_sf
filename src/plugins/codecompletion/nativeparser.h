@@ -58,7 +58,7 @@ class NativeParser : public wxEvtHandler
 		void RemoveFileFromParser(cbProject* project, const wxString& filename);
 		void ForceReparseActiveProject();
 
-		size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true);
+		size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool noPartialMatch = false, bool caseSensitive = false, int caretPos = -1);
 
 		const wxString& GetCodeCompletionItems();
 		const wxArrayString& GetCallTips(int chars_per_line);
@@ -78,9 +78,9 @@ class NativeParser : public wxEvtHandler
 
         // returns the editor's position where the current function starts
         // optionally, returns the function's namespace (ends in double-colon ::) and name
-		int FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L);
+		int FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace = 0L, wxString* procName = 0L, int caretPos = -1);
 		// fills the result argument with all the tokens matching the current function (hopefully, just one)
-		size_t FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& result);
+		size_t FindCurrentFunctionToken(cbEditor* editor, TokenIdxSet& result, int caretPos = -1);
 
         ClassBrowser* GetClassBrowser() const { return m_pClassBrowser; }
 		void CreateClassBrowser();
@@ -93,7 +93,7 @@ class NativeParser : public wxEvtHandler
 	protected:
 	private:
         friend class CodeCompletion;
-		size_t AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false, TokenIdxSet* search_scope = 0);
+		size_t AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false, TokenIdxSet* search_scope = 0, int caretPos = -1);
 
 		size_t FindAIMatches(Parser* parser, std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF, TokenIdxSet* search_scope = 0);
         size_t BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
@@ -103,9 +103,9 @@ class NativeParser : public wxEvtHandler
         bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
         const wxString& LastAIGlobalSearch() const { return m_LastAIGlobalSearch; }
 
-		bool ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope);
-		bool ParseFunctionArguments(cbEditor* ed);
-		bool ParseLocalBlock(cbEditor* ed); // parses from the start of function up to the cursor
+		bool ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, int caretPos = -1);
+		bool ParseFunctionArguments(cbEditor* ed, int caretPos = -1);
+		bool ParseLocalBlock(cbEditor* ed, int caretPos = -1); // parses from the start of function up to the cursor
 
 		unsigned int FindCCTokenStart(const wxString& line);
 		wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);
