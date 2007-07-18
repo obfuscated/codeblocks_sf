@@ -941,6 +941,20 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
     control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
 
+    // if user wants "Home" key to set cursor to the very beginning of line
+    if (mgr->ReadBool(_T("/simplified_home"), false))
+    {
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NULL, wxSCI_CMD_HOME);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMEEXTEND);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMERECTEXTEND);
+    }
+    else // else set default "Home" key behavior
+    {
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NULL, wxSCI_CMD_VCHOME);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMEEXTEND);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMERECTEXTEND);
+    }
+
     control->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
     control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false));
     control->SetTabIndents(mgr->ReadBool(_T("/tab_indents"), true));
