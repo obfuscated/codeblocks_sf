@@ -124,7 +124,7 @@ EditorBase::~EditorBase()
 {
     if (Manager::Get()->GetEditorManager()) // sanity check
         Manager::Get()->GetEditorManager()->RemoveCustomEditor(this);
-	
+
 	delete m_pData;
 }
 
@@ -250,9 +250,9 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   
 
         if(wxMinimumVersion<2,6,1>::eval)
         {
-            popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
-            popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
             popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
+            popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
+            popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
         }
         lastWord = text;
 
@@ -305,7 +305,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)   
     PopupMenu(popup, clientpos);
     delete popup;
     m_pData->m_DisplayingPopupMenu = false;
-    
+
     // this code *must* be the last code executed by this function
     // because it *will* invalidate 'this'
     if (m_pData->m_CloseMe)
