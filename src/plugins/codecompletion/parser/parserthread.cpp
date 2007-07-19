@@ -777,6 +777,10 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 {
     if(TestDestroy())
         return 0;
+	
+	if (name.IsEmpty())
+		return 0; // oops!
+		
 //	if (m_Options.useBuffer && !m_Options.isTemp && TokenExists(name, m_pLastParent, kind))
 //        return 0;
     s_MutexProtection.Enter();

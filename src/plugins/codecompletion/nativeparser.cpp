@@ -1703,7 +1703,7 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
                                         bool isPrefix,
                                         short int kindMask)
 {
-    if (!tree)
+    if (!tree || search.IsEmpty())
         return 0;
 
     Token* parent = tree->at(parentIdx);

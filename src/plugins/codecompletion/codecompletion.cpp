@@ -1389,16 +1389,14 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
 		if (ed->GetControl()->CallTipActive())
 			ed->GetControl()->CallTipCancel();
+//		DBGLOG(_T("CodeCompletion::OnValueTooltip: %p"), ed);
 
 		// ignore comments, strings, preprocesor, etc
         int style = event.GetInt();
         if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
             return;
 
-        wxPoint pt;
-        pt.x = event.GetX();
-        pt.y = event.GetY();
-        int pos = ed->GetControl()->PositionFromPoint(pt);
+        int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
         if (pos < 0 || pos >= ed->GetControl()->GetLength())
 			return;
         int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
@@ -1410,7 +1408,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 			if (m_NativeParsers.MarkItemsByAI(result, true, true, true, endOfWord))
 			{
 				wxString msg;
-				int count = 0; // allow max 32 matches (else something is definitely wrong)
+				int count = 0;
 				for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
 				{
 					Token* token = parser->GetTokens()->at(*it);
@@ -1418,9 +1416,9 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 					{
 						msg << token->DisplayName() << _T("\n");
 						++count;
-						if (count > 32)
+						if (count > 32) // allow max 32 matches (else something is definitely wrong)
 						{
-							msg = _("More than 32 matches: internal error...\n");
+							msg.Clear();
 							break;
 						}
 					}
