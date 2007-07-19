@@ -129,7 +129,8 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
         LinkerOptionsArr.Add(LinkerOptions);
     }
     // Arrange them in specified order
-    Result = GetOrderedOptions(target, ortLinkerOptions, LinkerOptionsArr[1], LinkerOptionsArr[0]);
+    if (target)
+        Result = GetOrderedOptions(target, ortLinkerOptions, LinkerOptionsArr[1], LinkerOptionsArr[0]);
     // Now append compiler level options
     Result << LinkerOptionsArr[2];
 
