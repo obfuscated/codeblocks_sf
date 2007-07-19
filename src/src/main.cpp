@@ -2801,7 +2801,7 @@ wxString GetCommentToken(cbStyledTextCtrl* stc)
         case wxSCI_LEX_NULL: comment = _T(""); break;
         case wxSCI_LEX_PYTHON: comment = _T("#"); break;
         case wxSCI_LEX_CPP: comment = _T("//"); break;
-        case wxSCI_LEX_HTML: comment = _T(""); break; // uses pairs <!-- and -->
+        case wxSCI_LEX_HTML: comment = _T("//"); break; // PHP uses HTML lexer
         case wxSCI_LEX_XML: comment = _T(""); break;
         case wxSCI_LEX_PERL: comment = _T("#"); break;
         case wxSCI_LEX_SQL: comment = _T("--"); break;
@@ -2866,7 +2866,7 @@ wxString GetCommentToken(cbStyledTextCtrl* stc)
         case wxSCI_LEX_FLAGSHIP: comment = _T(""); break;
         case wxSCI_LEX_CSOUND: comment = _T(""); break;
         case wxSCI_LEX_FREEBASIC: comment = _T(""); break;
-        default: comment=_T("");
+        default: comment=_T("//"); // Let the user decide if he wants to comment or not
     }
     return comment;
 }
