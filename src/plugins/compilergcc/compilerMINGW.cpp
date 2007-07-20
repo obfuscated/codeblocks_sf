@@ -286,7 +286,7 @@ void CompilerMINGW::SetVersionString()
         if (output.GetCount() > 0)
         {
             wxRegEx reg_exp;
-            if (reg_exp.Compile(_T("[0-9].[0-9].[0-9]")) && reg_exp.Matches(output[0]))
+            if (reg_exp.Compile(_T("[0-9][.][0-9][.][0-9]")) && reg_exp.Matches(output[0]))
                 m_VersionString = reg_exp.GetMatch(output[0]);
             else
             {
