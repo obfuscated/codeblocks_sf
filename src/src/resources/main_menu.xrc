@@ -221,6 +221,7 @@
         <help>Switch highlighting mode for the active editor</help>
         <object class="wxMenuItem" name="idEditHighlightModeText">
           <label>Plain text</label>
+          <radio>1</radio>
           <help>Switch highlighting mode for current document to &quot;Plain text&quot;</help>
         </object>
       </object>

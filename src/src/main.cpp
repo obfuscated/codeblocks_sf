@@ -798,10 +798,10 @@ void MainFrame::CreateMenubar()
                 wxArrayString langs = theme->GetAllHighlightLanguages();
                 for (size_t i = 0; i < langs.GetCount(); ++i)
                 {
-                    if (i == 20 || i == 40 || i ==60 || i == 80)
+                    if (i > 0 && !(i % 20))
                         hl->Break(); // break into columns every 20 items
                     int id = wxNewId();
-                    hl->Append(id, langs[i],
+                    hl->AppendRadioItem(id, langs[i],
                                 wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].c_str()));
                     Connect(id, -1, wxEVT_COMMAND_MENU_SELECTED,
                             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -3056,7 +3056,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
                         lang = theme->GetHighlightLanguage(item->GetLabel());
                 }
             }
-            theme->Apply(lang, ed->GetControl());
+            ed->SetLanguage(lang);
         }
     }
 }
@@ -3430,6 +3430,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         mbar->Check(idEditEncodingUnicode16LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF16LE);
         mbar->Check(idEditEncodingUnicode32BE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32BE);
         mbar->Check(idEditEncodingUnicode32LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32LE);
+
+        wxMenu* hl = 0;
+        mbar->FindItem(idEditHighlightModeText, &hl);
+        if (hl)
+            mbar->Check(hl->FindItem(ed->GetColourSet()->GetLanguageName(ed->GetLanguage())), true);
     }
 
     if (m_pToolbar)
