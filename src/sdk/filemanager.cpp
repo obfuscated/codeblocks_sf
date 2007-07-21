@@ -87,19 +87,19 @@ void URLLoader::operator()()
 }
 
 FileManager::FileManager()
-	: fileLoaderThread(false),
-	uncLoaderThread(false),
-	urlLoaderThread(false)//,
-//	delayedDeleteThread(false)
+    : fileLoaderThread(false),
+    uncLoaderThread(false),
+    urlLoaderThread(false)//,
+//  delayedDeleteThread(false)
 {
 }
 
 FileManager::~FileManager()
 {
-//	delayedDeleteThread.Die();
-//	fileLoaderThread.Die();
-//	uncLoaderThread.Die();
-//	urlLoaderThread.Die();
+//  delayedDeleteThread.Die();
+//  fileLoaderThread.Die();
+//  uncLoaderThread.Die();
+//  urlLoaderThread.Die();
 }
 
 LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
@@ -202,11 +202,11 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
     wxCSConv conv(encoding);
     wxCharBuffer buf = data.mb_str(conv);
 
-    if(!(size = strlen(buf)))
+    if((buf == NULL) || !(size = strlen(buf)))
     {
         buf = data.mb_str(wxConvUTF8);
 
-        if(!(size = strlen(buf)))
+        if((buf == NULL) || !(size = strlen(buf)))
             {
                 cbMessageBox(_T(    "The file could not be saved because it contains characters "
                                     "that can neither be represented in your current code page, "
@@ -247,11 +247,11 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
     }
 
     wxString tempName(name + _T(".cbTemp"));
-	do
-	{
-		wxFile f(tempName, wxFile::write);
-		if(!f.IsOpened())
-			return false;
+    do
+    {
+        wxFile f(tempName, wxFile::write);
+        if(!f.IsOpened())
+            return false;
 
         if(f.Write(data, len) != len)
         {
@@ -259,7 +259,7 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
             wxRemoveFile(tempName);
             return false;
         }
-	}while(false);
+    }while(false);
 
     return ReplaceFile(name, tempName);
 }
@@ -282,19 +282,19 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
     }
 
     wxString tempName(name + _T(".cbTemp"));
-	do
-	{
-		wxFile f(tempName, wxFile::write);
-		if(!f.IsOpened())
-			return false;
+    do
+    {
+        wxFile f(tempName, wxFile::write);
+        if(!f.IsOpened())
+            return false;
 
-		if(WriteWxStringToFile(f, data, encoding, bom) == false)
-		{
-			f.Close();
-			wxRemoveFile(tempName);
-			return false;
-		}
-	}while(false);
+        if(WriteWxStringToFile(f, data, encoding, bom) == false)
+        {
+            f.Close();
+            wxRemoveFile(tempName);
+            return false;
+        }
+    }while(false);
 
     return ReplaceFile(name, tempName);
 }
@@ -309,16 +309,16 @@ bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file
         // now rename the new created (temporary) file to the "old" filename
         if(wxRenameFile(new_file, old_file))
         {
-        	if (Manager::IsAppShuttingDown())
-        	{
-        		// app shut down, forget delayed deletion
-        		wxRemoveFile(backup_file);
-        	}
-        	else
-        	{
-				// issue a delayed deletion of the back'd up (old) file
-				delayedDeleteThread.Queue(new DelayedDelete(backup_file));
-        	}
+            if (Manager::IsAppShuttingDown())
+            {
+                // app shut down, forget delayed deletion
+                wxRemoveFile(backup_file);
+            }
+            else
+            {
+                // issue a delayed deletion of the back'd up (old) file
+                delayedDeleteThread.Queue(new DelayedDelete(backup_file));
+            }
             return true;
         }
         else
