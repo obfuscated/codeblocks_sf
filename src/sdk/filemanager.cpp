@@ -148,7 +148,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
 inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
 {
-    char* mark = NULL;
+    char* mark = 0;
     size_t mark_length = 0;
     if (bom)
     {
@@ -202,11 +202,11 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
     wxCSConv conv(encoding);
     wxCharBuffer buf = data.mb_str(conv);
 
-    if((buf == NULL) || !(size = strlen(buf)))
+    if((buf == 0) || !(size = strlen(buf)))
     {
         buf = data.mb_str(wxConvUTF8);
 
-        if((buf == NULL) || !(size = strlen(buf)))
+        if((buf == 0) || !(size = strlen(buf)))
             {
                 cbMessageBox(_T(    "The file could not be saved because it contains characters "
                                     "that can neither be represented in your current code page, "
