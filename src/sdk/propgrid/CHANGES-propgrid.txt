@@ -1,4 +1,904 @@
 
+Version 1.2.6 ( Jan-21-2007 )
+
+  New:
+
+  - SpinCtrl editor re-implemented using wxTextCtrl in combination with
+    wxSpinButton. This should resolve vast majority of SpinCtrl issues.
+    As a bonus, SpinCtrl now also works with wxFloatProperty (or any
+    property which value as string is a number).
+
+  - Added extra style wxPG_EX_AUTO_UNSPECIFIED_VALUES. When specified,
+    it is possible to set some properties to unspecified values by editing
+    them. Currently, following properties support this:
+      * wxIntProperty, wxUIntProperty, and wxFloatProperty: Clear the
+        text field.
+
+  - Added extra style wxPG_EX_PROCESS_EVENTS_IMMEDIATELY. When specified,
+    ProcessEvent is used to dispatch wxPropertyGridEvents instead of
+    AddPendingEvent.
+
+
+  Bugs Fixed:
+
+  - Crash when deleting a property with modified, uncommitted value.
+
+  - Compilation problems with wxWidgets 2.8.0.
+
+  - Compilation problem with MingW (bug #1619351).
+
+  - Compilation problem under Mac OS X (bug #1619350).
+
+  - Compilation failed if wxBitmapComboBox was also used (bug #1622884).
+
+  - Compilation problem when not using precompiled headers.
+
+  - Regression where point size and underlined attribute of wxFontProperty 
+    were not interpreted correctly.
+
+  - Various problems if first page of wxPropertyGridManager was removed
+    and re-created (patch #1626581 by rjmyst3).
+
+  - Properties using ComboBox editor and custom painting displayed their
+    value string even if it was unspecified.
+
+  - Posix install script had comptibility issues with some non-bash
+    compliant shells (bug #1620783).
+
+  - Unable to edit unspecified text properties with clipper window
+    (bug #1635432).
+
+  - SetPropertyValue, when called on a child property, did not visibly
+    refresh the parent.
+
+  - In rare circumstances, it was possible to "select" last selected
+    property of another page by double-clicking.
+
+
+
+Version 1.2.5 ( Dec-11-2006 )
+
+  New/Changed:
+
+  - wxPython Bindings: Experimental support for creating custom properties
+    and editors. See README-propgrid-wxPython.txt and test_propgrid.py
+    for more information (carefully, since there are caveats).
+
+  - Added wxPropertyGridManager::GetDescBoxHeight().
+
+  - Makefiles for wxWidgets 2.8.0.
+
+  - Added support for preprocessor define wxPG_USE_WXMODULE. Default is 1,
+    but can be set to 0 inorder not to use wxModule to manage global variables.
+    This may be needed in cases where wxPropertyGrid is linked in a plugin
+    DLL. (patch #1609769 by Tim Stahlhut)
+
+  - wxPython related source files are now in a separate archive.
+
+
+  Bugs Fixed:
+
+  - wxGTK, wxMAC: Fixed regression where the control was blank unless extra
+    style wxPG_EX_NATIVE_DOUBLE_BUFFERING was defined.
+
+  - wxMSW: Indentation in wxTextCtrl editors was not correct in all
+    combinations of font and Windows OS version.
+
+  - Setting value of a wxSystemColourProperty sometimes partially corrupted
+    the value (specifically, wxColourPropertyValue::m_type). This was a
+    regression caused by a buggy bug fix in 1.2.4.
+
+  - Property's custom text colour was not always applied correctly on the
+    value column.
+
+  - "make install" didn't work. Note that the current fix is only a workaround
+    (bug #1604887).
+
+  - Compile errors with GCC 4.1 and newer.
+
+  - wxImageFilePropertyClass, wxCursorPropertyClass and
+    wxMultiChoicePropertyClass were missing export declaration.
+
+
+
+Version 1.2.4 ( Nov-12-2006 )
+
+  New:
+
+  - Added SetPropertyTextColour. It sets text colour of properties and
+    their children. Similar to SetPropertyBackgroundColour, it doesn't
+    affect the caption colours.
+
+  - Added SetPropertyBackgroundColour as an alias for SetPropertyColour.
+
+  - Added SetCaptionTextColour. It specifically sets (caption) text
+    colour of a category property.
+
+  - Headers now identify WXMAKINGLIB_PROPGRID, which must be defined if
+    wxPropertyGrid is to be linked statically while wxWidgets itself is
+    linked dynamically (ie. WXUSINGDLL is defined)
+    (patch #1593682 by Tim Stahlhut).
+
+  - Improved combobox LnF under Windows Vista.
+
+  - wxPython build scripts and readme updated to work with the 2.7 branch.
+
+
+  Bugs Fixed:
+
+  - Child properties in deep hierarchy were not properly repainted when value of
+    one of their parents was updated (bug #1578255).
+
+  - Unspecified value did not work well with SpinCtrl editor.
+
+  - DeletePropertyChoice and InsertPropertyChoice did not adjust the selection
+    appropriately. Now, if current selection is deleted, then value is set to
+    unspecified.
+
+  - wxPython bindings: Setting string array and int array values didn't work.
+
+  - Setting undefined wxColour value to a wxColourProperty or
+    wxSystemColourProperty could cause assertion failure/crash (bug #1593459).
+
+  - Internal global variables class was not correctly destroyed, potentially
+    causing problems on app exit. Now this should be fixed by using wxModule.
+
+  - GetCellDisableTextColour -> GetCellDisabledTextColour.
+
+  - Fixed potential infinite focus event recursion scenario with
+    wxEditEnumProperty (applied to wxMAC, at least).
+
+  - wxPGCheckBoxEditor, wxParentPropertyClass and wxCustomPropertyClass were
+    missing export declaration.
+
+  - Compile problem with wxWidgets 2.7.2.
+
+
+
+Version 1.2.3 ( Oct-15-2006 )
+
+  New:
+
+  - Added extra style wxPG_EX_NATIVE_DOUBLE_BUFFERING, which allows wxPropertyGrid
+    to rely on system's native double-buffering, and thus conserve some memory
+    and improve drawing performance.
+
+  - Added EVT_PG_DOUBLE_CLICK (using event type wxEVT_PG_DOUBLE_CLICK) for
+    intercepting double-clicks on properties.
+
+
+  Bugs Fixed:
+
+  - Spurious property change events when pressing alt or ctrl, or when leaving
+    the control area with mouse. This was especially annoying if a validator
+    was used.
+
+  - wxFloatProperty could crash with wxUSE_STL = 1 (bug #1561169, fix by Todd).
+
+  - wxPropertyGridManager toolbar height was too small under Windows.
+
+
+
+Version 1.2.2 ( Sep-09-2006 )
+
+  New:
+
+  - Extra style wxPG_EX_GREY_LABEL_WHEN_DISABLED added. It causes labels
+    to become greyed along with the values when a property becomes disabled.
+
+  - SetCellDisabledTextColour member function added to wxPropertyGrid.
+
+  - Installer may try to automatically run bakefile if installing
+    for an "unsupported" wxWidgets version.
+
+  - Windows uninstaller does now much more through job. Namely, temporary
+    files (*.obj etc.) and files specific to older wxPropertyGrid releases
+    are removed where possible.
+
+  - Unix uninstaller script added (contrib/uninstall-propgrid.sh).
+
+  - wxArrayStringProperty now uses its validator to also validate the value
+    in editor dialog (done when ok is pressed). No other properties do this
+    currently, but just let me know if you need such thing.
+
+  - Added virtual member function wxArrayEditorDialog::GetTextCtrlValidator.
+    Implement it in a derived class to create a wxValidator for the wxTextCtrl
+    in dialog.
+
+  - Editor dialog of subclassed wxArrayStringPropertyClass can be changed
+    easier - you only need to implement new virtual member function
+    CreateEditorDialog() to return new instance of your own editor dialog
+    class derived from wxArrayEditorDialog. To facilitiate this there are
+    two new virtual functions in wxArrayEditorDialog - SetDialogValue and
+    GetDialogValue. At the moment they are not used with any other
+    properties.
+
+
+  Bugs Fixed:
+
+  - Pressing enter in wxEditEnumProperty's editor didn't do anything useful but
+    caused focus to be lost from wxPropertyGrid.
+
+  - All wxKeyEvents, specifically those from editor controls, could not be
+    intercepted. These events are now also sent to wxPropertyGrid itself,
+    meaning they can be intercepted in EVT_KEY_DOWN/UP handlers of derived
+    class or pushed wxEvtHandler.
+
+  - Pressing NumLock could cause problems under toolkits based on X. This
+    includes, for instance, wxGTK (patch #1554432 by rjmyst3).
+
+  - Compile problem with gcc4.1+ (bug #1540414)
+
+  - Trying to use wxMultiChoiceProperty with wxPGChoices that had values
+    not matching string indices did not work.
+
+  - wxPropertyGridManager::CreatePropertyGrid() was not virtual.
+
+
+
+Version 1.2.1 ( Aug-12-2006 )
+
+  New:
+
+  - Much improved focus detection.
+
+  - wxDateProperty added to advprops.h/cpp. It uses wxDateTime value type
+    and a new DatePickerCtrl editor (altough TextCtrl editor works as well).
+    There are two new attributes for it: wxPG_DATE_FORMAT (string - used with
+    wxDateTime::Format. Set your locale for nice default value) and
+    wxPG_DATE_PICKER_STYLE (long - the window style used when creating
+    wxDatePickerCtrl).
+
+    Member functions SetPropertyValue and GetPropertyValueAsDateTime have also
+    been added to wxPropertyGrid and wxPropertyGridManager.
+
+  - DatePickerCtrl editor added to advprops.h/cpp. Note that wxDatePickerCtrl
+    resides in wxAdv library, so using anything from advprops may cause
+    dependency for it. Since I don't want that to happen by default, you will
+    need to define wxPG_ALLOW_WXADV somewhere (library project settings or
+    top of propgrid.h, for instance).
+
+  - SpinCtrl editor moved from samples to advprops.h/cpp. You need to call
+    static member function wxPropertyGrid::RegisterAdditionalEditors()
+    prior to using it.
+
+  - Numerous wxASSERTs and wxCHECKs have been added to validate property ids
+    and names (among other things).
+
+  - wxPropertyGridEventHandler macro added for use with wxEvtHandler::Connect.
+
+  - Added to readme a note about tar "lone zero block" warning message.
+
+
+  Bugs Fixed:
+
+  - On systems where wxPopupWindow was used instead of wxTransientPopupWindow
+    (includes all systems with wxWidgets 2.6.1 or earlier), there was serious
+    dysfunctionality and even crashes in some rare situtations (for instance,
+    clicking wxPropertyGridManager toolbar button when a popup was open).
+
+  - wxPython bindings: property help strings did not appear in
+    PropertyGridManager's description box.
+
+  - wxPython bindings: there should now be a lot more Python exceptions
+    instead of plain crashes when an invalid property name is used.
+
+  - #1521288 (Crash on Tab keypress)
+
+  - When wxPG_EX_HELP_AS_TOOLTIPS extra window style was used, the help
+    strings were still shown in the status bar (in addition to that they
+    were shown as tooltips).
+
+  - POSIX installer script didn't work if path to wxWidgets was relative.
+
+  - EventObject of wxPropertyGridManager's wxPropertyGridEvents pointed to
+    the underlying wxPropertyGrid instead of the main (manager) object.
+
+  - Some inconsistencies in how Doxygen generated the documentation have
+    been resolved.
+
+
+
+Version 1.2.0 ( Jul-09-2006 )
+
+  Start of a new Stable API branch. In the subsequent 1.2.x releases API will
+  not be changed (albeit minor additions can be made) and internal changes not
+  related to bug fixes will be kept at minimum.
+
+  New/Changed:
+
+  - Improved appearance when disabled (all text is greyed).
+
+  - Added keyboard shortcut Alt+Down to push the editor button. You can change
+    it to a custom shortcut with new member function
+    wxPropertyGrid::SetButtonShortcut(keycode,ctrlDown,altDown).
+
+  - wxPropertyGridManager::SelectPage() now supports page index -1 to
+    indicate no selection.
+
+  - Ability to subclass wxPropertyGrid and wxPropertyGridManager has been
+    improved. See docs for details.
+
+  - Section "Creating New Properties" in the documentation has been
+    heavily revised to introduce how to subclass properties as easily
+    as possible (ie. macros not necessary).
+
+  - Added wxPG_VERSION macro. It is calculated as MajorVersion*1000 +
+    MinorVersion*100 + Release*10 + Subrelease. For instance, version 1.2.0
+    translates to 1200.
+
+  - Added wxPropertyGrid::GetPropertyPtr(id/name).
+
+  - wxArrayStringPropertyClass::OnButtonClick is now virtual.
+
+
+  Bugs Fixed:
+
+  - wxTextValidator didn't work with wxEditEnumProperty.
+
+  - Fixed bug #1511342 (Cannot clear FileProperty when PG_FILE_SHOW_FULL_PATH = 0)
+
+  - Fixed bug #1509826 (Expand buttons drawn in the wrong place)
+
+  - Fixed bug #1510934 (Build fails on gcc 4.1.1)
+
+  - Keyboard navigation with limited editing properties could provoke
+    (harmless) assertion failure.
+
+  - Custom wxPropertyGridPage did not trigger events in wxPropertyGridManager
+    itself (for instance, property description did not appear when property
+    was selected).
+
+  - wxPropertyGrid::GetEditorControl() sometimes crashed with wxGTK.
+
+
+
+Version 1.1.6 ( Jun-08-2006 )
+
+  New/Changed:
+
+  - Added attribute wxPG_FILE_DIALOG_TITLE for wxFileProperty. If set,
+    the file selector dialog will use it as the title.
+
+  - Added attribute wxPG_DIR_DIALOG_MESSAGE for wxDirProperty. If set,
+    the dir selector dialog will use it as the message.
+
+  - Added wxPropertyGridManager::RemovePage(pageIndex).
+
+  - Addex extra window style wxPG_EX_HELP_AS_TOOLTIPS, which will
+    display property help strings as tooltips instead of status bar text.
+    However, the usual wxWidgets restrictions apply and therefore multiline
+    tooltips are not created automatically (ie. line breaks are needed for
+    long tips).
+
+  - wxPropertyGridPage class can now be subclassed to create custom manager
+    pages. wxPropertyGridManager::AddPage() has new last argument where the
+    page instance can be given. Custom pages are mostly useful for handling
+    page-specific events, altough some virtual member functions can be
+    overridden as well (DoInsert, DoDelete).
+
+  - wxPG_SPLITTER_AUTO_CENTER behaviour has been further tweaked.
+
+  - Unix installer now uses configure's regen script to generate makefiles.
+    As of consequence, build dir is now asked even if quick install is used,
+    unless the dir is given as the second parameter.
+
+
+  New Features for Creating User Properties:
+
+  - OnCustomPaint can now be used to paint the entire item (ie. not just
+    an image in front of the text, as previously). Requirement is that
+    GetImageSize returns wxPG_FULL_CUSTOM_PAINT_SIZE(preferredHeight),
+    or for flexible height, wxPG_FULL_CUSTOM_PAINT_FLEXIBLE_SIZE(preferredHeight).
+    wxPaintedEnumPropertyClass has been added to the sample application as a
+    demonstration how to do this.
+
+
+  Bugs Fixed:
+
+  - Combobox focus and selection background drawing corrected.
+
+  - Various problems with wxWidgets 2.7.0.
+
+  - GCC 4.0 warning.
+
+
+
+Version 1.1.5 ( May-05-2006 )
+
+  New/Changed:
+
+  - Hugely improved wxPG_SPLITTER_AUTO_CENTER behaviour regarding appearing/
+    disappearing scrollbar.
+
+  - Text length limiting. Works with any properties using text ctrl as an
+    editor. Call wxPropertyGrid::SetPropertyMaxLength or wxPGProperty::
+    SetMaxLength.
+
+  - Attributes now work in wxPython (thanks to the wxVariant typemap I added
+    to the SWIG interface). See readme of the bindings package for a single
+    line example.
+
+  - Property hiding. Use wxPropertyGrid::HideProperty(property,true/false),
+    or wxPGProperty::Hide(true/false). NOTE! This overlaps the old priority
+    system and cannot be used simultaneously.
+
+  - wxSystemColourProperty: Selecting or setting custom colour from dialog
+    no longer tries to find named match from the list of system colours.
+
+  - Added attribute wxPG_FILE_INITIAL_PATH to wxFileProperty. If set, the
+    selector dialog will use it as initial path.
+
+  - wxPGChoices id used mainly with wxPropertyGridPopulator has been changed
+    from type size_t to custom type wxPGChoicesId (which is currently void*).
+
+
+  Bugs Fixed:
+
+  - Current colour was not selected in the colour dialog of wxColourProperty and
+    its kind (thanks Anthony Sommers).
+
+  - Fixed bug #1467766 (Combobox is set to the wrong value for an empty property)
+
+  - Fixed bug #1467760 (Can't tab from checkbox property on Windows)
+
+  - Applied patch #1467753 by Julian Smart that solves various keyboard navigation
+    issues with combo box editor, including:
+    * Pressing Enter should not show popup.
+    * Pressing Escape should close popup.
+
+  - wxMSW: Pressing enter in list popup didn't select an item.
+
+  - String property using attribute wxPG_STRING_PASSWORD exposed its value
+    as plain text instead of asterisk sequence in its parent's summary string.
+
+  - wxPropertyGrid::GetEditorControl() now returns the actual control
+    instead of clipper window, if any.
+
+  - Compile problems with 64-bit compilers.
+
+  - Compile problems with wxWidgets 2.7.0.
+
+  - Hopefully now compiles with Cygwin.
+
+
+
+Version 1.1.4 ( Mar-22-2006 )
+
+    IMPORTANT! There are changes in custom/user property scheme. See below.
+
+  New/Changed:
+
+  - Internal changes to make wxPython bindings reality.
+
+  - wxWidgets 2.6.3 makefiles are included.
+
+  - wxValidators are now used in a different way for textctrls - validation
+    happens on change instead on modify. This prevents user from leaving the
+    editor control if entered text is invalid.
+
+  - wxIntProperty and wxFloatProperty now have default numeric wxTextValidators
+    attached to them.
+
+  - Added CanClose() method which returns false if value in active editor
+    has been invalidated by a wxValidator.
+
+  - ClearSelection and SelectProperty now return false if selection could not
+    be changed (which would be the case if editor's validation fails).
+
+  - AddPropertyChoice method now also updates an active editor control.
+
+  - InsertPropertyChoice and DeletePropertyChoice methods.
+
+  - wxPGProperty now has AppendChoice, InsertChoice and DeleteChoice methods.
+    They also update active editor control.
+
+  - New attribute: wxPG_FILE_SHOW_RELATIVE_PATH. For wxFileProperty and derivatives.
+    Allows showing relative instead of absolute path. Base path is the value given
+    for this attribute.
+
+  - Moved the remaining wxPGxxx editor class headers to propdev.h.
+
+  - Sample application is now split into two source files. The new one,
+    sampleprops.cpp contains those more useful sample user properties.
+
+  - Dialog positioning and sizer spacing should now be more appropriate with
+    Windows CE.
+
+  - wxPG_COMPATIBILITY_1_0_0 is no longer on by default.
+
+
+  Changes in Creating User Properties and Editors:
+
+  - OnEvent: Instead of calling CopyValueFromControl, method should simply
+    return true when changing event was received.
+
+  - Macros WX_PG_IMPLEMENT_STRING_PROPERTY_WITH_VALIDATOR and
+    WX_PG_IMPLEMENT_STRING_PROPERTY now require an additional argument
+    which can be either wxPG_NO_ESCAPE (no escape sequences, ie. newlines
+    and tabs cannot really be used - good for wxDirProperty and such) or
+    wxPG_ESCAPE (the classic mode).
+
+  - wxPGEditor::AppendItem(wnd,label) replaced with
+    wxPGEditor::InsertItem(wnd,label,index).
+
+  - wxPGEditor::DeleteItem(wnd,index) added.
+
+
+  Bugs Fixed:
+
+  - wxDirProperty used escape sequences (such as \n and \t), causing dir
+    selector dialog to always start from the scratch.
+
+  - Custom delimeter for WX_PG_IMPLEMENT_ARRAYSTRING_PROPERTY_WITH_VALIDATOR
+    (including sample wxDirsProperty) did not take effect until the value was
+    set outside the constructor.
+
+  - wxPGSpinCtrlEditor (from the sample app) crashed when value was
+    entered manually.
+
+  - Property value type builder macro WX_PG_IMPLEMENT_VALUE_TYPE_VOIDP_CVD
+    did not work properly. Also added note about needing to use basic
+    WX_PG_DECLARE_VALUE_TYPE macro with it.
+
+  - Keyboard navigation did not work in combo popups.
+
+  - Open Watcom problems.
+
+  - GetFirstChild was not available in wxPropertyGridManager.
+
+  - Windows CE popup window problems.
+
+
+
+Version 1.1.3 ( Jan-15-2006 )
+
+  New Features:
+
+  - wxPopupTransientWindow now used for wxMSW and wxGTK popups if compiled with
+    wxWidgets 2.6.2 or newer. This allows more authentic popup behaviour and
+    using mouse input in wxGTK modal dialogs.
+
+  - wxWidgets 2.7.0 makefiles.
+
+
+  Bugs Fixed:
+
+  - Mouse cursor did not always change to resize-arrow when hovering on the
+    splitter.
+
+  - Various bugs with child properties set to have unspecified value (for
+    instance, when a property's value is set to unspecified, it's parent's
+    "summary" text now correctly reflects this).
+
+  - In ANSI build, it should now be possible to enter any non-ASCII
+    characters in editor dialogs of wxLongStringProperty and
+    wxArrayStringProperty (thanks Milan Babuskov).
+
+  - Editor dialogs of wxLongStringProperty and wxArrayStringProperty now
+    correctly use parent wxPropertyGrid's font.
+
+  - CollapseAll could corrupt the current selection.
+
+  - wxMAC compile problem.
+
+  - wxParentProperty should now work if it initially has no children.
+
+
+
+Version 1.1.2 ( Dec-02-2005 )
+
+  New Features:
+
+  - wxPG_BOOL_USE_DOUBLE_CLICK_CYCLING (wxBoolProperty attribute to allow
+    value cycling with double-click) has been re-enabled and *is now on by
+    the default*. Focusing to the combo box is detected as the first click,
+    so behaviour will be much smoother than before.
+
+  - New Attribute: wxPG_COLOUR_ALLOW_CUSTOM. Custom colour choice of
+    wxColourProperty, wxSystemColourProperty, and their kind can be disabled
+    by setting this attribute to 0.
+
+  - SetPropertyAttributeAll(attrId,attrVal) method allows setting an attribute
+    for every single property (in both normal grid and grid manager). Just
+    remember to call it *after* your grid has been completely built.
+
+
+  Bugs Fixed:
+
+  - Size given in constructor or Create did not work.
+
+  - Shorter name for SetPropertyValueUnspecified (ie. SetPropertyUnspecified)
+    was not available when v1.0.0 compatibility flag was set (which was the
+    default).
+
+  - In some cases wxPropertyGrid stole keyboard focus.
+
+  - Left aligning the splitter (ie. SetSplitterLeft method) has been fine-tuned.
+
+  - It was not possible to have user properties with name not starting
+    with "wx".
+
+
+
+Version 1.1.1 ( Sep-21-2005 )
+
+  New Features:
+
+  - New property editor: ComboBox. Just like Choice but without
+    wxCB_READONLY flag.
+
+  - New property: wxEditEnumProperty. Just like wxEnumProperty, but
+    has wxString value and ComboBox as default editor.
+
+  - New method: SetSplitterLeft. Moves splitter as far left as possible
+    so that labels are still fully visible. Also, this is the new default
+    splitter position when wxPG_SPLITTER_AUTO_CENTER window style is not
+    used.
+
+  - New event: EVT_PG_ITEM_COLLAPSED - occurs when property or category
+    has been collapsed by the user.
+
+  - New event: EVT_PG_ITEM_EXPANDED - occurs when property or category
+    has been expanded by the user.
+
+  - Initial Mac OS X compatibility has been reported (should build and run -
+    thanks to Jan-Friso Schipper for working it out).
+
+    NOTE: wxPropertyGrid::SetFont is reported to crash, so offending code in it
+    has been commented out. However, if you are willing to debug the issue, you
+    can replace line '#if !defined(__WXMAC__)' with line '#if 1' in propgrid.cpp:
+    wxPropertyGrid::SetFont.
+
+  - wxWidgets 2.6.2 makefiles.
+
+
+  Bug Fixes:
+
+  - wxFloatProperty and sample's wxArrayDoubleProperty had problems when
+    locale was set to one using comma as decimal point.
+
+  - When value image of property w/ Choice editor was changed (with
+    SetPropertyImage method), image appeared in front of every line in
+    dropdown, not just the current one.
+
+  - WX_PG_IMPLEMENT_STRING_PROPERTY macro produced erroneous code.
+
+  - SetSplitterPosition did not work  when called before grid's size was
+    properly set (by sizer logic etc).
+
+  - SetSplitterPosition was missing from wxPropertyGridManager.
+
+
+
+Version 1.1.0 ( Jun-14-2005 )
+
+  Attention, users of 1.0.x! Carefully read section entitled 'API Changes'.
+
+  New Features:
+
+  - When wxPropertyGrid loses focus, selected property now becomes greyed
+    (similar to other controls).
+
+  - wxValidator support methods:
+        void SetPropertyValidator(id/name,wxValidator&)
+        wxValidator* GetPropertyValidator(id/name)
+
+    In addition, wxFileProperty, wxDirProperty (as well as wxDirsProperty
+    in the sample app) now have built-in validators to filter out characters
+    that cannot be used in paths.
+
+  - Value image of any property can be set:
+        void SetPropertyImage(id/name,wxBitmap&)
+        wxBitmap* GetPropertyImage(id/name)
+
+  - Editor of any property can be changed:
+        void SetPropertyEditor(id/name,const wxPGEditor*)
+        const wxPGEditor* GetPropertyEditor(id/name)
+
+  - Property inheritance can now be traced, using IsPropertyKindOf method.
+    For example, to find out whether property inherits from wxCustomPropertyClass,
+    use:
+        pg->IsPropertyKindOf( property, WX_PG_CLASSINFO(wxCustomProperty) )
+
+  - wxStringProperty got wxPG_STRING_PASSWORD attribute. When it is used
+    the value is echoed as asterisks and wxTE_PASSWORD is passed to the
+    textctrl editor.
+
+  - wxColourProperty (and wxSystemColourProperty) trigger colour dialog on
+    wxButton click events (which means that changing the editor to
+    wxPG_EDITOR(TextCtrlAndButton) is viable).
+
+  - wxColourProperty's default editor is now now TextCtrlAndButton
+    (wxSystemColourProperty still has Choice). To get the old editor, just use
+    following code immediately after property has been added:
+
+    pg->SetPropertyEditor(colourProperty,wxPG_EDITOR(Choice))
+
+  - SpinCtrl editor added to the sample app. It is an example of user creatable
+    property editor, with plenty of comments. On the third page of sample app
+    there is a property "SpinCtrl" using it.
+
+  - Items of wxFlagsProperty can now be changed with SetPropertyChoices.
+
+  - Added documentation section "Customizing Properties (without sub-classing)".
+
+  - WX_PG_IMPLEMENT_STRING_PROPERTY_WITH_VALIDATOR. Identical to
+    WX_PG_IMPLEMENT_STRING_PROPERTY except it also declares
+    wxValidator* DoGetValidator() const method.
+
+  - WX_PG_IMPLEMENT_ARRAYSTRING_PROPERTY_WITH_VALIDATOR. Identical to
+    WX_PG_IMPLEMENT_ARRAYSTRING_PROPERTY except it also declares
+    wxValidator* DoGetValidator() const method.
+
+
+  API Changes:
+
+  - wxEnumProperty and wxFlagsProperty new constructor functions:
+        wxEnumProperty(name,label,wxArrayString labels,value)
+        wxEnumProperty(name,label,wxArrayString labels, wxArrayInt values, value)
+
+  - wxPGConstants renamed to wxPGChoices. *
+
+  - wxChar* arrays given as argument to wxEnumProperty, wxFlagsProperty,
+    WX_PG_IMPLEMENT_CUSTOM_ENUM_PROPERTY, WX_PG_IMPLEMENT_CUSTOM_COLOUR_PROPERTY,
+    and WX_PG_IMPLEMENT_CUSTOM_FLAGS_PROPERTY, *must now be NULL terminated*.
+    Also, all such constructors and macros no longer have 'itemcount' argument
+    (for the obvious reason).
+
+  - Sub-properties (i.e. properties which have parent that is not category or
+    root) can no longer be accessed globally by their name. Instead, use
+    "<property>.<subproperty>" in place of "<subproperty>".
+
+    For example:
+        wxPGId id = pg->GetPropertyByName(wxT("Property.SubProperty"));
+    Or:
+        wxPGId id = pg->GetPropertyByName(wxT("Property"),wxT("SubProperty"));
+
+    Clarification on sub-property OnChange event handling:
+    - For wxParentProperty and wxCustomProperty, events will occur for
+      sub-property. For those properties that inherit directly from
+      wxPGPropertyWithChildren/wxBaseParentPropertyClass (wxFontProperty,
+      wxFlagsProperty, etc), events occur for the main parent property
+      only (actually, this has to do whether the children are "private" or not
+      - see the attributes).
+    - When wxParentProperty or wxCustomProperty's child gets changed, you can
+      use wxPropertyGridEvent::GetMainParent to obtain its top non-category
+      parent (useful, if you have wxParentProperty as child of another
+      wxParentProperty, for example).
+
+  - Manager's default is now to hide Alphabetic/Categoric mode buttons. Use
+    new ex-flag wxPG_EX_MODE_BUTTONS to show them.
+
+  - SetPropertyValueUnspecified renamed to SetPropertyUnspecified. *
+
+  - wxRECURSE renamed to wxPG_RECURSE. *
+
+  - wxKEEP_STRUCTURE renamed to wxPG_KEEP_STRUCTURE. *
+
+  - GetPrimaryEditor renamed to GetEditorControl. *
+
+  - Identifiers wxPGCtrlClass, wxCCustomTextCtrl, wxCCustomButton, and
+    wxCCustomComboBox have been removed (use wxWindow, wxTextCtrl, wxButton and
+    wxOwnerDrawnComboBox instead). *
+
+  - SetPropertyChoicesPrivate renamed to SetPropertyChoicesExclusive.
+
+    * When wxPG_COMPATIBILITY_1_0_0 is defined (which is default - see
+    propgrid.h), this change is also implemented in its 1.0.x form.
+
+
+  Dropped Features:
+
+  - Support for wxWidgets versions earlier than 2.6.0.
+
+  - Non-wxWindow-based custom controls.
+
+  - wxPG_EX_CLASSIC_SPACING (defined to 0 with wxPG_COMPATIBILITY_1_0_0).
+
+  - Double click cycles (wxPG_BOOL_USE_DOUBLE_CLICK_CYCLING) - mostly useless
+    feature modeled from .NET version.
+
+  - wxPG_NEW_COLOUR_SCHEME can no longer be used to revert to the old colour
+    scheme.
+
+
+  Other Changes:
+
+  - Pressing ESC when editing value in wxTextCtrl editor cancels any
+    changes (in addition to unfocusing the control, as previously).
+
+  - EVT_TEXT (id = wxEVT_COMMAND_TEXT_UPDATED) events are now passed out of
+    of wxPropertyGrid. This is useful if you want your app to know when user
+    has started editing a property (since wxEVT_PG_CHANGED is sent only
+    after changes are committed, ie. enter is pressed or focus changes).
+
+  - GetFirstProperty, GetNextProperty and GetPrevProperty will no longer
+    skip wxCustomProperty and wxParentProperty.
+
+  - Unhandled editor button events are redirected to the grid's event handler
+    (effectively makes custom editor button callback function obsolete).
+
+  - wxFontProperty's "Face Name" sub-property has been changed to a
+    wxEnumProperty (it was wxStringProperty). Drop down will show all
+    available font faces.
+
+  - Check box editor no longer receives keyboard focus indicator (if I can
+    figure how to add it *only* when getting focus from kbd, then I will do
+    that).
+
+  - Added GetEditorControlSecondary which returns editor's button, if any.
+
+  - wxBasePropertyClass is a new alias for wxPGProperty.
+
+  - wxBaseParentPropertyClass is a new alias for wxPGPropertyWithChildren.
+
+
+  Changes to Property Classes System:
+
+  - WX_PG_IMPLEMENT_PROPERTY_CLASS now has base property argument, inserted
+    to second place (i.e. its between property name and value type). Use
+    wxBaseProperty when inheriting from wxPGProperty and wxBaseParentProperty
+    when inherting from wxPGPropertyWithChildren.
+
+  - Added wxPGProperty::DoGetValidator virtual method. If property does
+    not have explicit validator, it is called when property's editor is
+    about to be created. See wxPGProperty class reference for implementation
+    details.
+
+  - wxPropertyGrid::OnCustomEditorEvent's argument changed from wxEvent&
+    to wxCommandEvent& - you need to change casting in any related Connect
+    calls to accommodate this.
+
+  - wxPGChoices (old wxPGConstants) has been transformed internally. Due
+    to this, properties that need it now hold wxPGChoices m_choices instead
+    of wxPGChoices* m_choices. wxPGConstantsUnref macros are no longer necessary
+    in destructors.
+
+  - Editor classes wxPGTextCtrlEditor and wxPGChoiceEditor are now available
+    for inheritance in propdev.h.
+
+  - wxStringPropertyClass is available for inheritance in propdev.h.
+
+  - Replaced all m_constants members with m_choices.
+
+  - Second argument of wxPGProperty::SetAttribute changed from "wxVariant" to
+    "wxVariant&".
+
+  - virtual const wxPGEditor* GetEditorClass () const; replaced with
+    virtual const wxPGEditor* DoGetEditorClass () const;
+    (since there is now non-virtual wxPGProperty::GetEditorClass)
+
+  - Added wxPGEditor::GetName(). It is auto-generated with macros, and
+    will return pointer to editor's name ("TextCtrl" etc).
+
+  - Added wxPGEditor::OnFocus(). It is triggered when editor gets focus.
+    For wxTextCtrl based editor, for example, it should select all text.
+
+  - Old WX_PG_DECLARE_EDITOR_CLASS (which declares editor singleton
+    *in header*) has been renamed to WX_PG_DECLARE_EDITOR.
+
+  - WX_PG_IMPLEMENT_EDITOR_CLASS_CONSTFUNC renamed to
+    WX_PG_IMPLEMENT_EDITOR_CLASS.
+
+  - WX_PG_DECLARE_EDITOR_CLASS added - use it as you would DECLARE_DYNAMIC_CLASS.
+
+
+  Bug Fixes:
+
+  - wxUIntProperty did not render its value unless base or prefix was
+    explicitly set (via SetPropertyAttribute).
+
+  - WinXP/Win2K, wxWidgets 2.6.1: Improved indentation fix.
+
+  - When mouse was leaving "slowly" via right edge through active editor
+    control, correct mouse leave event was not triggered resulting in
+    latest changes not being committed (though there was error notification
+    in debug build).
+
+  - GetCaptionBackgroundColour function name had typo (g was missing).
+
+
 
 Version 1.0.6.1 ( Dec-02-2005 )
 

@@ -56,6 +56,29 @@
                 <Style name="Decorator"
                         index="15"
                         fg="0,128,128"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                        index="34"
+                        bg="0,255,0"
+                        bold="1"
+                        underlined="1"/>
+                <Style name="No matching brace highlight"
+                        index="35"
+                        bg="255,0,0"/>
                 <Keywords>
                         <!-- Keywords -->
                         <Set index="0"
