@@ -151,6 +151,7 @@ class CodeSnippets : public cbPlugin
         long LaunchExternalSnippets();
         bool ReleaseMemoryMappedFile();
         void TellExternalSnippetsToTerminate();
+        void CloseDockWindow();
 
         #if defined(__WXMSW__)
             void MSW_MouseMove(int x, int y );
@@ -161,6 +162,9 @@ class CodeSnippets : public cbPlugin
 		void OnActivate(wxActivateEvent& event);
         void OnWindowDestroy(wxEvent& event);
 		void OnIdle(wxIdleEvent& event);
+		void OnSwitchViewLayout(CodeBlocksLayoutEvent& event);
+		void OnSwitchedViewLayout(CodeBlocksLayoutEvent& event);
+		void OnDockWindowVisability(CodeBlocksDockEvent& event);
 
 		wxWindow*       m_pAppWin;
         ProjectManager* m_pPrjMan;

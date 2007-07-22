@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 93 2007-06-30 21:22:19Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 96 2007-07-22 05:14:05Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -192,6 +192,15 @@ void CodeSnippets::OnAttach()
     CreateSnippetWindow();
 
     LOGIT(wxT("idViewSnippets[%d]"), idViewSnippets);
+    // ---------------------
+	// register event sink
+    // ---------------------
+	// request app to switch view layout - BUG: this is not being issued on View/Layout change
+    Manager::Get()->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<CodeSnippets, CodeBlocksLayoutEvent>(this, &CodeSnippets::OnSwitchViewLayout));
+    // app notifies that a new layout has been applied
+    Manager::Get()->RegisterEventSink(cbEVT_SWITCHED_VIEW_LAYOUT, new cbEventFunctor<CodeSnippets, CodeBlocksLayoutEvent>(this, &CodeSnippets::OnSwitchedViewLayout));
+    // app notifies that a docked window has been hidden/shown
+    Manager::Get()->RegisterEventSink(cbEVT_DOCK_WINDOW_VISIBILITY, new cbEventFunctor<CodeSnippets, CodeBlocksDockEvent>(this, &CodeSnippets::OnDockWindowVisability));
 
 }//OnAttach
 
@@ -220,16 +229,17 @@ void CodeSnippets::OnRelease(bool appShutDown)
     {   wxMilliSleep(10) ; wxYield();
     }
 
-    // If floating window, we have to close it or CB crashes
-    if ( GetConfig()->IsFloatingWindow() )
-    {
-        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-        evt.pWindow = GetSnippetsWindow();
-        Manager::Get()->ProcessEvent(evt);
-
-        GetSnippetsWindow()->Destroy();
-        SetSnippetsWindow(0);
-    }
+////    The following causes wxAui on GTK2.6.3 to crash
+////    // If floating window, we have to close it or CB crashes
+////    if ( GetConfig()->IsFloatingWindow() )
+////    {
+////        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+////        evt.pWindow = GetSnippetsWindow();
+////        Manager::Get()->ProcessEvent(evt);
+////
+////        GetSnippetsWindow()->Destroy();
+////        SetSnippetsWindow(0);
+////    }
 
 
 }
@@ -271,7 +281,6 @@ void CodeSnippets::CreateSnippetWindow()
 {
     // Launch the executable if user specified "External" WindowState
 
-    // GetConfig()->m_ExternalPid will contain the resulting launched pgm Pid if successful
    	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
     {
         /*bool result =*/ LaunchExternalSnippets();
@@ -316,7 +325,7 @@ void CodeSnippets::CreateSnippetWindow()
 
 
     #if defined(__WXMSW__)
-    // Linux never creates an initial floating window. So skip this.
+        // Linux never creates an initial floating window. So skip this.
         // Set floating window to last position and size (except linux with buggy wxAUI)
         //if ( evt.dockSide==CodeBlocksDockEvent::dsFloating)
         if ( GetConfig()->IsFloatingWindow())
@@ -397,7 +406,10 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
     {
          LOGIT( _T("OnView External m_ExternalPid[%lu] Checked[%d]"), m_ExternalPid, event.IsChecked() );
         if ( (not m_ExternalPid) && event.IsChecked() )
-        {    CreateSnippetWindow();
+        {
+            // if open dock window, close it
+            if ( GetSnippetsWindow()) CloseDockWindow();
+            CreateSnippetWindow();
             LOGIT( _T("m_ExternalPid[%lu]"), m_ExternalPid );
             return;
         }
@@ -426,8 +438,8 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
         CreateSnippetWindow();
     }
 
-    LOGIT( _T("OnView Floating[%d] Checked[%d] IsShown[%d]"),
-            GetConfig()->IsFloatingWindow(),
+    LOGIT( _T("OnView [%s] Checked[%d] IsShown[%d]"),
+            GetConfig()->IsFloatingWindow()?wxT("float"):wxT("dock"),
             event.IsChecked(),
             IsWindowReallyShown(GetSnippetsWindow())
             );
@@ -455,8 +467,10 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
 	CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
 	evt.pWindow = GetSnippetsWindow();
 	Manager::Get()->ProcessEvent(evt);
+	//// if we close the window, it won't remember its layout position when reopened.
+    ////if (evt.GetEventType() == cbEVT_HIDE_DOCK_WINDOW) CloseDockWindow();
 
-    // connect to the wxAUI EVT_CLOSE event
+    // connect to the wxAUI wxEVT_CLOSE event
     if ( event.IsChecked() && GetConfig()->IsFloatingWindow()  )
     {   if( not GetConfig()->m_pEvtCloseConnect )
         {   GetSnippetsWindow()->GetParent()->Connect( wxEVT_CLOSE_WINDOW,
@@ -465,7 +479,8 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
             GetConfig()->m_pEvtCloseConnect = GetSnippetsWindow()->GetParent();
         }
     }//if
-}
+
+}//OnViewSnippets
 
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
@@ -474,9 +489,12 @@ void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 
     wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
 
+    LOGIT( _T("OnUpdateUI Window[%p],Pid[%d]"), GetSnippetsWindow(), m_ExternalPid );
+
     // check for externally started CodeSnippets
     if (not GetSnippetsWindow() && (not m_ExternalPid) )
     {   pbar->Check(idViewSnippets, false);
+        LOGIT( _T("OnUpdateUI Check[%s]"), wxT("to OFF") );
          return;
     }
     // check if external CodeSnippets terminated without us
@@ -512,28 +530,88 @@ void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 void CodeSnippets::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Because the current wxAUI is such a lousy interface, we have to poll
-    // our docked window to see if it has closed. There are no events
-    // that tell us if the user closed the docked or floating window.
-
-    // Unfortunately wxAUI crashes when we close a docked window
-    // When user closes docked window with system [x] button, wxAUI crashes
-    ////    if ( GetConfig()->IsDockedWindow() )
-    ////         { event.Skip(); return; }
-
-    // Don't close down if file checking is active
+    // Don't close windows if file checking is active
     if (m_nOnActivateBusy) { event.Skip();return; }
 
-    if (not GetSnippetsWindow()) { event.Skip();return; }
+    // if user manipulating snippet tree, punt for now
+    if ( GetSnippetsWindow() && GetSnippetsWindow()->IsTreeBusy() ) {event.Skip();return;}
 
-    if ( GetSnippetsWindow()->IsTreeBusy() ) {return;}
+    // ---------------------------------------------------------------------------
+    // If user changed the docked window type, close the current and open the new
+    // ---------------------------------------------------------------------------
+    // if user requested different window type close docked/floating window
+    // m_bWindowStateChanged is set true by the Settings dialog
+    // This does not apply when the external Snippets pgm changes window type
+    // because there's no way for the external app to signal m_bWindowStatChanged, yet
+    // In that case, the external app closes itself and the user must open Snippets
+    // from the View menu item.
+
+    if ( GetConfig()->m_bWindowStateChanged )
+    {
+        // close docked/floating window
+        if ( GetSnippetsWindow() && GetConfig()->m_bWindowStateChanged )
+            CloseDockWindow();
+
+        // close external snippets pgm if it's running
+        if ( m_ExternalPid && GetConfig()->m_bWindowStateChanged )
+        {
+            TellExternalSnippetsToTerminate();
+            ReleaseMemoryMappedFile();
+            m_ExternalPid = 0;
+        }
+
+        // if external snippets pgm terminated, clean up our environment
+        if ( m_ExternalPid && (not wxProcess::Exists( m_ExternalPid)) )
+        {
+            TellExternalSnippetsToTerminate();
+            ReleaseMemoryMappedFile();
+            m_ExternalPid = 0;
+        }
+
+        // if no snippet window is open, open one
+        if ( (not GetSnippetsWindow()) && (not m_ExternalPid) )
+            if (GetConfig()->m_bWindowStateChanged)
+        {
+            GetConfig()->m_bWindowStateChanged = false;
+            //-wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+            //-if ( pbar->IsChecked(idViewSnippets) )
+            {   CreateSnippetWindow();
+                bool bExternalRequest = GetConfig()->GetSettingsWindowState().Contains(wxT("External"));
+                if (not bExternalRequest)
+                {
+                    CodeBlocksDockEvent evt( cbEVT_SHOW_DOCK_WINDOW );
+                    evt.pWindow = GetSnippetsWindow();
+                    Manager::Get()->ProcessEvent(evt);
+
+                }
+            }//if pbar
+        }
+    }//if ( GetConfig()->m_bWindowStateChanged )
+
+
+    GetConfig()->m_bWindowStateChanged = false;
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void CodeSnippets::CloseDockWindow()
+// ----------------------------------------------------------------------------
+{
+    if (not GetSnippetsWindow()) return;
 
     bool bOpen = IsWindowReallyShown(GetSnippetsWindow());
-    if ( (not bOpen) && GetSnippetsWindow())
-    {   //Docked/Floating window is closed. Release our resources
+    if ( bOpen && GetConfig()->IsFloatingWindow() )
+    {
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = GetSnippetsWindow();
+        Manager::Get()->ProcessEvent(evt);
+    }
+
+    if ( GetSnippetsWindow())
+    {   //Close Docked/Floating window. Release our resources
         if ( GetConfig()->m_pEvtCloseConnect
                 && GetConfig()->IsFloatingWindow())
-        {    GetConfig()->m_pEvtCloseConnect->Disconnect( wxEVT_CLOSE_WINDOW,
+        {
+            GetConfig()->m_pEvtCloseConnect->Disconnect( wxEVT_CLOSE_WINDOW,
                 (wxObjectEventFunction)(wxEventFunction)
                 (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
         }
@@ -548,10 +626,41 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
 
         GetSnippetsWindow()->Destroy();
         SetSnippetsWindow(0);
-        LOGIT( _T("OnIdle:SnippetsWindow [%s]"), bOpen?wxT("Open"):wxT("Closed") );
+        LOGIT( _T("CloseDockWindow:SnippetsWindow [%s]"), bOpen?wxT("Open"):wxT("Closed") );
     }
 
-     event.Skip();
+}
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnSwitchViewLayout(CodeBlocksLayoutEvent& event)
+// ----------------------------------------------------------------------------
+{
+    //event.layout
+    LOGIT( _T("cbEVT_SWITCH_LAYOUT[%s]"),event.layout.c_str() );
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnSwitchedViewLayout(CodeBlocksLayoutEvent& event)
+// ----------------------------------------------------------------------------
+{
+    //event.layout
+    LOGIT( _T("cbEVT_SWITCHED_LAYOUT[%s]"),event.layout.c_str() );
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnDockWindowVisability(CodeBlocksDockEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Called when user issues the cbEVT_SHOW_DOCK_WINDOW/cbEVT_HIDE_DOCK_WINDOW)
+    // But not called when user uses system [x] close on docked/float window
+
+    //event.layout
+    //BUG: the event.GetId() is alway null. It should be the window pointer.
+    LOGIT( _T("cbEVT_DOCK_WINDOW_VISIBILITY[%p]"),event.GetId() );
+    wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    if (not IsWindowReallyShown(GetSnippetsWindow()))
+        pbar->Check(idViewSnippets, false);
+
+    event.Skip();
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::OnActivate(wxActivateEvent& event)
@@ -1282,7 +1391,7 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
     // start codesnippets
     Manager::Get()->GetMessageManager()->DebugLog( _("Starting program:")+cmd);
     m_ExternalPid = wxExecute(cmd, wxEXEC_ASYNC);
-     LOGIT( _T("Launch [%s\n] from [%s]\n] Pid[%lu]"), cmd.c_str(), cwd.c_str(), m_ExternalPid );
+     LOGIT( _T("Launch [%s] from [%s] Pid[%lu]"), cmd.c_str(), cwd.c_str(), m_ExternalPid );
 
     #if defined(__WXMAC__)
         if (m_ExternalPid == -1)

@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 91 2007-06-25 19:24:43Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 95 2007-07-22 04:19:22Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -233,6 +233,9 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
             //-}
         }//if
     }//if
+
+    wxMenuBar* pbar = GetConfig()->m_pMenuBar;
+    pbar->Check(idViewSnippets, false);
 
     GetConfig()->m_pEvtCloseConnect = 0;
     Destroy();
@@ -1044,9 +1047,12 @@ void CodeSnippetsWindow::OnMnuSettings(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     SetActiveMenuId( event.GetId() );
+    wxString oldWindowState = GetConfig()->GetSettingsWindowState();
     SettingsDlg* pDlg = new SettingsDlg( this );
     pDlg->ShowModal();
     delete pDlg;
+    if ( 0 != GetConfig()->GetSettingsWindowState().Cmp(oldWindowState) )
+        GetConfig()->m_bWindowStateChanged = true;
 }
 
 // ----------------------------------------------------------------------------

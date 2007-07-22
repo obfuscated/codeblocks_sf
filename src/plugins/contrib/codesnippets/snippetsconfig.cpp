@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 93 2007-06-30 21:22:19Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 95 2007-07-22 04:19:22Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -99,6 +99,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     m_sWindowHandle = wxEmptyString;
     SettingsWindowState = wxT("Floating");
     m_pEvtCloseConnect = 0;
+    m_bWindowStateChanged = false;
 }
 
 // ----------------------------------------------------------------------------
@@ -302,7 +303,7 @@ wxString CodeSnippetsConfig::GetSettingsWindowState()
 // ----------------------------------------------------------------------------
 {
     SettingsWindowState = SettingsReadString(wxT("WindowState"));
-    LOGIT( _T("GetSettingsWindowState[%s]"),GetConfig()->SettingsWindowState.c_str() );
+    //LOGIT( _T("GetSettingsWindowState[%s]"),GetConfig()->SettingsWindowState.c_str() );
     return GetConfig()->SettingsWindowState;
 }
 

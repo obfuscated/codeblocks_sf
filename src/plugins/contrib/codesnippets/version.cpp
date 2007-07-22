@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 93 2007-06-30 21:22:19Z Pecan $
+// RCS-ID: $Id: version.cpp 95 2007-07-22 04:19:22Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -290,6 +290,10 @@ AppVersion::~AppVersion()
 //          85) changes for sdk RegisterEventSink
 //          86) invoke properties dialog on "new snippet"
 //          87) do not copy removed snippet to .trash when shift key down
+/// ----------------------------------------------------------------------------
+//  Commit  1.2.89 2007/07/21
+//          88) fixed missing window when switching layouts
+//          89) auto show window when switching between window types
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
@@ -310,8 +314,6 @@ AppVersion::~AppVersion()
 //              Maybe just a line instead of a spacer will work
 //          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
-//          Docked wxAUI (MSW) window still bombs when using system [x] to close
-//          Switch icon loading to .zip xml LoadResource() etc.
 //          Add "U" type icon for url type snippets
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"

@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 93 2007-06-30 21:22:19Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 95 2007-07-22 04:19:22Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -622,7 +622,7 @@ void CodeSnippetsAppFrame::OnTimerAlarm(wxTimerEvent& event)
         event.Skip();
         return;
     }
-    // When this pgm invoked by another pgm, we got a pid argument
+    // When this pgm is invoked by another pgm, we got a pid argument
     // if our creator pid is gone, terminate this pgm
     if ( m_lKeepAlivePid  && (not wxProcess::Exists( m_lKeepAlivePid )) )
     {
@@ -644,6 +644,18 @@ void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
     if ( sb->GetStatusText() == wxEmptyString )
     { sb->SetStatusText( versionStr);
     }
+
+    // see if user changed from "external" to "docked" or "floating"
+    if ( GetConfig()->m_bWindowStateChanged )
+    {
+        // Don't close down if file checking is active
+        if (m_bOnActivateBusy)
+            {event.Skip(); return;}
+        wxCloseEvent evtClose;
+        OnClose(evtClose);
+        GetConfig()->m_bWindowStateChanged = false;
+    }
+    event.Skip();return;
 }
 // ----------------------------------------------------------------------------
 bool CodeSnippetsAppFrame::ReleaseMemoryMappedFile()

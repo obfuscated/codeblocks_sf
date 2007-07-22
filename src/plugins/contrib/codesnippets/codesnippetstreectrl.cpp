@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 92 2007-06-27 19:01:04Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 95 2007-07-22 04:19:22Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -1680,7 +1680,8 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
 
     // if search text is empty, show filename as root item
     // Edit the root node's title so that the user sees file name
-    if ( GetConfig()->GetSnippetsSearchCtrl()->GetValue().IsEmpty() )
+    if ( GetConfig()->GetSnippetsSearchCtrl()
+        && GetConfig()->GetSnippetsSearchCtrl()->GetValue().IsEmpty() )
     {   wxString nameOnly;
         wxFileName::SplitPath( GetConfig()->SettingsSnippetsXmlFullPath, 0, &nameOnly, 0);
         // avoid excessive refresh
@@ -1688,6 +1689,9 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
         if (currentValue != nameOnly)
             GetSnippetsTreeCtrl()->SetItemText(GetSnippetsTreeCtrl()->GetRootItem(), wxString::Format(_("%s"), nameOnly.GetData()));
     }
+
+    event.Skip();
+    return;
 }//OnIdle
 
 // ----------------------------------------------------------------------------

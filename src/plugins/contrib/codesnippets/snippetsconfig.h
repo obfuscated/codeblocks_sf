@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 93 2007-06-30 21:22:19Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 95 2007-07-22 04:19:22Z Pecan $
 
 
 #ifndef GLOBAL_H
@@ -128,6 +128,7 @@ class CodeSnippetsConfig
     SearchConfiguration     m_SearchConfig;
     wxFileConfig* m_pCfgFile;
     wxString     SettingsWindowState;
+    bool         m_bWindowStateChanged;
     bool         m_bIsPlugin;
 
     // Mouse DragScrolling settings
