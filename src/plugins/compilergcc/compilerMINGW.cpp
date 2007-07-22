@@ -275,8 +275,10 @@ void CompilerMINGW::SetVersionString()
         else
             masterpath = _T("/usr");
     }
-    wxString gcc_command = masterpath + sep + _T("bin") + sep + m_Programs.C + _T(" --version");
-    long result = wxExecute(gcc_command, output, errors, wxEXEC_NODISABLE);
+    wxString gcc_command = masterpath + sep + _T("bin") + sep + m_Programs.C;
+    if (!wxFileExists(gcc_command))
+        return;
+    long result = wxExecute(gcc_command + _T(" --version"), output, errors, wxEXEC_NODISABLE);
     if (result > 0)
     {
         DBGLOG(_T("Error in executing command"));
