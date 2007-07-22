@@ -35,7 +35,7 @@ void CompilerDMD::Reset()
         m_Programs.LD = _T("dmd.exe");
         m_Programs.LIB = _T("lib.exe");
         m_Programs.DBG = _T("windbg.exe");
-        m_Programs.WINDRES = _T("dmd.exe");
+        m_Programs.WINDRES = _T("rcc.exe");
         m_Programs.MAKE = _T("make.exe");
 
         m_Switches.includeDirs = _T("-I");
@@ -55,9 +55,9 @@ void CompilerDMD::Reset()
         m_Switches.linkerNeedsLibExtension = true;
 
         // FIXME (hd#1#): should be work on: we need $res_options
-        m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $resource_output $res_includes $file");
-        m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
-        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $libs");
+        m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -o$resource_output $res_includes $file -32 -r");
+        m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $link_resobjects $libs");
+        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $link_resobjects $libs");
     }
     else
     {
@@ -156,6 +156,7 @@ AutoDetectResult CompilerDMD::AutoDetectInstallationDir()
         incPath = m_MasterPath + sep + _T("src") + sep + _T("phobos");
         libPath = m_MasterPath + sep + _T("lib");
         libName = _T("phobos.lib");
+        m_ExtraPaths.Add(_T("C:\\dm\\bin"));
     }
     else
     {
