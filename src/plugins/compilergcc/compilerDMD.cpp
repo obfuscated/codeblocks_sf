@@ -92,7 +92,7 @@ void CompilerDMD::Reset()
 
     m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -of$object");
     m_Commands[(int)ctLinkDynamicCmd] = _T("$linker $exe_output $link_options $link_objects $libs $link_resobjects");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $static_output $link_options $link_objects");
+    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $link_options $static_output $link_objects");
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     m_Options.ClearOptions();
