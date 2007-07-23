@@ -202,11 +202,11 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
     wxCSConv conv(encoding);
     wxCharBuffer buf = data.mb_str(conv);
 
-    if((buf == 0) || !(size = strlen(buf)))
+    if(!buf || !(size = strlen(buf)))
     {
         buf = data.mb_str(wxConvUTF8);
 
-        if((buf == 0) || !(size = strlen(buf)))
+        if(!buf || !(size = strlen(buf)))
             {
                 cbMessageBox(_T(    "The file could not be saved because it contains characters "
                                     "that can neither be represented in your current code page, "
