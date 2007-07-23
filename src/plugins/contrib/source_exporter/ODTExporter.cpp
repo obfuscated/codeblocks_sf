@@ -358,6 +358,10 @@ void ODTExporter::ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBu
           content += fix_spaces(buffer, &i, buffer_size);
           break;
 
+        case '\t':
+          content += string("<text:tab/>");
+          break;
+
         case '\r':
           break;
 
