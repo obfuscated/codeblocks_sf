@@ -800,8 +800,12 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         envPath.Clear();
         for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
         {
+            #if wxCHECK_VERSION(2, 8, 0)
             if (!extraPaths[i].IsEmpty() &&
                 (pathList.Index(extraPaths[i], caseSensitive) == wxNOT_FOUND))
+            #else
+            if (!extraPaths[i].IsEmpty())
+            #endif
             {
                 envPath += extraPaths[i] + path_sep;
             }
@@ -809,14 +813,22 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         envPath = envPath + oldpath;
 
         // add bin path to PATH env. var.
+        #if wxCHECK_VERSION(2, 8, 0)
         wxString pathCheck = masterPath + sep + _T("bin");
         if  (wxFileExists(pathCheck + sep + gcc) &&
             (pathList.Index(pathCheck, caseSensitive) == wxNOT_FOUND))
+        #else
+        if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
+        #endif
         {
             envPath = masterPath + sep + _T("bin") + path_sep + envPath;
         }
+        #if wxCHECK_VERSION(2, 8, 0)
         else if (wxFileExists(masterPath + sep + gcc) &&
                 (pathList.Index(masterPath, caseSensitive) == wxNOT_FOUND))
+        #else
+        else if (wxFileExists(masterPath + sep + gcc))
+        #endif
         {
             envPath = masterPath + path_sep + envPath;
         }
