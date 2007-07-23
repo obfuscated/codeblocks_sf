@@ -549,10 +549,19 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<compiler>")); // recursive call
     }
   }
+  else if (section.MakeLower().Matches(wxT("editor")))      // editor colour sets
+  {
+    TiXmlNode* child = NULL;
+    for (child = (*node)->FirstChild(); child; child = child->NextSibling())
+    {
+      if (child->Type()==TiXmlNode::ELEMENT)
+        OfferNode(&child, listbox, nodes, wxT("<editor>")); // recursive call
+    }
+  }
 
-  // ------------------------------
-  // compiler -> sets and user sets
-  // ------------------------------
+  // -----------------------------------------------
+  // 1st recursion level: compiler -> sets/user sets
+  // -----------------------------------------------
   else if (   prefix.Matches(wxT("<compiler>"))
            && section.MakeLower().Matches(wxT("sets")))     // compiler sets
   {
@@ -574,19 +583,29 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
     }
   }
 
-  // -----------------------------------
-  // compiler -> sets -> individual sets
-  // -----------------------------------
+  // --------------------------------------------------------
+  // 2nd recursion level: compiler -> sets -> individual sets
+  // --------------------------------------------------------
   else if (prefix.Matches(wxT("<compiler><sets>")))         // individual compiler sets
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
   }
 
-  // ----------------------------------------
-  // compiler -> user sets -> individual sets
-  // ----------------------------------------
+  // -------------------------------------------------------------
+  // 2nd recursion level: compiler -> user sets -> individual sets
+  // -------------------------------------------------------------
   else if (prefix.Matches(wxT("<compiler><user_sets>")))    // individual compiler user sets
+  {
+    listbox->Append(prefix + wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+
+  // ------------------------------------------
+  // 1st recursion level: editor -> colour sets
+  // ------------------------------------------
+  else if (   prefix.Matches(wxT("<editor>"))
+           && section.MakeLower().Matches(wxT("colour_sets")))// colour sets
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
