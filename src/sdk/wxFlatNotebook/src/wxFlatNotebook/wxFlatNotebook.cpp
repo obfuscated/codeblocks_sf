@@ -452,6 +452,7 @@ void wxFlatNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
 			GetParent()->ProcessEvent(event);
 		}
 	}
+	event.Skip();
 }
 
 bool wxFlatNotebook::GetPageShapeAngle(int page_index, unsigned int * result)
