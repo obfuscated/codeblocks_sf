@@ -748,10 +748,11 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     }
     pathList.AddEnvList(_T("PATH"));
     wxString binPath = pathList.FindAbsoluteValidPath(gcc);
+    bool caseSensitive = !(platform::windows);
     // it seems, under Win32, the above command doesn't search in paths with spaces...
     // look directly for the file in question in masterPath
 #if wxCHECK_VERSION(2, 8, 0)
-    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath)) != wxNOT_FOUND))
+    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath), caseSensitive) != wxNOT_FOUND))
 #else
     if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
 #endif
@@ -777,7 +778,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     }
 
 #if wxCHECK_VERSION(2, 8, 0)
-    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath)) != wxNOT_FOUND))
+    if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath), caseSensitive) != wxNOT_FOUND))
 #else
     if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
 #endif
@@ -799,7 +800,8 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         envPath.Clear();
         for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
         {
-            if (!extraPaths[i].IsEmpty())
+            if (!extraPaths[i].IsEmpty() &&
+                (pathList.Index(extraPaths[i], caseSensitive) == wxNOT_FOUND))
             {
                 envPath += extraPaths[i] + path_sep;
             }
@@ -807,10 +809,17 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         envPath = envPath + oldpath;
 
         // add bin path to PATH env. var.
-        if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
+        wxString pathCheck = masterPath + sep + _T("bin");
+        if  (wxFileExists(pathCheck + sep + gcc) &&
+            (pathList.Index(pathCheck, caseSensitive) == wxNOT_FOUND))
+        {
             envPath = masterPath + sep + _T("bin") + path_sep + envPath;
-        else if (wxFileExists(masterPath + sep + gcc))
+        }
+        else if (wxFileExists(masterPath + sep + gcc) &&
+                (pathList.Index(masterPath, caseSensitive) == wxNOT_FOUND))
+        {
             envPath = masterPath + path_sep + envPath;
+        }
         wxSetEnv(_T("PATH"), envPath);
     }
 }
