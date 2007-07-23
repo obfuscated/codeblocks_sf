@@ -70,6 +70,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						importers_globals.cpp \
 						incrementalselectlistdlg.cpp \
 						infowindow.cpp \
+						logmanager.cpp \
 						macrosmanager.cpp \
 						managedthread.cpp \
 						manager.cpp \

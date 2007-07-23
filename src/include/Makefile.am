@@ -79,6 +79,8 @@ ALLHEADERS = annoyingdialog.h \
 				incrementalselectlistdlg.h \
 				infowindow.h \
 				licenses.h \
+				logger.h \
+				logmanager.h \
 				macrosmanager.h \
 				managedthread.h \
 				manager.h \

@@ -2019,6 +2019,9 @@
 		<Unit filename="sdk/infowindow.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/logmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/macrosmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
