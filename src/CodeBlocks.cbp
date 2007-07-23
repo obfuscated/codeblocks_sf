@@ -4295,6 +4295,22 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<resources>
+					<wxDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" name="VirtualBuildTargetsDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" name="DataBreakpointDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/ccdebuginfo.cpp" hdr="plugins/codecompletion/ccdebuginfo.h" name="CCDebugInfo" language="CPP" />
+					<wxPanel wxs="wxsmith/ScriptConsole.wxs" src="src/scriptconsole.cpp" hdr="src/scriptconsole.h" name="ScriptConsole" language="CPP" />
+					<wxPanel wxs="wxsmith/BuildTargetPanel.wxs" src="plugins/scriptedwizard/buildtargetpanel.cpp" hdr="plugins/scriptedwizard/buildtargetpanel.h" name="BuildTargetPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/CompilerPanel.wxs" src="plugins/scriptedwizard/compilerpanel.cpp" hdr="plugins/scriptedwizard/compilerpanel.h" name="CompilerPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/FilePathPanel.wxs" src="plugins/scriptedwizard/filepathpanel.cpp" hdr="plugins/scriptedwizard/filepathpanel.h" name="FilePathPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/GenericSelectPath.wxs" src="plugins/scriptedwizard/genericselectpath.cpp" hdr="plugins/scriptedwizard/genericselectpath.h" name="GenericSelectPath" language="CPP" />
+					<wxPanel wxs="wxsmith/GenericSingleChoiceList.wxs" src="plugins/scriptedwizard/genericsinglechoicelist.cpp" hdr="plugins/scriptedwizard/genericsinglechoicelist.h" name="GenericSingleChoiceList" language="CPP" />
+					<wxPanel wxs="wxsmith/InfoPanel.wxs" src="plugins/scriptedwizard/infopanel.cpp" hdr="plugins/scriptedwizard/infopanel.h" name="InfoPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/ProjectPathPanel.wxs" src="plugins/scriptedwizard/projectpathpanel.cpp" hdr="plugins/scriptedwizard/projectpathpanel.h" name="ProjectPathPanel" language="CPP" />
+				</resources>
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
