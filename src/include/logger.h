@@ -9,6 +9,11 @@
 
 #include <stdio.h>
 
+#include "manager.h"
+#include "configmanager.h"
+
+// TODO (killerbot) : other includes are needed -->wxDateTime
+
 class wxWindow;
 
 namespace
