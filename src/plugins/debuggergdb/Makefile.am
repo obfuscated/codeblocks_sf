@@ -57,4 +57,5 @@ noinst_HEADERS = backtracedlg.h \
 			gdb_commands.h \
 			gdb_driver.h \
 			gdb_tipwindow.h \
+			remotedebugging.h \
 			threadsdlg.h
