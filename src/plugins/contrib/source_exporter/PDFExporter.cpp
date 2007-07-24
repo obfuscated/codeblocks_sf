@@ -1,5 +1,5 @@
 /*
- * This plugin was created thanks to wxPdfDocument library
+ * This plugin was created thanks to the wxPdfDocument library
  */
 
 #include "PDFExporter.h"
@@ -95,6 +95,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
   bool fill = false;
+  int tabsize_in_spaces = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
 
   pdf.AddPage();
 
@@ -210,6 +211,10 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
         PDFWriteText(pdf, text, fill);
         text.Empty();
         pdf.Ln();
+        break;
+
+      case '\t':
+        text.Append(_T(' '), tabsize_in_spaces);
         break;
 
       default:
