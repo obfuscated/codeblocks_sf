@@ -812,11 +812,14 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         }
         envPath = envPath + oldpath;
 
+        /* Store the PATH variable in an array. This will be used to
+         * locate duplicate entries. */
+        wxArrayString envPathArr = GetArrayFromString(envPath, sep);
         // add bin path to PATH env. var.
         #if wxCHECK_VERSION(2, 8, 0)
         wxString pathCheck = masterPath + sep + _T("bin");
         if  (wxFileExists(pathCheck + sep + gcc) &&
-            (pathList.Index(pathCheck, caseSensitive) == wxNOT_FOUND))
+            (envPathArr.Index(pathCheck, caseSensitive) == wxNOT_FOUND))
         #else
         if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
         #endif
@@ -825,7 +828,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         }
         #if wxCHECK_VERSION(2, 8, 0)
         else if (wxFileExists(masterPath + sep + gcc) &&
-                (pathList.Index(masterPath, caseSensitive) == wxNOT_FOUND))
+                (envPathArr.Index(masterPath, caseSensitive) == wxNOT_FOUND))
         #else
         else if (wxFileExists(masterPath + sep + gcc))
         #endif
