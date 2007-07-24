@@ -32,15 +32,19 @@ size_t LogManager::SetLog(Logger* l, int i)
 
     if(i <= no_index)
     {
-        index = debug_log + 1;
-
-        while(slot[index].GetLogger())
-        if(++index >= max_logs)
+        for(index = debug_log + 1; index < max_logs; ++index)
         {
-            delete l;
-            return invalid_log;
+            if(slot[index].GetLogger() != &g_null_log)
+            {
+                slot[index].SetLogger(l);
+                return index;
+            }
         }
+
+        delete l;
+        return invalid_log;
     }
+
     slot[index].SetLogger(l);
     return index;
 }
