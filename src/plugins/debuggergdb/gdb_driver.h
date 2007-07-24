@@ -2,6 +2,7 @@
 #define GDB_DRIVER_H
 
 #include "debuggerdriver.h"
+#include "remotedebugging.h"
 #include <wx/dynarray.h>
 #include <wx/regex.h>
 
@@ -35,7 +36,7 @@ class GDB_driver : public DebuggerDriver
 
         virtual wxString GetCommandLine(const wxString& debugger, const wxString& debuggee);
         virtual wxString GetCommandLine(const wxString& debugger, int pid);
-        virtual void Prepare(bool isConsole);
+        virtual void Prepare(ProjectBuildTarget* target, bool isConsole);
         virtual void Start(bool breakOnEntry);
         virtual void Stop();
 
@@ -78,6 +79,9 @@ class GDB_driver : public DebuggerDriver
         // win/Cygwin platform checking
         void DetectCygwinMount(void);
         void CorrectCygwinPath(wxString& path);
+        
+        // remote debugging
+        RemoteDebugging* GetRemoteDebuggingInfo();
 
         bool m_CygwinPresent;
         wxString m_CygdrivePrefix;
@@ -106,6 +110,9 @@ class GDB_driver : public DebuggerDriver
 
         bool want_debug_events;
         bool disable_debug_events;
+
+        // for remote debugging usage (mainly)
+        ProjectBuildTarget* m_pTarget;
 
 }; // GDB_driver
 

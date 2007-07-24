@@ -11,7 +11,7 @@ class CDB_driver : public DebuggerDriver
 
         virtual wxString GetCommandLine(const wxString& debugger, const wxString& debuggee);
         virtual wxString GetCommandLine(const wxString& debugger, int pid);
-        virtual void Prepare(bool isConsole);
+        virtual void Prepare(ProjectBuildTarget* target, bool isConsole);
         virtual void Start(bool breakOnEntry);
         virtual void Stop();
 

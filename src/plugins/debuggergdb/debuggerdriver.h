@@ -21,6 +21,7 @@ class CPURegistersDlg;
 class ExamineMemoryDlg;
 class ThreadsDlg;
 class Compiler;
+class ProjectBuildTarget;
 
 WX_DEFINE_ARRAY(DebuggerCmd*, DebuggerCommands);
 
@@ -73,9 +74,10 @@ class DebuggerDriver
         virtual wxString GetCommandLine(const wxString& debugger, int pid) = 0;
 
         /** Prepares the debugging process by setting up search dirs etc.
+            @param target The build target to debug.
             @param isConsole If true, the debuggee is a console executable.
         */
-        virtual void Prepare(bool isConsole) = 0;
+        virtual void Prepare(ProjectBuildTarget* target, bool isConsole) = 0;
 
         /** Begin the debugging process by launching a program. */
         virtual void Start(bool breakOnEntry) = 0;

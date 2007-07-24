@@ -167,9 +167,12 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, int pid)
     return cmd;
 }
 
-void GDB_driver::Prepare(bool isConsole)
+void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 {
     // default initialization
+    
+    // init for remote debugging
+    m_pTarget = target;
 
     // for the possibility that the program to be debugged is compiled under Cygwin
     if(platform::windows)
@@ -206,8 +209,7 @@ void GDB_driver::Prepare(bool isConsole)
         disable_debug_events = false;
     }
 
-    int disassembly_flavour = Manager::Get()->GetConfigManager(_T("debugger"))
-                              ->ReadInt(_T("disassembly_flavor"), 0);
+    int disassembly_flavour = Manager::Get()->GetConfigManager(_T("debugger"))->ReadInt(_T("disassembly_flavor"), 0);
 
 //    Manager::Get()->GetMessageManager()->Log(_("Flavor is: %d"), disassembly_flavour);
 
@@ -226,8 +228,7 @@ void GDB_driver::Prepare(bool isConsole)
         }
         case 3: // Custom
         {
-            wxString instruction_set = Manager::Get()->GetConfigManager(_T("debugger"))
-                                       ->Read(_T("instruction_set"), wxEmptyString);
+            wxString instruction_set = Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("instruction_set"), wxEmptyString);
             flavour << instruction_set;
             break;
         }
@@ -276,6 +277,72 @@ void GDB_driver::Prepare(bool isConsole)
     // set arguments
     if (!m_Args.IsEmpty())
         QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
+	
+	// run per-target additional commands (remote debugging)
+	RemoteDebugging* rd = GetRemoteDebuggingInfo();
+	if (rd)
+	{
+		if (!rd->additionalCmds.IsEmpty())
+		{
+			wxArrayString initCmds = GetArrayFromString(rd->additionalCmds, _T('\n'));
+			for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+			{
+				QueueCommand(new DebuggerCmd(this, initCmds[i]));
+			}
+		}
+	}
+
+    // if performing remote debugging, now is a good time to try and connect to the target :)
+    if (rd)
+    {
+    	m_pDBG->Log(_("Target defined for remote debugging"));
+    	wxString command;
+    	switch (rd->connType)
+    	{
+    		case RemoteDebugging::TCP:
+    		{
+    			if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+					command << _T("target remote tcp:") << rd->ip << _T(":") << rd->ipPort;
+    		}
+    		break;
+
+    		case RemoteDebugging::UDP:
+    		{
+    			if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+					command << _T("target remote udp:") << rd->ip << _T(":") << rd->ipPort;
+    		}
+    		break;
+
+    		case RemoteDebugging::Serial:
+    		{
+    			if (!rd->serialPort.IsEmpty())
+					command << _T("target remote ") << rd->serialPort;
+    		}
+    		break;
+    		
+    		default:
+				break;
+    	}
+    	
+    	if (!command.IsEmpty())
+			QueueCommand(new DebuggerCmd(this, command));
+		else
+			m_pDBG->Log(_("Invalid settings for remote debugging!"));
+    }
+}
+
+// remote debugging
+RemoteDebugging* GDB_driver::GetRemoteDebuggingInfo()
+{
+	if (!m_pTarget)
+		return 0;
+		
+	RemoteDebuggingMap::iterator it = m_pDBG->GetRemoteDebuggingMap().find(m_pTarget);
+	if (it != m_pDBG->GetRemoteDebuggingMap().end())
+	{
+		return &(it->second);
+	}
+	return 0;
 }
 
 // Cygwin check code
@@ -385,6 +452,9 @@ void GDB_driver::Start(bool breakOnEntry)
         m_pDisassembly->Clear(sf);
     }
 
+	// if performing remote debugging, use "continue" command
+	bool remoteDebugging = GetRemoteDebuggingInfo() != 0;
+
     // under windows, 'start' segfaults with wx projects...
     if(platform::windows || platform::macosx)
     {
@@ -394,19 +464,19 @@ void GDB_driver::Start(bool breakOnEntry)
         if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
         {
             // start the process
-            QueueCommand(new DebuggerCmd(this, _T("run")));
+            QueueCommand(new DebuggerCmd(this, remoteDebugging ? _T("continue") : _T("run")));
             m_IsStarted = true;
         }
     }
     else
     {
-        m_BreakOnEntry = breakOnEntry;
-        m_ManualBreakOnEntry = true;
+        m_BreakOnEntry = breakOnEntry && !remoteDebugging;
+        m_ManualBreakOnEntry = !remoteDebugging;
 
         if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
         {
             // start the process
-            QueueCommand(new DebuggerCmd(this, _T("start")));
+            QueueCommand(new DebuggerCmd(this, remoteDebugging ? _T("continue") : _T("start")));
             m_IsStarted = true;
         }
 	}

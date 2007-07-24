@@ -625,6 +625,12 @@ wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
     return it->second;
 }
 
+RemoteDebuggingMap& DebuggerGDB::GetRemoteDebuggingMap()
+{
+	return m_RemoteDebugging;
+}
+
+
 void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
 {
     wxArrayString& pdirs = GetSearchDirs(project);
@@ -647,18 +653,72 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 
                 pathsElem = pathsElem->NextSiblingElement("search_path");
             }
+
+            TiXmlElement* rdElem = conf->FirstChildElement("remote_debugging");
+            while (rdElem)
+            {
+            	wxString targetName = cbC2U(rdElem->Attribute("target"));
+            	ProjectBuildTarget* bt = project->GetBuildTarget(targetName);
+
+				TiXmlElement* rdOpt = rdElem->FirstChildElement("options");
+
+            	if (bt && rdOpt)
+            	{
+					RemoteDebugging rd;
+					
+					if (rdOpt->Attribute("conn_type"))
+						rd.connType = (RemoteDebugging::ConnectionType)atol(rdOpt->Attribute("conn_type"));
+					if (rdOpt->Attribute("serial_port"))
+						rd.serialPort = cbC2U(rdOpt->Attribute("serial_port"));
+					if (rdOpt->Attribute("ip_address"))
+						rd.ip = cbC2U(rdOpt->Attribute("ip_address"));
+					if (rdOpt->Attribute("ip_port"))
+						rd.ipPort = cbC2U(rdOpt->Attribute("ip_port"));
+					if (rdOpt->Attribute("additional_cmds"))
+						rd.additionalCmds = cbC2U(rdOpt->Attribute("additional_cmds"));
+					
+					m_RemoteDebugging.insert(m_RemoteDebugging.end(), std::make_pair(bt, rd));
+            	}
+            	else
+					DBGLOG(_T("Unknown target in remote_debugging: %s"), targetName.c_str());
+
+                rdElem = rdElem->NextSiblingElement("remote_debugging");
+            }
         }
     }
     else
     {
         // Hook called when saving project file.
+		TiXmlElement* node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
+        
         if (pdirs.GetCount() > 0)
         {
-            TiXmlElement* node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
             for (size_t i = 0; i < pdirs.GetCount(); ++i)
             {
                 TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
                 path->SetAttribute("add", cbU2C(pdirs[i]));
+            }
+        }
+            
+        if (m_RemoteDebugging.size())
+        {
+            for (RemoteDebuggingMap::iterator it = m_RemoteDebugging.begin(); it != m_RemoteDebugging.end(); ++it)
+            {
+            	// valid targets only
+            	if (!it->first)
+					continue;
+
+				TiXmlElement* rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
+            	rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
+
+				RemoteDebugging& rd = it->second;
+					
+            	TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
+            	tgtnode->SetAttribute("conn_type", (int)rd.connType);
+            	tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
+            	tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
+            	tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
+            	tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
             }
         }
     }
@@ -901,7 +961,7 @@ int DebuggerGDB::Debug()
     m_pProject = project;
 
     // compile project/target (if not attaching to a PID)
-    if (m_PidToAttach == 0)
+    if (0)//m_PidToAttach == 0)
     {
         // make sure the target is compiled
         PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
@@ -1126,7 +1186,7 @@ int DebuggerGDB::Debug()
     // start polling gdb's output
     m_TimerPollDebugger.Start(20);
 
-    m_State.GetDriver()->Prepare(target && target->GetTargetType() == ttConsoleOnly);
+    m_State.GetDriver()->Prepare(target, target && target->GetTargetType() == ttConsoleOnly);
     m_State.ApplyBreakpoints();
 
    #ifdef __WXGTK__

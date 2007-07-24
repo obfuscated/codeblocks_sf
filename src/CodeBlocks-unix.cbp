@@ -645,6 +645,9 @@
 		<Unit filename="include/pluginsconfigurationdlg.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/prep.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/printing_types.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1550,6 +1553,9 @@
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/gdb_tipwindow.h">
+			<Option target="Debugger" />
+		</Unit>
+		<Unit filename="plugins/debuggergdb/remotedebugging.h">
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/backtrace.xrc">

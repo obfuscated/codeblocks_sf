@@ -42,14 +42,18 @@ BEGIN_EVENT_TABLE(DebuggerOptionsProjectDlg, wxPanel)
 	EVT_BUTTON(XRCID("btnAdd"), DebuggerOptionsProjectDlg::OnAdd)
 	EVT_BUTTON(XRCID("btnEdit"), DebuggerOptionsProjectDlg::OnEdit)
 	EVT_BUTTON(XRCID("btnDelete"), DebuggerOptionsProjectDlg::OnDelete)
+	EVT_LISTBOX(XRCID("lstTargets"), DebuggerOptionsProjectDlg::OnTargetSel)
 END_EVENT_TABLE()
 
 DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerGDB* debugger, cbProject* project)
 	: m_pDBG(debugger),
-	m_pProject(project)
+	m_pProject(project),
+	m_LastTargetSel(-1)
 {
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlDebuggerProjectOptions"));
+    
     m_OldPaths = m_pDBG->GetSearchDirs(project);
+	m_CurrentRemoteDebugging = m_pDBG->GetRemoteDebuggingMap();
 
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     control->Clear();
@@ -57,10 +61,73 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
     {
         control->Append(m_OldPaths[i]);
     }
+
+    control = XRCCTRL(*this, "lstTargets", wxListBox);
+    control->Clear();
+    for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
+    {
+        control->Append(project->GetBuildTarget(i)->GetTitle());
+    }
+    control->SetSelection(-1);
+    
+    LoadCurrentRemoteDebuggingRecord();
 }
 
 DebuggerOptionsProjectDlg::~DebuggerOptionsProjectDlg()
 {
+}
+
+void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
+{
+	m_LastTargetSel = XRCCTRL(*this, "lstTargets", wxListBox)->GetSelection();
+
+	ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_LastTargetSel);
+	if (bt && m_CurrentRemoteDebugging.find(bt) != m_CurrentRemoteDebugging.end())
+	{
+		RemoteDebugging& rd = m_CurrentRemoteDebugging[bt];
+		XRCCTRL(*this, "cmbConnType", wxChoice)->SetSelection((int)rd.connType);
+		XRCCTRL(*this, "txtSerial", wxTextCtrl)->SetValue(rd.serialPort);
+		XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(rd.ip);
+		XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(rd.ipPort);
+		XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(rd.additionalCmds);
+	}
+	else
+	{
+		XRCCTRL(*this, "cmbConnType", wxChoice)->SetSelection(0);
+		XRCCTRL(*this, "txtSerial", wxTextCtrl)->SetValue(wxEmptyString);
+		XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(wxEmptyString);
+		XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(wxEmptyString);
+		XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(wxEmptyString);
+	}
+}
+
+void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
+{
+	if (m_LastTargetSel == -1)
+		return;
+
+	ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_LastTargetSel);
+	if (!bt)
+		return;
+		
+	RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.find(bt);
+	if (it == m_CurrentRemoteDebugging.end())
+		it = m_CurrentRemoteDebugging.insert(m_CurrentRemoteDebugging.end(), std::make_pair(bt, RemoteDebugging()));
+	
+	RemoteDebugging& rd = it->second;
+
+	rd.connType = (RemoteDebugging::ConnectionType)XRCCTRL(*this, "cmbConnType", wxChoice)->GetSelection();
+	rd.serialPort = XRCCTRL(*this, "txtSerial", wxTextCtrl)->GetValue();
+	rd.ip = XRCCTRL(*this, "txtIP", wxTextCtrl)->GetValue();
+	rd.ipPort = XRCCTRL(*this, "txtPort", wxTextCtrl)->GetValue();
+	rd.additionalCmds = XRCCTRL(*this, "txtCmds", wxTextCtrl)->GetValue();
+}
+
+void DebuggerOptionsProjectDlg::OnTargetSel(wxCommandEvent& event)
+{
+	// update remote debugging controls
+	SaveCurrentRemoteDebuggingRecord();
+	LoadCurrentRemoteDebuggingRecord();
 }
 
 void DebuggerOptionsProjectDlg::OnAdd(wxCommandEvent& event)
@@ -117,6 +184,14 @@ void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
     XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelete", wxButton)->Enable(en);
+    
+    en = XRCCTRL(*this, "lstTargets", wxListBox)->GetSelection() != wxNOT_FOUND;
+    
+    XRCCTRL(*this, "cmbConnType", wxChoice)->Enable(en);
+    XRCCTRL(*this, "txtSerial", wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtIP", wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtPort", wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtCmds", wxTextCtrl)->Enable(en);
 }
 
 void DebuggerOptionsProjectDlg::OnApply()
@@ -129,5 +204,8 @@ void DebuggerOptionsProjectDlg::OnApply()
         m_OldPaths.Add(control->GetString(i));
     }
 
+	SaveCurrentRemoteDebuggingRecord();
+
     m_pDBG->GetSearchDirs(m_pProject) = m_OldPaths;
+	m_pDBG->GetRemoteDebuggingMap() = m_CurrentRemoteDebugging;
 }

@@ -10,6 +10,7 @@
 #include <pipedprocess.h>
 #include <wx/regex.h>
 
+#include "remotedebugging.h"
 #include "debuggerstate.h"
 #include "debugger_defs.h"
 #include "backtracedlg.h"
@@ -91,6 +92,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void RefreshConfiguration();
 
         wxArrayString& GetSearchDirs(cbProject* prj);
+        RemoteDebuggingMap& GetRemoteDebuggingMap();
 
         void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
@@ -203,8 +205,11 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         cbProject* m_pProject; // keep the currently debugged project handy
 
+		// per-project debugger search-dirs
         typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
         SearchDirsMap m_SearchDirs;
+        
+        RemoteDebuggingMap m_RemoteDebugging;
 
         int m_HookId; // project loader hook ID
 

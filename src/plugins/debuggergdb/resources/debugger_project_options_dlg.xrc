@@ -1,51 +1,197 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxPanel" name="pnlDebuggerProjectOptions">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticBoxSizer">
-          <label>Additional debugger search dirs:</label>
-          <orient>wxVERTICAL</orient>
-          <object class="sizeritem">
-            <object class="wxListBox" name="lstSearchDirs">
-              <content/>
-            </object>
-            <option>1</option>
-            <flag>wxALL|wxGROW</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnAdd">
-                  <label>&amp;Add</label>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnEdit">
-                  <label>&amp;Edit</label>
-                </object>
-                <flag>wxLEFT</flag>
-                <border>8</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnDelete">
-                  <label>&amp;Delete</label>
-                </object>
-                <flag>wxLEFT</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-            <border>5</border>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxPanel" name="pnlDebuggerProjectOptions">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Additional debugger search dirs:</label>
+					<object class="sizeritem">
+						<object class="wxListBox" name="lstSearchDirs">
+							<default>-1</default>
+							<style>wxLB_SINGLE</style>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnAdd">
+									<label>&amp;Add</label>
+								</object>
+								<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnEdit">
+									<label>&amp;Edit</label>
+								</object>
+								<flag>wxTOP|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnDelete">
+									<label>&amp;Delete</label>
+								</object>
+								<flag>wxTOP|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Remote debugging support (GDB only!)</label>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT6">
+									<label>Select target:</label>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxListBox" name="lstTargets">
+									<default>-1</default>
+									<size>161,-1</size>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE1">
+							<style>wxLI_VERTICAL</style>
+							<size>10,-1</size>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer">
+							<cols>2</cols>
+							<vgap>4</vgap>
+							<hgap>4</hgap>
+							<growablecols>1</growablecols>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT1">
+									<label>Connection type:</label>
+								</object>
+								<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxChoice" name="cmbConnType">
+									<content>
+										<item>TCP</item>
+										<item>UDP</item>
+										<item>Serial port</item>
+									</content>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>Serial port:</label>
+								</object>
+								<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtSerial">
+									<value>/dev/ttyS0</value>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT3">
+									<label>IP address:</label>
+								</object>
+								<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtIP">
+									<value>192.168.0.1</value>
+									<size>120,23</size>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT4">
+									<label>TCP/UDP port:</label>
+								</object>
+								<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtPort">
+									<value>12345</value>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT5">
+									<label>Extra GDB init:</label>
+								</object>
+								<flag>wxALIGN_RIGHT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtCmds">
+									<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxTE_DONTWRAP|wxVSCROLL|wxHSCROLL</style>
+									<size>238,-1</size>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT7">
+									<label>Tip: the extra GDB initialization commands will be issued&#x0A;no matter if you define a remote target or not</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
 </resource>

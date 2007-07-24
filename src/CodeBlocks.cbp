@@ -1554,6 +1554,9 @@
 		<Unit filename="plugins\debuggergdb\gdb_tipwindow.h">
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins\debuggergdb\remotedebugging.h">
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="plugins\debuggergdb\resources\backtrace.xrc">
 			<Option target="Debugger" />
 		</Unit>
