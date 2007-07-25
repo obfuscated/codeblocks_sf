@@ -231,7 +231,7 @@ void SharedMemory::UnLock(rw_t rw)
         op[1].sem_op  = 1;
         op[1].sem_flg = 0;
 
-		return;
+		semop(semid, op, 2) == 0;
 	}
 
 	if(rw == reader)
@@ -241,7 +241,7 @@ void SharedMemory::UnLock(rw_t rw)
         op[0].sem_op  = 1;
         op[0].sem_flg = 0;
 
-		return;
+		semop(semid, op, 1) == 0;
 	}
 }
 
