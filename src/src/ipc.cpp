@@ -94,13 +94,13 @@ bool SharedMemory::Lock(rw_t rw)
 {
 	if(rw == reader)
 	{
-		WaitForSingleObject(sem, INFINITE);
-		WaitForSingleObject(sem_w, INFINITE);
+		return WaitForSingleObject(sem, INFINITE) == WAIT_OBJECT_0
+		    && WaitForSingleObject(sem_w, INFINITE) == WAIT_OBJECT_0;
 	}
 
 	if(rw == writer)
 	{
-		WaitForSingleObject(sem_w, INFINITE);
+		return WaitForSingleObject(sem_w, INFINITE) == WAIT_OBJECT_0;
 	}
 
 	return false;
@@ -119,7 +119,6 @@ void SharedMemory::Unlock(rw_t rw)
 		ReleaseMutex(sem_w);
 		Sleep(0);
 	}
-
 }
 
 
