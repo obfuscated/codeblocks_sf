@@ -30,6 +30,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/listbox.h>
 #include <wx/button.h>
+#include <wx/choice.h>
 #include <cbproject.h>
 #include <editpathdlg.h>
 #include <manager.h>
