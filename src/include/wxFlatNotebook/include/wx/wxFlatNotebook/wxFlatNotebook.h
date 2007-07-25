@@ -81,6 +81,8 @@ WX_DECLARE_USER_EXPORTED_OBJARRAY(wxWindow*, wxWindowPtrArray, WXDLLIMPEXP_FNB);
 #define wxFNB_SMART_TABS				0x00002000
 #define wxFNB_DROPDOWN_TABS_LIST		0x00004000
 #define wxFNB_ALLOW_FOREIGN_DND			0x00008000
+#define wxFNB_FF2						0x00010000		// Firefox 2 tabs style
+#define wxFNB_CUSTOM_DLG				0x00020000		// Popup customize dialog using right click
 
 /// General macros
 #define VERTICAL_BORDER_PADDING			4
@@ -88,19 +90,30 @@ WX_DECLARE_USER_EXPORTED_OBJARRAY(wxWindow*, wxWindowPtrArray, WXDLLIMPEXP_FNB);
 #define VC8_SHAPE_LEN					16
 #define MASK_COLOR wxColor(0, 128, 128)
 
+enum wxCustomizeDlgOptions {
+	wxFNB_CUSTOM_TAB_LOOK		= 0x00000001,	///< Allow customizing the tab appearance
+	wxFNB_CUSTOM_ORIENTATION	= 0x00000002,	///< Allow customizing the tab orientation (upper | bottom)
+	wxFNB_CUSTOM_FOREIGN_DRAG	= 0x00000004,	///< Allow accept foreign tabs 
+	wxFNB_CUSTOM_LOCAL_DRAG		= 0x00000008,	///< Allow local drag and drop
+	wxFNB_CUSTOM_CLOSE_BUTTON	= 0x00000010,	///< Allow customizing close button
+	wxFNB_CUSTOM_ALL			= wxFNB_CUSTOM_TAB_LOOK | 
+								  wxFNB_CUSTOM_ORIENTATION |
+								  wxFNB_CUSTOM_FOREIGN_DRAG |
+								  wxFNB_CUSTOM_LOCAL_DRAG |
+								  wxFNB_CUSTOM_CLOSE_BUTTON 
+};
+
 /**
 * \brief Nice cross-platform flat notebook with X-button, navigation arrows and much more
 */
 
 class WXDLLIMPEXP_FNB wxFlatNotebook : public wxPanel
 {
-private:
-	friend class wxPageContainer;
-
 public:
 
 	///Default constructor
-	wxFlatNotebook() : m_popupWin(NULL) {}
+	wxFlatNotebook() 
+	{ Init(); }
 
 	/// Parametrized constructor
 	/**
@@ -113,14 +126,26 @@ public:
 	*/
 	wxFlatNotebook(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxT("Flat Notebook"));
 
+	/** 
+	 * See wxFlatNotebook constructor
+	 */
+	bool Create(wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0, const wxString& name = wxT("Flat Notebook"));
+
 	/// Destructor
 	virtual ~wxFlatNotebook(void);
 
-	/// Advances the selection
 	/**
-	\param bForward - if set to true then selection should be advanced forward otherwise - backward
-	*/
+     * Cleans up all the optimization structures held globally
+     *
+	 */
+    static void CleanUp ();
+
+	/**
+	 * Advance the current selection
+	 *\param bForward - if set to true then selection should be advanced forward otherwise - backward
+	 */
 	void AdvanceSelection(bool bForward);
+
 	/// Apends new notebook page
 	/**
 	\param windows - window to be appended
@@ -355,6 +380,24 @@ public:
 	*/
 	int GetPadding() { return m_nPadding; }
 
+	/**
+	 * Set the customization options available for this notebook, can be one of the wxFNB_CUSTOM_* values
+	 * this values is by default set to wxFNB_CUSTOM_ALL
+	 */
+	void SetCustomizeOptions(long options);
+	
+	/**
+	 * Get the customization options available for this notebook
+	 */
+	long GetCustomizeOptions() const;
+	
+	// Setters / Getters
+	void SetForceSelection(bool force) { m_bForceSelection = force; }
+	bool GetForceSelection() { return m_bForceSelection; }
+	wxWindowPtrArray& GetWindows() { return m_windows; }
+	wxPageContainer *GetPages() { return m_pages; }
+	wxBoxSizer* GetMainSizer() { return m_mainSizer; }
+
 protected:
 	/// Initialization function, called internally
 	virtual void Init();
@@ -513,6 +556,7 @@ public:
 	* \param color Tab face color
 	*/
 	void SetColor(wxColor& color) { m_color = color; }
+
 };
 
 WX_DECLARE_USER_EXPORTED_OBJARRAY(wxPageInfo, wxPageInfoArray, WXDLLIMPEXP_FNB);
@@ -697,6 +741,17 @@ public:
 	 * Draw a tab preview 
 	 */
 	void DrawDragHint();
+	
+	/**
+	 * Set the customization options available for this notebook, can be one of the wxFNB_CUSTOM_* values
+	 * this values is by default set to wxFNB_CUSTOM_ALL
+	 */
+	void SetCustomizeOptions(long options);
+	
+	/**
+	 * Get the customization options available for this notebook
+	 */
+	long GetCustomizeOptions() const;
 
 	DECLARE_EVENT_TABLE()
 	// Event handlers
@@ -712,8 +767,12 @@ public:
 	virtual void OnMouseEnterWindow(wxMouseEvent& event);
 	virtual void OnLeftDClick(wxMouseEvent &event);
 	virtual void OnTabMenuSelection(wxCommandEvent &event);
+	virtual void OnShowCustomizeDialog(wxCommandEvent &event);
 
 protected:
+	
+	void RotateLeft();
+	void RotateRight();
 
 	/**
 	 * Popup a menu that contains all the tabs to be selected by user
@@ -797,6 +856,7 @@ protected:
 	/// Drop target for enabling drag'n'drop of tabs
 	wxFNBDropTarget<wxPageContainer> *m_pDropTarget;
 
+private:
 	/// Pointer to the parent window
 	wxWindow *m_pParent;
 
@@ -818,6 +878,9 @@ protected:
 	int m_iPreviousActivePage;
 	int m_nArrowDownButtonStatus;
 
+	/// Customize menu
+	wxMenu *m_customMenu;
+	long m_customizeOptions;
 };
 
 /**

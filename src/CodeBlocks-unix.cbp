@@ -881,7 +881,16 @@
 		<Unit filename="include/workspaceloader.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_customize_dlg.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_resources.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_singleton.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_smart_ptr.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/popup_dlg.h">
@@ -890,16 +899,13 @@
 		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/singleton.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/smart_ptr.h">
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/xh_fnb.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/wxscintilla/include/wx/wxscintilla.h">
@@ -2522,6 +2528,9 @@
 		<Unit filename="sdk/workspaceloader.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_customize_dlg.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
 		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_resources.cpp">
 			<Option target="wxFlatNotebook" />
 		</Unit>
@@ -2532,6 +2541,9 @@
 			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/wxFlatNotebook.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/xh_fnb.cpp">
 			<Option target="wxFlatNotebook" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/samples/test/defsext.h">

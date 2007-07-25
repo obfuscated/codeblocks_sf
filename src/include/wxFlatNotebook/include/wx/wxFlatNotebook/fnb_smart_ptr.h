@@ -1,5 +1,5 @@
-#ifndef CODELITE_SMART_PTR_H
-#define CODELITE_SMART_PTR_H
+#ifndef FNB_SMART_PTR_H
+#define FNB_SMART_PTR_H
 
 
 /**
@@ -19,7 +19,7 @@
  * \author Eran
  */
 template <typename T>
-class SmartPtr
+class wxFNBSmartPtr
 {
 	typedef T* type_ptr;
 
@@ -86,7 +86,7 @@ public:
 	 * Construct smart pointer from ptr
 	 * \param ptr pointer
 	 */
-	SmartPtr(type_ptr ptr)
+	wxFNBSmartPtr(type_ptr ptr)
 	{
 		// create a fresh copy
 		CreateFresh( ptr );
@@ -95,7 +95,7 @@ public:
 	/**
 	 * Default constructor
 	 */
-	SmartPtr()
+	wxFNBSmartPtr()
 		: m_ref(NULL)
 	{
 	}
@@ -104,7 +104,7 @@ public:
 	 * Copy constructor
 	 * \param rhs right hand side 
 	 */
-	SmartPtr(const SmartPtr& rhs)
+	wxFNBSmartPtr(const wxFNBSmartPtr& rhs)
 		: m_ref(NULL)
 	{
 		*this = rhs;
@@ -115,7 +115,7 @@ public:
 	 * \param rhs right hand side 
 	 * \return reference to this
 	 */
-	SmartPtr& operator=(const SmartPtr& rhs)
+	wxFNBSmartPtr& operator=(const wxFNBSmartPtr& rhs)
 	{
 		// increase the reference count
 		if( m_ref == rhs.m_ref )
@@ -135,7 +135,7 @@ public:
 	/**
 	 * Destructor
 	 */
-	virtual ~SmartPtr()
+	virtual ~wxFNBSmartPtr()
 	{
 		DeleteRefCount();
 	}
@@ -212,4 +212,4 @@ private:
 	}
 };
 
-#endif // CODELITE_SMART_PTR_H
+#endif // FNB_SMART_PTR_H

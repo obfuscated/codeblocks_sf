@@ -163,6 +163,45 @@ So, the following changes fixes applies to v2.1:
 - All xpm files are now located on a single resource file
 - the smart tabbing dialog icon, was replaced from PNG to XPM.
 
+========================================================
+Version 2.2 13/05/2007
+========================================================
+- New style was added wxFNB_FF2 - which emulate a mix between Firefox2 & AUI, this style makes the notebook more natural when mixing between AUI & wxFNB
+- A built-in customization dialog is now available for customizing the notebook - enable it by rigth-click on 
+  empty tab area. The dialog allow customizing the following notebook options:
+  + Visual style of the tab (one of 5 styles: FF2, VC8, VC71, defualt, fancy and the default)
+  + Changing the navigation style between <> arrows to drop down arrow + menu or none
+  + Tab orientation (bottom | upper)
+  + Draw border around tab area
+  + Enable mouse DClick to close tab
+  + DClick closes tab
+  + Hide/Show close button (the right far one)
+  + Hide/Show close button on active tab
+  + Enable/Disable smart tabbing
+  + Enable drag and drop (plus foreign DnD)
+  + Effect: enable gradient painting for the tab area
+  + Effect: enable rnadom tab colour (VC8 only)
+  
+  There are cases when programmer does not want to provide the user the ability to change some settings, (e.g. add close button to tab), this can be
+  prevented by specifiying which options are allowed to be customized:
+  wxFlatNotebook::SetCustomizationOptions(), and use with one of the following flags:
+	wxFNB_CUSTOM_TAB_LOOK		= 0x00000001,	///< Allow customizing the tab appearance
+	wxFNB_CUSTOM_ORIENTATION	= 0x00000002,	///< Allow customizing the tab orientation (upper | bottom)
+	wxFNB_CUSTOM_FOREIGN_DRAG	= 0x00000004,	///< Allow accept foreign tabs 
+	wxFNB_CUSTOM_LOCAL_DRAG		= 0x00000008,	///< Allow local drag and drop
+	wxFNB_CUSTOM_CLOSE_BUTTON	= 0x00000010,	///< Allow customizing close button
+	wxFNB_CUSTOM_ALL			= wxFNB_CUSTOM_TAB_LOOK | 
+								  wxFNB_CUSTOM_ORIENTATION |
+								  wxFNB_CUSTOM_FOREIGN_DRAG |
+								  wxFNB_CUSTOM_LOCAL_DRAG |
+								  wxFNB_CUSTOM_CLOSE_BUTTON 
+	
+  
+- Close button on tabs is now drawn without the blue rectangle 
+- Fixed several rare issues where FNB could crash
+- Changed the behavior of the left/right roation arrows to rotate single tab at a time and not bulk
+- Fixed minor draw issue on Linux builds (tab's text positioning)
+- Sources is now compatible with wx-2.8 branch - IT WILL NOT COMPILE WITH 2.6.3
 
-Have fun !
+
 Eran

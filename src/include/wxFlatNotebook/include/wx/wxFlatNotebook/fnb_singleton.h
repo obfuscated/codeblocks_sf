@@ -1,14 +1,14 @@
-#ifndef CODELITE_SINGLETON_H
-#define CODELITE_SINGLETON_H
+#ifndef FNB_SINGLETON_H
+#define FNB_SINGLETON_H
 
 /**
- * A template class that implements the Singleton pattern.
+ * A template class that implements the wxFNBSingleton pattern.
  *
  * \date 08-23-2006
  * \author eran
  */
 template <typename T>
-class Singleton
+class wxFNBSingleton
 {
 	static T* ms_instance;
 public:
@@ -27,28 +27,28 @@ protected:
 	/**
 	 * Default constructor.
 	 */
-	Singleton();
+	wxFNBSingleton();
 
 	/**
 	 * Destructor.
 	 */
-	virtual ~Singleton();
+	virtual ~wxFNBSingleton();
 };
 template <typename T>
-T* Singleton<T>::ms_instance = 0;
+T* wxFNBSingleton<T>::ms_instance = 0;
 
 template <typename T>
-Singleton<T>::Singleton()
+wxFNBSingleton<T>::wxFNBSingleton()
 {
 }
 
 template <typename T>
-Singleton<T>::~Singleton()
+wxFNBSingleton<T>::~wxFNBSingleton()
 {
 }
 
 template <typename T>
-T* Singleton<T>::Get()
+T* wxFNBSingleton<T>::Get()
 {
 	if(!ms_instance)
 		ms_instance = new T();
@@ -56,7 +56,7 @@ T* Singleton<T>::Get()
 }
 
 template <typename T>
-void Singleton<T>::Free()
+void wxFNBSingleton<T>::Free()
 {
 	if( ms_instance )
 	{
@@ -65,4 +65,4 @@ void Singleton<T>::Free()
 	}
 }
 
-#endif // CODELITE_SINGLETON_H
+#endif // FNB_SINGLETON_H

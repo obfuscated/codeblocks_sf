@@ -23,6 +23,7 @@ extern char *down_arrow_xpm[];
 
 // X button
 extern char *x_button_hilite_xpm[];
+extern char *tab_x_button_pressed_xpm[];
 extern char *x_button_pressed_xpm[];
 extern char *x_button_xpm[];
 

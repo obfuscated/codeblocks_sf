@@ -12,6 +12,7 @@
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <wx/wxFlatNotebook/renderer.h>
 #include <wx/wxFlatNotebook/popup_dlg.h>
+#include <wx/wxFlatNotebook/fnb_customize_dlg.h>
 #include <algorithm>
 #include <wx/tooltip.h>
 #include <wx/tipwin.h>
@@ -45,15 +46,6 @@ wxString WhereToString( int where )
 }
 #endif
 
-inline bool RectContains(wxRect& rect,const wxPoint pt)
-{
-    #if wxVERSION_NUMBER >= 2800
-        return rect.Contains(pt);
-    #else
-        return rect.Inside(pt);
-    #endif
-}
-
 //-------------------------------------------------------------------
 // Provide user with a nice feedback when tab is being dragged
 //-------------------------------------------------------------------
@@ -82,18 +74,14 @@ EVT_NAVIGATION_KEY(wxFlatNotebook::OnNavigationKey)
 END_EVENT_TABLE()
 
 wxFlatNotebook::wxFlatNotebook(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style, const wxString& name)
-: m_popupWin(NULL)
-, m_sendPageChangeEvent(true)
 {
-	m_bForceSelection = false;
-	m_nPadding = 6;
-	m_nFrom = 0;
-	style |= wxTAB_TRAVERSAL;
-	m_pages = NULL;
-	wxPanel::Create(parent, id, pos, size, style, name);
-
-	m_pages = new wxPageContainer(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
 	Init();
+	Create(parent, id, pos, size, style, name);
+}
+
+void wxFlatNotebook::CleanUp ()
+{
+    wxFNBRendererMgrST::Free();
 }
 
 wxFlatNotebook::~wxFlatNotebook(void)
@@ -102,12 +90,29 @@ wxFlatNotebook::~wxFlatNotebook(void)
 
 void wxFlatNotebook::Init()
 {
+    m_popupWin = NULL;
+    m_sendPageChangeEvent = true;
+	m_bForceSelection = false;
+	m_nPadding = 6;
+	m_nFrom = 0;
+	m_pages = NULL;
+	m_mainSizer = new wxBoxSizer(wxVERTICAL);
+	SetSizer(m_mainSizer);
+}
+
+bool wxFlatNotebook::Create(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size,
+                             long style, const wxString& name)
+{
+	style |= wxTAB_TRAVERSAL;
+	wxPanel::Create(parent, id, pos, size, style, name);
+
+	m_pages = new wxPageContainer(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, style);
 	m_pages->m_colorBorder = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
 
 	m_mainSizer = new wxBoxSizer(wxVERTICAL);
 	SetSizer(m_mainSizer);
 
-	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
+	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
 
 	// Set default page height
 	wxMemoryDC memDc;
@@ -145,6 +150,7 @@ void wxFlatNotebook::Init()
 	m_pages->m_nFrom = m_nFrom;
 	m_pDropTarget = new wxFNBDropTarget<wxFlatNotebook>(this, &wxFlatNotebook::OnDropTarget);
 	SetDropTarget(m_pDropTarget);
+	return true;
 }
 
 void wxFlatNotebook::SetActiveTabTextColour(const wxColour& textColour)
@@ -423,14 +429,15 @@ void wxFlatNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
 	{
 		if( HasFlag(wxFNB_SMART_TABS) )
 		{
-			if( !m_popupWin )
+			if( !m_popupWin && GetPageCount() > 0)
 			{
 				m_popupWin = new wxTabNavigatorWindow( this );
 				m_popupWin->ShowModal();
 				m_popupWin->Destroy();
+				SetSelection((size_t)GetSelection());
 				m_popupWin = NULL;
 			}
-			else
+			else if( m_popupWin )
 			{
 				// a dialog is already opened
 				m_popupWin->OnNavigationKey( event );
@@ -668,6 +675,14 @@ const wxColour& wxFlatNotebook::GetActiveTabColour()
 	return m_pages->m_activeTabColor;
 }
 
+long wxFlatNotebook::GetCustomizeOptions() const {
+	return m_pages->GetCustomizeOptions();
+}
+
+void wxFlatNotebook::SetCustomizeOptions(long options) {
+	m_pages->SetCustomizeOptions(options);
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 //
 //	wxPageContainer
@@ -675,17 +690,17 @@ const wxColour& wxFlatNotebook::GetActiveTabColour()
 ///////////////////////////////////////////////////////////////////////////////////////////
 
 BEGIN_EVENT_TABLE(wxPageContainer, wxPanel)
-EVT_PAINT(wxPageContainer::OnPaint)
-EVT_SIZE(wxPageContainer::OnSize)
-EVT_LEFT_DOWN(wxPageContainer::OnLeftDown)
-EVT_LEFT_UP(wxPageContainer::OnLeftUp)
-EVT_RIGHT_DOWN(wxPageContainer::OnRightDown)
-EVT_MIDDLE_DOWN(wxPageContainer::OnMiddleDown)
-EVT_MOTION(wxPageContainer::OnMouseMove)
-EVT_ERASE_BACKGROUND(wxPageContainer::OnEraseBackground)
-EVT_LEAVE_WINDOW(wxPageContainer::OnMouseLeave)
-EVT_ENTER_WINDOW(wxPageContainer::OnMouseEnterWindow)
-EVT_LEFT_DCLICK(wxPageContainer::OnLeftDClick)
+	EVT_PAINT(wxPageContainer::OnPaint)
+	EVT_SIZE(wxPageContainer::OnSize)
+	EVT_LEFT_DOWN(wxPageContainer::OnLeftDown)
+	EVT_LEFT_UP(wxPageContainer::OnLeftUp)
+	EVT_RIGHT_DOWN(wxPageContainer::OnRightDown)
+	EVT_MIDDLE_DOWN(wxPageContainer::OnMiddleDown)
+	EVT_MOTION(wxPageContainer::OnMouseMove)
+	EVT_ERASE_BACKGROUND(wxPageContainer::OnEraseBackground)
+	EVT_LEAVE_WINDOW(wxPageContainer::OnMouseLeave)
+	EVT_ENTER_WINDOW(wxPageContainer::OnMouseEnterWindow)
+	EVT_LEFT_DCLICK(wxPageContainer::OnLeftDClick)
 END_EVENT_TABLE()
 
 wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
@@ -694,6 +709,7 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 , m_pDropTarget(NULL)
 , m_nLeftClickZone(wxFNB_NOWHERE)
 , m_iPreviousActivePage(-1)
+, m_customizeOptions(wxFNB_CUSTOM_ALL)
 {
 	m_pRightClickMenu = NULL;
 	m_nXButtonStatus = wxFNB_BTN_NONE;
@@ -702,12 +718,13 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 	m_nRightButtonStatus = wxFNB_BTN_NONE;
 	m_nLeftButtonStatus = wxFNB_BTN_NONE;
 	m_nTabXButtonStatus = wxFNB_BTN_NONE;
+	m_customMenu = NULL;
 
 	m_colorTo = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_ACTIVECAPTION));
 	m_colorFrom   = wxColor(*wxWHITE);
 	m_activeTabColor = wxColor(*wxWHITE);
 	m_activeTextColor = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-	m_nonActiveTextColor = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
+	m_nonActiveTextColor = wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 	m_tabAreaColor = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
 
 	// Set default page height, this is done according to the system font
@@ -739,6 +756,12 @@ wxPageContainer::~wxPageContainer(void)
 	{
 		delete m_pRightClickMenu;
 		m_pRightClickMenu = NULL;
+	}
+
+	if( m_customMenu )
+	{
+		delete m_customMenu;
+		m_customMenu = NULL;
 	}
 }
 
@@ -820,16 +843,43 @@ void wxPageContainer::OnMiddleDown(wxMouseEvent& event)
 	default:
 		break;
 	}
+
 	event.Skip();
+}
+
+void wxPageContainer::OnShowCustomizeDialog(wxCommandEvent &event)
+{
+	wxUnusedVar(event);
+	wxFNBCustomizeDialog *dlg = new wxFNBCustomizeDialog(this, m_customizeOptions);
+	dlg->ShowModal();
+	dlg->Destroy();
 }
 
 void wxPageContainer::OnRightDown(wxMouseEvent& event)
 {
+	FNB_LOG_MSG(wxT("OnRightDown") << event.GetPosition().x << wxT(",") << event.GetPosition().y );
 	wxPageInfo pgInfo;
 	int tabIdx;
 	int where = HitTest(event.GetPosition(), pgInfo, tabIdx);
 	switch(where)
 	{
+	case wxFNB_NOWHERE:
+                {
+                        // Incase user right clicked on 'anywhere' and style wxFNB_CUSTOM_DLG is set,
+                        // popup the customize dialog
+                        long style = GetParent()->GetWindowStyleFlag();
+                        if( style & wxFNB_CUSTOM_DLG ){
+                                if( !m_customMenu ){
+                                        m_customMenu = new wxMenu();
+                                        wxMenuItem *item = new wxMenuItem(m_customMenu, wxID_ANY, wxT("Properties..."));
+                                        m_customMenu->Append(item);
+                                        Connect( item->GetId(), wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler( wxPageContainer::OnShowCustomizeDialog ));
+                                }
+                                PopupMenu(m_customMenu);
+                        }
+                }
+                break;
+
 	case wxFNB_TAB:
 	case wxFNB_TAB_X:
 		{
@@ -838,26 +888,26 @@ void wxPageContainer::OnRightDown(wxMouseEvent& event)
 
 			// Set the current tab to be active
 			SetSelection((size_t)tabIdx);
+ 			// If the owner has defined a context menu for the tabs,
+                	// popup the right click menu
+                if (m_pRightClickMenu)
+                        PopupMenu(m_pRightClickMenu);
+                else
+                {
+                        // send a message to popup a custom menu
+                        wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, GetParent()->GetId());
+                        event.SetSelection((int)tabIdx);
+                        event.SetOldSelection((int)m_iActivePage);
+                        event.SetEventObject(GetParent());
+                        GetParent()->GetEventHandler()->ProcessEvent(event);
+                }
 
-			// If the owner has defined a context menu for the tabs,
-			// popup the right click menu
-			if (m_pRightClickMenu)
-				PopupMenu(m_pRightClickMenu);
-			else
-			{
-				// send a message to popup a custom menu
-				wxFlatNotebookEvent event(wxEVT_COMMAND_FLATNOTEBOOK_CONTEXT_MENU, GetParent()->GetId());
-				event.SetSelection((int)tabIdx);
-				event.SetOldSelection((int)m_iActivePage);
-				event.SetEventObject(GetParent());
-				GetParent()->GetEventHandler()->ProcessEvent(event);
-			}
 		}
 		break;
+
 	default:
 		break;
 	}
-	event.Skip();
 }
 
 void wxPageContainer::OnLeftDown(wxMouseEvent& event)
@@ -910,6 +960,48 @@ void wxPageContainer::OnLeftDown(wxMouseEvent& event)
 	}
 }
 
+void wxPageContainer::RotateLeft()
+{
+	if(m_nFrom == 0)
+		return;
+
+	// Make sure that the button was pressed before
+	if(m_nLeftButtonStatus != wxFNB_BTN_PRESSED)
+		return;
+
+	m_nLeftButtonStatus = wxFNB_BTN_HOVER;
+
+	// We scroll left with bulks of 5
+	int scrollLeft = GetNumTabsCanScrollLeft();
+
+	m_nFrom -= scrollLeft;
+	if(m_nFrom < 0)
+		m_nFrom = 0;
+
+	Refresh();
+	return;
+}
+
+void wxPageContainer::RotateRight()
+{
+	if(m_nFrom >= (int)m_pagesInfoVec.GetCount() - 1)
+		return;
+
+	// Make sure that the button was pressed before
+	if(m_nRightButtonStatus != wxFNB_BTN_PRESSED)
+		return;
+
+	m_nRightButtonStatus = wxFNB_BTN_HOVER;
+
+	// Check if the right most tab is visible, if it is
+	// don't rotate right anymore
+	if(m_pagesInfoVec[m_pagesInfoVec.GetCount()-1].GetPosition() != wxPoint(-1, -1))
+		return;
+
+	m_nFrom += 1;
+	Refresh();
+}
+
 void wxPageContainer::OnLeftUp(wxMouseEvent& event)
 {
 	wxPageInfo pgInfo;
@@ -923,51 +1015,12 @@ void wxPageContainer::OnLeftUp(wxMouseEvent& event)
 	{
 	case wxFNB_LEFT_ARROW:
 		{
-			if(m_nFrom == 0)
-				break;
-
-			// Make sure that the button was pressed before
-			if(m_nLeftButtonStatus != wxFNB_BTN_PRESSED)
-				break;
-
-			m_nLeftButtonStatus = wxFNB_BTN_HOVER;
-
-			// We scroll left with bulks of 5
-			int scrollLeft = GetNumTabsCanScrollLeft();
-
-			m_nFrom -= scrollLeft;
-			if(m_nFrom < 0)
-				m_nFrom = 0;
-
-			Refresh();
+			RotateLeft();
 			break;
 		}
 	case wxFNB_RIGHT_ARROW:
 		{
-			if(m_nFrom >= (int)m_pagesInfoVec.GetCount() - 1)
-				break;
-
-			// Make sure that the button was pressed before
-			if(m_nRightButtonStatus != wxFNB_BTN_PRESSED)
-				break;
-
-			m_nRightButtonStatus = wxFNB_BTN_HOVER;
-
-			// Check if the right most tab is visible, if it is
-			// don't rotate right anymore
-			if(m_pagesInfoVec[m_pagesInfoVec.GetCount()-1].GetPosition() != wxPoint(-1, -1))
-				break;
-
-			int lastVisibleTab = GetLastVisibleTab();
-			if(lastVisibleTab < 0)
-			{
-				// Probably the screen is too small for displaying even a single
-				// tab, in this case we do nothing
-				break;
-			}
-
-			m_nFrom += GetNumOfVisibleTabs();
-			Refresh();
+			RotateRight();
 			break;
 		}
 	case wxFNB_X:
@@ -1009,6 +1062,7 @@ void wxPageContainer::OnLeftUp(wxMouseEvent& event)
 			break;
 		}
 	}
+	event.Skip();
 }
 
 int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabIdx)
@@ -1028,7 +1082,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 	}
 
 	rect = wxRect(btnXPos, 8, 16, 16);
-	if(RectContains(rect,pt))
+	if(rect.Contains(pt))
 	{
 		return (style & wxFNB_NO_X_BUTTON) ? wxFNB_NOWHERE : wxFNB_X;
 	}
@@ -1037,18 +1091,18 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 	if( style & wxFNB_DROPDOWN_TABS_LIST )
 	{
 		rect = wxRect(render->GetDropArrowButtonPos( this ), 8, 16, 16);
-		if( RectContains(rect,pt) )
+		if( rect.Contains(pt) )
 			return wxFNB_DROP_DOWN_ARROW;
 	}
 
-	if(RectContains(rect,pt))
+	if(rect.Contains(pt))
 	{
 		return (style & wxFNB_NO_NAV_BUTTONS) ? wxFNB_NOWHERE : wxFNB_RIGHT_ARROW;
 	}
 
 
 	rect = wxRect(btnLeftPos, 8, 16, 16);
-	if(RectContains(rect,pt))
+	if(rect.Contains(pt))
 	{
 		return (style & wxFNB_NO_NAV_BUTTONS) ? wxFNB_NOWHERE : wxFNB_LEFT_ARROW;
 	}
@@ -1065,7 +1119,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 		if(style & wxFNB_X_ON_TAB && (int)cur == GetSelection())
 		{
 			// 'x' button exists on a tab
-			if(RectContains(m_pagesInfoVec[cur].GetXRect(),pt))
+			if(m_pagesInfoVec[cur].GetXRect().Contains(pt))
 			{
 				pageInfo = pgInfo;
 				tabIdx = (int)cur;
@@ -1093,7 +1147,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 
 			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y,
 				pgInfo.GetSize().x, pgInfo.GetSize().y);
-			if(RectContains(tabRect,pt))
+			if(tabRect.Contains(pt))
 			{
 				// We have a match
 				pageInfo = pgInfo;
@@ -1176,14 +1230,34 @@ void wxPageContainer::DoDeletePage(size_t page)
 {
 	// Remove the page from the vector
 	wxFlatNotebook* book = (wxFlatNotebook*)GetParent();
-	m_pagesInfoVec.RemoveAt(page);
 
-	// Thanks to Yiannis AKA Mandrav
-	if (m_iActivePage >= (int)page)
+	// Armel Asselin's patch
+	int newActivePageIndex = m_iActivePage, newPreviousPageIndex = m_iPreviousActivePage;
+	// if the "previous page" is after the deleted page, decrement the index
+	if (m_iPreviousActivePage > (int)page)
 	{
-		m_iActivePage--;
-		m_iPreviousActivePage = -1;
+		newPreviousPageIndex = m_iPreviousActivePage-1;
 	}
+	else if (m_iPreviousActivePage == (int)page)
+	{
+		newPreviousPageIndex = -1;
+	}
+
+	// same thing with the active page
+	if (m_iActivePage > (int)page || (int)page >= (int)(m_pagesInfoVec.Count()))
+	{
+		newActivePageIndex = m_iActivePage-1;
+	}
+	else if (m_iActivePage == (int)page)
+	{
+		newActivePageIndex = newPreviousPageIndex;
+ 	}
+
+	m_pagesInfoVec.RemoveAt(page);
+	m_iActivePage = newActivePageIndex;
+	m_iPreviousActivePage = newPreviousPageIndex;
+	if (m_iActivePage == m_iPreviousActivePage)
+		m_iPreviousActivePage = -1;
 
 	// The delete page was the last first on the array,
 	// but the book still has more pages, so we set the
@@ -1197,9 +1271,9 @@ void wxPageContainer::DoDeletePage(size_t page)
 	// Refresh the tabs
 	if(m_iActivePage >= 0)
 	{
-		book->m_bForceSelection = true;
+		book->SetForceSelection(true);
 		book->SetSelection(m_iActivePage);
-		book->m_bForceSelection = false;
+		book->SetForceSelection(false);
 	}
 
 	if(m_pagesInfoVec.empty())
@@ -1348,7 +1422,6 @@ void wxPageContainer::OnMouseMove(wxMouseEvent& event)
 			}
 			if (bRedrawTabX)
 			{
-				FNB_LOG_MSG( wxT("Refreshing Tab 'X' button with status=") << m_nTabXButtonStatus << wxT(" and tabIdx=") << tabIdx );
 				render->DrawTabX(this, dc, pgInfo.GetXRect(), tabIdx, m_nTabXButtonStatus);
 			}
 			if (bRedrawDropArrow)
@@ -1376,33 +1449,11 @@ int wxPageContainer::GetLastVisibleTab()
 
 int wxPageContainer::GetNumTabsCanScrollLeft()
 {
-	int i;
-
-	// Reserved area for the buttons (<>x)
-	wxRect rect = GetClientRect();
-	int clientWidth = rect.width;
-	int posx = ((wxFlatNotebook *)m_pParent)->m_nPadding, numTabs = 0, tabHeight, tabWidth;
-
-	wxClientDC dc(this);
-
-	// Incase we have error prevent crash
-	if(m_nFrom < 0)
+	if( m_nFrom - 1 >= 0){
+		return 1;
+	} else {
 		return 0;
-
-	long style = GetParent()->GetWindowStyleFlag();
-	wxFNBRendererPtr render = wxFNBRendererMgrST::Get()->GetRenderer(style);
-
-	tabHeight = render->CalcTabHeight(this);
-	for(i=m_nFrom; i>=0; i--)
-	{
-		tabWidth = render->CalcTabWidth(this, i, tabHeight);
-		if(posx + tabWidth + render->GetButtonsAreaLength(this) >= clientWidth)
-			break;
-
-		numTabs++;
-		posx += tabWidth;
 	}
-	return numTabs;
 }
 
 bool wxPageContainer::IsDefaultTabs()
@@ -1564,18 +1615,18 @@ void wxPageContainer::MoveTabPage(int nMove, int nMoveTo)
 	if(nMove == nMoveTo)
 		return;
 
-	else if(nMoveTo < (int)((wxFlatNotebook *)m_pParent)->m_windows.GetCount())
+	else if(nMoveTo < (int)((wxFlatNotebook *)m_pParent)->GetWindows().GetCount())
 		nMoveTo++;
 
 	m_pParent->Freeze();
 	// Remove the window from the main sizer
-	int nCurSel = ((wxFlatNotebook *)m_pParent)->m_pages->GetSelection();
-	((wxFlatNotebook *)m_pParent)->m_mainSizer->Detach(((wxFlatNotebook *)m_pParent)->m_windows[nCurSel]);
-	((wxFlatNotebook *)m_pParent)->m_windows[nCurSel]->Hide();
+	int nCurSel = ((wxFlatNotebook *)m_pParent)->GetPages()->GetSelection();
+	((wxFlatNotebook *)m_pParent)->GetMainSizer()->Detach(((wxFlatNotebook *)m_pParent)->GetWindows().Item(nCurSel));
+	((wxFlatNotebook *)m_pParent)->GetWindows().Item(nCurSel)->Hide();
 
-	wxWindow *pWindow = ((wxFlatNotebook *)m_pParent)->m_windows[nMove];
-	((wxFlatNotebook *)m_pParent)->m_windows.RemoveAt(nMove);
-	((wxFlatNotebook *)m_pParent)->m_windows.Insert(pWindow, nMoveTo-1);
+	wxWindow *pWindow = ((wxFlatNotebook *)m_pParent)->GetWindows().Item(nMove);
+	((wxFlatNotebook *)m_pParent)->GetWindows().RemoveAt(nMove);
+	((wxFlatNotebook *)m_pParent)->GetWindows().Insert(pWindow, nMoveTo-1);
 
 	wxPageInfo pgInfo = m_pagesInfoVec[nMove];
 
@@ -1583,7 +1634,7 @@ void wxPageContainer::MoveTabPage(int nMove, int nMoveTo)
 	m_pagesInfoVec.Insert(pgInfo, nMoveTo - 1);
 
 	// Add the page according to the style
-	wxBoxSizer* pSizer = ((wxFlatNotebook *)m_pParent)->m_mainSizer;
+	wxBoxSizer* pSizer = ((wxFlatNotebook *)m_pParent)->GetMainSizer();
 	long style = GetParent()->GetWindowStyleFlag();
 
 
@@ -1602,7 +1653,7 @@ void wxPageContainer::MoveTabPage(int nMove, int nMoveTo)
 	m_iActivePage = nMoveTo-1;
 	m_iPreviousActivePage = -1;
 	DoSetSelection(m_iActivePage);
-	Refresh();
+//	Refresh();
 	m_pParent->Thaw();
 }
 
@@ -1686,19 +1737,23 @@ void wxPageContainer::OnLeftDClick(wxMouseEvent& event)
 	int where = HitTest(event.GetPosition(), pgInfo, tabIdx);
 	switch(where)
 	{
+	case wxFNB_RIGHT_ARROW:
+		RotateRight();
+		break;
+	case wxFNB_LEFT_ARROW:
+		RotateLeft();
+		break;
 	case wxFNB_TAB:
 		if(HasFlag(wxFNB_DCLICK_CLOSES_TABS))
 		{
-			{
-				DeletePage((size_t)tabIdx);
-				break;
-			}
+			DeletePage((size_t)tabIdx);
 		}
+		break;
 	case wxFNB_X:
 		{
 			OnLeftDown(event);
-			break;
 		}
+		break;
 	default:
 		event.Skip();
 		break;
@@ -1742,4 +1797,14 @@ void wxPageContainer::DrawDragHint()
     wxPoint client_pt = ScreenToClient(pt);
 	HitTest(client_pt, info, tabIdx);
 	wxFNBRendererMgrST::Get()->GetRenderer( GetParent()->GetWindowStyleFlag() )->DrawDragHint(this, tabIdx);
+}
+
+void wxPageContainer::SetCustomizeOptions(long options)
+{
+	m_customizeOptions = options;
+}
+
+long wxPageContainer::GetCustomizeOptions() const
+{
+	return m_customizeOptions;
 }
