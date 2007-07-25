@@ -165,7 +165,12 @@ wxDragResult wxFlatNotebook::OnDropTarget(wxCoord x, wxCoord y, int nTabPage, wx
 
 int wxFlatNotebook::GetPreviousSelection() const
 {
-	return m_pages->m_iPreviousActivePage;
+	return m_pages->GetPreviousSelection();
+}
+
+const wxArrayInt &wxFlatNotebook::GetBrowseHistory() const
+{
+	return m_pages->m_history;
 }
 
 bool wxFlatNotebook::AddPage(wxWindow* window, const wxString& caption, const bool selected, const int imgindex)
@@ -203,12 +208,10 @@ bool wxFlatNotebook::InsertPage(size_t index, wxWindow* page, const wxString& te
 	if(index <= m_windows.GetCount())
 	{
 		m_windows.Insert(page, index);
-		wxLogTrace(wxTraceMask(), wxT("New page inserted. Index = %i"), index);
 	}
 	else
 	{
 		m_windows.Add(page);
-		wxLogTrace(wxTraceMask(), wxT("New page appended. Index = %i"), index);
 	}
 
 	if( !m_pages->InsertPage(index, page, text, bSelected, imgindex) )
@@ -289,12 +292,13 @@ void wxFlatNotebook::SetSelection(size_t page)
 	}
 
 	m_windows[page]->Show();
-	Thaw();
 	m_mainSizer->Layout();
+	Thaw();
 
-	if( page != (size_t)m_pages->m_iActivePage )
-		//there is a real poge changing
-		m_pages->m_iPreviousActivePage = m_pages->m_iActivePage;
+	if( page != (size_t)m_pages->m_iActivePage ){
+		//keep the page history
+		m_pages->PushPageHistory(m_pages->m_iActivePage);
+	}
 
 	m_pages->m_iActivePage = (int)page;
 	m_pages->DoSetSelection(page);
@@ -708,7 +712,6 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 , m_iActivePage(-1)
 , m_pDropTarget(NULL)
 , m_nLeftClickZone(wxFNB_NOWHERE)
-, m_iPreviousActivePage(-1)
 , m_customizeOptions(wxFNB_CUSTOM_ALL)
 {
 	m_pRightClickMenu = NULL;
@@ -773,11 +776,45 @@ void wxPageContainer::OnPaint(wxPaintEvent & event)
 	render->DrawTabs(this, dc, event);
 }
 
+void wxPageContainer::PopPageHistory(int page)
+{
+	int tabIdx(wxNOT_FOUND);
+	int where = m_history.Index(page);
+	while(where != wxNOT_FOUND){
+		tabIdx = m_history.Item(where);
+		m_history.Remove(page);
+		//remove all appearances of this page
+		where = m_history.Index(page);
+	}
+
+	//update values
+	if(tabIdx != wxNOT_FOUND){
+		for(size_t i=0; i<m_history.size(); i++){
+			int &tt = m_history.Item(i);
+			if(tt > tabIdx){
+				tt--;
+			}
+		}
+	}
+}
+
+void wxPageContainer::PushPageHistory(int page)
+{
+	if(page == wxNOT_FOUND)
+		return;
+
+	int where = m_history.Index(page);
+	if(where != wxNOT_FOUND){
+		m_history.Remove(page);
+	}
+	m_history.Insert(page, 0);
+}
+
 bool wxPageContainer::AddPage(const wxString& caption, const bool selected, const int imgindex)
 {
 	if(selected)
 	{
-		m_iPreviousActivePage = m_iActivePage;
+		PushPageHistory(m_iActivePage);
 		m_iActivePage = (int)m_pagesInfoVec.GetCount();
 	}
 
@@ -792,11 +829,10 @@ bool wxPageContainer::InsertPage(size_t index, wxWindow* /*page*/, const wxStrin
 {
 	if(select)
 	{
-		m_iPreviousActivePage = m_iActivePage;
-		m_iActivePage = (int)m_pagesInfoVec.GetCount();
+		PushPageHistory(m_iActivePage);
+		m_iActivePage = (int)index;
 	}
 	wxPageInfo pgInfo(text, imgindex);
-//	pgInfo.SetPosition(wxPoint(1, 1));
 	m_pagesInfoVec.Insert(pgInfo, index);
 	Refresh();
 	return true;
@@ -887,7 +923,12 @@ void wxPageContainer::OnRightDown(wxMouseEvent& event)
 				break;
 
 			// Set the current tab to be active
-			SetSelection((size_t)tabIdx);
+			// if needed
+			if(tabIdx != GetSelection())
+			{
+				SetSelection((size_t)tabIdx);
+			}
+
  			// If the owner has defined a context menu for the tabs,
                 	// popup the right click menu
                 if (m_pRightClickMenu)
@@ -1208,6 +1249,7 @@ void wxPageContainer::DoSetSelection(size_t page)
 	{
 		FNB_LOG_MSG( wxT("Tab ") << (int)page << wxT(" is visible"));
 	}
+	PushPageHistory((int)page);
 	Refresh();
 }
 
@@ -1226,55 +1268,40 @@ bool wxPageContainer::IsTabVisible(size_t page)
 	return iPage <= iLastVisiblePage && iPage >= m_nFrom;
 }
 
+int wxPageContainer::GetPreviousSelection() const
+{
+	if(m_history.empty()){
+		return wxNOT_FOUND;
+	}
+	//return the top of the heap
+	return m_history.Item(0);
+}
+
 void wxPageContainer::DoDeletePage(size_t page)
 {
 	// Remove the page from the vector
 	wxFlatNotebook* book = (wxFlatNotebook*)GetParent();
 
-	// Armel Asselin's patch
-	int newActivePageIndex = m_iActivePage, newPreviousPageIndex = m_iPreviousActivePage;
-	// if the "previous page" is after the deleted page, decrement the index
-	if (m_iPreviousActivePage > (int)page)
-	{
-		newPreviousPageIndex = m_iPreviousActivePage-1;
-	}
-	else if (m_iPreviousActivePage == (int)page)
-	{
-		newPreviousPageIndex = -1;
-	}
+	PopPageHistory((int)page);
 
 	// same thing with the active page
-	if (m_iActivePage > (int)page || (int)page >= (int)(m_pagesInfoVec.Count()))
-	{
-		newActivePageIndex = m_iActivePage-1;
-	}
-	else if (m_iActivePage == (int)page)
-	{
-		newActivePageIndex = newPreviousPageIndex;
+	if (m_iActivePage > (int)page || (int)page >= (int)(m_pagesInfoVec.Count())){
+		m_iActivePage -= 1;
+	}else if (m_iActivePage == (int)page){
+		m_iActivePage = GetPreviousSelection();
+		//PopPageHistory(m_iActivePage);
  	}
 
 	m_pagesInfoVec.RemoveAt(page);
-	m_iActivePage = newActivePageIndex;
-	m_iPreviousActivePage = newPreviousPageIndex;
-	if (m_iActivePage == m_iPreviousActivePage)
-		m_iPreviousActivePage = -1;
 
-	// The delete page was the last first on the array,
-	// but the book still has more pages, so we set the
-	// active page to be the first one (0)
-	if(m_iActivePage < 0 && !m_pagesInfoVec.empty())
-	{
-		m_iPreviousActivePage = -1;
+	if(m_iActivePage == wxNOT_FOUND && m_pagesInfoVec.Count() > 0){
 		m_iActivePage = 0;
 	}
 
 	// Refresh the tabs
-	if(m_iActivePage >= 0)
-	{
-		book->SetForceSelection(true);
-		book->SetSelection(m_iActivePage);
-		book->SetForceSelection(false);
-	}
+	book->SetForceSelection(true);
+	book->SetSelection(m_iActivePage);
+	book->SetForceSelection(false);
 
 	if(m_pagesInfoVec.empty())
 	{
@@ -1287,7 +1314,7 @@ void wxPageContainer::DoDeletePage(size_t page)
 void wxPageContainer::DeleteAllPages()
 {
 	m_iActivePage = -1;
-	m_iPreviousActivePage = -1;
+	m_history.Clear();
 	m_nFrom = 0;
 	m_pagesInfoVec.Clear();
 
@@ -1651,9 +1678,8 @@ void wxPageContainer::MoveTabPage(int nMove, int nMoveTo)
 
 	pSizer->Layout();
 	m_iActivePage = nMoveTo-1;
-	m_iPreviousActivePage = -1;
+	m_history.Clear();
 	DoSetSelection(m_iActivePage);
-//	Refresh();
 	m_pParent->Thaw();
 }
 

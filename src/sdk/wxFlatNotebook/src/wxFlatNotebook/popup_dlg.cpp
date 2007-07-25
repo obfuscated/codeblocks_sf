@@ -75,6 +75,7 @@ void wxTabNavigatorWindow::Create(wxWindow* parent)
 
 	// Connect events to the list box
 	m_listBox->Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(wxTabNavigatorWindow::OnKeyUp), NULL, this); 
+	//Connect(wxEVT_CHAR_HOOK, wxCharEventHandler(wxTabNavigatorWindow::OnKeyUp), NULL, this);
 	m_listBox->Connect(wxID_ANY, wxEVT_NAVIGATION_KEY, wxNavigationKeyEventHandler(wxTabNavigatorWindow::OnNavigationKey), NULL, this); 
 	m_listBox->Connect(wxID_ANY, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(wxTabNavigatorWindow::OnItemSelected), NULL, this);
 	
@@ -133,35 +134,21 @@ void wxTabNavigatorWindow::OnNavigationKey(wxNavigationKeyEvent &event)
 void wxTabNavigatorWindow::PopulateListControl(wxFlatNotebook *book)
 {
 	int selection = book->GetSelection();
-	int count     = book->GetPageCount();
-	
+	//int count     = book->GetPageCount();
 
+	std::map<int, bool> temp;
 	m_listBox->Append( book->GetPageText(static_cast<int>(selection)) );
 	m_indexMap[0] = selection;
+	temp[selection] = true;
 
-	int itemIdx(1);
-	int prevSel = book->GetPreviousSelection();
-	if( prevSel != wxNOT_FOUND )
+	const wxArrayInt &arr = book->GetBrowseHistory();
+	for(size_t i=0; i<arr.GetCount(); i++)
 	{
-		// Insert the previous selection as second entry 
-		m_listBox->Append( book->GetPageText(static_cast<int>(prevSel)) );
-		m_indexMap[1] = prevSel;
-		itemIdx++;
-	}
-
-	for(int c=0; c<count; c++)
-	{
-		// Skip selected page
-		if( c == selection )
-			continue;
-
-		// Skip previous selected page as well
-		if( c == prevSel )
-			continue;
-
-		m_listBox->Append( book->GetPageText(static_cast<int>(c)) );
-		m_indexMap[itemIdx] = c;
-		itemIdx++;
+		if(temp.find(arr.Item(i)) == temp.end()){ 
+			m_listBox->Append( book->GetPageText(static_cast<int>(arr.Item(i))) );
+			m_indexMap[(int)m_listBox->GetCount()-1] = arr.Item(i);
+			temp[arr.Item(i)] = true;
+		}
 	}
 
 	// Select the next entry after the current selection
