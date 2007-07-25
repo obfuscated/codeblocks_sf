@@ -116,13 +116,17 @@ int IncrementalSelectListDlg::GetSelection()
 void IncrementalSelectListDlg::FillList()
 {
     Freeze();
-	wxString search = m_Text->GetValue().Lower();
+
+    // We put a star before and after pattern to find search expression everywhere in path
+	wxString search(wxT("*") + m_Text->GetValue().Lower() + wxT("*"));
+
 	wxArrayString result;
 	//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "FillList(): '%s'", search.c_str());
 	m_List->Clear();
 	for (unsigned int i = 0; i < m_Items.GetCount(); ++i)
 	{
-		if (search.IsEmpty() || m_Items[i].Lower().Find(search) != wxNOT_FOUND)
+		// 2 for before and after stars =~ empty string
+		if ((search.Length()==2) || m_Items[i].Lower().Matches(search.c_str()))
 			result.Add(m_Items[i]);
 //			m_List->Append(m_Items[i]);
 	}
