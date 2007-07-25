@@ -15,11 +15,15 @@
 
 
 
-static const int ipc_buf_size = 1024*64
+static const int ipc_buf_size = 1024*64;
 
-typedef TernaryCondTypedef<platform::windows, HANDLE, int> int shm_handle_t;
-typedef TernaryCondTypedef<platform::windows, HANDLE, int> int semaphore_t;
-
+#ifdef __WIN32__
+typedef HANDLE shm_handle_t;
+typedef HANDLE semaphore_t;
+#else
+typedef int shm_handle_t;
+typedef int semaphore_t;
+#endif
 
 
 class SharedMemory
@@ -58,11 +62,11 @@ public:
 
 class IPC : public wxThread
 {
-	volatile bool shutdown;
+	volatile bool is_shutdown;
 	SharedMemory  shm;
 
 public:
-	IPC() : shutdown(false) {};
+	IPC() : is_shutdown(false) {};
 
 	virtual ExitCode Entry();
 

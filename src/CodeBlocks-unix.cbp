@@ -905,10 +905,10 @@
 		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
+		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/xh_fnb.h">
@@ -2949,6 +2949,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/environmentsettingsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/ipc.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/ipc.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/main.cpp">

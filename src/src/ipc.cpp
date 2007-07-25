@@ -1,14 +1,22 @@
 #include "ipc.h"
+#include "main.h"
+#include <wx/tokenzr.h>
 
+#ifndef __WIN32__
+	#include <errno.h>
+	#include <sys/types.h>
+	#include <sys/ipc.h>
+	#include <sys/sem.h>
+#endif
 
 void IPC::Send(const wxString& in)
 {
 	if(in.length() * sizeof(wxChar) > shm.Size())
 		cbThrow(_T("Input exceeds shared memory size."));
 
-	shm.Lock(writer);
+	shm.Lock(SharedMemory::writer);
 		memcpy(shm.BasePointer(), in.c_str(), (in.length()+1) * sizeof(wxChar));
-	shm.Unlock(writer);
+	shm.Unlock(SharedMemory::writer);
 }
 
 
@@ -17,24 +25,25 @@ void IPC::Shutdown()
 	// Other than POSIX, Windows does not signal threads waiting for a semaphore when it is deleted, 
 	// therefore we have to do unlock by hand before deleting
 	// IMPORTANT: This must be called from Manager::Shutdown() or from any other appropriate place
-	shutdown = true;
-	shm.Unlock(writer);
+	is_shutdown = true;
+	shm.Unlock(SharedMemory::writer);
 };
 
 
 
-virtual ExitCode IPC::Entry() /* this is the receiving end */
+wxThread::ExitCode IPC::Entry() /* this is the receiving end */
 {
 	for(;;)
 	{
-		if(Lock(reader) == 0 || shutdown)
+		if(shm.Lock(SharedMemory::reader) == 0 || is_shutdown)
 			return 0;
 
-		Manager::Get()->GetAppWindow()->OnDropFiles(0,0, wxStringTokenize((const wxChar*) shm.BasePointer(), _T("\n"), wxTOKEN_STRTOK));
+		MainFrame* cbframe = static_cast<MainFrame*>(Manager::Get()->GetAppWindow());
+		cbframe->OnDropFiles(0,0, wxStringTokenize((const wxChar*) shm.BasePointer(), _T("\n"), wxTOKEN_STRTOK));
 
-		Unlock(reader);
+		shm.Unlock(SharedMemory::reader);
 
-		if(shutdown)
+		if(is_shutdown)
 			return 0;
 	}
 }
@@ -83,9 +92,6 @@ SharedMemory::~SharedMemory()
 
 bool SharedMemory::Lock(rw_t rw)
 {
-	if(shutdown)
-		return 0;
-
 	if(rw == reader)
 	{
 		WaitForSingleObject(sem, INFINITE);
@@ -97,10 +103,10 @@ bool SharedMemory::Lock(rw_t rw)
 		WaitForSingleObject(sem_w, INFINITE);
 	}
 
-	return !shutdown;
+	return false;
 }
 
-void SharedMemory::UnLock(rw_t rw)
+void SharedMemory::Unlock(rw_t rw)
 {
 	if(rw == reader)
 	{
@@ -120,7 +126,7 @@ void SharedMemory::UnLock(rw_t rw)
 #else                   /* ------------------------------------------------------------- */
 
 
-SharedMemory::SharedMemory() : handle(0), sem(0), mutex(0), shared(0), ok(false), server(false)
+SharedMemory::SharedMemory() : handle(0), sem(0), shared(0), ok(false), server(false)
 {
 	char file[256];
 	key_t key;
@@ -172,7 +178,7 @@ SharedMemory::SharedMemory() : handle(0), sem(0), mutex(0), shared(0), ok(false)
 		server = true;
 
 		unsigned short int v[2] = {0, 1};
-		semctl(semid, 0, SETALL, v);
+		semctl(sem, 0, SETALL, v);
 	}
 
 	shared = shmat(handle, 0, 0);
@@ -183,11 +189,11 @@ SharedMemory::SharedMemory() : handle(0), sem(0), mutex(0), shared(0), ok(false)
 SharedMemory::~SharedMemory()
 {
 	shmdt(shared);
-	if(master)
-		{
-			shmctl(handle, SharedMemory_RMID, 0);
-			semctl(semid, 0, IPC_RMID );    /* this will wake up the thread blocking in semop() */
-		}
+	if(server)
+	{
+		shmctl(handle, IPC_RMID, 0);
+		semctl(sem, 0, IPC_RMID );    /* this will wake up the thread blocking in semop() */
+	}
 }
 
 bool SharedMemory::Lock(rw_t rw)
@@ -204,7 +210,7 @@ bool SharedMemory::Lock(rw_t rw)
         op[1].sem_op  = -1;
         op[1].sem_flg = 0;
 
-		return semop(semid, op, 2) == 0;    /* if semaphore is deleted, EIDRM or EINVAL will be returned */
+		return semop(sem, op, 2) == 0;    /* if semaphore is deleted, EIDRM or EINVAL will be returned */
 	}
 
 	if(rw == writer)
@@ -214,11 +220,13 @@ bool SharedMemory::Lock(rw_t rw)
         op[0].sem_op  = -1;
         op[0].sem_flg = 0;
 
-		return semop(semid, op, 1) == 0;
+		return semop(sem, op, 1) == 0;
 	}
+	
+	return false;
 }
 
-void SharedMemory::UnLock(rw_t rw)
+void SharedMemory::Unlock(rw_t rw)
 {
 	if(rw == writer)
 	{
@@ -231,7 +239,7 @@ void SharedMemory::UnLock(rw_t rw)
         op[1].sem_op  = 1;
         op[1].sem_flg = 0;
 
-		semop(semid, op, 2) == 0;
+		semop(sem, op, 2);
 	}
 
 	if(rw == reader)
@@ -241,7 +249,7 @@ void SharedMemory::UnLock(rw_t rw)
         op[0].sem_op  = 1;
         op[0].sem_flg = 0;
 
-		semop(semid, op, 1) == 0;
+		semop(sem, op, 1);
 	}
 }
 
