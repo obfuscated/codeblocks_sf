@@ -22,7 +22,7 @@ void IPC::Send(const wxString& in)
 
 void IPC::Shutdown()
 {
-	// Other than POSIX, Windows does not signal threads waiting for a semaphore when it is deleted, 
+	// Other than POSIX, Windows does not signal threads waiting for a semaphore when it is deleted,
 	// therefore we have to do unlock by hand before deleting
 	// IMPORTANT: This must be called from Manager::Shutdown() or from any other appropriate place
 	is_shutdown = true;
@@ -60,9 +60,6 @@ wxThread::ExitCode IPC::Entry() /* this is the receiving end */
 
 SharedMemory::SharedMemory() : handle(0), sem(0), sem_w(0), shared(0), ok(false), server(false)
 {
-	HANDLE hMapFile;
-	LPCTSTR pBuf;
-	
 	sem_w = CreateMutex(NULL, TRUE, TEXT("CodeBmutexsIPCMr"));
 	if(GetLastError() == ERROR_SUCCESS)
 	{
@@ -70,11 +67,11 @@ SharedMemory::SharedMemory() : handle(0), sem(0), sem_w(0), shared(0), ok(false)
 	}
 
 	sem = CreateSemaphore(0, 0, 1, TEXT("CodeBmutexsIPCw"));
-	
+
 	handle = CreateFileMapping(INVALID_HANDLE_VALUE, 0, PAGE_READWRITE, 0, ipc_buf_size, TEXT("CodeBmutexsIPC"));
-	
-	if (handle == 0 || (shared = MapViewOfFile(handle, FILE_MAP_ALL_ACCESS, 0, 0, ipc_buf_size)) == 0) 
-	{ 
+
+	if (handle == 0 || (shared = MapViewOfFile(handle, FILE_MAP_ALL_ACCESS, 0, 0, ipc_buf_size)) == 0)
+	{
 		fputs("failed creating shared memory", stderr);
 		return;
 	}
@@ -86,7 +83,7 @@ SharedMemory::~SharedMemory()
 {
 	UnmapViewOfFile(shared);
 	CloseHandle(handle);
-	CloseHandle(mutex);
+	CloseHandle(sem_w);
 	CloseHandle(sem);
 }
 
@@ -221,7 +218,7 @@ bool SharedMemory::Lock(rw_t rw)
 
 		return semop(sem, op, 1) == 0;
 	}
-	
+
 	return false;
 }
 
