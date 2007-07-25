@@ -2,7 +2,7 @@
 #define IPC_H
 
 
-#include "../include/sdk_precomp.h"
+#include "sdk.h"
 
 #include <wx/wx.h>
 
@@ -18,11 +18,11 @@
 static const int ipc_buf_size = 1024*64;
 
 #ifdef __WIN32__
-typedef HANDLE shm_handle_t;
-typedef HANDLE semaphore_t;
+    typedef HANDLE shm_handle_t;
+    typedef HANDLE semaphore_t;
 #else
-typedef int shm_handle_t;
-typedef int semaphore_t;
+    typedef int shm_handle_t;
+    typedef int semaphore_t;
 #endif
 
 
@@ -52,6 +52,22 @@ public:
 	bool Server() const { return server; };
 	bool Client() const { return !server; };
 
+
+    /*
+     * Lock(reader) locks "as reader", not "the reader semaphore", i.e. it
+     *   1. locks the reader semaphore
+     *   2. locks the writer mutex, so the shared memory cannot be written while we read it
+     *
+     * Lock(writer) locks "as writer", this is equivalent to locking "the writer mutex"
+     *
+     * Unlock(reader) unlocks "as reader", i.e. it actually unlocks the writer mutex
+     *   which the caller is still holding, so another process can write to the shared memory area again.
+     *   It does not release the reader semaphore, since it should block on it on the next iteration.
+     *
+     * Unlock(writer) locks "as writer", i.e. it
+     *   1. unlocks the reader semaphore, waking up the Server thread
+     *   2. unlocks the writer mutex, so the Server thread can acquire it and prevent other processes from writing
+     */
 	bool Lock(rw_t rw);
 	void Unlock(rw_t rw);
 };
