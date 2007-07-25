@@ -18,9 +18,6 @@ static void DrawButton(wxDC& dc,
 			const bool &focus,
 			const bool &upperTabs)
 {
-	// Define the rounded rectangle base on the given rect
-	// we need an array of 9 points for it
-
 	// Define the middle points
 	wxPoint leftPt, rightPt;
 	if( focus ){
