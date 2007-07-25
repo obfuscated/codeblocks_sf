@@ -88,6 +88,7 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
 		RemoteDebugging& rd = m_CurrentRemoteDebugging[bt];
 		XRCCTRL(*this, "cmbConnType", wxChoice)->SetSelection((int)rd.connType);
 		XRCCTRL(*this, "txtSerial", wxTextCtrl)->SetValue(rd.serialPort);
+		XRCCTRL(*this, "cmbBaud", wxChoice)->SetStringSelection(rd.serialBaud);
 		XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(rd.ip);
 		XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(rd.ipPort);
 		XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(rd.additionalCmds);
@@ -96,6 +97,7 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
 	{
 		XRCCTRL(*this, "cmbConnType", wxChoice)->SetSelection(0);
 		XRCCTRL(*this, "txtSerial", wxTextCtrl)->SetValue(wxEmptyString);
+		XRCCTRL(*this, "cmbBaud", wxChoice)->SetSelection(0);
 		XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(wxEmptyString);
 		XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(wxEmptyString);
 		XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(wxEmptyString);
@@ -119,6 +121,7 @@ void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
 
 	rd.connType = (RemoteDebugging::ConnectionType)XRCCTRL(*this, "cmbConnType", wxChoice)->GetSelection();
 	rd.serialPort = XRCCTRL(*this, "txtSerial", wxTextCtrl)->GetValue();
+	rd.serialBaud = XRCCTRL(*this, "cmbBaud", wxChoice)->GetStringSelection();
 	rd.ip = XRCCTRL(*this, "txtIP", wxTextCtrl)->GetValue();
 	rd.ipPort = XRCCTRL(*this, "txtPort", wxTextCtrl)->GetValue();
 	rd.additionalCmds = XRCCTRL(*this, "txtCmds", wxTextCtrl)->GetValue();

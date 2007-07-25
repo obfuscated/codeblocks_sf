@@ -24,6 +24,7 @@
 #include "examinememorydlg.h"
 #include "threadsdlg.h"
 #include "gdb_tipwindow.h"
+#include "remotedebugging.h"
 
 namespace
 {
@@ -1271,6 +1272,102 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
             m_pDlg->End();
 //            m_pDriver->DebugLog(output);
         }
+};
+
+class GdbCmd_RemoteBaud : public DebuggerCmd
+{
+	public:
+		GdbCmd_RemoteBaud(DebuggerDriver* driver, const wxString& baud)
+			: DebuggerCmd(driver)
+		{
+			m_Cmd << _T("set remotebaud ") << baud;
+			driver->Log(_("Setting serial connection speed to ") + baud);
+		}
+		void ParseOutput(const wxString& output)
+		{
+		}
+};
+
+class GdbCmd_RemoteTarget : public DebuggerCmd
+{
+	public:
+		GdbCmd_RemoteTarget(DebuggerDriver* driver, RemoteDebugging* rd)
+			: DebuggerCmd(driver)
+		{
+			switch (rd->connType)
+			{
+				case RemoteDebugging::TCP:
+				{
+					if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+						m_Cmd << _T("target remote tcp:") << rd->ip << _T(":") << rd->ipPort;
+				}
+				break;
+
+				case RemoteDebugging::UDP:
+				{
+					if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+						m_Cmd << _T("target remote udp:") << rd->ip << _T(":") << rd->ipPort;
+				}
+				break;
+
+				case RemoteDebugging::Serial:
+				{
+					if (!rd->serialPort.IsEmpty())
+						m_Cmd << _T("target remote ") << rd->serialPort;
+				}
+				break;
+				
+				default:
+					break;
+			}
+			
+			if (!m_Cmd.IsEmpty())
+				driver->Log(_("Connecting to remote target"));
+			else
+				m_pDriver->Log(_("Invalid settings for remote debugging!"));
+		}
+		void ParseOutput(const wxString& output)
+		{
+			// This command will either output an error or a breakpoint address info
+			// Connection errors are of the form:
+			//
+			// tcp:10.10.1.205:2345: No route to host.
+			// (remote system can't be contacted on the IP level)
+			//
+			// tcp:10.10.1.205:2345: Connection refused.
+			// (no gdb proxy/server running on the specified remote system ip/port)
+			//
+			// Malformed response to offset query, *
+			// Ignoring packet error, continuing...
+			// (serial line errors)
+			//
+			// Now, we could use a regex to filter these but this might be overkill
+			// since the above errors are the only (?) ones we could get.
+			// So for now we 'll just check them verbatim...
+			
+			wxString errMsg;
+			
+			if (output.Contains(_T("No route to host")))
+				errMsg << _("Can't connect to the remote system. Verify your connection settings and that the remote system is reachable/powered-on.");
+			else if (output.Contains(_T("Connection refused")))
+				errMsg << _("Connection refused by the remote system. Verify your connection settings and that the GDB server/proxy is running on the remote system.");
+			else if (output.Contains(_T("Malformed response")) ||
+					output.Contains(_T("packet error")))
+				errMsg << _("Connection can't be established. Verify your connection settings and that the GDB server/proxy is running on the remote system.");
+
+			if (!errMsg.IsEmpty())
+			{
+				m_pDriver->Log(_("Failed"));
+
+				// tell the user
+				errMsg << _("\nThe exact error message was:\n\n");
+				errMsg << output;
+				cbMessageBox(errMsg, _("Error"), wxICON_ERROR);
+				return;
+			}
+			
+			m_pDriver->Log(_("Connected"));
+		}
 };
 
 #endif // DEBUGGER_COMMANDS_H

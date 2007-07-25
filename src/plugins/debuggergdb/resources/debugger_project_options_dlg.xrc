@@ -115,11 +115,41 @@
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="txtSerial">
-									<value>/dev/ttyS0</value>
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="txtSerial">
+											<value>/dev/ttyS0</value>
+										</object>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT8">
+											<label>Baud:</label>
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>10</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxChoice" name="cmbBaud">
+											<content>
+												<item>115200</item>
+												<item>57600</item>
+												<item>38400</item>
+												<item>19200</item>
+												<item>9600</item>
+												<item>4800</item>
+												<item>2400</item>
+												<item>1200</item>
+											</content>
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
+								<option>1</option>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT3">
@@ -130,27 +160,33 @@
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="txtIP">
-									<value>192.168.0.1</value>
-									<size>120,23</size>
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="txtIP">
+											<value>192.168.0.1</value>
+											<size>120,23</size>
+										</object>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT4">
+											<label>Port:</label>
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>10</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="txtPort">
+											<value>12345</value>
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT4">
-									<label>TCP/UDP port:</label>
-								</object>
-								<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="txtPort">
-									<value>12345</value>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT5">
@@ -162,7 +198,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="txtCmds">
-									<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxTE_DONTWRAP|wxVSCROLL|wxHSCROLL</style>
+									<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
 									<size>238,-1</size>
 								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

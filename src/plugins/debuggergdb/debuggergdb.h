@@ -113,6 +113,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         wxString GetDebuggee(ProjectBuildTarget* target);
         bool IsStopped();
         void AddDataBreakpoint();
+        bool EnsureBuildUpToDate();
+		int DoDebug();
 
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDebug(wxCommandEvent& event);
@@ -141,6 +143,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnEditorOpened(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
+        void OnCompilerFinished(CodeBlocksEvent& event);
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);
         void OnGDBTerminated(wxCommandEvent& event);
@@ -219,6 +222,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool     m_bIsConsole;
         int      m_nConsolePid;
         wxString m_ConsoleTty;
+        
+        bool m_WaitingCompilerToFinish;
 
 		DECLARE_EVENT_TABLE()
 };

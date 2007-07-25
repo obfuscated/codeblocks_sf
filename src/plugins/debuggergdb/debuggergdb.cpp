@@ -241,7 +241,8 @@ DebuggerGDB::DebuggerGDB()
     m_pBreakpointsWindow(0),
     m_pExamineMemoryDlg(0),
     m_pThreadsDlg(0),
-    m_pProject(0)
+    m_pProject(0),
+    m_WaitingCompilerToFinish(false)
 {
     if(!Manager::LoadResource(_T("debugger.zip")))
     {
@@ -373,6 +374,9 @@ void DebuggerGDB::OnAttach()
 
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectClosed));
+    
+//    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerStarted));
+    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerFinished));
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
@@ -670,6 +674,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 						rd.connType = (RemoteDebugging::ConnectionType)atol(rdOpt->Attribute("conn_type"));
 					if (rdOpt->Attribute("serial_port"))
 						rd.serialPort = cbC2U(rdOpt->Attribute("serial_port"));
+					if (rdOpt->Attribute("serial_baud"))
+						rd.serialBaud = cbC2U(rdOpt->Attribute("serial_baud"));
 					if (rdOpt->Attribute("ip_address"))
 						rd.ip = cbC2U(rdOpt->Attribute("ip_address"));
 					if (rdOpt->Attribute("ip_port"))
@@ -716,6 +722,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
             	TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
             	tgtnode->SetAttribute("conn_type", (int)rd.connType);
             	tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
+            	tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
             	tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
             	tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
             	tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
@@ -932,10 +939,45 @@ bool DebuggerGDB::IsStopped()
     return !m_State.HasDriver() || m_State.GetDriver()->IsStopped();
 }
 
+bool DebuggerGDB::EnsureBuildUpToDate()
+{
+	m_WaitingCompilerToFinish = false;
+	
+    // compile project/target (if not attaching to a PID)
+    if (m_PidToAttach == 0)
+    {
+		MessageManager* msgMan = Manager::Get()->GetMessageManager();
+
+        // make sure the target is compiled
+        PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+        if (plugins.GetCount())
+            m_pCompiler = (cbCompilerPlugin*)plugins[0];
+        else
+            m_pCompiler = 0;
+        if (m_pCompiler)
+        {
+            // is the compiler already running?
+            if (m_pCompiler->IsRunning())
+            {
+                msgMan->Log(m_PageIndex, _("Compiler in use..."));
+                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+                cbMessageBox(_("The compiler is currently in use. Aborting debugging session..."), _("Compiler running"), wxICON_WARNING);
+                return false;
+            }
+
+            msgMan->Log(m_PageIndex, _("Building to ensure sources are up-to-date"));
+            m_pCompiler->Build();
+            m_WaitingCompilerToFinish = true;
+            // now, when the build is finished, DoDebug will be launched in OnCompilerFinished()
+        }
+    }
+	return true;
+}
+
 int DebuggerGDB::Debug()
 {
     // if already running, return
-    if (m_pProcess)
+    if (m_pProcess || m_WaitingCompilerToFinish)
         return 1;
 
     m_pProject = 0;
@@ -961,64 +1003,53 @@ int DebuggerGDB::Debug()
     m_pProject = project;
 
     // compile project/target (if not attaching to a PID)
-    if (0)//m_PidToAttach == 0)
-    {
-        // make sure the target is compiled
-        PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-        if (plugins.GetCount())
-            m_pCompiler = (cbCompilerPlugin*)plugins[0];
-        else
-            m_pCompiler = 0;
-        if (m_pCompiler)
-        {
-            // is the compiler already running?
-            if (m_pCompiler->IsRunning())
-            {
-                msgMan->Log(m_PageIndex, _("Compiler in use..."));
-                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
-                cbMessageBox(_("The compiler is currently in use. Aborting debugging session..."), _("Compiler running"), wxICON_WARNING);
-                return -1;
-            }
+    // this will wait for the compiler to finish and then call DoDebug
+    if (!EnsureBuildUpToDate())
+		return -1;
+	
+	// if not waiting for the compiler, start debugging now
+	if (!m_WaitingCompilerToFinish)
+		return DoDebug();
+	
+	return 0;
+}
 
-            msgMan->Log(m_PageIndex, _("Building to ensure sources are up-to-date"));
-            m_pCompiler->Build();
-            while (m_pCompiler->IsRunning())
-            {
-                wxMilliSleep(10);
-                Manager::Yield();
-            }
-            msgMan->SwitchTo(m_PageIndex);
-            if (m_pCompiler->GetExitCode() != 0)
-            {
-                msgMan->Log(m_PageIndex, _("Build failed..."));
-                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
-                cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
-                return -1;
-            }
-            msgMan->Log(m_PageIndex, _("Build succeeded"));
-        }
-    }
+int DebuggerGDB::DoDebug()
+{
+    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+
+	// this is always called after EnsureBuildUpToDate() so we should display the build result
+	msgMan->SwitchTo(m_PageIndex);
+	if (m_pCompiler->GetExitCode() != 0)
+	{
+		msgMan->Log(m_PageIndex, _("Build failed..."));
+		msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+		cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
+		return 1;
+	}
+	msgMan->Log(m_PageIndex, _("Build succeeded"));
 
     // select the build target to debug
     ProjectBuildTarget* target = 0;
     Compiler* actualCompiler = 0;
     if (m_PidToAttach == 0)
     {
-        wxString tgt = project->GetActiveBuildTarget();
+        wxString tgt = m_pProject->GetActiveBuildTarget();
         msgMan->SwitchTo(m_PageIndex);
         msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
-        if (!project->BuildTargetValid(tgt, false))
+        if (!m_pProject->BuildTargetValid(tgt, false))
         {
-            int tgtIdx = project->SelectTarget();
+            int tgtIdx = m_pProject->SelectTarget();
             if (tgtIdx == -1)
             {
                 msgMan->Log(m_PageIndex, _("canceled"));
                 return 3;
             }
-            target = project->GetBuildTarget(tgtIdx);
+            target = m_pProject->GetBuildTarget(tgtIdx);
         }
         else
-            target = project->GetBuildTarget(tgt);
+            target = m_pProject->GetBuildTarget(tgt);
 
         // make sure it's not a commands-only target
         if (target->GetTargetType() == ttCommandsOnly)
@@ -1031,7 +1062,7 @@ int DebuggerGDB::Debug()
         msgMan->Log(m_PageIndex, target->GetTitle());
 
         // find the target's compiler (to see which debugger to use)
-        actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : project->GetCompilerID());
+        actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : m_pProject->GetCompilerID());
     }
     else
         actualCompiler = CompilerFactory::GetDefaultCompiler();
@@ -1110,21 +1141,21 @@ int DebuggerGDB::Debug()
             {
                 cbProject* it = projects->Item(i);
                 // skip if it's THE project (added last)
-                if (it == project)
+                if (it == m_pProject)
                     continue;
                 AddSourceDir(it->GetBasePath());
                 AddSourceDir(it->GetCommonTopLevelPath());
             }
         }
         // now add all per-project user-set search dirs
-        wxArrayString& pdirs = GetSearchDirs(project);
+        wxArrayString& pdirs = GetSearchDirs(m_pProject);
         for (size_t i = 0; i < pdirs.GetCount(); ++i)
         {
             AddSourceDir(pdirs[i]);
         }
         // lastly, add THE project as source dir
-        AddSourceDir(project->GetBasePath());
-        AddSourceDir(project->GetCommonTopLevelPath());
+        AddSourceDir(m_pProject->GetBasePath());
+        AddSourceDir(m_pProject->GetCommonTopLevelPath());
 
         // switch to output dir
         wxString path = UnixFilename(target->GetWorkingDir());
@@ -1171,7 +1202,7 @@ int DebuggerGDB::Debug()
 	}
 
     // start the gdb process
-    wxString wdir = project ? project->GetBasePath() : _T(".");
+    wxString wdir = m_pProject ? m_pProject->GetBasePath() : _T(".");
     DebugLog(_T("Command-line: ") + cmdline);
     DebugLog(_T("Working dir : ") + wdir);
     int ret = LaunchProcess(cmdline, wdir);
@@ -2541,4 +2572,13 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
     for (int i=0; i<knt; ++i)
         DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
     return wxEmptyString;
+}
+
+void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
+{
+	if (m_WaitingCompilerToFinish)
+	{
+		m_WaitingCompilerToFinish = false;
+		DoDebug();
+	}
 }

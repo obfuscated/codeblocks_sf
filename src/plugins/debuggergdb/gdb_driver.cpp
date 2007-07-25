@@ -295,39 +295,9 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
     // if performing remote debugging, now is a good time to try and connect to the target :)
     if (rd)
     {
-    	m_pDBG->Log(_("Target defined for remote debugging"));
-    	wxString command;
-    	switch (rd->connType)
-    	{
-    		case RemoteDebugging::TCP:
-    		{
-    			if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-					command << _T("target remote tcp:") << rd->ip << _T(":") << rd->ipPort;
-    		}
-    		break;
-
-    		case RemoteDebugging::UDP:
-    		{
-    			if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-					command << _T("target remote udp:") << rd->ip << _T(":") << rd->ipPort;
-    		}
-    		break;
-
-    		case RemoteDebugging::Serial:
-    		{
-    			if (!rd->serialPort.IsEmpty())
-					command << _T("target remote ") << rd->serialPort;
-    		}
-    		break;
-    		
-    		default:
-				break;
-    	}
-    	
-    	if (!command.IsEmpty())
-			QueueCommand(new DebuggerCmd(this, command));
-		else
-			m_pDBG->Log(_("Invalid settings for remote debugging!"));
+    	if (rd->connType == RemoteDebugging::Serial)
+			QueueCommand(new GdbCmd_RemoteBaud(this, rd->serialBaud));
+    	QueueCommand(new GdbCmd_RemoteTarget(this, rd));
     }
 }
 
@@ -802,7 +772,8 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // Is the program exited?
-        else if (lines[i].StartsWith(_T("Program exited")))
+        else if (lines[i].StartsWith(_T("Program exited")) ||
+				lines[i].Contains(_T("The program is not being run")))
         {
             m_pDBG->Log(lines[i]);
             QueueCommand(new DebuggerCmd(this, _T("quit")));
