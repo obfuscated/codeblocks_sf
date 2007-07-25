@@ -606,6 +606,12 @@
 		<Unit filename="include/licenses.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/logger.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/logmanager.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/macrosmanager.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1210,6 +1216,12 @@
 		<Unit filename="plugins/compilergcc/compilerGNUARM.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerGNUAVR.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerGNUAVR.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/compilerICC.cpp">
 			<Option target="Compiler" />
 		</Unit>
@@ -1232,6 +1244,12 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/compilerMSVC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerMSVC8.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerMSVC8.h">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/compilerOW.cpp">
@@ -3229,6 +3247,7 @@
 		<Extensions>
 			<code_completion />
 			<envvars />
+			<debugger />
 			<wxsmith version="1">
 				<resources>
 					<wxDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" name="VirtualBuildTargetsDlg" language="CPP" />
