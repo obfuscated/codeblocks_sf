@@ -825,6 +825,12 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
     {
         if (errorStr)
             *errorStr = _("WARNING: Can't read file's timestamp: ") + pfd.source_file_absolute_native;
+
+        if (wxFileExists(pfd.source_file_absolute_native))
+        {
+            return true;
+        }
+
         return false;
     }
 
