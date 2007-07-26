@@ -290,10 +290,14 @@ AppVersion::~AppVersion()
 //          85) changes for sdk RegisterEventSink
 //          86) invoke properties dialog on "new snippet"
 //          87) do not copy removed snippet to .trash when shift key down
-/// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 //  Commit  1.2.89 2007/07/21
 //          88) fixed missing window when switching layouts
 //          89) auto show window when switching between window types
+// ----------------------------------------------------------------------------
+//  Commit  1.2.90 2007/07/26
+//          90) Don't save snippets xml when no changes made in order to avoid
+//              file time change and annoying reload msg in secondary CB.
 // ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------

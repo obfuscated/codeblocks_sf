@@ -230,7 +230,6 @@ void CodeSnippets::OnRelease(bool appShutDown)
     }
 
 ////    The following causes wxAui on GTK2.6.3 to crash
-////    // If floating window, we have to close it or CB crashes
 ////    if ( GetConfig()->IsFloatingWindow() )
 ////    {
 ////        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);

@@ -192,15 +192,11 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
 // ----------------------------------------------------------------------------
 {
 	// Save the snippets
-	GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
-
-    //-Don't save settings here, status is not reliable when plugin
-    // Save at plugin OnRlease or app OnClose
-    //-GetConfig()->SettingsSave();
+	if ( GetFileChanged() )
+        GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
 
     if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
   	GetConfig()->pSnippetsSearchCtrl = 0;
-
 }
 // ----------------------------------------------------------------------------
 // EVT_CLOSE is not generated from wxAUI windows wx2.6.3
