@@ -79,13 +79,13 @@ copy /y plugins\codecompletion\resources\images\*.png output\share\codeblocks\im
 echo Makefile.am > excludes.txt
 xcopy /y /s plugins\scriptedwizard\resources\* %RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
 xcopy /y /s plugins\scriptedwizard\resources\* output\share\codeblocks\templates\wizard /EXCLUDE:excludes.txt >nul
+xcopy /y templates\common\* output\share\codeblocks\templates /EXCLUDE:excludes.txt > nul
+xcopy /y templates\win32\* output\share\codeblocks\templates /EXCLUDE:excludes.txt > nul
+xcopy /y templates\common\* %RESDIR%\templates /EXCLUDE:excludes.txt > nul
+xcopy /y templates\win32\* %RESDIR%\templates /EXCLUDE:excludes.txt > nul
+xcopy /y scripts\* %RESDIR%\scripts /EXCLUDE:excludes.txt > nul
+xcopy /y scripts\* output\share\codeblocks\scripts /EXCLUDE:excludes.txt > nul
 del excludes.txt
-copy /y templates\common\* output\share\codeblocks\templates > nul
-copy /y templates\win32\* output\share\codeblocks\templates > nul
-copy /y templates\common\* %RESDIR%\templates > nul
-copy /y templates\win32\* %RESDIR%\templates > nul
-copy /y scripts\* %RESDIR%\scripts > nul
-copy /y scripts\* output\share\codeblocks\scripts > nul
 copy /y tips.txt devel\share\CodeBlocks > nul
 copy /y tips.txt output\share\CodeBlocks > nul
 copy /y tools\ConsoleRunner\cb_console_runner*.exe output > nul
