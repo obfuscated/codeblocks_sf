@@ -375,7 +375,7 @@ void DebuggerGDB::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectClosed));
     
-//    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerStarted));
+    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerStarted));
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerFinished));
 }
 
@@ -966,8 +966,8 @@ bool DebuggerGDB::EnsureBuildUpToDate()
             }
 
             msgMan->Log(m_PageIndex, _("Building to ensure sources are up-to-date"));
-            m_pCompiler->Build();
             m_WaitingCompilerToFinish = true;
+            m_pCompiler->Build();
             // now, when the build is finished, DoDebug will be launched in OnCompilerFinished()
         }
     }
@@ -2574,11 +2574,20 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
     return wxEmptyString;
 }
 
+void DebuggerGDB::OnCompilerStarted(CodeBlocksEvent& event)
+{
+	DBGLOG(_T("DebuggerGDB::OnCompilerStarted"));
+}
+
 void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 {
+	DBGLOG(_T("DebuggerGDB::OnCompilerFinished"));
+
 	if (m_WaitingCompilerToFinish)
 	{
 		m_WaitingCompilerToFinish = false;
-		DoDebug();
+		// only proceed if build succeeeded
+		if (!m_pCompiler || m_pCompiler->GetExitCode() == 0)
+			DoDebug();
 	}
 }

@@ -143,6 +143,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnEditorOpened(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
+        void OnCompilerStarted(CodeBlocksEvent& event);
         void OnCompilerFinished(CodeBlocksEvent& event);
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);

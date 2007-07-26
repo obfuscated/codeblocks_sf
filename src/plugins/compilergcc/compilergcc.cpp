@@ -1420,6 +1420,9 @@ void CompilerGCC::DoPrepareQueue()
 {
     if (m_CommandQueue.GetCount() == 0)
     {
+        CodeBlocksEvent evt(cbEVT_COMPILER_STARTED, 0, 0, 0, this);
+        Manager::Get()->ProcessEvent(evt);
+    	
         ClearLog();
         DoClearErrors();
         // wxStartTimer();
@@ -3581,6 +3584,6 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
     {
         CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, 0, 0, this);
         evt.SetInt(m_LastExitCode);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+        Manager::Get()->ProcessEvent(evt);
     }
 }
