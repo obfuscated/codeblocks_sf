@@ -10,15 +10,19 @@
 content="Artistic Style is a source code indenter, source code formatter, and source code beautifier for the C, C++, C# and Java programming languages.">
 <meta name="keywords" 
 content="artistic style, astyle, source code indenter, source code formatter, source code beautifier">
-<style> <!-- h1 {color:#0000A0; text-align:center; font-style:italic; font-size:300%;}
+
+<style> <!-- 
+    h1 {color:#0000A0; text-align:center; font-style:italic; font-size:300%;}
 	h2 {color:#0000A0;}
 	h3 {color:#0000A0;}
 	h4 {font-size:105%;}
+	table {color:#0000A0; font-weight:bold;}
 	code {color:#0000A0;}
 	code.title {font-size:larger; font-weight:bold;}
 	pre {color:#0000A0; font-weight:bold;}
 	span.brace {color:red;}
 	--></style>
+	
 </head>
 
 <body lang="EN">
@@ -26,117 +30,47 @@ content="artistic style, astyle, source code indenter, source code formatter, so
 <!-- CUT HERE FOR INSERTION INTO SOURCEFORGE DOC MANAGER -->
 <!-- $Id$ -->
 <blockquote>
-    <h1>Artistic Style 1.20</h1>
+    <h1>Artistic Style 1.21</h1>
     <center>
     <h2>A Free, Fast and Small Automatic Formatter<br>
     for <em>C</em>, <em>C++</em>, <em>C#</em>, and <em>Java</em> Source Code
     </h2>
-    <h4>by Tal Davidson <br>
-    and Jim Pattee</h4>
-    <table>
-        <tr>
-            <td>Home Page:</td>
-            <td><a href="http://astyle.sourceforge.net/">
-            http://astyle.sourceforge.net/</a></td>
-        </tr>
-        <tr>
-            <td>Project Page:</td>
-            <td><a href="http://sourceforge.net/projects/astyle/">
-            http://sourceforge.net/projects/astyle/</a></td>
-        </tr>
-    </table>
     </center>
+    
     <p>&nbsp;</p>
-    <p><strong>Artistic Style</strong> is a source code <strong>indenter</strong>, 
-    source code <strong>formatter</strong>, and source code <strong>beautifier</strong> 
-    for the <strong>C, C++, C#</strong> and <strong>Java</strong> programming 
-    languages.</p>
-    <p>When indenting source code, we as programmers have a tendency to use both
-    <strong>spaces</strong> and <strong>tab</strong> characters to create the 
-    wanted indentation. Moreover, some editors by default insert spaces instead 
-    of tabs when pressing the tab key, and other editors (Emacs for example) 
-    have the ability to &quot;pretty up&quot; lines by automatically setting up the white 
-    space before the code on the line, possibly inserting spaces in a code that 
-    up to now used only tabs for indentation. </p>
-    
-    <p>Since the <strong>NUMBER</strong> of space characters showed on screen 
-    for each tab character in the source code changes between editors (unless 
-    the user sets up the number to his liking...), <strong>one of the standard 
-    problems programmers are facing when moving from one editor to another
-    </strong>is that code containing both spaces and tabs that was up to now 
-    perfectly indented, suddenly becomes a mess to look at when changing to 
-    another editor. Even if you as a programmer take care to <strong>ONLY</strong> 
-    use spaces or tabs, looking at other people's source code can still be 
-    problematic. </p>
-    
-    <p>To address this problem, Artistic Style was created - a filter written in
-    <strong>C++</strong> that automatically re-indents and re-formats C / C++ / 
-    C# / Java source files. It can be used from a <strong>command line</strong>, 
-    or it can be <strong>incorporated as classes</strong> in another C++ 
-    program. </p>
-	<h3>License</h3>
-    
-    <p>Artistic Style may be used and distributed under the
-    <a href="license.html">GNU Lesser General Public License</a> (LGPL). You can 
-	use it for free or commercial software without charge. Projects that use Artistic Style do not 
-				have to make the their source code available. If Artistic 
-	Style itself is modified, however, the modified Artistic Style source code 
-	must be made available.</p>
-	
-    <h3><a href="astyle_news.html">News</a> and
-    <a href="astyle_release_notes.html">Release Notes</a></h3>
-    <p>New license agreement, new developer interface, sample Windows program, 
-	new makefile and project file, and 
-	support for Mac and the Linux Intel® compiler.</p>
-	
-    <h3><a href="astyleX.html">Supplemental Documentation</a></h3>
-    <p>There are some formatting problems with <code><nobr>--break-blocks</nobr></code> (or
-    <code><nobr>--break-blocks=all</nobr></code>).</p>
-    
-    <h3><a href="install.html">Install Information</a></h3>
-    <p>Download the latest release from the
-    <a href="http://sourceforge.net/project/showfiles.php?group_id=2319">file 
-    releases page</a>. The latest release is indicated by the line with a green 
-    background. Get the file for the appropriate platform (Linux or Windows).
-    <br>
-    Decompress the package, if necessary. Most operating systems will decompress 
-    and display the package contents automatically. It can then be copied to a 
-    work folder. <br>
-    Follow the installation information for the appropriate platform.</p>
-    
-	<h3><a href="develop.html">Developer Information</a></h3>
-	<p>Artistic Style has a compile option for use with a Graphical User 
-	Interface (GUI). See the Developer Information for the calling 
-	procedure and other details.</p>
-	<p>There is a sample GUI program for Windows available at
-	<a href="http://www.geocities.com/jpattee/"  target="_blank"
-	title="open new window">http://www.geocities.com/jpattee/</a>. 
-	It uses the unmodified Artistic Style 
-	compiled for a GUI. The source code needs some work so it is not available 
-	for now. It should work under Linux using WINE. Future enhancements and 
-	platform support will depend on the response to the sample program.</p>
-	
-    <h3>Bug Reports, Change Requests, Notification</h3>
-    <p>Bug reports and change requests should submitted to the
-    <a href="http://sourceforge.net/tracker/?group_id=2319&atid=102319">bug 
-    tracker page</a>. It is best to log in to SourceForge before submitting a 
-    report so you can be contacted if necessary. Note that code copied and 
-    pasted into the bug report <strong>will not be indented</strong> after the 
-    data is submitted. You must indicate the indentation when you submit the 
-    request (e.g. replace leading spaces with periods).</p>
-    <p>Notification of new releases is activated from the
-    <a href="http://sourceforge.net/project/showfiles.php?group_id=2319">file 
-    releases page</a>. In Latest File Releases, under Notes / Monitor, click on 
-    the envelope. You will receive notification when a new release is available.</p>
-    <p>To contact the project by email use the address
-    <a href="mailto:jimp03@email.com">jimp03@email.com</a>. </p>
-    <p><br>
+    <p>&nbsp;</p>
+     
+    <h2>General Information</h2>
+     
+    <p><b>Line Endings</b><br>
+    Line endings in the formatted file will be the same as the input file. If 
+    there are mixed line endings the most frequent occurrence will be used.</p>
+     
+    <p><b>File Type</b><br>
+    Artistic Style will determine the file type from the file 
+    extension. The extension &quot;.java&quot; indicates a Java file, and &quot;.cs&quot; indicates a C# file. 
+    Everything else is a C or C++ file. If you are using a non-standard file 
+    extension for Java or C#, use one of the <code>--mode=</code> options 
+    described  in &quot;Formatting Options&quot;.</p>
+     
+    <p><b>Quick Start</b><br>
+    If you have never used Artistic Style there are a couple of ways to 
+    start. One is to run it with no options at all. This will format the file 
+    with 4 spaces per indent and will leave the brackets unchanged. Another is 
+    to use one of the predefined styles described in the &quot;Predefined Style 
+    Options&quot;. Select one with a bracket formatting style you like. Once you are 
+    familiar with the options you can customize the format to your personal 
+    preference.</p>
+     
+    <p>&nbsp;</p>
+     
+    <p>
     </p>
-    
-    <h2>Usage </h2>
+     
+    <h2>Usage</h2>
     <p>Artistic style is a console program that receives information from the 
     command line. The format of the command line is:</p>
-    <pre><strong>astyle [options]  <em>SourceFile1.cpp  SourceFile2.cpp  SourceFile3.cpp</em> [ . . . ]</strong></pre>
+    <pre><strong>astyle [options]&nbsp;  <em>SourceFile1.cpp&nbsp; SourceFile2.cpp&nbsp; SourceFile3.cpp</em> [ . . . ]</strong></pre>
     <p>Or to save the file with a different name:</p>
     <p></p>
     <pre><strong>astyle [options] <font color="purple" size="4">&lt;</font><em> OriginalSourceFile </em><font 
@@ -161,25 +95,10 @@ content="artistic style, astyle, source code indenter, source code formatter, so
     <p>With the second option, the file is saved with a different name. 
     Therefore a copy is <strong>not</strong> created.</p>
     <p><code><b>Wildcards</b></code> (such as &quot;*.cpp&quot;), can be used if the 
-    project is compiled to include them. See the above Installation Information 
+    project is compiled to include them. See the Installation Information 
     for instructions.</p>
-    <p><br>
-    </p>
-    <h2>Options </h2>
-    <p>Not specifying any option will result in C/C++ style indentation, with a 
-    default of 4 spaces per indent, and NO formatting. </p>
-    <h4>Options may be written in two different ways:</h4>
-    <ul>
-        <li><strong>Long options:</strong><br>
-        These options start with '<strong><code>--</code></strong>', and <strong>
-        must be written one at a time.</strong><br>
-        (Example: '<code>--brackets=attach --pad --indent=spaces=4</code>) </li>
-        <li><strong>Short Options:</strong><br>
-        These options start with a single '<strong><code>-</code></strong>', and
-        <strong>may be concatenated together</strong>.<br>
-        (Example: '<code>-bps4</code>' is the same as writing '<code>-b -p -s4</code>'.)
-        </li>
-    </ul>
+    &nbsp;<h2>Options File</h2>
+    
     <h4>A <font color="#0000a0">default options file</font> may be used to set 
     your favorite source style.</h4>
     <ul>
@@ -210,9 +129,7 @@ content="artistic style, astyle, source code indenter, source code formatter, so
         are considered <strong>line-comments</strong>. </li>
         <li>Example of a default options file:
         <blockquote>
-            <pre><strong><font color="#8080c0"># set default parsing to java files</font>
-mode=java
-<font color="#8080c0"># brackets should be attached to pre-bracket lines</font>
+            <pre><strong><font color="#8080c0"># brackets should be attached to pre-bracket lines</font>
 brackets=attach
 <font color="#8080c0"># set 6 spaces per indent</font>
 indent=spaces=6
@@ -224,9 +141,31 @@ suffix=.pre</strong>
         </blockquote>
         </li>
     </ul>
+    
+    <p>&nbsp;</p>
+    
+    <h2>Options </h2>
+    
+    <p>Not specifying any option will result in C/C++ style indentation, no 
+    change in bracket placement, 4 spaces per indent, and no formatting changes.</p>
+    <h4>Options may be written in two different ways:</h4>
+    <ul>
+        <li><strong>Long options:</strong><br>
+        These options start with '<strong><code>--</code></strong>', and <strong>
+        must be written one at a time.</strong><br>
+        (Example: '<code>--brackets=attach  --indent=spaces=4</code>') </li>
+        <li><strong>Short Options:</strong><br>
+        These options start with a single '<strong><code>-</code></strong>', and
+        <strong>may be concatenated together</strong>.<br>
+        (Example: '<code>-bps4</code>' is the same as writing '<code>-b -p -s4</code>'.)
+        </li>
+    </ul>
+    <p>&nbsp;</p>
+    
     <hr>
-    <!--  * * * * * * * * * * * *   Predefined Style Options  * * * * * * * * * * * *  -->
+
     <h3>Predefined Style Options</h3>
+    
 	<p>Predefined Style options define the style by setting several other 
 	options. If other options are also used, the placement of the 
 	predefined style option in the command line is important. If the 
@@ -239,24 +178,24 @@ suffix=.pre</strong>
 	the order on the command line is reversed to &quot;<nobr>--brackets=attach</nobr>  
 	<nobr>--style=ansi</nobr> &quot;, the brackets will be broken (ansi style) and the attach 
 	option will be ignored.</p>
-	<p>For the options set by each style check the parseOption function in 
-	astyle_main.cpp</p>
+	<p>For the options set by each style check the parseOption function in astyle_main.cpp.</p>
 
     <blockquote>
         <p><code class="title">--style=ansi</code><br>
-        ANSI style formatting/indenting. </p>
+        ANSI style formatting/indenting. Brackets are broken, indentation is 4 
+        spaces. Namespaces, classes, and switches are NOT indented. </p>
         <blockquote>
             <pre>namespace foospace
 <span class="brace">{</span>
 int Foo()
 <span class="brace">{</span>
-    if (isBar)
-<span class="brace">    {</span>
-        bar();
-        return 1;
-<span class="brace">    }</span>
-    else
-        return 0;
+&nbsp;&nbsp;&nbsp; if (isBar)
+<span class="brace">&nbsp;&nbsp; &nbsp;{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bar();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;
+<span class="brace">&nbsp;&nbsp;&nbsp; }</span>
+&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;
 <span class="brace">}
 }</span>
 </pre>
@@ -264,35 +203,39 @@ int Foo()
         <p><br>
         </p>
         <p><code class="title">--style=gnu</code><br>
-        GNU style formatting/indenting. </p>
+        GNU style formatting/indenting.&nbsp; Brackets are broken, blocks are 
+        indented, indentation is 2 spaces. Namespaces, classes, and switches are 
+        NOT indented.</p>
         <blockquote>
             <pre>namespace foospace
-<span class="brace">  {</span>
-    int Foo()
-<span class="brace">      {</span>
-        if (isBar)
-<span class="brace">          {</span>
-            bar();
-            return 1;
-<span class="brace">          }</span>
-        else
-          return 0;
-<span class="brace">      }
-  }</span>
+<span class="brace">&nbsp; {</span>
+&nbsp;&nbsp;&nbsp; int Foo()
+<span class="brace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (isBar)
+<span class="brace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bar();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;
+<span class="brace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;
+<span class="brace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp; }</span>
 </pre>
         </blockquote>
         <p><br>
         </p>
         <p><code class="title">--style=kr</code><br>
-        Kernighan&amp;Ritchie style formatting/indenting. </p>
+        Kernighan&amp;Ritchie style formatting/indenting. Brackets are attached, 
+        indentation is 4 spaces. Namespaces, classes, and switches are NOT 
+        indented.</p>
         <blockquote>
             <pre>namespace foospace <span class="brace">{</span>
 int Foo() <span class="brace">{</span>
-    if (isBar) <span class="brace">{</span>
-        bar();
-        return 1;
-<span class="brace">    }</span> else
-        return 0;
+&nbsp;&nbsp;&nbsp; if (isBar) <span class="brace">{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bar();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;
+<span class="brace">&nbsp;&nbsp;&nbsp; }</span> else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;
 <span class="brace">}
 }</span>
 </pre>
@@ -300,19 +243,19 @@ int Foo() <span class="brace">{</span>
         <p><br>
         </p>
         <p><code class="title">--style=linux</code><br>
-        Linux style formatting/indenting (brackets are broken apart from 
-        class and function declarations, but connected to command lines, and indents 
-        are set to 8 spaces). </p>
+        Linux style formatting/indenting. All brackets are linux style, 
+        indentation is 8 spaces. Namespaces, classes, and switches are NOT 
+        indented.</p>
         <blockquote>
             <pre>namespace foospace
 <span class="brace">{</span>
 int Foo()
 <span class="brace">{</span>
-        if (isBar) <span class="brace">{</span>
-                bar();
-                return 1;
-<span class="brace">        }</span> else
-                return 0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (isBar) <span class="brace">{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bar();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;
+<span class="brace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  }</span> else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;
 <span class="brace">}
 }</span>
 </pre>
@@ -320,16 +263,17 @@ int Foo()
         <p><br>
         </p>
         <p><code class="title">--style=java</code><br>
-        Java style formatting/indenting. </p>
+        Java style formatting/indenting. Brackets are attached, indentation is 4 
+		spaces. Switches are NOT indented.</p>
         <blockquote>
             <pre>class foospace <span class="brace">{</span>
-    int Foo() <span class="brace">{</span>
-        if (isBar) <span class="brace">{</span>
-            bar();
-            return 1;
-<span class="brace">        }</span> else
-            return 0;
-<span class="brace">    }
+&nbsp;&nbsp;&nbsp; int Foo() <span class="brace">{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (isBar) <span class="brace">{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bar();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 1;
+<span class="brace">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   }</span> else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;
+<span class="brace">&nbsp;&nbsp;&nbsp; }
 }</span>
 </pre>
         </blockquote>
@@ -453,9 +397,10 @@ int Foo()
     <h3>Indentation Options </h3>
     <blockquote>
         <p><code class="title">--indent-classes / -C </code><br>
-        Indent '<code>class</code>' blocks so that the blocks '<code>public:</code>', 
+        Indent '<code>class</code>' and '<code>struct</code>' blocks so that the blocks '<code>public:</code>', 
         '<code>protected:</code>' and '<code>private:</code>' are indented. 
-        The entire block is indented.</p>
+        The entire block is indented. This option has no effect on Java and C# 
+		files.</p>
         <blockquote>
             <pre>class Foo
 <span class="brace">{</span>
@@ -544,6 +489,27 @@ case 2:
         </blockquote>
         <p><br>
         </p>
+        <p><code class="title">--indent-blocks / -G</code><br>
+        Add extra indentation to entire blocks. </p>
+        <blockquote>
+            <pre>if (isFoo)
+<span class="brace">{</span>
+    bar();
+<span class="brace">}</span>
+else
+    anotherBar();
+</pre>
+            <p>becomes:</p>
+            <pre>if (isFoo)
+<span class="brace">    {</span>
+        bar();
+<span class="brace">    }</span>
+else
+    anotherBar();
+</pre>
+        </blockquote>
+        <p><br>
+        </p>		
         <p><code class="title">--indent-brackets / -B</code><br>
         Add extra indentation to brackets. This option has no effect if 
         <code><nobr>--indent-blocks</nobr></code> is used.</p>
@@ -566,27 +532,7 @@ else
         </blockquote>
         <p><br>
         </p>
-        <p><code class="title">--indent-blocks / -G</code><br>
-        Add extra indentation to entire blocks. </p>
-        <blockquote>
-            <pre>if (isFoo)
-<span class="brace">{</span>
-    bar();
-<span class="brace">}</span>
-else
-    anotherBar();
-</pre>
-            <p>becomes:</p>
-            <pre>if (isFoo)
-<span class="brace">    {</span>
-        bar();
-<span class="brace">    }</span>
-else
-    anotherBar();
-</pre>
-        </blockquote>
-        <p><br>
-        </p>
+
         <p><code class="title">--indent-namespaces / -N</code><br>
         Add extra indentation to namespace blocks. </p>
         <blockquote>
@@ -646,12 +592,24 @@ error:
         <p><br>
         </p>
         <p><code class="title">--indent-preprocessor / -w</code><br>
-        Indent multi-line preprocessor definitions. should be used with <strong>
+        Indent multi-line preprocessor definitions ending with a backslash. Should be used with <strong>
         <code>--convert-tabs</code></strong> for proper results. Does a pretty 
         good job, but can not perform miracles in obfuscated preprocessor 
         definitions. </p>
+        <blockquote>
+            <pre>#define Is_Bar(arg,a,b) \
+(Is_Foo((arg), (a)) \
+|| Is_Foo((arg), (b)))
+</pre>
+            <p>becomes:</p>
+            <pre>#define Is_Bar(arg,a,b) \
+    (Is_Foo((arg), (a)) \
+     || Is_Foo((arg), (b)))
+</pre>
+        </blockquote>
         <p><br>
         </p>
+		
         <p><code class="title">--max-instatement-indent=<font color="purple">#</font> 
         / -M<font color="purple">#</font></code><br>
         Indent a maximum of <code><font color="purple">#</font></code> spaces in 
@@ -661,18 +619,18 @@ error:
         no <code><font color="purple">#</font></code> is set, the default value 
         of <strong>40</strong> will be used. </p>
         <blockquote>
-            <pre>fooArray[] = { red,
+            <pre>fooArray[] = <span class="brace">{</span> red,
          green,
-         blue };
+         blue <span class="brace">}</span>;
 
 fooFunction(barArg1,
          barArg2,
          barArg3);
 </pre>
             <p>becomes (with larger value):</p>
-            <pre>fooArray[] = { red,
+            <pre>fooArray[] = <span class="brace">{</span> red,
                green,
-               blue };
+               blue <span class="brace">}</span>;
 
 fooFunction(barArg1,
             barArg2,
@@ -685,12 +643,10 @@ fooFunction(barArg1,
         / -m<font color="purple">#</font></code><br>
         Set the minimal indent that is added when a header is built of 
         multiple-lines. This indent makes helps to easily separate the header 
-        from the command statements that follow. The default setting for this 
+        from the command statements that follow. 
+        The value for <font color="purple">#</font> must be less than <strong>40</strong>. The default setting for this 
         option is <strong>twice the current indent</strong> (e.g. <strong><code>
-        --min-conditional-indent=<font color="purple">8</font></code></strong>).
-        <font color="purple">#</font> must be less than <strong>40</strong>. If 
-        no <code><font color="purple">#</font></code> is set, the default value 
-        of <strong>8</strong> will be used. </p>
+        --min-conditional-indent=<font color="purple">8</font></code></strong>).</p>
         <blockquote>
             <pre><font color="#8080c0">// default setting makes this non-bracketed code clear</font>
 if (a &lt; b
@@ -726,11 +682,12 @@ if (a &lt; b
     <blockquote>
         <p><code class="title">--break-blocks / -f</code><br>
         Pad empty lines around header blocks (e.g. '<code>if</code>', '<code>while</code>'...). 
-        Be sure to read the <a href="astyleX.html">Supplemental Documentation</a> 
+        Be sure to read the 
+        <a href="file:///G:/USB/Projects/AStyle/doc/astyleX.html">Supplemental Documentation</a> 
         before using this option. </p>
         <blockquote>
             <pre>isFoo = true;
-if (isFoo)
+if (isFoo) <span class="brace">{</span>
     bar();
 <span class="brace">}</span> else <span class="brace">{</span>
     anotherBar();
@@ -754,7 +711,8 @@ isBar = false;
         <p><code class="title">--break-blocks=all / -F</code><br>
         Pad empty lines around header blocks (e.g. '<code>if</code>', '<code>while</code>'...). 
         Treat closing header blocks (e.g. '<code>else</code>', '<code>catch</code>') 
-        as stand-alone blocks. Be sure to read the <a href="astyleX.html">
+        as stand-alone blocks. Be sure to read the 
+        <a href="file:///G:/USB/Projects/AStyle/doc/astyleX.html">
         Supplemental Documentation</a> before using this option. </p>
         <blockquote>
             <pre>isFoo = true;
@@ -781,8 +739,10 @@ isBar = false;
         <p><br>
         </p>
         <p><code class="title">--break-elseifs / -e</code><br>
-        Break '<code>else if</code>' header combinations into separate lines.
-        </p>
+        Break '<code>else if</code>' header combinations into separate lines. 
+		This option has no effect if <code>one-line=keep-statements</code> is 
+		used. 
+		This option cannot be undone.</p>
         <blockquote>
             <pre>if (isFoo) <span class="brace">{</span>
     bar();
@@ -873,6 +833,10 @@ else
         be used in combination with the paren padding options <code><nobr>
         pad=paren-out</nobr></code> and <code><nobr>pad=paren-in</nobr></code> above. Only padding 
         that has not been requested by other options will be removed.</p>
+		<p>For example, if a source has parens padded on both the inside and 
+		outside, and you want inside only. You need to use <code><nobr>unpad=paren</nobr></code> to remove 
+		the outside padding, and <code><nobr>pad=paren-in</nobr></code> to retain the inside padding. Using 
+		only <code><nobr>pad=paren-in</nobr></code> would not remove the outside padding.</p>
         <blockquote>
             <pre>if ( isFoo( a, b ) )
     bar ( a, b );
@@ -918,17 +882,20 @@ else
         Fill empty lines with the white space of the previous line. </p>
         <p><br>
         </p>
-        <p><code class="title">--mode=c / -c</code><br>
+        <p><code class="title">--mode=c</code><br>
         Indent a C or C++ file. The option is set from the file extension for 
         each file. You can override the setting with this entry. It allows the 
-        formatter to identify language specific syntax such as C classes and C 
-        templates. </p>
-        <p><br>
-        </p>
-        <p><code class="title">--mode=java / -j</code><br>
+        formatter to identify language specific syntax such as C++ classes, 
+        templates, and keywords. </p>
+        <p><code class="title">--mode=java</code><br>
         Indent a Java file. The option is set from the file extension for each 
         file. You can override the setting with this entry. It allows the 
-        formatter to identify language specific syntax such as Java classes. </p>
+        formatter to identify language specific syntax such as Java classes keywords. </p>
+		<p><code class="title">--mode=cs</code><br>
+        Indent a C sharp file. The option is set from the file extension for 
+        each file. You can override the setting with this entry. It allows the 
+        formatter to identify language specific syntax such as C sharp classes 
+		and keywords. </p>
     </blockquote>
     <hr>
     <!--  * * * * * * * * * * * * *   Other Options  * * * * * * * * * * * * *  -->
@@ -936,42 +903,40 @@ else
     <blockquote>
         <p><code class="title">--suffix=<font color="purple">####</font></code><br>
         Append the suffix <font color="purple">####</font> instead of '.orig' to 
-        original filename (e.g. <code>--suffix=<font color="purple">.bak</font></code>).</p>
+        original filename (e.g. <code>--suffix=<font color="purple">.bak</font></code>). 
+		If this is to be a file extension, the dot '.' must be included. 
+		Otherwise the suffix will be appended to the current file extension.</p>
  		<p><code class="title">--suffix=none / -n</code><br>
  		Do not retain a backup of the original file. The original file is 
 		purged after it is formatted.</p>
         <p><code class="title">--options=<font color="purple">####</font></code><br>
-        Specify an options file <font color="purple">####</font> to read and 
-        use. </p>
+		Specify an options file <font color="purple">####</font> to read and 
+		use. </p>
         <p><code class="title">--options=none</code><br>
         Disable the default options file. Only the command-line parameters will 
         be used. </p>
-        <p><code class="title">--errors-to-standard-output / -X</code><br>
+        
+        <p><code class="title">--errors-to-stdout / -X</code><br>
         Print errors to standard-output rather than to standard-error.<br>
         This option should be helpful for systems/shells that do not have this 
         option, such as in Windows95. </p>
+
+		<p><code class="title">--preserve-date / -Z</code><br>
+		Preserve the original file's date and time modified. The date and time 
+		modified will not be changed in the formatted file. This option is not 
+		effective if redirection is used.</p>
+		        
         <p><code class="title">--version / -v</code><br>
         Print version number. </p>
         <p><code class="title">--help / -h / -?</code><br>
         Print a help message and quit. </p>
     </blockquote>
     <hr>
-    <p><br>
-    </p>
-    <h2>Acknowledgements </h2>
-    <ul>
-        <li>Thanks to <strong>Jim Watson, Fred Shwartz, W. Nathaniel Mills III, 
-        Danny Deschenes, Andre Houde, Richard Bullington, Paul-Michael Agapow,</strong> 
-        <strong>Daryn Adler, </strong><b>Dieter Bayer, Sam Cooler</b> for their patches and 
-		contributions to Artistic Style.</li>
-        <li>Thanks to <strong><a href="http://sourceforge.net">SourceForge</a></strong> 
-        for giving Artistic Style its home.</li>
-        <li>Thanks to all the dedicated <strong>beta-testers</strong> and
-        <strong>bug notifiers</strong>! </li>
-    </ul>
-    <p><br>
-    </p>
+ 
+    <p>&nbsp;</p>
     <h2 align="center">ENJOY !!!</h2>
+    <p>&nbsp;</p>
+	
 </blockquote>
 <!-- CUT HERE FOR INSERTION INTO SOURCEFORGE DOC MANAGER -->
 

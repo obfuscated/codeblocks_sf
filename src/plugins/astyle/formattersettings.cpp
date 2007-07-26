@@ -4,12 +4,12 @@
 
 FormatterSettings::FormatterSettings()
 {
-	//ctor
+  //ctor
 }
 
 FormatterSettings::~FormatterSettings()
 {
-	//dtor
+  //dtor
 }
 
 void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
@@ -18,7 +18,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
   int style = cfg->ReadInt(_T("/style"), 0);
 
-  switch(style)
+  switch (style)
   {
     case 0: // ansi
       formatter.setBracketIndent(false);
@@ -29,11 +29,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -47,11 +49,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -65,11 +69,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -83,11 +89,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(true);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -103,11 +111,13 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       //formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -126,8 +136,6 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setSpaceIndentation(spaceNum);
       }
 
-      formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
-      formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
       formatter.setClassIndent(cfg->ReadBool(_T("/indent_classes")));
       formatter.setSwitchIndent(cfg->ReadBool(_T("/indent_switches")));
       formatter.setCaseIndent(cfg->ReadBool(_T("/indent_case")));
@@ -156,13 +164,17 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setBracketFormatMode(astyle::NONE_MODE);
       }
 
+      formatter.setBreakClosingHeaderBracketsMode(cfg->ReadBool(_T("/break_closing")));
       formatter.setBreakBlocksMode(cfg->ReadBool(_T("/break_blocks")));
       formatter.setBreakElseIfsMode(cfg->ReadBool(_T("/break_elseifs")));
       formatter.setOperatorPaddingMode(cfg->ReadBool(_T("/pad_operators")));
       formatter.setParensOutsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_out")));
       formatter.setParensInsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_in")));
+      formatter.setParensUnPaddingMode(cfg->ReadBool(_T("/unpad_parentheses")));
       formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
       formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
+      formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
+      formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
       break;
     }
   }

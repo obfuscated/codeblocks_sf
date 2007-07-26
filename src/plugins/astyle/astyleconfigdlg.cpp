@@ -14,7 +14,7 @@
 #include <string>
 
 #ifndef CB_PRECOMP
-    #include "globals.h"
+#include "globals.h"
 #endif
 
 BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
@@ -29,17 +29,17 @@ END_EVENT_TABLE()
 
 AstyleConfigDlg::AstyleConfigDlg(wxWindow* parent)
 {
-	//ctor
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgAstyleConfig"));
-	wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
-	XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
+  //ctor
+  wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgAstyleConfig"));
+  wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+  XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
 
-    LoadSettings();
+  LoadSettings();
 }
 
 AstyleConfigDlg::~AstyleConfigDlg()
 {
-	//dtor
+  //dtor
 }
 
 void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
@@ -89,8 +89,6 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
   XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->Enable(!en);
   XRCCTRL(*this, "chkUseTab", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkForceUseTabs", wxCheckBox)->Enable(!en);
-  XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->Enable(!en);
-  XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkIndentClasses", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkIndentSwitches", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkIndentCase", wxCheckBox)->Enable(!en);
@@ -100,13 +98,17 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
   XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "cmbBreakType", wxComboBox)->Enable(!en);
+  XRCCTRL(*this, "chkBreakClosing", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkPadOperators", wxCheckBox)->Enable(!en);
-  XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkUnpadParens", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->Enable(!en);
 }
 
 void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
@@ -164,8 +166,6 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/indentation"), 4));
   XRCCTRL(*this, "chkUseTab", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_tabs"), false));
   XRCCTRL(*this, "chkForceUseTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/force_tabs"), false));
-  XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/convert_tabs"), false));
-  XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->SetValue(cfg->ReadBool(_T("/fill_empty_lines"), false));
   XRCCTRL(*this, "chkIndentClasses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_classes"), false));
   XRCCTRL(*this, "chkIndentSwitches", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_switches"), false));
   XRCCTRL(*this, "chkIndentCase", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_case"), false));
@@ -175,13 +175,17 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_labels"), false));
   XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_preprocessor"), false));
   XRCCTRL(*this, "cmbBreakType", wxComboBox)->SetValue(cfg->Read(_T("/break_type"), _T("None")));
+  XRCCTRL(*this, "chkBreakClosing", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_closing"), false));
   XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks"), false));
   XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_elseifs"), false));
   XRCCTRL(*this, "chkPadOperators", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_operators"), false));
   XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_in"), false));
   XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_out"), false));
+  XRCCTRL(*this, "chkUnpadParens", wxCheckBox)->SetValue(cfg->ReadBool(_T("/unpad_parentheses"), false));
   XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_complex"), false));
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_blocks"), false));
+  XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/convert_tabs"), false));
+  XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->SetValue(cfg->ReadBool(_T("/fill_empty_lines"), false));
 
   SetStyle((AStylePredefinedStyle)style);
 }
@@ -208,8 +212,6 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/indentation"), XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->GetValue());
   cfg->Write(_T("/use_tabs"), XRCCTRL(*this, "chkUseTab", wxCheckBox)->GetValue());
   cfg->Write(_T("/force_tabs"), XRCCTRL(*this, "chkForceUseTabs", wxCheckBox)->GetValue());
-  cfg->Write(_T("/convert_tabs"), XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->GetValue());
-  cfg->Write(_T("/fill_empty_lines"), XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_classes"), XRCCTRL(*this, "chkIndentClasses", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_switches"), XRCCTRL(*this, "chkIndentSwitches", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_case"), XRCCTRL(*this, "chkIndentCase", wxCheckBox)->GetValue());
@@ -219,11 +221,15 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/indent_labels"), XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preprocessor"), XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->GetValue());
   cfg->Write(_T("/break_type"), XRCCTRL(*this, "cmbBreakType", wxComboBox)->GetValue());
+  cfg->Write(_T("/break_closing"), XRCCTRL(*this, "chkBreakClosing", wxCheckBox)->GetValue());
   cfg->Write(_T("/break_blocks"), XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->GetValue());
   cfg->Write(_T("/break_elseifs"), XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_operators"), XRCCTRL(*this, "chkPadOperators", wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_parentheses_in"), XRCCTRL(*this, "chkPadParensIn", wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_parentheses_out"), XRCCTRL(*this, "chkPadParensOut", wxCheckBox)->GetValue());
+  cfg->Write(_T("/unpad_parentheses"), XRCCTRL(*this, "chkUnpadParens", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_complex"), XRCCTRL(*this, "chkKeepComplex", wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_blocks"), XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->GetValue());
+  cfg->Write(_T("/convert_tabs"), XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->GetValue());
+  cfg->Write(_T("/fill_empty_lines"), XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->GetValue());
 }

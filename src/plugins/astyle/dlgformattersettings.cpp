@@ -6,14 +6,14 @@
 #include <wx/xrc/xmlres.h>
 
 dlgFormatterSettings::dlgFormatterSettings(wxWindow *dlg)
-: m_dlg(dlg)
+    : m_dlg(dlg)
 {
-	//ctor
+  //ctor
 }
 
 dlgFormatterSettings::~dlgFormatterSettings()
 {
-	//dtor
+  //dtor
 }
 
 void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
@@ -33,7 +33,7 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   else if (XRCCTRL(*m_dlg, "rbCustom", wxRadioButton)->GetValue())
     style = 5;
 
-  switch(style)
+  switch (style)
   {
     case 0: // ansi
       formatter.setBracketIndent(false);
@@ -44,11 +44,13 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -62,11 +64,13 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -80,11 +84,13 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -98,11 +104,13 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(true);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -118,11 +126,13 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setSwitchIndent(false);
       //formatter.setNamespaceIndent(true);
       formatter.setBlockIndent(false);
+      formatter.setBreakClosingHeaderBracketsMode(false);
       formatter.setBreakBlocksMode(false);
       formatter.setBreakElseIfsMode(false);
       formatter.setOperatorPaddingMode(false);
       formatter.setParensInsidePaddingMode(false);
       formatter.setParensOutsidePaddingMode(false);
+      formatter.setParensUnPaddingMode(false);
       formatter.setSingleStatementsMode(true);
       formatter.setBreakOneLineBlocksMode(true);
       break;
@@ -141,8 +151,6 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setSpaceIndentation(spaceNum);
       }
 
-      formatter.setTabSpaceConversionMode(XRCCTRL(*m_dlg, "chkConvertTabs", wxCheckBox)->GetValue());
-      formatter.setEmptyLineFill(XRCCTRL(*m_dlg, "chkFillEmptyLines", wxCheckBox)->GetValue());
       formatter.setClassIndent(XRCCTRL(*m_dlg, "chkIndentClasses", wxCheckBox)->GetValue());
       formatter.setSwitchIndent(XRCCTRL(*m_dlg, "chkIndentSwitches", wxCheckBox)->GetValue());
       formatter.setCaseIndent(XRCCTRL(*m_dlg, "chkIndentCase", wxCheckBox)->GetValue());
@@ -171,13 +179,17 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setBracketFormatMode(astyle::NONE_MODE);
       }
 
+      formatter.setBreakBlocksMode(XRCCTRL(*m_dlg, "chkBreakClosing", wxCheckBox)->GetValue());
       formatter.setBreakBlocksMode(XRCCTRL(*m_dlg, "chkBreakBlocks", wxCheckBox)->GetValue());
       formatter.setBreakElseIfsMode(XRCCTRL(*m_dlg, "chkBreakElseIfs", wxCheckBox)->GetValue());
       formatter.setOperatorPaddingMode(XRCCTRL(*m_dlg, "chkPadOperators", wxCheckBox)->GetValue());
       formatter.setParensOutsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParensOut", wxCheckBox)->GetValue());
       formatter.setParensInsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParensIn", wxCheckBox)->GetValue());
+      formatter.setParensUnPaddingMode(XRCCTRL(*m_dlg, "chkUnpadParens", wxCheckBox)->GetValue());
       formatter.setSingleStatementsMode(!XRCCTRL(*m_dlg, "chkKeepComplex", wxCheckBox)->GetValue());
       formatter.setBreakOneLineBlocksMode(!XRCCTRL(*m_dlg, "chkKeepBlocks", wxCheckBox)->GetValue());
+      formatter.setTabSpaceConversionMode(XRCCTRL(*m_dlg, "chkConvertTabs", wxCheckBox)->GetValue());
+      formatter.setEmptyLineFill(XRCCTRL(*m_dlg, "chkFillEmptyLines", wxCheckBox)->GetValue());
       break;
     }
   }

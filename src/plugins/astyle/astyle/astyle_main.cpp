@@ -6,11 +6,11 @@
  *   reformatting tool for C, C++, C# and Java source files.
  *   http://astyle.sourceforge.net
  *
- *   The "Artistic Style" project, including all files needed to 
- *   compile it, is free software; you can redistribute it and/or 
- *   modify it under the terms of the GNU Lesser General Public 
+ *   The "Artistic Style" project, including all files needed to
+ *   compile it, is free software; you can redistribute it and/or
+ *   modify it under the terms of the GNU Lesser General Public
  *   License as published by the Free Software Foundation; either
- *   version 2.1 of the License, or (at your option) any later 
+ *   version 2.1 of the License, or (at your option) any later
  *   version.
  *
  *   This program is distributed in the hope that it will be useful,
@@ -19,7 +19,7 @@
  *   GNU Lesser General Public License for more details.
  *
  *   You should have received a copy of the GNU Lesser General Public
- *   License along with this project; if not, write to the 
+ *   License along with this project; if not, write to the
  *   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  *   Boston, MA  02110-1301, USA.
  *
@@ -31,7 +31,20 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
+
+#ifndef ASTYLE_LIB             // for console build only
+#if defined(_MSC_VER) || defined(__DMC__)
+#include <sys/utime.h>
+#include <sys/stat.h>
+//#define utimbuf  _utimbuf
+//#define utime    _utime
+#else
+#include <utime.h>
+#include <sys/stat.h>
+#endif                         // end compiler checks
+#endif                         // end ASTYLE_LIB
 
 // for G++ implementation of string.compare:
 // compare((str), (place), (length))  instead of  compare(place, length, str)
@@ -60,7 +73,7 @@
 
 using namespace astyle;
 
-const char* _version = "1.20.2";
+const char* _version = "1.21";
 
 // some compilers want this declared
 bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo);
@@ -74,11 +87,12 @@ stringstream *_err = NULL;
 #else
 // console variables
 ostream *_err = &cerr;
-bool purgeOrigIn = false;
+bool _purgeOrigIn = false;
+bool _preserveDate = false;
 string _suffix = ".orig";
 stringstream _msg;          // info messages are not printed until a file is read
 #endif
-bool _modeManuallySet;
+bool _modeManuallySet = false;
 
 
 // typename will be istringstream for GUI and istream otherwise
@@ -140,23 +154,23 @@ string ASStreamIterator<T>::nextLine()
 		buffer.append(1, ch);
 		inStream->get(ch);
 	}
-	
+
 	if (inStream->eof())
 	{
 		inStreamEOF = true;
 		return buffer;
 	}
-	
+
 	int peekch = inStream->peek();
 
-	if (ch == CR)		// CR/LF is windows otherwise Mac OS 9 
+	if (ch == CR)		// CR+LF is windows otherwise Mac OS 9
 	{
 		if (peekch == LF)
 		{
 			inStream->get();
 			eolWindows++;
 		}
-		else 
+		else
 			eolMacOld++;
 	}
 	else				// LF is Linux, allow for improbable LF/CR
@@ -166,14 +180,14 @@ string ASStreamIterator<T>::nextLine()
 			inStream->get();
 			eolWindows++;
 		}
-		else 
+		else
 			eolLinux++;
 	}
 
 	// set output end of line character
 	if (eolWindows >= eolLinux)
 		if (eolWindows >= eolMacOld)
-			strcpy(outputEOL, "\r\n");  // Windows (CRLF)
+			strcpy(outputEOL, "\r\n");  // Windows (CR+LF)
 		else
 			strcpy(outputEOL, "\r");    // MacOld (CR)
 	else
@@ -181,34 +195,12 @@ string ASStreamIterator<T>::nextLine()
 			strcpy(outputEOL, "\n");    // Linux (LF)
 		else
 			strcpy(outputEOL, "\r");    // MacOld (CR)
-	
+
 	return buffer;
 }
 
 
-/*
-template<typename T>
-string ASStreamIterator<T>::nextLine()
-{
-    char *srcPtr;
-    char *filterPtr;
-
-    inStream->getline(buffer, 2047);
-    srcPtr = filterPtr = buffer;
-
-    while (*srcPtr != 0)
-    {
-        if (*srcPtr != '\r')
-            *filterPtr++ = *srcPtr;
-        srcPtr++;
-    }
-    *filterPtr = 0;
-
-    return string(buffer);
-}
-*/
-
-template<class ITER>
+template<typename ITER>
 bool parseOptions(ASFormatter &formatter,
                   const ITER &optionsBegin,
                   const ITER &optionsEnd,
@@ -298,15 +290,15 @@ bool isParamOption(const string &arg, const char *option)
 void isOptionError(const string &arg, const string &errorInfo)
 {
 #ifdef ASTYLE_LIB
-	if (_err->str().length() == 0)		
+	if (_err->str().length() == 0)
 	{
 		(*_err) << errorInfo << endl;	// need main error message
 		(*_err) << arg;					// output the option in error
 	}
-	else								
+	else
 		(*_err) << endl << arg;			// put endl after previous option
 #else
-	if(errorInfo.length() > 0)			// to avoid a compiler warning
+	if (errorInfo.length() > 0)			// to avoid a compiler warning
 		(*_err) << "Error in param: " << arg << endl;
 #endif
 }
@@ -316,73 +308,70 @@ bool isParamOption(const string &arg, const char *option1, const char *option2)
 	return isParamOption(arg, option1) || isParamOption(arg, option2);
 }
 
-void manuallySetJavaStyle(ASFormatter &formatter)
-{
-	formatter.setJavaStyle();
-	_modeManuallySet = true;
-}
-
-void manuallySetCStyle(ASFormatter &formatter)
-{
-	formatter.setCStyle();
-	_modeManuallySet = true;
-}
-
 
 bool parseOption(ASFormatter &formatter, const string &arg, const string &errorInfo)
 {
 	if ( IS_OPTION(arg, "style=ansi") )
 	{
-		formatter.setBracketIndent(false);
 		formatter.setSpaceIndentation(4);
 		formatter.setBracketFormatMode(BREAK_MODE);
+		formatter.setBracketIndent(false);
 		formatter.setClassIndent(false);
 		formatter.setSwitchIndent(false);
 		formatter.setNamespaceIndent(false);
 	}
 	else if ( IS_OPTION(arg, "style=gnu") )
 	{
-		formatter.setBlockIndent(true);
 		formatter.setSpaceIndentation(2);
 		formatter.setBracketFormatMode(BREAK_MODE);
+		formatter.setBlockIndent(true);
 		formatter.setClassIndent(false);
 		formatter.setSwitchIndent(false);
 		formatter.setNamespaceIndent(false);
 	}
 	else if ( IS_OPTION(arg, "style=java") )
 	{
-		manuallySetJavaStyle(formatter);
-		formatter.setBracketIndent(false);
+//		formatter.setJavaStyle();
+//		_modeManuallySet = true;
 		formatter.setSpaceIndentation(4);
 		formatter.setBracketFormatMode(ATTACH_MODE);
+		formatter.setBracketIndent(false);
 		formatter.setSwitchIndent(false);
 	}
 	else if ( IS_OPTION(arg, "style=kr") )
 	{
 		//manuallySetCStyle(formatter);
-		formatter.setBracketIndent(false);
 		formatter.setSpaceIndentation(4);
 		formatter.setBracketFormatMode(ATTACH_MODE);
+		formatter.setBracketIndent(false);
 		formatter.setClassIndent(false);
 		formatter.setSwitchIndent(false);
 		formatter.setNamespaceIndent(false);
 	}
 	else if ( IS_OPTION(arg, "style=linux") )
 	{
-		formatter.setBracketIndent(false);
 		formatter.setSpaceIndentation(8);
 		formatter.setBracketFormatMode(BDAC_MODE);
+		formatter.setBracketIndent(false);
 		formatter.setClassIndent(false);
 		formatter.setSwitchIndent(false);
 		formatter.setNamespaceIndent(false);
 	}
-	else if ( IS_OPTIONS(arg, "c", "mode=c") )
+	// must check for mode=cs before mode=c !!!
+	else if ( IS_OPTION(arg, "mode=cs") )
 	{
-		manuallySetCStyle(formatter);
+		formatter.setSharpStyle();
+		_modeManuallySet = true;
 	}
-	else if ( IS_OPTIONS(arg, "j", "mode=java") )
+	else if ( IS_OPTION(arg, "mode=c") )
 	{
-		manuallySetJavaStyle(formatter);
+		formatter.setCStyle();
+		_modeManuallySet = true;
+	}
+	else if ( IS_OPTION(arg, "mode=java") )
+	{
+		formatter.setJavaStyle();
+		_modeManuallySet = true;
 	}
 	else if ( isParamOption(arg, "t", "indent=tab=") )
 	{
@@ -553,7 +542,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 	// Options used by only console
 	else if ( IS_OPTIONS(arg, "n", "suffix=none") )
 	{
-		purgeOrigIn = true;
+		_purgeOrigIn = true;
 	}
 	else if ( isParamOption(arg, "suffix=") )
 	{
@@ -561,18 +550,22 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 		if (suffixParam.length() > 0)
 		{
 			_suffix = suffixParam;
-			if (_suffix[0] != '.')
-				_suffix = '.' + _suffix;
+//			if (_suffix[0] != '.')
+//				_suffix = '.' + _suffix;
 		}
 	}
-	else if ( IS_OPTIONS(arg, "X", "errors-to-standard-output") )
+	else if ( IS_OPTIONS(arg, "Z", "preserve-date") )
+	{
+		_preserveDate =true;
+	}
+	else if ( IS_OPTIONS(arg, "X", "errors-to-stdout") )
 	{
 		_err = &cout;
 	}
 	else if ( IS_OPTIONS(arg, "v", "version") )
 	{
 		(*_err) << "Artistic Style " << _version << endl;
-		exit(1);
+		exit(0);
 	}
 	else
 	{
@@ -589,7 +582,7 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
 // *************************   GUI functions   *****************************************************
 /*
  * IMPORTANT VC DLL linker must have the parameter  /EXPORT:AStyleMain=_AStyleMain@16
- *                                                  /EXPORT:AStyleGetVersion=_AStyleGetVersion@0 
+ *                                                  /EXPORT:AStyleGetVersion=_AStyleGetVersion@0
  * For Dll only - "warning C4702: unreachable code" in the <vector> header
  *                is caused by using the Optimization options.
  *                /O2   Maximize speed
@@ -599,8 +592,8 @@ bool parseOption(ASFormatter &formatter, const string &arg, const string &errorI
  *                with the options set.  There haven't been any problems so far.
 */
 extern "C" EXPORT char* STDCALL
-	AStyleMain(char*   pSourceIn,              // pointer to the source to be formatted
-	           char*   pOptions,               // pointer to AStyle options, separated by \n
+	AStyleMain(const char* pSourceIn,          // pointer to the source to be formatted
+	           const char* pOptions,           // pointer to AStyle options, separated by \n
 	           fpError fpErrorHandler,         // pointer to error handler function
 	           fpAlloc fpMemoryAlloc)          // pointer to memory allocation function
 {
@@ -609,17 +602,17 @@ extern "C" EXPORT char* STDCALL
 
 	if (pSourceIn == NULL)
 	{
-		fpErrorHandler(101, "No pointer to source input!\nThe file will not be formatted.");
+		fpErrorHandler(101, "No pointer to source input");
 		return NULL;
 	}
 	if (pOptions == NULL)
 	{
-		fpErrorHandler(102, "No pointer to AStyle options!\nThe file will not be formatted.");
+		fpErrorHandler(102, "No pointer to AStyle options");
 		return NULL;
 	}
 	if (fpMemoryAlloc == NULL)
 	{
-		fpErrorHandler(103, "No pointer to memory allocation function!\nThe file will not be formatted.");
+		fpErrorHandler(103, "No pointer to memory allocation function");
 		return NULL;
 	}
 
@@ -629,14 +622,15 @@ extern "C" EXPORT char* STDCALL
 	vector<string> optionsVector;
 	istringstream opt(pOptions);
 	_err = new stringstream;
+	_modeManuallySet = false;
 
 	importOptions(opt, optionsVector);
 
 	parseOptions(formatter,
 	             optionsVector.begin(),
 	             optionsVector.end(),
-				 "Unknown Artistic Style options!\n"
-				 "The following options were not processed:");
+	             "Unknown Artistic Style options\n"
+	             "The following options were not processed:");
 
 	if (_err->str().length() > 0)
 		fpErrorHandler(210, (char*) _err->str().c_str());
@@ -660,7 +654,7 @@ extern "C" EXPORT char* STDCALL
 //    pTextOut = NULL;           // for testing
 	if (pTextOut == NULL)
 	{
-		fpErrorHandler(110, "Allocation failure on output!\nThe file will not be formatted.");
+		fpErrorHandler(110, "Allocation failure on output");
 		return NULL;
 	}
 
@@ -676,10 +670,29 @@ extern "C" EXPORT const char* STDCALL AStyleGetVersion (void)
 
 #else
 
+void preserveFileDate(const char *oldFileName, const char *newFileName)
+{
+	struct stat stBuf;
+	bool statErr = false;
+	if (stat (oldFileName, &stBuf) == -1)
+		statErr = true;
+	else
+	{
+		struct utimbuf outBuf;
+		outBuf.actime = stBuf.st_atime;
+		// add 1 so RCS will recoginze a change
+		outBuf.modtime = stBuf.st_mtime + 1;
+		if (utime (newFileName, &outBuf) == -1)
+			statErr = true;
+	}
+	if (statErr)
+		(*_err) << "    Could not preserve file date" << endl;
+}
+
 bool stringEndsWith(const string &str, const string &suffix)
 {
-	int strIndex = str.length() - 1;
-	int suffixIndex = suffix.length() - 1;
+	int strIndex = (int) str.length() - 1;
+	int suffixIndex = (int) suffix.length() - 1;
 
 	while (strIndex >= 0 && suffixIndex >= 0)
 	{
@@ -705,8 +718,8 @@ void printHelp()
 {
 	(*_err) << endl;
 	(*_err) << "                            Artistic Style " << _version << endl;
-	(*_err) << "                              by Tal Davidson\n";
-	(*_err) << "                               and Jim Pattee\n";
+	(*_err) << "                         Maintained by: Jim Pattee\n";
+	(*_err) << "                       Original Author: Tal Davidson\n";
 	(*_err) << endl;
 	(*_err) << "Usage  :  astyle [options] Source1.cpp Source2.cpp  [...]\n";
 	(*_err) << "          astyle [options] < Original > Beautified\n";
@@ -715,8 +728,8 @@ void printHelp()
 	(*_err) << "original file-name. The original pre-indented file is renamed, with a\n";
 	(*_err) << "suffix of \".orig\" added to the original filename.\n";
 	(*_err) << endl;
-	(*_err) << "By default, astyle is set up to indent C/C++/C# files, with 4 spaces per\n";
-	(*_err) << "indent, a maximal indentation of 40 spaces inside continuous statements,\n";
+	(*_err) << "By default, astyle is set up to indent C/C++/C#/Java files, with 4 spaces\n";
+	(*_err) << "per indent, a maximal indentation of 40 spaces inside continuous statements,\n";
 	(*_err) << "and NO formatting.\n";
 	(*_err) << endl;
 	(*_err) << "Option's Format:\n";
@@ -885,7 +898,10 @@ void printHelp()
 	(*_err) << "    Disable the default options file.\n";
 	(*_err) << "    Only the command-line parameters will be used.\n";
 	(*_err) << endl;
-	(*_err) << "    --errors-to-standard-output   OR   -X\n";
+	(*_err) << "    --preserve-date   OR   -Z\n";
+	(*_err) << "    The date and time modified will not be changed in the formatted file.\n";
+	(*_err) << endl;
+	(*_err) << "    --errors-to-stdout   OR   -X\n";
 	(*_err) << "    Print errors and help information to standard-output rather than\n";
 	(*_err) << "    to standard-error.\n";
 	(*_err) << endl;
@@ -1014,10 +1030,12 @@ int main(int argc, char *argv[])
 	if (shouldPrintHelp)
 	{
 		printHelp();
-		exit(1);
+		exit(0);
 	}
 
 	// if no files have been given, use cin for input and cout for output
+	// this is used to format text for text editors like TextWrangler
+	// do NOT display any console messages when this branch is used
 	if (fileNameVector.empty())
 	{
 		ASStreamIterator<istream> streamIterator(&cin);
@@ -1042,14 +1060,13 @@ int main(int argc, char *argv[])
 			string originalFileName = fileNameVector[i];
 			string inFileName = originalFileName + _suffix;
 
-			remove(inFileName.c_str());
+			remove(inFileName.c_str());     // remove the old .orig if present
 
 			// check if the file is present before rename
 			ifstream inCheck(originalFileName.c_str());
 			if (!inCheck)
 				error("Could not open input file", originalFileName.c_str());
-			else
-				inCheck.close();
+			inCheck.close();
 
 			if (rename(originalFileName.c_str(), inFileName.c_str()) < 0)
 				error("Could not rename ", string(originalFileName + " to " + inFileName).c_str());
@@ -1067,16 +1084,20 @@ int main(int argc, char *argv[])
 			if (!_modeManuallySet)
 			{
 				if (stringEndsWith(originalFileName, string(".java")))
-				{
 					formatter.setJavaStyle();
-				}
+				else if (stringEndsWith(originalFileName, string(".cs")))
+					formatter.setSharpStyle();
 				else
-				{
 					formatter.setCStyle();
-				}
 			}
-			// display file formatting message
+			// display file formatting message and save the filename
 			cout << "formatting " << originalFileName.c_str() << endl;
+			size_t fname = originalFileName.find_last_of("/\\");
+			if (fname == string::npos)
+				fname = 0;
+			else
+				fname +=1;
+			formatter.fileName = originalFileName.substr(fname);
 
 			ASStreamIterator<istream> streamIterator(&in);
 			formatter.init(&streamIterator);
@@ -1091,7 +1112,12 @@ int main(int argc, char *argv[])
 			out.flush();
 			out.close();
 			in.close();
-			if (purgeOrigIn)
+
+			// change date modified to original file date
+			if (_preserveDate)
+				preserveFileDate(inFileName.c_str(), originalFileName.c_str());
+
+			if (_purgeOrigIn)
 				remove(inFileName.c_str());
 		}
 		// all files formatted
@@ -1103,7 +1129,7 @@ int main(int argc, char *argv[])
 			cout.precision(3);
 		cout << "total time " << secs << " seconds" << endl;
 		cout.precision(0);
-		cout << endl;                    
+		cout << endl;
 	}
 	return 0;
 }

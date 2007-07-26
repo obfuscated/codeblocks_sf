@@ -20,7 +20,98 @@
         <P>&nbsp;</P>
         <blockquote>
         
-            <H3>Artistic Style 1.20&nbsp; (January 2007)</H3>
+ 			<h3>Artistic Style 1.21&nbsp; (June 2007)</h3>
+ 			<blockquote>
+
+				<p>This release contains many bug fixes. Array formatting and indentation has been improved. Arrays 
+				and enums are now formatted by a different procedure than 
+				functions. Brackets will now attach to lines with comments. 
+				Brackets will be broken from lines with comments without 
+                bringing the comments with them. All comments will remain in their 
+                original column, if possible. The formatting of empty blocks was 
+				fixed. The BracketType definition was expanded and the bracket 
+				types are now correctly identified. There are several formatting 
+				fixes for Java files. See the 
+				<a href="astyle_notes.html">Release Notes</a> for a complete 
+				list of changes.</p>
+				<p>A new option, --preserve-date (-Z), has been added.&nbsp; This 
+				will retain the date modified of the original 
+				file&nbsp;in the new formatted file. Otherwise the new file will 
+				contain the current date.</p>
+				<p>The option --errors-to-standard-output has been 
+                shortened to  
+        		--errors-to-stdout. The <b>short</b> options -c (mode=c) and -j 
+				(mode=java) have been removed. The options should seldom be needed 
+				since the mode is now set automatically from the file extension 
+				for <b>each source 
+				file</b> instead of for each program execution. A new long option --mode=cs 
+				(C#) has been added. Key words are now set for each file 
+				depending on the file mode (C, 
+				Java, or C#). This will eliminate formatting problems caused by 
+				not being able to identify the source code language.</p>
+				<p>There has been a change to the Linux style bracket 
+				formatting for C++ header files. In the past 
+				brackets have been broken for function definitions within a 
+				class. With this release 
+				the brackets will be attached. The 
+				brackets will also be attached for arrays, structs, enums, and 
+				other top level objects that are not classes or functions. The 
+				Linux style formatting for Java and C# has not been changed.</p>
+				<p>This release supports only one platform in each distribution 
+				package. In the past all platforms were included in every 
+				package. If you use Artistic Style on more than one platform you 
+				will need to download packages for each platform. 
+				The main difference in platforms is the build directory and the 
+				line endings. The source code and documentation are the same for 
+				all packages.</p>				
+				<p>There are new instructions about optimizing compiler options in 
+				the <a href="install.html">Install Instructions</a>. 
+				If you are compiling using a development environment you may want 
+				to read them. </p>
+				<p>If you have broken brackets with comments attached to the 
+				opening bracket instead of the previous line, do the following
+                <b>before formatting</b> again with broken brackets. Use the 
+				current Artistic Style release (1.21). Format the source using 
+				attached brackets to reattach the brackets and the comments to 
+				the previous line. Then format the source again using broken 
+				brackets. This will move the brackets to the next line without 
+				the comments. The comments will now be on the correct line.</p>
+				<p>There is a new multi-platform GUI program, <b>UniversalIndent</b>, available at
+				<a href="http://sourceforge.net/projects/universalindent">
+				sourceforge.net/projects/universalindent</a>. It allows 
+				you to view the effects of the Artistic Style options on your 
+				source code without saving the file. You can review the results of 
+				the formatting options before updating the file. It can be used 
+				with a test file or with your actual source code. It supports several 
+				other formatting programs. The <b>Artistic Style for 
+				Windows</b> program has been updated to support the current release. It is 
+				available at <a href="http://www.geocities.com/jpattee/">
+				www.geocities.com/jpattee/</a></p>
+				<p>There have been a few inquiries about how to customize 
+				Artistic Style 
+				for an unsupported format. Changes can be made&nbsp; with Python or 
+				another text processing program after formatting the source, or you can modify the Artistic 
+				Style source code itself. The best place to modify the code is 
+				usually in ASEnhancer.cpp. The ASEnhancer class is called after 
+				the main formatting has been done so you are getting a formatted 
+				file. If you just need to change the indentation of a few things 
+				this is probably the best place to do it.</p>
+				<p>There is now a distribution package for OpenVMS thanks to
+				Jim Duff, an OpenVMS Systems Specialist living in Sydney Australia. 
+				His website is at <a class="url" href="http://www.eight-cubed.com/index.html">
+				eight-cubed.com</a>.</p>
+				<p>Thanks to
+							Norbert Holzki and 
+				
+				Siemens AG, 
+				Medical Solutions, Forchheim, Germany for testing the array 
+				formatting.</p>
+				<p>Thanks to Sam Cooler for testing the Mac OS X version.</p>
+				<p>&nbsp;</p>
+        		
+        	</blockquote>
+
+           <H3>Artistic Style 1.20&nbsp; (January 2007)</H3>
         
              <blockquote>
              
