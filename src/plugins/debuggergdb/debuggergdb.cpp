@@ -1008,7 +1008,13 @@ int DebuggerGDB::Debug()
 		return -1;
 	
 	// if not waiting for the compiler, start debugging now
-	if (!m_WaitingCompilerToFinish)
+	// but first check if the driver has already been started:
+	// if the build process was ultra-fast (i.e. nothing to be done),
+	// it may have already called DoDebug() and m_WaitingCompilerToFinish
+	// would already be set to false
+	// by checking the driver availability, we avoid calling DoDebug
+	// a second consecutive time...
+	if (!m_WaitingCompilerToFinish && !m_State.HasDriver())
 		return DoDebug();
 	
 	return 0;

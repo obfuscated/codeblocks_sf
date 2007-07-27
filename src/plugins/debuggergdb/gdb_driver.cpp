@@ -278,8 +278,17 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
     if (!m_Args.IsEmpty())
         QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
 	
-	// run per-target additional commands (remote debugging)
+    // if performing remote debugging, now is a good time to try and connect to the target :)
 	RemoteDebugging* rd = GetRemoteDebuggingInfo();
+    if (rd && rd->IsOk())
+    {
+    	if (rd->connType == RemoteDebugging::Serial)
+			QueueCommand(new GdbCmd_RemoteBaud(this, rd->serialBaud));
+    	QueueCommand(new GdbCmd_RemoteTarget(this, rd));
+    }
+
+	// run per-target additional commands (remote debugging)
+	// moved after connection to remote target (if any)
 	if (rd)
 	{
 		if (!rd->additionalCmds.IsEmpty())
@@ -291,14 +300,6 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 			}
 		}
 	}
-
-    // if performing remote debugging, now is a good time to try and connect to the target :)
-    if (rd)
-    {
-    	if (rd->connType == RemoteDebugging::Serial)
-			QueueCommand(new GdbCmd_RemoteBaud(this, rd->serialBaud));
-    	QueueCommand(new GdbCmd_RemoteTarget(this, rd));
-    }
 }
 
 // remote debugging
@@ -423,7 +424,9 @@ void GDB_driver::Start(bool breakOnEntry)
     }
 
 	// if performing remote debugging, use "continue" command
-	bool remoteDebugging = GetRemoteDebuggingInfo() != 0;
+	RemoteDebugging* rd = GetRemoteDebuggingInfo();
+	bool remoteDebugging = rd && rd->IsOk();
+//	m_pDBG->Log(wxString::Format(_T("RD: %s"), remoteDebugging ? _T("yes") : _T("no")));
 
     // under windows, 'start' segfaults with wx projects...
     if(platform::windows || platform::macosx)
