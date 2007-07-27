@@ -39,6 +39,7 @@
     #include <wx/xrc/xmlres.h>
     #include "messagemanager.h"
     #include "projectmanager.h"
+    #include "projectfile.h"
     #include "pluginmanager.h"
     #include "manager.h"
     #include "sdk_events.h"
@@ -2591,11 +2592,18 @@ void EditorManager::OnTabPosition(wxCommandEvent& event)
 
 void EditorManager::OnProperties(wxCommandEvent& event)
 {
-    // active editor not-in-project
-    ProjectFileOptionsDlg dlg(Manager::Get()->GetAppWindow(),
-                              GetActiveEditor()->GetFilename());
-    PlaceWindow(&dlg);
-    dlg.ShowModal();
+    cbEditor* ed = GetBuiltinActiveEditor();
+    ProjectFile* pf = 0;
+    if (ed)
+        pf = ed->GetProjectFile();
+    if (pf)
+        pf->ShowOptions(Manager::Get()->GetAppWindow());
+    else
+    {
+        ProjectFileOptionsDlg dlg(Manager::Get()->GetAppWindow(), GetActiveEditor()->GetFilename());
+        PlaceWindow(&dlg);
+        dlg.ShowModal();
+    }
 }
 
 void EditorManager::OnAppDoneStartup(wxCommandEvent& event)
