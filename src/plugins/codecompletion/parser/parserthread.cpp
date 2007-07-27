@@ -1097,6 +1097,22 @@ void ParserThread::HandleClass(bool isClass)
 		wxString current = m_Tokenizer.GetToken(); // class name
 		wxString next = m_Tokenizer.PeekToken();
 
+		// handle preprocessor directives in class definition, e.g.
+		//
+		// class MyClass
+		// 		#ifdef FOO
+		// 			: public MyClass1
+		// 			, public MyClass2
+		// 		#endif
+		// {}
+		while (next==ParserConsts::hash)
+		{
+			m_Tokenizer.GetToken(); // make # current
+			next = m_Tokenizer.GetToken();
+			HandlePreprocessorBlocks(next);
+			next = m_Tokenizer.PeekToken();
+		}
+
 		if (!current.IsEmpty() && !next.IsEmpty())
 		{
 			if (next==ParserConsts::lt) // template specialization
