@@ -19,6 +19,7 @@ class cbProject;
 class ProjectBuildTarget;
 class ProjectFile;
 class FilesGroupsAndMasks;
+class TiXmlElement;
 
 // hashmap for fast searches in cbProject::GetFileByFilename()
 WX_DECLARE_STRING_HASH_MAP(ProjectFile*, ProjectFiles);
@@ -628,6 +629,10 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool m_ExtendedObjectNamesGeneration;
         wxString m_Notes;
         bool m_AutoShowNotesOnLoad;
+        
+        // copy of <Extensions> element, in case certain plugins are disabled
+        // so that the contents are not lost
+        TiXmlElement* m_pExtensionsElement;
 };
 
 #endif // CBPROJECT_H

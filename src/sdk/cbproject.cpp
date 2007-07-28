@@ -74,7 +74,8 @@ cbProject::cbProject(const wxString& filename)
     m_PCHMode(pchSourceFile),
     m_CurrentlyCompilingTarget(0),
     m_ExtendedObjectNamesGeneration(false),
-    m_AutoShowNotesOnLoad(false)
+    m_AutoShowNotesOnLoad(false),
+    m_pExtensionsElement(0)
 {
     SetCompilerID(CompilerFactory::GetDefaultCompilerID());
     SetModified(false);
@@ -244,6 +245,8 @@ wxString cbProject::CreateUniqueFilename()
 
 void cbProject::ClearAllProperties()
 {
+	Delete(m_pExtensionsElement);
+
     m_Files.DeleteContents(true);
     m_Files.Clear();
     m_Files.DeleteContents(false);
@@ -267,6 +270,7 @@ void cbProject::Open()
 {
     m_Loaded = false;
     m_ProjectFilesMap.clear();
+	Delete(m_pExtensionsElement);
 
     if (!wxFileName::FileExists(m_Filename) && !wxFileName::DirExists(m_Filename))
     {
@@ -285,7 +289,7 @@ void cbProject::Open()
         Manager::Get()->GetMessageManager()->AppendLog(_("Opening %s: "), m_Filename.c_str());
         m_CurrentlyLoading = true;
         ProjectLoader loader(this);
-        m_Loaded = loader.Open(m_Filename);
+        m_Loaded = loader.Open(m_Filename, &m_pExtensionsElement);
         fileUpgraded = loader.FileUpgraded();
         fileModified = loader.FileModified();
         m_CurrentlyLoading = false;
@@ -417,7 +421,7 @@ bool cbProject::Save()
     if (m_Filename.IsEmpty())
         return SaveAs();
     ProjectLoader loader(this);
-    if (loader.Save(m_Filename))
+    if (loader.Save(m_Filename, m_pExtensionsElement))
     {
         wxFileName fname(m_Filename);
         m_LastModified = fname.GetModificationTime();
@@ -1496,7 +1500,7 @@ bool cbProject::ExportTargetAsProject(const wxString& targetName)
     SetTitle(targetName);
 
     ProjectLoader loader(this);
-    bool ret = loader.ExportTargetAsProject(fname.GetFullPath(), target->GetTitle());
+    bool ret = loader.ExportTargetAsProject(fname.GetFullPath(), target->GetTitle(), m_pExtensionsElement);
 
     SetTitle(oldTitle);
     if (!alreadyModified)

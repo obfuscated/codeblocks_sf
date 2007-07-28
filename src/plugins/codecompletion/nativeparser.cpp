@@ -111,7 +111,15 @@ void NativeParser::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, 
         // Hook called when saving project file.
         wxArrayString& pdirs = GetProjectSearchDirs(project);
 
-        TiXmlElement* node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
+		// since rev4332, the project keeps a copy of the <Extensions> element
+		// and re-uses it when saving the project (so to avoid losing entries in it
+		// if plugins that use that element are not loaded atm).
+		// so, instead of blindly inserting the element, we must first check it's
+		// not already there (and if it is, clear its contents)
+        TiXmlElement* node = elem->FirstChildElement("code_completion");
+        if (!node)
+			node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
+		node->Clear();
         for (size_t i = 0; i < pdirs.GetCount(); ++i)
         {
             TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();

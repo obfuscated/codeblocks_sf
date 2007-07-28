@@ -697,7 +697,16 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
     else
     {
         // Hook called when saving project file.
-		TiXmlElement* node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
+
+		// since rev4332, the project keeps a copy of the <Extensions> element
+		// and re-uses it when saving the project (so to avoid losing entries in it
+		// if plugins that use that element are not loaded atm).
+		// so, instead of blindly inserting the element, we must first check it's
+		// not already there (and if it is, clear its contents)
+		TiXmlElement* node = elem->FirstChildElement("debugger");
+		if (!node)
+			node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
+		node->Clear();
         
         if (pdirs.GetCount() > 0)
         {

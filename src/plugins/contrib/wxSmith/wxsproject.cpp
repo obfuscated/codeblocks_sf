@@ -184,7 +184,10 @@ void wxsProject::WriteConfiguration(TiXmlElement* element)
         return;
     }
 
-    TiXmlElement* SmithElement = element->InsertEndChild(TiXmlElement("wxsmith"))->ToElement();
+    TiXmlElement* SmithElement = element->FirstChildElement("wxsmith");
+    if (!SmithElement)
+		SmithElement = element->InsertEndChild(TiXmlElement("wxsmith"))->ToElement();
+	SmithElement->Clear();
     SmithElement->SetAttribute("version",CurrentVersionStr);
 
     // saving GUI item

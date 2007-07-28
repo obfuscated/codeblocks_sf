@@ -53,6 +53,11 @@ ProjectLoader::~ProjectLoader()
 
 bool ProjectLoader::Open(const wxString& filename)
 {
+	return Open(filename, 0);
+}
+
+bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
+{
     MessageManager* pMsg = Manager::Get()->GetMessageManager();
     if (!pMsg)
         return false;
@@ -225,10 +230,15 @@ bool ProjectLoader::Open(const wxString& filename)
             m_pProject->SetDefaultExecuteTarget(bt->GetTitle());
     }
 
+	if (ppExtensions)
+		*ppExtensions = 0;
+
     // as a last step, run all hooked callbacks
     TiXmlElement* node = proj->FirstChildElement("Extensions");
     if (node)
     {
+    	if (ppExtensions)
+			*ppExtensions = new TiXmlElement(*node);
         ProjectLoaderHooks::CallHooks(m_pProject, node, true);
     }
 
@@ -1005,7 +1015,12 @@ void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* ba
 
 bool ProjectLoader::Save(const wxString& filename)
 {
-    if (ExportTargetAsProject(filename, wxEmptyString))
+	return Save(filename, 0);
+}
+
+bool ProjectLoader::Save(const wxString& filename, TiXmlElement* pExtensions)
+{
+    if (ExportTargetAsProject(filename, wxEmptyString, pExtensions))
     {
         m_pProject->SetModified(false);
         return true;
@@ -1013,7 +1028,7 @@ bool ProjectLoader::Save(const wxString& filename)
     return false;
 }
 
-bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget)
+bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget, TiXmlElement* pExtensions)
 {
     const char* ROOT_TAG = "CodeBlocks_project_file";
 
@@ -1317,7 +1332,9 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     // as a last step, run all hooked callbacks
     if (ProjectLoaderHooks::HasRegisteredHooks())
     {
-        TiXmlElement* node = AddElement(prjnode, "Extensions");
+        TiXmlElement* node = pExtensions
+							? prjnode->InsertEndChild(*pExtensions)->ToElement()
+							: AddElement(prjnode, "Extensions");
         if (node)
         {
             ProjectLoaderHooks::CallHooks(m_pProject, node, false);

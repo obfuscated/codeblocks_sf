@@ -25,14 +25,35 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
 
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
+
+        /** Open a file.
+		  * This version of Open, will return a copy of the <Extensions> element (if found).
+          * @param filename The file to open.
+          * @param ppExtension A pointer to a pointer of type TiXmlElement. This is where
+          * the copy of the <Extensions> element will be placed.
+          * @return True on success, false on failure. */
+        bool Open(const wxString& filename, TiXmlElement** ppExtensions);
+
+        /** Save a file.
+		  * This version of Save, can override the <Extensions> element.
+          * @param filename The file to save.
+          * @param pExtension A pointer of type TiXmlElement. This will be added as
+          * the <Extensions> element.
+          * @return True on success, false on failure. */
+        bool Save(const wxString& filename, TiXmlElement* pExtensions);
+
         /** Export a target as a new project.
           * In other words, save a copy of the project containing only the specified target.
           * @param filename The new project filename.
+          * @param pExtension A pointer of type TiXmlElement. This will be added as
+          * the <Extensions> element.
           * @param onlyTarget The target name. If empty, it's like saving the project under a different name
           * (i.e. all targets are exported to the new project). */
-        bool ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget);
+        bool ExportTargetAsProject(const wxString& filename, const wxString& onlyTarget, TiXmlElement* pExtensions);
+
         /** @return True if the file was upgraded after load, false if not. */
         bool FileUpgraded(){ return m_Upgraded; }
+
         /** @return True if the file was modified while loading, false if not. This is usually true if FileUpgraded() returned true. */
         bool FileModified(){ return m_OpenDirty; }
 	protected:
