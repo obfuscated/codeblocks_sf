@@ -377,6 +377,8 @@ void DebuggerGDB::OnAttach()
     
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerStarted));
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerFinished));
+
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnBuildTargetSelected));
 }
 
 void DebuggerGDB::OnRelease(bool appShutDown)
@@ -1014,7 +1016,9 @@ int DebuggerGDB::Debug()
 	// would already be set to false
 	// by checking the driver availability, we avoid calling DoDebug
 	// a second consecutive time...
-	if (!m_WaitingCompilerToFinish && !m_State.HasDriver())
+	// the same applies for m_Canceled: it is true if DoDebug() was launched but
+	// returned an error
+	if (!m_WaitingCompilerToFinish && !m_State.HasDriver() && !m_Canceled)
 		return DoDebug();
 	
 	return 0;
@@ -1022,6 +1026,9 @@ int DebuggerGDB::Debug()
 
 int DebuggerGDB::DoDebug()
 {
+	// set this to true before every error exit point in this function
+	m_Canceled = false;
+	
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 
@@ -1032,6 +1039,7 @@ int DebuggerGDB::DoDebug()
 		msgMan->Log(m_PageIndex, _("Build failed..."));
 		msgMan->Log(m_PageIndex, _("Aborting debugging session"));
 		cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
+		m_Canceled = true;
 		return 1;
 	}
 	msgMan->Log(m_PageIndex, _("Build succeeded"));
@@ -1041,21 +1049,22 @@ int DebuggerGDB::DoDebug()
     Compiler* actualCompiler = 0;
     if (m_PidToAttach == 0)
     {
-        wxString tgt = m_pProject->GetActiveBuildTarget();
         msgMan->SwitchTo(m_PageIndex);
         msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
-        if (!m_pProject->BuildTargetValid(tgt, false))
+        if (!m_pProject->BuildTargetValid(m_ActiveBuildTarget, false))
         {
             int tgtIdx = m_pProject->SelectTarget();
             if (tgtIdx == -1)
             {
                 msgMan->Log(m_PageIndex, _("canceled"));
+				m_Canceled = true;
                 return 3;
             }
             target = m_pProject->GetBuildTarget(tgtIdx);
+            m_ActiveBuildTarget = target->GetTitle();
         }
         else
-            target = m_pProject->GetBuildTarget(tgt);
+            target = m_pProject->GetBuildTarget(m_ActiveBuildTarget);
 
         // make sure it's not a commands-only target
         if (target->GetTargetType() == ttCommandsOnly)
@@ -1078,6 +1087,7 @@ int DebuggerGDB::DoDebug()
         wxString msg;
         msg.Printf(_("This %s is configured to use an invalid debugger.\nThe operation failed..."), target ? _("target") : _("project"));
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
+		m_Canceled = true;
         return 9;
     }
 
@@ -1100,6 +1110,7 @@ int DebuggerGDB::DoDebug()
             msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
         }
 
+		m_Canceled = true;
         return -1;
     }
 
@@ -1111,6 +1122,7 @@ int DebuggerGDB::DoDebug()
                        "To set it, go to \"Settings/Compiler and debugger\", switch to the \"Programs\" tab,\n"
                        "and select the debugger program."), _("Error"), wxICON_ERROR);
         msgMan->Log(m_PageIndex, _("Aborted"));
+		m_Canceled = true;
         return 4;
     }
 
@@ -1121,6 +1133,7 @@ int DebuggerGDB::DoDebug()
     if (!m_State.StartDriver(target))
     {
         cbMessageBox(_T("Could not decide which debugger to use!"), _T("Error"), wxICON_ERROR);
+		m_Canceled = true;
         return -1;
     }
     m_State.GetDriver()->SetDebugWindows(m_pBacktrace,
@@ -1184,7 +1197,10 @@ int DebuggerGDB::DoDebug()
         // (depends on the target type)
         wxString debuggee = GetDebuggee(target);
         if (debuggee.IsEmpty())
+        {
+			m_Canceled = true;
             return -3;
+        }
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, debuggee);
     }
     else // m_PidToAttach != 0
@@ -1217,7 +1233,10 @@ int DebuggerGDB::DoDebug()
 	wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
 
     if (ret != 0)
+    {
+		m_Canceled = true;
         return ret;
+    }
 
     wxString out;
     // start polling gdb's output
@@ -2596,4 +2615,13 @@ void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 		if (!m_pCompiler || m_pCompiler->GetExitCode() == 0)
 			DoDebug();
 	}
+}
+
+void DebuggerGDB::OnBuildTargetSelected(CodeBlocksEvent& event)
+{
+	DBGLOG(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetProject(), event.GetBuildTargetName().c_str());
+
+	// verify that the project that sent it, is the one we 're debugging
+	if (!m_pProject || event.GetProject() == m_pProject)
+		m_ActiveBuildTarget = event.GetBuildTargetName();
 }

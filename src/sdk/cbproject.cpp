@@ -125,10 +125,12 @@ cbProject::~cbProject()
     ClearAllProperties();
 }
 
-void cbProject::NotifyPlugins(wxEventType type)
+void cbProject::NotifyPlugins(wxEventType type, const wxString& targetName, const wxString& oldTargetName)
 {
     CodeBlocksEvent event(type);
     event.SetProject(this);
+    event.SetBuildTargetName(targetName);
+    event.SetOldBuildTargetName(oldTargetName);
     Manager::Get()->ProcessEvent(event);
 }
 
@@ -257,6 +259,8 @@ void cbProject::ClearAllProperties()
         m_Targets.RemoveAt(0);
     }
     SetModified(true);
+    
+    NotifyPlugins(cbEVT_BUILDTARGET_SELECTED);
 }
 
 void cbProject::Open()
@@ -1389,6 +1393,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
 
     SetModified(true);
 
+	NotifyPlugins(cbEVT_BUILDTARGET_ADDED, targetName);
     NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
     return target;
 }
@@ -1398,6 +1403,8 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
+    	wxString oldTargetName = target->GetTitle();
+    	
     	// rename target if referenced in any virtual target too
     	for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
     	{
@@ -1420,6 +1427,7 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
         // finally rename the target
         target->SetTitle(targetName);
         SetModified(true);
+		NotifyPlugins(cbEVT_BUILDTARGET_RENAMED, targetName, oldTargetName);
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
         return true;
     }
@@ -1448,6 +1456,7 @@ ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& n
         }
         SetModified(true);
         m_Targets.Add(newTarget);
+        NotifyPlugins(cbEVT_BUILDTARGET_ADDED, newName);
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
     }
     return newTarget;
@@ -1501,6 +1510,8 @@ bool cbProject::RemoveBuildTarget(int index)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
+    	wxString oldTargetName = target->GetTitle();
+
     	// remove target from any virtual targets it belongs to
     	for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
     	{
@@ -1524,6 +1535,7 @@ bool cbProject::RemoveBuildTarget(int index)
         delete target;
         m_Targets.RemoveAt(index);
         SetModified(true);
+        NotifyPlugins(cbEVT_BUILDTARGET_REMOVED, oldTargetName);
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
         return true;
     }
@@ -1569,15 +1581,20 @@ bool cbProject::SetActiveBuildTarget(const wxString& name)
 {
     if (name == m_ActiveTarget)
         return true;
+	wxString oldActiveTarget = m_ActiveTarget;
     m_ActiveTarget = name;
 
-    if (BuildTargetValid(name))
-        return true;
+    bool valid = BuildTargetValid(name);
 
-    // no target (virtual or real) by that name
-
-    m_ActiveTarget = GetFirstValidBuildTargetName();
-    return false;
+	if (!valid)
+	{
+		// no target (virtual or real) by that name
+		m_ActiveTarget = GetFirstValidBuildTargetName();
+	}
+	
+	NotifyPlugins(cbEVT_BUILDTARGET_SELECTED, m_ActiveTarget, oldActiveTarget);
+	
+    return valid;
 }
 
 const wxString& cbProject::GetActiveBuildTarget() const

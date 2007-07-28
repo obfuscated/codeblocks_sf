@@ -37,69 +37,71 @@
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDockEvent, wxEvent)
 
-#define DEFINE_CB_EVENT_TYPE(type) \
-	const wxEventType type = wxNewEventType();
-
 // app events
-DEFINE_CB_EVENT_TYPE(cbEVT_APP_STARTUP_DONE)
-DEFINE_CB_EVENT_TYPE(cbEVT_APP_START_SHUTDOWN)
-DEFINE_CB_EVENT_TYPE(cbEVT_APP_UPDATE_TITLE)
+const wxEventType cbEVT_APP_STARTUP_DONE = wxNewEventType();
+const wxEventType cbEVT_APP_START_SHUTDOWN = wxNewEventType();
+const wxEventType cbEVT_APP_UPDATE_TITLE = wxNewEventType();
 // plugin events
-DEFINE_CB_EVENT_TYPE(cbEVT_PLUGIN_ATTACHED)
-DEFINE_CB_EVENT_TYPE(cbEVT_PLUGIN_RELEASED)
-DEFINE_CB_EVENT_TYPE(cbEVT_PLUGIN_INSTALLED)
-DEFINE_CB_EVENT_TYPE(cbEVT_PLUGIN_UNINSTALLED)
+const wxEventType cbEVT_PLUGIN_ATTACHED = wxNewEventType();
+const wxEventType cbEVT_PLUGIN_RELEASED = wxNewEventType();
+const wxEventType cbEVT_PLUGIN_INSTALLED = wxNewEventType();
+const wxEventType cbEVT_PLUGIN_UNINSTALLED = wxNewEventType();
 // editor events
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_CLOSE)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_OPEN)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_ACTIVATED)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_DEACTIVATED)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_SAVE)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_MODIFIED)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_TOOLTIP)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_TOOLTIP_CANCEL)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_BREAKPOINT_ADD)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_BREAKPOINT_EDIT)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_BREAKPOINT_DELETE)
-DEFINE_CB_EVENT_TYPE(cbEVT_EDITOR_UPDATE_UI)
+const wxEventType cbEVT_EDITOR_CLOSE = wxNewEventType();
+const wxEventType cbEVT_EDITOR_OPEN = wxNewEventType();
+const wxEventType cbEVT_EDITOR_ACTIVATED = wxNewEventType();
+const wxEventType cbEVT_EDITOR_DEACTIVATED = wxNewEventType();
+const wxEventType cbEVT_EDITOR_SAVE = wxNewEventType();
+const wxEventType cbEVT_EDITOR_MODIFIED = wxNewEventType();
+const wxEventType cbEVT_EDITOR_TOOLTIP = wxNewEventType();
+const wxEventType cbEVT_EDITOR_TOOLTIP_CANCEL = wxNewEventType();
+const wxEventType cbEVT_EDITOR_BREAKPOINT_ADD = wxNewEventType();
+const wxEventType cbEVT_EDITOR_BREAKPOINT_EDIT = wxNewEventType();
+const wxEventType cbEVT_EDITOR_BREAKPOINT_DELETE = wxNewEventType();
+const wxEventType cbEVT_EDITOR_UPDATE_UI = wxNewEventType();
 // project events
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_CLOSE)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_OPEN)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_SAVE)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_ACTIVATE)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_FILE_ADDED)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_FILE_REMOVED)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_POPUP_MENU)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_TARGETS_MODIFIED)
-DEFINE_CB_EVENT_TYPE(cbEVT_PROJECT_RENAMED)
-DEFINE_CB_EVENT_TYPE(cbEVT_WORKSPACE_CHANGED)
+const wxEventType cbEVT_PROJECT_CLOSE = wxNewEventType();
+const wxEventType cbEVT_PROJECT_OPEN = wxNewEventType();
+const wxEventType cbEVT_PROJECT_SAVE = wxNewEventType();
+const wxEventType cbEVT_PROJECT_ACTIVATE = wxNewEventType();
+const wxEventType cbEVT_PROJECT_FILE_ADDED = wxNewEventType();
+const wxEventType cbEVT_PROJECT_FILE_REMOVED = wxNewEventType();
+const wxEventType cbEVT_PROJECT_POPUP_MENU = wxNewEventType();
+const wxEventType cbEVT_PROJECT_TARGETS_MODIFIED = wxNewEventType();
+const wxEventType cbEVT_PROJECT_RENAMED = wxNewEventType();
+const wxEventType cbEVT_WORKSPACE_CHANGED = wxNewEventType();
+// build targets events
+const wxEventType cbEVT_BUILDTARGET_ADDED = wxNewEventType();
+const wxEventType cbEVT_BUILDTARGET_REMOVED = wxNewEventType();
+const wxEventType cbEVT_BUILDTARGET_RENAMED = wxNewEventType();
+const wxEventType cbEVT_BUILDTARGET_SELECTED = wxNewEventType();
 // pipedprocess events
-DEFINE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_STDOUT)
-DEFINE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_STDERR)
-DEFINE_CB_EVENT_TYPE(cbEVT_PIPEDPROCESS_TERMINATED)
+const wxEventType cbEVT_PIPEDPROCESS_STDOUT = wxNewEventType();
+const wxEventType cbEVT_PIPEDPROCESS_STDERR = wxNewEventType();
+const wxEventType cbEVT_PIPEDPROCESS_TERMINATED = wxNewEventType();
 // thread-pool events
-DEFINE_CB_EVENT_TYPE(cbEVT_THREADTASK_STARTED)
-DEFINE_CB_EVENT_TYPE(cbEVT_THREADTASK_ENDED)
-DEFINE_CB_EVENT_TYPE(cbEVT_THREADTASK_ALLDONE)
+const wxEventType cbEVT_THREADTASK_STARTED = wxNewEventType();
+const wxEventType cbEVT_THREADTASK_ENDED = wxNewEventType();
+const wxEventType cbEVT_THREADTASK_ALLDONE = wxNewEventType();
 // request app to dock/undock a window
-DEFINE_CB_EVENT_TYPE(cbEVT_ADD_DOCK_WINDOW)
-DEFINE_CB_EVENT_TYPE(cbEVT_REMOVE_DOCK_WINDOW)
-DEFINE_CB_EVENT_TYPE(cbEVT_SHOW_DOCK_WINDOW)
-DEFINE_CB_EVENT_TYPE(cbEVT_HIDE_DOCK_WINDOW)
+const wxEventType cbEVT_ADD_DOCK_WINDOW = wxNewEventType();
+const wxEventType cbEVT_REMOVE_DOCK_WINDOW = wxNewEventType();
+const wxEventType cbEVT_SHOW_DOCK_WINDOW = wxNewEventType();
+const wxEventType cbEVT_HIDE_DOCK_WINDOW = wxNewEventType();
 // request app to switch view layout
-DEFINE_CB_EVENT_TYPE(cbEVT_SWITCH_VIEW_LAYOUT)
+const wxEventType cbEVT_SWITCH_VIEW_LAYOUT = wxNewEventType();
 // app notifies that a new layout has been applied
-DEFINE_CB_EVENT_TYPE(cbEVT_SWITCHED_VIEW_LAYOUT)
+const wxEventType cbEVT_SWITCHED_VIEW_LAYOUT = wxNewEventType();
 // app notifies that a docked window has been hidden/shown
-DEFINE_CB_EVENT_TYPE(cbEVT_DOCK_WINDOW_VISIBILITY)
+const wxEventType cbEVT_DOCK_WINDOW_VISIBILITY = wxNewEventType();
 // app notifies that the menubar is started being (re)created
-DEFINE_CB_EVENT_TYPE(cbEVT_MENUBAR_CREATE_BEGIN)
+const wxEventType cbEVT_MENUBAR_CREATE_BEGIN = wxNewEventType();
 // app notifies that the menubar (re)creation ended
-DEFINE_CB_EVENT_TYPE(cbEVT_MENUBAR_CREATE_END)
+const wxEventType cbEVT_MENUBAR_CREATE_END = wxNewEventType();
 // compiler-related events
-DEFINE_CB_EVENT_TYPE(cbEVT_COMPILER_STARTED)
-DEFINE_CB_EVENT_TYPE(cbEVT_COMPILER_FINISHED)
+const wxEventType cbEVT_COMPILER_STARTED = wxNewEventType();
+const wxEventType cbEVT_COMPILER_FINISHED = wxNewEventType();
 // debugger-related events
-DEFINE_CB_EVENT_TYPE(cbEVT_DEBUGGER_STARTED)
-DEFINE_CB_EVENT_TYPE(cbEVT_DEBUGGER_PAUSED)
-DEFINE_CB_EVENT_TYPE(cbEVT_DEBUGGER_FINISHED)
+const wxEventType cbEVT_DEBUGGER_STARTED = wxNewEventType();
+const wxEventType cbEVT_DEBUGGER_PAUSED = wxNewEventType();
+const wxEventType cbEVT_DEBUGGER_FINISHED = wxNewEventType();

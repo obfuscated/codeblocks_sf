@@ -268,7 +268,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         void ReOrderTargets(const wxArrayString& nameOrder);
 
-        /** Set the active build target. Mainly used by the compiler.
+        /** Set the active build target.
           * @param name The build target name to set as active. If @c name does
           *             not exist, then the first virtual target is set
           *             or the first real target, depending which is valid.
@@ -594,7 +594,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         ProjectBuildTarget* AddDefaultBuildTarget();
         int IndexOfBuildTargetName(const wxString& targetName) const;
         wxString CreateUniqueFilename();
-        void NotifyPlugins(wxEventType type);
+        void NotifyPlugins(wxEventType type, const wxString& targetName = wxEmptyString, const wxString& oldTargetName = wxEmptyString);
         void CopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent);
 
         // properties

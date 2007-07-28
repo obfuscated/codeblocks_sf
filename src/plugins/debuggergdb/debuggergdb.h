@@ -145,6 +145,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnProjectClosed(CodeBlocksEvent& event);
         void OnCompilerStarted(CodeBlocksEvent& event);
         void OnCompilerFinished(CodeBlocksEvent& event);
+        void OnBuildTargetSelected(CodeBlocksEvent& event);
         void OnGDBOutput(wxCommandEvent& event);
         void OnGDBError(wxCommandEvent& event);
         void OnGDBTerminated(wxCommandEvent& event);
@@ -208,6 +209,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         ThreadsDlg* m_pThreadsDlg;
 
         cbProject* m_pProject; // keep the currently debugged project handy
+        wxString m_ActiveBuildTarget;
 
 		// per-project debugger search-dirs
         typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
@@ -225,6 +227,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         wxString m_ConsoleTty;
         
         bool m_WaitingCompilerToFinish;
+        bool m_Canceled; // flag to avoid re-entering DoDebug when we shouldn't
 
 		DECLARE_EVENT_TABLE()
 };
