@@ -16,6 +16,7 @@ PluginSettings <- {
     HasModuleMenu = false
     HasToolbar = false
 }
+WxVersion <- 1; // 0 - wx 2.6, 1 - wx 2.8
 
 // -----------------------------------------------------------------------------
 // init wizard
@@ -42,6 +43,7 @@ function BeginWizard()
     Wizard.AddProjectPathPage();
     Wizard.AddPage(_T("PluginOptions"));
     Wizard.AddPage(_T("PluginInfo"));
+    Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x"), WxVersion); // select wxwidgets version
     Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false);
 }
 
@@ -205,7 +207,10 @@ function SetupTarget(target,is_debug)
         target.AddIncludeDir(_T("$(#wx.lib)\\gcc_dll\\mswu"));
 
         target.AddLinkLib(_T("codeblocks"));
-        target.AddLinkLib(_T("wxmsw26u"));
+        if (WxVersion == 0)
+            target.AddLinkLib(_T("wxmsw26u"));
+        else
+            target.AddLinkLib(_T("wxmsw28u"));
 
         target.AddLibDir(_T("$(#cb)\\devel"));
         target.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
