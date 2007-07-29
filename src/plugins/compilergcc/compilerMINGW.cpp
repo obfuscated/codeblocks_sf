@@ -221,7 +221,7 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                 // look for dev-cpp installation
                 wxRegKey key; // defaults to HKCR
                 key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Dev-C++"));
-                if (key.Open())
+                if (key.Open(wxRegKey::Read))
                 {
                     // found; read it
                     key.QueryValue(_T("Install_Dir"), m_MasterPath);
@@ -243,7 +243,8 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                     {
                         name = key.GetName() + _T("\\") + name;
                         key.SetName(name);
-                        if (key.Exists()) key.QueryValue(_T("InstallLocation"), m_MasterPath);
+                        if (key.Exists() && key.Open(wxRegKey::Read))
+                            key.QueryValue(_T("InstallLocation"), m_MasterPath);
                     }
                 }
 #endif

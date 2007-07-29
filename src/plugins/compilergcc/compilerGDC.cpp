@@ -216,7 +216,7 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
                 // look for dev-cpp installation
                 wxRegKey key; // defaults to HKCR
                 key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Dev-C++"));
-                if (key.Open()) {
+                if (key.Open(wxRegKey::Read)) {
                     // found; read it
                     key.QueryValue(_T("Install_Dir"), m_MasterPath);
                 }

@@ -47,7 +47,7 @@ AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()
 
     wxRegKey key; // defaults to HKCR
     key.SetName(_T("HKEY_LOCAL_MACHINE\\Software\\Cygnus Solutions\\Cygwin\\mounts v2\\/"));
-    if (key.Open())
+    if (key.Open(wxRegKey::Read))
     {
         // found; read it
         key.QueryValue(_T("native"), m_MasterPath);

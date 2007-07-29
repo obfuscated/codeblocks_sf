@@ -215,7 +215,7 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 
         // try to detect Platform SDK (old versions)
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\Win32SDK\\Directories"));
-        if (key.Open())
+        if (key.Open(wxRegKey::Read))
         {
             key.QueryValue(_T("Install Dir"), dir);
             if (!dir.IsEmpty() && wxDirExists(dir))
@@ -225,7 +225,7 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 
         // try to detect Platform SDK (newer versions)
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\MicrosoftSDK\\InstalledSDKs"));
-        if (!sdkfound && key.Open())
+        if (!sdkfound && key.Open(wxRegKey::Read))
         {
             wxString name;
             long idx;
@@ -235,7 +235,7 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
             {
                 wxRegKey subkey(key.GetName(), name);
 
-                if (subkey.Open() &&
+                if (subkey.Open(wxRegKey::Read) &&
                     (subkey.QueryValue(_T("Install Dir"), dir), !dir.IsEmpty()) &&
                     wxDirExists(dir))
                 {
@@ -268,7 +268,7 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
 
         // add extra paths for "Debugging tools" too
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\DebuggingTools"));
-        if (key.Open())
+        if (key.Open(wxRegKey::Read))
         {
             key.QueryValue(_T("WinDbg"), dir);
             if (!dir.IsEmpty() && wxDirExists(dir))

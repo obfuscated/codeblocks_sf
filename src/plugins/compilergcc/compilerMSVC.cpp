@@ -150,7 +150,7 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
         // add include dirs for MS Platform SDK too
         wxRegKey key; // defaults to HKCR
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\Win32SDK\\Directories"));
-        if (key.Open())
+        if (key.Open(wxRegKey::Read))
         {
             wxString dir;
             key.QueryValue(_T("Install Dir"), dir);
@@ -166,7 +166,7 @@ AutoDetectResult CompilerMSVC::AutoDetectInstallationDir()
 
         // add extra paths for "Debugging tools" too
         key.SetName(_T("HKEY_CURRENT_USER\\Software\\Microsoft\\DebuggingTools"));
-        if (key.Open())
+        if (key.Open(wxRegKey::Read))
         {
             wxString dir;
             key.QueryValue(_T("WinDbg"), dir);
