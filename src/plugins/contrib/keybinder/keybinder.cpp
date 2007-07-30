@@ -620,7 +620,7 @@ wxCmd *wxCmd::CreateNew(wxString cmdName, int type, int id, bool updateMnu)
 	if (!fnc) return NULL;	// for release builds
 
 	// create the wxCmd-derived class & init it
-	wxCmd *ret = fnc(cmdName, id);
+	wxCmd* ret = fnc(cmdName, id);
 	wxASSERT(ret);			// for debug builds
 	if (!ret) return NULL;	// for release builds
 	if (updateMnu) ret->Update();
@@ -961,18 +961,18 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //   menu items will never match causing constant update overhead
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
-             LOGIT(wxT("Merge change type[%d]:item[%d]:id[%d]:@[%p]:[%s]"), changed, j, nMenuItemID, pMenuItem, pMenuItem->GetText().c_str() );
+             LOGIT(wxT("Merge change type[%d]:item[%d]:id[%d]:@[%p]text[%s]key[%s]"), changed, j, nMenuItemID, pMenuItem, pMenuItem->GetText().c_str(), menuItemKeyStr.c_str() );
             #endif
-        }//if
+        }//if changed
         else
         {   // menu item has not changed
             #ifdef LOGGING
-             //LOGIT(wxT("Merge:NoChange:%d:%d:%p:%s"),j,nMenuItemID,pMenuItem,pMenuItem->GetText().GetData() );
+             //LOGIT(wxT("Merge:NoChange:pos[%d]id[%d]@[%p]text[%s]key[%s]"),j,nMenuItemID,pMenuItem,pMenuItem->GetText().c_str(), menuItemKeyStr.c_str() );
             #endif
         }
         // count changed array wxCmd items
         modified += (changed != 0) ;
-    }//rof
+    }//for itemKnt
     return modified;
 }//mergeSubmenu
 // ----------------------------------------------------------------------------

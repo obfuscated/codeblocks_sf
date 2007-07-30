@@ -201,8 +201,9 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // break the full menu path string into levels
     for ( int i=0; i < levelCount; ++i )
     {
-    	levels.Add(fullMenuPath.BeforeFirst(wxT('\\')));
+    	levels.Add( fullMenuPath.BeforeFirst(wxT('\\')) );
     	fullMenuPath.Remove(0, levels[i].Length()+1 );
+    	levels[i].Trim();
     	//LOGIT( _T("level[%d][%s]"), i, levels[i].c_str() );
     }
     // start searching from the menubar level
@@ -215,7 +216,7 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // find and compare file key path levels to each level of the actual menu
     for (int i=1; i < (int)levels.GetCount(); ++i)
     {
-        //LOGIT( _T("Level[%d][%s]"), i, levels[i].c_str() );
+        LOGIT( _T("Searcing for Level[%d][%s]"), i, levels[i].c_str() );
         if (not pMenu) return wxNOT_FOUND;
         found = false;
         for (int j=0; j < (int)pMenu->GetMenuItemCount(); ++j )
@@ -226,6 +227,7 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
             {   menuIndex = j;
                 pMenu = pMenuItem->GetSubMenu();
                 found = true;
+                LOGIT( _T("Found menuItem [%s]"), pMenuItem->GetLabel().c_str() );
                 break;
             }
         }//for j
@@ -295,7 +297,8 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     if ( -1 != (idx = str.Find('_'))) str[idx] = '&';
     for ( size_t i=0; i<str.Length(); ++i)
         if ( str[i]=='_'){ str[i] = ' ';}
-	 LOGIT( _T("Updating menu item Label[%s]Text[%s][%d]"), str.c_str(), strText.c_str(), idx );
+	 LOGIT( _T("Updating menu item Label[%s]Text[%s]id[%d]"), str.c_str(), strText.c_str(), pLclMnuItem->GetId() );
+
 
 	// on GTK, an optimization in wxMenu::SetText checks
 	// if the new label is identical to the old and in this
@@ -462,6 +465,8 @@ bool wxMenuCmd::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
     if (str.Left(1).IsNumber()) return true;
     if ( (str[0] == '&') && (str.Mid(1,1).IsNumber()) )
         return true;
+    if ( (str[0] == '_') && (str.Mid(1,1).IsNumber()) )
+        return true;
     return false;
 }//IsNumericMeuItem
 // ----------------------------------------------------------------------------
@@ -502,6 +507,7 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
     wxMenuItem* pMenuItem = 0;
     wxString fullMenuPath = sCmdName;       //(pecan 2007/6/15)
     wxString cmdName = fullMenuPath.AfterLast(wxT('\\'));
+    cmdName.Trim();
     int actualMenuID = id;
 
     // Try to match id and label to avoid duplicate named menu items //v0.4.8
@@ -515,6 +521,9 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
         actualMenuID = FindMenuIdUsingFullMenuPath( fullMenuPath ) ;
         if (not (wxNOT_FOUND == actualMenuID) )
             pMenuItem = m_pMenuBar->FindItem( actualMenuID );
+        else
+            LOGIT( _T("CreateNew() UnFound id[%d][%s]"), id, cmdName.GetData() );
+
 
     }//end else
 
@@ -542,6 +551,8 @@ bool wxMenuWalker::IsNumericMenuItem(wxMenuItem* pwxMenuItem)   //v0.2
     if (str.Length() <2) return false;
     if (str.Left(1).IsNumber()) return true;
     if ( (str[0] == '&') && (str.Mid(1,1).IsNumber()) )
+        return true;
+    if ( (str[0] == '_') && (str.Mid(1,1).IsNumber()) )
         return true;
     return false;
 }

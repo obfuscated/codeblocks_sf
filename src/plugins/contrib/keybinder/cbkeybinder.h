@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.38 2007/06/15"
+#define VERSION "1.0.41 2007/07/30"
 // -----------------------------------
 class MyDialog;
 
@@ -688,5 +688,13 @@ private:
 //          36) Use full menu path as key value in external storage
 //          37) Resolve unmatched menu id's with full menu path
 //          38) Add Tool menu shortcut preservation via cbEVT_MENUBAR_CREATE_BEGIN/END events
+// ----------------------------------------------------------------------------
+//  Commit  1.0.39
+//          39) mandrav changes for sdk RegisterEventSink
+// ----------------------------------------------------------------------------
+//  Commit  1.0.41
+//          40) check for numeric menu items that start with "_" wxGTK 2.8.4
+//          41) Fixed disappearing/reappearing command keys on wxGTK 2.8.4 by
+//              trimming all menu items and conf strings before comparing
 // ----------------------------------------------------------------------------
 //

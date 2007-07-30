@@ -94,6 +94,7 @@ void cbKeyBinder::OnAttach()
         //  wxLogWindow* pMyLog;
         // #define LOGIT wxLogMessage
         /* wxLogWindow* */
+        wxLog::EnableLogging(true);
         pMyLog = new wxLogWindow(pcbWindow,wxT("KeyBinder"),true,false);
         wxLog::SetActiveTarget(pMyLog);
         LOGIT(_T("keybinder log open"));
@@ -118,7 +119,7 @@ void cbKeyBinder::OnAttach()
    #endif
    // -----------------------------------------------
    // At least one window must be attached for the menus
-   // to get update at startup. Thus "flat notebook"
+   // to get updated at startup. Thus "flat notebook"
    // -----------------------------------------------
     wxKeyBinder::usableWindows.Add(_T("sciwindow"));           //+v0.4.4
     wxKeyBinder::usableWindows.Add(_T("flat notebook"));        //+v0.4.4
@@ -143,7 +144,7 @@ void cbKeyBinder::OnAttach()
     // if old key definitions file is valid for new keybinder release
     //  set it here.
 	m_OldKeyFilename = wxEmptyString;
-	m_OldKeyFilename = wxT("cbKeyBinder10v111.ini");
+	//-m_OldKeyFilename = wxT("cbKeyBinder10v111.ini");
 
 	// register event sink
 	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectClosed));
@@ -534,7 +535,7 @@ void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
     m_pKeyProfArr->GetSelProfileIdx();
 
     #if LOGGING
-        wxLogDebug(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
+        LOGIT(wxString::Format(wxT("Selected the #%d profile (named '%s')."),
             sel+1, m_pKeyProfArr->Item(sel)->GetName().c_str()),
             wxT("Profile selected"));
     #endif
@@ -949,6 +950,10 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
 
     // if keys still unbound, do it here.
     // load key binding from file
+
+    // We have to reload after the app is done initializing, else some
+    // plugin may have overridden the users keys, eg, debugger setting it's
+    // default keys over a users MSW VS bindings
     if (not m_bBound)
      {
         #if LOGGING
@@ -962,6 +967,7 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
          LOGIT(_T("cbKB:OnAppStartupDone:End initial Key Load"));
         #endif
      }
+
     // Check creation of windows that have no notification (ie., wxSplitWindows)
     Connect( wxEVT_CREATE,
         (wxObjectEventFunction) (wxEventFunction)
