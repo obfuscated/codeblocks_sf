@@ -246,7 +246,8 @@ bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
                 {
                 	case '{': SkipBlock('{'); break;
                 	case '(': SkipBlock('('); break;
-					case '<': SkipBlock('<'); break;
+					case '[': SkipBlock('['); break;
+					case '<': if (PeekToken() != '<') SkipBlock('<'); break; // don't skip if << operator
 					default: break;
 				}
             }
