@@ -144,6 +144,28 @@ function OnLeave_PluginInfo(fwd)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// wxWidgets' version page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_wxVersionPage(fwd)
+{
+    if (fwd)
+    {
+        WxVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
+function OnLeave_wxVersionPage(fwd)
+{
+    if (fwd)
+    {
+        WxVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
 // -----------------------------------------------------------------------------
 // each time, return a string of the form "filename.ext;contents"
 // you can change the return string based on <file_index>
