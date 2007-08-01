@@ -587,7 +587,7 @@ void wxFNBRenderer::NumberTabsCanFit(wxWindow *pageContainer, std::vector<wxRect
 		vTabInfo.push_back(tabRect);
 
 		/// Advance posx
-		posx += tabWidth + wxFNB_HEIGHT_SPACER;
+		posx += tabWidth;
 	}
 }
 
@@ -652,7 +652,7 @@ void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc, wxEvent &event)
 
 	// Calculate the number of rows required for drawing the tabs
 	wxRect rect = pc->GetClientRect();
-	int clientWidth = rect.width;
+//	int clientWidth = rect.width;
 
 	// Set the maximum client size
 #ifdef __WXMAC__
@@ -786,7 +786,10 @@ void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc, wxEvent &event)
 	// Go over and draw the visible tabs
 	//----------------------------------------------------------
 	wxCoord x1(-1), x2(-1);
-	for(i=pc->m_nFrom; i<(int)pc->GetPageInfoVector().GetCount(); i++)
+	std::vector<wxRect> vTabsInfo;
+	NumberTabsCanFit(pc, vTabsInfo);
+
+	for(i=pc->m_nFrom; i<pc->m_nFrom+(int)vTabsInfo.size(); i++)
 	{
 		dc.SetPen(borderPen);
 		if( !pc->HasFlag(wxFNB_FF2) ){
@@ -802,10 +805,6 @@ void wxFNBRenderer::DrawTabs(wxWindow *pageContainer, wxDC &dc, wxEvent &event)
 		// | PADDING | IMG | IMG_PADDING | TEXT | PADDING | x |PADDING |
 		// +-----------------------------------------------------------+
 		int tabWidth = CalcTabWidth(pageContainer, i, tabHeight);
-
-		// Check if we can draw more
-		if(posx + tabWidth + GetButtonsAreaLength( pc ) >= clientWidth)
-			break;
 
 		// By default we clean the tab region
 		pc->GetPageInfoVector()[i].GetRegion().Clear();

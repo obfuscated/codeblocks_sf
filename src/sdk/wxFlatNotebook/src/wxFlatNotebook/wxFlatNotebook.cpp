@@ -24,6 +24,15 @@
 # define FNB_LOG_MSG( msg ) { wxString logmsg; logmsg << msg; }
 #endif
 
+static bool InsideRect(const wxRect &rect, const wxPoint &pt)
+{
+#if wxCHECK_VERSION(2, 8, 0)
+	return rect.Contains(pt);
+#else
+	return rect.Inside(pt);
+#endif
+}
+
 #ifdef DEVELOPMENT
 #include <map>
 wxString WhereToString( int where )
@@ -1122,7 +1131,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 	}
 
 	rect = wxRect(btnXPos, 8, 16, 16);
-	if(rect.Contains(pt))
+	if(InsideRect(rect, pt))
 	{
 		return (style & wxFNB_NO_X_BUTTON) ? wxFNB_NOWHERE : wxFNB_X;
 	}
@@ -1131,18 +1140,18 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 	if( style & wxFNB_DROPDOWN_TABS_LIST )
 	{
 		rect = wxRect(render->GetDropArrowButtonPos( this ), 8, 16, 16);
-		if( rect.Contains(pt) )
+		if(InsideRect(rect, pt))
 			return wxFNB_DROP_DOWN_ARROW;
 	}
 
-	if(rect.Contains(pt))
+	if(InsideRect(rect, pt))
 	{
 		return (style & wxFNB_NO_NAV_BUTTONS) ? wxFNB_NOWHERE : wxFNB_RIGHT_ARROW;
 	}
 
 
 	rect = wxRect(btnLeftPos, 8, 16, 16);
-	if(rect.Contains(pt))
+	if(InsideRect(rect, pt))
 	{
 		return (style & wxFNB_NO_NAV_BUTTONS) ? wxFNB_NOWHERE : wxFNB_LEFT_ARROW;
 	}
@@ -1159,7 +1168,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 		if(style & wxFNB_X_ON_TAB && (int)cur == GetSelection())
 		{
 			// 'x' button exists on a tab
-			if(m_pagesInfoVec[cur].GetXRect().Contains(pt))
+			if(InsideRect(m_pagesInfoVec[cur].GetXRect(), pt))
 			{
 				pageInfo = pgInfo;
 				tabIdx = (int)cur;
@@ -1187,7 +1196,8 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 
 			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y,
 				pgInfo.GetSize().x, pgInfo.GetSize().y);
-			if(tabRect.Contains(pt))
+			
+			if(InsideRect(tabRect, pt))
 			{
 				// We have a match
 				pageInfo = pgInfo;
