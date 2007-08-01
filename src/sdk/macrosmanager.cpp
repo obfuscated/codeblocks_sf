@@ -264,7 +264,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     else if(target != m_lastTarget)
     {
-        m_TargetOutputDir = UnixFilename(target->GetBasePath());
+        wxFileName tod(target->GetOutputFilename());
+        m_TargetOutputDir = UnixFilename(tod.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
         m_TargetName = UnixFilename(target->GetTitle());
         m_TargetOutputBaseName = wxFileName(target->GetOutputFilename()).GetName();
         m_TargetFilename = UnixFilename(target->GetOutputFilename());
