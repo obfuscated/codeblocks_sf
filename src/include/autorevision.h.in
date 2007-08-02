@@ -5,14 +5,11 @@
 
 #include <wx/string.h>
 
-#define SVN_REVISION "@REVISION@"
-
-#define SVN_DATE     "@DATE@"
-
 namespace autorevision
 {
 	const unsigned int svn_revision = @REVISION@;
 	const wxString svnRevision(_T("@REVISION@"));
+	const wxString svnDate(_T("@DATE@"));
 }
 
 

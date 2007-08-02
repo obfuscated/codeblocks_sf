@@ -14,9 +14,9 @@
 #ifndef CB_PRECOMP
 #include <wx/utils.h>
 #include <wx/intl.h>
+#include "configmanager.h"
 #endif
 #include "appglobals.h"
-#include <autorevision.h>
 
 namespace appglobals
 {
@@ -25,12 +25,12 @@ namespace appglobals
 
     #if SVN_BUILD
         const wxString AppVersion				= _T("svn build");
-        const wxString AppActualVersionVerb	= _T("svn build  rev " SVN_REVISION);
-        const wxString AppActualVersion		= _T("svn-r" SVN_REVISION);
+        const wxString AppActualVersionVerb	= _T("svn build  rev ") +  ConfigManager::GetRevisionString();
+        const wxString AppActualVersion		= _T("svn-r") +  ConfigManager::GetRevisionString();
     #else
         const wxString AppVersion				= _T(RELEASE);
-        const wxString AppActualVersionVerb	= _T("Release " RELEASE "  rev " SVN_REVISION);
-        const wxString AppActualVersion		= _T(RELEASE "-r" SVN_REVISION);
+        const wxString AppActualVersionVerb	= _T("Release " RELEASE "  rev ") + ConfigManager::GetRevisionString();
+        const wxString AppActualVersion		= _T(RELEASE "-r") + ConfigManager::GetRevisionString();
     #endif
 
     const wxString AppUrl					= _T("http://www.codeblocks.org");

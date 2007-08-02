@@ -40,7 +40,7 @@
 #include <wx/statbmp.h>
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
-#include "autorevision.h"
+#include "configmanager.h"
 
 // class constructor
 
@@ -70,7 +70,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
 
     {   // copied from splashscreen.cpp
         const wxString release(wxT(RELEASE));
-        const wxString revision(wxT(SVN_REVISION));
+        const wxString revision = ConfigManager::GetRevisionString();
 
         wxMemoryDC dc;
         dc.SelectObject(bmp);

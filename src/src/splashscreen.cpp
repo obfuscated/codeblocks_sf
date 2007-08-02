@@ -9,7 +9,7 @@
 #include <wx/dcclient.h>
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
-#include "autorevision.h"
+#include "configmanager.h"
 #include "appglobals.h"
 #include "prep.h" // haven't included sdk in this source file
 
@@ -21,7 +21,7 @@ namespace
 void cbSplashScreen::DoPaint(wxDC &dc)
 {
   static const wxString release(wxT(RELEASE));
-  static const wxString revision(wxT(SVN_REVISION));
+  static const wxString revision = ConfigManager::GetRevisionString();
 
   #ifdef __WIN32__
   dc.SetClippingRegion(r);

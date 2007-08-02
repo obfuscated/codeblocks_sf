@@ -165,6 +165,7 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
     }
 
     fprintf(header, "%s\n", comment.c_str());
+    fprintf(header, "//don't include this header, only configmanager-revision.cpp should do this.\n");
     fprintf(header, "#ifndef AUTOREVISION_H\n");
     fprintf(header, "#define AUTOREVISION_H\n\n\n");
 
@@ -173,11 +174,8 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
     if(do_wx)
         fprintf(header, "#include <wx/string.h>\n");
 
-    fprintf(header, "\n#define SVN_REVISION \"%s\"\n", revision.c_str());
-    fprintf(header, "\n#define SVN_DATE     \"%s\"\n\n", date.c_str());
-
     if(do_int || do_std || do_wx)
-        fprintf(header, "namespace autorevision\n{\n");
+        fprintf(header, "\nnamespace autorevision\n{\n");
 
     if(do_int)
         fprintf(header, "\tconst unsigned int svn_revision = %s;\n", revision.c_str());
@@ -197,6 +195,11 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
         fprintf(header, "\tconst std::string svn_revision_s(%s);\n", revision.c_str());
     if(do_wx)
         fprintf(header, "\tconst wxString svnRevision(%s);\n", revision.c_str());
+
+    if(do_std)
+        fprintf(header, "\tconst std::string svn_date_s(%s);\n", date.c_str());
+    if(do_wx)
+        fprintf(header, "\tconst wxString svnDate(%s);\n", date.c_str());
 
     if(do_int || do_std || do_wx)
         fprintf(header, "}\n\n");
