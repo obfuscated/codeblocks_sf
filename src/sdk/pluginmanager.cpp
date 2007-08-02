@@ -318,28 +318,28 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
 
     // extract resources from bundle
     ExtractFile(actualName,
-				settingsOnName,
-				resourceDir + _T("/images/settings/") + settingsOnName,
-				false);
+                settingsOnName,
+                resourceDir + _T("/images/settings/") + settingsOnName,
+                false);
 //    DBGLOG(_T("Extracted resources"));
 
     // extract resources from bundle
     ExtractFile(actualName,
-				settingsOffName,
-				resourceDir + _T("/images/settings/") + settingsOffName,
-				false);
+                settingsOffName,
+                resourceDir + _T("/images/settings/") + settingsOffName,
+                false);
 //    DBGLOG(_T("Extracted resources"));
 
-	// extract extra files
-	wxArrayString extraFiles;
-	ReadExtraFilesFromManifestFile(localName, extraFiles);
-	for (size_t i = 0; i < extraFiles.GetCount(); ++i)
-	{
-		ExtractFile(actualName,
-					extraFiles[i],
-					resourceDir + _T("/") + extraFiles[i],
-					false);
-	}
+    // extract extra files
+    wxArrayString extraFiles;
+    ReadExtraFilesFromManifestFile(localName, extraFiles);
+    for (size_t i = 0; i < extraFiles.GetCount(); ++i)
+    {
+        ExtractFile(actualName,
+                    extraFiles[i],
+                    resourceDir + _T("/") + extraFiles[i],
+                    false);
+    }
 
     pd.Update(4, _("Loading plugin"));
 
@@ -402,11 +402,11 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             settingsOnFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOnFilename, sdDataGlobal | sdDataUser);
             settingsOffFilename = ConfigManager::LocateDataFile(_T("images/settings/") + settingsOffFilename, sdDataGlobal | sdDataUser);
 
-			ReadExtraFilesFromManifestFile(resourceFilename, extrafiles);
-			for (size_t n = 0; n < extrafiles.GetCount(); ++n)
-			{
-				extrafiles[n] = ConfigManager::LocateDataFile(extrafiles[n], sdDataGlobal | sdDataUser);
-			}
+            ReadExtraFilesFromManifestFile(resourceFilename, extrafiles);
+            for (size_t n = 0; n < extrafiles.GetCount(); ++n)
+            {
+                extrafiles[n] = ConfigManager::LocateDataFile(extrafiles[n], sdDataGlobal | sdDataUser);
+            }
             break;
         }
     }
@@ -472,11 +472,11 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             }
             for (size_t i = 0; i < extrafiles.GetCount(); ++i)
             {
-            	if (!extrafiles[i].IsEmpty() && wxFileExists(extrafiles[i]))
-            	{
-					if (!wxRemoveFile(extrafiles[i]))
-						LOG_WARN(_T("Failed to remove extra file: ") + extrafiles[i]);
-            	}
+                if (!extrafiles[i].IsEmpty() && wxFileExists(extrafiles[i]))
+                {
+                    if (!wxRemoveFile(extrafiles[i]))
+                        LOG_WARN(_T("Failed to remove extra file: ") + extrafiles[i]);
+                }
             }
             return true;
         }
@@ -509,6 +509,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
 
     wxArrayString sourcefiles;
     wxArrayString extrafiles;
+    wxArrayString extrafilesdest;
     wxFileName fname;
     wxString resourceFilename;
 
@@ -535,29 +536,29 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
             resourceFilename = fname.GetName() + _T(".png");
             if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
                 resourceFilename.Remove(0, 3);
-			resourceFilename.Prepend(_T("images/settings/"));
+            resourceFilename.Prepend(_T("images/settings/"));
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             if (!resourceFilename.IsEmpty())
-				sourcefiles.Add(resourceFilename);
+                sourcefiles.Add(resourceFilename);
 
             // the non-highlighted icon the plugin may have for its "settings" page
             resourceFilename = fname.GetName() + _T("-off.png");
             if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
                 resourceFilename.Remove(0, 3);
-			resourceFilename.Prepend(_T("images/settings/"));
+            resourceFilename.Prepend(_T("images/settings/"));
             resourceFilename = ConfigManager::LocateDataFile(resourceFilename, sdDataGlobal | sdDataUser);
             if (!resourceFilename.IsEmpty())
-				sourcefiles.Add(resourceFilename);
+                sourcefiles.Add(resourceFilename);
 
-			// export extra files
+            // export extra files
             resourceFilename = fname.GetName() + _T(".zip");
             if (!platform::windows && resourceFilename.StartsWith(_T("lib")))
                 resourceFilename.Remove(0, 3);
-			ReadExtraFilesFromManifestFile(resourceFilename, extrafiles);
-			for (size_t n = 0; n < extrafiles.GetCount(); ++n)
-			{
-				extrafiles[n] = ConfigManager::LocateDataFile(extrafiles[n], sdDataGlobal | sdDataUser);
-			}
+            ReadExtraFilesFromManifestFile(resourceFilename, extrafilesdest);
+            for (size_t n = 0; n < extrafilesdest.GetCount(); ++n)
+            {
+                extrafiles.Add(ConfigManager::LocateDataFile(extrafilesdest[n], sdDataGlobal | sdDataUser));
+            }
 
             break;
         }
@@ -578,8 +579,8 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
     wxZipOutputStream zip(out, 9); // max compression
     for (size_t i = 0; i < sourcefiles.GetCount(); ++i)
     {
-    	if (sourcefiles[i].IsEmpty())
-			continue;
+        if (sourcefiles[i].IsEmpty())
+            continue;
 
         wxFileInputStream in(sourcefiles[i]);
         zip.PutNextEntry(wxFileName(sourcefiles[i]).GetFullName());
@@ -587,18 +588,12 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
     }
     for (size_t i = 0; i < extrafiles.GetCount(); ++i)
     {
-    	if (extrafiles[i].IsEmpty())
-			continue;
+        if (extrafiles[i].IsEmpty() || extrafilesdest[i].IsEmpty())
+            continue;
 
         wxFileInputStream in(extrafiles[i]);
 
-        wxString f = extrafiles[i];
-        if (f.StartsWith(ConfigManager::GetFolder(sdDataUser)))
-			f.Remove(0, ConfigManager::GetFolder(sdDataUser).Length());
-        else if (f.StartsWith(ConfigManager::GetFolder(sdDataGlobal)))
-			f.Remove(0, ConfigManager::GetFolder(sdDataGlobal).Length());
-
-        zip.PutNextEntry(f);
+        zip.PutNextEntry(extrafilesdest[i]);
         zip << in;
     }
     zip.SetComment(_T("This is a redistributable plugin for the Code::Blocks IDE.\n"
@@ -662,14 +657,14 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
     else
     {
 //        DBGLOG(_T("File not found in plugin"));
-    	if (isMandatory)
-    	{
-			wxString msg = wxString::Format(_T("File '%s' not found in plugin '%s'"),
-											src_filename.c_str(), bundlename.c_str());
-			cbMessageBox(msg, _("Error"), wxICON_ERROR);
-			delete fs;
-			return false;
-    	}
+        if (isMandatory)
+        {
+            wxString msg = wxString::Format(_T("File '%s' not found in plugin '%s'"),
+                                            src_filename.c_str(), bundlename.c_str());
+            cbMessageBox(msg, _("Error"), wxICON_ERROR);
+            delete fs;
+            return false;
+        }
     }
     delete fs;
     return true;
@@ -865,55 +860,55 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
 }
 
 void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
-													wxArrayString& extraFiles)
+                                                    wxArrayString& extraFiles)
 {
-	extraFiles.Clear();
+    extraFiles.Clear();
 
-	// find and load plugin's resource file
-	// (pluginFilename contains no path info)
-	wxFileName fname(pluginFilename);
-	fname.SetExt(_T("zip"));
-	wxString actual = fname.GetFullName();
+    // find and load plugin's resource file
+    // (pluginFilename contains no path info)
+    wxFileName fname(pluginFilename);
+    fname.SetExt(_T("zip"));
+    wxString actual = fname.GetFullName();
 
-	// remove 'lib' prefix from plugin name (if any)
-	if (!platform::windows && actual.StartsWith(_T("lib")))
-		actual.Remove(0, 3);
+    // remove 'lib' prefix from plugin name (if any)
+    if (!platform::windows && actual.StartsWith(_T("lib")))
+        actual.Remove(0, 3);
 
-	actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
-	if (actual.IsEmpty())
-	{
-		LOG_ERROR(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
-		return; // not found
-	}
+    actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
+    if (actual.IsEmpty())
+    {
+        LOG_ERROR(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
+        return; // not found
+    }
 
-	// load XML from ZIP
-	wxString contents;
-	wxFileSystem* fs = new wxFileSystem;
-	wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
-	if (f)
-	{
-		wxInputStream* is = f->GetStream();
-		char tmp[1024] = {};
-		while (!is->Eof() && is->CanRead())
-		{
-			memset(tmp, 0, sizeof(tmp));
-			is->Read(tmp, sizeof(tmp) - 1);
-			contents << cbC2U((const char*)tmp);
-		}
-		delete f;
-	}
-	else
-	{
-		LOG_ERROR(_T("No plugin manifest file in resource: %s"), actual.c_str());
-		delete fs;
-		return;
-	}
-	delete fs;
+    // load XML from ZIP
+    wxString contents;
+    wxFileSystem* fs = new wxFileSystem;
+    wxFSFile* f = fs->OpenFile(actual + _T("#zip:manifest.xml"));
+    if (f)
+    {
+        wxInputStream* is = f->GetStream();
+        char tmp[1024] = {};
+        while (!is->Eof() && is->CanRead())
+        {
+            memset(tmp, 0, sizeof(tmp));
+            is->Read(tmp, sizeof(tmp) - 1);
+            contents << cbC2U((const char*)tmp);
+        }
+        delete f;
+    }
+    else
+    {
+        LOG_ERROR(_T("No plugin manifest file in resource: %s"), actual.c_str());
+        delete fs;
+        return;
+    }
+    delete fs;
 
-	// actually load XML document
-	TiXmlDocument doc;
-	if (!doc.Parse(cbU2C(contents)))
-		return;
+    // actually load XML document
+    TiXmlDocument doc;
+    if (!doc.Parse(cbU2C(contents)))
+        return;
 
     TiXmlElement* root = doc.FirstChildElement("CodeBlocks_plugin_manifest_file");
     if (!root)
@@ -925,7 +920,7 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
         const char* file = extra->Attribute("file");
         if (file && *file)
         {
-        	extraFiles.Add(cbC2U(file));
+            extraFiles.Add(cbC2U(file));
         }
 
         extra = extra->NextSiblingElement("Extra");
@@ -934,10 +929,10 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
 
 int PluginManager::ScanForPlugins(const wxString& path)
 {
-	static const wxString PluginsMask = platform::windows ? _T("*.dll") : _T("*.so");
+    static const wxString PluginsMask = platform::windows ? _T("*.dll") : _T("*.so");
     int count = 0;
     if(!wxDirExists(path))
-    	return count;
+        return count;
     wxDir dir(path);
 
     if (!dir.IsOpened())
@@ -1400,20 +1395,20 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
     wxArrayInt ids = ScriptBindings::ScriptPluginWrapper::CreateModuleMenu(type, menu, data);
     for (size_t i = 0; i < ids.GetCount(); ++i)
     {
-		Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
-				(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-				&PluginManager::OnScriptModuleMenu);
+        Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                &PluginManager::OnScriptModuleMenu);
     }
 }
 
 void PluginManager::OnScriptMenu(wxCommandEvent& event)
 {
-	ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
+    ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
 }
 
 void PluginManager::OnScriptModuleMenu(wxCommandEvent& event)
 {
-	ScriptBindings::ScriptPluginWrapper::OnScriptModuleMenu(event.GetId());
+    ScriptBindings::ScriptPluginWrapper::OnScriptModuleMenu(event.GetId());
 }
 
 cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)
@@ -1455,15 +1450,15 @@ void PluginManager::SetupLocaleDomain(const wxString& DomainName)
 
 void PluginManager::NotifyPlugins(CodeBlocksEvent& event)
 {
-	Manager::Get()->ProcessEvent(event);
+    Manager::Get()->ProcessEvent(event);
 }
 
 void PluginManager::NotifyPlugins(CodeBlocksDockEvent& event)
 {
-	Manager::Get()->ProcessEvent(event);
+    Manager::Get()->ProcessEvent(event);
 }
 
 void PluginManager::NotifyPlugins(CodeBlocksLayoutEvent& event)
 {
-	Manager::Get()->ProcessEvent(event);
+    Manager::Get()->ProcessEvent(event);
 }
