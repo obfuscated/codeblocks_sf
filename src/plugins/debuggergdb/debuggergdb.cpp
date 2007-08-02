@@ -374,7 +374,7 @@ void DebuggerGDB::OnAttach()
 
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnProjectClosed));
-    
+
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerStarted));
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnCompilerFinished));
 
@@ -671,7 +671,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
             	if (bt && rdOpt)
             	{
 					RemoteDebugging rd;
-					
+
 					if (rdOpt->Attribute("conn_type"))
 						rd.connType = (RemoteDebugging::ConnectionType)atol(rdOpt->Attribute("conn_type"));
 					if (rdOpt->Attribute("serial_port"))
@@ -684,7 +684,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 						rd.ipPort = cbC2U(rdOpt->Attribute("ip_port"));
 					if (rdOpt->Attribute("additional_cmds"))
 						rd.additionalCmds = cbC2U(rdOpt->Attribute("additional_cmds"));
-					
+
 					m_RemoteDebugging.insert(m_RemoteDebugging.end(), std::make_pair(bt, rd));
             	}
             	else
@@ -707,7 +707,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 		if (!node)
 			node = elem->InsertEndChild(TiXmlElement("debugger"))->ToElement();
 		node->Clear();
-        
+
         if (pdirs.GetCount() > 0)
         {
             for (size_t i = 0; i < pdirs.GetCount(); ++i)
@@ -716,7 +716,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 path->SetAttribute("add", cbU2C(pdirs[i]));
             }
         }
-            
+
         if (m_RemoteDebugging.size())
         {
             for (RemoteDebuggingMap::iterator it = m_RemoteDebugging.begin(); it != m_RemoteDebugging.end(); ++it)
@@ -729,7 +729,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
             	rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
 
 				RemoteDebugging& rd = it->second;
-					
+
             	TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
             	tgtnode->SetAttribute("conn_type", (int)rd.connType);
             	tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
@@ -953,7 +953,7 @@ bool DebuggerGDB::IsStopped()
 bool DebuggerGDB::EnsureBuildUpToDate()
 {
 	m_WaitingCompilerToFinish = false;
-	
+
     // compile project/target (if not attaching to a PID)
     if (m_PidToAttach == 0)
     {
@@ -1017,7 +1017,7 @@ int DebuggerGDB::Debug()
     // this will wait for the compiler to finish and then call DoDebug
     if (!EnsureBuildUpToDate())
 		return -1;
-	
+
 	// if not waiting for the compiler, start debugging now
 	// but first check if the driver has already been started:
 	// if the build process was ultra-fast (i.e. nothing to be done),
@@ -1029,7 +1029,7 @@ int DebuggerGDB::Debug()
 	// returned an error
 	if (!m_WaitingCompilerToFinish && !m_State.HasDriver() && !m_Canceled)
 		return DoDebug();
-	
+
 	return 0;
 }
 
@@ -1037,7 +1037,7 @@ int DebuggerGDB::DoDebug()
 {
 	// set this to true before every error exit point in this function
 	m_Canceled = false;
-	
+
     MessageManager* msgMan = Manager::Get()->GetMessageManager();
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 
@@ -2628,7 +2628,7 @@ void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 
 void DebuggerGDB::OnBuildTargetSelected(CodeBlocksEvent& event)
 {
-	DBGLOG(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetProject(), event.GetBuildTargetName().c_str());
+	DBGLOG(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetBuildTargetName().c_str());
 
 	// verify that the project that sent it, is the one we 're debugging
 	if (!m_pProject || event.GetProject() == m_pProject)

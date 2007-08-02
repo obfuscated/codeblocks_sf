@@ -795,6 +795,10 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         else
             path_sep = _T(":");
 
+        /* Store the PATH variable in an array. This will be used to
+         * locate duplicate entries. */
+        wxArrayString envPathArr = GetArrayFromString(envPath, path_sep);
+
         // add extra compiler paths in PATH
         wxString oldpath = envPath;
         envPath.Clear();
@@ -802,7 +806,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         {
             #if wxCHECK_VERSION(2, 8, 0)
             if (!extraPaths[i].IsEmpty() &&
-                (pathList.Index(extraPaths[i], caseSensitive) == wxNOT_FOUND))
+                (envPathArr.Index(extraPaths[i], caseSensitive) == wxNOT_FOUND))
             #else
             if (!extraPaths[i].IsEmpty())
             #endif
@@ -812,9 +816,6 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         }
         envPath = envPath + oldpath;
 
-        /* Store the PATH variable in an array. This will be used to
-         * locate duplicate entries. */
-        wxArrayString envPathArr = GetArrayFromString(envPath, sep);
         // add bin path to PATH env. var.
         #if wxCHECK_VERSION(2, 8, 0)
         wxString pathCheck = masterPath + sep + _T("bin");
@@ -1422,7 +1423,7 @@ void CompilerGCC::DoPrepareQueue()
     {
         CodeBlocksEvent evt(cbEVT_COMPILER_STARTED, 0, 0, 0, this);
         Manager::Get()->ProcessEvent(evt);
-    	
+
         ClearLog();
         DoClearErrors();
         // wxStartTimer();
