@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 96 2007-07-22 05:14:05Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 98 2007-08-02 21:35:04Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -172,6 +172,7 @@ void CodeSnippets::OnAttach()
     m_pPrjMan->GetNotebook()->SetDropTarget(new DropTargets(this));
     // set drop targets on the Project/File tree controls
     m_pEdMan->GetTree()->SetDropTarget(new DropTargets(this));
+    // set event hooks
     SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
     SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
 
@@ -865,15 +866,19 @@ wxArrayString* CodeSnippets::TextToFilenames(const wxString& str)
 
     wxArrayString* pFilenames = new wxArrayString;
 
-    if (0 == str.Freq('\r'))
+    if ( (0 == str.Freq('\r')) && (0 == str.Freq('\n')) )
         pFilenames->Add(str);
     else{ // parse big string into individual filenames
         wxString ostr;
         for (size_t i=0; i<str.Length(); i++ ) {
-            if (str[i] != '\r') ostr.Append(str[i]);
-            else{
+            if ((str[i] != '\r') && (str[i] != '\n'))
+                ostr.Append(str[i]);
+            else
+            {
                 pFilenames->Add(ostr);
                 ostr.Empty();
+                if ( ((i+1)<str.Length()) && (str[i+1] == '\r') )
+                    i++;    //skip over carrige return
                 if ( ((i+1)<str.Length()) && (str[i+1] == '\n') )
                     i++;    //skip over newline
             }//esle
@@ -1056,7 +1061,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
     if (event.GetEventType() == wxEVT_COMMAND_TREE_BEGIN_DRAG)
     {
         #ifdef LOGGING
-         LOGIT( _T("Plugin_TREE_BEGIN_DRAG %p"), pTree );
+         LOGIT( _T("Plugin_TREE_BEGIN_DRAG [%p][%s]"), pTree, pTree->GetName().c_str() );
         #endif //LOGGING
 
         if (pTree == (wxTreeCtrl*)m_pPrjMan->GetTree())
@@ -1067,6 +1072,8 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
             m_TreeItemId    =   event.GetItem();
             pTree->SelectItem(m_TreeItemId);
         }
+        else m_pMgtTreeBeginDrag = 0;
+
         m_TreeText = wxEmptyString;
         if (not GetTreeSelectionData(pTree, m_TreeText))
         {
@@ -1081,7 +1088,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
     if (event.GetEventType() == wxEVT_COMMAND_TREE_END_DRAG)
     {
         #ifdef LOGGING
-         LOGIT( _T("Plugin_TREE_END_DRAG %p"), pTree );
+         LOGIT( _T("Plugin_TREE_END_DRAG [%p][%s]"), pTree, pTree->GetName().c_str() );
         #endif //LOGGING
 
         m_TreeText = wxEmptyString;
@@ -1105,7 +1112,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
         if ( m_TreeText.IsEmpty()) return;
 
         #ifdef LOGGING
-         LOGIT( _T("TREE_LEAVE_WINDOW %p"), pTree );
+         LOGIT( _T("TREE_LEAVE_WINDOW [%p][%s]"), pTree, pTree->GetName().c_str() );
         #endif //LOGGING
 
         // we now have data, create both a simple text and filename drop source
@@ -1163,7 +1170,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
         {
             //send Mouse LeftKeyUp to Tree Control window
             #ifdef LOGGING
-             LOGIT( _T("Sending Mouse LeftKeyUp") );
+             LOGIT( _T("Sending Mouse LeftKeyUp[%p][%s]"), m_pMgtTreeBeginDrag, m_pMgtTreeBeginDrag->GetName().c_str() );
             #endif //LOGGING
 
             // move mouse into the Tree control

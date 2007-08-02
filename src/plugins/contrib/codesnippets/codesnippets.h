@@ -265,3 +265,31 @@ class DropTargetsComposite: public wxDataObjectComposite
 };
 
 #endif // CODESNIPPETS_H_INCLUDED
+// 2007/08/1
+// The following was an unsuccessful attempt to work-around the drag-n-drop crash
+// on Linux which occurs when the user drags the cursor too fast, giving the message
+// Gtk-CRITICAL ** : gtk_drag_set_icon_widget assert DRAG_CONTEXT (context) failed
+// and then the system freezes up.
+////// ----------------------------------------------------------------------------
+////class DropSource: public wxDropSource
+////// ----------------------------------------------------------------------------
+////{
+////  public:
+////
+////    // constructor
+////    DropSource (wxDataObject& data, wxWindow* win = NULL)
+////        :wxDropSource(data, win)
+////        {  //LOGIT( _T("DropSource ctor") );
+////        }
+////
+////    virtual bool GiveFeedback(wxDragResult WXUNUSED(effect))
+////        {
+////            LOGIT( _T("DropSource GiveFeedBack"));
+////            //asm("int3");
+////            return true;
+////            //return false;
+////        }
+////  private:
+////
+////};
+// ----------------------------------------------------------------------------

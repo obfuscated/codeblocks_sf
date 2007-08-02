@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 95 2007-07-22 04:19:22Z Pecan $
+// RCS-ID: $Id: version.cpp 98 2007-08-02 21:35:04Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -299,6 +299,10 @@ AppVersion::~AppVersion()
 //          90) Don't save snippets xml when no changes made in order to avoid
 //              file time change and annoying reload msg in secondary CB.
 // ----------------------------------------------------------------------------
+//  Commit  1.2.92 2007/08/2
+//          91) Added check for possible garbage window ptr in OnTreeCtrlEvent()
+//          92) Fixed TextToFilenames() for list/text containing \r & \n
+// ----------------------------------------------------------------------------
 //
 // ----------------------------------------------------------------------------
 //  ToDo    All
@@ -319,6 +323,12 @@ AppVersion::~AppVersion()
 //          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
 //          Add "U" type icon for url type snippets
+//          Bug: 2007/08/1
+//              Linux wxGTK2.8.4 cannot drag out of "OpenFilesList". Returns result
+//              "wxDragNone" even tho same code works for Management window
+//          Bug: 2007/08/2
+//              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
+//              bug was reported way back in wxGTK 2.1.0
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
