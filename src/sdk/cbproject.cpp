@@ -566,7 +566,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     FileType ft = FileTypeOf(filename);
 
     ext = filename.AfterLast(_T('.')).Lower();
-    if (ext.IsSameAs(FileFilters::C_EXT) || ext.IsSameAs(FileFilters::CC_EXT))
+    if (ext.IsSameAs(FileFilters::C_EXT))
         f->compilerVar = _T("CC");
     else if (platform::windows && ext.IsSameAs(FileFilters::RESOURCE_EXT))
         f->compilerVar = _T("WINDRES");

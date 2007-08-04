@@ -1273,7 +1273,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         if (!f->compilerVar.IsEmpty())
         {
             wxString ext = f->relativeFilename.AfterLast(_T('.')).Lower();
-            if (f->compilerVar != _T("CC") && (ext.IsSameAs(FileFilters::C_EXT) || ext.IsSameAs(FileFilters::CC_EXT)))
+            if (f->compilerVar != _T("CC") && (ext.IsSameAs(FileFilters::C_EXT)))
                 AddElement(unitnode, "Option", "compilerVar", f->compilerVar);
 #ifdef __WXMSW__
             else if (f->compilerVar != _T("WINDRES") && ext.IsSameAs(FileFilters::RESOURCE_EXT))
