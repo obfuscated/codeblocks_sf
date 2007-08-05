@@ -108,6 +108,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     wxString ver = cbC2U(root->Attribute("Version"));
     if (ver.IsSameAs(_T("7.0")) || ver.IsSameAs(_T("7.00"))) m_Version = 70;
     if (ver.IsSameAs(_T("7.1")) || ver.IsSameAs(_T("7.10"))) m_Version = 71;
+    if (ver.IsSameAs(_T("8.0")) || ver.IsSameAs(_T("8.00"))) m_Version = 80;
     if ((m_Version!=70) && (m_Version!=71))
     {
         // seems to work with visual 8 too ;)
@@ -406,9 +407,14 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 bt->AddCompilerOption(wxString(_T("/W")) + tmp);
             }
 
+/* For more details on "DebugInformationFormat", please visit
+   http://msdn2.microsoft.com/en-us/library/aa652260(VS.71).aspx
+   http://msdn2.microsoft.com/en-us/library/microsoft.visualstudio.vcprojectengine.debugoption(VS.80).aspx */
             tmp = cbC2U(tool->Attribute("DebugInformationFormat"));
             if (tmp.IsSameAs(_T("3")))
-                bt->AddCompilerOption(m_ConvertSwitches ? _T("-g") : _T("/Zi")); // no !
+                bt->AddCompilerOption(m_ConvertSwitches ? _T("") : _T("/Zi"));
+            else if (tmp.IsSameAs(_T("4")))
+                bt->AddCompilerOption(m_ConvertSwitches ? _T("-g") : _T("/ZI"));
 
 
             tmp = cbC2U(tool->Attribute("InlineFunctionExpansion"));
