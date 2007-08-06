@@ -20,6 +20,9 @@ static const int ipc_buf_size = 1024*64;
 #ifdef __WIN32__
     typedef HANDLE shm_handle_t;
     typedef HANDLE semaphore_t;
+#elif defined(__APPLE__) && defined(__MACH__)
+    typedef int shm_handle_t;
+    typedef mach_port_t semaphore_t;
 #else
     typedef int shm_handle_t;
     typedef int semaphore_t;
