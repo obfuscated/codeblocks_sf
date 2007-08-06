@@ -121,7 +121,7 @@ enum SupportedPlatforms
 
 typedef wxString HighlightLanguage;
 #define HL_AUTO _T(" ")
-#define HL_NONE _T("Plain text")
+#define HL_NONE _T("  ")
 
 extern DLLIMPORT const wxString DEFAULT_WORKSPACE;
 extern DLLIMPORT const wxString DEFAULT_ARRAY_SEP;
