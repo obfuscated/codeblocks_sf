@@ -88,6 +88,7 @@ class CodeBlocksApp : public wxApp
         bool m_NoSplash; // no splash screen
         bool m_HasDebugLog; // display debug log
         bool m_NoCrashHandler; // no crash handler
+        bool m_SafeMode; // all plugins disabled
 
         void InitAssociations();
 

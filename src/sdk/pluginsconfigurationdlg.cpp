@@ -113,6 +113,16 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
     initialInfo << _("If a plugin is not well-written, it could cause Code::Blocks to crash ");
     initialInfo << _T("when performing any operation on it...");
+
+	if (PluginManager::GetSafeMode())
+	{
+		initialInfo << _T("</font></i><br /><br /><b><font color=\"red\">");
+		initialInfo << _("Code::Blocks started up in \"safe-mode\"");
+		initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
+		initialInfo << _("All plugins were disabled on startup so that you can troubleshoot ");
+		initialInfo << _T("problematic plugins. Enable plugins at will now...");
+	}
+
     initialInfo << _T("</font></i><br /></body></html>\n");
 
     XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(initialInfo);
@@ -200,7 +210,7 @@ void PluginsConfigurationDlg::OnToggle(wxCommandEvent& event)
             if (!isEnable && elem->plugin->IsAttached())
                 Manager::Get()->GetPluginManager()->DetachPlugin(elem->plugin);
             else if (isEnable && !elem->plugin->IsAttached())
-                Manager::Get()->GetPluginManager()->AttachPlugin(elem->plugin);
+                Manager::Get()->GetPluginManager()->AttachPlugin(elem->plugin, true); // ignore safe-mode here
             else
                 continue;
 

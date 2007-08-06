@@ -10,6 +10,7 @@
 #include <wx/dcmemory.h>
 #include <wx/dcscreen.h>
 #include "configmanager.h"
+#include "pluginmanager.h"
 #include "appglobals.h"
 #include "prep.h" // haven't included sdk in this source file
 
@@ -32,16 +33,24 @@ void cbSplashScreen::DoPaint(wxDC &dc)
   wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
   wxFont smallFont(9, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 
-  wxCoord a, b, c, d;
+  wxCoord a, b, c, d, e, f;
 
   dc.GetTextExtent(release,  &a, &b, 0, 0, &largeFont);
   dc.GetTextExtent(revision, &c, &d, 0, 0, &smallFont);
+  dc.GetTextExtent(_("SAFE MODE"), &e, &f, 0, 0, &largeFont);
 
   a >>= 1; c >>=1;
   int y = 180 - ((b + d + 8)>>1);
 
+  dc.SetTextForeground(*wxBLACK);
   dc.SetFont(largeFont);
   dc.DrawText(release,  92 - a, y);
+  if (PluginManager::GetSafeMode())
+  {
+	dc.SetTextForeground(*wxRED);
+	dc.DrawText(_("SAFE MODE"), (dc.GetSize().GetX() - e) / 2, y + b);
+	dc.SetTextForeground(*wxBLACK);
+  }
   dc.SetFont(smallFont);
   dc.DrawText(revision, 92 - c, y + b);
 }

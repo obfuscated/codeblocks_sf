@@ -150,6 +150,7 @@ DDEServer* g_DDEServer = 0L;
 const wxCmdLineEntryDesc cmdLineDesc[] =
 {
     { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_SWITCH, _T(""), _T("safe-mode"), _T("load in safe mode (all plugins will be disabled)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
 #ifdef __WXMSW__
     { wxCMD_LINE_SWITCH, _T("na"), _T("no-check-associations"), _T("don't perform any association checks"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T("nd"), _T("no-dde"), _T("don't start a DDE server"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
@@ -433,6 +434,7 @@ bool CodeBlocksApp::OnInit()
     m_Clean = false;
     m_HasProject = false;
     m_HasWorkSpace = false;
+    m_SafeMode = false;
 
     m_BatchWindowAutoClose = true;
 
@@ -460,6 +462,9 @@ bool CodeBlocksApp::OnInit()
 
         if(!LoadConfig())
             return false;
+		
+		// set safe-mode appropriately
+		PluginManager::SetSafeMode(m_SafeMode);
 
         if(!m_Batch && m_Script.IsEmpty() && !InitXRCStuff())
         {
@@ -891,6 +896,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_NoDDE = parser.Found(_T("no-dde"));
                     m_NoAssocs = parser.Found(_T("no-check-associations"));
 #endif
+                    m_SafeMode = parser.Found(_T("safe-mode"));
                     m_NoSplash = parser.Found(_T("no-splash-screen"));
                     m_HasDebugLog = parser.Found(_T("debug-log"));
                     m_NoCrashHandler = parser.Found(_T("no-crash-handler"));

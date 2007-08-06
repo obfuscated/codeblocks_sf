@@ -169,6 +169,9 @@ namespace LibLoader
     }
 };
 
+//static
+bool PluginManager::s_SafeMode = false;
+
 BEGIN_EVENT_TABLE(PluginManager, wxEvtHandler)
 //
 END_EVENT_TABLE()
@@ -195,14 +198,15 @@ void PluginManager::ReleaseMenu(wxMenuBar* menuBar)
 {
 }
 
-bool PluginManager::AttachPlugin(cbPlugin* plugin)
+bool PluginManager::AttachPlugin(cbPlugin* plugin, bool ignoreSafeMode)
 {
     if (!plugin)
         return false;
     if (plugin->IsAttached())
         return true;
 
-    plugin->Attach();
+	if (!s_SafeMode || ignoreSafeMode)
+		plugin->Attach();
     return true;
 }
 

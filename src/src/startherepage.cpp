@@ -118,6 +118,7 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);
     buf.Replace(_T("CB_VAR_VERSION_VERB"), appglobals::AppActualVersionVerb);
     buf.Replace(_T("CB_VAR_VERSION"), appglobals::AppActualVersion);
+    buf.Replace(_T("CB_SAFE_MODE"), PluginManager::GetSafeMode() ? _("SAFE MODE") : _T(""));
     m_pWin->SetPage(buf);
 
     m_OriginalPageContent = buf; // keep a copy of original for Reload()

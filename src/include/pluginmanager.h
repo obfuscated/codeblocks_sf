@@ -87,7 +87,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         int ExecutePlugin(const wxString& pluginName);
         int ConfigurePlugin(const wxString& pluginName);
 
-        bool AttachPlugin(cbPlugin* plugin);
+        bool AttachPlugin(cbPlugin* plugin, bool ignoreSafeMode = false);
         bool DetachPlugin(cbPlugin* plugin);
 
         bool InstallPlugin(const wxString& pluginName, bool forAllUsers = true, bool askForConfirmation = true);
@@ -119,6 +119,9 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         void NotifyPlugins(CodeBlocksEvent& event);
         void NotifyPlugins(CodeBlocksDockEvent& event);
         void NotifyPlugins(CodeBlocksLayoutEvent& event);
+        
+        static void SetSafeMode(bool on){ s_SafeMode = on; }
+        static bool GetSafeMode(){ return s_SafeMode; }
     private:
         PluginManager();
         ~PluginManager();
@@ -167,6 +170,8 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
             PluginInfo info;
         };
         std::vector<PluginRegistration> m_RegisteredPlugins;
+        
+        static bool s_SafeMode;
         
 		DECLARE_EVENT_TABLE()
 };
