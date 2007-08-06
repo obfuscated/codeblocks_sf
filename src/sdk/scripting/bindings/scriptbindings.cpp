@@ -494,7 +494,8 @@ namespace ScriptBindings
                 func(&cbProject::GetNotes, "GetNotes").
                 func(&cbProject::SetShowNotesOnLoad, "SetShowNotesOnLoad").
                 func(&cbProject::GetShowNotesOnLoad, "GetShowNotesOnLoad").
-                func(&cbProject::ShowNotes, "ShowNotes");
+                func(&cbProject::ShowNotes, "ShowNotes").
+                func(&cbProject::AddToExtensions, "AddToExtensions");
 
         SqPlus::SQClassDef<ProjectManager>("ProjectManager").
                 func(&ProjectManager::GetDefaultPath, "GetDefaultPath").

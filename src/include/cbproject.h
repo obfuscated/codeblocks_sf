@@ -19,6 +19,7 @@ class cbProject;
 class ProjectBuildTarget;
 class ProjectFile;
 class FilesGroupsAndMasks;
+class TiXmlNode;
 class TiXmlElement;
 
 // hashmap for fast searches in cbProject::GetFileByFilename()
@@ -586,6 +587,36 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * and than calls base function.
           */
         virtual void SetTitle(const wxString& title);
+        
+        /** Access the <Extensions> XML node of this project
+          *
+          * This function is for advanced users only. Use at your own risk
+          * (and respect other plugins authors work under this node).
+          *
+          * @return The <Extensions> XML node.
+          * @note This function will never return NULL.
+          */
+        virtual TiXmlNode* GetExtensionsNode();
+        
+        /** Convenience function (mainly for scripts) to add nodes/attributes
+          * under the <Extensions> node.
+          *
+          * It is mainly useful for scripts that can't otherwise access the XML node.
+          * For C++ code, using GetExtensionsNode() is recommended instead (which is much faster).
+          *
+          * @param stringDesc A string representation of the nodes/attributes to add/edit
+          * under <Extensions>.
+          * @c stringDesc is a string of the form:
+          * "node/subnode/.../+subnode:attr=val"
+          *
+          * The ":attr=val" part is optional.
+          * The node/subnode structure will be created if not there.
+          * To set more than one attribute, call this function more than once,
+          * using the same node/subnode structure.
+          * If a node begins with the "plus" sign (+), then this forces adding a new node
+          * instead of re-using the existing one (if any).
+          */
+        virtual void AddToExtensions(const wxString& stringDesc);
 
     private:
         void Open();

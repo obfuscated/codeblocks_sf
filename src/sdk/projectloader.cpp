@@ -1330,16 +1330,13 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     }
 
     // as a last step, run all hooked callbacks
-    if (ProjectLoaderHooks::HasRegisteredHooks())
-    {
-        TiXmlElement* node = pExtensions
+	TiXmlElement* extnode = pExtensions
 							? prjnode->InsertEndChild(*pExtensions)->ToElement()
 							: AddElement(prjnode, "Extensions");
-        if (node)
-        {
-            ProjectLoaderHooks::CallHooks(m_pProject, node, false);
-        }
-    }
+    if (ProjectLoaderHooks::HasRegisteredHooks() && extnode)
+	{
+		ProjectLoaderHooks::CallHooks(m_pProject, extnode, false);
+	}
 
     return cbSaveTinyXMLDocument(&doc, filename);
 }

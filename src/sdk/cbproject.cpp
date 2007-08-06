@@ -404,7 +404,7 @@ bool cbProject::SaveAs()
     if (!m_Loaded)
         AddDefaultBuildTarget();
     ProjectLoader loader(this);
-    if (loader.Save(m_Filename))
+    if (loader.Save(m_Filename, m_pExtensionsElement))
     {
         wxFileName fname(m_Filename);
         m_LastModified = fname.GetModificationTime();
@@ -1894,5 +1894,76 @@ void cbProject::SetTitle(const wxString& title)
     {
         CompileTargetBase::SetTitle(title);
         NotifyPlugins(cbEVT_PROJECT_RENAMED);
+    }
+}
+
+TiXmlNode* cbProject::GetExtensionsNode()
+{
+	if (!m_pExtensionsElement)
+		m_pExtensionsElement = new TiXmlElement(cbU2C(_T("Extensions")));
+	return m_pExtensionsElement;
+}
+
+void cbProject::AddToExtensions(const wxString& stringDesc)
+{
+	// sample stringDesc:
+	// node/+subnode/subsubnode:attr=val
+
+	TiXmlElement* elem = GetExtensionsNode()->ToElement();
+    size_t pos = 0;
+    while (true)
+    {
+        // ignore consecutive slashes
+        while (pos < stringDesc.Length() && stringDesc.GetChar(pos) == _T('/'))
+        {
+            ++pos;
+        }
+
+        // find next slash or colon
+        size_t nextPos = pos;
+        while (nextPos < stringDesc.Length() && stringDesc.GetChar(++nextPos) != _T('/') && stringDesc.GetChar(nextPos) != _T(':'))
+            ;
+
+        wxString current = stringDesc.Mid(pos, nextPos - pos);
+        if (current.IsEmpty() || current[0] == _T(':')) // abort on invalid case: "node/:attr=val" (consecutive "/:")
+            break;
+
+		// find or create the subnode
+		bool forceAdd = current[0] == _T('+');
+		if (forceAdd)
+			current.Remove(0, 1); // remove '+'
+        TiXmlElement* sub = !forceAdd ? elem->FirstChildElement(cbU2C(current)) : 0;
+        if (!sub)
+        {
+			sub = elem->InsertEndChild(TiXmlElement(cbU2C(current)))->ToElement();
+			SetModified(true);
+        }
+        elem = sub;
+
+		// last node?
+		if (stringDesc.GetChar(nextPos) == _T(':'))
+		{
+			// yes, just parse the attribute now
+			pos = nextPos + 1; // skip the colon
+			nextPos = pos;
+			while (nextPos < stringDesc.Length() && stringDesc.GetChar(++nextPos) != _T('='))
+				;
+			if (pos == nextPos || nextPos == stringDesc.Length())
+			{
+				// invalid attribute
+			}
+			else
+			{
+				wxString key = stringDesc.Mid(pos, nextPos - pos);
+				wxString val = stringDesc.Mid(nextPos + 1, stringDesc.Length() - nextPos - 1);
+				sub->SetAttribute(cbU2C(key), cbU2C(val));
+				SetModified(true);
+			}
+			
+			// all done
+			break;
+		}
+
+        pos = nextPos; // prepare for next loop
     }
 }
