@@ -16,7 +16,6 @@
           <content/>
           <enabled>0</enabled>
         </object>
-        <option>1</option>
         <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
         <border>8</border>
       </object>
