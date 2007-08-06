@@ -111,17 +111,17 @@ enum TemplateOutputType
 /** Supported platforms */
 enum SupportedPlatforms
 {
-	spMac		= 0x01,
-	spUnix		= 0x02,
-	spWindows 	= 0x04,
+    spMac       = 0x01,
+    spUnix      = 0x02,
+    spWindows   = 0x04,
 
-	spAll		= 0xff
+    spAll       = 0xff
 };
 // NOTE: if you add/remove platforms, remember to update the relevant Get/Set globals
 
 typedef wxString HighlightLanguage;
 #define HL_AUTO _T(" ")
-#define HL_NONE _T("  ")
+#define HL_NONE _T("Plain text")
 
 extern DLLIMPORT const wxString DEFAULT_WORKSPACE;
 extern DLLIMPORT const wxString DEFAULT_ARRAY_SEP;
