@@ -145,7 +145,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     wxDir locDir(ConfigManager::GetDataFolder() + _T("/locale"));
     wxString locFName;
 
-    if(locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/))
+    if(locDir.IsOpened() && locDir.GetFirst(&locFName/*, wxEmptyString, wxDIR_DIRS*/))
     do
     {
         const wxLanguageInfo *info = wxLocale::FindLanguageInfo(locFName);
@@ -225,7 +225,7 @@ void EnvironmentSettingsDlg::AddPluginPanels()
     {
         cbConfigurationPanel* panel = m_PluginPanels[i];
         lb->AddPage(panel, panel->GetTitle());
-        
+
         wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
         if (onFile.IsEmpty())
 			onFile = ConfigManager::LocateDataFile(noimg + _T(".png"), sdDataGlobal | sdDataUser);
