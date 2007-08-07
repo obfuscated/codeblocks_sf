@@ -409,6 +409,10 @@ void CodeBlocksApp::InitLocale()
     path.Append(info->CanonicalName);
 
     wxDir dir(path);
+
+    if (!dir.IsOpened())
+        return;
+
     wxString moName;
 
     if(dir.GetFirst(&moName, _T("*.mo"), wxDIR_FILES))
