@@ -11,7 +11,7 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libcodesnippets.la
 
-libcodesnippets_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libcodesnippets_la_LDFLAGS = $(WX_GTK2_LIBS) -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libcodesnippets_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 

@@ -10,7 +10,7 @@ libdir = $(pkgdatadir)/plugins
 ##lib_LTLIBRARIES = codesnippets
 bin_PROGRAMS = codesnippets
 
-codesnippets_LDFLAGS = 
+codesnippets_LDFLAGS = $(WX_GTK2_LIBS)
 
 ##codesnippets_LIBADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
 ##codesnippets_LDADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
