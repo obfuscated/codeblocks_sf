@@ -83,7 +83,16 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
                 Codef(_T("%AMove(%P);\n"));
             }
             SetupWindowCode(Code,WindowParent,Language);
-            // TODO: Setup Icon
+            if ( !Icon.IsEmpty() )
+            {
+                Codef(
+                    _T("{\n")
+                    _T("\twxIcon FrameIcon;\n")
+                    _T("\tFrameIcon.CopyFromBitmap(%i);\n")
+                    _T("\t%ASetIcon(FrameIcon);\n")
+                    _T("}\n"),
+                        &Icon,wxART_FRAME_ICON);
+            }
 
             AddChildrenCode(Code,wxsCPP);
             if ( Centered )
@@ -119,6 +128,13 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
         }
         NewItem = Frm;
         SetupWindow(NewItem,Flags);
+        if ( !Icon.IsEmpty() )
+        {
+            wxIcon FrameIcon;
+            FrameIcon.CopyFromBitmap(Icon.GetPreview(wxDefaultSize,wxART_FRAME_ICON));
+            Frm->SetIcon(FrameIcon);
+        }
+
         AddChildrenPreview(NewItem,Flags);
         if ( Centered )
         {
@@ -175,7 +191,15 @@ void wxsFrame::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingL
 {
     switch ( Language )
     {
-        case wxsCPP: Decl.Add(_T("<wx/frame.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsFrame::OnEnumDeclFiles"),Language);
+        case wxsCPP:
+            Decl.Add(_T("<wx/frame.h>"));
+            if ( !Icon.IsEmpty() )
+            {
+                Decl.Add(_T("<wx/icon.h>"));
+            }
+            return;
+
+        default:
+            wxsCodeMarks::Unknown(_T("wxsFrame::OnEnumDeclFiles"),Language);
     }
 }
