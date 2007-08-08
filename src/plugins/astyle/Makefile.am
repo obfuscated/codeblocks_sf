@@ -32,7 +32,7 @@ noinst_HEADERS = asstreamiterator.h \
 
 EXTRA_DIST = astyle/astyle.html \
 			astyle/astyle_main.cpp \
-			astyle/astyle_release_notes.html \
-      astyle/astyleX.html \
+			astyle/astyle_notes.html \
+      		astyle/astyleX.html \
 			astyle/install.html \
 			astyle/license.html
