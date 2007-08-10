@@ -6,6 +6,7 @@
 class wxsItemEditorDragAssist;
 class wxsItemResData;
 class wxsItemEditor;
+class wxsItemInfo;
 class wxsParent;
 class wxsItem;
 
@@ -28,6 +29,9 @@ class wxsItemEditorContent: public wxsDrawingWindow
 
         /** \brief Function refreshing current selection (calculating new positions) */
         void RefreshSelection();
+
+        /** \brief Starting sequence of adding new item by pointing with mouse */
+        void InsertByPointing(const wxsItemInfo* Info);
 
     protected:
 
@@ -62,6 +66,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
             msDraggingPoint,
             msDraggingItemInit,
             msDraggingItem,
+            msTargetSearch,
         };
 
         /** \brief Structure describing one dragging point */
@@ -105,6 +110,10 @@ class wxsItemEditorContent: public wxsDrawingWindow
         wxsParent* m_AssistParent;
         bool       m_AssistAddAfter;
 
+        const wxsItemInfo* m_TargetInfo;                    ///< \brief Info of item added by pointing with mouse
+        int m_TargetX;
+        int m_TargetY;
+
 
         /** \brief Processing mouse events */
         void OnMouse(wxMouseEvent& event);
@@ -114,6 +123,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
         void OnMouseDraggingPointInit(wxMouseEvent& event);
         void OnMouseDraggingItem(wxMouseEvent& event);
         void OnMouseDraggingItemInit(wxMouseEvent& event);
+        void OnMouseTargetSearch(wxMouseEvent& event);
 
         inline void SetCur(int Cur) { SetCursor(wxCursor(Cur)); }
 
@@ -139,6 +149,9 @@ class wxsItemEditorContent: public wxsDrawingWindow
         /** \brief Function updating ItemToRect and ItemToWindow maps */
         void RecalculateMaps();
         void RecalculateMapsReq(wxsItem* Item);
+
+        /** \brief Adding item in point-by-mouse mode */
+        void AddItemAtTarget(wxsParent* AssistParent,int Position,const wxsItemInfo* Info,int PosX,int PosY);
 
         friend class wxsItemEditorDragAssist;
 

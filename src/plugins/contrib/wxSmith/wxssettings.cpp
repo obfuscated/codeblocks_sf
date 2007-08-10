@@ -34,6 +34,7 @@
 #include <wx/image.h>
 #include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 // TODO: Replace fixed settings with some modular structure
@@ -83,82 +84,82 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	wxStaticText* StaticText4;
 	wxStaticText* StaticText5;
 
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
-	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
+	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxPanel"));
+	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer1->AddGrowableCol(0);
-	FlexGridSizer6 = new wxFlexGridSizer(0,1,0,0);
+	FlexGridSizer6 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer6->AddGrowableCol(0);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Editor"));
-	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("Drag Assistance Type"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
+	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Editor"));
+	FlexGridSizer2 = new wxFlexGridSizer(0, 2, 0, 0);
+	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Drag Assistance Type"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
 	FlexGridSizer2->Add(StaticText2,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	DragAssistType = new wxComboBox(this,ID_COMBOBOX1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,0,wxCB_READONLY,wxDefaultValidator,_T("ID_COMBOBOX1"));
+	DragAssistType = new wxComboBox(this, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_READONLY, wxDefaultValidator, _T("ID_COMBOBOX1"));
 	DragAssistType->SetSelection( DragAssistType->Append(_("None")) );
 	DragAssistType->Append(_("Simple"));
 	DragAssistType->Append(_("Colour Mix"));
 	FlexGridSizer2->Add(DragAssistType,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("Drag target colour"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT3"));
+	StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Drag target colour"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
 	FlexGridSizer2->Add(StaticText3,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	DragTargetCol = new wxButton(this,ID_BUTTON1,_("..."),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
+	DragTargetCol = new wxButton(this, ID_BUTTON1, _("..."), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
 	FlexGridSizer2->Add(DragTargetCol,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("Drag Parent Colour"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT4"));
+	StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Drag Parent Colour"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
 	FlexGridSizer2->Add(StaticText4,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	DragParentCol = new wxButton(this,ID_BUTTON2,_("..."),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON2"));
+	DragParentCol = new wxButton(this, ID_BUTTON2, _("..."), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
 	FlexGridSizer2->Add(DragParentCol,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("Palette icon size"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT5"));
+	StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("Palette icon size"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
 	FlexGridSizer2->Add(StaticText5,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	FlexGridSizer3 = new wxFlexGridSizer(0,0,0,0);
-	Icons16 = new wxRadioButton(this,ID_RADIOBUTTON1,_("16x16"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP,wxDefaultValidator,_T("ID_RADIOBUTTON1"));
+	FlexGridSizer3 = new wxFlexGridSizer(0, 0, 0, 0);
+	Icons16 = new wxRadioButton(this, ID_RADIOBUTTON1, _("16x16"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
 	FlexGridSizer3->Add(Icons16,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	Icons32 = new wxRadioButton(this,ID_RADIOBUTTON2,_("32x32"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON2"));
+	Icons32 = new wxRadioButton(this, ID_RADIOBUTTON2, _("32x32"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON2"));
 	FlexGridSizer3->Add(Icons32,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer2->Add(FlexGridSizer3,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	StaticText6 = new wxStaticText(this,ID_STATICTEXT6,_("Tool icon size"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT6"));
+	StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("Tool icon size"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
 	FlexGridSizer2->Add(StaticText6,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	FlexGridSizer4 = new wxFlexGridSizer(0,0,0,0);
-	TIcons16 = new wxRadioButton(this,ID_RADIOBUTTON3,_("16x16"),wxDefaultPosition,wxDefaultSize,wxRB_GROUP,wxDefaultValidator,_T("ID_RADIOBUTTON3"));
+	FlexGridSizer4 = new wxFlexGridSizer(0, 0, 0, 0);
+	TIcons16 = new wxRadioButton(this, ID_RADIOBUTTON3, _("16x16"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
 	FlexGridSizer4->Add(TIcons16,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	TIcons32 = new wxRadioButton(this,ID_RADIOBUTTON4,_("32x32"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_RADIOBUTTON4"));
+	TIcons32 = new wxRadioButton(this, ID_RADIOBUTTON4, _("32x32"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON4"));
 	FlexGridSizer4->Add(TIcons32,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer2->Add(FlexGridSizer4,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	StaticBoxSizer1->Add(FlexGridSizer2,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer6->Add(StaticBoxSizer1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Default sizer settings"));
-	FlexGridSizer5 = new wxFlexGridSizer(0,2,0,0);
-	StaticText7 = new wxStaticText(this,ID_STATICTEXT7,_("Proportion:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT7"));
+	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Default sizer settings"));
+	FlexGridSizer5 = new wxFlexGridSizer(0, 2, 0, 0);
+	StaticText7 = new wxStaticText(this, ID_STATICTEXT7, _("Proportion:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
 	FlexGridSizer5->Add(StaticText7,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	spinProportion = new wxSpinCtrl(this,ID_SPINCTRL2,_T("0"),wxDefaultPosition,wxDefaultSize,0,0,100,0,_T("ID_SPINCTRL2"));
+	spinProportion = new wxSpinCtrl(this, ID_SPINCTRL2, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 100, 0, _T("ID_SPINCTRL2"));
 	spinProportion->SetValue(_T("0"));
 	FlexGridSizer5->Add(spinProportion,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
-	StaticText8 = new wxStaticText(this,ID_STATICTEXT8,_("Border flags:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT8"));
+	StaticText8 = new wxStaticText(this, ID_STATICTEXT8, _("Border flags:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
 	FlexGridSizer5->Add(StaticText8,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	chkTop = new wxCheckBox(this,ID_CHECKBOX1,_("Top"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+	chkTop = new wxCheckBox(this, ID_CHECKBOX1, _("Top"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
 	chkTop->SetValue(true);
 	BoxSizer2->Add(chkTop,0,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	chkBottom = new wxCheckBox(this,ID_CHECKBOX2,_("Bottom"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+	chkBottom = new wxCheckBox(this, ID_CHECKBOX2, _("Bottom"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
 	chkBottom->SetValue(true);
 	BoxSizer2->Add(chkBottom,0,wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	chkLeft = new wxCheckBox(this,ID_CHECKBOX3,_("Left"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX3"));
+	chkLeft = new wxCheckBox(this, ID_CHECKBOX3, _("Left"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
 	chkLeft->SetValue(true);
 	BoxSizer2->Add(chkLeft,0,wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	chkRight = new wxCheckBox(this,ID_CHECKBOX4,_("Right"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX4"));
+	chkRight = new wxCheckBox(this, ID_CHECKBOX4, _("Right"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
 	chkRight->SetValue(true);
 	BoxSizer2->Add(chkRight,0,wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	FlexGridSizer5->Add(BoxSizer2,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
-	StaticText9 = new wxStaticText(this,ID_STATICTEXT9,_("Expand:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT9"));
+	StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("Expand:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
 	FlexGridSizer5->Add(StaticText9,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	chkExpand = new wxCheckBox(this,ID_CHECKBOX5,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX5"));
+	chkExpand = new wxCheckBox(this, ID_CHECKBOX5, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
 	chkExpand->SetValue(false);
 	FlexGridSizer5->Add(chkExpand,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	StaticText10 = new wxStaticText(this,ID_STATICTEXT10,_("Shaped:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT10"));
+	StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("Shaped:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
 	FlexGridSizer5->Add(StaticText10,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	chkShaped = new wxCheckBox(this,ID_CHECKBOX6,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX6"));
+	chkShaped = new wxCheckBox(this, ID_CHECKBOX6, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
 	chkShaped->SetValue(false);
 	FlexGridSizer5->Add(chkShaped,1,wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,5);
-	StaticText12 = new wxStaticText(this,ID_STATICTEXT12,_("Placement:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT12"));
+	StaticText12 = new wxStaticText(this, ID_STATICTEXT12, _("Placement:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
 	FlexGridSizer5->Add(StaticText12,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	choicePlacement = new wxChoice(this,ID_CHOICE1,wxDefaultPosition,wxDefaultSize,0,0,0,wxDefaultValidator,_T("ID_CHOICE1"));
+	choicePlacement = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
 	choicePlacement->SetSelection( choicePlacement->Append(_("Left-Top")) );
 	choicePlacement->Append(_("Top"));
 	choicePlacement->Append(_("Right-Top"));
@@ -169,13 +170,13 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	choicePlacement->Append(_("Bottom"));
 	choicePlacement->Append(_("Right-Bottom"));
 	FlexGridSizer5->Add(choicePlacement,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
-	StaticText13 = new wxStaticText(this,ID_STATICTEXT13,_("Border:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT13"));
+	StaticText13 = new wxStaticText(this, ID_STATICTEXT13, _("Border:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT13"));
 	FlexGridSizer5->Add(StaticText13,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	spinBorder = new wxSpinCtrl(this,ID_SPINCTRL3,_T("0"),wxDefaultPosition,wxDefaultSize,0,0,100,0,_T("ID_SPINCTRL3"));
+	spinBorder = new wxSpinCtrl(this, ID_SPINCTRL3, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 100, 0, _T("ID_SPINCTRL3"));
 	spinBorder->SetValue(_T("0"));
 	FlexGridSizer5->Add(spinBorder,1,wxALL|wxALIGN_LEFT|wxALIGN_TOP,5);
 	FlexGridSizer5->Add(16,8,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	chkBorderDU = new wxCheckBox(this,ID_CHECKBOX8,_("Use dialog units"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX8"));
+	chkBorderDU = new wxCheckBox(this, ID_CHECKBOX8, _("Use dialog units"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX8"));
 	chkBorderDU->SetValue(false);
 	FlexGridSizer5->Add(chkBorderDU,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	StaticBoxSizer2->Add(FlexGridSizer5,1,wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
@@ -346,5 +347,5 @@ void wxsSettings::OnApply()
     cfg->Write(_T("/defsizer/border"), (int)spinBorder->GetValue());
     cfg->Write(_T("/defsizer/borderdu"),(bool)chkBorderDU->GetValue());
 
-    wxsItemEditor::ReloadImages();
+    wxsItemEditor::ConfigChanged();
 }

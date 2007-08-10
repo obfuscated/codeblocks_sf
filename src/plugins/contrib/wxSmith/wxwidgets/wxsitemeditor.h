@@ -13,6 +13,7 @@
 class wxsItemEditorContent;
 class wxsItemResData;
 class wxsToolSpace;
+class wxsItemInfo;
 class wxsItem;
 
 /** \brief This is root class for editing wxWidgets window resources
@@ -30,8 +31,8 @@ class wxsItemEditor : public wxsEditor
 		/** \brief Saving resource */
 		virtual bool Save();
 
-		/** \brief Reloading images in all editors */
-		static void ReloadImages();
+		/** \brief Notifying that configuration has been changed */
+		static void ConfigChanged();
 
     protected:
 
@@ -72,6 +73,7 @@ class wxsItemEditor : public wxsEditor
 		/* Event handlers */
         void OnMouseClick(wxMouseEvent& event);
         void OnButton(wxCommandEvent& event);
+        void OnInsPoint(wxCommandEvent& event);
         void OnInsInto(wxCommandEvent& event);
         void OnInsBefore(wxCommandEvent& event);
         void OnInsAfter(wxCommandEvent& event);
@@ -136,6 +138,12 @@ class wxsItemEditor : public wxsEditor
          */
         wxsItem* GetReferenceItem(int& InsertionType);
 
+        /** \brief Starting sequence of adding new item when inserting by pointing with mouse */
+        void StartInsertPointSequence(const wxsItemInfo* Info);
+
+		/** \brief Reloading images in all editors */
+		static void ReloadImages();
+
         wxsItemResData* m_Data;             ///< \brief Data managment object
 
         wxsItemEditorContent* m_Content;    ///< \brief Window with content area
@@ -146,6 +154,7 @@ class wxsItemEditor : public wxsEditor
         wxBoxSizer* m_QPSizer;              ///< \brief Sizer for quick properties
         wxBoxSizer* m_OpsSizer;             ///< \brief Sizer for operations pane
         wxScrolledWindow* m_QPArea;         ///< \brief Scrolled window containing all QuickProps sturr
+        wxBitmapButton* m_InsPointBtn;
         wxBitmapButton* m_InsIntoBtn;
         wxBitmapButton* m_InsBeforeBtn;
         wxBitmapButton* m_InsAfterBtn;
@@ -158,6 +167,7 @@ class wxsItemEditor : public wxsEditor
         int m_InsTypeMask;                  ///< \brief Current insertion type mask
         bool m_QuickPropsOpen;              ///< \brief Set to true if quick properties panel is opened
 
+        static wxImage m_InsPointImg;
         static wxImage m_InsIntoImg;
         static wxImage m_InsBeforeImg;
         static wxImage m_InsAfterImg;
@@ -169,9 +179,10 @@ class wxsItemEditor : public wxsEditor
         static WindowSet m_AllEditors;
         static bool m_ImagesLoaded;
 
-        static const int itBefore = 0x01;
-        static const int itAfter  = 0x02;
-        static const int itInto   = 0x04;
+        static const int itPoint  = 0x01;
+        static const int itBefore = 0x02;
+        static const int itAfter  = 0x04;
+        static const int itInto   = 0x08;
 
         DECLARE_EVENT_TABLE()
 

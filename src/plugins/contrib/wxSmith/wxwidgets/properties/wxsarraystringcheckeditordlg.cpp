@@ -59,36 +59,36 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
     Bools(_Bools)
 {
 	//(*Initialize(wxsArrayStringCheckEditorDlg)
-	Create(parent,id,_("Choices:"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
+	Create(parent, id, _("Choices:"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	EditArea = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL1"));
+	EditArea = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
 	BoxSizer2->Add(EditArea,1,wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	Button1 = new wxButton(this,ID_BUTTON1,_("Add"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
+	Button1 = new wxButton(this, ID_BUTTON1, _("Add"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
 	BoxSizer2->Add(Button1,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer1->Add(BoxSizer2,0,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
-	StaticLine1 = new wxStaticLine(this,ID_STATICLINE1,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE1"));
+	StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));
 	BoxSizer1->Add(StaticLine1,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
-	StringList = new wxCheckListBox(this,ID_CHECKLISTBOX1,wxDefaultPosition,wxSize(180,255),0,0,0,wxDefaultValidator,_T("ID_CHECKLISTBOX1"));
+	StringList = new wxCheckListBox(this, ID_CHECKLISTBOX1, wxDefaultPosition, wxSize(180,255), 0, 0, 0, wxDefaultValidator, _T("ID_CHECKLISTBOX1"));
 	BoxSizer3->Add(StringList,1,wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer4 = new wxBoxSizer(wxVERTICAL);
-	Button2 = new wxButton(this,ID_BUTTON2,_("Update"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON2"));
+	Button2 = new wxButton(this, ID_BUTTON2, _("Update"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
 	BoxSizer4->Add(Button2,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	Button4 = new wxButton(this,ID_BUTTON4,_("Remove"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON4"));
+	Button4 = new wxButton(this, ID_BUTTON4, _("Remove"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
 	BoxSizer4->Add(Button4,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	Button3 = new wxButton(this,ID_BUTTON3,_("Up"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON3"));
+	Button3 = new wxButton(this, ID_BUTTON3, _("Up"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
 	BoxSizer4->Add(Button3,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	Button5 = new wxButton(this,ID_BUTTON5,_("Down"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON5"));
+	Button5 = new wxButton(this, ID_BUTTON5, _("Down"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON5"));
 	BoxSizer4->Add(Button5,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer3->Add(BoxSizer4,0,wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL,0);
 	BoxSizer1->Add(BoxSizer3,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,0);
-	StaticLine2 = new wxStaticLine(this,ID_STATICLINE2,wxDefaultPosition,wxSize(10,-1),wxLI_HORIZONTAL,_T("ID_STATICLINE2"));
+	StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE2"));
 	BoxSizer1->Add(StaticLine2,0,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
-	Button6 = new wxButton(this,ID_BUTTON6,_("OK"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON6"));
+	Button6 = new wxButton(this, ID_BUTTON6, _("OK"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON6"));
 	BoxSizer5->Add(Button6,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-	Button7 = new wxButton(this,ID_BUTTON7,_("Cancel"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON7"));
+	Button7 = new wxButton(this, ID_BUTTON7, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON7"));
 	BoxSizer5->Add(Button7,1,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
 	BoxSizer1->Add(BoxSizer5,0,wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,0);
 	SetSizer(BoxSizer1);

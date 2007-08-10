@@ -25,6 +25,7 @@
 #include "wxsitemeditordragassist.h"
 #include "wxsbaseproperties.h"
 #include "wxsitemresdata.h"
+#include "wxsiteminfo.h"
 #include "wxsparent.h"
 #include "wxsitemeditor.h"
 
@@ -39,7 +40,8 @@ wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data
     m_MouseState(msIdle),
     m_AssistTarget(0),
     m_AssistParent(0),
-    m_AssistAddAfter(false)
+    m_AssistAddAfter(false),
+    m_TargetInfo(0)
 {
     m_Assist = new wxsItemEditorDragAssist(this);
 }
@@ -71,6 +73,10 @@ void wxsItemEditorContent::PaintExtra(wxDC* DC)
     	DC->DrawRectangle(PosX , PosY, m_DragBoxSize, m_DragBoxSize );
     }
 
+    if ( m_MouseState==msTargetSearch && m_TargetInfo )
+    {
+        DC->DrawBitmap(m_TargetInfo->Icon16,m_TargetX+16,m_TargetY,true);
+    }
 }
 
 void wxsItemEditorContent::RefreshSelection()
@@ -289,6 +295,7 @@ void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
         case msDraggingPoint:     OnMouseDraggingPoint     (event); break;
         case msDraggingItemInit:  OnMouseDraggingItemInit  (event); break;
         case msDraggingItem:      OnMouseDraggingItem      (event); break;
+        case msTargetSearch:      OnMouseTargetSearch      (event); break;
         default:                  OnMouseIdle              (event); break;
     }
 }
@@ -737,6 +744,52 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
     FastRepaint();
 }
 
+void wxsItemEditorContent::OnMouseTargetSearch(wxMouseEvent& event)
+{
+    if ( event.RightDown() )
+    {
+        // Getting out of point-by-mouse state
+        m_MouseState = msIdle;
+        m_TargetInfo = 0;
+        m_AssistParent = 0;
+        m_AssistTarget = 0;
+        m_AssistAddAfter = false;
+        m_Assist->NewDragging();
+        FastRepaint();
+        return;
+    }
+
+    if ( event.LeftDown() )
+    {
+        // Adding item
+        if ( m_AssistParent )
+        {
+            int Position = m_AssistParent->GetChildIndex(m_AssistTarget);
+            if ( m_AssistAddAfter && Position>=0 )
+            {
+                Position++;
+            }
+            AddItemAtTarget(m_AssistParent,Position,m_TargetInfo,event.GetX(),event.GetY());
+        }
+        m_AssistParent = 0;
+        m_AssistTarget = 0;
+        m_AssistAddAfter = false;
+        m_Assist->NewDragging();
+        return;
+    }
+
+    // highlight selection
+    m_TargetX = event.GetX();
+    m_TargetY = event.GetY();
+    if ( !FindDraggingItemTarget(event.GetX(),event.GetY(),0,m_AssistParent,m_AssistTarget,m_AssistAddAfter) )
+    {
+        m_AssistTarget = 0;
+        m_AssistParent = 0;
+        m_AssistAddAfter = false;
+    }
+    FastRepaint();
+}
+
 bool wxsItemEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dragging,wxsParent*& NewParent,wxsItem*& AtCursor,bool& AddAfter)
 {
     // Searching for item at cursor position
@@ -744,7 +797,7 @@ bool wxsItemEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dra
     if ( !Cursor ) Cursor = m_Data->GetRootItem();
 
     // Avoiding shifting into dragged item
-    wxsParent* DraggedAsParent = Dragging->ConvertToParent();
+    wxsParent* DraggedAsParent = Dragging ? Dragging->ConvertToParent() : 0;
     if ( DraggedAsParent && DraggedAsParent->IsGrandChild(Cursor) )
     {
         // Can not drag into own child
@@ -807,6 +860,10 @@ void wxsItemEditorContent::ScreenShootTaken()
 {
     RecalculateMaps();
     RebuildDragPoints();
+    m_AssistParent = 0;
+    m_AssistTarget = 0;
+    m_AssistAddAfter = false;
+    m_Assist->NewDragging();
 }
 
 wxWindow* wxsItemEditorContent::GetPreviewWindow(wxsItem* Item)
@@ -858,5 +915,56 @@ void wxsItemEditorContent::RecalculateMapsReq(wxsItem* Item)
                 }
             }
         }
+    }
+}
+
+void wxsItemEditorContent::InsertByPointing(const wxsItemInfo* Info)
+{
+    m_MouseState = msTargetSearch;
+    m_TargetInfo = Info;
+}
+
+void wxsItemEditorContent::AddItemAtTarget(wxsParent* AssistParent,int Position,const wxsItemInfo* Info,int PosX,int PosY)
+{
+    wxsItem* New = wxsItemFactory::Build(Info->ClassName,m_Data);
+    if ( New )
+    {
+        if ( New->CanAddToParent(AssistParent,true) && AssistParent->CanAddChild(New,true) )
+        {
+            m_Data->BeginChange();
+            if ( AssistParent->AddChild(New,Position) )
+            {
+                wxsBaseProperties* Props = New->GetBaseProps();
+
+                if ( AssistParent->GetType() == wxsTSizer )
+                {
+                    Props->m_Position.SetPosition(wxDefaultPosition,0);
+                }
+                else
+                {
+                    // Calculating new position
+                    int ParentPosX = 0, ParentPosY = 0, ParentSizeX = 0, ParentSizeY = 0;
+                    if ( FindAbsoluteRect(AssistParent,ParentPosX,ParentPosY,ParentSizeX,ParentSizeY) )
+                    {
+                        PosX -= ParentPosX;
+                        PosY -= ParentPosY;
+                        wxWindow* PreviewParent = GetPreviewWindow(AssistParent);
+                        if ( PreviewParent )
+                        {
+                            Props->m_Position.SetPosition(wxPoint(PosX,PosY),PreviewParent);
+                        }
+                    }
+                }
+
+                m_Data->SelectItem(New,true);
+            }
+            else
+            {
+                delete New;
+            }
+            m_Data->EndChange();
+            return;
+        }
+        delete New;
     }
 }

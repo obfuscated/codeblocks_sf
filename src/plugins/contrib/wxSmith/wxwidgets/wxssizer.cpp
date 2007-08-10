@@ -67,9 +67,9 @@ wxString wxsSizerExtra::AllParamsCode(const wxString& WindowParent,wxsCodingLang
     switch ( Language )
     {
         case wxsCPP:
-            return wxString::Format(_T("%d,"),Proportion) +
+            return wxString::Format(_T("%d, "),Proportion) +
                    wxsSizerFlagsProperty::GetString(Flags) +
-                   _T(",") << Border.GetPixelsCode(WindowParent,wxsCPP);
+                   _T(", ") << Border.GetPixelsCode(WindowParent,wxsCPP);
 
         default:
             wxsCodeMarks::Unknown(_T("wxsSizerExtra::AllParamsCode"),Language);
@@ -115,7 +115,7 @@ void wxsSizer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
                 {
                     case wxsCPP:
                     {
-                        Code << GetVarName() << _T("->Add(") << Child->GetVarName() << _T(",")
+                        Code << GetVarName() << _T("->Add(") << Child->GetVarName() << _T(", ")
                              << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
                         break;
                     }
