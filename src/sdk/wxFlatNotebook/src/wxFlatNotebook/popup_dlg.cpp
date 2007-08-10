@@ -94,6 +94,7 @@ void wxTabNavigatorWindow::Create(wxWindow* parent)
 		img.SetAlpha(signpost_alpha, true);
 		m_bmp =  wxBitmap(img); 
 	}
+	m_listBox->SetFocus();
 }
 
 void wxTabNavigatorWindow::OnKeyUp(wxKeyEvent &event)
