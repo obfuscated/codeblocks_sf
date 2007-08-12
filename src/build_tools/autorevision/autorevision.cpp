@@ -106,8 +106,7 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
 
     if(svn)
     {
-        char buf[16384];
-        memset(buf, 0, 16384);
+        char buf[16384] = {'0'};
         fread(buf, 16383, 1, svn);
         pclose(svn);
 
@@ -117,14 +116,16 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
         if(doc.Error())
             return 0;
 
-        TiXmlElement *e;
-        if((e = doc.RootElement()) && (e = e->FirstChildElement("entry")) && (e = e->FirstChildElement("commit")))
+        TiXmlHandle hCommit(&doc);
+        hCommit = hCommit.FirstChildElement("info").FirstChildElement("entry").FirstChildElement("commit");
+        if(const TiXmlElement* e = hCommit.ToElement())
         {
             revision = e->Attribute("revision") ? e->Attribute("revision") : "";
-            TiXmlElement *d = e->FirstChildElement("date");
+            const TiXmlElement* d = e->FirstChildElement("date");
             if(d && d->GetText())
+            {
                 date = d->GetText();
-
+            }
             return 1;
         }
     }
