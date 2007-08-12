@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.41 2007/07/30"
+#define VERSION "1.0.42 2007/08/12"
 // -----------------------------------
 class MyDialog;
 
@@ -692,9 +692,12 @@ private:
 //  Commit  1.0.39
 //          39) mandrav changes for sdk RegisterEventSink
 // ----------------------------------------------------------------------------
-//  Commit  1.0.41
+//  Commit  1.0.41 2007/07/30
 //          40) check for numeric menu items that start with "_" wxGTK 2.8.4
 //          41) Fixed disappearing/reappearing command keys on wxGTK 2.8.4 by
 //              trimming all menu items and conf strings before comparing
 // ----------------------------------------------------------------------------
-//
+//  Commit  1.0.42 2007/08/12
+//          42) Change AddPendingEvent() to ProcessEvent() in wxMenuCmd::Exec()
+//              to avoid crashes when secondary command key would close editors wx284
+// ----------------------------------------------------------------------------

@@ -771,10 +771,6 @@ void wxBinderEvtHandler::OnChar(wxKeyEvent &p)
 	m_pBinder->OnChar(p, GetNextHandler());
 }
 
-
-
-
-
 // ----------------------------------------------------------------------------
 // wxBinderApp
 // ----------------------------------------------------------------------------
@@ -1265,7 +1261,7 @@ void wxKeyBinder::Detach(wxWindow *p)
 	if (!p || !IsAttachedTo(p))
 		return;		// this is not attached...
 
-    wxLogDebug(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
+    LOGIT(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
 
 	// remove the event handler
 	int idx = FindHandlerIdxFor(p);
@@ -1296,11 +1292,11 @@ void wxKeyBinder::DetachAll()
         {   //+v0.4.9
             // tell dtor not to crash by using RemoveEventHander()
             pHdlr->SetWndInvalid(0);
-            wxLogDebug( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
+            LOGIT( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
         }
         #if LOGGING
          if (pHdlr->GetTargetWnd())
-           wxLogDebug( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
+           LOGIT( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
         #endif
         delete pHdlr;
 	 }
@@ -1340,23 +1336,22 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 
 		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an Alt+F4 event [%d]"),
 					event.GetKeyCode());
-        //-wxLogDebug("\n");
 		event.Skip();
 		return;
 	}
 
-#if 0
-	// for some reason we need to avoid processing also of the ENTER keypresses...
-	if (p && p->IsBindTo(wxKeyBind(wxT("ENTER")))) {
-
-		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an ENTER event [%d]"),
-					event.GetKeyCode());
-        //-wxLogDebug("\n");
-
-		event.Skip();
-		return;
-	}
-#endif
+    ////#if 0
+    ////	// for some reason we need to avoid processing also of the ENTER keypresses...
+    ////	if (p && p->IsBindTo(wxKeyBind(wxT("ENTER")))) {
+    ////
+    ////		wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring an ENTER event [%d]"),
+    ////					event.GetKeyCode());
+    ////        //-wxLogDebug("\n");
+    ////
+    ////		event.Skip();
+    ////		return;
+    ////	}
+    ////#endif
 
 	// if the given event is not a shortcut key...
 	if (p == NULL) {
@@ -1384,15 +1379,15 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
 			return;
 		}
         #ifdef LOGGING
-		LOGIT(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
+            LOGIT(wxT("wxKeyBinder::OnChar - calling the Exec() function of the [%s] ")
 				wxT("wxCmd on the keycode [%d] (event timestamp: %ld)"),
 				p->GetName().c_str(), event.GetKeyCode(), event.GetTimestamp());
-		wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
+            wxLogDebug(wxT("wxKeyBinder::OnChar - window[%s][%p]"),
                 ((wxWindow*)event.GetEventObject())->GetName().GetData(),
                  event.GetEventObject() );
         #endif
 		p->Exec(event.GetEventObject(),		// otherwise, tell wxCmd to send the
-				client);	// associated wxEvent to the next handler in the chain
+				client);	                // associated wxEvent to the next handler in the chain
 	}
 }
 

@@ -910,38 +910,39 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     if (IsAttached() && m_bBound)
-     {
+    {
 
-         wxWindow* thisWindow = event.GetEditor();
+        wxWindow* thisWindow = event.GetEditor();
 
-         // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
-         // one being closed!!
-         // wxWindow* thisEditor
-         //  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+        // Cannot use GetBuiltinActiveEditor() because the active Editor is NOT the
+        // one being closed!!
+        // wxWindow* thisEditor
+        //  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
 
-         //find the cbStyledTextCtrl wxScintilla window
-         wxWindow*
-           thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
+        //find the cbStyledTextCtrl wxScintilla window
+        wxWindow*
+            thisEditor = thisWindow->FindWindowByName(_T("SCIwindow"), thisWindow);
 
-         // find editor window the Code::Blocks way
-         // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
-         cbEditor* ed = 0;
-         EditorBase* eb = event.GetEditor();
-         if (eb && eb->IsBuiltinEditor())
-          {  ed = static_cast<cbEditor*>(eb);
-             thisEditor = ed->GetControl();
-          }
+        // find editor window the Code::Blocks way
+        // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
+        cbEditor* ed = 0;
+        EditorBase* eb = event.GetEditor();
+        if ( eb && eb->IsBuiltinEditor() )
+        {   ed = static_cast<cbEditor*>(eb);
+            thisEditor = ed->GetControl();
+        }
 
         if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
-         {
+        {
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
             m_EditorPtrs.Remove(thisEditor);
             #if LOGGING
-             LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
+                LOGIT(_T("cbKB:OnEditorClose/Detach %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
-         }//if
-     }
+        }//if
+    }
     event.Skip();
+
 }//OnEditorClose
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
@@ -1038,7 +1039,7 @@ void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
         m_EditorPtrs.Remove(pWindow);
         //-DetachEditor(pWindow); causes crash
         #ifdef LOGGING
-         LOGIT( _T("OnWindowDestroyEven Remove %p"), pWindow);
+         LOGIT( _T("OnWindowDestroyEvent Remove %p"), pWindow);
         #endif //LOGGING
     }
     event.Skip();

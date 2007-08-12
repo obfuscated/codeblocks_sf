@@ -478,7 +478,13 @@ void wxMenuCmd::Exec(wxObject *origin, wxEvtHandler *client)
 
 	// set up the event and process it...
 	menuEvent.SetEventObject(origin);
-	client->AddPendingEvent(menuEvent);//ProcessEvent(menuEvent);
+
+	// 2007/08/12
+	// Had to change AddPendingEvent() to ProcessEvent() to avoid crashes
+	// when secondary command key would close editors wx284
+	////client->AddPendingEvent(menuEvent);//ProcessEvent(menuEvent);
+
+    client->ProcessEvent(menuEvent);//ProcessEvent(menuEvent);
 }
 
 //// ----------------------------------------------------------------------------
