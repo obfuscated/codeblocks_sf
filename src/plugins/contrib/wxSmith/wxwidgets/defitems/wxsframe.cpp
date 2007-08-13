@@ -22,6 +22,7 @@
 */
 
 #include "wxsframe.h"
+#include "../wxsgridpanel.h"
 
 namespace
 {
@@ -144,8 +145,7 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
     }
     else
     {
-        // TODO: Use grid-viewing panel
-        NewItem = new wxPanel(Parent,GetId(),wxDefaultPosition,Size(Parent),0);
+        NewItem = new wxsGridPanel(Parent,GetId(),wxDefaultPosition,Size(Parent),0);
         SetupWindow(NewItem,Flags);
         AddChildrenPreview(NewItem,Flags);
 

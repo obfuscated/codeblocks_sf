@@ -153,6 +153,15 @@ class wxsItemEditorContent: public wxsDrawingWindow
         /** \brief Adding item in point-by-mouse mode */
         void AddItemAtTarget(wxsParent* AssistParent,int Position,const wxsItemInfo* Info,int PosX,int PosY);
 
+        /** \brief Snappign coordinates to grid if necessary for coordinates relative to parent */
+        void GridFixup(wxWindow* PreviewWindow,int& PosX,int& PosY);
+
+        /** \brief Snapping coordinates to grid if necessary for global coordinates */
+        void GridFixupForGlobalCoordinates(int& PosX,int& PosY,wxsItem* Owner);
+
+        /** \brief Checking if we're using continous insert mode */
+        static bool IsContinousInsert();
+
         friend class wxsItemEditorDragAssist;
 
         DECLARE_EVENT_TABLE()

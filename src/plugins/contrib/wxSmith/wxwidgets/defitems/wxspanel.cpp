@@ -22,6 +22,7 @@
 */
 
 #include "wxspanel.h"
+#include "../wxsgridpanel.h"
 
 namespace
 {
@@ -66,8 +67,15 @@ void wxsPanel::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 
 wxObject* wxsPanel::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    // TODO: Use grid-viewing panel when not in exact mode
-    wxWindow* NewItem = new wxPanel(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    wxWindow* NewItem = 0;
+    if ( Flags & pfExact )
+    {
+        NewItem = new wxPanel(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    }
+    else
+    {
+        NewItem = new wxsGridPanel(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    }
     NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE ));
     SetupWindow(NewItem,Flags);
     AddChildrenPreview(NewItem,Flags);

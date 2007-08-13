@@ -144,6 +144,9 @@ class wxsItemEditor : public wxsEditor
 		/** \brief Reloading images in all editors */
 		static void ReloadImages();
 
+		/** \brief Causing editor's content to refresh */
+		static void RefreshContents();
+
         wxsItemResData* m_Data;             ///< \brief Data managment object
 
         wxsItemEditorContent* m_Content;    ///< \brief Window with content area

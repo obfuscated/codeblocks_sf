@@ -167,6 +167,7 @@ void wxsItemEditor::InitializeVisualStuff()
 void wxsItemEditor::ConfigChanged()
 {
     ReloadImages();
+    RefreshContents();
 }
 
 void wxsItemEditor::ReloadImages()
@@ -176,6 +177,14 @@ void wxsItemEditor::ReloadImages()
     for ( WindowSet::iterator i=m_AllEditors.begin(); i!=m_AllEditors.end(); ++i )
     {
         (*i)->RebuildIcons();
+    }
+}
+
+void wxsItemEditor::RefreshContents()
+{
+    for ( WindowSet::iterator i=m_AllEditors.begin(); i!=m_AllEditors.end(); ++i )
+    {
+        (*i)->RebuildPreview();
     }
 }
 

@@ -32,6 +32,10 @@ class wxsSettings: public cbConfigurationPanel
 		static const long ID_BUTTON1;
 		static const long ID_STATICTEXT4;
 		static const long ID_BUTTON2;
+		static const long ID_CHECKBOX7;
+		static const long ID_SPINCTRL1;
+		static const long ID_STATICTEXT1;
+		static const long ID_CHECKBOX9;
 		static const long ID_STATICTEXT5;
 		static const long ID_RADIOBUTTON1;
 		static const long ID_RADIOBUTTON2;
@@ -59,6 +63,7 @@ class wxsSettings: public cbConfigurationPanel
 		//(*Handlers(wxsSettings)
 		void OnDragTargetColClick(wxCommandEvent& event);
 		void OnDragParentColClick(wxCommandEvent& event);
+		void OnUseGridClick(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(wxsSettings)
@@ -66,16 +71,20 @@ class wxsSettings: public cbConfigurationPanel
 		wxFlexGridSizer* FlexGridSizer6;
 		wxStaticBoxSizer* StaticBoxSizer1;
 		wxFlexGridSizer* FlexGridSizer2;
-		wxComboBox* DragAssistType;
-		wxButton* DragTargetCol;
-		wxButton* DragParentCol;
+		wxComboBox* m_DragAssistType;
+		wxButton* m_DragTargetCol;
+		wxButton* m_DragParentCol;
+		wxCheckBox* m_UseGrid;
+		wxSpinCtrl* m_GridSize;
+		wxStaticText* StaticText1;
+		wxCheckBox* m_Continous;
 		wxFlexGridSizer* FlexGridSizer3;
-		wxRadioButton* Icons16;
-		wxRadioButton* Icons32;
+		wxRadioButton* m_Icons16;
+		wxRadioButton* m_Icons32;
 		wxStaticText* StaticText6;
 		wxFlexGridSizer* FlexGridSizer4;
-		wxRadioButton* TIcons16;
-		wxRadioButton* TIcons32;
+		wxRadioButton* m_TIcons16;
+		wxRadioButton* m_TIcons32;
 		wxStaticBoxSizer* StaticBoxSizer2;
 		wxFlexGridSizer* FlexGridSizer5;
 		wxStaticText* StaticText7;

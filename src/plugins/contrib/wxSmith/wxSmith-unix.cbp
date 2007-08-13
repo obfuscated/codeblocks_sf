@@ -267,6 +267,8 @@
 		<Unit filename="wxwidgets/wxsexproperties.h" />
 		<Unit filename="wxwidgets/wxsframeres.cpp" />
 		<Unit filename="wxwidgets/wxsframeres.h" />
+		<Unit filename="wxwidgets/wxsgridpanel.cpp" />
+		<Unit filename="wxwidgets/wxsgridpanel.h" />
 		<Unit filename="wxwidgets/wxsitem.cpp" />
 		<Unit filename="wxwidgets/wxsitem.h" />
 		<Unit filename="wxwidgets/wxsitemeditor.cpp" />

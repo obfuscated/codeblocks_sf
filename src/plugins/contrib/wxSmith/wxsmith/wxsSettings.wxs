@@ -1,344 +1,349 @@
+<?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxPanel" name="wxsSettings">
-        <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
-            <rows>0</rows>
-            <cols>1</cols>
-            <vgap>0</vgap>
-            <hgap>0</hgap>
-            <growablecols>0</growablecols>
-            <object class="sizeritem">
-                <option>1</option>
-                <border>4</border>
-                <flag>wxALIGN_CENTER|wxEXPAND</flag>
-                <object class="wxFlexGridSizer" variable="FlexGridSizer6" member="yes">
-                    <rows>0</rows>
-                    <cols>1</cols>
-                    <vgap>0</vgap>
-                    <hgap>0</hgap>
-                    <growablecols>0</growablecols>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>4</border>
-                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
-                            <orient>wxHORIZONTAL</orient>
-                            <label>Editor</label>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <border>5</border>
-                                <flag>wxALIGN_CENTER</flag>
-                                <object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
-                                    <rows>0</rows>
-                                    <cols>2</cols>
-                                    <vgap>0</vgap>
-                                    <hgap>0</hgap>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
-                                            <label>Drag Assistance Type</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxComboBox" name="ID_COMBOBOX1" variable="DragAssistType" member="yes">
-                                            <selection>2</selection>
-                                            <content>
-                                                <item>None</item>
-                                                <item>Simple</item>
-                                                <item>Colour Mix</item>
-                                            </content>
-                                            <style>wxCB_READONLY</style>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="no">
-                                            <label>Drag target colour</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxButton" name="ID_BUTTON1" variable="DragTargetCol" member="yes">
-                                            <label>...</label>
-                                            <handler entry="EVT_BUTTON" function="OnDragTargetColClick" />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
-                                            <label>Drag Parent Colour</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxButton" name="ID_BUTTON2" variable="DragParentCol" member="yes">
-                                            <label>...</label>
-                                            <handler entry="EVT_BUTTON" function="OnDragParentColClick" />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="no">
-                                            <label>Palette icon size</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALIGN_CENTER</flag>
-                                        <object class="wxFlexGridSizer" variable="FlexGridSizer3" member="yes">
-                                            <rows>0</rows>
-                                            <cols>0</cols>
-                                            <vgap>0</vgap>
-                                            <hgap>0</hgap>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="Icons16" member="yes">
-                                                    <label>16x16</label>
-                                                    <style>wxRB_GROUP</style>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="Icons32" member="yes">
-                                                    <label>32x32</label>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
-                                            <label>Tool icon size</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALIGN_CENTER</flag>
-                                        <object class="wxFlexGridSizer" variable="FlexGridSizer4" member="yes">
-                                            <rows>0</rows>
-                                            <cols>0</cols>
-                                            <vgap>0</vgap>
-                                            <hgap>0</hgap>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="TIcons16" member="yes">
-                                                    <label>16x16</label>
-                                                    <style>wxRB_GROUP</style>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <option>1</option>
-                                                <border>5</border>
-                                                <flag>wxALL|wxALIGN_CENTER</flag>
-                                                <object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="TIcons32" member="yes">
-                                                    <label>32x32</label>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                    <object class="sizeritem">
-                        <option>1</option>
-                        <border>4</border>
-                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                        <object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
-                            <orient>wxHORIZONTAL</orient>
-                            <label>Default sizer settings</label>
-                            <object class="sizeritem">
-                                <option>1</option>
-                                <border>5</border>
-                                <flag>wxALIGN_CENTER</flag>
-                                <object class="wxFlexGridSizer" variable="FlexGridSizer5" member="yes">
-                                    <rows>0</rows>
-                                    <cols>2</cols>
-                                    <vgap>0</vgap>
-                                    <hgap>0</hgap>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
-                                            <label>Proportion:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="spinProportion" member="yes">
-                                            <value>0</value>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
-                                            <label>Border flags:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
-                                            <orient>wxHORIZONTAL</orient>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxALIGN_CENTER</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkTop" member="yes">
-                                                    <label>Top</label>
-                                                    <checked>1</checked>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxALIGN_CENTER</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX2" variable="chkBottom" member="yes">
-                                                    <label>Bottom</label>
-                                                    <checked>1</checked>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxALIGN_CENTER</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX3" variable="chkLeft" member="yes">
-                                                    <label>Left</label>
-                                                    <checked>1</checked>
-                                                </object>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <border>5</border>
-                                                <flag>wxLEFT|wxALIGN_CENTER</flag>
-                                                <object class="wxCheckBox" name="ID_CHECKBOX4" variable="chkRight" member="yes">
-                                                    <label>Right</label>
-                                                    <checked>1</checked>
-                                                </object>
-                                            </object>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
-                                            <label>Expand:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                        <object class="wxCheckBox" name="ID_CHECKBOX5" variable="chkExpand" member="yes">
-                                            <label />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
-                                            <label>Shaped:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                                        <object class="wxCheckBox" name="ID_CHECKBOX6" variable="chkShaped" member="yes">
-                                            <label />
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText12" member="yes">
-                                            <label>Placement:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxChoice" name="ID_CHOICE1" variable="choicePlacement" member="yes">
-                                            <selection>0</selection>
-                                            <content>
-                                                <item>Left-Top</item>
-                                                <item>Top</item>
-                                                <item>Right-Top</item>
-                                                <item>Left</item>
-                                                <item>Center</item>
-                                                <item>Right</item>
-                                                <item>Left-Bottom</item>
-                                                <item>Bottom</item>
-                                                <item>Right-Bottom</item>
-                                            </content>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_CENTER</flag>
-                                        <object class="wxStaticText" name="ID_STATICTEXT13" variable="StaticText13" member="yes">
-                                            <label>Border:</label>
-                                        </object>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>5</border>
-                                        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                                        <object class="wxSpinCtrl" name="ID_SPINCTRL3" variable="spinBorder" member="yes">
-                                            <value>0</value>
-                                        </object>
-                                    </object>
-                                    <object class="spacer">
-                                        <size>16,8</size>
-                                        <option>1</option>
-                                        <border>4</border>
-                                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <option>1</option>
-                                        <border>4</border>
-                                        <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER|wxEXPAND</flag>
-                                        <object class="wxCheckBox" name="ID_CHECKBOX8" variable="chkBorderDU" member="yes">
-                                            <label>Use dialog units</label>
-                                        </object>
-                                    </object>
-                                </object>
-                            </object>
-                        </object>
-                    </object>
-                </object>
-            </object>
-        </object>
-    </object>
+	<object class="wxPanel" name="wxsSettings">
+		<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
+			<cols>1</cols>
+			<growablecols>0</growablecols>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer" variable="FlexGridSizer6" member="yes">
+					<cols>1</cols>
+					<growablecols>0</growablecols>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+							<label>Editor</label>
+							<object class="sizeritem">
+								<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
+									<cols>2</cols>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
+											<label>Drag Assistance Type:</label>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxComboBox" name="ID_COMBOBOX1" variable="m_DragAssistType" member="yes">
+											<content>
+												<item>None</item>
+												<item>Simple</item>
+												<item>Colour Mix</item>
+											</content>
+											<style>wxCB_READONLY</style>
+										</object>
+										<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="no">
+											<label>Drag target colour:</label>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON1" variable="m_DragTargetCol" member="yes">
+											<label>...</label>
+											<handler function="OnDragTargetColClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
+											<label>Drag Parent Colour:</label>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON2" variable="m_DragParentCol" member="yes">
+											<label>...</label>
+											<handler function="OnDragParentColClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX7" variable="m_UseGrid" member="yes">
+											<label>Snap to grid:</label>
+											<handler function="OnUseGridClick" entry="EVT_CHECKBOX" />
+										</object>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="ID_SPINCTRL1" variable="m_GridSize" member="yes">
+											<value>8</value>
+											<min>2</min>
+										</object>
+										<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+											<label>Add new items continously:</label>
+											<style>wxALIGN_CENTRE</style>
+										</object>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX9" variable="m_Continous" member="yes" />
+										<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="no">
+											<label>Palette icon size:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="yes">
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="m_Icons16" member="yes">
+													<label>16x16</label>
+													<style>wxRB_GROUP</style>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="m_Icons32" member="yes">
+													<label>32x32</label>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+											<label>Tool icon size:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxFlexGridSizer" variable="FlexGridSizer4" member="yes">
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="m_TIcons16" member="yes">
+													<label>16x16</label>
+													<style>wxRB_GROUP</style>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxRadioButton" name="ID_RADIOBUTTON4" variable="m_TIcons32" member="yes">
+													<label>32x32</label>
+												</object>
+												<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+										</object>
+										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="yes">
+							<label>Default sizer settings</label>
+							<object class="sizeritem">
+								<object class="wxFlexGridSizer" variable="FlexGridSizer5" member="yes">
+									<cols>2</cols>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+											<label>Proportion:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="ID_SPINCTRL2" variable="spinProportion" member="yes">
+											<value>0</value>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
+											<label>Border flags:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkTop" member="yes">
+													<label>Top</label>
+													<checked>1</checked>
+												</object>
+												<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX2" variable="chkBottom" member="yes">
+													<label>Bottom</label>
+													<checked>1</checked>
+												</object>
+												<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX3" variable="chkLeft" member="yes">
+													<label>Left</label>
+													<checked>1</checked>
+												</object>
+												<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxCheckBox" name="ID_CHECKBOX4" variable="chkRight" member="yes">
+													<label>Right</label>
+													<checked>1</checked>
+												</object>
+												<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT9" variable="StaticText9" member="yes">
+											<label>Expand:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX5" variable="chkExpand" member="yes" />
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT10" variable="StaticText10" member="yes">
+											<label>Shaped:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX6" variable="chkShaped" member="yes" />
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText12" member="yes">
+											<label>Placement:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxChoice" name="ID_CHOICE1" variable="choicePlacement" member="yes">
+											<content>
+												<item>Left-Top</item>
+												<item>Top</item>
+												<item>Right-Top</item>
+												<item>Left</item>
+												<item>Center</item>
+												<item>Right</item>
+												<item>Left-Bottom</item>
+												<item>Bottom</item>
+												<item>Right-Bottom</item>
+											</content>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT13" variable="StaticText13" member="yes">
+											<label>Border:</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="ID_SPINCTRL3" variable="spinBorder" member="yes">
+											<value>0</value>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="spacer">
+										<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>4</border>
+										<option>1</option>
+										<size>16,8</size>
+									</object>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX8" variable="chkBorderDU" member="yes">
+											<label>Use dialog units</label>
+										</object>
+										<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>4</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>4</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
 </wxsmith>

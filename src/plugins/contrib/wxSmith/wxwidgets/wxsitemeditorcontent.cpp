@@ -28,6 +28,7 @@
 #include "wxsiteminfo.h"
 #include "wxsparent.h"
 #include "wxsitemeditor.h"
+#include "wxsgridpanel.h"
 
 BEGIN_EVENT_TABLE(wxsItemEditorContent,wxsDrawingWindow)
     EVT_MOUSE_EVENTS(wxsItemEditorContent::OnMouse)
@@ -540,42 +541,51 @@ void wxsItemEditorContent::OnMouseDraggingPoint(wxMouseEvent& event)
     DragPointData* leftTop = m_CurDragPoint->ItemPoints[LeftTop];
     DragPointData* rightBtm = m_CurDragPoint->ItemPoints[RightBtm];
 
+    int Dummy = 0;
     switch ( m_CurDragPoint->Type )
     {
         case LeftTop:
             leftTop->PosX = leftTop->DragInitPosX + DeltaX;
             leftTop->PosY = leftTop->DragInitPosY + DeltaY;
+            GridFixupForGlobalCoordinates(leftTop->PosX,leftTop->PosY,m_CurDragItem);
             break;
 
         case Top:
             leftTop->PosY = leftTop->DragInitPosY + DeltaY;
+            GridFixupForGlobalCoordinates(Dummy,leftTop->PosY,m_CurDragItem);
             break;
 
         case RightTop:
             rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
             leftTop->PosY = leftTop->DragInitPosY + DeltaY;
+            GridFixupForGlobalCoordinates(rightBtm->PosX,leftTop->PosY,m_CurDragItem);
             break;
 
         case Left:
             leftTop->PosX = leftTop->DragInitPosX + DeltaX;
+            GridFixupForGlobalCoordinates(leftTop->PosX,Dummy,m_CurDragItem);
             break;
 
         case Right:
             rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
+            GridFixupForGlobalCoordinates(rightBtm->PosX,Dummy,m_CurDragItem);
             break;
 
         case LeftBtm:
             leftTop->PosX = leftTop->DragInitPosX + DeltaX;
             rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
+            GridFixupForGlobalCoordinates(leftTop->PosX,rightBtm->PosY,m_CurDragItem);
             break;
 
         case Btm:
             rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
+            GridFixupForGlobalCoordinates(Dummy,rightBtm->PosY,m_CurDragItem);
             break;
 
         case RightBtm:
             rightBtm->PosX = rightBtm->DragInitPosX + DeltaX;
             rightBtm->PosY = rightBtm->DragInitPosY + DeltaY;
+            GridFixupForGlobalCoordinates(rightBtm->PosX,rightBtm->PosY,m_CurDragItem);
             break;
 
         default:;
@@ -706,7 +716,8 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
                             {
                                 int NewPosX = m_CurDragPoint->ItemPoints[LeftTop]->PosX - ParentPosX;
                                 int NewPosY = m_CurDragPoint->ItemPoints[LeftTop]->PosY - ParentPosY;
-                                wxWindow* PreviewParent = GetPreviewWindow(m_CurDragItem)->GetParent();
+                                wxWindow* PreviewParent = GetPreviewWindow(NewParent);
+                                GridFixup(PreviewParent,NewPosX,NewPosY);
                                 if ( PreviewParent )
                                 {
                                     Props->m_Position.SetPosition(wxPoint(NewPosX,NewPosY),PreviewParent);
@@ -729,18 +740,39 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
     int DeltaX = event.GetX() - m_DragInitPosX;
     int DeltaY = event.GetY() - m_DragInitPosY;
 
-    for ( size_t i=0; i<m_DragPoints.Count(); i++ )
-    {
-        m_DragPoints[i]->PosX = m_DragPoints[i]->DragInitPosX + DeltaX;
-        m_DragPoints[i]->PosY = m_DragPoints[i]->DragInitPosY + DeltaY;
-    }
-
     if ( !FindDraggingItemTarget(event.GetX(),event.GetY(),m_CurDragItem,m_AssistParent,m_AssistTarget,m_AssistAddAfter) )
     {
         m_AssistTarget = 0;
         m_AssistParent = 0;
         m_AssistAddAfter = false;
     }
+    else
+    {
+        // Applying grid stuff
+        int ParentPosX = 0, ParentPosY = 0, ParentSizeX = 0, ParentSizeY = 0;
+        if ( FindAbsoluteRect(m_AssistParent,ParentPosX,ParentPosY,ParentSizeX,ParentSizeY) )
+        {
+            int NewPosX = m_CurDragPoint->ItemPoints[LeftTop]->DragInitPosX - ParentPosX + DeltaX;
+            int NewPosY = m_CurDragPoint->ItemPoints[LeftTop]->DragInitPosY - ParentPosY + DeltaY;
+            int PosXStore = NewPosX;
+            int PosYStore = NewPosY;
+            wxWindow* PreviewParent = GetPreviewWindow(m_AssistParent);
+            GridFixup(PreviewParent,NewPosX,NewPosY);
+            if ( PreviewParent )
+            {
+                DeltaX += NewPosX - PosXStore;
+                DeltaY += NewPosY - PosYStore;
+            }
+        }
+
+    }
+
+    for ( size_t i=0; i<m_DragPoints.Count(); i++ )
+    {
+        m_DragPoints[i]->PosX = m_DragPoints[i]->DragInitPosX + DeltaX;
+        m_DragPoints[i]->PosY = m_DragPoints[i]->DragInitPosY + DeltaY;
+    }
+
     FastRepaint();
 }
 
@@ -775,6 +807,14 @@ void wxsItemEditorContent::OnMouseTargetSearch(wxMouseEvent& event)
         m_AssistTarget = 0;
         m_AssistAddAfter = false;
         m_Assist->NewDragging();
+
+        if ( !IsContinousInsert() )
+        {
+            m_MouseState = msIdle;
+            m_TargetInfo = 0;
+            FastRepaint();
+        }
+
         return;
     }
 
@@ -949,6 +989,7 @@ void wxsItemEditorContent::AddItemAtTarget(wxsParent* AssistParent,int Position,
                         PosX -= ParentPosX;
                         PosY -= ParentPosY;
                         wxWindow* PreviewParent = GetPreviewWindow(AssistParent);
+                        GridFixup(PreviewParent,PosX,PosY);
                         if ( PreviewParent )
                         {
                             Props->m_Position.SetPosition(wxPoint(PosX,PosY),PreviewParent);
@@ -967,4 +1008,43 @@ void wxsItemEditorContent::AddItemAtTarget(wxsParent* AssistParent,int Position,
         }
         delete New;
     }
+}
+
+void wxsItemEditorContent::GridFixup(wxWindow* PreviewWindow,int& PosX,int& PosY)
+{
+    if ( PreviewWindow && wxDynamicCast(PreviewWindow,wxsGridPanel) )
+    {
+        int GridSize = wxsGridPanel::GetGridSize();
+        if ( GridSize > 1 )
+        {
+            PosX = ( ( PosX + GridSize/2 ) / GridSize ) * GridSize;
+            PosY = ( ( PosY + GridSize/2 ) / GridSize ) * GridSize;
+        }
+    }
+}
+
+void wxsItemEditorContent::GridFixupForGlobalCoordinates(int& PosX,int& PosY,wxsItem* Owner)
+{
+    if ( Owner )
+    {
+        wxsParent* Parent = Owner->GetParent();
+        if ( Parent )
+        {
+            int ParentPosX = 0, ParentPosY = 0, ParentSizeX = 0, ParentSizeY = 0;
+            if ( FindAbsoluteRect(Parent,ParentPosX,ParentPosY,ParentSizeX,ParentSizeY) )
+            {
+                PosX -= ParentPosX;
+                PosY -= ParentPosY;
+                wxWindow* PreviewParent = GetPreviewWindow(Parent);
+                GridFixup(PreviewParent,PosX,PosY);
+                PosX += ParentPosX;
+                PosY += ParentPosY;
+            }
+        }
+    }
+}
+
+bool wxsItemEditorContent::IsContinousInsert()
+{
+    return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/continousinsert"),false);
 }
