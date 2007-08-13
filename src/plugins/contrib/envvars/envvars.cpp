@@ -95,10 +95,10 @@ void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
 
   if (loading)
   {
-    TiXmlElement* CCConf = elem->FirstChildElement("envvars");
-    if (CCConf)
+    TiXmlElement* node = elem->FirstChildElement("envvars");
+    if (node)
     {
-      m_ProjectSets[project] = cbC2U(CCConf->Attribute("set"));
+      m_ProjectSets[project] = cbC2U(node->Attribute("set"));
       if (m_ProjectSets[project].IsEmpty()) // no envvar set to apply setup
         return;
 
@@ -110,17 +110,17 @@ void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
   {
     // Hook called when saving project file.
 
-	// since rev4332, the project keeps a copy of the <Extensions> element
-	// and re-uses it when saving the project (so to avoid losing entries in it
-	// if plugins that use that element are not loaded atm).
-	// so, instead of blindly inserting the element, we must first check it's
-	// not already there (and if it is, clear its contents)
+    // since rev4332, the project keeps a copy of the <Extensions> element
+    // and re-uses it when saving the project (so to avoid losing entries in it
+    // if plugins that use that element are not loaded atm).
+    // so, instead of blindly inserting the element, we must first check it's
+    // not already there (and if it is, clear its contents)
     TiXmlElement* node = elem->FirstChildElement("envvars");
     if (!node)
-		node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
-	node->Clear();
+      node = elem->InsertEndChild(TiXmlElement("envvars"))->ToElement();
+    node->Clear();
     if (!m_ProjectSets[project].IsEmpty())
-      node->SetAttribute("set",  cbU2C(m_ProjectSets[project]));
+      node->SetAttribute("set", cbU2C(m_ProjectSets[project]));
   }
 }// OnProjectLoadingHook
 
