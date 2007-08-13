@@ -38,7 +38,11 @@ wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data
     wxsDrawingWindow(Parent,-1),
     m_Data(Data),
     m_Editor(Editor),
+    m_RebuildMaps(false),
     m_MouseState(msIdle),
+    m_CurDragItem(0),
+    m_CurDragPoint(0),
+    m_Assist(0),
     m_AssistTarget(0),
     m_AssistParent(0),
     m_AssistAddAfter(false),
@@ -893,12 +897,17 @@ void wxsItemEditorContent::BeforePreviewChanged()
 
 void wxsItemEditorContent::AfterPreviewChanged()
 {
+    m_RebuildMaps = true;
     AfterContentChanged();
 }
 
 void wxsItemEditorContent::ScreenShootTaken()
 {
-    RecalculateMaps();
+    if ( m_RebuildMaps )
+    {
+        RecalculateMaps();
+        m_RebuildMaps = false;
+    }
     RebuildDragPoints();
     m_AssistParent = 0;
     m_AssistTarget = 0;

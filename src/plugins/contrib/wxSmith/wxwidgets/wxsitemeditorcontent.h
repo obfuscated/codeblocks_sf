@@ -96,6 +96,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
         DragPointsT m_DragPoints;                           ///< \brief Array of visible drag points
         ItemToRectT m_ItemToRect;                           ///< \brief Coordinates of each item stored here
         ItemToWindowT m_ItemToWindow;                       ///< \brief Window in editor area for each item is stored here
+        bool m_RebuildMaps;                                 ///< \brief Set to true when internal maps need to be recalculated
         MouseStatesT m_MouseState;                          ///< \brief Current mouse state
         static const int m_DragBoxSize = 6;                 ///< \brief Size of boxes used to drag borders of widgets
         static const int m_MinDragDistance = 8;             ///< \brief Minimal distace which must be done to apply dragging
