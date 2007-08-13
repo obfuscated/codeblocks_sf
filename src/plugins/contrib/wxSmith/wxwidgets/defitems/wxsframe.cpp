@@ -146,6 +146,7 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
     else
     {
         NewItem = new wxsGridPanel(Parent,GetId(),wxDefaultPosition,Size(Parent),0);
+        NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_APPWORKSPACE));
         SetupWindow(NewItem,Flags);
         AddChildrenPreview(NewItem,Flags);
 

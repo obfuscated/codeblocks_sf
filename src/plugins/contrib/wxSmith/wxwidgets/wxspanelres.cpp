@@ -33,7 +33,7 @@ namespace
 
             wxsPanelResPreview(wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
             {
-                Create(Parent,-1,_("Preview for wxPanel class"));
+                Create(Parent,-1,_("Preview for wxPanel class"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
                 wxObject* PreviewObj = m_Data->GetRootItem()->BuildPreview(this,wxsItem::pfExact);
                 wxWindow* PreviewWnd = wxDynamicCast(PreviewObj,wxWindow);
                 if ( !PreviewWnd )

@@ -36,6 +36,25 @@ namespace
     WXS_EV_BEGIN(wxsPanelEvents)
         WXS_EV_DEFAULTS()
     WXS_EV_END()
+
+    class PanelPreview: public wxsGridPanel
+    {
+        public:
+
+            PanelPreview(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style,bool IsRoot):
+                wxsGridPanel(parent,id,pos,size,style),
+                m_IsRoot(IsRoot)
+            {}
+
+        private:
+
+            bool DrawBorder()
+            {
+                return !m_IsRoot;
+            }
+
+            bool m_IsRoot;
+    };
 }
 
 wxsPanel::wxsPanel(wxsItemResData* Data):
@@ -74,9 +93,9 @@ wxObject* wxsPanel::OnBuildPreview(wxWindow* Parent,long Flags)
     }
     else
     {
-        NewItem = new wxsGridPanel(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+        NewItem = new PanelPreview(Parent,GetId(),Pos(Parent),Size(Parent),Style(),IsRootItem());
     }
-    NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE ));
+    NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
     SetupWindow(NewItem,Flags);
     AddChildrenPreview(NewItem,Flags);
     return NewItem;

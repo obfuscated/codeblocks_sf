@@ -29,6 +29,7 @@ void wxsGridPanel::OnPaint(wxPaintEvent& event)
     int Width, Height;
     GetClientSize(&Width,&Height);
     DC.SetPen(wxPen(*wxBLACK));
+    DC.SetBrush(*wxTRANSPARENT_BRUSH);
 
     int GridSize = GetGridSize();
 
@@ -41,6 +42,11 @@ void wxsGridPanel::OnPaint(wxPaintEvent& event)
                 DC.DrawPoint(X,Y);
             }
         }
+    }
+
+    if ( DrawBorder() )
+    {
+        DC.DrawRectangle(0,0,Width,Height);
     }
 }
 

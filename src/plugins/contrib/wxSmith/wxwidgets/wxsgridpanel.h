@@ -27,6 +27,9 @@ class wxsGridPanel: public wxPanel
         /** \brief Paint procedure */
         void OnPaint(wxPaintEvent& event);
 
+        /** \brief Checking whether we should draw border around client area */
+        virtual bool DrawBorder() { return false; }
+
         DECLARE_CLASS(wxsGridPanel)
         DECLARE_EVENT_TABLE()
 };

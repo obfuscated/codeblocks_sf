@@ -123,7 +123,7 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
     else
     {
         NewItem = new wxsGridPanel(Parent,GetId(),wxPoint(0,0),Size(Parent),0);
-        NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE ));
+        NewItem->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
         SetupWindow(NewItem,Flags);
         AddChildrenPreview(NewItem,Flags);
 
