@@ -65,18 +65,6 @@ bool EncodingDetector::DetectEncoding(const wxString& filename)
         m_BOMSizeInBytes = 3;
         m_Encoding = wxFONTENCODING_UTF8;
     }
-    else if (memcmp(buff, "\xFE\xFF", 2) == 0)
-    {
-        m_UseBOM = true;
-        m_BOMSizeInBytes = 2;
-        m_Encoding = wxFONTENCODING_UTF16BE;
-    }
-    else if (memcmp(buff, "\xFF\xFE", 2) == 0)
-    {
-        m_UseBOM = true;
-        m_BOMSizeInBytes = 2;
-        m_Encoding = wxFONTENCODING_UTF16LE;
-    }
     else if (memcmp(buff, "\x00\x00\xFE\xFF", 4) == 0)
     {
         m_UseBOM = true;
@@ -88,6 +76,18 @@ bool EncodingDetector::DetectEncoding(const wxString& filename)
         m_UseBOM = true;
         m_BOMSizeInBytes = 4;
         m_Encoding = wxFONTENCODING_UTF32LE;
+    }
+    else if (memcmp(buff, "\xFE\xFF", 2) == 0)
+    {
+        m_UseBOM = true;
+        m_BOMSizeInBytes = 2;
+        m_Encoding = wxFONTENCODING_UTF16BE;
+    }
+    else if (memcmp(buff, "\xFF\xFE", 2) == 0)
+    {
+        m_UseBOM = true;
+        m_BOMSizeInBytes = 2;
+        m_Encoding = wxFONTENCODING_UTF16LE;
     }
     else
     {
