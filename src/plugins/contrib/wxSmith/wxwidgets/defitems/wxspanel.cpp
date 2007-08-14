@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/settings.h> // wxSystemSettings, wxSYS_COLOUR_BTNFACE
 #include "wxspanel.h"
 #include "../wxsgridpanel.h"
 
