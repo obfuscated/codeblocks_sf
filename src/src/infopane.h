@@ -2,7 +2,6 @@
 #define MLDOOORDE
 
 
-#include <sdk.h>
 #include <wx/aui/auibook.h>
 
 typedef wxAuiNotebook InfoPaneNotebook;   // or wxFlatNotebook, or whatever...
@@ -11,7 +10,9 @@ typedef wxAuiNotebook InfoPaneNotebook;   // or wxFlatNotebook, or whatever...
 //#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 //typedef wxAuiNotebook InfoPaneNotebook;
 
-
+class wxWindow;
+class wxCommandEvent;
+class wxMouseEvent;
 
 class InfoPane : public InfoPaneNotebook
 {

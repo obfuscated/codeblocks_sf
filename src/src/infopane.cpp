@@ -1,3 +1,4 @@
+#include <wx/event.h>
 #include "infopane.h"
 #include <logmanager.h>
 
