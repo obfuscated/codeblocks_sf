@@ -1,4 +1,5 @@
 #include <wx/event.h>
+#include <wx/menu.h>
 #include "infopane.h"
 #include <logmanager.h>
 
