@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/dcmemory.h>
 #include "wxsitemeditor.h"
 #include "wxsitemeditorcontent.h"
 #include "wxsitemfactory.h"
