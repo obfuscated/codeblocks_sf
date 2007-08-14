@@ -1,19 +1,14 @@
 #ifndef Log_H
 #define Log_H
 
-#include "sdk_precomp.h"
-//#include "settings.h"
+#include <wx/panel.h>
+#include <wx/font.h>
 
-#ifndef CB_PRECOMP
-    #include <wx/panel.h>
-    #include <wx/font.h>
+#include <wx/string.h>
+#include <wx/ffile.h>
 
-    #include <wx/string.h>
-    #include <wx/ffile.h>
-
-    #include "manager.h"
-    #include "configmanager.h"
-#endif
+#include "manager.h"
+#include "configmanager.h"
 
 #include <stdio.h>
 
