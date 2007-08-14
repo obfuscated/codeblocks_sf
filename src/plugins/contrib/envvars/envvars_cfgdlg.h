@@ -22,6 +22,7 @@
 #include "configurationpanel.h"
 
 class EnvVars;
+class wxChoice;
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

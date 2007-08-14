@@ -21,6 +21,8 @@
 * $HeadURL$
 */
 
+#include <wx/settings.h>
+
 #include "wxstoolspace.h"
 #include "wxsparent.h"
 #include "wxsitemresdata.h"

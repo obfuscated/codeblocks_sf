@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/checkbox.h>
 #include "wxscheckbox.h"
 
 namespace

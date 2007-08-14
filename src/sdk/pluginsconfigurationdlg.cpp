@@ -27,6 +27,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/filename.h>
     #include <wx/intl.h>

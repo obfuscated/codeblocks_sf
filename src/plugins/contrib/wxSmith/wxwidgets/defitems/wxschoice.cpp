@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/choice.h>
 #include "wxschoice.h"
 
 namespace

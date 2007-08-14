@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/statbox.h>
 #include "wxsstaticbox.h"
 
 namespace

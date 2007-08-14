@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/statusbr.h>
 #include "wxsstatusbar.h"
 #include "../wxsitemresdata.h"
 

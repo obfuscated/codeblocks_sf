@@ -8,7 +8,6 @@
   #include <wx/string.h>
   #include <wx/textctrl.h>
   #include <wx/xrc/xmlres.h>
-  #include <wx/dirdlg.h>
   #include "globals.h" // cbMessageBox
   #include "manager.h"
   #include "configmanager.h"
@@ -21,6 +20,8 @@
   #endif
 #endif
 
+#include <wx/dirdlg.h>
+#include <wx/filedlg.h>
 #include "symtabconfig.h"
 #include "prep.h"
 

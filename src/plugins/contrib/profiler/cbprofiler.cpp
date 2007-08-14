@@ -132,7 +132,7 @@ int CBProfiler::Execute()
     }
 
     // Scope...
-    wxString exename,dataname,workname;
+    wxString exename,dataname;
 
     if (target)
     {
@@ -166,7 +166,7 @@ int CBProfiler::Execute()
         if (!dname.FileExists())
         {
             // Second: look for gmon.out in the working directory of the project
-            workname = target->GetWorkingDir();
+            wxString workname = target->GetWorkingDir();
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(workname);
             wxFileName wname(workname);
             wname.Normalize(wxPATH_NORM_ALL, project->GetBasePath());

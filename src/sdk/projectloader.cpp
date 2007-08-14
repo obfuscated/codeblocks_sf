@@ -1118,10 +1118,18 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         }
         if (target->GetTargetType() != ttCommandsOnly)
         {
-            TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", target->GetOutputFilename());
             TargetFilenameGenerationPolicy prefixPolicy;
             TargetFilenameGenerationPolicy extensionPolicy;
             target->GetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
+
+            wxString outputFileName = target->GetOutputFilename();
+            if (platform::windows && extensionPolicy == tgfpPlatformDefault)
+            {
+                int loc = outputFileName.Find(_T('.'), true);
+                if (loc != wxNOT_FOUND)
+                    outputFileName = outputFileName.Remove(loc);
+            }
+            TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", outputFileName);
             outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
             outnode->SetAttribute("extension_auto", extensionPolicy == tgfpPlatformDefault ? "1" : "0");
 

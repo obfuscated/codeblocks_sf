@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/bmpbuttn.h>
 #include "wxsbitmapbutton.h"
 
 namespace

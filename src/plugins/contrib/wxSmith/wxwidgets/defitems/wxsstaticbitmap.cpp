@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/statbmp.h>
 #include "wxsstaticbitmap.h"
 
 namespace

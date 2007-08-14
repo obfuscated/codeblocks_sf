@@ -27,6 +27,7 @@
 #include <sdk.h>
 #include "ccoptionsdlg.h"
 #include <wx/intl.h>
+#include <wx/listbox.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/spinctrl.h>
 #include <wx/checkbox.h>

@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/scrolbar.h>
 #include "wxsscrollbar.h"
 
 namespace

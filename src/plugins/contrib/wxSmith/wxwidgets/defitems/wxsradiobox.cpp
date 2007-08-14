@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/radiobox.h>
 #include "wxsradiobox.h"
 
 namespace

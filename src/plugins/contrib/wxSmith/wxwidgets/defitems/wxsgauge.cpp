@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/gauge.h>
 #include "wxsgauge.h"
 
 namespace

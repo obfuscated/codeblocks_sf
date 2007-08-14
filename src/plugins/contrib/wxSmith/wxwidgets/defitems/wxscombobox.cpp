@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/combobox.h>
 #include "wxscombobox.h"
 
 namespace

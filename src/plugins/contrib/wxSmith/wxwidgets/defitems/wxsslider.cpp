@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/slider.h>
 #include "wxsslider.h"
 
 
