@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/defs.h> // to have wxUSE_RADIOBOX defined in the radiobox.h header
 #include <wx/radiobox.h>
 #include <wx/window.h> // GetParent
 #include "wxsradiobox.h"

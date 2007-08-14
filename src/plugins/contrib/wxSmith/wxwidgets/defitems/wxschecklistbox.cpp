@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/defs.h> // to have wxUSE_CHECKLISTBOX defined in the checklst.h header
 #include <wx/checklst.h>
 #include "wxschecklistbox.h"
 
