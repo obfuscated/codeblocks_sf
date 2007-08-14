@@ -126,6 +126,9 @@ class wxsItemEditorContent: public wxsDrawingWindow
         void OnMouseDraggingItemInit(wxMouseEvent& event);
         void OnMouseTargetSearch(wxMouseEvent& event);
 
+        /** \brief Processing mouse events */
+        void OnKeyDown(wxKeyEvent& event);
+
         inline void SetCur(int Cur) { SetCursor(wxCursor(Cur)); }
 
         void RebuildDragPoints();

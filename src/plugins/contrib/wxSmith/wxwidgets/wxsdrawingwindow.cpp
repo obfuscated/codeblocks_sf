@@ -66,8 +66,8 @@ BEGIN_EVENT_TABLE(wxsDrawingWindow,wxScrolledWindow)
     EVT_ERASE_BACKGROUND(wxsDrawingWindow::OnEraseBack)
 END_EVENT_TABLE()
 
-wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id):
-    wxScrolledWindow(Parent,id),
+wxsDrawingWindow::wxsDrawingWindow(wxWindow* Parent,wxWindowID id,const wxPoint& pos,const wxSize& size,long style,const wxString& name):
+    wxScrolledWindow(Parent,id,pos,size,style,name),
     m_Bitmap(0),
     m_IsBlockFetch(false),
     m_DuringFetch(false),

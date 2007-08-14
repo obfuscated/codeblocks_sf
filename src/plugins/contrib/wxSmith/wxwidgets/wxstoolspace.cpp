@@ -40,6 +40,8 @@ BEGIN_EVENT_TABLE(wxsToolSpace,wxScrolledWindow)
     EVT_LEFT_DOWN(wxsToolSpace::OnMouseClick)
     EVT_LEFT_DCLICK(wxsToolSpace::OnMouseDClick)
     EVT_RIGHT_DOWN(wxsToolSpace::OnMouseRight)
+    EVT_KEY_DOWN(wxsToolSpace::OnKeyDown)
+    EVT_MOUSE_EVENTS(wxsToolSpace::OnMouse)
 END_EVENT_TABLE()
 
 wxsToolSpace::wxsToolSpace(wxWindow* Parent,wxsItemResData* Data):
@@ -167,6 +169,8 @@ void wxsToolSpace::OnPaint(wxPaintEvent& event)
 
 void wxsToolSpace::OnMouseClick(wxMouseEvent& event)
 {
+    SetFocus();
+
     if ( m_Unstable ) return;
 
     // Finding out which tool has been clicked
@@ -208,6 +212,8 @@ void wxsToolSpace::OnMouseDClick(wxMouseEvent& event)
 
 void wxsToolSpace::OnMouseRight(wxMouseEvent& event)
 {
+    SetFocus();
+
     if ( m_Unstable ) return;
 
     // Finding out which tool has been clicked
@@ -220,6 +226,20 @@ void wxsToolSpace::OnMouseRight(wxMouseEvent& event)
     {
         Tool->m_Tool->MouseRightClick(0,PosX,PosY);
     }
+}
+
+void wxsToolSpace::OnMouse(wxMouseEvent& event)
+{
+    if ( event.ButtonDown() )
+    {
+        SetFocus();
+    }
+    event.Skip();
+}
+
+void wxsToolSpace::OnKeyDown(wxKeyEvent& event)
+{
+    GetParent()->ProcessEvent(event);
 }
 
 void wxsToolSpace::RecalculateVirtualSize()

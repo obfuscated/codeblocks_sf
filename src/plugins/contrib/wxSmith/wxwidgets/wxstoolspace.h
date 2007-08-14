@@ -45,6 +45,12 @@ class wxsToolSpace: public wxScrolledWindow
         /** \brief Custom right click event */
         void OnMouseRight(wxMouseEvent& event);
 
+        /** \brief Any mouse event */
+        void OnMouse(wxMouseEvent& event);
+
+        /** \brief Custom key down event */
+        void OnKeyDown(wxKeyEvent& event);
+
         /** \brief Recalculating virtual space required by this window */
         void RecalculateVirtualSize();
 

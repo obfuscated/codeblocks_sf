@@ -32,10 +32,11 @@
 
 BEGIN_EVENT_TABLE(wxsItemEditorContent,wxsDrawingWindow)
     EVT_MOUSE_EVENTS(wxsItemEditorContent::OnMouse)
+    EVT_KEY_DOWN(wxsItemEditorContent::OnKeyDown)
 END_EVENT_TABLE()
 
 wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data,wxsItemEditor* Editor):
-    wxsDrawingWindow(Parent,-1),
+    wxsDrawingWindow(Parent,-1,wxDefaultPosition,wxDefaultSize,wxHSCROLL|wxVSCROLL|wxWANTS_CHARS),
     m_Data(Data),
     m_Editor(Editor),
     m_RebuildMaps(false),
@@ -289,6 +290,11 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointFromItem
 
 void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
 {
+    if ( event.ButtonDown() )
+    {
+        SetFocus();
+    }
+
     int NewX = event.m_x;
     int NewY = event.m_y;
     CalcUnscrolledPosition(NewX,NewY,&NewX,&NewY);
@@ -1057,3 +1063,9 @@ bool wxsItemEditorContent::IsContinousInsert()
 {
     return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadBool(_T("/continousinsert"),false);
 }
+
+void wxsItemEditorContent::OnKeyDown(wxKeyEvent& event)
+{
+    GetParent()->ProcessEvent(event);
+}
+
