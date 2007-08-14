@@ -2,7 +2,7 @@
 #define MLDOOORDE
 
 
-#include "../sdk.h"
+#include <sdk.h>
 #include <wx/aui/auibook.h>
 
 typedef wxAuiNotebook InfoPaneNotebook;   // or wxFlatNotebook, or whatever...
