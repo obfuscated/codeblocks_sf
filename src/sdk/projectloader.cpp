@@ -1123,7 +1123,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             target->GetTargetFilenameGenerationPolicy(prefixPolicy, extensionPolicy);
 
             wxString outputFileName = target->GetOutputFilename();
-            if (platform::windows && extensionPolicy == tgfpPlatformDefault)
+            if (extensionPolicy == tgfpPlatformDefault)
             {
                 int loc = outputFileName.Find(_T('.'), true);
                 if (loc != wxNOT_FOUND)
