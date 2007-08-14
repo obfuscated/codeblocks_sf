@@ -2951,6 +2951,12 @@
 		<Unit filename="src/environmentsettingsdlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/infopane.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/infopane.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/ipc.cpp">
 			<Option target="src" />
 		</Unit>

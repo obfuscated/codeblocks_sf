@@ -34,6 +34,7 @@ codeblocks_SOURCES = app.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
 			environmentsettingsdlg.cpp \
+			infopane.cpp \
 			ipc.cpp \
 			main.cpp \
 			prefix.cpp \
@@ -51,6 +52,7 @@ noinst_HEADERS = app.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
 			environmentsettingsdlg.h \
+			infopane.h \
 			ipc.h \
 			main.h \
 			prefix.h \
