@@ -726,7 +726,7 @@ wxMenu* ProjectManager::GetProjectMenu()
     wxMenu* result = 0L;
     do
     {
-        wxFrame* frame = Manager::Get()->GetAppWindow();
+        wxFrame* frame = Manager::Get()->GetAppFrame();
         if(!frame)
             break;
         wxMenuBar* mb = frame->GetMenuBar();
