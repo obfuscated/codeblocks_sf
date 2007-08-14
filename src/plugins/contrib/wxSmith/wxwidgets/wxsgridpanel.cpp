@@ -21,6 +21,7 @@
 * $HeadURL$
 */
 
+#include <wx/dcclient.h> // wxPaintDC
 #include "wxsgridpanel.h"
 
 #include <configmanager.h>
