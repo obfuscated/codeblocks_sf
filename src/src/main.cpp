@@ -59,7 +59,9 @@
 #include <cbexception.h>
 #include <annoyingdialog.h>
 #include <editorcolourset.h>
+#include <logmanager.h>
 
+#include "infopane.h"
 #include "dlgaboutplugin.h"
 #include "dlgabout.h"
 #include "startherepage.h"
@@ -636,6 +638,38 @@ void MainFrame::CreateIDE()
                               Name(wxT("MessagesPane")).Caption(_("Messages")).
                               BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
                               Bottom());
+
+
+#if 0
+    InfoPane *infoPane = new InfoPane(this);
+    m_LayoutManager.AddPane(infoPane, wxAuiPaneInfo().Name(wxT("info")).Caption(_("Info Pane")).BestSize(wxSize(clientsize.GetWidth(), bottomH)));
+
+    LogManager* mgr = LogManager::Get();
+    wxWindow* log;
+
+    for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
+    {
+        if(log = mgr->Slot(i).GetLogger()->CreateControl(infoPane))
+            infoPane->AddPage(log, mgr->Slot(i).title);
+    }
+
+    LogManager::Get()->NotifyUpdate();
+
+
+    // ------------------------ remove this  ------------------------
+    LogManager::Get()->Log(_T("foo bar"));
+    LogManager::Get()->Log(_T("123456"));
+    LogManager::Get()->Log(_T("abcdefg"));
+    LogManager::Get()->LogWarning(_T("This doesn't look right"));
+    LogManager::Get()->DebugLog(_T("useless output"));
+    LogManager::Get()->Log(_T("another way for useless output"), LogManager::debug_log);
+    LogManager::Get()->DebugLog(_T("this is a debug error"), Logger::error);
+    LogManager::Get()->LogError(_T("This is really bad."));
+    LogManager::Get()->Log(_T("Starting build"), LogManager::app_log, Logger::caption);
+    LogManager::Get()->Log(_T("No resource file found. Cannot continue."), LogManager::app_log, Logger::critical);
+    LogManager::Get()->Log(_T("Build succeeded, no errors."), LogManager::app_log, Logger::success);
+    // ------------------------ remove this  ------------------------
+#endif
 
     CreateMenubar();
 

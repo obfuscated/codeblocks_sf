@@ -5,7 +5,6 @@
 */
 
 #include "sdk_precomp.h"
-
 #include "logmanager.h"
 
 
@@ -17,9 +16,9 @@ LogManager::LogManager()
         slot[i].log = &g_null_log;
     }
 
-    SetLog(new StdoutLog, stdout_log);
-    SetLog(new StdoutLog, app_log);
-    SetLog(new StdoutLog, debug_log);
+    SetLog(new StdoutLogger, stdout_log);
+    SetLog(new StdoutLogger, app_log);
+    SetLog(new StdoutLogger, debug_log);
     slot[stdout_log].title = _T("stdout");
     slot[app_log].title = _T("Code::Blocks");
     slot[debug_log].title = _T("Code::Blocks Debug");

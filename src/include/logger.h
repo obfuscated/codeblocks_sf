@@ -1,16 +1,21 @@
 #ifndef Log_H
 #define Log_H
 
-#include "settings.h"
-#include <wx/panel.h>
-#include <wx/font.h>
+#include "sdk_precomp.h"
+//#include "settings.h"
 
-#include <wx/string.h>
+#ifndef CB_PRECOMP
+    #include <wx/panel.h>
+    #include <wx/font.h>
+
+    #include <wx/string.h>
+    #include <wx/ffile.h>
+
+    #include "manager.h"
+    #include "configmanager.h"
+#endif
 
 #include <stdio.h>
-
-#include "manager.h"
-#include "configmanager.h"
 
 // TODO (killerbot) : other includes are needed -->wxDateTime
 
@@ -19,13 +24,14 @@ class wxWindow;
 namespace
 {
     static wxString temp_string(_T('\0'), 250);
+    static wxString newline_string(_T("\n"));
 }
 
 class DLLIMPORT Logger
 {
 public:
-	enum level { caption, info, warning, success, error, critical };
-	enum { num_levels = critical +1 };
+	enum level { caption, info, warning, success, error, critical, spacer };
+	enum { num_levels = spacer +1 };
 
     Logger() {};
     virtual ~Logger() {};
@@ -35,27 +41,37 @@ public:
     virtual void Append(const wxString& msg, Logger::level lv = info) = 0;
     virtual void Clear() = 0;
 
-	virtual wxWindow* CreateControl() { return 0; };
+	virtual wxWindow* CreateControl(wxWindow* parent) { return 0; };
 };
 
 
 
-class DLLIMPORT NullLog : public Logger
+class DLLIMPORT NullLogger : public Logger
 {
 public:
     virtual void Append(const wxString& msg, Logger::level lv){};
     virtual void Clear(){};
 };
 
-class DLLIMPORT StdoutLog : public Logger
+class DLLIMPORT StdoutLogger : public Logger
 {
 public:
     virtual void Append(const wxString& msg, Logger::level lv){ fputs(msg.mb_str(), lv < error ? stdout : stderr); };
     virtual void Clear(){};
 };
 
+class DLLIMPORT FileLogger : public Logger
+{
+	wxFFile f;
+public:
+	FileLogger(const wxString& filename) : f(filename, _T("wb")) {  };
 
-class DLLIMPORT TextCtrlLog : public Logger
+    virtual void Append(const wxString& msg, Logger::level lv) { fputs(msg.mb_str(), f.fp()); fputs(::newline_string.mb_str(), f.fp()); };
+    virtual void Clear(){};
+};
+
+
+class DLLIMPORT TextCtrlLogger : public Logger
 {
 protected:
 
@@ -65,19 +81,26 @@ protected:
 
 public:
 
-    TextCtrlLog(bool fixedPitchFont = false) : control(0), fixed(fixedPitchFont){};
+    TextCtrlLogger(bool fixedPitchFont = false) : control(0), fixed(fixedPitchFont){};
 
     virtual void UpdateSettings()
 	{
+        control->SetBackgroundColour(*wxWHITE);
+
 		int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
 
 		wxFont default_font(size, fixed ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 		wxFont bold_font(default_font);
 		wxFont italic_font(default_font);
-		wxFont bigger_font(bold_font);
 
 		bold_font.SetWeight(wxFONTWEIGHT_BOLD);
+
+		wxFont bigger_font(bold_font);
 		bigger_font.SetPointSize(size + 2);
+
+		wxFont small_font(default_font);
+		small_font.SetPointSize(size - 4);
+
 		italic_font.SetStyle(wxFONTSTYLE_ITALIC);
 
 		// might try alternatively
@@ -88,7 +111,7 @@ public:
 			style[i].SetFont(default_font);
 			style[i].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
 			style[i].SetTextColour(*wxBLACK);
-			style[i].SetBackgroundColour(wxNullColour);
+			style[i].SetBackgroundColour(*wxWHITE);
 
 			// is it necessary to do that?
 			//style[i].SetFlags(...);
@@ -108,6 +131,7 @@ public:
 		style[critical].SetFont(bold_font);
 		style[critical].SetTextColour(*wxWHITE);
 		style[critical].SetBackgroundColour(*wxRED);
+		style[spacer].SetFont(small_font);
 	};
 
     virtual void Append(const wxString& msg, Logger::level lv = info)
@@ -118,8 +142,22 @@ public:
 		::temp_string.assign(msg);
 		::temp_string.append(_T("\n"));
 
-		control->SetDefaultStyle(style[lv]);
-		control->AppendText(::temp_string);
+        if(lv == caption)
+        {
+            control->SetDefaultStyle(style[info]);
+            control->AppendText(::newline_string);
+
+            control->SetDefaultStyle(style[lv]);
+            control->AppendText(::temp_string);
+
+            control->SetDefaultStyle(style[spacer]);
+            control->AppendText(::newline_string);
+        }
+        else
+        {
+            control->SetDefaultStyle(style[lv]);
+            control->AppendText(::temp_string);
+        }
 	};
 
 
@@ -129,18 +167,15 @@ public:
 			control->Clear();
 	};
 
-	virtual wxWindow* CreateControl()
+	virtual wxWindow* CreateControl(wxWindow* parent)
 	{
-		control = new wxTextCtrl(0, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_NOHIDESEL);
-
-		UpdateSettings();
-
+		control = new wxTextCtrl(parent, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_NOHIDESEL);
 		return control;
 	};
 };
 
 
-class DLLIMPORT TimestampTextCtrlLog : public TextCtrlLog
+class DLLIMPORT TimestampTextCtrlLogger : public TextCtrlLogger
 {
 public:
     virtual void Append(const wxString& msg, Logger::level lv = info)

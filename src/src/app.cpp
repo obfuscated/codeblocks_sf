@@ -52,6 +52,7 @@
 #include <scriptingmanager.h>
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <globals.h>
+#include <logmanager.h>
 #include "splashscreen.h"
 #include <wx/arrstr.h>
 #include "crashhandler.h"
@@ -160,6 +161,8 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T("nc"), _T("no-crash-handler"), _T("don't use the crash handler (useful for debugging C::B)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""), _T("no-log"),  _T("turn off the application log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""), _T("log-to-file"),  _T("redirect application log to a file"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("profile"),  _T("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
@@ -270,7 +273,8 @@ bool CodeBlocksApp::LoadConfig()
     cfg->Write(_T("data_path"), data);
 
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog;
-    Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/has_debug_log"), m_HasDebugLog);
+    //Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/has_debug_log"), m_HasDebugLog);
+
     return true;
 }
 
@@ -466,7 +470,7 @@ bool CodeBlocksApp::OnInit()
 
         if(!LoadConfig())
             return false;
-		
+
 		// set safe-mode appropriately
 		PluginManager::SetSafeMode(m_SafeMode);
 
@@ -920,6 +924,14 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     parser.Found(_T("script"), &m_Script);
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild || m_Clean;
+
+
+                    if(parser.Found(_T("no-log")) == false)
+                        LogManager::Get()->SetLog(new TextCtrlLogger, LogManager::app_log);
+                    if(parser.Found(_T("log-to-file")))
+                        LogManager::Get()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
+                    if(m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog)
+                        LogManager::Get()->SetLog(new TextCtrlLogger, LogManager::debug_log);
                 }
             }
             break;

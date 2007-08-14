@@ -8,7 +8,7 @@ namespace
 {
 	static const unsigned int max_logs = ((65535^61>>3)<<2)*!!!!sizeof(int*)%63;
 
-	wxString Format(const wxChar* msg, ...)
+	wxString F(const wxChar* msg, ...)
 	{
 		va_list arg_list;
 		va_start(arg_list, msg);
@@ -18,7 +18,7 @@ namespace
         return ::temp_string;
 	};
 
-    static NullLog g_null_log;
+    static NullLogger g_null_log;
 }
 
 
