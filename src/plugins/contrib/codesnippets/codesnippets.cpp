@@ -24,7 +24,7 @@
 #else
     #include "sdk_common.h"
 	#include <wx/event.h>
-	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
+	#include <wx/frame.h> // GetMenuBar
 	#include <wx/intl.h>
 	#include <wx/menu.h>
 	#include <wx/menuitem.h>
@@ -103,7 +103,7 @@ void CodeSnippets::OnAttach()
     m_pAppWin = Manager::Get()->GetAppWindow();
     GetConfig()->AppName = wxT("codesnippets");
     GetConfig()->pMainFrame  = Manager::Get()->GetAppWindow() ;
-    GetConfig()->m_pMenuBar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    GetConfig()->m_pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
 
     AppVersion pgmVersion;
 
@@ -487,7 +487,7 @@ void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 
-    wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
 
     LOGIT( _T("OnUpdateUI Window[%p],Pid[%d]"), GetSnippetsWindow(), m_ExternalPid );
 
@@ -573,7 +573,7 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
             if (GetConfig()->m_bWindowStateChanged)
         {
             GetConfig()->m_bWindowStateChanged = false;
-            //-wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+            //-wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
             //-if ( pbar->IsChecked(idViewSnippets) )
             {   CreateSnippetWindow();
                 bool bExternalRequest = GetConfig()->GetSettingsWindowState().Contains(wxT("External"));
@@ -656,7 +656,7 @@ void CodeSnippets::OnDockWindowVisability(CodeBlocksDockEvent& event)
     //event.layout
     //BUG: the event.GetId() is alway null. It should be the window pointer.
     LOGIT( _T("cbEVT_DOCK_WINDOW_VISIBILITY[%p]"),event.GetId() );
-    wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     if (not IsWindowReallyShown(GetSnippetsWindow()))
         pbar->Check(idViewSnippets, false);
 

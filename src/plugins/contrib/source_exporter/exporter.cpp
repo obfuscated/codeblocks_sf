@@ -6,6 +6,7 @@
  * License:   GPL
  **************************************************************/
 
+#include <wx/frame.h> // GetMenuBar
 #include "exporter.h"
 #include <configmanager.h>
 #include <manager.h>
@@ -132,7 +133,7 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
     return;
   }
 
-  wxMenuBar *mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+  wxMenuBar *mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
 
   if (mbar)
   {
