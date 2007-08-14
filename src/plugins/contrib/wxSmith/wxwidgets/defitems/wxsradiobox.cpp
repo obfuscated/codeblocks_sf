@@ -22,6 +22,7 @@
 */
 
 #include <wx/radiobox.h>
+#include <wx/window.h> // GetParent
 #include "wxsradiobox.h"
 
 namespace

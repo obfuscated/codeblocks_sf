@@ -16,6 +16,7 @@
 class wxsItemResData;
 class wxsParent;
 class wxsTool;
+class wxWindow;
 
 /** \brief Base class for all items in resource
  *
