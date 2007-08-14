@@ -6,7 +6,7 @@
 // Created:     2005-08-17
 // RCS-ID:      $$
 // Copyright:   (c) Ulrich Telle
-// Licence:     wxWindows licence + RDS Data Security license
+// Licence:     wxWindows licence + RSA Data Security license
 ///////////////////////////////////////////////////////////////////////////////
 
 /// \file pdfencrypt.cpp Implementation of the wxPdfEncrypt class
@@ -35,14 +35,21 @@
  **********************************************************************
  */
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
+#ifndef WX_PRECOMP
+#include <wx/wx.h>
+#endif
+
 // includes
+#include <wx/log.h>
+
+#include "wx/pdfdoc.h"
 #include "wx/pdfencrypt.h"
 
 // ----------------
@@ -332,10 +339,30 @@ static void byteReverse(unsigned char *buf, unsigned longs)
 static unsigned char padding[] =
   "\x28\xBF\x4E\x5E\x4E\x75\x8A\x41\x64\x00\x4E\x56\xFF\xFA\x01\x08\x2E\x2E\x00\xB6\xD0\x68\x3E\x80\x2F\x0C\xA9\xFE\x64\x53\x69\x7A";
 
-wxPdfEncrypt::wxPdfEncrypt()
+wxPdfEncrypt::wxPdfEncrypt(int revision, int keyLength)
 {
+  switch (revision)
+  {
+    case 4:
+      m_rValue = 4;
+      m_keyLength = 128 / 8;
+      m_aes = new wxPdfRijndael();
+      break;
+    case 3:
+      keyLength = keyLength - keyLength % 8;
+      keyLength = (keyLength >= 40) ? ((keyLength <= 128) ? keyLength : 128) : 40;
+      m_rValue = 3;
+      m_keyLength = keyLength / 8;
+      break;
+    case 2:
+    default:
+      m_rValue = 2;
+      m_keyLength = 40 / 8;
+      break;
+  }
+
   int j;
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < 16; j++)
   {
     m_rc4key[j] = 0;
   }
@@ -343,6 +370,10 @@ wxPdfEncrypt::wxPdfEncrypt()
 
 wxPdfEncrypt::~wxPdfEncrypt()
 {
+  if (m_rValue == 4)
+  {
+    delete m_aes;
+  }
 }
 
 void
@@ -368,61 +399,267 @@ wxPdfEncrypt::GenerateEncryptionKey(const wxString& userPassword,
                                     const wxString& ownerPassword,
                                     int protection)
 {
-  int j;
   unsigned char userpswd[32];
   unsigned char ownerpswd[32];
-  unsigned char digest[MD5_HASHBYTES];
 
   // Pad passwords
   PadPassword(userPassword, userpswd);
   PadPassword(ownerPassword, ownerpswd);
 
-  // Compute O value
-  GetMD5Binary(ownerpswd, 32, digest);
-  RC4(digest, 5, userpswd, 32, m_Ovalue);
+  // Compute P value
+  m_pValue = -((protection ^ 255) + 1);
 
-  // Compute encryption key
-  const int buflen = 32 + 32 + 4;
-  unsigned char buffer[buflen];
+  // Compute O value
+  ComputeOwnerKey(userpswd, ownerpswd, m_keyLength*8, m_rValue, false, m_oValue);
+
+  // Compute encryption key and U value
+  m_documentId = CreateDocumentId();
+  ComputeEncryptionKey(m_documentId, userpswd,
+                       m_oValue, m_pValue, m_keyLength*8, m_rValue, m_uValue);
+}
+
+bool
+wxPdfEncrypt::Authenticate(const wxString& documentID, const wxString& password,
+                           const wxString& uValue, const wxString& oValue,
+                           int pValue, int lengthValue, int rValue)
+{
+  unsigned char userKey[32];
+  bool ok = false;
+  int j;
   for (j = 0; j < 32; j++)
   {
-    buffer[j]    = userpswd[j];
-    buffer[j+32] = m_Ovalue[j];
+    m_uValue[j] = (unsigned char) uValue.GetChar(j);
+    m_oValue[j] = (unsigned char) oValue.GetChar(j);
   }
-  buffer[64+0] = protection & 0xff;
-  buffer[64+1] = 0xff;
-  buffer[64+2] = 0xff;
-  buffer[64+3] = 0xff;
-  GetMD5Binary(buffer, buflen, digest);
-  for (j = 0; j < 5; j++)
+  m_pValue = pValue;
+  m_keyLength = lengthValue / 8;
+
+  // Pad password
+  unsigned char pswd[32];
+  PadPassword(password, pswd);
+
+  // Check password: 1) as user password, 2) as owner password
+  ComputeEncryptionKey(documentID, pswd, m_oValue, pValue, lengthValue, rValue, userKey);
+  ok = CheckKey(userKey, m_uValue);
+  if (!ok)
   {
-    m_encryptionKey[j] = digest[j];
+    unsigned char userpswd[32];
+    ComputeOwnerKey(m_oValue, pswd, lengthValue, rValue, true, userpswd);
+    ComputeEncryptionKey(documentID, userpswd, m_oValue, pValue, lengthValue, rValue, userKey);
+    ok = CheckKey(userKey, m_uValue);
   }
-
-  // Compute U value
-  RC4(m_encryptionKey, 5, padding, 32, m_Uvalue);
-
-  // Compute P value
-  m_Pvalue = -((protection ^ 255) + 1);
+  return ok;
 }
 
 void
-wxPdfEncrypt::Encrypt(int n, unsigned char* str, int len)
+wxPdfEncrypt::ComputeOwnerKey(unsigned char userPad[32], unsigned char ownerPad[32],
+                              int keyLength, int revision, bool authenticate,
+                              unsigned char ownerKey[32])
+{
+  unsigned char mkey[MD5_HASHBYTES];
+  unsigned char digest[MD5_HASHBYTES];
+  int length = keyLength / 8;
+
+  MD5_CTX ctx;
+  MD5Init(&ctx);
+  MD5Update(&ctx, ownerPad, 32);
+  MD5Final(digest,&ctx);
+
+  if (revision == 3 || revision == 4)
+  {
+    // only use for the input as many bit as the key consists of
+    int k;
+    for (k = 0; k < 50; ++k)
+    {
+      MD5Init(&ctx);
+      MD5Update(&ctx, digest, length);
+      MD5Final(digest,&ctx);
+    }
+    memcpy(ownerKey, userPad, 32);
+    int i;
+    int j;
+    for (i = 0; i < 20; ++i)
+    {
+      for (j = 0; j < length ; ++j)
+      {
+        if (authenticate)
+        {
+          mkey[j] = (digest[j] ^ (19-i));
+        }
+        else
+        {
+          mkey[j] = (digest[j] ^ i);
+        }
+      }
+      RC4(mkey, length, ownerKey, 32, ownerKey);
+    }
+  }
+  else
+  {
+    RC4(digest, 5, userPad, 32, ownerKey);
+  }
+}
+
+void
+wxPdfEncrypt::ComputeEncryptionKey(const wxString& documentId,
+                                   unsigned char userPad[32], unsigned char ownerKey[32],
+                                   int pValue, int keyLength, int revision,
+                                   unsigned char userKey[32])
+{
+  int j;
+  int k;
+  m_keyLength = keyLength / 8;
+
+  MD5_CTX ctx;
+  MD5Init(&ctx);
+  MD5Update(&ctx, userPad, 32);
+  MD5Update(&ctx, ownerKey, 32);
+
+  unsigned char ext[4];
+  ext[0] = (unsigned char) ( pValue        & 0xff);
+  ext[1] = (unsigned char) ((pValue >>  8) & 0xff);
+  ext[2] = (unsigned char) ((pValue >> 16) & 0xff);
+  ext[3] = (unsigned char) ((pValue >> 24) & 0xff);
+  MD5Update(&ctx, ext, 4);
+
+  size_t docIdLength = documentId.Length();
+  unsigned char* docId = NULL;
+  if (docIdLength > 0)
+  {
+    docId = new unsigned char[docIdLength];
+    size_t j;
+    for (j = 0; j < docIdLength; j++)
+    {
+      docId[j] = (unsigned char) documentId.GetChar(j);
+    }
+    MD5Update(&ctx, docId, docIdLength);
+  }
+  
+  // TODO: (Revision 3 or greater) If document metadata is not being encrypted,
+  //       pass 4 bytes with the value 0xFFFFFFFF to the MD5 hash function.
+
+  unsigned char digest[MD5_HASHBYTES];
+  MD5Final(digest,&ctx);
+
+  // only use the really needed bits as input for the hash
+  if (revision == 3 || revision == 4)
+  {
+    for (k = 0; k < 50; ++k)
+    {
+      MD5Init(&ctx);
+      MD5Update(&ctx, digest, m_keyLength);
+      MD5Final(digest, &ctx);
+    }
+  }
+
+  memcpy(m_encryptionKey, digest, m_keyLength);
+
+  // Setup user key
+  if (revision == 3 || revision == 4)
+  {
+    MD5Init(&ctx);
+    MD5Update(&ctx, padding, 32);
+    if (docId != NULL)
+    {
+      MD5Update(&ctx, docId, docIdLength);
+    }
+    MD5Final(digest, &ctx);
+    memcpy(userKey, digest, 16);
+    for (k = 16; k < 32; ++k)
+    {
+      userKey[k] = 0;
+    }
+    for (k = 0; k < 20; k++)
+    {
+      for (j = 0; j < m_keyLength; ++j)
+      {
+        digest[j] = (unsigned char)(m_encryptionKey[j] ^ k);
+      }
+      RC4(digest, m_keyLength, userKey, 16, userKey);
+    }
+  }
+  else
+  {
+    RC4(m_encryptionKey, m_keyLength, padding, 32, userKey);
+  }
+  if (docId != NULL)
+  {
+    delete [] docId;
+  }
+}
+
+bool
+wxPdfEncrypt::CheckKey(unsigned char key1[32], unsigned char key2[32])
+{
+  // Check whether the right password had been given
+  bool ok = true;
+  int k;
+  int kmax = (m_rValue == 3) ? 16 : 32;
+  for (k = 0; ok && k < kmax; k++)
+  {
+    ok = ok && (key1[k] == key2[k]);
+  }
+  return ok;
+}
+
+void
+wxPdfEncrypt::Encrypt(int n, int g, wxString& str)
+{
+  size_t len = str.Length();
+  unsigned char* data = new unsigned char[len];
+  size_t j;
+  for (j = 0; j < len; j++)
+  {
+    data[j] = (unsigned char) str.GetChar(j);
+  }
+  Encrypt(n, g, data, len);
+  for (j = 0; j < len; j++)
+  {
+    str.SetChar(j, data[j]);
+  }
+  delete [] data;
+}
+
+void
+wxPdfEncrypt::Encrypt(int n, int g, unsigned char* str, int len)
 {
   unsigned char objkey[MD5_HASHBYTES];
-  unsigned char nkey[10];
+  unsigned char nkey[MD5_HASHBYTES+5+4];
+  int nkeylen = m_keyLength + 5;
   int j;
-  for (j = 0; j < 5; j++)
+  for (j = 0; j < m_keyLength; j++)
   {
     nkey[j] = m_encryptionKey[j];
   }
-  nkey[5] = 0xff &  n;
-  nkey[6] = 0xff & (n >> 8);
-  nkey[7] = 0xff & (n >> 16);
-  nkey[8] = 0;
-  nkey[9] = 0;
-  GetMD5Binary(nkey, 10, objkey);
-  RC4(objkey, 10, str, len, str);
+  nkey[m_keyLength+0] = 0xff &  n;
+  nkey[m_keyLength+1] = 0xff & (n >> 8);
+  nkey[m_keyLength+2] = 0xff & (n >> 16);
+  nkey[m_keyLength+3] = 0xff &  g;
+  nkey[m_keyLength+4] = 0xff & (g >> 8);
+
+  if (m_rValue == 4)
+  {
+    // AES encryption needs some 'salt'
+    nkeylen += 4;
+    nkey[m_keyLength+5] = 0x73;
+    nkey[m_keyLength+6] = 0x41;
+    nkey[m_keyLength+7] = 0x6c;
+    nkey[m_keyLength+8] = 0x54;
+  }
+
+  GetMD5Binary(nkey, nkeylen, objkey);
+  int keylen = (m_keyLength <= 11) ? m_keyLength+5 : 16;
+  switch (m_rValue)
+  {
+    case 4:
+      AES(objkey, keylen, str, len, str);
+      break;
+    case 3:
+    case 2:
+    default:
+      RC4(objkey, keylen, str, len, str);
+      break;
+  }
 }
 
 /**
@@ -483,4 +720,75 @@ wxPdfEncrypt::GetMD5Binary(const unsigned char* data, int length, unsigned char*
   MD5Init(&ctx);
   MD5Update(&ctx, data, length);
   MD5Final(digest,&ctx);
+}
+
+void
+wxPdfEncrypt::AES(unsigned char* key, int WXUNUSED(keylen),
+                  unsigned char* textin, int textlen,
+                  unsigned char* textout)
+{
+  GenerateInitialVector(textout);
+  m_aes->init(wxPdfRijndael::CBC, wxPdfRijndael::Encrypt, key, wxPdfRijndael::Key16Bytes, textout);
+  int offset = CalculateStreamOffset();
+  int len = m_aes->padEncrypt(&textin[offset], textlen, &textout[offset]);
+  
+  // It is a good idea to check the error code
+  if (len < 0)
+  {
+    wxLogError(_T("wxPdfEncrypt::AES: Error on encrypting."));
+  }
+}
+
+void
+wxPdfEncrypt::GenerateInitialVector(unsigned char iv[16])
+{
+  wxString keyString = wxPdfDocument::GetUniqueId();
+#if wxUSE_UNICODE
+  wxCharBuffer cb(keyString.ToAscii());
+  const char* key = (const char*) cb;
+#else
+  const char* key = (const char*) keyString.c_str();
+#endif
+  GetMD5Binary((const unsigned char*) key, keyString.Length(), iv);
+}
+
+int
+wxPdfEncrypt::CalculateStreamLength(int length)
+{
+  int realLength = length;
+  if (m_rValue == 4)
+  {
+//    realLength = (length % 0x7ffffff0) + 32;
+    realLength = ((length + 15) & ~15) + 16;
+    if (length % 16 == 0)
+    {
+      realLength += 16;
+    }
+  }
+  return realLength;
+}
+
+int
+wxPdfEncrypt::CalculateStreamOffset()
+{
+  int offset = 0;
+  if (m_rValue == 4)
+  {
+    offset = 16;
+  }
+  return offset;
+}
+
+wxString
+wxPdfEncrypt::CreateDocumentId()
+{
+  wxString documentId;
+  unsigned char id[16];
+  GenerateInitialVector(id);
+  int k;
+  for (k = 0; k < 16; k++)
+  {
+    documentId.Append(id[k]);
+  }
+  return documentId;
 }

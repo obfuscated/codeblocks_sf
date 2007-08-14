@@ -13,10 +13,16 @@
 #ifndef _PDFFONT_H_
 #define _PDFFONT_H_
 
-#include "wx/strconv.h"
-#include "wx/xml/xml.h"
+#include <wx/dynarray.h>
+#include <wx/hashmap.h>
+#include <wx/strconv.h>
+#include <wx/xml/xml.h>
 
 #include "wx/pdfdocdef.h"
+
+/// Sorted integer array
+//WX_DEFINE_SORTED_USER_EXPORTED_ARRAY_INT(int, wxPdfSortedArrayInt, WXDLLIMPEXP_PDFDOC);
+WX_DEFINE_SORTED_ARRAY_INT(int, wxPdfSortedArrayInt);
 
 /// Class representing a font description. (For internal use only)
 class WXDLLIMPEXP_PDFDOC wxPdfFontDescription
@@ -161,7 +167,7 @@ public:
   void SetName(const wxString& name) { m_name = name; }
 
   /// Get font name
-  wxString GetName() { return m_name; }
+  wxString GetName();
 
   /// Set underline position
   void SetUnderlinePosition(int up) { m_desc.SetUnderlinePosition(up); }
@@ -241,14 +247,35 @@ public:
   /// Set char width map
   void SetCharWidthMap(wxPdfCharWidthMap* cw) { m_cw = cw; }
 
-  /// Set char width map
+  /// Get char width map
   const wxPdfCharWidthMap* GetCharWidthMap() { return m_cw; }
+
+  /// Set glyph number map
+  void SetGlyphNumberMap(wxPdfCharWidthMap* gn) { m_gn = gn; }
+
+  /// Get glyph number map
+  const wxPdfCharWidthMap* GetGlyphNumberMap() { return m_gn; }
+
+  /// Create a subset name prefix
+  wxString CreateSubsetPrefix() const;
+
+  /// Set subset flag if font subsetting is supported
+  void SetSubset(bool subset);
 
   /// Get the character width array as string
   virtual wxString GetWidthsAsString();
   
   /// Get the width of a string
   virtual double GetStringWidth(const wxString& s);
+
+  /// Update the list of used characters
+  virtual void UpdateUsedChars(const wxString& s);
+
+  /// Check whether the font supports subsetting
+  virtual bool SupportsSubset() { return false; }
+
+  /// Create font subset
+  virtual int CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset);
 
   /// Set the font description
   virtual void SetDesc(const wxPdfFontDescription& desc) { m_desc = desc; }
@@ -258,6 +285,9 @@ public:
 
   /// Load the font metrics XML file
   virtual bool LoadFontMetrics(wxXmlNode* WXUNUSED(root)) { return false; };
+
+  /// Convert character codes to glyph numbers
+  virtual wxString ConvertCID2GID(const wxString& s);
 
 #if wxUSE_UNICODE
   /// Get the associated encoding converter
@@ -276,10 +306,8 @@ protected:
   wxString             m_type;  ///< Font type
   wxString             m_name;  ///< Font name
   
-  //int                  m_up;    ///< Underline position
-  //int                  m_ut;    ///< Underline thickness
-
   wxPdfCharWidthMap*   m_cw;    ///< Array with character widths
+  wxPdfCharWidthMap*   m_gn;    ///< Array with glyph numbers
 
   wxPdfFontDescription m_desc;  ///< Font description
 
@@ -292,9 +320,13 @@ protected:
   int                  m_size1; ///< TrueType file size or Type1 file size 1
   int                  m_size2; ///< Type1 file size 2
 
-  wxString             m_cmap;        ///< CMap of a CID font
-  wxString             m_ordering;    ///< Ordering of a CID font 
-  wxString             m_supplement;  ///< Supplement of a CID font
+  wxString             m_cmap;          ///< CMap of a CID font
+  wxString             m_ordering;      ///< Ordering of a CID font 
+  wxString             m_supplement;    ///< Supplement of a CID font
+
+  wxPdfSortedArrayInt* m_usedChars;     ///< Array of used characters
+  bool                 m_subset;        ///< Flag whether the font uses subsetting
+  bool                 m_subsetSupport; ///< Flag whether the font supports subsetting
 
   static wxMBConv*     ms_winEncoding;  ///< WinAnsi converter
 };
@@ -314,6 +346,15 @@ public:
 
   /// Load the font metrics XML file
   virtual bool LoadFontMetrics(wxXmlNode* root);
+
+  /// Update the list of used characters
+  virtual void UpdateUsedChars(const wxString& s);
+
+  /// Check whether the font supports subsetting
+  virtual bool SupportsSubset() { return m_subsetSupport; }
+
+  /// Create a font subset
+  virtual int CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset);
 
 #if wxUSE_UNICODE
   /// Get the associated encoding converter
@@ -345,6 +386,47 @@ public:
   /// Load the font metrics XML file
   virtual bool LoadFontMetrics(wxXmlNode* root);
 
+  /// Check whether the font supports subsetting
+  virtual bool SupportsSubset() { return true; }
+
+  /// Create font subset
+  virtual int CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset);
+
+  /// Get the associated encoding converter
+  virtual wxMBConv* GetEncodingConv() { return m_conv; }
+
+protected:
+  wxMBConv* m_conv;   ///< Assocated encoding converter
+};
+
+/// Class representing Unicode OpenType fonts. (For internal use only)
+class WXDLLIMPEXP_PDFDOC wxPdfFontOpenTypeUnicode : public wxPdfFont
+{
+public:
+  ///< Constructor
+  wxPdfFontOpenTypeUnicode(int index);
+
+  /// Default destructor
+  virtual ~wxPdfFontOpenTypeUnicode();
+
+  /// Get the character width array as string
+  virtual wxString GetWidthsAsString();
+
+  /// Get the width of a string
+  virtual double GetStringWidth(const wxString& s);
+
+  /// Convert character codes to glyph numbers
+  virtual wxString ConvertCID2GID(const wxString& s);
+
+  /// Load the font metrics XML file
+  virtual bool LoadFontMetrics(wxXmlNode* root);
+
+  /// Check whether the font supports subsetting
+  virtual bool SupportsSubset() { return false; }
+
+  /// Create font subset
+  virtual int CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset);
+
   /// Get the associated encoding converter
   virtual wxMBConv* GetEncodingConv() { return m_conv; }
 
@@ -369,6 +451,9 @@ public:
 
   /// Load the font metrics XML file
   virtual bool LoadFontMetrics(wxXmlNode* root);
+
+  /// Create font subset
+  virtual int CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset);
 
 #if wxUSE_UNICODE
   /// Get the associated encoding converter
@@ -399,6 +484,9 @@ public:
 
   /// Load the font metrics XML file
   virtual bool LoadFontMetrics(wxXmlNode* root);
+
+  /// Create font subset
+  virtual int CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset);
 
   /// Get the associated encoding converter
   virtual wxMBConv* GetEncodingConv() { return m_conv; }

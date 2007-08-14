@@ -14,11 +14,10 @@
 #define _PDFXML_H_
 
 // wxWidgets headers
+#include <wx/string.h>
+#include <wx/wfstream.h>
+
 #include "wx/pdfdocdef.h"
-
-#include "wx/string.h"
-#include "wx/wfstream.h"
-
 #include "wx/pdfdoc.h"
 
 class wxPdfTable;

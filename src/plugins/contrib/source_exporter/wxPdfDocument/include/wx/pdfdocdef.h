@@ -71,6 +71,29 @@ verified to function properly. This means: wxPdfDocument still needs intensive t
 <b>If you find bugs please report them to the author!</b>
 
 <dl>
+<dt><b>0.8.0</b> - <i>December 2006</i></dt>
+<dd>
+Added features:<br>
+- support for external templates: pages of existing PDF documents may be imported and used as templates
+- font subsetting for TrueType and TrueType Unicode fonts, often resulting in much smaller PDF file sizes
+- support for using and embedding OpenType Unicode fonts
+- enhanced support for password based encryption, encryption key length freely definable between 40 and 128 bits (<b>Attention</b>: Adobe Reader supports only keys with 40 or 128 bits.)
+- support for AES encryption (additional standard encryption method in PDF version 1.6 and above)
+
+wxPdfDocument is compatible with wxWidgets version 2.8.0 as well as with version 2.6.x.
+
+As an add-on preprocessed font files for the free <a href="http://dejavu.sourceforge.net">DejaVu fonts</a>
+(version 2.12) are provided in the file release <b><a href="http://sourceforge.net/project/showfiles.php?group_id=51305&package_id=45182&release_id=468705">wxPdfDocument Add-Ons</a></b>.
+
+<b>Attention</b>: For supporting font subsetting for ordinary non-Unicode TrueType fonts
+the format of the font definition files has been extended. Font definition files created
+with prior versions of the \ref makefont are still usable, but do not support font subsetting.
+It is recommended to regenerate own font definition files. Unfortunately common AFM font metric
+files do not contain glyph information which is required by the \ref makefont to create the
+character-to-glyph mapping. Therefore the utility <tt>ttf2ufm</tt> had to be changed.
+The modified version including a Windows executable is available in the file release <b><a href="http://sourceforge.net/project/showfiles.php?group_id=51305&package_id=45182&release_id=468705">wxPdfDocument Add-Ons</a></b>.
+</dd>
+
 <dt><b>0.7.6</b> - <i>October 2006</i></dt>
 <dd>
 Added features (thanks to Stuart Smith):<br>
@@ -83,7 +106,7 @@ the addition of the font attribute <tt>xHeight</tt>. It is necessary to regenera
 font definition files using the \ref makefont. To support the <tt>xHeight</tt> attribute the utility
 <tt>ttf2ufm</tt> had to be changed.
 
-wxPdfDocument is now compatible with wxWidgets version 2.7.1 or above as well as with version 2.6.x.
+wxPdfDocument is now compatible with wxWidgets version 2.7.1 and above as well as with version 2.6.x.
 
 Fixed several bugs
 </dd>
@@ -185,6 +208,11 @@ found on the <a href="http://www.fpdf.org"><b>FPDF website</b></a> I would like 
 - Moritz Wagner (Transformation)
 - Andreas Wuermser (Clipping, Gradients, Transformation)
 
+The wxPdfDocument encryption methods use the RSA Data Security, Inc. MD5 Message
+Digest Algorithm (RSA Data Security license) and the Rijndael cipher implementation
+of Szymon Stefanek (Public Domain). For detailed license information \see files
+pdfencrypt.cpp and pdfrijndael.h.
+
 */
 
 /** \page overview Reference Manual
@@ -237,6 +265,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::GetFontPath - get current default path for font files
 \li wxPdfDocument::GetFontSize - get current font size in points
 \li wxPdfDocument::GetFontStyle - get current font style
+\li wxPdfDocument::GetFontSubsetting - get font embedding mode
 \li wxPdfDocument::GetImageScale - get image scale
 \li wxPdfDocument::GetLeftMargin - get the left margin
 \li wxPdfDocument::GetPageWidth - get page width
@@ -245,6 +274,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::GetScaleFactor - get scale factor
 \li wxPdfDocument::GetStringWidth - compute string length
 \li wxPdfDocument::GetTemplateSize - get size of template
+\li wxPdfDocument::GetTemplateBBox - get bounding box of template
 \li wxPdfDocument::GetTopMargin - get the top margin
 \li wxPdfDocument::GetX - get current x position
 \li wxPdfDocument::GetY - get current y position
@@ -253,6 +283,7 @@ of a specific method the following alphabetical list shows all available methods
 
 \li wxPdfDocument::Image - output an image
 \li wxPdfDocument::ImageMask - define an image mask
+\li wxPdfDocument::ImportPage - import page of external document for use as template
 \li wxPdfDocument::IsInFooter - check whether footer output is in progress
 
 \li wxPdfDocument::Line - draw a line
@@ -304,6 +335,7 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetFont - set font
 \li wxPdfDocument::SetFontPath - set default path for font files
 \li wxPdfDocument::SetFontSize - set font size
+\li wxPdfDocument::SetFontSubsetting - set font embedding mode
 \li wxPdfDocument::SetFormBorderStyle - set form field border style
 \li wxPdfDocument::SetFormColors - set form field colors (border, background, text)
 \li wxPdfDocument::SetImageScale - set image scale
@@ -315,7 +347,9 @@ of a specific method the following alphabetical list shows all available methods
 \li wxPdfDocument::SetMargins - set margins
 \li wxPdfDocument::SetProtection - set permissions and/or passwords
 \li wxPdfDocument::SetRightMargin - set right margin
+\li wxPdfDocument::SetSourceFile - set source file of external template document
 \li wxPdfDocument::SetSubject - set document subject
+\li wxPdfDocument::SetTemplateBBox - set bounding box of template
 \li wxPdfDocument::SetTextColor - set text color
 \li wxPdfDocument::SetTitle - set document title
 \li wxPdfDocument::SetTopMargin - set top margin
@@ -374,7 +408,7 @@ font is used. So it is preferable to ensure that the needed font is installed
 on the client systems. If the file is to be viewed by a large audience, it is
 better to embed the fonts. 
  
-Adding a new font requires three steps for \b TrueType fons: 
+Adding a new font requires three steps for \b TrueType fonts: 
 
 \li Generation of the metric file (.afm) 
 \li Generation of the font definition file (.xml) 
@@ -388,9 +422,10 @@ it must be converted to AFM first.
 
 The first step for a \b TrueType font consists in generating the AFM file (or UFM file in case of a 
 <b>Unicode TrueType</b> font). A utility exists to do this task: <tt>ttf2ufm</tt> - a special version of
-<tt>ttf2pt1</tt> - allowing to create AFM and/or UFM files. An archive containing the source
-code of <tt>ttf2ufm</tt> and a Windows executable can be downloaded from
-<a href="http://wxcode.sourceforge.net/docs/wxpdfdoc/ttf2ufm.zip">here</a>.
+<tt>ttf2pt1</tt> - allowing to create AFM and/or UFM files. <tt>ttf2ufm</tt> has been modified to
+generate AFM and UFM files containing all the information which is required by the utility program
+\b makefont. An archive containing the modified source code of <tt>ttf2ufm</tt> and a Windows executable can be
+downloaded from <b><a href="http://wxcode.sourceforge.net/docs/wxpdfdoc/ttf2ufm.zip">here</a></b>.
 The command line to use is the following: 
  
 <tt>ttf2ufm -a font.ttf font </tt>
@@ -407,17 +442,17 @@ The second step consists in generating a wxPdfDocument font metrics XML file con
 all the information needed by wxPdfDocument; in addition, the font file is compressed.
 To do this, a utility program, \b makefont, is provided.
 
-<tt>makefont {-a font.afm | -u font.ufm } [-f font.{ttf|pfb}] [-e encoding] [-p patch] [-t {ttf|t1}]</tt>
+<tt>makefont {-a font.afm | -u font.ufm } [-f font.{ttf|pfb}] [-e encoding] [-p patch] [-t {ttf|otf|t1}]</tt>
 
 <table border=0>
 <tr><td><tt>-a font.afm</tt></td><td>AFM font metric file for \b TrueType or \b Type1 fonts</td></tr>
-<tr><td><tt>-u font.ufm</tt></td><td>UFM font metric file for <b>TrueType Unicode</b> fonts</td></tr>
-<tr><td valign="top"><tt>-f font.{ttf|pfb}</tt></td><td>font file (<tt>.ttf</tt> = TrueType, <tt>.pfb</tt> = Type1).
+<tr><td><tt>-u font.ufm</tt></td><td>UFM font metric file for <b>TrueType Unicode</b> or <b>OpenType Unicode</b> fonts</td></tr>
+<tr><td valign="top"><tt>-f font.{ttf|otf|pfb}</tt></td><td>font file (<tt>.ttf</tt> = TrueType, <tt>.otf</tt> = OpenType, <tt>.pfb</tt> = Type1).
 <br>If you own a Type1 font in ASCII format (<tt>.pfa</tt>), you can convert it to binary format with
 <a href="http://www.lcdf.org/~eddietwo/type/#t1utils">t1utils</a>.
 <br>If you don't want to embed the font, omit this parameter. In this case, type is given by the type parameter. 
 </td></tr>
-<tr><td valign="top"><tt>-e encoding</tt></td><td>font encoding, i.e cp1252. Omit this parameter for a symbolic font.like <i>Symbol</i>
+<tr><td valign="top"><tt>-e encoding</tt></td><td>font encoding, i.e. cp1252. Omit this parameter for a symbolic font.like <i>Symbol</i>
 or <i>ZapfDingBats</i>.
 
 The encoding defines the association between a code (from 0 to 255) and a character.
@@ -449,6 +484,7 @@ Of course, the font must contain the characters corresponding to the chosen enco
 The encodings which begin with cp are those used by Windows; Linux systems usually use ISO. 
 Remark: the standard fonts use cp1252. 
 
+\b Note: For TrueType Unicode and OpenType Unicode fonts this parameter is ignored.
 </td></tr>
 <tr><td valign="top"><tt>-p patch</tt></td><td>patch file for individual encoding changes.
 Use the same format as the <tt>.map</tt> files for encodings.
@@ -457,8 +493,10 @@ Sometimes you may want to add some characters. For instance, ISO-8859-1 does not
 the euro symbol. To add it at position 164, create a file containing the line
 <p><tt>!A0 U+20AC Euro</tt>
 <p>\b Note: The Unicode character id will not be interpreted.
+
+For TrueType Unicode and OpenType Unicode fonts this parameter is ignored.
 </td></tr>
-<tr><td><tt>-t {ttf|t1}</tt></td><td>font type (ttf = TrueType, t1 = Type1). Only needed if omitting the font file.</td></tr>
+<tr><td><tt>-t {ttf|otf|t1}</tt></td><td>font type (ttf = TrueType, otf = OpenType, t1 = Type1). Only needed if omitting the font file.</td></tr>
 </table>
 
 \b Note: in the case of a font with the same name as a standard one, for instance arial.ttf,
@@ -510,6 +548,9 @@ encoding (you probably don't need all 217 characters), you can open the .map fil
 and remove the lines you are not interested in. This will reduce the file size
 accordingly. 
 
+Since wxPdfDocument version 0.8.0 automatic font subsetting is supported for
+TrueType und TrueType Unicode fonts. <b>Note</b>: The font license must allow embedding and
+subsetting.
 */
 
 /** \page writexml Styling text using a simple markup language
@@ -824,7 +865,7 @@ If neither a row nor a cell background color is specified the background is tran
 
 #ifdef WXMAKINGDLL_WXPDFDOC
     #define WXDLLIMPEXP_PDFDOC WXEXPORT
-#elif defined(WXUSINGDLL_WXPDFDOC)
+#elif defined(WXUSINGDLL)
     #define WXDLLIMPEXP_PDFDOC WXIMPORT
 #else // not making nor using DLL
     #define WXDLLIMPEXP_PDFDOC

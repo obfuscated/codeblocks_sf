@@ -11,23 +11,22 @@
 
 /// \file pdfxml.cpp Implementation of the wxPdfDocument markup
 
-// For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
 // includes
-#include "wx/sstream.h"
-
-#include "wx/pdfxml.h"
+#include <wx/sstream.h>
 
 #include "wx/pdfdoc.h"
+#include "wx/pdfxml.h"
 
 static wxString
 GetNodeContent(const wxXmlNode *node)
@@ -350,7 +349,7 @@ wxPdfTable::SetCellDimensions(double maxWidth)
               }
               if (cell->GetHeight() > rowHeight)
               {
-		            double delta = (cell->GetHeight() - rowHeight) / cell->GetRowSpan();
+                double delta = (cell->GetHeight() - rowHeight) / cell->GetRowSpan();
                 for (span = cell->GetRowSpan()-1; span >= 0; span--)
                 {
                   m_rowHeights[row+span] += delta;
@@ -1501,14 +1500,14 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
       wxString nameAttr = child->GetPropVal(_T("name"), _T(""));
       if (href.Length() > 0)
       {
-   		  if (href[0] == _T('#'))
+         if (href[0] == _T('#'))
         {
           wxString nameAttr = href.Right(href.Length()-1);
           if (nameAttr.Length() > 0)
           {
             if (m_namedLinks->find(nameAttr) == m_namedLinks->end())
             {
-		          (*m_namedLinks)[nameAttr] = AddLink();
+              (*m_namedLinks)[nameAttr] = AddLink();
             }
           }
         }
@@ -1535,13 +1534,13 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
         if (m_namedLinks->find(nameAttr) == m_namedLinks->end())
         {
           link = AddLink();
-		      (*m_namedLinks)[nameAttr] = link;
+          (*m_namedLinks)[nameAttr] = link;
         }
         else
         {
           link = (*m_namedLinks)[nameAttr];
         }
-		    SetLink(link, -1, -1);
+        SetLink(link, -1, -1);
         WriteXmlCell(child, context);        
       }
       else
@@ -1584,8 +1583,8 @@ wxPdfDocument::WriteXmlCell(wxXmlNode* node, wxPdfCellContext& context)
         {
           Ln();
         }
-				Image(src, x+delta, y, w, h);
-				SetXY(x, y+h);
+        Image(src, x+delta, y, w, h);
+        SetXY(x, y+h);
       }
     }
     else if (name == wxT("font"))

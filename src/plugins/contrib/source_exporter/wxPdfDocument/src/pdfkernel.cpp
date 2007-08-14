@@ -10,18 +10,18 @@
 
 /// \file pdfkernel.cpp Implementation of the wxPdfDocument class (internal methods)
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/zstream.h"
+#include <wx/zstream.h>
 
 #include "wx/pdfdoc.h"
 #include "wx/pdfform.h"
@@ -151,13 +151,18 @@ wxPdfDocument::SelectFont(const wxString& family, const wxString& style, double 
 void
 wxPdfDocument::EndDoc()
 {
-	if(m_extGStates->size() > 0 && m_PDFVersion < _T("1.4"))
+  if(m_extGStates->size() > 0 && m_PDFVersion < _T("1.4"))
   {
-		m_PDFVersion = _T("1.4");
+    m_PDFVersion = _T("1.4");
+  }
+  if (m_importVersion > m_PDFVersion)
+  {
+    m_PDFVersion = m_importVersion;
   }
 
   PutHeader();
   PutPages();
+
   PutResources();
   
   // Info
@@ -270,7 +275,12 @@ wxPdfDocument::PutTrailer()
   if (m_encrypted)
   {
     OutAscii(wxString::Format(_T("/Encrypt %d 0 R"), m_encObjId));
-    Out("/ID [()()]");
+    Out("/ID [", false);
+    m_encrypted = false;
+    OutHexTextstring(m_encryptor->GetDocumentId(), false);
+    OutHexTextstring(m_encryptor->GetDocumentId(), false);
+    m_encrypted = true;
+    Out("]");
   }
 }
 
@@ -282,10 +292,10 @@ wxPdfDocument::GetNewObjId()
 }
 
 void
-wxPdfDocument::NewObj()
+wxPdfDocument::NewObj(int objId)
 {
   // Begin a new object
-  int id = GetNewObjId();
+  int id = (objId > 0) ? objId : GetNewObjId();
   (*m_offsets)[id-1] = m_buffer.TellO();
   OutAscii(wxString::Format(_T("%d"),id) + wxString(_T(" 0 obj")));
 }
@@ -378,34 +388,34 @@ wxPdfDocument::PutCatalog()
   }
 
   
-	if (m_viewerPrefs > 0)
+  if (m_viewerPrefs > 0)
   {
-		Out("/ViewerPreferences <<");
+    Out("/ViewerPreferences <<");
     if (m_viewerPrefs & wxPDF_VIEWER_HIDETOOLBAR)
     {
-			Out("/HideToolbar true");
+      Out("/HideToolbar true");
     }
     if (m_viewerPrefs & wxPDF_VIEWER_HIDEMENUBAR)
     {
-			Out("/HideMenubar true");
+      Out("/HideMenubar true");
     }
     if (m_viewerPrefs & wxPDF_VIEWER_HIDEWINDOWUI)
     {
-			Out("/HideWindowUI true");
+      Out("/HideWindowUI true");
     }
     if (m_viewerPrefs & wxPDF_VIEWER_FITWINDOW)
     {
-			Out("/FitWindow true");
+      Out("/FitWindow true");
     }
     if (m_viewerPrefs & wxPDF_VIEWER_CENTERWINDOW)
     {
-			Out("/CenterWindow true");
+      Out("/CenterWindow true");
     }
     if (m_viewerPrefs & wxPDF_VIEWER_DISPLAYDOCTITLE)
     {
-			Out("/DisplayDocTitle true");
+      Out("/DisplayDocTitle true");
     }
-		Out(">>");
+    Out(">>");
   }
 
   if (m_javascript.Length() > 0)
@@ -748,7 +758,7 @@ wxPdfDocument::PutPages()
 
     NewObj();
     OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Length ")) + 
-             wxString::Format(_T("%ld"), p->TellO()) + wxString(_T(">>")));
+             wxString::Format(_T("%ld"), CalculateStreamLength(p->TellO())) + wxString(_T(">>")));
     PutStream(*p);
     Out("endobj");
     if (m_compress)
@@ -779,7 +789,7 @@ void
 wxPdfDocument::PutExtGStates()
 {
   static wxChar* bms[] = {
-  	_T("/Normal"),     _T("/Multiply"),   _T("/Screen"),    _T("/Overlay"),    _T("/Darken"),
+    _T("/Normal"),     _T("/Multiply"),   _T("/Screen"),    _T("/Overlay"),    _T("/Darken"),
     _T("/Lighten"),    _T("/ColorDodge"), _T("/ColorBurn"), _T("/HardLight"),  _T("/SoftLight"),
     _T("/Difference"), _T("/Exclusion"),  _T("/Hue"),       _T("/Saturation"), _T("/Color"),
     _T("Luminosity")
@@ -787,15 +797,15 @@ wxPdfDocument::PutExtGStates()
   wxPdfExtGStateMap::iterator extGState;
   for (extGState = m_extGStates->begin(); extGState != m_extGStates->end(); extGState++)
   {
-		NewObj();
+    NewObj();
     extGState->second->SetObjIndex(m_n);
-		Out("<</Type /ExtGState");
+    Out("<</Type /ExtGState");
     OutAscii(wxString(_T("/ca ")) + Double2String(extGState->second->GetFillAlpha(), 3));
     OutAscii(wxString(_T("/CA ")) + Double2String(extGState->second->GetLineAlpha(), 3));
-		OutAscii(wxString(_T("/bm ")) + wxString(bms[extGState->second->GetBlendMode()]));
-		Out(">>");
+    OutAscii(wxString(_T("/bm ")) + wxString(bms[extGState->second->GetBlendMode()]));
+    Out(">>");
     Out("endobj");
-	}
+  }
 }
 
 void
@@ -908,13 +918,13 @@ wxPdfDocument::PutShaders()
             Out("/ColorSpace /DeviceCMYK");
             break;
         }
-				Out("/BitsPerCoordinate 16");
-				Out("/BitsPerComponent 8");
-				Out("/Decode[0 1 0 1 0 1 0 1 0 1]");
-				Out("/BitsPerFlag 8");
+        Out("/BitsPerCoordinate 16");
+        Out("/BitsPerComponent 8");
+        Out("/Decode[0 1 0 1 0 1 0 1 0 1]");
+        Out("/BitsPerFlag 8");
         wxMemoryOutputStream* p = grad->GetBuffer();
-        OutAscii(wxString::Format(_T("/Length %ld"), p->TellO()));
-				Out(">>");
+        OutAscii(wxString::Format(_T("/Length %ld"), CalculateStreamLength(p->TellO())));
+        Out(">>");
         PutStream(*p);
         Out("endobj");
         gradient->second->SetObjIndex(m_n);
@@ -942,12 +952,14 @@ wxPdfDocument::PutFonts()
     Out("endobj");
   }
 
+  wxString type;
   wxPdfFontHashMap::iterator fontIter = m_fonts->begin();
   for (fontIter = m_fonts->begin(); fontIter != m_fonts->end(); fontIter++)
   {
     wxPdfFont* font = fontIter->second;
     if (font->HasFile())
     {
+      type = font->GetType();
       // Font file embedding
       NewObj();
       font->SetFileIndex(m_n);
@@ -960,7 +972,8 @@ wxPdfDocument::PutFonts()
       if (fontFile)
       {
         wxInputStream* fontStream = fontFile->GetStream();
-        int fontLen = fontStream->GetSize();
+        int fontLen   = fontStream->GetSize();
+        int fontSize1 = font->GetSize1();
         wxMemoryOutputStream* p = new wxMemoryOutputStream();
         
         bool compressed = strFontFileName.Right(2) == _T(".z");
@@ -993,19 +1006,35 @@ wxPdfDocument::PutFonts()
         }
         else
         {
-          p->Write(*fontStream);
+          if (m_fontSubsetting && font->SupportsSubset())
+          {
+            font->SetSubset(true);
+            fontSize1 = font->CreateSubset(fontStream, p);
+            compressed = true;
+          }
+          else
+          {
+            p->Write(*fontStream);
+          }
         }
+        fontLen = CalculateStreamLength(p->TellO());
         OutAscii(wxString::Format(_T("<</Length %d"), fontLen));
         if (compressed)
         {
           Out("/Filter /FlateDecode");
         }
-        OutAscii(wxString::Format(_T("/Length1 %d"), font->GetSize1()));
-        if (font->HasSize2())
+        if (type == _T("OpenTypeUnicode"))
         {
-          OutAscii(wxString::Format(_T("/Length2 %d /Length3 0"), font->GetSize2()));
+          Out("/Subtype /CIDFontType0C");
         }
-
+        else
+        {
+          OutAscii(wxString::Format(_T("/Length1 %d"), fontSize1));
+          if (font->HasSize2())
+          {
+            OutAscii(wxString::Format(_T("/Length2 %d /Length3 0"), font->GetSize2()));
+          }
+        }
         Out(">>");
         PutStream(*p);
         Out("endobj");
@@ -1095,7 +1124,7 @@ wxPdfDocument::PutFonts()
       Out(">>");
       Out("endobj");
     }
-    else if (type == _T("TrueTypeUnicode"))
+    else if (type == _T("TrueTypeUnicode") || type == _T("OpenTypeUnicode"))
     {
       // Type0 Font
       // A composite font composed of other fonts, organized hierarchically
@@ -1107,14 +1136,26 @@ wxPdfDocument::PutFonts()
       // CIDFonts using any Registry, Ordering, and Supplement values.
       Out("/Encoding /Identity-H");
       OutAscii(wxString::Format(_T("/DescendantFonts [%d 0 R]"), (m_n + 1)));
+      if (type == _T("OpenTypeUnicode"))
+      {
+        OutAscii(wxString::Format(_T("/ToUnicode %d 0 R"), (m_n + 4)));
+      }
       Out(">>");
       Out("endobj");
       
-      // CIDFontType2
-      // A CIDFont whose glyph descriptions are based on TrueType font technology
+      // CIDFontType
       NewObj();
       Out("<</Type /Font");
-      Out("/Subtype /CIDFontType2");
+      if (type == _T("TrueTypeUnicode"))
+      {
+        // A CIDFont whose glyph descriptions are based on TrueType font technology
+        Out("/Subtype /CIDFontType2");
+      }
+      else
+      {
+        // A CIDFont whose glyph descriptions are based on OpenType font technology
+        Out("/Subtype /CIDFontType0");
+      }
       OutAscii(wxString(_T("/BaseFont /")) + name);
       OutAscii(wxString::Format(_T("/CIDSystemInfo %d 0 R"), (m_n + 1))); 
       OutAscii(wxString::Format(_T("/FontDescriptor %d 0 R"), (m_n + 2)));
@@ -1127,18 +1168,31 @@ wxPdfDocument::PutFonts()
       }
       
       OutAscii(wxString(_T("/W ")) + font->GetWidthsAsString()); // A description of the widths for the glyphs in the CIDFont
-      OutAscii(wxString::Format(_T("/CIDToGIDMap %d 0 R"), (m_n + 3)));
+      if (type == _T("TrueTypeUnicode"))
+      {
+        OutAscii(wxString::Format(_T("/CIDToGIDMap %d 0 R"), (m_n + 3)));
+      }
+
       Out(">>");
       Out("endobj");
       
       // CIDSystemInfo dictionary
-      // TODO: Probably needs string encryption if encryption is used
       // A dictionary containing entries that define the character collectionof the CIDFont.
       NewObj();
       // A string identifying an issuer of character collections
-      Out("<</Registry (Adobe)");
+      Out("<</Registry ", false);
+      OutAsciiTextstring(wxString(_T("Adobe")));
       // A string that uniquely names a character collection issued by a specific registry
-      Out("/Ordering (UCS)");
+      Out("/Ordering ", false);
+      if (type == _T("TrueTypeUnicode"))
+      {
+        OutAsciiTextstring(wxString(_T("UCS")));
+      }
+      else
+      {
+        OutAsciiTextstring(wxString(_T("Identity")));
+//        OutAsciiTextstring(wxString(_T("UCS")));
+      }
       // The supplement number of the character collection.
       Out("/Supplement 0");
       Out(">>");
@@ -1161,8 +1215,16 @@ wxPdfDocument::PutFonts()
 
       if (font->HasFile())
       {
-        // A stream containing a TrueType font program
-        OutAscii(wxString::Format(_T("/FontFile2 %d 0 R"), font->GetFileIndex()));
+        if (type == _T("TrueTypeUnicode"))
+        {
+          // A stream containing a TrueType font program
+          OutAscii(wxString::Format(_T("/FontFile2 %d 0 R"), font->GetFileIndex()));
+        }
+        else
+        {
+          // A stream containing a CFF font program
+          OutAscii(wxString::Format(_T("/FontFile3 %d 0 R"), font->GetFileIndex()));
+        }
       }
       Out(">>");
       Out("endobj");
@@ -1179,7 +1241,7 @@ wxPdfDocument::PutFonts()
       {
         wxMemoryOutputStream* p = new wxMemoryOutputStream();
         wxInputStream* ctgStream = ctgFile->GetStream();
-        int ctgLen = ctgStream->GetSize();
+        int ctgLen = CalculateStreamLength(ctgStream->GetSize());
         OutAscii(wxString::Format(_T("<</Length %d"), ctgLen));
         // check file extension
         bool compressed = strCtgFileName.Right(2) == _T(".z");
@@ -1219,9 +1281,11 @@ wxPdfDocument::PutFonts()
       Out("<</Type /Font");
       Out("/Subtype /CIDFontType0");
       OutAscii(wxString(_T("/BaseFont /")) + name);
-      OutAscii(wxString(_T("/CIDSystemInfo <</Registry (Adobe) /Ordering (")) +
-               font->GetOrdering() + wxString(_T(") /Supplement ")) + 
-               font->GetSupplement() + wxString(_T(">>")));
+      Out("/CIDSystemInfo <</Registry ", false);
+      OutAsciiTextstring(_T("Adobe"), false);
+      Out("/Ordering ", false);
+      OutAsciiTextstring(font->GetOrdering(), false);
+      OutAscii(wxString(_T(" /Supplement ")) + font->GetSupplement() + wxString(_T(">>")));
       OutAscii(wxString::Format(_T("/FontDescriptor %d 0 R"), (m_n+1)));
 
       // Widths
@@ -1298,11 +1362,10 @@ wxPdfDocument::PutImages()
         {
           p->Write(currentImage->GetData(),currentImage->GetDataSize());
         }
-        dataLen = p->TellO();
+        dataLen = CalculateStreamLength(p->TellO());
         OutAscii(wxString::Format(_T("/Length %d>>"),dataLen));
         PutStream(*p);
 
-        // TODO: unset($this->formobjects[$file]['data']);
         Out("endobj");
         delete p;
       }
@@ -1370,13 +1433,12 @@ wxPdfDocument::PutImages()
           OutAscii(wxString(_T("/Mask [")) + trns + wxString(_T("]")));
         }
 
-        OutAscii(wxString::Format(_T("/Length %d>>"),currentImage->GetDataSize()));
+        OutAscii(wxString::Format(_T("/Length %d>>"), CalculateStreamLength(currentImage->GetDataSize())));
 
         wxMemoryOutputStream* p = new wxMemoryOutputStream();
         p->Write(currentImage->GetData(),currentImage->GetDataSize());
         PutStream(*p);
         delete p;
-        // TODO: unset($this->images[$file]['data']);
         Out("endobj");
 
         // Palette
@@ -1394,8 +1456,8 @@ wxPdfDocument::PutImages()
           {
             p->Write(currentImage->GetPalette(),currentImage->GetPaletteSize());
           }
-          palLen = p->TellO();
-          OutAscii(wxString(_T("<<")) + filter + wxString::Format(_T("/Length %d>>"),palLen));
+          palLen = CalculateStreamLength(p->TellO());
+          OutAscii(wxString(_T("<<")) + filter + wxString::Format(_T("/Length %d>>"), palLen));
           PutStream(*p);
           Out("endobj");
           delete p;
@@ -1417,50 +1479,57 @@ wxPdfDocument::PutTemplates()
     NewObj();
     currentTemplate->SetObjIndex(m_n);
 
-
     OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Type /XObject")));
     Out("/Subtype /Form");
     Out("/FormType 1");
 
     OutAscii(wxString(_T("/BBox [")) +
              Double2String(currentTemplate->GetX()*m_k,2) + wxString(_T(" ")) +
-             Double2String((currentTemplate->GetHeight()-currentTemplate->GetY())*m_k,2) + wxString(_T(" ")) +
-             Double2String(currentTemplate->GetWidth()*m_k,2) + wxString(_T(" ")) +
-             Double2String(-currentTemplate->GetY()*m_k,2) + wxString(_T("]")));
+             Double2String(currentTemplate->GetY()*m_k,2) + wxString(_T(" ")) +
+             Double2String((currentTemplate->GetX()+currentTemplate->GetWidth())*m_k,2) + wxString(_T(" ")) +
+             Double2String((currentTemplate->GetY()+currentTemplate->GetHeight())*m_k,2) + wxString(_T("]")));
 
     Out("/Resources ");
-    Out("<</ProcSet [/PDF /Text /ImageB /ImageC /ImageI]");
-    // Font references
-    if (currentTemplate->m_fonts->size() > 0)
+    if (currentTemplate->GetResources() != NULL)
     {
-      Out("/Font <<");
-      wxPdfFontHashMap::iterator font = currentTemplate->m_fonts->begin();
-      for (font = currentTemplate->m_fonts->begin(); font != currentTemplate->m_fonts->end(); font++)
+      m_currentParser = currentTemplate->GetParser();
+      WriteObjectValue(currentTemplate->GetResources());
+    }
+    else
+    {
+      Out("<</ProcSet [/PDF /Text /ImageB /ImageC /ImageI]");
+      // Font references
+      if (currentTemplate->m_fonts->size() > 0)
       {
-        OutAscii(wxString::Format(_T("/F%d %d 0 R"), font->second->GetIndex(), font->second->GetObjIndex()));
+        Out("/Font <<");
+        wxPdfFontHashMap::iterator font = currentTemplate->m_fonts->begin();
+        for (font = currentTemplate->m_fonts->begin(); font != currentTemplate->m_fonts->end(); font++)
+        {
+          OutAscii(wxString::Format(_T("/F%d %d 0 R"), font->second->GetIndex(), font->second->GetObjIndex()));
+        }
+        Out(">>");
+      }
+      // Image and template references
+      if (currentTemplate->m_images->size() > 0 ||
+          currentTemplate->m_templates->size() > 0)
+      {
+        Out("/XObject <<");
+        wxPdfImageHashMap::iterator image = currentTemplate->m_images->begin();
+        for (image = currentTemplate->m_images->begin(); image != currentTemplate->m_images->end(); image++)
+        {
+          wxPdfImage* currentImage = image->second;
+          OutAscii(wxString::Format(_T("/I%d %d 0 R"), currentImage->GetIndex(), currentImage->GetObjIndex()));
+        }
+        wxPdfTemplatesMap::iterator templateIter = currentTemplate->m_templates->begin();
+        for (templateIter = currentTemplate->m_templates->begin(); templateIter != currentTemplate->m_templates->end(); templateIter++)
+        {
+          wxPdfTemplate* tpl = templateIter->second;
+          OutAscii(m_templatePrefix + wxString::Format(_T("%d %d 0 R"), tpl->GetIndex(), tpl->GetObjIndex()));
+        }
+        Out(">>");
       }
       Out(">>");
     }
-    // Image and template references
-    if (currentTemplate->m_images->size() > 0 ||
-        currentTemplate->m_templates->size() > 0)
-    {
-      Out("/XObject <<");
-      wxPdfImageHashMap::iterator image = currentTemplate->m_images->begin();
-      for (image = currentTemplate->m_images->begin(); image != currentTemplate->m_images->end(); image++)
-      {
-        wxPdfImage* currentImage = image->second;
-        OutAscii(wxString::Format(_T("/I%d %d 0 R"), currentImage->GetIndex(), currentImage->GetObjIndex()));
-      }
-      wxPdfTemplatesMap::iterator templateIter = currentTemplate->m_templates->begin();
-      for (templateIter = currentTemplate->m_templates->begin(); templateIter != currentTemplate->m_templates->end(); templateIter++)
-      {
-        wxPdfTemplate* tpl = templateIter->second;
-        OutAscii(m_templatePrefix + wxString::Format(_T("%d %d 0 R"), tpl->GetIndex(), tpl->GetObjIndex()));
-      }
-      Out(">>");
-    }
-    Out(">>");
     
     // Template data
     wxMemoryOutputStream* p;
@@ -1476,12 +1545,35 @@ wxPdfDocument::PutTemplates()
       p = &(currentTemplate->m_buffer);
     }
 
-    OutAscii(wxString::Format(_T("/Length %ld >>"), p->TellO()));
+    OutAscii(wxString::Format(_T("/Length %ld >>"), CalculateStreamLength(p->TellO())));
     PutStream(*p);
     Out("endobj");
     if (m_compress)
     {
       delete p;
+    }
+  }
+}
+
+void
+wxPdfDocument::PutImportedObjects()
+{
+  wxPdfParserMap::iterator parser = m_parsers->begin();
+  for (parser = m_parsers->begin(); parser != m_parsers->end(); parser++)
+  {
+    m_currentParser = parser->second;
+    if (m_currentParser != NULL)
+    {
+      m_currentParser->SetUseRawStream(true);
+      wxPdfObjectQueue* entry = m_currentParser->GetObjectQueue();
+      while ((entry = entry->GetNext()) != NULL)
+      {
+        wxPdfObject* resolvedObject = m_currentParser->ResolveObject(entry->GetObject());
+        NewObj(entry->GetActualObjectId());
+        WriteObjectValue(resolvedObject);
+        Out("endobj");
+        entry->SetObject(resolvedObject);
+      }
     }
   }
 }
@@ -1524,7 +1616,7 @@ wxPdfDocument::PutResourceDict()
   for (extGState = m_extGStates->begin(); extGState != m_extGStates->end(); extGState++)
   {
     OutAscii(wxString::Format(_T("/GS%ld %d 0 R"), extGState->first, extGState->second->GetObjIndex()));
-	}
+  }
   Out(">>");
 
   Out("/Shading <<");
@@ -1633,15 +1725,40 @@ void
 wxPdfDocument::PutEncryption()
 {
   Out("/Filter /Standard");
-  Out("/V 1");
-  Out("/R 2");
+  switch (m_encryptor->GetRevision())
+  {
+    case 4:
+      {
+        Out("/V 4");
+        Out("/R 4");
+        Out("/Length 128");
+        Out("/CF <</StdCF <</CFM /AESV2 /Length 16 /AuthEvent /DocOpen>>>>");
+        Out("/StrF /StdCF");
+        Out("/StmF /StdCF");
+      }
+      break;
+    case 3:
+      {
+        Out("/V 2");
+        Out("/R 3");
+        OutAscii(wxString::Format(_T("/Length %d"), m_encryptor->GetKeyLength()));
+      }
+      break;
+    case 2:
+    default:
+      {
+        Out("/V 1");
+        Out("/R 2");
+      }
+      break;
+  }
   Out("/O (",false);
-  OutEscape((char*) m_encryptor->GetOvalue(),32);
+  OutEscape((char*) m_encryptor->GetOValue(),32);
   Out(")");
   Out("/U (",false);
-  OutEscape((char*) m_encryptor->GetUvalue(),32);
+  OutEscape((char*) m_encryptor->GetUValue(),32);
   Out(")");
-  OutAscii(wxString::Format(_T("/P %d"),m_encryptor->GetPvalue()));
+  OutAscii(wxString::Format(_T("/P %d"), m_encryptor->GetPValue()));
 }
 
 void
@@ -1677,7 +1794,9 @@ wxPdfDocument::PutJavaScript()
     NewObj();
     m_nJS = m_n;
     Out("<<");
-    OutAscii(wxString::Format(_T("/Names [(EmbeddedJS) %d 0 R ]"), m_n+1));
+    Out("/Names [", false);
+    OutAsciiTextstring(wxString(_T("EmbeddedJS")), false);
+    OutAscii(wxString::Format(_T(" %d 0 R ]"), m_n+1));
     Out(">>");
     Out("endobj");
     NewObj();
@@ -1699,6 +1818,7 @@ wxPdfDocument::PutResources()
   PutFonts();
   PutImages();
   PutTemplates();
+  PutImportedObjects();
   PutSpotColors(); 
 
   // Resource dictionary
@@ -1766,10 +1886,11 @@ void
 wxPdfDocument::TextEscape(const wxString& s, bool newline)
 {
 #if wxUSE_UNICODE
+  wxString t = m_currentFont->ConvertCID2GID(s);
   wxMBConv* conv = m_currentFont->GetEncodingConv();
-  int len = conv->WC2MB(NULL, s, 0);
+  int len = conv->WC2MB(NULL, t, 0);
   char* mbstr = new char[len+3];
-  len = conv->WC2MB(mbstr, s, len+3);
+  len = conv->WC2MB(mbstr, t, len+3);
 #else
   int len = s.Length();;
   char* mbstr = new char[len+1];
@@ -1784,40 +1905,67 @@ wxPdfDocument::TextEscape(const wxString& s, bool newline)
   delete [] mbstr;
 }
 
+int
+wxPdfDocument::CalculateStreamLength(int length)
+{
+  int realLength = length;
+  if (m_encrypted)
+  {
+    realLength = m_encryptor->CalculateStreamLength(length);
+  }
+  return realLength;
+}
+
+int
+wxPdfDocument::CalculateStreamOffset()
+{
+  int offset = 0;
+  if (m_encrypted)
+  {
+    offset = m_encryptor->CalculateStreamOffset();
+  }
+  return offset;
+}
+
 void
 wxPdfDocument::PutStream(wxMemoryOutputStream& s)
 {
   Out("stream");
-  if (m_encrypted)
+  if (s.GetLength() != 0)
   {
-    wxMemoryInputStream instream(s);
-    int len = instream.GetSize();
-    char* buffer = new char[len];
-    instream.Read(buffer,len);
-    m_encryptor->Encrypt(m_n, (unsigned char*) buffer, len);
-    Out(buffer, len);
-    delete [] buffer;
-  }
-  else
-  {
-    wxMemoryInputStream tmp(s);
-    if(m_state==2)
+    if (m_encrypted)
     {
-      if (!m_inTemplate)
-      {
-        (*m_pages)[m_page]->Write(tmp);
-        (*m_pages)[m_page]->Write("\n",1);
-      }
-      else
-      { 
-        m_currentTemplate->m_buffer.Write(tmp);
-        m_currentTemplate->m_buffer.Write("\n",1);
-      }
+      wxMemoryInputStream instream(s);
+      int len = instream.GetSize();
+      int lenbuf = CalculateStreamLength(len);
+      int ofs = CalculateStreamOffset();
+      char* buffer = new char[lenbuf];
+      instream.Read(&buffer[ofs],len);
+      m_encryptor->Encrypt(m_n, 0, (unsigned char*) buffer, len);
+      Out(buffer, lenbuf);
+      delete [] buffer;
     }
     else
     {
-      m_buffer.Write(tmp);
-      m_buffer.Write("\n",1);
+      wxMemoryInputStream tmp(s);
+      if(m_state==2)
+      {
+        if (!m_inTemplate)
+        {
+          (*m_pages)[m_page]->Write(tmp);
+          (*m_pages)[m_page]->Write("\n",1);
+        }
+        else
+        { 
+          m_currentTemplate->m_buffer.Write(tmp);
+          m_currentTemplate->m_buffer.Write("\n",1);
+        }
+      }
+      else
+      {
+        m_buffer.Write(tmp);
+        m_buffer.Write("\n",1);
+      }
     }
   }
   Out("endstream");
@@ -1861,26 +2009,96 @@ void
 wxPdfDocument::OutTextstring(const wxString& s, bool newline)
 {
   // Format a text string
+  int ofs = CalculateStreamOffset();
 #if wxUSE_UNICODE
   wxMBConvUTF16BE conv;
   int len = conv.WC2MB(NULL, s, 0);
-  char* mbstr = new char[len+5];
-  mbstr[0] = '\xfe';
-  mbstr[1] = '\xff';
-  len = 2 + conv.WC2MB(mbstr+2, s, len+3);
+  int lenbuf = CalculateStreamLength(len+2);
+  char* mbstr = new char[lenbuf+3];
+  mbstr[ofs+0] = '\xfe';
+  mbstr[ofs+1] = '\xff';
+  len = 2 + conv.WC2MB(&mbstr[ofs+2], s, len+3);
 #else
   int len = s.Length();;
-  char* mbstr = new char[len+1];
-  strcpy(mbstr,s.c_str());
+  int lenbuf = CalculateStreamLength(len);
+  char* mbstr = new char[lenbuf+1];
+  strcpy(&mbstr[ofs], s.c_str());
 #endif
 
   if (m_encrypted)
   {
-    m_encryptor->Encrypt(m_n, (unsigned char*) mbstr, len);
+    m_encryptor->Encrypt(m_n, 0, (unsigned char*) mbstr, len);
   }
   Out("(",false);
-  OutEscape(mbstr,len);
+  OutEscape(mbstr,lenbuf);
   Out(")",newline);
+  delete [] mbstr;
+}
+
+void
+wxPdfDocument::OutRawTextstring(const wxString& s, bool newline)
+{
+  // Format a text string
+  int ofs = CalculateStreamOffset();
+  int len = s.Length();;
+  int lenbuf = CalculateStreamLength(len);
+  char* mbstr = new char[lenbuf+1];
+#if wxUSE_UNICODE
+  int j;
+  for (j = 0; j < len; j++)
+  {
+    mbstr[ofs+j] = s[j];
+  }
+  mbstr[ofs+len] = 0;
+#else
+  strcpy(&mbstr[ofs],s.c_str());
+#endif
+
+  if (m_encrypted)
+  {
+    m_encryptor->Encrypt(m_n, 0, (unsigned char*) mbstr, len);
+  }
+  Out("(",false);
+  OutEscape(mbstr,lenbuf);
+  Out(")",newline);
+  delete [] mbstr;
+}
+
+void
+wxPdfDocument::OutHexTextstring(const wxString& s, bool newline)
+{
+  static char hexDigits[17] = "0123456789ABCDEF";
+  // Format a text string
+  int j;
+  int ofs = CalculateStreamOffset();
+  int len = s.Length();;
+  int lenbuf = CalculateStreamLength(len);
+  char* mbstr = new char[lenbuf+1];
+#if wxUSE_UNICODE
+  for (j = 0; j < len; j++)
+  {
+    mbstr[ofs+j] = s[j];
+  }
+  mbstr[ofs+len] = 0;
+#else
+  strcpy(&mbstr[ofs],s.c_str());
+#endif
+
+  if (m_encrypted)
+  {
+    m_encryptor->Encrypt(m_n, 0, (unsigned char*) mbstr, len);
+  }
+
+  char hexDigit;
+  Out("<",false);
+  for (j = 0; j < lenbuf; ++j)
+  {
+    hexDigit = hexDigits[(mbstr[j] >> 4) & 0x0f];
+    Out(&hexDigit, 1, false);
+    hexDigit = hexDigits[mbstr[j] & 0x0f];
+    Out(&hexDigit, 1, false);
+  }
+  Out(">",newline);
   delete [] mbstr;
 }
 
@@ -1888,16 +2106,18 @@ void
 wxPdfDocument::OutAsciiTextstring(const wxString& s, bool newline)
 {
   // Format an ASCII text string
+  int ofs = CalculateStreamOffset();
   int len = s.Length();;
-  char* mbstr = new char[len+1];
-  strcpy(mbstr,s.ToAscii());
+  int lenbuf = CalculateStreamLength(len);
+  char* mbstr = new char[lenbuf+1];
+  strcpy(&mbstr[ofs],s.ToAscii());
 
   if (m_encrypted)
   {
-    m_encryptor->Encrypt(m_n, (unsigned char*) mbstr, len);
+    m_encryptor->Encrypt(m_n, 0, (unsigned char*) mbstr, len);
   }
   Out("(",false);
-  OutEscape(mbstr,len);
+  OutEscape(mbstr,lenbuf);
   Out(")",newline);
   delete [] mbstr;
 }

@@ -10,19 +10,19 @@
 
 /// \file pdfdoc.cpp Implementation of the wxPdfDoc class
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/image.h"
-#include "wx/paper.h"
+#include <wx/image.h>
+#include <wx/paper.h>
 
 #include "wx/pdfdoc.h"
 #include "wx/pdfform.h"
@@ -63,6 +63,7 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_formFields  = new wxPdfFormFieldsMap();
   m_radioGroups = new wxPdfRadioGroupMap();
   m_templates   = new wxPdfTemplatesMap();
+  m_parsers     = new wxPdfParserMap();
   m_spotColors  = new wxPdfSpotColourMap();
 
   m_outlineRoot     = -1;
@@ -74,6 +75,8 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_fontStyle  = _T("");
   m_fontSizePt = 12;
   m_decoration = wxPDF_FONT_NORMAL;
+  m_fontSubsetting = true;
+
   m_drawColor  = wxPdfColour();
   m_fillColor  = wxPdfColour();
   m_textColor  = wxPdfColour();
@@ -162,6 +165,7 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
 
   // Set default PDF version number
   m_PDFVersion = _T("1.3");
+  m_importVersion = m_PDFVersion;
 
   m_encrypted = false;
   m_encryptor = NULL;
@@ -171,6 +175,9 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   m_inTemplate = false;
   m_templateId = 0;
   m_templatePrefix = _T("/TPL");
+
+  m_currentParser = NULL;
+  m_currentSource = wxEmptyString;
 
   SetFontPath();
   SetFont(_T("ZapfDingBats"), _T(""), 9);
@@ -322,6 +329,16 @@ wxPdfDocument::~wxPdfDocument()
   }
   delete m_templates;
 
+  wxPdfParserMap::iterator parser = m_parsers->begin();
+  for (parser = m_parsers->begin(); parser != m_parsers->end(); parser++)
+  {
+    if (parser->second != NULL)
+    {
+      delete parser->second;
+    }
+  }
+  delete m_parsers;
+
   wxPdfSpotColourMap::iterator spotColor = m_spotColors->begin();
   for (spotColor = m_spotColors->begin(); spotColor != m_spotColors->end(); spotColor++)
   {
@@ -347,11 +364,31 @@ wxPdfDocument::~wxPdfDocument()
 void
 wxPdfDocument::SetProtection(int permissions,
                              const wxString& userPassword,
-                             const wxString& ownerPassword)
+                             const wxString& ownerPassword,
+                             wxPdfEncryptionMethod encryptionMethod,
+                             int keyLength)
 {
   if (m_encryptor == NULL)
   {
-    m_encryptor = new wxPdfEncrypt();
+    int revision = (keyLength > 0) ? 3 : 2;
+    switch (encryptionMethod)
+    {
+      case wxPDF_ENCRYPTION_AESV2:
+        revision = 4;
+        if (m_PDFVersion < _T("1.6"))
+        {
+          m_PDFVersion = _T("1.6");
+        }
+        break;
+      case wxPDF_ENCRYPTION_RC4V2:
+        revision = 3;
+        break;
+      case wxPDF_ENCRYPTION_RC4V1:
+      default:
+        revision = 2;
+        break;
+    }
+    m_encryptor = new wxPdfEncrypt(revision, keyLength);
     m_encrypted = true;
     int allowedFlags = wxPDF_PERMISSION_PRINT | wxPDF_PERMISSION_MODIFY |
                        wxPDF_PERMISSION_COPY  | wxPDF_PERMISSION_ANNOT;
@@ -646,6 +683,14 @@ wxPdfDocument::AddFont(const wxString& family, const wxString& style, const wxSt
   {
     addedFont = new wxPdfFontTrueTypeUnicode(i);
   }
+  else if (fontType == _T("OpenTypeUnicode"))
+  {
+    addedFont = new wxPdfFontOpenTypeUnicode(i);
+    if (m_PDFVersion < _T("1.6"))
+    {
+      m_PDFVersion = _T("1.6");
+    }
+  }
   else if (fontType == _T("Type0"))
   {
     addedFont = new wxPdfFontType0(i);
@@ -846,7 +891,6 @@ wxPdfDocument::RotatedText(double x, double y, const wxString& txt, double angle
   StartTransform();
   Rotate(angle, x, y);
   Text(x, y, txt);
-//  TODO Rotate(0);
   StopTransform();
 }
 
@@ -974,6 +1018,10 @@ wxPdfDocument::Cell(double w, double h, const wxString& txt, int border, int ln,
     OutAscii(s,false);
     TextEscape(txt,false);
     s = _T(") Tj ET");
+    if (m_currentFont != 0)
+    {
+      m_currentFont->UpdateUsedChars(txt);
+    }
 
     if (m_decoration & wxPDF_FONT_DECORATION)
     {
@@ -1226,31 +1274,31 @@ int
 wxPdfDocument::TextBox(double w, double h, const wxString& txt,
                        int halign, int valign, int border, int fill)
 {
-	double xi = m_x;
-	double yi = m_y;
-	
-	double hrow  = m_fontSize;
-	int textrows = LineCount(w, txt);
-	int maxrows  = (int) floor(h / hrow);
+  double xi = m_x;
+  double yi = m_y;
+  
+  double hrow  = m_fontSize;
+  int textrows = LineCount(w, txt);
+  int maxrows  = (int) floor(h / hrow);
   int rows     = (textrows < maxrows) ? textrows : maxrows;
 
-	double dy = 0;
-	if (valign == wxPDF_ALIGN_MIDDLE)
+  double dy = 0;
+  if (valign == wxPDF_ALIGN_MIDDLE)
   {
-		dy = (h - rows * hrow) / 2;
+    dy = (h - rows * hrow) / 2;
   }
   else if (valign == wxPDF_ALIGN_BOTTOM)
   {
-		dy = h - rows * hrow;
+    dy = h - rows * hrow;
   }
 
-	SetY(yi+dy);
-	SetX(xi);
-	int trail = MultiCell(w, hrow, txt, 0, halign, fill, rows);
+  SetY(yi+dy);
+  SetX(xi);
+  int trail = MultiCell(w, hrow, txt, 0, halign, fill, rows);
 
-	if (border == wxPDF_BORDER_FRAME)
+  if (border == wxPDF_BORDER_FRAME)
   {
-		Rect(xi, yi, w, h);
+    Rect(xi, yi, w, h);
   }
   else
   {

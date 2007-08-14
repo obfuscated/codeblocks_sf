@@ -10,19 +10,18 @@
 
 /// \file pdfgraphics.cpp Implementation of the wxPdfDocument graphics primitives
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/tokenzr.h"
-
+#include <wx/tokenzr.h>
 
 #include "wx/pdfdoc.h"
 #include "wx/pdfgraphics.h"
@@ -56,7 +55,7 @@ wxPdfDocument::SetAlpha(double lineAlpha, double fillAlpha, wxPdfBlendMode blend
   wxPdfExtGSLookupMap::iterator extGState = (*m_extGSLookup).find(id);
   if (extGState == (*m_extGSLookup).end())
   {
-	  n = (*m_extGStates).size() + 1;
+    n = (*m_extGStates).size() + 1;
     (*m_extGStates)[n] = new wxPdfExtGState(lineAlpha, fillAlpha, blendMode);
     (*m_extGSLookup)[id] = n;
   }
@@ -67,7 +66,7 @@ wxPdfDocument::SetAlpha(double lineAlpha, double fillAlpha, wxPdfBlendMode blend
 
   if (n != m_currentExtGState)
   {
-  	SetAlphaState(n);
+    SetAlphaState(n);
   }
 
   return n;
@@ -254,13 +253,13 @@ wxPdfCoonsPatchGradient::wxPdfCoonsPatchGradient(const wxPdfCoonsPatchMesh& mesh
   size_t n = patches->size();
   size_t j, k, nc;
   unsigned char ch;
-	int bpcd = 65535; //16 BitsPerCoordinate
+  int bpcd = 65535; //16 BitsPerCoordinate
   int coord;
   wxPdfColour *colors;
 
   m_colorType = mesh.GetColorType();
   // build the data stream
-	for (j = 0;  j < n; j++)
+  for (j = 0;  j < n; j++)
   {
     wxPdfCoonsPatch* patch = (wxPdfCoonsPatch*) (*patches)[j];
     edgeFlag = patch->GetEdgeFlag();
@@ -271,35 +270,35 @@ wxPdfCoonsPatchGradient::wxPdfCoonsPatchGradient(const wxPdfCoonsPatchMesh& mesh
     nc = (edgeFlag == 0) ? 12 : 8;
     for (k = 0; k < nc; k++)
     {
-			// each point as 16 bit
-      coord = ((x[k] - minCoord) / (maxCoord - minCoord)) * bpcd;
+      // each point as 16 bit
+      coord = (int) (((x[k] - minCoord) / (maxCoord - minCoord)) * bpcd);
       if (coord < 0)    coord = 0;
       if (coord > bpcd) coord = bpcd;
       ch = (coord >> 8) & 0xFF;
       m_buffer.Write(&ch,1);
       ch = coord & 0xFF;
       m_buffer.Write(&ch,1);
-      coord = ((y[k] - minCoord) / (maxCoord - minCoord)) * bpcd;
+      coord = (int) (((y[k] - minCoord) / (maxCoord - minCoord)) * bpcd);
       if (coord < 0)    coord = 0;
       if (coord > bpcd) coord = bpcd;
       ch = (coord >> 8) & 0xFF;
       m_buffer.Write(&ch,1);
       ch = coord & 0xFF;
       m_buffer.Write(&ch,1);
-		}
+    }
     colors = patch->GetColors();
     nc = (edgeFlag == 0) ? 4 : 2;
     for (k = 0; k < nc; k++)
     {
-			// each color component as 8 bit
+      // each color component as 8 bit
       wxStringTokenizer tkz(colors[k].GetColorValue(), wxT(" "));
       while ( tkz.HasMoreTokens() )
       {
         ch = ((int) (wxPdfDocument::String2Double(tkz.GetNextToken()) * 255)) & 0xFF;
         m_buffer.Write(&ch,1);
       }
-		}
-	}
+    }
+  }
 }
 
 wxPdfCoonsPatchGradient::~wxPdfCoonsPatchGradient()
@@ -1677,7 +1676,7 @@ wxPdfDocument::Scale(double sx, double sy, double x, double y)
   }
   if (sx == 0 || sy == 0)
   {
-    // TODO  $this->Error('Please use values unequal to zero for Scaling');
+    wxLogError(_T("wxPdfDocument::Scale: Please use values unequal to zero for Scaling."));
     return false;
   }
   y = (m_h - y) * m_k;
@@ -1799,7 +1798,7 @@ wxPdfDocument::Skew(double xAngle, double yAngle, double x, double y)
   }
   if (xAngle <= -90 || xAngle >= 90 || yAngle <= -90 || yAngle >= 90)
   {
-    // TODO $this->Error('Please use values between -90° and 90° for skewing');
+    wxLogError(_T("wxPdfDocument::Skew: Please use values between -90 and 90 degree for skewing."));
     return false;
   }
   x *= m_k;

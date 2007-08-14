@@ -48,10 +48,20 @@
 #define wxPDF_FONT_DECORATION 0x0007 // Mask all possible decorations
 
 /// Permission options
+#define wxPDF_PERMISSION_NONE   0x0000  ///< Allow nothing
 #define wxPDF_PERMISSION_PRINT  0x0004  ///< Allow printing
 #define wxPDF_PERMISSION_MODIFY 0x0008  ///< Allow modifying
 #define wxPDF_PERMISSION_COPY   0x0010  ///< Allow text copying
 #define wxPDF_PERMISSION_ANNOT  0x0020  ///< Allow annotations
+#define wxPDF_PERMISSION_ALL    0x003C  ///< Allow anything
+
+/// Encryption methods
+enum wxPdfEncryptionMethod
+{
+  wxPDF_ENCRYPTION_RC4V1,
+  wxPDF_ENCRYPTION_RC4V2,
+  wxPDF_ENCRYPTION_AESV2
+};
 
 /// Color types
 enum wxPdfColourType
@@ -170,7 +180,7 @@ enum wxPdfLinearGradientType
 
 enum wxPdfBlendMode
 {
-	wxPDF_BLENDMODE_NORMAL,
+  wxPDF_BLENDMODE_NORMAL,
   wxPDF_BLENDMODE_MULTIPLY, 
   wxPDF_BLENDMODE_SCREEN, 
   wxPDF_BLENDMODE_OVERLAY, 
@@ -178,7 +188,7 @@ enum wxPdfBlendMode
   wxPDF_BLENDMODE_LIGHTEN, 
   wxPDF_BLENDMODE_COLORDODGE, 
   wxPDF_BLENDMODE_COLORBURN,
-	wxPDF_BLENDMODE_HARDLIGHT,
+  wxPDF_BLENDMODE_HARDLIGHT,
   wxPDF_BLENDMODE_SOFTLIGHT,
   wxPDF_BLENDMODE_DIFFERENCE, 
   wxPDF_BLENDMODE_EXCLUSION, 
@@ -193,6 +203,42 @@ enum wxPdfShapedTextMode
   wxPDF_SHAPEDTEXTMODE_ONETIME,
   wxPDF_SHAPEDTEXTMODE_STRETCHTOFIT,
   wxPDF_SHAPEDTEXTMODE_REPEAT
+};
+
+/// Class representing a PDF document information dictionary.
+class WXDLLIMPEXP_PDFDOC wxPdfInfo
+{
+public:
+  wxPdfInfo() {}
+  virtual~wxPdfInfo() {}
+
+  void SetTitle(const wxString& title) { m_title = title; }
+  void SetAuthor(const wxString& author) { m_author = author; }
+  void SetSubject(const wxString& subject) { m_subject = subject; }
+  void SetKeywords(const wxString& keywords) { m_keywords = keywords; }
+  void SetCreator(const wxString& creator) { m_creator = creator; }
+  void SetProducer(const wxString& producer) { m_producer = producer; }
+  void SetCreationDate(const wxString& creationDate) { m_creationDate = creationDate; }
+  void SetModDate(const wxString& modDate) { m_modDate = modDate; }
+
+  const wxString GetTitle() const { return m_title; }
+  const wxString GetAuthor() const { return m_author; }
+  const wxString GetSubject() const { return m_subject; }
+  const wxString GetKeywords() const { return m_keywords; }
+  const wxString GetCreator() const { return m_creator; }
+  const wxString GetProducer() const { return m_producer; }
+  const wxString GetCreationDate() const { return m_creationDate; }
+  const wxString GetModDate() const { return m_modDate; }
+
+private:
+  wxString m_title;        ///< The document’s title.
+  wxString m_author;       ///< The name of the person who created the document.
+  wxString m_subject;      ///< The subject of the document.
+  wxString m_keywords;     ///< Keywords associated with the document.
+  wxString m_creator;      ///< The name of the application that created the original document.
+  wxString m_producer;     ///< The name of the application that produced the document.
+  wxString m_creationDate; ///< The date and time the document was created.
+  wxString m_modDate;      ///< The date and time the document was modified.
 };
 
 /// Class representing internal or external links.
@@ -685,7 +731,7 @@ public:
   /**
   * \returns the number of patches of the coons patch mesh
   */
-  int GetPatchCount() const { return m_patches.size(); }
+  size_t GetPatchCount() const { return m_patches.size(); }
 
   /// Get the array of patches
   /**

@@ -10,22 +10,22 @@
 
 /// \file pdfimage.cpp Implementation of the wxPdfImage class
 
-// For compilers that support precompilation, includes "wx/wx.h".
-#include "wx/wxprec.h"
+// For compilers that support precompilation, includes <wx/wx.h>.
+#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif
 
-#include "wx/uri.h"
-#include "wx/url.h"
-#include "wx/gifdecod.h"
-#include "wx/wfstream.h"
-#include "wx/zstream.h"
+#include <wx/uri.h>
+#include <wx/url.h>
+#include <wx/gifdecod.h>
+#include <wx/wfstream.h>
+#include <wx/zstream.h>
 
 #include "wx/pdfdoc.h"
 #include "wx/pdfimage.h"

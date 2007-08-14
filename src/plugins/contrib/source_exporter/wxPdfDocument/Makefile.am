@@ -8,6 +8,7 @@ libwxPdfDocument_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined 
 libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
 							src/pdfbarcode.cpp \
 							src/pdfcolor.cpp \
+							src/pdfdecode.cpp \
 							src/pdfdoc.cpp \
 							src/pdfencrypt.cpp \
 							src/pdffont.cpp \
@@ -15,7 +16,11 @@ libwxPdfDocument_la_SOURCES = src/pdfannotation.cpp \
 							src/pdfgraphics.cpp \
 							src/pdfimage.cpp \
 							src/pdfkernel.cpp \
+							src/pdfobjects.cpp \
+							src/pdfparser.cpp \
+							src/pdfrijndael.cpp \
 							src/pdftemplate.cpp \
+							src/pdftruetype.cpp \
 							src/pdfxml.cpp
 
 noinst_HEADERS = include/wx/pdfbarcode.h \
@@ -26,8 +31,12 @@ noinst_HEADERS = include/wx/pdfbarcode.h \
 				include/wx/pdfform.h \
 				include/wx/pdfgraphics.h \
 				include/wx/pdfimage.h \
+				include/wx/pdfobjects.h \
+				include/wx/pdfparser.h \
 				include/wx/pdfproperties.h \
+				include/wx/pdfrijndael.h \
 				include/wx/pdftemplate.h \
+				include/wx/pdftruetype.h \
 				include/wx/pdfxml.h
 
 EXTRA_DIST = src/pdfcolordata.inc \

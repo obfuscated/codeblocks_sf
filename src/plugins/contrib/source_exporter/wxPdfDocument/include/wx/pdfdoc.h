@@ -22,7 +22,7 @@
 #include "wx/pdfimage.h"
 #include "wx/pdfproperties.h"
 
-#define wxPDF_PRODUCER       _T("wxPdfDocument 0.7.6")
+#define wxPDF_PRODUCER       _T("wxPdfDocument 0.8.0")
 
 #define wxPDF_EPSILON        1e-6
 
@@ -34,6 +34,8 @@ class wxPdfTable;
 class wxPdfIndirectObject;
 class wxPdfAnnotationWidget;
 class wxPdfTemplate;
+class wxPdfParser;
+class wxPdfObject;
 
 /// Hashmap class for offset values
 WX_DECLARE_HASH_MAP(long, int, wxIntegerHash, wxIntegerEqual, wxPdfOffsetHashMap);
@@ -93,6 +95,9 @@ WX_DECLARE_STRING_HASH_MAP(wxPdfSpotColour*, wxPdfSpotColourMap);
 /// Hash map class for spot colors
 WX_DECLARE_STRING_HASH_MAP(wxPdfIndirectObject*, wxPdfRadioGroupMap);
 
+/// Hash map class for parsers
+WX_DECLARE_STRING_HASH_MAP(wxPdfParser*, wxPdfParserMap);
+
 /// Class representing a PDF document.
 class WXDLLIMPEXP_PDFDOC wxPdfDocument
 {
@@ -119,19 +124,30 @@ public:
 
   /// Set permissions as well as user and owner passwords.
   /**
-  * \param[in] permissions flag indicating permissions.
-  *                        Flags from the following list may be combined as needed
-  *                        If a value is present it means that the permission is granted
-  * \param[in] userPassword user password if applicable.
-  *                         If a user password is set, user will be prompted before document is opened
-  * \param[in] ownerPassword owner password.if applicable
-  *                          If an owner password is set, the document can be opened
-  *                          in privilege mode with no restriction if that password is entered
-  *                           
+  * \param permissions flag indicating permissions.
+  *                    Flags from the following list may be combined as needed
+  *                    If a value is present it means that the permission is granted
+  * \param userPassword user password if applicable.
+  *                     If a user password is set, user will be prompted before document is opened
+  * \param ownerPassword owner password.if applicable
+  *                      If an owner password is set, the document can be opened
+  *                      in privilege mode with no restriction if that password is entered
+  * \param encryptionMethod selects the encryption method. Possible values are:
+  *   \li wxPDF_ENCRYPTION_RC4V1 RC4 method, version 1, with 40 bit encryption key (default)
+  *   \li wxPDF_ENCRYPTION_RC4V2 RC4 method, version 2, with 40..128 bit encryption key
+  *   \li wxPDF_ENCRYPTION_AESV2 AES method, with 128 bit encryption key
+  * \param keyLength Length of the key used for encryption (Default: 0)
+  *                  The default value selects the standard encryption method revision 2 with a key length of 40 bits.
+  *                  Specifying a value > 0 selects the standard encryption method revision 3 with the given key length,
+  *                  the key length has to be in the range 40..128 and has to be dividable by 8.
+  *                  The key length is adjusted accordingly if these conditions are not met.
+  * NOTE: Adobe Reader supports only 40- and 128-bit encryption keys.
   */
   virtual void SetProtection(int permissions,
                              const wxString& userPassword = wxEmptyString,
-                             const wxString& ownerPassword = wxEmptyString);
+                             const wxString& ownerPassword = wxEmptyString,
+                             wxPdfEncryptionMethod encryptionMethod = wxPDF_ENCRYPTION_RC4V1,
+                             int keyLength = 0);
 
   /// Set the image scale.
   /**
@@ -253,11 +269,11 @@ public:
   * When enabling, the second parameter
   * is the distance from the bottom of the page that defines the triggering limit.
   * By default, the mode is on and the margin is 2 cm.
-  * \param auto Boolean indicating if mode should be on or off.
+  * \param autoPageBreak Boolean indicating if mode should be on or off.
   * \param margin Distance from the bottom of the page.
   * \see Cell(), MultiCell(), AcceptPageBreak()
   */
-  virtual void SetAutoPageBreak(bool auto, double margin = 0);
+  virtual void SetAutoPageBreak(bool autoPageBreak, double margin = 0);
 
   /// Defines the way the document is to be displayed by the viewer.
   /**
@@ -880,11 +896,31 @@ public:
   */
   virtual void SetFontPath(const wxString& fontPath = wxEmptyString);
 
-  /// Return the current default path for font definition files
+  /// Returns the current default path for font definition files
   /**
   * \return The default font path
   */
   virtual wxString GetFontPath() const { return m_fontPath; };
+
+  /// Sets the font embedding mode
+  /**
+  * If other fonts than the 14 Adobe core fonts are used in a document, they are usually
+  * embedded into the PDF file, often resulting in rather large PDF files. This is
+  * especially true for Unicode fonts with thousands of glyphs. To reduce the size of
+  * the resulting PDF file fonts may be subsetted, that is, only those glyphs actually
+  * used in the document are embedded.
+  *
+  * Currently wxPdfDocument supports font subsetting for TrueType Unicode fonts only.
+  *
+  * \param fontSubsetting Boolean indicating whether font subsetting should be used or not.
+  */
+  virtual void SetFontSubsetting(bool fontSubsetting = true) { m_fontSubsetting = fontSubsetting; }
+
+  /// Returns the font embedding mode
+  /**
+  * \return true if font subsetting is enabled, false otherwise
+  */
+  virtual bool GetFontSubsetting() const { return m_fontSubsetting; }
 
   /// Imports a TrueType, TrueTypeUnicode or Type1 font and makes it available.
   /**
@@ -1698,17 +1734,17 @@ public:
 
   /// Sets alpha values and blend mode
   /**
-	* \param lineAlpha alpha value for stroking operations, from 0 (transparent) to 1 (opaque)
-	* \param fillAlpha alpha value for non-stroking operations, from 0 (transparent) to 1 (opaque)
-	* \param blendMode one of the following:
-	*   Normal, Multiply, Screen, Overlay, Darken, Lighten, ColorDodge, ColorBurn,
-	*   HardLight, SoftLight, Difference, Exclusion, Hue, Saturation, Color, Luminosity
+  * \param lineAlpha alpha value for stroking operations, from 0 (transparent) to 1 (opaque)
+  * \param fillAlpha alpha value for non-stroking operations, from 0 (transparent) to 1 (opaque)
+  * \param blendMode one of the following:
+  *   Normal, Multiply, Screen, Overlay, Darken, Lighten, ColorDodge, ColorBurn,
+  *   HardLight, SoftLight, Difference, Exclusion, Hue, Saturation, Color, Luminosity
   */
   virtual int SetAlpha(double lineAlpha = 1, double fillAlpha = 1, wxPdfBlendMode blendMode = wxPDF_BLENDMODE_NORMAL);
 
   /// Sets a previously defined alpha state
   /**
-	* \param alphaState id of alpha state
+  * \param alphaState id of alpha state
   */
   virtual void SetAlphaState(int alphaState);
 
@@ -1966,65 +2002,152 @@ public:
   void SetFormBorderStyle(wxPdfBorderStyle borderStyle = wxPDF_BORDER_SOLID,
                           double borderWidth = -1);
 
+  /// Starts a new Template
   /**
-  * Start a Template
+  * Starts a new template, optionally with own dimensions.
+  * The margins have to adapted to the new template size.
+  * For writing outside the template, for example to build a clipped template,
+  * the margins and "cursor" position have to be set manually after
+  * the call to BeginTemplate().
   *
-  * This method starts a template. You can give own coordinates to build an own sized
-  * Template. Pay attention, that the margins are adapted to the new templatesize.
-  * If you want to write outside the template, for example to build a clipped Template,
-  * you have to set the Margins and "Cursor"-Position manual after beginTemplate-Call.
+  * If no dimensions are given, the template uses the current page size.
+  * The method returns the ID of the current template.
+  * The ID is used to reference a template in the UseTemplate() method.
+  * Warning: A template once created is embedded in the resulting PDF document
+  * at all events, even if it is not used.
   *
-  * If no parameter is given, the template uses the current page-size.
-  * The Method returns an ID of the current Template.
-  * This ID is used later for using this template.
-  * Warning: A created Template is used in PDF at all events.
-  * Still if you don't use it after creation!
+  * \param x The x-coordinate given in user units
+  * \param y The y-coordinate given in user units
+  * \param width The width given in user units
+  * \param height The height given in user units
+  * \return int The ID of the created template
+  * \see EndTemplate(), UseTemplate()
   *
-  * \param x The x-coordinate given in user-units
-  * \param y The y-coordinate given in user-units
-  * \param w The width given in user-units
-  * \param h The height given in user-units
-  * \return int The ID of new created Template
+  * Attention: Calls to BeginTemplate can not be nested!
   */
-  int BeginTemplate(double x = 0, double y = 0, double w = 0, double h = 0);
+  int BeginTemplate(double x = 0, double y = 0, double width = 0, double height = 0);
 
+  /// Terminates a template
   /**
-  * End Template
+  * Terminates the creation of a template and reset initiated variables on beginTemplate.
   *
-  * This method ends a template and reset initiated variables on beginTemplate.
-  *
-  * \return mixed If a template is opened, the ID is returned. If not a false is returned.
+  * \return If a template was under construction, its ID is returned, otherwise a 0 is returned.
+  * \see BeginTemplate(), UseTemplate()
   */
   int EndTemplate();
 
+  /// Get the calculated size of a template
   /**
-  * Get The calculated Size of a Template
+  * Retrieves the size of a template.
   *
-  * If one size is given, this method calculates the other one.
+  * \param templateId A valid template ID
+  * \param width The width of the template
+  * \param height The height of the template
+  * \see BeginTemplate(), EndTemplate(), UseTemplate(), ImportPage()
   *
-  * \param tplidx A valid template-Id
-  * \param w The width of the template
-  * \param h The height of the template
+  * Attention: The width and/or height parameters have to be set to a value <= 0
+  * prior to calling this method, otherwise they will not be calculated.
+  * If one dimension, i.e. width, is passed with a value > 0,
+  * the other one, i.e. height, is calculated accordingly.
   */
-  void GetTemplateSize(int tplidx, double& w, double& h);
+  void GetTemplateSize(int templateId, double& width, double& height);
 
+  /// Uses a template in current page or in another template
   /**
-  * Use a Template in current Page or other Template
+  * Uses the specified template just like an image in the current page or
+  * in another template.
   *
-  * You can use a template in a page or in another template.
-  * You can give the used template a new size like you use the Image()-method.
-  * All parameters are optional. The width or height is calculated automaticaly
-  * if one is given. If no parameter is given the origin size as defined in
-  * beginTemplate() is used.
-  * The calculated or used width and height are returned as an array.
+  * All parameters are optional. The width or height is calculated using
+  * GetTemplateSize internally.
+  * By default the size as defined by BeginTemplate is used.
   *
-  * \param templateId A valid template Id
-  * \param x The x-position
-  * \param y The y-position
-  * \param w The new width of the template, on return the used width
-  * \param h The new height of the template, on return the used height
+  * \param templateId A valid template ID
+  * \param x The x coordinate
+  * \param y The y coordinate
+  * \param width The new width of the template
+  * \param height The new height of the template
+  * \see BeginTemplate(), EndTemplate(), ImportPage()
+  *
+  * Attention: The template may be displayed distorted, if both width and height
+  * are given with values > 0 and do not correspond to the dimensions of the template.
   */
-  void UseTemplate(int templateId, double x = -1, double y = -1, double w = 0, double h = 0);
+  void UseTemplate(int templateId, double x = -1, double y = -1, double width = 0, double height = 0);
+
+  /// Sets a source file for the external template feature.
+  /**
+  * Selects the source for the external template feature.
+  * A parser is setup for importing pages from the PDF document.
+  * Although wxPdfDocument usually creates PDF documents conforming to version 1.3
+  * of the PDF standard, parsing of documents conforming to versions up to 1.6 is
+  * supported. If pages are aimported from documents conforming to a higher version
+  * than 1.3 the version used by wxPdDocument is updated accordingly.
+  *
+  * \param filename a valid filename
+  * \param password a valid user or owner password if the PDF document is encrypted
+  * \return the number of available pages, or 0 if the document could not be opened
+  * \see ImportPage(), UseTemplate()
+  *
+  * Attention: Access permissions for printing, copying and extracting text or graphics
+  * are required. If a PDF document does not have these access permissions, it cannot
+  * be used as a source for the external template feature.
+  */
+  int SetSourceFile(const wxString& filename, const wxString& password = wxEmptyString);
+  
+  /// Gets the document information dictionary of the current external PDF document.
+  /**
+  * Gets the values of the Info dictionary of the current external document, if available.
+  *
+  * \param info the info dictionary object receiving the document information
+  * \return true if the info dictionary was available, false otherwise
+  * \see SetSourceFile()
+  */
+  bool GetSourceInfo(wxPdfInfo& info);
+
+  /// Imports a page from an external PDF document
+  /**
+  * Imports a page from the current external PDF document. As the bounding box of the
+  * template the ArtBox of the imported page is used. If the page does not have an
+  * explicit ArtBox, the CropBox will be used instead; if there is no explicit CropBox
+  * then the MediaBox will be used.
+  *
+  * \param pageno page number of the page to be imported
+  * \return Index of imported page - for use in UseTemplate().
+  * A value of 0 is returned if the page number is out of range or no source was selected.
+  * \see SetSourceFile()
+  */
+  int ImportPage(int pageno);
+
+  /// Gets the bounding box of a template
+  /**
+  * Especially for pages imported from an external PDF document the size of the bounding
+  * box might be of interest. The values returned correspond to the coordinates of the
+  * lower left corner and the width and height of the template.
+  *
+  * \param templateId A valid template ID
+  * \param x The x coordinate of the lower left corner
+  * \param y The y coordinate of the lower left corner
+  * \param width The width of the template
+  * \param height The height of the template
+  * \see SetTemplateBBox(), BeginTemplate(), ImportPage()
+  */
+  void GetTemplateBBox(int templateId, double& x, double& y, double& width, double& height);
+
+  /// Sets the bounding box of a template
+  /**
+  * As long as a template hasn't been used it is possible to change the bounding box of
+  * the template. This may be useful for pages imported from an external PDF document
+  * allowing to set the visible portion of the template.
+  * \b Note: Setting the bounding box influences only the visible area of the template,
+  * not the real size it occupies.
+  *
+  * \param templateId A valid template ID
+  * \param x The x coordinate of the lower left corner
+  * \param y The y coordinate of the lower left corner
+  * \param width The width of the template
+  * \param height The height of the template
+  * \see GetTemplateBBox(), BeginTemplate(), ImportPage()
+  */
+  void SetTemplateBBox(int templateId, double x, double y, double width, double height);
 
   /// Prints a text string along a path defined by a shape
   /**
@@ -2037,20 +2160,50 @@ public:
   */
   void ShapedText(const wxPdfShape& shape, const wxString& text, wxPdfShapedTextMode mode = wxPDF_SHAPEDTEXTMODE_STRETCHTOFIT);
 
-  /// Convert a wxColour to the corresponding PDF specification
+  /// Converts a wxColour to the corresponding PDF specification
+  /**
+  * \param color color to be converted to a hexadecimal string representation
+  * \return the hexadecimal string representation of the color
+  */
   static wxString RGB2String(const wxColour& color);
 
-  /// Format a floating point number with a fixed precision
+  /// Formats a floating point number with a fixed precision
+  /**
+  * \param value the value to be formatted
+  * \param precision the number of decimal places
+  * \return the string representation of the number
+  */
   static wxString Double2String(double value, int precision = 0);
 
-  /// Parse a floating point number
+  /// Parses a floating point number
+  /**
+  * \param str the string to be parsed
+  * \return the value of floating point number given by the string representation,
+  * 0 if the string could not be parsed.
+  */
   static double String2Double(const wxString& str);
 
-  /// Convert integer number to roman number
+  /// Converts an integer number to a roman number
+  /**
+  * \param value integer value to be converted
+  * \return the string representation of the integer value as a roman number
+  */
   static wxString Convert2Roman(int value);
 
-  /// Force a floating point number into a fixed range
+  /// Forces a floating point number into a fixed range
+  /**
+  * \param value value to be forced into range
+  * \param minValue lower limit
+  * \param maxValue upper limit
+  * \return value conforming to the given range:
+  *   \li the minValue if the value falls below the lower limit
+  *   \li the value itself if it is within range
+  *   \li the maxValue if the value exceeds the upper limit
+  */
   static double ForceRange(double value, double minValue, double maxValue);
+
+  /// Create a unique ID
+  static wxString GetUniqueId(const wxString& prefix = wxEmptyString);
 
 protected:
 
@@ -2098,6 +2251,11 @@ protected:
   /// Add templates
   virtual void PutTemplates();
 
+  /// Add imported objects
+  virtual void PutImportedObjects();
+
+  virtual void WriteObjectValue(wxPdfObject* value, bool newline = true);
+
   /// Add spot colors
   virtual void PutSpotColors();
 
@@ -2124,12 +2282,18 @@ protected:
   
   /// Add trailer
   virtual void PutTrailer();
-  
+
+  /// Calculate stream size
+  int CalculateStreamLength(int len);
+
+  /// Calculate stream offset
+  int CalculateStreamOffset();
+
   /// Get new object id
   int GetNewObjId();
 
   /// Begin a new object
-  void NewObj();
+  void NewObj(int objId = 0);
   
   /// Decorate text
   wxString DoDecoration(double x, double y, const wxString& txt);
@@ -2142,6 +2306,12 @@ protected:
   
   /// Add a text string to the document
   void OutTextstring(const wxString& s, bool newline = true);
+
+  /// Add a raw text string to the document (without charset conversion)
+  void OutRawTextstring(const wxString& s, bool newline = true);
+
+  /// Add a hex text string to the document (without charset conversion)
+  void OutHexTextstring(const wxString& s, bool newline = true);
 
   /// Add an ASCII text string to the document
   void OutAsciiTextstring(const wxString& s, bool newline = true);
@@ -2203,9 +2373,6 @@ protected:
 
   /// Initialize the core fonts
   void InitializeCoreFonts();
-
-  /// Create a unique ID
-  static wxString GetUniqueId(const wxString& prefix = wxEmptyString);
 
 private:
   int                  m_page;                ///< current page number
@@ -2274,6 +2441,7 @@ private:
   wxString             m_fontFamily;          ///< current font family
   wxString             m_fontStyle;           ///< current font style
   int                  m_decoration;          ///< font decoration flags
+  bool                 m_fontSubsetting;      ///< flag whether to use font subsetting
 
   wxPdfFont*           m_currentFont;         ///< current font info
 
@@ -2330,6 +2498,11 @@ private:
   wxString             m_templatePrefix;      ///< prefix used for template object names
   int                  m_templateId;          ///< Id of current template
   wxPdfTemplate*       m_currentTemplate;     ///< current template
+
+  wxPdfParserMap*      m_parsers;             ///< array of parsers
+  wxPdfParser*         m_currentParser;       ///< current parser
+  wxString             m_currentSource;       ///< current import source file name
+  wxString             m_importVersion;       ///< highest PDF version of imported files
 
   static bool          ms_seeded;             ///< flag whether random number generator is seeded
   static int           ms_s1;                 ///< Random number generator seed 1

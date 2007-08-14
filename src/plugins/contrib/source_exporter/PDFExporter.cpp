@@ -146,7 +146,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
     }
   }
 
-  wxString text;
+  std::string text;
 
   for (size_t i = 0; i < buffer_size; i += 2)
   {
@@ -154,8 +154,8 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
     {
       if (!isspace(buffer[i]))
       {
-        PDFWriteText(pdf, text, fill);
-        text.Empty();
+        PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
+        text.clear();
 
         current_style = buffer[i + 1];
 
@@ -208,13 +208,13 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
         break;
 
       case '\n':
-        PDFWriteText(pdf, text, fill);
-        text.Empty();
+        PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
+        text.clear();
         pdf.Ln();
         break;
 
       case '\t':
-        text.Append(_T(' '), tabsize_in_spaces);
+        text.append(' ', tabsize_in_spaces);
         break;
 
       default:
@@ -223,7 +223,7 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
     };
   }
 
-  PDFWriteText(pdf, text, fill);
+  PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
 }
 
 void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set)

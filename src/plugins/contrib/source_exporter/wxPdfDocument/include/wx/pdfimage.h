@@ -14,6 +14,7 @@
 #define _PDFIMAGE_H_
 
 #include <wx/filesys.h>
+#include <wx/image.h>
 
 #include "wx/pdfdocdef.h"
 
