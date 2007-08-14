@@ -56,11 +56,11 @@ void cbPlugin::Attach()
 {
 	if (m_IsAttached)
 		return;
-    wxFrame* frame = Manager::Get()->GetAppWindow();
-    if (frame)
+    wxWindow* window = Manager::Get()->GetAppWindow();
+    if (window)
     {
 		// push ourself in the application's event handling chain...
-        frame->PushEventHandler(this);
+        window->PushEventHandler(this);
     }
     m_IsAttached = true;
 	OnAttach();
@@ -91,11 +91,11 @@ void cbPlugin::Release(bool appShutDown)
 	if (appShutDown)
         return; // nothing more to do, if the app is shutting down
 
-    wxFrame* frame = Manager::Get()->GetAppWindow();
-    if (frame)
+    wxWindow* window = Manager::Get()->GetAppWindow();
+    if (window)
     {
 		// remove ourself from the application's event handling chain...
-		frame->RemoveEventHandler(this);
+		window->RemoveEventHandler(this);
     }
 }
 

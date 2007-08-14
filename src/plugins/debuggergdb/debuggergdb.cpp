@@ -68,6 +68,7 @@
 #endif
 
 #ifndef CB_PRECOMP
+    #include <wx/frame.h> // GetMenuBar
     #include "cbproject.h"
 #endif
 
@@ -1868,7 +1869,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     bool en = (prj && !prj->GetCurrentlyCompilingTarget()) || m_PidToAttach != 0;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     bool stopped = IsStopped();
     if (mbar)
     {

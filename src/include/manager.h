@@ -25,6 +25,7 @@
 
 // forward decls
 class wxFrame;
+class wxWindow;
 class ProjectManager;
 class EditorManager;
 class MessageManager;
@@ -62,7 +63,7 @@ public:
     static void Yield();
     static void ProcessPendingEvents();
     static void Shutdown();
-    
+
     bool ProcessEvent(CodeBlocksEvent& event);
     bool ProcessEvent(CodeBlocksDockEvent& event);
     bool ProcessEvent(CodeBlocksLayoutEvent& event);
@@ -75,7 +76,8 @@ public:
     /** Never, EVER, call this function! It is the last function called on shutdown.... */
     static void Free();
 
-    wxFrame* GetAppWindow() const;
+    wxFrame* GetAppFrame() const;
+    wxWindow* GetAppWindow() const;
 
     static bool IsAppShuttingDown();
     static bool isappShuttingDown(){return Manager::IsAppShuttingDown();};
@@ -137,7 +139,7 @@ public:
 
     static wxCmdLineParser* GetCmdLineParser();
 
-	// event sinks        
+	// event sinks
 	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>* functor);
 	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>* functor);
 	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
@@ -151,7 +153,7 @@ private:
 	typedef std::map< wxEventType, DockEventSinksArray > DockEventSinksMap;
 	typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
 	typedef std::map< wxEventType, LayoutEventSinksArray > LayoutEventSinksMap;
-	
+
 	EventSinksMap m_EventSinks;
 	DockEventSinksMap m_DockEventSinks;
 	LayoutEventSinksMap m_LayoutEventSinks;

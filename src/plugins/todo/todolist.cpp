@@ -9,6 +9,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/event.h>
+#include <wx/frame.h> // GetMenuBar
 #include <wx/fs_zip.h>
 #include <wx/intl.h>
 #include <wx/menu.h>
@@ -227,7 +228,7 @@ void ToDoList::OnAppDoneStartup(CodeBlocksEvent& event)
 
 void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog));
+    Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog));
 }
 
 void ToDoList::OnViewList(wxCommandEvent& event)

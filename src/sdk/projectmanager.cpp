@@ -29,6 +29,7 @@
 #ifndef CB_PRECOMP
     #include <wx/datetime.h>
     #include <wx/imaglist.h>
+    #include <wx/frame.h>
     #include <wx/menu.h>
     #include <wx/splitter.h>
     #include <wx/filename.h>
@@ -780,7 +781,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 		{
 			// the plugin handler should call begin/end on its own...
 			EndLoadingProject(0);
-			
+
             cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
             if (plugin)
             {
@@ -791,7 +792,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         break;
     } while(false);
     // we 're done
-    
+
     EndLoadingProject(result);
 	if (activateIt)
 		SetProject(result, !m_IsLoadingWorkspace);
@@ -815,7 +816,7 @@ cbProject* ProjectManager::NewProject(const wxString& filename)
         else
             return 0;
     }
-    
+
 	cbProject* prj = IsOpen(filename);
 	if (!prj && BeginLoadingProject())
     {
@@ -2285,7 +2286,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 {
     m_TreeCategorize = event.IsChecked();
-    Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewCategorize, m_TreeCategorize);
+    Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idMenuViewCategorize, m_TreeCategorize);
     Manager::Get()->GetConfigManager(_T("project_manager"))->Write(_T("/categorize_tree"), m_TreeCategorize);
     RebuildTree();
 }
@@ -2293,7 +2294,7 @@ void ProjectManager::OnViewCategorize(wxCommandEvent& event)
 void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
 {
     m_TreeUseFolders = event.IsChecked();
-    Manager::Get()->GetAppWindow()->GetMenuBar()->Check(idMenuViewUseFolders, m_TreeUseFolders);
+    Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idMenuViewUseFolders, m_TreeUseFolders);
     Manager::Get()->GetConfigManager(_T("project_manager"))->Write(_T("/use_folders"), m_TreeUseFolders);
     RebuildTree();
 }
@@ -2632,7 +2633,7 @@ bool ProjectManager::BeginLoadingProject()
         cbMessageBox(_("Deactivating the compiler plugin is most unwise.\n\nIf you intend to open a project, you have to re-activate the compiler plugin first."), _("Error"));
         return false;
     }
-    
+
     // disallow application shutdown while opening files
     s_CanShutdown = false;
     // flag project loading
@@ -2712,7 +2713,7 @@ bool ProjectManager::BeginLoadingWorkspace()
         m_IsLoadingWorkspace = false;
         return false; // didn't close
     }
-    
+
     FreezeTree();
     m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
     m_pTree->Expand(m_pTree->GetRootItem());
@@ -2725,7 +2726,7 @@ void ProjectManager::EndLoadingWorkspace()
 {
 	if (!m_IsLoadingWorkspace)
 		return;
-		
+
     m_IsLoadingWorkspace = false;
 	if (!m_pWorkspace)
 		return;
@@ -2782,7 +2783,7 @@ void ProjectManager::EndLoadingWorkspace()
                 }
             }
         }
-		
+
 		WorkspaceChanged();
     }
     else

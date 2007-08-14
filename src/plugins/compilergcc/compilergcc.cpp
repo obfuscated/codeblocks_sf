@@ -26,6 +26,7 @@
 
 #include <sdk.h>
 #include <prep.h>
+#include <wx/frame.h> // GetMenuBar
 #include <wx/gauge.h>     // Needs to be before compilergcc.h if NOPCH on wxMSW
 #include <wx/listctrl.h>
 #include "compilergcc.h"
@@ -1277,7 +1278,7 @@ void CompilerGCC::DoRecreateTargetMenu()
 
     if (m_ToolTarget)
         m_ToolTarget->Freeze();
-    wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     if (mbar)
         mbar->Freeze();
 
@@ -3142,7 +3143,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     bool running = IsRunning();
     if (mbar)
     {

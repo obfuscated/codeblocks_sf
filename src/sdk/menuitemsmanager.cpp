@@ -11,7 +11,7 @@
 */
 
 #ifndef CB_PRECOMP
-    #include <wx/frame.h> // GetAppWindow
+    #include <wx/frame.h> // GetMenuBar
 #endif
 
 #include "sdk_precomp.h"
@@ -107,7 +107,7 @@ void MenuItemsManager::Clear()
   */
 wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
 {
-    wxMenuBar* mbar = Manager::Get()->GetAppWindow()->GetMenuBar();
+    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     wxMenu* menu = 0;
     size_t pos = 0;
     while (true)

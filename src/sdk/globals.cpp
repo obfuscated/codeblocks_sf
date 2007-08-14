@@ -737,7 +737,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
     if(!w)
         cbThrow(_T("Passed NULL pointer to PlaceWindow."));
 
-    wxWindow *referenceWindow = Manager::Get()->GetAppWindow();
+    wxWindow* referenceWindow = Manager::Get()->GetAppWindow();
 
     if(!referenceWindow)    // no application window available, so this is as good as we can get
         referenceWindow = w;
@@ -860,7 +860,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 {
     int the_mode;
 
-    wxFrame *referenceWindow = Manager::Get()->GetAppWindow();
+    wxWindow* referenceWindow = Manager::Get()->GetAppWindow();
     if(!referenceWindow) // let's not crash on shutdown
         return;
 

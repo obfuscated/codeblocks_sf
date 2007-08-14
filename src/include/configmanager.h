@@ -1,7 +1,6 @@
 #ifndef X_CONFIGMANAGER_H
 #define X_CONFIGMANAGER_H
 
-#include <wx/wx.h>
 #include <wx/hashmap.h>
 #include <wx/hashset.h>
 

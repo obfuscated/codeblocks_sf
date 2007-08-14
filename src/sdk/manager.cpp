@@ -67,7 +67,7 @@ Manager::Manager() : m_pAppWindow(0)
 Manager::~Manager()
 {
 	// remove all event sinks
-	
+
 	for (EventSinksMap::iterator mit = m_EventSinks.begin(); mit != m_EventSinks.end(); ++mit)
 	{
 		EventSinksArray::iterator it = mit->second.begin();
@@ -293,9 +293,14 @@ bool Manager::isToolBar16x16(wxToolBar* toolBar)
     return (mysize.GetWidth()<=16 && mysize.GetHeight()<=16);
 }
 
-wxFrame* Manager::GetAppWindow() const
+wxFrame* Manager::GetAppFrame() const
 {
     return m_pAppWindow;
+}
+
+wxWindow* Manager::GetAppWindow() const
+{
+    return (wxWindow*)m_pAppWindow;
 }
 
 ProjectManager* Manager::GetProjectManager() const
