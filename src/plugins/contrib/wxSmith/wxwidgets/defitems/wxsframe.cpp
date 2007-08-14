@@ -21,6 +21,9 @@
 * $HeadURL$
 */
 
+#include <wx/app.h>		// wxTheApp
+#include <wx/frame.h>
+#include <wx/settings.h> // wxSystemSettings, wxSYS_COLOUR_APPWORKSPACE
 #include "wxsframe.h"
 #include "../wxsgridpanel.h"
 
