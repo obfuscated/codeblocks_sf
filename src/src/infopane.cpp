@@ -1,53 +1,165 @@
-#include <wx/event.h>
-#include <wx/menu.h>
+#include <sdk.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/event.h>
+    #include <wx/menu.h>
+#endif
+
 #include "infopane.h"
 #include <logmanager.h>
 
 
 BEGIN_EVENT_TABLE(InfoPane, InfoPaneNotebook)
     EVT_MENU(-1,  InfoPane::OnMenu)
-    EVT_RIGHT_UP(InfoPane::OnRightClick)
+    EVT_CONTEXT_MENU(InfoPane::ContextMenu)
 END_EVENT_TABLE()
 
 
-/*
-*  TODO: something is wrong yet: OnRightClick is never called?
-*        also, might think of a better way to hide/show items
-*/
+InfoPane::InfoPane(wxWindow* parent) : InfoPaneNotebook(parent), baseID(wxNewId())
+{
+    wxRegisterId(baseID + num_pages);
+    for(int i = 0; i < num_pages; ++i)
+    {
+        page[i] = Page();
+    }
+}
+
+
+void InfoPane::Toggle(size_t i)
+{
+    page[i].visible = 1 - page[i].visible;
+
+    if(page[i].visible == true)
+        AddPage(page[i].window, page[i].title);
+    else
+        RemovePage(GetPageIndex(page[i].window));
+}
 
 
 void InfoPane::OnMenu(wxCommandEvent& event)
 {
-    if(event.GetId() < baseID)          // pushing an event handler might be more elegant than listening on all, but oh well...
+    if(event.GetId() < baseID || event.GetId() > baseID + num_pages)
     {
         event.Skip();
         return;
     }
 
-    int index = event.GetId() - baseID; // get back our indices
-                                        // another (cleaner) way would be to use only one ID, get the menu item from the event, then its title,
-                                        // and finally search our list of Loggers
+    int i = event.GetId() - baseID; // get back our index
 
-    /*
-    *  TODO: now, actually do something, hide the tab, or whatever
-    */
+    Toggle(i);
 }
 
-void InfoPane::OnRightClick(wxMouseEvent& event)
+
+void InfoPane::ContextMenu(wxContextMenuEvent& event)
 {
-
-    // We will boldly use the ID ranges above this unique value, this shold work fine too, as we use the IDs in a blocking call
-    // Also, other than during startup, nobody else should be creating unique IDs anyway...
-    baseID = wxNewId();
-
     wxMenu menu;
+    bool any_nonloggers = false;
 
-    for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
+    for(int i = 0; i < num_pages; ++i)
     {
-        if(!!(LogManager::Get()->Slot(i).title))
-            menu.Append(baseID + i, LogManager::Get()->Slot(i).title);
+        if(page[i].window)
+        {
+            if(page[i].logger)
+            {
+                menu.Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
+                if(page[i].visible)
+                    menu.Check(baseID + i, true);
+            }
+            else
+            {
+                any_nonloggers = true;
+            }
+        }
     }
 
-    PopupMenu(&menu, event.GetX(), event.GetY());
+    if(any_nonloggers)
+    {
+        menu.AppendSeparator();
+        for(int i = 0; i < num_pages; ++i)
+        {
+            if(page[i].window && !page[i].logger)
+            {
+                menu.Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
+                if(page[i].visible)
+                    menu.Check(baseID + i, true);
+            }
+        }
+    }
+
+
+    PopupMenu(&menu);
 }
 
+
+
+
+bool InfoPane::AddLogger(wxWindow* p, const wxString& title)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(!(page[i].window))
+        {
+            AddPage(p, title);
+            page[i].window = p;
+            page[i].title = title;
+            page[i].visible = true;
+            page[i].logger = true;
+            return true;
+        }
+    }
+
+   return false;
+}
+
+bool InfoPane::AddNonLogger(wxWindow* p, const wxString& title)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(!(page[i].window))
+        {
+            AddPage(p, title);
+            page[i].window = p;
+            page[i].title = title;
+            page[i].visible = true;
+            page[i].logger = false;
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+bool InfoPane::DeleteLogger(wxWindow* p, Logger* l)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(page[i].window == p)
+        {
+            LogManager::Get()->DeleteLog(LogManager::Get()->FindIndex(l));
+            DeletePage(GetPageIndex(p));
+            page[i] = Page();
+            return true;
+        }
+    }
+
+   return false;
+}
+
+bool InfoPane::DeleteNonLogger(wxWindow* p)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(page[i].window == p)
+        {
+            if(page[i].logger)
+                cbThrow(_T("Bad API usage. Shame on you."));
+
+            DeletePage(GetPageIndex(p));
+            page[i] = Page();
+            return true;
+        }
+    }
+
+   return false;
+}

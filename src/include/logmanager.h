@@ -28,8 +28,6 @@ struct LogSlot
     size_t index;
     friend class LogManager;
 
-public:
-
     wxBitmap *icon;
     wxString title;
 
@@ -68,6 +66,7 @@ public:
         size_t SetLog(Logger* l, int index = no_index);
 		void DeleteLog(int i) { SetLog(&g_null_log, i); };
         LogSlot& Slot(int i) { return slot[i]; };
+        size_t FindIndex(Logger* l) { for(unsigned int i = invalid_log; i < max_logs; ++i) { if(slot[i].log == l) return i; }  return invalid_log; };
 
 
 
