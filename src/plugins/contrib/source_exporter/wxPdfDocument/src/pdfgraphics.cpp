@@ -405,6 +405,8 @@ wxPdfShape::GetSegment(int iterType, int iterPoints, double coords[]) const
           coords[4] = m_x[iterPoints];
           coords[5] = m_y[iterPoints];
           break;
+        default:
+          break;
       }
     }
   }
@@ -458,7 +460,7 @@ wxPdfFlatPath::FetchSegment()
   }
 
   m_srcSegType = m_shape->GetSegment(m_iterType, m_iterPoints, m_scratch);
-    
+
   switch (m_srcSegType)
   {
     case wxPDF_SEG_CLOSE:
@@ -718,7 +720,7 @@ wxPdfFlatPath::SubdivideCubic()
          && (GetFlatnessSq(m_stack, sp) >= m_flatnessSq))
   {
     m_recLevel[m_stackSize] = m_recLevel[m_stackSize - 1] = ++level;
-      
+
     SubdivideCubicCurve(m_stack, sp, m_stack, sp - 6, m_stack, sp);
     ++m_stackSize;
     sp -= 6;
@@ -839,7 +841,7 @@ wxPdfDocument::ShapedText(const wxPdfShape& shape, const wxString& text, wxPdfSh
             double x = lastX + next*dx*r;
             double y = lastY + next*dy*r;
             double advance = nextAdvance;
-            nextAdvance = currentChar < length-1 ? GetStringWidth(text.Mid(currentChar+1,1)) * 0.5 : 
+            nextAdvance = currentChar < length-1 ? GetStringWidth(text.Mid(currentChar+1,1)) * 0.5 :
                                                    (repeat) ? GetStringWidth(text.Mid(0,1)) * 0.5 : 0;
             SetXY(x, y);
             StartTransform();
@@ -910,7 +912,7 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
     Rect(x, y, w, h, style);
   }
   else
-  { 
+  {
     // Rounded
     wxString op;
     // Draw a rectangle
@@ -975,7 +977,7 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
     xc = x + r;
     yc = y + r;
     OutLine(x, yc);
-    
+
     if (roundCorner & wxPDF_CORNER_BOTTOM_RIGHT)
     {
       OutCurve(xc - r, yc - (r * myArc), xc - (r * myArc), yc - r, xc, yc - r);
@@ -990,7 +992,7 @@ wxPdfDocument::RoundedRect(double x, double y, double w, double h,
 }
 
 void
-wxPdfDocument::Curve(double x0, double y0, double x1, double y1, 
+wxPdfDocument::Curve(double x0, double y0, double x1, double y1,
                      double x2, double y2, double x3, double y3,
                      int style)
 {
@@ -1018,7 +1020,7 @@ wxPdfDocument::Curve(double x0, double y0, double x1, double y1,
 }
 
 void
-wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry, 
+wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry,
                        double angle, double astart, double afinish,
                        int style, int nSeg)
 {
@@ -1070,7 +1072,7 @@ wxPdfDocument::Ellipse(double x0, double y0, double rx, double ry,
   if (angle != 0)
   {
     double a = -(pi * angle / 180.);
-    OutAscii(wxString(_T("q ")) + 
+    OutAscii(wxString(_T("q ")) +
              Double2String(cos(a),2) + wxString(_T(" ")) +
              Double2String(-1 * sin(a),2) + wxString(_T(" ")) +
              Double2String(sin(a),2) + wxString(_T(" ")) +
@@ -1153,7 +1155,7 @@ wxPdfDocument::Sector(double xc, double yc, double r, double astart, double afin
   {
     d = 2 * pi;
   }
-  
+
   wxString op;
   if ((style & wxPDF_STYLE_FILLDRAW) == wxPDF_STYLE_FILL)
   {
@@ -1266,7 +1268,7 @@ wxPdfDocument::Polygon(const wxPdfArrayDouble& x, const wxPdfArrayDouble& y, int
 }
 
 void
-wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double angle, bool circle, int style, 
+wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double angle, bool circle, int style,
                               int circleStyle, const wxPdfLineStyle& circleLineStyle, const wxPdfColour& circleFillColor)
 {
   if (ns < 3)
@@ -1298,7 +1300,7 @@ wxPdfDocument::RegularPolygon(double x0, double y0, double r, int ns, double ang
 
 
 void
-wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, double angle, bool circle, int style, 
+wxPdfDocument::StarPolygon(double x0, double y0, double r, int nv, int ng, double angle, bool circle, int style,
                            int circleStyle, const wxPdfLineStyle& circleLineStyle, const wxPdfColour& circleFillColor)
 {
   if (nv < 2)
@@ -1968,7 +1970,7 @@ wxPdfDocument::Marker(double x, double y, wxPdfMarker markerType, double size)
   static double b = 4. / 3.;
 
   Out("q");
-  switch (markerType) 
+  switch (markerType)
   {
     case wxPDF_MARKER_CIRCLE:
       SetLineWidth(size * 0.15);

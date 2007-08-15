@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfparser.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2006-05-15
@@ -85,7 +85,7 @@ public:
 
   /// Get the type of the last token
   int GetTokenType();
-    
+
   /// Get the token value as a string
   wxString GetStringValue();
 
@@ -94,13 +94,13 @@ public:
 
   /// Check whether the token is a hexadecimal string
   bool IsHexString() { return m_hexString; }
-    
+
   /// Get object reference
   int GetReference();
 
   /// Get object generation
   int GetGeneration();
-    
+
   /// Check byte whether it represents a white space character
   static bool IsWhitespace(int ch);
 
@@ -271,7 +271,7 @@ protected:
    */
   wxMemoryOutputStream* ASCIIHexDecode(wxMemoryOutputStream* osIn);
 
-  /** Decode a stream that has the ASCII85Decode filter.
+  /// Decode a stream that has the ASCII85Decode filter.
   /**
    * \param osIn the input data
    * \return the decoded data

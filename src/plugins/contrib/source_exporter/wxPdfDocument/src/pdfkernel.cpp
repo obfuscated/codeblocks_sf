@@ -164,14 +164,14 @@ wxPdfDocument::EndDoc()
   PutPages();
 
   PutResources();
-  
+
   // Info
   NewObj();
   Out("<<");
   PutInfo();
   Out(">>");
   Out("endobj");
-  
+
   // Form fields
   PutFormFields();
 
@@ -181,7 +181,7 @@ wxPdfDocument::EndDoc()
   PutCatalog();
   Out(">>");
   Out("endobj");
-  
+
   // Cross-Reference
   int o = m_buffer.TellO();
   Out("xref");
@@ -192,7 +192,7 @@ wxPdfDocument::EndDoc()
   {
     OutAscii(wxString::Format(_T("%010d 00000 n "),(*m_offsets)[i]));
   }
-  
+
   // Trailer
   Out("trailer");
   Out("<<");
@@ -313,7 +313,7 @@ wxPdfDocument::PutFormFields()
 void
 wxPdfDocument::PutInfo()
 {
-  Out("/Producer ",false); 
+  Out("/Producer ",false);
   OutTextstring(wxString(wxPDF_PRODUCER));
   if (m_title.Length() > 0)
   {
@@ -387,7 +387,7 @@ wxPdfDocument::PutCatalog()
     Out("/PageMode /UseOutlines");
   }
 
-  
+
   if (m_viewerPrefs > 0)
   {
     Out("/ViewerPreferences <<");
@@ -441,7 +441,7 @@ wxPdfDocument::PutCatalog()
 
      // << /DR << /Font << /ZaDb << /Type /Font /Subtype /Type1 /Name /ZaDb /BaseFont /ZapfDingbats >>
      //  /Helv 3 0 R >> >> /DA (/Helv 10 Tf 0 g )
-     //  /NeedAppearances true >> 
+     //  /NeedAppearances true >>
 
   }
 }
@@ -700,7 +700,7 @@ wxPdfDocument::PutPages()
           wxPdfBoolHashMap::iterator oChange = (*m_orientationChanges).find(link->GetPage());
           double h = (oChange != (*m_orientationChanges).end()) ? wPt : hPt;
           OutAscii(wxString::Format(_T("/Dest [%d 0 R /XYZ 0 "),m_firstPageId+2*(link->GetPage()-1)) +
-                   Double2String(h-link->GetPosition()*m_k,2) + 
+                   Double2String(h-link->GetPosition()*m_k,2) +
                    wxString(_T(" null]>>")),false);
         }
         delete pl;
@@ -741,7 +741,7 @@ wxPdfDocument::PutPages()
 
     OutAscii(wxString::Format(_T("/Contents %d 0 R>>"), m_n+1));
     Out("endobj");
-    
+
     // Page content
     wxMemoryOutputStream* p;
     if (m_compress)
@@ -757,7 +757,7 @@ wxPdfDocument::PutPages()
     }
 
     NewObj();
-    OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Length ")) + 
+    OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Length ")) +
              wxString::Format(_T("%ld"), CalculateStreamLength(p->TellO())) + wxString(_T(">>")));
     PutStream(*p);
     Out("endobj");
@@ -869,6 +869,8 @@ wxPdfDocument::PutShaders()
           case wxPDF_COLOURTYPE_CMYK:
             Out("/ColorSpace /DeviceCMYK");
             break;
+          default:
+            break;
         }
         if (type == wxPDF_GRADIENT_AXIAL ||
             type == wxPDF_GRADIENT_MIDAXIAL)
@@ -916,6 +918,8 @@ wxPdfDocument::PutShaders()
             break;
           case wxPDF_COLOURTYPE_CMYK:
             Out("/ColorSpace /DeviceCMYK");
+            break;
+          default:
             break;
         }
         Out("/BitsPerCoordinate 16");
@@ -975,7 +979,7 @@ wxPdfDocument::PutFonts()
         int fontLen   = fontStream->GetSize();
         int fontSize1 = font->GetSize1();
         wxMemoryOutputStream* p = new wxMemoryOutputStream();
-        
+
         bool compressed = strFontFileName.Right(2) == _T(".z");
         if (!compressed && font->HasSize2())
         {
@@ -1044,7 +1048,7 @@ wxPdfDocument::PutFonts()
       }
     }
   }
-  
+
   fontIter = m_fonts->begin();
   for (fontIter = m_fonts->begin(); fontIter != m_fonts->end(); fontIter++)
   {
@@ -1142,7 +1146,7 @@ wxPdfDocument::PutFonts()
       }
       Out(">>");
       Out("endobj");
-      
+
       // CIDFontType
       NewObj();
       Out("<</Type /Font");
@@ -1157,7 +1161,7 @@ wxPdfDocument::PutFonts()
         Out("/Subtype /CIDFontType0");
       }
       OutAscii(wxString(_T("/BaseFont /")) + name);
-      OutAscii(wxString::Format(_T("/CIDSystemInfo %d 0 R"), (m_n + 1))); 
+      OutAscii(wxString::Format(_T("/CIDSystemInfo %d 0 R"), (m_n + 1)));
       OutAscii(wxString::Format(_T("/FontDescriptor %d 0 R"), (m_n + 2)));
 
       const wxPdfFontDescription& fd = font->GetDesc();
@@ -1166,7 +1170,7 @@ wxPdfDocument::PutFonts()
         // The default width for glyphs in the CIDFont MissingWidth
         OutAscii(wxString::Format(_T("/DW %d"), fd.GetMissingWidth()));
       }
-      
+
       OutAscii(wxString(_T("/W ")) + font->GetWidthsAsString()); // A description of the widths for the glyphs in the CIDFont
       if (type == _T("TrueTypeUnicode"))
       {
@@ -1175,7 +1179,7 @@ wxPdfDocument::PutFonts()
 
       Out(">>");
       Out("endobj");
-      
+
       // CIDSystemInfo dictionary
       // A dictionary containing entries that define the character collectionof the CIDFont.
       NewObj();
@@ -1197,7 +1201,7 @@ wxPdfDocument::PutFonts()
       Out("/Supplement 0");
       Out(">>");
       Out("endobj");
-      
+
       // Font descriptor
       // A font descriptor describing the CIDFonts default metrics other than its glyph widths
       NewObj();
@@ -1530,7 +1534,7 @@ wxPdfDocument::PutTemplates()
       }
       Out(">>");
     }
-    
+
     // Template data
     wxMemoryOutputStream* p;
     if (m_compress)
@@ -1785,7 +1789,7 @@ wxPdfDocument::PutSpotColors()
     spotColor->SetObjIndex(m_n);
   }
 }
- 
+
 void
 wxPdfDocument::PutJavaScript()
 {
@@ -1819,7 +1823,7 @@ wxPdfDocument::PutResources()
   PutImages();
   PutTemplates();
   PutImportedObjects();
-  PutSpotColors(); 
+  PutSpotColors();
 
   // Resource dictionary
   (*m_offsets)[2-1] = m_buffer.TellO();
@@ -1956,7 +1960,7 @@ wxPdfDocument::PutStream(wxMemoryOutputStream& s)
           (*m_pages)[m_page]->Write("\n",1);
         }
         else
-        { 
+        {
           m_currentTemplate->m_buffer.Write(tmp);
           m_currentTemplate->m_buffer.Write("\n",1);
         }
@@ -2209,7 +2213,7 @@ wxPdfDocument::OutLineRelative(double dx, double dy)
 void
 wxPdfDocument::OutCurve(double x1, double y1, double x2, double y2, double x3, double y3)
 {
-  // Draws a Bézier curve from last draw point
+  // Draws a BÃ©zier curve from last draw point
   OutAscii(Double2String(x1 * m_k,2) + wxString(_T(" ")) +
            Double2String((m_h - y1) * m_k,2) + wxString(_T(" ")) +
            Double2String(x2 * m_k,2) + wxString(_T(" ")) +
@@ -2267,7 +2271,7 @@ wxPdfDocument::OutImage(wxPdfImage* currentImage,
            Double2String(sw,2) + wxString(_T(" 0 0 ")) +
            Double2String(sh,2) + wxString(_T(" ")) +
            Double2String(sx,2) + wxString(_T(" ")) +
-           Double2String(sy,2) + 
+           Double2String(sy,2) +
            wxString::Format(_T(" cm /I%d Do Q"),currentImage->GetIndex()));
 
   if (link.IsValid())
@@ -2279,7 +2283,7 @@ wxPdfDocument::OutImage(wxPdfImage* currentImage,
   m_img_rb_x = x + w;
   m_img_rb_y = y + h;
 
-  // 
+  //
   if (m_inTemplate)
   {
     (*(m_currentTemplate->m_images))[currentImage->GetName()] = currentImage;
