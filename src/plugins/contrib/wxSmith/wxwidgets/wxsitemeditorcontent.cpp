@@ -356,6 +356,7 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
         {
             // If there's drag point, starting point-dragging sequence
             m_CurDragPoint = DPD;
+            m_CurDragItem = DPD->Item;
             m_MouseState = msDraggingPointInit;
         }
         else
