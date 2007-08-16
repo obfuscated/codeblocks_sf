@@ -588,24 +588,24 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         virtual void SetTitle(const wxString& title);
         
-        /** Access the <Extensions> XML node of this project
+        /** Access the \<Extensions\> XML node of this project
           *
           * This function is for advanced users only. Use at your own risk
           * (and respect other plugins authors work under this node).
           *
-          * @return The <Extensions> XML node.
+          * @return The \<Extensions\> XML node.
           * @note This function will never return NULL.
           */
         virtual TiXmlNode* GetExtensionsNode();
         
         /** Convenience function (mainly for scripts) to add nodes/attributes
-          * under the <Extensions> node.
+          * under the \<Extensions\> node.
           *
           * It is mainly useful for scripts that can't otherwise access the XML node.
           * For C++ code, using GetExtensionsNode() is recommended instead (which is much faster).
           *
           * @param stringDesc A string representation of the nodes/attributes to add/edit
-          * under <Extensions>.
+          * under \<Extensions\>.
           * @c stringDesc is a string of the form:
           * "node/subnode/.../+subnode:attr=val"
           *

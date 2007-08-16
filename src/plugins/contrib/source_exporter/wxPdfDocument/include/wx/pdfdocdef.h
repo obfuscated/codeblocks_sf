@@ -863,7 +863,9 @@ If neither a row nor a cell background color is specified the background is tran
 #ifndef _PDFDOC_DEF_H_
 #define _PDFDOC_DEF_H_
 
-#ifdef WXMAKINGDLL_WXPDFDOC
+#ifdef WXMAKINGLIB_WXPDFDOC
+    #define WXDLLIMPEXP_PDFDOC
+#elif WXMAKINGDLL_WXPDFDOC
     #define WXDLLIMPEXP_PDFDOC WXEXPORT
 #elif defined(WXUSINGDLL)
     #define WXDLLIMPEXP_PDFDOC WXIMPORT

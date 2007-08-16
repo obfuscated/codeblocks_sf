@@ -18,7 +18,7 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
 
         /// @return the panel's title.
         virtual wxString GetTitle() const = 0;
-        /// @return the panel's bitmap base name. You must supply two bitmaps: <basename>.png and <basename>-off.png...
+        /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
         virtual wxString GetBitmapBaseName() const = 0;
         /// Called when the user chooses to apply the configuration.
         virtual void OnApply() = 0;

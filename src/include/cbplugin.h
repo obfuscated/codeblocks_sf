@@ -207,7 +207,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
     private:
         friend class PluginManager; // only the plugin manager has access here
 
-		/** Attach is <u>not</u> a virtual function, so you can't override it.
+		/** Attach is <b>not</b> a virtual function, so you can't override it.
 		  * The default implementation hooks the plugin to Code::Block's
 		  * event handling system, so that the plugin can receive (and process)
 		  * events from Code::Blocks core library. Use OnAttach() for any
@@ -216,7 +216,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  */
         void Attach();
 
-		/** Release is <u>not</u> a virtual function, so you can't override it.
+		/** Release is <b>not</b> a virtual function, so you can't override it.
 		  * The default implementation un-hooks the plugin from Code::Blocks's
 		  * event handling system. Use OnRelease() for any clean-up specific
 		  * tasks.

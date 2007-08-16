@@ -88,7 +88,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
           * (i.e. @c tgfpPlatformDefault), it would be set depending on the running
           * platform and compiler, e.g.:
           * @li Windows & GCC: @c lib
-          * @li Windows & MSVC: @c <empty>
+          * @li Windows & MSVC: @c \<empty\>
           * @li Linux & <*>: @c lib
           * @par
           * The default generation policy is @c tgfpPlatformDefault for both the prefix
