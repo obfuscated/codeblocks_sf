@@ -271,12 +271,36 @@ namespace compatibility
         B does not know about A's counter, nor can it influence it.
         A::Z() and B::Z() will return a shared counter that increments if either A or B is asked to return a value.
 */
-template<typename whatever> inline unsigned int GetID()
+
+class ID
+{
+    unsigned int value;
+
+    ID(unsigned int in) : value(in) {};
+
+    template<typename> friend ID GetID();
+    friend ID ConstructID(unsigned int);
+
+public:
+
+    ID() : value ((unsigned) -1) {};
+
+    operator unsigned int() const { return value; };
+    operator void*() const { return (void*) value; };
+
+    bool Valid() const { return value != ((unsigned) -1); };
+    bool operator!() const { return !Valid(); };
+};
+
+
+template<typename whatever> inline ID GetID()
 {
     static unsigned int id = (unsigned int) -1;
-    return ++id;
+    return ID(++id);
 };
-inline unsigned int GetID() { return GetID<void>(); };
+
+inline ID GetID() { return GetID<void>(); };
+inline ID ConstructID(unsigned int i) { return ID(i); };
 
 
 #endif
