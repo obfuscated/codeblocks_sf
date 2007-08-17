@@ -52,6 +52,7 @@
 #endif
 #include <wx/choicdlg.h>	// wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
+#include <wx/textdlg.h>     // wxGetTextFromUser
 #include "cbexception.h"
 #include "annoyingdialog.h"
 #include "compileroptionsdlg.h"
