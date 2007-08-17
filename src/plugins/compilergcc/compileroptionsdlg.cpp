@@ -29,11 +29,16 @@
 #ifndef CB_PRECOMP
     #include <wx/arrstr.h>
     #include <wx/button.h>
+    #include <wx/checkbox.h>
     #include <wx/checklst.h>
     #include <wx/choice.h>
     #include <wx/event.h>
     #include <wx/filename.h>
     #include <wx/listbox.h>
+	#include <wx/notebook.h>
+    #include <wx/stattext.h>
+    #include <wx/sizer.h>
+    #include <wx/spinctrl.h>
     #include <wx/treectrl.h>
     #include <wx/xrc/xmlres.h>
     #include "compiler.h"
@@ -44,9 +49,8 @@
     #include "manager.h"
     #include "messagemanager.h"
     #include "projectmanager.h"
-    #include <wx/spinctrl.h>
-	#include <wx/notebook.h>
 #endif
+#include <wx/choicdlg.h>	// wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
 #include "cbexception.h"
 #include "annoyingdialog.h"

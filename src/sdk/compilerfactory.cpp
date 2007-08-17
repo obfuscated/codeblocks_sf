@@ -13,6 +13,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/choicdlg.h> // wxSingleChoiceDialog
     #include "compilerfactory.h"
     #include "manager.h"
     #include "messagemanager.h"

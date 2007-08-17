@@ -11,6 +11,7 @@
 */
 
 #include <sdk.h>
+#include <wx/button.h>
 #include <wx/xrc/xmlres.h>
 #include <manager.h>
 #include <configmanager.h>
@@ -26,6 +27,8 @@
 #include <wx/colordlg.h>
 #include <wx/msgdlg.h>
 #include <wx/imaglist.h>
+#include <wx/settings.h>
+#include <wx/stattext.h>
 #include "appglobals.h"
 #include "globals.h"
 #include "associations.h"

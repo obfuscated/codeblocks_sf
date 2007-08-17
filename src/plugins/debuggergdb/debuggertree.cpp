@@ -8,6 +8,7 @@
 #include <wx/msgdlg.h>
 #include <wx/app.h>
 #include <wx/tipwin.h>
+#include <wx/settings.h>	// wxSystemSettings
 #include <globals.h>
 #include "debuggergdb.h"
 #include "debuggerdriver.h"
@@ -465,7 +466,7 @@ void DebuggerTree::BuildTreeCDB(Watch* watch, const wxString& infoText)
             parent = m_pTree->GetItemParent(parent);
             clbrace = true;
         }
-		
+
 		if (opbrace)
 			lines[i].Append(_T(" = {"));
 		if (clbrace)

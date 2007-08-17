@@ -51,6 +51,7 @@
     #include "xtra_res.h" // our new ToolBarAddOn handler
 #endif
 
+#include <wx/app.h>	// wxTheApp
 #include <wx/toolbar.h>
 #include <wx/fs_mem.h>
 

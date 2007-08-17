@@ -3,6 +3,7 @@
 #ifndef CB_PRECOMP
     #include <wx/event.h>
     #include <wx/menu.h>
+    #include "cbexception.h"
 #endif
 
 #include "infopane.h"

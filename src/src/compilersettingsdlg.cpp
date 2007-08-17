@@ -22,6 +22,8 @@
 #include <wx/checklst.h>
 #include <wx/filename.h>
 #include <wx/imaglist.h>
+#include <wx/sizer.h>	// SetSizeHints
+#include <wx/stattext.h>	// wxStaticText
 
 #include "configurationpanel.h"
 #include "compilersettingsdlg.h"

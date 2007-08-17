@@ -24,6 +24,7 @@
     #include "cbexception.h"
     #include "infowindow.h"
 
+    #include <wx/button.h>
     #include <wx/dialog.h>
     #include <wx/intl.h>
     #include <wx/xrc/xmlres.h>
@@ -32,6 +33,7 @@
 
 #include "annoyingdialog.h"
 #include <wx/choice.h>
+#include <wx/textdlg.h> //wxTextEntryDialog
 #include <ctype.h>
 
 const wxString cBase(_T("base"));
