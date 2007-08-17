@@ -93,6 +93,7 @@ wxsItemResData::wxsItemResData(
     }
 
     Load();
+
     if ( !m_RootItem )
     {
         RecreateRootItem();
@@ -146,13 +147,19 @@ bool wxsItemResData::Load()
     }
     StoreUndo();
     m_Undo.Saved();
-    m_Editor->UpdateModified();
+    if ( m_Editor )
+    {
+        m_Editor->UpdateModified();
+    }
     if ( Ret && (m_PropertiesFilter!=wxsItem::flFile) )
     {
         RebuildSourceCode();        // Yop, only source recreated, xrc if used not touched
     }
     RebuildTree();
-    m_Editor->RebuildPreview();
+    if ( m_Editor )
+    {
+        m_Editor->RebuildPreview();
+    }
     SelectItem(m_RootItem,true);
 
     return Ret;
@@ -643,7 +650,7 @@ void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
     switch ( m_PropertiesFilter )
     {
         case wxsItem::flSource:
-            m_RootItem->BuildCreatingCode(Code,_T("parent"),Lang);
+            m_RootItem->BuildCreatingCode(Code,_T(""),Lang);
             break;
 
         case wxsItem::flMixed:
@@ -989,9 +996,15 @@ void wxsItemResData::EndChange()
     {
         m_Corrector.GlobalCheck();
         StoreUndo();
-        m_Editor->UpdateModified();
+        if ( m_Editor )
+        {
+            m_Editor->UpdateModified();
+        }
         RebuildFiles();
-        m_Editor->RebuildPreview();
+        if ( m_Editor )
+        {
+            m_Editor->RebuildPreview();
+        }
         if ( ValidateRootSelection() )
         {
             m_RootSelection->NotifyPropertyChange(false);
@@ -999,7 +1012,10 @@ void wxsItemResData::EndChange()
         else
         {
             m_RootSelection->ShowInPropertyGrid();
-            m_Editor->RebuildQuickProps(m_RootSelection);
+            if ( m_Editor )
+            {
+                m_Editor->RebuildQuickProps(m_RootSelection);
+            }
         }
         RebuildTree();
         wxsResourceTree::Get()->UnblockSelect();
@@ -1293,8 +1309,11 @@ bool wxsItemResData::SelectItem(wxsItem* Item,bool UnselectOther)
         Item->ShowInPropertyGrid();
     }
     m_RootSelection = Item;
-    m_Editor->RebuildQuickProps(Item);
-    m_Editor->UpdateSelection();
+    if ( m_Editor )
+    {
+        m_Editor->RebuildQuickProps(Item);
+        m_Editor->UpdateSelection();
+    }
 
     wxsResourceItemId Id;
     if ( FindId(Id,Item) )
@@ -1315,7 +1334,7 @@ bool wxsItemResData::SelectItem(wxsItem* Item,bool UnselectOther)
         }
     }
 
-    if ( Changed )
+    if ( Changed && m_Editor )
     {
         m_Editor->RebuildPreview();
     }
@@ -1329,9 +1348,12 @@ void wxsItemResData::NotifyChange(wxsItem* Changed)
     Changed->NotifyPropertyChange(false);
     StoreUndo();
     RebuildFiles();
-    m_Editor->UpdateModified();
-    m_Editor->RebuildPreview();
-    m_Editor->UpdateSelection();
+    if ( m_Editor )
+    {
+        m_Editor->UpdateModified();
+        m_Editor->RebuildPreview();
+        m_Editor->UpdateSelection();
+    }
 }
 
 wxString wxsItemResData::GetXmlData()
@@ -1387,10 +1409,13 @@ bool wxsItemResData::SetXmlData(const wxString& XmlData)
 
     RebuildFiles();
     RebuildTree();
-    m_Editor->RebuildPreview();
     // TODO: Fetch selection from xml data
     SelectItem(m_RootItem,true);
-    m_Editor->UpdateModified();
+    if ( m_Editor )
+    {
+        m_Editor->RebuildPreview();
+        m_Editor->UpdateModified();
+    }
 
     return true;
 }

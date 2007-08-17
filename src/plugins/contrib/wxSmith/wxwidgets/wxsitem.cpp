@@ -32,27 +32,16 @@ wxsItem::wxsItem(wxsItemResData* ResourceData,const wxsItemInfo* Info,long Prope
     m_Events(Events,this),
     m_Parent(0),
     m_ResourceData(ResourceData),
-    m_VarName(_T("")),
-    m_IdName(_T("")),
-    m_IsMember(true),
-    m_BaseProperties(0),
     m_PropertiesFlags(PropertiesFlags),
     m_LastPreview(0),
     m_IsSelected(false),
     m_IsExpanded(false)
 {
-    if ( m_PropertiesFlags &
-            (flPosition|flSize|flEnabled|flFocused|flHidden|
-             flColours|flToolTip|flFont|flHelpText|flSubclass|
-             flMinMaxSize|flExtraCode) )
-    {
-        m_BaseProperties = new wxsBaseProperties;
-    }
+    m_BaseProperties.m_Subclass = GetClassName();
 }
 
 wxsItem::~wxsItem()
 {
-    delete m_BaseProperties;
 }
 
 void wxsItem::OnEnumProperties(long Flags)
@@ -84,54 +73,27 @@ wxsQuickPropsPanel* wxsItem::OnCreateQuickProperties(wxWindow* ParentWnd)
     }
 
     // Appending qpp's from base properties
-    if ( m_BaseProperties )
-    {
-        m_BaseProperties->AddQPPChild(Panel,GetPropertiesFlags());
-    }
+    m_BaseProperties.AddQPPChild(Panel,GetPropertiesFlags());
 
     return Panel;
 }
 
 long wxsItem::OnGetPropertiesFlags()
 {
-    if ( IsRootItem() )
-    {
-        // Small hack - if there's no parent, this is root item
-        // of resource and thus can not have id nor variable
-        return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags & ~flVariable & ~flId & ~flSubclass;
-    }
-    return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags;
+    long ExtraFlags = 0;
+
+    if ( IsRootItem() ) ExtraFlags |= flRoot;
+    if ( IsPointer()  ) ExtraFlags |= flPointer;
+
+    return m_ResourceData->GetPropertiesFilter() | m_PropertiesFlags | ExtraFlags;
 }
 
 void wxsItem::EnumItemProperties(long Flags)
 {
-    static const int Priority = 60;
-
-    // Registering variable name / identifier
-    // these values are skipped when storing into xml variable
-    // because itis stored as attribute of XML element
-    if ( (Flags & (flPropGrid|flPropStream)) != 0 )
-    {
-        if ( Flags & flVariable )
-        {
-            WXS_SHORT_STRING_P(wxsItem,m_VarName,_("Var name"),_T("var_name"),wxEmptyString,true,Priority);
-            if ( IsPointer() )
-            {
-                // If item is not pointer it must be declared globally
-                WXS_BOOL_P(wxsItem,m_IsMember,_(" Is member"),_T("var_is_member"),true,Priority);
-            }
-        }
-        if ( Flags & flId )       WXS_SHORT_STRING_P(wxsItem,m_IdName,_("Identifier"),_T("identifier"),wxEmptyString,true,Priority);
-        if ( Flags & flSubclass ) WXS_SHORT_STRING_P(wxsItem,m_Subclass,_("Class name"),_T("subclass"),wxEmptyString,false,Priority);
-    }
-
     OnEnumItemProperties(Flags);
 
-    // Now enumerating all properties from wxsBaseProperties if any
-    if ( m_BaseProperties )
-    {
-        SubContainer(m_BaseProperties,Flags);
-    }
+    // Now enumerating all properties from wxsBaseProperties
+    SubContainer(m_BaseProperties,Flags);
 }
 
 void wxsItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
@@ -157,20 +119,19 @@ bool wxsItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     if ( IsXRC )
     {
         wxsPropertyContainer::XmlRead(Element);
-        m_IdName = cbC2U(Element->Attribute("name"));
-        m_Subclass = cbC2U(Element->Attribute("subclass"));
-        if ( m_Subclass.IsEmpty() )
-        {
-            m_Subclass = GetClassName();
-        }
     }
 
     if ( IsExtra )
     {
-        m_VarName = cbC2U(Element->Attribute("variable"));
-        const char* MbrText = Element->Attribute("member");
-        m_IsMember = !MbrText || !strcmp(MbrText,"yes");
         m_Events.XmlLoadFunctions(Element);
+    }
+
+    m_BaseProperties.SpecialXmlRead(Element,IsXRC,IsExtra);
+
+    // Some small fix to subclass property
+    if ( m_BaseProperties.m_Subclass.IsEmpty() )
+    {
+        m_BaseProperties.m_Subclass = GetClassName();
     }
 
     return true;
@@ -182,28 +143,14 @@ bool wxsItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
     {
         Element->SetAttribute("class",cbU2C(GetClassName()));
         wxsPropertyContainer::XmlWrite(Element);
-        if ( GetPropertiesFlags() & flId )
-        {
-            Element->SetAttribute("name",cbU2C(m_IdName));
-        }
-        if ( GetPropertiesFlags() & flSubclass )
-        {
-            if ( !m_Subclass.IsEmpty() && (m_Subclass!=GetClassName()) )
-            {
-                Element->SetAttribute("subclass",cbU2C(m_Subclass));
-            }
-        }
     }
 
     if ( IsExtra )
     {
-        if ( GetPropertiesFlags() & flVariable )
-        {
-            Element->SetAttribute("variable",cbU2C(m_VarName));
-            Element->SetAttribute("member",m_IsMember ? "yes" : "no" );
-        }
         m_Events.XmlSaveFunctions(Element);
     }
+
+    m_BaseProperties.SpecialXmlWrite(Element,IsXRC,IsExtra,GetPropertiesFlags(),GetClassName());
 
     return true;
 }
@@ -292,7 +239,7 @@ bool wxsItem::IsRootItem()
 
 void wxsItem::SetVarName(const wxString& NewName)
 {
-    m_VarName = NewName;
+    m_BaseProperties.m_VarName = NewName;
     UpdateTreeLabel();
 }
 
@@ -512,7 +459,7 @@ void wxsItem::Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* F
                         {
                             if ( GetPropertiesFlags() & flPosition )
                             {
-                                Result << GetBaseProps()->m_Position.GetPositionCode(m_WindowParent,Language);
+                                Result << PosCode(m_WindowParent,Language);
                             }
                             else
                             {
@@ -557,7 +504,7 @@ void wxsItem::Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* F
                         {
                             if ( GetPropertiesFlags() & flSize )
                             {
-                                Result << GetBaseProps()->m_Size.GetSizeCode(m_WindowParent,Language);
+                                Result << SizeCode(m_WindowParent,Language);
                             }
                             else
                             {
@@ -704,33 +651,33 @@ void wxsItem::BuildSetupWindowCode(wxString& Code,const wxString& WindowParent,w
 
             if ( PropertiesFlags&flMinMaxSize )
             {
-                if ( !m_BaseProperties->m_MinSize.IsDefault )
+                if ( !m_BaseProperties.m_MinSize.IsDefault )
                 {
-                    Code << Codef(Language,_T("%ASetMinSize(%z);\n"),&m_BaseProperties->m_MinSize);
+                    Code << Codef(Language,_T("%ASetMinSize(%z);\n"),&m_BaseProperties.m_MinSize);
                 }
 
-                if ( !m_BaseProperties->m_MaxSize.IsDefault )
+                if ( !m_BaseProperties.m_MaxSize.IsDefault )
                 {
-                    Code << Codef(Language,_T("%ASetMaxSize(%z);\n"),&m_BaseProperties->m_MaxSize);
+                    Code << Codef(Language,_T("%ASetMaxSize(%z);\n"),&m_BaseProperties.m_MaxSize);
                 }
             }
 
-            if ( (PropertiesFlags&flEnabled) && !m_BaseProperties->m_Enabled ) Code << Codef(Language,_T("%ADisable();\n"));
-            if ( (PropertiesFlags&flFocused) && m_BaseProperties->m_Focused  ) Code << Codef(Language,_T("%ASetFocus();\n"));
-            if ( (PropertiesFlags&flHidden)  && m_BaseProperties->m_Hidden   ) Code << Codef(Language,_T("%AHide();\n"));
+            if ( (PropertiesFlags&flEnabled) && !m_BaseProperties.m_Enabled ) Code << Codef(Language,_T("%ADisable();\n"));
+            if ( (PropertiesFlags&flFocused) && m_BaseProperties.m_Focused  ) Code << Codef(Language,_T("%ASetFocus();\n"));
+            if ( (PropertiesFlags&flHidden)  && m_BaseProperties.m_Hidden   ) Code << Codef(Language,_T("%AHide();\n"));
 
             if ( PropertiesFlags&flColours )
             {
-                wxString FGCol = m_BaseProperties->m_Fg.BuildCode(Language);
+                wxString FGCol = m_BaseProperties.m_Fg.BuildCode(Language);
                 if ( !FGCol.empty() ) Code << GetAccessPrefix(Language) << _T("SetForegroundColour(") << FGCol << _T(");\n");
 
-                wxString BGCol = m_BaseProperties->m_Bg.BuildCode(Language);
+                wxString BGCol = m_BaseProperties.m_Bg.BuildCode(Language);
                 if ( !BGCol.empty() ) Code << GetAccessPrefix(Language) << _T("SetBackgroundColour(") << BGCol << _T(");\n");
             }
 
             if ( PropertiesFlags&flFont )
             {
-                wxString FontVal = m_BaseProperties->m_Font.BuildFontCode(GetVarName() + _T("Font"), Language);
+                wxString FontVal = m_BaseProperties.m_Font.BuildFontCode(GetVarName() + _T("Font"), Language);
                 if ( !FontVal.empty() )
                 {
                     Code << FontVal;
@@ -738,11 +685,11 @@ void wxsItem::BuildSetupWindowCode(wxString& Code,const wxString& WindowParent,w
                 }
             }
 
-            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties->m_ToolTip.IsEmpty()  )   Code << GetAccessPrefix(Language) << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_ToolTip) << _T(");\n");
-            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties->m_HelpText.IsEmpty() )   Code << GetAccessPrefix(Language) << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties->m_HelpText) << _T(");\n");
-            if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties->m_ExtraCode.IsEmpty() )
+            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Code << GetAccessPrefix(Language) << _T("SetToolTip(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties.m_ToolTip) << _T(");\n");
+            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.IsEmpty() )   Code << GetAccessPrefix(Language) << _T("SetHelpText(") << wxsCodeMarks::WxString(wxsCPP,m_BaseProperties.m_HelpText) << _T(");\n");
+            if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties.m_ExtraCode.IsEmpty() )
             {
-                wxString& ExtraCode = m_BaseProperties->m_ExtraCode;
+                wxString& ExtraCode = m_BaseProperties.m_ExtraCode;
                 Code << ExtraCode;
                 // Adding extra \n character if it's not presend in extra code
                 if ( ExtraCode.GetChar(ExtraCode.Length()-1) != _T('\n') )
@@ -767,37 +714,37 @@ void wxsItem::SetupWindow(wxWindow* Window,long Flags)
 
     if ( PropertiesFlags&flMinMaxSize && IsExact )
     {
-        if ( !m_BaseProperties->m_MinSize.IsDefault )
+        if ( !m_BaseProperties.m_MinSize.IsDefault )
         {
-            Window->SetMinSize(m_BaseProperties->m_MinSize.GetSize(Window->GetParent()));
+            Window->SetMinSize(m_BaseProperties.m_MinSize.GetSize(Window->GetParent()));
         }
 
-        if ( !m_BaseProperties->m_MaxSize.IsDefault )
+        if ( !m_BaseProperties.m_MaxSize.IsDefault )
         {
-            Window->SetMaxSize(m_BaseProperties->m_MaxSize.GetSize(Window->GetParent()));
+            Window->SetMaxSize(m_BaseProperties.m_MaxSize.GetSize(Window->GetParent()));
         }
     }
 
-    if ( (PropertiesFlags&flEnabled) && !m_BaseProperties->m_Enabled ) Window->Disable();
-    if ( (PropertiesFlags&flFocused) && m_BaseProperties->m_Focused  ) Window->SetFocus();
-    if ( (PropertiesFlags&flHidden)  && m_BaseProperties->m_Hidden && IsExact ) Window->Hide();
+    if ( (PropertiesFlags&flEnabled) && !m_BaseProperties.m_Enabled ) Window->Disable();
+    if ( (PropertiesFlags&flFocused) && m_BaseProperties.m_Focused  ) Window->SetFocus();
+    if ( (PropertiesFlags&flHidden)  && m_BaseProperties.m_Hidden && IsExact ) Window->Hide();
 
     if ( PropertiesFlags&flColours )
     {
-        wxColour FGCol = m_BaseProperties->m_Fg.GetColour();
+        wxColour FGCol = m_BaseProperties.m_Fg.GetColour();
         if ( FGCol.Ok() ) Window->SetForegroundColour(FGCol);
-        wxColour BGCol = m_BaseProperties->m_Bg.GetColour();
+        wxColour BGCol = m_BaseProperties.m_Bg.GetColour();
         if ( BGCol.Ok() ) Window->SetBackgroundColour(BGCol);
     }
 
     if ( PropertiesFlags&flFont )
     {
-        wxFont FontVal = m_BaseProperties->m_Font.BuildFont();
+        wxFont FontVal = m_BaseProperties.m_Font.BuildFont();
         if ( FontVal.Ok() ) Window->SetFont(FontVal);
     }
 
-    if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties->m_ToolTip.empty() ) Window->SetToolTip(m_BaseProperties->m_ToolTip);
-    if ( (PropertiesFlags&flHelpText) && !m_BaseProperties->m_HelpText.empty() ) Window->SetHelpText(m_BaseProperties->m_HelpText);
+    if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.empty() ) Window->SetToolTip(m_BaseProperties.m_ToolTip);
+    if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.empty() ) Window->SetHelpText(m_BaseProperties.m_HelpText);
 }
 
 bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
@@ -810,9 +757,9 @@ wxString wxsItem::GetUserClass()
 {
     if ( GetPropertiesFlags() & flSubclass )
     {
-        if ( !m_Subclass.IsEmpty() )
+        if ( !m_BaseProperties.m_Subclass.IsEmpty() )
         {
-            return m_Subclass;
+            return m_BaseProperties.m_Subclass;
         }
     }
     return GetClassName();
@@ -828,4 +775,101 @@ wxString wxsItem::OnGetTreeLabel(int& Image)
     {
         return GetClassName();
     }
+}
+
+wxString wxsItem::PosCode(const wxString& Parent,wxsCodingLang Language)
+{
+    wxString Code = m_BaseProperties.m_Position.GetPositionCode(Parent,Language);
+    if ( IsRootItem()  &&  GetPropertiesFlags() & flSource )
+    {
+        if ( m_BaseProperties.m_PositionFromArg )
+        {
+            if ( m_BaseProperties.m_Position.IsDefault )
+            {
+                Code = _T("pos");
+            }
+            else
+            {
+                switch ( Language )
+                {
+                    case wxsCPP:
+                        Code = _T("(pos==wxDefaultPosition)?") + Code + _T(":pos");
+                        break;
+
+                    default:
+                        wxsCodeMarks::Unknown(_T("wxsItem::PosCode"),Language);
+                }
+            }
+        }
+    }
+
+    return Code;
+}
+
+wxString wxsItem::SizeCode(const wxString& Parent,wxsCodingLang Language)
+{
+    wxString Code = GetBaseProps()->m_Size.GetSizeCode(Parent,Language);
+    if ( IsRootItem()  &&  GetPropertiesFlags() & flSource )
+    {
+        if ( m_BaseProperties.m_SizeFromArg )
+        {
+            if ( m_BaseProperties.m_Size.IsDefault )
+            {
+                Code = _T("size");
+            }
+            else
+            {
+                switch ( Language )
+                {
+                    case wxsCPP:
+                        Code = _T("(size==wxDefaultSize)?") + Code + _T(":size");
+                        break;
+
+                    default:
+                        wxsCodeMarks::Unknown(_T("wxsItem::SizeCode"),Language);
+                }
+            }
+        }
+    }
+
+    return Code;
+}
+
+wxString wxsItem::GetIdName()
+{
+    wxString Code = m_BaseProperties.m_IdName;
+    if ( IsRootItem() )
+    {
+        if ( GetPropertiesFlags() & flSource && !m_BaseProperties.m_IdFromArg )
+        {
+            // TODO: Do we use the same identifier in other coding languages ?
+            Code = _T("wxID_ANY");
+        }
+        else
+        {
+            Code = _T("id");
+        }
+    }
+    return Code;
+}
+
+void wxsItem::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+{
+    if ( IsRootItem() )
+    {
+        // Root item has it's parent calculated in different way
+        if ( GetPropertiesFlags() & flSource  &&  !m_BaseProperties.m_ParentFromArg )
+        {
+            m_WindowParent = _T("0");
+        }
+        else
+        {
+            m_WindowParent = _T("parent");
+        }
+    }
+    else
+    {
+        m_WindowParent = WindowParent;
+    }
+    return OnBuildCreatingCode(Code,WindowParent,Language);
 }

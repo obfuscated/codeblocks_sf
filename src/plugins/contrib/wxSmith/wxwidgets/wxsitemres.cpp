@@ -24,6 +24,7 @@
 #include "wxsitemres.h"
 #include "wxsitemeditor.h"
 #include "wxsitemfactory.h"
+#include "wxsitemresdata.h"
 #include "../wxscoder.h"
 
 IMPLEMENT_CLASS(wxsItemRes,wxWidgetsRes)
@@ -31,7 +32,7 @@ IMPLEMENT_CLASS(wxsItemRes,wxWidgetsRes)
 namespace
 {
     const wxString CppEmptySource =
-        _T("#include \"$(Include)\"\n")
+        _T("$(PchCode)#include \"$(Include)\"\n")
         _T("\n")
         + wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),_T("$(ClassName)")) + _T("\n") +
         + wxsCodeMarks::End(wxsCPP) + _T("\n")
@@ -44,9 +45,9 @@ namespace
         _T("\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("END_EVENT_TABLE()\n")
         _T("\n")
-        _T("$(ClassName)::$(ClassName)(wxWindow* parent,wxWindowID id)\n")
+        _T("$(ClassName)::$(ClassName)($(CtorArgs))\n")
         _T("{\n")
-        _T("\t") + wxsCodeMarks::Beg(wxsCPP,_T("Initialize"),_T("$(ClassName)")) + _T("\n")
+        _T("$(CtorInit)\t") + wxsCodeMarks::Beg(wxsCPP,_T("Initialize"),_T("$(ClassName)")) + _T("\n")
         _T("\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("}\n")
         _T("\n")
@@ -68,7 +69,7 @@ namespace
         _T("{\n")
         _T("\tpublic:\n")
         _T("\n")
-        _T("\t\t$(ClassName)(wxWindow* parent,wxWindowID id = -1);\n")
+        _T("\t\t$(ClassName)($(CtorArgs));\n")
         _T("\t\tvirtual ~$(ClassName)();\n")
         _T("\n")
         _T("\t\t") + wxsCodeMarks::Beg(wxsCPP,_T("Identifiers"),_T("$(ClassName)")) + _T("\n")
@@ -81,7 +82,7 @@ namespace
         _T("\n")
         _T("\t\t") + wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),_T("$(ClassName)")) + _T("\n")
         _T("\t\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
-        _T("\n")
+        _T("\n$(InitFuncDecl)")
         _T("\tprivate:\n")
         _T("\n")
         _T("\t\tDECLARE_EVENT_TABLE()\n")
@@ -192,67 +193,168 @@ bool wxsItemRes::OnGetCanBeMain()
     return m_CanBeMain;
 }
 
-bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bool GenSrc,const wxString& Hdr, bool GenHdr,const wxString& Xrc, bool GenXrc,const wxString& Pch,bool UsePCH,const wxString& Wxs)
+bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
 {
-    wxFileName HFN(GetProjectPath()+Hdr);
+    wxFileName HFN(GetProjectPath()+Params.Hdr);
     SetLanguage(wxsCodeMarks::IdFromExt(HFN.GetExt()));
 
     switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            SetResourceName(Class);
+            SetResourceName(Params.Class);
 
-            m_HdrFileName = Hdr;
-            if ( GenHdr )
+            // Building arguments for constructor
+            wxString CallArgs;
+            wxString CtorArgs;
+            wxString CtorArgsD;
+
+            if ( Params.CtorParent )
             {
-                wxString Name = GetProjectPath()+Hdr;
+                CallArgs  << _T("parent");
+                CtorArgs  << _T("wxWindow* parent");
+                CtorArgsD << _T("wxWindow* parent");
+                if ( Params.CtorParentDef )
+                {
+                    CtorArgsD << _T("=0");
+                }
+            }
+
+            if ( Params.CtorId )
+            {
+                if ( !CtorArgs.IsEmpty() )
+                {
+                    CallArgs  << _T(",");
+                    CtorArgs  << _T(",");
+                    CtorArgsD << _T(",");
+                }
+                CallArgs  << _T("id");
+                CtorArgs  << _T("wxWindowID id");
+                CtorArgsD << _T("wxWindowID id");
+                if ( Params.CtorIdDef )
+                {
+                    CtorArgsD << _T("=wxID_ANY");
+                }
+            }
+
+            if ( Params.CtorPos )
+            {
+                if ( !CtorArgs.IsEmpty() )
+                {
+                    CallArgs  << _T(",");
+                    CtorArgs  << _T(",");
+                    CtorArgsD << _T(",");
+                }
+                CallArgs  << _T("pos");
+                CtorArgs  << _T("const wxPoint& pos");
+                CtorArgsD << _T("const wxPoint& pos");
+                if ( Params.CtorPosDef )
+                {
+                    CtorArgsD << _T("=wxDefaultPosition");
+                }
+            }
+
+            if ( Params.CtorSize )
+            {
+                if ( !CtorArgs.IsEmpty() )
+                {
+                    CallArgs  << _T(",");
+                    CtorArgs  << _T(",");
+                    CtorArgsD << _T(",");
+                }
+                CallArgs  << _T("size");
+                CtorArgs  << _T("const wxSize& size");
+                CtorArgsD << _T("const wxSize& size");
+                if ( Params.CtorSizeDef )
+                {
+                    CtorArgsD << _T("=wxDefaultSize");
+                }
+            }
+
+            wxString CtorArgsF = CtorArgs;
+
+            if ( !Params.CustomCtorArgs.IsEmpty() )
+            {
+                if ( !CtorArgs.IsEmpty() )
+                {
+                    CtorArgs  << _T(",");
+                    CtorArgsD << _T(",");
+                }
+                CtorArgs  << Params.CustomCtorArgs;
+                CtorArgsD << Params.CustomCtorArgs;
+            }
+
+            // Generating code
+
+            m_HdrFileName = Params.Hdr;
+            if ( Params.GenHdr )
+            {
+                wxString Name = GetProjectPath()+Params.Hdr;
                 wxFileName::Mkdir(wxFileName(Name).GetPath(),0777,wxPATH_MKDIR_FULL);
                 wxFile File(Name,wxFile::write);
                 wxString Guard = HFN.GetName().Upper() + _T("_H");
                 wxString Header = CppEmptyHeader;
+                wxString InitFuncDecl;
+                if ( Params.UseInitFunc )
+                {
+                    InitFuncDecl << _T("\t\tvoid ") << Params.InitFunc << _T("(") << CtorArgsF << _T(");\n\n");
+                }
+                Header.Replace(_T("$(CtorArgs)"),CtorArgsD);
                 Header.Replace(_T("$(Guard)"),Guard);
-                Header.Replace(_T("$(ClassName)"),Class);
-                Header.Replace(_T("$(BaseClassName)"),GetResourceType());
+                Header.Replace(_T("$(ClassName)"),Params.Class);
+                Header.Replace(_T("$(BaseClassName)"),Params.BaseClass);
+                Header.Replace(_T("$(InitFuncDecl)"),InitFuncDecl);
                 // TODO: Use wxsCoder to save file's content, so it will
                 //       have proper encoding and EOL stuff
                 if ( !File.Write(Header) ) return false;
             }
 
-            m_SrcFileName = Src;
-            if ( GenSrc )
+            m_SrcFileName = Params.Src;
+            if ( Params.GenSrc )
             {
-                wxString Name = GetProjectPath()+Src;
+                wxString Name = GetProjectPath()+Params.Src;
                 wxFileName::Mkdir(wxFileName(Name).GetPath(),0777,wxPATH_MKDIR_FULL);
                 wxFile File(Name,wxFile::write);
                 HFN.MakeRelativeTo(wxFileName(Name).GetPath());
                 wxString Include = HFN.GetFullPath(wxPATH_UNIX);
-                wxString Source;
-                if ( UsePCH )
+                wxString PchCode;
+                if ( Params.UsePch )
                 {
-                    wxFileName PCH(GetProjectPath()+Pch);
+                    wxFileName PCH(GetProjectPath()+Params.Pch);
                     PCH.MakeRelativeTo(wxFileName(Name).GetPath());
-                    Source << _T("#include \"") << PCH.GetFullPath(wxPATH_UNIX) << _T("\"\n");
+                    PchCode << _T("#include \"") << PCH.GetFullPath(wxPATH_UNIX) << _T("\"\n");
                 }
-                Source << CppEmptySource;
+                wxString CtorInitCode;
+                if ( Params.UseInitFunc )
+                {
+                    CtorInitCode << _T("\t") << Params.InitFunc << _T("(") << CallArgs << _T(");\n");
+                    CtorInitCode << _T("}\n\n");
+                    CtorInitCode << _T("void ") << Params.Class << _T("::") << Params.InitFunc << _T("(") << CtorArgsF << _T(")\n");
+                    CtorInitCode << _T("{\n");
+                }
+
+                wxString Source = CppEmptySource;
+                Source.Replace(_T("$(PchCode)"),PchCode);
+                Source.Replace(_T("$(CtorArgs)"),CtorArgs);
                 Source.Replace(_T("$(Include)"),Include);
-                Source.Replace(_T("$(ClassName)"),Class);
-                Source.Replace(_T("$(BaseClassName)"),GetResourceType());
+                Source.Replace(_T("$(ClassName)"),Params.Class);
+                Source.Replace(_T("$(BaseClassName)"),Params.BaseClass);
+                Source.Replace(_T("$(CtorInit)"),CtorInitCode);
                 // TODO: Use wxsCoder to save file's content, so it will
                 //       have proper encoding and EOL stuff
                 if ( !File.Write(Source) ) return false;
             }
 
-            m_XrcFileName = Xrc;
-            if ( !Xrc.empty() && GenXrc )
+            m_XrcFileName = Params.Xrc;
+            if ( !Params.Xrc.IsEmpty() && Params.GenXrc )
             {
-                wxString Name = GetProjectPath()+Xrc;
+                wxString Name = GetProjectPath()+Params.Xrc;
                 wxFileName::Mkdir(wxFileName(Name).GetPath(),0777,wxPATH_MKDIR_FULL);
                 wxFile File(Name,wxFile::write);
                 if ( !File.Write(EmptyXrc) ) return false;
             }
 
-            if ( Wxs.IsEmpty() )
+            if ( Params.Wxs.IsEmpty() )
             {
                 // Searching for new wxs file name
                 // TODO: Do not use constant folder name
@@ -265,7 +367,7 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
                         return false;
                     }
                 }
-                WxsNameBase += _T("/") + Class;
+                WxsNameBase += _T("/") + Params.Class;
                 WxsName = WxsNameBase + _T(".wxs");
                 int Cnt = 0;
                 for(;;)
@@ -280,11 +382,12 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
                 }
 
                 m_WxsFileName = WxsName;
+                Params.Wxs = WxsName;
                 {
                     wxString Name = GetProjectPath()+m_WxsFileName;
                     wxFile File(Name,wxFile::write);
                     wxString Content = EmptyWxs;
-                    Content.Replace(_T("$(ClassName)"),Class);
+                    Content.Replace(_T("$(ClassName)"),Params.Class);
                     Content.Replace(_T("$(BaseClassName)"),GetResourceType());
                     if ( !File.Write(Content) )
                     {
@@ -294,7 +397,7 @@ bool wxsItemRes::CreateNewResource(const wxString& Class,const wxString& Src, bo
             }
             else
             {
-                m_WxsFileName = Wxs;
+                m_WxsFileName = Params.Wxs;
             }
             return true;
         }
@@ -318,4 +421,21 @@ int wxsItemRes::OnGetTreeIcon()
     const wxsItemInfo* Info = wxsItemFactory::GetInfo(GetResourceType());
     if ( Info ) return Info->TreeIconId;
     return wxsResource::OnGetTreeIcon();
+}
+
+wxsItemResData* wxsItemRes::BuildResData(wxsItemEditor* Editor)
+{
+    wxString ProjectPath = GetProjectPath();
+
+    return new wxsItemResData(
+        ProjectPath + GetWxsFileName(),
+        ProjectPath + GetSrcFileName(),
+        ProjectPath + GetHdrFileName(),
+        GetXrcFileName().empty() ? _T("") : ProjectPath + GetXrcFileName(),
+        GetResourceName(),
+        GetResourceType(),
+        GetLanguage(),
+        GetTreeItemId(),
+        Editor,
+        this);
 }

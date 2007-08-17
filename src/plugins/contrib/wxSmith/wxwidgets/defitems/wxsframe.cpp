@@ -78,11 +78,11 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
         case wxsCPP:
         {
             Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.c_str());
-            if ( !GetBaseProps()->m_Size.IsDefault )
+            if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
             {
                 Codef(_T("%ASetClientSize(%S);\n"));
             }
-            if ( !GetBaseProps()->m_Position.IsDefault )
+            if ( !GetBaseProps()->m_Position.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_PositionFromArg) )
             {
                 Codef(_T("%AMove(%P);\n"));
             }

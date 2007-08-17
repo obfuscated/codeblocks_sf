@@ -63,18 +63,6 @@ class wxsWidget: public wxsItem
          */
         virtual void OnAddWidgetQPP(wxsAdvQPP* QPP) { }
 
-        /** \brief Easy access to position */
-        inline wxPoint Pos(wxWindow* Parent)
-        {
-            return GetBaseProps()->m_Position.GetPosition(Parent);
-        }
-
-        /** \brief Easy access to size */
-        inline wxSize Size(wxWindow* Parent)
-        {
-            return GetBaseProps()->m_Size.GetSize(Parent);
-        }
-
         /** \brief Easy access to style (can be used directly in wxWidgets */
         inline long Style()
         {
@@ -100,18 +88,6 @@ class wxsWidget: public wxsItem
          * \return window after settig up properties (value of Preview is returned)
          */
         wxWindow* SetupWindow(wxWindow* Preview,long Flags);
-
-        /** \brief Easy acces to position code */
-        inline wxString PosCode(const wxString& Parent,wxsCodingLang Language)
-        {
-            return GetBaseProps()->m_Position.GetPositionCode(Parent,Language);
-        }
-
-        /** \brief Easy acces to size code */
-        inline wxString SizeCode(const wxString& Parent,wxsCodingLang Language)
-        {
-            return GetBaseProps()->m_Size.GetSizeCode(Parent,Language);
-        }
 
         /** \brief Easy access to style code */
         inline wxString StyleCode(wxsCodingLang Language)

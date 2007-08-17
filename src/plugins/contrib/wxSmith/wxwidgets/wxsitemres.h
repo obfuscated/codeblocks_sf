@@ -3,8 +3,10 @@
 
 #include "wxwidgetsres.h"
 
-/** \brief Some abstract interface allowing wxsItemResData to access some resource-specific functinos easily */
+class wxsItemEditor;
 class wxsItemResData;
+
+/** \brief Some abstract interface allowing wxsItemResData to access some resource-specific functinos easily */
 class wxsItemResFunctions
 {
     public:
@@ -32,6 +34,40 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
         /** \brief Available edit modes for item resources */
         enum EditMode { File, Source, Mixed };
 
+        /** \brief Structure containing all arguments required when creating new resource */
+        struct NewResourceParams
+        {
+            wxString Class;
+            wxString Src;
+            wxString Hdr;
+            wxString Xrc;
+            wxString Pch;
+            wxString Wxs;
+            wxString InitFunc;
+            wxString BaseClass;
+            wxString CustomCtorArgs;
+            bool GenSrc;
+            bool GenHdr;
+            bool GenXrc;
+            bool UsePch;
+            bool UseInitFunc;
+            bool CtorParent;
+            bool CtorParentDef;
+            bool CtorId;
+            bool CtorIdDef;
+            bool CtorPos;
+            bool CtorPosDef;
+            bool CtorSize;
+            bool CtorSizeDef;
+
+            NewResourceParams():
+                GenSrc(false), GenHdr(false), GenXrc(false), UsePch(false),
+                UseInitFunc(false), CtorParent(false), CtorParentDef(false),
+                CtorId(false), CtorIdDef(false), CtorPos(false), CtorPosDef(false),
+                CtorSize(false), CtorSizeDef(false)
+            {}
+        };
+
         /** \brief Ctor */
         wxsItemRes(wxsProject* Owner,const wxString& ResourceType,bool CanBeMain);
 
@@ -45,17 +81,7 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
         virtual ~wxsItemRes();
 
         /** \brief Creating new resource and building files if necessarry */
-        virtual bool CreateNewResource(
-            const wxString& Class,
-            const wxString& Src,
-            bool GenSrc,
-            const wxString& Hdr,
-            bool GenHdr,
-            const wxString& Xrc,
-            bool GenXrc,
-            const wxString& Pch,
-            bool UsePch,
-            const wxString& Wxs=wxEmptyString);
+        virtual bool CreateNewResource(NewResourceParams& Params);
 
         inline const wxString& GetWxsFileName() { return m_WxsFileName; }
         inline const wxString& GetSrcFileName() { return m_SrcFileName; }
@@ -64,6 +90,9 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
 
         /** \brief Getting current edit mode */
         EditMode GetEditMode();
+
+        /** \brief Building data object for this resource */
+        wxsItemResData* BuildResData(wxsItemEditor* Editor);
 
     protected:
 

@@ -118,13 +118,12 @@ namespace
         }
 
         // Creating new resource using existing files
-        MainResource->CreateNewResource(
-            ResourceName,
-            MainResSource,false,
-            MainResHeader,false,
-            wxEmptyString,false,
-            _T(""), false,
-            WxsFile);
+        wxsItemRes::NewResourceParams Params;
+        Params.Class = ResourceName;
+        Params.Src   = MainResSource;
+        Params.Hdr   = MainResHeader;
+        Params.Wxs   = WxsFile;
+        MainResource->CreateNewResource(Params);
 
         // Registering new resource inside project
         WxsProject->AddResource(MainResource);

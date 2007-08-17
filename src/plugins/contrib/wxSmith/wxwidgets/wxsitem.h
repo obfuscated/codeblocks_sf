@@ -49,23 +49,26 @@ class wxsItem: public wxsPropertyContainer
     public:
 
         // Flags used for property filtering
-        static const long flFile      = 0x000001;  ///< \brief Edition in file mode
-        static const long flSource    = 0x000002;  ///< \brief Edition in source mode
-        static const long flMixed     = 0x000004;  ///< \brief Edition in mixed mode
-        static const long flVariable  = 0x000008;  ///< \brief Item is using variable
-        static const long flId        = 0x000010;  ///< \brief Item is using identifier
-        static const long flPosition  = 0x000020;  ///< \brief Item is using position
-        static const long flSize      = 0x000040;  ///< \brief Item is using size
-        static const long flEnabled   = 0x000080;  ///< \brief Item is using Enabled property
-        static const long flFocused   = 0x000100;  ///< \brief Item is using Focused property
-        static const long flHidden    = 0x000200;  ///< \brief Item is using Hidden property
-        static const long flColours   = 0x000400;  ///< \brief Item is using colour properties (Fg and Bg)
-        static const long flToolTip   = 0x000800;  ///< \brief Item is using tooltips
-        static const long flFont      = 0x001000;  ///< \brief Item is using font
-        static const long flHelpText  = 0x002000;  ///< \brief Item is using help text
-        static const long flSubclass  = 0x004000;  ///< \brief Item is using subclassing
-        static const long flMinMaxSize= 0x008000;  ///< \brief Item is using SetMinSize / SetMaxSize functions
-        static const long flExtraCode = 0x010000;  ///< \brief Item is using extra item initialization code
+        static const long flVariable  = 0x0000001;  ///< \brief Item is using variable
+        static const long flId        = 0x0000002;  ///< \brief Item is using identifier
+        static const long flPosition  = 0x0000004;  ///< \brief Item is using position
+        static const long flSize      = 0x0000008;  ///< \brief Item is using size
+        static const long flEnabled   = 0x0000010;  ///< \brief Item is using Enabled property
+        static const long flFocused   = 0x0000020;  ///< \brief Item is using Focused property
+        static const long flHidden    = 0x0000040;  ///< \brief Item is using Hidden property
+        static const long flColours   = 0x0000080;  ///< \brief Item is using colour properties (Fg and Bg)
+        static const long flToolTip   = 0x0000100;  ///< \brief Item is using tooltips
+        static const long flFont      = 0x0000200;  ///< \brief Item is using font
+        static const long flHelpText  = 0x0000400;  ///< \brief Item is using help text
+        static const long flSubclass  = 0x0000800;  ///< \brief Item is using subclassing
+        static const long flMinMaxSize= 0x0001000;  ///< \brief Item is using SetMinSize / SetMaxSize functions
+        static const long flExtraCode = 0x0002000;  ///< \brief Item is using extra item initialization code
+
+        static const long flFile      = 0x8000000;  ///< \brief Edition in file mode
+        static const long flSource    = 0x4000000;  ///< \brief Edition in source mode
+        static const long flMixed     = 0x2000000;  ///< \brief Edition in mixed mode
+        static const long flPointer   = 0x1000000;  ///< \brief Flag set when current item is as pointer
+        static const long flRoot      = 0x0800000;  ///< \brief Flag set when current item is root item of resource
 
         // Flags used when generating preview
         static const long pfExact     = 0x000001;   ///< \brief Notify to create exact preview (without any editor-like goodies)
@@ -109,7 +112,7 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Getting variable name
          *  \return name of variable or empty string of this item doesn't have one
          */
-        inline wxString GetVarName() { return IsRootItem() ? _T("this") : m_VarName; }
+        inline wxString GetVarName() { return IsRootItem() ? _T("this") : m_BaseProperties.m_VarName; }
 
         /** \brief Setting variabne name */
         void SetVarName(const wxString& NewName);
@@ -137,16 +140,16 @@ class wxsItem: public wxsPropertyContainer
         wxString GetAccessPrefix(wxsCodingLang Language);
 
         /** \brief Getting identifier */
-        inline wxString GetIdName() { return IsRootItem() ? _T("id") : m_IdName; }
+        wxString GetIdName();
 
         /** \brief Setting identifier */
-        inline void SetIdName(const wxString& NewIdName) { m_IdName = NewIdName; }
+        inline void SetIdName(const wxString& NewIdName) { m_BaseProperties.m_IdName = NewIdName; }
 
         /** \brief Checking if variable is member of class */
-        inline bool GetIsMember() { return IsPointer() ? m_IsMember : true; }
+        inline bool GetIsMember() { return IsPointer() ? m_BaseProperties.m_IsMember : true; }
 
         /** \brief Setting IsMember flag */
-        inline void SetIsMember(bool NewIsMember) { m_IsMember = NewIsMember; }
+        inline void SetIsMember(bool NewIsMember) { m_BaseProperties.m_IsMember = NewIsMember; }
 
         /** \brief Getting parent item */
         inline wxsParent* GetParent() { return m_Parent; }
@@ -172,7 +175,7 @@ class wxsItem: public wxsPropertyContainer
         wxString GetUserClass();
 
         /** \brief Setting user class */
-        inline void SetUserClass(const wxString& Subclass) { m_Subclass = Subclass; }
+        inline void SetUserClass(const wxString& Subclass) { m_BaseProperties.m_Subclass = Subclass; }
 
         /** \brief Function enumerating properties of this item
          *
@@ -189,7 +192,7 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Function generating code creating item in resource
          *  \note This is wrapped for \link OnBuildCreatingCode function
          */
-        inline void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language) { m_WindowParent = WindowParent; return OnBuildCreatingCode(Code,WindowParent,Language); }
+        void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
 
         /** \brief Function generating code declaring item (and all it's children)
          *  \note This is wrapped for \link OnBuildCreatingCode function
@@ -248,7 +251,7 @@ class wxsItem: public wxsPropertyContainer
         virtual wxsTool* ConvertToTool() { return 0; }
 
         /** \brief Function returinng pointer to wxsBaseProperties class if item uses it. */
-        virtual wxsBaseProperties* GetBaseProps() { return m_BaseProperties; }
+        virtual wxsBaseProperties* GetBaseProps() { return &m_BaseProperties; }
 
         /** \brief Getting current preview object */
         inline wxObject* GetLastPreview() { return m_LastPreview; }
@@ -275,7 +278,7 @@ class wxsItem: public wxsPropertyContainer
          * It will return value of identifier given as string, number if it's
          * given as integer or wxID_ANY (-1) if it's user-defined identifier.
          */
-        inline wxWindowID GetId() { return wxsPredefinedIDs::Value(m_IdName); }
+        inline wxWindowID GetId() { return wxsPredefinedIDs::Value(m_BaseProperties.m_IdName); }
 
         /** \brief Posting mouse click event from editor
          * \note This is only a wrapper to OnMouseClick function
@@ -539,6 +542,18 @@ class wxsItem: public wxsPropertyContainer
          */
         virtual wxString OnGetTreeLabel(int& Image);
 
+        /** \brief Easy access to position */
+        inline wxPoint Pos(wxWindow* Parent) { return GetBaseProps()->m_Position.GetPosition(Parent); }
+
+        /** \brief Easy access to size */
+        inline wxSize Size(wxWindow* Parent) { return GetBaseProps()->m_Size.GetSize(Parent); }
+
+        /** \brief Easy acces to position code */
+        wxString PosCode(const wxString& Parent,wxsCodingLang Language);
+
+        /** \brief Easy acces to size code */
+        wxString SizeCode(const wxString& Parent,wxsCodingLang Language);
+
     private:
 
         /** \brief Function enumerating proeprties
@@ -576,11 +591,7 @@ class wxsItem: public wxsPropertyContainer
         wxsEvents m_Events;                     ///< \brief Object managing events
         wxsParent* m_Parent;                    ///< \brief Parent class of this one
         wxsItemResData* m_ResourceData;         ///< \brief Data managment object containing this item
-        wxString m_VarName;                     ///< \brief Variable name
-        wxString m_IdName;                      ///< \brief Name of identifier
-        bool m_IsMember;                        ///< \brief Swith between local and global variable
-        wxString m_Subclass;                    ///< \brief Subclass (class used instead of original base class)
-        wxsBaseProperties* m_BaseProperties;    ///< \brief Pointer to base properties if item uses it
+        wxsBaseProperties m_BaseProperties;     ///< \brief Pointer to base properties if item uses it
         long m_PropertiesFlags;                 ///< \brief Properties flags
         wxObject* m_LastPreview;                ///< \brief Current preview object
         bool m_IsSelected;                      ///< \brief Set to true if item is selected inside editor

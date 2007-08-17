@@ -81,19 +81,7 @@ wxsItemEditor::~wxsItemEditor()
 
 void wxsItemEditor::InitializeResourceData()
 {
-    wxString ProjectPath = GetResource()->GetProjectPath();
-
-    m_Data = new wxsItemResData(
-        ProjectPath + GetWxsFileName(),
-        ProjectPath + GetSrcFileName(),
-        ProjectPath + GetHdrFileName(),
-        GetXrcFileName().empty() ? _T("") : ProjectPath + GetXrcFileName(),
-        GetResource()->GetResourceName(),
-        GetResource()->GetResourceType(),
-        GetResource()->GetLanguage(),
-        GetResource()->GetTreeItemId(),
-        this,
-        (wxsItemRes*)GetResource() );
+    m_Data = GetItemRes()->BuildResData(this);
 
     if ( !m_Data->IsOk() )
     {
