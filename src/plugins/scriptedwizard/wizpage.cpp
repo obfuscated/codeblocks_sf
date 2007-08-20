@@ -27,7 +27,7 @@
 // string parameter, if needed.
 wxString AppendPathSepIfNeeded(const wxString& path)
 {
-    if (path.Last() == _T('/') || path.Last() == _T('\\'))
+    if (path.IsEmpty() || path.Last() == _T('/') || path.Last() == _T('\\'))
         return path;
     return path + wxFILE_SEP_PATH;
 }
