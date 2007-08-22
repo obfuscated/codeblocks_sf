@@ -1014,10 +1014,20 @@ int DebuggerGDB::Debug()
 
     m_pProject = project;
 
-    // compile project/target (if not attaching to a PID)
-    // this will wait for the compiler to finish and then call DoDebug
-    if (!EnsureBuildUpToDate())
-		return -1;
+	// should we build to make sure project is up-to-date?
+	if (Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("auto_build"), true))
+	{
+		// compile project/target (if not attaching to a PID)
+		// this will wait for the compiler to finish and then call DoDebug
+		if (!EnsureBuildUpToDate())
+			return -1;
+	}
+	else
+	{
+		m_pCompiler = 0;
+		m_WaitingCompilerToFinish = false;
+		m_Canceled = false;
+	}
 
 	// if not waiting for the compiler, start debugging now
 	// but first check if the driver has already been started:
@@ -1044,15 +1054,18 @@ int DebuggerGDB::DoDebug()
 
 	// this is always called after EnsureBuildUpToDate() so we should display the build result
 	msgMan->SwitchTo(m_PageIndex);
-	if (m_pCompiler->GetExitCode() != 0)
+	if (m_pCompiler)
 	{
-		msgMan->Log(m_PageIndex, _("Build failed..."));
-		msgMan->Log(m_PageIndex, _("Aborting debugging session"));
-		cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
-		m_Canceled = true;
-		return 1;
+		if (m_pCompiler->GetExitCode() != 0)
+		{
+			msgMan->Log(m_PageIndex, _("Build failed..."));
+			msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+			cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
+			m_Canceled = true;
+			return 1;
+		}
+		msgMan->Log(m_PageIndex, _("Build succeeded"));
 	}
-	msgMan->Log(m_PageIndex, _("Build succeeded"));
 
     // select the build target to debug
     ProjectBuildTarget* target = 0;

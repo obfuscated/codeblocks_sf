@@ -388,6 +388,7 @@ void CompilerGCC::OnAttach()
 	// register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectUnloaded));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_TARGETS_MODIFIED, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
 }
 
@@ -3205,15 +3206,17 @@ void CompilerGCC::OnProjectActivated(CodeBlocksEvent& event)
 //            event.GetProject()->GetTitle().c_str());
     if (event.GetProject() == active)
         UpdateProjectTargets(event.GetProject());
-    event.Skip(); // *very* important! don't forget it...
 }
 
 void CompilerGCC::OnProjectLoaded(CodeBlocksEvent& event)
 {
-    // we only care to update the active project
-//    if (event.GetProject() == Manager::Get()->GetProjectManager()->GetActiveProject())
-//        UpdateProjectTargets(event.GetProject());
-    event.Skip(); // *very* important! don't forget it...
+}
+
+void CompilerGCC::OnProjectUnloaded(CodeBlocksEvent& event)
+{
+	// just make sure we don't keep an invalid pointer around
+	if (m_Project == event.GetProject())
+		m_Project = 0;
 }
 
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)

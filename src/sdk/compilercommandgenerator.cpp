@@ -46,7 +46,9 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_CFlags.clear();
     m_LDFlags.clear();
     m_RCFlags.clear();
-    m_Backticks.clear();
+    
+    // don't clear the backticks cache - it wouldn't be a cache then :)
+//    m_Backticks.clear();
 
     m_CompilerSearchDirs.clear();
     m_LinkerSearchDirs.clear();
@@ -877,6 +879,8 @@ wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 	while (start != wxString::npos && end != wxString::npos)
 	{
 		wxString cmd = str.substr(start + 1, end - start - 1);
+		cmd.Trim(true);
+		cmd.Trim(false);
 		if (cmd.IsEmpty())
 			break;
 
@@ -889,6 +893,7 @@ wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 		}
 		else
 		{
+			DBGLOG(_T("Caching result of `%s`"), cmd.c_str());
 			wxArrayString output;
 			if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
 				wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
@@ -897,6 +902,7 @@ wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 			bt = GetStringFromArray(output, _T(" "));
 			// add it in the cache
 			m_Backticks[cmd] = bt;
+			DBGLOG(_T("Cached"));
 		}
 		ret << bt << _T(' ');
 		str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);
