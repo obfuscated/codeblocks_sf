@@ -8,6 +8,7 @@
 #include <wx/fontutil.h>
 #include <cstdlib>
 #include <algorithm>
+#include <string>
 
 using std::size_t;
 using std::find;
