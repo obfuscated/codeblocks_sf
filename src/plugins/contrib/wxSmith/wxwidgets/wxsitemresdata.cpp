@@ -65,6 +65,7 @@ wxsItemResData::wxsItemResData(
         m_Corrector(this),
         m_IsOK(false),
         m_LockCount(0),
+        m_ReadOnly(false),
         m_CurrentCode(0)
 {
     if (  WxsFileName.empty() &&
@@ -121,7 +122,7 @@ wxsItemResData::~wxsItemResData()
     }
     m_Tools.clear();
     m_PropertiesFilter = 0;
-    if ( wxsResourceTree::Get() )
+    if ( m_Editor && wxsResourceTree::Get() )
     {
         wxsResourceItemId ParentId = wxsResourceTree::Get()->GetItemParent(m_TreeId);
         // Selecting parent to prevent reopening resource on wxGTK
@@ -1526,6 +1527,8 @@ bool wxsItemResData::HidePreview()
 
 void wxsItemResData::RebuildTree()
 {
+    // We DO NOT create resource tree if there's no editor
+    if ( !m_Editor ) return;
     wxsResourceTree::Get()->DeleteChildren(m_TreeId);
     m_RootItem->BuildItemTree(wxsResourceTree::Get(),m_TreeId,-1);
     if ( GetToolsCount() )

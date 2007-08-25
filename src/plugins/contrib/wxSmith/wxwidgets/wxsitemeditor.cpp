@@ -340,6 +340,11 @@ bool wxsItemEditor::CanPaste() const
     return m_Data ? m_Data->CanPaste() : false;
 }
 
+bool wxsItemEditor::IsReadOnly() const
+{
+    return m_Data ? m_Data->IsReadOnly() : false;
+}
+
 void wxsItemEditor::Cut()
 {
     if ( m_Data ) m_Data->Cut();

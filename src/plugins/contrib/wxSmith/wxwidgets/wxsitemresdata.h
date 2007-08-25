@@ -155,6 +155,9 @@ class wxsItemResData
 		/** \brief Redoing */
 		inline void Redo() { SetXmlData(m_Undo.Redo()); }
 
+        /** \brief Checking if current content is read only */
+        inline bool IsReadOnly() { return m_ReadOnly; }
+
 		/* ********************** */
 		/*  Clipboard operations  */
 		/* ********************** */
@@ -350,6 +353,8 @@ class wxsItemResData
 
         bool m_IsOK;
         int m_LockCount;
+
+        bool m_ReadOnly;
 
         wxString* m_CurrentCode;
 };

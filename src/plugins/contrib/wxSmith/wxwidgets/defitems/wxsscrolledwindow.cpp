@@ -83,7 +83,7 @@ void wxsScrolledWindow::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,w
 {
     switch ( Language )
     {
-        case wxsCPP: Decl.Add(_T("<wx/panel.h>")); return;
+        case wxsCPP: Decl.Add(_T("<wx/scrolwin.h>")); return;
         default: wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnEnumDeclFiles"),Language);
     }
 }

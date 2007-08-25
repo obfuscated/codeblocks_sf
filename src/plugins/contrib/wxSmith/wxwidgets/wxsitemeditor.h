@@ -51,7 +51,10 @@ class wxsItemEditor : public wxsEditor
 		/** \brief Checking if we can paste */
 		virtual bool CanPaste() const;
 
-		/** \brief Undoing */
+        /** \brief testing if current resource is read-only */
+        virtual bool IsReadOnly() const;
+
+        /** \brief Undoing */
 		virtual void Undo();
 
 		/** \brief Redoing */
