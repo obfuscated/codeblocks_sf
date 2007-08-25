@@ -42,7 +42,7 @@ CompileTargetBase::CompileTargetBase()
     m_PrefixGenerationPolicy(tgfpPlatformDefault),
     m_ExtensionGenerationPolicy(tgfpPlatformDefault)
 {
-	//ctor
+    //ctor
     for (int i = 0; i < static_cast<int>(ortLast); ++i)
     {
         m_OptionsRelation[i] = orAppendToParentOptions;
@@ -58,7 +58,7 @@ CompileTargetBase::CompileTargetBase()
 
 CompileTargetBase::~CompileTargetBase()
 {
-	//dtor
+    //dtor
 }
 
 void CompileTargetBase::SetTargetFilenameGenerationPolicy(TargetFilenameGenerationPolicy prefix,
@@ -78,20 +78,20 @@ void CompileTargetBase::GetTargetFilenameGenerationPolicy(TargetFilenameGenerati
 
 const wxString& CompileTargetBase::GetFilename() const
 {
-	return m_Filename;
+    return m_Filename;
 }
 
 const wxString& CompileTargetBase::GetTitle() const
 {
-	return m_Title;
+    return m_Title;
 }
 
 void CompileTargetBase::SetTitle(const wxString& title)
 {
-	if (m_Title == title)
-		return;
-	m_Title = title;
-	SetModified(true);
+    if (m_Title == title)
+        return;
+    m_Title = title;
+    SetModified(true);
 }
 
 void CompileTargetBase::SetOutputFilename(const wxString& filename)
@@ -102,48 +102,48 @@ void CompileTargetBase::SetOutputFilename(const wxString& filename)
         SetModified(true);
         return;
     }
-	else if (m_OutputFilename == filename)
-		return;
-	m_OutputFilename = UnixFilename(filename);
-	GenerateTargetFilename(m_OutputFilename);
-	SetModified(true);
+    else if (m_OutputFilename == filename)
+        return;
+    m_OutputFilename = UnixFilename(filename);
+    GenerateTargetFilename(m_OutputFilename);
+    SetModified(true);
 }
 
 void CompileTargetBase::SetWorkingDir(const wxString& dirname)
 {
-	if (m_WorkingDir == dirname)
-		return;
-	m_WorkingDir = UnixFilename(dirname);
-	SetModified(true);
+    if (m_WorkingDir == dirname)
+        return;
+    m_WorkingDir = UnixFilename(dirname);
+    SetModified(true);
 }
 
 void CompileTargetBase::SetObjectOutput(const wxString& dirname)
 {
-	if (m_ObjectOutput == dirname)
-		return;
-	m_ObjectOutput = UnixFilename(dirname);
-	SetModified(true);
+    if (m_ObjectOutput == dirname)
+        return;
+    m_ObjectOutput = UnixFilename(dirname);
+    SetModified(true);
 }
 
 void CompileTargetBase::SetDepsOutput(const wxString& dirname)
 {
-	if (m_DepsOutput == dirname)
-		return;
-	m_DepsOutput = UnixFilename(dirname);
-	SetModified(true);
+    if (m_DepsOutput == dirname)
+        return;
+    m_DepsOutput = UnixFilename(dirname);
+    SetModified(true);
 }
 
 OptionsRelation CompileTargetBase::GetOptionRelation(OptionsRelationType type) const
 {
-	return m_OptionsRelation[type];
+    return m_OptionsRelation[type];
 }
 
 void CompileTargetBase::SetOptionRelation(OptionsRelationType type, OptionsRelation rel)
 {
-	if (m_OptionsRelation[type] == rel)
-		return;
-	m_OptionsRelation[type] = rel;
-	SetModified(true);
+    if (m_OptionsRelation[type] == rel)
+        return;
+    m_OptionsRelation[type] = rel;
+    SetModified(true);
 }
 
 wxString CompileTargetBase::GetOutputFilename()
@@ -420,42 +420,42 @@ wxString CompileTargetBase::GetBasePath() const
 
 void CompileTargetBase::SetTargetType(TargetType pt)
 {
-	if (m_TargetType == pt)
-		return;
-	m_TargetType = pt;
-	m_OutputFilename = SuggestOutputFilename();
-	SetModified(true);
+    if (m_TargetType == pt)
+        return;
+    m_TargetType = pt;
+    m_OutputFilename = SuggestOutputFilename();
+    SetModified(true);
 }
 
 TargetType CompileTargetBase::GetTargetType() const
 {
-	return m_TargetType;
+    return m_TargetType;
 }
 
 const wxString& CompileTargetBase::GetExecutionParameters() const
 {
-	return m_ExecutionParameters;
+    return m_ExecutionParameters;
 }
 
 void CompileTargetBase::SetExecutionParameters(const wxString& params)
 {
-	if (m_ExecutionParameters == params)
-		return;
-	m_ExecutionParameters = params;
-	SetModified(true);
+    if (m_ExecutionParameters == params)
+        return;
+    m_ExecutionParameters = params;
+    SetModified(true);
 }
 
 const wxString& CompileTargetBase::GetHostApplication() const
 {
-	return m_HostApplication;
+    return m_HostApplication;
 }
 
 void CompileTargetBase::SetHostApplication(const wxString& app)
 {
-	if (m_HostApplication == app)
-		return;
-	m_HostApplication = app;
-	SetModified(true);
+    if (m_HostApplication == app)
+        return;
+    m_HostApplication = app;
+    SetModified(true);
 }
 
 void CompileTargetBase::SetCompilerID(const wxString& id)

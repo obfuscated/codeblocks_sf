@@ -29,7 +29,7 @@ enum TargetType
 {
     ttExecutable    = 0, /**< Target produces an executable */
     ttConsoleOnly   = 1, /**< Target produces a console executable (without GUI) (distinction between ttExecutable and ttConsoleOnly happens only under Win32) */
-    ttStaticLib		= 2, /**< Target produces a static library */
+    ttStaticLib        = 2, /**< Target produces a static library */
     ttDynamicLib    = 3, /**< Target produces a dynamic library */
     ttCommandsOnly  = 4, /**< Target only runs commands in pre-build and/or post-build steps */
     ttNative        = 5, /**< Target produces a native binary */
@@ -69,9 +69,9 @@ enum TargetFilenameGenerationPolicy
  */
 class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 {
-	public:
-		CompileTargetBase();
-		virtual ~CompileTargetBase();
+    public:
+        CompileTargetBase();
+        virtual ~CompileTargetBase();
 
         /** A target's filename can either be auto-generated based on the running platform,
           * or completely specified by the user. Calling this function sets the
@@ -127,14 +127,14 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual TargetType GetTargetType() const; ///< Read the target's type
         virtual const wxString& GetExecutionParameters() const; ///< Read the target's execution parameters
         virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
-		virtual const wxString& GetHostApplication() const; ///< Read the target's host application
-		virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
+        virtual const wxString& GetHostApplication() const; ///< Read the target's host application
+        virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
         virtual void SetCompilerID(const wxString& id); ///< Set the target's compiler
         virtual const wxString& GetCompilerID() const { return m_CompilerId; } ///< Read the target's compiler
         virtual wxString GetMakeCommandFor(MakeCommand cmd) const { return m_MakeCommands[cmd]; } ///< Get the "make" command used for @c cmd
         virtual void SetMakeCommandFor(MakeCommand cmd, const wxString& make); ///< Set the "make" command used for @c cmd
         virtual bool MakeCommandsModified() const { return m_MakeCommandsModified; } ///< True if any of the "make" commands is modified.
-	protected:
+    protected:
         friend class cbProject;
 
         wxString m_Filename;
@@ -152,7 +152,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         bool m_MakeCommandsModified;
         TargetFilenameGenerationPolicy m_PrefixGenerationPolicy;
         TargetFilenameGenerationPolicy m_ExtensionGenerationPolicy;
-	private:
+    private:
         void GenerateTargetFilename(wxString& filename) const;
 };
 

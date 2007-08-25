@@ -24,33 +24,40 @@
 
 const Associations::Assoc knownTypes[] =
 {
-    { FileFilters::CODEBLOCKS_EXT, _T("project file"),   1 },
-    { FileFilters::WORKSPACE_EXT,  _T("workspace file"), 9 },
+/*
+    { Extension (wxString), Description (wxString), IconIndex (int) }
+      Note: "index" is the index of the icon resource in "resources.rc"
+            Keep all indices in sync with icon indices in "resources.rc"!
+*/
+    { FileFilters::CODEBLOCKS_EXT,      _T("project file"),                  1 },
+    { FileFilters::WORKSPACE_EXT,       _T("workspace file"),               10 },
 
+    { FileFilters::C_EXT,               _T("C source file"),                 2 },
 
-    { FileFilters::C_EXT,    _T("C source file"), 2 },
-    { FileFilters::CPP_EXT,  _T("C++ source file"), 3 },
-    { FileFilters::CC_EXT,   _T("C++ source file"), 3 },
-    { FileFilters::CXX_EXT,  _T("C++ source file"), 3 },
-    { FileFilters::H_EXT,    _T("Header file"), 4 },
-    { FileFilters::HPP_EXT,  _T("Header file"), 4 },
-    { FileFilters::HH_EXT,   _T("Header file"), 4 },
-    { FileFilters::HXX_EXT,  _T("Header file"), 4 },
+    { FileFilters::CPP_EXT,             _T("C++ source file"),               3 },
+    { FileFilters::CC_EXT,              _T("C++ source file"),               3 },
+    { FileFilters::CXX_EXT,             _T("C++ source file"),               3 },
 
-    { _T("cg"),                     _T("cg source file"),      5 },
-    { FileFilters::D_EXT,           _T("D source file"),       6 },
-    { FileFilters::RESOURCE_EXT,    _T("resource file"),       8 },
-    { FileFilters::XRCRESOURCE_EXT, _T("XRC resource file"),   8 },
-    { FileFilters::F_EXT,           _T("Fortran source file"), 7 },
-    { FileFilters::F77_EXT,         _T("Fortran source file"), 7 },
-    { FileFilters::F95_EXT,         _T("Fortran source file"), 7 },
+    { FileFilters::H_EXT,               _T("Header file"),                   4 },
+    { FileFilters::HPP_EXT,             _T("Header file"),                   4 },
+    { FileFilters::HH_EXT,              _T("Header file"),                   4 },
+    { FileFilters::HXX_EXT,             _T("Header file"),                   4 },
 
+    { FileFilters::JAVA_EXT,            _T("Java source file"),              5 },
+    { _T("cg"),                         _T("cg source file"),                6 },
+    { FileFilters::D_EXT,               _T("D source file"),                 7 },
+    { FileFilters::RESOURCE_EXT,        _T("resource file"),                 9 },
+    { FileFilters::XRCRESOURCE_EXT,     _T("XRC resource file"),             9 },
 
-    { FileFilters::DEVCPP_EXT,       _T("Dev-CPP project file"), 18 },
-    { FileFilters::MSVC6_EXT,       _T("MS Visual C++ project file"), 19 },
-    { FileFilters::MSVC6_WORKSPACE_EXT,       _T("MS Visual C++ workspace file"), 20 }
-    // { _T("proj"),      _T(""), 21 },
+    { FileFilters::F_EXT,               _T("Fortran source file"),           8 },
+    { FileFilters::F77_EXT,             _T("Fortran source file"),           8 },
+    { FileFilters::F90_EXT,             _T("Fortran source file"),           8 },
+    { FileFilters::F95_EXT,             _T("Fortran source file"),           8 },
 
+    { FileFilters::DEVCPP_EXT,          _T("Dev-CPP project file"),         20 },
+    { FileFilters::MSVC6_EXT,           _T("MS Visual C++ project file"),   21 },
+    { FileFilters::MSVC6_WORKSPACE_EXT, _T("MS Visual C++ workspace file"), 22 }
+    //{ _T("proj"),                       _T("XCODE Project file"),           23 }
 };
 
 

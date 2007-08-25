@@ -30,27 +30,13 @@ FilesGroupsAndMasks::FilesGroupsAndMasks()
     Load();
 
     if (m_Groups.GetCount() == 0)
-    {
-        // only add default groups if none were loaded...
-        unsigned int group = AddGroup(_("Sources"));
-        SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX") );
-        group = AddGroup(_("D Sources"));
-        SetFileMasks(group, _T("*.d;*.D") );
-        group = AddGroup(_("Fortran Sources"));
-        SetFileMasks(group, _T("*.f;*.f77;*.f97") );
-        group = AddGroup(_("Headers"));
-        SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
-        group = AddGroup(_("Resources"));
-        SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
-        group = AddGroup(_("Scripts"));
-        SetFileMasks(group, _T("*.script;*.SCRIPT") );
-    }
+        SetDefault(false); // No need to clear any groups
 }
 
-FilesGroupsAndMasks::FilesGroupsAndMasks(FilesGroupsAndMasks& copy)
+FilesGroupsAndMasks::FilesGroupsAndMasks(const FilesGroupsAndMasks& rhs)
 {
     // copy ctor
-    CopyFrom(copy);
+    CopyFrom(rhs);
 }
 
 FilesGroupsAndMasks::~FilesGroupsAndMasks()
@@ -60,18 +46,40 @@ FilesGroupsAndMasks::~FilesGroupsAndMasks()
     Clear();
 }
 
-void FilesGroupsAndMasks::CopyFrom(FilesGroupsAndMasks& copy)
+void FilesGroupsAndMasks::CopyFrom(const FilesGroupsAndMasks& rhs)
 {
     Clear();
-    for (unsigned int i = 0; i < copy.m_Groups.GetCount(); ++i)
+    for (unsigned int i = 0; i < rhs.m_Groups.GetCount(); ++i)
     {
         FileGroups* fg = new FileGroups;
-        FileGroups* otherfg = copy.m_Groups[i];
+        FileGroups* otherfg = rhs.m_Groups[i];
         fg->groupName = otherfg->groupName;
         fg->fileMasks = otherfg->fileMasks;
 
         m_Groups.Add(fg);
     }
+}
+
+void FilesGroupsAndMasks::SetDefault(bool do_clear)
+{
+    if (do_clear)
+        Clear();
+
+    // only add default groups if none were loaded...
+    unsigned int group = AddGroup(_("Sources"));
+    SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX") );
+    group = AddGroup(_("D Sources"));
+    SetFileMasks(group, _T("*.d;*.D") );
+    group = AddGroup(_("Fortran Sources"));
+    SetFileMasks(group, _T("*.f;*.f77;*.f90;*.f95;*.F;*.F77;*.F90;*.F95") );
+    group = AddGroup(_("Java Sources"));
+    SetFileMasks(group, _T("*.java;*.JAVA") );
+    group = AddGroup(_("Headers"));
+    SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
+    group = AddGroup(_("Resources"));
+    SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
+    group = AddGroup(_("Scripts"));
+    SetFileMasks(group, _T("*.script;*.SCRIPT") );
 }
 
 void FilesGroupsAndMasks::Load()
