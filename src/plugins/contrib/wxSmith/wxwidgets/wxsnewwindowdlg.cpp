@@ -101,7 +101,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     wxStaticText* StaticText2;
     wxStaticText* StaticText3;
 
-    Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxDialog"));
+    Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Options"));
     FlexGridSizer1 = new wxFlexGridSizer(0, 2, 5, 5);
@@ -129,9 +129,9 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_XRCAutoload->Disable();
     FlexGridSizer1->Add(m_XRCAutoload, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(FlexGridSizer1, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-    m_RootSizer->Add(StaticBoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_RootSizer->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_AdvOps = new wxButton(this, ID_BUTTON1, _("+ Advanced options"), wxDefaultPosition, wxDefaultSize, wxBU_LEFT|wxNO_BORDER, wxDefaultValidator, _T("ID_BUTTON1"));
-    m_RootSizer->Add(m_AdvOps, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_RootSizer->Add(m_AdvOps, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_AdvancedOptionsSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxEmptyString);
     FlexGridSizer2 = new wxFlexGridSizer(0, 2, 5, 5);
     FlexGridSizer2->AddGrowableCol(1);
@@ -678,6 +678,7 @@ void wxsNewWindowDlg::OnUseInitFuncClick(wxCommandEvent& event)
 
 void wxsNewWindowDlg::OnAdvOpsClick(wxCommandEvent& event)
 {
+    Freeze();
     m_AdvOpsShown = !m_AdvOpsShown;
     wxString BaseLabel = _("Advanced options");
     if ( m_AdvOpsShown )
@@ -690,9 +691,12 @@ void wxsNewWindowDlg::OnAdvOpsClick(wxCommandEvent& event)
         m_RootSizer->Hide(m_AdvancedOptionsSizer);
         m_AdvOps->SetLabel(_T("+ ") + BaseLabel);
     }
+    SetMinSize(wxSize(10,10));
+    SetSize(wxSize(10,10));
     Layout();
     m_RootSizer->Fit(this);
     m_RootSizer->SetSizeHints(this);
+    Thaw();
 }
 
 bool wxsNewWindowDlg::PrepareResource(wxsItemRes* Res,wxsItemResData* Data)
