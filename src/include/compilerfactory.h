@@ -49,6 +49,8 @@ class DLLIMPORT CompilerFactory
         static void RemoveCompiler(Compiler* compiler);
         /// Unregister all compilers.
         static void UnregisterCompilers();
+        /// get the version number as string for the compiler with the specified index
+        static wxString GetCompilerVersionString(const wxString& Id);
 
         static void SaveSettings();
         static void LoadSettings();

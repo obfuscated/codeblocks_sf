@@ -610,6 +610,7 @@ namespace ScriptBindings
                 staticFunc(&CompilerFactory::IsValidCompilerID, "IsValidCompilerID").
                 staticFuncVarArgs(&CompilerFactory_GetCompilerIndex, "GetCompilerIndex", "*").
                 staticFunc(&CompilerFactory::GetDefaultCompilerID, "GetDefaultCompilerID").
+                staticFunc(&CompilerFactory::GetCompilerVersionString, "GetCompilerVersionString").
                 staticFunc<CF_INHERITSFROM>(&CompilerFactory::CompilerInheritsFrom, "CompilerInheritsFrom");
 
         SqPlus::SQClassDef<PluginInfo>("PluginInfo").

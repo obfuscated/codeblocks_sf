@@ -302,3 +302,13 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
         return Compilers[dlg.GetSelection()];
     return 0;
 }
+
+wxString CompilerFactory::GetCompilerVersionString(const wxString& Id)
+{
+	wxString Version;
+	if(const Compiler* pCompiler = GetCompiler(Id))
+	{
+		Version = pCompiler->GetVersionString();
+	}
+	return Version;
+} // end of GetCompilerVersionString
