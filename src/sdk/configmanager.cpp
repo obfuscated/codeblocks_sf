@@ -1002,8 +1002,10 @@ void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
     TiXmlNode *curr = 0;
     if(asNode)
     {
-        while(curr = asNode->IterateChildren("s", curr))
+        while((curr = asNode->IterateChildren("s", curr)))
+        {
             arrayString->Add(cbC2U(curr->FirstChild()->ToText()->Value()));
+        }
     }
 }
 
@@ -1037,7 +1039,7 @@ wxString ConfigManager::ReadBinary(const wxString& name)
     wxString str;
     wxString key(name);
     TiXmlElement* e = AssertPath(key);
-    unsigned int crc;
+    unsigned int crc = 0;
 
     TiXmlHandle parentHandle(e);
     TiXmlElement* bin = parentHandle.FirstChild(cbU2C(key)).FirstChild("bin").Element();
@@ -1048,8 +1050,7 @@ wxString ConfigManager::ReadBinary(const wxString& name)
     if(bin->QueryIntAttribute("crc", (int*)&crc) != TIXML_SUCCESS)
         return wxEmptyString;
 
-    TiXmlText *t = bin->FirstChild()->ToText();
-    if (t)
+    if (const TiXmlText* t = bin->FirstChild()->ToText())
     {
         str.assign(cbC2U(t->Value()));
         str = wxBase64::Decode(str);

@@ -1335,7 +1335,7 @@ bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
 bool cbEditor::SaveFoldState()
 {
     bool bRet = false;
-    if(m_foldBackup = CreateEditor())
+    if((m_foldBackup = CreateEditor()))
     {
         ApplyStyles(m_foldBackup);
         m_foldBackup->SetText(m_pControl->GetText());

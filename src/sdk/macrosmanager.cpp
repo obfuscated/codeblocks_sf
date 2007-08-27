@@ -144,7 +144,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     if(!editor)
     {
         m_ActiveEditorFilename = wxEmptyString;
-        m_lastEditor = NULL;
+        m_lastEditor = 0;
     }
     else if(editor != m_lastEditor)
     {
@@ -159,7 +159,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_ProjectDir = wxEmptyString;
         m_ProjectFiles = wxEmptyString;
         m_Makefile = wxEmptyString;
-        m_lastProject = NULL;
+        m_lastProject = 0;
         ClearProjectKeys();
         macros[_T("PROJECT_FILE")]  = wxEmptyString;
         macros[_T("PROJECT_FILENAME")] = wxEmptyString;
@@ -182,7 +182,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     else if(project != m_lastProject)
     {
 //        Manager::Get()->GetMessageManager()->DebugLog("project != m_lastProject");
-        m_lastTarget = NULL; // reset last target when project changes
+        m_lastTarget = 0; // reset last target when project changes
         m_prjname.Assign(project->GetFilename());
         m_ProjectFilename = UnixFilename(m_prjname.GetFullName());
         m_ProjectName = project->GetTitle();
@@ -260,7 +260,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
         m_TargetName = wxEmptyString;
         m_TargetOutputBaseName = wxEmptyString;
         m_TargetFilename = wxEmptyString;
-        m_lastTarget = NULL;
+        m_lastTarget = 0;
     }
     else if(target != m_lastTarget)
     {
@@ -280,8 +280,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
             macros[it->first.Upper()] = it->second;
         }
 
-        Compiler *c;
-        if(c = CompilerFactory::GetCompiler(target->GetCompilerID()))
+        if(Compiler* c = CompilerFactory::GetCompiler(target->GetCompilerID()))
         {
             macros[_T("TARGET_CC")]   = c->GetPrograms().C;
             macros[_T("TARGET_CPP")]   = c->GetPrograms().CPP;
