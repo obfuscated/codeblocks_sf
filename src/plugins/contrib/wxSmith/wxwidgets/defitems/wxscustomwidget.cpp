@@ -47,7 +47,8 @@ namespace
 wxsCustomWidget::wxsCustomWidget(wxsItemResData* Data):
     wxsWidget(Data,&Reg.Info,wxsCustomWidgetEvents),
     m_CreatingCode(_T("$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE),$(STYLE),wxDefaultValidator,$(NAME));")),
-    m_Style(_T("0"))
+    m_Style(_T("0")),
+    m_IncludeIsLocal(false)
 {
     SetUserClass(_("CustomClass"));
 }
@@ -88,17 +89,19 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     wxString XmlDataInit = m_XmlData;
     if ( GetResourceData()->GetPropertiesFilter() == flSource )
     {
-        WXS_STRING(wxsCustomWidget,m_CreatingCode,_("Creating code:"),_T("creating_code"),_T(""),true);
+        WXS_STRING(wxsCustomWidget,m_CreatingCode,_("Creating code"),_T("creating_code"),_T(""),true);
+        WXS_SHORT_STRING(wxsCustomWidget,m_IncludeFile,_("Include file"), _T("include_file"), _T(""),false);
+        WXS_BOOL(wxsCustomWidget,m_IncludeIsLocal,_(" Use \"\" for include (instead of <>)"), _T("local_include"), false);
     }
     else
     {
         if ( !(Flags&flXml) )
         {
-            WXS_STRING(wxsCustomWidget,m_XmlData,_("Xml Data:"),_T(""),_T(""),false);
+            WXS_STRING(wxsCustomWidget,m_XmlData,_("Xml Data"),_T(""),_T(""),false);
         }
     }
 
-    WXS_SHORT_STRING(wxsCustomWidget,m_Style,_("Style:"),_T("style"),_T("0"),false);
+    WXS_SHORT_STRING(wxsCustomWidget,m_Style,_("Style"),_T("style"),_T("0"),false);
 
     if ( Flags&flPropGrid )
     {
@@ -113,6 +116,14 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
 
 void wxsCustomWidget::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
 {
+    if ( GetResourceData()->GetPropertiesFilter() == flSource )
+    {
+        if ( !m_IncludeFile.IsEmpty() )
+        {
+            if ( m_IncludeIsLocal ) Decl.Add(_T("\"") + m_IncludeFile + _T("\""));
+            else                    Decl.Add(_T("<")  + m_IncludeFile + _T(">"));
+        }
+    }
 }
 
 bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)

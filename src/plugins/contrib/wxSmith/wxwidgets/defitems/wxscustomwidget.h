@@ -32,6 +32,8 @@ class wxsCustomWidget: public wxsWidget
         wxString m_Style;
         wxString m_XmlData;
         TiXmlDocument m_XmlDataDoc;
+        wxString m_IncludeFile;
+        bool m_IncludeIsLocal;
 
 };
 
