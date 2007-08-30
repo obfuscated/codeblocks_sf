@@ -30,6 +30,7 @@ using std::istringstream;
 using std::string;
 
 // this auto-registers the plugin
+
 namespace
 {
     PluginRegistrant<AStylePlugin> reg(_T("AStylePlugin"));
@@ -92,11 +93,12 @@ int AStylePlugin::Execute()
 
     if (ed->GetControl()->GetReadOnly())
     {
-      cbMessageBox(_("The file is read-only"), _("Error"), wxICON_ERROR);
-      return 0;
+        cbMessageBox(_("The file is read-only"), _("Error"), wxICON_ERROR);
+        return 0;
     }
 
     wxString edText(ed->GetControl()->GetText());
+
     wxString formattedText;
 
     astyle::ASFormatter formatter;
@@ -109,12 +111,15 @@ int AStylePlugin::Execute()
 
     switch (ed->GetControl()->GetEOLMode())
     {
+
         case wxSCI_EOL_CRLF:
             eolChars = _T("\r\n");
             break;
+
         case wxSCI_EOL_CR:
             eolChars = _T("\r");
             break;
+
         case wxSCI_EOL_LF:
             eolChars = _T("\n");
             break;
@@ -133,9 +138,10 @@ int AStylePlugin::Execute()
     std::vector<int> new_bookmark;
 
     // hack: we need to evaluate the special case of having a bookmark in the first line here
+
     if (ed->HasBookmark(0))
     {
-      new_bookmark.push_back(0);
+        new_bookmark.push_back(0);
     }
 
     wxSetCursor(*wxHOURGLASS_CURSOR);
@@ -169,10 +175,11 @@ int AStylePlugin::Execute()
     }
 
     ed->GetControl()->EndUndoAction();
+
     ed->GetControl()->GotoPos(pos);
     ed->SetModified(true);
 
-    wxSetCursor(*wxSTANDARD_CURSOR);
+    wxSetCursor(wxNullCursor);
 
     return 0;
 }
