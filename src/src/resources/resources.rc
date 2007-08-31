@@ -3,6 +3,7 @@
 // -> Adopt e.g. associations.cpp accordingly (indices start at 0).
 A_MAIN_ICON      ICON "src/resources/icons/app.ico"
 PROJECT_FILE     ICON "src/resources/icons/cbp.ico"
+SOURCE_FILE_ASM  ICON "src/resources/icons/asm.ico"
 SOURCE_FILE_C    ICON "src/resources/icons/c.ico"
 SOURCE_FILE_CPP  ICON "src/resources/icons/cpp.ico"
 SOURCE_FILE_H    ICON "src/resources/icons/h.ico"

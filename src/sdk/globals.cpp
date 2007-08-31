@@ -204,22 +204,24 @@ FileType FileTypeOf(const wxString& filename)
 {
     wxString ext = filename.AfterLast(_T('.')).Lower();
 
-    if (ext.IsSameAs(FileFilters::CPP_EXT) ||
-            ext.IsSameAs(FileFilters::C_EXT) ||
-            ext.IsSameAs(FileFilters::CC_EXT) ||
-            ext.IsSameAs(FileFilters::CXX_EXT) ||
-            ext.IsSameAs(FileFilters::D_EXT) ||
-            ext.IsSameAs(FileFilters::F_EXT) ||
-            ext.IsSameAs(FileFilters::F77_EXT) ||
-            ext.IsSameAs(FileFilters::F90_EXT) ||
-            ext.IsSameAs(FileFilters::F95_EXT) ||
-            ext.IsSameAs(FileFilters::JAVA_EXT)
+    if (ext.IsSameAs(FileFilters::C_EXT) ||
+        ext.IsSameAs(FileFilters::CC_EXT) ||
+        ext.IsSameAs(FileFilters::CPP_EXT) ||
+        ext.IsSameAs(FileFilters::CXX_EXT) ||
+        ext.IsSameAs(FileFilters::S_EXT) ||
+        ext.IsSameAs(FileFilters::SS_EXT) ||
+        ext.IsSameAs(FileFilters::D_EXT) ||
+        ext.IsSameAs(FileFilters::F_EXT) ||
+        ext.IsSameAs(FileFilters::F77_EXT) ||
+        ext.IsSameAs(FileFilters::F90_EXT) ||
+        ext.IsSameAs(FileFilters::F95_EXT) ||
+        ext.IsSameAs(FileFilters::JAVA_EXT)
        )
         return ftSource;
 
-    else if (ext.IsSameAs(FileFilters::HPP_EXT) ||
-             ext.IsSameAs(FileFilters::H_EXT) ||
+    else if (ext.IsSameAs(FileFilters::H_EXT) ||
              ext.IsSameAs(FileFilters::HH_EXT) ||
+             ext.IsSameAs(FileFilters::HPP_EXT) ||
              ext.IsSameAs(FileFilters::HXX_EXT)
             )
         return ftHeader;

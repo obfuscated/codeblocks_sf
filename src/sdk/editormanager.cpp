@@ -1132,13 +1132,13 @@ bool EditorManager::SwapActiveHeaderSource()
         //Manager::Get()->GetMessageManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
         if (ft == ftHeader)
         {
-            fname.SetExt(FileFilters::CPP_EXT);
-            if (fname.FileExists())
-                break;
             fname.SetExt(FileFilters::C_EXT);
             if (fname.FileExists())
                 break;
             fname.SetExt(FileFilters::CC_EXT);
+            if (fname.FileExists())
+                break;
+            fname.SetExt(FileFilters::CPP_EXT);
             if (fname.FileExists())
                 break;
             fname.SetExt(FileFilters::CXX_EXT);
@@ -1147,13 +1147,13 @@ bool EditorManager::SwapActiveHeaderSource()
         }
         else if (ft == ftSource)
         {
-            fname.SetExt(FileFilters::HPP_EXT);
-            if (fname.FileExists())
-                break;
             fname.SetExt(FileFilters::H_EXT);
             if (fname.FileExists())
                 break;
             fname.SetExt(FileFilters::HH_EXT);
+            if (fname.FileExists())
+                break;
+            fname.SetExt(FileFilters::HPP_EXT);
             if (fname.FileExists())
                 break;
             fname.SetExt(FileFilters::HXX_EXT);
