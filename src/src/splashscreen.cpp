@@ -82,7 +82,9 @@ void cbSplashScreen::OnTimer(wxTimerEvent &)
 void cbSplashScreen::OnCloseWindow(wxCloseEvent &)
 {
   m_timer.Stop();
-  this->Destroy();
+  /* Don't destroy it here. It creates a dangling pointer
+     in app.cpp and crashes C::B */
+  Hide();
 }
 
 void cbSplashScreen::OnChar(wxKeyEvent &)
