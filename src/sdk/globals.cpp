@@ -204,7 +204,8 @@ FileType FileTypeOf(const wxString& filename)
 {
     wxString ext = filename.AfterLast(_T('.')).Lower();
 
-    if (ext.IsSameAs(FileFilters::C_EXT) ||
+    if (ext.IsSameAs(FileFilters::ASM_EXT) ||
+        ext.IsSameAs(FileFilters::C_EXT) ||
         ext.IsSameAs(FileFilters::CC_EXT) ||
         ext.IsSameAs(FileFilters::CPP_EXT) ||
         ext.IsSameAs(FileFilters::CXX_EXT) ||

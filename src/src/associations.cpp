@@ -49,6 +49,7 @@ const Associations::Assoc knownTypes[] =
     { FileFilters::RESOURCE_EXT,        _T("resource file"),                10 },
     { FileFilters::XRCRESOURCE_EXT,     _T("XRC resource file"),            10 },
 
+    { FileFilters::ASM_EXT,             _T("ASM source file"),               2 },
     { FileFilters::S_EXT,               _T("ASM source file"),               2 },
     { FileFilters::SS_EXT,              _T("ASM source file"),               2 },
 
