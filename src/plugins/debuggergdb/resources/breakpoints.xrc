@@ -27,6 +27,7 @@
             <object class="wxSpinCtrl" name="spnIgnoreCount">
               <value>0</value>
               <min>0</min>
+              <max>2000000000</max>
             </object>
             <option>1</option>
             <flag>wxTOP|wxGROW</flag>
