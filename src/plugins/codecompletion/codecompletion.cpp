@@ -93,6 +93,35 @@ static char * cpp_keyword_xpm[] = {
 "  .......       ",
 "                "};
 
+// bitmap for other-than-C++ keywords
+// it's pretty nice actually :)
+/* XPM */
+static char * unknown_keyword_xpm[] = {
+"16 16 7 1",
+" 	c None",
+".	c #FF8800",
+"+	c #FF8D0B",
+"@	c #FF9115",
+"#	c #FFA948",
+"$	c #FFC686",
+"%	c #FFFFFF",
+"                ",
+"                ",
+"      ....      ",
+"    ........    ",
+"   ..+@+.....   ",
+"   .+#$#+....   ",
+"  ..@$%$@.....  ",
+"  ..+#$#+.....  ",
+"  ...+@+......  ",
+"  ............  ",
+"   ..........   ",
+"   ..........   ",
+"    ........    ",
+"      ....      ",
+"                ",
+"                "};
+
 // menu IDS
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
@@ -465,8 +494,8 @@ int CodeCompletion::CodeComplete()
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if (ft != ftHeader && ft != ftSource) // only parse source/header files
-        return -4;
+//    if (ft != ftHeader && ft != ftSource) // only parse source/header files
+//        return -4;
 
     Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
     if (!parser)
@@ -537,25 +566,31 @@ int CodeCompletion::CodeComplete()
 
             if (m_NativeParsers.LastAISearchWasGlobal())
             {
-                // empty or partial search phrase: add C++ keywords in search list
+                // empty or partial search phrase: add theme keywords in search list
 #ifdef DEBUG_CC_AI
                 if (s_DebugSmartSense)
-                    DBGLOG(_T("Last AI search was global: adding C++ keywords in list"));
+                    DBGLOG(_T("Last AI search was global: adding theme keywords in list"));
 #endif
                 EditorColourSet* theme = ed->GetColourSet();
                 if (theme)
                 {
                     wxString lastSearch = m_NativeParsers.LastAIGlobalSearch().Lower();
                     int iidx = ilist->GetImageCount();
-                    ed->GetControl()->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
-                    HighlightLanguage lang = theme->GetLanguageForFilename(_T(".cpp")); // C++ keywords
-                    wxString keywords = theme->GetKeywords(lang, 0);
-                    wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
-                    while (tkz.HasMoreTokens())
+                    bool isC = ft == ftHeader || ft == ftSource;
+                    ed->GetControl()->RegisterImage(iidx, wxBitmap(isC ? cpp_keyword_xpm : unknown_keyword_xpm));
+                    // theme keywords
+                    HighlightLanguage lang = theme->GetLanguageForFilename(_T(".")+wxFileName(ed->GetFilename()).GetExt());
+                    // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
+                    for (int i = 0; i < 1; ++i)
                     {
-                        wxString kw = tkz.GetNextToken() + wxString::Format(_T("?%d"), iidx);
-                        if (kw.Lower().StartsWith(lastSearch))
-                            items.Add(kw);
+						wxString keywords = theme->GetKeywords(lang, i);
+						wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
+						while (tkz.HasMoreTokens())
+						{
+							wxString kw = tkz.GetNextToken() + wxString::Format(_T("?%d"), iidx);
+							if (kw.Lower().StartsWith(lastSearch))
+								items.Add(kw);
+						}
                     }
                 }
             }

@@ -348,6 +348,7 @@ void EditorConfigurationDlg::CreateColoursSample()
 	m_TextColourControl->SetCaretWidth(0);
     m_TextColourControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     m_TextColourControl->SetMarginWidth(0, 32);
+    m_TextColourControl->SetMinSize(wxSize(50,50));
 	ApplyColours();
 
     m_TextColourControl->SetMarginWidth(1, 0);
@@ -369,6 +370,7 @@ void EditorConfigurationDlg::CreateAutoCompText()
     m_AutoCompTextControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
     m_AutoCompTextControl->SetMarginWidth(0, 32);
     m_AutoCompTextControl->SetViewWhiteSpace(1);
+    m_AutoCompTextControl->SetMinSize(wxSize(50,50));
 	ApplyColours();
     wxXmlResource::Get()->AttachUnknownControl(_T("txtAutoCompCode"), m_AutoCompTextControl);
 }
