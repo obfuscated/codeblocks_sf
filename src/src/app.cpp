@@ -494,7 +494,10 @@ bool CodeBlocksApp::OnInit()
             if (m_pSingleInstance->IsAnotherRunning())
             {
                 splash.Hide();
-                wxLogError(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."));
+                /* NOTE: Due to a recent change in logging code, this visual warning got disabled.
+                   So the wxLogError() has been changed to a wxMessageBox(). */
+                wxMessageBox(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."),
+                            _T("Code::Blocks"), wxOK | wxICON_ERROR);
                 return false;
             }
         }
