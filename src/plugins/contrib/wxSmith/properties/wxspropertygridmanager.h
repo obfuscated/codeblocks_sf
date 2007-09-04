@@ -85,8 +85,20 @@ class wxsPropertyGridManager: public wxPropertyGridManager
          */
         long Register(wxsPropertyContainer* Container,wxsProperty* Property,wxPGId Id,long Index);
 
-        /** \brief Function setting new main property container */
-        void SetNewMainContainer(wxsPropertyContainer* Container);
+        /** \brief Starting enumeration of properties for new property container */
+        void NewPropertyContainerStart();
+
+        /** \brief Adding new property into temporary list of properties */
+        void NewPropertyContainerAddProperty(wxsProperty* Property,wxsPropertyContainer* Container);
+
+        /** \brief Finish enumeration of properties for new property container */
+        void NewPropertyContainerFinish(wxsPropertyContainer* Container);
+
+        /** \brief Deleting temporary list used while changing container */
+        void DeleteTemporaryPropertiesList();
+
+        /** \brief Changing main property container */
+        void SetNewMainContainer(wxsPropertyContainer* NewMain);
 
         /** \brief Handler for roporting change event */
         void OnChange(wxPropertyGridEvent& event);
@@ -94,20 +106,30 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         /** \brief Singleton object */
         static wxsPropertyGridManager* Singleton;
 
+        struct TemporaryPropertiesList
+        {
+            wxsProperty* Property;
+            wxsPropertyContainer* Container;
+            int Priority;
+            TemporaryPropertiesList* Next;
+        };
+
         WX_DEFINE_ARRAY(wxPGId,wxArrayPGId);
         WX_DEFINE_ARRAY(wxsProperty*,wxArrayProps);
         WX_DEFINE_ARRAY(wxsPropertyContainer*,wxArrayCont);
         WX_DECLARE_HASH_SET(wxsPropertyContainer*,wxPointerHash,wxPointerEqual,wxSetCont);
 
-        wxArrayPGId  PGIDs;                     /// \brief Array of property identifiers
-        wxArrayProps PGEnteries;                /// \brief Array mapping enteries in grid to properties
-        wxArrayLong  PGIndexes;                 /// \brief Array of internal property indexes used inside wxsProperty
-        wxArrayCont  PGContainers;              /// \brief Array of container objects associated with properties
-        wxSetCont    PGContainersSet;           /// \brief Set of used containers, will be used to quickly determine if given container is used in manager
-        wxsProperty* PreviousProperty;          /// \brief Previous property used in Register()
-        long         PreviousIndex;             /// \brief Previous index used when automatically calculating property indexes
+        wxArrayPGId  PGIDs;                         ///< \brief Array of property identifiers
+        wxArrayProps PGEnteries;                    ///< \brief Array mapping enteries in grid to properties
+        wxArrayLong  PGIndexes;                     ///< \brief Array of internal property indexes used inside wxsProperty
+        wxArrayCont  PGContainers;                  ///< \brief Array of container objects associated with properties
+        wxSetCont    PGContainersSet;               ///< \brief Set of used containers, will be used to quickly determine if given container is used in manager
+        wxsProperty* PreviousProperty;              ///< \brief Previous property used in Register()
+        long         PreviousIndex;                 ///< \brief Previous index used when automatically calculating property indexes
 
-        wxsPropertyContainer* MainContainer;    /// \brief Main container
+        wxsPropertyContainer* MainContainer;        ///< \brief Main container
+
+        TemporaryPropertiesList* PropertiesList;    ///< \brief List used while generating sorted properties list
 
         DECLARE_EVENT_TABLE()
 

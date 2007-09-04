@@ -37,6 +37,7 @@ wxsPropertyGridManager::wxsPropertyGridManager(
         MainContainer(0)
 {
     Singleton = this;
+    PropertiesList = 0;
 }
 
 wxsPropertyGridManager::~wxsPropertyGridManager()
@@ -56,6 +57,7 @@ wxsPropertyGridManager::~wxsPropertyGridManager()
     {
         Singleton = 0;
     }
+    DeleteTemporaryPropertiesList();
 }
 
 void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
@@ -178,10 +180,56 @@ long wxsPropertyGridManager::Register(wxsPropertyContainer* Container,wxsPropert
     return Index;
 }
 
+void wxsPropertyGridManager::NewPropertyContainerStart()
+{
+    UnbindAll();
+    DeleteTemporaryPropertiesList();
+}
+
+void wxsPropertyGridManager::NewPropertyContainerAddProperty(wxsProperty* Property,wxsPropertyContainer* Container)
+{
+    TemporaryPropertiesList* NewItem = new TemporaryPropertiesList;
+    NewItem->Property = Property;
+    NewItem->Container = Container;
+    NewItem->Priority = Property->GetPriority();
+    int Priority = NewItem->Priority;
+
+    TemporaryPropertiesList *Prev = 0, *Search;
+    for ( Search = PropertiesList; Search && Search->Property->GetPriority() >= Priority; Prev = Search, Search = Search->Next );
+
+    NewItem->Next = Search;
+    ( Prev ? Prev->Next : PropertiesList ) = NewItem;
+}
+
+void wxsPropertyGridManager::NewPropertyContainerFinish(wxsPropertyContainer* Container)
+{
+    SetTargetPage(0);
+
+    while ( PropertiesList )
+    {
+        TemporaryPropertiesList* Next = PropertiesList->Next;
+        PropertiesList->Property->PGCreate(PropertiesList->Container,this,GetRoot());
+        delete PropertiesList;
+        PropertiesList = Next;
+    }
+
+    SetNewMainContainer(Container);
+}
+
 void wxsPropertyGridManager::SetNewMainContainer(wxsPropertyContainer* Container)
 {
     MainContainer = Container;
     OnContainerChanged(MainContainer);
+}
+
+void wxsPropertyGridManager::DeleteTemporaryPropertiesList()
+{
+    while ( PropertiesList )
+    {
+        TemporaryPropertiesList* Next = PropertiesList->Next;
+        delete PropertiesList;
+        PropertiesList = Next;
+    }
 }
 
 wxsPropertyGridManager* wxsPropertyGridManager::Singleton = 0;

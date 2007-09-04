@@ -64,14 +64,13 @@ void wxsPropertyContainer::ShowInPropertyGrid()
     wxMutexLocker Lock(Mutex);
     if ( !wxsPGRID() ) return;      // We're not sure that PropertyGridManager has been created
     Flags = (GetPropertiesFlags() & ~(flXml|flPropStream)) | flPropGrid;
-    wxsPGRID()->SetTargetPage(0);
     wxsPGRID()->Freeze();
-    wxsPGRID()->UnbindAll();
+    wxsPGRID()->NewPropertyContainerStart();
     OnEnumProperties(Flags);
+    wxsPGRID()->NewPropertyContainerFinish(this);
+    Flags = 0;
     OnAddExtraProperties(wxsPGRID());
     wxsPGRID()->Thaw();
-    Flags = 0;
-    wxsPGRID()->SetNewMainContainer(this);
 }
 
 void wxsPropertyContainer::XmlRead(TiXmlElement* Element)
@@ -198,7 +197,7 @@ void wxsPropertyContainer::Property(wxsProperty& Prop)
     {
         case flPropGrid:
             // Called from ShowInPropertyGrid
-            Prop.PGCreate(this,wxsPGRID(),wxsPGRID()->GetRoot());
+            wxsPGRID()->NewPropertyContainerAddProperty(&Prop,this);
             break;
 
         case flXml:
@@ -249,7 +248,7 @@ void wxsPropertyContainer::SubContainer(wxsPropertyContainer* Container,long New
     if ( !Container ) return;
     long FlagsStore = Flags;
     // Flags will be replaced using NewFlags but bits used internally by wxsPropertyContainer will be left untouched
-    Flags = ( Flags    &  (flPropGrid|flXml|flPropStream) ) |   // Leaving old part of data processing type
+    Flags = ( Flags    &  (flPropGrid|flXml|flPropStream) ) |   // Leaving old part of data processing type (to be same as parent's one)
             ( NewFlags & ~(flPropGrid|flXml|flPropStream) );    // Rest taken from new properties
     Container->OnEnumProperties(NewFlags);
     Flags = FlagsStore;
