@@ -348,18 +348,31 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
         if (pf->GetParentProject())
         {
             wxFileName fname(pf->relativeToCommonTopLevelPath);
-            /* Make a check on Windows if they belong to same drive or not. *
-             * In case they belong to different volumes, then don't prepend *
-             * project's relative base path */
+            /* NOTE: In case the source file resides in a different volume
+            * than the volume where project file is,
+            * then the object file will be created as follows.
+            *
+            * Project object output dir: C:\Foo\obj\Debug
+            * Source: D:\Source\foo.cpp
+            * Obj file: C:\Foo\obj\Debug\D\Source\foo.o
+            */
             wxString fileVol = fname.GetVolume();
+            wxString obj_file_full_path = fname.GetFullPath();
+            bool diffVolume = false;
+
             if (platform::windows
                 && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume())))
-                objOut = sep = wxEmptyString;
+            {
+                objOut += fileVol;
+                obj_file_full_path = obj_file_full_path.AfterFirst(_T('\\'));
+                diffVolume = true;
+            }
+
             if (ft == ftResource || ft == ftResourceBin)
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
-                    object_file_native = objOut + sep + fname.GetFullPath();
+                    object_file_native = objOut + sep + obj_file_full_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
 
                     object_file_native += FileFilters::RESOURCEBIN_DOT_EXT;
@@ -368,7 +381,10 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 else
                 {
                     fname.SetExt(FileFilters::RESOURCEBIN_EXT);
-                    object_file_native = objOut + sep + fname.GetFullPath();
+                    wxString obj_file_path = fname.GetFullPath();
+                    if (diffVolume)
+                        obj_file_path = obj_file_path.AfterFirst(_T('\\'));
+                    object_file_native = objOut + sep + obj_file_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
             }
@@ -376,7 +392,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
-                    object_file_native = objOut + sep + fname.GetFullPath();
+                    object_file_native = objOut + sep + obj_file_full_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
 
                     if (compiler)
@@ -388,8 +404,11 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 else
                 {
                     if (compiler)
-						fname.SetExt(compiler->GetSwitches().objectExtension);
-                    object_file_native = objOut + sep + fname.GetFullPath();
+                        fname.SetExt(compiler->GetSwitches().objectExtension);
+                    wxString obj_file_path = fname.GetFullPath();
+                    if (diffVolume)
+                        obj_file_path = obj_file_path.AfterFirst(_T('\\'));
+                    object_file_native = objOut + sep + obj_file_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
             }
