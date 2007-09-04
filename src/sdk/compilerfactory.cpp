@@ -35,7 +35,7 @@ size_t CompilerFactory::GetCompilersCount()
 Compiler* CompilerFactory::GetCompiler(size_t index)
 {
     // NOTE: The index can be -1 , if there is no compiler at all or less than number of compilers.
-    if ((Compilers.GetCount() < 1) || ((index + 1) > Compilers.GetCount()))
+    if ((Compilers.GetCount() < 1) || (index == size_t(-1)) || ((index + 1) > Compilers.GetCount()))
         return 0;
     return Compilers[index];
 }
