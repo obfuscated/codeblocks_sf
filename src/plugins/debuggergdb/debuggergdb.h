@@ -114,7 +114,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool IsStopped();
         void AddDataBreakpoint();
         bool EnsureBuildUpToDate();
-		int DoDebug();
+        int DoDebug();
 
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDebug(wxCommandEvent& event);
@@ -189,7 +189,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool m_NoDebugInfo;
 
         // Set, but was never used.  HC changed to pass to "Start()"
-		// Looks like was meant to allow initial step into first instruction of program start
+        // Looks like was meant to allow initial step into first instruction of program start
         bool m_BreakOnEntry;
 
         int m_HaltAtLine;
@@ -211,10 +211,10 @@ class DebuggerGDB : public cbDebuggerPlugin
         cbProject* m_pProject; // keep the currently debugged project handy
         wxString m_ActiveBuildTarget;
 
-		// per-project debugger search-dirs
+        // per-project debugger search-dirs
         typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
         SearchDirsMap m_SearchDirs;
-        
+
         RemoteDebuggingMap m_RemoteDebugging;
 
         int m_HookId; // project loader hook ID
@@ -225,11 +225,11 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool     m_bIsConsole;
         int      m_nConsolePid;
         wxString m_ConsoleTty;
-        
+
         bool m_WaitingCompilerToFinish;
         bool m_Canceled; // flag to avoid re-entering DoDebug when we shouldn't
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // DEBUGGERGDB_H

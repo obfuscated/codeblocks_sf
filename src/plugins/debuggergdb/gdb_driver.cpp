@@ -60,7 +60,7 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin)
     m_CygwinPresent(false),
     m_BreakOnEntry(false),
     m_ManualBreakOnEntry(false),
-	m_IsStarted(false),
+    m_IsStarted(false),
     m_GDBVersionMajor(0),
     m_GDBVersionMinor(0),
     want_debug_events(true),
@@ -170,7 +170,7 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, int pid)
 void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 {
     // default initialization
-    
+
     // init for remote debugging
     m_pTarget = target;
 
@@ -277,43 +277,43 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
     // set arguments
     if (!m_Args.IsEmpty())
         QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
-	
+
     // if performing remote debugging, now is a good time to try and connect to the target :)
-	RemoteDebugging* rd = GetRemoteDebuggingInfo();
+    RemoteDebugging* rd = GetRemoteDebuggingInfo();
     if (rd && rd->IsOk())
     {
-    	if (rd->connType == RemoteDebugging::Serial)
-			QueueCommand(new GdbCmd_RemoteBaud(this, rd->serialBaud));
-    	QueueCommand(new GdbCmd_RemoteTarget(this, rd));
+        if (rd->connType == RemoteDebugging::Serial)
+            QueueCommand(new GdbCmd_RemoteBaud(this, rd->serialBaud));
+        QueueCommand(new GdbCmd_RemoteTarget(this, rd));
     }
 
-	// run per-target additional commands (remote debugging)
-	// moved after connection to remote target (if any)
-	if (rd)
-	{
-		if (!rd->additionalCmds.IsEmpty())
-		{
-			wxArrayString initCmds = GetArrayFromString(rd->additionalCmds, _T('\n'));
-			for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
-			{
-				QueueCommand(new DebuggerCmd(this, initCmds[i]));
-			}
-		}
-	}
+    // run per-target additional commands (remote debugging)
+    // moved after connection to remote target (if any)
+    if (rd)
+    {
+        if (!rd->additionalCmds.IsEmpty())
+        {
+            wxArrayString initCmds = GetArrayFromString(rd->additionalCmds, _T('\n'));
+            for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+            {
+                QueueCommand(new DebuggerCmd(this, initCmds[i]));
+            }
+        }
+    }
 }
 
 // remote debugging
 RemoteDebugging* GDB_driver::GetRemoteDebuggingInfo()
 {
-	if (!m_pTarget)
-		return 0;
-		
-	RemoteDebuggingMap::iterator it = m_pDBG->GetRemoteDebuggingMap().find(m_pTarget);
-	if (it != m_pDBG->GetRemoteDebuggingMap().end())
-	{
-		return &(it->second);
-	}
-	return 0;
+    if (!m_pTarget)
+        return 0;
+
+    RemoteDebuggingMap::iterator it = m_pDBG->GetRemoteDebuggingMap().find(m_pTarget);
+    if (it != m_pDBG->GetRemoteDebuggingMap().end())
+    {
+        return &(it->second);
+    }
+    return 0;
 }
 
 // Cygwin check code
@@ -326,27 +326,44 @@ void GDB_driver::DetectCygwinMount(void)
 {
 
     LONG lRegistryAPIresult;
-    HKEY hKey;
+    HKEY hKey_CU;
+    HKEY hKey_LM;
     TCHAR szCygwinRoot[BUFSIZE];
     DWORD dwBufLen=BUFSIZE*sizeof(TCHAR);
 
-    // checking if cygwin is present
-    lRegistryAPIresult = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-                         TEXT("SOFTWARE\\Cygnus Solutions\\Cygwin\\mounts v2"),
-                         0, KEY_QUERY_VALUE, &hKey );
-    // cygwin not installed
-    if( lRegistryAPIresult != ERROR_SUCCESS )
+    // checking if cygwin mounts are present under HKCU
+    lRegistryAPIresult = RegOpenKeyEx( HKEY_CURRENT_USER,
+                         TEXT("Software\\Cygnus Solutions\\Cygwin\\mounts v2"),
+                         0, KEY_QUERY_VALUE, &hKey_CU );
+    if( lRegistryAPIresult == ERROR_SUCCESS )
     {
-        // no cygwin present
-        m_CygwinPresent = false;
-        return;
+        // try to readback cygwin root (might not exist!)
+        lRegistryAPIresult = RegQueryValueEx( hKey_CU, TEXT("cygdrive prefix"), NULL, NULL,
+                             (LPBYTE) szCygwinRoot, &dwBufLen);
     }
 
-    // readback cygwin root
-    m_CygwinPresent = true;
-    lRegistryAPIresult = RegQueryValueEx( hKey, TEXT("cygdrive prefix"), NULL, NULL,
-                         (LPBYTE) szCygwinRoot, &dwBufLen);
-    // query error
+    // lRegistryAPIresult can be erroneous for two reasons:
+    // 1.) Cygwin entry is not present (could not be opened) in HKCU
+    // 2.) "cygdrive prefix" is not present (could not be read) in HKCU
+    if( lRegistryAPIresult != ERROR_SUCCESS )
+    {
+        // Now check if probably present under HKLM
+        lRegistryAPIresult = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
+                             TEXT("SOFTWARE\\Cygnus Solutions\\Cygwin\\mounts v2"),
+                             0, KEY_QUERY_VALUE, &hKey_LM );
+        if( lRegistryAPIresult != ERROR_SUCCESS )
+        {
+            // cygwin definitely not installed
+            m_CygwinPresent = false;
+            return;
+        }
+
+        // try to readback cygwin root (now it really should exist here)
+        lRegistryAPIresult = RegQueryValueEx( hKey_LM, TEXT("cygdrive prefix"), NULL, NULL,
+                             (LPBYTE) szCygwinRoot, &dwBufLen);
+    }
+
+    // handle a possible query error
      if( (lRegistryAPIresult != ERROR_SUCCESS) || (dwBufLen > BUFSIZE*sizeof(TCHAR)) )
     {
         // bit of an assumption, but we won't be able to find the root without it
@@ -354,22 +371,12 @@ void GDB_driver::DetectCygwinMount(void)
         return;
     }
 
-    // close opened key
-    lRegistryAPIresult = RegCloseKey( hKey );
-    // key close error
-    if( lRegistryAPIresult != ERROR_SUCCESS )
-    {
-        // shouldn't happen
-        m_CygwinPresent = false;
-        return;
-    }
+    // close opened keys
+    RegCloseKey( hKey_CU ); // ignore key close errors
+    RegCloseKey( hKey_LM ); // ignore key close errors
 
-    if(m_CygwinPresent == true)
-    {
-        // convert to wxString type for later use
-        m_CygdrivePrefix = (szCygwinRoot);
-    }
-
+    m_CygwinPresent  = true;           // if we end up here all was OK
+    m_CygdrivePrefix = (szCygwinRoot); // convert to wxString type for later use
 }
 
 void GDB_driver::CorrectCygwinPath(wxString& path)
@@ -423,10 +430,10 @@ void GDB_driver::Start(bool breakOnEntry)
         m_pDisassembly->Clear(sf);
     }
 
-	// if performing remote debugging, use "continue" command
-	RemoteDebugging* rd = GetRemoteDebuggingInfo();
-	bool remoteDebugging = rd && rd->IsOk();
-//	m_pDBG->Log(wxString::Format(_T("RD: %s"), remoteDebugging ? _T("yes") : _T("no")));
+    // if performing remote debugging, use "continue" command
+    RemoteDebugging* rd = GetRemoteDebuggingInfo();
+    bool remoteDebugging = rd && rd->IsOk();
+//    m_pDBG->Log(wxString::Format(_T("RD: %s"), remoteDebugging ? _T("yes") : _T("no")));
 
     // under windows, 'start' segfaults with wx projects...
     if(platform::windows || platform::macosx)
@@ -452,26 +459,26 @@ void GDB_driver::Start(bool breakOnEntry)
             QueueCommand(new DebuggerCmd(this, remoteDebugging ? _T("continue") : _T("start")));
             m_IsStarted = true;
         }
-	}
+    }
 } // Start
 
 void GDB_driver::Stop()
 {
     ResetCursor();
     QueueCommand(new DebuggerCmd(this, _T("quit")));
-	m_IsStarted = false;
+    m_IsStarted = false;
 }
 
 void GDB_driver::Continue()
 {
     ResetCursor();
-	if (m_IsStarted)
-		QueueCommand(new DebuggerCmd(this, _T("cont")));
-	else
-	{
-		QueueCommand(new DebuggerCmd(this, m_ManualBreakOnEntry ? _T("start") : _T("run")));
-		m_IsStarted = true;
-	}
+    if (m_IsStarted)
+        QueueCommand(new DebuggerCmd(this, _T("cont")));
+    else
+    {
+        QueueCommand(new DebuggerCmd(this, m_ManualBreakOnEntry ? _T("start") : _T("run")));
+        m_IsStarted = true;
+    }
 }
 
 void GDB_driver::Step()
@@ -583,43 +590,43 @@ void GDB_driver::SwitchThread(size_t threadIndex)
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
 {
-	if (bp->type == DebuggerBreakpoint::bptData)
-	{
-		QueueCommand(new GdbCmd_AddDataBreakpoint(this, bp));
-	}
+    if (bp->type == DebuggerBreakpoint::bptData)
+    {
+        QueueCommand(new GdbCmd_AddDataBreakpoint(this, bp));
+    }
     //Workaround for GDB to break on C++ constructor/destructor
     else
     {
-    	if (bp->func.IsEmpty() && !bp->lineText.IsEmpty())
-		{
-			wxRegEx reCtorDtor(_T("([0-9A-z_]+)::([~]?)([0-9A-z_]+)[ \t\(]*"));
-			if (reCtorDtor.Matches(bp->lineText))
-			{
-				wxString strBase = reCtorDtor.GetMatch(bp->lineText, 1);
-				wxString strDtor = reCtorDtor.GetMatch(bp->lineText, 2);
-				wxString strMethod = reCtorDtor.GetMatch(bp->lineText, 3);
-				if (strBase.IsSameAs(strMethod))
-				{
-					bp->func = strBase;
-					bp->func << _T("::");
-					bp->func << strDtor;
-					bp->func << strMethod;
-	//                if (bp->temporary)
-	//                    bp->temporary = false;
-					NotifyCursorChanged(); // to force breakpoints window update
-				}
-			}
-		}
-		//end GDB workaround
+        if (bp->func.IsEmpty() && !bp->lineText.IsEmpty())
+        {
+            wxRegEx reCtorDtor(_T("([0-9A-z_]+)::([~]?)([0-9A-z_]+)[ \t\(]*"));
+            if (reCtorDtor.Matches(bp->lineText))
+            {
+                wxString strBase = reCtorDtor.GetMatch(bp->lineText, 1);
+                wxString strDtor = reCtorDtor.GetMatch(bp->lineText, 2);
+                wxString strMethod = reCtorDtor.GetMatch(bp->lineText, 3);
+                if (strBase.IsSameAs(strMethod))
+                {
+                    bp->func = strBase;
+                    bp->func << _T("::");
+                    bp->func << strDtor;
+                    bp->func << strMethod;
+    //                if (bp->temporary)
+    //                    bp->temporary = false;
+                    NotifyCursorChanged(); // to force breakpoints window update
+                }
+            }
+        }
+        //end GDB workaround
 
-		QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
+        QueueCommand(new GdbCmd_AddBreakpoint(this, bp));
     }
 }
 
 void GDB_driver::RemoveBreakpoint(DebuggerBreakpoint* bp)
 {
-	if (bp && bp->index != -1)
-		QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
+    if (bp && bp->index != -1)
+        QueueCommand(new GdbCmd_RemoveBreakpoint(this, bp));
 }
 
 void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
@@ -659,33 +666,33 @@ void GDB_driver::ParseOutput(const wxString& output)
 {
     m_Cursor.changed = false;
 
-	// Watch for initial debug info and grab the child PID
-	// this is put here because we need this info even if
-	// we don't get a prompt back.
-	// It's "cheap" anyway because the line we 're after is
-	// the very first line printed by gdb when running our
-	// program. It then sets the child PID and never enters here
-	// again because the "want_debug_events" condition below
-	// is not satisfied anymore...
-	if (platform::windows && want_debug_events && output.Contains(_T("do_initial_child_stuff")))
-	{
-		// got the line with the PID, parse it out:
-		// e.g.
-		// gdb: do_initial_child_stuff: process 1392
-		if (reChildPid.Matches(output))
-		{
-			wxString pidStr = reChildPid.GetMatch(output, 1);
-			long pid = 0;
-			pidStr.ToLong(&pid);
-			SetChildPID(pid);
-			want_debug_events = false;
-			disable_debug_events = true;
-			m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
-		}
-	}
+    // Watch for initial debug info and grab the child PID
+    // this is put here because we need this info even if
+    // we don't get a prompt back.
+    // It's "cheap" anyway because the line we 're after is
+    // the very first line printed by gdb when running our
+    // program. It then sets the child PID and never enters here
+    // again because the "want_debug_events" condition below
+    // is not satisfied anymore...
+    if (platform::windows && want_debug_events && output.Contains(_T("do_initial_child_stuff")))
+    {
+        // got the line with the PID, parse it out:
+        // e.g.
+        // gdb: do_initial_child_stuff: process 1392
+        if (reChildPid.Matches(output))
+        {
+            wxString pidStr = reChildPid.GetMatch(output, 1);
+            long pid = 0;
+            pidStr.ToLong(&pid);
+            SetChildPID(pid);
+            want_debug_events = false;
+            disable_debug_events = true;
+            m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+        }
+    }
 
     if (!want_debug_events &&
-		output.StartsWith(_T("gdb: ")) ||
+        output.StartsWith(_T("gdb: ")) ||
         output.StartsWith(_T("Warning: ")) ||
         output.StartsWith(_T("ContinueDebugEvent ")))
     {
@@ -695,42 +702,42 @@ void GDB_driver::ParseOutput(const wxString& output)
     static wxString buffer;
     buffer << output << _T('\n');
 
-	m_pDBG->DebugLog(output);
+    m_pDBG->DebugLog(output);
 
     int idx = buffer.First(GDB_PROMPT);
     if (idx == wxNOT_FOUND)
     {
-    	// don't uncomment the following line
-    	// m_ProgramIsStopped is set to false in DebuggerDriver::RunQueue()
-//		m_ProgramIsStopped = false;
+        // don't uncomment the following line
+        // m_ProgramIsStopped is set to false in DebuggerDriver::RunQueue()
+//        m_ProgramIsStopped = false;
         return; // come back later
     }
 
-	if (disable_debug_events)
-	{
-		// we don't want debug events anymore (we got the pid)
-		QueueCommand(new DebuggerCmd(this, _T("set debugevents off")));
-		disable_debug_events = false;
-	}
+    if (disable_debug_events)
+    {
+        // we don't want debug events anymore (we got the pid)
+        QueueCommand(new DebuggerCmd(this, _T("set debugevents off")));
+        disable_debug_events = false;
+    }
 
-	m_ProgramIsStopped = true;
-	m_QueueBusy = false;
-	DebuggerCmd* cmd = CurrentCommand();
-	if (cmd)
-	{
-//		DebugLog(wxString::Format(_T("Command parsing output (cmd: %s): %s"), cmd->m_Cmd.c_str(), buffer.Left(idx).c_str()));
-		RemoveTopCommand(false);
-		buffer.Remove(idx);
-		// remove the '>>>>>>' part of the prompt (or what's left of it)
-		int cnt = 6; // max 6 '>'
-		while (buffer.Last() == _T('>') && cnt--)
-			buffer.RemoveLast();
-		if (buffer.Last() == _T('\n'))
-			buffer.RemoveLast();
-		cmd->ParseOutput(buffer.Left(idx));
-		delete cmd;
-		RunQueue();
-	}
+    m_ProgramIsStopped = true;
+    m_QueueBusy = false;
+    DebuggerCmd* cmd = CurrentCommand();
+    if (cmd)
+    {
+//        DebugLog(wxString::Format(_T("Command parsing output (cmd: %s): %s"), cmd->m_Cmd.c_str(), buffer.Left(idx).c_str()));
+        RemoveTopCommand(false);
+        buffer.Remove(idx);
+        // remove the '>>>>>>' part of the prompt (or what's left of it)
+        int cnt = 6; // max 6 '>'
+        while (buffer.Last() == _T('>') && cnt--)
+            buffer.RemoveLast();
+        if (buffer.Last() == _T('\n'))
+            buffer.RemoveLast();
+        cmd->ParseOutput(buffer.Left(idx));
+        delete cmd;
+        RunQueue();
+    }
 
     m_needsUpdate = false;
     m_forceUpdate = false;
@@ -743,12 +750,12 @@ void GDB_driver::ParseOutput(const wxString& output)
     {
 //            Log(_T("DEBUG: ") + lines[i]); // write it in the full debugger log
 
-		// Check for possibility of a cygwin compiled program
-		// convert to valid path
-		if(platform::windows && m_CygwinPresent==true)
-		{
-			CorrectCygwinPath(lines.Item(i));
-		}
+        // Check for possibility of a cygwin compiled program
+        // convert to valid path
+        if(platform::windows && m_CygwinPresent==true)
+        {
+            CorrectCygwinPath(lines.Item(i));
+        }
 
         // log GDB's version
         if (lines[i].StartsWith(_T("GNU gdb")))
@@ -776,11 +783,11 @@ void GDB_driver::ParseOutput(const wxString& output)
 
         // Is the program exited?
         else if (lines[i].StartsWith(_T("Program exited")) ||
-				lines[i].Contains(_T("The program is not being run")))
+                lines[i].Contains(_T("The program is not being run")))
         {
             m_pDBG->Log(lines[i]);
             QueueCommand(new DebuggerCmd(this, _T("quit")));
-			m_IsStarted = false;
+            m_IsStarted = false;
         }
 
         // no debug symbols?
@@ -792,34 +799,34 @@ void GDB_driver::ParseOutput(const wxString& output)
         // signal
         else if (lines[i].StartsWith(_T("Program received signal SIG")))
         {
-			if (lines[i].StartsWith(_T("Program received signal SIGINT")) ||
-				lines[i].StartsWith(_T("Program received signal SIGTRAP")))
-			{
-				// these are break/trace signals, just log them
-				Log(lines[i]);
-			}
-			else
-			{
-				Log(lines[i]);
-				m_pDBG->BringAppToFront();
-				if (IsWindowReallyShown(m_pBacktrace))
-				{
-					// don't ask; it's already shown
-					// just grab the user's attention
-					cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
-				}
-				else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
-				{
-					// show the backtrace window
-					CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
-					evt.pWindow = m_pBacktrace;
-					Manager::Get()->ProcessEvent(evt);
-					m_forceUpdate = true;
-				}
-				m_needsUpdate = true;
-				// the backtrace will be generated when NotifyPlugins() is called
-				// and only if the backtrace window is shown
-			}
+            if (lines[i].StartsWith(_T("Program received signal SIGINT")) ||
+                lines[i].StartsWith(_T("Program received signal SIGTRAP")))
+            {
+                // these are break/trace signals, just log them
+                Log(lines[i]);
+            }
+            else
+            {
+                Log(lines[i]);
+                m_pDBG->BringAppToFront();
+                if (IsWindowReallyShown(m_pBacktrace))
+                {
+                    // don't ask; it's already shown
+                    // just grab the user's attention
+                    cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
+                }
+                else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
+                {
+                    // show the backtrace window
+                    CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+                    evt.pWindow = m_pBacktrace;
+                    Manager::Get()->ProcessEvent(evt);
+                    m_forceUpdate = true;
+                }
+                m_needsUpdate = true;
+                // the backtrace will be generated when NotifyPlugins() is called
+                // and only if the backtrace window is shown
+            }
         }
 
         // general errors
@@ -967,7 +974,7 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
             m_ManualBreakOnEntry = false;
             QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
             if (!m_BreakOnEntry)
-				Continue();
+                Continue();
         }
         else
         {

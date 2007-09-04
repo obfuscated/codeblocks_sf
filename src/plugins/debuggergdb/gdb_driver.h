@@ -79,7 +79,7 @@ class GDB_driver : public DebuggerDriver
         // win/Cygwin platform checking
         void DetectCygwinMount(void);
         void CorrectCygwinPath(wxString& path);
-        
+
         // remote debugging
         RemoteDebugging* GetRemoteDebuggingInfo();
 
@@ -96,8 +96,8 @@ class GDB_driver : public DebuggerDriver
         // True after first "Start()", until first break
         bool m_ManualBreakOnEntry;
 
-		// Program is "running": after a "run" or a "start", and before "kill" or a "quit"
-		bool m_IsStarted;
+        // Program is "running": after a "run" or a "start", and before "kill" or a "quit"
+        bool m_IsStarted;
 
         // cursor update flags
         bool m_needsUpdate;
