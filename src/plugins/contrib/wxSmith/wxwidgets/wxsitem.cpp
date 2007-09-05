@@ -749,8 +749,9 @@ void wxsItem::SetupWindow(wxWindow* Window,long Flags)
 
 bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
 {
-    // TODO: Create new event / search for current event
-    return false;
+    // Automatically build main event or try to find it's
+    // definition in code
+    return wxsEventsEditor::Get().GotoOrBuildEvent(this,0);
 }
 
 wxString wxsItem::GetUserClass()

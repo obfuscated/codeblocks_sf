@@ -29,6 +29,11 @@ class wxsEventsEditor
         /** \brief Function called when content inside grid has been changed */
         void PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGId Id);
 
+        /** \brief Function automatically adding new event function / going into function inside item
+         * \return true if new event was added, false on failure or on going to old handler's definition
+         */
+        bool GotoOrBuildEvent(wxsItem* Item,int EventIndex = 0);
+
 	private:
 
         WX_DEFINE_ARRAY(wxPGId,wxArrayPGId);

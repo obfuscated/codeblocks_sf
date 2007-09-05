@@ -160,6 +160,30 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     m_Data->NotifyChange(m_Item);
 }
 
+bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex)
+{
+    if ( Item != m_Item ) return false; // Can do this only to currently edited item
+    if ( EventIndex < 0 ) return false;
+    if ( EventIndex >= m_Events->GetCount() ) return false;
+
+    if ( m_Events->GetHandler(EventIndex).IsEmpty() )
+    {
+        // Adding new event handler
+        wxString NewFunctionName = GetFunctionProposition(m_Events->GetDesc(EventIndex));
+        if ( CreateNewFunction(m_Events->GetDesc(EventIndex),NewFunctionName) )
+        {
+            m_Events->SetHandler(EventIndex,NewFunctionName);
+            return true;
+        }
+        return false;
+    }
+    else
+    {
+        // TODO: Go to handler
+        return false;
+    }
+}
+
 void wxsEventsEditor::FindFunctions(const wxString& ArgType,wxArrayString& Array)
 {
 	wxString Code = wxsCoder::Get()->GetCode(m_Header,
