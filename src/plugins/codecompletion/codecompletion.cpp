@@ -405,7 +405,7 @@ void CodeCompletion::OnAttach()
 
 	// register event sinks
 	Manager* pm = Manager::Get();
-	
+
     pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnReparseActiveEditor));
     pm->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
@@ -1411,7 +1411,7 @@ void CodeCompletion::OnStartParsingFunctions(wxTimerEvent& event)
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 {
 	event.Skip();
-	
+
     if (IsAttached() && m_InitDone)
     {
         if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
@@ -1425,6 +1425,11 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 		if (ed->GetControl()->CallTipActive())
 			ed->GetControl()->CallTipCancel();
 //		DBGLOG(_T("CodeCompletion::OnValueTooltip: %p"), ed);
+        /* NOTE: The following 2 lines of codes can fix [Bug #11785].
+        *       The solution may not the best one and it requires the editor
+        *       to have the focus (even if C::B has the focus) in order to pop-up the tooltip. */
+        if (wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()))
+            return;
 
 		// ignore comments, strings, preprocesor, etc
         int style = event.GetInt();
