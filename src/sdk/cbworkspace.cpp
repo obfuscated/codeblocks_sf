@@ -99,7 +99,7 @@ void cbWorkspace::Load()
 		{
 			m_Title = Title;
 		}
-		
+
 		delete pWsp;
     }
 
@@ -136,6 +136,8 @@ bool cbWorkspace::SaveAs(const wxString& filename)
     if (dlg->ShowModal() != wxID_OK)
         return false;
     m_Filename = dlg->GetPath();
+    if(m_Filename.GetExt() == wxEmptyString)
+        m_Filename.SetExt(_T("workspace"));
     m_IsDefault = false;
     return Save(true);
 }
