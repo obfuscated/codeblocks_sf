@@ -58,6 +58,9 @@ class wxsEventsEditor
 
         /** \brief Creating new function inside source code */
         bool CreateNewFunction(const wxsEventDesc* Event,const wxString& NewFunctionName);
+
+        /** \brief Trying to find function's event handler in source code */
+        bool GotoHandler(int EventIndex);
 };
 
 #endif

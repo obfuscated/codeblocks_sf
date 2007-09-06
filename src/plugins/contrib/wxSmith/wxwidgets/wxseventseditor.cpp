@@ -154,7 +154,7 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     else
     {
         m_Events->SetHandler(Index,Selection);
-        // TODO: Jump to selected function
+        GotoHandler(Index);
     }
 
     m_Data->NotifyChange(m_Item);
@@ -179,7 +179,7 @@ bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex)
     }
     else
     {
-        // TODO: Go to handler
+        GotoHandler(EventIndex);
         return false;
     }
 }
@@ -416,4 +416,84 @@ bool wxsEventsEditor::CreateNewFunction(const wxsEventDesc* Event,const wxString
         }
     }
     return true;
+}
+
+bool wxsEventsEditor::GotoHandler(int Index)
+{
+    cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(m_Source);
+    if ( !Editor )
+    {
+        return false;
+    }
+
+	wxString FunctionName = m_Events->GetHandler(Index);
+	if ( FunctionName.IsEmpty() )
+	{
+	    return false;
+	}
+
+    cbStyledTextCtrl* Ctrl = Editor->GetControl();
+    wxString FullText = Ctrl->GetText();
+    int Begin = 0;
+    int End = Ctrl->GetLength();
+    while ( Begin < End )
+    {
+        int Pos = Ctrl->FindText(Begin,End,FunctionName,wxSCI_FIND_MATCHCASE);
+        if ( Pos < 0 ) break;
+
+        // Checking if there's <ClassName> :: sequence before function
+
+        int Before = Pos;
+        while ( --Before >= 0 )
+        {
+            wxChar Ch = Ctrl->GetCharAt(Before);
+            if ( Ch!=' ' && Ch!='\t' && Ch!='\r' && Ch!='\n' ) break;
+        }
+        if ( Before >= 1 )
+        {
+            if ( Ctrl->GetCharAt(Before) == ':' && Ctrl->GetCharAt(Before-1) == ':' )
+            {
+                Before--;
+                while ( --Before >= 0 )
+                {
+                    wxChar Ch = Ctrl->GetCharAt(Before);
+                    if ( Ch!=' ' && Ch!='\t' && Ch!='\r' && Ch!='\n' ) break;
+                }
+                if ( Before > 0 )
+                {
+                    wxString ClassName;
+                    while ( Before>=0 )
+                    {
+                        wxChar Ch = Ctrl->GetCharAt(Before--);
+                        if ( (Ch<'a' || Ch>'z') && (Ch<'A' || Ch>'Z') && (Ch<'0' || Ch>'9') && (Ch!='_') ) break;
+                        ClassName = Ch + ClassName;
+                    }
+
+                    if ( ClassName == m_Class )
+                    {
+                        // Test if there's ( after function name
+                        int After = Pos + FunctionName.Length();
+                        while ( After < End )
+                        {
+                            wxChar Ch = Ctrl->GetCharAt(After);
+                            if ( Ch!=' ' && Ch!='\t' && Ch!='\r' && Ch!='\n' ) break;
+                            After++;
+                        }
+                        if ( After < End )
+                        {
+                            if ( Ctrl->GetCharAt(After) == '(' )
+                            {
+                                Editor->GotoLine(Ctrl->LineFromPosition(Pos));
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Begin = Pos + FunctionName.Length();
+
+    }
+    return false;
 }
