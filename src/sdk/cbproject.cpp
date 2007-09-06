@@ -245,7 +245,7 @@ wxString cbProject::CreateUniqueFilename()
 
 void cbProject::ClearAllProperties()
 {
-	Delete(m_pExtensionsElement);
+    Delete(m_pExtensionsElement);
 
     m_Files.DeleteContents(true);
     m_Files.Clear();
@@ -270,7 +270,7 @@ void cbProject::Open()
 {
     m_Loaded = false;
     m_ProjectFilesMap.clear();
-	Delete(m_pExtensionsElement);
+    Delete(m_pExtensionsElement);
 
     if (!wxFileName::FileExists(m_Filename) && !wxFileName::DirExists(m_Filename))
     {
@@ -294,30 +294,30 @@ void cbProject::Open()
         fileModified = loader.FileModified();
         m_CurrentlyLoading = false;
 
-		if (m_Loaded)
-		{
-			CalculateCommonTopLevelPath();
-			Manager::Get()->GetMessageManager()->Log(_("done"));
-			if (!m_Targets.GetCount())
-				AddDefaultBuildTarget();
-			// in case of batch build discard upgrade messages
-			fileUpgraded = fileUpgraded && !Manager::IsBatchBuild();
-			SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
+        if (m_Loaded)
+        {
+            CalculateCommonTopLevelPath();
+            Manager::Get()->GetMessageManager()->Log(_("done"));
+            if (!m_Targets.GetCount())
+                AddDefaultBuildTarget();
+            // in case of batch build discard upgrade messages
+            fileUpgraded = fileUpgraded && !Manager::IsBatchBuild();
+            SetModified(ft != ftCodeBlocksProject || fileUpgraded || fileModified);
 
-			// moved to ProjectManager::LoadProject()
-			// see explanation there...
-	//        NotifyPlugins(cbEVT_PROJECT_OPEN);
+            // moved to ProjectManager::LoadProject()
+            // see explanation there...
+    //        NotifyPlugins(cbEVT_PROJECT_OPEN);
 
-			if (fileUpgraded)
-			{
-				InfoWindow::Display(m_Title,
-				  _("The loaded project file was generated\n"
-					"with an older version of Code::Blocks.\n\n"
-					"Code::Blocks can import older project files,\n"
-					"but will always save in the current format."), 12000, 2000);
-			}
-			m_LastModified = fname.GetModificationTime();
-		}
+            if (fileUpgraded)
+            {
+                InfoWindow::Display(m_Title,
+                  _("The loaded project file was generated\n"
+                    "with an older version of Code::Blocks.\n\n"
+                    "Code::Blocks can import older project files,\n"
+                    "but will always save in the current format."), 12000, 2000);
+            }
+            m_LastModified = fname.GetModificationTime();
+        }
     }
 } // end of Open
 
@@ -342,17 +342,17 @@ void cbProject::CalculateCommonTopLevelPath()
 
         size_t pos = 0;
         while (pos < tmp.Length() &&
-			(tmp.GetChar(pos) == _T('.') || tmp.GetChar(pos) == _T('/') || tmp.GetChar(pos) == _T('\\')))
-		{
-			++pos;
-		}
-		if (pos > 0 && pos < tmp.Length())
-		{
-			tmpbase << sep << tmp.Left(pos) << sep;
-			f->relativeToCommonTopLevelPath = tmp.Right(tmp.Length() - pos);
-		}
-		else
-			f->relativeToCommonTopLevelPath = tmp;
+            (tmp.GetChar(pos) == _T('.') || tmp.GetChar(pos) == _T('/') || tmp.GetChar(pos) == _T('\\')))
+        {
+            ++pos;
+        }
+        if (pos > 0 && pos < tmp.Length())
+        {
+            tmpbase << sep << tmp.Left(pos) << sep;
+            f->relativeToCommonTopLevelPath = tmp.Right(tmp.Length() - pos);
+        }
+        else
+            f->relativeToCommonTopLevelPath = tmp;
         f->SetObjName(f->relativeToCommonTopLevelPath);
 
         wxFileName tmpbaseF(tmpbase);
@@ -1001,8 +1001,8 @@ void cbProject::SetVirtualFolders(const wxArrayString& folders)
     m_VirtualFolders = folders;
     for (size_t i = 0; i < m_VirtualFolders.GetCount(); ++i)
     {
-    	m_VirtualFolders[i].Replace(_T("/"), wxString(wxFILE_SEP_PATH));
-    	m_VirtualFolders[i].Replace(_T("\\"), wxString(wxFILE_SEP_PATH));
+        m_VirtualFolders[i].Replace(_T("/"), wxString(wxFILE_SEP_PATH));
+        m_VirtualFolders[i].Replace(_T("\\"), wxString(wxFILE_SEP_PATH));
     }
 }
 
@@ -1056,6 +1056,19 @@ bool cbProject::NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to
     wxTreeItemId parent2 = ftd2->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(to) : to;
     if (parent1 == parent2)
         return false;
+
+    // A special check for virtual folders.
+    if (ftd1->GetKind() == FileTreeData::ftdkVirtualFolder && ftd2->GetKind() == FileTreeData::ftdkVirtualFolder)
+    {
+        wxTreeItemId root = tree->GetRootItem();
+        wxTreeItemId toParent = tree->GetItemParent(to);
+        while (toParent != root)
+        {
+            if (toParent == from)
+                return false;
+            toParent = tree->GetItemParent(toParent);
+        }
+    }
 
     // finally; make the move
     CopyTreeNodeRecursively(tree, from, parent2);
@@ -1397,7 +1410,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
 
     SetModified(true);
 
-	NotifyPlugins(cbEVT_BUILDTARGET_ADDED, targetName);
+    NotifyPlugins(cbEVT_BUILDTARGET_ADDED, targetName);
     NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
     return target;
 }
@@ -1407,20 +1420,20 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
-    	wxString oldTargetName = target->GetTitle();
-    	
-    	// rename target if referenced in any virtual target too
-    	for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
-    	{
-    		wxArrayString& tgts = it->second;
-    		int index = tgts.Index(target->GetTitle());
-    		if (index != -1)
-    		{
-    			tgts[index] = targetName;
-    		}
-    	}
+        wxString oldTargetName = target->GetTitle();
+        
+        // rename target if referenced in any virtual target too
+        for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+        {
+            wxArrayString& tgts = it->second;
+            int index = tgts.Index(target->GetTitle());
+            if (index != -1)
+            {
+                tgts[index] = targetName;
+            }
+        }
 
-    	// rename target for all files that reference it
+        // rename target for all files that reference it
         int count = GetFilesCount();
         for (int i = 0; i < count; ++i)
         {
@@ -1431,7 +1444,7 @@ bool cbProject::RenameBuildTarget(int index, const wxString& targetName)
         // finally rename the target
         target->SetTitle(targetName);
         SetModified(true);
-		NotifyPlugins(cbEVT_BUILDTARGET_RENAMED, targetName, oldTargetName);
+        NotifyPlugins(cbEVT_BUILDTARGET_RENAMED, targetName, oldTargetName);
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
         return true;
     }
@@ -1514,20 +1527,20 @@ bool cbProject::RemoveBuildTarget(int index)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
-    	wxString oldTargetName = target->GetTitle();
+        wxString oldTargetName = target->GetTitle();
 
-    	// remove target from any virtual targets it belongs to
-    	for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
-    	{
-    		wxArrayString& tgts = it->second;
-    		int index = tgts.Index(target->GetTitle());
-    		if (index != -1)
-    		{
-    			tgts.RemoveAt(index);
-    		}
-    	}
+        // remove target from any virtual targets it belongs to
+        for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+        {
+            wxArrayString& tgts = it->second;
+            int index = tgts.Index(target->GetTitle());
+            if (index != -1)
+            {
+                tgts.RemoveAt(index);
+            }
+        }
 
-    	// remove target from any project files that reference it
+        // remove target from any project files that reference it
         int count = GetFilesCount();
         for (int i = 0; i < count; ++i)
         {
@@ -1585,19 +1598,19 @@ bool cbProject::SetActiveBuildTarget(const wxString& name)
 {
     if (name == m_ActiveTarget)
         return true;
-	wxString oldActiveTarget = m_ActiveTarget;
+    wxString oldActiveTarget = m_ActiveTarget;
     m_ActiveTarget = name;
 
     bool valid = BuildTargetValid(name);
 
-	if (!valid)
-	{
-		// no target (virtual or real) by that name
-		m_ActiveTarget = GetFirstValidBuildTargetName();
-	}
-	
-	NotifyPlugins(cbEVT_BUILDTARGET_SELECTED, m_ActiveTarget, oldActiveTarget);
-	
+    if (!valid)
+    {
+        // no target (virtual or real) by that name
+        m_ActiveTarget = GetFirstValidBuildTargetName();
+    }
+    
+    NotifyPlugins(cbEVT_BUILDTARGET_SELECTED, m_ActiveTarget, oldActiveTarget);
+    
     return valid;
 }
 
@@ -1657,15 +1670,15 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
         // we have to re-order the targets which are kept inside
         // the virtual targets array too!
         VirtualBuildTargetsMap::iterator it;
-		for (it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
-		{
-			wxArrayString& vt = it->second;
-			if (vt.Index(nameOrder[i]) != wxNOT_FOUND)
-			{
-				vt.Remove(nameOrder[i]);
-				vt.Insert(nameOrder[i], i);
-			}
-		}
+        for (it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
+        {
+            wxArrayString& vt = it->second;
+            if (vt.Index(nameOrder[i]) != wxNOT_FOUND)
+            {
+                vt.Remove(nameOrder[i]);
+                vt.Insert(nameOrder[i], i);
+            }
+        }
     }
     SetModified(true);
 }
@@ -1819,11 +1832,11 @@ bool MiscTreeItemData::OwnerCheck(wxTreeEvent& event,wxTreeCtrl *tree,wxEvtHandl
 
 void cbProject::SetExtendedObjectNamesGeneration(bool ext)
 {
-	bool changed = m_ExtendedObjectNamesGeneration != ext;
+    bool changed = m_ExtendedObjectNamesGeneration != ext;
 
-	// update it now because SetObjName() below will call GetExtendedObjectNamesGeneration()
-	// so it must be up-to-date
-	m_ExtendedObjectNamesGeneration = ext;
+    // update it now because SetObjName() below will call GetExtendedObjectNamesGeneration()
+    // so it must be up-to-date
+    m_ExtendedObjectNamesGeneration = ext;
 
     if (changed)
     {
@@ -1899,17 +1912,17 @@ void cbProject::SetTitle(const wxString& title)
 
 TiXmlNode* cbProject::GetExtensionsNode()
 {
-	if (!m_pExtensionsElement)
-		m_pExtensionsElement = new TiXmlElement(cbU2C(_T("Extensions")));
-	return m_pExtensionsElement;
+    if (!m_pExtensionsElement)
+        m_pExtensionsElement = new TiXmlElement(cbU2C(_T("Extensions")));
+    return m_pExtensionsElement;
 }
 
 void cbProject::AddToExtensions(const wxString& stringDesc)
 {
-	// sample stringDesc:
-	// node/+subnode/subsubnode:attr=val
+    // sample stringDesc:
+    // node/+subnode/subsubnode:attr=val
 
-	TiXmlElement* elem = GetExtensionsNode()->ToElement();
+    TiXmlElement* elem = GetExtensionsNode()->ToElement();
     size_t pos = 0;
     while (true)
     {
@@ -1928,41 +1941,41 @@ void cbProject::AddToExtensions(const wxString& stringDesc)
         if (current.IsEmpty() || current[0] == _T(':')) // abort on invalid case: "node/:attr=val" (consecutive "/:")
             break;
 
-		// find or create the subnode
-		bool forceAdd = current[0] == _T('+');
-		if (forceAdd)
-			current.Remove(0, 1); // remove '+'
+        // find or create the subnode
+        bool forceAdd = current[0] == _T('+');
+        if (forceAdd)
+            current.Remove(0, 1); // remove '+'
         TiXmlElement* sub = !forceAdd ? elem->FirstChildElement(cbU2C(current)) : 0;
         if (!sub)
         {
-			sub = elem->InsertEndChild(TiXmlElement(cbU2C(current)))->ToElement();
-			SetModified(true);
+            sub = elem->InsertEndChild(TiXmlElement(cbU2C(current)))->ToElement();
+            SetModified(true);
         }
         elem = sub;
 
-		// last node?
-		if (stringDesc.GetChar(nextPos) == _T(':'))
-		{
-			// yes, just parse the attribute now
-			pos = nextPos + 1; // skip the colon
-			nextPos = pos;
-			while (nextPos < stringDesc.Length() && stringDesc.GetChar(++nextPos) != _T('='))
-				;
-			if (pos == nextPos || nextPos == stringDesc.Length())
-			{
-				// invalid attribute
-			}
-			else
-			{
-				wxString key = stringDesc.Mid(pos, nextPos - pos);
-				wxString val = stringDesc.Mid(nextPos + 1, stringDesc.Length() - nextPos - 1);
-				sub->SetAttribute(cbU2C(key), cbU2C(val));
-				SetModified(true);
-			}
-			
-			// all done
-			break;
-		}
+        // last node?
+        if (stringDesc.GetChar(nextPos) == _T(':'))
+        {
+            // yes, just parse the attribute now
+            pos = nextPos + 1; // skip the colon
+            nextPos = pos;
+            while (nextPos < stringDesc.Length() && stringDesc.GetChar(++nextPos) != _T('='))
+                ;
+            if (pos == nextPos || nextPos == stringDesc.Length())
+            {
+                // invalid attribute
+            }
+            else
+            {
+                wxString key = stringDesc.Mid(pos, nextPos - pos);
+                wxString val = stringDesc.Mid(nextPos + 1, stringDesc.Length() - nextPos - 1);
+                sub->SetAttribute(cbU2C(key), cbU2C(val));
+                SetModified(true);
+            }
+            
+            // all done
+            break;
+        }
 
         pos = nextPos; // prepare for next loop
     }
