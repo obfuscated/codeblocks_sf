@@ -142,6 +142,10 @@
 # define BYTEARRAY(x) x
 #endif
 
+#ifdef __MINGW32__
+    #include <io.h>
+#endif
+
 #include "man2html.h"
 
 using namespace std;
