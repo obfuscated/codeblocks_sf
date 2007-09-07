@@ -385,7 +385,10 @@ wxString CompileTargetBase::GetStaticLibFilename()
     if (m_Filename.IsEmpty())
         m_Filename = m_OutputFilename;
 
-    if (m_PrefixGenerationPolicy != tgfpNone || m_ExtensionGenerationPolicy != tgfpNone)
+    /* NOTE: There is no need to check for Generation policy for import library
+       if target type is ttDynamicLib. */
+    if ((m_TargetType == ttStaticLib) &&
+        (m_PrefixGenerationPolicy != tgfpNone || m_ExtensionGenerationPolicy != tgfpNone))
     {
         wxString out = m_Filename;
         GenerateTargetFilename(out);
