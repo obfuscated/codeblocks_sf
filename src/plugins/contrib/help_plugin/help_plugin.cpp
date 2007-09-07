@@ -25,8 +25,9 @@
 
 #include "help_plugin.h"
 #include "man2html.h"
-#include "bzip2/bzlib.h"
-#include "zlib/zlib.h"
+
+#include <bzlib.h>
+#include <zlib.h>
 
 #include <wx/process.h>
 #include <wx/intl.h>

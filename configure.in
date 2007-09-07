@@ -49,6 +49,15 @@ AC_CHECK_LIB(pthread, pthread_create)
 AC_CHECK_FUNC(snprintf, AC_DEFINE(HAVE_SNPRINTF,,snprintf))
 AC_CHECK_FUNC(vsnprintf, AC_DEFINE(HAVE_VSNPRINTF,,vsnprintf))
 
+save_LIBS=$LIBS
+AC_SEARCH_LIBS(gzopen, z, [HAVE_ZLIB=yes], [HAVE_ZLIB=no])
+LIBS=$save_LIBS
+AC_SEARCH_LIBS(BZ2_bzopen, bz2, [HAVE_BZIP2=yes], [HAVE_BZIP2=no])
+LIBS=$save_LIBS
+
+AM_CONDITIONAL([HAVE_ZLIB], [test "$HAVE_ZLIB" = yes])
+AM_CONDITIONAL([HAVE_BZIP2], [test "$HAVE_BZIP2" = yes])
+
 dnl versioning info for libtool
 dnl Note this is the ABI version which is not the same as our actual library version
 CODEBLOCKS_CURRENT=0
