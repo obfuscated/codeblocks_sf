@@ -1227,6 +1227,24 @@
 		<Unit filename="plugins\compilergcc\compilerGNUAVR.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUMSP430.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUMSP430.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUPOWERPC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUPOWERPC.h">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUTRICORE.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerGNUTRICORE.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerICC.cpp">
 			<Option target="Compiler" />
 		</Unit>
