@@ -88,6 +88,12 @@ class wxsResource: public wxObject
         /** \brief Helper function for fetching project path */
         inline wxString GetProjectPath() { return m_Owner ? m_Owner->GetProjectPath() : _T(""); }
 
+        /** \brief Getting project owning this resource */
+        inline wxsProject* GetProject() { return m_Owner; }
+
+        /** \brief Cleaning up before deleting this resource from project */
+        inline bool DeleteCleanup(bool ShowDialog=true) { return OnDeleteCleanup(ShowDialog); }
+
     protected:
 
         /** \brief Function called when there's need to create new editor
@@ -141,6 +147,15 @@ class wxsResource: public wxObject
         /** \brief Index of icon in resource browser */
         virtual int OnGetTreeIcon() { return -1; }
 
+        /** \brief Filling extra entries in popup menu invoked from resource browser */
+        virtual void OnFillPopupMenu(wxMenu* Menu) {}
+
+        /** \brief Reacting on popup menu event */
+        virtual bool OnPopupMenu(long Id) { return false; }
+
+        /** \brief Cleaning up before deleting this resource from project */
+        virtual bool OnDeleteCleanup(bool ShowDialog) { return true; }
+
     private:
 
         /** \brief Function called from wxsEditor just before it's deletion */
@@ -154,8 +169,10 @@ class wxsResource: public wxObject
         wxsResourceItemId m_TreeItemId;
         wxsCodingLang m_Language;
 
+        class wxsResourceRootTreeItemData;
         friend wxsEditor::~wxsEditor();
         friend class wxsProject;
+        friend class wxsResourceRootTreeItemData;
 };
 
 #endif

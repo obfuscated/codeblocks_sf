@@ -51,7 +51,19 @@ int wxsResourceTree::m_RootImageId = LoadImage(_T("/images/wxsmith/wxSmith16.png
 int wxsResourceTree::m_ProjectImageId = LoadImage(_T("/images/codeblocks.png"));
 int wxsResourceTree::m_ExternalImageId = LoadImage(_T("/images/wxsmith/deletewidget16.png"));
 
-wxsResourceTree::wxsResourceTree(wxWindow* Parent): wxTreeCtrl(Parent,-1), m_IsExt(false), m_BlockCount(0)
+
+BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
+    EVT_TREE_SEL_CHANGED(wxID_ANY,wxsResourceTree::OnSelect)
+    EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,wxsResourceTree::OnRightClick)
+    EVT_MENU(wxID_ANY,wxsResourceTree::OnPopupMenu)
+END_EVENT_TABLE()
+
+
+wxsResourceTree::wxsResourceTree(wxWindow* Parent)
+    : wxTreeCtrl(Parent,-1)
+    , m_IsExt(false)
+    , m_BlockCount(0)
+    , m_Data(0)
 {
     m_Singleton = this;
     SetImageList(&GetGlobalImageList());
@@ -185,7 +197,28 @@ void wxsResourceTree::UnblockSelect()
     m_BlockCount--;
 }
 
-BEGIN_EVENT_TABLE(wxsResourceTree,wxTreeCtrl)
-    EVT_TREE_SEL_CHANGED(wxID_ANY,wxsResourceTree::OnSelect)
-    EVT_TREE_ITEM_RIGHT_CLICK(wxID_ANY,wxsResourceTree::OnRightClick)
-END_EVENT_TABLE()
+void wxsResourceTree::PopupMenu(wxMenu* Menu,wxsResourceTreeItemData* ItemData)
+{
+    m_Data = ItemData;
+    wxWindow::PopupMenu(Menu,wxDefaultPosition);
+}
+
+void wxsResourceTree::InvalidateItemData(wxsResourceTreeItemData* ItemData)
+{
+    if ( m_Data == ItemData )
+    {
+        m_Data = 0;
+    }
+}
+
+void wxsResourceTree::OnPopupMenu(wxCommandEvent& event)
+{
+    if ( m_Data )
+    {
+        if ( m_Data->OnPopup(event.GetId()) )
+        {
+            return;
+        }
+    }
+    event.Skip();
+}

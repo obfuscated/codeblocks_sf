@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -30,27 +30,82 @@
 
 namespace
 {
-    // This object will cause resource to open itself
-    // when it's clicked in resource tree
-    class wxsResourceOpening: public wxsResourceTreeItemData
-    {
-        public:
-            wxsResourceOpening(wxsResource* Resource):
-                wxsResourceTreeItemData(),
-                m_Resource(Resource)
+    const int EditOpenId = wxNewId();
+    const int EditCloseId = wxNewId();
+    const int DeleteId = wxNewId();
+}
+
+// This object will cause resource to open itself
+// when it's clicked in resource tree
+class wxsResource::wxsResourceRootTreeItemData: public wxsResourceTreeItemData
+{
+    public:
+        wxsResourceRootTreeItemData(wxsResource* Resource):
+            wxsResourceTreeItemData(),
+            m_Resource(Resource)
+        {
+        }
+
+    private:
+
+        virtual void OnSelect()
+        {
+            m_Resource->EditOpen();
+        }
+
+        virtual void OnRightClick()
+        {
+            // Build menu allowing to close this resource
+            wxMenu Menu;
+            if ( m_Resource->GetEditor() )
             {
+                Menu.Append(EditCloseId,_("Close editor"));
             }
+            else
+            {
+                Menu.Append(EditOpenId,_("Open editor"));
+            }
+            Menu.AppendSeparator();
+            Menu.Append(DeleteId,_("Delete this resource"));
 
-        private:
+            m_Resource->OnFillPopupMenu(&Menu);
 
-            virtual void OnSelect()
+            PopupMenu(&Menu);
+        }
+
+        virtual bool OnPopup(long Id)
+        {
+            if ( Id == EditOpenId )
             {
                 m_Resource->EditOpen();
+                return true;
             }
 
-            wxsResource* m_Resource;
-    };
-}
+            if ( Id == EditCloseId )
+            {
+                m_Resource->EditClose();
+                return true;
+            }
+
+            if ( Id == DeleteId )
+            {
+                DeleteResource();
+                return true;
+            }
+
+            return m_Resource->OnPopupMenu(Id);
+        }
+
+        void DeleteResource()
+        {
+            if ( m_Resource->DeleteCleanup(true) )
+            {
+                m_Resource->GetProject()->DelResource(m_Resource);
+            }
+        }
+
+        wxsResource* m_Resource;
+};
 
 wxsResource::wxsResource(wxsProject* Owner,const wxString& ResourceType,const wxString& GUI):
     m_ResourceType(ResourceType),
@@ -69,6 +124,8 @@ wxsResource::~wxsResource()
         m_Editor = 0;
         EditorStore->Close();
     }
+
+    wxsTree()->Delete(m_TreeItemId);
 }
 
 void wxsResource::EditOpen()
@@ -109,7 +166,7 @@ void wxsResource::BuildTreeEntry(const wxsResourceItemId& Parent)
         Parent,
         GetResourceName(),
         OnGetTreeIcon(), OnGetTreeIcon(),
-        new wxsResourceOpening(this));
+        new wxsResourceRootTreeItemData(this));
 }
 
 bool wxsResource::ReadConfig(const TiXmlElement* Node)

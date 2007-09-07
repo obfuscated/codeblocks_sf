@@ -103,6 +103,9 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
         virtual wxString OnGetDeclarationFile();
         virtual bool OnGetUsingXRC();
         virtual bool OnGetCanBeMain();
+        virtual void OnFillPopupMenu(wxMenu* Menu);
+        virtual bool OnPopupMenu(long Id);
+        virtual bool OnDeleteCleanup(bool ShowDialog);
 
     private:
 

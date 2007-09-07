@@ -25,7 +25,10 @@
 #include "wxsitemeditor.h"
 #include "wxsitemfactory.h"
 #include "wxsitemresdata.h"
+#include "wxsdeleteitemres.h"
 #include "../wxscoder.h"
+#include <manager.h>
+#include <projectmanager.h>
 
 IMPLEMENT_CLASS(wxsItemRes,wxWidgetsRes)
 
@@ -438,4 +441,69 @@ wxsItemResData* wxsItemRes::BuildResData(wxsItemEditor* Editor)
         GetTreeItemId(),
         Editor,
         this);
+}
+
+bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
+{
+    bool PhisDeleteWXS = true;
+    bool DeleteSources = false;
+    bool PhisDeleteSources = false;
+
+    if ( ShowDialog )
+    {
+        wxsDeleteItemRes Dlg;
+        if ( Dlg.ShowModal() != wxID_OK )
+        {
+            return false;
+        }
+        PhisDeleteWXS = Dlg.m_PhisDeleteWXS->GetValue();
+        DeleteSources = Dlg.m_DeleteSources->GetValue();
+        PhisDeleteSources = Dlg.m_PhisDeleteSources->GetValue();
+    }
+
+    ProjectFile* Wxs = GetProject()->GetCBProject()->GetFileByFilename(m_WxsFileName,true);
+    if ( Wxs )
+    {
+        GetProject()->GetCBProject()->RemoveFile(Wxs);
+    }
+
+    if ( PhisDeleteWXS )
+    {
+        wxRemoveFile(GetProjectPath() + m_WxsFileName);
+    }
+
+    if ( DeleteSources )
+    {
+        ProjectFile* Pf = GetProject()->GetCBProject()->GetFileByFilename(m_SrcFileName,true);
+        if ( Pf )
+        {
+            GetProject()->GetCBProject()->RemoveFile(Pf);
+        }
+        Pf = GetProject()->GetCBProject()->GetFileByFilename(m_HdrFileName,true);
+        if ( Pf )
+        {
+            GetProject()->GetCBProject()->RemoveFile(Pf);
+        }
+
+        if ( PhisDeleteSources )
+        {
+            wxRemoveFile(GetProjectPath() + m_SrcFileName);
+            wxRemoveFile(GetProjectPath() + m_HdrFileName);
+        }
+    }
+
+    Manager::Get()->GetProjectManager()->RebuildTree();
+
+    // TODO: Check if we've deleted main resource of this app
+
+    return true;
+}
+
+void wxsItemRes::OnFillPopupMenu(wxMenu* Menu)
+{
+}
+
+bool wxsItemRes::OnPopupMenu(long Id)
+{
+    return false;
 }

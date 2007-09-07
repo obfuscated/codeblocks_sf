@@ -79,7 +79,7 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
     m_Events = &m_Item->GetEvents();
     m_Data   = m_Item->GetResourceData();
     m_Source = m_Data->GetSrcFileName();
-    m_Header = m_Data->GetHdsFileName();
+    m_Header = m_Data->GetHdrFileName();
     m_Class  = m_Data->GetClassName();
     m_Language = m_Data->GetLanguage();
 

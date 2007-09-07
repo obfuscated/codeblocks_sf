@@ -8,6 +8,7 @@
 #endif
 
 #include <wx/treectrl.h>
+#include "wxsresourcetreeitemdata.h"
 
 class wxsResource;
 class wxsProject;
@@ -86,6 +87,7 @@ class wxsResourceTree: public wxTreeCtrl
         wxsResourceItemId m_ExtId;              ///< \brief id of tree item containing external resources
         bool m_IsExt;                           ///< \brief True if there is item for external resources
         int m_BlockCount;                       ///< \brief if > 0 must block all select events
+        wxsResourceTreeItemData* m_Data;        ///< \brief Pointer to item data object used in last action
         static wxsResourceTree* m_Singleton;    ///< \brief singleton object
 
         static int m_RootImageId;
@@ -94,8 +96,15 @@ class wxsResourceTree: public wxTreeCtrl
 
         static wxArrayInt& GetFreedList();
 
+        void PopupMenu(wxMenu* Menu,wxsResourceTreeItemData* ItemData);
+        void InvalidateItemData(wxsResourceTreeItemData* ItemData);
+
         void OnSelect(wxTreeEvent& event);
         void OnRightClick(wxTreeEvent& event);
+        void OnPopupMenu(wxCommandEvent& event);
+
+        friend void wxsResourceTreeItemData::PopupMenu(wxMenu* Menu);
+        friend wxsResourceTreeItemData::~wxsResourceTreeItemData();
 
         DECLARE_EVENT_TABLE()
 };

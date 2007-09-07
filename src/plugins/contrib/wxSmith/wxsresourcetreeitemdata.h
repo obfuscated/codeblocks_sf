@@ -2,6 +2,7 @@
 #define WXSRESOURCETREEITEMDATA_H
 
 #include <wx/treectrl.h>
+#include <wx/menu.h>
 
 /** \brief Data used by resource tree */
 class wxsResourceTreeItemData: public wxTreeItemData
@@ -21,6 +22,15 @@ class wxsResourceTreeItemData: public wxTreeItemData
 
         /** \brief Called when right click was made on item */
         virtual void OnRightClick() {}
+
+        /** \brief Called when popup menu generated event with given id
+         *  \return true when event was processed, false otherwise
+         */
+        virtual bool OnPopup(long Id) { return false; }
+
+
+        /** \brief Function to properly display popup menu */
+        void PopupMenu(wxMenu* Menu);
 
     private:
 

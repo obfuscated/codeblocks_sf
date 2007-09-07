@@ -250,6 +250,17 @@ bool wxsProject::AddResource(wxsResource* NewResource)
     return true;
 }
 
+bool wxsProject::DelResource(wxsResource* Resource)
+{
+    int Index = m_Resources.Index(Resource);
+    if ( Index == wxNOT_FOUND ) return false;
+
+    delete Resource;
+    m_Resources.RemoveAt(Index);
+    m_Project->SetModified(true);
+    return true;
+}
+
 wxsResource* wxsProject::FindResource(const wxString& Name)
 {
     for ( size_t i = m_Resources.Count(); i-->0; )

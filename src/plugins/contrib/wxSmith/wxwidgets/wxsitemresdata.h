@@ -119,7 +119,7 @@ class wxsItemResData
         inline const wxString& GetSrcFileName() { return m_SrcFileName; }
 
         /** \brief Getting name of header file (global path) */
-        inline const wxString& GetHdsFileName() { return m_HdrFileName; }
+        inline const wxString& GetHdrFileName() { return m_HdrFileName; }
 
         /** \brief Getting name of XRC file (global path) */
         inline const wxString& GetXrcFileName() { return m_XrcFileName; }

@@ -22,6 +22,7 @@
 */
 
 #include "wxsresourcetreeitemdata.h"
+#include "wxsresourcetree.h"
 
 wxsResourceTreeItemData::wxsResourceTreeItemData()
 {
@@ -29,5 +30,10 @@ wxsResourceTreeItemData::wxsResourceTreeItemData()
 
 wxsResourceTreeItemData::~wxsResourceTreeItemData()
 {
+    wxsResourceTree::Get()->InvalidateItemData(this);
 }
 
+void wxsResourceTreeItemData::PopupMenu(wxMenu* Menu)
+{
+    wxsResourceTree::Get()->PopupMenu(Menu,this);
+}

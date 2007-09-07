@@ -256,6 +256,8 @@
 		<Unit filename="wxwidgets/wxscontainer.h" />
 		<Unit filename="wxwidgets/wxscorrector.cpp" />
 		<Unit filename="wxwidgets/wxscorrector.h" />
+		<Unit filename="wxwidgets/wxsdeleteitemres.cpp" />
+		<Unit filename="wxwidgets/wxsdeleteitemres.h" />
 		<Unit filename="wxwidgets/wxsdialogres.cpp" />
 		<Unit filename="wxwidgets/wxsdialogres.h" />
 		<Unit filename="wxwidgets/wxsdrawingwindow.cpp" />
@@ -340,6 +342,7 @@
 					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" name="wxsListbookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" name="wxsSettings" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" name="wxsMenuEditor" language="CPP" />
+					<wxDialog wxs="wxsmith/wxsDeleteItemRes.wxs" src="wxwidgets/wxsdeleteitemres.cpp" hdr="wxwidgets/wxsdeleteitemres.h" name="wxsDeleteItemRes" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />
