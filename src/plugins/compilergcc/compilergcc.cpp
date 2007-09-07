@@ -71,6 +71,7 @@
     #include "compilerDMD.h"
     #include "compilerGNUARM.h"
     #include "compilerGNUAVR.h"
+    #include "compilerGNUMSP430.h"
     #include "compilerCYGWIN.h"
 #endif
 #ifdef __WXMAC__
@@ -79,6 +80,8 @@
 #include "compilerICC.h"
 #include "compilerSDCC.h"
 #include "compilerTcc.h"
+#include "compilerGNUPOWERPC.h"
+#include "compilerGNUTRICORE.h"
 
 #include <scripting/bindings/sc_base_types.h>
 
@@ -321,6 +324,7 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerOW);
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
     CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
+    CompilerFactory::RegisterCompiler(new CompilerGNUMSP430);
     CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
 #endif
     CompilerFactory::RegisterCompiler(new CompilerICC);
@@ -329,6 +333,8 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerGDC);
 #if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerDMD);
+    CompilerFactory::RegisterCompiler(new CompilerGNUPOWERPC);
+    CompilerFactory::RegisterCompiler(new CompilerGNUTRICORE);
 #endif
 
     // register (if any) user-copies of built-in compilers
