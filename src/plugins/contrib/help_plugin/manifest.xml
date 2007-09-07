@@ -3,26 +3,33 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="HelpPlugin">
         <Value title="Help plugin" />
-        <Value version="1.0" />
+        <Value version="1.1" />
         <Value description="This plugin is used to add a list of help files to the Help menu so you can have them handy to launch.
 
-You can also set one of the help files as the default help file and that way it'll be launched when you press F1.
-NOTE: you can add any file you want and it'll be launched with the associated application.
+You can also set one of the help files as the default help file, and that way it'll be launched when you press F1.
+NOTE: you can add any file you want, and it'll be launched with the associated application.
 
 It'll also integrate in the context menu of the editor (right click) enabling you to search the word under the cursor in any of the help files.
-NOTE: it's meaningful under Windows for help files with extension hlp or chm, and for any platform when the help file is an URL or a line to be executed (read below).
+NOTE: it's meaningful under Windows for help files with extension hlp or chm, and for any platform when the help file is an URL, a man page or a line to be executed (read below).
 
 To add an URL as a help file, add a new help file as usual BUT choose NO when prompted for browsing the help file. Be sure the new help file is selected and enter the URL in the text entry (the one followed by the ... button).
 
 In addition you can also add a whole line to be executed just like you add URLs. Just be sure to check &quot;This line represents a full command to be executed&quot; for that help file.
 
+It's also possible to add man pages to the help plugin. To do this, follow the same steps to add an URL, but use the following syntax:
+  man:dir
+where dir is the path to the directory that has all the man pages. If you want to add more directories you just need to separate them with a semicolon (;). Just be sure the man pages are in plain text, GZip or BZip2. On *nix systems you would most likely add this one:
+  man:/usr/share/man
+
+Have in mind that looking for man pages is done recursively, so use it carefully.
+
 TIP: you can add $(keyword) in any place of the path to the help file, URL or line to execute, any number of times, and it'll get replaced by the word you selected to locate in that help file.
 
 The configuration dialog for this plugin can be found clicking on Settings -> Environment (Help files)." />
         <Value author="Bourricot | Ceniza (maintainer)" />
-        <Value authorEmail="titi37fr@yahoo.fr | ceniza@gda.utp.edu.co" />
+        <Value authorEmail="ceniza666@gmail.com" />
         <Value authorWebsite="www.codeblocks.org" />
-        <Value thanksTo="Codeblocks dev team !\nBourricot for the initial version" />
+        <Value thanksTo="Codeblocks dev team!\nBourricot for the initial version" />
         <Value license="GPL" />
     </Plugin>
 </CodeBlocks_plugin_manifest_file>

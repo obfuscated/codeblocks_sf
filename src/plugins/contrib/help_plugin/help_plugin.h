@@ -10,6 +10,7 @@
 #include <sdk_events.h>
 #include <cbplugin.h> // the base class we're inheriting
 #include <wx/dynarray.h>
+#include <wx/frame.h>
 #include "HelpConfigDialog.h"
 
 class HelpPlugin : public cbPlugin
@@ -35,9 +36,12 @@ class HelpPlugin : public cbPlugin
     void LaunchHelp(const wxString &helpfile, bool isExecutable, const wxString &keyword = wxEmptyString);
 
   private:
+    bool Decompress(const wxString& filename, const wxString& tmpfile);
+    wxString GetManPage(const wxString &dirs, const wxString &keyword);
     wxMenuBar *m_pMenuBar;
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastId;
+    wxFrame *m_manFrame;
 
     DECLARE_EVENT_TABLE()
 };
