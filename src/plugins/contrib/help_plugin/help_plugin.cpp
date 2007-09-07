@@ -589,13 +589,13 @@ bool HelpPlugin::Decompress(const wxString& filename, const wxString& tmpfile)
 wxString HelpPlugin::GetManPage(const wxString &dirs, const wxString &keyword)
 {
     std::vector<wxString> dirs_vect;
-    int start_pos = 4; // len("man:")
+    size_t start_pos = 4; // len("man:")
 
     while (true)
     {
-        int next_semi = dirs.find(_T(';'), start_pos);
+        size_t next_semi = dirs.find(_T(';'), start_pos);
 
-        if (next_semi == wxNOT_FOUND)
+        if ((int)next_semi == wxNOT_FOUND)
         {
             next_semi = dirs.Length();
         }
