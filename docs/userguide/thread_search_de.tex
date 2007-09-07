@@ -1,0 +1,85 @@
+\section{Thread Search}\label{sec:thread_search}
+
+Über das Menu \menu{Search,Thread Search} lässt sich das entsprechende Plugin als Tab in der Messages Console ein- und ausblenden. In \codeblocks kann mit diesem Plugin eine Vorschau für das Auftreten einer Zeichenkette in einer Datei, Workspace oder Verzeichnis angezeigt werden. Dabei wird die Liste der Suchergebnisse in der rechten Seite der ThreadSearch Console angezeigt. Durch Anklicken eines Eintrages in der Liste wird auf der linken Seite eine Vorschau angezeigt. Durch einen Doppelklick in der Liste wird die ausgewählte Datei im \codeblocks Editor geöffnet.
+
+\hint{Die Einstellung von zu durchsuchenden Dateiendungen voreingestellt ist und eventuell angepasst werden muss.}
+
+\subsection{Features}
+
+ThreadSearch plugin bietet folgende Funktionalität
+
+\begin{itemize}
+\item Mehrfache Suche in Dateien
+\item Interner Editor zur Anzeige einer Vorschau der Suchergebnisse
+\item Öffnen der Datei im Editor
+\item Kontextmenü \samp{Find occurrences} um Suche in Dateien nach dem Wort unter dem aktuellen Cursor zu starten.
+\end{itemize}
+
+\screenshot[hbt!][width=\columnwidth]{threadsearch_panel}{Thread Search Panel}
+
+\subsection{Verwendung}
+
+\begin{enumerate}
+\item Konfigurieren Sie Ihre Einstellungen für die Suche (see \pxref{fig:threadsearch_options})
+
+Nach dem das Plugin installiert wurde gibt es vier Arten die Suche zu starten.
+
+\begin{enumerate}
+\item Eingabe oder Auswahl eines Wortes in der Combo Box ein und Bestätigen Sie Ihre Eingabe mit Return oder drücken Sie den Search Knopf im Thread Search Panel in der Message Console.
+\item Eingabe oder Auswahl eines Wortes in der Symbolleiste Search combo box und Bestätigen Sie Ihre Eingabe mit Return oder drücken Sie den Search Knopf.
+\item Wählen Sie ein \samp{Wort} im aktiven Editor und wählen Sie im Kontextmenü \samp{Find occurrences}.
+\item Selektieren Sie Search/Thread search um den ausgewählten Begriff im aktiven Editor zu finden.
+\hint{Eintrag 1, 2 und 3 erscheint nur bei entsprechenden Konfiguration von Thread Search.}
+\end{enumerate}
+\item Erneuntes Betätigen des Search Knopfes bricht die Suche ab.
+\item Durch Anklicken eines Eintrages in der Liste der Suchergebnisse wird auf der linken Seite eine Vorschau angezeigt.
+\item Durch Doppelklick eines Eintrages in der Liste der Suchergebnisse wird die zugehörige Datei geöffnet und an die gesuchte Stelle gesprungen.
+\end{enumerate}
+
+\subsection{Einstellungen}
+
+Der Knopf \samp{Options} öffnet den Dialog für die Konfiguration des ThreadSearch plugin (see \pxref{fig:threadsearch_options}):
+
+\screenshot{threadsearch_options}{Konfiguration von Thread Search}
+
+\begin{enumerate}
+\item Knopf \samp{Options} in dem Reiter Thread Search der Message Console.
+\item Knopf \samp{Options} der Symbolleiste Thread Search.
+\item Menü \menu{Settings,Environment} und Eintrag Thread search in der linken Spalte wählen.
+\end{enumerate}
+
+\hint{Eintrag 1, 2 und 3 erscheint nur bei entsprechenden Konfiguration von Thread Search.}
+
+Sie können Filter für die Suche von Dateien konfigurieren.
+
+\begin{itemize}
+\item Project und Workspace checkboxes schließen sich gegenseitig aus.
+\item Suchpfad kann bearbeitet werden oder über den Knopf \samp{Select} konfiguriert werden.
+\item Maske von Dateiendungen, die durch \samp{;} getrennt sind. Zum Beispiel: \file{*.cpp;*.c;*.h.}
+\end{itemize}
+
+\subsection{Optionen}
+
+\begin{description}
+\item[Whole word] Diese Einstellung gibt in den Suchergebnisse nur die Begriffe zurück, die exakt dem Eintrag für die Suche entsprechen.
+\item[Start word] Sucht alle Begriffe die mit Eintrag der Suche beginnen..
+\item[Match case] Berücksichtigt Groß- und Kleinschreibung bei der Suche.
+\item[Regular expression] Regulärer Ausdruck für eine Suche.
+\end{description}
+
+\subsection{Konfiguration von Thread search}
+
+\begin{description}
+\item[Enable \samp{Find occurrences contextual menu item}] Fügt den Eintrag \samp{Find occurrences of \samp{Focused word}} im Kontextmenü im Editor hinzu.
+\item[Use default options when running \samp{Find occurrences}] Diese Einstellung übernimmt die voreingestellte Konfiguration für das Kontextmenü \samp{Find occurrences}. Standardmäßig ist die Einstellung \samp{Whole word} und \samp{Match case} aktiv.
+\end{description}
+
+\subsection{Layout}
+
+\begin{description}
+\item[Display header in log window] Der Name der Dateien wird in den Suchergebnissen angezeigt.
+\hint{Wenn diese Option deaktiviert ist, können die Spaltenbreite nicht mehr verändert werden, belegen jedoch Platz.}
+\item[Draw lines between columns] Anzeigen von Linien zwischen den Spalten.
+\item[Show ThreadSearch toolbar] Anzeige der Symbolleiste für das Thread Search plugin.
+\item[Show search widgets in ThreadSearch Messages panel] Mit dieser Einstellung werden nur das Fenster für die Suchergebnisse und der Editor für die Vorschau angezeigt. Die Anzeige aller anderen Elementen für das Thread Search Plugin wird unterdrückt.
+\end{description}

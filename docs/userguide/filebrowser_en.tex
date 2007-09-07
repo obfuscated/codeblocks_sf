@@ -1,0 +1,111 @@
+\section{File Explorer and Shell Extension Plugin}\label{sec:file_explorer}
+
+The File Explorer \pxref{fig:file_explorer} is included in the Shell Extensions plugin, and can be found in the \samp{Files} tab. The composition of the File Explorer is shown in \pxref{fig:file_explorer}.
+
+On top you will find a field for entering the path. By clicking the button at the end of this field, the drop-down field will list a history of the past entries which can be navigated via a scroll bar. The up arrow key on the right-hand side of the field moves up the directory structure one directory.
+
+In the \samp{Wildcard} field you can enter a filter term for the file display. Leaving the field empty or entering \codeline{*} results in all files being displayed. Entering \codeline{*.c;*.h}, for example will result in solely C sources and header files being displayed. Opneing the pull-down field will, again, list a history of the last entries.
+
+\figures[hbt!]{file_explorer}{The file manager}
+
+Pressing the Shift key and clicking selects a group of files or directories, pressing the Ctrl key and clicking selects multiple separate files or directories.
+
+The following operations can be started via the context menu if one or multiple directories are selected in the File Explorer:
+
+\begin{description}
+\item[Make Root] ...defines the current directory as the root directory.
+\item[Add to Favorites] ...sets a marker for the directory and stores it as a favourite. This function allows you to navigate quickly between frequently used directories, also on different network drives.
+\item[New File] ...creates a new file in the selected directory.
+\item[Make Directory] ...creates a new subdirectory in the selected directory.
+\end{description}
+
+The following operations can be started via the context menu if one or multiple files or directories are selected in the File Explorer:
+
+\begin{description}
+\item[Duplicate] ...copies a file/directory and renames it.
+\item[Copy To] ...opens a dialogue for entering the target directory in which the copied file/directory is to be stored.
+\item[Move To] ...moves the selection to the target location.
+\item[Delete] ...deletes the selected files/directories.
+\item[Show Hidden Files] ...activates/deactivates the display of hidden system files. When activated, this menu entry is checkmarked.
+\item[Refresh] ...actualises the display of the directory tree.
+\end{description}
+
+The following operations can be started via the context menu if one or multiple files are selected in the File Explorer:
+
+\begin{description}
+\item[Open in CB Editor] ...opens the selected file in the \codeblocks editor.
+\item[Rename] ...renames the selected file.
+\item[Add to active project] ...adds the file(s) to the active project.
+\end{description}
+
+\hint{The files/directories selected in the File Explorer can be accessed in the Shell Extensions plugin via the \codeline{mpaths} variable.}
+
+User-defined functions can be specified via the menu command \menu{Settings,Environment,Shell Extensions}. In the Shell Extensions mask, a new function which can be named at random, is created via the \samp{New} button. In the \samp{ShellCommand Executable} field, the executable program is stated, and in the field at the bottom of the window, additional parameters can be passed to the program.
+By clicking the function in the context menu or the Shell Extensions menu, the function is started and will then process the selected files/directories. The output is redirected to a separate shell window.
+
+In the screenshot, a menu entry in \menu{Shell Extensions,SVN} and in the context menu is created for \samp{SVN}. \codeline{$file} in this context means the file selected in the File Explorer, \codeline{$mpath} the selected files or directories (see \pxref{sec:builtin_variables}).
+
+\begin{code}
+ Add;$interpreter add $mpaths;;;
+\end{code}
+
+This and every subsequent command will create a submenu, in this case called \menu{Extensions,SVN,Add}. The context menu is extended accordingly. Clicking the command in the context menu will make the SVN command \codeline{add} process the selected files/directories.
+
+The plugin support the use of \codeblocks variables within the shell extension.
+
+\screenshot{interpreter}{Add a shell extension to the context menu}
+
+\genterm{Example}
+
+You can use the file explorer to diff files or directories. Follow these steps:
+
+\begin{enumerate}
+\item Add the name via menu \menu{Settings,Environment,Shell Extensions}. This is shown as entry in the interpreter menu and the context menu.
+\item Select the absolute path of Diff executable (e.g. kdiff3). The program is accessed with the variable \codeline{$interpreter}.
+\item Add parameters of the interpreter
+\begin{cmd}
+Diff;$interpreter $mpaths;;;
+\end{cmd}
+\end{enumerate}
+
+This command will be executed using the selected files or directories as parameter. The selection is accessed via the variable \codeline{$mpaths}. This is an easy way to diff files or directories können.
+
+% Actions string format: Name;Command;[W|C];WorkDir;EnvVarSet
+% (the last two ; delimit settings for the working directory and (not implemented) environment variable set)
+%
+\begin{codeentry}
+\item[\$interpreter] Call this executable.% Aufzurufendes Programm
+\item[\$fname] Name of the file without extension. %Name der Datei ohne Endung.
+\item[\$fext] Extension of the selected file. %Dateiendung der ausgewählten Datei.
+\item[\$file] Name of the file. %Dateiname mit Endung.
+\item[\$relfile] Name of the file without path info. %Dateiname ohne Pfadangabe.
+\item[\$dir] Name of the selected directory. %Ordnername mit Pfadangabe.
+\item[\$reldir] Name of directory without path info. %Ordnername ohne Pfadanabe.
+\item[\$path] Absolute path. %Absolute Pfad.
+\item[\$relpath] Relative path of file or directory. %Relativer Pfad einer Datei oder Verzeichnis.
+\item[\$mpaths] List of current selected files or directories. %Liste der ausgewählten Dateien oder Ordner.
+\item[\$inputstr\{<msg>\}] String that is entered in a message window. %Zeichenkette die durch eine Eingabeaufforderung eingegeben wird.
+\item[\$parentdir] Parent directory (../). %Übergeordnetes Verzeichnis (../)
+\end{codeentry}
+
+Alt-x und \&SVN/\&Add can be used with shortcuts.
+Support for personalities.
+hint: Context menu is also available in the editor!!!
+Bsp:
+%View;latex $fname.$fext;W;$parentdir
+
+\subsection{Support for Version Control Systems}
+
+Context menu \menu{View, SVN Decorators}
+% Run the processes using option 'W' in the action string (to run an interpreter in the cbconsole runnner use 'C' in the action string). for example a python run action string to run a script in a dockable winodw tab might look like this:
+%
+% \begin{code}
+% 'Run;$interpeter -u $file;W;;'
+% \end{code}
+%
+% Command line variables:
+% \begin{code}
+% $interpreter, $file, $dir, $path, $mpaths
+% Working directory variables: $dir, $parentdir
+% \end{code}
+%

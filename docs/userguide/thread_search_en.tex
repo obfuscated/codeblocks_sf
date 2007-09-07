@@ -1,0 +1,85 @@
+\section{Thread Search}\label{sec:thread_search}
+
+Via the \menu{Search,Thread Search} menu, the appropriate plug-in can be shown or hidden as a tab in the Messages Console. In \codeblocks, a preview can be displayed for the occurrence of a character string in a file, workspace or directory. In doing so, the list of search results will be displayed on the right-hand side of the ThreadSearch Console. By clicking an entry in the list, a preview is displayed on the left-hand side. By double-clicking in the list, the selected file is opened in the \codeblocks editor.
+
+\hint{The scope of file extensions to be included in the search, is preset and might have to be adjusted.}
+
+\subsection{Features}
+
+ThreadSearch plugin offers the following features:
+
+\begin{itemize}
+\item Multi-threaded \samp{Search in files}
+\item Internal read-only editor to preview the results
+\item File open in editors notebook
+\item Contextual menu \samp{Find occurrences} to start a search in files with the word under cursor
+\end{itemize}
+
+\screenshot[hbt!][width=\columnwidth]{threadsearch_panel}{Thread Search Panel}
+
+\subsection{Usage}
+
+\begin{enumerate}
+\item Configure your search preferences (see \pxref{fig:threadsearch_options})
+
+Once the plugin is installed, there are 4 ways to run a search:
+
+\begin{enumerate}
+\item Type/Select a word in the search combo box and press enter or click on Search on the Thread search panel of the Messages notebook.
+\item Type/Select a word in the toolbar search combo box and press enter or click on Search button.
+\item Right click on any \samp{word} in active editor and click on \samp{Find occurrences}.
+\item Click on Search/Thread search to find the current word in active editor.
+\hint{Items 1, 2 and 3 may not be available according to current configuration.}
+\end{enumerate}
+\item Click again on the search button to cancel current search.
+\item A single click on a result item displays it on the preview editor at right location.
+\item A double click on a result item opens or set an editor in editors notebook at right location.
+\end{enumerate}
+
+\subsection{Configuration}
+
+To access ThreadSearch plugin configuration panel click on (see \pxref{fig:threadsearch_options}):
+
+\screenshot{threadsearch_options}{Configuration of Thread Search}
+
+\begin{enumerate}
+\item Options button on Messages notebook Thread search panel.
+\item Options button on Thread search toolbar.
+\item Settings/Environment menu item and then on the Thread search item on the left columns.
+\end{enumerate}
+
+\hint{Items 1, 2 and 3 may not be available according to current configuration.}
+
+Search in part defines the set of files that will be analysed.
+
+\begin{itemize}
+\item Project and Workspace checkboxes are mutually exclusive.
+\item Directory path can be edited or set with Select button.
+\item Mask is the set a file specifications separated by \samp{;}. For example: \file{*.cpp;*.c;*.h.}
+\end{itemize}
+
+\subsection{Options}
+
+\begin{description}
+\item[Whole word] if checked, line matches search expression if search expression is found with no alpha-numeric \codeline{+'_'} before and after.
+\item[Start word] if checked, line matches search expression if search expression is found at the beginning of a word, ie no alpha-numeric \codeline{+'_'} before search expression.
+\item[Match case] if checked, the search is case sensitive.
+\item[Regular expression] the search expression is a regular expression.
+\end{description}
+
+\subsection{Thread search options}
+
+\begin{description}
+\item[Enable \samp{Find occurrences contextual menu item}] If checked, the Find occurrences of \samp{Focused word} entry is added to the editor contextual menu.
+\item[Use default options when running \samp{Find occurrences}] If checked, a set of default options is applied to the searches launched with the \samp{Find occurrences} contextual menu item.Per defaut option \samp{Whole word} and \samp{Match case} is enabled.
+\end{description}
+
+\subsection{Layout}
+
+\begin{description}
+\item[Display header in log window] if checked, the header are displayed in the results list control.
+\hint{If unchecked, the columns are no longer resizeable but space is spared.}
+\item[Draw lines between columns] Draws lines between columns.
+\item[Show ThreadSearch toolbar] Display the toolbar of Thread Search plugin.
+\item[Show search widgets in ThreadSearch Messages panel] If checked, only the results list control and the preview editor are displayed. All other search widgets are hidden (spares space).
+\end{description}

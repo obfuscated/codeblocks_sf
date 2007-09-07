@@ -1,0 +1,88 @@
+\section{File Explorer und Shell Extension Plugin}\label{sec:file_explorer}
+
+Der File Explorer \pxref{fig:file_explorer} ist im Shell Extension Plugin enthalten. In \pxref{fig:file_explorer} ist der Aufbau des File Explorers dargestellt. Der File Explorer erscheint als Tab \samp{Files} im Management Fenster.
+
+Das oberste Eingabefeld dient zur Angabe des Pfades. Die History der letzten Einträge erhalten Sie durch Mausklick auf die Schaltfläche neben dem Eingabefeld. Dadurch öffnet sich das Listenfeld, in dem der entsprechende Eintrag ausgewählt werden kann. Die Pfeil-nach-oben-Schaltfläche rechts daneben schiebt die Anzeige der Verzeichnisstruktur um eins nach oben.
+
+Im Feld \samp{Wildcard} können Sie Filter für die Anzeige von Dateien angeben. Mit einer leeren Eingabe oder \codeline{*} werden alle Dateien angezeigt. Ein Eintrag \codeline{*.c;*.h} zeigt z.B. nur C-Quellen und Headerdateien an. Durch Öffnen des Listenfeldes kann wiederum eine History der letzten Einträge zur Auswahl angezeigt werden.
+
+\figures[hbt!]{file_explorer}{Ansicht des Dateimanagers}
+
+Durch Mausklick mit gedrückter Shift-Taste kann ein Block von Dateien und Verzeichnissen ausgewählt werden, durch Mausklick mit gedrückter Ctrl-Taste können mehrere einzelne Dateien und Verzeichnisse ausgewählt werden.
+
+Für die Auswahl eines oder mehrerer Verzeichnisse im File Explorer stehen Ihnen über das Kontextmenü folgende Operationen zur Verfügung:
+
+\begin{description}
+\item[Make Root] Definiert das aktuell ausgewählte Verzeichnis als Hauptverzeichnis.
+\item[Add to Favorites] Setzt ein Lesezeichen für das Verzeichnis und speichert es als Favorit ab. Durch diese Auswahl können Sie schnell zwischen häufig verwendeten Verzeichnissen, z.B. auf unterschiedlichen Netzlaufwerken, springen.
+\item[New File] Erzeugt eine neue Datei in ausgewählten Verzeichnis.
+\item[Make Directory] Legt ein neues Unterverzeichnis im ausgewählten Ordner an.
+\end{description}
+
+Für die Auswahl von Dateien und Verzeichnissen stehen im Kontextmenü folgende gemeinsamen Befehle zur Verfügung.
+
+\begin{description}
+\item[Duplicate] Macht eine Kopie und benennt die Kopie um.
+\item[Copy To] Es öffnet sich ein Dialog in dem Sie das Zielverzeichnis für das Kopieren auswählen können.
+\item[Move To] Verschiebt Auswahl an die gewünschte Stelle.
+\item[Delete] Löscht die ausgewählten Ordner/Dateien.
+\item[Show Hidden Files] Aktiviert bzw. deaktiviert die Anzeige von versteckten Systemdateien. Wenn die Einstellung aktiviert ist, erscheint ein Haken vor dem Eintrag im Kontextmenü.
+\item[Refresh] Aktualisiert die Anzeige im Verzeichnisbaum.
+\end{description}
+
+Folgende Einträge sind nur für die Auswahl ein oder mehrerer Dateien gültig.
+
+\begin{description}
+\item[Open in CB Editor] Öffnet ausgewählte Datei im \codeblocks Editor.
+\item[Rename] Benennt die Datei um.
+\item[Add to active project] Fügt die Datei oder Dateien zum aktiven Projekt hinzu.
+\end{description}
+
+\hint{Die im File-Explorer ausgewählten Dateien oder Verzeichnisse sind über die Variable \codeline{mpaths} im Shell Extension Plugin verfügbar.}
+
+Über den Menübefehl \menu{Settings,Environment,Shell Extensions} können benutzerdefinierte Funktionen erstellt werden. In der Eingabemaske des Shell Extensions wird mit der Schaltfläche \samp{New} eine neue Funktion angelegt, die frei benannt werden kann. Im Feld ShellCommand Executable wird das auszuführende Programm angegeben, im unteren Feld können dem auszuführenden Programm zusätzliche Parameter übergeben werden.
+Durch Auswahl der Funktion im Kontextmenü oder Shell Extensions-Menü wird die eingetragene Aktion für die markierten Dateien oder Verzeichnisse ausgeführt. Die Ausgabe wird dabei auf ein eigenes Shell-Window umgelenkt.
+
+Im Screenshot wird für den Eintrag mit dem Namen \samp{SVN} ein zugehöriger Menüeintrag in \menu{Shell Extensions,SVN} und im Kontextmenü des File-Explorers hinzugefügt. Hierbei bedeutet \codeline{$file} die Datei, welche im FileExplorer markiert ist, und \codeline{$mpath} die markierten Dateien oder Verzeichnisse.
+
+\begin{code}
+ Add;$interpreter add $mpaths;;;
+\end{code}
+
+Dieser sowie jeder weitere Befehl erzeugt ein Untermenü, in diesem Fall \menu{Extensions,SVN,Add}. Das Kontextmenü wird entsprechend erweitert. Der Aufruf des Kontextmenüs führt das SVN-Kommando \codeline{add} für die ausgewählte(n) Datei(en)/Verzeichnis(se) aus.
+
+Als Übergabeparameter eines Befehl einer Shell Extensions unterstützt auch den Zugriff der in \codeblocks verfügbaren Variablen (siehe \pxref{sec:builtin_variables}).
+
+\screenshot{interpreter}{Hinzufügen von Aktionen für Kontextmenü}
+
+\genterm{Beispiel}
+
+Sie können den File-Explorer auch verwendet um Unterschiede zwischen verschiedenen Dateien oder Verzeichnisse anzeigen zu lassen. Dabei gehen Sie wie folgt vor.
+
+\begin{enumerate}
+\item Fügen Sie im \menu{Settings,Environment,Shell Extensions} den Namen ein, der später im Menü ShellExtensions bzw. im Kontextmenü erscheinen soll.
+\item Geben Sie den absoluten Pfad des Diff-Programms an (z.B. kdiff3). Dies wird über die Variable \codeline{$interpreter} zugegriffen.
+\item Fügen Sie im unteren Feld den Eintrag:
+\begin{cmd}
+Diff;$interpreter $mpaths;;;
+\end{cmd}
+\end{enumerate}
+
+In diesem Aufruf wird über die Variable \codeline{$mpaths} die im File-Explorer selektierten Dateien oder Verzeichnisse zugegriffen. Somit können Sie einfach ausgewählte Dateien oder Verzeichnisse gegeneineander vergleichen.
+
+% Actions string format: Name;Command;[W|C];WorkDir;EnvVarSet
+% (the last two ; delimit settings for the working directory and (not implemented) environment variable set)
+%
+% Run the processes using option 'W' in the action string (to run an interpreter in the cbconsole runnner use 'C' in the action string). for example a python run action string to run a script in a dockable winodw tab might look like this:
+%
+% \begin{code}
+% 'Run;$interpeter -u $file;W;;'
+% \end{code}
+%
+% Command line variables:
+% \begin{code}
+% $interpreter, $file, $dir, $path, $mpaths
+% Working directory variables: $dir, $parentdir
+% \end{code}
+%
+

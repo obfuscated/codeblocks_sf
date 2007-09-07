@@ -1,0 +1,265 @@
+\chapter{Variable Expansion}\label{sec:variables_types}
+
+\codeblocks differentiates between several types of variables. These types serve the purpose of configuring the environment for creating a program, and at the same of improving the maintainability and portability. Access to the \codeblocks variables is achieved via \codeline{$<name>}.
+
+
+\begin{description}
+\item[Envrionment Variable] are set during the startup of \codeblocks. They can modify system environment variables such as \codeline{PATH}. This can be useful in cases where a defined environment is necessary for the creation of projects. The settings for environment variables in \codeblocks are made at \menu{Settings,Environment,Environment Variables}.
+\item[Builtin Variables] are predefined in \codeblocks, and can be accessed via their names  (see \pxref{sec:builtin_variables} for details).
+\item[Command Macros] This type of variables is used for controlling the build process. For further information please refer to \pxref{sec:command_macros}.
+\item[Custom Variables] are user-defined variables which can be specified in the build options of a project. Here you can, for example define your derivative as a variable \codeline{MCU} and assign a corresponding value to it. Then set the compiler option \opt{-mcpu=\$(MCU)}, and \codeblocks will automatically replace the content. By this method, the settings for a project can be further parametrised.
+\item[Global Variables] are mainly used for creating \codeblocks from the sources or developments of wxWidgets applications. These variables have a very special meaning. In contrast to all others if you setup such a variables and share your project file with others that have *not* setup this GV \codeblocks will ask the user to setup the variable. This is a very easy way to ensure the \samp{other developer} knows what to setup easily. \codeblocks will ask for all path's usually necessary.
+\end{description}
+
+\section{Syntax}
+
+\codeblocks treats the following functionally identical character sequences inside pre-build, post-build, or build steps as variables:
+
+\begin{itemize}
+\item \codeline{$VARIABLE}
+\item \codeline{$(VARIABLE)}
+\item \codeline{$\{VARIABLE\}}
+\item \codeline{\%VARIABLE\%}
+\end{itemize}
+
+Variable names must consist of alphanumeric characters and are not case-sensitive. Variables starting with a single hash sign \codeline{(#)} are interpreted as global user variables (see \pxref{sec:global_variables} for details). The names listed below are interpreted as built-in types.
+
+Variables which are neither global user variables nor built-in types, will be replaced with a value provided in the project file, or with an environment variable if the latter should fail.
+
+\hint{Per-target definitions have precedence over per-project definitions.}
+
+\section{List of available built-ins}\label{sec:builtin_variables}
+
+The variables listed here are built-in variables of \codeblocks. They cannot be used within source files.
+
+\subsection{Files and directories}
+
+\begin{codeentry}
+\item[\$(PROJECT\_FILENAME), \$(PROJECT\_FILE\_NAME), \$(PROJECT\_FILE), \$(PROJECTFILE)] The filename of the currently compiled project.
+\item[\$(PROJECT\_NAME)] The name of the currently compiled project.
+\item[\$(PROJECT\_DIR), \$(PROJECTDIR), \$(PROJECT\_DIRECTORY)] The common top-level directory of the currently compiled project.
+\item[\$(ACTIVE\_EDITOR\_FILENAME)] The filename of the file opened in the currently active editor.
+\item[\$(ACTIVE\_EDITOR\_DIRNAME)] the directory containing the currently active file (relative to the common top level path).
+\item[\$(ACTIVE\_EDITOR\_STEM)] The base name (without extension) of the currently active file.
+\item[\$(ACTIVE\_EDITOR\_EXT)] The extension of the currently active file.
+\item[\$(ALL\_PROJECT\_FILES)] A string containing the names of all files in the current project.
+\item[\$(MAKEFILE)] The filename of the makefile.
+\item[\$(CODEBLOCKS), \$(APP\_PATH), \$(APPPATH), \$(APP-PATH)] The path to the currently running instance of \codeblocks.
+\item[\$(DATAPATH), \$(DATA\_PATH), \$(DATA-PATH)] The 'shared' directory of the currently running instance of \codeblocks.
+\item[\$(PLUGINS)] The \file{plugins} directory of the currently running instance of \codeblocks.
+\end{codeentry}
+
+\subsection{Build targets}
+
+\begin{codeentry}
+\item[\$(FOOBAR\_OUTPUT\_FILE)] The output file of a specific target.
+\item[\$(FOOBAR\_OUTPUT\_DIR)] The output directory of a specific target.
+\item[\$(FOOBAR\_OUTPUT\_BASENAME)] The output file's base name (no path, no extension) of a specific target.
+\item[\$(TARGET\_OUTPUT\_DIR)] The output directory of the current target.
+\item[\$(TARGET\_OBJECT\_DIR)] The object directory of the current target.
+\item[\$(TARGET\_NAME)] The name of the current target.
+\item[\$(TARGET\_OUTPUT\_FILE)] The output file of the current target.
+\item[\$(TARGET\_OUTPUT\_BASENAME)] The output file's base name (no path, no extension) of the current target.
+\item[\$(TARGET\_CC), \$(TARGET\_CPP), \$(TARGET\_LD), \$(TARGET\_LIB)] The build tool executable (compiler, linker, etc) of the current target.
+\end{codeentry}
+
+\subsection{Language and encoding}
+
+\begin{codeentry}
+\item[\$(LANGUAGE)] The system language in plain language.
+\item[\$(ENCODING)] The character encoding in plain language.
+\end{codeentry}
+
+\subsection{Time and date}
+
+\begin{codeentry}
+\item[\$(TDAY)] Current date in the form YYYYMMDD (for example 20051228)
+\item[\$(TODAY)] Current date in the form YYYY-MM-DD (for example 2005-12-28)
+\item[\$(NOW)] Timestamp in the form YYYY-MM-DD-hh.mm (for example 2005-12-28-07.15)
+\item[\$(NOW\_L)]] Timestamp in the form YYYY-MM-DD-hh.mm.ss (for example 2005-12-28-07.15.45)
+\item[\$(WEEKDAY)]  Plain language day of the week (for example \samp{Wednesday})
+\item[\$(TDAY\_UTC), \$(TODAY\_UTC), \$(NOW\_UTC), \$(NOW\_L\_UTC), \$(WEEKDAY\_UTC)] These are identical to the preceding types, but are expressed relative to UTC.
+\end{codeentry}
+
+\subsection{Random values}
+
+\begin{codeentry}
+\item[\$(COIN)] This variable tosses a virtual coin (once per invocation) and returns 0 or 1.
+\item[\$(RANDOM)] A 16-bit positive random number (0-65535)
+\end{codeentry}
+
+\subsection{Operating System Commands}
+
+The variable are substituted through the command of the operating system.
+
+\begin{codeentry}
+\item[\$(CMD\_CP)] Copy command for files.
+\item[\$(CMD\_RM)] Remove command for files.
+\item[\$(CMD\_MV)] Move command for files.
+\item[\$(CMD\_MKDIR)] Make directory command.
+\item[\$(CMD\_RMDIR)] Remove directory command.
+\end{codeentry}
+
+\subsection{Conditional Evaluation}
+
+\begin{code}
+$if(condition){true clause}{false clause}
+\end{code}
+
+Conditional evaluation will resolve to its true clause if
+
+\begin{itemize}
+\item condition is a non-empty character sequence other than 0 or false
+\item condition is a non-empty variable that does not resolve to 0 or false
+\item condition is a variable that evaluates to true (implicit by previous condition)
+\end{itemize}
+
+Conditional evaluation will resolve to its false clause if
+
+\begin{itemize}
+\item condition is empty
+\item condition is 0 or false
+\item condition is a variable that is empty or evaluates to 0 or false
+\end{itemize}
+
+\hint{Please do note that neither the variable syntax variants \codeline{\%if(...)} nor \codeline{\$(if)(...)} are supported for this construct.}
+
+\genterm{Example}
+
+For example if you are using several platforms and you want to set different parameters depending on the operating system. In the following code the script commands of \codeline{[[ ]]} are evaluated and the \var{command} will be executed. This could be useful in a post-built step.
+
+\begin{code}
+[[ if (PLATFORM ==  PLATFORM_MSW) { print (_T("cmd /c")); } else { print (_T("sh ")); } ]] <command>
+\end{code}
+
+\section{Script expansion}
+
+For maximum flexibility, you can embed scripts using the \codeline{[[ ]]} operator as a special case of variable expansion. Embedded scripts have access to all standard functionalities available to scrips and work pretty much like bash backticks (except for having access to \codeblocks namespace). As such, scripts are not limited to producing text output, but can also manipulate \codeblocks state (projects, targets, etc.).
+
+\hint{Manipulating \codeblocks state should be implemented rather with a pre-build script than with a script.}
+
+\genterm{Example with Backticks}
+
+\begin{cmd}
+objdump -D `find . -name *.elf` > name.dis
+\end{cmd}
+
+The expression in backticks returns a list of all executables \file{*.elf} in any subdirectories. The result of this expression can be used directly by \cmdline{objdump}. Finally the output is piped to a file named  \file{name.dis}. Thus, processes can be automatted in a simple way without having to program any loops.
+
+\genterm{Example using Script}
+
+The script text is replaced by any output generated by your script, or discarded in case of a syntax error.
+
+Since conditional evaluation runs prior to expanding scripts, conditional evaluation can be used for preprocessor functionalities. Built-in variables (and user variables) are expanded after scripts, so it is possible to reference variables in the output of a script.
+
+\begin{code}
+[[ print(GetProjectManager().GetActiveProject().GetTitle()); ]]
+\end{code}
+
+inserts the title of the active project into the command line.
+
+\section{Command Macros}\label{sec:command_macros}
+
+\begin{codeentry}
+\item[\$compiler] Access to name of the compiler executable.
+\item[\$linker] Access to name of the linker executable.
+\item[\$options] Compiler flags
+\item[\$link\_options] Linker flags
+\item[\$includes] Compiler include paths
+\item[\$libdirs] Linker include paths
+\item[\$libs] Linker libraries
+\item[\$file] Source file
+\item[\$object] Object file
+\item[\$exe\_output] Executable output file
+\item[\$objects\_output\_dir] Object Output Directory
+\end{codeentry}
+
+\section{Compile single file}
+
+\begin{code}
+$compiler $options $includes -c $file -o $object
+\end{code}
+
+\section{Link object files to executable}
+
+\begin{code}
+$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs
+\end{code}
+
+\section{Global compiler variables}\label{sec:global_variables}
+
+\section{Synopsis}
+
+Working as a developer on a project which relies on 3rd party libraries involves a lot of unnecessary repetitive tasks, such as setting up build variables according to the local file system layout. In the case of project files, care must be taken to avoid accidentially committing a locally modified copy. If one does not pay attention, this can happen easily for example after changing a build flag to make a release build.
+
+The concept of global compiler variables is a unique new solution for \codeblocks which addresses this problem. Global compiler variables allow you to set up a project once, with any number of developers using any number of different file system layouts being able to compile and develop this project. No local layout information ever needs to be changed more than once.
+
+\section{Names and Members}
+
+Global compiler variables in \codeblocks are discriminated from per-project variables by a leading hash sign. Global compiler variables are structured; every variable consists of a name and an optional member. Names are freely definable, while some of the members are built into the IDE. Although you can choose anything for a variable name in principle, it is advisable to pick a known identifier for common packages. Thus the amount of information that the user needs to provide is minimised. The \codeblocks team provides a list of recommended variables for known packages.
+
+The member base resolves to the same value as the variable name uses without a member (alias).
+
+The members \codeline{include} and \codeline{lib} are by default aliases for \codeline{base/include} and \codeline{base/lib}, respectively. However, a user can redefine them if another setup is desired.
+
+It is generally recommended to use the syntax \codeline{$(#variable.include)} instead of \codeline{$(#variable)/include}, as it provides additional flexibility and is otherwise exactly identical in functionality (see \pxref{sec:mini_tutorial} and \pxref{fig:gcv_ui} for details).
+
+The members \codeline{cflags} and \codeline{lflags} are empty by default and can be used to provide the ability to feed the same consistent set of compiler/linker flags to all builds on one machine. \codeblocks allows you to define custom variable members in addition to the built-in ones.
+
+\screenshot{gcv_ui}{Global Variable Environment}
+\section{Constraints}
+
+\begin{itemize}
+\item Both set and global compiler variable names may not be empty, they must not contain white space, must start with a letter and must consist of alphanumeric characters. Cyrillic or Chinese letters are not alphanumeric characters. If \codeblocks is given invalid character sequences as names, it might replace them without asking.
+\item Every variable requires its base to be defined. Everything else is optional, but the base is absolutely mandatory. If you don't define a the base of a variable, it will not be saved (no matter what other fields you have defined).
+\item You may not define a custom member that has the same name as a built-in member. Currently, the custom member will overwrite the built-in member, but in general, the behaviour for this case is undefined.
+\item Variable and member values may contain arbitrary character sequences, subject to the following three constraints:
+\begin{itemize}
+\item You may not define a variable by a value that references the same variable or any of its members
+\item You may not define a member by a value that references the same member
+\item You may not define a member or variable by a value that references the same variable or member through a cyclic dependency.
+\end{itemize}
+\end{itemize}
+
+\codeblocks will detect the most obvious cases of recursive definitions (which may happen by accident), but it will not perform an in-depth analysis of every possible abuse. If you enter crap, then crap is what you will get; you are warned now.
+
+\genterm{Examples}
+
+Defining \codeline{wx.include} as \codeline{$(#wx)/include} is redundant, but perfectly legal
+Defining \codeline{wx.include} as \codeline{$(#wx.include)} is illegal and will be detected by \codeblocks
+Defining \codeline{wx.include} as \codeline{$(#cb.lib)} which again is defined as \codeline{$(#wx.include)} will create an infinite loop
+
+\section{Using Global Compiler Variables}
+
+All you need to do for using global compiler variables is to put them in your project! Yes, it's that easy.
+
+When the IDE detects the presence of an unknown global variable, it will prompt you to enter its value. The value will be saved in your settings, so you never need to enter the information twice.
+
+If you need to modify or delete a variable at a later time, you can do so from the settings menu.
+
+
+\genterm{Example}
+
+\screenshot{global_vars_dir}{Global Variables}
+
+The above image shows both per-project and global variables. \codeline{WX_SUFFIX} is defined in the project, but \codeline{WX} is a global user variable.
+
+\section{Variable Sets}
+
+Sometimes, you want to use different versions of the same library, or you develop two branches of the same program. Although it is possible to get along with a global compiler variable, this can become tedious. For such a purpose, \codeblocks supports variable sets. A variable set is an independent collection of variables identified by a name (set names have the same constraints as variable names).
+
+If you wish to switch to a different set of variables, you simply select a different set from the menu. Different sets are not required to have the same variables, and identical variables in different sets are not required to have the same values, or even the same custom members.
+
+Another positive thing about sets is that if you have a dozen variables and you want to have a new set with one of these variables pointing to a different location, you are not required to re-enter all the data again. You can simply create a clone of your current set, which will then duplicate all of your variables.
+
+Deleting a set also deletes all variables in that set (but not in another set). The \file{default} set is always present and cannot be deleted.
+
+\subsection{Custom Members Mini-Tutorial}\label{sec:mini_tutorial}
+
+As stated above, writing \codeline{$(#var.include)} and \codeline{$(#var)/include} is exactly the same thing by default. So why would you want to write something as unintuitive as \codeline{$(#var.include)}?
+
+Let's take a standard Boost installation under Windows for an example. Generally, you would expect a fictional package ACME to have its include files under ACME/include and its libraries under ACME/lib. Optionally, it might place its headers into yet another subfolder called acme. So after adding the correct paths to the compiler and linker options, you would expect to \codeline{\#include <acme/acme.h>} and link to \file{libacme.a} (or whatever it happens to be).
+
+% Boost, however, installs headers into C:\Boost\include\boost-1_33_1\boost and its libraries under C:\Boost\lib by default. It seems impossible to get this under one hood without having to adjust everything on every new PC, especially if you have to work under Linux or some other OS, too.
+%
+% This is where the true power of global user variables is unveiled. When defining the value of the #boost variable, you go one step further than usual. You define the member include as C:\Boost\include\boost-1_33_1\boost and the member lib as C:\Boost\lib, respectively. Your projects using $(#boost.include) and $(#boost.lib) will magically work on every PC without any modifications. You don't need to know why, you don't want to know why.

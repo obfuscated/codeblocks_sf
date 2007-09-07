@@ -1,0 +1,27 @@
+\section{ToDo List}\label{sec:todo_list}
+
+Für komplexe Software-Projekte, an denen unterschiedliche Benutzer arbeiten, hat man häufig die Anforderung, dass zu erledigende Arbeiten von unterschiedlichen Usern umzusetzen sind. Für dieses Problem bietet \codeblocks eine Todo List. Diese Liste, zu öffnen unter \menu{View,To-Do list}, enthält die zu erledigenden Aufgaben mit Prioritäten, Typ und zuständige User. Dabei kann die Ansicht nach zu erledigenden Aufgaben nach Benutzer und/oder Quelldatei gefiltert werden.
+
+\screenshot{todo_list}{Anzeige der ToDo List}
+
+\hint{Die To-Do Liste kann auch direkt in der Message Console angezeigt werden, indem Sie die Einstellung \samp{Include the To-Do list in the message pane} im Menü \menu{Settings,Environment} auswählen.}
+
+Ein Todo lässt sich bei geöffneten Quellen in \codeblocks über die rechte Maustaste \samp{Add To-Do item} hinzufügen. Im Quellcode wird ein entsprechender Kommentar an der ausgewählten Quellzeile eingefügt.
+
+\begin{code}
+// TODO (user#1#): add new dialog for next release
+\end{code}
+
+Beim Hinzufügen eines To-Do erhalten Sie einen Eingabedialog mit folgenden Einstellungen (siehe \pxref{fig:add_todo}).
+
+\figures[hbt!][width=.5\columnwidth]{add_todo}{Dialog für Eingabe von ToDo}
+
+\begin{description}
+\item[User] Username \var{user} im Betriebssystem. Hierbei können auch Aufgaben für andere Benutzer angelegt werden. Dabei muss der zugehörige Benutzername über Add new user hinzugefügt werden. Die Zuordnung eines Todo geschieht dann über die Auswahl der unter User aufgelisteten Einträge.
+
+\hint{Beachten Sie, dass die User nichts mit den in \codeblocks verwendeten Personalities zu tun haben.}
+\item[Type] Standardmäßig ist der Typ auf Todo eingestellt.
+\item[Priority] Die Wichtigkeit von Aufgaben können in \codeblocks durch Prioritäten (Wertebereich: 1 - 9) gewichtet werden.
+\item[Position] Einstellung ob der Kommentar vor, nach oder exakt an der Stelle des aktuell befindlichen Cursor eingefügt werden soll.
+\item[Comment Style] Auswahl der Formatierung für Kommentare (zum Beispiel doxygen).
+\end{description}
