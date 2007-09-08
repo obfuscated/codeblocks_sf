@@ -36,8 +36,6 @@ class HelpPlugin : public cbPlugin
     void LaunchHelp(const wxString &helpfile, bool isExecutable, const wxString &keyword = wxEmptyString);
 
   private:
-    bool Decompress(const wxString& filename, const wxString& tmpfile);
-    wxString GetManPage(const wxString &dirs, const wxString &keyword);
     wxMenuBar *m_pMenuBar;
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastId;

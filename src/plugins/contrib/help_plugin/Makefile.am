@@ -35,13 +35,15 @@ endif
 libhelp_plugin_la_SOURCES = help_common.cpp \
 			HelpConfigDialog.cpp \
 			help_plugin.cpp \
-			man2html.cpp
+			man2html.cpp \
+			MANFrame.cpp
 
 noinst_HEADERS = help_common.h \
 			HelpConfigDialog.h \
 			help_plugin.h \
 			man2html.h \
-			defs.h
+			defs.h \
+			MANFrame.h
 
 EXTRA_DIST = $(srcdir)/*.cbp \
 			help_plugin.xrc \

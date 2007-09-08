@@ -68,6 +68,12 @@
 		<Unit filename="HelpConfigDialog.h">
 			<Option target="help_plugin" />
 		</Unit>
+		<Unit filename="MANFrame.cpp">
+			<Option target="help_plugin" />
+		</Unit>
+		<Unit filename="MANFrame.h">
+			<Option target="help_plugin" />
+		</Unit>
 		<Unit filename="bzip2/blocksort.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
