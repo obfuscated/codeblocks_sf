@@ -10,6 +10,10 @@
 #include <bzlib.h>
 #include <zlib.h>
 
+#ifndef CB_PRECOMP
+    #include "globals.h" // cbC2U
+#endif
+
 namespace
 {
     int butSearchID = wxNewId();
