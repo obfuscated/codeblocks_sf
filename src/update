@@ -57,6 +57,11 @@ ${ZIPCMD} -0 ../../../${RESDIR}/debugger.zip images/*.png images/16x16/*.png > /
 cd ../../..
 
 echo Copying files
+# Create an exclude pattern file
+echo .svn > excludes.txt
+echo Makefile >> excludes.txt
+echo Makefile.am >> excludes.txt
+echo Makefile.in >> excludes.txt
 cp -f ${RESDIR}/*.zip output/share/codeblocks > /dev/null
 cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
 cp -f sdk/resources/lexers/lexer_* output/share/codeblocks/lexers > /dev/null
@@ -68,12 +73,12 @@ cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
 cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
-cp -rf plugins/scriptedwizard/resources/* ${RESDIR}/templates/wizard > /dev/null
-cp -rf plugins/scriptedwizard/resources/* output/share/codeblocks/templates/wizard > /dev/null
-cp -f templates/common/* output/share/codeblocks/templates > /dev/null
-cp -f templates/unix/* output/share/codeblocks/templates > /dev/null
-cp -f templates/common/* ${RESDIR}/templates > /dev/null
-cp -f templates/unix/* ${RESDIR}/templates > /dev/null
+rsync -a --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
+rsync -a --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output/share/codeblocks/templates/wizard > /dev/null
+rsync -a --exclude-from=excludes.txt templates/common/ output/share/codeblocks/templates > /dev/null
+rsync -a --exclude-from=excludes.txt templates/unix/ output/share/codeblocks/templates > /dev/null
+rsync -a --exclude-from=excludes.txt templates/common/ ${RESDIR}/templates > /dev/null
+rsync -a --exclude-from=excludes.txt templates/unix/ ${RESDIR}/templates > /dev/null
 cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel/share/codeblocks > /dev/null
@@ -83,6 +88,8 @@ cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel > /dev/null
 cp -f devel/codeblocks${EXEEXT} output > /dev/null
 cp -f devel/*.${LIBEXT} output > /dev/null
 cp -f ${RESDIR}/plugins/*.${LIBEXT} output/share/codeblocks/plugins > /dev/null
+# Now remove the exclude pattern file
+rm excludes.txt
 
 if [ "x$MSYSTEM" != "x" ] ; then
   echo Stripping debug info from output tree
