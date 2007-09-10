@@ -1,0 +1,36 @@
+% Version of Document Management
+% $Name:  $
+
+\def\newcharencode{utf8}% set character encoding
+\input{booleans}% boolean declaration
+\setboolean{urlreg}{true}% for url catalogue
+\setboolean{bibreg}{false}% for bibliography
+\setboolean{indreg}{false}% for index generation
+\setboolean{shortdocu}{true}% oneside document
+
+%%%%% options %%%%%%%%%
+\def\lang{german}
+\def\graphmode{final}% graphmodes: draft: box; final: including figures
+
+% generate url catalog for toolchain
+\def\urlfilename{url_codeblocks}
+
+%%%%%%%% parameter for titlepage %%%%%%%%%%
+\def\Subject{Code::Blocks}
+\def\Title{Manual}
+\def\DocVersion{1.0}
+
+% style for documentation
+\input{format_docu}
+\input{new_interface}
+
+% own macro file
+\input{user_settings_de}
+
+\begin{document}
+\include{cb_titlepage}
+\include{mytext}
+%\appendix % generation of appendix
+%\include{appendices}
+\include{lists}
+\end{document}

@@ -1,0 +1,77 @@
+\ProvidesFile{format_docu.tex}[2007/05/26 HighTec template]
+\ifthenelse{\boolean{shortdocu}}{\def\docupagemode{oneside}}{\def\docupagemode{twoside}}
+\ifthenelse{\equal{\lang}{german}}{%
+\documentclass[idxtotoc,ngerman,12pt,\docupagemode,a4paper,normalheadings,headsepline,pointlessnumbers,footsepline,\graphmode]{scrbook}
+}{
+\documentclass[idxtotoc,english,12pt,\docupagemode,a4paper,normalheadings,headsepline,pointlessnumbers,footsepline,\graphmode]{scrbook}
+}
+
+\ifthenelse{\boolean{nomreg}}{\usepackage[\lang]{nomencl}\makeglossary}{}
+\ifthenelse{\boolean{glossreg}}{\usepackage{glosstex}}{}
+
+% common packages
+\input{common_pack}
+
+\topmargin=-1cm \oddsidemargin=0mm \evensidemargin=0mm
+\textheight24cm \textwidth16cm \marginparsep=3mm \marginparwidth=15mm %\reversemarginpar
+\partopsep 0pt %\topsep 0pt
+\parskip 1.7ex plus0.3ex minus0.2ex \parindent 0pt
+\frenchspacing \footskip 10mm \abovecaptionskip10pt
+
+% setup for pdf generation
+\input{hypersetup}
+\input{macros}
+
+% change layout of scrbook.cls
+\renewcommand*{\partpagestyle}{empty}
+\renewcommand*{\chapterpagestyle}{empty}
+\renewcommand*{\chapterheadstartvskip}{\vspace*{.3\baselineskip}}
+\renewcommand*{\chapterheadendvskip}{\vspace{0.5\baselineskip plus.1\baselineskip minus.167\baselineskip}}
+
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-.75ex \@plus -1ex \@minus -.1ex}%
+  {.75ex \@plus.1ex}%
+  {\raggedsection\normalfont\sectfont\nobreak\size@section\nobreak}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-.5ex\@plus -1ex \@minus -.1ex}%
+  {.5ex \@plus .1ex}%
+  {\raggedsection\normalfont\sectfont\nobreak\size@subsection\nobreak}}
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+  {-.25ex\@plus -1ex \@minus -.1ex}%
+  {.25ex \@plus .1ex}%
+  {\raggedsection\normalfont\sectfont\nobreak\size@subsubsection\nobreak}}
+\renewcommand\paragraph{\@startsection{paragraph}{4}{\z@}%
+  {-.1ex \@plus.05ex \@minus.05ex}%
+  {-1em}%
+  {\raggedsection\normalfont\sectfont\nobreak\size@paragraph\nobreak}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{5}{\parindent}%
+  {-.1ex \@plus.05ex \@minus .05ex}%
+  {-1em}%
+  {\raggedsection\normalfont\sectfont\nobreak\size@subparagraph\nobreak}}
+\setcounter{secnumdepth}{5}
+
+\def\ps@headings{\let\@mkboth\markboth
+  \def\@evenhead{\vbox{\hsize=\textwidth
+   \hb@xt@ \textwidth{{\headfont\strut\leftmark\hfil\Subject\ V\DocVersion}}%
+   \if@hsl \vskip 1.5\p@ \hrule \fi}}
+  \def\@oddhead{\vbox{\hsize=\textwidth
+   \hb@xt@ \textwidth{{\headfont\Subject\ V\DocVersion\hfil\strut\rightmark}}%
+   \if@hsl \vskip 1.5\p@ \hrule \fi}}
+  \def\@evenfoot{\vbox{\hsize=\textwidth
+   \if@fsl \hrule \vskip 3\p@ \fi
+   \hb@xt@ \textwidth{{\pnumfont\thepage\hfil Codeblocks}}}}%
+  \def\@oddfoot{\vbox{\hsize=\textwidth
+   \if@fsl \hrule \vskip 3\p@ \fi
+   \hb@xt@ \textwidth{{Codeblocks\pnumfont\hfil\thepage}}}}%
+  \def\chaptermark##1{%
+   \markboth {\ifnum \c@secnumdepth >\m@ne
+      \if@mainmatter
+        \chaptermarkformat\fi
+      \fi
+        ##1}{}}%
+  \def\sectionmark##1{%
+    \markright {\ifnum \c@secnumdepth >\z@
+        \sectionmarkformat\fi
+        ##1}}}
+\makeatother

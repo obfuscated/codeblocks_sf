@@ -1,0 +1,49 @@
+\ProvidesFile{titlepage.tex}[2003/07/01 HighTec Vorlage]
+%%%%%%%%%%%% titlepage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\clearemptydoublepage}{\newpage{\pagestyle{empty}\cleardoublepage}}
+\pagenumbering{roman}
+\makeatletter
+\@ifundefined{htmlmode}{%
+\begin{titlepage}
+\begin{flushleft}
+\includegraphics[width=\columnwidth]{cb_splash}
+\vfill
+\makeatletter
+\@ifundefined{Subtitle}{%
+{\Huge\bf{\Subject}\\ [3ex] \Title\\ [3ex] \large{Version \DocVersion}\\ [3ex]}
+}{%
+{\Huge\bf{\Subject}\\ [3ex] \Title\\ \Subtitle\\ [3ex] \large{Version \DocVersion}\\ [3ex]}
+}
+\makeatother
+\end{flushleft}
+\vfill
+Thanks to the \codeblocks team:\newline
+
+Anders F. Björklund (afb), Biplab Kumar Modak (biplab), Bartomiej wiecki (byo),
+Paul A. Jimenez (ceniza), Koa Chong Gee (cyberkoa), Daniel Orb (daniel2000), Lieven de Cock (killerbot), Yiannis Mandravellos (mandrav), Mispunt (mispunt), Martin Halle (mortenmacfly),
+Pecan Heber (pecan), Ricardo Garcia (rickg22), Thomas Denk (thomasdenk), tiwag (tiwag)
+\end{titlepage}
+\pagestyle{headings}
+%%%%%%%%%%%% Inhaltsverzeichnis %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\ifthenelse{\boolean{shortdocu}}{}{
+\tableofcontents
+\ifthenelse{\boolean{figreg}}{\listoffigures}{}
+\ifthenelse{\boolean{tabreg}}{\listoftables}{}
+}
+\clearemptydoublepage \pagestyle{headings}
+\pagenumbering{arabic}
+}{%
+\begin{titlepage}
+\@ifundefined{Subtitle}{%
+\Huge\bf{{\Subject} {\Title}}\\
+}{
+\Huge\bf{{\Subject} {\Title} {\Subtitle}}\\
+}
+\large{Version \DocVersion}
+\end{titlepage}
+\clearemptydoublepage \pagestyle{headings}
+%\tableofcontents
+\clearemptydoublepage \pagenumbering{arabic}
+\pagenumbering{arabic}
+}
+\makeatother

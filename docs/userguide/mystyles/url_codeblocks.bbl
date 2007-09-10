@@ -1,0 +1,67 @@
+\begin{theurlbibliography}{999}\small
+
+\urlbibitem[\hightechook 7Z]{url:zip}
+\ShowURN{7z}
+7z zip homepage.\\ \url{http://www.7-zip.org}
+
+\urlbibitem[\hightechook ARM]{url:arm-elf}
+\ShowURN{ARM}
+ARM homepage.\\ \url{http://www.arm.com/}
+
+\urlbibitem[\hightechook BERLIOS]{url:cbberlios}
+\ShowURN{BERLIOS}
+Codeblocks at berlios.\\ \url{http://developer.berlios.de/projects/codeblocks/}
+
+\urlbibitem[\hightechook FORUM]{url:cbforum}
+\ShowURN{FORUM}
+Codeblocks forum.\\ \url{http://forums.codeblocks.org/}
+
+\urlbibitem[\hightechook WIKI]{url:cbwiki}
+\ShowURN{WIKI}
+Codeblocks wiki.\\ \url{http://wiki.codeblocks.org/index.php?title=Main_Page/}
+
+\urlbibitem[\hightechook CODEBLOCKS]{url:cb}
+\ShowURN{CODEBLOCKS}
+Codeblocks homepage.\\ \url{http://www.codeblocks.org/}
+
+\urlbibitem[\hightechook GCC]{url:gnu}
+\ShowURN{GCC}
+GCC home page.\\ \url{http://gcc.gnu.org/}
+
+\urlbibitem[\hightechook HIGHTEC]{url:hightec}
+\ShowURN{HIGHTEC}
+HighTec homepage.\\ \url{http://www.hightec-rt.com/}
+
+\urlbibitem[\hightechook Koders]{url:koders}
+\ShowURN{KODERS}
+Koders homepage.\\ \url{http://www.koders.com/}
+
+\urlbibitem[\hightechook MSP430]{url:msp430}
+\ShowURN{MSP430}
+MSP430 homepage.\\ \url{http://www.ti.com/sc/msp430}
+
+\urlbibitem[\hightechook PowerPC]{url:ppc}
+\ShowURN{PowerPC}
+Motorola homepage.\\ \url{http://e-www.motorola.com/}
+
+\urlbibitem[\hightechook TriCore]{url:tricore}
+\ShowURN{TriCore}
+TriCore homepage.\\ \url{http://www.infineon.com/tricore/}
+
+\urlbibitem[\hightechook TortoiseSVN]{url:tortoisesvn}
+\ShowURN{TortoiseSVN}
+TriCore homepage.\\ \url{http://tortoisesvn.net/}
+
+\urlbibitem[\hightechook Subversion]{url:subversion}
+\ShowURN{Subversion}
+TriCore homepage.\\ \url{http://subversion.tigris.org/}
+
+\urlbibitem[\hightechook Wxwidgets]{url:wx}
+\ShowURN{WX}
+WxWidgets homepage.\\ \url{http://www.wxwidgets.org/}
+
+\urlbibitem[\hightechook Wxcode]{url:wxcode}
+\ShowURN{WXCODE}
+WxCode homepage.\\ \url{http://wxcode.sourceforge.net/}
+
+\end{theurlbibliography}
