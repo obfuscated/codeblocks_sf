@@ -67,7 +67,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerGNUAVR.h \
 			compilerGNUMSP430.h \
 			compilerGNUPOWERPC.h \
-			compilerGNUTRICORE.h
+			compilerGNUTRICORE.h \
 			compilerTcc.h \
 			directcommands.h \
 			makefilegenerator.h
