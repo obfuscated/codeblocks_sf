@@ -68,6 +68,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
 
+		void RereadOptions(); // called by the configuration panel
     private:
 
         void LoadTokenReplacements();
@@ -143,6 +144,8 @@ class CodeCompletion : public cbCodeCompletionPlugin
         wxString m_LastFile;
 
         wxTimer m_FunctionsParsingTimer;
+        
+        bool m_LexerKeywordsToInclude[9];
 
         DECLARE_EVENT_TABLE()
 };

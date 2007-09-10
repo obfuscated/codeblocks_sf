@@ -97,8 +97,79 @@
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
+											<object class="wxStaticBoxSizer">
+												<label>Keyword sets to additionally include:</label>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_1">
+														<label>1</label>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_2">
+														<label>2</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_3">
+														<label>3</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_4">
+														<label>4</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_5">
+														<label>5</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_6">
+														<label>6</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_7">
+														<label>7</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_8">
+														<label>8</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkKL_9">
+														<label>9</label>
+													</object>
+													<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT1">
-												<label>Delay (ms):</label>
+												<label>Delay for auto-kick-in when typing [. :: -&gt;]:</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
@@ -135,6 +206,7 @@
 														</object>
 													</object>
 													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>8</border>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -145,10 +217,11 @@
 													<border>8</border>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
 								</object>
 							</object>

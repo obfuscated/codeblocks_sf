@@ -218,7 +218,7 @@ void CodeCompletion::SaveTokenReplacements()
 
 cbConfigurationPanel* CodeCompletion::GetConfigurationPanel(wxWindow* parent)
 {
-    CCOptionsDlg* dlg = new CCOptionsDlg(parent, &m_NativeParsers);
+    CCOptionsDlg* dlg = new CCOptionsDlg(parent, &m_NativeParsers, this);
     return dlg;
 }
 
@@ -235,6 +235,21 @@ int CodeCompletion::Configure()
 //        m_NativeParsers.RereadParserOptions();
 //    }
     return 0;
+}
+
+void CodeCompletion::RereadOptions()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+	m_LexerKeywordsToInclude[0] = cfg->ReadBool(_T("/lexer_keywords_set1"), true);
+	m_LexerKeywordsToInclude[1] = cfg->ReadBool(_T("/lexer_keywords_set2"), true);
+	m_LexerKeywordsToInclude[2] = cfg->ReadBool(_T("/lexer_keywords_set3"), false);
+	m_LexerKeywordsToInclude[3] = cfg->ReadBool(_T("/lexer_keywords_set4"), false);
+	m_LexerKeywordsToInclude[4] = cfg->ReadBool(_T("/lexer_keywords_set5"), false);
+	m_LexerKeywordsToInclude[5] = cfg->ReadBool(_T("/lexer_keywords_set6"), false);
+	m_LexerKeywordsToInclude[6] = cfg->ReadBool(_T("/lexer_keywords_set7"), false);
+	m_LexerKeywordsToInclude[7] = cfg->ReadBool(_T("/lexer_keywords_set8"), false);
+	m_LexerKeywordsToInclude[8] = cfg->ReadBool(_T("/lexer_keywords_set9"), false);
 }
 
 void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
@@ -392,6 +407,7 @@ void CodeCompletion::OnAttach()
     m_LastFile = wxEmptyString;
 
     LoadTokenReplacements();
+    RereadOptions();
 
     m_LastPosForCodeCompletion = -1;
     StartIdxNameSpaceInScope = -1;
@@ -581,8 +597,12 @@ int CodeCompletion::CodeComplete()
                     // theme keywords
                     HighlightLanguage lang = theme->GetLanguageForFilename(_T(".")+wxFileName(ed->GetFilename()).GetExt());
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
-                    for (int i = 0; i < 1; ++i)
+                    // but this is now configurable in global settings
+                    for (int i = 0; i < 9; ++i)
                     {
+                    	if (!m_LexerKeywordsToInclude[i])
+							continue;
+						
 						wxString keywords = theme->GetKeywords(lang, i);
 						wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
 						while (tkz.HasMoreTokens())

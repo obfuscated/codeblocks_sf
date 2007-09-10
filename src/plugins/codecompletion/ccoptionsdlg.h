@@ -7,10 +7,12 @@
 #include "nativeparser.h"
 #include "parser/parser.h"
 
+class CodeCompletion;
+
 class CCOptionsDlg : public cbConfigurationPanel
 {
 	public:
-		CCOptionsDlg(wxWindow* parent, NativeParser* np);
+		CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc);
 		virtual ~CCOptionsDlg();
 
         virtual wxString GetTitle() const { return _("Code-completion and symbols browser"); }
@@ -30,6 +32,7 @@ class CCOptionsDlg : public cbConfigurationPanel
 		bool ValidateReplacementToken(wxString& from, wxString& to);
 		Parser m_Parser;
 		NativeParser* m_pNativeParsers;
+		CodeCompletion* m_pCodeCompletion;
 		DECLARE_EVENT_TABLE()
 };
 

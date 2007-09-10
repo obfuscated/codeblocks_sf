@@ -26,6 +26,7 @@
 
 #include <sdk.h>
 #include "ccoptionsdlg.h"
+#include "codecompletion.h"
 #include <wx/intl.h>
 #include <wx/listbox.h>
 #include <wx/xrc/xmlres.h>
@@ -91,9 +92,10 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
 	EVT_COMMAND_SCROLL(XRCID("sliderDelay"), CCOptionsDlg::OnSliderScroll)
 END_EVENT_TABLE()
 
-CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
+CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc)
 	: m_Parser(this),
-	m_pNativeParsers(np)
+	m_pNativeParsers(np),
+	m_pCodeCompletion(cc)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
@@ -117,6 +119,16 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np)
 	XRCCTRL(*this, "chkFloatCB", wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
 	XRCCTRL(*this, "chkNoSB", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
 	XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"), wxEmptyString));
+	
+	XRCCTRL(*this, "chkKL_1", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set1"), true));
+	XRCCTRL(*this, "chkKL_2", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set2"), true));
+	XRCCTRL(*this, "chkKL_3", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set3"), false));
+	XRCCTRL(*this, "chkKL_4", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set4"), false));
+	XRCCTRL(*this, "chkKL_5", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set5"), false));
+	XRCCTRL(*this, "chkKL_6", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set6"), false));
+	XRCCTRL(*this, "chkKL_7", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set7"), false));
+	XRCCTRL(*this, "chkKL_8", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set8"), false));
+	XRCCTRL(*this, "chkKL_9", wxCheckBox)->SetValue(cfg->ReadBool(_T("/lexer_keywords_set9"), false));
 
 	int timerDelay = cfg->ReadInt(_T("/cc_delay"), 500);
 	XRCCTRL(*this, "sliderDelay", wxSlider)->SetValue(timerDelay / 100);
@@ -296,7 +308,18 @@ void CCOptionsDlg::OnApply()
 	m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
 	m_Parser.ClassBrowserOptions().expandNS = XRCCTRL(*this, "chkExpandNS", wxCheckBox)->GetValue();
 	cfg->Write(_T("/as_floating_window"), (bool)XRCCTRL(*this, "chkFloatCB", wxCheckBox)->GetValue());
-    m_Parser.WriteOptions();
 
+	cfg->Write(_T("/lexer_keywords_set1"), (bool)XRCCTRL(*this, "chkKL_1", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set2"), (bool)XRCCTRL(*this, "chkKL_2", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set3"), (bool)XRCCTRL(*this, "chkKL_3", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set4"), (bool)XRCCTRL(*this, "chkKL_4", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set5"), (bool)XRCCTRL(*this, "chkKL_5", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set6"), (bool)XRCCTRL(*this, "chkKL_6", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set7"), (bool)XRCCTRL(*this, "chkKL_7", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set8"), (bool)XRCCTRL(*this, "chkKL_8", wxCheckBox)->GetValue());
+	cfg->Write(_T("/lexer_keywords_set9"), (bool)XRCCTRL(*this, "chkKL_9", wxCheckBox)->GetValue());
+
+    m_Parser.WriteOptions();
     m_pNativeParsers->RereadParserOptions();
+    m_pCodeCompletion->RereadOptions();
 }
