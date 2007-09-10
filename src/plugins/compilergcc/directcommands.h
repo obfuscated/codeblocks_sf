@@ -4,9 +4,10 @@
 #include <wx/string.h>
 #include <wx/hashmap.h>
 
-#define COMPILER_SIMPLE_LOG _T("CB_SLOG:")
-#define COMPILER_TARGET_CHANGE  _T("TARGET:")
-#define COMPILER_WAIT  _T("WAIT")
+#define COMPILER_SIMPLE_LOG 	_T("SLOG:")
+#define COMPILER_TARGET_CHANGE  _T("TGT:")
+#define COMPILER_WAIT			_T("WAIT")
+#define COMPILER_WAIT_LINK		_T("LINK")
 
 // forward decls
 class CompilerGCC;
@@ -45,7 +46,7 @@ class DirectCommands
         bool IsObjectOutdated(ProjectBuildTarget* target, const pfDetails& pfd, wxString* errorStr = 0);
         void DepsSearchStart(ProjectBuildTarget* target);
         MyFilesArray GetProjectFilesSortedByWeight(ProjectBuildTarget* target, bool compile, bool link);
-        void AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd = false);
+        void AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd = false, bool isLinkCmd = false);
 
         int m_PageIndex;
         CompilerGCC* m_pCompilerPlugin;

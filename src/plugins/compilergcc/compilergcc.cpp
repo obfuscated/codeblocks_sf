@@ -249,6 +249,7 @@ CompilerGCC::CompilerGCC()
     m_ParallelProcessCount(1),
     m_pTbar(0L),
     m_Pid(0),
+    m_ProcessOutputFiles(0),
     m_Log(0L),
     m_pListLog(0L),
     m_ToolTarget(0L),
@@ -293,6 +294,7 @@ void CompilerGCC::OnAttach()
     m_ParallelProcessCount = 1;
     m_pTbar = 0L;
     m_Pid = 0;
+    m_ProcessOutputFiles = 0;
     m_Log = 0L;
     m_pListLog = 0L;
     m_ToolTarget = 0L;
@@ -956,12 +958,14 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
     wxString mySimpleLog = wxString(COMPILER_SIMPLE_LOG);
     wxString myTargetChange = wxString(COMPILER_TARGET_CHANGE);
     wxString myWait = wxString(COMPILER_WAIT);
+    wxString myWaitLink = wxString(COMPILER_WAIT_LINK);
 //    wxString myWaitEnd = wxString(COMPILER_WAIT_END);
 //    ProjectBuildTarget* lastTarget = 0;
     ProjectBuildTarget* bt = m_pBuildingProject ? m_pBuildingProject->GetBuildTarget(GetTargetIndexFromName(m_pBuildingProject, m_BuildingTargetName)) : 0;
     m_CurrentProgress = 0;
     m_MaxProgress = 0;
     bool isLink = false;
+    bool mustWait = false;
     size_t count = commands.GetCount();
     for (size_t i = 0; i < count; ++i)
     {
@@ -976,42 +980,24 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
         // compiler change
         else if (cmd.StartsWith(myTargetChange))
         {
-//            cmd.Remove(0, myTargetChange.Length());
-            // using other compiler now: find it and set it
-//            lastTarget = m_Project->GetBuildTarget(cmd);
-
-//            if (bt)
-//            {
-//                m_Project->SetCurrentlyCompilingTarget(bt);
-//                SwitchCompiler(bt->GetCompilerID());
-//                // re-apply the env vars for this target
-//                if (CompilerFactory::CompilerIndexOK(m_CompilerId))
-//                    CompilerFactory::GetCompiler(m_CompilerId)->GetCustomVars().ApplyVarsToEnvironment();
-//                m_Project->GetCustomVars().ApplyVarsToEnvironment();
-//                bt->GetCustomVars().ApplyVarsToEnvironment();
-//
-//            }
-//            else
-//                msgMan->Log(m_PageIndex, _("Can't locate target '%s'!"), cmd.c_str());
         }
         else if (cmd.StartsWith(myWait))
         {
-//            cmd.Remove(0, myLinkStep.Length());
+            mustWait = true;
+        }
+        else if (cmd.StartsWith(myWaitLink))
+        {
             isLink = true;
         }
-//        else if (cmd.StartsWith(myWaitEnd))
-//        {
-////            cmd.Remove(0, myLinkStep.Length());
-//            isLink = false;
-//        }
         else
         {
             // compiler command
             CompilerCommand* p = new CompilerCommand(cmd, wxEmptyString, m_pBuildingProject, bt);
-            p->mustWait = isLink;
+            p->mustWait = mustWait;
+            p->isLink = isLink;
             m_CommandQueue.Add(p);
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("ADD: %s %s"), cmd.c_str(), isLink ? _T("(wait)") : _T(""));
             isLink = false;
+            mustWait = false;
             ++m_MaxProgress;
         }
     }
@@ -1029,6 +1015,7 @@ void CompilerGCC::AllocProcesses()
     m_ParallelProcessCount = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
     m_Processes = new wxProcess*[m_ParallelProcessCount];
     m_Pid = new long int[m_ParallelProcessCount];
+    m_ProcessOutputFiles = new wxString[m_ParallelProcessCount];
     for (size_t i = 0; i < m_ParallelProcessCount; ++i)
     {
         m_Processes[i] = 0;
@@ -1045,6 +1032,7 @@ void CompilerGCC::FreeProcesses()
     }
     DeleteArray(m_Processes);
     DeleteArray(m_Pid);
+    DeleteArray(m_ProcessOutputFiles);
 }
 
 bool CompilerGCC::ReAllocProcesses()
@@ -1109,7 +1097,7 @@ int CompilerGCC::DoRunQueue()
     if (IsProcessRunning())
     {
         CompilerCommand* cmd = m_CommandQueue.Peek();
-        if (cmd && cmd->mustWait)
+        if (cmd && (cmd->mustWait || cmd->isLink))
         {
 //            msgMan->Log(m_PageIndex, _("Waiting for compile to finish before linking..."));
             return -3;
@@ -1238,6 +1226,7 @@ int CompilerGCC::DoRunQueue()
     }
 
     // create a new process
+	m_ProcessOutputFiles[procIndex] = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString();
     m_Processes[procIndex] = new PipedProcess((void**)&m_Processes[procIndex], this, idGCCProcess1 + procIndex, pipe, dir);
     m_Pid[procIndex] = wxExecute(cmd->command, flags, m_Processes[procIndex]);
     if ( !m_Pid[procIndex] )
@@ -3482,6 +3471,37 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
     m_Processes[procIndex] = 0;
     m_LastExitCode = exitCode;
 
+	if (exitCode == 0 && !m_ProcessOutputFiles[procIndex].IsEmpty())
+	{
+		wxFFile f(m_ProcessOutputFiles[procIndex].c_str(), _T("r"));
+		if (f.IsOpened())
+		{
+			size_t size = f.Length();
+			f.Close();
+			
+			float displaySize;
+			wxString units;
+			if (size < 1024)
+			{
+				displaySize = (float)size;
+				units = _("bytes");
+			}
+			else if (size < 1024000)
+			{
+				displaySize = (float)size / 1024.0f;
+				units = _("KB");
+			}
+			else
+			{
+				displaySize = (float)size / 1024000.0f;
+				units = _("MB");
+			}
+			wxString msg;
+			msg.Printf(_("Output size is %.2f %s"), displaySize, units.c_str());
+			LogMessage(msg, cltInfo);
+		}
+	}
+	
     if (m_CommandQueue.GetCount() != 0 && exitCode == 0)
     {
         // continue running commands while last exit code was 0.

@@ -67,7 +67,7 @@ DirectCommands::~DirectCommands()
     depsDone();
 }
 
-void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd)
+void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& array, bool isWaitCmd, bool isLinkCmd)
 {
     wxString cmd = cmds;
     while (!cmd.IsEmpty())
@@ -80,6 +80,8 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
         {
             if (isWaitCmd)
                 array.Add(wxString(COMPILER_WAIT));
+			if (isLinkCmd)
+                array.Add(wxString(COMPILER_WAIT_LINK));
             array.Add(cmdpart);
         }
         if (idx == -1)
@@ -688,7 +690,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
 
         // the 'true' will make sure all commands will be prepended by
         // COMPILER_WAIT signal
-        AddCommandsToArray(compilerCmd, ret, true);
+        AddCommandsToArray(compilerCmd, ret, true, true);
     }
     else
         ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping linking (no linker program set): ") + output);

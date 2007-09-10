@@ -10,10 +10,10 @@ class ProjectBuildTarget;
 struct CompilerCommand
 {
     CompilerCommand(const wxString& cmd, const wxString& msg, cbProject* prj, ProjectBuildTarget* tgt, bool is_run = false)
-        : command(cmd), message(msg), project(prj), target(tgt), isRun(is_run), mustWait(false)
+        : command(cmd), message(msg), project(prj), target(tgt), isRun(is_run), mustWait(false), isLink(false)
     {}
     CompilerCommand(const CompilerCommand& rhs)
-        : command(rhs.command), message(rhs.message), project(rhs.project), target(rhs.target), isRun(rhs.isRun), mustWait(rhs.mustWait)
+        : command(rhs.command), message(rhs.message), project(rhs.project), target(rhs.target), isRun(rhs.isRun), mustWait(rhs.mustWait), isLink(rhs.isLink)
     {}
     wxString command;
     wxString message;
@@ -22,6 +22,7 @@ struct CompilerCommand
     ProjectBuildTarget* target;
     bool isRun; ///< if it's a command to run the target.
     bool mustWait; ///< wait for all previous commands to finish (for parallel builds).
+    bool isLink; ///< wait for all previous commands to finish (for parallel builds) - only for linking stage.
 };
 WX_DECLARE_LIST(CompilerCommand, CompilerCommands);
 

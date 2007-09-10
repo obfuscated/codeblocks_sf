@@ -247,6 +247,7 @@ class CompilerGCC : public cbCompilerPlugin
         size_t m_ParallelProcessCount;
         wxToolBar* m_pTbar;
         long int* m_Pid;
+        wxString* m_ProcessOutputFiles;
         wxTimer m_timerIdleWakeUp;
         SimpleTextLog* m_Log;
         CompilerMessages* m_pListLog;
