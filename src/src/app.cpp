@@ -511,6 +511,10 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
+        	// the compiler plugin might be waiting for this
+			CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+			Manager::Get()->ProcessEvent(event);
+
 			Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<CodeBlocksApp, CodeBlocksEvent>(this, &CodeBlocksApp::OnBatchBuildDone));
             s_Loading = false;
             LoadDelayedFiles(frame);
@@ -566,6 +570,10 @@ bool CodeBlocksApp::OnInit()
 
         LoadDelayedFiles(frame);
         Manager::Get()->GetProjectManager()->WorkspaceChanged();
+
+		// all done
+		CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+		Manager::Get()->ProcessEvent(event);
 
         return true;
     }

@@ -558,9 +558,6 @@ MainFrame::MainFrame(wxWindow* parent)
     }
 
     Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
-
-    CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
-    Manager::Get()->ProcessEvent(event);
 }
 
 MainFrame::~MainFrame()
