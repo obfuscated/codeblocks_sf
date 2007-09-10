@@ -116,6 +116,9 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
         ProjectFile* pf = m_Project->GetFile(i);
         list->Append(pf->relativeFilename);
     }
+    // this fixes the minsize of the file list
+    // which becomes huge when we add items in it (!)
+    list->SetMinSize(wxSize(50,50));
 
     // general
 	XRCCTRL(*this, "txtProjectName", wxTextCtrl)->SetValue(m_Project->GetTitle());

@@ -63,7 +63,6 @@
 							<object class="sizeritem">
 								<object class="wxListBox" name="lstTargets">
 									<default>-1</default>
-									<size>161,-1</size>
 								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<border>5</border>
@@ -87,6 +86,7 @@
 							<vgap>4</vgap>
 							<hgap>4</hgap>
 							<growablecols>1</growablecols>
+							<growablerows>3</growablerows>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT1">
 									<label>Connection type:</label>
@@ -199,7 +199,6 @@
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="txtCmds">
 									<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
-									<size>238,-1</size>
 								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -212,7 +211,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT7">
-									<label>Tip: the extra GDB initialization commands will be issued&#x0A;no matter if you define a remote target or not</label>
+									<label>Tip: the extra GDB initialization commands will be&#x0A;issued no matter if you define a remote target or not</label>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<border>5</border>

@@ -193,6 +193,7 @@ void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& event)
     
     XRCCTRL(*this, "cmbConnType", wxChoice)->Enable(en);
     XRCCTRL(*this, "txtSerial", wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "cmbBaud", wxChoice)->Enable(en);
     XRCCTRL(*this, "txtIP", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtPort", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtCmds", wxTextCtrl)->Enable(en);
