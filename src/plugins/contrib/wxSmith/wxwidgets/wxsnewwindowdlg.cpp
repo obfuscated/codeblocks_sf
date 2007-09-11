@@ -64,6 +64,13 @@ const long wxsNewWindowDlg::ID_CHECKBOX4 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL5 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT4 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL6 = wxNewId();
+const long wxsNewWindowDlg::ID_STATICTEXT7 = wxNewId();
+const long wxsNewWindowDlg::ID_STATICTEXT8 = wxNewId();
+const long wxsNewWindowDlg::ID_STATICTEXT9 = wxNewId();
+const long wxsNewWindowDlg::ID_STATICTEXT10 = wxNewId();
+const long wxsNewWindowDlg::ID_BUTTON2 = wxNewId();
+const long wxsNewWindowDlg::ID_BUTTON3 = wxNewId();
+const long wxsNewWindowDlg::ID_BUTTON4 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT5 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX5 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX9 = wxNewId();
@@ -101,7 +108,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     wxStaticText* StaticText2;
     wxStaticText* StaticText3;
 
-    Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
+    Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Options"));
     FlexGridSizer1 = new wxFlexGridSizer(0, 2, 5, 5);
@@ -128,10 +135,10 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_XRCAutoload->SetValue(false);
     m_XRCAutoload->Disable();
     FlexGridSizer1->Add(m_XRCAutoload, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3->Add(FlexGridSizer1, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-    m_RootSizer->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(FlexGridSizer1, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+    m_RootSizer->Add(StaticBoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     m_AdvOps = new wxButton(this, ID_BUTTON1, _("+ Advanced options"), wxDefaultPosition, wxDefaultSize, wxBU_LEFT|wxNO_BORDER, wxDefaultValidator, _T("ID_BUTTON1"));
-    m_RootSizer->Add(m_AdvOps, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_RootSizer->Add(m_AdvOps, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     m_AdvancedOptionsSizer = new wxStaticBoxSizer(wxVERTICAL, this, wxEmptyString);
     FlexGridSizer2 = new wxFlexGridSizer(0, 2, 5, 5);
     FlexGridSizer2->AddGrowableCol(1);
@@ -150,6 +157,25 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     FlexGridSizer2->Add(StaticText4, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_BaseClass = new wxTextCtrl(this, ID_TEXTCTRL6, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL6"));
     FlexGridSizer2->Add(m_BaseClass, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText7 = new wxStaticText(this, ID_STATICTEXT7, _("Scopes:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
+    FlexGridSizer2->Add(StaticText7, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    FlexGridSizer4 = new wxFlexGridSizer(0, 3, 0, 5);
+    FlexGridSizer4->AddGrowableCol(0);
+    FlexGridSizer4->AddGrowableCol(1);
+    FlexGridSizer4->AddGrowableCol(2);
+    StaticText8 = new wxStaticText(this, ID_STATICTEXT8, _("IDs:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
+    FlexGridSizer4->Add(StaticText8, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("Members:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+    FlexGridSizer4->Add(StaticText9, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("Handlers:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
+    FlexGridSizer4->Add(StaticText10, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ScopeIds = new wxButton(this, ID_BUTTON2, _("Public"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
+    FlexGridSizer4->Add(m_ScopeIds, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ScopeMembers = new wxButton(this, ID_BUTTON3, _("Public"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
+    FlexGridSizer4->Add(m_ScopeMembers, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ScopeHandlers = new wxButton(this, ID_BUTTON4, _("Public"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
+    FlexGridSizer4->Add(m_ScopeHandlers, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer2->Add(FlexGridSizer4, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("Constructor arguments:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
     FlexGridSizer2->Add(StaticText5, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer3 = new wxFlexGridSizer(0, 2, 0, 10);
@@ -207,6 +233,9 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnAdvOpsClick);
     Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnUsePCHClick);
     Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnUseInitFuncClick);
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnScopeIdsClick);
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnScopeMembersClick);
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnScopeHandlersClick);
     Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnCtorParentClick);
     Connect(ID_CHECKBOX9,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnCtorParentDefClick);
     Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnCtorIdClick);
@@ -258,6 +287,10 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_Xrc->Enable(m_UseXrc->GetValue());
     m_XRCAutoload->SetValue(Cfg->ReadBool(_T("/newresource/xrcautoloag"),m_XRCAutoload->GetValue()));
     m_AddWxs->SetValue(Cfg->ReadBool(_T("/newresource/addwxs"),m_AddWxs->GetValue()));
+    m_ScopeIdsVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopeids"),(int)wxsItemRes::NewResourceParams::Protected);
+    m_ScopeMembersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopemembers"),(int)wxsItemRes::NewResourceParams::Public);
+    m_ScopeHandlersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopehandlers"),(int)wxsItemRes::NewResourceParams::Private);
+    UpdateScopeButtons();
     OnUseXrcChange(event);
 
     m_BlockText = false;
@@ -300,6 +333,9 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Params.CtorPosDef     = m_CtorPosDef->GetValue();
     Params.CtorSize       = m_CtorSize->GetValue();
     Params.CtorSizeDef    = m_CtorSizeDef->GetValue();
+    Params.ScopeIds       = m_ScopeIdsVal;
+    Params.ScopeMembers   = m_ScopeMembersVal;
+    Params.ScopeHandlers  = m_ScopeHandlersVal;
 
     // Need to do some checks
     // Validating name
@@ -479,6 +515,9 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Cfg->Write(_T("/newresource/usexrc"),m_UseXrc->GetValue());
     Cfg->Write(_T("/newresource/xrcautoloag"),m_XRCAutoload->GetValue());
     Cfg->Write(_T("/newresource/addwxs"),m_AddWxs->GetValue());
+    Cfg->Write(_T("/newresource/scopeids"),(int)m_ScopeIdsVal);
+    Cfg->Write(_T("/newresource/scopemembers"),(int)m_ScopeMembersVal);
+    Cfg->Write(_T("/newresource/scopehandlers"),(int)m_ScopeHandlersVal);
 
     EndModal(wxID_OK);
 }
@@ -709,4 +748,59 @@ bool wxsNewWindowDlg::PrepareResource(wxsItemRes* Res,wxsItemResData* Data)
     Props->m_SizeFromArg     = m_CtorSize->GetValue();
 
     return true;
+}
+
+void wxsNewWindowDlg::OnScopeIdsClick(wxCommandEvent& event)
+{
+    switch ( m_ScopeIdsVal )
+    {
+        case wxsItemRes::NewResourceParams::Public:    m_ScopeIdsVal = wxsItemRes::NewResourceParams::Protected; break;
+        case wxsItemRes::NewResourceParams::Protected: m_ScopeIdsVal = wxsItemRes::NewResourceParams::Private; break;
+        default:                                       m_ScopeIdsVal = wxsItemRes::NewResourceParams::Public; break;
+    }
+    UpdateScopeButtons();
+}
+
+void wxsNewWindowDlg::OnScopeMembersClick(wxCommandEvent& event)
+{
+    switch ( m_ScopeMembersVal )
+    {
+        case wxsItemRes::NewResourceParams::Public:    m_ScopeMembersVal = wxsItemRes::NewResourceParams::Protected; break;
+        case wxsItemRes::NewResourceParams::Protected: m_ScopeMembersVal = wxsItemRes::NewResourceParams::Private; break;
+        default:                                       m_ScopeMembersVal = wxsItemRes::NewResourceParams::Public; break;
+    }
+    UpdateScopeButtons();
+}
+
+void wxsNewWindowDlg::OnScopeHandlersClick(wxCommandEvent& event)
+{
+    switch ( m_ScopeHandlersVal )
+    {
+        case wxsItemRes::NewResourceParams::Public:    m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Protected; break;
+        case wxsItemRes::NewResourceParams::Protected: m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Private; break;
+        default:                                       m_ScopeHandlersVal = wxsItemRes::NewResourceParams::Public; break;
+    }
+    UpdateScopeButtons();
+}
+
+void wxsNewWindowDlg::UpdateScopeButtons()
+{
+    switch ( m_ScopeIdsVal )
+    {
+        case wxsItemRes::NewResourceParams::Public:    m_ScopeIds->SetLabel(_T("Public")); break;
+        case wxsItemRes::NewResourceParams::Protected: m_ScopeIds->SetLabel(_T("Protected")); break;
+        default:                                       m_ScopeIds->SetLabel(_T("Private")); break;
+    }
+    switch ( m_ScopeMembersVal )
+    {
+        case wxsItemRes::NewResourceParams::Public:    m_ScopeMembers->SetLabel(_T("Public")); break;
+        case wxsItemRes::NewResourceParams::Protected: m_ScopeMembers->SetLabel(_T("Protected")); break;
+        default:                                       m_ScopeMembers->SetLabel(_T("Private")); break;
+    }
+    switch ( m_ScopeHandlersVal )
+    {
+        case wxsItemRes::NewResourceParams::Public:    m_ScopeHandlers->SetLabel(_T("Public")); break;
+        case wxsItemRes::NewResourceParams::Protected: m_ScopeHandlers->SetLabel(_T("Protected")); break;
+        default:                                       m_ScopeHandlers->SetLabel(_T("Private")); break;
+    }
 }

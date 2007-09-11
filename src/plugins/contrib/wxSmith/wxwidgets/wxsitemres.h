@@ -37,6 +37,13 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
         /** \brief Structure containing all arguments required when creating new resource */
         struct NewResourceParams
         {
+            enum Scope
+            {
+                Public,
+                Protected,
+                Private
+            };
+
             wxString Class;
             wxString Src;
             wxString Hdr;
@@ -59,12 +66,16 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
             bool CtorPosDef;
             bool CtorSize;
             bool CtorSizeDef;
+            Scope ScopeIds;
+            Scope ScopeMembers;
+            Scope ScopeHandlers;
 
             NewResourceParams():
                 GenSrc(false), GenHdr(false), GenXrc(false), UsePch(false),
                 UseInitFunc(false), CtorParent(false), CtorParentDef(false),
                 CtorId(false), CtorIdDef(false), CtorPos(false), CtorPosDef(false),
-                CtorSize(false), CtorSizeDef(false)
+                CtorSize(false), CtorSizeDef(false),
+                ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private)
             {}
         };
 

@@ -75,19 +75,19 @@ namespace
         _T("\t\t$(ClassName)($(CtorArgs));\n")
         _T("\t\tvirtual ~$(ClassName)();\n")
         _T("\n")
+        _T("$(MembersScope)")
+        _T("\t\t") + wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),_T("$(ClassName)")) + _T("\n")
+        _T("\t\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
+        _T("\n")
+        _T("$(IdsScope)")
         _T("\t\t") + wxsCodeMarks::Beg(wxsCPP,_T("Identifiers"),_T("$(ClassName)")) + _T("\n")
         _T("\t\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("\n")
-        _T("\tprotected:\n")
-        _T("\n")
+        _T("$(HandlersScope)")
         _T("\t\t") + wxsCodeMarks::Beg(wxsCPP,_T("Handlers"),_T("$(ClassName)")) + _T("\n")
         _T("\t\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("\n")
-        _T("\t\t") + wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),_T("$(ClassName)")) + _T("\n")
-        _T("\t\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
-        _T("\n$(InitFuncDecl)")
-        _T("\tprivate:\n")
-        _T("\n")
+        _T("$(InitFuncDecl)")
         _T("\t\tDECLARE_EVENT_TABLE()\n")
         _T("};\n")
         _T("\n")
@@ -300,13 +300,47 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                 wxString InitFuncDecl;
                 if ( Params.UseInitFunc )
                 {
-                    InitFuncDecl << _T("\t\tvoid ") << Params.InitFunc << _T("(") << CtorArgsF << _T(");\n\n");
+                    InitFuncDecl <<
+                        _T("\tprotected:\n\n")
+                        _T("\t\tvoid ") << Params.InitFunc << _T("(") << CtorArgsF << _T(");\n\n");
                 }
                 Header.Replace(_T("$(CtorArgs)"),CtorArgsD);
                 Header.Replace(_T("$(Guard)"),Guard);
                 Header.Replace(_T("$(ClassName)"),Params.Class);
                 Header.Replace(_T("$(BaseClassName)"),Params.BaseClass);
                 Header.Replace(_T("$(InitFuncDecl)"),InitFuncDecl);
+
+                wxString Scope = _T("");
+                switch ( Params.ScopeMembers )
+                {
+                    case NewResourceParams::Private:   Scope = _T("\tprivate:\n\n"); break;
+                    case NewResourceParams::Protected: Scope = _T("\tprotected:\n\n"); break;
+                    default:;
+                }
+                Header.Replace(_T("$(MembersScope)"),Scope);
+                Scope = _T("");
+                if ( Params.ScopeIds != Params.ScopeMembers )
+                {
+                    switch ( Params.ScopeIds )
+                    {
+                        case NewResourceParams::Public:    Scope = _T("\tpublic:\n\n"); break;
+                        case NewResourceParams::Private:   Scope = _T("\tprivate:\n\n"); break;
+                        case NewResourceParams::Protected: Scope = _T("\tprotected:\n\n"); break;
+                    }
+                }
+                Header.Replace(_T("$(IdsScope)"),Scope);
+                Scope = _T("");
+                if ( Params.ScopeHandlers != Params.ScopeIds )
+                {
+                    switch ( Params.ScopeHandlers )
+                    {
+                        case NewResourceParams::Public:    Scope = _T("\tpublic:\n\n"); break;
+                        case NewResourceParams::Private:   Scope = _T("\tprivate:\n\n"); break;
+                        case NewResourceParams::Protected: Scope = _T("\tprotected:\n\n"); break;
+                    }
+                }
+                Header.Replace(_T("$(HandlersScope)"),Scope);
+
                 // TODO: Use wxsCoder to save file's content, so it will
                 //       have proper encoding and EOL stuff
                 if ( !File.Write(Header) ) return false;

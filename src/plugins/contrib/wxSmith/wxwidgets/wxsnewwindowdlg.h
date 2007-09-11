@@ -11,7 +11,8 @@
 #include <wx/textctrl.h>
 //*)
 
-class wxsItemRes;
+#include "wxsitemres.h"
+
 class wxsItemResData;
 class wxsProject;
 
@@ -38,6 +39,13 @@ class wxsNewWindowDlg : public wxDialog
         static const long ID_TEXTCTRL5;
         static const long ID_STATICTEXT4;
         static const long ID_TEXTCTRL6;
+        static const long ID_STATICTEXT7;
+        static const long ID_STATICTEXT8;
+        static const long ID_STATICTEXT9;
+        static const long ID_STATICTEXT10;
+        static const long ID_BUTTON2;
+        static const long ID_BUTTON3;
+        static const long ID_BUTTON4;
         static const long ID_STATICTEXT5;
         static const long ID_CHECKBOX5;
         static const long ID_CHECKBOX9;
@@ -73,6 +81,9 @@ class wxsNewWindowDlg : public wxDialog
         void OnCtorSizeDefClick(wxCommandEvent& event);
         void OnUseInitFuncClick(wxCommandEvent& event);
         void OnAdvOpsClick(wxCommandEvent& event);
+        void OnScopeIdsClick(wxCommandEvent& event);
+        void OnScopeMembersClick(wxCommandEvent& event);
+        void OnScopeHandlersClick(wxCommandEvent& event);
         //*)
 
         //(*Declarations(wxsNewWindowDlg)
@@ -94,6 +105,14 @@ class wxsNewWindowDlg : public wxDialog
         wxTextCtrl* m_InitFunc;
         wxStaticText* StaticText4;
         wxTextCtrl* m_BaseClass;
+        wxStaticText* StaticText7;
+        wxFlexGridSizer* FlexGridSizer4;
+        wxStaticText* StaticText8;
+        wxStaticText* StaticText9;
+        wxStaticText* StaticText10;
+        wxButton* m_ScopeIds;
+        wxButton* m_ScopeMembers;
+        wxButton* m_ScopeHandlers;
         wxStaticText* StaticText5;
         wxFlexGridSizer* FlexGridSizer3;
         wxCheckBox* m_CtorParent;
@@ -124,6 +143,12 @@ class wxsNewWindowDlg : public wxDialog
         bool m_AppManaged;
         wxString m_Type;
         wxsProject* m_Project;
+
+        wxsItemRes::NewResourceParams::Scope m_ScopeIdsVal;
+        wxsItemRes::NewResourceParams::Scope m_ScopeMembersVal;
+        wxsItemRes::NewResourceParams::Scope m_ScopeHandlersVal;
+
+        void UpdateScopeButtons();
 
         DECLARE_EVENT_TABLE()
 };

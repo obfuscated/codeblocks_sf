@@ -56,7 +56,9 @@ wxsGrid::wxsGrid(wxsItemResData* Data):
         Data,
         &Reg.Info,
         wxsGridEvents,
-        wxsGridStyles)
+        wxsGridStyles),
+    Cols(0),
+    Rows(0)
 {}
 
 
@@ -66,7 +68,14 @@ void wxsGrid::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            if ( GetPropertiesFlags() & flSource )
+            {
+                if ( Cols>=0 && Rows>=0 && (Cols>0 || Rows>0) )
+                {
+                    Codef(_T("%ACreateGrid(%d,%d);\n"),Rows,Cols);
+                }
+            }
             SetupWindowCode(Code,WindowParent,Language);
             return;
         }
@@ -82,12 +91,24 @@ void wxsGrid::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wx
 wxObject* wxsGrid::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxGrid* Preview = new wxGrid(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    if ( GetPropertiesFlags() & flSource )
+    {
+        if ( Cols>=0 && Rows>=0 && (Cols>0 || Rows>0) )
+        {
+            Preview->CreateGrid(Rows,Cols);
+        }
+    }
     return SetupWindow(Preview,Flags);
 }
 
 
 void wxsGrid::OnEnumWidgetProperties(long Flags)
 {
+    if ( Flags & flSource )
+    {
+        WXS_LONG(wxsGrid,Cols,_("Number of columns"),_T("cols"),0);
+        WXS_LONG(wxsGrid,Rows,_("Number of rows"),_T("rows"),0);
+    }
 }
 
 void wxsGrid::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
