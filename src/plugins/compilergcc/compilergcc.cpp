@@ -1878,6 +1878,7 @@ void CompilerGCC::DoClean(const wxArrayString& commands)
     for (unsigned int i = 0; i < commands.GetCount(); ++i)
     {
 //        Manager::Get()->GetMessageManager()->Log(m_PageIndex, commands[i]);
+        DBGLOG(commands[i]);
         wxRemoveFile(commands[i]);
     }
 }
@@ -3478,7 +3479,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 		{
 			size_t size = f.Length();
 			f.Close();
-			
+
 			float displaySize;
 			wxString units;
 			if (size < 1024)
@@ -3486,14 +3487,14 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 				displaySize = (float)size;
 				units = _("bytes");
 			}
-			else if (size < 1024000)
+			else if (size < 1048576)
 			{
 				displaySize = (float)size / 1024.0f;
 				units = _("KB");
 			}
 			else
 			{
-				displaySize = (float)size / 1024000.0f;
+				displaySize = (float)size / 1048576.0f;
 				units = _("MB");
 			}
 			wxString msg;
@@ -3501,7 +3502,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 			LogMessage(msg, cltInfo);
 		}
 	}
-	
+
     if (m_CommandQueue.GetCount() != 0 && exitCode == 0)
     {
         // continue running commands while last exit code was 0.
