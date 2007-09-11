@@ -73,7 +73,10 @@ void wxsExtResManager::EditorClosed(wxsResource* Res)
         if ( i->second == Res )
         {
             m_Files.erase(i);
-            wxsTree()->Delete(Res->GetTreeItemId());
+            // wxsResource dtor calls "wxsTree()->Delete(m_TreeItemId);" itself
+            // no need to call it here, outside the class
+            // (which will crash if following line is uncommented)
+            //wxsTree()->Delete(Res->GetTreeItemId());
             delete Res;
             if ( m_Files.empty() )
             {
