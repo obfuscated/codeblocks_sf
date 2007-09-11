@@ -214,6 +214,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     }
 
 	// default code
+    XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->SetSelection(m_DefCodeFileType);
     wxString key;
     key.Printf(_T("/default_code/set%d"), IdxToFileType[m_DefCodeFileType]);
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
