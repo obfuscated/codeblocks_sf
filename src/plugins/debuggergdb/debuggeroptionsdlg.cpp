@@ -44,8 +44,6 @@ DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent, DebuggerGDB* plugin)
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
     XRCCTRL(*this, "txtInit",           wxTextCtrl)->SetValue(cfg->Read(_T("init_commands"), wxEmptyString));
-    XRCCTRL(*this, "txtLayoutStart",    wxTextCtrl)->SetValue(cfg->Read(_T("layout_start"),  wxEmptyString));
-    XRCCTRL(*this, "txtLayoutEnd",      wxTextCtrl)->SetValue(cfg->Read(_T("layout_end"),    wxEmptyString));
     XRCCTRL(*this, "chkAutoBuild",      wxCheckBox)->SetValue(cfg->ReadBool(_T("auto_build"),            true));
     XRCCTRL(*this, "chkWatchArgs",      wxCheckBox)->SetValue(cfg->ReadBool(_T("watch_args"),            true));
     XRCCTRL(*this, "chkWatchLocals",    wxCheckBox)->SetValue(cfg->ReadBool(_T("watch_locals"),          true));
@@ -67,8 +65,6 @@ void DebuggerOptionsDlg::OnApply()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
     cfg->Write(_T("init_commands"),         XRCCTRL(*this, "txtInit",           wxTextCtrl)->GetValue());
-    cfg->Write(_T("layout_start"),          XRCCTRL(*this, "txtLayoutStart",    wxTextCtrl)->GetValue());
-    cfg->Write(_T("layout_end"),            XRCCTRL(*this, "txtLayoutEnd",      wxTextCtrl)->GetValue());
     cfg->Write(_T("auto_build"),            XRCCTRL(*this, "chkAutoBuild",      wxCheckBox)->GetValue());
     cfg->Write(_T("watch_args"),            XRCCTRL(*this, "chkWatchArgs",      wxCheckBox)->GetValue());
     cfg->Write(_T("watch_locals"),          XRCCTRL(*this, "chkWatchLocals",    wxCheckBox)->GetValue());

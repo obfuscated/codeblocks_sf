@@ -28,50 +28,6 @@
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxStaticBoxSizer">
-					<label>Automatic view layout switching</label>
-					<orient>wxVERTICAL</orient>
-					<object class="sizeritem">
-						<object class="wxFlexGridSizer">
-							<cols>2</cols>
-							<vgap>4</vgap>
-							<hgap>4</hgap>
-							<growablecols>1</growablecols>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT2">
-									<label>Layout when session starts:</label>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="txtLayoutStart">
-									<tooltip>The name of the layout you want enabled when the debugging session starts</tooltip>
-								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<option>1</option>
-							</object>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="ID_STATICTEXT3">
-									<label>Layout when session ends:</label>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="txtLayoutEnd">
-									<tooltip>The name of the layout you want enabled when the debugging session ends</tooltip>
-								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<option>1</option>
-							</object>
-						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<border>4</border>
-					</object>
-				</object>
-				<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-				<border>8</border>
-			</object>
-			<object class="sizeritem">
 				<object class="wxFlexGridSizer">
 					<cols>1</cols>
 					<vgap>4</vgap>
@@ -180,7 +136,6 @@
 							<object class="sizeritem">
 								<object class="wxSpinCtrl" name="spnArrayElems">
 									<value>8</value>
-									<min>0</min>
 									<max>128</max>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>

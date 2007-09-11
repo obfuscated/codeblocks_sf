@@ -743,16 +743,29 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
     }
 }
 
-void DebuggerGDB::DoSwitchLayout(const wxString& config_key)
+void DebuggerGDB::DoSwitchToDebuggingLayout()
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("debugger"));
-    wxString layout = cfg->Read(config_key, wxEmptyString);
-    if (!layout.IsEmpty())
-    {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Switching layout to \"%s\""), layout.c_str());
-        CodeBlocksLayoutEvent evt(cbEVT_SWITCH_VIEW_LAYOUT, layout);
-        Manager::Get()->ProcessEvent(evt);
-    }
+	CodeBlocksLayoutEvent queryEvent(cbEVT_QUERY_VIEW_LAYOUT);
+	CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, _("Debugging"));
+
+	Manager::Get()->GetMessageManager()->DebugLog(_("Switching layout to \"%s\""), switchEvent.layout.c_str());
+
+	// query the current layout
+	Manager::Get()->ProcessEvent(queryEvent);
+	m_PreviousLayout = queryEvent.layout;
+	
+	// switch to debugging layout
+	Manager::Get()->ProcessEvent(switchEvent);
+}
+
+void DebuggerGDB::DoSwitchToPreviousLayout()
+{
+	CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
+
+	Manager::Get()->GetMessageManager()->DebugLog(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.c_str() : wxString(_("Code::Blocks default")).c_str());
+
+	// switch to previous layout
+	Manager::Get()->ProcessEvent(switchEvent);
 }
 
 void DebuggerGDB::DoWatches()
@@ -1149,9 +1162,6 @@ int DebuggerGDB::DoDebug()
         return 4;
     }
 
-    // switch to the user-defined layout for debugging
-    DoSwitchLayout(_T("layout_start"));
-
     // start debugger driver based on target compiler, or default compiler if no target
     if (!m_State.StartDriver(target))
     {
@@ -1286,6 +1296,10 @@ int DebuggerGDB::DoDebug()
     // Don't issue 'run' if attaching to a process (Bug #1391904)
     if (m_PidToAttach == 0)
         m_State.GetDriver()->Start(m_BreakOnEntry);
+
+    // switch to the user-defined layout for debugging
+    if (m_pProcess)
+		DoSwitchToDebuggingLayout();
 
     return 0;
 } // Debug
@@ -2240,7 +2254,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
     }
 
     // switch to the user-defined layout when finished debugging
-    DoSwitchLayout(_T("layout_end"));
+    DoSwitchToPreviousLayout();
 
     #ifdef __WXGTK__
     // kill any linux console

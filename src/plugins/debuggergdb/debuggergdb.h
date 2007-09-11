@@ -103,7 +103,8 @@ class DebuggerGDB : public cbDebuggerPlugin
     protected:
         void AddSourceDir(const wxString& dir);
     private:
-        void DoSwitchLayout(const wxString& config_key);
+        void DoSwitchToDebuggingLayout();
+        void DoSwitchToPreviousLayout();
         void ParseOutput(const wxString& output);
         void ClearActiveMarkFromAllEditors();
         void DoWatches();
@@ -228,6 +229,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         bool m_WaitingCompilerToFinish;
         bool m_Canceled; // flag to avoid re-entering DoDebug when we shouldn't
+        
+        wxString m_PreviousLayout;
 
         DECLARE_EVENT_TABLE()
 };

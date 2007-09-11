@@ -595,6 +595,7 @@ void MainFrame::RegisterEvents()
     pm->RegisterEventSink(cbEVT_PLUGIN_INSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginInstalled));
     pm->RegisterEventSink(cbEVT_PLUGIN_UNINSTALLED, new cbEventFunctor<MainFrame, CodeBlocksEvent>(this, &MainFrame::OnPluginUninstalled));
 
+    pm->RegisterEventSink(cbEVT_QUERY_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutQuery));
     pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
 }
 
@@ -3909,6 +3910,12 @@ void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& event)
 {
     if (m_ScriptConsoleID != -1 && event.GetId() == m_ScriptConsoleID)
         ShowHideScriptConsole();
+}
+
+void MainFrame::OnLayoutQuery(CodeBlocksLayoutEvent& event)
+{
+	event.layout = !m_LastLayoutName.IsEmpty() ? m_LastLayoutName : gDefaultLayout;
+	event.StopPropagation();
 }
 
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)

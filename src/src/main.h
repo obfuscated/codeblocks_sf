@@ -197,6 +197,7 @@ class MainFrame : public wxFrame
 		void OnDockWindowVisibility(CodeBlocksDockEvent& event);
 
         // layout requests
+        void OnLayoutQuery(CodeBlocksLayoutEvent& event);
         void OnLayoutSwitch(CodeBlocksLayoutEvent& event);
 
 		// editor changed events

@@ -88,6 +88,8 @@ const wxEventType cbEVT_ADD_DOCK_WINDOW = wxNewEventType();
 const wxEventType cbEVT_REMOVE_DOCK_WINDOW = wxNewEventType();
 const wxEventType cbEVT_SHOW_DOCK_WINDOW = wxNewEventType();
 const wxEventType cbEVT_HIDE_DOCK_WINDOW = wxNewEventType();
+// ask which is the current view layout
+const wxEventType cbEVT_QUERY_VIEW_LAYOUT = wxNewEventType();
 // request app to switch view layout
 const wxEventType cbEVT_SWITCH_VIEW_LAYOUT = wxNewEventType();
 // app notifies that a new layout has been applied
