@@ -226,7 +226,7 @@ void HelpPlugin::OnAttach()
     evt.minimumSize.Set(320, 240);
     Manager::Get()->ProcessEvent(evt);
 
-    if (Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadBool(_T("/show_man_viewer"), true))
+    if (Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadBool(_T("/show_man_viewer"), false))
     {
         ShowMANViewer();
     }

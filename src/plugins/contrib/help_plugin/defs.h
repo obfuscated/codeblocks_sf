@@ -259,24 +259,16 @@ class QListIterator
         QListIterator(const QList<T> &list)
         : m_iter(list.begin()), m_pList(&list)
         {
-            //*this = list.begin();
         }
 
         bool hasNext() const
         {
-            if (m_iter == m_pList->end())
-            {
-                return false;
-            }
-
-            typename QList<T>::const_iterator next = m_iter;
-            ++next;
-            return next != m_pList->end();
+            return m_iter != m_pList->end();
         }
 
         const T &next()
         {
-            return *++m_iter;
+            return *m_iter++;
         }
 };
 
