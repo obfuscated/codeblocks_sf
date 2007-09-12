@@ -234,7 +234,7 @@ void wxsNotebook::OnAddChildQPP(wxsItem* Child,wxsAdvQPP* QPP)
     wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(GetChildIndex(Child));
     if ( Extra )
     {
-        QPP->Register(new wxsNotebookParentQP(QPP,Extra),_("Notobook"));
+        QPP->Register(new wxsNotebookParentQP(QPP,Extra),_("Notebook"));
     }
 }
 
