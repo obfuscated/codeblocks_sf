@@ -139,6 +139,9 @@ class wxsItemResData
         /** \brief Searching for tree id in main resource tree for given item */
         inline bool GetTreeId(wxsResourceItemId& Id,wxsItem* Item) { return FindId(Id,Item); }
 
+        /** \brief Showing popup menu from given item */
+        inline wxsItemEditor* GetEditor() { return m_Editor; }
+
         /* ************************ */
         /*  Undo buffer operations  */
         /* ************************ */

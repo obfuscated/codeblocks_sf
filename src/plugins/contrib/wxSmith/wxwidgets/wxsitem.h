@@ -300,6 +300,9 @@ class wxsItem: public wxsPropertyContainer
          */
         inline bool CanAddToParent(wxsParent* Parent,bool ShowMessage) { return OnCanAddToParent(Parent,ShowMessage); }
 
+        /** \brief Requesting reaction to popup menu */
+        inline bool PopupMenu(long Id) { return OnPopup(Id); }
+
     protected:
 
         /** \brief Helpful printf-like function used when creating source code.
@@ -518,7 +521,15 @@ class wxsItem: public wxsPropertyContainer
          * \param PosY Y position of mouse relative to item's position
          * \return false if nothing has changed, true if preview must be refreshed
          */
-        virtual bool OnMouseRightClick(wxWindow* Preview,int PosX,int PosY) { return false; }
+        virtual bool OnMouseRightClick(wxWindow* Preview,int PosX,int PosY);
+
+        /** \brief Callback from popup menu
+         * \return true if event was processed, false otherwise
+         */
+        virtual bool OnPopup(long Id);
+
+        /** \brief Showing popup menu */
+        void ShowPopup(wxMenu* Menu);
 
         /** \brief Extensions to Codef function
          * \note Remember to call OnCodefExtension of base class (this function is implemented

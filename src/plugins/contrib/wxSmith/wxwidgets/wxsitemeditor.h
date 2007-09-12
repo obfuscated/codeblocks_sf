@@ -84,6 +84,7 @@ class wxsItemEditor : public wxsEditor
         void OnPreview(wxCommandEvent& event);
         void OnQuickProps(wxCommandEvent& event);
         void OnKeyDown(wxKeyEvent& event);
+        void OnPopup(wxCommandEvent& event);
 
         void InitializeVisualStuff();
         void InitializeResourceData();
@@ -150,6 +151,9 @@ class wxsItemEditor : public wxsEditor
 		/** \brief Causing editor's content to refresh */
 		static void RefreshContents();
 
+		/** \brief Showing popup menu */
+		void ShowPopup(wxsItem* Item,wxMenu* Menu);
+
         wxsItemResData* m_Data;             ///< \brief Data managment object
 
         wxsItemEditorContent* m_Content;    ///< \brief Window with content area
@@ -172,6 +176,7 @@ class wxsItemEditor : public wxsEditor
         int m_InsType;                      ///< \brief Current insertion type
         int m_InsTypeMask;                  ///< \brief Current insertion type mask
         bool m_QuickPropsOpen;              ///< \brief Set to true if quick properties panel is opened
+        wxsItem* m_PopupCaller;             ///< \brief Item which requested popup to be shown
 
         static wxImage m_InsPointImg;
         static wxImage m_InsIntoImg;
@@ -194,6 +199,7 @@ class wxsItemEditor : public wxsEditor
 
         friend class wxsItemEditorContent;
         friend class wxsItemResData;
+        friend class wxsItem;
 };
 
 #endif

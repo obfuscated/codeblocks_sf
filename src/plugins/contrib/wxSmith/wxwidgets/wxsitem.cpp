@@ -26,6 +26,14 @@
 #include "wxsitemresdata.h"
 #include "wxsitemrestreedata.h"
 #include "wxseventseditor.h"
+#include "wxsitemeditor.h"
+#include <wx/menu.h>
+
+namespace
+{
+    long IdToFront = wxNewId();
+    long IdToBottom = wxNewId();
+}
 
 wxsItem::wxsItem(wxsItemResData* ResourceData,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events):
     m_Info(Info),
@@ -873,4 +881,56 @@ void wxsItem::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsC
         m_WindowParent = WindowParent;
     }
     return OnBuildCreatingCode(Code,WindowParent,Language);
+}
+
+bool wxsItem::OnMouseRightClick(wxWindow* Preview,int PosX,int PosY)
+{
+    if ( GetType() != wxsTSizer )
+    {
+        if ( GetParent() && GetParent()->GetType() != wxsTSizer )
+        {
+            wxMenu Popup;
+            wxMenuItem* Item = Popup.Append(IdToFront,_("Bring to front"));
+            if ( GetParent()->GetChildIndex(this) == GetParent()->GetChildCount()-1 )
+            {
+                Item->Enable(false);
+            }
+            Item = Popup.Append(IdToBottom,_("Send to back"));
+            if ( GetParent()->GetChildIndex(this) == 0 )
+            {
+                Item->Enable(false);
+            }
+            ShowPopup(&Popup);
+        }
+    }
+    return false;
+}
+
+bool wxsItem::OnPopup(long Id)
+{
+    if ( Id == IdToFront )
+    {
+        GetResourceData()->BeginChange();
+        GetParent()->MoveChild(GetParent()->GetChildIndex(this),GetParent()->GetChildCount()-1);
+        GetResourceData()->EndChange();
+        return true;
+    }
+
+    if ( Id == IdToBottom )
+    {
+        GetResourceData()->BeginChange();
+        GetParent()->MoveChild(GetParent()->GetChildIndex(this),0);
+        GetResourceData()->EndChange();
+        return true;
+    }
+
+    return false;
+}
+
+void wxsItem::ShowPopup(wxMenu* Menu)
+{
+    if ( GetResourceData()->GetEditor() )
+    {
+        GetResourceData()->GetEditor()->ShowPopup(this,Menu);
+    }
 }

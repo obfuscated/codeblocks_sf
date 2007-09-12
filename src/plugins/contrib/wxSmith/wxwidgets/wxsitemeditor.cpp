@@ -66,7 +66,8 @@ wxsItemEditor::wxsItemEditor(wxWindow* parent,wxsItemRes* Resource):
     m_PreviewBackground(0),
     m_InsType(itPoint),
     m_InsTypeMask(itPoint),
-    m_QuickPropsOpen(false)
+    m_QuickPropsOpen(false),
+    m_PopupCaller(0)
 {
     InitializeResourceData();
     InitializeVisualStuff();
@@ -828,6 +829,23 @@ void wxsItemEditor::StartInsertPointSequence(const wxsItemInfo* Info)
     }
 }
 
+void wxsItemEditor::ShowPopup(wxsItem* Item,wxMenu* Popup)
+{
+    m_PopupCaller = Item;
+    PopupMenu(Popup);
+}
+
+void wxsItemEditor::OnPopup(wxCommandEvent& event)
+{
+    if ( m_PopupCaller )
+    {
+        if ( !m_PopupCaller->PopupMenu(event.GetId()) )
+        {
+            event.Skip();
+        }
+    }
+}
+
 wxImage wxsItemEditor::m_InsPointImg;
 wxImage wxsItemEditor::m_InsIntoImg;
 wxImage wxsItemEditor::m_InsBeforeImg;
@@ -850,4 +868,5 @@ BEGIN_EVENT_TABLE(wxsItemEditor,wxsEditor)
     EVT_BUTTON(wxsQuickPropsId,wxsItemEditor::OnQuickProps)
     EVT_BUTTON(-1,wxsItemEditor::OnButton)
     EVT_KEY_DOWN(wxsItemEditor::OnKeyDown)
+    EVT_MENU(wxID_ANY,wxsItemEditor::OnPopup)
 END_EVENT_TABLE()
