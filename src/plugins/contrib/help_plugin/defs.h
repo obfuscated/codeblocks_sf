@@ -21,10 +21,14 @@
 
 #define qstrncpy strncpy
 #define qstrncmp strncmp
-#define qstrdup strdup
 #define qstrcmp strcmp
 #define qstrlen strlen
 #define qstrcpy strcpy
+
+inline char *qstrdup(const char *str)
+{
+    return strcpy(new char[strlen(str) + 1], str);
+}
 
 class DummyOutput
 {
@@ -57,7 +61,7 @@ class QByteArray : public std::string
         }
 
         QByteArray(const char *str)
-        : std::string(str)
+        : std::string(str ? str : "")
         {
         }
 
@@ -260,7 +264,14 @@ class QListIterator
 
         bool hasNext() const
         {
-            return m_iter != m_pList->end();
+            if (m_iter == m_pList->end())
+            {
+                return false;
+            }
+
+            typename QList<T>::const_iterator next = m_iter;
+            ++next;
+            return next != m_pList->end();
         }
 
         const T &next()
