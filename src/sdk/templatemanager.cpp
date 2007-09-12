@@ -52,16 +52,16 @@
 
 TemplateManager::TemplateManager()
 {
-	//ctor
-	Manager::Get()->GetAppWindow()->PushEventHandler(this);
+    //ctor
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
 }
 
 TemplateManager::~TemplateManager()
 {
-	//dtor
+    //dtor
     // this is a core manager, so it is removed when the app is shutting down.
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
-//	Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+//  Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 }
 
 void TemplateManager::CreateMenu(wxMenuBar* menuBar)
@@ -94,39 +94,39 @@ void TemplateManager::LoadUserTemplates()
         ok = dir.GetNext(&filename);
     }
 
-	Manager::Get()->GetMessageManager()->DebugLog(_T("%d user templates loaded"), m_UserTemplates.GetCount());
+    Manager::Get()->GetMessageManager()->DebugLog(_T("%d user templates loaded"), m_UserTemplates.GetCount());
 }
 
 cbProject* TemplateManager::New(TemplateOutputType initial, wxString* pFilename)
 {
-	cbProject* prj = NULL;
+    cbProject* prj = NULL;
 
-	LoadUserTemplates();
-	NewFromTemplateDlg dlg(initial, m_UserTemplates);
+    LoadUserTemplates();
+    NewFromTemplateDlg dlg(initial, m_UserTemplates);
     PlaceWindow(&dlg);
-	if (dlg.ShowModal() == wxID_OK)
-	{
+    if (dlg.ShowModal() == wxID_OK)
+    {
         if (dlg.SelectedUserTemplate())
             prj = NewProjectFromUserTemplate(dlg, pFilename);
         else
             prj = NewFromTemplate(dlg, pFilename);
-	}
-	return prj;
+    }
+    return prj;
 }
 
 cbProject* TemplateManager::NewFromTemplate(NewFromTemplateDlg& dlg, wxString* pFilename)
 {
-	cbProject* prj = NULL;
+    cbProject* prj = NULL;
     cbWizardPlugin* wiz = dlg.GetWizard();
-	if (wiz)
-	{
-		// wizard, too easy ;)
-		CompileTargetBase* ret = wiz->Launch(dlg.GetWizardIndex(), pFilename);
-		switch (wiz->GetOutputType(dlg.GetWizardIndex()))
-		{
-		    case totProject: prj = dynamic_cast<cbProject*>(ret); break;
-		    default: break;
-		}
+    if (wiz)
+    {
+        // wizard, too easy ;)
+        CompileTargetBase* ret = wiz->Launch(dlg.GetWizardIndex(), pFilename);
+        switch (wiz->GetOutputType(dlg.GetWizardIndex()))
+        {
+            case totProject: prj = dynamic_cast<cbProject*>(ret); break;
+            default: break;
+        }
     }
     return prj;
 }
@@ -158,13 +158,13 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     wxDir dir(path);
     if (dir.HasFiles() || dir.HasSubDirs())
     {
-		if (cbMessageBox(path + _(" already contains other files.\n"
-								"If you continue, files with the same names WILL BE OVERWRITTEN.\n"
-								"Are you sure you want to continue?"),
-								_("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
-		{
-			return 0;
-		}
+        if (cbMessageBox(path + _(" already contains other files.\n"
+                                "If you continue, files with the same names WILL BE OVERWRITTEN.\n"
+                                "Are you sure you want to continue?"),
+                                _("Files exist in directory"), wxICON_EXCLAMATION | wxYES_NO | wxNO_DEFAULT) != wxID_YES)
+        {
+            return 0;
+        }
     }
 
     wxBusyCursor busy;
@@ -210,21 +210,38 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
             cbMessageBox(_("User-template saved succesfuly but no project file exists in it!"));
         else
         {
-        	// ask to rename the project file, if need be
-        	wxFileName fname(project_filename);
-        	wxString newname = wxGetTextFromUser(_("If you want, you can change the project's filename here (without extension):"), _("Change project's filename"), fname.GetName());
-        	if (!newname.IsEmpty() && newname != fname.GetName())
-        	{
-        		fname.SetName(newname);
-        		wxRenameFile(project_filename, fname.GetFullPath());
-        		project_filename = fname.GetFullPath();
-        	}
+            // ask to rename the project file, if need be
+            wxFileName fname(project_filename);
+            wxString newname = wxGetTextFromUser(_("If you want, you can change the project's filename here (without extension):"), _("Change project's filename"), fname.GetName());
+            if (!newname.IsEmpty() && newname != fname.GetName())
+            {
+                fname.SetName(newname);
+                wxRenameFile(project_filename, fname.GetFullPath());
+                project_filename = fname.GetFullPath();
+            }
             prj = Manager::Get()->GetProjectManager()->LoadProject(project_filename);
             if(prj && !newname.IsEmpty())
             {
                 prj->SetTitle(newname);
+                for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
+                {
+                    ProjectBuildTarget* bt = prj->GetBuildTarget(i);
+                    TargetFilenameGenerationPolicy tgfpPrefix, tgfpExtension;
+                    bt->GetTargetFilenameGenerationPolicy(tgfpPrefix, tgfpExtension);
+                    wxString outputFileName = bt->GetOutputFilename();
+                    wxFileName outFname(outputFileName);
+                    if (tgfpPrefix == tgfpPlatformDefault && bt->GetTargetType() == ttStaticLib)
+                    {
+                        Compiler* projectCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+                        if (projectCompiler)
+                            newname.Prepend(projectCompiler->GetSwitches().libPrefix);
+                    }
+                    outFname.SetName(newname);
+                    bt->SetOutputFilename(outFname.GetFullPath());
+                }
                 Manager::Get()->GetProjectManager()->RebuildTree(); // so the tree shows the new name
-                // TODO : title update of window --> ??how ; throw an acitivate or opened event ??
+                CodeBlocksEvent evt(cbEVT_PROJECT_OPEN, 0, prj);
+                Manager::Get()->ProcessEvent(evt);
             }
         }
     }
