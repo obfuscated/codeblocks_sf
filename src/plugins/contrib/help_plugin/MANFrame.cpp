@@ -18,21 +18,47 @@ namespace
 {
     int butSearchID = wxNewId();
     int textEntryID = wxNewId();
+    int htmlWindowID = wxNewId();
+
+    wxString NoSearchDirsSet = _("<html>\n"
+        "<head>\n"
+        "<meta content=\"text/html; charset=ISO-8859-1\"\n"
+        "http-equiv=\"content-type\">\n"
+        "<title></title>\n"
+        "</head>\n"
+        "<body>\n"
+        "<h2>No search directories set</h2>\n"
+        "<br>\n"
+        "You must configure a man page entry first\n"
+        "</body>\n"
+        "</html>");
+
+    wxString ManPageNotFound = _("<html>\n"
+        "<head>\n"
+        "<meta content=\"text/html; charset=ISO-8859-1\"\n"
+        "http-equiv=\"content-type\">\n"
+        "<title></title>\n"
+        "</head>\n"
+        "<body>\n"
+        "<h2>Man page not found</h2>\n"
+        "</body>\n"
+        "</html>");
 }
 
-BEGIN_EVENT_TABLE(MANFrame, wxFrame)
+BEGIN_EVENT_TABLE(MANFrame, wxPanel)
     EVT_BUTTON(butSearchID, MANFrame::OnSearch)
     EVT_TEXT_ENTER(textEntryID, MANFrame::OnSearch)
-    EVT_CLOSE(MANFrame::OnClose)
+    EVT_HTML_LINK_CLICKED(htmlWindowID, MANFrame::OnLinkClicked)
 END_EVENT_TABLE()
 
-MANFrame::MANFrame(wxWindow *parent, wxWindowID id, const wxString &title)
-: wxFrame(parent, id, title)
+MANFrame::MANFrame(wxWindow *parent, wxWindowID id)
+: wxPanel(parent, id)
 {
+
     wxStaticText *m_label = new wxStaticText(this, wxID_ANY, _("Man page: "));
     m_entry = new wxTextCtrl(this, textEntryID, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     m_search = new wxButton(this, butSearchID, _("Search"));
-    m_htmlWindow = new wxHtmlWindow(this);
+    m_htmlWindow = new wxHtmlWindow(this, htmlWindowID);
 
     wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *bar = new wxBoxSizer(wxHORIZONTAL);
@@ -46,8 +72,6 @@ MANFrame::MANFrame(wxWindow *parent, wxWindowID id, const wxString &title)
 
     SetSizer(main);
     SetAutoLayout(true);
-    SetSize(512, 384);
-    CentreOnScreen();
 }
 
 void MANFrame::SetPage(const wxString &contents)
@@ -55,15 +79,39 @@ void MANFrame::SetPage(const wxString &contents)
     m_htmlWindow->SetPage(contents);
 }
 
+void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
+{
+    wxString link = event.GetLinkInfo().GetHref();
+
+    if (!link.StartsWith(_T("man:"), &link))
+    {
+        return;
+    }
+
+    if (link.Last() == _T(')'))
+    {
+        link.RemoveLast();
+        wxString name = link.BeforeLast(_T('('));
+
+        if (name.IsEmpty())
+        {
+            return;
+        }
+
+        wxString section = link.AfterLast(_T('('));
+
+        if (!section.IsEmpty())
+        {
+            name += _T(".") + section;
+        }
+
+        SearchManPage(wxEmptyString, name);
+    }
+}
+
 void MANFrame::OnSearch(wxCommandEvent &event)
 {
     SearchManPage(wxEmptyString, m_entry->GetValue());
-}
-
-void MANFrame::OnClose(wxCloseEvent &event)
-{
-    Show(false);
-    event.Veto(true);
 }
 
 bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
@@ -223,23 +271,25 @@ bool MANFrame::SearchManPage(const wxString &dirs, const wxString &keyword)
 {
     wxString man_page = GetManPage(dirs, keyword);
 
-    if (!keyword.IsEmpty())
+    if (keyword.IsEmpty())
     {
-        m_entry->SetValue(keyword);
-    }
-
-    if (man_page.IsEmpty())
-    {
-        if (!keyword.IsEmpty())
+        if (dirs.Length() == wxString(_T("man:")).Length())
         {
-            SetTitle(_("Man page not found: ") + keyword);
+            SetPage(NoSearchDirsSet);
         }
 
         return false;
     }
 
+    m_entry->SetValue(keyword);
+
+    if (man_page.IsEmpty())
+    {
+        SetPage(ManPageNotFound);
+        return false;
+    }
+
     SetPage(cbC2U(man2html_buffer(man_page.mb_str())));
-    SetTitle(keyword);
 
     return true;
 }

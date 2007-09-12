@@ -65,10 +65,11 @@ int idHelpMenus[MAX_HELP_ITEMS];
 namespace
 {
     PluginRegistrant<HelpPlugin> reg(_T("HelpPlugin"));
+    int idViewMANViewer = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
-  // we hook the menus dynamically
+	EVT_MENU(idViewMANViewer, HelpPlugin::OnViewMANViewer)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -153,10 +154,10 @@ HelpPlugin::HelpPlugin()
 : m_pMenuBar(0), m_LastId(0), m_manFrame(0)
 {
   //ctor
-    if(!Manager::LoadResource(_T("help_plugin.zip")))
-    {
-        NotifyMissingFile(_T("help_plugin.zip"));
-    }
+  if(!Manager::LoadResource(_T("help_plugin.zip")))
+  {
+    NotifyMissingFile(_T("help_plugin.zip"));
+  }
 
   // initialize IDs for Help and popup menu
   for (int i = 0; i < MAX_HELP_ITEMS; ++i)
@@ -189,22 +190,46 @@ HelpPlugin::~HelpPlugin()
     FreeLibrary(ocx_module);
   }
 #endif
-
-  if (m_manFrame)
-  {
-    m_manFrame->Destroy();
-  }
 }
 
 void HelpPlugin::OnAttach()
 {
-  // load configuration (only saved in our config dialog)
-  HelpCommon::LoadHelpFilesVector(m_Vector);
+    // load configuration (only saved in our config dialog)
+    HelpCommon::LoadHelpFilesVector(m_Vector);
 
-  if (!m_manFrame)
-  {
-    m_manFrame = new MANFrame(0, wxID_ANY);
-  }
+    const wxString man_prefix = _T("man:");
+    wxString all_man_dirs(man_prefix);
+
+    for (HelpCommon::HelpFilesVector::const_iterator i = m_Vector.begin(); i != m_Vector.end(); ++i)
+    {
+        if (i->second.name.Mid(0, man_prefix.size()).CmpNoCase(man_prefix) == 0)
+        {
+            // only add ; if a dir is already set
+            if (all_man_dirs.Length() > man_prefix.Length())
+            {
+                all_man_dirs += _T(";");
+            }
+
+            all_man_dirs += i->second.name.Mid(man_prefix.Length());
+        }
+    }
+
+    m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY);
+    m_manFrame->SearchManPage(all_man_dirs, wxEmptyString);
+    CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+    evt.name = _T("MANViewer");
+    evt.title = _("Man pages viewer");
+    evt.pWindow = m_manFrame;
+    evt.dockSide = CodeBlocksDockEvent::dsRight;
+    evt.desiredSize.Set(320, 240);
+    evt.floatingSize.Set(320, 240);
+    evt.minimumSize.Set(320, 240);
+    Manager::Get()->ProcessEvent(evt);
+
+    if (Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadBool(_T("/show_man_viewer"), true))
+    {
+        ShowMANViewer();
+    }
 }
 
 cbConfigurationPanel* HelpPlugin::GetConfigurationPanel(wxWindow* parent)
@@ -230,36 +255,57 @@ void HelpPlugin::Reload()
 
 void HelpPlugin::OnRelease(bool appShutDown)
 {
+    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    evt.pWindow = m_manFrame;
+    Manager::Get()->ProcessEvent(evt);
 	m_manFrame->Destroy();
 	m_manFrame = 0;
 }
 
 void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
 {
-  if (!IsAttached())
-  {
-    return;
-  }
-
-  m_pMenuBar = menuBar;
-
-  // add entries in help menu
-  int counter = 0;
-  HelpCommon::HelpFilesVector::iterator it;
-
-  for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
-  {
-    if (counter == HelpCommon::getDefaultHelpIndex())
+    if (!IsAttached())
     {
-      AddToHelpMenu(idHelpMenus[counter], it->first + _T("\tF1"));
+        return;
     }
-    else
-    {
-      AddToHelpMenu(idHelpMenus[counter], it->first);
-    }
-  }
 
-  m_LastId = idHelpMenus[0] + counter;
+    m_pMenuBar = menuBar;
+
+    // add entries in help menu
+    int counter = 0;
+    HelpCommon::HelpFilesVector::iterator it;
+
+    for (it = m_Vector.begin(); it != m_Vector.end(); ++it, ++counter)
+    {
+        if (counter == HelpCommon::getDefaultHelpIndex())
+        {
+            AddToHelpMenu(idHelpMenus[counter], it->first + _T("\tF1"));
+        }
+        else
+        {
+            AddToHelpMenu(idHelpMenus[counter], it->first);
+        }
+    }
+
+    m_LastId = idHelpMenus[0] + counter;
+
+    int idx = menuBar->FindMenu(_("View"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* view = menuBar->GetMenu(idx);
+        wxMenuItemList& items = view->GetMenuItems();
+        // find the first separator and insert before it
+        for (size_t i = 0; i < items.GetCount(); ++i)
+        {
+            if (items[i]->IsSeparator())
+            {
+                view->InsertCheckItem(i, idViewMANViewer, _("Man pages viewer"), _("Toggle displaying the man pages viewer"));
+                return;
+            }
+        }
+        // not found, just append
+        view->AppendCheckItem(idViewMANViewer, _("Man pages viewer"), _("Toggle displaying the man pages viewer"));
+    }
 }
 
 void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data)
@@ -378,6 +424,23 @@ HelpCommon::HelpFileAttrib HelpPlugin::HelpFileFromId(int id)
   return HelpCommon::HelpFileAttrib();
 }
 
+void HelpPlugin::OnViewMANViewer(wxCommandEvent &event)
+{
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_manFrame;
+    Manager::Get()->ProcessEvent(evt);
+}
+
+void HelpPlugin::ShowMANViewer(bool show)
+{
+    CodeBlocksDockEvent evt(show ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_manFrame;
+    Manager::Get()->ProcessEvent(evt);
+
+    // update user prefs
+    Manager::Get()->GetConfigManager(_T("help_plugin"))->Write(_T("/show_man_viewer"), show);
+}
+
 void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const wxString &keyword)
 {
   const static wxString http_prefix(_T("http://"));
@@ -414,8 +477,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
         Manager::Get()->GetMessageManager()->DebugLog(_T("Launching man page"));
     }
 
-    m_manFrame->Iconize(false);
-    m_manFrame->Show(true);
+    ShowMANViewer();
     return;
   }
 

@@ -6,9 +6,10 @@
 #include <wx/button.h>
 #include <wx/wxhtml.h>
 #include <wx/string.h>
+#include <wx/html/htmlwin.h>
 #include <vector>
 
-class MANFrame : public wxFrame
+class MANFrame : public wxPanel
 {
     private:
         wxTextCtrl *m_entry;
@@ -17,7 +18,7 @@ class MANFrame : public wxFrame
         std::vector<wxString> m_dirsVect;
 
     public:
-        MANFrame(wxWindow *parent = 0, wxWindowID id = wxID_ANY, const wxString &title = _("Man pages viewer"));
+        MANFrame(wxWindow *parent = 0, wxWindowID id = wxID_ANY);
         bool SearchManPage(const wxString &dirs, const wxString &keyword);
 
     private:
@@ -25,7 +26,7 @@ class MANFrame : public wxFrame
         bool Decompress(const wxString& filename, const wxString& tmpfile);
         void SetPage(const wxString &contents);
         void OnSearch(wxCommandEvent &event);
-        void OnClose(wxCloseEvent &event);
+        void OnLinkClicked(wxHtmlLinkEvent &event);
 
     DECLARE_EVENT_TABLE()
 };

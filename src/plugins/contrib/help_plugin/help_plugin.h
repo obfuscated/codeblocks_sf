@@ -10,7 +10,7 @@
 #include <sdk_events.h>
 #include <cbplugin.h> // the base class we're inheriting
 #include <wx/dynarray.h>
-#include <wx/frame.h>
+#include "MANFrame.h"
 #include "HelpConfigDialog.h"
 
 class HelpPlugin : public cbPlugin
@@ -27,6 +27,8 @@ class HelpPlugin : public cbPlugin
     void Reload(); // called after the settings have been applied
 
   protected:
+    void OnViewMANViewer(wxCommandEvent &event);
+    void ShowMANViewer(bool show = true);
     void OnFindItem(wxCommandEvent &event);
     void AddToPopupMenu(wxMenu *menu, int id, const wxString &help);
     void AddToHelpMenu(int id, const wxString &help);
@@ -39,7 +41,7 @@ class HelpPlugin : public cbPlugin
     wxMenuBar *m_pMenuBar;
     HelpCommon::HelpFilesVector m_Vector;
     int m_LastId;
-    wxFrame *m_manFrame;
+    MANFrame *m_manFrame;
 
     DECLARE_EVENT_TABLE()
 };
