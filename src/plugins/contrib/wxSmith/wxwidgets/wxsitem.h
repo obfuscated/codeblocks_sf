@@ -523,6 +523,14 @@ class wxsItem: public wxsPropertyContainer
          */
         virtual bool OnMouseRightClick(wxWindow* Preview,int PosX,int PosY);
 
+        /** \brief Function used to udpate content of popup menu
+         *
+         * This function is called by default OnMouseRightClick implementation.
+         * It's called just before showing popup menu so one can add it's own entries
+         * \return
+         */
+        virtual void OnPreparePopup(wxMenu* Menu);
+
         /** \brief Callback from popup menu
          * \return true if event was processed, false otherwise
          */

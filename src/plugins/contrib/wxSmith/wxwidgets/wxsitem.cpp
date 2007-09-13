@@ -885,25 +885,33 @@ void wxsItem::BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsC
 
 bool wxsItem::OnMouseRightClick(wxWindow* Preview,int PosX,int PosY)
 {
+    wxMenu Popup;
+    OnPreparePopup(&Popup);
+    if ( Popup.GetMenuItemCount() )
+    {
+        ShowPopup(&Popup);
+    }
+    return false;
+}
+
+void wxsItem::OnPreparePopup(wxMenu* Popup)
+{
     if ( GetType() != wxsTSizer )
     {
         if ( GetParent() && GetParent()->GetType() != wxsTSizer )
         {
-            wxMenu Popup;
-            wxMenuItem* Item = Popup.Append(IdToFront,_("Bring to front"));
+            wxMenuItem* Item = Popup->Append(IdToFront,_("Bring to front"));
             if ( GetParent()->GetChildIndex(this) == GetParent()->GetChildCount()-1 )
             {
                 Item->Enable(false);
             }
-            Item = Popup.Append(IdToBottom,_("Send to back"));
+            Item = Popup->Append(IdToBottom,_("Send to back"));
             if ( GetParent()->GetChildIndex(this) == 0 )
             {
                 Item->Enable(false);
             }
-            ShowPopup(&Popup);
         }
     }
-    return false;
 }
 
 bool wxsItem::OnPopup(long Id)

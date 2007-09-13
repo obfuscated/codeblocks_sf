@@ -23,6 +23,8 @@ class wxsNotebook : public wxsContainer
         virtual bool OnMouseClick(wxWindow* Preview,int PosX,int PosY);
         virtual bool OnIsChildPreviewVisible(wxsItem* Child);
         virtual bool OnEnsureChildPreviewVisible(wxsItem* Child);
+        virtual void OnPreparePopup(wxMenu* Menu);
+        virtual bool OnPopup(long Id);
 
         void UpdateCurrentSelection();
 

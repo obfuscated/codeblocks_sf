@@ -23,7 +23,10 @@
 
 #include "wxsnotebook.h"
 #include "../../wxsadvqppchild.h"
+#include "../wxsitemresdata.h"
 #include <wx/notebook.h>
+#include <wx/menu.h>
+#include <wx/textdlg.h>
 
 //(*Headers(wxsNotebookParentQP)
 #include <wx/checkbox.h>
@@ -42,8 +45,6 @@
 #include <wx/settings.h>
 #include <wx/string.h>
 //*)
-
-#include <wx/notebook.h>
 
 // TODO: Add notebook images
 namespace
@@ -188,6 +189,11 @@ namespace
         WXS_EVI(EVT_NOTEBOOK_PAGE_CHANGING,wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGING,wxNotebookEvent,PageChanging)
     WXS_EV_END()
 
+    const long popupNewPageId = wxNewId();
+    const long popupPrevPageId = wxNewId();
+    const long popupNextPageId = wxNewId();
+    const long popupFirstId = wxNewId();
+    const long popupLastId = wxNewId();
 }
 
 
@@ -347,4 +353,89 @@ void wxsNotebook::UpdateCurrentSelection()
         }
     }
     m_CurrentSelection = NewCurrentSelection;
+}
+
+void wxsNotebook::OnPreparePopup(wxMenu* Menu)
+{
+    Menu->Append(popupNewPageId,_("Add new page"));
+    Menu->AppendSeparator();
+    // This require some extra fixing
+    //wxMenuItem* Item1 = Menu->Append(popupPrevPageId,_("Go to previous page"));
+    //wxMenuItem* Item2 = Menu->Append(popupNextPageId,_("Go to next page"));
+    //Menu->AppendSeparator();
+    wxMenuItem* Item3 = Menu->Append(popupFirstId,_("Make current page the first one"));
+    wxMenuItem* Item4 = Menu->Append(popupLastId,_("Make current page the last one"));
+    if ( !m_CurrentSelection || GetChildIndex(m_CurrentSelection)==0 )
+    {
+        //Item1->Enable(false);
+        Item3->Enable(false);
+    }
+    if ( !m_CurrentSelection || GetChildIndex(m_CurrentSelection)==GetChildCount()-1 )
+    {
+        //Item2->Enable(false);
+        Item4->Enable(false);
+    }
+}
+
+bool wxsNotebook::OnPopup(long Id)
+{
+    if ( Id == popupNewPageId )
+    {
+        wxTextEntryDialog Dlg(0,_("Enter name of new page"),_("Adding page"),_("New page"));
+        if ( Dlg.ShowModal() == wxID_OK )
+        {
+            wxsItem* Panel = wxsItemFactory::Build(_T("wxPanel"),GetResourceData());
+            if ( Panel )
+            {
+                GetResourceData()->BeginChange();
+                if ( AddChild(Panel) )
+                {
+                    wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(GetChildCount()-1);
+                    if ( Extra )
+                    {
+                        Extra->m_Label = Dlg.GetValue();
+                    }
+                    m_CurrentSelection = Panel;
+                }
+                else
+                {
+                    delete Panel;
+                }
+                GetResourceData()->EndChange();
+            }
+        }
+    }
+    else if ( Id == popupNextPageId )
+    {
+        GetResourceData()->BeginChange();
+        int Index = GetChildIndex(m_CurrentSelection);
+        m_CurrentSelection = GetChild(Index-1);
+        UpdateCurrentSelection();
+        GetResourceData()->EndChange();
+    }
+    else if ( Id == popupPrevPageId )
+    {
+        GetResourceData()->BeginChange();
+        int Index = GetChildIndex(m_CurrentSelection);
+        m_CurrentSelection = GetChild(Index+1);
+        UpdateCurrentSelection();
+        GetResourceData()->EndChange();
+    }
+    else if ( Id == popupFirstId )
+    {
+        GetResourceData()->BeginChange();
+        MoveChild(GetChildIndex(m_CurrentSelection),0);
+        GetResourceData()->EndChange();
+    }
+    else if ( Id == popupLastId )
+    {
+        GetResourceData()->BeginChange();
+        MoveChild(GetChildIndex(m_CurrentSelection),GetChildCount()-1);
+        GetResourceData()->EndChange();
+    }
+    else
+    {
+        return wxsContainer::OnPopup(Id);
+    }
+    return true;
 }
