@@ -69,7 +69,7 @@
 			<Add directory="../../../devel" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/help_plugin.zip manifest.xml *.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/help_plugin.zip manifest.xml *.xrc *.png" />
 		</ExtraCommands>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option target="help_plugin" />

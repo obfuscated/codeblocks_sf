@@ -47,6 +47,8 @@ noinst_HEADERS = help_common.h \
 
 EXTRA_DIST = $(srcdir)/*.cbp \
 			help_plugin.xrc \
+			zoomin.png \
+			zoomout.png \
 			manifest.xml \
 			Readme.txt
 
@@ -54,4 +56,4 @@ pkgdata_DATA = help_plugin.zip
 CLEANFILES = $(pkgdata_DATA)
 
 help_plugin.zip: manifest.xml help_plugin.xrc
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip manifest.xml *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/help_plugin.zip manifest.xml *.xrc *.png > /dev/null

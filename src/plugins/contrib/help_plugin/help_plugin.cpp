@@ -214,7 +214,10 @@ void HelpPlugin::OnAttach()
         }
     }
 
-    m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY);
+    wxBitmap zoominbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomInBitmap"));
+    wxBitmap zoomoutbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomOutBitmap"));
+
+    m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY, zoominbmp, zoomoutbmp);
     m_manFrame->SearchManPage(all_man_dirs, wxEmptyString);
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("MANViewer");
@@ -223,8 +226,15 @@ void HelpPlugin::OnAttach()
     evt.dockSide = CodeBlocksDockEvent::dsRight;
     evt.desiredSize.Set(320, 240);
     evt.floatingSize.Set(320, 240);
-    evt.minimumSize.Set(320, 240);
+    evt.minimumSize.Set(240, 160);
     Manager::Get()->ProcessEvent(evt);
+
+    int baseFont = Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadInt(_T("/base_font_size"), 0);
+
+    if (baseFont > 0)
+    {
+        m_manFrame->SetBaseFontSize(baseFont);
+    }
 
     if (Manager::Get()->GetConfigManager(_T("help_plugin"))->ReadBool(_T("/show_man_viewer"), false))
     {
@@ -250,11 +260,12 @@ void HelpPlugin::Reload()
 
     // reload configuration (saved in the config dialog)
     HelpCommon::LoadHelpFilesVector(m_Vector);
-    BuildMenu(m_pMenuBar);
+    BuildHelpMenu();
 }
 
 void HelpPlugin::OnRelease(bool appShutDown)
 {
+    Manager::Get()->GetConfigManager(_T("help_plugin"))->Write(_T("/base_font_size"), m_manFrame->GetBaseFontSize());
     CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
     evt.pWindow = m_manFrame;
     Manager::Get()->ProcessEvent(evt);
@@ -262,16 +273,8 @@ void HelpPlugin::OnRelease(bool appShutDown)
 	m_manFrame = 0;
 }
 
-void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
+void HelpPlugin::BuildHelpMenu()
 {
-    if (!IsAttached())
-    {
-        return;
-    }
-
-    m_pMenuBar = menuBar;
-
-    // add entries in help menu
     int counter = 0;
     HelpCommon::HelpFilesVector::iterator it;
 
@@ -288,6 +291,18 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
     }
 
     m_LastId = idHelpMenus[0] + counter;
+}
+
+void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
+{
+    if (!IsAttached())
+    {
+        return;
+    }
+
+    m_pMenuBar = menuBar;
+
+    BuildHelpMenu();
 
     int idx = menuBar->FindMenu(_("View"));
     if (idx != wxNOT_FOUND)

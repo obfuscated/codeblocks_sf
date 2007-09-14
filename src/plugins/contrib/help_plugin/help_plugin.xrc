@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
+  <object class="wxBitmap" name="ZoomInBitmap">zoomin.png</object>
+  <object class="wxBitmap" name="ZoomOutBitmap">zoomout.png</object>
   <object class="wxPanel" name="HelpConfigDialog">
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>

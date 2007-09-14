@@ -17,6 +17,8 @@
 namespace
 {
     int butSearchID = wxNewId();
+    int butZoomInID = wxNewId();
+    int butZoomOutID = wxNewId();
     int textEntryID = wxNewId();
     int htmlWindowID = wxNewId();
 
@@ -43,35 +45,72 @@ namespace
         "<h2>Man page not found</h2>\n"
         "</body>\n"
         "</html>");
+
+    // build all HTML font sizes (1..7) from the given base size
+    void wxBuildFontSizes(int *sizes, int size)
+    {
+        // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
+        // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
+        // simplest thing to do so still do it like this for now
+        sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
+        sizes[1] = int(size * 0.83);
+        sizes[2] = size;
+        sizes[3] = int(size * 1.2);
+        sizes[4] = int(size * 1.44);
+        sizes[5] = int(size * 1.73);
+        sizes[6] = int(size * 2);
+    }
+
+    int wxGetDefaultHTMLFontSize()
+    {
+        // base the default font size on the size of the default system font but
+        // also ensure that we have a font of reasonable size, otherwise small HTML
+        // fonts are unreadable
+        int size = wxNORMAL_FONT->GetPointSize();
+        if ( size < 10 )
+            size = 10;
+
+        return size;
+    }
+
+    int font_sizes[7] = { 0 };
 }
 
 BEGIN_EVENT_TABLE(MANFrame, wxPanel)
     EVT_BUTTON(butSearchID, MANFrame::OnSearch)
+    EVT_BUTTON(butZoomInID, MANFrame::OnZoomIn)
+    EVT_BUTTON(butZoomOutID, MANFrame::OnZoomOut)
     EVT_TEXT_ENTER(textEntryID, MANFrame::OnSearch)
     EVT_HTML_LINK_CLICKED(htmlWindowID, MANFrame::OnLinkClicked)
 END_EVENT_TABLE()
 
-MANFrame::MANFrame(wxWindow *parent, wxWindowID id)
-: wxPanel(parent, id)
+MANFrame::MANFrame(wxWindow *parent, wxWindowID id, const wxBitmap &zoomInBmp, const wxBitmap &zoomOutBmp)
+: wxPanel(parent, id), m_baseFontSize(wxGetDefaultHTMLFontSize())
 {
-
     wxStaticText *m_label = new wxStaticText(this, wxID_ANY, _("Man page: "));
-    m_entry = new wxTextCtrl(this, textEntryID, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
-    m_search = new wxButton(this, butSearchID, _("Search"));
+    m_entry = new wxTextCtrl(this, textEntryID, wxEmptyString, wxDefaultPosition, wxSize(20, -1), wxTE_PROCESS_ENTER);
+    m_search = new wxButton(this, butSearchID, _("Search"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    m_zoomIn = new wxBitmapButton(this, butZoomInID, zoomInBmp);
+    m_zoomOut = new wxBitmapButton(this, butZoomOutID, zoomOutBmp);
     m_htmlWindow = new wxHtmlWindow(this, htmlWindowID);
 
     wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer *bar = new wxBoxSizer(wxHORIZONTAL);
 
-    bar->Add(m_label, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-    bar->Add(m_entry, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-    bar->Add(m_search, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    bar->Add(m_label, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
+    bar->Add(m_entry, 1, wxALL | wxALIGN_CENTER_VERTICAL, 2);
+    bar->Add(m_search, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
+    bar->Add(m_zoomOut, 0, wxALIGN_CENTER_VERTICAL);
+    bar->Add(m_zoomIn, 0, wxRIGHT | wxALIGN_CENTER_VERTICAL, 2);
 
     main->Add(bar, 0, wxEXPAND);
     main->Add(m_htmlWindow, 1, wxEXPAND);
 
     SetSizer(main);
     SetAutoLayout(true);
+
+    wxBuildFontSizes(font_sizes, m_baseFontSize);
+    m_htmlWindow->SetFonts(wxEmptyString, wxEmptyString, font_sizes);
 }
 
 void MANFrame::SetPage(const wxString &contents)
@@ -265,6 +304,37 @@ wxString MANFrame::GetManPage(const wxString &dirs, const wxString &keyword)
     }
 
     return wxString();
+}
+
+void MANFrame::SetBaseFontSize(int newsize)
+{
+    m_baseFontSize = newsize;
+    wxBuildFontSizes(font_sizes, m_baseFontSize);
+    m_htmlWindow->SetFonts(wxEmptyString, wxEmptyString, font_sizes);
+}
+
+void MANFrame::OnZoomIn(wxCommandEvent &)
+{
+    ++m_baseFontSize;
+
+    if (m_baseFontSize > 20)
+    {
+        m_baseFontSize = 20;
+    }
+
+    SetBaseFontSize(m_baseFontSize);
+}
+
+void MANFrame::OnZoomOut(wxCommandEvent &)
+{
+    --m_baseFontSize;
+
+    if (m_baseFontSize < 6)
+    {
+        m_baseFontSize = 6;
+    }
+
+    SetBaseFontSize(m_baseFontSize);
 }
 
 bool MANFrame::SearchManPage(const wxString &dirs, const wxString &keyword)

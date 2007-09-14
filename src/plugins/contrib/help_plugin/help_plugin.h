@@ -20,6 +20,7 @@ class HelpPlugin : public cbPlugin
     ~HelpPlugin();
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
     void BuildMenu(wxMenuBar *menuBar);
+    void BuildHelpMenu();
     void BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data = 0);
     bool BuildToolBar(wxToolBar *toolBar);
     void OnAttach(); // fires when the plugin is attached to the application
