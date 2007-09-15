@@ -29,7 +29,9 @@ The configuration dialog for this plugin can be found clicking on Settings -> En
         <Value author="Bourricot | Ceniza (maintainer)" />
         <Value authorEmail="ceniza666@gmail.com" />
         <Value authorWebsite="www.codeblocks.org" />
-        <Value thanksTo="Codeblocks dev team!\nBourricot for the initial version\nKDE dev team for the man2html code" />
+        <Value thanksTo="Codeblocks dev team!
+Bourricot for the initial version
+KDE dev team for the man2html code" />
         <Value license="GPL" />
     </Plugin>
 </CodeBlocks_plugin_manifest_file>

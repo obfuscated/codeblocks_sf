@@ -218,7 +218,7 @@ void HelpPlugin::OnAttach()
     wxBitmap zoomoutbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomOutBitmap"));
 
     m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY, zoominbmp, zoomoutbmp);
-    m_manFrame->SearchManPage(all_man_dirs, wxEmptyString);
+    m_manFrame->SetDirs(all_man_dirs);
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("MANViewer");
     evt.title = _("Man pages viewer");

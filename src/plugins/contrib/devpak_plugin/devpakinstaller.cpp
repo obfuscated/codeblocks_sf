@@ -191,7 +191,7 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
     char buffer[2048];
     while (bzerror != BZ_STREAM_END)
     {
-        BZ2_bzRead(&bzerror, bz, buffer, 2048);
+        int read_bytes = BZ2_bzRead(&bzerror, bz, buffer, 2048);
         if (bzerror != BZ_OK && bzerror != BZ_STREAM_END)
         {
             m_Status = _("Error reading from stream!");
@@ -200,7 +200,7 @@ bool DevPakInstaller::Decompress(const wxString& filename, const wxString& tmpfi
             fclose(f);
             return false;
         }
-        fwrite(buffer, 2048, 1, fo);
+        fwrite(buffer, read_bytes, 1, fo);
     }
 
     BZ2_bzReadClose(&bzerror, bz);
