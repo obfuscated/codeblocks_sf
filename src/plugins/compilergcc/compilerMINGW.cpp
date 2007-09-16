@@ -267,8 +267,16 @@ void CompilerMINGW::SetVersionString()
 {
     wxArrayString output, errors;
     wxString sep = wxFileName::GetPathSeparator();
-//    DBGLOG(m_MasterPath);
     wxString masterpath = m_MasterPath;
+
+    /* We should read the master path from the configuration manager as
+     * the m_MasterPath is empty if AutoDetectInstallationDir() is not
+     * called
+     */
+    ConfigManager* cmgr = Manager::Get()->GetConfigManager(_T("compiler"));
+    if (cmgr)
+        cmgr->Read(_T("/sets/gcc/master_path"), &masterpath);
+
     if (masterpath.IsEmpty())
     {
         if (platform::windows)
@@ -299,5 +307,4 @@ void CompilerMINGW::SetVersionString()
             }
         }
     }
-//    DBGLOG(_T("Compiler version: %s"), m_VersionString.c_str());
 }

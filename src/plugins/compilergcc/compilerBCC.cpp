@@ -190,7 +190,7 @@ AutoDetectResult CompilerBCC::AutoDetectInstallationDir()
         key.QueryValue(_T("RootDir"), dir);
         if (!dir.IsEmpty() && wxDirExists(dir))
         {
-            m_MasterPath=dir;
+            m_MasterPath = dir;
         }
         key.Close();
     }
