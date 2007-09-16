@@ -189,7 +189,7 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
             return;
         }
 
-        SetPage(cbC2U(man2html_buffer(man_page.mb_str())));
+        SetPage(cbC2U(man2html_buffer(cbU2C(man_page))));
     }
 }
 
@@ -285,7 +285,15 @@ void MANFrame::GetMatches(const wxString &keyword, std::vector<wxString> *files_
     for (std::vector<wxString>::iterator i = m_dirsVect.begin(); i != m_dirsVect.end(); ++i)
     {
         wxArrayString files;
-        wxDir::GetAllFiles(*i, &files, keyword + _T(".*"));
+
+        if (keyword.Last() == _T('*'))
+        {
+            wxDir::GetAllFiles(*i, &files, keyword);
+        }
+        else
+        {
+            wxDir::GetAllFiles(*i, &files, keyword + _T("*"));
+        }
 
         for (int j = 0; j < files.GetCount(); ++j)
         {
@@ -379,11 +387,16 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
         wxString ext;
         wxString newfilename;
 
-        wxFileName::SplitPath(path, 0, &name, &ext);
+        wxFileName::SplitPath(path, 0, &name, &ext, wxPATH_UNIX); // man pages "always" use /
         newfilename = name + _T(".") + ext;
         wxFileName::SplitPath(orgFilename, &path, 0, &ext);
 
-        return GetManPage(path + wxFileName::GetPathSeparator() + newfilename + _T(".") + ext, depth + 1);
+        if (ext == _T("bz2") || ext == _T("gz"))
+        {
+            newfilename += _T(".") + ext;
+        }
+
+        return GetManPage(path + wxFileName::GetPathSeparator() + newfilename, depth + 1);
     }
 
     return ret;
@@ -490,7 +503,7 @@ bool MANFrame::SearchManPage(const wxString &dirs, const wxString &keyword)
             return false;
         }
 
-        SetPage(cbC2U(man2html_buffer(man_page.mb_str())));
+        SetPage(cbC2U(man2html_buffer(cbU2C(man_page))));
         return true;
     }
 
