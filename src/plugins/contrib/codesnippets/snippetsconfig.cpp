@@ -106,7 +106,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
 CodeSnippetsConfig::~CodeSnippetsConfig()
 // ----------------------------------------------------------------------------
 {
-    //dtor
+    delete m_pCfgFile; // Valgrind complaint about it not being freed
 }
 
 // ----------------------------------------------------------------------------
@@ -129,13 +129,13 @@ void CodeSnippetsConfig::SettingsLoad()
     //                        wxEmptyString,      // global file
     //                        wxCONFIG_USE_LOCAL_FILE);
     //                        //0);
-    if (m_pCfgFile)
-    {   // if we dont do this, we only get in-memory cache
+    //if (m_pCfgFile) // delete checks for NULL anyway
+    //{   // if we dont do this, we only get in-memory cache
         // and we want the new physical file data.
          delete(m_pCfgFile);
-         m_pCfgFile = 0;
-    }
-    if (not m_pCfgFile)
+         //m_pCfgFile = 0; // just continue and set it to something new in the next instruction
+    //}
+    //if (not m_pCfgFile) // Why? It was either 0 or we deleted it
         m_pCfgFile = new wxFileConfig(
                     wxEmptyString,              // appname
                     wxEmptyString,              // vendor

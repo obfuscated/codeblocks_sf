@@ -425,10 +425,11 @@ void CompilerGCC::OnRelease(bool appShutDown)
         m_pListLog = 0;
     }
 
-    if (appShutDown)
-        return; // no need to continue if app is shutting down
-
-    DoClearTargetMenu();
+    // let wx handle this on shutdown ( if we return here Valgrind will be sad :'( )
+    if (!appShutDown)
+    {
+        DoClearTargetMenu();
+    }
 
 //    if (m_Menu)
 //    {

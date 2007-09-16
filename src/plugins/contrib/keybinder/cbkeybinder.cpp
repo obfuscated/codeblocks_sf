@@ -190,6 +190,7 @@ void cbKeyBinder::OnRelease(bool appShutDown)
     }
     // remove keyboard and window close event //+v0.4.7
 	m_pKeyProfArr->DetachAll();
+	delete m_pKeyProfArr; // Valgrind complaint about it not being deleted
 }
 // ----------------------------------------------------------------------------
 //  cbKeyBinder GetConfigurationPanel
