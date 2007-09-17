@@ -372,6 +372,7 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
             // under the same namespace anyway. if we do, there's a bug in the parser :(
             tree->SetItemImage(existing, imgIndex, wxTreeItemIcon_Normal);
             tree->SetItemImage(existing, imgIndex, wxTreeItemIcon_Selected);
+            delete tree->GetItemData(existing); // make Valgrind happy
             tree->SetItemData(existing, data);
 
             return existing;
