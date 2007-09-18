@@ -130,7 +130,7 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
 
                     if ( !m_Bitmap.IsEmpty() )
                     {
-                        wxString BmpCode = m_Bitmap.BuildCode(true,wxEmptyString,Language,wxART_OTHER);
+                        wxString BmpCode = m_Bitmap.BuildCode(true,wxEmptyString,Language,_T("wxART_OTHER"));
                         Codef(_T("%ASetBitmap(%s);\n"), BmpCode.c_str());
                     }
 

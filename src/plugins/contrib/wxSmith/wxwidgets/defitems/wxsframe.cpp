@@ -95,7 +95,7 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
                     _T("\tFrameIcon.CopyFromBitmap(%i);\n")
                     _T("\t%ASetIcon(FrameIcon);\n")
                     _T("}\n"),
-                        &Icon,wxART_FRAME_ICON);
+                        &Icon,_T("wxART_FRAME_ICON"));
             }
 
             AddChildrenCode(Code,wxsCPP);
@@ -135,7 +135,7 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
         if ( !Icon.IsEmpty() )
         {
             wxIcon FrameIcon;
-            FrameIcon.CopyFromBitmap(Icon.GetPreview(wxDefaultSize,wxART_FRAME_ICON));
+            FrameIcon.CopyFromBitmap(Icon.GetPreview(wxDefaultSize,_T("wxART_FRAME_ICON")));
             Frm->SetIcon(FrameIcon);
         }
 

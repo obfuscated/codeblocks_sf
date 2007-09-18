@@ -48,7 +48,7 @@ wxBitmap wxsBitmapIconData::GetPreview(const wxSize& Size,const wxString& Defaul
     }
 
     wxString TempClient = Client.empty() ? DefaultClient : Client;
-    return wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(Id),TempClient,Size);
+    return wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(Id),wxART_MAKE_CLIENT_ID_FROM_STR(TempClient),Size);
 }
 
 wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxsCodingLang Language,const wxString& DefaultClient)
@@ -74,14 +74,29 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
             }
             else
             {
-                Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id) << _T("),");
-                if ( Client.empty() )
+                Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id,false) << _T("),");
+                wxString UsedClient = Client.empty() ? DefaultClient : Client;
+
+                if ( UsedClient == _T("wxART_TOOLBAR") ||
+                     UsedClient == _T("wxART_MENU") ||
+                     UsedClient == _T("wxART_FRAME_ICON") ||
+                     UsedClient == _T("wxART_CMN_DIALOG") ||
+                     UsedClient == _T("wxART_HELP_BROWSER") ||
+                     UsedClient == _T("wxART_MESSAGE_BO") ||
+                     UsedClient == _T("wxART_BUTTON") ||
+                     UsedClient == _T("wxART_OTHER") )
                 {
-                    Code << wxsCodeMarks::WxString(wxsCPP,DefaultClient,false);
+                    // One of predefined client ids so we can use name directly
+                    Code << UsedClient;
                 }
                 else
                 {
+                    // Not standard client id, we have to use macro
+                    // but because wxART_MAKE_CLIENT_ID_FROM_STR uses + operator
+                    // we additionally have to convert text to wxString
+                    Code << _T("wxART_MAKE_CLIENT_ID_FROM_STR(wxString(");
                     Code << wxsCodeMarks::WxString(wxsCPP,Client,false);
+                    Code << _T("))");
                 }
 
                 if ( !NoResize )

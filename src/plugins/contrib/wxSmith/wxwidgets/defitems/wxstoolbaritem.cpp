@@ -94,8 +94,8 @@ void wxsToolBarItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowPa
                         default:     ItemType = _T("wxITEM_CHECK");  break;
                     }
 
-                    wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),Language,wxART_TOOLBAR);
-                    wxString Bitmap2Code = m_Bitmap2.BuildCode(true,_T(""),Language,wxART_TOOLBAR);
+                    wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),Language,_T("wxART_TOOLBAR"));
+                    wxString Bitmap2Code = m_Bitmap2.BuildCode(true,_T(""),Language,_T("wxART_TOOLBAR"));
                     if ( BitmapCode.IsEmpty() )  BitmapCode  = _T("wxNullBitmap");
                     if ( Bitmap2Code.IsEmpty() ) Bitmap2Code = _T("wxNullBitmap");
 
