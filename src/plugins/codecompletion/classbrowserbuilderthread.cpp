@@ -164,9 +164,8 @@ void* ClassBrowserBuilderThread::Entry()
     m_pTreeTop = 0;
     m_pTreeBottom = 0;
 
-    // Valgrind didn't like this (Invalid write of size (sizeof pointer))
-    /*if (m_ppThreadVar)
-        *m_ppThreadVar = 0;*/
+    if (m_ppThreadVar)
+        *m_ppThreadVar = 0;
     return 0;
 }
 
