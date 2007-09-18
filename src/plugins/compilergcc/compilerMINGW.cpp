@@ -18,6 +18,8 @@
 #include <wx/config.h>
 #include <wx/fileconf.h>
 #include <wx/msgdlg.h>
+#include <wx/filename.h>
+#include <wx/filefn.h>
 #include "manager.h"
 #include "messagemanager.h"
 #include "compilerMINGWgenerator.h"
@@ -203,6 +205,16 @@ void CompilerMINGW::LoadDefaultRegExArray()
 
 AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
 {
+    // try to find MinGW in environment variable PATH first
+    wxPathList list;
+    list.AddEnvList(_T("PATH"));
+    wxString path = list.FindAbsoluteValidPath(m_Programs.C);
+    if (!path.IsEmpty())
+    {
+        m_MasterPath = wxFileName(path).GetPath(wxPATH_GET_VOLUME);
+        return adrDetected;
+    }
+
     wxString sep = wxFileName::GetPathSeparator();
     if (platform::windows)
     {
