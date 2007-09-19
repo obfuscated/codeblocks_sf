@@ -295,7 +295,7 @@ void MANFrame::GetMatches(const wxString &keyword, std::vector<wxString> *files_
             wxDir::GetAllFiles(*i, &files, keyword + _T("*"));
         }
 
-        for (int j = 0; j < files.GetCount(); ++j)
+        for (size_t j = 0; j < files.GetCount(); ++j)
         {
             files_found->push_back(files[j]);
         }
