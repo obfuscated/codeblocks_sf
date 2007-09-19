@@ -160,18 +160,9 @@ ClassBrowser::~ClassBrowser()
 
     if (m_pBuilderThread)
     {
-    	// for some reason, windows need to "post" the semaphore first...
-        if(platform::windows)
-            m_Semaphore.Post();
-
-        // must check for NULL again because by posting the semaphore above,
-        // the thread might have terminated by now and the variable NULLed...
-        if (m_pBuilderThread)
-            m_pBuilderThread->Delete();
-
-		// ... while other platforms need it last...
-        if(!platform::windows)
-            m_Semaphore.Post();
+        m_Semaphore.Post();
+        m_pBuilderThread->Delete();
+        m_pBuilderThread->Wait();
     }
 }
 

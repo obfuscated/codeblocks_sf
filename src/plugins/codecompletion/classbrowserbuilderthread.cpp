@@ -13,7 +13,7 @@
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrowserBuilderThread** threadVar)
-    : wxThread(wxTHREAD_DETACHED),
+    : wxThread(wxTHREAD_JOINABLE),
     m_Semaphore(sem),
     m_pParser(0),
     m_pTreeTop(0),
@@ -132,13 +132,13 @@ void* ClassBrowserBuilderThread::Entry()
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
         {
-        if(platform::gtk)
-        {
-			if(!::wxIsMainThread())
-			{
-				::wxMutexGuiLeave();
-			}
-        }
+            if(platform::gtk)
+            {
+                if(!::wxIsMainThread())
+                {
+                    ::wxMutexGuiLeave();
+                }
+            }
             break;
         }
 
@@ -164,8 +164,8 @@ void* ClassBrowserBuilderThread::Entry()
     m_pTreeTop = 0;
     m_pTreeBottom = 0;
 
-    if (m_ppThreadVar)
-        *m_ppThreadVar = 0;
+    /*if (m_ppThreadVar)
+        *m_ppThreadVar = 0;*/
     return 0;
 }
 
