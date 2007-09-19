@@ -168,7 +168,12 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
 
     key.SetName(BaseKeyName + node + _T("\\shell\\open\\command"));
     key.Create();
-    key = _T("\"") + exe + _T("\" \"%1\"");
+    /* NOTE (Biplab#5#): If we specify command="app.exe %1" then we'll be receiving the
+     * parameters twice; Once during the execution of this command (through command-line
+     * parser) and then next through DDE.
+     * Thus only command="app.exe" is required as we've code for handling the second case.
+     */
+    key = _T("\"") + exe + _T("\"");
 
     key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec"));
     key.Create();
