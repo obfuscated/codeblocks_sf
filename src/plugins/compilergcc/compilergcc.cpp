@@ -49,6 +49,7 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/statline.h>
+#include <wx/ffile.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
