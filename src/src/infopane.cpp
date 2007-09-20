@@ -10,13 +10,13 @@
 #include <logmanager.h>
 
 
-BEGIN_EVENT_TABLE(InfoPane, InfoPaneNotebook)
-    EVT_MENU(-1,  InfoPane::OnMenu)
+BEGIN_EVENT_TABLE(InfoPane, PieceOfShitBaseClass)
+    EVT_MENU(wxID_ANY,  InfoPane::OnMenu)
     EVT_CONTEXT_MENU(InfoPane::ContextMenu)
 END_EVENT_TABLE()
 
 
-InfoPane::InfoPane(wxWindow* parent) : InfoPaneNotebook(parent), baseID(wxNewId())
+InfoPane::InfoPane(wxWindow* parent) : InfoPaneNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
 {
     wxRegisterId(baseID + num_pages);
     for(int i = 0; i < num_pages; ++i)
@@ -36,6 +36,17 @@ void InfoPane::Toggle(size_t i)
         RemovePage(GetPageIndex(page[i].window));
 }
 
+void InfoPane::Show(size_t i)
+{
+    if(page[i].window == 0)
+        return;
+
+    if(page[i].visible == false)
+        Toggle(i);
+    else
+        SetSelection(i);
+}
+
 
 void InfoPane::OnMenu(wxCommandEvent& event)
 {
@@ -49,7 +60,6 @@ void InfoPane::OnMenu(wxCommandEvent& event)
 
     Toggle(i);
 }
-
 
 void InfoPane::ContextMenu(wxContextMenuEvent& event)
 {
@@ -164,3 +174,4 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
 
    return false;
 }
+
