@@ -56,7 +56,6 @@ void CompilerICC::Reset()
         m_Switches.forceCompilerUseQuotes = false;
         m_Switches.forceLinkerUseQuotes = false;
         m_Switches.logging = clogNone;
-        m_Switches.buildMethod = cbmDirect;
         m_Switches.libPrefix = _T("");
         m_Switches.libExtension = _T("lib");
         m_Switches.linkerNeedsLibPrefix = false;
@@ -132,13 +131,13 @@ void CompilerICC::Reset()
         m_Options.AddOption(_("Specify alignment constraint for structures to 16"), _T("/Zp16"), category);
         m_Options.AddOption(_("Change default char type to unsigned"), _T("/J"), category);
 
-        m_Commands[(int)ctCompileObjectCmd] = _T("$compiler /nologo $options $includes /c $file /Fo$object");
+        m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler /nologo $options $includes /c $file /Fo$object")));
         //The rest are part of the microsoft sdk. The xilink.exe calls link.exe eventually.
-        m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $res_includes -fo$resource_output $file");
-        m_Commands[(int)ctLinkExeCmd] = _T("$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-        m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-        m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options");
+        m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("$rescomp $res_includes -fo$resource_output $file")));
+        m_Commands[(int)ctLinkExeCmd].push_back(CompilerTool(_T("$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")));
+        m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")));
+        m_Commands[(int)ctLinkDynamicCmd].push_back(CompilerTool(_T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")));
+        m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options")));
         m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
     }
     else
@@ -165,7 +164,6 @@ void CompilerICC::Reset()
         m_Switches.libExtension = _T("a");
         m_Switches.linkerNeedsLibPrefix = false;
         m_Switches.linkerNeedsLibExtension = false;
-        m_Switches.buildMethod = cbmDirect;
 
         m_Options.ClearOptions();
         // Debug and Profile options
@@ -247,13 +245,13 @@ void CompilerICC::Reset()
         m_Options.AddOption(_("Do not recognize 'typeof' as a keyword"), _T("-fno-gnu-keywords"), category);
         m_Options.AddOption(_("Allow for non-conformant code"), _T("-fpermissive"), category);
 
-        m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -o $object");
-        m_Commands[(int)ctGenDependenciesCmd] = _T("$compiler -MM $options -MF $dep_object -MT $object $includes $file");
-        m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -i $file -J rc -o $resource_output -O coff $res_includes");
-        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs");
+        m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler $options $includes -c $file -o $object")));
+        m_Commands[(int)ctGenDependenciesCmd].push_back(CompilerTool(_T("$compiler -MM $options -MF $dep_object -MT $object $includes $file")));
+        m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("$rescomp -i $file -J rc -o $resource_output -O coff $res_includes")));
+        m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs")));
         m_Commands[(int)ctLinkExeCmd] = m_Commands[(int)ctLinkConsoleExeCmd];
-        m_Commands[(int)ctLinkDynamicCmd] = _T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs");
-        m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output");
+        m_Commands[(int)ctLinkDynamicCmd].push_back(CompilerTool(_T("$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs")));
+        m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output")));
         m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
     }
 

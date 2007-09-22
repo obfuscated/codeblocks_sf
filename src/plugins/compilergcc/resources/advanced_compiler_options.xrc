@@ -17,38 +17,105 @@
                     <orient>wxVERTICAL</orient>
                     <option>1</option>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Available commands:</label>
+                      <object class="wxFlexGridSizer">
+                        <cols>2</cols>
+                        <vgap>0</vgap>
+                        <hgap>4</hgap>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Command:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxStaticText">
+                            <label>Source ext.:</label>
+                          </object>
+                        </object>
+                        <object class="sizeritem">
+                          <object class="wxChoice" name="lstCommands">
+                            <content/>
+                          </object>
+                          <flag>wxGROW</flag>
+                        </object>
+                        <growablecols>0</growablecols>
+                        <object class="sizeritem">
+                          <object class="wxBoxSizer">
+                            <orient>wxHORIZONTAL</orient>
+                            <object class="sizeritem">
+                              <object class="wxChoice" name="lstExt">
+                                <content/>
+                              </object>
+                              <minsize>100,-1</minsize>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnAddExt">
+                                <label>+</label>
+                                <style>wxBU_EXACTFIT</style>
+                              </object>
+                            </object>
+                            <object class="sizeritem">
+                              <object class="wxButton" name="btnRemoveExt">
+                                <label>-</label>
+                                <style>wxBU_EXACTFIT</style>
+                              </object>
+                            </object>
+                          </object>
+                        </object>
+                        <growablerows>1</growablerows>
                       </object>
-                      <flag>wxTOP|wxLEFT</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxListBox" name="lstCommands">
-                        <content/>
-                      </object>
-                      <option>1</option>
-                      <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-                      <border>8</border>
+                      <flag>wxGROW</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticText">
                         <label>Command line macro:</label>
                       </object>
-                      <flag>wxTOP|wxLEFT</flag>
-                      <border>8</border>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtCommand">
                         <style>wxTE_MULTILINE|wxHSCROLL</style>
                       </object>
                       <option>1</option>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                      <border>8</border>
+                      <flag>wxGROW</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Generated files (to be further compiled):</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtGenerated">
+                        <style>wxTE_MULTILINE|wxHSCROLL</style>
+                      </object>
+                      <option>1</option>
+                      <flag>wxGROW</flag>
+                      <border>4</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText">
+                        <label>Add different command line macros for different
+extensions. This effectively adds support for non C/C++
+files.
+In the generated files box, add macros for any files that
+will be generated when the command runs. These are
+files that will further need to be compiled by the build
+system.
+Currently, only the $$file and $$file_basename macros
+are allowed to appear in the generated files box.
+
+See docs for more info.</label>
+                      </object>
+                      <flag>wxTOP</flag>
+                      <border>4</border>
                     </object>
                   </object>
-                  <option>1</option>
-                  <flag>wxGROW</flag>
+                  <option>0</option>
+                  <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                  <border>4</border>
                 </object>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
@@ -83,6 +150,7 @@ Resource include paths:
 Linker include paths:
 Link libraries:
 Source file:
+Source file basename (no ext.):
 Object file:
 Dependency result:
 All *linkable* object files:
@@ -109,6 +177,7 @@ $$res_includes
 $$libdirs
 $$libs
 $$file
+$$file_basename
 $$object
 $$dep_object
 $$link_objects
@@ -123,8 +192,8 @@ $$objects_output_dir</label>
                       </object>
                     </object>
                   </object>
-                  <flag>wxTOP|wxBOTTOM|wxRIGHT|wxGROW</flag>
-                  <border>8</border>
+                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <border>4</border>
                 </object>
               </object>
             </object>
@@ -159,7 +228,7 @@ $$objects_output_dir</label>
                           </object>
                           <option>1</option>
                           <flag>wxTOP|wxLEFT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
@@ -199,7 +268,7 @@ The first matching parsing expression is selected.</label>
                         </object>
                       </object>
                       <flag>wxTOP|wxBOTTOM|wxLEFT|wxGROW</flag>
-                      <border>8</border>
+                      <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticBoxSizer">
@@ -241,19 +310,19 @@ The first matching parsing expression is selected.</label>
                             </object>
                           </object>
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
                             <label>Regular expression:</label>
                           </object>
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxTextCtrl" name="txtRegex"/>
                           <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticBoxSizer">
@@ -264,7 +333,7 @@ The first matching parsing expression is selected.</label>
                                 <cols>2</cols>
                                 <rows>3</rows>
                                 <vgap>4</vgap>
-                                <hgap>8</hgap>
+                                <hgap>4</hgap>
                                 <object class="sizeritem">
                                   <object class="wxStaticText">
                                     <label>Message:</label>
@@ -328,11 +397,11 @@ The first matching parsing expression is selected.</label>
                                 <growablecols>0</growablecols>
                               </object>
                               <flag>wxALL|wxGROW</flag>
-                              <border>8</border>
+                              <border>4</border>
                             </object>
                           </object>
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
@@ -341,15 +410,16 @@ the regular expression.</label>
                             <fg>#800000</fg>
                           </object>
                           <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-                          <border>8</border>
+                          <border>4</border>
                         </object>
                         <label>Parsing expression details</label>
                       </object>
                       <option>1</option>
                       <flag>wxALL|wxGROW</flag>
-                      <border>8</border>
+                      <border>4</border>
                     </object>
                   </object>
+                  <flag>wxGROW</flag>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
@@ -381,7 +451,7 @@ the regular expression.</label>
                     </object>
                   </object>
                   <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-                  <border>8</border>
+                  <border>4</border>
                 </object>
               </object>
             </object>
@@ -394,7 +464,7 @@ the regular expression.</label>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
                     <cols>2</cols>
-                    <vgap>4</vgap>
+                    <vgap>0</vgap>
                     <hgap>8</hgap>
                     <growablecols>1</growablecols>
                     <object class="sizeritem">
@@ -616,7 +686,7 @@ the regular expression.</label>
                   </object>
                   <option>1</option>
                   <flag>wxALL|wxGROW</flag>
-                  <border>8</border>
+                  <border>4</border>
                 </object>
               </object>
             </object>

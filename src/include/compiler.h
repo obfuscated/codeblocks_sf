@@ -1,6 +1,9 @@
 #ifndef COMPILER_H
 #define COMPILER_H
 
+#include <vector>
+#include <map>
+
 #include <wx/string.h>
 #include <wx/filename.h>
 #include <wx/dynarray.h>
@@ -109,17 +112,19 @@ WX_DECLARE_OBJARRAY(RegExStruct, RegExArray);
 /// Helper enum to retrieve compiler commands
 enum CommandType
 {
-    ctInvalid = -1,
     ctCompileObjectCmd = 0, ///< Compile object command, e.g. "$compiler $options $includes -c $file -o $object"
     ctGenDependenciesCmd,   ///< Generate dependencies command
     ctCompileResourceCmd,   ///< Compile Win32 resources command, e.g. "$rescomp -i $file -J rc -o $resource_output -O coff $includes"
     ctLinkExeCmd,           ///< Link executable command, e.g. "$linker $libdirs -o $exe_output $link_objects $libs -mwindows"
     ctLinkConsoleExeCmd,    ///< Link console executable command, e.g. "$linker $libdirs -o $exe_output $link_objects $libs"
     ctLinkDynamicCmd,       ///< Link dynamic (dll) lib command, e.g. "$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $libs -o $dynamic_output"
-    ctLinkStaticCmd,         ///< Link static lib command, e.g. "ar -r $output $link_objects\n\tranlib $static_output"
-    ctLinkNativeCmd         ///< Link native binary command
+    ctLinkStaticCmd,        ///< Link static lib command, e.g. "ar -r $output $link_objects\n\tranlib $static_output"
+    ctLinkNativeCmd,        ///< Link native binary command
+    
+    ctCount,				///< Do NOT use
 };
-#define COMPILER_COMMAND_TYPES_COUNT 8 // change this to reflect the above enumerators count
+
+
 
 /// Helper enum for type of compiler logging
 enum CompilerLoggingType
@@ -127,13 +132,6 @@ enum CompilerLoggingType
     clogFull,
     clogSimple,
     clogNone
-};
-
-// Helper enum for compiler build method
-enum CompilerBuildMethod
-{
-    cbmUseMake,
-    cbmDirect
 };
 
 enum AutoDetectResult
@@ -168,7 +166,6 @@ struct CompilerSwitches
     bool forceCompilerUseQuotes; // use quotes for filenames in compiler command line (needed or not)?
     bool needDependencies; // true
     CompilerLoggingType logging; // clogFull
-    CompilerBuildMethod buildMethod; // cbmDirect
     wxString libPrefix; // lib
     wxString libExtension; // a
     bool linkerNeedsLibPrefix; // when adding a link library, linker needs prefix?
@@ -181,6 +178,27 @@ struct CompilerSwitches
             // a full path notation, for all other compilers it is suggested to keep this switch at false
     CompilerSwitches();     // constructor initializing the members, specific compilers should overrule if needed
 };
+
+/// Struct for compiler/linker commands
+struct CompilerTool
+{
+	// extensions string will be converted to array by GetArrayFromString using DEFAULT_ARRAY_SEP (;)
+	// as separator
+	CompilerTool(const wxString& command = wxEmptyString, const wxString& extensions = wxEmptyString)
+		: command(command), extensions(GetArrayFromString(extensions))
+	{}
+	CompilerTool(const CompilerTool& rhs)
+		: command(rhs.command), extensions(rhs.extensions), generatedFiles(rhs.generatedFiles)
+	{}
+	bool operator==(const CompilerTool& rhs) const { return command == rhs.command && extensions == rhs.extensions && generatedFiles == rhs.generatedFiles; }
+	bool operator!=(const CompilerTool& rhs) const { return !(*this == rhs); }
+	
+	wxString command; ///< command to execute
+	wxArrayString extensions; ///< file extensions for which the command will be invoked (no leading dot)
+	wxArrayString generatedFiles; ///< the native language files this command generates that should be further compiled
+};
+
+typedef std::vector<CompilerTool> CompilerToolsVector;
 
 /**
   * @brief Abstract base class for compilers.
@@ -217,8 +235,14 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         virtual const CompilerSwitches& GetSwitches() const { return m_Switches; }
         /** @brief Get the compiler's options */
         virtual const CompilerOptions& GetOptions() const { return m_Options; }
-        /** @brief Get a command based on CommandType */
-        virtual const wxString& GetCommand(CommandType ct) const { return m_Commands[(int)ct]; }
+        /** @brief Get a command based on CommandType
+          * @param fileExtension the file's extension (no leading dot)
+          */
+        virtual const wxString& GetCommand(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
+        /** @brief Get a compiler tool based on CommandType */
+        virtual const CompilerTool& GetCompilerTool(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
+        /** @brief Get a command tool vector based on CommandType (used by advanced compiler dialog) */
+        virtual CompilerToolsVector& GetCommandToolsVector(CommandType ct) { return m_Commands[ct]; }
         /** @brief Get the array of regexes used in errors/warnings recognition */
         virtual const RegExArray& GetRegExArray(){ return m_RegExes; }
         /** @brief Load the default (preset) array of regexes used in errors/warnings recognition */
@@ -236,8 +260,6 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         virtual void SetSwitches(const CompilerSwitches& switches){ m_Switches = switches; }
         /** @brief Set the compiler's options */
         virtual void SetOptions(const CompilerOptions& options){ m_Options = options; }
-        /** @brief Set a command based on CommandType */
-        virtual void SetCommand(CommandType ct, const wxString& cmd){ m_Commands[(int)ct] = cmd; }
         /** @brief Set the array of regexes used in errors/warnings recognition */
         virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
 
@@ -292,7 +314,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         const wxString& GetParentID() const { return m_ParentID; }
 
         /** @brief Get the command type descriptions (used in advanced compiler options) */
-        static wxString CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT];
+        static wxString CommandTypeDescriptions[ctCount];
 
         /** @brief Set the compiler version string. Please override this virtual function
           * with your own compiler-version detection code if you want to use this.
@@ -326,7 +348,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString m_Name;
         wxString m_MasterPath;
         wxArrayString m_ExtraPaths;
-        wxString m_Commands[COMPILER_COMMAND_TYPES_COUNT];
+        CompilerToolsVector m_Commands[ctCount];
         CompilerPrograms m_Programs;
         CompilerSwitches m_Switches;
         CompilerOptions m_Options;
@@ -362,7 +384,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
             wxArrayString CmdsAfter;
 
             // below are the settings that the user is asked to revert to defaults (if defaults have changed)
-            wxString Commands[COMPILER_COMMAND_TYPES_COUNT];
+            CompilerToolsVector Commands[ctCount];
             CompilerSwitches Switches;
             CompilerOptions Options;
             RegExArray RegExes;

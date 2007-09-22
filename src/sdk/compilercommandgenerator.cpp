@@ -278,8 +278,8 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     macro.Replace(_T("$res_includes"), m_RC[target] + fileInc);
     macro.Replace(_T("$libdirs"), m_Lib[target]);
     macro.Replace(_T("$libs"), m_LDAdd[target]);
-    macro.Replace(_T("$file"), tmpFile);
     macro.Replace(_T("$file_basename"), wxFileName(tmpFile).GetName());
+    macro.Replace(_T("$file"), tmpFile);
     macro.Replace(_T("$dep_object"), tmpDeps);
     if (target)
     {  // this one has to come before $object, otherwise $object would go first
@@ -640,17 +640,17 @@ wxString CompilerCommandGenerator::SetupCompilerOptions(Compiler* compiler, Proj
     if (target)
     {
         // target options
-        wxString tstr = GetStringFromArray(target->GetCompilerOptions(), _T(' '));
+        wxString tstr = GetStringFromArray(target->GetCompilerOptions(), _T(' ')) << _T(" ");
 
         // project options
-        wxString pstr = GetStringFromArray(target->GetParentProject()->GetCompilerOptions(), _T(' '));
+        wxString pstr = GetStringFromArray(target->GetParentProject()->GetCompilerOptions(), _T(' ')) << _T(" ");
 
         // decide order
         result = GetOrderedOptions(target, ortCompilerOptions, pstr, tstr);
     }
 
     // compiler options
-    result << GetStringFromArray(compiler->GetCompilerOptions(), _T(' '));
+    result << GetStringFromArray(compiler->GetCompilerOptions(), _T(' ')) << _T(" ");
 
 	wxString bt = ExpandBackticks(result);
     SearchDirsFromBackticks(compiler, target, bt);

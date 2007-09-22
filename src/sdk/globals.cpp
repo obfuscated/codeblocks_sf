@@ -111,7 +111,11 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
 {
     wxString out;
     for (unsigned int i = 0; i < array.GetCount(); ++i)
-        out << array[i] << separator;
+    {
+        out << array[i];
+        if (i < array.GetCount() - 1)
+			out << separator;
+    }
     return out;
 }
 

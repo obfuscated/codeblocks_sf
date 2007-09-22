@@ -189,6 +189,22 @@
                   <flag>wxALL|wxEXPAND</flag>
                   <border>8</border>
                 </object>
+                <object class="spacer">
+                  <size>0,0</size>
+                  <option>1</option>
+                  <flag>wxGROW</flag>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticText" name="lblAutoGen">
+                    <label>This file is auto-generated</label>
+                    <font>
+                      <size>12</size>
+                      <weight>bold</weight>
+                    </font>
+                  </object>
+                  <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
+                  <border>8</border>
+                </object>
               </object>
             </object>
           </object>

@@ -62,7 +62,6 @@ CompilerSwitches::CompilerSwitches()
     libExtension = _T("a");
     linkerNeedsLibPrefix = false;
     linkerNeedsLibExtension = false;
-    buildMethod = cbmDirect;
     supportsPCH = true;
     PCHExtension = _T("h.gch");
     UseFlatObjects = false;
@@ -70,7 +69,7 @@ CompilerSwitches::CompilerSwitches()
 } // end of constructor
 
 
-wxString Compiler::CommandTypeDescriptions[COMPILER_COMMAND_TYPES_COUNT] =
+wxString Compiler::CommandTypeDescriptions[ctCount] =
 {
     // These are the strings that describe each CommandType enumerator...
     // No need to say that it must have the same order as the enumerators!
@@ -131,9 +130,9 @@ Compiler::Compiler(const Compiler& other)
     m_CmdsAfter = other.m_CmdsAfter;
     m_RegExes = other.m_RegExes;
     m_VersionString = other.m_VersionString;
-    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+    for (int i = 0; i < ctCount; ++i)
     {
-        m_Commands[i] = other.m_Commands[i];
+        m_Commands[(CommandType)i] = other.m_Commands[(CommandType)i];
     }
 
     m_Valid = other.m_Valid;
@@ -277,6 +276,58 @@ const wxArrayString& Compiler::GetLinkerSearchDirs(ProjectBuildTarget* target)
     return m_pGenerator->GetLinkerSearchDirs(target);
 }
 
+const wxString& Compiler::GetCommand(CommandType ct, const wxString& fileExtension) const
+{
+	size_t catchAll = 0;
+	const CompilerToolsVector& vec = m_Commands[ct];
+	
+	if (!fileExtension.IsEmpty())
+	{
+		for (size_t i = 0; i < vec.size(); ++i)
+		{
+			if (vec[i].extensions.GetCount() == 0)
+			{
+				catchAll = i;
+				continue;
+			}
+			for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
+			{
+				if (vec[i].extensions[n] == fileExtension)
+				{
+					return vec[i].command;
+				}
+			}
+		}
+	}
+	return vec[catchAll].command;
+}
+
+const CompilerTool& Compiler::GetCompilerTool(CommandType ct, const wxString& fileExtension) const
+{
+	size_t catchAll = 0;
+	const CompilerToolsVector& vec = m_Commands[ct];
+	
+	if (!fileExtension.IsEmpty())
+	{
+		for (size_t i = 0; i < vec.size(); ++i)
+		{
+			if (vec[i].extensions.GetCount() == 0)
+			{
+				catchAll = i;
+				continue;
+			}
+			for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
+			{
+				if (vec[i].extensions[n] == fileExtension)
+				{
+					return vec[i];
+				}
+			}
+		}
+	}
+	return vec[catchAll];
+}
+
 void Compiler::MirrorCurrentSettings()
 {
     // run just once
@@ -290,7 +341,7 @@ void Compiler::MirrorCurrentSettings()
     m_Mirror.Name = m_Name;
     m_Mirror.MasterPath = m_MasterPath;
     m_Mirror.ExtraPaths = m_ExtraPaths;
-    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+    for (int i = 0; i < ctCount; ++i)
         m_Mirror.Commands[i] = m_Commands[i];
     m_Mirror.Programs = m_Programs;
     m_Mirror.Switches = m_Switches;
@@ -387,10 +438,18 @@ void Compiler::SaveSettings(const wxString& baseKey)
     if (m_Mirror.Programs.DBG != m_Programs.DBG)
         cfg->Write(tmp + _T("/debugger"), m_Programs.DBG, true);
 
-    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+    for (int i = 0; i < ctCount; ++i)
     {
-        if (m_Mirror.Commands[i] != m_Commands[i])
-            cfg->Write(tmp + _T("/macros/") + CommandTypeDescriptions[i], m_Commands[i], true);
+    	for (size_t n = 0; n < m_Commands[i].size(); ++n)
+    	{
+			if (n >= m_Mirror.Commands[i].size() || m_Mirror.Commands[i][n] != m_Commands[i][n])
+			{
+				wxString key = wxString::Format(_T("%s/macros/%s/tool%d/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), n);
+				cfg->Write(key + _T("command"), m_Commands[i][n].command);
+				cfg->Write(key + _T("extensions"), m_Commands[i][n].extensions);
+				cfg->Write(key + _T("generatedFiles"), m_Commands[i][n].generatedFiles);
+			}
+    	}
     }
 
     // switches
@@ -414,8 +473,6 @@ void Compiler::SaveSettings(const wxString& baseKey)
         cfg->Write(tmp + _T("/switches/forceLinkerQuotes"), m_Switches.forceLinkerUseQuotes);
     if (m_Mirror.Switches.logging != m_Switches.logging)
         cfg->Write(tmp + _T("/switches/logging"), m_Switches.logging);
-    if (m_Mirror.Switches.buildMethod != m_Switches.buildMethod)
-        cfg->Write(tmp + _T("/switches/buildMethod"), m_Switches.buildMethod);
     if (m_Mirror.Switches.libPrefix != m_Switches.libPrefix)
         cfg->Write(tmp + _T("/switches/libPrefix"), m_Switches.libPrefix, true);
     if (m_Mirror.Switches.libExtension != m_Switches.libExtension)
@@ -531,9 +588,24 @@ void Compiler::LoadSettings(const wxString& baseKey)
     SetCommandsBeforeBuild(GetArrayFromString(cfg->Read(tmp + _T("/commands_before"), wxEmptyString)));
     SetCommandsAfterBuild(GetArrayFromString(cfg->Read(tmp + _T("/commands_after"), wxEmptyString)));
 
-    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+    for (int i = 0; i < ctCount; ++i)
     {
-        m_Commands[i] = cfg->Read(tmp + _T("/macros/") + CommandTypeDescriptions[i], m_Commands[i]);
+    	wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/macros/") + CommandTypeDescriptions[i]);
+    	for (size_t n = 0; n < keys.size(); ++n)
+    	{
+    		unsigned long index;
+    		if (keys[n].Mid(4).ToULong(&index)) // skip 'tool'
+    		{
+    			while (index >= m_Commands[i].size())
+					m_Commands[i].push_back(CompilerTool());
+				CompilerTool& tool = m_Commands[i][index];
+				
+				wxString key = wxString::Format(_T("%s/macros/%s/tool%d/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), index);
+				tool.command = cfg->Read(key + _T("command"));
+				tool.extensions = cfg->ReadArrayString(key + _T("extensions"));
+				tool.generatedFiles = cfg->ReadArrayString(key + _T("generatedFiles"));
+    		}
+    	}
     }
 
     // switches
@@ -547,7 +619,6 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Switches.forceCompilerUseQuotes = cfg->ReadBool(tmp + _T("/switches/forceCompilerQuotes"), m_Switches.forceCompilerUseQuotes);
     m_Switches.forceLinkerUseQuotes = cfg->ReadBool(tmp + _T("/switches/forceLinkerQuotes"), m_Switches.forceLinkerUseQuotes);
     m_Switches.logging = (CompilerLoggingType)cfg->ReadInt(tmp + _T("/switches/logging"), m_Switches.logging);
-    m_Switches.buildMethod = (CompilerBuildMethod)cfg->ReadInt(tmp + _T("/switches/buildMethod"), m_Switches.buildMethod);
     m_Switches.libPrefix = cfg->Read(tmp + _T("/switches/libPrefix"), m_Switches.libPrefix);
     m_Switches.libExtension = cfg->Read(tmp + _T("/switches/libExtension"), m_Switches.libExtension);
     m_Switches.linkerNeedsLibPrefix = cfg->ReadBool(tmp + _T("/switches/linkerNeedsLibPrefix"), m_Switches.linkerNeedsLibPrefix);
@@ -622,7 +693,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
         // don't ask if the compiler is not valid (i.e. not installed), just update
         if (!IsValid() || cbMessageBox(msg, m_Name, wxICON_QUESTION | wxYES_NO) == wxID_YES)
         {
-            for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+            for (int i = 0; i < ctCount; ++i)
                 m_Commands[i] = m_Mirror.Commands[i];
             m_Switches = m_Mirror.Switches;
             m_Options = m_Mirror.Options;

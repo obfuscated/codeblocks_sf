@@ -78,7 +78,6 @@ void CompilerSDCC::Reset()
     m_Switches.libExtension = _T("lib");
     m_Switches.linkerNeedsLibPrefix = false;
     m_Switches.linkerNeedsLibExtension = false;
-    m_Switches.buildMethod = cbmDirect;
 
     // Summary of SDCC options: http://sdcc.sourceforge.net
 
@@ -138,11 +137,11 @@ void CompilerSDCC::Reset()
     m_Options.AddOption(_("Output Motorola S19"), _T("--out-fmt-s19"), category);
     m_Options.AddOption(_("Output ELF (Currently only supported for the HC08 processors)"), _T("--out-fmt-elf"), category);
 
-    m_Commands[(int)ctCompileObjectCmd] =   _T("$compiler $options $includes -c $file -o $object");
-    m_Commands[(int)ctGenDependenciesCmd] = _T("$compiler -MM $options -MF $dep_object -MT $object $includes $file");
-    m_Commands[(int)ctLinkExeCmd] =         _T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects");
-    m_Commands[(int)ctLinkConsoleExeCmd] =  _T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects");
-    //m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output");
+    m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler $options $includes -c $file -o $object")));
+    m_Commands[(int)ctGenDependenciesCmd].push_back(CompilerTool(_T("$compiler -MM $options -MF $dep_object -MT $object $includes $file")));
+    m_Commands[(int)ctLinkExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects")));
+    m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects")));
+    //m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output")));
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();

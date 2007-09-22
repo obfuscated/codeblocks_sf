@@ -1464,29 +1464,6 @@ bool CompilerGCC::UseMake(ProjectBuildTarget* target)
     {
         if (m_Project->IsMakefileCustom())
             return true;
-        else
-        {
-            if (CompilerFactory::GetCompiler(idx)->GetSwitches().buildMethod == cbmUseMake)
-            {
-                // since November 28 2005, "make" is no more a valid build method
-                // except if the project is set to use a custom Makefile
-                // (and is selected automatically, in this case).
-                // just notify the user once about this change
-                if (!Manager::Get()->GetConfigManager(_T("compiler"))->Exists(_T("/notify_no_make")))
-                {
-                    Manager::Get()->GetConfigManager(_T("compiler"))->Set(_T("/notify_no_make"));
-                    cbMessageBox(_("Code::Blocks no longer supports the \"GNU make\" build method, "
-                                    "except for projects which\nare using a custom Makefile "
-                                    "(in which case, this build method is selected automatically).\n"
-                                    "This poses no problem on the overall build process and this "
-                                    "notification is displayed\n"
-                                    "just to alert you about this change.\n\n"
-                                    "No further action is required on your part."),
-                                    _("Information"),
-                                    wxICON_INFORMATION);
-                }
-            }
-        }
     }
     return false;
 }

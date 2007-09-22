@@ -41,7 +41,10 @@ wxString StringToControlChars(const wxString& src)
 } // end of StringToControlChars
 
 BEGIN_EVENT_TABLE(AdvancedCompilerOptionsDlg, wxDialog)
-    EVT_LISTBOX(XRCID("lstCommands"),       AdvancedCompilerOptionsDlg::OnCommandsChange)
+    EVT_CHOICE(XRCID("lstCommands"),   		AdvancedCompilerOptionsDlg::OnCommandsChange)
+    EVT_CHOICE(XRCID("lstExt"),   			AdvancedCompilerOptionsDlg::OnExtChange)
+    EVT_BUTTON(XRCID("btnAddExt"),          AdvancedCompilerOptionsDlg::OnAddExt)
+    EVT_BUTTON(XRCID("btnRemoveExt"),       AdvancedCompilerOptionsDlg::OnDelExt)
     EVT_LISTBOX(XRCID("lstRegex"),          AdvancedCompilerOptionsDlg::OnRegexChange)
     EVT_BUTTON(XRCID("btnRegexTest"),       AdvancedCompilerOptionsDlg::OnRegexTest)
     EVT_BUTTON(XRCID("btnRegexAdd"),        AdvancedCompilerOptionsDlg::OnRegexAdd)
@@ -53,7 +56,8 @@ END_EVENT_TABLE()
 
 AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId)
     : m_CompilerId(compilerId),
-    m_LastCmdIndex(-1)
+    m_LastCmdIndex(-1),
+    m_LastExtIndex(-1)
 {
 	//ctor
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAdvancedCompilerOptions"));
@@ -70,16 +74,16 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
 {
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
-    wxListBox* lst = XRCCTRL(*this, "lstCommands", wxListBox);
+    wxChoice* lst = XRCCTRL(*this, "lstCommands", wxChoice);
     lst->Clear();
-    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+    for (int i = 0; i < ctCount; ++i)
     {
-        m_Commands[i] = compiler->GetCommand((CommandType)i);
-        m_Commands[i].Replace(_T("\t"), _T(""));
+        m_Commands[i] = compiler->GetCommandToolsVector((CommandType)i);
         lst->Append(Compiler::CommandTypeDescriptions[i]);
     }
     lst->SetSelection(0);
-    DisplayCommand(0);
+    DisplayCommand(0,0);
+    ReadExtensions(0);
 
     // switches
     const CompilerSwitches& switches = compiler->GetSwitches();
@@ -111,10 +115,9 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
 {
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
-    for (int i = 0; i < COMPILER_COMMAND_TYPES_COUNT; ++i)
+    for (int i = 0; i < ctCount; ++i)
     {
-        m_Commands[i].Replace(_T("\n"), _T("\n\t"));
-        compiler->SetCommand((CommandType)i, m_Commands[i]);
+        compiler->GetCommandToolsVector((CommandType)i) = m_Commands[i];
     }
 
     // switches
@@ -140,20 +143,82 @@ void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
     compiler->SetSwitches(switches);
 } // end of WriteCompilerOptions
 
-void AdvancedCompilerOptionsDlg::DisplayCommand(int nr)
+void AdvancedCompilerOptionsDlg::ReadExtensions(int nr)
 {
+	wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+	cmb->Clear();
+	for (size_t i = 0; i < m_Commands[nr].size(); ++i)
+	{
+		cmb->Append(GetStringFromArray(m_Commands[nr][i].extensions));
+	}
+	cmb->SetSelection(cmb->FindString(wxEmptyString));
+}
+
+CompilerTool* AdvancedCompilerOptionsDlg::GetCompilerTool(int cmd, int ext)
+{
+	wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+	for (size_t i = 0; i < m_Commands[cmd].size(); ++i)
+	{
+		if (cmb->GetString(ext).IsEmpty() && m_Commands[cmd][i].extensions.GetCount() == 0)
+			return &m_Commands[cmd][i];
+			
+		int selExt = m_Commands[cmd][i].extensions.Index(cmb->GetString(ext));
+		if (selExt != -1)
+			return &m_Commands[cmd][i];
+	}
+	return 0;
+}
+
+void AdvancedCompilerOptionsDlg::DisplayCommand(int cmd, int ext)
+{
+	CompilerTool* tool;
     wxTextCtrl* text = XRCCTRL(*this, "txtCommand", wxTextCtrl);
-    if (m_LastCmdIndex != -1)
+    wxTextCtrl* gen = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
+    if ((m_LastCmdIndex != -1 && m_LastCmdIndex != cmd) || (m_LastExtIndex != -1 && m_LastExtIndex != ext))
     {
-        if (text->GetValue() != m_Commands[m_LastCmdIndex])
-        {
-            // last command was changed; save it
-            m_Commands[m_LastCmdIndex] = text->GetValue();
-        }
+    	SaveCommands(m_LastCmdIndex != -1 && m_LastCmdIndex != cmd ? m_LastCmdIndex : cmd,
+					m_LastExtIndex != -1 && m_LastExtIndex != ext ? m_LastExtIndex : ext);
     }
 
-    text->SetValue(m_Commands[nr]);
-    m_LastCmdIndex = nr;
+	tool = GetCompilerTool(cmd,ext);
+	if (tool)
+	{
+		text->SetValue(tool->command);
+		gen->SetValue(GetStringFromArray(tool->generatedFiles, _T("\n")));
+	}
+	else
+	{
+		text->Clear();
+		gen->Clear();
+	}
+	m_LastCmdIndex = cmd;
+	m_LastExtIndex = ext;
+}
+
+void AdvancedCompilerOptionsDlg::SaveCommands(int cmd, int ext)
+{
+	if (cmd == -1 || ext == -1)
+		return;
+		
+	CompilerTool* tool;
+    wxTextCtrl* text = XRCCTRL(*this, "txtCommand", wxTextCtrl);
+    wxTextCtrl* gen = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
+
+	tool = GetCompilerTool(cmd, ext);
+	if (tool)
+	{
+		if (text->GetValue() != tool->command)
+		{
+			// last command was changed; save it
+			tool->command = text->GetValue();
+		}
+		wxString gens = GetStringFromArray(tool->generatedFiles, _T("\n"));
+		if (gen->GetValue() != gens)
+		{
+			// last genfiles are changed; save it
+			tool->generatedFiles = GetArrayFromString(gen->GetValue(), _T("\n"));
+		}
+	}
 }
 
 void AdvancedCompilerOptionsDlg::FillRegexes()
@@ -214,7 +279,58 @@ void AdvancedCompilerOptionsDlg::SaveRegexDetails(int index)
 
 void AdvancedCompilerOptionsDlg::OnCommandsChange(wxCommandEvent& event)
 {
-    DisplayCommand(XRCCTRL(*this, "lstCommands", wxListBox)->GetSelection());
+	int cmd = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
+	int ext = XRCCTRL(*this, "lstExt", wxChoice)->GetSelection();
+//	DBGLOG(_T("cmd=%d (%d), ext=%d (%d)"), cmd, m_LastCmdIndex, ext, m_LastExtIndex);
+	ReadExtensions(cmd);
+    DisplayCommand(cmd,ext);
+}
+
+void AdvancedCompilerOptionsDlg::OnExtChange(wxCommandEvent& event)
+{
+	int cmd = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
+	int ext = XRCCTRL(*this, "lstExt", wxChoice)->GetSelection();
+//	DBGLOG(_T("cmd=%d (%d), ext=%d (%d)"), cmd, m_LastCmdIndex, ext, m_LastExtIndex);
+    DisplayCommand(cmd,ext);
+}
+
+void AdvancedCompilerOptionsDlg::OnAddExt(wxCommandEvent& event)
+{
+	wxString ext = wxGetTextFromUser(_("Please enter a semi-colon separated list of extensions, without the leading dot:"), _("New extension"));
+	ext.Trim(false);
+	ext.Trim(true);
+	if (!ext.IsEmpty())
+	{
+		int nr = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
+		CompilerTool* ptool = GetCompilerTool(nr,0);
+		CompilerTool tool(ptool ? ptool->command : wxString(), ext);
+		m_Commands[nr].push_back(tool);
+		ReadExtensions(nr);
+		wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+		cmb->SetStringSelection(ext);
+		DisplayCommand(nr,cmb->GetSelection());
+	}
+}
+
+void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent& event)
+{
+	if (cbMessageBox(_("Are you sure you want to remove this extension set from the list?"), _T("Confirmation"), wxYES_NO) == wxID_YES)
+	{
+		int nr = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
+		wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
+		wxString extS = cmb->GetStringSelection();
+		if (!extS.IsEmpty())
+		{
+			int ext = cmb->GetSelection();
+			m_Commands[nr].erase(m_Commands[nr].begin() + ext);
+			ReadExtensions(nr);
+			cmb->SetSelection(0);
+			m_LastExtIndex = -1;
+			DisplayCommand(nr,0);
+		}
+		else
+			cbMessageBox(_("Can't remove default commands!"), _("Error"));
+	}
 }
 
 void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent& event)
@@ -336,7 +452,7 @@ void AdvancedCompilerOptionsDlg::EndModal(int retCode)
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
         // make sure we update the first command, if it changed
-        DisplayCommand(m_LastCmdIndex);
+        SaveCommands(m_LastCmdIndex,m_LastExtIndex);
         // write options
         WriteCompilerOptions();
         // save regexes

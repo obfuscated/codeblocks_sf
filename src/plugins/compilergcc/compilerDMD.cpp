@@ -50,14 +50,13 @@ void CompilerDMD::Reset()
         m_Switches.forceCompilerUseQuotes = false;
         m_Switches.forceLinkerUseQuotes = true;
         m_Switches.logging = clogSimple;
-        m_Switches.buildMethod = cbmDirect;
         m_Switches.linkerNeedsLibPrefix = false;
         m_Switches.linkerNeedsLibExtension = true;
 
         // FIXME (hd#1#): should be work on: we need $res_options
-        m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -o$resource_output $res_includes $file -32 -r");
-        m_Commands[(int)ctLinkExeCmd] = _T("$linker $exe_output $link_options $link_objects $link_resobjects $libs");
-        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker $exe_output $link_options $link_objects $link_resobjects $libs");
+        m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("$rescomp -o$resource_output $res_includes $file -32 -r")));
+        m_Commands[(int)ctLinkExeCmd].push_back(CompilerTool(_T("$linker $exe_output $link_options $link_objects $link_resobjects $libs")));
+        m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker $exe_output $link_options $link_objects $link_resobjects $libs")));
     }
     else
     {
@@ -81,18 +80,17 @@ void CompilerDMD::Reset()
         m_Switches.forceCompilerUseQuotes = false;
         m_Switches.forceLinkerUseQuotes = false;
         m_Switches.logging = clogSimple;
-        m_Switches.buildMethod = cbmDirect;
         m_Switches.linkerNeedsLibPrefix = false;
         m_Switches.linkerNeedsLibExtension = false;
 
-        m_Commands[(int)ctCompileResourceCmd] = _T("");
-        m_Commands[(int)ctLinkExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
-        m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker -o $exe_output $link_options $link_objects $libs");
+        m_Commands[(int)ctCompileResourceCmd].push_back(CompilerTool(_T("")));
+        m_Commands[(int)ctLinkExeCmd].push_back(CompilerTool(_T("$linker -o $exe_output $link_options $link_objects $libs")));
+        m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker -o $exe_output $link_options $link_objects $libs")));
     }
 
-    m_Commands[(int)ctCompileObjectCmd] = _T("$compiler $options $includes -c $file -of$object");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker $exe_output $link_options $link_objects $libs $link_resobjects");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker $link_options $static_output $link_objects");
+    m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler $options $includes -c $file -of$object")));
+    m_Commands[(int)ctLinkDynamicCmd].push_back(CompilerTool(_T("$linker $exe_output $link_options $link_objects $libs $link_resobjects")));
+    m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker $link_options $static_output $link_objects")));
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     m_Options.ClearOptions();
