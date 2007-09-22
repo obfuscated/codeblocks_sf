@@ -66,7 +66,6 @@ void CompilerOW::Reset()
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
 	m_Switches.logging = clogSimple;
-	m_Switches.buildMethod = cbmDirect;
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = true;
 
@@ -315,17 +314,17 @@ void CompilerOW::Reset()
 
 
     m_Commands[(int)ctCompileObjectCmd]
-        = wxT("$compiler -q -c $options $includes -fo=$object $file");
+       .push_back( CompilerTool(wxT("$compiler -q -c $options $includes -fo=$object $file")) );
     m_Commands[(int)ctCompileResourceCmd]
-        = wxT("$rescomp -q -r -fo=$resource_output $res_includes $file");
+       .push_back( CompilerTool(wxT("$rescomp -q -r -fo=$resource_output $res_includes $file")) );
     m_Commands[(int)ctLinkExeCmd]
-        = wxT("$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects");
+       .push_back( CompilerTool(wxT("$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects")) );
     m_Commands[(int)ctLinkConsoleExeCmd]
-        = wxT("$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects");
+       .push_back( CompilerTool(wxT("$linker option quiet $link_options $libdirs $link_objects name $exe_output $libs $link_resobjects")) );
     m_Commands[(int)ctLinkDynamicCmd]
-        = wxT("$linker option quiet $link_options $libdirs name $exe_output $libs $link_objects");
+       .push_back( CompilerTool(wxT("$linker option quiet $link_options $libdirs name $exe_output $libs $link_objects")) );
     m_Commands[(int)ctLinkStaticCmd]
-        = wxT("$lib_linker -q $static_output $link_objects");
+       .push_back( CompilerTool(wxT("$lib_linker -q $static_output $link_objects")) );
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();

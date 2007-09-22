@@ -46,7 +46,6 @@ void CompilerDMC::Reset()
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = true;
 	m_Switches.logging = clogSimple;
-	m_Switches.buildMethod = cbmDirect;
 	m_Switches.linkerNeedsLibPrefix = false;
 	m_Switches.linkerNeedsLibExtension = true;
 
@@ -148,12 +147,12 @@ void CompilerDMC::Reset()
 	m_Options.AddOption(_("Optimize for Pentium Pro, Pentium II, Pentium III"), _T("-6"), _("Architecture"));
 
     // FIXME (hd#1#): should be work on: we need $res_options
-    m_Commands[(int)ctCompileObjectCmd] = _T("$compiler -mn -c $options $includes -o$object $file");
-    m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp -32 -I$res_includes -o$resource_output $file");
-    m_Commands[(int)ctLinkExeCmd] = _T("$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects");
-    m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /NOLOGO $link_objects, $exe_output, , $libs $link_options");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker -c $link_options $static_output $link_objects");
+    m_Commands[(int)ctCompileObjectCmd].push_back( CompilerTool(_T("$compiler -mn -c $options $includes -o$object $file")) );
+    m_Commands[(int)ctCompileResourceCmd].push_back( CompilerTool(_T("$rescomp -32 -I$res_includes -o$resource_output $file")) );
+    m_Commands[(int)ctLinkExeCmd].push_back( CompilerTool(_T("$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects")) );
+    m_Commands[(int)ctLinkConsoleExeCmd].push_back( CompilerTool(_T("$linker /NOLOGO $link_objects, $exe_output, , $libs $link_options")) );
+    m_Commands[(int)ctLinkDynamicCmd].push_back( CompilerTool(_T("$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects")) );
+    m_Commands[(int)ctLinkStaticCmd].push_back( CompilerTool(_T("$lib_linker -c $link_options $static_output $link_objects")) );
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();

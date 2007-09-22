@@ -47,7 +47,6 @@ void CompilerMSVC8::Reset()
 	m_Switches.forceCompilerUseQuotes = false;
 	m_Switches.forceLinkerUseQuotes = false;
 	m_Switches.logging = clogNone;
-	m_Switches.buildMethod = cbmDirect;
 	m_Switches.libPrefix = _T("");
 	m_Switches.libExtension = _T("lib");
 	m_Switches.linkerNeedsLibPrefix = false;
@@ -145,13 +144,13 @@ void CompilerMSVC8::Reset()
     m_Options.AddOption(_("Multi-threaded DLL Debug Runtime Library"), _T("/MDd"), _("Runtime"));
 
 
-    m_Commands[(int)ctCompileObjectCmd] = _T("$compiler /nologo $options $includes /c $file /Fo$object");
-    m_Commands[(int)ctCompileResourceCmd] = _T("$rescomp $res_includes -fo$resource_output $file");
-    m_Commands[(int)ctLinkExeCmd] = _T("$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-    m_Commands[(int)ctLinkConsoleExeCmd] = _T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-    m_Commands[(int)ctLinkDynamicCmd] = _T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
-    m_Commands[(int)ctLinkStaticCmd] = _T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options");
-    m_Commands[(int)ctLinkNativeCmd] = _T("$linker /nologo /subsystem:native $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options");
+    m_Commands[(int)ctCompileObjectCmd].push_back( CompilerTool(_T("$compiler /nologo $options $includes /c $file /Fo$object")) );
+    m_Commands[(int)ctCompileResourceCmd].push_back( CompilerTool(_T("$rescomp $res_includes -fo$resource_output $file")) );
+    m_Commands[(int)ctLinkExeCmd].push_back( CompilerTool(_T("$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
+    m_Commands[(int)ctLinkConsoleExeCmd].push_back( CompilerTool(_T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
+    m_Commands[(int)ctLinkDynamicCmd].push_back( CompilerTool(_T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
+    m_Commands[(int)ctLinkStaticCmd].push_back( CompilerTool(_T("$lib_linker /lib /nologo $libdirs /out:$static_output $libs $link_objects $link_resobjects $link_options")) );
+    m_Commands[(int)ctLinkNativeCmd].push_back( CompilerTool(_T("$linker /nologo /subsystem:native $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
 
     LoadDefaultRegExArray();
 
