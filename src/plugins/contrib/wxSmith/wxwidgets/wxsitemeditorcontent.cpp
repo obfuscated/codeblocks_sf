@@ -290,6 +290,11 @@ wxsItemEditorContent::DragPointData* wxsItemEditorContent::FindDragPointFromItem
 
 void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
 {
+    // Anti-recursion lock
+    static bool IsRunning = false;
+    if ( IsRunning ) return;
+    IsRunning = true;
+
     if ( event.ButtonDown() )
     {
         SetFocus();
@@ -309,6 +314,8 @@ void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
         case msTargetSearch:      OnMouseTargetSearch      (event); break;
         default:                  OnMouseIdle              (event); break;
     }
+
+    IsRunning = false;
 }
 
 void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
@@ -350,35 +357,37 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
             NeedRefresh = OnCursor->MouseClick(Preview,MouseX-PosX,MouseY-PosY);
         }
 
-        DragPointData* DPD = FindDragPointAtPos(MouseX,MouseY);
-
-        if ( DPD )
-        {
-            // If there's drag point, starting point-dragging sequence
-            m_CurDragPoint = DPD;
-            m_CurDragItem = DPD->Item;
-            m_MouseState = msDraggingPointInit;
-        }
-        else
-        {
-            if ( !OnCursor->GetIsSelected() )
-            {
-                m_Data->SelectItem(OnCursor,!event.ControlDown());
-            }
-            else
-            {
-                m_Data->SelectItem(OnCursor,false);
-            }
-
-            m_CurDragPoint = FindDragPointFromItem(OnCursor);
-            m_CurDragItem = OnCursor;
-            m_MouseState = msDraggingItemInit;
-        }
-
         if ( NeedRefresh )
         {
             m_Editor->RebuildPreview();
             m_MouseState = msIdle;
+        }
+        else
+        {
+            DragPointData* DPD = FindDragPointAtPos(MouseX,MouseY);
+
+            if ( DPD )
+            {
+                // If there's drag point, starting point-dragging sequence
+                m_CurDragPoint = DPD;
+                m_CurDragItem = DPD->Item;
+                m_MouseState = msDraggingPointInit;
+            }
+            else
+            {
+                if ( !OnCursor->GetIsSelected() )
+                {
+                    m_Data->SelectItem(OnCursor,!event.ControlDown());
+                }
+                else
+                {
+                    m_Data->SelectItem(OnCursor,false);
+                }
+
+                m_CurDragPoint = FindDragPointFromItem(OnCursor);
+                m_CurDragItem = OnCursor;
+                m_MouseState = msDraggingItemInit;
+            }
         }
     }
 

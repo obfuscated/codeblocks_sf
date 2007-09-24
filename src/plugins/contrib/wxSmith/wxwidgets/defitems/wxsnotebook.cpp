@@ -321,6 +321,7 @@ bool wxsNotebook::OnMouseClick(wxWindow* Preview,int PosX,int PosY)
     {
         wxsItem* OldSel = m_CurrentSelection;
         m_CurrentSelection = GetChild(Hit);
+        GetResourceData()->SelectItem(m_CurrentSelection,true);
         return OldSel != m_CurrentSelection;
     }
     return false;

@@ -23,6 +23,7 @@
 
 #include "wxslistbook.h"
 #include "../../wxsadvqppchild.h"
+#include "../wxsitemresdata.h"
 #include <wx/listbook.h>
 
 //(*Headers(wxsListbookParentQP)
@@ -311,6 +312,7 @@ bool wxsListbook::OnMouseClick(wxWindow* Preview,int PosX,int PosY)
     {
         wxsItem* OldSel = m_CurrentSelection;
         m_CurrentSelection = GetChild(Hit);
+        GetResourceData()->SelectItem(m_CurrentSelection,true);
         return OldSel != m_CurrentSelection;
     }
     return false;

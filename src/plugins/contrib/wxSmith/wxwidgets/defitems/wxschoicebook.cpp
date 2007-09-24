@@ -23,6 +23,7 @@
 
 #include "wxschoicebook.h"
 #include "../../wxsadvqppchild.h"
+#include "../wxsitemresdata.h"
 #include <wx/choicebk.h>
 
 //(*Headers(wxsChoicebookParentQP)
@@ -308,6 +309,7 @@ bool wxsChoicebook::OnMouseClick(wxWindow* Preview,int PosX,int PosY)
     int NewIndex = GetChildIndex(m_CurrentSelection)+1;
     if ( NewIndex >= GetChildCount() ) NewIndex = 0;
     m_CurrentSelection = GetChild(NewIndex);
+    GetResourceData()->SelectItem(m_CurrentSelection,true);
     return true;
 }
 
