@@ -6,6 +6,7 @@
 #include <wx/listbox.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
+#include <wx/textdlg.h>
 #include <wx/xrc/xmlres.h>
 #include "compilerfactory.h"
 #include "globals.h"
@@ -161,7 +162,7 @@ CompilerTool* AdvancedCompilerOptionsDlg::GetCompilerTool(int cmd, int ext)
 	{
 		if (cmb->GetString(ext).IsEmpty() && m_Commands[cmd][i].extensions.GetCount() == 0)
 			return &m_Commands[cmd][i];
-			
+
 		int selExt = m_Commands[cmd][i].extensions.Index(cmb->GetString(ext));
 		if (selExt != -1)
 			return &m_Commands[cmd][i];
@@ -199,7 +200,7 @@ void AdvancedCompilerOptionsDlg::SaveCommands(int cmd, int ext)
 {
 	if (cmd == -1 || ext == -1)
 		return;
-		
+
 	CompilerTool* tool;
     wxTextCtrl* text = XRCCTRL(*this, "txtCommand", wxTextCtrl);
     wxTextCtrl* gen = XRCCTRL(*this, "txtGenerated", wxTextCtrl);
