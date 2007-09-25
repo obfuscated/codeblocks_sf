@@ -1,4 +1,4 @@
-SUBDIRS = FILES
+SUBDIRS = files
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/avr
 
