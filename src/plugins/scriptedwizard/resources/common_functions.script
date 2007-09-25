@@ -10,6 +10,7 @@ function WarningsOn(base, compilerID)
         base.AddCompilerOption(_T("/W3"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
@@ -43,6 +44,7 @@ function DebugSymbolsOn(base, compilerID)
         base.AddLinkerOption(_T("/DEBUG"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
@@ -100,6 +102,10 @@ function OptimizationsOn(base, compilerID)
         {
             base.AddLinkerOption(_T("-s"));
         }
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*")))
+    {
+        base.AddCompilerOption(_T("-Os"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
     {

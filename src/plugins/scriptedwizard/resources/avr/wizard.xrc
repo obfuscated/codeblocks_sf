@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource>
+	<object class="wxPanel" name="processorChoice">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="textChoice">
+					<label>Please choose a processor for this project...</label>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxProc">
+					<content>
+						<item>avr1</item>
+						<item>at90s1200</item>
+						<item>attiny11</item>
+						<item>attiny12</item>
+						<item>attiny15</item>
+						<item>attiny28</item>
+						<item>avr2</item>
+						<item>at90s2313</item>
+						<item>at90s2323</item>
+						<item>at90s2333</item>
+						<item>at90s2343</item>
+						<item>attiny22</item>
+						<item>attiny26</item>
+						<item>at90s4414</item>
+						<item>at90s4433</item>
+						<item>at90s4434</item>
+						<item>at90s8515</item>
+						<item>at90c8534</item>
+						<item>at90s8535</item>
+						<item>avr25</item>
+						<item>attiny13</item>
+						<item>attiny2313</item>
+						<item>attiny24</item>
+						<item>attiny44</item>
+						<item>attiny84</item>
+						<item>attiny25</item>
+						<item>attiny45</item>
+						<item>attiny85</item>
+						<item>attiny261</item>
+						<item>attiny461</item>
+						<item>attiny861</item>
+						<item>at86rf401</item>
+						<item>avr3</item>
+						<item>atmega103</item>
+						<item>atmega603</item>
+						<item>at43usb320</item>
+						<item>at43usb355</item>
+						<item>at76c711</item>
+						<item>atmega48</item>
+						<item>atmega8</item>
+						<item>avr4</item>
+						<item>atmega8515</item>
+						<item>atmega8535</item>
+						<item>atmega88</item>
+						<item>atmega84</item>
+						<item>at90pwm1</item>
+						<item>at90pwm2</item>
+						<item>at90pwm3</item>
+						<item>at90usb82</item>
+						<item>avr5</item>
+						<item>atmega16</item>
+						<item>atmega161</item>
+						<item>atmega162</item>
+						<item>atmega163</item>
+						<item>atmega164p</item>
+						<item>atmega165</item>
+						<item>atmega165p</item>
+						<item>atmega168</item>
+						<item>atmega169</item>
+						<item>atmega169p</item>
+						<item>atmega32</item>
+						<item>atmega323</item>
+						<item>atmega324p</item>
+						<item>atmega325</item>
+						<item>atmega325p</item>
+						<item>atmega3250</item>
+						<item>atmega3250p</item>
+						<item>atmega329</item>
+						<item>atmega329p</item>
+						<item>atmega3290</item>
+						<item>atmega3290p</item>
+						<item>atmega406</item>
+						<item>atmega64</item>
+						<item>atmega640</item>
+						<item>atmega644</item>
+						<item>atmega644p</item>
+						<item>atmega645</item>
+						<item>atmega6450</item>
+						<item>atmega649</item>
+						<item>atmega6490</item>
+						<item>atmega128</item>
+						<item>atmega1280</item>
+						<item>atmega1281</item>
+						<item>atmega16hva</item>
+						<item>at90can32</item>
+						<item>at90can64</item>
+						<item>at90can128</item>
+						<item>at90usb162</item>
+						<item>at90usb646</item>
+						<item>at90usb647</item>
+						<item>at90usb1286</item>
+						<item>at90usb1287</item>
+						<item>at94k</item>
+						<item>avr6</item>
+						<item>atmega2560</item>
+						<item>atmega2561</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxExtMem">
+					<label>Use external memory</label>
+					<tooltip>Use external memory SRAM instead of internal SRAM. &#x0A;This option will pass information to the linker which will relocate the &#x0A;.data section of the application to a memory address that you specify.&#x0A;&#x0A;See the processor datasheet for the address that you should use.</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="textctrlExtMem">
+					<value>0x801100</value>
+				</object>
+				<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>3</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxF_CPU">
+					<label>Define F__CPU with the following value:</label>
+					<checked>1</checked>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="textctrlF_CPU">
+					<value>16000000UL</value>
+				</object>
+				<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxMap">
+					<label>Create symbol map file (.map)</label>
+					<checked>1</checked>
+					<tooltip>Create an extended symbol file from the .elf output file</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxHex">
+					<label>Create hex files (.hex .eep.hex)</label>
+					<checked>1</checked>
+					<tooltip>Create Intel hex files from the .elf output file</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxSrec">
+					<label>Create Motorola S-Record files (.srec .eep.srec)</label>
+					<tooltip>Create Motorola S-Record output files from the .elf output of the project</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxBin">
+					<label>Create Binary files (.bin .eep.bin)</label>
+					<tooltip>Create binary image files from the .elf output file</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxLss">
+					<label>Create extended listing file (.lss)</label>
+					<checked>1</checked>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxAvrSize">
+					<label>Run avr-size after build</label>
+					<tooltip>Run avr-size after a build to display how much resource is being used in the microcontroller.</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>
