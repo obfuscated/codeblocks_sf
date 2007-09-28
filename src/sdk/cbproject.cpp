@@ -782,9 +782,11 @@ void cbProject::BuildTree(wxTreeCtrl* tree, const wxTreeItemId& root, bool categ
             pGroupNodes[i] = tree->AppendItem(m_ProjectNode, fgam->GetGroupName(i), fldIdx, fldIdx, ftd);
         }
         // add a default category "Generated" for all auto-generated file types
-        generated = tree->AppendItem(m_ProjectNode, _("Auto-generated"), fldIdx, fldIdx);
+        ftd = new FileTreeData(this, FileTreeData::ftdkVirtualGroup);
+        generated = tree->AppendItem(m_ProjectNode, _("Auto-generated"), fldIdx, fldIdx, ftd);
         // add a default category "Others" for all non-matching file-types
-        others = tree->AppendItem(m_ProjectNode, _("Others"), fldIdx, fldIdx);
+        ftd = new FileTreeData(this, FileTreeData::ftdkVirtualGroup);
+        others = tree->AppendItem(m_ProjectNode, _("Others"), fldIdx, fldIdx, ftd);
     }
     // Now add any virtual folders
     for (size_t i = 0; i < m_VirtualFolders.GetCount(); ++i)
