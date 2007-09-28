@@ -133,7 +133,6 @@
     #include "filemanager.h"
 
     // other base files
-    #include "xtra_classes.h"
     #include "xtra_res.h"
     #include "safedelete.h"
     #include "infowindow.h"

@@ -917,9 +917,6 @@
 		<Unit filename="include/wxscintilla/include/wx/wxscintilla.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/xtra_classes.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/xtra_res.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2917,9 +2914,6 @@
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/wxscintilla.cpp">
 			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/xtra_classes.cpp">
-			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/xtra_res.cpp">
 			<Option target="sdk" />
