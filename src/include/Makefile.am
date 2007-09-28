@@ -125,7 +125,6 @@ ALLHEADERS = annoyingdialog.h \
 				uservarmanager.h \
 				virtualbuildtargetsdlg.h \
 				workspaceloader.h \
-				xtra_classes.h \
 				xtra_res.h
 
 sdk_HEADERS = $(ALLHEADERS)
