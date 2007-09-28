@@ -76,13 +76,13 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * you 'll be calling in ProjectManager.
           * @return A pointer to the active project.
           */
-        cbProject* GetActiveProject(){ return (this==NULL) ? 0 : m_pActiveProject; }
+        cbProject* GetActiveProject(){ return m_pActiveProject; }
         /** Retrieve an array of all the opened projects. This is a standard
           * wxArray containing pointers to projects. Using this array you can
           * iterate through all the opened projects.
           * @return A pointer to the array containing the projects.
           */
-        ProjectsArray* GetProjects(){ return (this==NULL) ? 0 : m_pProjects; }
+        ProjectsArray* GetProjects(){ return m_pProjects; }
         /** Check if a project is open based on the project's filename.
           * @param filename The project's filename. Must be an absolute path.
           * @return A pointer to the project if it is open, or NULL if it is not.
@@ -360,7 +360,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         /** Retrieve a pointer to the project manager's tree (GUI).
           * @return A pointer to a wxTreeCtrl window.
           */
-        wxTreeCtrl* GetTree(){ return (this==NULL) ? 0 : m_pTree; }
+        wxTreeCtrl* GetTree(){ return m_pTree; }
         /** Retrieve a pointer to the project manager's panel (GUI). This panel
           * is the parent of the project manager's tree obtained through GetTree().
           * @return A pointer to a wxPanel window.
@@ -389,7 +389,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         /** Sends message to the plugins that the workspace has been changed */
         void WorkspaceChanged();
-        
+
         /** Begins the project loading process. Only to be used by code that needs it (e.g. project importers).
           * @return True on success, false on failure.
           * @note This call *must* be "closed" by a call to EndLoadingProject()!
