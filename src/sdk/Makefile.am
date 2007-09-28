@@ -108,4 +108,5 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						uservarmanager.cpp \
 						virtualbuildtargetsdlg.cpp \
 						workspaceloader.cpp \
-						xtra_res.cpp
+						xtra_res.cpp  \
+						nullptr.cpp
