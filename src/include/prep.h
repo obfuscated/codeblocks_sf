@@ -6,6 +6,16 @@
 #endif
 
 
+
+/* -----------------------------------------------
+   remove this once the compiler supports C++0x*/
+
+struct null_pointer_t { template<typename T> operator T*() const { return (T*) 0; }; };
+null_pointer_t nullptr;
+/* ----------------------------------------------- */
+
+
+
 /*  ---------------------------------------------------------------------------------------------------------
     Version<major, minor, revision>::eval
         Integer compile-time constant that represents  a major.minor.revision style version number.
