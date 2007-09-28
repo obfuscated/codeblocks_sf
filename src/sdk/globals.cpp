@@ -113,11 +113,10 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
     for (unsigned int i = 0; i < array.GetCount(); ++i)
     {
         out << array[i];
-        if (i < array.GetCount() - 1)
-			out << separator;
+        out << separator;
     }
     return out;
-}
+} // end of GetStringFromArray
 
 wxArrayString GetArrayFromString(const wxString& text, const wxString& separator, bool trimSpaces)
 {
