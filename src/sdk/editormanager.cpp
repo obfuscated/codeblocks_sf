@@ -2893,6 +2893,7 @@ void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
         if(GetActiveEditor()==ed)
             tree->SelectItem(item);
     }
+    tree->SortChildren(m_pData->m_TreeOpenedFiles);
     tree->Expand(m_pData->m_TreeOpenedFiles);
     tree->Thaw();
     m_pData->InvalidateTree();
