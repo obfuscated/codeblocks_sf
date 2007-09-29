@@ -253,7 +253,7 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
         return false;
     if (!key.QueryValue(wxEmptyString, strVal))
         return false;
-    if (strVal != wxString::Format(_T("\"%s\" \"%%1\""), exe.c_str()))
+    if (strVal != wxString::Format(_T("\"%s\""), exe.c_str()))
         return false;
 
     key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec"));
