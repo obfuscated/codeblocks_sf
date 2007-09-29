@@ -46,7 +46,6 @@
     #include "workspaceloader.h"
     #include "cbworkspace.h"
     #include "cbeditor.h"
-    #include "xtra_classes.h"
     #include <wx/dir.h>
     #include "globals.h"
     #include "cbexception.h"  // for cbassert

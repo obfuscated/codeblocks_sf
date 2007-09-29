@@ -47,7 +47,6 @@
     #include "uservarmanager.h"
     #include "filemanager.h"
     #include "globals.h"
-    #include "xtra_classes.h" // Our custom set of wxWidgets classes
     #include "xtra_res.h" // our new ToolBarAddOn handler
 #endif
 

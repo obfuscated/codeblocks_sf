@@ -47,7 +47,6 @@
     #include "cbproject.h"
     #include "cbeditor.h"
     #include "globals.h"
-    #include "xtra_classes.h"
     #include "sdk_events.h"
     #include <wx/file.h>
     #include <wx/dir.h>
@@ -3020,6 +3019,7 @@ int EditorManager::GetOpenFilesListIcon(EditorBase* ed)
     else if (ed->GetModified()) mod =2;     // modified
 	return mod;
 }
+
 
 
 
