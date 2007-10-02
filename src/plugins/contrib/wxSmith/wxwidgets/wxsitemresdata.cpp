@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -26,10 +26,14 @@
 #include "wxsitemfactory.h"
 #include "wxsitemeditor.h"
 #include "wxstool.h"
+#include "wxsflags.h"
 #include "../wxscoder.h"
 
+#include <globals.h>
 #include <wx/clipbrd.h>
 #include <tinyxml/tinywxuni.h>
+
+using namespace wxsFlags;
 
 namespace
 {
@@ -65,15 +69,14 @@ wxsItemResData::wxsItemResData(
         m_Corrector(this),
         m_IsOK(false),
         m_LockCount(0),
-        m_ReadOnly(false),
-        m_CurrentCode(0)
+        m_ReadOnly(false)
 {
     if (  WxsFileName.empty() &&
           SrcFileName.empty() &&
           HdrFileName.empty() &&
          !XrcFileName.empty() )
     {
-        m_PropertiesFilter = wxsItem::flFile;
+        m_PropertiesFilter = flFile;
     }
     else if ( !WxsFileName.empty() &&
               !SrcFileName.empty() &&
@@ -81,17 +84,21 @@ wxsItemResData::wxsItemResData(
     {
         if ( XrcFileName.empty() )
         {
-            m_PropertiesFilter = wxsItem::flSource;
+            m_PropertiesFilter = flSource;
         }
         else
         {
-            m_PropertiesFilter = wxsItem::flMixed;
+            m_PropertiesFilter = flMixed;
         }
     }
     else
     {
         m_PropertiesFilter = 0;
     }
+
+    DetectAutoCodeBlocks();
+    // TODO: Set-up flFwdDeclar flags in m_PropertiesFilter
+    // TODO: This is for test ONLY
 
     Load();
 
@@ -152,7 +159,7 @@ bool wxsItemResData::Load()
     {
         m_Editor->UpdateModified();
     }
-    if ( Ret && (m_PropertiesFilter!=wxsItem::flFile) )
+    if ( Ret && !(m_PropertiesFilter&flFile) )
     {
         RebuildSourceCode();        // Yop, only source recreated, xrc if used not touched
     }
@@ -168,17 +175,17 @@ bool wxsItemResData::Load()
 
 bool wxsItemResData::SilentLoad()
 {
-    switch ( m_PropertiesFilter )
+    switch ( m_PropertiesFilter & (flFile|flMixed|flSource) )
     {
-        case wxsItem::flFile:
+        case flFile:
             m_IsOK = LoadInFileMode();
             break;
 
-        case wxsItem::flMixed:
+        case flMixed:
             m_IsOK = LoadInMixedMode();
             break;
 
-        case wxsItem::flSource:
+        case flSource:
             m_IsOK = LoadInSourceMode();
             break;
 
@@ -287,7 +294,7 @@ bool wxsItemResData::LoadInMixedMode()
 
 void wxsItemResData::UpdateExtraDataReq(wxsItem* Item,IdToXmlMapT& Map)
 {
-    if ( Item->GetPropertiesFlags() & wxsItem::flId )
+    if ( Item->GetPropertiesFlags() & flId )
     {
         wxString Id = Item->GetIdName();
         if ( !Id.empty() )
@@ -367,7 +374,7 @@ void wxsItemResData::LoadToolsReq(TiXmlElement* Node,bool IsXRC,bool IsExtra)
             LoadToolsReq(Object,IsXRC,IsExtra);
             continue;
         }
-        if ( GetPropertiesFilter()!=wxsItem::flSource && !Info->AllowInXRC ) continue;
+        if ( !(GetPropertiesFilter()&flSource) && !Info->AllowInXRC ) continue;
         wxsItem* Item = wxsItemFactory::Build(Class,this);
         if ( !Item ) continue;
         wxsTool* Tool = Item->ConvertToTool();
@@ -386,15 +393,15 @@ void wxsItemResData::LoadToolsReq(TiXmlElement* Node,bool IsXRC,bool IsExtra)
 bool wxsItemResData::Save()
 {
     m_IsOK = true;
-    switch ( m_PropertiesFilter )
+    switch ( m_PropertiesFilter & (flFile|flMixed|flSource) )
     {
-        case wxsItem::flFile:
+        case flFile:
             return SaveInFileMode();
 
-        case wxsItem::flMixed:
+        case flMixed:
             return SaveInMixedMode();
 
-        case wxsItem::flSource:
+        case flSource:
             return SaveInSourceMode();
     }
 
@@ -442,7 +449,7 @@ bool wxsItemResData::SaveInMixedMode()
 
 void wxsItemResData::SaveExtraDataReq(wxsItem* Item,TiXmlElement* Node)
 {
-    if ( Item->GetPropertiesFlags() && wxsItem::flId )
+    if ( Item->GetPropertiesFlags() && flId )
     {
         wxString Id = Item->GetIdName();
         if ( !Id.empty() )
@@ -499,17 +506,53 @@ bool wxsItemResData::SaveInSourceMode()
 
 void wxsItemResData::RebuildFiles()
 {
-    switch ( m_PropertiesFilter )
+    switch ( m_PropertiesFilter & (flSource|flMixed|flSource) )
     {
-        case wxsItem::flSource:
+        case flSource:
             RebuildSourceCode();
             break;
 
-        case wxsItem::flMixed:
+        case flMixed:
             RebuildSourceCode();
             RebuildXrcFile();
             break;
     }
+}
+
+void wxsItemResData::DetectAutoCodeBlocks()
+{
+    // PCH filter is present when we can find HeadersPCH() and InternalHeadersPCH() code blocks
+
+    do
+    {
+        if ( wxsCoder::Get()->GetCode(
+                m_SrcFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                true,false).IsEmpty() )
+        {
+            break;
+        }
+
+        if ( wxsCoder::Get()->GetCode(
+                m_HdrFileName,
+                wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
+                wxsCodeMarks::End(wxsCPP),
+                true,false).IsEmpty() )
+        {
+            break;
+        }
+
+        m_PropertiesFilter |= flPchFilter;
+    }
+    while ( false );
+
+    // Check if we should clear event table
+    m_IsEventTable = !wxsCoder::Get()->GetCode(
+        m_HdrFileName,
+        wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
+        wxsCodeMarks::End(wxsCPP),
+        true,false).IsEmpty();
 }
 
 void wxsItemResData::RebuildSourceCode()
@@ -518,61 +561,119 @@ void wxsItemResData::RebuildSourceCode()
     {
         case wxsCPP:
         {
-            wxString InitializingCode;
-            wxString GlobalVarsCode;
-            wxString IdentifiersCode;
-            wxString IdInitCode;
-            wxString GlobalHeaders;
-            wxString LocalHeaders;
+            wxStopWatch SW;
 
-            BuildVariablesCode(wxsCPP,InitializingCode,GlobalVarsCode);
-            BuildCreatingCode(wxsCPP,InitializingCode);
-            BuildEventHandlersCode(wxsCPP,InitializingCode);
-            BuildIdentifiersCode(wxsCPP,IdentifiersCode,IdInitCode);
-            BuildIncludesCode(wxsCPP,LocalHeaders,GlobalHeaders);
+            wxsCoderContext Context;
+
+            // Setup language
+            Context.m_Language = m_Language;
+            Context.m_Flags = GetPropertiesFilter();
+
+            // Set-up parent for root item
+            if ( m_RootItem->GetBaseProps()->m_ParentFromArg )
+            {
+                // use procedure's argument if there's any used...
+                Context.m_WindowParent = _T("parent");
+            }
+            else
+            {
+                // ...or null if there's none
+                Context.m_WindowParent = _T("0");
+            }
+
+            // Add some initial headers
+            Context.AddHeader(_T("<wx/intl.h>"),_T(""),hfLocal|hfInPCH);
+            Context.AddHeader(_T("<wx/string.h>"),_T(""),hfLocal|hfInPCH);
+            if ( m_PropertiesFilter & flMixed )
+            {
+                Context.AddHeader(_T("<wx/xrc/xmlres.h>"),_T(""),hfLocal);
+            }
+
+            // Creating local and global declarations
+            // Root item will automatically iterate thorough all tools so don't need to do it here
+            m_RootItem->BuildCode(&Context);
+
+            DBGLOG(_T("wxSmith: Code regenerated in %d ms"),SW.Time());
 
             // TODO: Maybe some group update ??
+
+            SW.Start();
             wxsCoder::Get()->AddCode(
                 m_HdrFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                _T("\n") + GlobalVarsCode);
+                DeclarationsCode(&Context) );
 
             wxsCoder::Get()->AddCode(
                 m_HdrFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("Identifiers"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                _T("\n") + IdentifiersCode);
-
-            wxsCoder::Get()->AddCode(
-                m_HdrFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                _T("\n") + GlobalHeaders);
+                IdentifiersCode(&Context) );
 
             wxsCoder::Get()->AddCode(
                 m_SrcFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("Initialize"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                _T("\n") + InitializingCode);
+                InitializeCode(&Context) );
 
             wxsCoder::Get()->AddCode(
                 m_SrcFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("IdInit"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                _T("\n") + IdInitCode);
+                IdInitCode(&Context) );
 
-            wxsCoder::Get()->AddCode(
-                m_SrcFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                _T("\n") + LocalHeaders);
+            if ( m_IsEventTable )
+            {
+                wxsCoder::Get()->AddCode(
+                    m_SrcFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    _T("\n"));    // This clears previously used event table for event binding
+            }
 
-            wxsCoder::Get()->AddCode(
-                m_SrcFileName,
-                wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
-                wxsCodeMarks::End(wxsCPP),
-                _T("\n"));    // This clears previously used event table for event binding
+            if ( m_PropertiesFilter & flPchFilter )
+            {
+
+                wxsCoder::Get()->AddCode(
+                    m_SrcFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    InternalHeadersCode(&Context) );
+
+                wxsCoder::Get()->AddCode(
+                    m_SrcFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    InternalHeadersNoPCHCode(&Context) );
+
+                wxsCoder::Get()->AddCode(
+                    m_HdrFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    HeadersCode(&Context) );
+
+                wxsCoder::Get()->AddCode(
+                    m_HdrFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    HeadersNoPCHCode(&Context) );
+            }
+            else
+            {
+                wxsCoder::Get()->AddCode(
+                    m_SrcFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    InternalHeadersAllCode(&Context) );
+
+                wxsCoder::Get()->AddCode(
+                    m_HdrFileName,
+                    wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
+                    wxsCodeMarks::End(wxsCPP),
+                    HeadersAllCode(&Context) );
+            }
+
+            DBGLOG(_T("wxSmith: Files updated in %d milis"),SW.Time());
 
             break;
         }
@@ -585,6 +686,200 @@ void wxsItemResData::RebuildSourceCode()
 
 }
 
+wxString wxsItemResData::DeclarationsCode(wxsCoderContext* Ctx)
+{
+    // Enumerate all class members
+    wxString Code = _T("\n");
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalDeclarations.begin(); i!=Ctx->m_GlobalDeclarations.end(); ++i )
+    {
+        Code += *i;
+        Code += _T("\n");
+    }
+    return Code;
+}
+
+wxString wxsItemResData::IdentifiersCode(wxsCoderContext* Ctx)
+{
+    // Enumerate all ids
+    wxString Code = _T("\n");
+    for ( size_t Count = Ctx->m_IdEnumerations.Count(), Index=0; Count>0; Index++, Count-- )
+    {
+        Code += Ctx->m_IdEnumerations[Index];
+        Code += _T("\n");
+    }
+    return Code;
+}
+
+wxString wxsItemResData::InitializeCode(wxsCoderContext* Ctx)
+{
+    wxString Code = _T("\n");
+
+    // First there are local variables
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalDeclarations.begin(); i!=Ctx->m_LocalDeclarations.end(); ++i )
+    {
+        Code += *i;
+        Code += _T("\n");
+    }
+
+    if ( Code.Length()>1 )
+    {
+        Code += _T("\n");
+    }
+
+    // Next load resource's content
+    if ( Ctx->m_Flags & flSource )
+    {
+        // If in source mode, add building code
+        Code += Ctx->m_BuildingCode;
+    }
+    else
+    {
+        // If in XRC mode, add XRC loading code
+        Code += XRCLoadingCode();
+        Code += Ctx->m_XRCFetchingCode;
+    }
+
+    if ( !Ctx->m_EventsConnectingCode.IsEmpty() )
+    {
+        // And finally attach event handlers
+        Code += _T("\n");
+        Code += Ctx->m_EventsConnectingCode;
+    }
+
+    return Code;
+}
+
+wxString wxsItemResData::IdInitCode(wxsCoderContext* Ctx)
+{
+    wxString Code = _T("\n");
+    for ( size_t Count = Ctx->m_IdInitializions.Count(), Index=0; Count>0; Index++, Count-- )
+    {
+        Code += Ctx->m_IdInitializions[Index];
+        Code += _T("\n");
+    }
+    return Code;
+}
+
+wxString wxsItemResData::HeadersCode(wxsCoderContext* Ctx)
+{
+    wxString Code;
+    // Enumerate global includes (those in header file)
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeaders.begin(); i!=Ctx->m_GlobalHeaders.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarations.begin(); i!=Ctx->m_ForwardDeclarations.end(); ++i )
+    {
+        Code += _T("\nclass ");
+        Code += *i;
+        Code += _T(";");
+    }
+    return Code + _T("\n");
+}
+
+wxString wxsItemResData::HeadersNoPCHCode(wxsCoderContext* Ctx)
+{
+    wxString Code;
+    // Enumerate global includes (those in header file)
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeadersNonPCH.begin(); i!=Ctx->m_GlobalHeadersNonPCH.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarationsNonPCH.begin(); i!=Ctx->m_ForwardDeclarationsNonPCH.end(); ++i )
+    {
+        Code += _T("\nclass ");
+        Code += *i;
+        Code += _T(";");
+    }
+    return Code + _T("\n");
+}
+
+wxString wxsItemResData::HeadersAllCode(wxsCoderContext* Ctx)
+{
+    wxString Code;
+    // Enumerate global includes (those in header file)
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeaders.begin(); i!=Ctx->m_GlobalHeaders.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeadersNonPCH.begin(); i!=Ctx->m_GlobalHeadersNonPCH.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+
+    // Enumerate all forward declarations
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarations.begin(); i!=Ctx->m_ForwardDeclarations.end(); ++i )
+    {
+        Code += _T("\nclass ");
+        Code += *i;
+        Code += _T(";");
+    }
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarationsNonPCH.begin(); i!=Ctx->m_ForwardDeclarationsNonPCH.end(); ++i )
+    {
+        Code += _T("\nclass ");
+        Code += *i;
+        Code += _T(";");
+    }
+    return Code + _T("\n");
+}
+
+wxString wxsItemResData::InternalHeadersCode(wxsCoderContext* Ctx)
+{
+    wxString Code;
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeaders.begin(); i!=Ctx->m_LocalHeaders.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    return Code + _T("\n");
+}
+
+wxString wxsItemResData::InternalHeadersNoPCHCode(wxsCoderContext* Ctx)
+{
+    wxString Code;
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeadersNonPCH.begin(); i!=Ctx->m_LocalHeadersNonPCH.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    return Code + _T("\n");
+}
+
+wxString wxsItemResData::InternalHeadersAllCode(wxsCoderContext* Ctx)
+{
+    wxString Code;
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeaders.begin(); i!=Ctx->m_LocalHeaders.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeadersNonPCH.begin(); i!=Ctx->m_LocalHeadersNonPCH.end(); ++i )
+    {
+        Code += _T("\n#include ");
+        Code += *i;
+    }
+    return Code + _T("\n");
+}
+
+wxString wxsItemResData::XRCLoadingCode()
+{
+    wxString Parent = _T("0");
+    if ( m_RootItem->GetBaseProps()->m_ParentFromArg )
+    {
+        Parent = _T("parent");
+    }
+
+    return _T("wxXmlResource::Get()->LoadObject(this,") + Parent + _T(",") +
+           wxsCodeMarks::WxString(wxsCPP,m_ClassName,false) + _T(",") +
+           wxsCodeMarks::WxString(wxsCPP,m_ClassType,false) + _T(");\n");
+}
+
+
+/*
 void wxsItemResData::BuildVariablesCode(wxsCodingLang Lang,wxString& LocalCode, wxString& GlobalCode)
 {
     switch ( Lang )
@@ -623,13 +918,13 @@ void wxsItemResData::BuildVariablesCode(wxsCodingLang Lang,wxString& LocalCode, 
 
 void wxsItemResData::BuildVariablesCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& LocalCode, wxString& GlobalCode)
 {
-    if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
+    if ( Item->GetPropertiesFlags() & flVariable )
     {
         if ( Item->GetIsMember() )
         {
             Item->BuildDeclarationCode(GlobalCode,Lang);
         }
-        else if ( m_PropertiesFilter == wxsItem::flSource )
+        else if ( m_PropertiesFilter & flSource )
         {
             Item->BuildDeclarationCode(LocalCode,Lang);
         }
@@ -648,7 +943,7 @@ void wxsItemResData::BuildVariablesCodeReq(wxsCodingLang Lang,wxsItem* Item,wxSt
 void wxsItemResData::BuildCreatingCode(wxsCodingLang Lang,wxString& Code)
 {
     m_CurrentCode = &Code;
-    switch ( m_PropertiesFilter )
+    switch ( m_PropertiesFilter & (flSource|flMixed|flFile) )
     {
         case wxsItem::flSource:
             m_RootItem->BuildCreatingCode(Code,_T(""),Lang);
@@ -752,7 +1047,7 @@ void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* I
             {
                 IdString = _T("wxID_ANY");
             }
-            else if ( m_PropertiesFilter == wxsItem::flSource )
+            else if ( m_PropertiesFilter & wxsItem::flSource )
             {
                 IdString = Item->GetIdName();
                 VarNameString = Item->GetVarName();
@@ -792,7 +1087,7 @@ void wxsItemResData::BuildEventHandlersCodeReq(wxsCodingLang Language,wxsItem* I
 
 void wxsItemResData::BuildIdentifiersCode(wxsCodingLang Lang,wxString& IdCode,wxString& IdInitCode)
 {
-    if ( m_PropertiesFilter == wxsItem::flSource )
+    if ( m_PropertiesFilter & wxsItem::flSource )
     {
         wxArrayString IdsArray;
         wxsParent* RootAsParent = m_RootItem->ConvertToParent();
@@ -875,7 +1170,7 @@ void wxsItemResData::BuildIncludesCode(wxsCodingLang Language,wxString& LocalInc
             LocalHeaders.Add(_T("<wx/fontenum.h>"));
             LocalHeaders.Add(_T("<wx/settings.h>"));
 
-            if ( m_PropertiesFilter == wxsItem::flMixed )
+            if ( m_PropertiesFilter & wxsItem::flMixed )
             {
                 LocalHeaders.Add(_T("<wx/xrc/xmlres.h>"));
             }
@@ -929,6 +1224,7 @@ void wxsItemResData::BuildHeadersReq(wxsCodingLang Lang,wxsItem* Item,wxArrayStr
 	    BuildHeadersReq(Lang,Parent->GetChild(i),LocalHeaders,GlobalHeaders);
 	}
 }
+*/
 
 bool wxsItemResData::RebuildXrcFile()
 {

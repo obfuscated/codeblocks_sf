@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -43,44 +43,44 @@ namespace
     };
 }
 
-wxString wxsPositionSizeData::GetPositionCode(const wxString& ParentName,wxsCodingLang Language)
+wxString wxsPositionSizeData::GetPositionCode(wxsCoderContext* Context)
 {
-    switch ( Language )
+    switch ( Context->m_Language )
     {
         case wxsCPP:
         {
             return IsDefault ?
                 _T("wxDefaultPosition") :
                 DialogUnits ?
-                    wxString::Format(_T("wxDLG_UNIT(%s,wxPoint(%d,%d))"),ParentName.c_str(),X,Y) :
+                    wxString::Format(_T("wxDLG_UNIT(%s,wxPoint(%d,%d))"),Context->m_WindowParent.c_str(),X,Y) :
                     wxString::Format(_T("wxPoint(%d,%d)"),X,Y);
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetPositionCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetPositionCode"),Context->m_Language);
         }
     }
 
     return wxEmptyString;
 }
 
-wxString wxsPositionSizeData::GetSizeCode(const wxString& ParentName,wxsCodingLang Language)
+wxString wxsPositionSizeData::GetSizeCode(wxsCoderContext* Context)
 {
-    switch ( Language )
+    switch ( Context->m_Language )
     {
         case wxsCPP:
         {
             return IsDefault ?
                 _T("wxDefaultSize") :
                 DialogUnits ?
-                    wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,%d))"),ParentName.c_str(),X,Y) :
+                    wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,%d))"),Context->m_WindowParent.c_str(),X,Y) :
                     wxString::Format(_T("wxSize(%d,%d)"),X,Y);
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetSizeCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsPositionSizeData::GetSizeCode"),Context->m_Language);
         }
     }
 

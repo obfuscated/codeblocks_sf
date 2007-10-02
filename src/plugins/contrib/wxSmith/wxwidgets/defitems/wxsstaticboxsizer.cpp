@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -42,13 +42,14 @@ wxSizer* wxsStaticBoxSizer::OnBuildSizerPreview(wxWindow* Parent)
     return new wxStaticBoxSizer(Orient,Parent,Label);
 }
 
-void wxsStaticBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsStaticBoxSizer::OnBuildSizerCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%s, %W, %t);\n"),
+            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%s, %W, %t);\n"),
                     (Orient!=wxHORIZONTAL)?_T("wxVERTICAL"):_T("wxHORIZONTAL"),
                     Label.c_str());
             return;
@@ -56,7 +57,7 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& 
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsStaticBoxSizer::OnBuildSizerCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsStaticBoxSizer::OnBuildSizerCreatingCode"),GetLanguage());
         }
     }
 }
@@ -68,13 +69,4 @@ void wxsStaticBoxSizer::OnEnumSizerProperties(long Flags)
 
     WXS_SHORT_STRING(wxsStaticBoxSizer,Label,_("Label"),_T("label"),_T(""),false);
     WXS_ENUM(wxsStaticBoxSizer,Orient,_("Orientation"),_T("orient"),OrientValues,OrientNames,wxHORIZONTAL);
-}
-
-void wxsStaticBoxSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/sizer.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsStaticBoxSizer::OnEnumDeclFiles"),Language);
-    }
 }

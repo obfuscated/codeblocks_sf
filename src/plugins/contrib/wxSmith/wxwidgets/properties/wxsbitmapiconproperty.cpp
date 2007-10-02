@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -27,7 +27,10 @@
 #include <messagemanager.h>
 #include <wx/artprov.h>
 #include <wx/image.h>
-#include "globals.h"
+#include <globals.h>
+#include "../wxsflags.h"
+
+using namespace wxsFlags;
 
 wxBitmap wxsBitmapIconData::GetPreview(const wxSize& Size,const wxString& DefaultClient)
 {
@@ -51,12 +54,14 @@ wxBitmap wxsBitmapIconData::GetPreview(const wxSize& Size,const wxString& Defaul
     return wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(Id),wxART_MAKE_CLIENT_ID_FROM_STR(TempClient),Size);
 }
 
-wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxsCodingLang Language,const wxString& DefaultClient)
+wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxsCoderContext* Ctx,const wxString& DefaultClient)
 {
-    switch ( Language )
+    switch ( Ctx->m_Language )
     {
         case wxsCPP:
         {
+            Ctx->AddHeader(_T("<wx/bitmap.h>"),_T(""),hfLocal);
+            Ctx->AddHeader(_T("<wx/image.h>"),_T(""),hfLocal);
             wxString Code;
             if ( Id.empty() )
             {
@@ -74,6 +79,7 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
             }
             else
             {
+                Ctx->AddHeader(_T("<wx/artprov.h>"),_T(""),hfLocal);
                 Code << _T("wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(") << wxsCodeMarks::WxString(wxsCPP,Id,false) << _T("),");
                 wxString UsedClient = Client.empty() ? DefaultClient : Client;
 
@@ -112,7 +118,7 @@ wxString wxsBitmapIconData::BuildCode(bool NoResize,const wxString& SizeCode,wxs
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsBitmapIconData::BuildCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsBitmapIconData::BuildCode"),Ctx->m_Language);
         }
     }
 

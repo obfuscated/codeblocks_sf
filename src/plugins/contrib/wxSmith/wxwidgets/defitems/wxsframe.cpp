@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -71,12 +71,13 @@ wxsFrame::wxsFrame(wxsItemResData* Data):
     Centered(false)
 {}
 
-void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsFrame::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/frame.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.c_str());
             if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
             {
@@ -86,7 +87,7 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
             {
                 Codef(_T("%AMove(%P);\n"));
             }
-            SetupWindowCode(Code,WindowParent,Language);
+            BuildSetupWindowCode();
             if ( !Icon.IsEmpty() )
             {
                 Codef(
@@ -98,7 +99,7 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
                         &Icon,_T("wxART_FRAME_ICON"));
             }
 
-            AddChildrenCode(Code,wxsCPP);
+            AddChildrenCode();
             if ( Centered )
             {
                 Codef(_T("%ACenter();\n"));
@@ -109,7 +110,7 @@ void wxsFrame::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsFrame::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsFrame::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -188,22 +189,4 @@ void wxsFrame::OnEnumContainerProperties(long Flags)
     WXS_SHORT_STRING(wxsFrame,Title,_("Title"),_T("title"),_T(""),false)
     WXS_BOOL(wxsFrame,Centered,_("Centered"),_T("centered"),false);
     WXS_ICON(wxsFrame,Icon,_T("Icon"),_T("icon"),_T("wxART_FRAME_ICON"));
-}
-
-
-void wxsFrame::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-            Decl.Add(_T("<wx/frame.h>"));
-            if ( !Icon.IsEmpty() )
-            {
-                Decl.Add(_T("<wx/icon.h>"));
-            }
-            return;
-
-        default:
-            wxsCodeMarks::Unknown(_T("wxsFrame::OnEnumDeclFiles"),Language);
-    }
 }

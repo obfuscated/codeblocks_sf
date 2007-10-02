@@ -1,15 +1,38 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSBITMAPICONEDITORDLG_H
 #define WXSBITMAPICONEDITORDLG_H
 
 //(*Headers(wxsBitmapIconEditorDlg)
-#include <wx/button.h>
-#include <wx/combobox.h>
-#include <wx/dialog.h>
-#include <wx/radiobut.h>
 #include <wx/sizer.h>
-#include <wx/statbmp.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/radiobut.h>
+#include <wx/statbmp.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
 //*)
 #include <wx/timer.h>
 
@@ -48,36 +71,36 @@ class wxsBitmapIconEditorDlg: public wxDialog
 		//*)
 
 		//(*Declarations(wxsBitmapIconEditorDlg)
-		wxBoxSizer* BoxSizer1;
-		wxBoxSizer* BoxSizer5;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxRadioButton* NoImage;
-		wxRadioButton* ImageFile;
-		wxBoxSizer* BoxSizer2;
-		wxTextCtrl* FileName;
-		wxButton* Button3;
-		wxRadioButton* ImageArt;
 		wxBoxSizer* BoxSizer4;
-		wxFlexGridSizer* FlexGridSizer2;
-		wxStaticText* StaticText1;
-		wxComboBox* ArtId;
-		wxStaticText* StaticText2;
-		wxComboBox* ArtClient;
 		wxStaticBoxSizer* StaticBoxSizer2;
 		wxStaticBitmap* Preview;
-		wxBoxSizer* BoxSizer3;
+		wxRadioButton* ImageArt;
+		wxBoxSizer* BoxSizer5;
+		wxStaticText* StaticText2;
 		wxButton* Button1;
+		wxTextCtrl* FileName;
+		wxFlexGridSizer* FlexGridSizer2;
+		wxStaticText* StaticText1;
+		wxBoxSizer* BoxSizer2;
 		wxButton* Button2;
+		wxRadioButton* ImageFile;
+		wxButton* Button3;
+		wxComboBox* ArtClient;
+		wxBoxSizer* BoxSizer1;
+		wxRadioButton* NoImage;
+		wxComboBox* ArtId;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxFlexGridSizer* FlexGridSizer1;
+		wxBoxSizer* BoxSizer3;
 		//*)
 		wxTimer* Timer1;
 
 	private:
-	
+
         void UpdatePreview();
         void WriteData(wxsBitmapIconData& Data);
         void ReadData(wxsBitmapIconData& Data);
-	
+
         wxString DefaultClient;
         wxsBitmapIconData& Data;
 

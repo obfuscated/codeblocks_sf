@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -54,34 +54,35 @@ wxsListBox::wxsListBox(wxsItemResData* Data):
     DefaultSelection(-1)
 {}
 
-void wxsListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsListBox::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+            AddHeader(_T("<wx/listbox.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
                 if ( DefaultSelection == (int)i )
                 {
-                    Code << Codef(Language,_T("%ASetSelection( "));
+                    Codef(_T("%ASetSelection( "));
                 }
-                Code << Codef(Language, _T("%AAppend(%t)"), ArrayChoices[i].c_str());
+                Codef( _T("%AAppend(%t)"), ArrayChoices[i].c_str());
                 if ( DefaultSelection == (int)i )
                 {
-                    Code << _T(" )");
+                    Codef(_T(" )"));
                 }
-                Code << _T(";\n");
+                Codef(_T(";\n"));
             }
 
-            SetupWindowCode(Code,WindowParent,Language);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsListBox::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsListBox::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -106,13 +107,4 @@ void wxsListBox::OnEnumWidgetProperties(long Flags)
 {
       WXS_ARRAYSTRING(wxsListBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))
       WXS_LONG(wxsListBox,DefaultSelection,_("Default"),_T("default"),0)
-}
-
-void wxsListBox::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/listbox.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsListBox::EnumDeclFiles"),Language);
-    }
 }

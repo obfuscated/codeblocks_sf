@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -83,24 +83,24 @@ wxsListCtrl::wxsListCtrl(wxsItemResData* Data):
         wxsListCtrlStyles)
 {}
 
-void wxsListCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsListCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/listctrl.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsListCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsListCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
-
 
 wxObject* wxsListCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
@@ -108,17 +108,6 @@ wxObject* wxsListCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-
 void wxsListCtrl::OnEnumWidgetProperties(long Flags)
 {
 }
-
-void wxsListCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/listctrl.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsListCtrl::OnEnumDeclFiles"),Language);
-    }
-}
-

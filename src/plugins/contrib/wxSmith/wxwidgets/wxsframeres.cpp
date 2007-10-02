@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@
 
 #include "wxsframeres.h"
 #include "wxsitemresdata.h"
+#include "wxsflags.h"
 #include <wx/button.h>
+
+using namespace wxsFlags;
 
 namespace
 {
@@ -33,7 +36,7 @@ namespace
 
             wxsFrameResPreview(wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
             {
-                m_Data->GetRootItem()->BuildPreview(this,wxsItem::pfExact);
+                m_Data->GetRootItem()->BuildPreview(this,pfExact);
                 wxAcceleratorEntry Acc[1];
                 Acc[0].Set(wxACCEL_NORMAL,WXK_ESCAPE,wxID_EXIT);
                 wxAcceleratorTable Table(1,Acc);

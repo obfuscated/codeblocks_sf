@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -46,25 +46,28 @@ wxsStaticBitmap::wxsStaticBitmap(wxsItemResData* Data):
         wxsStaticBitmapStyles)
 {}
 
-void wxsStaticBitmap::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsStaticBitmap::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/statbmp.h>"),GetInfo().ClassName,hfInPCH);
+
+            // Can not use %i in Codef because it doesn't take size into consideration
             wxsSizeData& SizeData = GetBaseProps()->m_Size;
             bool DontResize = SizeData.IsDefault;
-            wxString SizeCodeStr = SizeCode(WindowParent,wxsCPP);
-            wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,wxsCPP,_T("wxART_OTHER"));
+            wxString SizeCodeStr = SizeData.GetSizeCode(GetCoderContext());
+            wxString BmpCode = Bitmap.IsEmpty() ? _T("wxNullBitmap") : Bitmap.BuildCode(DontResize,SizeCodeStr,GetCoderContext(),_T("wxART_OTHER"));
 
-            Code << Codef(Language,_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.c_str());
-            SetupWindowCode(Code,WindowParent,Language);
+            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),BmpCode.c_str());
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsStaticBitmap::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsStaticBitmap::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -81,22 +84,3 @@ void wxsStaticBitmap::OnEnumWidgetProperties(long Flags)
    WXS_BITMAP(wxsStaticBitmap,Bitmap,_("Bitmap"),_T("bitmap"),_T("wxART_OTHER"))
 }
 
-void wxsStaticBitmap::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-        {
-            Decl.Add(_T("<wx/statbmp.h>"));
-            Def.Add(_T("<wx/bitmap.h>"));
-            Def.Add(_T("<wx/image.h>"));
-            Def.Add(_T("<wx/artprov.h>"));
-            return;
-        }
-
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStaticBitmap::OnEnumDeclFiles"),Language);
-        }
-    }
-}

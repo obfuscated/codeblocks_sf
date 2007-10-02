@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,7 @@
 #include <projectfile.h>
 
 //(*InternalHeaders(wxsNewWindowDlg)
-#include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
 #include <wx/intl.h>
-#include <wx/settings.h>
 #include <wx/string.h>
 //*)
 
@@ -101,13 +95,11 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_Type(ResType),
     m_Project(Project)
 {
-    wxWindowID id = wxID_ANY;
-
     //(*Initialize(wxsNewWindowDlg)
-    wxStaticText* StaticText1;
     wxStaticText* StaticText2;
+    wxStaticText* StaticText1;
     wxStaticText* StaticText3;
-
+    
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Options"));
@@ -135,7 +127,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_XRCAutoload->SetValue(false);
     m_XRCAutoload->Disable();
     FlexGridSizer1->Add(m_XRCAutoload, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3->Add(FlexGridSizer1, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+    StaticBoxSizer3->Add(FlexGridSizer1, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
     m_RootSizer->Add(StaticBoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     m_AdvOps = new wxButton(this, ID_BUTTON1, _("+ Advanced options"), wxDefaultPosition, wxDefaultSize, wxBU_LEFT|wxNO_BORDER, wxDefaultValidator, _T("ID_BUTTON1"));
     m_RootSizer->Add(m_AdvOps, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
@@ -225,6 +217,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     SetSizer(m_RootSizer);
     m_RootSizer->Fit(this);
     m_RootSizer->SetSizeHints(this);
+    
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnClassChanged);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnHeaderChanged);
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnSourceChanged);

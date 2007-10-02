@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -80,27 +80,28 @@ wxsSlider::wxsSlider(wxsItemResData* Data):
     SelMax(0)
 {}
 
-void wxsSlider::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsSlider::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %d, %d, %d, %P, %S, %T, %V, %N);\n"),Value,Min,Max);
+            AddHeader(_T("<wx/slider.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %d, %d, %d, %P, %S, %T, %V, %N);\n"),Value,Min,Max);
 
-            if ( TickFrequency )    Code << Codef(Language, _T("%ASetTickFreq(%d);\n"), TickFrequency);
-            if ( PageSize )         Code << Codef(Language, _T("%ASetPageSize(%d);\n"), PageSize);
-            if ( LineSize )         Code << Codef(Language, _T("%ASetLineSize(%d);\n"), LineSize);
-            if ( ThumbLength )      Code << Codef(Language, _T("%ASetThumbLength(%d);\n"), ThumbLength);
-            if ( Tick )             Code << Codef(Language, _T("%ASetTick(%d);\n"), Tick);
-            if ( SelMin || SelMax ) Code << Codef(Language, _T("%ASetSelection(%d, %d);\n"), SelMin, SelMax);
-            SetupWindowCode(Code,WindowParent,Language);
+            if ( TickFrequency )    Codef( _T("%ASetTickFreq(%d);\n"), TickFrequency);
+            if ( PageSize )         Codef( _T("%ASetPageSize(%d);\n"), PageSize);
+            if ( LineSize )         Codef( _T("%ASetLineSize(%d);\n"), LineSize);
+            if ( ThumbLength )      Codef( _T("%ASetThumbLength(%d);\n"), ThumbLength);
+            if ( Tick )             Codef( _T("%ASetTick(%d);\n"), Tick);
+            if ( SelMin || SelMax ) Codef( _T("%ASetSelection(%d, %d);\n"), SelMin, SelMax);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsSlider::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsSlider::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -129,13 +130,4 @@ void wxsSlider::OnEnumWidgetProperties(long Flags)
    WXS_LONG(wxsSlider,Tick,_("Tick"),_T("tick"),0)
    WXS_LONG(wxsSlider,SelMin,_("Selection Min"),_T("selmin"),0)
    WXS_LONG(wxsSlider,SelMax,_("Selection Max"),_T("selmax"),0)
-}
-
-void wxsSlider::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/slider.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsSlider::OnEnumDeclFiles"),Language);
-    }
 }

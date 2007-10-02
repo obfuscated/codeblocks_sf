@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSITEM_H
 #define WXSITEM_H
 
@@ -6,6 +29,8 @@
 #include "wxsitemfactory.h"
 #include "wxsbaseproperties.h"
 #include "wxspredefinedids.h"
+#include "wxscodegenerator.h"
+#include "wxsflags.h"
 
 #include "../properties/wxsproperties.h"
 #include "../wxsresourcetree.h"
@@ -44,40 +69,15 @@ class wxWindow;
  * \note Parent of item is automatically set up when adding item to wxsParentClass
  *       using wxsParent::AddChild
  */
-class wxsItem: public wxsPropertyContainer
+class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
 {
     public:
-
-        // Flags used for property filtering
-        static const long flVariable  = 0x0000001;  ///< \brief Item is using variable
-        static const long flId        = 0x0000002;  ///< \brief Item is using identifier
-        static const long flPosition  = 0x0000004;  ///< \brief Item is using position
-        static const long flSize      = 0x0000008;  ///< \brief Item is using size
-        static const long flEnabled   = 0x0000010;  ///< \brief Item is using Enabled property
-        static const long flFocused   = 0x0000020;  ///< \brief Item is using Focused property
-        static const long flHidden    = 0x0000040;  ///< \brief Item is using Hidden property
-        static const long flColours   = 0x0000080;  ///< \brief Item is using colour properties (Fg and Bg)
-        static const long flToolTip   = 0x0000100;  ///< \brief Item is using tooltips
-        static const long flFont      = 0x0000200;  ///< \brief Item is using font
-        static const long flHelpText  = 0x0000400;  ///< \brief Item is using help text
-        static const long flSubclass  = 0x0000800;  ///< \brief Item is using subclassing
-        static const long flMinMaxSize= 0x0001000;  ///< \brief Item is using SetMinSize / SetMaxSize functions
-        static const long flExtraCode = 0x0002000;  ///< \brief Item is using extra item initialization code
-
-        static const long flFile      = 0x8000000;  ///< \brief Edition in file mode
-        static const long flSource    = 0x4000000;  ///< \brief Edition in source mode
-        static const long flMixed     = 0x2000000;  ///< \brief Edition in mixed mode
-        static const long flPointer   = 0x1000000;  ///< \brief Flag set when current item is as pointer
-        static const long flRoot      = 0x0800000;  ///< \brief Flag set when current item is root item of resource
-
-        // Flags used when generating preview
-        static const long pfExact     = 0x000001;   ///< \brief Notify to create exact preview (without any editor-like goodies)
 
         /** \brief Ctor
          * \param Resource resource containingthis widget, must not be 0
          * \param Events array of events used by this object (may be 0 if item doesn't use events)
          */
-        wxsItem(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events);
+        wxsItem(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events,const wxsStyleSet* StyleSet);
 
         /** \brief Dctor */
         virtual ~wxsItem();
@@ -188,21 +188,6 @@ class wxsItem: public wxsPropertyContainer
          *       be called somewhere in overridden MyEnumProperties.
          */
         void EnumItemProperties(long Flags);
-
-        /** \brief Function generating code creating item in resource
-         *  \note This is wrapped for \link OnBuildCreatingCode function
-         */
-        void BuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
-
-        /** \brief Function generating code declaring item (and all it's children)
-         *  \note This is wrapped for \link OnBuildCreatingCode function
-         */
-        inline void BuildDeclarationCode(wxString& Code,wxsCodingLang Language) { return OnBuildDeclarationCode(Code,Language); }
-
-        /** \brief Function enumerating required declaration files
-         *  \note This is wrapped for \link OnEnumDeclFiles
-         */
-        inline void EnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) { OnEnumDeclFiles(Decl,Def,Language); }
 
         /** \brief Function building preview for this item
          *
@@ -331,7 +316,7 @@ class wxsItem: public wxsPropertyContainer
          *  .
          * More formating strings may be added through OnCodefExtension function
          */
-        wxString Codef(wxsCodingLang Language,const wxChar* Fmt,...);
+        wxString Codef(wxsCoderContext* Context,const wxChar* Fmt,...);
 
         /** \brief Simplified version of Codef function
          *
@@ -340,11 +325,20 @@ class wxsItem: public wxsPropertyContainer
          */
         void Codef(const wxChar* Fmt,...);
 
-        /** \brief Generating code which uses most of base properties to set-up window */
-        void BuildSetupWindowCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
+        /** \brief Default procedure generating declarations code */
+        virtual void OnBuildDeclarationsCode();
 
-        /** \brief Applying most of properties from base properties to given window */
-        void SetupWindow(wxWindow* Window,long Flags);
+        /** \brief Default procedure generating events connectiong code */
+        virtual void OnBuildEventsConnectingCode();
+
+        /** \brief Default procedure generating identifiers code */
+        virtual void OnBuildIdCode();
+
+        /** \brief Default procedure generating XRC fetching code */
+        virtual void OnBuildXRCFetchingCode();
+
+        /** \brief Helper function that will add code setting-up most of base properties of this item */
+        void BuildSetupWindowCode();
 
         /** \brief Getting properties availability flags
          *
@@ -389,50 +383,6 @@ class wxsItem: public wxsPropertyContainer
          * \note This function is called from BuildPreview() function
          */
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long PreviewFlags) = 0;
-
-        /** \brief Function generating code creating item in resource
-         *
-         * This function should generate code creating new wxWidgets object and
-         * initializing it (but not declaring the code itself). New code should
-         * be appended at the end of string passed in Code parameter.
-         *
-         * You should not worry about the coding style used in generated code.
-         * Code will be restyled before putting into files. Just keep it in
-         * valid syntax.
-         *
-         * \param Code string where new code should be appended. Do not even try
-         *        to mess up with current content.
-         * \param WindowParent name of parent of class wxWindow* (this argument
-         *        may be passed as parent in wxWidgets constructors. It will be
-         *        empty string for root items.
-         * \param Language language of generated code
-         */
-        virtual void OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language) = 0;
-
-        /** \brief Function generating code declaring item (and all it's children)
-         *
-         * This function should append new code with item pointer declaration,
-         * for example: \code wxButton* Button1; \endcode at the end of code passed
-         * in Code parameter. If declaration is not needed, Code should be left
-         * as is.
-         *
-         * Default implementation uses name of widget taken from GetInfo
-         * function. So overriding this funciton will most probably take
-         * place in case of spacer whch doesn't have variable at all.
-         */
-        virtual void OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language);
-
-        /** \brief Function enumerating required declaration files
-         *
-         * This function is called when generating source code. It must add
-         * required declaration files (f.ex. header files in case of c++) into
-         * given lists.
-         * There are two lists of files - one is list used for class declaration
-         * and one for class definition. The first one must contain header files required
-         * when creating class (f.ex. <wx/button.h>, second one when creating content
-         * of resource (f.ex. <wx/bitmap.h>). If You're unsure of type, use the first one.
-         */
-        virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) = 0;
 
         /** \brief Function which should load this item and child items
          *         from xrc / wxs structure
@@ -567,11 +517,27 @@ class wxsItem: public wxsPropertyContainer
         /** \brief Easy access to size */
         inline wxSize Size(wxWindow* Parent) { return GetBaseProps()->m_Size.GetSize(Parent); }
 
-        /** \brief Easy acces to position code */
-        wxString PosCode(const wxString& Parent,wxsCodingLang Language);
+        /** \brief Easy access to style (can be used directly when generating preview) */
+        inline long Style() { return m_BaseProperties.m_StyleSet ? m_BaseProperties.m_StyleSet->GetWxStyle(m_BaseProperties.m_StyleBits,false) : 0; }
 
-        /** \brief Easy acces to size code */
-        wxString SizeCode(const wxString& Parent,wxsCodingLang Language);
+        /** \brief Function setting up standard widget properties after the window is created.
+         *
+         * Included properties:
+         *  - Enabled
+         *  - Focused
+         *  - Hidden (skipped when not exact preview)
+         *  - FG - Foreground colour
+         *  - BG - Background colour
+         *  - Font
+         *  - ToolTip
+         *  - HelpText
+         *  - Extra style
+         *
+         * \param Preview window for which properties must be applied
+         * \param Flags Flags passed to OnBuildPreview
+         * \return window after settig up properties (value of Preview is returned)
+         */
+        wxWindow* SetupWindow(wxWindow* Window,long Flags);
 
     private:
 
@@ -601,10 +567,13 @@ class wxsItem: public wxsPropertyContainer
         virtual void OnSubPropertyChanged(wxsPropertyContainer*);
 
         /** \brief Internal version of Codef function */
-        void Codef(wxsCodingLang Language,wxString WindowParent,const wxChar* Fmt,wxString& Result,va_list ap);
+        void Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,va_list ap);
 
         /** \brief Updating label of this item in resource tree */
         void UpdateTreeLabel();
+
+        /** \brief Updating code generation flags before building code */
+        virtual void OnUpdateFlags(long& Flags);
 
         const wxsItemInfo* m_Info;              ///< \brief Pointer to item's info structure
         wxsEvents m_Events;                     ///< \brief Object managing events
@@ -618,7 +587,6 @@ class wxsItem: public wxsPropertyContainer
                                                 ///         this value may not always be correct, it's used when recreating
                                                 ///         resource tree after change
         wxsResourceItemId m_LastTreeId;         ///< \brief Last Tree item id generated from BuildItemTree
-        wxString m_WindowParent;                ///< \brief name of variable with window parent used while generating code
 
         friend class wxsParent;
 };

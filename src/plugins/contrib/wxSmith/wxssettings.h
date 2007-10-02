@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSSETTINGS_H
 #define WXSSETTINGS_H
 
@@ -5,15 +28,15 @@
 #include <configurationpanel.h>
 
 //(*Headers(wxsSettings)
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/combobox.h>
-#include <wx/panel.h>
-#include <wx/radiobut.h>
 #include <wx/sizer.h>
-#include <wx/spinctrl.h>
 #include <wx/stattext.h>
+#include <wx/checkbox.h>
+#include <wx/spinctrl.h>
+#include <wx/radiobut.h>
+#include <wx/panel.h>
+#include <wx/choice.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
 //*)
 
 class wxsSettings: public cbConfigurationPanel
@@ -67,43 +90,43 @@ class wxsSettings: public cbConfigurationPanel
 		//*)
 
 		//(*Declarations(wxsSettings)
-		wxFlexGridSizer* FlexGridSizer1;
-		wxFlexGridSizer* FlexGridSizer6;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxFlexGridSizer* FlexGridSizer2;
-		wxComboBox* m_DragAssistType;
-		wxButton* m_DragTargetCol;
-		wxButton* m_DragParentCol;
-		wxCheckBox* m_UseGrid;
-		wxSpinCtrl* m_GridSize;
-		wxStaticText* StaticText1;
-		wxCheckBox* m_Continous;
-		wxFlexGridSizer* FlexGridSizer3;
-		wxRadioButton* m_Icons16;
-		wxRadioButton* m_Icons32;
-		wxStaticText* StaticText6;
-		wxFlexGridSizer* FlexGridSizer4;
-		wxRadioButton* m_TIcons16;
-		wxRadioButton* m_TIcons32;
-		wxStaticBoxSizer* StaticBoxSizer2;
-		wxFlexGridSizer* FlexGridSizer5;
-		wxStaticText* StaticText7;
-		wxSpinCtrl* spinProportion;
-		wxStaticText* StaticText8;
-		wxBoxSizer* BoxSizer2;
-		wxCheckBox* chkTop;
-		wxCheckBox* chkBottom;
-		wxCheckBox* chkLeft;
-		wxCheckBox* chkRight;
-		wxStaticText* StaticText9;
-		wxCheckBox* chkExpand;
 		wxStaticText* StaticText10;
-		wxCheckBox* chkShaped;
-		wxStaticText* StaticText12;
+		wxStaticBoxSizer* StaticBoxSizer2;
+		wxStaticText* StaticText9;
+		wxFlexGridSizer* FlexGridSizer4;
+		wxComboBox* m_DragAssistType;
+		wxCheckBox* chkLeft;
+		wxRadioButton* m_Icons32;
 		wxChoice* choicePlacement;
 		wxStaticText* StaticText13;
+		wxFlexGridSizer* FlexGridSizer3;
+		wxCheckBox* chkTop;
+		wxStaticText* StaticText6;
+		wxFlexGridSizer* FlexGridSizer5;
+		wxStaticText* StaticText8;
+		wxSpinCtrl* spinProportion;
+		wxCheckBox* m_Continous;
+		wxFlexGridSizer* FlexGridSizer2;
+		wxStaticText* StaticText1;
+		wxBoxSizer* BoxSizer2;
+		wxRadioButton* m_TIcons16;
+		wxRadioButton* m_TIcons32;
+		wxCheckBox* chkRight;
+		wxCheckBox* chkExpand;
+		wxStaticText* StaticText7;
+		wxSpinCtrl* m_GridSize;
+		wxCheckBox* chkBottom;
 		wxSpinCtrl* spinBorder;
+		wxRadioButton* m_Icons16;
+		wxStaticText* StaticText12;
+		wxFlexGridSizer* FlexGridSizer6;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxFlexGridSizer* FlexGridSizer1;
+		wxButton* m_DragTargetCol;
+		wxCheckBox* chkShaped;
 		wxCheckBox* chkBorderDU;
+		wxButton* m_DragParentCol;
+		wxCheckBox* m_UseGrid;
 		//*)
 
         wxString GetTitle() const { return _("wxSmith settings"); }

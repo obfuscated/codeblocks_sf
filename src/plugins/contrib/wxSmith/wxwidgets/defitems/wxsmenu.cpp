@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -199,32 +199,30 @@ wxsMenu::wxsMenu(wxsItemResData* Data):
 //    }
 //}
 
-void wxsMenu::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsMenu::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
+            AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
             if ( IsPointer() )
             {
                 // There's no Create() method for wxMenu so we call ctor only when creating pointer
-                Code << Codef(Language,_T("%C();\n"));
+                Codef(_T("%C();\n"));
             }
             for ( int i=0; i<GetChildCount(); i++ )
             {
-                GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
+                GetChild(i)->BuildCode(GetCoderContext());
             }
             if ( GetParent() && GetParent()->GetClassName()==_T("wxMenuBar") )
             {
-                Code << Codef(Language,_T("%sAppend(%v, %t);\n"),
-                    GetParent()->GetAccessPrefix(Language).c_str(),
-                    GetVarName().c_str(),
-                    m_Label.c_str());
+                Codef(_T("%MAppend(%O, %t);\n"),m_Label.c_str());
             }
-            BuildSetupWindowCode(Code, WindowParent, Language);
+            BuildSetupWindowCode();
             break;
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsMenu::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsMenu::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -234,15 +232,6 @@ void wxsMenu::OnEnumToolProperties(long Flags)
     {
         // If there's parent we got labl for this menu
         WXS_SHORT_STRING(wxsMenu,m_Label,_("Title"),_T("label"),_T(""),true);
-    }
-}
-
-void wxsMenu::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/menu.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsMenu::OnEnumDeclFiles"),Language);
     }
 }
 

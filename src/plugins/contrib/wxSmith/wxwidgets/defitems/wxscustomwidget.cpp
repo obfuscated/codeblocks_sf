@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -53,19 +53,28 @@ wxsCustomWidget::wxsCustomWidget(wxsItemResData* Data):
     SetUserClass(_("CustomClass"));
 }
 
-void wxsCustomWidget::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsCustomWidget::OnBuildCreatingCode()
 {
+    if ( GetCoderFlags() & flSource )
+    {
+        if ( !m_IncludeFile.IsEmpty() )
+        {
+            if ( m_IncludeIsLocal ) AddHeader(_T("\"") + m_IncludeFile + _T("\""), GetUserClass(), 0);
+            else                    AddHeader(_T("<")  + m_IncludeFile + _T(">"),  GetUserClass(), 0);
+        }
+    }
+
     wxString Result = m_CreatingCode;
-    Result.Replace(_T("$(POS)"),PosCode(WindowParent,Language));
-    Result.Replace(_T("$(SIZE)"),SizeCode(WindowParent,Language));
+    Result.Replace(_T("$(POS)"),Codef(GetCoderContext(),_T("%P")));
+    Result.Replace(_T("$(SIZE)"),Codef(GetCoderContext(),_T("%S")));
     Result.Replace(_T("$(STYLE)"),m_Style);
     Result.Replace(_T("$(ID)"),GetIdName());
     Result.Replace(_T("$(THIS)"),GetVarName());
-    Result.Replace(_T("$(PARENT)"),WindowParent);
-    Result.Replace(_T("$(NAME)"),wxsCodeMarks::WxString(Language,GetIdName(),false));
+    Result.Replace(_T("$(PARENT)"),GetCoderContext()->m_WindowParent);
+    Result.Replace(_T("$(NAME)"),Codef(GetCoderContext(),_T("%N")));
     Result.Replace(_T("$(CLASS)"),GetUserClass());
 
-    Code << Result << _T("\n");
+    AddBuildingCode(Result+_T("\n"));
 }
 
 wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -87,7 +96,7 @@ wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,long Flags)
 void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
 {
     wxString XmlDataInit = m_XmlData;
-    if ( GetResourceData()->GetPropertiesFilter() == flSource )
+    if ( GetPropertiesFlags() & flSource )
     {
         WXS_STRING(wxsCustomWidget,m_CreatingCode,_("Creating code"),_T("creating_code"),_T(""),true);
         WXS_SHORT_STRING(wxsCustomWidget,m_IncludeFile,_("Include file"), _T("include_file"), _T(""),false);
@@ -114,25 +123,13 @@ void wxsCustomWidget::OnEnumWidgetProperties(long Flags)
     }
 }
 
-void wxsCustomWidget::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    if ( GetResourceData()->GetPropertiesFilter() == flSource )
-    {
-        if ( !m_IncludeFile.IsEmpty() )
-        {
-            if ( m_IncludeIsLocal ) Decl.Add(_T("\"") + m_IncludeFile + _T("\""));
-            else                    Decl.Add(_T("<")  + m_IncludeFile + _T(">"));
-        }
-    }
-}
-
 bool wxsCustomWidget::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 {
     bool Ret = wxsItem::OnXmlRead(Element,IsXRC,IsExtra);
 
     if ( IsXRC )
     {
-        if ( GetResourceData()->GetPropertiesFilter() != flSource )
+        if ( !(GetPropertiesFlags() & flSource) )
         {
             SetUserClass(cbC2U(Element->Attribute("class")));
             m_XmlDataDoc.Clear();
@@ -167,7 +164,7 @@ bool wxsCustomWidget::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 
     if ( IsXRC )
     {
-        if ( GetResourceData()->GetPropertiesFilter() != flSource )
+        if ( !(GetPropertiesFlags() & flSource) )
         {
             Element->SetAttribute("class",cbU2C(GetUserClass()));
             Element->RemoveAttribute("subclass");

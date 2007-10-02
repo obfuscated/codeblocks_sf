@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -95,26 +95,27 @@ wxSizer* wxsFlexGridSizer::OnBuildSizerPreview(wxWindow* Parent)
     return Sizer;
 }
 
-void wxsFlexGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsFlexGridSizer::OnBuildSizerCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
-                 VGap.GetPixelsCode(WindowParent,wxsCPP).c_str(),
-                 HGap.GetPixelsCode(WindowParent,wxsCPP).c_str());
+            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
+                 VGap.GetPixelsCode(GetCoderContext()).c_str(),
+                 HGap.GetPixelsCode(GetCoderContext()).c_str());
 
             wxArrayInt Cols = GetArray(GrowableCols);
             for ( size_t i=0; i<Cols.Count(); i++ )
             {
-                Code << Codef(Language,_T("%AAddGrowableCol(%d);\n"),Cols[i]);
+                Codef(_T("%AAddGrowableCol(%d);\n"),Cols[i]);
             }
 
             wxArrayInt Rows = GetArray(GrowableRows);
             for ( size_t i=0; i<Rows.Count(); i++ )
             {
-                Code << Codef(Language,_T("%AAddGrowableRow(%d);\n"),Rows[i]);
+                Codef(_T("%AAddGrowableRow(%d);\n"),Rows[i]);
             }
 
             return;
@@ -122,7 +123,7 @@ void wxsFlexGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& W
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnBuildSizerCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnBuildSizerCreatingCode"),GetLanguage());
         }
     }
 }
@@ -139,13 +140,4 @@ void wxsFlexGridSizer::OnEnumSizerProperties(long Flags)
     WXS_SHORT_STRING(wxsFlexGridSizer,GrowableRows,_("Growable rows"),_T("growablerows"),_T(""),false);
     FixupList(GrowableCols);
     FixupList(GrowableRows);
-}
-
-void wxsFlexGridSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/sizer.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsFlexGridSizer::OnEnumDeclFiles"),Language);
-    }
 }

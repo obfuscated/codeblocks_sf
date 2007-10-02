@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -55,23 +55,25 @@ wxsSpinCtrl::wxsSpinCtrl(wxsItemResData* Data):
     Max(100)
 {}
 
-void wxsSpinCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsSpinCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/spinctrl.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/spinctrl.h>"),_T("wxSpinEvent"),0);
             long ValueLong = 0;
             Value.ToLong(&ValueLong);
-            Code << Codef(Language,_T("%C(%W, %I, %n, %P, %S, %T, %d, %d, %d, %N);\n"),Value.c_str(),Min,Max,ValueLong);
-            if ( !Value.empty() ) Code << Codef(Language,_T("%ASetValue(%n);\n"),Value.c_str());
-            SetupWindowCode(Code,WindowParent,Language);
+            Codef(_T("%C(%W, %I, %n, %P, %S, %T, %d, %d, %d, %N);\n"),Value.c_str(),Min,Max,ValueLong);
+            if ( !Value.empty() ) Codef(_T("%ASetValue(%n);\n"),Value.c_str());
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsSpinCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsSpinCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -88,13 +90,4 @@ void wxsSpinCtrl::OnEnumWidgetProperties(long Flags)
     WXS_SHORT_STRING(wxsSpinCtrl,Value,_("Value"),_T("value"),_T(""),true)
     WXS_LONG(wxsSpinCtrl,Min,_("Min"),_T("min"),0)
     WXS_LONG(wxsSpinCtrl,Max,_("Max"),_T("max"),100)
-}
-
-void wxsSpinCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/spinctrl.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsSpinCtrl::OnEnumDeclFiles"),Language);
-    }
 }

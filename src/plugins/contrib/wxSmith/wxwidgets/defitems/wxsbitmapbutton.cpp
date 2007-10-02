@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -54,12 +54,14 @@ wxsBitmapButton::wxsBitmapButton(wxsItemResData* Data):
         wxsBitmapButtonStyles)
 {}
 
-void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsBitmapButton::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/bmpbuttn.h>"),GetInfo().ClassName,hfInPCH);
+
             Codef(_T("%C(%W, %I, %i, %P, %S, %T, %V, %N);\n"), &BitmapLabel, _T("wxART_BUTTON"));
             if ( !BitmapDisabled.IsEmpty() )
             {
@@ -78,13 +80,13 @@ void wxsBitmapButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
             {
                 Codef(_T("%ASetDefault();\n"));
             }
-            SetupWindowCode(Code,WindowParent,Language);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsBitmapButton::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -124,24 +126,4 @@ void wxsBitmapButton::OnEnumWidgetProperties(long Flags)
     WXS_BITMAP(wxsBitmapButton,BitmapSelected,_("Pressed bmp."),_T("selected"),_T("wxART_OTHER"))
     WXS_BITMAP(wxsBitmapButton,BitmapFocus,_("Focused bmp."),_T("focus"),_T("wxART_OTHER"))
     WXS_BOOL  (wxsBitmapButton,IsDefault,_("Is default"),_T("default"),false)
-}
-
-void wxsBitmapButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-        {
-            Decl.Add(_T("<wx/bmpbuttn.h>"));
-            Def.Add(_T("<wx/bitmap.h>"));
-            Def.Add(_T("<wx/image.h>"));
-            Def.Add(_T("<wx/artprov.h>"));
-            return;
-        }
-
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsBitmapButtonn::OnEnumDeclFiles"),Language);
-        }
-    }
 }

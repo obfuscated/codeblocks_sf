@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -56,34 +56,35 @@ wxsCheckListBox::wxsCheckListBox(wxsItemResData* Data):
 {}
 
 
-void wxsCheckListBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsCheckListBox::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
+            AddHeader(_T("<wx/checklst.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, 0, 0, %T, %V, %N);\n"));
 
             for ( size_t i = 0; i <  ArrayChoices.GetCount(); ++i )
             {
                 if ( ArrayChecks[i] )
                 {
-                    Code << Codef(Language, _T("%ACheck("));
+                    Codef( _T("%ACheck("));
                 }
-                Code << Codef(Language, _T("%AAppend(%t)"), ArrayChoices[i].c_str());
+                Codef( _T("%AAppend(%t)"), ArrayChoices[i].c_str());
                 if ( ArrayChecks[i] )
                 {
-                    Code << _T(")");
+                    Codef(_T(")"));
                 }
-                Code << _T(";\n");
+                Codef(_T(";\n"));
             }
-            SetupWindowCode(Code,WindowParent,Language);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsCheckListBox::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsCheckListBox::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -106,13 +107,4 @@ wxObject* wxsCheckListBox::OnBuildPreview(wxWindow* Parent,long Flags)
 void wxsCheckListBox::OnEnumWidgetProperties(long Flags)
 {
     WXS_ARRAYSTRINGCHECK(wxsCheckListBox,ArrayChoices,ArrayChecks,_("Choices"),_T("content"),_T("item"));
-}
-
-void wxsCheckListBox::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/checklst.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsCheckListBox::OnEnumDeclFiles"),Language);
-    }
 }

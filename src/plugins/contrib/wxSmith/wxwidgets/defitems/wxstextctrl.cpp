@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -71,21 +71,22 @@ wxsTextCtrl::wxsTextCtrl(wxsItemResData* Data):
 {}
 
 
-void wxsTextCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsTextCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Text.c_str());
-            if ( MaxLength > 0 ) Code << Codef(Language,_T("%ASetMaxLength(%d);\n"),MaxLength);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/textctrl.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Text.c_str());
+            if ( MaxLength > 0 ) Codef(_T("%ASetMaxLength(%d);\n"),MaxLength);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsTextCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsTextCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -102,13 +103,4 @@ void wxsTextCtrl::OnEnumWidgetProperties(long Flags)
 {
     WXS_STRING(wxsTextCtrl,Text,_("Text"),_T("value"),_T(""),false)
     WXS_LONG(wxsTextCtrl,MaxLength,_("Max Length"),_T("maxlength"),0)
-}
-
-void wxsTextCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/textctrl.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsTextCtrl::EnumDeclFiles"),Language);
-    }
 }

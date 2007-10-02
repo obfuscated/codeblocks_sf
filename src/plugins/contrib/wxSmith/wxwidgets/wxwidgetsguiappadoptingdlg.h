@@ -1,14 +1,37 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXWIDGETSGUIAPPADOPTINGDLG_H
 #define WXWIDGETSGUIAPPADOPTINGDLG_H
 
 //(*Headers(wxWidgetsGUIAppAdoptingDlg)
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/listbox.h>
+#include <wx/statline.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/gauge.h>
-#include <wx/listbox.h>
-#include <wx/sizer.h>
-#include <wx/statline.h>
-#include <wx/stattext.h>
 //*)
 #include <wx/timer.h>
 #include <projectfile.h>
@@ -58,22 +81,22 @@ class wxWidgetsGUIAppAdoptingDlg: public wxDialog
 		//*)
 
 		//(*Declarations(wxWidgetsGUIAppAdoptingDlg)
-		wxBoxSizer* BoxSizer1;
 		wxBoxSizer* BoxSizer4;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxListBox* FoundFiles;
-		wxGauge* Progress;
-		wxBoxSizer* BoxSizer2;
-		wxStaticText* ScanningTxt;
-		wxStaticText* ScanningFile;
-		wxBoxSizer* BoxSizer3;
-		wxButton* UseFileBtn;
-		wxButton* SelectBtn;
-		wxButton* CreateBtn;
-		wxStaticLine* StaticLine2;
 		wxButton* Button4;
-		wxStaticLine* StaticLine1;
+		wxButton* CreateBtn;
+		wxBoxSizer* BoxSizer2;
+		wxStaticLine* StaticLine2;
 		wxButton* Button6;
+		wxButton* SelectBtn;
+		wxStaticLine* StaticLine1;
+		wxButton* UseFileBtn;
+		wxBoxSizer* BoxSizer1;
+		wxGauge* Progress;
+		wxStaticText* ScanningFile;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxBoxSizer* BoxSizer3;
+		wxStaticText* ScanningTxt;
+		wxListBox* FoundFiles;
 		//*)
 
 	private:

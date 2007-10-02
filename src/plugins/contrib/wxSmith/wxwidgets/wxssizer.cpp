@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -62,39 +62,39 @@ void wxsSizerExtra::OnEnumProperties(long Flags)
     WXS_LONG_P(wxsSizerExtra,Proportion,_("Proportion"),_T("option"),0,Priority);
 }
 
-wxString wxsSizerExtra::AllParamsCode(const wxString& WindowParent,wxsCodingLang Language)
+wxString wxsSizerExtra::AllParamsCode(wxsCoderContext* Ctx)
 {
-    switch ( Language )
+    switch ( Ctx->m_Language )
     {
         case wxsCPP:
             return wxString::Format(_T("%d, "),Proportion) +
                    wxsSizerFlagsProperty::GetString(Flags) +
-                   _T(", ") << Border.GetPixelsCode(WindowParent,wxsCPP);
+                   _T(", ") << Border.GetPixelsCode(Ctx);
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsSizerExtra::AllParamsCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsSizerExtra::AllParamsCode"),Ctx->m_Language);
     }
     return wxEmptyString;
 }
 
 wxsSizer::wxsSizer(wxsItemResData* Data,const wxsItemInfo* Info):
-    wxsParent(Data,Info,flVariable|flSubclass,0)
+    wxsParent(Data,Info,flVariable|flSubclass,0,0)
 {
 }
 
 long wxsSizer::OnGetPropertiesFlags()
 {
-    if ( GetResourceData()->GetPropertiesFilter() != flSource )
+    if ( !(wxsParent::OnGetPropertiesFlags() & flSource) )
     {
-        return wxsItem::OnGetPropertiesFlags() & ~flVariable;
+        return wxsParent::OnGetPropertiesFlags() & ~flVariable;
     }
 
-    return wxsItem::OnGetPropertiesFlags();
+    return wxsParent::OnGetPropertiesFlags();
 }
 
-void wxsSizer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsSizer::OnBuildCreatingCode()
 {
-    OnBuildSizerCreatingCode(Code,WindowParent,Language);
+    OnBuildSizerCreatingCode();
 
     bool UnknownLang = false;
     int Count = GetChildCount();
@@ -104,19 +104,24 @@ void wxsSizer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
         wxsSizerExtra* Extra = (wxsSizerExtra*)GetChildExtra(i);
 
         // Using same parent as we got, sizer is not a parent window
-        Child->BuildCreatingCode(Code,WindowParent,Language);
+        Child->BuildCode(GetCoderContext());
 
         switch ( Child->GetType() )
         {
             case wxsTWidget:
             case wxsTContainer:
             case wxsTSizer:
-                switch ( Language )
+                switch ( GetLanguage() )
                 {
                     case wxsCPP:
                     {
-                        Code << GetVarName() << _T("->Add(") << Child->GetVarName() << _T(", ")
-                             << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
+                        wxString ChildName = Child->GetVarName();
+                        // TODO: Replate this with some formatting
+                        if ( !Child->IsPointer() )
+                        {
+                            ChildName = _T("&") + ChildName;
+                        }
+                        Codef(_T("%AAdd(%s, %s);\n"),ChildName.c_str(),Extra->AllParamsCode(GetCoderContext()).c_str());
                         break;
                     }
 
@@ -138,7 +143,7 @@ void wxsSizer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
 
     if ( UnknownLang )
     {
-        wxsCodeMarks::Unknown(_T("wxsSizer::OnBuildCreatingCode"),Language);
+        wxsCodeMarks::Unknown(_T("wxsSizer::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -274,9 +279,4 @@ void wxsSizer::OnEnumItemProperties(long Flags)
 void wxsSizer::OnAddItemQPP(wxsAdvQPP* QPP)
 {
     OnAddSizerQPP(QPP);
-}
-
-bool wxsSizer::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
-{
-    return wxsParent::OnCodefExtension(Language,Result,FmtChar,ap);
 }

@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSMENUITEM_H
 #define WXSMENUITEM_H
 
@@ -14,7 +37,7 @@ class wxsMenuItem: public wxsTool
 
     private:
 
-        virtual void OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
+        virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
         virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
         virtual bool OnIsPointer() { return true; }
@@ -23,7 +46,7 @@ class wxsMenuItem: public wxsTool
         virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);
         virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
-        virtual void OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language);
+        virtual void OnBuildDeclarationsCode();
         virtual wxString OnGetTreeLabel(int& Image);
 
         enum Type                                   ///< \brief Type of menu (or it's item)

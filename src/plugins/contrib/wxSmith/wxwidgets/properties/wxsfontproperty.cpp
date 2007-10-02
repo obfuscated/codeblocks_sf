@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,10 @@
 #include <wx/fontmap.h>
 #include <wx/settings.h>
 
+#include "../wxsflags.h"
+
+using namespace wxsFlags;
+
 wxFont wxsFontData::BuildFont()
 {
     if ( IsDefault )
@@ -39,11 +43,11 @@ wxFont wxsFontData::BuildFont()
     wxString Face;
     wxFontEnumerator Enumer;
     Enumer.EnumerateFacenames();
-#if wxCHECK_VERSION(2, 8, 0)
+    #if wxCHECK_VERSION(2, 8, 0)
         wxArrayString faceNames = Enumer.GetFacenames();
-#else
+    #else
         wxArrayString& faceNames = *Enumer.GetFacenames();
-#endif
+    #endif
     size_t Count = Faces.Count();
     for ( size_t i = 0; i<Count; i++ )
     {
@@ -90,17 +94,18 @@ wxFont wxsFontData::BuildFont()
         HasEncoding ? Enc : wxFONTENCODING_DEFAULT);
 }
 
-wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Language)
+wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCoderContext* Context)
 {
     if ( IsDefault )
     {
         return wxEmptyString;
     }
 
-    switch ( Language )
+    switch ( Context->m_Language )
     {
         case wxsCPP:
         {
+            Context->AddHeader(_T("<wx/font.h>"),_T(""),hfLocal);
             wxString Code;
 
             // Fetching Face name string
@@ -112,21 +117,28 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
             }
             else if ( Faces.Count() > 1 )
             {
-                wxString Enumerator = FontName + _T("Enumerator");
-                wxString FacesStr = FontName + _T("Faces");
-                wxString FaceName = FontName + _T("Face");
+                Context->AddHeader(_T("<wx/fontenum.h>"),_T(""),hfLocal);
 
-                // Creating font enumerator
-                // TODO: Check if there could be one enumerator for all fonts
-                Code << _T("wxFontEnumerator ") << Enumerator << _T(";\n");
-                Code << Enumerator << _T(".EnumerateFacenames();\n");
+                wxString& Enumerator    = Context->m_Extra[_T("FontEnumerator")];
+                wxString& FacesArrayStr = Context->m_Extra[_T("FontFaces")];
+                wxString  FaceName      = _T("__") + FontName + _T("Face");
 
-                // Fetching array of face names
-                Code << _T("#if wxCHECK_VERSION(2, 8, 0)\n");
-                Code << _T("\tconst wxArrayString& ") << FacesStr << _T(" = ") << Enumerator << _T(".GetFacenames();\n");
-                Code << _T("#else\n");
-                Code << _T("\twxArrayString& ") << FacesStr << _T(" = *") << Enumerator << _T(".GetFacenames();\n");
-                Code << _T("#endif\n");
+                if ( Enumerator.IsEmpty() )
+                {
+                    // Creating font enumerator if there's none present
+                    Enumerator = _T("__FontEnumerator");
+                    FacesArrayStr = _T("__FontFaces");
+                    Code << _T("wxFontEnumerator ") << Enumerator << _T(";\n");
+                    Code << Enumerator << _T(".EnumerateFacenames();\n");
+
+                    // TODO: Add flag to avoid the wxCHECK_VERSION macro
+                    // Fetching array of face names
+                    Code << _T("#if wxCHECK_VERSION(2, 8, 0)\n");
+                    Code << _T("\tconst wxArrayString& ") << FacesArrayStr << _T(" = ") << Enumerator << _T(".GetFacenames();\n");
+                    Code << _T("#else\n");
+                    Code << _T("\tconst wxArrayString& ") << FacesArrayStr << _T(" = *") << Enumerator << _T(".GetFacenames();\n");
+                    Code << _T("#endif\n");
+                }
 
                 // Generating local variable which will hold the name of face
                 Code << _T("wxString ") << FaceName << _T(";\n");
@@ -134,8 +146,8 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
 
                 for ( size_t i = 0; i<Faces.Count(); i++ )
                 {
-                    wxString ThisFace = wxsCodeMarks::WxString(wxsCPP,Faces[i]);
-                    Code << _T("if ( ") << FacesStr << _T(".Index(") << ThisFace << _T(") != wxNOT_FOUND )\n");
+                    wxString ThisFace = wxsCodeMarks::WxString(wxsCPP,Faces[i],false);
+                    Code << _T("if ( ") << FacesArrayStr << _T(".Index(") << ThisFace << _T(") != wxNOT_FOUND )\n");
                     Code << _T("\t") << FaceName << _T(" = ") << ThisFace << _T(";\n");
                     if ( i != Faces.Count() -1 )
                     {
@@ -149,7 +161,7 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
             wxString EncodingStr = _T("wxFONTENCODING_DEFAULT");
             if ( HasEncoding )
             {
-                // TODO: Mark <wx/fontmap.h> as used
+                Context->AddHeader(_T("<wx/fontmap.h>"),_T(""),hfLocal);
 
                 wxString EncodingVar = FontName + _T("Encoding");
                 Code << _T("wxFontEncoding ") << EncodingVar
@@ -187,6 +199,8 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
 
             if ( !SysFont.empty() && HasSysFont )
             {
+                Context->AddHeader(_T("<wx/settings.h>"),_T(""),hfLocal);
+
                 Code << _T("wxFont ") << FontName << _T(" = wxSystemSettings::GetFont(") << SysFont << _T(");\n");
                 Code << _T("if ( !") << FontName << _T(".Ok() ) ") << FontName << _T(" = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);\n");
 
@@ -248,7 +262,7 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCodingLang Langu
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsFontData::BuildFontCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsFontData::BuildFontCode"),Context->m_Language);
         }
     }
     return wxEmptyString;

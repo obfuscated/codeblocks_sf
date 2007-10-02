@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,15 @@
 
 #include "wxsstyleproperty.h"
 #include "../wxsitem.h"
+#include "../wxsflags.h"
 
 #include <wx/tokenzr.h>
 
 // Helper macro for fetching variables
 #define STYLEBITS   wxsVARIABLE(Object,Offset,long)
 #define STYLESETPTR wxsVARIABLE(Object,StyleSetPtrOffset,const wxsStyleSet*)
+
+using namespace wxsFlags;
 
 wxsStyleProperty::wxsStyleProperty(
     const wxString&  StyleName,
@@ -52,7 +55,7 @@ void wxsStyleProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManag
         const wxArrayLong&   StyleFlags = STYLESETPTR->GetFlags(IsExtra);
         const wxArrayLong&   StyleBits  = STYLESETPTR->GetBits(IsExtra);
 
-        bool IsXrc = ( GetPropertiesFlags(Object) & (wxsItem::flFile|wxsItem::flMixed) ) != 0;
+        bool IsXrc = !( GetPropertiesFlags(Object) & flSource );
         wxPGConstants StyleConsts;
 
         size_t Count = StyleNames.Count();

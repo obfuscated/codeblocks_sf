@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,9 @@
 #include <wx/settings.h>
 #include <wx/colordlg.h>
 #include <wx/dc.h>
+#include "../wxsflags.h"
+
+using namespace wxsFlags;
 
 
 // Creating custom colour property.
@@ -355,14 +358,14 @@ wxColour wxsColourData::GetColour()
     return wxSystemSettings::GetColour((wxSystemColour)m_type);
 }
 
-wxString wxsColourData::BuildCode(wxsCodingLang Language)
+wxString wxsColourData::BuildCode(wxsCoderContext* Context)
 {
     if ( m_type == wxsCOLOUR_DEFAULT )
     {
         return wxEmptyString;
     }
 
-    switch ( Language )
+    switch ( Context->m_Language )
     {
         case wxsCPP:
         {
@@ -422,12 +425,13 @@ wxString wxsColourData::BuildCode(wxsCodingLang Language)
                 return wxEmptyString;
             }
 
+            Context->AddHeader(_T("<wx/settings.h>"),_T(""),hfLocal);
             return _T("wxSystemSettings::GetColour(") + SysColName + _T(")");
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsColourData::BuildCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsColourData::BuildCode"),Context->m_Language);
         }
     }
 

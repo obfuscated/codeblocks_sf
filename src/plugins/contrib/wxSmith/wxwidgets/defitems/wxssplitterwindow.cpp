@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ namespace
         WXS_EVI(EVT_SPLITTER_SASH_POS_CHANGING,wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGING,wxSplitterEvent,SashPosChanging)
         WXS_EVI(EVT_SPLITTER_SASH_POS_CHANGED,wxEVT_COMMAND_SPLITTER_SASH_POS_CHANGED,wxSplitterEvent,SashPosChanged)
         WXS_EVI(EVT_SPLITTER_UNSPLIT,wxEVT_COMMAND_SPLITTER_UNSPLIT,wxSplitterEvent,Unsplit)
-        WXS_EVI(EVT_SPLITTER_DCLICK,wxEVT_COMMAND_SPLITTER_DCLICK,wxSplitterEvent,DClick)
+        WXS_EVI(EVT_SPLITTER_DCLICK,wxEVT_COMMAND_SPLITTER_DOUBLECLICKED,wxSplitterEvent,DClick)
     WXS_EV_END()
 }
 
@@ -124,28 +124,35 @@ wxObject* wxsSplitterWindow::OnBuildPreview(wxWindow* Parent,long Flags)
     return Splitter;
 }
 
-void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsSplitterWindow::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            SetupWindowCode(Code,WindowParent,wxsCPP);
-            if ( MinSize != -1 ) Code << Codef(Language,_T("%ASetMinimumPaneSize(%d);\n"),MinSize);
-            AddChildrenCode(Code,wxsCPP);
+            AddHeader(_T("<wx/splitter.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/splitter.h>"),_T("wxSplitterEvent"),0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            if ( MinSize != -1 ) Codef(_T("%ASetMinimumPaneSize(%d);\n"),MinSize);
+            AddChildrenCode();
             if ( GetChildCount() == 0 )
             {
             }
             else if ( GetChildCount() == 1 )
             {
-                Code << Codef(Language,_T("%AInitialize(%v);\n"),GetChild(0)->GetVarName().c_str());
+                const wxChar* ChildPtrAdjust = GetChild(0)->IsPointer() ? _T("") : _T("&");
+                Codef(_T("%AInitialize(%s%v);\n"),ChildPtrAdjust,GetChild(0)->GetVarName().c_str());
             }
             else
             {
-                Code << Codef(Language,_T("%ASplit%s(%v, %v);\n"),
+                const wxChar* ChildPtrAdjust0 = GetChild(0)->IsPointer() ? _T("") : _T("&");
+                const wxChar* ChildPtrAdjust1 = GetChild(1)->IsPointer() ? _T("") : _T("&");
+                Codef(_T("%ASplit%s(%s%v, %s%v);\n"),
                             (Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically"),
+                            ChildPtrAdjust0,
                             GetChild(0)->GetVarName().c_str(),
+                            ChildPtrAdjust1,
                             GetChild(1)->GetVarName().c_str());
             }
             break;
@@ -153,7 +160,7 @@ void wxsSplitterWindow::OnBuildCreatingCode(wxString& Code,const wxString& Windo
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsSplitterWindow::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsSplitterWindow::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -166,15 +173,6 @@ void wxsSplitterWindow::OnEnumContainerProperties(long Flags)
     WXS_LONG(wxsSplitterWindow,SashPos,_("Sash position"),_T("sashpos"),0);
     WXS_LONG(wxsSplitterWindow,MinSize,_("Min. pane size"),_T("minsize"),-1);
     WXS_ENUM(wxsSplitterWindow,Orientation,_("Orientation"),_T("orientation"),OrientValues,OrientNames,wxHORIZONTAL);
-}
-
-void wxsSplitterWindow::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/splitter.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsSplitterWindow::OnEnumDeclFiles"),Language);
-    }
 }
 
 bool wxsSplitterWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)

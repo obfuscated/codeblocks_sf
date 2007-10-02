@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,12 @@
 
 #include "wxsstddialogbuttonsizer.h"
 #include "../wxsitemresdata.h"
+#include "../wxsflags.h"
 
 #include <wx/sizer.h>
 #include <wx/panel.h>
+
+using namespace wxsFlags;
 
 namespace
 {
@@ -86,7 +89,7 @@ namespace
 }
 
 wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData* Data):
-    wxsItem(Data,&Reg.Info,flVariable|flSubclass,0)
+    wxsItem(Data,&Reg.Info,flVariable|flSubclass,0,0)
 {
     for ( int i=0; i<NumButtons; i++ )
     {
@@ -100,7 +103,7 @@ wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData* Data):
 
 long wxsStdDialogButtonSizer::OnGetPropertiesFlags()
 {
-    if ( GetResourceData()->GetPropertiesFilter() != flSource )
+    if ( !(wxsItem::OnGetPropertiesFlags() & flSource) )
     {
         return wxsItem::OnGetPropertiesFlags() & ~flVariable;
     }
@@ -154,50 +157,35 @@ wxObject* wxsStdDialogButtonSizer::OnBuildPreview(wxWindow* Parent,long PreviewF
     return Sizer;
 }
 
-void wxsStdDialogButtonSizer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsStdDialogButtonSizer::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            if ( IsPointer() ) Code << Codef(Language,_T("%C();\n"));
+            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+            AddHeader(_T("<wx/button.h>"),GetInfo().ClassName,hfLocal);
+
+            if ( IsPointer() ) Codef(_T("%C();\n"));
 
             for ( int i=0; i<NumButtons; i++ )
             {
                 if ( m_Use[i] )
                 {
-                    Code << Codef(Language,_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].c_str());
+                    Codef(_T("%AAddButton(new wxButton(%W, %v, %t));\n"),IdNames[i],m_Label[i].c_str());
                 }
             }
-            Code << Codef(Language,_T("%ARealize();\n"));
+            Codef(_T("%ARealize();\n"));
             break;
+
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
-
-void wxsStdDialogButtonSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-        {
-            Decl.Add(_T("<wx/sizer.h>"));
-            Def.Add(_T("<wx/button.h>"));
-            break;
-        }
-
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnEnumDeclFiles"),Language);
-        }
-    }
-}
-
 
 bool wxsStdDialogButtonSizer::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
 {

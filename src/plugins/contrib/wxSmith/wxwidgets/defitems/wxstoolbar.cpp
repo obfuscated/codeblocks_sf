@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -105,12 +105,14 @@ wxsToolBar::wxsToolBar(wxsItemResData* Data):
     m_Margins.DialogUnits = false;
 }
 
-void wxsToolBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsToolBar::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
-            // NOTE: This code assumes that parent is wxToolBar
+            AddHeader(_T("<wx/toolbar.h>"),GetInfo().ClassName,hfInPCH);
+
+            // NOTE: This code assumes that parent is wxFrame
             if ( GetChildCount() )
             {
                 /*
@@ -126,11 +128,11 @@ void wxsToolBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
 
                 if ( !m_BitmapSize.IsDefault )
                 {
-                    Codef(_T("%ASetToolBitmapSize(%s);\n"),m_BitmapSize.GetSizeCode(WindowParent,Language).c_str());
+                    Codef(_T("%ASetToolBitmapSize(%z);\n"),&m_BitmapSize);
                 }
                 if ( !m_Margins.IsDefault )
                 {
-                    Codef(_T("%ASetMargins(%s);\n"),m_Margins.GetSizeCode(WindowParent,Language).c_str());
+                    Codef(_T("%ASetMargins(%<);\n"),&m_Margins);
                 }
                 if ( m_Packing >= 0 )
                 {
@@ -143,23 +145,30 @@ void wxsToolBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent
                 for ( int i=0; i<GetChildCount(); i++ )
                 {
                     wxsItem* Child = GetChild(i);
-                    Child->BuildCreatingCode(Code,GetVarName(),Language);
+                    Child->BuildCode(GetCoderContext());
                     if ( Child->GetClassName() != _T("wxToolBarToolBase") )
                     {
-                        Codef(_T("%AAddControl(%v);\n"),Child->GetVarName().c_str());
+                        if ( Child->IsPointer() )
+                        {
+                            Codef(_T("%AAddControl(%v);\n"),Child->GetVarName().c_str());
+                        }
+                        else
+                        {
+                            Codef(_T("%AAddControl(&%v);\n"),Child->GetVarName().c_str());
+                        }
                     }
                 }
                 Codef(_T("%ARealize();\n"));
+                BuildSetupWindowCode();
                 if ( !GetParent() && GetResourceData()->GetClassType()==_T("wxFrame") )
                 {
-                    Codef(_T("SetToolBar(%v);\n"),GetVarName().c_str());
+                    Codef(_T("SetToolBar(%O);\n"));
                 }
-                BuildSetupWindowCode(Code, WindowParent, Language);
             }
             break;
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsToolBar::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsToolBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -169,15 +178,6 @@ void wxsToolBar::OnEnumToolProperties(long Flags)
     WXS_SIZE(wxsToolBar,m_Margins,_("Use Margins"),_("  Width"),_("  Height"),_("  In Dialog Units"),_T("margins"));
     WXS_LONG(wxsToolBar,m_Packing,_("Packing"),_T("packing"),-1);
     WXS_LONG(wxsToolBar,m_Separation,_("Separation"),_T("separation"),-1);
-}
-
-void wxsToolBar::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/toolbar.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsToolBar::OnEnumDeclFiles"),Language);
-    }
 }
 
 bool wxsToolBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)

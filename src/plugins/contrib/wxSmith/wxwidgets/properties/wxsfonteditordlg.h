@@ -1,20 +1,43 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSFONTEDITORDLG_H
 #define WXSFONTEDITORDLG_H
 
 #include "wxsfontproperty.h"
 
 //(*Headers(wxsFontEditorDlg)
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/choice.h>
-#include <wx/combobox.h>
-#include <wx/dialog.h>
-#include <wx/listbox.h>
-#include <wx/radiobut.h>
 #include <wx/sizer.h>
-#include <wx/spinctrl.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/listbox.h>
+#include <wx/spinctrl.h>
+#include <wx/radiobut.h>
+#include <wx/choice.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
 //*)
 
 class wxsFontEditorDlg: public wxDialog
@@ -75,61 +98,61 @@ class wxsFontEditorDlg: public wxDialog
 		//*)
 
 		//(*Declarations(wxsFontEditorDlg)
-		wxBoxSizer* BoxSizer1;
 		wxBoxSizer* BoxSizer4;
-		wxBoxSizer* BoxSizer5;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxChoice* FontType;
 		wxStaticBoxSizer* StaticBoxSizer2;
-		wxFlexGridSizer* FlexGridSizer2;
-		wxBoxSizer* BaseFontSizer;
-		wxCheckBox* BaseFontUse;
-		wxStaticText* BaseFontTxt;
+		wxBoxSizer* BoxSizer6;
 		wxChoice* BaseFontVal;
-		wxCheckBox* FamUse;
-		wxComboBox* FamVal;
-		wxCheckBox* EncodUse;
-		wxChoice* EncodVal;
-		wxCheckBox* SizeUse;
-		wxSpinCtrl* SizeVal;
-		wxCheckBox* RelSizeUse;
-		wxTextCtrl* RelSizeVal;
-		wxBoxSizer* BoxSizer2;
-		wxStaticBoxSizer* StaticBoxSizer3;
-		wxCheckBox* StyleUse;
-		wxRadioButton* StyleNorm;
-		wxRadioButton* StyleItal;
-		wxRadioButton* StyleSlant;
-		wxStaticBoxSizer* StaticBoxSizer4;
-		wxCheckBox* WeightUse;
-		wxRadioButton* WeightLight;
 		wxRadioButton* WeightNorm;
 		wxRadioButton* WeightBold;
-		wxStaticBoxSizer* StaticBoxSizer5;
+		wxBoxSizer* BoxSizer5;
 		wxCheckBox* UnderUse;
+		wxCheckBox* StyleUse;
 		wxRadioButton* UnderYes;
-		wxRadioButton* UnderNo;
-		wxBoxSizer* BoxSizer6;
-		wxStaticBoxSizer* StaticBoxSizer6;
-		wxListBox* FaceList;
-		wxBoxSizer* BoxSizer3;
-		wxButton* FaceAdd;
-		wxButton* FaceDel;
-		wxButton* FaceEdit;
+		wxRadioButton* StyleSlant;
 		wxButton* FaceUp;
-		wxButton* FaceDown;
-		wxStaticBoxSizer* StaticBoxSizer7;
+		wxStaticBoxSizer* StaticBoxSizer4;
 		wxTextCtrl* TestArea;
+		wxSpinCtrl* SizeVal;
+		wxRadioButton* StyleNorm;
+		wxCheckBox* BaseFontUse;
+		wxChoice* FontType;
+		wxCheckBox* WeightUse;
+		wxButton* FaceAdd;
+		wxStaticText* BaseFontTxt;
+		wxFlexGridSizer* FlexGridSizer2;
+		wxChoice* EncodVal;
+		wxBoxSizer* BoxSizer2;
+		wxTextCtrl* RelSizeVal;
+		wxCheckBox* FamUse;
+		wxStaticBoxSizer* StaticBoxSizer7;
+		wxRadioButton* WeightLight;
+		wxStaticBoxSizer* StaticBoxSizer3;
+		wxStaticBoxSizer* StaticBoxSizer6;
+		wxCheckBox* SizeUse;
+		wxButton* FaceDown;
+		wxBoxSizer* BoxSizer1;
+		wxCheckBox* EncodUse;
+		wxRadioButton* StyleItal;
+		wxButton* FaceDel;
+		wxListBox* FaceList;
+		wxComboBox* FamVal;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxCheckBox* RelSizeUse;
+		wxBoxSizer* BoxSizer3;
+		wxStaticBoxSizer* StaticBoxSizer5;
+		wxRadioButton* UnderNo;
+		wxButton* FaceEdit;
+		wxBoxSizer* BaseFontSizer;
 		wxStdDialogButtonSizer* StdDialogButtonSizer1;
 		//*)
 
 	private:
-	
+
         void UpdateContent();
         void UpdatePreview();
         void ReadData(wxsFontData& Data);
         void StoreData(wxsFontData& Data);
-	
+
         wxsFontData& Data;
         wxArrayString Encodings;
         bool Initialized;

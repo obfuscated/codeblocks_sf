@@ -1,14 +1,37 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSNEWWINDOWDLG_H
 #define WXSNEWWINDOWDLG_H
 
 //(*Headers(wxsNewWindowDlg)
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
 //*)
 
 #include "wxsitemres.h"
@@ -87,46 +110,46 @@ class wxsNewWindowDlg : public wxDialog
         //*)
 
         //(*Declarations(wxsNewWindowDlg)
-        wxBoxSizer* m_RootSizer;
-        wxStaticBoxSizer* StaticBoxSizer3;
-        wxFlexGridSizer* FlexGridSizer1;
-        wxTextCtrl* m_Class;
-        wxTextCtrl* m_Header;
-        wxTextCtrl* m_Source;
-        wxCheckBox* m_UseXrc;
-        wxTextCtrl* m_Xrc;
-        wxCheckBox* m_XRCAutoload;
-        wxButton* m_AdvOps;
-        wxStaticBoxSizer* m_AdvancedOptionsSizer;
-        wxFlexGridSizer* FlexGridSizer2;
-        wxCheckBox* m_UsePCH;
-        wxComboBox* m_Pch;
-        wxCheckBox* m_UseInitFunc;
-        wxTextCtrl* m_InitFunc;
-        wxStaticText* StaticText4;
-        wxTextCtrl* m_BaseClass;
-        wxStaticText* StaticText7;
-        wxFlexGridSizer* FlexGridSizer4;
-        wxStaticText* StaticText8;
-        wxStaticText* StaticText9;
         wxStaticText* StaticText10;
+        wxBoxSizer* m_RootSizer;
+        wxStaticText* StaticText9;
+        wxFlexGridSizer* FlexGridSizer4;
+        wxTextCtrl* m_Header;
+        wxTextCtrl* m_CtorCustom;
+        wxButton* m_ScopeHandlers;
+        wxTextCtrl* m_InitFunc;
+        wxTextCtrl* m_BaseClass;
+        wxCheckBox* m_CtorIdDef;
+        wxTextCtrl* m_Source;
+        wxCheckBox* m_CtorParent;
+        wxCheckBox* m_CtorId;
+        wxCheckBox* m_AddWxs;
+        wxFlexGridSizer* FlexGridSizer3;
+        wxStaticText* StaticText6;
+        wxStaticText* StaticText8;
+        wxTextCtrl* m_Class;
+        wxCheckBox* m_UsePCH;
+        wxFlexGridSizer* FlexGridSizer2;
+        wxStaticBoxSizer* m_AdvancedOptionsSizer;
+        wxCheckBox* m_CtorParentDef;
+        wxCheckBox* m_CtorSizeDef;
+        wxStaticBoxSizer* StaticBoxSizer3;
+        wxCheckBox* m_XRCAutoload;
+        wxStaticText* StaticText5;
+        wxStaticText* StaticText7;
+        wxTextCtrl* m_Xrc;
         wxButton* m_ScopeIds;
         wxButton* m_ScopeMembers;
-        wxButton* m_ScopeHandlers;
-        wxStaticText* StaticText5;
-        wxFlexGridSizer* FlexGridSizer3;
-        wxCheckBox* m_CtorParent;
-        wxCheckBox* m_CtorParentDef;
-        wxCheckBox* m_CtorId;
-        wxCheckBox* m_CtorIdDef;
-        wxCheckBox* m_CtorPos;
+        wxCheckBox* m_UseXrc;
+        wxButton* m_AdvOps;
         wxCheckBox* m_CtorPosDef;
-        wxCheckBox* m_CtorSize;
-        wxCheckBox* m_CtorSizeDef;
-        wxStaticText* StaticText6;
-        wxTextCtrl* m_CtorCustom;
-        wxCheckBox* m_AddWxs;
+        wxFlexGridSizer* FlexGridSizer1;
+        wxStaticText* StaticText4;
+        wxCheckBox* m_CtorPos;
+        wxComboBox* m_Pch;
         wxStdDialogButtonSizer* StdDialogButtonSizer1;
+        wxCheckBox* m_CtorSize;
+        wxCheckBox* m_UseInitFunc;
         //*)
 
         virtual bool PrepareResource(wxsItemRes* Res,wxsItemResData* Data);

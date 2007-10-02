@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -74,9 +74,9 @@ wxsToolBarItem::wxsToolBarItem(wxsItemResData* Data,bool IsSeparator):
 {
 }
 
-void wxsToolBarItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsToolBarItem::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
 
@@ -94,16 +94,16 @@ void wxsToolBarItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowPa
                         default:     ItemType = _T("wxITEM_CHECK");  break;
                     }
 
-                    wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),Language,_T("wxART_TOOLBAR"));
-                    wxString Bitmap2Code = m_Bitmap2.BuildCode(true,_T(""),Language,_T("wxART_TOOLBAR"));
+                    wxString BitmapCode  = m_Bitmap.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
+                    wxString Bitmap2Code = m_Bitmap2.BuildCode(true,_T(""),GetCoderContext(),_T("wxART_TOOLBAR"));
                     if ( BitmapCode.IsEmpty() )  BitmapCode  = _T("wxNullBitmap");
                     if ( Bitmap2Code.IsEmpty() ) Bitmap2Code = _T("wxNullBitmap");
 
-                    Codef(_T("%v = %MAddTool(%I, %t, %s, %s, %s, %t, %t);\n"),
+                    Codef(_T("%v = %MAddTool(%I, %t, %i, %i, %s, %t, %t);\n"),
                         GetVarName().c_str(),
                         m_Label.c_str(),
-                        BitmapCode.c_str(),
-                        Bitmap2Code.c_str(),
+                        &m_Bitmap,_T("wxART_TOOLBAR"),
+                        &m_Bitmap2,_T("wxART_TOOLBAR"),
                         ItemType,
                         m_ToolTip.c_str(),
                         m_HelpText.c_str());
@@ -120,7 +120,7 @@ void wxsToolBarItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowPa
             break;
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsToolBarItem::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsToolBarItem::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -232,8 +232,8 @@ wxString wxsToolBarItem::OnGetTreeLabel(int& Image)
     }
 }
 
-void wxsToolBarItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
+void wxsToolBarItem::OnBuildDeclarationsCode()
 {
     if ( m_Type == Separator ) return;
-    wxsItem::OnBuildDeclarationCode(Code,Language);
+    wxsItem::OnBuildDeclarationsCode();
 }

@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -51,21 +51,22 @@ wxsToggleButton::wxsToggleButton(wxsItemResData* Data):
 {}
 
 
-void wxsToggleButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsToggleButton::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
-            if ( IsChecked ) Code << Codef(Language,_T("%ASetValue(%b);\n"),true);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/tglbtn.h>"),GetInfo().ClassName,0);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
+            if ( IsChecked ) Codef(_T("%ASetValue(%b);\n"),true);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsToggleButton::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsToggleButton::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -81,13 +82,4 @@ void wxsToggleButton::OnEnumWidgetProperties(long Flags)
 {
     WXS_STRING(wxsToggleButton,Label,_("Label"),_T("label"),_T(""),false)
     WXS_BOOL(wxsToggleButton,IsChecked,_("Is checked"),_T("checked"),false)
-}
-
-void wxsToggleButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/tglbtn.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsToggleButton::OnEnumDeclFiles"),Language);
-    }
 }

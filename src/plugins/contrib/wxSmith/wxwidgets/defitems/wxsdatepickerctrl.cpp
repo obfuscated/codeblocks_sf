@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -53,20 +53,22 @@ wxsDatePickerCtrl::wxsDatePickerCtrl(wxsItemResData* Data):
         wxsDatePickerCtrlStyles)
 {}
 
-void wxsDatePickerCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsDatePickerCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %V, %N);\n"));
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/datectrl.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/dateevt.h>"),_T("wxDateEvent"),0);
+            Codef(_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %V, %N);\n"));
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsDatePickerCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsDatePickerCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -80,18 +82,4 @@ wxObject* wxsDatePickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsDatePickerCtrl::OnEnumWidgetProperties(long Flags)
 {
-}
-
-void wxsDatePickerCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-        {
-            Decl.Add(_T("<wx/datectrl.h>"));
-            Decl.Add(_T("<wx/dateevt.h>"));
-            return;
-        }
-        default: wxsCodeMarks::Unknown(_T("wxsDatePickerCtrl::OnEnumDeclFiles"),Language);
-    }
 }

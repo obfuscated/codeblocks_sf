@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -34,7 +34,6 @@ namespace
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsStaticBoxEvents)
-        WXS_EVI(EVT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEvent,Click)
     WXS_EV_END()
 }
 
@@ -47,20 +46,21 @@ wxsStaticBox::wxsStaticBox(wxsItemResData* Data):
     Label(_("Label"))
 {}
 
-void wxsStaticBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsStaticBox::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.c_str());
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/statbox.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.c_str());
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsStaticBox::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsStaticBox::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -74,13 +74,4 @@ wxObject* wxsStaticBox::OnBuildPreview(wxWindow* Parent,long Flags)
 void wxsStaticBox::OnEnumWidgetProperties(long Flags)
 {
     WXS_SHORT_STRING(wxsStaticBox,Label,_("Label"),_T("label"),_T(""),false)
-}
-
-void wxsStaticBox::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/statbox.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsStaticBox::OnEnumDeclFiles"),Language);
-    }
 }

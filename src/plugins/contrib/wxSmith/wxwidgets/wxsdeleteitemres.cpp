@@ -24,14 +24,8 @@
 #include "wxsdeleteitemres.h"
 
 //(*InternalHeaders(wxsDeleteItemRes)
-#include <wx/bitmap.h>
-#include <wx/button.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
 #include <wx/intl.h>
-#include <wx/settings.h>
+#include <wx/button.h>
 #include <wx/string.h>
 //*)
 
@@ -74,6 +68,7 @@ wxsDeleteItemRes::wxsDeleteItemRes()
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
+	
 	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsDeleteItemRes::Onm_DeleteSourcesClick);
 	//*)
 }

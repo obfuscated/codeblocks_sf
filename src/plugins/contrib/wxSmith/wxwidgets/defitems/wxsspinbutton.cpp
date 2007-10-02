@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -58,22 +58,24 @@ wxsSpinButton::wxsSpinButton(wxsItemResData* Data):
     Max(100)
 {}
 
-void wxsSpinButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsSpinButton::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            if ( Value ) Code << Codef(Language,_T("%ASetValue(%d);\n"), Value);
-            if ( Max > Min ) Code << Codef(Language,_T("%ASetRange(%d, %d);\n"), Min, Max);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/spinbutt.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/spinbutt.h>"),_T("wxSpinEvent"),0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            if ( Value ) Codef(_T("%ASetValue(%d);\n"), Value);
+            if ( Max > Min ) Codef(_T("%ASetRange(%d, %d);\n"), Min, Max);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsSpinButton::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsSpinButton::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -92,13 +94,4 @@ void wxsSpinButton::OnEnumWidgetProperties(long Flags)
     WXS_LONG(wxsSpinButton,Value,_("Value"),_T("value"),0)
     WXS_LONG(wxsSpinButton,Min,_("Min Value"),_T("min"),0)
     WXS_LONG(wxsSpinButton,Max,_("Max Value"),_T("max"),0)
-}
-
-void wxsSpinButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/spinbutt.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsSpinButton::OnEnumDeclFiles"),Language);
-    }
 }

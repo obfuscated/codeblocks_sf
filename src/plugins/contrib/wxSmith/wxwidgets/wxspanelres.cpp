@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@
 
 #include "wxspanelres.h"
 #include "wxsitemresdata.h"
+#include "wxsflags.h"
 #include <wx/button.h>
+
+using namespace wxsFlags;
 
 namespace
 {
@@ -34,7 +37,7 @@ namespace
             wxsPanelResPreview(wxWindow* Parent,wxsItemResData* Data): m_Data(Data)
             {
                 Create(Parent,-1,_("Preview for wxPanel class"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
-                wxObject* PreviewObj = m_Data->GetRootItem()->BuildPreview(this,wxsItem::pfExact);
+                wxObject* PreviewObj = m_Data->GetRootItem()->BuildPreview(this,pfExact);
                 wxWindow* PreviewWnd = wxDynamicCast(PreviewObj,wxWindow);
                 if ( !PreviewWnd )
                 {

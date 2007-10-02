@@ -682,6 +682,18 @@
 		<Unit filename="wxwidgets\wxsbaseproperties.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets\wxscodegenerator.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscodegenerator.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscodercontext.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxscodercontext.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets\wxscontainer.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -725,6 +737,9 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\wxsexproperties.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\wxsflags.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\wxsframeres.cpp">

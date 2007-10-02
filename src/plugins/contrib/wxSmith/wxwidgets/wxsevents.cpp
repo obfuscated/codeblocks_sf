@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "wxsevents.h"
 #include "wxsitem.h"
 #include "wxsitemresdata.h"
+#include "wxsflags.h"
 
 #include <messagemanager.h>
 
@@ -31,6 +32,8 @@
 #define HandlerXmlEntryName     "entry"
 #define HandlerXmlTypeName      "type"
 #define HandlerXmlFunctionName  "function"
+
+using namespace wxsFlags;
 
 wxsEvents::wxsEvents(const wxsEventDesc* Events,wxsItem* Item):
     m_Item(Item),
@@ -112,10 +115,10 @@ void wxsEvents::XmlSaveFunctions(TiXmlElement* Element)
     }
 }
 
-void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,const wxString& VarNameString,bool IsRoot,wxsCodingLang Language)
+void wxsEvents::GenerateBindingCode(wxsCoderContext* Context,const wxString& IdString,const wxString& VarNameString)
 {
     wxString ClassName = m_Item->GetResourceData()->GetClassName();
-    switch ( Language )
+    switch ( Context->m_Language )
     {
         case wxsCPP:
         {
@@ -126,23 +129,26 @@ void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,cons
                     switch ( m_EventArray[i].ET )
                     {
                         case wxsEventDesc::Id:
-                            Code << _T("Connect(") << IdString << _T(",")
+                            Context->m_EventsConnectingCode
+                                 << _T("Connect(") << IdString << _T(",")
                                  << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
                                  << ClassName << _T("::") << m_Functions[i] << _T(");\n");
                             break;
 
                         case wxsEventDesc::NoId:
 
-                            if ( IsRoot )
+                            if ( Context->m_Flags & flRoot )
                             {
                                 // If this is root item, it's threaded as Id one
-                                Code << _T("Connect(") << IdString << _T(",")
+                                Context->m_EventsConnectingCode
+                                     << _T("Connect(") << IdString << _T(",")
                                      << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
                                      << ClassName << _T("::") << m_Functions[i] << _T(");\n");
                             }
                             else
                             {
-                                Code << VarNameString << _T("->Connect(") << IdString
+                                Context->m_EventsConnectingCode
+                                     << VarNameString << _T("->Connect(") << IdString
                                      << _T(",") << m_EventArray[i].Type
                                      << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
                                      << _T(",0,this);\n");
@@ -159,19 +165,19 @@ void wxsEvents::GenerateBindingCode(wxString& Code,const wxString& IdString,cons
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsEvents::GenerateBindingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsEvents::GenerateBindingCode"),Context->m_Language);
         }
     }
 }
 
-bool wxsEvents::ForceVariable()
-{
-    for ( int i=0; i<m_Count; i++ )
-    {
-        if ( !m_Functions[i].empty() )
-        {
-            return true;
-        }
-    }
-    return false;
-}
+//bool wxsEvents::ForceVariable()
+//{
+//    for ( int i=0; i<m_Count; i++ )
+//    {
+//        if ( !m_Functions[i].empty() )
+//        {
+//            return true;
+//        }
+//    }
+//    return false;
+//}

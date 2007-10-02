@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -53,20 +53,21 @@ wxsGenericDirCtrl::wxsGenericDirCtrl(wxsItemResData* Data):
 {}
 
 
-void wxsGenericDirCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsGenericDirCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %n, %P, %S, %T, %n, %d, %N);\n"),DefaultFolder.c_str(),Filter.c_str(),DefaultFilter);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/dirctrl.h>"),GetInfo().ClassName,0);
+            Codef(_T("%C(%W, %I, %n, %P, %S, %T, %n, %d, %N);\n"),DefaultFolder.c_str(),Filter.c_str(),DefaultFilter);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsGenericDirCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsGenericDirCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -82,13 +83,4 @@ void wxsGenericDirCtrl::OnEnumWidgetProperties(long Flags)
     WXS_SHORT_STRING(wxsGenericDirCtrl,DefaultFolder,_("Default Folder"),_T("defaultfolder"),_T(""),true)
     WXS_SHORT_STRING(wxsGenericDirCtrl,Filter,_("Filter"),_T("filter"),_T(""),true)
     WXS_LONG(wxsGenericDirCtrl,DefaultFilter,_("Default Filter"),_T("defaultfilter"),0)
-}
-
-void wxsGenericDirCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/dirctrl.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsGenericDirCtrl::OnEnumDeclFiles"),Language);
-    }
 }

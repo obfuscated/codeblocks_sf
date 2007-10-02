@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -41,21 +41,22 @@ wxSizer* wxsGridSizer::OnBuildSizerPreview(wxWindow* Parent)
         VGap.GetPixels(Parent),HGap.GetPixels(Parent));
 }
 
-void wxsGridSizer::OnBuildSizerCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsGridSizer::OnBuildSizerCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
-                    VGap.GetPixelsCode(WindowParent,wxsCPP).c_str(),
-                    HGap.GetPixelsCode(WindowParent,wxsCPP).c_str());
+            AddHeader(_T("<wx/sizer.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%d, %d, %s, %s);\n"),Rows,Cols,
+                    VGap.GetPixelsCode(GetCoderContext()).c_str(),
+                    HGap.GetPixelsCode(GetCoderContext()).c_str());
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsGridSizer::OnBuildSizerCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsGridSizer::OnBuildSizerCreatingCode"),GetLanguage());
         }
     }
 }
@@ -66,13 +67,4 @@ void wxsGridSizer::OnEnumSizerProperties(long Flags)
     WXS_LONG(wxsGridSizer,Rows,_("Rows"),_T("rows"),0);
     WXS_DIMENSION(wxsGridSizer,VGap,_("V-Gap"),_("V-Gap in dialog units"),_T("vgap"),0,false);
     WXS_DIMENSION(wxsGridSizer,HGap,_("H-Gap"),_("H,y-Gap in dialog units"),_T("hgap"),0,false);
-}
-
-void wxsGridSizer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/sizer.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsGridSizer::OnEnumDeclFiles"),Language);
-    }
 }

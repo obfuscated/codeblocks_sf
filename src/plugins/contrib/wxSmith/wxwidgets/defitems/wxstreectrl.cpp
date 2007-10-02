@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -78,20 +78,22 @@ wxsTreeCtrl::wxsTreeCtrl(wxsItemResData* Data):
         wxsTreeCtrlStyles)
 {}
 
-void wxsTreeCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsTreeCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/treectrl.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/treectrl.h>"),_T("wxTreeEvent"),0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsTreeCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsTreeCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -106,13 +108,4 @@ wxObject* wxsTreeCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsTreeCtrl::OnEnumWidgetProperties(long Flags)
 {
-}
-
-void wxsTreeCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/treectrl.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsTreeCtrl::OnEnumDeclFiles"),Language);
-    }
 }

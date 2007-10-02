@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -57,45 +57,44 @@ wxsRadioBox::wxsRadioBox(wxsItemResData* Data):
 {}
 
 
-void wxsRadioBox::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsRadioBox::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/radiobox.h>"),GetInfo().ClassName,hfInPCH);
+
             // wxRadioBox does not have Append Function , therefore , have to build a wxString[]
             // to pass in to the ctor
             if ( ArrayChoices.GetCount() > 0 )
             {
-                Code<< _T("wxString wxRadioBoxChoices_") << GetVarName()
-                    << _T("[") << wxString::Format(_T("%d"),ArrayChoices.GetCount()) << _T("] = \n{\n");
+                Codef(_T("wxString wxRadioBoxChoices_%s[%d] = \n{\n"),GetVarName().c_str(),(int)ArrayChoices.GetCount());
                 for ( size_t i = 0; i < ArrayChoices.GetCount(); ++i )
                 {
-                    Code << _T("\t") << wxsCodeMarks::WxString(wxsCPP,ArrayChoices[i]);
-                    if ( i != ArrayChoices.GetCount()-1 ) Code << _T(",");
-                    Code << _T("\n");
+                    Codef(_T("\t%t%s\n"),ArrayChoices[i].c_str(),((i!=ArrayChoices.GetCount()-1)?_T(","):_T("")));
                 }
-                Code << _T("};\n");
+                Codef(_T("};\n"));
             }
 
             if ( Dimension < 1 ) Dimension = 1;
 
-            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
+            Codef(_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
                         Label.c_str(),ArrayChoices.GetCount(),
                         (ArrayChoices.IsEmpty()?_T("0"):(_T("wxRadioBoxChoices_")+GetVarName()).c_str()),
                         Dimension);
 
             if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )
             {
-                Code << Codef(Language, _T("%ASetSelection(%d);\n"), DefaultSelection);
+                Codef( _T("%ASetSelection(%d);\n"), DefaultSelection);
             }
-            SetupWindowCode(Code,WindowParent,Language);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsRadioBox::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsRadioBox::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -118,13 +117,4 @@ void wxsRadioBox::OnEnumWidgetProperties(long Flags)
     WXS_LONG(wxsRadioBox,DefaultSelection,_("Default"),_T("default"),0)
     WXS_LONG(wxsRadioBox,Dimension,_("Dimension"),_T("dimension"),1)
 
-}
-
-void wxsRadioBox::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/radiobox.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsRadioBox::OnEnumDeclFiles"),Language);
-    }
 }

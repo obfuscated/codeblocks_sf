@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -54,23 +54,24 @@ wxsGauge::wxsGauge(wxsItemResData* Data):
 
 
 
-void wxsGauge::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsGauge::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"),Range);
-            if ( Value )  Code << Codef(Language,_T("%ASetValue(%d);\n"),Value);
-            if ( Shadow ) Code << Codef(Language,_T("%ASetShadowWidth(%d);\n"),Shadow);
-            if ( Bezel )  Code << Codef(Language,_T("%ASetBezelFace(%d);\n"),Bezel);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/gauge.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %d, %P, %S, %T, %V, %N);\n"),Range);
+            if ( Value )  Codef(_T("%ASetValue(%d);\n"),Value);
+            if ( Shadow ) Codef(_T("%ASetShadowWidth(%d);\n"),Shadow);
+            if ( Bezel )  Codef(_T("%ASetBezelFace(%d);\n"),Bezel);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsGauge::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsGauge::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -92,13 +93,4 @@ void wxsGauge::OnEnumWidgetProperties(long Flags)
     WXS_LONG(wxsGauge,Range,_("Range"),_T("range"),100)
     WXS_LONG(wxsGauge,Shadow,_("3D Shadow Width"),_T("shadow"),0)
     WXS_LONG(wxsGauge,Bezel,_("Bezel Face Width"),_T("bezel"),0)
-}
-
-void wxsGauge::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/gauge.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsGauge::OnEnumDeclFiles"),Language);
-    }
 }

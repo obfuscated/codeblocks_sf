@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSBASEPROPERTIES_H
 #define WXSBASEPROPERTIES_H
 
@@ -38,6 +61,11 @@ class wxsBaseProperties: public wxsPropertyContainer
         wxString m_HelpText;              ///< \brief Help text
         wxString m_ExtraCode;             ///< \brief User's extra item initialization code
 
+        // TODO: Convert these to long long
+        long m_StyleBits;                 ///< \brief Internal representation of styles as bit field
+        long m_ExStyleBits;               ///< \brief Internal representation of extra styles as bit field
+        const wxsStyleSet* m_StyleSet;    ///< \brief Styleset used in style operations
+
         /** \brief Constructor - it will be used to set default values */
         wxsBaseProperties():
             m_ParentFromArg(true),
@@ -52,7 +80,10 @@ class wxsBaseProperties: public wxsPropertyContainer
             m_Bg(wxsCOLOUR_DEFAULT),
             m_ToolTip(wxEmptyString),
             m_HelpText(wxEmptyString),
-            m_ExtraCode(wxEmptyString)
+            m_ExtraCode(wxEmptyString),
+            m_StyleBits(0),
+            m_ExStyleBits(0),
+            m_StyleSet(0)
         {}
 
         /** \brief Function generating QPPChild Panel for most frequently used

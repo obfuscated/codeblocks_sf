@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -49,23 +49,24 @@ wxsHtmlWindow::wxsHtmlWindow(wxsItemResData* Data):
 {
 }
 
-void wxsHtmlWindow::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsHtmlWindow::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            if ( Borders.Value ) Code << Codef(Language,_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(WindowParent,wxsCPP).c_str());
-            if ( !Url.empty() ) Code << Codef(Language,_T("%ALoadPage(%t);\n"),Url.c_str());
-            else if ( !HtmlCode.empty() ) Code << Codef(Language,_T("%ASetPage(%t);\n"),HtmlCode.c_str());
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/html/htmlwin.h>"),GetInfo().ClassName,0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            if ( Borders.Value ) Codef(_T("%ASetBorders(%s);\n"),Borders.GetPixelsCode(GetCoderContext()).c_str());
+            if ( !Url.empty() ) Codef(_T("%ALoadPage(%t);\n"),Url.c_str());
+            else if ( !HtmlCode.empty() ) Codef(_T("%ASetPage(%t);\n"),HtmlCode.c_str());
+            BuildSetupWindowCode();
             break;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsHtmlWindow::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsHtmlWindow::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -104,21 +105,4 @@ void wxsHtmlWindow::OnEnumWidgetProperties(long Flags)
     WXS_SHORT_STRING(wxsHtmlWindow,Url,_("Url"),_T("url"),_T(""),false)
     WXS_STRING(wxsHtmlWindow,HtmlCode,_("Html Code"),_T("htmlcode"),_T(""),false)
     WXS_DIMENSION(wxsHtmlWindow,Borders,_("Borders"),_("Borders in Dialog Units"),_("borders"),0,false)
-}
-
-void wxsHtmlWindow::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-        {
-            Decl.Add(_T("<wx/html/htmlwin.h>"));
-            break;
-        }
-
-        default:
-        {
-            wxsCodeMarks::Unknown(_T("wxsHtmlWindow::OnEnumDeclFiles"),Language);
-        }
-    }
 }

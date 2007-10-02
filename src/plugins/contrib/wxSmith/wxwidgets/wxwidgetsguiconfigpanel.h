@@ -1,14 +1,37 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXWIDGETSGUICONFIGPANEL_H
 #define WXWIDGETSGUICONFIGPANEL_H
 
 //(*Headers(wxWidgetsGUIConfigPanel)
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
 //*)
 
 #include "wxwidgetsgui.h"
@@ -46,23 +69,23 @@ class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
 		//*)
 
 		//(*Declarations(wxWidgetsGUIConfigPanel)
-		wxBoxSizer* BoxSizer1;
-		wxBoxSizer* BoxSizer2;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxStaticText* StaticText1;
-		wxTextCtrl* AutoLoad;
-		wxBoxSizer* BoxSizer3;
-		wxButton* Button1;
-		wxButton* Button2;
 		wxBoxSizer* BoxSizer4;
 		wxStaticBoxSizer* StaticBoxSizer2;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxComboBox* MainRes;
-		wxStaticText* StaticText2;
-		wxStaticBoxSizer* StaticBoxSizer3;
 		wxBoxSizer* BoxSizer5;
+		wxStaticText* StaticText2;
+		wxButton* Button1;
+		wxTextCtrl* AutoLoad;
+		wxComboBox* MainRes;
+		wxStaticText* StaticText1;
+		wxBoxSizer* BoxSizer2;
+		wxButton* Button2;
 		wxCheckBox* InitAll;
+		wxStaticBoxSizer* StaticBoxSizer3;
+		wxBoxSizer* BoxSizer1;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxFlexGridSizer* FlexGridSizer1;
 		wxCheckBox* InitAllNecessary;
+		wxBoxSizer* BoxSizer3;
 		//*)
 
         wxWidgetsGUI* m_GUI;

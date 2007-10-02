@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -32,43 +32,16 @@ wxsTool::wxsTool(
     const wxsEventDesc* EventArray,
     const wxsStyleSet* StyleSet,
     long PropertiesFlags):
-        wxsParent(Data,Info,PropertiesFlags,EventArray),
-        m_StyleSet(StyleSet),
-        m_StyleBits(0),
-        m_ExStyleBits(0)
+        wxsParent(Data,Info,PropertiesFlags,EventArray,StyleSet)
 {
-    if ( StyleSet )
-    {
-        m_StyleBits = StyleSet->GetDefaultBits(false);
-        m_ExStyleBits = StyleSet->GetDefaultBits(true);
-    }
-
 }
 
 void wxsTool::OnEnumItemProperties(long Flags)
 {
-    static const int Priority = 50;
-
     OnEnumToolProperties(Flags);
-    if ( m_StyleSet )
-    {
-        WXS_STYLE_P(wxsTool,m_StyleBits,_("Style"),_T("style"),m_StyleSet,Priority);
-        WXS_EXSTYLE_P(wxsTool,m_ExStyleBits,_("Extra style"),_T("exstyle"),m_StyleSet,Priority);
-    }
 }
 
 void wxsTool::OnAddItemQPP(wxsAdvQPP* QPP)
 {
     OnAddToolQPP(QPP);
-}
-
-bool wxsTool::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
-{
-    if ( *FmtChar == _T('T') )
-    {
-        Result << StyleCode(Language);
-        FmtChar++;
-        return true;
-    }
-    return wxsItem::OnCodefExtension(Language,Result,FmtChar,ap);
 }

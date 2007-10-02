@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -71,36 +71,28 @@ wxsMenuBar::wxsMenuBar(wxsItemResData* Data):
 {
 }
 
-void wxsMenuBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsMenuBar::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
-            Code << Codef(Language,_T("%C();\n"));
+            AddHeader(_T("<wx/menu.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C();\n"));
             for ( int i=0; i<GetChildCount(); i++ )
             {
-                GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
+                GetChild(i)->BuildCode(GetCoderContext());
             }
-            Code << Codef(Language, _T("SetMenuBar(%v);\n"), GetVarName().c_str());
-            BuildSetupWindowCode(Code, WindowParent, Language);
+            Codef(_T("%MSetMenuBar(%O);\n"));
+            BuildSetupWindowCode();
             break;
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsMenuBar::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsMenuBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
 void wxsMenuBar::OnEnumToolProperties(long Flags)
 {
-}
-
-void wxsMenuBar::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/menu.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsMenuBar::OnEnumDeclFiles"),Language);
-    }
 }
 
 bool wxsMenuBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)

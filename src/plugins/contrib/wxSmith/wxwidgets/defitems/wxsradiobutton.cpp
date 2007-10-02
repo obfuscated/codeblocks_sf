@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -52,21 +52,22 @@ wxsRadioButton::wxsRadioButton(wxsItemResData* Data):
 {}
 
 
-void wxsRadioButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsRadioButton::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
-            if ( IsSelected ) Code << Codef(Language, _T("%ASetValue(%b);\n"), true);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/radiobut.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"),Label.c_str());
+            if ( IsSelected ) Codef( _T("%ASetValue(%b);\n"), true);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsRadioButton::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsRadioButton::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -82,13 +83,4 @@ void wxsRadioButton::OnEnumWidgetProperties(long Flags)
 {
     WXS_SHORT_STRING(wxsRadioButton,Label,_("Label"),_T("label"),_T(""),true)
     WXS_BOOL(wxsRadioButton,IsSelected,_("Is Selected"),_T("selected"),false)
-}
-
-void wxsRadioButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/radiobut.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsRadioButton::OnEnumDeclFiles"),Language);
-    }
 }

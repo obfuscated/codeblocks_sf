@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ bool wxsCorrector::GlobalCheck()
 bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)
 {
     bool Ret = false;
-    if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
+    if ( Item->GetPropertiesFlags() & flVariable )
     {
         wxString VarName = Item->GetVarName();
         if ( FixVarName(VarName) )
@@ -85,7 +85,7 @@ bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)
             m_Vars.insert(VarName);
         }
     }
-    if ( Item->GetPropertiesFlags() & wxsItem::flId )
+    if ( Item->GetPropertiesFlags() & flId )
     {
         wxString IdName = Item->GetIdName();
         if ( FixIdName(IdName) )
@@ -123,7 +123,7 @@ bool wxsCorrector::FixAfterLoadCheckNames(wxsItem* Item)
 bool wxsCorrector::FillEmpty(wxsItem* Item)
 {
     bool Ret = false;
-    if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
+    if ( Item->GetPropertiesFlags() & flVariable )
     {
         if ( Item->GetVarName().empty() )
         {
@@ -132,7 +132,7 @@ bool wxsCorrector::FillEmpty(wxsItem* Item)
             m_Vars.insert(Item->GetVarName());
         }
     }
-    if ( Item->GetPropertiesFlags() & wxsItem::flId )
+    if ( Item->GetPropertiesFlags() & flId )
     {
         if ( Item->GetIdName().empty() )
         {
@@ -166,7 +166,7 @@ void wxsCorrector::AfterChange(wxsItem* Item)
         RebuildSetsReq(m_Data->GetTool(i),Item);
     }
 
-    if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
+    if ( Item->GetPropertiesFlags() & flVariable )
     {
         wxString VarName = Item->GetVarName();
         if ( FixVarName(VarName) )
@@ -180,7 +180,7 @@ void wxsCorrector::AfterChange(wxsItem* Item)
         m_Vars.insert(Item->GetVarName());
     }
 
-    if ( Item->GetPropertiesFlags() & wxsItem::flId )
+    if ( Item->GetPropertiesFlags() & flId )
     {
         wxString IdName = Item->GetIdName();
         if ( FixIdName(IdName) )
@@ -216,12 +216,12 @@ void wxsCorrector::RebuildSetsReq(wxsItem* Item,wxsItem* Exclude)
 {
     if ( Item != Exclude )
     {
-        if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
+        if ( Item->GetPropertiesFlags() & flVariable )
         {
             m_Vars.insert(Item->GetVarName());
         }
 
-        if ( Item->GetPropertiesFlags() & wxsItem::flId )
+        if ( Item->GetPropertiesFlags() & flId )
         {
             wxString Id = Item->GetIdName();
             m_Ids.insert(Id);
@@ -271,7 +271,7 @@ void wxsCorrector::BeforePaste(wxsItem* Item)
 
 void wxsCorrector::BeforePasteReq(wxsItem* Item)
 {
-    if ( Item->GetPropertiesFlags() & wxsItem::flVariable )
+    if ( Item->GetPropertiesFlags() & flVariable )
     {
         wxString VarName = Item->GetVarName();
         if ( FixVarName(VarName) )
@@ -285,7 +285,7 @@ void wxsCorrector::BeforePasteReq(wxsItem* Item)
         m_Vars.insert(Item->GetVarName());
     }
 
-    if ( Item->GetPropertiesFlags() & wxsItem::flId )
+    if ( Item->GetPropertiesFlags() & flId )
     {
         wxString IdName = Item->GetIdName();
         if ( FixIdName(IdName) )

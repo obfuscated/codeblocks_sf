@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -46,11 +46,12 @@ wxsStatusBar::wxsStatusBar(wxsItemResData* Data):
     UpdateArraysSize(m_Fields);
 }
 
-void wxsStatusBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsStatusBar::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
+            AddHeader(_T("<wx/statusbr.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%C(%W, %I, %T, %N);\n"));
             if ( m_Fields>0 )
             {
@@ -67,34 +68,25 @@ void wxsStatusBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowPare
                 for ( int i=0; i<m_Fields; i++ )
                 {
                     Codef(_T("%s%s"),
-                        m_Styles[i] == wxSB_FLAT ? _T("wxSB_FLAT") :
+                        m_Styles[i] == wxSB_FLAT ?   _T("wxSB_FLAT") :
                         m_Styles[i] == wxSB_RAISED ? _T("wxSB_RAISED") :
-                        _T("wxSB_NORMAL"),
+                                                     _T("wxSB_NORMAL"),
                         i==(m_Fields-1) ? _T(" };\n") : _T(", "));
                 }
                 Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.c_str());
                 Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.c_str());
-                Codef(_T("SetStatusBar(%v);\n"),GetVarName().c_str());
+                Codef(_T("SetStatusBar(%O);\n"),GetVarName().c_str());
             }
-            BuildSetupWindowCode(Code, WindowParent, Language);
+            BuildSetupWindowCode();
             break;
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
 void wxsStatusBar::OnEnumToolProperties(long Flags)
 {
-}
-
-void wxsStatusBar::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/statusbr.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsStatusBar::OnEnumDeclFiles"),Language);
-    }
 }
 
 bool wxsStatusBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)

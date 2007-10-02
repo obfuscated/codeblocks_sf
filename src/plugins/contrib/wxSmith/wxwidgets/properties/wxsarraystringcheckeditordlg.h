@@ -1,15 +1,38 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSARRAYSTRINGCHECKEDITORDLG_H
 #define WXSARRAYSTRINGCHECKEDITORDLG_H
 
 #include "wxsarraystringcheckproperty.h"
 
 //(*Headers(wxsArrayStringCheckEditorDlg)
-#include <wx/button.h>
-#include <wx/checklst.h>
-#include <wx/dialog.h>
 #include <wx/sizer.h>
-#include <wx/statline.h>
 #include <wx/textctrl.h>
+#include <wx/checklst.h>
+#include <wx/statline.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
 //*)
 
 
@@ -48,22 +71,22 @@ class wxsArrayStringCheckEditorDlg: public wxDialog
 		//*)
 
 		//(*Declarations(wxsArrayStringCheckEditorDlg)
-		wxBoxSizer* BoxSizer1;
-		wxBoxSizer* BoxSizer2;
-		wxTextCtrl* EditArea;
-		wxButton* Button1;
-		wxStaticLine* StaticLine1;
-		wxBoxSizer* BoxSizer3;
-		wxCheckListBox* StringList;
 		wxBoxSizer* BoxSizer4;
-		wxButton* Button2;
 		wxButton* Button4;
-		wxButton* Button3;
-		wxButton* Button5;
-		wxStaticLine* StaticLine2;
 		wxBoxSizer* BoxSizer5;
+		wxButton* Button1;
+		wxBoxSizer* BoxSizer2;
+		wxButton* Button2;
+		wxStaticLine* StaticLine2;
 		wxButton* Button6;
+		wxButton* Button5;
+		wxButton* Button3;
 		wxButton* Button7;
+		wxStaticLine* StaticLine1;
+		wxCheckListBox* StringList;
+		wxBoxSizer* BoxSizer1;
+		wxTextCtrl* EditArea;
+		wxBoxSizer* BoxSizer3;
 		//*)
 
 	private:

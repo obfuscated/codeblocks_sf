@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -74,9 +74,9 @@ wxsMenuItem::wxsMenuItem(wxsItemResData* Data,bool BreakOrSeparator):
 {
 }
 
-void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsMenuItem::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
 
@@ -87,16 +87,18 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                     if ( GetChildCount() )
                     {
                         // Creating new wxMenu
-                        Codef(_T("%v = new wxMenu();\n"), GetVarName().c_str());
+                        if ( IsPointer() )
+                        {
+                            Codef(_T("%C();\n"));
+                        }
                         for ( int i=0; i<GetChildCount(); i++ )
                         {
-                            GetChild(i)->BuildCreatingCode(Code,WindowParent,Language);
+                            GetChild(i)->BuildCode(GetCoderContext());
                         }
                         // Many parameters are passed in wxMenu::Append, so we call this function
                         // here, not in wxMenu
-                        Codef(_T("%MAppend(%I, %t, %v, %t)%s;\n"),
+                        Codef(_T("%MAppend(%I, %t, %O, %t)%s;\n"),
                             m_Label.c_str(),
-                            GetVarName().c_str(),
                             m_Help.c_str(),
                             m_Enabled?_T(""):_T("->Enable(false)"));
                         break;
@@ -130,11 +132,10 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
 
                     if ( !m_Bitmap.IsEmpty() )
                     {
-                        wxString BmpCode = m_Bitmap.BuildCode(true,wxEmptyString,Language,_T("wxART_OTHER"));
-                        Codef(_T("%ASetBitmap(%s);\n"), BmpCode.c_str());
+                        Codef(_T("%ASetBitmap(%i);\n"), &m_Bitmap, _T("wxART_OTHER"));
                     }
 
-                    Codef(_T("%MAppend(%v);\n"), GetVarName().c_str());
+                    Codef(_T("%MAppend(%O);\n"));
                     if ( !m_Enabled )
                     {
                         Codef(_T("%AEnable(false);\n"));
@@ -160,11 +161,11 @@ void wxsMenuItem::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
                 }
 
             }
-            BuildSetupWindowCode(Code, WindowParent, Language);
+            BuildSetupWindowCode();
             break;
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -331,20 +332,27 @@ wxString wxsMenuItem::OnGetTreeLabel(int& Image)
     }
 }
 
-void wxsMenuItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
+void wxsMenuItem::OnBuildDeclarationsCode()
 {
     // Few hacks needed, First: if this item has children, we have to change to
     // wxMenu, Second: if it is break or separtor we do not have any declaration
     if ( GetChildCount() )
     {
-        switch ( Language )
+        switch ( GetLanguage() )
         {
             case wxsCPP:
-                Code << _T("wxMenu* ") << GetVarName() << _T(";\n");
+                if ( IsPointer() )
+                {
+                    AddDeclaration(_T("wxMenu* ") + GetVarName() + _T(";"));
+                }
+                else
+                {
+                    AddDeclaration(_T("wxMenu ") + GetVarName() + _T(";"));
+                }
                 break;
 
             default:
-                wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildDeclarationCode"),Language);
+                wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildDeclarationsCode"),GetLanguage());
         }
         return;
     }
@@ -358,5 +366,5 @@ void wxsMenuItem::OnBuildDeclarationCode(wxString& Code,wxsCodingLang Language)
         default:;
     }
 
-    wxsItem::OnBuildDeclarationCode(Code,Language);
+    wxsItem::OnBuildDeclarationsCode();
 }

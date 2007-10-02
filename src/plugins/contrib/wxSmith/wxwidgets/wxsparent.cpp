@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -25,9 +25,12 @@
 
 #include "wxsitemfactory.h"
 #include "wxsitemresdata.h"
+#include "wxsflags.h"
 
-wxsParent::wxsParent(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events):
-    wxsItem(Data,Info,PropertiesFlags,Events)
+using namespace wxsFlags;
+
+wxsParent::wxsParent(wxsItemResData* Data,const wxsItemInfo* Info,long PropertiesFlags,const wxsEventDesc* Events,const wxsStyleSet* StyleSet):
+    wxsItem(Data,Info,PropertiesFlags,Events,StyleSet)
 {
 }
 
@@ -257,7 +260,7 @@ bool wxsParent::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     }
 
     // Checking if this item is allowed in this edit mode
-    if ( GetResourceData()->GetPropertiesFilter()!=flSource && !NewItem->GetInfo().AllowInXRC )
+    if ( !(GetPropertiesFlags()&flSource) && !NewItem->GetInfo().AllowInXRC )
     {
         // we will load this item as custom item since it's not supported when using XRC
         delete NewItem;
@@ -307,9 +310,4 @@ bool wxsParent::OnXmlWriteChild(int Index,TiXmlElement* Elem,bool IsXRC,bool IsE
 
     // Saving child item
     return Children[Index]->XmlWrite(RealElem,IsXRC,IsExtra);
-}
-
-bool wxsParent::OnCodefExtension(wxsCodingLang Language,wxString& Result,const wxChar* &FmtChar,va_list ap)
-{
-    return wxsItem::OnCodefExtension(Language,Result,FmtChar,ap);
 }

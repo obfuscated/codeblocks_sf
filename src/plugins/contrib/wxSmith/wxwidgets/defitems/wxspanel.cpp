@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -66,21 +66,22 @@ wxsPanel::wxsPanel(wxsItemResData* Data):
         wxsPanelStyles)
 {}
 
-void wxsPanel::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsPanel::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            SetupWindowCode(Code,WindowParent,wxsCPP);
-            AddChildrenCode(Code,wxsCPP);
+            AddHeader(_T("<wx/panel.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsPanel::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -104,13 +105,4 @@ wxObject* wxsPanel::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsPanel::OnEnumContainerProperties(long Flags)
 {
-}
-
-void wxsPanel::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/panel.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsPanel::OnEnumDeclFiles"),Language);
-    }
 }

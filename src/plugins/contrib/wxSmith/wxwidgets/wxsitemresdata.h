@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSITEMRESDATA_H
 #define WXSITEMRESDATA_H
 
@@ -132,9 +155,6 @@ class wxsItemResData
 
         /** \brief Getting language used in resource */
         inline wxsCodingLang GetLanguage() { return m_Language; }
-
-        /** \brief Getting pointer to current source code string */
-        inline wxString* GetCurentCode() { return m_CurrentCode; }
 
         /** \brief Searching for tree id in main resource tree for given item */
         inline bool GetTreeId(wxsResourceItemId& Id,wxsItem* Item) { return FindId(Id,Item); }
@@ -312,8 +332,10 @@ class wxsItemResData
         void StoreTreeIds();
         void StoreTreeIdsReq(wxsItem* Item);
         bool FindId(wxsResourceItemId& Id,wxsItem* Item);
+        void DetectAutoCodeBlocks();
 
         // Functions used by RebuildSourceCode
+/*
         void BuildVariablesCode(wxsCodingLang Lang,wxString& LocalCode, wxString& GlobalCode);
         void BuildVariablesCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& LocalCode, wxString& GlobalCode);
         void BuildCreatingCode(wxsCodingLang Lang,wxString& Code);
@@ -326,6 +348,18 @@ class wxsItemResData
         void BuildIdsArrayReq(wxsItem* Item,wxArrayString& Array);
         void BuildIncludesCode(wxsCodingLang Lang,wxString& LocalIncludes,wxString& GlobalIncludes);
         void BuildHeadersReq(wxsCodingLang Lang,wxsItem* Item,wxArrayString& LocalHeaders,wxArrayString& GlobalHeaders);
+*/
+        wxString DeclarationsCode(wxsCoderContext* Ctx);
+        wxString IdentifiersCode(wxsCoderContext* Ctx);
+        wxString InitializeCode(wxsCoderContext* Ctx);
+        wxString IdInitCode(wxsCoderContext* Ctx);
+        wxString HeadersCode(wxsCoderContext* Ctx);
+        wxString HeadersNoPCHCode(wxsCoderContext* Ctx);
+        wxString HeadersAllCode(wxsCoderContext* Ctx);
+        wxString InternalHeadersCode(wxsCoderContext* Ctx);
+        wxString InternalHeadersNoPCHCode(wxsCoderContext* Ctx);
+        wxString InternalHeadersAllCode(wxsCoderContext* Ctx);
+        wxString XRCLoadingCode();
 
         // Wrappers to m_Functions functionality
         inline wxWindow* BuildExactPreview(wxWindow* Parent) { return m_Functions->OnBuildExactPreview(Parent,this); }
@@ -355,11 +389,10 @@ class wxsItemResData
         wxsCorrector m_Corrector;
 
         bool m_IsOK;
+        bool m_IsEventTable;
         int m_LockCount;
 
         bool m_ReadOnly;
-
-        wxString* m_CurrentCode;
 };
 
 #endif

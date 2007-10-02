@@ -1,3 +1,26 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSPROPERTYSTREAM_H
 #define WXSPROPERTYSTREAM_H
 
@@ -13,7 +36,7 @@
  * Each reading function returns True or False. True is returned if value read
  * correctly, false if read error. Error will usually mean - no more data with
  * this name found.
- * It's permitted to use same names for different values. 
+ * It's permitted to use same names for different values.
  * Calling read functions with same name will find next data with given name
  * located in stream after previous read. This could be usefull to store arrays
  * of data.
@@ -23,7 +46,7 @@
  * passed to PutXXX functions (functions storing data) are using references
  * instead of values.
  *
- * Most Get / Put functions are defined by dedfault. Default behaviour is to 
+ * Most Get / Put functions are defined by dedfault. Default behaviour is to
  * convert from / to string value. It's obvious that it can not be done for
  * string itself. So the minimum to make property stream usable is to write
  * own GetString / PutString functions and fuuncitons processing sub categories:
@@ -32,31 +55,31 @@
 class wxsPropertyStream
 {
     public:
-    
+
         /** \brief Ctor */
         wxsPropertyStream() {}
-        
+
         /** \brief Dctor */
         virtual ~wxsPropertyStream() {}
-        
+
         /** \brief Reading wxChar value from steram */
         virtual bool GetChar(const wxString &Name, wxChar& Value, wxChar Default = _T('\0'));
-        
+
         /** \brief Writing wxChar value to stream */
         virtual bool PutChar(const wxString &Name, wxChar& Value, wxChar Default = _T('\0'));
-        
+
         /** \brief Getting double value */
         virtual bool GetDouble(const wxString& Name, double& value, double Default = 0.0);
-        
+
         /** \brief Writting double value */
         virtual bool PutDouble(const wxString& Name, double& value, double Default = 0.0);
-        
+
         /** \brief Getting long value */
         virtual bool GetLong(const wxString &Name, long& Value, long Default = 0);
 
         /** \brief Writing long value */
         virtual bool PutLong(const wxString &Name, long& Value, long Default = 0);
-        
+
         /** \brief Getting unsigned long value */
         virtual bool GetULong(const wxString &Name, unsigned long& Value, unsigned long Default = 0);
 
@@ -71,13 +94,13 @@ class wxsPropertyStream
 
         /** \brief Getting wxString value */
         virtual bool GetString(const wxString &Name, wxString& Value, wxString Default = wxEmptyString)=0;
-        
+
         /** \brief Writting wxString value */
         virtual bool PutString(const wxString &Name, wxString& Value, wxString Default = wxEmptyString)=0;
-        
+
         /** \brief Function creating new data sub-group */
         virtual void SubCategory(const wxString &Name)=0;
-        
+
         /** \brief Function restoring previous data group */
         virtual void PopCategory()=0;
 };

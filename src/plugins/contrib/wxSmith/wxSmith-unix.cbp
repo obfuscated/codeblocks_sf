@@ -252,6 +252,10 @@
 		<Unit filename="wxwidgets/properties/wxsstyleproperty.h" />
 		<Unit filename="wxwidgets/wxsbaseproperties.cpp" />
 		<Unit filename="wxwidgets/wxsbaseproperties.h" />
+		<Unit filename="wxwidgets/wxscodegenerator.cpp" />
+		<Unit filename="wxwidgets/wxscodegenerator.h" />
+		<Unit filename="wxwidgets/wxscodercontext.cpp" />
+		<Unit filename="wxwidgets/wxscodercontext.h" />
 		<Unit filename="wxwidgets/wxscontainer.cpp" />
 		<Unit filename="wxwidgets/wxscontainer.h" />
 		<Unit filename="wxwidgets/wxscorrector.cpp" />
@@ -267,6 +271,7 @@
 		<Unit filename="wxwidgets/wxseventseditor.cpp" />
 		<Unit filename="wxwidgets/wxseventseditor.h" />
 		<Unit filename="wxwidgets/wxsexproperties.h" />
+		<Unit filename="wxwidgets/wxsflags.h" />
 		<Unit filename="wxwidgets/wxsframeres.cpp" />
 		<Unit filename="wxwidgets/wxsframeres.h" />
 		<Unit filename="wxwidgets/wxsgridpanel.cpp" />

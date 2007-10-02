@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -207,7 +207,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
 	        ToolBarItem* New = new ToolBarItem;
 	        New->m_OriginalPos = i;
 	        New->m_Label = Child->GetClassName();
-	        if ( Child->GetPropertiesFlags() & wxsItem::flVariable )
+	        if ( Child->GetPropertiesFlags() & flVariable )
 	        {
 	            New->m_Label << _T(": ") << Child->GetVarName();
 	        }

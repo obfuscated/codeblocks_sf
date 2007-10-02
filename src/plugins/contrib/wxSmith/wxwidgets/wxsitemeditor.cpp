@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -645,7 +645,7 @@ namespace
 void wxsItemEditor::BuildPalette(wxNotebook* Palette)
 {
     Palette->DeleteAllPages();
-    bool AllowNonXRCItems = m_Data->GetPropertiesFilter() == wxsItem::flSource;
+    bool AllowNonXRCItems = (m_Data->GetPropertiesFilter() & flSource);
 
     // First we need to split all widgets into groups
     // it will be done using multimap (map of arrays)

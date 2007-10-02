@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -52,20 +52,21 @@ wxsStaticText::wxsStaticText(wxsItemResData* Data):
 {}
 
 
-void wxsStaticText::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsStaticText::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.c_str());
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/stattext.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.c_str());
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsStaticText::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsStaticText::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -81,13 +82,4 @@ wxObject* wxsStaticText::OnBuildPreview(wxWindow* Parent,long Flags)
 void wxsStaticText::OnEnumWidgetProperties(long Flags)
 {
     WXS_STRING(wxsStaticText,Label,_("Label"),_T("label"),_T(""),true)
-}
-
-void wxsStaticText::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/stattext.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsStaticText::OnEnumDeclFiles"),Language);
-    }
 }

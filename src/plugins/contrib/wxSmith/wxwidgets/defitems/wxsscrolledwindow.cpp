@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -47,21 +47,22 @@ wxsScrolledWindow::wxsScrolledWindow(wxsItemResData* Data):
         wxsScrolledWindowStyles)
 {}
 
-void wxsScrolledWindow::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsScrolledWindow::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            SetupWindowCode(Code,WindowParent,wxsCPP);
-            AddChildrenCode(Code,wxsCPP);
+            AddHeader(_T("<wx/scrolwin.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -77,13 +78,4 @@ wxObject* wxsScrolledWindow::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsScrolledWindow::OnEnumContainerProperties(long Flags)
 {
-}
-
-void wxsScrolledWindow::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/scrolwin.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsScrolledWindow::OnEnumDeclFiles"),Language);
-    }
 }

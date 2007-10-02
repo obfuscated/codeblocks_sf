@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -67,13 +67,14 @@ wxsDialog::wxsDialog(wxsItemResData* Data):
     Centered(true)
 {}
 
-void wxsDialog::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsDialog::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.c_str());
+            AddHeader(_T("<wx/dialog.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %t, wxDefaultPosition, wxDefaultSize, %T, %N);\n"),Title.c_str());
             if ( !GetBaseProps()->m_Size.IsDefault || (GetPropertiesFlags()&flSource && IsRootItem() && GetBaseProps()->m_SizeFromArg) )
             {
                 Codef(_T("%ASetClientSize(%S);\n"));
@@ -82,11 +83,11 @@ void wxsDialog::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
             {
                 Codef(_T("%AMove(%P);\n"));
             }
-            SetupWindowCode(Code,WindowParent,Language);
-            AddChildrenCode(Code,wxsCPP);
+            BuildSetupWindowCode();
+            AddChildrenCode();
             if ( Centered )
             {
-                Code << Codef(Language,_T("%ACenter();\n"));
+                Codef(_T("%ACenter();\n"));
             }
 
             return;
@@ -94,7 +95,7 @@ void wxsDialog::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsDialog::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsDialog::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -173,13 +174,4 @@ void wxsDialog::OnEnumContainerProperties(long Flags)
 {
     WXS_SHORT_STRING(wxsDialog,Title,_("Title"),_T("title"),_T(""),false)
     WXS_BOOL(wxsDialog,Centered,_("Centered"),_T("centered"),false);
-}
-
-void wxsDialog::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/dialog.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsDialog::OnEnumDeclFiles"),Language);
-    }
 }

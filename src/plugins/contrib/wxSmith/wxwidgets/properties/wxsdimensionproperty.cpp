@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -24,19 +24,19 @@
 #include "wxsdimensionproperty.h"
 #include <globals.h>
 
-wxString wxsDimensionData::GetPixelsCode(wxString ParentName,wxsCodingLang Language)
+wxString wxsDimensionData::GetPixelsCode(wxsCoderContext* Context)
 {
-    switch ( Language )
+    switch ( Context->m_Language )
     {
         case wxsCPP:
         {
             if ( !DialogUnits ) return wxString::Format(_T("%d"),Value);
-            return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,0)).GetWidth()"),ParentName.c_str(),Value);
+            return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"),Context->m_Language);
         }
     }
     return wxEmptyString;

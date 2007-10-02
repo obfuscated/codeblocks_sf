@@ -1,16 +1,39 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision$
+* $Id$
+* $HeadURL$
+*/
+
 #ifndef WXSMENUEDITOR_H
 #define WXSMENUEDITOR_H
 
 //(*Headers(wxsMenuEditor)
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/panel.h>
-#include <wx/radiobut.h>
+#include <wx/treectrl.h>
 #include <wx/sizer.h>
-#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/treectrl.h>
+#include <wx/checkbox.h>
+#include <wx/statline.h>
+#include <wx/radiobut.h>
+#include <wx/panel.h>
+#include <wx/button.h>
 //*)
 
 #include "wxsmenu.h"
@@ -165,39 +188,39 @@ class wxsMenuEditor: public wxPanel
 		//*)
 
 		//(*Declarations(wxsMenuEditor)
-		wxBoxSizer* BoxSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxTreeCtrl* m_Content;
 		wxStaticBoxSizer* StaticBoxSizer2;
-		wxGridSizer* GridSizer1;
-		wxRadioButton* m_TypeNormal;
-		wxRadioButton* m_TypeSeparator;
-		wxRadioButton* m_TypeCheck;
-		wxRadioButton* m_TypeBreak;
-		wxRadioButton* m_TypeRadio;
-		wxStaticLine* StaticLine1;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxStaticText* StaticText6;
-		wxTextCtrl* m_Id;
-		wxStaticText* StaticText1;
-		wxTextCtrl* m_Label;
+		wxButton* Button4;
 		wxStaticText* StaticText2;
-		wxTextCtrl* m_Accelerator;
+		wxRadioButton* m_TypeNormal;
+		wxButton* Button1;
+		wxStaticText* StaticText6;
+		wxTreeCtrl* m_Content;
+		wxRadioButton* m_TypeRadio;
+		wxStaticText* StaticText1;
+		wxBoxSizer* BoxSizer2;
 		wxStaticText* StaticText3;
-		wxTextCtrl* m_Help;
-		wxStaticText* StaticText4;
 		wxCheckBox* m_Checked;
+		wxButton* Button2;
+		wxStaticLine* StaticLine2;
+		wxButton* Button6;
+		wxRadioButton* m_TypeCheck;
+		wxRadioButton* m_TypeSeparator;
+		wxButton* Button5;
+		wxButton* Button3;
+		wxGridSizer* GridSizer1;
 		wxStaticText* StaticText5;
 		wxCheckBox* m_Enabled;
-		wxStaticLine* StaticLine2;
-		wxBoxSizer* BoxSizer2;
-		wxButton* Button1;
-		wxButton* Button2;
-		wxButton* Button3;
-		wxButton* Button4;
+		wxStaticLine* StaticLine1;
+		wxBoxSizer* BoxSizer1;
+		wxRadioButton* m_TypeBreak;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxFlexGridSizer* FlexGridSizer1;
 		wxBoxSizer* BoxSizer3;
-		wxButton* Button5;
-		wxButton* Button6;
+		wxStaticText* StaticText4;
+		wxTextCtrl* m_Label;
+		wxTextCtrl* m_Help;
+		wxTextCtrl* m_Id;
+		wxTextCtrl* m_Accelerator;
 		//*)
 
 };

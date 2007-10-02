@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -47,7 +47,7 @@ namespace
         WXS_EVI(EVT_CALENDAR_DAY,wxEVT_CALENDAR_DAY_CHANGED,wxCalendarEvent,DayChanged)
         WXS_EVI(EVT_CALENDAR_MONTH,wxEVT_CALENDAR_MONTH_CHANGED,wxCalendarEvent,MonthChanged)
         WXS_EVI(EVT_CALENDAR_YEAR,wxEVT_CALENDAR_YEAR_CHANGED,wxCalendarEvent,YearChanged)
-        WXS_EVI(EVT_CALENDAR,wxCalendarEvent,wxEVT_CALENDAR_DOUBLECLICKED,DblClicked)
+        WXS_EVI(EVT_CALENDAR,wxEVT_CALENDAR_DOUBLECLICKED,wxCalendarEvent,DblClicked)
         WXS_EVI(EVT_CALENDAR_WEEKDAY_CLICKED,wxEVT_CALENDAR_WEEKDAY_CLICKED,wxCalendarEvent,WeekdayClicked)
     WXS_EV_END()
 }
@@ -61,20 +61,22 @@ wxsCalendarCtrl::wxsCalendarCtrl(wxsItemResData* Data):
         wxsCalendarCtrlStyles)
 {}
 
-void wxsCalendarCtrl::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsCalendarCtrl::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %N);\n"));
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/calctrl.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/calctrl.h>"),_T("wxCalendarEvent"),0);
+            Codef(_T("%C(%W, %I, wxDefaultDateTime, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsCalendarCtrl::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsCalendarCtrl::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -87,13 +89,4 @@ wxObject* wxsCalendarCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsCalendarCtrl::OnEnumWidgetProperties(long Flags)
 {
-}
-
-void wxsCalendarCtrl::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/calctrl.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsCalendarCtrl::OnEnumDeclFiles"),Language);
-    }
 }

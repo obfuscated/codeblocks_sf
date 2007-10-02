@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -68,7 +68,7 @@ namespace
 
 }
 
-wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,0)
+wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,0,0)
 {}
 
 void wxsSpacer::OnEnumItemProperties(long Flags)
@@ -84,32 +84,39 @@ wxObject* wxsSpacer::OnBuildPreview(wxWindow* Parent,long Flags)
     return new wxsSpacerPreview(Parent,GetBaseProps()->m_Size.GetSize(Parent));
 }
 
-void wxsSpacer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsSpacer::OnBuildCreatingCode()
 {
     int Index = GetParent()->GetChildIndex(this);
     wxsSizerExtra* Extra = (wxsSizerExtra*) GetParent()->GetChildExtra(Index);
-    wxString ParentName = GetParent()->GetVarName();
 
     if ( Extra == 0 ) return;
 
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
             wxsSizeData& Size = GetBaseProps()->m_Size;
             if ( Size.DialogUnits )
             {
-                wxString SizeName = ParentName + wxString::Format(_T("SpacerSize%d"),Index);
-                Code << _T("wxSize ") << SizeName << _T(" = ") << Size.GetSizeCode(WindowParent,wxsCPP) << _T(";\n")
-                     << ParentName << _T("->Add(")
-                     << SizeName << _T(".GetWidth(),")
-                     << SizeName << _T(".GetHeight(),")
-                     << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
+                // We use 'SpacerSizes' extra variable to keep count of currently added spacer sizes
+                // length of this extra string indicates current spacer size number
+                GetCoderContext()->m_Extra[_T("SpacerSizes")].Append(_T("*"));
+                wxString SizeName = wxString::Format(_T("SpacerSize%d"),(int)GetCoderContext()->m_Extra[_T("SpacerSizes")].Length());
+
+                Codef(_T("wxSize %s = %z;\n")
+                      _T("%MAdd(%s.GetWidth(),%s.GetHeight(),%s);\n"),
+                         SizeName.c_str(),
+                         &Size,
+                         SizeName.c_str(),
+                         SizeName.c_str(),
+                         Extra->AllParamsCode(GetCoderContext()).c_str());
             }
             else
             {
-                Code << ParentName << wxString::Format(_T("->Add(%d,%d,"),Size.X,Size.Y)
-                     << Extra->AllParamsCode(WindowParent,wxsCPP) << _T(");\n");
+                Codef(_T("%MAdd(%d,%d,%s);\n"),
+                    (int)Size.X,
+                    (int)Size.Y,
+                    Extra->AllParamsCode(GetCoderContext()).c_str());
             }
 
             break;
@@ -117,7 +124,7 @@ void wxsSpacer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsSpacer::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsSpacer::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }

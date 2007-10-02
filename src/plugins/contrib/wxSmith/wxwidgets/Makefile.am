@@ -57,7 +57,9 @@ libwxsmith_wxwidgets_la_SOURCES = \
 ./wxstool.cpp \
 ./wxstoolspace.cpp \
 ./wxsgridpanel.cpp \
-./wxsdeleteitemres.cpp
+./wxsdeleteitemres.cpp \
+./wxscodercontext.cpp \
+./wxscodegenerator.cpp
 
 noinst_HEADERS = \
 ./wxsitemresdata.h \
@@ -97,4 +99,6 @@ noinst_HEADERS = \
 ./wxstool.h \
 ./wxstoolspace.h \
 ./wxsgridpanel.h \
-./wxsdeleteitemres.h
+./wxsdeleteitemres.h \
+./wxscodercontext.h \
+./wxscodegenerator.h

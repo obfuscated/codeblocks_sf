@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -27,22 +27,19 @@
 #include <wx/notebook.h>
 #include <wx/menu.h>
 #include <wx/textdlg.h>
+#include "../wxsflags.h"
+
+using namespace wxsFlags;
 
 //(*Headers(wxsNotebookParentQP)
-#include <wx/checkbox.h>
-#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
 //*)
 
 //(*InternalHeaders(wxsNotebookParentQP)
-#include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
 #include <wx/intl.h>
-#include <wx/settings.h>
 #include <wx/string.h>
 //*)
 
@@ -83,20 +80,21 @@ namespace
                 m_Extra(Extra)
             {
                 //(*Initialize(wxsNotebookParentQP)
-                Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxPanel"));
+                Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
                 StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
                 Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-                StaticBoxSizer1->Add(Label,0,wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-                FlexGridSizer1->Add(StaticBoxSizer1,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+                StaticBoxSizer1->Add(Label, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
                 StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
                 Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
                 Selected->SetValue(false);
-                StaticBoxSizer2->Add(Selected,1,wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
-                FlexGridSizer1->Add(StaticBoxSizer2,1,wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,5);
+                StaticBoxSizer2->Add(Selected, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
                 SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
+                
                 Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsNotebookParentQP::OnLabelText);
                 Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNotebookParentQP::OnSelectionChange);
                 //*)
@@ -145,11 +143,11 @@ namespace
             //*)
 
             //(*Declarations(wxsNotebookParentQP)
-            wxFlexGridSizer* FlexGridSizer1;
-            wxStaticBoxSizer* StaticBoxSizer1;
-            wxTextCtrl* Label;
             wxStaticBoxSizer* StaticBoxSizer2;
             wxCheckBox* Selected;
+            wxTextCtrl* Label;
+            wxStaticBoxSizer* StaticBoxSizer1;
+            wxFlexGridSizer* FlexGridSizer1;
             //*)
 
             wxsNotebookExtra* m_Extra;
@@ -276,21 +274,28 @@ wxObject* wxsNotebook::OnBuildPreview(wxWindow* Parent,long PreviewFlags)
 	return Notebook;
 }
 
-void wxsNotebook::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsNotebook::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-            SetupWindowCode(Code,WindowParent,wxsCPP);
-            AddChildrenCode(Code,wxsCPP);
+            AddHeader(_T("<wx/notebook.h>"),GetInfo().ClassName,0);
+            AddHeader(_T("<wx/notebook.h>"),_T("wxNotebookEvent"),0);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
 
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-                Code << Codef(Language,_T("%AAddPage(%v, %t, %b);\n"),
-                        GetChild(i)->GetVarName().c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
+                wxString ChildName = GetChild(i)->GetVarName();
+                if ( !GetChild(i)->IsPointer() )
+                {
+                    ChildName = _T("&") + ChildName;
+                }
+                Codef(_T("%AAddPage(%v, %t, %b);\n"),
+                        ChildName.c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
             break;
@@ -298,17 +303,8 @@ void wxsNotebook::OnBuildCreatingCode(wxString& Code,const wxString& WindowParen
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsNotebook::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsNotebook::OnBuildCreatingCode"),GetLanguage());
         }
-    }
-}
-
-void wxsNotebook::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/notebook.h>")); break;
-        default: wxsCodeMarks::Unknown(_T("wxsNotebook::OnEnumDeclFiles"),Language);
     }
 }
 

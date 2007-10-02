@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -67,21 +67,22 @@ wxsScrollBar::wxsScrollBar(wxsItemResData* Data):
 {}
 
 
-void wxsScrollBar::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsScrollBar::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
-            Code << Codef(Language,_T("%ASetScrollbar(%d, %d, %d, %d);\n"), Value, ThumbSize, Range, PageSize);
-            SetupWindowCode(Code,WindowParent,Language);
+            AddHeader(_T("<wx/scrolbar.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
+            Codef(_T("%ASetScrollbar(%d, %d, %d, %d);\n"), Value, ThumbSize, Range, PageSize);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsScrollBar::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsScrollBar::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -101,13 +102,4 @@ void wxsScrollBar::OnEnumWidgetProperties(long Flags)
    WXS_LONG(wxsScrollBar,ThumbSize,_("ThumbSize"),_T("thumbsize"),0)
    WXS_LONG(wxsScrollBar,Range,_("Range"),_T("range"),0)
    WXS_LONG(wxsScrollBar,PageSize,_("PageSize"),_T("pagesize"),0)
-}
-
-void wxsScrollBar::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/scrolbar.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsScrollBar::OnEnumDeclFiles"),Language);
-    }
 }

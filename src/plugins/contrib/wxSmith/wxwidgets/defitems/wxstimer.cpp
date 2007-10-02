@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006  Bartlomiej Swiecki
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -47,21 +47,22 @@ wxsTimer::wxsTimer(wxsItemResData* Data):
     m_OneShoot = false;
 }
 
-void wxsTimer::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsTimer::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
-            Code << Codef(Language,_T("%ASetOwner(this, %I);\n"));
-            if ( m_Interval > 0 ) Code << Codef(Language,_T("%AStart(%d, %b);\n"),m_Interval,m_OneShoot);
-            BuildSetupWindowCode(Code, WindowParent, Language);
+            AddHeader(_T("<wx/timer.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%ASetOwner(this, %I);\n"));
+            if ( m_Interval > 0 ) Codef(_T("%AStart(%d, %b);\n"),m_Interval,m_OneShoot);
+            BuildSetupWindowCode();
             return;
         }
 
         default:
         {
-            wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildCreatingCode"),GetLanguage());
         }
     }
 }
@@ -72,18 +73,9 @@ void wxsTimer::OnEnumToolProperties(long Flags)
     WXS_BOOL(wxsTimer,m_OneShoot,_("One Shoot"),_T("oneshoot"),false);
 }
 
-void wxsTimer::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP: Decl.Add(_T("<wx/timer.h>")); return;
-        default: wxsCodeMarks::Unknown(_T("wxsTimer::OnEnumDeclFiles"),Language);
-    }
-}
-
 bool wxsTimer::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
 {
-    switch ( Data->GetPropertiesFilter() )
+    switch ( Data->GetPropertiesFilter() & (flSource|flMixed|flFile) )
     {
         case flSource:
             return true;
