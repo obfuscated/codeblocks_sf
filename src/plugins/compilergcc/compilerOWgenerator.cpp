@@ -99,16 +99,44 @@ wxString CompilerOWGenerator::SetupLinkerOptions(Compiler* compiler, ProjectBuil
             {
                 Temp = ComLinkerOptions[i];
 
+                // Replace any macros
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(Temp, target);
+
 // TODO (Biplab#5#): Move the linker options parsing code to a different function
                 //Let's not scan all the options unnecessarily
                 if (Temp.Matches(_T("-b*")))
                 {
-                    LinkerOptions += MapTargetType(Temp, target->GetTargetType());
+                    Temp = MapTargetType(Temp, target->GetTargetType());
+                    if (!Temp.IsEmpty() && LinkerOptions.Find(_T("system")) == wxNOT_FOUND)
+                        LinkerOptions += Temp;
                 }
-
                 // TODO: Map and Set All Debug Flags
-                if (Temp.Matches(_T("-d*")) && Temp.Length() <= 4)
+                else if (Temp.Matches(_T("-d*")) && Temp.Length() <= 4)
+                {
                     LinkerOptions = LinkerOptions + MapDebugOptions(Temp);
+                }
+                else if (Temp.StartsWith(_T("-l=")))
+                {
+                    Temp = Temp.AfterFirst(_T('='));
+                    if (LinkerOptions.Find(_T("system")) == wxNOT_FOUND && !Temp.IsEmpty())
+                        LinkerOptions += _T("system ") + Temp + _T(" ");
+                }
+                else if (Temp.StartsWith(_T("-fm")))
+                {
+                    LinkerOptions += _T("option map");
+                    int pos = Temp.Find(_T('='));
+                    if (pos != wxNOT_FOUND)
+                        LinkerOptions += Temp.Mid(pos);
+                    LinkerOptions.Append(_T(" "));
+                }
+                else if (Temp.StartsWith(_T("-k")))
+                {
+                    LinkerOptions += _T("option stack=") + Temp.Mid(2) + _T(" ");
+                }
+                else if (Temp.StartsWith(_T("@")))
+                {
+                    LinkerOptions += Temp + _T(" ");
+                }
             }
         }
         /* Following code will allow user to add any valid linker option
