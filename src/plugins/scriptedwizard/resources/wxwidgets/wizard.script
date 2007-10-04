@@ -498,30 +498,6 @@ function OnClick_m_radioBoxWxChoice()
     }
 }
 
-// Converting project's name to be valid c++ identifier
-// (needed for class names) and valid c++ file name
-// (i.e. can not contain unicode and forbidden chars)
-function GetFixedProjectName()
-{
-    local ProjectName = Wizard.GetProjectName();
-    local Fixed = _T("");
-    for ( local i=0; i<ProjectName.Length(); i+=1 )
-    {
-        local Char = ProjectName.GetChar(i);
-        if  ( ( Char>='0' && Char<='9' && i>0 ) ||
-              ( Char>='a' && Char<='z' )        ||
-              ( Char>='A' && Char<='Z' ) )
-        {
-            Fixed.AddChar(Char);
-        }
-        else
-        {
-            Fixed.AddChar('_');
-        }
-    }
-    return Fixed;
-}
-
 // -----------------------------------------------------------------------------
 // each time, return a string of the form "filename.ext;contents"
 // you can change the return string based on <file_index>
@@ -530,7 +506,7 @@ function GetGeneratedFile(file_index)
 {
     if (!IsEmpty)
     {
-        local Prefix = GetFixedProjectName();
+        local Prefix = GetFixedProjectName(Wizard.GetProjectName());
         if (file_index == 0)
             return Prefix + _T("App.h") + _T(";") + GenerateHeader(file_index);
         else if (file_index == 1)
@@ -1208,7 +1184,7 @@ function SubstituteMacros(buffer)
     buffer = HandleDirective(buffer, _T("WINDOWS"), (PLATFORM == PLATFORM_MSW ? true : false));
 
     // create class name from project name which is valid c++ identifier
-    local Prefix = GetFixedProjectName();
+    local Prefix = GetFixedProjectName(Wizard.GetProjectName());
     local PchInclude = WantPCH ? ( _T("#include \"") + PCHFileName + _T("\"\n") ) : _T("");
 
     // macros substitution

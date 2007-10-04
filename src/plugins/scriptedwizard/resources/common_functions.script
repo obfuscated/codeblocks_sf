@@ -380,6 +380,29 @@ function GetCompilerLibMacro(selection, defaultSelection, defaultLibMacro)
     return (_T(""));
 }
 
+// Converting project's name to be valid c++ identifier
+// (needed for class names) and valid c++ file name
+// (i.e. can not contain unicode and forbidden chars)
+function GetFixedProjectName(ProjectName)
+{
+    local Fixed = _T("");
+    for ( local i = 0; i < ProjectName.Length(); i++ )
+    {
+        local Char = ProjectName.GetChar(i);
+        if  ( ( Char>='0' && Char<='9' && i > 0 ) ||
+              ( Char>='a' && Char<='z' )          ||
+              ( Char>='A' && Char<='Z' ) )
+        {
+            Fixed.AddChar(Char);
+        }
+        else
+        {
+            Fixed.AddChar('_');
+        }
+    }
+    return Fixed;
+}
+
 // verify the existence of a file of specific type
 // dir  = the directory the file is expected in
 // file = name of the file to look for

@@ -135,6 +135,7 @@ function OnLeave_PluginInfo(fwd)
             ShowWarning(_T("You have to fill the Title and Version fields before you can proceed..."));
             return false;
         }
+        PluginSettings.Name = GetFixedProjectName(PluginSettings.Name);
     }
 
     // save config
