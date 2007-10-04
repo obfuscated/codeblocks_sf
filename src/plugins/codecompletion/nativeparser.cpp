@@ -471,7 +471,10 @@ wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, con
                     {
                         wxFileName dir(out);
                         if (NormalizePath(dir,base))
+                        {
+                            Manager::Get()->GetMessageManager()->DebugLog(_T("Caching GCC dir: '%s'"),dir.GetFullPath().c_str());
                             gcc_compiler_dirs.Add(dir.GetFullPath());
+                        }
                         else
                             Manager::Get()->GetMessageManager()->DebugLog(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str());
                     }

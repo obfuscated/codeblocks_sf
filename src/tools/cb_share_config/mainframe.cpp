@@ -558,6 +558,15 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
         OfferNode(&child, listbox, nodes, wxT("<editor>")); // recursive call
     }
   }
+  else if (section.MakeLower().Matches(wxT("project_manager"))) // file groups
+  {
+    TiXmlNode* child = NULL;
+    for (child = (*node)->FirstChild(); child; child = child->NextSibling())
+    {
+      if (child->Type()==TiXmlNode::ELEMENT)
+        OfferNode(&child, listbox, nodes, wxT("<project_manager>")); // recursive call
+    }
+  }
 
   // -----------------------------------------------
   // 1st recursion level: compiler -> sets/user sets
@@ -606,6 +615,16 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // ------------------------------------------
   else if (   prefix.Matches(wxT("<editor>"))
            && section.MakeLower().Matches(wxT("colour_sets")))// colour sets
+  {
+    listbox->Append(prefix + wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+
+  // ---------------------------------------------------
+  // 1st recursion level: project_manager -> file_groups
+  // ---------------------------------------------------
+  else if (   prefix.Matches(wxT("<project_manager>"))
+           && section.MakeLower().Matches(wxT("file_groups")))// file groups
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
