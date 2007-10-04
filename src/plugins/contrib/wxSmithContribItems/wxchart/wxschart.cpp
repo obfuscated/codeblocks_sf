@@ -60,12 +60,18 @@ wxsChart::~wxsChart()
     m_ChartPointsDesc.Clear();
 }
 
-void wxsChart::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsChart::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/chartctrl.h>"),GetInfo().ClassName);
+            AddHeader(_T("<wx/barchartpoints.h>"),_T(""),hfLocal);
+            AddHeader(_T("<wx/bar3dchartpoints.h>"),_T(""),hfLocal);
+            AddHeader(_T("<wx/piechartpoints.h>"),_T(""),hfLocal);
+            AddHeader(_T("<wx/pie3dchartpoints.h>"),_T(""),hfLocal);
+
             wxString StyleCode;
             for ( int i=0; Names[i]; i++ )
             {
@@ -112,12 +118,11 @@ void wxsChart::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,w
             }
             Codef(_T("}\n"));
 
-
             break;
         }
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsChart::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsChart::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -163,23 +168,6 @@ wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,long Flags)
 void wxsChart::OnEnumWidgetProperties(long Flags)
 {
     WXS_FLAGS(wxsChart,m_Flags,_("wxChart style"),_T("wxchart_style"),Values,Names, DEFAULT_STYLE_FIX )
-}
-
-void wxsChart::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-            Decl.Add(_T("<wx/chartctrl.h>"));
-            Def.Add(_T("<wx/barchartpoints.h>"));
-            Def.Add(_T("<wx/bar3dchartpoints.h>"));
-            Def.Add(_T("<wx/piechartpoints.h>"));
-            Def.Add(_T("<wx/pie3dchartpoints.h>"));
-            break;
-
-        default:
-            wxsCodeMarks::Unknown(_T("wxsChart::OnEnumDeclFiles"),Language);
-    }
 }
 
 void wxsChart::OnAddExtraProperties(wxsPropertyGridManager* Grid)

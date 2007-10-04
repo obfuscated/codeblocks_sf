@@ -13,10 +13,9 @@ class wxsChart : public wxsWidget
 
     private:
 
-        virtual void OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
+        virtual void OnBuildCreatingCode();
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
-        virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
 
         void OnAddExtraProperties(wxsPropertyGridManager* Grid);
         void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id);

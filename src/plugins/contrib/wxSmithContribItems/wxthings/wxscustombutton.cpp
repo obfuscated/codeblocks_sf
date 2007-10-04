@@ -54,12 +54,15 @@ wxsCustomButton::~wxsCustomButton()
 {
 }
 
-void wxsCustomButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language)
+void wxsCustomButton::OnBuildCreatingCode()
 {
-    switch ( Language )
+    switch ( GetLanguage() )
     {
         case wxsCPP:
         {
+            AddHeader(_T("<wx/things/toggle.h>"),GetInfo().ClassName);
+            AddHeader(_T("<wx/tglbtn.h>"),_T(""),hfLocal);
+
             wxString Style;
             for ( int i=0; TypeNames[i]; i++ )
             {
@@ -138,7 +141,7 @@ void wxsCustomButton::OnBuildCreatingCode(wxString& Code,const wxString& WindowP
         }
 
         default:
-            wxsCodeMarks::Unknown(_T("wxsCustomButton::OnBuildCreatingCode"),Language);
+            wxsCodeMarks::Unknown(_T("wxsCustomButton::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
@@ -203,18 +206,4 @@ void wxsCustomButton::OnEnumWidgetProperties(long Flags)
     WXS_SIZE(wxsCustomButton,m_Margins,_("Default margin"),_("Margin width"),_("Margin height"),_("Margin in Dialog Units"),_T("margin"));
     WXS_SIZE(wxsCustomButton,m_LabelMargins,_("Default label margin"),_("Label marg. width"),_("Label marg. height"),_("Label marg. in Dialog Units"),_T("label_margin"));
     WXS_SIZE(wxsCustomButton,m_BitmapMargins,_("Default bitmap margin"),_("Bitmap marg. width"),_("Bitmap marg. height"),_("Bitmap marg. in Dialog Units"),_T("bitmap_margin"));
-}
-
-void wxsCustomButton::OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language)
-{
-    switch ( Language )
-    {
-        case wxsCPP:
-            Decl.Add(_T("<wx/things/toggle.h>"));
-            Def.Add(_T("<wx/tglbtn.h>"));
-            break;
-
-        default:
-            wxsCodeMarks::Unknown(_T("wxsCustomButton::OnEnumDeclFiles"),Language);
-    }
 }

@@ -13,10 +13,9 @@ class wxsCustomButton : public wxsWidget
 
     private:
 
-        void OnBuildCreatingCode(wxString& Code,const wxString& WindowParent,wxsCodingLang Language);
+        void OnBuildCreatingCode();
         wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         void OnEnumWidgetProperties(long Flags);
-        void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language);
 
         long m_Type;
         bool m_Flat;
