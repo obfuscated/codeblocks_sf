@@ -29,6 +29,7 @@
 #include "../wxscoder.h"
 #include <manager.h>
 #include <projectmanager.h>
+#include <editormanager.h>
 
 IMPLEMENT_CLASS(wxsItemRes,wxWidgetsRes)
 
@@ -104,6 +105,10 @@ namespace
         _T("\t<object class=\"$(BaseClassName)\" name=\"$(ClassName)\"/>\n")
         _T("\t<resource_extra/>\n")
         _T("</wxsmith>\n");
+
+
+    const long GoToHeaderId = wxNewId();
+    const long GoToSourceId = wxNewId();
 }
 
 wxsItemRes::wxsItemRes(wxsProject* Owner,const wxString& Type,bool CanBeMain):
@@ -535,9 +540,31 @@ bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
 
 void wxsItemRes::OnFillPopupMenu(wxMenu* Menu)
 {
+    if ( !m_SrcFileName.IsEmpty() || !m_HdrFileName.IsEmpty() )
+    {
+        Menu->AppendSeparator();
+        Menu->Append(GoToHeaderId,_("Go to header file"));
+        Menu->Append(GoToSourceId,_("Go to source file"));
+    }
 }
 
 bool wxsItemRes::OnPopupMenu(long Id)
 {
+    if ( Id == GoToHeaderId )
+    {
+        if ( !m_HdrFileName.IsEmpty() )
+        {
+            EditorManager::Get()->Open(GetProjectPath() + m_HdrFileName);
+        }
+        return true;
+    }
+    if ( Id == GoToSourceId )
+    {
+        if ( !m_SrcFileName.IsEmpty() )
+        {
+            EditorManager::Get()->Open(GetProjectPath() + m_SrcFileName);
+        }
+        return true;
+    }
     return false;
 }
