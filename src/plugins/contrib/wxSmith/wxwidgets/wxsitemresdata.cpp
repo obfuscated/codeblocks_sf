@@ -98,7 +98,6 @@ wxsItemResData::wxsItemResData(
 
     DetectAutoCodeBlocks();
     // TODO: Set-up flFwdDeclar flags in m_PropertiesFilter
-    // TODO: This is for test ONLY
 
     Load();
 
@@ -593,34 +592,33 @@ void wxsItemResData::RebuildSourceCode()
             // Root item will automatically iterate thorough all tools so don't need to do it here
             m_RootItem->BuildCode(&Context);
 
-            DBGLOG(_T("wxSmith: Code regenerated in %d ms"),SW.Time());
-
-            // TODO: Maybe some group update ??
-
-            SW.Start();
             wxsCoder::Get()->AddCode(
                 m_HdrFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("Declarations"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                DeclarationsCode(&Context) );
+                DeclarationsCode(&Context),
+                false );
 
             wxsCoder::Get()->AddCode(
                 m_HdrFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("Identifiers"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                IdentifiersCode(&Context) );
+                IdentifiersCode(&Context),
+                false );
 
             wxsCoder::Get()->AddCode(
                 m_SrcFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("Initialize"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                InitializeCode(&Context) );
+                InitializeCode(&Context),
+                false );
 
             wxsCoder::Get()->AddCode(
                 m_SrcFileName,
                 wxsCodeMarks::Beg(wxsCPP,_T("IdInit"),m_ClassName),
                 wxsCodeMarks::End(wxsCPP),
-                IdInitCode(&Context) );
+                IdInitCode(&Context),
+                false );
 
             if ( m_IsEventTable )
             {
@@ -628,7 +626,8 @@ void wxsItemResData::RebuildSourceCode()
                     m_SrcFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("EventTable"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    _T("\n"));    // This clears previously used event table for event binding
+                    _T("\n"),
+                    false );    // This clears previously used event table for event binding
             }
 
             if ( m_PropertiesFilter & flPchFilter )
@@ -638,25 +637,29 @@ void wxsItemResData::RebuildSourceCode()
                     m_SrcFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    InternalHeadersCode(&Context) );
+                    InternalHeadersCode(&Context),
+                    false );
 
                 wxsCoder::Get()->AddCode(
                     m_SrcFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    InternalHeadersNoPCHCode(&Context) );
+                    InternalHeadersNoPCHCode(&Context),
+                    false );
 
                 wxsCoder::Get()->AddCode(
                     m_HdrFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    HeadersCode(&Context) );
+                    HeadersCode(&Context),
+                    false );
 
                 wxsCoder::Get()->AddCode(
                     m_HdrFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    HeadersNoPCHCode(&Context) );
+                    HeadersNoPCHCode(&Context),
+                    false );
             }
             else
             {
@@ -664,16 +667,19 @@ void wxsItemResData::RebuildSourceCode()
                     m_SrcFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    InternalHeadersAllCode(&Context) );
+                    InternalHeadersAllCode(&Context),
+                    false );
 
                 wxsCoder::Get()->AddCode(
                     m_HdrFileName,
                     wxsCodeMarks::Beg(wxsCPP,_T("Headers"),m_ClassName),
                     wxsCodeMarks::End(wxsCPP),
-                    HeadersAllCode(&Context) );
+                    HeadersAllCode(&Context),
+                    false );
             }
 
-            DBGLOG(_T("wxSmith: Files updated in %d milis"),SW.Time());
+            wxsCoder::Get()->Flush(500);
+            //DBGLOG(_T("wxSmith: New code built in %d milis"),SW.Time());
 
             break;
         }
@@ -1297,7 +1303,6 @@ void wxsItemResData::EndChange()
         {
             m_Editor->UpdateModified();
         }
-        RebuildFiles();
         if ( m_Editor )
         {
             m_Editor->RebuildPreview();
@@ -1314,6 +1319,7 @@ void wxsItemResData::EndChange()
                 m_Editor->RebuildQuickProps(m_RootSelection);
             }
         }
+        RebuildFiles();
         RebuildTree();
         wxsResourceTree::Get()->UnblockSelect();
     }
