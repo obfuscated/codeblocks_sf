@@ -43,17 +43,17 @@ ProjectLoader::ProjectLoader(cbProject* project)
     m_1_4_to_1_5_deftarget(-1),
     m_IsPre_1_6(false)
 {
-	//ctor
+    //ctor
 }
 
 ProjectLoader::~ProjectLoader()
 {
-	//dtor
+    //dtor
 }
 
 bool ProjectLoader::Open(const wxString& filename)
 {
-	return Open(filename, 0);
+    return Open(filename, 0);
 }
 
 bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
@@ -230,15 +230,15 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
             m_pProject->SetDefaultExecuteTarget(bt->GetTitle());
     }
 
-	if (ppExtensions)
-		*ppExtensions = 0;
+    if (ppExtensions)
+        *ppExtensions = 0;
 
     // as a last step, run all hooked callbacks
     TiXmlElement* node = proj->FirstChildElement("Extensions");
     if (node)
     {
-    	if (ppExtensions)
-			*ppExtensions = new TiXmlElement(*node);
+        if (ppExtensions)
+            *ppExtensions = new TiXmlElement(*node);
         ProjectLoaderHooks::CallHooks(m_pProject, node, true);
     }
 
@@ -396,7 +396,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
             title = cbC2U(node->Attribute("title"));
 
         else if (node->Attribute("platforms"))
-        	platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
+            platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
 
         else if (node->Attribute("makefile")) // there is only one attribute per option, so "else" is a safe optimisation
             makefile = cbC2U(node->Attribute("makefile"));
@@ -535,7 +535,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     while (node)
     {
         if (node->Attribute("platforms"))
-        	platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
+            platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
 
         if (node->Attribute("use_console_runner"))
             use_console_runner = strncmp(node->Attribute("use_console_runner"), "0", 1) != 0;
@@ -824,7 +824,7 @@ void ProjectLoader::DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget
 
 void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* base)
 {
-	if (!base)
+    if (!base)
         return;
     TiXmlElement* node = parentNode->FirstChildElement("Environment");
     while (node)
@@ -835,7 +835,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
             wxString name = cbC2U(child->Attribute("name"));
             wxString value = cbC2U(child->Attribute("value"));
             if (!name.IsEmpty())
-            	base->SetVar(name, UnixFilename(value));
+                base->SetVar(name, UnixFilename(value));
 
             child = child->NextSiblingElement("Variable");
         }
@@ -956,13 +956,13 @@ void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)
             file->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
         }
 
-		// use same targets for generated files
+        // use same targets for generated files
         for (size_t n = 0; n < file->generatedFiles.size(); ++n)
         {
-			for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
-			{
-				file->generatedFiles[n]->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
-			}
+            for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
+            {
+                file->generatedFiles[n]->AddBuildTarget(m_pProject->GetBuildTarget(i)->GetTitle());
+            }
         }
     }
 }
@@ -1024,7 +1024,7 @@ void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* ba
 
 bool ProjectLoader::Save(const wxString& filename)
 {
-	return Save(filename, 0);
+    return Save(filename, 0);
 }
 
 bool ProjectLoader::Save(const wxString& filename, TiXmlElement* pExtensions)
@@ -1058,11 +1058,11 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     TiXmlElement* prjnode = rootnode->FirstChildElement("Project");
 
     AddElement(prjnode, "Option", "title", m_pProject->GetTitle());
-	if (m_pProject->GetPlatforms() != spAll)
-	{
-		wxString platforms = GetStringFromPlatforms(m_pProject->GetPlatforms());
-		AddElement(prjnode, "Option", "platforms", platforms);
-	}
+    if (m_pProject->GetPlatforms() != spAll)
+    {
+        wxString platforms = GetStringFromPlatforms(m_pProject->GetPlatforms());
+        AddElement(prjnode, "Option", "platforms", platforms);
+    }
     if (m_pProject->GetMakefile() != _T("Makefile"))
         AddElement(prjnode, "Option", "makefile", m_pProject->GetMakefile());
     if (m_pProject->IsMakefileCustom())
@@ -1122,7 +1122,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         TiXmlElement* tgtnode = AddElement(buildnode, "Target", "title", target->GetTitle());
         if (target->GetPlatforms() != spAll)
         {
-        	wxString platforms = GetStringFromPlatforms(target->GetPlatforms());
+            wxString platforms = GetStringFromPlatforms(target->GetPlatforms());
             AddElement(tgtnode, "Option", "platforms", platforms);
         }
         if (target->GetTargetType() != ttCommandsOnly)
@@ -1282,7 +1282,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
 
         // do not save auto-generated files
         if (f->autoGeneratedBy)
-			continue;
+            continue;
 
         // do not save project files that do not belong in the target we 're exporting
         if (onlytgt && !onlytgt->GetFilesList().Find(f))
@@ -1351,13 +1351,13 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     }
 
     // as a last step, run all hooked callbacks
-	TiXmlElement* extnode = pExtensions
-							? prjnode->InsertEndChild(*pExtensions)->ToElement()
-							: AddElement(prjnode, "Extensions");
+    TiXmlElement* extnode = pExtensions
+                            ? prjnode->InsertEndChild(*pExtensions)->ToElement()
+                            : AddElement(prjnode, "Extensions");
     if (ProjectLoaderHooks::HasRegisteredHooks() && extnode)
-	{
-		ProjectLoaderHooks::CallHooks(m_pProject, extnode, false);
-	}
+    {
+        ProjectLoaderHooks::CallHooks(m_pProject, extnode, false);
+    }
 
     return cbSaveTinyXMLDocument(&doc, filename);
 }
@@ -1380,27 +1380,27 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
     {
         long int idx = -1;
         if (proposal.ToLong(&idx))
-			compiler = CompilerFactory::GetCompiler(idx);
+            compiler = CompilerFactory::GetCompiler(idx);
     }
 
     if (!compiler)
     {
-		if(!(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/ignore_invalid_targets"), true)))
-		{
-			wxString msg;
-			msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
-						"Please choose the compiler you want to use instead and click \"OK\".\n"
-						"If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
-						proposal.c_str());
-			compiler = CompilerFactory::SelectCompilerUI(msg);
-		}
+        if(!(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/ignore_invalid_targets"), false)))
+        {
+            wxString msg;
+            msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"
+                        "Please choose the compiler you want to use instead and click \"OK\".\n"
+                        "If you click \"Cancel\", the project/target will be excluded from the build."), scope.c_str(),
+                        proposal.c_str());
+            compiler = CompilerFactory::SelectCompilerUI(msg);
+        }
     }
 
     if (!compiler)
     {
-		// allow for invalid compiler IDs to be preserved...
-		m_CompilerSubstitutes[proposal] = proposal;
-		return proposal;
+        // allow for invalid compiler IDs to be preserved...
+        m_CompilerSubstitutes[proposal] = proposal;
+        return proposal;
     }
 
     m_OpenDirty = true;

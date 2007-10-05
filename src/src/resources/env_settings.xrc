@@ -88,7 +88,6 @@
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkInvalidTargets">
 										<label>Ignore Invalid Targets</label>
-										<checked>1</checked>
 										<tooltip>When checked the user will not be prompted to deal with Invalid Targets, &#x0A;during the build process they will be ignored (example : the target&apos;s compiler is not installed)</tooltip>
 									</object>
 									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
