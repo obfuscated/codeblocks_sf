@@ -10,7 +10,7 @@
 header_contents <- @"#ifndef GUARD
 #define GUARD
 
-
+AUTO_GENERATED_CONTENTS
 
 #endif // GUARD
 ";
@@ -49,7 +49,9 @@ function CreateFiles()
         // succeeded -> add header guard
         local guard = Wizard.GetFileHeaderGuard();
         local text = _T(header_contents);
+        local auto_text = ed_new.GetText();
         text.Replace(_T("GUARD"), guard);
+        text.Replace(_T("AUTO_GENERATED_CONTENTS"), auto_text);
         ed_new.SetText(text);
 
         // succeeded -> add file to project if needed
