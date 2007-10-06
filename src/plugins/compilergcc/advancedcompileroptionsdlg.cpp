@@ -150,7 +150,7 @@ void AdvancedCompilerOptionsDlg::ReadExtensions(int nr)
 	cmb->Clear();
 	for (size_t i = 0; i < m_Commands[nr].size(); ++i)
 	{
-		cmb->Append(GetStringFromArray(m_Commands[nr][i].extensions));
+		cmb->Append(GetStringFromArray(m_Commands[nr][i].extensions, DEFAULT_ARRAY_SEP, false));
 	}
 	cmb->SetSelection(cmb->FindString(wxEmptyString));
 }
@@ -185,7 +185,7 @@ void AdvancedCompilerOptionsDlg::DisplayCommand(int cmd, int ext)
 	if (tool)
 	{
 		text->SetValue(tool->command);
-		gen->SetValue(GetStringFromArray(tool->generatedFiles, _T("\n")));
+		gen->SetValue(GetStringFromArray(tool->generatedFiles, _T("\n"), false));
 	}
 	else
 	{
@@ -213,7 +213,7 @@ void AdvancedCompilerOptionsDlg::SaveCommands(int cmd, int ext)
 			// last command was changed; save it
 			tool->command = text->GetValue();
 		}
-		wxString gens = GetStringFromArray(tool->generatedFiles, _T("\n"));
+		wxString gens = GetStringFromArray(tool->generatedFiles, _T("\n"), false);
 		if (gen->GetValue() != gens)
 		{
 			// last genfiles are changed; save it

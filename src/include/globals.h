@@ -153,7 +153,8 @@ extern DLLIMPORT wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxSt
 extern DLLIMPORT int GetPlatformsFromString(const wxString& platforms);
 extern DLLIMPORT wxString GetStringFromPlatforms(int platforms, bool forceSeparate = false);
 
-extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP);
+// see globals.cpp for info on the third argument (bool SeparatorAtEnd)
+extern DLLIMPORT wxString GetStringFromArray(const wxArrayString& array, const wxString& separator = DEFAULT_ARRAY_SEP, bool SeparatorAtEnd = true);
 extern DLLIMPORT wxArrayString GetArrayFromString(const wxString& text, const wxString& separator = DEFAULT_ARRAY_SEP, bool trimSpaces = true);
 extern DLLIMPORT void AppendArray(const wxArrayString& from, wxArrayString& to);
 
