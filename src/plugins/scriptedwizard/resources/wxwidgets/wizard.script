@@ -750,7 +750,7 @@ function SetupProject(project)
         if ("WxsAddWxExtensions" in getroottable())
         {
             // Adding extra bindings for wxSmith
-            local Prefix = GetFixedProjectName();
+            local Prefix = GetFixedProjectName(Wizard.GetProjectName());
             local WxsFileName = _T("");
 
             if ( GuiAppType==0 )
