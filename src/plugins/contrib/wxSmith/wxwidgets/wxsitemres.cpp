@@ -554,7 +554,7 @@ bool wxsItemRes::OnPopupMenu(long Id)
     {
         if ( !m_HdrFileName.IsEmpty() )
         {
-            EditorManager::Get()->Open(GetProjectPath() + m_HdrFileName);
+            Manager::Get()->GetEditorManager()->Open(GetProjectPath() + m_HdrFileName);
         }
         return true;
     }
@@ -562,7 +562,7 @@ bool wxsItemRes::OnPopupMenu(long Id)
     {
         if ( !m_SrcFileName.IsEmpty() )
         {
-            EditorManager::Get()->Open(GetProjectPath() + m_SrcFileName);
+            Manager::Get()->GetEditorManager()->Open(GetProjectPath() + m_SrcFileName);
         }
         return true;
     }
