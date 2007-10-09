@@ -124,7 +124,8 @@ function SetupProject(project)
         SetupTarget(target, false);
 
     //Add CPP Exception handling support
-    CppExceptionsOn(project, Wizard.GetCompilerID());
+    if (ConsoleLang == 1)
+        CppExceptionsOn(project, Wizard.GetCompilerID());
     // all done!
     return true;
 }
