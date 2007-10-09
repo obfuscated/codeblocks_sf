@@ -141,19 +141,11 @@ void wxsSplitterWindow::OnBuildCreatingCode()
             }
             else if ( GetChildCount() == 1 )
             {
-                const wxChar* ChildPtrAdjust = GetChild(0)->IsPointer() ? _T("") : _T("&");
-                Codef(_T("%AInitialize(%s%v);\n"),ChildPtrAdjust,GetChild(0)->GetVarName().c_str());
+                Codef(_T("%AInitialize(%o);\n"),0);
             }
             else
             {
-                const wxChar* ChildPtrAdjust0 = GetChild(0)->IsPointer() ? _T("") : _T("&");
-                const wxChar* ChildPtrAdjust1 = GetChild(1)->IsPointer() ? _T("") : _T("&");
-                Codef(_T("%ASplit%s(%s%v, %s%v);\n"),
-                            (Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically"),
-                            ChildPtrAdjust0,
-                            GetChild(0)->GetVarName().c_str(),
-                            ChildPtrAdjust1,
-                            GetChild(1)->GetVarName().c_str());
+                Codef(_T("%ASplit%s(%o, %o);\n"),((Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically")),0,1);
             }
             break;
         }

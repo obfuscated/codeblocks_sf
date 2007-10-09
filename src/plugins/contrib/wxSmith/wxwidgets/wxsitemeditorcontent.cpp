@@ -54,6 +54,7 @@ wxsItemEditorContent::wxsItemEditorContent(wxWindow* Parent,wxsItemResData* Data
 
 wxsItemEditorContent::~wxsItemEditorContent()
 {
+    ClearDragPoints();
     delete m_Assist;
 }
 

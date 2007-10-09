@@ -148,14 +148,7 @@ void wxsToolBar::OnBuildCreatingCode()
                     Child->BuildCode(GetCoderContext());
                     if ( Child->GetClassName() != _T("wxToolBarToolBase") )
                     {
-                        if ( Child->IsPointer() )
-                        {
-                            Codef(_T("%AAddControl(%v);\n"),Child->GetVarName().c_str());
-                        }
-                        else
-                        {
-                            Codef(_T("%AAddControl(&%v);\n"),Child->GetVarName().c_str());
-                        }
+                        Codef(_T("%AAddControl(%o);\n"),i);
                     }
                 }
                 Codef(_T("%ARealize();\n"));

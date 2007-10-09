@@ -67,9 +67,14 @@ void wxsRadioBox::OnBuildCreatingCode()
 
             // wxRadioBox does not have Append Function , therefore , have to build a wxString[]
             // to pass in to the ctor
+            wxString ChoicesName;
             if ( ArrayChoices.GetCount() > 0 )
             {
-                Codef(_T("wxString wxRadioBoxChoices_%s[%d] = \n{\n"),GetVarName().c_str(),(int)ArrayChoices.GetCount());
+                wxString& CountVar = GetCoderContext()->m_Extra[_T("wxRadioBoxChoicesCount")];
+                ChoicesName.Printf(_T("__wxRadioBoxChoices_%d"),CountVar.Length());
+                CountVar.Append(_T("*"));
+
+                Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.c_str(),(int)ArrayChoices.GetCount());
                 for ( size_t i = 0; i < ArrayChoices.GetCount(); ++i )
                 {
                     Codef(_T("\t%t%s\n"),ArrayChoices[i].c_str(),((i!=ArrayChoices.GetCount()-1)?_T(","):_T("")));
@@ -81,7 +86,7 @@ void wxsRadioBox::OnBuildCreatingCode()
 
             Codef(_T("%C(%W, %I, %t, %P, %S, %d, %s, %d, %T, %V, %N);\n"),
                         Label.c_str(),ArrayChoices.GetCount(),
-                        (ArrayChoices.IsEmpty()?_T("0"):(_T("wxRadioBoxChoices_")+GetVarName()).c_str()),
+                        (ArrayChoices.IsEmpty()?_T("0"):ChoicesName.c_str()),
                         Dimension);
 
             if ( DefaultSelection >= 0 && DefaultSelection < (int)ArrayChoices.GetCount() )

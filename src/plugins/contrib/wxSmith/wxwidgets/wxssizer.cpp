@@ -115,13 +115,7 @@ void wxsSizer::OnBuildCreatingCode()
                 {
                     case wxsCPP:
                     {
-                        wxString ChildName = Child->GetVarName();
-                        // TODO: Replate this with some formatting
-                        if ( !Child->IsPointer() )
-                        {
-                            ChildName = _T("&") + ChildName;
-                        }
-                        Codef(_T("%AAdd(%s, %s);\n"),ChildName.c_str(),Extra->AllParamsCode(GetCoderContext()).c_str());
+                        Codef(_T("%AAdd(%o, %s);\n"),i,Extra->AllParamsCode(GetCoderContext()).c_str());
                         break;
                     }
 

@@ -94,7 +94,7 @@ namespace
                 SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
-                
+
                 Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsNotebookParentQP::OnLabelText);
                 Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNotebookParentQP::OnSelectionChange);
                 //*)
@@ -289,13 +289,7 @@ void wxsNotebook::OnBuildCreatingCode()
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsNotebookExtra* Extra = (wxsNotebookExtra*)GetChildExtra(i);
-                wxString ChildName = GetChild(i)->GetVarName();
-                if ( !GetChild(i)->IsPointer() )
-                {
-                    ChildName = _T("&") + ChildName;
-                }
-                Codef(_T("%AAddPage(%v, %t, %b);\n"),
-                        ChildName.c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
             break;

@@ -188,15 +188,8 @@ void wxsContainer::AddChildrenCode()
                 Child->BuildCode(Context);
                 if ( Child->GetType() == wxsTSizer )
                 {
-                    // TODO: Is this right place to do the sizer asignment ?
-                    if ( Child->IsPointer() )
-                    {
-                        Codef(_T("%ASetSizer(%s);\n"),Child->GetVarName().c_str());
-                    }
-                    else
-                    {
-                        Codef(_T("%ASetSizer(&%s);\n"),Child->GetVarName().c_str());
-                    }
+                    // TODO: Is this right place to set-up sizer ?
+                    Codef(_T("%ASetSizer(%o);\n"),i);
                 }
             }
 

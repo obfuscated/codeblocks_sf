@@ -55,8 +55,10 @@ void wxsStatusBar::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %T, %N);\n"));
             if ( m_Fields>0 )
             {
-                wxString WidthsVarName = GetVarName() + _T("__widths");
-                wxString StylesVarName = GetVarName() + _T("__styles");
+                wxString& CounterVal = GetCoderContext()->m_Extra[_T("wxStatusBarCount")];
+                wxString WidthsVarName = wxString::Format(_T("__wxStatusBarWidths_%d"),CounterVal.Length());
+                wxString StylesVarName = wxString::Format(_T("__wxStatusBarStyles_%d"),CounterVal.Length());
+                CounterVal.Append(_T('*'));
                 Codef(_T("int %v[%d] = { "),WidthsVarName.c_str(),m_Fields);
                 for ( int i=0; i<m_Fields; i++ )
                 {
@@ -75,7 +77,7 @@ void wxsStatusBar::OnBuildCreatingCode()
                 }
                 Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.c_str());
                 Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.c_str());
-                Codef(_T("SetStatusBar(%O);\n"),GetVarName().c_str());
+                Codef(_T("SetStatusBar(%O);\n"));
             }
             BuildSetupWindowCode();
             break;

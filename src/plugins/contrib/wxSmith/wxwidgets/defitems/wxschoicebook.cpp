@@ -88,7 +88,7 @@ namespace
                 SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
-                
+
                 Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsChoicebookParentQP::OnLabelText);
                 Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsChoicebookParentQP::OnSelectionChange);
                 //*)
@@ -276,8 +276,7 @@ void wxsChoicebook::OnBuildCreatingCode()
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsChoicebookExtra* Extra = (wxsChoicebookExtra*)GetChildExtra(i);
-                Codef(_T("%AAddPage(%v, %t, %b);\n"),
-                    GetChild(i)->GetVarName().c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
             break;

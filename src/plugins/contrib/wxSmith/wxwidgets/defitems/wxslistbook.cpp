@@ -89,7 +89,7 @@ namespace
                 SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
-                
+
                 Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsListbookParentQP::OnLabelText);
                 Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsListbookParentQP::OnSelectionChange);
                 //*)
@@ -276,8 +276,7 @@ void wxsListbook::OnBuildCreatingCode()
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
-                Codef(_T("%AAddPage(%v, %t, %b);\n"),
-                    GetChild(i)->GetVarName().c_str(),Extra->m_Label.c_str(),Extra->m_Selected);
+                Codef(_T("%AAddPage(%i, %t, %b);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
             break;
