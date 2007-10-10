@@ -241,7 +241,13 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
         if (isHeader)
             ret.Add(wxString(COMPILER_WAIT));
 		if (retGenerated.GetCount())
+		{
+			// not only append commands for (any) generated files to be compiled
+			// but also insert a "pause" to allow this file to generate its files first
+			if (!isHeader) // if isHeader, the "pause" has already been added
+				ret.Add(wxString(COMPILER_WAIT));
 			AppendArray(retGenerated, ret);
+		}
 
         // if it's a PCH, delete the previously generated PCH to avoid problems
         // (it 'll be recreated anyway)
