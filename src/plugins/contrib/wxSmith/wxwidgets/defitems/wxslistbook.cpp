@@ -276,7 +276,7 @@ void wxsListbook::OnBuildCreatingCode()
             for ( int i=0; i<GetChildCount(); i++ )
             {
                 wxsListbookExtra* Extra = (wxsListbookExtra*)GetChildExtra(i);
-                Codef(_T("%AAddPage(%i, %t, %b);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected);
+                Codef(_T("%AAddPage(%o, %t, %b);\n"),i,Extra->m_Label.c_str(),Extra->m_Selected);
             }
 
             break;
