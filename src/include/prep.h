@@ -20,6 +20,7 @@
         Integer compile-time constant that represents  a major.minor.revision style version number.
         This is the most convenient and efficient way to check for API-version dependent features,
         as it can be done as easily as:  if(foobar_version >= Version<1,2>::eval)
+        The range of possible version numbers is [Version<0,0,0> , Version<63,1023,32767>]
 
     wxMinimumVersion<...>::eval, wxExactVersion<...>::eval
         Boolean values that are true if the compiled wxWidgets version is at least (exactly)
@@ -29,7 +30,9 @@
         if(!wxMinimumVersion<2.8>::eval && (foo_version < Version<1.2>::eval))
             ErrorMessage("This feature is only supported under wxWidgets 2.8, or with Foo Component 1.2 or higher.");
 */
-template <int major, int minor = 0, int revision = 0> struct Version { enum { eval = 1000*1000*major + 1000*minor + revision }; };
+template <int major, int minor = 0, int revision = 0> struct Version { enum { eval = (major<<25) + (minor<<15) + revision }; };
+inline void Version2MMR(int v, int& major, int& minor, int& revision) { major = v>>25; minor = (v>>15) & ((1<<10) -1); revision = v & ((1<<15) -1); };
+
 template <int major, int minor, int rel = 0> struct wxMinimumVersion { enum { eval = ((unsigned int)  Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval >= (unsigned int) Version<major, minor, rel>::eval) }; };
 template <int major, int minor, int rel = 0> struct wxExactVersion { enum { eval = ((unsigned int) Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval == (unsigned int) Version<major, minor, rel>::eval) }; };
 
