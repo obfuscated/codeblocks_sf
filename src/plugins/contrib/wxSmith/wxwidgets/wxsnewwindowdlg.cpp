@@ -41,6 +41,43 @@
 #include <wx/string.h>
 //*)
 
+namespace
+{
+    // Don't want to use wxFileName since it breaks slashes/backslashes stuff
+
+    wxString GetPathPart(const wxString& FileName)
+    {
+        for ( size_t i=FileName.Length(); i-->0; )
+        {
+            switch ( FileName[i] )
+            {
+                case _T('/'):
+                case _T('\\'):
+                    return FileName.Mid(0,i+1);
+            }
+        }
+
+        return wxEmptyString;
+    }
+
+    wxString GetNoExt(const wxString& FileName)
+    {
+        for ( size_t i=FileName.Length(); i-->0; )
+        {
+            switch ( FileName[i] )
+            {
+                case _T('/'):
+                case _T('\\'):
+                    return FileName;
+
+                case _T('.'):
+                    return FileName.Mid(0,i);
+            }
+        }
+        return FileName;
+    }
+}
+
 //(*IdInit(wxsNewWindowDlg)
 const long wxsNewWindowDlg::ID_STATICTEXT1 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL1 = wxNewId();
@@ -99,7 +136,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     wxStaticText* StaticText2;
     wxStaticText* StaticText1;
     wxStaticText* StaticText3;
-    
+
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Options"));
@@ -217,7 +254,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     SetSizer(m_RootSizer);
     m_RootSizer->Fit(this);
     m_RootSizer->SetSizeHints(this);
-    
+
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnClassChanged);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnHeaderChanged);
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnSourceChanged);
@@ -239,13 +276,17 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     Connect(ID_CHECKBOX12,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNewWindowDlg::OnCtorSizeDefClick);
     //*)
 
+    ConfigManager* Cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+
     m_BlockText = true;
+    m_SourceDirectory = Cfg->Read(_T("/newresource/sourcedirectory"),_T(""));
+
     wxString StrippedName = ResType.Mid(2);
     wxString ResName = wxString::Format(_("New%s"),StrippedName.c_str());
     m_Class->SetValue(ResName);
-    m_Source->SetValue(ResName+_T(".cpp"));
-    m_Header->SetValue(ResName+_T(".h"));
-    m_Xrc->SetValue(ResName+_T(".xrc"));
+    m_Source->SetValue(m_SourceDirectory + ResName+_T(".cpp"));
+    m_Header->SetValue(m_SourceDirectory + ResName+_T(".h"));
+    m_Xrc   ->SetValue(m_SourceDirectory + ResName+_T(".xrc"));
     m_Xrc->Disable();
     SetTitle(wxString::Format(_("New %s resource"),ResType.c_str()));
     DetectPchFile();
@@ -258,8 +299,6 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
         m_Project->GetGUI()->GetName()==_T("wxWidgets") &&
         m_Project->GetGUI()->CheckIfApplicationManaged();
     m_XRCAutoload->SetValue(m_AppManaged);
-
-    ConfigManager* Cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
 
     m_UseInitFunc->SetValue(Cfg->ReadBool(_T("/newresource/useinitfunc"),m_UseInitFunc->GetValue()));
     m_InitFunc->Enable(m_UseInitFunc->GetValue());
@@ -511,6 +550,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Cfg->Write(_T("/newresource/scopeids"),(int)m_ScopeIdsVal);
     Cfg->Write(_T("/newresource/scopemembers"),(int)m_ScopeMembersVal);
     Cfg->Write(_T("/newresource/scopehandlers"),(int)m_ScopeHandlersVal);
+    Cfg->Write(_T("/newresource/sourcedirectory"),m_SourceDirectory);
 
     EndModal(wxID_OK);
 }
@@ -519,9 +559,9 @@ void wxsNewWindowDlg::OnClassChanged(wxCommandEvent& event)
 {
     if ( m_BlockText ) return;
     m_BlockText = true;
-    if ( m_HeaderNotTouched ) m_Header->SetValue(m_Class->GetValue() + _T(".h"));
-    if ( m_SourceNotTouched ) m_Source->SetValue(m_Class->GetValue() + _T(".cpp"));
-    if ( m_XrcNotTouched ) m_Xrc->SetValue(m_Class->GetValue() + _T(".xrc"));
+    if ( m_HeaderNotTouched ) m_Header->SetValue(m_SourceDirectory + m_Class->GetValue() + _T(".h"));
+    if ( m_SourceNotTouched ) m_Source->SetValue(m_SourceDirectory + m_Class->GetValue() + _T(".cpp"));
+    if ( m_XrcNotTouched    ) m_Xrc->   SetValue(m_SourceDirectory + m_Class->GetValue() + _T(".xrc"));
     m_BlockText = false;
 }
 
@@ -537,16 +577,15 @@ void wxsNewWindowDlg::OnHeaderChanged(wxCommandEvent& event)
 {
     if ( m_BlockText ) return;
     m_BlockText = true;
-    wxFileName FN(m_Header->GetValue());
-    FN.SetExt(_T("cpp"));
+    m_SourceDirectory = GetPathPart(m_Header->GetValue());
+    wxString Base = GetNoExt(m_Header->GetValue());
     if ( m_SourceNotTouched )
     {
-        m_Source->SetValue(FN.GetFullPath(wxPATH_UNIX));
+        m_Source->SetValue(Base+_T(".cpp"));
     }
-    FN.SetExt(_T("xrc"));
     if ( m_XrcNotTouched )
     {
-        m_Xrc->SetValue(FN.GetFullPath(wxPATH_UNIX));
+        m_Xrc->SetValue(Base+_T(".h"));
     }
     m_HeaderNotTouched = false;
     m_BlockText = false;

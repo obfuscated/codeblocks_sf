@@ -29,6 +29,7 @@
 #include "wxsparent.h"
 #include "wxsitemeditor.h"
 #include "wxsgridpanel.h"
+#include <wx/app.h>
 
 BEGIN_EVENT_TABLE(wxsItemEditorContent,wxsDrawingWindow)
     EVT_MOUSE_EVENTS(wxsItemEditorContent::OnMouse)
@@ -923,7 +924,6 @@ void wxsItemEditorContent::ScreenShootTaken()
     if ( m_RebuildMaps )
     {
         RecalculateMaps();
-        m_RebuildMaps = false;
     }
     RebuildDragPoints();
     m_AssistParent = 0;
@@ -945,6 +945,7 @@ void wxsItemEditorContent::RecalculateMaps()
     m_ItemToRect.clear();
     m_ItemToWindow.clear();
     RecalculateMapsReq(m_Data->GetRootItem());
+    m_RebuildMaps = false;
 }
 
 void wxsItemEditorContent::RecalculateMapsReq(wxsItem* Item)

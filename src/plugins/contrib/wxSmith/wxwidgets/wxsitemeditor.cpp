@@ -219,9 +219,10 @@ void wxsItemEditor::RebuildPreview()
         m_Content->SetSizer(NewSizer);
         NewSizer->SetVirtualSizeHints(m_Content);
         NewSizer->FitInside(m_Content);
+        m_PreviewBackground->Layout();
+        m_Content->Layout();
         m_HorizSizer->Layout();
         m_VertSizer->Layout();
-        m_PreviewBackground->Layout();
         Layout();
     }
 

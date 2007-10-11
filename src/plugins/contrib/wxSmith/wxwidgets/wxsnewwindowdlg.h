@@ -166,6 +166,7 @@ class wxsNewWindowDlg : public wxDialog
         bool m_AppManaged;
         wxString m_Type;
         wxsProject* m_Project;
+        wxString m_SourceDirectory;
 
         wxsItemRes::NewResourceParams::Scope m_ScopeIdsVal;
         wxsItemRes::NewResourceParams::Scope m_ScopeMembersVal;
