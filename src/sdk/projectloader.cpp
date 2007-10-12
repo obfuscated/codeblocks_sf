@@ -1134,9 +1134,9 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             wxString outputFileName = target->GetOutputFilename();
             if (extensionPolicy == tgfpPlatformDefault)
             {
-                int loc = outputFileName.Find(_T('.'), true);
-                if (loc != wxNOT_FOUND)
-                    outputFileName = outputFileName.Remove(loc);
+                wxFileName fname(outputFileName);
+                fname.ClearExt();
+                outputFileName = fname.GetFullPath();
             }
             TiXmlElement* outnode = AddElement(tgtnode, "Option", "output", outputFileName);
             outnode->SetAttribute("prefix_auto", prefixPolicy == tgfpPlatformDefault ? "1" : "0");
