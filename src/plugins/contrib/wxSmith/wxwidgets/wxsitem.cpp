@@ -776,7 +776,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                         case _T('o'):
                         {
                             int ChildIndex = va_arg(ap,int);
-                            wxsParent* This = GetParent();
+                            wxsParent* This = ConvertToParent();
                             if ( This && ChildIndex>=0 && ChildIndex<This->GetChildCount() )
                             {
                                 wxsItem* Child = This->GetChild(ChildIndex);
@@ -815,7 +815,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                         case _T('r'):
                         {
                             int ChildIndex = va_arg(ap,int);
-                            wxsParent* This = GetParent();
+                            wxsParent* This = ConvertToParent();
                             if ( This && ChildIndex>=0 && ChildIndex<This->GetChildCount() )
                             {
                                 wxsItem* Child = This->GetChild(ChildIndex);
