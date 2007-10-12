@@ -113,6 +113,7 @@ const long wxsNewWindowDlg::ID_CHECKBOX8 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX12 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT6 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL7 = wxNewId();
+const long wxsNewWindowDlg::ID_CHECKBOX14 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX13 = wxNewId();
 //*)
 
@@ -241,6 +242,9 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_CtorCustom = new wxTextCtrl(this, ID_TEXTCTRL7, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL7"));
     FlexGridSizer2->Add(m_CtorCustom, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_AdvancedOptionsSizer->Add(FlexGridSizer2, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_UseFwdDecl = new wxCheckBox(this, ID_CHECKBOX14, _("Use forward declarations"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX14"));
+    m_UseFwdDecl->SetValue(false);
+    m_AdvancedOptionsSizer->Add(m_UseFwdDecl, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_AddWxs = new wxCheckBox(this, ID_CHECKBOX13, _("Add wxs file to project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX13"));
     m_AddWxs->SetValue(false);
     m_AdvancedOptionsSizer->Add(m_AddWxs, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -322,6 +326,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_ScopeIdsVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopeids"),(int)wxsItemRes::NewResourceParams::Protected);
     m_ScopeMembersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopemembers"),(int)wxsItemRes::NewResourceParams::Public);
     m_ScopeHandlersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopehandlers"),(int)wxsItemRes::NewResourceParams::Private);
+    m_UseFwdDecl->SetValue(Cfg->ReadBool(_T("/newresource/usefwddecl"),m_UseFwdDecl->GetValue()));
     UpdateScopeButtons();
     OnUseXrcChange(event);
 
@@ -368,6 +373,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Params.ScopeIds       = m_ScopeIdsVal;
     Params.ScopeMembers   = m_ScopeMembersVal;
     Params.ScopeHandlers  = m_ScopeHandlersVal;
+    Params.UseFwdDecl     = m_UseFwdDecl->GetValue();
 
     // Need to do some checks
     // Validating name
@@ -551,6 +557,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Cfg->Write(_T("/newresource/scopemembers"),(int)m_ScopeMembersVal);
     Cfg->Write(_T("/newresource/scopehandlers"),(int)m_ScopeHandlersVal);
     Cfg->Write(_T("/newresource/sourcedirectory"),m_SourceDirectory);
+    Cfg->Write(_T("/newresource/usefwddecl"),m_UseFwdDecl->GetValue());
 
     EndModal(wxID_OK);
 }

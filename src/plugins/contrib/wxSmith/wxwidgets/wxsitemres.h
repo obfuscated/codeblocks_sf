@@ -92,13 +92,15 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
             Scope ScopeIds;
             Scope ScopeMembers;
             Scope ScopeHandlers;
+            bool UseFwdDecl;
 
             NewResourceParams():
                 GenSrc(false), GenHdr(false), GenXrc(false), UsePch(false),
                 UseInitFunc(false), CtorParent(false), CtorParentDef(false),
                 CtorId(false), CtorIdDef(false), CtorPos(false), CtorPosDef(false),
                 CtorSize(false), CtorSizeDef(false),
-                ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private)
+                ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private),
+                UseFwdDecl(false)
             {}
         };
 
@@ -149,6 +151,7 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
         wxString m_SrcFileName;
         wxString m_HdrFileName;
         wxString m_XrcFileName;
+        bool     m_UseForwardDeclarations;
         bool     m_CanBeMain;
 };
 

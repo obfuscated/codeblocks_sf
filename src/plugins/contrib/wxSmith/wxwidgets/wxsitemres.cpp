@@ -117,6 +117,7 @@ wxsItemRes::wxsItemRes(wxsProject* Owner,const wxString& Type,bool CanBeMain):
     m_SrcFileName(wxEmptyString),
     m_HdrFileName(wxEmptyString),
     m_XrcFileName(wxEmptyString),
+    m_UseForwardDeclarations(false),
     m_CanBeMain(CanBeMain)
 {
 }
@@ -127,7 +128,8 @@ wxsItemRes::wxsItemRes(const wxString& FileName,const TiXmlElement* XrcElem,cons
     m_WxsFileName(wxEmptyString),
     m_SrcFileName(wxEmptyString),
     m_HdrFileName(wxEmptyString),
-    m_XrcFileName(FileName)
+    m_XrcFileName(FileName),
+    m_UseForwardDeclarations(false)
 {
     SetResourceName(cbC2U(XrcElem->Attribute("name")));
 }
@@ -147,10 +149,12 @@ bool wxsItemRes::OnReadConfig(const TiXmlElement* Node)
     m_SrcFileName = cbC2U(Node->Attribute("src"));
     m_HdrFileName = cbC2U(Node->Attribute("hdr"));
     m_XrcFileName = cbC2U(Node->Attribute("xrc"));
+    m_UseForwardDeclarations = (cbC2U(Node->Attribute("fwddecl")) == _T("1"));
+
+    // m_XrcFileName may be empty because it's not used when generating full source code
     return !m_WxsFileName.empty() &&
            !m_SrcFileName.empty() &&
            !m_HdrFileName.empty();
-    // m_XrcFileName may be empty because it's not used when generating full source code
 }
 
 bool wxsItemRes::OnWriteConfig(TiXmlElement* Node)
@@ -161,6 +165,10 @@ bool wxsItemRes::OnWriteConfig(TiXmlElement* Node)
     if ( !m_XrcFileName.empty() )
     {
         Node->SetAttribute("xrc",cbU2C(m_XrcFileName));
+    }
+    if ( m_UseForwardDeclarations )
+    {
+        Node->SetAttribute("fwddecl","1");
     }
     return true;
 }
@@ -441,6 +449,7 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
             {
                 m_WxsFileName = Params.Wxs;
             }
+            m_UseForwardDeclarations = Params.UseFwdDecl;
             return true;
         }
 
@@ -477,6 +486,7 @@ wxsItemResData* wxsItemRes::BuildResData(wxsItemEditor* Editor)
         GetResourceName(),
         GetResourceType(),
         GetLanguage(),
+        m_UseForwardDeclarations,
         GetTreeItemId(),
         Editor,
         this);

@@ -80,6 +80,7 @@ class wxsNewWindowDlg : public wxDialog
         static const long ID_CHECKBOX12;
         static const long ID_STATICTEXT6;
         static const long ID_TEXTCTRL7;
+        static const long ID_CHECKBOX14;
         static const long ID_CHECKBOX13;
         //*)
 
@@ -115,6 +116,7 @@ class wxsNewWindowDlg : public wxDialog
         wxStaticText* StaticText9;
         wxFlexGridSizer* FlexGridSizer4;
         wxTextCtrl* m_Header;
+        wxCheckBox* m_UseFwdDecl;
         wxTextCtrl* m_CtorCustom;
         wxButton* m_ScopeHandlers;
         wxTextCtrl* m_InitFunc;

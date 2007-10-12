@@ -342,6 +342,13 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX14" variable="m_UseFwdDecl" member="yes">
+							<label>Use forward declarations</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX13" variable="m_AddWxs" member="yes">
 							<label>Add wxs file to project</label>
 						</object>

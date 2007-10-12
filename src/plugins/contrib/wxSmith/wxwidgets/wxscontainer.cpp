@@ -170,7 +170,6 @@ void wxsContainer::AddChildrenPreview(wxWindow* This,long Flags)
 
 void wxsContainer::AddChildrenCode()
 {
-    // TODO: Convert for Access-safe code
     switch ( GetLanguage() )
     {
         case wxsCPP:

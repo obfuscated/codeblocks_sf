@@ -60,6 +60,7 @@ class wxsItemResData
             const wxString& ClassName,
             const wxString& ClassType,
             wxsCodingLang   Language,
+            bool UseForwardDeclarations,
             wxsResourceItemId TreeId,
             wxsItemEditor*  Editor,
             wxsItemResFunctions* Functions
@@ -335,20 +336,6 @@ class wxsItemResData
         void DetectAutoCodeBlocks();
 
         // Functions used by RebuildSourceCode
-/*
-        void BuildVariablesCode(wxsCodingLang Lang,wxString& LocalCode, wxString& GlobalCode);
-        void BuildVariablesCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& LocalCode, wxString& GlobalCode);
-        void BuildCreatingCode(wxsCodingLang Lang,wxString& Code);
-        void BuildXrcLoadingCode(wxsCodingLang Lang,wxString& Code);
-        void BuildXrcItemsFetchingCode(wxsCodingLang Lang,wxString& Code);
-        void BuildXrcItemsFetchingCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& Code);
-        void BuildEventHandlersCode(wxsCodingLang Lang,wxString& Code);
-        void BuildEventHandlersCodeReq(wxsCodingLang Lang,wxsItem* Item,wxString& Code);
-        void BuildIdentifiersCode(wxsCodingLang Lang,wxString& Code,wxString& IdInitCode);
-        void BuildIdsArrayReq(wxsItem* Item,wxArrayString& Array);
-        void BuildIncludesCode(wxsCodingLang Lang,wxString& LocalIncludes,wxString& GlobalIncludes);
-        void BuildHeadersReq(wxsCodingLang Lang,wxsItem* Item,wxArrayString& LocalHeaders,wxArrayString& GlobalHeaders);
-*/
         wxString DeclarationsCode(wxsCoderContext* Ctx);
         wxString IdentifiersCode(wxsCoderContext* Ctx);
         wxString InitializeCode(wxsCoderContext* Ctx);

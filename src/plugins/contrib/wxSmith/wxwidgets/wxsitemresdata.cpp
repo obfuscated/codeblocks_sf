@@ -47,9 +47,10 @@ wxsItemResData::wxsItemResData(
     const wxString& XrcFileName,
     const wxString& ClassName,
     const wxString& ClassType,
-    wxsCodingLang        Language,
-    wxsResourceItemId    TreeId,
-    wxsItemEditor*       Editor,
+    wxsCodingLang Language,
+    bool UseForwardDeclarations,
+    wxsResourceItemId TreeId,
+    wxsItemEditor* Editor,
     wxsItemResFunctions* Functions):
         m_WxsFileName(WxsFileName),
         m_SrcFileName(SrcFileName),
@@ -97,7 +98,10 @@ wxsItemResData::wxsItemResData(
     }
 
     DetectAutoCodeBlocks();
-    // TODO: Set-up flFwdDeclar flags in m_PropertiesFilter
+    if ( UseForwardDeclarations )
+    {
+        m_PropertiesFilter |= flFwdDeclar;
+    }
 
     Load();
 
