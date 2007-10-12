@@ -262,6 +262,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     wxString tmpDeps = deps;
     wxString tmpObject = object;
     wxString tmpFlatObject = FlatObject;
+    wxFileName tmpFname = tmpFile;
 
     FixPathSeparators(compiler, tmpFile);
     FixPathSeparators(compiler, tmpDeps);
@@ -278,7 +279,10 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     macro.Replace(_T("$res_includes"), m_RC[target] + fileInc);
     macro.Replace(_T("$libdirs"), m_Lib[target]);
     macro.Replace(_T("$libs"), m_LDAdd[target]);
-    macro.Replace(_T("$file_basename"), wxFileName(tmpFile).GetName());
+    macro.Replace(_T("$file_basename"), tmpFname.GetName()); // old way - remove later
+    macro.Replace(_T("$file_name"), tmpFname.GetName());
+    macro.Replace(_T("$file_dir"), tmpFname.GetPath());
+    macro.Replace(_T("$file_ext"), tmpFname.GetExt());
     macro.Replace(_T("$file"), tmpFile);
     macro.Replace(_T("$dep_object"), tmpDeps);
     if (target)

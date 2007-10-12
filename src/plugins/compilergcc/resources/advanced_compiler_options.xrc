@@ -104,8 +104,8 @@ In the generated files box, add macros for any files that
 will be generated when the command runs. These are
 files that will further need to be compiled by the build
 system.
-Currently, only the $$file and $$file_basename macros
-are allowed to appear in the generated files box.
+Currently, only the $$file* macros are allowed to appear
+in the generated files box.
 
 See docs for more info.</label>
                       </object>
@@ -149,8 +149,10 @@ Compiler include paths:
 Resource include paths:
 Linker include paths:
 Link libraries:
-Source file:
-Source file basename (no ext.):
+Source file (full name):
+Source file dir (no name, no ext.):
+Source file name (no path, no ext.):
+Source file extension:
 Object file:
 Dependency result:
 All *linkable* object files:
@@ -177,7 +179,9 @@ $$res_includes
 $$libdirs
 $$libs
 $$file
-$$file_basename
+$$file_dir
+$$file_name
+$$file_ext
 $$object
 $$dep_object
 $$link_objects
