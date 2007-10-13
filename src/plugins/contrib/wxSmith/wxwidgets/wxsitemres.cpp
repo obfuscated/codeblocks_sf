@@ -36,8 +36,10 @@ IMPLEMENT_CLASS(wxsItemRes,wxWidgetsRes)
 namespace
 {
     const wxString CppEmptySource =
-        _T("$(PchCode)#include \"$(Include)\"\n")
+        _T("$(PchCode)")
+        _T("#include \"$(Include)\"\n")
         _T("\n")
+        _T("$(InternalHeadersPch)")
         + wxsCodeMarks::Beg(wxsCPP,_T("InternalHeaders"),_T("$(ClassName)")) + _T("\n") +
         + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("\n")
@@ -66,6 +68,7 @@ namespace
         _T("#ifndef $(Guard)\n")
         _T("#define $(Guard)\n")
         _T("\n")
+        _T("$(HeadersPch)")
         + wxsCodeMarks::Beg(wxsCPP,_T("Headers"),_T("$(ClassName)")) + _T("\n")
         + wxsCodeMarks::End(wxsCPP) + _T("\n")
         _T("\n")
@@ -311,17 +314,27 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                 wxString Guard = HFN.GetName().Upper() + _T("_H");
                 wxString Header = CppEmptyHeader;
                 wxString InitFuncDecl;
+                wxString HeadersPch;
                 if ( Params.UseInitFunc )
                 {
                     InitFuncDecl <<
                         _T("\tprotected:\n\n")
                         _T("\t\tvoid ") << Params.InitFunc << _T("(") << CtorArgsF << _T(");\n\n");
                 }
+                if ( Params.UsePch && !Params.PchGuard.IsEmpty() )
+                {
+                    HeadersPch <<
+                        _T("#ifndef ") + Params.PchGuard + _T("\n")
+                        _T("\t") + wxsCodeMarks::Beg(wxsCPP,_T("HeadersPCH"),Params.Class) + _T("\n")
+                        _T("\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
+                        _T("#endif\n");
+                }
                 Header.Replace(_T("$(CtorArgs)"),CtorArgsD);
                 Header.Replace(_T("$(Guard)"),Guard);
                 Header.Replace(_T("$(ClassName)"),Params.Class);
                 Header.Replace(_T("$(BaseClassName)"),Params.BaseClass);
                 Header.Replace(_T("$(InitFuncDecl)"),InitFuncDecl);
+                Header.Replace(_T("$(HeadersPch)"),HeadersPch);
 
                 wxString Scope = _T("");
                 switch ( Params.ScopeMembers )
@@ -382,6 +395,15 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                     CtorInitCode << _T("void ") << Params.Class << _T("::") << Params.InitFunc << _T("(") << CtorArgsF << _T(")\n");
                     CtorInitCode << _T("{\n");
                 }
+                wxString IntHeadersPch;
+                if ( Params.UsePch && !Params.PchGuard.IsEmpty() )
+                {
+                    IntHeadersPch <<
+                        _T("#ifndef ") + Params.PchGuard + _T("\n")
+                        _T("\t") + wxsCodeMarks::Beg(wxsCPP,_T("InternalHeadersPCH"),Params.Class) + _T("\n")
+                        _T("\t") + wxsCodeMarks::End(wxsCPP) + _T("\n")
+                        _T("#endif\n");
+                }
 
                 wxString Source = CppEmptySource;
                 Source.Replace(_T("$(PchCode)"),PchCode);
@@ -390,6 +412,7 @@ bool wxsItemRes::CreateNewResource(NewResourceParams& Params)
                 Source.Replace(_T("$(ClassName)"),Params.Class);
                 Source.Replace(_T("$(BaseClassName)"),Params.BaseClass);
                 Source.Replace(_T("$(CtorInit)"),CtorInitCode);
+                Source.Replace(_T("$(InternalHeadersPch)"),IntHeadersPch);
                 // TODO: Use wxsCoder to save file's content, so it will
                 //       have proper encoding and EOL stuff
                 if ( !File.Write(Source) ) return false;

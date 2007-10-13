@@ -91,6 +91,8 @@ const long wxsNewWindowDlg::ID_CHECKBOX3 = wxNewId();
 const long wxsNewWindowDlg::ID_BUTTON1 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX2 = wxNewId();
 const long wxsNewWindowDlg::ID_COMBOBOX1 = wxNewId();
+const long wxsNewWindowDlg::ID_STATICTEXT11 = wxNewId();
+const long wxsNewWindowDlg::ID_TEXTCTRL8 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX4 = wxNewId();
 const long wxsNewWindowDlg::ID_TEXTCTRL5 = wxNewId();
 const long wxsNewWindowDlg::ID_STATICTEXT4 = wxNewId();
@@ -177,6 +179,13 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     FlexGridSizer2->Add(m_UsePCH, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     m_Pch = new wxComboBox(this, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
     FlexGridSizer2->Add(m_Pch, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+    BoxSizer1->Add(21,16,0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    StaticText11 = new wxStaticText(this, ID_STATICTEXT11, _("PCH guard define:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
+    BoxSizer1->Add(StaticText11, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    FlexGridSizer2->Add(BoxSizer1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+    m_PchGuard = new wxTextCtrl(this, ID_TEXTCTRL8, _("WX_PRECOMP"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL8"));
+    FlexGridSizer2->Add(m_PchGuard, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     m_UseInitFunc = new wxCheckBox(this, ID_CHECKBOX4, _("Init code in function:"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX4"));
     m_UseInitFunc->SetValue(false);
     FlexGridSizer2->Add(m_UseInitFunc, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -327,6 +336,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_ScopeMembersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopemembers"),(int)wxsItemRes::NewResourceParams::Public);
     m_ScopeHandlersVal = (wxsItemRes::NewResourceParams::Scope)Cfg->ReadInt(_T("/newresource/scopehandlers"),(int)wxsItemRes::NewResourceParams::Private);
     m_UseFwdDecl->SetValue(Cfg->ReadBool(_T("/newresource/usefwddecl"),m_UseFwdDecl->GetValue()));
+    m_PchGuard->SetValue(Cfg->Read(_T("/newresource/pchguard"),m_PchGuard->GetValue()));
     UpdateScopeButtons();
     OnUseXrcChange(event);
 
@@ -374,6 +384,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Params.ScopeMembers   = m_ScopeMembersVal;
     Params.ScopeHandlers  = m_ScopeHandlersVal;
     Params.UseFwdDecl     = m_UseFwdDecl->GetValue();
+    Params.PchGuard       = m_PchGuard->GetValue();
 
     // Need to do some checks
     // Validating name
@@ -402,6 +413,13 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     if ( m_Project->FindResource(Params.Class) )
     {
         wxMessageBox(wxString::Format(_("Resource '%s' already exists"),Params.Class.c_str()));
+        return;
+    }
+
+    // Validating PCH guard if needed
+    if ( Params.UsePch && (Params.PchGuard.IsEmpty() || !wxsCodeMarks::ValidateIdentifier(wxsCPP,Params.PchGuard)) )
+    {
+        wxMessageBox(_("Invalid name of pch guard"));
         return;
     }
 
@@ -494,7 +512,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
 
     if ( !m_Project->AddResource(NewResource) )
     {
-        wxMessageBox(_("Errot while adding new resource into project"));
+        wxMessageBox(_("Error while adding new resource into project"));
         Data->EndChange();
         delete Data;
         delete NewResource;
@@ -558,6 +576,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     Cfg->Write(_T("/newresource/scopehandlers"),(int)m_ScopeHandlersVal);
     Cfg->Write(_T("/newresource/sourcedirectory"),m_SourceDirectory);
     Cfg->Write(_T("/newresource/usefwddecl"),m_UseFwdDecl->GetValue());
+    Cfg->Write(_T("/newresource/pchguard"),m_PchGuard->GetValue());
 
     EndModal(wxID_OK);
 }
@@ -675,6 +694,7 @@ wxString wxsNewWindowDlg::DetectPchFile()
 void wxsNewWindowDlg::OnUsePCHClick(wxCommandEvent& event)
 {
     m_Pch->Enable(m_UsePCH->GetValue());
+    m_PchGuard->Enable(m_UsePCH->GetValue());
 }
 
 void wxsNewWindowDlg::OnCtorParentClick(wxCommandEvent& event)

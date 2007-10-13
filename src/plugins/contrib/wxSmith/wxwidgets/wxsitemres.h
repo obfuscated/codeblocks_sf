@@ -76,6 +76,7 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
             wxString InitFunc;
             wxString BaseClass;
             wxString CustomCtorArgs;
+            wxString PchGuard;
             bool GenSrc;
             bool GenHdr;
             bool GenXrc;
@@ -89,18 +90,17 @@ class wxsItemRes: public wxWidgetsRes, public wxsItemResFunctions
             bool CtorPosDef;
             bool CtorSize;
             bool CtorSizeDef;
+            bool UseFwdDecl;
             Scope ScopeIds;
             Scope ScopeMembers;
             Scope ScopeHandlers;
-            bool UseFwdDecl;
 
             NewResourceParams():
                 GenSrc(false), GenHdr(false), GenXrc(false), UsePch(false),
                 UseInitFunc(false), CtorParent(false), CtorParentDef(false),
                 CtorId(false), CtorIdDef(false), CtorPos(false), CtorPosDef(false),
-                CtorSize(false), CtorSizeDef(false),
-                ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private),
-                UseFwdDecl(false)
+                CtorSize(false), CtorSizeDef(false), UseFwdDecl(false),
+                ScopeIds(Protected), ScopeMembers(Public), ScopeHandlers(Private)
             {}
         };
 

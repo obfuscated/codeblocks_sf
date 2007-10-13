@@ -58,6 +58,8 @@ class wxsNewWindowDlg : public wxDialog
         static const long ID_BUTTON1;
         static const long ID_CHECKBOX2;
         static const long ID_COMBOBOX1;
+        static const long ID_STATICTEXT11;
+        static const long ID_TEXTCTRL8;
         static const long ID_CHECKBOX4;
         static const long ID_TEXTCTRL5;
         static const long ID_STATICTEXT4;
@@ -129,6 +131,8 @@ class wxsNewWindowDlg : public wxDialog
         wxFlexGridSizer* FlexGridSizer3;
         wxStaticText* StaticText6;
         wxStaticText* StaticText8;
+        wxStaticText* StaticText11;
+        wxTextCtrl* m_PchGuard;
         wxTextCtrl* m_Class;
         wxCheckBox* m_UsePCH;
         wxFlexGridSizer* FlexGridSizer2;
@@ -142,6 +146,7 @@ class wxsNewWindowDlg : public wxDialog
         wxTextCtrl* m_Xrc;
         wxButton* m_ScopeIds;
         wxButton* m_ScopeMembers;
+        wxBoxSizer* BoxSizer1;
         wxCheckBox* m_UseXrc;
         wxButton* m_AdvOps;
         wxCheckBox* m_CtorPosDef;
