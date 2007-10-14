@@ -130,11 +130,11 @@ void MacrosManager::ClearProjectKeys()
     }
     else
     {
-        macros[_T("CMD_CP")]  = _T("cp");
+        macros[_T("CMD_CP")]  = _T("cp --preserve=timestamps");
         macros[_T("CMD_RM")]  = _T("rm");
         macros[_T("CMD_MV")]  = _T("mv");
         macros[_T("CMD_NULL")]  = _T("/dev/null");
-        macros[_T("CMD_MKDIR")]  = _T("mkdir");
+        macros[_T("CMD_MKDIR")]  = _T("mkdir -p");
         macros[_T("CMD_RMDIR")]  = _T("rmdir");
     }
 }
