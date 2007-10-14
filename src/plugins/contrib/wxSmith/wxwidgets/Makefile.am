@@ -101,4 +101,5 @@ noinst_HEADERS = \
 ./wxsgridpanel.h \
 ./wxsdeleteitemres.h \
 ./wxscodercontext.h \
-./wxscodegenerator.h
+./wxscodegenerator.h \
+./wxsflags.h

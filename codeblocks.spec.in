@@ -1,76 +1,89 @@
 %define _svnrev		@REVISION@
-%define req_wxgtk	2.6.0
+%define req_wxgtk	2.8.0
 %define _fedora		%(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
 %define _redhat		%(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
-%define _suse           %(if [ -f /etc/SuSE-release ]; then echo 1; else echo 0; fi)
 %define _mandrake       %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
 %define _version        1.0_0.svn.%{_svnrev}
 %define _rel		0
-%define _release	%{_rel}
+%define __release	%{_rel}
 
-
-%if %_suse
-%define _suse_version	%(grep VERSION /etc/SuSE-release|cut -f3 -d" ")
-%define _suse_vernum	%(echo "%{_suse_version}"|tr -d '.')
-%define _release	%{_rel}.suse%{_suse_vernum}
-%define _distribution	SuSE Linux %{_suse_version}
+%if 0%{?suse_version}
+%if 0%{?suse_version} > 1020
+%define _wx28   0
+%else
+%define _wx28   1
 %endif
-%if %_mandrake
-%define _mandrake_version   %(cat /etc/mandrake-release|cut -f4 -d" ")
-%define _mandrake_vernum    %(echo "%{_mandrake_version}"|tr -d '.')
-%define _release            %{_rel}.mdk%{_mandrake_vernum}
-%define _distribution       %(cat /etc/mandrake-release|cut -f1-4 -d" ")
+%endif
+
+%if 0%{?suse_version}
+%define __release	%{_rel}.suse%{suse_version}
+%endif
+%if 0%{?mandriva_version}
+%define __release            %{_rel}.mdk%{mandrake_version}
 %define _redhat 0
 %endif
-%if %_fedora
-%define _fedora_vernum      %(cat /etc/fedora-release | cut -f4 -d" ")
-%define _release            %{_rel}.fc%{_fedora_vernum}
-%define _distribution       %(cat /etc/fedora-release|cut -f1-4 -d" ")
+%if 0%{?fedora_version}
+%define __release            %{_rel}.fc%{fedora_version}
 %define _redhat 0
 %endif
 %if %_redhat
 %define _redhat_prefix      %(grep -q "Red Hat Linux" /etc/redhat-release && echo rhl || echo el)
 %define _redhat_vernum      %(rpm -qf --queryformat %{VERSION} /etc/redhat-release|tr -d '.')
-%define _release            %{_rel}.%{_redhat_prefix}%{_redhat_vernum}
-%define _distribution       %(cat /etc/redhat-release)
+%define __release            %{_rel}.%{_redhat_prefix}%{_redhat_vernum}
 %endif
-
-%if %_suse
-%if %suse_version >= 930
+%if %_wx28
+%define _release           %{__release}.wx28
+%else
+%if 0%{?suse_version} > 1020
+%define _release           %{__release}.wx28
+%else
+%define _release           %{__release}.wx26
+%endif
+%endif
+%if 0%{?suse_version} >= 930
 %define debugrpm	    1
 %endif
-%endif
 
-%if %_mandrake
+%if 0%{?mandriva_version}
 %define debugrpm            1
 %endif
 
 %define automake17	    0
 
 %if %_redhat
-%if %_redhat_vernum < 4
+%if 0%{?_redhat_vernum} < 4
 %define automake17	    1
 %endif
 %endif
 
 Name:			codeblocks
-Version:		%{_version}
-Release:		%{_release}
+Version:		%{_version}.%{_release}
+Release:		0
 Summary:		OpenSource Cross Platform Free C++ IDE
 Group:			Development/Tools/IDE
 License:		GPL
 URL:			http://www.codeblocks.org/
-Packager:		Daniel Orb <danielorb2000@googlemail.com>
+Packager:		TheTuxKeeper <thetuxkeeper@googlemail.com>
 Source:			%{name}-@VERSION@.tar.gz
 BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
 Provides:		codeblocks
 
-%if ! %_mandrake
+%if 0%{?mandriva_version}
+Requires:               wxGTK2.6 >= %{req_wxgtk}
+BuildRequires:          wxGTK2.6 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
+%endif
+
+%if ! %_wx28
+%if ! 0%{?mandriva_version}
 Requires:               wxGTK >= %{req_wxgtk}
 BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 %else
 Requires:               wxGTK2.6 >= %{req_wxgtk}
 BuildRequires:          wxGTK2.6 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
+%endif
+%else
+Requires:               wxWidgets >= 2.8.0
+BuildRequires:          wxWidgets >= 2.8.0, wxWidgets-devel >= 2.8.0
 %endif
 
 %if ! %{automake17}
@@ -78,14 +91,14 @@ BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, autom
 %else
 BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
 %endif
-BuildRequires:  	libstdc++, libstdc++-devel
-BuildRequires:  	zip, subversion
+BuildRequires:  	libstdc++, libstdc++-devel, gtk2-devel
+BuildRequires:  	zip, subversion, pkgconfig
 
-%if %_suse
+%if 0%{suse_version}
 BuildRequires:		update-desktop-files
 %endif
 
-%{?_distribution:Distribution:%_distribution}
+#{?_distribution:Distribution:%_distribution}
 
 %define pkgdata		%{_datadir}/%{name}
 
@@ -119,13 +132,20 @@ Code::Blocks SDK to develop your own plugins.
 %{?suse_update_config:%{suse_update_config -f}}
 
 %build
-%if ! %{automake17}
- ./bootstrap
-%else
- AUTOMAKE=automake-1.7 ACLOCAL=aclocal-1.7 ACLOCAL_FLAGS="-I %{_datadir}/aclocal" ./bootstrap
-%endif
+  %if ! %{automake17}
+     ./bootstrap
+  %else
+     AUTOMAKE=automake-1.7 ACLOCAL=aclocal-1.7 ACLOCAL_FLAGS="-I %{_datadir}/aclocal" ./bootstrap
+  %endif
+  %if 0%{?suse_version} > 1020
   %configure \
-    --enable-contrib
+      --with-contrib-plugins=all
+  %else
+  %configure \
+      %{?_wx28:--with-wx-config=%{_bindir}/wx-config-2.8} \
+      --with-contrib-plugins=all
+  %endif
+
   %__make
 
 %install
@@ -133,15 +153,15 @@ Code::Blocks SDK to develop your own plugins.
   %__make DESTDIR=$RPM_BUILD_ROOT install
 
 %post
-if [ -x /usr/bin/update-mime-database ]; then
-	/usr/bin/update-mime-database "%{_datadir}/mime"
-fi
-test -x /sbin/ldconfig && /sbin/ldconfig
+  if [ -x /usr/bin/update-mime-database ]; then
+  	/usr/bin/update-mime-database "%{_datadir}/mime"
+  fi
+  test -x /sbin/ldconfig && /sbin/ldconfig
 
 %preun
-if [ -x /usr/bin/update-mime-database ]; then
-   /usr/bin/update-mime-database "%{_datadir}/mime"
-fi
+  if [ -x /usr/bin/update-mime-database ]; then
+     /usr/bin/update-mime-database "%{_datadir}/mime"
+  fi
 
 %clean
   test -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != "/" && %{__rm} -rf $RPM_BUILD_ROOT
@@ -165,6 +185,7 @@ fi
 %{pkgdata}/debugger.zip
 %{pkgdata}/defaultmimehandler.zip
 %{pkgdata}/manager_resources.zip
+%{pkgdata}/projectsimporter.zip
 %{pkgdata}/resources.zip
 %{pkgdata}/scriptedwizard.zip
 %{pkgdata}/start_here.zip
@@ -183,6 +204,7 @@ fi
 %{pkgdata}/plugins/libcompiler.*
 %{pkgdata}/plugins/libdebugger.*
 %{pkgdata}/plugins/libdefaultmimehandler.*
+%{pkgdata}/plugins/libprojectsimporter.*
 %{pkgdata}/plugins/libscriptedwizard.*
 %{pkgdata}/plugins/libtodo.*
 %{pkgdata}/scripts/*
@@ -235,6 +257,8 @@ fi
 %{_includedir}/%{name}/*
 
 %changelog
+* Sun Oct 14 2007 Daniel Orb <thetuxkeeper@googlemail.com>
+- applied changes made on opensuse buildservice
 * Mon Apr 16 2007 Daniel Orb <danielorb2000@googlemail.com>
 - added wxsmithcontribitems files to filelist
 * Fri Jan  5 2007 Daniel Orb <danielorb2000@googlemail.com>
