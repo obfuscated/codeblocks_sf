@@ -393,7 +393,11 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     while (node)
     {
         if (node->Attribute("title"))
+        {
             title = cbC2U(node->Attribute("title"));
+            if (title.Trim().IsEmpty())
+                title = _T("untitled");
+        }
 
         else if (node->Attribute("platforms"))
             platformsFinal = GetPlatformsFromString(cbC2U(node->Attribute("platforms")));
