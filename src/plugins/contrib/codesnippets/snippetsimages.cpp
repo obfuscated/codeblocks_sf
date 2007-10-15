@@ -32,12 +32,12 @@
 #include "version.h"
 
     // forward declarations to keep data at bottom of this file
-extern char* allsnippets[];
-extern char* category[];
-extern char* snippet[];
-extern char* snippetText[];
-extern char* snippetFile[];
-extern char* xpm_data_ptrs[] ;
+extern const char* allsnippets[];
+extern const char* category[];
+extern const char* snippet[];
+extern const char* snippetText[];
+extern const char* snippetFile[];
+extern const char* xpm_data_ptrs[] ;
 // ----------------------------------------------------------------------------
 SnipImages::SnipImages()
 // ----------------------------------------------------------------------------
@@ -82,17 +82,16 @@ SnipImages::~SnipImages()
 // ----------------------------------------------------------------------------
 {
     //dtor
-    if (m_pSnippetsTreeImageList) delete m_pSnippetsTreeImageList;
-    m_pSnippetsTreeImageList = 0;
+    delete m_pSnippetsTreeImageList;
 }
 // ----------------------------------------------------------------------------
 //  XPM image definitions for AllSnippets, Category, Snippet, SnippetText, SnippetFile
 // ----------------------------------------------------------------------------
     // array holding pointers to XPM char arrays
-char* xpm_data_ptrs[ SNIPPETS_TREE_IMAGE_COUNT ]
-        = {(char*)allsnippets,(char*)category,(char*)snippet,(char*)snippetText,(char*)snippetFile};
+const char* xpm_data_ptrs[ SNIPPETS_TREE_IMAGE_COUNT ]
+        = {(const char*)allsnippets,(const char*)category,(const char*)snippet,(const char*)snippetText,(const char*)snippetFile};
 /* XPM */
- char *allsnippets[] = {
+const char *allsnippets[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 93 2",
 "   c black",
@@ -208,7 +207,7 @@ char* xpm_data_ptrs[ SNIPPETS_TREE_IMAGE_COUNT ]
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-char *category[] = {
+const char *category[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 93 2",
 "   c black",
@@ -324,7 +323,7 @@ char *category[] = {
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-char *snippet[] = {
+const char *snippet[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 111 2",
 "   c black",
@@ -458,7 +457,7 @@ char *snippet[] = {
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-char *snippetText[] = {
+const char *snippetText[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 98 2",
 "   c black",
@@ -579,7 +578,7 @@ char *snippetText[] = {
 };
 // ----------------------------------------------------------------------------
 /* XPM */
-char *snippetFile[] = {
+const char *snippetFile[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 96 2",
 "   c black",

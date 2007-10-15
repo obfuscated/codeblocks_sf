@@ -72,7 +72,7 @@ namespace
 
 // empty bitmap for use as C++ keywords icon in code-completion list
 /* XPM */
-static char * cpp_keyword_xpm[] = {
+static const char * cpp_keyword_xpm[] = {
 "16 16 2 1",
 "     c None",
 ".    c #04049B",
@@ -96,7 +96,7 @@ static char * cpp_keyword_xpm[] = {
 // bitmap for other-than-C++ keywords
 // it's pretty nice actually :)
 /* XPM */
-static char * unknown_keyword_xpm[] = {
+static const char * unknown_keyword_xpm[] = {
 "16 16 7 1",
 " 	c None",
 ".	c #FF8800",
@@ -602,7 +602,7 @@ int CodeCompletion::CodeComplete()
                     {
                     	if (!m_LexerKeywordsToInclude[i])
 							continue;
-						
+
 						wxString keywords = theme->GetKeywords(lang, i);
 						wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
 						while (tkz.HasMoreTokens())
