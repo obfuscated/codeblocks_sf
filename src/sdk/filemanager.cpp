@@ -148,7 +148,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 
 inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
 {
-    char* mark = 0;
+    const char* mark = 0;
     size_t mark_length = 0;
     if (bom)
     {
