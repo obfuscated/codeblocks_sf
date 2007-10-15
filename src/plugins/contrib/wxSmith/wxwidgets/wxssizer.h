@@ -125,6 +125,14 @@ class wxsSizer: public wxsParent
          */
         virtual void OnBuildCreatingCode();
 
+        /** \brief Function generating declarations
+         *
+         * When using XRC file, sizers can not be declared
+         * so this function does disable them.
+         */
+        virtual void OnBuildDeclarationsCode();
+
+
         /** \brief Function building preview
          *
          * Preview is generated using BuildSizerPreview function. All child

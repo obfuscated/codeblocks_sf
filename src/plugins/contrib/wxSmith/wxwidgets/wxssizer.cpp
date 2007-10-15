@@ -24,9 +24,12 @@
 #include "wxssizer.h"
 #include "wxsitemresdata.h"
 #include "wxssizerparentqp.h"
+#include "wxsflags.h"
 
 #include <wx/dcclient.h>
 #include <messagemanager.h>
+
+using namespace wxsFlags;
 
 namespace
 {
@@ -80,6 +83,7 @@ wxString wxsSizerExtra::AllParamsCode(wxsCoderContext* Ctx)
 wxsSizer::wxsSizer(wxsItemResData* Data,const wxsItemInfo* Info):
     wxsParent(Data,Info,flVariable|flSubclass,0,0)
 {
+    GetBaseProps()->m_IsMember = false;
 }
 
 long wxsSizer::OnGetPropertiesFlags()
@@ -138,6 +142,14 @@ void wxsSizer::OnBuildCreatingCode()
     if ( UnknownLang )
     {
         wxsCodeMarks::Unknown(_T("wxsSizer::OnBuildCreatingCode"),GetLanguage());
+    }
+}
+
+void wxsSizer::OnBuildDeclarationsCode()
+{
+    if ( GetCoderFlags() && flSource )
+    {
+        wxsItem::OnBuildDeclarationsCode();
     }
 }
 
