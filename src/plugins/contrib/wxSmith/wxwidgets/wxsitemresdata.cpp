@@ -589,7 +589,7 @@ void wxsItemResData::RebuildSourceCode()
             Context.AddHeader(_T("<wx/string.h>"),_T(""),hfLocal|hfInPCH);
             if ( m_PropertiesFilter & flMixed )
             {
-                Context.AddHeader(_T("<wx/xrc/xmlres.h>"),_T(""),hfLocal);
+                Context.m_LocalHeadersNonPCH.insert(_T("<wx/xrc/xmlres.h>"));
             }
 
             // Creating local and global declarations
