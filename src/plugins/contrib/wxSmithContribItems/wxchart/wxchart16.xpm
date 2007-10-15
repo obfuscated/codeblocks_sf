@@ -1,5 +1,5 @@
 /* XPM */
-static char * wxchart16_xpm[] = {
+static const char * wxchart16_xpm[] = {
 "16 16 66 1",
 " 	c None",
 ".	c #DDDDDD",
