@@ -52,6 +52,7 @@ const Associations::Assoc knownTypes[] =
     { FileFilters::ASM_EXT,             _T("ASM source file"),               2 },
     { FileFilters::S_EXT,               _T("ASM source file"),               2 },
     { FileFilters::SS_EXT,              _T("ASM source file"),               2 },
+    { FileFilters::S62_EXT,             _T("ASM source file"),               2 },
 
     { FileFilters::F_EXT,               _T("Fortran source file"),           9 },
     { FileFilters::F77_EXT,             _T("Fortran source file"),           9 },

@@ -77,7 +77,7 @@ void FilesGroupsAndMasks::SetDefault(bool do_clear)
     group = AddGroup(_("Headers"));
     SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
     group = AddGroup(_("ASM Sources"));
-    SetFileMasks(group, _T("*.asm;*.ASM;*.s;*.S;*.ss;*.SS") );
+    SetFileMasks(group, _T("*.asm;*.ASM;*.s;*.S;*.ss;*.SS;*.s62;*.S62") );
     group = AddGroup(_("Resources"));
     SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
     group = AddGroup(_("Scripts"));

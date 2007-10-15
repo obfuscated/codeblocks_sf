@@ -229,6 +229,7 @@ FileType FileTypeOf(const wxString& filename)
         ext.IsSameAs(FileFilters::CXX_EXT) ||
         ext.IsSameAs(FileFilters::S_EXT) ||
         ext.IsSameAs(FileFilters::SS_EXT) ||
+        ext.IsSameAs(FileFilters::S62_EXT) ||
         ext.IsSameAs(FileFilters::D_EXT) ||
         ext.IsSameAs(FileFilters::F_EXT) ||
         ext.IsSameAs(FileFilters::F77_EXT) ||
