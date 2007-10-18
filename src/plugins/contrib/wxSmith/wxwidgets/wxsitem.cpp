@@ -1000,7 +1000,7 @@ bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
 
             default:
                 // Found event, now let's try to add handler for it
-                return wxsEventsEditor::Get().GotoOrBuildEvent(this,i);
+                return wxsEventsEditor::Get().GotoOrBuildEvent(this,i,wxsPGRID());
         }
     }
 

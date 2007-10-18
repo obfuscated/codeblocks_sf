@@ -55,7 +55,7 @@ class wxsEventsEditor
         /** \brief Function automatically adding new event function / going into function inside item
          * \return true if new event was added, false on failure or on going to old handler's definition
          */
-        bool GotoOrBuildEvent(wxsItem* Item,int EventIndex = 0);
+        bool GotoOrBuildEvent(wxsItem* Item,int EventIndex,wxsPropertyGridManager* Grid);
 
 	private:
 

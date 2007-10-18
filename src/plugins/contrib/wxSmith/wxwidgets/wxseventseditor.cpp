@@ -160,7 +160,7 @@ void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGI
     m_Data->NotifyChange(m_Item);
 }
 
-bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex)
+bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex,wxsPropertyGridManager* Grid)
 {
     if ( Item != m_Item ) return false; // Can do this only to currently edited item
     if ( EventIndex < 0 ) return false;
@@ -173,6 +173,8 @@ bool wxsEventsEditor::GotoOrBuildEvent(wxsItem* Item,int EventIndex)
         if ( CreateNewFunction(m_Events->GetDesc(EventIndex),NewFunctionName) )
         {
             m_Events->SetHandler(EventIndex,NewFunctionName);
+            BuildEvents(Item,Grid);
+            m_Data->NotifyChange(m_Item);
             return true;
         }
         return false;
