@@ -44,8 +44,12 @@ void FileLoader::operator()()
     wxFile file(fileName);
     len = file.Length();
 
-    data = new char[len+1];
-    data[len] = '\0';
+    data = new char[len+4];
+	char *dp = data + len;
+    *dp++ = '\0';
+    *dp++ = '\0';
+    *dp++ = '\0';
+    *dp++ = '\0';
 
     if(file.Read(data, len) == wxInvalidOffset)
     {
@@ -83,6 +87,7 @@ void URLLoader::operator()()
 
     data = buffer.Data();
     len = buffer.Length();
+	buffer.Append("\0\0\0\0", 4);
     Ready();
 }
 

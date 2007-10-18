@@ -1,7 +1,6 @@
 #ifndef BACKGROUNDTHREAD_H
 #define BACKGROUNDTHREAD_H
 
-#include "sdk_precomp.h"
 #include "safedelete.h"
 
 #undef new
@@ -9,10 +8,9 @@
 #include <list>
 #include <algorithm>
 
-#ifndef CB_PRECOMP
-    #include <wx/timer.h> // wxMilliSleep
-    #include "manager.h"
-#endif
+#include <wx/timer.h> // wxMilliSleep
+#include "wx/thread.h"
+#include "manager.h"
 
 /*
 * BackgroundThread is a lightweight single background worker thread implementation for situations in which

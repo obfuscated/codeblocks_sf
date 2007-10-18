@@ -56,6 +56,7 @@
 #include "splashscreen.h"
 #include <wx/arrstr.h>
 #include "crashhandler.h"
+#include "filesystem.h"
 
 #include <sqplus.h>
 
