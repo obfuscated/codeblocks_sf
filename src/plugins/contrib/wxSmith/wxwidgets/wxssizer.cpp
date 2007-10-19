@@ -147,7 +147,7 @@ void wxsSizer::OnBuildCreatingCode()
 
 void wxsSizer::OnBuildDeclarationsCode()
 {
-    if ( GetCoderFlags() && flSource )
+    if ( GetCoderFlags() & flSource )
     {
         wxsItem::OnBuildDeclarationsCode();
     }

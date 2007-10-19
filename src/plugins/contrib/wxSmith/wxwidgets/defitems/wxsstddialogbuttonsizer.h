@@ -42,6 +42,7 @@ class wxsStdDialogButtonSizer: public wxsItem
         virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual void OnAddExtraProperties(wxsPropertyGridManager* Grid);
         virtual void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id);
+        virtual void OnBuildDeclarationsCode();
 
         static const int NumButtons = 8;
 

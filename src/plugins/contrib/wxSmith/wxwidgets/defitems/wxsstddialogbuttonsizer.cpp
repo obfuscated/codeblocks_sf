@@ -91,6 +91,8 @@ namespace
 wxsStdDialogButtonSizer::wxsStdDialogButtonSizer(wxsItemResData* Data):
     wxsItem(Data,&Reg.Info,flVariable|flSubclass,0,0)
 {
+    GetBaseProps()->m_IsMember = false;
+
     for ( int i=0; i<NumButtons; i++ )
     {
         m_Use[i] = false;
@@ -277,3 +279,14 @@ void wxsStdDialogButtonSizer::OnExtraPropertyChanged(wxsPropertyGridManager* Gri
 
     wxsItem::OnExtraPropertyChanged(Grid,Id);
 }
+
+void wxsStdDialogButtonSizer::OnBuildDeclarationsCode()
+{
+    // Add declaration only when not using XRC file
+    if ( GetCoderFlags() & flSource )
+    {
+        wxsItem::OnBuildDeclarationsCode();
+    }
+}
+
+
