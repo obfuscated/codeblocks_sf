@@ -124,6 +124,7 @@ void CompilerICC::Reset()
         m_Options.AddOption(_("Strict ANSI conformance dialects"), _T("/Za"), category);
         m_Options.AddOption(_("Compile all source or unrecognized file types as C++ source files"), _T("/Qc++"), category);
         m_Options.AddOption(_("Disable RTTI support"), _T("/GR-"), category);
+        m_Options.AddOption(_T("Process OpenMP directives"), _T("/Qopenmp"), category);
         m_Options.AddOption(_("Specify alignment constraint for structures to 1"), _T("/Zp1"), category);
         m_Options.AddOption(_("Specify alignment constraint for structures to 2"), _T("/Zp2"), category);
         m_Options.AddOption(_("Specify alignment constraint for structures to 4"), _T("/Zp4"), category);
@@ -232,6 +233,7 @@ void CompilerICC::Reset()
         m_Options.AddOption(_("Strict ANSI conformance dialects"), _T("-strict-ansi"), category);
         m_Options.AddOption(_("Compile all source or unrecognized file types as C++ source files"), _T("-Kc++"), category);
         m_Options.AddOption(_("Disable RTTI support"), _T("-fno-rtti"), category);
+        m_Options.AddOption(_T("Process OpenMP directives"), _T("-openmp"), category);
         m_Options.AddOption(_("Analyze and reorder memory layout for variables and arrays"), _T("-align"), category);
         m_Options.AddOption(_("Specify alignment constraint for structures to 1"), _T("-Zp1"), category);
         m_Options.AddOption(_("Specify alignment constraint for structures to 2"), _T("-Zp2"), category);
@@ -268,6 +270,7 @@ void CompilerICC::LoadDefaultRegExArray()
 {
     m_RegExes.Clear();
     m_RegExes.Add(RegExStruct(_("Compilation remark"), cltWarning, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+).:[ \t]([Rr]emark[ \t]#[0-9]+:[ \t].*)"), 3, 1, 2));
+    m_RegExes.Add(RegExStruct(_("OpenMP remark"), cltInfo, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+)\\):[ \\t]\\(col. ([0-9]+)\\)[ \\t]([Rr]emark:[ \\t].*)"), 4, 1, 2));
     m_RegExes.Add(RegExStruct(_("Compilation warning"), cltWarning, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+).:[ \t]([Ww]arning[ \t]#[0-9]+:[ \t].*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("Compilation error"), cltError, _T("(") + FilePathWithSpaces + _T(")\\(([0-9]+).:[ \t](.*)"), 3, 1, 2));
     m_RegExes.Add(RegExStruct(_("General warning"), cltWarning, _T("([Ww]arning:[ \t].*)"), 1));
