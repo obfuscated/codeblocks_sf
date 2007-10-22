@@ -28,8 +28,8 @@ class DLLIMPORT EncodingDetector
 		wxString GetWxStr() const;
 	protected:
         /** @return True if succeeded, false if not (e.g. file didn't exist). */
-		bool DetectEncoding(const wxString& filename);
-		bool DetectEncoding(const wxByte* buffer, size_t size);
+		bool DetectEncoding(const wxString& filename, bool ConvertToWxString = true);
+		bool DetectEncoding(const wxByte* buffer, size_t size, bool ConvertToWxString = true);
 
         bool m_IsOK;
 		bool m_UseBOM;
