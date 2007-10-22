@@ -663,7 +663,7 @@ void MainFrame::CreateIDE()
 
 void MainFrame::SetupGUILogging()
 {
-#if 1
+#if 0
     int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
     wxSize clientsize = GetClientSize();
 

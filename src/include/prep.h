@@ -206,9 +206,19 @@ namespace platform
 
 
     #if __GNUC__ > 3 || (__GNUC__ == 3 && __GNUC_MINOR__ >= 2)
-    const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
+        const int gcc = Version<__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__>::eval;
+        #define pure_function       __attribute__ ((pure, nothrow))
+        #define const_function      __attribute__ ((const, nothrow))
+        #define force_inline        __attribute__ ((always_inline))
+        #define warn_unused         __attribute__ ((warn_unused_result))
+        #define deprecated_function __attribute__ ((deprecated))
     #else
-    const int gcc = 0;
+        const int gcc = 0;
+        #define pure_function
+        #define const_function
+        #define force_inline
+        #define warn_unused
+        #define deprecated_function
     #endif
 };
 

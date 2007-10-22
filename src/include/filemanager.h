@@ -151,7 +151,7 @@ public:
     FileManager();
     ~FileManager();
 
-    LoaderBase* Load(const wxString& file, bool reuseEditors = false);
+    warn_unused LoaderBase* Load(const wxString& file, bool reuseEditors = false);
 
     bool Save(const wxString& file, const wxString& data, wxFontEncoding encoding, bool bom);
     bool Save(const wxString& file, const char* data, size_t len);
