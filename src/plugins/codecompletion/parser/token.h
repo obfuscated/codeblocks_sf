@@ -40,77 +40,77 @@ typedef set<size_t,less<size_t> > TokenFilesSet;
 
 enum TokenScope
 {
-	tsUndefined = 0,
-	tsPrivate,
-	tsProtected,
-	tsPublic
+    tsUndefined = 0,
+    tsPrivate,
+    tsProtected,
+    tsPublic
 };
 
 enum TokenKind
 {
-	tkClass         = 0x0001,
-	tkNamespace     = 0x0002,
-	tkTypedef       = 0x0004, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
-	tkConstructor   = 0x0008,
-	tkDestructor    = 0x0010,
-	tkFunction      = 0x0020,
-	tkVariable      = 0x0040,
-	tkEnum          = 0x0080,
-	tkEnumerator    = 0x0100,
-	tkPreprocessor  = 0x0200,
+    tkClass         = 0x0001,
+    tkNamespace     = 0x0002,
+    tkTypedef       = 0x0004, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
+    tkConstructor   = 0x0008,
+    tkDestructor    = 0x0010,
+    tkFunction      = 0x0020,
+    tkVariable      = 0x0040,
+    tkEnum          = 0x0080,
+    tkEnumerator    = 0x0100,
+    tkPreprocessor  = 0x0200,
 
-	// convenient masks
-	tkAnyContainer  = tkClass | tkNamespace | tkTypedef,
-	tkAnyFunction   = tkFunction | tkConstructor | tkDestructor,
+    // convenient masks
+    tkAnyContainer  = tkClass | tkNamespace | tkTypedef,
+    tkAnyFunction   = tkFunction | tkConstructor | tkDestructor,
 
-	tkUndefined     = 0xFFFF,
+    tkUndefined     = 0xFFFF,
 };
 
 
 class Token  : public BlockAllocated<Token, 10000>
 {
     friend class TokensTree;
-	public:
-		Token();
-		Token(const wxString& name, unsigned int file, unsigned int line);
-		~Token();
+    public:
+        Token();
+        Token(const wxString& name, unsigned int file, unsigned int line);
+        ~Token();
 
-		void AddChild(int child);
-		void RemoveChild(int child);
-		wxString GetNamespace() const;
-		bool InheritsFrom(int idx) const;
-		wxString DisplayName() const;
-		wxString GetTokenKindString() const;
-		wxString GetTokenScopeString() const;
+        void AddChild(int child);
+        void RemoveChild(int child);
+        wxString GetNamespace() const;
+        bool InheritsFrom(int idx) const;
+        wxString DisplayName() const;
+        wxString GetTokenKindString() const;
+        wxString GetTokenScopeString() const;
         wxString GetFilename() const;
-		wxString GetImplFilename() const;
-		inline unsigned long GetTicket() const { return m_Ticket; }
-		bool MatchesFiles(const TokenFilesSet& files);
+        wxString GetImplFilename() const;
+        inline unsigned long GetTicket() const { return m_Ticket; }
+        bool MatchesFiles(const TokenFilesSet& files);
 
-		bool SerializeIn(wxInputStream* f);
-		bool SerializeOut(wxOutputStream* f);
-		int GetSelf() { return m_Self; } // current index in the tree
-		wxString GetParentName();
-		Token* GetParentToken();
-		TokensTree* GetTree() { return m_pTree; }
+        bool SerializeIn(wxInputStream* f);
+        bool SerializeOut(wxOutputStream* f);
+        int GetSelf() { return m_Self; } // current index in the tree
+        wxString GetParentName();
+        Token* GetParentToken();
+        TokensTree* GetTree() { return m_pTree; }
 
-		wxString m_Type; // this is the return value (if any): e.g. const wxString&
-		wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
-		wxString m_Name;
-		wxString m_Args;
-		wxString m_AncestorsString; // all ancestors comma-separated list
-		unsigned int m_File;
-		unsigned int m_Line;
-		unsigned int m_ImplFile;
-		unsigned int m_ImplLine; // where the token was met
-		unsigned int m_ImplLineStart; // if token is impl, opening brace line
-		unsigned int m_ImplLineEnd; // if token is impl, closing brace line
-		TokenScope m_Scope;
-		TokenKind m_TokenKind;
-		bool m_IsOperator;
-		bool m_IsLocal; // found in a local file?
-		bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
-		bool m_IsConst;	// the member method is const (yes/no)
+        wxString m_Type; // this is the return value (if any): e.g. const wxString&
+        wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
+        wxString m_Name;
+        wxString m_Args;
+        wxString m_AncestorsString; // all ancestors comma-separated list
+        unsigned int m_File;
+        unsigned int m_Line;
+        unsigned int m_ImplFile;
+        unsigned int m_ImplLine; // where the token was met
+        unsigned int m_ImplLineStart; // if token is impl, opening brace line
+        unsigned int m_ImplLineEnd; // if token is impl, closing brace line
+        TokenScope m_Scope;
+        TokenKind m_TokenKind;
+        bool m_IsOperator;
+        bool m_IsLocal; // found in a local file?
+        bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
+        bool m_IsConst;    // the member method is const (yes/no)
 
         int m_ParentIndex;
         TokenIdxSet m_Children;
@@ -120,14 +120,14 @@ class Token  : public BlockAllocated<Token, 10000>
 
         wxArrayString m_Aliases; // used for namespace aliases
 
-		void* m_pUserData; // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
-	protected:
+        void* m_pUserData; // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
+    protected:
         TokensTree* m_pTree;
-		int m_Self; // current index in the tree
-		unsigned long m_Ticket;
-		static unsigned long GetTokenTicket();
+        int m_Self; // current index in the tree
+        unsigned long m_Ticket;
+        static unsigned long GetTokenTicket();
 
-	private:
+    private:
 };
 
 class TokensTree
@@ -209,7 +209,7 @@ inline void SaveIntToFile(wxOutputStream* f, int i)
     and a constant int size */
 
     unsigned int const j = i; // rshifts aren't well-defined for negatives
-    unsigned char c[4] = { j>>0&0xFF, j>>8&0xFF, j>>16&0xFF, j>>24&0xFF };
+    wxChar c[4] = { j>>0&0xFF, j>>8&0xFF, j>>16&0xFF, j>>24&0xFF };
     f->Write( c, 4 );
 }
 
@@ -218,7 +218,7 @@ inline bool LoadIntFromFile(wxInputStream* f, int* i)
 //    See SaveIntToFile
 //    return f->Read(i, sizeof(int)) == sizeof(int);
 
-    unsigned char c[4];
+    wxChar c[4];
     if ( f->Read( c, 4 ).LastRead() != 4 ) return false;
     *i = ( c[0]<<0 | c[1]<<8 | c[2]<<16 | c[3]<<24 );
     return true;
@@ -227,6 +227,7 @@ inline bool LoadIntFromFile(wxInputStream* f, int* i)
 inline void SaveStringToFile(wxOutputStream* f, const wxString& str)
 {
     const wxWX2MBbuf psz = str.mb_str(wxConvUTF8);
+    // TODO (MortenMacFly#5#): Can we safely use strlen here?
     int size = psz ? strlen(psz) : 0;
     if (size >= 32767)
         size = 32767;
@@ -243,7 +244,7 @@ inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
     bool ok = true;
     if (size > 0 && size <= 32767)
     {
-        static char buf[32768];
+        wxChar buf[32768];
         ok = f->Read(buf, size).LastRead() == (size_t)size;
         buf[size] = '\0';
         str = wxString(buf, wxConvUTF8);

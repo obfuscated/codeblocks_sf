@@ -195,12 +195,28 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
     if( encoding == wxFONTENCODING_UTF16 || encoding == wxFONTENCODING_UTF16LE || encoding == wxFONTENCODING_UTF16BE ||
         encoding == wxFONTENCODING_UTF32 || encoding == wxFONTENCODING_UTF32LE || encoding == wxFONTENCODING_UTF32BE)
     {
-        //FIXME: This code probably does not work correctly, as it does not really convert anything according to
-        //       the requested encoding. The output is always whatever wxWidgets uses as native data.
-        //       However, it's been like this ever since Code::Blocks started using Unicode, and nobody ever complained...
-        //       Apparently, UTF-16/UTF-32 is not a big issue ---> will leave it as it is for now.
-        const size_t len = data.Length() * sizeof(wxChar);
-        return f.Write(data.c_str(), len) == len;
+        /* NOTE (Biplab#1#): The following code (used for wx-2.8.x) can handle all encodings
+        *  effectively (including UTF-8). Therefore it may also be brought out of this if {} statement.
+        */
+        wxCSConv conv(encoding);
+        #if wxCHECK_VERSION(2, 8, 0)
+        size_t inlen = data.Length(), outlen = 0;
+        wxCharBuffer mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+        return f.Write(mbBuff, outlen) == outlen;
+        #else
+        /* NOTE (Biplab#1#): Following code is not tested with wx-2.6.x
+        *  But it will not work with wx-2.8.x
+        */
+        size_t byte_size = (encoding == wxFONTENCODING_UTF16 || encoding == wxFONTENCODING_UTF16LE || encoding == wxFONTENCODING_UTF16BE) ? 2 : 4;
+        size_t inlen = (data.Len() + 1) * byte_size;
+        char* buff = (char*) malloc(inlen);
+        if (buff)
+        {
+            size_t outlen = conv.WC2MB(buff, data.c_str(), inlen);
+            return (f.Write(buff, inlen) == outlen);
+        }
+        free(buff);
+        #endif
     }
 
     size_t size = 0;

@@ -32,6 +32,7 @@ class ProjectFile;
 class cbEditor;
 class cbStyledTextCtrl;
 class SimpleListLog;
+class LoaderBase;
 struct EditorManagerInternalData;
 
 WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
@@ -62,6 +63,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 
         EditorBase* IsOpen(const wxString& filename);
         cbEditor* Open(const wxString& filename, int pos = 0,ProjectFile* data = 0);
+        cbEditor* Open(LoaderBase* fileLdr, const wxString& filename, int pos = 0,ProjectFile* data = 0);
         EditorBase* GetEditor(int index);
         EditorBase* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
         EditorBase* GetActiveEditor();

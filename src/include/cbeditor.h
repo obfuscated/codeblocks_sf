@@ -18,6 +18,7 @@ class cbEditor;
 class ProjectFile;
 class EditorColourSet;
 class wxSplitterWindow;
+class LoaderBase;
 
 class cbStyledTextCtrl : public wxScintilla
 {
@@ -59,6 +60,7 @@ class DLLIMPORT cbEditor : public EditorBase
           * use EditorManager's methods to do it...</em>
           */
         cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
+        cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme = 0L);
         /** Don't use this. It throws an exception if you do. */
         cbEditor(const cbEditor& rhs) : EditorBase(rhs) { cbThrow(_T("Can't call cbEditor's copy ctor!!!")); }
         /** cbEditor destructor. */
@@ -339,6 +341,8 @@ class DLLIMPORT cbEditor : public EditorBase
         void OnAfterBuildContextMenu(ModuleType type);                              //pecan 2006/03/22
 
         void DestroySplitView();
+
+        void DoInitializations(const wxString& filename, LoaderBase* fileLdr = 0);
 
         // variables
         bool m_IsOK;

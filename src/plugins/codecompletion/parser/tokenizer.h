@@ -88,7 +88,7 @@ protected:
     bool ReadFile();
     bool SkipWhiteSpace();
     bool SkipToChar(const wxChar& ch);
-    bool SkipToOneOfChars(const char* chars, bool supportNesting = false);
+    bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false);
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
     bool SkipComment();
@@ -125,12 +125,12 @@ protected:
 
     wxChar CurrentCharMoveNext()
     {
-    	size_t i = m_TokenIndex++;
+        size_t i = m_TokenIndex++;
 
-    	if(m_TokenIndex < m_BufferLen)
-			return m_Buffer.GetChar(i);
-		else
-			return 0;
+        if(m_TokenIndex < m_BufferLen)
+            return m_Buffer.GetChar(i);
+        else
+            return 0;
     };
 
     wxChar NextChar() const
@@ -149,8 +149,8 @@ protected:
 
     void CompactSpaces(wxString& str) const  // zero-alloc single-copy  --- wxString::Replace has to do an awful lot of copying
     {
-    	if(str.size() < 3)
-    	return;
+        if(str.size() < 3)
+        return;
 //          str.Replace(_T("  "), _T(" "));   // replace two-spaces with single-space (introduced if it skipped comments or assignments)
 //          str.Replace(_T("( "), _T("("));
 //          str.Replace(_T(" )"), _T(")"));
@@ -175,9 +175,9 @@ protected:
     };
 
 private:
-    bool CharInString(const char ch, const char* chars) const
+    bool CharInString(const wxChar ch, const wxChar* chars) const
     {
-        int len = strlen(chars);
+        int len = wxStrlen(chars);
         for (int i = 0; i < len; ++i)
         {
             if (ch == chars[i])
@@ -206,9 +206,9 @@ private:
     unsigned int m_UndoTokenIndex;
     unsigned int m_LineNumber;
     unsigned int m_UndoLineNumber;
-	unsigned int m_PeekTokenIndex;
-	unsigned int m_PeekLineNumber;
-	unsigned int m_PeekNestLevel;
+    unsigned int m_PeekTokenIndex;
+    unsigned int m_PeekLineNumber;
+    unsigned int m_PeekNestLevel;
 
     unsigned int m_SavedNestingLevel;
 
@@ -217,7 +217,7 @@ private:
     bool m_LastWasPreprocessor;
     wxString m_LastPreprocessor;
     bool m_SkipUnwantedTokens;
-    
+
     LoaderBase* m_pLoader;
 
     static ConfigManagerContainer::StringToStringMap s_Replacements;

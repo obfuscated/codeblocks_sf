@@ -82,7 +82,7 @@ Tokenizer::~Tokenizer()
 
 bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
 {
-	m_pLoader = loader;
+    m_pLoader = loader;
     BaseInit();
     if (filename.IsEmpty())
     {
@@ -146,36 +146,36 @@ void Tokenizer::BaseInit()
 
 bool Tokenizer::ReadFile()
 {
-	if (m_pLoader)
-	{
-		char* data = m_pLoader->GetData();
-		m_BufferLen = m_pLoader->GetLength();
-		
-		// the following code is faster than DetectEncodingAndConvert()
-//		DetectEncodingAndConvert(data, m_Buffer);
-		
-		// same code as in cbC2U() but with the addition of the string length (3rd param in unicode version)
-		// and the fallback encoding conversion
+    if (m_pLoader)
+    {
+        char* data = m_pLoader->GetData();
+        m_BufferLen = m_pLoader->GetLength();
+
+        // the following code is faster than DetectEncodingAndConvert()
+//        DetectEncodingAndConvert(data, m_Buffer);
+
+        // same code as in cbC2U() but with the addition of the string length (3rd param in unicode version)
+        // and the fallback encoding conversion
 #if wxUSE_UNICODE
-		m_Buffer = wxString(data, wxConvUTF8, m_BufferLen);
-		if (m_Buffer.Length() == 0)
-		{
-			// could not read as utf-8 encoding, try iso8859-1
-			m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen);
-		}
+        m_Buffer = wxString(data, wxConvUTF8, m_BufferLen);
+        if (m_Buffer.Length() == 0)
+        {
+            // could not read as utf-8 encoding, try iso8859-1
+            m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen);
+        }
 #else
-		m_Buffer = wxString(data, m_BufferLen);
+        m_Buffer = wxString(data, m_BufferLen);
 #endif
 
-		if (m_BufferLen != m_Buffer.Length())
-		{
-			// inconsistency!
-			// correct it to avoid crashes but this file will probably NOT be parsed correctly
-			m_BufferLen = m_Buffer.Length();
-//			asm("int $3;");
-		}
-		return data != 0;
-	};
+        if (m_BufferLen != m_Buffer.Length())
+        {
+            // inconsistency!
+            // correct it to avoid crashes but this file will probably NOT be parsed correctly
+            m_BufferLen = m_Buffer.Length();
+//            asm("int $3;");
+        }
+        return data != 0;
+    };
 
     if (!wxFileExists(m_Filename))
         return false;
@@ -225,7 +225,7 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
 }
 
 
-bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
+bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
 {
     // skip everything until we find any one of chars
     while (1)
@@ -235,7 +235,7 @@ bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
             if (CurrentChar() == '"' || CurrentChar() == '\'')
             {
                 // this is the case that match is inside a string!
-                char ch = CurrentChar();
+                wxChar ch = CurrentChar();
                 MoveToNextChar();
                 SkipToChar(ch);
             }
@@ -244,12 +244,12 @@ bool Tokenizer::SkipToOneOfChars(const char* chars, bool supportNesting)
             {
                 switch (CurrentChar())
                 {
-                	case '{': SkipBlock('{'); break;
-                	case '(': SkipBlock('('); break;
-					case '[': SkipBlock('['); break;
-					case '<': if (PeekToken() != '<') SkipBlock('<'); break; // don't skip if << operator
-					default: break;
-				}
+                    case '{': SkipBlock('{'); break;
+                    case '(': SkipBlock('('); break;
+                    case '[': SkipBlock('['); break;
+                    case '<': if (PeekToken() != '<') SkipBlock('<'); break; // don't skip if << operator
+                    default: break;
+                }
             }
         }
         if (PreviousChar() != '\\')
@@ -311,27 +311,27 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
     int count = 1; // counter for nested blocks (xxx())
     while (NotEOF())
     {
-		bool noMove = false;
+        bool noMove = false;
         if (CurrentChar() == '/')
             SkipComment(); // this will decide if it is a comment
 
         if (CurrentChar() == '"' || CurrentChar() == '\'')
         {
             // this is the case that match is inside a string!
-            char ch = CurrentChar();
+            wxChar ch = CurrentChar();
             MoveToNextChar();
             SkipToChar(ch);
-			MoveToNextChar();
+            MoveToNextChar();
             // don't move to next char below if concatenating strings (e.g. printf("" ""))
-			if (CurrentChar() == '"' || CurrentChar() == '\'')
-				noMove = true;
+            if (CurrentChar() == '"' || CurrentChar() == '\'')
+                noMove = true;
         }
         if (CurrentChar() == ch)
             ++count;
         else if (CurrentChar() == match)
             --count;
-		if (!noMove)
-			MoveToNextChar();
+        if (!noMove)
+            MoveToNextChar();
         if (count == 0)
             break;
     }
@@ -445,7 +445,7 @@ bool Tokenizer::SkipUnwanted()
         {
             // skip assignments
             // TODO: what happens with operators?
-            if (!SkipToOneOfChars(",;}", true))
+            if (!SkipToOneOfChars(_T(",;}"), true))
                 return false;
         }
 
@@ -453,7 +453,7 @@ bool Tokenizer::SkipUnwanted()
         {
             // skip "condition ? true : false"
             // TODO: what happens with operators?
-            if (!SkipToOneOfChars(";}"))
+            if (!SkipToOneOfChars(_T(";}")))
                 return false;
         }
         if (skipPreprocessor)
@@ -526,13 +526,13 @@ wxString Tokenizer::DoGetToken()
     wxString m_Str;
     wxChar c = CurrentChar();
 
-    if (c == '_' || isalpha(c))
+    if (c == '_' || wxIsalpha(c))
     {
         // keywords, identifiers, etc.
 
-        // operator== is cheaper than isalnum, also MoveToNextChar already includes IsEOF
+        // operator== is cheaper than wxIsalnum, also MoveToNextChar already includes IsEOF
         while (  ( CurrentChar() == '_' ||
-                   isalnum(CurrentChar()) ) && MoveToNextChar()  )
+                   wxIsalnum(CurrentChar()) ) && MoveToNextChar()  )
         ;
 
         if (IsEOF())
@@ -540,10 +540,10 @@ wxString Tokenizer::DoGetToken()
         m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
         m_IsOperator = m_Str.IsSameAs(TokenizerConsts::operator_str);
     }
-    else if (isdigit(CurrentChar()))
+    else if (wxIsdigit(CurrentChar()))
     {
         // numbers
-        while (NotEOF() && CharInString(CurrentChar(), "0123456789.abcdefABCDEFXxLl"))
+        while (NotEOF() && CharInString(CurrentChar(), _T("0123456789.abcdefABCDEFXxLl")))
             MoveToNextChar();
         if (IsEOF())
             return wxEmptyString;

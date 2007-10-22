@@ -1137,7 +1137,7 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
     while (repeat)
     {
         repeat = false;
-        while (x >= 0 && (isalnum(line.GetChar(x)) || line.GetChar(x) == '_'))
+        while (x >= 0 && (wxIsalnum(line.GetChar(x)) || line.GetChar(x) == '_'))
             --x;
 
         if (x > 0 &&
@@ -1175,7 +1175,7 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
                         case '(': --nest; break;
                     }
                 }
-                if (x > 0 && (isalnum(line.GetChar(x - 1)) || line.GetChar(x - 1) == '_'))
+                if (x > 0 && (wxIsalnum(line.GetChar(x - 1)) || line.GetChar(x - 1) == '_'))
                     --x;
             }
         }
@@ -1211,7 +1211,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     }
 
 //    Manager::Get()->GetMessageManager()->DebugLog(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
-    while (startAt < line.Length() && (isalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
+    while (startAt < line.Length() && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
     {
         res << line.GetChar(startAt);
         ++startAt;

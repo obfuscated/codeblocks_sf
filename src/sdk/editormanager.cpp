@@ -492,7 +492,16 @@ void EditorManager::SetColourSet(EditorColourSet* theme)
     }
 }
 
-cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* data)
+cbEditor* EditorManager::Open(const wxString& filename, int pos, ProjectFile* data)
+{
+    LoaderBase* fileLdr = Manager::Get()->GetFileManager()->Load(filename);
+    if (!fileLdr)
+        return 0;
+
+    return Open(fileLdr, filename, pos, data);
+}
+
+cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int pos,ProjectFile* data)
 {
     bool can_updateui = !GetActiveEditor() || !Manager::Get()->GetProjectManager()->IsLoading();
     wxFileName fn(filename);
@@ -519,7 +528,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos,ProjectFile* dat
 
     if (!ed)
     {
-        ed = new cbEditor(m_pNotebook, fname, m_Theme);
+        ed = new cbEditor(m_pNotebook, fileLdr, fname, m_Theme);
         if (ed->IsOK())
             AddEditorBase(ed);
         else

@@ -170,7 +170,7 @@ struct cbEditorInternalData
 {
     cbEditor* m_pOwner;
 
-    cbEditorInternalData(cbEditor* owner)
+    cbEditorInternalData(cbEditor* owner, LoaderBase* fileLoader = 0)
         : m_pOwner(owner),
         m_strip_trailing_spaces(true),
         m_ensure_final_line_end(false),
@@ -179,13 +179,30 @@ struct cbEditorInternalData
         m_LastDebugLine(-1),
         m_useByteOrderMark(false),
         m_byteOrderMarkLength(0),
-        m_lineNumbersWidth(0)
+        m_lineNumbersWidth(0),
+        m_pFileLoader(fileLoader)
     {
         m_encoding = wxLocale::GetSystemEncoding();
+
+        if (m_pFileLoader)
+        {
+            EncodingDetector enc(fileLoader);
+            if (enc.IsOK())
+            {
+                m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
+                m_useByteOrderMark = enc.UsesBOM();
+                m_encoding = enc.GetFontEncoding();
+            }
+        }
     }
 
     ~cbEditorInternalData()
     {
+        if (m_pFileLoader)
+        {
+            delete m_pFileLoader;
+            m_pFileLoader = 0;
+        }
     }
 
     // add member vars/funcs below
@@ -357,6 +374,8 @@ struct cbEditorInternalData
 
     int m_lineNumbersWidth;
 
+    LoaderBase* m_pFileLoader;
+
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -444,7 +463,7 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pSizer(0),
     m_pControl(0),
     m_pControl2(0),
-        m_foldBackup(0),
+    m_foldBackup(0),
     m_SplitType(stNoSplit),
     m_Modified(false),
     m_Index(-1),
@@ -452,9 +471,51 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
     m_pTheme(theme),
     m_lang(HL_AUTO)
 {
+    DoInitializations(filename);
+}
+
+// class constructor
+cbEditor::cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme)
+    : EditorBase(parent, filename),
+    m_pSplitter(0),
+    m_pSizer(0),
+    m_pControl(0),
+    m_pControl2(0),
+    m_foldBackup(0),
+    m_SplitType(stNoSplit),
+    m_Modified(false),
+    m_Index(-1),
+    m_pProjectFile(0L),
+    m_pTheme(theme),
+    m_lang(HL_AUTO)
+{
+    DoInitializations(filename, fileLdr);
+}
+
+// class destructor
+cbEditor::~cbEditor()
+{
+    SetSizer(0);
+    NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
+    UpdateProjectFile();
+    if (m_pControl)
+    {
+        if (m_pProjectFile)
+            m_pProjectFile->editorOpen = false;
+        m_pControl->Destroy();
+        m_pControl = 0;
+    }
+    DestroySplitView();
+
+    delete m_pData;
+}
+
+void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
+{
     // first thing to do!
     // if we add more constructors in the future, don't forget to set this!
-    m_pData = new cbEditorInternalData(this);
+    m_pData = new cbEditorInternalData(this, fileLdr);
+    m_pData->m_pFileLoader = fileLdr;
     m_IsBuiltinEditor = true;
 
     if (!filename.IsEmpty())
@@ -507,24 +568,6 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
         SetModified(true);
         m_IsOK = false;
     }
-}
-
-// class destructor
-cbEditor::~cbEditor()
-{
-    SetSizer(0);
-    NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
-    UpdateProjectFile();
-    if (m_pControl)
-    {
-        if (m_pProjectFile)
-            m_pProjectFile->editorOpen = false;
-        m_pControl->Destroy();
-        m_pControl = 0;
-    }
-    DestroySplitView();
-
-    delete m_pData;
 }
 
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
@@ -1075,13 +1118,16 @@ void cbEditor::SetEncoding( wxFontEncoding encoding )
         return;
 
     m_pData->m_encoding = encoding;
+    SetModified(true);
 
-    wxString msg;
+    /* NOTE (Biplab#1#): Following method is wrong. The file is still in old encoding
+    *  So if you try to load it with new encoding, you'll get garbage*/
+    /*wxString msg;
     msg.Printf(_("Do you want to reload the file with the new encoding (you will lose any unsaved work)?"));
     if (cbMessageBox(msg, _("Reload file?"), wxYES_NO) == wxID_YES)
         Reload(false);
     else
-        SetModified(true);
+        SetModified(true);*/
 }
 
 bool cbEditor::GetUseBom() const
@@ -1180,16 +1226,25 @@ bool cbEditor::Open(bool detectEncoding)
     wxString st;
 
     m_pControl->ClearAll();
-    wxFile file(m_Filename);
+    m_pControl->SetModEventMask(0);
 
-    if (!file.IsOpened())
+    if (!m_pData)
         return false;
 
-    m_pControl->SetModEventMask(0);
+    if (!m_pData->m_pFileLoader)
+    {
+        m_pData->m_pFileLoader = Manager::Get()->GetFileManager()->Load(m_Filename, false);
+    }
+
+    EncodingDetector enc((wxByte*)m_pData->m_pFileLoader->GetData(), m_pData->m_pFileLoader->GetLength());
+    st = enc.GetWxStr();
     if (detectEncoding)
-        DetectEncoding();
-    st = cbReadFileContents(file, GetEncoding());
-    st.Remove(0, m_pData->m_byteOrderMarkLength / sizeof(wxChar)); // remove BOM (if there)
+    {
+        SetEncoding(enc.GetFontEncoding());
+        m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
+        SetUseBom(m_pData->m_byteOrderMarkLength > 0);
+    }
+
     m_pControl->InsertText(0, st);
     m_pControl->EmptyUndoBuffer();
     m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
@@ -1211,6 +1266,13 @@ bool cbEditor::Open(bool detectEncoding)
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     if (m_pControl2)
         m_pControl2->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
+
+    if (m_pData->m_pFileLoader)
+    {
+        delete m_pData->m_pFileLoader;
+        m_pData->m_pFileLoader = 0;
+    }
+
     return true;
 }
 

@@ -491,12 +491,20 @@ bool cbProject::LoadLayout()
                     node = node->GetNext();
                 }
 
-                // Open all requested files:
+                // Load all requested files
+                std::vector<LoaderBase*> filesInMemory;
                 for (open_files_map::iterator it = open_files.begin(); it != open_files.end(); ++it)
                 {
-                    cbEditor* ed = Manager::Get()->GetEditorManager()->Open((*it).second->file.GetFullPath(),0,(*it).second);
+                    filesInMemory.push_back(Manager::Get()->GetFileManager()->Load((*it).second->file.GetFullPath()));
+                }
+                // Open all requested files:
+                size_t i = 0;
+                for (open_files_map::iterator it = open_files.begin(); it != open_files.end(); ++it)
+                {
+                    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filesInMemory[i], (*it).second->file.GetFullPath(),0,(*it).second);
                     if (ed)
                         ed->SetProjectFile((*it).second);
+                    ++i;
                 }
 
                 ProjectFile* f = loader.GetTopProjectFile();

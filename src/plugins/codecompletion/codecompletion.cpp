@@ -98,13 +98,13 @@ static const char * cpp_keyword_xpm[] = {
 /* XPM */
 static const char * unknown_keyword_xpm[] = {
 "16 16 7 1",
-" 	c None",
-".	c #FF8800",
-"+	c #FF8D0B",
-"@	c #FF9115",
-"#	c #FFA948",
-"$	c #FFC686",
-"%	c #FFFFFF",
+"     c None",
+".    c #FF8800",
+"+    c #FF8D0B",
+"@    c #FF9115",
+"#    c #FFA948",
+"$    c #FFC686",
+"%    c #FFFFFF",
 "                ",
 "                ",
 "      ....      ",
@@ -241,15 +241,15 @@ void CodeCompletion::RereadOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-	m_LexerKeywordsToInclude[0] = cfg->ReadBool(_T("/lexer_keywords_set1"), true);
-	m_LexerKeywordsToInclude[1] = cfg->ReadBool(_T("/lexer_keywords_set2"), true);
-	m_LexerKeywordsToInclude[2] = cfg->ReadBool(_T("/lexer_keywords_set3"), false);
-	m_LexerKeywordsToInclude[3] = cfg->ReadBool(_T("/lexer_keywords_set4"), false);
-	m_LexerKeywordsToInclude[4] = cfg->ReadBool(_T("/lexer_keywords_set5"), false);
-	m_LexerKeywordsToInclude[5] = cfg->ReadBool(_T("/lexer_keywords_set6"), false);
-	m_LexerKeywordsToInclude[6] = cfg->ReadBool(_T("/lexer_keywords_set7"), false);
-	m_LexerKeywordsToInclude[7] = cfg->ReadBool(_T("/lexer_keywords_set8"), false);
-	m_LexerKeywordsToInclude[8] = cfg->ReadBool(_T("/lexer_keywords_set9"), false);
+    m_LexerKeywordsToInclude[0] = cfg->ReadBool(_T("/lexer_keywords_set1"), true);
+    m_LexerKeywordsToInclude[1] = cfg->ReadBool(_T("/lexer_keywords_set2"), true);
+    m_LexerKeywordsToInclude[2] = cfg->ReadBool(_T("/lexer_keywords_set3"), false);
+    m_LexerKeywordsToInclude[3] = cfg->ReadBool(_T("/lexer_keywords_set4"), false);
+    m_LexerKeywordsToInclude[4] = cfg->ReadBool(_T("/lexer_keywords_set5"), false);
+    m_LexerKeywordsToInclude[5] = cfg->ReadBool(_T("/lexer_keywords_set6"), false);
+    m_LexerKeywordsToInclude[6] = cfg->ReadBool(_T("/lexer_keywords_set7"), false);
+    m_LexerKeywordsToInclude[7] = cfg->ReadBool(_T("/lexer_keywords_set8"), false);
+    m_LexerKeywordsToInclude[8] = cfg->ReadBool(_T("/lexer_keywords_set9"), false);
 }
 
 void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
@@ -419,8 +419,8 @@ void CodeCompletion::OnAttach()
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
 
-	// register event sinks
-	Manager* pm = Manager::Get();
+    // register event sinks
+    Manager* pm = Manager::Get();
 
     pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnReparseActiveEditor));
     pm->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
@@ -600,17 +600,17 @@ int CodeCompletion::CodeComplete()
                     // but this is now configurable in global settings
                     for (int i = 0; i < 9; ++i)
                     {
-                    	if (!m_LexerKeywordsToInclude[i])
-							continue;
+                        if (!m_LexerKeywordsToInclude[i])
+                            continue;
 
-						wxString keywords = theme->GetKeywords(lang, i);
-						wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
-						while (tkz.HasMoreTokens())
-						{
-							wxString kw = tkz.GetNextToken() + wxString::Format(_T("?%d"), iidx);
-							if (kw.Lower().StartsWith(lastSearch))
-								items.Add(kw);
-						}
+                        wxString keywords = theme->GetKeywords(lang, i);
+                        wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
+                        while (tkz.HasMoreTokens())
+                        {
+                            wxString kw = tkz.GetNextToken() + wxString::Format(_T("?%d"), iidx);
+                            if (kw.Lower().StartsWith(lastSearch))
+                                items.Add(kw);
+                        }
                     }
                 }
             }
@@ -946,7 +946,7 @@ int CodeCompletion::DoAllMethodsImpl()
             str << token->m_Type << _T(" ") << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
             if(token->m_IsConst)
             {
-				str << _T(" const");
+                str << _T(" const");
             }
             str << _T("\n{\n\n}\n\n");
 
@@ -1258,10 +1258,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if(!ed)
     {
-    	if (m_Function)
-			m_Function->Clear();
-		if (m_Scope)
-			m_Scope->Clear();
+        if (m_Function)
+            m_Function->Clear();
+        if (m_Scope)
+            m_Scope->Clear();
         return;
     }
     wxString filename = ed->GetFilename();
@@ -1430,7 +1430,7 @@ void CodeCompletion::OnStartParsingFunctions(wxTimerEvent& event)
 
 void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 {
-	event.Skip();
+    event.Skip();
 
     if (IsAttached() && m_InitDone)
     {
@@ -1442,55 +1442,55 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
         if (!ed)
             return;
 
-		if (ed->GetControl()->CallTipActive())
-			ed->GetControl()->CallTipCancel();
-//		DBGLOG(_T("CodeCompletion::OnValueTooltip: %p"), ed);
+        if (ed->GetControl()->CallTipActive())
+            ed->GetControl()->CallTipCancel();
+//        DBGLOG(_T("CodeCompletion::OnValueTooltip: %p"), ed);
         /* NOTE: The following 2 lines of codes can fix [Bug #11785].
         *       The solution may not the best one and it requires the editor
         *       to have the focus (even if C::B has the focus) in order to pop-up the tooltip. */
         if (wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()))
             return;
 
-		// ignore comments, strings, preprocesor, etc
+        // ignore comments, strings, preprocesor, etc
         int style = event.GetInt();
         if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
             return;
 
         int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
         if (pos < 0 || pos >= ed->GetControl()->GetLength())
-			return;
+            return;
         int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
 
-		Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
-		if (parser)
-		{
-			TokenIdxSet result;
-			if (m_NativeParsers.MarkItemsByAI(result, true, true, true, endOfWord))
-			{
-				wxString msg;
-				int count = 0;
-				for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
-				{
-					Token* token = parser->GetTokens()->at(*it);
-					if (token)
-					{
-						msg << token->DisplayName() << _T("\n");
-						++count;
-						if (count > 32) // allow max 32 matches (else something is definitely wrong)
-						{
-							msg.Clear();
-							break;
-						}
-					}
-				}
-				if (!msg.IsEmpty())
-				{
-					msg.RemoveLast(); // last \n
-					ed->GetControl()->CallTipShow(pos, msg);
-//					DBGLOG(msg);
-				}
-			}
-		}
+        Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
+        if (parser)
+        {
+            TokenIdxSet result;
+            if (m_NativeParsers.MarkItemsByAI(result, true, true, true, endOfWord))
+            {
+                wxString msg;
+                int count = 0;
+                for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
+                {
+                    Token* token = parser->GetTokens()->at(*it);
+                    if (token)
+                    {
+                        msg << token->DisplayName() << _T("\n");
+                        ++count;
+                        if (count > 32) // allow max 32 matches (else something is definitely wrong)
+                        {
+                            msg.Clear();
+                            break;
+                        }
+                    }
+                }
+                if (!msg.IsEmpty())
+                {
+                    msg.RemoveLast(); // last \n
+                    ed->GetControl()->CallTipShow(pos, msg);
+//                    DBGLOG(msg);
+                }
+            }
+        }
     }
 }
 
@@ -1652,9 +1652,9 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             token = parser->GetTokens()->at(int_selections[sel]);
         }
         else if (selections.GetCount() == 1)
-        {	// number of selections can be < result.size() due to the if tests, so in case we fall
-        	// back on 1 entry no need to show a selection
-        	token = parser->GetTokens()->at(int_selections[0]);
+        {    // number of selections can be < result.size() due to the if tests, so in case we fall
+            // back on 1 entry no need to show a selection
+            token = parser->GetTokens()->at(int_selections[0]);
         }
     }
 

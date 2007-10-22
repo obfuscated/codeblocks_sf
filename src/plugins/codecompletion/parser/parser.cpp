@@ -429,7 +429,7 @@ void Parser::BatchParse(const wxArrayString& filenames)
     m_Pool.BatchBegin();
     for (unsigned int i = 0; i < filenames.GetCount(); ++i)
     {
-		LoaderBase* loader = NULL; //defer loading until later
+        LoaderBase* loader = NULL; //defer loading until later
         Parse(filenames[i], true, loader);
     }
 
@@ -475,7 +475,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             {
                if(opts.loader) // if a loader is already open at this point, the caller must clean it up
                    Manager::Get()->GetMessageManager()->DebugLog(_T("CodeCompletion Plugin: FileLoader memory leak likely loading file ")+bufferOrFilename);
-			   break;
+               break;
             }
             if(!opts.loader) //this should always be true (memory will leak if a loader has already been initialized before this point)
                 opts.loader=Manager::Get()->GetFileManager()->Load(bufferOrFilename, false);
@@ -883,7 +883,7 @@ void Parser::OnParseFile(const wxString& filename,int flags)
         return;
     if (filename.IsEmpty())
         return;
-	LoaderBase* loader = NULL; //defer loading until later
+    LoaderBase* loader = NULL; //defer loading until later
     Parse(filename, flags == 0, loader); // isLocal = (flags==0)
 }
 

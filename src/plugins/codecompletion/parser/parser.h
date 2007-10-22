@@ -12,34 +12,34 @@
 #include <sdk_events.h>
 
 #ifndef STANDALONE
-	#include <wx/imaglist.h>
+    #include <wx/imaglist.h>
 #endif // STANDALONE
 
-#define PARSER_IMG_NONE				-2
-#define PARSER_IMG_CLASS_FOLDER		0
-#define PARSER_IMG_CLASS			1
-#define PARSER_IMG_CTOR_PRIVATE		2
-#define PARSER_IMG_CTOR_PROTECTED	3
-#define PARSER_IMG_CTOR_PUBLIC		4
-#define PARSER_IMG_DTOR_PRIVATE		5
-#define PARSER_IMG_DTOR_PROTECTED	6
-#define PARSER_IMG_DTOR_PUBLIC		7
-#define PARSER_IMG_FUNC_PRIVATE		8
-#define PARSER_IMG_FUNC_PROTECTED	9
-#define PARSER_IMG_FUNC_PUBLIC		10
-#define PARSER_IMG_VAR_PRIVATE		11
-#define PARSER_IMG_VAR_PROTECTED	12
-#define PARSER_IMG_VAR_PUBLIC		13
-#define PARSER_IMG_PREPROCESSOR		14
-#define PARSER_IMG_ENUM				15
-#define PARSER_IMG_ENUMERATOR		16
-#define PARSER_IMG_NAMESPACE 		17
-#define PARSER_IMG_TYPEDEF     	18
-#define PARSER_IMG_SYMBOLS_FOLDER	19
-#define PARSER_IMG_ENUMS_FOLDER	    20
-#define PARSER_IMG_PREPROC_FOLDER	21
-#define PARSER_IMG_OTHERS_FOLDER	22
-#define PARSER_IMG_TYPEDEF_FOLDER	23
+#define PARSER_IMG_NONE                -2
+#define PARSER_IMG_CLASS_FOLDER        0
+#define PARSER_IMG_CLASS            1
+#define PARSER_IMG_CTOR_PRIVATE        2
+#define PARSER_IMG_CTOR_PROTECTED    3
+#define PARSER_IMG_CTOR_PUBLIC        4
+#define PARSER_IMG_DTOR_PRIVATE        5
+#define PARSER_IMG_DTOR_PROTECTED    6
+#define PARSER_IMG_DTOR_PUBLIC        7
+#define PARSER_IMG_FUNC_PRIVATE        8
+#define PARSER_IMG_FUNC_PROTECTED    9
+#define PARSER_IMG_FUNC_PUBLIC        10
+#define PARSER_IMG_VAR_PRIVATE        11
+#define PARSER_IMG_VAR_PROTECTED    12
+#define PARSER_IMG_VAR_PUBLIC        13
+#define PARSER_IMG_PREPROCESSOR        14
+#define PARSER_IMG_ENUM                15
+#define PARSER_IMG_ENUMERATOR        16
+#define PARSER_IMG_NAMESPACE         17
+#define PARSER_IMG_TYPEDEF         18
+#define PARSER_IMG_SYMBOLS_FOLDER    19
+#define PARSER_IMG_ENUMS_FOLDER        20
+#define PARSER_IMG_PREPROC_FOLDER    21
+#define PARSER_IMG_OTHERS_FOLDER    22
+#define PARSER_IMG_TYPEDEF_FOLDER    23
 
 #define PARSER_IMG_MIN PARSER_IMG_CLASS_FOLDER
 #define PARSER_IMG_MAX PARSER_IMG_OTHERS_FOLDER
@@ -57,11 +57,11 @@ class ClassTreeData : public BlockAllocated<ClassTreeData, 500>, public wxTreeIt
 
 struct ParserOptions
 {
-	bool followLocalIncludes;
-	bool followGlobalIncludes;
-	bool caseSensitive;
-	bool wantPreprocessor;
-	bool useSmartSense;
+    bool followLocalIncludes;
+    bool followGlobalIncludes;
+    bool caseSensitive;
+    bool wantPreprocessor;
+    bool useSmartSense;
 };
 
 enum BrowserDisplayFilter
@@ -73,9 +73,9 @@ enum BrowserDisplayFilter
 
 struct BrowserOptions
 {
-	bool showInheritance; // default: false
-	bool expandNS; // default: false (auto-expand namespaces)
-	BrowserDisplayFilter displayFilter; // default: bdfWorkspace
+    bool showInheritance; // default: false
+    bool expandNS; // default: false (auto-expand namespaces)
+    BrowserDisplayFilter displayFilter; // default: bdfWorkspace
 };
 
 class ClassBrowser;
@@ -83,83 +83,83 @@ class ClassBrowserBuilderThread;
 
 class Parser : public wxEvtHandler
 {
-	public:
+    public:
         friend class ClassBrowser;
         friend class ParserThread;
-		Parser(wxEvtHandler* parent);
-		~Parser();
+        Parser(wxEvtHandler* parent);
+        ~Parser();
 
-		void BatchParse(const wxArrayString& filenames);
-		bool Parse(const wxString& filename, bool isLocal = true, LoaderBase* loader = 0);
-		bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
-		bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
-		bool ParseBufferForFunctions(const wxString& buffer);
-		bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
-		bool Reparse(const wxString& filename, bool isLocal = true);
+        void BatchParse(const wxArrayString& filenames);
+        bool Parse(const wxString& filename, bool isLocal = true, LoaderBase* loader = 0);
+        bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
+        bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
+        bool ParseBufferForFunctions(const wxString& buffer);
+        bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
+        bool Reparse(const wxString& filename, bool isLocal = true);
         bool ReparseModifiedFiles();
-		bool RemoveFile(const wxString& filename);
-		void Clear();
-		void ReadOptions();
-		void WriteOptions();
-		bool ReadFromCache(wxInputStream* f);
-		bool WriteToCache(wxOutputStream* f);
-		bool CacheNeedsUpdate();
+        bool RemoveFile(const wxString& filename);
+        void Clear();
+        void ReadOptions();
+        void WriteOptions();
+        bool ReadFromCache(wxInputStream* f);
+        bool WriteToCache(wxOutputStream* f);
+        bool CacheNeedsUpdate();
 
-		void StartStopWatch();
-		void EndStopWatch();
-		long EllapsedTime();
-		long LastParseTime();
+        void StartStopWatch();
+        void EndStopWatch();
+        long EllapsedTime();
+        long LastParseTime();
 
 #ifndef STANDALONE
-		int GetTokenKindImage(Token* token);
-		void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
-		void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
-		void SetTokenKindImage(int kind, const wxIcon& icon);
-		wxImageList* GetImageList(){ return m_pImageList; }
+        int GetTokenKindImage(Token* token);
+        void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
+        void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
+        void SetTokenKindImage(int kind, const wxIcon& icon);
+        wxImageList* GetImageList(){ return m_pImageList; }
 #endif // STANDALONE
-		Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
-		Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
-		size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true);
+        Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
+        Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
+        size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true);
 
-		ParserOptions& Options(){ return m_Options; }
-		BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }
+        ParserOptions& Options(){ return m_Options; }
+        BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }
 
-		void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
-		void AddIncludeDir(const wxString& dir);
-		const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
+        void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
+        void AddIncludeDir(const wxString& dir);
+        const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
         wxString GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal);
         wxString FindFirstFileInIncludeDirs(const wxString& file);
-		wxArrayString FindFileInIncludeDirs(const wxString& file,bool firstonly = false);
+        wxArrayString FindFileInIncludeDirs(const wxString& file,bool firstonly = false);
 
-		TokensTree* GetTokens(){ return m_pTokens; }
-		TokensTree* GetTempTokens() { return m_pTempTokens; }
-		unsigned int GetFilesCount();
+        TokensTree* GetTokens(){ return m_pTokens; }
+        TokensTree* GetTempTokens() { return m_pTempTokens; }
+        unsigned int GetFilesCount();
 
-		bool Done();
-		void LinkInheritance(bool tempsOnly = false);
-		void MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData = 0);
+        bool Done();
+        void LinkInheritance(bool tempsOnly = false);
+        void MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData = 0);
 
-		unsigned int GetMaxThreads()const { return m_Pool.GetConcurrentThreads(); }
-		void SetMaxThreads(unsigned int max){ m_Pool.SetConcurrentThreads(max); }
+        unsigned int GetMaxThreads()const { return m_Pool.GetConcurrentThreads(); }
+        void SetMaxThreads(unsigned int max){ m_Pool.SetConcurrentThreads(max); }
 
-		void TerminateAllThreads();
-	protected:
-		void OnParseFile(const wxString& filename,int flags);
+        void TerminateAllThreads();
+    protected:
+        void OnParseFile(const wxString& filename,int flags);
         void OnAllThreadsDone(CodeBlocksEvent& event);
-		void OnTimer(wxTimerEvent& event);
-		void OnBatchTimer(wxTimerEvent& event);
-	private:
+        void OnTimer(wxTimerEvent& event);
+        void OnBatchTimer(wxTimerEvent& event);
+    private:
         void ConnectEvents();
         void DisconnectEvents();
 
-		ParserOptions m_Options;
-		BrowserOptions m_BrowserOptions;
-		SearchTree<wxString> m_GlobalIncludes;
-		wxArrayString m_IncludeDirs;
-		wxEvtHandler* m_pParent;
-		wxTreeItemId m_RootNode;
+        ParserOptions m_Options;
+        BrowserOptions m_BrowserOptions;
+        SearchTree<wxString> m_GlobalIncludes;
+        wxArrayString m_IncludeDirs;
+        wxEvtHandler* m_pParent;
+        wxTreeItemId m_RootNode;
 #ifndef STANDALONE
-		wxImageList* m_pImageList;
+        wxImageList* m_pImageList;
     protected:
         // the following three members are used to detect changes between
         // in-mem data and cache
@@ -186,7 +186,7 @@ class Parser : public wxEvtHandler
 
 #endif // STANDALONE
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // PARSER_H

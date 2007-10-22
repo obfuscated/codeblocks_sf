@@ -1,4 +1,5 @@
 /////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 // Name:        searchtree.h
 // Purpose:     N-ary Search Tree
 //              The classes used here implement a N-Ary Search Tree for
@@ -16,21 +17,11 @@
 #ifndef SEARCHTREE_H
 #define SEARCHTREE_H
 
+#include <wx/string.h>
+
 #include <vector>
 #include <map>
 #include <set>
-
-#ifdef __WXWINDOWS__
-
-#  include <wx/string.h>
-#  define string wxString
-#  define char wxChar
-
-#else
-
-#  include <string>
-
-#endif
 
 using namespace std;
 
@@ -43,7 +34,7 @@ class SearchTreePoint;
 
 /** SearchTreeLinkMap is the list of the edges towards other nodes. The character is the
 key, and the node is the value */
-typedef map<char,nSearchTreeNode,less<char> > SearchTreeLinkMap;
+typedef map<wxChar,nSearchTreeNode,less<wxChar> > SearchTreeLinkMap;
 
 typedef vector<SearchTreeLinkMap::iterator> SearchTreeStack;
 
@@ -57,7 +48,7 @@ typedef vector<SearchTreePoint> SearchTreePointsArray;
 typedef map<size_t,size_t,less<size_t> > SearchTreeItemsMap;
 
 /** SearchTreeLabelsArray contains the labels used by the nodes */
-typedef vector<string> SearchTreeLabelsArray;
+typedef vector<wxString> SearchTreeLabelsArray;
 
 /** SearchTreeIterator lets us iterate through the nodes of a BasicSearchTree */
 class BasicSearchTreeIterator
@@ -74,7 +65,7 @@ class BasicSearchTreeIterator
         const BasicSearchTreeIterator& operator--() { FindPrev(); return *this; }
         bool FindNextSibling();
         bool FindPrevSibling();
-        bool FindSibling(char ch);
+        bool FindSibling(wxChar ch);
         bool eof() { return (!IsValid() || m_eof); }
         nSearchTreeNode m_CurNode;
         bool m_eof; // Reached end of tree
@@ -105,14 +96,14 @@ class SearchTreeNode
         virtual ~SearchTreeNode();
         nSearchTreeNode GetParent() const { return m_parent; }
         void SetParent(nSearchTreeNode newparent) { m_parent = newparent; }
-        nSearchTreeNode GetChild(char ch);
+        nSearchTreeNode GetChild(wxChar ch);
         size_t GetItemNo(size_t depth);
         size_t AddItemNo(size_t depth,size_t itemno);
         SearchTreeNode* GetParent(const BasicSearchTree* tree) const;
-        SearchTreeNode* GetChild(BasicSearchTree* tree,char ch);
-        string GetLabel(const BasicSearchTree* tree) const;
-        char GetChar(const BasicSearchTree* tree) const;
-        const string& GetActualLabel(const BasicSearchTree* tree) const;
+        SearchTreeNode* GetChild(BasicSearchTree* tree,wxChar ch);
+        wxString GetLabel(const BasicSearchTree* tree) const;
+        wxChar GetChar(const BasicSearchTree* tree) const;
+        const wxString& GetActualLabel(const BasicSearchTree* tree) const;
         nSearchTreeLabel GetLabelNo() const { return m_label; }
         unsigned int GetLabelStart() const { return m_labelstart; }
         unsigned int GetLabelLen() const { return m_labellen; }
@@ -129,17 +120,17 @@ class SearchTreeNode
         /** Gets the deepest position where the string matches the node's edge's label.
             0 for 0 characters in the tree matched, 1 for 1 character matched, etc.
             */
-        unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const string& s,unsigned int StringStartDepth);
-        string Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,bool withchildren = false);
-        void dump(BasicSearchTree* tree,nSearchTreeNode node_id,const string& prefix,string& result);
+        unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const wxString& s,unsigned int StringStartDepth);
+        wxString Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,bool withchildren = false);
+        void dump(BasicSearchTree* tree,nSearchTreeNode node_id,const wxString& prefix,wxString& result);
 
 
-        static string SerializeString(const string& s);
-        static string u2s(unsigned int u);
-        static string i2s(int i);
-        static bool UnSerializeString(const string& s,string& result);
-        static bool s2u(const string& s,unsigned int& u);
-        static bool s2i(const string& s,int& i);
+        static wxString SerializeString(const wxString& s);
+        static wxString u2s(unsigned int u);
+        static wxString i2s(int i);
+        static bool UnSerializeString(const wxString& s,wxString& result);
+        static bool s2u(const wxString& s,unsigned int& u);
+        static bool s2i(const wxString& s,int& i);
     protected:
         unsigned int m_depth;
         nSearchTreeNode m_parent;
@@ -162,30 +153,30 @@ class BasicSearchTree
 
         /** Adds an item number to position defined by s.
             If the string already exists, returns the correspoinding item no. */
-        size_t insert(const string& s);
+        size_t insert(const wxString& s);
 
         /// Tells if there is an item for string s
-        bool HasItem(const string& s);
+        bool HasItem(const wxString& s);
 
         /// std::map compatibility for the above
-        size_t count(const string& s) { return HasItem(s) ? 1 : 0; }
+        size_t count(const wxString& s) { return HasItem(s) ? 1 : 0; }
 
         /// Gets the array position defined by s
-        size_t GetItemNo(const string& s);
+        size_t GetItemNo(const wxString& s);
 
         /// Gets the key string for item n
-        const string GetString(size_t n) const;
+        const wxString GetString(size_t n) const;
 
         /** Finds items that match a given string.
             if is_prefix==true, it finds items that start with the string.
             returns the number of matches.
         */
-        size_t FindMatches(const string& s,set<size_t> &result,bool caseSensitive,bool is_prefix);
+        size_t FindMatches(const wxString& s,set<size_t> &result,bool caseSensitive,bool is_prefix);
 
         /// Serializes the labels into an XML-compatible string
-        string SerializeLabels();
+        wxString SerializeLabels();
         /// Dumps a graphical version of the tree
-        string dump();
+        wxString dump();
     protected:
 
         /** Creates a new node. Function is virtual so the nodes can be extended
@@ -194,18 +185,18 @@ class BasicSearchTree
 
         /** Gets the string corresponding to the tree point 'nn'.
             If 'top' is specified, it gets the string that goes from node 'top' to point 'nn'. */
-        string GetString(const SearchTreePoint &nn,nSearchTreeNode top = 0) const;
+        wxString GetString(const SearchTreePoint &nn,nSearchTreeNode top = 0) const;
 
         /** Obtains the node with number n,NULL if n is invalid.
             If NullOnZero == true, returns NULL if n is 0. */
         SearchTreeNode* GetNode(nSearchTreeNode n,bool NullOnZero = false);
         /// Finds the node that starts from node 'parent', and has the suffix s.
-        bool FindNode(const string& s, nSearchTreeNode nparent, SearchTreePoint* result);
+        bool FindNode(const wxString& s, nSearchTreeNode nparent, SearchTreePoint* result);
         /// Adds Suffix s starting from node nparent.
-        SearchTreePoint AddNode(const string& s, nSearchTreeNode nparent = 0);
+        SearchTreePoint AddNode(const wxString& s, nSearchTreeNode nparent = 0);
 
         /// Serializes given label into an XML-escaped string.
-        string SerializeLabel(nSearchTreeLabel labelno);
+        wxString SerializeLabel(nSearchTreeLabel labelno);
 
         /// Labels used by the nodes' edges
         SearchTreeLabelsArray m_Labels;
@@ -237,21 +228,21 @@ class SearchTree: public BasicSearchTree
         virtual void clear(); /// Clears the tree
         size_t GetCount() const; /// Gets the number of items stored
         virtual size_t size() const; /// Same as GetCount
-        bool SaveCacheTo(const string& filename); /// Stores the Tree and items into a file
-        bool LoadCacheFrom(const string& filename); /// Loads the Tree and items from a file
-        string Serialize();
-        T GetItem(const string& s); /// Gets the item at position defined by s
-        T GetItem(const char* s);
-        size_t AddItem(const string& s,T item,bool replaceexisting = false); /// Adds an item to position defined by s
+        bool SaveCacheTo(const wxString& filename); /// Stores the Tree and items into a file
+        bool LoadCacheFrom(const wxString& filename); /// Loads the Tree and items from a file
+        wxString Serialize();
+        T GetItem(const wxString& s); /// Gets the item at position defined by s
+        T GetItem(const wxChar* s);
+        size_t AddItem(const wxString& s,T item,bool replaceexisting = false); /// Adds an item to position defined by s
         T& GetItemAtPos(size_t i); /// Gets the item found at position i
         void SetItemAtPos(size_t i,T item); /// Replaces the item found at position i
 
         /** Gets the item found at position s. Inserts new empty one if not found. */
-        T& operator[](const string& s);
+        T& operator[](const wxString& s);
         /// Serializes the stored items
-        virtual string SerializeItem(size_t idx) { return string(_T("")); }
+        virtual wxString SerializeItem(size_t idx) { return wxString(_T("")); }
         /// Unserializes the items to be stored
-        virtual void* UnserializeItem(const string& s) { return NULL; }
+        virtual void* UnserializeItem(const wxString& s) { return NULL; }
     protected:
         vector<T> m_Items;   /// The actual stored items
 
@@ -300,26 +291,26 @@ size_t SearchTree<T>::size() const
 
 
 template <class T>
-bool SearchTree<T>::SaveCacheTo(const string& filename)
+bool SearchTree<T>::SaveCacheTo(const wxString& filename)
 {
     return true;
 }
 
 template <class T>
-bool SearchTree<T>::LoadCacheFrom(const string& filename)
+bool SearchTree<T>::LoadCacheFrom(const wxString& filename)
 {
     return true;
 }
 
 template <class T>
-T SearchTree<T>::GetItem(const char* s)
+T SearchTree<T>::GetItem(const wxChar* s)
 {
-    string tmps(s);
+    wxString tmps(s);
     return GetItem(tmps);
 }
 
 template <class T>
-T SearchTree<T>::GetItem(const string& s)
+T SearchTree<T>::GetItem(const wxString& s)
 {
     size_t itemno = GetItemNo(s);
     if(!itemno && !s.empty())
@@ -328,7 +319,7 @@ T SearchTree<T>::GetItem(const string& s)
 }
 
 template <class T>
-size_t SearchTree<T>::AddItem(const string& s,T item,bool replaceexisting)
+size_t SearchTree<T>::AddItem(const wxString& s,T item,bool replaceexisting)
 {
     size_t itemno = insert(s);
     if(itemno > m_Items.size())
@@ -370,7 +361,7 @@ bool SearchTree<T>::AddFirstNullItem()
 }
 
 template <class T>
-T& SearchTree<T>::operator[](const string& s)
+T& SearchTree<T>::operator[](const wxString& s)
 {
     size_t curpos = GetItemNo(s);
     if(!curpos)
@@ -382,9 +373,9 @@ T& SearchTree<T>::operator[](const string& s)
 }
 
 template <class T>
-string SearchTree<T>::Serialize()
+wxString SearchTree<T>::Serialize()
 {
-    string result;
+    wxString result;
     size_t i;
     result << _T("<SearchTree>\n");
     result << SerializeLabels();
@@ -402,12 +393,5 @@ string SearchTree<T>::Serialize()
     result << _T("</SearchTree>\n");
     return result;
 }
-
-#ifdef __WXWINDOWS__
-
-#undef string
-#undef char
-
-#endif
 
 #endif
