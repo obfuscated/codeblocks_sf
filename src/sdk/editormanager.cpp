@@ -42,6 +42,7 @@
     #include "projectfile.h"
     #include "pluginmanager.h"
     #include "manager.h"
+    #include "filemanager.h"
     #include "sdk_events.h"
     #include "projectbuildtarget.h"
     #include "cbproject.h"
@@ -3029,6 +3030,7 @@ int EditorManager::GetOpenFilesListIcon(EditorBase* ed)
     else if (ed->GetModified()) mod =2;     // modified
 	return mod;
 }
+
 
 
 

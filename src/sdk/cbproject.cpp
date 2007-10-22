@@ -46,6 +46,7 @@
     #include "macrosmanager.h"
     #include "messagemanager.h"
     #include "editormanager.h"
+    #include "filemanager.h"
     #include "configmanager.h"
     #include "compilerfactory.h"
     #include "projectbuildtarget.h"
