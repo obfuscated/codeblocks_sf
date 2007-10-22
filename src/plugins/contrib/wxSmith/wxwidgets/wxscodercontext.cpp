@@ -112,7 +112,8 @@ void wxsCoderContext::AddDeclaration(const wxString& Declaration)
 
 void wxsCoderContext::AddXRCFetchingCode(const wxString& Code)
 {
-    if ( m_Flags & flRoot ) return;
+    if ( m_Flags & flRoot  ) return;
+    if ( m_Flags & flLocal ) return;
 
     if ( m_Flags & flMixed )
     {

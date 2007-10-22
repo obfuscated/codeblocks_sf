@@ -21,6 +21,7 @@ void wxsCodeGenerator::BuildCode(wxsCoderContext* Context)
     OnBuildDeclarationsCode();
     OnBuildEventsConnectingCode();
     OnBuildIdCode();
+    OnBuildXRCFetchingCode();
 
     Context->m_Flags = FlagsStore;
     m_Context = Store;
