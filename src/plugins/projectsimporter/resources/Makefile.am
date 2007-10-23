@@ -1,7 +1,8 @@
 pkgdata_DATA = projectsimporter.zip
 CLEANFILES = $(pkgdata_DATA)
 
-EXTRA_DIST = manifest.xml
+EXTRA_DIST = manifest.xml \
+             project_import_menu.xrc
 
 projectsimporter.zip: $(EXTRA_DIST)
     PWD=`pwd` cd $(srcdir) && zip $(PWD)/projectsimporter.zip manifest.xml *.xrc > /dev/null
