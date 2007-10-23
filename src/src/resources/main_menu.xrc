@@ -63,32 +63,6 @@
         </object>
       </object>
       <object class="separator"/>
-      <object class="wxMenu" name="idFileImportProject">
-        <label>&amp;Import project</label>
-        <object class="wxMenuItem" name="idFileImportProjectDevCpp">
-          <label>Dev-C++ project...</label>
-          <help>Import an existing Dev-C++ project</help>
-        </object>
-        <object class="separator"/>
-        <object class="wxMenuItem" name="idFileImportProjectMSVC">
-          <label>MS Visual C++ project...</label>
-          <help>Import an existing MS Visual C++ project</help>
-        </object>
-        <object class="wxMenuItem" name="idFileImportProjectMSVCWksp">
-          <label>MS Visual C++ workspace...</label>
-          <help>Import an existing MS Visual C++ workspace</help>
-        </object>
-        <object class="separator"/>
-        <object class="wxMenuItem" name="idFileImportProjectMSVS">
-          <label>MS Visual Studio project...</label>
-          <help>Import an existing MS Visual Studio project</help>
-        </object>
-        <object class="wxMenuItem" name="idFileImportProjectMSVSWksp">
-          <label>MS Visual Studio solution...</label>
-          <help>Import an existing MS Visual Studio solution</help>
-        </object>
-      </object>
-      <object class="separator"/>
       <object class="wxMenuItem" name="idFileSave">
         <label>&amp;Save</label>
         <bitmap>images\16x16\filesave.png</bitmap>
@@ -102,7 +76,7 @@
       </object>
       <object class="wxMenuItem" name="idFileSaveAllFiles">
         <label>Save a&amp;ll files</label>
-	<bitmap>images\16x16\filesaveall.png</bitmap>
+        <bitmap>images\16x16\filesaveall.png</bitmap>
         <accel>Ctrl-Shift-S</accel>
         <help>Save all modified files</help>
       </object>

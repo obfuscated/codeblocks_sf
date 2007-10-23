@@ -74,6 +74,29 @@ cbConfigurationPanel* ProjectsImporter::GetConfigurationPanel(wxWindow* parent)
     return 0;
 }
 
+void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
+{
+    if (!IsAttached() || !menuBar)
+    {
+        return;
+    }
+
+    m_Menu = Manager::Get()->LoadMenu(_T("project_import_menu"), false);
+
+    if (!m_Menu)
+    {
+        return;
+    }
+
+    wxMenu* fileMenu = menuBar->GetMenu(0);
+    if (fileMenu)
+    {
+        // The position is hard-coded. Please adjust it if necessary
+        fileMenu->Insert(7, wxNewId(), _T("&Import project"), m_Menu);
+        fileMenu->InsertSeparator(8);
+    }
+}
+
 bool ProjectsImporter::CanHandleFile(const wxString& filename) const
 {
     FileType ft = FileTypeOf(filename);

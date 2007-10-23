@@ -25,9 +25,12 @@ class ProjectsImporter : public cbMimePlugin
         int OpenFile(const wxString& filename);
         void OnAttach(); // fires when the plugin is attached to the application
         void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	private:
-		int LoadProject(const wxString& filename);
-		int LoadWorkspace(const wxString& filename);
+        void BuildMenu(wxMenuBar* menuBar);
+    private:
+        int LoadProject(const wxString& filename);
+        int LoadWorkspace(const wxString& filename);
+
+        wxMenu* m_Menu;
 };
 
 #endif // PROJECTSIMPORTER_H

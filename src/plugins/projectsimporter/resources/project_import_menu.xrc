@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+  <object class="wxMenu" name="project_import_menu">
+    <label>&amp;Import project</label>
+    <object class="wxMenuItem" name="idFileImportProjectDevCpp">
+      <label>Dev-C++ project...</label>
+      <help>Import an existing Dev-C++ project</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idFileImportProjectMSVC">
+      <label>MS Visual C++ project...</label>
+      <help>Import an existing MS Visual C++ project</help>
+    </object>
+    <object class="wxMenuItem" name="idFileImportProjectMSVCWksp">
+      <label>MS Visual C++ workspace...</label>
+      <help>Import an existing MS Visual C++ workspace</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idFileImportProjectMSVS">
+      <label>MS Visual Studio project...</label>
+      <help>Import an existing MS Visual Studio project</help>
+    </object>
+    <object class="wxMenuItem" name="idFileImportProjectMSVSWksp">
+      <label>MS Visual Studio solution...</label>
+      <help>Import an existing MS Visual Studio solution</help>
+    </object>
+  </object>
+</resource>
