@@ -191,9 +191,19 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
     if (!m_UseBOM)
     {
         if (DetectUTF8((wxByte*)buffer, size))
+        {
             m_Encoding = wxFONTENCODING_UTF8;
+        }
         else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
+        {
+            #ifdef __WXMSW__
             m_Encoding = wxLocale::GetSystemEncoding();
+            #else
+            /* On Linux, system encoding is UTF-8. But as our code didn't
+            detect UTF-8, we'll set it to ansi. */
+            m_Encoding = wxFONTENCODING_ISO8859_1;
+            #endif
+        }
 
         m_UseBOM = false;
         m_BOMSizeInBytes = 0;
@@ -273,6 +283,10 @@ bool EncodingDetector::DetectUTF8(wxByte *byt, size_t size)
             {
                 return false;
             }
+        }
+        else
+        {
+            return false;
         }
         /* End: Extra code (not from MadEdit) */
     }
