@@ -133,7 +133,11 @@ The company's Coding Rules require source files to have a standard design. \code
 
 \subsection{Abbreviation}\label{sec:abbreviation}
 
-A lot of typing can be saved in \codeblocks by defining abbreviation. This is done by selecting \menu{Settings,Editor} and defining the abbreviations under the name \var{name}, which can then be called by the keyboard shortcut Ctrl-J. Parametrisation is also possible by including variables \codeline{$(NAME}) in the abbreviations.
+A lot of typing can be saved in \codeblocks by defining abbreviation. This is done by selecting \menu{Settings,Editor} and defining the abbreviations under the name \var{name}, which can then be called by the keyboard shortcut Ctrl-J (see \pxref{fig:abbreviation}).
+
+\screenshot{abbreviation}{Defining abbreviations}
+
+Parametrisation is also possible by including variables \codeline{$(NAME}) in the abbreviations.
 
 \begin{code}
 #ifndef $(Guard token)
@@ -142,8 +146,6 @@ A lot of typing can be saved in \codeblocks by defining abbreviation. This is do
 \end{code}
 
 When performing the abbreviation \var{name} in the source text and performing Ctrl-J, the content of the variable is requested and included.
-
-\screenshot{abbreviation}{Defining abbreviations}
 %Inherit Class
 %Im Editor kann durch Auswahl von Inherit Class über die rechte Maustaste. ???
 
@@ -165,17 +167,26 @@ To create a portable version of \codeblocks on a USB stick, proceed as follows. 
 
 In \codeblocks there are different ways of quick navigation between files and functions. Setting bookmarks is a typical procedure. Via the shortcut Ctrl-B a bookmark is set or deleted in the source file. Via Alt-PgUp you can jump to the previous bookmark, and via Alt-PgDn you can jump to the next bookmark.
 
-\codeblocks bietet verschiedene Möglichkeiten für die Suche in einer Datei oder in Verzeichnissen.
+\hint{If you select the workspace or a project in the workspace in the project view you will be able to search for a file in the project. Just select \menu{Find file} from the context menu, then type the name of the file and the file will be selected. If you hit return this file will be opened in the editor (see \pxref{fig:project_find_file}).}
 
-\hint{In der Projektansicht können Sie durch Auswählen eines Projektes über das Kontextmenü \menu{Find file} in einem Dialog einen Dateinamen angeben. Dieser wird anschließend in der Projektansicht markiert und durch Eingabe mit Return im Editor geöffnet.}
+\screenshot[][width=.5\columnwidth]{project_find_file}{Suche nach Dateien}
 
-Mit dem \menu{Search,Find} (Ctrl-F) oder \menu{Find in Files} (Ctrl-Shift-F) öffnet sich der Dialog für die Suche.
+In \codeblocks you can easily navigate between header/source files like:
+
+\begin{enumerate}
+\item Set cursor at the location where a header file is include and open this file via the context menu \menu{open include file} (see \pxref{fig:open_header})
+\item Swap between header and source via the context menu \menu{Swap header/source}
+\item Select e.g. a define in the editor and choose \menu{Find declaration} from the contex menu to open the file with the declaration.
+\end{enumerate}
+
+\screenshot{open_header}{Öffnen einer Header Datei}
+
 
 \codeblocks offeres several ways of searching within a file or directory. In the project view, you can select a project via the context menu \menu{Find file}, and then enter a file name in the dialogue box. The corresponding file will be selected in the project view and can then be opened in the editor by pressing the Return key. The dialogue box for searching is opened via \menu{Search,Find} (Ctrl-F) or \menu{Find in Files} (Ctrl-Shift-F).
 
 Ctrl-G and Ctrl-Alt-G are another useful functions. The dialogue which will open on using this shortcut, lets you select files/functions and then jumps to the implementation of the selected function (see \pxref{fig:select_function}) or opens the selected file in the editor. You may use wildcards like \codeline{*} or \codeline{?} etc. for an incremental search in the dialog.
 
-\screenshot{select_function}{Search for functions}
+\screenshot[][width=.5\columnwidth]{select_function}{Search for functions}
 
 \hint{With the Ctrl-PgUp shortcut you can jump to the previous function, and via Ctrl-PgDn you can jump to the next function.}
 
@@ -219,6 +230,7 @@ In addition you can other help methods like a Google search of a select item in 
 man:/usr/share/man 
 \end{cmd}
 
+\hint{If you hold the Ctrl key and then select text in the \codeblocks editor you can perform e.g. a Google search via the context menu.}
 % \section{Scripting}
 %
 % \codeblocks in Console Modus + Scripts
@@ -308,6 +320,9 @@ code with user defined folding
 //}
 \end{code}
 
+\subsection{Auto complete}
+
+If you open a open a project in \codeblocks the \samp{Search directories} of your compiler and the project, the sources and headers of your project are parsed. In addition the keyowrdsof the corresponding lexer file are parsed. The parse information is used for the auto complete feature in \codeblocks. Please check the settings for the editor if this feature is enabled. The auto completion is accessible with the shortcut Ctrl-Space. Via the menu \menu{Settings,Editor,Syntax highlighting} you can add user defined keywords to your lexer.
 
 \subsection{Including libraries}
 

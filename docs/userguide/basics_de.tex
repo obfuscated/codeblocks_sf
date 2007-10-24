@@ -133,7 +133,11 @@ Durch vorgegebene Coding Rules im Unternehmen müssen Quelldateien einen einheit
 
 \subsection{Abbreviation}\label{sec:abbreviation}
 
-Durch Definition von Abkürzung in \codeblocks kann einiges an Schreibarbeit und Zeit gespart werden. Hierzu werden in \menu{Settings,Editor} sogenannte Abbreviations unter dem Namen \var{name} angelegt, die über das Tastenkürzel Ctrl-J aufgerufen werden. Durch Einfügen von Variablen \codeline{$(NAME}) in den Abkürzungen ist auch eine Parametrisierung möglich.
+Durch Definition von Abkürzung in \codeblocks kann einiges an Schreibarbeit und Zeit gespart werden. Hierzu werden in \menu{Settings,Editor} sogenannte Abbreviations unter dem Namen \var{name} angelegt, die über das Tastenkürzel Ctrl-J aufgerufen werden (siehe \pxref{fig:abbreviation}).
+
+\screenshot{abbreviation}{Definition von Abkürzungen}
+
+Durch Einfügen von Variablen \codeline{$(NAME}) in den Abkürzungen ist auch eine Parametrisierung möglich.
 
 \begin{code}
 #ifndef $(Guard token)
@@ -143,7 +147,6 @@ Durch Definition von Abkürzung in \codeblocks kann einiges an Schreibarbeit und
 
 Bei Aufruf der Abkürzung \var{name} im Quelltext und Ausführen von Ctrl-J, wird der Inhalt der Variablen abgefragt und eingefügt.
 
-\screenshot{abbreviation}{Definition von Abkürzungen}
 %Inherit Class
 %Im Editor kann durch Auswahl von Inherit Class über die rechte Maustaste.
 
@@ -165,15 +168,25 @@ Zur Erzeugung einer portablen Version von \codeblocks auf einem USB-Stick gehen 
 
 In \codeblocks existieren unterschiedliche Möglichkeiten zum schnellen Navigieren zwischen Dateien und Funktionen. Eine typische Vorgehensweise ist das Setzen von Lesezeichen (Bookmarks). Durch Betätigen des Tastenkürzel (Ctrl-B) wird ein Lesezeichen in einer Quelldatei gesetzt bzw. gelöscht. Mit (Alt-PgUp) wird zum vorherigen Lesezeichen gesprungen und mit (Alt-PgDn) zum nächsten gewechselt.
 
-\codeblocks bietet verschiedene Möglichkeiten für die Suche in einer Datei oder in Verzeichnissen.
+\hint{In der Projektansicht können Sie durch Auswählen eines Projektes oder im gesamten Workspace über das Kontextmenü \menu{Find file} in einem Dialog einen Dateinamen angeben. Dieser wird anschließend in der Projektansicht markiert und durch Eingabe mit Return im Editor geöffnet (siehe \pxref{fig:project_find_file}).}
 
-\hint{In der Projektansicht können Sie durch Auswählen eines Projektes über das Kontextmenü \menu{Find file} in einem Dialog einen Dateinamen angeben. Dieser wird anschließend in der Projektansicht markiert und durch Eingabe mit Return im Editor geöffnet.}
+\screenshot[][width=.5\columnwidth]{project_find_file}{Suche nach Dateien}
 
-Mit dem \menu{Search,Find} (Ctrl-F) oder \menu{Find in Files} (Ctrl-Shift-F) öffnet sich der Dialog für die Suche.
+Für das schnelle Navigieren zwischen Header/Quelle Dateien bietet \codeblocks folgende Möglichkeiten
+
+\begin{enumerate}
+\item Cursor auf Zeile setzen wo Header includiert wird und über Kontextmenü \menu{open include file} öffnen (siehe \pxref{fig:open_header})
+\item Umschalten zwischen Quelle und Header über Kontextmenü \menu{Swap header/source}
+\item Markieren eines Begriffes z.B. eines Defines in einer Datei und Aufruf des Kontextmenü \menu{Find declaration}
+\end{enumerate}
+
+\screenshot{open_header}{Öffnen einer Header Datei}
+
+\codeblocks bietet verschiedene Möglichkeiten für die Suche in einer Datei oder in Verzeichnissen. Mit dem \menu{Search,Find} (Ctrl-F) oder \menu{Find in Files} (Ctrl-Shift-F) öffnet sich der Dialog für die Suche.
 
 Eine weitere komfortable Funktion bietet das Tastenkürzel Ctrl-G und Ctrl-Alt-G. Der sich öffnende Dialog erlaubt die Auswahl von Dateien/Funktionen und springt anschließend an die Implementierung der Funktion (siehe \pxref{fig:select_function}) bzw. öffnete die ausgewählte Datei. Als Eingabe werden auf Wildcards \codeline{*} oder \codeline{?} etc. für eine inkrementelle Suche unterstützt.
 
-\screenshot{select_function}{Suche nach Funktionen}
+\screenshot[][width=.5\columnwidth]{select_function}{Suche nach Funktionen}
 
 \hint{Mit dem Tastenkürzel Ctrl-PAGEUP springen Sie an die vorherige Funktion und mit Ctrl-PAGEDOWN zur nächsten Funktion.}
 
@@ -217,7 +230,7 @@ Neben chm Dateien können andere Hilfe eingebunden werden, wie zum Beispiel eine
 man:/usr/share/man 
 \end{cmd}
 
-
+\hint{Sie können auch im Editor einen Begriff mit gedrückter Ctrl Taste markieren und dann über das Kontextmenü nach diesem Begriff z.B. in Goolge suchen.}
 % \section{Scripting}
 %
 % \codeblocks in Console Modus - Scripts
@@ -306,6 +319,10 @@ Eine weitere Möglichkeit ist benutzerdefinierte Folding Punkte zu definieren, i
 code with user defined folding
 //}
 \end{code}
+
+\subsection{Auto complete}
+
+\codeblocks parst beim Öffnen eines Projektes die \samp{Search directories} die für einen Compiler oder Projekt eingestellt wurden und die im Projekt befindlichen Quellen und Header. Des weiteren werden auch die Keywords der zugehörigen Lexerdateien geparst. Die aus dem Parsen gewonne Information über Symbole kann für die sogenannte Auto completion genutzt werden, wenn diese in den Einstellungen des Editors für \codeblocks aktiviert ist. Die Auto completion können Sie im Editor über das Tastenkürzel Ctrl-Space ausführen. Im Menü \menu{Settings,Editor,Syntax highlighting} können eigene keywords zum Lexer hinzugefügt werden.
 
 \subsection{Einbinden von Bibliotheken}
 

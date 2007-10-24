@@ -67,6 +67,8 @@ Search in part defines the set of files that will be analysed.
 \item[Regular expression] the search expression is a regular expression.
 \end{description}
 
+\hint{If you want to search for regular expressions like \codeline{\n} you will have to set the option \menu{Use Advanced RegEx searches} via the menu \menu{Settings,Editor,General Settings}.}
+
 \subsection{Thread search options}
 
 \begin{description}
@@ -79,7 +81,16 @@ Search in part defines the set of files that will be analysed.
 \begin{description}
 \item[Display header in log window] if checked, the header are displayed in the results list control.
 \hint{If unchecked, the columns are no longer resizeable but space is spared.}
-\item[Draw lines between columns] Draws lines between columns.
+\item[Draw lines between columns] Draws lines between columns in list mode.
 \item[Show ThreadSearch toolbar] Display the toolbar of Thread Search plugin.
 \item[Show search widgets in ThreadSearch Messages panel] If checked, only the results list control and the preview editor are displayed. All other search widgets are hidden (spares space).
+\item[Show code preview editor] Code preview can be hidden either with this check box or with a double click on the splitter window middle border. This is where it can be shown again. 
 \end{description}
+
+\subsection{Panel Management}
+
+You can choose different modes how the the ThreadSearch window is managed. With the setting \samp{Message Notebook} the ThreadSearch window will be a dockable window in the message panel. If you choose the setting \samp{Layout} you will be able to undock the window from the message panel and put it somewhere else.
+
+\subsection{Logger Type}
+
+The view of the search results can be displayed in different ways. The setting \samp{List} displays all occurrences as list. The other mode \samp{Tree} gathers all occurrences within a file as a node. 

@@ -67,6 +67,8 @@ Sie können Filter für die Suche von Dateien konfigurieren.
 \item[Regular expression] Regulärer Ausdruck für eine Suche.
 \end{description}
 
+\hint{Um nach reguläre Ausdrücken wie \codeline{\n} suchen zu können, muss in \menu{Settings,Editor,General Settings} der Eintrag \menu{Use Advanced RegEx searches} aktiviert sein.}
+
 \subsection{Konfiguration von Thread search}
 
 \begin{description}
@@ -79,7 +81,16 @@ Sie können Filter für die Suche von Dateien konfigurieren.
 \begin{description}
 \item[Display header in log window] Der Name der Dateien wird in den Suchergebnissen angezeigt.
 \hint{Wenn diese Option deaktiviert ist, können die Spaltenbreite nicht mehr verändert werden, belegen jedoch Platz.}
-\item[Draw lines between columns] Anzeigen von Linien zwischen den Spalten.
+\item[Draw lines between columns] Anzeigen von Linien zwischen den Spalten im List Mode.
 \item[Show ThreadSearch toolbar] Anzeige der Symbolleiste für das Thread Search plugin.
 \item[Show search widgets in ThreadSearch Messages panel] Mit dieser Einstellung werden nur das Fenster für die Suchergebnisse und der Editor für die Vorschau angezeigt. Die Anzeige aller anderen Elementen für das Thread Search Plugin wird unterdrückt.
+\item[Show code preview editor] Code preview kann entweder in den Thread Search Optionen deaktiviert werden oder durch einen Doppelklick auf die Trennlinie zwischen Code Preview und der Ausgabe der Suchergebnissen versteckt werden. In den Optionen kann die Vorschau wieder aktiviert werden.
 \end{description}
+
+\subsection{Panel Management}
+
+Für das Verwalten des ThreadSearch Fenster stehen zwei Alternativen zur Auswahl. Mit der Einstellung \samp{Message Notebook} wird das ThreadSearch Fenster in der Message Konsole angedockt. Mit der Einstellung \samp{Layout} können Sie das Fenster aus der Message Konsole lösen und als freies Fenster anordnen.
+
+\subsection{Logger Type}
+
+Für die Ansicht der Suchergebnisse existieren zwei Ansichten. Mit der Einstellung \samp{List} werden alle Einträge untereinander angezeigt. Der andere Mode \samp{Tree} zeigt die Suchergebnisse in einer Baumansicht an. Dabei werden Suchergebnisse aus einer Datei in einem Knoten zusammengefasst.
