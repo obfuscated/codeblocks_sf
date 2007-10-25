@@ -24,6 +24,8 @@ EXTRA_DIST = ./wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
 		./wxchart/*.png \
 		./wxthings/*.xpm \
 		./wxthings/*.png \
+		./wxflatnotebook/images/*.xpm \
+		./wxflatnotebook/images/*.png \
 		$(srcdir)/*.cbp \
 		manifest.xml
 
@@ -54,6 +56,7 @@ libwxsmithcontribitems_la_SOURCES = \
 ./wxchart/wxschart.cpp \
 ./wxthings/wxthings/src/toggle.cpp \
 ./wxthings/wxscustombutton.cpp \
+./wxflatnotebook/wxsFlatNotebook.cpp \
 ./wxSmithContribItems.cpp
 
 noinst_HEADERS = \
@@ -82,4 +85,5 @@ noinst_HEADERS = \
 ./wxthings/wxthings/include/wx/things/toggle.h \
 ./wxthings/wxthings/include/wx/things/thingdef.h \
 ./wxthings/wxscustombutton.h \
+./wxflatnotebook/wxsFlatNotebook.h \
 ./wxSmithContribItems.h
