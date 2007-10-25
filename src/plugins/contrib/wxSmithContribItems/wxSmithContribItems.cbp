@@ -50,6 +50,7 @@
 			<Add directory="..\wxSmith" />
 			<Add directory="wxchart\wxchart-1.0\include" />
 			<Add directory="wxthings\wxthings\include" />
+			<Add directory="$(#cb)\include\wxFlatNotebook\include" />
 		</Compiler>
 		<Linker>
 			<Add library="wxsmithlib" />
@@ -112,6 +113,12 @@
 		<Unit filename="wxchart\wxchart32.xpm" />
 		<Unit filename="wxchart\wxschart.cpp" />
 		<Unit filename="wxchart\wxschart.h" />
+		<Unit filename="wxflatnotebook\images\flatnote16.png" />
+		<Unit filename="wxflatnotebook\images\flatnote16.xpm" />
+		<Unit filename="wxflatnotebook\images\flatnote32.png" />
+		<Unit filename="wxflatnotebook\images\flatnote32.xpm" />
+		<Unit filename="wxflatnotebook\wxsFlatNotebook.cpp" />
+		<Unit filename="wxflatnotebook\wxsFlatNotebook.h" />
 		<Unit filename="wxthings\wxscustombutton.cpp" />
 		<Unit filename="wxthings\wxscustombutton.h" />
 		<Unit filename="wxthings\wxthings\include\wx\things\block.h" />
@@ -170,6 +177,8 @@
 		<Unit filename="wxthings\wxthings\src\toggle.cpp" />
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
