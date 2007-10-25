@@ -213,7 +213,6 @@ function SetupTarget(target,is_debug)
         target.AddCompilerOption(_T("-DHAVE_W32API_H"));
         target.AddCompilerOption(_T("-D__WXMSW__"));
         target.AddCompilerOption(_T("-DWXUSINGDLL"));
-        target.AddCompilerOption(_T("-DTIXML_USE_STL"));
         target.AddCompilerOption(_T("-DcbDEBUG"));
         target.AddCompilerOption(_T("-DCB_PRECOMP"));
         target.AddCompilerOption(_T("-DWX_PRECOMP"));
