@@ -1,5 +1,8 @@
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
+#include "manager.h"
+#include "configmanager.h"
+#include <wx/fontmap.h>
 #include <wx/file.h>
 #include <wx/string.h>
 #endif // CB_PRECOMP
@@ -89,23 +92,26 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
             *buffer++;
     }
 
-    size_t outlen = 0, nullBytes = 1, bufferLen = size - m_BOMSizeInBytes;
+    size_t outlen = 0;
     wxCSConv conv(m_Encoding);
-    nullBytes = conv.GetMBNulLen();
-    if (nullBytes == wxCONV_FAILED)
-        nullBytes = 1;
 
-    char* newBuffer = (char*) malloc(bufferLen + nullBytes);
-    if (!newBuffer)
-        return false;
-
-    memcpy(newBuffer, buffer, bufferLen);
-    for (size_t i = 0; i < nullBytes; ++i)
-        newBuffer[bufferLen + i] = '\0';
-    wxWCharBuffer wideBuff = conv.cMB2WC((char*)newBuffer, bufferLen + nullBytes, &outlen);
+/* NOTE (Biplab#5#): FileManager returns a buffer with 4 extra NULL chars appended.
+    But the buffer size is returned sans the NULL chars */
+    wxWCharBuffer wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
     m_ConvStr = wxString(wideBuff);
 
-    free(newBuffer);
+    if (outlen == 0)
+    {
+        // Possibly the conversion has failed. Let's try with user-specified encoding
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        wxString encname = cfg->Read(_T("/default_encoding"));
+        wxFontMapper fontmap;
+        m_Encoding = fontmap.CharsetToEncoding(encname);
+
+        wxCSConv conv(m_Encoding);
+        wxWCharBuffer wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+        m_ConvStr = wxString(wideBuff);
+    }
 
     if (outlen == 0)
         return false;
@@ -196,13 +202,7 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         }
         else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
         {
-            #ifdef __WXMSW__
             m_Encoding = wxLocale::GetSystemEncoding();
-            #else
-            /* On Linux, system encoding is UTF-8. But as our code didn't
-            detect UTF-8, we'll set it to ansi. */
-            m_Encoding = wxFONTENCODING_ISO8859_1;
-            #endif
         }
 
         m_UseBOM = false;
