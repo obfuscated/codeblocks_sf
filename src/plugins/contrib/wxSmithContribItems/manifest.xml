@@ -8,7 +8,7 @@
         <Value author="" />
         <Value authorEmail="" />
         <Value authorWebsite="" />
-        <Value thanksTo="" />
+        <Value thanksTo="olivetti for wxsFlatNotebook support" />
         <Value license="GPL" />
     </Plugin>
 </CodeBlocks_plugin_manifest_file>
