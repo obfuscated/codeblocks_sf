@@ -212,7 +212,7 @@ void ProjectOptionsDlg::FillBuildTargets()
     for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
         lstTargets->Append(m_Project->GetBuildTarget(i)->GetTitle());
     lstTargets->SetSelection(0);
-    DoTargetChange();
+    DoTargetChange(false);
 }
 
 void ProjectOptionsDlg::DoTargetChange(bool saveOld)
@@ -641,10 +641,10 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
     if (dlg.ShowModal() == wxID_NO)
         return;
 
-    // the target name in the units is changed by the project...
-    m_Project->RemoveBuildTarget(targetIdx);
     lstTargets->Delete(targetIdx);
     lstTargets->SetSelection(targetIdx);
+    // the target name in the units is changed by the project...
+    m_Project->RemoveBuildTarget(targetIdx);
     m_Current_Sel = -1;
     DoTargetChange();
     BuildScriptsTree();
