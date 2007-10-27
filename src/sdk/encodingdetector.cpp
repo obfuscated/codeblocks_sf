@@ -202,7 +202,15 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         }
         else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
         {
-            m_Encoding = wxLocale::GetSystemEncoding();
+            if (platform::windows)
+            {
+                m_Encoding = wxLocale::GetSystemEncoding();
+            }
+            else
+            {
+                // We can rely on the UTF-8 detection code ;-)
+                m_Encoding = wxFONTENCODING_ISO8859_1;
+            }
         }
 
         m_UseBOM = false;
