@@ -11,7 +11,7 @@
 ////////////////////////////////////////////////////////////
 
 /* XPM */
-char *signpost_xpm[] = {
+const char *signpost_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 104 2",
 "   c Black",
@@ -136,7 +136,7 @@ char *signpost_xpm[] = {
 "                                ",
 "                                "
 };
-unsigned char signpost_alpha[]={
+const unsigned char signpost_alpha[]={
 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 0,   0,   0,   0,   7, 174, 240, 238, 148,   0,   0,   0,   0,   0,   0,   0,
@@ -152,10 +152,10 @@ unsigned char signpost_alpha[]={
 0,   0,   0,   0,   0, 214, 255, 255, 231,   0,   0,   0,   0,   0,   0,   0,
 0,   0,   0,   0,   0, 137, 240, 236, 131,   0,   0,   0,   0,   0,   0,   0,
 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 }; 
+0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0 };
 
 /* XPM */
-char *left_arrow_disabled_xpm[] = {
+const char *left_arrow_disabled_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -187,7 +187,7 @@ char *left_arrow_disabled_xpm[] = {
 };
 
 /* XPM */
-char *x_button_pressed_xpm[] = {
+const char *x_button_pressed_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -220,7 +220,7 @@ char *x_button_pressed_xpm[] = {
 
 
 /* XPM */
-char *tab_x_button_pressed_xpm[] = {
+const char *tab_x_button_pressed_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -252,7 +252,7 @@ char *tab_x_button_pressed_xpm[] = {
 };
 
 /* XPM */
-char *left_arrow_xpm[] = {
+const char *left_arrow_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -284,7 +284,7 @@ char *left_arrow_xpm[] = {
 };
 
 /* XPM */
-char *x_button_hilite_xpm[] = {
+const char *x_button_hilite_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -316,7 +316,7 @@ char *x_button_hilite_xpm[] = {
 };
 
 /* XPM */
-char *x_button_xpm[] = {
+const char *x_button_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -348,7 +348,7 @@ char *x_button_xpm[] = {
 };
 
 /* XPM */
-char *left_arrow_pressed_xpm[] = {
+const char *left_arrow_pressed_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -412,7 +412,7 @@ char *left_arrow_hilite_xpm[] = {
 };
 
 /* XPM */
-char *right_arrow_disabled_xpm[] = {
+const char *right_arrow_disabled_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -444,7 +444,7 @@ char *right_arrow_disabled_xpm[] = {
 };
 
 /* XPM */
-char *right_arrow_hilite_xpm[] = {
+const char *right_arrow_hilite_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -509,7 +509,7 @@ char *right_arrow_pressed_xpm[] = {
 
 
 /* XPM */
-char *right_arrow_xpm[] = {
+const char *right_arrow_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -542,7 +542,7 @@ char *right_arrow_xpm[] = {
 
 // Arrow down bitmaps
 /* XPM */
-char *down_arrow_hilite_xpm[] = {
+const char *down_arrow_hilite_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -574,7 +574,7 @@ char *down_arrow_hilite_xpm[] = {
 };
 
 /* XPM */
-char *down_arrow_pressed_xpm[] = {
+const char *down_arrow_pressed_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -607,7 +607,7 @@ char *down_arrow_pressed_xpm[] = {
 
 
 /* XPM */
-char *down_arrow_xpm[] = {
+const char *down_arrow_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -636,32 +636,32 @@ char *down_arrow_xpm[] = {
 "````````````````",
 "````````````````",
 "````````````````"
-};	
+};
 
 // Arrow down bitmaps
 const int tab_x_size = 9;
 
 // arrow_down_blue.xpm 16x16
-unsigned char arrow_down_blue_alpha[]={
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 246, 250, 250, 248, 246, 245,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   2,  11,  11,   0, 255, 255, 255, 255, 255, 255,   0,  11,  11,   2,   0, 
-  0,   7, 190, 254, 254, 255, 255, 255, 255, 255, 255, 254, 254, 186,   5,   0, 
-  0,   0,  15, 209, 255, 255, 255, 255, 255, 255, 255, 255, 206,  13,   0,   0, 
-  0,   0,   0,  28, 226, 255, 255, 255, 255, 255, 255, 223,  25,   0,   0,   0, 
-  0,   0,   0,   0,  43, 238, 255, 255, 255, 255, 236,  40,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,  62, 247, 255, 255, 245,  58,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,  86, 253, 252,  82,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,   0, 112, 107,   0,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+const unsigned char arrow_down_blue_alpha[]={
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 246, 250, 250, 248, 246, 245,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   2,  11,  11,   0, 255, 255, 255, 255, 255, 255,   0,  11,  11,   2,   0,
+  0,   7, 190, 254, 254, 255, 255, 255, 255, 255, 255, 254, 254, 186,   5,   0,
+  0,   0,  15, 209, 255, 255, 255, 255, 255, 255, 255, 255, 206,  13,   0,   0,
+  0,   0,   0,  28, 226, 255, 255, 255, 255, 255, 255, 223,  25,   0,   0,   0,
+  0,   0,   0,   0,  43, 238, 255, 255, 255, 255, 236,  40,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,  62, 247, 255, 255, 245,  58,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,  86, 253, 252,  82,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0, 112, 107,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 };
 /* XPM */
-char *arrow_down_blue_xpm[] = {
+const char *arrow_down_blue_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 99 2",
 "a  c #3E8FDC",
@@ -782,26 +782,26 @@ char *arrow_down_blue_xpm[] = {
 "                                "
 };
 // arrow_up_blue.xpm 16x16
-unsigned char arrow_up_blue_alpha[]={
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,   0,  95, 110,   0,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,  72, 250, 252,  85,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,  51, 242, 255, 255, 247,  62,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,  35, 232, 255, 255, 255, 255, 238,  44,   0,   0,   0,   0, 
-  0,   0,   0,  21, 218, 255, 255, 255, 255, 255, 255, 226,  28,   0,   0,   0, 
-  0,   0,  11, 200, 255, 255, 255, 255, 255, 255, 255, 255, 210,  16,   0,   0, 
-  0,   4, 180, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 192,   7,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0, 241, 244, 245, 243, 241, 239,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
-  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+const unsigned char arrow_up_blue_alpha[]={
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,  95, 110,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,  72, 250, 252,  85,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,  51, 242, 255, 255, 247,  62,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,  35, 232, 255, 255, 255, 255, 238,  44,   0,   0,   0,   0,
+  0,   0,   0,  21, 218, 255, 255, 255, 255, 255, 255, 226,  28,   0,   0,   0,
+  0,   0,  11, 200, 255, 255, 255, 255, 255, 255, 255, 255, 210,  16,   0,   0,
+  0,   4, 180, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 192,   7,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 255, 255, 255, 255, 255, 255,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0, 241, 244, 245, 243, 241, 239,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 };
 /* XPM */
-char *arrow_up_blue_xpm[] = {
+const char *arrow_up_blue_xpm[] = {
 /* columns rows colors chars-per-pixel */
 "16 16 93 2",
 "   c Black",
