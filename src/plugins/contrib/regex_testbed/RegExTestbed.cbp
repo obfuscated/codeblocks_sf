@@ -7,8 +7,9 @@
 		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
+			<Script file="..\..\..\..\cbgcc420.script" />
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\RegExTestbed.dll" prefix_auto="1" extension_auto="1" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\RegExTestbed" prefix_auto="1" extension_auto="1" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\regex_testbed" />
 				<Option external_deps="..\..\..\devel\libcodeblocks.a;" />
 				<Option type="3" />
@@ -42,7 +43,6 @@
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
@@ -76,6 +76,8 @@
 					<wxDialog wxs="wxsmith/RegExDlg.wxs" src="regexdlg.cpp" hdr="regexdlg.h" xrc="regexdlg.xrc" name="regex_dialog" language="CPP" />
 				</resources>
 			</wxsmith>
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

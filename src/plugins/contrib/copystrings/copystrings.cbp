@@ -5,6 +5,7 @@
 		<Option title="CopyStrings" />
 		<Option compiler="gcc" />
 		<Build>
+			<Script file="..\..\..\..\cbgcc420.script" />
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\copystrings.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\copystrings" />
@@ -34,7 +35,6 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
@@ -63,6 +63,8 @@
 		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

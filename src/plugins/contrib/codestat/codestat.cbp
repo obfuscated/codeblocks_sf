@@ -6,6 +6,7 @@
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
+			<Script file="..\..\..\..\cbgcc420.script" />
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codestat.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\codestat" />
@@ -36,7 +37,6 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#CB.INCLUDE)" />
 			<Add directory="$(#WX.INCLUDE)" />
@@ -69,6 +69,8 @@
 		<Unit filename="resources\manifest.xml" />
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -6,26 +6,27 @@
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
+			<Script file="..\..\..\..\cbgcc420.script" />
 			<Target title="bzip2">
-				<Option output="bzip2/libbzip2.a" prefix_auto="0" extension_auto="0" />
+				<Option output="bzip2\libbzip2.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 			</Target>
 			<Target title="zlib">
-				<Option output="zlib/libz.a" prefix_auto="0" extension_auto="0" />
+				<Option output="zlib\libz.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
 			</Target>
 			<Target title="help_plugin">
-				<Option output="../../../devel/share/CodeBlocks/plugins/help_plugin.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="../../../.objs/plugins/contrib/help_plugin" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\help_plugin.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\help_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
@@ -42,14 +43,13 @@
 					<Add option="-D__WXMSW__" />
 					<Add option="-DWXUSINGDLL" />
 					<Add option="-DcbDEBUG" />
-					<Add option="-DTIXML_USE_STL" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="bzip2" />
 					<Add directory="zlib" />
 				</Compiler>
 				<Linker>
-					<Add library="bzip2/libbzip2.a" />
-					<Add library="zlib/libz.a" />
+					<Add library="bzip2\libbzip2.a" />
+					<Add library="zlib\libz.a" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc *.png" />
@@ -66,10 +66,10 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
-			<Add directory="$(#WX)/contrib/include" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)/wxscintilla/include" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -81,8 +81,8 @@
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add directory="$(#CB.lib)" />
-			<Add directory="$(#CB)/devel" />
-			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#CB)\devel" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option target="help_plugin" />
@@ -96,37 +96,37 @@
 		<Unit filename="MANFrame.h">
 			<Option target="help_plugin" />
 		</Unit>
-		<Unit filename="bzip2/blocksort.c">
+		<Unit filename="bzip2\blocksort.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/bzlib.c">
+		<Unit filename="bzip2\bzlib.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/bzlib.h">
+		<Unit filename="bzip2\bzlib.h">
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/bzlib_private.h">
+		<Unit filename="bzip2\bzlib_private.h">
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/compress.c">
+		<Unit filename="bzip2\compress.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/crctable.c">
+		<Unit filename="bzip2\crctable.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/decompress.c">
+		<Unit filename="bzip2\decompress.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/huffman.c">
+		<Unit filename="bzip2\huffman.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
-		<Unit filename="bzip2/randtable.c">
+		<Unit filename="bzip2\randtable.c">
 			<Option compilerVar="CC" />
 			<Option target="bzip2" />
 		</Unit>
@@ -157,82 +157,82 @@
 		<Unit filename="manifest.xml">
 			<Option target="help_plugin" />
 		</Unit>
-		<Unit filename="zlib/adler32.c">
+		<Unit filename="zlib\adler32.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/compress.c">
+		<Unit filename="zlib\compress.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/crc32.c">
+		<Unit filename="zlib\crc32.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/crc32.h">
+		<Unit filename="zlib\crc32.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/deflate.c">
+		<Unit filename="zlib\deflate.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/deflate.h">
+		<Unit filename="zlib\deflate.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/gzio.c">
+		<Unit filename="zlib\gzio.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/infback.c">
+		<Unit filename="zlib\infback.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inffast.c">
+		<Unit filename="zlib\inffast.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inffast.h">
+		<Unit filename="zlib\inffast.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inffixed.h">
+		<Unit filename="zlib\inffixed.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inflate.c">
+		<Unit filename="zlib\inflate.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inflate.h">
+		<Unit filename="zlib\inflate.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inftrees.c">
+		<Unit filename="zlib\inftrees.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/inftrees.h">
+		<Unit filename="zlib\inftrees.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/trees.c">
+		<Unit filename="zlib\trees.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/trees.h">
+		<Unit filename="zlib\trees.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/uncompr.c">
+		<Unit filename="zlib\uncompr.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/zconf.h">
+		<Unit filename="zlib\zconf.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/zlib.h">
+		<Unit filename="zlib\zlib.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/zutil.c">
+		<Unit filename="zlib\zutil.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/zutil.h">
+		<Unit filename="zlib\zutil.h">
 			<Option target="zlib" />
 		</Unit>
 		<Extensions>

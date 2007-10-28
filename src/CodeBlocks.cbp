@@ -7,6 +7,7 @@
 		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
+			<Script file="..\cbgcc420.script" />
 			<Target title="tinyXML">
 				<Option output="base\tinyxml\libtxml.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
@@ -470,7 +471,6 @@
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DTIXML_USE_STL" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
@@ -489,7 +489,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="base\tinyxml\tinystr.cpp">
-			<Option target="sdk" />
+			<Option target="tinyXML" />
 		</Unit>
 		<Unit filename="base\tinyxml\tinywxuni.cpp">
 			<Option target="sdk" />
