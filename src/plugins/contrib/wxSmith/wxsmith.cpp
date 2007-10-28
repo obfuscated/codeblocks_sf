@@ -39,7 +39,7 @@ namespace
     int ConfigureId = wxNewId();
 
     /* XPM */
-    static char * Events_xpm[] = {
+    static const char * Events_xpm[] = {
     "16 16 2 1",
     " 	c None",
     ".	c #000000",
