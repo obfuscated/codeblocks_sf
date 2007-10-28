@@ -91,7 +91,7 @@ const wxChar *wxPropertyGridManagerNameStr = wxT("wxPropertyGridManager");
 
 
 // Categoric Mode Icon
-static char* gs_xpm_catmode[] = {
+static const char* gs_xpm_catmode[] = {
 "16 16 5 1",
 ". c none",
 "B c black",
@@ -117,7 +117,7 @@ static char* gs_xpm_catmode[] = {
 };
 
 // Alphabetic Mode Icon
-static char* gs_xpm_noncatmode[] = {
+static const char* gs_xpm_noncatmode[] = {
 "16 16 5 1",
 ". c none",
 "B c black",
@@ -143,7 +143,7 @@ static char* gs_xpm_noncatmode[] = {
 };
 
 // Default Page Icon.
-static char* gs_xpm_defpage[] = {
+static const char* gs_xpm_defpage[] = {
 "16 16 5 1",
 ". c none",
 "B c black",
@@ -170,7 +170,7 @@ static char* gs_xpm_defpage[] = {
 /*
 
 // Categoric Mode Icon
-static char* gs_xpm_catmode[] = {
+static const char* gs_xpm_catmode[] = {
 "12 12 5 1",
 ". c none",
 "B c black",
@@ -192,7 +192,7 @@ static char* gs_xpm_catmode[] = {
 };
 
 // Alphabetic Mode Icon
-static char* gs_xpm_noncatmode[] = {
+static const char* gs_xpm_noncatmode[] = {
 "12 12 5 1",
 ". c none",
 "B c black",
@@ -214,7 +214,7 @@ static char* gs_xpm_noncatmode[] = {
 };
 
 // Default Page Icon.
-static char* gs_xpm_defpage[] = {
+static const char* gs_xpm_defpage[] = {
 "12 12 5 1",
 ". c none",
 "B c black",
