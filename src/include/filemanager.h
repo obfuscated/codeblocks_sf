@@ -112,7 +112,7 @@ public:
         ptr = tmp;
     };
 
-    void Append(char *add_buf, size_t add_len)
+    void Append(const char* add_buf, size_t add_len)
     {
         Alloc(add_len);
         memcpy(ptr.get() + len, add_buf, add_len);
