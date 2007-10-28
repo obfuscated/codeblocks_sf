@@ -1051,11 +1051,9 @@ public:
 #ifdef SWIG
     %pythoncode {
         def GetValuesFromPage(self,page,dict_=None,as_strings=False):
-            """\
-            Same as GetValues, but returns values from specific page only.
-
-            For argument descriptions, see GetValues.
-            """
+            "Same as GetValues, but returns values from specific page only."
+            ""
+            "For argument descriptions, see GetValues."
 
             if dict_ is None:
                 dict_ = {}
@@ -1074,18 +1072,16 @@ public:
 
 
         def GetValues(self,dict_=None,as_strings=False):
-            """\
-            Returns values in the grid.
-
-            dict_: if not given, then a new one is created. dict_ can be
-              object as well, in which case it's __dict__ is used.
-            as_strings: if True, then string representations of values
-              are fetched instead of native types. Useful for config and such.
-
-            Return value: dictionary with values. It is always a dictionary,
-            so if dict_ was object with __dict__ attribute, then that attribute
-            is returned.
-            """
+            "Returns values in the grid."
+            ""
+            "dict_: if not given, then a new one is created. dict_ can be"
+            "  object as well, in which case it's __dict__ is used."
+            "as_strings: if True, then string representations of values"
+            "  are fetched instead of native types. Useful for config and such."
+            ""
+            "Return value: dictionary with values. It is always a dictionary,"
+            "so if dict_ was object with __dict__ attribute, then that attribute"
+            "is returned."
 
             if dict_ is None:
                 dict_ = {}
