@@ -28,7 +28,7 @@ extern const char *x_button_pressed_xpm[];
 extern const char *x_button_xpm[];
 
 // Popup dialog xpm
-extern const unsigned char signpost_alpha[];
+extern unsigned char signpost_alpha[];
 extern const char *signpost_xpm[];
 
 // Drag hint arrows

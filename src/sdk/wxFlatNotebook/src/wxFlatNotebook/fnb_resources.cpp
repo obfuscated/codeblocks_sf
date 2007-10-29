@@ -136,7 +136,7 @@ const char *signpost_xpm[] = {
 "                                ",
 "                                "
 };
-const unsigned char signpost_alpha[]={
+unsigned char signpost_alpha[]={
 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
 0,   0,   0,   0,   7, 174, 240, 238, 148,   0,   0,   0,   0,   0,   0,   0,
