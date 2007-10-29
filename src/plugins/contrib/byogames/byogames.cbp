@@ -43,6 +43,7 @@
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxFlatNotebook" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="..\..\..\include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

@@ -59,6 +59,7 @@
 			<Add directory="$(#cb)\include\wxFlatNotebook\include" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="..\..\..\include\tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add library="wxmsw28$(WX_SUFFIX)" />
