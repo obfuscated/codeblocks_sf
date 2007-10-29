@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Script file="..\..\..\..\cbgcc420.script" />
+			<Script file="..\..\..\cbgcc420.script" />
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\lib_finder.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\lib_finder" />

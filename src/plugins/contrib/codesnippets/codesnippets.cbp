@@ -2,11 +2,11 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="CodeSnippets-msw" />
+		<Option title="Code Snippets" />
 		<Option default_target="App - Win32" />
 		<Option compiler="gcc" />
 		<Build>
-			<Script file="..\..\..\..\cbgcc420.script" />
+			<Script file="..\..\..\cbgcc420.script" />
 			<Target title="Plugin - Win32">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\plugin\" />
@@ -50,7 +50,7 @@
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DNO_CB_PRECOMP" />
+			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#CB.include)" />
@@ -71,6 +71,7 @@
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
+			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="Makefile.am" />
 		<Unit filename="codesnippets.cpp">
