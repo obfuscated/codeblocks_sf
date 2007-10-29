@@ -102,11 +102,16 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
     if (outlen == 0)
     {
-        // Possibly the conversion has failed. Let's try with user-specified encoding
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-        wxString encname = cfg->Read(_T("/default_encoding"));
-        wxFontMapper fontmap;
-        m_Encoding = fontmap.CharsetToEncoding(encname);
+        // Possibly the conversion has failed. Let's try with System-default encoding
+        if (platform::windows)
+        {
+            m_Encoding = wxLocale::GetSystemEncoding();
+        }
+        else
+        {
+            // We can rely on the UTF-8 detection code ;-)
+            m_Encoding = wxFONTENCODING_ISO8859_1;
+        }
 
         wxCSConv conv(m_Encoding);
         wxWCharBuffer wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
@@ -114,7 +119,9 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
     }
 
     if (outlen == 0)
+    {
         return false;
+    }
 
     return true;
 }
@@ -202,15 +209,11 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         }
         else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
         {
-            if (platform::windows)
-            {
-                m_Encoding = wxLocale::GetSystemEncoding();
-            }
-            else
-            {
-                // We can rely on the UTF-8 detection code ;-)
-                m_Encoding = wxFONTENCODING_ISO8859_1;
-            }
+            // Use user-specified one
+            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+            wxString encname = cfg->Read(_T("/default_encoding"));
+            wxFontMapper fontmap;
+            m_Encoding = fontmap.CharsetToEncoding(encname);
         }
 
         m_UseBOM = false;
