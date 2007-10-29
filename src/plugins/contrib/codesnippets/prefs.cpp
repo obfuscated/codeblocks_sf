@@ -79,7 +79,7 @@ const CommonInfo g_CommonPrefs = {
 //----------------------------------------------------------------------------
 // keywordlists
 // C++
-wxChar* CppWordlist1 =
+const wxChar* CppWordlist1 =
     _T("asm auto bool break case catch char class const const_cast \
        continue default delete do double dynamic_cast else enum explicit \
        export extern false float for friend goto if inline int long \
@@ -88,9 +88,9 @@ wxChar* CppWordlist1 =
        struct switch template this throw true try typedef typeid \
        typename union unsigned using virtual void volatile wchar_t \
        while");
-wxChar* CppWordlist2 =
+const wxChar* CppWordlist2 =
     _T("file");
-wxChar* CppWordlist3 =
+const wxChar* CppWordlist3 =
     _T("a addindex addtogroup anchor arg attention author b brief bug c \
        class code date def defgroup deprecated dontinclude e em endcode \
        endhtmlonly endif endlatexonly endlink endverbatim enum example \
@@ -103,11 +103,11 @@ wxChar* CppWordlist3 =
        verbinclude version warning weakgroup $ @ \" & < > # { }");
 
 // Python
-wxChar* PythonWordlist1 =
+const wxChar* PythonWordlist1 =
     _T("and assert break class continue def del elif else except exec \
        finally for from global if import in is lambda None not or pass \
        print raise return try while yield");
-wxChar* PythonWordlist2 =
+const wxChar* PythonWordlist2 =
     _T("ACCELERATORS ALT AUTO3STATE AUTOCHECKBOX AUTORADIOBUTTON BEGIN \
        BITMAP BLOCK BUTTON CAPTION CHARACTERISTICS CHECKBOX CLASS \
        COMBOBOX CONTROL CTEXT CURSOR DEFPUSHBUTTON DIALOG DIALOGEX \
@@ -124,112 +124,112 @@ const LanguageInfo g_LanguagePrefs [] = {
     {_T("C++"),
      _T("*.c;*.cc;*.cpp;*.cxx;*.cs;*.h;*.hh;*.hpp;*.hxx;*.sma"),
      wxSCI_LEX_CPP,
-     {{TOKEN_DEFAULT, NULL},
-      {TOKEN_COMMENT, NULL},
-      {TOKEN_COMMENT_LINE, NULL},
-      {TOKEN_COMMENT_DOC, NULL},
-      {TOKEN_NUMBER, NULL},
+     {{TOKEN_DEFAULT, 0},
+      {TOKEN_COMMENT, 0},
+      {TOKEN_COMMENT_LINE, 0},
+      {TOKEN_COMMENT_DOC, 0},
+      {TOKEN_NUMBER, 0},
       {TOKEN_WORD1, CppWordlist1}, // KEYWORDS
-      {TOKEN_STRING, NULL},
-      {TOKEN_CHARACTER, NULL},
-      {TOKEN_UUID, NULL},
-      {TOKEN_PREPROCESSOR, NULL},
-      {TOKEN_OPERATOR, NULL},
-      {TOKEN_IDENTIFIER, NULL},
-      {TOKEN_STRING_EOL, NULL},
-      {TOKEN_DEFAULT, NULL}, // VERBATIM
-      {TOKEN_REGEX, NULL},
-      {TOKEN_COMMENT_SPECIAL, NULL}, // DOXY
+      {TOKEN_STRING, 0},
+      {TOKEN_CHARACTER, 0},
+      {TOKEN_UUID, 0},
+      {TOKEN_PREPROCESSOR, 0},
+      {TOKEN_OPERATOR, 0},
+      {TOKEN_IDENTIFIER, 0},
+      {TOKEN_STRING_EOL, 0},
+      {TOKEN_DEFAULT, 0}, // VERBATIM
+      {TOKEN_REGEX, 0},
+      {TOKEN_COMMENT_SPECIAL, 0}, // DOXY
       {TOKEN_WORD2, CppWordlist2}, // EXTRA WORDS
       {TOKEN_WORD3, CppWordlist3}, // DOXY KEYWORDS
-      {TOKEN_ERROR, NULL}, // KEYWORDS ERROR
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL}},
+      {TOKEN_ERROR, 0}, // KEYWORDS ERROR
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0}},
      FOLD_TYPE_COMMENT | FOLD_TYPE_COMPACT | FOLD_TYPE_PREPROC},
     // Python
     {_T("Python"),
      _T("*.py;*.pyw"),
      wxSCI_LEX_PYTHON,
-     {{TOKEN_DEFAULT, NULL},
-      {TOKEN_COMMENT_LINE, NULL},
-      {TOKEN_NUMBER, NULL},
-      {TOKEN_STRING, NULL},
-      {TOKEN_CHARACTER, NULL},
+     {{TOKEN_DEFAULT, 0},
+      {TOKEN_COMMENT_LINE, 0},
+      {TOKEN_NUMBER, 0},
+      {TOKEN_STRING, 0},
+      {TOKEN_CHARACTER, 0},
       {TOKEN_WORD1, PythonWordlist1}, // KEYWORDS
-      {TOKEN_DEFAULT, NULL}, // TRIPLE
-      {TOKEN_DEFAULT, NULL}, // TRIPLEDOUBLE
-      {TOKEN_DEFAULT, NULL}, // CLASSNAME
+      {TOKEN_DEFAULT, 0}, // TRIPLE
+      {TOKEN_DEFAULT, 0}, // TRIPLEDOUBLE
+      {TOKEN_DEFAULT, 0}, // CLASSNAME
       {TOKEN_DEFAULT, PythonWordlist2}, // DEFNAME
-      {TOKEN_OPERATOR, NULL},
-      {TOKEN_IDENTIFIER, NULL},
-      {TOKEN_DEFAULT, NULL}, // COMMENT_BLOCK
-      {TOKEN_STRING_EOL, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL}},
+      {TOKEN_OPERATOR, 0},
+      {TOKEN_IDENTIFIER, 0},
+      {TOKEN_DEFAULT, 0}, // COMMENT_BLOCK
+      {TOKEN_STRING_EOL, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0}},
      FOLD_TYPE_COMMENTPY | FOLD_TYPE_QUOTESPY},
     // * (any)
     {(wxChar *)DEFAULT_LANGUAGE,
      _T("*.*"),
      wxSCI_LEX_PROPERTIES,
-     {{TOKEN_DEFAULT, NULL},
-      {TOKEN_DEFAULT, NULL},
-      {TOKEN_DEFAULT, NULL},
-      {TOKEN_DEFAULT, NULL},
-      {TOKEN_DEFAULT, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL},
-      {-1, NULL}},
+     {{TOKEN_DEFAULT, 0},
+      {TOKEN_DEFAULT, 0},
+      {TOKEN_DEFAULT, 0},
+      {TOKEN_DEFAULT, 0},
+      {TOKEN_DEFAULT, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0},
+      {-1, 0}},
      0},
     };
 
