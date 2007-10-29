@@ -15,9 +15,6 @@
   #include <shlobj.h>
 #endif
 
-#ifdef TIXML_USE_STL
-  #include <string>
-#endif
 #include "tinyxml/tinywxuni.h"
 
 //***********************************************************************

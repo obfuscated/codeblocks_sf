@@ -336,7 +336,6 @@ private:
 //          -fexceptions            __WXMSW__
 //          -include "sdk.h"        WXUSINGDLL
 //                                  cbDEBUG
-//                                  TIXML_USE_STL
 //                                  wxUSE_UNICODE
 // ----------------------------------------------------------------------------
 //  commit  v0.26 2006/06/29

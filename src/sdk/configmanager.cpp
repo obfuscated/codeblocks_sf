@@ -47,10 +47,6 @@
 #include <CoreFoundation/CFURL.h>
 #endif
 
-#ifdef TIXML_USE_STL
-#include <string>
-#endif
-
 #include "tinyxml/tinywxuni.h"
 #include <stdlib.h>
 

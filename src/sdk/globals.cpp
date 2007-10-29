@@ -26,10 +26,6 @@
 
 #include "sdk_precomp.h"
 
-#ifdef TIXML_USE_STL
-    #include <string>
-#endif
-
 #ifndef CB_PRECOMP
     #include "globals.h"
     #include <wx/filename.h>
