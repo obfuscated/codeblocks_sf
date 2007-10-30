@@ -17,13 +17,17 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: snippetitemdata.h 89 2007-06-25 00:55:06Z Pecan $
+// RCS-ID: $Id: snippetitemdata.h 102 2007-10-29 21:16:50Z Pecan $
 
 #ifndef SNIPPETITEMDATA_H
 #define SNIPPETITEMDATA_H
 
 #include <wx/treectrl.h>
 #include <wx/string.h>
+
+#if defined(BUILDING_PLUGIN)
+    #include "macrosmanager.h"
+#endif
 
 // ----------------------------------------------------------------------------
 class SnippetItemData : public wxTreeItemData
@@ -53,6 +57,9 @@ class SnippetItemData : public wxTreeItemData
                 if (not IsSnippet() ) return false ;
                 wxString FileName = GetSnippet().BeforeFirst('\r');
                          FileName = FileName.BeforeFirst('\n');
+                #if defined(BUILDING_PLUGIN)
+                    Manager::Get()->GetMacrosManager()->ReplaceMacros(FileName);
+                #endif
                 if (FileName.Length() > 128)
                     return false ;
                 if ( (FileName.IsEmpty())

@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID:      $Id: edit.cpp 62 2007-04-25 03:29:09Z Pecan $
+// RCS-ID:      $Id: edit.cpp 102 2007-10-29 21:16:50Z Pecan $
 
 //----------------------------------------------------------------------------
 // informations
@@ -256,6 +256,11 @@ Edit::Edit (wxWindow *parent, wxWindowID id,
     m_replace = false;
     m_GotoDlg = new myGotoDlg (this);
 
+    // initialize print data and setup
+    g_printData = new wxPrintData;
+    g_pageSetupData = new wxPageSetupDialogData;
+    g_bPrinterIsSetup = false;
+
 }
 
 // ----------------------------------------------------------------------------
@@ -264,7 +269,16 @@ Edit::~Edit ()
 {
      // remove created objects
     if (m_GotoDlg) delete m_GotoDlg;
+    m_GotoDlg = 0;
     if (m_FindReplaceDlg) delete m_FindReplaceDlg;
+    m_FindReplaceDlg = 0;
+
+    // delete global print data and setup
+    if (g_printData) delete g_printData;
+    g_printData = 0;
+    if (g_pageSetupData) delete g_pageSetupData;
+    g_pageSetupData = 0;
+    g_bPrinterIsSetup = false;
 
 }
 // ----------------------------------------------------------------------------
@@ -1163,7 +1177,10 @@ EditPrint::EditPrint (Edit *edit, wxChar *title)
 
 }
 
-bool EditPrint::OnPrintPage (int page) {
+// ----------------------------------------------------------------------------
+bool EditPrint::OnPrintPage (int page)
+// ----------------------------------------------------------------------------
+{
 
     wxDC *dc = GetDC();
     if (!dc) return false;
@@ -1179,6 +1196,7 @@ bool EditPrint::OnPrintPage (int page) {
     return true;
 }
 
+// ----------------------------------------------------------------------------
 bool EditPrint::OnBeginDocument (int startPage, int endPage) {
 
     if (!wxPrintout::OnBeginDocument (startPage, endPage)) {
@@ -1188,7 +1206,10 @@ bool EditPrint::OnBeginDocument (int startPage, int endPage) {
     return true;
 }
 
-void EditPrint::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo) {
+// ----------------------------------------------------------------------------
+void EditPrint::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *selPageTo)
+// ----------------------------------------------------------------------------
+{
 
     // initialize values
     *minPage = 0;
@@ -1199,6 +1220,7 @@ void EditPrint::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *
     // scale DC if possible
     wxDC *dc = GetDC();
     if (!dc) return;
+
     PrintScaling (dc);
 
     // get print page informations and convert to printer pixels
@@ -1240,11 +1262,13 @@ void EditPrint::GetPageInfo (int *minPage, int *maxPage, int *selPageFrom, int *
     m_printed = 0;
 }
 
+// ----------------------------------------------------------------------------
 bool EditPrint::HasPage (int WXUNUSED(page)) {
 
     return (m_printed < m_edit->GetLength());
 }
 
+// ----------------------------------------------------------------------------
 bool EditPrint::PrintScaling (wxDC *dc){
 
     // check for dc, return if none

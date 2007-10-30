@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetproperty.cpp 89 2007-06-25 00:55:06Z Pecan $
+// RCS-ID: $Id: snippetproperty.cpp 102 2007-10-29 21:16:50Z Pecan $
 // ----------------------------------------------------------------------------
 //  SnippetProperty.cpp                                         //(pecan 2006/9/12)
 // ----------------------------------------------------------------------------
@@ -42,10 +42,12 @@
 #include "snippetsconfig.h"
 #include "snippetproperty.h"
 
+    // FIXME: this stuff should be allocated in an Edit class
     // wxScintila (Edit) stuff
     //! global print data, to remember settings during the session
     wxPrintData *g_printData = (wxPrintData*) NULL;
     wxPageSetupData *g_pageSetupData = (wxPageSetupData*) NULL;
+    bool g_bPrinterIsSetup = false;
 
    BEGIN_EVENT_TABLE(SnippetProperty, SnippetPropertyForm)
     EVT_BUTTON(wxID_OK,             SnippetProperty::OnOk)
@@ -357,7 +359,7 @@ void SnippetProperty::InvokeEditOnSnippetFile()
     if (not IsSnippetFile() ) return;
 
 	// If snippet is file, open it
-	wxString FileName = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetFileLink();
+    wxString FileName = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetFileLink();
 
     // we have an actual file name, not just text
     wxString pgmName = GetConfig()->SettingsExternalEditor;

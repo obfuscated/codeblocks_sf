@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: defsext.h 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID: $Id: defsext.h 100 2007-08-24 23:11:03Z Pecan $
 
 #ifndef _WX_DEFSEXT_H_
 #define _WX_DEFSEXT_H_
@@ -120,6 +120,7 @@ extern wxString *g_appname;
 //! global print data, to remember settings during the session
 extern wxPrintData *g_printData;
 extern wxPageSetupData *g_pageSetupData;
+extern bool g_bPrinterIsSetup;
 
 #endif // _WX_DEFSEXT_H_
 

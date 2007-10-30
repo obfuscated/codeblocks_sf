@@ -17,14 +17,14 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 98 2007-08-02 21:35:04Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 103 2007-10-30 19:17:39Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
 #else
     #include "sdk_common.h"
 	#include <wx/event.h>
-	#include <wx/frame.h> // GetMenuBar
+	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
 	#include <wx/intl.h>
 	#include <wx/menu.h>
 	#include <wx/menuitem.h>
@@ -74,8 +74,8 @@ BEGIN_EVENT_TABLE(CodeSnippets, cbPlugin)
 	EVT_UPDATE_UI(idViewSnippets, CodeSnippets::OnUpdateUI)
 	EVT_MENU(idViewSnippets, CodeSnippets::OnViewSnippets)
     EVT_ACTIVATE(            CodeSnippets::OnActivate)
-    EVT_IDLE(                CodeSnippets::OnIdle)
-    EVT_APP_START_SHUTDOWN(  CodeSnippets::OnRelease)
+    //-EVT_IDLE(                CodeSnippets::OnIdle) replaced by Connect()
+    //EVT_APP_START_SHUTDOWN(  CodeSnippets::OnRelease)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -94,6 +94,13 @@ CodeSnippets::~CodeSnippets()
 void CodeSnippets::OnAttach()
 // ----------------------------------------------------------------------------
 {
+
+    // Do not allow a secondary plugin enable
+    if (g_pConfig){
+        wxMessageBox(wxT("CodeSnippets will enable on CodeBlocks restart."));
+        return;
+    }
+
     // Initialize one and only Global class
     // Must be done first to allocate config file
     g_pConfig = new CodeSnippetsConfig;
@@ -179,6 +186,9 @@ void CodeSnippets::OnAttach()
     m_nOnActivateBusy = 0;
     m_ExternalPid = 0;
     m_pMappedFile = 0;
+    GetConfig()->m_appIsShutdown = false;
+    GetConfig()->m_appIsDisabled = false;
+
 
     // ---------------------------------------
     // load tree icons/images
@@ -203,6 +213,9 @@ void CodeSnippets::OnAttach()
     // app notifies that a docked window has been hidden/shown
     Manager::Get()->RegisterEventSink(cbEVT_DOCK_WINDOW_VISIBILITY, new cbEventFunctor<CodeSnippets, CodeBlocksDockEvent>(this, &CodeSnippets::OnDockWindowVisability));
 
+    GetConfig()->pMainFrame->Connect(wxEVT_IDLE,
+            wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
+
 }//OnAttach
 
 // ----------------------------------------------------------------------------
@@ -212,6 +225,15 @@ void CodeSnippets::OnRelease(bool appShutDown)
     // ------------------------------------------------------------
     // watch out, CodeBlocks can enter this routine multiple times
     // ------------------------------------------------------------
+    LOGIT( _T("CodeSnippets OnRelease[%s]"), appShutDown?wxT("true"):wxT("false") );
+    if (GetConfig()->m_appIsShutdown)
+        return;
+
+    if (not appShutDown)
+    {
+        OnDisable(appShutDown);
+        return;
+    }
 
     // Unmap and delete the temporary memory mapped communications file
     ReleaseMemoryMappedFile();
@@ -221,6 +243,7 @@ void CodeSnippets::OnRelease(bool appShutDown)
     wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +myPid+ wxT(".plg");
     bool result = ::wxRemoveFile( mappedFileName );
     wxUnusedVar(result);
+
     // ----------------------------------
     if (not GetSnippetsWindow()) return;
     // ----------------------------------
@@ -230,17 +253,24 @@ void CodeSnippets::OnRelease(bool appShutDown)
     {   wxMilliSleep(10) ; wxYield();
     }
 
-////    The following causes wxAui on GTK2.6.3 to crash
-////    if ( GetConfig()->IsFloatingWindow() )
-////    {
-////        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-////        evt.pWindow = GetSnippetsWindow();
-////        Manager::Get()->ProcessEvent(evt);
-////
-////        GetSnippetsWindow()->Destroy();
-////        SetSnippetsWindow(0);
-////    }
 
+    //-CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = GetSnippetsWindow();
+    Manager::Get()->ProcessEvent(evt);
+
+
+    GetConfig()->pMainFrame->Disconnect(wxEVT_IDLE,
+            wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
+
+    if (GetSnippetsWindow())
+    {   //GetSnippetsWindow()->Close(); <- causes crash when user disables plugin
+        GetSnippetsWindow()->Destroy();
+        SetSnippetsWindow(0);
+    }
+
+    // Make sure user cannot re-enable CodeSnippets until a CB restart
+    GetConfig()->m_appIsShutdown = true;
 
 }
 
@@ -248,6 +278,9 @@ void CodeSnippets::OnRelease(bool appShutDown)
 void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 // ----------------------------------------------------------------------------
 {
+    if (GetConfig()->m_appIsShutdown) return;
+    if (GetConfig()->m_appIsDisabled) return;
+
     GetConfig()->m_pMenuBar = menuBar;
     bool isSet = false;
 
@@ -274,7 +307,38 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
 	}while(0);
 	LOGIT(wxT("Menubar[%p]idViewSnippets[%d]"),menuBar, idViewSnippets);
 }
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnDisable(bool appShutDown)
+// ----------------------------------------------------------------------------
+{
+    // It's impossible to remove CodeSnippets from memory when a user disables it
+    // with the Settings/ManagePlugsin dlg. Doing so causes one crash after another.
+    // So, here, we simple disable the user's ability to get to it. On the next
+    // CodeBlocks reload, CodeSnippets won't be loaded. That's a good compromise.
 
+    if (GetConfig()->m_appIsShutdown) return;
+    if (GetConfig()->m_appIsDisabled) return;
+
+    if (appShutDown) return;
+
+    GetConfig()->m_appIsDisabled = true;
+
+    // disable all idle processing
+    GetConfig()->pMainFrame->Disconnect(wxEVT_IDLE,
+        wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
+
+    // disable our menu item
+    wxMenuBar* pbar = GetConfig()->m_pMenuBar;
+    pbar->Check(idViewSnippets, false);
+
+    // hide the window if showing
+     //-CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = GetSnippetsWindow();
+    Manager::Get()->ProcessEvent(evt);
+
+     return;
+}
 // ----------------------------------------------------------------------------
 void CodeSnippets::CreateSnippetWindow()
 // ----------------------------------------------------------------------------
@@ -530,6 +594,9 @@ void CodeSnippets::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 void CodeSnippets::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
+    if ( GetConfig()->m_appIsShutdown )
+        { event.Skip(); return; }
+
     // Don't close windows if file checking is active
     if (m_nOnActivateBusy) { event.Skip();return; }
 
@@ -573,7 +640,7 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
             if (GetConfig()->m_bWindowStateChanged)
         {
             GetConfig()->m_bWindowStateChanged = false;
-            //-wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+            //-wxMenuBar* pbar = Manager::Get()->GetAppWindow()->GetMenuBar();
             //-if ( pbar->IsChecked(idViewSnippets) )
             {   CreateSnippetWindow();
                 bool bExternalRequest = GetConfig()->GetSettingsWindowState().Contains(wxT("External"));
@@ -590,6 +657,10 @@ void CodeSnippets::OnIdle(wxIdleEvent& event)
 
 
     GetConfig()->m_bWindowStateChanged = false;
+
+    CodeSnippetsTreeCtrl* pTree = GetConfig()->GetSnippetsTreeCtrl();
+    if ( pTree ) pTree->OnIdle();
+
     event.Skip();
 }
 // ----------------------------------------------------------------------------
@@ -1114,6 +1185,12 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
         #ifdef LOGGING
          LOGIT( _T("TREE_LEAVE_WINDOW [%p][%s]"), pTree, pTree->GetName().c_str() );
         #endif //LOGGING
+
+        #if defined(BUILDING_PLUGIN)
+            // substitute any $(macro) text
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(m_TreeText);
+            LOGIT( _T("$macros substitute[%s]"),m_TreeText.c_str() );
+        #endif
 
         // we now have data, create both a simple text and filename drop source
         wxTextDataObject* textData = new wxTextDataObject();

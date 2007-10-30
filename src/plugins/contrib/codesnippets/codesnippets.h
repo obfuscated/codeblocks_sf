@@ -132,6 +132,7 @@ class CodeSnippets : public cbPlugin
 		 *         behaviour is undefined...
 		*/
 		void OnRelease(bool appShutDown);
+        void OnDisable(bool appShutDown);
 
 		// ---
 		void SetSnippetsWindow(CodeSnippetsWindow* p);

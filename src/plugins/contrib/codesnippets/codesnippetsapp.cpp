@@ -24,7 +24,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetsapp.cpp 95 2007-07-22 04:19:22Z Pecan $
+// RCS-ID: $Id: codesnippetsapp.cpp 103 2007-10-30 19:17:39Z Pecan $
 
 #ifdef WX_PRECOMP //
 #include "wx_pch.h"
@@ -179,6 +179,8 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame *frame, const wxString& title
 {
     GetConfig()->pMainFrame    = 0;
     GetConfig()->pSnippetsWindow = 0;
+    GetConfig()->m_appIsShutdown = 0;
+    GetConfig()->m_appIsDisabled = 0;
     m_bOnActivateBusy = 0;
     m_lKeepAlivePid = 0;
     m_pMappedFile = 0;
@@ -639,8 +641,14 @@ void CodeSnippetsAppFrame::OnTimerAlarm(wxTimerEvent& event)
 void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
+    if ( GetConfig()->m_appIsShutdown) { event.Skip(); return;}
+
     // when menu help clears the statusbar, put back the version string
     wxStatusBar* sb = GetStatusBar();
+
+    if (GetConfig()->m_appIsShutdown)
+        { event.Skip(); return; }
+
     if ( sb->GetStatusText() == wxEmptyString )
     { sb->SetStatusText( versionStr);
     }
@@ -655,6 +663,10 @@ void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
         OnClose(evtClose);
         GetConfig()->m_bWindowStateChanged = false;
     }
+
+    CodeSnippetsTreeCtrl* pTree = GetConfig()->GetSnippetsTreeCtrl();
+    if ( pTree ) pTree->OnIdle();
+
     event.Skip();return;
 }
 // ----------------------------------------------------------------------------

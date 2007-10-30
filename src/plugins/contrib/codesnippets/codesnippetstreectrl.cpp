@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 95 2007-07-22 04:19:22Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 103 2007-10-30 19:17:39Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -63,7 +63,8 @@ BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
 	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseEvent)
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
 	EVT_TREE_ITEM_RIGHT_CLICK(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnItemRightSelected)
-	EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
+	//-EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
+	//- EVT_IDLE replaced by call from plugin|appframe OnIdle routine
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -88,7 +89,27 @@ CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
 // ----------------------------------------------------------------------------
 {
     //dtor
+    // Tell all that TreeCtrl is gone;
+    GetConfig()->SetSnippetsTreeCtrl(0);
 
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippetsTreeCtrl::IsFileSnippet (wxTreeItemId treeItemId  )
+// ----------------------------------------------------------------------------
+{
+    wxTreeItemId itemId = treeItemId;
+    if ( itemId == (void*)0) itemId = GetSelection();
+    if (not itemId.IsOk()) return false;
+    if (not IsSnippet(itemId) ) return false;
+    wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+    fileName = fileName.BeforeFirst('\n');
+    // substitute $macros with actual text
+    #if defined(BUILDING_PLUGIN)
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+        //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
+    #endif
+    if ( not ::wxFileExists( fileName) ) return false;
+    return true;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnItemSelectChanging(wxTreeEvent& event)
@@ -827,8 +848,15 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     wxTextDataObject* textData = new wxTextDataObject();
     wxFileDataObject* fileData = new wxFileDataObject();
         // fill text and file sources with snippet
+    wxString textStr = GetSnippet(m_MnuAssociatedItemID) ;
+    #if defined(BUILDING_PLUGIN)
+        // substitute any $(macro) text
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(textStr);
+        //-LOGIT( _T("SnippetsTreeCtrl OnLeaveWindow $macros text[%s]"),textStr.c_str() );
+    #endif
     wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
-    textData->SetText( GetSnippet(m_MnuAssociatedItemID) );
+    textData->SetText( textStr );
+
     wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
     wxString fileName = GetSnippetFileLink(m_MnuAssociatedItemID);
     if (not ::wxFileExists(fileName) ) fileName = wxEmptyString;
@@ -1314,6 +1342,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     wxString snippetLabel = GetSnippetLabel();
     wxString snippetData = GetSnippet();
     wxString fileName = GetSnippetFileLink();
+
     int answer = wxYES;
 
     // if file already exists preserve the old data
@@ -1344,6 +1373,12 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     // filter filename, removing all illegal filename characters
     wxString newFileName = snippetLabel+wxT(".txt");
     wxFileName snippetFileName( newFileName) ;
+    #if defined(BUILDING_PLUGIN)
+        // substitute any $(macro) text
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(newFileName);
+        //-LOGIT( _T("$macros substitute[%s]"),newFileName.c_str() );
+    #endif
+
     //newFileName = snippetFileName.GetFullName();
     wxString forbidden = snippetFileName.GetForbiddenChars();
     for (size_t i=0; i < forbidden.Length(); ++i)
@@ -1621,7 +1656,8 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
         return retcode;
 }
 // ----------------------------------------------------------------------------
-void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
+//-void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
+void CodeSnippetsTreeCtrl::OnIdle()
 // ----------------------------------------------------------------------------
 {
     // check to see if an editor has been posted & finish.
@@ -1690,7 +1726,7 @@ void CodeSnippetsTreeCtrl::OnIdle(wxIdleEvent& event)
             GetSnippetsTreeCtrl()->SetItemText(GetSnippetsTreeCtrl()->GetRootItem(), wxString::Format(_("%s"), nameOnly.GetData()));
     }
 
-    event.Skip();
+    ////event.Skip();
     return;
 }//OnIdle
 

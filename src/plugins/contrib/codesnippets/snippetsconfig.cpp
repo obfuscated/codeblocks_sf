@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.cpp 95 2007-07-22 04:19:22Z Pecan $
+// RCS-ID: $Id: snippetsconfig.cpp 102 2007-10-29 21:16:50Z Pecan $
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
 #else
@@ -106,7 +106,9 @@ CodeSnippetsConfig::CodeSnippetsConfig()
 CodeSnippetsConfig::~CodeSnippetsConfig()
 // ----------------------------------------------------------------------------
 {
-    delete m_pCfgFile; // Valgrind complaint about it not being freed
+    //dtor
+	delete m_pCfgFile; // Valgrind complaint about it not being freed
+
 }
 
 // ----------------------------------------------------------------------------
@@ -129,13 +131,13 @@ void CodeSnippetsConfig::SettingsLoad()
     //                        wxEmptyString,      // global file
     //                        wxCONFIG_USE_LOCAL_FILE);
     //                        //0);
-    //if (m_pCfgFile) // delete checks for NULL anyway
-    //{   // if we dont do this, we only get in-memory cache
+    if (m_pCfgFile)
+    {   // if we dont do this, we only get in-memory cache
         // and we want the new physical file data.
          delete(m_pCfgFile);
-         //m_pCfgFile = 0; // just continue and set it to something new in the next instruction
-    //}
-    //if (not m_pCfgFile) // Why? It was either 0 or we deleted it
+         m_pCfgFile = 0;
+    }
+    if (not m_pCfgFile)
         m_pCfgFile = new wxFileConfig(
                     wxEmptyString,              // appname
                     wxEmptyString,              // vendor

@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 98 2007-08-02 21:35:04Z Pecan $
+// RCS-ID: $Id: version.cpp 102 2007-10-29 21:16:50Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -303,20 +303,25 @@ AppVersion::~AppVersion()
 //          91) Added check for possible garbage window ptr in OnTreeCtrlEvent()
 //          92) Fixed TextToFilenames() for list/text containing \r & \n
 // ----------------------------------------------------------------------------
-//
+//          1.2.93 2007/08/2
+//          93) Added print facility to app
+//          1.2.95 2007/09/30
+//          94) change GetAppWindow to GetAppFrame
+//          95) Fix crash in CodeSnippetsTreeCtrl::OnIdle when plugin disabled
+//          96) Fix crash in CodeSnippetsWindow::OnClose when plgn disabled & CB shuts down
+//          1.2.98 2007/10/29
+//          97) Fix crash in CodeSnippetsTreeCtrl::OnIdle when float/docked switch
+//          98) Incorporate killerbot.cbp and ceniza valgrind mods
+//          99) Implement macro substitution requested by mariocup
+//         100) Stop crashes: disallow re-enabled plugin until CB reloads
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, DragnDrop
-//          "XML load error" doesn't pop up when loading a "txt" file. Why?
 //          MSW path may already have ";" tacked to end. What happens?
-//          "File has changed" msg pops up even when file has NOT changed.
-//              Open CB, with floating window default. Set to External window. Close
-//              floating window with system X. Open external window with View/CodeSnippets.
-//              View a text file, Close CB. You'll get the "file changed" when none has.
-//              AND, window stays up even tho CB is gone.
 //          Add option for ToolTips and max chars shown
 //          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
 //              Maybe just a line instead of a spacer will work
@@ -329,6 +334,9 @@ AppVersion::~AppVersion()
 //          Bug: 2007/08/2
 //              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
 //              bug was reported way back in wxGTK 2.1.0
+//          Bug: 2007/09/30 crash during uninstall in OnIdle events.
+//          Leak: 2007/10/4 g_printData allocated for each Edit, but only deleted once.
+//              The globals in snippetproperty.cpp should be allocated by instance.
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;

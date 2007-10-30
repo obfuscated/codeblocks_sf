@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.h 91 2007-06-25 19:24:43Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.h 102 2007-10-29 21:16:50Z Pecan $
 
 #ifndef CODESNIPPETSTREECTRL_H
 #define CODESNIPPETSTREECTRL_H
@@ -76,6 +76,10 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void        EditSnippetAsText();
         void        EditSnippetWithMIME();
 
+        // This OnIdle() is driven from the plugin|app OnIdle routines
+        void OnIdle();
+
+
         CodeSnippetsTreeCtrl*
                     GetSnippetsTreeCtrl(){return m_pSnippetsTreeCtrl;}
 
@@ -121,6 +125,9 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 if (not IsSnippet(itemId) ) return wxEmptyString;
                 wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
                 fileName = fileName.BeforeFirst('\n');
+                #if defined(BUILDING_PLUGIN)
+                    Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+                #endif
                 return fileName;
             }
 
@@ -139,16 +146,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
                 return pItem->IsSnippet();
             }
-        bool IsFileSnippet (wxTreeItemId treeItemId = (void*)0 )
-            {   wxTreeItemId itemId = treeItemId;
-                if ( itemId == (void*)0) itemId = GetSelection();
-                if (not itemId.IsOk()) return false;
-                if (not IsSnippet(itemId) ) return false;
-                wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
-                fileName = fileName.BeforeFirst('\n');
-                if ( not ::wxFileExists( fileName) ) return false;
-                return true;
-            }
+        bool IsFileSnippet (wxTreeItemId treeItemId = (void*)0 );
         bool IsUrlSnippet (wxTreeItemId treeItemId = (void*)0 )
             {   wxTreeItemId itemId = treeItemId;
                 if ( itemId == (void*)0) itemId = GetSelection();
@@ -203,7 +201,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
    		void OnEnterWindow(wxMouseEvent& event);
         void OnMouseEvent(wxMouseEvent& event);
         void OnShutdown(wxCloseEvent& event);
-        void OnIdle(wxIdleEvent& event);
+        //-void OnIdle(wxIdleEvent& event);
 
 		// Must use this so overridden OnCompareItems() works on MSW,
 		// see wxWidgets Samples -> TreeCtrl sample

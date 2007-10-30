@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 97 2007-07-26 22:33:06Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 103 2007-10-30 19:17:39Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -210,6 +210,8 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
     // and Disconnect() in codesnippets.cpp OnIdle() when the
     // window is closed.
 
+    if ( GetConfig()->m_appIsShutdown) { event.Skip(); return;}
+
     if ( not GetConfig()->GetSnippetsWindow() )
         {event.Skip();return;}
      LOGIT( _T("CodeSnippetsWindow::Onclose Saving Settings"));
@@ -230,12 +232,16 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
         }//if
     }//if
 
-    wxMenuBar* pbar = GetConfig()->m_pMenuBar;
-    pbar->Check(idViewSnippets, false);
+    // crash on shutdown if we don't do this test
+    if ((not GetConfig()->m_appIsShutdown) && (not GetConfig()->m_appIsDisabled))
+    {
+        wxMenuBar* pbar = GetConfig()->m_pMenuBar;
+        pbar->Check(idViewSnippets, false);
+    }
 
     GetConfig()->m_pEvtCloseConnect = 0;
     Destroy();
-    GetConfig()->pSnippetsWindow=0;
+    GetConfig()->pSnippetsWindow = 0;
     event.Skip();
 }
 // ----------------------------------------------------------------------------
@@ -874,7 +880,12 @@ void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 		const SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID()));
 		if (itemData)
 		{
-			wxTheClipboard->SetData(new wxTextDataObject(itemData->GetSnippet()));
+		    wxString itemStr = itemData->GetSnippet();
+            #if defined(BUILDING_PLUGIN)
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(itemStr);
+            #endif
+
+			wxTheClipboard->SetData(new wxTextDataObject(itemStr));
 			wxTheClipboard->Close();
 		}
 	}
@@ -893,7 +904,7 @@ void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
 
         wxTreeItemId itemId = GetAssociatedItemID();
         wxString FileName = pTree->GetSnippetFileLink( itemId );
-        LOGIT( _T("OnMnuEditSnipet FileName[%s]"),FileName.c_str() );
+        LOGIT( _T("OnMnuEditSnippet FileName[%s]"),FileName.c_str() );
 
         // If snippet is text, edit it as text
         if (FileName.Length() > 128)
@@ -944,7 +955,11 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 // ----------------------------------------------------------------------------
 {
     //FIXME: CheckForMacros in App???
+
   #if defined(BUILDING_PLUGIN)
+    // Replace known macros in the generated code
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(snippet);
+
 	// Copied from cbEditor::Autocomplete, I admit it
 	int macroPos = snippet.Find(_T("$("));
 	while (macroPos != -1)
@@ -966,8 +981,8 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 		macroPos = snippet.Find(_T("$("));
 	}
 
-	// Replace any other macros in the generated code
-	Manager::Get()->GetMacrosManager()->ReplaceMacros(snippet);
+	//- Replace any other macros in the generated code
+	//-Manager::Get()->GetMacrosManager()->ReplaceMacros(snippet);
   #endif
 }
 

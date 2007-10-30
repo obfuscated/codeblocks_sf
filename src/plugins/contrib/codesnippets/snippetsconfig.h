@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
-// RCS-ID: $Id: snippetsconfig.h 95 2007-07-22 04:19:22Z Pecan $
+// RCS-ID: $Id: snippetsconfig.h 103 2007-10-30 19:17:39Z Pecan $
 
 
 #ifndef GLOBAL_H
@@ -97,6 +97,8 @@ class CodeSnippetsConfig
         }
     };
 
+    bool         m_appIsShutdown;
+    bool         m_appIsDisabled;
     wxString     AppName;
     wxWindow*    pMainFrame;
     wxMenuBar*   m_pMenuBar;

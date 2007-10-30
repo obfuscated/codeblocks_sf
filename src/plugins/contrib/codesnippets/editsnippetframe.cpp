@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.cpp 89 2007-06-25 00:55:06Z Pecan $
+// RCS-ID: $Id: editsnippetframe.cpp 102 2007-10-29 21:16:50Z Pecan $
 
 #include "editsnippetframe.h"
 
@@ -47,9 +47,9 @@ BEGIN_EVENT_TABLE (EditSnippetFrame, wxFrame)
     // properties
     EVT_MENU (myID_PROPERTIES,       EditSnippetFrame::OnProperties)
     // print and exit
-    //EVT_MENU (wxID_PRINT_SETUP,      EditSnippetFrame::OnPrintSetup)
-    //EVT_MENU (wxID_PREVIEW,          EditSnippetFrame::OnPrintPreview)
-    //EVT_MENU (wxID_PRINT,            EditSnippetFrame::OnPrint)
+    EVT_MENU (wxID_PRINT_SETUP,      EditSnippetFrame::OnPrintSetup)
+    EVT_MENU (wxID_PREVIEW,          EditSnippetFrame::OnPrintPreview)
+    EVT_MENU (wxID_PRINT,            EditSnippetFrame::OnPrint)
     EVT_MENU (wxID_EXIT,             EditSnippetFrame::OnExit)
     // edit
     EVT_MENU (wxID_CLEAR,            EditSnippetFrame::OnEditEvent)
@@ -145,8 +145,12 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 
     m_EditFileName = m_EditSnippetText.BeforeFirst('\r');
     m_EditFileName = m_EditFileName.BeforeFirst('\n');
+    #if defined(BUILDING_PLUGIN)
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(m_EditFileName);
+    #endif
+
     if ( (m_EditFileName.Length() < 129) && (::wxFileExists(m_EditFileName)) )
-        /*OK*/;
+        /*OK we're editing a physical file, not just text*/;
     else m_EditFileName = wxEmptyString;
 
     m_EditSnippetLabel = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetLabel(TreeItemId);
@@ -203,7 +207,7 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 	cfgFile.Read( wxT("EditDlgHeight"),     &GetConfig()->nEditDlgHeight, 400 ) ;
 	cfgFile.Read( wxT("EditDlgMaximized"),  &GetConfig()->bEditDlgMaximized, false );
 	//SetSize(GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
-    LOGIT( _T("EditDlgPositin IN X[%d]Y[%d]Width[%d]Height[%d]"),
+    LOGIT( _T("EditDlgPosition IN X[%d]Y[%d]Width[%d]Height[%d]"),
         GetConfig()->nEditDlgXpos,GetConfig()->nEditDlgYpos,
         GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight );
     SetSize(GetConfig()->nEditDlgXpos, GetConfig()->nEditDlgYpos, GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
@@ -494,12 +498,28 @@ void EditSnippetFrame::OnPrintSetup (wxCommandEvent &WXUNUSED(event))
     pageSetupDialog.ShowModal();
     (*g_printData) = pageSetupDialog.GetPageSetupData().GetPrintData();
     (*g_pageSetupData) = pageSetupDialog.GetPageSetupData();
+
+    // force printing to colors on a white background
+    m_pEdit->SetPrintColourMode(wxSCI_PRINT_COLOURONWHITE);
+
+    g_bPrinterIsSetup = true;
 }
 
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnPrintPreview (wxCommandEvent &WXUNUSED(event))
+void EditSnippetFrame::OnPrintPreview (wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    // ----------------------------------------------------------------
+    // very bad loop in wx284 if setup isnt called first
+    // ----------------------------------------------------------------
+    //(pecan 2007/8/24)
+    // The printer goes into a loop if setup isnt called before preview or print
+    if (not g_bPrinterIsSetup)
+    {
+        OnPrintSetup(event);
+        g_bPrinterIsSetup = true;
+    }
+
     wxPrintDialogData printDialogData( *g_printData);
     wxPrintPreview *preview =
         new wxPrintPreview (new EditPrint (m_pEdit),
@@ -509,10 +529,11 @@ void EditSnippetFrame::OnPrintPreview (wxCommandEvent &WXUNUSED(event))
         delete preview;
         /*wxMessageBox (_("There was a problem with previewing.\n\ */
         messageBox (_("There was a problem with previewing.\n\
-                         Perhaps your current printer is not correctly?"),
+                         Perhaps your current printer is not setup correctly?"),
                       _("Previewing"), wxOK);
         return;
     }
+
     wxRect rect = DeterminePrintSize();
     wxPreviewFrame *frame = new wxPreviewFrame (preview, this, _("Print Preview"));
     frame->SetSize (rect);
@@ -522,9 +543,17 @@ void EditSnippetFrame::OnPrintPreview (wxCommandEvent &WXUNUSED(event))
 }
 
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnPrint (wxCommandEvent &WXUNUSED(event))
+void EditSnippetFrame::OnPrint (wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    //(pecan 2007/8/24)
+    // The printer goes into a loop if setup isnt called before preview or print
+    if (not g_bPrinterIsSetup)
+    {
+        OnPrintSetup(event);
+        g_bPrinterIsSetup = true;
+    }
+
     wxPrintDialogData printDialogData( *g_printData);
     wxPrinter printer (&printDialogData);
     EditPrint printout (m_pEdit);
@@ -577,10 +606,10 @@ void EditSnippetFrame::CreateMenu ()
     menuFile->AppendSeparator();
     menuFile->Append (myID_PROPERTIES, _("Proper&ties ..\tCtrl+I"));
     menuFile->AppendSeparator();
-    //menuFile->Append (wxID_PRINT_SETUP, _("Print Set&up .."));
-    //menuFile->Append (wxID_PREVIEW, _("Print Pre&view\tCtrl+Shift+P"));
-    //menuFile->Append (wxID_PRINT, _("&Print ..\tCtrl+P"));
-    //menuFile->AppendSeparator();
+    menuFile->Append (wxID_PRINT_SETUP, _("Print Set&up .."));
+    menuFile->Append (wxID_PREVIEW, _("Print Pre&view\tCtrl+Shift+P"));
+    menuFile->Append (wxID_PRINT, _("&Print ..\tCtrl+P"));
+    menuFile->AppendSeparator();
     menuFile->Append (wxID_EXIT, _("&Quit\tCtrl+Q"));
 
     // Edit menu
