@@ -20,7 +20,8 @@ class ClassWizardDlg : public wxDialog
         void OnCancelClick(wxCommandEvent& event);
         void OnNameChange(wxCommandEvent& event);
         void OnAncestorChange(wxCommandEvent& event);
-        void OnBaseDirClick(wxCommandEvent& event);
+        void OnIncludeDirClick(wxCommandEvent& event);
+        void OnImplDirClick(wxCommandEvent& event);
         void DoGuardBlock();
 
         wxString m_Header;

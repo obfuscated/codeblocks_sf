@@ -247,20 +247,21 @@ AC_ARG_WITH(contrib-plugins,
   [  --with-contrib-plugins=<list>     compile contrib plugins in <list>. ]
   [                        plugins may be separated with commas. ]
   [                        "all" compiles all contrib plugins ]
+  [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
   [                        Plugin names are: byogames,cbkoders,codesnippets,]
   [                        		     codestat,dragscroll,envvars, ]
   [                        		     help,keybinder,libfinder,profiler, ]
   [                        		     regex,exporter,symtab,wxsmith ],
   plugins="$withval", plugins="none")
-if test "x$plugins" = "xall"; then
-  BUILD_CONTRIB_ALL
-  AC_MSG_RESULT(all)
-else
-  plugins=`echo $plugins | sed 's/,/ /g'`
-  for plugin in $plugins
-  do
+
+plugins=`echo $plugins | sed 's/,/ /g'`
+for plugin in $plugins
+do
     case "$plugin" in
+	all)
+		BUILD_CONTRIB_ALL
+		;;
 	byogames)
 		AM_CONDITIONAL([BUILD_BYOGAMES], [true])
 		;;
@@ -303,13 +304,55 @@ else
 	wxsmith)
 		AM_CONDITIONAL([BUILD_WXSMITH], [true])
 		;;
+	-byogames)
+		AM_CONDITIONAL([BUILD_BYOGAMES], [false])
+		;;
+	-cbkoders)
+		AM_CONDITIONAL([BUILD_CBKODERS], [false])
+		;;
+	-codesnippets)
+		AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
+		;;
+	-codestat)
+		AM_CONDITIONAL([BUILD_CODESTAT], [false])
+		;;
+	-dragscroll)
+		AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
+		;;
+	-envvars)
+		AM_CONDITIONAL([BUILD_ENVVARS], [false])
+		;;
+	-help)
+		AM_CONDITIONAL([BUILD_HELP], [false])
+		;;
+	-keybinder)
+		AM_CONDITIONAL([BUILD_KEYBINDER], [false])
+		;;
+	-libfinder)
+		AM_CONDITIONAL([BUILD_LIBFINDER], [false])
+		;;
+	-profiler)
+		AM_CONDITIONAL([BUILD_PROFILER], [false])
+		;;
+	-regex)
+		AM_CONDITIONAL([BUILD_REGEX], [false])
+		;;
+	-exporter)
+		AM_CONDITIONAL([BUILD_EXPORTER], [false])
+		;;
+	-symtab)
+		AM_CONDITIONAL([BUILD_SYMTAB], [false])
+		;;
+	-wxsmith)
+		AM_CONDITIONAL([BUILD_WXSMITH], [false])
+		;;
 	*)
 		echo "Unknown contrib plugin $plugin, ignoring"
 		;;
     esac
-  done
-  AC_MSG_RESULT($plugins)
-fi
+done
+AC_MSG_RESULT($plugins)
+
 
 AC_SUBST(BUILD_BYOGAMES)
 AC_SUBST(BUILD_CBKODERS)

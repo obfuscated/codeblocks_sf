@@ -69,7 +69,8 @@ BEGIN_EVENT_TABLE(ClassWizardDlg, wxDialog)
     EVT_BUTTON(XRCID("wxID_CANCEL"), ClassWizardDlg::OnCancelClick)
     EVT_TEXT(XRCID("txtName"), ClassWizardDlg::OnNameChange)
     EVT_TEXT(XRCID("txtInheritance"), ClassWizardDlg::OnAncestorChange)
-    EVT_BUTTON(XRCID("btnBaseDir"), ClassWizardDlg::OnBaseDirClick)
+    EVT_BUTTON(XRCID("btnIncludeDir"), ClassWizardDlg::OnIncludeDirClick)
+    EVT_BUTTON(XRCID("btnImplDir"), ClassWizardDlg::OnImplDirClick)
 END_EVENT_TABLE()
 
 
@@ -80,9 +81,17 @@ ClassWizardDlg::ClassWizardDlg(wxWindow* parent)
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     cbProject* prj = prjMan->GetActiveProject();
     if (prj)
-  	    XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->SetValue(prj->GetBasePath());
+    {
+  	    XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->SetValue(prj->GetCommonTopLevelPath() + _T("include"));
+  	    XRCCTRL(*this, "txtImplDir", wxTextCtrl)->SetValue(prj->GetCommonTopLevelPath() + _T("src"));\
+    }
     else
-  	    XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->SetValue(::wxGetCwd());
+    {
+  	    XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->SetValue(::wxGetCwd());
+  	    XRCCTRL(*this, "txtImplDir", wxTextCtrl)->SetValue(::wxGetCwd());
+    }
+    XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->SetValue(_T("<>"));
+    XRCCTRL(*this, "cmbInheritanceScope", wxComboBox)->SetSelection(0);
 }
 
 
@@ -125,7 +134,10 @@ void ClassWizardDlg::OnAncestorChange(wxCommandEvent& event)
     name.MakeLower();
     while (name.Replace(_T("::"), _T("/")))
         ;
-    XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->SetValue(name + _T(".h"));
+	wxString old = XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->GetValue();
+	wxChar first = old.GetChar(0);
+	wxChar last = old.Last();
+    XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->SetValue(first + name + _T(".h") + last);
     DoGuardBlock();
 }
 
@@ -139,6 +151,7 @@ void ClassWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
     bool genimpl = XRCCTRL(*this, "chkImplementation", wxCheckBox)->GetValue();
     XRCCTRL(*this, "txtImplementation", wxTextCtrl)->Enable(genimpl);
+    XRCCTRL(*this, "txtImplDir", wxTextCtrl)->Enable(genimpl);
 
     bool genguard = XRCCTRL(*this, "chkGuardBlock", wxCheckBox)->GetValue();
     XRCCTRL(*this, "txtGuardBlock", wxTextCtrl)->Enable(genguard);
@@ -160,7 +173,8 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
         Name = tkz.GetNextToken();
     }
 
-    wxString baseDir = XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->GetValue();
+    wxString includeDir = XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->GetValue();
+    wxString implDir = XRCCTRL(*this, "txtImplDir", wxTextCtrl)->GetValue();
     //wxSetWorkingDirectory(baseDir);
 
     wxString Constructor = XRCCTRL(*this, "txtConstructor", wxTextCtrl)->GetValue();
@@ -182,8 +196,8 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 
     wxFileName headerFname(UnixFilename(m_Header));
     wxFileName implementationFname(UnixFilename(m_Implementation));
-    headerFname.MakeAbsolute(baseDir);
-    implementationFname.MakeAbsolute(baseDir);
+    headerFname.MakeAbsolute(includeDir);
+    implementationFname.MakeAbsolute(implDir);
 
     bool usestabs = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);
     int tabsize = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
@@ -213,7 +227,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 
     if (!AncestorFilename.IsEmpty())
     {
-        buffer << _T("#include <") << AncestorFilename << _T(">") << eolstr;
+        buffer << _T("#include ") << AncestorFilename << eolstr;
         buffer << eolstr;
     }
 
@@ -228,11 +242,13 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     buffer << eolstr;
     buffer << _T("{") << eolstr;
     buffer << tabstr << _T("public:") << eolstr;
-    buffer << tabstr << tabstr << Name << _T("(") << Constructor << _T(");") << eolstr;
+    buffer << tabstr << tabstr << Name << _T("(") << Constructor << _T(")");
+    buffer << (!GenerateImplementation ? _T(" {}") : _T(";")) << eolstr;
     buffer << tabstr << tabstr;
     if (VirtualDestructor)
         buffer << _T("virtual ");
-    buffer << _T('~') << Name << _T("();") << eolstr;
+    buffer << _T('~') << Name << _T("()");
+    buffer << (!GenerateImplementation ? _T(" {}") : _T(";")) << eolstr;
     buffer << tabstr << _T("protected:") << eolstr;
     buffer << tabstr << _T("private:") << eolstr;
     buffer << _T("};") << eolstr;
@@ -308,17 +324,27 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 }
 
 
-void ClassWizardDlg::OnBaseDirClick(wxCommandEvent& event)
+void ClassWizardDlg::OnIncludeDirClick(wxCommandEvent& event)
 {
-    wxString path = XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->GetValue();
+    wxString path = XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->GetValue();
     wxDirDialog dlg (this, _T("Choose a directory"), path);
     if (dlg.ShowModal()==wxID_OK)
     {
         path = dlg.GetPath();
-        XRCCTRL(*this, "txtBaseDir", wxTextCtrl)->SetValue(path);
+        XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->SetValue(path);
     }
 }
 
+void ClassWizardDlg::OnImplDirClick(wxCommandEvent& event)
+{
+    wxString path = XRCCTRL(*this, "txtImplDir", wxTextCtrl)->GetValue();
+    wxDirDialog dlg (this, _T("Choose a directory"), path);
+    if (dlg.ShowModal()==wxID_OK)
+    {
+        path = dlg.GetPath();
+        XRCCTRL(*this, "txtImplDir", wxTextCtrl)->SetValue(path);
+    }
+}
 
 void ClassWizardDlg::OnCancelClick(wxCommandEvent& event)
 {

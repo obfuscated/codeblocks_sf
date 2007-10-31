@@ -59,8 +59,9 @@
 #include "compilerMINGW.h"
 #ifdef __WXGTK__
 // TODO (mandrav#1#): Find out which compilers exist for linux and adapt this
-    #include "compilerGDC.h"
     #include "compilerDMD.h"
+    #include "compilerGNUARM.h"
+    #include "compilerGNUAVR.h"
 #endif
 #ifdef __WXMSW__
     #include "compilerMSVC.h"
@@ -68,19 +69,16 @@
     #include "compilerBCC.h"
     #include "compilerDMC.h"
     #include "compilerOW.h"
-    #include "compilerGDC.h"
     #include "compilerDMD.h"
     #include "compilerGNUARM.h"
     #include "compilerGNUAVR.h"
     #include "compilerGNUMSP430.h"
     #include "compilerCYGWIN.h"
 #endif
-#ifdef __WXMAC__
-    #include "compilerGDC.h"
-#endif
 #include "compilerICC.h"
 #include "compilerSDCC.h"
 #include "compilerTcc.h"
+#include "compilerGDC.h"
 #include "compilerGNUPOWERPC.h"
 #include "compilerGNUTRICORE.h"
 
@@ -336,6 +334,8 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerGDC);
 #if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerDMD);
+    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
+    CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
     CompilerFactory::RegisterCompiler(new CompilerGNUPOWERPC);
     CompilerFactory::RegisterCompiler(new CompilerGNUTRICORE);
 #endif

@@ -14,11 +14,13 @@
 #include "prep.h"
 
 static int idGotoMessage = wxNewId();
-static int idCopyToClipboard = wxNewId();
+static int idCopySelectedToClipboard = wxNewId();
+static int idCopyAllToClipboard = wxNewId();
 
 BEGIN_EVENT_TABLE(CompilerMessages, SimpleListLog)
     EVT_MENU(idGotoMessage, CompilerMessages::OnClick)
-    EVT_MENU(idCopyToClipboard, CompilerMessages::OnCopyToClipboard)
+    EVT_MENU(idCopySelectedToClipboard, CompilerMessages::OnCopyToClipboard)
+    EVT_MENU(idCopyAllToClipboard, CompilerMessages::OnCopyToClipboard)
 END_EVENT_TABLE()
 
 CompilerMessages::CompilerMessages(int numCols, int widths[], const wxArrayString& titles)
@@ -77,34 +79,28 @@ void CompilerMessages::OnRightClick(wxCommandEvent& event)
 {
     wxMenu m;
     m.Append(idGotoMessage, _("Jump to selected message"));
+    m.Append(idCopySelectedToClipboard, _("Copy selected message to clipboard"));
     m.AppendSeparator();
-    m.Append(idCopyToClipboard, _("Copy all messages to clipboard"));
+    m.Append(idCopyAllToClipboard, _("Copy all messages to clipboard"));
     PopupMenu(&m);
 }
 
 void CompilerMessages::OnCopyToClipboard(wxCommandEvent& event)
 {
     wxString text;
-    for (int i = 0; i < m_pList->GetItemCount(); ++i)
+
+    if (event.GetId() == idCopySelectedToClipboard)
     {
-        wxListItem info;
-        info.m_itemId = i;
-        info.m_mask = wxLIST_MASK_TEXT;
+        int i = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
 
-        info.m_col = 1;
-        m_pList->GetItem(info);
-        wxString line = info.m_text;
-
-        info.m_col = 2;
-        m_pList->GetItem(info);
-        wxString msg = info.m_text;
-
-        // file:line: msg
-        text << m_pList->GetItemText(i) << _T(':') << line << _T(": ");
-        text << msg;
-        if (platform::windows)
-            text << _T('\r'); // Add CR for Windows clipboard
-        text << _T('\n');
+        text << AssembleMessage(i);
+    }
+    else if (event.GetId() == idCopyAllToClipboard)
+    {
+        for (int i = 0; i < m_pList->GetItemCount(); ++i)
+        {
+            text << AssembleMessage(i);
+        }
     }
 
     if (!text.IsEmpty() && wxTheClipboard->Open())
@@ -112,4 +108,39 @@ void CompilerMessages::OnCopyToClipboard(wxCommandEvent& event)
         wxTheClipboard->SetData(new wxTextDataObject(text));
         wxTheClipboard->Close();
     }
+}
+
+wxString CompilerMessages::AssembleMessage(int id)
+{
+    wxString text;
+
+    wxListItem info;
+    info.m_itemId = id;
+    info.m_mask = wxLIST_MASK_TEXT;
+
+    info.m_col = 0;
+    m_pList->GetItem(info);
+    wxString file = info.m_text;
+
+    info.m_col = 1;
+    m_pList->GetItem(info);
+    wxString line = info.m_text;
+
+    info.m_col = 2;
+    m_pList->GetItem(info);
+    wxString msg = info.m_text;
+
+    // msg only for header/footer
+    if (!file.IsEmpty())
+        text << file << _T(':'); //m_pList->GetItemText(i)
+    // file:line: msg for compiler messages
+    if (!line.IsEmpty())
+        text << line << _T(':');
+    // file: msg for linker messages
+    text << _T(' ') << msg;
+    if (platform::windows)
+        text << _T('\r'); // Add CR for Windows clipboard
+    text << _T('\n');
+
+    return text;
 }

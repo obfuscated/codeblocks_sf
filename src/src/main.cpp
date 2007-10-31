@@ -2895,14 +2895,14 @@ wxString GetCommentToken(cbStyledTextCtrl* stc)
         case wxSCI_LEX_POWERBASIC: comment = _T(""); break;
         case wxSCI_LEX_FORTH: comment = _T(""); break;
         case wxSCI_LEX_ERLANG: comment = _T(""); break;
-        case wxSCI_LEX_OCTAVE: comment = _T(""); break;
+        case wxSCI_LEX_OCTAVE: comment = _T("#"); break; // or '%'
         case wxSCI_LEX_MSSQL: comment = _T(""); break;
-        case wxSCI_LEX_VERILOG: comment = _T(""); break;
+        case wxSCI_LEX_VERILOG: comment = _T("//"); break;
         case wxSCI_LEX_KIX: comment = _T(""); break;
         case wxSCI_LEX_SPECMAN: comment = _T(""); break;
         case wxSCI_LEX_APDL: comment = _T(""); break;
         case wxSCI_LEX_BASH: comment = _T("#"); break;
-        case wxSCI_LEX_VHDL: comment = _T(""); break;
+        case wxSCI_LEX_VHDL: comment = _T("--"); break;
         case wxSCI_LEX_CAML: comment = _T(""); break;
         case wxSCI_LEX_BLITZBASIC: comment = _T(""); break;
         case wxSCI_LEX_PUREBASIC: comment = _T(""); break;

@@ -19,6 +19,9 @@ class CompilerMessages : public SimpleListLog
         void OnDoubleClick(wxCommandEvent& event);
         void OnRightClick(wxCommandEvent& event);
         void OnCopyToClipboard(wxCommandEvent& event);
+
+        wxString AssembleMessage(int id);
+
         CompilerErrors* m_pErrors;
 
         DECLARE_EVENT_TABLE()
