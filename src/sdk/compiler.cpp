@@ -581,9 +581,9 @@ void Compiler::LoadSettings(const wxString& baseKey)
 
     SetCompilerOptions(GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxEmptyString)));
     SetLinkerOptions(GetArrayFromString(cfg->Read(tmp + _T("/linker_options"), wxEmptyString)));
-    SetIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/include_dirs"), m_MasterPath + sep + _T("include"))));
-    SetResourceIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/res_include_dirs"), m_MasterPath + sep + _T("include"))));
-    SetLibDirs(GetArrayFromString(cfg->Read(tmp + _T("/library_dirs"), m_MasterPath + sep + _T("lib"))));
+    SetIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/include_dirs"), wxEmptyString)));
+    SetResourceIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/res_include_dirs"), wxEmptyString)));
+    SetLibDirs(GetArrayFromString(cfg->Read(tmp + _T("/library_dirs"), wxEmptyString)));
     SetLinkLibs(GetArrayFromString(cfg->Read(tmp + _T("/libraries"), _T(""))));
     SetCommandsBeforeBuild(GetArrayFromString(cfg->Read(tmp + _T("/commands_before"), wxEmptyString)));
     SetCommandsAfterBuild(GetArrayFromString(cfg->Read(tmp + _T("/commands_after"), wxEmptyString)));
