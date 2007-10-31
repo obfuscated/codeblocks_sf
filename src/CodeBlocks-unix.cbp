@@ -220,12 +220,14 @@
 				<Option compiler="gcc" />
 				<Option projectResourceIncludeDirsRelation="2" />
 				<Compiler>
+					<Add option="-fno-strict-aliasing" />
 					<Add option="-DDEPSLIB_UNIX" />
 				</Compiler>
 			</Target>
 			<Target title="Compiler">
 				<Option output="devel/share/codeblocks/plugins/libcompiler.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
+				<Option external_deps="plugins/compilergcc/depslib/libdepslib.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />

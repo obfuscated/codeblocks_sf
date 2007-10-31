@@ -1,4 +1,4 @@
-AM_CFLAGS = -Wall -g -DDEPSLIB_UNIX
+AM_CFLAGS = -Wall -g -DDEPSLIB_UNIX -fno-strict-aliasing
 
 noinst_LTLIBRARIES = libdepslib.la
 
