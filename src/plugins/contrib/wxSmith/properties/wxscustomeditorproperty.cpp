@@ -44,7 +44,22 @@ namespace
                     wxCustomPropertyClass(label,name),
                     Property(property),
                     Object(object)
-            {}
+            {
+                SetEditor(wxPG_EDITOR(TextCtrlAndButton));
+            }
+
+            virtual bool OnEvent(
+                wxPropertyGrid* propgrid,
+                wxWindow* wnd_primary,
+                wxEvent& event)
+            {
+                if ( event.GetEventType() == wxEVT_COMMAND_BUTTON_CLICKED )
+                {
+                    return Property->ShowEditor(Object);
+                }
+                return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
+            }
+
 
             /** \brief Pointer to wxsProperty which created this
              *
@@ -58,8 +73,6 @@ namespace
 void wxsCustomEditorProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
     wxPGId PGId = Grid->AppendIn(Parent,new wxsCustomEditorPropertyPropClass(GetPGName(),wxPG_LABEL,this,Object));
-    Grid->SetPropertyAttribute(PGId,wxPG_CUSTOM_EDITOR,wxPGEditor_TextCtrlAndButton);
-    Grid->SetPropertyAttribute(PGId,wxPG_CUSTOM_CALLBACK,(void*)PGCallback);
     Grid->SetPropertyValue(PGId,GetStr(Object));
     if ( !CanParseStr() )
     {
@@ -77,10 +90,4 @@ bool wxsCustomEditorProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGri
 {
     Grid->SetPropertyValue(PGId,GetStr(Object));
     return true;
-}
-
-bool wxsCustomEditorProperty::PGCallback(wxPropertyGridManager* propGrid,wxPGProperty* property,wxPGCtrlClass* ctrl,long data)
-{
-    wxsCustomEditorPropertyPropClass* Prop = (wxsCustomEditorPropertyPropClass*)property;
-    return Prop->Property->ShowEditor(Prop->Object);
 }

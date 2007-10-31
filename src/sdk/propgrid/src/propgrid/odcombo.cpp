@@ -30,6 +30,7 @@
 #if wxUSE_COMBOBOX
 
 #ifndef WX_PRECOMP
+    #include "wx/app.h"
     #include "wx/log.h"
 
     #include "wx/button.h"
@@ -967,6 +968,11 @@ wxSize wxPGVListBoxComboPopup::GetAdjustedSize( int minWidth, int prefHeight, in
     }
     else
         height = 50;
+
+#if defined(__WXMAC__)
+    // Set a minimum height since otherwise scrollbars won't draw properly
+    height = wxMax(50, height);
+#endif
 
     // Take scrollbar into account in width calculations
     int widestWidth = m_widestWidth + wxSystemSettings::GetMetric(wxSYS_VSCROLL_X);
@@ -2198,7 +2204,7 @@ void wxPGComboControlBase::SetPopup( wxPGComboPopup* iface )
     }
 
     // This must be after creation
-    if ( m_valueString )
+    if ( m_valueString.length() )
         iface->SetStringValue(m_valueString);
 
 }
@@ -3091,7 +3097,13 @@ bool wxPGComboControl::Create(wxWindow *parent,
 
     if ( theme )
     {
+#if wxCHECK_VERSION(2, 8, 0)
         const bool isVista = (::wxGetWinVersion() >= wxWinVersion_6);
+#else
+        int Major = 0;
+        int family = wxGetOsVersion(&Major, NULL);
+        const bool isVista = ((family == wxWINDOWS_NT) && (Major >= 6));
+#endif
 
         if ( isVista )
             m_iFlags |= wxPGCC_BUTTON_STAYS_DOWN;
@@ -3354,7 +3366,13 @@ void wxPGComboControl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
 
     if ( hTheme )
     {
-        const bool useVistaComboBox = ::wxGetWinVersion() >= wxWinVersion_6;
+#if wxCHECK_VERSION(2, 8, 0)
+        const bool useVistaComboBox = (::wxGetWinVersion() >= wxWinVersion_6);
+#else
+        int Major = 0;
+        int family = wxGetOsVersion(&Major, NULL);
+        const bool useVistaComboBox = ((family == wxWINDOWS_NT) && (Major >= 6));
+#endif
 
         RECT rFull;
         wxCopyRectToRECT(borderRect, rFull);
@@ -3763,10 +3781,39 @@ int wxPGOwnerDrawnComboBox::DoInsert(const wxString& item, wxODCIndex pos)
     return pos;
 }
 
+#if wxCHECK_VERSION(2,9,0)
+int wxPGOwnerDrawnComboBox::DoInsertItems(const wxArrayStringsAdapter& items,
+                                          unsigned int pos,
+                                          void **clientData,
+                                          wxClientDataType type)
+{
+    unsigned int i;
+    for ( i=0; i<items.GetCount(); i++ )
+    {
+        DoInsert(items[i], pos);
+        if ( clientData )
+        {
+            if ( type == wxClientData_Object )
+                DoSetItemClientObject(pos, (wxClientData*)clientData[i]);
+            else
+                DoSetItemClientData(pos, clientData[i]);
+        }
+        pos++;
+    }
+    return pos - 1;
+}
+#endif
+
 void wxPGOwnerDrawnComboBox::DoSetItemClientData(wxODCIndex n, void* clientData)
 {
     wxASSERT(m_popupInterface);
-    m_popupInterface->SetItemClientData(n,clientData,m_clientDataItemsType);
+    m_popupInterface->SetItemClientData(n,clientData,
+#if wxCHECK_VERSION(2,9,0)
+        GetClientDataType()
+#else
+        m_clientDataItemsType
+#endif
+        );
 }
 
 void* wxPGOwnerDrawnComboBox::DoGetItemClientData(wxODCIndex n) const

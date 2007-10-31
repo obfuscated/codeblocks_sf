@@ -13,7 +13,7 @@
 #define __WX_PG_DOX_MAINPAGE_H__
 
 /**
-    \mainpage wxPropertyGrid 1.2.6 Overview
+    \mainpage wxPropertyGrid 1.2.10 Overview
 
       wxPropertyGrid is a specialized two-column grid for editing properties
     such as strings, numbers, flagsets, fonts, and colours. It allows hierarchial,
@@ -166,7 +166,7 @@
         pg->Append( wxFileProperty(wxT("FileProperty"), wxPG_LABEL, wxEmptyString) );
 
         // Extra: set wildcard for file property (format same as in wxFileDialog).
-        pg->SetPropertyAttribute(wxT("TextFile"),
+        pg->SetPropertyAttribute(wxT("FileProperty"),
                                  wxPG_FILE_WILDCARD,
                                  wxT("All files (*.*)|*.*"));
 
@@ -184,7 +184,7 @@
       You can get property id as Append/Insert return value, or by calling
     GetPropertyByName.
 
-      Below are samples for using some of the more commong operations. See
+      Below are samples for using some of the more commong operations. See 
     wxPropertyContainerMethods and wxPropertyGrid class references for complete list.
 
     \code
@@ -217,10 +217,11 @@
         // Set new label - we need to use the new name.
         pg->SetPropertyLabel( wxT("X"), wxT("New Label") );
 
-        // Disable the property. It's text will appear greyed.
-        // This is probably the closest you can get if you want
-        // a "read-only" property.
+        // Disable the property.
         pg->DisableProperty( MyPropertyId );
+
+        // Set property as read-only.
+        pg->SetPropertyReadOnly( MyPropertyId );
 
     \endcode
 
@@ -1593,7 +1594,8 @@
 
         #include <wx/propgrid/propdev.h>
 
-        WX_PG_IMPLEMENT_STRING_PROPERTY(PROPNAME,FLAGS)
+        // FLAGS can be wxPG_NO_ESCAPE if escape sequences shall not be expanded.
+        WX_PG_IMPLEMENT_STRING_PROPERTY(PROPNAME, FLAGS)
 
         bool PROPNAMEClass::OnButtonClick( wxPropertyGrid* propgrid, wxString& value )
         {
@@ -1615,7 +1617,7 @@
 
         #include <wx/propgrid/propdev.h>
 
-        WX_PG_IMPLEMENT_STRING_PROPERTY_WITH_VALIDATOR(PROPNAME)
+        WX_PG_IMPLEMENT_STRING_PROPERTY_WITH_VALIDATOR(PROPNAME, FLAGS)
 
         bool PROPNAMEClass::OnButtonClick( wxPropertyGrid* propgrid, wxString& value )
         {
@@ -1851,7 +1853,7 @@
         //   instead of wxPG_INIT_REQUIRED_TYPE.
         WX_PG_IMPLEMENT_DERIVED_TYPE(TYPENAME,PARENTVT,DEFVAL)
 
-        // For implementing value type for a native value.
+        // For implementing value type for a POD (plain 'ol data) value.
         // Generally should not be used since it is meant for
         // wxString, int, double etc. which are already implemented.
         WX_PG_IMPLEMENT_VALUE_TYPE(TYPE,DEFPROPERTY,TYPESTRING,GETTER,DEFVAL)

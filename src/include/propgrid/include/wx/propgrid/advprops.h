@@ -396,7 +396,7 @@ public:
     {
         return m_format;
     }
-
+    
     inline void SetDateValue( const wxDateTime& dt )
     {
         m_valueDateTime = dt;

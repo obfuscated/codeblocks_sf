@@ -959,7 +959,7 @@ wxString wxsItem::GetUserClass()
 
 wxString wxsItem::OnGetTreeLabel(int& Image)
 {
-    if ( GetPropertiesFlags() & flVariable )
+    if ( GetPropertiesFlags()&flVariable && !IsRootItem() )
     {
         return GetClassName() + _T(": ") + GetVarName();
     }

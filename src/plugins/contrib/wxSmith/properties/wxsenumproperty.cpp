@@ -41,7 +41,7 @@ wxsEnumProperty::wxsEnumProperty(const wxString& PGName, const wxString& DataNam
 
 void wxsEnumProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    wxPGConstants PGC(Names,Values);
+    wxPGChoices PGC(Names,Values);
     PGRegister(Object,Grid,Grid->AppendIn(Parent,wxEnumProperty(GetPGName(),wxPG_LABEL,PGC,VALUE)));
 }
 

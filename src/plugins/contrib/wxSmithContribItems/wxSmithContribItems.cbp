@@ -40,7 +40,6 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXMAKINGLIB_PROPGRID" />
-			<Add option="-DwxPG_COMPATIBILITY_1_0_0" />
 			<Add option="-DWXMAKINGDLL_THINGS" />
 			<Add directory="$(#cb)\include" />
 			<Add directory="$(#cb)\include\wxscintilla\include" />

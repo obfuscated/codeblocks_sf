@@ -42,7 +42,6 @@ class wxsCustomEditorProperty : public wxsProperty
         virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent);
         virtual bool PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
         virtual bool PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid, wxPGId Id,long Index);
-        static bool PGCallback(wxPropertyGridManager* propGrid,wxPGProperty* property,wxPGCtrlClass* ctrl,long data);
 };
 
 #endif

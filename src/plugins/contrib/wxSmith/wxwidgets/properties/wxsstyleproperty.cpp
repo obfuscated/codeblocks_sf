@@ -56,7 +56,7 @@ void wxsStyleProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManag
         const wxArrayLong&   StyleBits  = STYLESETPTR->GetBits(IsExtra);
 
         bool IsXrc = !( GetPropertiesFlags(Object) & flSource );
-        wxPGConstants StyleConsts;
+        wxPGChoices StyleConsts;
 
         size_t Count = StyleNames.Count();
         for ( size_t i = 0; i < Count; i++ )
@@ -70,7 +70,7 @@ void wxsStyleProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManag
         if ( StyleConsts.GetCount() )
         {
             wxPGId ID = Grid->AppendIn(Parent,wxFlagsProperty(GetPGName(),wxPG_LABEL,StyleConsts,STYLEBITS));
-            Grid->SetPropertyAttribute(ID,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
+            Grid->SetPropertyAttribute(ID,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
             PGRegister(Object,Grid,ID);
         }
     }

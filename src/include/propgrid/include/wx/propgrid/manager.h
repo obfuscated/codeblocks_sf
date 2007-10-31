@@ -632,7 +632,7 @@ public:
         match the visible order in the grid.
         \param flags
         Use wxKEEP_STRUCTURE to retain category structure; each sub
-        category will be its own wxList of wxVariant.
+        category will be its own wxVariantList of wxVariant.
         \remarks
         This works on the target page (*not* the selected page).
     */
@@ -925,6 +925,8 @@ public:
 #endif
     wxPG_IMPLEMENT_PGMAN_METHOD_NORET1_INBODY(SetPropertyValuePoint,const wxPoint&)
     wxPG_IMPLEMENT_PGMAN_METHOD_NORET1_INBODY(SetPropertyValueSize,const wxSize&)
+    wxPG_IMPLEMENT_PGMAN_METHOD_NORET1_INBODY(SetPropertyValueLongLong,const wxLongLong&)
+    wxPG_IMPLEMENT_PGMAN_METHOD_NORET1_INBODY(SetPropertyValueULongLong,const wxULongLong&)
 #ifdef __WXPYTHON__
     wxPG_IMPLEMENT_PGMAN_METHOD_NORET1_INBODY(SetPropertyValuePyObject,PyObject*)
 #endif
@@ -953,7 +955,7 @@ public:
         name is missing from the grid, new property is created under given default
         category (or root if omitted). Works on target page.
     */
-    void SetPropertyValues( const wxList& list, wxPGId defaultCategory )
+    void SetPropertyValues( const wxVariantList& list, wxPGId defaultCategory )
     {
         m_targetState->SetPropertyValues(list,defaultCategory);
     }
@@ -962,7 +964,7 @@ public:
     {
         SetPropertyValues(list.GetList(),defaultCategory);
     }
-    inline void SetPropertyValues( const wxList& list, const wxString& defaultCategory = wxEmptyString )
+    inline void SetPropertyValues( const wxVariantList& list, const wxString& defaultCategory = wxEmptyString )
     {
         SetPropertyValues(list,GetPropertyByName(defaultCategory));
     }
@@ -1224,7 +1226,7 @@ protected:
 
     void RefreshHelpBox( int new_splittery, int new_width, int new_height );
 
-    void RepaintSplitter( int new_splittery, int new_width, int new_height, bool desc_too );
+    void RepaintSplitter( wxDC& dc, int new_splittery, int new_width, int new_height, bool desc_too );
 
     void SetDescribedProperty( wxPGProperty* p );
 

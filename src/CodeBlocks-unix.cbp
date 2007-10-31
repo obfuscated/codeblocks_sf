@@ -121,7 +121,6 @@
 				<Compiler>
 					<Add option="-DWXMAKINGLIB_PROPGRID" />
 					<Add option="-DwxPG_USE_WXMODULE=0" />
-					<Add option="-DwxPG_COMPATIBILITY_1_0_0" />
 					<Add directory="include/propgrid/include" />
 				</Compiler>
 			</Target>

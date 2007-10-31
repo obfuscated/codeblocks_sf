@@ -16,12 +16,16 @@
     #pragma interface "propgrid.cpp"
 #endif
 
+#include <wx/window.h>
+#include <wx/bitmap.h>
+#include <wx/dcclient.h>
+#include <wx/scrolwin.h>
 #include <wx/dynarray.h>
 #include <wx/hashmap.h>
 #include <wx/variant.h>
+#include <wx/longlong.h>
 #include <wx/tooltip.h>
 #include <wx/datetime.h>
-
 
 // NB: Do *NOT * remove this.
 #if defined(SWIG) || defined(SWIG_TYPE_TABLE)
@@ -76,26 +80,31 @@
 //    #define wxPG_ALLOW_WXADV
 
 #if defined(__WXPYTHON__)
-    #include <python.h>
+    #include <Python.h>
 
     #undef wxPG_ALLOW_WXADV
     #define wxPG_ALLOW_WXADV
 #endif
 
-//
-// wxPropertyGrid version macro
-//
-// Formula:
-//     Major Version * 1000
-//   + Minor Version * 100
-//   + Release * 10
-//   + Subrelease (zero for actual releases, some number for consequtive snapshots)
-//
-// NB: Subrelease does not necessarily get updated at every snapshot.
-//     In fact, it will more likely be updated once a week or so
-//     (less often when releases are made more sparsely).
-//
-#define wxPG_VERSION        1260
+// Defines for component version.
+// The following symbols should be updated for each new component release
+// since some kind of tests, like those of AM_WXCODE_CHECKFOR_COMPONENT_VERSION()
+// for "configure" scripts under unix, use them.
+#define wxPROPGRID_MAJOR          1
+#define wxPROPGRID_MINOR          2
+#define wxPROPGRID_RELEASE        10
+
+// For non-Unix systems (i.e. when building without a configure script),
+// users of this component can use the following macro to check if the
+// current version is at least major.minor.release
+#define wxCHECK_PROPGRID_VERSION(major,minor,release) \
+    (wxPROPGRID_MAJOR > (major) || \
+    (wxPROPGRID_MAJOR == (major) && wxPROPGRID_MINOR > (minor)) || \
+    (wxPROPGRID_MAJOR == (major) && wxPROPGRID_MINOR == (minor) && wxPROPGRID_RELEASE >= (release)))
+
+
+// Legacy version number
+#define wxPG_VERSION        ((wxPROPGRID_MAJOR*1000)+(wxPROPGRID_MINOR*100)+(wxPROPGRID_RELEASE*10))
 
 
 // -----------------------------------------------------------------------
@@ -244,6 +253,19 @@
 #endif
 
 
+#ifndef SWIG
+    #if !wxCHECK_VERSION(2,9,0)
+        #if !defined(wxUniChar)
+            #define wxUniChar   wxChar
+        #endif
+        //#define wxPGGetIterChar(str, i)  str[i]
+        #define wxPGGetIterChar(str, i)  *i
+    #else
+        #define wxPGGetIterChar(str, i)  *i
+    #endif
+#endif
+
+
 // -----------------------------------------------------------------------
 
 //
@@ -284,6 +306,8 @@
 #define SetPropertyValueArrint2     SetPropertyValue
 #define SetPropertyValueArrstr2     SetPropertyValue
 #define SetPropertyValueDatetime    SetPropertyValue
+#define SetPropertyValueLongLong    SetPropertyValue
+#define SetPropertyValueULongLong   SetPropertyValue
 
 #else
 
@@ -648,6 +672,8 @@ typedef void (*wxPGPaintCallback)(wxPGProperty* property,
 
 /** Flags for wxPropertyGrid::SetPropertyAttribute etc */
 #define wxPG_RECURSE                      0x00000020
+#define wxPG_RECURSE_STARTS               0x00000040
+#define wxPG_FORCE                        0x00000080
 
 // -----------------------------------------------------------------------
 
@@ -661,6 +687,7 @@ typedef void (*wxPGPaintCallback)(wxPGProperty* property,
 #define wxPG_FULL_VALUE             0x00000001 // Get/Store full value instead of displayed value.
 #define wxPG_REPORT_ERROR           0x00000002
 #define wxPG_PROPERTY_SPECIFIC      0x00000004
+#define wxPG_EDITABLE_VALUE         0x00000008 // Get/Store value that must be editable in wxTextCtrl
 
 // -----------------------------------------------------------------------
 
@@ -790,6 +817,11 @@ WXDLLIMPEXP_PG void wxPGGetFailed ( const wxPGProperty* p, const wxChar* typestr
 /** Indicates the bit useable by derived properties.
 */
 #define wxPG_PROP_CLASS_SPECIFIC_2  0x0080
+
+/** Property value cannot be modified. However, editor may be created
+    so that the value can be easily copied.
+*/
+#define wxPG_PROP_READONLY          0x0100
 
 /** @}
 */
@@ -993,11 +1025,24 @@ WX_PG_DECLARE_VALUE_TYPE_BUILTIN_WITH_DECL(wxArrayString,WXDLLIMPEXP_PG)
     WX_PG_DECLARE_VALUE_TYPE_BUILTIN_WITH_DECL(PyObject,WXDLLIMPEXP_PG)
 #endif
 
+//
+// With wxWidgets 2.9 and later we demand native C++ RTTI support
+#if wxCHECK_VERSION(2,9,0)
+    #ifdef wxNO_RTTI
+        #error "You need to enable compiler RTTI support when using wxWidgets 2.9.0 or later"
+    #endif
+    #define WX_PG_DECLARE_DYNAMIC_CLASS_VARIANTDATA(A)
+    #define WX_PG_IMPLEMENT_DYNAMIC_CLASS_VARIANTDATA(A, B)
+#else
+    #define WX_PG_DECLARE_DYNAMIC_CLASS_VARIANTDATA DECLARE_DYNAMIC_CLASS
+    #define WX_PG_IMPLEMENT_DYNAMIC_CLASS_VARIANTDATA IMPLEMENT_DYNAMIC_CLASS
+#endif
+
 // VDC = wxVariantData Class
 #define WX_PG_DECLARE_VALUE_TYPE_VDC(VALUETYPE) \
 wxVariantData_##VALUETYPE : public wxPGVariantDataWxObj \
 { \
-    DECLARE_DYNAMIC_CLASS(wxVariantData_##VALUETYPE) \
+    WX_PG_DECLARE_DYNAMIC_CLASS_VARIANTDATA(wxVariantData_##VALUETYPE) \
 protected: \
     VALUETYPE   m_value; \
 public: \
@@ -1046,6 +1091,10 @@ public:
 };
 
 #endif // #ifndef SWIG
+
+#if !wxCHECK_VERSION(2,9,0)
+typedef wxList wxVariantList;
+#endif
 
 // -----------------------------------------------------------------------
 // Editor class.
@@ -1176,6 +1225,8 @@ protected: \
     #define wxPGVariantToDateTime(A)        A.GetDateTime()
     #define wxPGVariantToWxPoint(A)         ((wxPGVariantDataPoint*)(A.GetData()))->GetValueRef()
     #define wxPGVariantToWxSize(A)          ((wxPGVariantDataSize*)(A.GetData()))->GetValueRef()
+    #define wxPGVariantToWxLongLong(A)      ((wxPGVariantDataLongLong*)(A.GetData()))->GetValueRef()
+    #define wxPGVariantToWxULongLong(A)     ((wxPGVariantDataULongLong*)(A.GetData()))->GetValueRef()
     #define wxPGVariantToArrayInt(A)        ((wxPGVariantDataArrayInt*)(A.GetData()))->GetValueRef()
     #define wxPGVariantToPyObject(A)        ((wxPGVariantDataPyObject*)(A.GetData()))->GetValue()
     #define wxPGVariantFromWxObject(A)      wxVariant((wxObject*)A)
@@ -1186,6 +1237,8 @@ protected: \
     WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataPoint, wxPoint, WXDLLIMPEXP_PG)
     WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataSize, wxSize, WXDLLIMPEXP_PG)
     WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataArrayInt, wxArrayInt, WXDLLIMPEXP_PG)
+    WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataLongLong, wxLongLong, WXDLLIMPEXP_PG)
+    WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataULongLong, wxULongLong, WXDLLIMPEXP_PG)
    #ifdef __WXPYTHON__
     WX_PG_DECLARE_VARIANT_DATA_PTR(wxPGVariantDataPyObject, PyObject, WXDLLIMPEXP_PG)
    #endif
@@ -1210,6 +1263,8 @@ protected: \
     inline wxVariant wxPGVariantCreator(const wxArrayInt& a) { return wxVariant(new wxPGVariantDataArrayInt(a)); }
     inline wxVariant wxPGVariantCreator(const wxPoint& a) { return wxVariant(new wxPGVariantDataPoint(a)); }
     inline wxVariant wxPGVariantCreator(const wxSize& a) { return wxVariant(new wxPGVariantDataSize(a)); }
+    inline wxVariant wxPGVariantCreator(const wxLongLong& a) { return wxVariant(new wxPGVariantDataLongLong(a)); }
+    inline wxVariant wxPGVariantCreator(const wxULongLong& a) { return wxVariant(new wxPGVariantDataULongLong(a)); }
    #ifdef __WXPYTHON__
     inline wxVariant wxPGVariantCreator(PyObject* a) { return wxVariant(new wxPGVariantDataPyObject(a)); }
    #endif
@@ -1284,6 +1339,16 @@ public:
     }
     /** Constructor for wxSize. */
     wxPGVariant( const wxSize& v_ptr )
+    {
+        m_v.m_ptr = (void*)&v_ptr;
+    }
+    /** Constructor for wxLongLong. */
+    wxPGVariant( const wxLongLong& v_ptr )
+    {
+        m_v.m_ptr = (void*)&v_ptr;
+    }
+    /** Constructor for wxULongLong. */
+    wxPGVariant( const wxULongLong& v_ptr )
     {
         m_v.m_ptr = (void*)&v_ptr;
     }
@@ -1385,6 +1450,8 @@ public:
     #define wxPGVariantToDateTime(A)        *((wxDateTime*)A.GetVoidPtr())
     #define wxPGVariantToWxPoint(A)         *((wxPoint*)wxPGVariantToVoidPtr(A))
     #define wxPGVariantToWxSize(A)          *((wxSize*)wxPGVariantToVoidPtr(A))
+    #define wxPGVariantToWxLongLong(A)      *((wxLongLong*)wxPGVariantToVoidPtr(A))
+    #define wxPGVariantToWxULongLong(A)     *((wxULongLong*)wxPGVariantToVoidPtr(A))
     #define wxPGVariantToArrayInt(A)        *((wxArrayInt*)A.GetVoidPtr())
     #define wxPGVariantFromWxObject(A)      *((const wxObject*)A)
     #define wxPGVariantFromLong(A)          wxPGVariant(A)
@@ -1415,7 +1482,7 @@ public:
 
 #define WX_PG_DECLARE_CLASSINFO() \
     WX_PG_DECLARE_GETCLASSNAME \
-    WX_PG_DECLARE_GETCLASSINFO \
+    WX_PG_DECLARE_GETCLASSINFO
 
 // We don't want to create SWIG interface for DoGetEditorClass (we'll use GetEditor instead)
 #ifndef SWIG
@@ -1920,7 +1987,14 @@ public:
         return (( m_y >= -1 )?true:false);
     }
 
-    inline bool IsFlagSet( unsigned char flag ) const
+	typedef short FlagType;
+#ifndef __WXPYTHON__
+    typedef void* ClientDataType;
+#else
+    typedef PyObject* ClientDataType;
+#endif
+
+    inline bool IsFlagSet( FlagType flag ) const
     {
         return ( m_flags & flag ) ? true : false;
     }
@@ -1930,7 +2004,7 @@ public:
         return ( m_flags & wxPG_PROP_UNSPECIFIED ) ? true : false;
     }
 
-    inline bool HasFlag( unsigned char flag ) const
+    bool HasFlag( FlagType flag ) const
     {
         return ( m_flags & flag ) ? true : false;
     }
@@ -1950,7 +2024,7 @@ public:
     /** Returns property's data extension (NULL if none). */
     inline wxPGPropertyDataExt* GetDataExt() { return m_dataExt; }
 
-    inline unsigned int GetFlags() const
+    unsigned int GetFlags() const
     {
         return (unsigned int)m_flags;
     }
@@ -2078,7 +2152,7 @@ public:
     */
     void SetChoicesExclusive();
 
-    inline void SetFlag( unsigned char flag ) { m_flags |= flag; }
+    void SetFlag( FlagType flag ) { m_flags |= flag; }
 
     inline void SetHelpString( const wxString& helpString )
     {
@@ -2134,13 +2208,21 @@ public:
     bool PrepareValueForDialogEditing( wxPropertyGrid* propgrid );
 
 #if wxPG_USE_CLIENT_DATA
-    inline void* GetClientData() const { return m_clientData; }
+    inline ClientDataType GetClientData() const { return m_clientData; }
 
     /** Sets client data (void*) of a property.
         \remarks
         This untyped client data has to be deleted manually.
     */
-    inline void SetClientData( void* clientData ) { m_clientData = clientData; }
+    inline void SetClientData( ClientDataType clientData )
+    {
+#ifdef __WXPYTHON__
+        if ( m_clientData )
+            Py_DECREF( m_clientData );
+        Py_INCREF( clientData );
+#endif
+        m_clientData = clientData;
+    }
 #endif
 
     /** Sets new set of choices for property.
@@ -2163,7 +2245,7 @@ public:
         return wxEmptyString;
     }
 
-    inline void ClearFlag( unsigned char flag ) { m_flags &= ~(flag); }
+    void ClearFlag( FlagType flag ) { m_flags &= ~(flag); }
 
     // Use, for example, to detect if item is inside collapsed section.
     bool IsSomeParent( wxPGProperty* candidate_parent ) const;
@@ -2186,7 +2268,7 @@ protected:
     wxString                    m_name;
     wxPGPropertyWithChildren*   m_parent;
 #if wxPG_USE_CLIENT_DATA
-    void*                       m_clientData;
+    ClientDataType              m_clientData;
 #endif
     wxPGPropertyDataExt*        m_dataExt; // Optional data extension.
     unsigned int                m_arrIndex; // Index in parent's property array.
@@ -2198,7 +2280,7 @@ protected:
                                           // Anyway, we had 3 excess bytes to use so short int will fit in
                                           // just fine.
 
-    unsigned char               m_flags; // This could be short int for increased flag capacity.
+    FlagType                    m_flags;
 
     // 1 = category
     // 0 = no children
@@ -2656,7 +2738,11 @@ public:
     inline int Index( const wxString& str ) const { return m_data->m_arrLabels.Index(str); }
 
     /** Inserts single item. */
+#if wxCHECK_VERSION(2,9,0)
+    void Insert( const wxString& label, int index, int value = wxPG_INVALID_VALUE );
+#else
     void Insert( const wxChar* label, int index, int value = wxPG_INVALID_VALUE );
+#endif
 
     // Returns data, increases refcount.
     inline wxPGChoicesData* GetData()
@@ -2861,6 +2947,10 @@ extern WXDLLIMPEXP_PG wxPGPropertyClassInfo wxPropertyCategoryClassInfo;
 #endif // DOXYGEN
 
 
+#ifndef wxDynamicCastVariantData
+    #define wxDynamicCastVariantData wxDynamicCast
+#endif
+
 // FIXME: Should this be out-of-inline?
 inline wxObject* wxPG_VariantToWxObject( wxVariant& variant, wxClassInfo* classInfo )
 {
@@ -2868,8 +2958,9 @@ inline wxObject* wxPG_VariantToWxObject( wxVariant& variant, wxClassInfo* classI
         return (wxObject*) NULL;
     wxVariantData* vdata = variant.GetData();
 
-    if ( vdata->IsKindOf( &wxPGVariantDataWxObj::ms_classInfo ) )
-         return (wxObject*) ((wxPGVariantDataWxObj*)vdata)->GetValuePtr();
+    wxPGVariantDataWxObj* vdataWxObj = wxDynamicCastVariantData(vdata, wxPGVariantDataWxObj);
+    if ( vdataWxObj )
+        return (wxObject*) vdataWxObj->GetValuePtr();
 
     return variant.GetWxObjectPtr();
 }
@@ -3076,8 +3167,20 @@ public:
         SetPropertyValue( p, wxPG_VALUETYPE(PyObject), wxPGVariantCreator(value) );
     }
 #endif
+    /** Sets value (wxLongLong&) of a property. */
+    inline void SetPropertyValueLongLong( wxPGProperty* p, const wxLongLong& value )
+    {
+        wxASSERT(p);
+        SetPropertyValue( p, wxT("wxLongLong"), wxPGVariantCreator(value) );
+    }
+    /** Sets value (wxULongLong&) of a property. */
+    inline void SetPropertyValueULongLong( wxPGProperty* p, const wxULongLong& value )
+    {
+        wxASSERT(p);
+        SetPropertyValue( p, wxT("wxULongLong"), wxPGVariantCreator(value) );
+    }
 
-    void SetPropertyValues( const wxList& list, wxPGId default_category );
+    void SetPropertyValues( const wxVariantList& list, wxPGId default_category );
 
     void SetPropertyUnspecified( wxPGProperty* p );
 
@@ -3202,6 +3305,25 @@ public:
     {
         wxPG_PROP_NAME_CALL_PROLOG()
         AddPropertyChoice(wxPGIdGen(p),label,value);
+    }
+
+    /** Inorder to add new items into a property with fixed children (for instance, wxFlagsProperty),
+        you need to call this method. After populating has been finished, you need to call EndAddChildren.
+    */
+    void BeginAddChildren( wxPGId id );
+    inline void BeginAddChildren( wxPGPropNameStr name )
+    {
+        wxPG_PROP_NAME_CALL_PROLOG()
+        BeginAddChildren(wxPGIdGen(p));
+    }
+
+    /** Called after population of property with fixed children has finished.
+    */
+    void EndAddChildren( wxPGId id );
+    inline void EndAddChildren( wxPGPropNameStr name )
+    {
+        wxPG_PROP_NAME_CALL_PROLOG()
+        EndAddChildren(wxPGIdGen(p));
     }
 
     /** Inserts choice to a property that can accept one.
@@ -3360,13 +3482,13 @@ public:
 
 #if wxPG_USE_CLIENT_DATA
     /** Returns client data (void*) of a property. */
-    inline void* GetPropertyClientData( wxPGId id ) const
+    inline wxPGProperty::ClientDataType GetPropertyClientData( wxPGId id ) const
     {
         wxPG_PROP_ID_CALL_PROLOG_RETVAL(NULL)
         return p->GetClientData();
     }
     /** Returns client data (void*) of a property. */
-    inline void* GetPropertyClientData( wxPGPropNameStr name ) const
+    inline wxPGProperty::ClientDataType GetPropertyClientData( wxPGPropNameStr name ) const
     {
         wxPG_PROP_NAME_CALL_PROLOG_RETVAL(NULL)
         return p->GetClientData();
@@ -3589,6 +3711,34 @@ public:
     {
         wxPG_PROP_ID_GETPROPVAL_CALL_PROLOG_RETVAL(wxT("wxSize"), wxSize())
         return wxPGVariantToWxSize(p->DoGetValue());
+    }
+#endif
+
+#if !wxPG_PGVARIANT_IS_VARIANT
+    wxPG_PYTHON_STATIC inline const wxLongLong& GetPropertyValueAsLongLong( wxPGId id ) wxPG_GETVALUE_CONST
+    {
+        wxPG_PROP_ID_GETPROPVAL_CALL_PROLOG_RETVAL(wxT("wxLongLong"), *((const wxLongLong*)NULL))
+        return wxPGVariantToWxLongLong(p->DoGetValue());
+    }
+#else
+    wxPG_PYTHON_STATIC inline wxLongLong GetPropertyValueAsLongLong( wxPGId id ) wxPG_GETVALUE_CONST
+    {
+        wxPG_PROP_ID_GETPROPVAL_CALL_PROLOG_RETVAL(wxT("wxLongLong"), wxLongLong())
+        return wxPGVariantToWxLongLong(p->DoGetValue());
+    }
+#endif
+
+#if !wxPG_PGVARIANT_IS_VARIANT
+    wxPG_PYTHON_STATIC inline const wxULongLong& GetPropertyValueAsULongLong( wxPGId id ) wxPG_GETVALUE_CONST
+    {
+        wxPG_PROP_ID_GETPROPVAL_CALL_PROLOG_RETVAL(wxT("wxULongLong"), *((const wxULongLong*)NULL))
+        return wxPGVariantToWxULongLong(p->DoGetValue());
+    }
+#else
+    wxPG_PYTHON_STATIC inline wxULongLong GetPropertyValueAsULongLong( wxPGId id ) wxPG_GETVALUE_CONST
+    {
+        wxPG_PROP_ID_GETPROPVAL_CALL_PROLOG_RETVAL(wxT("wxULongLong"), wxULongLong())
+        return wxPGVariantToWxULongLong(p->DoGetValue());
     }
 #endif
 
@@ -3978,25 +4128,8 @@ public:
         \endcode
         For more info, see wxPropertyGrid::Insert.
     */
-    inline wxPGId ReplaceProperty( wxPGId id, wxPGProperty* property )
-    {
-        wxPG_PROP_ID_CALL_PROLOG_RETVAL(wxNullProperty)
+    wxPGId ReplaceProperty( wxPGId id, wxPGProperty* property );
 
-        wxPGProperty* replaced = wxPGIdToPtr(id);
-        wxASSERT( replaced && property );
-        wxASSERT( replaced->GetParentingType() == 0 || replaced->GetParentingType() == -1 );
-        wxASSERT( !m_pState->IsInNonCatMode() );
-
-        // Get address to the slot
-        wxPGPropertyWithChildren* parent = replaced->GetParent();
-        int ind = replaced->GetIndexInParent();
-
-        wxPropertyGridState* state = replaced->GetParentState();
-        Delete(replaced); // Must use generic Delete
-        state->DoInsert(parent,ind,property);
-
-        return wxPGIdGen(property);
-    }
     inline wxPGId ReplaceProperty( wxPGPropNameStr name, wxPGProperty* property )
     {
         wxPG_PROP_NAME_CALL_PROLOG_RETVAL(wxNullProperty)
@@ -4101,7 +4234,7 @@ public:
         \remarks
         This untyped client data has to be deleted manually.
     */
-    inline void SetPropertyClientData( wxPGId id, void* clientData )
+    inline void SetPropertyClientData( wxPGId id, wxPGProperty::ClientDataType clientData )
     {
         wxPG_PROP_ID_CALL_PROLOG()
         p->SetClientData(clientData);
@@ -4110,7 +4243,7 @@ public:
         \remarks
         This untyped client data has to be deleted manually.
     */
-    inline void SetPropertyClientData( wxPGPropNameStr name, void* clientData )
+    inline void SetPropertyClientData( wxPGPropNameStr name, wxPGProperty::ClientDataType clientData )
     {
         wxPG_PROP_NAME_CALL_PROLOG()
         p->SetClientData(clientData);
@@ -4222,9 +4355,7 @@ public:
 #ifdef SWIG
     %pythoncode {
         def MapType(class_,factory):
-            "Registers Python type/class to property mapping."
-            ""
-            "factory: Property builder function/class."
+            "Registers Python type/class to property mapping.\n\nfactory: Property builder function/class."
             global _type2property
             try:
                 mappings = _type2property
@@ -4260,9 +4391,7 @@ public:
 
 
         def GetPropertyValue(self,p):
-            "Returns Python object value for property."
-            ""
-            "Caches getters on value type id basis for performance purposes."
+            "Returns Python object value for property.\n\nCaches getters on value type id basis for performance purposes."
             global _vt2getter
             vtid = self.GetPVTI(p)
             if not vtid:
@@ -4326,9 +4455,7 @@ public:
 
 
         def SetPropertyValue(self,p,v):
-            "Set property value from Python object."
-            ""
-            "Caches setters on value type id basis for performance purposes."
+            "Set property value from Python object.\n\nCaches setters on value type id basis for performance purposes."
             cls = self.__class__
             if not isinstance(v,basestring):
                 _vt2setter = cls._vt2setter
@@ -4359,6 +4486,10 @@ public:
                         setter = cls.SetPropertyValuePoint
                     elif vtn == 'wxSize':
                         setter = cls.SetPropertyValueSize
+                    elif vtn == 'wxLongLong':
+                        setter = cls.SetPropertyValueLongLong
+                    elif vtn == 'wxULongLong':
+                        setter = cls.SetPropertyValueULongLong
                     elif vtn.startswith('wx'):
                         setter = cls.SetPropertyValueWxObjectPtr
                     elif not vtn:
@@ -4431,8 +4562,7 @@ public:
 
 
         def SetPropertyValues(self,dict_):
-            "Sets property values from dict_, which can be either"
-            "dictionary or an object with __dict__ attribute."
+            "Sets property values from dict_, which can be either\ndictionary or an object with __dict__ attribute."
             ""
             "autofill: If true, keys with not relevant properties"
             "  are auto-created. For more info, see AutoFill."
@@ -4502,8 +4632,7 @@ public:
 
 
         def AutoFill(self,obj,parent=None):
-            "Clears properties and re-fills to match members and"
-            "values of given object or dictionary obj."
+            "Clears properties and re-fills to match members and\nvalues of given object or dictionary obj."
 
             self.edited_objects[parent] = obj
 
@@ -4539,7 +4668,7 @@ public:
 
 
         def RegisterEditor(self, editor, editorName=None):
-            "Transform class into instance, if necessary"
+            "Transform class into instance, if necessary."
             if not isinstance(editor, PGEditor):
                 editor = editor()
             if not editorName:
@@ -4553,13 +4682,37 @@ public:
     }
 #endif
 
+	/** Sets property as read-only. It's value cannot be changed by the user, but the
+	    editor may still be created for copying purposes.
+	*/
+	void SetPropertyReadOnly( wxPGId id, bool readOnly = true )
+	{
+        wxPG_PROP_ID_CALL_PROLOG()
+		if ( readOnly )
+			p->SetFlag(wxPG_PROP_READONLY);
+		else
+			p->ClearFlag(wxPG_PROP_READONLY);
+	}
+
+	/** Sets property as read-only. It's value cannot be changed by the user, but the
+	    editor may still be created for copying purposes.
+	*/
+	void SetPropertyReadOnly( wxPGPropNameStr name, bool readOnly = true )
+	{
+        wxPG_PROP_NAME_CALL_PROLOG()
+		if ( readOnly )
+			p->SetFlag(wxPG_PROP_READONLY);
+		else
+			p->ClearFlag(wxPG_PROP_READONLY);
+	}
+
     // GetPropertyByNameI With nice assertion error message.
     wxPGId GetPropertyByNameA( wxPGPropNameStr name ) const;
 
 #ifndef SWIG
 
     static wxPGEditor* GetEditorByName( const wxString& editorName );
-
+    
 protected:
 
     // Deriving classes must set this (it must be only or current page).
@@ -5496,9 +5649,11 @@ public:
     */
     void SetPropertyAttributeAll( int attrid, wxVariant value );
 
-    /** Sets background colour of property and all its children. Colours of
+    /** Sets background colour of property and all its children, recursively. Colours of
         captions are not affected. Background brush cache is optimized for often
         set colours to be set last.
+        \remarks
+        * Children which already have custom background colour are not affected.
     */
     void SetPropertyBackgroundColour( wxPGId id, const wxColour& col );
     inline void SetPropertyBackgroundColour( wxPGPropNameStr name, const wxColour& col )
@@ -5523,6 +5678,8 @@ public:
     }
 
     /** Sets text colour of property and all its children.
+        \remarks
+        * Children which already have custom text colour are not affected.
     */
     void SetPropertyTextColour( wxPGId id, const wxColour& col );
     inline void SetPropertyTextColour( wxPGPropNameStr name, const wxColour& col )
@@ -5731,6 +5888,18 @@ public:
     {
         SetPropertyValue( id, wxT("wxSize"), wxPGVariantCreator(value) );
     }
+    /** Sets value (wxLongLong&) of a property.
+    */
+    inline void SetPropertyValueLongLong( wxPGId id, const wxLongLong& value )
+    {
+        SetPropertyValue( id, wxT("wxLongLong"), wxPGVariantCreator(value) );
+    }
+    /** Sets value (wxULongLong&) of a property.
+    */
+    inline void SetPropertyValueULongLong( wxPGId id, const wxULongLong& value )
+    {
+        SetPropertyValue( id, wxT("wxULongLong"), wxPGVariantCreator(value) );
+    }
     /** Sets value (wxArrayInt&) of a property.
     */
     inline void SetPropertyValueArrint2( wxPGId id, const wxArrayInt& value )
@@ -5865,6 +6034,20 @@ public:
         wxPG_PROP_NAME_CALL_PROLOG()
         SetPropertyValueSize( wxPGIdGen(p), value );
     }
+    /** Sets value (wxLongLong&) of a property.
+    */
+    inline void SetPropertyValueLongLong( wxPGPropNameStr name, const wxLongLong& value )
+    {
+        wxPG_PROP_NAME_CALL_PROLOG()
+        SetPropertyValueLongLong( wxPGIdGen(p), value );
+    }
+    /** Sets value (wxULongLong&) of a property.
+    */
+    inline void SetPropertyValueULongLong( wxPGPropNameStr name, const wxULongLong& value )
+    {
+        wxPG_PROP_NAME_CALL_PROLOG()
+        SetPropertyValueULongLong( wxPGIdGen(p), value );
+    }
 #ifdef __WXPYTHON__
     inline void SetPropertyValuePyObject( wxPGPropNameStr name, PyObject* value )
     {
@@ -5888,7 +6071,7 @@ public:
         name is missing from the grid, new property is created under given default
         category (or root if omitted).
     */
-    void SetPropertyValues( const wxList& list, wxPGId default_category )
+    void SetPropertyValues( const wxVariantList& list, wxPGId default_category )
     {
         m_pState->SetPropertyValues(list,default_category);
     }
@@ -5897,7 +6080,7 @@ public:
     {
         SetPropertyValues(list.GetList(),default_category);
     }
-    inline void SetPropertyValues( const wxList& list, const wxString& default_category = wxEmptyString )
+    inline void SetPropertyValues( const wxVariantList& list, const wxString& default_category = wxEmptyString )
     {
         SetPropertyValues(list,GetPropertyByNameI(default_category));
     }
@@ -6222,6 +6405,8 @@ protected:
 #if wxPG_DOUBLE_BUFFER
     wxBitmap            *m_doubleBuffer;
 #endif
+
+    wxArrayPtrVoid      *m_windowsToDelete;
 
     /** Local time ms when control was created. */
     wxLongLong          m_timeCreated;
@@ -6551,7 +6736,7 @@ protected:
     static void RegisterDefaultValues();
 
     // Sets m_bgColIndex to this property and all its children.
-    void SetBackgroundColourIndex( wxPGProperty* p, int index );
+    void SetBackgroundColourIndex( wxPGProperty* p, int index, int flags );
 
     // Sets m_fgColIndex to this property and all its children.
     void SetTextColourIndex( wxPGProperty* p, int index, int flags );
@@ -6724,7 +6909,7 @@ public:
 
 #if wxPG_USE_CLIENT_DATA
     /** Returns client data of relevant property. */
-    void* GetPropertyClientData() const
+    wxPGProperty::ClientDataType GetPropertyClientData() const
     {
         wxASSERT( m_property );
         return m_property->GetClientData();

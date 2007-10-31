@@ -37,26 +37,6 @@ using namespace wxsFlags;
 
 namespace
 {
-    class wxsMyColourPropertyClass : public wxEnumPropertyClass
-    {
-            WX_PG_DECLARE_PROPERTY_CLASS()
-
-        public:
-
-            wxsMyColourPropertyClass(const wxString& label, const wxString& name,
-                const wxColourPropertyValue& value);
-            ~wxsMyColourPropertyClass();
-
-            WX_PG_DECLARE_BASIC_TYPE_METHODS()
-            WX_PG_DECLARE_EVENT_METHODS()
-            WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
-
-        protected:
-            wxColourPropertyValue   m_value;
-    };
-
-    WX_PG_DECLARE_PROPERTY(wxsMyColourProperty,const wxColourPropertyValue&,*((wxColourPropertyValue*)0))
-
     static const wxChar* wxsColourLabels[] = {
         _("Default"),
         _("Custom"),
@@ -90,10 +70,11 @@ namespace
         _("Gradient of active caption"),
         _("Gradnent of inactive caption"),
         _("Selected menu item"),
-        _("Menu bar")
+        _("Menu bar"),
+        0
     };
 
-    static const int wxsColourCount = sizeof(wxsColourLabels) / sizeof(wxsColourLabels[0]);
+    const int wxsColourCount = (sizeof(wxsColourLabels) / sizeof(wxsColourLabels[0])) - 1;
 
     static long wxsColourValues[] = {
         wxsCOLOUR_DEFAULT,
@@ -128,14 +109,26 @@ namespace
         wxSYS_COLOUR_GRADIENTACTIVECAPTION,
         wxSYS_COLOUR_GRADIENTINACTIVECAPTION,
         wxSYS_COLOUR_MENUHILIGHT,
-        wxSYS_COLOUR_MENUBAR
+        wxSYS_COLOUR_MENUBAR,
+        0
     };
 
-#if defined(wxPG_VERSION) && wxPG_VERSION > 1099
-    WX_PG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourProperty,wxEnumProperty,wxColourPropertyValue,const wxColourPropertyValue&,Choice)
-#else
-    WX_PG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourProperty,wxColourPropertyValue,const wxColourPropertyValue&,Choice)
-#endif
+    class wxsMyColourPropertyClass : public wxEnumPropertyClass
+    {
+        public:
+
+            wxsMyColourPropertyClass(const wxString& label, const wxString& name,
+                const wxColourPropertyValue& value);
+            ~wxsMyColourPropertyClass();
+
+            WX_PG_DECLARE_BASIC_TYPE_METHODS()
+            WX_PG_DECLARE_EVENT_METHODS()
+            WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
+
+        protected:
+
+            wxColourPropertyValue   m_value;
+    };
 
     wxsMyColourPropertyClass::wxsMyColourPropertyClass( const wxString& label, const wxString& name,
         const wxColourPropertyValue& value )
@@ -144,7 +137,8 @@ namespace
         wxPG_INIT_REQUIRED_TYPE(wxColourPropertyValue)
         m_value.m_type = value.m_type;
         m_value.m_colour = value.m_colour.Ok() ? value.m_colour : *wxWHITE;
-        DoSetValue ( m_value );
+        m_flags |= wxPG_PROP_STATIC_CHOICES;
+        DoSetValue(&m_value);
     }
 
     wxsMyColourPropertyClass::~wxsMyColourPropertyClass () { }
@@ -152,11 +146,11 @@ namespace
     void wxsMyColourPropertyClass::DoSetValue ( wxPGVariant value )
     {
         wxColourPropertyValue* pval = wxPGVariantToWxObjectPtr(value,wxColourPropertyValue);
+        m_flags &= ~(wxPG_PROP_UNSPECIFIED);
 
         if ( pval == (wxColourPropertyValue*) 0 )
         {
-            m_value.m_type = wxsCOLOUR_DEFAULT;
-            m_value.m_colour = *wxWHITE;
+            m_value.Init(wxsCOLOUR_DEFAULT,*wxWHITE);
         }
         else if ( pval != &m_value )
         {
@@ -176,7 +170,7 @@ namespace
 
     wxPGVariant wxsMyColourPropertyClass::DoGetValue () const
     {
-        return wxPGVariant(&m_value);
+        return wxPGVariantCreator(&m_value);
     }
 
     wxString wxsMyColourPropertyClass::GetValueAsString ( int ) const
@@ -188,11 +182,7 @@ namespace
                 (int)m_value.m_colour.Red(),(int)m_value.m_colour.Green(),(int)m_value.m_colour.Blue());
             return temp;
         }
-#if defined(wxPG_VERSION) && wxPG_VERSION > 1099
         return m_choices.GetLabel(m_index);
-#else
-        return m_constants->GetLabel(m_index);
-#endif
     }
 
     wxSize wxsMyColourPropertyClass::GetImageSize() const
@@ -200,13 +190,9 @@ namespace
         return wxSize(-1,-1);
     }
 
-    bool wxsMyColourPropertyClass::OnEvent ( wxPropertyGrid* propgrid, wxPGCtrlClass* primary, wxEvent& event )
+    bool wxsMyColourPropertyClass::OnEvent ( wxPropertyGrid* propgrid, wxWindow* primary, wxEvent& event )
     {
-        #if wxPG_USE_CUSTOM_CONTROLS
-            if ( event.GetEventType() == wxEVT_COMMAND_CHOICE_SELECTED )
-        #else
-            if ( event.GetEventType() == wxEVT_COMMAND_COMBOBOX_SELECTED )
-        #endif
+        if ( event.GetEventType() == wxEVT_COMMAND_COMBOBOX_SELECTED )
         {
             int type = wxEnumPropertyClass::DoGetValue().GetRawLong();
 
@@ -455,7 +441,7 @@ wxsColourProperty::wxsColourProperty(
 
 void wxsColourProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    PGRegister(Object,Grid,Grid->AppendIn(Parent,wxsMyColourProperty(GetPGName(),wxPG_LABEL,VALUE)));
+    PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxsMyColourPropertyClass(GetPGName(),wxPG_LABEL,VALUE)));
 }
 
 bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)

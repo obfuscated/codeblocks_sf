@@ -924,7 +924,7 @@ public:
     // helpers
     inline int GetItemAtPosition( const wxPoint& pos ) { return HitTest(pos); }
     inline wxCoord GetTotalHeight() const { return EstimateTotalHeight(); }
-    inline wxCoord GetLineHeight(int line) const { return OnGetLineHeight(line); }
+    inline wxCoord GetLineHeight(int line) const { return OnMeasureItem(line); }
 
 protected:
 
@@ -937,6 +937,8 @@ protected:
 
     // Re-calculates width for given item
     void CheckWidth( int pos );
+
+	virtual wxCoord OnGetRowHeight(size_t n) const { return OnMeasureItem(n); }
 
     // wxVListBox implementation
     virtual void OnDrawItem(wxDC& dc, const wxRect& rect, size_t n) const;
@@ -1075,6 +1077,14 @@ protected:
     virtual void* DoGetItemClientData(wxODCIndex n) const;
     virtual void DoSetItemClientObject(wxODCIndex n, wxClientData* clientData);
     virtual wxClientData* DoGetItemClientObject(wxODCIndex n) const;
+#if wxCHECK_VERSION(2,9,0)
+    virtual int DoInsertItems(const wxArrayStringsAdapter& items,
+                              unsigned int pos,
+                              void **clientData,
+                              wxClientDataType type);
+    virtual void DoClear() { Clear(); }
+    virtual void DoDeleteOneItem(unsigned int pos) { Delete(pos); }
+#endif
 
     // overload m_popupInterface member so we can access specific popup interface easier
     wxPGVListBoxComboPopup*     m_popupInterface;

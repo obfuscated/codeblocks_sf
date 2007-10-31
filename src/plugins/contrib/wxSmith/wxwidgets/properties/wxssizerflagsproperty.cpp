@@ -56,7 +56,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
         FLAGS &= ~BorderAll & ~BorderPrevAll;
     }
 
-    wxPGConstants PGC;
+    wxPGChoices PGC;
     PGC.Add(_("Top"),BorderTop);
     PGC.Add(_("Bottom"),BorderBottom);
     PGC.Add(_("Left"),BorderLeft);
@@ -64,13 +64,13 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     PGC.Add(_("All"),BorderAll);
     PGRegister(Object,Grid,ID1 = Grid->AppendIn(Parent,wxFlagsProperty(_("Border"),wxPG_LABEL,PGC,FLAGS&(BorderMask|BorderAll))),BORDERIND);
 
-    wxPGConstants PGC2;
+    wxPGChoices PGC2;
     PGC2.Add(_("Left"),AlignLeft);
     PGC2.Add(_("Center"),AlignCenterHorizontal);
     PGC2.Add(_("Right"),AlignRight);
     PGRegister(Object,Grid,ID2 = Grid->AppendIn(Parent,wxEnumProperty(_("Horizontal align"),wxPG_LABEL,PGC2,FLAGS&AlignHMask)),ALIGNHIND);
 
-    wxPGConstants PGC3;
+    wxPGChoices PGC3;
     PGC3.Add(_("Top"),AlignTop);
     PGC3.Add(_("Center"),AlignCenterVertical);
     PGC3.Add(_("Bottom"),AlignBottom);
@@ -80,12 +80,12 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     PGRegister(Object,Grid,ID5 = Grid->AppendIn(Parent,wxBoolProperty(_("Shaped"),wxPG_LABEL,(FLAGS&Shaped)!=0)),SHAPEDIND);
     PGRegister(Object,Grid,ID6 = Grid->AppendIn(Parent,wxBoolProperty(_("Fixed min size"),wxPG_LABEL,(FLAGS&FixedMinSize)!=0)),FIXEDIND);
 
-    Grid->SetPropertyAttribute(ID1,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
-    Grid->SetPropertyAttribute(ID2,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
-    Grid->SetPropertyAttribute(ID3,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
-    Grid->SetPropertyAttribute(ID4,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
-    Grid->SetPropertyAttribute(ID5,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
-    Grid->SetPropertyAttribute(ID6,wxPG_BOOL_USE_CHECKBOX,1L,wxRECURSE);
+    Grid->SetPropertyAttribute(ID1,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
+    Grid->SetPropertyAttribute(ID2,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
+    Grid->SetPropertyAttribute(ID3,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
+    Grid->SetPropertyAttribute(ID4,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
+    Grid->SetPropertyAttribute(ID5,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
+    Grid->SetPropertyAttribute(ID6,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
 }
 
 bool wxsSizerFlagsProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)

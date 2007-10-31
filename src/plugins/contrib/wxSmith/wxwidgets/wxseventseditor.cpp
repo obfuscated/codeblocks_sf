@@ -99,7 +99,7 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
 		wxArrayString Functions;
 		FindFunctions(Event->ArgType,Functions);
 
-        wxPGConstants Const;
+        wxPGChoices Const;
         Const.Add(NoneStr,0);
         Const.Add(AddNewStr,1);
 
