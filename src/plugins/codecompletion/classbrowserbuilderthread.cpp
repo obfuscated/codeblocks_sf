@@ -255,7 +255,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
     while (parent.IsOk() && existing.IsOk())
     {
         bool removeCurrent = false;
-        bool hasChildren = (tree->GetChildrenCount(existing) > 0);
+        bool hasChildren = tree->ItemHasChildren(existing);
         CBTreeData* data = (CBTreeData*)(tree->GetItemData(existing));
 
         if (tree == m_pTreeBottom)
