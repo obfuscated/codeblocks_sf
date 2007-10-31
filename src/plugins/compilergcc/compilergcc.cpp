@@ -323,8 +323,6 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerBCC);
     CompilerFactory::RegisterCompiler(new CompilerDMC);
     CompilerFactory::RegisterCompiler(new CompilerOW);
-    CompilerFactory::RegisterCompiler(new CompilerGNUARM);
-    CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
     CompilerFactory::RegisterCompiler(new CompilerGNUMSP430);
     CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
 #endif
