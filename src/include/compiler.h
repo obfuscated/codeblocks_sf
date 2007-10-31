@@ -236,6 +236,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         /** @brief Get the compiler's options */
         virtual const CompilerOptions& GetOptions() const { return m_Options; }
         /** @brief Get a command based on CommandType
+          * @param ct The command type to process
           * @param fileExtension the file's extension (no leading dot)
           */
         virtual const wxString& GetCommand(CommandType ct, const wxString& fileExtension = wxEmptyString) const;

@@ -57,6 +57,7 @@ class DLLIMPORT FilesGroupsAndMasks
           * \return The group's file masks */
         wxString GetFileMasks(unsigned int group) const;
         /** Return whether a file extension matches a file mask (group)
+          * \param ext The extension to query
           * \param group Group index to match
           * \return Extension matches the group in question? */
         bool MatchesMask(const wxString& ext, unsigned int group);
