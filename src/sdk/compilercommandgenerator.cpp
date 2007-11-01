@@ -540,6 +540,14 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
         for (unsigned int x = 0; x < searchDirs.GetCount(); ++x)
         {
             Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
+            
+            // also, normalize path (make absolute)
+            wxFileName fn(searchDirs[x]);
+            if (fn.IsRelative())
+            {
+				fn.MakeAbsolute(target->GetParentProject()->GetBasePath());
+				searchDirs[x] = fn.GetFullPath();
+            }
         }
         m_LinkerSearchDirs.insert(m_LinkerSearchDirs.end(), std::make_pair(target, searchDirs));
 
@@ -962,6 +970,8 @@ void CompilerCommandGenerator::SearchDirsFromBackticks(Compiler* compiler, Proje
 		size_t pos2 = btOutput.find(_T(' '), pos);
 		if (pos2 != pos)
 		{
+			// note that backtick'd expressions always return full paths so no need to
+			// re-normalize it here
 			if (pos2 == wxString::npos) // whole remaining string
 				m_LinkerSearchDirs[target].Add(btOutput.Mid(pos, btOutput.Length() - pos));
 			else
