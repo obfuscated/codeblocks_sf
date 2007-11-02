@@ -84,15 +84,10 @@ void DebuggerState::SetupBreakpointIndices()
 // Just adjust the path separators...
 wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
 {
-	// reportedly (and rightfully) this breaks debugging in some cases
-	// (see bug #12211)
-	// let's see what happens if we just feed the filename as passed
-	
-//    wxString fname = filename;
-//    fname.Replace(_T("\\"), _T("/"));
-//    return fname;
-    return filename;
-}
+    wxString fname = filename;
+    fname.Replace(_T("\\"), _T("/"));
+    return fname;
+} // end of ConvertToValidFilename
 
 cbProject* DebuggerState::FindProjectForFile(const wxString& file)
 {
