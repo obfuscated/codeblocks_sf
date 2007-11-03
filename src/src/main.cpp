@@ -1518,7 +1518,7 @@ bool MainFrame::DoCloseCurrentWorkspace()
 void MainFrame::DoCreateStatusBar()
 {
 #if wxUSE_STATUSBAR
-    const int num = 6;
+    const int num = 7;
     wxCoord width[num];
     CreateStatusBar(num);
 
@@ -1538,6 +1538,7 @@ void MainFrame::DoCreateStatusBar()
     dc.GetTextExtent(_(" Modified"),   &width[4], &h);
   #endif
     dc.GetTextExtent(_(" Read/Write....."), &width[5], &h);
+    dc.GetTextExtent(_(" default "), &width[6], &h);
 
     SetStatusWidths(num, width);
 #endif // wxUSE_STATUSBAR
@@ -1549,6 +1550,7 @@ void MainFrame::DoUpdateStatusBar()
     if (!GetStatusBar())
         return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
     if (ed)
     {
         int panel = 0;
@@ -1561,11 +1563,13 @@ void MainFrame::DoUpdateStatusBar()
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
         SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
         SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
+        SetStatusText(personality, panel++);
     }
     else
     {
         int panel = 0;
         SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
+        SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
