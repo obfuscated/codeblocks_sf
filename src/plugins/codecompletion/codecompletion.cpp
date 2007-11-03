@@ -598,7 +598,7 @@ int CodeCompletion::CodeComplete()
                     HighlightLanguage lang = theme->GetLanguageForFilename(_T(".")+wxFileName(ed->GetFilename()).GetExt());
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
                     // but this is now configurable in global settings
-                    for (int i = 0; i < 9; ++i)
+                    for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
                     {
                         if (!m_LexerKeywordsToInclude[i])
                             continue;
