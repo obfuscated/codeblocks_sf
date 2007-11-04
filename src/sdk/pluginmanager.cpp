@@ -217,8 +217,8 @@ bool PluginManager::DetachPlugin(cbPlugin* plugin)
     if (!plugin->IsAttached())
         return true;
 
-    plugin->Release(Manager::IsAppShuttingDown());
     Manager::Get()->RemoveAllEventSinksFor(plugin);
+    plugin->Release(Manager::IsAppShuttingDown());
     return true;
 }
 
