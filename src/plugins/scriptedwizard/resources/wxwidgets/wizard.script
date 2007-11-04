@@ -625,6 +625,7 @@ function SetupProject(project)
                 project.AddCompilerOption(_T("-DWXUSINGDLL"));
             if (IsUnicode)
                 project.AddCompilerOption(_T("-DwxUSE_UNICODE"));
+            project.AddCompilerOption(_T("[[if (PLATFORM == PLATFORM_MSW && (GetCompilerFactory().GetCompilerVersionString(_T(\"gcc\")) >= _T(\"4.0.0\"))) print(_T(\"-Wno-attributes\"));]]"));
         }
         else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc*")))
         {
@@ -879,7 +880,9 @@ function SetupTarget(target, is_debug)
 
         /* Modified and added */
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")) && is_debug)
+        {
             target.AddCompilerOption(_T("/D__WXDEBUG__")); // For Debug Build
+        }
         else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")) && is_debug)
         {
             target.AddCompilerOption(_T("-D__WXDEBUG__"));
