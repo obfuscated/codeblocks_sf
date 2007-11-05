@@ -1406,16 +1406,23 @@ void CodeCompletion::OnEditorActivated(CodeBlocksEvent& event)
 
 void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 {
-    // clear toolbar when closing editor
-    m_Function->Clear();
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
-    wxString filename(wxEmptyString);
-    if(ed)
-        filename = ed->GetFilename();
+    EditorManager* edm = Manager::Get()->GetEditorManager();
 
-    m_AllFunctionsScopes[filename].m_FunctionsScope.clear();
-    m_AllFunctionsScopes[filename].m_NameSpaces.clear();
-    m_AllFunctionsScopes[filename].parsed = false;
+    // we need to clear CC toolbar only when we are closing last editor
+    // in other situations OnEditorActivated does this job
+    if(edm->GetEditorsCount() == 1)
+    {
+        // clear toolbar when closing last editor
+        m_Function->Clear();
+        cbEditor* ed = edm->GetBuiltinEditor(event.GetEditor());
+        wxString filename(wxEmptyString);
+        if(ed)
+            filename = ed->GetFilename();
+
+        m_AllFunctionsScopes[filename].m_FunctionsScope.clear();
+        m_AllFunctionsScopes[filename].m_NameSpaces.clear();
+        m_AllFunctionsScopes[filename].parsed = false;
+    }
 
     event.Skip();
 }
