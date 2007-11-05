@@ -456,7 +456,16 @@ void GDB_driver::Start(bool breakOnEntry)
         if (!Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("do_not_run"), false))
         {
             // start the process
-            QueueCommand(new DebuggerCmd(this, remoteDebugging ? _T("continue") : _T("start")));
+            if(breakOnEntry)
+            {
+                QueueCommand(new DebuggerCmd(this, remoteDebugging ? _T("continue") : _T("start")));
+            }
+            else
+            {
+                // if breakOnEntry is not set, we need to use 'run' to make gdb stop at a breakpoint at first instruction
+                m_ManualBreakOnEntry=false;  // must be reset or gdb does not stop at first breakpoint
+                QueueCommand(new DebuggerCmd(this, remoteDebugging ? _T("continue") : _T("run")));
+            }
             m_IsStarted = true;
         }
     }
@@ -971,13 +980,15 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak, wxString line)
     {
         if (m_ManualBreakOnEntry)
         {
-            m_ManualBreakOnEntry = false;
             QueueCommand(new GdbCmd_InfoProgram(this), DebuggerDriver::High);
-            if (!m_BreakOnEntry)
-                Continue();
+        }
+        if (m_ManualBreakOnEntry && !m_BreakOnEntry)
+        {
+            Continue();
         }
         else
         {
+            m_ManualBreakOnEntry = false;
             wxString lineStr;
             if(platform::windows)
             {
