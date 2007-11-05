@@ -278,8 +278,22 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
     if (!m_Args.IsEmpty())
         QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
 
-    // if performing remote debugging, now is a good time to try and connect to the target :)
     RemoteDebugging* rd = GetRemoteDebuggingInfo();
+	
+	// send additional gdb commands before establishing remote connection
+    if (rd)
+    {
+        if (!rd->additionalCmdsBefore.IsEmpty())
+        {
+            wxArrayString initCmds = GetArrayFromString(rd->additionalCmdsBefore, _T('\n'));
+            for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+            {
+                QueueCommand(new DebuggerCmd(this, initCmds[i]));
+            }
+        }
+    }
+    
+    // if performing remote debugging, now is a good time to try and connect to the target :)
     if (rd && rd->IsOk())
     {
         if (rd->connType == RemoteDebugging::Serial)

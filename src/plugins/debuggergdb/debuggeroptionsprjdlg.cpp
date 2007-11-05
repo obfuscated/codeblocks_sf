@@ -92,6 +92,8 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
 		XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(rd.ip);
 		XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(rd.ipPort);
 		XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(rd.additionalCmds);
+		XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->SetValue(rd.additionalCmdsBefore);
+		XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->SetValue(rd.skipLDpath);
 	}
 	else
 	{
@@ -101,6 +103,8 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
 		XRCCTRL(*this, "txtIP", wxTextCtrl)->SetValue(wxEmptyString);
 		XRCCTRL(*this, "txtPort", wxTextCtrl)->SetValue(wxEmptyString);
 		XRCCTRL(*this, "txtCmds", wxTextCtrl)->SetValue(wxEmptyString);
+		XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->SetValue(wxEmptyString);
+		XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->SetValue(false);
 	}
 }
 
@@ -125,6 +129,8 @@ void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
 	rd.ip = XRCCTRL(*this, "txtIP", wxTextCtrl)->GetValue();
 	rd.ipPort = XRCCTRL(*this, "txtPort", wxTextCtrl)->GetValue();
 	rd.additionalCmds = XRCCTRL(*this, "txtCmds", wxTextCtrl)->GetValue();
+	rd.additionalCmdsBefore = XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->GetValue();
+	rd.skipLDpath = XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->GetValue();
 }
 
 void DebuggerOptionsProjectDlg::OnTargetSel(wxCommandEvent& event)
@@ -197,6 +203,8 @@ void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "txtIP", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtPort", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "txtCmds", wxTextCtrl)->Enable(en);
+    XRCCTRL(*this, "txtCmdsBefore", wxTextCtrl)->Enable(en);
+	XRCCTRL(*this, "chkSkipLDpath", wxCheckBox)->Enable(en);
 }
 
 void DebuggerOptionsProjectDlg::OnApply()

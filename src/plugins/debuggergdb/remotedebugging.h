@@ -16,6 +16,8 @@ struct RemoteDebugging
 		Serial
 	};
 
+	RemoteDebugging() : skipLDpath(false) {}
+	
 	bool IsOk()
 	{
 		return connType == Serial
@@ -28,7 +30,9 @@ struct RemoteDebugging
 	wxString serialBaud;
 	wxString ip;
 	wxString ipPort;
-	wxString additionalCmds;
+	wxString additionalCmds; ///< commands after remote connection established
+	wxString additionalCmdsBefore; ///< commands before establishing remote connection
+	bool skipLDpath; ///< skip adjusting LD_LIBRARY_PATH before launching debugger
 };
 
 typedef std::map<ProjectBuildTarget*, RemoteDebugging> RemoteDebuggingMap;

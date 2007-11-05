@@ -685,6 +685,10 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                         rd.ipPort = cbC2U(rdOpt->Attribute("ip_port"));
                     if (rdOpt->Attribute("additional_cmds"))
                         rd.additionalCmds = cbC2U(rdOpt->Attribute("additional_cmds"));
+                    if (rdOpt->Attribute("additional_cmds_before"))
+                        rd.additionalCmdsBefore = cbC2U(rdOpt->Attribute("additional_cmds_before"));
+                    if (rdOpt->Attribute("skip_ld_path"))
+                        rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != _T("0");
 
                     m_RemoteDebugging.insert(m_RemoteDebugging.end(), std::make_pair(bt, rd));
                 }
@@ -738,6 +742,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
                 tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
                 tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
+                tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
+                tgtnode->SetAttribute("skip_ld_path", rd.skipLDpath ? "1" : "0");
             }
         }
     }
@@ -1239,22 +1245,30 @@ int DebuggerGDB::DoDebug()
     else // m_PidToAttach != 0
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach);
 
+	RemoteDebugging* rd = 0;
+	RemoteDebuggingMap::iterator it = m_RemoteDebugging.find(target);
+	if (it != m_RemoteDebugging.end())
+		rd = &it->second;
+		
     wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
-    wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
+	if (!rd || !rd->skipLDpath)
+	{
+		wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
 
-    // setup dynamic linker path
-    if (actualCompiler && target)
-    {
-        wxString newLibPath;
-        const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-        newLibPath << _T(".") << libPathSep;
-        newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
-        if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
-            newLibPath << libPathSep;
-        newLibPath << oldLibPath;
-        wxSetEnv(LIBRARY_ENVVAR, newLibPath);
-        DebugLog(LIBRARY_ENVVAR _T("=") + newLibPath);
-    }
+		// setup dynamic linker path
+		if (actualCompiler && target)
+		{
+			wxString newLibPath;
+			const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+			newLibPath << _T(".") << libPathSep;
+			newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
+			if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+				newLibPath << libPathSep;
+			newLibPath << oldLibPath;
+			wxSetEnv(LIBRARY_ENVVAR, newLibPath);
+			DebugLog(LIBRARY_ENVVAR _T("=") + newLibPath);
+		}
+	}
 
     // start the gdb process
     wxString wdir = m_pProject ? m_pProject->GetBasePath() : _T(".");
@@ -1262,8 +1276,11 @@ int DebuggerGDB::DoDebug()
     DebugLog(_T("Working dir : ") + wdir);
     int ret = LaunchProcess(cmdline, wdir);
 
-    // restore dynamic linker path
-    wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
+	if (!rd || !rd->skipLDpath)
+	{
+		// restore dynamic linker path
+		wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
+	}
 
     if (ret != 0)
     {
@@ -1274,6 +1291,20 @@ int DebuggerGDB::DoDebug()
     wxString out;
     // start polling gdb's output
     m_TimerPollDebugger.Start(20);
+    
+    // although I don't really like these do-nothing loops, we must wait a small amount of time
+    // for gdb to see if it really started: it may fail to load shared libs or whatever
+    // the reason this is added is because I had a case where gdb would error and bail out
+    // *while* the driver->Prepare() call was running below and hell broke loose...
+    int i = 50;
+    while (i)
+    {
+		wxMilliSleep(1);
+		Manager::Yield();
+		--i;
+    }
+    if (!m_State.HasDriver())
+		return -1;
 
     m_State.GetDriver()->Prepare(target, target && target->GetTargetType() == ttConsoleOnly);
     m_State.ApplyBreakpoints();
