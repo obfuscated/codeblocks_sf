@@ -312,6 +312,12 @@ public:
 
     bool Valid() const { return value != ((unsigned) -1); };
     bool operator!() const { return !Valid(); };
+
+    friend bool operator==(ID a, ID b)    { return a.value      == b.value; };
+    friend bool operator==(ID a, int b)   { return a.value      == (unsigned) b; };
+
+    friend bool operator!=(ID a, ID b)    { return a.value      != b.value; };
+    friend bool operator!=(ID a, int b)   { return a.value      != (unsigned) b; };
 };
 
 
