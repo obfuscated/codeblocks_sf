@@ -43,7 +43,7 @@ class wxsPropertyContainer;
 /** \brief Class representing one property
  *
  * Property is object around real variable(s) which is responsible
- * for streaming it. Currently there are three strammings supported:
+ * for streaming it. Currently there are thre streamings supported:
  * - Streaming to/from PropertyGrid - this will be used in
  *   property editor
  * - Streaming to/from Xml structure - this kind of streaming will be
@@ -54,7 +54,7 @@ class wxsPropertyContainer;
  * - Streaming to/from property stream (interface modelled in wxsPropertyStream)
  *
  * Property object is build independently from class instance. Each operating
- * function takes pointer to class as argument.
+ * function takes pointer to such class as argument.
  *
  * Some properties provide additional functions operating on data. In some cases
  * data is not stored directly but must be stored in modified form. These

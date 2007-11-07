@@ -4,7 +4,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
-		-I$(top_srcdir)/src/include/propgrid/include
+		-I$(top_srcdir)/src/plugins/contrib/propgrid/include
 
 lib_LTLIBRARIES = libwxsmith.la
 

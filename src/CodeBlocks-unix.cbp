@@ -112,18 +112,6 @@
 					<Add directory="include/wxFlatNotebook/include" />
 				</Compiler>
 			</Target>
-			<Target title="wxPropertyGrid">
-				<Option output="sdk/propgrid/libpropgrid.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Option projectResourceIncludeDirsRelation="2" />
-				<Compiler>
-					<Add option="-DWXMAKINGLIB_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
-					<Add directory="include/propgrid/include" />
-				</Compiler>
-			</Target>
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
@@ -138,7 +126,6 @@
 					<Add directory="include/scripting/bindings" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
-					<Add directory="include/propgrid/include" />
 					<Add directory="include/wxFlatNotebook/include" />
 				</Compiler>
 				<Linker>
@@ -396,9 +383,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxPropertyGrid;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;To-do;Autosave;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;To-do;Autosave;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;To-do;Autosave;" />
-			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxPropertyGrid;wxAUI;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxAUI;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -689,27 +676,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/projecttemplateloader.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/advprops.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/extras.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/manager.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/odcombo.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/pg_dox_mainpage.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/propdev.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/propgrid/include/wx/propgrid/propgrid.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/replacedlg.h">
@@ -1910,7 +1876,6 @@
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
 			<Option target="wxFlatNotebook" />
-			<Option target="wxPropertyGrid" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
 			<Option target="src" />
@@ -2143,24 +2108,6 @@
 		<Unit filename="sdk/projecttemplateloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/advprops.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/extras.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/manager.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/odcombo.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/propgrid.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk/propgrid/src/propgrid/props.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
 		<Unit filename="sdk/replacedlg.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2218,7 +2165,6 @@
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
 			<Option target="wxFlatNotebook" />
-			<Option target="wxPropertyGrid" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
 			<Option target="src" />
@@ -3195,7 +3141,6 @@
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
 			<Option target="wxFlatNotebook" />
-			<Option target="wxPropertyGrid" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
 			<Option target="src" />

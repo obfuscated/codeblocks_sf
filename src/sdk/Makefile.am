@@ -1,4 +1,4 @@
-SUBDIRS = scripting wxscintilla propgrid wxFlatNotebook resources
+SUBDIRS = scripting wxscintilla wxFlatNotebook resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
@@ -6,8 +6,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include/tinyxml \
 			-I$(top_srcdir)/src/include/scripting/include \
 			-I$(top_srcdir)/src/include/scripting/sqplus \
-			-I$(top_srcdir)/src/include/wxFlatNotebook/include \
-			-I$(top_srcdir)/src/include/propgrid/include
+			-I$(top_srcdir)/src/include/wxFlatNotebook/include
 
 lib_LTLIBRARIES = libcodeblocks.la
 
@@ -20,8 +19,7 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 			scripting/squirrel/libsquirrel.la \
 			../base/tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la \
-			wxFlatNotebook/libwxflatnotebook.la \
-			propgrid/libpropgrid.la
+			wxFlatNotebook/libwxflatnotebook.la
 
 libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						autodetectcompilers.cpp \

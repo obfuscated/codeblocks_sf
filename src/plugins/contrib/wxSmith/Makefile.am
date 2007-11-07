@@ -1,4 +1,4 @@
-SUBDIRS = properties wxwidgets . plugin
+SUBDIRS = propgrid properties wxwidgets . plugin
 
 AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID
 
@@ -6,15 +6,17 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
-		-I$(top_srcdir)/src/include/propgrid/include
+		-I$(top_srcdir)/src/plugins/contrib/wxSmith/propgrid/contrib/include
 
 lib_LTLIBRARIES = libwxsmithlib.la
 
 libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared
 
-libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
+libwxsmithlib_la_LIBADD = $(PLUGIN_WX_LIBS) \
+				../../../sdk/libcodeblocks.la \
 				properties/libwxsmith_properties.la \
-				wxwidgets/libwxsmith_wxwidgets.la
+				wxwidgets/libwxsmith_wxwidgets.la \
+				propgrid/libpropgrid.la
 
 libwxsmithlib_la_SOURCES = \
 ./wxsadvqpp.cpp \

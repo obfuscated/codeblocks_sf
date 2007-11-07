@@ -115,19 +115,6 @@
 					<Add library="gdi32" />
 				</Linker>
 			</Target>
-			<Target title="wxPropertyGrid">
-				<Option output="sdk\propgrid\libpropgrid.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-DWXMAKINGLIB_PROPGRID" />
-					<Add option="-DwxPG_USE_WXMODULE=0" />
-				</Compiler>
-				<Linker>
-					<Add option="-r" />
-				</Linker>
-			</Target>
 			<Target title="wxFlatNotebook">
 				<Option output="sdk\wxFlatNotebook\libwxflatnotebook.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
@@ -165,14 +152,12 @@
 					<Add library="libshfolder.a" />
 					<Add library="libtxml.a" />
 					<Add library="libwxscintilla.a" />
-					<Add library="propgrid" />
 					<Add library="wxflatnotebook" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />
 					<Add directory="devel" />
 					<Add directory="sdk\scripting\lib" />
-					<Add directory="sdk\propgrid" />
 					<Add directory="sdk\wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
@@ -475,9 +460,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;Projects-workspaces importer;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;Projects-workspaces importer;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;" />
-			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxPropertyGrid;wxFlatNotebook;wxAUI;Compiler depslib;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;wxFlatNotebook;wxAUI;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -497,7 +482,6 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="include\wxscintilla\include" />
-			<Add directory="include\propgrid\include" />
 			<Add directory="include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
@@ -780,27 +764,6 @@
 		</Unit>
 		<Unit filename="include\projecttemplateloader.h">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\advprops.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\extras.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\manager.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\odcombo.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\pg_dox_mainpage.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\propdev.h">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="include\propgrid\include\wx\propgrid\propgrid.h">
-			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="include\replacedlg.h">
 			<Option target="sdk" />
@@ -1897,7 +1860,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2134,24 +2096,6 @@
 		<Unit filename="sdk\projecttemplateloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk\propgrid\src\propgrid\advprops.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk\propgrid\src\propgrid\extras.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk\propgrid\src\propgrid\manager.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk\propgrid\src\propgrid\odcombo.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk\propgrid\src\propgrid\propgrid.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
-		<Unit filename="sdk\propgrid\src\propgrid\props.cpp">
-			<Option target="wxPropertyGrid" />
-		</Unit>
 		<Unit filename="sdk\replacedlg.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2163,7 +2107,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2188,7 +2131,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2213,7 +2155,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2241,7 +2182,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2266,7 +2206,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2291,7 +2230,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2316,7 +2254,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2341,7 +2278,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2366,7 +2302,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2391,7 +2326,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2416,7 +2350,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2441,7 +2374,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2466,7 +2398,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2494,7 +2425,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2525,7 +2455,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2550,7 +2479,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2575,7 +2503,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2600,7 +2527,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2625,7 +2551,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2650,7 +2575,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2675,7 +2599,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2700,7 +2623,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2725,7 +2647,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2750,7 +2671,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2775,7 +2695,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2800,7 +2719,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2825,7 +2743,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2850,7 +2767,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2875,7 +2791,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2900,7 +2815,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2925,7 +2839,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2950,7 +2863,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -2975,7 +2887,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3000,7 +2911,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3025,7 +2935,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3050,7 +2959,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3075,7 +2983,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3100,7 +3007,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3125,7 +3031,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3150,7 +3055,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3175,7 +3079,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3200,7 +3103,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3225,7 +3127,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3250,7 +3151,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3275,7 +3175,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3300,7 +3199,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3325,7 +3223,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3350,7 +3247,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3375,7 +3271,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3400,7 +3295,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3425,7 +3319,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3450,7 +3343,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3475,7 +3367,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3500,7 +3391,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -3528,7 +3418,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4117,7 +4006,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4142,7 +4030,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4167,7 +4054,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4192,7 +4078,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4217,7 +4102,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4242,7 +4126,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4267,7 +4150,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />
@@ -4292,7 +4174,6 @@
 			<Option target="Squirrel std lib" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxPropertyGrid" />
 			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
 			<Option target="wxAUI" />

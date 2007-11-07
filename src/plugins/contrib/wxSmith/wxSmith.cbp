@@ -8,7 +8,16 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Script file="..\..\..\cbgcc420.script" />
+			<Target title="wxPropertyGrid">
+				<Option platforms="Windows;" />
+				<Option output="propgrid\libpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+			</Target>
 			<Target title="wxSmithLib">
+				<Option platforms="Windows;" />
 				<Option output="..\..\..\devel\wxsmithlib.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithLib" />
 				<Option type="3" />
@@ -17,7 +26,8 @@
 				<Option createStaticLib="1" />
 			</Target>
 			<Target title="wxSmith">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith.dll" prefix_auto="1" extension_auto="1" />
+				<Option platforms="Windows;" />
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxsmith" prefix_auto="1" extension_auto="1" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -33,7 +43,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxSmithLib;wxSmith;" />
+			<Add alias="All" targets="wxPropertyGrid;wxSmithLib;wxSmith;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -54,15 +64,15 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXMAKINGLIB_PROPGRID" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX.include)" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#CB.include)\wxFlatNotebook\include" />
-			<Add directory="$(#CB.include)\propgrid\include" />
 			<Add directory="$(#CB.include)\scripting\include" />
 			<Add directory="$(#CB.include)\scripting\squirrel" />
 			<Add directory="$(#CB.include)\scripting\sqplus" />
 			<Add directory="$(#CB.include)\scripting\bindings" />
-			<Add directory="$(#WX.include)" />
+			<Add directory="propgrid\contrib\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -80,8 +90,8 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB)\base\tinyxml" />
-			<Add directory="$(#CB)\sdk\propgrid" />
 			<Add directory="$(#CB.lib)" />
+			<Add directory="propgrid" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
@@ -176,6 +186,45 @@
 		</Unit>
 		<Unit filename="properties\wxsstringproperty.h">
 			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\advprops.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\extras.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\manager.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\odcombo.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\pg_dox_mainpage.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\propdev.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\include\wx\propgrid\propgrid.h">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\src\propgrid\advprops.cpp">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\src\propgrid\extras.cpp">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\src\propgrid\manager.cpp">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\src\propgrid\odcombo.cpp">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\src\propgrid\propgrid.cpp">
+			<Option target="wxPropertyGrid" />
+		</Unit>
+		<Unit filename="propgrid\contrib\src\propgrid\props.cpp">
+			<Option target="wxPropertyGrid" />
 		</Unit>
 		<Unit filename="wxsadvqpp.cpp">
 			<Option target="wxSmithLib" />

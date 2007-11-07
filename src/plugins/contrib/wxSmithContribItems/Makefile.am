@@ -4,8 +4,8 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
-		-I$(top_srcdir)/src/include/propgrid/include \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith \
+		-I$(top_srcdir)/src/plugins/contrib/wxSmith/propgrid/contrib/include \
 		-I$(srcdir)/wxchart/wxchart-1.0/include \
 		-I$(srcdir)/wxthings/wxthings/include
 

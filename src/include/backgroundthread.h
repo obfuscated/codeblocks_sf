@@ -148,7 +148,8 @@ public:
                 break;
 
             job = queue->Pop();
-            (*job)();
+            if ( job )
+                (*job)();
 
             if(ownsJobs)
                 delete job;
