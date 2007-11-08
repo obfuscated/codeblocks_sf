@@ -29,6 +29,7 @@
 #include "wxsparent.h"
 #include "wxsitemeditor.h"
 #include "wxsgridpanel.h"
+#include "../wxscoder.h"
 #include <wx/app.h>
 
 BEGIN_EVENT_TABLE(wxsItemEditorContent,wxsDrawingWindow)
@@ -57,6 +58,7 @@ wxsItemEditorContent::~wxsItemEditorContent()
 {
     ClearDragPoints();
     delete m_Assist;
+    wxsCoder::Get()->Flush(0);
 }
 
 void wxsItemEditorContent::PaintExtra(wxDC* DC)

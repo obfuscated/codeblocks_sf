@@ -382,7 +382,8 @@ void wxsItem::OnPropertyChanged()
 
 void wxsItem::OnSubPropertyChanged(wxsPropertyContainer*)
 {
-    GetResourceData()->NotifyChange(this);
+    // Forwarding this to standard property changed handler
+    OnPropertyChanged();
 }
 
 void wxsItem::OnAddExtraProperties(wxsPropertyGridManager* Grid)
