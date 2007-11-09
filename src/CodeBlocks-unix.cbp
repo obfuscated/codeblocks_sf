@@ -132,7 +132,6 @@
 					<Add library="txml" />
 					<Add library="wxscintilla" />
 					<Add library="wxflatnotebook" />
-					<Add library="propgrid" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />

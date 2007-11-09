@@ -61,12 +61,16 @@
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="bzip2" />
+			<Add directory="zlib" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add directory="../../../devel" />
+			<Add directory="bzip2" />
+			<Add directory="zlib" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ../../../devel/share/codeblocks/help_plugin.zip manifest.xml *.xrc *.png" />
