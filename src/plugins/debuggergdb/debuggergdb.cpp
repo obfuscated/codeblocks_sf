@@ -279,6 +279,9 @@ void DebuggerGDB::OnAttach()
     wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG));
     msgMan->Slot(m_PageIndex).icon = bmp;
 
+    CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd);
+
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
     if (m_HasDebugLog)
     {
@@ -288,12 +291,10 @@ void DebuggerGDB::OnAttach()
         // set log image
         bmp = new wxBitmap(cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG));
         msgMan->Slot(m_DbgPageIndex).icon = bmp;
-    }
 
-    CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
-    CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, msgMan->Slot(m_DbgPageIndex).title, msgMan->Slot(m_DbgPageIndex).icon);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd1);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd2);
+		CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, msgMan->Slot(m_DbgPageIndex).title, msgMan->Slot(m_DbgPageIndex).icon);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd);
+    }
 
     m_pTree = new DebuggerTree(Manager::Get()->GetAppWindow(), this);
     m_pDisassembly = new DisassemblyDlg(Manager::Get()->GetAppWindow(), this);
