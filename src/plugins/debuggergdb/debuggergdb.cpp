@@ -512,9 +512,9 @@ void DebuggerGDB::RefreshConfiguration()
 
     if (!log_visible && m_HasDebugLog)
     {
-//        Manager::Get()->GetLogManager()->RemoveLog(m_pDbgLog);
-//        m_pDbgLog->Destroy();
-        m_pDbgLog = 0;
+		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+		m_pDbgLog = 0;
     }
     else if (log_visible && !m_HasDebugLog)
     {
@@ -524,6 +524,9 @@ void DebuggerGDB::RefreshConfiguration()
         // set log image
         wxBitmap* bmp = new wxBitmap(cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG));
         Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon = bmp;
+
+		CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).title, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd);
     }
     m_HasDebugLog = log_visible;
 }
