@@ -26,7 +26,7 @@
 #include "wxsitemresdata.h"
 #include "wxsflags.h"
 
-#include <messagemanager.h>
+#include <logmanager.h>
 
 #define HandlerXmlElementName   "handler"
 #define HandlerXmlEntryName     "entry"

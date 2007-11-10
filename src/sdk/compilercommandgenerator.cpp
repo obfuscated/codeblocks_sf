@@ -7,7 +7,7 @@
 #include "compiler.h"
 #include "manager.h"
 #include "configmanager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "macrosmanager.h"
 #include "scriptingmanager.h"
 #include "filefilters.h"
@@ -173,7 +173,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
         }
 
         if (Manager::IsBatchBuild()) // no dialog if batch building...
-            Manager::Get()->GetMessageManager()->LogToStdOut(msg);
+            Manager::Get()->GetLogManager()->LogToStdOut(msg);
         else
             cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
@@ -221,7 +221,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         (compiler->GetPrograms().LIB.IsEmpty() && macro.Contains(_T("$lib_linker"))) ||
         (compiler->GetPrograms().WINDRES.IsEmpty() && macro.Contains(_T("$rescomp"))))
     {
-        DBGLOG(_T("GenerateCommandLine: no executable found! (file=%s)"), file.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine: no executable found! (file=%s)"), file.c_str()));
         macro.Clear();
         return;
     }
@@ -905,7 +905,7 @@ wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 		}
 		else
 		{
-			DBGLOG(_T("Caching result of `%s`"), cmd.c_str());
+			Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.c_str()));
 			wxArrayString output;
 			if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
 				wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
@@ -914,7 +914,7 @@ wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 			bt = GetStringFromArray(output, _T(" "));
 			// add it in the cache
 			m_Backticks[cmd] = bt;
-			DBGLOG(_T("Cached"));
+			Manager::Get()->GetLogManager()->DebugLog(_T("Cached"));
 		}
 		ret << bt << _T(' ');
 		str = str.substr(0, start) + bt + str.substr(end + 1, wxString::npos);

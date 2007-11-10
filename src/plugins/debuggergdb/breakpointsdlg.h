@@ -1,15 +1,16 @@
 #ifndef BREAKPOINTSDLG_H
 #define BREAKPOINTSDLG_H
 
-#include "simplelistlog.h"
+#include <wx/panel.h>
 #include "debugger_defs.h"
 
 class wxCommandEvent;
+class wxListCtrl;
 class wxListEvent;
 class BreakpointsList;
 class DebuggerState;
 
-class BreakpointsDlg : public SimpleListLog
+class BreakpointsDlg : public wxPanel
 {
     public:
         BreakpointsDlg(DebuggerState& state);
@@ -29,6 +30,7 @@ class BreakpointsDlg : public SimpleListLog
 
         DebuggerState& m_State;
         BreakpointsList& m_BreakpointsList;
+        wxListCtrl* m_pList;
     private:
         DECLARE_EVENT_TABLE()
 };

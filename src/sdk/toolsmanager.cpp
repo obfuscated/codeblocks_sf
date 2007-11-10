@@ -35,7 +35,7 @@
     #include "manager.h"
     #include "macrosmanager.h"
     #include "configmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "configmanager.h"
     #include "pipedprocess.h"
     #include "globals.h"
@@ -143,7 +143,7 @@ bool ToolsManager::Execute(const cbTool* tool)
 
     // log info so user can troubleshoot
     dir = wxGetCwd(); // read in the actual working dir
-    Manager::Get()->GetMessageManager()->Log(_("Launching tool '%s': %s (in %s)"), tool->GetName().c_str(), cmdline.c_str(), dir.c_str());
+    Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"), tool->GetName().c_str(), cmdline.c_str(), dir.c_str()));
 
     bool pipe = true;
     int flags = wxEXEC_ASYNC;
@@ -175,7 +175,7 @@ bool ToolsManager::Execute(const cbTool* tool)
         }
         else
         {
-            Manager::Get()->GetMessageManager()->SwitchTo(0); // switch to default log
+//            Manager::Get()->GetLogManager()->SwitchTo(0); // switch to default log
         }
     }
     else
@@ -193,7 +193,7 @@ bool ToolsManager::Execute(const cbTool* tool)
         }
         else
         {
-            Manager::Get()->GetMessageManager()->SwitchTo(0); // switch to default log
+//            Manager::Get()->GetLogManager()->SwitchTo(0); // switch to default log
         }
     }
 
@@ -279,7 +279,7 @@ void ToolsManager::LoadTools()
 
         AddTool(&tool, false);
     }
-    Manager::Get()->GetMessageManager()->Log(_("Configured %d tools"), m_Tools.GetCount());
+    Manager::Get()->GetLogManager()->Log(_("Configured %d tools"), m_Tools.GetCount());
 }
 
 void ToolsManager::SaveTools()
@@ -393,12 +393,12 @@ void ToolsManager::OnIdle(wxIdleEvent& event)
 
 void ToolsManager::OnToolStdOutput(CodeBlocksEvent& event)
 {
-    Manager::Get()->GetMessageManager()->Log(_T("stdout> %s"), event.GetString().c_str());
+    Manager::Get()->GetLogManager()->Log(_T("stdout> ") + event.GetString());
 }
 
 void ToolsManager::OnToolErrOutput(CodeBlocksEvent& event)
 {
-    Manager::Get()->GetMessageManager()->Log(_T("stderr> %s"), event.GetString().c_str());
+    Manager::Get()->GetLogManager()->Log(_T("stderr> ") + event.GetString());
 }
 
 void ToolsManager::OnToolTerminated(CodeBlocksEvent& event)
@@ -406,5 +406,5 @@ void ToolsManager::OnToolTerminated(CodeBlocksEvent& event)
     m_Pid = 0;
     m_pProcess = 0;
 
-    Manager::Get()->GetMessageManager()->Log(_T("Tool execution terminated with status %d"), event.GetInt());
+    Manager::Get()->GetLogManager()->Log(F(_T("Tool execution terminated with status %d"), event.GetInt()));
 }

@@ -2,7 +2,7 @@
 #define TODOLISTVIEW_H
 
 #include <wx/string.h>
-#include "simplelistlog.h"
+#include "loggers.h"
 #include <vector>
 #include <map>
 using namespace std;
@@ -13,6 +13,7 @@ class wxCommandEvent;
 class wxListEvent;
 class wxComboBox;
 class wxButton;
+class wxPanel;
 
 struct ToDoItem
 {
@@ -30,13 +31,15 @@ typedef map<wxString,vector<ToDoItem> > TodoItemsMap;
 
 WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
 
-class ToDoListView : public SimpleListLog
+class ToDoListView : public ListCtrlLogger, public wxEvtHandler
 {
 	public:
-		ToDoListView(int numCols, int widths[], const wxArrayString& titles, const wxArrayString& types);
+		ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
 		~ToDoListView();
         void Parse();
         void ParseCurrent(bool forced);
+		virtual wxWindow* CreateControl(wxWindow* parent);
+		wxWindow* GetWindow(){ return panel; }
 	private:
         void LoadUsers();
         void FillList();
@@ -51,6 +54,7 @@ class ToDoListView : public SimpleListLog
         void OnDoubleClick( wxListEvent& event ); //pecan 1/2/2006 12PM
         void FocusEntry(size_t index);            //pecan 1/2/2006 12PM
 
+		wxWindow* panel;
 		TodoItemsMap m_itemsmap;
 		ToDoItems m_Items;
         wxComboBox* m_pSource;

@@ -24,7 +24,7 @@
 #include "wxsbitmapiconproperty.h"
 #include "wxsbitmapiconeditordlg.h"
 
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <wx/artprov.h>
 #include <wx/image.h>
 #include <globals.h>

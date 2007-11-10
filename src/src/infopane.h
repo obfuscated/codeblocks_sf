@@ -8,7 +8,7 @@
     #include <wx/aui/auibook.h>
     typedef wxAuiNotebook InfoPaneNotebook;
     typedef wxAuiNotebook PieceOfShitBaseClass;
-    static const int infopane_flags = wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE;
+    static const int infopane_flags = wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT;
 #else
     #include <wx/wxFlatNotebook/wxFlatNotebook.h>
     typedef wxFlatNotebook InfoPaneNotebook;
@@ -26,14 +26,17 @@ class InfoPane : public InfoPaneNotebook
 
     struct Page
     {
-        Page() : window(0), visible(0), logger(0){};
+        Page() : icon(0), window(0), logger(0), visible(0), islogger(0) {};
         wxString title;
+        wxBitmap* icon;
         wxWindow* window;
+        Logger* logger;
         bool visible;
-        bool logger;
+        bool islogger;
     };
 
     static const int num_pages = ::max_logs + 8;
+    wxBitmap defaultBitmap;
 
     Page page[num_pages];
     const int baseID;
@@ -42,11 +45,15 @@ class InfoPane : public InfoPaneNotebook
     void Hide(size_t i);
 
     void OnMenu(wxCommandEvent& event);
+    void OnCopy(wxCommandEvent& event);
+    void OnClear(wxCommandEvent& event);
     void ContextMenu(wxContextMenuEvent& event);
 
+	void AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
 public:
 
     InfoPane(wxWindow* parent);
+    ~InfoPane();
 
     /*
     *  Show a tab, or bring it to the foreground if already shown.
@@ -56,6 +63,7 @@ public:
     *  Note that you cannot hide a tab programatically.
     */
     void Show(size_t index);
+    void ShowNonLogger(wxWindow* p);
 
 
     /*
@@ -68,15 +76,16 @@ public:
     *  will be redirected to the null log thereafter.
     *  To prove that you are serious, you must know the logger belonging to the tab to delete.
     */
-    bool AddLogger(wxWindow* p, const wxString& title);
-    bool DeleteLogger(wxWindow* p, Logger* l);
+    int AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+    bool DeleteLogger(Logger* l);
 
     /*
     *  If something that is not a logger should be placed in the info pane (think twice about this before doing it),
     *  use AddNonLogger()/DeleteNonLogger() for that purpose.
     *  An example of something that is not a logger but might still show up in the info pane is the list of search results.
     */
-    bool AddNonLogger(wxWindow* p, const wxString& title);
+    int AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+    bool RemoveNonLogger(wxWindow* p);
     bool DeleteNonLogger(wxWindow* p);
 };
 

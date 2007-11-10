@@ -31,7 +31,7 @@
 
     #include "projectmanager.h"
     #include "editormanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "macrosmanager.h"
     #include "scriptingmanager.h"
     #include "manager.h"
@@ -103,7 +103,7 @@ void MacrosManager::Reset()
 
 void MacrosManager::ClearProjectKeys()
 {
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("clear"));
+//    Manager::Get()->GetLogManager()->DebugLog(_T("clear"));
     macros.clear();
 
     macros[_T("AMP")]   = _T("&");
@@ -153,7 +153,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     if(!project)
     {
-//        Manager::Get()->GetMessageManager()->DebugLog("project == 0");
+//        Manager::Get()->GetLogManager()->DebugLog("project == 0");
         m_ProjectFilename = wxEmptyString;
         m_ProjectName = wxEmptyString;
         m_ProjectDir = wxEmptyString;
@@ -181,7 +181,7 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     }
     else if(project != m_lastProject)
     {
-//        Manager::Get()->GetMessageManager()->DebugLog("project != m_lastProject");
+//        Manager::Get()->GetLogManager()->DebugLog("project != m_lastProject");
         m_lastTarget = 0; // reset last target when project changes
         m_prjname.Assign(project->GetFilename());
         m_ProjectFilename = UnixFilename(m_prjname.GetFullName());

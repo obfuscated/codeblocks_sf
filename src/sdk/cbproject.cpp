@@ -44,7 +44,7 @@
     #include "pluginmanager.h"
     #include "projectmanager.h"
     #include "macrosmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "editormanager.h"
     #include "filemanager.h"
     #include "configmanager.h"
@@ -288,7 +288,7 @@ void cbProject::Open()
     FileType ft = FileTypeOf(m_Filename);
     if (ft == ftCodeBlocksProject)
     {
-        Manager::Get()->GetMessageManager()->AppendLog(_("Opening %s: "), m_Filename.c_str());
+        Manager::Get()->GetLogManager()->Log(_("Opening ") + m_Filename);
         m_CurrentlyLoading = true;
         ProjectLoader loader(this);
         m_Loaded = loader.Open(m_Filename, &m_pExtensionsElement);
@@ -299,7 +299,7 @@ void cbProject::Open()
         if (m_Loaded)
         {
             CalculateCommonTopLevelPath();
-            Manager::Get()->GetMessageManager()->Log(_("done"));
+            Manager::Get()->GetLogManager()->Log(_("done"));
             if (!m_Targets.GetCount())
                 AddDefaultBuildTarget();
             // in case of batch build discard upgrade messages
@@ -331,7 +331,7 @@ void cbProject::CalculateCommonTopLevelPath()
     // in their paths
     wxString sep = wxFileName::GetPathSeparator();
     wxFileName base = GetBasePath() + sep;
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Project's base path: %s"), base.GetFullPath().c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Project's base path: ") + base.GetFullPath());
 
     // this loop takes ~30ms for 1000 project files
     // it's as fast as it can get, considered that it used to take ~1200ms ;)
@@ -364,7 +364,7 @@ void cbProject::CalculateCommonTopLevelPath()
     }
 
     m_CommonTopLevelPath = base.GetFullPath();
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Project's common toplevel path: %s"), m_CommonTopLevelPath.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Project's common toplevel path: ") + m_CommonTopLevelPath);
 }
 
 wxString cbProject::GetCommonTopLevelPath() const
@@ -511,7 +511,7 @@ bool cbProject::LoadLayout()
                 ProjectFile* f = loader.GetTopProjectFile();
                 if (f)
                 {
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Top Editor: %s"),f->file.GetFullPath().c_str());
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Top Editor: ") + f->file.GetFullPath());
                     EditorBase* eb = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
                     if(eb)
                         eb->Activate();
@@ -747,7 +747,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
 				ProjectFile* pfile = AddFile(targetIndex, UnixFilename(tmps));
 				if (!pfile)
-					Manager::Get()->GetMessageManager()->DebugLog(_T("Can't add auto-generated file '%s'"), tmps.c_str());
+					Manager::Get()->GetLogManager()->DebugLog(_T("Can't add auto-generated file ") + tmps);
 				else
 				{
 					f->generatedFiles.push_back(pfile);
@@ -770,7 +770,7 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     FilesList::Node* node = m_Files.Find(pf);
     if (!node)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
     }
     else
     {
@@ -1537,7 +1537,7 @@ ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
     if (HasVirtualBuildTarget(targetName))
     {
         RemoveVirtualBuildTarget(targetName);
-        LOG_WARN(_T("Deleted existing virtual target '%s' because real target was added with the same name"), targetName.c_str());
+        Manager::Get()->GetLogManager()->LogWarning(F(_T("Deleted existing virtual target '%s' because real target was added with the same name"), targetName.c_str()));
     }
 
     SetModified(true);
@@ -1780,10 +1780,10 @@ ProjectBuildTarget* cbProject::GetBuildTarget(const wxString& targetName)
 
 void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
 {
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    LogManager* msgMan = Manager::Get()->GetLogManager();
     if (nameOrder.GetCount() != m_Targets.GetCount())
     {
-        msgMan->DebugLog(_T("cbProject::ReOrderTargets() : Count does not match (%d sent, %d had)..."), nameOrder.GetCount(), m_Targets.GetCount());
+        msgMan->DebugLog(F(_T("cbProject::ReOrderTargets() : Count does not match (%d sent, %d had)..."), nameOrder.GetCount(), m_Targets.GetCount()));
         return;
     }
 
@@ -1792,7 +1792,7 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
         ProjectBuildTarget* target = GetBuildTarget(nameOrder[i]);
         if (!target)
         {
-            msgMan->DebugLog(_T("cbProject::ReOrderTargets() : Target \"%s\" not found..."), nameOrder[i].c_str());
+            msgMan->DebugLog(F(_T("cbProject::ReOrderTargets() : Target \"%s\" not found..."), nameOrder[i].c_str()));
             break;
         }
 
@@ -1824,14 +1824,14 @@ bool cbProject::DefineVirtualBuildTarget(const wxString& alias, const wxArrayStr
 {
     if (targets.GetCount() == 0)
     {
-        LOG_WARN(_T("Can't define virtual build target '%s': Group of build targets is empty!"), alias.c_str());
+        Manager::Get()->GetLogManager()->LogWarning(F(_T("Can't define virtual build target '%s': Group of build targets is empty!"), alias.c_str()));
         return false;
     }
 
     ProjectBuildTarget* existing = GetBuildTarget(alias);
     if (existing)
     {
-        LOG_WARN(_T("Can't define virtual build target '%s': Real build target exists with that name!"), alias.c_str());
+        Manager::Get()->GetLogManager()->LogWarning(F(_T("Can't define virtual build target '%s': Real build target exists with that name!"), alias.c_str()));
         return false;
     }
 

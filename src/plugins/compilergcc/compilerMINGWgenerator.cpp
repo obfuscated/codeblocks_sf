@@ -7,7 +7,7 @@
 #include "compiler.h"
 #include "manager.h"
 #include "configmanager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "macrosmanager.h"
 #include "scriptingmanager.h"
 

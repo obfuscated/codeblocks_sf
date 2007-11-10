@@ -8,11 +8,11 @@ namespace
 {
 	static const unsigned int max_logs = ((65535^61>>3)<<2)*!!!!sizeof(int*)%63;
 
-	wxString F(const wxChar* msg, ...)
+	inline wxString F(const wxChar* msg, ...)
 	{
 		va_list arg_list;
 		va_start(arg_list, msg);
-		::temp_string.Printf(msg, arg_list);
+		::temp_string = wxString::FormatV(msg, arg_list);
 		va_end(arg_list);
 
         return ::temp_string;
@@ -31,13 +31,13 @@ struct LogSlot
     wxBitmap *icon;
     wxString title;
 
-    LogSlot() : log(0) {};
-    ~LogSlot() { delete log; };
+    LogSlot();
+    ~LogSlot();
 
-    size_t Index() const { return index; };
+    size_t Index() const;
 
-    void SetLogger(Logger* in) { if(log != &g_null_log) delete log; log = in; };
-    Logger* GetLogger() const { return log; };
+    void SetLogger(Logger* in);
+    Logger* GetLogger() const;
 };
 
 
@@ -64,9 +64,9 @@ public:
          * On error, SetLog() returns invalid_log
          */
         size_t SetLog(Logger* l, int index = no_index);
-		void DeleteLog(int i) { SetLog(&g_null_log, i); };
-        LogSlot& Slot(int i) { return slot[i]; };
-        size_t FindIndex(Logger* l) { for(unsigned int i = invalid_log; i < max_logs; ++i) { if(slot[i].log == l) return i; }  return invalid_log; };
+		void DeleteLog(int i);
+        LogSlot& Slot(int i);
+        size_t FindIndex(Logger* l);
 
 
 
@@ -106,5 +106,5 @@ public:
         void NotifyUpdate();
 };
 
-#endif // MESSAGEMANAGER_H
+#endif // LOGMGR_H
 

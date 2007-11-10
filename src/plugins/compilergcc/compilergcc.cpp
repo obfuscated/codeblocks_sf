@@ -34,7 +34,7 @@
 #include <sdk_events.h>
 #include <pipedprocess.h>
 #include <configmanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <macrosmanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
@@ -84,20 +84,6 @@
 
 #include <scripting/bindings/sc_base_types.h>
 
-namespace ScriptBindings
-{
-    static int gBuildLogId = -1;
-
-    // global funcs
-    void gBuildLog(const wxString& msg)
-    {
-        Manager::Get()->GetMessageManager()->Log(gBuildLogId, msg);
-    }
-};
-
-#define COLOUR_MAROON wxColour(0xa0, 0x00, 0x00)
-#define COLOUR_NAVY   wxColour(0x00, 0x00, 0xa0)
-
 #if defined(__APPLE__) && defined(__MACH__)
     #define LIBRARY_ENVVAR _T("DYLD_LIBRARY_PATH")
 #elif !defined(__WXMSW__)
@@ -105,6 +91,70 @@ namespace ScriptBindings
 #else
     #define LIBRARY_ENVVAR _T("PATH")
 #endif
+
+namespace ScriptBindings
+{
+    static int gBuildLogId = -1;
+
+    // global funcs
+    void gBuildLog(const wxString& msg)
+    {
+        Manager::Get()->GetLogManager()->Log(msg, gBuildLogId);
+    }
+};
+
+class BuildLogger : public TextCtrlLogger
+{
+	wxPanel* panel;
+	wxBoxSizer* sizer;
+public:
+	wxGauge* progress;
+
+	BuildLogger() : TextCtrlLogger(true), panel(0), sizer(0), progress(0) {}
+
+	void UpdateSettings()
+	{
+		TextCtrlLogger::UpdateSettings();
+
+		style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
+		style[caption].SetFont(style[error].GetFont());
+		style[warning].SetTextColour(*wxBLUE);
+		style[error].SetFont(style[info].GetFont());
+	}
+
+	virtual wxWindow* CreateControl(wxWindow* parent)
+	{
+		panel = new wxPanel(parent);
+		TextCtrlLogger::CreateControl(panel);
+		
+		sizer = new wxBoxSizer(wxVERTICAL);
+		sizer->Add(control, 1, wxEXPAND, 0);
+		panel->SetSizer(sizer);
+		
+		return panel;
+	}
+
+	void AddBuildProgressBar()
+	{
+		if (!progress)
+		{
+			progress = new wxGauge(panel, -1, 0, wxDefaultPosition, wxSize(-1, 12));
+			sizer->Add(progress, 0, wxEXPAND);
+			sizer->Layout();
+		}
+	}
+
+	void RemoveBuildProgressBar()
+	{
+		if (progress)
+		{
+			sizer->Detach(progress);
+			progress->Destroy();
+			progress = 0;
+			sizer->Layout();
+		}
+	}
+};
 
 namespace
 {
@@ -264,8 +314,7 @@ CompilerGCC::CompilerGCC()
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true),
     m_IsWorkspaceOperation(false),
-    m_LogBuildProgressPercentage(false),
-    m_BuildProgress(0)
+    m_LogBuildProgressPercentage(false)
 {
     if(!Manager::LoadResource(_T("compiler.zip")))
     {
@@ -343,38 +392,48 @@ void CompilerGCC::OnAttach()
 
     AllocProcesses();
 
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    LogManager* msgMan = Manager::Get()->GetLogManager();
 
     // create compiler's log
-    m_Log = new SimpleTextLog(true);
-    m_PageIndex = msgMan->AddLog(m_Log, _("Build log"));
-    msgMan->SetBatchBuildLog(m_PageIndex);
+    m_Log = new BuildLogger();
+    m_PageIndex = msgMan->SetLog(m_Log);
+    msgMan->Slot(m_PageIndex).title = _("Build log");
+//    msgMan->SetBatchBuildLog(m_PageIndex);
+    // set log image
+    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
+    wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG));
+    msgMan->Slot(m_PageIndex).icon = bmp;
+
+    // create warnings/errors log
+    wxArrayString titles;
+    wxArrayInt widths;
+    titles.Add(_("File"));
+    titles.Add(_("Line"));
+    titles.Add(_("Message"));
+    widths.Add(128);
+    widths.Add(48);
+    widths.Add(640);
+
+    m_pListLog = new CompilerMessages(titles, widths);
+    m_pListLog->SetCompilerErrors(&m_Errors);
+    m_ListPageIndex = msgMan->SetLog(m_pListLog);
+    msgMan->Slot(m_ListPageIndex).title = _("Build messages");
+    // set log image
+    bmp = new wxBitmap(cbLoadBitmap(prefix + _T("flag_16x16.png"), wxBITMAP_TYPE_PNG));
+    msgMan->Slot(m_ListPageIndex).icon = bmp;
+
+    CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_Log, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd1);
+    if (!Manager::IsBatchBuild())
+    {
+		CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd2);
+    }
 
     m_LogBuildProgressPercentage = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false);
     bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
     if (hasBuildProg)
-		AddBuildProgressBar();
-
-    // set log image
-    wxBitmap bmp;
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-    bmp = cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
-    Manager::Get()->GetMessageManager()->SetLogImage(m_Log, bmp);
-
-    // create warnings/errors log
-    wxArrayString titles;
-    int widths[3] = {128, 48, 640};
-    titles.Add(_("File"));
-    titles.Add(_("Line"));
-    titles.Add(_("Message"));
-
-    m_pListLog = new CompilerMessages(3, widths, titles);
-    m_pListLog->SetCompilerErrors(&m_Errors);
-    m_ListPageIndex = msgMan->AddLog(m_pListLog, _("Build messages"));
-
-    // set log image
-    bmp = cbLoadBitmap(prefix + _T("flag_16x16.png"), wxBITMAP_TYPE_PNG);
-    Manager::Get()->GetMessageManager()->SetLogImage(m_pListLog, bmp);
+		m_Log->AddBuildProgressBar();
 
     // set default compiler for new projects
     CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
@@ -404,23 +463,21 @@ void CompilerGCC::OnRelease(bool appShutDown)
     // disable script functions
     ScriptBindings::gBuildLogId = -1;
 
-//	RemoveBuildProgressBar();
-
     DoDeleteTempMakefile();
     SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
-    if (Manager::Get()->GetMessageManager())
+    if (Manager::Get()->GetLogManager())
     {
     	// for batch builds, the log is deleted by the manager
     	if (!Manager::IsBatchBuild())
     	{
-			Manager::Get()->GetMessageManager()->RemoveLog(m_Log);
-			m_Log->Destroy();
+			CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_Log);
+			Manager::Get()->GetAppWindow()->ProcessEvent(evt);
     	}
         m_Log = 0;
 
-        Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
-        m_pListLog->Destroy();
+		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
         m_pListLog = 0;
     }
 
@@ -459,6 +516,12 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
         SaveOptions();
 //        SetupEnvironment();
         Manager::Get()->GetMacrosManager()->Reset();
+
+		bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
+		if (hasBuildProg)
+			m_Log->AddBuildProgressBar();
+		else
+			m_Log->RemoveBuildProgressBar();
     }
 //    delete panel;
     return 0;
@@ -593,7 +656,7 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
 
     int eventId = event.GetId();
 
-//    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher"));
+//    Manager::Get()->GetLogManager()->Log(wxT("Dispatcher"));
 
     if (eventId == idMenuRun)
         OnRun(event);
@@ -666,40 +729,6 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         focused->SetFocus();*/
 }
 
-void CompilerGCC::AddBuildProgressBar()
-{
-	if (!m_BuildProgress)
-	{
-		m_BuildProgress = new wxGauge(m_Log, -1, 0, wxDefaultPosition, wxSize(-1, 12));
-		wxSizer* s = m_Log->GetSizer();
-		if (s)
-		{
-			s->Add(m_BuildProgress, 0, wxEXPAND);
-			s->Layout();
-		}
-		else
-		{
-			Delete(m_BuildProgress);
-			DBGLOG(_T("Can't create build progress bar: no sizer found"));
-		}
-	}
-}
-
-void CompilerGCC::RemoveBuildProgressBar()
-{
-	if (m_BuildProgress)
-	{
-		wxSizer* s = m_Log->GetSizer();
-		if (s)
-		{
-			s->Detach(m_BuildProgress);
-			m_BuildProgress->Destroy();
-			m_BuildProgress = 0;
-			s->Layout();
-		}
-	}
-}
-
 void CompilerGCC::SetupEnvironment()
 {
     if (!CompilerFactory::GetCompiler(m_CompilerId))
@@ -708,7 +737,7 @@ void CompilerGCC::SetupEnvironment()
     m_EnvironmentMsg.Clear();
 
     wxString path;
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Setting up compiler environment..."));
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Setting up compiler environment..."));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -728,7 +757,7 @@ void CompilerGCC::SetupEnvironment()
                     "system commands and the application might not behave "
                     "the way it was designed to...");
 //    wxGetEnv("PATH", &path);
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
 }
 
 void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPath)
@@ -794,7 +823,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
 #endif
     {
         m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str()));
     }
     else
     {
@@ -861,9 +890,9 @@ bool CompilerGCC::CheckDebuggerIsRunning()
             // is the debugger running?
             if (dbg->IsRunning())
             {
-                m_Log->GetTextControl()->Clear();
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger is active"));
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting build"));
+                m_Log->Clear();
+                Manager::Get()->GetLogManager()->Log(_("Debugger is active"), m_PageIndex);
+                Manager::Get()->GetLogManager()->Log(_("Aborting build"), m_PageIndex);
                 cbMessageBox(_("The debugger is currently active. Aborting build..."), _("Debugger active"), wxICON_WARNING);
                 return true;
             }
@@ -931,9 +960,12 @@ void CompilerGCC::ClearLog()
 {
     if (m_IsWorkspaceOperation)
         return;
-    Manager::Get()->GetMessageManager()->SwitchTo(m_PageIndex);
+	
+	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_Log);
+	Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+
     if (m_Log)
-        m_Log->GetTextControl()->Clear();
+        m_Log->Clear();
 }
 
 FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
@@ -1002,10 +1034,10 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
         }
     }
 
-    if (m_BuildProgress)
+    if (m_Log->progress)
     {
-    	m_BuildProgress->SetRange(m_MaxProgress);
-    	m_BuildProgress->SetValue(m_CurrentProgress);
+    	m_Log->progress->SetRange(m_MaxProgress);
+    	m_Log->progress->SetValue(m_CurrentProgress);
     }
 }
 
@@ -1082,7 +1114,7 @@ int CompilerGCC::GetActiveProcessCount() const
 
 int CompilerGCC::DoRunQueue()
 {
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+//    LogManager* msgMan = Manager::Get()->GetLogManager();
 //    msgMan->SwitchTo(m_PageIndex);
 
     // leave if already running
@@ -1135,11 +1167,10 @@ int CompilerGCC::DoRunQueue()
         }
     }
 
-    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
     wxString dir = cmd->dir;
 
     // if message manager is auto-hiding, this will lock it open
-    msgMan->LockOpen();
+//    msgMan->LockOpen();
 
     // log file
     bool hasLog = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false);
@@ -1554,12 +1585,13 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
 {
     if (!CompilerValid(target))
         return;
-    Manager::Get()->GetMessageManager()->Open();
+
+	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+	Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
 
     if (!prj)
         prj = m_Project;
 
-    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
     wxString banner;
     banner.Printf(_("-------------- Build: %s in %s ---------------"),
                     target
@@ -1622,7 +1654,7 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
         // if they didn't specify $SCRIPT, append:
         cmd << _T("\"") << exe_filename << _T("\"");
 
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), exe_filename.c_str());
+    Manager::Get()->GetLogManager()->Log(_("Checking for existence: ") + exe_filename, m_PageIndex);
     if (!wxFileExists(exe_filename))
     {
         int ret = cbMessageBox(_("It seems that this file has not been built yet.\n"
@@ -1645,7 +1677,7 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     }
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
+    Manager::Get()->GetLogManager()->Log(F(_("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str()), m_PageIndex);
     m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, 0, 0, true));
     return 0;
 }
@@ -1802,7 +1834,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // if they didn't specify $SCRIPT, append:
         cmd << command;
 
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Checking for existence: %s"), f.GetFullPath().c_str());
+    Manager::Get()->GetLogManager()->Log(_("Checking for existence: ") + f.GetFullPath(), m_PageIndex);
     if (!wxFileExists(f.GetFullPath()))
     {
         int ret = cbMessageBox(_("It seems that this project has not been built yet.\n"
@@ -1826,7 +1858,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
     }
 
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str());
+    Manager::Get()->GetLogManager()->Log(F(_("Executing: %s (in %s)"), cmd.c_str(), m_CdRun.c_str()), m_PageIndex);
     m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target, true));
 
     m_Project->SetCurrentlyCompilingTarget(0);
@@ -1846,7 +1878,7 @@ wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, Pro
     command.Replace(_T("$makefile"), project->GetMakefile());
     command.Replace(_T("$make"), CompilerFactory::GetCompiler(compilerId)->GetPrograms().MAKE);
     command.Replace(_T("$target"), target ? target->GetTitle() : _T(""));
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str());
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str());
     return command;
 }
 
@@ -1854,8 +1886,7 @@ void CompilerGCC::DoClean(const wxArrayString& commands)
 {
     for (unsigned int i = 0; i < commands.GetCount(); ++i)
     {
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, commands[i]);
-        DBGLOG(commands[i]);
+//        Manager::Get()->GetLogManager()->Log(commands[i], m_PageIndex);
         wxRemoveFile(commands[i]);
     }
 }
@@ -1887,7 +1918,7 @@ int CompilerGCC::Clean(const wxString& target)
         DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
         clean = dc.GetCleanSingleFileCommand(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
         DoClean(clean);
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaned object and output files"));
+        Manager::Get()->GetLogManager()->Log(_("Cleaned object and output files"), m_PageIndex);
     }
 
     // generate build jobs
@@ -1914,14 +1945,14 @@ int CompilerGCC::Clean(const wxString& target)
             DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), bjt.project, m_PageIndex);
             clean = dc.GetCleanCommands(bt, true);
             DoClean(clean);
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Cleaned \"%s - %s\""), bjt.project->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>"));
+            Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), bjt.project->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
         }
     }
 
     if (!m_IsWorkspaceOperation)
     {
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done."));
-        Manager::Get()->GetMessageManager()->Close();
+        Manager::Get()->GetLogManager()->Log(_("Done."), m_PageIndex);
+//        Manager::Get()->GetLogManager()->Close();
     }
     return 0;
 }
@@ -1937,7 +1968,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 {
     // make sure all project files are saved
     if (m_Project && !m_Project->SaveAllFiles())
-        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+        Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
 
     if (!m_IsWorkspaceOperation)
         DoPrepareQueue();
@@ -2100,7 +2131,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
 
 void CompilerGCC::BuildStateManagement()
 {
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("BuildStateManagement"));
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("BuildStateManagement"));
     if (IsProcessRunning())
     {
         return;
@@ -2126,12 +2157,12 @@ void CompilerGCC::BuildStateManagement()
         if (bt)
             SwitchCompiler(bt->GetCompilerID());
 
-        bool hasLogged = m_Log->GetTextControl()->GetInsertionPoint() != 0;
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("CHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p (%p)"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt, m_pLastBuildingTarget);
+        bool hasLogged = !m_Log->IsEmpty();
+//        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("CHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p (%p)"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt, m_pLastBuildingTarget);
         if (!hasLogged || (m_pBuildingProject == m_pLastBuildingProject && m_NextBuildState == bsTargetPreBuild) || m_NextBuildState == bsProjectPreBuild)
         {
             if (hasLogged)
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, wxEmptyString);
+                Manager::Get()->GetLogManager()->Log(wxEmptyString, m_PageIndex);
             PrintBanner(m_pBuildingProject, bt);
         }
 
@@ -2161,7 +2192,7 @@ void CompilerGCC::BuildStateManagement()
     DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_pBuildingProject, m_PageIndex);
     dc.m_doYield = true;
 
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("BuildState *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%s, bt=%s"),
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("BuildState *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%s, bt=%s"),
 //        StateToString(m_BuildState).c_str(),
 //        StateToString(m_NextBuildState).c_str(),
 //        m_pBuildingProject ? m_pBuildingProject->GetTitle().c_str() : _T("<none>"),
@@ -2280,7 +2311,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         CalculateProjectDependencies(project, deps);
 
     // loop all projects in the dependencies list
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Creating deps"));
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("** Creating deps"));
     for (size_t i = 0; i < deps.GetCount(); ++i)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetProjects()->Item(deps[i]);
@@ -2290,10 +2321,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 			wxString msg;
 			msg.Printf(_T("\"%s\" does not support the current platform. Skipping..."),
 						prj->GetTitle().c_str());
-			LOG_WARN(msg);
-			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
-			Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
-			m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+			Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
 			continue;
 		}
 
@@ -2301,9 +2329,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 
         if (tlist.GetCount() == 0)
         {
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Warning: No target named '%s' in project '%s'. Project will not be built..."), targetName.c_str(), prj->GetTitle().c_str());
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+            Manager::Get()->GetLogManager()->LogWarning(F(_T("Warning: No target named '%s' in project '%s'. Project will not be built..."), targetName.c_str(), prj->GetTitle().c_str()));
         }
 
         // add all matching targets in the job list
@@ -2315,10 +2341,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         		wxString msg;
         		msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
 							prj->GetTitle().c_str(), tlist[x].c_str());
-        		LOG_WARN(msg);
-				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
-        		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
-				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+        		Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
 				continue;
         	}
         	else if (!tgt->SupportsCurrentPlatform())
@@ -2326,10 +2349,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         		wxString msg;
         		msg.Printf(_T("\"%s - %s\" does not support the current platform. Skipping..."),
 							prj->GetTitle().c_str(), tlist[x].c_str());
-        		LOG_WARN(msg);
-				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
-        		Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
-				m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+        		Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
 				continue;
         	}
             BuildJobTarget bjt;
@@ -2338,7 +2358,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 
             m_BuildJobTargetsList.push(bjt);
 
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
+//            Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
         }
     }
 
@@ -2348,7 +2368,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
     	NotifyJobDone(true);
     }
 
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Done creating deps"));
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("** Done creating deps"));
 }
 
 CompilerGCC::BuildJobTarget CompilerGCC::GetNextJob()
@@ -2384,7 +2404,7 @@ int CompilerGCC::DoBuild()
         bj.project != m_pBuildingProject && // avoid saving when we only switch targets
         !bj.project->SaveAllFiles())
     {
-        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+        Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
     }
 
     m_pBuildingProject = bj.project;
@@ -2425,7 +2445,7 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
         // no dependencies; add the project in question and exit
         if (deps.Index(prjidx) == wxNOT_FOUND)
         {
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str());
+//            Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str());
             deps.Add(prjidx);
         }
         return;
@@ -2447,23 +2467,21 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
                 // avoid duplicates
                 if (deps.Index(idx) == wxNOT_FOUND)
                 {
-//                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), thisprj->GetTitle().c_str());
+//                    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Adding dependency: %s"), thisprj->GetTitle().c_str());
                     deps.Add(idx);
                 }
             }
         }
         else
         {
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Circular dependency detected between \"%s\" and \"%s\". Skipping..."), prj->GetTitle().c_str(), thisprj->GetTitle().c_str());
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+            Manager::Get()->GetLogManager()->Log(F(_("Circular dependency detected between \"%s\" and \"%s\". Skipping..."), prj->GetTitle().c_str(), thisprj->GetTitle().c_str()), m_PageIndex, Logger::warning);
         }
     }
 
     // always add the project in question
     if (deps.Index(prjidx) == wxNOT_FOUND)
     {
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str());
+//        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str());
         deps.Add(prjidx);
     }
 }
@@ -2498,7 +2516,7 @@ int CompilerGCC::Build(const wxString& target)
     {
         // make sure all project files are saved
         if (m_Project && !m_Project->SaveAllFiles())
-            Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+            Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
 
         // generate build jobs
         PreprocessJob(m_Project, realTarget);
@@ -2552,7 +2570,7 @@ int CompilerGCC::Rebuild(const wxString& target)
 
     // make sure all project files are saved
     if (m_Project && !m_Project->SaveAllFiles())
-        Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+        Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
 
     if (!m_IsWorkspaceOperation)
         DoPrepareQueue();
@@ -2624,7 +2642,7 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
         {
             cbProject* prj = arr->Item(i);
             if (prj && !prj->SaveAllFiles())
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Could not save all files of %s..."), prj->GetTitle().c_str());
+                Manager::Get()->GetLogManager()->Log(F(_("Could not save all files of %s..."), prj->GetTitle().c_str()), m_PageIndex);
         }
     }
 
@@ -2670,8 +2688,8 @@ int CompilerGCC::CleanWorkspace(const wxString& target)
     m_Project = bak;
 
     m_IsWorkspaceOperation = false;
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Done."));
-    Manager::Get()->GetMessageManager()->Close();
+    Manager::Get()->GetLogManager()->Log(_("Done."), m_PageIndex);
+//    Manager::Get()->GetLogManager()->Close();
     return 0;
 }
 
@@ -2691,7 +2709,7 @@ int CompilerGCC::KillProcess()
             continue;
 
         if (platform::windows)
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ... Be patient!"), i);
+            Manager::Get()->GetLogManager()->Log(F(_("Aborting process %d ... Be patient!"), i), m_PageIndex);
 
         // Close input pipe
         m_Processes[i]->CloseOutput();
@@ -2704,7 +2722,7 @@ int CompilerGCC::KillProcess()
             if(ret != wxKILL_OK)
             {
                 // No need to tell the user about the errors - just keep him waiting.
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Aborting process %d ..."), i);
+                Manager::Get()->GetLogManager()->Log(F(_("Aborting process %d ..."), i), m_PageIndex);
             }
             else switch (ret)
             {
@@ -2714,7 +2732,7 @@ int CompilerGCC::KillProcess()
 //                case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
                 case wxKILL_OK:
                 default: break;
-                // Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed..."));
+                // Manager::Get()->GetLogManager()->Log(m_PageIndex, _("Process killed..."));
             }
         }
     }
@@ -2778,7 +2796,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
-//        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----");
+//        Manager::Get()->GetLogManager()->DebugLog("-----CompileFile [if(!pf)]-----");
         Manager::Get()->GetMacrosManager()->Reset();
         CompilerFactory::GetCompiler(m_CompilerId)->Init(0);
 
@@ -2918,7 +2936,7 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     {
         if(!m_Project->SaveAllFiles())
         {
-            Manager::Get()->GetMessageManager()->Log(_("Could not save all files..."));
+            Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
         }
         file.MakeRelativeTo(m_Project->GetBasePath());
     }
@@ -3263,25 +3281,20 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 
 void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const wxString& filename, const wxString& line, const wxString& msg)
 {
-    wxArrayString errors;
-
     // add build message
+    wxArrayString errors;
     errors.Add(filename);
     errors.Add(line);
     errors.Add(msg);
-    m_pListLog->AddLog(errors);
-    m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
 
-    // colourize the list output
-    wxColour c;
-    switch (lt)
-    {
-        case cltNormal:
-        case cltInfo:    c = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT); break;
-        case cltWarning: c = COLOUR_NAVY; break;
-        case cltError:   c = *wxRED; break;
-    }
-    m_pListLog->GetListControl()->SetItemTextColour(m_pListLog->GetListControl()->GetItemCount() - 1, c);
+	Logger::level lv = Logger::info;
+	if (lt == cltError)
+		lv = Logger::error;
+	else if (lt == cltWarning)
+		lv = Logger::warning;
+
+    m_pListLog->Append(errors, lv);
+//    m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
 
     // add to error keeping struct
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(line.mb_str()), msg);
@@ -3328,12 +3341,13 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
     // log window
     if (log & ltMessages)
     {
+    	Logger::level lv = isTitle ? Logger::caption : Logger::info;
         if (forceErrorColour)
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_MAROON, wxNullColour));
+			lv = Logger::critical;
         else if (lt == cltError)
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(*wxRED, wxNullColour));
+            lv = Logger::error;
         else if (lt == cltWarning)
-            m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(COLOUR_NAVY, wxNullColour));
+            lv = Logger::warning;
 
 		wxString progressMsg;
 		if (updateProgress && m_CurrentProgress < m_MaxProgress)
@@ -3344,17 +3358,15 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
 				float p = (float)(m_CurrentProgress * 100.0f) / (float)m_MaxProgress;
 				progressMsg.Printf(_T("[%5.1f%%] "), p);
 			}
-			if (m_BuildProgress)
+			if (m_Log->progress)
 			{
-				m_BuildProgress->SetRange(m_MaxProgress);
-				m_BuildProgress->SetValue(m_CurrentProgress);
+				m_Log->progress->SetRange(m_MaxProgress);
+				m_Log->progress->SetValue(m_CurrentProgress);
 			}
 		}
 
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, progressMsg + message);
-        Manager::Get()->GetMessageManager()->LogToStdOut(progressMsg + message + _T('\n'));
-
-        m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
+        Manager::Get()->GetLogManager()->Log(progressMsg + message, m_PageIndex, lv);
+        Manager::Get()->GetLogManager()->LogToStdOut(progressMsg + message);
     }
 }
 
@@ -3432,8 +3444,7 @@ void CompilerGCC::SaveBuildLog()
     f.Write(_T("</body>\n"));
     f.Write(_T("</html>\n"));
 
-    m_Log->GetTextControl()->SetDefaultStyle(wxTextAttr(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT), wxNullColour));
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Build log saved as: ") + m_BuildLogFilename);
+    Manager::Get()->GetLogManager()->Log(_("Build log saved as: ") + m_BuildLogFilename, m_PageIndex);
 }
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
@@ -3443,7 +3454,7 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 
 void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 {
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("JobDone: index=%u, exitCode=%d"), procIndex, exitCode);
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("JobDone: index=%u, exitCode=%d"), procIndex, exitCode);
     m_timerIdleWakeUp.Stop();
     m_Pid[procIndex] = 0;
     m_Processes[procIndex] = 0;
@@ -3476,7 +3487,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 			}
 			wxString msg;
 			msg.Printf(_("Output size is %.2f %s"), displaySize, units.c_str());
-			LogMessage(msg, cltInfo);
+			LogMessage(msg, cltNormal);
 		}
 	}
 
@@ -3526,7 +3537,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         if (!m_CommandQueue.LastCommandWasRun())
         {
             wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
-            LogMessage(msg, exitCode == 0 ? cltWarning : cltError);
+            LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
             LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
             SaveBuildLog();
         }
@@ -3537,19 +3548,24 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 // TODO (mandrav##): Maybe create and use GetLastRunExitCode()? Is it needed?
             m_LastExitCode = 0;
         }
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T(" ")); // blank line
+        Manager::Get()->GetLogManager()->Log(_T(" "), m_PageIndex); // blank line
 
         NotifyJobDone();
 
         if (m_Errors.GetCount(cltError))
         {
             if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
-                Manager::Get()->GetMessageManager()->Open();
-            Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
+            {
+				CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+				Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+            }
+        	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+			Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+
             m_pListLog->FocusError(m_Errors.GetFirstError());
             // Build is not completed, so clear the progress bar
-            if (m_BuildProgress)
-                m_BuildProgress->SetValue(0);
+            if (m_Log->progress)
+                m_Log->progress->SetValue(0);
         }
         else
         {
@@ -3563,14 +3579,19 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             {
                 // don't close the message manager (if auto-hiding), if warnings are required to keep it open
                 if (m_Errors.GetCount(cltWarning) &&
-                    (!Manager::Get()->GetMessageManager()->IsAutoHiding() ||
-                    Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true)))
+                    Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
                 {
-                    Manager::Get()->GetMessageManager()->Open();
-                    Manager::Get()->GetMessageManager()->SwitchTo(m_ListPageIndex);
+					CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+					Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+
+					CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+					Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
                 }
                 else // if message manager is auto-hiding, unlock it (i.e. close it)
-                    Manager::Get()->GetMessageManager()->Close(true);
+                {
+					CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
+					Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                }
             }
         }
 

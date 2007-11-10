@@ -213,12 +213,12 @@ SQInteger RegisterPlugin(HSQUIRRELVM v)
     {
         // already exists; release the old one
         s_ScriptPlugins.erase(it);
-        LOG(_("Script plugin unregistered: %s"), s.c_str());
+        Manager::Get()->GetLogManager()->Log(_("Script plugin unregistered: ") + s);
     }
 
     // finally, register this script plugin
     it = s_ScriptPlugins.insert(s_ScriptPlugins.end(), std::make_pair(s, o));
-    LOG(_("Script plugin registered: %s"), s.c_str());
+    Manager::Get()->GetLogManager()->Log(_("Script plugin registered: ") + s);
 
     Manager::Get()->GetScriptingManager()->RegisterScriptPlugin(s, CreateMenu(s));
 

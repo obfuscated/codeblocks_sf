@@ -84,7 +84,7 @@ void EditorBase::InitFilename(const wxString& filename)
     wxFileName fname;
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
-    //    Manager::Get()->GetMessageManager()->DebugLog("ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
+    //    Manager::Get()->GetLogManager()->DebugLog("ctor: Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
 }
 
 wxString EditorBase::CreateUniqueFilename()

@@ -26,7 +26,7 @@
 #include <licenses.h> // defines some common licenses (like the GPL)
 
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "personalitymanager.h"
 
 //#include <wx/datetime.h>

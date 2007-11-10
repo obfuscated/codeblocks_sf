@@ -21,7 +21,7 @@
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "compilerMINGWgenerator.h"
 
 #include <configmanager.h>
@@ -303,7 +303,7 @@ void CompilerMINGW::SetVersionString()
     long result = wxExecute(gcc_command + _T(" --version"), output, errors, wxEXEC_NODISABLE);
     if (result > 0)
     {
-        DBGLOG(_T("Error in executing command"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Error in executing ") + gcc_command);
     }
     else
     {

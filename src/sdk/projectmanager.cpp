@@ -39,7 +39,7 @@
     #include "manager.h"
     #include "configmanager.h"
     #include "cbproject.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "pluginmanager.h"
     #include "editormanager.h"
     #include "uservarmanager.h"
@@ -138,7 +138,7 @@ class PrjTree : public wxTreeCtrl
         void OnRightClick(wxMouseEvent& event)
         {
             if(!this) return;
-            //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
+            //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
             int flags;
             HitTest(wxPoint(event.GetX(), event.GetY()), flags);
             if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
@@ -1438,7 +1438,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         wxString msg;
         msg.Printf(_("Could not open the file '%s'.\nThe file does not exist."), filename.c_str());
         cbMessageBox(msg, _("Error"));
-        LOG_ERROR(msg);
+        Manager::Get()->GetLogManager()->LogError(msg);
         return;
     }
 
@@ -1456,7 +1456,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         {
             wxString msg;
             msg.Printf(_("Failed to open '%s'."), filename.c_str());
-            LOG_ERROR(msg);
+            Manager::Get()->GetLogManager()->LogError(msg);
         }
     }
     else
@@ -1477,14 +1477,14 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         {
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nNo handler registered for this type of file."), filename.c_str());
-            LOG_ERROR(msg);
+            Manager::Get()->GetLogManager()->LogError(msg);
         }
         else if (plugin->OpenFile(filename) != 0)
         {
             const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
             wxString msg;
             msg.Printf(_("Could not open file '%s'.\nThe registered handler (%s) could not open it."), filename.c_str(), info ? info->title.c_str() : wxString(_("<Unknown plugin>")).c_str());
-            LOG_ERROR(msg);
+            Manager::Get()->GetLogManager()->LogError(msg);
         }
     }
 }
@@ -1554,7 +1554,7 @@ bool ProjectManager::AddProjectDependency(cbProject* base, cbProject* dependsOn)
         arr->Add(dependsOn);
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
-        Manager::Get()->GetMessageManager()->DebugLog(_T("%s now depends on %s (%d deps)"), base->GetTitle().c_str(), dependsOn->GetTitle().c_str(), arr->GetCount());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("%s now depends on %s (%d deps)"), base->GetTitle().c_str(), dependsOn->GetTitle().c_str(), arr->GetCount()));
     }
     return true;
 }
@@ -1571,7 +1571,7 @@ void ProjectManager::RemoveProjectDependency(cbProject* base, cbProject* doesNot
     ProjectsArray* arr = it->second;
     arr->Remove(doesNotDependOn);
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("%s now does not depend on %s (%d deps)"), base->GetTitle().c_str(), doesNotDependOn->GetTitle().c_str(), arr->GetCount());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("%s now does not depend on %s (%d deps)"), base->GetTitle().c_str(), doesNotDependOn->GetTitle().c_str(), arr->GetCount()));
     // if it was the last dependency, delete the array
     if (!arr->GetCount())
     {
@@ -1595,7 +1595,7 @@ void ProjectManager::ClearProjectDependencies(cbProject* base)
     if (m_pWorkspace)
         m_pWorkspace->SetModified(true);
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Removed all deps from %s"), base->GetTitle().c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Removed all deps from ") + base->GetTitle());
 }
 
 void ProjectManager::RemoveProjectFromAllDependencies(cbProject* base)
@@ -1633,7 +1633,7 @@ void ProjectManager::RemoveProjectFromAllDependencies(cbProject* base)
         else
             ++it;
     }
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Removed %s from all deps"), base->GetTitle().c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removed %s from all deps"), base->GetTitle().c_str()));
 }
 
 const ProjectsArray* ProjectManager::GetDependenciesForProject(cbProject* base)
@@ -1760,7 +1760,7 @@ void ProjectManager::OnExecParameters(wxCommandEvent& event)
 
 void ProjectManager::OnRightClick(wxCommandEvent& event)
 {
-    //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
+    //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
 
     wxMenu menu;
 
@@ -1796,7 +1796,7 @@ void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
         return;
     }
 
-    //Manager::Get()->GetMessageManager()->DebugLog("OnTreeItemRightClick");
+    //Manager::Get()->GetLogManager()->DebugLog("OnTreeItemRightClick");
     m_pTree->SelectItem(event.GetItem());
     ShowMenu(event.GetItem(), event.GetPoint());
 }
@@ -2060,13 +2060,13 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 ProjectFile* pf = prj->GetFile(indices[i]);
                 if (!pf)
                 {
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Invalid project file: Index %d"), indices[i]);
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Invalid project file: Index %d"), indices[i]));
                     continue;
                 }
                 if (pf->autoGeneratedBy)
 					continue;
                 wxString filename = pf->file.GetFullPath();
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Removing index %d, %s"), indices[i], filename.c_str());
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing index %d, %s"), indices[i], filename.c_str()));
                 prj->RemoveFile(indices[i]);
                 CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
                 evt.SetProject(prj);
@@ -2190,7 +2190,7 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
             }
             wxString msg;
             msg.Printf(_("Failed to open '%s'."), filename.c_str());
-            LOG_ERROR(msg);
+            Manager::Get()->GetLogManager()->LogError(msg);
         }
     }
 }
@@ -2269,7 +2269,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
 {
     if (!m_pActiveProject)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No active project!"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("No active project!"));
         return;
     }
 
@@ -2277,7 +2277,7 @@ void ProjectManager::OnGotoFile(wxCommandEvent& event)
     for (int i = 0; i < m_pActiveProject->GetFilesCount(); ++i)
         files.Add(m_pActiveProject->GetFile(i)->relativeFilename);
 
-    IncrementalSelectListDlg dlg(m_pTree, files, _("Select file..."), _("Please select file to open:"));
+    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), files, _("Select file..."), _("Please select file to open:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
@@ -2557,7 +2557,7 @@ void ProjectManager::CheckForExternallyModifiedProjects()
                 int ret = -1;
                 if (!reloadAll)
                 {
-                    Manager::Get()->GetMessageManager()->Log(pProject->GetFilename());
+                    Manager::Get()->GetLogManager()->Log(pProject->GetFilename());
                     wxString msg;
                     msg.Printf(_("Project %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
                                pProject->GetFilename().c_str());
@@ -2612,7 +2612,7 @@ void ProjectManager::RemoveFilesRecursively(wxTreeItemId& sel_id)
                     if (pf && !pf->autoGeneratedBy)
                     {
                         filename = pf->file.GetFullPath();
-                        DBGLOG(_T("Removed ") + filename + _T(" from ") + prj->GetTitle());
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Removed ") + filename + _T(" from ") + prj->GetTitle());
                         prj->RemoveFile(pf);
                         CodeBlocksEvent evt(cbEVT_PROJECT_FILE_REMOVED);
                         evt.SetProject(prj);

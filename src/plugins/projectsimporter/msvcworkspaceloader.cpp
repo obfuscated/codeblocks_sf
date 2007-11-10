@@ -23,7 +23,7 @@
 
     #include "globals.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
     #include "compilerfactory.h"
     #include "compiler.h"
@@ -89,7 +89,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
         wxString line = input.ReadLine();
         if (line.IsEmpty())
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Unsupported format."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Unsupported format."));
             return false;
         }
         comps = GetArrayFromString(line, _T(","));
@@ -98,14 +98,14 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
         line.Trim(false);
         if (line != _T("Microsoft Developer Studio Workspace File"))
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Unsupported format."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Unsupported format."));
             return false;
         }
         line = comps.GetCount() > 1 ? comps[1] : wxString(wxEmptyString);
         line.Trim(true);
         line.Trim(false);
         if (line != _T("Format Version 6.00"))
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Format not recognized. Will try to parse though..."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Format not recognized. Will try to parse though..."));
     }
 
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
@@ -120,7 +120,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
     cbProject* firstproject = 0;
     wxFileName wfname = filename;
     wfname.Normalize();
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Workspace dir: ") + wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -170,7 +170,7 @@ bool MSVCWorkspaceLoader::Open(const wxString& filename, wxString& Title)
             ++count;
             wxFileName fname(UnixFilename(prjFile));
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str()));
 
             int percentage = ((int)file.TellI())*100 / (int)(file.GetLength());
             if (!progress.Update(percentage, _("Importing project: ") + prjTitle))

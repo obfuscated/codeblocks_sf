@@ -53,6 +53,7 @@
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <globals.h>
 #include <logmanager.h>
+#include <loggers.h>
 #include "splashscreen.h"
 #include <wx/arrstr.h>
 #include "crashhandler.h"
@@ -715,7 +716,7 @@ int CodeBlocksApp::BatchJob()
             #endif // __WXMSW__
                 _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
 
-    m_pBatchBuildDialog = Manager::Get()->GetMessageManager()->GetBatchBuildDialog();
+    m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
     PlaceWindow(m_pBatchBuildDialog);
     m_pBatchBuildDialog->Show();
 

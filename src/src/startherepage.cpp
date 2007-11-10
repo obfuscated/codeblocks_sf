@@ -16,7 +16,7 @@
 #include <wx/utils.h>
 #include <wx/sizer.h>
 #include <manager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <projectmanager.h>
 #include <templatemanager.h>
 #include <pluginmanager.h>

@@ -211,7 +211,7 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 
     int disassembly_flavour = Manager::Get()->GetConfigManager(_T("debugger"))->ReadInt(_T("disassembly_flavor"), 0);
 
-//    Manager::Get()->GetMessageManager()->Log(_("Flavor is: %d"), disassembly_flavour);
+//    Manager::Get()->GetLogManager()->Log(_("Flavor is: %d"), disassembly_flavour);
 
     flavour = _T("set disassembly-flavor ");
     switch (disassembly_flavour)

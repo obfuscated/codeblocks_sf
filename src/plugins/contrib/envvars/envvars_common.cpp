@@ -22,7 +22,7 @@
   #include "globals.h"
   #include "manager.h"
   #include "macrosmanager.h"
-  #include "messagemanager.h"
+  #include "logmanager.h"
 #endif
 
 #include "envvars_common.h"
@@ -56,7 +56,7 @@ void nsEnvVars::EnvVarsDebugLog(const wxChar* msg, ...)
   log_msg = wxString::FormatV(msg, arg_list);
   va_end(arg_list);
 
-  DBGLOG(log_msg);
+  Manager::Get()->GetLogManager()->DebugLog(log_msg);
 }// EnvVarsDebugLog
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -348,8 +348,8 @@ bool nsEnvVars::EnvvarDiscard(const wxString &key)
 
   if (!wxUnsetEnv(the_key))
   {
-    Manager::Get()->GetMessageManager()->Log(
-      _("Unsetting environment variable '%s' failed."), the_key.c_str());
+    Manager::Get()->GetLogManager()->Log(F(
+      _("Unsetting environment variable '%s' failed."), the_key.c_str()));
     return false;
   }
 

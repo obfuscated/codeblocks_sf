@@ -325,7 +325,7 @@ bool ParserThread::InitTokenizer()
 
 bool ParserThread::Parse()
 {
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("> parsing %s"),m_Filename.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("> parsing %s"),m_Filename.c_str());
     if (!InitTokenizer())
         return false;
     bool result = false;
@@ -1413,7 +1413,7 @@ void ParserThread::HandleTypedef()
     wxString typ;
     std::queue<wxString> components;
     // get everything on the same line
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef start"));
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Typedef start"));
     wxString args;
     wxString token;
     wxString peek;
@@ -1502,9 +1502,9 @@ void ParserThread::HandleTypedef()
             continue;
         }
 
-//        Manager::Get()->GetMessageManager()->DebugLog(_T(" + '%s'"), token.c_str());
+//        Manager::Get()->GetLogManager()->DebugLog(_T(" + '%s'"), token.c_str());
     }
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Typedef done"));
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Typedef done"));
     m_ParsingTypedef = false;
 
     if (components.empty())
@@ -1529,7 +1529,7 @@ void ParserThread::HandleTypedef()
     // no return type
     m_Str.Clear();
 
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Adding typedef: name '%s', ancestor: '%s'"), components.front().c_str(), ancestor.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Adding typedef: name '%s', ancestor: '%s'"), components.front().c_str(), ancestor.c_str());
     Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
     if (tdef)
     {

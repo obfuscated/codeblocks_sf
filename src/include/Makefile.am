@@ -79,13 +79,12 @@ ALLHEADERS = annoyingdialog.h \
 				infowindow.h \
 				licenses.h \
 				logger.h \
+				loggers.h \
 				logmanager.h \
 				macrosmanager.h \
 				managedthread.h \
 				manager.h \
 				menuitemsmanager.h \
-				messagelog.h \
-				messagemanager.h \
 				multiselectdlg.h \
 				newfromtemplatedlg.h \
 				openfilestree.h \
@@ -117,8 +116,6 @@ ALLHEADERS = annoyingdialog.h \
 				searchresultslog.h \
 				selecttargetdlg.h \
 				settings.h \
-				simplelistlog.h \
-				simpletextlog.h \
 				templatemanager.h \
 				toolsmanager.h \
 				uservarmanager.h \

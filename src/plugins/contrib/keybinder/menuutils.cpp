@@ -40,7 +40,7 @@
 	#include "editormanager.h"
 	#include "cbworkspace.h"
 	#include "cbproject.h"
-	#include "messagemanager.h"
+	#include "logmanager.h"
 #endif
 
 // includes

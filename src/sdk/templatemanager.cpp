@@ -36,7 +36,7 @@
     #include "templatemanager.h"
     #include "manager.h"
     #include "configmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
     #include "cbproject.h"
     #include "globals.h"
@@ -94,7 +94,7 @@ void TemplateManager::LoadUserTemplates()
         ok = dir.GetNext(&filename);
     }
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("%d user templates loaded"), m_UserTemplates.GetCount());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("%d user templates loaded"), m_UserTemplates.GetCount()));
 }
 
 cbProject* TemplateManager::New(TemplateOutputType initial, wxString* pFilename)
@@ -136,7 +136,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     cbProject* prj = NULL;
     if (!dlg.SelectedUserTemplate())
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("TemplateManager::NewProjectFromUserTemplate() called when no user template was selected ?!?"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("TemplateManager::NewProjectFromUserTemplate() called when no user template was selected ?!?"));
         return NULL;
     }
 
@@ -173,7 +173,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     templ << sep << dlg.GetSelectedUserTemplate();
     if (!wxDirExists(templ))
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Cannot open user-template source path '%s'!"), templ.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Cannot open user-template source path '%s'!"), templ.c_str()));
         return NULL;
     }
 
@@ -189,9 +189,9 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
         dstname.MakeRelativeTo(templ + sep);
         wxString src = files[i];
         wxString dst = path + sep + dstname.GetFullPath();
-//        Manager::Get()->GetMessageManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
+//        Manager::Get()->GetLogManager()->DebugLog("dst=%s, dstname=%s", dst.c_str(), dstname.GetFullPath().c_str());
         if (!CreateDirRecursively(dst))
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed creating directory for %s"), dst.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Failed creating directory for ") + dst);
         if (wxCopyFile(src, dst, true))
         {
             if (FileTypeOf(dst) == ftCodeBlocksProject)
@@ -199,7 +199,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
             ++count;
         }
         else
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed copying %s to %s"), src.c_str(), dst.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Failed copying %s to %s"), src.c_str(), dst.c_str()));
     }
     if (count != total_count)
         cbMessageBox(_("Some files could not be loaded with the template..."), _("Error"), wxICON_ERROR);
@@ -303,13 +303,13 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     {
         wxString src = prj->GetFile(i)->file.GetFullPath();
         wxString dst = templ + prj->GetFile(i)->relativeToCommonTopLevelPath;
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Copying %s to %s"), src.c_str(), dst.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Copying %s to %s"), src.c_str(), dst.c_str()));
         if (!CreateDirRecursively(dst))
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed creating directory for %s"), dst.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Failed creating directory for ") + dst);
         if (wxCopyFile(src, dst, true))
             ++count;
         else
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed copying %s to %s"), src.c_str(), dst.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Failed copying %s to %s"), src.c_str(), dst.c_str()));
     }
 
     // cbProject doesn't have a GetRelativeToCommonTopLevelPath() function, so we simulate it here
@@ -327,7 +327,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     {
         if (!wxCopyFile(prj->GetFilename(), fname.GetFullPath()))
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Failed to copy the project file: %s"), fname.GetFullPath().c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Failed to copy the project file: ") + fname.GetFullPath());
             cbMessageBox(_("Failed to copy the project file!"), _("Error"), wxICON_ERROR);
             ++count;
         }

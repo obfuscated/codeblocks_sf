@@ -18,7 +18,7 @@
     #include <wx/intl.h>
     #include "manager.h"
     #include "projectmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "editormanager.h"
     #include "cbeditor.h"
     #include "cbproject.h"
@@ -50,7 +50,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         return false;
 
     ProjectManager* pMan = Manager::Get()->GetProjectManager();
-    MessageManager* pMsg = Manager::Get()->GetMessageManager();
+    LogManager* pMsg = Manager::Get()->GetLogManager();
     if (!pMan || !pMsg)
         return false;
 

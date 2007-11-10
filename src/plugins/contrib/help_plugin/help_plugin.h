@@ -4,7 +4,6 @@
 #include <settings.h> // SDK
 #include <cbplugin.h>
 #include <cbproject.h>
-#include <simpletextlog.h>
 #include <sdk_events.h>
 #include <settings.h> // much of the SDK is here
 #include <sdk_events.h>

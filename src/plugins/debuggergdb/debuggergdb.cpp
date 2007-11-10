@@ -33,7 +33,7 @@
 
 #include <manager.h>
 #include <configmanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <projectmanager.h>
 #include <pluginmanager.h>
 #include <editormanager.h>
@@ -270,24 +270,30 @@ void DebuggerGDB::OnAttach()
 {
     m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
-    m_pLog = new SimpleTextLog(true);
-    m_PageIndex = msgMan->AddLog(m_pLog, _("Debugger"));
+    LogManager* msgMan = Manager::Get()->GetLogManager();
+    m_pLog = new TextCtrlLogger(true);
+    m_PageIndex = msgMan->SetLog(m_pLog);
+    msgMan->Slot(m_PageIndex).title = _("Debugger");
     // set log image
-    wxBitmap bmp;
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-    bmp = cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG);
-    Manager::Get()->GetMessageManager()->SetLogImage(m_pLog, bmp);
+    wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG));
+    msgMan->Slot(m_PageIndex).icon = bmp;
 
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
     if (m_HasDebugLog)
     {
-        m_pDbgLog = new SimpleTextLog(true);
-        m_DbgPageIndex = msgMan->AddLog(m_pDbgLog, _("Debugger (debug)"));
+        m_pDbgLog = new TextCtrlLogger(true);
+        m_DbgPageIndex = msgMan->SetLog(m_pDbgLog);
+        msgMan->Slot(m_DbgPageIndex).title = _("Debugger (debug)");
         // set log image
-        bmp = cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG);
-        Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
+        bmp = new wxBitmap(cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG));
+        msgMan->Slot(m_DbgPageIndex).icon = bmp;
     }
+
+    CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
+    CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, msgMan->Slot(m_DbgPageIndex).title, msgMan->Slot(m_DbgPageIndex).icon);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd1);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd2);
 
     m_pTree = new DebuggerTree(Manager::Get()->GetAppWindow(), this);
     m_pDisassembly = new DisassemblyDlg(Manager::Get()->GetAppWindow(), this);
@@ -457,16 +463,16 @@ void DebuggerGDB::OnRelease(bool appShutDown)
 
     m_State.CleanUp();
 
-    if (Manager::Get()->GetMessageManager())
+    if (Manager::Get()->GetLogManager())
     {
         if (m_HasDebugLog)
         {
-            Manager::Get()->GetMessageManager()->RemoveLog(m_pDbgLog);
-            m_pDbgLog->Destroy();
+			CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
+			Manager::Get()->GetAppWindow()->ProcessEvent(evt);
             m_pDbgLog = 0;
         }
-        Manager::Get()->GetMessageManager()->RemoveLog(m_pLog);
-        m_pLog->Destroy();
+		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pLog);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
         m_pLog = 0;
     }
     // vars for Linux console
@@ -505,19 +511,18 @@ void DebuggerGDB::RefreshConfiguration()
 
     if (!log_visible && m_HasDebugLog)
     {
-        Manager::Get()->GetMessageManager()->RemoveLog(m_pDbgLog);
-        m_pDbgLog->Destroy();
+//        Manager::Get()->GetLogManager()->RemoveLog(m_pDbgLog);
+//        m_pDbgLog->Destroy();
         m_pDbgLog = 0;
     }
     else if (log_visible && !m_HasDebugLog)
     {
-        m_pDbgLog = new SimpleTextLog();
-        m_pDbgLog->GetTextControl()->SetFont(m_pLog->GetTextControl()->GetFont());
-        m_DbgPageIndex = Manager::Get()->GetMessageManager()->AddLog(m_pDbgLog, _("Debugger (debug)"));
+        m_pDbgLog = new TextCtrlLogger(true);
+        m_DbgPageIndex = Manager::Get()->GetLogManager()->SetLog(m_pDbgLog);
+        Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).title = _("Debugger (debug)");
         // set log image
-        wxBitmap bmp;
-        bmp = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG);
-        Manager::Get()->GetMessageManager()->SetLogImage(m_pDbgLog, bmp);
+        wxBitmap* bmp = new wxBitmap(cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG));
+        Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon = bmp;
     }
     m_HasDebugLog = log_visible;
 }
@@ -610,14 +615,14 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
 void DebuggerGDB::Log(const wxString& msg)
 {
     if (IsAttached())
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, msg);
+        Manager::Get()->GetLogManager()->Log(msg, m_PageIndex);
 }
 
 void DebuggerGDB::DebugLog(const wxString& msg)
 {
     // gdb debug messages
     if (IsAttached() && m_HasDebugLog)
-        Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, msg);
+        Manager::Get()->GetLogManager()->Log(msg, m_DbgPageIndex);
 }
 
 wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
@@ -693,7 +698,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                     m_RemoteDebugging.insert(m_RemoteDebugging.end(), std::make_pair(bt, rd));
                 }
                 else
-                    DBGLOG(_T("Unknown target in remote_debugging: %s"), targetName.c_str());
+                    Manager::Get()->GetLogManager()->Log(_T("Unknown target in remote_debugging: ") + targetName, m_PageIndex, Logger::warning);
 
                 rdElem = rdElem->NextSiblingElement("remote_debugging");
             }
@@ -754,7 +759,7 @@ void DebuggerGDB::DoSwitchToDebuggingLayout()
 	CodeBlocksLayoutEvent queryEvent(cbEVT_QUERY_VIEW_LAYOUT);
 	CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, _("Debugging"));
 
-	Manager::Get()->GetMessageManager()->DebugLog(_("Switching layout to \"%s\""), switchEvent.layout.c_str());
+	Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.c_str()));
 
 	// query the current layout
 	Manager::Get()->ProcessEvent(queryEvent);
@@ -768,7 +773,7 @@ void DebuggerGDB::DoSwitchToPreviousLayout()
 {
 	CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
 
-	Manager::Get()->GetMessageManager()->DebugLog(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.c_str() : wxString(_("Code::Blocks default")).c_str());
+	Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.c_str() : wxString(_("Code::Blocks default")).c_str()));
 
 	// switch to previous layout
 	Manager::Get()->ProcessEvent(switchEvent);
@@ -843,7 +848,7 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
 
     // start the gdb process
     m_pProcess = new PipedProcess((void**)&m_pProcess, this, idGDBProcess, true, cwd);
-    Manager::Get()->GetMessageManager()->AppendLog(m_PageIndex, _("Starting debugger: "));
+    Manager::Get()->GetLogManager()->Log(_("Starting debugger: "), m_PageIndex);
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 
 #ifdef __WXMAC__
@@ -891,31 +896,31 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
     {
         delete m_pProcess;
         m_pProcess = 0;
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed"));
+        Manager::Get()->GetLogManager()->Log(_("failed"), m_PageIndex);
         return -1;
     }
     else if (!m_pProcess->GetOutputStream())
     {
         delete m_pProcess;
         m_pProcess = 0;
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed (to get debugger's stdin)"));
+        Manager::Get()->GetLogManager()->Log(_("failed (to get debugger's stdin)"), m_PageIndex);
         return -2;
     }
     else if (!m_pProcess->GetInputStream())
     {
         delete m_pProcess;
         m_pProcess = 0;
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed (to get debugger's stdout)"));
+        Manager::Get()->GetLogManager()->Log(_("failed (to get debugger's stdout)"), m_PageIndex);
         return -2;
     }
     else if (!m_pProcess->GetErrorStream())
     {
         delete m_pProcess;
         m_pProcess = 0;
-        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed (to get debugger's stderr)"));
+        Manager::Get()->GetLogManager()->Log(_("failed (to get debugger's stderr)"), m_PageIndex);
         return -2;
     }
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("done"));
+    Manager::Get()->GetLogManager()->Log(_("done"), m_PageIndex);
     return 0;
 }
 
@@ -931,7 +936,7 @@ wxString DebuggerGDB::GetDebuggee(ProjectBuildTarget* target)
         case ttConsoleOnly:
             out = UnixFilename(target->GetOutputFilename());
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding file: %s"), out.c_str());
+            Manager::Get()->GetLogManager()->Log(_("Adding file: ") + out, m_PageIndex);
             ConvertToGDBDirectory(out);
             break;
 
@@ -945,7 +950,7 @@ wxString DebuggerGDB::GetDebuggee(ProjectBuildTarget* target)
             }
             out = UnixFilename(target->GetHostApplication());
             Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
-            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding file: %s"), out.c_str());
+            Manager::Get()->GetLogManager()->Log(_("Adding file: ") + out, m_PageIndex);
             ConvertToGDBDirectory(out);
             break;
 //            // for DLLs, add the DLL's symbols
@@ -977,7 +982,7 @@ bool DebuggerGDB::EnsureBuildUpToDate()
     // compile project/target (if not attaching to a PID)
     if (m_PidToAttach == 0)
     {
-        MessageManager* msgMan = Manager::Get()->GetMessageManager();
+        LogManager* msgMan = Manager::Get()->GetLogManager();
 
         // make sure the target is compiled
         PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
@@ -990,13 +995,13 @@ bool DebuggerGDB::EnsureBuildUpToDate()
             // is the compiler already running?
             if (m_pCompiler->IsRunning())
             {
-                msgMan->Log(m_PageIndex, _("Compiler in use..."));
-                msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+                msgMan->Log(_("Compiler in use..."), m_PageIndex);
+                msgMan->Log(_("Aborting debugging session"), m_PageIndex);
                 cbMessageBox(_("The compiler is currently in use. Aborting debugging session..."), _("Compiler running"), wxICON_WARNING);
                 return false;
             }
 
-            msgMan->Log(m_PageIndex, _("Building to ensure sources are up-to-date"));
+            msgMan->Log(_("Building to ensure sources are up-to-date"), m_PageIndex);
             m_WaitingCompilerToFinish = true;
             m_pCompiler->Build();
             // now, when the build is finished, DoDebug will be launched in OnCompilerFinished()
@@ -1016,14 +1021,16 @@ int DebuggerGDB::Debug()
 
     // clear the debug log
     if (m_HasDebugLog)
-        m_pDbgLog->GetTextControl()->Clear();
+        m_pDbgLog->Clear();
 
     m_pTree->GetTree()->DeleteAllItems();
 
     // switch to the debugging log and clear it
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
-    msgMan->SwitchTo(m_PageIndex);
-    m_pLog->GetTextControl()->Clear();
+	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+	Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+	Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+    m_pLog->Clear();
 
     // can only debug projects or attach to processes
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
@@ -1068,22 +1075,26 @@ int DebuggerGDB::DoDebug()
     // set this to true before every error exit point in this function
     m_Canceled = false;
 
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    LogManager* msgMan = Manager::Get()->GetLogManager();
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 
     // this is always called after EnsureBuildUpToDate() so we should display the build result
-    msgMan->SwitchTo(m_PageIndex);
+	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+	Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+	Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+
     if (m_pCompiler)
     {
         if (m_pCompiler->GetExitCode() != 0)
         {
-            msgMan->Log(m_PageIndex, _("Build failed..."));
-            msgMan->Log(m_PageIndex, _("Aborting debugging session"));
+            msgMan->Log(_("Build failed..."), m_PageIndex);
+            msgMan->Log(_("Aborting debugging session"), m_PageIndex);
             cbMessageBox(_("Build failed. Aborting debugging session..."), _("Build failed"), wxICON_WARNING);
             m_Canceled = true;
             return 1;
         }
-        msgMan->Log(m_PageIndex, _("Build succeeded"));
+        msgMan->Log(_("Build succeeded"), m_PageIndex);
     }
 
     // select the build target to debug
@@ -1091,14 +1102,18 @@ int DebuggerGDB::DoDebug()
     Compiler* actualCompiler = 0;
     if (m_PidToAttach == 0)
     {
-        msgMan->SwitchTo(m_PageIndex);
-        msgMan->AppendLog(m_PageIndex, _("Selecting target: "));
+		CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+		CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+
+        msgMan->Log(_("Selecting target: "), m_PageIndex);
         if (!m_pProject->BuildTargetValid(m_ActiveBuildTarget, false))
         {
             int tgtIdx = m_pProject->SelectTarget();
             if (tgtIdx == -1)
             {
-                msgMan->Log(m_PageIndex, _("canceled"));
+                msgMan->Log(_("canceled"), m_PageIndex);
                 m_Canceled = true;
                 return 3;
             }
@@ -1113,10 +1128,10 @@ int DebuggerGDB::DoDebug()
         {
             cbMessageBox(_("The selected target is only running pre/post build step commands\n"
                         "Can't debug such a target..."), _("Information"), wxICON_INFORMATION);
-            msgMan->Log(m_PageIndex, _("aborted"));
+            msgMan->Log(_("aborted"), m_PageIndex);
             return 3;
         }
-        msgMan->Log(m_PageIndex, target->GetTitle());
+        msgMan->Log(target->GetTitle(), m_PageIndex);
 
         // find the target's compiler (to see which debugger to use)
         actualCompiler = CompilerFactory::GetCompiler(target ? target->GetCompilerID() : m_pProject->GetCompilerID());
@@ -1140,16 +1155,16 @@ int DebuggerGDB::DoDebug()
     cmdexe.Trim(true);
     if(cmdexe.IsEmpty())
     {
-        msgMan->AppendLog(m_PageIndex,_("ERROR: You need to specify a debugger program in the compiler's settings."));
+        msgMan->Log(_("ERROR: You need to specify a debugger program in the compiler's settings."), m_PageIndex);
 
         if(platform::windows)
         {
-            msgMan->Log(m_PageIndex,_("\n(For MinGW compilers, it's 'gdb.exe' (without the quotes))"));
-            msgMan->Log(m_PageIndex,_("\n(For MSVC compilers, it's 'cdb.exe' (without the quotes))"));
+            msgMan->Log(_("(For MinGW compilers, it's 'gdb.exe' (without the quotes))"), m_PageIndex);
+            msgMan->Log(_("(For MSVC compilers, it's 'cdb.exe' (without the quotes))"), m_PageIndex);
         }
         else
         {
-            msgMan->Log(m_PageIndex,_("\n(For GCC compilers, it's 'gdb' (without the quotes))"));
+            msgMan->Log(_("(For GCC compilers, it's 'gdb' (without the quotes))"), m_PageIndex);
         }
 
         m_Canceled = true;
@@ -1163,7 +1178,7 @@ int DebuggerGDB::DoDebug()
         cbMessageBox(_("The debugger executable is not set.\n"
                        "To set it, go to \"Settings/Compiler and debugger\", switch to the \"Programs\" tab,\n"
                        "and select the debugger program."), _("Error"), wxICON_ERROR);
-        msgMan->Log(m_PageIndex, _("Aborted"));
+        msgMan->Log(_("Aborted"), m_PageIndex);
         m_Canceled = true;
         return 4;
     }
@@ -1224,7 +1239,7 @@ int DebuggerGDB::DoDebug()
             ConvertToGDBDirectory(path);
             if (path != _T(".")) // avoid silly message "changing to ."
             {
-                msgMan->Log(m_PageIndex, _("Changing directory to: %s"), path.c_str());
+                msgMan->Log(_("Changing directory to: ") + path, m_PageIndex);
                 m_State.GetDriver()->SetWorkingDirectory(path);
             }
         }
@@ -1341,7 +1356,7 @@ void DebuggerGDB::AddSourceDir(const wxString& dir)
         return;
     wxString filename = dir;
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(filename); // apply env vars
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding source dir: %s"), filename.c_str());
+    Manager::Get()->GetLogManager()->Log(_("Adding source dir: ") + filename, m_PageIndex);
     ConvertToGDBDirectory(filename, _T(""), false);
     m_State.GetDriver()->AddDirectory(filename);
 }
@@ -1471,7 +1486,7 @@ void DebuggerGDB::SendCommand(const wxString& cmd)
     if (!m_pProcess || !IsStopped())
         return;
     if (m_HasDebugLog)
-        Manager::Get()->GetMessageManager()->Log(m_DbgPageIndex, _T("> ") + cmd);
+        Manager::Get()->GetLogManager()->Log(_T("> ") + cmd, m_DbgPageIndex);
 //    m_QueueBusy = true;
     m_pProcess->SendString(cmd);
 }
@@ -1488,7 +1503,7 @@ void DebuggerGDB::RunCommand(int cmd)
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
             {
-                Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Continuing..."));
+                Manager::Get()->GetLogManager()->Log(_("Continuing..."), m_PageIndex);
                 m_State.GetDriver()->Continue();
             }
 //            QueueCommand(new DebuggerCmd(this, _T("cont")));
@@ -1535,14 +1550,14 @@ void DebuggerGDB::RunCommand(int cmd)
             break;
 
         case CMD_BACKTRACE:
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Running back-trace...");
+//            Manager::Get()->GetLogManager()->Log(m_PageIndex, "Running back-trace...");
             if (m_State.HasDriver())
                 m_State.GetDriver()->Backtrace();
             break;
 
         case CMD_DISASSEMBLE:
         {
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Disassemblying...");
+//            Manager::Get()->GetLogManager()->Log(m_PageIndex, "Disassemblying...");
             if (m_State.HasDriver())
                 m_State.GetDriver()->Disassemble();
             break;
@@ -1550,7 +1565,7 @@ void DebuggerGDB::RunCommand(int cmd)
 
         case CMD_REGISTERS:
         {
-//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, "Displaying registers...");
+//            Manager::Get()->GetLogManager()->Log(m_PageIndex, "Displaying registers...");
             if (m_State.HasDriver())
                 m_State.GetDriver()->CPURegisters();
             break;
@@ -2078,7 +2093,7 @@ void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
                                     wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
     if (file.IsEmpty())
         return;
-//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());
+//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _("Adding symbol file: %s"), file.c_str());
     ConvertToGDBDirectory(file);
 //    QueueCommand(new DbgCmd_AddSymbolFile(this, file));
 }
@@ -2248,7 +2263,7 @@ void DebuggerGDB::OnGDBOutput(wxCommandEvent& event)
     wxString msg = event.GetString();
     if (!msg.IsEmpty())
     {
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("O>>> %s"), msg.c_str());
+//        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("O>>> %s"), msg.c_str());
         ParseOutput(msg);
     }
 }
@@ -2258,7 +2273,7 @@ void DebuggerGDB::OnGDBError(wxCommandEvent& event)
     wxString msg = event.GetString();
     if (!msg.IsEmpty())
     {
-//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("E>>> %s"), msg.c_str());
+//        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("E>>> %s"), msg.c_str());
         ParseOutput(msg);
     }
 }
@@ -2274,7 +2289,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
 
     ClearActiveMarkFromAllEditors();
     m_State.StopDriver();
-    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Debugger finished with status %d"), m_LastExitCode);
+    Manager::Get()->GetLogManager()->Log(F(_("Debugger finished with status %d"), m_LastExitCode), m_PageIndex);
 
     if (m_NoDebugInfo)
     {
@@ -2669,12 +2684,12 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
 
 void DebuggerGDB::OnCompilerStarted(CodeBlocksEvent& event)
 {
-    DBGLOG(_T("DebuggerGDB::OnCompilerStarted"));
+//    DBGLOG(_T("DebuggerGDB::OnCompilerStarted"));
 }
 
 void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 {
-    DBGLOG(_T("DebuggerGDB::OnCompilerFinished"));
+//    DBGLOG(_T("DebuggerGDB::OnCompilerFinished"));
 
     if (m_WaitingCompilerToFinish)
     {
@@ -2687,7 +2702,7 @@ void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 
 void DebuggerGDB::OnBuildTargetSelected(CodeBlocksEvent& event)
 {
-    DBGLOG(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetBuildTargetName().c_str());
+//    DBGLOG(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetBuildTargetName().c_str());
 
     // verify that the project that sent it, is the one we 're debugging
     if (!m_pProject || event.GetProject() == m_pProject)

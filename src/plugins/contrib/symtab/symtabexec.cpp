@@ -13,7 +13,7 @@
   #include <wx/xrc/xmlres.h>
   #include "globals.h" // cbMessageBox
   #include "manager.h"
-  #include "messagemanager.h"
+  #include "logmanager.h"
 #endif
 
 //#define TRACE_SYMTAB_EXE
@@ -55,7 +55,7 @@ SymTabExecDlg::~SymTabExecDlg()
 int SymTabExecDlg::Execute(struct_config config)
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::Execute"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::Execute"));
 #endif
 
   // Intialise GUI (does nothing if already done)
@@ -90,7 +90,7 @@ int SymTabExecDlg::Execute(struct_config config)
   }// else if
   else
   {
-    DBGLOG(_T("SymTab: Invalid (unsupported) choice."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Invalid (unsupported) choice."));
   }// else
 
   CleanUp(); // free memory
@@ -102,7 +102,7 @@ int SymTabExecDlg::Execute(struct_config config)
 void SymTabExecDlg::DoInitDialog()
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::DoInitDialog"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::DoInitDialog"));
 #endif
 
   // Avoid multiple load of resources
@@ -133,7 +133,7 @@ void SymTabExecDlg::DoInitDialog()
 void SymTabExecDlg::EndModal(int retCode)
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::EndModal"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::EndModal"));
 #endif
 
   wxDialog::EndModal(retCode);
@@ -145,7 +145,7 @@ void SymTabExecDlg::EndModal(int retCode)
 void SymTabExecDlg::OnWriteToFile(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::OnWriteToFile"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnWriteToFile"));
 #endif
 
   wxString     es = wxEmptyString;
@@ -168,7 +168,7 @@ void SymTabExecDlg::OnWriteToFile(wxCommandEvent& WXUNUSED(event))
 void SymTabExecDlg::OnNext(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::OnNext"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnNext"));
 #endif
 
   wxDialog::EndModal(wxID_OK);
@@ -179,7 +179,7 @@ void SymTabExecDlg::OnNext(wxCommandEvent& WXUNUSED(event))
 void SymTabExecDlg::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::OnCancel"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnCancel"));
 #endif
 
   wxDialog::EndModal(wxID_CANCEL);
@@ -269,7 +269,7 @@ int wxCALLBACK SortFunction(long item1, long item2, long dlg)
 void SymTabExecDlg::OnColumnClick(wxListEvent& event)
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::OnColumnClick"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnColumnClick"));
 #endif
 
   if (event.GetColumn() != ms_iSortColumn)
@@ -397,10 +397,10 @@ int SymTabExecDlg::ExecuteSingle(struct_config &config, wxString cmd)
 bool SymTabExecDlg::ExecuteNM(wxString lib, wxString cmd)
 {
 #ifdef TRACE_SYMTAB_EXE
-  DBGLOG(_T("SymTabExecDlg::ExecuteNM"));
-  DBGLOG(_T("Library: ")   + lib);
+  Manager::Get()->GetLogManager()->(_T("SymTabExecDlg::ExecuteNM"));
+  Manager::Get()->GetLogManager()->(_T("Library: ")   + lib);
 #endif
-	DBGLOG(_T("SymTab: Executing: ") + cmd);
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Executing: ") + cmd);
 
   wxString p_msg;
   p_msg << _("Launching NM tool for:\n") << lib
@@ -432,7 +432,7 @@ bool SymTabExecDlg::ExecuteNM(wxString lib, wxString cmd)
 int SymTabExecDlg::ParseOutput(wxString lib, wxString filter)
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::ParseOutput"));
+	Manager::Get()->GetLogManager()->(_T("SymTabExecDlg::ParseOutput"));
 #endif
 
   int symbols_processed = -1;
@@ -445,7 +445,7 @@ int SymTabExecDlg::ParseOutput(wxString lib, wxString filter)
     symbols_processed = ParseOutputSuccess(lib, filter);
 
 	if (symbols_processed == 0)
-    DBGLOG(_T("SymTab: Parsing produced no match (no results)."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Parsing produced no match (no results)."));
 
   return symbols_processed;
 }// ParseOutput
@@ -455,7 +455,7 @@ int SymTabExecDlg::ParseOutput(wxString lib, wxString filter)
 void SymTabExecDlg::ParseOutputError()
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::ParseOutputError"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::ParseOutputError"));
 #endif
 
   wxString output;
@@ -484,19 +484,19 @@ void SymTabExecDlg::ParseOutputError()
 int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
 {
 #ifdef TRACE_SYMTAB_EXE
-	DBGLOG(_T("SymTabExecDlg::ParseOutputSuccess"));
+	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::ParseOutputSuccess"));
 #endif
 
   size_t count = nm_result.GetCount();
   if (!count)
   {
 #ifdef TRACE_SYMTAB_EXE
-    DBGLOG(_T("SymTab: No entries. Skipping."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: No entries. Skipping."));
 #endif
     return 0;
   }
 
-	DBGLOG(_T("SymTab: Parsing %d items..."), count);
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTab: Parsing %d items..."), count));
 
   wxProgressDialog* progress = 0L;
   if (count>2000) // avoid flickering for small libs
@@ -569,7 +569,7 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
   }// for
 
 #ifdef TRACE_SYMTAB_EXE
-  DBGLOG(_T("SymTab: Operated %d entries."), entries);
+  Manager::Get()->GetLogManager()->DebugLog(_T("SymTab: Operated %d entries."), entries);
 #endif
 
   if (entries)

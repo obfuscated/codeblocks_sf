@@ -1,26 +1,24 @@
 #ifndef COMPILERMESSAGES_H
 #define COMPILERMESSAGES_H
 
-#include "simplelistlog.h"
+#include "loggers.h"
 
 class CompilerErrors;
 class wxArrayString;
 class wxCommandEvent;
 
-class CompilerMessages : public SimpleListLog
+class CompilerMessages : public ListCtrlLogger, public wxEvtHandler
 {
 	public:
-		CompilerMessages(int numCols, int widths[], const wxArrayString& titles);
+		CompilerMessages(const wxArrayString& titles, const wxArrayInt& widths);
 		virtual ~CompilerMessages();
         virtual void SetCompilerErrors(CompilerErrors* errors){ m_pErrors = errors; }
         virtual void FocusError(int nr);
+
+		virtual wxWindow* CreateControl(wxWindow* parent);
 	private:
         void OnClick(wxCommandEvent& event);
         void OnDoubleClick(wxCommandEvent& event);
-        void OnRightClick(wxCommandEvent& event);
-        void OnCopyToClipboard(wxCommandEvent& event);
-
-        wxString AssembleMessage(int id);
 
         CompilerErrors* m_pErrors;
 

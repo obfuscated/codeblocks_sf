@@ -10,7 +10,6 @@
 #include "tinyxml/tinystr.h"
 #include "tinyxml/tinyxml.h"
 #include "manager.h"
-#include "messagemanager.h"
 #include "base64.h"
 
 #undef new

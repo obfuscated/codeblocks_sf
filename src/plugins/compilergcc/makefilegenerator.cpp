@@ -28,7 +28,7 @@
 #include "makefilegenerator.h" // class's header file
 #include <manager.h>
 #include <macrosmanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <wx/file.h>
 #include <compilerfactory.h>
 #include <filefilters.h>

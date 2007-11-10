@@ -23,7 +23,7 @@
 
 #include "wxscolourproperty.h"
 
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <wx/settings.h>
 #include <wx/colordlg.h>
 #include <wx/dc.h>

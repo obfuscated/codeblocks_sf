@@ -37,7 +37,7 @@
     #include "cbexception.h"
     #include "cbplugin.h"
     #include "infowindow.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "macrosmanager.h"
     #include "manager.h"
     #include "editormanager.h"
@@ -355,7 +355,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     const PluginInfo* info = GetPluginInfo(plugin);
     if (!plugin || !info)
     {
-        DBGLOG(_T("Failed"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Failed"));
         return false;
     }
 //    DBGLOG(_T("Succeeded"));
@@ -462,31 +462,31 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
             if (!resourceFilename.IsEmpty())
             {
                 if (!wxRemoveFile(resourceFilename))
-                    LOG_WARN(_T("Failed to remove plugin resources: ") + resourceFilename);
+                    Manager::Get()->GetLogManager()->LogWarning(_T("Failed to remove plugin resources: ") + resourceFilename);
             }
             if (!settingsOnFilename.IsEmpty() && wxFileExists(settingsOnFilename))
             {
                 if (!wxRemoveFile(settingsOnFilename))
-                    LOG_WARN(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOnFilename);
+                    Manager::Get()->GetLogManager()->LogWarning(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOnFilename);
             }
             if (!settingsOffFilename.IsEmpty() && wxFileExists(settingsOffFilename))
             {
                 if (!wxRemoveFile(settingsOffFilename))
-                    LOG_WARN(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOffFilename);
+                    Manager::Get()->GetLogManager()->LogWarning(_T("Failed to remove icon for \"Settings\" dialog: ") + settingsOffFilename);
             }
             for (size_t i = 0; i < extrafiles.GetCount(); ++i)
             {
                 if (!extrafiles[i].IsEmpty() && wxFileExists(extrafiles[i]))
                 {
                     if (!wxRemoveFile(extrafiles[i]))
-                        LOG_WARN(_T("Failed to remove extra file: ") + extrafiles[i]);
+                        Manager::Get()->GetLogManager()->LogWarning(_T("Failed to remove extra file: ") + extrafiles[i]);
                 }
             }
             return true;
         }
         else
         {
-            LOG_WARN(_T("Failed to remove plugin file: ") + pluginFilename);
+            Manager::Get()->GetLogManager()->LogWarning(_T("Failed to remove plugin file: ") + pluginFilename);
             cbMessageBox(_("Plugin could not be completely uninstalled because its files could not be removed.\n\n"
                             "This can happen if the plugin's file is in-use like, for "
                             "example, when the same plugin file provides more than one "
@@ -638,7 +638,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
         if (!output.IsOpened())
         {
 //            DBGLOG(_T("Can't open destination file for writing"));
-            wxString msg = wxString::Format(_T("Can't open destination file '%s' for writing..."),
+            wxString msg = wxString::Format(_("Can't open destination file '%s' for writing..."),
                                             dst_filename.c_str());
             cbMessageBox(msg, _("Error"), wxICON_ERROR);
             delete f;
@@ -663,7 +663,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
 //        DBGLOG(_T("File not found in plugin"));
         if (isMandatory)
         {
-            wxString msg = wxString::Format(_T("File '%s' not found in plugin '%s'"),
+            wxString msg = wxString::Format(_("File '%s' not found in plugin '%s'"),
                                             src_filename.c_str(), bundlename.c_str());
             cbMessageBox(msg, _("Error"), wxICON_ERROR);
             delete fs;
@@ -692,7 +692,7 @@ void PluginManager::RegisterPlugin(const wxString& name,
     if (!ReadManifestFile(m_CurrentlyLoadingFilename, name, &info) ||
         info.name.IsEmpty())
     {
-        LOG_ERROR(_T("Invalid manifest file for: ") + name);
+        Manager::Get()->GetLogManager()->LogError(_T("Invalid manifest file for: ") + name);
         return;
     }
 
@@ -715,7 +715,7 @@ void PluginManager::RegisterPlugin(const wxString& name,
                     PLUGIN_SDK_VERSION_MAJOR,
                     PLUGIN_SDK_VERSION_MINOR,
                     PLUGIN_SDK_VERSION_RELEASE);
-        LOG_ERROR(fmt);
+        Manager::Get()->GetLogManager()->LogError(fmt);
         return;
     }
 
@@ -750,7 +750,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
         {
-            LOG_ERROR(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
+            Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + fname.GetFullName());
             return false; // not found
         }
 
@@ -772,7 +772,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         }
         else
         {
-            LOG_ERROR(_T("No plugin manifest file in resource: %s"), actual.c_str());
+            Manager::Get()->GetLogManager()->LogError(_T("No plugin manifest file in resource: ") + actual);
             delete fs;
             return false;
         }
@@ -817,7 +817,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
 //                    PLUGIN_SDK_VERSION_MAJOR,
 //                    PLUGIN_SDK_VERSION_MINOR,
 //                    PLUGIN_SDK_VERSION_RELEASE);
-//        LOG_ERROR(fmt);
+//        Manager::Get()->GetLogManager()->LogError(fmt);
 //        return false;
 //    }
 
@@ -881,7 +881,7 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
     actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
     if (actual.IsEmpty())
     {
-        LOG_ERROR(_T("Plugin resource not found: %s"), fname.GetFullName().c_str());
+        Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + fname.GetFullName());
         return; // not found
     }
 
@@ -903,7 +903,7 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
     }
     else
     {
-        LOG_ERROR(_T("No plugin manifest file in resource: %s"), actual.c_str());
+        Manager::Get()->GetLogManager()->LogError(_T("No plugin manifest file in resource: %s") + actual);
         delete fs;
         return;
     }
@@ -996,7 +996,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
         m_pCurrentlyLoadingManifestDoc = 0;
         ok = dir.GetNext(&filename);
     }
-    Manager::Get()->GetMessageManager()->Log(_("Found %d plugins"), count);
+    Manager::Get()->GetLogManager()->Log(F(_("Loaded %d plugins"), count));
     if (!failed.IsEmpty())
     {
         InfoWindow::Display(_("Warning"),
@@ -1020,7 +1020,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
     m_pCurrentlyLoadingLib = LibLoader::LoadLibrary(pluginName);
     if (!m_pCurrentlyLoadingLib->IsLoaded())
     {
-        LOG_ERROR(_T("%s: not loaded (missing symbols?)"), pluginName.c_str());
+        Manager::Get()->GetLogManager()->LogError(F(_T("%s: not loaded (missing symbols?)"), pluginName.c_str()));
         LibLoader::RemoveLibrary(m_pCurrentlyLoadingLib);
         m_pCurrentlyLoadingLib = 0;
         m_CurrentlyLoadingFilename.Clear();
@@ -1058,7 +1058,7 @@ bool PluginManager::LoadPlugin(const wxString& pluginName)
 
         SetupLocaleDomain(pr.name);
 
-        Manager::Get()->GetMessageManager()->DebugLog(_T("%s: loaded"), pr.name.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("%s: loaded"), pr.name.c_str()));
     }
 
     if (m_RegisteredPlugins.empty())
@@ -1109,7 +1109,7 @@ void PluginManager::LoadAllPlugins()
         if (loadIt)
         {
             Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), elem->info.title);
-            Manager::Get()->GetMessageManager()->AppendLog(_("%s "), elem->info.name.c_str());
+            Manager::Get()->GetLogManager()->Log(elem->info.name);
             try
             {
                 AttachPlugin(plug);
@@ -1117,7 +1117,7 @@ void PluginManager::LoadAllPlugins()
             }
             catch (cbException& exception)
             {
-                Manager::Get()->GetMessageManager()->AppendLog(_T("[failed] "));
+                Manager::Get()->GetLogManager()->Log(_T("[failed]"));
                 exception.ShowErrorMessage(false);
 
                 wxString msg;
@@ -1128,13 +1128,12 @@ void PluginManager::LoadAllPlugins()
             }
         }
     }
-    Manager::Get()->GetMessageManager()->Log(_T(""));
     Manager::Get()->GetConfigManager(_T("plugins"))->Write(_T("/try_to_activate"), wxEmptyString, false);
 }
 
 void PluginManager::UnloadAllPlugins()
 {
-//    Manager::Get()->GetMessageManager()->DebugLog("Count %d", m_Plugins.GetCount());
+//    Manager::Get()->GetLogManager()->DebugLog("Count %d", m_Plugins.GetCount());
 
     while (m_Plugins.GetCount())
     {
@@ -1240,7 +1239,7 @@ int PluginManager::ExecutePlugin(const wxString& pluginName)
     {
         if (plug->GetType() != ptTool)
         {
-            LOG_ERROR(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.c_str());
+            Manager::Get()->GetLogManager()->LogError(F(_T("Plugin %s is not a tool to have Execute() method!"), elem->info.name.c_str()));
         }
         else
         {

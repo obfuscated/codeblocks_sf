@@ -30,7 +30,7 @@
     #include "globals.h"
     #include "cbeditor.h"
     #include "configmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "filemanager.h"
     #include "manager.h"
     #include <wx/dir.h>
@@ -120,7 +120,7 @@ void EditorColourSet::LoadAvailableSets()
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
     if (dir.Open(path))
     {
-        Manager::Get()->GetMessageManager()->Log(_("Scanning for lexers in %s..."), path.c_str());
+        Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.c_str()));
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
         while(ok)
         {
@@ -128,7 +128,7 @@ void EditorColourSet::LoadAvailableSets()
             ok = dir.GetNext(&filename);
             ++count;
         }
-        Manager::Get()->GetMessageManager()->Log(_("Found %d lexers"), count);
+        Manager::Get()->GetLogManager()->Log(_("Found %d lexers"), count);
         count = 0;
     }
 
@@ -136,7 +136,7 @@ void EditorColourSet::LoadAvailableSets()
     path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
     if (dir.Open(path))
     {
-        Manager::Get()->GetMessageManager()->Log(_("Scanning for lexers in %s..."), path.c_str());
+        Manager::Get()->GetLogManager()->Log(F(_("Scanning for lexers in %s..."), path.c_str()));
         bool ok = dir.GetFirst(&filename, _T("lexer_*.xml"), wxDIR_FILES);
         while(ok)
         {
@@ -144,7 +144,7 @@ void EditorColourSet::LoadAvailableSets()
             ok = dir.GetNext(&filename);
             ++count;
         }
-        Manager::Get()->GetMessageManager()->Log(_("Found %d lexers"), count);
+        Manager::Get()->GetLogManager()->Log(F(_("Found %d lexers"), count));
     }
 
     for(std::list<LoaderBase*>::iterator it = loaders.begin(); it != loaders.end(); ++it)

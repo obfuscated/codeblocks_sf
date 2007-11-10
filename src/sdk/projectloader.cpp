@@ -22,7 +22,7 @@
     #include "manager.h"
     #include "configmanager.h"
     #include "projectmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "macrosmanager.h"
     #include "cbproject.h"
     #include "compilerfactory.h"
@@ -58,7 +58,7 @@ bool ProjectLoader::Open(const wxString& filename)
 
 bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
 {
-    MessageManager* pMsg = Manager::Get()->GetMessageManager();
+    LogManager* pMsg = Manager::Get()->GetLogManager();
     if (!pMsg)
         return false;
 
@@ -106,12 +106,12 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
             (major == 1 && minor < 2))
         {
             // pre-1.2
-            pMsg->DebugLog(_T("Project version is %d.%d. Defaults have changed since then..."), major, minor);
+            pMsg->DebugLog(F(_T("Project version is %d.%d. Defaults have changed since then..."), major, minor));
             m_IsPre_1_2 = true;
         }
         else if (major >= PROJECT_FILE_VERSION_MAJOR && minor > PROJECT_FILE_VERSION_MINOR)
         {
-            pMsg->DebugLog(_T("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR);
+            pMsg->DebugLog(F(_T("Project version is > %d.%d. Trying to load..."), PROJECT_FILE_VERSION_MAJOR, PROJECT_FILE_VERSION_MINOR));
             AnnoyingDialog dlg(_("Project file format is newer/unknown"),
                                 _("This project file was saved with a newer version of Code::Blocks.\n"
                                 "Will try to load, but you should make sure all the settings were loaded correctly..."),
@@ -492,7 +492,7 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
 
         if (target)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Loading target %s"), title.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Loading target ") + title);
             DoBuildTargetOptions(node, target);
             DoCompilerOptions(node, target);
             DoResourceCompilerOptions(node, target);
@@ -849,7 +849,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
 
 void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 {
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Loading project files..."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Loading project files..."));
     int count = 0;
     TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
@@ -859,7 +859,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
         {
             ProjectFile* file = m_pProject->AddFile(-1, UnixFilename(filename));
             if (!file)
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Can't load file '%s'"), filename.c_str());
+                Manager::Get()->GetLogManager()->DebugLog(_T("Can't load file ") + filename);
             else
             {
                 ++count;
@@ -869,7 +869,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 
         unit = unit->NextSiblingElement("Unit");
     }
-    Manager::Get()->GetMessageManager()->DebugLog(_T("%d files loaded"), count);
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("%d files loaded"), count));
 }
 
 void ProjectLoader::DoUnitOptions(TiXmlElement* parentNode, ProjectFile* file)

@@ -31,7 +31,7 @@
 //  additional includeds for cbDragScroll
 // ----------------------------------------------------------------------------
 #include <manager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <editormanager.h>
 #include <configmanager.h>
 

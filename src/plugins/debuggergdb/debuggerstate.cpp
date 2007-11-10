@@ -116,7 +116,7 @@ int DebuggerState::AddBreakpoint(const wxString& file, int line, bool temp, cons
     if (idx != -1)
         RemoveBreakpoint(idx, true);
     // create new bp
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("add bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("add bp: file=%s, bpfile=%s"), file.c_str(), bpfile.c_str());
     DebuggerBreakpoint* bp = new DebuggerBreakpoint;
     bp->type = DebuggerBreakpoint::bptCode;
     bp->filename = bpfile;

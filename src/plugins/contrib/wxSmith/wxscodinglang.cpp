@@ -22,7 +22,7 @@
 */
 
 #include "wxscodinglang.h"
-#include <messagemanager.h>
+#include <logmanager.h>
 
 namespace wxsCodeMarks
 {
@@ -81,11 +81,11 @@ namespace wxsCodeMarks
 
     void Unknown(const wxString& Function,wxsCodingLang Lang)
     {
-        DBGLOG(
+        Manager::Get()->GetLogManager()->DebugLog(F(
             _T("Unknown coding language %s (%d) in function %s"),
             Name(Lang).c_str(),
             (int)Lang,
-            Function.c_str());
+            Function.c_str()));
     }
 
     wxString String(wxsCodingLang Lang,const wxString& Source)

@@ -37,7 +37,7 @@
     #include "editormanager.h" // class's header file
     #include "configmanager.h"
     #include <wx/xrc/xmlres.h>
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
     #include "projectfile.h"
     #include "pluginmanager.h"
@@ -228,9 +228,9 @@ EditorManager::EditorManager()
     ShowOpenFilesTree(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_opened_files_tree"), true));
 #endif
 
-Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColourSet ....."));
+	Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
     m_Theme = new EditorColourSet(Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/colour_sets/active_colour_set"), COLORSET_DEFAULT));
-Manager::Get()->GetMessageManager()->DebugLog(_T("Initialize EditColourSet: done."));
+	Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet: done."));
 
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
@@ -251,6 +251,9 @@ EditorManager::~EditorManager()
         Manager::Get()->ProcessEvent(evt);
         m_pTree->Destroy();
     }
+
+    CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pSearchLog);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     delete m_Theme;
     delete m_LastFindReplaceData;
@@ -300,26 +303,24 @@ void EditorManager::Configure()
 
 void EditorManager::CreateSearchLog()
 {
+	if (Manager::IsBatchBuild())
+		return;
+		
+    wxArrayInt widths;
     wxArrayString titles;
-    int widths[3] =
-        {
-            128, 48, 640
-        };
     titles.Add(_("File"));
     titles.Add(_("Line"));
     titles.Add(_("Text"));
+    widths.Add(128);
+    widths.Add(48);
+    widths.Add(640);
 
-    m_pSearchLog = new SearchResultsLog(3, widths, titles);
-    m_SearchLogIndex = LOGGER->AddLog(m_pSearchLog, _("Search results"));
-
-    // Set search log font & size like all other logs         //pecan 2006/5/22
-    m_pSearchLog->ResetLogFont();
-
-    // set log image
-    wxBitmap bmp;
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-    bmp = cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG);
-    Manager::Get()->GetMessageManager()->SetLogImage(m_pSearchLog, bmp);
+    wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG));
+
+    m_pSearchLog = new SearchResultsLog(titles, widths);
+    CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pSearchLog, _("Search results"), bmp);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 }
 
 void EditorManager::LogSearch(const wxString& file, int line, const wxString& lineText)
@@ -348,9 +349,7 @@ void EditorManager::LogSearch(const wxString& file, int line, const wxString& li
     values.Add(lineStr);
     values.Add(lineTextL);
 
-    m_pSearchLog->AddLog(values);
-    m_pSearchLog->GetListControl()->SetColumnWidth(0, wxLIST_AUTOSIZE);
-    m_pSearchLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
+    m_pSearchLog->Append(values, line == -1 ? Logger::caption : Logger::info);
 }
 
 void EditorManager::LoadAutoComplete()
@@ -508,10 +507,10 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     wxFileName fn(filename);
     NormalizePath(fn, wxEmptyString);
     wxString fname = UnixFilename(fn.GetFullPath());
-    //  Manager::Get()->GetMessageManager()->DebugLog("Trying to open '%s'", fname.c_str());
+    //  Manager::Get()->GetLogManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
         return NULL;
-    //  Manager::Get()->GetMessageManager()->DebugLog("File exists '%s'", fname.c_str());
+    //  Manager::Get()->GetLogManager()->DebugLog("File exists '%s'", fname.c_str());
 
     // disallow application shutdown while opening files
     // WARNING: remember to set it to true, when exiting this function!!!
@@ -555,7 +554,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         // as a parameter
         if(data)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("project data set for %s"), data->file.GetFullPath().c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("project data set for ") + data->file.GetFullPath());
         }
         else
         {
@@ -566,7 +565,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
                 ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
                 if (pf)
                 {
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("found %s"), pf->file.GetFullPath().c_str());
+                    Manager::Get()->GetLogManager()->DebugLog(_T("found ") + pf->file.GetFullPath());
                     data = pf;
                     break;
                 }
@@ -1138,7 +1137,7 @@ bool EditorManager::SwapActiveHeaderSource()
         {
             fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
         }
-        //Manager::Get()->GetMessageManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
+        //Manager::Get()->GetLogManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
         if (ft == ftHeader)
         {
             fname.SetExt(FileFilters::C_EXT);
@@ -1173,7 +1172,7 @@ bool EditorManager::SwapActiveHeaderSource()
 
     if (fname.FileExists())
     {
-        //Manager::Get()->GetMessageManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
+        //Manager::Get()->GetLogManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
         cbEditor* newEd = Open(fname.GetFullPath());
         //if (newEd)
         //    newEd->SetProjectFile(ed->GetProjectFile());
@@ -2098,7 +2097,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 			control->GotoLine(l2);
             control->GotoLine(line);
             control->SetSelection(pos, pos + lengthFound);
-            //            Manager::Get()->GetMessageManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
+            //            Manager::Get()->GetLogManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
             data->start = pos;
             break; // done
         }
@@ -2189,9 +2188,9 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     // clear old search results
     if ( data->delOldSearches )
     {
-        m_pSearchLog->GetListControl()->DeleteAllItems();
+        m_pSearchLog->Clear();
     }
-    int oldcount = m_pSearchLog->GetListControl()->GetItemCount();
+    int oldcount = m_pSearchLog->GetItemsCount();
 
     // let's make a list of all the files to search in
     wxArrayString filesList;
@@ -2376,10 +2375,14 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     if (count > 0)
     {
         static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
-        Manager::Get()->GetMessageManager()->ShowLog(m_SearchLogIndex);
-        Manager::Get()->GetMessageManager()->SwitchTo(m_SearchLogIndex);
         if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
-            Manager::Get()->GetMessageManager()->Open();
+        {
+        	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pSearchLog);
+        	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+			
+			Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+			Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+        }
         static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
     }
     else

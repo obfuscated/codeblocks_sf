@@ -23,7 +23,7 @@
 
 #include "wxswidget.h"
 
-#include <messagemanager.h>
+#include <logmanager.h>
 
 wxsWidget::wxsWidget(
     wxsItemResData* Data,

@@ -14,7 +14,7 @@
 
 #ifndef CB_PRECOMP
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "cbeditor.h"
 #endif
 
@@ -57,11 +57,11 @@ bool cbEditorPrintout::OnPrintPage(int page)
             m_printed = (*m_pPageSelStart)[page-1];
         else
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("OnPrintPage ERROR: page = %d , maxpage = %d"), page, maxpage);
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("OnPrintPage ERROR: page = %d , maxpage = %d"), page, maxpage));
             return false;
         }
 
-        //Manager::Get()->GetMessageManager()->DebugLog(_T("OnPrintPage: page %d , m_printed %d"), page, m_printed);
+        //Manager::Get()->GetLogManager()->DebugLog(_T("OnPrintPage: page %d , m_printed %d"), page, m_printed);
         m_printed = m_TextControl->FormatRange (1, m_printed, m_SelEnd,
                                                 dc, dc, m_printRect, m_pageRect);
         return true;
@@ -137,7 +137,7 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
         m_printed = m_SelStart;
         while (HasPage(*maxPage))
         {
-            //Manager::Get()->GetMessageManager()->DebugLog(_T("CountPages: PageCount %d , m_printed %d"), m_pPageSelStart->GetCount(), m_printed);
+            //Manager::Get()->GetLogManager()->DebugLog(_T("CountPages: PageCount %d , m_printed %d"), m_pPageSelStart->GetCount(), m_printed);
             m_printed = m_TextControl->FormatRange (0, m_printed, m_SelEnd,
                                              dc, dc, m_printRect, m_pageRect);
             m_pPageSelStart->Add(m_printed);
@@ -163,7 +163,7 @@ bool cbEditorPrintout::OnBeginDocument(int startPage, int endPage)
     int maxpage = m_pPageSelStart->GetCount();
     if( startPage > maxpage || endPage > maxpage )
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("OnBeginDocument ERROR: startPage %d , endPage %d , maxpage %d "), startPage, endPage, maxpage);
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("OnBeginDocument ERROR: startPage %d , endPage %d , maxpage %d "), startPage, endPage, maxpage));
         return false;
     }
     return result;

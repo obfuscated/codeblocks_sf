@@ -16,7 +16,7 @@
     #include "cbexception.h"
     #include "compiler.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "configmanager.h"
     #include "macrosmanager.h"
     #include "globals.h"
@@ -99,7 +99,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_Switches.forceFwdSlashes = false;
     m_VersionString = wxEmptyString;
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), m_Name.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.c_str()));
 }
 
 Compiler::Compiler(const Compiler& other)

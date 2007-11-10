@@ -24,6 +24,7 @@
 #include "wxsitemresdataobject.h"
 #include "wxsitem.h"
 #include "wxsitemfactory.h"
+#include <logmanager.h>
 #include <sstream>
 
 wxsItemResDataObject::wxsItemResDataObject(): m_ItemCount(0)
@@ -138,7 +139,7 @@ bool wxsItemResDataObject::SetXmlData(const wxString& Data)
 	m_XmlDoc.Parse(cbU2C(Data));
     if ( m_XmlDoc.Error() )
     {
-        DBGLOG(_T("wxSmith: Error loading Xml data -> ") + cbC2U(m_XmlDoc.ErrorDesc()));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Error loading Xml data -> ") + cbC2U(m_XmlDoc.ErrorDesc()));
     	Clear();
     	return false;
     }

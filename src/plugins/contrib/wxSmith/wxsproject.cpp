@@ -30,7 +30,7 @@
 #include "wxsversionconverter.h"
 
 #include <wx/string.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 
 namespace
 {

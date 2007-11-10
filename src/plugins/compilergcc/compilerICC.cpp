@@ -13,7 +13,7 @@
 #include <wx/fileconf.h>
 #include <wx/msgdlg.h>
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 
 CompilerICC::CompilerICC()
     : Compiler(_("Intel C/C++ Compiler"), _T("icc"))

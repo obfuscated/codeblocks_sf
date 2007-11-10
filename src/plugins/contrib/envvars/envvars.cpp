@@ -24,7 +24,7 @@
   #include "globals.h"
   #include "manager.h"
   #include "configmanager.h"
-  #include "messagemanager.h"
+  #include "logmanager.h"
 #endif
 
 #include "projectloader_hooks.h"

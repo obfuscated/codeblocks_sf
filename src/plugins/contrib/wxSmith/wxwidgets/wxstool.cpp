@@ -24,7 +24,7 @@
 #include "wxstool.h"
 
 #include "wxsitemresdata.h"
-#include <messagemanager.h>
+#include <logmanager.h>
 
 wxsTool::wxsTool(
     wxsItemResData* Data,

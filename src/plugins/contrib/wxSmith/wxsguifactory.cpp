@@ -24,7 +24,7 @@
 #include "wxsguifactory.h"
 #include "wxsgui.h"
 
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <wx/choicdlg.h>
 
 wxsGUIFactory::wxsGUIFactory(const wxString& Name): m_Name(Name)
@@ -48,9 +48,9 @@ wxsGUI* wxsGUIFactory::Build(const wxString& Name,wxsProject* Project)
     if ( NewGUI->GetName() != Name )
     {
         // Some hack? Bug in factory?
-        DBGLOG(_T("wxSmith: Error while creating wxsGUI object (name mismatch)."));
-        DBGLOG(_T("wxSmith:   Looks like bug in one wf wxsGUIFactory-derived classes or"));
-        DBGLOG(_T("wxSmith:   some hack attempt."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Error while creating wxsGUI object (name mismatch)."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith:   Looks like bug in one wf wxsGUIFactory-derived classes or"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith:   some hack attempt."));
         delete NewGUI;
         return 0;
     }

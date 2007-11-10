@@ -5,7 +5,7 @@
 #   include "compiler.h"
 #   include "cbproject.h"
 #   include "projectbuildtarget.h"
-#   include "messagemanager.h"
+#   include "logmanager.h"
 #   include "macrosmanager.h"
 #endif
 #include "compileoptionsbase.h"

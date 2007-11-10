@@ -31,11 +31,55 @@
     #include "cbproject.h"
     #include "editorbase.h"
     #include "cbplugin.h"
+    #include "logmanager.h"
 #endif
 
 
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDockEvent, wxEvent)
+IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLayoutEvent, wxEvent)
+IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLogEvent, wxEvent)
+
+
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger, const wxString& title, wxBitmap *icon)
+	: wxEvent(wxID_ANY, commandType),
+	logger(logger), logIndex(-1), icon(icon), title(title), window(0)
+{
+	// special case for add
+	if (commandType == cbEVT_ADD_LOG_WINDOW && logger)
+	{
+		if (LogManager::Get()->FindIndex(logger) == LogManager::invalid_log)
+		{
+			logIndex = LogManager::Get()->SetLog(logger);
+			cbAssert(logIndex != LogManager::invalid_log);
+			LogManager::Get()->Slot(logIndex).title = title;
+			LogManager::Get()->Slot(logIndex).icon = icon;
+			return;
+		}
+	}
+
+	logIndex = LogManager::Get()->FindIndex(logger);
+}
+
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title, wxBitmap *icon)
+	: wxEvent(wxID_ANY, commandType),
+	logger(0), logIndex(logIndex), icon(icon), title(title), window(0)
+{
+	logger = LogManager::Get()->Slot(logIndex).GetLogger();
+}
+
+CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title, wxBitmap *icon)
+	: wxEvent(wxID_ANY, commandType),
+	logger(0), logIndex(logIndex), icon(icon), title(title), window(window)
+{
+	logger = LogManager::Get()->Slot(logIndex).GetLogger();
+}
+
+CodeBlocksLogEvent::CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs)
+	: logger(rhs.logger), logIndex(rhs.logIndex), icon(rhs.icon), title(rhs.title), window(rhs.window)
+{
+}
+
 
 // app events
 const wxEventType cbEVT_APP_STARTUP_DONE = wxNewEventType();
@@ -107,3 +151,12 @@ const wxEventType cbEVT_COMPILER_FINISHED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_STARTED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_PAUSED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_FINISHED = wxNewEventType();
+
+// logger-related events
+const wxEventType cbEVT_ADD_LOG_WINDOW = wxNewEventType();
+const wxEventType cbEVT_REMOVE_LOG_WINDOW = wxNewEventType();
+const wxEventType cbEVT_SWITCH_TO_LOG_WINDOW = wxNewEventType();
+const wxEventType cbEVT_SHOW_LOG_MANAGER = wxNewEventType();
+const wxEventType cbEVT_HIDE_LOG_MANAGER = wxNewEventType();
+const wxEventType cbEVT_LOCK_LOG_MANAGER = wxNewEventType();
+const wxEventType cbEVT_UNLOCK_LOG_MANAGER = wxNewEventType();

@@ -30,6 +30,7 @@
 #include "../wxscoder.h"
 
 #include <globals.h>
+#include <logmanager.h>
 #include <wx/clipbrd.h>
 #include <tinyxml/tinywxuni.h>
 
@@ -335,7 +336,7 @@ bool wxsItemResData::LoadInSourceMode()
     TiXmlDocument Doc;
     if ( !TinyXML::LoadDocument(m_WxsFileName,&Doc)  )
     {
-        DBGLOG(_T("wxSmith: Error loading wxs file (Col: %d, Row:%d): ") + cbC2U(Doc.ErrorDesc()),Doc.ErrorCol(),Doc.ErrorRow());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Error loading wxs file (Col: %d, Row:%d): ") + cbC2U(Doc.ErrorDesc()),Doc.ErrorCol(),Doc.ErrorRow()));
         return false;
     }
 

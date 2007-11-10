@@ -17,7 +17,7 @@
 #include "editormanager.h"
 #include "globals.h"
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "projectfile.h"
 #include "projectmanager.h"
 #endif
@@ -71,7 +71,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
 		if (!filename.FileExists())
 		{
 			++nb_files_not_found;
-			//Manager::Get()->GetMessageManager()->DebugLog(_T("Code Statistics: Ignoring file '%s' (file not found)"), filename.GetName());
+			//Manager::Get()->GetLogManager()->DebugLog(_T("Code Statistics: Ignoring file '%s' (file not found)"), filename.GetName());
 		}
 		else
 		{

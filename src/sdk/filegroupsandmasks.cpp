@@ -17,7 +17,7 @@
     #include "globals.h"
     #include "configmanager.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
 #endif
 
 #include "filegroupsandmasks.h"

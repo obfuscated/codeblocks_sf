@@ -494,10 +494,10 @@
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
-      <object class="wxMenuItem" name="idViewMessageManager">
-        <label>Messa&amp;ges</label>
+      <object class="wxMenuItem" name="idViewLogManager">
+        <label>&amp;Logs</label>
         <accel>F2</accel>
-        <help>Show/hide messages</help>
+        <help>Show/hide logs</help>
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>

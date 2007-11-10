@@ -4,13 +4,23 @@
     #include <wx/event.h>
     #include <wx/menu.h>
     #include "cbexception.h"
+    #include "globals.h"
+    #include "configmanager.h"
 #endif
 
 #include "infopane.h"
 #include <logmanager.h>
 
+namespace
+{
+	int idClear = wxNewId();
+	int idCopySelectedToClipboard = wxNewId();
+	int idCopyAllToClipboard = wxNewId();
+};
 
 BEGIN_EVENT_TABLE(InfoPane, PieceOfShitBaseClass)
+    EVT_MENU(idClear,  InfoPane::OnClear)
+    EVT_MENU_RANGE(idCopySelectedToClipboard, idCopyAllToClipboard,  InfoPane::OnCopy)
     EVT_MENU(wxID_ANY,  InfoPane::OnMenu)
     EVT_CONTEXT_MENU(InfoPane::ContextMenu)
 END_EVENT_TABLE()
@@ -18,20 +28,42 @@ END_EVENT_TABLE()
 
 InfoPane::InfoPane(wxWindow* parent) : InfoPaneNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
 {
+	defaultBitmap = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/edit_16x16.png"), wxBITMAP_TYPE_PNG);
+	
     wxRegisterId(baseID + num_pages);
     for(int i = 0; i < num_pages; ++i)
     {
         page[i] = Page();
     }
+
+#ifndef CB_USE_AUI_NOTEBOOK
+    SetImageList(new wxFlatNotebookImageList);
+#endif
 }
 
+InfoPane::~InfoPane()
+{
+    delete GetImageList();
+}
+
+void InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon)
+{
+	const wxBitmap& bmp = icon ? *icon : defaultBitmap;
+
+#ifdef CB_USE_AUI_NOTEBOOK
+	AddPage(p, title, false, bmp);
+#else
+    GetImageList()->push_back(bmp);
+	AddPage(p, title, false, GetImageList()->size() - 1);
+#endif
+}
 
 void InfoPane::Toggle(size_t i)
 {
     page[i].visible = 1 - page[i].visible;
 
     if(page[i].visible == true)
-        AddPage(page[i].window, page[i].title);
+        AddPagePrivate(page[i].window, page[i].title, page[i].icon);
     else
         RemovePage(GetPageIndex(page[i].window));
 }
@@ -47,34 +79,80 @@ void InfoPane::Show(size_t i)
         SetSelection(i);
 }
 
+void InfoPane::ShowNonLogger(wxWindow* p)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(page[i].window == p)
+        {
+			if(page[i].visible == false)
+				Toggle(i);
+			else
+				SetSelection(i);
+			return;
+        }
+    }
+}
+
+
+void InfoPane::OnCopy(wxCommandEvent& event)
+{
+	int i = GetSelection();
+	if (page[i].islogger)
+	{
+		if (event.GetId() == idCopyAllToClipboard)
+			page[i].logger->CopyContentsToClipboard(false);
+		else if (event.GetId() == idCopySelectedToClipboard)
+			page[i].logger->CopyContentsToClipboard(true);
+	}
+}
+
+void InfoPane::OnClear(wxCommandEvent& event)
+{
+	int i = GetSelection();
+	if (page[i].islogger)
+		page[i].logger->Clear();
+}
 
 void InfoPane::OnMenu(wxCommandEvent& event)
 {
     if(event.GetId() < baseID || event.GetId() > baseID + num_pages)
     {
-        event.Skip();
-        return;
+		event.Skip();
+		return;
     }
 
     int i = event.GetId() - baseID; // get back our index
-
-    Toggle(i);
+	Toggle(i);
 }
 
 void InfoPane::ContextMenu(wxContextMenuEvent& event)
 {
     wxMenu menu;
+	wxMenu* view;
     bool any_nonloggers = false;
 
+	if (page[GetSelection()].islogger)
+	{
+		view = new wxMenu;
+
+		menu.Append(idCopyAllToClipboard, _("Copy contents to clipboard"));
+		menu.Append(idCopySelectedToClipboard, _("Copy selection to clipboard"));
+		menu.AppendSeparator();
+		menu.Append(idClear, _("Clear contents"));
+		menu.AppendSeparator();
+	}
+	else
+		view = &menu;
+	
     for(int i = 0; i < num_pages; ++i)
     {
         if(page[i].window)
         {
-            if(page[i].logger)
+            if(page[i].islogger)
             {
-                menu.Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
-                if(page[i].visible)
-                    menu.Check(baseID + i, true);
+                view->Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
+				view->Check(baseID + i, page[i].visible);
             }
             else
             {
@@ -88,33 +166,83 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
         menu.AppendSeparator();
         for(int i = 0; i < num_pages; ++i)
         {
-            if(page[i].window && !page[i].logger)
+            if(page[i].window && !page[i].islogger)
             {
-                menu.Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
-                if(page[i].visible)
-                    menu.Check(baseID + i, true);
+                view->Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
+				view->Check(baseID + i, page[i].visible);
             }
         }
     }
 
-
+	if (&menu != view)
+		menu.AppendSubMenu(view, _("Toggle..."));
     PopupMenu(&menu);
 }
 
 
 
 
-bool InfoPane::AddLogger(wxWindow* p, const wxString& title)
+int InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon)
 {
     for(int i = 0; i < num_pages; ++i)
     {
         if(!(page[i].window))
         {
-            AddPage(p, title);
+            AddPagePrivate(p, title, icon);
             page[i].window = p;
+            page[i].logger = logger;
+            page[i].icon = icon;
             page[i].title = title;
             page[i].visible = true;
-            page[i].logger = true;
+            page[i].islogger = true;
+            return i;
+        }
+    }
+
+   return -1;
+}
+
+int InfoPane::AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(!(page[i].window))
+        {
+        	p->Reparent(this);
+            AddPagePrivate(p, title, icon);
+            page[i].window = p;
+            page[i].icon = icon;
+            page[i].title = title;
+            page[i].visible = true;
+            page[i].islogger = false;
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+
+bool InfoPane::DeleteLogger(Logger* l)
+{
+	if (!l)
+	{
+		return false;
+	}
+	
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(page[i].logger == l)
+        {
+        	int index = LogManager::Get()->FindIndex(l);
+        	if (index != -1)
+				LogManager::Get()->DeleteLog(index);
+            
+            index = GetPageIndex(page[i].window);
+            if (index != -1)
+				DeletePage(index);
+            
+            page[i] = Page();
             return true;
         }
     }
@@ -122,33 +250,16 @@ bool InfoPane::AddLogger(wxWindow* p, const wxString& title)
    return false;
 }
 
-bool InfoPane::AddNonLogger(wxWindow* p, const wxString& title)
-{
-    for(int i = 0; i < num_pages; ++i)
-    {
-        if(!(page[i].window))
-        {
-            AddPage(p, title);
-            page[i].window = p;
-            page[i].title = title;
-            page[i].visible = true;
-            page[i].logger = false;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
-bool InfoPane::DeleteLogger(wxWindow* p, Logger* l)
+bool InfoPane::RemoveNonLogger(wxWindow* p)
 {
     for(int i = 0; i < num_pages; ++i)
     {
         if(page[i].window == p)
         {
-            LogManager::Get()->DeleteLog(LogManager::Get()->FindIndex(l));
-            DeletePage(GetPageIndex(p));
+            if(page[i].islogger)
+                cbThrow(_T("Bad API usage. Shame on you."));
+
+            RemovePage(GetPageIndex(p));
             page[i] = Page();
             return true;
         }
@@ -163,7 +274,7 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
     {
         if(page[i].window == p)
         {
-            if(page[i].logger)
+            if(page[i].islogger)
                 cbThrow(_T("Bad API usage. Shame on you."));
 
             DeletePage(GetPageIndex(p));

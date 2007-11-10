@@ -333,7 +333,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 {
     if (!path.IsEmpty())
     {
-        //Manager::Get()->GetMessageManager()->Log(mltDevDebug, path);
+        //Manager::Get()->GetLogManager()->Log(mltDevDebug, path);
         wxString tmpPath;
         tmpPath = path;
         wxString folder;
@@ -355,7 +355,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
             tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
         }
 
-        //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
+        //Manager::Get()->GetLogManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
         compatibility::tree_cookie_t cookie = 0;
 

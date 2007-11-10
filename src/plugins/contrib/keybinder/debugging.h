@@ -3,7 +3,7 @@
 // RCS-ID:      $Id$
 
 //#include <manager.h>
-//#include <messagemanager.h>
+//#include <logmanager.h>
 
 #if defined(kbLOGGING)
     #define LOGGING 1

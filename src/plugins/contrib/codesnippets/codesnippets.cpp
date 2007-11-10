@@ -36,7 +36,7 @@
 	#include "personalitymanager.h"
 	#include "cbworkspace.h"
 	#include "cbproject.h"
-	#include "messagemanager.h"
+	#include "logmanager.h"
 #endif
 	#include <wx/stdpaths.h>
 	#include <wx/process.h>
@@ -1466,13 +1466,13 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
             ldLibraryPath << wxT(":$LD_LIBRARY_PATH");
             wxSetEnv( _T("LD_LIBRARY_PATH"), ldLibraryPath );
             wxGetEnv( _T("LD_LIBRARY_PATH"), &ldLibraryPath );
-            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("CodeSnippets CWD: %s"), cwd.c_str()) );
-            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("CodeSnippets LD_LIBRARY_PATH is: %s"), ldLibraryPath.c_str()) );
+            Manager::Get()->GetLogManager()->DebugLog(wxString::Format( _("CodeSnippets CWD: %s"), cwd.c_str()) );
+            Manager::Get()->GetLogManager()->DebugLog(wxString::Format( _("CodeSnippets LD_LIBRARY_PATH is: %s"), ldLibraryPath.c_str()) );
         #endif // __APPLE__ && __MACH__
     #endif
 
     // start codesnippets
-    Manager::Get()->GetMessageManager()->DebugLog( _("Starting program:")+cmd);
+    Manager::Get()->GetLogManager()->DebugLog( _("Starting program:")+cmd);
     m_ExternalPid = wxExecute(cmd, wxEXEC_ASYNC);
      LOGIT( _T("Launch [%s] from [%s] Pid[%lu]"), cmd.c_str(), cwd.c_str(), m_ExternalPid );
 
@@ -1492,7 +1492,7 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
             wxArrayString psErrors;
 
             psCmd << wxT("/bin/ps -o ppid,pid,command");
-            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
+            Manager::Get()->GetLogManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
             int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
 
             mypidStr << wxT(" ");
@@ -1513,19 +1513,19 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
              }
 
             for (int i = 0; i < psErrors.GetCount(); ++i)
-                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
+                Manager::Get()->GetLogManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
 
         }//if(m_ExternalPid == -1)
     #endif
 
     if (!m_ExternalPid)
     {
-        //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed"));
-        Manager::Get()->GetMessageManager()->DebugLog( _("failed"));
+        //Manager::Get()->GetLogManager()->Log(m_PageIndex, _("failed"));
+        Manager::Get()->GetLogManager()->DebugLog( _("failed"));
         return -1;
     }
-    //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("done"));
-    Manager::Get()->GetMessageManager()->DebugLog( _("done"));
+    //Manager::Get()->GetLogManager()->Log(m_PageIndex, _("done"));
+    Manager::Get()->GetLogManager()->DebugLog( _("done"));
     return 0;
 }
 // ----------------------------------------------------------------------------

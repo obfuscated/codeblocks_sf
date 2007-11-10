@@ -19,7 +19,7 @@
 #include <wx/fileconf.h>
 #include <wx/msgdlg.h>
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 
 #include <configmanager.h>
 
@@ -233,7 +233,7 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
                     if (ok) {
                         name = key.GetName() + _T("\\") + name;
                         key.SetName(name);
-                        Manager::Get()->GetMessageManager()->DebugLog(_T("name: %s"), name.c_str());
+                        Manager::Get()->GetLogManager()->DebugLog(_T("name: %s"), name.c_str());
                         if (key.Exists()) key.QueryValue(_T("InstallLocation"), m_MasterPath);
                     }
                 }

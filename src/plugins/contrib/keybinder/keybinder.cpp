@@ -41,7 +41,7 @@
 	#include "editormanager.h"
 	#include "cbworkspace.h"
 	#include "cbproject.h"
-	#include "messagemanager.h"
+	#include "logmanager.h"
 #endif
 
 // includes
@@ -1055,7 +1055,7 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
                 #ifdef LOGGING
                  LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
                 #else
-                 Manager::Get()->GetMessageManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
+                 Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
                 #endif
 ////                // When a .ini id cannot be found: (menu ids have shifted)
 ////                // The following code causes real problems when menu labels are duplicates

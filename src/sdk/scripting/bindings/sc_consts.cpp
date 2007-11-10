@@ -164,7 +164,7 @@ namespace ScriptBindings
         // ModuleType
         BIND_INT_CONSTANT(mtProjectManager);
         BIND_INT_CONSTANT(mtEditorManager);
-        BIND_INT_CONSTANT(mtMessageManager);
+        BIND_INT_CONSTANT(mtLogManager);
         BIND_INT_CONSTANT(mtOpenFilesList);
         BIND_INT_CONSTANT(mtUnknown);
 

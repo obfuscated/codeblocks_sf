@@ -4,7 +4,7 @@
     #include <globals.h>
     #include <settings.h>
     #include <manager.h>
-    #include <messagemanager.h>
+    #include <logmanager.h>
     #include <configmanager.h>
     #include <editormanager.h>
     #include <projectmanager.h>
@@ -21,10 +21,10 @@
 namespace ScriptBindings
 {
     // global funcs
-    void gDebugLog(const wxString& msg){ DBGLOG(msg); }
-    void gErrorLog(const wxString& msg){ LOG_ERROR(msg); }
-    void gWarningLog(const wxString& msg){ LOG_WARN(msg); }
-    void gLog(const wxString& msg){ LOG(msg); }
+    void gDebugLog(const wxString& msg){ Manager::Get()->GetLogManager()->DebugLog(msg); }
+    void gErrorLog(const wxString& msg){ Manager::Get()->GetLogManager()->LogError(msg); }
+    void gWarningLog(const wxString& msg){ Manager::Get()->GetLogManager()->LogWarning(msg); }
+    void gLog(const wxString& msg){ Manager::Get()->GetLogManager()->Log(msg); }
     int gMessage(const wxString& msg, const wxString& caption, int buttons){ return cbMessageBox(msg, caption, buttons); }
     void gShowMessage(const wxString& msg){ cbMessageBox(msg, _("Script message")); }
     void gShowMessageWarn(const wxString& msg){ cbMessageBox(msg, _("Script warning"), wxICON_WARNING); }

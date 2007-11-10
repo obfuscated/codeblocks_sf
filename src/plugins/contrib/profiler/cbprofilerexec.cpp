@@ -20,7 +20,7 @@
     #include <wx/xrc/xmlres.h>
     #include "globals.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
 #endif
 #include <wx/colour.h>
 #include <wx/ffile.h>
@@ -62,7 +62,7 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     {
         wxString msg = _("Unable to execute Gprof\nBe sure it is in the OS global path\nC::B Profiler could not complete the operation");
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, (wxWindow*)Manager::Get()->GetAppWindow());
-        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
 
         return -1;
     }

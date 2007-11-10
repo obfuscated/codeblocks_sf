@@ -26,7 +26,7 @@
 #include <manager.h>
 #include <editormanager.h>
 #include <configmanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <encodingdetector.h>
 #include <globals.h>
 #include <wx/file.h>
@@ -281,7 +281,7 @@ void wxsCoder::FlushFile(const wxString& FileName)
         //wxStopWatch SW;
         if ( !ReadFileContentWithProperEncoding(FileName,Content,Encoding,UseBOM) )
         {
-            DBGLOG(_("wxSmith: Couldn't open file '%s'"),FileName.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't open file '%s'"),FileName.c_str()));
             return;
         }
         //DBGLOG(_T("File read time: %d ms"),SW.Time());
@@ -341,9 +341,9 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
 
 	if ( Position == -1 )
 	{
-	    DBGLOG(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
+	    Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\"\nin file '%s'"),
 			Header.c_str(),
-			Editor->GetFilename().c_str());
+			Editor->GetFilename().c_str()));
 		return false;
 	}
 
@@ -353,9 +353,9 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
     int EndPosition = Ctrl->SearchInTarget(End);
     if ( EndPosition == -1 )
     {
-        DBGLOG(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
+        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\"\nin file '%s'"),
             Header.c_str(),
-            Editor->GetFilename().c_str());
+            Editor->GetFilename().c_str()));
         return false;
     }
 
@@ -426,7 +426,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
 
     if ( Position == -1 )
     {
-    	DBGLOG(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.c_str());
+    	Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't find code with header:\n\t\"%s\""),Header.c_str()));
 		return false;
     }
 
@@ -441,7 +441,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
     int EndPosition = Content.First(End);
     if ( EndPosition == -1 )
     {
-        DBGLOG(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\""),Header.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Unfinished block of auto-generated code with header:\n\t\"%s\""),Header.c_str()));
         return false;
     }
 

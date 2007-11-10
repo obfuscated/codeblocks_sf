@@ -15,7 +15,7 @@
 #include "cbproject.h"
 #include "configmanager.h"
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "projectmanager.h"
 #endif
 #include "codestat.h"
@@ -88,7 +88,7 @@ int CodeStat::Execute()
 	{
 		wxString msg = _("You need to open a project\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-		Manager::Get()->GetMessageManager()->DebugLog(msg);
+		Manager::Get()->GetLogManager()->DebugLog(msg);
 		return -1;
 	}
 

@@ -20,7 +20,7 @@
 
     #include "manager.h"
     #include "projectmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "cbproject.h"
     #include "globals.h"
     #include "workspaceloader.h"
@@ -42,7 +42,7 @@ WorkspaceLoader::~WorkspaceLoader()
 }
 
 inline ProjectManager* GetpMan() { return Manager::Get()->GetProjectManager(); }
-inline MessageManager* GetpMsg() { return Manager::Get()->GetMessageManager(); }
+inline LogManager* GetpMsg() { return Manager::Get()->GetLogManager(); }
 
 bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 {
@@ -51,7 +51,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         return false;
 
 //    ProjectManager* pMan = Manager::Get()->GetProjectManager();
-//    MessageManager* pMsg = Manager::Get()->GetMessageManager();
+//    LogManager* pMsg = Manager::Get()->GetLogManager();
 
     if (!GetpMan() || !GetpMsg())
         return false;
@@ -59,7 +59,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     // BUG: Race condition. to be fixed by Rick.
     // If I click close AFTER pMan and pMsg are calculated,
     // I get a segfault.
-    // I modified classes projectmanager and messagemanager,
+    // I modified classes projectmanager and logmanager,
     // so that when self==NULL, they do nothing
     // (constructors, destructors and static functions excempted from this)
     // This way, we'll use the *manager::Get() functions to check for nulls.
@@ -122,7 +122,7 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 					}
                     break;
                 case TIXML_WRONG_TYPE:
-                    GetpMsg()->DebugLog(_T("Error %s: %s"), doc.Value(), doc.ErrorDesc());
+                    GetpMsg()->DebugLog(F(_T("Error %s: %s"), doc.Value(), doc.ErrorDesc()));
                     GetpMsg()->DebugLog(_T("Wrong attribute type (expected 'int')"));
                     break;
                 default:

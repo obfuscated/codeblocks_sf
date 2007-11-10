@@ -23,7 +23,7 @@
 
     #include "globals.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
     #include "compilerfactory.h"
     #include "compiler.h"
@@ -110,7 +110,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         line.Trim(false);
         if (line != _T("Microsoft Visual Studio Solution File"))
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Unsupported format."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Unsupported format."));
             return false;
         }
         line = comps.GetCount() > 1 ? comps[1] : wxString(wxEmptyString);
@@ -118,7 +118,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
         line.Trim(false);
         wxString _version = line.AfterLast(' '); // want the version number
         if ((_version != _T("7.00")) && (_version != _T("8.00")))
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Version not recognized. Will try to parse though..."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Version not recognized. Will try to parse though..."));
     }
 
     ImportersGlobals::UseDefaultCompiler = !askForCompiler;
@@ -139,7 +139,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     bool global = false;  // global section or project section?
     wxFileName wfname = filename;
     wfname.Normalize();
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Workspace dir: %s"), wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR).c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Workspace dir: ") + wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
@@ -188,7 +188,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             ++count;
             wxFileName fname(UnixFilename(prjFile));
             fname.Normalize(wxPATH_NORM_ALL, wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR), wxPATH_NATIVE);
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str());
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found project '%s' in '%s'"), prjTitle.c_str(), fname.GetFullPath().c_str()));
 
             int percentage = ((int)file.TellI())*100 / (int)(file.GetLength());
             if (!progress.Update(percentage, _("Importing project: ") + prjTitle))

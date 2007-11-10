@@ -2,7 +2,7 @@
 #ifndef CB_PRECOMP
     #include <settings.h>
     #include <manager.h>
-    #include <messagemanager.h>
+    #include <logmanager.h>
     #include <configmanager.h>
     #include <editormanager.h>
     #include <projectmanager.h>

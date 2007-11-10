@@ -16,7 +16,7 @@
     #include <wx/choicdlg.h> // wxSingleChoiceDialog
     #include "compilerfactory.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "configmanager.h"
     #include "compiler.h"
 #endif
@@ -116,7 +116,7 @@ bool CompilerFactory::CompilerInheritsFrom(Compiler* compiler, const wxString& f
         Compiler* newcompiler = GetCompiler(id);
         if (compiler == newcompiler)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Compiler circular dependency detected?!?!?"));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Compiler circular dependency detected?!?!?"));
             break;
         }
         compiler = newcompiler;
@@ -175,7 +175,7 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
     }
     RegisterCompiler(newC);
     newC->LoadSettings(_T("/user_sets"));
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Added compiler \"%s\""), newC->GetName().c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), newC->GetName().c_str()));
     return newC; // return the index for the new compiler
 }
 
@@ -186,7 +186,7 @@ void CompilerFactory::RemoveCompiler(Compiler* compiler)
     Manager::Get()->GetConfigManager(_T("compiler"))->DeleteSubPath(_T("/user_sets/") + compiler->GetID());
 
     Compilers.Remove(compiler);
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Compiler \"%s\" removed"), compiler->GetName().c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Compiler \"%s\" removed"), compiler->GetName().c_str()));
 
     Compiler::m_CompilerIDs.Remove(compiler->GetID());
     delete compiler;

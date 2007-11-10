@@ -1,7 +1,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include "configmanager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #endif
 #include <wx/artprov.h>
 #include <wx/colour.h>
@@ -179,14 +179,14 @@ void byoGameBase::RecalculateSizeHints(int minStepsHoriz,int minStepsVert)
     m_MinCellsHoriz = minStepsHoriz;
     m_MinCellsVert  = minStepsVert;
 
-    DBGLOG(_T("msh: %d, msv: %d, ch: %d, cv: %d, cs: %d, x: %d, y: %d"),
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("msh: %d, msv: %d, ch: %d, cv: %d, cs: %d, x: %d, y: %d"),
         minStepsHoriz,
         minStepsVert,
         cellSizeH,
         cellSizeV,
         m_CellSize,
         m_FirstCellXPos,
-        m_FirstCellYPos);
+        m_FirstCellYPos));
 
 }
 

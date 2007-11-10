@@ -4,7 +4,6 @@
 #include <settings.h> // SDK
 #include <cbplugin.h>
 #include <cbproject.h>
-#include <simpletextlog.h>
 #include <sdk_events.h>
 #include <wx/string.h>
 #include "nativeparser.h"

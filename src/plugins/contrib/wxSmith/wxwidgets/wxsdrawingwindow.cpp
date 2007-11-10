@@ -32,7 +32,7 @@
 #include <wx/app.h>
 
 #include <manager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <prep.h>
 
 namespace

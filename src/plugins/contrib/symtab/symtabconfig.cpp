@@ -16,7 +16,7 @@
 //#define TRACE_SYMTAB_CFG
 #ifdef TRACE_SYMTAB_CFG
   #ifndef CB_PRECOMP
-    #include "messagemanager.h"
+    #include "logmanager.h"
   #endif
 #endif
 

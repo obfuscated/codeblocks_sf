@@ -8,7 +8,7 @@
 #include <compileoptionsbase.h>
 #include <cbplugin.h>
 #include <cbproject.h>
-#include <simpletextlog.h>
+#include <logger.h>
 #include "compilermessages.h"
 #include <wx/process.h>
 #include <wx/dynarray.h>
@@ -66,6 +66,7 @@ class wxTimerEvent;
 class wxComboBox;
 class wxStaticText;
 class wxGauge;
+class BuildLogger;
 
 class CompilerGCC : public cbCompilerPlugin
 {
@@ -224,9 +225,6 @@ class CompilerGCC : public cbCompilerPlugin
         BuildJobTarget GetNextJob();
         BuildJobTarget& PeekNextJob();
 
-        void AddBuildProgressBar();
-        void RemoveBuildProgressBar();
-
         wxArrayString m_Targets; // list of targets contained in the active project
         int m_RealTargetsStartIndex;
         int m_RealTargetIndex;
@@ -249,7 +247,7 @@ class CompilerGCC : public cbCompilerPlugin
         long int* m_Pid;
         wxString* m_ProcessOutputFiles;
         wxTimer m_timerIdleWakeUp;
-        SimpleTextLog* m_Log;
+        BuildLogger* m_Log;
         CompilerMessages* m_pListLog;
 		wxChoice* m_ToolTarget;
 		bool m_RunAfterCompile;
@@ -288,7 +286,6 @@ class CompilerGCC : public cbCompilerPlugin
         size_t m_MaxProgress;
         size_t m_CurrentProgress;
         bool m_LogBuildProgressPercentage;
-        wxGauge* m_BuildProgress;
 
         DECLARE_EVENT_TABLE()
 };

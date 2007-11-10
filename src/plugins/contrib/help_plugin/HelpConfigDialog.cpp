@@ -3,7 +3,7 @@
 #include <globals.h> // cbMessageBox
 #include <manager.h>
 #include <editormanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <projectmanager.h>
 
 #include <wx/filedlg.h>

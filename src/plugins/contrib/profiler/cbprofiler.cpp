@@ -21,7 +21,7 @@
     #include "globals.h"
     #include "macrosmanager.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectbuildtarget.h"
     #include "projectmanager.h"
 #endif
@@ -89,7 +89,7 @@ int CBProfiler::Execute()
         wxString msg = _("You need to open a project\nbefore using the plugin!\n"
                          "C::B Profiler could not complete the operation.");
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
         return -1;
     }
 
@@ -119,7 +119,7 @@ int CBProfiler::Execute()
         wxString msg = _("No executable targets found in project!\n"
                          "C::B Profiler could not complete the operation.");
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
         return -1;
     }
 
@@ -127,7 +127,7 @@ int CBProfiler::Execute()
     {
         wxString msg = _("The target is not executable!");
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-        Manager::Get()->GetMessageManager()->DebugLog(msg);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
         return -1;
     }
 
@@ -200,8 +200,8 @@ int CBProfiler::Execute()
             }
         }
 
-        Manager::Get()->GetMessageManager()->DebugLog(_("Using executable file from: %s."), exename.c_str());
-        Manager::Get()->GetMessageManager()->DebugLog(_("Using gmon.out   file from: %s."), dataname.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(_("Using executable file from: ") + exename);
+        Manager::Get()->GetLogManager()->DebugLog(_("Using gmon.out   file from: ") + dataname);
 
         // If we got so far, it means both the executable and the profile data exist
         wxDateTime exetime  = ename.GetModificationTime();

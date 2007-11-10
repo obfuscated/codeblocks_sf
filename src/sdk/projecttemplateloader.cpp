@@ -14,7 +14,7 @@
 
 #ifndef CB_PRECOMP
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "globals.h"
 #endif
 
@@ -37,7 +37,7 @@ ProjectTemplateLoader::~ProjectTemplateLoader()
 
 bool ProjectTemplateLoader::Open(const wxString& filename)
 {
-    MessageManager* pMsg = Manager::Get()->GetMessageManager();
+    LogManager* pMsg = Manager::Get()->GetLogManager();
     if (!pMsg)
         return false;
 

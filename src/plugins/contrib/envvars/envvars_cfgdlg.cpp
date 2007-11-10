@@ -26,7 +26,7 @@
   #include "globals.h"
   #include "manager.h"
   #include "configmanager.h"
-  #include "messagemanager.h"
+  #include "logmanager.h"
 #endif
 
 #include "editpairdlg.h"
@@ -183,7 +183,7 @@ void EnvVarsConfigDlg::LoadSettings()
 void EnvVarsConfigDlg::SaveSettings()
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetMessageManager());
+	if (Manager::Get() && Manager::Get()->GetLogManager());
     DBGLOG(_T("SaveSettings"));
 #endif
 

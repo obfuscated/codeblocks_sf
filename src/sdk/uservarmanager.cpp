@@ -17,7 +17,7 @@
 #ifndef CB_PRECOMP
     #include "uservarmanager.h"
     #include "configmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
     #include "macrosmanager.h"
     #include "manager.h"

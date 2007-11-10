@@ -22,7 +22,7 @@
 #include "editormanager.h"
 #include "manager.h"
 #include "projectmanager.h"
-//#include "messagemanager.h"
+//#include "logmanager.h"
 #include "sdk_events.h"
 #endif
 
@@ -71,36 +71,48 @@ void ToDoList::OnAttach()
 {
 	// create ToDo in bottom view
 	wxArrayString titles;
-	int widths[6] = {64, 320, 64, 48, 48, 640};
+	wxArrayInt widths;
 	titles.Add(_("Type"));
 	titles.Add(_("Text"));
 	titles.Add(_("User"));
 	titles.Add(_("Prio."));
 	titles.Add(_("Line"));
 	titles.Add(_("File"));
+	widths.Add(64);
+	widths.Add(320);
+	widths.Add(64);
+	widths.Add(48);
+	widths.Add(48);
+	widths.Add(640);
 
-	m_pListLog = new ToDoListView(6, widths, titles, m_Types);
-	m_pListLog->SetSize(wxSize(352,94));
-    #if wxCHECK_VERSION(2, 8, 0)
-    m_pListLog->SetInitialSize(wxSize(352,94));
-    #else
-    m_pListLog->SetBestFittingSize(wxSize(352,94));
-    #endif
+	m_pListLog = new ToDoListView(titles, widths, m_Types);
 
     bool standalone = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("stand_alone"), true);
     m_StandAlone = standalone;
 
     if(!standalone)
     {
-        MessageManager* msgMan = Manager::Get()->GetMessageManager();
-        m_ListPageIndex = msgMan->AddLog(m_pListLog, _("To-Do"));
+        LogManager* msgMan = Manager::Get()->GetLogManager();
+        m_ListPageIndex = msgMan->SetLog(m_pListLog);
+        msgMan->Slot(m_ListPageIndex).title = _("To-Do");
+
+		CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
+		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
     }
     else
     {
+		m_pListLog->CreateControl(Manager::Get()->GetAppWindow());
+		m_pListLog->GetWindow()->SetSize(wxSize(352,94));
+		#if wxCHECK_VERSION(2, 8, 0)
+		m_pListLog->GetWindow()->SetInitialSize(wxSize(352,94));
+		#else
+		m_pListLog->GetWindow()->SetBestFittingSize(wxSize(352,94));
+		#endif
+
         CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
         evt.name = _T("TodoListPanev2.0.0");
         evt.title = _("To-Do list");
-        evt.pWindow = m_pListLog;
+        evt.pWindow = m_pListLog->GetWindow();
         evt.dockSide = CodeBlocksDockEvent::dsFloating;
         evt.desiredSize.Set(352, 94);
         evt.floatingSize.Set(352, 94);
@@ -128,14 +140,15 @@ void ToDoList::OnRelease(bool appShutDown)
     if(m_StandAlone)
     {
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-        evt.pWindow = m_pListLog;
+        evt.pWindow = m_pListLog->GetWindow();
         Manager::Get()->ProcessEvent(evt);
-        m_pListLog->Destroy();
+        delete m_pListLog;
     }
     else
     {
-        if (Manager::Get()->GetMessageManager())
-            Manager::Get()->GetMessageManager()->RemoveLog(m_pListLog);
+		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+		evt.window = m_pListLog->GetWindow();
+		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
     }
     m_pListLog = 0;
 }
@@ -228,13 +241,13 @@ void ToDoList::OnAppDoneStartup(CodeBlocksEvent& event)
 
 void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog));
+    Manager::Get()->GetAppFrame()->GetMenuBar()->Check(idViewTodo, IsWindowReallyShown(m_pListLog->GetWindow()));
 }
 
 void ToDoList::OnViewList(wxCommandEvent& event)
 {
     CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
-    evt.pWindow = m_pListLog;
+    evt.pWindow = m_pListLog->GetWindow();
     Manager::Get()->ProcessEvent(evt);
 }
 

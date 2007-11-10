@@ -18,22 +18,27 @@
 #include "manager.h"
 #include "projectfile.h"
 #include "projectmanager.h"
-//#include "messagemanager.h"
+//#include "logmanager.h"
 #endif
 #include "todolistview.h"
 
-int idSource = wxNewId();
-int idUser = wxNewId();
-int idButtonRefresh = wxNewId();
+namespace
+{
+	int idList = wxNewId();
+	int idSource = wxNewId();
+	int idUser = wxNewId();
+	int idButtonRefresh = wxNewId();
+};
 
-BEGIN_EVENT_TABLE(ToDoListView, SimpleListLog)
+BEGIN_EVENT_TABLE(ToDoListView, wxEvtHandler)
 	EVT_COMBOBOX(idSource, ToDoListView::OnComboChange)
 	EVT_COMBOBOX(idUser, ToDoListView::OnComboChange)
 	EVT_BUTTON(idButtonRefresh, ToDoListView::OnButtonRefresh)
 END_EVENT_TABLE()
 
-ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& titles, const wxArrayString& m_Types)
-    : SimpleListLog(numCols, widths, titles),
+ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& m_Types)
+    : ListCtrlLogger(titles, widths, false),
+    panel(0),
     m_pSource(0L),
     m_pUser(0L),
     m_Types(m_Types),
@@ -41,21 +46,34 @@ ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& title
     m_ignore(false)
 {
 	//ctor
-    int id = m_pList->GetId();
-    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
+}
+
+ToDoListView::~ToDoListView()
+{
+	//dtor
+}
+
+wxWindow* ToDoListView::CreateControl(wxWindow* parent)
+{
+	panel = new wxPanel(parent);
+	ListCtrlLogger::CreateControl(panel);
+	
+    control->SetId(idList);
+    Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ToDoListView::OnListItemSelected);
-    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED, //pecan 1/2/2006 12PM
+    Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED, //pecan 1/2/2006 12PM
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ToDoListView::OnDoubleClick);
 
     #if wxCHECK_VERSION(2, 8, 0)
-    m_pList->SetInitialSize(wxSize(342,56));
+    control->SetInitialSize(wxSize(342,56));
     #else
-    m_pList->SetBestFittingSize(wxSize(342,56));
+    control->SetBestFittingSize(wxSize(342,56));
     #endif
-	m_pList->SetMinSize(wxSize(342,56));
-	wxSizer* bs = m_pList->GetContainingSizer();
+	control->SetMinSize(wxSize(342,56));
+	wxSizer* bs = new wxBoxSizer(wxVERTICAL);
+	bs->Add(control, 1, wxEXPAND);
 	if (bs)
 	{
         wxArrayString choices;
@@ -64,29 +82,27 @@ ToDoListView::ToDoListView(int numCols, int widths[], const wxArrayString& title
         choices.Add(_("All project files"));
         wxBoxSizer* hbs = new wxBoxSizer(wxHORIZONTAL);
 
-        hbs->Add(new wxStaticText(this, wxID_ANY, _("Scope:")), 0, wxTOP, 4);
+        hbs->Add(new wxStaticText(panel, wxID_ANY, _("Scope:")), 0, wxTOP, 4);
 
-        m_pSource = new wxComboBox(this, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 3, &choices[0], wxCB_READONLY);
+        m_pSource = new wxComboBox(panel, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 3, &choices[0], wxCB_READONLY);
         m_pSource->SetSelection(0);
         hbs->Add(m_pSource, 0, wxLEFT | wxRIGHT, 8);
 
-        hbs->Add(new wxStaticText(this, wxID_ANY, _("User:")), 0, wxTOP, 4);
+        hbs->Add(new wxStaticText(panel, wxID_ANY, _("User:")), 0, wxTOP, 4);
 
-        m_pUser = new wxComboBox(this, idUser, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_READONLY);
+        m_pUser = new wxComboBox(panel, idUser, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0L, wxCB_READONLY);
         m_pUser->Append(_("<All users>"));
         m_pUser->SetSelection(0);
         hbs->Add(m_pUser, 0, wxLEFT, 4);
 
-        m_pRefresh = new wxButton(this, idButtonRefresh, _("Refresh"));
+        m_pRefresh = new wxButton(panel, idButtonRefresh, _("Refresh"));
         hbs->Add(m_pRefresh, 0, wxLEFT, 4);
 
         bs->Add(hbs, 0, wxGROW | wxALL, 4);
 	}
-}
-
-ToDoListView::~ToDoListView()
-{
-	//dtor
+	panel->SetSizer(bs);
+	
+	return panel;
 }
 
 void ToDoListView::LoadUsers()
@@ -115,7 +131,7 @@ void ToDoListView::LoadUsers()
 void ToDoListView::FillList()
 {
 	LoadUsers();
-	GetListControl()->Freeze();
+	control->Freeze();
 	Clear();
     m_Items.Clear();
 
@@ -149,16 +165,16 @@ void ToDoListView::FillList()
 		if (m_pUser->GetSelection() == 0 || // all users
 			m_pUser->GetStringSelection().Matches(item.user)) // or matches user
 		{
-			int idx = GetListControl()->InsertItem(GetListControl()->GetItemCount(), item.type);
-			GetListControl()->SetItem(idx, 1, item.text);
-			GetListControl()->SetItem(idx, 2, item.user);
-			GetListControl()->SetItem(idx, 3, item.priorityStr);
-			GetListControl()->SetItem(idx, 4, item.lineStr);
-			GetListControl()->SetItem(idx, 5, item.filename);
-			GetListControl()->SetItemData(idx, i);
+			int idx = control->InsertItem(control->GetItemCount(), item.type);
+			control->SetItem(idx, 1, item.text);
+			control->SetItem(idx, 2, item.user);
+			control->SetItem(idx, 3, item.priorityStr);
+			control->SetItem(idx, 4, item.lineStr);
+			control->SetItem(idx, 5, item.filename);
+			control->SetItemData(idx, i);
 		}
 	}
-	GetListControl()->Thaw();
+	control->Thaw();
 }
 
 void ToDoListView::ParseCurrent(bool forced)
@@ -279,7 +295,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 
 	for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
 	{
-//Manager::Get()->GetMessageManager()->DebugLog("Looking for %s", m_Types[i].c_str());
+//Manager::Get()->GetLogManager()->DebugLog("Looking for %s", m_Types[i].c_str());
 		int pos = buffer.find(m_Types[i], 0);
 
 		while (pos > 0)
@@ -312,7 +328,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 				lastChar = c;
 			}
 
-//Manager::Get()->GetMessageManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", isC ? "C" : "C++", m_Types[i].c_str(), pos);
+//Manager::Get()->GetLogManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", isC ? "C" : "C++", m_Types[i].c_str(), pos);
 			if (isValid)
 			{
 				ToDoItem item;
@@ -322,7 +338,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 				idx = pos + m_Types[i].Length();
 				wxChar c = _T('\0');
 
-//Manager::Get()->GetMessageManager()->DebugLog("1");
+//Manager::Get()->GetLogManager()->DebugLog("1");
 				// skip to next non-blank char
 				while (idx < (int)buffer.Length())
 				{
@@ -331,7 +347,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 						break;
 					++idx;
 				}
-//Manager::Get()->GetMessageManager()->DebugLog("2");
+//Manager::Get()->GetLogManager()->DebugLog("2");
 				// is it ours or generic todo?
 				if (c == _T('('))
 				{
@@ -374,7 +390,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 						++idx;
 					}
 				}
-//Manager::Get()->GetMessageManager()->DebugLog("3");
+//Manager::Get()->GetLogManager()->DebugLog("3");
 				// ok, we 've reached the actual todo text :)
 				// take everything up to the end of line or end of comment (if isC)
 				wxChar lastChar = _T('\0');
@@ -401,7 +417,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 						item.text << c1;
 					lastChar = c1;
 				}
-//Manager::Get()->GetMessageManager()->DebugLog("4");
+//Manager::Get()->GetLogManager()->DebugLog("4");
 				// do some clean-up
 				item.text.Trim();
 				item.text.Trim(false);
@@ -417,7 +433,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 
 			pos = buffer.find(m_Types[i], idx);
 		}
-//		Manager::Get()->GetMessageManager()->DebugLog("Found it at %d", pos);
+//		Manager::Get()->GetLogManager()->DebugLog("Found it at %d", pos);
 	}
 }
 
@@ -443,7 +459,7 @@ void ToDoListView::OnDoubleClick( wxListEvent& event )
 
     if (event.GetIndex() == -1)
         return;
-    unsigned int idx = GetListControl()->GetItemData(event.GetIndex());
+    unsigned int idx = control->GetItemData(event.GetIndex());
     wxString file = m_Items[idx].filename;
     long int line = m_Items[idx].line;
 
@@ -465,9 +481,9 @@ void ToDoListView::OnDoubleClick( wxListEvent& event )
 
 void ToDoListView::FocusEntry(size_t index)                 //pecan 1/2/2006 12PM
 {
-    if (index >= 0 && index < (size_t)m_pList->GetItemCount())
+    if (index >= 0 && index < (size_t)control->GetItemCount())
     {
-        m_pList->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
-        m_pList->EnsureVisible(index);
+        control->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
+        control->EnsureVisible(index);
     }
 }

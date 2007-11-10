@@ -43,7 +43,7 @@ END_EVENT_TABLE()
 
 void myHandler::OnKeyDown(wxKeyEvent& event)
 {
-	//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "OnKeyDown");
+	//Manager::Get()->GetLogManager()->Log(mltDevDebug, "OnKeyDown");
 	switch (event.GetKeyCode())
 	{
 		case WXK_RETURN:
@@ -121,7 +121,7 @@ void IncrementalSelectListDlg::FillList()
 	wxString search(wxT("*") + m_Text->GetValue().Lower() + wxT("*"));
 
 	wxArrayString result;
-	//Manager::Get()->GetMessageManager()->Log(mltDevDebug, "FillList(): '%s'", search.c_str());
+	//Manager::Get()->GetLogManager()->Log(mltDevDebug, "FillList(): '%s'", search.c_str());
 	m_List->Clear();
 	for (unsigned int i = 0; i < m_Items.GetCount(); ++i)
 	{

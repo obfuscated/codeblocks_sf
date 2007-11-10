@@ -23,7 +23,7 @@
 
 #include "wxsstyle.h"
 #include <wx/tokenzr.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 
 wxsStyleSet::wxsStyleSet(const wxChar* DefaultStyle): DefaultStr(DefaultStyle)
 {

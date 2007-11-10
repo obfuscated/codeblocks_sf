@@ -51,7 +51,7 @@
 #include <sdk_events.h>
 #include <projectmanager.h>
 #include <editormanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <pluginmanager.h>
 #include <templatemanager.h>
 #include <toolsmanager.h>
@@ -68,6 +68,7 @@
 #include "scriptconsole.h"
 #include "scriptingsettingsdlg.h"
 #include "printdlg.h"
+#include "batchbuild.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
@@ -214,7 +215,7 @@ int idViewToolbars = XRCID("idViewToolbars");
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
 int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
-int idViewMessageManager = XRCID("idViewMessageManager");
+int idViewLogManager = XRCID("idViewLogManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
 int idViewScriptConsole = XRCID("idViewScriptConsole");
 int idViewFocusEditor = XRCID("idViewFocusEditor");
@@ -306,7 +307,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idSearchGotoLine, MainFrame::OnSearchMenuUpdateUI)
 
     EVT_UPDATE_UI(idViewToolMain, MainFrame::OnViewMenuUpdateUI)
-    EVT_UPDATE_UI(idViewMessageManager, MainFrame::OnViewMenuUpdateUI)
+    EVT_UPDATE_UI(idViewLogManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewManager, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewStatusbar, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewScriptConsole, MainFrame::OnViewMenuUpdateUI)
@@ -420,7 +421,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewLayoutSave, MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewLayoutDelete, MainFrame::OnViewLayoutDelete)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
-    EVT_MENU(idViewMessageManager, MainFrame::OnToggleBar)
+    EVT_MENU(idViewLogManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewOpenFilesTree, MainFrame::OnToggleOpenFilesTree)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
@@ -448,6 +449,14 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     /// Shift-Tab bug workaround
     EVT_MENU(idShiftTab,MainFrame::OnShiftTab)
+    
+    EVT_ADD_LOG_WINDOW(MainFrame::OnAddLogWindow)
+    EVT_REMOVE_LOG_WINDOW(MainFrame::OnRemoveLogWindow)
+    EVT_SWITCH_TO_LOG_WINDOW(MainFrame::OnSwitchToLogWindow)
+    EVT_SHOW_LOG_MANAGER(MainFrame::OnShowLogManager)
+    EVT_HIDE_LOG_MANAGER(MainFrame::OnHideLogManager)
+    EVT_LOCK_LOG_MANAGER(MainFrame::OnLockLogManager)
+    EVT_UNLOCK_LOG_MANAGER(MainFrame::OnUnlockLogManager)
 
 END_EVENT_TABLE()
 
@@ -463,12 +472,16 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pEdMan(0L),
        m_pPrjMan(0L),
        m_pMsgMan(0L),
+       infoPane(0),
        m_pToolbar(0L),
        m_ToolsMenu(0L),
        m_HelpPluginsMenu(0L),
        m_StartupDone(false), // one-time flag
        m_InitiatedShutdown(false),
-       m_ScriptConsoleID(-1)
+       m_AutoHideLogs(false),
+       m_AutoHideLockCounter(0),
+       m_pScriptConsole(0),
+       m_pBatchBuildDialog(0)
 {
 #if !wxCHECK_VERSION(2,8,0)
     // tell wxFrameManager to manage this frame
@@ -521,7 +534,7 @@ MainFrame::MainFrame(wxWindow* parent)
     SetTitle(appglobals::AppName + _T(" v") + appglobals::AppVersion);
 
     ScanForPlugins();
-    SetupGUILogging();
+
     // save default view
     wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
     if (deflayout.IsEmpty())
@@ -532,11 +545,10 @@ MainFrame::MainFrame(wxWindow* parent)
     LoadWindowState();
 
     ShowHideStartPage();
-    m_ScriptConsoleVisible = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false);
-    // create console
-    m_ScriptConsoleID = Manager::Get()->GetMessageManager()->AddLog(new ScriptConsoleLog(), _("Script console"));
-    if (m_ScriptConsoleID != -1)
-        Manager::Get()->GetMessageManager()->ShowLog(m_ScriptConsoleID, m_ScriptConsoleVisible);
+    
+    // create script console (if needed)
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false))
+		ShowHideScriptConsole();
 
     RegisterScriptFunctions();
     RunStartupScripts();
@@ -544,24 +556,28 @@ MainFrame::MainFrame(wxWindow* parent)
     m_StartupDone = true;
     DoUpdateLayout();
 
-    if (Manager::Get()->GetMessageManager()->HasErrors())
-    {
-        InfoWindow::Display(_("Errors logged!"), _("Some errors have been logged during\n"
-                                                    "the Code::Blocks startup process.\n\n"
-                                                    "Please review them in the logs...\n\n"), 8000, 1000);
-    }
-    else if (Manager::Get()->GetMessageManager()->HasWarnings())
-    {
-        InfoWindow::Display(_("Warnings logged!"), _("Some warnings have been logged during\n"
-                                                    "the Code::Blocks startup process.\n\n"
-                                                    "Please review them in the logs...\n\n"), 8000, 1000);
-    }
+//    if (Manager::Get()->GetLogManager()->HasErrors())
+//    {
+//        InfoWindow::Display(_("Errors logged!"), _("Some errors have been logged during\n"
+//                                                    "the Code::Blocks startup process.\n\n"
+//                                                    "Please review them in the logs...\n\n"), 8000, 1000);
+//    }
+//    else if (Manager::Get()->GetLogManager()->HasWarnings())
+//    {
+//        InfoWindow::Display(_("Warnings logged!"), _("Some warnings have been logged during\n"
+//                                                    "the Code::Blocks startup process.\n\n"
+//                                                    "Please review them in the logs...\n\n"), 8000, 1000);
+//    }
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Initializing plugins..."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Initializing plugins..."));
 }
 
 MainFrame::~MainFrame()
 {
+//	if (m_pBatchBuildDialog)
+//		m_pBatchBuildDialog->Destroy();
+//	m_pBatchBuildDialog = 0;
+
     this->SetAcceleratorTable(wxNullAcceleratorTable);
     delete m_pAccel;
 
@@ -617,7 +633,7 @@ void MainFrame::ShowTips(bool forceShow)
 void MainFrame::CreateIDE()
 {
     int leftW = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_width"), 200);
-    int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
+//    int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
     SetSize(800,600);
     wxSize clientsize = GetClientSize();
 
@@ -632,17 +648,14 @@ void MainFrame::CreateIDE()
                               BestSize(wxSize(leftW, clientsize.GetHeight())).MinSize(wxSize(100,100)).
                               Left().Layer(1));
 
-    // message manager
-    m_LayoutManager.AddPane(Manager::Get()->GetMessageManager()->GetNotebook(), wxAuiPaneInfo().
-                              Name(wxT("MessagesPane")).Caption(_("Messages")).
-                              BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
-                              Bottom());
+    // logs manager
+    SetupGUILogging();
 
     CreateMenubar();
 
     m_pEdMan = Manager::Get()->GetEditorManager();
     m_pPrjMan = Manager::Get()->GetProjectManager();
-    m_pMsgMan = Manager::Get()->GetMessageManager();
+    m_pMsgMan = Manager::Get()->GetLogManager();
 
     CreateToolbars();
     SetToolBar(0);
@@ -657,48 +670,66 @@ void MainFrame::CreateIDE()
 
     m_pEdMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
     m_pPrjMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
-    m_pMsgMan->GetNotebook()->SetDropTarget(new wxMyFileDropTarget(this));
 }
 
 
 void MainFrame::SetupGUILogging()
 {
-#if 0
+#if 1
+    m_AutoHideLogs = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/auto_hide"), false);
+
     int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
     wxSize clientsize = GetClientSize();
 
-    InfoPane *infoPane = new InfoPane(this);
-    m_LayoutManager.AddPane(infoPane, wxAuiPaneInfo().Name(wxT("info")).Caption(_("Info Pane")).BestSize(wxSize(clientsize.GetWidth(), bottomH)));
+	LogManager* mgr = Manager::Get()->GetLogManager();
+	
+	if(!Manager::IsBatchBuild())
+	{
+		infoPane = new InfoPane(this);
+		m_LayoutManager.AddPane(infoPane, wxAuiPaneInfo().
+								  Name(wxT("MessagesPane")).Caption(_("Logs & others")).
+								  BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
+								  Bottom());
 
-    LogManager* mgr = LogManager::Get();
-    wxWindow* log;
+		wxWindow* log;
 
-    for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
-    {
-        if(log = mgr->Slot(i).GetLogger()->CreateControl(infoPane))
-            infoPane->AddLogger(log, mgr->Slot(i).title);
-    }
+		for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
+		{
+			if((log = mgr->Slot(i).GetLogger()->CreateControl(infoPane)))
+				infoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
+		}
+	}
+	else
+	{
+		m_pBatchBuildDialog = new BatchLogWindow(this, _("Batch build"));
+		infoPane = new InfoPane(m_pBatchBuildDialog);
+		
+		// setting &g_null_log causes the app to crash on exit for some reason...
+		mgr->SetLog(new NullLogger, LogManager::app_log);
+		mgr->SetLog(new NullLogger, LogManager::debug_log);
+	}
 
-    LogManager::Get()->NotifyUpdate();
+    mgr->NotifyUpdate();
+    infoPane->SetDropTarget(new wxMyFileDropTarget(this));
 
 
 
     // ------------------------ remove this  ------------------------
 
-    infoPane->AddNonLogger(new wxStaticText(infoPane, -1, wxString(_T("here be search results (actually wrong, this is not a logger!)"))), _T("Search results"));
-
-
-    LogManager::Get()->Log(_T("foo bar"));
-    LogManager::Get()->Log(_T("123456"));
-    LogManager::Get()->Log(_T("abcdefg"));
-    LogManager::Get()->LogWarning(_T("This doesn't look right"));
-    LogManager::Get()->DebugLog(_T("useless output"));
-    LogManager::Get()->Log(_T("another way for useless output"), LogManager::debug_log);
-    LogManager::Get()->DebugLog(_T("this is a debug error"), Logger::error);
-    LogManager::Get()->LogError(_T("This is really bad."));
-    LogManager::Get()->Log(_T("Starting build"), LogManager::app_log, Logger::caption);
-    LogManager::Get()->Log(_T("No resource file found. Cannot continue."), LogManager::app_log, Logger::critical);
-    LogManager::Get()->Log(_T("Build succeeded, no errors."), LogManager::app_log, Logger::success);
+//    infoPane->AddNonLogger(new wxStaticText(infoPane, -1, wxString(_T("here be search results (actually wrong, this is not a logger!)"))), _T("Search results"));
+//
+//
+//    LogManager::Get()->Log(_T("foo bar"));
+//    LogManager::Get()->Log(_T("123456"));
+//    LogManager::Get()->Log(_T("abcdefg"));
+//    LogManager::Get()->LogWarning(_T("This doesn't look right"));
+//    LogManager::Get()->DebugLog(_T("useless output"));
+//    LogManager::Get()->Log(_T("another way for useless output"), LogManager::debug_log);
+//    LogManager::Get()->DebugLog(_T("this is a debug error"), Logger::error);
+//    LogManager::Get()->LogError(_T("This is really bad."));
+//    LogManager::Get()->Log(_T("Starting build"), LogManager::app_log, Logger::caption);
+//    LogManager::Get()->Log(_T("No resource file found. Cannot continue."), LogManager::app_log, Logger::critical);
+//    LogManager::Get()->Log(_T("Build succeeded, no errors."), LogManager::app_log, Logger::success);
 
     // ------------------------ remove this  ------------------------
 
@@ -742,7 +773,7 @@ void MainFrame::RunStartupScripts()
                     else if (!se.menu.IsEmpty())
                         Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
                     else
-                        LOG_WARN(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.c_str());
+                        Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.c_str()));
                 }
             }
             catch (SquirrelError& exception)
@@ -876,7 +907,7 @@ void MainFrame::CreateMenubar()
     // core modules: create menus
     Manager::Get()->GetProjectManager()->CreateMenu(mbar);
     Manager::Get()->GetEditorManager()->CreateMenu(mbar);
-    Manager::Get()->GetMessageManager()->CreateMenu(mbar);
+//    Manager::Get()->GetLogManager()->CreateMenu(mbar);
 
     // ask all plugins to rebuild their menus
     PluginElementsArray plugins = Manager::Get()->GetPluginManager()->GetPlugins();
@@ -929,7 +960,7 @@ void MainFrame::CreateToolbars()
     if(m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Loading toolbar..."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Loading toolbar..."));
 
     wxSize size = m_SmallToolBar ? wxSize(16, 16) : (platform::macosx ? wxSize(32, 32) : wxSize(22, 22));
     m_pToolbar = new wxToolBar(this, -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
@@ -978,18 +1009,18 @@ void MainFrame::ScanForPlugins()
 
     // user paths first
     wxString path = ConfigManager::GetPluginsFolder(false);
-    Manager::Get()->GetMessageManager()->Log(_("Scanning for plugins in %s..."), path.c_str());
+    Manager::Get()->GetLogManager()->Log(_("Scanning for plugins in ") + path);
     int count = m_PluginManager->ScanForPlugins(path);
 
     // global paths
     path = ConfigManager::GetPluginsFolder(true);
-    Manager::Get()->GetMessageManager()->Log(_("Scanning for plugins in %s..."), path.c_str());
+    Manager::Get()->GetLogManager()->Log(_("Scanning for plugins in ") + path);
     count += m_PluginManager->ScanForPlugins(path);
 
     // actually load plugins
     if (count > 0)
     {
-        Manager::Get()->GetMessageManager()->AppendLog(_("Loading: "));
+        Manager::Get()->GetLogManager()->Log(_("Loading:"));
         m_PluginManager->LoadAllPlugins();
     }
 }
@@ -1060,7 +1091,7 @@ void MainFrame::AddPluginInHelpPluginsMenu(cbPlugin* plugin)
 
 void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
 {
-    //Manager::Get()->GetMessageManager()->DebugLog("Unloading %s plugin", pluginName.c_str());
+    //Manager::Get()->GetLogManager()->DebugLog("Unloading %s plugin", pluginName.c_str());
     if (pluginName.IsEmpty())
         return;
 
@@ -1079,7 +1110,7 @@ void MainFrame::RemovePluginFromMenus(const wxString& pluginName)
         else
             ++it;
     }
-    //Manager::Get()->GetMessageManager()->DebugLog("id=%d", id);
+    //Manager::Get()->GetLogManager()->DebugLog("id=%d", id);
     if (id.GetCount() == 0)
         return; // not found
 
@@ -1108,7 +1139,7 @@ void MainFrame::LoadWindowState()
 
     // load manager and messages selected page
     Manager::Get()->GetProjectManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
-    Manager::Get()->GetMessageManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
+    infoPane->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
 #ifndef __WXMAC__
     int x = 0;
@@ -1131,7 +1162,7 @@ void MainFrame::LoadWindowState()
     SetSize(rect);
 
     // close message manager (if auto-hiding)
-    Manager::Get()->GetMessageManager()->Close();
+//    Manager::Get()->GetLogManager()->Close();
 }
 
 void MainFrame::SaveWindowState()
@@ -1151,7 +1182,7 @@ void MainFrame::SaveWindowState()
 
     // save manager and messages selected page
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetProjectManager()->GetNotebook()->GetSelection());
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), Manager::Get()->GetMessageManager()->GetNotebook()->GetSelection());
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), infoPane->GetSelection());
 
     // save window size and position
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/maximized"), IsMaximized());
@@ -1350,7 +1381,7 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
 
 void MainFrame::DoAddPlugin(cbPlugin* plugin)
 {
-    //Manager::Get()->GetMessageManager()->DebugLog(_T("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
+    //Manager::Get()->GetLogManager()->DebugLog(_T("Adding plugin: %s"), plugin->GetInfo()->name.c_str());
     AddPluginInSettingsMenu(plugin);
     AddPluginInHelpPluginsMenu(plugin);
     if (plugin->GetType() == ptTool)
@@ -1380,8 +1411,8 @@ bool MainFrame::Open(const wxString& filename, bool addToHistory)
     wxFileName fn(filename);
     fn.Normalize(); // really important so that two same files with different names are not loaded twice
     wxString name = fn.GetFullPath();
-    //Manager::Get()->GetMessageManager()->DebugLog(_T("Opening file '%s'"), sname.c_str());
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Opening file %s"), name.c_str());
+    //Manager::Get()->GetLogManager()->DebugLog(_T("Opening file '%s'"), sname.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Opening file ") + name);
     bool ret = OpenGeneric(name, addToHistory);
     return ret;
 }
@@ -1482,7 +1513,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 {
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Opening project '%s'"), filename.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Opening project '%s'"), filename.c_str());
     if (!wxFileExists(filename))
     {
         cbMessageBox(_("The project file does not exist..."), _("Error"), wxICON_ERROR);
@@ -1581,6 +1612,9 @@ void MainFrame::DoUpdateStatusBar()
 
 void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle)
 {
+	if (!target)
+		return;
+		
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     long nbstyle = cfg->ReadInt(_T("/environment/tabs_style"), 0);
     switch (nbstyle)
@@ -1625,7 +1659,7 @@ void MainFrame::DoUpdateEditorStyle()
     wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
     DoUpdateEditorStyle(fn, _T("editor"), wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_X_ON_TAB | wxFNB_NO_X_BUTTON);
 
-    fn = Manager::Get()->GetMessageManager()->GetNotebook();
+    fn = infoPane;
     DoUpdateEditorStyle(fn, _T("message"), wxFNB_NO_X_BUTTON);
 
     fn = Manager::Get()->GetProjectManager()->GetNotebook();
@@ -1724,12 +1758,17 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
 
 void MainFrame::ShowHideScriptConsole()
 {
-    if (m_ScriptConsoleID != -1)
+    if (!m_pScriptConsole)
     {
-        m_ScriptConsoleVisible = !m_ScriptConsoleVisible;
-        Manager::Get()->GetMessageManager()->ShowLog(m_ScriptConsoleID, m_ScriptConsoleVisible);
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_ScriptConsoleVisible);
+		m_pScriptConsole = new ScriptConsole(this, -1);
+		infoPane->AddNonLogger(m_pScriptConsole, _("Script console"));
     }
+    else
+    {
+        infoPane->DeleteNonLogger(m_pScriptConsole);
+        m_pScriptConsole = 0;
+    }
+	Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_pScriptConsole != 0);
 }
 
 void MainFrame::OnStartHereLink(wxCommandEvent& event)
@@ -2068,7 +2107,7 @@ void MainFrame::OnPluginsExecuteMenu(wxCommandEvent& event)
     if (!pluginName.IsEmpty())
         Manager::Get()->GetPluginManager()->ExecutePlugin(pluginName);
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("No plugin found for ID %d"), event.GetId()));
 }
 
 void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
@@ -2077,7 +2116,7 @@ void MainFrame::OnPluginSettingsMenu(wxCommandEvent& event)
     if (!pluginName.IsEmpty())
         Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("No plugin found for ID %d"), event.GetId()));
 }
 
 void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
@@ -2088,7 +2127,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         const PluginInfo* pi = Manager::Get()->GetPluginManager()->GetPluginInfo(pluginName);
         if (!pi)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin info for %s!"), pluginName.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("No plugin info for ") + pluginName);
             return;
         }
         dlgAboutPlugin dlg(this, pi);
@@ -2096,7 +2135,7 @@ void MainFrame::OnHelpPluginMenu(wxCommandEvent& event)
         dlg.ShowModal();
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No plugin found for ID %d"), event.GetId());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("No plugin found for ID %d"), event.GetId()));
 }
 
 void MainFrame::OnFileNewWhat(wxCommandEvent& event)
@@ -2579,7 +2618,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         return;
     }
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Deinitializing plugins..."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Deinitializing plugins..."));
     CodeBlocksEvent evtShutdown(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evtShutdown);
 
@@ -2587,7 +2626,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         SaveWindowState();
 
     m_LayoutManager.DetachPane(Manager::Get()->GetProjectManager()->GetNotebook());
-    m_LayoutManager.DetachPane(Manager::Get()->GetMessageManager()->GetNotebook());
+    m_LayoutManager.DetachPane(infoPane);
     m_LayoutManager.DetachPane(Manager::Get()->GetEditorManager()->GetNotebook());
 
     m_LayoutManager.UnInit();
@@ -2600,6 +2639,12 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     // Hide the window
     Hide();
+    
+    if (!Manager::IsBatchBuild())
+    {
+		infoPane->Destroy();
+		infoPane = 0;
+    }
 
     Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
     Destroy();
@@ -3284,6 +3329,8 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 void MainFrame::OnViewScriptConsole(wxCommandEvent& event)
 {
     ShowHideScriptConsole();
+    if (m_pScriptConsole)
+		infoPane->ShowNonLogger(m_pScriptConsole);
 }
 
 void MainFrame::OnSearchFind(wxCommandEvent& event)
@@ -3514,9 +3561,9 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
     mbar->Enable(idViewOpenFilesTree, m_pEdMan);
-    mbar->Check(idViewMessageManager, m_LayoutManager.GetPane(Manager::Get()->GetMessageManager()->GetNotebook()).IsShown());
+    mbar->Check(idViewLogManager, m_LayoutManager.GetPane(infoPane).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
-    mbar->Check(idViewScriptConsole, m_ScriptConsoleVisible);
+    mbar->Check(idViewScriptConsole, m_pScriptConsole != 0);
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
 
@@ -3612,8 +3659,8 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
     wxWindow* win = 0;
     if (event.GetId() == idViewManager)
         win = Manager::Get()->GetProjectManager()->GetNotebook();
-    else if (event.GetId() == idViewMessageManager)
-        win = Manager::Get()->GetMessageManager()->GetNotebook();
+    else if (event.GetId() == idViewLogManager)
+        win = infoPane;
     else if (event.GetId() == idViewToolMain)
         win = m_pToolbar;
     else
@@ -3703,7 +3750,7 @@ void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
         DoAddPlugin(plug);
         const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plug);
         wxString msg = info ? info->title : wxString(_("<Unknown plugin>"));
-        Manager::Get()->GetMessageManager()->DebugLog(_T("%s plugin loaded"), msg.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("%s plugin activated"), msg.c_str()));
     }
 }
 
@@ -3740,9 +3787,9 @@ void MainFrame::OnSettingsEnvironment(wxCommandEvent& event)
 
         m_SmallToolBar = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/toolbar_size"), true);
         needRestart = m_SmallToolBar != tbarsmall;
-        bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
-        Manager::Get()->GetMessageManager()->EnableAutoHide(autoHide);
-        Manager::Get()->GetMessageManager()->ResetLogFont();
+//        bool autoHide = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
+//        Manager::Get()->GetLogManager()->EnableAutoHide(autoHide);
+        Manager::Get()->GetLogManager()->NotifyUpdate();
 //        if (!autoHide)
 //            pDockWindow2->Show(true); // make sure it's shown
         ShowHideStartPage();
@@ -3912,8 +3959,8 @@ void MainFrame::OnRequestHideDockWindow(CodeBlocksDockEvent& event)
 
 void MainFrame::OnDockWindowVisibility(CodeBlocksDockEvent& event)
 {
-    if (m_ScriptConsoleID != -1 && event.GetId() == m_ScriptConsoleID)
-        ShowHideScriptConsole();
+//    if (m_ScriptConsoleID != -1 && event.GetId() == m_ScriptConsoleID)
+//        ShowHideScriptConsole();
 }
 
 void MainFrame::OnLayoutQuery(CodeBlocksLayoutEvent& event)
@@ -3925,4 +3972,71 @@ void MainFrame::OnLayoutQuery(CodeBlocksLayoutEvent& event)
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)
 {
     LoadViewLayout(event.layout);
+}
+
+void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)
+{
+	if (Manager::IsAppShuttingDown())
+		return;
+	wxWindow* p = event.logger->CreateControl(infoPane);
+	if(p)
+	{
+		int idx = infoPane->AddLogger(event.logger, p, event.title, event.icon);
+		if (idx != -1)
+			m_LoggerToInfoPaneIndex[event.logger] = idx;
+	}
+
+    LogManager::Get()->NotifyUpdate();
+}
+
+void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
+{
+	if (Manager::IsAppShuttingDown())
+		return;
+//	infoPane->DeleteLogger(event.window, event.logger);
+	infoPane->DeleteLogger(event.logger);
+	m_LoggerToInfoPaneIndex[event.logger] = -1;
+}
+
+void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
+{
+	int idx = m_LoggerToInfoPaneIndex[event.logger];
+	if (idx != -1)
+		infoPane->Show(idx);
+}
+
+void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)
+{
+	if (!m_AutoHideLogs)
+		return;
+
+	m_LayoutManager.GetPane(infoPane).Show(true);
+	DoUpdateLayout();
+}
+
+void MainFrame::OnHideLogManager(CodeBlocksLogEvent& event)
+{
+	if (!m_AutoHideLogs || m_AutoHideLockCounter > 0)
+		return;
+
+	m_LayoutManager.GetPane(infoPane).Show(false);
+	DoUpdateLayout();
+}
+
+void MainFrame::OnLockLogManager(CodeBlocksLogEvent& event)
+{
+	if (!m_AutoHideLogs)
+		return;
+	++m_AutoHideLockCounter;
+}
+
+void MainFrame::OnUnlockLogManager(CodeBlocksLogEvent& event)
+{
+	if (!m_AutoHideLogs && m_AutoHideLockCounter > 0)
+		return;
+	if (--m_AutoHideLockCounter == 0)
+	{
+		m_LayoutManager.GetPane(infoPane).Show(false);
+		DoUpdateLayout();
+	}
 }

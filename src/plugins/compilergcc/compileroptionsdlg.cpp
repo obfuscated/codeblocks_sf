@@ -47,7 +47,7 @@
     #include "globals.h"
     #include "macrosmanager.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
 #endif
 #include <wx/choicdlg.h>	// wxGetSingleChoiceIndex
@@ -589,7 +589,7 @@ void CompilerOptionsDlg::DoFillOptions()
         {
             list->Append(copt->name);
             list->Check(list->GetCount() - 1, copt->enabled);
-//            Manager::Get()->GetMessageManager()->DebugLog("(FILL) option %s (0x%8.8x) %s", copt->option.c_str(), copt, copt->enabled ? "enabled" : "disabled");
+//            Manager::Get()->GetLogManager()->DebugLog("(FILL) option %s (0x%8.8x) %s", copt->option.c_str(), copt, copt->enabled ? "enabled" : "disabled");
         }
     }
     Connect(XRCID("lstCompilerOptions"), -1,
@@ -620,7 +620,7 @@ void CompilerOptionsDlg::TextToOptions()
         CompOption* copt = m_Options.GetOptionByOption(opt);
         if (copt)
         {
-//            Manager::Get()->GetMessageManager()->DebugLog("Enabling option %s", copt->option.c_str());
+//            Manager::Get()->GetLogManager()->DebugLog("Enabling option %s", copt->option.c_str());
             copt->enabled = true;
             m_CompilerOptions.RemoveAt(i, 1);
         }
@@ -642,7 +642,7 @@ void CompilerOptionsDlg::TextToOptions()
         CompOption* copt = m_Options.GetOptionByAdditionalLibs(opt);
         if (copt)
         {
-//            Manager::Get()->GetMessageManager()->DebugLog("Enabling option %s", copt->option.c_str());
+//            Manager::Get()->GetLogManager()->DebugLog("Enabling option %s", copt->option.c_str());
             copt->enabled = true;
             m_LinkerOptions.RemoveAt(i, 1);
         }
@@ -690,7 +690,7 @@ void DoGetCompileOptions(wxArrayString& array, const wxTextCtrl* control)
         line = tmp.Left(nl);
     while (nl != -1 || !line.IsEmpty())
     {
-//        Manager::Get()->GetMessageManager()->DebugLog("%s text=%s", control->GetName().c_str(), line.c_str());
+//        Manager::Get()->GetLogManager()->DebugLog("%s text=%s", control->GetName().c_str(), line.c_str());
         if (!line.IsEmpty())
         {
             // just to make sure..
@@ -2081,10 +2081,6 @@ void CompilerOptionsDlg::OnApply()
     if (chk)
     {
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/build_progress/bar"), (bool)chk->IsChecked());
-		if (chk->IsChecked())
-			m_Compiler->AddBuildProgressBar();
-		else
-			m_Compiler->RemoveBuildProgressBar();
     }
     chk = XRCCTRL(*this, "chkBuildProgressPerc", wxCheckBox);
     if (chk)

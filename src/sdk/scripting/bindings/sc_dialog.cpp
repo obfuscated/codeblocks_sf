@@ -5,7 +5,7 @@
     #include <cbexception.h>
     #include <manager.h>
     #include <configmanager.h>
-    #include <messagemanager.h>
+    #include <logmanager.h>
     #include <wx/string.h>
 #endif
 
@@ -68,7 +68,7 @@ namespace ScriptBindings
     {
         wxString actual = ConfigManager::LocateDataFile(xrc, sdScriptsUser | sdScriptsGlobal);
 //        DBGLOG(_T("Original parameter is: ") + xrc);
-        DBGLOG(_T("Loading XRC: ") + actual);
+        Manager::Get()->GetLogManager()->DebugLog(_T("Loading XRC: ") + actual);
         if (wxXmlResource::Get()->Load(actual))
         {
             XrcDialog* old = s_ActiveDialog;

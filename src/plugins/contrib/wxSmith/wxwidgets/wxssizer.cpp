@@ -27,7 +27,7 @@
 #include "wxsflags.h"
 
 #include <wx/dcclient.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 
 using namespace wxsFlags;
 

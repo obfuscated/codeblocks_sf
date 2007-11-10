@@ -1,7 +1,7 @@
 #include <sdk.h>
 #ifndef CB_PRECOMP
     #include <manager.h>
-    #include <messagemanager.h>
+    #include <logmanager.h>
     #include <configmanager.h>
     #include <projectmanager.h>
     #include <scriptingmanager.h>
@@ -177,7 +177,7 @@ void WizPage::OnButton(wxCommandEvent& event)
     wxWindow* win = FindWindowById(event.GetId(), this);
     if (!win)
     {
-        LOGSTREAM << _T("Can't locate window with id ") << event.GetId() << _T("!\n");
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't locate window with id %d"), event.GetId()));
         return;
     }
     try

@@ -23,18 +23,19 @@
 
 #include "searchresultslog.h"
 
-BEGIN_EVENT_TABLE(SearchResultsLog, SimpleListLog)
+namespace
+{
+	const int ID_List = wxNewId();
+};
+
+BEGIN_EVENT_TABLE(SearchResultsLog, wxEvtHandler)
 //
 END_EVENT_TABLE()
 
-SearchResultsLog::SearchResultsLog(int numCols, int widths[], const wxArrayString& titles)
-    : SimpleListLog(numCols, widths, titles)
+SearchResultsLog::SearchResultsLog(const wxArrayString& titles, wxArrayInt& widths)
+    : ListCtrlLogger(titles, widths)
 {
 	//ctor
-    int id = m_pList->GetId();
-    Connect(id, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &SearchResultsLog::OnDoubleClick);
 }
 
 SearchResultsLog::~SearchResultsLog()
@@ -42,19 +43,29 @@ SearchResultsLog::~SearchResultsLog()
 	//dtor
 }
 
+wxWindow* SearchResultsLog::CreateControl(wxWindow* parent)
+{
+	ListCtrlLogger::CreateControl(parent);
+    control->SetId(ID_List);
+    Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &SearchResultsLog::OnDoubleClick);
+	return control;
+};
+
 void SearchResultsLog::FocusEntry(size_t index)
 {
-    if (index >= 0 && index < (size_t)m_pList->GetItemCount())
+    if (index >= 0 && index < (size_t)control->GetItemCount())
     {
-        m_pList->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
-        m_pList->EnsureVisible(index);
+        control->SetItemState(index, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED, wxLIST_STATE_FOCUSED | wxLIST_STATE_SELECTED);
+        control->EnsureVisible(index);
         SyncEditor(index);
     }
 }
 
 void SearchResultsLog::SyncEditor(int selIndex)
 {
-    wxFileName filename(m_pList->GetItemText(selIndex));
+    wxFileName filename(control->GetItemText(selIndex));
     wxString file;
     if (!filename.IsAbsolute())
         filename.MakeAbsolute(m_Base);
@@ -64,7 +75,7 @@ void SearchResultsLog::SyncEditor(int selIndex)
     li.m_itemId = selIndex;
     li.m_col = 1;
     li.m_mask = wxLIST_MASK_TEXT;
-    m_pList->GetItem(li);
+    control->GetItem(li);
     long line = 0;
     li.m_text.ToLong(&line);
     cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
@@ -83,11 +94,11 @@ void SearchResultsLog::SyncEditor(int selIndex)
 void SearchResultsLog::OnDoubleClick(wxCommandEvent& /*event*/)
 {
     // go to the relevant file/line
-    if (m_pList->GetSelectedItemCount() == 0)
+    if (control->GetSelectedItemCount() == 0)
         return;
 
     // find selected item index
-    int index = m_pList->GetNextItem(-1,
+    int index = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
                                      wxLIST_STATE_SELECTED);
 

@@ -17,7 +17,7 @@
     #include <wx/msgdlg.h>
 
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "cbproject.h"
     #include "globals.h"
     #include "compilerfactory.h"
@@ -76,7 +76,7 @@ wxString MSVC7Loader::ReplaceMSVCMacros(const wxString& str)
 
 bool MSVC7Loader::Open(const wxString& filename)
 {
-    MessageManager* pMsg = Manager::Get()->GetMessageManager();
+    LogManager* pMsg = Manager::Get()->GetLogManager();
     if (!pMsg)
         return false;
 
@@ -84,7 +84,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     m_ConvertSwitches = m_pProject->GetCompilerID().IsSameAs(_T("gcc"));
     m_ProjectName = wxFileName(filename).GetName();
 
-    pMsg->DebugLog(_T("Importing MSVC 7.xx project: %s"), filename.c_str());
+    pMsg->DebugLog(F(_T("Importing MSVC 7.xx project: %s"), filename.c_str()));
 
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
@@ -112,7 +112,7 @@ bool MSVC7Loader::Open(const wxString& filename)
     if ((m_Version!=70) && (m_Version!=71))
     {
         // seems to work with visual 8 too ;)
-        pMsg->DebugLog(_T("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), ver.c_str());
+        pMsg->DebugLog(F(_T("Project version is '%s'. Although this loader was designed for version 7.xx, will try to import..."), ver.c_str()));
     }
 
     m_pProject->ClearAllProperties();
@@ -137,14 +137,14 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
     TiXmlElement* config = root->FirstChildElement("Configurations");
     if (!config)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No 'Configurations' node..."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("No 'Configurations' node..."));
         return false;
     }
 
     TiXmlElement* confs = config->FirstChildElement("Configuration");
     if (!confs)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No 'Configuration' node..."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("No 'Configuration' node..."));
         return false;
     }
 
@@ -176,7 +176,7 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_CANCEL)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Cancelled..."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Cancelled..."));
             return false;
         }
         selected_indices = dlg.GetSelectedIndices();
@@ -192,12 +192,12 @@ bool MSVC7Loader::DoSelectConfiguration(TiXmlElement* root)
             confs = confs->NextSiblingElement();
         if (!confs)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Cannot find configuration nr %d..."), selected_indices[i]);
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Cannot find configuration nr %d..."), selected_indices[i]));
             success = false;
             break;
         }
 
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Importing configuration: %s"), configurations[selected_indices[i]].c_str());
+        Manager::Get()->GetLogManager()->DebugLog(_T("Importing configuration: ") + configurations[selected_indices[i]]);
 
         // prepare the configuration name
         m_ConfigurationName = configurations[selected_indices[i]];
@@ -244,13 +244,13 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
         bt->SetTargetType(ttCommandsOnly);
     else { // typeUnknown 0
         bt->SetTargetType(ttCommandsOnly);
-        Manager::Get()->GetMessageManager()->DebugLog(_T("unrecognized project type"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("unrecognized project type"));
     }
 
     TiXmlElement* tool = conf->FirstChildElement("Tool");
     if (!tool)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("No 'Tool' node..."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("No 'Tool' node..."));
         return false;
     }
 
@@ -620,9 +620,9 @@ void MSVC7Loader::HandleFileConfiguration(TiXmlElement* file, ProjectFile* pf)
                 wxString name = cbC2U(fconf->Attribute("Name"));
                 name.Replace(_T("|"), _T(" "), true); // Replace '|' to ensure proper check
                 pf->RemoveBuildTarget(name);
-                Manager::Get()->GetMessageManager()->DebugLog(
-                    _("removed %s from %s"),
-                    pf->file.GetFullPath().c_str(), name.c_str());
+                Manager::Get()->GetLogManager()->DebugLog(
+                    F(_("removed %s from %s"),
+                    pf->file.GetFullPath().c_str(), name.c_str()));
             }
         }
         fconf = fconf->NextSiblingElement("FileConfiguration");

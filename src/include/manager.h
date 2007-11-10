@@ -28,7 +28,7 @@ class wxFrame;
 class wxWindow;
 class ProjectManager;
 class EditorManager;
-class MessageManager;
+class LogManager;
 class PluginManager;
 class ToolsManager;
 class MacrosManager;
@@ -94,7 +94,7 @@ public:
      *   ToolsManager,       TemplateManager, PluginManager,
 	 *   ScriptingManager,   ProjectManager,  EditorManager,
 	 *   PersonalityManager, MacrosManager,   UserVariableManager,
-	 *   MessageManager
+	 *   LogManager
 	 *   The ConfigManager is destroyed immediately before the applicaton terminates, so it can be
 	 *   considered being omnipresent.
      *
@@ -104,7 +104,7 @@ public:
 
     ProjectManager* GetProjectManager() const;
     EditorManager* GetEditorManager() const;
-    MessageManager* GetMessageManager() const;
+    LogManager* GetLogManager() const;
     PluginManager* GetPluginManager() const;
     ToolsManager* GetToolsManager() const;
     MacrosManager* GetMacrosManager() const;
@@ -143,6 +143,7 @@ public:
 	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>* functor);
 	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>* functor);
 	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor);
+	void RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>* functor);
 	void RemoveAllEventSinksFor(void* owner);
 
 private:
@@ -153,10 +154,13 @@ private:
 	typedef std::map< wxEventType, DockEventSinksArray > DockEventSinksMap;
 	typedef std::vector< IEventFunctorBase<CodeBlocksLayoutEvent>* > LayoutEventSinksArray;
 	typedef std::map< wxEventType, LayoutEventSinksArray > LayoutEventSinksMap;
+	typedef std::vector< IEventFunctorBase<CodeBlocksLogEvent>* > LogEventSinksArray;
+	typedef std::map< wxEventType, LogEventSinksArray > LogEventSinksMap;
 
 	EventSinksMap m_EventSinks;
 	DockEventSinksMap m_DockEventSinks;
 	LayoutEventSinksMap m_LayoutEventSinks;
+	LogEventSinksMap m_LogEventSinks;
 };
 
 template <class MgrT> class Mgr

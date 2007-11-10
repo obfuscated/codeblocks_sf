@@ -1,59 +1,59 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxPanel" name="ScriptConsole">
-        <object class="wxBoxSizer" variable="BoxSizer1" member="yes">
-            <orient>wxVERTICAL</orient>
-            <object class="sizeritem">
-                <object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtConsole" member="yes">
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-                </object>
-                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                <option>1</option>
-            </object>
-            <object class="sizeritem">
-                <object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
-                    <bg>wxSYS_COLOUR_BTNFACE</bg>
-                    <object class="wxBoxSizer" variable="BoxSizer2" member="yes">
-                        <object class="sizeritem">
-                            <object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
-                                <label>Command:</label>
-                            </object>
-                            <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                            <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                            <object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="txtCommand" member="yes">
-                                <handler function="OnbtnExecuteClick" entry="EVT_TEXT_ENTER" />
-                            </object>
-                            <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                            <option>1</option>
-                        </object>
-                        <object class="sizeritem">
-                            <object class="wxButton" name="ID_BUTTON1" variable="btnExecute" member="yes">
-                                <label>Execute</label>
-                                <handler function="OnbtnExecuteClick" entry="EVT_BUTTON" />
-                            </object>
-                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        </object>
-                        <object class="sizeritem">
-                            <object class="wxButton" name="ID_BUTTON2" variable="btnLoad" member="yes">
-                                <label>Load from file</label>
-                                <handler function="OnbtnLoadClick" entry="EVT_BUTTON" />
-                            </object>
-                            <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                            <border>16</border>
-                        </object>
-                        <object class="sizeritem">
-                            <object class="wxButton" name="ID_BUTTON3" variable="btnClear" member="yes">
-                                <label>Clear</label>
-                                <handler function="OnbtnClearClick" entry="EVT_BUTTON" />
-                            </object>
-                            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                        </object>
-                    </object>
-                </object>
-                <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-            </object>
-        </object>
-    </object>
+	<object class="wxPanel" name="ScriptConsole">
+		<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtConsole" member="yes">
+					<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+					<bg>wxSYS_COLOUR_BTNFACE</bg>
+					<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+						<object class="sizeritem">
+							<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+								<label>Command:</label>
+							</object>
+							<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+							<border>4</border>
+						</object>
+						<object class="sizeritem">
+							<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="txtCommand" member="yes">
+								<handler function="OnbtnExecuteClick" entry="EVT_TEXT_ENTER" />
+							</object>
+							<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+							<option>1</option>
+						</object>
+						<object class="sizeritem">
+							<object class="wxButton" name="ID_BUTTON1" variable="btnExecute" member="yes">
+								<label>Execute</label>
+								<handler function="OnbtnExecuteClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						</object>
+						<object class="sizeritem">
+							<object class="wxButton" name="ID_BUTTON2" variable="btnLoad" member="yes">
+								<label>Load from file</label>
+								<handler function="OnbtnLoadClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+							<border>16</border>
+						</object>
+						<object class="sizeritem">
+							<object class="wxButton" name="ID_BUTTON3" variable="btnClear" member="yes">
+								<label>Clear</label>
+								<handler function="OnbtnClearClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+			</object>
+		</object>
+	</object>
 </wxsmith>

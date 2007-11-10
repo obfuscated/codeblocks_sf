@@ -163,7 +163,7 @@ int PipedProcess::Launch(const wxString& cmd, unsigned int pollingInterval)
 
 void PipedProcess::SendString(const wxString& text)
 {
-	//Manager::Get()->GetMessageManager()->Log(m_PageIndex, cmd);
+	//Manager::Get()->GetLogManager()->Log(m_PageIndex, cmd);
 	wxOutputStream* pOut = GetOutputStream();
 	if (pOut)
 	{

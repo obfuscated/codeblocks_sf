@@ -456,7 +456,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
                         // Add the file only if it does not exist
                         if (theproject->GetFileByFilename(files[i], true, true) == NULL)
                         {
-                            DBGLOG(_T("Generated file %s"), actual.c_str());
+                            Manager::Get()->GetLogManager()->DebugLog(_T("Generated file ") + actual);
                             // add it to the project
                             ProjectFile* pf = theproject->AddFile(0, actual);
                             // to all targets...
@@ -467,7 +467,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
                         }
                         else
                         {
-                            DBGLOG(_T("File %s exists"), actual.c_str());
+                            Manager::Get()->GetLogManager()->DebugLog(F(_T("File %s exists"), actual.c_str()));
                         }
                     }
                 }
@@ -663,7 +663,7 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
         case ftResourceBin:
         case ftObject:
 //        case ftOther:
-            DBGLOG(_T("Attempt to generate a file with forbidden extension!\nFile: %s"), fname.GetFullPath().c_str());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Attempt to generate a file with forbidden extension!\nFile: ") + fname.GetFullPath());
             return wxEmptyString;
         default: break;
     }
@@ -684,7 +684,7 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
                 // attempt to create file outside the project dir
                 // remove any path info from the filename
                 fname = fname.GetFullName();
-                DBGLOG(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.c_str(), fname.GetFullPath().c_str());
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Attempt to generate a file outside the project base dir:\nOriginal: %s\nConverted to:%s"), filename.c_str(), fname.GetFullPath().c_str()));
                 break;
             }
         }
@@ -1109,7 +1109,7 @@ void Wiz::AddWizard(TemplateOutputType otype,
         WizardInfo& info = m_Wizards[i];
         if (info.output_type == otype && info.title == title)
         {
-            DBGLOG(_T("Wizard already registered. Skipping... (%s)"), title.c_str());
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Wizard already registered. Skipping... (%s)"), title.c_str()));
             return;
         }
     }
@@ -1145,7 +1145,7 @@ void Wiz::AddWizard(TemplateOutputType otype,
         default: break;
     }
 
-    Manager::Get()->GetMessageManager()->DebugLog(typS + _T(" wizard added for '%s'"), title.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(typS + _T(" wizard added for '%s'"), title.c_str()));
 }
 
 wxString Wiz::GetProjectPath()

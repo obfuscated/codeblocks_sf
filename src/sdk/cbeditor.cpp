@@ -43,7 +43,7 @@
     #include "projectmanager.h"
     #include "pluginmanager.h"
     #include "editormanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "macrosmanager.h" // ReplaceMacros
     #include "cbplugin.h"
 #endif
@@ -537,7 +537,7 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 
         InitFilename(f);
     }
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
     // initialize left control (unsplit state)
     Freeze();
@@ -685,7 +685,7 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
     dbg << _T("[ed] Modified: ") << GetModified() << _T('\n');
     dbg << _T("[ed] Project: ") << ((m_pProjectFile && m_pProjectFile->project) ? m_pProjectFile->project->GetTitle() : _T("unknown")) << _T('\n');
     dbg << _T("[ed] Project file: ") << (m_pProjectFile ? m_pProjectFile->relativeFilename : _T("unknown")) << _T('\n');
-    Manager::Get()->GetMessageManager()->DebugLog(dbg);
+    Manager::Get()->GetLogManager()->DebugLog(dbg);
 #endif
     if(preserve_modified)
         SetModified(wasmodified);
@@ -1363,11 +1363,11 @@ bool cbEditor::SaveAs()
     if (dlg->ShowModal() != wxID_OK)
         return false;
     m_Filename = dlg->GetPath();
-    LOGSTREAM << m_Filename << _T('\n');
+    Manager::Get()->GetLogManager()->Log(m_Filename);
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
     SetEditorTitle(m_Shortname);
-    //Manager::Get()->GetMessageManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
+    //Manager::Get()->GetLogManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
     SetModified(true);
     SetLanguage( HL_AUTO );
@@ -1465,14 +1465,14 @@ bool cbEditor::FixFoldState()
 
 void cbEditor::AutoComplete()
 {
-    MessageManager* msgMan = Manager::Get()->GetMessageManager();
+    LogManager* msgMan = Manager::Get()->GetLogManager();
     AutoCompleteMap& map = Manager::Get()->GetEditorManager()->GetAutoCompleteMap();
     cbStyledTextCtrl* control = GetControl();
     int curPos = control->GetCurrentPos();
     int wordStartPos = control->WordStartPosition(curPos, true);
     wxString keyword = control->GetTextRange(wordStartPos, curPos);
     wxString lineIndent = GetLineIndentString(control->GetCurrentLine());
-    msgMan->DebugLog(_T("Auto-complete keyword: %s"), keyword.c_str());
+    msgMan->DebugLog(_T("Auto-complete keyword: ") + keyword);
 
     AutoCompleteMap::iterator it;
     for (it = map.begin(); it != map.end(); ++it)
@@ -1500,7 +1500,7 @@ void cbEditor::AutoComplete()
                     break; // no ending parenthesis
 
                 wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
-                msgMan->DebugLog(_T("Found macro: %s"), macroName.c_str());
+                msgMan->DebugLog(_T("Found macro: ") + macroName);
                 wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
                 code.Replace(_T("$(") + macroName + _T(")"), macro);
                 macroPos = code.Find(_T("$("));
@@ -2359,7 +2359,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         RemoveBreakpoint(m_pData->m_LastMarginMenuLine);
     else
         event.Skip();
-    //Manager::Get()->GetMessageManager()->DebugLog(_T("Leaving OnContextMenuEntry"));
+    //Manager::Get()->GetLogManager()->DebugLog(_T("Leaving OnContextMenuEntry"));
 }
 
 void cbEditor::OnMarginClick(wxScintillaEvent& event)
@@ -2405,7 +2405,7 @@ void cbEditor::OnEditorChange(wxScintillaEvent& event)
 void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
 {
     // if message manager is auto-hiding, this will close it if not needed open
-    Manager::Get()->GetMessageManager()->Close();
+//    Manager::Get()->GetLogManager()->Close();
 
     cbStyledTextCtrl* control = GetControl();
     int pos = control->GetCurrentPos();
@@ -2527,7 +2527,7 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
 //        << wxString::Format(_T("%d"), event.GetLine())
 //        << _T(", linesAdded=")
 //        << wxString::Format(_T("%d"), event.GetLinesAdded());
-//    Manager::Get()->GetMessageManager()->DebugLog(txt);
+//    Manager::Get()->GetLogManager()->DebugLog(txt);
 
     // whenever event.GetLinesAdded() != 0, we must re-set breakpoints for lines greater
     // than LineFromPosition(event.GetPosition())

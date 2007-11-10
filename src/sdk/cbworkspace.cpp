@@ -31,7 +31,7 @@
     #include "globals.h"
     #include "manager.h"
     #include "configmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "workspaceloader.h"
 
     #include <wx/intl.h>
@@ -73,11 +73,11 @@ void cbWorkspace::Load()
     wxString fname = m_Filename.GetFullPath();
     if (fname.IsEmpty())
         return;
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Loading workspace \"%s\""), fname.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Loading workspace \"%s\""), fname.c_str()));
 
     if (!m_Filename.FileExists())
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("File does not exist."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("File does not exist."));
         if (!m_IsDefault)
         {
             wxString msg;
@@ -115,7 +115,7 @@ bool cbWorkspace::Save(bool force)
     if (!force && !m_Modified)
         return true;
 
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Saving workspace \"%s\""), m_Filename.GetFullPath().c_str());
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving workspace \"%s\""), m_Filename.GetFullPath().c_str()));
     WorkspaceLoader wsp;
     bool ret = wsp.Save(m_Title, m_Filename.GetFullPath());
     SetModified(!ret);

@@ -6,6 +6,38 @@
 
 #include "sdk_precomp.h"
 #include "logmanager.h"
+#include "loggers.h"
+
+LogSlot::LogSlot()
+	: log(0)
+{
+}
+
+LogSlot::~LogSlot()
+{
+	if(log != &g_null_log)
+		delete log;
+}
+
+size_t LogSlot::Index() const
+{
+	return index;
+}
+
+void LogSlot::SetLogger(Logger* in)
+{
+	if(log != &g_null_log)
+		delete log;
+	log = in;
+}
+
+Logger* LogSlot::GetLogger() const
+{
+	return log;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
 
 
 LogManager::LogManager()
@@ -33,7 +65,7 @@ size_t LogManager::SetLog(Logger* l, int i)
     {
         for(index = debug_log + 1; index < max_logs; ++index)
         {
-            if(slot[index].GetLogger() != &g_null_log)
+            if(slot[index].GetLogger() == &g_null_log)
             {
                 slot[index].SetLogger(l);
                 return index;
@@ -57,5 +89,22 @@ void LogManager::NotifyUpdate()
 
 }
 
+void LogManager::DeleteLog(int i)
+{
+	SetLog(&g_null_log, i);
+}
 
+LogSlot& LogManager::Slot(int i)
+{
+	return slot[i];
+}
 
+size_t LogManager::FindIndex(Logger* l)
+{
+	for(unsigned int i = invalid_log; i < max_logs; ++i)
+	{
+		if(slot[i].log == l)
+			return i;
+	}
+	return invalid_log;
+}

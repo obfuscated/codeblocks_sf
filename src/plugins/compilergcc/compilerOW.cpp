@@ -9,7 +9,7 @@
 #include <wx/utils.h>
 #include <wx/msw/registry.h>
 
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <manager.h>
 #include "compilerOWgenerator.h"
 

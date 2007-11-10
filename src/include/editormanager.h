@@ -31,7 +31,7 @@ class cbProject;
 class ProjectFile;
 class cbEditor;
 class cbStyledTextCtrl;
-class SimpleListLog;
+class ListCtrlLogger;
 class LoaderBase;
 struct EditorManagerInternalData;
 
@@ -197,7 +197,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         wxTreeCtrl* m_pTree;
         wxString m_LastActiveFile;
         bool m_LastModifiedflag;
-        SimpleListLog* m_pSearchLog;
+        ListCtrlLogger* m_pSearchLog;
         int m_SearchLogIndex;
         int m_SashPosition;
         int m_zoom;

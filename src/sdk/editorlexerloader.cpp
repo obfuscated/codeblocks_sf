@@ -15,7 +15,7 @@
 #ifndef CB_PRECOMP
     #include "globals.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include <wx/dynarray.h>
     #include <wx/wxscintilla.h>
 #endif
@@ -37,15 +37,15 @@ EditorLexerLoader::~EditorLexerLoader()
 
 void EditorLexerLoader::Load(LoaderBase* loader)
 {
-    DBGLOG(wxString(_("Loading ")) << wxFileName(loader->FileName()).GetName());
+    Manager::Get()->GetLogManager()->Log(_("Loading ") + wxFileName(loader->FileName()).GetName());
 
     TiXmlDocument doc;
     doc.Parse(loader->GetData());
 
     if (doc.Error())
     {
-        LOGSTREAM << _("--> failed.\n\n");
-        LOGSTREAM << _("TinyXML error: ") << cbC2U(doc.ErrorDesc()) << _T("\n\n");
+        Manager::Get()->GetLogManager()->Log(_("Failed."));
+        Manager::Get()->GetLogManager()->Log(_("TinyXML error: ") + cbC2U(doc.ErrorDesc()));
         return;
     }
 
@@ -59,14 +59,14 @@ void EditorLexerLoader::Load(LoaderBase* loader)
         root = doc.FirstChildElement("Code::Blocks_lexer_properties");
         if (!root)
         {
-            LOGSTREAM << _("Not a valid Code::Blocks lexer file...\n");
+            Manager::Get()->GetLogManager()->Log(_("Not a valid Code::Blocks lexer file..."));
             return;
         }
     }
     lexer = root->FirstChildElement("Lexer");
     if (!lexer)
     {
-        LOGSTREAM << _("No 'Lexer' element in file...\n");
+        Manager::Get()->GetLogManager()->Log(_("No 'Lexer' element in file..."));
         return;
     }
 
@@ -77,7 +77,7 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
 {
     if (!node->Attribute("name") || !node->Attribute("index"))
     {
-    	LOGSTREAM << _("No name or index...\n");
+    	Manager::Get()->GetLogManager()->Log(_("No name or index..."));
         return;
     }
 

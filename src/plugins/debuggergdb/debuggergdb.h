@@ -6,7 +6,7 @@
 #include <settings.h> // much of the SDK is here
 #include <sdk_events.h>
 #include <cbplugin.h>
-#include <simpletextlog.h>
+#include <loggers.h>
 #include <pipedprocess.h>
 #include <wx/regex.h>
 
@@ -171,8 +171,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnInfoSignals(wxCommandEvent& event);
 
         wxMenu* m_pMenu;
-        SimpleTextLog* m_pLog;
-        SimpleTextLog* m_pDbgLog;
+        TextCtrlLogger* m_pLog;
+        TextCtrlLogger* m_pDbgLog;
         PipedProcess* m_pProcess;
         wxToolBar* m_pTbar;
         int m_PageIndex;

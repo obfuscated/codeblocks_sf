@@ -31,6 +31,7 @@
 #include "wxstool.h"
 #include "wxsparent.h"
 #include "../wxsproject.h"
+#include <logmanager.h>
 
 namespace
 {
@@ -203,7 +204,7 @@ void wxsItemEditor::RebuildPreview()
     m_TopPreview = wxDynamicCast(TopPreviewObject,wxWindow);
     if ( !m_TopPreview )
     {
-        DBGLOG(_T("One of root items returned class not derived from wxWindow"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("One of root items returned class not derived from wxWindow"));
         delete TopPreviewObject;
         delete m_PreviewBackground;
     }
@@ -396,14 +397,14 @@ void wxsItemEditor::InsertRequest(const wxString& Name)
     wxsItem* Reference = GetReferenceItem(m_InsType);
     if ( !Reference )
     {
-        DBGLOG(_T("wxSmith: No item selected - couldn't create new item"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: No item selected - couldn't create new item"));
         return;
     }
 
     wxsItem* New = wxsItemFactory::Build(Name,m_Data);
     if ( !New )
     {
-        DBGLOG(_T("wxSmith: Culdn't generate item inside factory"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Couldn't generate item inside factory"));
         return;
     }
 

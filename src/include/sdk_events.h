@@ -8,6 +8,7 @@
 class cbProject;
 class EditorBase;
 class cbPlugin;
+class Logger;
 
 /** A generic Code::Blocks event. */
 class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<CodeBlocksEvent, 75>
@@ -133,7 +134,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
 
         char unused[64];    ///< Unused space in this class for later enhancements.
 	private:
-		DECLARE_DYNAMIC_CLASS(cbAddDockWindowEvent)
+		DECLARE_DYNAMIC_CLASS(CodeBlocksDockEvent)
 };
 typedef void (wxEvtHandler::*CodeBlocksDockEventFunction)(CodeBlocksDockEvent&);
 
@@ -151,8 +152,35 @@ class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<Co
 		virtual wxEvent *Clone() const { return new CodeBlocksLayoutEvent(*this); }
 
         wxString layout;      ///< Layout's name.
+	private:
+		DECLARE_DYNAMIC_CLASS(CodeBlocksLayoutEvent)
 };
 typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEvent&);
+
+/** Event used to request from the main app to add a log. */
+class EVTIMPORT CodeBlocksLogEvent : public wxEvent, public BlockAllocated<CodeBlocksEvent, 75>
+{
+    public:
+        CodeBlocksLogEvent(wxEventType commandType = wxEVT_NULL, Logger* logger = 0, const wxString& title = wxEmptyString, wxBitmap *icon = 0);
+        CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title = wxEmptyString, wxBitmap *icon = 0);
+        CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title = wxEmptyString, wxBitmap *icon = 0);
+        CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs);
+
+		virtual wxEvent *Clone() const { return new CodeBlocksLogEvent(*this); }
+
+        Logger* logger; ///< The logger.
+        int logIndex; ///< The logger's index.
+		wxBitmap *icon; ///< The logger's icon. Valid only for cbEVT_ADD_LOG_WINDOW.
+		wxString title; ///< The logger's title. Valid only for cbEVT_ADD_LOG_WINDOW.
+		wxWindow* window; ///< A non-logger window. Needed at least by cbEVT_REMOVE_LOG_WINDOW.
+	private:
+		DECLARE_DYNAMIC_CLASS(CodeBlocksLogEvent)
+};
+typedef void (wxEvtHandler::*CodeBlocksLogEventFunction)(CodeBlocksLogEvent&);
+
+//
+// if you add more event types, remember to add event sinks in Manager...
+//
 
 // app events
 extern EVTIMPORT const wxEventType cbEVT_APP_STARTUP_DONE;
@@ -295,5 +323,29 @@ extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_PAUSED;
 #define EVT_DEBUGGER_PAUSED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_PAUSED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_FINISHED;
 #define EVT_DEBUGGER_FINISHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+
+// logger-related events
+
+// add a log window
+extern EVTIMPORT const wxEventType cbEVT_ADD_LOG_WINDOW;
+#define EVT_ADD_LOG_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_ADD_LOG_WINDOW, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+// remove a log window
+extern EVTIMPORT const wxEventType cbEVT_REMOVE_LOG_WINDOW;
+#define EVT_REMOVE_LOG_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_REMOVE_LOG_WINDOW, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+// switch to a log window (make it visible)
+extern EVTIMPORT const wxEventType cbEVT_SWITCH_TO_LOG_WINDOW;
+#define EVT_SWITCH_TO_LOG_WINDOW(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SWITCH_TO_LOG_WINDOW, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+// show log manager
+extern EVTIMPORT const wxEventType cbEVT_SHOW_LOG_MANAGER;
+#define EVT_SHOW_LOG_MANAGER(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_SHOW_LOG_MANAGER, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+// hide log manager
+extern EVTIMPORT const wxEventType cbEVT_HIDE_LOG_MANAGER;
+#define EVT_HIDE_LOG_MANAGER(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_HIDE_LOG_MANAGER, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+// "lock" it (used with auto-hiding functionality)
+extern EVTIMPORT const wxEventType cbEVT_LOCK_LOG_MANAGER;
+#define EVT_LOCK_LOG_MANAGER(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_LOCK_LOG_MANAGER, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
+// "unlock" it (used with auto-hiding functionality)
+extern EVTIMPORT const wxEventType cbEVT_UNLOCK_LOG_MANAGER;
+#define EVT_UNLOCK_LOG_MANAGER(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_UNLOCK_LOG_MANAGER, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksLogEventFunction)&fn, (wxObject *) NULL ),
 
 #endif // SDK_EVENTS_H

@@ -35,7 +35,7 @@
 #include "../classbrowserbuilderthread.h"
 #ifndef STANDALONE
     #include <configmanager.h>
-    #include <messagemanager.h>
+    #include <logmanager.h>
     #include <editormanager.h>
     #include <manager.h>
     #include <globals.h>
@@ -474,14 +474,14 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             if (!canparse)
             {
                if(opts.loader) // if a loader is already open at this point, the caller must clean it up
-                   Manager::Get()->GetMessageManager()->DebugLog(_T("CodeCompletion Plugin: FileLoader memory leak likely loading file ")+bufferOrFilename);
+                   Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion Plugin: FileLoader memory leak likely loading file ")+bufferOrFilename);
                break;
             }
             if(!opts.loader) //this should always be true (memory will leak if a loader has already been initialized before this point)
                 opts.loader=Manager::Get()->GetFileManager()->Load(bufferOrFilename, false);
         }
 
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Creating task for: %s"), buffOrFile.c_str());
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Creating task for: %s"), buffOrFile.c_str());
         ParserThread* thread = new ParserThread(this,
                                                 buffOrFile,
                                                 isLocal,
@@ -502,7 +502,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             m_IsBatch = true;
             m_Pool.BatchBegin();
         }
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("parsing %s"),buffOrFile.c_str());
+//        Manager::Get()->GetLogManager()->DebugLog(_T("parsing %s"),buffOrFile.c_str());
         if(m_IgnoreThreadEvents)
             m_IgnoreThreadEvents = false;
         #ifdef CODECOMPLETION_PROFILING
@@ -598,12 +598,12 @@ void Parser::Clear()
     DisconnectEvents();
 //    if(m_ShuttingDown)
 //    {
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Terminating threads..."));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Terminating threads..."));
 //    }
     TerminateAllThreads(); //
 //    if(m_ShuttingDown)
 //    {
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Done."));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Done."));
 //    }
 
     Manager::ProcessPendingEvents();
@@ -753,7 +753,7 @@ bool Parser::WriteToCache(wxOutputStream* f)
 
     for (i = 0; i < tcount; ++i)
     {
-        // Manager::Get()->GetMessageManager()->DebugLog(_T("Token #%d, offset %d"),i,f->TellO());
+        // Manager::Get()->GetLogManager()->DebugLog(_T("Token #%d, offset %d"),i,f->TellO());
         Token* token = m_pTokens->at(i);
         SaveIntToFile(f,(token!=0) ? 1 : 0);
         if(token)
@@ -783,7 +783,7 @@ void Parser::AddIncludeDir(const wxString& file)
 
     if(m_IncludeDirs.Index(base) == wxNOT_FOUND)
     {
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("Adding %s"), base.c_str());
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Adding %s"), base.c_str());
         m_IncludeDirs.Add(base);
     }
 } // end of AddIncludeDir
@@ -819,8 +819,8 @@ wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
                 break;
         }
     } // end for : idx : idxSearch
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Searching %s"), file.c_str());
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Found %d"), FoundSet.GetCount());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Searching %s"), file.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Found %d"), FoundSet.GetCount());
     return FoundSet;
 } // end of FindFileInIncludeDirs
 
@@ -925,7 +925,7 @@ void Parser::OnTimer(wxTimerEvent& event)
 void Parser::OnBatchTimer(wxTimerEvent& event)
 {
 #ifndef CODECOMPLETION_PROFILING
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Starting batch parsing"));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Starting batch parsing"));
     if(m_IsBatch)
     {
         m_IsBatch = false;
@@ -947,7 +947,7 @@ bool Parser::ReparseModifiedFiles()
 {
     if(!m_NeedsReparse || !m_Pool.Done())
         return false;
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Reparsing saved files..."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing saved files..."));
     m_NeedsReparse = false;
     std::queue<wxString> files_list;
     {

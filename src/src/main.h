@@ -25,6 +25,7 @@ extern int idStartHerePageLink;
 extern int idStartHerePageVarSubst;
 
 class wxFlatNotebook;
+class InfoPane;
 
 class MainFrame : public wxFrame
 {
@@ -43,6 +44,8 @@ class MainFrame : public wxFrame
         bool Open(const wxString& filename, bool addToHistory = true);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
         void ShowTips(bool forceShow = false);
+
+        wxDialog* GetBatchBuildDialog(){ return m_pBatchBuildDialog; }
 
         // show a file-open dialog and return the selection
         wxString ShowOpenFileDialog(const wxString& caption, const wxString& filter);
@@ -200,6 +203,15 @@ class MainFrame : public wxFrame
         void OnLayoutQuery(CodeBlocksLayoutEvent& event);
         void OnLayoutSwitch(CodeBlocksLayoutEvent& event);
 
+		// log requests
+		void OnAddLogWindow(CodeBlocksLogEvent& event);
+		void OnRemoveLogWindow(CodeBlocksLogEvent& event);
+		void OnSwitchToLogWindow(CodeBlocksLogEvent& event);
+		void OnShowLogManager(CodeBlocksLogEvent& event);
+		void OnHideLogManager(CodeBlocksLogEvent& event);
+		void OnLockLogManager(CodeBlocksLogEvent& event);
+		void OnUnlockLogManager(CodeBlocksLogEvent& event);
+
 		// editor changed events
 		void OnEditorOpened(CodeBlocksEvent& event);
 		void OnEditorActivated(CodeBlocksEvent& event);
@@ -276,7 +288,8 @@ class MainFrame : public wxFrame
 
 		EditorManager* m_pEdMan;
 		ProjectManager* m_pPrjMan;
-		MessageManager* m_pMsgMan;
+		LogManager* m_pMsgMan;
+		InfoPane *infoPane;
 
         wxToolBar* m_pToolbar;
         PluginToolbarsMap m_PluginsTools;
@@ -289,15 +302,22 @@ class MainFrame : public wxFrame
         bool m_SmallToolBar;
         bool m_StartupDone;
         bool m_InitiatedShutdown;
+        
+        bool m_AutoHideLogs;
+        int m_AutoHideLockCounter;
 
         wxString m_LastLayoutName;
         wxString m_LastLayoutData;
 
-        int m_ScriptConsoleID;
-        bool m_ScriptConsoleVisible;
+        wxWindow* m_pScriptConsole;
 
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
 		MenuIDToScript m_MenuIDToScript;
+		
+		typedef std::map<Logger*, size_t> LoggerToInfoPaneIndex; // logger to infpane page index
+		LoggerToInfoPaneIndex m_LoggerToInfoPaneIndex;
+
+        wxDialog* m_pBatchBuildDialog;
 
         DECLARE_EVENT_TABLE()
 };

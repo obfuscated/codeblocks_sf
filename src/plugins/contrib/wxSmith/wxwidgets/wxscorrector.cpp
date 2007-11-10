@@ -26,6 +26,7 @@
 #include "wxstool.h"
 #include "wxsparent.h"
 #include "wxsitemresdata.h"
+#include <logmanager.h>
 
 wxsCorrector::wxsCorrector(wxsItemResData* Data):
     m_Data(Data),
@@ -333,7 +334,7 @@ bool wxsCorrector::FixVarName(wxString& Name)
 
         if ( FirstChar.Find(Name.GetChar(0)) == -1 )
         {
-            DBGLOG(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),Name.c_str(),Name.GetChar(0),0);
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),Name.c_str(),Name.GetChar(0),0));
         }
         else
         {
@@ -350,7 +351,7 @@ bool wxsCorrector::FixVarName(wxString& Name)
         {
             if ( NextChars.Find(Name.GetChar(i)) == -1 )
             {
-                DBGLOG(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),Name.c_str(),Name.GetChar(i),i);
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Variable name : \"%s\" is not a valid c++ identifier (invalid character \"%c\" at position %d)"),Name.c_str(),Name.GetChar(i),i));
             }
             else
             {

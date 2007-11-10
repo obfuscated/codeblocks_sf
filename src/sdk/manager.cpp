@@ -36,7 +36,7 @@
     #include "cbexception.h"
     #include "projectmanager.h"
     #include "editormanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "pluginmanager.h"
     #include "toolsmanager.h"
     #include "macrosmanager.h"
@@ -116,7 +116,7 @@ Manager* Manager::Get(wxFrame *appWindow)
         {
             Get()->m_pAppWindow = appWindow;
             LoadResource(_T("manager_resources.zip"));
-            Get()->GetMessageManager()->Log(_("Manager initialized"));
+            Get()->GetLogManager()->Log(_("Manager initialized"));
         }
     }
     return Get();
@@ -170,7 +170,7 @@ void Manager::Shutdown()
 	PersonalityManager::Free();
 	MacrosManager::Free();
 	UserVariableManager::Free();
-	MessageManager::Free();
+	LogManager::Free();
 }
 
 bool Manager::ProcessEvent(CodeBlocksEvent& event)
@@ -317,9 +317,9 @@ EditorManager* Manager::GetEditorManager() const
     return EditorManager::Get();
 }
 
-MessageManager* Manager::GetMessageManager() const
+LogManager* Manager::GetLogManager() const
 {
-    return MessageManager::Get();
+    return LogManager::Get();
 }
 
 PluginManager* Manager::GetPluginManager() const
@@ -423,6 +423,11 @@ void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlo
 	m_LayoutEventSinks[eventType].push_back(functor);
 }
 
+void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>* functor)
+{
+	m_LogEventSinks[eventType].push_back(functor);
+}
+
 void Manager::RemoveAllEventSinksFor(void* owner)
 {
 	for (EventSinksMap::iterator mit = m_EventSinks.begin(); mit != m_EventSinks.end(); ++mit)
@@ -470,6 +475,24 @@ void Manager::RemoveAllEventSinksFor(void* owner)
 			if ((*it) && (*it)->GetThis() == owner)
 			{
 				LayoutEventSinksArray::iterator it2 = it++;
+				endIsInvalid = it == mit->second.end();
+				delete (*it2);
+				mit->second.erase(it2);
+			}
+			else
+				++it;
+		}
+	}
+
+	for (LogEventSinksMap::iterator mit = m_LogEventSinks.begin(); mit != m_LogEventSinks.end(); ++mit)
+	{
+		LogEventSinksArray::iterator it = mit->second.begin();
+		bool endIsInvalid = false;
+		while (!endIsInvalid && it != mit->second.end())
+		{
+			if ((*it) && (*it)->GetThis() == owner)
+			{
+				LogEventSinksArray::iterator it2 = it++;
 				endIsInvalid = it == mit->second.end();
 				delete (*it2);
 				mit->second.erase(it2);

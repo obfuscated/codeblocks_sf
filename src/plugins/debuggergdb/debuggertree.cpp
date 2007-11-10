@@ -14,7 +14,7 @@
 #include "debuggerdriver.h"
 #include "debuggertree.h"
 #include <manager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <cbexception.h>
 
 #include "editwatchdlg.h"
@@ -52,7 +52,7 @@ class WatchTree : public wxTreeCtrl
     protected:
         void OnRightClick(wxMouseEvent& event)
         {
-            //Manager::Get()->GetMessageManager()->DebugLog("OnRightClick");
+            //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
             int flags;
             HitTest(wxPoint(event.GetX(), event.GetY()), flags);
             if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
@@ -111,7 +111,7 @@ void DebuggerTree::BeginUpdateTree()
 {
     if (m_InUpdateBlock)
     {
-//        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BeginUpdateTree() while already in update block"));
+//        Manager::Get()->GetLogManager()->DebugLogWarning(_T("DebuggerTree::BeginUpdateTree() while already in update block"));
         return;
     }
 
@@ -125,7 +125,7 @@ void DebuggerTree::BuildTree(Watch* watch, const wxString& infoText, WatchString
 {
     if (!m_InUpdateBlock)
     {
-//        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::BuildTree() while not in update block"));
+//        Manager::Get()->GetLogManager()->DebugLogWarning(_T("DebuggerTree::BuildTree() while not in update block"));
         return;
     }
 
@@ -139,7 +139,7 @@ void DebuggerTree::EndUpdateTree()
 {
     if (!m_InUpdateBlock)
     {
-//        Manager::Get()->GetMessageManager()->DebugLogWarning(_T("DebuggerTree::EndUpdateTree() while not in update block"));
+//        Manager::Get()->GetLogManager()->DebugLogWarning(_T("DebuggerTree::EndUpdateTree() while not in update block"));
         return;
     }
 
@@ -413,7 +413,7 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
 
 void DebuggerTree::BuildTreeGDB(Watch* watch, const wxString& infoText)
 {
-//    Manager::Get()->GetMessageManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog("DebuggerTree::BuildTree(): Parsing '%s'", infoText.c_str());
     wxString buffer = infoText;
     // remove CRLFs (except if inside quotes)
     int len = buffer.Length();
@@ -645,7 +645,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
         {
             if (!cmd.IsEmpty()) // Skip empty lines
             {
-//                Manager::Get()->GetMessageManager()->DebugLog(_T("Adding watch \"%s\" to debugger:"), keyword);
+//                Manager::Get()->GetLogManager()->DebugLog(_T("Adding watch \"%s\" to debugger:"), keyword);
                 AddWatch(cmd, Undefined, false); // do not notify about new watch (we 'll do it when done)
             }
             if (tf.Eof()) break;
@@ -657,7 +657,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
         NotifyForChangedWatches();
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(_T("Error opening debugger watch file: ") + fname);
 }
 
 void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
@@ -708,7 +708,7 @@ void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
         tf.Close(); // release file handle
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Error opening debugger watch file: %s"), fname.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(_T("Error opening debugger watch file: ") + fname);
 }
 
 void DebuggerTree::OnEditWatch(wxCommandEvent& event)

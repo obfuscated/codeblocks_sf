@@ -31,7 +31,7 @@
 #include "../wxsmith.h"
 #include "../wxsproject.h"
 
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <projectmanager.h>
 #include <cbproject.h>
 #include <projectfile.h>
@@ -481,7 +481,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     }
     else
     {
-        DBGLOG(_T("wxSmith: Internal error: unknown type when creating resource"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Internal error: unknown type when creating resource"));
         EndModal(wxID_CANCEL);
         return;
     }
@@ -490,7 +490,7 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     if ( !NewResource->CreateNewResource(Params) )
     {
         delete NewResource;
-        DBGLOG(_T("wxSmith: Couldn't generate new resource"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("wxSmith: Couldn't generate new resource"));
         EndModal(wxID_CANCEL);
         return;
     }

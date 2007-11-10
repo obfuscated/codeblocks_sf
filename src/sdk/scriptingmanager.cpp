@@ -5,7 +5,7 @@
     #include "cbexception.h"
     #include "manager.h"
     #include "editormanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "configmanager.h"
     #include "cbeditor.h"
     #include <settings.h>
@@ -33,7 +33,7 @@ static void ScriptsPrintFunc(HSQUIRRELVM v, const SQChar * s, ...)
     va_start(vl,s);
     scvsprintf( temp,s,vl);
     wxString msg = cbC2U(temp);
-    Manager::Get()->GetMessageManager()->DebugLog(msg);
+    Manager::Get()->GetLogManager()->DebugLog(msg);
     va_end(vl);
 
     s_ScriptErrors << msg;
@@ -125,7 +125,7 @@ bool ScriptingManager::LoadScript(const wxString& filename)
 			f.Open(fname);
 			if (!f.IsOpened())
 			{
-				Manager::Get()->GetMessageManager()->DebugLog(_T("Can't open script %s"), filename.c_str());
+				Manager::Get()->GetLogManager()->DebugLog(_T("Can't open script ") + filename);
 				return false;
 			}
 		}
@@ -144,7 +144,7 @@ bool ScriptingManager::LoadBuffer(const wxString& buffer, const wxString& debugN
     wxString incName = UnixFilename(debugName);
     if (m_IncludeSet.find(incName) != m_IncludeSet.end())
     {
-        LOG_WARN(_T("Ignoring Include(\"%s\") because it would cause recursion..."), incName.c_str());
+        Manager::Get()->GetLogManager()->LogWarning(F(_T("Ignoring Include(\"%s\") because it would cause recursion..."), incName.c_str()));
         return true;
     }
     m_IncludeSet.insert(incName);
@@ -268,19 +268,19 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxStri
         mbs.scriptOrFunc = scriptOrFunc;
         mbs.isFunc = isFunction;
         m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, mbs));
-        LOG(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.c_str(), menuPath.c_str());
+        Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.c_str(), menuPath.c_str()));
 
         return true;
     }
 
-    LOG(_("Error registering script menu: %s"), menuPath.c_str());
+    Manager::Get()->GetLogManager()->Log(_("Error registering script menu: ") + menuPath);
     return false;
 }
 
 bool ScriptingManager::UnRegisterScriptMenu(const wxString& menuPath)
 {
     // TODO: not implemented
-    DBGLOG(_T("ScriptingManager::UnRegisterScriptMenu() not implemented"));
+    Manager::Get()->GetLogManager()->DebugLog(_T("ScriptingManager::UnRegisterScriptMenu() not implemented"));
     return false;
 }
 

@@ -97,6 +97,7 @@
     #include "cbexception.h"
 
     // absolute base classes
+    #include "logger.h"
     #include "editorbase.h"
     #include "cbeditor.h"
     #include "compileoptionsbase.h"
@@ -107,9 +108,6 @@
     #include "cbproject.h"
     #include "cbtool.h"
     #include "cbworkspace.h"
-    #include "messagelog.h"
-    #include "simpletextlog.h"
-    #include "simplelistlog.h"
     #include "compilerfactory.h"
     #include "compiler.h"
     #include "workspaceloader.h"
@@ -120,7 +118,7 @@
     #include "manager.h"
     #include "configmanager.h"
     #include "editormanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
     #include "menuitemsmanager.h"
     #include "scriptingmanager.h"

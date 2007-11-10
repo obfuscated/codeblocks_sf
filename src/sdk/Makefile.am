@@ -68,13 +68,12 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						importers_globals.cpp \
 						incrementalselectlistdlg.cpp \
 						infowindow.cpp \
+						loggers.cpp \
 						logmanager.cpp \
 						macrosmanager.cpp \
 						managedthread.cpp \
 						manager.cpp \
 						menuitemsmanager.cpp \
-						messagelog.cpp \
-						messagemanager.cpp \
 						multiselectdlg.cpp \
 						newfromtemplatedlg.cpp \
 						personalitymanager.cpp \
@@ -99,8 +98,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						sdk_events.cpp \
 						searchresultslog.cpp \
 						selecttargetdlg.cpp \
-						simplelistlog.cpp \
-						simpletextlog.cpp \
 						templatemanager.cpp \
 						toolsmanager.cpp \
 						uservarmanager.cpp \

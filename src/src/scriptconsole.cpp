@@ -13,23 +13,19 @@
 #include <wx/filedlg.h>
 
 //(*InternalHeaders(ScriptConsole)
-#include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
-#include <wx/intl.h>
 #include <wx/settings.h>
+#include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(ScriptConsole)
 const long ScriptConsole::ID_TEXTCTRL1 = wxNewId();
-const long ScriptConsole::ID_PANEL1 = wxNewId();
 const long ScriptConsole::ID_STATICTEXT1 = wxNewId();
 const long ScriptConsole::ID_TEXTCTRL2 = wxNewId();
 const long ScriptConsole::ID_BUTTON1 = wxNewId();
 const long ScriptConsole::ID_BUTTON2 = wxNewId();
 const long ScriptConsole::ID_BUTTON3 = wxNewId();
+const long ScriptConsole::ID_PANEL1 = wxNewId();
 //*)
 
 static ScriptConsole* s_Console = 0;
@@ -57,30 +53,31 @@ END_EVENT_TABLE()
 ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(ScriptConsole)
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
+	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-	txtConsole = new wxTextCtrl(this,ID_TEXTCTRL1,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL,wxDefaultValidator,_T("ID_TEXTCTRL1"));
-	BoxSizer1->Add(txtConsole,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
-	Panel1 = new wxPanel(this,ID_PANEL1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("ID_PANEL1"));
+	txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+	BoxSizer1->Add(txtConsole, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
 	Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	StaticText1 = new wxStaticText(Panel1,ID_STATICTEXT1,_("Command:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
-	BoxSizer2->Add(StaticText1,0,wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	txtCommand = new wxTextCtrl(Panel1,ID_TEXTCTRL2,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TEXTCTRL2"));
-	BoxSizer2->Add(txtCommand,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
-	btnExecute = new wxButton(Panel1,ID_BUTTON1,_("Execute"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON1"));
-	BoxSizer2->Add(btnExecute,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
-	btnLoad = new wxButton(Panel1,ID_BUTTON2,_("Load from file"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON2"));
-	BoxSizer2->Add(btnLoad,0,wxLEFT|wxALIGN_LEFT|wxALIGN_TOP,16);
-	btnClear = new wxButton(Panel1,ID_BUTTON3,_("Clear"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BUTTON3"));
-	BoxSizer2->Add(btnClear,0,wxALL|wxALIGN_LEFT|wxALIGN_TOP,0);
+	StaticText1 = new wxStaticText(Panel1, ID_STATICTEXT1, _("Command:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+	BoxSizer2->Add(StaticText1, 0, wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 4);
+	txtCommand = new wxTextCtrl(Panel1, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
+	BoxSizer2->Add(txtCommand, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+	btnExecute = new wxButton(Panel1, ID_BUTTON1, _("Execute"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
+	BoxSizer2->Add(btnExecute, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+	btnLoad = new wxButton(Panel1, ID_BUTTON2, _("Load from file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
+	BoxSizer2->Add(btnLoad, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 16);
+	btnClear = new wxButton(Panel1, ID_BUTTON3, _("Clear"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
+	BoxSizer2->Add(btnClear, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
 	Panel1->SetSizer(BoxSizer2);
 	BoxSizer2->Fit(Panel1);
 	BoxSizer2->SetSizeHints(Panel1);
-	BoxSizer1->Add(Panel1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	BoxSizer1->Add(Panel1, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
+	
 	Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnLoadClick);

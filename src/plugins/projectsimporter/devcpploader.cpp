@@ -20,7 +20,7 @@
 
     #include "manager.h"
     #include "projectmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "cbproject.h"
     #include "globals.h"
 #endif

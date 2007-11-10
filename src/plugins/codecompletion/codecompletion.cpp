@@ -37,7 +37,7 @@
 #include <wx/choicdlg.h>
 #include <manager.h>
 #include <configmanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <projectmanager.h>
 #include <editormanager.h>
 #include <editorcolourset.h>
@@ -270,7 +270,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_EditMenu->Append(idMenuShowCallTip, _("Show call tip\tCtrl-Shift-Space"));
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Edit menu!"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Edit menu!"));
     pos = menuBar->FindMenu(_("Sea&rch"));
     if (pos != wxNOT_FOUND)
     {
@@ -280,7 +280,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_SearchMenu->Append(idMenuGotoNextFunction, _("Goto next function\tCtrl-PgDn"));
     }
     else
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Search menu!"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Search menu!"));
 
     // add the classbrowser window in the "View" menu
     int idx = menuBar->FindMenu(_("View"));
@@ -363,13 +363,13 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                         subMenu->Append(idUnimplementedClassMethods, _("All class methods without implementation..."));
                     }
                     else
-                        Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu 3!"));
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 3!"));
                 }
                 else
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu 2!"));
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 2!"));
             }
             else
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Could not find Insert menu!"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu!"));
         }
     }
 }
@@ -516,7 +516,7 @@ int CodeCompletion::CodeComplete()
     Parser* parser = m_NativeParsers.FindParserFromEditor(ed);
     if (!parser)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
         return -4;
     }
 
@@ -528,14 +528,14 @@ int CodeCompletion::CodeComplete()
     {
 #ifdef DEBUG_CC_AI
         if (s_DebugSmartSense)
-            Manager::Get()->GetMessageManager()->DebugLog(_T("%d results"), result.size());
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("%d results"), result.size()));
 #endif
         size_t max_match = cfg->ReadInt(_T("/max/matches"), 16384);
         if (result.size() <= max_match)
         {
 #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Generating tokens list"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Generating tokens list"));
 #endif
             wxImageList* ilist = parser->GetImageList();
             ed->GetControl()->ClearRegisteredImages();
@@ -585,7 +585,7 @@ int CodeCompletion::CodeComplete()
                 // empty or partial search phrase: add theme keywords in search list
 #ifdef DEBUG_CC_AI
                 if (s_DebugSmartSense)
-                    DBGLOG(_T("Last AI search was global: adding theme keywords in list"));
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Last AI search was global: adding theme keywords in list"));
 #endif
                 EditorColourSet* theme = ed->GetColourSet();
                 if (theme)
@@ -617,7 +617,7 @@ int CodeCompletion::CodeComplete()
 
 #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
-                Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
 #endif
             if (items.GetCount() == 0)
                 return -2;
@@ -628,7 +628,7 @@ int CodeCompletion::CodeComplete()
                 items.Sort(SortCCList);
 #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Done generating tokens list"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Done generating tokens list"));
 #endif
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
@@ -653,7 +653,7 @@ int CodeCompletion::CodeComplete()
     {
 #ifdef DEBUG_CC_AI
         if (s_DebugSmartSense)
-            Manager::Get()->GetMessageManager()->DebugLog(_T("0 results"));
+            Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
 #endif
         if (!parser->Done())
         {
@@ -688,7 +688,7 @@ void CodeCompletion::CodeCompleteIncludes()
     int pos = ed->GetControl()->GetCurrentPos();
     int lineStartPos = ed->GetControl()->PositionFromLine(ed->GetControl()->GetCurrentLine());
     wxString line = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
-    //Manager::Get()->GetMessageManager()->DebugLog("#include cc for \"%s\"", line.c_str());
+    //Manager::Get()->GetLogManager()->DebugLog("#include cc for \"%s\"", line.c_str());
     line.Trim();
     if (line.IsEmpty() || !line.StartsWith(_T("#include")))
         return;
@@ -715,7 +715,7 @@ void CodeCompletion::CodeCompleteIncludes()
 
     // take care: found might point at the end of the string (out of bounds)
     // in this case: #include "(<-code-completion at this point)
-    //Manager::Get()->GetMessageManager()->DebugLog("#include using \"%s\" (starting at %d)", filename.c_str(), found);
+    //Manager::Get()->GetLogManager()->DebugLog("#include using \"%s\" (starting at %d)", filename.c_str(), found);
     if (found == -1)
         return;
 
@@ -806,7 +806,7 @@ void CodeCompletion::ShowCallTip()
     }
     if (!definition.IsEmpty())
         ed->GetControl()->CallTipShow(pos, definition);
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("start=%d, end=%d"), start, end);
+//    Manager::Get()->GetLogManager()->DebugLog(_T("start=%d, end=%d"), start, end);
     // only highlight current argument if only one calltip (scintilla doesn't support multiple highlighting ranges in calltips)
     ed->GetControl()->CallTipSetHighlight(count == 1 ? start : 0, count == 1 ? end : 0);
 }
@@ -828,7 +828,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
     if (!parser)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
         return -4;
     }
 
@@ -875,7 +875,7 @@ int CodeCompletion::DoAllMethodsImpl()
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
     if (!parser)
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
         return -4;
     }
 
@@ -970,8 +970,8 @@ void CodeCompletion::DoCodeComplete()
         return;
 
     int style = ed->GetControl()->GetStyleAt(ed->GetControl()->GetCurrentPos());
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Style at %d is %d"), ed->GetControl()->GetCurrentPos(), style);
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("wxSCI_C_PREPROCESSOR is %d"), wxSCI_C_PREPROCESSOR);
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Style at %d is %d"), ed->GetControl()->GetCurrentPos(), style);
+//    Manager::Get()->GetLogManager()->DebugLog(_T("wxSCI_C_PREPROCESSOR is %d"), wxSCI_C_PREPROCESSOR);
     if (style == wxSCI_C_PREPROCESSOR)
     {
         CodeCompleteIncludes();
@@ -1306,10 +1306,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
                 Ns.EndLine = token->m_ImplLineEnd - 1;
                 Ns.Name = token->m_Name;
                 funcdata->m_NameSpaces.push_back(Ns);
-    //        Manager::Get()->GetMessageManager()->DebugLog(_T("namespace ") + token->m_Name);
+    //        Manager::Get()->GetLogManager()->DebugLog(_T("namespace ") + token->m_Name);
     //       wxString Log;
     //        Log.Printf(_("start %d and end %d"), token->m_ImplLine, token->m_ImplLineEnd);
-    //        Manager::Get()->GetMessageManager()->DebugLog(Log);
+    //        Manager::Get()->GetLogManager()->DebugLog(Log);
             }
         }
         // sort the vector
@@ -1382,7 +1382,7 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
             wxString filename = ed->GetFilename();
             // wxString s_tmplog = _T("CC: OnEditorOpen... Filename: ");
             // s_tmplog = s_tmplog + filename;
-            // Manager::Get()->GetMessageManager()->DebugLog(s_tmplog);
+            // Manager::Get()->GetLogManager()->DebugLog(s_tmplog);
             FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
             funcdata->parsed = false;
         }
@@ -1581,7 +1581,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
         Token* token = tmpsearch.GetItem(sel);
         if(token)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Token found at line %d"), token->m_Line);
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Token found at line %d"), token->m_Line));
             ed->GotoLine(token->m_Line - 1);
         }
     }
@@ -1612,7 +1612,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     EditorManager* edMan = Manager::Get()->GetEditorManager();
 
     wxString txt = m_LastKeyword;
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Go to decl for '%s'"), txt.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Go to decl for '%s'"), txt.c_str());
 
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
     if (!parser)
@@ -1754,13 +1754,13 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     cbStyledTextCtrl* control = editor->GetControl();
 
 //    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("wxEVT_SCI_CHARADDED"));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("wxEVT_SCI_CHARADDED"));
 //    else if (event.GetEventType() == wxEVT_SCI_CHANGE)
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("wxEVT_SCI_CHANGE"));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("wxEVT_SCI_CHANGE"));
 //    else if (event.GetEventType() == wxEVT_SCI_KEY)
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("wxEVT_SCI_KEY"));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("wxEVT_SCI_KEY"));
 //    else if (event.GetEventType() == wxEVT_SCI_MODIFIED)
-//        Manager::Get()->GetMessageManager()->DebugLog(_T("wxEVT_SCI_MODIFIED"));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("wxEVT_SCI_MODIFIED"));
 
     if (event.GetEventType() == wxEVT_SCI_CHARADDED &&
         !control->AutoCompActive()) // not already active autocompletion
@@ -1809,7 +1809,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             ((ch == _T(':')) && (control->GetCharAt(pos - 2) == _T(':'))))
         {
             int style = control->GetStyleAt(pos);
-            //Manager::Get()->GetMessageManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
+            //Manager::Get()->GetLogManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
             if (ch == _T('"') || ch == _T('<'))
             {
                 if (style != wxSCI_C_PREPROCESSOR)

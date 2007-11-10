@@ -47,7 +47,7 @@ void ThreadsDlg::Clear()
 
 void ThreadsDlg::AddThread(const wxString& active_mark, const wxString& thread_num, const wxString& thread_info)
 {
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Add: mark=%s, num=%s, info=%s"), active_mark.c_str(), thread_num.c_str(), thread_info.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Add: mark=%s, num=%s, info=%s"), active_mark.c_str(), thread_num.c_str(), thread_info.c_str());
     wxListCtrl* lst = XRCCTRL(*this, "lstThreads", wxListCtrl);
     lst->Freeze();
     lst->InsertItem(lst->GetItemCount(), active_mark);

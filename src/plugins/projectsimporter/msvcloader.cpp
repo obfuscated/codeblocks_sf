@@ -24,7 +24,7 @@
 
     #include "manager.h"
     #include "projectmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "cbproject.h"
     #include "globals.h"
     #include "compilerfactory.h"
@@ -65,7 +65,7 @@ bool MSVCLoader::Open(const wxString& filename)
         return false;
 
     // the file is read, now process it
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Importing MSVC project: %s"), filename.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Importing MSVC project: ") + filename);
 
     // delete all targets of the project (we 'll create new ones from the imported configurations)
     while (m_pProject->GetBuildTargetsCount())
@@ -85,7 +85,7 @@ bool MSVCLoader::Open(const wxString& filename)
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_CANCEL)
         {
-            Manager::Get()->GetMessageManager()->DebugLog(_T("Canceled..."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("Canceled..."));
             return false;
         }
         selected_indices = dlg.GetSelectedIndices();
@@ -146,10 +146,10 @@ bool MSVCLoader::ReadConfigurations()
                 else
                 {
                     type = ttCommandsOnly;
-                    Manager::Get()->GetMessageManager()->DebugLog(_T("unrecognized target type"));
+                    Manager::Get()->GetLogManager()->DebugLog(_T("unrecognized target type"));
                 }
 
-                //Manager::Get()->GetMessageManager()->DebugLog(_T("TargType '%s' is %d"), targtype.c_str(), type);
+                //Manager::Get()->GetLogManager()->DebugLog(_T("TargType '%s' is %d"), targtype.c_str(), type);
                 m_TargType[targtype] = type;
             }
             continue;
@@ -165,7 +165,7 @@ bool MSVCLoader::ReadConfigurations()
             wxString target = projectTarget[1];
             if (projectTarget.GetCount() != 2)
             {
-                Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: bad target format"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("ERROR: bad target format"));
                 return false;
             }
             line = line.Mid(pos + 1);
@@ -179,11 +179,11 @@ bool MSVCLoader::ReadConfigurations()
                 type = it->second;
             else
             {
-                Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: target type not found"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("ERROR: target type not found"));
                 return false;
             }
             m_TargetBasedOn[target] = type;
-            //Manager::Get()->GetMessageManager()->DebugLog(_T("Target '%s' type %d"), target.c_str(), type);
+            //Manager::Get()->GetLogManager()->DebugLog(_T("Target '%s' type %d"), target.c_str(), type);
         }
         else if (line.StartsWith(_T("!IF  \"$(CFG)\" ==")))
             size = 16;
@@ -213,7 +213,7 @@ bool MSVCLoader::ReadConfigurations()
             {
                 m_Configurations.Add(tmp);
                 m_ConfigurationsLineIndex.Add(currentLine);
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Detected configuration '%s' at line %d"), tmp.c_str(), currentLine);
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Detected configuration '%s' at line %d"), tmp.c_str(), currentLine));
             }
         }
     }
@@ -234,7 +234,7 @@ bool MSVCLoader::ParseConfiguration(int index)
     m_Type = ttCommandsOnly;
     HashTargetType::iterator it = m_TargetBasedOn.find(m_Configurations[index]);
     if (it != m_TargetBasedOn.end()) m_Type = it->second;
-    else Manager::Get()->GetMessageManager()->DebugLog(_T("ERROR: could not find the target type of %s"), m_Configurations[index].c_str());
+    else Manager::Get()->GetLogManager()->DebugLog(_T("ERROR: could not find the target type of ") + m_Configurations[index]);
     bt->SetTargetType(m_Type);
     bt->SetOutputFilename(bt->SuggestOutputFilename());
 
@@ -428,8 +428,8 @@ bool MSVCLoader::ParseSourceFiles()
                             if (m_pProject->GetBuildTarget(j)->GetTitle().IsSameAs(CurCFG))
                             {
                                 pf->RemoveBuildTarget(CurCFG);
-                                DBGLOG(wxString::Format(_T("Buid target %s has been excluded from %s"),
-                                                        CurCFG.c_str(), LastProcessedFile.c_str()));
+                                Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_T("Buid target %s has been excluded from %s"),
+																		CurCFG.c_str(), LastProcessedFile.c_str()));
                             }
                         }
                     }
@@ -514,11 +514,11 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
                 }
                 else
                 { // Fallback: Remember GCC will process Pre-processor macros only
-                    DBGLOG(_T("Can't open ") + m_pProject->GetBasePath() + opt.Mid(1) + _T(" for parsing"));
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Can't open ") + m_pProject->GetBasePath() + opt.Mid(1) + _T(" for parsing"));
                     target->AddCompilerOption(_T("-imacros ") + opt.Mid(1));
                 }
             }
-            //else Manager::Get()->GetMessageManager()->DebugLog("Unhandled compiler option: " + opt);
+            //else Manager::Get()->GetLogManager()->DebugLog("Unhandled compiler option: " + opt);
         }
         else // !m_ConvertSwitches
         {
@@ -530,7 +530,7 @@ void MSVCLoader::ProcessCompilerOptions(ProjectBuildTarget* target, const wxStri
             else if (opt.Matches(_T("/U")))
                 target->AddCompilerOption(_T("/U") + RemoveQuotes(array[++i]));
             else if (opt.StartsWith(_T("/Yu")))
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Ignoring precompiled headers option (/Yu)"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Ignoring precompiled headers option (/Yu)"));
             else if (opt.Matches(_T("/c")) || opt.Matches(_T("/nologo")))
             {
                 // do nothing (ignore silently)
@@ -591,7 +591,7 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                 } // else ignore
             }
             else if (opt.Find(_T(".lib")) == -1) // don't add linking lib (added below, in common options)
-                Manager::Get()->GetMessageManager()->DebugLog(_T("Unknown linker option: " + opt));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Unknown linker option: " + opt));
         }
         else // !m_ConvertSwitches
         {
@@ -723,7 +723,7 @@ wxString MSVCLoader::RemoveQuotes(const wxString& src)
         res = res.Mid(1);
         res.Truncate(res.Length() - 1);
     }
-//    Manager::Get()->GetMessageManager()->DebugLog(_T("Removing quotes: %s --> %s"), src.c_str(), res.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Removing quotes: %s --> %s"), src.c_str(), res.c_str());
     return res;
 }
 

@@ -25,7 +25,7 @@
 #include "wxsitemresdata.h"
 #include "wxstool.h"
 #include "wxscodercontext.h"
-#include <messagemanager.h>
+#include <logmanager.h>
 
 wxsContainer::wxsContainer(
     wxsItemResData* Data,

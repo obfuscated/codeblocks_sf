@@ -18,9 +18,9 @@
 
     #include "globals.h"
     #include "manager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "projectmanager.h"
-    #include "messagemanager.h"
+    #include "logmanager.h"
     #include "compilerfactory.h"
     #include "cbproject.h"
     #include "cbworkspace.h"
@@ -149,7 +149,7 @@ int ProjectsImporter::LoadProject(const wxString& filename)
     {
         wxBusyCursor wait;
 
-        Manager::Get()->GetMessageManager()->Log(_("Importing %s: "), filename.c_str());
+        Manager::Get()->GetLogManager()->Log(F(_("Importing %s: "), filename.c_str()));
         IBaseLoader* loader = 0L;
         FileType ft = FileTypeOf(filename);
         switch (ft)
@@ -225,7 +225,7 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
     if (!wksp)
         return -1;
 
-    Manager::Get()->GetMessageManager()->Log(_("Importing %s: "), filename.c_str());
+    Manager::Get()->GetLogManager()->Log(F(_("Importing %s: "), filename.c_str()));
     FileType ft = FileTypeOf(filename);
     IBaseWorkspaceLoader* pWsp = 0;
     switch (ft)

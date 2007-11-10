@@ -29,7 +29,7 @@
 #define MIN_MARGIN  20
 
 #include <manager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <configmanager.h>
 
 static const wxWindowID SplitterId = wxNewId();

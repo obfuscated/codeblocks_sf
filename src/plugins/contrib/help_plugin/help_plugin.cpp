@@ -37,7 +37,7 @@
 #include <manager.h>
 #include <configmanager.h>
 #include <editormanager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <projectmanager.h>
 #include <cbeditor.h>
 #include <cbproject.h>
@@ -467,7 +467,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
 
   if (isExecutable)
   {
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Executing %s"), helpfile.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Executing ") + helpfile);
     wxExecute(helpfile);
     return;
   }
@@ -475,7 +475,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
   // Operate on help http (web) links
   if (helpfile.Mid(0, http_prefix.size()).CmpNoCase(http_prefix) == 0)
   {
-    Manager::Get()->GetMessageManager()->DebugLog(_T("Launching %s"), helpfile.c_str());
+    Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
     wxLaunchDefaultBrowser(helpfile);
     return;
   }
@@ -485,11 +485,11 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
   {
     if (reinterpret_cast<MANFrame *>(m_manFrame)->SearchManPage(c_helpfile, keyword))
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Couldn't find man page"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find man page"));
     }
     else
     {
-        Manager::Get()->GetMessageManager()->DebugLog(_T("Launching man page"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Launching man page"));
     }
 
     ShowMANViewer();
@@ -497,7 +497,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
   }
 
   wxFileName the_helpfile = wxFileName(helpfile);
-  Manager::Get()->GetMessageManager()->DebugLog(_T("Help File is %s"), helpfile.c_str());
+  Manager::Get()->GetLogManager()->DebugLog(_T("Help File is ") + helpfile);
 
   if (!(the_helpfile.FileExists()))
   {

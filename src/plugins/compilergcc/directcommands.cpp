@@ -11,7 +11,7 @@
 #include <projectbuildtarget.h>
 #include <globals.h>
 #include <manager.h>
-#include <messagemanager.h>
+#include <logmanager.h>
 #include <macrosmanager.h>
 #include "directcommands.h"
 #include "compilercommandgenerator.h"
@@ -60,9 +60,9 @@ DirectCommands::~DirectCommands()
         fname.SetExt(_T("depend"));
         depsCacheWrite(fname.GetFullPath().mb_str());
     }
-    Manager::Get()->GetMessageManager()->DebugLog(
-        _("Scanned %d files for #includes, cache used %d, cache updated %d"),
-        stats.scanned, stats.cache_used, stats.cache_updated);
+    Manager::Get()->GetLogManager()->DebugLog(
+        F(_("Scanned %d files for #includes, cache used %d, cache updated %d"),
+        stats.scanned, stats.cache_used, stats.cache_updated));
 
     depsDone();
 }
@@ -389,7 +389,7 @@ wxArrayString DirectCommands::GetCompileCommands(ProjectBuildTarget* target, boo
 
 wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* target, bool force)
 {
-//    Manager::Get()->GetMessageManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
+//    Manager::Get()->GetLogManager()->DebugLog(wxString("-----GetTargetCompileCommands-----"));
     wxArrayString ret;
 //    ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Switching to target: ") + target->GetTitle());
     // NOTE: added this to notify compiler about the active target.

@@ -48,7 +48,7 @@
         #include "sdk.h"
     #else
         #include "manager.h"
-        #include "messagemanager.h"
+        #include "logmanager.h"
         #include "macrosmanager.h"
         #include "configmanager.h"
         #include "editormanager.h"
