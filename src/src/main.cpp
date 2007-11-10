@@ -45,6 +45,7 @@
 #include <wx/sstream.h>
 #include <wx/fileconf.h>
 #include <wx/xrc/xmlres.h>
+#include <wx/gauge.h>
 #include <configmanager.h>
 #include <cbproject.h>
 #include <cbplugin.h>
@@ -481,7 +482,8 @@ MainFrame::MainFrame(wxWindow* parent)
        m_AutoHideLogs(false),
        m_AutoHideLockCounter(0),
        m_pScriptConsole(0),
-       m_pBatchBuildDialog(0)
+       m_pBatchBuildDialog(0),
+       m_pProgressBar(0)
 {
 #if !wxCHECK_VERSION(2,8,0)
     // tell wxFrameManager to manage this frame
@@ -1549,29 +1551,27 @@ bool MainFrame::DoCloseCurrentWorkspace()
 void MainFrame::DoCreateStatusBar()
 {
 #if wxUSE_STATUSBAR
-    const int num = 7;
-    wxCoord width[num];
-    CreateStatusBar(num);
+    wxCoord width[16]; // 16 max
 
     wxClientDC dc(this);
     wxFont font = dc.GetFont();
     int h;
+    int num = 0;
 
-    width[0] = -1;
-    dc.GetTextExtent(_(" WINDOWS-1252 "), &width[1], &h);
-    dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[2], &h);
-    // GTK needs an addition space more than MSW    //pecan 2006/03/31
-  #ifdef __WXGTK__
-    dc.GetTextExtent(_(" Overwrite "),  &width[3], &h);
-    dc.GetTextExtent(_(" Modified "),   &width[4], &h);
-  #else
-    dc.GetTextExtent(_(" Overwrite"),  &width[3], &h);
-    dc.GetTextExtent(_(" Modified"),   &width[4], &h);
-  #endif
-    dc.GetTextExtent(_(" Read/Write....."), &width[5], &h);
-    dc.GetTextExtent(_(" default "), &width[6], &h);
+    width[num++] = -1; // main field
+//    width[num++] = 128; // progress bar
+    dc.GetTextExtent(_(" WINDOWS-1252 "), &width[num++], &h);
+    dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[num++], &h);
+    dc.GetTextExtent(_(" Overwrite "),  &width[num++], &h);
+    dc.GetTextExtent(_(" Modified "),   &width[num++], &h);
+    dc.GetTextExtent(_(" Read/Write....."), &width[num++], &h);
+    dc.GetTextExtent(_(" name_of_profile "), &width[num++], &h);
 
+    CreateStatusBar(num);
     SetStatusWidths(num, width);
+    
+    // here for later usage
+//    m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
 #endif // wxUSE_STATUSBAR
 }
 
@@ -1605,7 +1605,7 @@ void MainFrame::DoUpdateStatusBar()
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
-        SetStatusText(wxEmptyString, panel++);
+        SetStatusText(personality, panel++);
     }
 #endif // wxUSE_STATUSBAR
 }
@@ -2574,6 +2574,14 @@ void MainFrame::OnEraseBackground(wxEraseEvent& event)
 
 void MainFrame::OnSize(wxSizeEvent& event)
 {
+	if (m_pProgressBar)
+	{
+		wxRect r;
+		GetStatusBar()->GetFieldRect(1, r);
+		m_pProgressBar->SetPosition(r.GetPosition());
+		m_pProgressBar->SetSize(r.GetSize());
+	}
+
     // for flicker-free display
     event.Skip();
 }

@@ -222,7 +222,7 @@ void ListCtrlLogger::UpdateSettings()
 	style[success].colour = *wxBLUE;
 
 	style[warning].font = italic_font;
-	style[error].colour = wxColour(0x00, 0x00, 0xa0); // navy blue
+	style[warning].colour = wxColour(0x00, 0x00, 0xa0); // navy blue
 
 	style[error].colour = *wxRED;
 

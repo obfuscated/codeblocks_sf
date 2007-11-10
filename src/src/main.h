@@ -26,6 +26,7 @@ extern int idStartHerePageVarSubst;
 
 class wxFlatNotebook;
 class InfoPane;
+class wxGauge;
 
 class MainFrame : public wxFrame
 {
@@ -318,6 +319,7 @@ class MainFrame : public wxFrame
 		LoggerToInfoPaneIndex m_LoggerToInfoPaneIndex;
 
         wxDialog* m_pBatchBuildDialog;
+        wxGauge* m_pProgressBar;
 
         DECLARE_EVENT_TABLE()
 };
