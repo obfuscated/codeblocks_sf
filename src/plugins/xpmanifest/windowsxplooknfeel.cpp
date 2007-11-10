@@ -34,7 +34,7 @@
 #include "cbproject.h"
 #include "globals.h"
 #include "manager.h"
-#include "messagemanager.h"
+#include "logmanager.h"
 #include "projectbuildtarget.h"
 #include "projectmanager.h"
 #endif
@@ -82,7 +82,7 @@ int WindowsXPLookNFeel::Execute()
 	{
 		wxString msg = _("No active project!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK);
-		Manager::Get()->GetMessageManager()->DebugLog(msg);
+		Manager::Get()->GetLogManager()->DebugLog(msg);
 		return -1;
 	}
 
@@ -95,7 +95,7 @@ int WindowsXPLookNFeel::Execute()
 		{
 			if (tgt->GetTargetType() != ttExecutable)
 			{
-				Manager::Get()->GetMessageManager()->DebugLog(_T("WindowsXPLookNFeel: Ignoring target '%s'"), tgt->GetTitle().c_str());
+				Manager::Get()->GetLogManager()->DebugLog(F(_T("WindowsXPLookNFeel: Ignoring target '%s'"), tgt->GetTitle().c_str()));
 				continue;
 			}
 			targetNames.Add(tgt->GetTitle());
@@ -106,7 +106,7 @@ int WindowsXPLookNFeel::Execute()
 	if (!target)
 	{
 		// not even one executable target...
-		Manager::Get()->GetMessageManager()->DebugLog(_T("WindowsXPLookNFeel: No executable targets in project"));
+		Manager::Get()->GetLogManager()->DebugLog(_T("WindowsXPLookNFeel: No executable targets in project"));
 		return -1;
 	}
 	else if (targetNames.GetCount() > 1)
@@ -130,7 +130,7 @@ int WindowsXPLookNFeel::Execute()
 		wxFileName fname(filename);
 		fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
 		filename = fname.GetFullPath();
-		Manager::Get()->GetMessageManager()->DebugLog(_T("WindowsXPLookNFeel: Creating Manifest '%s'"), filename.c_str());
+		Manager::Get()->GetLogManager()->DebugLog(F(_T("WindowsXPLookNFeel: Creating Manifest '%s'"), filename.c_str()));
 
 		wxString buffer;
 		buffer << _T("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>") << _T('\n');
