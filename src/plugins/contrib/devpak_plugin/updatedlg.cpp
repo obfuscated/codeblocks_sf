@@ -12,10 +12,9 @@
 #include "devpakinstaller.h"
 #include "crc32.h"
 
-#include <manager.h>
-#include <messagemanager.h>
+#include "manager.h"
 #include "configmanager.h"
-#include <globals.h>
+#include "globals.h"
 
 int idNet = wxNewId();
 int idPopupInstall = wxNewId();
