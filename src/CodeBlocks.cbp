@@ -684,6 +684,9 @@
 		<Unit filename="include\logger.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\loggers.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\logmanager.h">
 			<Option target="sdk" />
 		</Unit>
@@ -697,12 +700,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\menuitemsmanager.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include\messagelog.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include\messagemanager.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\multiselectdlg.h">
@@ -908,12 +905,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\settings.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include\simplelistlog.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include\simpletextlog.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\templatemanager.h">
@@ -2018,6 +2009,9 @@
 		<Unit filename="sdk\infowindow.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\loggers.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\logmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2031,12 +2025,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\menuitemsmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\messagelog.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\messagemanager.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\multiselectdlg.cpp">
@@ -3549,12 +3537,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\selecttargetdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\simplelistlog.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk\simpletextlog.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\templatemanager.cpp">
