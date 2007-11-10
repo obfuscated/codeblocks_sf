@@ -1,5 +1,5 @@
 /* XPM */
-static char * chart_zot_xpm[] = {
+static const char * chart_zot_xpm[] = {
 "20 18 8 1",
 " 	c None",
 ".	c #C0C0C0",

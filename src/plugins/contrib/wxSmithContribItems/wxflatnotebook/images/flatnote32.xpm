@@ -1,5 +1,5 @@
 /* XPM */
-static char *flatnote32[]={
+static const char *flatnote32[]={
 /* GenericFrm_WxStaticBitmap2 */
 "32 32 162 2",
 "      c None",

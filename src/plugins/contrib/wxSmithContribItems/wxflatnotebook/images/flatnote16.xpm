@@ -1,5 +1,5 @@
 /* XPM */
-static char *flatnote16[]={
+static const char *flatnote16[]={
 /* GenericFrm_WxStaticBitmap2 */
 "16 16 111 2",
 "      c None",
