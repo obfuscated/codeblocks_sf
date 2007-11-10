@@ -233,7 +233,7 @@ AutoDetectResult CompilerGDC::AutoDetectInstallationDir()
                     if (ok) {
                         name = key.GetName() + _T("\\") + name;
                         key.SetName(name);
-                        Manager::Get()->GetLogManager()->DebugLog(_T("name: %s"), name.c_str());
+                        Manager::Get()->GetLogManager()->DebugLog(F(_T("name: %s"), name.c_str()));
                         if (key.Exists()) key.QueryValue(_T("InstallLocation"), m_MasterPath);
                     }
                 }
