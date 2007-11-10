@@ -273,7 +273,7 @@ bool CodeBlocksApp::LoadConfig()
 
     cfg->Write(_T("data_path"), data);
 
-    m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog;
+    //m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog;
     //Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/has_debug_log"), m_HasDebugLog);
 
     return true;
@@ -942,7 +942,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                         LogManager::Get()->SetLog(new TextCtrlLogger, LogManager::app_log);
                     if(parser.Found(_T("log-to-file")))
                         LogManager::Get()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
-                    if(m_HasDebugLog = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false) || m_HasDebugLog)
+                    if(m_HasDebugLog)
                         LogManager::Get()->SetLog(new TextCtrlLogger, LogManager::debug_log);
                 }
             }
