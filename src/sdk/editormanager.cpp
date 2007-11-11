@@ -69,11 +69,6 @@
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 
-namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
-
-
-//#define DONT_USE_OPENFILES_TREE
-
 int ID_NBEditorManager = wxNewId();
 int ID_EditorManager = wxNewId();
 int idEditorManagerCheckFiles = wxNewId();
@@ -133,46 +128,12 @@ struct EditorManagerInternalData
     /* Methods */
 
     EditorManagerInternalData(EditorManager* owner)
-            : m_pOwner(owner),
-            m_NeedsRefresh(false),
-            m_TreeNeedsRefresh(false),
-            m_pImages(0),
-            m_SetFocusFlag(false)
+            : m_pOwner(owner)
     {}
-
-    void BuildTree(wxTreeCtrl* pTree)
-    {
-        wxBitmap bmp;
-        m_pImages = new wxImageList(16, 16);
-        wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-        bmp = cbLoadBitmap(prefix + _T("folder_open.png"), wxBITMAP_TYPE_PNG); // folder
-        m_pImages->Add(bmp);
-        bmp = cbLoadBitmap(prefix + _T("ascii.png"), wxBITMAP_TYPE_PNG); // file
-        m_pImages->Add(bmp);
-        bmp = cbLoadBitmap(prefix + _T("modified_file.png"), wxBITMAP_TYPE_PNG); // modified file
-        m_pImages->Add(bmp);
-        bmp = cbLoadBitmap(prefix + _T("file-readonly.png"), wxBITMAP_TYPE_PNG); // read only file
-        m_pImages->Add(bmp);
-        pTree->SetImageList(m_pImages);
-        m_TreeOpenedFiles=pTree->AddRoot(_T("Opened Files"), 0, 0);
-        pTree->SetItemBold(m_TreeOpenedFiles);
-    }
-
-    void InvalidateTree()
-    {
-        m_TreeNeedsRefresh = true;
-    }
 
     /* Static data */
 
     EditorManager* m_pOwner;
-
-    /* Used for refreshing the notebook if necessary */
-    bool m_NeedsRefresh;
-    bool m_TreeNeedsRefresh;
-    wxImageList* m_pImages;
-    wxTreeItemId m_TreeOpenedFiles;
-
     bool m_SetFocusFlag;
 };
 
@@ -199,20 +160,12 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBSwapHeaderSource, EditorManager::OnSwapHeaderSource)
     EVT_MENU(idNBProperties, EditorManager::OnProperties)
     EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
-#ifdef USE_OPENFILES_TREE
-    EVT_UPDATE_UI(ID_EditorManager, EditorManager::OnUpdateUI)
-    EVT_TREE_ITEM_ACTIVATED(ID_EditorManager, EditorManager::OnTreeItemActivated)
-    EVT_TREE_ITEM_RIGHT_CLICK(ID_EditorManager, EditorManager::OnTreeItemRightClick)
-#endif
 END_EVENT_TABLE()
 
 // class constructor
 EditorManager::EditorManager()
         : m_pNotebook(0L),
         m_LastFindReplaceData(0L),
-        m_pTree(0L),
-        m_LastActiveFile(_T("")),
-        m_LastModifiedflag(false),
         m_pSearchLog(0),
         m_SearchLogIndex(-1),
         m_SashPosition(150), // no longer used
@@ -222,11 +175,6 @@ EditorManager::EditorManager()
 
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE | wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
-
-#ifdef USE_OPENFILES_TREE
-    m_pData->m_TreeNeedsRefresh = false;
-    ShowOpenFilesTree(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/show_opened_files_tree"), true));
-#endif
 
 	Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
     m_Theme = new EditorColourSet(Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/colour_sets/active_colour_set"), COLORSET_DEFAULT));
@@ -244,20 +192,11 @@ EditorManager::~EditorManager()
 {
     SaveAutoComplete();
 
-    if (m_pTree)
-    {
-        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-        evt.pWindow = m_pTree;
-        Manager::Get()->ProcessEvent(evt);
-        m_pTree->Destroy();
-    }
-
     CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pSearchLog);
     Manager::Get()->GetAppWindow()->ProcessEvent(evt);
 
     delete m_Theme;
     delete m_LastFindReplaceData;
-    delete m_pData->m_pImages;
     delete m_pData;
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/zoom"), m_zoom);
 } // end of destructor
@@ -297,7 +236,6 @@ void EditorManager::Configure()
                 }
             }
         }
-        RebuildOpenedFilesTree(0); // maybe the tab text naming changed
     }
 } // end of Configure
 
@@ -574,22 +512,6 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         if(data)
             ed->SetProjectFile(data,true);
     }
-#ifdef USE_OPENFILES_TREE
-    if(can_updateui)
-    {
-        // If this file is already in the tree we have to call
-        // RefreshOpenedFilesTree because AddFiletoTree would not do anything
-        // and the file would not be selected.
-        if (eb)
-        {
-            RefreshOpenedFilesTree();
-        }
-        else
-        {
-            AddFiletoTree(ed);
-        }
-    }
-#endif
 
     // we 're done
     s_CanShutdown = true;
@@ -622,10 +544,6 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
     if (page != -1)
     {
         m_pNotebook->SetSelection(page);
-        // because we use SetSelection() manually, the event handler isn't called,
-        // so we must send this event manually
-        CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, GetActiveEditor());
-        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     }
 }
 
@@ -656,10 +574,6 @@ cbEditor* EditorManager::New(const wxString& newFileName)
 
     ed->SetColourSet(m_Theme);
     AddEditorBase(ed);
-
-#ifdef USE_OPENFILES_TREE
-    AddFiletoTree(ed);
-#endif
 
     ed->Show(true);
     SetActiveEditor(ed);
@@ -694,16 +608,6 @@ void EditorManager::RemoveEditorBase(EditorBase* eb, bool deleteObject)
     int page = FindPageFromEditor(eb);
    if (page != -1 && !Manager::isappShuttingDown())
         m_pNotebook->RemovePage(page, false);
-
-#ifdef USE_OPENFILES_TREE
-    //        if (eb->IsBuiltinEditor())
-    //        {
-    //            cbEditor* ed = static_cast<cbEditor*>(eb);
-    //            DeleteFilefromTree(ed->GetProjectFile()->file.GetFullPath());
-    //        }
-    //        else
-    DeleteFilefromTree(eb->GetFilename());
-#endif
 
     //    if (deleteObject)
     //        eb->Destroy();
@@ -831,10 +735,9 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
                     return false;
             wxString filename = editor->GetFilename();
             //            LOGSTREAM << wxString::Format(_T("Close(): ed=%p, title=%s\n"), editor, editor ? editor->GetTitle().c_str() : _T(""));
-            m_pNotebook->DeletePage(idx, false);
+            m_pNotebook->DeletePage(idx, true);
         }
     }
-    m_pData->m_NeedsRefresh = true;
     return true;
 }
 
@@ -855,9 +758,6 @@ bool EditorManager::Save(const wxString& filename)
         wxString oldname = ed->GetFilename();
         if (!ed->Save())
             return false;
-        wxString newname = ed->GetFilename();
-        if (oldname != newname)
-            RenameTreeFile(oldname, newname);
         return true;
     }
     return true;
@@ -871,9 +771,6 @@ bool EditorManager::Save(int index)
         wxString oldname = ed->GetFilename();
         if (!ed->Save())
             return false;
-        wxString newname = ed->GetFilename();
-        if (oldname != newname)
-            RenameTreeFile(oldname, newname);
         return true;
     }
     return false;
@@ -887,9 +784,6 @@ bool EditorManager::SaveActive()
         wxString oldname = ed->GetFilename();
         if (!ed->Save())
             return false;
-        wxString newname = ed->GetFilename();
-        if (oldname != newname)
-            RenameTreeFile(oldname, newname);
         return true;
     }
     return true;
@@ -900,11 +794,7 @@ bool EditorManager::SaveAs(int index)
     cbEditor* ed = GetBuiltinEditor(GetEditor(index));
     if(!ed)
         return false;
-    wxString oldname=ed->GetFilename();
-    if(!ed->SaveAs())
-        return false;
-    RenameTreeFile(oldname,ed->GetFilename());
-    return true;
+    return ed->SaveAs();
 }
 
 bool EditorManager::SaveActiveAs()
@@ -912,9 +802,7 @@ bool EditorManager::SaveActiveAs()
     cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
     if (ed)
     {
-        wxString oldname=ed->GetFilename();
-        if(ed->SaveAs())
-            RenameTreeFile(oldname,ed->GetFilename());
+        return ed->SaveAs();
     }
     return true;
 }
@@ -931,9 +819,6 @@ bool EditorManager::SaveAll()
             cbMessageBox(msg, _("Error saving file"), wxICON_ERROR);
         }
     }
-#ifdef USE_OPENFILES_TREE
-    RefreshOpenedFilesTree(true);
-#endif
 
     return true;
 }
@@ -2475,8 +2360,6 @@ void EditorManager::OnPageChanged(wxFlatNotebookEvent& event)
     CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
 
-    RefreshOpenedFilesTree();
-
     // focus editor on next update event
     m_pData->m_SetFocusFlag = true;
 
@@ -2485,7 +2368,7 @@ void EditorManager::OnPageChanged(wxFlatNotebookEvent& event)
 
 void EditorManager::OnPageChanging(wxFlatNotebookEvent& event)
 {
-    EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
+    EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetOldSelection()));
     //    LOGSTREAM << wxString::Format(_T("OnPageChanging(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
     CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, 0, eb);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
@@ -2633,148 +2516,6 @@ void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& event)
     CheckForExternallyModifiedFiles();
 }
 
-
-bool EditorManager::OpenFilesTreeSupported()
-{
-#ifdef DONT_USE_OPENFILES_TREE
-    return false;
-#else
-
-    return true;
-#endif
-}
-
-// This function is not used anymore, so we turned it into a synonym
-// for RefreshOpenedFilesTree().
-void EditorManager::RefreshOpenFilesTree()
-{
-    RefreshOpenedFilesTree();
-}
-
-void EditorManager::ShowOpenFilesTree(bool show)
-{
-    if (!OpenFilesTreeSupported())
-        return;
-    if (!m_pTree)
-        InitPane();
-    if (!m_pTree)
-        return;
-    if(Manager::isappShuttingDown())
-        return;
-    //    if (show && !IsOpenFilesTreeVisible())
-    //        m_pTree->Show(true);
-    //    else if (!show && IsOpenFilesTreeVisible())
-    //        m_pTree->Show(false);
-    RefreshOpenFilesTree();
-
-    CodeBlocksDockEvent evt(show ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
-    evt.pWindow = m_pTree;
-    Manager::Get()->ProcessEvent(evt);
-
-    // update user prefs
-    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/show_opened_files_tree"), show);
-}
-
-bool EditorManager::IsOpenFilesTreeVisible() const
-{
-    return m_pTree && m_pTree->IsShown();
-}
-
-wxTreeCtrl* EditorManager::GetTree()
-{
-    return m_pTree;
-    // Manager::Get()->GetProjectManager()->GetTree();
-}
-
-wxTreeItemId EditorManager::FindTreeFile(const wxString& filename)
-{
-    wxTreeItemId item = wxTreeItemId();
-    do
-    {
-        if(Manager::isappShuttingDown())
-            break;
-        if(filename==_T(""))
-            break;
-        wxTreeCtrl *tree=GetTree();
-        if(!tree || !m_pData->m_TreeOpenedFiles)
-            break;
-
-        compatibility::tree_cookie_t cookie = 0;
-
-        for(item = tree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
-                item;
-                item = tree->GetNextChild(m_pData->m_TreeOpenedFiles, cookie))
-        {
-            if(GetTreeItemFilename(item)==filename)
-                break;
-        }
-    }
-    while(false);
-    return item;
-}
-
-wxString EditorManager::GetTreeItemFilename(wxTreeItemId item)
-{
-    if(Manager::isappShuttingDown())
-        return _T("");
-    wxTreeCtrl *tree=GetTree();
-    if(!tree || !m_pData->m_TreeOpenedFiles || !item)
-        return _T("");
-    MiscTreeItemData *data=(MiscTreeItemData*)tree->GetItemData(item);
-    if(!data)
-        return _T("");
-    if(data->GetOwner()!=this)
-        return _T("");
-    return ((EditorTreeData*)data)->GetFullName();
-}
-
-void EditorManager::DeleteItemfromTree(wxTreeItemId item)
-{
-    if(Manager::isappShuttingDown())
-        return;
-    wxTreeCtrl *tree=GetTree();
-    if(!tree || !m_pData->m_TreeOpenedFiles || !item)
-        return;
-    wxTreeItemId itemparent=tree->GetItemParent(item);
-    if(itemparent!=m_pData->m_TreeOpenedFiles)
-        return;
-    tree->Delete(item);
-}
-
-void EditorManager::DeleteFilefromTree(const wxString& filename)
-{
-    if(Manager::isappShuttingDown())
-        return;
-    DeleteItemfromTree(FindTreeFile(filename));
-    //    RefreshOpenedFilesTree();
-}
-
-void EditorManager::AddFiletoTree(EditorBase* ed)
-{
-    if(Manager::isappShuttingDown())
-        return;
-    if(!ed)
-        return;
-    if(!ed->VisibleToTree())
-        return;
-    wxString shortname=ed->GetShortName();
-    wxString filename=ed->GetFilename();
-    wxTreeItemId item=FindTreeFile(filename);
-    if(item.IsOk())
-        return;
-    wxTreeCtrl *tree=GetTree();
-    if(!tree)
-        return;
-    if(!m_pData->m_TreeOpenedFiles)
-        return;
-
-    int mod = GetOpenFilesListIcon(ed);
-    tree->AppendItem(m_pData->m_TreeOpenedFiles,shortname,mod,mod,
-                     new EditorTreeData(this,filename));
-    tree->SortChildren(m_pData->m_TreeOpenedFiles);
-    RefreshOpenedFilesTree(true);
-}
-
 void EditorManager::HideNotebook()
 {
     //    if(!this)
@@ -2794,209 +2535,6 @@ void EditorManager::ShowNotebook()
     //    m_pData->m_NeedsRefresh = true;
     //    m_pData->InvalidateTree();
     //    return;
-}
-
-bool EditorManager::RenameTreeFile(const wxString& oldname, const wxString& newname)
-{
-    if(Manager::isappShuttingDown())
-        return false;
-    wxTreeCtrl *tree = GetTree();
-    if(!tree)
-        return false;
-
-    compatibility::tree_cookie_t cookie = 0;
-
-    wxTreeItemId item;
-    wxString filename,shortname;
-    for(item=tree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
-            item;
-            item = tree->GetNextChild(m_pData->m_TreeOpenedFiles, cookie))
-    {
-        EditorTreeData *data=(EditorTreeData*)tree->GetItemData(item);
-        if(!data)
-            continue;
-        filename=data->GetFullName();
-        if(filename!=oldname)
-            continue;
-        data->SetFullName(newname);
-        EditorBase *ed=GetEditor(newname);
-        if(ed)
-        {
-            shortname=ed->GetShortName();
-            int mod = GetOpenFilesListIcon(ed);
-            if(tree->GetItemText(item)!=shortname)
-                tree->SetItemText(item,shortname);
-            if (tree->GetItemImage(item) != mod)
-            {
-                tree->SetItemImage(item, mod, wxTreeItemIcon_Normal);
-                tree->SetItemImage(item, mod, wxTreeItemIcon_Selected);
-            }
-            if(ed==GetActiveEditor())
-                tree->SelectItem(item);
-        }
-        return true;
-    }
-    return false;
-}
-
-void EditorManager::InitPane()
-{
-#if defined(DONT_USE_OPENFILES_TREE)
-    return;
-#endif
-
-    BuildOpenedFilesTree(Manager::Get()->GetAppWindow());
-    if (!m_pTree)
-        return;
-    CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
-    evt.name = _T("OpenFilesPane");
-    evt.title = _("Open files list");
-    evt.pWindow = m_pTree;
-    evt.minimumSize.Set(50, 50);
-    evt.desiredSize.Set(150, 100);
-    evt.floatingSize.Set(100, 150);
-    evt.dockSide = CodeBlocksDockEvent::dsLeft;
-    evt.stretch = true;
-    Manager::Get()->ProcessEvent(evt);
-}
-
-void EditorManager::BuildOpenedFilesTree(wxWindow* parent)
-{
-#if defined(DONT_USE_OPENFILES_TREE)
-    return;
-#endif
-
-    if(m_pTree)
-        return;
-    m_pTree = new wxTreeCtrl(parent, ID_EditorManager,wxDefaultPosition,wxSize(150, 100),wxTR_HAS_BUTTONS | wxNO_BORDER | wxTR_HIDE_ROOT);
-    m_pData->BuildTree(m_pTree);
-    RebuildOpenedFilesTree(m_pTree);
-}
-
-void EditorManager::RebuildOpenedFilesTree(wxTreeCtrl *tree)
-{
-#if defined(DONT_USE_OPENFILES_TREE)
-    return;
-#endif
-
-    if(Manager::isappShuttingDown())
-        return;
-    if(!tree)
-        tree=GetTree();
-    if(!tree)
-        return;
-    tree->Freeze();
-    tree->DeleteChildren(m_pData->m_TreeOpenedFiles);
-    if(!GetEditorsCount())
-    {
-        tree->Thaw();
-        return;
-    }
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
-    {
-        EditorBase* ed = InternalGetEditorBase(i);
-        if(!ed)
-            continue;
-        if(!ed->VisibleToTree())
-            continue;
-        wxString shortname=ed->GetShortName();
-        int mod = GetOpenFilesListIcon(ed);
-        wxTreeItemId item=tree->AppendItem(m_pData->m_TreeOpenedFiles,shortname,mod,mod,
-                                           new EditorTreeData(this,ed->GetFilename()));
-        if(GetActiveEditor()==ed)
-            tree->SelectItem(item);
-    }
-    tree->SortChildren(m_pData->m_TreeOpenedFiles);
-    tree->Expand(m_pData->m_TreeOpenedFiles);
-    tree->Thaw();
-    m_pData->InvalidateTree();
-}
-
-void EditorManager::RefreshOpenedFilesTree(bool force)
-{
-#if defined(DONT_USE_OPENFILES_TREE)
-    return;
-#endif
-
-    if(Manager::isappShuttingDown())
-        return;
-    if(!m_pTree)
-        return;
-    wxString fname;
-    EditorBase *aed=GetActiveEditor();
-    if(!aed)
-        return;
-    if(!aed->VisibleToTree())
-        return;
-    bool ismodif=aed->GetModified();
-    fname=aed->GetFilename();
-
-    if(!force && m_LastActiveFile==fname && m_LastModifiedflag==ismodif)
-        return; // Nothing to do
-
-    m_LastActiveFile=fname;
-    m_LastModifiedflag=ismodif;
-    m_pTree->Freeze();
-
-    compatibility::tree_cookie_t cookie = 0;
-
-    wxTreeItemId item = m_pTree->GetFirstChild(m_pData->m_TreeOpenedFiles,cookie);
-    wxString filename,shortname;
-    while (item)
-    {
-        EditorTreeData *data=(EditorTreeData*)m_pTree->GetItemData(item);
-        if(data)
-        {
-            filename=data->GetFullName();
-            EditorBase *ed=GetEditor(filename);
-            if(ed)
-            {
-                shortname=ed->GetShortName();
-                int mod = GetOpenFilesListIcon(ed);
-                if(m_pTree->GetItemText(item)!=shortname)
-                    m_pTree->SetItemText(item,shortname);
-                if (m_pTree->GetItemImage(item) != mod)
-                {
-                    m_pTree->SetItemImage(item, mod, wxTreeItemIcon_Normal);
-                    m_pTree->SetItemImage(item, mod, wxTreeItemIcon_Selected);
-                }
-                if(ed==aed)
-                    m_pTree->SelectItem(item);
-                // m_pTree->SetItemBold(item,(ed==aed));
-            }
-        }
-        item = m_pTree->GetNextChild(m_pData->m_TreeOpenedFiles, cookie);
-    }
-    m_pTree->Thaw();
-}
-
-void EditorManager::OnTreeItemActivated(wxTreeEvent &event)
-{
-    if(Manager::isappShuttingDown())
-        return;
-    if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
-        return;
-    wxString filename=GetTreeItemFilename(event.GetItem());
-    if(filename==_T(""))
-        return;
-    Open(filename);
-}
-
-void EditorManager::OnTreeItemRightClick(wxTreeEvent &event)
-{
-    if(Manager::isappShuttingDown())
-        return;
-    if(!MiscTreeItemData::OwnerCheck(event,GetTree(),this,true))
-        return;
-    wxString filename=GetTreeItemFilename(event.GetItem());
-    if(filename.IsEmpty())
-        return;
-    EditorBase* ed = GetEditor(filename);
-    if(ed)
-    {
-        wxPoint pt = m_pTree->ClientToScreen(event.GetPoint());
-        ed->DisplayContextMenu(pt,mtOpenFilesList); //pecan 2006/03/22
-    }
 }
 
 void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
@@ -3025,18 +2563,3 @@ int EditorManager::GetZoom() const
 {
     return m_zoom;
 }
-
-int EditorManager::GetOpenFilesListIcon(EditorBase* ed)
-{
-    int mod = 1;                            // ascii
-    if (ed->IsReadOnly()) mod = 3;          // read only
-    else if (ed->GetModified()) mod =2;     // modified
-	return mod;
-}
-
-
-
-
-
-
-

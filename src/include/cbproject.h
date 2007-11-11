@@ -7,7 +7,7 @@
 #include <wx/treectrl.h>
 
 #include "settings.h"
-#include "openfilestree.h"
+#include "misctreeitemdata.h"
 #include "compiletargetbase.h"
 #include "cbplugin.h"
 #include "projectbuildtarget.h"

@@ -626,7 +626,6 @@ void cbEditor::SetModified(bool modified)
         }
         SetEditorTitle(m_Shortname);
         NotifyPlugins(cbEVT_EDITOR_MODIFIED);
-        Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree();
         // visual state
         if (m_pProjectFile)
             m_pProjectFile->SetFileState(m_pControl->GetReadOnly() ? fvsReadOnly : (m_Modified ? fvsModified : fvsNormal));

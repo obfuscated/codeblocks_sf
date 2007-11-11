@@ -9,7 +9,6 @@
 #include "manager.h"
 #include "cbexception.h" // cbThrow
 
-#include "openfilestree.h"
 #include "printing_types.h"
 
 #ifndef CB_PRECOMP
@@ -119,25 +118,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedFiles();
 
-        /// Open Files Tree functions
-        /// Is the opened files tree supported? (depends on platform)
-        bool OpenFilesTreeSupported();
-        /// Show/hide the opened files tree
-        void ShowOpenFilesTree(bool show);
-        /// Refresh the open files tree
-        void RefreshOpenFilesTree();
-        /// Return true if opened files tree is visible, false if not
-        bool IsOpenFilesTreeVisible() const;
-
-        /** Builds Opened Files tree in the Projects tab
-          */
-        wxTreeCtrl* GetTree();
-        wxTreeItemId FindTreeFile(const wxString& filename);
-        wxString GetTreeItemFilename(wxTreeItemId item);
-        void BuildOpenedFilesTree(wxWindow* parent);
-        void RebuildOpenedFilesTree(wxTreeCtrl *tree = 0L);
-        void RefreshOpenedFilesTree(bool force = false);
-
         void OnGenericContextMenuHandler(wxCommandEvent& event);
         void OnPageChanged(wxFlatNotebookEvent& event);
         void OnPageChanging(wxFlatNotebookEvent& event);
@@ -159,7 +139,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnTreeItemRightClick(wxTreeEvent &event);
         void SetZoom(int zoom);
         int GetZoom()const;
-        bool RenameTreeFile(const wxString& oldname, const wxString& newname);
 
     protected:
         // m_EditorsList access
@@ -174,11 +153,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void LoadAutoComplete();
         void SaveAutoComplete();
 
-        void DeleteItemfromTree(wxTreeItemId item);
-        void DeleteFilefromTree(const wxString& filename);
-        void AddFiletoTree(EditorBase* ed);
-        void InitPane();
-
         AutoCompleteMap m_AutoCompleteMap;
     private:
         EditorManager();
@@ -189,14 +163,10 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int FindInFiles(cbFindReplaceData* data);
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int ReplaceInFiles(cbFindReplaceData* data);
-        int GetOpenFilesListIcon(EditorBase* ed);
 
         wxFlatNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
         EditorColourSet* m_Theme;
-        wxTreeCtrl* m_pTree;
-        wxString m_LastActiveFile;
-        bool m_LastModifiedflag;
         ListCtrlLogger* m_pSearchLog;
         int m_SearchLogIndex;
         int m_SashPosition;

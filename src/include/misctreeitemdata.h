@@ -1,5 +1,5 @@
-#ifndef OPENFILESTREE_H
-#define OPENFILESTREE_H
+#ifndef MISCTREEITEMDATA_H
+#define MISCTREEITEMDATA_H
 
 #include <wx/treectrl.h>
 
@@ -21,18 +21,4 @@ class DLLIMPORT MiscTreeItemData : public wxTreeItemData
         wxEvtHandler *m_owner;
 };
 
-// New Feature: Opened Files tree in Projects tab
-#define USE_OPENFILES_TREE
-
-class DLLIMPORT EditorTreeData : public MiscTreeItemData
-{
-    public:
-        EditorTreeData(wxEvtHandler *owner,const wxString &fullname)
-        { SetOwner(owner);m_fullname = fullname; }
-        wxString GetFullName(){ return m_fullname; }
-        void SetFullName(const wxString &fullname){ m_fullname = fullname; }
-    private:
-        wxString m_fullname;
-};
-
-#endif
+#endif // MISCTREEITEMDATA_H

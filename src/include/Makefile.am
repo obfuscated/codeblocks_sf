@@ -85,9 +85,9 @@ ALLHEADERS = annoyingdialog.h \
 				managedthread.h \
 				manager.h \
 				menuitemsmanager.h \
+				misctreeitemdata.h \
 				multiselectdlg.h \
 				newfromtemplatedlg.h \
-				openfilestree.h \
 				personalitymanager.h \
 				pipedprocess.h \
 				pluginmanager.h \

@@ -13,6 +13,7 @@ usr/share/codeblocks/plugins/libcodecompletion.*
 usr/share/codeblocks/plugins/libcompiler.*
 usr/share/codeblocks/plugins/libdebugger.*
 usr/share/codeblocks/plugins/libdefaultmimehandler.*
+usr/share/codeblocks/plugins/libopenfileslist.*
 usr/share/codeblocks/plugins/libprojectsimporter.*
 usr/share/codeblocks/plugins/libscriptedwizard.*
 usr/share/codeblocks/plugins/libtodo.*
@@ -26,6 +27,7 @@ usr/share/codeblocks/compiler.zip*
 usr/share/codeblocks/debugger.zip*
 usr/share/codeblocks/defaultmimehandler.zip*
 usr/share/codeblocks/manager_resources.zip*
+usr/share/codeblocks/openfileslist.zip*
 usr/share/codeblocks/projectsimporter.zip*
 usr/share/codeblocks/resources.zip
 usr/share/codeblocks/scriptedwizard.zip*

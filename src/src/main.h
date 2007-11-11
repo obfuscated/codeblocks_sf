@@ -168,7 +168,6 @@ class MainFrame : public wxFrame
         void OnHelpPluginMenu(wxCommandEvent& event);
 
         void OnToggleBar(wxCommandEvent& event);
-        void OnToggleOpenFilesTree(wxCommandEvent& event);
         void OnToggleStatusBar(wxCommandEvent& event);
         void OnFocusEditor(wxCommandEvent& event);
         void OnToggleFullScreen(wxCommandEvent& event);

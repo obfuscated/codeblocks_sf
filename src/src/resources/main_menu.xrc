@@ -488,12 +488,6 @@
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
-      <object class="wxMenuItem" name="idViewOpenFilesTree">
-        <label>&amp;Open files list</label>
-        <help>Show/hide open files list</help>
-        <checkable>1</checkable>
-        <enabled>1</enabled>
-      </object>
       <object class="wxMenuItem" name="idViewLogManager">
         <label>&amp;Logs</label>
         <accel>F2</accel>

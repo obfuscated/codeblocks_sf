@@ -178,10 +178,10 @@ void CodeSnippets::OnAttach()
     // set a drop target for the project managers wxFlatNotebook
     m_pPrjMan->GetNotebook()->SetDropTarget(new DropTargets(this));
     // set drop targets on the Project/File tree controls
-    m_pEdMan->GetTree()->SetDropTarget(new DropTargets(this));
+    //m_pEdMan->GetTree()->SetDropTarget(new DropTargets(this));
     // set event hooks
     SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
-    SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    //SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
 
     m_nOnActivateBusy = 0;
     m_ExternalPid = 0;
@@ -874,7 +874,7 @@ bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString)
     if (not pTree) { return false; }
 
     if ( (pTree == m_pPrjMan->GetTree())
-        or (pTree == m_pEdMan->GetTree()) )
+        /*or (pTree == m_pEdMan->GetTree())*/ )
         {/*ok*/;}
     else{ return false; }
     #ifdef LOGGING
@@ -889,9 +889,9 @@ bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString)
     #endif //LOGGING
 
     // Opened Files Tree
-    if ( pTree == m_pEdMan->GetTree() ) {
-        selString = m_pEdMan->GetTreeItemFilename( sel );
-    }//fi Opened Files Tree
+//    if ( pTree == m_pEdMan->GetTree() ) {
+//        selString = m_pEdMan->GetTreeItemFilename( sel );
+//    }//fi Opened Files Tree
 
     // Project Tree
     if ( pTree == m_pPrjMan->GetTree() ) {

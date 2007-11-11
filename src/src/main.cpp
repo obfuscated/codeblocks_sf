@@ -215,7 +215,6 @@ int idViewLayoutSave = XRCID("idViewLayoutSave");
 int idViewToolbars = XRCID("idViewToolbars");
 int idViewToolMain = XRCID("idViewToolMain");
 int idViewManager = XRCID("idViewManager");
-int idViewOpenFilesTree = XRCID("idViewOpenFilesTree");
 int idViewLogManager = XRCID("idViewLogManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
 int idViewScriptConsole = XRCID("idViewScriptConsole");
@@ -424,7 +423,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewToolMain, MainFrame::OnToggleBar)
     EVT_MENU(idViewLogManager, MainFrame::OnToggleBar)
     EVT_MENU(idViewManager, MainFrame::OnToggleBar)
-    EVT_MENU(idViewOpenFilesTree, MainFrame::OnToggleOpenFilesTree)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewScriptConsole, MainFrame::OnViewScriptConsole)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
@@ -2205,16 +2203,12 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
                     wxYES_NO | wxICON_QUESTION) == wxID_YES &&
         ed->SaveAs() && ed->IsOK())
     {
-        wxString newname = ed->GetFilename();
-        if (oldname != newname)
-            Manager::Get()->GetEditorManager()->RenameTreeFile(oldname, newname);
         wxArrayInt targets;
         if (Manager::Get()->GetProjectManager()->AddFileToProject(ed->GetFilename(), project, targets) != 0)
         {
             ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
             ed->SetProjectFile(pf);
             Manager::Get()->GetProjectManager()->RebuildTree();
-            Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
         }
     }
     // verify that the open files are still in sync
@@ -3567,8 +3561,6 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     bool manVis = m_LayoutManager.GetPane(Manager::Get()->GetProjectManager()->GetNotebook()).IsShown();
 
     mbar->Check(idViewManager, manVis);
-    mbar->Check(idViewOpenFilesTree, m_pEdMan && m_pEdMan->IsOpenFilesTreeVisible());
-    mbar->Enable(idViewOpenFilesTree, m_pEdMan);
     mbar->Check(idViewLogManager, m_LayoutManager.GetPane(infoPane).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewScriptConsole, m_pScriptConsole != 0);
@@ -3654,12 +3646,6 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
         DoUpdateStatusBar();
     }
     event.Skip();
-}
-
-void MainFrame::OnToggleOpenFilesTree(wxCommandEvent& event)
-{
-    if (Manager::Get()->GetEditorManager()->OpenFilesTreeSupported())
-        Manager::Get()->GetEditorManager()->ShowOpenFilesTree(!Manager::Get()->GetEditorManager()->IsOpenFilesTreeVisible());
 }
 
 void MainFrame::OnToggleBar(wxCommandEvent& event)

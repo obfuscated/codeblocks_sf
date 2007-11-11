@@ -2749,10 +2749,8 @@ void ProjectManager::EndLoadingWorkspace()
         if (m_pActiveProject)
             m_pTree->Expand(m_pActiveProject->GetProjectNode());
         m_pTree->Expand(m_TreeRoot); // make sure the root node is open
-        Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
         m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
 
-        Manager::Get()->GetEditorManager()->RefreshOpenedFilesTree(true);
         UnfreezeTree(true);
         // sort out any global user vars that need to be defined now (in a batch) :)
         Manager::Get()->GetUserVariableManager()->Arrogate();

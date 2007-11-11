@@ -347,6 +347,27 @@
 					<Add directory="devel" />
 				</Linker>
 			</Target>
+			<Target title="Open files list">
+				<Option output="devel/share/codeblocks/plugins/libopenfileslist.so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="devel/share/codeblocks/plugins" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Option projectIncludeDirsRelation="2" />
+				<Option projectLibDirsRelation="2" />
+				<Compiler>
+					<Add option='-include &quot;sdk.h&quot;' />
+					<Add directory="include" />
+					<Add directory="include/scripting/include" />
+					<Add directory="include/scripting/sqplus" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
+					<Add directory="devel" />
+				</Linker>
+			</Target>
 			<Target title="To-do">
 				<Option output="devel/share/codeblocks/plugins/libtodo.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel/share/codeblocks/plugins" />
@@ -382,9 +403,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;To-do;Autosave;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;To-do;Autosave;" />
-			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;wxAUI;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -618,9 +639,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/newfromtemplatedlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/openfilestree.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/personalitymanager.h">
@@ -1643,6 +1661,12 @@
 		</Unit>
 		<Unit filename="plugins/defaultmimehandler/resources/edit_files_handling.xrc">
 			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins/openfileslist/openfileslistplugin.cpp">
+			<Option target="Open files list" />
+		</Unit>
+		<Unit filename="plugins/openfileslist/openfileslistplugin.h">
+			<Option target="Open files list" />
 		</Unit>
 		<Unit filename="plugins/projectsimporter/devcpploader.cpp">
 			<Option target="Projects-workspaces importer" />

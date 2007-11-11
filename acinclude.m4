@@ -153,6 +153,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the open files list plugin)
+openfiles_default="yes"
+AC_ARG_ENABLE(open-files-list, [AC_HELP_STRING([--enable-open-files-list], [build the open files list plugin (default YES)])],,
+                       enable_openfiles=$openfiles_default)
+AM_CONDITIONAL([BUILD_OPENFILESLIST], [test "x$enable_openfiles" = "xyes"])
+if test "x$enable_openfiles" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the foreign projects importer plugin)
 pimport_default="yes"
 AC_ARG_ENABLE(projects-importer, [AC_HELP_STRING([--enable-projects-importer], [build the foreign projects importer plugin (default YES)])],,
