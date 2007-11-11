@@ -22,7 +22,7 @@
 #include "editormanager.h"
 #include "manager.h"
 #include "projectmanager.h"
-//#include "logmanager.h"
+#include "logmanager.h"
 #include "sdk_events.h"
 #endif
 

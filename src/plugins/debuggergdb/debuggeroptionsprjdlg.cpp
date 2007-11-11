@@ -31,6 +31,7 @@
 #include <wx/listbox.h>
 #include <wx/button.h>
 #include <wx/choice.h>
+#include <wx/checkbox.h>
 #include <cbproject.h>
 #include <editpathdlg.h>
 #include <manager.h>
@@ -52,7 +53,7 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
 	m_LastTargetSel(-1)
 {
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlDebuggerProjectOptions"));
-    
+
     m_OldPaths = m_pDBG->GetSearchDirs(project);
 	m_CurrentRemoteDebugging = m_pDBG->GetRemoteDebuggingMap();
 
@@ -70,7 +71,7 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
         control->Append(project->GetBuildTarget(i)->GetTitle());
     }
     control->SetSelection(-1);
-    
+
     LoadCurrentRemoteDebuggingRecord();
 }
 
@@ -116,11 +117,11 @@ void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
 	ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_LastTargetSel);
 	if (!bt)
 		return;
-		
+
 	RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.find(bt);
 	if (it == m_CurrentRemoteDebugging.end())
 		it = m_CurrentRemoteDebugging.insert(m_CurrentRemoteDebugging.end(), std::make_pair(bt, RemoteDebugging()));
-	
+
 	RemoteDebugging& rd = it->second;
 
 	rd.connType = (RemoteDebugging::ConnectionType)XRCCTRL(*this, "cmbConnType", wxChoice)->GetSelection();
@@ -194,9 +195,9 @@ void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
     XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);
     XRCCTRL(*this, "btnDelete", wxButton)->Enable(en);
-    
+
     en = XRCCTRL(*this, "lstTargets", wxListBox)->GetSelection() != wxNOT_FOUND;
-    
+
     XRCCTRL(*this, "cmbConnType", wxChoice)->Enable(en);
     XRCCTRL(*this, "txtSerial", wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "cmbBaud", wxChoice)->Enable(en);

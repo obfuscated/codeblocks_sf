@@ -19,6 +19,7 @@
     #include "globals.h"
     #include "personalitymanager.h"
     #include "cbexception.h"
+    #include "logmanager.h"
     #include <wx/file.h>
     #include <wx/dir.h>
     #include <wx/log.h> // for wxSafeShowMessage()

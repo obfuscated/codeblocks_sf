@@ -61,6 +61,7 @@
 #include <annoyingdialog.h>
 #include <editorcolourset.h>
 #include <logmanager.h>
+#include <personalitymanager.h>
 
 #include "infopane.h"
 #include "dlgaboutplugin.h"
@@ -448,7 +449,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     /// Shift-Tab bug workaround
     EVT_MENU(idShiftTab,MainFrame::OnShiftTab)
-    
+
     EVT_ADD_LOG_WINDOW(MainFrame::OnAddLogWindow)
     EVT_REMOVE_LOG_WINDOW(MainFrame::OnRemoveLogWindow)
     EVT_SWITCH_TO_LOG_WINDOW(MainFrame::OnSwitchToLogWindow)
@@ -545,7 +546,7 @@ MainFrame::MainFrame(wxWindow* parent)
     LoadWindowState();
 
     ShowHideStartPage();
-    
+
     // create script console (if needed)
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false))
 		ShowHideScriptConsole();
@@ -682,7 +683,7 @@ void MainFrame::SetupGUILogging()
     wxSize clientsize = GetClientSize();
 
 	LogManager* mgr = Manager::Get()->GetLogManager();
-	
+
 	if(!Manager::IsBatchBuild())
 	{
 		infoPane = new InfoPane(this);
@@ -703,7 +704,7 @@ void MainFrame::SetupGUILogging()
 	{
 		m_pBatchBuildDialog = new BatchLogWindow(this, _("Batch build"));
 		infoPane = new InfoPane(m_pBatchBuildDialog);
-		
+
 		// setting &g_null_log causes the app to crash on exit for some reason...
 		mgr->SetLog(new NullLogger, LogManager::app_log);
 		mgr->SetLog(new NullLogger, LogManager::debug_log);
@@ -1567,7 +1568,7 @@ void MainFrame::DoCreateStatusBar()
 
     CreateStatusBar(num);
     SetStatusWidths(num, width);
-    
+
     // here for later usage
 //    m_pProgressBar = new wxGauge(GetStatusBar(), -1, 100);
 #endif // wxUSE_STATUSBAR
@@ -1612,7 +1613,7 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
 {
 	if (!target)
 		return;
-		
+
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     long nbstyle = cfg->ReadInt(_T("/environment/tabs_style"), 0);
     switch (nbstyle)
@@ -2641,7 +2642,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     // Hide the window
     Hide();
-    
+
     if (!Manager::IsBatchBuild())
     {
 		infoPane->Destroy();

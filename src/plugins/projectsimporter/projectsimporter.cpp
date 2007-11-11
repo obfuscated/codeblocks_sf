@@ -14,6 +14,7 @@
     #include <wx/utils.h>
     #include <wx/filename.h>
     #include <wx/fs_zip.h>
+    #include <wx/menu.h>
     #include <wx/xrc/xmlres.h>
 
     #include "globals.h"

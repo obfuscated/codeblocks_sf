@@ -4,6 +4,8 @@
 #include <wx/string.h>
 #include <wx/dynarray.h>
 
+class wxArrayString;
+
 struct Replacers
 {
     wxString from;
@@ -64,16 +66,16 @@ class TAR
 
         TAR(const wxString& filename = 0);
         ~TAR();
-        
+
         bool Open(const wxString& filename);
         void Close();
         void Reset();
-        
+
         bool Next(Record* rec);
         bool ExtractAll(const wxString& dirname, wxString& status, wxArrayString* files = 0);
         bool ExtractFile(Record* rec, const wxString& dirname, wxString& status, wxString* convertedFile = 0);
         Record* FindFile(const wxString& filename);
-        
+
         void ClearReplacers();
         void AddReplacer(const wxString& from, const wxString& to);
     protected:
