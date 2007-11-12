@@ -73,7 +73,8 @@ END_EVENT_TABLE()
 wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
     m_Selected(0),
     m_ToolBar(ToolBar),
-    m_BlockTextChange(false)
+    m_BlockTextChange(false),
+    m_BlockSelect(false)
 {
     wxWindowID id = wxID_ANY;
 	//(*Initialize(wxsToolBarEditor)
@@ -248,6 +249,8 @@ namespace
 
 void wxsToolBarEditor::ApplyChanges()
 {
+    SelectItem(m_Selected); // Store changes
+
     m_ToolBar->GetResourceData()->BeginChange();
     int NewCount = m_Content->GetCount();
     if ( NewCount == 0 )
@@ -337,6 +340,7 @@ wxString wxsToolBarEditor::GetItemLabel(ToolBarItem* Item)
 
 void wxsToolBarEditor::Onm_ContentSelect(wxCommandEvent& event)
 {
+    if ( m_BlockSelect ) return;
     int Selection = m_Content->GetSelection();
     if ( Selection == wxNOT_FOUND )
     {
@@ -352,15 +356,20 @@ void wxsToolBarEditor::Onm_ContentSelect(wxCommandEvent& event)
 void wxsToolBarEditor::Onm_LabelText(wxCommandEvent& event)
 {
     if ( m_BlockTextChange ) return;
+    m_BlockSelect = true;
     if ( m_Selected )
     {
         m_Selected->m_Label = m_Label->GetValue();
-        m_Content->SetString(m_Content->GetSelection(),GetItemLabel(m_Selected));
+        int Selection = m_Content->GetSelection();
+        m_Content->SetString(Selection,GetItemLabel(m_Selected));
+        m_Content->SetSelection(Selection);
     }
+    m_BlockSelect = false;
 }
 
 void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
 {
+    DBGLOG(_T("TEXT CHANGE BLOCK"));
     m_BlockTextChange = true;
     if ( m_Selected != 0 )
     {
@@ -381,7 +390,12 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         }
     }
 
-    if ( m_Selected == Item ) return;
+    if ( m_Selected == Item )
+    {
+        DBGLOG(_T("TEXT CHANGE UNBLOCK (1): %d"),m_Selected);
+        m_BlockTextChange = false;
+        return;
+    }
     m_Selected = Item;
 
     if ( m_Selected )
@@ -449,6 +463,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         }
     }
 
+    DBGLOG(_T("TEXT CHANGE UNBLOCK (2): %d"),m_Selected);
     m_BlockTextChange = false;
 }
 
@@ -480,9 +495,9 @@ void wxsToolBarEditor::OnDownClick(wxCommandEvent& event)
 
 void wxsToolBarEditor::OnNewClick(wxCommandEvent& event)
 {
+    SelectItem(m_Selected);
     ToolBarItem* New = new ToolBarItem();
     New->m_Label = _("New item");
-    SelectItem(m_Selected);
     int SelIndex = m_Content->GetSelection();
     if ( SelIndex == wxNOT_FOUND )
     {

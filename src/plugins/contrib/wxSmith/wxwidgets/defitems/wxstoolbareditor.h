@@ -170,6 +170,7 @@ class wxsToolBarEditor: public wxPanel
         ToolBarItem* m_Selected;
         wxsToolBar* m_ToolBar;
         bool m_BlockTextChange;
+        bool m_BlockSelect;
 
 		DECLARE_EVENT_TABLE()
 };
