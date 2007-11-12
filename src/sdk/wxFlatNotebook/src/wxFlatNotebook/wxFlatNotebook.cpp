@@ -718,6 +718,7 @@ END_EVENT_TABLE()
 wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
 : m_ImageList(NULL)
 , m_iActivePage(-1)
+, m_nFrom(0)
 , m_pDropTarget(NULL)
 , m_nLeftClickZone(wxFNB_NOWHERE)
 , m_customizeOptions(wxFNB_CUSTOM_ALL)
@@ -1196,7 +1197,7 @@ int wxPageContainer::HitTest(const wxPoint& pt, wxPageInfo& pageInfo, int &tabId
 
 			wxRect tabRect = wxRect(pgInfo.GetPosition().x, pgInfo.GetPosition().y,
 				pgInfo.GetSize().x, pgInfo.GetSize().y);
-			
+
 			if(InsideRect(tabRect, pt))
 			{
 				// We have a match

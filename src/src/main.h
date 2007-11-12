@@ -302,7 +302,7 @@ class MainFrame : public wxFrame
         bool m_SmallToolBar;
         bool m_StartupDone;
         bool m_InitiatedShutdown;
-        
+
         bool m_AutoHideLogs;
         int m_AutoHideLockCounter;
 
@@ -313,8 +313,8 @@ class MainFrame : public wxFrame
 
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
 		MenuIDToScript m_MenuIDToScript;
-		
-		typedef std::map<Logger*, size_t> LoggerToInfoPaneIndex; // logger to infpane page index
+
+		typedef std::map<Logger*, int> LoggerToInfoPaneIndex; // logger to infpane page index
 		LoggerToInfoPaneIndex m_LoggerToInfoPaneIndex;
 
         wxDialog* m_pBatchBuildDialog;

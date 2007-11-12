@@ -9,7 +9,8 @@
 #include "loggers.h"
 
 LogSlot::LogSlot()
-	: log(0)
+	: log(0),
+	icon(0)
 {
 }
 
