@@ -20,6 +20,7 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
       wxString name = conf->Read(list[i] + _T("/name"), wxEmptyString);
       hfa.name = conf->Read(list[i] + _T("/file"), wxEmptyString);
       conf->Read(list[i] + _T("/isexec"), &hfa.isExecutable);
+      conf->Read(list[i] + _T("/embeddedviewer"), &hfa.openEmbeddedViewer);
 
       if (!name.IsEmpty() && !hfa.name.IsEmpty())
       {
@@ -54,6 +55,7 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
       conf->Write(key + _T("name"), name);
       conf->Write(key + _T("file"), hfa.name);
       conf->Write(key + _T("isexec"), hfa.isExecutable);
+      conf->Write(key + _T("embeddedviewer"), hfa.openEmbeddedViewer);
     }
   }
 

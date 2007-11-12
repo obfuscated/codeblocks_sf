@@ -148,6 +148,11 @@ MANFrame::~MANFrame()
     }
 }
 
+void MANFrame::LoadPage(const wxString &file)
+{
+    m_htmlWindow->LoadPage(file);
+}
+
 void MANFrame::SetPage(const wxString &contents)
 {
     m_htmlWindow->SetPage(contents);
@@ -190,6 +195,10 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
         }
 
         SetPage(cbC2U(man2html_buffer(cbU2C(man_page))));
+    }
+    else if (wxFileName(link).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
+    {
+    	m_htmlWindow->LoadPage(link);
     }
 }
 

@@ -31,6 +31,7 @@ class HelpConfigDialog : public cbConfigurationPanel
     void ListChange(wxCommandEvent &event);
     void OnCheckbox(wxCommandEvent &event);
     void OnCheckboxExecute(wxCommandEvent &event);
+    void OnCheckboxEmbeddedViewer(wxCommandEvent &event);
     void UpdateUI(wxUpdateUIEvent &event);
 
   private:

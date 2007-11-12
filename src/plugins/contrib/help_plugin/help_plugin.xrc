@@ -161,6 +161,14 @@
               <label>This line represents a full command to be executed</label>
             </object>
           </object>
+          <object class="sizeritem">
+            <option>0</option>
+            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+            <border>5</border>
+            <object class="wxCheckBox" name="chkEmbeddedViewer">
+              <label>Open this file with the embedded help viewer (only for HTML files)</label>
+            </object>
+          </object>
         </object>
 
         <border>8</border>

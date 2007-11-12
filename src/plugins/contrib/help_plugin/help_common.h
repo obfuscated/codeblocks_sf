@@ -15,8 +15,9 @@ class HelpCommon
     {
       wxString name;
       bool isExecutable;
+      bool openEmbeddedViewer;
 
-      HelpFileAttrib() : isExecutable(false) { }
+      HelpFileAttrib() : isExecutable(false), openEmbeddedViewer(false) { }
     };
 
     typedef pair<wxString, HelpFileAttrib> wxStringPair;

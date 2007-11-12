@@ -30,6 +30,7 @@ class MANFrame : public wxPanel
         void SetBaseFontSize(int newsize);
         int GetBaseFontSize() const { return m_baseFontSize; }
         void SetDirs(const wxString &dirs);
+        void LoadPage(const wxString &file);
 
     private:
         void GetMatches(const wxString &keyword, std::vector<wxString> *files_found);

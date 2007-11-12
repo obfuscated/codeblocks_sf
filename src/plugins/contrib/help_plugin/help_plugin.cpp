@@ -221,7 +221,7 @@ void HelpPlugin::OnAttach()
     m_manFrame->SetDirs(all_man_dirs);
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("MANViewer");
-    evt.title = _("Man pages viewer");
+    evt.title = _("Man/Html pages viewer");
     evt.pWindow = m_manFrame;
     evt.dockSide = CodeBlocksDockEvent::dsRight;
     evt.desiredSize.Set(320, 240);
@@ -417,7 +417,6 @@ void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help)
 
   if (!help.IsEmpty())
   {
-    tmp.Append(_("Locate in "));
     tmp.Append(help);
     menu->Append(id, tmp);
   }
@@ -456,7 +455,7 @@ void HelpPlugin::ShowMANViewer(bool show)
     Manager::Get()->GetConfigManager(_T("help_plugin"))->Write(_T("/show_man_viewer"), show);
 }
 
-void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const wxString &keyword)
+void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool openEmbeddedViewer, const wxString &keyword)
 {
   const static wxString http_prefix(_T("http://"));
   const static wxString man_prefix(_T("man:"));
@@ -469,6 +468,15 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, const
   {
     Manager::Get()->GetLogManager()->DebugLog(_T("Executing ") + helpfile);
     wxExecute(helpfile);
+    return;
+  }
+
+  // Operate on help html file links inside embedded viewer
+  if (openEmbeddedViewer && wxFileName(helpfile).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
+  {
+    Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
+	reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
+    ShowMANViewer();
     return;
   }
 
@@ -568,5 +576,5 @@ void HelpPlugin::OnFindItem(wxCommandEvent &event)
 
   int id = event.GetId();
   HelpCommon::HelpFileAttrib hfa = HelpFileFromId(id);
-  LaunchHelp(hfa.name, hfa.isExecutable, text);
+  LaunchHelp(hfa.name, hfa.isExecutable, hfa.openEmbeddedViewer, text);
 }

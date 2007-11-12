@@ -33,6 +33,7 @@ BEGIN_EVENT_TABLE(HelpConfigDialog, wxPanel)
   EVT_LISTBOX(XRCID("lstHelp"), HelpConfigDialog::ListChange)
   EVT_CHECKBOX(XRCID("chkDefault"), HelpConfigDialog::OnCheckbox)
   EVT_CHECKBOX(XRCID("chkExecute"), HelpConfigDialog::OnCheckboxExecute)
+  EVT_CHECKBOX(XRCID("chkEmbeddedViewer"), HelpConfigDialog::OnCheckboxEmbeddedViewer)
 END_EVENT_TABLE()
 
 
@@ -58,6 +59,7 @@ m_pPlugin(plugin)
     m_LastSel = 0;
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[0].second.name);
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[0].second.isExecutable);
+    XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(m_Vector[0].second.openEmbeddedViewer);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == 0);
   }
 }
@@ -80,12 +82,14 @@ void HelpConfigDialog::UpdateEntry(int index)
   {
   	m_Vector[index].second.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
   	m_Vector[index].second.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
+  	m_Vector[index].second.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
   }
   else
   {
     HelpCommon::HelpFileAttrib hfa;
     hfa.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
     hfa.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
+    hfa.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
   	m_Vector.push_back(make_pair(lst->GetString(index), hfa));
   }
 }
@@ -127,12 +131,14 @@ void HelpConfigDialog::ListChange(wxCommandEvent& event)
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second.name);
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.isExecutable);
+    XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.openEmbeddedViewer);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == lst->GetSelection());
   }
   else
   {
   	XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   	XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
+  	XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
   }
 }
 
@@ -167,6 +173,7 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
     lst->SetSelection(lst->GetCount() - 1);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
 
     if (cbMessageBox(_("Would you like to browse for the help file?\n(Check \"Help->Plugins->Help plugin\" for a reason you would like to choose No)"), _("Browse"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
@@ -227,11 +234,13 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].first);
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.isExecutable);
+    XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.openEmbeddedViewer);
   }
   else
   {
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   }
 
@@ -312,6 +321,20 @@ void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent &event)
   }
 }
 
+void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent& event)
+{
+  int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+
+  if (event.IsChecked())
+  {
+    m_Vector[current].second.openEmbeddedViewer = true;
+  }
+  else
+  {
+    m_Vector[current].second.openEmbeddedViewer = false;
+  }
+}
+
 void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
 {
   int sel = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
@@ -322,6 +345,7 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
   XRCCTRL(*this, "txtHelp", wxTextCtrl)->Enable(sel != -1);
   XRCCTRL(*this, "chkDefault", wxCheckBox)->Enable(sel != -1);
   XRCCTRL(*this, "chkExecute", wxCheckBox)->Enable(sel != -1);
+  XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->Enable(sel != -1);
 
   if (sel == -1 || count == 1)
   {
