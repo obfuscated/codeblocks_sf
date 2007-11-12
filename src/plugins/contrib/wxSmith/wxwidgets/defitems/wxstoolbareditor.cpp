@@ -369,7 +369,7 @@ void wxsToolBarEditor::Onm_LabelText(wxCommandEvent& event)
 
 void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
 {
-    DBGLOG(_T("TEXT CHANGE BLOCK"));
+//killerbot : DBGLOG no longer exists    DBGLOG(_T("TEXT CHANGE BLOCK"));
     m_BlockTextChange = true;
     if ( m_Selected != 0 )
     {
@@ -392,7 +392,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
 
     if ( m_Selected == Item )
     {
-        DBGLOG(_T("TEXT CHANGE UNBLOCK (1): %d"),m_Selected);
+//killerbot : DBGLOG no longer exists        DBGLOG(_T("TEXT CHANGE UNBLOCK (1): %d"),m_Selected);
         m_BlockTextChange = false;
         return;
     }
@@ -463,7 +463,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
         }
     }
 
-    DBGLOG(_T("TEXT CHANGE UNBLOCK (2): %d"),m_Selected);
+//killerbot : DBGLOG no longer exists    DBGLOG(_T("TEXT CHANGE UNBLOCK (2): %d"),m_Selected);
     m_BlockTextChange = false;
 }
 
