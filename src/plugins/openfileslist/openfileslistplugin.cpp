@@ -294,36 +294,36 @@ void OpenFilesListPlugin::OnUpdateUI(wxUpdateUIEvent& event)
 
 void OpenFilesListPlugin::OnEditorActivated(CodeBlocksEvent& event)
 {
-//	LogManager::Get()->Log(_T("OnEditorActivated: ") + event.GetEditor()->GetFilename());
+//	Manager::Get()->GetLogManager()->Log(_T("OnEditorActivated: ") + event.GetEditor()->GetFilename());
 	RefreshOpenFilesTree(event.GetEditor());
 }
 
 void OpenFilesListPlugin::OnEditorClosed(CodeBlocksEvent& event)
 {
-//	LogManager::Get()->Log(_T("OnEditorClosed: ") + event.GetEditor()->GetFilename());
+//	Manager::Get()->GetLogManager()->Log(_T("OnEditorClosed: ") + event.GetEditor()->GetFilename());
 	RefreshOpenFilesTree(event.GetEditor(), true);
 }
 
 void OpenFilesListPlugin::OnEditorDeactivated(CodeBlocksEvent& event)
 {
-//	LogManager::Get()->Log(_T("OnEditorDeactivated: ") + event.GetEditor()->GetFilename());
+//	Manager::Get()->GetLogManager()->Log(_T("OnEditorDeactivated: ") + event.GetEditor()->GetFilename());
 	RefreshOpenFilesTree(event.GetEditor());
 }
 
 void OpenFilesListPlugin::OnEditorModified(CodeBlocksEvent& event)
 {
-//	LogManager::Get()->Log(_T("OnEditorModified: ") + event.GetEditor()->GetFilename());
+//	Manager::Get()->GetLogManager()->Log(_T("OnEditorModified: ") + event.GetEditor()->GetFilename());
 	RefreshOpenFilesTree(event.GetEditor());
 }
 
 void OpenFilesListPlugin::OnEditorOpened(CodeBlocksEvent& event)
 {
-//	LogManager::Get()->Log(_T("OnEditorOpened: ") + event.GetEditor()->GetFilename());
+//	Manager::Get()->GetLogManager()->Log(_T("OnEditorOpened: ") + event.GetEditor()->GetFilename());
 	RefreshOpenFilesTree(event.GetEditor());
 }
 
 void OpenFilesListPlugin::OnEditorSaved(CodeBlocksEvent& event)
 {
-//	LogManager::Get()->Log(_T("OnEditorSaved: ") + event.GetEditor()->GetFilename());
+//	Manager::Get()->GetLogManager()->Log(_T("OnEditorSaved: ") + event.GetEditor()->GetFilename());
 	RefreshOpenFilesTree(event.GetEditor());
 }

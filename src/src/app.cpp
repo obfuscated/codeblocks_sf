@@ -939,11 +939,11 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
 
                     if(parser.Found(_T("no-log")) == false)
-                        LogManager::Get()->SetLog(new TextCtrlLogger, LogManager::app_log);
+                        Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::app_log);
                     if(parser.Found(_T("log-to-file")))
-                        LogManager::Get()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
+                        Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
                     if(m_HasDebugLog)
-                        LogManager::Get()->SetLog(new TextCtrlLogger, LogManager::debug_log);
+                        Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::debug_log);
                 }
             }
             break;

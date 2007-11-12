@@ -163,7 +163,7 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
 
     if(any_nonloggers)
     {
-        menu.AppendSeparator();
+        view->AppendSeparator();
         for(int i = 0; i < num_pages; ++i)
         {
             if(page[i].window && !page[i].islogger)
@@ -234,9 +234,9 @@ bool InfoPane::DeleteLogger(Logger* l)
     {
         if(page[i].logger == l)
         {
-        	int index = LogManager::Get()->FindIndex(l);
+        	int index = Manager::Get()->GetLogManager()->FindIndex(l);
         	if (index != -1)
-				LogManager::Get()->DeleteLog(index);
+				Manager::Get()->GetLogManager()->DeleteLog(index);
             
             index = GetPageIndex(page[i].window);
             if (index != -1)
