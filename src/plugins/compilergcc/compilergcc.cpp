@@ -108,69 +108,71 @@ const int idBuildLog = wxNewId();
 
 class BuildLogger : public TextCtrlLogger
 {
-	wxPanel* panel;
-	wxBoxSizer* sizer;
+    wxPanel* panel;
+    wxBoxSizer* sizer;
 public:
-	wxGauge* progress;
+    wxGauge* progress;
 
-	BuildLogger() : TextCtrlLogger(true), panel(0), sizer(0), progress(0) {}
+    BuildLogger() : TextCtrlLogger(true), panel(0), sizer(0), progress(0) {}
 
-	void UpdateSettings()
-	{
-		TextCtrlLogger::UpdateSettings();
+    void UpdateSettings()
+    {
+        TextCtrlLogger::UpdateSettings();
 
-		style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
-		style[caption].SetFont(style[error].GetFont());
-		style[warning].SetTextColour(*wxBLUE);
-		style[error].SetFont(style[info].GetFont());
-	}
+        style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
+        style[caption].SetFont(style[error].GetFont());
+        style[warning].SetTextColour(*wxBLUE);
+        style[error].SetFont(style[info].GetFont());
+    }
 
-	virtual wxWindow* CreateControl(wxWindow* parent)
-	{
-		panel = new wxPanel(parent);
-		
-		TextCtrlLogger::CreateControl(panel);
-		control->SetId(idBuildLog);
-		
-		sizer = new wxBoxSizer(wxVERTICAL);
-		sizer->Add(control, 1, wxEXPAND, 0);
-		panel->SetSizer(sizer);
-		
-		return panel;
-	}
+    virtual wxWindow* CreateControl(wxWindow* parent)
+    {
+        panel = new wxPanel(parent);
 
-	void AddBuildProgressBar()
-	{
-		if (!progress)
-		{
-			progress = new wxGauge(panel, -1, 0, wxDefaultPosition, wxSize(-1, 12));
-			sizer->Add(progress, 0, wxEXPAND);
-			sizer->Layout();
-		}
-	}
+        TextCtrlLogger::CreateControl(panel);
+        control->SetId(idBuildLog);
 
-	void RemoveBuildProgressBar()
-	{
-		if (progress)
-		{
-			sizer->Detach(progress);
-			progress->Destroy();
-			progress = 0;
-			sizer->Layout();
-		}
-	}
-	
-	void OpenLink(long urlStart, long urlEnd)
-	{
-		if (!control)
-			return;
-		wxString url = control->GetRange(urlStart, urlEnd);
-		cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
-		if (p)
-			p->OpenFile(url);
-		else
-			wxLaunchDefaultBrowser(url);
-	}
+        sizer = new wxBoxSizer(wxVERTICAL);
+        sizer->Add(control, 1, wxEXPAND, 0);
+        panel->SetSizer(sizer);
+
+        return panel;
+    }
+
+    void AddBuildProgressBar()
+    {
+        if (!progress)
+        {
+            progress = new wxGauge(panel, -1, 0, wxDefaultPosition, wxSize(-1, 12));
+            sizer->Add(progress, 0, wxEXPAND);
+            sizer->Layout();
+        }
+    }
+
+    void RemoveBuildProgressBar()
+    {
+        if (progress)
+        {
+            sizer->Detach(progress);
+            progress->Destroy();
+            progress = 0;
+            sizer->Layout();
+        }
+    }
+
+    void OpenLink(long urlStart, long urlEnd)
+    {
+        if (!control)
+            return;
+        wxString url = control->GetRange(urlStart, urlEnd);
+        if (platform::windows && url.StartsWith(_T("file://")))
+            url.Remove(0, 7);
+        cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
+        if (p)
+            p->OpenFile(url);
+        else
+            wxLaunchDefaultBrowser(url);
+    }
 };
 
 namespace
@@ -293,8 +295,8 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuClearErrors,                     CompilerGCC::Dispatcher)
     EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
     EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
-    
-    EVT_TEXT_URL(idBuildLog,						CompilerGCC::TextURL)
+
+    EVT_TEXT_URL(idBuildLog,                        CompilerGCC::TextURL)
 
     EVT_CHOICE(idToolTarget,                      CompilerGCC::OnSelectTarget)
 
@@ -445,14 +447,14 @@ void CompilerGCC::OnAttach()
     Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd1);
     if (!Manager::IsBatchBuild())
     {
-		CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd2);
+        CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
+        Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd2);
     }
 
     m_LogBuildProgressPercentage = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false);
     bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
     if (hasBuildProg)
-		m_Log->AddBuildProgressBar();
+        m_Log->AddBuildProgressBar();
 
     // set default compiler for new projects
     CompilerFactory::SetDefaultCompiler(Manager::Get()->GetConfigManager(_T("compiler"))->Read(_T("/default_compiler"), _T("gcc")));
@@ -470,7 +472,7 @@ void CompilerGCC::OnAttach()
     else
         ScriptBindings::gBuildLogId = -1;
 
-	// register event sink
+    // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectUnloaded));
@@ -487,16 +489,16 @@ void CompilerGCC::OnRelease(bool appShutDown)
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
     if (Manager::Get()->GetLogManager())
     {
-    	// for batch builds, the log is deleted by the manager
-    	if (!Manager::IsBatchBuild())
-    	{
-			CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_Log);
-			Manager::Get()->GetAppWindow()->ProcessEvent(evt);
-    	}
+        // for batch builds, the log is deleted by the manager
+        if (!Manager::IsBatchBuild())
+        {
+            CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_Log);
+            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        }
         m_Log = 0;
 
-		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
         m_pListLog = 0;
     }
 
@@ -536,11 +538,11 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 //        SetupEnvironment();
         Manager::Get()->GetMacrosManager()->Reset();
 
-		bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
-		if (hasBuildProg)
-			m_Log->AddBuildProgressBar();
-		else
-			m_Log->RemoveBuildProgressBar();
+        bool hasBuildProg = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/bar"), false);
+        if (hasBuildProg)
+            m_Log->AddBuildProgressBar();
+        else
+            m_Log->RemoveBuildProgressBar();
     }
 //    delete panel;
     return 0;
@@ -708,7 +710,7 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         OnRebuildAll(event);
 
     if (eventId == idMenuProjectCompilerOptions ||
-		eventId == idMenuProjectCompilerOptionsFromProjectManager)
+        eventId == idMenuProjectCompilerOptionsFromProjectManager)
         OnProjectCompilerOptions(event);
 
     if (eventId == idMenuTargetCompilerOptions)
@@ -751,9 +753,9 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
 void CompilerGCC::TextURL(wxTextUrlEvent& event)
 {
     if (event.GetId() == idBuildLog && event.GetMouseEvent().ButtonDown(wxMOUSE_BTN_LEFT))
-    	m_Log->OpenLink(event.GetURLStart(), event.GetURLEnd());
-	else
-		event.Skip();
+        m_Log->OpenLink(event.GetURLStart(), event.GetURLEnd());
+    else
+        event.Skip();
 }
 
 void CompilerGCC::SetupEnvironment()
@@ -808,7 +810,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     {
         if (!extraPaths[i].IsEmpty())
         {
-        	Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPaths[i]);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(extraPaths[i]);
             pathList.Add(extraPaths[i]);
         }
     }
@@ -987,9 +989,9 @@ void CompilerGCC::ClearLog()
 {
     if (m_IsWorkspaceOperation)
         return;
-	
-	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_Log);
-	Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+
+    CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_Log);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
 
     if (m_Log)
         m_Log->Clear();
@@ -1063,8 +1065,8 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 
     if (m_Log->progress)
     {
-    	m_Log->progress->SetRange(m_MaxProgress);
-    	m_Log->progress->SetValue(m_CurrentProgress);
+        m_Log->progress->SetRange(m_MaxProgress);
+        m_Log->progress->SetValue(m_CurrentProgress);
     }
 }
 
@@ -1243,8 +1245,8 @@ int CompilerGCC::DoRunQueue()
         return DoRunQueue(); // move on
     }
 
-	wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
-	wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
+    wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
+    wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
 
     bool pipe = true;
     int flags = wxEXEC_ASYNC;
@@ -1254,20 +1256,20 @@ int CompilerGCC::DoRunQueue()
         flags |= wxEXEC_NOHIDE;
         dir = m_CdRun;
 
-		// setup dynamic linker path
-		Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-		if (compiler)
-		{
-			wxString newLibPath;
-			const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-			newLibPath << _T(".") << libPathSep;
-			newLibPath << GetStringFromArray(compiler->GetLinkerSearchDirs(cmd->target), libPathSep);
-			if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
-				newLibPath << libPathSep;
-			newLibPath << oldLibPath;
-			wxSetEnv(LIBRARY_ENVVAR, newLibPath);
-//			LogMessage(LIBRARY_ENVVAR _T("=") + newLibPath, cltInfo);
-		}
+        // setup dynamic linker path
+        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        if (compiler)
+        {
+            wxString newLibPath;
+            const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+            newLibPath << _T(".") << libPathSep;
+            newLibPath << GetStringFromArray(compiler->GetLinkerSearchDirs(cmd->target), libPathSep);
+            if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+                newLibPath << libPathSep;
+            newLibPath << oldLibPath;
+            wxSetEnv(LIBRARY_ENVVAR, newLibPath);
+//            LogMessage(LIBRARY_ENVVAR _T("=") + newLibPath, cltInfo);
+        }
     }
 
     // special shell used only for build commands
@@ -1284,7 +1286,7 @@ int CompilerGCC::DoRunQueue()
     }
 
     // create a new process
-	m_ProcessOutputFiles[procIndex] = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString();
+    m_ProcessOutputFiles[procIndex] = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString();
     m_Processes[procIndex] = new PipedProcess((void**)&m_Processes[procIndex], this, idGCCProcess1 + procIndex, pipe, dir);
     m_Pid[procIndex] = wxExecute(cmd->command, flags, m_Processes[procIndex]);
     if ( !m_Pid[procIndex] )
@@ -1299,8 +1301,8 @@ int CompilerGCC::DoRunQueue()
     else
         m_timerIdleWakeUp.Start(100);
 
-	// restore dynamic linker path
-	wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
+    // restore dynamic linker path
+    wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
 
     delete cmd;
     return DoRunQueue();
@@ -1613,8 +1615,8 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
     if (!CompilerValid(target))
         return;
 
-	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-	Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+    CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+    Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
 
     if (!prj)
         prj = m_Project;
@@ -1768,23 +1770,23 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     if (cd.IsRelative())
         cd.MakeAbsolute(m_Project->GetBasePath());
     m_CdRun = cd.GetFullPath();
-	wxString baseDir = ConfigManager::GetExecutableFolder();
+    wxString baseDir = ConfigManager::GetExecutableFolder();
 
     wxString titleStr = platform::windows
-						? strQUOTE + m_Project->GetTitle() + strQUOTE
-						: EscapeSpaces(m_Project->GetTitle());
+                        ? strQUOTE + m_Project->GetTitle() + strQUOTE
+                        : EscapeSpaces(m_Project->GetTitle());
     wxString dirStr = platform::windows
-						? strQUOTE + m_CdRun + strQUOTE
-						: EscapeSpaces(m_CdRun);
+                        ? strQUOTE + m_CdRun + strQUOTE
+                        : EscapeSpaces(m_CdRun);
     wxString crunnStr = platform::windows
-						? strQUOTE + baseDir + strSLASH + strCONSOLE_RUNNER + strQUOTE
-						: EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER);
+                        ? strQUOTE + baseDir + strSLASH + strCONSOLE_RUNNER + strQUOTE
+                        : EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER);
     wxString hostapStr = platform::windows
-						? strQUOTE + target->GetHostApplication() + strQUOTE
-						: EscapeSpaces(target->GetHostApplication());
+                        ? strQUOTE + target->GetHostApplication() + strQUOTE
+                        : EscapeSpaces(target->GetHostApplication());
     wxString execStr = platform::windows
-						? strQUOTE + f.GetFullPath() + strQUOTE
-						: EscapeSpaces(f.GetFullPath());
+                        ? strQUOTE + f.GetFullPath() + strQUOTE
+                        : EscapeSpaces(f.GetFullPath());
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
@@ -1950,8 +1952,8 @@ int CompilerGCC::Clean(const wxString& target)
 
     // generate build jobs
     PreprocessJob(m_Project, realTarget);
-	if (m_BuildJobTargetsList.empty())
-		return -1;
+    if (m_BuildJobTargetsList.empty())
+        return -1;
 
     // loop all jobs and add them in the queue
     while (!m_BuildJobTargetsList.empty())
@@ -2343,14 +2345,14 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetProjects()->Item(deps[i]);
 
-		if (!prj->SupportsCurrentPlatform())
-		{
-			wxString msg;
-			msg.Printf(_T("\"%s\" does not support the current platform. Skipping..."),
-						prj->GetTitle().c_str());
-			Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
-			continue;
-		}
+        if (!prj->SupportsCurrentPlatform())
+        {
+            wxString msg;
+            msg.Printf(_T("\"%s\" does not support the current platform. Skipping..."),
+                        prj->GetTitle().c_str());
+            Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
+            continue;
+        }
 
         ExpandTargets(prj, targetName, tlist);
 
@@ -2362,23 +2364,23 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         // add all matching targets in the job list
         for (size_t x = 0; x < tlist.GetCount(); ++x)
         {
-        	ProjectBuildTarget* tgt = prj->GetBuildTarget(tlist[x]);
-        	if (!CompilerValid(tgt))
-        	{
-        		wxString msg;
-        		msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
-							prj->GetTitle().c_str(), tlist[x].c_str());
-        		Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
-				continue;
-        	}
-        	else if (!tgt->SupportsCurrentPlatform())
-        	{
-        		wxString msg;
-        		msg.Printf(_T("\"%s - %s\" does not support the current platform. Skipping..."),
-							prj->GetTitle().c_str(), tlist[x].c_str());
-        		Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
-				continue;
-        	}
+            ProjectBuildTarget* tgt = prj->GetBuildTarget(tlist[x]);
+            if (!CompilerValid(tgt))
+            {
+                wxString msg;
+                msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
+                            prj->GetTitle().c_str(), tlist[x].c_str());
+                Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
+                continue;
+            }
+            else if (!tgt->SupportsCurrentPlatform())
+            {
+                wxString msg;
+                msg.Printf(_T("\"%s - %s\" does not support the current platform. Skipping..."),
+                            prj->GetTitle().c_str(), tlist[x].c_str());
+                Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
+                continue;
+            }
             BuildJobTarget bjt;
             bjt.project = prj;
             bjt.targetName = tlist[x];
@@ -2392,7 +2394,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
     // were there any jobs generated?
     if (m_BuildJobTargetsList.empty())
     {
-    	NotifyJobDone(true);
+        NotifyJobDone(true);
     }
 
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Done creating deps")));
@@ -2547,8 +2549,8 @@ int CompilerGCC::Build(const wxString& target)
 
         // generate build jobs
         PreprocessJob(m_Project, realTarget);
-		if (m_BuildJobTargetsList.empty())
-			return -1;
+        if (m_BuildJobTargetsList.empty())
+            return -1;
 
         // loop all jobs and add them in the queue
         while (!m_BuildJobTargetsList.empty())
@@ -2565,8 +2567,8 @@ int CompilerGCC::Build(const wxString& target)
     else
     {
         PreprocessJob(m_Project, realTarget);
-		if (m_BuildJobTargetsList.empty())
-			return -1;
+        if (m_BuildJobTargetsList.empty())
+            return -1;
         InitBuildState(bjProject, realTarget);
         if (DoBuild())
             return -2;
@@ -2604,9 +2606,9 @@ int CompilerGCC::Rebuild(const wxString& target)
 
 //    Manager::Get()->GetMacrosManager()->Reset();
 
-	Compiler* cmp = CompilerFactory::GetCompiler(m_CompilerId);
-	if (cmp)
-		cmp->Init(m_Project);
+    Compiler* cmp = CompilerFactory::GetCompiler(m_CompilerId);
+    if (cmp)
+        cmp->Init(m_Project);
 
     if (UseMake())
     {
@@ -2615,8 +2617,8 @@ int CompilerGCC::Rebuild(const wxString& target)
 
         // generate build jobs
         PreprocessJob(m_Project, realTarget);
-		if (m_BuildJobTargetsList.empty())
-			return -1;
+        if (m_BuildJobTargetsList.empty())
+            return -1;
 
         // loop all jobs and add them in the queue
         while (!m_BuildJobTargetsList.empty())
@@ -2675,8 +2677,8 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
     // create list of jobs to run (project->realTarget pairs)
     PreprocessJob(0, realTarget);
-	if (m_BuildJobTargetsList.empty())
-		return -1;
+    if (m_BuildJobTargetsList.empty())
+        return -1;
 
     InitBuildState(bjWorkspace, realTarget);
 
@@ -3232,9 +3234,9 @@ void CompilerGCC::OnProjectLoaded(CodeBlocksEvent& event)
 
 void CompilerGCC::OnProjectUnloaded(CodeBlocksEvent& event)
 {
-	// just make sure we don't keep an invalid pointer around
-	if (m_Project == event.GetProject())
-		m_Project = 0;
+    // just make sure we don't keep an invalid pointer around
+    if (m_Project == event.GetProject())
+        m_Project = 0;
 }
 
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
@@ -3314,11 +3316,11 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     errors.Add(line);
     errors.Add(msg);
 
-	Logger::level lv = Logger::info;
-	if (lt == cltError)
-		lv = Logger::error;
-	else if (lt == cltWarning)
-		lv = Logger::warning;
+    Logger::level lv = Logger::info;
+    if (lt == cltError)
+        lv = Logger::error;
+    else if (lt == cltWarning)
+        lv = Logger::warning;
 
     m_pListLog->Append(errors, lv);
 //    m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
@@ -3368,29 +3370,29 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
     // log window
     if (log & ltMessages)
     {
-    	Logger::level lv = isTitle ? Logger::caption : Logger::info;
+        Logger::level lv = isTitle ? Logger::caption : Logger::info;
         if (forceErrorColour)
-			lv = Logger::critical;
+            lv = Logger::critical;
         else if (lt == cltError)
             lv = Logger::error;
         else if (lt == cltWarning)
             lv = Logger::warning;
 
-		wxString progressMsg;
-		if (updateProgress && m_CurrentProgress < m_MaxProgress)
-		{
-			++m_CurrentProgress;
-			if (m_LogBuildProgressPercentage)
-			{
-				float p = (float)(m_CurrentProgress * 100.0f) / (float)m_MaxProgress;
-				progressMsg.Printf(_T("[%5.1f%%] "), p);
-			}
-			if (m_Log->progress)
-			{
-				m_Log->progress->SetRange(m_MaxProgress);
-				m_Log->progress->SetValue(m_CurrentProgress);
-			}
-		}
+        wxString progressMsg;
+        if (updateProgress && m_CurrentProgress < m_MaxProgress)
+        {
+            ++m_CurrentProgress;
+            if (m_LogBuildProgressPercentage)
+            {
+                float p = (float)(m_CurrentProgress * 100.0f) / (float)m_MaxProgress;
+                progressMsg.Printf(_T("[%5.1f%%] "), p);
+            }
+            if (m_Log->progress)
+            {
+                m_Log->progress->SetRange(m_MaxProgress);
+                m_Log->progress->SetValue(m_CurrentProgress);
+            }
+        }
 
         Manager::Get()->GetLogManager()->Log(progressMsg + message, m_PageIndex, lv);
         Manager::Get()->GetLogManager()->LogToStdOut(progressMsg + message);
@@ -3488,36 +3490,36 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
     m_Processes[procIndex] = 0;
     m_LastExitCode = exitCode;
 
-	if (exitCode == 0 && !m_ProcessOutputFiles[procIndex].IsEmpty())
-	{
-		wxFFile f(m_ProcessOutputFiles[procIndex].c_str(), _T("r"));
-		if (f.IsOpened())
-		{
-			size_t size = f.Length();
-			f.Close();
+    if (exitCode == 0 && !m_ProcessOutputFiles[procIndex].IsEmpty())
+    {
+        wxFFile f(m_ProcessOutputFiles[procIndex].c_str(), _T("r"));
+        if (f.IsOpened())
+        {
+            size_t size = f.Length();
+            f.Close();
 
-			float displaySize;
-			wxString units;
-			if (size < 1024)
-			{
-				displaySize = (float)size;
-				units = _("bytes");
-			}
-			else if (size < 1048576)
-			{
-				displaySize = (float)size / 1024.0f;
-				units = _("KB");
-			}
-			else
-			{
-				displaySize = (float)size / 1048576.0f;
-				units = _("MB");
-			}
-			wxString msg;
-			msg.Printf(_("Output size is %.2f %s"), displaySize, units.c_str());
-			LogMessage(msg, cltNormal);
-		}
-	}
+            float displaySize;
+            wxString units;
+            if (size < 1024)
+            {
+                displaySize = (float)size;
+                units = _("bytes");
+            }
+            else if (size < 1048576)
+            {
+                displaySize = (float)size / 1024.0f;
+                units = _("KB");
+            }
+            else
+            {
+                displaySize = (float)size / 1048576.0f;
+                units = _("MB");
+            }
+            wxString msg;
+            msg.Printf(_("Output size is %.2f %s"), displaySize, units.c_str());
+            LogMessage(msg, cltNormal);
+        }
+    }
 
     if (m_CommandQueue.GetCount() != 0 && exitCode == 0)
     {
@@ -3584,11 +3586,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         {
             if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
             {
-				CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-				Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+                Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
             }
-        	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-			Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+            CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+            Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
 
             m_pListLog->FocusError(m_Errors.GetFirstError());
             // Build is not completed, so clear the progress bar
@@ -3609,16 +3611,16 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
                 if (m_Errors.GetCount(cltWarning) &&
                     Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
                 {
-					CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-					Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                    CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+                    Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
 
-					CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-					Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+                    CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+                    Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
                 }
                 else // if message manager is auto-hiding, unlock it (i.e. close it)
                 {
-					CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
-					Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                    CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
+                    Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
                 }
             }
         }
