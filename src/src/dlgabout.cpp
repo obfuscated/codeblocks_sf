@@ -106,6 +106,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Yiannis Mandravellos: Project leader - Core developer\n"
         "Thomas Denk         : Core developer\n"
         "Ricardo Garcia      : All-hands person\n"
+        "Biplab Modak        : Developer\n"
+        "Martin Halle        : Developer\n"
         "\"tiwag\"             : Developer\n"
         "\n"
         "Contributors (in no special order):\n"

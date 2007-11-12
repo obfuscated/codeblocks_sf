@@ -684,7 +684,7 @@ void wxsItemResData::RebuildSourceCode()
             }
 
             wxsCoder::Get()->Flush(500);
-            //DBGLOG(_T("wxSmith: New code built in %d milis"),SW.Time());
+            //Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: New code built in %d milis"),SW.Time()));
 
             break;
         }

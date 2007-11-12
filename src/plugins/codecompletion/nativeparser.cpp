@@ -802,7 +802,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
 #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
             {
-//				DBGLOG(_T("Block:\n%s"), buffer.c_str());
+//				Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
                 Manager::Get()->GetLogManager()->DebugLog(_T("Local tokens:"));
                 for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
                 {

@@ -352,7 +352,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     if ( !Test )
     {
     	// Something went wrong - default factory is not working ?
-    	DBGLOG(_T("wxSmith: Internal error - did not found one of base items when importing XRC"));
+    	Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Internal error - did not found one of base items when importing XRC")));
     	return;
     }
 

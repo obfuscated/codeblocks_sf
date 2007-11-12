@@ -80,7 +80,7 @@ EnvVarsProjectOptionsDlg::~EnvVarsProjectOptionsDlg()
 void EnvVarsProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("OnUpdateUI"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnUpdateUI")));
 #endif
 
   wxCheckBox* checkbox_control = XRCCTRL(*this, "chkEnvvarSet", wxCheckBox);
@@ -98,7 +98,7 @@ void EnvVarsProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 void EnvVarsProjectOptionsDlg::OnApply()
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("OnApply"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnApply")));
 #endif
 
   wxCheckBox* checkbox_control = XRCCTRL(*this, "chkEnvvarSet", wxCheckBox);

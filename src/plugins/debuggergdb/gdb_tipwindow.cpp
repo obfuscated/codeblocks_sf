@@ -362,7 +362,7 @@ wxSize GDBTipWindowView::GetTextSize(wxArrayString& array, const wxString& text,
     wxSize ret;
     ret.x = widthMax;
     ret.y = array.GetCount() * m_parent->m_heightLine;
-    //DBGLOG(_T("text='%s', y=%d, m_parent->m_heightLine=%d"), text.c_str(), ret.y, m_parent->m_heightLine);
+    //Manager::Get()->GetLogManager()->DebugLog(F(_T("text='%s', y=%d, m_parent->m_heightLine=%d"), text.c_str(), ret.y, m_parent->m_heightLine));
     return ret;
 }
 

@@ -282,7 +282,7 @@ void AdvancedCompilerOptionsDlg::OnCommandsChange(wxCommandEvent& event)
 {
 	int cmd = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
 	int ext = XRCCTRL(*this, "lstExt", wxChoice)->GetSelection();
-//	DBGLOG(_T("cmd=%d (%d), ext=%d (%d)"), cmd, m_LastCmdIndex, ext, m_LastExtIndex);
+//	Manager::Get()->GetLogManager()->DebugLog(F(_T("cmd=%d (%d), ext=%d (%d)"), cmd, m_LastCmdIndex, ext, m_LastExtIndex));
 	ReadExtensions(cmd);
     DisplayCommand(cmd,ext);
 }
@@ -291,7 +291,7 @@ void AdvancedCompilerOptionsDlg::OnExtChange(wxCommandEvent& event)
 {
 	int cmd = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
 	int ext = XRCCTRL(*this, "lstExt", wxChoice)->GetSelection();
-//	DBGLOG(_T("cmd=%d (%d), ext=%d (%d)"), cmd, m_LastCmdIndex, ext, m_LastExtIndex);
+//	Manager::Get()->GetLogManager()->DebugLog(F(_T("cmd=%d (%d), ext=%d (%d)"), cmd, m_LastCmdIndex, ext, m_LastExtIndex));
     DisplayCommand(cmd,ext);
 }
 

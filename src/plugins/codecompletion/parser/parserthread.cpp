@@ -375,7 +375,7 @@ void ParserThread::DoParse()
         if (token.IsEmpty())
             continue;
 #if 0
-        DBGLOG(_T("m_Str='%s', token='%s'"), m_Str.c_str(), token.c_str());
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("m_Str='%s', token='%s'"), m_Str.c_str(), token.c_str()));
 #endif
 
         if (token==ParserConsts::semicolon)
@@ -628,7 +628,7 @@ void ParserThread::DoParse()
                     peek = m_Tokenizer.PeekToken();
                     if (peek==ParserConsts::dcolon)
                     {
-//                        DBGLOG(_T("peek='::', token='") + token + _T("', m_LastToken='") + m_LastToken + _T("', m_Str='") + m_Str + _T("'"));
+//                        Manager::Get()->GetLogManager()->DebugLog(F(_T("peek='::', token='") + token + _T("', m_LastToken='") + m_LastToken + _T("', m_Str='") + m_Str + _T("'")));
                         if (m_Str.IsEmpty())
                             m_EncounteredTypeNamespaces.push(token); // it's a type's namespace
                         else
@@ -763,7 +763,7 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
         int newidx = m_pTokens->insert(result);
         if (parentIfCreated)
             parentIfCreated->AddChild(newidx);
-//        DBGLOG(_T("Created unknown class/namespace %s (%d) under %s (%d)"), ns.c_str(), newidx, parent ? parent->m_Name.c_str() : _T("<globals>"), parent ? parent->GetSelf() : -1);
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Created unknown class/namespace %s (%d) under %s (%d)"), ns.c_str(), newidx, parent ? parent->m_Name.c_str() : _T("<globals>"), parent ? parent->GetSelf() : -1));
     }
 
     if (q.empty())
@@ -858,7 +858,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
 
         newToken->m_File = m_File;
         newToken->m_Line = line;
-//        DBGLOG(_T("Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"), name.c_str(), newToken->GetSelf(), newToken->m_Type.c_str(), newToken->m_ActualType.c_str(), newToken->GetParentName().c_str(), newToken->m_ParentIndex);
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"), name.c_str(), newToken->GetSelf(), newToken->m_Type.c_str(), newToken->m_ActualType.c_str(), newToken->GetParentName().c_str(), newToken->m_ParentIndex));
     }
     else
     {
@@ -986,13 +986,13 @@ void ParserThread::HandlePreprocessorBlocks(const wxString& preproc)
         if (token.IsSameAs(_T("0")))
         {
             // TODO: handle special case "#if 0"
-//                    DBGLOG(_T("Special case \"#if 0\" not skipped."));
+//                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Special case \"#if 0\" not skipped.")));
         }
         m_Tokenizer.SkipToEOL();
     }
     else if (preproc==ParserConsts::kw_else || preproc==ParserConsts::kw_elif) // #else, #elif
     {
-//        DBGLOG(_T("Saving nesting level: %d"), m_Tokenizer.GetNestingLevel());
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving nesting level: %d"), m_Tokenizer.GetNestingLevel()));
         m_Tokenizer.SaveNestingLevel();
         wxString token = preproc;
         while (!token.IsEmpty() && token != ParserConsts::kw_endif)
@@ -1000,7 +1000,7 @@ void ParserThread::HandlePreprocessorBlocks(const wxString& preproc)
         --m_PreprocessorIfCount;
 //        int l = m_Tokenizer.GetNestingLevel();
         m_Tokenizer.RestoreNestingLevel();
-//        DBGLOG(_T("Restoring nesting level: %d (was %d)"), m_Tokenizer.GetNestingLevel(), l);
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Restoring nesting level: %d (was %d)"), m_Tokenizer.GetNestingLevel(), l));
     }
     else if (preproc==ParserConsts::kw_endif) // #endif
         --m_PreprocessorIfCount;
@@ -1123,7 +1123,7 @@ void ParserThread::HandleClass(bool isClass)
 
             if (next==ParserConsts::colon) // has ancestor(s)
             {
-//                DBGLOG(_T("Class '%s' has ancestors"), current.c_str());
+//                Manager::Get()->GetLogManager()->DebugLog(F(_T("Class '%s' has ancestors"), current.c_str()));
                 m_Tokenizer.GetToken(); // eat ":"
                 while (1)
                 {
@@ -1143,7 +1143,7 @@ void ParserThread::HandleClass(bool isClass)
                             ancestors << tmp;
                         else
                             ancestors << tmp << _T(',');
-//                        DBGLOG(_T("Adding ancestor ") + tmp);
+//                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding ancestor ") + tmp));
                     }
                     if (next.IsEmpty() ||
                         next==ParserConsts::opbrace ||
@@ -1158,7 +1158,7 @@ void ParserThread::HandleClass(bool isClass)
                         SkipAngleBraces();
                     }
                 }
-//                DBGLOG(_T("Ancestors: ") + ancestors);
+//                Manager::Get()->GetLogManager()->DebugLog(F(_T("Ancestors: ") + ancestors));
             }
 
             if (current==ParserConsts::opbrace) // unnamed class/struct
@@ -1223,7 +1223,7 @@ void ParserThread::HandleClass(bool isClass)
 
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
-//    DBGLOG(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'")));
     wxString args = m_Tokenizer.GetToken();
     wxString peek = m_Tokenizer.PeekToken();
     if (!m_Str.StartsWith(ParserConsts::kw_friend))
@@ -1240,7 +1240,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             // probably a ctor/dtor
             std::queue<wxString> q = m_EncounteredTypeNamespaces; // preserve m_EncounteredTypeNamespaces; needed in DoAddToken()
             localParent = FindTokenFromQueue(q);
-//            DBGLOG(_T("Ctor? '%s', m_Str='%s', localParent='%s'"), name.c_str(), m_Str.c_str(), localParent ? localParent->m_Name.c_str() : _T("<none>"));
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Ctor? '%s', m_Str='%s', localParent='%s'"), name.c_str(), m_Str.c_str(), localParent ? localParent->m_Name.c_str() : _T("<none>")));
         }
         else
         {
@@ -1276,7 +1276,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineStart = m_Tokenizer.GetLineNumber();
                 SkipBlock(); // skip  to matching }
                 lineEnd = m_Tokenizer.GetLineNumber();
-//                DBGLOG(_T("Skipped function %s impl. from %d to %d"), name.c_str(), lineStart, lineEnd);
+//                Manager::Get()->GetLogManager()->DebugLog(F(_T("Skipped function %s impl. from %d to %d"), name.c_str(), lineStart, lineEnd));
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
@@ -1423,7 +1423,7 @@ void ParserThread::HandleTypedef()
     {
         token = m_Tokenizer.GetToken();
         peek = m_Tokenizer.PeekToken();
-//        DBGLOG(_T("tdef: token=%s, peek=%s"), token.c_str(), peek.c_str());
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("tdef: token=%s, peek=%s"), token.c_str(), peek.c_str()));
         if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
 

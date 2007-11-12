@@ -11,6 +11,7 @@
 			<Target title="wxPropertyGrid">
 				<Option platforms="Windows;" />
 				<Option output="propgrid\libpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxPropertyGrid" />
 				<Option working_dir="" />
 				<Option type="2" />
 				<Option compiler="gcc" />

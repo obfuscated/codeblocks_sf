@@ -91,18 +91,18 @@ wxString DebuggerState::ConvertToValidFilename(const wxString& filename)
 
 cbProject* DebuggerState::FindProjectForFile(const wxString& file)
 {
-//    DBGLOG(_T("Searching for project containing: ") + file);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Searching for project containing: ") + file));
     ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
     for (size_t i = 0; i < projects->GetCount(); ++i)
     {
         cbProject* prj = projects->Item(i);
         if (prj->GetFileByFilename(file, false, false))
         {
-//            DBGLOG(_T("Got it: %s (%p)"), prj->GetTitle().c_str(), prj);
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Got it: %s (%p)"), prj->GetTitle().c_str(), prj));
             return prj;
         }
     }
-//    DBGLOG(_T("Not found..."));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Not found...")));
     return 0;
 }
 
@@ -228,13 +228,13 @@ int DebuggerState::RemoveBreakpointsRange(const wxString& file, int startline, i
 
 void DebuggerState::RemoveAllProjectBreakpoints(cbProject* prj)
 {
-//    DBGLOG(_T("Removing all breakpoints of project: %p"), prj);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing all breakpoints of project: %p"), prj));
     for (int i = m_Breakpoints.GetCount() - 1; i >= 0; --i)
     {
         DebuggerBreakpoint* bp = m_Breakpoints[i];
         if (bp->userData == prj)
         {
-//            DBGLOG(_T("Got one"));
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Got one")));
             RemoveBreakpoint(i, true);
         }
     }

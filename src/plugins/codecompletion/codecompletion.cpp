@@ -1451,7 +1451,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
         if (ed->GetControl()->CallTipActive())
             ed->GetControl()->CallTipCancel();
-//        DBGLOG(_T("CodeCompletion::OnValueTooltip: %p"), ed);
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("CodeCompletion::OnValueTooltip: %p"), ed));
         /* NOTE: The following 2 lines of codes can fix [Bug #11785].
         *       The solution may not the best one and it requires the editor
         *       to have the focus (even if C::B has the focus) in order to pop-up the tooltip. */
@@ -1494,7 +1494,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
                 {
                     msg.RemoveLast(); // last \n
                     ed->GetControl()->CallTipShow(pos, msg);
-//                    DBGLOG(msg);
+//                    Manager::Get()->GetLogManager()->DebugLog(F(msg));
                 }
             }
         }

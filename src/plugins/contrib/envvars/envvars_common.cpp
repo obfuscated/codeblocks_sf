@@ -64,7 +64,7 @@ void nsEnvVars::EnvVarsDebugLog(const wxChar* msg, ...)
 wxArrayString nsEnvVars::EnvvarStringTokeniser(const wxString& str)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarStringTokeniser"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarStringTokeniser")));
 #endif
   // tokenise string like:
   // C:\Path;"D:\Other Path"
@@ -114,7 +114,7 @@ wxArrayString nsEnvVars::EnvvarStringTokeniser(const wxString& str)
 wxArrayString nsEnvVars::GetEnvvarSetNames()
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("GetEnvvarSetNames"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("GetEnvvarSetNames")));
 #endif
 
   wxArrayString set_names;
@@ -153,7 +153,7 @@ wxArrayString nsEnvVars::GetEnvvarSetNames()
 wxString nsEnvVars::GetActiveSetName()
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("GetActiveSetName"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("GetActiveSetName")));
 #endif
 
   wxString active_set = nsEnvVars::EnvVarsDefault;
@@ -178,7 +178,7 @@ wxString nsEnvVars::GetSetPathByName(const wxString& set_name, bool check_exists
                                      bool return_default)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("GetSetPathByName"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("GetSetPathByName")));
 #endif
 
   wxString set_path = _T("/sets/")+nsEnvVars::EnvVarsDefault; // fall back solution
@@ -212,7 +212,7 @@ wxString nsEnvVars::GetSetPathByName(const wxString& set_name, bool check_exists
 wxArrayString nsEnvVars::GetEnvvarsBySetPath(const wxString& set_path)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("GetEnvvarsBySetPath"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("GetEnvvarsBySetPath")));
 #endif
 
   wxArrayString envvars;
@@ -243,7 +243,7 @@ wxArrayString nsEnvVars::GetEnvvarsBySetPath(const wxString& set_path)
 bool nsEnvVars::EnvvarSetExists(const wxString& set_name)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarSetExists"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetExists")));
 #endif
 
   if (set_name.IsEmpty())
@@ -261,7 +261,7 @@ bool nsEnvVars::EnvvarSetExists(const wxString& set_name)
 bool nsEnvVars::EnvvarVeto(const wxString& key, wxCheckListBox* lstEnvVars, int sel)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarVeto"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarVeto")));
 #endif
 
   if (wxGetEnv(key, NULL))
@@ -293,7 +293,7 @@ bool nsEnvVars::EnvvarVeto(const wxString& key, wxCheckListBox* lstEnvVars, int 
 bool nsEnvVars::EnvvarsClear(wxCheckListBox* lstEnvVars)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarsClear"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarsClear")));
 #endif
 
   wxString envsNotUnSet(wxEmptyString);
@@ -339,7 +339,7 @@ bool nsEnvVars::EnvvarsClear(wxCheckListBox* lstEnvVars)
 bool nsEnvVars::EnvvarDiscard(const wxString &key)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarDiscard"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarDiscard")));
 #endif
 
   // Replace all macros the user might have setup for the key
@@ -362,7 +362,7 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
                             wxCheckListBox* lstEnvVars, int sel)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarApply"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarApply")));
 #endif
 
   // Key:   Replace all macros the user might have used
@@ -413,7 +413,7 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
 bool nsEnvVars::EnvvarApply(const wxArrayString& envvar, wxCheckListBox* lstEnvVars)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarApply"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarApply")));
 #endif
 
   if (envvar.GetCount() == 3)
@@ -450,7 +450,7 @@ bool nsEnvVars::EnvvarApply(const wxArrayString& envvar, wxCheckListBox* lstEnvV
 void nsEnvVars::EnvvarSetApply(const wxString& set_name)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarSetApply"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetApply")));
 #endif
 
   // load and apply envvar set from config (to application only)
@@ -494,7 +494,7 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name)
 void nsEnvVars::EnvvarSetDiscard(const wxString& set_name)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarSetDiscard"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetDiscard")));
 #endif
 
   // load and apply envvar set from config (to application only)

@@ -239,7 +239,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         basename = basename.BeforeFirst(_T('-'));
     }
 
-//    DBGLOG(_T("InstallPlugin: basename='%s', version=%s"), basename.c_str(), version.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("InstallPlugin: basename='%s', version=%s"), basename.c_str(), version.c_str()));
 
     // if plugin with the same name exists, ask to uninstall first
     cbPlugin* existingPlugin = FindPluginByName(basename);
@@ -297,8 +297,8 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     if (!platform::windows && settingsOffName.StartsWith(_T("lib")))
         settingsOffName.Remove(0, 3);
     wxString pluginFilename = pluginDir + _T('/') + localName;
-//    DBGLOG(_T("Plugin filename: ") + pluginFilename);
-//    DBGLOG(_T("Plugin resources: ") + ConfigManager::GetDataFolder() + _T('/') + resourceName);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin filename: ") + pluginFilename));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin resources: ") + ConfigManager::GetDataFolder() + _T('/') + resourceName));
 
     pd.Update(1, _("Extracting plugin"));
 
@@ -307,7 +307,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
                     localName,
                     pluginFilename))
         return false;
-//    DBGLOG(_T("Extracted plugin"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted plugin")));
 
     pd.Update(2, _("Extracting plugin resources"));
 
@@ -316,7 +316,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
                     resourceName,
                     resourceDir + _T('/') + resourceName))
         return false;
-//    DBGLOG(_T("Extracted resources"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted resources")));
 
     pd.Update(3, _("Extracting plugin icons for \"Settings\" dialog"));
 
@@ -325,14 +325,14 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
                 settingsOnName,
                 resourceDir + _T("/images/settings/") + settingsOnName,
                 false);
-//    DBGLOG(_T("Extracted resources"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted resources")));
 
     // extract resources from bundle
     ExtractFile(actualName,
                 settingsOffName,
                 resourceDir + _T("/images/settings/") + settingsOffName,
                 false);
-//    DBGLOG(_T("Extracted resources"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted resources")));
 
     // extract extra files
     wxArrayString extraFiles;
@@ -348,7 +348,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
     pd.Update(4, _("Loading plugin"));
 
     // bundle extracted; now load the plugin on-the-fly
-//    DBGLOG(_T("Loading plugin..."));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Loading plugin...")));
     ScanForPlugins(pluginDir);
     LoadAllPlugins();
     cbPlugin* plugin = FindPluginByFileName(pluginFilename);
@@ -358,14 +358,14 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         Manager::Get()->GetLogManager()->DebugLog(_T("Failed"));
         return false;
     }
-//    DBGLOG(_T("Succeeded"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Succeeded")));
 
     // inform app to update menus and toolbars
     pd.Update(5, _("Updating menus and toolbars"));
     CodeBlocksEvent evt(cbEVT_PLUGIN_INSTALLED);
     evt.SetPlugin(plugin);
     Manager::Get()->ProcessEvent(evt);
-//    DBGLOG(_T("Menus updated"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Menus updated")));
 
     return true;
 }
@@ -424,26 +424,26 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
         return false;
     }
 
-//    DBGLOG(_T("UninstallPlugin:"));
-//    DBGLOG(_T("Plugin filename: ") + pluginFilename);
-//    DBGLOG(_T("Plugin resources: ") + resourceFilename);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("UninstallPlugin:")));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin filename: ") + pluginFilename));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin resources: ") + resourceFilename));
 
     wxProgressDialog pd(wxString::Format(_("Uninstalling %s"), title.c_str()),
                         _T("A description wide enough for the dialog ;)"), 3);
 
     pd.Update(1, _("Detaching plugin"));
     DetachPlugin(plugin);
-//    DBGLOG(_T("Plugin released"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin released")));
 
     pd.Update(2, _("Updating menus and toolbars"));
     CodeBlocksEvent event(cbEVT_PLUGIN_UNINSTALLED);
     event.SetPlugin(plugin);
     Manager::Get()->ProcessEvent(event);
-//    DBGLOG(_T("Menus updated"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Menus updated")));
 
     pd.Update(3, _("Unloading plugin"));
     UnloadPlugin(plugin);
-//    DBGLOG(_T("Plugin unloaded"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin unloaded")));
 
     if (!removeFiles)
         return true;
@@ -458,7 +458,7 @@ bool PluginManager::UninstallPlugin(cbPlugin* plugin, bool removeFiles)
     {
         if (wxRemoveFile(pluginFilename))
         {
-//            DBGLOG(_T("Plugin file removed"));
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin file removed")));
             if (!resourceFilename.IsEmpty())
             {
                 if (!wxRemoveFile(resourceFilename))
@@ -578,7 +578,7 @@ bool PluginManager::ExportPlugin(cbPlugin* plugin, const wxString& filename)
         }
     }
 
-//    DBGLOG(_T("Creating archive: ") + filename);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Creating archive: ") + filename));
     wxFileOutputStream out(filename);
     wxZipOutputStream zip(out, 9); // max compression
     for (size_t i = 0; i < sourcefiles.GetCount(); ++i)
@@ -611,15 +611,15 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
                                 const wxString& dst_filename,
                                 bool isMandatory)
 {
-//    DBGLOG(_T("ExtractFile:"));
-//    DBGLOG(_T("Plugin filename: ") + bundlename);
-//    DBGLOG(_T("Source filename: ") + src_filename);
-//    DBGLOG(_T("Destination filename: ") + dst_filename);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("ExtractFile:")));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin filename: ") + bundlename));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Source filename: ") + src_filename));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Destination filename: ") + dst_filename));
 
     // check if the destination file already exists
     if (wxFileExists(dst_filename) && !wxFile::Access(dst_filename, wxFile::write))
     {
-//        DBGLOG(_T("Destination file in use"));
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Destination file in use")));
         cbMessageBox(_("The destination file is in use.\nAborting..."), _("Warning"), wxICON_WARNING);
         return false;
     }
@@ -628,7 +628,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
     CreateDirRecursively(wxFileName(dst_filename).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
     // actually extract file
-//    DBGLOG(_T("Extracting..."));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracting...")));
     wxFileSystem* fs = new wxFileSystem;
     wxFSFile* f = fs->OpenFile(bundlename + _T("#zip:") + src_filename);
     if (f)
@@ -637,7 +637,7 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
         wxFile output(dst_filename, wxFile::write);
         if (!output.IsOpened())
         {
-//            DBGLOG(_T("Can't open destination file for writing"));
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't open destination file for writing")));
             wxString msg = wxString::Format(_("Can't open destination file '%s' for writing..."),
                                             dst_filename.c_str());
             cbMessageBox(msg, _("Error"), wxICON_ERROR);
@@ -656,11 +656,11 @@ bool PluginManager::ExtractFile(const wxString& bundlename,
             output.Write(tmp, is->LastRead());
         }
         delete f;
-//        DBGLOG(_T("Extracted"));
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Extracted")));
     }
     else
     {
-//        DBGLOG(_T("File not found in plugin"));
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("File not found in plugin")));
         if (isMandatory)
         {
             wxString msg = wxString::Format(_("File '%s' not found in plugin '%s'"),

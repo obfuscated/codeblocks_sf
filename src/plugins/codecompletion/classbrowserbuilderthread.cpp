@@ -110,7 +110,7 @@ void* ClassBrowserBuilderThread::Entry()
     {
         // wait until the classbrowser signals
         m_Semaphore.Wait();
-//        DBGLOG(_T(" - - - - - -"));
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T(" - - - - - -")));
 
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
@@ -181,7 +181,7 @@ void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
 		CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(existing);
 		if (data && data->m_pToken && data->m_pToken->m_TokenKind == tkNamespace)
 		{
-//			DBGLOG(_T("Auto-expanding: ") + data->m_pToken->m_Name);
+//			Manager::Get()->GetLogManager()->DebugLog(F(_T("Auto-expanding: ") + data->m_pToken->m_Name));
 			m_pTreeTop->Expand(existing);
 			ExpandNamespaces(existing); // recurse
 		}
@@ -330,7 +330,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                 }
 				else
 				{
-//                	DBGLOG(_T("Item %s is invalid"), tree->GetItemText(existing).c_str());
+//                	Manager::Get()->GetLogManager()->DebugLog(F(_T("Item %s is invalid"), tree->GetItemText(existing).c_str()));
 					wxTreeItemId next = tree->GetPrevSibling(existing);
 					tree->Delete(existing);
 					existing = next;
@@ -443,7 +443,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
         parentToken = m_pTokens->at(parentTokenIdx);
         if (!parentToken)
         {
-//            DBGLOG(_T("Token not found?!?"));
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Token not found?!?")));
             return false;
         }
         it = parentToken->m_Children.begin();
@@ -535,10 +535,10 @@ bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, 
                 tree->AppendItem(parent, str, img, img, new CBTreeData(sfToken, token));
         }
     }
-//    DBGLOG(_T("Sorting..."));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Sorting...")));
     if (tree == m_pTreeBottom) // only sort alphabetically the bottom tree
         tree->SortChildren(parent);
-//    DBGLOG(_T("Added %d nodes"), count);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added %d nodes"), count));
     return count != 0;
 }
 
@@ -714,7 +714,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             default: break;
         }
     }
-//    DBGLOG(_("E: %d items"), m_pTreeTop->GetCount());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_("E: %d items"), m_pTreeTop->GetCount()));
 }
 
 void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
@@ -729,7 +729,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
     m_pTreeTop->DeleteChildren(item);
 #endif
     m_pTreeTop->SetItemHasChildren(item);
-//    DBGLOG(_("C: %d items"), m_pTreeTop->GetCount());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_("C: %d items"), m_pTreeTop->GetCount()));
 }
 
 void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
@@ -739,5 +739,5 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 
     wxMutexLocker lock(m_BuildMutex);
     SelectNode(item);
-//    DBGLOG(_T("Select ") + m_pTreeTop->GetItemText(item));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Select ") + m_pTreeTop->GetItemText(item)));
 }

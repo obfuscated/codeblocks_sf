@@ -32,7 +32,7 @@
     #include "compiletargetbase.h"
     #include "compilerfactory.h"
     #include "globals.h"
-    #include "logmanager.h" // DBGLOG
+    #include "logmanager.h" // Manager::Get()->GetLogManager()->DebugLog(F())
 #endif
 
 #include "filefilters.h"
@@ -287,7 +287,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             filename.Clear();
             break;
     }
-//    DBGLOG(_T("GenerateTargetFilename: input '%s', output '%s'"), fname.GetFullPath().c_str(), filename.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateTargetFilename: input '%s', output '%s'"), fname.GetFullPath().c_str(), filename.c_str()));
 }
 
 wxString CompileTargetBase::GetExecutableFilename() const

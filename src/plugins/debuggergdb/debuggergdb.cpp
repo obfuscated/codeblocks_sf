@@ -768,7 +768,7 @@ void DebuggerGDB::DoSwitchToDebuggingLayout()
 	// query the current layout
 	Manager::Get()->ProcessEvent(queryEvent);
 	m_PreviousLayout = queryEvent.layout;
-	
+
 	// switch to debugging layout
 	Manager::Get()->ProcessEvent(switchEvent);
 }
@@ -1268,7 +1268,7 @@ int DebuggerGDB::DoDebug()
 	RemoteDebuggingMap::iterator it = m_RemoteDebugging.find(target);
 	if (it != m_RemoteDebugging.end())
 		rd = &it->second;
-		
+
     wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
 	if (!rd || !rd->skipLDpath)
 	{
@@ -1310,7 +1310,7 @@ int DebuggerGDB::DoDebug()
     wxString out;
     // start polling gdb's output
     m_TimerPollDebugger.Start(20);
-    
+
     // although I don't really like these do-nothing loops, we must wait a small amount of time
     // for gdb to see if it really started: it may fail to load shared libs or whatever
     // the reason this is added is because I had a case where gdb would error and bail out
@@ -2688,12 +2688,12 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
 
 void DebuggerGDB::OnCompilerStarted(CodeBlocksEvent& event)
 {
-//    DBGLOG(_T("DebuggerGDB::OnCompilerStarted"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerGDB::OnCompilerStarted")));
 }
 
 void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 {
-//    DBGLOG(_T("DebuggerGDB::OnCompilerFinished"));
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerGDB::OnCompilerFinished")));
 
     if (m_WaitingCompilerToFinish)
     {
@@ -2706,7 +2706,7 @@ void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 
 void DebuggerGDB::OnBuildTargetSelected(CodeBlocksEvent& event)
 {
-//    DBGLOG(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetBuildTargetName().c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetBuildTargetName().c_str()));
 
     // verify that the project that sent it, is the one we 're debugging
     if (!m_pProject || event.GetProject() == m_pProject)

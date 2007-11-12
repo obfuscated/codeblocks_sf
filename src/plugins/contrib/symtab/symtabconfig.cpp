@@ -48,7 +48,7 @@ SymTabConfigDlg::~SymTabConfigDlg()
 int SymTabConfigDlg::Execute()
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::Execute"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::Execute")));
 #endif
 
   // Avoid multiple load of resources
@@ -70,7 +70,7 @@ int SymTabConfigDlg::Execute()
 void SymTabConfigDlg::EndModal(int retCode)
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::EndModal"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::EndModal")));
 #endif
 
   wxDialog::EndModal(retCode);
@@ -81,7 +81,7 @@ void SymTabConfigDlg::EndModal(int retCode)
 void SymTabConfigDlg::OnWhatToDo(wxCommandEvent& event)
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::OnWhatToDo"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnWhatToDo")));
 #endif
 
   int choice = event.GetInt();
@@ -93,7 +93,7 @@ void SymTabConfigDlg::OnWhatToDo(wxCommandEvent& event)
 void SymTabConfigDlg::OnSearch(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::OnSearch"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnSearch")));
 #endif
 
   // user pressed Search; save settings
@@ -156,7 +156,7 @@ void SymTabConfigDlg::OnSearch(wxCommandEvent& WXUNUSED(event))
 void SymTabConfigDlg::OnClose(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::OnClose"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnClose")));
 #endif
 
   wxDialog::EndModal(wxID_CANCEL);
@@ -167,7 +167,7 @@ void SymTabConfigDlg::OnClose(wxCommandEvent& WXUNUSED(event))
 void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::OnLibraryPath"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnLibraryPath")));
 #endif
 
   wxDirDialog dd(parent, _("Select directory for search"));
@@ -183,7 +183,7 @@ void SymTabConfigDlg::OnLibraryPath(wxCommandEvent& WXUNUSED(event))
 void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::OnLibrary"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnLibrary")));
 #endif
 
   wxString caption  = _T("Choose a (library) file");
@@ -214,7 +214,7 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
 void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::OnNM"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnNM")));
 #endif
 
   wxString caption  = _T("Choose NM application");
@@ -240,7 +240,7 @@ void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
 void SymTabConfigDlg::ToggleWidgets(int choice)
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::ToggleWidgets"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::ToggleWidgets")));
 #endif
 
   // Strategy: Disable all widgets, enable required.
@@ -279,7 +279,7 @@ void SymTabConfigDlg::ToggleWidgets(int choice)
 void SymTabConfigDlg::LoadSettings()
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::LoadSettings"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::LoadSettings")));
 #endif
 
   ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("symtab"));
@@ -333,7 +333,7 @@ void SymTabConfigDlg::LoadSettings()
 void SymTabConfigDlg::SaveSettings()
 {
 #ifdef TRACE_SYMTAB_CFG
-	DBGLOG(_T("SymTabConfigDlg::SaveSettings"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::SaveSettings")));
 #endif
 
   ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("symtab"));

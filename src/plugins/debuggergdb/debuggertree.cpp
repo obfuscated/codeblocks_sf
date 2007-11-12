@@ -313,7 +313,7 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
 {
     if (text.IsEmpty())
         return;
-//    DBGLOG(_T("DebuggerTree::ParseEntry(): %s"), text.c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerTree::ParseEntry(): %s"), text.c_str()));
     while (1)
     {
         // trim the string from left and right

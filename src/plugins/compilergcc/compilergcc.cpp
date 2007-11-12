@@ -656,7 +656,7 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
 
     int eventId = event.GetId();
 
-//    Manager::Get()->GetLogManager()->Log(wxT("Dispatcher"));
+//    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher")));
 
     if (eventId == idMenuRun)
         OnRun(event);
@@ -737,7 +737,7 @@ void CompilerGCC::SetupEnvironment()
     m_EnvironmentMsg.Clear();
 
     wxString path;
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Setting up compiler environment..."));
+//    Manager::Get()->GetMessageManager()->DebugLog(_T("Setting up compiler environment...")));
 
     // reset PATH to original value
     if (!m_OriginalPath.IsEmpty())
@@ -757,7 +757,7 @@ void CompilerGCC::SetupEnvironment()
                     "system commands and the application might not behave "
                     "the way it was designed to...");
 //    wxGetEnv("PATH", &path);
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str());
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, "PATH set to: %s", path.c_str()));
 }
 
 void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPath)
@@ -1878,7 +1878,7 @@ wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, Pro
     command.Replace(_T("$makefile"), project->GetMakefile());
     command.Replace(_T("$make"), CompilerFactory::GetCompiler(compilerId)->GetPrograms().MAKE);
     command.Replace(_T("$target"), target ? target->GetTitle() : _T(""));
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str());
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str()));
     return command;
 }
 
@@ -2131,7 +2131,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
 
 void CompilerGCC::BuildStateManagement()
 {
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("BuildStateManagement"));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("BuildStateManagement")));
     if (IsProcessRunning())
     {
         return;
@@ -2192,11 +2192,11 @@ void CompilerGCC::BuildStateManagement()
     DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_pBuildingProject, m_PageIndex);
     dc.m_doYield = true;
 
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("BuildState *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%s, bt=%s"),
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("BuildState *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%s, bt=%s"),
 //        StateToString(m_BuildState).c_str(),
 //        StateToString(m_NextBuildState).c_str(),
 //        m_pBuildingProject ? m_pBuildingProject->GetTitle().c_str() : _T("<none>"),
-//        bt ? bt->GetTitle().c_str() : _T("<none>"));
+//        bt ? bt->GetTitle().c_str() : _T("<none>")));
 
     m_BuildState = m_NextBuildState;
     wxArrayString cmds;
@@ -2311,7 +2311,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         CalculateProjectDependencies(project, deps);
 
     // loop all projects in the dependencies list
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("** Creating deps"));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Creating deps")));
     for (size_t i = 0; i < deps.GetCount(); ++i)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetProjects()->Item(deps[i]);
@@ -2358,7 +2358,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
 
             m_BuildJobTargetsList.push(bjt);
 
-//            Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str());
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Job: %s - %s"), prj->GetTitle().c_str(), prj->GetBuildTarget(tlist[x])->GetTitle().c_str()));
         }
     }
 
@@ -2368,7 +2368,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
     	NotifyJobDone(true);
     }
 
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("** Done creating deps"));
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("** Done creating deps")));
 }
 
 CompilerGCC::BuildJobTarget CompilerGCC::GetNextJob()
@@ -2445,7 +2445,7 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
         // no dependencies; add the project in question and exit
         if (deps.Index(prjidx) == wxNOT_FOUND)
         {
-//            Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str());
+//            Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str()));
             deps.Add(prjidx);
         }
         return;
@@ -2467,7 +2467,7 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
                 // avoid duplicates
                 if (deps.Index(idx) == wxNOT_FOUND)
                 {
-//                    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Adding dependency: %s"), thisprj->GetTitle().c_str());
+//                    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), thisprj->GetTitle().c_str()));
                     deps.Add(idx);
                 }
             }
@@ -2481,7 +2481,7 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
     // always add the project in question
     if (deps.Index(prjidx) == wxNOT_FOUND)
     {
-//        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str());
+//        Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Adding dependency: %s"), prj->GetTitle().c_str()));
         deps.Add(prjidx);
     }
 }
@@ -2732,7 +2732,7 @@ int CompilerGCC::KillProcess()
 //                case wxKILL_ERROR: cbMessageBox(_("Unspecified error")); break;
                 case wxKILL_OK:
                 default: break;
-                // Manager::Get()->GetLogManager()->Log(m_PageIndex, _("Process killed..."));
+                // Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("Process killed...")));
             }
         }
     }
@@ -2796,7 +2796,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 
         // switch to the default compiler
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
-//        Manager::Get()->GetLogManager()->DebugLog("-----CompileFile [if(!pf)]-----");
+//        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----"));
         Manager::Get()->GetMacrosManager()->Reset();
         CompilerFactory::GetCompiler(m_CompilerId)->Init(0);
 
@@ -3454,7 +3454,7 @@ void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 
 void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 {
-//    Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("JobDone: index=%u, exitCode=%d"), procIndex, exitCode);
+//    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("JobDone: index=%u, exitCode=%d"), procIndex, exitCode));
     m_timerIdleWakeUp.Stop();
     m_Pid[procIndex] = 0;
     m_Processes[procIndex] = 0;

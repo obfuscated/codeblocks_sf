@@ -615,7 +615,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 				GenFilesHackMap[c] = t;
 			}
 		}
-		
+
 		for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
 		{
 			Compiler* c = CompilerFactory::GetCompiler(m_Targets[i]->GetCompilerID());
@@ -1244,7 +1244,7 @@ bool cbProject::VirtualFolderAdded(wxTreeCtrl* tree, wxTreeItemId parent_node, c
 
     SetModified(true);
 
-//    DBGLOG(_T("VirtualFolderAdded: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderAdded: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
     return true;
 }
 
@@ -1286,7 +1286,7 @@ void cbProject::VirtualFolderDeleted(wxTreeCtrl* tree, wxTreeItemId node)
         m_VirtualFolders.Add(parent_foldername);
 
     SetModified(true);
-//    DBGLOG(_T("VirtualFolderDeleted: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderDeleted: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
 }
 
 bool cbProject::VirtualFolderRenamed(wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name)
@@ -1351,7 +1351,7 @@ bool cbProject::VirtualFolderRenamed(wxTreeCtrl* tree, wxTreeItemId node, const 
 
     SetModified(true);
 
-//    DBGLOG(_T("VirtualFolderRenamed: %s to %s: %s"), old_foldername.c_str(), new_foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str());
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderRenamed: %s to %s: %s"), old_foldername.c_str(), new_foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
     return true;
 }
 

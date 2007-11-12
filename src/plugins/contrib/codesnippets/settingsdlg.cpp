@@ -35,6 +35,7 @@
 #include "settingsdlg.h"
 #include "settingsdlgform.h"
 #include "version.h"
+#include "prep.h"
 
    BEGIN_EVENT_TABLE(SettingsDlg, SettingsDlgForm)
     EVT_BUTTON(wxID_OK,            SettingsDlg::OnOk)
@@ -151,7 +152,8 @@ void SettingsDlg::GetFileName(wxString& newFileName)
                  wxEmptyString,                 //default directory
                  wxEmptyString,                 //default file
                  wxT("*.*"),                    //wildcards
-                 wxOPEN | wxFILE_MUST_EXIST );  //style
+                 wxOPEN | wxFILE_MUST_EXIST     //style
+                 | compatibility::wxHideReadonly);
 
    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
@@ -173,7 +175,7 @@ wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
 
     // Ask user for filename
     wxDirDialog dlg(::wxGetTopLevelParent(0),   //parent  window
-                 _T("Select path "),             //message
+                 _T("Select path "),            //message
                  ::wxGetCwd(),                  //default directory
                  wxDD_DEFAULT_STYLE );          //style
 

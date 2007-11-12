@@ -52,7 +52,7 @@ namespace ScriptBindings
 
         try
         {
-//            DBGLOG(_T("Script dialog event: %d"), event.GetId());
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Script dialog event: %d"), event.GetId()));
             SqPlus::SquirrelFunction<void> cb(cbU2C(m_CallBack));
             if (cb.func.IsNull())
                 return;
@@ -67,7 +67,7 @@ namespace ScriptBindings
     int ShowDialog(const wxString& xrc, const wxString& dlgName, const wxString& callback)
     {
         wxString actual = ConfigManager::LocateDataFile(xrc, sdScriptsUser | sdScriptsGlobal);
-//        DBGLOG(_T("Original parameter is: ") + xrc);
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Original parameter is: ") + xrc));
         Manager::Get()->GetLogManager()->DebugLog(_T("Loading XRC: ") + actual);
         if (wxXmlResource::Get()->Load(actual))
         {

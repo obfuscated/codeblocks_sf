@@ -284,7 +284,7 @@ void wxsCoder::FlushFile(const wxString& FileName)
             Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't open file '%s'"),FileName.c_str()));
             return;
         }
-        //DBGLOG(_T("File read time: %d ms"),SW.Time());
+        //Manager::Get()->GetLogManager()->DebugLog(F(_T("File read time: %d ms"),SW.Time()));
 
         while ( Changes )
         {
@@ -299,7 +299,7 @@ void wxsCoder::FlushFile(const wxString& FileName)
             // Storing the result
             //wxStopWatch SW;
             cbSaveToFile(FileName,Content,Encoding,UseBOM);
-            //DBGLOG(_T("File write time: %d ms"),SW.Time());
+            //Manager::Get()->GetLogManager()->DebugLog(F(_T("File write time: %d ms"),SW.Time()));
         }
     }
 
@@ -592,7 +592,7 @@ void wxsCoder::FlushAll()
     }
     CodeChanges.Clear();
     CodeChangesFiles.Clear();
-    //DBGLOG(_T("wxSmith: Flushing of code done in %d ms"),SW.Time());
+    //Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Flushing of code done in %d ms"),SW.Time()));
 }
 
 void wxsCoder::FlushTimerEvent(wxTimerEvent& event)

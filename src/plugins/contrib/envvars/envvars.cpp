@@ -71,7 +71,7 @@ EnvVars::~EnvVars()
 void EnvVars::SetProjectEnvvarSet(cbProject* project, const wxString& envvar_set)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("SetProjectEnvvarSet"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("SetProjectEnvvarSet")));
 #endif
 
   m_ProjectSets[project] = envvar_set;
@@ -90,7 +90,7 @@ void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
                                    bool loading)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("OnProjectLoadingHook"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectLoadingHook")));
 #endif
 
   if (loading)
@@ -129,7 +129,7 @@ void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
 void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("OnProjectActivated"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectActivated")));
 #endif
 
   if (IsAttached())
@@ -162,7 +162,7 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("OnProjectClosed"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectClosed")));
 #endif
 
   if (IsAttached())
@@ -178,7 +178,7 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
 void EnvVars::OnAttach()
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("OnAttach"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnAttach")));
 #endif
 
   if(!Manager::LoadResource(_T("envvars.zip")))
@@ -210,7 +210,7 @@ void EnvVars::OnRelease(bool appShutDown)
 int EnvVars::Configure()
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("Configure"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("Configure")));
 #endif
 
   // Nothing to do (so far...) -> just return success
@@ -243,7 +243,7 @@ cbConfigurationPanel* EnvVars::GetProjectConfigurationPanel(wxWindow* parent,
 void EnvVars::EnvvarSetWarning(const wxString& envvar_set)
 {
 #if TRACE_ENVVARS
-  DBGLOG(_T("EnvvarSetWarning"));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetWarning")));
 #endif
 
   wxString warning_msg;

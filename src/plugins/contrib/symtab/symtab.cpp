@@ -81,7 +81,7 @@ int SymTab::Execute()
     return -1;
 
 #ifdef TRACE_SYMTAB
-	DBGLOG(_T("SymTab::Execute"));
+	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTab::Execute")));
 #endif
 
   if (!CfgDlg)
