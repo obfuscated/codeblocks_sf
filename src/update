@@ -40,11 +40,11 @@ ${ZIPCMD} -j9 ${RESDIR}/classwizard.zip plugins/classwizard/resources/manifest.x
 ${ZIPCMD} -j9 ${RESDIR}/codecompletion.zip plugins/codecompletion/resources/manifest.xml plugins/codecompletion/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/compiler.zip plugins/compilergcc/resources/manifest.xml plugins/compilergcc/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc > /dev/null
+${ZIPCMD} -j9 ${RESDIR}/openfileslist.zip plugins/openfileslist/manifest.xml > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/projectsimporter.zip plugins/projectsimporter/resources/*.xrc plugins/projectsimporter/resources/manifest.xml > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/debugger.zip plugins/debuggergdb/resources/manifest.xml plugins/debuggergdb/resources/*.xrc > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml > /dev/null
 ${ZIPCMD} -j9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc > /dev/null
-${ZIPCMD} -j9 ${RESDIR}/openfileslist.zip plugins/openfileslist/manifest.xml > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
 ${ZIPCMD} -0 ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
