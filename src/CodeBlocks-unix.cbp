@@ -358,8 +358,6 @@
 				<Compiler>
 					<Add option='-include &quot;sdk.h&quot;' />
 					<Add directory="include" />
-					<Add directory="include/scripting/include" />
-					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
