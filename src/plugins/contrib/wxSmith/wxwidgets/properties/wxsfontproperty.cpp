@@ -113,7 +113,7 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCoderContext* Co
 
             if ( Faces.Count() == 1 )
             {
-                FaceStr = wxsCodeMarks::WxString(wxsCPP,Faces[0]);
+                FaceStr = wxsCodeMarks::WxString(wxsCPP,Faces[0],false);
             }
             else if ( Faces.Count() > 1 )
             {
