@@ -136,6 +136,7 @@ class CompilerGCC : public cbCompilerPlugin
         friend class CompilerOptionsDlg;
 
         void Dispatcher(wxCommandEvent& event);
+        void TextURL(wxTextUrlEvent& event);
 
         bool CheckDebuggerIsRunning();
 

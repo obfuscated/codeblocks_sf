@@ -13,6 +13,8 @@
 #include "cbplugin.h" // the base class we 're inheriting
 #include "mimetypesarray.h"
 
+class wxHtmlWindow;
+
 class DefaultMimeHandler : public cbMimePlugin
 {
     public:
@@ -31,6 +33,8 @@ class DefaultMimeHandler : public cbMimePlugin
         wxString ChooseExternalProgram();
         int DoOpenFile(cbMimeType* mt, const wxString& filename);
         MimeTypesArray m_MimeTypes;
+        
+        wxHtmlWindow* m_Html;
 };
 
 #endif // DEFAULTMIMEHANDLER_H

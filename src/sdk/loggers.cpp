@@ -115,7 +115,7 @@ void TextCtrlLogger::Clear()
 wxWindow* TextCtrlLogger::CreateControl(wxWindow* parent)
 {
 	if (!control)
-		control = new wxTextCtrl(parent, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_NOHIDESEL);
+		control = new wxTextCtrl(parent, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_NOHIDESEL | wxTE_AUTO_URL);
 	return control;
 };
 

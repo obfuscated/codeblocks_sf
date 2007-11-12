@@ -50,6 +50,7 @@
 #include <wx/stattext.h>
 #include <wx/statline.h>
 #include <wx/ffile.h>
+#include <wx/utils.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
@@ -103,6 +104,8 @@ namespace ScriptBindings
     }
 };
 
+const int idBuildLog = wxNewId();
+
 class BuildLogger : public TextCtrlLogger
 {
 	wxPanel* panel;
@@ -125,7 +128,9 @@ public:
 	virtual wxWindow* CreateControl(wxWindow* parent)
 	{
 		panel = new wxPanel(parent);
+		
 		TextCtrlLogger::CreateControl(panel);
+		control->SetId(idBuildLog);
 		
 		sizer = new wxBoxSizer(wxVERTICAL);
 		sizer->Add(control, 1, wxEXPAND, 0);
@@ -153,6 +158,18 @@ public:
 			progress = 0;
 			sizer->Layout();
 		}
+	}
+	
+	void OpenLink(long urlStart, long urlEnd)
+	{
+		if (!control)
+			return;
+		wxString url = control->GetRange(urlStart, urlEnd);
+		cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(url);
+		if (p)
+			p->OpenFile(url);
+		else
+			wxLaunchDefaultBrowser(url);
 	}
 };
 
@@ -276,6 +293,8 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuClearErrors,                     CompilerGCC::Dispatcher)
     EVT_MENU(idMenuExportMakefile,                  CompilerGCC::Dispatcher)
     EVT_MENU(idMenuSettings,                        CompilerGCC::Dispatcher)
+    
+    EVT_TEXT_URL(idBuildLog,						CompilerGCC::TextURL)
 
     EVT_CHOICE(idToolTarget,                      CompilerGCC::OnSelectTarget)
 
@@ -727,6 +746,14 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
     breaks anything or replace this with a better fix, when available. */
     /*if (focused)
         focused->SetFocus();*/
+}
+
+void CompilerGCC::TextURL(wxTextUrlEvent& event)
+{
+    if (event.GetId() == idBuildLog && event.GetMouseEvent().ButtonDown(wxMOUSE_BTN_LEFT))
+    	m_Log->OpenLink(event.GetURLStart(), event.GetURLEnd());
+	else
+		event.Skip();
 }
 
 void CompilerGCC::SetupEnvironment()
@@ -3444,7 +3471,8 @@ void CompilerGCC::SaveBuildLog()
     f.Write(_T("</body>\n"));
     f.Write(_T("</html>\n"));
 
-    Manager::Get()->GetLogManager()->Log(_("Build log saved as: ") + m_BuildLogFilename, m_PageIndex);
+    Manager::Get()->GetLogManager()->Log(_("Build log saved as: "), m_PageIndex);
+    Manager::Get()->GetLogManager()->Log(F(_T("file://%s"), m_BuildLogFilename.c_str()), m_PageIndex, Logger::warning);
 }
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)

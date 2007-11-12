@@ -21,6 +21,7 @@
 #endif
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
+#include <wx/html/htmlwin.h>
 #include "defaultmimehandler.h"
 #include "editmimetypesdlg.h"
 #include "filefilters.h"
@@ -29,6 +30,8 @@
 namespace
 {
     PluginRegistrant<DefaultMimeHandler> reg(_T("FilesExtensionHandler"));
+    
+    const int idHtml = wxNewId();
 }
 
 DefaultMimeHandler::DefaultMimeHandler()
@@ -86,11 +89,35 @@ void DefaultMimeHandler::OnAttach()
         else
             m_MimeTypes.Add(mt);
     }
+    
+    m_Html = new wxHtmlWindow(Manager::Get()->GetAppWindow(), idHtml, wxPoint(0,0), wxSize(320,240));
+	wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+	int sizes[7] = {};
+	for (int i = 0; i < 7; ++i)
+        sizes[i] = systemFont.GetPointSize();
+	m_Html->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
+	
+	CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+	evt.pWindow = m_Html;
+    evt.name = _T("DefMimeHandler_HTMLViewer");
+	evt.title = _("HTML viewer");
+    evt.dockSide = CodeBlocksDockEvent::dsFloating;
+    evt.desiredSize.Set(350, 250);
+    evt.floatingSize.Set(350, 250);
+    evt.minimumSize.Set(150, 150);
+    evt.shown = false;
+	Manager::Get()->ProcessEvent(evt);
 }
 
 
 void DefaultMimeHandler::OnRelease(bool appShutDown)
 {
+	CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+	evt.pWindow = m_Html;
+	Manager::Get()->ProcessEvent(evt);
+	m_Html->Destroy();
+	m_Html = 0;
+
     // save configuration
     ConfigManager* conf = Manager::Get()->GetConfigManager(_T("mime_types"));
     wxArrayString list = conf->EnumerateKeys(_T("/"));
@@ -136,12 +163,24 @@ bool DefaultMimeHandler::CanHandleFile(const wxString& filename) const
 int DefaultMimeHandler::OpenFile(const wxString& filename)
 {
     wxFileName the_file(filename);
-    if (!the_file.FileExists())
-        return -1;
+    
+    // don't check for existence because URLs can't be checked this way
+//    if (!the_file.FileExists())
+//        return -1;
 
     cbMimeType* mt = FindMimeTypeFor(filename);
     if (mt)
         return DoOpenFile(mt, filename);
+	else if (the_file.GetExt().CmpNoCase(_T("htm")) == 0 ||
+			the_file.GetExt().CmpNoCase(_T("html")) == 0)
+	{
+		// embedded help viewer (unless the user has added an explicit association manually)
+		m_Html->LoadPage(filename);
+		CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+		evt.pWindow = m_Html;
+		Manager::Get()->ProcessEvent(evt);
+		return 0;
+	}
     else
     {
         // not yet supported. ask the user how to open it.
