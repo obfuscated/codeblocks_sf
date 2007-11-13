@@ -194,8 +194,6 @@ public:
         instance = 0;
     }
 };
-template<class MgrT>MgrT* Mgr<MgrT>::instance = 0;
-template<class MgrT>bool  Mgr<MgrT>::isShutdown = false;
 
 #endif // MANAGER_H
 

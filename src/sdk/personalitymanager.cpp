@@ -37,6 +37,9 @@
 
 #include <wx/arrstr.h>
 
+template<> PersonalityManager* Mgr<PersonalityManager>::instance = 0;
+template<> bool  Mgr<PersonalityManager>::isShutdown = false;
+
 PersonalityManager::PersonalityManager()
 {
     PersonalityManager::pers = _T("default");

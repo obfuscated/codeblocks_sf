@@ -8,6 +8,9 @@
 #include "logmanager.h"
 #include "loggers.h"
 
+template<> LogManager* Mgr<LogManager>::instance = 0;
+template<> bool  Mgr<LogManager>::isShutdown = false;
+
 LogSlot::LogSlot()
 	: log(0),
 	icon(0)

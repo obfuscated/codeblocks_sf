@@ -10,6 +10,9 @@
 
 #include <wx/url.h>
 
+template<> FileManager* Mgr<FileManager>::instance = 0;
+template<> bool  Mgr<FileManager>::isShutdown = false;
+
 LoaderBase::~LoaderBase()
 {
     delete[] data;

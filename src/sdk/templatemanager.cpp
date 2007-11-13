@@ -50,6 +50,9 @@
 #include "filefilters.h"
 #include "newfromtemplatedlg.h"
 
+template<> TemplateManager* Mgr<TemplateManager>::instance = 0;
+template<> bool  Mgr<TemplateManager>::isShutdown = false;
+
 TemplateManager::TemplateManager()
 {
     //ctor

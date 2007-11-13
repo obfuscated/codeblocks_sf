@@ -68,6 +68,8 @@
 
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
+template<> EditorManager* Mgr<EditorManager>::instance = 0;
+template<> bool  Mgr<EditorManager>::isShutdown = false;
 
 int ID_NBEditorManager = wxNewId();
 int ID_EditorManager = wxNewId();
@@ -243,7 +245,7 @@ void EditorManager::CreateSearchLog()
 {
 	if (Manager::IsBatchBuild())
 		return;
-		
+
     wxArrayInt widths;
     wxArrayString titles;
     titles.Add(_("File"));
@@ -2264,7 +2266,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         {
         	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pSearchLog);
         	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-			
+
 			Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
 			Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
         }

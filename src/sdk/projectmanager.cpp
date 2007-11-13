@@ -65,6 +65,9 @@
 #include "confirmreplacedlg.h"
 #include "projectfileoptionsdlg.h"
 
+template<> ProjectManager* Mgr<ProjectManager>::instance = 0;
+template<> bool  Mgr<ProjectManager>::isShutdown = false;
+
 // maximum number of items in "Open with" context menu
 static const unsigned int MAX_OPEN_WITH_ITEMS = 20; // keep it in sync with below array!
 static const int idOpenWith[] =

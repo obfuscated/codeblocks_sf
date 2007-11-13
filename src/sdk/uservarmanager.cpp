@@ -36,6 +36,9 @@
 #include <wx/textdlg.h> //wxTextEntryDialog
 #include <ctype.h>
 
+template<> UserVariableManager* Mgr<UserVariableManager>::instance = 0;
+template<> bool  Mgr<UserVariableManager>::isShutdown = false;
+
 const wxString cBase(_T("base"));
 const wxString cDir(_T("dir"));
 const wxChar cSlash(_T('/'));

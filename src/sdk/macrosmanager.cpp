@@ -52,6 +52,8 @@
 
 using namespace std;
 
+template<> MacrosManager* Mgr<MacrosManager>::instance = 0;
+template<> bool  Mgr<MacrosManager>::isShutdown = false;
 
 static const wxString const_COIN(_T("COIN"));
 static const wxString const_RANDOM(_T("RANDOM"));

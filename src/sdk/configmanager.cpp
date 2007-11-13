@@ -51,6 +51,9 @@
 #include "tinyxml/tinywxuni.h"
 #include <stdlib.h>
 
+template<> CfgMgrBldr* Mgr<CfgMgrBldr>::instance = 0;
+template<> bool  Mgr<CfgMgrBldr>::isShutdown = false;
+
 wxString ConfigManager::config_folder;
 wxString ConfigManager::home_folder;
 wxString ConfigManager::data_path_user;

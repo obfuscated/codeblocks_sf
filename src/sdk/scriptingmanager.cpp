@@ -23,6 +23,9 @@
 #include "scripting/bindings/scriptbindings.h"
 #include "scripting/bindings/sc_plugin.h"
 
+template<> ScriptingManager* Mgr<ScriptingManager>::instance = 0;
+template<> bool  Mgr<ScriptingManager>::isShutdown = false;
+
 static wxString s_ScriptErrors;
 static wxString capture;
 

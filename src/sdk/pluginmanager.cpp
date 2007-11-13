@@ -66,6 +66,9 @@
 
 #include "scripting/bindings/sc_plugin.h"
 
+template<> PluginManager* Mgr<PluginManager>::instance = 0;
+template<> bool  Mgr<PluginManager>::isShutdown = false;
+
 void VersionStringToNumbers(const wxString& version, long* major, long* minor, long* release)
 {
     wxString majorS = version.BeforeFirst(_T('.')); // 6.3.2 -> 6

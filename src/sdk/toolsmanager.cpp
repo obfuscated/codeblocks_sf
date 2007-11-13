@@ -46,6 +46,9 @@
 #include <wx/listimpl.cpp>
 #include "configuretoolsdlg.h"
 
+template<> ToolsManager* Mgr<ToolsManager>::instance = 0;
+template<> bool  Mgr<ToolsManager>::isShutdown = false;
+
 WX_DEFINE_LIST(ToolsList);
 
 const int idToolsConfigure = wxNewId();
