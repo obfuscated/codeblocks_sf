@@ -496,7 +496,10 @@ cbEditor::cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filena
 cbEditor::~cbEditor()
 {
     SetSizer(0);
-    NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
+
+    // moved in ~EditorBase
+//    NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
+
     UpdateProjectFile();
     if (m_pControl)
     {

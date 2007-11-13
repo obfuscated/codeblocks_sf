@@ -676,7 +676,6 @@ void MainFrame::CreateIDE()
 
 void MainFrame::SetupGUILogging()
 {
-#if 1
     m_AutoHideLogs = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/auto_hide"), false);
 
     int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
@@ -733,8 +732,6 @@ void MainFrame::SetupGUILogging()
 //    Manager::Get()->GetLogManager()->Log(_T("Build succeeded, no errors."), LogManager::app_log, Logger::success);
 
     // ------------------------ remove this  ------------------------
-
-#endif
 }
 
 
