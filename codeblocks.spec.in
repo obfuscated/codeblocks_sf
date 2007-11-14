@@ -6,6 +6,7 @@
 %define _version        1.0_0.svn.%{_svnrev}
 %define _rel		0
 %define __release	%{_rel}
+%define jobs		%(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
 
 %if 0%{?suse_version}
 %if 0%{?suse_version} > 1020
@@ -146,7 +147,7 @@ Code::Blocks SDK to develop your own plugins.
       --with-contrib-plugins=all
   %endif
 
-  %__make
+  %{__make} %{?jobs:-j %{jobs}}
 
 %install
   %__rm -rf $RPM_BUILD_ROOT
@@ -185,6 +186,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/debugger.zip
 %{pkgdata}/defaultmimehandler.zip
 %{pkgdata}/manager_resources.zip
+%{pkgdata}/openfileslist.zip
 %{pkgdata}/projectsimporter.zip
 %{pkgdata}/resources.zip
 %{pkgdata}/scriptedwizard.zip
@@ -204,6 +206,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/plugins/libcompiler.*
 %{pkgdata}/plugins/libdebugger.*
 %{pkgdata}/plugins/libdefaultmimehandler.*
+%{pkgdata}/plugins/libopenfileslist.*
 %{pkgdata}/plugins/libprojectsimporter.*
 %{pkgdata}/plugins/libscriptedwizard.*
 %{pkgdata}/plugins/libtodo.*
@@ -257,6 +260,9 @@ Code::Blocks SDK to develop your own plugins.
 %{_includedir}/%{name}/*
 
 %changelog
+* Wed Nov 14 2007 Daniel Orb <thetuxkeeper@googlemail.com>
+- added new plugin to file list
+- added make job number "detection"
 * Sun Oct 14 2007 Daniel Orb <thetuxkeeper@googlemail.com>
 - applied changes made on opensuse buildservice
 * Mon Apr 16 2007 Daniel Orb <danielorb2000@googlemail.com>
