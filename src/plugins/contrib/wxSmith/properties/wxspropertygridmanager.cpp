@@ -24,6 +24,9 @@
 #include "wxspropertygridmanager.h"
 #include "wxspropertycontainer.h"
 
+#include <manager.h>
+#include <logmanager.h>
+
 IMPLEMENT_CLASS(wxsPropertyGridManager,wxPropertyGridManager)
 
 wxsPropertyGridManager::wxsPropertyGridManager(
@@ -68,7 +71,11 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
         if ( PGIDs[i] == ID )
         {
             wxsPropertyContainer* Container = PGContainers[i];
-            PGEnteries[i]->PGRead(Container,this,ID,PGIndexes[i]);
+            if ( !PGEnteries[i]->PGRead(Container,this,ID,PGIndexes[i]) )
+            {
+                Manager::Get()->GetLogManager()->DebugLogError(
+                    _T("wxSmith: Couldn't read value from wxsPropertyGridManager"));
+            }
 
             // Notifying about property change
             Container->NotifyPropertyChangeFromPropertyGrid();

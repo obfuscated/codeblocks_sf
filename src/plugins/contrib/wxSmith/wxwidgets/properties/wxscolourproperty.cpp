@@ -113,21 +113,39 @@ namespace
         0
     };
 
+    // #@$%@#$% This was really annoying bit of code
+    // wxPropertyGrid is really messy when trying to
+    // create custom properties. And all this macro stuff
+    // is just disaster for any developer, especially when
+    // macros are buggy (produce compilation errors).
     class wxsMyColourPropertyClass : public wxEnumPropertyClass
     {
         public:
 
-            wxsMyColourPropertyClass(const wxString& label, const wxString& name,
-                const wxColourPropertyValue& value);
-            ~wxsMyColourPropertyClass();
+            virtual wxPG_VALUETYPE_MSGVAL GetValueType() const
+            {
+                return wxPG_VALUETYPE(wxColourPropertyValue);
+            }
 
-            WX_PG_DECLARE_BASIC_TYPE_METHODS()
-            WX_PG_DECLARE_EVENT_METHODS()
-            WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
+            wxsMyColourPropertyClass(
+                const wxString& label = wxEmptyString,
+                const wxString& name = wxPG_LABEL,
+                const wxColourPropertyValue& value = wxColourPropertyValue(wxsCOLOUR_DEFAULT,*wxWHITE) );
+
+            virtual ~wxsMyColourPropertyClass();
+
+            virtual void DoSetValue(wxPGVariant value);
+            virtual wxPGVariant DoGetValue() const;
+            virtual bool SetValueFromString(const wxString& text, int);
+            virtual wxString GetValueAsString(int) const;
+            virtual bool OnEvent(wxPropertyGrid* propGrid, wxWindow* primary, wxEvent& event);
+            virtual wxSize GetImageSize() const;
+            virtual void OnCustomPaint(wxDC& dc,const wxRect& rect,wxPGPaintData& paintdata);
 
         protected:
 
             wxColourPropertyValue   m_value;
+
     };
 
     wxsMyColourPropertyClass::wxsMyColourPropertyClass( const wxString& label, const wxString& name,
@@ -194,7 +212,7 @@ namespace
     {
         if ( event.GetEventType() == wxEVT_COMMAND_COMBOBOX_SELECTED )
         {
-            int type = wxEnumPropertyClass::DoGetValue().GetRawLong();
+            int type = wxEnumPropertyClass::DoGetValue().GetLong();
 
             if ( type == wxPG_COLOUR_CUSTOM )
             {
@@ -210,20 +228,22 @@ namespace
                 }
 
                 wxColourDialog dialog(propgrid, &data);
+                bool Ret = false;
                 if ( dialog.ShowModal() == wxID_OK )
                 {
                     wxColourData retData = dialog.GetColourData();
                     m_value.m_colour = retData.GetColour();
                     wxsMyColourPropertyClass::DoSetValue(m_value);
+                    Ret = true;
                 }
 
                 // Update text in combo box (so it is "(R,G,B)" not "Custom").
                 if ( primary )
                 {
-                    GetEditorClass()->SetControlStringValue(primary,GetValueAsString(1));
+                    GetEditorClass()->SetControlStringValue(primary,GetValueAsString(0));
                 }
 
-                return TRUE;
+                return Ret;
             }
             else if ( type == wxsCOLOUR_DEFAULT )
             {
@@ -235,15 +255,16 @@ namespace
                     GetEditorClass()->SetControlStringValue(primary,GetValueAsString(0));
                 }
 
-                return TRUE;
+                return true;
             }
             else
             {
                 m_value.m_type = type;
                 m_value.m_colour = wxSystemSettings::GetColour((wxSystemColour)m_value.m_type);
+                return true;
             }
         }
-        return FALSE;
+        return false;
     }
 
     void wxsMyColourPropertyClass::OnCustomPaint ( wxDC& dc,
@@ -301,7 +322,7 @@ namespace
 
             wxsMyColourPropertyClass::DoSetValue ( &val );
 
-            return TRUE;
+            return true;
         }
         else
         {
@@ -320,11 +341,11 @@ namespace
                 {
                     val.m_colour = wxSystemSettings::GetColour((wxSystemColour)val.m_type);
                 }
-                wxsMyColourPropertyClass::DoSetValue ( &val );
-                return TRUE;
+                wxsMyColourPropertyClass::DoSetValue(&val);
+                return true;
             }
         }
-        return FALSE;
+        return true;
     };
 }
 
@@ -442,15 +463,16 @@ wxsColourProperty::wxsColourProperty(
 void wxsColourProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
     PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxsMyColourPropertyClass(GetPGName(),wxPG_LABEL,VALUE)));
+//    PGRegister(Object,Grid,Grid->AppendIn(Parent,wxSystemColourProperty(GetPGName(),wxPG_LABEL,VALUE)));
 }
 
 bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
 {
-    if ( ! Grid->IsPropertyValueType(Id,CLASSINFO(wxColourPropertyValue)) ) return false;
+    wxVariant value = Grid->GetPropertyValue(Id);
+    wxColourPropertyValue* Val = wxGetVariantCast(value,wxColourPropertyValue);
+    if ( !Val ) return false;
 
-    VALUE = *wxDynamicCast(
-        Grid->GetPropertyValueAsWxObjectPtr(Id),
-        wxColourPropertyValue);
+    VALUE = *Val;
 
     return true;
 }

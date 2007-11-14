@@ -267,7 +267,7 @@ bool wxPGSpinCtrlEditor::OnEvent( wxPropertyGrid* propgrid, wxPGProperty* proper
                 double dSpinMax = (double) spinMax;
                 if ( v_d > dSpinMax ) v_d = dSpinMax;
                 else if ( v_d < dSpinMin ) v_d = dSpinMin;
-                
+
                 wxPropertyGrid::DoubleToString(s, v_d, 6, true, NULL);
             }
             else
