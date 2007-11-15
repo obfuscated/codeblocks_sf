@@ -1435,13 +1435,6 @@ void CompilerGCC::DoUpdateTargetMenu(int targetIndex)
 
 void CompilerGCC::UpdateProjectTargets(cbProject* project)
 {
-    // keep a backup of old targets list so we can check for equality
-    // with the new list we 'll create below.
-    // if they 're equal, we can spare the DoRecreateTargetMenu() call
-    // which might be slow (esp. on linux)
-    wxArrayString oldTargets = m_Targets;
-    int oldRealIdx = m_RealTargetsStartIndex;
-
     m_Targets.Clear();
     if (!project)
         return;
@@ -1460,9 +1453,8 @@ void CompilerGCC::UpdateProjectTargets(cbProject* project)
     // keep the index for the first real target
     m_RealTargetsStartIndex = virtuals.GetCount();
 
-    // actually rebuild menu and combo (if needed)
-    if (oldRealIdx != m_RealTargetsStartIndex || m_Targets != oldTargets)
-        DoRecreateTargetMenu();
+    // actually rebuild menu and combo
+    DoRecreateTargetMenu();
 }
 
 wxString CompilerGCC::GetTargetString(int index)
@@ -2270,11 +2262,11 @@ void CompilerGCC::BuildStateManagement()
 
         case bsProjectPostBuild:
         {
-            m_pLastBuildingTarget = 0;
             // run project post-build steps
             if (m_RunProjectPostBuild || m_pBuildingProject->GetAlwaysRunPostBuildSteps())
-                cmds = dc.GetPostBuildCommands(0);
+                cmds = dc.GetPostBuildCommands(m_pLastBuildingTarget);
             // reset
+            m_pLastBuildingTarget = 0;
             m_RunProjectPostBuild = false;
             break;
         }
