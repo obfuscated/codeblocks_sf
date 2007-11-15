@@ -10,6 +10,9 @@ endif
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/include/scripting/include \
+		-I$(top_srcdir)/src/include/scripting/bindings \
+		-I$(top_srcdir)/src/include/scripting/sqplus \
 		-include "sdk.h"
 
 libdir = $(pkgdatadir)/plugins
@@ -18,7 +21,13 @@ lib_LTLIBRARIES = libhelp_plugin.la
 
 libhelp_plugin_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libhelp_plugin_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
+libhelp_plugin_la_LIBADD = $(PLUGIN_WX_LIBS) \
+							../../../sdk/libcodeblocks.la \
+							../../../sdk/scripting/bindings/libsqbindings.la \
+							../../../sdk/scripting/sqplus/libsqplus.la \
+							../../../sdk/scripting/sqstdlib/libsqstdlib.la \
+							../../../sdk/scripting/squirrel/libsquirrel.la
+
 if ! HAVE_BZIP2
 libhelp_plugin_la_LIBADD += bzip2/libbzip2.la
 INCLUDES += -Ibzip2
