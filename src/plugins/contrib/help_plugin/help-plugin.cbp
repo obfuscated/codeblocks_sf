@@ -72,6 +72,9 @@
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#CB.include)\scripting\bindings" />
+			<Add directory="$(#CB.include)\scripting\include" />
+			<Add directory="$(#CB.include)\scripting\sqplus" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -82,9 +85,13 @@
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
+			<Add library="sqplus" />
+			<Add library="sqstdlib" />
+			<Add library="squirrel" />
 			<Add directory="$(#CB.lib)" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#CB)\sdk\scripting\lib" />
 		</Linker>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option target="help_plugin" />

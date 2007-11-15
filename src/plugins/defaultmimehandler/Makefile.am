@@ -13,8 +13,10 @@ libdefaultmimehandler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undef
 libdefaultmimehandler_la_LIBADD = $(PLUGIN_WX_LIBS) ../../sdk/libcodeblocks.la
 
 libdefaultmimehandler_la_SOURCES = defaultmimehandler.cpp \
-			editmimetypesdlg.cpp
+			editmimetypesdlg.cpp \
+			EmbeddedHtmlPanel.cpp
 
 noinst_HEADERS = defaultmimehandler.h \
 			editmimetypesdlg.h \
-			mimetypesarray.h
+			mimetypesarray.h \
+			EmbeddedHtmlPanel.h

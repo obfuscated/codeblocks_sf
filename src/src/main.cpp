@@ -739,8 +739,8 @@ DECLARE_INSTANCE_TYPE(MainFrame);
 
 void MainFrame::RegisterScriptFunctions()
 {
-    // The "App" object currently does not provide any functions
-    SqPlus::SQClassDef<MainFrame>("MainFrame");
+    SqPlus::SQClassDef<MainFrame>("MainFrame").
+                    func(&MainFrame::Open, "Open");
 
     SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
 }

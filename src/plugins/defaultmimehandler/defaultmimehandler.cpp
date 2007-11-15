@@ -21,7 +21,7 @@
 #endif
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
-#include <wx/html/htmlwin.h>
+#include "EmbeddedHtmlPanel.h"
 #include "defaultmimehandler.h"
 #include "editmimetypesdlg.h"
 #include "filefilters.h"
@@ -30,7 +30,7 @@
 namespace
 {
     PluginRegistrant<DefaultMimeHandler> reg(_T("FilesExtensionHandler"));
-    
+
     const int idHtml = wxNewId();
 }
 
@@ -89,14 +89,9 @@ void DefaultMimeHandler::OnAttach()
         else
             m_MimeTypes.Add(mt);
     }
-    
-    m_Html = new wxHtmlWindow(Manager::Get()->GetAppWindow(), idHtml, wxPoint(0,0), wxSize(320,240));
-	wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	int sizes[7] = {};
-	for (int i = 0; i < 7; ++i)
-        sizes[i] = systemFont.GetPointSize();
-	m_Html->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
-	
+
+    m_Html = new EmbeddedHtmlPanel(Manager::Get()->GetAppWindow());
+
 	CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
 	evt.pWindow = m_Html;
     evt.name = _T("DefMimeHandler_HTMLViewer");
@@ -163,7 +158,7 @@ bool DefaultMimeHandler::CanHandleFile(const wxString& filename) const
 int DefaultMimeHandler::OpenFile(const wxString& filename)
 {
     wxFileName the_file(filename);
-    
+
     // don't check for existence because URLs can't be checked this way
 //    if (!the_file.FileExists())
 //        return -1;
@@ -175,7 +170,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
 			the_file.GetExt().CmpNoCase(_T("html")) == 0)
 	{
 		// embedded help viewer (unless the user has added an explicit association manually)
-		m_Html->LoadPage(filename);
+		m_Html->Open(filename);
 		CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
 		evt.pWindow = m_Html;
 		Manager::Get()->ProcessEvent(evt);

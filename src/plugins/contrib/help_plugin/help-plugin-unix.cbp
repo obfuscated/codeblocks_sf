@@ -61,6 +61,9 @@
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../include/scripting/bindings" />
+			<Add directory="../../../include/scripting/include" />
+			<Add directory="../../../include/scripting/sqplus" />
 			<Add directory="bzip2" />
 			<Add directory="zlib" />
 		</Compiler>
@@ -68,7 +71,11 @@
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
+			<Add library="sqplus" />
+			<Add library="sqstdlib" />
+			<Add library="squirrel" />
 			<Add directory="../../../devel" />
+			<Add directory="../../../sdk/scripting/lib" />
 			<Add directory="bzip2" />
 			<Add directory="zlib" />
 		</Linker>

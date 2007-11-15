@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="EmbeddedHtmlPanel">
+		<id_arg>0</id_arg>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+					<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+						<object class="sizeritem">
+							<object class="wxBitmapButton" name="ID_BITMAPBUTTON2" variable="btnBack" member="yes">
+								<bitmap stock_id="wxART_GO_BACK" stock_client="wxART_BUTTON" />
+								<handler function="OnbtnBackClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+						</object>
+						<object class="sizeritem">
+							<object class="wxBitmapButton" name="ID_BITMAPBUTTON3" variable="btnForward" member="yes">
+								<bitmap stock_id="wxART_GO_FORWARD" stock_client="wxART_BUTTON" />
+								<handler function="OnbtnForwardClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+						</object>
+						<object class="sizeritem">
+							<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblStatus" member="yes">
+								<label>Label</label>
+							</object>
+							<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+							<option>1</option>
+						</object>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxHtmlWindow" name="ID_HTMLWINDOW1" variable="winHtml" member="yes">
+					<size>340,180</size>
+				</object>
+				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

@@ -59,6 +59,9 @@
 // 20 wasn't enough
 #define MAX_HELP_ITEMS 32
 
+#include "scripting/bindings/sc_base_types.h"
+#include "scripting/sqplus/sqplus.h"
+
 int idHelpMenus[MAX_HELP_ITEMS];
 
 // Register the plugin
@@ -471,12 +474,45 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
     return;
   }
 
+  // Support C::B scripts
+  if (wxFileName(helpfile).GetExt() == _T("script"))
+  {
+      if (Manager::Get()->GetScriptingManager()->LoadScript(helpfile))
+      {
+        // help scripts must contain a function with the following signature:
+        // function SearchHelp(keyword)
+        try
+        {
+            SqPlus::SquirrelFunction<void> f("SearchHelp");
+            f(keyword);
+        }
+        catch (SquirrelError& e)
+        {
+            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        }
+      }
+      else
+      {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't run script"));
+      }
+
+      return;
+  }
+
   // Operate on help html file links inside embedded viewer
   if (openEmbeddedViewer && wxFileName(helpfile).GetExt().Mid(0, 3).CmpNoCase(_T("htm")) == 0)
   {
     Manager::Get()->GetLogManager()->DebugLog(_T("Launching ") + helpfile);
-	reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
-    ShowMANViewer();
+    cbMimePlugin* p = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(helpfile);
+    if (p)
+    {
+        p->OpenFile(helpfile);
+    }
+    else
+    {
+        reinterpret_cast<MANFrame *>(m_manFrame)->LoadPage(helpfile);
+        ShowMANViewer();
+    }
     return;
   }
 

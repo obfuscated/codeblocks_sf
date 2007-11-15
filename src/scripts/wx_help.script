@@ -1,0 +1,44 @@
+/*
+
+Sample help script for wxWidgets docs.
+Based on the original unix shell script by rjmyst3
+
+*/
+function SearchHelp(keyword)
+{
+    // that's all you should ever need to change in here
+    local wx_version = _T("2.8")
+    // on windows, adjust this for your wx installation
+    local wx_doc_folder = _T("/usr/share/doc")
+
+
+
+
+    local helproot = wx_doc_folder + _T("/wx") + wx_version + _T("-doc/wx-manual.html/")
+    local prefix = _T("wx") + wx_version + _T("-manual_")
+
+    // replace "contents" with "classref" below to default to alphabetical class list
+    local defaultpath = prefix + _T("contents.html")
+
+    // If there is no keyword, launch the default page defined above
+    if (keyword.IsEmpty())
+    {
+        App.Open(helproot + defaultpath, false)
+        return
+    }
+
+    // convert keyword to lowercase, this should be the class name
+    keyword.MakeLower()
+    local classpath = helproot + prefix + keyword + _T(".html")
+
+    LogDebug(_T("Opening ") + classpath)
+    if (IO.FileExists(classpath))
+    {
+        App.Open(classpath, false)
+    }
+    else
+    {
+        LogDebug(_T("Not found, opening default page"))
+        App.Open(helproot + defaultpath, false)
+    }
+}

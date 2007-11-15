@@ -1615,6 +1615,12 @@
 		<Unit filename="plugins\debuggergdb\threadsdlg.h">
 			<Option target="Debugger" />
 		</Unit>
+		<Unit filename="plugins\defaultmimehandler\EmbeddedHtmlPanel.cpp">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins\defaultmimehandler\EmbeddedHtmlPanel.h">
+			<Option target="Default MIME handler" />
+		</Unit>
 		<Unit filename="plugins\defaultmimehandler\defaultmimehandler.cpp">
 			<Option target="Default MIME handler" />
 		</Unit>
@@ -4264,6 +4270,7 @@
 					<wxPanel wxs="wxsmith/GenericSingleChoiceList.wxs" src="plugins/scriptedwizard/genericsinglechoicelist.cpp" hdr="plugins/scriptedwizard/genericsinglechoicelist.h" name="GenericSingleChoiceList" language="CPP" />
 					<wxPanel wxs="wxsmith/InfoPanel.wxs" src="plugins/scriptedwizard/infopanel.cpp" hdr="plugins/scriptedwizard/infopanel.h" name="InfoPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/ProjectPathPanel.wxs" src="plugins/scriptedwizard/projectpathpanel.cpp" hdr="plugins/scriptedwizard/projectpathpanel.h" name="ProjectPathPanel" language="CPP" />
+					<wxPanel wxs="wxsmith/EmbeddedHtmlPanel.wxs" src="plugins/defaultmimehandler/EmbeddedHtmlPanel.cpp" hdr="plugins/defaultmimehandler/EmbeddedHtmlPanel.h" fwddecl="1" name="EmbeddedHtmlPanel" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />
