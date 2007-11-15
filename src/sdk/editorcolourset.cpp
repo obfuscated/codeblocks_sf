@@ -128,7 +128,7 @@ void EditorColourSet::LoadAvailableSets()
             ok = dir.GetNext(&filename);
             ++count;
         }
-        Manager::Get()->GetLogManager()->Log(_("Found %d lexers"), count);
+        Manager::Get()->GetLogManager()->Log(F(_("Found %d lexers"), count));
         count = 0;
     }
 
