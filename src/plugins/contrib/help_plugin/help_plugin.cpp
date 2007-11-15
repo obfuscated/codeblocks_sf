@@ -73,6 +73,7 @@ namespace
 
 BEGIN_EVENT_TABLE(HelpPlugin, cbPlugin)
 	EVT_MENU(idViewMANViewer, HelpPlugin::OnViewMANViewer)
+	EVT_UPDATE_UI(idViewMANViewer, HelpPlugin::OnUpdateUI)
 END_EVENT_TABLE()
 
 #ifdef __WXMSW__
@@ -456,6 +457,15 @@ void HelpPlugin::ShowMANViewer(bool show)
 
     // update user prefs
     Manager::Get()->GetConfigManager(_T("help_plugin"))->Write(_T("/show_man_viewer"), show);
+}
+
+void HelpPlugin::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+
+    // uncheck checkbox if window was closed
+    if(m_manFrame && !IsWindowReallyShown(m_manFrame))
+        pbar->Check(idViewMANViewer, false);
 }
 
 void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool openEmbeddedViewer, const wxString &keyword)

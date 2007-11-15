@@ -25,6 +25,7 @@ class HelpPlugin : public cbPlugin
     void OnAttach(); // fires when the plugin is attached to the application
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
     void Reload(); // called after the settings have been applied
+    void OnUpdateUI(wxUpdateUIEvent& event); // called when showing View menu
 
   protected:
     void OnViewMANViewer(wxCommandEvent &event);
