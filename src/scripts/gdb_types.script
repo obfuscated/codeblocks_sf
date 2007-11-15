@@ -45,11 +45,11 @@ function Evaluate_wxString(type, a_str, start, count)
     if (type.Find(_T("*"), false) > 0)
         oper = _T("->");
 
-    local result = _T("output /c ") + a_str + oper + _T("c_str()[") + start + _T("]@");
+    local result = _T("output /c ") + a_str + oper + _T("m_pchData[") + start + _T("]@");
     if (count != 0)
         result = result + count;
     else
-        result = result + a_str + oper + _T("size()");
+        result = result + _T("((wxStringData*)") + a_str + oper + _T("m_pchData - 1)->nDataLength");
     return result;
 }
 
