@@ -2264,7 +2264,7 @@ void CompilerGCC::BuildStateManagement()
         {
             // run project post-build steps
             if (m_RunProjectPostBuild || m_pBuildingProject->GetAlwaysRunPostBuildSteps())
-                cmds = dc.GetPostBuildCommands(m_pLastBuildingTarget);
+                cmds = dc.GetPostBuildCommands(0);
             // reset
             m_pLastBuildingTarget = 0;
             m_RunProjectPostBuild = false;
