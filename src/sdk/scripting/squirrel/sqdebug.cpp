@@ -10,7 +10,7 @@
 
 SQRESULT sq_stackinfos(HSQUIRRELVM v, SQInteger level, SQStackInfos *si)
 {
-	SQInteger cssize = v->_callsstack.size();
+	SQInteger cssize = v->_callsstacksize;
 	if (cssize > level) {
 		memset(si, 0, sizeof(SQStackInfos));
 		SQVM::CallInfo &ci = v->_callsstack[cssize-level-1];

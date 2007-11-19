@@ -30,6 +30,11 @@ bool str2num(const SQChar *s,SQObjectPtr &res)
 	}
 }
 
+static SQInteger base_dummy(HSQUIRRELVM v)
+{
+	return 0;
+}
+
 #ifndef NO_GARBAGE_COLLECTOR
 static SQInteger base_collectgarbage(HSQUIRRELVM v)
 {
@@ -217,6 +222,7 @@ static SQRegFunction base_funcs[]={
 	{_SC("suspend"),base_suspend,-1, NULL},
 	{_SC("array"),base_array,-2, _SC(".n")},
 	{_SC("type"),base_type,2, NULL},
+	{_SC("dummy"),base_dummy,0,NULL},
 #ifndef NO_GARBAGE_COLLECTOR
 	{_SC("collectgarbage"),base_collectgarbage,1, _SC("t")},
 #endif
@@ -235,6 +241,9 @@ void sq_base_register(HSQUIRRELVM v)
 		sq_createslot(v,-3);
 		i++;
 	}
+	sq_pushstring(v,_SC("_version_"),-1);
+	sq_pushstring(v,SQUIRREL_VERSION,-1);
+	sq_createslot(v,-3);
 	sq_pushstring(v,_SC("_charsize_"),-1);
 	sq_pushinteger(v,sizeof(SQChar));
 	sq_createslot(v,-3);
@@ -653,9 +662,9 @@ static SQInteger closure_getinfos(HSQUIRRELVM v) {
 	SQTable *res = SQTable::Create(_ss(v),4);
 	if(type(o) == OT_CLOSURE) {
 		SQFunctionProto *f = _funcproto(_closure(o)->_function);
-		SQInteger nparams = f->_parameters.size() + (f->_varparams?1:0);
+		SQInteger nparams = f->_nparameters + (f->_varparams?1:0);
 		SQObjectPtr params = SQArray::Create(_ss(v),nparams);
-		for(SQUnsignedInteger n = 0; n<f->_parameters.size(); n++) {
+		for(SQInteger n = 0; n<f->_nparameters; n++) {
 			_array(params)->Set((SQInteger)n,f->_parameters[n]);
 		}
 		if(f->_varparams) {

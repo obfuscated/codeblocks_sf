@@ -206,7 +206,7 @@ static int getVar(StackHandler & sa,VarRef * vr,void * data) {
 
 // === Global Vars ===
 
-SQInteger setVarFunc(HSQUIRRELVM v) {
+int setVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_TABLE) {
     VarRefPtr vr;
@@ -217,7 +217,7 @@ SQInteger setVarFunc(HSQUIRRELVM v) {
   return SQ_ERROR;
 } // setVarFunc
 
-SQInteger getVarFunc(HSQUIRRELVM v) {
+int getVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_TABLE) {
     VarRefPtr vr;
@@ -230,7 +230,7 @@ SQInteger getVarFunc(HSQUIRRELVM v) {
 
 // === Instance Vars ===
 
-SQInteger setInstanceVarFunc(HSQUIRRELVM v) {
+int setInstanceVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_INSTANCE) {
     VarRefPtr vr;
@@ -242,7 +242,7 @@ SQInteger setInstanceVarFunc(HSQUIRRELVM v) {
   return SQ_ERROR;
 } // setInstanceVarFunc
 
-SQInteger getInstanceVarFunc(HSQUIRRELVM v) {
+int getInstanceVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_INSTANCE) {
     VarRefPtr vr;

@@ -15,7 +15,7 @@ public:
   void Reset(void); // Release (any) reference and reset _o.
   SquirrelObject Clone();
 	BOOL SetValue(const SquirrelObject &key,const SquirrelObject &val);
-
+	
 	BOOL SetValue(SQInteger key,const SquirrelObject &val);
 	BOOL SetValue(INT key,bool b); // Compiler treats SQBool as INT.
 	BOOL SetValue(INT key,INT n);
@@ -53,7 +53,7 @@ public:
 
 	BOOL SetInstanceUP(SQUserPointer up);
 	BOOL IsNull() const;
-	BOOL IsNumeric() const;
+	int IsNumeric() const;
 	int Len() const;
 	BOOL SetDelegate(SquirrelObject &obj);
 	SquirrelObject GetDelegate();
@@ -175,41 +175,41 @@ struct StackHandler {
 		}
 		return -1;
 	}
-
+	
 	int GetParamCount() {
 		return _top;
 	}
-	SQInteger Return(const SQChar *s)
+	int Return(const SQChar *s)
 	{
 		sq_pushstring(v,s,-1);
 		return 1;
 	}
-	SQInteger Return(SQFloat f)
+	int Return(FLOAT f)
 	{
 		sq_pushfloat(v,f);
 		return 1;
 	}
-	SQInteger Return(SQInteger i)
+	int Return(INT i)
 	{
 		sq_pushinteger(v,i);
 		return 1;
 	}
-	SQInteger Return(bool b)
+	int Return(bool b)
 	{
 		sq_pushbool(v,b);
 		return 1;
 	}
-  SQInteger Return(SQUserPointer p) {
+  int Return(SQUserPointer p) {
     sq_pushuserpointer(v,p);
     return 1;
   }
-	SQInteger Return(SquirrelObject &o)
+	int Return(SquirrelObject &o)
 	{
 		sq_pushobject(v,o.GetObjectHandle());
 		return 1;
 	}
-	SQInteger Return() { return 0; }
-	SQInteger ThrowError(const SQChar *error) {
+	int Return() { return 0; }
+	int ThrowError(const SQChar *error) {
 		return sq_throwerror(v,error);
 	}
   HSQUIRRELVM GetVMPtr() { return v; }

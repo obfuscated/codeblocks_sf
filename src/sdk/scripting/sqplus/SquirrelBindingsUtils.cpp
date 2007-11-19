@@ -51,7 +51,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 	}
 	sq_createslot(v,-3);
 	sq_pop(v,1);
-
+	
 	return TRUE;
 }
 

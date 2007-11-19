@@ -234,7 +234,7 @@ SQInteger GetPlugin(HSQUIRRELVM v)
     StackHandler sa(v);
 
     // get the script plugin's name
-    const wxString& name = *SqPlus::GetInstance<wxString>(v, 2);
+    const wxString& name = *SqPlus::GetInstance<wxString,false>(v, 2);
 
     // search for it in the registered script plugins list
     ScriptPlugins::iterator it = s_ScriptPlugins.find(name);

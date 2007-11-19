@@ -647,8 +647,13 @@ public:
 			Lex();
 						 }
 			break;
-		case TK_FLOAT: 
-			_fs->AddInstruction(_OP_LOAD, _fs->PushTarget(), _fs->GetNumericConstant(_lex._fvalue));
+		case TK_FLOAT:
+			if(sizeof(SQFloat) == sizeof(SQInt32)) {
+				_fs->AddInstruction(_OP_LOADFLOAT, _fs->PushTarget(),*((SQInt32 *)&_lex._fvalue));
+			}
+			else {
+				_fs->AddInstruction(_OP_LOAD, _fs->PushTarget(), _fs->GetNumericConstant(_lex._fvalue));
+			}
 			Lex();
 			break;
 		case TK_TRUE: case TK_FALSE:

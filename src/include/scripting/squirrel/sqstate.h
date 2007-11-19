@@ -44,7 +44,7 @@ private:
 	void AllocNodes(SQUnsignedInteger size);
 	SQUnsignedInteger _numofslots;
 	SQUnsignedInteger _slotused;
-	SQUnsignedInteger _buffersize;
+	RefNode *_nodes;
 	RefNode *_freelist;
 	RefNode **_buckets;
 };

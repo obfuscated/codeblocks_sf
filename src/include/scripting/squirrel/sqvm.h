@@ -32,23 +32,21 @@ struct SQVM : public CHAINABLE_OBJ
 {
 	struct VarArgs {
 		VarArgs() { size = 0; base = 0; }
-		SQInteger size;
-		SQInteger base;
+		unsigned short size;
+		unsigned short base;
 	};
 
 	struct CallInfo{
 		CallInfo() { _generator._type = OT_NULL;}
-		//CallInfo(const CallInfo& ci) {  }
-		SQInstructionVec *_iv;
-		SQObjectPtrVec *_literals;
+		SQInstruction *_ip;
+		SQObjectPtr *_literals;
 		SQObject _closure;
 		SQObject _generator;
-		SQInteger _etraps;
-		SQInteger _prevstkbase;
-		SQInteger _prevtop;
-		SQInteger _target;
-		SQInstruction *_ip;
-		SQInteger _ncalls;
+		SQInt32 _etraps;
+		SQInt32 _prevstkbase;
+		SQInt32 _prevtop;
+		SQInt32 _target;
+		SQInt32 _ncalls;
 		SQBool _root;
 		VarArgs _vargs;
 	};
@@ -118,7 +116,11 @@ public:
 	void Mark(SQCollectable **chain);
 #endif
 	void Finalize();
-
+	void GrowCallStack() {
+		SQInteger newsize = _alloccallsstacksize*2;
+		_callsstack = (CallInfo*)sq_realloc(_callsstack,_alloccallsstacksize*sizeof(CallInfo),newsize*sizeof(CallInfo));
+		_alloccallsstacksize = newsize;
+	}
 	void Release(){ sq_delete(this,SQVM); } //does nothing
 ////////////////////////////////////////////////////////////////////////////
 	//stack functions for the api
@@ -144,7 +146,12 @@ public:
 	SQObjectPtr _debughook;
 
 	SQObjectPtr temp_reg;
-	CallInfoVec _callsstack;
+	
+
+	CallInfo* _callsstack;
+	SQInteger _callsstacksize;
+	SQInteger _alloccallsstacksize;
+
 	ExceptionsTraps _etraps;
 	CallInfo *ci;
 	void *_foreignptr;
@@ -156,6 +163,7 @@ public:
 	SQBool _suspended_root;
 	SQInteger _suspended_target;
 	SQInteger _suspended_traps;
+	VarArgs _suspend_varargs;
 };
 
 struct AutoDec{
@@ -177,13 +185,18 @@ const SQChar *IdType2Name(SQObjectType type);
 #endif
 
 #define PUSH_CALLINFO(v,nci){ \
-	v->ci = &v->_callsstack.push_back(nci); \
+	if(v->_callsstacksize == v->_alloccallsstacksize) { \
+		v->GrowCallStack(); \
+	} \
+	v->ci = &v->_callsstack[v->_callsstacksize]; \
+	*(v->ci) = nci; \
+	v->_callsstacksize++; \
 }
 
 #define POP_CALLINFO(v){ \
-	v->_callsstack.pop_back(); \
-	if(v->_callsstack.size())	\
-		v->ci = &v->_callsstack.back() ; \
+	v->_callsstacksize--; \
+	if(v->_callsstacksize)	\
+		v->ci = &v->_callsstack[v->_callsstacksize-1] ; \
 	else	\
 		v->ci = NULL; \
 }

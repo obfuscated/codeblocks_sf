@@ -34,7 +34,7 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 3)
         {
-            wxString key = *SqPlus::GetInstance<wxString>(v, 2);
+            wxString key = *SqPlus::GetInstance<wxString,false>(v, 2);
             if (sa.GetType(3) == OT_INTEGER)
                 return sa.Return((SQInteger)Manager::Get()->GetConfigManager(_T("scripts"))->ReadInt(key, sa.GetInt(3)));
             else if (sa.GetType(3) == OT_BOOL)
@@ -43,7 +43,7 @@ namespace ScriptBindings
                 return sa.Return((float)Manager::Get()->GetConfigManager(_T("scripts"))->ReadDouble(key, sa.GetFloat(3)));
             else
             {
-                wxString val = *SqPlus::GetInstance<wxString>(v, 3);
+                wxString val = *SqPlus::GetInstance<wxString,false>(v, 3);
                 wxString ret = Manager::Get()->GetConfigManager(_T("scripts"))->Read(key, val);
                 return SqPlus::ReturnCopy(v, ret);
             }
@@ -56,7 +56,7 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 3)
         {
-            wxString key = *SqPlus::GetInstance<wxString>(v, 2);
+            wxString key = *SqPlus::GetInstance<wxString,false>(v, 2);
             if (sa.GetType(3) == OT_INTEGER)
             {
                 Manager::Get()->GetConfigManager(_T("scripts"))->Write(key, (int)sa.GetInt(3));
@@ -74,14 +74,14 @@ namespace ScriptBindings
             }
             else
             {
-                Manager::Get()->GetConfigManager(_T("scripts"))->Write(key, *SqPlus::GetInstance<wxString>(v, 3));
+                Manager::Get()->GetConfigManager(_T("scripts"))->Write(key, *SqPlus::GetInstance<wxString,false>(v, 3));
                 return SQ_OK;
             }
         }
         else if (paramCount == 4)
         {
-            wxString key = *SqPlus::GetInstance<wxString>(v, 2);
-            wxString val = *SqPlus::GetInstance<wxString>(v, 3);
+            wxString key = *SqPlus::GetInstance<wxString,false>(v, 2);
+            wxString val = *SqPlus::GetInstance<wxString,false>(v, 3);
             if (sa.GetType(4) == OT_BOOL)
             {
                 Manager::Get()->GetConfigManager(_T("scripts"))->Write(key, val, sa.GetBool(4));
@@ -100,7 +100,7 @@ namespace ScriptBindings
             if (sa.GetType(2) == OT_INTEGER)
                 ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(sa.GetInt(2));
             else
-                ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(*SqPlus::GetInstance<wxString>(v, 2));
+                ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(*SqPlus::GetInstance<wxString,false>(v, 2));
             SqPlus::Push(v, ed);
             return 1;
         }
@@ -112,7 +112,7 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(*SqPlus::GetInstance<wxString>(v, 2));
+            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(*SqPlus::GetInstance<wxString,false>(v, 2));
             SqPlus::Push(v, ed);
             return 1;
         }
@@ -127,7 +127,7 @@ namespace ScriptBindings
             if (sa.GetType(2) == OT_INTEGER)
                 return sa.Return(Manager::Get()->GetEditorManager()->Close(sa.GetInt(2)));
             else
-                return sa.Return(Manager::Get()->GetEditorManager()->Close(*SqPlus::GetInstance<wxString>(v, 2)));
+                return sa.Return(Manager::Get()->GetEditorManager()->Close(*SqPlus::GetInstance<wxString,false>(v, 2)));
         }
         return sa.ThrowError("Invalid arguments to \"EditorManager::Close\"");
     }
@@ -140,7 +140,7 @@ namespace ScriptBindings
             if (sa.GetType(2) == OT_INTEGER)
                 return sa.Return(Manager::Get()->GetEditorManager()->Save(sa.GetInt(2)));
             else
-                return sa.Return(Manager::Get()->GetEditorManager()->Save(*SqPlus::GetInstance<wxString>(v, 2)));
+                return sa.Return(Manager::Get()->GetEditorManager()->Save(*SqPlus::GetInstance<wxString,false>(v, 2)));
         }
         return sa.ThrowError("Invalid arguments to \"EditorManager::Save\"");
     }
@@ -150,11 +150,11 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             if (sa.GetType(2) == OT_INTEGER)
                 return sa.Return(prj->RemoveFile(sa.GetInt(2)));
             else
-                return sa.Return(prj->RemoveFile(SqPlus::GetInstance<ProjectFile>(v, 2)));
+                return sa.Return(prj->RemoveFile(SqPlus::GetInstance<ProjectFile,false>(v, 2)));
         }
         return sa.ThrowError("Invalid arguments to \"cbProject::RemoveFile\"");
     }
@@ -164,8 +164,8 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount >= 3)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
-            wxString str = *SqPlus::GetInstance<wxString>(v, 3);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
+            wxString str = *SqPlus::GetInstance<wxString,false>(v, 3);
             bool b1 = paramCount >= 4 ? sa.GetBool(4) : true;
             bool b2 = paramCount >= 5 ? sa.GetBool(5) : true;
             int i = paramCount == 6 ? sa.GetInt(6) : 50;
@@ -173,7 +173,7 @@ namespace ScriptBindings
             if (sa.GetType(2) == OT_INTEGER)
                 pf = prj->AddFile(sa.GetInt(2), str, b1, b2, i);
             else
-                pf = prj->AddFile(*SqPlus::GetInstance<wxString>(v, 2), str, b1, b2, i);
+                pf = prj->AddFile(*SqPlus::GetInstance<wxString,false>(v, 2), str, b1, b2, i);
             SqPlus::Push(v, pf);
             return 1;
         }
@@ -185,12 +185,12 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             ProjectBuildTarget* bt = 0;
             if (sa.GetType(2) == OT_INTEGER)
                 bt = prj->GetBuildTarget(sa.GetInt(2));
             else
-                bt = prj->GetBuildTarget(*SqPlus::GetInstance<wxString>(v, 2));
+                bt = prj->GetBuildTarget(*SqPlus::GetInstance<wxString,false>(v, 2));
             SqPlus::Push(v, bt);
             return 1;
         }
@@ -202,11 +202,11 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 3)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             if (sa.GetType(2) == OT_INTEGER)
-                return sa.Return(prj->RenameBuildTarget(sa.GetInt(2), *SqPlus::GetInstance<wxString>(v, 3)));
+                return sa.Return(prj->RenameBuildTarget(sa.GetInt(2), *SqPlus::GetInstance<wxString,false>(v, 3)));
             else
-                return sa.Return(prj->RenameBuildTarget(*SqPlus::GetInstance<wxString>(v, 2), *SqPlus::GetInstance<wxString>(v, 3)));
+                return sa.Return(prj->RenameBuildTarget(*SqPlus::GetInstance<wxString,false>(v, 2), *SqPlus::GetInstance<wxString,false>(v, 3)));
         }
         return sa.ThrowError("Invalid arguments to \"cbProject::RenameBuildTarget\"");
     }
@@ -216,12 +216,12 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 3)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             ProjectBuildTarget* bt = 0;
             if (sa.GetType(2) == OT_INTEGER)
-                bt = prj->DuplicateBuildTarget(sa.GetInt(2), *SqPlus::GetInstance<wxString>(v, 3));
+                bt = prj->DuplicateBuildTarget(sa.GetInt(2), *SqPlus::GetInstance<wxString,false>(v, 3));
             else
-                bt = prj->DuplicateBuildTarget(*SqPlus::GetInstance<wxString>(v, 2), *SqPlus::GetInstance<wxString>(v, 3));
+                bt = prj->DuplicateBuildTarget(*SqPlus::GetInstance<wxString,false>(v, 2), *SqPlus::GetInstance<wxString,false>(v, 3));
             SqPlus::Push(v, bt);
             return 1;
         }
@@ -233,11 +233,11 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             if (sa.GetType(2) == OT_INTEGER)
                 return sa.Return(prj->RemoveBuildTarget(sa.GetInt(2)));
             else
-                return sa.Return(prj->RemoveBuildTarget(*SqPlus::GetInstance<wxString>(v, 2)));
+                return sa.Return(prj->RemoveBuildTarget(*SqPlus::GetInstance<wxString,false>(v, 2)));
         }
         return sa.ThrowError("Invalid arguments to \"cbProject::RemoveBuildTarget\"");
     }
@@ -247,11 +247,11 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbProject* prj = SqPlus::GetInstance<cbProject>(v, 1);
+            cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
             if (sa.GetType(2) == OT_INTEGER)
                 return sa.Return(prj->ExportTargetAsProject(sa.GetInt(2)));
             else
-                return sa.Return(prj->ExportTargetAsProject(*SqPlus::GetInstance<wxString>(v, 2)));
+                return sa.Return(prj->ExportTargetAsProject(*SqPlus::GetInstance<wxString,false>(v, 2)));
         }
         return sa.ThrowError("Invalid arguments to \"cbProject::ExportTargetAsProject\"");
     }
@@ -263,8 +263,8 @@ namespace ScriptBindings
         {
             if (sa.GetType(4) == OT_INTEGER)
             {
-                wxString fname = *SqPlus::GetInstance<wxString>(v, 2);
-                cbProject* prj = SqPlus::GetInstance<cbProject>(v, 3);
+                wxString fname = *SqPlus::GetInstance<wxString,false>(v, 2);
+                cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 3);
                 int idx = sa.GetInt(4);
                 return sa.Return((SQInteger)Manager::Get()->GetProjectManager()->AddFileToProject(fname, prj, idx));
             }
@@ -277,10 +277,10 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbEditor* self = SqPlus::GetInstance<cbEditor>(v, 1);
+            cbEditor* self = SqPlus::GetInstance<cbEditor,false>(v, 1);
             if (self)
             {
-                self->GetControl()->SetText(*SqPlus::GetInstance<wxString>(v, 2));
+                self->GetControl()->SetText(*SqPlus::GetInstance<wxString,false>(v, 2));
                 return sa.Return();
             }
             return sa.ThrowError("'this' is NULL!?! (type of cbEditor*)");
@@ -293,7 +293,7 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 1)
         {
-            cbEditor* self = SqPlus::GetInstance<cbEditor>(v, 1);
+            cbEditor* self = SqPlus::GetInstance<cbEditor,false>(v, 1);
             if (self)
             {
                 wxString str = self->GetControl()->GetText();
@@ -308,7 +308,7 @@ namespace ScriptBindings
         StackHandler sa(v);
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
-            return sa.Return((SQInteger)CompilerFactory::GetCompilerIndex(*SqPlus::GetInstance<wxString>(v, 2)));
+            return sa.Return((SQInteger)CompilerFactory::GetCompilerIndex(*SqPlus::GetInstance<wxString,false>(v, 2)));
         return sa.ThrowError("Invalid arguments to \"CompilerFactory::GetCompilerIndex\"");
     }
 

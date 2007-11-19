@@ -24,28 +24,28 @@ static const SQChar *g_nnames[] =
 
 #endif
 
-#define OP_GREEDY		MAX_CHAR+1 // * + ? {n}
-#define OP_OR			MAX_CHAR+2
-#define OP_EXPR			MAX_CHAR+3 //parentesis ()
-#define OP_NOCAPEXPR	MAX_CHAR+4 //parentesis (?:)
-#define OP_DOT			MAX_CHAR+5
-#define OP_CLASS		MAX_CHAR+6
-#define OP_CCLASS		MAX_CHAR+7
-#define OP_NCLASS		MAX_CHAR+8 //negates class the [^
-#define OP_RANGE		MAX_CHAR+9
-#define OP_CHAR			MAX_CHAR+10
-#define OP_EOL			MAX_CHAR+11
-#define OP_BOL			MAX_CHAR+12
-#define OP_WB			MAX_CHAR+13
+#define OP_GREEDY		(MAX_CHAR+1) // * + ? {n}
+#define OP_OR			(MAX_CHAR+2)
+#define OP_EXPR			(MAX_CHAR+3) //parentesis ()
+#define OP_NOCAPEXPR	(MAX_CHAR+4) //parentesis (?:)
+#define OP_DOT			(MAX_CHAR+5)
+#define OP_CLASS		(MAX_CHAR+6)
+#define OP_CCLASS		(MAX_CHAR+7)
+#define OP_NCLASS		(MAX_CHAR+8) //negates class the [^
+#define OP_RANGE		(MAX_CHAR+9)
+#define OP_CHAR			(MAX_CHAR+10)
+#define OP_EOL			(MAX_CHAR+11)
+#define OP_BOL			(MAX_CHAR+12)
+#define OP_WB			(MAX_CHAR+13)
 
-#define SQREX_SYMBOL_ANY_CHAR '.'
-#define SQREX_SYMBOL_GREEDY_ONE_OR_MORE '+'
-#define SQREX_SYMBOL_GREEDY_ZERO_OR_MORE '*'
-#define SQREX_SYMBOL_GREEDY_ZERO_OR_ONE '?'
-#define SQREX_SYMBOL_BRANCH '|'
-#define SQREX_SYMBOL_END_OF_STRING '$'
-#define SQREX_SYMBOL_BEGINNING_OF_STRING '^'
-#define SQREX_SYMBOL_ESCAPE_CHAR '\\'
+#define SQREX_SYMBOL_ANY_CHAR ('.')
+#define SQREX_SYMBOL_GREEDY_ONE_OR_MORE ('+')
+#define SQREX_SYMBOL_GREEDY_ZERO_OR_MORE ('*')
+#define SQREX_SYMBOL_GREEDY_ZERO_OR_ONE ('?')
+#define SQREX_SYMBOL_BRANCH ('|')
+#define SQREX_SYMBOL_END_OF_STRING ('$')
+#define SQREX_SYMBOL_BEGINNING_OF_STRING ('^')
+#define SQREX_SYMBOL_ESCAPE_CHAR ('\\')
 
 
 typedef int SQRexNodeType;
@@ -88,7 +88,8 @@ static SQInteger sqstd_rex_newnode(SQRex *exp, SQRexNodeType type)
 		exp->_nodes = (SQRexNode *)sq_realloc(exp->_nodes, oldsize * sizeof(SQRexNode) ,exp->_nallocated * sizeof(SQRexNode));
 	}
 	exp->_nodes[exp->_nsize++] = n;
-	return (SQInteger)exp->_nsize - 1;
+	SQInteger newid = exp->_nsize - 1;
+	return (SQInteger)newid;
 }
 
 static void sqstd_rex_error(SQRex *exp,const SQChar *error)
@@ -102,18 +103,6 @@ static void sqstd_rex_expect(SQRex *exp, SQInteger n){
 		sqstd_rex_error(exp, _SC("expected paren"));
 	exp->_p++;
 }
-
-/*static SQBool sqstd_rex_ischar(SQChar c)
-{
-	switch(c) {
-	case SQREX_SYMBOL_BRANCH:case SQREX_SYMBOL_GREEDY_ZERO_OR_MORE:
-	case SQREX_SYMBOL_GREEDY_ZERO_OR_ONE:case SQREX_SYMBOL_GREEDY_ONE_OR_MORE:
-	case SQREX_SYMBOL_BEGINNING_OF_STRING:case SQREX_SYMBOL_END_OF_STRING:
-	case SQREX_SYMBOL_ANY_CHAR:case SQREX_SYMBOL_ESCAPE_CHAR:case '(':case ')':case '[':case '{': case '}':
-		return SQFalse;
-    }
-	return SQTrue;
-}*/
 
 static SQChar sqstd_rex_escapechar(SQRex *exp)
 {
@@ -140,6 +129,7 @@ static SQInteger sqstd_rex_charclass(SQRex *exp,SQInteger classid)
 
 static SQInteger sqstd_rex_charnode(SQRex *exp,SQBool isclass)
 {
+	SQChar t;
 	if(*exp->_p == SQREX_SYMBOL_ESCAPE_CHAR) {
 		exp->_p++;
 		switch(*exp->_p) {
@@ -152,8 +142,7 @@ static SQInteger sqstd_rex_charnode(SQRex *exp,SQBool isclass)
 			case 'd': case 'D': case 'x': case 'X': case 'c': case 'C': 
 			case 'p': case 'P': case 'l': case 'u': 
 				{
-				SQChar t = *exp->_p;
-				exp->_p++; 
+				t = *exp->_p; exp->_p++; 
 				return sqstd_rex_charclass(exp,t);
 				}
 			case 'b': 
@@ -164,14 +153,17 @@ static SQInteger sqstd_rex_charnode(SQRex *exp,SQBool isclass)
 					exp->_p++; 
 					return node;
 				} //else default
-			default: return sqstd_rex_newnode(exp,(*exp->_p++));
+			default: 
+				t = *exp->_p; exp->_p++; 
+				return sqstd_rex_newnode(exp,t);
 		}
 	}
 	else if(!scisprint(*exp->_p)) {
 		
 		sqstd_rex_error(exp,_SC("letter expected"));
 	}
-	return sqstd_rex_newnode(exp,*exp->_p++);
+	t = *exp->_p; exp->_p++; 
+	return sqstd_rex_newnode(exp,t);
 }
 static SQInteger sqstd_rex_class(SQRex *exp)
 {
@@ -192,7 +184,8 @@ static SQInteger sqstd_rex_class(SQRex *exp)
 			if(first>*exp->_p) sqstd_rex_error(exp,_SC("invalid range"));
 			if(exp->_nodes[first].type == OP_CCLASS) sqstd_rex_error(exp,_SC("cannot use character classes in ranges"));
 			exp->_nodes[r].left = exp->_nodes[first].type;
-			exp->_nodes[r].right = sqstd_rex_escapechar(exp);
+			SQInteger t = sqstd_rex_escapechar(exp);
+			exp->_nodes[r].right = t;
             exp->_nodes[chain].next = r;
 			chain = r;
 			first = -1;
@@ -236,14 +229,14 @@ static SQInteger sqstd_rex_parsenumber(SQRex *exp)
 
 static SQInteger sqstd_rex_element(SQRex *exp)
 {
-	SQInteger ret;
+	SQInteger ret = -1;
 	switch(*exp->_p)
 	{
 	case '(': {
 		SQInteger expr;
 		exp->_p++;
-		
-		
+
+
 		if(*exp->_p =='?') {
 			exp->_p++;
 			sqstd_rex_expect(exp,':');
@@ -251,11 +244,12 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 		}
 		else
 			expr = sqstd_rex_newnode(exp,OP_EXPR);
-		exp->_nodes[expr].left = sqstd_rex_list(exp);
+		SQInteger newn = sqstd_rex_list(exp);
+		exp->_nodes[expr].left = newn;
 		ret = expr;
 		sqstd_rex_expect(exp,')');
-	}
-		break;
+			  }
+			  break;
 	case '[':
 		exp->_p++;
 		ret = sqstd_rex_class(exp);
@@ -267,45 +261,53 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 		ret = sqstd_rex_charnode(exp,SQFalse);
 		break;
 	}
-	/* scope block */
-	{
-		SQInteger op;
-		unsigned short p0 = 0, p1 = 0;
-		switch(*exp->_p){
-		case SQREX_SYMBOL_GREEDY_ZERO_OR_MORE: p0 = 0; p1 = 0xFFFF; exp->_p++; goto __end;
-		case SQREX_SYMBOL_GREEDY_ONE_OR_MORE: p0 = 1; p1 = 0xFFFF; exp->_p++; goto __end;
-		case SQREX_SYMBOL_GREEDY_ZERO_OR_ONE: p0 = 0; p1 = 1; exp->_p++; goto __end;
-		case '{':{
+
+
+	SQInteger op;
+	SQBool isgreedy = SQFalse;
+	unsigned short p0 = 0, p1 = 0;
+	switch(*exp->_p){
+		case SQREX_SYMBOL_GREEDY_ZERO_OR_MORE: p0 = 0; p1 = 0xFFFF; exp->_p++; isgreedy = SQTrue; break;
+		case SQREX_SYMBOL_GREEDY_ONE_OR_MORE: p0 = 1; p1 = 0xFFFF; exp->_p++; isgreedy = SQTrue; break;
+		case SQREX_SYMBOL_GREEDY_ZERO_OR_ONE: p0 = 0; p1 = 1; exp->_p++; isgreedy = SQTrue; break;
+		case '{':
 			exp->_p++;
 			if(!isdigit(*exp->_p)) sqstd_rex_error(exp,_SC("number expected"));
 			p0 = (unsigned short)sqstd_rex_parsenumber(exp);
+			/*******************************/
 			switch(*exp->_p) {
-			case '}':
-				p1 = p0; exp->_p++;
-				goto __end;
-			case ',':
-				exp->_p++;
-				p1 = 0xFFFF;
-				if(isdigit(*exp->_p)){
-					p1 = (unsigned short)sqstd_rex_parsenumber(exp);
-				}
-				sqstd_rex_expect(exp,'}');
-				goto __end;
-			default:
-				sqstd_rex_error(exp,_SC(", or } expected"));
+		case '}':
+			p1 = p0; exp->_p++;
+			break;
+		case ',':
+			exp->_p++;
+			p1 = 0xFFFF;
+			if(isdigit(*exp->_p)){
+				p1 = (unsigned short)sqstd_rex_parsenumber(exp);
 			}
-		}
-		__end: {
-				SQInteger nnode = sqstd_rex_newnode(exp,OP_GREEDY);
-				op = OP_GREEDY;
-				exp->_nodes[nnode].left = ret;
-				exp->_nodes[nnode].right = ((p0)<<16)|p1;
-				ret = nnode;
+			sqstd_rex_expect(exp,'}');
+			break;
+		default:
+			sqstd_rex_error(exp,_SC(", or } expected"));
 			}
-		}
+			/*******************************/
+			isgreedy = SQTrue; 
+			break;
+
 	}
-	if(*exp->_p != SQREX_SYMBOL_BRANCH && *exp->_p != ')' && *exp->_p != SQREX_SYMBOL_GREEDY_ZERO_OR_MORE && *exp->_p != SQREX_SYMBOL_GREEDY_ONE_OR_MORE && *exp->_p != '\0')
-		exp->_nodes[ret].next = sqstd_rex_element(exp);
+	if(isgreedy) {
+		SQInteger nnode = sqstd_rex_newnode(exp,OP_GREEDY);
+		op = OP_GREEDY;
+		exp->_nodes[nnode].left = ret;
+		exp->_nodes[nnode].right = ((p0)<<16)|p1;
+		ret = nnode;
+	}
+
+	if((*exp->_p != SQREX_SYMBOL_BRANCH) && (*exp->_p != ')') && (*exp->_p != SQREX_SYMBOL_GREEDY_ZERO_OR_MORE) && (*exp->_p != SQREX_SYMBOL_GREEDY_ONE_OR_MORE) && (*exp->_p != '\0')) {
+		SQInteger nnode = sqstd_rex_element(exp);
+		exp->_nodes[ret].next = nnode;
+	}
+
 	return ret;
 }
 
@@ -323,11 +325,12 @@ static SQInteger sqstd_rex_list(SQRex *exp)
 	else ret = e;
 
 	if(*exp->_p == SQREX_SYMBOL_BRANCH) {
-		SQInteger temp;
+		SQInteger temp,tright;
 		exp->_p++;
 		temp = sqstd_rex_newnode(exp,OP_OR);
 		exp->_nodes[temp].left = ret;
-		exp->_nodes[temp].right = sqstd_rex_list(exp);
+		tright = sqstd_rex_list(exp);
+		exp->_nodes[temp].right = tright;
 		ret = temp;
 	}
 	return ret;
@@ -533,7 +536,8 @@ SQRex *sqstd_rex_compile(const SQChar *pattern,const SQChar **error)
 	exp->_error = error;
 	exp->_jmpbuf = sq_malloc(sizeof(jmp_buf));
 	if(setjmp(*((jmp_buf*)exp->_jmpbuf)) == 0) {
-		exp->_nodes[exp->_first].left=sqstd_rex_list(exp);
+		SQInteger res = sqstd_rex_list(exp);
+		exp->_nodes[exp->_first].left = res;
 		if(*exp->_p!='\0')
 			sqstd_rex_error(exp,_SC("unexpected character"));
 #ifdef _DEBUG

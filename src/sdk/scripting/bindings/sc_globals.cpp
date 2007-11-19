@@ -82,7 +82,7 @@ namespace ScriptBindings
     SQInteger Require(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        const wxString& filename = *SqPlus::GetInstance<wxString>(v, 2);
+        const wxString& filename = *SqPlus::GetInstance<wxString,false>(v, 2);
         if (!getSM()->LoadScript(filename))
         {
             wxString msg = wxString::Format(_("Failed to load required script: %s"), filename.c_str());
@@ -93,7 +93,7 @@ namespace ScriptBindings
     SQInteger wx_GetColourFromUser(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        const wxColour& c = sa.GetParamCount() == 2 ? *SqPlus::GetInstance<wxColour>(v, 2) : *wxBLACK;
+        const wxColour& c = sa.GetParamCount() == 2 ? *SqPlus::GetInstance<wxColour,false>(v, 2) : *wxBLACK;
         return SqPlus::ReturnCopy(v, wxGetColourFromUser(Manager::Get()->GetAppWindow(), c));
     }
     long wx_GetNumberFromUser(const wxString& message, const wxString& prompt, const wxString& caption, long value)
@@ -130,7 +130,7 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(getUVM, "GetUserVariableManager");
         SqPlus::RegisterGlobal(getSM, "GetScriptingManager");
         SqPlus::RegisterGlobal(getCF, "GetCompilerFactory");
-        
+
         // from globals.h
         SqPlus::RegisterGlobal(GetArrayFromString, "GetArrayFromString");
         SqPlus::RegisterGlobal(GetStringFromArray, "GetStringFromArray");

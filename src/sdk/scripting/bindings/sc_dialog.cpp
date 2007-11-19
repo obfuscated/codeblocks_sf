@@ -121,7 +121,7 @@ namespace ScriptBindings
         if (sa.GetType(2) == OT_STRING)
             win = wxWindow::FindWindowByName(cbC2U(sa.GetString(2)), s_ActiveDialog);
         else
-            win = wxWindow::FindWindowByName(*SqPlus::GetInstance<wxString>(v, 2), s_ActiveDialog);
+            win = wxWindow::FindWindowByName(*SqPlus::GetInstance<wxString,false>(v, 2), s_ActiveDialog);
         return sa.Return((SQInteger)(win ? win->GetId() : -1));
     }
 

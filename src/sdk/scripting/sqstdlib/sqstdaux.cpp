@@ -80,7 +80,7 @@ void sqstd_printcallstack(HSQUIRRELVM v)
 					pf(v,_SC("[%s] INSTANCE\n"),name);
 					break;
 				case OT_WEAKREF:
-					pf(v,_SC("[%s] INSTANCE\n"),name);
+					pf(v,_SC("[%s] WEAKREF\n"),name);
 					break;
 				case OT_BOOL:{
 					sq_getinteger(v,-1,&i);

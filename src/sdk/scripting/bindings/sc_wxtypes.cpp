@@ -27,7 +27,7 @@ namespace ScriptBindings
     {
         StackHandler sa(v);
         wxString result;
-        wxString& str1 = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& str1 = *SqPlus::GetInstance<wxString,false>(v, 1);
         if (sa.GetType(2) == OT_INTEGER)
             result.Printf(_T("%s%d"), str1.c_str(), sa.GetInt(2));
         else if (sa.GetType(2) == OT_FLOAT)
@@ -37,30 +37,30 @@ namespace ScriptBindings
         else if (sa.GetType(2) == OT_STRING)
             result.Printf(_T("%s%s"), str1.c_str(), cbC2U(sa.GetString(2)).c_str());
         else
-            result = str1 + *SqPlus::GetInstance<wxString>(v, 2);
+            result = str1 + *SqPlus::GetInstance<wxString,false>(v, 2);
         return SqPlus::ReturnCopy(v, result);
     }
 
     SQInteger wxString_OpCmp(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& str1 = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& str1 = *SqPlus::GetInstance<wxString,false>(v, 1);
         if (sa.GetType(2) == OT_STRING)
             return sa.Return((SQInteger)str1.Cmp(cbC2U(sa.GetString(2))));
-        return sa.Return((SQInteger)str1.Cmp(*SqPlus::GetInstance<wxString>(v, 2)));
+        return sa.Return((SQInteger)str1.Cmp(*SqPlus::GetInstance<wxString,false>(v, 2)));
     }
 
     SQInteger wxString_OpToString(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         return sa.Return((const SQChar*)self.mb_str(wxConvUTF8));
     }
 
     SQInteger wxString_AddChar(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         int idx = sa.GetInt(2);
         char tmp[8] = {};
         sprintf(tmp, "%c", idx);
@@ -70,47 +70,47 @@ namespace ScriptBindings
     SQInteger wxString_GetChar(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         int idx = sa.GetInt(2);
         return sa.Return((SQInteger)(((const char*)cbU2C(self))[idx]));
     }
     SQInteger wxString_Matches(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
-        wxString& other = *SqPlus::GetInstance<wxString>(v, 2);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
+        wxString& other = *SqPlus::GetInstance<wxString,false>(v, 2);
         return sa.Return(self.Matches(other));
     }
     SQInteger wxString_AfterFirst(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         return SqPlus::ReturnCopy(v, self.AfterFirst((wxChar)sa.GetInt(2)));
     }
     SQInteger wxString_AfterLast(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         return SqPlus::ReturnCopy(v, self.AfterLast((wxChar)sa.GetInt(2)));
     }
     SQInteger wxString_BeforeFirst(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         return SqPlus::ReturnCopy(v, self.BeforeFirst((wxChar)sa.GetInt(2)));
     }
     SQInteger wxString_BeforeLast(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
         return SqPlus::ReturnCopy(v, self.BeforeLast((wxChar)sa.GetInt(2)));
     }
     SQInteger wxString_Replace(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxString& self = *SqPlus::GetInstance<wxString>(v, 1);
-        wxString from = *SqPlus::GetInstance<wxString>(v, 2);
-        wxString to = *SqPlus::GetInstance<wxString>(v, 3);
+        wxString& self = *SqPlus::GetInstance<wxString,false>(v, 1);
+        wxString from = *SqPlus::GetInstance<wxString,false>(v, 2);
+        wxString to = *SqPlus::GetInstance<wxString,false>(v, 3);
         bool all = true;
         if (sa.GetParamCount() == 4)
             all = sa.GetBool(4);
@@ -124,7 +124,7 @@ namespace ScriptBindings
     SQInteger wxFileName_OpToString(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxFileName& self = *SqPlus::GetInstance<wxFileName>(v, 1);
+        wxFileName& self = *SqPlus::GetInstance<wxFileName,false>(v, 1);
         return sa.Return((const SQChar*)self.GetFullPath().mb_str(wxConvUTF8));
     }
 
@@ -136,8 +136,8 @@ namespace ScriptBindings
     SQInteger wxArrayString_Index(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxArrayString& self = *SqPlus::GetInstance<wxArrayString>(v, 1);
-        wxString inpstr = *SqPlus::GetInstance<wxString>(v, 2);
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
+        wxString inpstr = *SqPlus::GetInstance<wxString,false>(v, 2);
         bool chkCase = true;
         bool frmEnd = false;
         if (sa.GetParamCount() >= 3)
@@ -155,7 +155,7 @@ namespace ScriptBindings
     SQInteger wxColour_OpToString(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        wxColour& self = *SqPlus::GetInstance<wxColour>(v, 1);
+        wxColour& self = *SqPlus::GetInstance<wxColour,false>(v, 1);
         wxString str = wxString::Format(_T("[r=%d, g=%d, b=%d]"), self.Red(), self.Green(), self.Blue());
         return sa.Return((const SQChar*)str.mb_str(wxConvUTF8));
     }

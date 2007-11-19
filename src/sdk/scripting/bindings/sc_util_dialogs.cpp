@@ -36,20 +36,20 @@ namespace ScriptBindings
         if (sa.GetParamCount() > 3)
         {
             dlg = new EditArrayFileDlg(0,
-                                        *SqPlus::GetInstance<wxArrayString>(v, 2),
+                                        *SqPlus::GetInstance<wxArrayString,false>(v, 2),
                                         sa.GetBool(3),
-                                        *SqPlus::GetInstance<wxString>(v, 4));
+                                        *SqPlus::GetInstance<wxString,false>(v, 4));
         }
         else if (sa.GetParamCount() > 2)
         {
             dlg = new EditArrayFileDlg(0,
-                                        *SqPlus::GetInstance<wxArrayString>(v, 2),
+                                        *SqPlus::GetInstance<wxArrayString,false>(v, 2),
                                         sa.GetBool(3));
         }
         else if (sa.GetParamCount() > 1)
         {
             dlg = new EditArrayFileDlg(0,
-                                        *SqPlus::GetInstance<wxArrayString>(v, 2));
+                                        *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         }
         else
             return sa.ThrowError("EditArrayFileDlg needs at least one argument");
@@ -71,7 +71,7 @@ namespace ScriptBindings
         if (sa.GetParamCount() == 1)
             dlg = new EditArrayOrderDlg(0);
         else if (sa.GetParamCount() == 2)
-            dlg = new EditArrayOrderDlg(0, *SqPlus::GetInstance<wxArrayString>(v, 2));
+            dlg = new EditArrayOrderDlg(0, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         else
             return sa.ThrowError("EditArrayOrderDlg needs at most one argument");
 
@@ -90,7 +90,7 @@ namespace ScriptBindings
         EditArrayStringDlg* dlg = 0;
 
         if (sa.GetParamCount() == 2)
-            dlg = new EditArrayStringDlg(0, *SqPlus::GetInstance<wxArrayString>(v, 2));
+            dlg = new EditArrayStringDlg(0, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         else
             return sa.ThrowError("EditArrayStringDlg needs one argument");
 
@@ -115,23 +115,23 @@ namespace ScriptBindings
         if (sa.GetParamCount() > 4)
         {
             dlg = new EditPairDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4),
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4),
                                     (EditPairDlg::BrowseMode)sa.GetInt(5));
         }
         else if (sa.GetParamCount() > 3)
         {
             dlg = new EditPairDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4));
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4));
         }
         else if (sa.GetParamCount() > 2)
         {
             dlg = new EditPairDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3));
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3));
         }
         else
             return sa.ThrowError("EditPairDlg needs at least two arguments");
@@ -160,53 +160,53 @@ namespace ScriptBindings
         if (sa.GetParamCount() > 7)
         {
             dlg = new EditPathDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4),
-                                    *SqPlus::GetInstance<wxString>(v, 5),
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4),
+                                    *SqPlus::GetInstance<wxString,false>(v, 5),
                                     sa.GetBool(6),
                                     sa.GetBool(7),
-                                    *SqPlus::GetInstance<wxString>(v, 8));
+                                    *SqPlus::GetInstance<wxString,false>(v, 8));
         }
         else if (sa.GetParamCount() > 6)
         {
             dlg = new EditPathDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4),
-                                    *SqPlus::GetInstance<wxString>(v, 5),
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4),
+                                    *SqPlus::GetInstance<wxString,false>(v, 5),
                                     sa.GetBool(6),
                                     sa.GetBool(7));
         }
         else if (sa.GetParamCount() > 5)
         {
             dlg = new EditPathDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4),
-                                    *SqPlus::GetInstance<wxString>(v, 5),
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4),
+                                    *SqPlus::GetInstance<wxString,false>(v, 5),
                                     sa.GetBool(6));
         }
         else if (sa.GetParamCount() > 4)
         {
             dlg = new EditPathDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4),
-                                    *SqPlus::GetInstance<wxString>(v, 5));
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4),
+                                    *SqPlus::GetInstance<wxString,false>(v, 5));
         }
         else if (sa.GetParamCount() > 3)
         {
             dlg = new EditPathDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3),
-                                    *SqPlus::GetInstance<wxString>(v, 4));
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3),
+                                    *SqPlus::GetInstance<wxString,false>(v, 4));
         }
         else if (sa.GetParamCount() > 2)
         {
             dlg = new EditPathDlg(0,
-                                    *SqPlus::GetInstance<wxString>(v, 2),
-                                    *SqPlus::GetInstance<wxString>(v, 3));
+                                    *SqPlus::GetInstance<wxString,false>(v, 2),
+                                    *SqPlus::GetInstance<wxString,false>(v, 3));
         }
         else
             return sa.ThrowError("EditPathDlg needs at least two arguments");
@@ -231,20 +231,20 @@ namespace ScriptBindings
         if (sa.GetParamCount() > 3)
         {
             dlg = new GenericMultiLineNotesDlg(0,
-                                            *SqPlus::GetInstance<wxString>(v, 2),
-                                            *SqPlus::GetInstance<wxString>(v, 3),
+                                            *SqPlus::GetInstance<wxString,false>(v, 2),
+                                            *SqPlus::GetInstance<wxString,false>(v, 3),
                                             sa.GetBool(4));
         }
         else if (sa.GetParamCount() > 2)
         {
             dlg = new GenericMultiLineNotesDlg(0,
-                                            *SqPlus::GetInstance<wxString>(v, 2),
-                                            *SqPlus::GetInstance<wxString>(v, 3));
+                                            *SqPlus::GetInstance<wxString,false>(v, 2),
+                                            *SqPlus::GetInstance<wxString,false>(v, 3));
         }
         else if (sa.GetParamCount() > 1)
         {
             dlg = new GenericMultiLineNotesDlg(0,
-                                            *SqPlus::GetInstance<wxString>(v, 2));
+                                            *SqPlus::GetInstance<wxString,false>(v, 2));
         }
         else
             dlg = new GenericMultiLineNotesDlg(0);

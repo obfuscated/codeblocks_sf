@@ -17,8 +17,8 @@ inline void Push(HSQUIRRELVM v,const TYPE * value) { \
   else if (!CreateNativeClassInstance(v,GetTypeName(*value),(TYPE*)value,0)) \
     throw SquirrelError(sqT("Push(): could not create INSTANCE (check registration name)")); } \
 inline void Push(HSQUIRRELVM v,const TYPE & value) { if (!CreateCopyInstance(GetTypeName(value),value)) throw SquirrelError(sqT("Push(): could not create INSTANCE copy (check registration name)")); } \
-inline bool Match(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE>(v,idx) != NULL; } \
-inline const TYPE & Get(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return *GetInstance<TYPE>(v,idx); } \
+inline bool Match(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
+inline const TYPE & Get(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return *GetInstance<TYPE,true>(v,idx); } \
 } // nameSpace SqPlus
 
 #else
@@ -28,8 +28,8 @@ DECLARE_INSTANCE_TYPE_NAME_(TYPE,NAME) \
 namespace SqPlus { \
 inline void Push(HSQUIRRELVM v,const TYPE * value) { if (!CreateNativeClassInstance(v,GetTypeName(*value),(TYPE*)value,0)) throw SquirrelError(sqT("Push(): could not create INSTANCE (check registration name)")); } \
 inline void Push(HSQUIRRELVM v,const TYPE & value) { if (!CreateCopyInstance(GetTypeName(value),value)) throw SquirrelError(sqT("Push(): could not create INSTANCE copy (check registration name)")); } \
-inline bool	Match(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE>(v,idx) != NULL; } \
-inline const TYPE & Get(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return *GetInstance<TYPE>(v,idx); } \
+inline bool	Match(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return GetInstance<TYPE,false>(v,idx) != NULL; } \
+inline const TYPE & Get(TypeWrapper<const TYPE &>,HSQUIRRELVM v,int idx) { return *GetInstance<TYPE,true>(v,idx); } \
 } // nameSpace SqPlus
 
 #endif

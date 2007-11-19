@@ -14,6 +14,7 @@ SQInstructionDesc g_InstrDesc[]={
 	{_SC("_OP_LINE")},
 	{_SC("_OP_LOAD")},
 	{_SC("_OP_LOADINT")},
+	{_SC("_OP_LOADFLOAT")},
 	{_SC("_OP_DLOAD")},
 	{_SC("_OP_TAILCALL")},
 	{_SC("_OP_CALL")},
@@ -110,6 +111,7 @@ void SQFuncState::Error(const SQChar *err)
 void SQFuncState::Dump(SQFunctionProto *func)
 {
 	SQUnsignedInteger n=0,i;
+	SQInteger si;
 	scprintf(_SC("SQInstruction sizeof %d\n"),sizeof(SQInstruction));
 	scprintf(_SC("SQObject sizeof %d\n"),sizeof(SQObject));
 	scprintf(_SC("--------------------------------------------------------------------\n"));
@@ -140,8 +142,8 @@ void SQFuncState::Dump(SQFunctionProto *func)
 		n++;
 	}
 	scprintf(_SC("-----LOCALS\n"));
-	for(i=0;i<func->_localvarinfos.size();i++){
-		SQLocalVarInfo lvi=func->_localvarinfos[i];
+	for(si=0;si<func->_nlocalvarinfos;si++){
+		SQLocalVarInfo lvi=func->_localvarinfos[si];
 		scprintf(_SC("[%d] %s \t%d %d\n"),lvi._pos,_stringval(lvi._name),lvi._start_op,lvi._end_op);
 		n++;
 	}
@@ -187,6 +189,9 @@ void SQFuncState::Dump(SQFunctionProto *func)
 				scprintf(_SC("\n"));
 			}
 			}
+		}
+		else if(inst.op==_OP_LOADFLOAT) {
+			scprintf(_SC("[%03d] %15s %d %f %d %d\n"),n,g_InstrDesc[inst.op].name,inst._arg0,*((SQFloat*)&inst._arg1),inst._arg2,inst._arg3);
 		}
 		else if(inst.op==_OP_ARITH){
 			scprintf(_SC("[%03d] %15s %d %d %d %c\n"),n,g_InstrDesc[inst.op].name,inst._arg0,inst._arg1,inst._arg2,inst._arg3);
@@ -488,8 +493,10 @@ SQObject SQFuncState::CreateString(const SQChar *s,SQInteger len)
 
 SQFunctionProto *SQFuncState::BuildProto()
 {
-	SQFunctionProto *f=SQFunctionProto::Create();
-	f->_literals.resize(_nliterals);
+	SQFunctionProto *f=SQFunctionProto::Create(_instructions.size(),
+		_nliterals,_parameters.size(),_functions.size(),_outervalues.size(),
+		_lineinfos.size(),_localvarinfos.size());
+	//f->_literals.resize(_nliterals);
 	SQObjectPtr refidx,key,val;
 	SQInteger idx;
 
@@ -503,18 +510,23 @@ SQFunctionProto *SQFuncState::BuildProto()
 		refidx=idx;
 	}
 
-	f->_functions.resize(_functions.size());
-	f->_functions.copy(_functions);
-	f->_parameters.resize(_parameters.size());
-	f->_parameters.copy(_parameters);
-	f->_outervalues.resize(_outervalues.size());
-	f->_outervalues.copy(_outervalues);
-	f->_instructions.resize(_instructions.size());
-	f->_instructions.copy(_instructions);
-	f->_localvarinfos.resize(_localvarinfos.size());
-	f->_localvarinfos.copy(_localvarinfos);
-	f->_lineinfos.resize(_lineinfos.size());
-	f->_lineinfos.copy(_lineinfos);
+	//f->_functions.resize(_functions.size());
+	//f->_functions.copy(_functions);
+	//f->_parameters.resize(_parameters.size());
+	for(SQUnsignedInteger nf = 0; nf < _functions.size(); nf++) f->_functions[nf] = _functions[nf];
+	for(SQUnsignedInteger np = 0; np < _parameters.size(); np++) f->_parameters[np] = _parameters[np];
+	for(SQUnsignedInteger no = 0; no < _outervalues.size(); no++) f->_outervalues[no] = _outervalues[no];
+	for(SQUnsignedInteger no = 0; no < _localvarinfos.size(); no++) f->_localvarinfos[no] = _localvarinfos[no];
+	for(SQUnsignedInteger no = 0; no < _lineinfos.size(); no++) f->_lineinfos[no] = _lineinfos[no];
+	//f->_outervalues.resize(_outervalues.size());
+	//f->_outervalues.copy(_outervalues);
+	//f->_instructions.resize(_instructions.size());
+	//f->_instructions.copy(_instructions);
+	memcpy(f->_instructions,&_instructions[0],_instructions.size()*sizeof(SQInstruction));
+	//f->_localvarinfos.resize(_localvarinfos.size());
+	//f->_localvarinfos.copy(_localvarinfos);
+	//f->_lineinfos.resize(_lineinfos.size());
+	//f->_lineinfos.copy(_lineinfos);
 	f->_varparams = _varparams;
 
 	return f;
