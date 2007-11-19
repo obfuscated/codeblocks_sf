@@ -753,7 +753,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                             wxsBitmapIconData* Image = va_arg(ap,wxsBitmapIconData*);
                             if ( Image )
                             {
-                                wxChar* ArtProvider = va_arg(ap,wxChar*);
+                                const wxChar* ArtProvider = va_arg(ap,wxChar*);
                                 if ( !ArtProvider ) ArtProvider = _T("wxART_OTHER");
                                 if ( !Image->IsEmpty() )
                                 {
