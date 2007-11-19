@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdffont_ttf.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2006-11-20
@@ -98,7 +98,7 @@ wxPdfTrueTypeSubset::ReadTableDirectory()
   }
   return ok;
 }
-    
+
 bool
 wxPdfTrueTypeSubset::ReadLocaTable()
 {
@@ -137,7 +137,7 @@ wxPdfTrueTypeSubset::ReadLocaTable()
   }
   return ok;
 }
-    
+
 bool
 wxPdfTrueTypeSubset::CheckGlyphs()
 {
@@ -288,29 +288,31 @@ wxPdfTrueTypeSubset::CreateNewTables()
     }
   }
 }
-    
+
 void
 wxPdfTrueTypeSubset::WriteSubsetFont()
 {
-  static wxChar* tableNamesDefault[] = {
+  static const wxChar* tableNamesDefault[] = {
     _T("cvt "), _T("fpgm"), _T("glyf"), _T("head"),
     _T("hhea"), _T("hmtx"), _T("loca"), _T("maxp"), _T("prep"),
     NULL
   };
-  static wxChar* tableNamesCmap[] = {
+  static const wxChar* tableNamesCmap[] = {
     _T("cmap"), _T("cvt "), _T("fpgm"), _T("glyf"), _T("head"),
     _T("hhea"), _T("hmtx"), _T("loca"), _T("maxp"), _T("prep"),
     NULL
   };
-  static wxChar* tableNamesExtra[] = {
+  #if 0 // ((in CB exporter plug-in) nobody uses this)
+  static const wxChar* tableNamesExtra[] = {
     _T("OS/2"), _T("cmap"), _T("cvt "), _T("fpgm"), _T("glyf"), _T("head"),
     _T("hhea"), _T("hmtx"), _T("loca"), _T("maxp"), _T("name"), _T("prep"),
     NULL
   };
+  #endif
   wxPdfTableDirectoryEntry* tableLocation;
   wxPdfTableDirectory::iterator entry;
   int k;
-  wxChar** tableNames = (m_includeCmap) ? tableNamesCmap : tableNamesDefault;
+  const wxChar** tableNames = (m_includeCmap) ? tableNamesCmap : tableNamesDefault;
   int tableCount = 0;
   while (tableNames[tableCount] != NULL)
   {
@@ -416,7 +418,7 @@ wxPdfTrueTypeSubset::WriteSubsetFont()
     }
   }
 }
-    
+
 int
 wxPdfTrueTypeSubset::CalculateChecksum(char* b, int length)
 {
@@ -483,7 +485,7 @@ wxPdfTrueTypeSubset::ReadString(int length)
   delete [] buffer;
   return str;
 }
-    
+
 void
 wxPdfTrueTypeSubset::WriteShort(int n)
 {
@@ -529,4 +531,4 @@ wxPdfTrueTypeSubset::WriteString(const wxString& s)
   m_outFont->Write(buffer, len);
   delete [] buffer;
 }
-    
+

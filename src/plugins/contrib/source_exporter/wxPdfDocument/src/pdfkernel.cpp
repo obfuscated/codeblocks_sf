@@ -788,7 +788,7 @@ wxPdfDocument::PutPages()
 void
 wxPdfDocument::PutExtGStates()
 {
-  static wxChar* bms[] = {
+  static const wxChar* bms[] = {
     _T("/Normal"),     _T("/Multiply"),   _T("/Screen"),    _T("/Overlay"),    _T("/Darken"),
     _T("/Lighten"),    _T("/ColorDodge"), _T("/ColorBurn"), _T("/HardLight"),  _T("/SoftLight"),
     _T("/Difference"), _T("/Exclusion"),  _T("/Hue"),       _T("/Saturation"), _T("/Color"),
