@@ -1,4 +1,4 @@
-#include "../../include/sdk_precomp.h"
+#include "sdk.h"
 #include "EmbeddedHtmlPanel.h"
 
 #ifndef CB_PRECOMP
