@@ -201,7 +201,7 @@ class EditPrint: public wxPrintout
 public:
 
     //! constructor
-    EditPrint (Edit *edit, wxChar *title = _T(""));
+    EditPrint (Edit *edit, const wxChar *title = _T(""));
 
     //! event handlers
     bool OnPrintPage (int page);
