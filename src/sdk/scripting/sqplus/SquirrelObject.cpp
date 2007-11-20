@@ -92,6 +92,7 @@ BOOL SquirrelObject::SetDelegate(SquirrelObject &obj)
 					if(SQ_SUCCEEDED(sq_setdelegate(SquirrelVM::_VM,-2)))
 						return TRUE;
 					break;
+                // C::B patch: Handle all switch cases
                 default: break;
 			}
 		}

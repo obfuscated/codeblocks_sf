@@ -2,6 +2,7 @@
 #ifndef _SQLEXER_H_
 #define _SQLEXER_H_
 
+// C::B patch: Comment out Unicode stuff
 //#ifdef _UNICODE
 //typedef SQChar LexChar;
 //#else

@@ -80,6 +80,7 @@ struct SQClass;
 struct SQInstance;
 struct SQDelegable;
 
+// C::B patch: Comment out Unicode stuff
 //#ifdef _UNICODE
 //#define SQUNICODE
 //#endif
@@ -92,6 +93,7 @@ struct SQDelegable;
 #endif
 
 #else
+// C::B patch: Comment out typedef
 //typedef unsigned short wchar_t;
 #endif
 

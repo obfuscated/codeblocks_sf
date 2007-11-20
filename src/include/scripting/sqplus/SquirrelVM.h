@@ -12,6 +12,7 @@ struct SquirrelVMSys {
   SquirrelObject * _root;
 };
 
+// C::B patch: Add additional initilisation flags
 enum SquirrelInitFlags
 {
     sqifIO     = 0x01,
@@ -27,6 +28,7 @@ class SquirrelVM
 	friend class SquirrelObject;
 	friend struct SquirrelError;
 public:
+    // C::B patch: Add additional initilisation flags
 	static void Init(SquirrelInitFlags flags = sqifAll);
 	static BOOL IsInitialized(){return _VM == NULL?FALSE:TRUE;}
 	static void Shutdown();

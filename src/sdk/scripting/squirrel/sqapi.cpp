@@ -46,6 +46,7 @@ SQInteger sq_aux_invalidtype(HSQUIRRELVM v,SQObjectType type)
 HSQUIRRELVM sq_open(SQInteger initialstacksize)
 {
 	SQSharedState *ss;
+    // C::B patch: Initialise variable properly
 	SQVM *v = 0;
 	sq_new(ss, SQSharedState);
 	ss->Init();

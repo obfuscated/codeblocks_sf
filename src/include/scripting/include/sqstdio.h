@@ -7,7 +7,8 @@
 #define SQSTD_STREAM_TYPE_TAG 0x80000000
 
 struct SQStream {
-	virtual ~SQStream(){} // keep gcc happy with a virtual dtor
+	// C::B patch: Keep gcc happy with a virtual dtor
+	virtual ~SQStream(){}
 	virtual SQInteger Read(void *buffer, SQInteger size) = 0;
 	virtual SQInteger Write(void *buffer, SQInteger size) = 0;
 	virtual SQInteger Flush() = 0;

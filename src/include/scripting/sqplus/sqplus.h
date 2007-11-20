@@ -28,6 +28,8 @@
     #define SCPUTS _putws
   #endif
 #else
+  // C::B patch: Convert conflicting _T() to sqT() --> applies to nearly *all* files!
+//  #define _T(n) n
   #define sqT(n) n
   #define SCSNPRINTF snprintf
   #include <stdio.h> // for snprintf
@@ -73,6 +75,7 @@ namespace SqPlus {
 
 // === Constant argument and constant member function support ===
 // Define SQPLUS_CONST_OPT before including SqPlus.h for constant argument + constant member function support.
+// C::B patch: Enable this option
 #define SQPLUS_CONST_OPT
 
 // === Uncomment to support std::string ===
@@ -1195,6 +1198,7 @@ public:
     StackHandler sa(v);
     int paramCount = sa.GetParamCount();
     unsigned char * ud = (unsigned char *)sa.GetUserData(paramCount);
+    // C::B patch: Handle invalid instance type here
     if (!*(Callee**)ud) {
       return sq_throwerror(v,sqT("Invalid Instance Type"));
     } // if
@@ -1215,7 +1219,7 @@ public:
     Callee * instance = (Callee *)sa.GetInstanceUp(1,0);
     int paramCount = sa.GetParamCount();
     Func * func = (Func *)sa.GetUserData(paramCount);
-    // mandrav: why search manually? the compiler does it for us, unless I 'm missing something here...
+    // C::B patch: Let the compiler search (comment out the whole block)
 //#ifdef SQ_USE_CLASS_INHERITANCE
 //    SquirrelObject so(sa.GetObjectHandle(1)); // 'this'
 //    SQUserPointer typetag; so.GetTypeTag(&typetag);
@@ -1228,6 +1232,7 @@ public:
 //      } // if
 //    } // if
 //#endif
+    // C::B patch: If not instance -> return Ok anyways
     if (!instance)
       return SQ_OK;
     return Call(*instance,*func,v,2);
@@ -1245,7 +1250,7 @@ public:
     Callee * instance = (Callee *)sa.GetInstanceUp(1,0);
     int paramCount = sa.GetParamCount();
     FuncType func = *(FuncType *)sa.GetUserData(paramCount);
-    // mandrav: why search manually? the compiler does it for us, unless I 'm missing something here...
+    // C::B patch: Let the compiler search (comment out the whole block)
 //#ifdef SQ_USE_CLASS_INHERITANCE
 //    SquirrelObject so(sa.GetObjectHandle(1)); // 'this'
 //    SQUserPointer typetag; so.GetTypeTag(&typetag);
@@ -1259,6 +1264,7 @@ public:
 //    } // if
 //#endif
     sq_poptop(v); // Remove UserData from stack: so sa.GetParamCount() returns actual param count.
+    // C::B patch: If not instance -> return Ok anyways
     if (!instance)
       return SQ_OK;
     return (instance->*func)(v);
@@ -1638,6 +1644,7 @@ inline int PostConstruct(HSQUIRRELVM v,T * newClass,SQRELEASEHOOK hook) {
     INT top = sq_gettop(v);
     T ** ud = (T **)sq_newuserdata(v,sizeof(T *)); // Create UserData and push onto stack.
     *ud = newClass;
+    // C::B patch: Disable releasing of objects (due to private/protected dtors) (Note: This is evil, but no other possibility found.)
 //    sq_setreleasehook(v,-1,ReleaseClassPtrPtr<T>::release); // Set release hook for UserData on stack.
     SquirrelObject userData;
     userData.AttachToStackObject(-1);
@@ -1657,6 +1664,7 @@ struct ConstructReleaseClass {
   static int construct(HSQUIRRELVM v) {
     return PostConstruct<T>(v,new T(),release);
   } // construct
+  // C::B patch: Add empty constructor
   static int no_construct(HSQUIRRELVM v) {
     return PostConstruct<T>(v,0,0);
   } // no_construct
@@ -1724,6 +1732,7 @@ struct SQClassDef {
   }
 #endif
 
+  // C::B patch: Add empty constructor
   SQClassDef & emptyCtor() {
     SquirrelVM::CreateFunction(newClass,&ConstructReleaseClass<TClassType>::construct,sqT("constructor"));
     return *this;

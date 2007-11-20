@@ -29,6 +29,7 @@ BOOL CreateStaticNamespace(HSQUIRRELVM v,ScriptNamespaceDecl *sn)
 		case OT_STRING: sq_pushstring(v,c->val.s,-1);break;
 		case OT_INTEGER: sq_pushinteger(v,c->val.i);break;
 		case OT_FLOAT: sq_pushfloat(v,c->val.f);break;
+        // C::B patch: Handle all switch cases
 		default: break;
 		}
 		sq_createslot(v,-3);
@@ -73,6 +74,7 @@ BOOL CreateClass(HSQUIRRELVM v,SquirrelClassDecl *cd)
 		return FALSE;
 	}
 //  sq_settypetag(v,-1,(unsigned int)cd);
+// C::B patch: Use pragmas only for MS compilers
 #if defined(_WIN32) && defined(_MSC_VER)
 #pragma warning(disable : 4311)
 #endif

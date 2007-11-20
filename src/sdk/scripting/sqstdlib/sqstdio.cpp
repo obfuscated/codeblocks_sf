@@ -9,6 +9,7 @@
 //basic API
 SQFILE sqstd_fopen(const SQChar *filename ,const SQChar *mode)
 {
+// C::B patch: Comment out Unicode stuff
 //#ifndef SQUNICODE
 	return (SQFILE)fopen(filename,mode);
 //#else
