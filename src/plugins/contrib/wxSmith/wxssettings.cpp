@@ -35,6 +35,9 @@
 //       like builders of settings etc.
 
 //(*IdInit(wxsSettings)
+const long wxsSettings::ID_STATICTEXT10 = wxNewId();
+const long wxsSettings::ID_CHOICE2 = wxNewId();
+const long wxsSettings::ID_STATICTEXT11 = wxNewId();
 const long wxsSettings::ID_STATICTEXT2 = wxNewId();
 const long wxsSettings::ID_COMBOBOX1 = wxNewId();
 const long wxsSettings::ID_STATICTEXT3 = wxNewId();
@@ -60,7 +63,6 @@ const long wxsSettings::ID_CHECKBOX3 = wxNewId();
 const long wxsSettings::ID_CHECKBOX4 = wxNewId();
 const long wxsSettings::ID_STATICTEXT9 = wxNewId();
 const long wxsSettings::ID_CHECKBOX5 = wxNewId();
-const long wxsSettings::ID_STATICTEXT10 = wxNewId();
 const long wxsSettings::ID_CHECKBOX6 = wxNewId();
 const long wxsSettings::ID_STATICTEXT12 = wxNewId();
 const long wxsSettings::ID_CHOICE1 = wxNewId();
@@ -79,14 +81,33 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	//(*Initialize(wxsSettings)
 	wxStaticText* StaticText2;
 	wxStaticText* StaticText3;
+	wxFlexGridSizer* FlexGridSizer7;
+	wxStaticBoxSizer* StaticBoxSizer3;
 	wxStaticText* StaticText5;
+	wxBoxSizer* BoxSizer1;
+	wxBoxSizer* BoxSizer3;
 	wxStaticText* StaticText4;
-	
-	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
+
+	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer1->AddGrowableCol(0);
 	FlexGridSizer6 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer6->AddGrowableCol(0);
+	StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Resource and properties browser"));
+	FlexGridSizer7 = new wxFlexGridSizer(0, 2, 0, 0);
+	FlexGridSizer7->AddGrowableCol(1);
+	StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("Placement:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
+	FlexGridSizer7->Add(StaticText10, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	m_BrowserPlacements = new wxChoice(this, ID_CHOICE2, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE2"));
+	m_BrowserPlacements->SetSelection( m_BrowserPlacements->Append(_("Add inside Management pane")) );
+	m_BrowserPlacements->Append(_("One dockable pane (both browsers on one pane)"));
+	m_BrowserPlacements->Append(_("Two dockable panes (each browser on it\'s pane)"));
+	FlexGridSizer7->Add(m_BrowserPlacements, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	FlexGridSizer7->Add(8,6,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticText11 = new wxStaticText(this, ID_STATICTEXT11, _("Placement will change after restart"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
+	FlexGridSizer7->Add(StaticText11, 1, wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer3->Add(FlexGridSizer7, 1, wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	FlexGridSizer6->Add(StaticBoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Editor"));
 	FlexGridSizer2 = new wxFlexGridSizer(0, 2, 0, 0);
 	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Drag Assistance Type:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
@@ -156,16 +177,16 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	chkRight->SetValue(true);
 	BoxSizer2->Add(chkRight, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	FlexGridSizer5->Add(BoxSizer2, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
-	StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("Expand:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
+	StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("Auto-size:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
 	FlexGridSizer5->Add(StaticText9, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	chkExpand = new wxCheckBox(this, ID_CHECKBOX5, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
+	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+	chkExpand = new wxCheckBox(this, ID_CHECKBOX5, _("Expand"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX5"));
 	chkExpand->SetValue(false);
-	FlexGridSizer5->Add(chkExpand, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("Shaped:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT10"));
-	FlexGridSizer5->Add(StaticText10, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	chkShaped = new wxCheckBox(this, ID_CHECKBOX6, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
+	BoxSizer1->Add(chkExpand, 0, wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	chkShaped = new wxCheckBox(this, ID_CHECKBOX6, _("Shaped"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
 	chkShaped->SetValue(false);
-	FlexGridSizer5->Add(chkShaped, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer1->Add(chkShaped, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	FlexGridSizer5->Add(BoxSizer1, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	StaticText12 = new wxStaticText(this, ID_STATICTEXT12, _("Placement:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
 	FlexGridSizer5->Add(StaticText12, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	choicePlacement = new wxChoice(this, ID_CHOICE1, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHOICE1"));
@@ -181,26 +202,29 @@ wxsSettings::wxsSettings(wxWindow* parent,wxWindowID id)
 	FlexGridSizer5->Add(choicePlacement, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
 	StaticText13 = new wxStaticText(this, ID_STATICTEXT13, _("Border:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT13"));
 	FlexGridSizer5->Add(StaticText13, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
 	spinBorder = new wxSpinCtrl(this, ID_SPINCTRL3, _T("0"), wxDefaultPosition, wxDefaultSize, 0, 0, 100, 0, _T("ID_SPINCTRL3"));
 	spinBorder->SetValue(_T("0"));
-	FlexGridSizer5->Add(spinBorder, 1, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
-	FlexGridSizer5->Add(16,8,1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+	BoxSizer3->Add(spinBorder, 1, wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP, 5);
 	chkBorderDU = new wxCheckBox(this, ID_CHECKBOX8, _("Use dialog units"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX8"));
 	chkBorderDU->SetValue(false);
-	FlexGridSizer5->Add(chkBorderDU, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+	BoxSizer3->Add(chkBorderDU, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+	FlexGridSizer5->Add(BoxSizer3, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer2->Add(FlexGridSizer5, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	FlexGridSizer6->Add(StaticBoxSizer2, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
 	FlexGridSizer1->Add(FlexGridSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSettings::OnDragTargetColClick);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSettings::OnDragParentColClick);
 	Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSettings::OnUseGridClick);
 	//*)
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+    m_InitialPlacement = cfg->ReadInt(_T("/browserplacements"),0);
+    m_BrowserPlacements->SetSelection(m_InitialPlacement);
 
     long ColTarget = cfg->ReadInt(_T("/dragtargetcol"),0x608CDFL);;
     long ColParent = cfg->ReadInt(_T("/dragparentcol"),0x0D177BL);;
@@ -336,6 +360,7 @@ void wxsSettings::OnApply()
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
 
+    cfg->Write(_T("/browserplacements"),(int)(m_BrowserPlacements->GetSelection()));
     cfg->Write(_T("/dragtargetcol"),(int)((((int)ColTarget.Red())<<16) + (((long)ColTarget.Green())<<8) + (long)ColTarget.Blue()));
     cfg->Write(_T("/dragparentcol"),(int)((((int)ColParent.Red())<<16) + (((long)ColParent.Green())<<8) + (long)ColParent.Blue()));
     cfg->Write(_T("/dragassisttype"),(int)m_DragAssistType->GetSelection());

@@ -27,32 +27,6 @@
 
 namespace
 {
-    const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
-    const wxChar* OrientNames[]  = { _T("horizontal"), _T("vertical"), 0 };
-
-/*
-    class OrientProp: public wxsEnumProperty
-    {
-        public:
-            OrientProp(int Offset):
-                wxsEnumProperty(
-                    _("Orientation"),
-                    _T("orientation"),
-                    Offset,
-                    OrientValues,
-                    OrientNames,
-                    false,
-                    wxHORIZONTAL,
-                    true)
-            {}
-
-            virtual const wxString GetTypeName()
-            {
-                return _T("Orientation");
-            }
-    };
-    */
-
     wxsRegisterItem<wxsSplitterWindow> Reg(_T("SplitterWindow"),wxsTContainer,_T("Layout"),30);
 
     WXS_ST_BEGIN(wxsSplitterWindowStyles,_T("wxSP_3D"))

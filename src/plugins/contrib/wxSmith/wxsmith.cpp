@@ -36,7 +36,11 @@
 
 namespace
 {
-    int ConfigureId = wxNewId();
+    const int ConfigureId = wxNewId();
+    const int ViewWxSmithId = wxNewId();
+    const int ViewWxSmithResourceId = wxNewId();
+    const int ViewWxSmithPropertyId = wxNewId();
+
 
     /* XPM */
     static const char * Events_xpm[] = {
@@ -59,12 +63,25 @@ namespace
     "    ..    ..    ",
     "                ",
     "                "};
+
+    const int placementManagementPane = 0;
+    const int placementOnePane = 1;
+    const int placementTwoPanes = 2;
+
+    inline int GetBrowserPlacements() { return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/browserplacements"),0); }
+
 }
 
 wxSmith* wxSmith::m_Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxSmith, cbPlugin)
+    EVT_UPDATE_UI(ViewWxSmithId,wxSmith::OnUpdateUI)
+    EVT_UPDATE_UI(ViewWxSmithResourceId,wxSmith::OnUpdateUI)
+    EVT_UPDATE_UI(ViewWxSmithPropertyId,wxSmith::OnUpdateUI)
 	EVT_MENU(ConfigureId,wxSmith::OnConfigure)
+	EVT_MENU(ViewWxSmithId,wxSmith::OnViewBrowsers)
+	EVT_MENU(ViewWxSmithResourceId,wxSmith::OnViewResourceBrowser)
+	EVT_MENU(ViewWxSmithPropertyId,wxSmith::OnViewPropertyBrowser)
 	EVT_MENU(-1,wxSmith::OnMenu)
 END_EVENT_TABLE()
 
@@ -83,31 +100,8 @@ void wxSmith::OnAttach()
     // to different memory locations
     wxASSERT(m_Singleton == 0);
 
-    wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
-    wxASSERT(Notebook!=0);
-
-    // Creating main splitting object
-    m_Splitter = new wxsStoringSplitterWindow(Notebook);
-    Notebook->AddPage(m_Splitter,_("Resources"));
-
-    wxPanel* ResourcesContainer = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
-    wxPanel* PropertiesContainer = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
-
-    // Adding resource browser
-    wxSizer* Sizer = new wxGridSizer(1);
-    wxTreeCtrl* ResourceBrowser = new wxsResourceTree(ResourcesContainer);
-    Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
-    ResourcesContainer->SetSizer(Sizer);
-
-    // Adding properties / events browser
-    Sizer = new wxGridSizer(1);
-    wxsPropertyGridManager* PGManager = new wxsPropertyGridManager(PropertiesContainer,-1,wxDefaultPosition,wxDefaultSize,wxPG_TOOLBAR|wxTAB_TRAVERSAL);
-    PGManager->AddPage(_("Properties"));
-    PGManager->AddPage(_("Events"),wxBitmap(Events_xpm));
-    PGManager->SelectPage(0);
-    Sizer->Add(PGManager,1,wxGROW);
-    PropertiesContainer->SetSizer(Sizer);
-    m_Splitter->Split(ResourcesContainer,PropertiesContainer);
+    // Creating properties and resource browser
+    BuildBrowsers();
 
     // Registering function for loading / saving extra XML configuration inside CBP files
     ProjectLoaderHooks::HookFunctorBase* wxSmithHook = new ProjectLoaderHooks::HookFunctor<wxSmith>(this, &wxSmith::OnProjectHook);
@@ -121,6 +115,95 @@ void wxSmith::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectOpened));
 	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectClose));
 	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectRenamed));
+}
+
+void wxSmith::BuildBrowserParents()
+{
+    // Zero pointers to minimize segfault possibility ;)
+    m_Splitter = 0;
+    m_ResourceBrowserParent = 0;
+    m_PropertyBrowserParent = 0;
+
+    switch ( GetBrowserPlacements() )
+    {
+        case placementOnePane:
+        {
+            m_Splitter = new wxsStoringSplitterWindow(Manager::Get()->GetAppWindow());
+            m_ResourceBrowserParent = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+            m_PropertyBrowserParent = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+            m_Splitter->Split(m_ResourceBrowserParent,m_PropertyBrowserParent);
+            m_Splitter->SetSize(150,450);
+
+            CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+            evt.name = _T("wxSmithOnePane");
+            evt.title = _("wxSmith");
+            evt.pWindow = m_Splitter;
+            evt.dockSide = CodeBlocksDockEvent::dsFloating;
+            evt.desiredSize.Set(150, 450);
+            evt.floatingSize.Set(150, 450);
+            evt.minimumSize.Set(50, 50);
+            Manager::Get()->ProcessEvent(evt);
+            break;
+        }
+
+        case placementTwoPanes:
+        {
+            m_ResourceBrowserParent = new wxPanel(Manager::Get()->GetAppWindow(),-1,wxDefaultPosition,wxDefaultSize,0);
+            m_PropertyBrowserParent = new wxPanel(Manager::Get()->GetAppWindow(),-1,wxDefaultPosition,wxDefaultSize,0);
+
+            CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
+            evt.name = _T("wxSmithTwoPanes_ResourceBrowser");
+            evt.title = _("wxSmith - Resource Browser");
+            evt.pWindow = m_ResourceBrowserParent;
+            evt.dockSide = CodeBlocksDockEvent::dsFloating;
+            evt.desiredSize.Set(150, 450);
+            evt.floatingSize.Set(150, 450);
+            evt.minimumSize.Set(50, 50);
+            Manager::Get()->ProcessEvent(evt);
+
+            evt.name = _T("wxSmithTwoPanes_PropertyBrowser");
+            evt.title = _("wxSmith - Property Browser");
+            evt.pWindow = m_PropertyBrowserParent;
+            Manager::Get()->ProcessEvent(evt);
+            break;
+        }
+
+        default:
+        {
+            wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+            wxASSERT(Notebook!=0);
+
+            // Creating main splitting object
+            m_Splitter = new wxsStoringSplitterWindow(Notebook);
+            Notebook->AddPage(m_Splitter,_("Resources"));
+
+            m_ResourceBrowserParent = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+            m_PropertyBrowserParent = new wxPanel(m_Splitter->GetSplitter(),-1,wxDefaultPosition,wxDefaultSize,0);
+            m_Splitter->Split(m_ResourceBrowserParent,m_PropertyBrowserParent);
+        }
+    }
+}
+
+
+void wxSmith::BuildBrowsers()
+{
+    // Building background windows for panes
+    BuildBrowserParents();
+
+    // Adding resource browser
+    wxSizer* Sizer = new wxGridSizer(1);
+    wxTreeCtrl* ResourceBrowser = new wxsResourceTree(m_ResourceBrowserParent);
+    Sizer->Add(ResourceBrowser,1,wxGROW|wxALL);
+    m_ResourceBrowserParent->SetSizer(Sizer);
+
+    // Adding properties / events browser
+    Sizer = new wxGridSizer(1);
+    wxsPropertyGridManager* PGManager = new wxsPropertyGridManager(m_PropertyBrowserParent,-1,wxDefaultPosition,wxDefaultSize,wxPG_TOOLBAR|wxTAB_TRAVERSAL);
+    PGManager->AddPage(_("Properties"));
+    PGManager->AddPage(_("Events"),wxBitmap(Events_xpm));
+    PGManager->SelectPage(0);
+    Sizer->Add(PGManager,1,wxGROW);
+    m_PropertyBrowserParent->SetSizer(Sizer);
 }
 
 void wxSmith::OnRelease(bool appShutDown)
@@ -160,6 +243,7 @@ cbConfigurationPanel* wxSmith::GetProjectConfigurationPanel(wxWindow* parent, cb
 
 void wxSmith::BuildMenu(wxMenuBar* menuBar)
 {
+    // Genearating separate wxSmith menu entry
 	wxMenu* SmithMenu = new wxMenu;
 
 	wxsResourceFactory::BuildSmithMenu(SmithMenu);
@@ -176,6 +260,47 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
 	{
         menuBar->Insert(ToolsPos,SmithMenu,_("&wxSmith"));
 	}
+
+	// Generate entries in "view" menu
+    int idx = menuBar->FindMenu(_("View"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* view = menuBar->GetMenu(idx);
+        wxMenuItemList& items = view->GetMenuItems();
+        // find the first separator and insert before it
+        for (size_t i = 0; i < items.GetCount(); ++i)
+        {
+            if (items[i]->IsSeparator())
+            {
+                switch ( GetBrowserPlacements() )
+                {
+                    case placementOnePane:
+                        view->InsertCheckItem(i,ViewWxSmithId, _("wxSmith browsers"), _("Toggle displaying the wxSmith resource and property browsers"));
+                        break;
+
+                    case placementTwoPanes:
+                        view->InsertCheckItem(i,ViewWxSmithResourceId, _("wxSmith resource browser"), _("Toggle displaying the wxSmith resource browser"));
+                        view->InsertCheckItem(i,ViewWxSmithPropertyId, _("wxSmith property browser"), _("Toggle displaying the wxSmith property browser"));
+                        break;
+                }
+                return;
+            }
+        }
+
+        // not found, just append
+        switch ( GetBrowserPlacements() )
+        {
+            case placementOnePane:
+                view->AppendCheckItem(ViewWxSmithId, _("wxSmith browsers"), _("Toggle displaying the wxSmith resource and property browsers"));
+                break;
+
+            case placementTwoPanes:
+                view->AppendCheckItem(ViewWxSmithResourceId, _("wxSmith resource browser"), _("Toggle displaying the wxSmith resource browser"));
+                view->AppendCheckItem(ViewWxSmithPropertyId, _("wxSmith property browser"), _("Toggle displaying the wxSmith property browser"));
+                break;
+        }
+        return;
+    }
 }
 
 void wxSmith::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -242,6 +367,36 @@ void wxSmith::OnMenu(wxCommandEvent& event)
         }
     }
     event.Skip();
+}
+
+void wxSmith::OnViewBrowsers(wxCommandEvent& event)
+{
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_Splitter;
+    Manager::Get()->ProcessEvent(evt);
+}
+
+void wxSmith::OnViewPropertyBrowser(wxCommandEvent& event)
+{
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_PropertyBrowserParent;
+    Manager::Get()->ProcessEvent(evt);
+}
+
+void wxSmith::OnViewResourceBrowser(wxCommandEvent& event)
+{
+    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+    evt.pWindow = m_ResourceBrowserParent;
+    Manager::Get()->ProcessEvent(evt);
+}
+
+void wxSmith::OnUpdateUI(wxUpdateUIEvent& event)
+{
+    wxMenuBar* Bar = Manager::Get()->GetAppFrame()->GetMenuBar();
+
+    Bar->Check(ViewWxSmithId,IsWindowReallyShown(m_Splitter));
+    Bar->Check(ViewWxSmithResourceId,IsWindowReallyShown(m_ResourceBrowserParent));
+    Bar->Check(ViewWxSmithPropertyId,IsWindowReallyShown(m_PropertyBrowserParent));
 }
 
 cbProject* wxSmith::GetCBProject(wxsProject* Proj)

@@ -100,6 +100,8 @@ class wxSmith : public cbPlugin
 
         ProjectMapT m_ProjectMap;               ///< \brief Map binding all cbProject classes with wxsProject ones
         wxsStoringSplitterWindow* m_Splitter;   ///< \brief Splitter window used to divide resource browser and property grid
+        wxPanel* m_ResourceBrowserParent;       ///< \brief Parent panel for resource browser
+        wxPanel* m_PropertyBrowserParent;       ///< \brief Parent for property browser
         int m_HookId;                           ///< \brief Project hook identifier used when deleting hook
         static wxSmith* m_Singleton;            ///< \brief Singleton object
 
@@ -120,6 +122,17 @@ class wxSmith : public cbPlugin
 
         /** \brief Called for any menu, used to find possible "Add ...." enteries */
         void OnMenu(wxCommandEvent& event);
+
+        /** \brief Function building resource and properties browser */
+        void BuildBrowsers();
+
+        /** \brief Function Generating background panes for resource and property browsers */
+        void BuildBrowserParents();
+
+        void OnViewBrowsers(wxCommandEvent& event);
+        void OnViewResourceBrowser(wxCommandEvent& event);
+        void OnViewPropertyBrowser(wxCommandEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
 
         friend class wxSmithMime;
 		DECLARE_EVENT_TABLE()

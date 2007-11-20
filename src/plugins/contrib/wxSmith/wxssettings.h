@@ -49,6 +49,9 @@ class wxsSettings: public cbConfigurationPanel
 	private:
 
 		//(*Identifiers(wxsSettings)
+		static const long ID_STATICTEXT10;
+		static const long ID_CHOICE2;
+		static const long ID_STATICTEXT11;
 		static const long ID_STATICTEXT2;
 		static const long ID_COMBOBOX1;
 		static const long ID_STATICTEXT3;
@@ -74,7 +77,6 @@ class wxsSettings: public cbConfigurationPanel
 		static const long ID_CHECKBOX4;
 		static const long ID_STATICTEXT9;
 		static const long ID_CHECKBOX5;
-		static const long ID_STATICTEXT10;
 		static const long ID_CHECKBOX6;
 		static const long ID_STATICTEXT12;
 		static const long ID_CHOICE1;
@@ -102,8 +104,10 @@ class wxsSettings: public cbConfigurationPanel
 		wxFlexGridSizer* FlexGridSizer3;
 		wxCheckBox* chkTop;
 		wxStaticText* StaticText6;
+		wxChoice* m_BrowserPlacements;
 		wxFlexGridSizer* FlexGridSizer5;
 		wxStaticText* StaticText8;
+		wxStaticText* StaticText11;
 		wxSpinCtrl* spinProportion;
 		wxCheckBox* m_Continous;
 		wxFlexGridSizer* FlexGridSizer2;
@@ -128,6 +132,8 @@ class wxsSettings: public cbConfigurationPanel
 		wxButton* m_DragParentCol;
 		wxCheckBox* m_UseGrid;
 		//*)
+
+		int m_InitialPlacement;
 
         wxString GetTitle() const { return _("wxSmith settings"); }
         wxString GetBitmapBaseName() const { return _T("wxsmith"); }
