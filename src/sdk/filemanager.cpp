@@ -198,6 +198,7 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
     if( encoding == wxFONTENCODING_UTF16 || encoding == wxFONTENCODING_UTF16LE || encoding == wxFONTENCODING_UTF16BE ||
         encoding == wxFONTENCODING_UTF32 || encoding == wxFONTENCODING_UTF32LE || encoding == wxFONTENCODING_UTF32BE)
     {
+    #if defined(UNICODE) || defined(_UNICODE)
         /* NOTE (Biplab#1#): The following code (used for wx-2.8.x) can handle all encodings
         *  effectively (including UTF-8). Therefore it may also be brought out of this if {} statement.
         */
@@ -220,6 +221,10 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
         }
         free(buff);
         #endif
+    #else
+        // For ANSI builds, dump the char* to file.
+        return (f.Write(data.c_str(), data.Length()) == data.Length());
+    #endif
     }
 
     size_t size = 0;
