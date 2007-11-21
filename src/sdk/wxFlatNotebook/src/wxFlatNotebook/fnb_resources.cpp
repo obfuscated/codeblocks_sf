@@ -380,7 +380,7 @@ const char *left_arrow_pressed_xpm[] = {
 };
 
 /* XPM */
-char *left_arrow_hilite_xpm[] = {
+const char *left_arrow_hilite_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
@@ -476,7 +476,7 @@ const char *right_arrow_hilite_xpm[] = {
 };
 
 /* XPM */
-char *right_arrow_pressed_xpm[] = {
+const char *right_arrow_pressed_xpm[] = {
 /* width height num_colors chars_per_pixel */
 "    16    16        8            1",
 /* colors */
