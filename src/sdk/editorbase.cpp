@@ -122,6 +122,9 @@ EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
 
 EditorBase::~EditorBase()
 {
+    if (Manager::Get()->GetEditorManager()) // sanity check
+        Manager::Get()->GetEditorManager()->RemoveCustomEditor(this);
+
     if (Manager::Get()->GetPluginManager())
     {
         CodeBlocksEvent event(cbEVT_EDITOR_CLOSE);
@@ -131,10 +134,7 @@ EditorBase::~EditorBase()
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
     }
 
-    if (Manager::Get()->GetEditorManager()) // sanity check
-        Manager::Get()->GetEditorManager()->RemoveCustomEditor(this);
-
-	delete m_pData;
+    delete m_pData;
 }
 
 const wxString& EditorBase::GetTitle()
