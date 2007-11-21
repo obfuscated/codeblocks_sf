@@ -59,7 +59,6 @@
             <flag>wxALL|wxALIGN_CENTER</flag>
             <object class="wxButton" name="deleteSet">
               <label>Delete</label>
-              <style>wxNO_BORDER</style>
             </object>
           </object>
           <object class="sizeritem">
