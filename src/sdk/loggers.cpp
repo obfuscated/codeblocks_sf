@@ -1,6 +1,14 @@
-#include "loggers.h"
-#include <cbexception.h>
-#include <wx/listctrl.h>
+#include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+    #include <wx/listctrl.h>
+    #include <wx/textctrl.h>
+
+    #include <cbexception.h>
+
+    #include "loggers.h"
+#endif
+
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 
@@ -29,7 +37,7 @@ void TextCtrlLogger::UpdateSettings()
 {
 	if (!control)
 		return;
-	
+
 	control->SetBackgroundColour(*wxWHITE);
 
 	int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
@@ -150,7 +158,7 @@ void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
 {
 	if (!control)
 		return;
-	
+
     if (!IsEmpty() && wxTheClipboard->Open())
     {
     	wxString text;
@@ -196,7 +204,7 @@ void ListCtrlLogger::UpdateSettings()
 {
 	if (!control)
 		return;
-		
+
 	int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
 	wxFont default_font(size, fixed ? wxFONTFAMILY_MODERN : wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 	wxFont bold_font(default_font);
@@ -236,9 +244,9 @@ void ListCtrlLogger::Append(const wxString& msg, Logger::level lv)
 {
 	if (!control)
 		return;
-	
+
 	int idx = control->GetItemCount();
-	
+
 	control->Freeze();
 	control->InsertItem(idx, msg);
 	control->SetItemFont(idx, style[lv].font);
@@ -250,7 +258,7 @@ void ListCtrlLogger::Append(const wxArrayString& colValues, Logger::level lv)
 {
 	if (!control)
 		return;
-	
+
 	if (colValues.GetCount() == 0 || colValues.GetCount() > titles.GetCount())
 		return;
 
@@ -281,7 +289,7 @@ wxWindow* ListCtrlLogger::CreateControl(wxWindow* parent)
 {
 	if (control)
 		return control;
-	
+
 	control = new wxListCtrl(parent, -1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
 	for (size_t i = 0; i < titles.GetCount(); ++i)
 	{

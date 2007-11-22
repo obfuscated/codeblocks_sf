@@ -4,6 +4,8 @@
 #include "logger.h"
 
 class wxListCtrl;
+class wxTextCtrl;
+class wxTextAttr;
 
 class DLLIMPORT StdoutLogger : public Logger
 {
@@ -71,7 +73,7 @@ protected:
 		wxColour colour;
 	};
 	ListStyles style[num_levels];
-	
+
 	wxString GetItemAsText(long item);
 public:
 
