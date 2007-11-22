@@ -1,16 +1,14 @@
 #include "sdk_precomp.h"
-
 #ifndef CB_PRECOMP
     #include <wx/listctrl.h>
     #include <wx/textctrl.h>
-
     #include <cbexception.h>
-
-    #include "loggers.h"
 #endif
 
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
+
+#include "loggers.h"
 
 TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont)
 	: control(0), fixed(fixedPitchFont)
