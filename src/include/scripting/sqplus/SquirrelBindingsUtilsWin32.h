@@ -34,8 +34,8 @@
 
 BOOL CreateRefCountedInstance(HSQUIRRELVM v,const SQChar *classname,IUnknown *pRC);
 BOOL CreateRefCountedInstanceChached(HSQUIRRELVM v,const SQChar *classname,IUnknown *pRC);
-int refcounted_release_hook(SQUserPointer p, int size);
-int construct_RefCounted(IUnknown *p);
+SQInteger refcounted_release_hook(SQUserPointer p, SQInteger size);
+SQInteger construct_RefCounted(IUnknown *p);
 
 #endif // SQUIRREL_BINDINGS_UTILS_WIN32_H
 

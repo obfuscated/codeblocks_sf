@@ -4,7 +4,7 @@
 struct ScriptClassMemberDecl  {
 	const SQChar *name;
 	SQFUNCTION func;
-	int params;
+	SQInteger params;
 	const SQChar *typemask;
 };
 
@@ -37,7 +37,7 @@ struct ScriptNamespaceDecl  {
 };
 
 #define _BEGIN_CLASS(classname)  \
-		int __##classname##__typeof(HSQUIRRELVM v) \
+		SQInteger __##classname##__typeof(HSQUIRRELVM v) \
 		{ \
 			sq_pushstring(v,sqT(#classname),-1); \
 			return 1; \
@@ -73,7 +73,7 @@ struct SquirrelClassDecl __##classname##_decl = {  \
 	sqT(#classname), sqT(#base), __##classname##_members };
 
 #define _MEMBER_FUNCTION_IMPL(classname,name) \
-	int __##classname##_##name(HSQUIRRELVM v)
+	SQInteger __##classname##_##name(HSQUIRRELVM v)
 
 #define _INIT_STATIC_NAMESPACE(classname) CreateStaticNamespace(SquirrelVM::GetVMPtr(),&__##classname##_decl);
 #define _INIT_CLASS(classname)CreateClass(SquirrelVM::GetVMPtr(),&__##classname##_decl);
@@ -107,7 +107,7 @@ struct SquirrelClassDecl __##classname##_decl = {  \
 	SquirrelObject new_##classname(cppclass &quat);
 
 #define _IMPL_NATIVE_CONSTRUCTION(classname,cppclass) \
-static int classname##_release_hook(SQUserPointer p, int size) \
+static SQInteger classname##_release_hook(SQUserPointer p, SQInteger size) \
 { \
 	if(p) { \
 		cppclass *pv = (cppclass *)p; \
@@ -134,7 +134,7 @@ SquirrelObject new_##classname(cppclass &quat) \
 	} \
 	return ret; \
 } \
-int construct_##classname(cppclass *p) \
+SQInteger construct_##classname(cppclass *p) \
 { \
 	sq_setinstanceup(SquirrelVM::GetVMPtr(),1,p); \
 	sq_setreleasehook(SquirrelVM::GetVMPtr(),1,classname##_release_hook); \

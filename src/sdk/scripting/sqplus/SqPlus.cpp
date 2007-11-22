@@ -3,7 +3,7 @@
 
 namespace SqPlus {
 
-static int getVarInfo(StackHandler & sa,VarRefPtr & vr) {
+static SQInteger getVarInfo(StackHandler & sa,VarRefPtr & vr) {
   HSQOBJECT htable = sa.GetObjectHandle(1);
   SquirrelObject table(htable);
 #ifdef _DEBUG
@@ -21,7 +21,7 @@ static int getVarInfo(StackHandler & sa,VarRefPtr & vr) {
   return SQ_OK;
 } // getVarInfo
 
-static int getInstanceVarInfo(StackHandler & sa,VarRefPtr & vr,SQUserPointer & data) {
+static SQInteger getInstanceVarInfo(StackHandler & sa,VarRefPtr & vr,SQUserPointer & data) {
   HSQOBJECT ho = sa.GetObjectHandle(1);
   SquirrelObject instance(ho);
 #ifdef _DEBUG
@@ -60,7 +60,7 @@ static int getInstanceVarInfo(StackHandler & sa,VarRefPtr & vr,SQUserPointer & d
   return SQ_OK;
 } // getInstanceVarInfo
 
-static int setVar(StackHandler & sa,VarRef * vr,void * data) {
+static SQInteger setVar(StackHandler & sa,VarRef * vr,void * data) {
   if (vr->access & (VAR_ACCESS_READ_ONLY|VAR_ACCESS_CONSTANT)) {
     ScriptStringVar256 msg;
     const SQChar * el = sa.GetString(2);
@@ -134,7 +134,7 @@ static int setVar(StackHandler & sa,VarRef * vr,void * data) {
   return SQ_ERROR;
 } // setVar
 
-static int getVar(StackHandler & sa,VarRef * vr,void * data) {
+static SQInteger getVar(StackHandler & sa,VarRef * vr,void * data) {
   switch (vr->type) {
   case TypeInfo<INT>::TypeID: {
     if (!(vr->access & VAR_ACCESS_CONSTANT)) {
@@ -209,22 +209,22 @@ static int getVar(StackHandler & sa,VarRef * vr,void * data) {
 
 // === Global Vars ===
 
-int setVarFunc(HSQUIRRELVM v) {
+SQInteger setVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_TABLE) {
     VarRefPtr vr;
-    int res = getVarInfo(sa,vr);
+    SQInteger res = getVarInfo(sa,vr);
     if (res != SQ_OK) return res;
     return setVar(sa,vr,vr->offsetOrAddrOrConst);
   } // if
   return SQ_ERROR;
 } // setVarFunc
 
-int getVarFunc(HSQUIRRELVM v) {
+SQInteger getVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_TABLE) {
     VarRefPtr vr;
-    int res = getVarInfo(sa,vr);
+    SQInteger res = getVarInfo(sa,vr);
     if (res != SQ_OK) return res;
     return getVar(sa,vr,vr->offsetOrAddrOrConst);
   } // if
@@ -233,24 +233,24 @@ int getVarFunc(HSQUIRRELVM v) {
 
 // === Instance Vars ===
 
-int setInstanceVarFunc(HSQUIRRELVM v) {
+SQInteger setInstanceVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_INSTANCE) {
     VarRefPtr vr;
     void * data;
-    int res = getInstanceVarInfo(sa,vr,data);
+    SQInteger res = getInstanceVarInfo(sa,vr,data);
     if (res != SQ_OK) return res;
     return setVar(sa,vr,data);
   } // if
   return SQ_ERROR;
 } // setInstanceVarFunc
 
-int getInstanceVarFunc(HSQUIRRELVM v) {
+SQInteger getInstanceVarFunc(HSQUIRRELVM v) {
   StackHandler sa(v);
   if (sa.GetType(1) == OT_INSTANCE) {
     VarRefPtr vr;
     void * data;
-    int res = getInstanceVarInfo(sa,vr,data);
+    SQInteger res = getInstanceVarInfo(sa,vr,data);
     if (res != SQ_OK) return res;
     return getVar(sa,vr,data);
   } // if
@@ -261,8 +261,8 @@ int getInstanceVarFunc(HSQUIRRELVM v) {
 
 BOOL CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType,const SQChar * name,const SQChar * baseName) {
   // C::B patch: Comment out unused variable
-  //int n = 0;
-  int oldtop = sq_gettop(v);
+  //SQInteger n = 0;
+  SQInteger oldtop = sq_gettop(v);
   sq_pushroottable(v);
   sq_pushstring(v,name,-1);
   if (baseName) {
@@ -284,7 +284,7 @@ BOOL CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType
 } // CreateClass
 
 SquirrelObject RegisterClassType(HSQUIRRELVM v,const SQChar * scriptClassName,SQUserPointer classType,SQFUNCTION constructor) {
-  int top = sq_gettop(v);
+  SQInteger top = sq_gettop(v);
   SquirrelObject newClass;
   if (CreateClass(v,newClass,classType,scriptClassName)) {
     SquirrelVM::CreateFunction(newClass,constructor,sqT("constructor"));

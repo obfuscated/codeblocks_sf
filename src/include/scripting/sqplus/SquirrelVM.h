@@ -49,10 +49,10 @@ public:
 	static SquirrelObject EndCall();
 	static SquirrelObject CreateString(const SQChar *s);
 	static SquirrelObject CreateTable();	
-	static SquirrelObject CreateArray(int size);
+	static SquirrelObject CreateArray(SQInteger size);
 	static SquirrelObject CreateInstance(SquirrelObject &oclass); // oclass is an existing class. Create an 'instance' (OT_INSTANCE) of oclass.
 	static SquirrelObject CreateFunction(SQFUNCTION func);
-  static SquirrelObject CreateUserData(int size);
+  static SquirrelObject CreateUserData(SQInteger size);
 
 	static const SquirrelObject &GetRootTable();
 	static HSQUIRRELVM GetVMPtr() { return _VM; }
@@ -107,7 +107,7 @@ public:
 
 private:
 	static HSQUIRRELVM _VM;
-	static int _CallState;
+	static SQInteger _CallState;
 	static SquirrelObject * _root;
 };
 

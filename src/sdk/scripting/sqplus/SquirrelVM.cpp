@@ -18,7 +18,7 @@
 #endif
 
 HSQUIRRELVM SquirrelVM::_VM = NULL;
-int SquirrelVM::_CallState = -1;
+SQInteger SquirrelVM::_CallState = -1;
 SquirrelObject * SquirrelVM::_root = NULL;
 
 SquirrelError::SquirrelError() 
@@ -205,8 +205,8 @@ SquirrelObject SquirrelVM::EndCall()
 {
 	SquirrelObject ret;
 	if(_CallState >= 0) { 
-		int oldtop = sq_gettop(_VM);
-		int nparams = _CallState;
+		SQInteger oldtop = sq_gettop(_VM);
+		SQInteger nparams = _CallState;
 		_CallState = -1;
 		if(SQ_SUCCEEDED(sq_call(_VM,nparams,SQTrue,SQ_CALL_RAISE_ERROR))) {
 			ret.AttachToStackObject(-1);
@@ -223,7 +223,7 @@ SquirrelObject SquirrelVM::EndCall()
 SquirrelObject SquirrelVM::CreateInstance(SquirrelObject &oclass)
 {
 	SquirrelObject ret;
-	int oldtop = sq_gettop(_VM);
+	SQInteger oldtop = sq_gettop(_VM);
 	sq_pushobject(_VM,oclass._o);
 	if(SQ_FAILED(sq_createinstance(_VM,-1))) {
 		sq_settop(_VM,oldtop);
@@ -253,7 +253,7 @@ SquirrelObject SquirrelVM::CreateString(const SQChar *s)
 }
 
 
-SquirrelObject SquirrelVM::CreateArray(int size)
+SquirrelObject SquirrelVM::CreateArray(SQInteger size)
 {
 	SquirrelObject ret;
 	sq_newarray(_VM,size);
@@ -271,7 +271,7 @@ SquirrelObject SquirrelVM::CreateFunction(SQFUNCTION func)
 	return ret;
 }
 
-SquirrelObject SquirrelVM::CreateUserData(int size) {
+SquirrelObject SquirrelVM::CreateUserData(SQInteger size) {
   SquirrelObject ret;
   sq_newuserdata(_VM,size);
   ret.AttachToStackObject(-1);
@@ -289,7 +289,7 @@ void SquirrelVM::PushRootTable(void) {
 } // SquirrelVM::PushRootTable
 
 // Creates a function in the table or class currently on the stack.
-//void CreateFunction(HSQUIRRELVM v,const SQChar * scriptFuncName,SQFUNCTION func,int numParams=0,const SQChar * typeMask=0) {
+//void CreateFunction(HSQUIRRELVM v,const SQChar * scriptFuncName,SQFUNCTION func,SQInteger numParams=0,const SQChar * typeMask=0) {
 SquirrelObject SquirrelVM::CreateFunction(SQFUNCTION func,const SQChar * scriptFuncName,const SQChar * typeMask) {
   sq_pushstring(_VM,scriptFuncName,-1);
   sq_newclosure(_VM,func,0);
@@ -297,7 +297,7 @@ SquirrelObject SquirrelVM::CreateFunction(SQFUNCTION func,const SQChar * scriptF
   ret.AttachToStackObject(-1);
   SQChar tm[64];
   SQChar * ptm = tm;
-  int numParams = SQ_MATCHTYPEMASKSTRING;
+  SQInteger numParams = SQ_MATCHTYPEMASKSTRING;
   if (typeMask) {
     if (typeMask[0] == '*') {
       ptm       = 0; // Variable args: don't check parameters.
@@ -335,7 +335,7 @@ SquirrelObject SquirrelVM::CreateFunction(SquirrelObject & so,SQFUNCTION func,co
 } // SquirrelVM::CreateFunction
 
 // Create a Global function on the root table.
-//void CreateFunctionGlobal(HSQUIRRELVM v,const SQChar * scriptFuncName,SQFUNCTION func,int numParams=0,const SQChar * typeMask=0) {
+//void CreateFunctionGlobal(HSQUIRRELVM v,const SQChar * scriptFuncName,SQFUNCTION func,SQInteger numParams=0,const SQChar * typeMask=0) {
 SquirrelObject SquirrelVM::CreateFunctionGlobal(SQFUNCTION func,const SQChar * scriptFuncName,const SQChar * typeMask) {
   PushRootTable(); // Push root table.
   //  CreateFunction(scriptFuncName,func,numParams,typeMask);

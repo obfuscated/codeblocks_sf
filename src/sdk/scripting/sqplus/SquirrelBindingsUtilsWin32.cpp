@@ -4,7 +4,7 @@
 //#include "SquirrelVM.h"
 #include "SquirrelBindingsUtilsWin32.h"
 
-int refcounted_release_hook(SQUserPointer p, int size)
+SQInteger refcounted_release_hook(SQUserPointer p, SQInteger size)
 {
 	IUnknown *pRC = (IUnknown*)p;
 	pRC->Release();
@@ -17,7 +17,7 @@ static BOOL __CreateRefCountedInstance(HSQUIRRELVM v,const SQChar *classname,IUn
 	return TRUE;
 }
 
-int construct_RefCounted(IUnknown *p)
+SQInteger construct_RefCounted(IUnknown *p)
 {
 	sq_setinstanceup(SquirrelVM::GetVMPtr(),1,p);
 	sq_setreleasehook(SquirrelVM::GetVMPtr(),1,refcounted_release_hook);

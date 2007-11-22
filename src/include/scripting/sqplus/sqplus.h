@@ -36,14 +36,6 @@
   #define SCPUTS puts
 #endif
 
-#ifndef _WINDEF_
-  typedef int BOOL;
-  typedef int INT;
-  typedef float FLOAT;
-  #define TRUE 1
-  #define FALSE 0
-#endif
-
 #if 1
 #define SQ_CALL_RAISE_ERROR SQTrue
 #else
@@ -51,6 +43,15 @@
 #endif
 
 #include "squirrel.h"
+
+// C::B patch: so it builds on 64bit, ecapsulate int/float using Squirrel types
+#ifndef _WINDEF_
+  typedef int       BOOL;
+  typedef SQInteger INT;
+  typedef SQFloat   FLOAT;
+  #define TRUE 1
+  #define FALSE 0
+#endif
 
 #include "SquirrelObject.h"
 #include "SquirrelVM.h"
@@ -104,7 +105,7 @@ typedef SQChar * SQCharPtr;
 struct ScriptStringVarBase {
   const unsigned char MaxLength; // Real length is MaxLength+1.
   SQChar s[1];
-  ScriptStringVarBase(int _MaxLength) : MaxLength(_MaxLength) {}
+  ScriptStringVarBase(SQInteger _MaxLength) : MaxLength(_MaxLength) {}
   operator SQChar * () { return &s[0]; }
   operator void * () { return (void *)&s[0]; }
   const SQChar * operator = (const SQChar * _s) {
@@ -112,8 +113,8 @@ struct ScriptStringVarBase {
   }
   // Special safe string copy where MaxLength is 1 less than true buffer length.
   // strncpy() pads out nulls for the full length of the buffer specified by MaxLength.
-  static inline SQChar * safeStringCopy(SQChar * d,const SQChar * s,int MaxLength) {
-    int i=0;
+  static inline SQChar * safeStringCopy(SQChar * d,const SQChar * s,SQInteger MaxLength) {
+    SQInteger i=0;
     while (s[i]) {
       d[i] = s[i];
       i++;
@@ -126,7 +127,7 @@ struct ScriptStringVarBase {
 
 // === Do not use directly: use one of the predefined sizes below ===
 
-template<int MAXLENGTH> // MAXLENGTH is max printable characters (trailing NULL is accounted for in ScriptStringVarBase::s[1]).
+template<SQInteger MAXLENGTH> // MAXLENGTH is max printable characters (trailing NULL is accounted for in ScriptStringVarBase::s[1]).
 struct ScriptStringVar : ScriptStringVarBase {
   SQChar ps[MAXLENGTH];
   ScriptStringVar() : ScriptStringVarBase(MAXLENGTH) {
@@ -295,7 +296,7 @@ struct VarRef {
   short access;               // VarAccessType.
   const SQChar * typeName;    // Type name string (to create instances by name).
   VarRef() : offsetOrAddrOrConst(0), type(VAR_TYPE_NONE), instanceType((SQUserPointer)-1), copyFunc(0), size(0), access(VAR_ACCESS_READ_WRITE) {}
-  VarRef(void * _offsetOrAddrOrConst, ScriptVarType _type, SQUserPointer _instanceType, CopyVarFunc _copyFunc, int _size,VarAccessType _access,const SQChar * _typeName) : 
+  VarRef(void * _offsetOrAddrOrConst, ScriptVarType _type, SQUserPointer _instanceType, CopyVarFunc _copyFunc, SQInteger _size,VarAccessType _access,const SQChar * _typeName) :
          offsetOrAddrOrConst(_offsetOrAddrOrConst), type(_type), instanceType(_instanceType), copyFunc(_copyFunc), size(_size), access(_access), typeName(_typeName) {
 #ifdef SQ_SUPPORT_INSTANCE_TYPE_INFO
     SquirrelObject typeTable = SquirrelVM::GetRootTable().GetValue(SQ_PLUS_TYPE_TABLE);
@@ -320,7 +321,7 @@ inline void getVarNameTag(SQChar * buff,INT maxSize,const SQChar * scriptName) {
   d[1] = 'v';
   d = &d[2];
   maxSize -= (2+1); // +1 = space for null.
-  int pos=0;
+  SQInteger pos=0;
   while (scriptName[pos] && pos < maxSize) {
     d[pos] = scriptName[pos];
     pos++;
@@ -332,10 +333,10 @@ inline void getVarNameTag(SQChar * buff,INT maxSize,const SQChar * scriptName) {
 } // getVarNameTag
 
 // Internal use only.
-int setVarFunc(HSQUIRRELVM v);
-int getVarFunc(HSQUIRRELVM v);
-int setInstanceVarFunc(HSQUIRRELVM v);
-int getInstanceVarFunc(HSQUIRRELVM v);
+SQInteger setVarFunc(HSQUIRRELVM v);
+SQInteger getVarFunc(HSQUIRRELVM v);
+SQInteger setInstanceVarFunc(HSQUIRRELVM v);
+SQInteger getInstanceVarFunc(HSQUIRRELVM v);
 
 // === BEGIN Helpers ===
 
@@ -343,7 +344,7 @@ inline void createTableSetGetHandlers(SquirrelObject & so) {
   SquirrelObject delegate = so.GetDelegate();
   if (!delegate.Exists(sqT("_set"))) {
     delegate = SquirrelVM::CreateTable();
-    SquirrelVM::CreateFunction(delegate,setVarFunc,sqT("_set"),sqT("sn|b|s")); // String var name = number(int or float) or bool or string.
+    SquirrelVM::CreateFunction(delegate,setVarFunc,sqT("_set"),sqT("sn|b|s")); // String var name = number(SQInteger or float) or bool or string.
     SquirrelVM::CreateFunction(delegate,getVarFunc,sqT("_get"),sqT("s"));      // String var name.
     so.SetDelegate(delegate);
   } // if
@@ -374,7 +375,7 @@ void validateConstantType(T constant) {
 
 inline void createInstanceSetGetHandlers(SquirrelObject & so) {
   if (!so.Exists(sqT("_set"))) {
-    SquirrelVM::CreateFunction(so,setInstanceVarFunc,sqT("_set"),sqT("sn|b|s|x")); // String var name = number(int or float) or bool or string or instance.
+    SquirrelVM::CreateFunction(so,setInstanceVarFunc,sqT("_set"),sqT("sn|b|s|x")); // String var name = number(SQInteger or float) or bool or string or instance.
     SquirrelVM::CreateFunction(so,getInstanceVarFunc,sqT("_get"),sqT("s"));      // String var name.
   } // if
 } // createInstanceSetGetHandlers
@@ -459,7 +460,7 @@ void RegisterInstanceConstant(SquirrelObject & so,SQUserPointer classType,T cons
 
 // Create native class instance and leave on stack.
 inline BOOL CreateConstructNativeClassInstance(HSQUIRRELVM v,const SQChar * className) {
-  int oldtop = sq_gettop(v);
+  SQInteger oldtop = sq_gettop(v);
   sq_pushroottable(v);
   sq_pushstring(v,className,-1);
   if (SQ_FAILED(sq_rawget(v,-2))) { // Get the class (created with sq_newclass()).
@@ -478,7 +479,7 @@ inline BOOL CreateConstructNativeClassInstance(HSQUIRRELVM v,const SQChar * clas
     return FALSE;
   } // if
   sq_remove(v,-2); // Remove the class.
-  //  int newtop = sq_gettop(v);
+  //  SQInteger newtop = sq_gettop(v);
   return TRUE;
 } // CreateConstructNativeClassInstance
 
@@ -512,7 +513,7 @@ inline SquirrelObject NewClassCopy(const SQChar * className,const T & classToCop
 
 // Return a new class copy on the stack from a varArgs function call.
 template<typename T>
-inline int ReturnCopy(HSQUIRRELVM v,const T & classToCopy) {
+inline SQInteger ReturnCopy(HSQUIRRELVM v,const T & classToCopy) {
   SquirrelObject so(NewClassCopy(GetTypeName(classToCopy),classToCopy));
   return StackHandler(v).Return(so);
 } // ReturnCopy
@@ -542,11 +543,11 @@ T * GetInstance(HSQUIRRELVM v,SQInteger idx) {
     else if (!CreateNativeClassInstance(v,GetTypeName(*value),value,0)) \
       throw SquirrelError(sqT("Push(): could not create INSTANCE (check registration name)")); } \
   inline void Push(HSQUIRRELVM v,TYPE & value) { if (!CreateCopyInstance(GetTypeName(value),value)) throw SquirrelError(sqT("Push(): could not create INSTANCE copy (check registration name)")); } \
-  inline bool Match(TypeWrapper<TYPE &>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
-  inline bool Match(TypeWrapper<TYPE *>,HSQUIRRELVM v,int idx) { \
+  inline bool Match(TypeWrapper<TYPE &>,HSQUIRRELVM v,SQInteger idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
+  inline bool Match(TypeWrapper<TYPE *>,HSQUIRRELVM v,SQInteger idx) { \
     return (sq_gettype(v,idx)==OT_NULL) || (GetInstance<TYPE,false>(v,idx) != NULL); } \
-  inline TYPE & Get(TypeWrapper<TYPE &>,HSQUIRRELVM v,int idx) { return *GetInstance<TYPE,true>(v,idx); } \
-  inline TYPE * Get(TypeWrapper<TYPE *>,HSQUIRRELVM v,int idx) { \
+  inline TYPE & Get(TypeWrapper<TYPE &>,HSQUIRRELVM v,SQInteger idx) { return *GetInstance<TYPE,true>(v,idx); } \
+  inline TYPE * Get(TypeWrapper<TYPE *>,HSQUIRRELVM v,SQInteger idx) { \
     if (sq_gettype(v,idx)==OT_NULL) return NULL; \
     return GetInstance<TYPE,true>(v,idx); } \
   template<> \
@@ -564,10 +565,10 @@ T * GetInstance(HSQUIRRELVM v,SQInteger idx) {
   inline const SQChar * GetTypeName(const TYPE & n)            { return sqT(#NAME); } \
   inline void Push(HSQUIRRELVM v,TYPE * value)                 { if (!CreateNativeClassInstance(v,GetTypeName(*value),value,0)) throw SquirrelError(sqT("Push(): could not create INSTANCE (check registration name)")); } \
   inline void Push(HSQUIRRELVM v,TYPE & value)                 { if (!CreateCopyInstance(GetTypeName(value),value)) throw SquirrelError(sqT("Push(): could not create INSTANCE copy (check registration name)")); } \
-  inline bool	Match(TypeWrapper<TYPE &>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
-  inline bool	Match(TypeWrapper<TYPE *>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
-  inline TYPE & Get(TypeWrapper<TYPE &>,HSQUIRRELVM v,int idx) { return *GetInstance<TYPE,true>(v,idx); } \
-  inline TYPE * Get(TypeWrapper<TYPE *>,HSQUIRRELVM v,int idx) { return  GetInstance<TYPE,true>(v,idx); } \
+  inline bool	Match(TypeWrapper<TYPE &>,HSQUIRRELVM v,SQInteger idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
+  inline bool	Match(TypeWrapper<TYPE *>,HSQUIRRELVM v,SQInteger idx) { return  GetInstance<TYPE,false>(v,idx) != NULL; } \
+  inline TYPE & Get(TypeWrapper<TYPE &>,HSQUIRRELVM v,SQInteger idx) { return *GetInstance<TYPE,true>(v,idx); } \
+  inline TYPE * Get(TypeWrapper<TYPE *>,HSQUIRRELVM v,SQInteger idx) { return  GetInstance<TYPE,true>(v,idx); } \
   template<> \
   struct TypeInfo<TYPE> { \
     const SQChar * typeName; \
@@ -605,14 +606,14 @@ struct ReturnSpecialization {
 
   // === Standard Function calls ===
 
-  static int Call(RT (*func)(),HSQUIRRELVM v,int /*index*/) {
+  static SQInteger Call(RT (*func)(),HSQUIRRELVM v,SQInteger /*index*/) {
     RT ret = func();
     Push(v,ret);
     return 1;
   }
 
   template<typename P1>
-  static int Call(RT (*func)(P1),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     RT ret = func(
       Get(TypeWrapper<P1>(),v,index + 0)
@@ -622,7 +623,7 @@ struct ReturnSpecialization {
   }
 
   template<typename P1,typename P2>
-  static int Call(RT (*func)(P1,P2),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1,P2),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     RT ret = func(
@@ -634,7 +635,7 @@ struct ReturnSpecialization {
   }
 
   template<typename P1,typename P2,typename P3>
-  static int Call(RT (*func)(P1,P2,P3),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1,P2,P3),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -648,7 +649,7 @@ struct ReturnSpecialization {
   }
 
   template<typename P1,typename P2,typename P3,typename P4>
-  static int Call(RT (*func)(P1,P2,P3,P4),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1,P2,P3,P4),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -664,7 +665,7 @@ struct ReturnSpecialization {
   }
 
   template<typename P1,typename P2,typename P3,typename P4,typename P5>
-  static int Call(RT (*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -682,7 +683,7 @@ struct ReturnSpecialization {
   }
 
   template<typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-  static int Call(RT (*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -702,7 +703,7 @@ struct ReturnSpecialization {
   }
 
   template<typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-  static int Call(RT (*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,int index) {
+  static SQInteger Call(RT (*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -726,14 +727,14 @@ struct ReturnSpecialization {
   // === Member Function calls ===
 
   template <typename Callee>
-  static int Call(Callee & callee,RT (Callee::*func)(),HSQUIRRELVM v,int /*index*/) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(),HSQUIRRELVM v,SQInteger /*index*/) {
     RT ret = (callee.*func)();
     Push(v,ret);
     return 1;
   }
 
   template <typename Callee,typename P1>
-  static int Call(Callee & callee,RT (Callee::*func)(P1),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     RT ret = (callee.*func)(
       Get(TypeWrapper<P1>(),v,index + 0)
@@ -743,7 +744,7 @@ struct ReturnSpecialization {
   }
 
   template<typename Callee,typename P1,typename P2>
-  static int Call(Callee & callee,RT (Callee::*func)(P1,P2),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     RT ret = (callee.*func)(
@@ -755,7 +756,7 @@ struct ReturnSpecialization {
   }
 
   template<typename Callee,typename P1,typename P2,typename P3>
-  static int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -769,7 +770,7 @@ struct ReturnSpecialization {
   }
 
   template<typename Callee,typename P1,typename P2,typename P3,typename P4>
-  static int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -785,7 +786,7 @@ struct ReturnSpecialization {
   }
 
   template<typename Callee,typename P1,typename P2,typename P3,typename P4,typename P5>
-  static int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -803,7 +804,7 @@ struct ReturnSpecialization {
   }
 
   template<typename Callee,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-  static int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -823,7 +824,7 @@ struct ReturnSpecialization {
   }
 
   template<typename Callee,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-  static int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,int index) {
+  static SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -857,14 +858,14 @@ struct ReturnSpecialization<void> {
 
   // === Standard function calls ===
 
-  static int Call(void (*func)(),HSQUIRRELVM v,int /*index*/) {
+  static SQInteger Call(void (*func)(),HSQUIRRELVM v,SQInteger /*index*/) {
 		(void)v;
 		func();
 		return 0;
 	}
 
 	template<typename P1>
-	static int Call(void (*func)(P1),HSQUIRRELVM v,int index) {
+	static SQInteger Call(void (*func)(P1),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
 		func(
 			Get(TypeWrapper<P1>(),v,index + 0)
@@ -873,7 +874,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename P1,typename P2>
-	static int Call(void (*func)(P1,P2),HSQUIRRELVM v,int index) {
+	static SQInteger Call(void (*func)(P1,P2),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
 		func(
@@ -884,7 +885,7 @@ struct ReturnSpecialization<void> {
 	}
 
   template<typename P1,typename P2,typename P3>
-  static int Call(void (*func)(P1,P2,P3),HSQUIRRELVM v,int index) {
+  static SQInteger Call(void (*func)(P1,P2,P3),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -897,7 +898,7 @@ struct ReturnSpecialization<void> {
   }
 
   template<typename P1,typename P2,typename P3,typename P4>
-  static int Call(void (*func)(P1,P2,P3,P4),HSQUIRRELVM v,int index) {
+  static SQInteger Call(void (*func)(P1,P2,P3,P4),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -912,7 +913,7 @@ struct ReturnSpecialization<void> {
   }
 
   template<typename P1,typename P2,typename P3,typename P4,typename P5>
-  static int Call(void (*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,int index) {
+  static SQInteger Call(void (*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -929,7 +930,7 @@ struct ReturnSpecialization<void> {
   }
 
   template<typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-  static int Call(void (*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,int index) {
+  static SQInteger Call(void (*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -948,7 +949,7 @@ struct ReturnSpecialization<void> {
   }
 
   template<typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-  static int Call(void (*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,int index) {
+  static SQInteger Call(void (*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -971,13 +972,13 @@ struct ReturnSpecialization<void> {
   // === Member function calls ===
 
 	template<typename Callee>
-	static int Call(Callee & callee,void (Callee::*func)(),HSQUIRRELVM,int /*index*/) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(),HSQUIRRELVM,SQInteger /*index*/) {
 		(callee.*func)();
 		return 0;
 	}
 
 	template<typename Callee,typename P1>
-	static int Call(Callee & callee,void (Callee::*func)(P1),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
 		(callee.*func)(
 			Get(TypeWrapper<P1>(),v,index + 0)
@@ -986,7 +987,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename Callee,typename P1,typename P2>
-	static int Call(Callee & callee,void (Callee::*func)(P1,P2),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1,P2),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
 		(callee.*func)(
@@ -997,7 +998,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename Callee,typename P1,typename P2,typename P3>
-	static int Call(Callee & callee,void (Callee::*func)(P1,P2,P3),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1,P2,P3),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -1010,7 +1011,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename Callee,typename P1,typename P2,typename P3,typename P4>
-	static int Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -1025,7 +1026,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename Callee,typename P1,typename P2,typename P3,typename P4,typename P5>
-	static int Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -1042,7 +1043,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename Callee,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-	static int Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -1061,7 +1062,7 @@ struct ReturnSpecialization<void> {
 	}
 
 	template<typename Callee,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-	static int Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,int index) {
+	static SQInteger Call(Callee & callee,void (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,SQInteger index) {
     sq_argassert(1,index + 0);
     sq_argassert(2,index + 1);
     sq_argassert(3,index + 2);
@@ -1091,84 +1092,84 @@ struct ReturnSpecialization<void> {
 // === STANDARD Function return value specialized call handlers ===
 
 template<typename RT>
-int Call(RT (*func)(),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1>
-int Call(RT (*func)(P1),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1,typename P2>
-int Call(RT (*func)(P1,P2),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1,P2),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1,typename P2,typename P3>
-int Call(RT (*func)(P1,P2,P3),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1,P2,P3),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1,typename P2,typename P3,typename P4>
-int Call(RT (*func)(P1,P2,P3,P4),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1,P2,P3,P4),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1,typename P2,typename P3,typename P4,typename P5>
-int Call(RT (*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-int Call(RT (*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 template<typename RT,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-int Call(RT (*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,int index) {
+SQInteger Call(RT (*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(func,v,index);
 }
 
 // === MEMBER Function return value specialized call handlers ===
 
 template<typename Callee,typename RT>
-int Call(Callee & callee, RT (Callee::*func)(),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee, RT (Callee::*func)(),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1>
-int Call(Callee & callee,RT (Callee::*func)(P1),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1,typename P2>
-int Call(Callee & callee,RT (Callee::*func)(P1,P2),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1,typename P2,typename P3>
-int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1,typename P2,typename P3,typename P4>
-int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1,typename P2,typename P3,typename P4,typename P5>
-int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6>
-int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
 template<typename Callee,typename RT,typename P1,typename P2,typename P3,typename P4,typename P5,typename P6,typename P7>
-int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,int index) {
+SQInteger Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,SQInteger index) {
   return ReturnSpecialization<RT>::Call(callee,func,v,index);
 }
 
@@ -1181,9 +1182,9 @@ int Call(Callee & callee,RT (Callee::*func)(P1,P2,P3,P4,P5,P6,P7),HSQUIRRELVM v,
 
 template<typename Func>
 struct DirectCallFunction {
-  static inline int Dispatch(HSQUIRRELVM v) {
+  static inline SQInteger Dispatch(HSQUIRRELVM v) {
     StackHandler sa(v);
-    int paramCount = sa.GetParamCount();
+    SQInteger paramCount = sa.GetParamCount();
     Func * func = (Func *)sa.GetUserData(paramCount);
     return Call(*func,v,2);
   } // Dispatch
@@ -1194,9 +1195,9 @@ struct DirectCallFunction {
 template<typename Callee,typename Func>
 class DirectCallMemberFunction {
 public:
-  static inline int Dispatch(HSQUIRRELVM v) {
+  static inline SQInteger Dispatch(HSQUIRRELVM v) {
     StackHandler sa(v);
-    int paramCount = sa.GetParamCount();
+    SQInteger paramCount = sa.GetParamCount();
     unsigned char * ud = (unsigned char *)sa.GetUserData(paramCount);
     // C::B patch: Handle invalid instance type here
     if (!*(Callee**)ud) {
@@ -1214,10 +1215,10 @@ public:
 template<typename Callee,typename Func>
 class DirectCallInstanceMemberFunction {
 public:
-  static inline int Dispatch(HSQUIRRELVM v) {
+  static inline SQInteger Dispatch(HSQUIRRELVM v) {
     StackHandler sa(v);
     Callee * instance = (Callee *)sa.GetInstanceUp(1,0);
-    int paramCount = sa.GetParamCount();
+    SQInteger paramCount = sa.GetParamCount();
     Func * func = (Func *)sa.GetUserData(paramCount);
     // C::B patch: Let the compiler search (comment out the whole block)
 //#ifdef SQ_USE_CLASS_INHERITANCE
@@ -1244,11 +1245,11 @@ public:
 template<typename Callee>
 class DirectCallInstanceMemberFunctionVarArgs {
 public:
-  typedef int (Callee::*FuncType)(HSQUIRRELVM);
-  static inline int Dispatch(HSQUIRRELVM v) {
+  typedef SQInteger (Callee::*FuncType)(HSQUIRRELVM);
+  static inline SQInteger Dispatch(HSQUIRRELVM v) {
     StackHandler sa(v);
     Callee * instance = (Callee *)sa.GetInstanceUp(1,0);
-    int paramCount = sa.GetParamCount();
+    SQInteger paramCount = sa.GetParamCount();
     FuncType func = *(FuncType *)sa.GetUserData(paramCount);
     // C::B patch: Let the compiler search (comment out the whole block)
 //#ifdef SQ_USE_CLASS_INHERITANCE
@@ -1310,7 +1311,7 @@ inline void sq_pushdirectinstanceclosure(HSQUIRRELVM v,const Callee & callee,Fun
 // === Class Instance call: class pointer retrieved from script class instance (variable arguments) ===
 
 template<typename Callee>
-inline void sq_pushdirectinstanceclosurevarargs(HSQUIRRELVM v,const Callee & callee,int (Callee::*func)(HSQUIRRELVM),SQUnsignedInteger nupvalues) {
+inline void sq_pushdirectinstanceclosurevarargs(HSQUIRRELVM v,const Callee & callee,SQInteger (Callee::*func)(HSQUIRRELVM),SQUnsignedInteger nupvalues) {
   unsigned char * up = (unsigned char *)sq_newuserdata(v,sizeof(func)); // Also pushed on stack.
   memcpy(up,&func,sizeof(func));
   sq_newclosure(v,DirectCallInstanceMemberFunctionVarArgs<Callee>::Dispatch,nupvalues+1);
@@ -1403,13 +1404,13 @@ inline void RegisterInstance(HSQUIRRELVM v,HSQOBJECT hclass,Callee & callee,Func
 // All the other Squirrel type-masks are passed normally.
 
 template<typename Callee>
-inline void RegisterInstanceVarArgs(HSQUIRRELVM v,HSQOBJECT hclass,Callee & callee,int (Callee::*func)(HSQUIRRELVM),const SQChar * name,const SQChar * typeMask=sqT("*")) {
+inline void RegisterInstanceVarArgs(HSQUIRRELVM v,HSQOBJECT hclass,Callee & callee,SQInteger (Callee::*func)(HSQUIRRELVM),const SQChar * name,const SQChar * typeMask=sqT("*")) {
   sq_pushobject(v,hclass);
   sq_pushstring(v,name,-1);
   sq_pushdirectinstanceclosurevarargs(v,callee,func,0);
   SQChar tm[64];
   SQChar * ptm = tm;
-  int numParams = SQ_MATCHTYPEMASKSTRING;
+  SQInteger numParams = SQ_MATCHTYPEMASKSTRING;
   if (typeMask) {
     if (typeMask[0] == '*') {
       ptm       = 0; // Variable args: don't check parameters.
@@ -1567,13 +1568,13 @@ struct SquirrelFunction {
 
 #define SQ_DELETE_CLASS(CLASSTYPE) if (up) { CLASSTYPE * self = (CLASSTYPE *)up; delete self;} return 0
 #define SQ_DECLARE_RELEASE(CLASSTYPE) \
-  static int release(SQUserPointer up,SQInteger size) { \
+  static SQInteger release(SQUserPointer up,SQInteger size) { \
     SQ_DELETE_CLASS(CLASSTYPE); \
   }
 
 template<typename T>
 struct ReleaseClassPtrPtr {
-  static int release(SQUserPointer up,SQInteger size) {
+  static SQInteger release(SQUserPointer up,SQInteger size) {
     if (up) { 
       T ** self = (T **)up; 
       delete *self;
@@ -1584,7 +1585,7 @@ struct ReleaseClassPtrPtr {
 
 template<typename T>
 struct ReleaseClassPtr {
-  static int release(SQUserPointer up,SQInteger size) {
+  static SQInteger release(SQUserPointer up,SQInteger size) {
     if (up) { 
       T * self = (T *)up; 
       delete self;
@@ -1599,7 +1600,7 @@ BOOL CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType
 
 // Call PostConstruct() at the end of custom constructors.
 template<typename T>
-inline int PostConstruct(HSQUIRRELVM v,T * newClass,SQRELEASEHOOK hook) {
+inline SQInteger PostConstruct(HSQUIRRELVM v,T * newClass,SQRELEASEHOOK hook) {
 #ifdef SQ_USE_CLASS_INHERITANCE
   StackHandler sa(v);
   HSQOBJECT ho = sa.GetObjectHandle(1); // OT_INSTANCE
@@ -1661,11 +1662,11 @@ inline int PostConstruct(HSQUIRRELVM v,T * newClass,SQRELEASEHOOK hook) {
 
 template<typename T>
 struct ConstructReleaseClass {
-  static int construct(HSQUIRRELVM v) {
+  static SQInteger construct(HSQUIRRELVM v) {
     return PostConstruct<T>(v,new T(),release);
   } // construct
   // C::B patch: Add empty constructor
-  static int no_construct(HSQUIRRELVM v) {
+  static SQInteger no_construct(HSQUIRRELVM v) {
     return PostConstruct<T>(v,0,0);
   } // no_construct
   SQ_DECLARE_RELEASE(T)
@@ -1673,7 +1674,7 @@ struct ConstructReleaseClass {
 
 template<typename T>
 inline SquirrelObject RegisterClassType(HSQUIRRELVM v,const SQChar * scriptClassName,const SQChar * baseScriptClassName=0) {
-  int top = sq_gettop(v);
+  SQInteger top = sq_gettop(v);
   SquirrelObject newClass;
   if (CreateClass(v,newClass,(SQUserPointer)ClassType<T>::type(),scriptClassName,baseScriptClassName)) {
     SquirrelVM::CreateFunction(newClass,&ConstructReleaseClass<T>::no_construct,sqT("constructor"));
@@ -1829,7 +1830,7 @@ struct SQClassDef {
   } // constant
 
   // Register an enum as an integer (read-only in script).
-  SQClassDef & enumInt(int constant,const SQChar * name) {
+  SQClassDef & enumInt(SQInteger constant,const SQChar * name) {
       RegisterInstanceConstant(newClass,ClassType<TClassType>::type(),constant,name);
       return *this;
   } // enumInt
@@ -1861,7 +1862,7 @@ inline void Push(HSQUIRRELVM v,SquirrelObject & so)  { sq_pushobject(v,so.GetObj
 #pragma warning (disable:4675) // Disable warning: "resolved overload was found by argument-dependent lookup" when class/struct pointers are used as function arguments.
 #endif
 // === BEGIN Argument Dependent Overloads ===
-inline void Push(HSQUIRRELVM v,bool value)                  { sq_pushbool(v,value); }               // Pass bool as int if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
+inline void Push(HSQUIRRELVM v,bool value)                  { sq_pushbool(v,value); }               // Pass bool as SQInteger if USE_ARGUMENT_DEPENDANT_OVERLOADS can't be used by your compiler.
 inline void Push(HSQUIRRELVM v,const void * value)          { sq_pushuserpointer(v,(void*)value); } // Pass SQAnythingPtr instead of void * "                                             "
 inline void Push(HSQUIRRELVM v,const SQUserPointer & value) { sq_pushuserpointer(v,(void*)value); }
 // === END Argument Dependent Overloads ===
@@ -1869,60 +1870,60 @@ inline void Push(HSQUIRRELVM v,const SQUserPointer & value) { sq_pushuserpointer
 
 #define SQPLUS_CHECK_GET(res) if (!SQ_SUCCEEDED(res)) throw SquirrelError(sqT("sq_get*() failed (type error)"))
 
-inline bool	Match(TypeWrapper<bool>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_BOOL; }
-inline bool	Match(TypeWrapper<char>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned char>,HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<short>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned short>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<int>,HSQUIRRELVM v,int idx)            { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned int>,HSQUIRRELVM v,int idx)   { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<long>,HSQUIRRELVM v,int idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<unsigned long>,HSQUIRRELVM v,int idx)  { return sq_gettype(v,idx) == OT_INTEGER; }
-inline bool	Match(TypeWrapper<float>,HSQUIRRELVM v,int idx)          { int type = sq_gettype(v,idx); return type == OT_FLOAT; }
-inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,int idx)         { int type = sq_gettype(v,idx); return type == OT_FLOAT; }
-inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx) { return sq_gettype(v,idx) == OT_STRING; }
-inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int idx)    { return true; } // See Get() for HSQUIRRELVM below (v is always present).
-inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,int idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
-inline bool	Match(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx) { return true; } // See sq_getstackobj(): always returns true.
+inline bool	Match(TypeWrapper<bool>,HSQUIRRELVM v,SQInteger idx)           { return sq_gettype(v,idx) == OT_BOOL; }
+inline bool	Match(TypeWrapper<char>,HSQUIRRELVM v,SQInteger idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned char>,HSQUIRRELVM v, SQInteger idx) { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<short>,HSQUIRRELVM v,SQInteger idx)          { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned short>,HSQUIRRELVM v,SQInteger idx) { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<int>,HSQUIRRELVM v,SQInteger idx)            { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned int>,HSQUIRRELVM v,SQInteger idx)   { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<long>,HSQUIRRELVM v,SQInteger idx)           { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<unsigned long>,HSQUIRRELVM v,SQInteger idx)  { return sq_gettype(v,idx) == OT_INTEGER; }
+inline bool	Match(TypeWrapper<float>,HSQUIRRELVM v,SQInteger idx)          { SQInteger type = sq_gettype(v,idx); return type == OT_FLOAT; }
+inline bool	Match(TypeWrapper<double>,HSQUIRRELVM v,SQInteger idx)         { SQInteger type = sq_gettype(v,idx); return type == OT_FLOAT; }
+inline bool	Match(TypeWrapper<const SQChar *>,HSQUIRRELVM v,SQInteger idx) { return sq_gettype(v,idx) == OT_STRING; }
+inline bool	Match(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,SQInteger idx)    { return true; } // See Get() for HSQUIRRELVM below (v is always present).
+inline bool	Match(TypeWrapper<void*>,HSQUIRRELVM v,SQInteger idx)          { return sq_gettype(v,idx) == OT_USERPOINTER; }
+inline bool	Match(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,SQInteger idx) { return true; } // See sq_getstackobj(): always returns true.
 
 inline void           Get(TypeWrapper<void>,HSQUIRRELVM v,int)                {}
-inline bool           Get(TypeWrapper<bool>,HSQUIRRELVM v,int idx)            { SQBool b; SQPLUS_CHECK_GET(sq_getbool(v,idx,&b)); return b != 0; }
-inline char           Get(TypeWrapper<char>,HSQUIRRELVM v,int idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<char>(i); }
-inline unsigned char  Get(TypeWrapper<unsigned char>,HSQUIRRELVM v,int idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned char>(i); }
-inline short          Get(TypeWrapper<short>,HSQUIRRELVM v,int idx)           { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<short>(i); }
-inline unsigned short	Get(TypeWrapper<unsigned short>,HSQUIRRELVM v,int idx)  { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned short>(i); }
-inline int            Get(TypeWrapper<int>,HSQUIRRELVM v,int idx)             { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return i; }
-inline unsigned int   Get(TypeWrapper<unsigned int>,HSQUIRRELVM v,int idx)    { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned int>(i); }
-inline long           Get(TypeWrapper<long>,HSQUIRRELVM v,int idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long>(i); }
-inline unsigned long  Get(TypeWrapper<unsigned long>,HSQUIRRELVM v,int idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long>(i); }
-inline float          Get(TypeWrapper<float>,HSQUIRRELVM v,int idx)           { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return f; }
-inline double         Get(TypeWrapper<double>,HSQUIRRELVM v,int idx)          { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return static_cast<double>(f); }
-inline const SQChar * Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,int idx)  { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
-inline SquirrelNull   Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,int idx)    { (void)v, (void)idx; return SquirrelNull();  }
-inline void *         Get(TypeWrapper<void *>,HSQUIRRELVM v,int idx)          { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
-inline HSQUIRRELVM    Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,int /*idx*/) { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
-inline SquirrelObject Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,int idx)  { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
+inline bool           Get(TypeWrapper<bool>,HSQUIRRELVM v,SQInteger idx)            { SQBool b; SQPLUS_CHECK_GET(sq_getbool(v,idx,&b)); return b != 0; }
+inline char           Get(TypeWrapper<char>,HSQUIRRELVM v,SQInteger idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<char>(i); }
+inline unsigned char  Get(TypeWrapper<unsigned char>,HSQUIRRELVM v,SQInteger idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned char>(i); }
+inline short          Get(TypeWrapper<short>,HSQUIRRELVM v,SQInteger idx)           { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<short>(i); }
+inline unsigned short	Get(TypeWrapper<unsigned short>,HSQUIRRELVM v,SQInteger idx)  { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned short>(i); }
+inline int            Get(TypeWrapper<int>,HSQUIRRELVM v,SQInteger idx)             { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return i; }
+inline unsigned int   Get(TypeWrapper<unsigned int>,HSQUIRRELVM v,SQInteger idx)    { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned int>(i); }
+inline long           Get(TypeWrapper<long>,HSQUIRRELVM v,SQInteger idx)            { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<long>(i); }
+inline unsigned long  Get(TypeWrapper<unsigned long>,HSQUIRRELVM v,SQInteger idx)   { INT i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return static_cast<unsigned long>(i); }
+inline float          Get(TypeWrapper<float>,HSQUIRRELVM v,SQInteger idx)           { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return f; }
+inline double         Get(TypeWrapper<double>,HSQUIRRELVM v,SQInteger idx)          { FLOAT f; SQPLUS_CHECK_GET(sq_getfloat(v,idx,&f)); return static_cast<double>(f); }
+inline const SQChar * Get(TypeWrapper<const SQChar *>,HSQUIRRELVM v,SQInteger idx)  { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return s; }
+inline SquirrelNull   Get(TypeWrapper<SquirrelNull>,HSQUIRRELVM v,SQInteger idx)    { (void)v, (void)idx; return SquirrelNull();  }
+inline void *         Get(TypeWrapper<void *>,HSQUIRRELVM v,SQInteger idx)          { SQUserPointer p; SQPLUS_CHECK_GET(sq_getuserpointer(v,idx,&p)); return p; }
+inline HSQUIRRELVM    Get(TypeWrapper<HSQUIRRELVM>,HSQUIRRELVM v,SQInteger /*idx*/) { sq_poptop(v); return v; } // sq_poptop(v): remove UserData from stack so GetParamCount() matches normal behavior.
+inline SquirrelObject Get(TypeWrapper<SquirrelObject>,HSQUIRRELVM v,SQInteger idx)  { HSQOBJECT o; SQPLUS_CHECK_GET(sq_getstackobj(v,idx,&o)); return SquirrelObject(o); }
 
 #ifdef SQPLUS_SUPPORT_STD_STRING
 inline void Push(HSQUIRRELVM v,const std::string& value) { sq_pushstring(v,value.c_str(),-1); }
-inline bool Match(TypeWrapper<const std::string&>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_STRING; }
-inline std::string Get(TypeWrapper<const std::string&>,HSQUIRRELVM v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return std::string(s); } 
+inline bool Match(TypeWrapper<const std::string&>, HSQUIRRELVM v, SQInteger idx) { return sq_gettype(v,idx) == OT_STRING; }
+inline std::string Get(TypeWrapper<const std::string&>,HSQUIRRELVM v,SQInteger idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return std::string(s); }
 #endif
 
 // Added jflanglois suggestion, 8/20/06. jcs
 #ifdef SQPLUS_SUPPORT_SQ_STD_STRING
 typedef std::basic_string<SQChar> sq_std_string;
 inline void Push(HSQUIRRELVM v,const sq_std_string & value) { sq_pushstring(v,value.c_str(),-1); }
-inline bool Match(TypeWrapper<const sq_std_string &>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_STRING; }
-inline sq_std_string Get(TypeWrapper<const sq_std_string &>,HSQUIRRELVM v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return sq_std_string(s); } 
+inline bool Match(TypeWrapper<const sq_std_string &>, HSQUIRRELVM v, SQInteger idx) { return sq_gettype(v,idx) == OT_STRING; }
+inline sq_std_string Get(TypeWrapper<const sq_std_string &>,HSQUIRRELVM v,SQInteger idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return sq_std_string(s); }
 #endif
 
 // GetRet() restores the stack for SquirrelFunction<>() calls.
 template<typename RT>
-inline RT GetRet(TypeWrapper<RT>,HSQUIRRELVM v,int idx) { RT ret = Get(TypeWrapper<RT>(),v,idx); sq_pop(v,2); return ret; } // sq_pop(v,2): restore stack after function call.
+inline RT GetRet(TypeWrapper<RT>,HSQUIRRELVM v,SQInteger idx) { RT ret = Get(TypeWrapper<RT>(),v,idx); sq_pop(v,2); return ret; } // sq_pop(v,2): restore stack after function call.
 
 // Specialization to support void return type.
-inline void GetRet(TypeWrapper<void>,HSQUIRRELVM v,int idx) { sq_pop(v,2); }
+inline void GetRet(TypeWrapper<void>,HSQUIRRELVM v,SQInteger idx) { sq_pop(v,2); }
 
 // === END Function Call Handlers ===
 
@@ -1949,14 +1950,14 @@ inline void GetRet(TypeWrapper<void>,HSQUIRRELVM v,int idx) { sq_pop(v,2); }
 // === Macros for old style registration. SQClassDef registration is now easier to use (SQ_DECLARE_CLASS() is not needed) ===
 
 #define SQ_DECLARE_CLASS(CLASSNAME)                                  \
-static int _##CLASSNAME##_release(SQUserPointer up,SQInteger size) { \
+static SQInteger _##CLASSNAME##_release(SQUserPointer up,SQInteger size) { \
   if (up) {                                                          \
     CLASSNAME * self = (CLASSNAME *)up;                              \
     delete self;                                                     \
   }                                                                  \
   return 0;                                                          \
 }                                                                    \
-static int _##CLASSNAME##_constructor(HSQUIRRELVM v) {               \
+static SQInteger _##CLASSNAME##_constructor(HSQUIRRELVM v) {               \
   CLASSNAME * pc = new CLASSNAME();                                  \
   sq_setinstanceup(v,1,pc);                                          \
   sq_setreleasehook(v,1,_##CLASSNAME##_release);                     \
