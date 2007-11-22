@@ -1964,7 +1964,6 @@ void cbEditor::HighlightBraces()
     }
     else
         control->BraceHighlight(-1, -1);
-    control->Refresh(FALSE);
 }
 
 int cbEditor::GetLineIndentInSpaces(int line) const
@@ -2599,6 +2598,35 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
 // generic scintilla event handler
 void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
 {
+//	wxString txt;
+//    wxEventType type = event.GetEventType();
+//	if (type == wxEVT_SCI_CHANGE) txt << _T("wxEVT_SCI_CHANGE");
+//	else if (type == wxEVT_SCI_STYLENEEDED) txt << _T("wxEVT_SCI_STYLENEEDED");
+//	else if (type == wxEVT_SCI_CHARADDED) txt << _T("wxEVT_SCI_CHARADDED");
+//	else if (type == wxEVT_SCI_SAVEPOINTREACHED) txt << _T("wxEVT_SCI_SAVEPOINTREACHED");
+//	else if (type == wxEVT_SCI_SAVEPOINTLEFT) txt << _T("wxEVT_SCI_SAVEPOINTLEFT");
+//	else if (type == wxEVT_SCI_ROMODIFYATTEMPT) txt << _T("wxEVT_SCI_ROMODIFYATTEMPT");
+//	else if (type == wxEVT_SCI_KEY) txt << _T("wxEVT_SCI_KEY");
+//	else if (type == wxEVT_SCI_DOUBLECLICK) txt << _T("wxEVT_SCI_DOUBLECLICK");
+//	else if (type == wxEVT_SCI_UPDATEUI) txt << _T("wxEVT_SCI_UPDATEUI");
+//	else if (type == wxEVT_SCI_MODIFIED) txt << _T("wxEVT_SCI_MODIFIED");
+//	else if (type == wxEVT_SCI_MACRORECORD) txt << _T("wxEVT_SCI_MACRORECORD");
+//	else if (type == wxEVT_SCI_MARGINCLICK) txt << _T("wxEVT_SCI_MARGINCLICK");
+//	else if (type == wxEVT_SCI_NEEDSHOWN) txt << _T("wxEVT_SCI_NEEDSHOWN");
+//	else if (type == wxEVT_SCI_PAINTED) txt << _T("wxEVT_SCI_PAINTED");
+//	else if (type == wxEVT_SCI_USERLISTSELECTION) txt << _T("wxEVT_SCI_USERLISTSELECTION");
+//	else if (type == wxEVT_SCI_URIDROPPED) txt << _T("wxEVT_SCI_URIDROPPED");
+//	else if (type == wxEVT_SCI_DWELLSTART) txt << _T("wxEVT_SCI_DWELLSTART");
+//	else if (type == wxEVT_SCI_DWELLEND) txt << _T("wxEVT_SCI_DWELLEND");
+//	else if (type == wxEVT_SCI_START_DRAG) txt << _T("wxEVT_SCI_START_DRAG");
+//	else if (type == wxEVT_SCI_DRAG_OVER) txt << _T("wxEVT_SCI_DRAG_OVER");
+//	else if (type == wxEVT_SCI_DO_DROP) txt << _T("wxEVT_SCI_DO_DROP");
+//	else if (type == wxEVT_SCI_ZOOM) txt << _T("wxEVT_SCI_ZOOM");
+//	else if (type == wxEVT_SCI_HOTSPOT_CLICK) txt << _T("wxEVT_SCI_HOTSPOT_CLICK");
+//	else if (type == wxEVT_SCI_HOTSPOT_DCLICK) txt << _T("wxEVT_SCI_HOTSPOT_DCLICK");
+//	else if (type == wxEVT_SCI_CALLTIP_CLICK) txt << _T("wxEVT_SCI_CALLTIP_CLICK");
+//    Manager::Get()->GetLogManager()->DebugLog(txt);
+
     // call any hooked functors
     if (!ProjectManager::IsBusy() && EditorHooks::HasRegisteredHooks())
     {
