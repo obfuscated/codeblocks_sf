@@ -30,6 +30,8 @@ CompilerMessages::CompilerMessages(const wxArrayString& titles, const wxArrayInt
 CompilerMessages::~CompilerMessages()
 {
 	//dtor
+	if (control)
+		control->RemoveEventHandler(this);
 }
 
 wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
