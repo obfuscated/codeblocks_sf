@@ -9,7 +9,7 @@ GtkPathDefault    <- _T("$(#gtk)");
 GtkPathDefaultInc <- _T("$(#gtk.include)");
 GtkPathDefaultLib <- _T("$(#gtk.lib)");
 GtkPath <- _T("");
-GtkVersion <- 1; // 0 - GTK+, 1 - GTK+-2.0
+// GtkVersion <- 1; // 0 - GTK+, 1 - GTK+-2.0
 
 function BeginWizard()
 {
@@ -29,10 +29,10 @@ function BeginWizard()
     {
         Wizard.AddGenericSelectPathPage(_T("GtkPath"), gtkpath_msg, _T("GTK's location:"), GtkPathDefault);
     }
-    else
+    /*else
     {
         Wizard.AddGenericSingleChoiceListPage(_T("GtkVersionPage"), _T("Please select the GTK+ version you want to use."), _T("GTK+ 1.x;GTK+ 2.x"), GtkVersion); // select GTK+ version
-    }
+    }*/
     Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, true);
 }
 
@@ -141,16 +141,16 @@ function SetupProject(project)
     }
     else
     {
-        if (GtkVersion == 1)
-        {
-            project.AddCompilerOption(_T("`pkg-config gtk+-2.0 --cflags`"));
-            project.AddLinkerOption(_T("`pkg-config gtk+-2.0 --libs`"));
-        }
+        /*if (GtkVersion == 1)
+        {*/
+        project.AddCompilerOption(_T("`pkg-config gtk+-2.0 --cflags`"));
+        project.AddLinkerOption(_T("`pkg-config gtk+-2.0 --libs`"));
+        /*}
         else
         {
             project.AddCompilerOption(_T("`pkg-config gtk+ --cflags`"));
             project.AddLinkerOption(_T("`pkg-config gtk+ --libs`"));
-        }
+        }*/
     }
     
     // enable compiler warnings (project-wide)
