@@ -9,6 +9,7 @@ GtkPathDefault    <- _T("$(#gtk)");
 GtkPathDefaultInc <- _T("$(#gtk.include)");
 GtkPathDefaultLib <- _T("$(#gtk.lib)");
 GtkPath <- _T("");
+GtkVersion <- 1; // 0 - GTK+, 1 - GTK+-2.0
 
 function BeginWizard()
 {
@@ -24,7 +25,14 @@ function BeginWizard()
 
     Wizard.AddInfoPage(_T("GtkIntro"), intro_msg);
     Wizard.AddProjectPathPage();
-    Wizard.AddGenericSelectPathPage(_T("GtkPath"), gtkpath_msg, _T("GTK's location:"), GtkPathDefault);
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        Wizard.AddGenericSelectPathPage(_T("GtkPath"), gtkpath_msg, _T("GTK's location:"), GtkPathDefault);
+    }
+    else
+    {
+        Wizard.AddGenericSingleChoiceListPage(_T("GtkVersionPage"), _T("Please select the GTK+ version you want to use."), _T("GTK+ 1.x;GTK+ 2.x"), GtkVersion); // select GTK+ version
+    }
     Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, true);
 }
 
@@ -80,6 +88,19 @@ function OnLeave_GtkPath(fwd)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Gtk's version page (For *nix users)
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_GtkVersionPage(fwd)
+{
+    if (fwd)
+    {
+        GtkVersion = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
 // return the files this project contains
 function GetFilesDir()
 {
@@ -89,35 +110,51 @@ function GetFilesDir()
 // setup the already created project
 function SetupProject(project)
 {
-    project.AddIncludeDir(GtkPathDefaultInc);
-    project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("gtk-2.0"));
-    project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("cairo"));
-    project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("gdk"));
-    project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("glib-2.0"));
-    // Notice GtkPathDefault*Lib* at some positions. This is correct as of 2.8.20
-    project.AddIncludeDir(GtkPathDefaultLib + wxFILE_SEP_PATH + _T("glib-2.0") + wxFILE_SEP_PATH + _T("include"));
-    project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("pango-1.0"));
-    project.AddIncludeDir(GtkPathDefaultLib + wxFILE_SEP_PATH + _T("gtk-2.0")  + wxFILE_SEP_PATH + _T("include"));
-    project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("atk-1.0"));
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddIncludeDir(GtkPathDefaultInc);
+        project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("gtk-2.0"));
+        project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("cairo"));
+        project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("gdk"));
+        project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("glib-2.0"));
+        // Notice GtkPathDefault*Lib* at some positions. This is correct as of 2.8.20
+        project.AddIncludeDir(GtkPathDefaultLib + wxFILE_SEP_PATH + _T("glib-2.0") + wxFILE_SEP_PATH + _T("include"));
+        project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("pango-1.0"));
+        project.AddIncludeDir(GtkPathDefaultLib + wxFILE_SEP_PATH + _T("gtk-2.0")  + wxFILE_SEP_PATH + _T("include"));
+        project.AddIncludeDir(GtkPathDefaultInc + wxFILE_SEP_PATH + _T("atk-1.0"));
+
+
+        project.AddLibDir(GtkPathDefaultLib);
+
+        // add link libraries
+        project.AddLinkLib(_T("gtk-win32-2.0"));
+        project.AddLinkLib(_T("gobject-2.0"));
+        project.AddLinkLib(_T("glib-2.0"));
+
+        // Notice: there are more libs required as the app gets more complex, e.g.:
+        // pangocairo-1.0.lib, pangocairo-1.0.lib, libatk-1.0.dll.a,
+        // gdk_pixbuf-2.0.lib, gdk-win32-2.0.lib,  pango-1.0.lib,
+        // gmodule-2.0.lib,    gthread-2.0.lib,    cairo.lib,
+        // pangoft2-1.0.lib    (...)
+
+        project.AddCompilerOption(_T("-mms-bitfields"));
+    }
+    else
+    {
+        if (GtkVersion == 1)
+        {
+            project.AddCompilerOption(_T("`pkg-config gtk+-2.0 --cflags`"));
+            project.AddLinkerOption(_T("`pkg-config gtk+-2.0 --libs`"));
+        }
+        else
+        {
+            project.AddCompilerOption(_T("`pkg-config gtk+ --cflags`"));
+            project.AddLinkerOption(_T("`pkg-config gtk+ --libs`"));
+        }
+    }
     
-
-    project.AddLibDir(GtkPathDefaultLib);
-
-    // add link libraries
-    project.AddLinkLib(_T("gtk-win32-2.0"));
-    project.AddLinkLib(_T("gobject-2.0"));
-    project.AddLinkLib(_T("glib-2.0"));
-
-    // Notice: there are more libs required as the app gets more complex, e.g.:
-    // pangocairo-1.0.lib, pangocairo-1.0.lib, libatk-1.0.dll.a,
-    // gdk_pixbuf-2.0.lib, gdk-win32-2.0.lib,  pango-1.0.lib,
-    // gmodule-2.0.lib,    gthread-2.0.lib,    cairo.lib,
-    // pangoft2-1.0.lib    (...)
-
     // enable compiler warnings (project-wide)
     WarningsOn(project, Wizard.GetCompilerID());
-
-    project.AddCompilerOption(_T("-mms-bitfields"));
 
     // Debug
     local target = project.GetBuildTarget(Wizard.GetDebugName());

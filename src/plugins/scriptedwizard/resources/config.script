@@ -17,11 +17,10 @@ function RegisterWizards()
         RegisterWizard(wizProject, _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
         RegisterWizard(wizProject, _T("sys"),          _T("Kernel Mode Driver"),    _T("Native"));
     }
-    RegisterWizard(wizProject, 	   _T("fltk"),         _T("FLTK project"),          _T("GUI"));
+    RegisterWizard(wizProject,     _T("fltk"),         _T("FLTK project"),          _T("GUI"));
     RegisterWizard(wizProject,     _T("glfw"),         _T("GLFW project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("glut"),         _T("GLUT project"),          _T("2D/3D Graphics"));
-    if (PLATFORM == PLATFORM_MSW)
-        RegisterWizard(wizProject, _T("gtk"),          _T("GTK+ project"),          _T("GUI"));
+    RegisterWizard(wizProject,     _T("gtk"),          _T("GTK+ project"),          _T("GUI"));
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("lf"),           _T("Lightfeather project"),  _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("opengl"),       _T("OpenGL project"),        _T("2D/3D Graphics"));
