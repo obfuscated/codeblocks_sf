@@ -10,7 +10,7 @@
 #include <wx/msw/registry.h>
 
 CompilerMSVC8::CompilerMSVC8()
-    : Compiler(_("Microsoft Visual C++ 2005"), _T("msvc8"))
+    : Compiler(_("Microsoft Visual C++ 2005/2008"), _T("msvc8"))
 {
     Reset();
 }
@@ -176,9 +176,13 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
     wxString idepath;
 
     // Read the VCToolkitInstallDir environment variable
-    wxGetEnv(_T("VS80COMNTOOLS"), &m_MasterPath);
+    wxGetEnv(_T("VS90COMNTOOLS"), &m_MasterPath);
+    if(m_MasterPath.IsEmpty())
+    {
+        wxGetEnv(_T("VS80COMNTOOLS"), &m_MasterPath);
+    }
 
-    if (m_MasterPath.IsEmpty())\
+    if (m_MasterPath.IsEmpty())
     {
         // just a guess; the default installation dir
         wxString Programs = _T("C:\\Program Files");
@@ -186,8 +190,13 @@ AutoDetectResult CompilerMSVC8::AutoDetectInstallationDir()
         // TO DO : support 64 bit ->    32 bit apps are in "ProgramFiles(x86)"
         //                              64 bit apps are in "ProgramFiles"
         wxGetEnv(_T("ProgramFiles"), &Programs);
-        m_MasterPath = Programs + _T("\\Microsoft Visual Studio 8\\VC");
-        idepath = Programs + _T("\\Microsoft Visual Studio 8\\Common7\\IDE");
+        m_MasterPath = Programs + _T("\\Microsoft Visual Studio 9.0\\VC");
+        idepath = Programs + _T("\\Microsoft Visual Studio 9.0\\Common7\\IDE");
+        if(!wxDirExists(m_MasterPath))
+        {
+            m_MasterPath = Programs + _T("\\Microsoft Visual Studio 8\\VC");
+            idepath = Programs + _T("\\Microsoft Visual Studio 8\\Common7\\IDE");
+        }
     }
     else
     {

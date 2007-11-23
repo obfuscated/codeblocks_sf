@@ -1,5 +1,6 @@
 #ifdef __WXMSW__
 // this compiler is valid only in windows
+// for VC8 and VC9 (DevStudio 2005 and 2008 that is)
 
 #ifndef COMPILERMSVC8_H
 #define COMPILERMSVC8_H
