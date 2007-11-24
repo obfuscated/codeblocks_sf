@@ -31,6 +31,8 @@
 
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <projectloader_hooks.h>
+#include "manager.h"
+#include "configmanager.h"
 #include <projectmanager.h>
 #include <logmanager.h>
 
