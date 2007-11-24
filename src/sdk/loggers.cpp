@@ -2,7 +2,9 @@
 #ifndef CB_PRECOMP
     #include <wx/listctrl.h>
     #include <wx/textctrl.h>
-    #include <cbexception.h>
+    #include "cbexception.h"
+    #include "manager.h"
+    #include "configmanager.h"
 #endif
 
 #include <wx/clipbrd.h>
@@ -15,14 +17,12 @@ TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont)
 {
 }
 
-bool TextCtrlLogger::IsEmpty()
+bool TextCtrlLogger::IsEmpty() const
 {
-	if (control)
-		return control->GetValue().IsEmpty();
-	return true;
+	return control?control->GetValue().IsEmpty():true;
 }
 
-void TextCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
+void TextCtrlLogger::CopyContentsToClipboard(bool selectionOnly) const
 {
     if (!IsEmpty() && wxTheClipboard->Open())
     {
@@ -145,14 +145,12 @@ ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& wi
 	cbAssert(titles.GetCount() == widths.GetCount());
 };
 
-bool ListCtrlLogger::IsEmpty()
+bool ListCtrlLogger::IsEmpty() const
 {
-	if (control)
-		return control->GetItemCount() == 0;
-	return true;
+	return control?(control->GetItemCount() == 0):true;
 }
 
-void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
+void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly) const
 {
 	if (!control)
 		return;
@@ -170,9 +168,10 @@ void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
 			for (int i = 0; i < control->GetItemCount(); ++i)
 			{
 				text << GetItemAsText(i);
-
 				if (platform::windows)
+				{
 					text << _T('\r'); // Add CR for Windows clipboard
+				}
 				text << _T('\n');
 			}
     	}
@@ -181,7 +180,7 @@ void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
     }
 }
 
-wxString ListCtrlLogger::GetItemAsText(long item)
+wxString ListCtrlLogger::GetItemAsText(long item) const
 {
     wxString text;
 
@@ -196,7 +195,7 @@ wxString ListCtrlLogger::GetItemAsText(long item)
 		text << info.m_text << _T('|');
 	}
 	return text;
-}
+} // end of GetItemAsText
 
 void ListCtrlLogger::UpdateSettings()
 {
@@ -270,17 +269,17 @@ void ListCtrlLogger::Append(const wxArrayString& colValues, Logger::level lv)
 	control->Thaw();
 }
 
-size_t ListCtrlLogger::GetItemsCount()
+size_t ListCtrlLogger::GetItemsCount() const
 {
-	if (control)
-		return control->GetItemCount();
-	return 0;
+	return control?control->GetItemCount():0;
 }
 
 void ListCtrlLogger::Clear()
 {
 	if(control)
+	{
 		control->DeleteAllItems();
+	}
 };
 
 wxWindow* ListCtrlLogger::CreateControl(wxWindow* parent)

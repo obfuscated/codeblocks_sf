@@ -1,18 +1,7 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
-#include <wx/panel.h>
-#include <wx/font.h>
-
 #include <wx/string.h>
-#include <wx/ffile.h>
-
-#include "manager.h"
-#include "configmanager.h"
-
-#include <stdio.h>
-
-// TODO (killerbot) : other includes are needed -->wxDateTime
 
 class wxWindow;
 
@@ -35,7 +24,7 @@ public:
 
     virtual void Append(const wxString& msg, Logger::level lv = info) = 0;
     virtual void Clear() = 0;
-    virtual bool IsEmpty(){ return false; }
+    virtual bool IsEmpty() const{ return false; }
     virtual void CopyContentsToClipboard(bool selectionOnly = false){}
 
 	virtual wxWindow* CreateControl(wxWindow* parent) { return 0; };

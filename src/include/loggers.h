@@ -3,6 +3,10 @@
 
 #include "logger.h"
 
+#include <wx/colour.h>
+#include <wx/font.h>
+#include <wx/ffile.h>
+
 class wxListCtrl;
 class wxTextCtrl;
 class wxTextAttr;
@@ -43,8 +47,8 @@ protected:
 public:
     TextCtrlLogger(bool fixedPitchFont = false);
 
-    virtual bool IsEmpty();
-    virtual void CopyContentsToClipboard(bool selectionOnly = false);
+    virtual bool IsEmpty() const;
+    virtual void CopyContentsToClipboard(bool selectionOnly = false) const;
     virtual void UpdateSettings();
     virtual void Append(const wxString& msg, Logger::level lv = info);
     virtual void Clear();
@@ -74,17 +78,17 @@ protected:
 	};
 	ListStyles style[num_levels];
 
-	wxString GetItemAsText(long item);
+	wxString GetItemAsText(long item) const;
 public:
 
     ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont = false);
 
-    virtual bool IsEmpty();
-    virtual void CopyContentsToClipboard(bool selectionOnly = false);
+    virtual bool IsEmpty() const;
+    virtual void CopyContentsToClipboard(bool selectionOnly = false) const;
     virtual void UpdateSettings();
     virtual void Append(const wxString& msg, Logger::level lv = info);
     virtual void Append(const wxArrayString& colValues, Logger::level lv = info);
-    virtual size_t GetItemsCount();
+    virtual size_t GetItemsCount() const;
     virtual void Clear();
 	virtual wxWindow* CreateControl(wxWindow* parent);
 };
