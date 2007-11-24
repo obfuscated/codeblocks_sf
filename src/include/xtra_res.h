@@ -10,7 +10,7 @@
 #endif
 
 
-class WXDLLEXPORT wxXmlResourceHandler;
+class wxXmlResourceHandler;
 
 class wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
 {
@@ -24,7 +24,7 @@ class wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
         bool m_isAddon;
         wxToolBar *m_toolbar;
 
-        wxBitmap GetCenteredBitmap(const wxString& param = wxT("bitmap"), 
+        wxBitmap GetCenteredBitmap(const wxString& param = wxT("bitmap"),
             const wxArtClient& defaultArtClient = wxART_OTHER,
             wxSize size = wxDefaultSize);
 };

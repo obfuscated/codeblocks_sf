@@ -45,8 +45,8 @@
     // FIXME: this stuff should be allocated in an Edit class
     // wxScintila (Edit) stuff
     //! global print data, to remember settings during the session
-    wxPrintData *g_printData = (wxPrintData*) NULL;
-    wxPageSetupData *g_pageSetupData = (wxPageSetupData*) NULL;
+    wxPrintData *g_printData = (wxPrintData*) 0;
+    wxPageSetupData *g_pageSetupData = (wxPageSetupData*) 0;
     bool g_bPrinterIsSetup = false;
 
    BEGIN_EVENT_TABLE(SnippetProperty, SnippetPropertyForm)
@@ -154,7 +154,7 @@ SnippetProperty::SnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemap
     // EVT_CHAR events
     m_SnippetEditCtrl->Connect(wxEVT_KEY_DOWN,
                      wxKeyEventHandler(SnippetProperty::OnKeyDownEvent),
-                     NULL, this);
+                     0, this);
 
 }//SnippetProperty ctor
 // ----------------------------------------------------------------------------
@@ -164,7 +164,7 @@ SnippetProperty::~SnippetProperty()
     //dtor
     m_SnippetEditCtrl->Disconnect(wxEVT_KEY_DOWN,
                      wxKeyEventHandler(SnippetProperty::OnKeyDownEvent),
-                     NULL, this);
+                     0, this);
 
 }
 // ----------------------------------------------------------------------------
