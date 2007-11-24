@@ -232,7 +232,7 @@ wxPdfFont::GetWinEncodingConv()
 }
 
 // ----------------------------------------------------------------------------
-// wxPdfFont: class 
+// wxPdfFont: class
 // ----------------------------------------------------------------------------
 
 wxPdfFont::wxPdfFont(int index, const wxString& name, short* cwArray,
@@ -412,7 +412,7 @@ wxPdfFont::SetSubset(bool subset)
 }
 
 // ----------------------------------------------------------------------------
-// wxPdfFontTrueType: class 
+// wxPdfFontTrueType: class
 // ----------------------------------------------------------------------------
 
 wxPdfFontTrueType::wxPdfFontTrueType(int index)
@@ -612,7 +612,7 @@ wxPdfFontTrueType::CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSub
     int glyph = (*m_gn)[charIndex];
     usedGlyphs.Add(glyph);
   }
-  
+
   // 2) Uncompress fontFile
   wxZlibInputStream zin2(*fontFile);
   wxMemoryOutputStream zout2;
@@ -636,7 +636,7 @@ wxPdfFontTrueType::CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSub
 #if wxUSE_UNICODE
 
 // ----------------------------------------------------------------------------
-// wxPdfFontTrueTypeUnicode: class 
+// wxPdfFontTrueTypeUnicode: class
 // ----------------------------------------------------------------------------
 
 wxPdfFontTrueTypeUnicode::wxPdfFontTrueTypeUnicode(int index)
@@ -868,7 +868,7 @@ wxPdfFontTrueTypeUnicode::CreateSubset(wxInputStream* fontFile, wxOutputStream* 
 }
 
 // ----------------------------------------------------------------------------
-// wxPdfFontOpenTypeUnicode: class 
+// wxPdfFontOpenTypeUnicode: class
 // ----------------------------------------------------------------------------
 
 wxPdfFontOpenTypeUnicode::wxPdfFontOpenTypeUnicode(int index)
@@ -1076,7 +1076,7 @@ wxPdfFontOpenTypeUnicode::CreateSubset(wxInputStream* fontFile, wxOutputStream* 
 #endif // wxUSE_UNICODE
 
 // ----------------------------------------------------------------------------
-// wxPdfFontType1: class 
+// wxPdfFontType1: class
 // ----------------------------------------------------------------------------
 
 wxPdfFontType1::wxPdfFontType1(int index)
@@ -1233,7 +1233,7 @@ wxPdfFontType1::CreateSubset(wxInputStream* fontFile, wxOutputStream* fontSubset
 #if wxUSE_UNICODE
 
 // ----------------------------------------------------------------------------
-// wxPdfFontType0: class 
+// wxPdfFontType0: class
 // ----------------------------------------------------------------------------
 
 wxPdfFontType0::wxPdfFontType0(int index)
@@ -1380,7 +1380,11 @@ wxPdfFontType0::GetStringWidth(const wxString& s)
   for (i = 0; i < s.Length(); i++)
   {
     wxChar c = s[i];
+#if wxUSE_UNICODE
+    if (c < 128)        // CB adjustment so we don't have the warning in our (official) unicode build
+#else
     if (c >= 0 && c < 128)
+#endif
     {
       wxPdfCharWidthMap::iterator charIter = (*m_cw).find(c);
       if (charIter != (*m_cw).end())
