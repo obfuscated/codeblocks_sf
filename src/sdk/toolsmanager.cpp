@@ -178,8 +178,9 @@ bool ToolsManager::Execute(const cbTool* tool)
         }
         else
         {
-//            Manager::Get()->GetLogManager()->SwitchTo(0); // switch to default log
-        }
+            CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
+            Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);        // switch to default log
+         }
     }
     else
     {
@@ -196,25 +197,30 @@ bool ToolsManager::Execute(const cbTool* tool)
         }
         else
         {
-//            Manager::Get()->GetLogManager()->SwitchTo(0); // switch to default log
+            CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
+            Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);        // switch to default log
         }
     }
 
     return true;
-}
+} // end of Execute
 
 void ToolsManager::AddTool(const cbTool* tool, bool save)
 {
     if (tool)
+    {
         InsertTool(m_Tools.GetCount(), tool, save);
-}
+    }
+} // end of AddTool
 
 void ToolsManager::InsertTool(int position, const cbTool* tool, bool save)
 {
     m_Tools.Insert(position, new cbTool(*tool));
     if (save)
+    {
         SaveTools();
-}
+    }
+} // end of InsertTool
 
 void ToolsManager::RemoveToolByIndex(int index)
 {
