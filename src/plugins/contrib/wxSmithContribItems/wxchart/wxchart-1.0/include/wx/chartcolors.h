@@ -35,7 +35,7 @@ enum {
     wxCHART_LCYAN        = 0xFFFFA0UL,
     wxCHART_ALICEBLUE    = 0xFFC8C0UL,
     wxCHART_ANTIQUEWHITE = 0xD7EBFFUL,
-    wxCHART_AQUAMARINE   = 0xDFFF7FUL,   
+    wxCHART_AQUAMARINE   = 0xDFFF7FUL,
     wxCHART_BLUEVIOLET   = 0xE22B8AUL,
     wxCHART_BROWN        = 0x2A2AA5UL,
     wxCHART_TURQUOISE    = 0xDBC643UL,
@@ -45,24 +45,24 @@ enum {
     wxCHART_GOLDENROD    = 0x74DAEDUL,
     wxCHART_ROYALBLUE    = 0xDE602BUL,
     wxCHART_GRAY         = 0x6E6F73UL,
-    wxCHART_SLATEGRAY    = 0x837365UL   
+    wxCHART_SLATEGRAY    = 0x837365UL
 };
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxChartColor
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartColors
+class WXDLLIMPEXP_CHART wxChartColors
 {
 
 public:
 	static ChartColor GetColor();
-    
+
     // Get shadow Color for 3D part of chart
     //--------------------------------------
-    static ChartColor GetDarkColor(ChartColor c, int step);   
+    static ChartColor GetDarkColor(ChartColor c, int step);
 
 private:
 	static ChartColor vColors[];

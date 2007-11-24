@@ -32,7 +32,7 @@ const int LEGEND_HEIGHT	= 60;	// height in pixels
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxLegendWindow : public wxWindow
+class WXDLLIMPEXP_CHART wxLegendWindow : public wxWindow
 {
 public:
 	wxLegendWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS

@@ -23,11 +23,11 @@
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxChartPointsTypes
-//	DESC:		
+//	DESC:
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartPointsTypes
+class WXDLLIMPEXP_CHART wxChartPointsTypes
 {
 private:
 	enum CHART_POINTS_TYPES
@@ -65,23 +65,23 @@ public:
 
 private:
 	const CHART_POINTS_TYPES m_Type;
-	
+
 	wxChartPointsTypes(CHART_POINTS_TYPES t) : m_Type(t) {};
 
 	// Wrong. Only for MSW compiler
-    wxChartPointsTypes& operator=(const wxChartPointsTypes& UNUSED_ARG(rhs)) 
+    wxChartPointsTypes& operator=(const wxChartPointsTypes& UNUSED_ARG(rhs))
         { return *this;}
 };
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		op==()
-//	DESC:		
-//	PARAMETERS:	const CChartPointsTypes& lhs, 
+//	DESC:
+//	PARAMETERS:	const CChartPointsTypes& lhs,
 //				const CChartPointsTypes& rhs
 //	RETURN:		bool
 //----------------------------------------------------------------------E-+++
 inline bool operator==(
-	const wxChartPointsTypes& lhs, 
+	const wxChartPointsTypes& lhs,
 	const wxChartPointsTypes& rhs
 )
 {

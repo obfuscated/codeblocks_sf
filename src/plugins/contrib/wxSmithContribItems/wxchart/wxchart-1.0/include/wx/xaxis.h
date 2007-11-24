@@ -24,7 +24,7 @@
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxXAxis : public wxAxis
+class WXDLLIMPEXP_CHART wxXAxis : public wxAxis
 {
 
 public:

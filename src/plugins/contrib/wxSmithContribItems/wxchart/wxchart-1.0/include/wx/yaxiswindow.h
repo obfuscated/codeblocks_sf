@@ -42,7 +42,7 @@ const int YAXIS_HEIGHT	= 30;	// height in pixels
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxYAxisWindow : public wxWindow
+class WXDLLIMPEXP_CHART wxYAxisWindow : public wxWindow
 {
 public:
 	wxYAxisWindow() {};	// for IMPLEMENT_DYNAMIC_CLASS

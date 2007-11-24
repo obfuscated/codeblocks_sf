@@ -72,7 +72,7 @@ WX_DECLARE_OBJARRAY(DescLegend, ListLegendDesc);
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxLegend
+class WXDLLIMPEXP_CHART wxLegend
 {
 public:
 

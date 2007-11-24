@@ -48,7 +48,7 @@ enum STYLE
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartCtrl : public wxScrolledWindow
+class WXDLLIMPEXP_CHART wxChartCtrl : public wxScrolledWindow
 {
 public:
 

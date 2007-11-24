@@ -41,6 +41,7 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXMAKINGLIB_PROPGRID" />
 			<Add option="-DWXMAKINGDLL_THINGS" />
+			<Add option="-DWXMAKINGDLL_CHART" />
 			<Add directory="$(#cb)\include" />
 			<Add directory="$(#cb)\include\wxscintilla\include" />
 			<Add directory="$(#cb)\include\wxFlatNotebook\include" />

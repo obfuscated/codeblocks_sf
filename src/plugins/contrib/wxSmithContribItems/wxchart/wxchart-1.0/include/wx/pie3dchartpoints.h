@@ -26,7 +26,7 @@
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxPie3DChartPoints : public wxChartPoints
+class WXDLLIMPEXP_CHART wxPie3DChartPoints : public wxChartPoints
 {
 public:
 

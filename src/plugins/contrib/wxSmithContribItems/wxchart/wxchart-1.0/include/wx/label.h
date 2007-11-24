@@ -35,7 +35,7 @@ enum LABEL_POSITION
 //  INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxLabel
+class WXDLLIMPEXP_CHART wxLabel
 {
 public:
     void Draw(CHART_HPAINT hp, int x, int y, ChartColor c,

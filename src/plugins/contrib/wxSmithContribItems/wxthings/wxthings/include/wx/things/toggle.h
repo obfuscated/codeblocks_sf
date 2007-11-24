@@ -74,8 +74,8 @@ You have to #include "wx/tglbtn.h" for EVT_TOGGLEBUTTON
 
 #include "wx/things/thingdef.h"
 
-class WXDLLEXPORT wxTimer;
-class WXDLLEXPORT wxTimerEvent;
+class wxTimer;
+class wxTimerEvent;
 
 //-----------------------------------------------------------------------------
 // wxCustomButton styles

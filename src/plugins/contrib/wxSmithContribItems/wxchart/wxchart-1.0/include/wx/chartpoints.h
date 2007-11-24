@@ -39,7 +39,7 @@ enum wxDISPLAY_LABEL
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartPoints
+class WXDLLIMPEXP_CHART wxChartPoints
 {
 
 public:
@@ -123,13 +123,13 @@ private:
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		op==()
-//	DESC:		
-//	PARAMETERS:	const wxChartPoints& c, 
+//	DESC:
+//	PARAMETERS:	const wxChartPoints& c,
 //				const wxChartPointsTypes& t
 //	RETURN:		bool
 //----------------------------------------------------------------------E-+++
 inline bool operator==(
-	const wxChartPoints& c, 
+	const wxChartPoints& c,
 	const wxChartPointsTypes& t
 )
 {
