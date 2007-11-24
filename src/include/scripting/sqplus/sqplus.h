@@ -46,7 +46,7 @@
 
 // C::B patch: so it builds on 64bit, ecapsulate int/float using Squirrel types
 #ifndef _WINDEF_
-  typedef int       BOOL;
+  typedef SQInteger BOOL;
   typedef SQInteger INT;
   typedef SQFloat   FLOAT;
   #define TRUE 1
@@ -1693,7 +1693,8 @@ inline SquirrelObject RegisterClassType(HSQUIRRELVM v,const SQChar * scriptClass
       classHierArray = newClass.GetValue(SQ_CLASS_HIER_ARRAY);
     } // if
     classHierArray.ArrayAppend(newClass);          // Add the class to the hierarchy array. The array values will be released and replaced with UserData to free created ancestor classes.
-    newClass.SetValue(SQ_ANCESTOR_CLASS_INDEX,-1); // When the class hierarchy is created, this var will be used to help in recursively creating ancestor classes.
+    // C::B patch for 64bit builds
+    newClass.SetValue(SQ_ANCESTOR_CLASS_INDEX,(SQInteger)-1); // When the class hierarchy is created, this var will be used to help in recursively creating ancestor classes.
 #endif
   } // if
   sq_settop(v,top);

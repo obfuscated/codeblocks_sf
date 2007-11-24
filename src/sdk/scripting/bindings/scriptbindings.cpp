@@ -64,7 +64,7 @@ namespace ScriptBindings
             }
             else if (sa.GetType(3) == OT_BOOL)
             {
-                Manager::Get()->GetConfigManager(_T("scripts"))->Write(key, sa.GetBool(3));
+                Manager::Get()->GetConfigManager(_T("scripts"))->Write(key, (bool)sa.GetBool(3));
                 return SQ_OK;
             }
             else if (sa.GetType(3) == OT_FLOAT)
