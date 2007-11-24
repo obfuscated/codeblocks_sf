@@ -37,8 +37,8 @@
     #define wxPGRectContains    Contains
 #endif
 
-class WXDLLEXPORT wxTextCtrl;
-class WXDLLEXPORT wxButton;
+class wxTextCtrl;
+class wxButton;
 
 #ifdef WXMAKINGLIB_PROPGRID
     #define WXDLLEXPORT_PGODC
