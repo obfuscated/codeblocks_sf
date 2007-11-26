@@ -9,11 +9,12 @@
 		<Build>
 			<Target title="wxPropertyGrid">
 				<Option platforms="Unix;Mac;" />
-				<Option output="propgrid/libpropgrid" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option type="2" />
+				<Option output="../../../devel/libpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/wxSmith" />
+				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option createDefFile="1" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Option createStaticLib="1" />
 			</Target>
 			<Target title="wxSmithLib">
 				<Option platforms="Unix;Mac;" />
@@ -22,7 +23,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log -ns" />
-				<Option host_application="codeblocks" />
+				<Option host_application="../../../devel/codeblocks" />
 				<Option createStaticLib="1" />
 				<Linker>
 					<Add library="propgrid" />
@@ -31,6 +32,7 @@
 			<Target title="wxSmith">
 				<Option platforms="Unix;Mac;" />
 				<Option output="../../../devel/share/codeblocks/plugins/libwxsmith.so" prefix_auto="0" extension_auto="0" />
+				<Option object_output="./../../.objs/plugins/contrib/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Linker>
@@ -71,7 +73,6 @@
 			<Add library="wxscintilla" />
 			<Add directory="../../../devel" />
 			<Add directory="../../../base/tinyxml" />
-			<Add directory="propgrid" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="./update" />
