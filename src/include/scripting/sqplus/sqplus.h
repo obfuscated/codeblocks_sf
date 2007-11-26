@@ -44,7 +44,7 @@
 
 #include "squirrel.h"
 
-// C::B patch: so it builds on 64bit, ecapsulate int/float using Squirrel types
+// C::B patch: so it builds on 64bit, ecapsulate bool/int/float using Squirrel types
 #ifndef _WINDEF_
   typedef SQInteger BOOL;
   typedef SQInteger INT;

@@ -57,6 +57,7 @@ SQString *SQVM::PrintObjVal(const SQObject &o)
 	switch(type(o)) {
 	case OT_STRING: return _string(o);
 	case OT_INTEGER:
+        // C::B patch: Build for 64bit: cast to long int
 		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%ld"), static_cast<long int>(_integer(o)));
 		return SQString::Create(_ss(this), _spval);
 		break;
@@ -85,7 +86,7 @@ void SQVM::Raise_CompareError(const SQObject &o1, const SQObject &o2)
 void SQVM::Raise_ParamTypeError(SQInteger nparam,SQInteger typemask,SQInteger type)
 {
 	SQObjectPtr exptypes = SQString::Create(_ss(this), _SC(""), -1);
-	SQInteger found = 0;
+	SQInteger found = 0;	
 	for(SQInteger i=0; i<16; i++)
 	{
 		SQInteger mask = 0x00000001 << i;
