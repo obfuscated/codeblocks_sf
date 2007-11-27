@@ -51,13 +51,14 @@ ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths
 ToDoListView::~ToDoListView()
 {
 	//dtor
+	control->RemoveEventHandler(this);
 }
 
 wxWindow* ToDoListView::CreateControl(wxWindow* parent)
 {
 	panel = new wxPanel(parent);
 	ListCtrlLogger::CreateControl(panel);
-	
+
     control->SetId(idList);
     Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -65,6 +66,8 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED, //pecan 1/2/2006 12PM
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ToDoListView::OnDoubleClick);
+
+    control->PushEventHandler(this);
 
     #if wxCHECK_VERSION(2, 8, 0)
     control->SetInitialSize(wxSize(342,56));
@@ -101,7 +104,7 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
         bs->Add(hbs, 0, wxGROW | wxALL, 4);
 	}
 	panel->SetSizer(bs);
-	
+
 	return panel;
 }
 
@@ -442,11 +445,14 @@ void ToDoListView::OnComboChange(wxCommandEvent& event)
     Parse();
 }
 
-void ToDoListView::OnListItemSelected(wxListEvent& event)
+void ToDoListView::OnListItemSelected(wxCommandEvent& event)
 {
-    if (event.GetIndex() == -1)
+    long index = control->GetNextItem(-1,
+                                     wxLIST_NEXT_ALL,
+                                     wxLIST_STATE_SELECTED);
+    if (index == -1)
         return;
-    FocusEntry(event.GetIndex());
+    FocusEntry(index);
 }
 
 void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
@@ -454,12 +460,14 @@ void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
     Parse();
 }
 
-void ToDoListView::OnDoubleClick( wxListEvent& event )
+void ToDoListView::OnDoubleClick( wxCommandEvent& event )
 {    //pecan 1/2/2006 12PM // Switched with OnListItemSelected by Rick 20/07/2007
-
-    if (event.GetIndex() == -1)
+    long idx = control->GetNextItem(-1,
+                                     wxLIST_NEXT_ALL,
+                                     wxLIST_STATE_SELECTED);
+    if (idx == -1)
         return;
-    unsigned int idx = control->GetItemData(event.GetIndex());
+
     wxString file = m_Items[idx].filename;
     long int line = m_Items[idx].line;
 

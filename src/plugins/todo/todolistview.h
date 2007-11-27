@@ -49,9 +49,9 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
 		int CalculateLineNumber(const wxString& buffer, int upTo);
 
         void OnComboChange(wxCommandEvent& event);
-        void OnListItemSelected(wxListEvent& event);
+        void OnListItemSelected(wxCommandEvent& event);
         void OnButtonRefresh(wxCommandEvent& event);
-        void OnDoubleClick( wxListEvent& event ); //pecan 1/2/2006 12PM
+        void OnDoubleClick( wxCommandEvent& event ); //pecan 1/2/2006 12PM
         void FocusEntry(size_t index);            //pecan 1/2/2006 12PM
 
 		wxWindow* panel;
