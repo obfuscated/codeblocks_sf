@@ -17,14 +17,9 @@ TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont)
 {
 }
 
-bool TextCtrlLogger::IsEmpty() const
-{
-	return control?control->GetValue().IsEmpty():true;
-}
-
 void TextCtrlLogger::CopyContentsToClipboard(bool selectionOnly) const
 {
-    if (!IsEmpty() && wxTheClipboard->Open())
+    if (control && control->GetValue().IsEmpty() == false && wxTheClipboard->Open())
     {
         wxTheClipboard->SetData(new wxTextDataObject(selectionOnly ? control->GetStringSelection() : control->GetValue()));
         wxTheClipboard->Close();
@@ -145,17 +140,10 @@ ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& wi
 	cbAssert(titles.GetCount() == widths.GetCount());
 };
 
-bool ListCtrlLogger::IsEmpty() const
-{
-	return control?(control->GetItemCount() == 0):true;
-}
 
 void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly) const
 {
-	if (!control)
-		return;
-
-    if (!IsEmpty() && wxTheClipboard->Open())
+    if (control && control->GetItemCount() > 0 && wxTheClipboard->Open())
     {
     	wxString text;
     	if (selectionOnly)

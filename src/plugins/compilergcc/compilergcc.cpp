@@ -2178,12 +2178,9 @@ void CompilerGCC::BuildStateManagement()
         if (bt)
             SwitchCompiler(bt->GetCompilerID());
 
-        bool hasLogged = !m_Log->IsEmpty();
 //        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("CHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p (%p)"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt, m_pLastBuildingTarget);
-        if (!hasLogged || (m_pBuildingProject == m_pLastBuildingProject && m_NextBuildState == bsTargetPreBuild) || m_NextBuildState == bsProjectPreBuild)
+        if ((m_pBuildingProject == m_pLastBuildingProject && m_NextBuildState == bsTargetPreBuild) || m_NextBuildState == bsProjectPreBuild)
         {
-            if (hasLogged)
-                Manager::Get()->GetLogManager()->Log(wxEmptyString, m_PageIndex);
             PrintBanner(m_pBuildingProject, bt);
         }
 

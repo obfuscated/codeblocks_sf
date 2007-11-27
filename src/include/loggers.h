@@ -19,7 +19,6 @@ public:
     	fputs(msg.mb_str(), lv < error ? stdout : stderr);
     	fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
 	}
-    virtual void Clear(){};
 };
 
 class DLLIMPORT FileLogger : public Logger
@@ -33,7 +32,6 @@ public:
     	fputs(msg.mb_str(), f.fp());
     	fputs(::newline_string.mb_str(), f.fp());
 	};
-    virtual void Clear(){};
 };
 
 class DLLIMPORT TextCtrlLogger : public Logger
@@ -47,7 +45,6 @@ protected:
 public:
     TextCtrlLogger(bool fixedPitchFont = false);
 
-    virtual bool IsEmpty() const;
     virtual void CopyContentsToClipboard(bool selectionOnly = false) const;
     virtual void UpdateSettings();
     virtual void Append(const wxString& msg, Logger::level lv = info);
@@ -83,7 +80,6 @@ public:
 
     ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont = false);
 
-    virtual bool IsEmpty() const;
     virtual void CopyContentsToClipboard(bool selectionOnly = false) const;
     virtual void UpdateSettings();
     virtual void Append(const wxString& msg, Logger::level lv = info);
