@@ -1,26 +1,27 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/arrstr.h>
-#include <wx/choice.h>
-#include <wx/intl.h>
-#include <wx/spinctrl.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "manager.h"
-#include "configmanager.h"
+  #include <wx/arrstr.h>
+  #include <wx/choice.h>
+  #include <wx/intl.h>
+  #include <wx/spinctrl.h>
+  #include <wx/textctrl.h>
+  #include <wx/xrc/xmlres.h>
+  #include "manager.h"
+  #include "configmanager.h"
 #endif
 #include <wx/textdlg.h>
 #include "addtododlg.h"
 
 BEGIN_EVENT_TABLE(AddTodoDlg, wxDialog)
     EVT_BUTTON(XRCID("btAddUser"), AddTodoDlg::OnAddUser)
+    EVT_BUTTON(XRCID("btDelUser"), AddTodoDlg::OnDelUser)
 END_EVENT_TABLE()
 
 AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
     : m_Types(types)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAddToDo"));
-	LoadUsers();
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAddToDo"));
+    LoadUsers();
 
     // load types
     wxChoice* cmb = XRCCTRL(*this, "chcType", wxChoice);
@@ -76,34 +77,34 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& types)
 
 AddTodoDlg::~AddTodoDlg()
 {
-	//dtor
+    //dtor
 }
 
 void AddTodoDlg::LoadUsers() const
 {
-	wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
+    wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
 
-	wxArrayString users;
-	Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("users"), &users);
+    wxArrayString users;
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("users"), &users);
 
-	cmb->Clear();
+    cmb->Clear();
     cmb->Append(users);
 
-	if (cmb->GetCount() == 0)
-		cmb->Append(wxGetUserId());
-	cmb->SetSelection(0);
+    if (cmb->GetCount() == 0)
+        cmb->Append(wxGetUserId());
+    cmb->SetSelection(0);
 }
 
 void AddTodoDlg::SaveUsers() const
 {
-	wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
-	wxArrayString users;
+    wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
+    wxArrayString users;
 
-	for (int i = 0; i < (int)cmb->GetCount(); ++i)
-	{
-		users.Add(cmb->GetString(i));
-	}
-	Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), users);
+    for (int i = 0; i < (int)cmb->GetCount(); ++i)
+    {
+        users.Add(cmb->GetString(i));
+    }
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), users);
 }
 
 wxString AddTodoDlg::GetText() const
@@ -143,9 +144,9 @@ ToDoCommentType AddTodoDlg::GetCommentType() const
 
 void AddTodoDlg::EndModal(int retVal)
 {
-	if (retVal == wxID_OK)
-	{
-		SaveUsers();
+    if (retVal == wxID_OK)
+    {
+        SaveUsers();
 
         // "save" types
         wxChoice* cmb = XRCCTRL(*this, "chcType", wxChoice);
@@ -162,21 +163,41 @@ void AddTodoDlg::EndModal(int retVal)
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_style"), cmb->GetStringSelection());
         cmb = XRCCTRL(*this, "chcPosition", wxChoice);
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_position"), cmb->GetStringSelection());
-	}
+    }
 
-	wxDialog::EndModal(retVal);
+    wxDialog::EndModal(retVal);
 }
 
 void AddTodoDlg::OnAddUser(wxCommandEvent&)
 {
-	// ask for the new user to be added to the "choice" list
-	wxTextEntryDialog dlg(this, _T("Enter the user you wish to add"), _T("Add user"), _T(""), wxOK|wxCANCEL);
-	if(dlg.ShowModal() == wxID_OK)
-	{
-		wxString User = dlg.GetValue();
-		if(!User.IsEmpty())
-		{
-			XRCCTRL(*this, "chcUser", wxChoice)->Append(User);
-		}
-	}
+    // ask for the new user to be added to the "choice" list
+    wxTextEntryDialog dlg(this, _T("Enter the user you wish to add"), _T("Add user"), _T(""), wxOK|wxCANCEL);
+    if(dlg.ShowModal() == wxID_OK)
+    {
+        wxString User = dlg.GetValue();
+        if(!User.IsEmpty())
+        {
+            XRCCTRL(*this, "chcUser", wxChoice)->Append(User);
+        }
+    }
 } // end of OnAddUser
+
+void AddTodoDlg::OnDelUser(wxCommandEvent&)
+{
+    wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
+    int sel = cmb->GetCurrentSelection();
+    if (sel == wxNOT_FOUND)
+        return;
+
+    wxString msg; msg.Printf(_T("Are you sure you want to delete the user '%s'?"), cmb->GetString(sel).c_str());
+    if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
+       return;
+
+    cmb->Delete(sel);
+    if (cmb->GetCount() == 0)
+    {
+        cmb->Append(wxGetUserId());
+        cbMessageBox(_T("Default user has been re-added to list of users."), _T("Information"), wxICON_INFORMATION);
+    }
+    cmb->SetSelection(0);
+} // end of OnDelUser

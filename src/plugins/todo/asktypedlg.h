@@ -12,11 +12,11 @@ enum TypeCorrection
 
 class AskTypeDlg : public wxDialog
 {
-	public:
-		AskTypeDlg(wxWindow* parent);
-		virtual ~AskTypeDlg();
+    public:
+        AskTypeDlg(wxWindow* parent);
+        virtual ~AskTypeDlg();
 
-		TypeCorrection GetTypeCorrection() const;
+        TypeCorrection GetTypeCorrection() const;
 };
 
 #endif // ASKTYPEDLG_H

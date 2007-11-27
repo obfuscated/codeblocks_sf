@@ -8,22 +8,22 @@
  **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/event.h>
-#include <wx/frame.h> // GetMenuBar
-#include <wx/fs_zip.h>
-#include <wx/intl.h>
-#include <wx/menu.h>
-#include <wx/menuitem.h>
-#include <wx/string.h>
-#include <wx/utils.h>
-#include <wx/xrc/xmlres.h>
-#include "cbeditor.h"
-#include "configmanager.h"
-#include "editormanager.h"
-#include "manager.h"
-#include "projectmanager.h"
-#include "logmanager.h"
-#include "sdk_events.h"
+  #include <wx/event.h>
+  #include <wx/frame.h> // GetMenuBar
+  #include <wx/fs_zip.h>
+  #include <wx/intl.h>
+  #include <wx/menu.h>
+  #include <wx/menuitem.h>
+  #include <wx/string.h>
+  #include <wx/utils.h>
+  #include <wx/xrc/xmlres.h>
+  #include "cbeditor.h"
+  #include "configmanager.h"
+  #include "editormanager.h"
+  #include "manager.h"
+  #include "projectmanager.h"
+  #include "logmanager.h"
+  #include "sdk_events.h"
 #endif
 
 #include "addtododlg.h"
@@ -45,9 +45,9 @@ const int idAddTodo = wxNewId();
 const int idStartParsing = wxNewId();
 
 BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
-	EVT_UPDATE_UI(idViewTodo, ToDoList::OnUpdateUI)
-	EVT_MENU(idViewTodo, ToDoList::OnViewList)
-	EVT_MENU(idAddTodo, ToDoList::OnAddItem)
+    EVT_UPDATE_UI(idViewTodo, ToDoList::OnUpdateUI)
+    EVT_MENU(idViewTodo, ToDoList::OnViewList)
+    EVT_MENU(idAddTodo, ToDoList::OnAddItem)
 END_EVENT_TABLE()
 
 ToDoList::ToDoList() :
@@ -55,7 +55,7 @@ m_InitDone(false),
 m_ParsePending(false),
 m_StandAlone(true)
 {
-	//ctor
+    //ctor
     if(!Manager::LoadResource(_T("todo.zip")))
     {
         NotifyMissingFile(_T("todo.zip"));
@@ -64,28 +64,28 @@ m_StandAlone(true)
 
 ToDoList::~ToDoList()
 {
-	//dtor
+    //dtor
 }
 
 void ToDoList::OnAttach()
 {
-	// create ToDo in bottom view
-	wxArrayString titles;
-	wxArrayInt widths;
-	titles.Add(_("Type"));
-	titles.Add(_("Text"));
-	titles.Add(_("User"));
-	titles.Add(_("Prio."));
-	titles.Add(_("Line"));
-	titles.Add(_("File"));
-	widths.Add(64);
-	widths.Add(320);
-	widths.Add(64);
-	widths.Add(48);
-	widths.Add(48);
-	widths.Add(640);
+    // create ToDo in bottom view
+    wxArrayString titles;
+    wxArrayInt widths;
+    titles.Add(_("Type"));
+    titles.Add(_("Text"));
+    titles.Add(_("User"));
+    titles.Add(_("Prio."));
+    titles.Add(_("Line"));
+    titles.Add(_("File"));
+    widths.Add(64);
+    widths.Add(320);
+    widths.Add(64);
+    widths.Add(48);
+    widths.Add(48);
+    widths.Add(640);
 
-	m_pListLog = new ToDoListView(titles, widths, m_Types);
+    m_pListLog = new ToDoListView(titles, widths, m_Types);
 
     bool standalone = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("stand_alone"), true);
     m_StandAlone = standalone;
@@ -96,18 +96,18 @@ void ToDoList::OnAttach()
         m_ListPageIndex = msgMan->SetLog(m_pListLog);
         msgMan->Slot(m_ListPageIndex).title = _("To-Do");
 
-		CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
     }
     else
     {
-		m_pListLog->CreateControl(Manager::Get()->GetAppWindow());
-		m_pListLog->GetWindow()->SetSize(wxSize(352,94));
-		#if wxCHECK_VERSION(2, 8, 0)
-		m_pListLog->GetWindow()->SetInitialSize(wxSize(352,94));
-		#else
-		m_pListLog->GetWindow()->SetBestFittingSize(wxSize(352,94));
-		#endif
+        m_pListLog->CreateControl(Manager::Get()->GetAppWindow());
+        m_pListLog->GetWindow()->SetSize(wxSize(352,94));
+        #if wxCHECK_VERSION(2, 8, 0)
+        m_pListLog->GetWindow()->SetInitialSize(wxSize(352,94));
+        #else
+        m_pListLog->GetWindow()->SetBestFittingSize(wxSize(352,94));
+        #endif
 
         CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
         evt.name = _T("TodoListPanev2.0.0");
@@ -123,12 +123,12 @@ void ToDoList::OnAttach()
     m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
     LoadTypes();
 
-	// register event sink
+    // register event sink
     Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnAppDoneStartup));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
-	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparseCurrent));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED, new cbEventFunctor<ToDoList, CodeBlocksEvent>(this, &ToDoList::OnReparse));
@@ -146,9 +146,9 @@ void ToDoList::OnRelease(bool appShutDown)
     }
     else
     {
-		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
-		evt.window = m_pListLog->GetWindow();
-		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
+        evt.window = m_pListLog->GetWindow();
+        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
     }
     m_pListLog = 0;
 }
@@ -176,18 +176,18 @@ void ToDoList::BuildMenu(wxMenuBar* menuBar)
 
 void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
-	if (!menu || !IsAttached())
-		return;
-	if (type == mtEditorManager)
-	{
-		menu->AppendSeparator();
-		menu->Append(idAddTodo, _("Add To-Do item..."), _("Add new To-Do item..."));
-	}
+    if (!menu || !IsAttached())
+        return;
+    if (type == mtEditorManager)
+    {
+        menu->AppendSeparator();
+        menu->Append(idAddTodo, _("Add To-Do item..."), _("Add new To-Do item..."));
+    }
 }
 
 bool ToDoList::BuildToolBar(wxToolBar* toolBar)
 {
-	return false;
+    return false;
 }
 
 cbConfigurationPanel* ToDoList::GetConfigurationPanel(wxWindow* parent)
@@ -203,17 +203,17 @@ int ToDoList::Configure()
 //    PlaceWindow(&dlg);
 //    if (dlg.ShowModal() == wxID_OK)
 //        m_AutoRefresh = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("auto_refresh"), true);
-//	return 0;
+//    return 0;
 }
 
 void ToDoList::LoadTypes()
 {
     m_Types.Clear();
 
-	Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("types"), &m_Types);
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("types"), &m_Types);
 
-	if(m_Types.GetCount() == 0)
-	{
+    if(m_Types.GetCount() == 0)
+    {
         m_Types.Add(_T("TODO"));
         m_Types.Add(_T("@todo"));
         m_Types.Add(_T("\\todo"));
@@ -221,13 +221,13 @@ void ToDoList::LoadTypes()
         m_Types.Add(_T("NOTE"));
         m_Types.Add(_T("@note"));
         m_Types.Add(_T("\\note"));
-	}
+    }
     SaveTypes();
 }
 
 void ToDoList::SaveTypes()
 {
-	Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types"), m_Types);
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types"), m_Types);
 }
 
 // events
@@ -254,8 +254,8 @@ void ToDoList::OnViewList(wxCommandEvent& event)
 void ToDoList::OnAddItem(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if (!ed)
-		return;
+    if (!ed)
+        return;
 
     // display todo dialog
     AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Types);
@@ -264,97 +264,97 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
         return;
     SaveTypes();
 
-	cbStyledTextCtrl* control = ed->GetControl();
+    cbStyledTextCtrl* control = ed->GetControl();
 
-	// calculate insertion point
-	int idx = 0;
-	int crlfLen = 0; // length of newline chars
-	int origPos = control->GetCurrentPos(); // keep current position in the document
-	int line = control->GetCurrentLine(); // current line
-	ToDoCommentType CmtType = dlg.GetCommentType();
-	if (dlg.GetPosition() == tdpCurrent)
-	{
-		idx = control->GetCurrentPos(); // current position in the document
-		// if the style is cpp comments (// ...), there's the possibility that the current position
-		// is somewhere in the middle of a line of code; this would result
-		// in everything after the insertion point to turn into comments
-		// let's double check this with the user
-		if(idx != control->GetLineEndPosition(line))
-		{
-			// let's ask the user, and present as options
-			// keep cpp style at current position, switch to c style, add the todo at the end (keeping cpp style)
-			// if user cancels out / do nothing : just return
-			// future idea : check if there's any non white space character
-			// if yes -> in the middle of code
-			// if no -> then only whitespace after the insertion point -> no harm to turn that into comments
-			AskTypeDlg dlg(Manager::Get()->GetAppWindow());
-			PlaceWindow(&dlg);
-			if (dlg.ShowModal() != wxID_OK)
-				return;
-			switch(dlg.GetTypeCorrection())
-			{
-				case tcCppStay:
-					break; // do nothing, leave things as they are
-				case tcCpp2C:
-					CmtType = tdctC;
-					break;
-				case tcCppMove:
-				default:
-					idx = control->GetLineEndPosition(line);
-					break;
-			} // end switch
-		}
-	}
-	else
-	{
-		if (dlg.GetPosition() == tdpAbove)
-			idx = control->GetLineEndPosition(line - 1); // get previous line's end
-		else if (dlg.GetPosition() == tdpBelow)
-			idx = control->GetLineEndPosition(line); // get current line's end
-		// calculate insertion point by skipping next newline
-		switch (control->GetEOLMode())
-		{
-			case wxSCI_EOL_CR:
-			case wxSCI_EOL_LF: crlfLen = 1; break;
-			case wxSCI_EOL_CRLF: crlfLen = 2; break;
-		}
-		if (idx > 0)
+    // calculate insertion point
+    int idx = 0;
+    int crlfLen = 0; // length of newline chars
+    int origPos = control->GetCurrentPos(); // keep current position in the document
+    int line = control->GetCurrentLine(); // current line
+    ToDoCommentType CmtType = dlg.GetCommentType();
+    if (dlg.GetPosition() == tdpCurrent)
+    {
+        idx = control->GetCurrentPos(); // current position in the document
+        // if the style is cpp comments (// ...), there's the possibility that the current position
+        // is somewhere in the middle of a line of code; this would result
+        // in everything after the insertion point to turn into comments
+        // let's double check this with the user
+        if(idx != control->GetLineEndPosition(line))
+        {
+            // let's ask the user, and present as options
+            // keep cpp style at current position, switch to c style, add the todo at the end (keeping cpp style)
+            // if user cancels out / do nothing : just return
+            // future idea : check if there's any non white space character
+            // if yes -> in the middle of code
+            // if no -> then only whitespace after the insertion point -> no harm to turn that into comments
+            AskTypeDlg dlg(Manager::Get()->GetAppWindow());
+            PlaceWindow(&dlg);
+            if (dlg.ShowModal() != wxID_OK)
+                return;
+            switch(dlg.GetTypeCorrection())
+            {
+                case tcCppStay:
+                    break; // do nothing, leave things as they are
+                case tcCpp2C:
+                    CmtType = tdctC;
+                    break;
+                case tcCppMove:
+                default:
+                    idx = control->GetLineEndPosition(line);
+                    break;
+            } // end switch
+        }
+    }
+    else
+    {
+        if (dlg.GetPosition() == tdpAbove)
+            idx = control->GetLineEndPosition(line - 1); // get previous line's end
+        else if (dlg.GetPosition() == tdpBelow)
+            idx = control->GetLineEndPosition(line); // get current line's end
+        // calculate insertion point by skipping next newline
+        switch (control->GetEOLMode())
+        {
+            case wxSCI_EOL_CR:
+            case wxSCI_EOL_LF: crlfLen = 1; break;
+            case wxSCI_EOL_CRLF: crlfLen = 2; break;
+        }
+        if (idx > 0)
             idx += crlfLen;
-	}
-	// make sure insertion point is valid (bug #1300981)
+    }
+    // make sure insertion point is valid (bug #1300981)
     if (idx > control->GetLength())
         idx = control->GetLength();
 
-	// ok, construct todo line text like this:
+    // ok, construct todo line text like this:
     // TODO (mandrav#0#): Implement code to do this and the other...
-	wxString buffer;
+    wxString buffer;
 
-	// start with the comment
-	switch(CmtType)
-	{
-		case tdctCpp:
-			buffer << _T("// ");
-			break;
-		case tdctDoxygen:
-			buffer << _T("/// ");
-			break;
-		case tdctWarning:
-			buffer << _T("#warning ");
-			break;
-		case tdctError:
-			buffer << _T("#error ");
-			break;
-		default:
-			buffer << _T("/* ");
-			break;
-	} // end switch
+    // start with the comment
+    switch(CmtType)
+    {
+        case tdctCpp:
+            buffer << _T("// ");
+            break;
+        case tdctDoxygen:
+            buffer << _T("/// ");
+            break;
+        case tdctWarning:
+            buffer << _T("#warning ");
+            break;
+        case tdctError:
+            buffer << _T("#error ");
+            break;
+        default:
+            buffer << _T("/* ");
+            break;
+    } // end switch
 
     // continue with the type
-	buffer << dlg.GetType() << _T(" ");
-	wxString priority = wxString::Format(_T("%d"), dlg.GetPriority()); // do it like this (wx bug with int and streams)
+    buffer << dlg.GetType() << _T(" ");
+    wxString priority = wxString::Format(_T("%d"), dlg.GetPriority()); // do it like this (wx bug with int and streams)
 
-	// now do the () part
-	buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#): ");
+    // now do the () part
+    buffer << _T("(") << dlg.GetUser() << _T("#") << priority << _T("#): ");
 
     wxString text = dlg.GetText();
     if (CmtType != tdctC)
@@ -367,35 +367,35 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
             text.Replace(_T("\\\\\n"), _T("\\\n"));
     }
 
-	// add the actual text
-	buffer << text;
+    // add the actual text
+    buffer << text;
 
     if (CmtType == tdctWarning || CmtType == tdctError)
         buffer << _T("");
 
     else if (CmtType == tdctC)
-		buffer << _T(" */");
+        buffer << _T(" */");
 
-	// add newline char(s), only if dlg.GetPosition() != tdpCurrent
-	if (dlg.GetPosition() != tdpCurrent)
-	{
-		switch (control->GetEOLMode())
-		{
-			// NOTE: maybe this switch, should make it in the SDK (maybe as cbStyledTextCtrl::GetEOLString())???
-			case wxSCI_EOL_CR: buffer << _T("\n"); break;
-			case wxSCI_EOL_CRLF: buffer << _T("\r\n"); break;
-			case wxSCI_EOL_LF: buffer << _T("\r"); break;
-		}
-	}
+    // add newline char(s), only if dlg.GetPosition() != tdpCurrent
+    if (dlg.GetPosition() != tdpCurrent)
+    {
+        switch (control->GetEOLMode())
+        {
+            // NOTE: maybe this switch, should make it in the SDK (maybe as cbStyledTextCtrl::GetEOLString())???
+            case wxSCI_EOL_CR: buffer << _T("\n"); break;
+            case wxSCI_EOL_CRLF: buffer << _T("\r\n"); break;
+            case wxSCI_EOL_LF: buffer << _T("\r"); break;
+        }
+    }
 
-	// ok, insert the todo line text
-	control->InsertText(idx, buffer);
-	if (dlg.GetPosition() == tdpAbove)
-		origPos += buffer.Length() + crlfLen;
-	control->GotoPos(origPos);
-	control->EnsureCaretVisible();
+    // ok, insert the todo line text
+    control->InsertText(idx, buffer);
+    if (dlg.GetPosition() == tdpAbove)
+        origPos += buffer.Length() + crlfLen;
+    control->GotoPos(origPos);
+    control->EnsureCaretVisible();
 
-	ParseCurrent(true);
+    ParseCurrent(true);
 } // end of OnAddItem
 
 void ToDoList::OnReparse(CodeBlocksEvent& event)

@@ -17,18 +17,18 @@ enum ToDoPosition
 
 enum ToDoCommentType
 {
-    tdctCpp = 0,	// C++ style,
-    tdctC, 			// C style
-    tdctDoxygen,	// Doxygen style
-    tdctWarning,	// compiler warning
-    tdctError		// compiler error
+    tdctCpp = 0, // C++ style,
+    tdctC,       // C style
+    tdctDoxygen, // Doxygen style
+    tdctWarning, // compiler warning
+    tdctError    // compiler error
 };
 
 class AddTodoDlg : public wxDialog
 {
-	public:
-		AddTodoDlg(wxWindow* parent, wxArrayString& types); // make sure the types live as long (or longer) then this dialog
-		~AddTodoDlg();
+    public:
+        AddTodoDlg(wxWindow* parent, wxArrayString& types); // make sure the types live as long (or longer) then this dialog
+        ~AddTodoDlg();
 
         wxString GetText() const;
         wxString GetUser() const;
@@ -37,13 +37,14 @@ class AddTodoDlg : public wxDialog
         wxString GetType() const;
         ToDoCommentType GetCommentType() const;
 
-		void EndModal(int retVal);
-	private:
-		void LoadUsers() const;
-		void SaveUsers() const;
-		void OnAddUser(wxCommandEvent& event);
-		wxArrayString& m_Types;
-		DECLARE_EVENT_TABLE()
+        void EndModal(int retVal);
+    private:
+        void LoadUsers() const;
+        void SaveUsers() const;
+        void OnAddUser(wxCommandEvent& event);
+        void OnDelUser(wxCommandEvent& event);
+        wxArrayString& m_Types;
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // ADDTODODLG_H

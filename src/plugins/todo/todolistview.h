@@ -33,20 +33,20 @@ WX_DECLARE_OBJARRAY(ToDoItem, ToDoItems);
 
 class ToDoListView : public ListCtrlLogger, public wxEvtHandler
 {
-	public:
-		ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
-		~ToDoListView();
+    public:
+        ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
+        ~ToDoListView();
         void Parse();
         void ParseCurrent(bool forced);
-		virtual wxWindow* CreateControl(wxWindow* parent);
-		wxWindow* GetWindow(){ return panel; }
-	private:
+        virtual wxWindow* CreateControl(wxWindow* parent);
+        wxWindow* GetWindow(){ return panel; }
+    private:
         void LoadUsers();
         void FillList();
-		void ParseEditor(cbEditor* pEditor);
-		void ParseFile(const wxString& filename);
-		void ParseBuffer(const wxString& buffer, const wxString& filename);
-		int CalculateLineNumber(const wxString& buffer, int upTo);
+        void ParseEditor(cbEditor* pEditor);
+        void ParseFile(const wxString& filename);
+        void ParseBuffer(const wxString& buffer, const wxString& filename);
+        int CalculateLineNumber(const wxString& buffer, int upTo);
 
         void OnComboChange(wxCommandEvent& event);
         void OnListItemSelected(wxCommandEvent& event);
@@ -54,15 +54,15 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
         void OnDoubleClick( wxCommandEvent& event ); //pecan 1/2/2006 12PM
         void FocusEntry(size_t index);            //pecan 1/2/2006 12PM
 
-		wxWindow* panel;
-		TodoItemsMap m_itemsmap;
-		ToDoItems m_Items;
+        wxWindow* panel;
+        TodoItemsMap m_itemsmap;
+        ToDoItems m_Items;
         wxComboBox* m_pSource;
         wxComboBox* m_pUser;
         wxButton* m_pRefresh;
         const wxArrayString& m_Types;
-		wxString m_LastFile;
-		bool m_ignore;
+        wxString m_LastFile;
+        bool m_ignore;
 
         DECLARE_EVENT_TABLE()
 };

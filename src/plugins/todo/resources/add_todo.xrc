@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" ?>
+<?xml version="1.0" ?>
 <resource>
   <object class="wxDialog" name="dlgAddToDo">
     <title>Add To-Do item</title>
@@ -42,12 +42,22 @@
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
+          <growablecols>0</growablecols>
           <object class="sizeritem">
-            <object class="wxButton" name="btAddUser">
-              <label>Add new user</label>
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxButton" name="btAddUser">
+                  <label>Add new user</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btDelUser">
+                  <label>Delete user</label>
+                </object>
+              </object>
             </object>
           </object>
-          <growablecols>0</growablecols>
           <object class="sizeritem">
             <object class="wxStaticText">
               <label>Type:</label>
