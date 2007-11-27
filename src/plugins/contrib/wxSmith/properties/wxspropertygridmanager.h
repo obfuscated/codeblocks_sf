@@ -126,6 +126,27 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         /** \brief Handler for roporting change event */
         void OnChange(wxPropertyGridEvent& event);
 
+        /** \brief Data of selected property */
+        struct SelectionData
+        {
+            int m_PageIndex;
+            wxString m_PropertyName;
+        };
+
+        /** \brief Storing currently selected property
+         *
+         * \param Data place where selection should be stored, if NULL,
+         *        selection will be stored in internal variable
+         */
+        void StoreSelected(SelectionData* Data=0);
+
+        /** \brief Restoring selected property
+         *
+         * \param Data structure containing selection data, if NULL,
+         *        selection will be resotred from internal variable
+         */
+        void RestoreSelected(const SelectionData* Data=0);
+
         /** \brief Singleton object */
         static wxsPropertyGridManager* Singleton;
 
@@ -153,6 +174,8 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         wxsPropertyContainer* MainContainer;        ///< \brief Main container
 
         TemporaryPropertiesList* PropertiesList;    ///< \brief List used while generating sorted properties list
+
+        SelectionData LastSelection;                ///< \brief Internal selection structure used to restore selected property
 
         DECLARE_EVENT_TABLE()
 

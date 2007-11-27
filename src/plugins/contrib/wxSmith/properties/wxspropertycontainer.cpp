@@ -65,11 +65,13 @@ void wxsPropertyContainer::ShowInPropertyGrid()
     if ( !wxsPGRID() ) return;      // We're not sure that PropertyGridManager has been created
     Flags = (GetPropertiesFlags() & ~(flXml|flPropStream)) | flPropGrid;
     wxsPGRID()->Freeze();
+    wxsPGRID()->StoreSelected();
     wxsPGRID()->NewPropertyContainerStart();
     OnEnumProperties(Flags);
     wxsPGRID()->NewPropertyContainerFinish(this);
     Flags = 0;
     OnAddExtraProperties(wxsPGRID());
+    wxsPGRID()->RestoreSelected();
     wxsPGRID()->Thaw();
 }
 

@@ -239,6 +239,42 @@ void wxsPropertyGridManager::DeleteTemporaryPropertiesList()
     }
 }
 
+void wxsPropertyGridManager::StoreSelected(SelectionData* Data)
+{
+    if ( !Data )
+    {
+        Data = &LastSelection;
+    }
+
+    Data->m_PageIndex = GetSelectedPage();
+
+    wxPGId Selected = GetSelectedProperty();
+    if ( wxPGIdIsOk(Selected) )
+    {
+        Data->m_PropertyName = GetPropertyName(Selected);
+    }
+    else
+    {
+        Data->m_PropertyName.Clear();
+    }
+}
+
+void wxsPropertyGridManager::RestoreSelected(const SelectionData* Data)
+{
+    if ( !Data )
+    {
+        Data = &LastSelection;
+    }
+
+    if ( Data->m_PageIndex < 0 ) return;
+    if ( Data->m_PageIndex >= (int)GetPageCount() ) return;
+    if ( Data->m_PropertyName.IsEmpty() ) return;
+
+    SelectPage(Data->m_PageIndex);
+    SelectProperty(Data->m_PropertyName);
+}
+
+
 wxsPropertyGridManager* wxsPropertyGridManager::Singleton = 0;
 
 BEGIN_EVENT_TABLE(wxsPropertyGridManager,wxPropertyGridManager)
