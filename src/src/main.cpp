@@ -3374,7 +3374,7 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
     However, this is just a temporary hack, because the default dialog used isn't
     that suitable either.
     */
-    wxString strLine = wxGetTextFromUser( _("Line: "),
+    wxString strLine = wxGetTextFromUser( wxString::Format(_("Line (1 - %d): "), max),
                                         _("Goto line"),
                                         _T( "" ),
                                         this );
