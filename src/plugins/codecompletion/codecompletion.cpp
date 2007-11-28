@@ -932,7 +932,7 @@ int CodeCompletion::DoAllMethodsImpl()
         wxArrayInt indices = dlg.GetSelectedIndices();
         for (size_t i = 0; i < indices.GetCount(); ++i)
         {
-            Token* token = tree->at(arrint[i]);
+            Token* token = tree->at(arrint[indices[i]]);
             if (!token)
                 continue;
 
