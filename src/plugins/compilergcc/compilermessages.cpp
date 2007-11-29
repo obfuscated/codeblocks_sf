@@ -15,7 +15,7 @@
 
 namespace
 {
-	int idList = wxNewId();
+    int idList = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(CompilerMessages, wxEvtHandler)
@@ -24,19 +24,19 @@ END_EVENT_TABLE()
 CompilerMessages::CompilerMessages(const wxArrayString& titles, const wxArrayInt& widths)
     : ListCtrlLogger(titles, widths, true)
 {
-	//ctor
+    //ctor
 }
 
 CompilerMessages::~CompilerMessages()
 {
-	//dtor
-	if (control)
-		control->RemoveEventHandler(this);
+    //dtor
+    if (control)
+        control->RemoveEventHandler(this);
 }
 
 wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
 {
-	ListCtrlLogger::CreateControl(parent);
+    ListCtrlLogger::CreateControl(parent);
     control->SetId(idList);
     Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_SELECTED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -44,9 +44,9 @@ wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
     Connect(idList, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &CompilerMessages::OnDoubleClick);
-	control->PushEventHandler(this);
-	return control;
-};
+    control->PushEventHandler(this);
+    return control;
+}
 
 void CompilerMessages::FocusError(int nr)
 {
