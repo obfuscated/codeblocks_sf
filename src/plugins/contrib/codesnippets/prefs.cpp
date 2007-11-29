@@ -79,7 +79,7 @@ const CommonInfo g_CommonPrefs = {
 //----------------------------------------------------------------------------
 // keywordlists
 // C++
-wxChar* CppWordlist1 =
+const wxChar* CppWordlist1 =
     _T("asm auto bool break case catch char class const const_cast \
        continue default delete do double dynamic_cast else enum explicit \
        export extern false float for friend goto if inline int long \
@@ -88,9 +88,9 @@ wxChar* CppWordlist1 =
        struct switch template this throw true try typedef typeid \
        typename union unsigned using virtual void volatile wchar_t \
        while");
-wxChar* CppWordlist2 =
+const wxChar* CppWordlist2 =
     _T("file");
-wxChar* CppWordlist3 =
+const wxChar* CppWordlist3 =
     _T("a addindex addtogroup anchor arg attention author b brief bug c \
        class code date def defgroup deprecated dontinclude e em endcode \
        endhtmlonly endif endlatexonly endlink endverbatim enum example \
@@ -103,11 +103,11 @@ wxChar* CppWordlist3 =
        verbinclude version warning weakgroup $ @ \" & < > # { }");
 
 // Python
-wxChar* PythonWordlist1 =
+const wxChar* PythonWordlist1 =
     _T("and assert break class continue def del elif else except exec \
        finally for from global if import in is lambda None not or pass \
        print raise return try while yield");
-wxChar* PythonWordlist2 =
+const wxChar* PythonWordlist2 =
     _T("ACCELERATORS ALT AUTO3STATE AUTOCHECKBOX AUTORADIOBUTTON BEGIN \
        BITMAP BLOCK BUTTON CAPTION CHARACTERISTICS CHECKBOX CLASS \
        COMBOBOX CONTROL CTEXT CURSOR DEFPUSHBUTTON DIALOG DIALOGEX \
