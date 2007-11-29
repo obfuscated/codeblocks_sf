@@ -1363,7 +1363,8 @@ void wxFrameManager::SetFrame(wxFrame* frame)
 // will result in a crash upon program exit
 void wxFrameManager::UnInit()
 {
-    m_frame->RemoveEventHandler(this);
+    if (m_frame)
+        m_frame->RemoveEventHandler(this);
 }
 
 // GetFrame() returns the frame pointer being managed by wxFrameManager
