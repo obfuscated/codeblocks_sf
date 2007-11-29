@@ -29,9 +29,9 @@ CompilerMessages::CompilerMessages(const wxArrayString& titles, const wxArrayInt
 
 CompilerMessages::~CompilerMessages()
 {
-    //dtor
-    if (control)
-        control->RemoveEventHandler(this);
+	//dtor
+	if (control && !Manager::IsAppShuttingDown())
+		control->RemoveEventHandler(this);
 }
 
 wxWindow* CompilerMessages::CreateControl(wxWindow* parent)
