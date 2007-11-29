@@ -137,14 +137,14 @@ class CodeSnippets : public cbPlugin
 		// ---
 		void SetSnippetsWindow(CodeSnippetsWindow* p);
 		CodeSnippetsWindow*  GetSnippetsWindow(){return GetConfig()->GetSnippetsWindow();}
-        void OnTreeCtrlEvent(wxTreeEvent& event);
+        void OnTreeDragEvent(wxTreeEvent& event);
 
 	private:
 
         void CreateSnippetWindow();
         void SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType);
         void RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType);
-        bool GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString);
+        bool GetTreeSelectionData(wxTreeCtrl* pTree, wxTreeItemId itemID, wxString& selString);
         wxArrayString* TextToFilenames(const wxString& string);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files);
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
@@ -153,6 +153,8 @@ class CodeSnippets : public cbPlugin
         bool ReleaseMemoryMappedFile();
         void TellExternalSnippetsToTerminate();
         void CloseDockWindow();
+        wxWindow* FindOpenFilesListWindow();
+
 
         #if defined(__WXMSW__)
             void MSW_MouseMove(int x, int y );
@@ -166,10 +168,11 @@ class CodeSnippets : public cbPlugin
 		void OnSwitchViewLayout(CodeBlocksLayoutEvent& event);
 		void OnSwitchedViewLayout(CodeBlocksLayoutEvent& event);
 		void OnDockWindowVisability(CodeBlocksDockEvent& event);
+        void OnAppStartupDone(CodeBlocksEvent& event);
 
 		wxWindow*       m_pAppWin;
         ProjectManager* m_pPrjMan;
-        EditorManager*  m_pEdMan;
+        wxWindow*       m_pOpenFilesList;
         wxTreeCtrl*     m_pMgtTreeBeginDrag;
         wxPoint         m_TreeMousePosn;
         wxTreeItemId    m_TreeItemId;

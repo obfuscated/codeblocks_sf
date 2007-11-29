@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.h 91 2007-06-25 19:24:43Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.h 105 2007-11-16 19:50:44Z Pecan $
 
 #ifndef CODESNIPPETSWINDOW_H
 #define CODESNIPPETSWINDOW_H
@@ -101,6 +101,7 @@ class CodeSnippetsWindow : public wxPanel
 		void OnEndDrag(wxTreeEvent& event);
 		void OnMnuAddSubCategory(wxCommandEvent& event);
 		void OnMnuRemove(wxCommandEvent& event);
+		void OnMnuRename(wxCommandEvent& event);
 		void OnMnuConvertToCategory(wxCommandEvent& event);
 		void OnMnuAddSnippet(wxCommandEvent& event);
 		void OnMnuApplySnippet(wxCommandEvent& event);

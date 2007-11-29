@@ -37,6 +37,7 @@ extern const char* category[];
 extern const char* snippet[];
 extern const char* snippetText[];
 extern const char* snippetFile[];
+extern const char* snippetURL[];
 extern const char* xpm_data_ptrs[] ;
 // ----------------------------------------------------------------------------
 SnipImages::SnipImages()
@@ -89,7 +90,7 @@ SnipImages::~SnipImages()
 // ----------------------------------------------------------------------------
     // array holding pointers to XPM char arrays
 const char* xpm_data_ptrs[ SNIPPETS_TREE_IMAGE_COUNT ]
-        = {(const char*)allsnippets,(const char*)category,(const char*)snippet,(const char*)snippetText,(const char*)snippetFile};
+        = {(const char*)allsnippets,(const char*)category,(const char*)snippet,(const char*)snippetText,(const char*)snippetFile,(const char*)snippetURL};
 /* XPM */
 const char *allsnippets[] = {
 /* columns rows colors chars-per-pixel */
@@ -695,4 +696,98 @@ const char *snippetFile[] = {
 "E   l g p 0 7 5 , = $ O X .   E ",
 "E                             E "
 };
+/* XPM */
+const char *snippetURL[] = {
+/* columns rows colors chars-per-pixel */
+"16 16 71 1",
+"  c black",
+". c #217231",
+"X c #277836",
+"o c #287937",
+"O c #2D7D3B",
+"+ c #2E7E3D",
+"@ c #2F7F3E",
+"# c #338241",
+"$ c #348342",
+"% c #358543",
+"& c #378645",
+"* c #398746",
+"= c #3A8947",
+"- c #3B8A49",
+"; c #3E8C4B",
+": c #3E8D4B",
+"> c #408E4D",
+", c #418F4E",
+"< c #449251",
+"1 c #459352",
+"2 c #469352",
+"3 c #4A9756",
+"4 c #4C9857",
+"5 c #4D9958",
+"6 c #509C5B",
+"7 c #529D5D",
+"8 c #54A05F",
+"9 c #56A161",
+"0 c #57A262",
+"q c #57A362",
+"w c #5BA665",
+"e c #5CA766",
+"r c #5DA867",
+"t c #62AC6B",
+"y c #62AC6C",
+"u c #63AD6D",
+"i c #64AE6D",
+"p c #69B272",
+"a c #6AB372",
+"s c #6DB675",
+"d c #6FB777",
+"f c #70B978",
+"g c #71B979",
+"h c #73BB7B",
+"j c #76BE7D",
+"k c #78BF7F",
+"l c #78C080",
+"z c #7EC585",
+"x c #7FC686",
+"c c magenta",
+"v c #84CA8A",
+"b c #85CB8B",
+"n c #86CC8C",
+"m c #8ACF90",
+"M c #8BD090",
+"N c #8ED393",
+"B c #90D595",
+"V c #95D999",
+"C c #96DA9A",
+"Z c #9CDF9F",
+"A c #9CDFA0",
+"S c #A2E4A5",
+"D c #A4E6A6",
+"F c #A8EAAA",
+"G c #ABECAD",
+"H c #AEEFAF",
+"J c #B2F3B3",
+"K c #B3F4B5",
+"L c #B9F9BA",
+"P c #F2EFE9",
+"I c #F6ECEC",
+/* pixels */
+"cccccccccccccccc",
+"c              c",
+"c LKHFSZVBMvzj c",
+"c JJHHMbbMbbhh c",
+"c GGPPbMbMPIpp c",
+"c DDIIbhhsIIty c",
+"c AAIIbhshIIww c",
+"c VVIIjr0iII88 c",
+"c NBIIjr0iII55 c",
+"c bbIIdr0rII11 c",
+"c zx,IIIIII;;; c",
+"c kk,IIIIII%%& c",
+"c h:---->->-%+ c",
+"c ayrq752>=%+o c",
+"c tr0531;=#OX. c",
+"c              c"
+};
+
 // ----------------------------------------------------------------------------

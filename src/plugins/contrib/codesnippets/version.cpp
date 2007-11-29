@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 102 2007-10-29 21:16:50Z Pecan $
+// RCS-ID: $Id: version.cpp 105 2007-11-16 19:50:44Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -303,7 +303,7 @@ AppVersion::~AppVersion()
 //          91) Added check for possible garbage window ptr in OnTreeCtrlEvent()
 //          92) Fixed TextToFilenames() for list/text containing \r & \n
 // ----------------------------------------------------------------------------
-//          1.2.93 2007/08/2
+//  Commit  1.2.100 2007/10/30
 //          93) Added print facility to app
 //          1.2.95 2007/09/30
 //          94) change GetAppWindow to GetAppFrame
@@ -315,28 +315,29 @@ AppVersion::~AppVersion()
 //          99) Implement macro substitution requested by mariocup
 //         100) Stop crashes: disallow re-enabled plugin until CB reloads
 // ----------------------------------------------------------------------------
+//  commit  1.2.104 2007/11/29
+//          101) mods to compensate for CB OpenFilesList change
+//          102) fixed incorrect selection of dragged tree item
+//          103) make it easier to rename a catagory
+//          104) Add "U" xpm for url type snippets
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
-//              backup, wrapper execution, DragnDrop
-//          MSW path may already have ";" tacked to end. What happens?
+//              backup, wrapper execution, Drag'nDrop
 //          Add option for ToolTips and max chars shown
 //          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
 //              Maybe just a line instead of a spacer will work
 //          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
-//          Add "U" type icon for url type snippets
-//          Bug: 2007/08/1
-//              Linux wxGTK2.8.4 cannot drag out of "OpenFilesList". Returns result
-//              "wxDragNone" even tho same code works for Management window
 //          Bug: 2007/08/2
 //              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
 //              bug was reported way back in wxGTK 2.1.0
-//          Bug: 2007/09/30 crash during uninstall in OnIdle events.
 //          Leak: 2007/10/4 g_printData allocated for each Edit, but only deleted once.
 //              The globals in snippetproperty.cpp should be allocated by instance.
+//          Dragging file out of OpenFilesList does not work on Linux.
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;

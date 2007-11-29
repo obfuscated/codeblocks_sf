@@ -136,8 +136,8 @@ extern const CommonInfo g_CommonPrefs;
 // LanguageInfo
 
 struct LanguageInfo {
-    const wxChar *name;
-    const wxChar *filepattern;
+    wxChar *name;
+    wxChar *filepattern;
     int lexer;
     struct {
         int type;
@@ -152,10 +152,10 @@ extern const int g_LanguagePrefsSize;
 //----------------------------------------------------------------------------
 // StyleInfo
 struct StyleInfo {
-    const wxChar *name;
-    const wxChar *foreground;
-    const wxChar *background;
-    const wxChar *fontname;
+    wxChar *name;
+    wxChar *foreground;
+    wxChar *background;
+    wxChar *fontname;
     int fontsize;
     int fontstyle;
     int lettercase;

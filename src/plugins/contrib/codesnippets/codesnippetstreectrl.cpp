@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 103 2007-10-30 19:17:39Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 105 2007-11-16 19:50:44Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -71,7 +71,8 @@ END_EVENT_TABLE()
 CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id,
                                 const wxPoint& pos, const wxSize& size, long style)
 // ----------------------------------------------------------------------------
-	: wxTreeCtrl(parent, id, pos, size, style)
+	//-: wxTreeCtrl(parent, id, pos, size, style)
+	: wxTreeCtrl(parent, id, pos, size, style, wxDefaultValidator, wxT("csTreeCtrl"))
 {
     m_fileChanged = false;
     m_bMouseLeftWindow = false;
@@ -603,12 +604,19 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
 {
 	// Get the associated item id
 	wxTreeItemId itemId = RemoveItemId;
-	// Sanity check
-	if (itemId==GetRootItem() ) return false;
-
-    bool shiftKeyIsDown = ::wxGetKeyState(WXK_SHIFT);
+	// Sanity checks
+	if (not itemId.IsOk()) return false;
+	if (itemId == GetRootItem() ) return false;
 
     SnippetItemData* pItemData = (SnippetItemData*)(GetItemData(itemId));
+    if (not pItemData) return false;
+
+    bool shiftKeyIsDown = ::wxGetKeyState(WXK_SHIFT);
+    wxString itemText = GetItemText(RemoveItemId);
+
+    // delete unused items directly (don't ".trash" them)
+    if ( itemText.IsSameAs(wxT("New category")) || itemText.IsSameAs(wxT("New snippet")) )
+        shiftKeyIsDown = true;
     bool trashItem = false;
 
     // if shift key is up, copy item to .trash category
@@ -664,6 +672,8 @@ void CodeSnippetsTreeCtrl::SetSnippetImage(wxTreeItemId itemId)
     // set the item tree image
     if ( IsFileSnippet(itemId) )
         SetItemImage( itemId, TREE_IMAGE_SNIPPET_FILE);
+    else if (IsUrlSnippet(itemId))
+        SetItemImage( itemId, TREE_IMAGE_SNIPPET_URL);
     else
         SetItemImage( itemId, TREE_IMAGE_SNIPPET_TEXT);
     return;

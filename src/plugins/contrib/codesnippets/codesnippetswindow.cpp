@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 103 2007-10-30 19:17:39Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 105 2007-11-16 19:50:44Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -72,7 +72,7 @@
 
 
 //-#define SNIPPETS_TREE_IMAGE_COUNT 3
-// above redefined in snipimages.h to 5
+// above redefined in snipimages.h to 6
 
 //const wxString snippetsTreeImageFileNames[] = {
 //	_T("allsnippets.png"),
@@ -87,6 +87,7 @@ int idSnippetsTreeCtrl          = wxNewId();
     // Context Menu items
 int idMnuAddSubCategory         = wxNewId();
 int idMnuRemove                 = wxNewId();
+int idMnuRename                 = wxNewId();
 int idMnuCopy                   = wxNewId();
 int idMnuPaste                  = wxNewId();
 int idMnuConvertToCategory      = wxNewId();
@@ -118,6 +119,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
     // ---
 	// Tree menu events
 	EVT_MENU(idMnuRemove,           CodeSnippetsWindow::OnMnuRemove)
+	EVT_MENU(idMnuRename,           CodeSnippetsWindow::OnMnuRename)
 	EVT_MENU(idMnuCopy,             CodeSnippetsWindow::OnMnuCopy)
 	EVT_MENU(idMnuPaste,            CodeSnippetsWindow::OnMnuPaste)
 	EVT_MENU(idMnuConvertToCategory,CodeSnippetsWindow::OnMnuConvertToCategory)
@@ -165,7 +167,7 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 // ----------------------------------------------------------------------------
-	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
+	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxTAB_TRAVERSAL,wxT("csPanel"))
 {
     m_isCheckingForExternallyModifiedFiles = false;
     pTiXmlDoc = 0;
@@ -489,6 +491,7 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 				snippetsTreeMenu->Append(idMnuCopy,  _("Copy  Category"));
 				snippetsTreeMenu->Append(idMnuPaste, _("Paste Tree Items"));
 				snippetsTreeMenu->Enable(idMnuPaste, pTiXmlDoc);
+				snippetsTreeMenu->Append(idMnuRename, _("Rename"));
 				snippetsTreeMenu->Append(idMnuRemove, _("Remove"));
 			break;
 
@@ -551,12 +554,22 @@ void CodeSnippetsWindow::OnEndDrag(wxTreeEvent& /*event*/)
 }
 
 // ----------------------------------------------------------------------------
-void CodeSnippetsWindow::OnMnuAddSubCategory(wxCommandEvent& /*event*/)
+void CodeSnippetsWindow::OnMnuAddSubCategory(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
 	// Add new category using the associated item ID
-	GetSnippetsTreeCtrl()->AddCategory(GetSnippetsTreeCtrl()->GetAssociatedItemID(), _("New category"), true);
+	CodeSnippetsTreeCtrl* pTree = GetSnippetsTreeCtrl();
+	wxTreeItemId newItem =
+        GetSnippetsTreeCtrl()->AddCategory(GetSnippetsTreeCtrl()->GetAssociatedItemID(), _("New category"), true);
 	SetFileChanged(true);
+	if (newItem.IsOk())
+	{
+	    pTree->SelectItem(newItem);
+	    pTree->SetAssociatedItemID(newItem);
+        OnMnuRename(event);
+	}
+	if ( (newItem.IsOk()) && (pTree->GetItemText(newItem).IsEmpty()) )
+        pTree->RemoveItem(newItem);
 }
 
 // ----------------------------------------------------------------------------
@@ -576,7 +589,32 @@ void CodeSnippetsWindow::OnMnuRemove(wxCommandEvent& /*event*/)
 //	}
     GetSnippetsTreeCtrl()->RemoveItem(itemID);
 }
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuRename(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+	// Get the associated item id
+	wxTreeItemId itemID = GetAssociatedItemID();
 
+    CodeSnippetsTreeCtrl* pTree = GetSnippetsTreeCtrl();
+    wxString itemLabel = pTree->GetItemText(itemID);
+    wxPoint currentMousePosn = ::wxGetMousePosition();
+
+    // get new label(on ok) or empty string(on cancel)
+    wxString newLabel = ::wxGetTextFromUser(wxT("New Category Label"),wxT("Rename"),
+        itemLabel, pTree,
+        currentMousePosn.x, currentMousePosn.y,false);
+    LOGIT( _T("GetTextFromUser[%s] oldLabel[%s]"),newLabel.c_str(),itemLabel.c_str() );
+
+    // label may have been edited
+    if (not newLabel.IsEmpty())
+        pTree->SetItemText( itemID, newLabel );
+
+    // remove unlabeled item
+	if (itemID.IsOk() && pTree->GetItemText(itemID).IsEmpty())
+        pTree->RemoveItem(itemID);
+
+}
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuCopy(wxCommandEvent& event)
 // ----------------------------------------------------------------------------

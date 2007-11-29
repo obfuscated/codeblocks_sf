@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 103 2007-10-30 19:17:39Z Pecan $
+// RCS-ID: $Id: codesnippets.cpp 104 2007-11-15 19:51:34Z Pecan $
 
 #if defined(CB_PRECOMP)
 #include "sdk.h"
@@ -37,6 +37,7 @@
 	#include "cbworkspace.h"
 	#include "cbproject.h"
 	#include "logmanager.h"
+	#include "editorbase.h"
 #endif
 	#include <wx/stdpaths.h>
 	#include <wx/process.h>
@@ -61,10 +62,25 @@
     #error preprocessor BUILDING_PLUGIN flag required for this target
 #endif
 
-// Register the plugin
 namespace
 {
+    // Register the plugin
     PluginRegistrant<CodeSnippets> reg(_T("CodeSnippets"));
+
+    // Duplicated from OpenFilesList plugin in order to drag out
+    // full filenames from CB tree items to CodeSnippets tree
+    class OpenFilesListData : public wxTreeItemData
+    {
+    public:
+        OpenFilesListData(EditorBase* ed) : ed(ed) {}
+        EditorBase* GetEditor() const
+        {
+            return ed;
+        }
+    private:
+        EditorBase* ed;
+    };
+
 };
 
 int idViewSnippets = wxNewId();
@@ -174,14 +190,18 @@ void CodeSnippets::OnAttach()
     // Set Drop targets so we can drag items in/out of the Project/Files Tree ctrls
     // memorize manager of Open files tree
     m_pPrjMan = Manager::Get()->GetProjectManager();
-	m_pEdMan  = Manager::Get()->GetEditorManager();
     // set a drop target for the project managers wxFlatNotebook
     m_pPrjMan->GetNotebook()->SetDropTarget(new DropTargets(this));
-    // set drop targets on the Project/File tree controls
-    //m_pEdMan->GetTree()->SetDropTarget(new DropTargets(this));
-    // set event hooks
     SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
-    //SetTreeCtrlHandler( m_pEdMan->GetTree(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+
+	m_pOpenFilesList  = FindOpenFilesListWindow();
+    if (m_pOpenFilesList)
+    {
+        // set drop targets on the OpenFilesList tree control
+        m_pOpenFilesList->SetDropTarget(new DropTargets(this));
+        // set event hooks
+        SetTreeCtrlHandler( m_pOpenFilesList,  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    }
 
     m_nOnActivateBusy = 0;
     m_ExternalPid = 0;
@@ -212,6 +232,8 @@ void CodeSnippets::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_SWITCHED_VIEW_LAYOUT, new cbEventFunctor<CodeSnippets, CodeBlocksLayoutEvent>(this, &CodeSnippets::OnSwitchedViewLayout));
     // app notifies that a docked window has been hidden/shown
     Manager::Get()->RegisterEventSink(cbEVT_DOCK_WINDOW_VISIBILITY, new cbEventFunctor<CodeSnippets, CodeBlocksDockEvent>(this, &CodeSnippets::OnDockWindowVisability));
+    // hook App Startup Done event
+	Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<CodeSnippets, CodeBlocksEvent>(this, &CodeSnippets::OnAppStartupDone));
 
     GetConfig()->pMainFrame->Connect(wxEVT_IDLE,
             wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
@@ -338,6 +360,30 @@ void CodeSnippets::OnDisable(bool appShutDown)
     Manager::Get()->ProcessEvent(evt);
 
      return;
+}
+// ----------------------------------------------------------------------------
+void CodeSnippets::OnAppStartupDone(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // if OpenFilesList plugin initializes *after* us, we didn't
+    // find it in OnAttach(). So do it now.
+
+    if (not m_pOpenFilesList)
+    {
+        m_pOpenFilesList  = FindOpenFilesListWindow();
+        // set drop targets on the OpenFilesList tree control
+        if (m_pOpenFilesList)
+        {
+            m_pOpenFilesList->SetDropTarget(new DropTargets(this));
+            // set event hooks
+            SetTreeCtrlHandler( m_pOpenFilesList,  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+            LOGIT( _T("OpenFilesList found @[%p]"), m_pOpenFilesList);
+        }
+        else{
+            LOGIT( _T("OpenFilesList *NOT* found."));
+        }
+    }
+    event.Skip();
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::CreateSnippetWindow()
@@ -760,88 +806,6 @@ void CodeSnippets::OnActivate(wxActivateEvent& event)
     event.Skip();
     return;
 }
-
-// ----------------------------------------------------------------------------
-// The following are attempts to avoid the OnIdle polling. But they didn't work.
-// ----------------------------------------------------------------------------
-//void CodeSnippets::OnActivate(wxActivateEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    // An application has been activated by the OS
-//    // Notes: At routine entry,
-//    //      wxFindWindowAtPointer = window to be activated
-//    //      wxWindow::FindFocus() = window being deactivated
-//    //      each can be null when not a window for this app
-//    //      When moving mouse from non-app window to docked window to app
-//    //          no EVT_ACTIVATE occurs.
-//    //      ::wxGetActiveWindow always returns a ptr to CodeBlocks
-//    //      wxTheApp->GetTopWindow always return a ptr to Codeblocks
-//
-//     LOGIT( _T("-----OnActivate----------[%s]"),event.GetActive()?wxT("Active"):wxT("Deactive") );
-//
-//    // Wait until codeblocks is fully initialized
-//    if (not GetConfig()->pSnippetsWindow) return;
-//
-//     //if (not event.GetActive()) { event.Skip();return; }
-//
-//     wxPoint pt;
-//     wxWindow* pwMouse = ::wxFindWindowAtPointer( pt );
-//     wxWindow* pwSnippet = GetConfig()->pSnippetsWindow;
-//     wxWindow* pwFocused = wxWindow::FindFocus();
-//     wxWindow* pwTreeCtrl = GetConfig()->pSnippetsWindow->GetSnippetsTreeCtrl();
-//      LOGIT( _T("MouseWin   [%p]Name[%s]"),pwMouse, pwMouse?pwMouse->GetName().c_str():wxT(""));
-//      LOGIT( _T("FocusedWin [%p]Name[%s]"),pwFocused, pwFocused?pwFocused->GetName().c_str():wxT(""));
-//      LOGIT( _T("SnippetWin [%p]Name[%s]"),pwSnippet, pwSnippet->GetName().c_str());
-//      LOGIT( _T("TreeCtrWin [%p]Name[%s]"),pwTreeCtrl, pwFocused?pwTreeCtrl->GetName().c_str():wxT(""));
-//      wxWindow* pwTreeParent = pwTreeCtrl->GetParent();
-//      wxWindow* pwSnipParent = pwSnippet->GetParent();
-//      LOGIT( _T("SnippetParent [%p]Name[%s]"),pwSnipParent, pwSnipParent->GetName().c_str());
-//      LOGIT( _T("TreeParent [%p]Name[%s]"),pwTreeParent, pwFocused?pwTreeParent->GetName().c_str():wxT(""));
-//      if (pwSnipParent)
-//      {     wxWindow* pwSnipGrndParent = pwSnipParent->GetParent();
-//            if (pwSnipGrndParent)
-//             LOGIT( _T("SnippetGrndParent [%p]Name[%s]"),pwSnipGrndParent, pwSnipGrndParent->GetName().c_str());
-//      }
-//      m_pLog->Flush();
-//
-//     if (wxWindow::FindFocus() != pwTreeCtrl )
-//        {event.Skip(); return;}
-//    // Deactivated window was our CodeSnippets TreeCtrl
-//    LOGIT( _T(" Activated Plugin") );
-//    event.Skip();
-//    return;
-//    //========================================================
-//    // An application has been activated by the OS
-//
-//    // Wait until codeblocks is fully initialized
-//    if (not GetConfig()->pSnippetsWindow) return;
-//
-//    //LOGIT( _T(" OnActivate Plugin") );
-//
-//     if (not event.GetActive()) { event.Skip();return; }
-//     //Err: wxGetActiveWindow and wxTheApp->GetTopWindow is always the same.
-//     //  namely code::blocks
-//     if (::wxGetActiveWindow() != wxTheApp->GetTopWindow() )
-//        {event.Skip(); return;}
-//
-//    do
-//    {
-//        CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
-//        p->CheckForExternallyModifiedFiles();
-//
-//    }while(0);
-//
-//    event.Skip();
-//    return;
-//}
-//// ----------------------------------------------------------------------------
-//void CodeSnippets::OnWindowDestroy(wxEvent& event)
-//// ----------------------------------------------------------------------------
-//{
-//    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
-//     LOGIT( _T("OnWindowClose[%p]"), pWindow );
-//     event.Skip();
-//}
 // ----------------------------------------------------------------------------
 bool CodeSnippets::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
 // ----------------------------------------------------------------------------
@@ -866,7 +830,7 @@ bool CodeSnippets::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files)
     return bRC;
 }
 // ----------------------------------------------------------------------------
-bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString)
+bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxTreeItemId itemID, wxString& selString)
 // ----------------------------------------------------------------------------
 {
     selString = wxEmptyString;
@@ -874,26 +838,35 @@ bool CodeSnippets::GetTreeSelectionData(wxTreeCtrl* pTree, wxString& selString)
     if (not pTree) { return false; }
 
     if ( (pTree == m_pPrjMan->GetTree())
-        /*or (pTree == m_pEdMan->GetTree())*/ )
+        or (pTree == m_pOpenFilesList) )
         {/*ok*/;}
     else{ return false; }
+
     #ifdef LOGGING
-     LOGIT( _T("Focused Tree:%p"),pTree );
+     LOGIT( _T("Focused Tree:%p item[%p]"),pTree, itemID.IsOk()?itemID.m_pItem:0 );
     #endif //LOGGING
 
     // check for a file selection in the treeCtrl
+    // note: the following gets the wrong item when we're called from a tree event
     wxTreeItemId sel = pTree->GetSelection();
+    if ( itemID.IsOk()) sel = itemID;
     if (not sel) {return false;}
     #ifdef LOGGING
-     LOGIT( _T("Selection:%d"), (unsigned int)sel);
+     LOGIT( _T("Selection:%p"), sel.m_pItem);
     #endif //LOGGING
-
+    // -------------------------
     // Opened Files Tree
-//    if ( pTree == m_pEdMan->GetTree() ) {
-//        selString = m_pEdMan->GetTreeItemFilename( sel );
-//    }//fi Opened Files Tree
+    // -------------------------
+    if ( pTree == m_pOpenFilesList )
+    {   //-selString = pTree->GetTreeItemFilename( sel );
+        //-EditorBase* ed = static_cast<EditorBase*>(static_cast<OpenFilesListData*>(pTree->GetItemData(event.GetItem()))->GetEditor());
+        EditorBase* ed = static_cast<EditorBase*>(static_cast<OpenFilesListData*>(pTree->GetItemData(sel))->GetEditor());
+        selString = ed->GetFilename();
+    }
 
+    // -------------------------
     // Project Tree
+    // -------------------------
     if ( pTree == m_pPrjMan->GetTree() ) {
         // create a string from highlighted Project treeCtrl item
 
@@ -1104,7 +1077,7 @@ void DropTargets::OnLeave()
 // ----------------------------------------------------------------------------
 //   Events and Event support routines
 // ----------------------------------------------------------------------------
-void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
+void CodeSnippets::OnTreeDragEvent(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Drag event.
@@ -1120,24 +1093,25 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
     event.Skip();
 
     wxTreeCtrl* pTree = (wxTreeCtrl*)event.GetEventObject();
+    wxTreeItemId treeItemID = event.GetItem();
 
     #ifdef LOGGING
-    	 //LOGIT( wxT("CodeSnippets::OnTreeCtrlEvent %p"), pTree );
+    	 //LOGIT( wxT("CodeSnippets::OnTreeDragEvent %p"), pTree );
     #endif //LOGGING
 
     // -----------------------
     // TREE_BEGIN_DRAG
     // -----------------------
-
     if (event.GetEventType() == wxEVT_COMMAND_TREE_BEGIN_DRAG)
     {
         #ifdef LOGGING
-         LOGIT( _T("Plugin_TREE_BEGIN_DRAG [%p][%s]"), pTree, pTree->GetName().c_str() );
+         LOGIT( _T("Plugin_TREE_BEGIN_DRAG [%p][%s] itemID[%p]"),
+            pTree, pTree->GetName().c_str(),
+            treeItemID.m_pItem  );
         #endif //LOGGING
 
         if (pTree == (wxTreeCtrl*)m_pPrjMan->GetTree())
         {
-
             m_pMgtTreeBeginDrag = pTree;
             m_TreeMousePosn = ::wxGetMousePosition();
             m_TreeItemId    =   event.GetItem();
@@ -1146,7 +1120,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
         else m_pMgtTreeBeginDrag = 0;
 
         m_TreeText = wxEmptyString;
-        if (not GetTreeSelectionData(pTree, m_TreeText))
+        if (not GetTreeSelectionData(pTree, treeItemID, m_TreeText))
         {
             m_TreeText = wxEmptyString;
             m_pMgtTreeBeginDrag = 0;
@@ -1307,7 +1281,7 @@ void CodeSnippets::OnTreeCtrlEvent(wxTreeEvent& event)
 
     return;
 
-}//OnTreeCtrlEvent
+}//OnTreeDragEvent
 // ----------------------------------------------------------------------------
 #if defined(__WXMSW__)
 void CodeSnippets::MSW_MouseMove(int x, int y )
@@ -1330,20 +1304,20 @@ void CodeSnippets::MSW_MouseMove(int x, int y )
 void CodeSnippets::SetTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
 // ----------------------------------------------------------------------------
 {
-	if (!p ) return;		// already attached !!!
+	if (!p ) return;		// sanity check
 
     #ifdef LOGGING
-	 LOGIT(wxT("CodeSnippets::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
+	 LOGIT(wxT("CodeSnippets::SetTreeCtrlHandler[%s] %p"), p->GetName().c_str(),p);
     #endif //LOGGING
 
-    p->Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+    p->Connect(wxEVT_COMMAND_TREE_BEGIN_DRAG,
+                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
                      NULL, this);
-    p->Connect(wxEVT_COMMAND_TREE_END_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+    p->Connect(wxEVT_COMMAND_TREE_END_DRAG,
+                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
                      NULL, this);
-    p->Connect(wxEVT_LEAVE_WINDOW,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+    p->Connect(wxEVT_LEAVE_WINDOW,
+                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
                      NULL, this);
 }
 // ----------------------------------------------------------------------------
@@ -1357,13 +1331,13 @@ void CodeSnippets::RemoveTreeCtrlHandler(wxWindow *p, WXTYPE eventType)
     #endif //LOGGING
 
     p->Disconnect(wxEVT_COMMAND_TREE_BEGIN_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
                      NULL, this);
     p->Disconnect(wxEVT_COMMAND_TREE_END_DRAG,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
                      NULL, this);
     p->Disconnect(wxEVT_LEAVE_WINDOW,       //eg.,wxEVT_LEAVE_WINDOW,
-                     wxTreeEventHandler(CodeSnippets::OnTreeCtrlEvent),
+                     wxTreeEventHandler(CodeSnippets::OnTreeDragEvent),
                      NULL, this);
 }
 // ----------------------------------------------------------------------------
@@ -1492,7 +1466,7 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
             wxArrayString psErrors;
 
             psCmd << wxT("/bin/ps -o ppid,pid,command");
-            Manager::Get()->GetLogManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
+            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
             int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
 
             mypidStr << wxT(" ");
@@ -1513,18 +1487,18 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
              }
 
             for (int i = 0; i < psErrors.GetCount(); ++i)
-                Manager::Get()->GetLogManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
+                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
 
         }//if(m_ExternalPid == -1)
     #endif
 
     if (!m_ExternalPid)
     {
-        //Manager::Get()->GetLogManager()->Log(m_PageIndex, _("failed"));
+        //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("failed"));
         Manager::Get()->GetLogManager()->DebugLog( _("failed"));
         return -1;
     }
-    //Manager::Get()->GetLogManager()->Log(m_PageIndex, _("done"));
+    //Manager::Get()->GetMessageManager()->Log(m_PageIndex, _("done"));
     Manager::Get()->GetLogManager()->DebugLog( _("done"));
     return 0;
 }
@@ -1600,3 +1574,113 @@ long CodeSnippets::LaunchExternalSnippets()
     return result;
 }
 // ----------------------------------------------------------------------------
+wxWindow* CodeSnippets::FindOpenFilesListWindow()
+// ----------------------------------------------------------------------------
+{
+    //Find "Open files list" menu item.
+    wxFrame* pFrame = Manager::Get()->GetAppFrame();
+    int idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, wxT("View"), wxT("Open files list"));
+    #if defined(__WXGTK__)
+      idMenuOpenFilesList = ::wxFindMenuItemId( pFrame, wxT("View"), wxT("_Open files list"));
+    #endif
+    int idWindowOpenFilesList = 0;
+    if (idMenuOpenFilesList != wxNOT_FOUND)
+    {
+        LOGIT( _T("idMenuOpenFilesList:[%d]"), idMenuOpenFilesList );
+        idWindowOpenFilesList = idMenuOpenFilesList - 1;
+        wxWindow* pOpenFilesListWin = wxWindow::FindWindowById( idWindowOpenFilesList, pFrame);
+        if (pOpenFilesListWin)
+        {
+            LOGIT( _T("pOpenFilesListWin[%p] name[%s] label[%s]"), pOpenFilesListWin,
+                pOpenFilesListWin->GetName().c_str(),
+                pOpenFilesListWin->GetLabel().c_str()
+                );
+            return pOpenFilesListWin;
+        }
+    }
+    return 0;
+}//FindOpenFilesListWindow
+
+//// ----------------------------------------------------------------------------
+//void CodeSnippets::OnWindowDestroy(wxEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+//     LOGIT( _T("OnWindowClose[%p]"), pWindow );
+//     event.Skip();
+//}
+
+// ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// The following are attempts to avoid the OnIdle polling. But they didn't work.
+// ----------------------------------------------------------------------------
+//void CodeSnippets::OnActivate(wxActivateEvent& event)
+//// ----------------------------------------------------------------------------
+//{
+//    // An application has been activated by the OS
+//    // Notes: At routine entry,
+//    //      wxFindWindowAtPointer = window to be activated
+//    //      wxWindow::FindFocus() = window being deactivated
+//    //      each can be null when not a window for this app
+//    //      When moving mouse from non-app window to docked window to app
+//    //          no EVT_ACTIVATE occurs.
+//    //      ::wxGetActiveWindow always returns a ptr to CodeBlocks
+//    //      wxTheApp->GetTopWindow always return a ptr to Codeblocks
+//
+//     LOGIT( _T("-----OnActivate----------[%s]"),event.GetActive()?wxT("Active"):wxT("Deactive") );
+//
+//    // Wait until codeblocks is fully initialized
+//    if (not GetConfig()->pSnippetsWindow) return;
+//
+//     //if (not event.GetActive()) { event.Skip();return; }
+//
+//     wxPoint pt;
+//     wxWindow* pwMouse = ::wxFindWindowAtPointer( pt );
+//     wxWindow* pwSnippet = GetConfig()->pSnippetsWindow;
+//     wxWindow* pwFocused = wxWindow::FindFocus();
+//     wxWindow* pwTreeCtrl = GetConfig()->pSnippetsWindow->GetSnippetsTreeCtrl();
+//      LOGIT( _T("MouseWin   [%p]Name[%s]"),pwMouse, pwMouse?pwMouse->GetName().c_str():wxT(""));
+//      LOGIT( _T("FocusedWin [%p]Name[%s]"),pwFocused, pwFocused?pwFocused->GetName().c_str():wxT(""));
+//      LOGIT( _T("SnippetWin [%p]Name[%s]"),pwSnippet, pwSnippet->GetName().c_str());
+//      LOGIT( _T("TreeCtrWin [%p]Name[%s]"),pwTreeCtrl, pwFocused?pwTreeCtrl->GetName().c_str():wxT(""));
+//      wxWindow* pwTreeParent = pwTreeCtrl->GetParent();
+//      wxWindow* pwSnipParent = pwSnippet->GetParent();
+//      LOGIT( _T("SnippetParent [%p]Name[%s]"),pwSnipParent, pwSnipParent->GetName().c_str());
+//      LOGIT( _T("TreeParent [%p]Name[%s]"),pwTreeParent, pwFocused?pwTreeParent->GetName().c_str():wxT(""));
+//      if (pwSnipParent)
+//      {     wxWindow* pwSnipGrndParent = pwSnipParent->GetParent();
+//            if (pwSnipGrndParent)
+//             LOGIT( _T("SnippetGrndParent [%p]Name[%s]"),pwSnipGrndParent, pwSnipGrndParent->GetName().c_str());
+//      }
+//      m_pLog->Flush();
+//
+//     if (wxWindow::FindFocus() != pwTreeCtrl )
+//        {event.Skip(); return;}
+//    // Deactivated window was our CodeSnippets TreeCtrl
+//    LOGIT( _T(" Activated Plugin") );
+//    event.Skip();
+//    return;
+//    //========================================================
+//    // An application has been activated by the OS
+//
+//    // Wait until codeblocks is fully initialized
+//    if (not GetConfig()->pSnippetsWindow) return;
+//
+//    //LOGIT( _T(" OnActivate Plugin") );
+//
+//     if (not event.GetActive()) { event.Skip();return; }
+//     //Err: wxGetActiveWindow and wxTheApp->GetTopWindow is always the same.
+//     //  namely code::blocks
+//     if (::wxGetActiveWindow() != wxTheApp->GetTopWindow() )
+//        {event.Skip(); return;}
+//
+//    do
+//    {
+//        CodeSnippetsWindow* p = GetConfig()->pSnippetsWindow;
+//        p->CheckForExternallyModifiedFiles();
+//
+//    }while(0);
+//
+//    event.Skip();
+//    return;
+//}
