@@ -6,6 +6,7 @@
     #include <wx/string.h>
     #include <wx/utils.h>
     #include "globals.h"
+    #include "manager.h"
 #endif
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
