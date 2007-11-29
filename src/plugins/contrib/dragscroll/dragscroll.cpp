@@ -72,6 +72,7 @@ void cbDragScroll::OnAttach()
     wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
     m_pMS_Window = pcbWindow;
     #if LOGGING
+        wxLog::EnableLogging(true);
         /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow, wxT("DragScroll"), true, false);
         wxLog::SetActiveTarget(pMyLog);
         pMyLog->Flush();
@@ -86,6 +87,7 @@ void cbDragScroll::OnAttach()
     m_UsableWindows.Add(_T("treectrl"));
     m_UsableWindows.Add(_T("treeAll"));
     m_UsableWindows.Add(_T("treeMembers"));
+    m_UsableWindows.Add(_T("csTreeCtrl"));
     m_UsableWindows.Add(_T("sciwindow"));
 
     MouseDragScrollEnabled  = true;
@@ -95,14 +97,13 @@ void cbDragScroll::OnAttach()
     MouseDragKey            = 0;
     MouseDragSensitivity    = 5;
     MouseToLineRatio        = 30;
-    MouseRightKeyCtrl       = 0 ;
+    //-MouseRightKeyCtrl       = 0 ;
     MouseContextDelay       = 10;
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
     m_ConfigFolder = ConfigManager::GetConfigFolder();
     m_DataFolder = ConfigManager::GetDataFolder();
-    ////m_ExecuteFolder = ConfigManager::GetExecutableFolder();
     m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
@@ -142,7 +143,7 @@ void cbDragScroll::OnAttach()
 	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
 	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
 	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
-	cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
+	//-cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
 	cfgFile.Read(_T("MouseContextDelay"),       &MouseContextDelay) ;
 
 	// Don't allow less than 10 mils on context/scroll delay.
@@ -156,7 +157,7 @@ void cbDragScroll::OnAttach()
         LOGIT(_T("MouseDragKey:%d"),            MouseDragKey ) ;
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
-        LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
+        //-LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
         LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay ) ;
     #endif //LOGGING
 
@@ -213,7 +214,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     pDlg->SetMouseDragKey ( MouseDragKey );
     pDlg->SetMouseDragSensitivity ( MouseDragSensitivity );
     pDlg->SetMouseToLineRatio ( MouseToLineRatio );
-////    pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
+    //-pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
     pDlg->SetMouseContextDelay ( MouseContextDelay );
 
 
@@ -234,7 +235,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseDragKey            = pDlg->GetMouseDragKey();
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
     MouseToLineRatio        = pDlg->GetMouseToLineRatio();
-////    MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl();
+    //- MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl(); removed
     MouseContextDelay       = pDlg->GetMouseContextDelay();
     #ifdef LOGGING
      LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
@@ -244,7 +245,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
      LOGIT(_T("MouseDragKey:%d"),            MouseDragKey);
      LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
      LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio);
-     LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl);
+     //-LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl);
      LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay);
      LOGIT(_T("-----------------------------"));
     #endif //LOGGING
@@ -293,7 +294,7 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
 	cfgFile.Write(_T("MouseDragKey"),            MouseDragKey ) ;
 	cfgFile.Write(_T("MouseDragSensitivity"),    MouseDragSensitivity ) ;
 	cfgFile.Write(_T("MouseToLineRatio"),        MouseToLineRatio ) ;
-	cfgFile.Write(_T("MouseRightKeyCtrl"),       MouseRightKeyCtrl ) ;
+	//-cfgFile.Write(_T("MouseRightKeyCtrl"),       MouseRightKeyCtrl ) ;
 	cfgFile.Write(_T("MouseContextDelay"),       MouseContextDelay ) ;
 
 }
@@ -702,22 +703,24 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     m_pEvtObject = event.GetEventObject();
     cbDragScroll* pDS = cbDragScroll::pDragScroll;
 
-    // Why is an event getting in here when this OS window doesnt have the focus
+    // Why is an event getting in here when this window doesnt have the OS focus
     if (::wxGetActiveWindow() != pDS->m_pMS_Window)
         {event.Skip(); return;}
-    // For efficiency, skip wheel events right now
+
+    // For efficiency, skip wheel events now
     if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
         { event.Skip(); return; }
 
-////    //Returns the string form of the class name.
-////    const wxChar* pClassName = 0;
-////    if (m_pEvtObject)
-////        pClassName = m_pEvtObject->GetClassInfo()->GetClassName();
-////    #ifdef LOGGING
-////     LOGIT( _T("ClassName[%s]"), pClassName );
-////    #endif //LOGGING
+    // if "focus follows mouse" enabled, set focus to window
+    if (pDS->GetMouseFocusEnabled() )
+    {   // use EVT_ENTER_WINDOW instead of EVT_MOTION so that double
+        // clicking a search window item allows activating the editor cursor
+        // while mouse is still in the search window
+        if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
+            if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
+    }
 
-    // differentialte window, left, right split window
+    // differentiate window, left, right split window
     cbEditor* ed = 0;
     cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
     cbStyledTextCtrl* pLeftSplitWin = 0;
@@ -729,29 +732,29 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         pRightSplitWin = ed->GetRightSplitViewControl();
     }
 
-    // if "focus follows mouse" enabled, set focus to window
-    if (pDS->GetMouseFocusEnabled() )
-        if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
-            if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
-
     // set focus to editor window if mouse is in it
-    if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
-    {
-         //LOGIT( _T("EVT_ENTER_WINDOW:%p Styled:%p LeftSplit:%p RightSplit:%p"), m_pEvtObject, p_cbStyledTextCtrl, pLeftSplitWin, pRightSplitWin );
-        if (pDS->GetMouseEditorFocusEnabled() )
-        {  if (p_cbStyledTextCtrl && (m_pEvtObject ==  pLeftSplitWin))
-           {    pLeftSplitWin->SetFocus();
-                #ifdef LOGGING
-                 //LOGIT( _T("OnMouseEvent:SetFocus %p"), pLeftSplitWin );
-                #endif //LOGGING
-           }
+    if (event.GetEventType() ==  wxEVT_MOTION)
+    {   // use EVT_MOTION here to avoid missing EVT_ENTER_WINDOW.
+        // also allows auto activating the editor during long compiles
+        if (pDS->GetMouseEditorFocusEnabled() ) do
+        {   wxWindow* currentFocus = wxWindow::FindFocus();
+            if (p_cbStyledTextCtrl && (m_pEvtObject ==  pLeftSplitWin))
+                if (currentFocus != (wxWindow*)m_pEvtObject)
+                {   pLeftSplitWin->SetFocus();
+                    #ifdef LOGGING
+                     //LOGIT( _T("OnMouseEvent:SetFocus Left %p"), pLeftSplitWin );
+                    #endif //LOGGING
+                    break;
+                }
            if (pRightSplitWin && (m_pEvtObject ==  pRightSplitWin))
-           {    pRightSplitWin->SetFocus();
-                #ifdef LOGGING
-                 //LOGIT( _T("OnMouseEvent:SetFocus %p"), pRightSplitWin );
-                #endif //LOGGING
-           }
-        }
+                if (currentFocus != (wxWindow*)m_pEvtObject)
+                {   pRightSplitWin->SetFocus();
+                    #ifdef LOGGING
+                     //LOGIT( _T("OnMouseEvent:SetFocus Right %p"), pRightSplitWin );
+                    #endif //LOGGING
+                    break;
+                }
+        }while(0);
     }
 
     int scrollx;
@@ -762,7 +765,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     #endif
 
     if (KeyDown(event))
-     {
+    {
             m_Direction = pDS->GetMouseDragDirection() ? 1 : -1 ; //v0.14
             m_MouseMoveToLineMoveRatio = pDS->GetMouseToLineRatio()/100.0;
             #ifdef LOGGING
@@ -782,16 +785,13 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
             #if LOGGING
              //LOGIT(_T("Down X:%d Y:%d"), m_InitY, m_InitX);
             #endif
-            // If hiding Right mouse keydown from ListCtrls, return v0.22
-            // RightMouseDown is causing an immediate selection in the control
-            // This stops it.
-////            if (pDS->GetMouseRightKeyCtrl()) return;
+
             event.Skip(); //v0.21
             return;
-     }
+    }// if KeyDown
 
     else if (KeyUp(event) && (m_DragMode != DRAG_NONE) )
-     {
+    {
         // Finish dragging
         int lastmode = m_DragMode;
         m_DragMode = DRAG_NONE;
@@ -803,10 +803,10 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         // allow context menu processing
         event.Skip();
         return;
-     }
+    }// if KeyUp
 
     else if ( event.Dragging() && (m_DragMode != DRAG_NONE ) )
-     {
+    {
         //make sure user didnt leave client area and lift mouse key
         if ( not KeyIsDown(event))
          {  m_DragMode = DRAG_NONE;
@@ -824,41 +824,41 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
          {
             // Start the drag. This will stop the context popup
             #if LOGGING
-            //LOGIT(_T("Drag_Start"));
+              //LOGIT(_T("Drag_Start"));
             #endif
             m_DragMode = DRAG_DRAGGING;
          }
 
-       m_MouseHasMoved = true;
-       int dX = event.GetPosition().x - m_StartX;
-       int dY = event.GetPosition().y - m_StartY;
+        m_MouseHasMoved = true;
+        int dX = event.GetPosition().x - m_StartX;
+        int dY = event.GetPosition().y - m_StartY;
 
-      //show some sensitivity to speed of user mouse movements
-      m_RatioX = m_RatioY = m_MouseMoveToLineMoveRatio;
-      // build up some mouse movements to guarantee ratios won't cancel scrolling
-      if ( (abs(dX)*m_RatioX >= 1) || (abs(dY)*m_RatioY >= 1) )
-       { m_StartY = event.GetPosition().y; m_StartX = event.GetPosition().x;}
+        //show some sensitivity to speed of user mouse movements
+        m_RatioX = m_RatioY = m_MouseMoveToLineMoveRatio;
+        // build up some mouse movements to guarantee ratios won't cancel scrolling
+        if ( (abs(dX)*m_RatioX >= 1) || (abs(dY)*m_RatioY >= 1) )
+        { m_StartY = event.GetPosition().y; m_StartX = event.GetPosition().x;}
 
-      //add one full mousemove for every x mouse positions beyond start position
-      //so scrolling is faster as user is faster
-      // slider values 1...2...3...4...5...6...7...8...9...10   //v0.14
-      // divisn values 90  80  70  60 50   40  30  20  10   1
-      int nThreshold = 1+( 100-(pDS->GetMouseDragSensitivity()*10) );
-      m_RatioX += (abs(dX)/nThreshold);
-      m_RatioY += (abs(dY)/nThreshold);
+        //add one full mousemove for every x mouse positions beyond start position
+        //so scrolling is faster as user is faster
+        // slider values 1...2...3...4...5...6...7...8...9...10   //v0.14
+        // divisn values 90  80  70  60 50   40  30  20  10   1
+        int nThreshold = 1+( 100-(pDS->GetMouseDragSensitivity()*10) );
+        m_RatioX += (abs(dX)/nThreshold);
+        m_RatioY += (abs(dY)/nThreshold);
 
-      // scroll the client area
-      if (abs(dX) > abs(dY))
-       {
+        // scroll the client area
+        if (abs(dX) > abs(dY))
+        {
             scrolly = 0; scrollx = int(dX * m_RatioX);
-       }
-      else
-       {
+        }
+        else
+        {
             scrollx = 0; scrolly = int(dY * m_RatioY);
-       }
+        }
         #if LOGGING
-       //  LOGIT(_T("RatioX:%f RatioY:%f"), m_RatioX, m_RatioY);
-       //  LOGIT(_T("Drag: dX:%d dY:%d scrollx:%d scrolly:%d"), dX, dY, scrollx, scrolly);
+        //  LOGIT(_T("RatioX:%f RatioY:%f"), m_RatioX, m_RatioY);
+        //  LOGIT(_T("Drag: dX:%d dY:%d scrollx:%d scrolly:%d"), dX, dY, scrollx, scrolly);
         #endif
 
         // Scroll horizontally and vertically.
@@ -878,8 +878,8 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
                 ((wxWindow*)m_pEvtObject)->ScrollLines(scrolly);
             else  // use listCtrl for x scrolling
                 ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx<<2,scrolly);
-        }//esle
-    }//else if
+        }//else
+    }//else if ( event.Dragging() && (m_DragMode != DRAG_NONE )
 
     // pass the event onward
     event.Skip();
@@ -910,6 +910,14 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
      //LOGIT( _T("m_MouseMoveToLineMoveRatio %f"),m_MouseMoveToLineMoveRatio );
     #endif //LOGGING
 
+    // if "focus follows mouse" enabled, set focus to window
+    if (pDS->GetMouseFocusEnabled() )
+    {   // use EVT_ENTER_WINDOW instead of EVT_MOTION so that double
+        // clicking a search window item allows activating the editor cursor
+        if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
+            if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
+    }
+
     cbEditor* ed = 0;
     cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
     cbStyledTextCtrl* pLeftSplitWin = 0;
@@ -921,16 +929,30 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         pRightSplitWin = ed->GetRightSplitViewControl();
     }
 
-    // if "focus follows mouse" endabled, set focus to window
-    if (pDS->GetMouseFocusEnabled() )
-        if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
-            if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
-
-     // set focus to editor window if mouse is in it
-    if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
-        if (pDS->GetMouseEditorFocusEnabled() )
-           if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl))
-                p_cbStyledTextCtrl->SetFocus();
+    // set focus to editor window if mouse is in it
+    if (event.GetEventType() ==  wxEVT_MOTION)
+    {   // use EVT_MOTION here to avoid missing EVT_ENTER_WINDOW
+        // and allow activating the editor during compiles
+        if (pDS->GetMouseEditorFocusEnabled() ) do
+        {   wxWindow* currentFocus = wxWindow::FindFocus();
+            if (p_cbStyledTextCtrl && (m_pEvtObject ==  pLeftSplitWin))
+                if (currentFocus != (wxWindow*)m_pEvtObject)
+                {   pLeftSplitWin->SetFocus();
+                    #ifdef LOGGING
+                     //LOGIT( _T("OnMouseEvent:SetFocus Left %p"), pLeftSplitWin );
+                    #endif //LOGGING
+                    break;
+                }
+           if (pRightSplitWin && (m_pEvtObject ==  pRightSplitWin))
+                if (currentFocus != (wxWindow*)m_pEvtObject)
+                {   pRightSplitWin->SetFocus();
+                    #ifdef LOGGING
+                     //LOGIT( _T("OnMouseEvent:SetFocus Right %p"), pRightSplitWin );
+                    #endif //LOGGING
+                    break;
+                }
+        }while(0);
+    }
 
     int scrollx;
     int scrolly;
@@ -1013,9 +1035,9 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
 ////        //// If hiding Right mouse keydown from ListCtrls, return v0.22
 ////        //// RightMouseDown is causing an immediate selection in the control
 ////        //// This stops it.
-////        //if (pDS->GetMouseRightKeyCtrl()) return;
-////        //event.Skip(); //v0.21
-////        //return;
+////        //-if (pDS->GetMouseRightKeyCtrl()) return; removed
+////        //-event.Skip(); //v0.21
+////        //-return;
 
         //no mouse movements, so pass off to context menu processing
         event.Skip();

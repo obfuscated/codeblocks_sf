@@ -46,7 +46,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.1.04 2007/06/27"
+#define VERSION "1.2.04 2007/11/29"
 //----------------------------------------
 
 #if defined(dsLOGGING)
@@ -95,7 +95,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragKey()           { return MouseDragKey; }
         int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       { return MouseToLineRatio; }
-////        int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; }
+        //- int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; } removed
         int  GetMouseContextDelay()      { return MouseContextDelay; }
 
         wxWindow* m_pMS_Window;
@@ -137,7 +137,7 @@ class cbDragScroll : public cbPlugin
         int  MouseDragKey           ;   //Right or Middle mouse key
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
-        bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows
+        //-bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows removed
         int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
 
     private:
@@ -336,6 +336,7 @@ private:
 //          -fexceptions            __WXMSW__
 //          -include "sdk.h"        WXUSINGDLL
 //                                  cbDEBUG
+//                                  TIXML_USE_STL
 //                                  wxUSE_UNICODE
 // ----------------------------------------------------------------------------
 //  commit  v0.26 2006/06/29
@@ -348,10 +349,6 @@ private:
 //          and that the background color was incorrect.
 //  closed  2006/09/11
 //          Removed all Setfont()'s from config. Removed SetBackGroundColorColor()
-// ----------------------------------------------------------------------------
-//  ToDo
-//          2006/10/23 Determine attachable windows via RTTI
-//          2006/12/19 Add user specified RightKey drag dwell for GTK
 // ----------------------------------------------------------------------------
 //  commit  v0.28 2006/09/11
 // ----------------------------------------------------------------------------
@@ -395,5 +392,17 @@ private:
 //  Commit  1.1.04 2007/06/27
 //          03) Reduce minimum Unix Context menu sentry delay
 //          04) Clean up configuration panel
+// ----------------------------------------------------------------------------
+//  Commit  1.1.05
+//          05) mandrav changes for sdk RegisterEventSink
+// ----------------------------------------------------------------------------
+//  commit  1.2.04 2007/11/29
+//          1) add non-pch logmanager header
+//          2) correct "focus follows mouse" event on long compilations
+//          3) correct editor focus event on long compilations
+//          4) remove unused MouseRightKeyCtrl code
+// ----------------------------------------------------------------------------
+//  ToDo
+// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H
