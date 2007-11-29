@@ -3380,7 +3380,7 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
                                         this );
     long int line = 0;
     strLine.ToLong(&line);
-    if ( line > 1 && line <= max )
+    if ( line >= 1 && line <= max )
     {
         ed->UnfoldBlockFromLine(line - 1);
         ed->GotoLine(line - 1);
