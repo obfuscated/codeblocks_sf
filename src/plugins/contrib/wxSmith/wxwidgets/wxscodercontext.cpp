@@ -147,3 +147,10 @@ void wxsCoderContext::AddIdCode(const wxString& Enumeration,const wxString& Init
         }
     }
 }
+
+wxString wxsCoderContext::GetUniqueName(const wxString& Prefix)
+{
+    wxString& MapEntry = m_Extra[_T("__Counter_of_") + Prefix];
+    MapEntry.Append(_T('*'));
+    return wxString::Format(_T("%s_%d"),Prefix.c_str(),(int)MapEntry.Length());
+}

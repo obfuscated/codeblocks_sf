@@ -70,10 +70,7 @@ void wxsRadioBox::OnBuildCreatingCode()
             wxString ChoicesName;
             if ( ArrayChoices.GetCount() > 0 )
             {
-                wxString& CountVar = GetCoderContext()->m_Extra[_T("wxRadioBoxChoicesCount")];
-                ChoicesName.Printf(_T("__wxRadioBoxChoices_%d"),CountVar.Length());
-                CountVar.Append(_T("*"));
-
+                ChoicesName = GetCoderContext()->GetUniqueName(_T("__wxRadioBoxChoices"));
                 Codef(_T("wxString %s[%d] = \n{\n"),ChoicesName.c_str(),(int)ArrayChoices.GetCount());
                 for ( size_t i = 0; i < ArrayChoices.GetCount(); ++i )
                 {

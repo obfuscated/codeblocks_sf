@@ -390,6 +390,12 @@
 		<Unit filename="wxwidgets\defitems\wxschoicebook.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscolourdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxscolourdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets\defitems\wxscombobox.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>

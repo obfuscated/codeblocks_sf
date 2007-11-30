@@ -540,6 +540,15 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                     }
                                 }
                             }
+                            else if ( GetType()==wxsTTool && !IsRootItem() )
+                            {
+                                // For tools let's return this
+                                switch ( Language )
+                                {
+                                    case wxsCPP: Result << _T("this"); break;
+                                    default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
+                                }
+                            }
                             break;
                         }
 
@@ -562,6 +571,15 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                         case wxsCPP: Result << GetParent()->GetVarName(); break;
                                         default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                     }
+                                }
+                            }
+                            else if ( GetType()==wxsTTool && !IsRootItem() )
+                            {
+                                // For tools let's return *this
+                                switch ( Language )
+                                {
+                                    case wxsCPP: Result << _T("(*this)"); break;
+                                    default: wxsCodeMarks::Unknown(_T("wxString wxsItem::Codef"),Language);
                                 }
                             }
                             break;
@@ -763,6 +781,21 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                                 {
                                     Result << _T("wxNullBitmap");
                                 }
+                            }
+                            break;
+                        }
+
+                        case _T('l'):
+                        {
+                            wxsColourData* Data = va_arg(ap,wxsColourData*);
+                            wxString Code = Data->BuildCode(GetCoderContext());
+                            if ( Code.IsEmpty() )
+                            {
+                                Result << _T("wxNullColour");
+                            }
+                            else
+                            {
+                                Result << Code;
                             }
                             break;
                         }

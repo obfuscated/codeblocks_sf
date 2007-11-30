@@ -100,8 +100,7 @@ void wxsSpacer::OnBuildCreatingCode()
             {
                 // We use 'SpacerSizes' extra variable to keep count of currently added spacer sizes
                 // length of this extra string indicates current spacer size number
-                GetCoderContext()->m_Extra[_T("SpacerSizes")].Append(_T("*"));
-                wxString SizeName = wxString::Format(_T("SpacerSize%d"),(int)GetCoderContext()->m_Extra[_T("SpacerSizes")].Length());
+                wxString SizeName = GetCoderContext()->GetUniqueName(_T("__SpacerSize"));
 
                 Codef(_T("wxSize %s = %z;\n")
                       _T("%MAdd(%s.GetWidth(),%s.GetHeight(),%s);\n"),

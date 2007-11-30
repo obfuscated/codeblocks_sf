@@ -55,10 +55,9 @@ void wxsStatusBar::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %T, %N);\n"));
             if ( m_Fields>0 )
             {
-                wxString& CounterVal = GetCoderContext()->m_Extra[_T("wxStatusBarCount")];
-                wxString WidthsVarName = wxString::Format(_T("__wxStatusBarWidths_%d"),CounterVal.Length());
-                wxString StylesVarName = wxString::Format(_T("__wxStatusBarStyles_%d"),CounterVal.Length());
-                CounterVal.Append(_T('*'));
+                wxString WidthsVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarWidths"));
+                wxString StylesVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarStyles"));
+
                 Codef(_T("int %v[%d] = { "),WidthsVarName.c_str(),m_Fields);
                 for ( int i=0; i<m_Fields; i++ )
                 {
