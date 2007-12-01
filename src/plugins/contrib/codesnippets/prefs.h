@@ -11,7 +11,7 @@
 #define _PREFS_H_
 
 //----------------------------------------------------------------------------
-// informations
+// information
 //----------------------------------------------------------------------------
 /*
 	This file is part of Code Snippets, a plugin for Code::Blocks

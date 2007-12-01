@@ -321,6 +321,10 @@ AppVersion::~AppVersion()
 //          103) make it easier to rename a catagory
 //          104) Add "U" xpm for url type snippets
 // ----------------------------------------------------------------------------
+//  commit  1.2.105 2007/12/01
+//          105) fix Linux crash when CB terminates and window is floating
+//          106) on Linux disable drag/drop out of Project panel because of
+//               recurring drag/drop freeze bug
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
@@ -338,6 +342,7 @@ AppVersion::~AppVersion()
 //          Leak: 2007/10/4 g_printData allocated for each Edit, but only deleted once.
 //              The globals in snippetproperty.cpp should be allocated by instance.
 //          Dragging file out of OpenFilesList does not work on Linux.
+//          Cancelled "New snippet" is asking to delete file target. Should not!
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;

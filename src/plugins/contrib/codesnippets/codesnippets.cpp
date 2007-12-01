@@ -121,6 +121,7 @@ void CodeSnippets::OnAttach()
     // Must be done first to allocate config file
     g_pConfig = new CodeSnippetsConfig;
     g_pConfig->m_bIsPlugin = true;
+    m_pOpenFilesList = 0;
 
     // initialize version and logging
     m_pAppWin = Manager::Get()->GetAppWindow();
@@ -192,16 +193,22 @@ void CodeSnippets::OnAttach()
     m_pPrjMan = Manager::Get()->GetProjectManager();
     // set a drop target for the project managers wxFlatNotebook
     m_pPrjMan->GetNotebook()->SetDropTarget(new DropTargets(this));
-    SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
 
-	m_pOpenFilesList  = FindOpenFilesListWindow();
+    //NB: On Linux, we don't enable dragging out of the file windows because of the drag/drop freeze bug
+    #if defined(__WXMSW__)
+        SetTreeCtrlHandler( m_pPrjMan->GetTree(), wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    #endif
+    m_pOpenFilesList  = FindOpenFilesListWindow();
     if (m_pOpenFilesList)
     {
         // set drop targets on the OpenFilesList tree control
         m_pOpenFilesList->SetDropTarget(new DropTargets(this));
-        // set event hooks
-        SetTreeCtrlHandler( m_pOpenFilesList,  wxEVT_COMMAND_TREE_BEGIN_DRAG );
-    }
+        //NB: On Linux, we don't enable dragging out of the file windows because of the drag/drop freeze bug
+        #if defined(__WXMSW__)
+            // set event hooks
+            SetTreeCtrlHandler( m_pOpenFilesList,  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+        #endif
+    }//if
 
     m_nOnActivateBusy = 0;
     m_ExternalPid = 0;
@@ -285,11 +292,12 @@ void CodeSnippets::OnRelease(bool appShutDown)
     GetConfig()->pMainFrame->Disconnect(wxEVT_IDLE,
             wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
 
-    if (GetSnippetsWindow())
-    {   //GetSnippetsWindow()->Close(); <- causes crash when user disables plugin
-        GetSnippetsWindow()->Destroy();
-        SetSnippetsWindow(0);
-    }
+//  On Linux, the following causes CB to crash when the snippet window is floating
+////    if (GetSnippetsWindow())
+////    {   //GetSnippetsWindow()->Close(); <- causes crash when user disables plugin
+////        GetSnippetsWindow()->Destroy();
+////        SetSnippetsWindow(0);
+////    }
 
     // Make sure user cannot re-enable CodeSnippets until a CB restart
     GetConfig()->m_appIsShutdown = true;
@@ -375,8 +383,11 @@ void CodeSnippets::OnAppStartupDone(CodeBlocksEvent& event)
         if (m_pOpenFilesList)
         {
             m_pOpenFilesList->SetDropTarget(new DropTargets(this));
+            //NB: On Linux, we don't enable dragging out of the file windows because of the drag/drop freeze bug
             // set event hooks
-            SetTreeCtrlHandler( m_pOpenFilesList,  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+            #if defined(__WXMSW__)
+                SetTreeCtrlHandler( m_pOpenFilesList,  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+            #endif
             LOGIT( _T("OpenFilesList found @[%p]"), m_pOpenFilesList);
         }
         else{
