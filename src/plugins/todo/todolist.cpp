@@ -142,7 +142,7 @@ void ToDoList::OnRelease(bool appShutDown)
         CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
         evt.pWindow = m_pListLog->GetWindow();
         Manager::Get()->ProcessEvent(evt);
-        delete m_pListLog;
+//        delete m_pListLog;
     }
     else
     {
