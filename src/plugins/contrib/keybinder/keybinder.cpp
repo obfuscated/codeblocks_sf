@@ -1133,11 +1133,17 @@ int wxKeyBinder::FindHandlerIdxFor(wxWindow *p) const
 // ----------------------------------------------------------------------------
 void wxKeyBinder::Attach(wxWindow *p)
 {
+    LOGIT( _T("wxKeyBinder:Attach for [%p]"), p );
+
 	if (!p || IsAttachedTo(p))
 		return;		// already attached !!!
 
+    LOGIT( _T("wxKeyBinder:Attach2[%p]"), p );
+
 	if (p->GetExtraStyle() & wxWS_EX_TRANSIENT)
 		return;		// do not attach ourselves to temporary windows !!
+
+    LOGIT( _T("wxKeyBinder:Attach3[%p]"), p );
 
     //+v0.4.4 we allow only static windows to be attached by codeblocks
     // Disappearing frames/windows cause crashes
@@ -1145,9 +1151,10 @@ void wxKeyBinder::Attach(wxWindow *p)
 
     if (wxNOT_FOUND == usableWindows.Index(_T("*"),false)) //+v0.4.4 debugging
     if (wxNOT_FOUND == usableWindows.Index(windowName,false)) //+v0.4.2
-     {  //wxLogDebug(wxT("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str());
+    {
+        LOGIT( _T("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str() );
         return;
-     }
+    }
 
 	wxLogDebug(wxT("wxKeyBinder::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
 
@@ -1256,7 +1263,7 @@ void wxKeyBinder::OnWinClosed(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 //  wxKeyBinder Detach
 // ----------------------------------------------------------------------------
-void wxKeyBinder::Detach(wxWindow *p)
+void wxKeyBinder::Detach(wxWindow *p, bool deleteEvtHandler)
 {
 	if (!p || !IsAttachedTo(p))
 		return;		// this is not attached...
@@ -1269,7 +1276,7 @@ void wxKeyBinder::Detach(wxWindow *p)
 	m_arrHandlers.RemoveAt(idx, 1);
 
 	// the wxBinderEvtHandler will remove itself from p's event handlers
-	delete toremove;
+	if (deleteEvtHandler) delete toremove;
 }
 // ----------------------------------------------------------------------------
 //  wxKeyBinder DetachAll

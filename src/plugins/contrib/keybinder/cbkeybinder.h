@@ -45,7 +45,7 @@
 #include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.42 2007/08/12"
+#define VERSION "1.0.44 2007/12/2"
 // -----------------------------------
 class MyDialog;
 
@@ -125,7 +125,7 @@ class cbKeyBinder : public cbPlugin
         void AttachEditor(wxWindow* pEditor);
         void OnWindowCreateEvent(wxEvent& event);
         void OnWindowDestroyEvent(wxEvent& event);
-        void DetachEditor(wxWindow* pWindow);
+        void DetachEditor(wxWindow* pWindow, bool deleteEvtHandler = true);
         void MergeDynamicMenus();
         void OnAppStartShutdown(CodeBlocksEvent& event);
         void OnIdle(wxIdleEvent& event);
@@ -700,4 +700,8 @@ private:
 //  Commit  1.0.42 2007/08/12
 //          42) Change AddPendingEvent() to ProcessEvent() in wxMenuCmd::Exec()
 //              to avoid crashes when secondary command key would close editors wx284
+// ----------------------------------------------------------------------------
+// commit   1.0.44 2007/12/2
+//          43) add non-pch logmanager headers
+//          44) fix skipping of previously opened editors
 // ----------------------------------------------------------------------------

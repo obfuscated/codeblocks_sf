@@ -791,7 +791,7 @@ public:		// miscellaneous
 	void AttachRecursively(wxWindow *p);
 
 	//! Detaches this event handler from the given window.
-	void Detach(wxWindow *p);
+	void Detach(wxWindow *p, bool deleteEvtHandler = true);
 
 	//! Detaches this event handler from all the window it's attached to.
 	void DetachAll();

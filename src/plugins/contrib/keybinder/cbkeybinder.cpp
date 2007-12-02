@@ -820,13 +820,13 @@ void cbKeyBinder::AttachEditor(wxWindow* pWindow)
 // ----------------------------------------------------------------------------
 {
     if (IsAttached())
-     {
+    {
          wxWindow* thisEditor = pWindow->FindWindowByName(_T("SCIwindow"),pWindow);
 
 
         //skip editors that we already have
         if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
-         {
+        {
             //add editor to our array and push a keyBinder event handler
             m_EditorPtrs.Add(thisEditor);
             //Rebind keys to newly opened windows
@@ -834,11 +834,13 @@ void cbKeyBinder::AttachEditor(wxWindow* pWindow)
             #if LOGGING
              LOGIT(_T("cbKB:AttachEditor %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
-         }
-     }
+        }
+        else
+            LOGIT( _T("AttachEditor failed[%p][%p]"), pWindow, thisEditor );
+    }
 }
 // ----------------------------------------------------------------------------
-void cbKeyBinder::DetachEditor(wxWindow* pWindow)
+void cbKeyBinder::DetachEditor(wxWindow* pWindow, bool deleteEvtHandler)
 // ----------------------------------------------------------------------------
 {
     if (IsAttached())
@@ -857,7 +859,7 @@ void cbKeyBinder::DetachEditor(wxWindow* pWindow)
 
         if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
          {
-            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
+            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor, deleteEvtHandler);
             m_EditorPtrs.Remove(thisEditor);
             #if LOGGING
              LOGIT(_T("cbKB:DetachEditor %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
@@ -932,8 +934,11 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
         {   ed = static_cast<cbEditor*>(eb);
             thisEditor = ed->GetControl();
         }
-
-        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
+        //------------------------------------------------------------------
+        // This code never executed because ed->GetControl no longer exists
+        // See OnWindowDestroyEvent() which gets the window as an event.object
+        //------------------------------------------------------------------
+                if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
         {
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
             m_EditorPtrs.Remove(thisEditor);
@@ -1011,8 +1016,8 @@ void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
                 //-if (pRightSplitWin eq pWindow)
                 //-{    Attach(pRightSplitWin);
                 if (pWindow->GetParent() == ed)
-                {    AttachEditor(pWindow);
-                    LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
+                {   LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
+                    AttachEditor(pWindow);
                 }
             }
         }
@@ -1024,23 +1029,26 @@ void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
 void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
 // ----------------------------------------------------------------------------
 {
+    //NB: event.GetGetEventObject() is a SCIwindow*, not and EditorBase*
+
     // wxEVT_DESTROY entry
     // This routine simply clears the memorized Editor pointers
     // that dont get cleared by OnEditorClose, which doesnt get
     // entered for split windows. CodeBlocks doesnt yet have events
     // when opening/closing split windows.
-
     if (not m_bBound){ event.Skip(); return;}
 
-    wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
-
+    wxWindow* thisWindow = (wxWindow*)(event.GetEventObject());
     //-Detach(pWindow); causes crash
-    if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
+    if ( (thisWindow) && (m_EditorPtrs.Index(thisWindow) != wxNOT_FOUND))
     {
-        m_EditorPtrs.Remove(pWindow);
-        //-DetachEditor(pWindow); causes crash
+        // deleteing the EvtHandler here will crash CB
+        // detach before removing the ed ptr
+        DetachEditor(thisWindow, /*DeleteEvtHander*/false);
+        m_EditorPtrs.Remove(thisWindow);
+
         #ifdef LOGGING
-         LOGIT( _T("OnWindowDestroyEvent Remove %p"), pWindow);
+         LOGIT( _T("OnWindowDestroyEvent Removed %p"), thisWindow);
         #endif //LOGGING
     }
     event.Skip();
