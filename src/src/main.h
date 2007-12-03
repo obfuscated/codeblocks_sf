@@ -70,11 +70,11 @@ class MainFrame : public wxFrame
         void OnFileOpenRecentProjectClearHistory(wxCommandEvent& event);
         void OnFileReopen(wxCommandEvent& event);
         void OnFileOpenRecentClearHistory(wxCommandEvent& event);
-		void OnFileImportProjectDevCpp(wxCommandEvent& event);
-		void OnFileImportProjectMSVC(wxCommandEvent& event);
-		void OnFileImportProjectMSVCWksp(wxCommandEvent& event);
-		void OnFileImportProjectMSVS(wxCommandEvent& event);
-		void OnFileImportProjectMSVSWksp(wxCommandEvent& event);
+        void OnFileImportProjectDevCpp(wxCommandEvent& event);
+        void OnFileImportProjectMSVC(wxCommandEvent& event);
+        void OnFileImportProjectMSVCWksp(wxCommandEvent& event);
+        void OnFileImportProjectMSVS(wxCommandEvent& event);
+        void OnFileImportProjectMSVSWksp(wxCommandEvent& event);
         void OnFileSave(wxCommandEvent& event);
         void OnFileSaveAs(wxCommandEvent& event);
         void OnFileSaveAllFiles(wxCommandEvent& event);
@@ -138,9 +138,9 @@ class MainFrame : public wxFrame
         void OnEditToggleCommentSelected(wxCommandEvent & event);
         void OnEditAutoComplete(wxCommandEvent& event);
 
-		void OnEditBookmarksToggle(wxCommandEvent& event);
-		void OnEditBookmarksNext(wxCommandEvent& event);
-		void OnEditBookmarksPrevious(wxCommandEvent& event);
+        void OnEditBookmarksToggle(wxCommandEvent& event);
+        void OnEditBookmarksNext(wxCommandEvent& event);
+        void OnEditBookmarksPrevious(wxCommandEvent& event);
 
         void OnViewLayout(wxCommandEvent& event);
         void OnViewLayoutSave(wxCommandEvent& event);
@@ -150,13 +150,13 @@ class MainFrame : public wxFrame
         void OnSearchFind(wxCommandEvent& event);
         void OnSearchFindNext(wxCommandEvent& event);
         void OnSearchReplace(wxCommandEvent& event);
-		void OnSearchGotoLine(wxCommandEvent& event);
+        void OnSearchGotoLine(wxCommandEvent& event);
 
         void OnPluginsExecuteMenu(wxCommandEvent& event);
 
-		void OnSettingsEnvironment(wxCommandEvent& event);
+        void OnSettingsEnvironment(wxCommandEvent& event);
         void OnSettingsKeyBindings(wxCommandEvent& event);
-		void OnGlobalUserVars(wxCommandEvent& event);
+        void OnGlobalUserVars(wxCommandEvent& event);
         void OnSettingsEditor(wxCommandEvent& event);
         void OnSettingsCompilerDebugger(wxCommandEvent& event);
         void OnSettingsPlugins(wxCommandEvent& event);
@@ -178,60 +178,60 @@ class MainFrame : public wxFrame
         void OnPluginInstalled(CodeBlocksEvent& event);
         void OnPluginUninstalled(CodeBlocksEvent& event);
 
-		// general UpdateUI events
+        // general UpdateUI events
         void OnEditorUpdateUI(CodeBlocksEvent& event);
 
-		void OnFileMenuUpdateUI(wxUpdateUIEvent& event);
-		void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
-		void OnViewMenuUpdateUI(wxUpdateUIEvent& event);
-		void OnSearchMenuUpdateUI(wxUpdateUIEvent& event);
-		void OnProjectMenuUpdateUI(wxUpdateUIEvent& event);
+        void OnFileMenuUpdateUI(wxUpdateUIEvent& event);
+        void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
+        void OnViewMenuUpdateUI(wxUpdateUIEvent& event);
+        void OnSearchMenuUpdateUI(wxUpdateUIEvent& event);
+        void OnProjectMenuUpdateUI(wxUpdateUIEvent& event);
 
-		// project events
-		void OnProjectActivated(CodeBlocksEvent& event);
-		void OnProjectOpened(CodeBlocksEvent& event);
-		void OnProjectClosed(CodeBlocksEvent& event);
+        // project events
+        void OnProjectActivated(CodeBlocksEvent& event);
+        void OnProjectOpened(CodeBlocksEvent& event);
+        void OnProjectClosed(CodeBlocksEvent& event);
 
-		// dock/undock window requests
-		void OnRequestDockWindow(CodeBlocksDockEvent& event);
-		void OnRequestUndockWindow(CodeBlocksDockEvent& event);
-		void OnRequestShowDockWindow(CodeBlocksDockEvent& event);
-		void OnRequestHideDockWindow(CodeBlocksDockEvent& event);
-		void OnDockWindowVisibility(CodeBlocksDockEvent& event);
+        // dock/undock window requests
+        void OnRequestDockWindow(CodeBlocksDockEvent& event);
+        void OnRequestUndockWindow(CodeBlocksDockEvent& event);
+        void OnRequestShowDockWindow(CodeBlocksDockEvent& event);
+        void OnRequestHideDockWindow(CodeBlocksDockEvent& event);
+        void OnDockWindowVisibility(CodeBlocksDockEvent& event);
 
         // layout requests
         void OnLayoutQuery(CodeBlocksLayoutEvent& event);
         void OnLayoutSwitch(CodeBlocksLayoutEvent& event);
 
-		// log requests
-		void OnAddLogWindow(CodeBlocksLogEvent& event);
-		void OnRemoveLogWindow(CodeBlocksLogEvent& event);
-		void OnSwitchToLogWindow(CodeBlocksLogEvent& event);
-		void OnShowLogManager(CodeBlocksLogEvent& event);
-		void OnHideLogManager(CodeBlocksLogEvent& event);
-		void OnLockLogManager(CodeBlocksLogEvent& event);
-		void OnUnlockLogManager(CodeBlocksLogEvent& event);
+        // log requests
+        void OnAddLogWindow(CodeBlocksLogEvent& event);
+        void OnRemoveLogWindow(CodeBlocksLogEvent& event);
+        void OnSwitchToLogWindow(CodeBlocksLogEvent& event);
+        void OnShowLogManager(CodeBlocksLogEvent& event);
+        void OnHideLogManager(CodeBlocksLogEvent& event);
+        void OnLockLogManager(CodeBlocksLogEvent& event);
+        void OnUnlockLogManager(CodeBlocksLogEvent& event);
 
-		// editor changed events
-		void OnEditorOpened(CodeBlocksEvent& event);
-		void OnEditorActivated(CodeBlocksEvent& event);
-		void OnEditorClosed(CodeBlocksEvent& event);
-		void OnEditorSaved(CodeBlocksEvent& event);
-		void OnEditorModified(CodeBlocksEvent& event);
-		void OnPageChanged(wxNotebookEvent& event);
+        // editor changed events
+        void OnEditorOpened(CodeBlocksEvent& event);
+        void OnEditorActivated(CodeBlocksEvent& event);
+        void OnEditorClosed(CodeBlocksEvent& event);
+        void OnEditorSaved(CodeBlocksEvent& event);
+        void OnEditorModified(CodeBlocksEvent& event);
+        void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
     protected:
         void CreateIDE();
-		void CreateMenubar();
+        void CreateMenubar();
         void CreateToolbars();
         void ScanForPlugins();
-		void AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image);
+        void AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image);
         void RecreateMenuBar();
         void RegisterEvents();
         void SetupGUILogging();
 
-		void RegisterScriptFunctions();
-		void RunStartupScripts();
+        void RegisterScriptFunctions();
+        void RunStartupScripts();
 
         enum { Installed, Uninstalled, Unloaded };
         void PluginsUpdated(cbPlugin* plugin, int status);
@@ -252,9 +252,9 @@ class MainFrame : public wxFrame
 
         void AskToRemoveFileFromHistory(wxFileHistory* hist, int id);
 
-		void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
-		void RemoveEditorFromWindowMenu(const wxString& filename);
-		int IsEditorInWindowMenu(const wxString& filename);
+        void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
+        void RemoveEditorFromWindowMenu(const wxString& filename);
+        int IsEditorInWindowMenu(const wxString& filename);
 
         bool DoCloseCurrentWorkspace();
         bool DoOpenProject(const wxString& filename, bool addToHistory = true);
@@ -263,11 +263,11 @@ class MainFrame : public wxFrame
 
         void DoCreateStatusBar();
         void DoUpdateStatusBar();
-		void DoUpdateAppTitle();
-		void DoUpdateLayout();
+        void DoUpdateAppTitle();
+        void DoUpdateLayout();
         void DoUpdateLayoutColours();
-		void DoUpdateEditorStyle();
-		void DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle);
+        void DoUpdateEditorStyle();
+        void DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle);
 
         void ShowHideStartPage(bool forceHasProject = false);
         void ShowHideScriptConsole();
@@ -286,17 +286,17 @@ class MainFrame : public wxFrame
         /// "Close FullScreen" button. Only shown when in FullScreen view
         wxButton* m_pCloseFullScreenBtn;
 
-		EditorManager* m_pEdMan;
-		ProjectManager* m_pPrjMan;
-		LogManager* m_pMsgMan;
-		InfoPane *infoPane;
+        EditorManager* m_pEdMan;
+        ProjectManager* m_pPrjMan;
+        LogManager* m_pMsgMan;
+        InfoPane *infoPane;
 
         wxToolBar* m_pToolbar;
         PluginToolbarsMap m_PluginsTools;
 
         PluginIDsMap m_PluginIDsMap;
         wxMenu* m_ToolsMenu;
-		wxMenu* m_PluginsMenu;
+        wxMenu* m_PluginsMenu;
         wxMenu* m_HelpPluginsMenu;
 
         bool m_SmallToolBar;
@@ -312,10 +312,10 @@ class MainFrame : public wxFrame
         wxWindow* m_pScriptConsole;
 
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
-		MenuIDToScript m_MenuIDToScript;
+        MenuIDToScript m_MenuIDToScript;
 
-		typedef std::map<Logger*, int> LoggerToInfoPaneIndex; // logger to infpane page index
-		LoggerToInfoPaneIndex m_LoggerToInfoPaneIndex;
+        typedef std::map<Logger*, int> LoggerToInfoPaneIndex; // logger to infpane page index
+        LoggerToInfoPaneIndex m_LoggerToInfoPaneIndex;
 
         wxDialog* m_pBatchBuildDialog;
         wxGauge* m_pProgressBar;
