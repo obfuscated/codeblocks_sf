@@ -72,28 +72,3 @@ void wxsTimer::OnEnumToolProperties(long Flags)
     WXS_LONG(wxsTimer,m_Interval,_("Interval"),_T("interval"),0);
     WXS_BOOL(wxsTimer,m_OneShoot,_("One Shoot"),_T("oneshoot"),false);
 }
-
-bool wxsTimer::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
-{
-    switch ( Data->GetPropertiesFilter() & (flSource|flMixed|flFile) )
-    {
-        case flSource:
-            return true;
-
-        case flMixed:
-            if ( ShowMessage )
-            {
-                cbMessageBox(_("Can not add timer when using XRC file"),_("wxTimer error"));
-            }
-            return false;
-
-        case flFile:
-            if ( ShowMessage )
-            {
-                cbMessageBox(_("wxTimer is not supported in XRC"),_("wxTimer error"));
-            }
-            return false;
-    }
-
-    return false;
-}

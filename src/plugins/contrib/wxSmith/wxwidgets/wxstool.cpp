@@ -36,6 +36,33 @@ wxsTool::wxsTool(
 {
 }
 
+bool wxsTool::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
+{
+    if ( GetInfo().AllowInXRC )
+    {
+        // We do not filter if we can use this tool in XRC mode
+        return true;
+    }
+
+    switch ( Data->GetPropertiesFilter() & (flSource|flMixed|flFile) )
+    {
+        case flSource:
+            return true;
+
+        case flMixed:
+        case flFile:
+            if ( ShowMessage )
+            {
+                cbMessageBox(
+                    wxString::Format(_("%s is not supported in XRC"),GetInfo().ClassName.c_str()),
+                    _("Tool insertion error"));
+            }
+            return false;
+    }
+
+    return false;
+}
+
 void wxsTool::OnEnumItemProperties(long Flags)
 {
     OnEnumToolProperties(Flags);

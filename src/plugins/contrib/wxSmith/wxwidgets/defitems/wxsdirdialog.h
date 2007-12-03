@@ -21,24 +21,24 @@
 * $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/wxSmith/wxwidgets/defitems/wxstimer.h $
 */
 
-#ifndef WXSCOLOURDIALOG_H
-#define WXSCOLOURDIALOG_H
+#ifndef WXSDIRDIALOG_H
+#define WXSDIRDIALOG_H
 
 #include "../wxstool.h"
 
-class wxsColourDialog: public wxsTool
+class wxsDirDialog: public wxsTool
 {
     public:
 
-        wxsColourDialog(wxsItemResData* Data);
+        wxsDirDialog(wxsItemResData* Data);
 
     private:
 
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
 
-        bool m_ChooseFull;
-        wxsColourData m_Colour;
+        wxString m_Message;
+        wxString m_DefaultPath;
 };
 
 #endif

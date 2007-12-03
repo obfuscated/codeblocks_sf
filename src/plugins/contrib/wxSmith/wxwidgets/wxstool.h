@@ -75,12 +75,15 @@ class wxsTool: public wxsParent
 
         /** \brief Checking if this tool can be added to given resource
          *
-         * One can override this function to limit tool's availability
+         * One can override this function to limit tool's availability.
+         * Default implemetnation checks if we are in XRC edit mode and if this
+         * item can not be used inside XRC
+         *
          * \param Data data of checked resource
          * \param ShowMessage if true, this function should show message box
          *        notifying about problem when can not add this tool to resource
          */
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage) { return true; }
+        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
 
     private:
 

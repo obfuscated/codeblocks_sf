@@ -65,7 +65,9 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxstoolbaritem.cpp \
 ./wxstoolbareditor.cpp \
 ./wxsgrid.cpp \
-./wxscolourdialog.cpp
+./wxscolourdialog.cpp \
+./wxsdirdialog.cpp \
+./wxsfiledialog.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -119,4 +121,7 @@ noinst_HEADERS = \
 ./wxstoolbaritem.h \
 ./wxstoolbareditor.h \
 ./wxsgrid.h \
-./wxscolourdialog.h
+./wxscolourdialog.h \
+./wxsdirdialog.h \
+./wxsfiledialog.h
+

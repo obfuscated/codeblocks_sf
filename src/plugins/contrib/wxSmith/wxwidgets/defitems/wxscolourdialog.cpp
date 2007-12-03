@@ -1,6 +1,6 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006-2007  Bartlomiej Swiecki
+* Copyright (C) 2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -85,29 +85,4 @@ void wxsColourDialog::OnEnumToolProperties(long Flags)
 {
     WXS_BOOL(wxsColourDialog,m_ChooseFull,_("Full dialog"),_T("choosefull"),true);
     WXS_COLOUR(wxsColourDialog,m_Colour,_("Colour"),_T("colour"));
-}
-
-bool wxsColourDialog::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
-{
-    switch ( Data->GetPropertiesFilter() & (flSource|flMixed|flFile) )
-    {
-        case flSource:
-            return true;
-
-        case flMixed:
-            if ( ShowMessage )
-            {
-                cbMessageBox(_("Can not add wxColourDialog when using XRC file"),_("wxColourDialog error"));
-            }
-            return false;
-
-        case flFile:
-            if ( ShowMessage )
-            {
-                cbMessageBox(_("wxColourDialog is not supported in XRC"),_("wxColourDialog error"));
-            }
-            return false;
-    }
-
-    return false;
 }

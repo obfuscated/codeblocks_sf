@@ -37,7 +37,6 @@ class wxsTimer: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
         virtual bool OnIsPointer() { return false; }
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
 
         long m_Interval;
         bool m_OneShoot;
