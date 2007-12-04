@@ -495,6 +495,12 @@
 		<Unit filename="wxwidgets/defitems/wxsmenuitem.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsmultichoicedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsmultichoicedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsnotebook.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
