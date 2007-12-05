@@ -68,7 +68,8 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxscolourdialog.cpp \
 ./wxsdirdialog.cpp \
 ./wxsfiledialog.cpp \
-./wxsmultichoicedialog.cpp
+./wxsmultichoicedialog.cpp \
+./wxssinglechoicedialog.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -125,5 +126,6 @@ noinst_HEADERS = \
 ./wxscolourdialog.h \
 ./wxsdirdialog.h \
 ./wxsfiledialog.h \
-./wxsmultichoicedialog.h
+./wxsmultichoicedialog.h \
+./wxssinglechoicedialog.h
 

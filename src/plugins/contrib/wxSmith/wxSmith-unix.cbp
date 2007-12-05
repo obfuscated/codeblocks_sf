@@ -537,6 +537,12 @@
 		<Unit filename="wxwidgets/defitems/wxsscrolledwindow.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxssinglechoicedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxssinglechoicedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsslider.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>

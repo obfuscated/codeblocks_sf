@@ -414,6 +414,12 @@
 		<Unit filename="wxwidgets\defitems\wxsmultichoicedialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets\defitems\wxscombobox.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
