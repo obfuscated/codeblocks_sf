@@ -19,10 +19,9 @@
 */
 // RCS-ID: $Id: codesnippets.cpp 104 2007-11-15 19:51:34Z Pecan $
 
-#if defined(CB_PRECOMP)
+#include <cstring>
 #include "sdk.h"
-#else
-    #include "sdk_common.h"
+#ifndef CB_PRECOMP
 	#include <wx/event.h>
 	#include <wx/frame.h> // Manager::Get()->GetAppWindow()
 	#include <wx/intl.h>
