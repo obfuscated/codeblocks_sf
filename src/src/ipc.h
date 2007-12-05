@@ -1,10 +1,8 @@
 #ifndef IPC_H
 #define IPC_H
 
-
-#include "sdk.h"
-
-#include <wx/wx.h>
+#include <wx/thread.h>
+#include "cbexception.h"
 
 #ifndef __WIN32__
 	#include <sys/types.h>
@@ -13,7 +11,7 @@
 	#include <fcntl.h>
 #endif
 
-
+class wxString;
 
 static const int ipc_buf_size = 1024*64;
 
