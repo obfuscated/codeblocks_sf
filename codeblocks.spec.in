@@ -92,7 +92,7 @@ BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, autom
 %else
 BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
 %endif
-BuildRequires:  	libstdc++, libstdc++-devel, gtk2-devel
+BuildRequires:  	libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel
 BuildRequires:  	zip, subversion, pkgconfig
 
 %if 0%{suse_version}
