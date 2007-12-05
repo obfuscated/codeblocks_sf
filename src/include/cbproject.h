@@ -335,6 +335,44 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @return True if succesfull, false otherwise.
           */
         bool LoadLayout();
+        
+        /** Notify that file(s) will be added shortly.
+          * This function should be called before calling AddFile().
+          * When done calling AddFile() as many times as needed, call
+          * EndAddFiles().
+          *
+          * This sequence of function calls ensures proper events dispatching.
+          * This function broadcasts the cbEVT_PROJECT_BEGIN_ADD_FILES event.
+          */
+		void BeginAddFiles();
+
+        /** Notify that file(s) addition finished.
+          * This function should be called when done calling AddFile() as many times as needed.
+          *
+          * This sequence of function calls ensures proper events dispatching.
+          * This function broadcasts the cbEVT_PROJECT_END_ADD_FILES event.
+          * @see BeginAddFiles().
+          */
+		void EndAddFiles();
+
+        /** Notify that file(s) will be removed shortly.
+          * This function should be called before calling RemoveFile().
+          * When done calling RemoveFile() as many times as needed, call
+          * EndRemoveFiles().
+          *
+          * This sequence of function calls ensures proper events dispatching.
+          * This function broadcasts the cbEVT_PROJECT_BEGIN_REMOVE_FILES event.
+          */
+		void BeginRemoveFiles();
+
+        /** Notify that file(s) removal finished.
+          * This function should be called when done calling RemoveFile() as many times as needed.
+          *
+          * This sequence of function calls ensures proper events dispatching.
+          * This function broadcasts the cbEVT_PROJECT_END_REMOVE_FILES event.
+          * @see BeginRemoveFiles().
+          */
+		void EndRemoveFiles();
 
         /** Add a file to the project.
           * This variation, takes a target name as first parameter.

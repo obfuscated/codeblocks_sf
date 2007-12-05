@@ -97,7 +97,7 @@ void ToDoList::OnAttach()
         msgMan->Slot(m_ListPageIndex).title = _("To-Do");
 
         CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
     }
     else
     {
@@ -148,7 +148,7 @@ void ToDoList::OnRelease(bool appShutDown)
     {
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
         evt.window = m_pListLog->GetWindow();
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
     }
     m_pListLog = 0;
 }

@@ -179,7 +179,7 @@ bool ToolsManager::Execute(const cbTool* tool)
         else
         {
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
-            Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);        // switch to default log
+            Manager::Get()->ProcessEvent(evtSwitch);        // switch to default log
          }
     }
     else
@@ -198,7 +198,7 @@ bool ToolsManager::Execute(const cbTool* tool)
         else
         {
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
-            Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);        // switch to default log
+            Manager::Get()->ProcessEvent(evtSwitch);        // switch to default log
         }
     }
 

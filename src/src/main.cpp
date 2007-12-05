@@ -450,14 +450,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     /// Shift-Tab bug workaround
     EVT_MENU(idShiftTab,MainFrame::OnShiftTab)
 
-    EVT_ADD_LOG_WINDOW(MainFrame::OnAddLogWindow)
-    EVT_REMOVE_LOG_WINDOW(MainFrame::OnRemoveLogWindow)
-    EVT_SWITCH_TO_LOG_WINDOW(MainFrame::OnSwitchToLogWindow)
-    EVT_SHOW_LOG_MANAGER(MainFrame::OnShowLogManager)
-    EVT_HIDE_LOG_MANAGER(MainFrame::OnHideLogManager)
-    EVT_LOCK_LOG_MANAGER(MainFrame::OnLockLogManager)
-    EVT_UNLOCK_LOG_MANAGER(MainFrame::OnUnlockLogManager)
-
 END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
@@ -614,6 +606,14 @@ void MainFrame::RegisterEvents()
 
     pm->RegisterEventSink(cbEVT_QUERY_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutQuery));
     pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
+    
+    pm->RegisterEventSink(cbEVT_ADD_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnAddLogWindow));
+    pm->RegisterEventSink(cbEVT_REMOVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnRemoveLogWindow));
+    pm->RegisterEventSink(cbEVT_SWITCH_TO_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnSwitchToLogWindow));
+    pm->RegisterEventSink(cbEVT_SHOW_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnShowLogManager));
+    pm->RegisterEventSink(cbEVT_HIDE_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnHideLogManager));
+    pm->RegisterEventSink(cbEVT_LOCK_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnLockLogManager));
+    pm->RegisterEventSink(cbEVT_UNLOCK_LOG_MANAGER, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnUnlockLogManager));
 }
 
 void MainFrame::ShowTips(bool forceShow)
@@ -3966,14 +3966,18 @@ void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)
 {
     if (Manager::IsAppShuttingDown())
         return;
-    wxWindow* p = event.logger->CreateControl(infoPane);
-    if(p)
-    {
-        int idx = infoPane->AddLogger(event.logger, p, event.title, event.icon);
-        if (idx != -1)
-            m_LoggerToInfoPaneIndex[event.logger] = idx;
-    }
-
+	int idx = -1;
+    wxWindow* p = event.window;
+    if (p)
+		idx = infoPane->AddNonLogger(p, event.title, event.icon);
+	else
+	{
+		p = event.logger->CreateControl(infoPane);
+		if(p)
+			idx = infoPane->AddLogger(event.logger, p, event.title, event.icon);
+	}
+	if (idx != -1)
+		m_LoggerToInfoPaneIndex[event.window ? event.window : (void*)event.logger] = idx;
     Manager::Get()->GetLogManager()->NotifyUpdate();
 }
 
@@ -3981,14 +3985,16 @@ void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
 {
     if (Manager::IsAppShuttingDown())
         return;
-//    infoPane->DeleteLogger(event.window, event.logger);
-    infoPane->DeleteLogger(event.logger);
-    m_LoggerToInfoPaneIndex[event.logger] = -1;
+	if (event.window)
+		infoPane->RemoveNonLogger(event.window);
+	else
+		infoPane->DeleteLogger(event.logger);
+	m_LoggerToInfoPaneIndex[event.window ? event.window : (void*)event.logger] = -1;
 }
 
 void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
 {
-    int idx = m_LoggerToInfoPaneIndex[event.logger];
+    int idx = m_LoggerToInfoPaneIndex[event.window ? event.window : (void*)event.logger];
     if (idx != -1)
         infoPane->Show(idx);
 }

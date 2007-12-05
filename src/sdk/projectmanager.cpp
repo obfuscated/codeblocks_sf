@@ -1370,6 +1370,8 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
     if (!project)
         project = GetActiveProject();
 
+	project->BeginAddFiles();
+
     wxArrayString addedFiles; // to know which files were added succesfully
     for (unsigned int i = 0; i < filelist.GetCount(); ++i)
     {
@@ -1388,6 +1390,9 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
             Manager::Get()->GetPluginManager()->NotifyPlugins(event);
         }
     }
+    
+    project->EndAddFiles();
+    
     return targets.GetCount();
 }
 
@@ -2056,6 +2061,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
             {
                 return;
             }
+            prj->BeginRemoveFiles();
             // we iterate the arry backwards, because if we iterate it normally,
             // when we remove the first index, the rest become invalid...
             for (int i = (int)indices.GetCount() - 1; i >= 0; --i)
@@ -2077,6 +2083,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
             }
             prj->CalculateCommonTopLevelPath();
+            prj->EndAddFiles();
             RebuildTree();
         }
     }
@@ -2088,6 +2095,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
 			cbMessageBox(_("Can't remove file because it is auto-generated..."), _("Error"));
 			return;
 		}
+		prj->BeginRemoveFiles();
         wxString filename = ftd->GetProjectFile()->file.GetFullPath();
         prj->RemoveFile(ftd->GetProjectFile());
         prj->CalculateCommonTopLevelPath();
@@ -2097,6 +2105,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
         if (prj->GetCommonTopLevelPath() == oldpath)
             m_pTree->Delete(sel);
+		prj->EndRemoveFiles();
         RebuildTree();
     }
     else if (event.GetId() == idMenuRemoveFolderFilesPopup)
@@ -2111,7 +2120,9 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         bool is_virtual = ftd->GetKind() == FileTreeData::ftdkVirtualFolder;
         if (is_virtual || ftd->GetKind() == FileTreeData::ftdkFolder)
         {
+        	prj->BeginRemoveFiles();
             RemoveFilesRecursively(sel);
+            prj->EndRemoveFiles();
         }
         prj->CalculateCommonTopLevelPath();
         if (prj->GetCommonTopLevelPath() == oldpath && !is_virtual)

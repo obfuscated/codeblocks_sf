@@ -84,7 +84,6 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs)
 // app events
 const wxEventType cbEVT_APP_STARTUP_DONE = wxNewEventType();
 const wxEventType cbEVT_APP_START_SHUTDOWN = wxNewEventType();
-const wxEventType cbEVT_APP_UPDATE_TITLE = wxNewEventType();
 // plugin events
 const wxEventType cbEVT_PLUGIN_ATTACHED = wxNewEventType();
 const wxEventType cbEVT_PLUGIN_RELEASED = wxNewEventType();
@@ -108,6 +107,10 @@ const wxEventType cbEVT_PROJECT_CLOSE = wxNewEventType();
 const wxEventType cbEVT_PROJECT_OPEN = wxNewEventType();
 const wxEventType cbEVT_PROJECT_SAVE = wxNewEventType();
 const wxEventType cbEVT_PROJECT_ACTIVATE = wxNewEventType();
+const wxEventType cbEVT_PROJECT_BEGIN_ADD_FILES = wxNewEventType();
+const wxEventType cbEVT_PROJECT_END_ADD_FILES = wxNewEventType();
+const wxEventType cbEVT_PROJECT_BEGIN_REMOVE_FILES = wxNewEventType();
+const wxEventType cbEVT_PROJECT_END_REMOVE_FILES = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_ADDED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_REMOVED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_POPUP_MENU = wxNewEventType();

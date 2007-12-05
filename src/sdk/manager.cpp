@@ -221,6 +221,22 @@ bool Manager::ProcessEvent(CodeBlocksLayoutEvent& event)
 	return true;
 }
 
+bool Manager::ProcessEvent(CodeBlocksLogEvent& event)
+{
+	if (IsAppShuttingDown())
+		return false;
+
+	LogEventSinksMap::iterator mit = m_LogEventSinks.find(event.GetEventType());
+	if (mit != m_LogEventSinks.end())
+	{
+		for (LogEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+		{
+			(*it)->Call(event);
+		}
+	}
+	return true;
+}
+
 
 bool Manager::IsAppShuttingDown()
 {

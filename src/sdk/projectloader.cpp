@@ -850,6 +850,7 @@ void ProjectLoader::DoEnvironment(TiXmlElement* parentNode, CompileOptionsBase* 
 void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 {
     Manager::Get()->GetLogManager()->DebugLog(_T("Loading project files..."));
+    m_pProject->BeginAddFiles();
     int count = 0;
     TiXmlElement* unit = parentNode->FirstChildElement("Unit");
     while (unit)
@@ -869,6 +870,7 @@ void ProjectLoader::DoUnits(TiXmlElement* parentNode)
 
         unit = unit->NextSiblingElement("Unit");
     }
+    m_pProject->EndAddFiles();
     Manager::Get()->GetLogManager()->DebugLog(F(_T("%d files loaded"), count));
 }
 

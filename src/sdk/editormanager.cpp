@@ -195,7 +195,7 @@ EditorManager::~EditorManager()
     SaveAutoComplete();
 
     CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pSearchLog);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 
     delete m_Theme;
     delete m_LastFindReplaceData;
@@ -260,7 +260,7 @@ void EditorManager::CreateSearchLog()
 
     m_pSearchLog = new SearchResultsLog(titles, widths);
     CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pSearchLog, _("Search results"), bmp);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void EditorManager::LogSearch(const wxString& file, int line, const wxString& lineText)
@@ -2267,8 +2267,8 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pSearchLog);
         	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
 
-			Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
-			Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+			Manager::Get()->ProcessEvent(evtSwitch);
+			Manager::Get()->ProcessEvent(evtShow);
         }
         static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
     }

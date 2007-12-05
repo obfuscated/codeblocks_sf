@@ -527,6 +527,34 @@ bool cbProject::LoadLayout()
     return result;
 }
 
+void cbProject::BeginAddFiles()
+{
+	CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_ADD_FILES);
+	event.SetProject(this);
+	Manager::Get()->ProcessEvent(event);
+}
+
+void cbProject::EndAddFiles()
+{
+	CodeBlocksEvent event(cbEVT_PROJECT_END_ADD_FILES);
+	event.SetProject(this);
+	Manager::Get()->ProcessEvent(event);
+}
+
+void cbProject::BeginRemoveFiles()
+{
+	CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_REMOVE_FILES);
+	event.SetProject(this);
+	Manager::Get()->ProcessEvent(event);
+}
+
+void cbProject::EndRemoveFiles()
+{
+	CodeBlocksEvent event(cbEVT_PROJECT_END_REMOVE_FILES);
+	event.SetProject(this);
+	Manager::Get()->ProcessEvent(event);
+}
+
 ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& filename, bool compile, bool link, unsigned short int weight)
 {
     int idx = IndexOfBuildTargetName(targetName);

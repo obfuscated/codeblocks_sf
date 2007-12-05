@@ -444,11 +444,11 @@ void CompilerGCC::OnAttach()
     msgMan->Slot(m_ListPageIndex).icon = bmp;
 
     CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_Log, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd1);
+    Manager::Get()->ProcessEvent(evtAdd1);
     if (!Manager::IsBatchBuild())
     {
         CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
-        Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd2);
+        Manager::Get()->ProcessEvent(evtAdd2);
     }
 
     m_LogBuildProgressPercentage = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/build_progress/percentage"), false);
@@ -493,12 +493,12 @@ void CompilerGCC::OnRelease(bool appShutDown)
         if (!Manager::IsBatchBuild())
         {
             CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_Log);
-            Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+            Manager::Get()->ProcessEvent(evt);
         }
         m_Log = 0;
 
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
-        Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+        Manager::Get()->ProcessEvent(evt);
         m_pListLog = 0;
     }
 
@@ -991,7 +991,7 @@ void CompilerGCC::ClearLog()
         return;
 
     CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_Log);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+    Manager::Get()->ProcessEvent(evtSwitch);
 
     if (m_Log)
         m_Log->Clear();
@@ -1608,7 +1608,7 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
         return;
 
     CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+    Manager::Get()->ProcessEvent(evtShow);
 
     if (!prj)
         prj = m_Project;
@@ -3576,10 +3576,10 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
             {
                 CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-                Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                Manager::Get()->ProcessEvent(evtShow);
             }
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-            Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+            Manager::Get()->ProcessEvent(evtSwitch);
 
             m_pListLog->FocusError(m_Errors.GetFirstError());
             // Build is not completed, so clear the progress bar
@@ -3601,15 +3601,15 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
                     Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_warnings"), true))
                 {
                     CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-                    Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                    Manager::Get()->ProcessEvent(evtShow);
 
                     CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
-                    Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
+                    Manager::Get()->ProcessEvent(evtSwitch);
                 }
                 else // if message manager is auto-hiding, unlock it (i.e. close it)
                 {
                     CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
-                    Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+                    Manager::Get()->ProcessEvent(evtShow);
                 }
             }
         }

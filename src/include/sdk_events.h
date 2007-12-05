@@ -157,7 +157,12 @@ class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<Co
 };
 typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEvent&);
 
-/** Event used to request from the main app to add a log. */
+/** Event used to request from the main app to add a log.
+  *
+  * @note By adding a Logger*, the app takes ownership of it in cbEVT_ADD_LOG_WINDOW.
+  * By adding a wxWindow*, the ownership is not touched and you should delete the window after calling
+  * cbEVT_REMOVE_LOG_WINDOW for it.
+  */
 class EVTIMPORT CodeBlocksLogEvent : public wxEvent, public BlockAllocated<CodeBlocksEvent, 75>
 {
     public:
@@ -187,8 +192,6 @@ extern EVTIMPORT const wxEventType cbEVT_APP_STARTUP_DONE;
 #define EVT_APP_STARTUP_DONE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_STARTUP_DONE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_APP_START_SHUTDOWN;
 #define EVT_APP_START_SHUTDOWN(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_START_SHUTDOWN, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-extern EVTIMPORT const wxEventType cbEVT_APP_UPDATE_TITLE;
-#define EVT_APP_UPDATE_TITLE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_UPDATE_TITLE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // plugin events
 extern EVTIMPORT const wxEventType cbEVT_PLUGIN_ATTACHED;
@@ -235,6 +238,14 @@ extern EVTIMPORT const wxEventType cbEVT_PROJECT_SAVE;
 #define EVT_PROJECT_SAVE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_SAVE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_ACTIVATE;
 #define EVT_PROJECT_ACTIVATE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_ACTIVATE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PROJECT_BEGIN_ADD_FILES;
+#define EVT_PROJECT_BEGIN_ADD_FILES(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_BEGIN_ADD_FILES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PROJECT_END_ADD_FILES;
+#define EVT_PROJECT_END_ADD_FILES(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_END_ADD_FILES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PROJECT_BEGIN_REMOVE_FILES;
+#define EVT_PROJECT_BEGIN_REMOVE_FILES(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_BEGIN_REMOVE_FILES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_PROJECT_END_REMOVE_FILES;
+#define EVT_PROJECT_END_REMOVE_FILES(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_END_REMOVE_FILES, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_FILE_ADDED;
 #define EVT_PROJECT_FILE_ADDED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_PROJECT_FILE_ADDED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_FILE_REMOVED;

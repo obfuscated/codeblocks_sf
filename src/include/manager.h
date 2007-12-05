@@ -67,6 +67,7 @@ public:
     bool ProcessEvent(CodeBlocksEvent& event);
     bool ProcessEvent(CodeBlocksDockEvent& event);
     bool ProcessEvent(CodeBlocksLayoutEvent& event);
+    bool ProcessEvent(CodeBlocksLogEvent& event);
 
 
     /** Use Manager::Get() to get a pointer to its instance

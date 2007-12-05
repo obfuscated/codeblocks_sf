@@ -280,7 +280,7 @@ void DebuggerGDB::OnAttach()
     msgMan->Slot(m_PageIndex).icon = bmp;
 
     CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pLog, msgMan->Slot(m_PageIndex).title, msgMan->Slot(m_PageIndex).icon);
-    Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd);
+    Manager::Get()->ProcessEvent(evtAdd);
 
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
     if (m_HasDebugLog)
@@ -293,7 +293,7 @@ void DebuggerGDB::OnAttach()
         msgMan->Slot(m_DbgPageIndex).icon = bmp;
 
 		CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, msgMan->Slot(m_DbgPageIndex).title, msgMan->Slot(m_DbgPageIndex).icon);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd);
+		Manager::Get()->ProcessEvent(evtAdd);
     }
 
     m_pTree = new DebuggerTree(Manager::Get()->GetAppWindow(), this);
@@ -469,11 +469,11 @@ void DebuggerGDB::OnRelease(bool appShutDown)
         if (m_HasDebugLog)
         {
 			CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
-			Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+			Manager::Get()->ProcessEvent(evt);
             m_pDbgLog = 0;
         }
 		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pLog);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+		Manager::Get()->ProcessEvent(evt);
         m_pLog = 0;
     }
     // vars for Linux console
@@ -513,7 +513,7 @@ void DebuggerGDB::RefreshConfiguration()
     if (!log_visible && m_HasDebugLog)
     {
 		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evt);
+		Manager::Get()->ProcessEvent(evt);
 		m_pDbgLog = 0;
     }
     else if (log_visible && !m_HasDebugLog)
@@ -526,7 +526,7 @@ void DebuggerGDB::RefreshConfiguration()
         Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon = bmp;
 
 		CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).title, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evtAdd);
+		Manager::Get()->ProcessEvent(evtAdd);
     }
     m_HasDebugLog = log_visible;
 }
@@ -1032,8 +1032,8 @@ int DebuggerGDB::Debug()
     // switch to the debugging log and clear it
 	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
 	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-	Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
-	Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+	Manager::Get()->ProcessEvent(evtSwitch);
+	Manager::Get()->ProcessEvent(evtShow);
     m_pLog->Clear();
 
     // can only debug projects or attach to processes
@@ -1085,8 +1085,8 @@ int DebuggerGDB::DoDebug()
     // this is always called after EnsureBuildUpToDate() so we should display the build result
 	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
 	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-	Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
-	Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+	Manager::Get()->ProcessEvent(evtSwitch);
+	Manager::Get()->ProcessEvent(evtShow);
 
     if (m_pCompiler)
     {
@@ -1108,8 +1108,8 @@ int DebuggerGDB::DoDebug()
     {
 		CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
 		CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evtSwitch);
-		Manager::Get()->GetAppWindow()->ProcessEvent(evtShow);
+		Manager::Get()->ProcessEvent(evtSwitch);
+		Manager::Get()->ProcessEvent(evtShow);
 
         msgMan->Log(_("Selecting target: "), m_PageIndex);
         if (!m_pProject->BuildTargetValid(m_ActiveBuildTarget, false))
