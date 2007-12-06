@@ -1,6 +1,7 @@
 #ifndef IPC_H
 #define IPC_H
 
+#include <wx/wx.h>
 #include <wx/thread.h>
 #include "cbexception.h"
 
