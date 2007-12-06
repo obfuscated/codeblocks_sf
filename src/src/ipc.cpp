@@ -1,7 +1,5 @@
 #include "ipc.h"
 #include "main.h"
-#include <wx/intl.h>
-#include <wx/string.h>
 #include <wx/tokenzr.h>
 
 #ifndef __WIN32__
@@ -62,7 +60,7 @@ wxThread::ExitCode IPC::Entry() /* this is the receiving end */
 
 SharedMemory::SharedMemory() : handle(0), sem(0), sem_w(0), shared(0), ok(false), server(false)
 {
-	sem_w = CreateMutex(0, TRUE, TEXT("CodeBmutexsIPCMr"));
+	sem_w = CreateMutex(NULL, TRUE, TEXT("CodeBmutexsIPCMr"));
 	if(GetLastError() == ERROR_SUCCESS)
 	{
 		server = true;
@@ -126,7 +124,7 @@ void SharedMemory::Unlock(rw_t rw)
 
 SharedMemory::SharedMemory() : handle(0), sem(0), shared(0), ok(false), server(false)
 {
-	char file[256] = {'\0'};
+	char file[256];
 	key_t key;
 
 	/* we attempt to use executable for ftok() for an application-unique ID */

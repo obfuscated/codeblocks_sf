@@ -1,20 +1,19 @@
 #ifndef IPC_H
 #define IPC_H
 
+
+#include "sdk.h"
+
 #include <wx/wx.h>
-#include <wx/thread.h>
-#include "cbexception.h"
 
 #ifndef __WIN32__
 	#include <sys/types.h>
 	#include <sys/ipc.h>
 	#include <sys/shm.h>
 	#include <fcntl.h>
-#else
-	#include "wx/msw/wrapwin.h"
 #endif
 
-class wxString;
+
 
 static const int ipc_buf_size = 1024*64;
 
