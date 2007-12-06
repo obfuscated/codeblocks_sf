@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippets.cpp 104 2007-11-15 19:51:34Z Pecan $
+// $Id: codesnippets.cpp 110 2007-12-06 15:28:51Z Pecan $
 
 #include <cstring>
 #include "sdk.h"
@@ -294,9 +294,11 @@ void CodeSnippets::OnRelease(bool appShutDown)
 //  On Linux, the following causes CB to crash when the snippet window is floating
 ////    if (GetSnippetsWindow())
 ////    {   //GetSnippetsWindow()->Close(); <- causes crash when user disables plugin
-////        GetSnippetsWindow()->Destroy();
+////        GetSnippetsWindow()->Destroy(); <- causes crash when CB closes
 ////        SetSnippetsWindow(0);
 ////    }
+	if ( GetSnippetsWindow()->GetFileChanged() )
+        GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
 
     // Make sure user cannot re-enable CodeSnippets until a CB restart
     GetConfig()->m_appIsShutdown = true;

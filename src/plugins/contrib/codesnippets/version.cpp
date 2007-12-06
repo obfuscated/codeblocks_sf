@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 105 2007-11-16 19:50:44Z Pecan $
+// RCS-ID: $Id: version.cpp 108 2007-12-06 13:18:00Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -326,8 +326,16 @@ AppVersion::~AppVersion()
 //          106) on Linux disable drag/drop out of Project panel because of
 //               recurring drag/drop freeze bug
 // ----------------------------------------------------------------------------
+//  commit  1.2.108 2007/12/02
+//          107) force close of xml in OnRelease() (Closing window causes crashes)
+//          108) immediately delete canceled "New category" & "New snippet" items,
+//               ignore filelinks in properties. Avoids unnecessary "delete?" dialog.
+//          109) fix macro substitution in CheckForMacros() broken by mod 99.
+//               Dialog substitutions must preceed CB macro substitution.
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
+//          Search should continue to next matching item, not just stop (F3?)
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, Drag'nDrop
@@ -339,11 +347,10 @@ AppVersion::~AppVersion()
 //          Bug: 2007/08/2
 //              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
 //              bug was reported way back in wxGTK 2.1.0
+//          Dragging file out of file panels does not work on Linux. Causes GTK to freeze.
+//  Other
 //          Leak: 2007/10/4 g_printData allocated for each Edit, but only deleted once.
 //              The globals in snippetproperty.cpp should be allocated by instance.
-//          Dragging file out of OpenFilesList does not work on Linux.
-//          Cancelled "New snippet" is asking to delete file target. Should not!
-//  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
 // ----------------------------------------------------------------------------

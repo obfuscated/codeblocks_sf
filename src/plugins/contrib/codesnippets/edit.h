@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: edit.h 101 2007-08-25 02:14:26Z Pecan $
+// RCS-ID: $Id: edit.h 106 2007-12-01 18:31:55Z Pecan $
 
 #ifndef _EDIT_H_
 #define _EDIT_H_

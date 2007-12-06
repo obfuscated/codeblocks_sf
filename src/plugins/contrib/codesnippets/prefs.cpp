@@ -3,7 +3,7 @@
 // Purpose:     wxScintilla test preferences
 // Maintainer:  Otto Wyss
 // Created:     2003-09-01
-// RCS-ID:      $Id: prefs.cpp 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID:      $Id: prefs.cpp 106 2007-12-01 18:31:55Z Pecan $
 // Copyright:   (c) 2004 wxCode
 // Licence:     wxWindows
 //////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: prefs.cpp 58 2007-04-22 04:40:57Z Pecan $
+// RCS-ID: $Id: prefs.cpp 106 2007-12-01 18:31:55Z Pecan $
 
 //----------------------------------------------------------------------------
 // headers

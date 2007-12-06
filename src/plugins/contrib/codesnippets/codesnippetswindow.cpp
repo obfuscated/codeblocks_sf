@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 105 2007-11-16 19:50:44Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 109 2007-12-06 15:04:10Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -614,7 +614,7 @@ void CodeSnippetsWindow::OnMnuRename(wxCommandEvent& event)
 	if (itemID.IsOk() && pTree->GetItemText(itemID).IsEmpty())
         pTree->RemoveItem(itemID);
 
-}
+}//OnMnuRename
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuCopy(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -993,13 +993,11 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 // ----------------------------------------------------------------------------
 {
     //FIXME: CheckForMacros in App???
-
-  #if defined(BUILDING_PLUGIN)
-    // Replace known macros in the generated code
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(snippet);
-
 	// Copied from cbEditor::Autocomplete, I admit it
+
+    wxPoint currentMousePosn = ::wxGetMousePosition();
 	int macroPos = snippet.Find(_T("$("));
+	int currPosn = macroPos;
 	while (macroPos != -1)
 	{
 		// locate ending parenthesis
@@ -1013,17 +1011,28 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 			break; // no ending parenthesis
 
 		wxString macroName = snippet.SubString(macroPos + 2, macroPosEnd - 1);
-		wxString macro = wxGetTextFromUser(wxString::Format(_("Please enter the text for \"%s\":"), macroName.c_str()), _("Macro substitution"));
-		snippet.Replace(_T("$(") + macroName + _T(")"), macro);
+        wxString defaultResult = snippet.SubString(macroPos,macroPosEnd);
+        #if defined(BUILDING_PLUGIN)
+          Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultResult);
+        #endif
 
-		macroPos = snippet.Find(_T("$("));
+		wxString macro = wxGetTextFromUser(wxString::Format(_("Please enter the text for \"%s\":"), macroName.c_str()),
+            _("Macro substitution"),defaultResult,0,
+            currentMousePosn.x, currentMousePosn.y,false);
+		if (not macro.IsEmpty())
+            snippet.Replace(_T("$(") + macroName + _T(")"), macro);
+
+		//-macroPos = snippet.Find(_T("$("));
+		currPosn = currPosn + macroPos + 1;
+		macroPos = snippet.Mid(currPosn).Find(_T("$("));
+		if (macroPos == -1) break;
+		macroPos = macroPos + currPosn;
+		#if defined(LOGGING)
+		//LOGIT( _T("CheckForMacros:currPosn[%d],macroPos[%d],Macro[%s]"),
+        //    currPosn, macroPos, snippet.Mid(macroPos).c_str());
+		#endif
 	}
-
-	//- Replace any other macros in the generated code
-	//-Manager::Get()->GetMacrosManager()->ReplaceMacros(snippet);
-  #endif
-}
-
+}//CheckForMacros
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
 // ----------------------------------------------------------------------------

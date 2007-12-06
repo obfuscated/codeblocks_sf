@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 105 2007-11-16 19:50:44Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 108 2007-12-06 13:18:00Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -463,6 +463,8 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
 // ----------------------------------------------------------------------------
 {
+    // This routine also called from codesnippets.cpp::OnRelease()
+
 	TiXmlDocument doc;
 	TiXmlDeclaration header("1.0", "UTF-8", "yes");
 	doc.InsertEndChild(header);
@@ -615,8 +617,12 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
     wxString itemText = GetItemText(RemoveItemId);
 
     // delete unused items directly (don't ".trash" them)
+    bool canceledItem = false;
     if ( itemText.IsSameAs(wxT("New category")) || itemText.IsSameAs(wxT("New snippet")) )
+    {
+        canceledItem = true;
         shiftKeyIsDown = true;
+    }
     bool trashItem = false;
 
     // if shift key is up, copy item to .trash category
@@ -641,7 +647,8 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
     }//if not shiftKeyIsDown
 
     // when in trash already, or immediate delete requested, check for fileLink delete too
-    if (trashItem || shiftKeyIsDown)
+    if ( not canceledItem )    //not "New category", not "New snippet"
+    if (trashItem || shiftKeyIsDown )
     {
         // if FileLink, memorize the filename
         wxString filename = wxEmptyString;

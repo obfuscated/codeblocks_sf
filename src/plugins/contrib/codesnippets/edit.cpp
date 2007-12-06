@@ -25,7 +25,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID:      $Id: edit.cpp 102 2007-10-29 21:16:50Z Pecan $
+// RCS-ID:      $Id: edit.cpp 106 2007-12-01 18:31:55Z Pecan $
 
 //----------------------------------------------------------------------------
 // informations
