@@ -9,6 +9,8 @@
 	#include <sys/ipc.h>
 	#include <sys/shm.h>
 	#include <fcntl.h>
+#else
+	#include "wx/msw/wrapwin.h"
 #endif
 
 class wxString;
