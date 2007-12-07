@@ -105,7 +105,7 @@ enum DebugCommandConst
     CMD_RUNNINGTHREADS,
 };
 
-const wxString g_EscapeChars = wxChar(26);
+const wxString g_EscapeChar = wxChar(26);
 
 int idMenuDebug = XRCID("idDebuggerMenuDebug");
 int idMenuRunToCursor = XRCID("idDebuggerMenuRunToCursor");

@@ -11,6 +11,7 @@ function WarningsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
@@ -45,6 +46,7 @@ function DebugSymbolsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
@@ -91,6 +93,7 @@ function OptimizationsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
     {
@@ -134,7 +137,8 @@ function CppExceptionsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("/EHsc"));
     }
-    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc")))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin")) )
     {
         base.AddCompilerOption(_T("-fexceptions"));
     }

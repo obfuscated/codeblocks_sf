@@ -19,7 +19,7 @@
 #include "breakpointsdlg.h"
 #include "threadsdlg.h"
 
-extern const wxString g_EscapeChars;
+extern const wxString g_EscapeChar;
 
 class cbProject;
 class TiXmlElement;
@@ -229,7 +229,7 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         bool m_WaitingCompilerToFinish;
         bool m_Canceled; // flag to avoid re-entering DoDebug when we shouldn't
-        
+
         wxString m_PreviousLayout;
 
         DECLARE_EVENT_TABLE()

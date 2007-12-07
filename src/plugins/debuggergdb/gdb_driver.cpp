@@ -279,7 +279,7 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
         QueueCommand(new DebuggerCmd(this, _T("set args ") + m_Args));
 
     RemoteDebugging* rd = GetRemoteDebuggingInfo();
-	
+
 	// send additional gdb commands before establishing remote connection
     if (rd)
     {
@@ -292,7 +292,7 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
             }
         }
     }
-    
+
     // if performing remote debugging, now is a good time to try and connect to the target :)
     if (rd && rd->IsOk())
     {
@@ -338,7 +338,6 @@ enum{ BUFSIZE = 64 };
 // routines to handle cygwin compiled programs on a Windows compiled C::B IDE
 void GDB_driver::DetectCygwinMount(void)
 {
-
     LONG lRegistryAPIresult;
     HKEY hKey_CU;
     HKEY hKey_LM;
@@ -395,30 +394,45 @@ void GDB_driver::DetectCygwinMount(void)
 
 void GDB_driver::CorrectCygwinPath(wxString& path)
 {
-    unsigned int i=0, escCount=0;
-    // prepare to convert to a valid path if Cygwin is being used
-    if(path.Contains(m_CygdrivePrefix))
-    {
-        // preserve any escape characters at start of path - this is true for
-        // breakpoints - value is 2, but made dynamic for safety as we
-        // are only checking for the CDprefix not any furthur correctness
-        if(path.GetChar(0)== g_EscapeChars)
-        {
-            while(i<path.Len()& (path.GetChar(i)==g_EscapeChars))
-            {
-                // get character
-                escCount+=1;
-                i+=1;
-            }
-        }
+    unsigned int i=0, EscCount=0;
 
-        // step over the escape characters and remove cygwin prefix
-        path.Remove(escCount, (m_CygdrivePrefix.Len())+1);
+    // preserve any escape characters at start of path - this is true for
+    // breakpoints - value is 2, but made dynamic for safety as we
+    // are only checking for the CDprefix not any furthur correctness
+    if(path.GetChar(0)== g_EscapeChar)
+    {
+        while((i<path.Len()) && (path.GetChar(i)==g_EscapeChar))
+        {
+            // get character
+            EscCount++;
+            i++;
+        }
+    }
+
+    // prepare to convert to a valid path if Cygwin is being used
+
+    // step over the escape characters
+    wxString PathWithoutEsc(path); PathWithoutEsc.Remove(0, EscCount);
+
+    if(PathWithoutEsc.StartsWith(m_CygdrivePrefix))
+    {
+        // remove cygwin prefix
+        if (m_CygdrivePrefix.EndsWith(_T("/"))) // for the case   "/c/path"
+          PathWithoutEsc.Remove(0, m_CygdrivePrefix.Len()  );
+        else                                    // for cases e.g. "/cygdrive/c/path"
+          PathWithoutEsc.Remove(0, m_CygdrivePrefix.Len()+1);
+
         // insert ':' after drive label by reading and removing drive the label
         // and adding ':' and the drive label back
-        wxString DriveLetter = path.GetChar(escCount);
-        path.Replace(DriveLetter, DriveLetter + _T(":"), false);
+        wxString DriveLetter = PathWithoutEsc.GetChar(0);
+        PathWithoutEsc.Replace(DriveLetter, DriveLetter + _T(":"), false);
     }
+
+    // Compile corrected path
+    path = wxEmptyString;
+    for (unsigned int i=0; i<EscCount; i++)
+        path += g_EscapeChar;
+    path += PathWithoutEsc;
 }
 #else
     void GDB_driver::DetectCygwinMount(void){/* dummy */}
@@ -918,7 +932,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
 
         // cursor change
-        else if (lines[i].StartsWith(g_EscapeChars)) // ->->
+        else if (lines[i].StartsWith(g_EscapeChar)) // ->->
         {
             // breakpoint, e.g.
             // C:/Devel/tmp/test_console_dbg/tmp/main.cpp:14:171:beg:0x401428
