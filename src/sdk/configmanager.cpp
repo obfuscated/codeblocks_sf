@@ -1389,9 +1389,7 @@ void ConfigManager::InitPaths()
     CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));
     CreateDir(ConfigManager::data_path_user   + _T("/scripts/"));
 
-    wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
-    ConfigManager::temp_folder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    ::wxRemoveFile(tempFile);
+    ConfigManager::temp_folder = wxStandardPathsBase::Get().GetTempDir();
 };
 
 

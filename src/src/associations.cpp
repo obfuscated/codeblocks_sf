@@ -12,8 +12,8 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
-#include <wx/radiobox.h>
-#include <wx/xrc/xmlres.h>
+    #include <wx/radiobox.h>
+    #include <wx/xrc/xmlres.h>
 #endif
 #include "associations.h"
 #include "appglobals.h"
@@ -64,7 +64,6 @@ const Associations::Assoc knownTypes[] =
     { FileFilters::MSVC6_WORKSPACE_EXT, _T("MS Visual C++ workspace file"), 23 }
     //{ _T("proj"),                       _T("XCODE Project file"),           24 }
 };
-
 
 inline void DoSetAssociation(const wxString& executable, int index)
 {
@@ -118,7 +117,6 @@ void Associations::SetAll()
 
     UpdateChanges();
 }
-
 
 void Associations::ClearAll()
 {
@@ -175,9 +173,13 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
     key.Create();
     key = _T("[Open(\"%1\")]");
 
-    key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\Application"));
+    key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\application"));
     key.Create();
     key = DDE_SERVICE;
+
+    key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\ifexec"));
+    key.Create();
+    key = _T("[IfExec_Open(\"%1\")]");;
 
     key.SetName(BaseKeyName + node + _T("\\shell\\open\\ddeexec\\topic"));
     key.Create();
@@ -195,7 +197,6 @@ void Associations::DoSetAssociation(const wxString& ext, const wxString& descr, 
         key = _T("\"") + exe + _T("\" ") + batchbuildargs + _T(" --rebuild \"%1\"");
     }
 }
-
 
 void Associations::DoClearAssociation(const wxString& ext)
 {
@@ -216,8 +217,6 @@ void Associations::DoClearAssociation(const wxString& ext)
     if(key.Exists())
         key.DeleteSelf();
 }
-
-
 
 bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr, const wxString& exe, int icoNum)
 {
@@ -268,6 +267,14 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
     if (strVal != DDE_SERVICE)
         return false;
 
+    key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\ifexec"));
+    if (!key.Open())
+        return false;
+    if (!key.QueryValue(wxEmptyString, strVal))
+        return false;
+    if (strVal != _T("[IfExec_Open(\"%1\")]"))
+        return false;
+
     key.SetName(BaseKeyName + _T("CodeBlocks.") + ext + _T("\\shell\\open\\ddeexec\\topic"));
     if (!key.Open())
         return false;
@@ -298,7 +305,6 @@ bool Associations::DoCheckAssociation(const wxString& ext, const wxString& descr
 
     return true;
 }
-
 
 
 
@@ -360,6 +366,8 @@ void ManageAssocsDialog::OnClearAll(wxCommandEvent& event)
     EndModal(0);
 }
 
+
+
 BEGIN_EVENT_TABLE(AskAssocDialog, wxDialog)
     EVT_BUTTON(XRCID("wxID_OK"), AskAssocDialog::OnOK)
 END_EVENT_TABLE()
@@ -375,5 +383,3 @@ void AskAssocDialog::OnOK(wxCommandEvent& event)
 {
     EndModal(XRCCTRL(*this, "choice", wxRadioBox)->GetSelection());
 }
-
-

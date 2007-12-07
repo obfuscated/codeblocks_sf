@@ -26,6 +26,7 @@
 
 #include <sdk.h>
 #include "app.h"
+#include <wx/arrstr.h>
 #include <wx/fs_zip.h>
 #include <wx/fs_mem.h>
 #include <wx/xrc/xmlres.h>
@@ -38,6 +39,8 @@
 #include <wx/notebook.h>
 #include <wx/clipbrd.h>
 #include <wx/taskbar.h>
+
+#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <cbexception.h>
 #if wxCHECK_VERSION(2,6,0)
     #include <wx/debugrpt.h>
@@ -50,12 +53,10 @@
 #include <sdk_events.h>
 #include <manager.h>
 #include <scriptingmanager.h>
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <globals.h>
 #include <logmanager.h>
 #include <loggers.h>
 #include "splashscreen.h"
-#include <wx/arrstr.h>
 #include "crashhandler.h"
 
 #include <sqplus.h>
@@ -126,23 +127,28 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
 {
     wxString strData(data);
 
-    if (!strData.StartsWith(_T("[Open(\"")))
-        return false;
+    if (strData.StartsWith(_T("[IfExec_Open(\"")))
+        return false; // let Shell Open handle the request as we *know* that we have registered the Shell Open command, too
 
-    wxRegEx reCmd(_T("\"(.*)\""));
-    if (reCmd.Matches(strData))
+    if (strData.StartsWith(_T("[Open(\"")))
     {
-        const wxString file = reCmd.GetMatch(strData, 1);
-        if (s_Loading)
+        wxRegEx reCmd(_T("\"(.*)\""));
+        if (reCmd.Matches(strData))
         {
-            s_DelayedFilesToOpen.Add(file);
+            const wxString file = reCmd.GetMatch(strData, 1);
+            if (s_Loading)
+            {
+                s_DelayedFilesToOpen.Add(file);
+            }
+            else if (m_Frame)
+            {
+                m_Frame->Open(file, true); // add to history, files that open through DDE
+            }
         }
-        else if (m_Frame)
-        {
-            m_Frame->Open(file, true); // add to history, files that open through DDE
-        }
+        return true;
     }
-    return true;
+
+    return false;
 }
 
 DDEServer* g_DDEServer = 0L;
