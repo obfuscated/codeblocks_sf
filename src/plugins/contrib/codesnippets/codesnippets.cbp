@@ -6,7 +6,6 @@
 		<Option default_target="App - Win32" />
 		<Option compiler="gcc" />
 		<Build>
-			<Script file="..\..\..\cbgcc420.script" />
 			<Target title="Plugin - Win32">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\plugin\" />

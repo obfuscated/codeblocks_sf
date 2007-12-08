@@ -7,12 +7,11 @@
 		<Option default_target="wxSmithLib" />
 		<Option compiler="gcc" />
 		<Build>
-			<Script file="..\..\..\cbgcc420.script" />
 			<Target title="wxPropertyGrid">
 				<Option platforms="Windows;" />
 				<Option output="propgrid\libpropgrid" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxPropertyGrid" />
 				<Option working_dir="" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxPropertyGrid" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -396,30 +395,6 @@
 		<Unit filename="wxwidgets\defitems\wxscolourdialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
-		<Unit filename="wxwidgets\defitems\wxsdirdialog.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxsdirdialog.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxsfiledialog.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxsfiledialog.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxsmultichoicedialog.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxsmultichoicedialog.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.h">
-			<Option target="wxSmithLib" />
-		</Unit>
 		<Unit filename="wxwidgets\defitems\wxscombobox.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -442,6 +417,18 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsdirdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsdirdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsfiledialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsfiledialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsflexgridsizer.cpp">
@@ -528,6 +515,12 @@
 		<Unit filename="wxwidgets\defitems\wxsmenuitem.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmultichoicedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsmultichoicedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsnotebook.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -562,6 +555,12 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsscrolledwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsslider.cpp">
