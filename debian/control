@@ -69,6 +69,7 @@ Description: Contrib plugins for Code::Blocks IDE
     * GUI RAD builder (wxSmith)
     * Selection of small games for relaxing between coding sessions! (BYOGames)
     * WYSIWYG forms designer for wxWidgets (wxSmith)
+    * Autoversioning
  .
  http://www.codeblocks.org
 
