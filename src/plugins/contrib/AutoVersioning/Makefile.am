@@ -25,7 +25,7 @@ noinst_HEADERS = AutoVersioning.h \
             avVersionEditorDlg.h
 
 EXTRA_DIST = wxsmith/avChangesDlg.wxs \
-            wxSmith/avVersionEditorDlg.wxs \
+            wxsmith/avVersionEditorDlg.wxs \
             AutoVersioning.cbp \
             AutoVersioning-unix.cbp \
             manifest.xml
