@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="avChangesDlg">
+		<title>AutoVersioning :: Changes Log</title>
+		<style>wxCAPTION|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_CHANGES_STATICTEXT" variable="lblChanges" member="yes">
+					<label>Enter every change followed by an enter except the last one. &#x0A;Leave it in blank if you plan to write the changes later.</label>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="ID_CHANGES_TEXTCTRL" variable="txtChanges" member="yes">
+					<style>wxTE_MULTILINE|wxHSCROLL|wxVSCROLL</style>
+					<size>500,250</size>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxButton" name="ID_ACCEPT_BUTTON" variable="btnAccept" member="yes">
+					<label>Accept</label>
+					<default>1</default>
+					<handler function="OnBtnAcceptClick" entry="EVT_BUTTON" />
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</wxsmith>

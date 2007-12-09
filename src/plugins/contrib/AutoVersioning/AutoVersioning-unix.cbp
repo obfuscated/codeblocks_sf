@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="AutoVersioning-unix" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/codeblocks/plugins/libAutoversioning" prefix_auto="1" extension_auto="1" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+					<Add option="-fPIC" />
+					<Add option="-DPIC" />
+					<Add directory="../../../include" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel/share/codeblocks/Autoversioning.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="AutoVersioning.cpp" />
+		<Unit filename="AutoVersioning.h" />
+		<Unit filename="avChangesDlg.cpp" />
+		<Unit filename="avChangesDlg.h" />
+		<Unit filename="avConfig.h" />
+		<Unit filename="avHeader.cpp" />
+		<Unit filename="avHeader.h" />
+		<Unit filename="avSvnRevision.cpp" />
+		<Unit filename="avSvnRevision.h" />
+		<Unit filename="avVersionEditorDlg.cpp" />
+		<Unit filename="avVersionEditorDlg.h" />
+		<Unit filename="license.txt" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="avVersionEditorDlg.cpp" main="avVersionEditorDlg" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/avVersionEditorDlg.wxs" src="avVersionEditorDlg.cpp" hdr="avVersionEditorDlg.h" name="avVersionEditorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/avChangesDlg.wxs" src="avChangesDlg.cpp" hdr="avChangesDlg.h" name="avChangesDlg" language="CPP" />
+				</resources>
+			</wxsmith>
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

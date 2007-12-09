@@ -259,8 +259,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/projectsimporter/resources/Makefile
 	src/plugins/scriptedwizard/Makefile
 	src/plugins/scriptedwizard/resources/Makefile
-    src/plugins/scriptedwizard/resources/avr/Makefile
-    src/plugins/scriptedwizard/resources/avr/files/Makefile
+	src/plugins/scriptedwizard/resources/avr/Makefile
+	src/plugins/scriptedwizard/resources/avr/files/Makefile
 	src/plugins/scriptedwizard/resources/c_file/Makefile
 	src/plugins/scriptedwizard/resources/console/Makefile
 	src/plugins/scriptedwizard/resources/console/c/Makefile
@@ -310,8 +310,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/sys/files/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/files/Makefile
-    src/plugins/scriptedwizard/resources/win32gui/files/dialog/Makefile
-    src/plugins/scriptedwizard/resources/win32gui/files/frame/Makefile
+	src/plugins/scriptedwizard/resources/win32gui/files/dialog/Makefile
+	src/plugins/scriptedwizard/resources/win32gui/files/frame/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/common/Makefile
 	src/plugins/scriptedwizard/resources/wxwidgets/pch/Makefile
@@ -324,6 +324,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/todo/resources/Makefile
 	src/plugins/xpmanifest/Makefile
 	src/plugins/contrib/Makefile
+	src/plugins/contrib/AutoVersioning/Makefile
 	src/plugins/contrib/byogames/Makefile
 	src/plugins/contrib/cb_koders/Makefile
 	src/plugins/contrib/codesnippets/Makefile

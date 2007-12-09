@@ -218,6 +218,7 @@ Code::Blocks SDK to develop your own plugins.
 %defattr(-,root,root)
 %{_bindir}/cb_share_config
 %{_bindir}/codesnippets
+%{pkgdata}/AutoVersioning.zip
 %{pkgdata}/byogames.zip
 %{pkgdata}/cb_koders.zip
 %{pkgdata}/codesnippets.zip
@@ -235,6 +236,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
+%{pkgdata}/plugins/libAutoVersioning.*
 %{pkgdata}/plugins/libbyogames.*
 %{pkgdata}/plugins/libcb_koders.*
 %{pkgdata}/plugins/libcodesnippets.*

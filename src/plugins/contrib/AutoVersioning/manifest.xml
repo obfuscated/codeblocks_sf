@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="AutoVersioning">
+        <Value title="AutoVersioning" />
+        <Value version="0.9.1" />
+        <Value description="Auto increments the version and build number of your application every time a change has been made and stores it in version.h with easy to use variable declarations. Also have a feature for committing changes a la SVN style, a version scheme editor and a change log generator.
+
+Example:
+
+   #include &quot;version.h&quot;
+   printf(&quot;v%d.%d.%d.%d&quot;,MAJOR,MINOR,BUILD,REVISION); //C example
+   string version = AutoVersion::FULLVERSION_STRING; //C++ example
+
+Declarations available in the AutoVersion namespace on C++ and global on C:
+
+  1) Date Version Types
+	  static const char DATE[]
+	  static const char MONTH[]
+	  static const char YEAR[]
+	  static const double UBUNTU_VERSION_STYLE
+
+  2) Software Status
+	  static const char STATUS[]
+	  static const char STATUS_SHORT[]
+
+  3) Standard Version Type
+	  static const long MAJOR
+	  static const long MINOR
+	  static const long BUILD
+      	  static const long REVISION
+
+  4) Miscellaneous Version Types
+	  static const long BUILDS_COUNT
+	  #define RC_FILEVERSION
+	  #define RC_FILEVERSION_STRING
+	  static const char FULLVERSION_STRING[]
+
+  5) SVN Version
+	  static const char SVN_REVISION[]
+	  static const char SVN_DATE[]
+" />
+        <Value author="JGM" />
+        <Value authorEmail="jgmdev@gmail.com" />
+        <Value authorWebsite="" />
+        <Value thanksTo="Killerbot - Code Optimizations
+Jeisson - Nice Const Tip to suppress warnings" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

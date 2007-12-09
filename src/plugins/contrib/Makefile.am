@@ -1,3 +1,7 @@
+if BUILD_AUTOVERSIONING
+MAYBE_AUTOVERSIONING=AutoVersioning
+endif
+
 if BUILD_BYOGAMES
 MAYBE_BYOGAMES=byogames
 endif
@@ -54,7 +58,8 @@ if BUILD_WXSMITH
 MAYBE_WXSMITH=wxSmith wxSmithContribItems
 endif
 
-SUBDIRS = $(MAYBE_BYOGAMES) \
+SUBDIRS = $(MAYBE_AUTOVERSIONING) \
+		$(MAYBE_BYOGAMES) \
 		$(MAYBE_CBKODERS) \
 		$(MAYBE_CODESNIPPETS) \
 		$(MAYBE_CODESTAT) \
@@ -69,7 +74,8 @@ SUBDIRS = $(MAYBE_BYOGAMES) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_WXSMITH)
 
-DIST_SUBDIRS = byogames \
+DIST_SUBDIRS = AutoVersioning \
+		byogames \
 		cb_koders \
 		codesnippets \
 		codestat \
