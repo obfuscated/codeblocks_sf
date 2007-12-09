@@ -33,5 +33,5 @@ EXTRA_DIST = wxsmith/avChangesDlg.wxs \
 pkgdata_DATA = AutoVersioning.zip
 CLEANFILES = $(pkgdata_DATA)
 
-byogames.zip: manifest.xml
+AutoVersioning.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/AutoVersioning.zip manifest.xml > /dev/null
