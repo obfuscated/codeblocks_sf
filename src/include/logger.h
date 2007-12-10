@@ -14,8 +14,12 @@ namespace
 class DLLIMPORT Logger
 {
 public:
-	enum level { caption, info, warning, success, error, critical, spacer };
-	enum { num_levels = spacer +1 };
+    /*
+    *  The ubiquitous, standard log levels to use are:  info, warning, error, critical
+    *  Other levels are for special uses and may have side effects (other than formatting) that you don't know about... don't use them.
+    */
+	enum level { caption, info, warning, success, error, critical, failure, pagetitle, spacer, asterisk };
+	enum { num_levels = asterisk +1 };
 
     Logger() {};
     virtual ~Logger() {};
@@ -46,6 +50,5 @@ public:
     virtual void Append(const wxString& msg, Logger::level lv){};
 };
 
-// for more built-in loggers, check loggers.h
 
-#endif // LOGGER_H
+#endif

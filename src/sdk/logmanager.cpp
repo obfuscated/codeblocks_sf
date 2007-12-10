@@ -58,8 +58,19 @@ LogManager::LogManager()
     slot[stdout_log].title = _T("stdout");
     slot[app_log].title = _T("Code::Blocks");
     slot[debug_log].title = _T("Code::Blocks Debug");
+
+    Register(_T("null"),   new Instantiator<NullLogger>);
+    Register(_T("stdout"), new Instantiator<StdoutLogger>);
+    Register(_T("text"),   new Instantiator<TextCtrlLogger>);
+    Register(_T("file"),   new Instantiator<FileLogger, true>);
 }
 
+
+LogManager::~LogManager()
+{
+	for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
+		delete i->second;
+}
 
 size_t LogManager::SetLog(Logger* l, int i)
 {
@@ -112,3 +123,43 @@ size_t LogManager::FindIndex(Logger* l)
 	}
 	return invalid_log;
 }
+
+
+
+
+wxArrayString LogManager::ListAvailable()
+{
+	wxArrayString as;
+
+	for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
+		as.Add(i->first);
+
+	return as;
+}
+
+bool LogManager::FilenameRequired(const wxString& name)
+{
+	inst_map_t::iterator i = instMap.find(name);
+
+	if(i != instMap.end())
+		return i->second->RequiresFilename();
+	else
+		return false;
+}
+
+Logger* LogManager::New(const wxString& name)
+{
+	inst_map_t::iterator i;
+
+	if((i = instMap.find(name)) != instMap.end())
+		return i->second->New();
+	else
+		return new NullLogger;
+}
+
+void LogManager::Register(const wxString& name, InstantiatorBase* ins)
+{
+	instMap[name] = ins;
+}
+
+

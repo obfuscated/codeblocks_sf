@@ -17,7 +17,7 @@ TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont)
 {
 }
 
-void TextCtrlLogger::CopyContentsToClipboard(bool selectionOnly) const
+void TextCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
 {
     if (control && control->GetValue().IsEmpty() == false && wxTheClipboard->Open())
     {
@@ -213,6 +213,7 @@ void ListCtrlLogger::UpdateSettings()
 
 	style[caption].font = bigger_font;
 	style[success].colour = *wxBLUE;
+	style[failure].colour = wxColour(0x00, 0x00, 0xa0);
 
 	style[warning].font = italic_font;
 	style[warning].colour = wxColour(0x00, 0x00, 0xa0); // navy blue
@@ -223,6 +224,7 @@ void ListCtrlLogger::UpdateSettings()
 	style[critical].colour = wxColour(0x0a, 0x00, 0x00); // maroon
 
 	style[spacer].font = small_font;
+	style[pagetitle] = style[caption];
 }
 
 void ListCtrlLogger::Append(const wxString& msg, Logger::level lv)
@@ -282,3 +284,75 @@ wxWindow* ListCtrlLogger::CreateControl(wxWindow* parent)
 	}
 	return control;
 };
+
+
+CSS::CSS() :
+    caption		(_T("font-size: 12pt;")),
+    info		(wxEmptyString),
+    warning		(_T("margin-left: 2em;")),
+    success		(wxEmptyString),
+    error		(_T("margin-left: 2em; border-left: 1px solid red;")),
+    critical	(_T("color: red; font-weight: bold;")),
+    failure		(_T("color: maroon;")),
+    pagetitle	(_T("font-size: 16pt;")),
+    spacer		(wxEmptyString),
+    asterisk	(_T("font-family: Arial, Helvetica, \"Bitstream Vera Sans\", sans;"))
+{
+}
+
+CSS::operator wxString()
+{
+    wxString tmp(_T('\0'), 300);
+    return tmp;
+}
+
+HTMLFileLogger::HTMLFileLogger(const wxString& filename)
+{
+    Open(filename);
+}
+
+
+
+void HTMLFileLogger::Append(const wxString& msg, Logger::level lv)
+{
+    fputs(msg.mb_str(), f.fp());
+    fputs(::newline_string.mb_str(), f.fp());
+};
+
+typedef const char* wxStringSucks;
+
+
+void HTMLFileLogger::Open(const wxString& filename)
+{
+    FileLogger::Open(filename);
+    fputs("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en-US\" lang=\"en-US\">\n<head>\n<title>Build log</title>\n<style>\n", f.fp());
+
+    if(!!css.asterisk)
+        fprintf(f.fp(), "* { %s }\n", (wxStringSucks) css.asterisk.mb_str());
+    if(!!css.pagetitle)
+        fprintf(f.fp(), "h1 { %s }\n", (wxStringSucks) css.pagetitle.mb_str());
+    if(!!css.caption)
+        fprintf(f.fp(), "h2 { %s }\n", (wxStringSucks) css.caption.mb_str());
+    if(!!css.info)
+        fprintf(f.fp(), ".info { %s }\n", (wxStringSucks) css.info.mb_str());
+    if(!!css.warning)
+        fprintf(f.fp(), ".warn { %s }\n", (wxStringSucks) css.warning.mb_str());
+    if(!!css.error)
+        fprintf(f.fp(), ".error { %s }\n", (wxStringSucks) css.error.mb_str());
+    if(!!css.success)
+        fprintf(f.fp(), ".success { %s }\n", (wxStringSucks) css.success.mb_str());
+    if(!!css.failure)
+        fprintf(f.fp(), ".failure { %s }\n", (wxStringSucks) css.failure.mb_str());
+    if(!!css.critical)
+        fprintf(f.fp(), ".critical { %s }\n", (wxStringSucks) css.critical.mb_str());
+    fputs("</style>\n</head>\n\n<body>", f.fp());
+};
+
+void HTMLFileLogger::Close()
+{
+    fputs("</body>\n</html>\n", f.fp());
+    FileLogger::Close();
+};
+
+
+
