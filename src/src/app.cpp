@@ -42,9 +42,7 @@
 
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include <cbexception.h>
-#if wxCHECK_VERSION(2,6,0)
-    #include <wx/debugrpt.h>
-#endif
+#include <wx/debugrpt.h>
 #include <configmanager.h>
 #include <editormanager.h>
 #include <projectmanager.h>
@@ -659,7 +657,7 @@ bool CodeBlocksApp::OnCmdLineParsed(wxCmdLineParser& parser)
 
 void CodeBlocksApp::OnFatalException()
 {
-#if wxCHECK_VERSION(2,6,0) && wxUSE_DEBUGREPORT && wxUSE_XML && wxUSE_ON_FATAL_EXCEPTION
+#if wxUSE_DEBUGREPORT && wxUSE_XML && wxUSE_ON_FATAL_EXCEPTION
     wxDebugReport report;
     wxDebugReportPreviewStd preview;
 

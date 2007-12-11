@@ -2149,11 +2149,9 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type
                            m_pControl->GetMarginWidth(1) + // breakpoints, bookmarks... if present
                            m_pControl->GetMarginWidth(2);  // folding, if present
         wxRect r = m_pControl->GetRect();
-        #if wxCHECK_VERSION(2, 8, 0)
+
         bool inside1 = r.Contains(clientpos);
-        #else
-        bool inside1 = r.Inside(clientpos);
-        #endif
+
         cbStyledTextCtrl* control = !m_pControl2 || inside1 ? m_pControl : m_pControl2;
 //        control->SetFocus();
 

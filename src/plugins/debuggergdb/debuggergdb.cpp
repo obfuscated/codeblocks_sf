@@ -605,11 +605,7 @@ bool DebuggerGDB::BuildToolBar(wxToolBar* toolBar)
     wxString my_16x16=Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::AddonToolBar(toolBar,wxString(_T("debugger_toolbar"))+my_16x16);
     toolBar->Realize();
-    #if wxCHECK_VERSION(2, 8, 0)
     toolBar->SetInitialSize();
-    #else
-    toolBar->SetBestFittingSize();
-    #endif
     return true;
 #else
     return false;
@@ -816,11 +812,7 @@ wxString DebuggerGDB::FindDebuggerExecutable(Compiler* compiler)
     wxString binPath = pathList.FindAbsoluteValidPath(gdb);
     // it seems, under Win32, the above command doesn't search in paths with spaces...
     // look directly for the file in question in masterPath
-#if wxCHECK_VERSION(2, 8, 0)
     if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath)) != wxNOT_FOUND))
-#else
-    if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-#endif
     {
         if (wxFileExists(masterPath + wxFILE_SEP_PATH + _T("bin") + wxFILE_SEP_PATH + gdb))
             binPath = masterPath + wxFILE_SEP_PATH + _T("bin");

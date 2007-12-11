@@ -660,11 +660,7 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
     Manager::Get()->AddonToolBar(toolBar,_T("compiler_toolbar")+my_16x16);
     m_ToolTarget = XRCCTRL(*toolBar, "idToolTarget", wxChoice);
     toolBar->Realize();
-    #if wxCHECK_VERSION(2, 8, 0)
     toolBar->SetInitialSize();
-    #else
-    toolBar->SetBestFittingSize();
-    #endif
     DoRecreateTargetMenu(); // make sure the tool target combo is up-to-date
     return true;
 }
@@ -819,11 +815,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     bool caseSensitive = !(platform::windows);
     // it seems, under Win32, the above command doesn't search in paths with spaces...
     // look directly for the file in question in masterPath
-#if wxCHECK_VERSION(2, 8, 0)
     if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath), caseSensitive) != wxNOT_FOUND))
-#else
-    if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-#endif
     {
         if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
             binPath = masterPath + sep + _T("bin");
@@ -845,11 +837,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         }
     }
 
-#if wxCHECK_VERSION(2, 8, 0)
     if (binPath.IsEmpty() || !(pathList.Index(wxPathOnly(binPath), caseSensitive) != wxNOT_FOUND))
-#else
-    if (binPath.IsEmpty() || !pathList.Member(wxPathOnly(binPath)))
-#endif
     {
         m_EnvironmentMsg << _("Can't find compiler executable in your search path for ") << compiler->GetName() << _T('\n');
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't find compiler executable in your search path (%s)..."), compiler->GetName().c_str()));
@@ -885,22 +873,14 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
         envPath = envPath + oldpath;
 
         // add bin path to PATH env. var.
-        #if wxCHECK_VERSION(2, 8, 0)
         wxString pathCheck = masterPath + sep + _T("bin");
         if  (wxFileExists(pathCheck + sep + gcc) &&
             (envPathArr.Index(pathCheck, caseSensitive) == wxNOT_FOUND))
-        #else
-        if (wxFileExists(masterPath + sep + _T("bin") + sep + gcc))
-        #endif
         {
             envPath = masterPath + sep + _T("bin") + path_sep + envPath;
         }
-        #if wxCHECK_VERSION(2, 8, 0)
         else if (wxFileExists(masterPath + sep + gcc) &&
                 (envPathArr.Index(masterPath, caseSensitive) == wxNOT_FOUND))
-        #else
-        else if (wxFileExists(masterPath + sep + gcc))
-        #endif
         {
             envPath = masterPath + path_sep + envPath;
         }

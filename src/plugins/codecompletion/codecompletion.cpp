@@ -381,11 +381,7 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
     m_Scope = XRCCTRL(*toolBar, "chcCodeCompletionScope", wxChoice);
     m_Scope->Disable();
     toolBar->Realize();
-    #if wxCHECK_VERSION(2, 8, 0)
     toolBar->SetInitialSize();
-    #else
-    toolBar->SetBestFittingSize();
-    #endif
     return true;
 }
 

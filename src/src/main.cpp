@@ -454,9 +454,7 @@ END_EVENT_TABLE()
 
 MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
-       #if wxCHECK_VERSION(2,8,0)
        m_LayoutManager(this),
-       #endif
        m_pAccel(0L),
        m_pFilesHistory(0),
        m_pProjectsHistory(0),
@@ -476,11 +474,6 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pBatchBuildDialog(0),
        m_pProgressBar(0)
 {
-#if !wxCHECK_VERSION(2,8,0)
-    // tell wxFrameManager to manage this frame
-    m_LayoutManager.SetFrame(this);
-#endif
-
 #if defined( _MSC_VER ) && defined( _DEBUG )
     int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
     //tmpFlag |= _CRTDBG_CHECK_ALWAYS_DF;
@@ -606,7 +599,7 @@ void MainFrame::RegisterEvents()
 
     pm->RegisterEventSink(cbEVT_QUERY_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutQuery));
     pm->RegisterEventSink(cbEVT_SWITCH_VIEW_LAYOUT, new cbEventFunctor<MainFrame, CodeBlocksLayoutEvent>(this, &MainFrame::OnLayoutSwitch));
-    
+
     pm->RegisterEventSink(cbEVT_ADD_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnAddLogWindow));
     pm->RegisterEventSink(cbEVT_REMOVE_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnRemoveLogWindow));
     pm->RegisterEventSink(cbEVT_SWITCH_TO_LOG_WINDOW, new cbEventFunctor<MainFrame, CodeBlocksLogEvent>(this, &MainFrame::OnSwitchToLogWindow));
@@ -966,11 +959,8 @@ void MainFrame::CreateToolbars()
     Manager::Get()->AddonToolBar(m_pToolbar,xrcToolbarName);
 
     m_pToolbar->Realize();
-    #if wxCHECK_VERSION(2, 8, 0)
+
     m_pToolbar->SetInitialSize();
-    #else
-    m_pToolbar->SetBestFittingSize();
-    #endif
 
     // add toolbars in docking system
     m_LayoutManager.AddPane(m_pToolbar, wxAuiPaneInfo().
@@ -1334,18 +1324,10 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
             #endif
         }
         else
-            #if wxCHECK_VERSION(2, 8, 0)
             tb->SetInitialSize();
-            #else
-            tb->SetBestFittingSize();
-            #endif
         // end of HACK
 #else
-        #if wxCHECK_VERSION(2, 8, 0)
         tb->SetInitialSize();
-        #else
-        tb->SetBestFittingSize();
-        #endif
 #endif
 
         // add View->Toolbars menu item for toolbar

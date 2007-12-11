@@ -103,11 +103,7 @@ void ToDoList::OnAttach()
     {
         m_pListLog->CreateControl(Manager::Get()->GetAppWindow());
         m_pListLog->GetWindow()->SetSize(wxSize(352,94));
-        #if wxCHECK_VERSION(2, 8, 0)
         m_pListLog->GetWindow()->SetInitialSize(wxSize(352,94));
-        #else
-        m_pListLog->GetWindow()->SetBestFittingSize(wxSize(352,94));
-        #endif
 
         CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
         evt.name = _T("TodoListPanev2.0.0");

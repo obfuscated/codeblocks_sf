@@ -258,11 +258,8 @@ namespace ScriptBindings
                 func(&wxArrayString::GetCount, "GetCount").
                 func(&wxArrayString::Item, "Item");
 
-#if wxCHECK_VERSION(2, 8, 0)
         typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char, const unsigned char);
-#else
-        typedef void(wxColour::*WXC_SET)(const unsigned char, const unsigned char, const unsigned char);
-#endif
+
         SqPlus::SQClassDef<wxColour>("wxColour").
                 emptyCtor().
                 staticFuncVarArgs(&wxColour_OpToString, "_tostring", "").

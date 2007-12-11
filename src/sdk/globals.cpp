@@ -959,13 +959,8 @@ namespace platform
         else
         {
 
-        #if wxCHECK_VERSION(2, 8, 0)
             int famWin95 = wxOS_WINDOWS_9X;
             int famWinNT = wxOS_WINDOWS_NT;
-        #else
-            int famWin95 = wxWIN95;
-            int famWinNT = wxWINDOWS_NT;
-        #endif
 
             int Major = 0;
             int family = wxGetOsVersion(&Major, NULL);

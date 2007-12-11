@@ -203,24 +203,10 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
         *  effectively (including UTF-8). Therefore it may also be brought out of this if {} statement.
         */
         wxCSConv conv(encoding);
-        #if wxCHECK_VERSION(2, 8, 0)
+
         size_t inlen = data.Length(), outlen = 0;
         wxCharBuffer mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
         return f.Write(mbBuff, outlen) == outlen;
-        #else
-        /* NOTE (Biplab#1#): Following code is not tested with wx-2.6.x
-        *  But it will not work with wx-2.8.x
-        */
-        size_t byte_size = (encoding == wxFONTENCODING_UTF16 || encoding == wxFONTENCODING_UTF16LE || encoding == wxFONTENCODING_UTF16BE) ? 2 : 4;
-        size_t inlen = (data.Len() + 1) * byte_size;
-        char* buff = (char*) malloc(inlen);
-        if (buff)
-        {
-            size_t outlen = conv.WC2MB(buff, data.c_str(), inlen);
-            return (f.Write(buff, inlen) == outlen);
-        }
-        free(buff);
-        #endif
     #else
         // For ANSI builds, dump the char* to file.
         return (f.Write(data.c_str(), data.Length()) == data.Length());

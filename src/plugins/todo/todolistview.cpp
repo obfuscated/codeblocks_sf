@@ -70,11 +70,7 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
 
     control->PushEventHandler(this);
 
-    #if wxCHECK_VERSION(2, 8, 0)
     control->SetInitialSize(wxSize(342,56));
-    #else
-    control->SetBestFittingSize(wxSize(342,56));
-    #endif
     control->SetMinSize(wxSize(342,56));
     wxSizer* bs = new wxBoxSizer(wxVERTICAL);
     bs->Add(control, 1, wxEXPAND);

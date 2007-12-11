@@ -345,7 +345,7 @@ void EditorConfigurationDlg::CreateColoursSample()
 
 		wxXmlResource::Get()->AttachUnknownControl(_T("txtColoursSample"), m_TextColourControl);
 	}
-	
+
     int breakLine = -1;
     int debugLine = -1;
     int errorLine = -1;
@@ -503,11 +503,7 @@ void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 	wxFontData data;
     data.SetInitialFont(tmpFont);
 
-	#if wxCHECK_VERSION(2, 8, 0)
 	wxFontDialog dlg(this, data);
-	#else
-	wxFontDialog dlg(this, &data);
-	#endif
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {

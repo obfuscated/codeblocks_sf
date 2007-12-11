@@ -536,11 +536,7 @@ void GDBTipWindowView::OnMouseMove(wxMouseEvent& event)
     const wxRect& rectBound = m_parent->m_rectBound;
 
     if ( rectBound.width &&
-#if wxCHECK_VERSION(2, 8, 0)
 		!rectBound.Contains(ClientToScreen(event.GetPosition())) )
-#else
-		 !rectBound.Inside(ClientToScreen(event.GetPosition())) )
-#endif
     {
         // mouse left the bounding rect, disappear
         m_parent->Close();

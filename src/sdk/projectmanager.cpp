@@ -1212,10 +1212,8 @@ void ProjectManager::FreezeTree()
 {
     if (!m_pTree)
         return;
-// wx 2.5.x implement nested Freeze()/Thaw() calls correctly
-//#if !wxCHECK_VERSION(2,5,0)   //pecan 2006/2/28
+
     ++m_TreeFreezeCounter;
-//#endif                        //pecan 2006/2/28
     m_pTree->Freeze();
 }
 
@@ -1223,20 +1221,11 @@ void ProjectManager::UnfreezeTree(bool force)
 {
     if (!m_pTree)
         return;
-// wx 2.5.x implement nested Freeze()/Thaw() calls correctly
-#if !wxCHECK_VERSION(2,5,0)
-    --m_TreeFreezeCounter;
-    if (force || m_TreeFreezeCounter <= 0)
-    {
-        m_pTree->Thaw();
-        m_TreeFreezeCounter = 0;
-    }
-#else
-    if (m_TreeFreezeCounter){           //pecan 2006/2/28
-            --m_TreeFreezeCounter;      //pecan 2006/2/28
+
+    if (m_TreeFreezeCounter){
+            --m_TreeFreezeCounter;
             m_pTree->Thaw();
     }
-#endif
 }
 
 void ProjectManager::RebuildTree()
@@ -1390,9 +1379,9 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
             Manager::Get()->GetPluginManager()->NotifyPlugins(event);
         }
     }
-    
+
     project->EndAddFiles();
-    
+
     return targets.GetCount();
 }
 
@@ -2498,18 +2487,7 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
 
         if(name != new_name)
         {
-            #if wxCHECK_VERSION(2, 8, 0)
             if (!wxRenameFile(path + name, path + new_name, false))
-            #else // wx-2.6 doesn't check whether it's overwriting an existing file
-            if(wxFileExists(path + new_name))
-            {
-                cbMessageBox(_("Can't rename file ") + path + new_name +
-                             _("\nA file with specified filename already exists!") +
-                             _("\nPlease specify a different file name."), _("Error renaming file"), wxICON_ERROR);
-                return;
-            }
-            if (!wxRenameFile(path + name, path + new_name))
-            #endif
             {
                 wxBell();
                 return;

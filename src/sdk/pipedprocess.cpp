@@ -75,11 +75,7 @@ class cbTextInputStream : public wxTextInputStream
                     return wxEOT;
                 if (m_allowMBconversion)
                 {
-#if wxCHECK_VERSION(2, 8, 0)
                     int retlen = (int) m_conv->MB2WC(wbuf, m_lastBytes, 2); // returns -1 for failure
-#else
-                    int retlen = (int) m_conv.MB2WC(wbuf, m_lastBytes, 2); // returns -1 for failure
-#endif
                     if(retlen >= 0) // res == 0 could happen for '\0' char
                         return wbuf[0];
                 }
