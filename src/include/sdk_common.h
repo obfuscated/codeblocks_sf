@@ -34,8 +34,6 @@
 
 #include "prep.h" // this is deliberately not inside the #ifdef block
 
-void CodeBlocks_requires_at_least_wxWidgets_2_8() { CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert(); };
-
 #ifdef CB_PRECOMP
 
     // some common wxWidgets headers

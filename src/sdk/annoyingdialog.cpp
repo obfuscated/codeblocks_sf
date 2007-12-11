@@ -37,6 +37,9 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         dontAnnoy(false),
         defRet(defaultReturn)
 {
+	// Code::Blocks needs wxWidgets 2.8
+	CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+
     ConfigManagerContainer::StringSet disabled = Manager::Get()->GetConfigManager(_T("an_dlg"))->ReadSSet(_T("/disabled"));
     if(disabled.find(caption) != disabled.end())
     {
