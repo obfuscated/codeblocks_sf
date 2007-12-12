@@ -6,35 +6,47 @@
 
 #include <wx/wx.h>
 
-#ifndef __WIN32__
+
+#ifdef __WIN32__
+
+	#define WIN32_LEAN_AND_MEAN
+	#define NOGDI
+	#include <windows.h>
+    typedef HANDLE shm_handle_t;
+    typedef HANDLE semaphore_t;
+
+#else
+
+	#include <fcntl.h>
+	#include <errno.h>
 	#include <sys/types.h>
+	#include <sys/sem.h>
 	#include <sys/ipc.h>
 	#include <sys/shm.h>
-	#include <fcntl.h>
+
+	#if defined(__APPLE__) && defined(__MACH__)
+		typedef int shm_handle_t;
+		typedef mach_port_t semaphore_t;
+	#else
+		typedef int shm_handle_t;
+		typedef int semaphore_t;
+	#endif
+
 #endif
-
-
 
 static const int ipc_buf_size = 1024*64;
 
-#ifdef __WIN32__
-    typedef HANDLE shm_handle_t;
-    typedef HANDLE semaphore_t;
-#elif defined(__APPLE__) && defined(__MACH__)
-    typedef int shm_handle_t;
-    typedef mach_port_t semaphore_t;
-#else
-    typedef int shm_handle_t;
-    typedef int semaphore_t;
-#endif
 
 
 class SharedMemory
 {
 	shm_handle_t handle;
 
-	semaphore_t sem;
-	semaphore_t sem_w;
+	union
+	{
+		semaphore_t semid;
+		semaphore_t sem[2];
+	};
 
 	void* shared;
 	bool ok;
