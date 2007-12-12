@@ -743,7 +743,7 @@ wxMenu* ProjectManager::GetProjectMenu()
 cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
 {
     cbProject* result = 0;
-    if (!BeginLoadingProject())
+    if (!wxFileExists(filename) || !BeginLoadingProject())
     {
     	return 0;
     }
