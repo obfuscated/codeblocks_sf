@@ -76,6 +76,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
     }
     wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
     clb->Clear();
+    clb->SetMinSize(wxSize(-1, 150));
     const PluginElementsArray& plugins = Manager::Get()->GetPluginManager()->GetPlugins();
     for (size_t i = 0; i < plugins.GetCount(); ++i)
     {
