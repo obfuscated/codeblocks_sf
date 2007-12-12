@@ -1,178 +1,162 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxBitmap" name="ZoomInBitmap">zoomin.png</object>
-  <object class="wxBitmap" name="ZoomOutBitmap">zoomout.png</object>
-  <object class="wxPanel" name="HelpConfigDialog">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <option>1</option>
-        <flag>wxLEFT|wxEXPAND</flag>
-        <object class="wxBoxSizer">
-          <orient>wxVERTICAL</orient>
-          <object class="sizeritem">
-            <option>1</option>
-            <flag>wxEXPAND</flag>
-            <border>5</border>
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <option>1</option>
-                <flag>wxLEFT|wxTOP|wxBOTTOM|wxEXPAND</flag>
-                <border>5</border>
-                <object class="wxListBox" name="lstHelp">
-
-                  <style>wxLB_SINGLE</style>
-
-                  <content/>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <option>0</option>
-                <flag>wxTOP</flag>
-                <border>5</border>
-                <object class="wxBoxSizer">
-                  <orient>wxVERTICAL</orient>
-                  <object class="sizeritem">
-                    <option>0</option>
-                    <flag>wxLEFT|wxRIGHT</flag>
-                    <border>5</border>
-                    <object class="wxButton" name="btnAdd">
-
-                      <label>Add</label>
-
-                      <default>0</default>
-                    </object>
-                  </object>
-                  <object class="sizeritem">
-                    <option>0</option>
-                    <flag>wxLEFT|wxRIGHT</flag>
-                    <border>5</border>
-                    <object class="wxButton" name="btnRename">
-
-                      <label>Rename</label>
-
-                      <default>0</default>
-                    </object>
-                  </object>
-                  <object class="sizeritem">
-                    <option>0</option>
-                    <flag>wxLEFT|wxRIGHT</flag>
-                    <border>5</border>
-                    <object class="wxButton" name="btnDelete">
-
-                      <label>Delete</label>
-
-                      <default>0</default>
-                    </object>
-                  </object>
-                  <object class="spacer">
-
-                    <size>10,10</size>
-
-                    <option>0</option>
-
-                    <flag>wxALL</flag>
-
-                    <border>5</border>
-                  </object>
-                  <object class="sizeritem">
-                    <option>0</option>
-                    <flag>wxLEFT|wxRIGHT</flag>
-                    <border>5</border>
-                    <object class="wxButton" name="btnUp">
-
-                      <enabled>0</enabled>
-
-                      <label>Up</label>
-
-                      <default>0</default>
-                    </object>
-                  </object>
-                  <object class="sizeritem">
-                    <option>0</option>
-                    <flag>wxLEFT|wxRIGHT</flag>
-                    <border>5</border>
-                    <object class="wxButton" name="btnDown">
-
-                      <enabled>0</enabled>
-
-                      <label>Down</label>
-
-                      <default>0</default>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <option>0</option>
-            <flag>wxEXPAND</flag>
-            <border>5</border>
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <option>1</option>
-                <flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <border>5</border>
-                <object class="wxTextCtrl" name="txtHelp">
-
-                  <value></value>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <option>0</option>
-                <flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-                <border>5</border>
-                <object class="wxButton" name="btnBrowse">
-
-                  <size>22,-1</size>
-
-                  <label>...</label>
-
-                  <default>0</default>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <option>0</option>
-            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-            <border>5</border>
-            <object class="wxStaticText">
-              <label>TIP: $$(keyword) will be replaced by the word under the cursor</label>
-              <fg>#800000</fg>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <option>0</option>
-            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-            <border>5</border>
-            <object class="wxCheckBox" name="chkDefault">
-              <label>This is the default help file (shortcut: F1)</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <option>0</option>
-            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-            <border>5</border>
-            <object class="wxCheckBox" name="chkExecute">
-              <label>This line represents a full command to be executed</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <option>0</option>
-            <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-            <border>5</border>
-            <object class="wxCheckBox" name="chkEmbeddedViewer">
-              <label>Open this file with the embedded help viewer (only for HTML files)</label>
-            </object>
-          </object>
-        </object>
-
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxBitmap" name="ZoomInBitmap">zoomin.png</object>
+	<object class="wxBitmap" name="ZoomOutBitmap">zoomout.png</object>
+	<object class="wxPanel" name="HelpConfigDialog">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxListBox" name="lstHelp">
+									<style>wxLB_SINGLE</style>
+								</object>
+								<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnAdd">
+											<label>Add</label>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnRename">
+											<label>Rename</label>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnDelete">
+											<label>Delete</label>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+									</object>
+									<object class="spacer">
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+										<size>10,10</size>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnUp">
+											<label>Up</label>
+											<enabled>0</enabled>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnDown">
+											<label>Down</label>
+											<enabled>0</enabled>
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtHelp" />
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnBrowse">
+									<label>...</label>
+									<size>22,-1</size>
+								</object>
+								<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>TIP: $$(keyword) will be replaced by the word under the cursor</label>
+							<fg>#800000</fg>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkDefault">
+							<label>This is the default help file (shortcut: F1)</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkExecute">
+							<label>This line represents a full command to be executed</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkEmbeddedViewer">
+							<label>Open this file with the embedded help viewer (only for HTML files)</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="chkCase">
+							<content>
+								<item>Preserve keyword case</item>
+								<item>Convert keyword to uppercase</item>
+								<item>Convert keyword to lowercase</item>
+							</content>
+							<size>-1,-1</size>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>Default keyword value:</label>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="textDefaultKeyword" />
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
 </resource>

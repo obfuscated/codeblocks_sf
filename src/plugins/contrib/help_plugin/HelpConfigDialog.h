@@ -32,6 +32,9 @@ class HelpConfigDialog : public cbConfigurationPanel
     void OnCheckbox(wxCommandEvent &event);
     void OnCheckboxExecute(wxCommandEvent &event);
     void OnCheckboxEmbeddedViewer(wxCommandEvent &event);
+    // Patch by Yorgos Pagles: Add new gui elements' events for setting the new attributes
+    void OnDefaultKeywordEntry(wxCommandEvent &event);
+    void OnCaseChoice(wxCommandEvent &event);
     void UpdateUI(wxUpdateUIEvent &event);
 
   private:

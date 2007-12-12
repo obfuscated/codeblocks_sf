@@ -21,6 +21,11 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
       hfa.name = conf->Read(list[i] + _T("/file"), wxEmptyString);
       conf->Read(list[i] + _T("/isexec"), &hfa.isExecutable);
       conf->Read(list[i] + _T("/embeddedviewer"), &hfa.openEmbeddedViewer);
+      // Patch by Yorgos Pagles: Read new attributes from settings
+      int keyWordCase=0;
+      (conf->Read(list[i] + _T("/keywordcase"), &keyWordCase));
+      hfa.keywordCase = static_cast<HelpCommon::StringCase>(keyWordCase);
+      hfa.defaultKeyword = conf->Read(list[i] + _T("/defaultkeyword"), wxEmptyString);
 
       if (!name.IsEmpty() && !hfa.name.IsEmpty())
       {
@@ -56,6 +61,9 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
       conf->Write(key + _T("file"), hfa.name);
       conf->Write(key + _T("isexec"), hfa.isExecutable);
       conf->Write(key + _T("embeddedviewer"), hfa.openEmbeddedViewer);
+      // Patch by Yorgos Pagles: Write new attributes in settings
+      conf->Write(key + _T("keywordcase"), static_cast<int>(hfa.keywordCase));
+      conf->Write(key + _T("defaultkeyword"), hfa.defaultKeyword);
     }
   }
 

@@ -468,11 +468,23 @@ void HelpPlugin::OnUpdateUI(wxUpdateUIEvent& event)
         pbar->Check(idViewMANViewer, false);
 }
 
-void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool openEmbeddedViewer, const wxString &keyword)
+void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase, const wxString &defkeyword, const wxString &c_keyword)
 {
   const static wxString http_prefix(_T("http://"));
   const static wxString man_prefix(_T("man:"));
   wxString helpfile(c_helpfile);
+
+  // Patch by Yorgos Pagles: Use the new attributes to calculate the keyword
+  wxString keyword = c_keyword.IsEmpty() ? defkeyword : c_keyword;
+
+  if(keyCase == HelpCommon::UpperCase)
+  {
+    keyword.MakeUpper();
+  }
+  else if (keyCase == HelpCommon::LowerCase)
+  {
+    keyword.MakeLower();
+  }
 
   helpfile.Replace(_T("$(keyword)"), keyword);
   Manager::Get()->GetMacrosManager()->ReplaceMacros(helpfile);
@@ -622,5 +634,6 @@ void HelpPlugin::OnFindItem(wxCommandEvent &event)
 
   int id = event.GetId();
   HelpCommon::HelpFileAttrib hfa = HelpFileFromId(id);
-  LaunchHelp(hfa.name, hfa.isExecutable, hfa.openEmbeddedViewer, text);
+  // Patch by Yorgos Pagles: Use the new keyword calculation
+  LaunchHelp(hfa.name, hfa.isExecutable, hfa.openEmbeddedViewer, hfa.keywordCase, hfa.defaultKeyword, text);
 }

@@ -34,6 +34,9 @@ BEGIN_EVENT_TABLE(HelpConfigDialog, wxPanel)
   EVT_CHECKBOX(XRCID("chkDefault"), HelpConfigDialog::OnCheckbox)
   EVT_CHECKBOX(XRCID("chkExecute"), HelpConfigDialog::OnCheckboxExecute)
   EVT_CHECKBOX(XRCID("chkEmbeddedViewer"), HelpConfigDialog::OnCheckboxEmbeddedViewer)
+  // Patch by Yorgos Pagles: Add new gui elements' events for setting the new attributes
+  EVT_CHOICE(XRCID("chkCase"), HelpConfigDialog::OnCaseChoice)
+  EVT_TEXT(XRCID("textDefaultKeyword"), HelpConfigDialog::OnDefaultKeywordEntry)
 END_EVENT_TABLE()
 
 
@@ -61,6 +64,9 @@ m_pPlugin(plugin)
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[0].second.isExecutable);
     XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(m_Vector[0].second.openEmbeddedViewer);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == 0);
+    // Patch by Yorgos Pagles: Show the new attributes
+    XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(m_Vector[0].second.keywordCase);
+    XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(m_Vector[0].second.defaultKeyword);
   }
 }
 
@@ -83,6 +89,9 @@ void HelpConfigDialog::UpdateEntry(int index)
   	m_Vector[index].second.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
   	m_Vector[index].second.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
   	m_Vector[index].second.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
+    // Patch by Yorgos Pagles: Write the new attributes
+    m_Vector[lst->GetSelection()].second.keywordCase = static_cast<HelpCommon::StringCase>(XRCCTRL(*this, "chkCase", wxChoice)->GetSelection());
+    m_Vector[lst->GetSelection()].second.defaultKeyword = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->GetValue();
   }
   else
   {
@@ -90,6 +99,9 @@ void HelpConfigDialog::UpdateEntry(int index)
     hfa.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
     hfa.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
     hfa.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
+  	// Patch by Yorgos Pagles: Write the new attributes
+    hfa.keywordCase = static_cast<HelpCommon::StringCase>(XRCCTRL(*this, "chkCase", wxChoice)->GetSelection());
+    hfa.defaultKeyword = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->GetValue();
   	m_Vector.push_back(make_pair(lst->GetString(index), hfa));
   }
 }
@@ -133,12 +145,18 @@ void HelpConfigDialog::ListChange(wxCommandEvent& event)
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.isExecutable);
     XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.openEmbeddedViewer);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(HelpCommon::getDefaultHelpIndex() == lst->GetSelection());
+    // Patch by Yorgos Pagles: Show the new attributes
+    XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(m_Vector[lst->GetSelection()].second.keywordCase);
+    XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second.defaultKeyword);
   }
   else
   {
   	XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
   	XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
   	XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
+    // Patch by Yorgos Pagles: Show the new attributes
+    XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(0);
+    XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(_T(""));
   }
 }
 
@@ -175,6 +193,9 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(_T(""));
+    // Patch by Yorgos Pagles: Show the new attributes
+    XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(0);
+    XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(_T(""));
 
     if (cbMessageBox(_("Would you like to browse for the help file?\n(Check \"Help->Plugins->Help plugin\" for a reason you would like to choose No)"), _("Browse"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
@@ -235,6 +256,9 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
     XRCCTRL(*this, "txtHelp", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].first);
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.isExecutable);
     XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(m_Vector[lst->GetSelection()].second.openEmbeddedViewer);
+    // Patch by Yorgos Pagles: Show the new attributes
+    XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(m_Vector[lst->GetSelection()].second.keywordCase);
+    XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(m_Vector[lst->GetSelection()].second.defaultKeyword);
   }
   else
   {
@@ -242,6 +266,9 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
     XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
     XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
+    // Patch by Yorgos Pagles: Show the new attributes
+    XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(0);
+    XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(_T(""));
   }
 
   m_LastSel = lst->GetSelection();
@@ -335,6 +362,21 @@ void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent& event)
   }
 }
 
+// Patch by Yorgos Pagles: Handle the events of the new gui elements
+void HelpConfigDialog::OnCaseChoice(wxCommandEvent &event)
+{
+  int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  wxChoice *keywordCaseCtrl = XRCCTRL(*this, "chkCase", wxChoice);
+  m_Vector[current].second.keywordCase = static_cast<HelpCommon::StringCase>(keywordCaseCtrl->GetSelection());
+}
+
+void HelpConfigDialog::OnDefaultKeywordEntry(wxCommandEvent &event)
+{
+  int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  wxTextCtrl *defaultKeywordCtrl = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl);
+  m_Vector[current].second.defaultKeyword = defaultKeywordCtrl->GetValue();
+}
+
 void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
 {
   int sel = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
@@ -346,6 +388,9 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
   XRCCTRL(*this, "chkDefault", wxCheckBox)->Enable(sel != -1);
   XRCCTRL(*this, "chkExecute", wxCheckBox)->Enable(sel != -1);
   XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->Enable(sel != -1);
+  // Patch by Yorgos Pagles: Disable the new items
+  XRCCTRL(*this, "chkCase", wxChoice)->Enable(sel != -1);
+  XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->Enable(sel != -1);
 
   if (sel == -1 || count == 1)
   {

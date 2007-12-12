@@ -36,7 +36,8 @@ class HelpPlugin : public cbPlugin
     void RemoveFromHelpMenu(int id, const wxString &help);
     void AddFile();
     HelpCommon::HelpFileAttrib HelpFileFromId(int id);
-    void LaunchHelp(const wxString &helpfile, bool isExecutable, bool openEmbeddedViewer, const wxString &keyword = wxEmptyString);
+    // Patch from Yorgos Pagles: Take into consideration the new attributes when launching a help file
+    void LaunchHelp(const wxString &helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase = HelpCommon::Preserve, const wxString &defkeyword = wxEmptyString, const wxString &keyword = wxEmptyString);
 
   private:
     wxMenuBar *m_pMenuBar;
