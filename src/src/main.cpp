@@ -704,27 +704,6 @@ void MainFrame::SetupGUILogging()
 
     mgr->NotifyUpdate();
     infoPane->SetDropTarget(new wxMyFileDropTarget(this));
-
-
-
-    // ------------------------ remove this  ------------------------
-
-//    infoPane->AddNonLogger(new wxStaticText(infoPane, -1, wxString(_T("here be search results (actually wrong, this is not a logger!)"))), _T("Search results"));
-//
-//
-//    Manager::Get()->GetLogManager()->Log(_T("foo bar"));
-//    Manager::Get()->GetLogManager()->Log(_T("123456"));
-//    Manager::Get()->GetLogManager()->Log(_T("abcdefg"));
-//    Manager::Get()->GetLogManager()->LogWarning(_T("This doesn't look right"));
-//    Manager::Get()->GetLogManager()->DebugLog(_T("useless output"));
-//    Manager::Get()->GetLogManager()->Log(_T("another way for useless output"), LogManager::debug_log);
-//    Manager::Get()->GetLogManager()->DebugLog(_T("this is a debug error"), Logger::error);
-//    Manager::Get()->GetLogManager()->LogError(_T("This is really bad."));
-//    Manager::Get()->GetLogManager()->Log(_T("Starting build"), LogManager::app_log, Logger::caption);
-//    Manager::Get()->GetLogManager()->Log(_T("No resource file found. Cannot continue."), LogManager::app_log, Logger::critical);
-//    Manager::Get()->GetLogManager()->Log(_T("Build succeeded, no errors."), LogManager::app_log, Logger::success);
-
-    // ------------------------ remove this  ------------------------
 }
 
 

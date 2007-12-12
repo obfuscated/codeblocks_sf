@@ -88,11 +88,18 @@ public:
          *   - DebugLog() and DebugLogError() direct their output into the debug log.
          *   - LogToStdOut() outputs a message on stdout. Normally you will not want to use this function, it
          *     exists solely for some special cases.
+         *   - Panic() signals a condition that does not allow proper continuation of the application or significant
+         *     parts of it, but it is slightly less harsh than simply bailing out with an unhandled exception.
+         *     Currently, Panic() is simply a wrapper around wxSafeShowMessage(), but it might do something else, too.
+         *     When signalling panic, you will usually want to shut down the application as soon as appropriate.
+         *     Plugins should call Panic() with the plugin's name as the component argument.
          */
 
 		void Log(const wxString& msg, int i = app_log, Logger::level lv = Logger::info) { slot[i].log->Append(msg, lv); };
 		void LogWarning(const wxString& msg, int i = app_log) { Log(msg, i, Logger::warning); };
 		void LogError(const wxString& msg, int i = app_log) { Log(msg, i, Logger::error); };
+
+		void Panic(const wxString& msg, const wxString& component = wxEmptyString);
 
 		void DebugLog(const wxString& msg, Logger::level lv = Logger::info) { Log(msg, debug_log, lv); };
 		void DebugLogError(const wxString& msg) { DebugLog(msg, Logger::error); };

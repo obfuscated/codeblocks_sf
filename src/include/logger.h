@@ -16,7 +16,14 @@ class DLLIMPORT Logger
 public:
     /*
     *  The ubiquitous, standard log levels to use are:  info, warning, error, critical
-    *  Other levels are for special uses and may have side effects (other than formatting) that you don't know about... don't use them.
+    *
+    *  info      - I'm telling you, but you probably won't bother reading anyway.
+    *  warning   - You should know about this. I'm telling you now, so you can's sue me later.
+    *  error     - Something failed, but the world is not going to end.
+    *  critical  - Something failed, and it hit you right in the eye. It really hurts, you have to do something.
+    *
+    *  Other log levels are for special uses and may have side effects that you don't know about,
+    *  and they may not work like expected under the specific conditions they run in... don't use them.
     */
 	enum level { caption, info, warning, success, error, critical, failure, pagetitle, spacer, asterisk };
 	enum { num_levels = asterisk +1 };
