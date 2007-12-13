@@ -5,6 +5,11 @@
 */
 
 #include "sdk_precomp.h"
+
+#ifndef CB_PRECOMP
+#include <wx/log.h>
+#endif
+
 #include "logmanager.h"
 #include "loggers.h"
 
