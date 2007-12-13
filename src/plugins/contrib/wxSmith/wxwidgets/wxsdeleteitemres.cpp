@@ -47,7 +47,7 @@ wxsDeleteItemRes::wxsDeleteItemRes()
 	Create(0, wxID_ANY, _("Deleting resource"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Delete options"));
-	m_PhisDeleteWXS = new wxCheckBox(this, ID_CHECKBOX1, _("Phisically delete WXS file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+	m_PhisDeleteWXS = new wxCheckBox(this, ID_CHECKBOX1, _("Physically delete WXS file"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
 	m_PhisDeleteWXS->SetValue(true);
 	StaticBoxSizer1->Add(m_PhisDeleteWXS, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	m_DeleteSources = new wxCheckBox(this, ID_CHECKBOX2, _("Delete source files from project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));

@@ -12,7 +12,7 @@
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_PhisDeleteWXS" member="yes">
-							<label>Phisically delete WXS file</label>
+							<label>Physically delete WXS file</label>
 							<checked>1</checked>
 						</object>
 						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
