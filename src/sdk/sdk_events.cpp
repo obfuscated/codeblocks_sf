@@ -70,9 +70,8 @@ CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, int logIndex, co
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title, wxBitmap *icon)
 	: wxEvent(wxID_ANY, commandType),
-	logger(0), logIndex(logIndex), icon(icon), title(title), window(window)
+	logger(0), logIndex(-1), icon(icon), title(title), window(window)
 {
-	logger = Manager::Get()->GetLogManager()->Slot(logIndex).GetLogger();
 }
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs)
