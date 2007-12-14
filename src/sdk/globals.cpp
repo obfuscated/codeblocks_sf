@@ -198,7 +198,9 @@ wxString UnixFilename(const wxString& filename)
 
 void QuoteStringIfNeeded(wxString& str)
 {
-    if (!str.IsEmpty() && str.GetChar(0) != _T('"') && str.Find(_T(' ')) != -1)
+	bool hasSpace = str.Find(_T(' ')) != -1;
+	bool hasParen = !platform::windows && (str.Find(_T('(')) != -1 || str.Find(_T(')')) != -1);
+    if (!str.IsEmpty() && str.GetChar(0) != _T('"') && (hasSpace || hasParen))
         str = wxString(_T("\"")) + str + _T("\"");
 }
 
