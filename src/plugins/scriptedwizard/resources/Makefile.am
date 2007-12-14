@@ -1,4 +1,4 @@
-SUBDIRS = avr c_file console d directx dll empty empty_file fltk glfw glut gtk h_file irrlicht lf ogre opengl plugins qt4 sdl smartwin staticlib sys win32gui wxwidgets
+SUBDIRS = avr c_file console d directx dll empty empty_file fltk glfw glut gtk h_file irrlicht lf ogre opengl plugins qt4 sdl smartwin staticlib sharedlib sys win32gui wxwidgets
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard
 

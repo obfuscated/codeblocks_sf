@@ -306,6 +306,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/smartwin/files/Makefile
 	src/plugins/scriptedwizard/resources/staticlib/Makefile
 	src/plugins/scriptedwizard/resources/staticlib/files/Makefile
+	src/plugins/scriptedwizard/resources/sharedlib/Makefile
+	src/plugins/scriptedwizard/resources/sharedlib/files/Makefile
 	src/plugins/scriptedwizard/resources/sys/Makefile
 	src/plugins/scriptedwizard/resources/sys/files/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile

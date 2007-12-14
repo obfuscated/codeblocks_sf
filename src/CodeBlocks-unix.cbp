@@ -1807,6 +1807,9 @@
 		<Unit filename="plugins/scriptedwizard/resources/staticlib/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/sharedlib/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/wxwidgets/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>

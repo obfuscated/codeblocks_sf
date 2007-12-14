@@ -27,6 +27,9 @@ dist_pkgdata_DATA = console.cbp \
 		sdl-cb.bmp \
 		sdl-main.cpp \
 		sdl.png \
+		sharedlib.cbp \
+		sharedlib-sample.c \
+		sharedlib.template \
 		staticlib.cbp \
 		staticlib-sample.c \
 		staticlib.template \
