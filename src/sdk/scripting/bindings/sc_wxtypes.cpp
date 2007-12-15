@@ -13,6 +13,7 @@ namespace ScriptBindings
     // the _T() function for scripts
     wxString static_T(const SQChar* str)
     {
+		CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
         return cbC2U(str);
     }
 
