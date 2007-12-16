@@ -2072,7 +2072,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
             }
             prj->CalculateCommonTopLevelPath();
-            prj->EndAddFiles();
+            prj->EndRemoveFiles();
             RebuildTree();
         }
     }
