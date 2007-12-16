@@ -361,6 +361,13 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
                 if (!tmp.IsEmpty())
                     bt->AddLinkerOption(wxString(_T("/pdb:")) + UnixFilename(tmp));
             }
+
+            if (!m_ConvertSwitches)
+            {
+                tmp = ReplaceMSVCMacros(cbC2U(tool->Attribute("ModuleDefinitionFile")));
+                if (!tmp.IsEmpty())
+                    bt->AddLinkerOption(_T("/DEF:\"") + tmp + _T("\""));
+            }
         }
         else if (strcmp(tool->Attribute("Name"), "VCCLCompilerTool") == 0)
         {
@@ -438,7 +445,7 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             }
             else
             {
-                if      (tmp.IsSameAs(_T("0"))) bt->AddCompilerOption(_T("/O0"));
+                if      (tmp.IsSameAs(_T("0"))) bt->AddCompilerOption(_T("/Od"));
                 else if (tmp.IsSameAs(_T("1"))) bt->AddCompilerOption(_T("/O1"));
                 else if (tmp.IsSameAs(_T("2"))) bt->AddCompilerOption(_T("/O2"));
                 else if (tmp.IsSameAs(_T("3"))) bt->AddCompilerOption(_T("/Ox"));
