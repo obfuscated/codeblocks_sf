@@ -1478,7 +1478,7 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
             wxArrayString psErrors;
 
             psCmd << wxT("/bin/ps -o ppid,pid,command");
-            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
+//            Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
             int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
 
             mypidStr << wxT(" ");
@@ -1498,8 +1498,8 @@ int CodeSnippets::LaunchProcess(const wxString& cmd, const wxString& cwd)
                }
              }
 
-            for (int i = 0; i < psErrors.GetCount(); ++i)
-                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
+//            for (int i = 0; i < psErrors.GetCount(); ++i)
+//                Manager::Get()->GetMessageManager()->DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
 
         }//if(m_ExternalPid == -1)
     #endif
