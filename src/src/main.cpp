@@ -735,7 +735,9 @@ void MainFrame::RunStartupScripts()
 
             try
             {
-                wxString startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
+                wxString startup = se.script;
+                if (wxFileName(se.script).IsRelative())
+					startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
                 if (!startup.IsEmpty())
                 {
                     if (!se.registered)
@@ -745,6 +747,8 @@ void MainFrame::RunStartupScripts()
                     else
                         Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.c_str()));
                 }
+                else
+					Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.c_str()));
             }
             catch (SquirrelError& exception)
             {
