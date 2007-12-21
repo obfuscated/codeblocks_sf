@@ -48,6 +48,7 @@ class wxsMenuItem: public wxsTool
         virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
         virtual void OnBuildDeclarationsCode();
         virtual wxString OnGetTreeLabel(int& Image);
+        virtual const wxString& GetClassName();
 
         enum Type                                   ///< \brief Type of menu (or it's item)
         {

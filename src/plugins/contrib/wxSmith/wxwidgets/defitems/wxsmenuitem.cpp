@@ -230,11 +230,6 @@ bool wxsMenuItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 break;
 
             case Normal:
-                if ( GetChildCount() )
-                {
-                    // If there are any children, we save this class as wxMenu, not wxMenuItem
-                    Element->SetAttribute("class","wxMenu");
-                }
                 break;
         }
     }
@@ -334,37 +329,28 @@ wxString wxsMenuItem::OnGetTreeLabel(int& Image)
 
 void wxsMenuItem::OnBuildDeclarationsCode()
 {
-    // Few hacks needed, First: if this item has children, we have to change to
-    // wxMenu, Second: if it is break or separtor we do not have any declaration
-    if ( GetChildCount() )
+    if ( !GetChildCount() )
     {
-        switch ( GetLanguage() )
+        switch ( m_Type )
         {
-            case wxsCPP:
-                if ( IsPointer() )
-                {
-                    AddDeclaration(_T("wxMenu* ") + GetVarName() + _T(";"));
-                }
-                else
-                {
-                    AddDeclaration(_T("wxMenu ") + GetVarName() + _T(";"));
-                }
-                break;
+            case Break:
+            case Separator:
+                return;
 
-            default:
-                wxsCodeMarks::Unknown(_T("wxsMenuItem::OnBuildDeclarationsCode"),GetLanguage());
+            default:;
         }
-        return;
-    }
-
-    switch ( m_Type )
-    {
-        case Break:
-        case Separator:
-            return;
-
-        default:;
     }
 
     wxsItem::OnBuildDeclarationsCode();
+}
+
+const wxString& wxsMenuItem::GetClassName()
+{
+    if ( GetChildCount() )
+    {
+        // If there are any children, this item becomes wxMenu
+        static const wxString ChangedClassName = _T("wxMenu");
+        return ChangedClassName;
+    }
+    return wxsTool::GetClassName();
 }

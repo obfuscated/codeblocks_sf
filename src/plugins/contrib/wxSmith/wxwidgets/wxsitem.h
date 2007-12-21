@@ -165,7 +165,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
         inline wxsItemType GetType() { return GetInfo().Type; }
 
         /** \brief Getting class name */
-        inline const wxString& GetClassName() { return GetInfo().ClassName; }
+        virtual const wxString& GetClassName() { return GetInfo().ClassName; }
 
         /** \brief Getting user class name
          *

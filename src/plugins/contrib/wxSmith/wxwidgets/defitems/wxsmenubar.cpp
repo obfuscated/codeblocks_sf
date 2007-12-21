@@ -123,7 +123,7 @@ bool wxsMenuBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
 
 bool wxsMenuBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
-    if ( Item->GetClassName() != _T("wxMenu") )
+    if ( Item->GetInfo().ClassName != _T("wxMenu") )
     {
         if ( ShowMessage )
         {

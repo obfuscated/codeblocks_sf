@@ -253,7 +253,7 @@ bool wxsMenu::OnIsPointer()
 
 bool wxsMenu::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
-    if ( Item->GetClassName() != _T("wxMenuItem") )
+    if ( Item->GetInfo().ClassName != _T("wxMenuItem") )
     {
         if ( ShowMessage )
         {
