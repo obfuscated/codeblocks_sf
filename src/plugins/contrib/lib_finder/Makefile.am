@@ -1,3 +1,5 @@
+SUBDIRS = lib_finder
+
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include
