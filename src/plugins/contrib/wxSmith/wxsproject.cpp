@@ -178,15 +178,22 @@ void wxsProject::ReadConfiguration(TiXmlElement* element)
 
 void wxsProject::WriteConfiguration(TiXmlElement* element)
 {
+    TiXmlElement* SmithElement = element->FirstChildElement("wxsmith");
+
     if ( !m_GUI && m_Resources.empty() && m_UnknownConfig.NoChildren() && m_UnknownResources.NoChildren() )
     {
         // Nothing to write
+        if ( SmithElement )
+        {
+            element->RemoveChild(SmithElement);
+        }
         return;
     }
 
-    TiXmlElement* SmithElement = element->FirstChildElement("wxsmith");
-    if (!SmithElement)
+    if ( !SmithElement )
+    {
 		SmithElement = element->InsertEndChild(TiXmlElement("wxsmith"))->ToElement();
+    }
 	SmithElement->Clear();
     SmithElement->SetAttribute("version",CurrentVersionStr);
 
