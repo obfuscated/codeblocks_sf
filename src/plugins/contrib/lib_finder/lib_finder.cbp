@@ -60,7 +60,6 @@
 			<Add after="update.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
-		<Unit filename="README.txt" />
 		<Unit filename="dirlistdlg.cpp" />
 		<Unit filename="dirlistdlg.h" />
 		<Unit filename="lib_finder.cpp" />
@@ -74,7 +73,11 @@
 		<Unit filename="libraryresult.h" />
 		<Unit filename="manifest.xml" />
 		<Unit filename="processingdlg.cpp" />
-		<Unit filename="processingdlg.h" />
+                <Unit filename="projectconfiguration.cpp" />
+                <Unit filename="projectconfiguration.h" />
+                <Unit filename="projectconfigurationpanel.cpp" />
+                <Unit filename="projectconfigurationpanel.h" />
+ 		<Unit filename="processingdlg.h" />
 		<Unit filename="resultmap.cpp" />
 		<Unit filename="resultmap.h" />
 		<Extensions>

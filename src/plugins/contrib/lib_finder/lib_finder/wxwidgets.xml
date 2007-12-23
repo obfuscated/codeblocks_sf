@@ -1,17 +1,90 @@
-<library name="wxWidgets" global_var="wx">
-    <file name="include/wx/wx.h"/>
-    <file name="include/wx/wxprec.h"/>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<library name="wxWidgets" global_var="wx" category1="Gui" category2="Cross-Platform">
 
-    <config new_name="wxWidgets 2.6 Monolithic DLL (Configuration: $(CONFIG_NAME))">
-        <file name="lib/*$(CONFIG_NAME)/msw/wx/setup.h"/>
-        <file name="lib/*$(CONFIG_NAME)/libwxmsw26.a"/>
-        <path include="$(BASE_DIR)/include"/>
-        <path include="$(BASE_DIR)/contrib/include"/>
-        <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
-        <path lib="$(BASE_DIR)/lib/$(CONFIG_NAME)"/>
-        <path obj="$(BASE_DIR)/include"/>
-        <flags cflags="-DHAVE_W32API_H -D__WXMSW__ -DWXUSINGDLL"/>
-        <flags lflags="-lwxmsw26"/>
+    <config description="wxWidgets configured through wx-config">
+        <!-- Confugration for systems where you can find wx-config -->
+        <filters>
+            <exec name="wx-config"/>
+        </filters>
+        <settings>
+            <flags cflags="`wx-config --cxxflags`"/>
+            <flags lflags="`wx-config --libs`"/>
+        </settings>
+    </config>
+
+    <config>
+        <!-- Configurations for windows hosts -->
+
+        <!-- These are the same for all configurations -->
+        <platform name="win"/>
+        <filters>
+            <file name="include/wx/wx.h"/>
+            <file name="include/wx/wxprec.h"/>
+        </filters>
+        <settings>
+            <path include="$(BASE_DIR)/include"/>
+            <path include="$(BASE_DIR)/contrib/include"/>
+            <!-- NOTE: This is needed inly to force compatibility with current usage of $(#wx.libs) variable -->
+            <path lib="$(BASE_DIR)/lib"/>
+            <path lib="$(BASE_DIR)/lib/$(CONFIG_NAME)"/>
+            <path obj="$(BASE_DIR)/include"/>
+            <flags cflags="-D__GNUWIN32__"/>
+            <flags cflags="-DHAVE_W32API_H"/>
+            <flags cflags="-D__WXMSW__"/>
+        </settings>
+
+        <!-- Next we have settings for different configurations -->
+
+        <config description="wxWidgets 2.6 Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/msw/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw26.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
+                <flags cflags="-DWXUSINGDLL"/>
+                <flags lflags="-lwxmsw26"/>
+            </settings>
+        </config>
+
+        <config description="wxWidgets 2.6 Unicode Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/mswu/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw26.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/mswu"/>
+                <flags cflags="-DWXUSINGDLL"/>
+                <flags cflags="-DwxUSE_UNICODE"/>
+                <flags lflags="-lwxmsw26u"/>
+            </settings>
+        </config>
+
+        <config description="wxWidgets 2.8 Unicode Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/mswu/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw28u.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/mswu"/>
+                <flags cflags="-DWXUSINGDLL"/>
+                <flags cflags="-DwxUSE_UNICODE"/>
+                <flags lflags="-lwxmsw28u"/>
+            </settings>
+        </config>
+
+        <config description="wxWidgets 2.8 Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/msw/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw28.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
+                <flags cflags="-DWXUSINGDLL"/>
+                <flags lflags="-lwxmsw28"/>
+            </settings>
+        </config>
+
     </config>
 
 </library>

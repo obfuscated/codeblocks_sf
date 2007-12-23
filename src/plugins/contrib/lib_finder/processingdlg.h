@@ -1,22 +1,44 @@
+/*
+* This file is part of lib_finder plugin for Code::Blocks Studio
+* Copyright (C) 2006-2007  Bartlomiej Swiecki
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 2 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA
+*
+* $Revision: 4504 $
+* $Id: wxsmithpluginregistrants.cpp 4504 2007-10-02 21:52:30Z byo $
+* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/wxSmith/plugin/wxsmithpluginregistrants.cpp $
+*/
+
 #ifndef PROCESSINGDLG_H
 #define PROCESSINGDLG_H
 
-// NOTE : once the new wxSmith is up and running these includes should be
-// moved to the cpp, forward declarations is what we need here
-
 #include <wx/string.h>
+#include <wx/hashmap.h>
+#include <wx/arrstr.h>
 
 //(*Headers(ProcessingDlg)
+#include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
 #include <wx/gauge.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
 //*)
 
 #include "libraryconfig.h"
-
-class wxArrayString;
+#include "libraryconfigmanager.h"
+#include "resultmap.h"
 
 WX_DECLARE_STRING_HASH_MAP(wxArrayString,FileNamesMap);
 WX_DECLARE_STRING_HASH_MAP(wxString,wxStringStringMap);
@@ -25,7 +47,7 @@ class ProcessingDlg: public wxDialog
 {
 	public:
 
-		ProcessingDlg(wxWindow* parent,wxWindowID id = -1);
+		ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,ResultMap& Results,wxWindowID id = -1);
 		virtual ~ProcessingDlg();
 
 		//(*Identifiers(ProcessingDlg)
@@ -45,11 +67,11 @@ class ProcessingDlg: public wxDialog
 		//*)
 
 		//(*Declarations(ProcessingDlg)
-		wxFlexGridSizer* FlexGridSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
 		wxStaticText* Status;
-		wxGauge* Gauge1;
 		wxButton* StopBtn;
+		wxGauge* Gauge1;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxFlexGridSizer* FlexGridSizer1;
 		//*)
 
 	private:
@@ -58,13 +80,15 @@ class ProcessingDlg: public wxDialog
         void ProcessLibrary(const LibraryConfig* Config);
         void SplitPath(const wxString& FileName,wxArrayString& Split);
         bool IsVariable(const wxString& NamePart) const;
-        void CheckNextFileName(const wxString& BasePath,const wxStringStringMap& Vars,const LibraryConfig*Config,int WhichFile);
-        void FoundLibrary(const wxString& BasePath,const wxStringStringMap& Vars,const LibraryConfig*Config);
+        void CheckFilter(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryConfig *Config,int WhichFilter);
+        void FoundLibrary(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryConfig *Config);
         wxString FixVars(wxString Original,const wxStringStringMap& Vars);
         wxString FixPath(wxString Original);
 
         bool StopFlag;
         FileNamesMap Map;
+        LibraryConfigManager& m_Manager;
+        ResultMap& m_Results;
 
 		DECLARE_EVENT_TABLE()
 };

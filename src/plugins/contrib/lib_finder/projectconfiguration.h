@@ -1,6 +1,6 @@
 /*
 * This file is part of lib_finder plugin for Code::Blocks Studio
-* Copyright (C) 2006-2007  Bartlomiej Swiecki
+* Copyright (C) 2007  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -21,44 +21,36 @@
 * $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/wxSmith/plugin/wxsmithpluginregistrants.cpp $
 */
 
-#ifndef RESULTMAP_H
-#define RESULTMAP_H
+#ifndef PROJECTCONFIGURATION_H
+#define PROJECTCONFIGURATION_H
 
-#include <wx/dynarray.h>
+#include <wx/arrstr.h>
+#include <wx/string.h>
 #include <wx/hashmap.h>
+#include <tinyxml/tinyxml.h>
+#include <cbproject.h>
 
-#include "libraryresult.h"
-
-class wxArrayString;
-class wxString;
-
-WX_DEFINE_ARRAY(LibraryResult*,ResultArray);
-
-class ResultMap
+/** \brief Configuration of one project */
+class ProjectConfiguration
 {
     public:
-        ResultMap();
-        virtual ~ResultMap();
 
-        /** \brief Clearing all results */
-        void Clear();
+        /** \brief Ctor */
+        ProjectConfiguration();
 
-        /** \brief Getting array associated with specified variable name */
-        ResultArray& GetGlobalVar(const wxString& Name) { return Map[Name]; }
+        /** \brief Dctor */
+        ~ProjectConfiguration();
 
-        /** \brief Checking if given global variable does exist */
-        bool IsGlobalVar(const wxString& Name);
+        /** \brief Loading configuration from xml node */
+        void XmlLoad(TiXmlElement* Node,cbProject* Project);
 
-        /** \brief Getting all results */
-        void GetAllResults(ResultArray& Array);
+        /** \brief Writing configuration to xml node */
+        void XmlWrite(TiXmlElement* Node,cbProject* Project);
 
-        /** \brief Getting array of used variable names */
-        void GetGlobalVarNames(wxArrayString& Names);
+        WX_DECLARE_STRING_HASH_MAP(wxArrayString,wxMultiStringMap);
 
-    private:
-
-        WX_DECLARE_STRING_HASH_MAP(ResultArray,ResultHashMap);
-        ResultHashMap Map;
+        wxArrayString    m_GlobalUsedLibs;  ///< \brief List of used libraries for the whole project
+        wxMultiStringMap m_TargetsUsedLibs; ///< \brief List of libs used in targets
 };
 
 #endif

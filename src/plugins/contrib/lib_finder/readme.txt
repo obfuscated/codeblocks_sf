@@ -1,3 +1,5 @@
+WARNING: Outdated
+
 This Code::Blocks plugin was created to automatically find libraries installed in system.
 Each library is represented as global variable. If this global variable is configured by
 this plugin, all necessary steps to use such library is to:

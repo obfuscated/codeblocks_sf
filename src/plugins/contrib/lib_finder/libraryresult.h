@@ -5,14 +5,18 @@
 
 struct LibraryResult
 {
-    wxString GlobalVar;
     wxString LibraryName;
+    wxString GlobalVar;
     wxString BasePath;
-    wxString IncludePath;
-    wxString LibPath;
-    wxString ObjPath;
-    wxString CFlags;
-    wxString LFlags;
+    wxString Description;
+    wxString PkgConfigVar;
+    wxArrayString Categories;
+    wxArrayString IncludePath;
+    wxArrayString LibPath;
+    wxArrayString ObjPath;
+    wxArrayString CFlags;
+    wxArrayString LFlags;
+    wxArrayString Compilers;
 };
 
-#endif //LIBRARYRESULT_H
+#endif

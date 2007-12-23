@@ -3,28 +3,62 @@
 
 #include <wx/arrstr.h>
 #include <wx/string.h>
+#include <vector>
 
+/** \brief Requirement which must be meet for this library to be detected */
+struct LibraryFilter
+{
+    enum FilterType
+    {
+        None,       ///< \brief Nothing is required by this filter
+        File,       ///< \brief Some file is required
+        Platform,   ///< \brief Some platform is required
+        Exec,       ///< \brief Some executable is required
+        PkgConfig,  ///< \brief Configuration in pkg-config is required
+        Compiler,   ///< \brief Some compiler is required
+    };
+
+    /** \brief Type of filter */
+    FilterType Type;
+
+    /** \brief Value required by the filter (f.ex. file name pattern) */
+    wxString Value;
+};
+
+/** \brief Configuration of the library */
 struct LibraryConfig
 {
-    /** Name of library, may use internal variables in form $(VAR_NAME) */
+    /** \brief Name of library, may use internal variables in form $(VAR_NAME) */
     wxString LibraryName;
 
-    /** Name of global variable used with this library */
+    /** \brief Name of global variable used with this library */
     wxString GlobalVar;
 
-    /** Set of files required by this library
-     *
-     * Each file name will be threated as relative name inside
-     * root library path. It may point to file or directory.
-     * When directory is in form:
-     *  @code *$(VAR_NAME) @endcode
-     * It will be threated as ANY directory and internal variable named
-     * VAR_NAME will be set to it's name.
-     * Top-level file can not be variable name.
-     */
-    wxArrayString FileNames;
+    /** \brief Description of the library */
+    wxString Description;
 
-    /** Set of include directories. If more than one is provided,
+    /** \brief Category list */
+    wxArrayString Categories;
+
+    /** \brief Pkg-Config variable name */
+    wxString PkgConfigVar;
+
+    /** \brief Set of filters required by the library */
+    std::vector<LibraryFilter> Filters;
+
+//    /** Set of files required by this library
+//     *
+//     * Each file name will be threated as relative name inside
+//     * root library path. It may point to file or directory.
+//     * When directory is in form:
+//     *  @code *$(VAR_NAME) @endcode
+//     * It will be threated as ANY directory and internal variable named
+//     * VAR_NAME will be set to it's name.
+//     * Top-level file can not be variable name.
+//     */
+//    wxArrayString FileNames;
+
+    /** \brief Set of include directories. If more than one is provided,
      *  first one will be set in global var, other will be added through
      *  cflags.
      *
@@ -32,7 +66,7 @@ struct LibraryConfig
      *  variable $(BASE_DIR) pointing to base directory */
     wxArrayString IncludePaths;
 
-    /** Set of lib directories. If more than one is provided,
+    /** \brief Set of lib directories. If more than one is provided,
      *  first one will be set in global var, other will be added through
      *  lflags.
      *
@@ -40,7 +74,7 @@ struct LibraryConfig
      *  variable $(BASE_DIR) pointing to base directory */
     wxArrayString LibPaths;
 
-    /** Set of obj directories. If more than one is provided,
+    /** \brief Set of obj directories. If more than one is provided,
      *  first one will be set in global var, other will be added through
      *  lflags.
      *
@@ -48,15 +82,16 @@ struct LibraryConfig
      *  variable $(BASE_DIR) pointing to base directory */
     wxArrayString ObjPaths;
 
-    /** Global cflags
+    /** \brief Global cflags
      *
      * Internal variables and $(BASE_DIR) may be used here. */
-    wxString CFlags;
+    wxArrayString CFlags;
 
-    /** Global lflags
+    /** \brief Global lflags
      *
      * Internal variables and $(BASE_DIR) may be used here. */
-    wxString LFlags;
+    wxArrayString LFlags;
+
 };
 
-#endif //LIBRARYCONFIG_H
+#endif

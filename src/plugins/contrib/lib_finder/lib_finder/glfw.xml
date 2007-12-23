@@ -1,17 +1,53 @@
-<library name="GL Framework" global_var="glfw">
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<library name="GL Framework" global_var="glfw" category="Graphics.3d">
 
-    <file name="include/GL/glfw.h"/>
-
-    <config new_name="OpenGL Framework (Windows DLL)">
-        <file name="lib/win32/libglfwdll.a"/>
-        <path lib="$(BASE_DIR)/lib/win32"/>
-        <flags lflags="-lglfwdll -lopengl32 -lglu32 -lkernel32 -luser32 -lgdi32"/>
+    <!--
+        By default pkg-config should be automatically invoked when
+        global_var is equal to pkg-config name of library.
+        If the name does not mismatch or if there are few versions
+        of the library in pkg-config which we would like to provide
+        under one name of global_var, we can use following
+        construction which does bind code::blocks' library name with
+        the one in pkg-config
+    -->
+    <config description="OpenGL Framework (pkg-config)">
+        <pkgconfig name="libglfw"/>
     </config>
 
-    <config new_name="OpenGL Framework (Windows, static library)">
-        <file name="lib/win32/libglfw.a"/>
-        <path lib="$(BASE_DIR)/lib/win32"/>
-        <flags lflags="-lglfw -lopengl32 -lglu32 -lkernel32 -luser32 -lgdi32"/>
+    <config>
+        <!-- Windows platform configurations -->
+
+        <filters>
+            <platform name="win"/>
+            <file name="include/GL/glfw.h"/>
+        </filters>
+        <settings>
+            <path lib="$(BASE_DIR)/lib/win32"/>
+            <flags lflags="-lopengl32"/>
+            <flags lflags="-lglu32"/>
+            <flags lflags="-lkernel32"/>
+            <flags lflags="-luser32"/>
+            <flags lflags="-lgdi32"/>
+        </settings>
+
+        <config description="OpenGL Framework (Windows DLL)">
+            <filters>
+                <file name="lib/win32/libglfwdll.a"/>
+            </filters>
+            <settings>
+                <flags lflags="-lglfwdll"/>
+            </settings>
+        </config>
+
+        <config description="OpenGL Framework (Windows, static library)">
+            <filters>
+                <file name="lib/win32/libglfw.a"/>
+            </filters>
+            <settings>
+                <flags lflags="-lglfw"/>
+            </settings>
+        </config>
+
     </config>
 
 </library>
