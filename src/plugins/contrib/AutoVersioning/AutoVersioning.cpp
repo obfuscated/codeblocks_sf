@@ -31,6 +31,7 @@ using namespace std;
 
 const int idMenuAutoVersioning = wxNewId();
 const int idMenuCommitChanges = wxNewId();
+const int idMenuChangesLog = wxNewId();
 
 /*
 	KILLERBOT : TODO : is this really needed  ??
@@ -45,8 +46,10 @@ BEGIN_EVENT_TABLE(AutoVersioning,wxEvtHandler)
 
     EVT_UPDATE_UI(idMenuCommitChanges, AutoVersioning::OnUpdateUI)
     EVT_UPDATE_UI(idMenuAutoVersioning, AutoVersioning::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuChangesLog, AutoVersioning::OnUpdateUI)
     EVT_MENU(idMenuAutoVersioning, AutoVersioning::OnMenuAutoVersioning)
     EVT_MENU(idMenuCommitChanges, AutoVersioning::OnMenuCommitChanges)
+    EVT_MENU(idMenuChangesLog, AutoVersioning::OnMenuChangesLog)
 END_EVENT_TABLE()
 //}
 
@@ -112,6 +115,7 @@ void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
         project->AppendSeparator();
         project->Append(idMenuAutoVersioning, _("Autoversioning"), _("Manage your project version"));
         project->Append(idMenuCommitChanges, _("Increment Version"), _("Increments and update the version info"));
+        project->Append(idMenuChangesLog, _("Changes Log"), _("View and edit the actual changes"));
     }
 }
 //}
@@ -188,9 +192,9 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
 				Config.ChangesLog.ChangesLogPath = pElem->Attribute("changeslog_path");
 
 				int Help = 0;
-				if(pElem->QueryIntAttribute("generate_log", &Help) == TIXML_SUCCESS)
+				if(pElem->QueryIntAttribute("show_changes_editor", &Help) == TIXML_SUCCESS)
 				{
-					Config.ChangesLog.GenerateChanges = Help?true:false;
+					Config.ChangesLog.ShowChangesEditor = Help?true:false;
 				}
 			}
 		}
@@ -254,7 +258,7 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
 			Settings.SetAttribute("header_path", NewConfig.Settings.HeaderPath.c_str());
 			node->InsertEndChild(Settings);
 			TiXmlElement ChangesLog("Changes_Log");
-			ChangesLog.SetAttribute("generate_log", NewConfig.ChangesLog.GenerateChanges);
+			ChangesLog.SetAttribute("show_changes_editor", NewConfig.ChangesLog.ShowChangesEditor);
 			ChangesLog.SetAttribute("app_title", NewConfig.ChangesLog.AppTitle.c_str());
 			ChangesLog.SetAttribute("changeslog_path", NewConfig.ChangesLog.ChangesLogPath.c_str());
 			node->InsertEndChild(ChangesLog);
@@ -387,6 +391,11 @@ void AutoVersioning::OnMenuCommitChanges(wxCommandEvent&)
     }
 }
 
+void AutoVersioning::OnMenuChangesLog(wxCommandEvent&)
+{
+    GenerateChanges();
+}
+
 void AutoVersioning::OnUpdateUI(wxUpdateUIEvent& event)
 {
     if (IsAttached())
@@ -400,6 +409,10 @@ void AutoVersioning::OnUpdateUI(wxUpdateUIEvent& event)
             else if (m_IsCurrentProjectVersioned)
             {
                 if (m_Modified)
+                {
+                    event.Enable(true);
+                }
+                else if(event.GetId() == idMenuChangesLog)
                 {
                     event.Enable(true);
                 }
@@ -429,6 +442,8 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     m_timerStatus->Stop();
     avVersionEditorDlg VersionEditorDialog((wxWindow*) Manager::Get()->GetAppWindow(), 0L);
 
+    VersionEditorDialog.SetCurrentProject(Project.GetTitle());
+
     VersionEditorDialog.SetMajor(GetVersionState().Values.Major);
     VersionEditorDialog.SetMinor(GetVersionState().Values.Minor);
     VersionEditorDialog.SetBuild(GetVersionState().Values.Build);
@@ -454,7 +469,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     VersionEditorDialog.SetRevisionRandomMaximum(GetConfig().Scheme.RevisionRandMax);
     VersionEditorDialog.SetBuildTimesToMinorIncrement(GetConfig().Scheme.BuildTimesToIncrementMinor);
 
-    VersionEditorDialog.SetChanges(GetConfig().ChangesLog.GenerateChanges);
+    VersionEditorDialog.SetChanges(GetConfig().ChangesLog.ShowChangesEditor);
     VersionEditorDialog.SetChangesTitle(cbC2U(GetConfig().ChangesLog.AppTitle.c_str()));
     VersionEditorDialog.SetChangesLogPath(cbC2U(GetConfig().ChangesLog.ChangesLogPath.c_str()));
 
@@ -474,7 +489,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetConfig().Settings.Svn = VersionEditorDialog.GetSvn();
     GetConfig().Settings.SvnDirectory = cbU2C(VersionEditorDialog.GetSvnDirectory());
     GetConfig().Settings.HeaderPath = cbU2C(VersionEditorDialog.GetHeaderPath());
-    GetConfig().ChangesLog.GenerateChanges = VersionEditorDialog.GetChanges();
+    GetConfig().ChangesLog.ShowChangesEditor = VersionEditorDialog.GetChanges();
     GetConfig().ChangesLog.AppTitle = cbU2C(VersionEditorDialog.GetChangesTitle());
     GetConfig().ChangesLog.ChangesLogPath = cbU2C(VersionEditorDialog.GetChangesLogPath());
 
@@ -645,7 +660,7 @@ void AutoVersioning::CommitChanges()
                     ++GetVersionState().Values.Major;
                 }
             }
-            if(GetConfig().ChangesLog.GenerateChanges)
+            if(GetConfig().ChangesLog.ShowChangesEditor)
             {
                 GenerateChanges();
             }
@@ -660,6 +675,7 @@ void AutoVersioning::CommitChanges()
 void AutoVersioning::GenerateChanges()
 {
     avChangesDlg changesDlg((wxWindow*) Manager::Get()->GetAppWindow(),0L);
+    changesDlg.SetTemporaryChangesFile(m_Project->GetBasePath() + _T("changes.tmp"));
     changesDlg.ShowModal();
 
     wxString changes = changesDlg.Changes();

@@ -69,6 +69,7 @@ const long avVersionEditorDlg::ID_CHANGESTITLE_TEXTCTRL = wxNewId();
 const long avVersionEditorDlg::ID_FORMATS_STATICTEXT = wxNewId();
 const long avVersionEditorDlg::ID_CHANGES_PANEL = wxNewId();
 const long avVersionEditorDlg::ID_AV_NOTEBOOK = wxNewId();
+const long avVersionEditorDlg::ID_STATICTEXT2 = wxNewId();
 const long avVersionEditorDlg::ID_ACCEPT = wxNewId();
 const long avVersionEditorDlg::ID_CANCEL = wxNewId();
 const long avVersionEditorDlg::ID_VALIDATE_TIMER = wxNewId();
@@ -174,28 +175,28 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     pnlScheme = new wxPanel(nbAutoVersioning, ID_SCHEME_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_SCHEME_PANEL"));
     schemeSizer = new wxBoxSizer(wxVERTICAL);
     minorMaxSizer = new wxBoxSizer(wxHORIZONTAL);
-    lblMinorMaximum = new wxStaticText(pnlScheme, ID_MINORMAXIMUN_LABEL, _("Minor maximun:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_MINORMAXIMUN_LABEL"));
+    lblMinorMaximum = new wxStaticText(pnlScheme, ID_MINORMAXIMUN_LABEL, _("Minor maximum:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_MINORMAXIMUN_LABEL"));
     minorMaxSizer->Add(lblMinorMaximum, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     txtMinorMaximun = new wxTextCtrl(pnlScheme, ID_MINORMAXIMUM_TEXT, _("10"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_MINORMAXIMUM_TEXT"));
     txtMinorMaximun->SetToolTip(_("Resets the minor to\nzero when the specified\nvalue is reached."));
     minorMaxSizer->Add(txtMinorMaximun, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     schemeSizer->Add(minorMaxSizer, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     buildNumberMaxSizer = new wxBoxSizer(wxHORIZONTAL);
-    lblBuildNumberMaximun = new wxStaticText(pnlScheme, ID_BUILDNUMBERMAX_LABEL, _("Build Number maximun:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_BUILDNUMBERMAX_LABEL"));
+    lblBuildNumberMaximun = new wxStaticText(pnlScheme, ID_BUILDNUMBERMAX_LABEL, _("Build Number maximum:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_BUILDNUMBERMAX_LABEL"));
     buildNumberMaxSizer->Add(lblBuildNumberMaximun, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     txtBuildNumberMaximun = new wxTextCtrl(pnlScheme, ID_BUILDNUMBERMAX_TEXT, _("0"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUILDNUMBERMAX_TEXT"));
     txtBuildNumberMaximun->SetToolTip(_("Reset the build number\nto zero when the specified\nvalue is reached.\n\n0 equals to unlimited."));
     buildNumberMaxSizer->Add(txtBuildNumberMaximun, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     schemeSizer->Add(buildNumberMaxSizer, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
-    lblRevisionMax = new wxStaticText(pnlScheme, ID_REVISIONMAX_LABEL, _("Revision maximun:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_REVISIONMAX_LABEL"));
+    lblRevisionMax = new wxStaticText(pnlScheme, ID_REVISIONMAX_LABEL, _("Revision maximum:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_REVISIONMAX_LABEL"));
     BoxSizer1->Add(lblRevisionMax, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     txtRevisionMax = new wxTextCtrl(pnlScheme, ID_REVISIONMAX_TEXT, _("0"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_REVISIONMAX_TEXT"));
     txtRevisionMax->SetToolTip(_("Reset the revision to zero\nwhen the specified value \nis reached.\n\n0 equals to unlimited."));
     BoxSizer1->Add(txtRevisionMax, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     schemeSizer->Add(BoxSizer1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-    lblRevisionRandom = new wxStaticText(pnlScheme, ID_REVISIONRANDOM_LABEL, _("Revision random maximun:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_REVISIONRANDOM_LABEL"));
+    lblRevisionRandom = new wxStaticText(pnlScheme, ID_REVISIONRANDOM_LABEL, _("Revision random maximum:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_REVISIONRANDOM_LABEL"));
     BoxSizer2->Add(lblRevisionRandom, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     txtRevisionRandom = new wxTextCtrl(pnlScheme, ID_REVISIONRANDOM_TEXT, _("10"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_REVISIONRANDOM_TEXT"));
     txtRevisionRandom->SetToolTip(_("Maximun number value\nused for the random\nincrementation of the\nrevision."));
@@ -250,12 +251,12 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     BoxSizer7->Add(BoxSizer15, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer5->Add(BoxSizer7, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-    wxString __wxRadioBoxChoices_0[2] =
+    wxString __wxRadioBoxChoices_1[2] = 
     {
         _("C"),
         _("C++")
     };
-    rbHeaderLanguage = new wxRadioBox(pnlSettings, ID_HEADERLANGUAGE_RADIOBOX, _("Header language"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_0, 2, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_HEADERLANGUAGE_RADIOBOX"));
+    rbHeaderLanguage = new wxRadioBox(pnlSettings, ID_HEADERLANGUAGE_RADIOBOX, _("Header language"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 2, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_HEADERLANGUAGE_RADIOBOX"));
     rbHeaderLanguage->SetSelection(1);
     rbHeaderLanguage->SetToolTip(_("Sets the language output."));
     BoxSizer8->Add(rbHeaderLanguage, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -282,7 +283,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     settingsSizer->SetSizeHints(pnlSettings);
     pnlChanges = new wxPanel(nbAutoVersioning, ID_CHANGES_PANEL, wxPoint(231,17), wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_CHANGES_PANEL"));
     changesSizer = new wxBoxSizer(wxVERTICAL);
-    chkChanges = new wxCheckBox(pnlChanges, ID_GENERATECHANGES_CHECKBOX, _("Generate changes log"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_GENERATECHANGES_CHECKBOX"));
+    chkChanges = new wxCheckBox(pnlChanges, ID_GENERATECHANGES_CHECKBOX, _("Show changes editor when incrementing version"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_GENERATECHANGES_CHECKBOX"));
     chkChanges->SetValue(false);
     chkChanges->SetToolTip(_("This will open a window\neverytime you commit or\nthe project version increments.\n\nThen you can enter the\nchanges made to the project."));
     changesSizer->Add(chkChanges, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -290,11 +291,9 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     changesSizer->Add(lblChangesPath, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
     txtChangesLogPath = new wxTextCtrl(pnlChanges, ID_CHANGESLOGPATH_TEXTCTRL, _("ChangesLog.txt"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHANGESLOGPATH_TEXTCTRL"));
-    txtChangesLogPath->Disable();
     txtChangesLogPath->SetToolTip(_("ChangesLog Path"));
     BoxSizer10->Add(txtChangesLogPath, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     btnChangesLogPath = new wxButton(pnlChanges, ID_CHANGESLOGPATH_BUTTON, _("..."), wxDefaultPosition, wxSize(23,26), 0, wxDefaultValidator, _T("ID_CHANGESLOGPATH_BUTTON"));
-    btnChangesLogPath->Disable();
     btnChangesLogPath->SetToolTip(_("Select ChangesLog path and filename"));
     BoxSizer10->Add(btnChangesLogPath, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     changesSizer->Add(BoxSizer10, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -302,7 +301,6 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     lblChangesTitle = new wxStaticText(pnlChanges, ID_FORMAT_STATICTEXT, _("Title Format:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_FORMAT_STATICTEXT"));
     BoxSizer4->Add(lblChangesTitle, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     txtChangesTitle = new wxTextCtrl(pnlChanges, ID_CHANGESTITLE_TEXTCTRL, _("released version %M.%m.%b of %p"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHANGESTITLE_TEXTCTRL"));
-    txtChangesTitle->Disable();
     BoxSizer4->Add(txtChangesTitle, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     changesSizer->Add(BoxSizer4, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     lblChangesFormats = new wxStaticText(pnlChanges, ID_FORMATS_STATICTEXT, _("Major: %M, Minor: %m, Build: %b, Revision: %r, SVN Revision: %s, Date: %d, Month: %o, Year: %y, Ubuntu Style Version: %u, Status: %T, Status Short: %t, Project title: %p"), wxDefaultPosition, wxSize(413,80), 0, _T("ID_FORMATS_STATICTEXT"));
@@ -316,6 +314,8 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     nbAutoVersioning->AddPage(pnlSettings, _("Settings"), false);
     nbAutoVersioning->AddPage(pnlChanges, _("Changes Log"), false);
     mainSizer->Add(nbAutoVersioning, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    lblCurrentProject = new wxStaticText(this, ID_STATICTEXT2, _("Current Project: "), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
+    mainSizer->Add(lblCurrentProject, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
     btnAccept = new wxButton(this, ID_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_ACCEPT"));
     btnAccept->SetDefault();
@@ -337,7 +337,6 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     Connect(ID_HEADERPATH_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnHeaderPathClick);
     Connect(ID_SVN_CHECK,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnSvnCheck);
     Connect(ID_SVNDIR_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnSvnDirectoryClick);
-    Connect(ID_GENERATECHANGES_CHECKBOX,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnChkChangesClick);
     Connect(ID_CHANGESLOGPATH_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnChangesLogPathClick);
     Connect(ID_ACCEPT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnAcceptClick);
     Connect(ID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnCancelClick);
@@ -539,18 +538,6 @@ void avVersionEditorDlg::SetChanges(bool value)
 {
     m_changes = value;
 	chkChanges->SetValue(value);
-    if(!value)
-    {
-        txtChangesTitle->Disable();
-        txtChangesLogPath->Disable();
-        btnChangesLogPath->Disable();
-    }
-    else
-    {
-        txtChangesTitle->Enable();
-        txtChangesLogPath->Enable();
-        btnChangesLogPath->Enable();
-    }
 }
 
 void avVersionEditorDlg::SetChangesLogPath(const wxString& value)
@@ -568,6 +555,11 @@ void avVersionEditorDlg::SetChangesTitle(const wxString& value)
     }
 }
 //}
+
+void avVersionEditorDlg::SetCurrentProject(const wxString& projectName)
+{
+    lblCurrentProject->SetLabel(lblCurrentProject->GetLabel() + projectName);
+}
 
 //{Events
 void avVersionEditorDlg::OnAcceptClick(wxCommandEvent&)
@@ -660,22 +652,6 @@ void avVersionEditorDlg::OnCmbStatusSelect(wxCommandEvent&)
     {
         cmbAbbreviation->SetValue(_T(""));
         cmbStatus->SetValue(_T(""));
-    }
-}
-
-void avVersionEditorDlg::OnChkChangesClick(wxCommandEvent&)
-{
-    if (chkChanges->IsChecked())
-    {
-        txtChangesTitle->Enable();
-        txtChangesLogPath->Enable();
-        btnChangesLogPath->Enable();
-    }
-    else
-    {
-        txtChangesTitle->Disable();
-        txtChangesLogPath->Disable();
-        btnChangesLogPath->Disable();
     }
 }
 
@@ -784,7 +760,8 @@ void avVersionEditorDlg::OnHeaderPathClick(wxCommandEvent& event)
     wxString fullpath;
     fullpath = wxFileSelector(_("Select the header path and filename:"), path, filename, extension, _T("C/C++ Header (*.h)|*.h|All Files (*.*)|*.*"));
 
-    if(!fullpath.IsEmpty()){
+    if(!fullpath.IsEmpty())
+    {
         wxFileName relativeFile(fullpath);
         relativeFile.MakeRelativeTo();
 

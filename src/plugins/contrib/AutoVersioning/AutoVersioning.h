@@ -37,6 +37,7 @@ public: //Constructor and Destructor
 	void OnRelease(bool appShutDown);
 	void OnMenuAutoVersioning(wxCommandEvent& event);
 	void OnMenuCommitChanges(wxCommandEvent& event);
+	void OnMenuChangesLog(wxCommandEvent& event);
 	void OnUpdateUI(wxUpdateUIEvent& event);
 	void OnCompilerStarted(CodeBlocksEvent& event);
 	void OnCompilerFinished(CodeBlocksEvent& event);

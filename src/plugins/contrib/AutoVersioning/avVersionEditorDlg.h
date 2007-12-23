@@ -119,6 +119,7 @@ public:
 		static const long ID_FORMATS_STATICTEXT;
 		static const long ID_CHANGES_PANEL;
 		static const long ID_AV_NOTEBOOK;
+		static const long ID_STATICTEXT2;
 		static const long ID_ACCEPT;
 		static const long ID_CANCEL;
 		static const long ID_VALIDATE_TIMER;
@@ -221,11 +222,14 @@ public:
 		wxTextCtrl* txtMinorVersion;
 		wxStaticText* lblMinor;
 		wxBoxSizer* mainSizer;
+		wxStaticText* lblCurrentProject;
 		wxBoxSizer* buildNumberMaxSizer;
 		wxNotebook* nbAutoVersioning;
 		//*)
 
 public:
+	void SetCurrentProject(const wxString& projectName);
+
 	void SetMajor(long value);
 	void SetMinor(long value);
 	void SetBuild(long value);

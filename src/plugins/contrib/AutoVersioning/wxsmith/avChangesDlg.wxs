@@ -2,30 +2,88 @@
 <wxsmith>
 	<object class="wxDialog" name="avChangesDlg">
 		<title>AutoVersioning :: Changes Log</title>
+		<size>700,300</size>
+		<id_arg>0</id_arg>
 		<style>wxCAPTION|wxRESIZE_BORDER</style>
 		<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxStaticText" name="ID_CHANGES_STATICTEXT" variable="lblChanges" member="yes">
-					<label>Enter every change followed by an enter except the last one. &#x0A;Leave it in blank if you plan to write the changes later.</label>
+				<object class="wxBoxSizer" variable="sizerButtons" member="no">
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_ADD_BUTTON" variable="btnAdd" member="yes">
+							<label>Add</label>
+							<tooltip>Adds another row to the data grid</tooltip>
+							<handler function="OnBtnAddClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_EDIT_BUTTON" variable="btnEdit" member="yes">
+							<label>Edit</label>
+							<tooltip>Enters edit mode</tooltip>
+							<handler function="OnBtnEditClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_DELETE_BUTTON" variable="btnDelete" member="yes">
+							<label>Delete</label>
+							<tooltip>Deletes the selected row</tooltip>
+							<handler function="OnBtnDeleteClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxTextCtrl" name="ID_CHANGES_TEXTCTRL" variable="txtChanges" member="yes">
-					<style>wxTE_MULTILINE|wxHSCROLL|wxVSCROLL</style>
-					<size>500,250</size>
+				<object class="wxGrid" name="ID_CHANGES_GRID" variable="grdChanges" member="yes">
+					<tooltip>List of changes</tooltip>
+					<minsize>600,300</minsize>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
-				<object class="wxButton" name="ID_ACCEPT_BUTTON" variable="btnAccept" member="yes">
-					<label>Accept</label>
-					<default>1</default>
-					<handler function="OnBtnAcceptClick" entry="EVT_BUTTON" />
+				<object class="wxBoxSizer" variable="sizerConfirmation" member="no">
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_SAVE_BUTTON" variable="btnSave" member="yes">
+							<label>Save</label>
+							<default>1</default>
+							<tooltip>Save the changes for later use</tooltip>
+							<handler function="OnBtnSaveClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_WRITE_BUTTON" variable="btnWrite" member="yes">
+							<label>Write</label>
+							<tooltip>Write the changes to the changeslog and clean the data grid</tooltip>
+							<handler function="OnBtnWriteClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_CANCEL_BUTTON" variable="btnCancel" member="yes">
+							<label>Cancel</label>
+							<tooltip>Discards any change made</tooltip>
+							<handler function="OnBtnCancelClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
 				</object>
 				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>

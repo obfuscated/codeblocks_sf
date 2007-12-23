@@ -67,14 +67,14 @@ struct avSettings
 
 struct avChangesLog
 {
-	bool GenerateChanges;
+	bool ShowChangesEditor;
 	std::string AppTitle;
 	std::string ChangesLogPath;
-	avChangesLog() : GenerateChanges(false), AppTitle("released version %M.%m.%b of %p"),
+	avChangesLog() : ShowChangesEditor(false), AppTitle("released version %M.%m.%b of %p"),
         ChangesLogPath("ChangesLog.txt") {}
 	bool operator!=(const avChangesLog& Other) const
 	{
-	    return (GenerateChanges != Other.GenerateChanges || AppTitle != Other.AppTitle ||
+	    return (ShowChangesEditor != Other.ShowChangesEditor || AppTitle != Other.AppTitle ||
                 ChangesLogPath != Other.ChangesLogPath);
 	}
 };
