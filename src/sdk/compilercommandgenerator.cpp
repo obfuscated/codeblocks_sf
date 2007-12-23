@@ -46,7 +46,7 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_CFlags.clear();
     m_LDFlags.clear();
     m_RCFlags.clear();
-    
+
     // don't clear the backticks cache - it wouldn't be a cache then :)
 //    m_Backticks.clear();
 
@@ -540,7 +540,7 @@ wxString CompilerCommandGenerator::SetupLibrariesDirs(Compiler* compiler, Projec
         for (unsigned int x = 0; x < searchDirs.GetCount(); ++x)
         {
             Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
-            
+
             // also, normalize path (make absolute)
             wxFileName fn(searchDirs[x]);
             if (fn.IsRelative())
@@ -877,7 +877,7 @@ wxArrayString CompilerCommandGenerator::GetOrderedOptions(const ProjectBuildTarg
 wxString CompilerCommandGenerator::ExpandBackticks(wxString& str)
 {
 	wxString ret;
-	
+
 	// this function is not windows-only anymore because we parse the backticked command's output
 	// for compiler/linker search dirs
 
@@ -945,7 +945,7 @@ void CompilerCommandGenerator::SearchDirsFromBackticks(Compiler* compiler, Proje
 		pos = btOutput.find(compiler->GetSwitches().includeDirs, pos);
 		if (pos == wxString::npos)
 			break;
-		
+
 		pos += compiler->GetSwitches().includeDirs.Length();
 		size_t pos2 = btOutput.find(_T(' '), pos);
 		if (pos2 != pos)
@@ -965,7 +965,7 @@ void CompilerCommandGenerator::SearchDirsFromBackticks(Compiler* compiler, Proje
 		pos = btOutput.find(compiler->GetSwitches().libDirs, pos);
 		if (pos == wxString::npos)
 			break;
-		
+
 		pos += compiler->GetSwitches().libDirs.Length();
 		size_t pos2 = btOutput.find(_T(' '), pos);
 		if (pos2 != pos)
