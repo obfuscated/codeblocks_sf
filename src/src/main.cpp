@@ -695,7 +695,10 @@ void MainFrame::SetupGUILogging()
     else
     {
         m_pBatchBuildDialog = new BatchLogWindow(this, _("Batch build"));
+        wxSizer* s = new wxBoxSizer(wxVERTICAL);
         infoPane = new InfoPane(m_pBatchBuildDialog);
+        s->Add(infoPane, 1, wxEXPAND);
+        m_pBatchBuildDialog->SetSizer(s);
 
         // setting &g_null_log causes the app to crash on exit for some reason...
         mgr->SetLog(new NullLogger, LogManager::app_log);
@@ -1725,6 +1728,8 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
 
 void MainFrame::ShowHideScriptConsole()
 {
+	if (Manager::IsBatchBuild())
+		return;
     if (!m_pScriptConsole)
     {
         m_pScriptConsole = new ScriptConsole(this, -1);

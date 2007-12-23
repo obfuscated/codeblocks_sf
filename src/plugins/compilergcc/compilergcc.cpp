@@ -3551,7 +3551,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
         NotifyJobDone();
 
-        if (m_Errors.GetCount(cltError))
+        if (!Manager::IsBatchBuild() && m_Errors.GetCount(cltError))
         {
             if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_build_errors"), true))
             {
@@ -3574,7 +3574,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
                 if (Run() == 0)
                     DoRunQueue();
             }
-            else
+            else if (!Manager::IsBatchBuild())
             {
                 // don't close the message manager (if auto-hiding), if warnings are required to keep it open
                 if (m_Errors.GetCount(cltWarning) &&
