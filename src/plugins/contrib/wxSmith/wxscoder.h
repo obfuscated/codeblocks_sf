@@ -25,6 +25,7 @@
 #define WXSCODER_H
 
 #include <cbeditor.h>
+#include <wx/string.h>
 #include <wx/timer.h>
 
 /** \brief Class putting new code into proper files

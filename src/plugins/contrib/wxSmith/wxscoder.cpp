@@ -30,6 +30,7 @@
 #include <encodingdetector.h>
 #include <globals.h>
 #include <wx/file.h>
+#include <wx/intl.h>
 
 namespace
 {
