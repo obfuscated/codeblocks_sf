@@ -49,9 +49,10 @@ BEGIN_EVENT_TABLE(ProcessingDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,ResultMap& Results,wxWindowID id):
+ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,PkgConfigManager& PkgConfig,ResultMap& Results,wxWindowID id):
     StopFlag(false),
     m_Manager(Manager),
+    m_PkgConfig(PkgConfig),
     m_Results(Results)
 {
 	//(*Initialize(ProcessingDlg)
@@ -60,7 +61,7 @@ ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,Resu
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Processing"));
 	Status = new wxStaticText(this, ID_STATICTEXT1, _("Waiting"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
 	StaticBoxSizer1->Add(Status, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-	Gauge1 = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(288,12), 0, wxDefaultValidator, _T("ID_GAUGE1"));
+	Gauge1 = new wxGauge(this, ID_GAUGE1, 100, wxDefaultPosition, wxSize(402,12), 0, wxDefaultValidator, _T("ID_GAUGE1"));
 	StaticBoxSizer1->Add(Gauge1, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	FlexGridSizer1->Add(StaticBoxSizer1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StopBtn = new wxButton(this, ID_BUTTON1, _("Stop"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
@@ -68,7 +69,7 @@ ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,Resu
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProcessingDlg::OnButton1Click);
 	//*)
 }
@@ -385,7 +386,10 @@ void ProcessingDlg::CheckFilter(
 
         case LibraryFilter::PkgConfig:
         {
-            // TODO: Not supported yet
+            if ( m_PkgConfig.GetLibraries().IsGlobalVar(Filter.Value) )
+            {
+                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,WhichFilter+1);
+            }
             break;
         }
 

@@ -16,7 +16,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxGauge" name="ID_GAUGE1" variable="Gauge1" member="yes">
-							<size>288,12</size>
+							<size>402,12</size>
 						</object>
 						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>

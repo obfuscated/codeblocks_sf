@@ -81,9 +81,10 @@ namespace
 }
 
 
-ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Configuration,ResultMap& KnownLibs):
+ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Configuration,ResultMap& KnownLibs,ResultMap& KnownPkgConfigLibs):
     m_Configuration(Configuration),
-    m_KnownLibs(KnownLibs)
+    m_KnownLibs(KnownLibs),
+    m_KnownPkgConfigLibs(KnownPkgConfigLibs)
 {
 	//(*Initialize(ProjectConfigurationPanel)
 	wxBoxSizer* BoxSizer4;
@@ -93,7 +94,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxBoxSizer* BoxSizer3;
-
+	
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Libraries used in project"));
@@ -136,7 +137,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	Timer1.SetOwner(this, ID_TIMER1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_UsedLibrariesSelect);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddClick);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_RemoveClick);
@@ -197,6 +198,10 @@ wxString ProjectConfigurationPanel::GetUserListName(const wxString& Name)
     {
         return Name + _T(": ") + m_KnownLibs.GetGlobalVar(Name)[0]->LibraryName;
     }
+    else if ( m_KnownPkgConfigLibs.IsGlobalVar(Name) )
+    {
+        return Name + _T(" (pkg-config)");
+    }
     else
     {
         return Name + _T(" (Unknown library)");
@@ -216,6 +221,7 @@ void ProjectConfigurationPanel::FillKnownLibraries()
 
     m_CategoryMap.clear();
     m_IsOtherCategory = false;
+    m_IsPkgConfig = false;
 
     wxString Filter = m_Filter->GetValue().Upper();
     bool Tree = m_Tree->GetValue();
@@ -259,13 +265,41 @@ void ProjectConfigurationPanel::FillKnownLibraries()
         }
     }
 
+    Vars.Clear();
+    m_KnownPkgConfigLibs.GetGlobalVarNames(Vars);
+
+    if ( !Vars.IsEmpty() )
+    {
+        for ( size_t i=0; i<Vars.Count(); i++ )
+        {
+            ResultArray& Array = m_KnownPkgConfigLibs.GetGlobalVar(Vars[i]);
+            if ( Array.IsEmpty() ) continue;
+
+            if ( !Filter.IsEmpty() )
+            {
+                if ( Array[0]->LibraryName.Upper().Find(Filter) == wxNOT_FOUND &&
+                     Array[0]->GlobalVar.Upper().Find(Filter)   == wxNOT_FOUND )
+                {
+                    // This result has been filtered
+                    continue;
+                }
+            }
+
+            BuildEntry(Tree ? PkgConfigId() : m_KnownLibrariesTree->GetRootItem(),Array);
+        }
+    }
+
     m_KnownLibrariesTree->ExpandAll();
     m_KnownLibrariesTree->Thaw();
 }
 
 void ProjectConfigurationPanel::BuildEntry(const wxTreeItemId& Id,ResultArray& Array)
 {
-    wxString Name = Array[0]->GlobalVar + _T(": ") + Array[0]->LibraryName;
+    wxString Name = Array[0]->GlobalVar;
+    if ( !Array[0]->LibraryName.IsEmpty() )
+    {
+        Name = Name + _T(": ") + Array[0]->LibraryName;
+    }
     m_KnownLibrariesTree->AppendItem(Id,Name,0,0,new TreeItemData(Array[0]->GlobalVar));
 }
 
@@ -278,6 +312,15 @@ wxTreeItemId ProjectConfigurationPanel::OtherCategoryId()
 
     m_IsOtherCategory = true;
     return m_CategoryMap[_("other")] = m_KnownLibrariesTree->AppendItem(m_KnownLibrariesTree->GetRootItem(),_("Other"));
+}
+
+wxTreeItemId ProjectConfigurationPanel::PkgConfigId()
+{
+    if ( m_IsPkgConfig ) return m_PkgConfigId;
+    m_IsPkgConfig = true;
+    return m_PkgConfigId = m_KnownLibrariesTree->AppendItem(
+        m_KnownLibrariesTree->GetRootItem(),
+        _("Available in pkg-config"));
 }
 
 wxTreeItemId ProjectConfigurationPanel::CategoryId(const wxString& Category)

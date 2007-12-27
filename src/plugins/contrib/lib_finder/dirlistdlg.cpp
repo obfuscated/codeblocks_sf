@@ -45,13 +45,13 @@ BEGIN_EVENT_TABLE(DirListDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-DirListDlg::DirListDlg(wxWindow* parent,wxWindowID id)
+DirListDlg::DirListDlg(wxWindow* parent,const wxArrayString& Dirs,wxWindowID id)
 {
 	//(*Initialize(DirListDlg)
 	wxButton* Button1;
 	wxButton* Button2;
 	wxStaticBoxSizer* StaticBoxSizer1;
-
+	
 	Create(parent, id, _("List of directories with libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Scanned directories:"));
@@ -74,12 +74,19 @@ DirListDlg::DirListDlg(wxWindow* parent,wxWindowID id)
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton1Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton2Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton3Click);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton4Click);
 	//*)
+
+	wxString List;
+	for ( size_t i=0; i<Dirs.Count(); i++ )
+	{
+	    List << Dirs[i] << _T("\n");
+	}
+	DirList->SetValue(List);
 }
 
 DirListDlg::~DirListDlg()

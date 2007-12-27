@@ -39,6 +39,7 @@
 #include "libraryconfig.h"
 #include "libraryconfigmanager.h"
 #include "resultmap.h"
+#include "pkgconfigmanager.h"
 
 WX_DECLARE_STRING_HASH_MAP(wxArrayString,FileNamesMap);
 WX_DECLARE_STRING_HASH_MAP(wxString,wxStringStringMap);
@@ -47,7 +48,7 @@ class ProcessingDlg: public wxDialog
 {
 	public:
 
-		ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,ResultMap& Results,wxWindowID id = -1);
+		ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,PkgConfigManager& PkgConfig,ResultMap& Results,wxWindowID id = -1);
 		virtual ~ProcessingDlg();
 
 		//(*Identifiers(ProcessingDlg)
@@ -88,6 +89,7 @@ class ProcessingDlg: public wxDialog
         bool StopFlag;
         FileNamesMap Map;
         LibraryConfigManager& m_Manager;
+        PkgConfigManager& m_PkgConfig;
         ResultMap& m_Results;
 
 		DECLARE_EVENT_TABLE()

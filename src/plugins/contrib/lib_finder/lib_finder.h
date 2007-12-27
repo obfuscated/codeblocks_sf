@@ -33,6 +33,7 @@
 #include "resultmap.h"
 #include "projectconfiguration.h"
 #include "libraryresult.h"
+#include "pkgconfigmanager.h"
 
 class LibraryResult;
 
@@ -59,11 +60,14 @@ class lib_finder: public cbToolPlugin
         void SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs);
         bool TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result);
 
+        bool SameResults(LibraryResult* First, LibraryResult* Second);
+
         ProjectConfiguration* GetProject(cbProject* Project);
 
         WX_DECLARE_HASH_MAP(cbProject*,ProjectConfiguration*,wxPointerHash,wxPointerEqual,ProjectMapT);
 
         LibraryConfigManager m_Manager;
+        PkgConfigManager m_PkgConfig;
         ResultMap m_StoredResults;
         ProjectMapT m_Projects;
         int m_HookId;

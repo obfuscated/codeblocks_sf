@@ -56,7 +56,11 @@
 		<Unit filename="libraryconfigmanager.cpp" />
 		<Unit filename="libraryconfigmanager.h" />
 		<Unit filename="libraryresult.h" />
+		<Unit filename="libselectdlg.cpp" />
+		<Unit filename="libselectdlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="pkgconfigmanager.cpp" />
+		<Unit filename="pkgconfigmanager.h" />
 		<Unit filename="processingdlg.cpp" />
 		<Unit filename="processingdlg.h" />
 		<Unit filename="projectconfiguration.cpp" />
@@ -65,6 +69,7 @@
 		<Unit filename="projectconfigurationpanel.h" />
 		<Unit filename="resultmap.cpp" />
 		<Unit filename="resultmap.h" />
+		<Unit filename="wxsmith/LibSelectDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
@@ -73,10 +78,12 @@
 					<wxDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" name="DirListDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" name="ProcessingDlg" language="CPP" />
 					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
+					<wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />
 			<debugger />
+			<lib_finder />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

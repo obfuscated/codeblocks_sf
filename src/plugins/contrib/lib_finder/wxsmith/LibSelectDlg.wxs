@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="LibSelectDlg">
+		<title>Setting up libraries</title>
+		<centered>1</centered>
+		<id_arg>0</id_arg>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+					<label>Select libraries You want to set up:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckListBox" name="ID_CHECKLISTBOX1" variable="m_Libraries" member="yes">
+					<size>361,251</size>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+					<label>Previous settings</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="m_DontClear" member="yes">
+							<label>Do not clear previous results (but remove duplicates)</label>
+							<style>wxRB_GROUP</style>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxRadioButton" name="ID_RADIOBUTTON2" variable="m_ClearSelected" member="yes">
+							<label>Clear previous results for selected libraries</label>
+							<selected>1</selected>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="m_ClearAll" member="yes">
+							<label>Clear all previous libraries settings</label>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_SetupGlobalVars" member="yes">
+					<label>Set up Global Variables</label>
+					<checked>1</checked>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="no">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>10</border>
+			</object>
+		</object>
+	</object>
+</wxsmith>

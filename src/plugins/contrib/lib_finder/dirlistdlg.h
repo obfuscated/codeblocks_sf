@@ -42,20 +42,21 @@ class DirListDlg: public wxDialog
 {
 	public:
 
-		DirListDlg(wxWindow* parent,wxWindowID id = -1);
+		DirListDlg(wxWindow* parent,const wxArrayString& Dirs,wxWindowID id = -1);
 		virtual ~DirListDlg();
-
-		//(*Identifiers(DirListDlg)
-		static const long ID_TEXTCTRL1;
-		static const long ID_BUTTON1;
-		static const long ID_BUTTON2;
-		static const long ID_BUTTON3;
-		static const long ID_BUTTON4;
-		//*)
 
 		wxArrayString Dirs;
 
-	protected:
+	private:
+
+        //(*Declarations(DirListDlg)
+        wxButton* Button4;
+        wxBoxSizer* BoxSizer2;
+        wxButton* Button3;
+        wxTextCtrl* DirList;
+        wxBoxSizer* BoxSizer1;
+        wxFlexGridSizer* FlexGridSizer1;
+        //*)
 
 		//(*Handlers(DirListDlg)
 		void OnButton1Click(wxCommandEvent& event);
@@ -64,16 +65,13 @@ class DirListDlg: public wxDialog
 		void OnButton4Click(wxCommandEvent& event);
 		//*)
 
-		//(*Declarations(DirListDlg)
-		wxButton* Button4;
-		wxBoxSizer* BoxSizer2;
-		wxButton* Button3;
-		wxTextCtrl* DirList;
-		wxBoxSizer* BoxSizer1;
-		wxFlexGridSizer* FlexGridSizer1;
+		//(*Identifiers(DirListDlg)
+		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON1;
+		static const long ID_BUTTON2;
+		static const long ID_BUTTON3;
+		static const long ID_BUTTON4;
 		//*)
-
-	private:
 
 		DECLARE_EVENT_TABLE()
 };

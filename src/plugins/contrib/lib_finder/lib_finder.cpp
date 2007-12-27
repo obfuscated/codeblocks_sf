@@ -40,6 +40,7 @@
 #include "libraryresult.h"
 #include "lib_finder.h"
 #include "projectconfigurationpanel.h"
+#include "libselectdlg.h"
 
 // Register the plugin
 namespace
@@ -61,6 +62,8 @@ void lib_finder::OnAttach()
     ProjectLoaderHooks::HookFunctorBase* Hook = new ProjectLoaderHooks::HookFunctor<lib_finder>(this, &lib_finder::OnProjectHook);
     m_HookId = ProjectLoaderHooks::RegisterHook(Hook);
 
+    m_PkgConfig.RefreshData();
+
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnProjectClose));
     #ifdef EVT_COMPILER_SET_BUILD_OPTIONS
         Manager::Get()->RegisterEventSink(cbEVT_COMPILER_SET_BUILD_OPTIONS, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnCompilerSetBuildOptions));
@@ -78,12 +81,13 @@ void lib_finder::OnRelease(bool appShutDown)
     m_Projects.clear();
 
     ClearStoredResults();
+
+    m_PkgConfig.Clear();
 }
 
 int lib_finder::Execute()
 {
     m_Manager.Clear();
-    ClearStoredResults();       // TODO: This is not the best idea...
     ResultMap m_Results;
 
     wxString resPath = ConfigManager::GetDataFolder();
@@ -91,26 +95,28 @@ int lib_finder::Execute()
 
     if ( m_Manager.GetLibraryCount() == 0 )
     {
-        cbMessageBox(_("Didn't find any library :("));
+        cbMessageBox(_("Didn't found any library :("));
         return -1;
     }
 
-    DirListDlg Dlg(0L);
+    DirListDlg Dlg(
+        Manager::Get()->GetAppWindow(),
+        Manager::Get()->GetConfigManager(_T("lib_finder"))->ReadArrayString(_T("search_dirs")));
     if ( Dlg.ShowModal() == wxID_CANCEL ) return 0;
+    Manager::Get()->GetConfigManager(_T("lib_finder"))->Write(_T("search_dirs"),Dlg.Dirs);
 
     FileNamesMap FNMap;
-    ProcessingDlg PDlg(0L,m_Manager,m_Results);
+    ProcessingDlg PDlg(0L,m_Manager,m_PkgConfig,m_Results);
     PDlg.Show();
     PDlg.MakeModal(true);
-    if ( PDlg.ReadDirs(Dlg.Dirs) &&
-         PDlg.ProcessLibs() )
+    if ( PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs() )
     {
         PDlg.Hide();
         ResultArray Results;
         m_Results.GetAllResults(Results);
         if ( Results.Count() == 0 )
         {
-            cbMessageBox(_("Didn't find any library"));
+            cbMessageBox(_("Didn't found any library"));
         }
         else
         {
@@ -134,16 +140,71 @@ int lib_finder::Execute()
                     PreviousVar = Results[i]->GlobalVar;
                 }
             }
-            wxMultiChoiceDialog Dlg(NULL,_("Select libraries You want to set up."),_("Setting up libraries"),Names);
+
+            LibSelectDlg Dlg(Manager::Get()->GetAppWindow(),Names);
             Dlg.SetSelections(Selected);
+
             if ( Dlg.ShowModal() == wxID_OK )
             {
+                // Fetch selected libraries
                 Selected = Dlg.GetSelections();
+
+                // Clear all results if requested
+                if ( Dlg.GetClearAllPrevious() )
+                {
+                    m_StoredResults.Clear();
+                }
+
+                // Here we will store names of libraries set-up so far
+                // by checking entries we will be able to find out whether
+                // we have to clear previous settings
+                wxArrayString AddedLibraries;
+
                 for ( size_t i = 0; i<Selected.Count(); i++ )
                 {
-                    SetGlobalVar(Results[Selected[i]]);
+                    wxString Library = Results[Selected[i]]->GlobalVar;
 
-                    m_StoredResults.GetGlobalVar(Results[Selected[i]]->GlobalVar).Add(new LibraryResult(*Results[Selected[i]]));
+                    if ( true )
+                    {
+                        // Here we set-up internal libraries configuration
+                        if ( Dlg.GetClearSelectedPrevious() )
+                        {
+                            if ( AddedLibraries.Index(Library)==wxNOT_FOUND )
+                            {
+                                // Ok, have to delete previosu results since this is the first
+                                // occurence of this library in new set
+                                ResultArray& Previous = m_StoredResults.GetGlobalVar(Library);
+                                for ( size_t j=0; j<Previous.Count(); j++ )
+                                {
+                                    delete Previous[j];
+                                }
+                                Previous.Clear();
+                            }
+                            AddedLibraries.Add(Library);
+                        }
+                        else if ( Dlg.GetDontClearPrevious() )
+                        {
+                            // Find and remove duplicates
+                            ResultArray& Previous = m_StoredResults.GetGlobalVar(Library);
+                            for ( size_t j=0; j<Previous.Count(); j++ )
+                            {
+                                if ( SameResults(Previous[j],Results[Selected[i]]) )
+                                {
+                                    delete Previous[j];
+                                    Previous.RemoveAt(j--);
+                                }
+                            }
+                        }
+
+                        // Add the result
+                        m_StoredResults.GetGlobalVar(Library).Add(new LibraryResult(*Results[Selected[i]]));
+                    }
+
+                    if ( Dlg.GetSetupGlobalVars() )
+                    {
+                        // Here we set-up global variables
+                        SetGlobalVar(Results[Selected[i]]);
+                    }
                 }
             }
         }
@@ -315,7 +376,7 @@ ProjectConfiguration* lib_finder::GetProject(cbProject* Project)
 
 cbConfigurationPanel* lib_finder::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 {
-    return new ProjectConfigurationPanel(parent,GetProject(project),m_StoredResults);
+    return new ProjectConfigurationPanel(parent,GetProject(project),m_StoredResults,m_PkgConfig.GetLibraries());
 }
 
 void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs)
@@ -327,21 +388,30 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
     for ( size_t i=0; i<Libs.Count(); i++ )
     {
         wxString& Lib = Libs[i];
-        if ( !m_StoredResults.IsGlobalVar(Lib) )
+        ResultArray* Config = 0;
+
+        if ( m_StoredResults.IsGlobalVar(Lib) )
+        {
+            Config = &m_StoredResults.GetGlobalVar(Lib);
+        }
+        else if ( m_PkgConfig.GetLibraries().IsGlobalVar(Lib) )
+        {
+            Config = &m_PkgConfig.GetLibraries().GetGlobalVar(Lib);
+        }
+
+        if ( !Config )
         {
             NotFound.Add(Lib);
             continue;
         }
 
-        ResultArray& Config = m_StoredResults.GetGlobalVar(Lib);
-
         // Ok, we got set of configurations for this library
         // now we only have to find the one that's needed
         // Currently we only filter compiler type
         bool Ok = false;
-        for ( size_t j=0; j<Config.GetCount(); j++ )
+        for ( size_t j=0; j<Config->GetCount(); j++ )
         {
-            if ( TryAddLibrary(Target,Config[j]) )
+            if ( TryAddLibrary(Target,(*Config)[j]) )
             {
                 Ok = true;
                 break;
@@ -355,8 +425,7 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
 
     if ( !NotFound.IsEmpty() || !NoCompiler.IsEmpty() )
     {
-        wxString Message =
-            _("Found following issues with libraries:\n\n");
+        wxString Message = _("Found following issues with libraries:\n\n");
         if ( !NotFound.IsEmpty() )
         {
             Message += _("Didn't found configuration for libraries:\n");
@@ -396,8 +465,10 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
     // Ok, this target match the result, let's update compiler options
     if ( !Result->PkgConfigVar.IsEmpty() )
     {
-        Target->AddCompilerOption(_T("`pkg-config \"")+Result->PkgConfigVar+_T("\" --cflags`"));
-        Target->AddLinkerOption(_T("`pkg-config \"")+Result->PkgConfigVar+_T("\" --libs`"));
+        if ( !m_PkgConfig.UpdateTarget(Result->PkgConfigVar,Target) )
+        {
+            return false;
+        }
     }
 
     for ( size_t i=0; i<Result->IncludePath.Count(); i++ )
@@ -425,5 +496,14 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
         Target->AddLinkerOption(Result->LFlags[i]);
     }
 
+    return true;
+}
+
+bool lib_finder::SameResults(LibraryResult* First, LibraryResult* Second)
+{
+    if ( First->GlobalVar   != Second->GlobalVar   ) return false;
+    if ( First->LibraryName != Second->LibraryName ) return false;
+    if ( First->BasePath    != Second->BasePath    ) return false;
+    if ( First->Description != Second->Description ) return false;
     return true;
 }

@@ -48,7 +48,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 {
 	public:
 
-		ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Config,ResultMap& KnownLibs);
+		ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Config,ResultMap& KnownLibs,ResultMap& KnownPkgConfigLibs);
 		virtual ~ProjectConfigurationPanel();
 
 	private:
@@ -67,13 +67,17 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 
         void BuildEntry(const wxTreeItemId& Id,ResultArray& Array);
         wxTreeItemId OtherCategoryId();
+        wxTreeItemId PkgConfigId();
         wxTreeItemId CategoryId(const wxString& Category);
 
         ProjectConfiguration* m_Configuration;
         ProjectConfiguration  m_ConfCopy;
         ResultMap& m_KnownLibs;
+        ResultMap& m_KnownPkgConfigLibs;
         IdsMap m_CategoryMap;
         bool m_IsOtherCategory;
+        bool m_IsPkgConfig;
+        wxTreeItemId m_PkgConfigId;
 
 
 		//(*Declarations(ProjectConfigurationPanel)
