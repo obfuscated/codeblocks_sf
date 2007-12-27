@@ -22,7 +22,9 @@
 */
 
 #include <wx/statbmp.h>
+#include <wx/dc.h>
 #include "wxsstaticbitmap.h"
+#include "../wxsflags.h"
 
 namespace
 {
@@ -36,6 +38,30 @@ namespace
 
     WXS_EV_BEGIN(wxsStaticBitmapEvents)
     WXS_EV_END()
+
+
+    class Background: public wxPanel
+    {
+        public:
+
+            Background(wxWindow* Parent): wxPanel(Parent)
+            {
+            }
+
+            void OnPaint(wxPaintEvent& event)
+            {
+                wxPaintDC dc(this);
+                dc.SetPen(wxColour(0x80,0x80,0x80));
+                dc.SetBrush(*wxTRANSPARENT_BRUSH);
+                dc.DrawRectangle(0,0,GetSize().GetWidth(),GetSize().GetHeight());
+            }
+
+            DECLARE_EVENT_TABLE()
+    };
+
+    BEGIN_EVENT_TABLE(Background,wxPanel)
+        EVT_PAINT(Background::OnPaint)
+    END_EVENT_TABLE()
 }
 
 wxsStaticBitmap::wxsStaticBitmap(wxsItemResData* Data):
@@ -75,8 +101,24 @@ void wxsStaticBitmap::OnBuildCreatingCode()
 
 wxObject* wxsStaticBitmap::OnBuildPreview(wxWindow* Parent,long Flags)
 {
-    wxStaticBitmap* Preview = new wxStaticBitmap(Parent,GetId(),Bitmap.GetPreview(Size(Parent)),Pos(Parent),Size(Parent),Style());
-    return SetupWindow(Preview,Flags);
+    if ( Flags & wxsFlags::pfExact )
+    {
+        wxStaticBitmap* Preview = new wxStaticBitmap(Parent,GetId(),Bitmap.GetPreview(Size(Parent)),Pos(Parent),Size(Parent),Style());
+        return SetupWindow(Preview,Flags);
+    }
+
+    // We do fake background under the bitmap - that's because bitmaps tend to be
+    // invisible when not selected
+
+    Background* Back = new Background(Parent);
+    wxStaticBitmap* Preview = new wxStaticBitmap(Back,GetId(),Bitmap.GetPreview(Size(Parent)),Pos(Parent),Size(Parent),Style());
+    SetupWindow(Preview,Flags);
+    wxBoxSizer* Sizer = new wxBoxSizer(wxHORIZONTAL);
+    Sizer->Add(Preview,1,wxEXPAND,0);
+    Back->SetSizer(Sizer);
+    Sizer->SetSizeHints(Back);
+    Sizer->Fit(Back);
+    return Back;
 }
 
 void wxsStaticBitmap::OnEnumWidgetProperties(long Flags)
