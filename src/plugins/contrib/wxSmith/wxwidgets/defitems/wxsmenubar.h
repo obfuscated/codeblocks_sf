@@ -41,6 +41,7 @@ class wxsMenuBar: public wxsTool
         virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage);
         virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
         virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
+        virtual bool OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra);
 };
 
 

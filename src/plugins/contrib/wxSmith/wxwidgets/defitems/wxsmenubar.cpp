@@ -23,6 +23,7 @@
 
 #include "wxsmenubar.h"
 #include "wxsmenueditor.h"
+#include "wxsmenu.h"
 #include "../wxsitemresdata.h"
 #include <wx/menu.h>
 
@@ -115,6 +116,26 @@ bool wxsMenuBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
                 cbMessageBox(_("Can not add two or more wxMenuBar classes\ninto one wxFrame"));
             }
             return false;
+        }
+    }
+
+    return true;
+}
+
+bool wxsMenuBar::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
+{
+    if ( IsXRC )
+    {
+        wxString ClassName = cbC2U(Elem->Attribute("class"));
+        if ( ClassName == _T("wxMenu") )
+        {
+            wxsMenu* Child = new wxsMenu(GetResourceData());
+            if ( !AddChild(Child) )
+            {
+                delete Child;
+                return false;
+            }
+            return Child->XmlRead(Elem,IsXRC,IsExtra);
         }
     }
 
