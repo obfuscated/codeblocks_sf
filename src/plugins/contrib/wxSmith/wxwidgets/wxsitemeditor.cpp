@@ -848,19 +848,6 @@ void wxsItemEditor::OnPopup(wxCommandEvent& event)
     }
 }
 
-bool wxsItemEditor::UpdateStatusBar(wxFrame* frame) const
-{
-    int panel = 0;
-    frame->SetStatusText(_T("wxSmith"), panel++);
-    frame->SetStatusText(wxEmptyString, panel++);
-    frame->SetStatusText(wxEmptyString, panel++);
-    frame->SetStatusText(wxEmptyString, panel++);
-    frame->SetStatusText(wxEmptyString, panel++);
-    frame->SetStatusText(wxEmptyString, panel++);
-
-    return true;
-}
-
 wxImage wxsItemEditor::m_InsPointImg;
 wxImage wxsItemEditor::m_InsIntoImg;
 wxImage wxsItemEditor::m_InsBeforeImg;

@@ -92,9 +92,6 @@ class wxsItemEditor : public wxsEditor
 		/** \brief Pasting */
 		virtual void Paste();
 
-		/** \brief Updating statusbar */
-		virtual bool UpdateStatusBar(wxFrame* frame) const;
-
     private:
 
         WX_DECLARE_HASH_SET(wxsItemEditor*,wxPointerHash,wxPointerEqual,WindowSet);
