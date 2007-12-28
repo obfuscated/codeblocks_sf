@@ -15,6 +15,7 @@
 #include <wx/intl.h>
 #include <wx/utils.h>
 #include <wx/sizer.h>
+#include <wx/settings.h>
 #include <manager.h>
 #include <logmanager.h>
 #include <projectmanager.h>

@@ -15,6 +15,7 @@
 #include <wx/listbox.h>
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
+#include <wx/menu.h>
 #include <globals.h>
 namespace
 {

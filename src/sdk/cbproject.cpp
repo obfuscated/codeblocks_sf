@@ -32,7 +32,9 @@
 
 #include <wx/choicdlg.h>
 #include <wx/settings.h>
+#include <wx/filedlg.h>
 #include <wx/filename.h>
+#include <wx/textdlg.h>
 
 #ifndef CB_PRECOMP
     #include "cbproject.h" // class's header file
