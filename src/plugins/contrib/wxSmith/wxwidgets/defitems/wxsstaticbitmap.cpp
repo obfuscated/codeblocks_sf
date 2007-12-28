@@ -51,9 +51,12 @@ namespace
             void OnPaint(wxPaintEvent& event)
             {
                 wxPaintDC dc(this);
-                dc.SetPen(wxColour(0x80,0x80,0x80));
+                wxSize Size = GetSize();
+                dc.SetPen(wxColour(0x0,0x0,0x0));
                 dc.SetBrush(*wxTRANSPARENT_BRUSH);
-                dc.DrawRectangle(0,0,GetSize().GetWidth(),GetSize().GetHeight());
+                dc.DrawRectangle(0,0,Size.GetWidth(),Size.GetHeight());
+                dc.SetPen(wxColour(0xFF,0xFF,0xFF));
+                dc.DrawRectangle(1,1,Size.GetWidth()-2,Size.GetHeight()-2);
             }
 
             DECLARE_EVENT_TABLE()
