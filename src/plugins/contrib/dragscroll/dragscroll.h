@@ -12,34 +12,16 @@
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma interface "dragscroll.h"
 #endif
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 	#pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
-
-#include <sdk.h>      // precompiled headers (needed by plugin API version 1.80)
+#include <wx/arrstr.h>
+#include <wx/dynarray.h>
+#include <wx/event.h> // wxEvtHandler
+#include <wx/gdicmn.h> //wxPoint
 #include <cbplugin.h> // the base class we 're inheriting
-#include <settings.h> // needed to use the Code::Blocks SDK
-
-// ----------------------------------------------------------------------------
-//  additional includeds for cbDragScroll
-// ----------------------------------------------------------------------------
-#include <manager.h>
-#include <logmanager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-
-#include <cbeditor.h> //need def of cbStyledTextCntl
-#include <wx/listctrl.h>
-#include <wx/event.h>
-#include <wx/fileconf.h>
-#include <wx/splitter.h>
 
 // ---------------------------------------------------------------------------
 //  Logging / debugging
@@ -64,6 +46,8 @@
 // anchor to one and only DragScroll object
 class MyMouseEvents;
 class cbDragScrollCfg;
+class wxLogWindow;
+class wxObject;
 
 // ----------------------------------------------------------------------------
 //  cbDragScroll class declaration
@@ -88,15 +72,15 @@ class cbDragScroll : public cbPlugin
     public:
         void OnDialogDone(cbDragScrollCfg* pdlg);
 
-        bool GetMouseDragScrollEnabled() { return MouseDragScrollEnabled; }
-        bool GetMouseEditorFocusEnabled(){ return MouseEditorFocusEnabled; }
-        bool GetMouseFocusEnabled()      { return MouseFocusEnabled; }
-        int  GetMouseDragDirection()     { return MouseDragDirection; }
-        int  GetMouseDragKey()           { return MouseDragKey; }
-        int  GetMouseDragSensitivity()   { return MouseDragSensitivity; }
-        int  GetMouseToLineRatio()       { return MouseToLineRatio; }
+        bool GetMouseDragScrollEnabled() const { return MouseDragScrollEnabled; }
+        bool GetMouseEditorFocusEnabled() const { return MouseEditorFocusEnabled; }
+        bool GetMouseFocusEnabled()      const { return MouseFocusEnabled; }
+        int  GetMouseDragDirection()     const { return MouseDragDirection; }
+        int  GetMouseDragKey()           const { return MouseDragKey; }
+        int  GetMouseDragSensitivity()   const { return MouseDragSensitivity; }
+        int  GetMouseToLineRatio()       const { return MouseToLineRatio; }
         //- int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; } removed
-        int  GetMouseContextDelay()      { return MouseContextDelay; }
+        int  GetMouseContextDelay()      const { return MouseContextDelay; }
 
         wxWindow* m_pMS_Window;
         wxWindow* m_pSearchResultsWindow;

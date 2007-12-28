@@ -10,17 +10,23 @@
 	#pragma implementation "dragscroll.h"
 #endif
 
+
+#include <sdk.h>
+#ifndef CB_PRECOMP
+	#include <wx/intl.h>
+	#include <wx/listctrl.h>
+	#include <wx/log.h>
+	#include "cbeditor.h"
+	#include "configmanager.h"
+	#include "editormanager.h"
+	#include "manager.h"
+	#include "personalitymanager.h"
+	#include "sdk_events.h" // EVT_APP_STARTUP_DONE
+#endif
+#include <wx/fileconf.h> // wxFileConfig
+#include "cbstyledtextctrl.h"
 #include "dragscroll.h"
 #include "dragscrollcfg.h"
-#include <wx/utils.h>
-#include <wx/event.h>
-#include <wx/generic/splitter.h>
-
-#ifndef CB_PRECOMP
-    #include "sdk_events.h" // EVT_APP_STARTUP_DONE
-    #include "personalitymanager.h"
-#endif
-#include "cbstyledtextctrl.h" // TODO : somethings wrong here with pch !!!!
 
 // Register the plugin
 namespace
