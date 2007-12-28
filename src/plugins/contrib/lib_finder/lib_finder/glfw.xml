@@ -23,11 +23,11 @@
         </filters>
         <settings>
             <path lib="$(BASE_DIR)/lib/win32"/>
-            <flags lflags="-lopengl32"/>
-            <flags lflags="-lglu32"/>
-            <flags lflags="-lkernel32"/>
-            <flags lflags="-luser32"/>
-            <flags lflags="-lgdi32"/>
+            <add lib="opengl"/>
+            <add lib="glu32"/>
+            <add lib="kernel32"/>
+            <add lib="user32"/>
+            <add lib="gdi32"/>
         </settings>
 
         <config description="OpenGL Framework (Windows DLL)">
@@ -35,7 +35,7 @@
                 <file name="lib/win32/libglfwdll.a"/>
             </filters>
             <settings>
-                <flags lflags="-lglfwdll"/>
+                <add lib="glfwdll"/>
             </settings>
         </config>
 
@@ -44,7 +44,7 @@
                 <file name="lib/win32/libglfw.a"/>
             </filters>
             <settings>
-                <flags lflags="-lglfw"/>
+                <add lib="glfw"/>
             </settings>
         </config>
 

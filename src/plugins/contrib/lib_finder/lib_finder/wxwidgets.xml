@@ -7,8 +7,8 @@
             <exec name="wx-config"/>
         </filters>
         <settings>
-            <flags cflags="`wx-config --cxxflags`"/>
-            <flags lflags="`wx-config --libs`"/>
+            <add cflags="`wx-config --cxxflags`"/>
+            <add lflags="`wx-config --libs`"/>
         </settings>
     </config>
 
@@ -28,9 +28,9 @@
             <path lib="$(BASE_DIR)/lib"/>
             <path lib="$(BASE_DIR)/lib/$(CONFIG_NAME)"/>
             <path obj="$(BASE_DIR)/include"/>
-            <flags cflags="-D__GNUWIN32__"/>
-            <flags cflags="-DHAVE_W32API_H"/>
-            <flags cflags="-D__WXMSW__"/>
+            <add define="__GNUWIN32__"/>
+            <add define="HAVE_W32API_H"/>
+            <add define="__WXMSW__"/>
         </settings>
 
         <!-- Next we have settings for different configurations -->
@@ -42,8 +42,8 @@
             </filters>
             <settings>
                 <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
-                <flags cflags="-DWXUSINGDLL"/>
-                <flags lflags="-lwxmsw26"/>
+                <add define="WXUSINGDLL"/>
+                <add lib="wxmsw26"/>
             </settings>
         </config>
 
@@ -54,9 +54,9 @@
             </filters>
             <settings>
                 <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/mswu"/>
-                <flags cflags="-DWXUSINGDLL"/>
-                <flags cflags="-DwxUSE_UNICODE"/>
-                <flags lflags="-lwxmsw26u"/>
+                <add define="WXUSINGDLL"/>
+                <add define="wxUSE_UNICODE"/>
+                <add lib="wxmsw26u"/>
             </settings>
         </config>
 
@@ -67,9 +67,9 @@
             </filters>
             <settings>
                 <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/mswu"/>
-                <flags cflags="-DWXUSINGDLL"/>
-                <flags cflags="-DwxUSE_UNICODE"/>
-                <flags lflags="-lwxmsw28u"/>
+                <add define="WXUSINGDLL"/>
+                <add define="wxUSE_UNICODE"/>
+                <add lib="wxmsw28u"/>
             </settings>
         </config>
 
@@ -80,11 +80,10 @@
             </filters>
             <settings>
                 <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
-                <flags cflags="-DWXUSINGDLL"/>
-                <flags lflags="-lwxmsw28"/>
+                <add define="WXUSINGDLL"/>
+                <add lib="wxmsw28"/>
             </settings>
         </config>
 
     </config>
-
 </library>

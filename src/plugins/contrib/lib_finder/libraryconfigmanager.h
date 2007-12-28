@@ -27,6 +27,7 @@
 #include <wx/dynarray.h>
 
 #include "libraryconfig.h"
+#include "pkgconfigmanager.h"
 
 class wxArrayString;
 class wxString;
@@ -37,7 +38,7 @@ class LibraryConfigManager
     public:
 
         /** \brief Ctor */
-        LibraryConfigManager();
+        LibraryConfigManager(PkgConfigManager& PkgConfig);
 
         /** \brief Dctor */
         ~LibraryConfigManager();
@@ -80,6 +81,7 @@ class LibraryConfigManager
         WX_DEFINE_ARRAY(LibraryConfig*,LCArray);
 
         LCArray Libraries;
+        PkgConfigManager& PkgConfig;
 };
 
 #endif

@@ -38,6 +38,8 @@ struct LibraryResult
     wxArrayString IncludePath;
     wxArrayString LibPath;
     wxArrayString ObjPath;
+    wxArrayString Libs;
+    wxArrayString Defines;
     wxArrayString CFlags;
     wxArrayString LFlags;
     wxArrayString Compilers;

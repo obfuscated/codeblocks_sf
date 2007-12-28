@@ -29,7 +29,8 @@
 #include <wx/filename.h>
 #include <wx/string.h>
 
-LibraryConfigManager::LibraryConfigManager()
+LibraryConfigManager::LibraryConfigManager(PkgConfigManager& _PkgConfig)
+    : PkgConfig(_PkgConfig)
 {
 }
 
@@ -199,6 +200,18 @@ void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool
                 if ( !lFlags.empty() ) Config->LFlags.Add(lFlags);
                 continue;
             }
+
+            if ( Node==_T("add") )
+            {
+                wxString cFlags = wxString(Data->Attribute("cflags"),wxConvUTF8);
+                wxString lFlags = wxString(Data->Attribute("lflags"),wxConvUTF8);
+                wxString Lib    = wxString(Data->Attribute("lib")   ,wxConvUTF8);
+                wxString Define = wxString(Data->Attribute("define"),wxConvUTF8);
+                if ( !cFlags.empty() ) Config->CFlags.Add(cFlags);
+                if ( !lFlags.empty() ) Config->LFlags.Add(lFlags);
+                if ( !Lib.empty()    ) Config->Libs.Add(Lib);
+                if ( !Define.empty() ) Config->Defines.Add(Define);
+            }
         }
     }
 
@@ -243,8 +256,7 @@ const LibraryConfig* LibraryConfigManager::GetLibrary(int Index)
 
 bool LibraryConfigManager::IsPkgConfigEntry(const wxString& Name)
 {
-    // TODO: Code this if support for pkg-config will be added
-    return false;
+    return PkgConfig.GetLibraries().IsGlobalVar(Name);
 }
 
 void LibraryConfigManager::AddConfig(LibraryConfig* Cfg)

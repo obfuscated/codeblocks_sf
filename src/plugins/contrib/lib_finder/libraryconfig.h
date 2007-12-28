@@ -69,18 +69,6 @@ struct LibraryConfig
     /** \brief Set of filters required by the library */
     std::vector<LibraryFilter> Filters;
 
-//    /** Set of files required by this library
-//     *
-//     * Each file name will be threated as relative name inside
-//     * root library path. It may point to file or directory.
-//     * When directory is in form:
-//     *  @code *$(VAR_NAME) @endcode
-//     * It will be threated as ANY directory and internal variable named
-//     * VAR_NAME will be set to it's name.
-//     * Top-level file can not be variable name.
-//     */
-//    wxArrayString FileNames;
-
     /** \brief Set of include directories. If more than one is provided,
      *  first one will be set in global var, other will be added through
      *  cflags.
@@ -96,6 +84,12 @@ struct LibraryConfig
      *  Lib path may use internal variables in form $(VAR_NAME) and
      *  variable $(BASE_DIR) pointing to base directory */
     wxArrayString LibPaths;
+
+    /** \brief List of libraries which should be added */
+    wxArrayString Libs;
+
+    /** \brief List of defines which should be added */
+    wxArrayString Defines;
 
     /** \brief Set of obj directories. If more than one is provided,
      *  first one will be set in global var, other will be added through

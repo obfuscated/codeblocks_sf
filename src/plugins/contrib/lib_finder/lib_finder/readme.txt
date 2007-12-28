@@ -117,18 +117,31 @@ There are following settings which can be added:
             <path lib="lib path"/>
             <path obj="obj path"/>
 
-    - Flags options
+    - Libraries
 
-        flags option can be used to set compiler / linker flags (options). Good example is to set
-        automatically linked librarues with LFLAGS and required dedfines with CFLAGS. Tag describing
+        this option is used to add library to linker settings, for example:
+
+            <add lib="wxmsw26"/>
+
+        will add wxmsw26 library to build options
+
+    - Defines
+
+        this option can be used to add extra defines like:
+            <add define="HAVE_W32API_H"/>
+
+    - Extra compiler / linker flags
+
+        this option can be used to set additional compiler / linker flags. Tag describing
         flags can be defined like in following forms (example from wxWidgets configuration):
 
-            <flags cflags="-DHAVE_W32API_H"/>
-            <flags lflags="-lwxmsw26"/>
+            <add cflags="-DHAVE_W32API_H"/>
+            <add lflags="-lwxmsw26"/>
+
+        The example above show how to add define and library to gcc-like compilers. Note that
+        preffered way should be through <add lib="..."/> and <add define="..."/>
 
 * Pkg-config support
-
-NOTE: Pkg-config support is not yet finished so pkg-config-related stuff won't work.
 
     There may be special switch dedicated to pkg-config available in <config> section.
     This switch is both filter and setting so it should be placed directly inside <config>

@@ -48,7 +48,7 @@ namespace
     PluginRegistrant<lib_finder> reg(_T("lib_finder"));
 };
 
-lib_finder::lib_finder()
+lib_finder::lib_finder(): m_Manager(m_PkgConfig)
 {
 }
 
@@ -226,37 +226,73 @@ void lib_finder::SetGlobalVar(const LibraryResult* Res)
     wxString ObjPath     = Res->ObjPath.IsEmpty()     ? _T("") : Res->ObjPath[0];
 
     wxString CFlags;
+    if ( !Res->PkgConfigVar.IsEmpty() )
+    {
+        CFlags.Append(_T(" `pkg-config "));
+        CFlags.Append(Res->PkgConfigVar);
+        CFlags.Append(_T(" --cflags`"));
+    }
     for ( size_t i=0; i<Res->CFlags.Count(); i++ )
     {
-        CFlags.Append(L" ");
+        CFlags.Append(_T(" "));
         CFlags.Append(Res->CFlags[i]);
     }
     for ( size_t i=1; i<Res->IncludePath.Count(); i++ )
     {
-        CFlags.Append(L" -I");
+        CFlags.Append(_T(" -I"));
         CFlags.Append(Res->IncludePath[i]);
+    }
+    for ( size_t i=0; i<Res->Defines.Count(); i++ )
+    {
+        CFlags.Append(_T(" -D"));
+        CFlags.Append(Res->Defines[i]);
     }
     CFlags.Remove(0,1);
 
     wxString LFlags;
+    if ( !Res->PkgConfigVar.IsEmpty() )
+    {
+        LFlags.Append(_T(" `pkg-config "));
+        LFlags.Append(Res->PkgConfigVar);
+        LFlags.Append(_T(" --libs`"));
+    }
     for ( size_t i=0; i<Res->LFlags.Count(); i++ )
     {
-        LFlags.Append(L" ");
+        LFlags.Append(_T(" "));
         LFlags.Append(Res->LFlags[i]);
     }
     for ( size_t i=1; i<Res->LibPath.Count(); i++ )
     {
-        LFlags.Append(L" -L");
+        LFlags.Append(_T(" -L"));
         LFlags.Append(Res->LibPath[i]);
     }
     for ( size_t i=1; i<Res->ObjPath.Count(); i++ )
     {
-        LFlags.Append(L" -L");
+        LFlags.Append(_T(" -L"));
         LFlags.Append(Res->ObjPath[i]);
+    }
+    for ( size_t i=0; i<Res->Libs.Count(); i++ )
+    {
+        LFlags.Append(_T(" -l"));
+        LFlags.Append(Res->Libs[i]);
     }
     LFlags.Remove(0,1);
 
-    cfg->Write(curr + _T("/base"),    Res->BasePath);
+    wxString BasePath = Res->BasePath;
+    if ( BasePath.IsEmpty() )
+    {
+        // BasePath is mandatory so let's set it anyway
+        if ( !Res->PkgConfigVar.IsEmpty() )
+        {
+            BasePath = _T("`pkg-config ")+ Res->PkgConfigVar + _T(" --variable=prefix`");
+        }
+        else
+        {
+            BasePath = _T("---");
+        }
+    }
+
+    cfg->Write(curr + _T("/base"),    BasePath);
     cfg->Write(curr + _T("/include"), IncludePath);
     cfg->Write(curr + _T("/lib"),     LibPath);
     cfg->Write(curr + _T("/obj"),     ObjPath);
@@ -292,6 +328,8 @@ void lib_finder::ReadStoredResults()
         Result->IncludePath  = cfg->ReadArrayString(Path+_T("include_paths"));
         Result->LibPath      = cfg->ReadArrayString(Path+_T("lib_paths"));
         Result->ObjPath      = cfg->ReadArrayString(Path+_T("obj_paths"));
+        Result->Libs         = cfg->ReadArrayString(Path+_T("libs"));
+        Result->Defines      = cfg->ReadArrayString(Path+_T("defines"));
         Result->CFlags       = cfg->ReadArrayString(Path+_T("cflags"));
         Result->LFlags       = cfg->ReadArrayString(Path+_T("lflags"));
         Result->Compilers    = cfg->ReadArrayString(Path+_T("compilers"));
@@ -323,6 +361,8 @@ void lib_finder::WriteStoredResults()
         cfg->Write(Path+_T("include_paths"),Result->IncludePath);
         cfg->Write(Path+_T("lib_paths"),Result->LibPath);
         cfg->Write(Path+_T("obj_paths"),Result->ObjPath);
+        cfg->Write(Path+_T("libs"),Result->Libs);
+        cfg->Write(Path+_T("defines"),Result->Defines);
         cfg->Write(Path+_T("cflags"),Result->CFlags);
         cfg->Write(Path+_T("lflags"),Result->LFlags);
         cfg->Write(Path+_T("compilers"),Result->Compilers);
@@ -484,6 +524,17 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
     for ( size_t i=0; i<Result->ObjPath.Count(); i++ )
     {
         Target->AddResourceIncludeDir(Result->ObjPath[i]);
+    }
+
+    for ( size_t i=0; i<Result->Libs.Count(); i++ )
+    {
+        Target->AddLinkLib(Result->Libs[i]);
+    }
+
+    for ( size_t i=0; i<Result->Defines.Count(); i++ )
+    {
+        // TODO: This may need some compiler-dependent processing
+        Target->AddCompilerOption(_T("-D")+Result->Defines[i]);
     }
 
     for ( size_t i=0; i<Result->CFlags.Count(); i++ )

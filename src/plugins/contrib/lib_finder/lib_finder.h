@@ -66,8 +66,8 @@ class lib_finder: public cbToolPlugin
 
         WX_DECLARE_HASH_MAP(cbProject*,ProjectConfiguration*,wxPointerHash,wxPointerEqual,ProjectMapT);
 
-        LibraryConfigManager m_Manager;
         PkgConfigManager m_PkgConfig;
+        LibraryConfigManager m_Manager;
         ResultMap m_StoredResults;
         ProjectMapT m_Projects;
         int m_HookId;
