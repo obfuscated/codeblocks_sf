@@ -10,6 +10,10 @@
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
+#if defined(__GNUG__) && !defined(__APPLE__)
+	#pragma implementation "cbkeybinder.h"
+#endif
+
 #include <sdk.h>
 #ifndef CB_PRECOMP
 #include <wx/dynarray.h>
@@ -27,10 +31,6 @@
 
 #include "menuutils.h"
 #include "cbkeybinder.h"
-
-#if defined(__GNUG__) && !defined(__APPLE__)
-	#pragma implementation "cbkeybinder.h"
-#endif
 
 // ----------------------------------------------------------------------------
 wxString* pKeyFilename = 0;     // used by keybinder key definition dialog
