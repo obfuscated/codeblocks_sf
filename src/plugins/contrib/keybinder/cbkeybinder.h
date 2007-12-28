@@ -13,44 +13,30 @@
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma interface "cbkeybinder.h"
 #endif
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
 	#pragma hdrstop
 #endif
 
-#ifndef WX_PRECOMP
-	#include <wx/wx.h>
-#endif
+#include <wx/string.h>
+#include <wx/timer.h>
 
 #include "cbplugin.h" // the base class we 're inheriting
 #include "configurationpanel.h"
-#include <settings.h> // needed to use the Code::Blocks SDK
-// ----------------------------------------------------------------------------
-//  additional includeds for cbKeyBinder
-// ----------------------------------------------------------------------------
-#include <manager.h>
-#include <logmanager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-#include <cbeditor.h>
 #include "keybinder.h"
-#include "menuutils.h"
-#include "wx/config.h"
-#include "wx/fileconf.h"
-#include "wx/app.h"
-#include "wx/utils.h"
-#include <wx/intl.h>
-#include <wx/timer.h>
 
 // --Version-Rlease-Feature-Fix-------
 #define VERSION "1.0.44 2007/12/2"
 // -----------------------------------
 class MyDialog;
+class wxKeyConfigPanel;
+class wxKeyProfileArray;
+class wxWindow;
+class wxEvent;
+class wxMenuBar;
+class wxLogWindow;
+class wxArrayPtrVoid;
 
-// ----------------------------------------------------------------------------
-#include "debugging.h"
 // ----------------------------------------------------------------------------
 //  cbKeyBinder class declaration
 // ----------------------------------------------------------------------------
@@ -105,8 +91,8 @@ class cbKeyBinder : public cbPlugin
         void OnLoad();
         // Enable/Disable Merge
         int EnableMerge(bool allow);
-        int IsEnabledMerge(){return m_mergeEnabled;}
-        bool IsMerging(){return m_bMerging;}
+        int IsEnabledMerge() const {return m_mergeEnabled;}
+        bool IsMerging() const {return m_bMerging;}
         void IsMerging(bool state){m_bMerging = state;}
 
     protected:

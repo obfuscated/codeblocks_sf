@@ -10,27 +10,27 @@
 // The majority of this code was lifted from wxKeyBinder and
 // its "minimal.cpp" sample program
 
-#ifdef CB_PRECOMP
-    #include <sdk.h>
-#else
-    #include "sdk_common.h"
-    #include "sdk_events.h"
+#include <sdk.h>
+#ifndef CB_PRECOMP
+#include <wx/dynarray.h>
+#include <wx/intl.h>
+#include <wx/log.h>
+#include "cbeditor.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "manager.h"
+#include "pluginmanager.h"
+#include "personalitymanager.h"
 #endif
-#include "cbstyledtextctrl.h" // TODO : somethings wrong with pch !!!!
+#include "wx/fileconf.h"
+#include "cbstyledtextctrl.h"
+
+#include "menuutils.h"
+#include "cbkeybinder.h"
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "cbkeybinder.h"
 #endif
-
-#include "wxscintilla/include/wx/wxscintilla.h"
-#include "cbkeybinder.h"
-#include <licenses.h> // defines some common licenses (like the GPL)
-
-#include "manager.h"
-#include "logmanager.h"
-#include "personalitymanager.h"
-
-//#include <wx/datetime.h>
 
 // ----------------------------------------------------------------------------
 wxString* pKeyFilename = 0;     // used by keybinder key definition dialog
