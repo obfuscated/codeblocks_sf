@@ -4,8 +4,8 @@
 #include <wx/hashmap.h>
 #include <wx/datetime.h>
 #include <wx/fontmap.h>
+#include <wx/timer.h>
 
-#include "wx/wxscintilla.h"
 #include "settings.h"
 #include "editorbase.h"
 #include "printing_types.h"
@@ -19,20 +19,10 @@ class ProjectFile;
 class EditorColourSet;
 class wxSplitterWindow;
 class LoaderBase;
+class cbStyledTextCtrl;
+class wxScintillaEvent;
+class wxBoxSizer;
 
-class cbStyledTextCtrl : public wxScintilla
-{
-    public:
-        cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
-        virtual ~cbStyledTextCtrl();
-    protected:
-        void OnContextMenu(wxContextMenuEvent& event);
-        void OnKillFocus(wxFocusEvent& event);
-        void OnGPM(wxMouseEvent& event);
-    private:
-        wxWindow* m_pParent;
-        DECLARE_EVENT_TABLE()
-};
 
 /** @brief A file editor
   *

@@ -43,6 +43,8 @@
 #include "manager.h"
 #include "projectmanager.h"
 #endif
+#include "cbstyledtextctrl.h"
+
 #include "classwizarddlg.h"
 #include <wx/tokenzr.h>
 #include <wx/dirdlg.h>

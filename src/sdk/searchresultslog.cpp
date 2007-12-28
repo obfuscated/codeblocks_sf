@@ -20,6 +20,7 @@
     #include "editormanager.h"
     #include "cbeditor.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include "searchresultslog.h"
 

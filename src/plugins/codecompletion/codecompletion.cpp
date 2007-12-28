@@ -50,6 +50,8 @@
 #include "parser/tokenizer.h"
 #include "selectincludefile.h"
 #include "globals.h"
+#include "cbstyledtextctrl.h"
+
 
 #include "editor_hooks.h"
 #include "cbeditor.h"

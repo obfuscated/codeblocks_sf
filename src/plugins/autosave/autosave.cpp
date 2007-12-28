@@ -29,6 +29,7 @@
     #include "manager.h"
     #include "sdk_events.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include "projectloader.h"
 #include "autosave.h"

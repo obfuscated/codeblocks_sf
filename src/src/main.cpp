@@ -62,6 +62,7 @@
 #include <editorcolourset.h>
 #include <logmanager.h>
 #include <personalitymanager.h>
+#include "cbstyledtextctrl.h"
 
 #include "infopane.h"
 #include "dlgaboutplugin.h"

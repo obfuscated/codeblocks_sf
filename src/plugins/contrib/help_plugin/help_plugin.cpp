@@ -43,6 +43,7 @@
 #include <cbproject.h>
 #include <macrosmanager.h>
 #include <vector>
+#include "cbstyledtextctrl.h"
 
 #include <wx/help.h> //(wxWindows chooses the appropriate help controller class)
 #include <wx/helpbase.h> //(wxHelpControllerBase class)

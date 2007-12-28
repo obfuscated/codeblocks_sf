@@ -41,6 +41,7 @@
     #include "globals.h"
     #include "manager.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include <wx/listbook.h>
 #include <wx/radiobox.h>
@@ -412,7 +413,7 @@ void NewFromTemplateDlg::OnListRightClick(wxListEvent& event)
 	if (data && data->plugin)
 	{
 	    menu->Append(idEditWizardScript, _("Edit this script"));
-	    
+
 		// if the script exists in the user's configuration, it has been customized
 		wxString script = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/") + data->plugin->GetScriptFilename(data->wizPluginIndex);
 		if (wxFileExists(script))

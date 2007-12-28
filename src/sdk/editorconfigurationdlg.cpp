@@ -44,6 +44,7 @@
     #include <wx/radiobox.h>
     #include <wx/imaglist.h>
 #endif
+#include "cbstyledtextctrl.h"
 
 #include <wx/fontdlg.h>
 #include <wx/fontutil.h>

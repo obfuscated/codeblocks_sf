@@ -16,6 +16,8 @@
 #include "globals.h"
 #include "manager.h"
 #endif
+#include "cbstyledtextctrl.h"
+
 #include <wx/clipbrd.h>
 #include <wx/dataobj.h>
 #include "copystrings.h"

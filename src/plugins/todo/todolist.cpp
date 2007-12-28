@@ -25,6 +25,7 @@
   #include "logmanager.h"
   #include "sdk_events.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include "addtododlg.h"
 #include "asktypedlg.h"

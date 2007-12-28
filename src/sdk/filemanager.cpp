@@ -7,6 +7,7 @@
     #include "editormanager.h"
     #include "infowindow.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include <wx/url.h>
 

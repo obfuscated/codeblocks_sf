@@ -52,6 +52,7 @@
     #include <wx/file.h>
     #include <wx/dir.h>
 #endif
+#include "cbstyledtextctrl.h"
 
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>

@@ -16,6 +16,7 @@
     #include "sdk_common.h"
     #include "sdk_events.h"
 #endif
+#include "cbstyledtextctrl.h" // TODO : somethings wrong with pch !!!!
 
 #if defined(__GNUG__) && !defined(__APPLE__)
 	#pragma implementation "cbkeybinder.h"

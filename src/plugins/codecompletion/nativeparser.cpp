@@ -44,6 +44,8 @@
 #include <wx/log.h> // for wxSafeShowMessage()
 #include <tinyxml/tinyxml.h>
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include "cbstyledtextctrl.h"
+
 
 #include <wx/wfstream.h>
 

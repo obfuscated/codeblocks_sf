@@ -44,9 +44,8 @@
 #endif //__BORLANDC__
 
 #if defined(BUILDING_PLUGIN)
-    #if defined(CB_PRECOMP)
-        #include "sdk.h"
-    #else
+    #include "sdk.h"
+    #ifndef CB_PRECOMP
         #include "manager.h"
         #include "logmanager.h"
         #include "macrosmanager.h"
@@ -56,6 +55,7 @@
         #include "cbeditor.h"
         #include "globals.h"
     #endif
+	#include "cbstyledtextctrl.h"
 #endif
 
 // project headers

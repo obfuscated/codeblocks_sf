@@ -20,6 +20,7 @@
     #include "sdk_events.h" // EVT_APP_STARTUP_DONE
     #include "personalitymanager.h"
 #endif
+#include "cbstyledtextctrl.h" // TODO : somethings wrong here with pch !!!!
 
 // Register the plugin
 namespace

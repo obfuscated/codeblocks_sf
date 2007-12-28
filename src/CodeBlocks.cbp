@@ -563,6 +563,9 @@
 		<Unit filename="include\cbproject.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\cbstyledtextctrl.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\cbthreadedtask.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1794,13 +1797,13 @@
 		<Unit filename="plugins\scriptedwizard\resources\sdl\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\sharedlib\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\smartwin\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\staticlib\wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins\scriptedwizard\resources\sharedlib\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\win32gui\wizard.script">
@@ -1927,6 +1930,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\cbproject.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk\cbstyledtextctrl.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk\cbthreadpool.cpp">
@@ -4276,6 +4282,7 @@
 				</resources>
 			</wxsmith>
 			<debugger />
+			<lib_finder />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

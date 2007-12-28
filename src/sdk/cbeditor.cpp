@@ -47,6 +47,7 @@
     #include "macrosmanager.h" // ReplaceMacros
     #include "cbplugin.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include <wx/fontutil.h>
 #include <wx/splitter.h>
@@ -70,79 +71,6 @@ const wxString g_EditorModified = _T("*");
 
 #define DEBUG_MARKER        4
 #define DEBUG_STYLE         wxSCI_MARK_ARROW
-
-BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
-    EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
-    EVT_KILL_FOCUS(cbStyledTextCtrl::OnKillFocus)
-    EVT_MIDDLE_DOWN(cbStyledTextCtrl::OnGPM)
-END_EVENT_TABLE()
-
-cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos, const wxSize& size, long style)
-    : wxScintilla(pParent, id, pos, size, style),
-    m_pParent(pParent)
-{
-    //ctor
-}
-
-cbStyledTextCtrl::~cbStyledTextCtrl()
-{
-    //dtor
-}
-
-// events
-
-void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
-{
-    // cancel auto-completion list when losing focus
-    if (AutoCompActive())
-        AutoCompCancel();
-    if (CallTipActive())
-        CallTipCancel();
-    event.Skip();
-}
-
-void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
-{
-    if ( m_pParent != NULL )
-    {
-        cbEditor* pParent = dynamic_cast<cbEditor*>(m_pParent);
-        if ( pParent != NULL )
-        {
-            const bool is_right_click = event.GetPosition()!=wxDefaultPosition;
-            const wxPoint mp(is_right_click ? event.GetPosition() : wxDefaultPosition);
-            pParent->DisplayContextMenu(mp,mtEditorManager);
-        }
-        else
-        {
-            event.Skip();
-        }
-    }
-}
-
-void cbStyledTextCtrl::OnGPM(wxMouseEvent& event)
-{
-    if(platform::gtk == false) // only if GPM is not already implemented by the OS
-    {
-        int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
-
-        if(pos == wxSCI_INVALID_POSITION)
-            return;
-
-        int start = GetSelectionStart();
-        int end = GetSelectionEnd();
-
-        wxString s = GetSelectedText();
-
-        if(pos < GetCurrentPos())
-        {
-            start += s.length();
-            end += s.length();
-        }
-
-        InsertText(pos, s);
-        SetSelection(start, end);
-    }
-}
 
 
 

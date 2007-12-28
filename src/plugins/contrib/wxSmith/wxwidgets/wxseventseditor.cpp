@@ -27,6 +27,7 @@
 #include "../wxscoder.h"
 
 #include <editormanager.h>
+#include "cbstyledtextctrl.h"
 
 namespace
 {

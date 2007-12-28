@@ -9,6 +9,8 @@
     #include "editormanager.h"
     #include "globals.h"
 #endif //CB_PRECOMP
+#include "cbstyledtextctrl.h"
+
 #include "crashhandler.h"
 #include <shlobj.h>
 

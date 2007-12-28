@@ -21,6 +21,8 @@
 #include "editormanager.h"
 #include "manager.h"
 #endif
+#include "cbstyledtextctrl.h"
+
 #include "printdlg.h"
 
 PrintDialog::PrintDialog(wxWindow* parent)

@@ -56,6 +56,7 @@
 #include <loggers.h>
 #include "splashscreen.h"
 #include "crashhandler.h"
+#include "cbstyledtextctrl.h"
 
 #include <sqplus.h>
 

@@ -56,6 +56,8 @@
 #include "directcommands.h"
 #include "globals.h"
 #include "cbworkspace.h"
+#include "cbstyledtextctrl.h"
+
 
 #include "compilerMINGW.h"
 #ifdef __WXGTK__

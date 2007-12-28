@@ -12,6 +12,7 @@
     #include <cbeditor.h>
     #include <globals.h>
 #endif
+#include "cbstyledtextctrl.h"
 
 #include "scriptbindings.h"
 #include <cbexception.h>

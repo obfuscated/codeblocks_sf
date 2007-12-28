@@ -25,6 +25,7 @@
 #include <wx/fs_zip.h>
 #include <wx/strconv.h>
 #include "asstreamiterator.h"
+#include "cbstyledtextctrl.h"
 
 using std::istringstream;
 using std::string;

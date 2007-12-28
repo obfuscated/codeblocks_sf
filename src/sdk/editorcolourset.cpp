@@ -35,6 +35,7 @@
     #include "manager.h"
     #include <wx/dir.h>
 #endif
+#include "cbstyledtextctrl.h"
 
 #include "editorcolourset.h"
 #include "editorlexerloader.h"

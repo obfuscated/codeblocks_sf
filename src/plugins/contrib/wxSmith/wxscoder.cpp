@@ -31,6 +31,7 @@
 #include <globals.h>
 #include <wx/file.h>
 #include <wx/intl.h>
+#include "cbstyledtextctrl.h"
 
 namespace
 {

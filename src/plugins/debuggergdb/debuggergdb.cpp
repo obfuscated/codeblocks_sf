@@ -60,6 +60,8 @@
 #include "editwatchdlg.h"
 #include "databreakpointdlg.h"
 #include "globals.h"
+#include "cbstyledtextctrl.h"
+
 
 #ifdef __WXMSW__
     #include <winbase.h>

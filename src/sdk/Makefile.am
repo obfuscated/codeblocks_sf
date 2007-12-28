@@ -30,6 +30,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						cbeditorprintout.cpp \
 						cbplugin.cpp \
 						cbproject.cpp \
+						cbstyledtextctrl.cpp \
 						cbthreadpool.cpp \
 						cbworkspace.cpp \
 						compileoptionsbase.cpp \

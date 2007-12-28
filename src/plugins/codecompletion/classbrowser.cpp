@@ -46,6 +46,8 @@
 #include <projectmanager.h>
 #include <cbeditor.h>
 #include <globals.h>
+#include "cbstyledtextctrl.h"
+
 
 #ifndef CB_PRECOMP
     #include "cbproject.h"

@@ -19,6 +19,7 @@
 #include "RTFExporter.h"
 #include "ODTExporter.h"
 #include "PDFExporter.h"
+#include "cbstyledtextctrl.h"
 
 static int idFileExport = wxNewId();
 static int idFileExportHTML = wxNewId();
@@ -191,7 +192,7 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
     return;
   }
 
-  wxScintilla *ed = cb->GetControl();
+  cbStyledTextCtrl* ed = cb->GetControl();
   wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
   EditorColourSet *ecs = cb->GetColourSet();
 

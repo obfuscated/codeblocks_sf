@@ -31,6 +31,7 @@
     #include <wx/stattext.h>
     #include "cbeditor.h"
 #endif
+#include "cbstyledtextctrl.h"
 
 #include "confirmreplacedlg.h"
 

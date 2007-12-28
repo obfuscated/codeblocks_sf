@@ -20,6 +20,8 @@
   #include "projectmanager.h"
   //#include "logmanager.h"
 #endif
+#include "cbstyledtextctrl.h"
+
 #include "todolistview.h"
 
 namespace
