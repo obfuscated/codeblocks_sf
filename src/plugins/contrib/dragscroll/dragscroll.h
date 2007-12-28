@@ -21,6 +21,7 @@
 #include <wx/dynarray.h>
 #include <wx/event.h> // wxEvtHandler
 #include <wx/gdicmn.h> //wxPoint
+#include <wx/log.h>
 #include <cbplugin.h> // the base class we 're inheriting
 
 // ---------------------------------------------------------------------------

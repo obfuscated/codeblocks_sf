@@ -1,8 +1,6 @@
 #ifndef DragScrollCfg_H
 #define DragScrollCfg_H
 
-#include <wx/wxprec.h>
-
 #ifdef __BORLANDC__
     #pragma hdrstop
 #endif

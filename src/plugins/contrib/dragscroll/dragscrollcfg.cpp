@@ -1,3 +1,4 @@
+#include "configmanager.h"
 #include "dragscrollcfg.h"
 
 BEGIN_EVENT_TABLE(cbDragScrollCfg,cbConfigurationPanel)

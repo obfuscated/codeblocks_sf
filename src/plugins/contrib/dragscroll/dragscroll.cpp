@@ -15,7 +15,6 @@
 #ifndef CB_PRECOMP
 	#include <wx/intl.h>
 	#include <wx/listctrl.h>
-	#include <wx/log.h>
 	#include "cbeditor.h"
 	#include "configmanager.h"
 	#include "editormanager.h"
