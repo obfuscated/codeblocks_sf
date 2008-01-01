@@ -34,6 +34,8 @@
 #include <projectloader_hooks.h>
 #include <compiler.h>
 #include <compilerfactory.h>
+#include <sqplus.h>
+#include <sc_base_types.h>
 
 #include "resultmap.h"
 #include "dirlistdlg.h"
@@ -44,22 +46,33 @@
 #include "projectconfigurationpanel.h"
 #include "libselectdlg.h"
 
-// Register the plugin
 namespace
 {
+    // Register the plugin
     PluginRegistrant<lib_finder> reg(_T("lib_finder"));
+
+    // Some class required for scripting
+    class LibFinder
+    {
+    };
 };
+
+lib_finder* lib_finder::m_Singleton = 0;
 
 lib_finder::lib_finder()
 {
+    m_Singleton = this;
 }
 
 lib_finder::~lib_finder()
 {
+    m_Singleton = 0;
 }
 
 void lib_finder::OnAttach()
 {
+    RegisterScripting();
+
     ReadStoredResults();
     ProjectLoaderHooks::HookFunctorBase* Hook = new ProjectLoaderHooks::HookFunctor<lib_finder>(this, &lib_finder::OnProjectHook);
     m_HookId = ProjectLoaderHooks::RegisterHook(Hook);
@@ -85,6 +98,8 @@ void lib_finder::OnRelease(bool appShutDown)
     ClearStoredResults();
 
     m_PkgConfig.Clear();
+
+    UnregisterScripting();
 }
 
 int lib_finder::Execute()
@@ -578,5 +593,97 @@ bool lib_finder::SameResults(LibraryResult* First, LibraryResult* Second)
     if ( First->LibraryName != Second->LibraryName ) return false;
     if ( First->BasePath    != Second->BasePath    ) return false;
     if ( First->Description != Second->Description ) return false;
+    return true;
+}
+
+void lib_finder::RegisterScripting()
+{
+    SqPlus::SQClassDef<LibFinder>("LibFinder")
+        .staticFunc(&lib_finder::AddLibraryToProject,"AddLibraryToProject")
+        .staticFunc(&lib_finder::IsLibraryInProject,"IsLibraryInProject")
+        .staticFunc(&lib_finder::RemoveLibraryFromProject,"RemoveLibraryFromProject")
+    ;
+}
+
+void lib_finder::UnregisterScripting()
+{
+    Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
+    if ( v )
+    {
+        sq_pushroottable(v);
+        sq_pushstring(v,"LibFinder",-1);
+        sq_deleteslot(v,-2,false);
+        sq_poptop(v);
+    }
+}
+
+bool lib_finder::AddLibraryToProject(const wxString& LibName,cbProject* Project,const wxString& TargetName)
+{
+    if ( !m_Singleton ) return false;
+
+    ProjectConfiguration* Config = m_Singleton->GetProject(Project);
+    wxArrayString* Libs;
+    if ( TargetName.IsEmpty() )
+    {
+        Libs = &Config->m_GlobalUsedLibs;
+    }
+    else
+    {
+        if ( !Project->GetBuildTarget(TargetName) ) return false;
+        Libs = &Config->m_TargetsUsedLibs[TargetName];
+    }
+
+    if ( Libs->Index(LibName) == wxNOT_FOUND )
+    {
+        Libs->Add(LibName);
+        Project->SetModified(true);
+    }
+    return true;
+}
+
+bool lib_finder::IsLibraryInProject(const wxString& LibName,cbProject* Project,const wxString& TargetName)
+{
+    if ( !m_Singleton ) return false;
+
+    ProjectConfiguration* Config = m_Singleton->GetProject(Project);
+    wxArrayString* Libs;
+    if ( TargetName.IsEmpty() )
+    {
+        Libs = &Config->m_GlobalUsedLibs;
+    }
+    else
+    {
+        if ( !Project->GetBuildTarget(TargetName) ) return false;
+        Libs = &Config->m_TargetsUsedLibs[TargetName];
+    }
+
+    return Libs->Index(LibName) != wxNOT_FOUND;
+}
+
+bool lib_finder::RemoveLibraryFromProject(const wxString& LibName,cbProject* Project,const wxString& TargetName)
+{
+    if ( !m_Singleton ) return false;
+
+    ProjectConfiguration* Config = m_Singleton->GetProject(Project);
+    wxArrayString* Libs;
+    if ( TargetName.IsEmpty() )
+    {
+        Libs = &Config->m_GlobalUsedLibs;
+    }
+    else
+    {
+        if ( !Project->GetBuildTarget(TargetName) ) return false;
+        Libs = &Config->m_TargetsUsedLibs[TargetName];
+    }
+
+    int Index = Libs->Index(LibName);
+    if ( Index == wxNOT_FOUND )
+    {
+        return false;
+    }
+
+    Libs->RemoveAt(Index);
+    Project->SetModified(true);
     return true;
 }

@@ -40,12 +40,14 @@ class LibraryResult;
 class lib_finder: public cbToolPlugin
 {
 	public:
+
 		lib_finder();
 		~lib_finder();
 		int Configure(){ return 0; }
 		int Execute();
 		void OnAttach();
 		void OnRelease(bool appShutDown);
+
 	private:
 
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
@@ -60,8 +62,16 @@ class lib_finder: public cbToolPlugin
         void SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs);
         bool TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result);
         bool LoadSearchFilters(LibraryConfigManager* CfgManager);
+        void RegisterScripting();
+        void UnregisterScripting();
 
         bool SameResults(LibraryResult* First, LibraryResult* Second);
+
+        // These functions are used in scripting bindings
+		static bool AddLibraryToProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
+		static bool RemoveLibraryFromProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
+		static bool IsLibraryInProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
+
 
         ProjectConfiguration* GetProject(cbProject* Project);
 
@@ -71,6 +81,8 @@ class lib_finder: public cbToolPlugin
         ResultMap m_StoredResults;
         ProjectMapT m_Projects;
         int m_HookId;
+
+        static lib_finder* m_Singleton;
 };
 
 #endif
