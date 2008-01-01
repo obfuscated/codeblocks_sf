@@ -43,6 +43,10 @@
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\tinyxml" />
+			<Add directory="$(#CB.include)\scripting\include" />
+			<Add directory="$(#CB.include)\scripting\sqplus" />
+			<Add directory="$(#CB.include)\scripting\squirrel" />
+			<Add directory="$(#CB.include)\scripting\bindings" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
