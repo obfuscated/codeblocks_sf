@@ -1,6 +1,6 @@
 /*
 * This file is part of lib_finder plugin for Code::Blocks Studio
-* Copyright (C) 2006-2007  Bartlomiej Swiecki
+* Copyright (C) 2006-2008  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -32,6 +32,8 @@
 #include <globals.h>
 #include <manager.h>
 #include <projectloader_hooks.h>
+#include <compiler.h>
+#include <compilerfactory.h>
 
 #include "resultmap.h"
 #include "dirlistdlg.h"
@@ -48,7 +50,7 @@ namespace
     PluginRegistrant<lib_finder> reg(_T("lib_finder"));
 };
 
-lib_finder::lib_finder(): m_Manager(m_PkgConfig)
+lib_finder::lib_finder()
 {
 }
 
@@ -87,24 +89,26 @@ void lib_finder::OnRelease(bool appShutDown)
 
 int lib_finder::Execute()
 {
-    m_Manager.Clear();
+    LibraryConfigManager m_Manager(m_PkgConfig);
     ResultMap m_Results;
 
-    wxString resPath = ConfigManager::GetDataFolder();
-    m_Manager.LoadXmlConfig(resPath + wxFileName::GetPathSeparator() + _T("lib_finder"));
-
-    if ( m_Manager.GetLibraryCount() == 0 )
+    // Loading library search filters
+    if ( !LoadSearchFilters(&m_Manager) )
     {
-        cbMessageBox(_("Didn't found any library :("));
+        cbMessageBox(
+            _("Didn't found any search filters used to detect libraries.\n"
+              "Please check if lib_finder plugin is installed properly."));
         return -1;
     }
 
+    // Getting list of directories to process
     DirListDlg Dlg(
         Manager::Get()->GetAppWindow(),
         Manager::Get()->GetConfigManager(_T("lib_finder"))->ReadArrayString(_T("search_dirs")));
     if ( Dlg.ShowModal() == wxID_CANCEL ) return 0;
     Manager::Get()->GetConfigManager(_T("lib_finder"))->Write(_T("search_dirs"),Dlg.Dirs);
 
+    // Do the processing
     FileNamesMap FNMap;
     ProcessingDlg PDlg(0L,m_Manager,m_PkgConfig,m_Results);
     PDlg.Show();
@@ -214,6 +218,17 @@ int lib_finder::Execute()
 
 	return -1;
 }
+
+bool lib_finder::LoadSearchFilters(LibraryConfigManager* CfgManager)
+{
+    wxString Sep = wxFileName::GetPathSeparator();
+
+    CfgManager->LoadXmlConfig(ConfigManager::GetFolder(sdDataGlobal) + Sep + _T("lib_finder"));
+    CfgManager->LoadXmlConfig(ConfigManager::GetFolder(sdDataUser)   + Sep + _T("lib_finder"));
+
+    return CfgManager->GetLibraryCount()>0;
+}
+
 
 void lib_finder::SetGlobalVar(const LibraryResult* Res)
 {
@@ -502,6 +517,14 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
         }
     }
 
+    // Read used compiler to detect command line option for defines
+    Compiler* comp = CompilerFactory::GetCompiler(Target->GetCompilerID());
+    wxString DefinePrefix = _T("-D");
+    if ( comp )
+    {
+        DefinePrefix += comp->GetSwitches().defines;
+    }
+
     // Ok, this target match the result, let's update compiler options
     if ( !Result->PkgConfigVar.IsEmpty() )
     {
@@ -533,8 +556,7 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
 
     for ( size_t i=0; i<Result->Defines.Count(); i++ )
     {
-        // TODO: This may need some compiler-dependent processing
-        Target->AddCompilerOption(_T("-D")+Result->Defines[i]);
+        Target->AddCompilerOption(DefinePrefix+Result->Defines[i]);
     }
 
     for ( size_t i=0; i<Result->CFlags.Count(); i++ )

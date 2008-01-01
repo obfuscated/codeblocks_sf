@@ -51,6 +51,7 @@
 		<Unit filename="lib_finder.h" />
 		<Unit filename="lib_finder/codeblocks_sdk.xml" />
 		<Unit filename="lib_finder/glfw.xml" />
+		<Unit filename="lib_finder/readme.txt" />
 		<Unit filename="lib_finder/wxwidgets.xml" />
 		<Unit filename="libraryconfig.h" />
 		<Unit filename="libraryconfigmanager.cpp" />

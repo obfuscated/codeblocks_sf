@@ -1,6 +1,6 @@
 /*
 * This file is part of lib_finder plugin for Code::Blocks Studio
-* Copyright (C) 2006-2007  Bartlomiej Swiecki
+* Copyright (C) 2006-2008  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by

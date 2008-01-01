@@ -1,6 +1,6 @@
 /*
 * This file is part of lib_finder plugin for Code::Blocks Studio
-* Copyright (C) 2006-2007  Bartlomiej Swiecki
+* Copyright (C) 2006-2008  Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ class lib_finder: public cbToolPlugin
         void OnCompilerSetBuildOptions(CodeBlocksEvent& event);
         void SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs);
         bool TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result);
+        bool LoadSearchFilters(LibraryConfigManager* CfgManager);
 
         bool SameResults(LibraryResult* First, LibraryResult* Second);
 
@@ -67,7 +68,6 @@ class lib_finder: public cbToolPlugin
         WX_DECLARE_HASH_MAP(cbProject*,ProjectConfiguration*,wxPointerHash,wxPointerEqual,ProjectMapT);
 
         PkgConfigManager m_PkgConfig;
-        LibraryConfigManager m_Manager;
         ResultMap m_StoredResults;
         ProjectMapT m_Projects;
         int m_HookId;
