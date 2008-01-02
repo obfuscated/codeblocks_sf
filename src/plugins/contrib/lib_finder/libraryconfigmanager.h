@@ -33,12 +33,19 @@ class wxArrayString;
 class wxString;
 class TiXmlElement;
 
+/** \brief Class managing library configurations used to detect libraries
+ *
+ * Note that confiugrations managed here are not yet fully functional library
+ * settings - they can only be used to automatically detect existing libraries.
+ * After successfull detection, LibraryResult is produced which does hold
+ * useful configuration of library
+ */
 class LibraryConfigManager
 {
     public:
 
         /** \brief Ctor */
-        LibraryConfigManager(PkgConfigManager& PkgConfig);
+        LibraryConfigManager(TypedResults& Results);
 
         /** \brief Dctor */
         ~LibraryConfigManager();
@@ -81,7 +88,7 @@ class LibraryConfigManager
         WX_DEFINE_ARRAY(LibraryConfig*,LCArray);
 
         LCArray Libraries;
-        PkgConfigManager& PkgConfig;
+        TypedResults& m_CurrentResults;
 };
 
 #endif

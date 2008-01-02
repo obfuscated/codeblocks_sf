@@ -50,8 +50,8 @@ class PkgConfigManager
         /** \brief Checking whether there is pkg-config on this system */
         bool IsPkgConfig() { return m_PkgConfigVersion!=-1L; }
 
-        /** \brief Getting the result of scanning for libraries */
-        ResultMap& GetLibraries() { return m_Libraries; }
+        /** \brief Adding libraries detected from pkg-config to given set */
+        bool DetectLibraries(ResultMap& Results);
 
         /** \brief Clear all results */
         void Clear();
@@ -67,11 +67,11 @@ class PkgConfigManager
         /** \brief Detecting version of pkg-config */
         bool DetectVersion();
 
-        /** \brief Reading list of supported libraries */
-        bool LoadLibraries();
+//        /** \brief Reading list of supported libraries */
+//        bool LoadLibraries();
 
         long m_PkgConfigVersion;    ///< \brief Pkg-Config version, -1 if there's no pkg-config
-        ResultMap m_Libraries;      ///< \brief Libraries detected by pkg-config
+//        ResultMap m_Libraries;      ///< \brief Libraries detected by pkg-config
 };
 
 

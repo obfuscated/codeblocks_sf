@@ -37,7 +37,7 @@ PkgConfigManager::~PkgConfigManager()
 
 void PkgConfigManager::RefreshData()
 {
-    if ( !DetectVersion() || !LoadLibraries() )
+    if ( !DetectVersion() /*|| !LoadLibraries() */)
     {
         m_PkgConfigVersion = -1;
     }
@@ -86,8 +86,10 @@ bool PkgConfigManager::DetectVersion()
     return true;
 }
 
-bool PkgConfigManager::LoadLibraries()
+bool PkgConfigManager::DetectLibraries(ResultMap& Results)
 {
+    if ( !IsPkgConfig() ) return false;
+
     wxArrayString Output;
     if ( wxExecute(_T("pkg-config --list-all"),Output,wxEXEC_NODISABLE) != 0 )
     {
@@ -95,7 +97,7 @@ bool PkgConfigManager::LoadLibraries()
         return false;
     }
 
-    m_Libraries.Clear();
+    Results.Clear();
     for ( size_t i=0; i<Output.Count(); i++ )
     {
         wxString Name;
@@ -124,12 +126,13 @@ bool PkgConfigManager::LoadLibraries()
         while ( j<Line.Length() && (Line[j]==_T(' ') || Line[j]==_T('\t')) ) j++;
         // After that, we have description
 
-        LibraryResult* Result = new LibraryResult;
+        LibraryResult* Result = new LibraryResult();
+        Result->Type = rtPkgConfig;
 //        Result->LibraryName =
-        Result->GlobalVar = Name;
+        Result->ShortCode = Name;
         Result->PkgConfigVar = Name;
         Result->Description = Line.Mid(j);
-        m_Libraries.GetGlobalVar(Name).push_back(Result);
+        Results.GetShortCode(Name).push_back(Result);
     }
 
     return true;
@@ -137,15 +140,11 @@ bool PkgConfigManager::LoadLibraries()
 
 void PkgConfigManager::Clear()
 {
-    m_Libraries.Clear();
 }
 
 bool PkgConfigManager::UpdateTarget(const wxString& VarName,CompileTargetBase* Target,bool Force)
 {
-    if ( m_Libraries.IsGlobalVar(VarName) || Force )
-    {
-        Target->AddCompilerOption(_T("`pkg-config ") + VarName + _T(" --cflags`"));
-        Target->AddLinkerOption  (_T("`pkg-config ") + VarName + _T(" --libs`"  ));
-    }
-    return m_Libraries.IsGlobalVar(VarName);
+    Target->AddCompilerOption(_T("`pkg-config ") + VarName + _T(" --cflags`"));
+    Target->AddLinkerOption  (_T("`pkg-config ") + VarName + _T(" --libs`"  ));
+    return true;
 }

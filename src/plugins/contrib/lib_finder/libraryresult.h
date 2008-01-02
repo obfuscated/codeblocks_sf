@@ -27,10 +27,28 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 
+/** \brief Type of library configuration result */
+enum LibraryResultType
+{
+    rtDetected = 0,     ///< \brief Cnofiguration detected by lib_finder
+    rtPredefined,       ///< \brief Predefined configuration
+    rtPkgConfig,        ///< \brief Library provided by pkg-config
+    ///////
+    rtCount,            ///< \brief Here will be the number of result types
+    rtUnknown = -1      ///< \brief Used for unknown result types
+};
+
+/** \brief Library configuration result
+ *
+ * This structure contains informations about specific configuration
+ * of library. It's usually a result of some detection (at the beginning
+ * there were only results of detection) so here's where the name is from.
+ */
 struct LibraryResult
 {
+    LibraryResultType Type;
     wxString LibraryName;
-    wxString GlobalVar;
+    wxString ShortCode;
     wxString BasePath;
     wxString Description;
     wxString PkgConfigVar;

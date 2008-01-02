@@ -59,18 +59,16 @@ void ResultMap::GetAllResults(ResultArray& Array)
     }
 }
 
-void ResultMap::GetGlobalVarNames(wxArrayString& Array)
+void ResultMap::GetShortCodes(wxArrayString& Array)
 {
-    for ( ResultHashMap::iterator it = Map.begin(); it != Map.end(); ++it )
+    for ( ResultHashMap::const_iterator it = Map.begin(); it != Map.end(); ++it )
     {
         Array.Add(it->first);
     }
 }
 
-bool ResultMap::IsGlobalVar(const wxString& Name)
+bool ResultMap::IsShortCode(const wxString& Name)
 {
     if ( Map.find(Name) == Map.end() ) return false;
     return !Map[Name].IsEmpty();
 }
-
-//ResultMap ResultMap::Singleton;

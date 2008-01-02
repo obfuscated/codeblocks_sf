@@ -48,7 +48,7 @@ class ProcessingDlg: public wxDialog
 {
 	public:
 
-		ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,PkgConfigManager& PkgConfig,ResultMap& Results,wxWindowID id = -1);
+		ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,TypedResults& KnownResults,ResultMap& FoundResults,wxWindowID id = -1);
 		virtual ~ProcessingDlg();
 
 		//(*Identifiers(ProcessingDlg)
@@ -89,10 +89,10 @@ class ProcessingDlg: public wxDialog
         bool StopFlag;
         FileNamesMap Map;
         LibraryConfigManager& m_Manager;
-        PkgConfigManager& m_PkgConfig;
-        ResultMap& m_Results;
+        TypedResults& m_KnownResults;
+        ResultMap& m_FoundResults;
 
 		DECLARE_EVENT_TABLE()
 };
 
-#endif //PROCESSINGDLG_H
+#endif

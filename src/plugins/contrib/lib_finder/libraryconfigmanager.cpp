@@ -22,15 +22,16 @@
 */
 
 #include <tinyxml/tinyxml.h>
-#include "libraryconfigmanager.h"
 
 #include <wx/arrstr.h>
 #include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/string.h>
 
-LibraryConfigManager::LibraryConfigManager(PkgConfigManager& _PkgConfig)
-    : PkgConfig(_PkgConfig)
+#include "libraryconfigmanager.h"
+#include "lib_finder.h"
+
+LibraryConfigManager::LibraryConfigManager(TypedResults& CurrentResults): m_CurrentResults(CurrentResults)
 {
 }
 
@@ -42,7 +43,9 @@ LibraryConfigManager::~LibraryConfigManager()
 void LibraryConfigManager::Clear()
 {
     for ( size_t i=0; i<Libraries.Count(); ++i )
+    {
         delete Libraries[i];
+    }
     Libraries.Clear();
 }
 
@@ -84,8 +87,8 @@ void LibraryConfigManager::LoadXmlFile(const wxString& Name)
         LibraryConfig Initial;
 
         // Read global var name and library name
-        Initial.GlobalVar = wxString(Elem->Attribute("global_var"),wxConvUTF8);
-        if ( Initial.GlobalVar.empty() ) continue;
+        Initial.ShortCode = wxString(Elem->Attribute("short_code"),wxConvUTF8);
+        if ( Initial.ShortCode.empty() ) continue;
         Initial.LibraryName = wxString(Elem->Attribute("name"),wxConvUTF8);
 
         // Read categories of library
@@ -93,6 +96,7 @@ void LibraryConfigManager::LoadXmlFile(const wxString& Name)
               attr;
               attr = attr->Next() )
         {
+//            if ( !strncasecmp(attr->Name(),"category",8) )
             if ( !strncmp(attr->Name(),"category",8) )
             {
                 Initial.Categories.Add(wxString(attr->Value(),wxConvUTF8));
@@ -100,14 +104,14 @@ void LibraryConfigManager::LoadXmlFile(const wxString& Name)
         }
 
         // Check if there's corresponding pkg-config entry
-        if ( IsPkgConfigEntry(Initial.GlobalVar) )
+        if ( IsPkgConfigEntry(Initial.ShortCode) )
         {
             LibraryConfig* Config = new LibraryConfig(Initial);
-            Config->PkgConfigVar = Initial.GlobalVar;
+            Config->PkgConfigVar = Initial.ShortCode;
             Config->Description = Config->LibraryName + _T(" (pkg-config)");
             LibraryFilter Filter;
             Filter.Type = LibraryFilter::PkgConfig;
-            Filter.Value = Initial.GlobalVar;
+            Filter.Value = Initial.ShortCode;
             Config->Filters.push_back(Filter);
             AddConfig(Config);
         }
@@ -242,7 +246,7 @@ void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool
 bool LibraryConfigManager::CheckConfig(const LibraryConfig* Cfg) const
 {
     if ( Cfg->LibraryName.empty() ) return false;
-    if ( Cfg->GlobalVar.empty()   ) return false;
+    if ( Cfg->ShortCode.empty()   ) return false;
     if ( Cfg->Filters.empty()     ) return false;
     return true;
 }
@@ -256,7 +260,7 @@ const LibraryConfig* LibraryConfigManager::GetLibrary(int Index)
 
 bool LibraryConfigManager::IsPkgConfigEntry(const wxString& Name)
 {
-    return PkgConfig.GetLibraries().IsGlobalVar(Name);
+    return m_CurrentResults[rtPkgConfig].IsShortCode(Name);
 }
 
 void LibraryConfigManager::AddConfig(LibraryConfig* Cfg)

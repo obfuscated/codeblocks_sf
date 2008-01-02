@@ -54,8 +54,8 @@ struct LibraryConfig
     /** \brief Name of library, may use internal variables in form $(VAR_NAME) */
     wxString LibraryName;
 
-    /** \brief Name of global variable used with this library */
-    wxString GlobalVar;
+    /** \brief ShortCode for this library (used as global var) */
+    wxString ShortCode;
 
     /** \brief Description of the library */
     wxString Description;

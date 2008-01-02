@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<library name="wxWidgets" global_var="wx" category1="Gui" category2="Cross-Platform">
+<library name="wxWidgets" short_code="wx" category1="Gui" category2="Cross-Platform">
 
     <config description="wxWidgets configured through wx-config">
         <!-- Confugration for systems where you can find wx-config -->

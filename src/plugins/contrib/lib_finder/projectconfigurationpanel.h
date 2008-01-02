@@ -48,7 +48,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 {
 	public:
 
-		ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Config,ResultMap& KnownLibs,ResultMap& KnownPkgConfigLibs);
+		ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Config,TypedResults& KnownLibs);
 		virtual ~ProjectConfigurationPanel();
 
 	private:
@@ -72,13 +72,10 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 
         ProjectConfiguration* m_Configuration;
         ProjectConfiguration  m_ConfCopy;
-        ResultMap& m_KnownLibs;
-        ResultMap& m_KnownPkgConfigLibs;
+        TypedResults& m_KnownLibs;
         IdsMap m_CategoryMap;
         bool m_IsOtherCategory;
         bool m_IsPkgConfig;
-        wxTreeItemId m_PkgConfigId;
-
 
 		//(*Declarations(ProjectConfigurationPanel)
 		wxButton* m_AddUnknown;

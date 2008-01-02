@@ -62,10 +62,10 @@ namespace
         // Warning: since we use reference to string instead of string itself,
         // the base string must exist as long as this item data exists
         public:
-            TreeItemData(const wxString& GlobalVar): m_GlobalVar(GlobalVar) {}
+            TreeItemData(const wxString& ShortCode): m_ShortCode(ShortCode) {}
             ~TreeItemData() {}
 
-            const wxString& m_GlobalVar;
+            const wxString& m_ShortCode;
     };
 
     class ListItemData: public wxClientData
@@ -73,18 +73,17 @@ namespace
         // We don't use string's reference here since project's libraries set
         // should be much smaller than list of known libraries
         public:
-            ListItemData(const wxString& GlobalVar): m_GlobalVar(GlobalVar) {}
+            ListItemData(const wxString& ShortCode): m_ShortCode(ShortCode) {}
             ~ListItemData() {}
 
-            const wxString m_GlobalVar;
+            const wxString m_ShortCode;
     };
 }
 
 
-ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Configuration,ResultMap& KnownLibs,ResultMap& KnownPkgConfigLibs):
+ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Configuration,TypedResults& KnownLibs):
     m_Configuration(Configuration),
-    m_KnownLibs(KnownLibs),
-    m_KnownPkgConfigLibs(KnownPkgConfigLibs)
+    m_KnownLibs(KnownLibs)
 {
 	//(*Initialize(ProjectConfigurationPanel)
 	wxBoxSizer* BoxSizer4;
@@ -94,7 +93,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxBoxSizer* BoxSizer3;
-	
+
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Libraries used in project"));
@@ -137,7 +136,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	Timer1.SetOwner(this, ID_TIMER1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_UsedLibrariesSelect);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddClick);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_RemoveClick);
@@ -194,18 +193,22 @@ void ProjectConfigurationPanel::LoadData()
 
 wxString ProjectConfigurationPanel::GetUserListName(const wxString& Name)
 {
-    if ( m_KnownLibs.IsGlobalVar(Name) )
+    for ( int i=0; i<rtCount; i++ )
     {
-        return Name + _T(": ") + m_KnownLibs.GetGlobalVar(Name)[0]->LibraryName;
+        if ( m_KnownLibs[i].IsShortCode(Name) )
+        {
+            switch ( i )
+            {
+                case rtPkgConfig:
+                    return Name + _T(" (pkg-config)");
+
+                default:
+                    return Name + _T(": ") + m_KnownLibs[i].GetShortCode(Name)[0]->LibraryName;
+            }
+        }
     }
-    else if ( m_KnownPkgConfigLibs.IsGlobalVar(Name) )
-    {
-        return Name + _T(" (pkg-config)");
-    }
-    else
-    {
-        return Name + _T(" (Unknown library)");
-    }
+
+    return Name + _T(" (Unknown library)");
 }
 
 void ProjectConfigurationPanel::StoreData()
@@ -226,18 +229,35 @@ void ProjectConfigurationPanel::FillKnownLibraries()
     wxString Filter = m_Filter->GetValue().Upper();
     bool Tree = m_Tree->GetValue();
 
+    // Collecting list of all global variable names,
+    // currently without pkg-config entries (will be used later)
     wxArrayString Vars;
-    m_KnownLibs.GetGlobalVarNames(Vars);
+    for ( int i=0; i<rtCount; i++ )
+    {
+        if ( i==rtPkgConfig ) continue;
+        m_KnownLibs[i].GetShortCodes(Vars);
+    }
 
     for ( size_t i=0; i<Vars.Count(); i++ )
     {
-        ResultArray& Array = m_KnownLibs.GetGlobalVar(Vars[i]);
-        if ( Array.IsEmpty() ) continue;
+        ResultArray* Array = 0;
+        for ( int j=0; j<rtCount; j++ )
+        {
+            if ( j!=rtPkgConfig )
+            {
+                if ( m_KnownLibs[j].IsShortCode(Vars[i]) )
+                {
+                    Array = &m_KnownLibs[j].GetShortCode(Vars[i]);
+                }
+            }
+        }
+
+        if ( !Array || Array->IsEmpty() ) continue;
 
         if ( !Filter.IsEmpty() )
         {
-            if ( Array[0]->LibraryName.Upper().Find(Filter) == wxNOT_FOUND &&
-                 Array[0]->GlobalVar.Upper().Find(Filter)   == wxNOT_FOUND )
+            if ( (*Array)[0]->LibraryName.Upper().Find(Filter) == wxNOT_FOUND &&
+                 (*Array)[0]->ShortCode.Upper().Find(Filter)   == wxNOT_FOUND )
             {
                 // This result has been filtered
                 continue;
@@ -246,39 +266,40 @@ void ProjectConfigurationPanel::FillKnownLibraries()
 
         if ( Tree )
         {
-            wxArrayString& Categories = Array[0]->Categories;
+            wxArrayString& Categories = (*Array)[0]->Categories;
             if ( Categories.IsEmpty() )
             {
-                BuildEntry(OtherCategoryId(),Array);
+                BuildEntry(OtherCategoryId(),*Array);
             }
             else
             {
                 for ( size_t i=0; i<Categories.Count(); i++ )
                 {
-                    BuildEntry(CategoryId(Categories[i]),Array);
+                    BuildEntry(CategoryId(Categories[i]),*Array);
                 }
             }
         }
         else
         {
-            BuildEntry(m_KnownLibrariesTree->GetRootItem(),Array);
+            BuildEntry(m_KnownLibrariesTree->GetRootItem(),*Array);
         }
     }
 
+    // Now add pkg-config entries in separate category at the end
     Vars.Clear();
-    m_KnownPkgConfigLibs.GetGlobalVarNames(Vars);
+    m_KnownLibs[rtPkgConfig].GetShortCodes(Vars);
 
     if ( !Vars.IsEmpty() )
     {
         for ( size_t i=0; i<Vars.Count(); i++ )
         {
-            ResultArray& Array = m_KnownPkgConfigLibs.GetGlobalVar(Vars[i]);
+            ResultArray& Array = m_KnownLibs[rtPkgConfig].GetShortCode(Vars[i]);
             if ( Array.IsEmpty() ) continue;
 
             if ( !Filter.IsEmpty() )
             {
                 if ( Array[0]->LibraryName.Upper().Find(Filter) == wxNOT_FOUND &&
-                     Array[0]->GlobalVar.Upper().Find(Filter)   == wxNOT_FOUND )
+                     Array[0]->ShortCode.Upper().Find(Filter)   == wxNOT_FOUND )
                 {
                     // This result has been filtered
                     continue;
@@ -289,38 +310,40 @@ void ProjectConfigurationPanel::FillKnownLibraries()
         }
     }
 
+    // Ok, let's present all results
     m_KnownLibrariesTree->ExpandAll();
     m_KnownLibrariesTree->Thaw();
 }
 
 void ProjectConfigurationPanel::BuildEntry(const wxTreeItemId& Id,ResultArray& Array)
 {
-    wxString Name = Array[0]->GlobalVar;
+    wxString Name = Array[0]->ShortCode;
     if ( !Array[0]->LibraryName.IsEmpty() )
     {
         Name = Name + _T(": ") + Array[0]->LibraryName;
     }
-    m_KnownLibrariesTree->AppendItem(Id,Name,0,0,new TreeItemData(Array[0]->GlobalVar));
+    m_KnownLibrariesTree->AppendItem(Id,Name,0,0,new TreeItemData(Array[0]->ShortCode));
 }
 
 wxTreeItemId ProjectConfigurationPanel::OtherCategoryId()
 {
     if ( m_IsOtherCategory )
     {
-        return m_CategoryMap[_("other")];
+        return m_CategoryMap[_T(".other")];
     }
 
     m_IsOtherCategory = true;
-    return m_CategoryMap[_("other")] = m_KnownLibrariesTree->AppendItem(m_KnownLibrariesTree->GetRootItem(),_("Other"));
+    return m_CategoryMap[_T(".other")] = m_KnownLibrariesTree->AppendItem(m_KnownLibrariesTree->GetRootItem(),_("Other"));
 }
 
 wxTreeItemId ProjectConfigurationPanel::PkgConfigId()
 {
-    if ( m_IsPkgConfig ) return m_PkgConfigId;
+    if ( m_IsPkgConfig )
+    {
+        return m_CategoryMap[_T(".pkg-config")];
+    }
     m_IsPkgConfig = true;
-    return m_PkgConfigId = m_KnownLibrariesTree->AppendItem(
-        m_KnownLibrariesTree->GetRootItem(),
-        _("Available in pkg-config"));
+    return m_CategoryMap[_T(".pkg-config")] = m_KnownLibrariesTree->AppendItem(m_KnownLibrariesTree->GetRootItem(),_("Available in pkg-config"));
 }
 
 wxTreeItemId ProjectConfigurationPanel::CategoryId(const wxString& Category)
@@ -330,23 +353,29 @@ wxTreeItemId ProjectConfigurationPanel::CategoryId(const wxString& Category)
         return m_CategoryMap[Category.Lower()];
     }
 
-    wxStringTokenizer Tokens(Category,_T("."));
+    wxStringTokenizer Tokens(Category,_T("."),wxTOKEN_STRTOK);
     wxString PathSoFar = _T("");
     wxTreeItemId IdSoFar = m_KnownLibrariesTree->GetRootItem();
     bool FirstElem = true;
     while ( Tokens.HasMoreTokens() )
     {
-        wxString Part = Tokens.GetNextToken().Lower();
+        // Iterate through items already added to map
+        wxString Part = Tokens.GetNextToken();
         PathSoFar += Part.Lower();
         if ( m_CategoryMap.find(PathSoFar) == m_CategoryMap.end() )
         {
-            // Have to generate the path to the end
-            if ( FirstElem && m_IsOtherCategory )
+            // Ok, found first node which is not yet added, this mean
+            // that all subnodes are also not yet added
+            int SkipLast = FirstElem ? (m_IsOtherCategory?1:0) + (m_IsPkgConfig?1:0) : 0;
+
+            // First elem of the path must take into consideration
+            // that some categoies must remain at the end
+            if ( SkipLast )
             {
                 IdSoFar = m_CategoryMap[PathSoFar] =
                     m_KnownLibrariesTree->InsertItem(
                         IdSoFar,
-                        m_KnownLibrariesTree->GetChildrenCount(IdSoFar,false)-1,
+                        m_KnownLibrariesTree->GetChildrenCount(IdSoFar,false)-SkipLast,
                         Part);
                 FirstElem = false;
             }
@@ -355,6 +384,8 @@ wxTreeItemId ProjectConfigurationPanel::CategoryId(const wxString& Category)
                 IdSoFar = m_CategoryMap[PathSoFar] =
                     m_KnownLibrariesTree->AppendItem(IdSoFar,Part);
             }
+
+            // Next items are always added at the end
             while ( Tokens.HasMoreTokens() )
             {
                 Part = Tokens.GetNextToken();
@@ -363,6 +394,9 @@ wxTreeItemId ProjectConfigurationPanel::CategoryId(const wxString& Category)
                 IdSoFar = m_CategoryMap[PathSoFar] =
                     m_KnownLibrariesTree->AppendItem(IdSoFar,Part);
             }
+
+            // If we're here, all remaining path has been added, so we
+            // finished here
             break;
         }
         FirstElem = false;
@@ -400,7 +434,7 @@ void ProjectConfigurationPanel::Onm_KnownLibrariesTreeSelectionChanged(wxTreeEve
         TreeItemData* Data = (TreeItemData*)m_KnownLibrariesTree->GetItemData(m_KnownLibrariesTree->GetSelection());
         if ( Data )
         {
-            wxString Library = Data->m_GlobalVar;
+            wxString Library = Data->m_ShortCode;
             if ( m_ConfCopy.m_GlobalUsedLibs.Index(Library) == wxNOT_FOUND )
             {
                 m_Add->Enable();
@@ -422,7 +456,7 @@ void ProjectConfigurationPanel::Onm_RemoveClick(wxCommandEvent& event)
     {
         wxString Library =
             ((ListItemData*)m_UsedLibraries->GetClientObject(
-                m_UsedLibraries->GetSelection()))->m_GlobalVar;
+                m_UsedLibraries->GetSelection()))->m_ShortCode;
         m_ConfCopy.m_GlobalUsedLibs.Remove(Library);
         m_UsedLibraries->Delete(m_UsedLibraries->GetSelection());
         m_Remove->Disable();
@@ -438,7 +472,7 @@ void ProjectConfigurationPanel::Onm_AddClick(wxCommandEvent& event)
         TreeItemData* Data = (TreeItemData*)m_KnownLibrariesTree->GetItemData(m_KnownLibrariesTree->GetSelection());
         if ( Data )
         {
-            wxString Library = Data->m_GlobalVar;
+            wxString Library = Data->m_ShortCode;
             if ( m_ConfCopy.m_GlobalUsedLibs.Index(Library) == wxNOT_FOUND )
             {
                 m_ConfCopy.m_GlobalUsedLibs.Add(Library);

@@ -48,14 +48,15 @@ class lib_finder: public cbToolPlugin
 		void OnAttach();
 		void OnRelease(bool appShutDown);
 
-	private:
+    private:
 
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
 
         void SetGlobalVar(const LibraryResult* Result);
-        void ClearStoredResults();
-        void ReadStoredResults();
-        void WriteStoredResults();
+        void ReadDetectedResults();
+        void ReadPkgConfigResults();
+        void ReadPredefinedResults();
+        void WriteDetectedResults();
         void OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading);
         void OnProjectClose(CodeBlocksEvent& event);
         void OnCompilerSetBuildOptions(CodeBlocksEvent& event);
@@ -64,6 +65,7 @@ class lib_finder: public cbToolPlugin
         bool LoadSearchFilters(LibraryConfigManager* CfgManager);
         void RegisterScripting();
         void UnregisterScripting();
+        void LoadPredefinedResultFromFile(const wxString& FileName);
 
         bool SameResults(LibraryResult* First, LibraryResult* Second);
 
@@ -77,8 +79,10 @@ class lib_finder: public cbToolPlugin
 
         WX_DECLARE_HASH_MAP(cbProject*,ProjectConfiguration*,wxPointerHash,wxPointerEqual,ProjectMapT);
 
+
+        ResultMap m_KnownLibraries[rtCount];
+
         PkgConfigManager m_PkgConfig;
-        ResultMap m_StoredResults;
         ProjectMapT m_Projects;
         int m_HookId;
 
@@ -86,4 +90,3 @@ class lib_finder: public cbToolPlugin
 };
 
 #endif
-

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<library name="Code::Blocks SDK" global_var="cb">
+<library name="Code::Blocks SDK" short_code="cb">
 
     <config description="Code::Blocks SDK (pkg-config)">
         <pkgconfig name="codeblocks"/>

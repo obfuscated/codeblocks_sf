@@ -27,6 +27,7 @@
 #include <wx/filename.h>
 #include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/dir.h>
 
 #include <configmanager.h>
 #include <globals.h>
@@ -71,40 +72,54 @@ lib_finder::~lib_finder()
 
 void lib_finder::OnAttach()
 {
-    RegisterScripting();
+    // Initialize components
+    m_PkgConfig.RefreshData();
 
-    ReadStoredResults();
+    // Read all known libraries
+    ReadDetectedResults();
+    ReadPkgConfigResults();
+    ReadPredefinedResults();
+
+    // Add project extensions
     ProjectLoaderHooks::HookFunctorBase* Hook = new ProjectLoaderHooks::HookFunctor<lib_finder>(this, &lib_finder::OnProjectHook);
     m_HookId = ProjectLoaderHooks::RegisterHook(Hook);
 
-    m_PkgConfig.RefreshData();
-
+    // Register events
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnProjectClose));
     #ifdef EVT_COMPILER_SET_BUILD_OPTIONS
         Manager::Get()->RegisterEventSink(cbEVT_COMPILER_SET_BUILD_OPTIONS, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnCompilerSetBuildOptions));
     #endif
+
+    // Register scripting extensions
+    RegisterScripting();
 }
 
 void lib_finder::OnRelease(bool appShutDown)
 {
-    ProjectLoaderHooks::UnregisterHook(m_HookId,true);
+    // unregister cripting extensions
+    UnregisterScripting();
 
+    // Unregister project extensions
+    ProjectLoaderHooks::UnregisterHook(m_HookId,true);
     for ( ProjectMapT::iterator i=m_Projects.begin(); i!=m_Projects.end(); ++i )
     {
         delete i->second;
     }
     m_Projects.clear();
 
-    ClearStoredResults();
+    // Clear detected libraries
+    for ( int i=0; i<rtCount; i++ )
+    {
+        m_KnownLibraries[i].Clear();
+    }
 
+    // Uninitialize components
     m_PkgConfig.Clear();
-
-    UnregisterScripting();
 }
 
 int lib_finder::Execute()
 {
-    LibraryConfigManager m_Manager(m_PkgConfig);
+    LibraryConfigManager m_Manager(m_KnownLibraries);
     ResultMap m_Results;
 
     // Loading library search filters
@@ -125,7 +140,7 @@ int lib_finder::Execute()
 
     // Do the processing
     FileNamesMap FNMap;
-    ProcessingDlg PDlg(0L,m_Manager,m_PkgConfig,m_Results);
+    ProcessingDlg PDlg(Manager::Get()->GetAppWindow(),m_Manager,m_KnownLibraries,m_Results);
     PDlg.Show();
     PDlg.MakeModal(true);
     if ( PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs() )
@@ -151,12 +166,12 @@ int lib_finder::Execute()
 
                 Names.Add(
                     wxString::Format(_T("%s : %s"),
-                        Results[i]->GlobalVar.c_str(),
+                        Results[i]->ShortCode.c_str(),
                         Name.c_str()));
-                if ( PreviousVar != Results[i]->GlobalVar )
+                if ( PreviousVar != Results[i]->ShortCode )
                 {
                     Selected.Add((int)i);
-                    PreviousVar = Results[i]->GlobalVar;
+                    PreviousVar = Results[i]->ShortCode;
                 }
             }
 
@@ -171,7 +186,7 @@ int lib_finder::Execute()
                 // Clear all results if requested
                 if ( Dlg.GetClearAllPrevious() )
                 {
-                    m_StoredResults.Clear();
+                    m_KnownLibraries[rtDetected].Clear();
                 }
 
                 // Here we will store names of libraries set-up so far
@@ -181,7 +196,7 @@ int lib_finder::Execute()
 
                 for ( size_t i = 0; i<Selected.Count(); i++ )
                 {
-                    wxString Library = Results[Selected[i]]->GlobalVar;
+                    wxString Library = Results[Selected[i]]->ShortCode;
 
                     if ( true )
                     {
@@ -192,7 +207,7 @@ int lib_finder::Execute()
                             {
                                 // Ok, have to delete previosu results since this is the first
                                 // occurence of this library in new set
-                                ResultArray& Previous = m_StoredResults.GetGlobalVar(Library);
+                                ResultArray& Previous = m_KnownLibraries[rtDetected].GetShortCode(Library);
                                 for ( size_t j=0; j<Previous.Count(); j++ )
                                 {
                                     delete Previous[j];
@@ -204,7 +219,7 @@ int lib_finder::Execute()
                         else if ( Dlg.GetDontClearPrevious() )
                         {
                             // Find and remove duplicates
-                            ResultArray& Previous = m_StoredResults.GetGlobalVar(Library);
+                            ResultArray& Previous = m_KnownLibraries[rtDetected].GetShortCode(Library);
                             for ( size_t j=0; j<Previous.Count(); j++ )
                             {
                                 if ( SameResults(Previous[j],Results[Selected[i]]) )
@@ -216,7 +231,7 @@ int lib_finder::Execute()
                         }
 
                         // Add the result
-                        m_StoredResults.GetGlobalVar(Library).Add(new LibraryResult(*Results[Selected[i]]));
+                        m_KnownLibraries[rtDetected].GetShortCode(Library).Add(new LibraryResult(*Results[Selected[i]]));
                     }
 
                     if ( Dlg.GetSetupGlobalVars() )
@@ -229,7 +244,7 @@ int lib_finder::Execute()
         }
     }
     PDlg.MakeModal(false);
-    WriteStoredResults();
+    WriteDetectedResults();
 
 	return -1;
 }
@@ -249,7 +264,7 @@ void lib_finder::SetGlobalVar(const LibraryResult* Res)
 {
     ConfigManager * cfg = Manager::Get()->GetConfigManager(_T("gcv"));
     wxString activeSet = cfg->Read(_T("/active"));
-    wxString curr = _T("/sets/") + activeSet + _T("/") + Res->GlobalVar;
+    wxString curr = _T("/sets/") + activeSet + _T("/") + Res->ShortCode;
 
     wxString IncludePath = Res->IncludePath.IsEmpty() ? _T("") : Res->IncludePath[0];
     wxString LibPath     = Res->LibPath.IsEmpty()     ? _T("") : Res->LibPath[0];
@@ -330,14 +345,9 @@ void lib_finder::SetGlobalVar(const LibraryResult* Res)
     cfg->Write(curr + _T("/lflags"),  LFlags);
 }
 
-void lib_finder::ClearStoredResults()
+void lib_finder::ReadDetectedResults()
 {
-    m_StoredResults.Clear();
-}
-
-void lib_finder::ReadStoredResults()
-{
-    ClearStoredResults();
+    m_KnownLibraries[rtDetected].Clear();
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
     if ( !cfg ) return;
@@ -348,8 +358,10 @@ void lib_finder::ReadStoredResults()
         wxString Path = _T("/stored_results/") + Results[i] + _T("/");
         LibraryResult* Result = new LibraryResult();
 
+        Result->Type         = rtDetected;
+
         Result->LibraryName  = cfg->Read(Path+_T("name"),wxEmptyString);
-        Result->GlobalVar    = cfg->Read(Path+_T("global_var"),wxEmptyString);
+        Result->ShortCode    = cfg->Read(Path+_T("short_code"),wxEmptyString);
         Result->BasePath     = cfg->Read(Path+_T("base_path"),wxEmptyString);
         Result->Description  = cfg->Read(Path+_T("description"),wxEmptyString);
         Result->PkgConfigVar = cfg->Read(Path+_T("pkg_config_var"),wxEmptyString);
@@ -364,17 +376,143 @@ void lib_finder::ReadStoredResults()
         Result->LFlags       = cfg->ReadArrayString(Path+_T("lflags"));
         Result->Compilers    = cfg->ReadArrayString(Path+_T("compilers"));
 
-        m_StoredResults.GetGlobalVar(Result->GlobalVar).Add(Result);
+        if ( Result->ShortCode.IsEmpty() )
+        {
+            delete Result;
+            continue;
+        }
+
+        m_KnownLibraries[rtDetected].GetShortCode(Result->ShortCode).Add(Result);
     }
 }
 
-void lib_finder::WriteStoredResults()
+void lib_finder::ReadPkgConfigResults()
+{
+    m_PkgConfig.DetectLibraries(m_KnownLibraries[rtPkgConfig]);
+}
+
+void lib_finder::ReadPredefinedResults()
+{
+    SearchDirs Dirs[] = { sdDataGlobal, sdDataUser };
+    size_t DirsCnt = sizeof(Dirs) / sizeof(Dirs[0]);
+
+    for ( size_t i=0; i<DirsCnt; i++ )
+    {
+        wxString Path = ConfigManager::GetFolder(Dirs[i]) + wxFileName::GetPathSeparator() + _T("lib_finder/predefined");
+        wxDir Dir(Path);
+        wxString Name;
+        if ( !Dir.IsOpened() ) continue;
+        if ( Dir.GetFirst(&Name,wxEmptyString,wxDIR_FILES|wxDIR_HIDDEN) )
+        {
+            do
+            {
+                LoadPredefinedResultFromFile(Path+wxFileName::GetPathSeparator()+Name);
+            }
+            while ( Dir.GetNext(&Name) );
+        }
+    }
+}
+
+void lib_finder::LoadPredefinedResultFromFile(const wxString& FileName)
+{
+    TiXmlDocument Doc;
+
+    if ( !Doc.LoadFile(FileName.mb_str(wxConvFile)) ) return;
+
+    wxString CBBase = ConfigManager::GetFolder(sdBase) + wxFileName::GetPathSeparator();
+
+    for ( TiXmlElement* RootElem = Doc.FirstChildElement("predefined_library");
+          RootElem;
+          RootElem = RootElem->NextSiblingElement("predefined_library") )
+    {
+        for ( TiXmlElement* Elem = RootElem->FirstChildElement();
+              Elem;
+              Elem = Elem->NextSiblingElement() )
+        {
+            LibraryResult* Result = new LibraryResult();
+            Result->Type         = rtPredefined;
+            Result->LibraryName  = wxString(Elem->Attribute("name")      ,wxConvUTF8);
+            Result->ShortCode    = wxString(Elem->Attribute("short_code"),wxConvUTF8);
+            Result->BasePath     = wxString(Elem->Attribute("base_path") ,wxConvUTF8);
+            Result->PkgConfigVar = wxString(Elem->Attribute("pkg_config"),wxConvUTF8);
+            if ( TiXmlElement* Sub = Elem->FirstChildElement("description") )
+            {
+                Result->Description  = wxString(Sub->GetText(),wxConvUTF8);
+            }
+
+            for ( TiXmlAttribute* Attr = Elem->FirstAttribute(); Attr; Attr=Attr->Next() )
+            {
+//                if ( !strncasecmp(Attr->Name(),"category",8) )
+                if ( !strncmp(Attr->Name(),"category",8) )
+                {
+                    Result->Categories.Add(wxString(Attr->Value(),wxConvUTF8));
+                }
+            }
+
+            for ( TiXmlElement* Sub = Elem->FirstChildElement(); Sub; Sub=Sub->NextSiblingElement() )
+            {
+                wxString Name = wxString(Sub->Value(),wxConvUTF8).Lower();
+
+                if ( Name == _T("path") )
+                {
+                    wxString Include = wxString(Sub->Attribute("include"),wxConvUTF8);
+                    wxString Lib     = wxString(Sub->Attribute("lib"),wxConvUTF8);
+                    wxString Obj     = wxString(Sub->Attribute("obj"),wxConvUTF8);
+
+                    if ( !Include.IsEmpty() )
+                    {
+                        Result->IncludePath.Add(wxFileName(Include).IsRelative() ? CBBase + Include : Include);
+                    }
+
+                    if ( !Lib.IsEmpty() )
+                    {
+                        Result->LibPath.Add(wxFileName(Lib).IsRelative() ? CBBase + Lib : Lib);
+                    }
+
+                    if ( !Obj.IsEmpty() )
+                    {
+                        Result->ObjPath.Add(wxFileName(Obj).IsRelative() ? CBBase + Obj : Obj);
+                    }
+                }
+
+                if ( Name == _T("add") )
+                {
+                    wxString Lib = wxString(Sub->Attribute("lib"),wxConvUTF8);
+                    wxString Define = wxString(Sub->Attribute("define"),wxConvUTF8);
+                    wxString CFlags = wxString(Sub->Attribute("cflags"),wxConvUTF8);
+                    wxString LFlags = wxString(Sub->Attribute("lflags"),wxConvUTF8);
+
+                    if ( !Lib.IsEmpty() ) Result->Libs.Add(Lib);
+                    if ( !Define.IsEmpty() ) Result->Defines.Add(Define);
+                    if ( !CFlags.IsEmpty() ) Result->CFlags.Add(CFlags);
+                    if ( !LFlags.IsEmpty() ) Result->LFlags.Add(LFlags);
+                }
+
+                if ( Name == _T("compiler") )
+                {
+                    Result->Compilers.Add(wxString(Sub->Attribute("name"),wxConvUTF8));
+                }
+            }
+
+            if ( Result->LibraryName.IsEmpty() ||
+                 Result->ShortCode.IsEmpty() )
+            {
+                delete Result;
+                continue;
+            }
+
+            m_KnownLibraries[rtPredefined].GetShortCode(Result->ShortCode).Add(Result);
+        }
+    }
+}
+
+void lib_finder::WriteDetectedResults()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
     if ( !cfg ) return;
 
     ResultArray Results;
-    m_StoredResults.GetAllResults(Results);
+    m_KnownLibraries[rtDetected].GetAllResults(Results);
 
     for ( size_t i=0; i<Results.Count(); i++ )
     {
@@ -382,7 +520,7 @@ void lib_finder::WriteStoredResults()
         wxString Path = wxString::Format(_T("/stored_results/res%06d/"),i);
 
         cfg->Write(Path+_T("name"),Result->LibraryName);
-        cfg->Write(Path+_T("global_var"),Result->GlobalVar);
+        cfg->Write(Path+_T("short_code"),Result->ShortCode);
         cfg->Write(Path+_T("base_path"),Result->BasePath);
         cfg->Write(Path+_T("description"),Result->Description);
         cfg->Write(Path+_T("pkg_config_var"),Result->PkgConfigVar);
@@ -446,7 +584,7 @@ ProjectConfiguration* lib_finder::GetProject(cbProject* Project)
 
 cbConfigurationPanel* lib_finder::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 {
-    return new ProjectConfigurationPanel(parent,GetProject(project),m_StoredResults,m_PkgConfig.GetLibraries());
+    return new ProjectConfigurationPanel(parent,GetProject(project),m_KnownLibraries);
 }
 
 void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs)
@@ -454,66 +592,89 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
     if ( !Target ) return;
     wxArrayString NotFound;
     wxArrayString NoCompiler;
+    wxArrayString NoVersion;
 
     for ( size_t i=0; i<Libs.Count(); i++ )
     {
         wxString& Lib = Libs[i];
-        ResultArray* Config = 0;
 
-        if ( m_StoredResults.IsGlobalVar(Lib) )
+        bool AnyFound   = false;
+        bool Added      = false;
+        bool IsCompiler = false;
+        bool IsVersion  = false;
+
+        for ( int i=0; i<rtCount && !Added; i++ )
         {
-            Config = &m_StoredResults.GetGlobalVar(Lib);
-        }
-        else if ( m_PkgConfig.GetLibraries().IsGlobalVar(Lib) )
-        {
-            Config = &m_PkgConfig.GetLibraries().GetGlobalVar(Lib);
+            if ( m_KnownLibraries[i].IsShortCode(Lib) )
+            {
+                AnyFound = true;
+
+                // Ok, we got set of configurations for this library
+                // now we only have to find the one that's needed
+                // Currently we only filter compiler type
+
+                ResultArray& Config = m_KnownLibraries[i].GetShortCode(Lib);
+                for ( size_t j=0; j<Config.GetCount(); j++ )
+                {
+                    if ( TryAddLibrary(Target,Config[j]) )
+                    {
+                        Added = true;
+                        break;
+                    }
+                }
+            }
         }
 
-        if ( !Config )
+        if ( !AnyFound )
         {
             NotFound.Add(Lib);
             continue;
         }
-
-        // Ok, we got set of configurations for this library
-        // now we only have to find the one that's needed
-        // Currently we only filter compiler type
-        bool Ok = false;
-        for ( size_t j=0; j<Config->GetCount(); j++ )
+        else if ( !Added )
         {
-            if ( TryAddLibrary(Target,(*Config)[j]) )
+            if ( !IsCompiler )
             {
-                Ok = true;
-                break;
+                NoCompiler.Add(Lib);
             }
-        }
-        if ( !Ok )
-        {
-            NoCompiler.Add(Lib);
+            else if ( !IsVersion )
+            {
+                NoVersion.Add(Lib);
+            }
+            else
+            {
+                NoCompiler.Add(Lib);
+            }
         }
     }
 
-    if ( !NotFound.IsEmpty() || !NoCompiler.IsEmpty() )
+    if ( !NotFound.IsEmpty() || !NoCompiler.IsEmpty() || !NoVersion.IsEmpty() )
     {
-        wxString Message = _("Found following issues with libraries:\n\n");
+        wxString Message = _("Found following issues with libraries:\n");
         if ( !NotFound.IsEmpty() )
         {
+            Message += _T("\n");
             Message += _("Didn't found configuration for libraries:\n");
             for ( size_t i=0; i<NotFound.Count(); i++ )
             {
                 Message += _T("  * ") + NotFound[i];
             }
-            if ( !NoCompiler.IsEmpty() )
-            {
-                Message += _T("\n");
-            }
         }
         if ( !NoCompiler.IsEmpty() )
         {
+            Message += _T("\n");
             Message += _("These libraries were not configured for used compiler:\n");
             for ( size_t i=0; i<NoCompiler.Count(); i++ )
             {
                 Message += _T("  * ") + NoCompiler[i];
+            }
+        }
+        if ( !NoVersion.IsEmpty() )
+        {
+            Message += _T("\n");
+            Message += _("These libraries did not meet version requirements:\n");
+            for ( size_t i=0; i<NoVersion.Count(); i++ )
+            {
+                Message += _T("  * ") + NoVersion[i];
             }
         }
 
@@ -537,7 +698,7 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
     wxString DefinePrefix = _T("-D");
     if ( comp )
     {
-        DefinePrefix += comp->GetSwitches().defines;
+        DefinePrefix = comp->GetSwitches().defines;
     }
 
     // Ok, this target match the result, let's update compiler options
@@ -589,7 +750,7 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
 
 bool lib_finder::SameResults(LibraryResult* First, LibraryResult* Second)
 {
-    if ( First->GlobalVar   != Second->GlobalVar   ) return false;
+    if ( First->ShortCode   != Second->ShortCode   ) return false;
     if ( First->LibraryName != Second->LibraryName ) return false;
     if ( First->BasePath    != Second->BasePath    ) return false;
     if ( First->Description != Second->Description ) return false;

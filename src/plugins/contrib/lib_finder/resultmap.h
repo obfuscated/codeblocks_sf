@@ -34,6 +34,14 @@ class wxString;
 
 WX_DEFINE_ARRAY(LibraryResult*,ResultArray);
 
+/** \brief Map of known results
+ *
+ * This map does keep the mapping between global var names and lists of
+ * library results found for that name.
+ * It's purpose is also to manage ResultArray structure which does keep
+ * only pointers to LibraryResult elements - all elements are deleted
+ * in the descructor preventing memory leaks
+ */
 class ResultMap
 {
     public:
@@ -43,22 +51,29 @@ class ResultMap
         /** \brief Clearing all results */
         void Clear();
 
-        /** \brief Getting array associated with specified variable name */
-        ResultArray& GetGlobalVar(const wxString& Name) { return Map[Name]; }
+        /** \brief Getting array associated with specified variable name
+         *  \note When adding new result to array fetched this way
+         *        remember that this must be structure generated using new
+         *        and ResultMap will delete it automatically.
+         */
+        ResultArray& GetShortCode(const wxString& Name) { return Map[Name]; }
 
         /** \brief Checking if given global variable does exist */
-        bool IsGlobalVar(const wxString& Name);
+        bool IsShortCode(const wxString& Name);
 
         /** \brief Getting all results */
         void GetAllResults(ResultArray& Array);
 
         /** \brief Getting array of used variable names */
-        void GetGlobalVarNames(wxArrayString& Names);
+        void GetShortCodes(wxArrayString& Names);
 
     private:
 
         WX_DECLARE_STRING_HASH_MAP(ResultArray,ResultHashMap);
         ResultHashMap Map;
 };
+
+/** \brief Array of maps, each element should keep results of only one type */
+typedef ResultMap TypedResults[rtCount];
 
 #endif

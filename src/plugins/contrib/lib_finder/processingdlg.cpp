@@ -30,13 +30,14 @@
 #include <wx/filename.h>
 #include <prep.h>
 
-#include "libraryconfigmanager.h"
-#include "resultmap.h"
-
 //(*InternalHeaders(ProcessingDlg)
 #include <wx/intl.h>
 #include <wx/string.h>
 //*)
+
+#include "libraryconfigmanager.h"
+#include "resultmap.h"
+#include "lib_finder.h"
 
 //(*IdInit(ProcessingDlg)
 const long ProcessingDlg::ID_STATICTEXT1 = wxNewId();
@@ -49,11 +50,11 @@ BEGIN_EVENT_TABLE(ProcessingDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,PkgConfigManager& PkgConfig,ResultMap& Results,wxWindowID id):
+ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,TypedResults& KnownResults,ResultMap& FoundResults,wxWindowID id):
     StopFlag(false),
     m_Manager(Manager),
-    m_PkgConfig(PkgConfig),
-    m_Results(Results)
+    m_KnownResults(KnownResults),
+    m_FoundResults(FoundResults)
 {
 	//(*Initialize(ProcessingDlg)
 	Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("id"));
@@ -157,8 +158,8 @@ void ProcessingDlg::ProcessLibrary(const LibraryConfig* Config)
 {
     Status->SetLabel(
         wxString::Format(
-            _("Searching variable \"%s\""),
-            Config->GlobalVar.c_str()));
+            _("Searching library \"%s\""),
+            Config->ShortCode.c_str()));
 
     CheckFilter(_T(""),wxStringStringMap(),wxArrayString(),Config,0);
 }
@@ -386,7 +387,7 @@ void ProcessingDlg::CheckFilter(
 
         case LibraryFilter::PkgConfig:
         {
-            if ( m_PkgConfig.GetLibraries().IsGlobalVar(Filter.Value) )
+            if ( m_KnownResults[rtPkgConfig].IsShortCode(Filter.Value) )
             {
                 CheckFilter(OldBasePath,OldVars,OldCompilers,Config,WhichFilter+1);
             }
@@ -456,7 +457,8 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
     Vars[_T("BASE_DIR")] = BasePath;
     LibraryResult* Result = new LibraryResult();
 
-    Result->GlobalVar = Config->GlobalVar;
+    Result->Type = rtDetected;
+    Result->ShortCode = Config->ShortCode;
     Result->LibraryName = FixVars(Config->LibraryName,Vars);
     Result->BasePath = FixPath(BasePath);
     Result->PkgConfigVar = Config->PkgConfigVar;
@@ -500,7 +502,7 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
         Result->LFlags.Add(FixVars(Config->LFlags[i],Vars));
     }
 
-    ResultArray& Array = m_Results.GetGlobalVar(Config->GlobalVar);
+    ResultArray& Array = m_FoundResults.GetShortCode(Config->ShortCode);
     Array.Add(Result);
 }
 

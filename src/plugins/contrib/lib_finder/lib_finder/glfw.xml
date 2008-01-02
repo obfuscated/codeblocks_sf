@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
-<library name="GL Framework" global_var="glfw" category="Graphics.3d">
+<library name="GL Framework" short_code="glfw" category="Graphics.3d">
 
     <!--
         By default pkg-config should be automatically invoked when
