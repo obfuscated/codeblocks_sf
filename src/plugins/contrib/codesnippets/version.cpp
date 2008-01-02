@@ -333,6 +333,9 @@ AppVersion::~AppVersion()
 //          109) fix macro substitution in CheckForMacros() broken by mod 99.
 //               Dialog substitutions must preceed CB macro substitution.
 // ----------------------------------------------------------------------------
+//  Commit  1.2.109 2008/01/2
+//          110) Change GetMessageManager to GetLogManager for wxMAC.
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          Search should continue to next matching item, not just stop (F3?)
