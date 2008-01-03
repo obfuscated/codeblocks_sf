@@ -9,14 +9,6 @@
 %define jobs		%(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
 
 %if 0%{?suse_version}
-%if 0%{?suse_version} > 1020
-%define _wx28   0
-%else
-%define _wx28   1
-%endif
-%endif
-
-%if 0%{?suse_version}
 %define __release	%{_rel}.suse%{suse_version}
 %endif
 %if 0%{?mandriva_version}
@@ -27,20 +19,14 @@
 %define __release            %{_rel}.fc%{fedora_version}
 %define _redhat 0
 %endif
-%if %_redhat
+%if 0%{?_redhat}
 %define _redhat_prefix      %(grep -q "Red Hat Linux" /etc/redhat-release && echo rhl || echo el)
 %define _redhat_vernum      %(rpm -qf --queryformat %{VERSION} /etc/redhat-release|tr -d '.')
 %define __release            %{_rel}.%{_redhat_prefix}%{_redhat_vernum}
 %endif
-%if %_wx28
-%define _release           %{__release}.wx28
-%else
-%if 0%{?suse_version} > 1020
-%define _release           %{__release}.wx28
-%else
-%define _release           %{__release}.wx26
-%endif
-%endif
+
+%define _release           %{__release}
+
 %if 0%{?suse_version} >= 930
 %define debugrpm	    1
 %endif
@@ -51,7 +37,7 @@
 
 %define automake17	    0
 
-%if %_redhat
+%if 0%{?_redhat}
 %if 0%{?_redhat_vernum} < 4
 %define automake17	    1
 %endif
@@ -67,36 +53,38 @@ URL:			http://www.codeblocks.org/
 Packager:		TheTuxKeeper <thetuxkeeper@googlemail.com>
 Source:			%{name}-@VERSION@.tar.gz
 BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
+
 Provides:		codeblocks
 
 %if 0%{?mandriva_version}
-Requires:               wxGTK2.6 >= %{req_wxgtk}
-BuildRequires:          wxGTK2.6 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
+Requires:               wxgtk2.8 >= %{req_wxgtk}
+BuildRequires:          wxgtk2.8 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
+%else
+%if 0%{?suse_version}
+%if 0%{?suse_version} < 1030
+Requires:               wxWidgets >= %{req_wxgtk}
+BuildRequires:          wxWidgets >= %{req_wxgtk}, wxWidgets-devel >= %{req_wxgtk}
 %endif
-
-%if ! %_wx28
-%if ! 0%{?mandriva_version}
+%else
 Requires:               wxGTK >= %{req_wxgtk}
 BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
-%else
-Requires:               wxGTK2.6 >= %{req_wxgtk}
-BuildRequires:          wxGTK2.6 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
 %endif
-%else
-Requires:               wxWidgets >= 2.8.0
-BuildRequires:          wxWidgets >= 2.8.0, wxWidgets-devel >= 2.8.0
 %endif
 
-%if ! %{automake17}
+%if ! 0%{?automake17}
 BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake >= 1.7, libtool >= 1.4, m4
 %else
 BuildRequires:          intltool, gcc-c++, make, gettext, autoconf >= 2.5, automake17, libtool >= 1.4, m4
 %endif
-BuildRequires:  	libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel
+BuildRequires:  	libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
 BuildRequires:  	zip, subversion, pkgconfig
 
-%if 0%{suse_version}
+%if 0%{?suse_version}
 BuildRequires:		update-desktop-files
+%endif
+
+%if 0%{?fedora_version}
+BuildRequires:  	lynx
 %endif
 
 #{?_distribution:Distribution:%_distribution}
@@ -138,13 +126,20 @@ Code::Blocks SDK to develop your own plugins.
   %else
      AUTOMAKE=automake-1.7 ACLOCAL=aclocal-1.7 ACLOCAL_FLAGS="-I %{_datadir}/aclocal" ./bootstrap
   %endif
+  %if 0%{?suse_version}
   %if 0%{?suse_version} > 1020
   %configure \
-      --with-contrib-plugins=all
+      --with-wx-config="%{_bindir}/wx-config" \
+      --with-contrib-plugins=all $CONF_OPTS
   %else
   %configure \
-      %{?_wx28:--with-wx-config=%{_bindir}/wx-config-2.8} \
-      --with-contrib-plugins=all
+      %{?_wx28:--with-wx-config="%{_bindir}/wx-config-2.8"} \
+      --with-contrib-plugins=all $CONF_OPTS
+  %endif
+  %else
+  %configure \
+      --with-wx-config="%{_bindir}/wx-config" \
+      --with-contrib-plugins=all $CONF_OPTS
   %endif
 
   %{__make} %{?jobs:-j %{jobs}}
@@ -236,6 +231,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
+%{pkgdata}/lib_finder/*
 %{pkgdata}/plugins/libAutoVersioning.*
 %{pkgdata}/plugins/libbyogames.*
 %{pkgdata}/plugins/libcb_koders.*
