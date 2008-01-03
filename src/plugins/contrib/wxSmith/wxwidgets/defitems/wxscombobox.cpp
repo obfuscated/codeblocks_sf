@@ -106,6 +106,6 @@ wxObject* wxsComboBox::OnBuildPreview(wxWindow* Parent,long Flags)
 
 void wxsComboBox::OnEnumWidgetProperties(long Flags)
 {
-      WXS_ARRAYSTRING(wxsComboBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))
-      WXS_LONG(wxsComboBox,DefaultSelection,_("Default"),_T("default"),0)
+    WXS_ARRAYSTRING(wxsComboBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))
+    WXS_LONG(wxsComboBox,DefaultSelection,_("Selection"),_T("selection"),-1)
 }
