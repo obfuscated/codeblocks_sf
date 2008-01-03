@@ -7,7 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="loghacker" prefix_auto="1" extension_auto="1" />
+				<Option output="$(#cb)\devel\share\codeblocks\plugins\loghacker" prefix_auto="1" extension_auto="1" />
+				<Option object_output="$(#cb)\.objs\plugins\contrib\loghacker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="$(#cb)\devel\codeblocks.exe" />
@@ -26,28 +27,36 @@
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="$(#cb)\include" />
-					<Add directory="$(#cb)\include\wxscintilla\include" />
-					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)\gcc_dll\mswu" />
+					<Add directory="$(#CB.include)" />
+					<Add directory="$(#WX.include)" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#CB)\include\wxscintilla\include" />
 				</Compiler>
 				<Linker>
+					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw28u" />
-					<Add directory="$(#cb)\devel" />
-					<Add directory="$(#wx.lib)\gcc_dll" />
+					<Add directory="$(#CB)\devel" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="update.bat" />
 				</ExtraCommands>
 			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
 		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
 		<Unit filename="loghacker.cpp" />
 		<Unit filename="loghacker.h" />
 		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

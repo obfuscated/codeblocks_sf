@@ -899,6 +899,10 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                             m_HasProject = true;
                             s_DelayedFilesToOpen.Add(parser.GetParam(param));
                         }
+                        else if (ft == ftSource || ft == ftHeader || ft == ftResource)
+                        {
+                            s_DelayedFilesToOpen.Add(parser.GetParam(param));
+                        }
                         else if (ft == ftCodeBlocksWorkspace)
                         {
                             // only one workspace can be opened

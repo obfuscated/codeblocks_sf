@@ -86,9 +86,9 @@ void HelpConfigDialog::UpdateEntry(int index)
 
   if (index < static_cast<int>(m_Vector.size()))
   {
-  	m_Vector[index].second.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
-  	m_Vector[index].second.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
-  	m_Vector[index].second.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
+    m_Vector[index].second.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
+    m_Vector[index].second.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
+    m_Vector[index].second.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
     // Patch by Yorgos Pagles: Write the new attributes
     m_Vector[lst->GetSelection()].second.keywordCase = static_cast<HelpCommon::StringCase>(XRCCTRL(*this, "chkCase", wxChoice)->GetSelection());
     m_Vector[lst->GetSelection()].second.defaultKeyword = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->GetValue();
@@ -99,10 +99,10 @@ void HelpConfigDialog::UpdateEntry(int index)
     hfa.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
     hfa.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
     hfa.openEmbeddedViewer = XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->IsChecked();
-  	// Patch by Yorgos Pagles: Write the new attributes
+    // Patch by Yorgos Pagles: Write the new attributes
     hfa.keywordCase = static_cast<HelpCommon::StringCase>(XRCCTRL(*this, "chkCase", wxChoice)->GetSelection());
     hfa.defaultKeyword = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->GetValue();
-  	m_Vector.push_back(make_pair(lst->GetString(index), hfa));
+    m_Vector.push_back(make_pair(lst->GetString(index), hfa));
   }
 }
 
@@ -151,9 +151,9 @@ void HelpConfigDialog::ListChange(wxCommandEvent& event)
   }
   else
   {
-  	XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
-  	XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
-  	XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkDefault", wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkExecute", wxCheckBox)->SetValue(false);
+    XRCCTRL(*this, "chkEmbeddedViewer", wxCheckBox)->SetValue(false);
     // Patch by Yorgos Pagles: Show the new attributes
     XRCCTRL(*this, "chkCase", wxChoice)->SetSelection(0);
     XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->SetValue(_T(""));
@@ -245,7 +245,7 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
 
   if (HelpCommon::getDefaultHelpIndex() >= lst->GetSelection())
   {
-  	HelpCommon::setDefaultHelpIndex(HelpCommon::getDefaultHelpIndex() - 1);
+    HelpCommon::setDefaultHelpIndex(HelpCommon::getDefaultHelpIndex() - 1);
   }
 
   m_Vector.erase(m_Vector.begin() + lst->GetSelection());
@@ -276,67 +276,70 @@ void HelpConfigDialog::Delete(wxCommandEvent &event)
 
 void HelpConfigDialog::OnUp(wxCommandEvent &event)
 {
-	wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-	int helpIndex = HelpCommon::getDefaultHelpIndex();
-	int current = lst->GetSelection();
+  wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+  int helpIndex = HelpCommon::getDefaultHelpIndex();
+  int current = lst->GetSelection();
+  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
 
-	if (helpIndex == current)
-	{
-		helpIndex = current - 1;
-	}
-	else if (helpIndex == current - 1)
-	{
-		helpIndex = current;
-	}
+  if (helpIndex == current)
+  {
+    helpIndex = current - 1;
+  }
+  else if (helpIndex == current - 1)
+  {
+    helpIndex = current;
+  }
 
-	wxString temp(lst->GetString(current));
+  wxString temp(lst->GetString(current));
   lst->SetString(current, lst->GetString(current - 1));
-	lst->SetSelection(--current);
-	lst->SetString(current, temp);
-	HelpCommon::setDefaultHelpIndex(helpIndex);
-	swap(m_Vector[current], m_Vector[current + 1]);
-	m_LastSel = current;
+  lst->SetSelection(--current);
+  lst->SetString(current, temp);
+  HelpCommon::setDefaultHelpIndex(helpIndex);
+  swap(m_Vector[current], m_Vector[current + 1]);
+  m_LastSel = current;
 }
 
 void HelpConfigDialog::OnDown(wxCommandEvent &event)
 {
-	wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
-	int helpIndex = HelpCommon::getDefaultHelpIndex();
-	int current = lst->GetSelection();
+  wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
+  int helpIndex = HelpCommon::getDefaultHelpIndex();
+  int current = lst->GetSelection();
+  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
 
-	if (helpIndex == current)
-	{
-		helpIndex = current + 1;
-	}
-	else if (helpIndex == current + 1)
-	{
-		helpIndex = current;
-	}
+  if (helpIndex == current)
+  {
+    helpIndex = current + 1;
+  }
+  else if (helpIndex == current + 1)
+  {
+    helpIndex = current;
+  }
 
-	wxString temp(lst->GetString(current));
+  wxString temp(lst->GetString(current));
   lst->SetString(current, lst->GetString(current + 1));
-	lst->SetSelection(++current);
-	lst->SetString(current, temp);
+  lst->SetSelection(++current);
+  lst->SetString(current, temp);
   HelpCommon::setDefaultHelpIndex(helpIndex);
-	swap(m_Vector[current], m_Vector[current - 1]);
-	m_LastSel = current;
+  swap(m_Vector[current], m_Vector[current - 1]);
+  m_LastSel = current;
 }
 
 void HelpConfigDialog::OnCheckbox(wxCommandEvent &event)
 {
-	if (event.IsChecked())
-	{
-		HelpCommon::setDefaultHelpIndex(XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection());
-	}
-	else
-	{
-		HelpCommon::setDefaultHelpIndex(-1);
-	}
+  if (event.IsChecked())
+  {
+    HelpCommon::setDefaultHelpIndex(XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection());
+  }
+  else
+  {
+    HelpCommon::setDefaultHelpIndex(-1);
+  }
 }
 
 void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent &event)
 {
   int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
 
   if (event.IsChecked())
   {
@@ -351,6 +354,7 @@ void HelpConfigDialog::OnCheckboxExecute(wxCommandEvent &event)
 void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent& event)
 {
   int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
 
   if (event.IsChecked())
   {
@@ -366,6 +370,8 @@ void HelpConfigDialog::OnCheckboxEmbeddedViewer(wxCommandEvent& event)
 void HelpConfigDialog::OnCaseChoice(wxCommandEvent &event)
 {
   int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
+
   wxChoice *keywordCaseCtrl = XRCCTRL(*this, "chkCase", wxChoice);
   m_Vector[current].second.keywordCase = static_cast<HelpCommon::StringCase>(keywordCaseCtrl->GetSelection());
 }
@@ -373,6 +379,8 @@ void HelpConfigDialog::OnCaseChoice(wxCommandEvent &event)
 void HelpConfigDialog::OnDefaultKeywordEntry(wxCommandEvent &event)
 {
   int current = XRCCTRL(*this, "lstHelp", wxListBox)->GetSelection();
+  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
+
   wxTextCtrl *defaultKeywordCtrl = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl);
   m_Vector[current].second.defaultKeyword = defaultKeywordCtrl->GetValue();
 }
@@ -394,23 +402,23 @@ void HelpConfigDialog::UpdateUI(wxUpdateUIEvent &event)
 
   if (sel == -1 || count == 1)
   {
-  	XRCCTRL(*this, "btnUp", wxButton)->Disable();
-  	XRCCTRL(*this, "btnDown", wxButton)->Disable();
+    XRCCTRL(*this, "btnUp", wxButton)->Disable();
+    XRCCTRL(*this, "btnDown", wxButton)->Disable();
   }
   else if (sel == 0)
   {
-  	XRCCTRL(*this, "btnUp", wxButton)->Disable();
-  	XRCCTRL(*this, "btnDown", wxButton)->Enable();
+    XRCCTRL(*this, "btnUp", wxButton)->Disable();
+    XRCCTRL(*this, "btnDown", wxButton)->Enable();
   }
   else if (sel == count - 1)
   {
-  	XRCCTRL(*this, "btnUp", wxButton)->Enable();
-  	XRCCTRL(*this, "btnDown", wxButton)->Disable();
+    XRCCTRL(*this, "btnUp", wxButton)->Enable();
+    XRCCTRL(*this, "btnDown", wxButton)->Disable();
   }
   else
   {
-  	XRCCTRL(*this, "btnUp", wxButton)->Enable();
-  	XRCCTRL(*this, "btnDown", wxButton)->Enable();
+    XRCCTRL(*this, "btnUp", wxButton)->Enable();
+    XRCCTRL(*this, "btnDown", wxButton)->Enable();
   }
 }
 
