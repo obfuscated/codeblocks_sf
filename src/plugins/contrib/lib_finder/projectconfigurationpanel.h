@@ -48,7 +48,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 {
 	public:
 
-		ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Config,TypedResults& KnownLibs);
+		ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Config,cbProject* Proj,TypedResults& KnownLibs);
 		virtual ~ProjectConfigurationPanel();
 
 	private:
@@ -72,6 +72,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 
         ProjectConfiguration* m_Configuration;
         ProjectConfiguration  m_ConfCopy;
+        cbProject* m_Project;
         TypedResults& m_KnownLibs;
         IdsMap m_CategoryMap;
         bool m_IsOtherCategory;
@@ -84,14 +85,19 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		wxTreeCtrl* m_KnownLibrariesTree;
 		wxTextCtrl* m_UnknownLibrary;
 		wxTextCtrl* m_Filter;
+		wxButton* m_AddScript;
 		wxButton* m_Add;
+		wxCheckBox* m_NoAuto;
 		wxListBox* m_UsedLibraries;
+		wxStaticText* m_EventText;
 		wxTimer Timer1;
 		wxButton* m_Remove;
 		//*)
 
 		//(*Identifiers(ProjectConfigurationPanel)
 		static const long ID_LISTBOX1;
+		static const long ID_CHECKBOX2;
+		static const long ID_BUTTON4;
 		static const long ID_BUTTON1;
 		static const long ID_BUTTON2;
 		static const long ID_TREECTRL1;
@@ -100,6 +106,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		static const long ID_CHECKBOX1;
 		static const long ID_TEXTCTRL1;
 		static const long ID_BUTTON3;
+		static const long ID_STATICTEXT2;
 		static const long ID_TIMER1;
 		//*)
 
@@ -114,6 +121,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		void Onm_AddClick(wxCommandEvent& event);
 		void Onm_UnknownLibraryText(wxCommandEvent& event);
 		void Onm_AddUnknownClick(wxCommandEvent& event);
+		void Onm_AddScriptClick(wxCommandEvent& event);
 		//*)
 
 		wxString GetUserListName(const wxString &VarName);

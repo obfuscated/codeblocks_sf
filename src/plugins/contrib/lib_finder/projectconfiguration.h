@@ -51,6 +51,7 @@ class ProjectConfiguration
 
         wxArrayString    m_GlobalUsedLibs;  ///< \brief List of used libraries for the whole project
         wxMultiStringMap m_TargetsUsedLibs; ///< \brief List of libs used in targets
+        bool             m_DisableAuto;     ///< \brief Disable automatic library adding - usefull when libs are added from script
 };
 
 #endif

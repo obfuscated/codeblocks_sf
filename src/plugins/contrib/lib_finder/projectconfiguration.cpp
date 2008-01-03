@@ -42,9 +42,16 @@ void ProjectConfiguration::XmlLoad(TiXmlElement* Node,cbProject* Project)
 {
     m_GlobalUsedLibs.Clear();
     m_TargetsUsedLibs.clear();
+    m_DisableAuto = false;
 
     TiXmlElement* LibFinder = Node->FirstChildElement("lib_finder");
     if ( !LibFinder ) return;
+
+    int noauto = 0;
+    if ( LibFinder->QueryIntAttribute("disable_auto",&noauto) == TIXML_SUCCESS && noauto )
+    {
+        m_DisableAuto = true;
+    }
 
     for ( TiXmlElement* Elem = LibFinder->FirstChildElement("lib");
           Elem;
@@ -86,6 +93,12 @@ void ProjectConfiguration::XmlWrite(TiXmlElement* Node,cbProject* Project)
     if ( !LibFinder ) LibFinder = Node->InsertEndChild(TiXmlElement("lib_finder"))->ToElement();
 
     LibFinder->Clear();
+
+    if ( m_DisableAuto )
+    {
+        LibFinder->SetAttribute("disable_auto","1");
+    }
+
     for ( size_t i=0; i<m_GlobalUsedLibs.Count(); i++ )
     {
         LibFinder->InsertEndChild(TiXmlElement("lib"))->ToElement()->SetAttribute("name",cbU2C(m_GlobalUsedLibs[i]));
@@ -97,12 +110,21 @@ void ProjectConfiguration::XmlWrite(TiXmlElement* Node,cbProject* Project)
     {
         if ( !Project->GetBuildTarget(i->first) ) continue;
 
-        TiXmlElement* TargetElem = LibFinder->InsertEndChild(TiXmlElement("target"))->ToElement();
-        TargetElem->SetAttribute("name",cbU2C(i->first));
         wxArrayString& Libs = i->second;
-        for ( size_t i=0; i<Libs.Count(); i++ )
+        if ( Libs.Count() )
         {
-            TargetElem->InsertEndChild(TiXmlElement("lib"))->ToElement()->SetAttribute("name",cbU2C(Libs[i]));
+            TiXmlElement* TargetElem = LibFinder->InsertEndChild(TiXmlElement("target"))->ToElement();
+            TargetElem->SetAttribute("name",cbU2C(i->first));
+            for ( size_t i=0; i<Libs.Count(); i++ )
+            {
+                TargetElem->InsertEndChild(TiXmlElement("lib"))->ToElement()->SetAttribute("name",cbU2C(Libs[i]));
+            }
         }
+    }
+
+    if ( !LibFinder->FirstAttribute() && !LibFinder->FirstChild() )
+    {
+        // LibFinder is empty, let's delete it so it doesn't trash here
+        Node->RemoveChild(LibFinder);
     }
 }

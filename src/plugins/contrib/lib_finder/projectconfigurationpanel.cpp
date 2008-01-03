@@ -37,8 +37,12 @@
 
 #include <wx/tokenzr.h>
 
+#include "lib_finder.h"
+
 //(*IdInit(ProjectConfigurationPanel)
 const long ProjectConfigurationPanel::ID_LISTBOX1 = wxNewId();
+const long ProjectConfigurationPanel::ID_CHECKBOX2 = wxNewId();
+const long ProjectConfigurationPanel::ID_BUTTON4 = wxNewId();
 const long ProjectConfigurationPanel::ID_BUTTON1 = wxNewId();
 const long ProjectConfigurationPanel::ID_BUTTON2 = wxNewId();
 const long ProjectConfigurationPanel::ID_TREECTRL1 = wxNewId();
@@ -47,6 +51,7 @@ const long ProjectConfigurationPanel::ID_TEXTCTRL2 = wxNewId();
 const long ProjectConfigurationPanel::ID_CHECKBOX1 = wxNewId();
 const long ProjectConfigurationPanel::ID_TEXTCTRL1 = wxNewId();
 const long ProjectConfigurationPanel::ID_BUTTON3 = wxNewId();
+const long ProjectConfigurationPanel::ID_STATICTEXT2 = wxNewId();
 const long ProjectConfigurationPanel::ID_TIMER1 = wxNewId();
 //*)
 
@@ -80,26 +85,41 @@ namespace
     };
 }
 
-
-ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Configuration,TypedResults& KnownLibs):
+ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectConfiguration* Configuration,cbProject* Project,TypedResults& KnownLibs):
     m_Configuration(Configuration),
+    m_Project(Project),
     m_KnownLibs(KnownLibs)
 {
 	//(*Initialize(ProjectConfigurationPanel)
 	wxBoxSizer* BoxSizer4;
 	wxStaticBoxSizer* StaticBoxSizer2;
+	wxBoxSizer* BoxSizer6;
+	wxBoxSizer* BoxSizer5;
 	wxBoxSizer* BoxSizer2;
 	wxStaticBoxSizer* StaticBoxSizer3;
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxBoxSizer* BoxSizer3;
+	wxStaticBoxSizer* m_DisableAuto;
 
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
-	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
+	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
+	BoxSizer5 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Libraries used in project"));
 	m_UsedLibraries = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(147,123), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
 	StaticBoxSizer1->Add(m_UsedLibraries, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 3, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer5->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_DisableAuto = new wxStaticBoxSizer(wxVERTICAL, this, _("Extra settings"));
+	m_NoAuto = new wxCheckBox(this, ID_CHECKBOX2, _("Don\'t setup automatically"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+	m_NoAuto->SetValue(false);
+	m_NoAuto->SetToolTip(_("If you check this option, lib_finder won\'t add settings of libraries automatically.\nNote that automatic setup is available only after applying extra patch to code::blocks available at forums."));
+	m_DisableAuto->Add(m_NoAuto, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_AddScript = new wxButton(this, ID_BUTTON4, _("Add manual build script"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
+	m_AddScript->SetToolTip(_("When you use this option, extra script will be added to the project.\nThis script does invoke lib_finder and will add settings of libraries\njust as in case of automatic setup.\nIt may be usefull when no extra-event patch has been applied."));
+	m_DisableAuto->Add(m_AddScript, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer5->Add(m_DisableAuto, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer6->Add(BoxSizer5, 3, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer2 = new wxBoxSizer(wxVERTICAL);
 	m_Add = new wxButton(this, ID_BUTTON1, _("<"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
 	m_Add->Disable();
@@ -109,7 +129,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	m_Remove->Disable();
 	m_Remove->SetToolTip(_("Remove selected library from project"));
 	BoxSizer2->Add(m_Remove, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(BoxSizer2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer6->Add(BoxSizer2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer3 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Known libraries"));
 	m_KnownLibrariesTree = new wxTreeCtrl(this, ID_TREECTRL1, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER, wxDefaultValidator, _T("ID_TREECTRL1"));
@@ -131,13 +151,18 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	m_AddUnknown->Disable();
 	StaticBoxSizer3->Add(m_AddUnknown, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer3->Add(StaticBoxSizer3, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(BoxSizer3, 4, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer6->Add(BoxSizer3, 4, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer1->Add(BoxSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_EventText = new wxStaticText(this, ID_STATICTEXT2, _("Note: Because there\'s not yet ability to update project\'s build options\nfrom plugin, the only way to automatically add library configurations\nis to use build script"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
+	m_EventText->Hide();
+	BoxSizer1->Add(m_EventText, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	SetSizer(BoxSizer1);
 	Timer1.SetOwner(this, ID_TIMER1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_UsedLibrariesSelect);
+	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddScriptClick);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddClick);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_RemoveClick);
 	Connect(ID_TREECTRL1,wxEVT_COMMAND_TREE_SEL_CHANGED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_KnownLibrariesTreeSelectionChanged);
@@ -148,6 +173,14 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddUnknownClick);
 	Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&ProjectConfigurationPanel::OnTimer1Trigger);
 	//*)
+
+	m_EventText->Show(!lib_finder::IsExtraEvent());
+
+	if ( m_Project->GetBuildScripts().Index(_T("lib_finder.script")) != wxNOT_FOUND )
+	{
+	    // There's a build script yet
+	    m_AddScript->Disable();
+	}
 
 	m_ConfCopy = *m_Configuration;
 	FillKnownLibraries();
@@ -189,6 +222,7 @@ void ProjectConfigurationPanel::LoadData()
         m_UsedLibraries->Append(GetUserListName(Name),new ListItemData(Name));
     }
     m_UsedLibraries->Thaw();
+    m_NoAuto->SetValue(m_ConfCopy.m_DisableAuto);
 }
 
 wxString ProjectConfigurationPanel::GetUserListName(const wxString& Name)
@@ -213,6 +247,7 @@ wxString ProjectConfigurationPanel::GetUserListName(const wxString& Name)
 
 void ProjectConfigurationPanel::StoreData()
 {
+    m_ConfCopy.m_DisableAuto = m_NoAuto->GetValue();
 }
 
 void ProjectConfigurationPanel::FillKnownLibraries()
@@ -502,4 +537,35 @@ void ProjectConfigurationPanel::Onm_AddUnknownClick(wxCommandEvent& event)
             Onm_KnownLibrariesTreeSelectionChanged(ev);
         }
     }
+}
+
+void ProjectConfigurationPanel::Onm_AddScriptClick(wxCommandEvent& event)
+{
+    wxFile Fl(m_Project->GetBasePath() + wxFileName::GetPathSeparator() + _T("lib_finder.script"),wxFile::write);
+    if ( !Fl.IsOpened() )
+    {
+        wxMessageBox(_("Couldn't create file \"lib_finder.script\" in project's base path"),_("lib_finder.script error"),wxOK|wxICON_ERROR,this);
+        return;
+    }
+
+    if ( !Fl.Write(
+        _T("function SetBuildOptions(base)\n")
+        _T("{\n")
+        _T("\tif ( \"LibFinder\" in getroottable() )\n")
+        _T("\t{\n")
+        _T("\t\tLibFinder.SetupTarget(base);\n")
+        _T("\t}\n")
+        _T("}\n"),
+        wxConvUTF8) )
+    {
+        wxMessageBox(_("Couldn't write script file \"lib_finder.script\"."),_("lib_finder.script error"),wxOK|wxICON_ERROR,this);
+        return;
+    }
+    Fl.Close();
+
+    m_Project->AddBuildScript(_T("lib_finder.script"));
+    m_AddScript->Disable();
+    m_NoAuto->SetValue(true);
+
+    wxMessageBox(_("Script \"lib_finder.script\" successfully added."),_("lib_finder.script Success"),wxOK|wxICON_INFORMATION,this);
 }

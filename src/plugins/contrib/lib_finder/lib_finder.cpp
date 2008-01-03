@@ -56,6 +56,19 @@ namespace
     class LibFinder
     {
     };
+
+    // Here's some conditional code that will allow to compile this when
+    // both there's patch to add extra event and when there's not
+    #ifdef EVT_COMPILER_SET_BUILD_OPTIONS
+
+        bool ExtraEventPresent = true;
+
+    #else
+
+        bool ExtraEventPresent = false;
+        wxEventType cbEVT_COMPILER_SET_BUILD_OPTIONS = -1;
+
+    #endif
 };
 
 lib_finder* lib_finder::m_Singleton = 0;
@@ -86,9 +99,12 @@ void lib_finder::OnAttach()
 
     // Register events
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnProjectClose));
-    #ifdef EVT_COMPILER_SET_BUILD_OPTIONS
+    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_STARTED, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnCompilerStarted));
+    Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnCompilerFinished));
+    if ( ExtraEventPresent )
+    {
         Manager::Get()->RegisterEventSink(cbEVT_COMPILER_SET_BUILD_OPTIONS, new cbEventFunctor<lib_finder, CodeBlocksEvent>(this, &lib_finder::OnCompilerSetBuildOptions));
-    #endif
+    }
 
     // Register scripting extensions
     RegisterScripting();
@@ -258,7 +274,6 @@ bool lib_finder::LoadSearchFilters(LibraryConfigManager* CfgManager)
 
     return CfgManager->GetLibraryCount()>0;
 }
-
 
 void lib_finder::SetGlobalVar(const LibraryResult* Res)
 {
@@ -559,6 +574,7 @@ void lib_finder::OnCompilerSetBuildOptions(CodeBlocksEvent& event)
     event.Skip();
     cbProject* Proj = event.GetProject();
     ProjectConfiguration* Conf = GetProject(Proj);
+    if ( Conf->m_DisableAuto ) return;
     wxString Target = event.GetBuildTargetName();
     if ( Target.IsEmpty() )
     {
@@ -584,7 +600,7 @@ ProjectConfiguration* lib_finder::GetProject(cbProject* Project)
 
 cbConfigurationPanel* lib_finder::GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
 {
-    return new ProjectConfigurationPanel(parent,GetProject(project),m_KnownLibraries);
+    return new ProjectConfigurationPanel(parent,GetProject(project),project,m_KnownLibraries);
 }
 
 void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs)
@@ -763,6 +779,7 @@ void lib_finder::RegisterScripting()
         .staticFunc(&lib_finder::AddLibraryToProject,"AddLibraryToProject")
         .staticFunc(&lib_finder::IsLibraryInProject,"IsLibraryInProject")
         .staticFunc(&lib_finder::RemoveLibraryFromProject,"RemoveLibraryFromProject")
+        .staticFunc(&lib_finder::SetupTargetManually,"SetupTarget")
     ;
 }
 
@@ -847,4 +864,49 @@ bool lib_finder::RemoveLibraryFromProject(const wxString& LibName,cbProject* Pro
     Libs->RemoveAt(Index);
     Project->SetModified(true);
     return true;
+}
+
+bool lib_finder::SetupTargetManually(CompileTargetBase* Target)
+{
+    if ( !m_Singleton ) return false;
+
+    if ( m_Singleton->m_Targets.find(Target) == m_Singleton->m_Targets.end() ) return false;
+    m_Singleton->SetupTarget(Target,m_Singleton->m_Targets[Target]);
+    return true;
+}
+
+void lib_finder::OnCompilerStarted(CodeBlocksEvent& event)
+{
+    // When compilation starts, we generate map of build targets
+    // for each target in project - this may be used later to
+    // allow invoking lib_finder setup from scripts
+    event.Skip();
+    m_Targets.clear();
+
+    cbProject* cbp = ProjectManager::Get()->GetActiveProject();
+    if ( !cbp ) return;
+
+    ProjectConfiguration* Conf = GetProject(cbp);
+
+    // Copy libraries used in whole project
+    m_Targets[(CompileTargetBase*)cbp] = Conf->m_GlobalUsedLibs;
+
+    // Copy libraries used in build targets
+    for ( int i=0; i<cbp->GetBuildTargetsCount(); i++ )
+    {
+        m_Targets[(CompileTargetBase*)(cbp->GetBuildTarget(i))] = Conf->m_TargetsUsedLibs[cbp->GetBuildTarget(i)->GetTitle()];
+    }
+}
+
+void lib_finder::OnCompilerFinished(CodeBlocksEvent& event)
+{
+    event.Skip();
+
+    // We don't need target bindings anymore
+    m_Targets.clear();
+}
+
+bool lib_finder::IsExtraEvent()
+{
+    return ExtraEventPresent;
 }
