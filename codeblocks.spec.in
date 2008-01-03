@@ -58,12 +58,15 @@ Provides:		codeblocks
 
 %if 0%{?mandriva_version}
 Requires:               wxgtk2.8 >= %{req_wxgtk}
-BuildRequires:          wxgtk2.8 >= %{req_wxgtk}, wxgtku-devel >= %{req_wxgtk}
+BuildRequires:          wxgtk2.8 >= %{req_wxgtk}, libwxgtku2.8-devel >= %{req_wxgtk}
 %else
 %if 0%{?suse_version}
 %if 0%{?suse_version} < 1030
 Requires:               wxWidgets >= %{req_wxgtk}
 BuildRequires:          wxWidgets >= %{req_wxgtk}, wxWidgets-devel >= %{req_wxgtk}
+%else
+Requires:               wxGTK >= %{req_wxgtk}
+BuildRequires:  	wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 %endif
 %else
 Requires:               wxGTK >= %{req_wxgtk}
@@ -133,7 +136,7 @@ Code::Blocks SDK to develop your own plugins.
       --with-contrib-plugins=all $CONF_OPTS
   %else
   %configure \
-      %{?_wx28:--with-wx-config="%{_bindir}/wx-config-2.8"} \
+      --with-wx-config="%{_bindir}/wx-config-2.8" \
       --with-contrib-plugins=all $CONF_OPTS
   %endif
   %else
@@ -258,6 +261,10 @@ Code::Blocks SDK to develop your own plugins.
 %{_includedir}/%{name}/*
 
 %changelog
+* Thu Jan 03 2008 Daniel Orb <thetuxkeeper@googlemail.com>
+- added missing files to file list (libfinder)
+- changed dependencies for mandriva
+- some clean-ups
 * Wed Nov 14 2007 Daniel Orb <thetuxkeeper@googlemail.com>
 - added new plugin to file list
 - added make job number "detection"
