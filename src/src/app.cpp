@@ -341,10 +341,10 @@ void CodeBlocksApp::InitExceptionHandler()
 bool CodeBlocksApp::InitXRCStuff()
 {
     if (!Manager::LoadResource(_T("resources.zip")))
-        {
-            ComplainBadInstall();
-            return false;
-        }
+	{
+		ComplainBadInstall();
+		return false;
+	}
     return true;
 }
 
@@ -367,14 +367,6 @@ MainFrame* CodeBlocksApp::InitFrame()
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
             Manager::Get()->GetProjectManager()->LoadWorkspace();
-    }
-
-    if (!m_Batch && m_Script.IsEmpty())
-    {
-#ifdef wxUSE_BINDERAPP
-        SetGlobalHandler(frame);
-        SetGlobalBinder(frame->m_KeyProfiles.Item(0));
-#endif
     }
     return frame;
 }

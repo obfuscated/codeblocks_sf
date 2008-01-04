@@ -836,8 +836,6 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             s_pWin = new GDBTipWindow((wxWindow*)Manager::Get()->GetAppWindow(), m_What, m_Type, m_Address, contents, 640, &s_pWin, &m_WinRect);
         }
 };
-// static
-GDBTipWindow* GdbCmd_TooltipEvaluation::s_pWin = 0;
 
 /**
   * Command to get a symbol's type and use it for tooltip evaluation.

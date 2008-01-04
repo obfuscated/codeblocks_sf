@@ -36,9 +36,6 @@
 #ifndef WX_PRECOMP
     #include "wx/dcclient.h"
 #endif // WX_PRECOMP
-#ifdef __WXGTK__
-    #include <gtk/gtk.h>
-#endif
 #include "gdb_tipwindow.h"
 
 #if wxUSE_TIPWINDOW
@@ -109,6 +106,7 @@ BEGIN_EVENT_TABLE(GDBTipWindow, wxTipWindowBase)
     EVT_LEFT_DOWN(GDBTipWindow::OnMouseClick)
     EVT_RIGHT_DOWN(GDBTipWindow::OnMouseClick)
     EVT_MIDDLE_DOWN(GDBTipWindow::OnMouseClick)
+    EVT_KEY_DOWN(GDBTipWindow::OnKey)
 
 #if !wxUSE_POPUPWIN
     EVT_KILL_FOCUS(GDBTipWindow::OnKillFocus)
@@ -182,13 +180,12 @@ GDBTipWindow::GDBTipWindow(wxWindow *parent,
     //     cursors hot spot is... it would be nice if we could find this out
     //     though
     y += wxSystemSettings::GetMetric(wxSYS_CURSOR_Y) / 2;
-
+//asm("int $3");
 #if wxUSE_POPUPWIN
     Position(wxPoint(x, y), wxSize(0,0));
     Popup(m_view);
     #ifdef __WXGTK__
-        if (!GTK_WIDGET_HAS_GRAB(m_widget))
-            gtk_grab_add( m_widget );
+        m_view->CaptureMouse();
     #endif
 #else
     Move(x, y);
@@ -202,10 +199,11 @@ GDBTipWindow::~GDBTipWindow()
     {
         *m_windowPtr = NULL;
     }
+
     #ifdef wxUSE_POPUPWIN
         #ifdef __WXGTK__
-            if (GTK_WIDGET_HAS_GRAB(m_widget))
-                gtk_grab_remove( m_widget );
+            if ( m_view->HasCapture() )
+                m_view->ReleaseMouse();
         #endif
     #endif
 }
@@ -213,6 +211,13 @@ GDBTipWindow::~GDBTipWindow()
 void GDBTipWindow::OnMouseClick(wxMouseEvent& WXUNUSED(event))
 {
     Close();
+}
+
+void GDBTipWindow::OnKey(wxKeyEvent& event)
+{
+	Close();
+	
+	// not using event.Skip() here to save us from a bad crash...
 }
 
 #if wxUSE_POPUPWIN
@@ -258,10 +263,10 @@ void GDBTipWindow::Close()
 #if wxUSE_POPUPWIN
     Show(false);
     #ifdef __WXGTK__
-        if (GTK_WIDGET_HAS_GRAB(m_widget))
-            gtk_grab_remove( m_widget );
+		if ( m_view->HasCapture() )
+			m_view->ReleaseMouse();
     #endif
-    Destroy();
+    delete this;//Destroy();
 #else
     wxFrame::Close();
 #endif

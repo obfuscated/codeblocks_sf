@@ -75,7 +75,7 @@ CODEBLOCKS_GET_PLATFORM
 CODEBLOCKS_ENABLE_SETTINGS
 
 AM_OPTIONS_WXCONFIG
-AM_PATH_WXCONFIG(2.6.0, wxWin=1)
+AM_PATH_WXCONFIG(2.8.0, wxWin=1)
         if test "$wxWin" != 1; then
         AC_MSG_ERROR([
                 wxWidgets must be installed on your system.
@@ -84,7 +84,7 @@ AM_PATH_WXCONFIG(2.6.0, wxWin=1)
                 where wxWidgets libraries are installed (returned by
                 'wx-config --libs' or 'wx-config --static --libs' command)
                 is in LD_LIBRARY_PATH or equivalent variable and
-                wxWindows version is 2.6.0 or above.
+                wxWindows version is 2.8.0 or above.
                 ])
 	else
 		# check for wx2.8.3 which is known to behave badly for us
@@ -119,6 +119,10 @@ WX_BASENAME=`$WX_CONFIG_WITH_ARGS --basename`
 case $WX_BASENAME in 
     *wx_gtk*)
         AC_MSG_RESULT(wxGTK)
+			dnl
+			dnl pkg-config no longer needed by debugger plugin
+			dnl but seems to be needed by codesnippets...
+			dnl
         dnl check for pkg-config itself so we don't try the m4 macro without pkg-config
         AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
         ifdef([PKG_CHECK_MODULES],[],[

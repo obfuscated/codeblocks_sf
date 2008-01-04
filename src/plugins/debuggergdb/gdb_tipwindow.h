@@ -77,6 +77,8 @@ protected:
 
     // event handlers
     void OnMouseClick(wxMouseEvent& event);
+    
+    void OnKey(wxKeyEvent& event);
 
 #if !wxUSE_POPUPWIN
     void OnActivate(wxActivateEvent& event);
