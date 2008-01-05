@@ -1,0 +1,11 @@
+#! /bin/sh
+mkdir -p ../../../devel/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
+mkdir -p ../../../output/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
+mkdir -p ../../../devel/share/codeblocks/images/settings > /dev/null 2> /dev/null
+mkdir -p ../../../output/share/codeblocks/images/settings > /dev/null 2> /dev/null
+cp ./resources/images/*.png ../../../devel/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
+cp ./resources/images/*.png ../../../output/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../devel/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../output/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+exit 0
+

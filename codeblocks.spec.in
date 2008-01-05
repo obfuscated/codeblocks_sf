@@ -230,10 +230,12 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/Profiler.zip
 %{pkgdata}/RegExTestbed.zip
 %{pkgdata}/SymTab.zip
+%{pkgdata}/ThreadSearch.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
+%{pkgdata}/images/ThreadSearch/*
 %{pkgdata}/lib_finder/*
 %{pkgdata}/plugins/libAutoVersioning.*
 %{pkgdata}/plugins/libbyogames.*
@@ -249,6 +251,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/plugins/libProfiler.*
 %{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
+%{pkgdata}/plugins/libThreadSearch.*
 %{pkgdata}/plugins/libwxsmith.*
 %{_libdir}/libwxsmithlib.*
 %{pkgdata}/plugins/libwxsmithcontribitems.*

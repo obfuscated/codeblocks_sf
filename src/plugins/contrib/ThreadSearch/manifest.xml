@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11"  release="10" />
+    <Plugin name="ThreadSearch">
+        <Value title="ThreadSearch" />
+        <Value version="1.1" />
+        <Value description="Multi-threaded 'Search in files' with preview window." />
+        <Value author="Jerome ANTOINE" />
+        <Value authorEmail="" />
+        <Value authorWebsite="" />
+        <Value thanksTo="wxWidgets team
+Code::Blocks team
+wxGlade team" />
+        <Value license="GPL" />
+    </Plugin>
+    <Extra file="images/ThreadSearch/findf.png" />
+    <Extra file="images/ThreadSearch/findfdisabled.png" />
+    <Extra file="images/ThreadSearch/options.png" />
+    <Extra file="images/ThreadSearch/optionsdisabled.png" />
+    <Extra file="images/ThreadSearch/stop.png" />
+    <Extra file="images/ThreadSearch/stopdisabled.png" />
+</CodeBlocks_plugin_manifest_file>

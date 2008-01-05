@@ -12,10 +12,12 @@ usr/share/codeblocks/lib_finder.zip*
 usr/share/codeblocks/Profiler.zip*
 usr/share/codeblocks/RegExTestbed.zip*
 usr/share/codeblocks/SymTab.zip*
+usr/share/codeblocks/ThreadSearch.zip*
 usr/share/codeblocks/wxsmith.zip*
 usr/share/codeblocks/wxsmithcontribitems.zip*
 usr/share/codeblocks/images/codesnippets*
 usr/share/codeblocks/images/wxsmith*
+usr/share/codeblocks/images/ThreadSearch*
 usr/share/codeblocks/lib_finder/*
 usr/share/codeblocks/plugins/libAutoVersioning.*
 usr/share/codeblocks/plugins/libbyogames.*
@@ -31,6 +33,7 @@ usr/share/codeblocks/plugins/liblib_finder.*
 usr/share/codeblocks/plugins/libProfiler.*
 usr/share/codeblocks/plugins/libRegExTestbed.*
 usr/share/codeblocks/plugins/libSymTab.*
+usr/share/codeblocks/plugins/libThreadSearch.*
 usr/share/codeblocks/plugins/libwxsmith.*
 usr/share/codeblocks/plugins/libwxsmithcontribitems.*
 

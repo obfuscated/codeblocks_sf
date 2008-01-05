@@ -70,6 +70,7 @@ Description: Contrib plugins for Code::Blocks IDE
     * Selection of small games for relaxing between coding sessions! (BYOGames)
     * WYSIWYG forms designer for wxWidgets (wxSmith)
     * Autoversioning
+    * ThreadSearch
  .
  http://www.codeblocks.org
 

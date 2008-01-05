@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ThreadSearch-unix" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/codeblocks/plugins/ThreadSearch.so" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="../../../devel" />
+				<Option object_output=".objs/" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="$(#cb)/devel/codeblocks" />
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-g" />
+			<Add option="-Ulinux" />
+			<Add option="-Uunix" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../include/wxFlatNotebook/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`" />
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+			<Add directory="../../../devel" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/ThreadSearch.zip manifest.xml" />
+			<Add after="./update" />
+s			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="DirectoryParamsPanel.cpp" />
+		<Unit filename="DirectoryParamsPanel.h" />
+		<Unit filename="SearchInPanel.cpp" />
+		<Unit filename="SearchInPanel.h" />
+		<Unit filename="TextFileSearcher.cpp" />
+		<Unit filename="TextFileSearcher.h" />
+		<Unit filename="TextFileSearcherRegEx.cpp" />
+		<Unit filename="TextFileSearcherRegEx.h" />
+		<Unit filename="TextFileSearcherText.cpp" />
+		<Unit filename="TextFileSearcherText.h" />
+		<Unit filename="ThreadSearch.cpp" />
+		<Unit filename="ThreadSearch.h" />
+		<Unit filename="ThreadSearchConfPanel.cpp" />
+		<Unit filename="ThreadSearchConfPanel.h" />
+		<Unit filename="ThreadSearchControlIds.h" />
+		<Unit filename="ThreadSearchEvent.cpp" />
+		<Unit filename="ThreadSearchEvent.h" />
+		<Unit filename="ThreadSearchFindData.cpp" />
+		<Unit filename="ThreadSearchFindData.h" />
+		<Unit filename="ThreadSearchLoggerBase.cpp" />
+		<Unit filename="ThreadSearchLoggerBase.h" />
+		<Unit filename="ThreadSearchLoggerList.cpp" />
+		<Unit filename="ThreadSearchLoggerList.h" />
+		<Unit filename="ThreadSearchLoggerTree.cpp" />
+		<Unit filename="ThreadSearchLoggerTree.h" />
+		<Unit filename="ThreadSearchThread.cpp" />
+		<Unit filename="ThreadSearchThread.h" />
+		<Unit filename="ThreadSearchView.cpp" />
+		<Unit filename="ThreadSearchView.h" />
+		<Unit filename="ThreadSearchViewManagerBase.cpp" />
+		<Unit filename="ThreadSearchViewManagerBase.h" />
+		<Unit filename="ThreadSearchViewManagerLayout.cpp" />
+		<Unit filename="ThreadSearchViewManagerLayout.h" />
+		<Unit filename="ThreadSearchViewManagerMessagesNotebook.cpp" />
+		<Unit filename="ThreadSearchViewManagerMessagesNotebook.h" />
+		<Unit filename="logging.h" />
+		<Unit filename="plugin/manifest.xml" />
+		<Unit filename="update" />
+		<Unit filename="update.bat" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

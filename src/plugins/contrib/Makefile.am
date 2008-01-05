@@ -54,6 +54,10 @@ if BUILD_SYMTAB
 MAYBE_SYMTAB=symtab
 endif
 
+if BUILD_THREADSEARCH
+MAYBE_THREADSEARCH=ThreadSearch
+endif
+
 if BUILD_WXSMITH
 MAYBE_WXSMITH=wxSmith wxSmithContribItems
 endif
@@ -72,6 +76,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
 		$(MAYBE_REGEX) \
+		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_WXSMITH)
 
 DIST_SUBDIRS = AutoVersioning \
@@ -88,6 +93,7 @@ DIST_SUBDIRS = AutoVersioning \
 		source_exporter \
 		symtab \
 		regex_testbed \
+		ThreadSearch \
 		wxSmith \
 		wxSmithContribItems
 

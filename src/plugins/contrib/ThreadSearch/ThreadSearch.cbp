@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ThreadSearch" />
+		<Option default_target="App - Win32" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="ThreadSearch - Win32">
+				<Option output="..\..\..\devel\share\CodeBlocks\plugins\ThreadSearch.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\ThreadSearch" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="$(#cb)\devel\codeblocks.exe" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+				<Linker>
+					<Add library="codeblocks" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxscintilla" />
+					<Add directory="$(#CB)\devel" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="ThreadSearch - Win32;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DNO_LOGGING" />
+			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#cb)\include\wxFlatNotebook\include" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ExtraCommands>
+			<Add after="zip -j9 $(#cb)\devel\share\codeblocks\ThreadSearch.zip manifest.xml" />
+			<Add after="update.bat" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="DirectoryParamsPanel.cpp" />
+		<Unit filename="DirectoryParamsPanel.h" />
+		<Unit filename="SearchInPanel.cpp" />
+		<Unit filename="SearchInPanel.h" />
+		<Unit filename="TextFileSearcher.cpp" />
+		<Unit filename="TextFileSearcher.h" />
+		<Unit filename="TextFileSearcherRegEx.cpp" />
+		<Unit filename="TextFileSearcherRegEx.h" />
+		<Unit filename="TextFileSearcherText.cpp" />
+		<Unit filename="TextFileSearcherText.h" />
+		<Unit filename="ThreadSearch.cpp" />
+		<Unit filename="ThreadSearch.h" />
+		<Unit filename="ThreadSearchConfPanel.cpp" />
+		<Unit filename="ThreadSearchConfPanel.h" />
+		<Unit filename="ThreadSearchControlIds.h" />
+		<Unit filename="ThreadSearchEvent.cpp" />
+		<Unit filename="ThreadSearchEvent.h" />
+		<Unit filename="ThreadSearchFindData.cpp" />
+		<Unit filename="ThreadSearchFindData.h" />
+		<Unit filename="ThreadSearchLoggerBase.cpp" />
+		<Unit filename="ThreadSearchLoggerBase.h" />
+		<Unit filename="ThreadSearchLoggerList.cpp" />
+		<Unit filename="ThreadSearchLoggerList.h" />
+		<Unit filename="ThreadSearchLoggerTree.cpp" />
+		<Unit filename="ThreadSearchLoggerTree.h" />
+		<Unit filename="ThreadSearchThread.cpp" />
+		<Unit filename="ThreadSearchThread.h" />
+		<Unit filename="ThreadSearchView.cpp" />
+		<Unit filename="ThreadSearchView.h" />
+		<Unit filename="ThreadSearchViewManagerBase.cpp" />
+		<Unit filename="ThreadSearchViewManagerBase.h" />
+		<Unit filename="ThreadSearchViewManagerLayout.cpp" />
+		<Unit filename="ThreadSearchViewManagerLayout.h" />
+		<Unit filename="ThreadSearchViewManagerMessagesNotebook.cpp" />
+		<Unit filename="ThreadSearchViewManagerMessagesNotebook.h" />
+		<Unit filename="logging.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="update" />
+		<Unit filename="update.bat" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
