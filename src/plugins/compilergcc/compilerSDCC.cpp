@@ -171,7 +171,7 @@ AutoDetectResult CompilerSDCC::AutoDetectInstallationDir()
 #ifdef __WXMSW__ // for wxRegKey
         wxRegKey key;   // defaults to HKCR
         key.SetName(wxT("HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\SDCC"));
-        if (key.Open(wxRegKey::Read)) // found; read it
+        if (key.Exists() && key.Open(wxRegKey::Read)) // found; read it
             key.QueryValue(wxT("UninstallString"), m_MasterPath);
 #endif
 
