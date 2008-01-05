@@ -47,7 +47,7 @@ noinst_HEADERS =  	DirectoryParamsPanel.h \
 			ThreadSearchLoggerList.h \
 			ThreadSearchLoggerTree.h \
 			ThreadSearchThread.h \
-			ThreadSearchTraceh \
+			ThreadSearchTrace.h \
 			ThreadSearchView.h \
 			ThreadSearchViewManagerBase.h \
 			ThreadSearchViewManagerLayout.h \
