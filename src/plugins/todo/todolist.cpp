@@ -243,9 +243,22 @@ void ToDoList::OnUpdateUI(wxUpdateUIEvent& event)
 
 void ToDoList::OnViewList(wxCommandEvent& event)
 {
-    CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
-    evt.pWindow = m_pListLog->GetWindow();
-    Manager::Get()->ProcessEvent(evt);
+    if(m_StandAlone)
+    {
+        CodeBlocksDockEvent evt(event.IsChecked() ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
+        evt.pWindow = m_pListLog->GetWindow();
+        Manager::Get()->ProcessEvent(evt);
+    }
+    else
+    {
+        if(event.IsChecked())
+        {
+                CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+                Manager::Get()->ProcessEvent(evtShow);
+                CodeBlocksLogEvent event(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+                Manager::Get()->ProcessEvent(event);
+        }
+    }
 }
 
 void ToDoList::OnAddItem(wxCommandEvent& event)
