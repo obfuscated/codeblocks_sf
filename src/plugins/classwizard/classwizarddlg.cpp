@@ -118,7 +118,7 @@ void ClassWizardDlg::DoGuardBlock()
 
 // events
 
-void ClassWizardDlg::OnNameChange(wxCommandEvent& event)
+void ClassWizardDlg::OnNameChange(wxCommandEvent& WXUNUSED(event))
 {
     wxString name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
     //name.MakeLower();
@@ -130,7 +130,7 @@ void ClassWizardDlg::OnNameChange(wxCommandEvent& event)
 }
 
 
-void ClassWizardDlg::OnAncestorChange(wxCommandEvent& event)
+void ClassWizardDlg::OnAncestorChange(wxCommandEvent& WXUNUSED(event))
 {
     wxString name = XRCCTRL(*this, "txtInheritance", wxTextCtrl)->GetValue();
     name.MakeLower();
@@ -144,7 +144,7 @@ void ClassWizardDlg::OnAncestorChange(wxCommandEvent& event)
 }
 
 
-void ClassWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void ClassWizardDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
     bool inherits = XRCCTRL(*this, "chkInherits", wxCheckBox)->GetValue();
     XRCCTRL(*this, "txtInheritance", wxTextCtrl)->Enable(inherits);
@@ -161,7 +161,7 @@ void ClassWizardDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
 
 
-void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
+void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
 {
     // set some variable for easy reference
     wxString Name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
@@ -171,7 +171,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     while ( tkz.HasMoreTokens() )
     {
         if (Name!=_T(""))
+        {
             NameSpaces.Add(Name);
+        }
         Name = tkz.GetNextToken();
     }
 
@@ -193,8 +195,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     bool GuardBlock = XRCCTRL(*this, "chkGuardBlock", wxCheckBox)->GetValue();
     wxString GuardWord = XRCCTRL(*this, "txtGuardBlock", wxTextCtrl)->GetValue();
     if (GuardWord.IsEmpty())
+    {
         DoGuardBlock();
-
+    }
 
     wxFileName headerFname(UnixFilename(m_Header));
     wxFileName implementationFname(UnixFilename(m_Implementation));
@@ -211,12 +214,17 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     wxString tabstr = usestabs ? wxString(_T("\t")) : wxString(_T(' '),tabsize);
     wxString eolstr;
     if(eolmode == 2)
+    {
         eolstr = _T("\n");
+    }
     else if(eolmode == 1)
+    {
         eolstr = _T("\r");
+    }
     else
+    {
         eolstr = _T("\r\n");
-
+    }
 
     // actual creation starts here
     // let's start with the header file
@@ -227,20 +235,24 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
         buffer << eolstr;
     }
 
-    if (!AncestorFilename.IsEmpty())
+    if (!AncestorFilename.IsEmpty() && !AncestorFilename.IsSameAs(_T("<>")))
     {
         buffer << _T("#include ") << AncestorFilename << eolstr;
         buffer << eolstr;
     }
 
     for (unsigned int i=0; i<NameSpaces.GetCount(); ++i)
+    {
         buffer << _T("namespace ") << NameSpaces[i] << _T(" {") << eolstr;
+    }
     buffer << eolstr;
 
 
     buffer << _T("class ") << Name;
     if (Inherits)
+    {
         buffer << _T(" : ") << AncestorScope << _T(" ") << Ancestor;
+    }
     buffer << eolstr;
     buffer << _T("{") << eolstr;
     buffer << tabstr << _T("public:") << eolstr;
@@ -248,7 +260,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     buffer << (!GenerateImplementation ? _T(" {}") : _T(";")) << eolstr;
     buffer << tabstr << tabstr;
     if (VirtualDestructor)
+    {
         buffer << _T("virtual ");
+    }
     buffer << _T('~') << Name << _T("()");
     buffer << (!GenerateImplementation ? _T(" {}") : _T(";")) << eolstr;
     buffer << tabstr << _T("protected:") << eolstr;
@@ -257,7 +271,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 
     buffer << eolstr;
     for (int i=NameSpaces.GetCount(); i>0; --i)
+    {
         buffer << _T("} // namespace ") << NameSpaces[i-1] << eolstr;
+    }
     buffer << eolstr;
 
     if (GuardBlock)
@@ -292,7 +308,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     buffer << _T("#include \"") << m_Header << _T("\"") << eolstr;
     buffer << eolstr;
     for (unsigned int i=0; i<NameSpaces.GetCount(); ++i)
+    {
         buffer << _T("namespace ") << NameSpaces[i] << _T(" {") << eolstr;
+    }
     buffer << eolstr;
 
     buffer << Name << _T("::") << Name << _T("(") << Constructor << _T(")") << eolstr;
@@ -307,7 +325,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
 
     buffer << eolstr;
     for (int i=NameSpaces.GetCount(); i>0; --i)
+    {
         buffer << _T("} // namespace ") << NameSpaces[i-1] << eolstr;
+    }
     buffer << eolstr;
 
     new_ed->GetControl()->SetText(buffer);
@@ -323,10 +343,10 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& event)
     m_Implementation= implementationFname.GetFullPath();
 
     EndModal(wxID_OK);
-}
+} // end of OnOKClick
 
 
-void ClassWizardDlg::OnIncludeDirClick(wxCommandEvent& event)
+void ClassWizardDlg::OnIncludeDirClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString path = XRCCTRL(*this, "txtIncludeDir", wxTextCtrl)->GetValue();
     wxDirDialog dlg (this, _T("Choose a directory"), path);
@@ -337,7 +357,7 @@ void ClassWizardDlg::OnIncludeDirClick(wxCommandEvent& event)
     }
 }
 
-void ClassWizardDlg::OnImplDirClick(wxCommandEvent& event)
+void ClassWizardDlg::OnImplDirClick(wxCommandEvent& WXUNUSED(event))
 {
     wxString path = XRCCTRL(*this, "txtImplDir", wxTextCtrl)->GetValue();
     wxDirDialog dlg (this, _T("Choose a directory"), path);
@@ -348,7 +368,7 @@ void ClassWizardDlg::OnImplDirClick(wxCommandEvent& event)
     }
 }
 
-void ClassWizardDlg::OnCancelClick(wxCommandEvent& event)
+void ClassWizardDlg::OnCancelClick(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(wxID_CANCEL);
 }
