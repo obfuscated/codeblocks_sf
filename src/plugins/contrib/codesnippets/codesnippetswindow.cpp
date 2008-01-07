@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 109 2007-12-06 15:04:10Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 112 2008-01-07 17:03:31Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -501,7 +501,10 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 			case SnippetItemData::TYPE_SNIPPET:
                 if ( IsFileSnippet(itemId) )
                 {   snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit File"));
-                    snippetsTreeMenu->Append(idMnuOpenFileLink,_("Open File"));
+                    // append file .ext to Open menu item
+                    wxString fileExt(GetSnippetsTreeCtrl()->GetFileLinkExt(itemId));
+                    if ( not fileExt.IsEmpty()) fileExt = wxT(" (as ")+fileExt+wxT(")");
+                    snippetsTreeMenu->Append(idMnuOpenFileLink,_("Open File")+fileExt);
                 }
                 else // it's a text snippet
                 {   snippetsTreeMenu->Append(idMnuEditSnippet, _("Edit Text"));

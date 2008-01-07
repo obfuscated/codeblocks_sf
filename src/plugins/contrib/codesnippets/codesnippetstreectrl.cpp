@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 108 2007-12-06 13:18:00Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 112 2008-01-07 17:03:31Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -111,6 +111,49 @@ bool CodeSnippetsTreeCtrl::IsFileSnippet (wxTreeItemId treeItemId  )
     #endif
     if ( not ::wxFileExists( fileName) ) return false;
     return true;
+}
+// ----------------------------------------------------------------------------
+bool CodeSnippetsTreeCtrl::IsFileLinkSnippet (wxTreeItemId treeItemId  )
+// ----------------------------------------------------------------------------
+{
+    wxTreeItemId itemId = treeItemId;
+    if ( itemId == (void*)0) itemId = GetSelection();
+    if (not itemId.IsOk()) return false;
+    if (not IsSnippet(itemId) ) return false;
+    wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+    fileName = fileName.BeforeFirst('\n');
+    // substitute $macros with actual text
+    #if defined(BUILDING_PLUGIN)
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+        //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
+    #endif
+    if (fileName.Length() > 128)
+    {   // if text is > 128 characters, not a filelink.
+        return false;
+    }
+    if ( not ::wxFileExists( fileName) ) return false;
+    return true;
+
+}//IsFileLinkSnippet
+// ----------------------------------------------------------------------------
+wxString CodeSnippetsTreeCtrl::GetFileLinkExt (wxTreeItemId treeItemId  )
+// ----------------------------------------------------------------------------
+{
+    if ( not IsFileLinkSnippet(treeItemId) ) return wxT("");
+    wxTreeItemId itemId = treeItemId;
+    if ( itemId == (void*)0) itemId = GetSelection();
+    if (not itemId.IsOk()) return wxT("");
+    if (not IsSnippet(itemId) ) return wxT("");
+    wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+    fileName = fileName.BeforeFirst('\n');
+    // substitute $macros with actual text
+    #if defined(BUILDING_PLUGIN)
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+        //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
+    #endif
+    if ( not ::wxFileExists( fileName) ) return wxT("");
+    wxFileName filename(fileName);
+    return filename.GetExt();
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnItemSelectChanging(wxTreeEvent& event)
@@ -1525,8 +1568,16 @@ void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
     LOGIT( _T("EditSnippetWithMime[%s]"), fileName.c_str() );
     if ( fileName.IsEmpty() ) return;
 
+    wxFileName file(fileName);
+    wxString fileExt = file.GetExt();
+
     // MIME search fails on a url. Do it brute force
-    if ( fileName.StartsWith(wxT("http://")) )
+    if (   ( fileName.StartsWith(wxT("http://")) )
+        || ( fileName.StartsWith(wxT("file://")) )
+        || ( fileName.StartsWith(wxT("ftp://")) )
+        || ( fileExt == wxT("htmp") )
+        || ( fileExt == wxT("htm") )
+       )
     {   wxLaunchDefaultBrowser( fileName);
         return;
     }

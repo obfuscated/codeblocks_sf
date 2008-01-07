@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// $Id: codesnippets.cpp 110 2007-12-06 15:28:51Z Pecan $
+// $Id: codesnippets.cpp 111 2008-01-02 17:39:38Z Pecan $
 
 #include <cstring>
 #include "sdk.h"

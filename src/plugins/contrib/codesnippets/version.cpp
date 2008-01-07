@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 108 2007-12-06 13:18:00Z Pecan $
+// RCS-ID: $Id: version.cpp 112 2008-01-07 17:03:31Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -335,6 +335,10 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit  1.2.109 2008/01/2
 //          110) Change GetMessageManager to GetLogManager for wxMAC.
+// ----------------------------------------------------------------------------
+//  Commit  1.2.111 2008/01/7
+//          111) Add ftp://,file://,.htm,.html to url checking.
+//          112) Add "(as filetype)" to Open File menu item for clarity.
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box

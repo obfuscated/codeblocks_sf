@@ -18,7 +18,7 @@
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 // ----------------------------------------------------------------------------
-// RCS-ID: $Id: version.h 108 2007-12-06 13:18:00Z Pecan $
+// RCS-ID: $Id: version.h 112 2008-01-07 17:03:31Z Pecan $
 
 #ifndef VERSION_H
 #define VERSION_H
@@ -58,7 +58,7 @@ class AppVersion
 
 #include <wx/string.h>
 //-----Release-Feature-Fix------------------
-#define VERSION wxT("1.2.110 2008/01/2")
+#define VERSION wxT("1.2.112 2008/01/7")
 //------------------------------------------
 // Release - Current development level
 // Feature - User interface level
