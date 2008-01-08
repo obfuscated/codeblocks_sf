@@ -1575,7 +1575,7 @@ void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
     if (   ( fileName.StartsWith(wxT("http://")) )
         || ( fileName.StartsWith(wxT("file://")) )
         || ( fileName.StartsWith(wxT("ftp://")) )
-        || ( fileExt == wxT("htmp") )
+        || ( fileExt == wxT("html") )
         || ( fileExt == wxT("htm") )
        )
     {   wxLaunchDefaultBrowser( fileName);
