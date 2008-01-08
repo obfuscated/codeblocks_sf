@@ -2,6 +2,7 @@
 #define LOGGER_H
 
 #include <wx/string.h>
+#include "settings.h" // DLLIMPORT
 
 class wxWindow;
 
