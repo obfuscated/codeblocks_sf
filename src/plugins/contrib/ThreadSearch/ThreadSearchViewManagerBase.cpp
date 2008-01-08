@@ -8,8 +8,6 @@
  * License:   GPL
  **************************************************************/
 
-#include <sdk.h> // Code::Blocks SDK
-
 #include "ThreadSearchViewManagerBase.h"
 #include "ThreadSearchViewManagerMessagesNotebook.h"
 #include "ThreadSearchViewManagerLayout.h"
