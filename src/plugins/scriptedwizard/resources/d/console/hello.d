@@ -1,4 +1,4 @@
-
+version(Tango) extern (C) int printf(char *, ...);
 
 int main(char[][] args)
 {
