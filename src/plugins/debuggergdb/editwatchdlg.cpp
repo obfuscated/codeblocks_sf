@@ -20,6 +20,8 @@ EditWatchDlg::EditWatchDlg(Watch* w, wxWindow* parent)
     XRCCTRL(*this, "chkArray", wxCheckBox)->SetValue(m_Watch.is_array);
     XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->SetValue(m_Watch.array_start);
     XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->SetValue(m_Watch.array_count);
+    
+    XRCCTRL(*this, "txtKeyword", wxTextCtrl)->SetFocus();
 }
 
 EditWatchDlg::~EditWatchDlg()
