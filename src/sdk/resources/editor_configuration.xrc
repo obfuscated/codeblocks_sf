@@ -9,7 +9,6 @@
 			<object class="sizeritem">
 				<object class="wxStaticText" name="lblBigTitle">
 					<label>General settings</label>
-					<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 					<fg>#FFFFFF</fg>
 					<bg>#004080</bg>
 					<font>
@@ -17,6 +16,7 @@
 						<weight>bold</weight>
 						<family>swiss</family>
 					</font>
+					<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 				</object>
 				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 			</object>
@@ -265,8 +265,8 @@
 																			<item>Always</item>
 																			<item>Only after indent</item>
 																		</content>
-																		<style>wxCB_READONLY</style>
 																		<size>95,24</size>
+																		<style>wxCB_READONLY</style>
 																	</object>
 																	<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																	<border>16</border>
@@ -406,6 +406,44 @@
 									</object>
 									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>4</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Folding Style</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="lblIndicator">
+												<label>Indicator:</label>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxChoice" name="lstIndicators">
+												<content>
+													<item>Arrow</item>
+													<item>Flaten Tree Circular Headers</item>
+													<item>Flaten Tree Square Headers</item>
+													<item>Simple</item>
+												</content>
+												<default>2</default>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkUnderlineFoldedLine">
+												<label>Underline Folded Line</label>
+												<checked>1</checked>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
 								</object>
 							</object>
 						</object>

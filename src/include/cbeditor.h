@@ -151,6 +151,9 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Toggle all editor folds (inverts the show/hide state of blocks of code). */
         void ToggleAllFolds();
 
+        /** Sets the type of folding indicator where id is one of the following: 0->Arrow, 1->Circle, 2->Square, 3->simple */
+        void SetFoldingIndicator(int id);
+
         /** Folds the block containing \c line. If \c line is -1, folds the block containing the caret. */
         void FoldBlockFromLine(int line = -1);
 
@@ -300,6 +303,8 @@ class DLLIMPORT cbEditor : public EditorBase
         void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
         void DoFoldBlockFromLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
         bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
+        void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
+        void UnderlineFoldedLines(bool underline);
         cbStyledTextCtrl* CreateEditor();
         void SetEditorStyle();
         void SetEditorStyleBeforeFileOpen();

@@ -160,6 +160,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_preprocessor"), false));
    	XRCCTRL(*this, "chkFoldComments", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_comments"), true));
    	XRCCTRL(*this, "chkFoldXml", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_xml"), true));
+   	XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/underline_folded_line"), true));
+    XRCCTRL(*this, "lstIndicators", wxChoice)->SetSelection(cfg->ReadInt(_T("/folding/indicator"), 2));
 
 	//gutter
     wxColour gutterColour = cfg->ReadColour(_T("/gutter/colour"), *wxLIGHT_GREY);
@@ -898,6 +900,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/folding/fold_preprocessor"), 	XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->GetValue());
         cfg->Write(_T("/folding/fold_comments"), 		XRCCTRL(*this, "chkFoldComments", wxCheckBox)->GetValue());
         cfg->Write(_T("/folding/fold_xml"), 		    XRCCTRL(*this, "chkFoldXml", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/underline_folded_line"), XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/indicator"), 		    XRCCTRL(*this, "lstIndicators", wxChoice)->GetSelection());
 
         //eol
         cfg->Write(_T("/show_eol"), 			        XRCCTRL(*this, "chkShowEOL", wxCheckBox)->GetValue());
