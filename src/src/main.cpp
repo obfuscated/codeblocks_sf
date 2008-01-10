@@ -33,6 +33,7 @@
 #include <cbworkspace.h>
 #include <globals.h>
 #include <filefilters.h>
+#include <wx/tokenzr.h>
 
 #if defined(_MSC_VER) && defined( _DEBUG )
     #define _CRTDBG_MAP_ALLOC
@@ -1224,11 +1225,28 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
     }
 } // end of SaveViewLayout
 
+bool MainFrame::AreDifferentLayouts(const wxString& layout1,const wxString& layout2,const wxString& delimiter)
+{
+	wxArrayString* arLayout1 = new wxArrayString();
+	wxArrayString* arLayout2 = new wxArrayString();
+    wxStringTokenizer* strTok = new wxStringTokenizer(layout1,delimiter);
+     while(strTok->CountTokens() > 0){
+         arLayout1->Add(strTok->GetNextToken());
+    }
+    strTok->SetString(layout2,delimiter);
+    while(strTok->CountTokens() > 0){
+         arLayout2->Add(strTok->GetNextToken());
+    }
+	arLayout1->Sort();
+	arLayout2->Sort();
+    return *arLayout1 != *arLayout2;
+} // end of AreDifferentLayouts
+
 bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 {
     DoFixToolbarsLayout();
     wxString lastlayout = m_LayoutManager.SavePerspective();
-    if (!m_LastLayoutName.IsEmpty() && lastlayout != m_LastLayoutData)
+    if (!m_LastLayoutName.IsEmpty() && AreDifferentLayouts(lastlayout, m_LastLayoutData))
     {
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),

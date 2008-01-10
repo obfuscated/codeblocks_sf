@@ -33,6 +33,7 @@ class MainFrame : public wxFrame
     private:
         wxAuiManager m_LayoutManager;
         LayoutViewsMap m_LayoutViews;
+        bool AreDifferentLayouts(const wxString& layout1,const wxString& layout2,const wxString& delimiter=_("|"));
     public:
         wxAcceleratorTable* m_pAccel;
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
