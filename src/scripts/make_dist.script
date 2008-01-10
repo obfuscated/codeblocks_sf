@@ -23,7 +23,7 @@ class MakeDistPlugin extends cbScriptPlugin
 	{
 		info.name = _T("MakeDistPlugin");
 		info.title = _T("Make distribution package");
-		info.version = _T("0.1a");
+		info.version = _T("0.2");
 		info.license = _T("GPL");
 	}
 
@@ -53,6 +53,10 @@ class MakeDistPlugin extends cbScriptPlugin
         	return -1;
         }
         
+        // if there is more then one project in the workspace the current working dir is the one of the last loaded project,
+        // so we have to set it explicitely to make the zip-command find the files
+        IO.SetCwd(prj.GetCommonTopLevelPath());
+
         // good, now let's get the project's filename
         local prj_fname = wxFileName();
         prj_fname.Assign(prj.GetFilename(), ::wxPATH_NATIVE);
@@ -70,8 +74,13 @@ class MakeDistPlugin extends cbScriptPlugin
 				file_list += _T("\"") + prj_file.relativeFilename + _T("\" ");
         }
         
+        // also include the project file :)
+        file_list += _T("\"") + prj_fname.GetFullName() + _T("\"");
+        
         // all that's left is to replace the variables in the command
-		local cmd = Cmd;
+		// we have to copy Cmd into cmd or both are two names for the same instance and the placeholders get overwritten
+		local cmd = wxString();
+		cmd += Cmd;
         cmd.Replace(_T("$ARCHIVE"), prj_fname.GetName());
         cmd.Replace(_T("$FILES_LIST"), file_list);
         
@@ -81,7 +90,7 @@ class MakeDistPlugin extends cbScriptPlugin
         if (result == 0)
 			ShowInfo(_T("All done!"));
 		else
-			ShowWarning(_T("Failed..."));
+			ShowWarning(_T("Failed. Make sure the ZIP program is installed and somewhere in the path..."));
         
         return result;
     }
