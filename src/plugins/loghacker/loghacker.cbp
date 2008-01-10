@@ -30,7 +30,7 @@
 					<Add directory="$(#CB.include)" />
 					<Add directory="$(#WX.include)" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-					<Add directory="$(#CB)\include\wxscintilla\include" />
+					<Add directory="$(#CB.include)\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add library="wxmsw28$(WX_SUFFIX)" />
