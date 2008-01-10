@@ -149,6 +149,7 @@ const wxEventType cbEVT_MENUBAR_CREATE_END = wxNewEventType();
 // compiler-related events
 const wxEventType cbEVT_COMPILER_STARTED = wxNewEventType();
 const wxEventType cbEVT_COMPILER_FINISHED = wxNewEventType();
+const wxEventType cbEVT_COMPILER_SET_BUILD_OPTIONS = wxNewEventType();
 // debugger-related events
 const wxEventType cbEVT_DEBUGGER_STARTED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_PAUSED = wxNewEventType();

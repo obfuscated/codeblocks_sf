@@ -59,7 +59,7 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent, public BlockAllocated<C
 		// for some editor events
 		int m_X;
 		int m_Y;
-		
+
 		wxString m_TargetName;
 		wxString m_OldTargetName;
 	private:
@@ -321,11 +321,13 @@ extern EVTIMPORT const wxEventType cbEVT_MENUBAR_CREATE_BEGIN;
 extern EVTIMPORT const wxEventType cbEVT_MENUBAR_CREATE_END;
 #define EVT_MENUBAR_CREATE_END(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_MENUBAR_CREATE_END, -1, -1, (wxObjectEventFunction) (wxEventFunction) (CodeBlocksEventFunction) & fn, (wxObject *) NULL ),
 
-// compiler-related events (compiler plugins must fire them)
+// compiler-related events (compiler plugins usually fire them)
 extern EVTIMPORT const wxEventType cbEVT_COMPILER_STARTED;
 #define EVT_COMPILER_STARTED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_COMPILER_STARTED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_COMPILER_FINISHED;
 #define EVT_COMPILER_FINISHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_COMPILER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_COMPILER_SET_BUILD_OPTIONS;
+#define EVT_COMPILER_SET_BUILD_OPTIONS(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_COMPILER_SET_BUILD_OPTIONS, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // debugger-related events (debugger plugins must fire them)
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_STARTED;
