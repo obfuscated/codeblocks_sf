@@ -840,7 +840,8 @@ void GDB_driver::ParseOutput(const wxString& output)
         else if (lines[i].StartsWith(_T("Program received signal SIG")))
         {
             if (lines[i].StartsWith(_T("Program received signal SIGINT")) ||
-                lines[i].StartsWith(_T("Program received signal SIGTRAP")))
+                lines[i].StartsWith(_T("Program received signal SIGTRAP")) ||
+                lines[i].StartsWith(_T("Program received signal SIGSTOP")))
             {
                 // these are break/trace signals, just log them
                 Log(lines[i]);
