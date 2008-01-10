@@ -26,12 +26,12 @@ class InfoPane : public InfoPaneNotebook
 
     struct Page
     {
-        Page() : icon(0), window(0), logger(0), visible(0), islogger(0) {};
+        Page() : icon(0), window(0), logger(0), indexInNB(-1), islogger(0) {};
         wxString title;
         wxBitmap* icon;
         wxWindow* window;
         Logger* logger;
-        bool visible;
+        int indexInNB; // used to be "visible" flag: invisible is <0, any other value means visible
         bool islogger;
     };
 
@@ -49,7 +49,7 @@ class InfoPane : public InfoPaneNotebook
     void OnClear(wxCommandEvent& event);
     void ContextMenu(wxContextMenuEvent& event);
 
-	void AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+	int AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
 public:
 
     InfoPane(wxWindow* parent);
@@ -63,6 +63,7 @@ public:
     *  Note that you cannot hide a tab programatically.
     */
     void Show(size_t index);
+    void Show(Logger* logger);
     void ShowNonLogger(wxWindow* p);
 
 

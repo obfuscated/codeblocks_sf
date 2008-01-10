@@ -315,9 +315,6 @@ class MainFrame : public wxFrame
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
         MenuIDToScript m_MenuIDToScript;
 
-        typedef std::map<void*, int> LoggerToInfoPaneIndex; // logger to infpane page index
-        LoggerToInfoPaneIndex m_LoggerToInfoPaneIndex;
-
         wxDialog* m_pBatchBuildDialog;
         wxGauge* m_pProgressBar;
 

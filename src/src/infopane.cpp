@@ -46,7 +46,7 @@ InfoPane::~InfoPane()
     delete GetImageList();
 }
 
-void InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon)
+int InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon)
 {
 	const wxBitmap& bmp = icon ? *icon : defaultBitmap;
 
@@ -56,16 +56,18 @@ void InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon
     GetImageList()->push_back(bmp);
 	AddPage(p, title, false, GetImageList()->size() - 1);
 #endif
+	return GetPageCount() - 1;
 }
 
 void InfoPane::Toggle(size_t i)
 {
-    page[i].visible = 1 - page[i].visible;
-
-    if(page[i].visible == true)
-        AddPagePrivate(page[i].window, page[i].title, page[i].icon);
+    if(page[i].indexInNB == -1)
+        page[i].indexInNB = AddPagePrivate(page[i].window, page[i].title, page[i].icon);
     else
-        RemovePage(GetPageIndex(page[i].window));
+    {
+        RemovePage(page[i].indexInNB);
+        page[i].indexInNB = -1;
+    }
 }
 
 void InfoPane::Show(size_t i)
@@ -73,10 +75,25 @@ void InfoPane::Show(size_t i)
     if(page[i].window == 0)
         return;
 
-    if(page[i].visible == false)
+    if(page[i].indexInNB == -1)
         Toggle(i);
     else
-        SetSelection(i);
+        SetSelection(page[i].indexInNB);
+}
+
+void InfoPane::Show(Logger* logger)
+{
+    for(int i = 0; i < num_pages; ++i)
+    {
+        if(page[i].logger == logger)
+        {
+			if(page[i].indexInNB == -1)
+				Toggle(i);
+			else
+				SetSelection(page[i].indexInNB);
+			return;
+        }
+    }
 }
 
 void InfoPane::ShowNonLogger(wxWindow* p)
@@ -85,10 +102,10 @@ void InfoPane::ShowNonLogger(wxWindow* p)
     {
         if(page[i].window == p)
         {
-			if(page[i].visible == false)
+			if(page[i].indexInNB == -1)
 				Toggle(i);
 			else
-				SetSelection(i);
+				SetSelection(page[i].indexInNB);
 			return;
         }
     }
@@ -152,7 +169,7 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
             if(page[i].islogger)
             {
                 view->Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
-				view->Check(baseID + i, page[i].visible);
+				view->Check(baseID + i, page[i].indexInNB != -1);
             }
             else
             {
@@ -169,7 +186,7 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
             if(page[i].window && !page[i].islogger)
             {
                 view->Append(baseID + i, page[i].title, wxEmptyString, wxITEM_CHECK);
-				view->Check(baseID + i, page[i].visible);
+				view->Check(baseID + i, page[i].indexInNB != -1);
             }
         }
     }
@@ -188,12 +205,11 @@ int InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBi
     {
         if(!(page[i].window))
         {
-            AddPagePrivate(p, title, icon);
+            page[i].indexInNB = AddPagePrivate(p, title, icon);
             page[i].window = p;
             page[i].logger = logger;
             page[i].icon = icon;
             page[i].title = title;
-            page[i].visible = true;
             page[i].islogger = true;
             return i;
         }
@@ -209,11 +225,10 @@ int InfoPane::AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon)
         if(!(page[i].window))
         {
         	p->Reparent(this);
-            AddPagePrivate(p, title, icon);
+            page[i].indexInNB = AddPagePrivate(p, title, icon);
             page[i].window = p;
             page[i].icon = icon;
             page[i].title = title;
-            page[i].visible = true;
             page[i].islogger = false;
             return i;
         }
@@ -238,9 +253,8 @@ bool InfoPane::DeleteLogger(Logger* l)
         	if (index != -1)
 				Manager::Get()->GetLogManager()->DeleteLog(index);
             
-            index = GetPageIndex(page[i].window);
-            if (index != -1)
-				DeletePage(index);
+            if (page[i].indexInNB != -1)
+				DeletePage(page[i].indexInNB);
             
             page[i] = Page();
             return true;
@@ -259,7 +273,7 @@ bool InfoPane::RemoveNonLogger(wxWindow* p)
             if(page[i].islogger)
                 cbThrow(_T("Bad API usage. Shame on you."));
 
-            RemovePage(GetPageIndex(p));
+            RemovePage(page[i].indexInNB);
             page[i] = Page();
             return true;
         }
@@ -277,7 +291,8 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
             if(page[i].islogger)
                 cbThrow(_T("Bad API usage. Shame on you."));
 
-            DeletePage(GetPageIndex(p));
+			if (page[i].indexInNB != -1)
+				DeletePage(page[i].indexInNB);
             page[i] = Page();
             return true;
         }

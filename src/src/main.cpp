@@ -3961,18 +3961,15 @@ void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)
 {
     if (Manager::IsAppShuttingDown())
         return;
-	int idx = -1;
     wxWindow* p = event.window;
     if (p)
-		idx = infoPane->AddNonLogger(p, event.title, event.icon);
+		infoPane->AddNonLogger(p, event.title, event.icon);
 	else
 	{
 		p = event.logger->CreateControl(infoPane);
 		if(p)
-			idx = infoPane->AddLogger(event.logger, p, event.title, event.icon);
+			infoPane->AddLogger(event.logger, p, event.title, event.icon);
 	}
-	if (idx != -1)
-		m_LoggerToInfoPaneIndex[event.window ? event.window : (void*)event.logger] = idx;
     Manager::Get()->GetLogManager()->NotifyUpdate();
 }
 
@@ -3984,14 +3981,14 @@ void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
 		infoPane->RemoveNonLogger(event.window);
 	else
 		infoPane->DeleteLogger(event.logger);
-	m_LoggerToInfoPaneIndex[event.window ? event.window : (void*)event.logger] = -1;
 }
 
 void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
 {
-    int idx = m_LoggerToInfoPaneIndex[event.window ? event.window : (void*)event.logger];
-    if (idx != -1)
-        infoPane->Show(idx);
+	if (event.window)
+		infoPane->ShowNonLogger(event.window);
+	else if (event.logger)
+		infoPane->Show(event.logger);
 }
 
 void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)
