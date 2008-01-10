@@ -223,6 +223,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         // Linux console support
         int      RunNixConsole();
         wxString GetConsoleTty(int ConsolePid);
+        long GetGDBChildPID(void);
+
         bool     m_bIsConsole;
         int      m_nConsolePid;
         wxString m_ConsoleTty;
