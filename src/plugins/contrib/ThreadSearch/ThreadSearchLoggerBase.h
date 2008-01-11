@@ -12,6 +12,7 @@
 #ifndef THREAD_SEARCH_LOGGER_BASE_H
 #define THREAD_SEARCH_LOGGER_BASE_H
 
+#include "InsertIndexManager.h"
 
 class wxWindow;
 class wxPanel;
@@ -38,6 +39,7 @@ public:
 	static ThreadSearchLoggerBase* BuildThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
 															   ThreadSearch&     threadSearchPlugin,
 															   eLoggerTypes      loggerType,
+															   InsertIndexManager::eFileSorting fileSorting,
 															   wxPanel* pParent,
 															   long id);
 
@@ -47,7 +49,7 @@ public:
 	eLoggerTypes virtual GetLoggerType() = 0;
 
 	/** Called by ThreadSearchView when new settings are applied. */
-	virtual void Update() = 0;
+	virtual void Update();
 
 	/** Called by ThreadSearchView to process a ThreadSearchEvent
 	  * sent by worker thread.
@@ -66,9 +68,11 @@ public:
 protected:
 	/** Constructor. */
 	ThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
-						   ThreadSearch&     threadSearchPlugin)
+						   ThreadSearch&                    threadSearchPlugin,
+						   InsertIndexManager::eFileSorting fileSorting)
 						   : m_ThreadSearchView  (threadSearchView)
 						   , m_ThreadSearchPlugin(threadSearchPlugin)
+						   , m_IndexManager(fileSorting)
 	{}
 
 	/** Dynamic events connection. */
@@ -79,6 +83,7 @@ protected:
 
 	ThreadSearchView& m_ThreadSearchView;
 	ThreadSearch&     m_ThreadSearchPlugin;
+	InsertIndexManager m_IndexManager;
 };
 
 #endif // THREAD_SEARCH_LOGGER_BASE_H

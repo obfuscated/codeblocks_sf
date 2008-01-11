@@ -25,6 +25,11 @@
 #include "ThreadSearchControlIds.h"
 #include "ThreadSearchViewManagerBase.h"
 #include "ThreadSearchFindData.h"
+#include "InsertIndexManager.h"
+
+// begin wxGlade: ::extracode
+
+// end wxGlade
 
 
 ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, wxWindow* parent,wxWindowID id)
@@ -39,8 +44,8 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     SizerListControlOptions_staticbox = new wxStaticBox(this, -1, wxT("List control options"));
     SizerThreadSearchLayout_staticbox = new wxStaticBox(this, -1, wxT("Layout"));
     SizerSearchIn_staticbox = new wxStaticBox(this, -1, wxT("Search in"));
-    m_pPnlSearchIn = new SearchInPanel(this, -1);
-    m_pPnlDirParams = new DirectoryParamsPanel(this, -1);
+    m_pPnlSearchIn = new SearchInPanel(this, wxID_ANY);
+    m_pPnlDirParams = new DirectoryParamsPanel(this, wxID_ANY);
     m_pChkWholeWord = new wxCheckBox(this, idChkWholeWord, wxT("Whole word"));
     m_pChkStartWord = new wxCheckBox(this, idChkStartWord, wxT("Start word"));
     m_pChkMatchCase = new wxCheckBox(this, idChkMatchCase, wxT("Match case"));
@@ -56,12 +61,22 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
         wxT("Messages notebook"),
         wxT("Layout")
     };
-    m_pRadPanelManagement = new wxRadioBox(this, -1, wxT("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_COLS);
+    m_pRadPanelManagement = new wxRadioBox(this, wxID_ANY, wxT("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadLoggerType_choices[] = {
         wxT("List"),
         wxT("Tree")
     };
-    m_pRadLoggerType = new wxRadioBox(this, -1, wxT("Logger type"), wxDefaultPosition, wxDefaultSize, 2, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_COLS);
+    m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, wxT("Logger type"), wxDefaultPosition, wxDefaultSize, 2, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
+    const wxString m_pRadSplitterWndMode_choices[] = {
+        wxT("Horizontal"),
+        wxT("Vertical")
+    };
+    m_pRadSplitterWndMode = new wxRadioBox(this, wxID_ANY, wxT("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
+    const wxString m_pRadSortBy_choices[] = {
+        wxT("file path"),
+        wxT("file name")
+    };
+    m_pRadSortBy = new wxRadioBox(this, wxID_ANY, wxT("Sort results by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSortBy_choices, 1, wxRA_SPECIFY_ROWS);
 
     set_properties();
     do_layout();
@@ -73,6 +88,7 @@ BEGIN_EVENT_TABLE(ThreadSearchConfPanel, wxPanel)
     // begin wxGlade: ThreadSearchConfPanel::event_table
     EVT_CHECKBOX(idChkThreadSearchEnable, ThreadSearchConfPanel::OnThreadSearchEnable)
     EVT_CHECKBOX(idChkViewThreadSearchToolBar, ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick)
+    EVT_CHECKBOX(idChkShowCodePreview, ThreadSearchConfPanel::OnChkCodePreview)
     EVT_CHECKBOX(idChkShowThreadSearchWidgets, ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick)
     // end wxGlade
 END_EVENT_TABLE();
@@ -95,6 +111,13 @@ void ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick(wxCommandEvent &ev
 			m_pChkShowThreadSearchToolBar->SetValue(true);
 		}
 	}
+	event.Skip();
+}
+
+
+void ThreadSearchConfPanel::OnChkCodePreview(wxCommandEvent &event)
+{
+	m_pRadSplitterWndMode->Enable(event.IsChecked());
 	event.Skip();
 }
 
@@ -133,6 +156,8 @@ void ThreadSearchConfPanel::set_properties()
     m_pChkDisplayLogHeaders->SetValue(1);
     m_pRadPanelManagement->SetSelection(0);
     m_pRadLoggerType->SetSelection(0);
+    m_pRadSplitterWndMode->SetSelection(0);
+    m_pRadSortBy->SetSelection(0);
     // end wxGlade
 
 	ThreadSearchFindData findData;
@@ -156,13 +181,13 @@ void ThreadSearchConfPanel::set_properties()
     {
 		case ThreadSearchViewManagerBase::TypeLayout :
 		{
-			radIndex = ThreadSearchViewManagerBase::TypeLayout;
+			radIndex = 1;
 			break;
 		}
 		default:
-		// case ThreadSearchViewManagerBase::TypeLayout :
+		// case ThreadSearchViewManagerBase::TypeMessagesNotebook :
 		{
-			radIndex = ThreadSearchViewManagerBase::TypeMessagesNotebook;
+			radIndex = 0;
 			break;
 		}
     }
@@ -173,17 +198,52 @@ void ThreadSearchConfPanel::set_properties()
     {
 		case ThreadSearchLoggerBase::TypeTree:
 		{
-			radIndex = ThreadSearchLoggerBase::TypeTree;
+			radIndex = 1;
 			break;
 		}
 		default:
 		// case ThreadSearchLoggerBase::TypeList :
 		{
-			radIndex = ThreadSearchLoggerBase::TypeList;
+			radIndex = 0;
 			break;
 		}
     }
     m_pRadLoggerType->SetSelection(radIndex);
+
+    radIndex = 0;
+    switch (m_ThreadSearchPlugin.GetSplitterMode())
+    {
+		case wxSPLIT_HORIZONTAL:
+		{
+			radIndex = 0;
+			break;
+		}
+		default :
+		// case wxSPLIT_VERTICAL:
+		{
+			radIndex = 1;
+			break;
+		}
+    }
+    m_pRadSplitterWndMode->SetSelection(radIndex);
+    m_pRadSplitterWndMode->Enable(m_ThreadSearchPlugin.GetShowCodePreview());
+
+    radIndex = 0;
+    switch (m_ThreadSearchPlugin.GetFileSorting())
+    {
+		case InsertIndexManager::SortByFileName:
+		{
+			radIndex = 1;
+			break;
+		}
+		default:
+		// case ThreadSearch::SortByFilePath :
+		{
+			radIndex = 0;
+			break;
+		}
+    }
+    m_pRadSortBy->SetSelection(radIndex);
 
     m_pPnlDirParams->SetSearchDirHidden(findData.GetHiddenSearch());
     m_pPnlDirParams->SetSearchDirRecursively(findData.GetRecursiveSearch());
@@ -202,7 +262,7 @@ void ThreadSearchConfPanel::do_layout()
     // begin wxGlade: ThreadSearchConfPanel::do_layout
     wxBoxSizer* SizerTop = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchLayout = new wxStaticBoxSizer(SizerThreadSearchLayout_staticbox, wxVERTICAL);
-    wxFlexGridSizer* SizerThreadSearchGridLayout = new wxFlexGridSizer(5, 2, 0, 0);
+    wxFlexGridSizer* SizerThreadSearchGridLayout = new wxFlexGridSizer(4, 2, 0, 0);
     wxStaticBoxSizer* SizerListControlOptions = new wxStaticBoxSizer(SizerListControlOptions_staticbox, wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchLayoutGlobal = new wxStaticBoxSizer(SizerThreadSearchLayoutGlobal_staticbox, wxVERTICAL);
     wxStaticBoxSizer* SizerThreadSearchOptions = new wxStaticBoxSizer(SizerThreadSearchOptions_staticbox, wxVERTICAL);
@@ -218,7 +278,7 @@ void ThreadSearchConfPanel::do_layout()
     SizerTop->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL|wxADJUST_MINSIZE, 4);
     SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL|wxADJUST_MINSIZE, 4);
-    wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, -1, wxT("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
+    wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, wxT("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
     SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, wxADJUST_MINSIZE, 0);
     SizerTop->Add(SizerThreadSearchOptions, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL|wxADJUST_MINSIZE, 4);
@@ -230,9 +290,11 @@ void ThreadSearchConfPanel::do_layout()
     SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
     SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
     SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
+    SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
+    SizerThreadSearchGridLayout->Add(m_pRadSortBy, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->AddGrowableCol(0);
     SizerThreadSearchGridLayout->AddGrowableCol(1);
-    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
+    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 0);
     SizerTop->Add(SizerThreadSearchLayout, 0, wxALL|wxEXPAND, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);
@@ -306,6 +368,42 @@ void ThreadSearchConfPanel::OnApply()
 		}
     }
     m_ThreadSearchPlugin.SetLoggerType(lgrType);
+
+    radIndex = m_pRadSortBy->GetSelection();
+    InsertIndexManager::eFileSorting sortingType;
+    switch (radIndex)
+    {
+		case 1 :
+		{
+			sortingType = InsertIndexManager::SortByFileName;
+			break;
+		}
+		default:
+		// case 0 :
+		{
+			sortingType = InsertIndexManager::SortByFilePath;
+			break;
+		}
+    }
+    m_ThreadSearchPlugin.SetFileSorting(sortingType);
+
+    radIndex = m_pRadSplitterWndMode->GetSelection();
+    wxSplitMode splitterMode;
+    switch (radIndex)
+    {
+		case 1 :
+		{
+			splitterMode = wxSPLIT_VERTICAL;
+			break;
+		}
+		default:
+		// case 0 :
+		{
+			splitterMode = wxSPLIT_HORIZONTAL;
+			break;
+		}
+    }
+    m_ThreadSearchPlugin.SetSplitterMode(splitterMode);
 
 	// Updates toolbar visibility
 	m_ThreadSearchPlugin.ShowToolBar(m_pChkShowThreadSearchToolBar->IsChecked());

@@ -32,16 +32,14 @@ class ThreadSearchLoggerTree : public wxEvtHandler, public ThreadSearchLoggerBas
 {
 public:
 	/** Constructor. */
-	ThreadSearchLoggerTree(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin, wxPanel* pParent, long id);
+	ThreadSearchLoggerTree(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
+							InsertIndexManager::eFileSorting fileSorting, wxPanel* pParent, long id);
 
 	/** Destructor. */
 	virtual ~ThreadSearchLoggerTree();
 
 	/** Getter */
 	virtual eLoggerTypes GetLoggerType() {return TypeTree;}
-
-	/** Called by ThreadSearchView when new settings are applied. */
-	virtual void Update();
 
 	/** Called by ThreadSearchView to process a ThreadSearchEvent
 	  * sent by worker thread.

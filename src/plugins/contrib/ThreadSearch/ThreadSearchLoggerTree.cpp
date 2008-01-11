@@ -19,9 +19,10 @@
 
 ThreadSearchLoggerTree::ThreadSearchLoggerTree(ThreadSearchView& threadSearchView,
 											   ThreadSearch& threadSearchPlugin,
+											   InsertIndexManager::eFileSorting fileSorting,
 											   wxPanel* pParent,
 											   long id)
-					   : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin)
+					   : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin, fileSorting)
 					   , m_pTreeLog(NULL)
 					   , m_FirstItemProcessed(false)
 {
@@ -44,12 +45,6 @@ ThreadSearchLoggerTree::~ThreadSearchLoggerTree()
 	}
 	m_pTreeLog->Destroy();
 	m_pTreeLog = NULL;
-}
-
-
-void ThreadSearchLoggerTree::Update()
-{
-	// Nothing to do for tree control
 }
 
 
@@ -121,6 +116,7 @@ void ThreadSearchLoggerTree::OnLoggerTreeDoubleClick(wxTreeEvent& event)
     	return;
     }
     m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
+
     event.Skip();
 }
 
@@ -195,16 +191,32 @@ void ThreadSearchLoggerTree::OnThreadSearchEvent(const ThreadSearchEvent& event)
 	const wxFileName&    filename(event.GetString());
 	bool                 setFocus(false);
 	wxTreeItemId         rootItemId(m_pTreeLog->GetRootItem());
+	wxTreeItemId         fileItemId;
+	long                 index    = m_IndexManager.GetInsertionIndex(filename.GetFullPath());
+	long                 nb_items = m_pTreeLog->GetChildrenCount(rootItemId, false);
 
+	wxASSERT(index != wxNOT_FOUND);
 	wxASSERT((words.GetCount() % 2) == 0);
 
 	// Use of Freeze Thaw to enhance speed and limit blink effect
 	m_pTreeLog->Freeze();
 	wxTreeItemId lineItemId;
-	wxTreeItemId fileItemId = m_pTreeLog->AppendItem(rootItemId,
+
+	if ( index == nb_items )
+	{
+		fileItemId = m_pTreeLog->AppendItem(rootItemId,
 													 wxString::Format(wxT("%s (%s)"),
 																	  filename.GetFullName().c_str(),
 																	  filename.GetPath().c_str()));
+	}
+	else
+	{
+		fileItemId = m_pTreeLog->InsertItem(rootItemId, index,
+											wxString::Format(wxT("%s (%s)"),
+															 filename.GetFullName().c_str(),
+															 filename.GetPath().c_str()));
+	}
+
 	for (size_t i = 0; i < words.GetCount(); i += 2)
 	{
 		lineItemId = m_pTreeLog->AppendItem(fileItemId, wxString::Format(wxT("%s: %s"),
@@ -254,6 +266,8 @@ void ThreadSearchLoggerTree::Clear()
 
     m_pTreeLog->DeleteChildren(m_pTreeLog->GetRootItem());
     m_FirstItemProcessed = false;
+
+    m_IndexManager.Reset();
 
     ConnectEvents(pParent);
 }

@@ -14,6 +14,7 @@ libThreadSearch_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -
 libThreadSearch_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
+			InsertIndexManager.cpp \
 			SearchInPanel.cpp \
 			TextFileSearcher.cpp \
 			TextFileSearcherRegEx.cpp \
@@ -33,6 +34,7 @@ libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
 			ThreadSearchViewManagerMessagesNotebook.cpp
 
 noinst_HEADERS =  	DirectoryParamsPanel.h \
+			InsertIndexManager.h \
 			logging.h \
 			SearchInPanel.h \
 			TextFileSearcher.h \

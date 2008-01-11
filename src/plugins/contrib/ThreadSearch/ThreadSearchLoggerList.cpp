@@ -25,9 +25,10 @@
 
 ThreadSearchLoggerList::ThreadSearchLoggerList(ThreadSearchView& threadSearchView,
 											   ThreadSearch& threadSearchPlugin,
+											   InsertIndexManager::eFileSorting fileSorting,
 											   wxPanel* pParent,
 											   long id)
-					   : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin)
+					   : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin, fileSorting)
 {
 	m_pListLog = new wxListCtrl(pParent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER);
 	m_pListLog->SetMinSize(wxSize(100,100));
@@ -53,6 +54,8 @@ ThreadSearchLoggerList::~ThreadSearchLoggerList()
 
 void ThreadSearchLoggerList::Update()
 {
+	ThreadSearchLoggerBase::Update();
+
 	// Adds/Removes listview header and adds/removes vertical rules
 	m_pListLog->SetSingleStyle(wxLC_NO_HEADER, !m_ThreadSearchPlugin.GetDisplayLogHeaders());
 	m_pListLog->SetSingleStyle(wxLC_VRULES,     m_ThreadSearchPlugin.GetDrawLogLines());
@@ -156,9 +159,9 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
 
 	// Use of Freeze Thaw to enhance speed and limit blink effect
 	m_pListLog->Freeze();
+	long index = m_IndexManager.GetInsertionIndex(filename.GetFullPath(), words.GetCount()/2);
 	for (size_t i = 0; i < words.GetCount(); i += 2)
 	{
-		int index = m_pListLog->GetItemCount();
 		m_pListLog->InsertItem(index, filename.GetPath());     // Directory
 		m_pListLog->SetItem(index, 1, filename.GetFullName()); // File name
 		m_pListLog->SetItem(index, 2, words[i]);               // Line index starting from 1
@@ -182,6 +185,7 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
 				setFocus = true;
 			}
 		}
+		index++;
 	}
 	m_pListLog->Thaw();
 
@@ -237,4 +241,5 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
 void ThreadSearchLoggerList::Clear()
 {
 	m_pListLog->DeleteAllItems();
+    m_IndexManager.Reset();
 }

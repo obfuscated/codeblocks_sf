@@ -12,6 +12,7 @@
 #define THREAD_SEARCH_H
 
 #include <wx/string.h>
+#include <wx/splitter.h>
 
 #include <cbplugin.h> // for "class cbPlugin"
 #include <globals.h> // for "ModuleType"
@@ -19,6 +20,7 @@
 #include "ThreadSearchFindData.h"
 #include "ThreadSearchViewManagerBase.h"
 #include "ThreadSearchLoggerBase.h"
+#include "InsertIndexManager.h"
 
 class wxWindow;
 class wxMenu;
@@ -128,8 +130,10 @@ public:
 	void SetDrawLogLines(bool drawLogLines)                {m_DrawLogLines = drawLogLines;}
 	void SetFindData(const ThreadSearchFindData& findData) {m_FindData = findData;}
 
-	void SetManagerType(ThreadSearchViewManagerBase::eManagerTypes mgrType);
+	void SetManagerType (ThreadSearchViewManagerBase::eManagerTypes mgrType);
 	void SetLoggerType (ThreadSearchLoggerBase::eLoggerTypes       lgrType) {m_LoggerType = lgrType;}
+	void SetSplitterMode(wxSplitMode                                splitterMode) {m_SplitterMode = splitterMode;}
+	void SetFileSorting (InsertIndexManager::eFileSorting           fileSorting)  {m_FileSorting  = fileSorting;}
 
 	// Getters
 	bool GetCtxMenuIntegration()                     const {return m_CtxMenuIntegration;}
@@ -143,6 +147,8 @@ public:
 	ThreadSearchFindData& GetFindData()                    {return m_FindData;}
 	ThreadSearchViewManagerBase::eManagerTypes GetManagerType() const {return m_pViewManager->GetManagerType();}
 	ThreadSearchLoggerBase::eLoggerTypes       GetLoggerType()  const {return m_LoggerType;}
+	long                                       GetSplitterMode() const {return m_SplitterMode;}
+	InsertIndexManager::eFileSorting           GetFileSorting()  const {return m_FileSorting;}
 
 	/** This method runs a threaded search for text param.
 	  * @param text : text to look after
@@ -199,7 +205,9 @@ protected:
 	  * @param sashPosition : position of the splitter window.
 	  * @param mgrType      : type of view manager (Messages notebook, layout)
 	  */
-	virtual void LoadConfig(bool &showPanel, int &sashPosition, ThreadSearchViewManagerBase::eManagerTypes& mgrType);
+	virtual void LoadConfig(bool &showPanel, int &sashPosition,
+							ThreadSearchViewManagerBase::eManagerTypes& mgrType,
+							wxArrayString& searchPatterns);
 
 	/** This method saves the plugin configuration to default.conf using
 	  * the standard ConfigManager
@@ -208,7 +216,9 @@ protected:
 	  * @param sashPosition : position of the splitter window.
 	  * @param mgrType :      Type of view manager (Messages notebook, layout)
 	  */
-	virtual void SaveConfig(bool showPanel, int sashPosition, ThreadSearchViewManagerBase::eManagerTypes mgrType);
+	virtual void SaveConfig(bool showPanel, int sashPosition,
+							ThreadSearchViewManagerBase::eManagerTypes mgrType,
+							const wxArrayString& searchPatterns);
 
 private:
 	/** Event handler called when user clicks on the 'Thread search'
@@ -280,6 +290,9 @@ private:
     bool                                 m_DrawLogLines;              // Draw lines between columns in wxListCtrl logger
     bool                                 m_OnReleased;                // For multiple simultaneous calls of OnRelease
     wxComboBox*                          m_pCboSearchExpr;
+    wxSplitMode                          m_SplitterMode;              // Sets vertical or horizontal display for code
+                                                                      // preview and search results (logger)
+    InsertIndexManager::eFileSorting     m_FileSorting;               // Sorts file by name or by path
 
 	DECLARE_EVENT_TABLE();
 };

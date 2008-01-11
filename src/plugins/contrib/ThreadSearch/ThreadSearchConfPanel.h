@@ -15,6 +15,10 @@
 // begin wxGlade: ::dependencies
 // end wxGlade
 
+// begin wxGlade: ::extracode
+
+// end wxGlade
+
 #include <wx/string.h>
 
 #include "configurationpanel.h"
@@ -86,6 +90,8 @@ protected:
     wxCheckBox* m_pChkDrawLogLines;
     wxRadioBox* m_pRadPanelManagement;
     wxRadioBox* m_pRadLoggerType;
+    wxRadioBox* m_pRadSplitterWndMode;
+    wxRadioBox* m_pRadSortBy;
     // end wxGlade
 
     DECLARE_EVENT_TABLE();
@@ -98,6 +104,7 @@ public:
 	  */
     void OnThreadSearchEnable(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkShowThreadSearchToolBarClick(wxCommandEvent &event); // wxGlade: <event_handler>
+    void OnChkCodePreview(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkShowThreadSearchWidgetsClick(wxCommandEvent &event); // wxGlade: <event_handler>
 }; // wxGlade: end class
 

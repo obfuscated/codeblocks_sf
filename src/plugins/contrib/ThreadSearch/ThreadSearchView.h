@@ -19,6 +19,7 @@
 #include <wx/dynarray.h>
 #include <wx/datetime.h>
 #include <wx/panel.h>
+#include <wx/arrstr.h>
 
 #include "editormanager.h"
 #include "cbproject.h"
@@ -93,9 +94,13 @@ public:
 	  */
 	bool UpdatePreview(const wxString& file, long line);
 
-	/** Sets the splitter window sash position. */
+	/** Sets/gets the splitter window sash position. */
 	void SetSashPosition(int position, const bool redraw = true);
-	int  GetSashPosition();
+	int  GetSashPosition() const;
+
+	/** Sets/gets the search history */
+	void          SetSearchHistory(const wxArrayString& searchPatterns);
+	wxArrayString GetSearchHistory() const;
 
 	/** SetLoggerType
 	  * Sets the logger type. If value is different from current one,
@@ -104,13 +109,11 @@ public:
 	  */
 	void SetLoggerType(ThreadSearchLoggerBase::eLoggerTypes lgrType);
 
-
 	/** PostThreadSearchEvent
 	  * @param event : event sent by the worker thread (ThreadSearchThread)
 	  * Thread safe mechanism. Clone the worker thread event to the mutex protected events array.
 	  */
 	void PostThreadSearchEvent(const ThreadSearchEvent& event);
-
 
 	/** SetToolBar
 	  * C::B plugins manager provides a toolbar instance to ThreadSearch instance
@@ -123,10 +126,11 @@ public:
 	  */
 	void ShowSearchControls(bool show);
 
-	/** This method shows/hide the code preview editor.
-	  * @param show : show = true/hide = false toolbar
+	/** This method applies splitter settings
+	  * @param showCodePreview : show = true/hide = false preview editor (=~ splitted or not)
+	  * @param splitterMode : wxSPLIT_HORIZONTAL or wxSPLIT_VERTICAL
 	  */
-	void ShowCodePreview(bool show);
+	void ApplySplitterSettings(bool showCodePreview, long splitterMode);
 
 private:
     // begin wxGlade: ThreadSearchView::methods

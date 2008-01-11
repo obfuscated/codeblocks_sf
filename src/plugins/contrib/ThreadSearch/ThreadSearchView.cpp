@@ -61,6 +61,7 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
     m_pSearchPreview = new cbStyledTextCtrl(m_pPnlPreview, wxID_ANY, wxDefaultPosition, wxSize(1,1));
     m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this, m_ThreadSearchPlugin,
 																	m_ThreadSearchPlugin.GetLoggerType(),
+																	m_ThreadSearchPlugin.GetFileSorting(),
 																	m_pPnlListLog,
 																	idWndLogger);
 
@@ -242,7 +243,7 @@ void ThreadSearchView::OnBtnShowDirItemsClick(wxCommandEvent& WXUNUSED(event))
 void ThreadSearchView::OnSplitterDoubleClick(wxSplitterEvent &event)
 {
     m_ThreadSearchPlugin.SetShowCodePreview(false);
-    ShowCodePreview(false);
+	ApplySplitterSettings(false, m_pSplitter->GetSplitMode());
 
     // Informs user on how to show code preview later.
     cbMessageBox(wxT("To re-enable code preview, check the \"Show code preview editor\" in ThreadSearch options panel."),
@@ -463,6 +464,10 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
 	// Show even if line is folded
 	if (cbStyledTextCtrl* control = ed->GetControl()) {
 		control->EnsureVisible(line);
+
+		wxFocusEvent ev(wxEVT_SET_FOCUS);
+		ev.SetWindow(this);
+		control->AddPendingEvent(ev);
 	}
 }
 
@@ -571,9 +576,10 @@ void ThreadSearchView::Update()
 	m_pPnlDirParams->SetSearchMask           (findData.GetSearchMask());
 
 	ShowSearchControls(m_ThreadSearchPlugin.GetShowSearchControls());
-	ShowCodePreview(m_ThreadSearchPlugin.GetShowCodePreview());
 	SetLoggerType(m_ThreadSearchPlugin.GetLoggerType());
 	m_pLogger->Update();
+
+	ApplySplitterSettings(m_ThreadSearchPlugin.GetShowCodePreview(), m_ThreadSearchPlugin.GetSplitterMode());
 }
 
 
@@ -855,14 +861,22 @@ void ThreadSearchView::ShowSearchControls(bool show)
 }
 
 
-void ThreadSearchView::ShowCodePreview(bool show)
+void ThreadSearchView::ApplySplitterSettings(bool showCodePreview, long splitterMode)
 {
-	if ( show == true )
+	if ( showCodePreview == true )
 	{
-		if ( m_pSplitter->IsSplit() == false )
+		if ( (m_pSplitter->IsSplit() == false) || (splitterMode != m_pSplitter->GetSplitMode()) )
+		{
+			if ( m_pSplitter->IsSplit() == true ) m_pSplitter->Unsplit();
+			if ( splitterMode == wxSPLIT_HORIZONTAL )
+	{
+				m_pSplitter->SplitHorizontally(m_pPnlListLog, m_pPnlPreview);
+			}
+			else
 		{
 			m_pSplitter->SplitVertically(m_pPnlPreview, m_pPnlListLog);
 		}
+	}
 	}
 	else
 	{
@@ -887,7 +901,9 @@ void ThreadSearchView::SetLoggerType(ThreadSearchLoggerBase::eLoggerTypes lgrTyp
 		delete m_pLogger;
 		m_pLogger = ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(*this
 																	   , m_ThreadSearchPlugin
-																	   , lgrType, m_pPnlListLog
+																	   , lgrType
+																	   , m_ThreadSearchPlugin.GetFileSorting()
+																	   , m_pPnlListLog
 																	   , idWndLogger);
 		m_pPnlListLog->GetSizer()->Add(m_pLogger->GetWindow(), 1, wxEXPAND|wxFIXED_MINSIZE, 0);
 		wxSizer* pTopSizer = m_pPnlListLog->GetSizer();
@@ -902,7 +918,23 @@ void ThreadSearchView::SetSashPosition(int position, const bool redraw)
 }
 
 
-int ThreadSearchView::GetSashPosition()
+int ThreadSearchView::GetSashPosition() const
 {
 	return m_pSplitter->GetSashPosition();
+}
+
+
+void ThreadSearchView::SetSearchHistory(const wxArrayString& searchPatterns)
+{
+	m_pCboSearchExpr->Append(searchPatterns);
+	if ( searchPatterns.GetCount() > 0 )
+	{
+		m_pCboSearchExpr->SetSelection(0);
+	}
+}
+
+
+wxArrayString ThreadSearchView::GetSearchHistory() const
+{
+	return m_pCboSearchExpr->GetStrings();
 }

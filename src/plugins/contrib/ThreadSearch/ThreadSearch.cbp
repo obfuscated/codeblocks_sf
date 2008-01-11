@@ -60,6 +60,8 @@
 		</ExtraCommands>
 		<Unit filename="DirectoryParamsPanel.cpp" />
 		<Unit filename="DirectoryParamsPanel.h" />
+		<Unit filename="InsertIndexManager.cpp" />
+		<Unit filename="InsertIndexManager.h" />
 		<Unit filename="SearchInPanel.cpp" />
 		<Unit filename="SearchInPanel.h" />
 		<Unit filename="TextFileSearcher.cpp" />

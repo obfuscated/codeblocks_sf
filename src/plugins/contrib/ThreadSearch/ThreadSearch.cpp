@@ -125,7 +125,9 @@ ThreadSearch::ThreadSearch()
 			  m_LoggerType(ThreadSearchLoggerBase::TypeList),
 			  m_DisplayLogHeaders(true),
 			  m_DrawLogLines(false),
-			  m_pCboSearchExpr(0)
+			  m_pCboSearchExpr(0),
+			  m_SplitterMode(wxSPLIT_VERTICAL),
+			  m_FileSorting(InsertIndexManager::SortByFilePath)
 {
 	// Make sure our resources are available.
 	// In the generated boilerplate code we have no resources but when
@@ -162,12 +164,14 @@ void ThreadSearch::OnAttach()
 	bool showPanel;
 	int  sashPosition;
 	ThreadSearchViewManagerBase::eManagerTypes mgrType;
+	wxArrayString searchPatterns;
 
 	// Loads configuration from default.conf
-	LoadConfig(showPanel, sashPosition, mgrType);
+	LoadConfig(showPanel, sashPosition, mgrType, searchPatterns);
 
 	// Adds window to the manager
 	m_pThreadSearchView = new ThreadSearchView(*this);
+	m_pThreadSearchView->SetSearchHistory(searchPatterns);
 
 	// Builds manager
 	m_pViewManager = ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(m_pThreadSearchView, true, mgrType);
@@ -188,9 +192,6 @@ void ThreadSearch::OnAttach()
 
 	// Shows/Hides search widgets on the Messages notebook ThreadSearch panel
 	m_pThreadSearchView->ShowSearchControls(m_ShowSearchControls);
-
-	// Shows/Hides code preview on the Messages notebook ThreadSearch panel
-	m_pThreadSearchView->ShowCodePreview(m_ShowCodePreview);
 
 	// true if it enters in OnRelease for the first time
 	m_OnReleased = false;
@@ -234,12 +235,13 @@ void ThreadSearch::OnThreadSearchViewDestruction()
 
 	// We show code preview to save a consistent
 	// value of splitter sash position.
-	m_pThreadSearchView->ShowCodePreview(true);
+	m_pThreadSearchView->ApplySplitterSettings(m_ShowCodePreview, m_SplitterMode);
 
 	// Saves configuration to default.conf
 	SaveConfig(m_pViewManager->IsViewShown(),
 			   m_pThreadSearchView->GetSashPosition(),
-			   m_pViewManager->GetManagerType());
+			   m_pViewManager->GetManagerType(),
+			   m_pThreadSearchView->GetSearchHistory());
 
 	// Reset of the pointer as view is being deleted
 	m_pThreadSearchView = NULL;
@@ -474,11 +476,14 @@ void ThreadSearch::Notify()
 	m_pThreadSearchView->Update();
 	SaveConfig(m_pViewManager->IsViewShown(),
 			   m_pThreadSearchView->GetSashPosition(),
-			   m_pViewManager->GetManagerType());
+			   m_pViewManager->GetManagerType(),
+			   m_pThreadSearchView->GetSearchHistory());
 }
 
 
-void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition, ThreadSearchViewManagerBase::eManagerTypes& mgrType)
+void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
+							  ThreadSearchViewManagerBase::eManagerTypes& mgrType,
+							  wxArrayString& searchPatterns)
 {
 	if ( !IsAttached() )
 		return;
@@ -508,6 +513,12 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition, ThreadSearchVi
     m_FindData.SetSearchMask      (pCfg->Read    (wxT("/Mask"),               wxT("*.cpp;*.c;*.h")));
 
     sashPosition                 = pCfg->ReadInt(wxT("/SplitterPosn"),        0);
+    int splitterMode             = pCfg->ReadInt(wxT("/SplitterMode"),        wxSPLIT_VERTICAL);
+    m_SplitterMode               = wxSPLIT_VERTICAL;
+    if ( splitterMode == wxSPLIT_HORIZONTAL )
+    {
+    	m_SplitterMode = wxSPLIT_HORIZONTAL;
+    }
 
 	int managerType              = pCfg->ReadInt(wxT("/ViewManagerType"),     ThreadSearchViewManagerBase::TypeMessagesNotebook);
 	mgrType                      = ThreadSearchViewManagerBase::TypeMessagesNotebook;
@@ -522,10 +533,14 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition, ThreadSearchVi
     {
     	m_LoggerType = ThreadSearchLoggerBase::TypeTree;
     }
+
+    searchPatterns = pCfg->ReadArrayString(wxT("/SearchPatterns"));
 }
 
 
-void ThreadSearch::SaveConfig(bool showPanel, int sashPosition, ThreadSearchViewManagerBase::eManagerTypes mgrType)
+void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
+							  ThreadSearchViewManagerBase::eManagerTypes mgrType,
+							  const wxArrayString& searchPatterns)
 {
     ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("ThreadSearch"));
 
@@ -552,8 +567,12 @@ void ThreadSearch::SaveConfig(bool showPanel, int sashPosition, ThreadSearchView
     pCfg->Write(wxT("/Mask"),               m_FindData.GetSearchMask());
 
     pCfg->Write(wxT("/SplitterPosn"),       sashPosition);
+    pCfg->Write(wxT("/SplitterMode"),       (int)m_SplitterMode);
     pCfg->Write(wxT("/ViewManagerType"),    m_pViewManager->GetManagerType());
     pCfg->Write(wxT("/LoggerType"),         m_LoggerType);
+    pCfg->Write(wxT("/FileSorting"),        m_FileSorting);
+
+    pCfg->Write(wxT("/SearchPatterns"),     searchPatterns);
 }
 
 

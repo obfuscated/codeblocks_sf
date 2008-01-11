@@ -29,7 +29,8 @@ class ThreadSearchLoggerList : public wxEvtHandler, public ThreadSearchLoggerBas
 {
 public:
 	/** Constructor. */
-	ThreadSearchLoggerList(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin, wxPanel* pParent, long id);
+	ThreadSearchLoggerList(ThreadSearchView& threadSearchView, ThreadSearch& threadSearchPlugin,
+							InsertIndexManager::eFileSorting fileSorting, wxPanel* pParent, long id);
 
 	/** Destructor. */
 	virtual ~ThreadSearchLoggerList();
