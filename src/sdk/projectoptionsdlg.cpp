@@ -147,11 +147,16 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     // scripts
     BuildScriptsTree();
 
+    // make sure everything is laid out properly
+    // before adding panels from plugins
+    // we don't want the dialog to become huge ;)
+    // note that a similar situation in editor settings had been solved by commenting
+    // the following line out...
+    GetSizer()->SetSizeHints(this);
+
     // other plugins configuration
     AddPluginPanels();
 
-    // make sure everything is laid out properly
-    GetSizer()->SetSizeHints(this);
     CentreOnParent();
 }
 
