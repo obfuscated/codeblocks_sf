@@ -139,11 +139,11 @@ function SetupTarget(target,is_debug)
 
     target.SetTargetType(ttConsoleOnly);
     // TODO (Biplab#9#): Wizard.GetProjectName() returns file extension when the wizard is of Target type. This bug needs to be fixed
-    local ProjectName = (WizType == 0) ? Wizard.GetProjectName() : target.GetParentProject().GetTitle();
+    local ProjectName = (WizardType == 0) ? Wizard.GetProjectName() : target.GetParentProject().GetTitle();
 
     if (is_debug)
     {
-        local TargetName = (WizType == 0) ? Wizard.GetDebugOutputDir() : Wizard.GetTargetOutputDir();
+        local TargetName = (WizardType == 0) ? Wizard.GetDebugOutputDir() : Wizard.GetTargetOutputDir();
         if (target.GetWorkingDir().Matches(_T("")))
             target.SetOutputFilename(target.SuggestOutputFilename());
         else
@@ -173,7 +173,7 @@ function SetupTarget(target,is_debug)
     }
     else
     {
-        local TargetName = (WizType == 0) ? Wizard.GetReleaseOutputDir() : Wizard.GetTargetOutputDir();
+        local TargetName = (WizardType == 0) ? Wizard.GetReleaseOutputDir() : Wizard.GetTargetOutputDir();
         if (target.GetWorkingDir().Matches(_T("")))
             target.SetOutputFilename(target.SuggestOutputFilename());
         else
