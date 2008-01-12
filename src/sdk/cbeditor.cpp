@@ -1432,13 +1432,13 @@ void cbEditor::AutoComplete()
         {
             // found; auto-complete it
             msgMan->DebugLog(_T("Match found"));
-            control->BeginUndoAction();
 
             // indent code accordingly
             wxString code = it->second;
             code.Replace(_T("\n"), _T('\n') + lineIndent);
 
             // look for and replace macros
+            bool canceled = false;
             int macroPos = code.Find(_T("$("));
             while (macroPos != -1)
             {
@@ -1453,9 +1453,19 @@ void cbEditor::AutoComplete()
                 wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
                 msgMan->DebugLog(_T("Found macro: ") + macroName);
                 wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
+                if (macro.IsEmpty())
+                {
+                	canceled = true;
+                	break;
+                }
                 code.Replace(_T("$(") + macroName + _T(")"), macro);
                 macroPos = code.Find(_T("$("));
             }
+            
+            if (canceled)
+				break;
+
+            control->BeginUndoAction();
 
             // delete keyword
             control->SetSelection(wordStartPos, curPos);
