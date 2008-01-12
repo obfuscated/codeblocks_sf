@@ -12,6 +12,7 @@
 
 multi_thread_dynamic <- true; //Default to Multi-thread. For MSVC only.
 ConsoleLang <- 1; // default to C++
+WizardType  <- 0; // 0 - Project, 1 - Target
 
 //
 //------------------------------------------------------------------------------
@@ -29,28 +30,27 @@ function BeginWizard()
 
         // intro
         Wizard.AddInfoPage(_T("ConsoleIntro"), intro_msg);
+        // select language
+        Wizard.AddGenericSingleChoiceListPage(_T("ConsoleLanguagePage"), _T("Please select the language you want to use."), _T("C;C++"), ConsoleLang); // select language
         // select project name and path
         Wizard.AddProjectPathPage();
         // select compiler and configurations
         Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
-        // select language
-        Wizard.AddGenericSingleChoiceListPage(_T("ConsoleLanguagePage"), _T("Please select the language you want to use."), _T("C;C++"), ConsoleLang); // select language
     }
     else if (wiz_type == wizTarget)
     {
+        WizardType = 1;
         local intro_msg = _T("Welcome to the new console build target wizard!\n" +
                             "This wizard will guide you to create a new console build target.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
         Wizard.AddInfoPage(_T("ConsoleIntro"), intro_msg);
-        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+        Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
     }
-    else
-        print(wiz_type);
 }
 //
 //------------------------------------------------------------------------------
 //
-function OnLeave_ConsoleLanguagePage(fwd)
+function OnLeave_CompilerPage(fwd)
 {
     if (fwd)
     {
@@ -138,14 +138,19 @@ function SetupTarget(target,is_debug)
         return false;
 
     target.SetTargetType(ttConsoleOnly);
+    // TODO (Biplab#9#): Wizard.GetProjectName() returns file extension when the wizard is of Target type. This bug needs to be fixed
+    local ProjectName = (WizType == 0) ? Wizard.GetProjectName() : target.GetParentProject().GetTitle();
 
     if (is_debug)
     {
+        local TargetName = (WizType == 0) ? Wizard.GetDebugOutputDir() : Wizard.GetTargetOutputDir();
         if (target.GetWorkingDir().Matches(_T("")))
             target.SetOutputFilename(target.SuggestOutputFilename());
         else
-            target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
-        // enable debugging symbols for this target
+            //target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+            target.SetOutputFilename(TargetName + ProjectName + DOT_EXT_EXECUTABLE);
+
+            // enable debugging symbols for this target
         // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         DebugSymbolsOn(target, Wizard.GetCompilerID());
         //Special consideration for MSVC 7.1
@@ -168,10 +173,13 @@ function SetupTarget(target,is_debug)
     }
     else
     {
+        local TargetName = (WizType == 0) ? Wizard.GetReleaseOutputDir() : Wizard.GetTargetOutputDir();
         if (target.GetWorkingDir().Matches(_T("")))
             target.SetOutputFilename(target.SuggestOutputFilename());
         else
-            target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+            //target.SetOutputFilename(TargetName + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+            target.SetOutputFilename(TargetName + ProjectName + DOT_EXT_EXECUTABLE);
+
         // enable optimizations for this target
         // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
         OptimizationsOn(target, Wizard.GetCompilerID());
