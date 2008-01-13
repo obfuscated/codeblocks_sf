@@ -55,12 +55,12 @@ noinst_HEADERS =  	DirectoryParamsPanel.h \
 			ThreadSearchViewManagerLayout.h \
 			ThreadSearchViewManagerMessagesNotebook.h
 
-EXTRA_DIST = 	ThreadSearch.cbp \
-		ThreadSearch-unix.cbp \
-		ThreadSearch-unix.wxg \
-		update.bat \
-		update \
-		manifest.xml
+EXTRA_DIST = 	$(srcdir)/ThreadSearch.cbp \
+		$(srcdir)/ThreadSearch-unix.cbp \
+		$(srcdir)/ThreadSearch.wxg \
+		$(srcdir)/update.bat \
+		$(srcdir)/update \
+		$(srcdir)/manifest.xml
 
 pkgdata_DATA = ThreadSearch.zip
 CLEANFILES = $(pkgdata_DATA)

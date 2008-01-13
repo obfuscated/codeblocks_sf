@@ -18,14 +18,14 @@ libwxsmithcontribitems_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-unde
 libwxsmithcontribitems_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la \
 		       ../wxSmith/libwxsmithlib.la
 
-EXTRA_DIST = ./wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
-		./wxchart/wxchart-1.0/include/wx/chartart/*.bmp \
-		./wxchart/*.xpm \
-		./wxchart/*.png \
-		./wxthings/*.xpm \
-		./wxthings/*.png \
-		./wxflatnotebook/images/*.xpm \
-		./wxflatnotebook/images/*.png \
+EXTRA_DIST = $(srcdir)/wxchart/wxchart-1.0/include/wx/chartart/*.xpm \
+		$(srcdir)/wxchart/wxchart-1.0/include/wx/chartart/*.bmp \
+		$(srcdir)/wxchart/*.xpm \
+		$(srcdir)/wxchart/*.png \
+		$(srcdir)/wxthings/*.xpm \
+		$(srcdir)/wxthings/*.png \
+		$(srcdir)/wxflatnotebook/images/*.xpm \
+		$(srcdir)/wxflatnotebook/images/*.png \
 		$(srcdir)/*.cbp \
 		manifest.xml
 
