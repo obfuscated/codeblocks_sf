@@ -29,7 +29,7 @@ function BeginWizard()
                              "This wizard will guide you to create a new DLL build target.\n\n" +
                              "When you 're ready to proceed, please click \"Next\"...");
         Wizard.AddInfoPage(_T("DllIntro"), intro_msg);
-        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+        Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
     }
     else
         print(wiz_type);
@@ -43,31 +43,6 @@ function GetFilesDir()
 
 function SetupProject(project)
 {
-    // enable compiler warnings (project-wide)
-    WarningsOn(project, Wizard.GetCompilerID());
-
-    // Now define BUILD_DLL to export the functions
-    if (    GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc"))
-        ||  GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("dmc")))
-        project.AddCompilerOption(_T("-DBUILD_DLL"));
-    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
-    {
-        project.AddCompilerOption(_T("-DBUILD_DLL"));
-        project.AddCompilerOption(_T("-tWR")); // To use Dynamic RTL
-        project.AddLinkerOption(_T("-Gi")); // To create an import library
-    }
-    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
-        project.AddCompilerOption(_T("/DBUILD_DLL"));
-    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
-    {
-        project.AddCompilerOption(_T("-dBUILD_DLL"));
-        project.AddCompilerOption(_T("-bt=nt"));
-        project.AddLinkerOption(_T("OPTION IMPLIB")); // To create an import library
-    }
-
-    // Add user32.lib for MessageBox()
-    project.AddLinkLib(_T("user32"));
-
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());
     if (!IsNull(target))
@@ -104,6 +79,35 @@ function SetupTarget(target, is_debug)
 
     target.SetOutputFilename(dll_filename_with_path);
 
+    // enable compiler warnings (project-wide)
+    WarningsOn(target, Wizard.GetCompilerID());
+
+    // Now define BUILD_DLL to export the functions
+    if (    GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc"))
+        ||  GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("dmc")))
+    {
+        target.AddCompilerOption(_T("-DBUILD_DLL"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+    {
+        target.AddCompilerOption(_T("-DBUILD_DLL"));
+        target.AddCompilerOption(_T("-tWR")); // To use Dynamic RTL
+        target.AddLinkerOption(_T("-Gi")); // To create an import library
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+    {
+        target.AddCompilerOption(_T("/DBUILD_DLL"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+    {
+        target.AddCompilerOption(_T("-dBUILD_DLL"));
+        target.AddCompilerOption(_T("-bt=nt"));
+        target.AddLinkerOption(_T("OPTION IMPLIB")); // To create an import library
+    }
+
+    // Add user32.lib for MessageBox()
+    target.AddLinkLib(_T("user32"));
+    
     if (is_debug)
     {
         // enable debugging symbols for this target
