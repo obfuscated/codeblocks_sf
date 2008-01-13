@@ -78,7 +78,7 @@ However, if we want to build a wx application, we need to include the headers of
 
 Wx is provided as a zip file of it's sources, so we need to build that ourselves. We already shopped for the MinGW compiler, so we have all the tools we need at hand.
 
-Next, let's unzip the wx sources into \file{C:\osp Projects} so we will end up with a wx root directory like this: \file{C:\osp Projects\osp wxWidgets-2.8.4}. Next unzip the patch into the same directory letting it overwrite files. Note that we are going to refer to the wx root directory from now on as \var{wxDir}
+Next, let's unzip the wx sources into \file{C:\osp Projects} so we will end up with a wx root directory like this: \file{C:\osp Projects\osp wxWidgets-2.8.7}. Next unzip the patch into the same directory letting it overwrite files. Note that we are going to refer to the wx root directory from now on as \var{wxDir}
 
 Now, we are going to build the wxWidgets. This is how we do it:
 
@@ -178,7 +178,7 @@ For the \codeline{cb} variable, set the \codeline{base} entry to the source dire
 For the \codeline{wx} variable, set the \codeline{base} entry to the source directory of wx (e.g.
 
 \begin{cmd}
-C:\Programme\wxWidgets-2.8.4
+C:\Programme\wxWidgets-2.8.7
 \end{cmd}
 
 In the \codeblocks project, the project variable \codeline{WX_SUFFIX} is set to \codeline{u}. This means that, when generating \codeblocks linking will be carried out against the \file{*u\_gcc\_custom.dll} library. The official nightly Builts of \codeblocks will be linked against \file{gcc\_cb.dll}. In doing so, the layout is as follows.
@@ -221,18 +221,28 @@ But, let's create a worksapce containing everything. Let's put that workspace in
 \begin{code}
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
- <Workspace title="Workspace">
-   <Project filename="src\CodeBlocks.cbp" active="1" />
-   <Project filename="src\plugins\contrib\codestat\codestat.cbp" />
-   <Project filename="src\plugins\contrib\copystrings\copystrings.cbp" />
-   <Project filename="src\plugins\contrib\dragscroll\dragscroll.cbp" />
-   <Project filename="src\plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />
-   <Project filename="src\plugins\contrib\help_plugin\help-plugin.cbp" />
-   <Project filename="src\plugins\contrib\keybinder\keybinder.cbp" />
-   <Project filename="src\plugins\contrib\profiler\cbprofiler.cbp" />
-   <Project filename="src\plugins\contrib\source_exporter\Exporter.cbp" />
-   <Project filename="src\plugins\contrib\wxSmith\wxSmith.cbp" />
- </Workspace>
+	<Workspace title="All contrib plugins">
+		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning.cbp" active="1" />
+		<Project filename="plugins\contrib\byogames\byogames.cbp" />
+		<Project filename="plugins\contrib\cb_koders\cb_koders.cbp" />
+		<Project filename="plugins\contrib\codesnippets\codesnippets.cbp" />
+		<Project filename="plugins\contrib\codestat\codestat.cbp" />
+		<Project filename="plugins\contrib\copystrings\copystrings.cbp" />
+		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />
+		<Project filename="plugins\contrib\dragscroll\dragscroll.cbp" />
+		<Project filename="plugins\contrib\envvars\envvars.cbp" />
+		<Project filename="plugins\contrib\help_plugin\help-plugin.cbp" />
+		<Project filename="plugins\contrib\keybinder\keybinder.cbp" />
+		<Project filename="plugins\contrib\lib_finder\lib_finder.cbp" />
+		<Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
+		<Project filename="plugins\contrib\regex_testbed\RegExTestbed.cbp" />
+		<Project filename="plugins\contrib\source_exporter\Exporter.cbp" />
+		<Project filename="plugins\contrib\symtab\symtab.cbp" />
+		<Project filename="plugins\contrib\ThreadSearch\ThreadSearch.cbp" />
+		<Project filename="plugins\contrib\wxSmith\wxSmith.cbp" />
+		<Project filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems.cbp" />
+		<Project filename="tools\cb_share_config\cb_share_config.cbp" />
+	</Workspace>
 </CodeBlocks_workspace_file>
 \end{code}
 

@@ -1,0 +1,211 @@
+\section{AutoVersioning}\label{sec:autoversioning}
+
+An application versioning plug in that increments the version and build number of your application every time a change has been made and stores it in \file{version.h} with easy to use variable declarations. Also have a feature for committing changes a la SVN style, a version scheme editor, a change log generator and more $\ldots$
+
+\subsection{Introduction}
+
+The idea of the AutoVersioning plugin was made during the development of a pre-alpha software that required the version info and status. Been to busy coding, without time to maintain the version number, just decided to develop a plugin that could do the job with little intervention as possible.
+
+\subsection{Features}
+
+Here is the list of features the plugin covers summarized:
+
+\begin{itemize}
+\item Supports C and C++.
+\item Generates and auto increment version variables.
+\item Software status editor.
+\item Integrated scheme editor for changing the behavior of the auto incrementation of version values.
+\item Date declarations as month, date and year.
+\item Ubuntu style version.
+\item Svn revision check.
+\item Change log generator.
+\item Works on Windows and Linux.
+\end{itemize}
+
+\subsection{Usage}
+
+After downloading the sources, compiling them and installing the plugin to \codeblocks just go to \menu{Project,Autoversioning} menu. A pop up window like this will appear:
+
+screenshot
+
+When hitting yes on the ask to configure message box, the main auto versioning configuration dialog will open, to let you configure the version info of your project. Each editable control has a tool tip with information that explains you its features, so if you put the mouse on the control the tool tip will pop up. Below is a screenshot showing all the tabs:
+
+screenshot
+
+After configuring your project for auto versioning, the settings that you entered on the configuration dialog will be stored on the project file, and a \file{version.h} file will be created. For now, every time that you hit the \menu{Project,Autoversioning} menu the configuration dialog will popup to let you edit your project version and versioning related settings, unless you don't save the new changes made by the plugin to the project file.
+
+\subsection{Dialog notebook tabs}
+\subsubsection{Version Values}
+
+Here you just enter the corresponding version values or let the auto versioning plugin increment them for you.
+
+\begin{description}
+\item[Major] Increments by 1 when the minor version reaches its maximum
+\item[Minor] Increments by 1 when the build number pass the barrier of build times, the value is reset to 0 when it reach its maximum value.
+\item[Build Number] (also equivalent to Release) - Increments by 1 every time that the revision number is incremented.
+\item[Revision] Increments randomly when the project has been modified and then compiled.
+\end{description}
+
+\subsubsection{Status}
+
+Some fields to keep track of your software status with a list of predefined values for convenience.
+
+\begin{description}
+\item[Software Status] The typical example should be v1.0 Alpha
+\item[Abbreviation] Same as software status but like this: v1.0a
+\end{description}
+
+\subsubsection{Scheme}
+
+Lets you edit how the plugin will increment the version values.
+
+\begin{description}
+\item[Minor maximum] The maximum number that the Minor value can reach, after this value is reached the Major is incremented by 1 and next time project is compiled the Minor is set to 0.
+\item[Build Number maximum] When the value is reached, the next time the project is compiled is set to 0. Put a 0 for unlimited.
+\item[Revision maximum] Same as Build Number maximum. Put a 0 for unlimited
+\item[Revision random maximum] The revision increments by random numbers that you decide, if you put here 1, the revision obviously will increment by 1.
+\item[Build times before incrementing Minor] After successful changes to code and compilation the build history will increment, and when it reaches this value the Minor will increment.
+\end{description}
+
+\subsubsection{Settings}
+
+Here you can set some settings of the auto versioning behavior.
+
+\begin{description}
+\item[Autoincrement Major and Minor] Lets the plugin increments this values by you using the scheme. If not marked only the Build Number and Revision will increment.
+\item[Create date declarations] Create entries in the \file{version.h} file with dates and ubuntu style version.
+\item[Do Auto Increment] This tells the plugin to automatically increment the changes when a modification is made, this incrementation will occur before compilation.
+\item[Header language] Select the language output of \file{version.h}
+\item[Ask to increment] If marked, Do Auto Increment, it ask you before compilation (if changes has been made) to increment the version values.
+\item[svn enabled] Search for the svn revision and date in the current folder and generates the correct entries in \file{version.h}
+\end{description}
+
+\subsubsection{Changes Log}
+
+This lets you enter every change made to the project to generate a \file{ChangesLog.txt} file.
+
+\begin{description}
+\item[Show changes editor when incrementing version] Will pop up the changes log editor when incrementing the version.
+\item[Title Format] A format able title with a list of predefined values.
+\end{description}
+
+\subsection{Including in your code}
+
+To use the variables generated by the plugin just \codeline{\#include <version.h>}. An example code would be like the following:
+
+\begin{code}
+#include <iostream>
+#include "version.h"
+
+void main(){
+    std::cout<<AutoVersion::Major<<endl;
+}
+\end{code}
+
+\subsubsection{Output of version.h}
+
+The generated header file. Here is a sample content of the file on c++ mode:
+
+\begin{code}
+#ifndef VERSION_H
+#define VERSION_H
+
+namespace AutoVersion{
+
+	//Date Version Types
+	static const char DATE[] = "15";
+	static const char MONTH[] = "09";
+	static const char YEAR[] = "2007";
+	static const double UBUNTU_VERSION_STYLE = 7.09;
+
+	//Software Status
+	static const char STATUS[] = "Pre-alpha";
+	static const char STATUS_SHORT[] = "pa";
+
+	//Standard Version Type
+	static const long MAJOR = 0;
+	static const long MINOR = 10;
+	static const long BUILD = 1086;
+	static const long REVISION = 6349;
+
+	//Miscellaneous Version Types
+	static const long BUILDS_COUNT = 1984;
+	#define RC_FILEVERSION 0,10,1086,6349
+	#define RC_FILEVERSION_STRING "0, 10, 1086, 6349\0"
+	static const char FULLVERSION_STRING[] = "0.10.1086.6349";
+
+}
+#endif //VERSION_h
+\end{code}
+
+On C mode is the same as C++ but without the namespace:
+
+\begin{code}
+#ifndef VERSION_H
+#define VERSION_H
+
+	//Date Version Types
+	static const char DATE[] = "15";
+	static const char MONTH[] = "09";
+	static const char YEAR[] = "2007";
+	static const double UBUNTU_VERSION_STYLE = 7.09;
+
+	//Software Status
+	static const char STATUS[] = "Pre-alpha";
+	static const char STATUS_SHORT[] = "pa";
+
+	//Standard Version Type
+	static const long MAJOR = 0;
+	static const long MINOR = 10;
+	static const long BUILD = 1086;
+	static const long REVISION = 6349;
+
+	//Miscellaneous Version Types
+	static const long BUILDS_COUNT = 1984;
+	#define RC_FILEVERSION 0,10,1086,6349
+	#define RC_FILEVERSION_STRING "0, 10, 1086, 6349\0"
+	static const char FULLVERSION_STRING[] = "0.10.1086.6349";
+
+#endif //VERSION_h
+\end{code}
+
+\subsection{Change log generator}
+
+This dialog is accessible from the menu \menu{Project,Changes Log}. Also if checked Show changes editor when incrementing version on the changes log settings, the window will open to let you enter the list of changes after a modification to the project sources or an incrementation event. Below is an example screenshot:
+
+screenshot
+\subsubsection{Buttons Summary}
+
+\begin{description}
+\item[Add] Appends a row in to the data grid
+\item[Edit] Enables the modification of the selected cell
+\item[Delete] Removes the current row from the data grid
+\item[Save] Stores into a temporary file (\file{changes.tmp}) the actual data for later procesing into the changes log file
+\item[Write] Process the data grid data to the changes log file
+\item[Cancel] Just closes the dialog without taking any action
+\end{description}
+
+Here is an example of the output generated by the plugin to the \file{ChangesLog.txt} file:
+
+\begin{code}
+03 September 2007
+   released version 0.7.34 of AutoVersioning-Linux
+
+     Change log:
+        -Fixed: pointer declaration
+        -Bug: blah blah
+
+02 September 2007
+   released version 0.7.32 of AutoVersioning-Linux
+
+     Change log:
+        -Documented some areas of the code
+        -Reorganized the code for readability
+
+01 September 2007
+   released version 0.7.30 of AutoVersioning-Linux
+
+     Change log:
+        -Edited the change log window
+        -If the change log windows is leave blank no changes.txt is modified
+\end{code}

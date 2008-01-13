@@ -11,8 +11,20 @@ The below illustration shows the design of the \codeblocks user interface.
 \item[Editor] In the above illustration, a source named \file{hello.c} is opened with syntax highlighting in the editor.
 \item[Open files list] shows a list of all files opened in the editor, in this example: \file{hello.c}.
 \item[CodeSnippets] can be displayed via the menu \menu{View,CodeSnippets}. Here you can manage text modules, links to files and links to urls.
-\item[Messages]. This window is used for outputting search results, log messages of a compiler etc..
+\item[Logs \& others]. This window is used for outputting search results, log messages of a compiler etc..
 \end{description}
+
+The status bar gives an overview of the following settings:
+
+\begin{itemize}
+\item Absolute path of an opened file in the editor.
+\item The editor uses the default character encoding of your host operating system. This setting will be displayed with \codeline{default}.
+\item Row and column number of the current cursor position in the editor.
+\item The configured keyboard mode for inserting text (Insert or Overwrite).
+\item Current state of a file. A modified file will be marked with \codeline{Modified} otherwise this entry is empty.
+\item The permission of a file. A file with read only settings will dipslay \codeline{Read only} in the status bar. In the window \menu{Open files list} these files will be emphasised with a lock as icon overlay.
+\item If you start \codeblocks with the command line option \opt{--personality=\var{profile}} then the status bar will show the currently used profile, otherwise \codeline{default} will be shown. The settings of \codeblocks are stored in the corresponding configuration file \file{\var{personality}.conf}.
+\end{itemize}
 
 \codeblocks offers a very flexible and comprehensive project management. The following text will address only some of the features of the project management.
 
@@ -76,6 +88,8 @@ zip -j9 $(PROJECT_NAME)_$(TODAY).zip src h obj $(PROJECT_NAME).cbp
 \end{cmd}
 
 With this command, the active project and its sources, header and objects will be packed as a zip file. In doing so, the Built-in variables \codeline{$(PROJECT_NAME)} and \codeline{$(TODAY)}, the project name and the current date will be extracted (see \pxref{sec:builtin_variables}). After the execution of the Target \samp{Archive}, the packed file will be stored in the project directory.
+
+In the \file{share/codeblocks/scripts} directory you will find some examples for scripts. You can add a script via menu \menu{Settings,Scripting} and configure an menu. If you execute e.g. the script \file{make\_dist} from the menu then all files belonging to a project will be compressed in an archive \file{\var{project}.tar.gz}.
 
 \section{Adding Scripts in Build Targets}
 
@@ -153,6 +167,8 @@ When performing the abbreviation \var{name} in the source text and performing Ct
 
 \codeblocks settings are saved as application data in a file called \file{\var{user}.conf} in the \file{codeblocks} directory. This configuration file contains information such as the last opened projects, settings for the editor, display of symbol bars etc.. By default, the \samp{default} personality is set so that the configuration is stored in the file \file{default.conf}. If \codeblocks is called from the command line with the parameter \cmdline{--personality=myuser}, the settings will be stored in the file \file{myuser.conf}. If the profile does not exist already, it will automatically be created. This procedure makes it possible to create the corresponding profiles for different work steps. If you start \codeblocks from the command line with the additional parameter\cmdline{--personality=ask}, a selection box will be displayed for all the available profiles.
 
+\hint{The name of the current profile/personality is displayed in the right corner of the status bar.}
+
 \subsection{Configuration Files}
 
 The \codeblocks settings are stored in the \file{default.conf} profile in the \file{codeblocks} directory of your Application Data. When using personalities (see \pxref{sec:personalities}), the configuration details will be stored in the \file{\var{personality}.conf} file.
@@ -227,8 +243,10 @@ If you have included multiple help files, you can select a term in the editor an
 In addition you can other help methods like a Google search of a select item in the \codeblocks editor (see \pxref{fig:help_files}). The entry \codeline{$(keyword)} is a placeholder for a select item in your editor. If you select the entry \menu{Locate in} in the context menu then the selected keyword is \samp{googled}. In \codeblocks you can add even support for man pages. Just add a entry \menu{man} and specify the path as follows.
 
 \begin{cmd}
-man:/usr/share/man 
+man:/usr/share/man
 \end{cmd}
+
+\codeblocks provides an \samp{Embedded HTML Viewer}, which can be used to display simple html file and find keywords within this file. Just configure the path to the html file, which should be parsed and enable the checkbox \menu{Open this file with embedded help viewer} via the menu \menu{Settings,Environment,Help Files}.
 
 \hint{If you hold the Ctrl key and then select text in the \codeblocks editor you can perform e.g. a Google search via the context menu.}
 % \section{Scripting}
@@ -264,15 +282,15 @@ Access and scope of the environmental variables created here, is limited to \cod
 
 You can write the used environment into a postbuild Step (see \pxref{sec:pre_postbuild}) in a file \file{\var{project}.env} and archive it within your project.
 
-\begin{cmdline}
+\begin{cmd}
 cmd /c echo \%PATH\%  > project.env
-\end{cmdline}
+\end{cmd}
 
 or under Linux
 
-\begin{cmdline}
+\begin{cmd}
 echo \$PATH > project.env
-\end{cmdline}
+\end{cmd}
 
 \subsection{Switching between projects}
 
@@ -309,6 +327,8 @@ Furthermore, \codeblocks offers a progress bar for the build process in the Buil
 
 \codeblocks supports so called cold folding. With this feature you can fold e.g. functions within the \codeblocks editor. A folding point is marked by minus symbol in the left margin of
 the editor view. In the margin the beginning and the end of a folding point is visible as vertical line. If you click the minus symbol with the left mouse button the code snippet will be folded or unfolded. Via the menu \menu{Edit,Folding} you can select the folding. In the editor you see folded code as continous horizontal line.
+
+\hint{The folding style can be configured via menu \menu{Settings,Editor,Folding}.}
 
 \codeblocks provides the folding feature also for preprocessor directives. To enable this feature select \samp{Fold preprocessor commands} via the menu \menu{Settings,Editor} in the folding entry.
 
@@ -369,7 +389,7 @@ codeblocks.exe /na /nd --no-splash-screen --built <name>.cbp --target='Release'
 \item[--target=\var{str}] Sets target for batch build. For example \cmdline{--target='Release'}.
 \item[--no-batch-window-close] Keeps the batch log window visible after the batch build is completed.
 \item[--batch-build-notify] Shows a message after the batch build is completed.
-\item[--safe-mode] All plugins are disabled on startup. 
+\item[--safe-mode] All plugins are disabled on startup.
 \item[$>$ \var{build log file}] Placed in the very last position of the command line, this may be used to redirect standard output to log file. This is not a codeblock option as such, but just a standard DOS/*nix shell output redirection.
 \end{optentry}
 

@@ -4,10 +4,6 @@
 \ShowURN{7z}
 7z zip homepage.\\ \url{http://www.7-zip.org}
 
-\urlbibitem[\hightechook ARM]{url:arm-elf}
-\ShowURN{ARM}
-ARM homepage.\\ \url{http://www.arm.com/}
-
 \urlbibitem[\hightechook BERLIOS]{url:cbberlios}
 \ShowURN{BERLIOS}
 Codeblocks at berlios.\\ \url{http://developer.berlios.de/projects/codeblocks/}
@@ -36,14 +32,6 @@ HighTec homepage.\\ \url{http://www.hightec-rt.com/}
 \ShowURN{KODERS}
 Koders homepage.\\ \url{http://www.koders.com/}
 
-\urlbibitem[\hightechook MSP430]{url:msp430}
-\ShowURN{MSP430}
-MSP430 homepage.\\ \url{http://www.ti.com/sc/msp430}
-
-\urlbibitem[\hightechook PowerPC]{url:ppc}
-\ShowURN{PowerPC}
-Motorola homepage.\\ \url{http://e-www.motorola.com/}
-
 \urlbibitem[\hightechook TriCore]{url:tricore}
 \ShowURN{TriCore}
 TriCore homepage.\\ \url{http://www.infineon.com/tricore/}
@@ -64,4 +52,7 @@ WxWidgets homepage.\\ \url{http://www.wxwidgets.org/}
 \ShowURN{WXCODE}
 WxCode homepage.\\ \url{http://wxcode.sourceforge.net/}
 
+\urlbibitem[\hightechook Scripts]{url:scripts}
+\ShowURN{SCRIPTS}
+Scripting commands.\\ \url{http://wiki.codeblocks.org/index.php?title=Scripting_commands/}
 \end{theurlbibliography}

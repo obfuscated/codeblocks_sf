@@ -7,12 +7,24 @@ Die nachfolgende Abbildung zeigt den Aufbau der \codeblocks Oberfläche.
 \screenshot{codeblocks}{IDE \codeblocks}
 
 \begin{description}
-\item[Management] Diese Fenster enthält die Ansicht \menu{Projects}, im nachfolgenden als Projectansicht bezeichnet. In dieser werden die in \codeblocks aktuell geöffneten Projekte angezeigt. In dem Management Fenster erhält man im Reiter \samp{Symbols} die Anzeige von Symbolen, Variablen etc.
+\item[Management] Diese Fenster enthält die Ansicht \menu{Projects}, im nachfolgenden als Projektansicht bezeichnet. In dieser werden die in \codeblocks aktuell geöffneten Projekte angezeigt. In dem Management Fenster erhält man im Reiter \samp{Symbols} die Anzeige von Symbolen, Variablen etc.
 \item[Editor] In der obigen Abbildung ist eine Quelle \file{hello.c} mit Syntaxhighlighting im Editor geöffnet.
 \item[Open files list] Zeigt die Liste der im Editor geöffneten Dateien an, hier \file{hello.c}.
 \item[CodeSnippets] Lässt sich über das Menü \menu{View,CodeSnippets} anzeigen. Hier können Textbausteine, Verknüpfungen auf Dateien und Urls verwaltet werden.
-\item[Messages] Fenster zur Ausgabe von Suchergebnisse, Logmeldung eines Compilers etc.
+\item[Logs \& others] Fenster zur Ausgabe von Suchergebnisse, Logmeldung eines Compilers etc.
 \end{description}
+
+Die Statusbar gibt einen Überblick der folgenden Einstellungen:
+
+\begin{itemize}
+\item Vollständiger Pfad einer im Editor angezeigten Datei.
+\item Im Editor wird das vom Betriebssystem standardmäßig verwendete Character Encoding übernommen und mit der Einstellung \codeline{default} angezeigt.
+\item Aktuelle Zeilen- und Spaltnummer der Cursorposition im Editor.
+\item Über die Tastatur eingestellte Modus für das Einfügen von Text (Insert oder Overwrite).
+\item Aktuelle Status einer Datei. Für eine geänderte Datei steht der Eintrag auf \codeline{Modified} ansonsten ist dieser Eintrag leer.
+\item Die für eine Datei eingestellte Berechtigung. Eine schreibgeschützte Datei wird als \codeline{Read only} in der Statusbar gekennzeichnet. Im Fenster \menu{Open files list} werden solche mit einem Schloss als Icon Overlay markiert.
+\item Falls \codeblocks mit der Kommandozeileoption \opt{--personality=\var{profile}} gestartet wird, steht in der Statusbar das aktuell verwendete Profil, ansonsten wird hier \codeline{default} angezeigt. Die Einstellungen von \codeblocks werden in der gleichnamigen Konfigurationsdatei \file{\var{personality}.conf} gespeichert.
+\end{itemize}
 
 \codeblocks bietet eine sehr flexible und umfassende Projektverwaltung. Der folgende Text geht nur auf einige Besonderheiten der Projektverwaltung ein.
 
@@ -76,6 +88,8 @@ zip -j9 $(PROJECT_NAME)_$(TODAY).zip src h obj $(PROJECT_NAME).cbp
 \end{cmd}
 
 Mit diesem Befehl wird das aktive Projekt und seine Quellen, Header und Objekte als Zip-Datei gepackt. Dabei werden über die Built-in Variablen \codeline{$(PROJECT_NAME)} und \codeline{$(TODAY)}, der Projektname und das aktuelle Datum extrahiert (siehe \pxref{sec:builtin_variables}). Im Verzeichnis des Projektes liegt dann nach Ausführen des Targets \samp{Archive} die gepackte Datei.
+
+In dem Verzeichnis \file{share/codeblocks/scripts} finden Sie einige Beispiele für Skripte. Ein Skript kann über das Menü \menu{Settings,Scripting} hinzugefügt und in ein Menü eingetragen werden. Wenn Sie ein Skript z.B. \file{make\_dist} über ein Menü ausführen, werden alle Dateien, die zum einem aktiven Projekt gehören in ein Archiv \file{\var{project}.tar.gz} komprimiert.
 
 \section{Hinzufügen von Scripts in Build Targets}
 
@@ -154,6 +168,8 @@ Bei Aufruf der Abkürzung \var{name} im Quelltext und Ausführen von Ctrl-J, wir
 
 \codeblocks Einstellungen werden als Anwendungsdaten im Verzeichnis \file{codeblocks} in einer Datei \file{\var{user}.conf} gespeichert. Diese Konfigurationsdatei enthält Informationen wie beispielsweise zuletzt geöffnete Projekte, Einstellungen für Editor, Anzeige von Symbolleisten etc. Standardmäßig ist die Personality \samp{default} eingestellt, so dass die Konfiguration in der Datei \file{default.conf} abgelegt ist. Wenn \codeblocks mit dem Parameter \cmdline{--personality=myuser} in der Kommandozeile aufgerufen wird, werden die Einstellungen in der Datei \file{myuser.conf} gespeichert. Falls das Profil nicht bereits existiert, wird es automatisch angelegt. Durch diese Vorgehensweise können für unterschiedliche durchzuführende Arbeitsschritte auch zugehörige Profile gespeichert werden. Wenn Sie \codeblocks mit dem zusätzlichen Parameter \cmdline{--personality=ask} starten erscheint ein Auswahldialog für die verfügbaren Profile.
 
+\hint{Der Name des aktuell verwendeten Profils/Personality wird rechts in der Statusbar angezeigt.}
+
 \subsection{Konfigurationsdateien}
 
 Die Einstellungen für \codeblocks werden im Profil \file{default.conf} im Ordner \file{codeblocks} in Ihren Anwendungsdaten gespeichert. Bei Verwendung von personalities (siehe \pxref{sec:personalities} werden die Konfiguration in der Datei \file{\var{personality}.conf} abgelegt.
@@ -227,8 +243,10 @@ Wenn Sie mehrere Hilfedateien einbinden, können Sie im Editor einen Begriff mar
 Neben chm Dateien können andere Hilfe eingebunden werden, wie zum Beispiel eine Google Suche eines Begriffes (siehe \pxref{fig:help_files}). Dabei steht im Eintrag \codeline{$(keyword)} als Platzhalter für einen Begriff der im Editor markiert wird. Ein Aufruf des Kontextmenü \menu{Locate in} im Editor führt die Google Suche durch. In \codeblocks werden auch die Hilfe mit man pages unterstützt. Hier fügen Sie einen neuen Eintrag \menu{man} ein und geben den Pfad wie folgt an.
 
 \begin{cmd}
-man:/usr/share/man 
+man:/usr/share/man
 \end{cmd}
+
+\codeblocks bietet auch einen \samp{Embedded HTML Viewer}, hiermit können  einfache HTML-Dateien in \codeblocks angezeigt und für Suchen genutzt werden. Konfigurieren Sie einfach den Pfad der HTML-Datei, die durchsucht werden soll und aktivieren Sie die Option \menu{Open this file with embedded help viewer} in dem Menü \menu{Settings,Environment,Help Files}.
 
 \hint{Sie können auch im Editor einen Begriff mit gedrückter Ctrl Taste markieren und dann über das Kontextmenü nach diesem Begriff z.B. in Goolge suchen.}
 % \section{Scripting}
@@ -264,15 +282,15 @@ Der Zugriff und der Gültigkeitkeitbereich auf die hier erstellten Umgebungsvari
 
 Sie können die verwendete Umgebung in einem postbuild Step (siehe \pxref{sec:pre_postbuild}) in einer Datei \file{\var{project}.env} schreiben und zu Ihrem Projekt archivieren.
 
-\begin{cmdline}
+\begin{cmd}
 cmd /c echo \%PATH\%  > project.env
-\end{cmdline}
+\end{cmd}
 
 oder unter Linux
 
-\begin{cmdline}
+\begin{cmd}
 echo \$PATH > project.env
-\end{cmdline}
+\end{cmd}
 
 \subsection{Umschalten zwischen Projekten}
 
@@ -307,12 +325,14 @@ Des weiteren bietet \codeblocks eine Fortschrittsanzeige des Buildprozesses im F
 
 \subsection{Code folding}
 
-\codeblocks unterstützt ein sogenanntes Folding für Quellen. Hiermit lassen sich zum Beispiel Funktionen zusammenklappen. Ein Folding Punkt erkennen Sie im Editor als Minussymbol im linken Seitenrand. Hier wird auch der Beginn und das Ende eines Folding Punktes durch eine vertikale Linie gekennzeichnet. Wenn Sie mit der linken Maustaste auf das Minussymbol klicken wir der entsprechende Abschnitt eingekappt bzw. ausgeklappt. Sie können über das Menu \menu{Edit,Folding} einstellen wie eingeklappt werden soll. Im Editor wird ein eingeklappte Codestelle durch eine durchgehende horizontale Linie dargestellt. 
+\codeblocks unterstützt ein sogenanntes Folding für Quellen. Hiermit lassen sich zum Beispiel Funktionen zusammenklappen. Ein Folding Punkt erkennen Sie im Editor als Minussymbol im linken Seitenrand. Hier wird auch der Beginn und das Ende eines Folding Punktes durch eine vertikale Linie gekennzeichnet. Wenn Sie mit der linken Maustaste auf das Minussymbol klicken wir der entsprechende Abschnitt eingekappt bzw. ausgeklappt. Sie können über das Menu \menu{Edit,Folding} einstellen wie eingeklappt werden soll. Im Editor wird ein eingeklappte Codestelle durch eine durchgehende horizontale Linie dargestellt.
 
-Neben dem Folding für Funktionen kann die Funktionalität auch für Präprozessor Direktiven eingestellt werden. Aktivieren Sie hierfür die Option \samp{Fold preprocessor commands} im Menü 
+\hint{Der Stil für das Folding kann im Menü \menu{Settings,Editor,Folding} geändert werden.}
+
+Neben dem Folding für Funktionen kann die Funktionalität auch für Präprozessor Direktiven eingestellt werden. Aktivieren Sie hierfür die Option \samp{Fold preprocessor commands} im Menü
 \menu{Settings,Editor} unter dem Eintrag Folding.
 
-Eine weitere Möglichkeit ist benutzerdefinierte Folding Punkte zu definieren, indem ein Kommentarzeichen durch eine geöffnete Klammer den Anfang und ein Kommentar mit schließender Klammer das Ende markiert. 
+Eine weitere Möglichkeit ist benutzerdefinierte Folding Punkte zu definieren, indem ein Kommentarzeichen durch eine geöffnete Klammer den Anfang und ein Kommentar mit schließender Klammer das Ende markiert.
 
 \begin{code}
 //{

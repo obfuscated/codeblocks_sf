@@ -1,9 +1,22 @@
 \section{BrowseTracks}\label{sec:browsetracks}
 
-BrowseTracker ist ein Plugin um zwischen kürzlich geöffneten Dateien in \codeblocks zu navigieren. Dabei wird die Liste der kürzlich geöffneten Dateien in einer History gespeichert. Derzeit wird eine Liste mit maximal 20 Einträge unterstützt. Im Menü \menu{View,Browse Tracker,Clear} können Sie die History löschen.
+BrowseTracker ist ein Plugin um zwischen kürzlich geöffneten Dateien in \codeblocks zu navigieren. Dabei wird die Liste der kürzlich geöffneten Dateien in einer History gespeichert. Im Menü \menu{View,Browse Tracker,Clear All} können Sie die History löschen.
 
-Das Fenster \samp{Browsed Tabs} zum Navigieren in dieser Listen erhalten Sie über das Menü \menu{View,Browse Tacker} mit dem Eintrag \samp{forward}/\samp{backward} oder über das Tastenkürzel Alt-Left/Alt-Right.
+Das Fenster \samp{Browsed Tabs} zum Navigieren in dieser Listen erhalten Sie über das Menü \menu{View,Browse Tracker} mit dem Eintrag \menu{Backward Ed/Forward Ed} oder über das Tastenkürzel Alt-Left/Alt-Right. Das Browse Tracker Menü ist auch über die Rechte Maustaste als Kontextmenü zugänglich. Die Marker werden in der Layout-Datei layout file \file{\var{projectName}.bmarks} gespeichert.
 
 Eine häufige Arbeitsweise bei der Entwicklung von Software ist, dass man sich durch ein Satz von Funktion hangelt, die in unterschiedlichen Dateien implementiert sind. Durch das Plugin BrowseTracks können Sie somit komfortabel zwischen den Aufrufen in unterschiedlichen Dateien navigieren.
+
+Das Plugin erlaubt auch Browse Marker in jeder Datei innerhalb des \codeblocks Editor zu setzen. Die Cursor Position wird für jede Datei gespeichert. Das Setzen eines Markers innerhalb einer Datei ist wahlweise über das Menü \menu{View, Browse Tracker, Set BrowseMarks} oder durch einen Klick mit der linken Maustaste bei gehaltener Ctrl Taste möglich. Der Marker ist durch $\ldots$ im linken Seitenrand gekennzeichnet. Über das Menü \menu{View,Browse Tracker,Prev Mark/Next Mark} oder das Tastenkürzel Alt-up/Alt-down kann zwischen den Marker innerhalb einer Datei gesprungen werden. Dabei werden die Marker beim Navigieren in der Reihenfolge angesprungen wie diese gesetzt wurden. Falls Sie die Marker innerhalb einer Datei nach Zeilennummern sortiert durchlaufen möchten, wählen Sie einfach das Menü \menu{View,Browse Tracker,Sort BrowseMark}.
+
+Mit dem \menu{Clear BrowseMark} wird ein Marker in der ausgewählten Zeile gelöscht. Falls ein Marker für ein Zeile gesetzt ist, kann bei gehaltener linker Maustaste (1/4 Sekunde) und betätigen der Ctrl Taste der Marker für diese Zeile gelöscht werden. Mit dem Aufruf \menu{Clear All BrowseMarks} oder mit Ctrl-left Klick werden alle Marker innerhalb einer Datei zurückgesetzt.
+
+Die Einstellungen für das Plugin können im Menü \menu{View,Browse Tracker,Settings} verändert werden.
+
+\begin{description}
+\item[Mark Style] Standardmäßig werden Browse Marks durch $\ldots$ im Seitenrand gekennzeichnet. Mit der Einstellung \menu{Book\_Marks} werden Browse Marks wie Bookmarks durch einen blauer Pfeil im Rand dargestellt. Mit Hide werden die Darstellung von Browse Marks unterdrückt.
+\item[Toggle Browse Mark key] Das Setzen oder Löschen von Marker kann entweder durch eine Klick mit der linken Maustaste oder bei gleichzeitig gehaltener Ctrl-Taste geschehen.
+\item[Toggle Delay] Die Zeitspanne, die eine linke Maustaste gedrückt gehalten sein muss um in den Browse Marker Modus zu wechseln.
+\item[Clear All BrowseMarks] Löschen aller Marker bei gehaltener Ctrl Taste entweder über einen einfachen Klick oder einen Doppelklick mit der linken Maustaste.
+\end{description}
 
 Die Konfiguration für das Plugin wird in den Anwendungsdaten in der Datei \file{default.conf} gepseichert. Bei der Verwenundung einer Personality wird die Konfiguration aus der Datei \file{\var{personality}.conf} gelesen.
