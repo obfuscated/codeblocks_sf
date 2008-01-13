@@ -11,6 +11,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 	#include <wx/splitter.h>
+	#include "cbeditor.h"
 	#include "configmanager.h"
 	#include "editorcolourset.h"
 #endif

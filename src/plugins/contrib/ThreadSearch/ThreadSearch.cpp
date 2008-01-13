@@ -11,6 +11,7 @@
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
 	#include <wx/xrc/xmlres.h>
+	#include "cbeditor.h"
 	#include "configmanager.h"
 	#include "sdk_events.h"
 #endif
