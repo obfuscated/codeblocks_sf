@@ -141,3 +141,5 @@ EXTRA_DIST = $(srcdir)/Readme \
 	$(srcdir)/src/scintilla/include/*.iface \
 	$(srcdir)/src/scintilla/src/*.py \
 	$(srcdir)/src/scintilla/src/*.properties
+
+README: Readme
