@@ -1,1 +1,1 @@
-EXTRA_DIST = *.wxs
+EXTRA_DIST = $(srcdir)/*.wxs
