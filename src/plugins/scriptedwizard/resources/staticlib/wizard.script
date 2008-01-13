@@ -28,7 +28,7 @@ function BeginWizard()
                              "This wizard will guide you to create a new static library build target.\n\n" +
                              "When you 're ready to proceed, please click \"Next\"...");
         Wizard.AddInfoPage(_T("StaticLibIntro"), intro_msg);
-        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+        Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
     }
     else
         print(wiz_type);
@@ -42,18 +42,21 @@ function GetFilesDir()
 
 function SetupProject(project)
 {
-    // enable compiler warnings (project-wide)
-    WarningsOn(project, Wizard.GetCompilerID());
-
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());
     if (!IsNull(target))
+    {
+        WarningsOn(target, Wizard.GetCompilerID());
         SetupTarget(target, true);
+    }
 
     // Release build target
     target = project.GetBuildTarget(Wizard.GetReleaseName());
     if (!IsNull(target))
+    {
+        WarningsOn(target, Wizard.GetCompilerID());
         SetupTarget(target, false);
+    }
 
     return true;
 }
@@ -64,6 +67,7 @@ function SetupTarget(target, is_debug)
         return false;
 
     target.SetTargetType(ttStaticLib);
+    
     if (target.GetWorkingDir().Matches(_T("")))
         target.SetOutputFilename(target.SuggestOutputFilename());
     else

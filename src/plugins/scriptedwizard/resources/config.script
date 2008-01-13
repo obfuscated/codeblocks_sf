@@ -41,6 +41,7 @@ function RegisterWizards()
     // build target wizards
     //
     RegisterWizard(wizTarget,      _T("console"),      _T("Console"),               _T("Console"));
+    RegisterWizard(wizTarget,      _T("staticlib"),    _T("Static library"),        _T("Console"));
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizTarget,  _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
     RegisterWizard(wizTarget,      _T("wxwidgets"),    _T("wxWidgets"),             _T("GUI"));
