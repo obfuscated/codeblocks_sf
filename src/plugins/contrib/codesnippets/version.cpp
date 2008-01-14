@@ -340,6 +340,10 @@ AppVersion::~AppVersion()
 //          111) Add ftp://,file://,.htm,.html to url checking.
 //          112) Add "(as filetype)" to Open File menu item for clarity.
 // ----------------------------------------------------------------------------
+//  Commit  1.2.113 2008/01/14
+//          113) Fixed: When a pgm started after CodeBlocks, and an editorFrame
+//               started by the context menu wax closed, the external pgm got the focus.
+// ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
 //          Search should continue to next matching item, not just stop (F3?)

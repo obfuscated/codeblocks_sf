@@ -269,8 +269,9 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
     cfgFile.Write( wxT("EditDlgYpos"),  y );
     cfgFile.Write( wxT("EditDlgWidth"),  w );
     cfgFile.Write( wxT("EditDlgHeight"), h );
+    #if defined(LOGGING)
      LOGIT( _T("EditDlgPositin OUT X[%d]Y[%d]Width[%d]Height[%d]"),x,y,w,h );
-
+    #endif
     cfgFile.Write( wxT("EditDlgMaximized"),  false );
     cfgFile.Flush();
 

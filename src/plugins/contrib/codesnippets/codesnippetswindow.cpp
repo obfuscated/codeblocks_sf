@@ -945,8 +945,9 @@ void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
 
         wxTreeItemId itemId = GetAssociatedItemID();
         wxString FileName = pTree->GetSnippetFileLink( itemId );
-        LOGIT( _T("OnMnuEditSnippet FileName[%s]"),FileName.c_str() );
-
+        #if defined(LOGGING)
+         LOGIT( _T("OnMnuEditSnippet FileName[%s]"),FileName.c_str() );
+        #endif
         // If snippet is text, edit it as text
         if (FileName.Length() > 128)
         {   // if text is > 128 characters, open a temp file with snippet text as data.

@@ -203,7 +203,7 @@ void CodeSnippetsTreeCtrl::OnItemRightSelected(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
     // on wx2.8.3, Right click does not select the item.
-    // The selection is still on he previous item.
+    // The selection is still on the previous item.
     // So we'll select it ourself.
 
     SelectItem(event.GetItem());                                                         //(pecan 2006/9/12)
@@ -1221,6 +1221,10 @@ void CodeSnippetsTreeCtrl::EditSnippetAsFileLink()
     // Open snippet text as a file name. Ie, the text should contain a filename.
     // Else just open a temp file with the snippet text as data.
 
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetAsFileLink[%s]"),wxT("") );
+    #endif
+
     if (not IsSnippet() ) return;
 
 	// If snippet is file, open it
@@ -1298,6 +1302,9 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
 // ----------------------------------------------------------------------------
 {
 
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetAsText[%s]"),wxT("") );
+    #endif
 	SnippetItemData* pSnippetItemData = (SnippetItemData*)GetItemData(GetAssociatedItemID());
 
     // if no user specified editor, use default editor
@@ -1552,7 +1559,7 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
             m_aDlgRetcodes.RemoveAt(m_aDlgRetcodes.GetCount());
 
 	}//if
-}
+}//EditSnippet
 
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
@@ -1760,6 +1767,15 @@ void CodeSnippetsTreeCtrl::OnIdle()
 		}//if
 		if (pdlg && (not m_bShutDown) )
         {
+            // If a pgm is started after CodeBlocks, it'll get the focus
+            // when we destroy the editor frame *and* the frame was initiated by
+            // a context menu item. So, here, we raise and focus CodeBlocks
+            // if this is the last editor frame.
+            if ( 1 == this->m_aDlgRetcodes.GetCount() )
+            {   wxWindow* pWin = (wxWindow*)(GetConfig()->GetMainFrame());
+                pWin->Raise();
+                pWin->SetFocus();
+            }
             pdlg->Destroy();
         }
 
@@ -1794,7 +1810,8 @@ void CodeSnippetsTreeCtrl::OnIdle()
             GetSnippetsTreeCtrl()->SetItemText(GetSnippetsTreeCtrl()->GetRootItem(), wxString::Format(_("%s"), nameOnly.GetData()));
     }
 
-    ////event.Skip();
+    ////event.Skip(); this routine is called from another OnIdle which does the
+    // event.Skip() itself.
     return;
 }//OnIdle
 
