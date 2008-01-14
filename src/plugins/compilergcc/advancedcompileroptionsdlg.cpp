@@ -1,6 +1,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/checkbox.h>
+#include <wx/choice.h>
 #include <wx/combobox.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
