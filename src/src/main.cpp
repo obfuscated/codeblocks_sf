@@ -742,7 +742,7 @@ void MainFrame::RunStartupScripts()
             {
                 wxString startup = se.script;
                 if (wxFileName(se.script).IsRelative())
-					startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
+                    startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
                 if (!startup.IsEmpty())
                 {
                     if (!se.registered)
@@ -753,7 +753,7 @@ void MainFrame::RunStartupScripts()
                         Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.c_str()));
                 }
                 else
-					Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.c_str()));
+                    Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.c_str()));
             }
             catch (SquirrelError& exception)
             {
@@ -1026,7 +1026,7 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
     wxString title = info->title + (menu == m_HelpPluginsMenu ? _T("...") : wxEmptyString);
     m_PluginIDsMap[id] = info->name;
     if (pos == -1)
-		pos = menu->GetMenuItemCount();
+        pos = menu->GetMenuItemCount();
 
     while(!item)
     {
@@ -1225,28 +1225,30 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
     }
 } // end of SaveViewLayout
 
-bool MainFrame::AreDifferentLayouts(const wxString& layout1,const wxString& layout2,const wxString& delimiter)
+bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter)
 {
-	wxArrayString* arLayout1 = new wxArrayString();
-	wxArrayString* arLayout2 = new wxArrayString();
-    wxStringTokenizer* strTok = new wxStringTokenizer(layout1,delimiter);
-     while(strTok->CountTokens() > 0){
-         arLayout1->Add(strTok->GetNextToken());
+    wxArrayString    arLayout1;
+    wxArrayString    arLayout2;
+    wxStringTokenizer strTok(layout1, delimiter);
+    while(strTok.CountTokens() > 0)
+    {
+        arLayout1.Add(strTok.GetNextToken());
     }
-    strTok->SetString(layout2,delimiter);
-    while(strTok->CountTokens() > 0){
-         arLayout2->Add(strTok->GetNextToken());
+    strTok.SetString(layout2, delimiter);
+    while(strTok.CountTokens() > 0)
+    {
+        arLayout2.Add(strTok.GetNextToken());
     }
-	arLayout1->Sort();
-	arLayout2->Sort();
-    return *arLayout1 != *arLayout2;
-} // end of AreDifferentLayouts
+    arLayout1.Sort();
+    arLayout2.Sort();
+    return arLayout1 != arLayout2;
+}
 
 bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 {
     DoFixToolbarsLayout();
     wxString lastlayout = m_LayoutManager.SavePerspective();
-    if (!m_LastLayoutName.IsEmpty() && AreDifferentLayouts(lastlayout, m_LastLayoutData))
+    if (!m_LastLayoutName.IsEmpty() && LayoutDifferent(lastlayout, m_LastLayoutData))
     {
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
@@ -1747,8 +1749,8 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
 
 void MainFrame::ShowHideScriptConsole()
 {
-	if (Manager::IsBatchBuild())
-		return;
+    if (Manager::IsBatchBuild())
+        return;
     if (!m_pScriptConsole)
     {
         m_pScriptConsole = new ScriptConsole(this, -1);
@@ -3963,13 +3965,13 @@ void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)
         return;
     wxWindow* p = event.window;
     if (p)
-		infoPane->AddNonLogger(p, event.title, event.icon);
-	else
-	{
-		p = event.logger->CreateControl(infoPane);
-		if(p)
-			infoPane->AddLogger(event.logger, p, event.title, event.icon);
-	}
+        infoPane->AddNonLogger(p, event.title, event.icon);
+    else
+    {
+        p = event.logger->CreateControl(infoPane);
+        if(p)
+            infoPane->AddLogger(event.logger, p, event.title, event.icon);
+    }
     Manager::Get()->GetLogManager()->NotifyUpdate();
 }
 
@@ -3977,18 +3979,18 @@ void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
 {
     if (Manager::IsAppShuttingDown())
         return;
-	if (event.window)
-		infoPane->RemoveNonLogger(event.window);
-	else
-		infoPane->DeleteLogger(event.logger);
+    if (event.window)
+        infoPane->RemoveNonLogger(event.window);
+    else
+        infoPane->DeleteLogger(event.logger);
 }
 
 void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
 {
-	if (event.window)
-		infoPane->ShowNonLogger(event.window);
-	else if (event.logger)
-		infoPane->Show(event.logger);
+    if (event.window)
+        infoPane->ShowNonLogger(event.window);
+    else if (event.logger)
+        infoPane->Show(event.logger);
 }
 
 void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)

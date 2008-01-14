@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Option host_application="$(#cb)\devel\codeblocks" />
 				<Compiler>
+					<Add option="-g" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
@@ -32,7 +33,6 @@
 					<Add directory="$(#CB.include)\wxscintilla\include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="codeblocks" />
 					<Add directory="$(#CB)\devel" />

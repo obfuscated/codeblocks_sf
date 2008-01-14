@@ -1,5 +1,5 @@
-#ifndef IDKLRWALU
-#define IDKLRWALU
+#ifndef ID_H
+#define ID_H
 #undef new
 
 #include <wx/string.h>
