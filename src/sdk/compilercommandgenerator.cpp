@@ -272,6 +272,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     wxString tmpObject = object;
     wxString tmpFlatObject = FlatObject;
     wxFileName tmpFname = tmpFile;
+    wxFileName tmpOutFname;
 
     FixPathSeparators(compiler, tmpFile);
     FixPathSeparators(compiler, tmpDeps);
@@ -316,11 +317,17 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
         QuoteStringIfNeeded(output);
         FixPathSeparators(compiler, output);
         macro.Replace(_T("$exe_output"), output);
+        tmpOutFname.Assign(output);
     }
     else
     {
         macro.Replace(_T("$exe_output"), m_Output[target]);
+        tmpOutFname.Assign(m_Output[target]);
     }
+    macro.Replace(_T("$exe_name"), tmpOutFname.GetName());
+    macro.Replace(_T("$exe_dir"), tmpOutFname.GetPath());
+    macro.Replace(_T("$exe_ext"), tmpOutFname.GetExt());
+    
     macro.Replace(_T("$link_resobjects"), tmpDeps);
     macro.Replace(_T("$link_objects"), tmpObject);
     macro.Replace(_T("$link_flat_objects"), tmpFlatObject);

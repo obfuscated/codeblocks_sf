@@ -8,95 +8,97 @@
       <object class="sizeritem">
         <object class="wxNotebook" name="nbMain">
           <object class="notebookpage">
-            <label>Commands</label>
             <object class="wxPanel" name="tabCommands">
               <object class="wxBoxSizer">
-                <orient>wxHORIZONTAL</orient>
                 <object class="sizeritem">
                   <object class="wxBoxSizer">
                     <orient>wxVERTICAL</orient>
-                    <option>1</option>
                     <object class="sizeritem">
                       <object class="wxFlexGridSizer">
                         <cols>2</cols>
-                        <vgap>0</vgap>
                         <hgap>4</hgap>
+                        <growablecols>0</growablecols>
+                        <growablerows>1</growablerows>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
+                          <object class="wxStaticText" name="ID_STATICTEXT1">
                             <label>Command:</label>
                           </object>
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
+                          <object class="wxStaticText" name="ID_STATICTEXT2">
                             <label>Source ext.:</label>
                           </object>
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
                         <object class="sizeritem">
                           <object class="wxChoice" name="lstCommands">
                             <content/>
                           </object>
-                          <flag>wxGROW</flag>
+                          <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
-                        <growablecols>0</growablecols>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
-                            <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
                               <object class="wxChoice" name="lstExt">
                                 <content/>
                               </object>
-                              <minsize>100,-1</minsize>
+                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnAddExt">
                                 <label>+</label>
                                 <style>wxBU_EXACTFIT</style>
                               </object>
+                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnRemoveExt">
                                 <label>-</label>
                                 <style>wxBU_EXACTFIT</style>
                               </object>
+                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
+                            <orient></orient>
                           </object>
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
-                        <growablerows>1</growablerows>
                       </object>
-                      <flag>wxGROW</flag>
+                      <flag>wxEXPAND</flag>
+                      <option>0</option>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT3">
                         <label>Command line macro:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtCommand">
                         <style>wxTE_MULTILINE|wxHSCROLL</style>
                       </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
+                      <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
+                      <option>1</option>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT4">
                         <label>Generated files (to be further compiled):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtGenerated">
                         <style>wxTE_MULTILINE|wxHSCROLL</style>
                       </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
+                      <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
+                      <option>1</option>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT5">
                         <label>Add different command line macros for different
 extensions. This effectively adds support for non C/C++
 files.
@@ -109,13 +111,13 @@ in the generated files box.
 
 See docs for more info.</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                   </object>
-                  <option>0</option>
-                  <flag>wxTOP|wxLEFT|wxRIGHT</flag>
+                  <flag>wxALL|wxEXPAND</flag>
                   <border>4</border>
+                  <option>1</option>
                 </object>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
@@ -123,22 +125,25 @@ See docs for more info.</label>
                     <vgap>4</vgap>
                     <hgap>4</hgap>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT6">
                         <label>Command macros:</label>
                       </object>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="spacer">
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <size>0,0</size>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticLine"/>
-                      <flag>wxGROW</flag>
+                      <object class="wxStaticLine" name="ID_STATICLINE1"/>
+                      <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="spacer">
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <size>0,0</size>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT7">
                         <label>Compiler executable:
 Resource compiler executable:
 Linker executable:
@@ -158,16 +163,20 @@ Dependency result:
 All *linkable* object files:
 All *linkable* flat object files:
 All *linkable* resource object files:
-Executable output file:
+Executable output file (full name):
+Executable dir (no name, no ext):
+Executable name (no path, no ext):
+Executable extension:
 Static library output file:
 Dynamic library output file:
 Dynamic library DEF output file:
 Resources output file:
 Objects Output Dir:</label>
                       </object>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT8">
                         <label>$$compiler
 $$rescomp
 $$linker
@@ -185,97 +194,105 @@ $$file_ext
 $$object
 $$dep_object
 $$link_objects
-$$link_flat_objects
+$$link_flat&amp;objects
 $$link_resobjects
 $$exe_output
+$$exe_dir
+$$exe_name
+$$exe_ext
 $$static_output
 $$exe_output
 $$def_output
 $$resource_output
 $$objects_output_dir</label>
                       </object>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
+                    <growablecols>1</growablecols>
                   </object>
-                  <flag>wxTOP|wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <option>0</option>
+                  <flag>wxALL|wxEXPAND</flag>
                   <border>4</border>
                 </object>
+                <orient></orient>
               </object>
             </object>
+            <label>Commands</label>
             <selected>1</selected>
           </object>
           <object class="notebookpage">
-            <label>Output parsing</label>
             <object class="wxPanel" name="tabRegExes">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxBoxSizer">
-                    <orient>wxHORIZONTAL</orient>
                     <object class="sizeritem">
                       <object class="wxStaticBoxSizer">
+                        <label>Parsing expressions</label>
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
-                            <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
                               <object class="wxListBox" name="lstRegex">
                                 <content/>
                               </object>
+                              <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <option>1</option>
-                              <flag>wxGROW</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxSpinButton" name="spnRegexOrder"/>
-                              <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                              <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                               <border>4</border>
                             </object>
+                            <orient></orient>
                           </object>
-                          <option>1</option>
-                          <flag>wxTOP|wxLEFT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
+                          <option>1</option>
                         </object>
                         <object class="sizeritem">
                           <object class="wxBoxSizer">
-                            <orient>wxHORIZONTAL</orient>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnRegexAdd">
                                 <label>Add</label>
                               </object>
-                              <flag>wxRIGHT</flag>
+                              <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnRegexDelete">
                                 <label>Delete</label>
                               </object>
-                              <flag>wxRIGHT</flag>
+                              <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <border>4</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxButton" name="btnRegexDefaults">
                                 <label>Defaults</label>
                               </object>
+                              <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
+                            <orient></orient>
                           </object>
-                          <flag>wxTOP|wxALIGN_CENTRE_HORIZONTAL</flag>
+                          <flag>wxTOP|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
                           <border>4</border>
                         </object>
-                        <label>Parsing expressions</label>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
+                          <object class="wxStaticText" name="ID_STATICTEXT9">
                             <label>Order matters!
 The first matching parsing expression is selected.</label>
                             <fg>#800000</fg>
                           </object>
-                          <flag>wxTOP|wxLEFT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
                       </object>
-                      <flag>wxTOP|wxBOTTOM|wxLEFT|wxGROW</flag>
+                      <flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticBoxSizer">
+                        <label>Parsing expression details</label>
                         <orient>wxVERTICAL</orient>
                         <object class="sizeritem">
                           <object class="wxFlexGridSizer">
@@ -284,20 +301,20 @@ The first matching parsing expression is selected.</label>
                             <hgap>8</hgap>
                             <growablecols>0</growablecols>
                             <object class="sizeritem">
-                              <object class="wxStaticText">
+                              <object class="wxStaticText" name="ID_STATICTEXT10">
                                 <label>Description:</label>
                               </object>
-                              <flag>wxGROW</flag>
+                              <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
-                              <object class="wxStaticText">
+                              <object class="wxStaticText" name="ID_STATICTEXT11">
                                 <label>Type:</label>
                               </object>
-                              <flag>wxGROW</flag>
+                              <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxTextCtrl" name="txtRegexDesc"/>
-                              <flag>wxGROW</flag>
+                              <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                             <object class="sizeritem">
                               <object class="wxComboBox" name="cmbRegexType">
@@ -310,22 +327,22 @@ The first matching parsing expression is selected.</label>
                                 <selection>1</selection>
                                 <style>wxCB_READONLY</style>
                               </object>
-                              <flag>wxGROW</flag>
+                              <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
                           </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
+                          <object class="wxStaticText" name="ID_STATICTEXT12">
                             <label>Regular expression:</label>
                           </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
                           <object class="wxTextCtrl" name="txtRegex"/>
-                          <flag>wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
@@ -338,387 +355,379 @@ The first matching parsing expression is selected.</label>
                                 <rows>3</rows>
                                 <vgap>4</vgap>
                                 <hgap>4</hgap>
+                                <growablecols>0</growablecols>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="ID_STATICTEXT13">
                                     <label>Message:</label>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxSpinCtrl" name="spnRegexMsg1">
                                     <value>0</value>
-                                    <min>0</min>
                                     <max>16</max>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="ID_STATICTEXT14">
                                     <label>Additional message 2:</label>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxSpinCtrl" name="spnRegexMsg2">
                                     <value>0</value>
-                                    <min>0</min>
                                     <max>16</max>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="ID_STATICTEXT15">
                                     <label>Additional message 3:</label>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxSpinCtrl" name="spnRegexMsg3">
                                     <value>0</value>
-                                    <min>0</min>
                                     <max>16</max>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="ID_STATICTEXT16">
                                     <label>Filename:</label>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxSpinCtrl" name="spnRegexFilename">
                                     <value>0</value>
-                                    <min>0</min>
                                     <max>16</max>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
-                                  <object class="wxStaticText">
+                                  <object class="wxStaticText" name="ID_STATICTEXT17">
                                     <label>Line:</label>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxSpinCtrl" name="spnRegexLine">
                                     <value>0</value>
-                                    <min>0</min>
                                     <max>16</max>
                                   </object>
+                                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                                 </object>
-                                <growablecols>0</growablecols>
                               </object>
-                              <flag>wxALL|wxGROW</flag>
+                              <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <border>4</border>
                             </object>
                           </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
                         <object class="sizeritem">
-                          <object class="wxStaticText">
+                          <object class="wxStaticText" name="ID_STATICTEXT18">
                             <label>A sub-expression index of 0 (zero), means it's not provided by
 the regular expression.</label>
                             <fg>#800000</fg>
                           </object>
-                          <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                          <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
-                        <label>Parsing expression details</label>
                       </object>
-                      <option>1</option>
-                      <flag>wxALL|wxGROW</flag>
+                      <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
+                      <option>1</option>
                     </object>
+                    <orient></orient>
                   </object>
-                  <flag>wxGROW</flag>
+                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                 </object>
                 <object class="sizeritem">
                   <object class="wxStaticBoxSizer">
                     <label>Test parsing expressions</label>
                     <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT19">
                         <label>Test string (e.g. compiler output line):</label>
                       </object>
-                      <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>8</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
                         <object class="sizeritem">
                           <object class="wxTextCtrl" name="txtRegexTest"/>
+                          <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <option>1</option>
-                          <flag>wxGROW</flag>
                         </object>
                         <object class="sizeritem">
                           <object class="wxButton" name="btnRegexTest">
                             <label>Test</label>
                           </object>
+                          <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
+                        <orient></orient>
                       </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>8</border>
                     </object>
                   </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
+                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
                 </object>
               </object>
             </object>
+            <label>Output parsing</label>
           </object>
           <object class="notebookpage">
-            <label>Others</label>
             <object class="wxPanel" name="tabSwitches">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
                 <object class="sizeritem">
                   <object class="wxFlexGridSizer">
                     <cols>2</cols>
-                    <vgap>0</vgap>
                     <hgap>8</hgap>
                     <growablecols>1</growablecols>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT20">
                         <label>Add header files search path (e.g. -I):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtAddIncludePath"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT21">
                         <label>Add libraries search path (e.g. -L):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtAddLibPath"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT22">
                         <label>Link library (e.g. -l):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtAddLib"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT23">
                         <label>Library prefix (e.g. lib):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtLibPrefix"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT24">
                         <label>Library extension (e.g. a):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtLibExt"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT25">
                         <label>Add preprocessor definition (e.g. -D):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtDefine"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT26">
                         <label>Generic switch character (e.g. -):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtGenericSwitch"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT27">
                         <label>Object file extension (e.g. o):</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtObjectExt"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT28">
                         <label>Force use of forward slash as path separator:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkFwdSlashes">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkFwdSlashes"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT29">
                         <label>Need dependency checks:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkNeedDeps">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkNeedDeps"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT30">
                         <label>Linker needs lib prefix:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkLinkerNeedsLibPrefix">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkLinkerNeedsLibPrefix"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT31">
                         <label>Linker needs lib extension:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkLinkerNeedsLibExt">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkLinkerNeedsLibExt"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT32">
                         <label>Force quotes for filenames in compiler command-line:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkForceCompilerQuotes">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkForceCompilerQuotes"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT33">
                         <label>Force quotes for filenames in linker command-line:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkForceLinkerQuotes">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkForceLinkerQuotes"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT34">
                         <label>Supports PCH:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkSupportsPCH">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkSupportsPCH"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT35">
                         <label>PCH extension (e.g. h.gch)</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
                       <object class="wxTextCtrl" name="txtPCHExt"/>
+                      <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT36">
                         <label>Use Flat Objects:</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkUseFlatObjects">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkUseFlatObjects"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxStaticText">
+                      <object class="wxStaticText" name="ID_STATICTEXT37">
                         <label>Use Full Paths for source files (GDB workaround) :</label>
                       </object>
-                      <flag>wxTOP</flag>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                     <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkUseFullSourcePaths">
-                        <label></label>
-                      </object>
-                      <flag>wxTOP</flag>
+                      <object class="wxCheckBox" name="chkUseFullSourcePaths"/>
+                      <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
                   </object>
-                  <option>1</option>
-                  <flag>wxALL|wxGROW</flag>
+                  <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
+                  <option>1</option>
                 </object>
               </object>
             </object>
+            <label>Others</label>
           </object>
-          <usenotebooksizer>1</usenotebooksizer>
         </object>
-        <option>1</option>
-        <flag>wxALL|wxGROW</flag>
+        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
         <border>8</border>
+        <option>1</option>
       </object>
       <object class="sizeritem">
         <object class="wxStdDialogButtonSizer">
-          <orient>wxHORIZONTAL</orient>
           <object class="button">
             <object class="wxButton" name="wxID_OK">
               <label>&amp;OK</label>
-              <default>1</default>
             </object>
           </object>
           <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
               <label>&amp;Cancel</label>
             </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
           </object>
         </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
         <border>8</border>
       </object>
     </object>

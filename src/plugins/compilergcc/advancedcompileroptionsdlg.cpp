@@ -65,6 +65,8 @@ AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const w
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAdvancedCompilerOptions"));
 	ReadCompilerOptions();
 	m_bDirty = false;
+	
+	GetSizer()->SetSizeHints(this);
 } // end of constructor
 
 AdvancedCompilerOptionsDlg::~AdvancedCompilerOptionsDlg()
