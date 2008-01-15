@@ -47,6 +47,27 @@ function BeginWizard()
         Wizard.AddBuildTargetPage(_T(""), false, true, _T(""), _T("*"), true);
     }
 }
+
+//------------------------------------------------------------------------------
+// Function OnEnter_ConsoleLanguagePage
+//------------------------------------------------------------------------------
+function OnEnter_ConsoleLanguagePage(fwd)
+{
+    Wizard.SetListboxSelection(_T("GenericChoiceList"), ConsoleLang);
+    return true;
+}
+//------------------------------------------------------------------------------
+// Function OnLeave_ConsoleLanguagePage
+//------------------------------------------------------------------------------
+function OnLeave_ConsoleLanguagePage(fwd)
+{
+    if (fwd)
+    {
+        ConsoleLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}
+
 //
 //------------------------------------------------------------------------------
 //
@@ -54,7 +75,6 @@ function OnLeave_CompilerPage(fwd)
 {
     if (fwd)
     {
-        ConsoleLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvctk"))
          || GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
         {
