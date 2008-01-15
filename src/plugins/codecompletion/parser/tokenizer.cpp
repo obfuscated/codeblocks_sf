@@ -522,6 +522,10 @@ wxString Tokenizer::DoGetToken()
     if (m_SkipUnwantedTokens && !SkipUnwanted())
         return wxEmptyString;
 
+	// if m_SkipUnwantedTokens is false, we need to handle comments here too
+	if (!m_SkipUnwantedTokens)
+		SkipComment();
+
     int start = m_TokenIndex;
     wxString m_Str;
     wxChar c = CurrentChar();

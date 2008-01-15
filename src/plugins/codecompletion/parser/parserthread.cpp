@@ -1084,7 +1084,10 @@ void ParserThread::HandleNamespace()
             aliasToken->m_Aliases.Add(ns);
         }
         else
+        {
+            m_Tokenizer.SetSkipUnwantedTokens(true);
             SkipToOneOfChars(ParserConsts::semicolonopbrace); // some kind of error in code ?
+        }
     }
 }
 
