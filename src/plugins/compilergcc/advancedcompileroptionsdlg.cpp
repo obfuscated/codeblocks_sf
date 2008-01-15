@@ -5,6 +5,7 @@
 #include <wx/combobox.h>
 #include <wx/intl.h>
 #include <wx/listbox.h>
+#include <wx/sizer.h>
 #include <wx/spinctrl.h>
 #include <wx/textctrl.h>
 #include <wx/textdlg.h>
@@ -65,7 +66,7 @@ AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const w
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAdvancedCompilerOptions"));
 	ReadCompilerOptions();
 	m_bDirty = false;
-	
+
 	GetSizer()->SetSizeHints(this);
 } // end of constructor
 
