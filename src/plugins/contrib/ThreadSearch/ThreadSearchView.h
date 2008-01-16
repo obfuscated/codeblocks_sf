@@ -151,6 +151,12 @@ private:
       */
     bool StopThread();
 
+    // BEGIN Duplicated from cbeditor.cpp to apply folding options
+	void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
+	void UnderlineFoldedLines(bool underline);
+	void SetFoldingIndicator(int id);
+	// END Duplicated from cbeditor.cpp to apply folding options
+
 	ThreadSearchThread* m_pFindThread;             // Worker thread pointer. Must be allocated on the heap.
 	ThreadSearch&       m_ThreadSearchPlugin;      // Thread search plugin reference. 'Subject' in the observer pattern.
 	wxString            m_PreviewFilePath;         // File currently previewed path. Used to avoid reloading files.
