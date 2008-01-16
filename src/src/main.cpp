@@ -1227,20 +1227,35 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
 
 bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter)
 {
-    wxArrayString    arLayout1;
-    wxArrayString    arLayout2;
-    wxStringTokenizer strTok(layout1, delimiter);
-    while(strTok.CountTokens() > 0)
+    wxStringTokenizer strTok;
+
+    strTok.SetString(layout1, delimiter);
+    wxArrayString arLayout1;
+    while(strTok.HasMoreTokens())
     {
-        arLayout1.Add(strTok.GetNextToken());
+        wxStringTokenizer strTokColon(strTok.GetNextToken(), _T(";"));
+        while(strTokColon.HasMoreTokens())
+        {
+            wxString theToken = strTokColon.GetNextToken();
+            if (!theToken.StartsWith(_T("state="))) arLayout1.Add(theToken);
+        }
     }
+
     strTok.SetString(layout2, delimiter);
-    while(strTok.CountTokens() > 0)
+    wxArrayString arLayout2;
+    while(strTok.HasMoreTokens())
     {
-        arLayout2.Add(strTok.GetNextToken());
+        wxStringTokenizer strTokColon(strTok.GetNextToken(), _T(";"));
+        while(strTokColon.HasMoreTokens())
+        {
+            wxString theToken = strTokColon.GetNextToken();
+            if (!theToken.StartsWith(_T("state="))) arLayout2.Add(theToken);
+        }
     }
+
     arLayout1.Sort();
     arLayout2.Sort();
+
     return arLayout1 != arLayout2;
 }
 
