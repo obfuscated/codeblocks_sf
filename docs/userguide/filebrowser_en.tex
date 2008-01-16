@@ -43,7 +43,7 @@ The following operations can be started via the context menu if one or multiple 
 User-defined functions can be specified via the menu command \menu{Settings,Environment,Shell Extensions}. In the Shell Extensions mask, a new function which can be named at random, is created via the \samp{New} button. In the \samp{ShellCommand Executable} field, the executable program is stated, and in the field at the bottom of the window, additional parameters can be passed to the program.
 By clicking the function in the context menu or the Shell Extensions menu, the function is started and will then process the selected files/directories. The output is redirected to a separate shell window.
 
-In the screenshot, a menu entry in \menu{Shell Extensions,SVN} and in the context menu is created for \samp{SVN}. \codeline{$file} in this context means the file selected in the File Explorer, \codeline{$mpath} the selected files or directories (see \pxref{sec:builtin_variables}).
+For example a menu entry in \menu{Shell Extensions,SVN} and in the context menu is created for \samp{SVN}. \codeline{$file} in this context means the file selected in the File Explorer, \codeline{$mpath} the selected files or directories (see \pxref{sec:builtin_variables}).
 
 \begin{code}
  Add;$interpreter add $mpaths;;;
@@ -51,7 +51,14 @@ In the screenshot, a menu entry in \menu{Shell Extensions,SVN} and in the contex
 
 This and every subsequent command will create a submenu, in this case called \menu{Extensions,SVN,Add}. The context menu is extended accordingly. Clicking the command in the context menu will make the SVN command \codeline{add} process the selected files/directories.
 
-The plugin support the use of \codeblocks variables within the shell extension.
+TortoiseSVN is a widespread SVN program with integration in the explorer. The program \file{TortoiseProc.exe} of TortoiseSVN can be started in the command line and dispalys a dialog to collect user input. So you can perform the commands, that are available as context menu in the explorer also in the command line. Therefore you can integrate it also a shell extension in \codeblocks. For example the command
+
+\begin{cmd}
+TortoiseProc.exe /command:diff /path:$file
+\end{cmd}
+
+will diff a selected file in the \codeblocks file explorer with the SVN base. See \pxref{fig:interpreter} how to integrate this command.
+\hint{For files that are under SVN control the file explorer shows overlay icons if they are actived via menu \menu{View,SVN Decorators}.}
 
 \screenshot{interpreter}{Add a shell extension to the context menu}
 
@@ -68,7 +75,9 @@ Diff;$interpreter $mpaths;;;
 \end{cmd}
 \end{enumerate}
 
-This command will be executed using the selected files or directories as parameter. The selection is accessed via the variable \codeline{$mpaths}. This is an easy way to diff files or directories können.
+This command will be executed using the selected files or directories as parameter. The selection is accessed via the variable \codeline{$mpaths}. This is an easy way to diff files or directories.
+
+\hint{The plugin support the use of \codeblocks variables within the shell extension.}
 
 % Actions string format: Name;Command;[W|C];WorkDir;EnvVarSet
 % (the last two ; delimit settings for the working directory and (not implemented) environment variable set)
@@ -88,15 +97,14 @@ This command will be executed using the selected files or directories as paramet
 \item[\$parentdir] Parent directory (../). %Übergeordnetes Verzeichnis (../)
 \end{codeentry}
 
-Alt-x und \&SVN/\&Add can be used with shortcuts.
-Support for personalities.
-hint: Context menu is also available in the editor!!!
-Bsp:
-%View;latex $fname.$fext;W;$parentdir
-
-\subsection{Support for Version Control Systems}
-
-Context menu \menu{View, SVN Decorators}
+\hint{The entries of shell extension are also available as context menu in the \codeblocks editor.}
+%Support for personalities.
+%Bsp:
+%%View;latex $fname.$fext;W;$parentdir
+%
+%\subsection{Support for Version Control Systems}
+%
+%Context menu \menu{View, SVN Decorators}
 % Run the processes using option 'W' in the action string (to run an interpreter in the cbconsole runnner use 'C' in the action string). for example a python run action string to run a script in a dockable winodw tab might look like this:
 %
 % \begin{code}

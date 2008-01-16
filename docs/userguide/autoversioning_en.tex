@@ -24,20 +24,18 @@ Here is the list of features the plugin covers summarized:
 
 \subsection{Usage}
 
-After downloading the sources, compiling them and installing the plugin to \codeblocks just go to \menu{Project,Autoversioning} menu. A pop up window like this will appear:
+Just go to \menu{Project,Autoversioning} menu. A pop up window like this will appear:
 
-screenshot
+\figures[H][]{autoversion_configure}{Configure project for Autoversioning}
 
-When hitting yes on the ask to configure message box, the main auto versioning configuration dialog will open, to let you configure the version info of your project. Each editable control has a tool tip with information that explains you its features, so if you put the mouse on the control the tool tip will pop up. Below is a screenshot showing all the tabs:
-
-screenshot
+When hitting yes on the ask to configure message box, the main auto versioning configuration dialog will open, to let you configure the version info of your project.
 
 After configuring your project for auto versioning, the settings that you entered on the configuration dialog will be stored on the project file, and a \file{version.h} file will be created. For now, every time that you hit the \menu{Project,Autoversioning} menu the configuration dialog will popup to let you edit your project version and versioning related settings, unless you don't save the new changes made by the plugin to the project file.
 
 \subsection{Dialog notebook tabs}
 \subsubsection{Version Values}
 
-Here you just enter the corresponding version values or let the auto versioning plugin increment them for you.
+Here you just enter the corresponding version values or let the auto versioning plugin increment them for you (see \pxref{fig:autoversion_editor}).
 
 \begin{description}
 \item[Major] Increments by 1 when the minor version reaches its maximum
@@ -46,18 +44,24 @@ Here you just enter the corresponding version values or let the auto versioning 
 \item[Revision] Increments randomly when the project has been modified and then compiled.
 \end{description}
 
+\figures{autoversion_editor}{Set Version Values}
+
 \subsubsection{Status}
 
-Some fields to keep track of your software status with a list of predefined values for convenience.
+Some fields to keep track of your software status with a list of predefined values for convenience(see \pxref{fig:autoversion_status}).
 
 \begin{description}
 \item[Software Status] The typical example should be v1.0 Alpha
 \item[Abbreviation] Same as software status but like this: v1.0a
 \end{description}
 
+\figures{autoversion_status}{Set Status of Autoversioning}
+
 \subsubsection{Scheme}
 
-Lets you edit how the plugin will increment the version values.
+Lets you edit how the plugin will increment the version values (see \pxref{fig:autoversion_scheme}).
+
+\figures{autoversion_scheme}{Scheme of autoversioning}
 
 \begin{description}
 \item[Minor maximum] The maximum number that the Minor value can reach, after this value is reached the Major is incremented by 1 and next time project is compiled the Minor is set to 0.
@@ -69,7 +73,9 @@ Lets you edit how the plugin will increment the version values.
 
 \subsubsection{Settings}
 
-Here you can set some settings of the auto versioning behavior.
+Here you can set some settings of the auto versioning behavior (see \pxref{fig:autoversion_settings}).
+
+\figures{autoversion_settings}{Settings of Autoversioning}
 
 \begin{description}
 \item[Autoincrement Major and Minor] Lets the plugin increments this values by you using the scheme. If not marked only the Build Number and Revision will increment.
@@ -82,7 +88,9 @@ Here you can set some settings of the auto versioning behavior.
 
 \subsubsection{Changes Log}
 
-This lets you enter every change made to the project to generate a \file{ChangesLog.txt} file.
+This lets you enter every change made to the project to generate a \file{ChangesLog.txt} file (see \pxref{fig:autoversion_changelog}).
+
+\figures{autoversion_changelog}{Changelog of Autoversioning}
 
 \begin{description}
 \item[Show changes editor when incrementing version] Will pop up the changes log editor when incrementing the version.
@@ -171,9 +179,10 @@ On C mode is the same as C++ but without the namespace:
 
 \subsection{Change log generator}
 
-This dialog is accessible from the menu \menu{Project,Changes Log}. Also if checked Show changes editor when incrementing version on the changes log settings, the window will open to let you enter the list of changes after a modification to the project sources or an incrementation event. Below is an example screenshot:
+This dialog is accessible from the menu \menu{Project,Changes Log}. Also if checked Show changes editor when incrementing version on the changes log settings, the window will open to let you enter the list of changes after a modification to the project sources or an incrementation event (see \pxref{fig:autoversion_changes}).
 
-screenshot
+\figures[H][]{autoversion_changes}{Changes for a project}
+
 \subsubsection{Buttons Summary}
 
 \begin{description}

@@ -4,7 +4,7 @@ The instructions for \pxref{sec:variables_types} and \pxref{sec:build_codeblocks
 
 The below illustration shows the design of the \codeblocks user interface.
 
-\screenshot{codeblocks}{IDE \codeblocks}
+\figures[H][width=\columnwidth]{codeblocks}{IDE \codeblocks}
 
 \begin{description}
 \item[Management] This window contains the interface \menu{Projects} which will in the following text be referred to as the project view. This view show all the projects opened in \codeblocks at a certain time. The \samp{Symbols} tab of the Management window shows symbols, variables etc..
@@ -185,7 +185,7 @@ In \codeblocks there are different ways of quick navigation between files and fu
 
 \hint{If you select the workspace or a project in the workspace in the project view you will be able to search for a file in the project. Just select \menu{Find file} from the context menu, then type the name of the file and the file will be selected. If you hit return this file will be opened in the editor (see \pxref{fig:project_find_file}).}
 
-\screenshot[][width=.5\columnwidth]{project_find_file}{Suche nach Dateien}
+\screenshot[][width=.5\columnwidth]{project_find_file}{Searching for files}
 
 In \codeblocks you can easily navigate between header/source files like:
 
@@ -195,7 +195,7 @@ In \codeblocks you can easily navigate between header/source files like:
 \item Select e.g. a define in the editor and choose \menu{Find declaration} from the contex menu to open the file with the declaration.
 \end{enumerate}
 
-\screenshot{open_header}{Öffnen einer Header Datei}
+\screenshot{open_header}{Opening of a header file}
 
 
 \codeblocks offeres several ways of searching within a file or directory. In the project view, you can select a project via the context menu \menu{Find file}, and then enter a file name in the dialogue box. The corresponding file will be selected in the project view and can then be opened in the editor by pressing the Return key. The dialogue box for searching is opened via \menu{Search,Find} (Ctrl-F) or \menu{Find in Files} (Ctrl-Shift-F).
@@ -238,7 +238,7 @@ The \codeblocks development environment supports the inclusion of external help 
 
 If you have included multiple help files, you can select a term in the editor and choose a help file from the context menu \menu{Locate in} for \codeblocks to search in.
 
-\screenshot{help_files}{Einstellungen für Hilfe}
+\screenshot{help_files}{Settings for help files}
 
 In addition you can other help methods like a Google search of a select item in the \codeblocks editor (see \pxref{fig:help_files}). The entry \codeline{$(keyword)} is a placeholder for a select item in your editor. If you select the entry \menu{Locate in} in the context menu then the selected keyword is \samp{googled}. In \codeblocks you can add even support for man pages. Just add a entry \menu{man} and specify the path as follows.
 
