@@ -1,15 +1,14 @@
 \section{AutoVersioning}\label{sec:autoversioning}
 
-Ein Plugin zur Versionierung von Anwendungen, indem die Versions- und Buildnummer einer Anwendung jedesmal hochgezählt wird, wenn eine Änderung stattgefunden hat. Diese Information wird über einfach benutzbare Variablendeklarationen in der Datei \file{version.h} abgelegt. Des weiteren sind Übergaben im SVN Stil, ein Version Schemen Editor, ein Versionsschema Editor, ein Change Log Generator und ein Log Generator und vieles mehr $\ldots$
+Ein Plugin zur Versionierung von Anwendungen, indem die Versions- und Buildnummer einer Anwendung jedesmal hochgezählt wird, wenn eine Änderung stattgefunden hat. Diese Information wird über einfach benutzbare Variablendeklarationen in der Datei \file{version.h} abgelegt. Des weiteren sind möglich: Übergaben im SVN Stil, ein Versionsschema Editor, ein Change Log Generator und ein Log Generator und vieles mehr $\ldots$
 
 \subsection{Einleitung}
 
-Die Idee dieses Plugins entstand bei Entwicklung von Software, die sich im frühen pre-alpha Status befand und eine Art von Versionsinformation benötigte. Beschäftigt durch die Erstellung von Code, blieb keine Zeit um die Versionsnummer zu pflegen, deshlab wurde ein Plugin entwickelt, dass diese Arbeit erledigt und nur minimaler Bedienereingriff benötigt.
+Die Idee dieses Plugins entstand bei Entwicklung von Software, die sich im frühen pre-alpha Status befand und eine Art von Versionsinformation benötigte. Beschäftigt durch die Erstellung von Code, blieb keine Zeit um die Versionsnummer zu pflegen, deshlab wurde ein Plugin entwickelt, dass diese Arbeit erledigt und nur minimaler Bedienereingriff erfordert.
 
 \subsection{Features}
 
 Hier finden Sie eine Liste von Features, die vom Plugin abgedeckt werden.
-Here is the list of features the plugin covers summarized:
 
 \begin{itemize}
 \item Unterstützung für C und C++.
@@ -25,12 +24,11 @@ Here is the list of features the plugin covers summarized:
 
 \subsection{Handhabung}
 
-Wählen Sie einfach das Menü \menu{Project,Autoversioning}. Das folgende Pop Up Fenster erscheint.
+Wählen Sie einfach das Menü \menu{Project,Autoversioning}. Das Pop Up Fenster wie auf \pxref{autoversion_configure} erscheint.
 
 \figures[H][]{autoversion_configure}{Configure project for Autoversioning}
 
 Wenn Sie den Dialog mit yes bestätigen, dann wird der Konfigurationsdialog von Autoversioning angezeigt.
-When hitting yes on the ask to configure message box, the main auto versioning configuration dialog will open, to let you configure the version info of your project.
 
 Nachdem Sie Ihr Projekt für Autoversioning konfiguriert haben, werden die Einstellungen aus dem Eingabedialog im Projekt gespeichert und eine Datei \file{version.h} wird angelegt. Ab diesem Zeitpunkt wird bei jedem Aufruf des Menüs \menu{Project,Autoversioning} der Konfigurationsdialog aufgerufen, um die Einstellung für Projektversion vorzunehmen, es sei denn Sie speichern die Änderungen des Plugins in Projektdatei.
 
@@ -41,8 +39,8 @@ Hier können Sie einfach die zugehörigen Version Values eintragen oder Auswähl
 
 \begin{description}
 \item[Major] Wird um eins hochgezählt wenn die Minor Version ihr Maximum erreicht
-\item[Minor] Wird um eins hochgezählt wenn die Anzahl von Build die Schranke build times überschreitet. Der Wert wird auch Null zurückgesetzt, nachdem die maximale Anzahl bereitserreicht wurde.
-\item[Build Number] (gleichbedeutend mit Release) - Wird jedesmal wenn die Revison Number steigt um eins hochgezählt.
+\item[Minor] Wird um eins hochgezählt wenn die Anzahl von Build die Schranke build times überschreitet. Der Wert wird auch Null zurückgesetzt, nachdem die maximale Anzahl bereits erreicht wurde.
+\item[Build Number] Gleichbedeutend mit Release und wird jedesmal wenn die Revison Number steigt um eins hochgezählt.
 \item[Revision] Zählt die Revision zufallsartig hoch, wenn das Projekt geändert oder kompiliert wurde.
 \end{description}
 
@@ -61,14 +59,14 @@ Einige Felder sind auf vordefiniert Werte voreingestellt (siehe \pxref{fig:autov
 
 \subsubsection{Scheme}
 
-Lets you edit how the plugin will increment the version values (siehe \pxref{fig:autoversion_scheme}).
+Hier stellen Sie ein, wie das Plugin die version values hochzählt (siehe \pxref{fig:autoversion_scheme}).
 
 \figures{autoversion_scheme}{Scheme of autoversioning}
 
 \begin{description}
-\item[Minor maximum] Die obere Schranke für den Wert Minor. Wenn diese erreicht wurde, wird Major hochgezählt und beim nächsten Kompilevorgang des Projektes wird Minor auf Null zurückgesetzt.
-\item[Build Number maximum] Wenn der Wert erreicht wurde, wird beim nächsten Kompilevorgang der Wert auf Null zurückgesetzt. Mit der Einstellung 0 ist das Maximum unendlich
-\item[Revision maximum] Gleichbedeutend mit Maximum für Build Number maximum. Mit der Einstellung 0 ist das Maximum unendlich
+\item[Minor maximum] Die obere Schranke für den Wert Minor. Wenn diese erreicht ist, wird Major hochgezählt und beim nächsten Kompilevorgang des Projektes wird Minor auf Null zurückgesetzt.
+\item[Build Number maximum] Wenn der Wert erreicht wurde, wird beim nächsten Kompilevorgang der Wert auf Null zurückgesetzt. Die Einstellung 0 setzt das Maximum auf unendlich
+\item[Revision maximum] Gleichbedeutend mit Maximum für Build Number maximum. Die Einstellung 0 setzt das Maximum auf unendlich
 \item[Revision random maximum] Die Revisions Nummer wird durch Zufallszahlen hochgezählt. Eine Einstellung mit 1, wird die Revision um eins erhöhen.
 \item[Build times before incrementing Minor] Nach Änderungen im Code und Kompilierung wird die Build History inkrementiert und wenn dieser Wert erreicht wird, dann wir der Minor Wert auch inkrementiert.
 \end{description}
@@ -84,7 +82,7 @@ Hier können Sie einige Einstellungen für Auto Versioning vornehmen (siehe \pxr
 \item[Create date declarations] Erzeugt in der Datei \file{version.h} Einträge für Datum und Ubuntu style version.
 \item[Do Auto Increment] Weist das Plugin an bei jeder Änderung noch vor dem Kompilevorgang zu inkrementieren.
 \item[Header language] Einstellung der Sprache für Ausgabe in \file{version.h}
-\item[Ask to increment] Wenn Do Auto Increment aktive ist, wird vor dem Kompilevorgang bei Änderungen nachgefragt, ob hochgezählt werden soll.
+\item[Ask to increment] Wenn Do Auto Increment aktiv ist, wird vor dem Kompilevorgang bei Änderungen nachgefragt, ob hochgezählt werden soll.
 \item[svn enabled] Sucht nach der SVN Revision und Datum im aktuellen Verzeichnis und erzeugt die zugehörigen Einträge in \file{version.h}
 \end{description}
 
@@ -181,7 +179,7 @@ Bei der Einstellung der Sprache C ergibt sich folgende Ausgabe ohne Namespaces:
 
 \subsection{Change log generator}
 
-Dieser Dialog is über das Menü \menu{Project,Changes Log} erreichbar. Diese Dialog erscheint auch wenn die Einstellung \menu{Show changes editor} für das Inkrementierung der Version (Changes Log) besteht. Im Dialog werden die Liste von Änderungen nach Modifikation der Quellen eines Projektes eingegeben (siehe \pxref{fig:autoversion_changes}).
+Dieser Dialog ist über das Menü \menu{Project,Changes Log} erreichbar. Diese Dialog erscheint auch wenn die Einstellung \menu{Show changes editor} für das Inkrementierung der Version (Changes Log) besteht. Im Dialog werden die Liste von Änderungen nach Modifikation der Quellen eines Projektes eingegeben (siehe \pxref{fig:autoversion_changes}).
 
 \figures[H][]{autoversion_changes}{Changes for a project}
 

@@ -1,0 +1,60 @@
+\section{LibFinder}\label{sec:lib_finder}
+
+Wenn Sie Bibliotheken in einer Anwendungen verwenden, muss Ihr Projekt so eingestellt werden, dass es nach diesen Bibliotheken sucht und diese anschließend benutzen kann. Dieser Vorgang kann zeitaufwändig und nervend sein, da jede Bibliothek unter Umständen durch unterschiedliche Arten von Option eingebunden werden muss. Des weiteren hängen die Einstellungen vom Host-Betriebssystem ab, was zu Inkompatibilitäten im Projekt für die Verwendung unter Unix und Windows führt.
+
+LibFinder stellt folgende Kernfunktionalitäten zur Verfügung:
+
+\begin{itemize}
+\item Suche nach Bibliotheken die bereits auf einem System installiert sind
+\item Einbinden von Bibliotheken in Ihr Projekt und somit wird ein Projekt mit nur wenigen Mausklicks plattformunabhängig
+\end{itemize}
+
+\subsection{Suche nach Bibliotheken}
+
+Die Suche nach Bibliotheken ist über das Menü \menu{Plugins,Library finder} erreichbar. Der Sinn besteht in der Suche nach Bibliotheken, die bereits auf Ihrem System installiert sind. Das Ergebnis der Suche wird in der Libfinder Datenbank gespeichert. Diese Ergebnisse werden nicht in den \codeblocks Projektdateien gespeichert. Die Suche startet mit dem Aufruf des Dialogs für die Angabe von Suchpfaden. LibFinder scannt diese Verzeichnisse rekursiv. Falls Sie nicht ganz sicher sind, wo sich die Bibliotheken befinden, ist auch die Angabe eines allgemeinen Pfades möglich. Sie können auch ganze Laufwerke angeben -- in diesem Fall wird die Suche länger dauern aber voraussichtlich werden dann alle Bibliotheken gefunden (siehe \pxref{fig:list_of_directories}).
+
+\screenshot{list_of_directories}{Liste für Suchpfade}
+
+Wenn LibFinder nach Bibliotheken sucht, verwendet es spezielle Regeln um das Vorhandsein von Bibliotheken zu erkennen. Jeder Satz an Regeln ist im einer xml Datei abgelegt. Derzeit unterstützt LibFinder die Suche von wxWidgets 2.6/2.8, \codeblocks SDK and GLFW -- die Liste wird zukünftig erweitert werden.
+
+\hint{Für nähere Informationen wie eine Unterstützung für weitere Arten von Bibliotheken eingefügt werden kann, lesen Sie bitte die Datei \file{src/plugins/contrib/lib\_finder/lib\_finder/readme.txt} im Quellverzeichnis von \codeblocks.}
+
+Nach der Suche, zeigt Libfinder die Suchergebnisse an (siehe \pxref{fig:search_results}).
+
+\screenshot{search_results}{Suchergebnisse}
+
+In der Liste wählen Sie dann die Bibliotheken aus, die in der Libfinder Datenbank gespeichert werden sollen. Beachten Sie das jede Bibliothek mehrere gültige Konfigurationen haben kann und die Einstellungen aus vorhergehenden Suchen für die Erzeugung eines Projektes dominieren.
+
+Mit den nachfolgenden Einstellungen lässt sich konfigurieren, wie mit den Ergebnissen aus vorhergehenden Suchen umgegangen wird.
+
+\begin{description}
+\item[Do not clear previous results] Diese Option funktioniert wie ein Update eines existierenden Ergebnis -- es fügt neue hinzu und aktualisiert bereits bestehende. Die Option ist nicht ratsam.
+\item[Second option (Clear previous results for selected libraries)] Löscht alle Suchergebnisse für Bibliotheken, die vor der Suche ausgewählt wurden. Die Verwendung dieser Option wird empfohlen.
+\item[Clear all previous library settings] wenn diese Option ausgewählt ist, wird die LibFinder Datenbank aufgeräumt bevor neue Suchergebnisse eingefügt werden. Dies ist sinnvoll wenn Sie ungültige Einträge aus der LibFinder Datenbank entfernen wollen.
+\end{description}
+
+Eine weitere Alternative in diesem Dialog ist die Einstellung \menu{Set up Global Variables}. Wenn diese Option ausgewählt ist, versucht LibFinder automatisch die globalen Variablen zu konfigurieren und den Umgang mit den Bibliotheken zu erleichtern.
+
+Wenn Sie pkg-config auf Ihrem System installiert haben (ist meist auf Linux Systemen installiert), wird LibFinder auch die Bibliotheken aus diesem Tool verwenden. Es ist keine weitere Suche erforderlich, da diese beim Start von \codeblocks automatisch geladen werden.
+
+\subsection{Einbinden von Bibliotheken in Projekten}
+
+LibFinder fügt in Project Properties einen weiteren Reiter \menu{Libraries} ein -- diese Reiter zeigt die Bibliotheken an, die im Projekt verwendet werden und LibFinder bekannt sind. Um Bibliotheken in ein Projekt einzufügen, wählen Sie einfach einen Eintrag im rechten Ausschnitt und Klicken Sie den $<$ Knopf. Das Entfernen einer Bibliothek aus einem Projekt geschieht durch Auswahl eines Eintrages im linken Ausschnitt und einen Klick auf den $>$ Knopf (siehe \pxref{fig:project_configuration}).
+
+\screenshot{project_configuration}{Project configuration}
+
+Die Anzeige von Bibliotheken, die LibFinder bekannt sind, kann gefiltert werden. Die Checkbox \menu{Show as Tree} erlaubt das Umschalten zwischen kategorisiert und nicht kategorisierter Ansicht.
+
+Wenn Sie Bibliotheken, die nicht in LibFinder verfügbar sind, einfügen wollen, wählen Sie den Eintrag \menu{Unknown Library}. Sie sollte für die Angabe der Bibliothek das übliche Kürzel verwenden (entspricht normalerweise dem globalen Variablennamen) oder den Name der Bibliothek in pkg-config. Zum Beispiel
+
+\begin{code}
+$(#GLOBAL_VAR_NAME.lib)
+\end{code}
+
+Die Auswahl der Option \menu{Don't setup automatically} wird LibFinder anweisen die Bibliotheken nicht automatisch beim Kompilieren des Projektes einzubinden. In einem solchen Fall kann LibFinder aus einem Build Script ausgeführt werden. Ein Beispiel für ein solches Skript wird durch Auswahl des Menüs \menu{Add manual build script} erzeugt und dem Projekt hinzugefügt.
+
+\subsection{Verwendung von LibFinder und aus Wizards erzeugten Projekten}
+
+Wizards erzeugen Projekte, die nicht LibFinder nutzen. Die Verwendung des Plugins erfordert, das der Benutzer die Einstellung in den Build options im Reiter \menu{Libraries} anpasst. Die Vorgehensweise sieht so aus, dass alle Bibliothek spezifische Einstellungen entfernt werden müssen und die benötigten Bibliotheken im Reiter \menu{Libraries} eingefügt werden.
+
+Diese Art von Projeken werden somit unabhängig von dem verwendeten Betriebssytem. Solange nur Bibliotheken, die in der LibFinder Datenbank definiert wurden, verwendet werden, werden die Build Optionen eines Projektes automatisch aktualisiert, so dass die Einstellung auch für die plattformabhängigen Einstellungen von Bibliotheken funktionieren.
