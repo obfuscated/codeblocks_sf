@@ -496,7 +496,16 @@ namespace ScriptBindings
                 func(&cbProject::SetShowNotesOnLoad, "SetShowNotesOnLoad").
                 func(&cbProject::GetShowNotesOnLoad, "GetShowNotesOnLoad").
                 func(&cbProject::ShowNotes, "ShowNotes").
-                func(&cbProject::AddToExtensions, "AddToExtensions");
+                func(&cbProject::AddToExtensions, "AddToExtensions").
+                func(&cbProject::DefineVirtualBuildTarget, "DefineVirtualBuildTarget").
+                func(&cbProject::HasVirtualBuildTarget, "HasVirtualBuildTarget").
+                func(&cbProject::RemoveVirtualBuildTarget, "RemoveVirtualBuildTarget").
+                func(&cbProject::GetVirtualBuildTargets, "GetVirtualBuildTargets").
+                func(&cbProject::GetVirtualBuildTargetGroup, "GetVirtualBuildTargetGroup").
+                func(&cbProject::GetExpandedVirtualBuildTargetGroup, "GetExpandedVirtualBuildTargetGroup").
+                func(&cbProject::CanAddToVirtualBuildTarget, "CanAddToVirtualBuildTarget").
+                func(&cbProject::SetTitle, "SetTitle");
+
 
         SqPlus::SQClassDef<ProjectManager>("ProjectManager").
                 func(&ProjectManager::GetDefaultPath, "GetDefaultPath").
@@ -520,7 +529,13 @@ namespace ScriptBindings
                 func(&ProjectManager::NewProject, "NewProject").
                 staticFuncVarArgs(&ProjectManager_AddFileToProject, "AddFileToProject", "*").
                 func(&ProjectManager::AskForBuildTargetIndex, "AskForBuildTargetIndex").
-                func(&ProjectManager::RebuildTree, "RebuildTree");
+                func(&ProjectManager::RebuildTree, "RebuildTree").
+                func(&ProjectManager::AddProjectDependency, "AddProjectDependency").
+                func(&ProjectManager::RemoveProjectDependency, "RemoveProjectDependency").
+                func(&ProjectManager::ClearProjectDependencies, "ClearProjectDependencies").
+                func(&ProjectManager::RemoveProjectFromAllDependencies, "RemoveProjectFromAllDependencies").
+                func(&ProjectManager::GetDependenciesForProject, "GetDependenciesForProject").
+                func(&ProjectManager::ConfigureProjectDependencies, "ConfigureProjectDependencies");
 
         SqPlus::SQClassDef<EditorBase>("EditorBase").
                 func(&EditorBase::GetFilename, "GetFilename").
