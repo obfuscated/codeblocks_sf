@@ -105,7 +105,7 @@ Komplexe Softwaresysteme bestehen aus Komponenten, die in unterschiedlichen \cod
 
 \genterm{Beispiel}
 
-Ein Projekt A enthält zentrale Funktionen, die auch anderen Projekten in Form einer Bibliothek zugänglich gemacht werden. Wenn nun die Quellen der zentralen Funktionen geändert werden, muss die Bibliothek neu erzeugt werden. Damit die Konsistenz zwischen einem Projekt B, das die Funktionen verwendet und dem Projekt A, das die Funktionen implementiert, gewahrt bleibt, muss Projekt B von Projekt A abhängen. Die Information für die Abhängigkeit von Projekten wird im jeweiligen Workspace gespeichert, damit jedes Projekt weiterhin einzeln erzeugt werden kann. Durch die Verwendung von Abhängigkeiten kann auch die Reihenfolge bei der Generierung von Projekten gesteuert werden. Die Abhängigkeiten für Projekte werden über den Menüeintrag \menu{Project,Properties} und Auswahl der Schaltfläche \samp{Project's dependencies} gesetzt.
+Ein Projekt A enthält zentrale Funktionen, die auch anderen Projekten in Form einer Bibliothek zugänglich gemacht werden. Wenn nun diese Quellen eines Projektes geändert werden, muss die Bibliothek neu erzeugt werden. Damit die Konsistenz zwischen einem Projekt B, das die Funktionen verwendet und dem Projekt A, das die Funktionen implementiert, gewahrt bleibt, muss Projekt B von Projekt A abhängen. Die Information für die Abhängigkeit von Projekten wird im jeweiligen Workspace gespeichert, damit jedes Projekt weiterhin einzeln erzeugt werden kann. Durch die Verwendung von Abhängigkeiten kann auch die Reihenfolge bei der Generierung von Projekten gesteuert werden. Die Abhängigkeiten für Projekte werden über den Menüeintrag \menu{Project,Properties} und Auswahl der Schaltfläche \samp{Project's dependencies} gesetzt.
 
 \section{Einbinden von Assembler Dateien}
 
@@ -184,7 +184,7 @@ Zur Erzeugung einer portablen Version von \codeblocks auf einem USB-Stick gehen 
 
 In \codeblocks existieren unterschiedliche Möglichkeiten zum schnellen Navigieren zwischen Dateien und Funktionen. Eine typische Vorgehensweise ist das Setzen von Lesezeichen (Bookmarks). Durch Betätigen des Tastenkürzel (Ctrl-B) wird ein Lesezeichen in einer Quelldatei gesetzt bzw. gelöscht. Mit (Alt-PgUp) wird zum vorherigen Lesezeichen gesprungen und mit (Alt-PgDn) zum nächsten gewechselt.
 
-\hint{In der Projektansicht können Sie durch Auswählen eines Projektes oder im gesamten Workspace über das Kontextmenü \menu{Find file} in einem Dialog einen Dateinamen angeben. Dieser wird anschließend in der Projektansicht markiert und durch Eingabe mit Return im Editor geöffnet (siehe \pxref{fig:project_find_file}).}
+In der Projektansicht können Sie durch Auswählen eines Projektes oder im gesamten Workspace über das Kontextmenü \menu{Find file} in einem Dialog einen Dateinamen angeben. Dieser wird anschließend in der Projektansicht markiert und durch Eingabe mit Return im Editor geöffnet (siehe \pxref{fig:project_find_file}).
 
 \screenshot[][width=.5\columnwidth]{project_find_file}{Suche nach Dateien}
 
@@ -200,7 +200,7 @@ Für das schnelle Navigieren zwischen Header/Quelle Dateien bietet \codeblocks f
 
 \codeblocks bietet verschiedene Möglichkeiten für die Suche in einer Datei oder in Verzeichnissen. Mit dem \menu{Search,Find} (Ctrl-F) oder \menu{Find in Files} (Ctrl-Shift-F) öffnet sich der Dialog für die Suche.
 
-Eine weitere komfortable Funktion bietet das Tastenkürzel Ctrl-G und Ctrl-Alt-G. Der sich öffnende Dialog erlaubt die Auswahl von Dateien/Funktionen und springt anschließend an die Implementierung der Funktion (siehe \pxref{fig:select_function}) bzw. öffnete die ausgewählte Datei. Als Eingabe werden auf Wildcards \codeline{*} oder \codeline{?} etc. für eine inkrementelle Suche unterstützt.
+Eine weitere komfortable Funktion bietet das Tastenkürzel Alt-G und Ctrl-Alt-G. Der sich öffnende Dialog erlaubt die Auswahl von Dateien/Funktionen und springt anschließend an die Implementierung der Funktion (siehe \pxref{fig:select_function}) bzw. öffnete die ausgewählte Datei. Als Eingabe werden auf Wildcards \codeline{*} oder \codeline{?} etc. für eine inkrementelle Suche unterstützt.
 
 \screenshot[][width=.5\columnwidth]{select_function}{Suche nach Funktionen}
 
@@ -210,9 +210,11 @@ Wenn Sie sich im Editor Fenster befinden, können Sie mit Ctrl-Tab zwischen den 
 
 \screenshot{tab_scheme}{Einstellungen für Wechseln zwischen Reitern}
 
-Eine häufige Arbeitsweise bei der Entwicklung von Software ist jedoch, dass man sich durch ein Satz von Funktion hangelt, die in unterschiedlichen Dateien implementiert sind. Durch das Plugin BrowseTracks zeigt mit dem Fenster \samp{Browsed Tabs} eine Liste in der Reihenfolge wie Dateien selektiert wurden. Somit können Sie komfortabel zwischen den Aufrufen navigieren.
+Eine häufige Arbeitsweise bei der Entwicklung von Software ist jedoch, dass man sich durch ein Satz von Funktion hangelt, die in unterschiedlichen Dateien implementiert sind. Durch das Plugin Browse Tracker zeigt mit dem Fenster \samp{Browsed Tabs} eine Liste in der Reihenfolge wie Dateien selektiert wurden. Somit können Sie komfortabel zwischen den Aufrufen navigieren (siehe \pxref{sec:browsetracker}).
 
 In \codeblocks aktivieren Sie die Anzeige von Zeilennummern in \menu{Settings,General Settings} im Feld \samp{Show line numbers}. Mit dem Tastenkürzel Ctrl-G oder über das Menü \menu{Search,Goto line} springen Sie an die gewünschte Zeile.
+
+\hint{Sie können auch im Editor einen Begriff mit gedrückter Ctrl Taste markieren und dann über das Kontextmenü nach diesem Begriff z.B. in Goolge suchen.}
 
 \subsection{Symbolansicht}
 
@@ -234,13 +236,13 @@ Strukturen und Klassen werden unterhalb von Preprocessor symbols angezeigt. Wenn
 
 \subsection{Einbinden von externen Hilfen}
 
-Die Entwicklungsumgebung \codeblocks unterstützt das Einbinden von externen Hilfen über das Menü \menu{Settings,Environment}. Fügen Sie ein Manual Ihrer Wahl im chm Format in \menu{Help Files} hinzu und wählen Sie die Einstellung \samp{this is the default help file}. Nun können Sie in \codeblocks in einer geöffneten Quelldatei eine Funktion mit der Maus durch Doppelklick markieren und anschließend die Hilfe mit F1 aufrufen und erhalten die zugehörige Dokumentation.
+Die Entwicklungsumgebung \codeblocks unterstützt das Einbinden von externen Hilfen über das Menü \menu{Settings,Environment}. Fügen Sie ein Manual Ihrer Wahl im chm Format in \menu{Help Files} hinzu und wählen Sie die Einstellung \samp{this is the default help file} (siehe \pxref{fig:help_files}). Dabei steht im Eintrag \codeline{$(keyword)} als Platzhalter für einen Begriff der im Editor markiert wird.  Nun können Sie in \codeblocks in einer geöffneten Quelldatei eine Funktion mit der Maus durch Doppelklick markieren und anschließend die Hilfe mit F1 aufrufen und erhalten die zugehörige Dokumentation.
 
 Wenn Sie mehrere Hilfedateien einbinden, können Sie im Editor einen Begriff markieren und anschließend über das Kontextmenü \menu{Locate in} die Hilfedatei auswählen, in der \codeblocks suchen soll.
 
 \screenshot{help_files}{Einstellungen für Hilfe}
 
-Neben chm Dateien können andere Hilfe eingebunden werden, wie zum Beispiel eine Google Suche eines Begriffes (siehe \pxref{fig:help_files}). Dabei steht im Eintrag \codeline{$(keyword)} als Platzhalter für einen Begriff der im Editor markiert wird. Ein Aufruf des Kontextmenü \menu{Locate in} im Editor führt die Google Suche durch. In \codeblocks werden auch die Hilfe mit man pages unterstützt. Hier fügen Sie einen neuen Eintrag \menu{man} ein und geben den Pfad wie folgt an.
+In \codeblocks werden auch die Hilfe mit man pages unterstützt. Hier fügen Sie einen neuen Eintrag \menu{man} ein und geben den Pfad wie folgt an.
 
 \begin{cmd}
 man:/usr/share/man
@@ -248,7 +250,9 @@ man:/usr/share/man
 
 \codeblocks bietet auch einen \samp{Embedded HTML Viewer}, hiermit können  einfache HTML-Dateien in \codeblocks angezeigt und für Suchen genutzt werden. Konfigurieren Sie einfach den Pfad der HTML-Datei, die durchsucht werden soll und aktivieren Sie die Option \menu{Open this file with embedded help viewer} in dem Menü \menu{Settings,Environment,Help Files}.
 
-\hint{Sie können auch im Editor einen Begriff mit gedrückter Ctrl Taste markieren und dann über das Kontextmenü nach diesem Begriff z.B. in Goolge suchen.}
+\screenshot{embedded_html_viewer}{Embedded HTML Viewer}
+
+\hint{Wenn Sie eine HTML-Datei im File Explorer mit einem Doppelklick öffnen (siehe \pxref{sec:file_explorer}) dann wird der Embedded Html Viewer gestartet, solange für HTML Dateien keine  andere Zuordnung im file extension handler vorgenommen wurde.}
 % \section{Scripting}
 %
 % \codeblocks in Console Modus - Scripts
@@ -351,6 +355,8 @@ In den Builtoption eines Projektes können Sie unter \samp{Linker Settings} im E
 \genterm{Beispiel}
 
 Für eine Bibliothek \file{\var{path}\osp libs\osp lib\var{name}.a} geben Sie einfach \file{\var{name}} an. Der Linker mit den jeweiligen Suchpfaden für die Bibliotheken bindet diese dann korrekt ein.
+
+\hint{Eine weitere Möglichkeit wie Sie Bibliotheken einbinden können, beschreibt \pxref{sec:lib_finder}.}
 
 \subsection{Linkreihenfolge von Objekten}
 

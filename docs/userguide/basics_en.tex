@@ -22,7 +22,7 @@ The status bar gives an overview of the following settings:
 \item Row and column number of the current cursor position in the editor.
 \item The configured keyboard mode for inserting text (Insert or Overwrite).
 \item Current state of a file. A modified file will be marked with \codeline{Modified} otherwise this entry is empty.
-\item The permission of a file. A file with read only settings will dipslay \codeline{Read only} in the status bar. In the window \menu{Open files list} these files will be emphasised with a lock as icon overlay.
+\item The permission of a file. A file with read only settings will display \codeline{Read only} in the status bar. In the window \menu{Open files list} these files will be emphasised with a lock as icon overlay.
 \item If you start \codeblocks with the command line option \opt{--personality=\var{profile}} then the status bar will show the currently used profile, otherwise \codeline{default} will be shown. The settings of \codeblocks are stored in the corresponding configuration file \file{\var{personality}.conf}.
 \end{itemize}
 
@@ -36,12 +36,12 @@ In \codeblocks, the sources and the settings for the build process are stored in
 \item[Sources] includes source files with the extensions \file{*.c;*.cpp;}.
 \item[ASM Sources] includes source files with the extensions \file{*.s;*.S;*.ss;*.asm}.
 \item[Headers] includes, among others, files with the extension \file{*.h;}.
-\item[Resources] includes files for layout descriptions for xxWidgets windows with the extensions \file{*.res;*.xrc;}. These file types are shown in the \samp{Resources} tab of the Manangement window.
+\item[Resources] includes files for layout descriptions for wxWidgets windows with the extensions \file{*.res;*.xrc;}. These file types are shown in the \samp{Resources} tab of the Manangement window.
 \end{description}
 
 The settings for types and categories of files can be adjusted via the context menu \menu{Project tree,Edit file types \& categories}. Here you can also define custom categories for file extensions of your own. For example, if you wish to list linker scripts with the \file{*.ld} extension in a category called \file{Linkerscript}, you only have to create the new category.
 
-\hint{If you deactivate \menu{Project tree,Categorize by file types} in the context menu, the category display will be switched off, and the files will be displayed as they are stored in the file system.}
+\hint{If you deactivate \menu{Project tree,Categorize by file types} in the context menu, the category display will be switched off, and the files will be listed as they are stored in the file system.}
 
 \section{Notes for Projects}
 
@@ -89,11 +89,11 @@ zip -j9 $(PROJECT_NAME)_$(TODAY).zip src h obj $(PROJECT_NAME).cbp
 
 With this command, the active project and its sources, header and objects will be packed as a zip file. In doing so, the Built-in variables \codeline{$(PROJECT_NAME)} and \codeline{$(TODAY)}, the project name and the current date will be extracted (see \pxref{sec:builtin_variables}). After the execution of the Target \samp{Archive}, the packed file will be stored in the project directory.
 
-In the \file{share/codeblocks/scripts} directory you will find some examples for scripts. You can add a script via menu \menu{Settings,Scripting} and configure an menu. If you execute e.g. the script \file{make\_dist} from the menu then all files belonging to a project will be compressed in an archive \file{\var{project}.tar.gz}.
+In the \file{share/codeblocks/scripts} directory you will find some examples for scripts. You can add a script via menu \menu{Settings,Scripting} and register in a menu. If you execute e.g. the script \file{make\_dist} from the menu then all files belonging to a project will be compressed in an archive \file{\var{project}.tar.gz}.
 
 \section{Adding Scripts in Build Targets}
 
-\codeblocks offers the possibility of using menu actions in scripts. The script represents another degree of freedom vor controlling the generation of your project.
+\codeblocks offers the possibility of using menu actions in scripts. The script represents another degree of freedom for controlling the generation of your project.
 
 \hint{A script can also be included at a Build Target.}
 
@@ -105,7 +105,7 @@ Complex software systems consist of components which are managed in different \c
 
 \genterm{Example}
 
-A project A contains central functions which are made available to other projects in the form of a library. Now, if the sources of the central function are changed, then the library has to be recreated. To maintain consistency between a project B which uses the functions and project A which implements the functions, project B has to depend on project A. The necessary information on the dependencies of projects is stored in the relevant workspace, so that each project can be created separately. The usage of dependencies makes it also possible to control the order in which the projects will be generated. The dependencies for projects can be set via the selecting the menu \menu{Project,Properties} and then clicking the \samp{Project's dependencies} button.
+A project A contains fundamental functions which are made available to other projects in the form of a library. Now, if the sources of this project are modified, then the library has to be rebuilt. To maintain consistency between a project B which uses the functions and project A which implements the functions, project B has to depend on project A. The necessary information on the dependencies of projects is stored in the relevant workspace, so that each project can be created separately. The usage of dependencies makes it also possible to control the order in which the projects will be generated. The dependencies for projects can be set via the selecting the menu \menu{Project,Properties} and then clicking the \samp{Project's dependencies} button.
 
 \section{Including Assembler files}
 
@@ -163,9 +163,9 @@ When performing the abbreviation \var{name} in the source text and performing Ct
 %Inherit Class
 %Im Editor kann durch Auswahl von Inherit Class über die rechte Maustaste. ???
 
-\subsection{Personalities}
+\subsection{Personalities}\label{sec:personalities}
 
-\codeblocks settings are saved as application data in a file called \file{\var{user}.conf} in the \file{codeblocks} directory. This configuration file contains information such as the last opened projects, settings for the editor, display of symbol bars etc.. By default, the \samp{default} personality is set so that the configuration is stored in the file \file{default.conf}. If \codeblocks is called from the command line with the parameter \cmdline{--personality=myuser}, the settings will be stored in the file \file{myuser.conf}. If the profile does not exist already, it will automatically be created. This procedure makes it possible to create the corresponding profiles for different work steps. If you start \codeblocks from the command line with the additional parameter\cmdline{--personality=ask}, a selection box will be displayed for all the available profiles.
+\codeblocks settings are saved as application data in a file called \file{\var{user}.conf} in the \file{codeblocks} directory. This configuration file contains information such as the last opened projects, settings for the editor, display of symbol bars etc. By default, the \samp{default} personality is set so that the configuration is stored in the file \file{default.conf}. If \codeblocks is called from the command line with the parameter \cmdline{--personality=myuser}, the settings will be stored in the file \file{myuser.conf}. If the profile does not exist already, it will automatically be created. This procedure makes it possible to create the corresponding profiles for different work steps. If you start \codeblocks from the command line with the additional parameter\cmdline{--personality=ask}, a selection box will be displayed for all the available profiles.
 
 \hint{The name of the current profile/personality is displayed in the right corner of the status bar.}
 
@@ -183,24 +183,23 @@ To create a portable version of \codeblocks on a USB stick, proceed as follows. 
 
 In \codeblocks there are different ways of quick navigation between files and functions. Setting bookmarks is a typical procedure. Via the shortcut Ctrl-B a bookmark is set or deleted in the source file. Via Alt-PgUp you can jump to the previous bookmark, and via Alt-PgDn you can jump to the next bookmark.
 
-\hint{If you select the workspace or a project in the workspace in the project view you will be able to search for a file in the project. Just select \menu{Find file} from the context menu, then type the name of the file and the file will be selected. If you hit return this file will be opened in the editor (see \pxref{fig:project_find_file}).}
+If you select the workspace or a project in the workspace in the project view you will be able to search for a file in the project. Just select \menu{Find file} from the context menu, then type the name of the file and the file will be selected. If you hit return this file will be opened in the editor (see \pxref{fig:project_find_file}).
 
-\screenshot[][width=.5\columnwidth]{project_find_file}{Searching for files}
+\screenshot[H][width=.5\columnwidth]{project_find_file}{Searching for files}
 
 In \codeblocks you can easily navigate between header/source files like:
 
 \begin{enumerate}
 \item Set cursor at the location where a header file is include and open this file via the context menu \menu{open include file} (see \pxref{fig:open_header})
 \item Swap between header and source via the context menu \menu{Swap header/source}
-\item Select e.g. a define in the editor and choose \menu{Find declaration} from the contex menu to open the file with the declaration.
+\item Select e.g. a define in the editor and choose \menu{Find declaration} from the context menu to open the file with its declaration.
 \end{enumerate}
 
 \screenshot{open_header}{Opening of a header file}
 
+\codeblocks offeres several ways of searching within a file or directory. The dialogue box for searching is opened via \menu{Search,Find} (Ctrl-F) or \menu{Find in Files} (Ctrl-Shift-F).
 
-\codeblocks offeres several ways of searching within a file or directory. In the project view, you can select a project via the context menu \menu{Find file}, and then enter a file name in the dialogue box. The corresponding file will be selected in the project view and can then be opened in the editor by pressing the Return key. The dialogue box for searching is opened via \menu{Search,Find} (Ctrl-F) or \menu{Find in Files} (Ctrl-Shift-F).
-
-Ctrl-G and Ctrl-Alt-G are another useful functions. The dialogue which will open on using this shortcut, lets you select files/functions and then jumps to the implementation of the selected function (see \pxref{fig:select_function}) or opens the selected file in the editor. You may use wildcards like \codeline{*} or \codeline{?} etc. for an incremental search in the dialog.
+Alt-G and Ctrl-Alt-G are another useful functions. The dialogue which will open on using this shortcut, lets you select files/functions and then jumps to the implementation of the selected function (see \pxref{fig:select_function}) or opens the selected file in the editor. You may use wildcards like \codeline{*} or \codeline{?} etc. for an incremental search in the dialog.
 
 \screenshot[][width=.5\columnwidth]{select_function}{Search for functions}
 
@@ -210,9 +209,11 @@ In the editor, you can switch between the tabs with the open files via Ctrl-Tab.
 
 \screenshot{tab_scheme}{Settings of switching between tabs}
 
-A common procedure when developing software is to struggle with a set of functions which are implemented in different files. The BrowseTracks plugin will help you solve this problem by showing you the order in which the files were selected. You can then comfortably navigate the function calls.
+A common procedure when developing software is to struggle with a set of functions which are implemented in different files. The Browse Tracker plugin will help you solve this problem by showing you the order in which the files were selected. You can then comfortably navigate the function calls (see \pxref{sec:browsetracker}).
 
 The display of line numbers in \codeblocks can be activated via \menu{Settings,General Settings} in the field \samp{Show line numbers}. The shortcut Ctrl-G or the menu command \menu{Search,Goto line} will help you jump to the desired line.
+
+\hint{If you hold the Ctrl key and then select text in the \codeblocks editor you can perform e.g. a Google search via the context menu.}
 
 \subsection{Symbol view}
 
@@ -221,9 +222,9 @@ The \codeblocks Management window offers a tree view for symbols of C/C++ source
 \screenshot{symbols}{Symbol view}
 
 \begin{description}
-\item[Global functions] Lists the implementation of globale functions.
+\item[Global functions] Lists the implementation of global functions.
 \item[Global typedefs] Lists the use of \codeline{typedef} definitions.
-\item[Global variables] Displays the symbols of globale variables.
+\item[Global variables] Displays the symbols of global variables.
 \item[Preprocessor symbols] Lists the pre-processor directives created by \codeline{#define}.
 \end{description}
 
@@ -234,13 +235,13 @@ Structures and classes are displayed below the pre-processor symbols. If a categ
 
 \subsection{Including external help files}
 
-The \codeblocks development environment supports the inclusion of external help files via the menu \menu{Settings,Environment}. Include the manual of your choice in the chm format in \menu{Help Files} select \samp{this is the default help file}. Now you can select a function in an opened source file in \codeblocks by mouse-click, and the corresponding documentation will appear.
+The \codeblocks development environment supports the inclusion of external help files via the menu \menu{Settings,Environment}. Include the manual of your choice in the chm format in \menu{Help Files} select \samp{this is the default help file} (see \pxref{fig:help_files}). The entry \codeline{$(keyword)} is a placeholder for a select item in your editor. Now you can select a function in an opened source file in \codeblocks by mouse-click, and the corresponding documentation will appear while pressing F1.
 
 If you have included multiple help files, you can select a term in the editor and choose a help file from the context menu \menu{Locate in} for \codeblocks to search in.
 
 \screenshot{help_files}{Settings for help files}
 
-In addition you can other help methods like a Google search of a select item in the \codeblocks editor (see \pxref{fig:help_files}). The entry \codeline{$(keyword)} is a placeholder for a select item in your editor. If you select the entry \menu{Locate in} in the context menu then the selected keyword is \samp{googled}. In \codeblocks you can add even support for man pages. Just add a entry \menu{man} and specify the path as follows.
+In \codeblocks you can add even support for man pages. Just add a entry \menu{man} and specify the path as follows.
 
 \begin{cmd}
 man:/usr/share/man
@@ -248,7 +249,9 @@ man:/usr/share/man
 
 \codeblocks provides an \samp{Embedded HTML Viewer}, which can be used to display simple html file and find keywords within this file. Just configure the path to the html file, which should be parsed and enable the checkbox \menu{Open this file with embedded help viewer} via the menu \menu{Settings,Environment,Help Files}.
 
-\hint{If you hold the Ctrl key and then select text in the \codeblocks editor you can perform e.g. a Google search via the context menu.}
+\screenshot{embedded_html_viewer}{Embedded HTML Viewer}
+
+\hint{If you select a html file with a double-click within the file explorer (see \pxref{sec:file_explorer}) then the embedded html viewer will be started, as long as no association for html files is made in file extensions handler.}
 % \section{Scripting}
 %
 % \codeblocks in Console Modus + Scripts
@@ -313,13 +316,13 @@ Furthermore, \codeblocks offers a progress bar for the build process in the Buil
 
 \subsection{Zooming within the editor}
 
-\codeblocks offers a very efficient editor. This editor allows you to change the size in which the opened text is displayed. If you use a mouse with a wheel, you only need to press the Ctrl key and scroll via the jog dial to zoom in and out of the text.
+\codeblocks offers a very efficient editor. This editor allows you to change the size in which the opened text is displayed. If you use a mouse with a wheel, you only need to press the Ctrl key and scroll via the mouse wheel to zoom in and out of the text.
 
 \hint{With the shortcut Ctrl-Numepad-/ or with the menu \menu{Edit,Special commands,Zoom,Reset} the original font size of the active file in the editor is restored.}
 
 \subsection{Block select mode in editor}
 
-\codeblocks supports the block select mode within the editor. Hold the key \samp{ALT} and select a region with the left mouse button and copy or paste our selection. This feature is helpful if you want to select some columns e.g. of an array and copy and paste the content.
+\codeblocks supports the block select mode within the editor. Hold the key \samp{ALT} and select a region with the left mouse button and copy or paste your selection. This feature is helpful if you want to select some columns e.g. of an array and copy and paste the content.
 
 \hint{Most Linux window managers use ALT-LeftClickDrag to move a window, so you will have to disable this window manager behavior first for block select to work.}
 
@@ -342,7 +345,7 @@ code with user defined folding
 
 \subsection{Auto complete}
 
-If you open a open a project in \codeblocks the \samp{Search directories} of your compiler and the project, the sources and headers of your project are parsed. In addition the keyowrdsof the corresponding lexer file are parsed. The parse information is used for the auto complete feature in \codeblocks. Please check the settings for the editor if this feature is enabled. The auto completion is accessible with the shortcut Ctrl-Space. Via the menu \menu{Settings,Editor,Syntax highlighting} you can add user defined keywords to your lexer.
+If you open a open a project in \codeblocks the \samp{Search directories} of your compiler and the project, the sources and headers of your project are parsed. In addition the keyowrds of the corresponding lexer file are parsed. The parse information is used for the auto complete feature in \codeblocks. Please check the settings for the editor if this feature is enabled. The auto completion is accessible with the shortcut Ctrl-Space. Via the menu \menu{Settings,Editor,Syntax highlighting} you can add user defined keywords to your lexer.
 
 \subsection{Including libraries}
 
@@ -351,6 +354,8 @@ In the build options of a project, you can add the used libraries via the \samp{
 \genterm{Example}
 
 For a library called \file{\var{path}\osp libs\osp lib\var{name}.a}, just write \file{\var{name}}. The linker with the corresponding search paths will then include the libraries correctly.
+
+\hint{Another way to include libraries is documented in \pxref{sec:lib_finder}.}
 
 \subsection{Object linking order}
 

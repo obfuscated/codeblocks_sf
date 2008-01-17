@@ -13,29 +13,29 @@ Pressing the Shift key and clicking selects a group of files or directories, pre
 The following operations can be started via the context menu if one or multiple directories are selected in the File Explorer:
 
 \begin{description}
-\item[Make Root] ...defines the current directory as the root directory.
-\item[Add to Favorites] ...sets a marker for the directory and stores it as a favourite. This function allows you to navigate quickly between frequently used directories, also on different network drives.
-\item[New File] ...creates a new file in the selected directory.
-\item[Make Directory] ...creates a new subdirectory in the selected directory.
+\item[Make Root] defines the current directory as the root directory.
+\item[Add to Favorites] sets a marker for the directory and stores it as a favourite. This function allows you to navigate quickly between frequently used directories, also on different network drives.
+\item[New File] creates a new file in the selected directory.
+\item[Make Directory] creates a new subdirectory in the selected directory.
 \end{description}
 
 The following operations can be started via the context menu if one or multiple files or directories are selected in the File Explorer:
 
 \begin{description}
-\item[Duplicate] ...copies a file/directory and renames it.
-\item[Copy To] ...opens a dialogue for entering the target directory in which the copied file/directory is to be stored.
-\item[Move To] ...moves the selection to the target location.
-\item[Delete] ...deletes the selected files/directories.
-\item[Show Hidden Files] ...activates/deactivates the display of hidden system files. When activated, this menu entry is checkmarked.
-\item[Refresh] ...actualises the display of the directory tree.
+\item[Duplicate] copies a file/directory and renames it.
+\item[Copy To] opens a dialogue for entering the target directory in which the copied file/directory is to be stored.
+\item[Move To] moves the selection to the target location.
+\item[Delete] deletes the selected files/directories.
+\item[Show Hidden Files] activates/deactivates the display of hidden system files. When activated, this menu entry is checkmarked.
+\item[Refresh] update the display of the directory tree.
 \end{description}
 
 The following operations can be started via the context menu if one or multiple files are selected in the File Explorer:
 
 \begin{description}
-\item[Open in CB Editor] ...opens the selected file in the \codeblocks editor.
-\item[Rename] ...renames the selected file.
-\item[Add to active project] ...adds the file(s) to the active project.
+\item[Open in CB Editor] opens the selected file in the \codeblocks editor.
+\item[Rename] renames the selected file.
+\item[Add to active project] adds the file(s) to the active project.
 \end{description}
 
 \hint{The files/directories selected in the File Explorer can be accessed in the Shell Extensions plugin via the \codeline{mpaths} variable.}
@@ -51,7 +51,7 @@ For example a menu entry in \menu{Shell Extensions,SVN} and in the context menu 
 
 This and every subsequent command will create a submenu, in this case called \menu{Extensions,SVN,Add}. The context menu is extended accordingly. Clicking the command in the context menu will make the SVN command \codeline{add} process the selected files/directories.
 
-TortoiseSVN is a widespread SVN program with integration in the explorer. The program \file{TortoiseProc.exe} of TortoiseSVN can be started in the command line and dispalys a dialog to collect user input. So you can perform the commands, that are available as context menu in the explorer also in the command line. Therefore you can integrate it also a shell extension in \codeblocks. For example the command
+TortoiseSVN is a widespread SVN program with integration in the explorer. The program \file{TortoiseProc.exe} of TortoiseSVN can be started in the command line and dispalys a dialogue to collect user input. So you can perform the commands, that are available as context menu in the explorer also in the command line. Therefore you can integrate it also a shell extension in \codeblocks. For example the command
 
 \begin{cmd}
 TortoiseProc.exe /command:diff /path:$file
@@ -77,7 +77,7 @@ Diff;$interpreter $mpaths;;;
 
 This command will be executed using the selected files or directories as parameter. The selection is accessed via the variable \codeline{$mpaths}. This is an easy way to diff files or directories.
 
-\hint{The plugin support the use of \codeblocks variables within the shell extension.}
+\hint{The plug-in supports the use of \codeblocks variables within the shell extension.}
 
 % Actions string format: Name;Command;[W|C];WorkDir;EnvVarSet
 % (the last two ; delimit settings for the working directory and (not implemented) environment variable set)

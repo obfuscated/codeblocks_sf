@@ -1,16 +1,16 @@
-\section{BrowseTracks}\label{sec:browsetracks}
+\section{Browse Tracker}\label{sec:browsetracker}
 
-BrowseTracker is a plugin that helps navigating between recently opened files in \codeblocks. The list of recent files is saved in a history. With the menu \menu{View,Browse Tracker,Clear All} the history is cleared.
+Browse Tracker is a plug-in that helps navigating between recently opened files in \codeblocks. The list of recent files is saved in a history. With the menu \menu{View,Browse Tracker,Clear All} the history is cleared.
 
 With the window \samp{Browsed Tabs} you can navigate between the items of the recently opened files using the menu entry \menu{View,Browse Tracker,Backward Ed/Forward Ed} or the shortcut Alt-Left/Alt-Right. The Browse Tracker menu is also accessible as context menu. The markers are saved in the layout file \file{\var{projectName}.bmarks}
 
-A common procedure when developing software is to struggle with a set of functions which are implemented in different files. The BrowseTracks plugin will help you solve this problem by showing you the order in which the files were selected. You can then comfortably navigate the function calls.
+A common procedure when developing software is to struggle with a set of functions which are implemented in different files. The BrowseTracks plug-in will help you solve this problem by showing you the order in which the files were selected. You can then comfortably navigate the function calls.
 
-The plugin allows even browse markers within each file in the \codeblocks editor. The cursor position is memorized for every file. You can set this markers using the menu item \menu{View, Browse Tracker, Set BrowseMarks} or with selecting a line with the left mouse button. A marker with $\ldots$ is shown in the left margin. With the menu \menu{View,Browse Tracker,Prev Mark/Next Mark} or the shortcut Alt-up/Alt-down you can navigate through the markers within a file. If you want to navigate in a file between markers sorted by line numbers then just select the menu \menu{View,Browse Tracker,Sort BrowseMark}.
+The plug-in allows even browse markers within each file in the \codeblocks editor. The cursor position is memorized for every file. You can set this markers using the menu item \menu{View, Browse Tracker, Set BrowseMarks} or with selecting a line with the left mouse button. A marker with $\ldots$ is shown in the left margin. With the menu \menu{View,Browse Tracker,Prev Mark/Next Mark} or the shortcut Alt-up/Alt-down you can navigate through the markers within a file. If you want to navigate in a file between markers sorted by line numbers then just select the menu \menu{View,Browse Tracker,Sort BrowseMark}.
 
 With the \menu{Clear BrowseMark} the marker in a selected line is removed. If a marker is set for a line, holding left-mouse button down for 1/4 second while pressing the Ctrl key will delete the marker for this line. Via the menu \menu{Clear All BrowseMarks} or with a Ctrl-left click on any unmarked line will reset the markers within a file.
 
-The settings of the plugin can be configure via the menu \menu{View,Browse Tracker,Settings}.
+The settings of the plug-in can be configure via the menu \menu{View,Browse Tracker,Settings}.
 
 \begin{description}
 \item[Mark Style] Browse Marks are displayed per default as $\ldots$ within the margin. With the setting \menu{Book\_Marks} they will be displayed like Bookmarks as blue arrow in the margin. With hide the display of Browse Marks is suppressed.
@@ -19,7 +19,7 @@ The settings of the plugin can be configure via the menu \menu{View,Browse Track
 \item[Clear All BrowseMarks] while holding Ctrl key either by a simple or a double click with the left mouse button.
 \end{description}
 
-The configuration of the plugin is stored in your application data directory in the file \file{default.conf}. If you use the personality feature of \codeblocks the configuration is read from the file \file{\var{personality}.conf}.
+The configuration of the plug-in is stored in your application data directory in the file \file{default.conf}. If you use the personality feature of \codeblocks the configuration is read from the file \file{\var{personality}.conf}.
 
 
 

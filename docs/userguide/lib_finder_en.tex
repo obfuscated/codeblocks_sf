@@ -11,7 +11,7 @@ LibFinder provides two major functionalities:
 
 \subsection{Searching for libraries}
 
-Searching for libraries is available under \menu{Plugins,Library finder} menu. It's purpose is to detect libraries installed on your system and store the results inside LibFinder's database (note that these results are not written into \codeblocks files). Searching starts with dialog where you can provide set of directories with installed libraries. LibFinder will scan them recursively so if you're not sure you may select some generic directories. You may even enter whole disks -- in such case searching process will take more time but it may detect more libraries (see \pxref{fig:list_of_directories}).
+Searching for libraries is available under \menu{Plugins,Library finder} menu. It's purpose is to detect libraries installed on your system and store the results inside LibFinder's database (note that these results are not written into \codeblocks files). Searching starts with dialogue where you can provide set of directories with installed libraries. LibFinder will scan them recursively so if you're not sure you may select some generic directories. You may even enter whole disks -- in such case searching process will take more time but it may detect more libraries (see \pxref{fig:list_of_directories}).
 
 \screenshot{list_of_directories}{List of directories}
 
@@ -33,7 +33,7 @@ Below the list you can select what to do with results of previous scans:
 \item[Clear all previous library settings] when you select this option, LibFinder's database will be cleared before adding new results. It's useful when you want to clean some invalid LibFinder's database.
 \end{description}
 
-Another option in this dialog is \menu{Set up Global Variables}. When you check this option, LibFinder will try automatically configure Global Variables which are also used to help dealing with libraries.
+Another option in this dialogue is \menu{Set up Global Variables}. When you check this option, LibFinder will try automatically configure Global Variables which are also used to help dealing with libraries.
 
 If you have pkg-config installed on your system (it's installed automatically on most linux versions) LibFinder will also provide libraries from this tool. There is no need to perform scanning for them -- they are automatically loaded when \codeblocks starts.
 
@@ -55,7 +55,7 @@ Checking the \menu{Don't setup automatically} option will notify LibFinder that 
 
 \subsection{Using LibFinder and projects generated from wizards}
 
-Wizards will create projects that don't use LibFinder. To integrate them with this plugin, you will have to manually update project build options. This can be easily achieved by removing all library-specific settings and adding library through menu{Libraries} tab in project properties.
+Wizards will create projects that don't use LibFinder. To integrate them with this plugin, you will have to manually update project build options. This can be easily achieved by removing all library-specific settings and adding library through \menu{Libraries} tab in project properties.
 
 Such project becomes cross-platform. As long as used libs are defined in LibFinder's database, project's build options will be automatically updated to match platform-specific library settings.
 
