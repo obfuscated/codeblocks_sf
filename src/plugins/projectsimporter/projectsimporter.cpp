@@ -130,6 +130,7 @@ int ProjectsImporter::OpenFile(const wxString& filename)
             cbMessageBox(_("Failed to import file: unsupported"), _("Error"), wxICON_ERROR);
             return -1;
     }
+    return -1;
 }
 
 int ProjectsImporter::LoadProject(const wxString& filename)
@@ -141,9 +142,7 @@ int ProjectsImporter::LoadProject(const wxString& filename)
 
     cbProject* prj = Manager::Get()->GetProjectManager()->NewProject(the_file.GetFullPath());
     if (!prj)
-    {
         return -1;
-    }
 
     // Make a check whether the project exists in current workspace
     if (Manager::Get()->GetProjectManager()->BeginLoadingProject())
@@ -164,8 +163,8 @@ int ProjectsImporter::LoadProject(const wxString& filename)
             case ftXcode1Project: /* placeholder, fallthrough (for now) */
             case ftXcode2Project: /* placeholder, fallthrough (for now) */
             default:
-                cbMessageBox(_("Failed to import file: unsupported"), _("Error"), wxICON_ERROR);
-                Manager::Get()->GetProjectManager()->EndLoadingProject(prj);
+                Manager::Get()->GetProjectManager()->EndLoadingProject(0);
+                cbMessageBox(_("Failed to import file: File type not supported."), _("Error"), wxICON_ERROR);
                 return -1;
         }
 
@@ -178,8 +177,17 @@ int ProjectsImporter::LoadProject(const wxString& filename)
             // need to do it before actual import, because the importer might need
             // project's compiler information (like the object files extension etc).
             Compiler* compiler = CompilerFactory::SelectCompilerUI(_("Select compiler for ") + wxFileName(filename).GetFullName());
-            if (compiler)
-                compilerID = compiler->GetID();
+            if (!compiler) // User hit Cancel.
+            {
+                if (loader) delete loader;
+                Manager::Get()->GetProjectManager()->EndLoadingProject(0);
+                Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
+                Manager::Get()->GetProjectManager()->RebuildTree();
+                cbMessageBox(_("Import canceled."), _("Information"), wxICON_INFORMATION);
+                return -1;
+            }
+
+            compilerID = compiler->GetID();
             if (compilerID.IsEmpty())
                 compilerID = CompilerFactory::GetDefaultCompilerID();
         }
@@ -199,15 +207,23 @@ int ProjectsImporter::LoadProject(const wxString& filename)
         }
         else
         {
+            if (loader) delete loader;
+            Manager::Get()->GetProjectManager()->EndLoadingProject(0);
             Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
-            prj = 0;
-            cbMessageBox(_("Failed to import file: wrong format"), _("Error"), wxICON_ERROR);
+            Manager::Get()->GetProjectManager()->RebuildTree();
+            cbMessageBox(_("Failed to import file: Wrong file format."), _("Error"), wxICON_ERROR);
+            return -1;
         }
 
-        delete loader;
+        if (loader) delete loader;
+        Manager::Get()->GetProjectManager()->EndLoadingProject(prj);
         return prj ? 0 : -1;
     }
+
+    cbMessageBox(_("Failed to import file (internal error)."), _("Error"), wxICON_ERROR);
     Manager::Get()->GetProjectManager()->EndLoadingProject(0);
+    Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
+    Manager::Get()->GetProjectManager()->RebuildTree();
     return -1;
 }
 
@@ -224,7 +240,10 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
 
     cbWorkspace* wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
     if (!wksp)
+    {
+        Manager::Get()->GetProjectManager()->EndLoadingWorkspace();
         return -1;
+    }
 
     Manager::Get()->GetLogManager()->Log(F(_("Importing %s: "), filename.c_str()));
     FileType ft = FileTypeOf(filename);
