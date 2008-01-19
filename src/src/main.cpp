@@ -2398,14 +2398,9 @@ void MainFrame::OnFileSave(wxCommandEvent& event)
 
 void MainFrame::OnFileSaveAs(wxCommandEvent& event)
 {
-    if (!Manager::Get()->GetEditorManager()->SaveActiveAs())
-    {
-        wxString msg;
-        msg.Printf(_("File %s could not be saved..."), Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename().c_str());
-        cbMessageBox(msg, _("Error saving file"), wxICON_ERROR);
-    }
+    Manager::Get()->GetEditorManager()->SaveActiveAs();
     DoUpdateStatusBar();
-}
+} // end of OnFileSaveAs
 
 void MainFrame::OnFileSaveAllFiles(wxCommandEvent& event)
 {

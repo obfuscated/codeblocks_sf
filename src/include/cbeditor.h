@@ -133,9 +133,6 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Save editor contents under a different filename. Returns true on success, false otherwise. */
         bool SaveAs();
 
-        /** Unimplemented */
-        bool RenameTo(const wxString& filename, bool deleteOldFromDisk = false);
-
         /** Save fold states within a new cbStyledTextCtrl. This saves the whole document, thus saving the fold states before the Fold Options Change*/
         bool SaveFoldState();
 

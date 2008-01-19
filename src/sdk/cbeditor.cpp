@@ -1237,11 +1237,17 @@ bool cbEditor::Save()
     m_pControl->BeginUndoAction();
     {
         if(m_pData->m_strip_trailing_spaces)
+        {
             m_pData->StripTrailingSpaces();
+        }
         if(m_pData->m_ensure_consistent_line_ends)
+        {
             m_pData->EnsureConsistentLineEnds();
+        }
         if(m_pData->m_ensure_final_line_end)
+        {
             m_pData->EnsureFinalLineEnd();
+        }
     }
     m_pControl->EndUndoAction();
 
@@ -1251,7 +1257,12 @@ bool cbEditor::Save()
     }
 
     if(!cbSaveToFile(m_Filename, m_pControl->GetText(),GetEncoding(),GetUseBom()))
+    {
+        wxString msg;
+        msg.Printf(_("File %s could not be saved..."), GetFilename().c_str());
+        cbMessageBox(msg, _("Error saving file"), wxICON_ERROR);
         return false; // failed; file is read-only?
+    }
 
     wxFileName fname(m_Filename);
     m_LastModified = fname.GetModificationTime();
@@ -1263,7 +1274,7 @@ bool cbEditor::Save()
 
     NotifyPlugins(cbEVT_EDITOR_SAVE);
     return true;
-}
+} // end of Save
 
 bool cbEditor::SaveAs()
 {
@@ -1312,7 +1323,9 @@ bool cbEditor::SaveAs()
     dlg->SetFilterIndex(StoredIndex);
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
+    {  // cancelled out
         return false;
+    }
     m_Filename = dlg->GetPath();
     Manager::Get()->GetLogManager()->Log(m_Filename);
     fname.Assign(m_Filename);
@@ -1337,13 +1350,6 @@ bool cbEditor::SaveAs()
     dlg->Destroy();
     return Save();
 } // end of SaveAs
-
-bool cbEditor::RenameTo(const wxString& filename, bool deleteOldFromDisk)
-{
-    wxLogWarning(_("Not implemented..."));
-    //NotifyPlugins(cbEVT_EDITOR_RENAME);
-    return false;
-}
 
 bool cbEditor::SaveFoldState()
 {
