@@ -212,7 +212,9 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
     wxString path = list.FindAbsoluteValidPath(m_Programs.C);
     if (!path.IsEmpty())
     {
-        m_MasterPath = wxFileName(path).GetPath(wxPATH_GET_VOLUME);
+        wxFileName fname(path);
+        fname.RemoveLastDir();
+        m_MasterPath = fname.GetPath(wxPATH_GET_VOLUME);
         return adrDetected;
     }
 
