@@ -45,7 +45,7 @@ LibFinder fügt in Project Properties einen weiteren Reiter \menu{Libraries} ein
 
 Die Anzeige von Bibliotheken, die LibFinder bekannt sind, kann gefiltert werden. Die Checkbox \menu{Show as Tree} erlaubt das Umschalten zwischen kategorisiert und nicht kategorisierter Ansicht.
 
-Wenn Sie Bibliotheken, die nicht in LibFinder verfügbar sind, einfügen wollen, wählen Sie den Eintrag \menu{Unknown Library}. Sie sollte für die Angabe der Bibliothek das übliche Kürzel verwenden (entspricht normalerweise dem globalen Variablennamen) oder den Name der Bibliothek in pkg-config. Zum Beispiel
+Wenn Sie Bibliotheken, die nicht in der LibFinder Datenbank verfügbar sind, einfügen wollen, wählen Sie den Eintrag \menu{Unknown Library}. Sie sollte für die Angabe der Bibliothek das übliche Kürzel verwenden (entspricht normalerweise dem globalen Variablennamen) oder den Name der Bibliothek in pkg-config. Eine Liste von empfohlen Shortcodes finden Sie auf \href{http://wiki.codeblocks.org/index.php?title=Recommended_global_variables}{Global Variables}. Die Verwendung dieser Option ist nur dann ratsam, wenn ein Projekt auf unterschiedlichen Systemen erzeugt werden soll, wo die erforderlichen Bibliotheken existieren und durch LibFinder ermittelt werden können. Der Zugriff auf eine globale Variable innerhalb von \codeblocks sieht wie folgt aus:
 
 \begin{code}
 $(#GLOBAL_VAR_NAME.lib)

@@ -11,7 +11,7 @@ LibFinder provides two major functionalities:
 
 \subsection{Searching for libraries}
 
-Searching for libraries is available under \menu{Plugins,Library finder} menu. It's purpose is to detect libraries installed on your system and store the results inside LibFinder's database (note that these results are not written into \codeblocks files). Searching starts with dialogue where you can provide set of directories with installed libraries. LibFinder will scan them recursively so if you're not sure you may select some generic directories. You may even enter whole disks -- in such case searching process will take more time but it may detect more libraries (see \pxref{fig:list_of_directories}).
+Searching for libraries is available under \menu{Plugins,Library finder} menu. It's purpose is to detect libraries installed on your system and store the results inside LibFinder's database (note that these results are not written into \codeblocks project files). Searching starts with dialogue where you can provide set of directories with installed libraries. LibFinder will scan them recursively so if you're not sure you may select some generic directories. You may even enter whole disks -- in such case searching process will take more time but it may detect more libraries (see \pxref{fig:list_of_directories}).
 
 \screenshot{list_of_directories}{List of directories}
 
@@ -45,7 +45,7 @@ LibFinder adds extra tab in Project Properties \menu{Libraries} -- this tab show
 
 You can filter libraries known to LibFinder by providing search filter. The \menu{Show as Tree} checkbox allows to switch between categorized and uncategorized view.
 
-If you want to add library which is not available in LibFinder you may use \menu{Unknown Library} field. Note that you should enter library's shortcode (which usually matches global variable name) or name of library in pkg-config. E.g.
+If you want to add library which is not available in LibFinder's database, you may use \menu{Unknown Library} field. Note that you should enter library's shortcode (which usually matches global variable name) or name of library in pkg-config. List of suggested shortcodes can be found at \href{http://wiki.codeblocks.org/index.php?title=Recommended_global_variables}{Global Variables}. Using this option is recommended only when preparing project to be built on other machines where such library exists and is properly detected by LibFinder. You can access a global variable within \codeblocks like:
 
 \begin{code}
 $(#GLOBAL_VAR_NAME.include)
