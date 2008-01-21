@@ -90,6 +90,7 @@ class wxsItemEditorContent: public wxsDrawingWindow
             msDraggingItemInit,
             msDraggingItem,
             msTargetSearch,
+            msWaitForIdle,
         };
 
         /** \brief Structure describing one dragging point */
@@ -172,6 +173,9 @@ class wxsItemEditorContent: public wxsDrawingWindow
 
         /** \brief Getting preview window for given item */
         wxWindow* GetPreviewWindow(wxsItem* Item);
+
+        /** \brief Function clearing ItemToRect and ItemToWindow maps */
+        void ClearMaps();
 
         /** \brief Function updating ItemToRect and ItemToWindow maps */
         void RecalculateMaps();

@@ -303,6 +303,10 @@ void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
     {
         SetFocus();
     }
+    else if ( m_MouseState == msWaitForIdle )
+    {
+        m_MouseState = msIdle;
+    }
 
     int NewX = event.m_x;
     int NewY = event.m_y;
@@ -316,6 +320,7 @@ void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
         case msDraggingItemInit:  OnMouseDraggingItemInit  (event); break;
         case msDraggingItem:      OnMouseDraggingItem      (event); break;
         case msTargetSearch:      OnMouseTargetSearch      (event); break;
+        case msWaitForIdle:                                         break;
         default:                  OnMouseIdle              (event); break;
     }
 
@@ -344,13 +349,15 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
             FindAbsoluteRect(OnCursor,PosX,PosY,SizeX,SizeY);
             if ( OnCursor->MouseDClick(Preview,MouseX-PosX,MouseY-PosY) )
             {
+                m_MouseState = msWaitForIdle;
                 m_Editor->RebuildPreview();
-                m_MouseState = msIdle;
+                m_MouseState = msWaitForIdle;
+                return;
             }
         }
     }
 
-    if ( event.LeftIsDown() && !event.LeftDClick() && !event.RightIsDown() && !event.MiddleIsDown() )
+    if ( event.LeftDown() && !event.LeftDClick() && !event.RightIsDown() && !event.MiddleIsDown() )
     {
         // Selecting / drag init event
         bool NeedRefresh = false;
@@ -363,34 +370,40 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
 
         if ( NeedRefresh )
         {
+            m_MouseState = msWaitForIdle;
             m_Editor->RebuildPreview();
-            m_MouseState = msIdle;
+            m_MouseState = msWaitForIdle;
+            return;
+        }
+
+        DragPointData* DPD = FindDragPointAtPos(MouseX,MouseY);
+
+        if ( DPD )
+        {
+            // If there's drag point, starting point-dragging sequence
+            m_CurDragPoint = DPD;
+            m_CurDragItem = DPD->Item;
+            m_MouseState = msDraggingPointInit;
         }
         else
         {
-            DragPointData* DPD = FindDragPointAtPos(MouseX,MouseY);
-
-            if ( DPD )
+            if ( !OnCursor->GetIsSelected() )
             {
-                // If there's drag point, starting point-dragging sequence
-                m_CurDragPoint = DPD;
-                m_CurDragItem = DPD->Item;
-                m_MouseState = msDraggingPointInit;
+                m_Data->SelectItem(OnCursor,!event.ControlDown());
             }
             else
             {
-                if ( !OnCursor->GetIsSelected() )
-                {
-                    m_Data->SelectItem(OnCursor,!event.ControlDown());
-                }
-                else
-                {
-                    m_Data->SelectItem(OnCursor,false);
-                }
+                m_Data->SelectItem(OnCursor,false);
+            }
 
-                m_CurDragPoint = FindDragPointFromItem(OnCursor);
-                m_CurDragItem = OnCursor;
-                m_MouseState = msDraggingItemInit;
+            m_CurDragPoint = FindDragPointFromItem(OnCursor);
+            m_CurDragItem = OnCursor;
+            m_MouseState = msDraggingItemInit;
+
+            if ( !m_CurDragPoint || !m_CurDragItem )
+            {
+                // If we're here, preview has probably not been updated yet
+                m_MouseState = msWaitForIdle;
             }
         }
     }
@@ -403,8 +416,10 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
             FindAbsoluteRect(OnCursor,PosX,PosY,SizeX,SizeY);
             if ( OnCursor->MouseRightClick(Preview,MouseX-PosX,MouseY-PosY) )
             {
+                m_MouseState = msWaitForIdle;
                 m_Editor->RebuildPreview();
-                m_MouseState = msIdle;
+                m_MouseState = msWaitForIdle;
+                return;
             }
         }
     }
@@ -680,6 +695,12 @@ void wxsItemEditorContent::OnMouseDraggingItem(wxMouseEvent& event)
 
     if ( !event.LeftIsDown() )
     {
+        if ( !m_CurDragPoint )
+        {
+            // TODO: Enable this anti-crash check after tests
+//            return;
+        }
+
         // Finalizing change
         m_Data->BeginChange();
 
@@ -912,6 +933,8 @@ bool wxsItemEditorContent::FindDraggingItemTarget(int PosX,int PosY,wxsItem* Dra
 
 void wxsItemEditorContent::BeforePreviewChanged()
 {
+    ClearMaps();
+    ClearDragPoints();
     BeforeContentChanged();
 }
 
@@ -940,6 +963,12 @@ wxWindow* wxsItemEditorContent::GetPreviewWindow(wxsItem* Item)
     ItemToWindowT::iterator i = m_ItemToWindow.find(Item);
     if ( i==m_ItemToWindow.end() ) return 0;
     return (*i).second;
+}
+
+void wxsItemEditorContent::ClearMaps()
+{
+    m_ItemToRect.clear();
+    m_ItemToWindow.clear();
 }
 
 void wxsItemEditorContent::RecalculateMaps()

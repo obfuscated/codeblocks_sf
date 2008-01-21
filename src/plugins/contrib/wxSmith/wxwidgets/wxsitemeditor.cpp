@@ -193,9 +193,9 @@ void wxsItemEditor::RebuildPreview()
     if ( m_PreviewBackground )
     {
         m_Content->SetSizer(0);
-        delete m_PreviewBackground;
-        m_TopPreview = 0;
+        m_PreviewBackground->Destroy();
         m_PreviewBackground = 0;
+        m_TopPreview = 0;
     }
 
     // Generating preview
@@ -205,8 +205,9 @@ void wxsItemEditor::RebuildPreview()
     if ( !m_TopPreview )
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("One of root items returned class not derived from wxWindow"));
-        delete TopPreviewObject;
-        delete m_PreviewBackground;
+        m_PreviewBackground->Destroy();
+        m_PreviewBackground = 0;
+        m_TopPreview = 0;
     }
     else
     {
