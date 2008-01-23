@@ -53,8 +53,7 @@ ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths
 ToDoListView::~ToDoListView()
 {
     //dtor
-    if (control && !Manager::IsAppShuttingDown())
-        control->RemoveEventHandler(this);
+    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 }
 
 wxWindow* ToDoListView::CreateControl(wxWindow* parent)
@@ -70,7 +69,7 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &ToDoListView::OnDoubleClick);
 
-    control->PushEventHandler(this);
+    Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
     control->SetInitialSize(wxSize(342,56));
     control->SetMinSize(wxSize(342,56));
