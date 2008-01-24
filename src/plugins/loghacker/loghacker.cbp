@@ -28,9 +28,9 @@
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="$(#CB.include)" />
+					<Add directory="$(#CB.include)\wxscintilla\include" />
 					<Add directory="$(#WX.include)" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-					<Add directory="$(#CB.include)\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add library="wxmsw28$(WX_SUFFIX)" />
@@ -39,7 +39,8 @@
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="update.bat" />
+					<Add after="zip -j9 $(#cb)\devel\share\CodeBlocks\loghacker.zip manifest.xml" />
+					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Environment>
