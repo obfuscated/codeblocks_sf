@@ -1,0 +1,2220 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title>1 CodeBlocks Projektverwaltung</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<!-- html,2,sections+,info,next,refcaption,fn-in,xhtml,word,charset=iso-8859-1,fn-in --> 
+<meta name="src" content="main_codeblocks_de.tex" /> 
+<meta name="date" content="2008-01-24 17:14:00" /> 
+<link rel="stylesheet" type="text/css" href="main_codeblocks_de.css" /> 
+</head><body 
+>
+<!--l. 1--><div class="crosslinks"><p class="noindent">[<a 
+href="main_codeblocks_dech2.html" >next</a>] [<a 
+href="main_codeblocks_de.html" >prev</a>] [<a 
+href="main_codeblocks_de.html#tailmain_codeblocks_de" >prev-tail</a>] [<a 
+href="#tailmain_codeblocks_dech1.html">tail</a>] [<a 
+href="main_codeblocks_de.html#main_codeblocks_dech1.html" >up</a>] </p></div>
+<h2 class="chapterHead"><span class="titlemark">1</span>.  <a 
+href="main_codeblocks_de.html#QQ2-2-1" id="x2-10001">CodeBlocks Projektverwaltung</a></h2>
+<!--l. 3--><p class="noindent" >Die Dokumentation f&#x00FC;r <a 
+href="main_codeblocks_dech3.html#x4-790003">Variable Expansion 3<!--tex4ht:ref: sec:variables_types --></a> und <a 
+href="main_codeblocks_dech4.html#x5-1000004">Building CodeBlocks from sources 4<!--tex4ht:ref: sec:build_codeblocks --></a> sind
+offizielle Dokumentationen der CodeBlocks Wiki-Seite und nur in englischer Sprache
+verf&#x00FC;gbar.
+</p><!--l. 5--><p class="noindent" >Die nachfolgende Abbildung zeigt den Aufbau der CodeBlocks Oberfl&#x00E4;che.
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 7--><p class="noindent" ><img 
+src="codeblocks.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-10011">Abbildung 1.1</a>:  
+IDE CodeBlocks</td></tr></table></div><!--tex4ht:label?: x2-10011 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+      <dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Management</span> </dt><dd 
+class="description">Diese  Fenster  enth&#x00E4;lt  die  Ansicht  ’Projects’  ,  im  nachfolgenden  als
+      Projektansicht bezeichnet. In dieser werden die in CodeBlocks aktuell ge&#x00F6;ffneten
+      Projekte angezeigt. In dem Management Fenster erh&#x00E4;lt man im Reiter ’Symbols’
+      die Anzeige von Symbolen, Variablen etc.
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Editor</span> </dt><dd 
+class="description">In der obigen Abbildung ist eine Quelle <span 
+class="cmtt-12">hello.c </span>mit Syntaxhighlighting im Editor
+      ge&#x00F6;ffnet.
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Open files list</span> </dt><dd 
+class="description">Zeigt die Liste der im Editor ge&#x00F6;ffneten Dateien an, hier <span 
+class="cmtt-12">hello.c</span>.
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">CodeSnippets</span> </dt><dd 
+class="description">L&#x00E4;sst sich &#x00FC;ber das Men&#x00FC; ’View’ /’CodeSnippets’  anzeigen. Hier k&#x00F6;nnen
+      Textbausteine, Verkn&#x00FC;pfungen auf Dateien und Urls verwaltet werden.
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Logs &amp; others</span> </dt><dd 
+class="description">Fenster zur Ausgabe von Suchergebnisse, Logmeldung eines Compilers
+      etc.</dd></dl>
+<!--l. 17--><p class="noindent" >Die Statusbar gibt einen &#x00DC;berblick der folgenden Einstellungen:
+</p>
+      <ul class="itemize1">
+      <li class="itemize">Vollst&#x00E4;ndiger Pfad einer im Editor angezeigten Datei.
+      </li>
+      <li class="itemize">Im  Editor  wird  das  vom  Betriebssystem  standardm&#x00E4;&#x00DF;ig  verwendete  Character
+      Encoding &#x00FC;bernommen und mit der Einstellung <span class="lstinline"><span 
+class="ecsx-1200">default</span></span> <span 
+class="ecrm-1200">angezeigt.</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Aktuelle Zeilen- und Spaltnummer der Cursorposition im Editor.</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">&#x00DC;ber  die  Tastatur  eingestellte  Modus  f&#x00FC;r  das  Einf&#x00FC;gen  von  Text  (Insert  oder</span>
+      <span 
+class="ecrm-1200">Overwrite).</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Aktuelle Status einer Datei. F&#x00FC;r eine ge&#x00E4;nderte Datei steht der Eintrag auf </span><span class="lstinline"><span 
+class="ecss-1200">Modified</span></span>
+      <span 
+class="ecrm-1200">ansonsten ist dieser Eintrag leer.</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Die f&#x00FC;r eine Datei eingestellte Berechtigung. Eine schreibgesch&#x00FC;tzte Datei wird als</span>
+      <span class="lstinline"><span 
+class="ecss-1200">Read</span><span 
+class="ecss-1200"> </span><span 
+class="ecss-1200">only</span></span> <span 
+class="ecrm-1200">in der Statusbar gekennzeichnet. Im Fenster ’Open files list’ werden solche</span>
+      <span 
+class="ecrm-1200">mit einem Schloss als Icon Overlay markiert.</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Falls  CodeBlocks  mit  der  Kommandozeileoption</span>  <span 
+class="cmtt-12">--personality=</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">profile</span><span 
+class="cmmi-12">&#x003E;</span>
+      <span 
+class="ecrm-1200">gestartet  wird,  steht  in  der  Statusbar  das  aktuell  verwendete  Profil,  ansonsten</span>
+                                                                                       
+                                                                                       
+      <span 
+class="ecrm-1200">wird  hier  </span><span class="lstinline"><span 
+class="ecsx-1200">default</span></span> <span 
+class="ecrm-1200">angezeigt.  Die  Einstellungen  von  CodeBlocks  werden  in  der</span>
+      <span 
+class="ecrm-1200">gleichnamigen Konfigurationsdatei </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">personality</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.conf </span><span 
+class="ecrm-1200">gespeichert.</span></li></ul>
+<!--l. 29--><p class="noindent" >CodeBlocks bietet eine sehr flexible und umfassende Projektverwaltung. Der folgende Text geht
+nur auf einige Besonderheiten der Projektverwaltung ein.
+</p>
+<div class="sectionTOCS">
+ <span class="sectionToc" >1.1  <a 
+href="#x2-20001.1" id="QQ2-2-3">Projektansicht</a></span>
+<br /> <span class="sectionToc" >1.2  <a 
+href="#x2-30001.2" id="QQ2-2-4">Notizen f&#x00FC;r Projekte</a></span>
+<br /> <span class="sectionToc" >1.3  <a 
+href="#x2-40001.3" id="QQ2-2-5">Projektvorlagen</a></span>
+<br /> <span class="sectionToc" >1.4  <a 
+href="#x2-50001.4" id="QQ2-2-6">Projekte aus Build Targets erstellen</a></span>
+<br /> <span class="sectionToc" >1.5  <a 
+href="#x2-60001.5" id="QQ2-2-8">Virtual Targets</a></span>
+<br /> <span class="sectionToc" >1.6  <a 
+href="#x2-70001.6" id="QQ2-2-9">Pre- und Postbuild Schritte</a></span>
+<br /> <span class="sectionToc" >1.7  <a 
+href="#x2-80001.7" id="QQ2-2-10">Hinzuf&#x00FC;gen von Scripts in Build Targets</a></span>
+<br /> <span class="sectionToc" >1.8  <a 
+href="#x2-90001.8" id="QQ2-2-11">Workspace und Project Dependencies</a></span>
+<br /> <span class="sectionToc" >1.9  <a 
+href="#x2-100001.9" id="QQ2-2-12">Einbinden von Assembler Dateien</a></span>
+<br /> <span class="sectionToc" >1.10  <a 
+href="#x2-110001.10" id="QQ2-2-13">Editor und Hilfsmittel</a></span>
+<br />  <span class="subsectionToc" >1.10.1  <a 
+href="#x2-120001.10.1" id="QQ2-2-14">Default Code</a></span>
+<br />  <span class="subsectionToc" >1.10.2  <a 
+href="#x2-130001.10.2" id="QQ2-2-15">Abbreviation</a></span>
+<br />  <span class="subsectionToc" >1.10.3  <a 
+href="#x2-140001.10.3" id="QQ2-2-17">Personalities</a></span>
+<br />  <span class="subsectionToc" >1.10.4  <a 
+href="#x2-150001.10.4" id="QQ2-2-18">Konfigurationsdateien</a></span>
+<br />  <span class="subsectionToc" >1.10.5  <a 
+href="#x2-160001.10.5" id="QQ2-2-19">Navigieren und Suchen</a></span>
+<br />  <span class="subsectionToc" >1.10.6  <a 
+href="#x2-170001.10.6" id="QQ2-2-24">Symbolansicht</a></span>
+<br />  <span class="subsectionToc" >1.10.7  <a 
+href="#x2-180001.10.7" id="QQ2-2-26">Einbinden von externen Hilfen</a></span>
+<br />  <span class="subsectionToc" >1.10.8  <a 
+href="#x2-190001.10.8" id="QQ2-2-29">Einbinden von externen Werkzeugen</a></span>
+<br /> <span class="sectionToc" >1.11  <a 
+href="#x2-200001.11" id="QQ2-2-30">Tips zum Arbeiten mit CodeBlocks</a></span>
+<br />  <span class="subsectionToc" >1.11.1  <a 
+href="#x2-210001.11.1" id="QQ2-2-31">Konfiguration von Umgebungsvariablen</a></span>
+<br />  <span class="subsectionToc" >1.11.2  <a 
+href="#x2-220001.11.2" id="QQ2-2-33">Umschalten zwischen Projekten</a></span>
+<br />  <span class="subsectionToc" >1.11.3  <a 
+href="#x2-230001.11.3" id="QQ2-2-34">Erweitere Einstellung f&#x00FC;r Compiler</a></span>
+<br />  <span class="subsectionToc" >1.11.4  <a 
+href="#x2-240001.11.4" id="QQ2-2-36">Zoom im Editor</a></span>
+                                                                                       
+                                                                                       
+<br />  <span class="subsectionToc" >1.11.5  <a 
+href="#x2-250001.11.5" id="QQ2-2-37">Block select Mode im Editor</a></span>
+<br />  <span class="subsectionToc" >1.11.6  <a 
+href="#x2-260001.11.6" id="QQ2-2-38">Code folding</a></span>
+<br />  <span class="subsectionToc" >1.11.7  <a 
+href="#x2-270001.11.7" id="QQ2-2-39">Auto complete</a></span>
+<br />  <span class="subsectionToc" >1.11.8  <a 
+href="#x2-280001.11.8" id="QQ2-2-40">Einbinden von Bibliotheken</a></span>
+<br />  <span class="subsectionToc" >1.11.9  <a 
+href="#x2-290001.11.9" id="QQ2-2-41">Linkreihenfolge von Objekten</a></span>
+<br />  <span class="subsectionToc" >1.11.10  <a 
+href="#x2-300001.11.10" id="QQ2-2-42">Autosave</a></span>
+<br />  <span class="subsectionToc" >1.11.11  <a 
+href="#x2-310001.11.11" id="QQ2-2-43">Einstellen f&#x00FC;r Dateizuordnungen</a></span>
+<br /> <span class="sectionToc" >1.12  <a 
+href="#x2-320001.12" id="QQ2-2-44">CodeBlocks in der Kommandozeile</a></span>
+<br /> <span class="sectionToc" >1.13  <a 
+href="#x2-330001.13" id="QQ2-2-45">Shortcuts</a></span>
+<br />  <span class="subsectionToc" >1.13.1  <a 
+href="#x2-340001.13.1" id="QQ2-2-46">Editor</a></span>
+<br />  <span class="subsectionToc" >1.13.2  <a 
+href="#x2-350001.13.2" id="QQ2-2-47">Files</a></span>
+<br />  <span class="subsectionToc" >1.13.3  <a 
+href="#x2-360001.13.3" id="QQ2-2-48">View</a></span>
+<br />  <span class="subsectionToc" >1.13.4  <a 
+href="#x2-370001.13.4" id="QQ2-2-49">Search</a></span>
+<br />  <span class="subsectionToc" >1.13.5  <a 
+href="#x2-380001.13.5" id="QQ2-2-50">Build</a></span>
+</div>
+<h3 class="sectionHead"><span class="titlemark">1.1</span>.  <a 
+href="#QQ2-2-3" id="x2-20001.1">Projektansicht</a></h3>
+<!--l. 33--><p class="noindent" >In CodeBlocks werden Quellen und die Einstellungen f&#x00FC;r den Builtprozess in einer
+Projektdatei <span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.cbp </span>gespeichert. Ein Projekt besteht typischerweise aus C/C++
+Quellen und zugeh&#x00F6;rige Header Dateien. Ein neues Projekt legen Sie am einfachsten
+an, indem Sie das Men&#x00FC; ’File’ /’Project’  ausf&#x00FC;hren und einen Wizard ausw&#x00E4;hlen.
+Anschlie&#x00DF;end k&#x00F6;nnen Sie im Management Fenster &#x00FC;ber das Kontextmen&#x00FC; ’Add files’
+Dateien zum Projekt hinzuf&#x00FC;gen. In CodeBlocks werden die Projektdateien abh&#x00E4;ngig
+von ihrer Dateiendung in Kategorien verwalten. Die voreingestellen Kategorien sind
+f&#x00FC;r
+      </p><dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Sources</span> </dt><dd 
+class="description">Unter  der  Kategorie  <span 
+class="cmtt-12">Sources  </span>werden  Quellen  z.B.  mit  den  Endungen
+      <span 
+class="cmtt-12">*.c;*.cpp; </span>aufgelistet.
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">ASM Sources</span> </dt><dd 
+class="description">Unter der Kategorie <span 
+class="cmtt-12">ASM Sources </span>werden Quellen z.B. mit den Endungen
+      <span 
+class="cmtt-12">*.s;*.S;*.ss;*.asm </span>aufgelistet.
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Headers</span> </dt><dd 
+class="description">Unter der Kategorie <span 
+class="cmtt-12">Headers </span>werden Dateien z.B. mit den Endungen <span 
+class="cmtt-12">*.h;</span>
+      angezeigt.
+                                                                                       
+                                                                                       
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Resources</span> </dt><dd 
+class="description">Unter der Kategorie <span 
+class="cmtt-12">Resources </span>werden z.B. Dateien <span 
+class="cmtt-12">*.res;*.xrc; </span>f&#x00FC;r die
+      Beschreibung von Layout von wxWidgets Fenster gelistet. F&#x00FC;r die Anzeigen dieser
+      Dateitypen dient im Manangement Fenster der Reiter ’Resources’.</dd></dl>
+<!--l. 42--><p class="noindent" >Die Einstellungen f&#x00FC;r Typen und Kategorien von Dateien k&#x00F6;nnen &#x00FC;ber das Kontextmen&#x00FC;
+’Project tree’ /’Edit file types &amp; categories’  angepasst werden. Dabei k&#x00F6;nnen auch eigene
+Kategorien f&#x00FC;r Dateiendungen angelegt werden. Wenn Sie z.B. Linkerskripte mit der Endung
+<span 
+class="cmtt-12">*.ld </span>unter der Kategorie <span 
+class="cmtt-12">Linkerscript </span>anzeigen m&#x00F6;chten, legen Sie einfach eine neue
+Kategorie an.
+</p>
+<div class="center" 
+>
+<!--l. 44--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox1"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" />Wenn Sie im Kontextmen&#x00FC; ’Project tree’ /’Categorize by file types’
+deaktivieren,  wird  die  Anzeige  in  Kategorien  aufgehoben  und  die
+Dateien erscheinen wie sie im Dateisystem abgelegt sind.           </div>
+</div>
+<!--l. 46--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark">1.2</span>.  <a 
+href="#QQ2-2-4" id="x2-30001.2">Notizen f&#x00FC;r Projekte</a></h3>
+<!--l. 48--><p class="noindent" >In CodeBlocks k&#x00F6;nnen zu Projekten sogenannte Notes hinterlegt werden. Diese sollten eine
+Kurzbeschreibung oder Hinweise f&#x00FC;r das jeweilige Projekt enthalten. Durch Anzeige dieser
+Information beim &#x00D6;ffnen des Projektes bekommen andere Bearbeiter einen schnellen &#x00DC;berblick.
+Die Anzeige von Notes kann bei den Properties eines Projektes im Reiter Notes aktiviert bzw.
+deaktiviert werden.
+</p><!--l. 50--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark">1.3</span>.  <a 
+href="#QQ2-2-5" id="x2-40001.3">Projektvorlagen</a></h3>
+                                                                                       
+                                                                                       
+<!--l. 52--><p class="noindent" >CodeBlocks wird mit einer Vielzahl von Projektvorlagen ausgeliefert, die beim Anlegen eines
+neuen Projektes angezeigt werden. Es ist aber auch m&#x00F6;glich, eigene Vorlagen zu speichern
+und somit eigene Vorgaben f&#x00FC;r Compilerschalter, wie zu verwendete Optimierung,
+maschinenspezifische Schalter etc. in Vorlagen zusammenzufassen. Diese werden im Verzeichnis
+<span 
+class="cmtt-12">Dokumente und Einstellungen</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">user</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">Anwendungsdaten</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">codeblocks</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">UserTemplates</span>
+abgelegt. Wenn die Vorlagen f&#x00FC;r alle Benutzer zug&#x00E4;nglich sein sollen, m&#x00FC;ssen die Vorlagen in
+zugeh&#x00F6;riges Verzeichnis der CodeBlocks Installation kopiert werden. Diese Vorlagen erscheinen
+dann beim n&#x00E4;chsten Start von CodeBlocks unter ’New’ /’ Project’ /’User templates’
+.
+</p>
+<div class="center" 
+>
+<!--l. 54--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox2"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" />Die verf&#x00FC;gbaren Vorlagen im Project Wizard k&#x00F6;nnen durch Auswahl
+mit der rechten Maustaste bearbeitet werden.                      </div>
+</div>
+<!--l. 56--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark">1.4</span>.  <a 
+href="#QQ2-2-6" id="x2-50001.4">Projekte aus Build Targets erstellen</a></h3>
+<!--l. 58--><p class="noindent" >In Projekten ist es notwendig unterschiedliche Varianten eines Projektes vorzuhalten. Varianten
+werden als Build Target bezeichnet. Diese unterscheiden sich in der Regel durch unterschiedliche
+Compileroptionen, Debug-Information und Auswahl von Dateien. Ein Build Target kann auch
+in ein eigenst&#x00E4;ndiges Projekt ausgelagert werden, daf&#x00FC;r selektieren Sie in ’Project’ /’Properties’
+den Reiter ’Build Targets’ die Variante und w&#x00E4;hlen Sie Schaltfl&#x00E4;che ’Create project from target’
+(siehe <a 
+href="#x2-50012">Build Targets 1.2<!--tex4ht:ref: fig:build_targets --></a>).
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 60--><p class="noindent" ><img 
+src="build_targets.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-50012">Abbildung 1.2</a>:  
+Build Targets</td></tr></table></div><!--tex4ht:label?: x2-50012 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<h3 class="sectionHead"><span class="titlemark">1.5</span>.  <a 
+href="#QQ2-2-8" id="x2-60001.5">Virtual Targets</a></h3>
+<!--l. 64--><p class="noindent" >Mit sogenannten Virtual Targets k&#x00F6;nnen Projekte in CodeBlocks weiter strukturiert werden.
+Eine h&#x00E4;ufige Projektstruktur besteht aus zwei Build Targets. Einem Target ’Debug’  mit
+Debuginformation und einem anderen Target ’Release’ ohne diese Information. Durch
+Hinzuf&#x00FC;gen von Virtual Targets unter ’Project’ /’Properties’ /’Build Targets’  k&#x00F6;nnen einzelne
+Build Targets zusammengefasst werden. So kann zum Beispiel ein Virtual Target ’All’ die
+Targets Debug und Release gleichzeitig erzeugen. Die Virtual Targets werden auch in der
+Symbolleiste des Compilers unter Build Targets angezeigt.
+</p><!--l. 66--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark">1.6</span>.  <a 
+href="#QQ2-2-9" id="x2-70001.6">Pre- und Postbuild Schritte</a></h3>
+<!--l. 68--><p class="noindent" >CodeBlocks erm&#x00F6;glicht es, weitere Arbeitschritte vor oder nach der Compilierung eines
+Projektes durchzuf&#x00FC;hren. Die Arbeitsschritte werden als Prebuilt bzw. Postbuilt Step
+bezeichnet. Typische Postbuilt Steps sind:
+</p>
+      <ul class="itemize1">
+      <li class="itemize">Erzeugung eines Intel Hexformats aus einem fertigen Objekt
+      </li>
+      <li class="itemize">Manipulation von Objekten mit <span 
+class="cmtt-12">objcopy</span>
+      </li>
+      <li class="itemize">Generierung von Dumpdateien mit <span 
+class="cmtt-12">objdump</span></li></ul>
+<!--l. 76--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Beispiel</span>
+</p><!--l. 78--><p class="noindent" >Erzeugung einer Disassembly aus einem Objekt unter Windows. Die Umlenkung in eine Datei
+erfordert den Aufruf der <span 
+class="cmtt-12">cmd </span>mit der Option <span 
+class="cmtt-12">/c</span>.
+</p><!--l. 80--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb1">
+<a 
+ id="x2-7002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> cmd</span><span 
+class="pcrr7t-"> /c</span><span 
+class="pcrr7t-"> objdump</span><span 
+class="pcrr7t-"> -D</span><span 
+class="pcrr7t-"> name.elf</span><span 
+class="pcrr7t-"> &#x003E;</span><span 
+class="pcrr7t-"> name.dis</span>
+</div>
+                                                                                       
+                                                                                       
+<!--l. 84--><p class="noindent" >Ein weiteres Beispiel f&#x00FC;r ein Postbuilt Step kann die Archivierung eines Projektes sein. Hierzu
+erstellen Sie ein Build Target ’Archive’ und tragen im Postbuilt Step folgende Anweisung
+ein
+</p><!--l. 86--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb2">
+<a 
+ id="x2-7004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> zip</span><span 
+class="pcrr7t-"> -j9</span><span 
+class="pcrr7t-"> $(PROJECT_NAME)_$(TODAY).zip</span><span 
+class="pcrr7t-"> src</span><span 
+class="pcrr7t-"> h</span><span 
+class="pcrr7t-"> obj</span><span 
+class="pcrr7t-"> $(PROJECT_NAME).cbp</span>
+</div>
+<!--l. 90--><p class="noindent" >Mit diesem Befehl wird das aktive Projekt und seine Quellen, Header und Objekte als Zip-Datei
+gepackt. Dabei werden &#x00FC;ber die Built-in Variablen <span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecss-1200">PROJECT_NAME</span><span 
+class="ecss-1200">)</span></span> <span 
+class="ecrm-1200">und </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecss-1200">TODAY</span><span 
+class="ecss-1200">)</span></span><span 
+class="ecrm-1200">, der</span>
+<span 
+class="ecrm-1200">Projektname und das aktuelle Datum extrahiert (siehe </span><a 
+href="main_codeblocks_dech3.html#x4-810003.2"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.2</span><!--tex4ht:ref: sec:builtin_variables --></a><span 
+class="ecrm-1200">). Im</span>
+<span 
+class="ecrm-1200">Verzeichnis des Projektes liegt dann nach Ausf&#x00FC;hren des Targets ’Archive’ die gepackte</span>
+<span 
+class="ecrm-1200">Datei.</span>
+</p><!--l. 92--><p class="noindent" ><span 
+class="ecrm-1200">In dem Verzeichnis </span><span 
+class="cmtt-12">share/codeblocks/scripts </span><span 
+class="ecrm-1200">finden Sie einige Beispiele f&#x00FC;r Skripte. Ein</span>
+<span 
+class="ecrm-1200">Skript kann &#x00FC;ber das Men&#x00FC; ’Settings’ /’Scripting’  hinzugef&#x00FC;gt und in ein Men&#x00FC; eingetragen</span>
+<span 
+class="ecrm-1200">werden. Wenn Sie ein Skript z.B. </span><span 
+class="cmtt-12">make</span><span 
+class="cmtt-12">_dist </span><span 
+class="ecrm-1200">&#x00FC;ber ein Men&#x00FC; ausf&#x00FC;hren, werden alle</span>
+<span 
+class="ecrm-1200">Dateien, die zum einem aktiven Projekt geh&#x00F6;ren in ein Archiv </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">project</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.tar.gz</span>
+<span 
+class="ecrm-1200">komprimiert.</span>
+</p><!--l. 94--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.7</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-10" id="x2-80001.7"><span 
+class="ecrm-1200">Hinzuf&#x00FC;gen von Scripts in Build Targets</span></a></h3>
+<!--l. 96--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks bieten die M&#x00F6;glichkeit, Aktionen die vom Benutzer in Men&#x00FC;s ausgef&#x00FC;hrt werden,</span>
+<span 
+class="ecrm-1200">auch in Skripten zu verwenden. Mit dem Skript entsteht somit ein zus&#x00E4;tzlicher Freiheitsgrad um</span>
+<span 
+class="ecrm-1200">die Generierung Ihres Projektes zu steuern.</span>
+</p>
+<div class="center" 
+>
+<!--l. 98--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox3"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Ein Skript kann auch bei einem Build Target angegeben werden.</span>    </div>
+</div>
+                                                                                       
+                                                                                       
+<!--l. 100--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.8</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-11" id="x2-90001.8"><span 
+class="ecrm-1200">Workspace und Project Dependencies</span></a></h3>
+<!--l. 102--><p class="noindent" ><span 
+class="ecrm-1200">In CodeBlocks k&#x00F6;nnen Sie mehrere Projekte ge&#x00F6;ffnet halten. Durch speichern der ge&#x00F6;ffneten</span>
+<span 
+class="ecrm-1200">Projekte &#x00FC;ber ’File’ /’Save workspace’  werden diese in einem Arbeitsbereich unter</span>
+<span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.workspace </span><span 
+class="ecrm-1200">zusammengefasst. Wenn Sie beim n&#x00E4;chsten Start von CodeBlocks den</span>
+<span 
+class="ecrm-1200">Arbeitsbereich </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.workspace </span><span 
+class="ecrm-1200">&#x00F6;ffnen erscheinen wieder alle Projekte.</span>
+</p><!--l. 104--><p class="noindent" ><span 
+class="ecrm-1200">Komplexe Softwaresysteme bestehen aus Komponenten, die in unterschiedlichen CodeBlocks</span>
+<span 
+class="ecrm-1200">Projekten verwaltet werden. Des weiteren existieren bei der Generierung von solchen</span>
+<span 
+class="ecrm-1200">Softwaresystemen oftmals Abh&#x00E4;ngigkeiten zwischen diesen Projekten.</span>
+</p><!--l. 106--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Beispiel</span>
+</p><!--l. 108--><p class="noindent" ><span 
+class="ecrm-1200">Ein Projekt A enth&#x00E4;lt zentrale Funktionen, die auch anderen Projekten in Form einer</span>
+<span 
+class="ecrm-1200">Bibliothek zug&#x00E4;nglich gemacht werden. Wenn nun diese Quellen eines Projektes ge&#x00E4;ndert</span>
+<span 
+class="ecrm-1200">werden, muss die Bibliothek neu erzeugt werden. Damit die Konsistenz zwischen einem Projekt</span>
+<span 
+class="ecrm-1200">B, das die Funktionen verwendet und dem Projekt A, das die Funktionen implementiert,</span>
+<span 
+class="ecrm-1200">gewahrt bleibt, muss Projekt B von Projekt A abh&#x00E4;ngen. Die Information f&#x00FC;r die Abh&#x00E4;ngigkeit</span>
+<span 
+class="ecrm-1200">von Projekten wird im jeweiligen Workspace gespeichert, damit jedes Projekt weiterhin einzeln</span>
+<span 
+class="ecrm-1200">erzeugt werden kann. Durch die Verwendung von Abh&#x00E4;ngigkeiten kann auch die Reihenfolge bei</span>
+<span 
+class="ecrm-1200">der Generierung von Projekten gesteuert werden. Die Abh&#x00E4;ngigkeiten f&#x00FC;r Projekte werden &#x00FC;ber</span>
+<span 
+class="ecrm-1200">den Men&#x00FC;eintrag ’Project’ /’Properties’  und Auswahl der Schaltfl&#x00E4;che ’Project’s dependencies’</span>
+<span 
+class="ecrm-1200">gesetzt.</span>
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.9</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-12" id="x2-100001.9"><span 
+class="ecrm-1200">Einbinden von Assembler Dateien</span></a></h3>
+<!--l. 112--><p class="noindent" ><span 
+class="ecrm-1200">In der Projektansicht (Project View) im Fenter Management werden Assembler Dateien im</span>
+<span 
+class="ecrm-1200">Kategorie </span><span 
+class="cmtt-12">ASM Sources </span><span 
+class="ecrm-1200">aufgef&#x00FC;hrt. Die Anzeige von Dateien und Kategorien kann vom</span>
+<span 
+class="ecrm-1200">Benutzer festgelegt werden (siehe </span><a 
+href="#x2-20001.1"><span 
+class="ecrm-1200">Kapitel</span><span 
+class="ecrm-1200"> 1.1</span><!--tex4ht:ref: sec:categories --></a><span 
+class="ecrm-1200">). Durch einen Rechtsklick einer der gelisteten</span>
+<span 
+class="ecrm-1200">Assembler Dateien erh&#x00E4;lt man ein Kontextmen&#x00FC;. Darin &#x00F6;ffnet der Befehl ’Properties’  ein neues</span>
+<span 
+class="ecrm-1200">Fenster. Klicken Sie darin auf den Reiter ’Build’ und aktivieren Sie die beiden Felder ’Compile</span>
+<span 
+class="ecrm-1200">file’ und ’Link file’. Wechseln Sie nun auf den Reiter ’Advanced’ und f&#x00FC;hren Sie folgende</span>
+<span 
+class="ecrm-1200">Schritte durch:</span>
+</p><!--l. 114--><p class="noindent" >
+      </p><ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x2-10002x1"><span 
+class="ecrm-1200">’Compiler variable’ auf CC setzen</span>
+      </li>
+      <li 
+  class="enumerate" id="x2-10004x2"><span 
+class="ecrm-1200">Den Compiler unter ’For this compiler’ ausw&#x00E4;hlen</span>
+                                                                                       
+                                                                                       
+      </li>
+      <li 
+  class="enumerate" id="x2-10006x3"><span 
+class="ecrm-1200">’Use custom command to build this file’ anw&#x00E4;hlen</span>
+      </li>
+      <li 
+  class="enumerate" id="x2-10008x4"><span 
+class="ecrm-1200">Inhalt im Fenster eingeben:</span>
+      <div class="fancyvrb" id="fancyvrb3">
+<a 
+ id="x2-10010r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $compiler</span><span 
+class="pcrr7t-"> $options</span><span 
+class="pcrr7t-"> $includes</span><span 
+class="pcrr7t-"> &#x003C;asopts&#x003E;</span><span 
+class="pcrr7t-"> -c</span><span 
+class="pcrr7t-"> $file</span><span 
+class="pcrr7t-"> -o</span><span 
+class="pcrr7t-"> $object</span>
+</div>
+      </li></ol>
+<!--l. 124--><p class="noindent" ><span 
+class="ecrm-1200">Dabei sind die CodeBlocks Variablen durch </span><span class="lstinline"><span 
+class="ecss-1200">$</span></span> <span 
+class="ecrm-1200">gekennzeichnet (siehe </span><a 
+href="main_codeblocks_dech3.html#x4-900003.4"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.4</span><!--tex4ht:ref: sec:command_macros --></a><span 
+class="ecrm-1200">).</span>
+<span 
+class="ecrm-1200">Diese werden automatisch ersetzt, so dass Sie lediglich die Assembleroption &#x003C;asopt&#x003E; durch Ihre</span>
+<span 
+class="ecrm-1200">Einstellungen ersetzen brauchen.</span>
+</p><!--l. 126--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-13" id="x2-110001.10"><span 
+class="ecrm-1200">Editor und Hilfsmittel</span></a></h3>
+<!--l. 128--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-14" id="x2-120001.10.1"><span 
+class="ecrm-1200">Default Code</span></a></h4>
+<!--l. 130--><p class="noindent" ><span 
+class="ecrm-1200">Durch vorgegebene Coding Rules im Unternehmen m&#x00FC;ssen Quelldateien einen einheitlichen</span>
+<span 
+class="ecrm-1200">Aufbau vorweisen. CodeBlocks bietet die M&#x00F6;glichkeit, beim Anlegen von neuen C/C++ Quellen</span>
+<span 
+class="ecrm-1200">und Header einen vorgegebenen Inhalt am Anfang einer Datei automatisiert einzuf&#x00FC;gen. Die</span>
+<span 
+class="ecrm-1200">vorgebene Inhalt wird als Default Code bezeichnet. Die Einstellung hierf&#x00FC;r kann unter</span>
+<span 
+class="ecrm-1200">’Stettings’ /’Editor’  Default Code vorgenommen werden. Eine neue Datei erzeugen Sie &#x00FC;ber</span>
+<span 
+class="ecrm-1200">das Men&#x00FC; ’File’ /’New’ /’File’ .</span>
+</p><!--l. 132--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Beispiel</span>
+</p><!--l. 134--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb4">
+<a 
+ id="x2-12002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> /&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;</span>
+<br class="fancyvrb" /><a 
+ id="x2-12004r2"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> Project:</span>
+<br class="fancyvrb" /><a 
+ id="x2-12006r3"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> Function:</span>
+<br class="fancyvrb" /><a 
+ id="x2-12008r4"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;</span>
+<br class="fancyvrb" /><a 
+ id="x2-12010r5"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $Author:</span><span 
+class="pcrr7t-"> mario</span><span 
+class="pcrr7t-"> $</span>
+<br class="fancyvrb" /><a 
+ id="x2-12012r6"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $Name:</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $</span>
+                                                                                       
+                                                                                       
+<br class="fancyvrb" /><a 
+ id="x2-12014r7"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;</span>
+<br class="fancyvrb" /><a 
+ id="x2-12016r8"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span>
+<br class="fancyvrb" /><a 
+ id="x2-12018r9"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> Copyright</span><span 
+class="pcrr7t-"> 2007</span><span 
+class="pcrr7t-"> by</span><span 
+class="pcrr7t-"> company</span><span 
+class="pcrr7t-"> name</span>
+<br class="fancyvrb" /><a 
+ id="x2-12020r10"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;</span>
+<br class="fancyvrb" /><a 
+ id="x2-12022r11"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;&#x22C6;/</span>
+</div>
+<!--l. 148--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.2</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-15" id="x2-130001.10.2"><span 
+class="ecrm-1200">Abbreviation</span></a></h4>
+<!--l. 150--><p class="noindent" ><span 
+class="ecrm-1200">Durch Definition von Abk&#x00FC;rzung in CodeBlocks kann einiges an Schreibarbeit und Zeit gespart</span>
+<span 
+class="ecrm-1200">werden. Hierzu werden in ’Settings’ /’Editor’  sogenannte Abbreviations unter dem Namen</span>
+<span 
+class="ecrm-1200">&#x003C;name&#x003E; angelegt, die &#x00FC;ber das Tastenk&#x00FC;rzel Ctrl-J aufgerufen werden (siehe </span><a 
+href="#x2-130013"><span 
+class="ecrm-1200">Definition von</span>
+<span 
+class="ecrm-1200">Abk&#x00FC;rzungen</span><span 
+class="ecrm-1200"> 1.3</span><!--tex4ht:ref: fig:abbreviation --></a><span 
+class="ecrm-1200">).</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 152--><p class="noindent" ><img 
+src="abbreviation.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-130013">Abbildung 1.3</a>:  
+Definition von Abk&#x00FC;rzungen</td></tr></table></div><!--tex4ht:label?: x2-130013 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 154--><p class="noindent" ><span 
+class="ecrm-1200">Durch Einf&#x00FC;gen von Variablen </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecss-1200">NAME</span></span><span 
+class="ecrm-1200">) in den Abk&#x00FC;rzungen ist auch eine Parametrisierung</span>
+<span 
+class="ecrm-1200">m&#x00F6;glich.</span>
+</p>
+<div class="fancyvrb" id="fancyvrb5">
+<a 
+ id="x2-13003r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> #ifndef</span><span 
+class="pcrr7t-"> $(Guard</span><span 
+class="pcrr7t-"> token)</span>
+<br class="fancyvrb" /><a 
+ id="x2-13005r2"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> #define</span><span 
+class="pcrr7t-"> $(Guard</span><span 
+class="pcrr7t-"> token)</span>
+<br class="fancyvrb" /><a 
+ id="x2-13007r3"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> #endif</span><span 
+class="pcrr7t-"> //</span><span 
+class="pcrr7t-"> $(Guard</span><span 
+class="pcrr7t-"> token)</span>
+</div>
+<!--l. 162--><p class="noindent" ><span 
+class="ecrm-1200">Bei Aufruf der Abk&#x00FC;rzung &#x003C;name&#x003E; im Quelltext und Ausf&#x00FC;hren von Ctrl-J, wird der Inhalt der</span>
+<span 
+class="ecrm-1200">Variablen abgefragt und eingef&#x00FC;gt.</span>
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-17" id="x2-140001.10.3"><span 
+class="ecrm-1200">Personalities</span></a></h4>
+<!--l. 169--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks Einstellungen werden als Anwendungsdaten im Verzeichnis </span><span 
+class="cmtt-12">codeblocks </span><span 
+class="ecrm-1200">in einer</span>
+<span 
+class="ecrm-1200">Datei </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">user</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.conf </span><span 
+class="ecrm-1200">gespeichert. Diese Konfigurationsdatei enth&#x00E4;lt Informationen</span>
+<span 
+class="ecrm-1200">wie beispielsweise zuletzt ge&#x00F6;ffnete Projekte, Einstellungen f&#x00FC;r Editor, Anzeige von</span>
+<span 
+class="ecrm-1200">Symbolleisten etc. Standardm&#x00E4;&#x00DF;ig ist die Personality ’default’ eingestellt, so dass die</span>
+<span 
+class="ecrm-1200">Konfiguration in der Datei </span><span 
+class="cmtt-12">default.conf </span><span 
+class="ecrm-1200">abgelegt ist. Wenn CodeBlocks mit dem Parameter</span>
+<span 
+class="cmtt-12">--personality=myuser </span><span 
+class="ecrm-1200">in der Kommandozeile aufgerufen wird, werden die Einstellungen in der</span>
+<span 
+class="ecrm-1200">Datei </span><span 
+class="cmtt-12">myuser.conf </span><span 
+class="ecrm-1200">gespeichert. Falls das Profil nicht bereits existiert, wird es automatisch</span>
+<span 
+class="ecrm-1200">angelegt. Durch diese Vorgehensweise k&#x00F6;nnen f&#x00FC;r unterschiedliche durchzuf&#x00FC;hrende</span>
+<span 
+class="ecrm-1200">Arbeitsschritte auch zugeh&#x00F6;rige Profile gespeichert werden. Wenn Sie CodeBlocks mit dem</span>
+<span 
+class="ecrm-1200">zus&#x00E4;tzlichen Parameter </span><span 
+class="cmtt-12">--personality=ask </span><span 
+class="ecrm-1200">starten erscheint ein Auswahldialog f&#x00FC;r die</span>
+<span 
+class="ecrm-1200">verf&#x00FC;gbaren Profile.</span>
+</p>
+<div class="center" 
+>
+<!--l. 171--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox4"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Der Name des aktuell verwendeten Profils/Personality wird rechts in</span>
+<span 
+class="ecrm-1200">der Statusbar angezeigt.</span>                                           </div>
+</div>
+                                                                                       
+                                                                                       
+<!--l. 173--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-18" id="x2-150001.10.4"><span 
+class="ecrm-1200">Konfigurationsdateien</span></a></h4>
+<!--l. 175--><p class="noindent" ><span 
+class="ecrm-1200">Die Einstellungen f&#x00FC;r CodeBlocks werden im Profil </span><span 
+class="cmtt-12">default.conf </span><span 
+class="ecrm-1200">im Ordner </span><span 
+class="cmtt-12">codeblocks </span><span 
+class="ecrm-1200">in</span>
+<span 
+class="ecrm-1200">Ihren Anwendungsdaten gespeichert. Bei Verwendung von personalities (siehe </span><a 
+href="#x2-140001.10.3"><span 
+class="ecrm-1200">Kapitel</span><span 
+class="ecrm-1200"> 1.10.3</span><!--tex4ht:ref: sec:personalities --></a>
+<span 
+class="ecrm-1200">werden die Konfiguration in der Datei </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">personality</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.conf </span><span 
+class="ecrm-1200">abgelegt.</span>
+</p><!--l. 177--><p class="noindent" ><span 
+class="ecrm-1200">Mit dem Werkzeug </span><span 
+class="cmtt-12">cb</span><span 
+class="cmtt-12">_share</span><span 
+class="cmtt-12">_conf</span><span 
+class="ecrm-1200">, aus dem CodeBlocks Installationsverzeichnis, k&#x00F6;nnen diese</span>
+<span 
+class="ecrm-1200">Einstellungen verwaltet und gesichert werden.</span>
+</p><!--l. 179--><p class="noindent" ><span 
+class="ecrm-1200">Falls Sie Standardeinstellung f&#x00FC;r mehrere Benutzer eines PCs vorgeben m&#x00F6;chten, muss die</span>
+<span 
+class="ecrm-1200">Konfigurationsdatei </span><span 
+class="cmtt-12">default.conf </span><span 
+class="ecrm-1200">im Ordner </span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">Dokumente und Einstellungen</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">Default</span>
+<span 
+class="cmtt-12">User</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">Anwendungsdaten</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">codeblocks </span><span 
+class="ecrm-1200">abgelegt sein. Beim ersten Start von CodeBlocks werden</span>
+<span 
+class="ecrm-1200">die Voreinstellungen aus ’Default User’ in die Anwendungsdaten der aktuellen Benutzers</span>
+<span 
+class="ecrm-1200">kopiert.</span>
+</p><!--l. 181--><p class="noindent" ><span 
+class="ecrm-1200">Zur Erzeugung einer portablen Version von CodeBlocks auf einem USB-Stick gehen Sie wie</span>
+<span 
+class="ecrm-1200">folgt vor. Kopieren Sie die CodeBlocks Installation auf einen USB-Stick und legen Sie die</span>
+<span 
+class="ecrm-1200">Konfigurationsdatei </span><span 
+class="cmtt-12">default.conf </span><span 
+class="ecrm-1200">in dieses Verzeichnis. Die Konfiguration wird als globale</span>
+<span 
+class="ecrm-1200">Einstellung verwendet. Bitte achten Sie darauf, dass die Datei schreibbar sein muss, damit</span>
+<span 
+class="ecrm-1200">&#x00C4;nderungen in der Konfiguration auch gespeichert werden k&#x00F6;nnen.</span>
+</p><!--l. 183--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.5</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-19" id="x2-160001.10.5"><span 
+class="ecrm-1200">Navigieren und Suchen</span></a></h4>
+<!--l. 185--><p class="noindent" ><span 
+class="ecrm-1200">In CodeBlocks existieren unterschiedliche M&#x00F6;glichkeiten zum schnellen Navigieren zwischen</span>
+<span 
+class="ecrm-1200">Dateien und Funktionen. Eine typische Vorgehensweise ist das Setzen von Lesezeichen</span>
+<span 
+class="ecrm-1200">(Bookmarks). Durch Bet&#x00E4;tigen des Tastenk&#x00FC;rzel (Ctrl-B) wird ein Lesezeichen in einer</span>
+<span 
+class="ecrm-1200">Quelldatei gesetzt bzw. gel&#x00F6;scht. Mit (Alt-PgUp) wird zum vorherigen Lesezeichen gesprungen</span>
+<span 
+class="ecrm-1200">und mit (Alt-PgDn) zum n&#x00E4;chsten gewechselt.</span>
+</p><!--l. 187--><p class="noindent" ><span 
+class="ecrm-1200">In der Projektansicht k&#x00F6;nnen Sie durch Ausw&#x00E4;hlen eines Projektes oder im gesamten Workspace</span>
+<span 
+class="ecrm-1200">&#x00FC;ber das Kontextmen&#x00FC; ’Find file’  in einem Dialog einen Dateinamen angeben. Dieser wird</span>
+<span 
+class="ecrm-1200">anschlie&#x00DF;end in der Projektansicht markiert und durch Eingabe mit Return im Editor ge&#x00F6;ffnet</span>
+<span 
+class="ecrm-1200">(siehe </span><a 
+href="#x2-160014"><span 
+class="ecrm-1200">Suche nach Dateien</span><span 
+class="ecrm-1200"> 1.4</span><!--tex4ht:ref: fig:project_find_file --></a><span 
+class="ecrm-1200">).</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 189--><p class="noindent" ><img 
+src="project_find_file.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-160014">Abbildung 1.4</a>:  
+Suche nach Dateien</td></tr></table></div><!--tex4ht:label?: x2-160014 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 191--><p class="noindent" ><span 
+class="ecrm-1200">F&#x00FC;r das schnelle Navigieren zwischen Header/Quelle Dateien bietet CodeBlocks folgende</span>
+<span 
+class="ecrm-1200">M&#x00F6;glichkeiten</span>
+      </p><ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x2-16003x1"><span 
+class="ecrm-1200">Cursor auf Zeile setzen wo Header includiert wird und &#x00FC;ber Kontextmen&#x00FC; ’open</span>
+      <span 
+class="ecrm-1200">include file’  &#x00F6;ffnen (siehe </span><a 
+href="#x2-160085"><span 
+class="ecrm-1200">&#x00D6;ffnen einer Header Datei</span><span 
+class="ecrm-1200"> 1.5</span><!--tex4ht:ref: fig:open_header --></a><span 
+class="ecrm-1200">)</span>
+      </li>
+      <li 
+  class="enumerate" id="x2-16005x2"><span 
+class="ecrm-1200">Umschalten zwischen Quelle und Header &#x00FC;ber Kontextmen&#x00FC; ’Swap header/source’</span>
+      </li>
+      <li 
+  class="enumerate" id="x2-16007x3"><span 
+class="ecrm-1200">Markieren  eines  Begriffes  z.B.  eines  Defines  in  einer  Datei  und  Aufruf  des</span>
+      <span 
+class="ecrm-1200">Kontextmen&#x00FC; ’Find declaration’ </span></li></ol>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 199--><p class="noindent" ><img 
+src="open_header.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-160085">Abbildung 1.5</a>:  
+&#x00D6;ffnen einer Header Datei</td></tr></table></div><!--tex4ht:label?: x2-160085 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 201--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks bietet verschiedene M&#x00F6;glichkeiten f&#x00FC;r die Suche in einer Datei oder in</span>
+<span 
+class="ecrm-1200">Verzeichnissen. Mit dem ’Search’ /’Find’  (Ctrl-F) oder ’Find in Files’  (Ctrl-Shift-F) &#x00F6;ffnet sich</span>
+<span 
+class="ecrm-1200">der Dialog f&#x00FC;r die Suche.</span>
+</p><!--l. 203--><p class="noindent" ><span 
+class="ecrm-1200">Eine weitere komfortable Funktion bietet das Tastenk&#x00FC;rzel Alt-G und Ctrl-Alt-G. Der sich</span>
+<span 
+class="ecrm-1200">&#x00F6;ffnende Dialog erlaubt die Auswahl von Dateien/Funktionen und springt anschlie&#x00DF;end an die</span>
+<span 
+class="ecrm-1200">Implementierung der Funktion (siehe </span><a 
+href="#x2-160096"><span 
+class="ecrm-1200">Suche nach Funktionen</span><span 
+class="ecrm-1200"> 1.6</span><!--tex4ht:ref: fig:select_function --></a><span 
+class="ecrm-1200">) bzw. &#x00F6;ffnete die ausgew&#x00E4;hlte</span>
+<span 
+class="ecrm-1200">Datei. Als Eingabe werden auf Wildcards </span><span class="lstinline"><span 
+class="cmsy-10x-x-120">*</span></span> <span 
+class="ecrm-1200">oder </span><span class="lstinline"><span 
+class="ecss-1200">?</span></span> <span 
+class="ecrm-1200">etc. f&#x00FC;r eine inkrementelle Suche</span>
+<span 
+class="ecrm-1200">unterst&#x00FC;tzt.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 205--><p class="noindent" ><img 
+src="select_function.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-160096">Abbildung 1.6</a>:  
+Suche nach Funktionen</td></tr></table></div><!--tex4ht:label?: x2-160096 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<div class="center" 
+>
+<!--l. 207--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox5"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Mit dem Tastenk&#x00FC;rzel Ctrl-PAGEUP springen Sie an die vorherige</span>
+<span 
+class="ecrm-1200">Funktion und mit Ctrl-PAGEDOWN zur n&#x00E4;chsten Funktion.</span>       </div>
+</div>
+<!--l. 209--><p class="noindent" ><span 
+class="ecrm-1200">Wenn Sie sich im Editor Fenster befinden, k&#x00F6;nnen Sie mit Ctrl-Tab zwischen den Reiter von</span>
+<span 
+class="ecrm-1200">ge&#x00F6;ffneten Dateien springen. Durch setzen der Einstellung ’Use Smart Tab-switching scheme’ in</span>
+<span 
+class="ecrm-1200">’Settings’ /’Notebook appearance’  erhalten Sie nun &#x00FC;ber Ctrl-Tab ein zus&#x00E4;tzliches Open Tabs</span>
+<span 
+class="ecrm-1200">Fenster im Editor (siehe </span><a 
+href="#x2-160107"><span 
+class="ecrm-1200">Einstellungen f&#x00FC;r Wechseln zwischen Reitern</span><span 
+class="ecrm-1200"> 1.7</span><!--tex4ht:ref: fig:tab_scheme --></a><span 
+class="ecrm-1200">). Dabei wird die Liste</span>
+<span 
+class="ecrm-1200">in der Reihenfolge der ge&#x00F6;ffneten Dateien gezeigt. Sie k&#x00F6;nnen die Tastenkombination</span>
+<span 
+class="ecrm-1200">Ctrl-Tab auch im Management Fenster verwenden, um in zwischen den Reitern zu</span>
+<span 
+class="ecrm-1200">wechseln.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 211--><p class="noindent" ><img 
+src="tab_scheme.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-160107">Abbildung 1.7</a>:  
+Einstellungen f&#x00FC;r Wechseln zwischen Reitern</td></tr></table></div><!--tex4ht:label?: x2-160107 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 213--><p class="noindent" ><span 
+class="ecrm-1200">Eine h&#x00E4;ufige Arbeitsweise bei der Entwicklung von Software ist jedoch, dass man sich durch ein</span>
+<span 
+class="ecrm-1200">Satz von Funktion hangelt, die in unterschiedlichen Dateien implementiert sind. Durch das</span>
+<span 
+class="ecrm-1200">Plugin Browse Tracker zeigt mit dem Fenster ’Browsed Tabs’ eine Liste in der Reihenfolge wie</span>
+<span 
+class="ecrm-1200">Dateien selektiert wurden. Somit k&#x00F6;nnen Sie komfortabel zwischen den Aufrufen navigieren</span>
+<span 
+class="ecrm-1200">(siehe </span><a 
+href="main_codeblocks_dech2.html#x3-560002.7"><span 
+class="ecrm-1200">Plugins</span><span 
+class="ecrm-1200"> 2.7</span><!--tex4ht:ref: sec:browsetracker --></a><span 
+class="ecrm-1200">).</span>
+</p><!--l. 215--><p class="noindent" ><span 
+class="ecrm-1200">In CodeBlocks aktivieren Sie die Anzeige von Zeilennummern in ’Settings’ /’General Settings’</span>
+<span 
+class="ecrm-1200">im Feld ’Show line numbers’. Mit dem Tastenk&#x00FC;rzel Ctrl-G oder &#x00FC;ber das Men&#x00FC; ’Search’ /’Goto</span>
+<span 
+class="ecrm-1200">line’  springen Sie an die gew&#x00FC;nschte Zeile.</span>
+</p>
+<div class="center" 
+>
+<!--l. 217--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox6"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Sie k&#x00F6;nnen auch im Editor einen Begriff mit gedr&#x00FC;ckter Ctrl Taste</span>
+<span 
+class="ecrm-1200">markieren und dann &#x00FC;ber das Kontextmen&#x00FC; nach diesem Begriff z.B.</span>
+<span 
+class="ecrm-1200">in Goolge suchen.</span>                                                  </div>
+</div>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.6</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-24" id="x2-170001.10.6"><span 
+class="ecrm-1200">Symbolansicht</span></a></h4>
+<!--l. 221--><p class="noindent" ><span 
+class="ecrm-1200">F&#x00FC;r das Navigieren &#x00FC;ber Funktionen oder Variablen bietet das Management Fenster in</span>
+<span 
+class="ecrm-1200">CodeBlocks eine Baumansicht f&#x00FC;r Symbole von C/C++ Quellen. Dabei l&#x00E4;sst sicht der</span>
+<span 
+class="ecrm-1200">G&#x00FC;ltigkeitsbereich (Scope) der Ansicht auf die aktuelle Datei oder Projekt oder den</span>
+<span 
+class="ecrm-1200">gesamten Arbeitsbereich einstellen. F&#x00FC;r die Kategorien der Symbole existieren folgende</span>
+<span 
+class="ecrm-1200">Kategorien.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 223--><p class="noindent" ><img 
+src="symbols.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-170018">Abbildung 1.8</a>:  
+Symbolansicht</td></tr></table></div><!--tex4ht:label?: x2-170018 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+      <dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Global functions</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Listet die Implementierung von globalen Funktionen.</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Global typedefs</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Listet die Verwendung von </span><span class="lstinline"><span 
+class="ecsx-1200">typedef</span></span> <span 
+class="ecrm-1200">Definitionen.</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Global variables</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Zeigt die Symbole von globalen Variablen an.</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Preprocessor symbols</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Auflistung der mit </span><span class="lstinline"><span 
+class="ecsx-1200">#</span><span 
+class="ecsx-1200">define</span></span> <span 
+class="ecrm-1200">erzeugten Pr&#x00E4;prozessor Direktiven.</span></dd></dl>
+<!--l. 232--><p class="noindent" ><span 
+class="ecrm-1200">Strukturen und Klassen werden unterhalb von Preprocessor symbols angezeigt. Wenn eine</span>
+<span 
+class="ecrm-1200">Kategorie mit der Maus angew&#x00E4;hlt wird, erscheinen die gefundenen Symbole in dem unteren</span>
+<span 
+class="ecrm-1200">Teil des Fensters (siehe </span><a 
+href="#x2-170018"><span 
+class="ecrm-1200">Symbolansicht</span><span 
+class="ecrm-1200"> 1.8</span><!--tex4ht:ref: fig:symbols --></a><span 
+class="ecrm-1200">). Ein Doppelklick auf das Symbol &#x00F6;ffnet die Datei,</span>
+<span 
+class="ecrm-1200">wo das Symbol definiert bzw. die Funktion implementiert ist und springt an die zugeh&#x00F6;rige</span>
+<span 
+class="ecrm-1200">Zeile.</span>
+</p>
+<div class="center" 
+>
+<!--l. 234--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox7"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Im Editor k&#x00F6;nnen Sie &#x00FC;ber das Kontextmen&#x00FC; ’Insert Class method</span>
+<span 
+class="ecrm-1200">declaration  implementation’     bzw.  ’All  class  methods  without</span>
+<span 
+class="ecrm-1200">implementation’  sich auch die Liste der Klassen anzeigen lassen.</span>    </div>
+</div>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.7</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-26" id="x2-180001.10.7"><span 
+class="ecrm-1200">Einbinden von externen Hilfen</span></a></h4>
+<!--l. 239--><p class="noindent" ><span 
+class="ecrm-1200">Die Entwicklungsumgebung CodeBlocks unterst&#x00FC;tzt das Einbinden von externen</span>
+<span 
+class="ecrm-1200">Hilfen &#x00FC;ber das Men&#x00FC; ’Settings’ /’Environment’ . F&#x00FC;gen Sie ein Manual Ihrer Wahl</span>
+<span 
+class="ecrm-1200">im chm Format in ’Help Files’  hinzu und w&#x00E4;hlen Sie die Einstellung ’this is the</span>
+<span 
+class="ecrm-1200">default help file’ (siehe </span><a 
+href="#x2-180019"><span 
+class="ecrm-1200">Einstellungen f&#x00FC;r Hilfe</span><span 
+class="ecrm-1200"> 1.9</span><!--tex4ht:ref: fig:help_files --></a><span 
+class="ecrm-1200">). Dabei steht im Eintrag </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecss-1200">keyword</span><span 
+class="ecss-1200">)</span></span>
+<span 
+class="ecrm-1200">als Platzhalter f&#x00FC;r einen Begriff der im Editor markiert wird. Nun k&#x00F6;nnen Sie in</span>
+<span 
+class="ecrm-1200">CodeBlocks in einer ge&#x00F6;ffneten Quelldatei eine Funktion mit der Maus durch Doppelklick</span>
+<span 
+class="ecrm-1200">markieren und anschlie&#x00DF;end die Hilfe mit F1 aufrufen und erhalten die zugeh&#x00F6;rige</span>
+<span 
+class="ecrm-1200">Dokumentation.</span>
+</p><!--l. 241--><p class="noindent" ><span 
+class="ecrm-1200">Wenn Sie mehrere Hilfedateien einbinden, k&#x00F6;nnen Sie im Editor einen Begriff markieren und</span>
+<span 
+class="ecrm-1200">anschlie&#x00DF;end &#x00FC;ber das Kontextmen&#x00FC; ’Locate in’  die Hilfedatei ausw&#x00E4;hlen, in der CodeBlocks</span>
+<span 
+class="ecrm-1200">suchen soll.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 243--><p class="noindent" ><img 
+src="help_files.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-180019">Abbildung 1.9</a>:  
+Einstellungen f&#x00FC;r Hilfe</td></tr></table></div><!--tex4ht:label?: x2-180019 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 245--><p class="noindent" ><span 
+class="ecrm-1200">In CodeBlocks werden auch die Hilfe mit man pages unterst&#x00FC;tzt. Hier f&#x00FC;gen Sie einen neuen</span>
+<span 
+class="ecrm-1200">Eintrag ’man’  ein und geben den Pfad wie folgt an.</span>
+</p>
+<div class="fancyvrb" id="fancyvrb6">
+<a 
+ id="x2-18003r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> man:/usr/share/man</span>
+</div>
+<!--l. 251--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks bietet auch einen ’Embedded HTML Viewer’, hiermit k&#x00F6;nnen einfache</span>
+<span 
+class="ecrm-1200">HTML-Dateien in CodeBlocks angezeigt und f&#x00FC;r Suchen genutzt werden. Konfigurieren Sie</span>
+<span 
+class="ecrm-1200">einfach den Pfad der HTML-Datei, die durchsucht werden soll und aktivieren Sie die Option</span>
+<span 
+class="ecrm-1200">’Open this file with embedded help viewer’  in dem Men&#x00FC; ’Settings’ /’Environment’ /’Help</span>
+<span 
+class="ecrm-1200">Files’ .</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 253--><p class="noindent" ><img 
+src="embedded_html_viewer.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-1800410">Abbildung 1.10</a>:  
+Embedded HTML Viewer</td></tr></table></div><!--tex4ht:label?: x2-1800410 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<div class="center" 
+>
+<!--l. 255--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox8"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Wenn Sie eine HTML-Datei im File Explorer mit einem Doppelklick</span>
+<span 
+class="ecrm-1200">&#x00F6;ffnen  (siehe  </span><a 
+href="main_codeblocks_dech2.html#x3-550002.6"><span 
+class="ecrm-1200">Plugins</span><span 
+class="ecrm-1200"> 2.6</span><!--tex4ht:ref: sec:file_explorer --></a><span 
+class="ecrm-1200">)  dann  wird  der  Embedded  Html  Viewer</span>
+<span 
+class="ecrm-1200">gestartet, solange f&#x00FC;r HTML Dateien keine andere Zuordnung im file</span>
+<span 
+class="ecrm-1200">extension handler vorgenommen wurde.</span>                            </div>
+</div>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.10.8</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-29" id="x2-190001.10.8"><span 
+class="ecrm-1200">Einbinden von externen Werkzeugen</span></a></h4>
+<!--l. 262--><p class="noindent" ><span 
+class="ecrm-1200">Die Einbindung von externen Tools ist in CodeBlocks unter dem Men&#x00FC;eintrag ’Tools’</span>
+<span 
+class="ecrm-1200">/’Configure Tools’ /’Add’  vorgesehen. F&#x00FC;r die &#x00DC;bergabeparameter der Tools kann</span>
+<span 
+class="ecrm-1200">auch auf Built-in Variables (see </span><a 
+href="main_codeblocks_dech3.html#x4-810003.2"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.2</span><!--tex4ht:ref: sec:builtin_variables --></a><span 
+class="ecrm-1200">) zugegriffen werden. Des</span>
+<span 
+class="ecrm-1200">weiteren existieren f&#x00FC;r das Starten von externen Anwendungen unterschiedliche Arten</span>
+<span 
+class="ecrm-1200">(Launching options). Je nach Option werden die extern gestarteten Anwendung beim</span>
+<span 
+class="ecrm-1200">Beenden von CodeBlocks gestoppt. Falls die Anwendungen auch beim Beenden von</span>
+<span 
+class="ecrm-1200">CodeBlocks ge&#x00F6;ffnet bleiben sollen, ist die Option ’Launch tool visible detached’</span>
+<span 
+class="ecrm-1200">einzustellen.</span>
+</p><!--l. 264--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-30" id="x2-200001.11"><span 
+class="ecrm-1200">Tips zum Arbeiten mit CodeBlocks</span></a></h3>
+<!--l. 266--><p class="noindent" ><span 
+class="ecrm-1200">In diesem Kapitel werden Ihnen einige n&#x00FC;tzliche Einstellungen in CodeBlocks vorgestellt.</span>
+</p><!--l. 268--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-31" id="x2-210001.11.1"><span 
+class="ecrm-1200">Konfiguration von Umgebungsvariablen</span></a></h4>
+<!--l. 270--><p class="noindent" ><span 
+class="ecrm-1200">Die Konfiguration f&#x00FC;r ein Betriebssystem wird durch sogenannte Umgebungsvariablen</span>
+<span 
+class="ecrm-1200">festgelegt. Zum Beispiel enth&#x00E4;lt die Umgebungsvariablen </span><span class="lstinline"><span 
+class="ecss-1200">PATH</span></span> <span 
+class="ecrm-1200">den Pfad auf einen installierten</span>
+<span 
+class="ecrm-1200">Compiler. Das Betriebssystem geht diese Umgebungsvariable von vorne nach hinten durch, d.h.</span>
+                                                                                       
+                                                                                       
+<span 
+class="ecrm-1200">die Eintr&#x00E4;ge am Ende werden als letztes durchsucht. Wenn nun unterschiedliche Versionen eines</span>
+<span 
+class="ecrm-1200">Compilers oder anderer Anwendungen installiert sind, k&#x00F6;nnen nun folgende Situationen</span>
+<span 
+class="ecrm-1200">auftreten:</span>
+</p>
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="ecrm-1200">Die falsche Version einer Software wird aufgrufen</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Installierte Softwarepakete st&#x00F6;ren sich gegenseitig</span></li></ul>
+<!--l. 277--><p class="noindent" ><span 
+class="ecrm-1200">Es k&#x00F6;nnte zum Beispiel notwendig sein, dass f&#x00FC;r unterschiedliche Projekte unterschiedliche</span>
+<span 
+class="ecrm-1200">Versionen eines Compilers oder anderer Werkzeugen vorgeschrieben sind. Eine M&#x00F6;glichkeit ist</span>
+<span 
+class="ecrm-1200">die Umgebungsvariablen in der Systemsteuerung jeweils f&#x00FC;r ein Projekt zu &#x00E4;ndern. Diese</span>
+<span 
+class="ecrm-1200">Vorgehensweise ist jedoch fehleranf&#x00E4;llig und nicht flexibel. F&#x00FC;r diese Anforderung bietet</span>
+<span 
+class="ecrm-1200">CodeBlocks eine elegante L&#x00F6;sung. Es lassen sich hier unterschiedliche Konfigurationen von</span>
+<span 
+class="ecrm-1200">Umgebungsvariablen erstellen, die nur intern in CodeBlocks verwendet werden. Zus&#x00E4;tzlich kann</span>
+<span 
+class="ecrm-1200">zwischen diesen Konfiguration umgeschaltet werden. Die </span><a 
+href="#x2-2100111"><span 
+class="ecrm-1200">Umgebungsvariablen</span><span 
+class="ecrm-1200"> 1.11</span><!--tex4ht:ref: fig:env_variables --></a> <span 
+class="ecrm-1200">zeigt den</span>
+<span 
+class="ecrm-1200">Eingabedialog, den Sie &#x00FC;ber das Men&#x00FC; ’Settings’ /’Environment’  und Auswahl von</span>
+<span 
+class="ecrm-1200">’Environment Varibales’ erhalten. Eine Konfiguration wird &#x00FC;ber die Schaltfl&#x00E4;che ’Create’</span>
+<span 
+class="ecrm-1200">erzeugt. Die &#x00DC;bernahme der hinzugef&#x00FC;gten Umgebungsvariablen erfolgt durch Best&#x00E4;tigen</span>
+<span 
+class="ecrm-1200">des OK Knopfes. Das Aktivieren einer Konfiguration erfolgt &#x00FC;ber den Knopf Set</span>
+<span 
+class="ecrm-1200">Now.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 279--><p class="noindent" ><img 
+src="env_variables.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-2100111">Abbildung 1.11</a>:  
+Umgebungsvariablen</td></tr></table></div><!--tex4ht:label?: x2-2100111 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 281--><p class="noindent" ><span 
+class="ecrm-1200">Der Zugriff und der G&#x00FC;ltigkeitkeitbereich auf die hier erstellten Umgebungsvariablen ist auf</span>
+<span 
+class="ecrm-1200">CodeBlocks begrenzt. Sie k&#x00F6;nnen diese Umgebungsvariablen wie auch andere CodeBlocks</span>
+<span 
+class="ecrm-1200">Variablen &#x00FC;ber </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecss-1200">NAME</span><span 
+class="ecss-1200">)</span></span> <span 
+class="ecrm-1200">expandieren.</span>
+</p>
+<div class="center" 
+>
+<!--l. 283--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox9"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Eine Konfiguration von Umgebungsvariable l&#x00E4;sst sich pro Projekt im</span>
+<span 
+class="ecrm-1200">Kontextmen&#x00FC; ’Properties’  im Reiter ’EnvVars options’ selektieren.</span> </div>
+</div>
+<!--l. 285--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Beispiel</span>
+</p><!--l. 287--><p class="noindent" ><span 
+class="ecrm-1200">Sie k&#x00F6;nnen die verwendete Umgebung in einem postbuild Step (siehe </span><a 
+href="#x2-70001.6"><span 
+class="ecrm-1200">Kapitel</span><span 
+class="ecrm-1200"> 1.6</span><!--tex4ht:ref: sec:pre_postbuild --></a><span 
+class="ecrm-1200">) in einer Datei</span>
+<span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">project</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.env </span><span 
+class="ecrm-1200">schreiben und zu Ihrem Projekt archivieren.</span>
+</p>
+<div class="fancyvrb" id="fancyvrb7">
+<a 
+ id="x2-21003r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> cmd</span><span 
+class="pcrr7t-"> /c</span><span 
+class="pcrr7t-"> echo</span><span 
+class="pcrr7t-"> \%PATH\%</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x003E;</span><span 
+class="pcrr7t-"> project.env</span>
+</div>
+<!--l. 293--><p class="noindent" ><span 
+class="ecrm-1200">oder unter Linux</span>
+</p>
+<div class="fancyvrb" id="fancyvrb8">
+<a 
+ id="x2-21005r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> echo</span><span 
+class="pcrr7t-"> \$PATH</span><span 
+class="pcrr7t-"> &#x003E;</span><span 
+class="pcrr7t-"> project.env</span>
+</div>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.2</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-33" id="x2-220001.11.2"><span 
+class="ecrm-1200">Umschalten zwischen Projekten</span></a></h4>
+<!--l. 301--><p class="noindent" ><span 
+class="ecrm-1200">Wenn mehrere Projekte oder Dateien gleichzeitig ge&#x00F6;ffnet sind, so will der Benutzer h&#x00E4;ufig</span>
+<span 
+class="ecrm-1200">zwischen den Projekten und Dateien schnell wechseln k&#x00F6;nnen. CodeBlocks stellt hierf&#x00FC;r eine</span>
+<span 
+class="ecrm-1200">Reihe an Shortcuts zur Verf&#x00FC;gung.</span>
+      </p><dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Alt-F5</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Aktiviert vorheriges Projekt aus der Projektansicht.</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Alt-F6</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Aktiviert nachfolgendes Projekt aus der Projektansicht.</span>
+                                                                                       
+                                                                                       
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">F11</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Wechselt im Editor zwischen einer Quelldatei </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.cpp </span><span 
+class="ecrm-1200">und der zugeh&#x00F6;rigen</span>
+      <span 
+class="ecrm-1200">Header Datei </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.h</span></dd></dl>
+<!--l. 309--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-34" id="x2-230001.11.3"><span 
+class="ecrm-1200">Erweitere Einstellung f&#x00FC;r Compiler</span></a></h4>
+<!--l. 311--><p class="noindent" ><span 
+class="ecrm-1200">Beim Buildprozess eines Projektes werden die Ausgaben des Compilers in Fenster Messages im</span>
+<span 
+class="ecrm-1200">Reiter Build Log ausgegeben. Wenn Sie an detaillierten Information interessiert sind, kann die</span>
+<span 
+class="ecrm-1200">Ausgabe erweitert werden. Dazu w&#x00E4;hlen Sie unter ’Settings’ /’Compiler and Debugger’  im</span>
+<span 
+class="ecrm-1200">Reiter ’Other Settings’.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 313--><p class="noindent" ><img 
+src="compiler_debugger.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x2-2300112">Abbildung 1.12</a>:  
+Einstellung von Detailinformationen</td></tr></table></div><!--tex4ht:label?: x2-2300112 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 315--><p class="noindent" ><span 
+class="ecrm-1200">Achten Sie darauf, dass beim Eintrag Selected Compiler der gew&#x00FC;nschte Compiler eingestellt ist.</span>
+<span 
+class="ecrm-1200">Die Einstellung ’Full command line’ im Feld Compiler Logging gibt die vollst&#x00E4;ndige</span>
+<span 
+class="ecrm-1200">Information im Build Log aus. Zus&#x00E4;tzlich kann diese Ausgabe in eine HTML-Datei</span>
+<span 
+class="ecrm-1200">geloggt werden. Hierzu ist die Einstellung ’Save build log to HTML file when finished’</span>
+<span 
+class="ecrm-1200">erforderlich. Des weiteren bietet CodeBlocks eine Fortschrittsanzeige des Buildprozesses im</span>
+<span 
+class="ecrm-1200">Fenster Build Log. Diese aktivieren Sie mit dem Einstellung ’Display build progress</span>
+<span 
+class="ecrm-1200">bar’.</span>
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-36" id="x2-240001.11.4"><span 
+class="ecrm-1200">Zoom im Editor</span></a></h4>
+<!--l. 320--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks bietet einen sehr leistungsf&#x00E4;higen Editor. Eine Besonderheit ist, dass Sie innerhalb</span>
+<span 
+class="ecrm-1200">einer ge&#x00F6;ffneten Datei die Darstellung vergr&#x00F6;&#x00DF;ern und verkleinern k&#x00F6;nnen. Wenn Sie eine Maus</span>
+<span 
+class="ecrm-1200">mit einem Scrollrad haben, halten Sie einfach die Ctrl-Taste gedr&#x00FC;ckt und scrollen im Editor</span>
+<span 
+class="ecrm-1200">&#x00FC;ber das Rad nach vorne oder hinten.</span>
+</p>
+<div class="center" 
+>
+<!--l. 322--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox10"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Mit  dem  Tastenk&#x00FC;rzel  Ctrl-Numepad-/  oder  mit  ’Edit’  /’Special</span>
+<span 
+class="ecrm-1200">commands’  /’Zoom’  /’Reset’    k&#x00F6;nnen  Sie  auf  die  urspr&#x00FC;ngliche</span>
+<span 
+class="ecrm-1200">Schriftgr&#x00F6;&#x00DF;e umschalten.</span>                                           </div>
+</div>
+<!--l. 324--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.5</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-37" id="x2-250001.11.5"><span 
+class="ecrm-1200">Block select Mode im Editor</span></a></h4>
+<!--l. 326--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks unterst&#x00FC;tzt im Editor einen sogenannten Block select mode. Hiermit k&#x00F6;nnen bei</span>
+<span 
+class="ecrm-1200">gedr&#x00FC;ckter ’ALT’ Taste ein Rechteck mit der linken Maustaste aufziehen und kopieren bzw.</span>
+<span 
+class="ecrm-1200">einf&#x00FC;gen. Dies ist zum Beispiel n&#x00FC;tzlich, wenn nur einige Spalten eines Array markiert und</span>
+<span 
+class="ecrm-1200">kopiert werden sollen.</span>
+</p>
+                                                                                       
+                                                                                       
+<div class="center" 
+>
+<!--l. 328--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox11"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Beachten   Sie,   dass   die   meisten   Linux   Fenstermanager   diese</span>
+<span 
+class="ecrm-1200">Tastenkombination  f&#x00FC;r  das  Verschieben  von  Fenster  vordefinieren.</span>
+<span 
+class="ecrm-1200">Deshalb muss dieses Verhalten des Fenstermanager ge&#x00E4;ndert werden,</span>
+<span 
+class="ecrm-1200">damit der Block select mode unter Linux funktioniert.</span>              </div>
+</div>
+<!--l. 330--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.6</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-38" id="x2-260001.11.6"><span 
+class="ecrm-1200">Code folding</span></a></h4>
+<!--l. 332--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks unterst&#x00FC;tzt ein sogenanntes Folding f&#x00FC;r Quellen. Hiermit lassen sich zum Beispiel</span>
+<span 
+class="ecrm-1200">Funktionen zusammenklappen. Ein Folding Punkt erkennen Sie im Editor als Minussymbol im</span>
+<span 
+class="ecrm-1200">linken Seitenrand. Hier wird auch der Beginn und das Ende eines Folding Punktes</span>
+<span 
+class="ecrm-1200">durch eine vertikale Linie gekennzeichnet. Wenn Sie mit der linken Maustaste auf das</span>
+<span 
+class="ecrm-1200">Minussymbol klicken wir der entsprechende Abschnitt eingekappt bzw. ausgeklappt. Sie</span>
+<span 
+class="ecrm-1200">k&#x00F6;nnen &#x00FC;ber das Menu ’Edit’ /’Folding’  einstellen wie eingeklappt werden soll. Im</span>
+<span 
+class="ecrm-1200">Editor wird ein eingeklappte Codestelle durch eine durchgehende horizontale Linie</span>
+<span 
+class="ecrm-1200">dargestellt.</span>
+</p>
+<div class="center" 
+>
+<!--l. 334--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox12"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Der Stil f&#x00FC;r das Folding kann im Men&#x00FC; ’Settings’ /’Editor’ /’Folding’</span>
+<span 
+class="ecrm-1200">ge&#x00E4;ndert werden.</span>                                                  </div>
+</div>
+<!--l. 336--><p class="noindent" ><span 
+class="ecrm-1200">Neben dem Folding f&#x00FC;r Funktionen kann die Funktionalit&#x00E4;t auch f&#x00FC;r Pr&#x00E4;prozessor Direktiven</span>
+<span 
+class="ecrm-1200">eingestellt werden. Aktivieren Sie hierf&#x00FC;r die Option ’Fold preprocessor commands’ im Men&#x00FC;</span>
+<span 
+class="ecrm-1200">’Settings’ /’Editor’  unter dem Eintrag Folding.</span>
+</p><!--l. 339--><p class="noindent" ><span 
+class="ecrm-1200">Eine weitere M&#x00F6;glichkeit ist benutzerdefinierte Folding Punkte zu definieren, indem ein</span>
+<span 
+class="ecrm-1200">Kommentarzeichen durch eine ge&#x00F6;ffnete Klammer den Anfang und ein Kommentar mit</span>
+<span 
+class="ecrm-1200">schlie&#x00DF;ender Klammer das Ende markiert.</span>
+                                                                                       
+                                                                                       
+</p><!--l. 341--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb9">
+<a 
+ id="x2-26002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> //{</span>
+<br class="fancyvrb" /><a 
+ id="x2-26004r2"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> code</span><span 
+class="pcrr7t-"> with</span><span 
+class="pcrr7t-"> user</span><span 
+class="pcrr7t-"> defined</span><span 
+class="pcrr7t-"> folding</span>
+<br class="fancyvrb" /><a 
+ id="x2-26006r3"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> //}</span>
+</div>
+<!--l. 347--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.7</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-39" id="x2-270001.11.7"><span 
+class="ecrm-1200">Auto complete</span></a></h4>
+<!--l. 349--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks parst beim &#x00D6;ffnen eines Projektes die ’Search directories’ die f&#x00FC;r einen Compiler</span>
+<span 
+class="ecrm-1200">oder Projekt eingestellt wurden und die im Projekt befindlichen Quellen und Header. Des</span>
+<span 
+class="ecrm-1200">weiteren werden auch die Keywords der zugeh&#x00F6;rigen Lexerdateien geparst. Die aus dem Parsen</span>
+<span 
+class="ecrm-1200">gewonne Information &#x00FC;ber Symbole kann f&#x00FC;r die sogenannte Auto completion genutzt werden,</span>
+<span 
+class="ecrm-1200">wenn diese in den Einstellungen des Editors f&#x00FC;r CodeBlocks aktiviert ist. Die Auto completion</span>
+<span 
+class="ecrm-1200">k&#x00F6;nnen Sie im Editor &#x00FC;ber das Tastenk&#x00FC;rzel Ctrl-Space ausf&#x00FC;hren. Im Men&#x00FC; ’Settings’</span>
+<span 
+class="ecrm-1200">/’Editor’ /’Syntax highlighting’  k&#x00F6;nnen eigene keywords zum Lexer hinzugef&#x00FC;gt</span>
+<span 
+class="ecrm-1200">werden.</span>
+</p><!--l. 351--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.8</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-40" id="x2-280001.11.8"><span 
+class="ecrm-1200">Einbinden von Bibliotheken</span></a></h4>
+<!--l. 353--><p class="noindent" ><span 
+class="ecrm-1200">In den Builtoption eines Projektes k&#x00F6;nnen Sie unter ’Linker Settings’ im Eintrag ’Link libraries’</span>
+<span 
+class="ecrm-1200">&#x00FC;ber die Schaltfl&#x00E4;che ’Add’ verwendete Bibliotheken hinzuf&#x00FC;gen. Dabei k&#x00F6;nnen Sie entweder den</span>
+<span 
+class="ecrm-1200">absoluten Pfad zur Bibliothek durchsuchen oder nur den Namen ohne den Prefix </span><span 
+class="cmtt-12">lib </span><span 
+class="ecrm-1200">und die</span>
+<span 
+class="ecrm-1200">Dateiendung angeben.</span>
+</p><!--l. 355--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Beispiel</span>
+</p><!--l. 357--><p class="noindent" ><span 
+class="ecrm-1200">F&#x00FC;r eine Bibliothek </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">path</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">libs</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">lib</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">.a </span><span 
+class="ecrm-1200">geben Sie einfach </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">name</span><span 
+class="cmmi-12">&#x003E; </span><span 
+class="ecrm-1200">an. Der</span>
+<span 
+class="ecrm-1200">Linker mit den jeweiligen Suchpfaden f&#x00FC;r die Bibliotheken bindet diese dann korrekt</span>
+<span 
+class="ecrm-1200">ein.</span>
+</p>
+<div class="center" 
+>
+<!--l. 359--><p class="noindent" >
+                                                                                       
+                                                                                       
+</p>
+<div 
+class="colorbox" id="colorbox13"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Eine  weitere  M&#x00F6;glichkeit  wie  Sie  Bibliotheken  einbinden  k&#x00F6;nnen,</span>
+<span 
+class="ecrm-1200">beschreibt </span><a 
+href="main_codeblocks_dech2.html#x3-570002.8"><span 
+class="ecrm-1200">Plugins</span><span 
+class="ecrm-1200"> 2.8</span><!--tex4ht:ref: sec:lib_finder --></a><span 
+class="ecrm-1200">.</span>                                             </div>
+</div>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.9</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-41" id="x2-290001.11.9"><span 
+class="ecrm-1200">Linkreihenfolge von Objekten</span></a></h4>
+<!--l. 363--><p class="noindent" ><span 
+class="ecrm-1200">Beim Compilierung werden aus Quellen </span><span 
+class="cmtt-12">name.c/cpp </span><span 
+class="ecrm-1200">werden Objekte </span><span 
+class="cmtt-12">name.o </span><span 
+class="ecrm-1200">erzeugt. Der</span>
+<span 
+class="ecrm-1200">Linker bindet die einzelnen Objekten zu einer Anwendung </span><span 
+class="cmtt-12">name.exe </span><span 
+class="ecrm-1200">oder f&#x00FC;r den Embedded</span>
+<span 
+class="ecrm-1200">Bereiche </span><span 
+class="cmtt-12">name.elf</span><span 
+class="ecrm-1200">. In einigen F&#x00E4;llen ist es w&#x00FC;nschenswert die Reihenfolge f&#x00FC;r das Binden von</span>
+<span 
+class="ecrm-1200">Objekten vorzugeben. In CodeBlocks kann dies durch die Vergabe von sogenannten Priorit&#x00E4;ten</span>
+<span 
+class="ecrm-1200">erzielt werden. Stellen Sie f&#x00FC;r eine Datei &#x00FC;ber das Kontextmen&#x00FC; ’Properties’  im Reiter Build</span>
+<span 
+class="ecrm-1200">die Priorit&#x00E4;t ein. Dabei f&#x00FC;hrt eine geringe Priorit&#x00E4;t des Objekts dazu, dass es zu erst gebunden</span>
+<span 
+class="ecrm-1200">wird.</span>
+</p><!--l. 365--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.10</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-42" id="x2-300001.11.10"><span 
+class="ecrm-1200">Autosave</span></a></h4>
+<!--l. 367--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks bietet die M&#x00F6;glichkeit Projekte und Quelldateien automatisch zu speichern bzw.</span>
+<span 
+class="ecrm-1200">eine Sicherungskopie anzulegen. Diese Funktionalit&#x00E4;t wird im Men&#x00FC; ’Settings’ /’Environment’</span>
+<span 
+class="ecrm-1200">/’Autosave’  eingestellt. Dabei sollte als ’Save to .save file’ als Methode f&#x00FC;r das Erstellen einer</span>
+<span 
+class="ecrm-1200">Sicherungskopie eingestellt werden.</span>
+</p><!--l. 369--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.11.11</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-43" id="x2-310001.11.11"><span 
+class="ecrm-1200">Einstellen f&#x00FC;r Dateizuordnungen</span></a></h4>
+<!--l. 371--><p class="noindent" ><span 
+class="ecrm-1200">In CodeBlocks k&#x00F6;nnen Sie zwischen verschiedenen Arten der Behandlung von Dateiendungen</span>
+<span 
+class="ecrm-1200">w&#x00E4;hlen. Die Einstellungen erhalten Sie &#x00FC;ber ’Settings’ /’Files extension handling’ . Sie k&#x00F6;nnen</span>
+<span 
+class="ecrm-1200">entweder die von Windows zugeordneten Anwendungen (open it with the associated</span>
+<span 
+class="ecrm-1200">application) f&#x00FC;r entsprechende Dateiendungen verwenden oder f&#x00FC;r jede Dateiendungen die</span>
+<span 
+class="ecrm-1200">Einstellungen so &#x00E4;ndern, dass entweder ein benutzerdefiniertes Programm (launch an external</span>
+<span 
+class="ecrm-1200">program) gestartet wird oder die Datei in Editor von CodeBlocks ge&#x00F6;ffnet wird (open it inside</span>
+<span 
+class="ecrm-1200">Code::Blocks editor).</span>
+</p>
+                                                                                       
+                                                                                       
+<div class="center" 
+>
+<!--l. 374--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox14"><span 
+class="cmbx-12">Hinweis:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Wenn  ein  benutzerdefiniertes  Programm  f&#x00FC;r  eine  Dateiendung</span>
+<span 
+class="ecrm-1200">gew&#x00E4;hlt wird, sollte die Einstellung ’Disable Code::Blocks while the</span>
+<span 
+class="ecrm-1200">external  programm  is  running’  deaktiviert  werden,  da  sonst  beim</span>
+<span 
+class="ecrm-1200">&#x00D6;ffnen dieser Dateien CodeBlocks beendet wird.</span>                    </div>
+</div>
+<!--l. 376--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.12</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-44" id="x2-320001.12"><span 
+class="ecrm-1200">CodeBlocks in der Kommandozeile</span></a></h3>
+<!--l. 378--><p class="noindent" ><span 
+class="ecrm-1200">Die IDE CodeBlocks kann auch ohne grafische Oberfl&#x00E4;che in der Kommandozeile ausgef&#x00FC;hrt</span>
+<span 
+class="ecrm-1200">werden. Dabei stehen unterschiedliche Schalter zur Verf&#x00FC;gung um den Buildprozess eines</span>
+<span 
+class="ecrm-1200">Projektes zu steuern. Da CodeBlocks somit skriptf&#x00E4;hig ist, kann die Erzeugung von</span>
+<span 
+class="ecrm-1200">Exectutables in eigene Arbeitsabl&#x00E4;ufe integriert werden.</span>
+</p><!--l. 380--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb10">
+<a 
+ id="x2-32002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> codeblocks.exe</span><span 
+class="pcrr7t-"> /na</span><span 
+class="pcrr7t-"> /nd</span><span 
+class="pcrr7t-"> --no-splash-screen</span><span 
+class="pcrr7t-"> --built</span><span 
+class="pcrr7t-"> &#x003C;name&#x003E;.cbp</span><span 
+class="pcrr7t-"> --target='Release'</span>
+</div>
+<!--l. 384--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">filename</span><span 
+class="cmmi-12">&#x003E;</span>      </dt><dd 
+class="list">
+                  <!--l. 385--><p class="noindent" ><span 
+class="ecrm-1200">Specifies  the  project  </span><span 
+class="cmtt-12">*.cbp </span><span 
+class="ecrm-1200">filename  or  workspace  </span><span 
+class="cmtt-12">*.workspace</span>
+                  <span 
+class="ecrm-1200">filename. For instance, &#x003C;filename&#x003E; may be </span><span 
+class="cmtt-12">project.cbp</span><span 
+class="ecrm-1200">. Place this</span>
+                  <span 
+class="ecrm-1200">argument  at  the  end  of  the  command  line,  just  before  the  output</span>
+                  <span 
+class="ecrm-1200">redirection if there is any.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">/h, --help</span>       </dt><dd 
+class="list">
+                  <!--l. 386--><p class="noindent" ><span 
+class="ecrm-1200">Shows a help message regarding the command line arguments.</span>
+                                                                                       
+                                                                                       
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">/na, --no-check-associations</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 387--><p class="noindent" ><span 
+class="ecrm-1200">Don’t perform any file association checks (Windows only).</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">/nd, --no-dde</span>   </dt><dd 
+class="list">
+                  <!--l. 388--><p class="noindent" ><span 
+class="ecrm-1200">Don’t start a DDE server (Windows only).</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">/ns, --no-splash-screen</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 389--><p class="noindent" ><span 
+class="ecrm-1200">Hides the splash screen while the application is loading.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">/d, --debug-log</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 390--><p class="noindent" ><span 
+class="ecrm-1200">Display the debug log of the application.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--prefix=</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">str</span><span 
+class="cmmi-12">&#x003E;</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 391--><p class="noindent" ><span 
+class="ecrm-1200">Sets the shared data directory prefix.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">/p, --personality=</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">str</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">, --profile=</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">str</span><span 
+class="cmmi-12">&#x003E;</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 392--><p class="noindent" ><span 
+class="ecrm-1200">Sets the personality to use. You can use ask as the parameter to list</span>
+                  <span 
+class="ecrm-1200">all available personalities.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--rebuild</span>        </dt><dd 
+class="list">
+                  <!--l. 393--><p class="noindent" ><span 
+class="ecrm-1200">Clean and build the project or workspace.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--build</span>          </dt><dd 
+class="list">
+                  <!--l. 394--><p class="noindent" ><span 
+class="ecrm-1200">Build the project or workspace.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--target=</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">str</span><span 
+class="cmmi-12">&#x003E;</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 395--><p class="noindent" ><span 
+class="ecrm-1200">Sets target for batch build. For example </span><span 
+class="cmtt-12">--target=’Release’</span><span 
+class="ecrm-1200">.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--no-batch-window-close</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 396--><p class="noindent" ><span 
+class="ecrm-1200">Keeps the batch log window visible after the batch build is completed.</span>
+                                                                                       
+                                                                                       
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--batch-build-notify</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 397--><p class="noindent" ><span 
+class="ecrm-1200">Shows a message after the batch build is completed.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmtt-12">--safe-mode</span>      </dt><dd 
+class="list">
+                  <!--l. 398--><p class="noindent" ><span 
+class="ecrm-1200">Alle Plugins werden beim Start deaktiviert.</span>
+                  </p></dd><dt class="list">
+<span 
+class="cmmi-12">&#x003E; &#x003C;</span><span 
+class="cmtt-12">build log file</span><span 
+class="cmmi-12">&#x003E;</span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 399--><p class="noindent" ><span 
+class="ecrm-1200">Placed in the very last position of the command line, this may be used</span>
+                  <span 
+class="ecrm-1200">to redirect standard output to log file. This is not a codeblock option</span>
+                  <span 
+class="ecrm-1200">as such, but just a standard DOS/*nix shell output redirection.</span></p></dd></dl>
+<!--l. 402--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.13</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-45" id="x2-330001.13"><span 
+class="ecrm-1200">Shortcuts</span></a></h3>
+<!--l. 404--><p class="noindent" ><span 
+class="ecrm-1200">Auch wenn man eine IDE wie CodeBlocks &#x00FC;berwiegend mit der Maus bedient, erweisen sich</span>
+<span 
+class="ecrm-1200">dennoch Tastenkombinationen immer wieder als hilfreich, um die Arbeit zu vereinfachen und zu</span>
+<span 
+class="ecrm-1200">beschleunigen. In nachstehender Tabelle sind einige verf&#x00FC;gbare Tastenkombinationen</span>
+<span 
+class="ecrm-1200">zusammengefasst.</span>
+</p><!--l. 406--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.13.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-46" id="x2-340001.13.1"><span 
+class="ecrm-1200">Editor</span></a></h4>
+<div class="pic-tabular">
+<img 
+src="main_codeblocks_de0x.png" alt=""  /></div>
+                                                                                       
+                                                                                       
+<!--l. 421--><p class="noindent" ><span 
+class="ecrm-1200">This is a list of shortcuts provided by the CodeBlocks editor component. These shortcuts</span>
+<span 
+class="ecrm-1200">cannot be rebound.</span>
+</p>
+<div class="pic-tabular">
+<img 
+src="main_codeblocks_de1x.png" alt=""  /></div>
+<!--l. 432--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.13.2</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-47" id="x2-350001.13.2"><span 
+class="ecrm-1200">Files</span></a></h4>
+<div class="pic-tabular">
+<img 
+src="main_codeblocks_de2x.png" alt=""  /></div>
+<!--l. 444--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.13.3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-48" id="x2-360001.13.3"><span 
+class="ecrm-1200">View</span></a></h4>
+<div class="pic-tabular">
+<img 
+src="main_codeblocks_de3x.png" alt=""  /></div>
+<!--l. 454--><p class="noindent" >
+                                                                                       
+                                                                                       
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.13.4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-49" id="x2-370001.13.4"><span 
+class="ecrm-1200">Search</span></a></h4>
+<div class="pic-tabular">
+<img 
+src="main_codeblocks_de4x.png" alt=""  /></div>
+<!--l. 469--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">1.13.5</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-2-50" id="x2-380001.13.5"><span 
+class="ecrm-1200">Build</span></a></h4>
+<div class="pic-tabular">
+<img 
+src="main_codeblocks_de5x.png" alt=""  /></div>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+<!--l. 1--><div class="crosslinks"><p class="noindent"><span 
+class="ecrm-1200">[</span><a 
+href="main_codeblocks_dech2.html" ><span 
+class="ecrm-1200">next</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_de.html" ><span 
+class="ecrm-1200">prev</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_de.html#tailmain_codeblocks_de" ><span 
+class="ecrm-1200">prev-tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_dech1.html" ><span 
+class="ecrm-1200">front</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_de.html#main_codeblocks_dech1.html" ><span 
+class="ecrm-1200">up</span></a><span 
+class="ecrm-1200">] </span></p></div>
+<!--l. 1--><p class="noindent" ><a 
+ id="tailmain_codeblocks_dech1.html"></a>  </p> 
+</body></html> 

@@ -1,0 +1,1152 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title>4 Building CodeBlocks from sources</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<!-- html,2,sections+,info,next,refcaption,fn-in,xhtml,word,charset=iso-8859-1,fn-in --> 
+<meta name="src" content="main_codeblocks_de.tex" /> 
+<meta name="date" content="2008-01-24 17:14:00" /> 
+<link rel="stylesheet" type="text/css" href="main_codeblocks_de.css" /> 
+</head><body 
+>
+<!--l. 1--><div class="crosslinks"><p class="noindent"><span 
+class="ecrm-1200">[</span><a 
+href="main_codeblocks_dech3.html" ><span 
+class="ecrm-1200">prev</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_dech3.html#tailmain_codeblocks_dech3.html" ><span 
+class="ecrm-1200">prev-tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="#tailmain_codeblocks_dech4.html"><span 
+class="ecrm-1200">tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_de.html#main_codeblocks_dech4.html" ><span 
+class="ecrm-1200">up</span></a><span 
+class="ecrm-1200">] </span></p></div>
+<h2 class="chapterHead"><span class="titlemark"><span 
+class="ecrm-1200">4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="main_codeblocks_de.html#QQ2-5-135" id="x5-1000004"><span 
+class="ecrm-1200">Building CodeBlocks from sources</span></a></h2>
+<div class="sectionTOCS">
+<span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">4.1</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1010004.1" id="QQ2-5-136"><span 
+class="ecrm-1200">Introduction</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.1</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1020004.1.1" id="QQ2-5-137"><span 
+class="ecrm-1200">WIN32</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.2</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1030004.1.2" id="QQ2-5-138"><span 
+class="ecrm-1200">Initial Build System</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.3</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1040004.1.3" id="QQ2-5-139"><span 
+class="ecrm-1200">Version Control System</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.4</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1050004.1.4" id="QQ2-5-140"><span 
+class="ecrm-1200">wxWidgets</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.5</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1060004.1.5" id="QQ2-5-141"><span 
+class="ecrm-1200">Zip</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.6</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1070004.1.6" id="QQ2-5-142"><span 
+class="ecrm-1200">Building Codeblocks</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.7</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1080004.1.7" id="QQ2-5-143"><span 
+class="ecrm-1200">WIN32</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.8</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1090004.1.8" id="QQ2-5-144"><span 
+class="ecrm-1200">LINUX</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.9</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1100004.1.9" id="QQ2-5-145"><span 
+class="ecrm-1200">Generate a plugins</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.10</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1110004.1.10" id="QQ2-5-146"><span 
+class="ecrm-1200">Linux</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.11</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1120004.1.11" id="QQ2-5-147"><span 
+class="ecrm-1200">Contributed Plugins</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">4.1.12</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x5-1130004.1.12" id="QQ2-5-148"><span 
+class="ecrm-1200">Building CodeBlocks</span></a></span>
+</div>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-136" id="x5-1010004.1"><span 
+class="ecrm-1200">Introduction</span></a></h3>
+<!--l. 5--><p class="noindent" ><span 
+class="ecrm-1200">This article will describe the process used in creating the nightly builds, and can be used as a</span>
+<span 
+class="ecrm-1200">guideline if you want to build CodeBlocks yourself. It is described as a sequence of</span>
+<span 
+class="ecrm-1200">actions.</span>
+</p><!--l. 7--><p class="noindent" ><span 
+class="ecrm-1200">In order to perform our build tasks, we will need several tools. Let’s create an ingredient list for</span>
+<span 
+class="ecrm-1200">our cooking experiments</span>
+</p>
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="ecrm-1200">a compiler</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">an initial build system</span>
+                                                                                       
+                                                                                       
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">the CodeBlocks sources</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">zip program</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">svn (version control system)</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">wxWidgets</span></li></ul>
+<!--l. 18--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-137" id="x5-1020004.1.1"><span 
+class="ecrm-1200">WIN32</span></a></h4>
+<!--l. 20--><p class="noindent" ><span 
+class="ecrm-1200">Since the CodeBlocks developers build CodeBlocks using GCC, we might as well use that one</span>
+<span 
+class="ecrm-1200">under windows. The easiest and cleanest port is MinGW. This is the compiler distributed with</span>
+<span 
+class="ecrm-1200">CodeBlocks when you download the official package. We will stick to version 3.4.5, which works</span>
+<span 
+class="ecrm-1200">nicely.</span>
+</p><!--l. 22--><p class="noindent" ><span 
+class="ecrm-1200">First, a brief explanation of MinGW components:</span>
+      </p><dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">gcc-core</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">the core of the GCC suite</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">gcc-g++</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">the c++ compiler</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">mingw Runtime</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">implementation of the run time libraries</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">mingw utils</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">several utilities (implementation of smaller programs that GCC itself uses)</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">win32Api</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">the APIs for creating Windows programs</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">binutils</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">several utilities used in build environments</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">make</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">the Gnu make program, so you can build from make files</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">GDB</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">the Gnu debugger</span></dd></dl>
+                                                                                       
+                                                                                       
+<!--l. 35--><p class="noindent" ><span 
+class="ecrm-1200">I would suggest extracting (and installing for the GDB) everything in the </span><span 
+class="cmtt-12">C:</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">MinGW </span><span 
+class="ecrm-1200">directory.</span>
+<span 
+class="ecrm-1200">The remainder of this article will assume that this is where you have put it. If you</span>
+<span 
+class="ecrm-1200">already have an installation of CodeBlocks that came bundled with MinGW, I still</span>
+<span 
+class="ecrm-1200">advise you to install MinGW as described here. A compiler does not belong under the</span>
+<span 
+class="ecrm-1200">directory tree of an IDE; they are two separate things. CodeBlocks just brings it along</span>
+<span 
+class="ecrm-1200">in the official versions so that the average user does not need to bother with this</span>
+<span 
+class="ecrm-1200">process.</span>
+</p><!--l. 37--><p class="noindent" ><span 
+class="ecrm-1200">You may need to add the </span><span 
+class="cmtt-12">bin </span><span 
+class="ecrm-1200">directory of your MinGW installation to your path. An easy way</span>
+<span 
+class="ecrm-1200">to do this is with the following command at the command prompt:</span>
+</p><!--l. 39--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb26">
+<a 
+ id="x5-102002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> set</span><span 
+class="pcrr7t-"> path=%PATH%;C:\MinGW\bin;C:\MinGW\mingw32\bin;</span>
+</div>
+<!--l. 43--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.2</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-138" id="x5-1030004.1.2"><span 
+class="ecrm-1200">Initial Build System</span></a></h4>
+<!--l. 45--><p class="noindent" ><span 
+class="ecrm-1200">For </span><span class="cite"><span 
+class="ecrm-1200">[</span><span 
+class="cmbx-12">?</span><span 
+class="ecrm-1200">]</span></span> <span 
+class="ecrm-1200">a project description </span><span 
+class="cmtt-12">CodeBlocks.cbp </span><span 
+class="ecrm-1200">is available. If you load this project file in</span>
+<span 
+class="ecrm-1200">CodeBlocks then you are able to build CodeBlocks from sources. All we need to do is get hold</span>
+<span 
+class="ecrm-1200">of a pre-built version CodeBlocks.</span>
+</p><!--l. 47--><p class="noindent" ><span 
+class="ecrm-1200">First, download a nightly build. You can make your selection from here. The nightly builds are</span>
+<span 
+class="ecrm-1200">unicode versions, containing the core and contributed plug-ins.</span>
+</p><!--l. 49--><p class="noindent" ><span 
+class="ecrm-1200">Next, unpack the 7-zip file to any directory you like. If you don’t have 7-zip, you can download</span>
+<span 
+class="ecrm-1200">it for free from </span><span class="cite"><span 
+class="ecrm-1200">[</span><span 
+class="cmbx-12">?</span><span 
+class="ecrm-1200">]</span></span><span 
+class="ecrm-1200">.</span>
+</p><!--l. 51--><p class="noindent" ><span 
+class="ecrm-1200">Now, CodeBlocks needs one more </span><span 
+class="cmtt-12">dll </span><span 
+class="ecrm-1200">to work correctly: the WxWidgets dll. You can also</span>
+<span 
+class="ecrm-1200">download it at the nightly builds forum. Just unzip it into the same directory that you</span>
+<span 
+class="ecrm-1200">unpacked the CodeBlocks nightly build. It also needs the </span><span 
+class="cmtt-12">mingwm10.dll</span><span 
+class="ecrm-1200">. It’s in the bin</span>
+<span 
+class="ecrm-1200">directory of our MinGW installation. So, it’s important to make sure the bin directory of your</span>
+<span 
+class="ecrm-1200">MinGW installation is in your path variable.</span>
+</p><!--l. 53--><p class="noindent" ><span 
+class="ecrm-1200">Finally, start up this new nightly build of CodeBlocks. It should discover the MinGW compiler</span>
+<span 
+class="ecrm-1200">we just installed.</span>
+</p><!--l. 55--><p class="noindent" >
+</p>
+                                                                                       
+                                                                                       
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-139" id="x5-1040004.1.3"><span 
+class="ecrm-1200">Version Control System</span></a></h4>
+<!--l. 57--><p class="noindent" ><span 
+class="ecrm-1200">In order to be able to retrieve the latest and greatest CodeBlocks sources, we need to install a</span>
+<span 
+class="ecrm-1200">Version Control System.</span>
+</p><!--l. 59--><p class="noindent" ><span 
+class="ecrm-1200">The CodeBlocks developers provide their sources through the version control system</span><span class="cite"><span 
+class="ecrm-1200">[</span><span 
+class="cmbx-12">?</span><span 
+class="ecrm-1200">]</span></span><span 
+class="ecrm-1200">.</span>
+<span 
+class="ecrm-1200">So, we need a client to access their svn repository of sources. A nice, easy client for</span>
+<span 
+class="ecrm-1200">Windows is </span><span class="cite"><span 
+class="ecrm-1200">[</span><span 
+class="cmbx-12">?</span><span 
+class="ecrm-1200">]</span></span><span 
+class="ecrm-1200">, which is freely available. Download and install it, keeping all suggested</span>
+<span 
+class="ecrm-1200">settings.</span>
+</p><!--l. 61--><p class="noindent" ><span 
+class="ecrm-1200">Now, go create a directory wherever you like, for example </span><span 
+class="cmtt-12">D:</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">projects</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">CodeBlocks</span><span 
+class="ecrm-1200">. Right</span>
+<span 
+class="ecrm-1200">click on that directory and choose from the pop-up menu: svn-checkout. In the dialog that pops</span>
+<span 
+class="ecrm-1200">up, fill in the following information for Url of Repository:</span>
+<a 
+href="svn://svn.berlios.de/codeblocks/trunk" class="url" ><span 
+class="cmtt-12">svn://svn.berlios.de/codeblocks/trunk</span></a>
+</p><!--l. 65--><p class="noindent" ><span 
+class="ecrm-1200">and leave all other settings as they are.</span>
+</p><!--l. 67--><p class="noindent" ><span 
+class="ecrm-1200">Now be patient while TortoiseSVN retrieves the most recent source files from the CodeBlocks</span>
+<span 
+class="ecrm-1200">repository into our local directory. Yes; all those CodeBlocks sources are coming your</span>
+<span 
+class="ecrm-1200">way!</span>
+</p><!--l. 69--><p class="noindent" ><span 
+class="ecrm-1200">For more info on SVN settings, see info on SVN settings. If you don’t like an Explorer</span>
+<span 
+class="ecrm-1200">integration or look for a cross-plattform client you might want to have a look at</span>
+<span 
+class="ecrm-1200">RapidSVN..</span>
+</p><!--l. 71--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-140" id="x5-1050004.1.4"><span 
+class="ecrm-1200">wxWidgets</span></a></h4>
+<!--l. 73--><p class="noindent" ><span class="cite"><span 
+class="ecrm-1200">[</span><span 
+class="cmbx-12">?</span><span 
+class="ecrm-1200">]</span></span> <span 
+class="ecrm-1200">is a platform abstraction that provides an API to support many things such as GUI, sockets,</span>
+<span 
+class="ecrm-1200">files, registry functionality. By using this API, you can create a platform independent</span>
+<span 
+class="ecrm-1200">program.</span>
+</p><!--l. 75--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks is a wxWidgets (here after: wx) application, that means if you want to run</span>
+<span 
+class="ecrm-1200">CodeBlocks you needed the wx functionality. This can be provided in a couple of ways. It could</span>
+<span 
+class="ecrm-1200">be a </span><span 
+class="cmtt-12">.dll </span><span 
+class="ecrm-1200">or a static library. CodeBlocks uses wx as a dll and this dll can also be downloaded</span>
+<span 
+class="ecrm-1200">from the nightly build section of the forum.</span>
+</p><!--l. 77--><p class="noindent" ><span 
+class="ecrm-1200">However, if we want to build a wx application, we need to include the headers of the wx</span>
+<span 
+class="ecrm-1200">sources. They tell the compiler about the functionality of wx. In addition to those header files,</span>
+<span 
+class="ecrm-1200">our application needs to link to the wx import libraries. Well, let’s take it step by</span>
+<span 
+class="ecrm-1200">step.</span>
+</p><!--l. 79--><p class="noindent" ><span 
+class="ecrm-1200">Wx is provided as a zip file of it’s sources, so we need to build that ourselves. We already</span>
+<span 
+class="ecrm-1200">shopped for the MinGW compiler, so we have all the tools we need at hand.</span>
+</p><!--l. 81--><p class="noindent" ><span 
+class="ecrm-1200">Next, let’s unzip the wx sources into </span><span 
+class="cmtt-12">C:</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">Projects </span><span 
+class="ecrm-1200">so we will end up with a wx root directory</span>
+                                                                                       
+                                                                                       
+<span 
+class="ecrm-1200">like this: </span><span 
+class="cmtt-12">C:</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">Projects</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">wxWidgets-2.8.7</span><span 
+class="ecrm-1200">. Next unzip the patch into the same directory letting</span>
+<span 
+class="ecrm-1200">it overwrite files. Note that we are going to refer to the wx root directory from now on as</span>
+<span 
+class="ecrm-1200">&#x003C;wxDir&#x003E;</span>
+</p><!--l. 83--><p class="noindent" ><span 
+class="ecrm-1200">Now, we are going to build the wxWidgets. This is how we do it:</span>
+</p><!--l. 85--><p class="noindent" ><span 
+class="ecrm-1200">First, make sure </span><span 
+class="cmtt-12">C:</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">MingGW</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">bin </span><span 
+class="ecrm-1200">is in your path, during the build some programs will be called</span>
+<span 
+class="ecrm-1200">that reside in the the MinGW\bin directory. Also, Make has to be version 3.80 or</span>
+<span 
+class="ecrm-1200">above.</span>
+</p><!--l. 87--><p class="noindent" ><span 
+class="ecrm-1200">Now it is time to compile wxWidgets. Open the command prompt and change to the</span>
+<span 
+class="ecrm-1200">wxWidgets directory:</span>
+</p><!--l. 89--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb27">
+<a 
+ id="x5-105002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> cd</span><span 
+class="pcrr7t-"> &#x003C;wxDir&#x003E;\build\msw</span>
+</div>
+<!--l. 93--><p class="noindent" ><span 
+class="ecrm-1200">We are now in the right place. We are first going to clean up the source:</span>
+</p><!--l. 95--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb28">
+<a 
+ id="x5-105004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> mingw32-make</span><span 
+class="pcrr7t-"> -f</span><span 
+class="pcrr7t-"> makefile.gcc</span><span 
+class="pcrr7t-"> SHARED=1</span><span 
+class="pcrr7t-"> MONOLITHIC=1</span><span 
+class="pcrr7t-"> BUILD=release</span><span 
+class="pcrr7t-"> UNICODE=1</span><span 
+class="pcrr7t-"> clean</span>
+</div>
+<!--l. 99--><p class="noindent" ><span 
+class="ecrm-1200">Once everything is clean, we can compile wxWidgets:</span>
+</p><!--l. 101--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb29">
+<a 
+ id="x5-105006r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> mingw32-make</span><span 
+class="pcrr7t-"> -f</span><span 
+class="pcrr7t-"> makefile.gcc</span><span 
+class="pcrr7t-"> SHARED=1</span><span 
+class="pcrr7t-"> MONOLITHIC=1</span><span 
+class="pcrr7t-"> BUILD=release</span><span 
+class="pcrr7t-"> UNICODE=1</span>
+</div>
+<!--l. 105--><p class="noindent" ><span 
+class="ecrm-1200">This is going to take some time.</span>
+</p><!--l. 107--><p class="noindent" ><span 
+class="ecrm-1200">For making the debug build, follow these steps:</span>
+</p>
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="ecrm-1200">Clean any previous compilation with</span>
+      <div class="fancyvrb" id="fancyvrb30">
+<a 
+ id="x5-105008r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">   mingw32-make</span><span 
+class="pcrr7t-"> -f</span><span 
+class="pcrr7t-"> makefile.gcc</span><span 
+class="pcrr7t-"> SHARED=1</span><span 
+class="pcrr7t-"> MONOLITHIC=1</span><span 
+class="pcrr7t-"> BUILD=debug</span><span 
+class="pcrr7t-"> UNICODE=1</span><span 
+class="pcrr7t-"> clean</span>
+</div>
+                                                                                       
+                                                                                       
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Compile with</span>
+      <div class="fancyvrb" id="fancyvrb31">
+<a 
+ id="x5-105010r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">   mingw32-make</span><span 
+class="pcrr7t-"> -f</span><span 
+class="pcrr7t-"> makefile.gcc</span><span 
+class="pcrr7t-"> SHARED=1</span><span 
+class="pcrr7t-"> MONOLITHIC=1</span><span 
+class="pcrr7t-"> BUILD=debug</span><span 
+class="pcrr7t-"> UNICODE=1</span>
+</div>
+      </li></ul>
+<!--l. 120--><p class="noindent" ><span 
+class="ecrm-1200">Well have a little look in the directory (</span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">wxDir</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">lib</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">gcc</span><span 
+class="cmtt-12">_dll</span><span 
+class="ecrm-1200">) now. The import libraries and</span>
+<span 
+class="ecrm-1200">the dll have shown up and there should also a </span><span 
+class="cmtt-12">mswu</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">wx </span><span 
+class="ecrm-1200">subdirectory at that position containing</span>
+<span 
+class="cmtt-12">setup.h</span><span 
+class="ecrm-1200">.</span>
+</p><!--l. 122--><p class="noindent" ><span 
+class="ecrm-1200">Congratulations! You have just built wxWidgets!</span>
+</p><!--l. 124--><p class="noindent" ><span 
+class="ecrm-1200">Let’s do some more preliminary tasks before we get to the real deal of compiling</span>
+<span 
+class="ecrm-1200">CodeBlocks.</span>
+</p><!--l. 126--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.5</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-141" id="x5-1060004.1.5"><span 
+class="ecrm-1200">Zip</span></a></h4>
+<!--l. 128--><p class="noindent" ><span 
+class="ecrm-1200">During the build of CodeBlocks, several resources are going to be zipped in zip files. Therefore,</span>
+<span 
+class="ecrm-1200">the build process should have access to a zip.exe. We have to download that zip.exe and put it</span>
+<span 
+class="ecrm-1200">somewhere in our path. A good place is: </span><span 
+class="cmtt-12">MingW</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">bin</span><span 
+class="ecrm-1200">.</span>
+</p><!--l. 130--><p class="noindent" ><span 
+class="ecrm-1200">You can download zip.exe for free from this site and this is a direct link(32bit) to the most</span>
+<span 
+class="ecrm-1200">recent version at the time of this writing.</span>
+</p><!--l. 132--><p class="noindent" ><span 
+class="ecrm-1200">Once downloaded, simply extract zip.exe to the appropriate location.</span>
+</p><!--l. 134--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.6</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-142" id="x5-1070004.1.6"><span 
+class="ecrm-1200">Building Codeblocks</span></a></h4>
+      <dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">win32</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Starting </span><span 
+class="cmtt-12">update</span><span 
+class="cmtt-12">_revision.bat</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">linux</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">Starting </span><span 
+class="cmtt-12">update</span><span 
+class="cmtt-12">_revision.sh</span></dd></dl>
+                                                                                       
+                                                                                       
+<!--l. 141--><p class="noindent" ><span 
+class="ecrm-1200">With this function the SUN revision of the Nightly Builts is updated in the sources. The file can</span>
+<span 
+class="ecrm-1200">be found in the main directory of the CodeBlocks sources.</span>
+</p><!--l. 143--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.7</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-143" id="x5-1080004.1.7"><span 
+class="ecrm-1200">WIN32</span></a></h4>
+<!--l. 145--><p class="noindent" ><span 
+class="ecrm-1200">Now, open the project </span><span 
+class="cmtt-12">CodeBlocks.cbp </span><span 
+class="ecrm-1200">in CodeBlocks. Generate CodeBlocks by starting the</span>
+<span 
+class="ecrm-1200">build process. After the creation of CodeBlocks, the generated files with the debug information</span>
+<span 
+class="ecrm-1200">can be found in the </span><span 
+class="cmtt-12">devel </span><span 
+class="ecrm-1200">subdirectory. By calling the batch file </span><span 
+class="cmtt-12">update.bat </span><span 
+class="ecrm-1200">from the source</span>
+<span 
+class="ecrm-1200">directory, the files are copied to the </span><span 
+class="cmtt-12">output </span><span 
+class="ecrm-1200">subdirectory and the debug information is</span>
+<span 
+class="ecrm-1200">stripped.</span>
+</p><!--l. 147--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.8</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-144" id="x5-1090004.1.8"><span 
+class="ecrm-1200">LINUX</span></a></h4>
+<!--l. 149--><p class="noindent" ><span 
+class="ecrm-1200">When generating under Linux, the following steps are necessary. In this example we assume</span>
+<span 
+class="ecrm-1200">that you are in the CodeBlocks source directory. Under Linux, the environment variable</span>
+<span class="lstinline"><span 
+class="ecss-1200">PKG_CONFIG_PATH</span></span> <span 
+class="ecrm-1200">must be set. The &#x003C;prefix&#x003E; directory has to contain the </span><span 
+class="cmtt-12">codeblocks.pc</span>
+<span 
+class="ecrm-1200">file.</span>
+</p><!--l. 151--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb32">
+<a 
+ id="x5-109002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> PKG_CONFIG_PATH=$PKG_CONFIG_PATH:&#x003C;prefix&#x003E;</span>
+</div>
+<!--l. 156--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb33">
+<a 
+ id="x5-109004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> sh</span><span 
+class="pcrr7t-"> update_revsion.sh</span>
+<br class="fancyvrb" /><a 
+ id="x5-109006r2"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> ./bootstrap</span>
+<br class="fancyvrb" /><a 
+ id="x5-109008r3"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> ./configure</span><span 
+class="pcrr7t-"> --with-contrib=[all</span><span 
+class="pcrr7t-"> |</span><span 
+class="pcrr7t-"> plugin</span><span 
+class="pcrr7t-"> names</span><span 
+class="pcrr7t-"> separated</span><span 
+class="pcrr7t-"> with</span><span 
+class="pcrr7t-"> comma]</span><span 
+class="pcrr7t-"> --prefix=&#x003C;install-dir&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-109010r4"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> make</span>
+<br class="fancyvrb" /><a 
+ id="x5-109012r5"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> make</span><span 
+class="pcrr7t-"> install</span><span 
+class="pcrr7t-"> (root)</span>
+</div>
+                                                                                       
+                                                                                       
+<!--l. 164--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.9</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-145" id="x5-1100004.1.9"><span 
+class="ecrm-1200">Generate a plugins</span></a></h4>
+<!--l. 166--><p class="noindent" ><span 
+class="ecrm-1200">Afterwards, configure the global variables via ’Settings’ /’Global Variables’ .</span>
+</p><!--l. 168--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Variable</span>
+<span 
+class="cmssbx-10x-x-120">cb</span>
+</p><!--l. 170--><p class="noindent" ><span 
+class="ecrm-1200">For the </span><span class="lstinline"><span 
+class="ecss-1200">cb</span></span> <span 
+class="ecrm-1200">variable, set the </span><span class="lstinline"><span 
+class="ecss-1200">base</span></span> <span 
+class="ecrm-1200">entry to the source directory of CodeBlocks.</span>
+</p><!--l. 172--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb34">
+<a 
+ id="x5-110002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x003C;prefix&#x003E;/codeblocks/src</span>
+</div>
+<!--l. 176--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Variable</span>
+<span 
+class="cmssbx-10x-x-120">wx</span>
+</p><!--l. 178--><p class="noindent" ><span 
+class="ecrm-1200">For the </span><span class="lstinline"><span 
+class="ecss-1200">wx</span></span> <span 
+class="ecrm-1200">variable, set the </span><span class="lstinline"><span 
+class="ecss-1200">base</span></span> <span 
+class="ecrm-1200">entry to the source directory of wx (e.g.</span>
+</p><!--l. 180--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb35">
+<a 
+ id="x5-110004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> C:\Programme\wxWidgets-2.8.7</span>
+</div>
+<!--l. 184--><p class="noindent" ><span 
+class="ecrm-1200">In the CodeBlocks project, the project variable </span><span class="lstinline"><span 
+class="ecss-1200">WX_SUFFIX</span></span> <span 
+class="ecrm-1200">is set to </span><span class="lstinline"><span 
+class="ecss-1200">u</span></span><span 
+class="ecrm-1200">. This means that, when</span>
+<span 
+class="ecrm-1200">generating CodeBlocks linking will be carried out against the </span><span 
+class="cmtt-12">*u</span><span 
+class="cmtt-12">_gcc</span><span 
+class="cmtt-12">_custom.dll </span><span 
+class="ecrm-1200">library. The</span>
+<span 
+class="ecrm-1200">official nightly Builts of CodeBlocks will be linked against </span><span 
+class="cmtt-12">gcc</span><span 
+class="cmtt-12">_cb.dll</span><span 
+class="ecrm-1200">. In doing so, the layout</span>
+<span 
+class="ecrm-1200">is as follows.</span>
+</p><!--l. 186--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb36">
+<a 
+ id="x5-110006r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> gcc_&#x003C;VENDOR&#x003E;.dll</span>
+</div>
+<!--l. 190--><p class="noindent" ><span 
+class="ecrm-1200">The &#x003C;VENDOR&#x003E; variable is set in the configuration file </span><span 
+class="cmtt-12">compiler.gcc</span><span 
+class="ecrm-1200">. To ensure, that a</span>
+<span 
+class="ecrm-1200">distinction is possible between the officially generated CodeBlocks and those generated by</span>
+<span 
+class="ecrm-1200">yourself, the default setting </span><span class="lstinline"><span 
+class="ecss-1200">VENDOR</span><span 
+class="ecss-1200">=</span><span 
+class="ecss-1200">custom</span></span> <span 
+class="ecrm-1200">should never be changed.</span>
+</p><!--l. 192--><p class="noindent" ><span 
+class="ecrm-1200">Afterwards create the workspace </span><span 
+class="cmtt-12">ContribPlugins.cbp </span><span 
+class="ecrm-1200">via ’Project’ /’Build workspace’ . Then</span>
+<span 
+class="ecrm-1200">execute </span><span 
+class="cmtt-12">update.bat </span><span 
+class="ecrm-1200">once more.</span>
+                                                                                       
+                                                                                       
+</p><!--l. 194--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.10</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-146" id="x5-1110004.1.10"><span 
+class="ecrm-1200">Linux</span></a></h4>
+<!--l. 196--><p class="noindent" ><span 
+class="ecrm-1200">Variable </span><span class="lstinline"><span 
+class="ecss-1200">wx</span></span> <span 
+class="ecrm-1200">bei globalen Variablen konfigurieren. Configure the </span><span class="lstinline"><span 
+class="ecss-1200">wx</span></span> <span 
+class="ecrm-1200">variable with the global</span>
+<span 
+class="ecrm-1200">variables.</span>
+      </p><dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">base</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">/usr</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">include</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">/usr/include/wx-2.8</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">lib</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">/usr/lib</span></dd></dl>
+<!--l. 205--><p class="noindent" ><span 
+class="ecrm-1200">debug CodeBlocks. Start CodeBlocks in the output directory and load </span><span 
+class="cmtt-12">CodeBlocks.cbp </span><span 
+class="ecrm-1200">as the</span>
+<span 
+class="ecrm-1200">project. Then set the breakpoint and start with ’Debug and Run’ (f8).</span>
+</p><!--l. 208--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.11</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-147" id="x5-1120004.1.11"><span 
+class="ecrm-1200">Contributed Plugins</span></a></h4>
+<!--l. 210--><p class="noindent" ><span 
+class="ecrm-1200">This brings us to the last preliminary task. The CodeBlocks code can be divided into 2 major</span>
+<span 
+class="ecrm-1200">parts: the core with internal plug-ins, and the contributed plug-ins. You always need to build</span>
+<span 
+class="ecrm-1200">the core/internal parts before building the contrib part.</span>
+</p><!--l. 212--><p class="noindent" ><span 
+class="ecrm-1200">To build the internal part, you can use the CodeBlocks project file which you can find at:</span>
+<span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">cbDir</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">src</span><span 
+class="cmsy-10x-x-120">\</span><span 
+class="cmtt-12">CodeBlocks.cbp</span><span 
+class="ecrm-1200">. Our CodeBlocks master directory is from now one mentioned</span>
+<span 
+class="ecrm-1200">as &#x003C;cbDir&#x003E;, by the way. A workspace is something that groups several projects together. To</span>
+<span 
+class="ecrm-1200">build the contrib plug-ins, they can be found at</span>
+</p><!--l. 214--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb37">
+<a 
+ id="x5-112002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x003C;cbDir&#x003E;\src\ContribPlugins.workspace</span>
+</div>
+<!--l. 219--><p class="noindent" ><span 
+class="ecrm-1200">But, let’s create a worksapce containing everything. Let’s put that workspace in the master</span>
+<span 
+class="ecrm-1200">directory &#x003C;cbDir&#x003E;. Just use a regular text editor and create a file with the name</span>
+<span 
+class="cmtt-12">CbProjects.workspace </span><span 
+class="ecrm-1200">and give it the following content :</span>
+</p><!--l. 221--><p class="noindent" >
+                                                                                       
+                                                                                       
+</p>
+<div class="fancyvrb" id="fancyvrb38">
+<a 
+ id="x5-112004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x003C;?xml</span><span 
+class="pcrr7t-"> version="1.0"</span><span 
+class="pcrr7t-"> encoding="UTF-8"</span><span 
+class="pcrr7t-"> standalone="yes"</span><span 
+class="pcrr7t-"> ?&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112006r2"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x003C;CodeBlocks_workspace_file&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112008r3"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">   &#x003C;Workspace</span><span 
+class="pcrr7t-"> title="All</span><span 
+class="pcrr7t-"> contrib</span><span 
+class="pcrr7t-"> plugins"&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112010r4"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\AutoVersioning\AutoVersioning.cbp"</span><span 
+class="pcrr7t-"> active="1"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112012r5"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\byogames\byogames.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112014r6"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\cb_koders\cb_koders.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112016r7"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\codesnippets\codesnippets.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112018r8"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\codestat\codestat.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112020r9"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\copystrings\copystrings.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112022r10"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112024r11"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\dragscroll\dragscroll.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112026r12"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\envvars\envvars.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112028r13"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\help_plugin\help-plugin.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112030r14"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\keybinder\keybinder.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112032r15"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\lib_finder\lib_finder.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112034r16"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\profiler\cbprofiler.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112036r17"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\regex_testbed\RegExTestbed.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112038r18"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\source_exporter\Exporter.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112040r19"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\symtab\symtab.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112042r20"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\ThreadSearch\ThreadSearch.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112044r21"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\wxSmith\wxSmith.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112046r22"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112048r23"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">     &#x003C;Project</span><span 
+class="pcrr7t-"> filename="tools\cb_share_config\cb_share_config.cbp"</span><span 
+class="pcrr7t-"> /&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112050r24"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-">   &#x003C;/Workspace&#x003E;</span>
+<br class="fancyvrb" /><a 
+ id="x5-112052r25"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> &#x003C;/CodeBlocks_workspace_file&#x003E;</span>
+</div>
+<!--l. 249--><p class="noindent" ><span 
+class="ecrm-1200">We will use this workspace to build all of CodeBlocks.</span>
+</p><!--l. 251--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">4.1.12</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-5-148" id="x5-1130004.1.12"><span 
+class="ecrm-1200">Building CodeBlocks</span></a></h4>
+<!--l. 253--><p class="noindent" ><span 
+class="ecrm-1200">Finally we have arrived at the final step; our final goal. Run the CodeBlocks executable from</span>
+<span 
+class="ecrm-1200">your nightly build download. Choose Open from the File menu and browse for our above</span>
+<span 
+class="ecrm-1200">created workspace, and open it up. Be a little patient while CodeBlocks is parsing everything,</span>
+<span 
+class="ecrm-1200">and CodeBlocks will ask us for 2 global variables, these global variables will tell the nightly</span>
+<span 
+class="ecrm-1200">CodeBlocks where it can find wxWidgets (remember : header files and import libraries) and</span>
+<span 
+class="ecrm-1200">where it can find .... CodeBlocks, this is needed for the contrib plug-ins, they need to know (as</span>
+<span 
+class="ecrm-1200">for any user created plug-in) where the sdk (CodeBlocks header files) are. These are the values</span>
+<span 
+class="ecrm-1200">in our case :</span>
+      </p><dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">wx</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">&#x003C;wxDir&#x003E; base directory of wxWidgets.</span>
+                                                                                       
+                                                                                       
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">cb</span> </dt><dd 
+class="description"><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">cbDir</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">/src </span><span 
+class="ecrm-1200">CodeBlocks directory contaning the sources.</span></dd></dl>
+<!--l. 260--><p class="noindent" ><span 
+class="ecrm-1200">Now go to the Project Menu and choose (re)build workspace, and off you go. Watch how</span>
+<span 
+class="ecrm-1200">CodeBlocks is building CodeBlocks.</span>
+</p><!--l. 262--><p class="noindent" ><span 
+class="ecrm-1200">Once the build is complete, open up a console in </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">cbDir</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">/src </span><span 
+class="ecrm-1200">and run the command</span>
+<span 
+class="cmtt-12">update.bat</span><span 
+class="ecrm-1200">. This will transfer all built deliverables from </span><span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">cbDir</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">/src/devel </span><span 
+class="ecrm-1200">to</span>
+<span 
+class="cmmi-12">&#x003C;</span><span 
+class="cmtt-12">cbDir</span><span 
+class="cmmi-12">&#x003E;</span><span 
+class="cmtt-12">/src/output</span><span 
+class="ecrm-1200">. In addition, it will strip out all debugging symbols. This step is very</span>
+<span 
+class="ecrm-1200">important - never ever forget it.</span>
+</p><!--l. 264--><p class="noindent" ><span 
+class="ecrm-1200">Now you can copy the wx dll in both that output and the devel directory.</span>
+</p><!--l. 266--><p class="noindent" ><span 
+class="ecrm-1200">Then you can close CodeBlocks. That was the downloaded nightly remember?</span>
+</p><!--l. 268--><p class="noindent" ><span 
+class="ecrm-1200">Time to test it. In the output directory, start up the CodeBlocks.exe. If everything went well,</span>
+<span 
+class="ecrm-1200">you’ll have your very own home-built CodeBlocks running.</span>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+</p>
+<!--l. 40--><div class="crosslinks"><p class="noindent"><span 
+class="ecrm-1200">[</span><a 
+href="main_codeblocks_dech3.html" ><span 
+class="ecrm-1200">prev</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_dech3.html#tailmain_codeblocks_dech3.html" ><span 
+class="ecrm-1200">prev-tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_dech4.html" ><span 
+class="ecrm-1200">front</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_de.html#main_codeblocks_dech4.html" ><span 
+class="ecrm-1200">up</span></a><span 
+class="ecrm-1200">] </span></p></div>
+<!--l. 40--><p class="noindent" ><a 
+ id="tailmain_codeblocks_dech4.html"></a>  </p> 
+</body></html> 

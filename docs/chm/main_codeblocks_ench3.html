@@ -1,0 +1,1463 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">  
+<!--http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd-->  
+<html xmlns="http://www.w3.org/1999/xhtml"  
+> 
+<head><title>3 Variable Expansion</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" /> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)" /> 
+<!-- html,2,sections+,info,next,refcaption,fn-in,xhtml,word,charset=iso-8859-1,fn-in --> 
+<meta name="src" content="main_codeblocks_en.tex" /> 
+<meta name="date" content="2008-01-24 17:17:00" /> 
+<link rel="stylesheet" type="text/css" href="main_codeblocks_en.css" /> 
+</head><body 
+>
+<!--l. 1--><div class="crosslinks"><p class="noindent"><span 
+class="ecrm-1200">[</span><a 
+href="main_codeblocks_ench4.html" ><span 
+class="ecrm-1200">next</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_ench2.html" ><span 
+class="ecrm-1200">prev</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_ench2.html#tailmain_codeblocks_ench2.html" ><span 
+class="ecrm-1200">prev-tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="#tailmain_codeblocks_ench3.html"><span 
+class="ecrm-1200">tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_en.html#main_codeblocks_ench3.html" ><span 
+class="ecrm-1200">up</span></a><span 
+class="ecrm-1200">] </span></p></div>
+<h2 class="chapterHead"><span class="titlemark"><span 
+class="ecrm-1200">3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="main_codeblocks_en.html#QQ2-4-112" id="x4-790003"><span 
+class="ecrm-1200">Variable Expansion</span></a></h2>
+<!--l. 3--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks differentiates between several types of variables. These types serve the purpose of</span>
+<span 
+class="ecrm-1200">configuring the environment for creating a program, and at the same of improving the</span>
+<span 
+class="ecrm-1200">maintainability and portability. Access to the CodeBlocks variables is achieved via</span>
+<span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">&#x003C;</span><span 
+class="ecss-1200">name</span><span 
+class="ecss-1200">&#x003E;</span></span><span 
+class="ecrm-1200">.</span>
+      </p><dl class="description"><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Envrionment Variable</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">are set during the startup of CodeBlocks. They can modify system</span>
+      <span 
+class="ecrm-1200">environment variables such as </span><span class="lstinline"><span 
+class="ecss-1200">PATH</span></span><span 
+class="ecrm-1200">. This can be useful in cases where a defined</span>
+      <span 
+class="ecrm-1200">environment is necessary for the creation of projects. The settings for environment</span>
+      <span 
+class="ecrm-1200">variables  in  CodeBlocks  are  made  at  ’Settings’  /’Environment’  /’Environment</span>
+      <span 
+class="ecrm-1200">Variables’ .</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Builtin Variables</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">are predefined in CodeBlocks, and can be accessed via their names (see</span>
+      <a 
+href="#x4-810003.2"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.2</span><!--tex4ht:ref: sec:builtin_variables --></a> <span 
+class="ecrm-1200">for details).</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Command Macros</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">This type of variables is used for controlling the build process. For</span>
+      <span 
+class="ecrm-1200">further information please refer to </span><a 
+href="#x4-900003.4"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.4</span><!--tex4ht:ref: sec:command_macros --></a><span 
+class="ecrm-1200">.</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Custom Variables</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">are user-defined variables which can be specified in the build options</span>
+      <span 
+class="ecrm-1200">of a project. Here you can, for example define your derivative as a variable </span><span class="lstinline"><span 
+class="ecss-1200">MCU</span></span> <span 
+class="ecrm-1200">and</span>
+      <span 
+class="ecrm-1200">assign a corresponding value to it. Then set the compiler option</span> <span 
+class="cmtt-12">-mcpu=$(MCU)</span><span 
+class="ecrm-1200">, and</span>
+      <span 
+class="ecrm-1200">CodeBlocks will automatically replace the content. By this method, the settings for</span>
+      <span 
+class="ecrm-1200">a project can be further parametrised.</span>
+      </dd><dt class="description">
+<span 
+class="cmssbx-10x-x-120">Global Variables</span> </dt><dd 
+class="description"><span 
+class="ecrm-1200">are  mainly  used  for  creating  CodeBlocks  from  the  sources  or</span>
+      <span 
+class="ecrm-1200">developments  of  wxWidgets  applications.  These  variables  have  a  very  special</span>
+      <span 
+class="ecrm-1200">meaning. In contrast to all others if you setup such a variables and share your project</span>
+      <span 
+class="ecrm-1200">file with others that have *not* setup this GV CodeBlocks will ask the user to setup</span>
+      <span 
+class="ecrm-1200">the variable. This is a very easy way to ensure the ’other developer’ knows what to</span>
+      <span 
+class="ecrm-1200">setup easily. CodeBlocks will ask for all path’s usually necessary.</span></dd></dl>
+<div class="sectionTOCS">
+<span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.1</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-800003.1" id="QQ2-4-113"><span 
+class="ecrm-1200">Syntax</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.2</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-810003.2" id="QQ2-4-114"><span 
+class="ecrm-1200">List of available built-ins</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.1</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-820003.2.1" id="QQ2-4-115"><span 
+class="ecrm-1200">Files and directories</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.2</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-830003.2.2" id="QQ2-4-116"><span 
+class="ecrm-1200">Build targets</span></a></span>
+                                                                                       
+                                                                                       
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.3</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-840003.2.3" id="QQ2-4-117"><span 
+class="ecrm-1200">Language and encoding</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.4</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-850003.2.4" id="QQ2-4-118"><span 
+class="ecrm-1200">Time and date</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.5</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-860003.2.5" id="QQ2-4-119"><span 
+class="ecrm-1200">Random values</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.6</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-870003.2.6" id="QQ2-4-120"><span 
+class="ecrm-1200">Operating System Commands</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.2.7</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-880003.2.7" id="QQ2-4-121"><span 
+class="ecrm-1200">Conditional Evaluation</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.3</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-890003.3" id="QQ2-4-122"><span 
+class="ecrm-1200">Script expansion</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.4</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-900003.4" id="QQ2-4-123"><span 
+class="ecrm-1200">Command Macros</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.5</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-910003.5" id="QQ2-4-124"><span 
+class="ecrm-1200">Compile single file</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.6</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-920003.6" id="QQ2-4-125"><span 
+class="ecrm-1200">Link object files to executable</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.7</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-930003.7" id="QQ2-4-126"><span 
+class="ecrm-1200">Global compiler variables</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.8</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-940003.8" id="QQ2-4-127"><span 
+class="ecrm-1200">Synopsis</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.9</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-950003.9" id="QQ2-4-128"><span 
+class="ecrm-1200">Names and Members</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.10</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-960003.10" id="QQ2-4-130"><span 
+class="ecrm-1200">Constraints</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.11</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-970003.11" id="QQ2-4-131"><span 
+class="ecrm-1200">Using Global Compiler Variables</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span class="sectionToc" ><span 
+class="ecrm-1200">3.12</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-980003.12" id="QQ2-4-133"><span 
+class="ecrm-1200">Variable Sets</span></a></span>
+<br /><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><span class="subsectionToc" ><span 
+class="ecrm-1200">3.12.1</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#x4-990003.12.1" id="QQ2-4-134"><span 
+class="ecrm-1200">Custom Members Mini-Tutorial</span></a></span>
+</div>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-113" id="x4-800003.1"><span 
+class="ecrm-1200">Syntax</span></a></h3>
+<!--l. 16--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks treats the following functionally identical character sequences inside pre-build,</span>
+<span 
+class="ecrm-1200">post-build, or build steps as variables:</span>
+</p>
+      <ul class="itemize1">
+      <li class="itemize"><span class="lstinline"><span 
+class="ecss-1200">$VARIABLE</span></span>
+      </li>
+      <li class="itemize"><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecss-1200">VARIABLE</span><span 
+class="ecss-1200">)</span></span>
+      </li>
+      <li class="itemize"><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">{</span><span 
+class="ecss-1200">VARIABLE</span><span 
+class="ecss-1200">}</span></span>
+      </li>
+      <li class="itemize"><span class="lstinline"><span 
+class="ecss-1200">%</span><span 
+class="ecss-1200">VARIABLE</span><span 
+class="ecss-1200">%</span></span></li></ul>
+                                                                                       
+                                                                                       
+<!--l. 25--><p class="noindent" ><span 
+class="ecrm-1200">Variable names must consist of alphanumeric characters and are not case-sensitive.</span>
+<span 
+class="ecrm-1200">Variables starting with a single hash sign </span><span class="lstinline"><span 
+class="ecss-1200">(#)</span></span> <span 
+class="ecrm-1200">are interpreted as global user variables (see</span>
+<a 
+href="#x4-930003.7"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.7</span><!--tex4ht:ref: sec:global_variables --></a> <span 
+class="ecrm-1200">for details). The names listed below are interpreted as built-in</span>
+<span 
+class="ecrm-1200">types.</span>
+</p><!--l. 27--><p class="noindent" ><span 
+class="ecrm-1200">Variables which are neither global user variables nor built-in types, will be replaced with a</span>
+<span 
+class="ecrm-1200">value provided in the project file, or with an environment variable if the latter should</span>
+<span 
+class="ecrm-1200">fail.</span>
+</p>
+<div class="center" 
+>
+<!--l. 29--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox31"><span 
+class="cmbx-12">Note:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Per-target definitions have precedence over per-project definitions.</span>  </div>
+</div>
+<!--l. 31--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-114" id="x4-810003.2"><span 
+class="ecrm-1200">List of available built-ins</span></a></h3>
+<!--l. 33--><p class="noindent" ><span 
+class="ecrm-1200">The variables listed here are built-in variables of CodeBlocks. They cannot be used within</span>
+<span 
+class="ecrm-1200">source files.</span>
+</p><!--l. 35--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-115" id="x4-820003.2.1"><span 
+class="ecrm-1200">Files and directories</span></a></h4>
+<!--l. 37--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(PROJECT_FILENAME), $(PROJECT_FILE_NAME), $(PROJECT_FILE), $(PROJECTFILE)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 38--><p class="noindent" ><span 
+class="ecrm-1200">The filename of the currently compiled project.</span>
+                                                                                       
+                                                                                       
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(PROJECT_NAME)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 39--><p class="noindent" ><span 
+class="ecrm-1200">The name of the currently compiled project.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(PROJECT_DIR), $(PROJECTDIR), $(PROJECT_DIRECTORY)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 40--><p class="noindent" ><span 
+class="ecrm-1200">The common top-level directory of the currently compiled project.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(ACTIVE_EDITOR_FILENAME)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 41--><p class="noindent" ><span 
+class="ecrm-1200">The filename of the file opened in the currently active editor.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(ACTIVE_EDITOR_DIRNAME)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 42--><p class="noindent" ><span 
+class="ecrm-1200">the  directory  containing  the  currently  active  file  (relative  to  the</span>
+                  <span 
+class="ecrm-1200">common top level path).</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(ACTIVE_EDITOR_STEM)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 43--><p class="noindent" ><span 
+class="ecrm-1200">The base name (without extension) of the currently active file.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(ACTIVE_EDITOR_EXT)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 44--><p class="noindent" ><span 
+class="ecrm-1200">The extension of the currently active file.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(ALL_PROJECT_FILES)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 45--><p class="noindent" ><span 
+class="ecrm-1200">A string containing the names of all files in the current project.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(MAKEFILE)</span></span>      </dt><dd 
+class="list">
+                  <!--l. 46--><p class="noindent" ><span 
+class="ecrm-1200">The filename of the makefile.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(CODEBLOCKS), $(APP_PATH), $(APPPATH), $(APP-PATH)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 47--><p class="noindent" ><span 
+class="ecrm-1200">The path to the currently running instance of CodeBlocks.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(DATAPATH), $(DATA_PATH), $(DATA-PATH)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 48--><p class="noindent" ><span 
+class="ecrm-1200">The ’shared’ directory of the currently running instance of CodeBlocks.</span>
+                                                                                       
+                                                                                       
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(PLUGINS)</span></span>       </dt><dd 
+class="list">
+                  <!--l. 49--><p class="noindent" ><span 
+class="ecrm-1200">The   </span><span 
+class="cmtt-12">plugins  </span><span 
+class="ecrm-1200">directory   of   the   currently   running   instance   of</span>
+                  <span 
+class="ecrm-1200">CodeBlocks.</span></p></dd></dl>
+<!--l. 52--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.2</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-116" id="x4-830003.2.2"><span 
+class="ecrm-1200">Build targets</span></a></h4>
+<!--l. 54--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(FOOBAR_OUTPUT_FILE)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 55--><p class="noindent" ><span 
+class="ecrm-1200">The output file of a specific target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(FOOBAR_OUTPUT_DIR)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 56--><p class="noindent" ><span 
+class="ecrm-1200">The output directory of a specific target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(FOOBAR_OUTPUT_BASENAME)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 57--><p class="noindent" ><span 
+class="ecrm-1200">The output file’s base name (no path, no extension) of a specific target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TARGET_OUTPUT_DIR)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 58--><p class="noindent" ><span 
+class="ecrm-1200">The output directory of the current target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TARGET_OBJECT_DIR)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 59--><p class="noindent" ><span 
+class="ecrm-1200">The object directory of the current target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TARGET_NAME)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 60--><p class="noindent" ><span 
+class="ecrm-1200">The name of the current target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TARGET_OUTPUT_FILE)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 61--><p class="noindent" ><span 
+class="ecrm-1200">The output file of the current target.</span>
+                                                                                       
+                                                                                       
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TARGET_OUTPUT_BASENAME)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 62--><p class="noindent" ><span 
+class="ecrm-1200">The output file’s base name (no path, no extension) of the current</span>
+                  <span 
+class="ecrm-1200">target.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TARGET_CC), $(TARGET_CPP), $(TARGET_LD), $(TARGET_LIB)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 63--><p class="noindent" ><span 
+class="ecrm-1200">The build tool executable (compiler, linker, etc) of the current target.</span></p></dd></dl>
+<!--l. 66--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-117" id="x4-840003.2.3"><span 
+class="ecrm-1200">Language and encoding</span></a></h4>
+<!--l. 68--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(LANGUAGE)</span></span>      </dt><dd 
+class="list">
+                  <!--l. 69--><p class="noindent" ><span 
+class="ecrm-1200">The system language in plain language.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(ENCODING)</span></span>      </dt><dd 
+class="list">
+                  <!--l. 70--><p class="noindent" ><span 
+class="ecrm-1200">The character encoding in plain language.</span></p></dd></dl>
+<!--l. 73--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-118" id="x4-850003.2.4"><span 
+class="ecrm-1200">Time and date</span></a></h4>
+<!--l. 75--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TDAY)</span></span>          </dt><dd 
+class="list">
+                  <!--l. 76--><p class="noindent" ><span 
+class="ecrm-1200">Current date in the form YYYYMMDD (for example 20051228)</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TODAY)</span></span>         </dt><dd 
+class="list">
+                  <!--l. 77--><p class="noindent" ><span 
+class="ecrm-1200">Current date in the form YYYY-MM-DD (for example 2005-12-28)</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(NOW)</span></span>            </dt><dd 
+class="list">
+                                                                                       
+                                                                                       
+                  <!--l. 78--><p class="noindent" ><span 
+class="ecrm-1200">Timestamp   in   the   form   YYYY-MM-DD-hh.mm   (for   example</span>
+                  <span 
+class="ecrm-1200">2005-12-28-07.15)</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(NOW_L)</span></span>         </dt><dd 
+class="list">
+                  <!--l. 79--><p class="noindent" ><span 
+class="ecrm-1200">]  Timestamp  in  the  form  YYYY-MM-DD-hh.mm.ss  (for  example</span>
+                  <span 
+class="ecrm-1200">2005-12-28-07.15.45)</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(WEEKDAY)</span></span>       </dt><dd 
+class="list">
+                  <!--l. 80--><p class="noindent" ><span 
+class="ecrm-1200">Plain language day of the week (for example ’Wednesday’)</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(TDAY_UTC), $(TODAY_UTC), $(NOW_UTC), $(NOW_L_UTC), $(WEEKDAY_UTC)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 81--><p class="noindent" ><span 
+class="ecrm-1200">These are identical to the preceding types, but are expressed relative</span>
+                  <span 
+class="ecrm-1200">to UTC.</span></p></dd></dl>
+<!--l. 84--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.5</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-119" id="x4-860003.2.5"><span 
+class="ecrm-1200">Random values</span></a></h4>
+<!--l. 86--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(COIN)</span></span>          </dt><dd 
+class="list">
+                  <!--l. 87--><p class="noindent" ><span 
+class="ecrm-1200">This variable tosses a virtual coin (once per invocation) and returns 0</span>
+                  <span 
+class="ecrm-1200">or 1.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(RANDOM)</span></span>        </dt><dd 
+class="list">
+                  <!--l. 88--><p class="noindent" ><span 
+class="ecrm-1200">A 16-bit positive random number (0-65535)</span></p></dd></dl>
+<!--l. 91--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.6</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-120" id="x4-870003.2.6"><span 
+class="ecrm-1200">Operating System Commands</span></a></h4>
+<!--l. 93--><p class="noindent" ><span 
+class="ecrm-1200">The variable are substituted through the command of the operating system.</span>
+</p><!--l. 95--><p class="noindent" >
+                                                                                       
+                                                                                       
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(CMD_CP)</span></span>        </dt><dd 
+class="list">
+                  <!--l. 96--><p class="noindent" ><span 
+class="ecrm-1200">Copy command for files.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(CMD_RM)</span></span>        </dt><dd 
+class="list">
+                  <!--l. 97--><p class="noindent" ><span 
+class="ecrm-1200">Remove command for files.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(CMD_MV)</span></span>        </dt><dd 
+class="list">
+                  <!--l. 98--><p class="noindent" ><span 
+class="ecrm-1200">Move command for files.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(CMD_MKDIR)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 99--><p class="noindent" ><span 
+class="ecrm-1200">Make directory command.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$(CMD_RMDIR)</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 100--><p class="noindent" ><span 
+class="ecrm-1200">Remove directory command.</span></p></dd></dl>
+<!--l. 103--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.2.7</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-121" id="x4-880003.2.7"><span 
+class="ecrm-1200">Conditional Evaluation</span></a></h4>
+<!--l. 105--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb20">
+<a 
+ id="x4-88002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $if(condition){true</span><span 
+class="pcrr7t-"> clause}{false</span><span 
+class="pcrr7t-"> clause}</span>
+</div>
+<!--l. 109--><p class="noindent" ><span 
+class="ecrm-1200">Conditional evaluation will resolve to its true clause if</span>
+</p>
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="ecrm-1200">condition is a non-empty character sequence other than 0 or false</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">condition is a non-empty variable that does not resolve to 0 or false</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">condition is a variable that evaluates to true (implicit by previous condition)</span></li></ul>
+                                                                                       
+                                                                                       
+<!--l. 117--><p class="noindent" ><span 
+class="ecrm-1200">Conditional evaluation will resolve to its false clause if</span>
+</p>
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="ecrm-1200">condition is empty</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">condition is 0 or false</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">condition is a variable that is empty or evaluates to 0 or false</span></li></ul>
+<div class="center" 
+>
+<!--l. 125--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox32"><span 
+class="cmbx-12">Note:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Please do note that neither the variable syntax variants </span><span class="lstinline"><span 
+class="ecss-1200">%</span><span 
+class="ecsx-1200">if</span><span 
+class="ecss-1200">(...)</span></span> <span 
+class="ecrm-1200">nor</span>
+<span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(</span><span 
+class="ecsx-1200">if</span><span 
+class="ecss-1200">)(...)</span></span> <span 
+class="ecrm-1200">are supported for this construct.</span>                           </div>
+</div>
+<!--l. 127--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Example</span>
+</p><!--l. 129--><p class="noindent" ><span 
+class="ecrm-1200">For example if you are using several platforms and you want to set different parameters</span>
+<span 
+class="ecrm-1200">depending on the operating system. In the following code the script commands of </span><span class="lstinline"><span 
+class="ecss-1200">[[</span><span 
+class="ecss-1200"> </span><span 
+class="ecss-1200">]]</span></span> <span 
+class="ecrm-1200">are</span>
+<span 
+class="ecrm-1200">evaluated and the &#x003C;command&#x003E; will be executed. This could be useful in a post-built</span>
+<span 
+class="ecrm-1200">step.</span>
+</p><!--l. 131--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb21">
+<a 
+ id="x4-88004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> [[</span><span 
+class="pcrr7t-"> if</span><span 
+class="pcrr7t-"> (PLATFORM</span><span 
+class="pcrr7t-"> ==</span><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> PLATFORM_MSW)</span><span 
+class="pcrr7t-"> {</span><span 
+class="pcrr7t-"> print</span><span 
+class="pcrr7t-"> (_T("cmd</span><span 
+class="pcrr7t-"> /c"));</span><span 
+class="pcrr7t-"> }</span><span 
+class="pcrr7t-"> else</span><span 
+class="pcrr7t-"> {</span><span 
+class="pcrr7t-"> print</span><span 
+class="pcrr7t-"> (_T("sh</span><span 
+class="pcrr7t-"> "));</span><span 
+class="pcrr7t-"> }</span><span 
+class="pcrr7t-"> ]]</span><span 
+class="pcrr7t-"> &#x003C;command&#x003E;</span>
+</div>
+<!--l. 135--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.3</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-122" id="x4-890003.3"><span 
+class="ecrm-1200">Script expansion</span></a></h3>
+                                                                                       
+                                                                                       
+<!--l. 137--><p class="noindent" ><span 
+class="ecrm-1200">For maximum flexibility, you can embed scripts using the </span><span class="lstinline"><span 
+class="ecss-1200">[[</span><span 
+class="ecss-1200"> </span><span 
+class="ecss-1200">]]</span></span> <span 
+class="ecrm-1200">operator as a special case of</span>
+<span 
+class="ecrm-1200">variable expansion. Embedded scripts have access to all standard functionalities available to</span>
+<span 
+class="ecrm-1200">scrips and work pretty much like bash backticks (except for having access to CodeBlocks</span>
+<span 
+class="ecrm-1200">namespace). As such, scripts are not limited to producing text output, but can also manipulate</span>
+<span 
+class="ecrm-1200">CodeBlocks state (projects, targets, etc.).</span>
+</p>
+<div class="center" 
+>
+<!--l. 139--><p class="noindent" >
+</p>
+<div 
+class="colorbox" id="colorbox33"><span 
+class="cmbx-12">Note:</span><br 
+class="newline" /><span 
+class="ecrm-1200">Manipulating CodeBlocks state should be implemented rather with a</span>
+<span 
+class="ecrm-1200">pre-build script than with a script.</span>                                 </div>
+</div>
+<!--l. 141--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Example</span>
+<span 
+class="cmssbx-10x-x-120">with</span>
+<span 
+class="cmssbx-10x-x-120">Backticks</span>
+</p><!--l. 143--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb22">
+<a 
+ id="x4-89002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> objdump</span><span 
+class="pcrr7t-"> -D</span><span 
+class="pcrr7t-"> ‘find</span><span 
+class="pcrr7t-"> .</span><span 
+class="pcrr7t-"> -name</span><span 
+class="pcrr7t-"> &#x22C6;.elf‘</span><span 
+class="pcrr7t-"> &#x003E;</span><span 
+class="pcrr7t-"> name.dis</span>
+</div>
+<!--l. 147--><p class="noindent" ><span 
+class="ecrm-1200">The expression in backticks returns a list of all executables </span><span 
+class="cmtt-12">*.elf </span><span 
+class="ecrm-1200">in any subdirectories. The</span>
+<span 
+class="ecrm-1200">result of this expression can be used directly by </span><span 
+class="cmtt-12">objdump</span><span 
+class="ecrm-1200">. Finally the output is piped to a file</span>
+<span 
+class="ecrm-1200">named </span><span 
+class="cmtt-12">name.dis</span><span 
+class="ecrm-1200">. Thus, processes can be automatted in a simple way without having to</span>
+<span 
+class="ecrm-1200">program any loops.</span>
+</p><!--l. 149--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Example</span>
+<span 
+class="cmssbx-10x-x-120">using</span>
+<span 
+class="cmssbx-10x-x-120">Script</span>
+</p><!--l. 151--><p class="noindent" ><span 
+class="ecrm-1200">The script text is replaced by any output generated by your script, or discarded in case of a</span>
+<span 
+class="ecrm-1200">syntax error.</span>
+</p><!--l. 153--><p class="noindent" ><span 
+class="ecrm-1200">Since conditional evaluation runs prior to expanding scripts, conditional evaluation</span>
+<span 
+class="ecrm-1200">can be used for preprocessor functionalities. Built-in variables (and user variables)</span>
+<span 
+class="ecrm-1200">are expanded after scripts, so it is possible to reference variables in the output of a</span>
+<span 
+class="ecrm-1200">script.</span>
+</p><!--l. 155--><p class="noindent" >
+</p>
+                                                                                       
+                                                                                       
+<div class="fancyvrb" id="fancyvrb23">
+<a 
+ id="x4-89004r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> [[</span><span 
+class="pcrr7t-"> print(GetProjectManager().GetActiveProject().GetTitle());</span><span 
+class="pcrr7t-"> ]]</span>
+</div>
+<!--l. 159--><p class="noindent" ><span 
+class="ecrm-1200">inserts the title of the active project into the command line.</span>
+</p><!--l. 161--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.4</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-123" id="x4-900003.4"><span 
+class="ecrm-1200">Command Macros</span></a></h3>
+<!--l. 163--><p class="noindent" >
+                  </p><dl class="list1"><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$compiler</span></span>        </dt><dd 
+class="list">
+                  <!--l. 164--><p class="noindent" ><span 
+class="ecrm-1200">Access to name of the compiler executable.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$linker</span></span>          </dt><dd 
+class="list">
+                  <!--l. 165--><p class="noindent" ><span 
+class="ecrm-1200">Access to name of the linker executable.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$options</span></span>         </dt><dd 
+class="list">
+                  <!--l. 166--><p class="noindent" ><span 
+class="ecrm-1200">Compiler flags</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$link_options</span></span>    </dt><dd 
+class="list">
+                  <!--l. 167--><p class="noindent" ><span 
+class="ecrm-1200">Linker flags</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$includes</span></span>        </dt><dd 
+class="list">
+                  <!--l. 168--><p class="noindent" ><span 
+class="ecrm-1200">Compiler include paths</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$c</span></span>                </dt><dd 
+class="list">
+                  <!--l. 169--><p class="noindent" ><span 
+class="ecrm-1200">Linker include paths</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$libs</span></span>             </dt><dd 
+class="list">
+                  <!--l. 170--><p class="noindent" ><span 
+class="ecrm-1200">Linker libraries</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$file</span></span>             </dt><dd 
+class="list">
+                  <!--l. 171--><p class="noindent" ><span 
+class="ecrm-1200">Source file (full name)</span>
+                                                                                       
+                                                                                       
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$file_dir</span></span>        </dt><dd 
+class="list">
+                  <!--l. 172--><p class="noindent" ><span 
+class="ecrm-1200">Source file directory without file name and file name extension.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$file_name</span></span>       </dt><dd 
+class="list">
+                  <!--l. 173--><p class="noindent" ><span 
+class="ecrm-1200">Source file name without path info and file name extension.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$exe_dir</span></span>         </dt><dd 
+class="list">
+                  <!--l. 174--><p class="noindent" ><span 
+class="ecrm-1200">Directory of executable without file name and file name extension.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$exe_name</span></span>        </dt><dd 
+class="list">
+                  <!--l. 175--><p class="noindent" ><span 
+class="ecrm-1200">File name of executable without path and file name extension.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$exe_ext</span></span>         </dt><dd 
+class="list">
+                  <!--l. 176--><p class="noindent" ><span 
+class="ecrm-1200">File name extension of executable without path and file name.</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$object</span></span>          </dt><dd 
+class="list">
+                  <!--l. 177--><p class="noindent" ><span 
+class="ecrm-1200">Object file</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$exe_output</span></span>      </dt><dd 
+class="list">
+                  <!--l. 178--><p class="noindent" ><span 
+class="ecrm-1200">Executable output file</span>
+                  </p></dd><dt class="list">
+<span class="verb"><span 
+class="pcrr8t-">$objects_output_dir</span></span><br 
+class="newline" />                  </dt><dd 
+class="list">
+                  <!--l. 179--><p class="noindent" ><span 
+class="ecrm-1200">Object Output Directory</span></p></dd></dl>
+<!--l. 182--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.5</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-124" id="x4-910003.5"><span 
+class="ecrm-1200">Compile single file</span></a></h3>
+<!--l. 184--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb24">
+<a 
+ id="x4-91002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $compiler</span><span 
+class="pcrr7t-"> $options</span><span 
+class="pcrr7t-"> $includes</span><span 
+class="pcrr7t-"> -c</span><span 
+class="pcrr7t-"> $file</span><span 
+class="pcrr7t-"> -o</span><span 
+class="pcrr7t-"> $object</span>
+</div>
+                                                                                       
+                                                                                       
+<!--l. 188--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.6</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-125" id="x4-920003.6"><span 
+class="ecrm-1200">Link object files to executable</span></a></h3>
+<!--l. 190--><p class="noindent" >
+</p>
+<div class="fancyvrb" id="fancyvrb25">
+<a 
+ id="x4-92002r1"></a><span 
+class="pcrr7t-"> </span><span 
+class="pcrr7t-"> $linker</span><span 
+class="pcrr7t-"> $libdirs</span><span 
+class="pcrr7t-"> -o</span><span 
+class="pcrr7t-"> $exe_output</span><span 
+class="pcrr7t-"> $link_objects</span><span 
+class="pcrr7t-"> $link_resobjects</span><span 
+class="pcrr7t-"> $link_options</span><span 
+class="pcrr7t-"> $libs</span>
+</div>
+<!--l. 194--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.7</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-126" id="x4-930003.7"><span 
+class="ecrm-1200">Global compiler variables</span></a></h3>
+<!--l. 196--><p class="noindent" >
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.8</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-127" id="x4-940003.8"><span 
+class="ecrm-1200">Synopsis</span></a></h3>
+<!--l. 198--><p class="noindent" ><span 
+class="ecrm-1200">Working as a developer on a project which relies on 3rd party libraries involves a lot of</span>
+<span 
+class="ecrm-1200">unnecessary repetitive tasks, such as setting up build variables according to the local file system</span>
+<span 
+class="ecrm-1200">layout. In the case of project files, care must be taken to avoid accidentially committing a</span>
+<span 
+class="ecrm-1200">locally modified copy. If one does not pay attention, this can happen easily for example after</span>
+<span 
+class="ecrm-1200">changing a build flag to make a release build.</span>
+</p><!--l. 200--><p class="noindent" ><span 
+class="ecrm-1200">The concept of global compiler variables is a unique new solution for CodeBlocks which</span>
+<span 
+class="ecrm-1200">addresses this problem. Global compiler variables allow you to set up a project once, with any</span>
+<span 
+class="ecrm-1200">number of developers using any number of different file system layouts being able to compile</span>
+<span 
+class="ecrm-1200">and develop this project. No local layout information ever needs to be changed more than</span>
+<span 
+class="ecrm-1200">once.</span>
+</p><!--l. 202--><p class="noindent" >
+                                                                                       
+                                                                                       
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.9</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-128" id="x4-950003.9"><span 
+class="ecrm-1200">Names and Members</span></a></h3>
+<!--l. 204--><p class="noindent" ><span 
+class="ecrm-1200">Global compiler variables in CodeBlocks are discriminated from per-project variables by a</span>
+<span 
+class="ecrm-1200">leading hash sign. Global compiler variables are structured; every variable consists of a name</span>
+<span 
+class="ecrm-1200">and an optional member. Names are freely definable, while some of the members are built into</span>
+<span 
+class="ecrm-1200">the IDE. Although you can choose anything for a variable name in principle, it is advisable to</span>
+<span 
+class="ecrm-1200">pick a known identifier for common packages. Thus the amount of information that the user</span>
+<span 
+class="ecrm-1200">needs to provide is minimised. The CodeBlocks team provides a list of recommended variables</span>
+<span 
+class="ecrm-1200">for known packages.</span>
+</p><!--l. 206--><p class="noindent" ><span 
+class="ecrm-1200">The member base resolves to the same value as the variable name uses without a member</span>
+<span 
+class="ecrm-1200">(alias).</span>
+</p><!--l. 208--><p class="noindent" ><span 
+class="ecrm-1200">The members </span><span class="lstinline"><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">and </span><span class="lstinline"><span 
+class="ecss-1200">lib</span></span> <span 
+class="ecrm-1200">are by default aliases for </span><span class="lstinline"><span 
+class="ecss-1200">base</span><span 
+class="ecss-1200">/</span><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">and </span><span class="lstinline"><span 
+class="ecss-1200">base</span><span 
+class="ecss-1200">/</span><span 
+class="ecss-1200">lib</span></span><span 
+class="ecrm-1200">, respectively.</span>
+<span 
+class="ecrm-1200">However, a user can redefine them if another setup is desired.</span>
+</p><!--l. 210--><p class="noindent" ><span 
+class="ecrm-1200">It is generally recommended to use the syntax </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">variable</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span><span 
+class="ecss-1200">)</span></span> <span 
+class="ecrm-1200">instead of</span>
+<span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">variable</span><span 
+class="ecss-1200">)/</span><span 
+class="ecss-1200">include</span></span><span 
+class="ecrm-1200">, as it provides additional flexibility and is otherwise exactly identical in</span>
+<span 
+class="ecrm-1200">functionality (see </span><a 
+href="#x4-990003.12.1"><span 
+class="ecrm-1200">Variable Expansion</span><span 
+class="ecrm-1200"> 3.12.1</span><!--tex4ht:ref: sec:mini_tutorial --></a> <span 
+class="ecrm-1200">and </span><a 
+href="#x4-950011"><span 
+class="ecrm-1200">Global Variable Environment</span><span 
+class="ecrm-1200"> 3.1</span><!--tex4ht:ref: fig:gcv_ui --></a> <span 
+class="ecrm-1200">for</span>
+<span 
+class="ecrm-1200">details).</span>
+</p><!--l. 212--><p class="noindent" ><span 
+class="ecrm-1200">The members </span><span class="lstinline"><span 
+class="ecss-1200">cflags</span></span> <span 
+class="ecrm-1200">and </span><span class="lstinline"><span 
+class="ecss-1200">lflags</span></span> <span 
+class="ecrm-1200">are empty by default and can be used to provide the ability to</span>
+<span 
+class="ecrm-1200">feed the same consistent set of compiler/linker flags to all builds on one machine.</span>
+<span 
+class="ecrm-1200">CodeBlocks allows you to define custom variable members in addition to the built-in</span>
+<span 
+class="ecrm-1200">ones.</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 214--><p class="noindent" ><img 
+src="gcv_ui.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x4-950011">Figure 3.1</a>:  
+Global Variable Environment</td></tr></table></div><!--tex4ht:label?: x4-950011 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.10</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-130" id="x4-960003.10"><span 
+class="ecrm-1200">Constraints</span></a></h3>
+      <ul class="itemize1">
+      <li class="itemize"><span 
+class="ecrm-1200">Both set and global compiler variable names may not be empty, they must not</span>
+      <span 
+class="ecrm-1200">contain white space, must start with a letter and must consist of alphanumeric</span>
+      <span 
+class="ecrm-1200">characters. Cyrillic or Chinese letters are not alphanumeric characters. If CodeBlocks</span>
+      <span 
+class="ecrm-1200">is given invalid character sequences as names, it might replace them without asking.</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Every variable requires its base to be defined. Everything else is optional, but the</span>
+      <span 
+class="ecrm-1200">base is absolutely mandatory. If you don’t define a the base of a variable, it will not</span>
+      <span 
+class="ecrm-1200">be saved (no matter what other fields you have defined).</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">You may not define a custom member that has the same name as a built-in member.</span>
+      <span 
+class="ecrm-1200">Currently, the custom member will overwrite the built-in member, but in general,</span>
+      <span 
+class="ecrm-1200">the behaviour for this case is undefined.</span>
+      </li>
+      <li class="itemize"><span 
+class="ecrm-1200">Variable and member values may contain arbitrary character sequences, subject to the</span>
+      <span 
+class="ecrm-1200">following three constraints:</span>
+           <ul class="itemize2">
+           <li class="itemize"><span 
+class="ecrm-1200">You may not define a variable by a value that references the same variable or</span>
+           <span 
+class="ecrm-1200">any of its members</span>
+           </li>
+           <li class="itemize"><span 
+class="ecrm-1200">You may not define a member by a value that references the same member</span>
+           </li>
+           <li class="itemize"><span 
+class="ecrm-1200">You may not define a member or variable by a value that references the same</span>
+           <span 
+class="ecrm-1200">variable or member through a cyclic dependency.</span></li></ul>
+      </li></ul>
+<!--l. 229--><p class="noindent" ><span 
+class="ecrm-1200">CodeBlocks will detect the most obvious cases of recursive definitions (which may happen by</span>
+<span 
+class="ecrm-1200">accident), but it will not perform an in-depth analysis of every possible abuse. If you enter crap,</span>
+<span 
+class="ecrm-1200">then crap is what you will get; you are warned now.</span>
+</p><!--l. 231--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Examples</span>
+</p><!--l. 233--><p class="noindent" ><span 
+class="ecrm-1200">Defining </span><span class="lstinline"><span 
+class="ecss-1200">wx</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">as </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">wx</span><span 
+class="ecss-1200">)/</span><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">is redundant, but perfectly legal Defining </span><span class="lstinline"><span 
+class="ecss-1200">wx</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">as</span>
+<span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">wx</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span><span 
+class="ecss-1200">)</span></span> <span 
+class="ecrm-1200">is illegal and will be detected by CodeBlocks Defining </span><span class="lstinline"><span 
+class="ecss-1200">wx</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">as </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">cb</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">lib</span><span 
+class="ecss-1200">)</span></span>
+<span 
+class="ecrm-1200">which again is defined as </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">wx</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span><span 
+class="ecss-1200">)</span></span> <span 
+class="ecrm-1200">will create an infinite loop</span>
+                                                                                       
+                                                                                       
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.11</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-131" id="x4-970003.11"><span 
+class="ecrm-1200">Using Global Compiler Variables</span></a></h3>
+<!--l. 239--><p class="noindent" ><span 
+class="ecrm-1200">All you need to do for using global compiler variables is to put them in your project! Yes, it’s</span>
+<span 
+class="ecrm-1200">that easy.</span>
+</p><!--l. 241--><p class="noindent" ><span 
+class="ecrm-1200">When the IDE detects the presence of an unknown global variable, it will prompt you to enter</span>
+<span 
+class="ecrm-1200">its value. The value will be saved in your settings, so you never need to enter the information</span>
+<span 
+class="ecrm-1200">twice.</span>
+</p><!--l. 243--><p class="noindent" ><span 
+class="ecrm-1200">If you need to modify or delete a variable at a later time, you can do so from the settings</span>
+<span 
+class="ecrm-1200">menu.</span>
+</p><!--l. 246--><p class="noindent" ><span 
+class="cmssbx-10x-x-120">Example</span>
+</p>
+<hr class="figure" /><div class="figure" 
+><table class="figure"><tr class="figure"><td class="figure" 
+>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+
+<!--l. 248--><p class="noindent" ><img 
+src="global_vars_dir.png" alt="pict"  
+ />
+<br /> </p><div class="caption"><table class="caption" 
+><tr style="vertical-align:baseline;" class="caption"><td class="id"><a 
+ id="x4-970012">Figure 3.2</a>:  
+Global Variables</td></tr></table></div><!--tex4ht:label?: x4-970012 -->
+                                                                                       
+                                                                                       
+</td></tr></table></div><hr class="endfigure" />
+<!--l. 250--><p class="noindent" ><span 
+class="ecrm-1200">The above image shows both per-project and global variables. </span><span class="lstinline"><span 
+class="ecss-1200">WX_SUFFIX</span></span> <span 
+class="ecrm-1200">is defined in the</span>
+<span 
+class="ecrm-1200">project, but </span><span class="lstinline"><span 
+class="ecss-1200">WX</span></span> <span 
+class="ecrm-1200">is a global user variable.</span>
+</p>
+<h3 class="sectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.12</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-133" id="x4-980003.12"><span 
+class="ecrm-1200">Variable Sets</span></a></h3>
+<!--l. 254--><p class="noindent" ><span 
+class="ecrm-1200">Sometimes, you want to use different versions of the same library, or you develop two branches</span>
+<span 
+class="ecrm-1200">of the same program. Although it is possible to get along with a global compiler variable, this</span>
+<span 
+class="ecrm-1200">can become tedious. For such a purpose, CodeBlocks supports variable sets. A variable set is an</span>
+<span 
+class="ecrm-1200">independent collection of variables identified by a name (set names have the same constraints as</span>
+<span 
+class="ecrm-1200">variable names).</span>
+</p><!--l. 256--><p class="noindent" ><span 
+class="ecrm-1200">If you wish to switch to a different set of variables, you simply select a different set from the</span>
+<span 
+class="ecrm-1200">menu. Different sets are not required to have the same variables, and identical variables in</span>
+<span 
+class="ecrm-1200">different sets are not required to have the same values, or even the same custom</span>
+<span 
+class="ecrm-1200">members.</span>
+</p><!--l. 258--><p class="noindent" ><span 
+class="ecrm-1200">Another positive thing about sets is that if you have a dozen variables and you want to have a</span>
+<span 
+class="ecrm-1200">new set with one of these variables pointing to a different location, you are not required to</span>
+<span 
+class="ecrm-1200">re-enter all the data again. You can simply create a clone of your current set, which will then</span>
+<span 
+class="ecrm-1200">duplicate all of your variables.</span>
+</p><!--l. 260--><p class="noindent" ><span 
+class="ecrm-1200">Deleting a set also deletes all variables in that set (but not in another set). The </span><span 
+class="cmtt-12">default </span><span 
+class="ecrm-1200">set is</span>
+<span 
+class="ecrm-1200">always present and cannot be deleted.</span>
+</p><!--l. 262--><p class="noindent" >
+</p>
+<h4 class="subsectionHead"><span class="titlemark"><span 
+class="ecrm-1200">3.12.1</span></span><span 
+class="ecrm-1200">.</span><span 
+class="ecrm-1200"> </span><span 
+class="ecrm-1200"> </span><a 
+href="#QQ2-4-134" id="x4-990003.12.1"><span 
+class="ecrm-1200">Custom Members Mini-Tutorial</span></a></h4>
+<!--l. 264--><p class="noindent" ><span 
+class="ecrm-1200">As stated above, writing </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">var</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span><span 
+class="ecss-1200">)</span></span> <span 
+class="ecrm-1200">and </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">var</span><span 
+class="ecss-1200">)/</span><span 
+class="ecss-1200">include</span></span> <span 
+class="ecrm-1200">is exactly the same thing by</span>
+<span 
+class="ecrm-1200">default. So why would you want to write something as unintuitive as </span><span class="lstinline"><span 
+class="ecss-1200">$</span><span 
+class="ecss-1200">(#</span><span 
+class="ecss-1200">var</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">include</span><span 
+class="ecss-1200">)</span></span><span 
+class="ecrm-1200">?</span>
+</p><!--l. 266--><p class="noindent" ><span 
+class="ecrm-1200">Let’s take a standard Boost installation under Windows for an example. Generally, you would</span>
+<span 
+class="ecrm-1200">expect a fictional package ACME to have its include files under ACME/include and its libraries</span>
+<span 
+class="ecrm-1200">under ACME/lib. Optionally, it might place its headers into yet another subfolder called acme.</span>
+<span 
+class="ecrm-1200">So after adding the correct paths to the compiler and linker options, you would expect</span>
+<span 
+class="ecrm-1200">to </span><span class="lstinline"><span 
+class="ecsx-1200">#</span><span 
+class="ecsx-1200">include</span><span 
+class="ecss-1200"> </span><span 
+class="ecss-1200">&#x003C;</span><span 
+class="ecss-1200">acme</span><span 
+class="ecss-1200">/</span><span 
+class="ecss-1200">acme</span><span 
+class="ecss-1200">.</span><span 
+class="ecss-1200">h</span><span 
+class="ecss-1200">&#x003E;</span></span> <span 
+class="ecrm-1200">and link to </span><span 
+class="cmtt-12">libacme.a </span><span 
+class="ecrm-1200">(or whatever it happens to</span>
+<span 
+class="ecrm-1200">be).</span>
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+                                                                                       
+</p>
+<!--l. 1--><div class="crosslinks"><p class="noindent"><span 
+class="ecrm-1200">[</span><a 
+href="main_codeblocks_ench4.html" ><span 
+class="ecrm-1200">next</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_ench2.html" ><span 
+class="ecrm-1200">prev</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_ench2.html#tailmain_codeblocks_ench2.html" ><span 
+class="ecrm-1200">prev-tail</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_ench3.html" ><span 
+class="ecrm-1200">front</span></a><span 
+class="ecrm-1200">] [</span><a 
+href="main_codeblocks_en.html#main_codeblocks_ench3.html" ><span 
+class="ecrm-1200">up</span></a><span 
+class="ecrm-1200">] </span></p></div>
+<!--l. 1--><p class="noindent" ><a 
+ id="tailmain_codeblocks_ench3.html"></a>  </p> 
+</body></html> 
