@@ -142,5 +142,6 @@ EXTRA_DIST = $(srcdir)/Readme \
 	$(srcdir)/src/scintilla/src/*.py \
 	$(srcdir)/src/scintilla/src/*.properties
 
-README: Readme
-	test -r README || ln -s Readme README
+# add upper-case copy
+README: $(srcdir)/Readme
+	cp -p $< $@
