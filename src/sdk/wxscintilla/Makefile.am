@@ -143,5 +143,6 @@ EXTRA_DIST = $(srcdir)/Readme \
 	$(srcdir)/src/scintilla/src/*.properties
 
 # add upper-case copy
+CLEANFILES = README
 README: $(srcdir)/Readme
 	cp -p $< $@
