@@ -668,10 +668,10 @@ void ThreadSearchView::EnableControls(bool enable)
 		idCboSearchExpr
 	};
 
-	for ( unsigned int i = 0; i < sizeof(idsArray)/sizeof(unsigned int); ++i )
+	for ( unsigned int i = 0; i < sizeof(idsArray)/sizeof(idsArray[0]); ++i )
 	{
 		wxWindow* pWnd = wxWindow::FindWindow(idsArray[i]);
-		if ( pWnd != NULL )
+		if ( pWnd != 0 )
 		{
 			pWnd->Enable(enable);
 		}
@@ -682,7 +682,7 @@ void ThreadSearchView::EnableControls(bool enable)
 		}
 	}
 
-	for ( unsigned int i = 0; i < sizeof(toolBarIdsArray)/sizeof(unsigned int); ++i )
+	for ( unsigned int i = 0; i < sizeof(toolBarIdsArray)/sizeof(toolBarIdsArray[0]); ++i )
 	{
 		m_pToolBar->FindControl(toolBarIdsArray[i])->Enable(enable);
 	}
@@ -784,7 +784,7 @@ bool ThreadSearchView::StopThread()
 
 bool ThreadSearchView::IsSearchRunning()
 {
-	bool searchRunning = (m_pFindThread != NULL);
+	bool searchRunning = (m_pFindThread != 0);
 
 	if ( m_MutexSearchEventsArray.Lock() == wxMUTEX_NO_ERROR )
 	{
