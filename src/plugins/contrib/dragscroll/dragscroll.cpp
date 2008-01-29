@@ -77,7 +77,7 @@ void cbDragScroll::OnAttach()
 
     wxWindow* pcbWindow = Manager::Get()->GetAppWindow();
     m_pMS_Window = pcbWindow;
-    #if LOGGING
+    #if defined(LOGGING)
         wxLog::EnableLogging(true);
         /*wxLogWindow**/ pMyLog = new wxLogWindow(pcbWindow, wxT("DragScroll"), true, false);
         wxLog::SetActiveTarget(pMyLog);
@@ -375,7 +375,7 @@ void cbDragScroll::Attach(wxWindow *p)
                     (wxMouseEventFunction)&MyMouseEvents::OnMouseEvent,
                      NULL, thisEvtHndlr);
 
-    #if LOGGING
+    #if defined(LOGGING)
      LOGIT(_T("cbDS:Attach Window:%p Handler:%p"), p,thisEvtHndlr);
     #endif
 }
@@ -457,7 +457,7 @@ void cbDragScroll::Detach(wxWindow* thisEditor)
 {
     if ( (thisEditor) && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND))
     {
-         #if LOGGING
+         #if defined(LOGGING)
           LOGIT(_T("cbDS:Detaching %p"), thisEditor);
          #endif
 
@@ -500,7 +500,7 @@ void cbDragScroll::Detach(wxWindow* thisEditor)
 
         delete(thisEvtHandler);
 
-        #if LOGGING
+        #if defined(LOGGING)
          LOGIT(_T("Detach: Editor:%p EvtHndlr: %p"),thisEditor,thisEvtHandler);
         #endif
     }//if (thisEditor..
@@ -688,7 +688,7 @@ END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 MyMouseEvents::~MyMouseEvents()
 {
-    #if LOGGING
+    #if defined(LOGGING)
      LOGIT(_T("MyMouseEvents dtor"));
     #endif
     return;
@@ -766,7 +766,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     int scrollx;
     int scrolly;
 
-    #if LOGGING
+    #if defined(LOGGING)
     //LOGIT(_T("OnMouseEvent"));
     #endif
 
@@ -788,10 +788,11 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
 
             m_DragMode = DRAG_START;
             m_DragStartPos = event.GetPosition();
-            #if LOGGING
+            #if defined(LOGGING)
              //LOGIT(_T("Down X:%d Y:%d"), m_InitY, m_InitX);
             #endif
-
+            if ( (GetUserDragKey() ==  wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
+                return; //dont allow paste from middle-mouse used as scroll key
             event.Skip(); //v0.21
             return;
     }// if KeyDown
@@ -802,7 +803,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         int lastmode = m_DragMode;
         m_DragMode = DRAG_NONE;
         // if our trapped drag, hide event from others, ie. don't event.skip()
-        #if LOGGING
+        #if defined(LOGGING)
          //LOGIT(_T("Up"));
         #endif
         if (lastmode ==  DRAG_DRAGGING) return;
@@ -829,7 +830,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         if (m_DragMode == DRAG_START)
          {
             // Start the drag. This will stop the context popup
-            #if LOGGING
+            #if defined(LOGGING)
               //LOGIT(_T("Drag_Start"));
             #endif
             m_DragMode = DRAG_DRAGGING;
@@ -862,7 +863,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
         {
             scrollx = 0; scrolly = int(dY * m_RatioY);
         }
-        #if LOGGING
+        #if defined(LOGGING)
         //  LOGIT(_T("RatioX:%f RatioY:%f"), m_RatioX, m_RatioY);
         //  LOGIT(_T("Drag: dX:%d dY:%d scrollx:%d scrolly:%d"), dX, dY, scrollx, scrolly);
         #endif
@@ -963,7 +964,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
     int scrollx;
     int scrolly;
 
-    #if LOGGING
+    #if defined(LOGGING)
      //LOGIT(_T("OnMouseEvent"));
     #endif
 
@@ -984,7 +985,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
 
         m_DragMode = DRAG_NONE;
         m_DragStartPos = event.GetPosition();
-        #if LOGGING
+        #if defined(LOGGING)
          LOGIT(_T("Down at  X:%d Y:%d"), m_InitX, m_InitY);
         #endif
 
@@ -1009,7 +1010,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         }
         else // wait for movement if right mouse key; might be context menu request
         {
-            #if LOGGING
+            #if defined(LOGGING)
              LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );
             #endif
             if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl) //v0.21
@@ -1035,15 +1036,15 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
             }//endelse
         }//else wait for movement
 
-////        // --------------------------------
-////        // Dont do the following on Linux, it kills all context menus
-////        // --------------------------------
-////        //// If hiding Right mouse keydown from ListCtrls, return v0.22
-////        //// RightMouseDown is causing an immediate selection in the control
-////        //// This stops it.
-////        //-if (pDS->GetMouseRightKeyCtrl()) return; removed
-////        //-event.Skip(); //v0.21
-////        //-return;
+        ////        // --------------------------------
+        ////        // Dont do the following on Linux, it kills all context menus
+        ////        // --------------------------------
+        ////        //// If hiding Right mouse keydown from ListCtrls, return v0.22
+        ////        //// RightMouseDown is causing an immediate selection in the control
+        ////        //// This stops it.
+        ////        //-if (pDS->GetMouseRightKeyCtrl()) return; removed
+        ////        //-event.Skip(); //v0.21
+        ////        //-return;
 
         //no mouse movements, so pass off to context menu processing
         event.Skip();
@@ -1055,7 +1056,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         // Finish dragging
         int lastmode = m_DragMode;
         m_DragMode = DRAG_NONE;
-        #if LOGGING
+        #if defined(LOGGING)
          LOGIT( _T("Up") ) ;
         #endif
         if (lastmode ==  DRAG_DRAGGING) return;
@@ -1084,7 +1085,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
         if (m_DragMode == DRAG_START)
          {
             // Start the drag. This will stop the context popup
-            #if LOGGING
+            #if defined(LOGGING)
             LOGIT(_T("Drag_Start"));
             #endif
             m_DragMode = DRAG_DRAGGING;
@@ -1117,7 +1118,7 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
        {
             scrollx = 0; scrolly = int(dY * m_RatioY);
        }
-        #if LOGGING
+        #if defined(LOGGING)
        //  LOGIT(_T("RatioX:%f RatioY:%f"), m_RatioX, m_RatioY);
        //  LOGIT(_T("Drag: dX:%d dY:%d scrollx:%d scrolly:%d"), dX, dY, scrollx, scrolly);
         #endif

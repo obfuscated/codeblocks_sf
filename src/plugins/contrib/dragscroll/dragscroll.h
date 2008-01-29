@@ -29,20 +29,17 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.2.04 2007/11/29"
+#define VERSION "1.2.05 2008/01/29"
 //----------------------------------------
 
-#if defined(dsLOGGING)
-    #define LOGGING 1
-#endif
-//debugging control
+#undef LOGGING
 #define LOGIT wxLogDebug
-#if LOGGING
-    #undef LOGIT
-    #define LOGIT wxLogMessage
-    #define TRAP asm("int3")
+#if defined(dsLOGGING)
+ #define LOGGING 1
+ #undef LOGIT
+ #define LOGIT wxLogMessage
+ #define TRAP asm("int3")
 #endif
-
 
 // anchor to one and only DragScroll object
 class MyMouseEvents;
@@ -386,6 +383,10 @@ private:
 //          2) correct "focus follows mouse" event on long compilations
 //          3) correct editor focus event on long compilations
 //          4) remove unused MouseRightKeyCtrl code
+// ----------------------------------------------------------------------------
+//  Commit  1.2.05 2008/01/29
+//          05) Killerbot header and const(ipation) changes (2007/12/28)
+//          06) Fixed: Middle-mouse conflict with msWindows paste (2008/01/29)
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------
