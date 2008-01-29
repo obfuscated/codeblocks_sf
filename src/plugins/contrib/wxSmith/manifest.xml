@@ -26,17 +26,4 @@ Jaakko Salli for wxPropertyGrid" />
         <Value thanksTo="" />
         <Value license="GPL" />
     </Plugin>
-
-<!--
-    <Plugin name="wxSmithWizard">
-        <Value title="wxSmith - Project Wizard plugin" />
-        <Value version="1.0" />
-        <Value description="Project Wizard for wxSmith" />
-        <Value author="BYO" />
-        <Value authorEmail="byo.spoon@gmail.com" />
-        <Value authorWebsite="" />
-        <Value thanksTo="" />
-        <Value license="GPL" />
-    </Plugin>
--->
 </CodeBlocks_plugin_manifest_file>
