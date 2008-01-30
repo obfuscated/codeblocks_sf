@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      todolist.h
- * Purpose:   Code::Blocks plugin
- * Author:    Yiannis Mandravellos <mandrav@codeblocks.org>
- * Created:   11/21/03 14:01:50
- * Copyright: (c) Yiannis Mandravellos
- * License:   GPL
- **************************************************************/
-
 #ifndef TODOLIST_H
 #define TODOLIST_H
 
