@@ -12,7 +12,7 @@ class ClassWizard : public cbToolPlugin
         virtual void OnAttach();
         virtual void OnRelease(bool appShutDown);
         virtual int Configure(){ return -1; }
-		virtual int Execute();
+        virtual int Execute();
 };
 
 #endif // CLASSWIZARD_H

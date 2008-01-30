@@ -78,7 +78,7 @@ int ClassWizard::Execute()
     {
         if (!prj)
         {
-            cbMessageBox(	_("The new class has been created."),
+            cbMessageBox(    _("The new class has been created."),
                             _("Information"),
                             wxOK | wxICON_INFORMATION,
                             Manager::Get()->GetAppWindow());

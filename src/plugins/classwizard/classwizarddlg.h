@@ -16,13 +16,18 @@ class ClassWizardDlg : public wxDialog
         const wxString& GetImplementationFilename() const { return m_Implementation; }
     private:
         void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnOKClick(wxCommandEvent& event);
-        void OnCancelClick(wxCommandEvent& event);
         void OnNameChange(wxCommandEvent& event);
         void OnAncestorChange(wxCommandEvent& event);
+        void OnCommonDirClick(wxCommandEvent& event);
+        void OnLowerCaseClick(wxCommandEvent& event);
         void OnIncludeDirClick(wxCommandEvent& event);
         void OnImplDirClick(wxCommandEvent& event);
+        void OnHeaderChange(wxCommandEvent& event);
+        void OnOKClick(wxCommandEvent& event);
+        void OnCancelClick(wxCommandEvent& event);
+
         void DoGuardBlock();
+        void DoFileNames();
 
         wxString m_Header;
         wxString m_Implementation;
