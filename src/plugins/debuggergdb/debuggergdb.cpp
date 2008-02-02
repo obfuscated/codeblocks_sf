@@ -639,18 +639,29 @@ wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
     return it->second;
 }
 
-RemoteDebuggingMap& DebuggerGDB::GetRemoteDebuggingMap()
+RemoteDebuggingMap& DebuggerGDB::GetRemoteDebuggingMap(cbProject* project)
 {
-    return m_RemoteDebugging;
+	if (!project)
+		project = m_pProject;
+	ProjectRemoteDebuggingMap::iterator it = m_RemoteDebugging.find(project);
+	if (it == m_RemoteDebugging.end())
+	{
+        // create an empty set for this project
+        it = m_RemoteDebugging.insert(m_RemoteDebugging.begin(), std::make_pair(project, RemoteDebuggingMap()));
+	}
+	return it->second;
 }
 
 
 void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
 {
     wxArrayString& pdirs = GetSearchDirs(project);
+    RemoteDebuggingMap& rdprj = GetRemoteDebuggingMap(project);
 
     if (loading)
     {
+    	rdprj.clear();
+    	
         // Hook called when loading project file.
         TiXmlElement* conf = elem->FirstChildElement("debugger");
         if (conf)
@@ -697,7 +708,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                     if (rdOpt->Attribute("skip_ld_path"))
                         rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != _T("0");
 
-                    m_RemoteDebugging.insert(m_RemoteDebugging.end(), std::make_pair(bt, rd));
+					rdprj.insert(rdprj.end(), std::make_pair(bt, rd));
                 }
                 else
                     Manager::Get()->GetLogManager()->Log(_T("Unknown target in remote_debugging: ") + targetName, m_PageIndex, Logger::warning);
@@ -729,28 +740,43 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
             }
         }
 
-        if (m_RemoteDebugging.size())
+        if (rdprj.size())
         {
-            for (RemoteDebuggingMap::iterator it = m_RemoteDebugging.begin(); it != m_RemoteDebugging.end(); ++it)
+            for (RemoteDebuggingMap::iterator it = rdprj.begin(); it != rdprj.end(); ++it)
             {
                 // valid targets only
                 if (!it->first)
                     continue;
+				
+                RemoteDebugging& rd = it->second;
+
+				// if no different than defaults, skip it
+				if (rd.serialPort.IsEmpty() && rd.ip.IsEmpty() &&
+					rd.additionalCmds.IsEmpty() && rd.additionalCmdsBefore.IsEmpty() &&
+					!rd.skipLDpath)
+				{
+					continue;
+				}
 
                 TiXmlElement* rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
                 rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
 
-                RemoteDebugging& rd = it->second;
-
                 TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
                 tgtnode->SetAttribute("conn_type", (int)rd.connType);
-                tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
-                tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
-                tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
-                tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
-                tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
-                tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
-                tgtnode->SetAttribute("skip_ld_path", rd.skipLDpath ? "1" : "0");
+                if (!rd.serialPort.IsEmpty())
+					tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
+                if (!rd.serialBaud.IsEmpty())
+					tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
+                if (!rd.ip.IsEmpty())
+					tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
+                if (!rd.ipPort.IsEmpty())
+					tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
+                if (!rd.additionalCmds.IsEmpty())
+					tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
+                if (!rd.additionalCmdsBefore.IsEmpty())
+					tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
+                if (rd.skipLDpath)
+					tgtnode->SetAttribute("skip_ld_path", "1");
             }
         }
     }
@@ -1259,8 +1285,9 @@ int DebuggerGDB::DoDebug()
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach);
 
 	RemoteDebugging* rd = 0;
-	RemoteDebuggingMap::iterator it = m_RemoteDebugging.find(target);
-	if (it != m_RemoteDebugging.end())
+	RemoteDebuggingMap& rdprj = GetRemoteDebuggingMap();
+	RemoteDebuggingMap::iterator it = rdprj.find(target);
+	if (it != rdprj.end())
 		rd = &it->second;
 
     wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
@@ -2457,9 +2484,12 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
     // allow others to catch this
     event.Skip();
 
-    // remove all search dirs sotred for this project so we don't have conflicts
+    // remove all search dirs stored for this project so we don't have conflicts
     // if a newly opened project happens to use the same memory address
     GetSearchDirs(event.GetProject()).clear();
+    
+    // the same for remote debugging
+    GetRemoteDebuggingMap(event.GetProject()).clear();
 
     // remove all breakpoints belonging to the closed project
     m_State.RemoveAllProjectBreakpoints(event.GetProject());

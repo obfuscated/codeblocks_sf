@@ -92,7 +92,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void RefreshConfiguration();
 
         wxArrayString& GetSearchDirs(cbProject* prj);
-        RemoteDebuggingMap& GetRemoteDebuggingMap();
+        RemoteDebuggingMap& GetRemoteDebuggingMap(cbProject* project = 0);
 
         void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
@@ -216,7 +216,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
         SearchDirsMap m_SearchDirs;
 
-        RemoteDebuggingMap m_RemoteDebugging;
+		typedef std::map<cbProject*, RemoteDebuggingMap> ProjectRemoteDebuggingMap;
+        ProjectRemoteDebuggingMap m_RemoteDebugging;
 
         int m_HookId; // project loader hook ID
 
