@@ -21,6 +21,15 @@ WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
 WX_DECLARE_STRING_HASH_MAP(wxString, LayoutViewsMap);
 
+struct CommentToken {
+    wxString lineComment;
+    wxString streamCommentStart;
+    wxString streamCommentEnd;
+    wxString boxCommentStart;
+    wxString boxCommentMid;
+    wxString boxCommentEnd;
+};
+
 extern int idStartHerePageLink;
 extern int idStartHerePageVarSubst;
 
@@ -137,6 +146,8 @@ class MainFrame : public wxFrame
         void OnEditCommentSelected(wxCommandEvent& event);
         void OnEditUncommentSelected(wxCommandEvent& event);
         void OnEditToggleCommentSelected(wxCommandEvent & event);
+        void OnEditStreamCommentSelected(wxCommandEvent & event);
+        void OnEditBoxCommentSelected(wxCommandEvent & event);
         void OnEditAutoComplete(wxCommandEvent& event);
 
         void OnEditBookmarksToggle(wxCommandEvent& event);
@@ -322,4 +333,5 @@ class MainFrame : public wxFrame
 };
 
 #endif // MAIN_H
+
 

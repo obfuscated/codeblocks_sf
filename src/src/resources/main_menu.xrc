@@ -446,6 +446,14 @@
         <label>Toggle comme&amp;nt</label>
         <help>Toggles the commentation of the selected block of code</help>
       </object>
+      <object class="wxMenuItem" name="idEditStreamCommentSelected">
+        <label>Stream-Comme&amp;nt</label>
+        <help>Comments the selected code</help>
+      </object>
+      <object class="wxMenuItem" name="idEditBoxCommentSelected">
+        <label>Box-Comme&amp;nt</label>
+        <help>Boxcomments the selected lines of code</help>
+      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditAutoComplete">
         <label>Auto-complete</label>
