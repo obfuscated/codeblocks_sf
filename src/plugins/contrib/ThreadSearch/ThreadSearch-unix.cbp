@@ -83,7 +83,7 @@
 		<Unit filename="ThreadSearchViewManagerMessagesNotebook.cpp" />
 		<Unit filename="ThreadSearchViewManagerMessagesNotebook.h" />
 		<Unit filename="logging.h" />
-		<Unit filename="plugin/manifest.xml" />
+		<Unit filename="manifest.xml" />
 		<Unit filename="update" />
 		<Unit filename="update.bat" />
 		<Extensions>

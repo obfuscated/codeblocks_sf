@@ -228,7 +228,6 @@ public:
 
 	void OnMarginClick(wxScintillaEvent& event);
 	void OnContextMenu(wxContextMenuEvent& event);
-	void OnMouseRightUp(wxMouseEvent& event);
     void OnLoggerClick      (const wxString& file, long line);  // Called by ThreadSearchLoggerBase derived instance
 																// when user clicks on a search result
     void OnLoggerDoubleClick(const wxString& file, long line);  // Called by ThreadSearchLoggerBase derived instance

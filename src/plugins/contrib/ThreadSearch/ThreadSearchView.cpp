@@ -81,10 +81,6 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
 			(wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
 			&ThreadSearchView::OnContextMenu);
 
-	Connect(id, wxEVT_RIGHT_UP,
-			(wxObjectEventFunction) (wxEventFunction) (wxMouseEventFunction)
-			&ThreadSearchView::OnMouseRightUp);
-
 	Connect(idTxtSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&ThreadSearchView::OnTxtSearchDirPathTextEvent);
@@ -112,10 +108,6 @@ ThreadSearchView::~ThreadSearchView()
 	Disconnect(id, wxEVT_CONTEXT_MENU,
 			(wxObjectEventFunction) (wxEventFunction) (wxContextMenuEventFunction)
 			&ThreadSearchView::OnContextMenu);
-
-	Disconnect(id, wxEVT_RIGHT_UP,
-			(wxObjectEventFunction) (wxEventFunction) (wxMouseEventFunction)
-			&ThreadSearchView::OnMouseRightUp);
 
 	Disconnect(idTxtSearchDirPath, wxEVT_COMMAND_TEXT_UPDATED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -520,15 +512,7 @@ void ThreadSearchView::OnMarginClick(wxScintillaEvent& event)
 
 void ThreadSearchView::OnContextMenu(wxContextMenuEvent& event)
 {
-	// Default cbStyledTextCtrl contextual menu
-	m_pSearchPreview->ProcessEvent(event);
-}
-
-
-void ThreadSearchView::OnMouseRightUp(wxMouseEvent& event)
-{
-	// Default cbStyledTextCtrl contextual menu
-	m_pSearchPreview->ProcessEvent(event);
+	event.StopPropagation();
 }
 
 
