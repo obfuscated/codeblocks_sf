@@ -53,6 +53,8 @@ static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
 
 // gdb: do_initial_child_stuff: process 1392
 static wxRegEx reChildPid(_T("gdb: do_initial_child_stuff: process ([0-9]+)"));
+// same as above but for gdb >= 6.7 (TODO: need to check the exact version it was changed)
+static wxRegEx reChildPid2(_T("gdb: kernel event for pid=([0-9]+)"));
 
 
 // scripting support
@@ -714,21 +716,35 @@ void GDB_driver::ParseOutput(const wxString& output)
     // program. It then sets the child PID and never enters here
     // again because the "want_debug_events" condition below
     // is not satisfied anymore...
-    if (platform::windows && want_debug_events && output.Contains(_T("do_initial_child_stuff")))
+    if (platform::windows && want_debug_events)
     {
-        // got the line with the PID, parse it out:
-        // e.g.
-        // gdb: do_initial_child_stuff: process 1392
-        if (reChildPid.Matches(output))
-        {
-            wxString pidStr = reChildPid.GetMatch(output, 1);
-            long pid = 0;
-            pidStr.ToLong(&pid);
-            SetChildPID(pid);
-            want_debug_events = false;
-            disable_debug_events = true;
-            m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
-        }
+    	wxRegEx* re = 0;
+		if ((m_GDBVersionMajor > 6 || (m_GDBVersionMajor == 6 && m_GDBVersionMinor >= 7)) &&
+			output.Contains(_T("CREATE_PROCESS_DEBUG_EVENT")))
+		{
+			re = &reChildPid2;
+		}
+		else if (m_GDBVersionMajor <= 6 && output.Contains(_T("do_initial_child_stuff")))
+		{
+			re = &reChildPid;
+		}
+		
+		if (re)
+		{
+			// got the line with the PID, parse it out:
+			// e.g.
+			// gdb: do_initial_child_stuff: process 1392
+			if (re->Matches(output))
+			{
+				wxString pidStr = re->GetMatch(output, 1);
+				long pid = 0;
+				pidStr.ToLong(&pid);
+				SetChildPID(pid);
+				want_debug_events = false;
+				disable_debug_events = true;
+				m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+			}
+		}
     }
 
     if (!want_debug_events &&
