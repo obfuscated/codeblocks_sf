@@ -636,17 +636,23 @@ void cbEditor::UpdateProjectFile()
 
 void cbEditor::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back)
 {
-    cbStyledTextCtrl* ctrl = GetControl();
-
-    ctrl->MarkerDefine(marker, markerType);
-	ctrl->MarkerSetForeground(marker, fore);
-	ctrl->MarkerSetBackground(marker, back);
+    m_pControl->MarkerDefine(marker, markerType);
+	m_pControl->MarkerSetForeground(marker, fore);
+	m_pControl->MarkerSetBackground(marker, back);
+	
+	if (m_pControl2)
+	{
+		m_pControl2->MarkerDefine(marker, markerType);
+		m_pControl2->MarkerSetForeground(marker, fore);
+		m_pControl2->MarkerSetBackground(marker, back);
+	}
 }
 
 void cbEditor::UnderlineFoldedLines(bool underline)
 {
-    cbStyledTextCtrl* ctrl = GetControl();
-    ctrl->SetFoldFlags(underline? 16 : 0);
+    m_pControl->SetFoldFlags(underline ? 16 : 0);
+    if (m_pControl2)
+		m_pControl2->SetFoldFlags(underline ? 16 : 0);
 }
 
 cbStyledTextCtrl* cbEditor::CreateEditor()
@@ -788,9 +794,10 @@ void cbEditor::Split(cbEditor::SplitType split)
             break;
     }
 
-    // update right control's look'n'feel
-    InternalSetEditorStyleBeforeFileOpen(m_pControl2);
-    InternalSetEditorStyleAfterFileOpen(m_pControl2);
+    // update controls' look'n'feel
+    SetEditorStyleBeforeFileOpen();
+    SetEditorStyleAfterFileOpen();
+    
     // apply syntax highlighting too
     if (m_pTheme)
         m_pTheme->Apply(m_lang, m_pControl2);
@@ -2395,7 +2402,7 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
         case 1: // bookmarks and breakpoints margin
         {
             int lineYpix = event.GetPosition();
-            int line = m_pControl->LineFromPosition(lineYpix);
+            int line = GetControl()->LineFromPosition(lineYpix);
 
             ToggleBreakpoint(line);
             break;
@@ -2403,9 +2410,9 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
         case 2: // folding margin
         {
             int lineYpix = event.GetPosition();
-            int line = m_pControl->LineFromPosition(lineYpix);
+            int line = GetControl()->LineFromPosition(lineYpix);
 
-            m_pControl->ToggleFold(line);
+            GetControl()->ToggleFold(line);
             break;
         }
     }
