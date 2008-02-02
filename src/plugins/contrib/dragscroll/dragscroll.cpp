@@ -999,7 +999,8 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
             mouseXY = ((wxWindow*)m_pEvtObject)->ScreenToClient(wxGetMousePosition());
             scrollx = abs(mouseXY.x - m_InitX) ;
             scrolly = abs(mouseXY.y - m_InitY) ;
-            if ( ( scrolly > 1) || (scrollx > 1) ) break;
+            //-if ( ( scrolly > 1) || (scrollx > 1) ) break; 2008/02/2
+            if ( ( scrolly > 2) || (scrollx > 2) ) break;
             i += 10;
         }
 
@@ -1014,7 +1015,8 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
              LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );
             #endif
             if (p_cbStyledTextCtrl && (m_pEvtObject == p_cbStyledTextCtrl) //v0.21
-                && ( ( scrolly > 1) || (scrollx > 1) ))
+                //-&& ( ( scrolly > 1) || (scrollx > 1) )) 2008/02/2
+                && ( ( scrolly > 2) || (scrollx > 2) ))
             {   m_DragMode = DRAG_START;
                 return;
             }
@@ -1029,7 +1031,8 @@ void MyMouseEvents::OnMouseEvent(wxMouseEvent& event)    //GTK
             //}//endelse
             else {  // listctrl windows ALWAYS report 24 pixel y move
                     // when just hitting the mouse button.
-                if ( (scrolly > 1) || (scrollx > 1))
+                //-if ( (scrolly > 1) || (scrollx > 1)) 2008/02/2
+                if ( (scrolly > 2) || (scrollx > 2))
                 {   m_DragMode = DRAG_START;
                     return;
                 }
