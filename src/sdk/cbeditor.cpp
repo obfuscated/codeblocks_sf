@@ -296,6 +296,9 @@ struct cbEditorInternalData
     int m_LastMarginMenuLine;
     int m_LastDebugLine;
 
+    bool mFoldingLimit;
+    int mFoldingLimitLevel;
+
     wxFontEncoding m_encoding;
     bool m_useByteOrderMark;
     int m_byteOrderMarkLength;
@@ -853,6 +856,10 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
             m_Shortname = m_pProjectFile->file.GetFullName();
         SetEditorTitle(m_Shortname);
     }
+
+    // Folding properties.
+	m_pData->mFoldingLimit = mgr->ReadBool(_T("/folding/limit"), false);
+    m_pData->mFoldingLimitLevel = mgr->ReadInt(_T("/folding/limit_level"), 1);
 
     // EOL properties
     m_pData->m_strip_trailing_spaces = mgr->ReadBool(_T("/eol/strip_trailing_spaces"), true);
@@ -1555,27 +1562,31 @@ bool cbEditor::DoFoldLine(int line, int fold)
         cbAssert(m_pControl2);
     cbStyledTextCtrl* ctrl = GetControl();
     int level = ctrl->GetFoldLevel(line);
+
+	// The fold parameter is the type of folding action requested
+	// 0 = Unfold; 1 = Fold; 2 = Toggle folding.
+
+	// Check if the line is a header (fold point).
     if (level & wxSCI_FOLDLEVELHEADERFLAG)
     {
-        bool expand = false;
-        if (fold == 2) // toggle
-        {
-            ctrl->ToggleFold(line);
-            return true;
-        }
-        else
-            expand = fold == 0;
-        bool IsCurLineFolded = ctrl->GetFoldExpanded(line);
-        /* -------------------------------------------------------
-        *  fold = 0 (Unfold), 1 (fold), 2 (toggle)
-        *  So check if fold = 0 then GetFoldExpanded(line) = false
-        *  before toggling it and vice-versa
-        *  -----------------------------------------------------*/
-        if ((!IsCurLineFolded && expand) || (IsCurLineFolded && !expand))
-        {
-            ctrl->ToggleFold(line);
-            return true;
-        }
+    	bool IsExpanded = ctrl->GetFoldExpanded(line);
+
+		// If a fold/unfold request is issued when the block is already
+		// folded/unfolded, ignore the request.
+    	if (fold == 0 && IsExpanded) return true;
+    	if (fold == 1 && !IsExpanded) return true;
+
+    	// Apply the folding level limit only if the current block will be
+    	// folded (that means it's currently expanded), folding level limiter
+    	// must be enabled of course. Unfolding will not be affected.
+    	if (m_pData->mFoldingLimit && IsExpanded)
+    	{
+    		if ((level & wxSCI_FOLDLEVELNUMBERMASK) > (wxSCI_FOLDLEVELBASE + m_pData->mFoldingLimitLevel-1))
+				return false;
+    	}
+
+    	ctrl->ToggleFold(line);
+    	return true;
     }
     return false;
 }

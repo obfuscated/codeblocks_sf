@@ -162,7 +162,9 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "chkFoldXml", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/fold_xml"), true));
    	XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/underline_folded_line"), true));
     XRCCTRL(*this, "lstIndicators", wxChoice)->SetSelection(cfg->ReadInt(_T("/folding/indicator"), 2));
-
+    XRCCTRL(*this, "chkFoldLimit", wxCheckBox)->SetValue(cfg->ReadBool(_T("/folding/limit"), false));
+    XRCCTRL(*this, "spnFoldLimitLevel", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/folding/limit_level"), 1));
+    
 	//gutter
     wxColour gutterColour = cfg->ReadColour(_T("/gutter/colour"), *wxLIGHT_GREY);
     XRCCTRL(*this, "lstGutterMode", wxChoice)->SetSelection(cfg->ReadInt(_T("/gutter/mode"), 0));
@@ -902,6 +904,8 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/folding/fold_xml"), 		    XRCCTRL(*this, "chkFoldXml", wxCheckBox)->GetValue());
         cfg->Write(_T("/folding/underline_folded_line"), XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->GetValue());
         cfg->Write(_T("/folding/indicator"), 		    XRCCTRL(*this, "lstIndicators", wxChoice)->GetSelection());
+        cfg->Write(_T("/folding/limit"), 				XRCCTRL(*this, "chkFoldLimit", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/limit_level"), 		    XRCCTRL(*this, "spnFoldLimitLevel", wxSpinCtrl)->GetValue());
 
         //eol
         cfg->Write(_T("/show_eol"), 			        XRCCTRL(*this, "chkShowEOL", wxCheckBox)->GetValue());
