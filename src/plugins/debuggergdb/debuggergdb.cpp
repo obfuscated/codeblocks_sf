@@ -1845,50 +1845,59 @@ void DebuggerGDB::AddDataBreakpoint()
     }
 }
 
+void DebuggerGDB::Break()
+{
+    // m_Process is PipedProcess I/O; m_Pid is debugger pid
+    if (m_pProcess && m_Pid && !IsStopped())
+	{
+		long pid = m_State.GetDriver()->GetChildPID();
+	#ifndef __WXMSW__
+		// non-windows gdb can interrupt the running process. yay!
+		if (pid <= 0) // look out for the "fake" PIDs (killall)
+			cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);
+		else
+			wxKill(pid, wxSIGINT);
+	#else
+		// windows gdb can interrupt the running process too. yay!
+		bool done = false;
+		if (DebugBreakProcessFunc && pid > 0)
+		{
+			Log(_("Trying to pause the running process..."));
+			HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+			if (proc)
+			{
+				DebugBreakProcessFunc(proc); // yay!
+				CloseHandle(proc);
+				done = true;
+			}
+			else
+				Log(_("Failed."));
+		}
+	#endif
+	}
+}
+
 void DebuggerGDB::Stop()
 {
     // m_Process is PipedProcess I/O; m_Pid is debugger pid
     if (m_pProcess && m_Pid)
     {
-        if (IsStopped())
-        {
-            RunCommand(CMD_STOP);
-            m_pProcess->CloseOutput();
-        }
-        else
+        if (!IsStopped())
         {
             long pid = m_State.GetDriver()->GetChildPID();
-        #ifndef __WXMSW__
-            // non-windows gdb can interrupt the running process. yay!
             if (pid <= 0) // look out for the "fake" PIDs (killall)
+            {
                 cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);
+                return;
+            }
             else
-                wxKill(pid, wxSIGINT);
-        #else
-            // windows gdb can interrupt the running process too. yay!
-            bool done = false;
-            if (DebugBreakProcessFunc && pid > 0)
             {
-                Log(_("Trying to pause the running process..."));
-                HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
-                if (proc)
-                {
-                    DebugBreakProcessFunc(proc); // yay!
-                    CloseHandle(proc);
-                    done = true;
-                }
-                else
-                    Log(_("Failed."));
+				m_pProcess->CloseOutput();
+				m_pProcess->Kill(pid, wxSIGKILL);
             }
-
-            if (!done)
-            {
-                // we failed...
-                m_pProcess->CloseOutput();
-                m_pProcess->Kill(m_Pid, wxSIGKILL);
-            }
-        #endif
         }
+		RunCommand(CMD_STOP);
+		m_pProcess->CloseOutput();
     }
 }
 
@@ -2096,7 +2105,10 @@ void DebuggerGDB::OnAddDataBreakpoint(wxCommandEvent& event)
 
 void DebuggerGDB::OnStop(wxCommandEvent& event)
 {
-    Stop();
+	if (!IsStopped())
+		Break();
+	else
+		Stop();
 }
 
 void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)

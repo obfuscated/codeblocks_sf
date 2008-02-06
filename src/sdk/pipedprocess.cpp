@@ -180,7 +180,7 @@ void PipedProcess::ForfeitStreams()
     }
     if (IsInputAvailable())
     {
-        wxInputStream *in = GetErrorStream();
+        wxInputStream *in = GetInputStream();
         while(in->Read(&buf, sizeof(buf)).LastRead())
             ;
     }

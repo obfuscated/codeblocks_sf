@@ -75,6 +75,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void StepOut();
         void RunToCursor();
         void ToggleBreakpoint();
+        void Break();
         void Stop();
         bool Validate(const wxString& line, const char cb);
         bool IsRunning() const { return m_pProcess; }

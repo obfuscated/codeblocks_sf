@@ -406,7 +406,10 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 		/** @brief Execute the next instruction, stepping into function calls if needed, and return control to the debugger. */
 		virtual void Step() = 0;
 
-		/** @brief Stop the debugging process. */
+		/** @brief Break the debugging process (stop the debuggee for debugging). */
+		virtual void Break() = 0;
+
+		/** @brief Stop the debugging process (exit debugging). */
 		virtual void Stop() = 0;
 
         /** @brief Is the plugin currently debugging? */

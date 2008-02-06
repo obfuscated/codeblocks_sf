@@ -890,7 +890,7 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
     }
 }
 
-bool CompilerGCC::CheckDebuggerIsRunning()
+bool CompilerGCC::StopRunningDebugger()
 {
     PluginsArray plugins = Manager::Get()->GetPluginManager()->GetDebuggerOffers();
     if (plugins.GetCount())
@@ -901,15 +901,28 @@ bool CompilerGCC::CheckDebuggerIsRunning()
             // is the debugger running?
             if (dbg->IsRunning())
             {
-                m_Log->Clear();
-                Manager::Get()->GetLogManager()->Log(_("Debugger is active"), m_PageIndex);
-                Manager::Get()->GetLogManager()->Log(_("Aborting build"), m_PageIndex);
-                cbMessageBox(_("The debugger is currently active. Aborting build..."), _("Debugger active"), wxICON_WARNING);
-                return true;
+                int ret = cbMessageBox(_("The debugger must be stopped to do a (re-)build.\n"
+                                         "Do you want to stop the debugger now?"),
+                                         _("Information"),
+                                        wxYES_NO | wxCANCEL | wxICON_QUESTION);
+                switch (ret)
+                {
+                    case wxID_YES:
+                    {
+                        m_Log->Clear();
+                        Manager::Get()->GetLogManager()->Log(_("Stopping debugger..."), m_PageIndex);
+                        dbg->Stop();
+                        break;
+                    }
+                    case wxID_NO: // fallthrough
+                    default:
+                        Manager::Get()->GetLogManager()->Log(_("Aborting (re-)build."), m_PageIndex);
+                        return false;
+                }
             }
         }
     }
-    return false;
+    return true;
 }
 
 void CompilerGCC::SaveOptions()
@@ -2492,7 +2505,7 @@ int CompilerGCC::Build(const wxString& target)
     if (realTarget.IsEmpty())
         realTarget = GetTargetString();
 
-    if (CheckDebuggerIsRunning())
+    if (!StopRunningDebugger())
         return -1;
 
     if (!CheckProject())
@@ -2565,7 +2578,7 @@ int CompilerGCC::Rebuild(const wxString& target)
     if (realTarget.IsEmpty())
         return -1;
 
-    if (CheckDebuggerIsRunning())
+    if (!StopRunningDebugger())
         return -1;
 
     // make sure all project files are saved
@@ -2625,7 +2638,7 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
     if (realTarget.IsEmpty())
         return -1;
 
-    if (CheckDebuggerIsRunning())
+    if (!StopRunningDebugger())
         return -1;
 
     DoPrepareQueue();
@@ -2669,7 +2682,7 @@ int CompilerGCC::RebuildWorkspace(const wxString& target)
 
 int CompilerGCC::CleanWorkspace(const wxString& target)
 {
-    if (CheckDebuggerIsRunning())
+    if (!StopRunningDebugger())
         return -1;
 
     DoPrepareQueue();
