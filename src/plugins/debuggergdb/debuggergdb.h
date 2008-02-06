@@ -117,6 +117,9 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool EnsureBuildUpToDate();
         int DoDebug();
 
+        int RunNixConsole();
+        wxString GetConsoleTty(int ConsolePid);
+
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDebug(wxCommandEvent& event);
         void OnStop(wxCommandEvent& event);
@@ -222,10 +225,6 @@ class DebuggerGDB : public cbDebuggerPlugin
         int m_HookId; // project loader hook ID
 
         // Linux console support
-        int      RunNixConsole();
-        wxString GetConsoleTty(int ConsolePid);
-        long GetGDBChildPID(void);
-
         bool     m_bIsConsole;
         int      m_nConsolePid;
         wxString m_ConsoleTty;

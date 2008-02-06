@@ -55,6 +55,9 @@ static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
 static wxRegEx reChildPid(_T("gdb: do_initial_child_stuff: process ([0-9]+)"));
 // same as above but for gdb >= 6.7 (TODO: need to check the exact version it was changed)
 static wxRegEx reChildPid2(_T("gdb: kernel event for pid=([0-9]+)"));
+// [Switching to Thread -1234655568 (LWP 18590)]
+// [New Thread -1234655568 (LWP 18590)]
+static wxRegEx reChildPid3(_T("Thread[ \t]+[-0-9]+[ \t]+\\(LWP ([0-9]+)\\)]"));
 
 
 // scripting support
@@ -745,6 +748,17 @@ void GDB_driver::ParseOutput(const wxString& output)
 				m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
 			}
 		}
+    }
+    else if (!platform::windows && m_ChildPID == 0)
+    {
+    	if (reChildPid3.Matches(output)) // [Switching to Thread -1234655568 (LWP 18590)]
+    	{
+			wxString pidStr = reChildPid3.GetMatch(output, 1);
+			long pid = 0;
+			pidStr.ToLong(&pid);
+			SetChildPID(pid);
+			m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+    	}
     }
 
     if (!want_debug_events &&

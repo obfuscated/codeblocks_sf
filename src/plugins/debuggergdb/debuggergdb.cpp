@@ -2641,8 +2641,6 @@ int DebuggerGDB::RunNixConsole()
     {
     	// show what we found as tty
         DebugLog(wxString::Format(wxT("GetConsoleTTY[%s]ConsolePid[%d]"),m_ConsoleTty.c_str(),m_nConsolePid));
-
-        GetGDBChildPID();
         return m_nConsolePid;
     }
     // failed to find the console tty
@@ -2718,51 +2716,6 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
         DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
 #endif // !__WXMSW__
     return wxEmptyString;
-}
-
-long DebuggerGDB::GetGDBChildPID(void)
-{
-#ifndef __WXMSW__
-    wxString psCmd;
-    wxArrayString psOutput;
-    wxArrayString psErrors;
-
-    //Look for the pid of the debug process
-    //Format will be command PID
-    //Maybe we can retrieve the size of the command line...
-    psCmd << wxT("ps ax -o command:100,pid");
-    DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
-
-    int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
-    psCmd.Clear();
-
-    if (result != 0)
-    {   psCmd << wxT("Result of ps x:") << result;
-        DebugLog(wxString::Format( _("Execution Error: %s"), psCmd.c_str()) );
-        return -1;
-    }
-
-    int knt = psOutput.GetCount();
-    for (int i = 0; i < knt; i++)
-    {
-        wxString ConsPidStr;
-        long pspid;
-        ConsPidStr = psOutput.Item(i);
-        DebugLog(ConsPidStr);
-        //Maybe we should look for the real path or name of the debugger?
-        if (ConsPidStr.Contains(_T("gdb")))
-        {
-            ConsPidStr = ConsPidStr.AfterLast(_T(' '));
-            if (ConsPidStr.ToLong(&pspid) && (pspid >= 0))
-            {
-                DebugLog(wxString::Format( _("Find PID for gdb: %d"), pspid ));
-                m_State.GetDriver()->SetChildPID(pspid);
-            }
-            return pspid;
-        }
-    }
-#endif // !__WXMSW__
-    return -1;
 }
 
 void DebuggerGDB::OnCompilerStarted(CodeBlocksEvent& event)
