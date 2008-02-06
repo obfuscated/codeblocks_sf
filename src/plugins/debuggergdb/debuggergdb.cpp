@@ -1855,6 +1855,8 @@ void DebuggerGDB::Break()
     if (m_pProcess && m_Pid && !IsStopped())
 	{
 		long pid = m_State.GetDriver()->GetChildPID();
+		if (pid <= 0)
+			pid = m_Pid; // try poking gdb directly
 	#ifndef __WXMSW__
 		// non-windows gdb can interrupt the running process. yay!
 		if (pid <= 0) // look out for the "fake" PIDs (killall)
