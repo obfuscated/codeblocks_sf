@@ -57,7 +57,7 @@ static wxRegEx reChildPid(_T("gdb: do_initial_child_stuff: process ([0-9]+)"));
 static wxRegEx reChildPid2(_T("gdb: kernel event for pid=([0-9]+)"));
 // [Switching to Thread -1234655568 (LWP 18590)]
 // [New Thread -1234655568 (LWP 18590)]
-static wxRegEx reChildPid3(_T("Thread[ \t]+[-0-9]+[ \t]+\\(LWP ([0-9]+)\\)]"));
+static wxRegEx reChildPid3(_T("Thread[ \t]+[xA-Fa-f0-9-]+[ \t]+\\(LWP ([0-9]+)\\)]"));
 
 
 // scripting support
