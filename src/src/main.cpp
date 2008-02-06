@@ -478,6 +478,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_InitiatedShutdown(false),
        m_AutoHideLogs(false),
        m_AutoHideLockCounter(0),
+       m_LastLayoutIsTemp(false),
        m_pScriptConsole(0),
        m_pBatchBuildDialog(0),
        m_pProgressBar(0)
@@ -1183,11 +1184,13 @@ void MainFrame::SaveWindowState()
     }
 }
 
-void MainFrame::LoadViewLayout(const wxString& name)
+void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
 {
     if (m_LastLayoutName != name && !DoCheckCurrentLayoutForChanges(true))
         return;
 
+	m_LastLayoutIsTemp = isTemp;
+	
     wxString layout = m_LayoutViews[name];
     if (layout.IsEmpty())
     {
@@ -1318,7 +1321,9 @@ void MainFrame::DoSelectLayout(const wxString& name)
                 continue;
             items[i]->Check(items[i]->GetText().IsSameAs(name));
         }
-        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
+        
+        if (!m_LastLayoutIsTemp)
+			Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
     }
 }
 
@@ -4220,7 +4225,7 @@ void MainFrame::OnLayoutQuery(CodeBlocksLayoutEvent& event)
 
 void MainFrame::OnLayoutSwitch(CodeBlocksLayoutEvent& event)
 {
-    LoadViewLayout(event.layout);
+    LoadViewLayout(event.layout, true);
 }
 
 void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)

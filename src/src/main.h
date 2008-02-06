@@ -256,7 +256,7 @@ class MainFrame : public wxFrame
         wxMenuItem* AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos = -1, bool checkable = false);
         void RemovePluginFromMenus(const wxString& pluginName);
 
-        void LoadViewLayout(const wxString& name);
+        void LoadViewLayout(const wxString& name, bool isTemp = false);
         void SaveViewLayout(const wxString& name, const wxString& layout, bool select = false);
         void DoSelectLayout(const wxString& name);
         void DoFixToolbarsLayout();
@@ -320,6 +320,7 @@ class MainFrame : public wxFrame
 
         wxString m_LastLayoutName;
         wxString m_LastLayoutData;
+        bool m_LastLayoutIsTemp;
 
         wxWindow* m_pScriptConsole;
 

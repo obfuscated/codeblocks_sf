@@ -462,7 +462,11 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     m_pTree = 0L;
 
     //Close debug session when appShutDown
-    Stop();
+    if (m_State.HasDriver())
+    {
+		Stop();
+		wxYieldIfNeeded();
+    }
 
     m_State.CleanUp();
 
