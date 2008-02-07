@@ -19,6 +19,14 @@
 class TextFileSearcher
 {
 public:
+	enum eFileSearcherReturn
+	{
+		idStringFound=0,
+		idStringNotFound,
+		idFileNotFound,
+		idFileOpenError
+	};
+
 	/** BuildTextFileSearcher
 	  * Builds a TextFileSearcherRegEx or a TextFileSearcherText pointer depending on regEx
 	  * @return TextFileSearcher* : NULL if failure (regular expression syntax for example)
@@ -58,7 +66,7 @@ public:
 	  * @return true if success (error can only come from bad reg ex or file open
 	  * failure).
 	  */
-	bool FindInFile(const wxString& filePath, wxArrayString &foundLines);
+	eFileSearcherReturn FindInFile(const wxString& filePath, wxArrayString &foundLines);
 
 protected:
 	/** Constructor. */

@@ -48,7 +48,6 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNO_LOGGING" />
 			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\tinyxml" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#cb.include)\wxFlatNotebook\include" />
 			<Add directory="$(#WX.include)" />

@@ -41,35 +41,31 @@ TextFileSearcher* TextFileSearcher::BuildTextFileSearcher(const wxString& search
 	if ( pFileSearcher && !pFileSearcher->IsOk(&errorMessage)  )
 	{
 		delete pFileSearcher;
-		pFileSearcher = NULL;
-		cbMessageBox(errorMessage, _T("Error"), wxICON_ERROR);
+		pFileSearcher = 0;
 	}
 
 	return pFileSearcher;
 }
 
 
-bool TextFileSearcher::FindInFile(const wxString& filePath, wxArrayString &foundLines)
+TextFileSearcher::eFileSearcherReturn TextFileSearcher::FindInFile(const wxString& filePath, wxArrayString &foundLines)
 {
-	bool     success = true;
+	eFileSearcherReturn success=idStringNotFound;
 	wxString line;
 
 	// Tests file existence
-	success = wxFileName::FileExists(filePath);
-	if ( success == false )
+	if ( !wxFileName::FileExists(filePath) )
 	{
 		// We skip missing files without alerting user.
 		// If a file has disappeared, it is not our problem.
 		// cbMessageBox( filePath + _T(" does not exist."), _T("Error"), wxICON_ERROR);
-		return success;
+		return idFileNotFound;
 	}
 
 	// File open
-	success = m_TextFile.Open(filePath, wxConvFile);
-	if ( success == false )
+	if ( !m_TextFile.Open(filePath, wxConvFile) )
 	{
-		cbMessageBox(_T("Failed to open ") + filePath, _T("Error"), wxICON_ERROR);
-		return success;
+		return idFileOpenError;
 	}
 
 	// Tests all file lines
@@ -78,6 +74,7 @@ bool TextFileSearcher::FindInFile(const wxString& filePath, wxArrayString &found
 		line = m_TextFile.GetLine(i);
 		if ( MatchLine(line) )
 		{
+			success=idStringFound;
 			// An interesting line is found. We clean and add it to the provided array
 			line.Replace(_T("\t"), _T(" "));
 			line.Replace(_T("\r"), _T(" "));

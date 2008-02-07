@@ -88,6 +88,8 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
 	Connect(idTxtSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&ThreadSearchView::OnTxtSearchMaskTextEvent);
+	Connect(wxEVT_THREAD_SEARCH_ERROR,
+			(wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 }
 
 
@@ -116,6 +118,8 @@ ThreadSearchView::~ThreadSearchView()
 	Disconnect(idTxtSearchMask, wxEVT_COMMAND_TEXT_UPDATED,
 			(wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
 			&ThreadSearchView::OnTxtSearchMaskTextEvent);
+	Disconnect(wxEVT_THREAD_SEARCH_ERROR,
+			(wxObjectEventFunction)&ThreadSearchView::OnThreadSearchErrorEvent);
 
 	m_ThreadSearchPlugin.OnThreadSearchViewDestruction();
 
@@ -144,6 +148,11 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_TIMER(idTmrListCtrlUpdate,          ThreadSearchView::OnTmrListCtrlUpdate)
 END_EVENT_TABLE();
 
+
+void ThreadSearchView::OnThreadSearchErrorEvent(const ThreadSearchEvent& event)
+{
+	cbMessageBox(event.GetString(), _T("Error"), wxICON_ERROR);
+}
 
 void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &event)
 {

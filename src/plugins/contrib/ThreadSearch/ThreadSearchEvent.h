@@ -47,11 +47,17 @@ typedef void (wxEvtHandler::*ThreadSearchEventFunction)(ThreadSearchEvent&);
 
 BEGIN_DECLARE_EVENT_TYPES()
 	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH, wxID_ANY)
+	DECLARE_EXPORTED_EVENT_TYPE(WXEXPORT, wxEVT_THREAD_SEARCH_ERROR, wxID_ANY)
 END_DECLARE_EVENT_TYPES()
 
 #define EVT_THREAD_SEARCH(id, fn) \
 	DECLARE_EVENT_TABLE_ENTRY(wxEVT_THREAD_SEARCH, id, -1, \
 	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (ThreadSearchEventFunction) & fn,(wxObject *) NULL ),
 
+#define EVT_THREAD_SEARCH_ERROR(id, fn) \
+	DECLARE_EVENT_TABLE_ENTRY(wxEVT_THREAD_SEARCH_ERROR, id, -1, \
+	(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction) (ThreadSearchEventFunction) & fn,(wxObject *) NULL ),
+
 #endif // THREAD_SEARCH_EVENT_H
+
 

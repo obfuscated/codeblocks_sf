@@ -14,7 +14,7 @@
 
 #include <wx/defs.h>
 
-enum eConrolIds
+enum eControlIds
 {
 	idBtnDirSelectClick = wxID_HIGHEST,
 	idBtnShowDirItemsClick,

@@ -45,6 +45,14 @@ ThreadSearchThread::ThreadSearchThread(ThreadSearchView*           pThreadSearch
 																  findData.GetStartWord(),
 																  findData.GetMatchWord(),
 																  findData.GetRegEx());
+	if (!m_pTextFileSearcher)
+	{
+		ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+		event.SetString(_T("TextFileSearcher could not be instantiated."));
+		
+		// Using wxPostEvent, we avoid multi-threaded memory violation.
+		wxPostEvent( m_pThreadSearchView,event);
+	}
 }
 
 
@@ -195,18 +203,42 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 {
 	m_LineTextArray.Empty();
 
-	if ( m_pTextFileSearcher->FindInFile(path, m_LineTextArray) == true )
+	switch ( m_pTextFileSearcher->FindInFile(path, m_LineTextArray) )
 	{
-		// If text has been found at least once, we send an event to the view
-		// to log it.
-		if ( m_LineTextArray.GetCount() > 0 )
+		case TextFileSearcher::idStringFound:
 		{
 			ThreadSearchEvent event(wxEVT_THREAD_SEARCH, -1);
 			event.SetString(path);
 			event.SetLineTextArray(m_LineTextArray);
-
+			
 			// Using wxPostEvent, we avoid multi-threaded memory violation.
 			m_pThreadSearchView->PostThreadSearchEvent(event);
+			break;
+		}
+		case TextFileSearcher::idStringNotFound:
+		{
+			break;
+		}
+		case TextFileSearcher::idFileNotFound:
+		{
+			ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+			event.SetString(path + _T(" does not exist."));
+			
+			// Using wxPostEvent, we avoid multi-threaded memory violation.
+			wxPostEvent( m_pThreadSearchView,event);
+			break;
+		}
+		case TextFileSearcher::idFileOpenError:
+		{
+			ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+			event.SetString(_T("Failed to open ") + path);
+			
+			// Using wxPostEvent, we avoid multi-threaded memory violation.
+			wxPostEvent( m_pThreadSearchView,event);
+			break;
+		}
+		default:
+		{
 		}
 	}
 }
@@ -236,4 +268,5 @@ void ThreadSearchThread::AddProjectFiles(wxSortedArrayString& sortedArrayString,
 		if ( TestDestroy() == true ) return;
 	}
 }
+
 

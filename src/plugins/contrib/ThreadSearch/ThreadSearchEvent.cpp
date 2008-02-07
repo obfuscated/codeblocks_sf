@@ -17,6 +17,7 @@
  #include "ThreadSearchEvent.h"
 
 DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH)
+DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH_ERROR)
 IMPLEMENT_DYNAMIC_CLASS(ThreadSearchEvent, wxCommandEvent)
 
 ThreadSearchEvent::ThreadSearchEvent(wxEventType commandType, int id)

@@ -220,6 +220,7 @@ protected:
 	void EnableControls(bool enable);
 
 public:
+    void OnThreadSearchErrorEvent(const ThreadSearchEvent& event);
     void OnCboSearchExprEnter(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnBtnSearchClick(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnBtnOptionsClick(wxCommandEvent &event); // wxGlade: <event_handler>
