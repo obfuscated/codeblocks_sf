@@ -435,11 +435,11 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             {
                 reDataBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
             }
-	    else if (reHWBreakpoint.Matches(output))
-	    {
-	        reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
-	        reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
-	    }
+			else if (reHWBreakpoint.Matches(output))
+			{
+				reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+				reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
+			}
             else
                 m_pDriver->Log(output); // one of the error responses
         }
@@ -504,8 +504,12 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
             if (!m_BP)
                 return;
 
+			// This can crash because m_BP could already be deleted
+			// and if it isn't deleted already, it will be soon
+			// so there's no point in invalidating the bp number anyway
+			
             // invalidate bp number
-            m_BP->index = -1;
+//            m_BP->index = -1;
 
             if (!output.IsEmpty())
                 m_pDriver->Log(output);

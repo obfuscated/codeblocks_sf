@@ -44,9 +44,9 @@ static wxRegEx reBreak3(_T("^(0x[A-Fa-f0-9]+) in (.*)"));
 
 // Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
 #ifdef __WXMSW__
-static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([A-Za-z]:)([^:]+):([0-9]+)\".*"));
+static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+[\"]+([A-Za-z]:)([^:]+):([0-9]+)\".*"));
 #else
-static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+\"([^:]+):([0-9]+)\".*"));
+static wxRegEx rePendingFound(_T("^Pending[ \t]+breakpoint[ \t]+[\"]+([^:]+):([0-9]+)\".*"));
 #endif
 // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
 static wxRegEx rePendingFound1(_T("^Breakpoint[ \t]+([0-9]+),.*"));
@@ -923,46 +923,54 @@ void GDB_driver::ParseOutput(const wxString& output)
 
             // Pending breakpoint "C:/Devel/libs/irr_svn/source/Irrlicht/CSceneManager.cpp:1077" resolved
             wxString bpstr = lines[i];
-            // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
-            wxString newbpstr = lines[i+1];
 
-            if (rePendingFound.Matches(bpstr) &&
-                rePendingFound1.Matches(newbpstr))
+            if (rePendingFound.Matches(bpstr))
             {
-//                m_pDBG->Log(_T("MATCH"));
+            	// there are cases where 'newbpstr' is not the next message
+            	// e.g. [Switching to thread...]
+            	// so we 'll loop over lines starting with [
 
-                wxString file;
-                wxString lineStr;
+				// Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
+				wxString newbpstr = lines[++i];
+				while (i < lines.GetCount() - 1 && newbpstr.StartsWith(_T("[")))
+					newbpstr = lines[++i];
 
-                if(platform::windows)
-                {
-                    file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
-                    lineStr = rePendingFound.GetMatch(bpstr, 3);
-                }
-                else
-                {
-                    file = rePendingFound.GetMatch(bpstr, 1);
-                    lineStr = rePendingFound.GetMatch(bpstr, 2);
-                }
+                if (rePendingFound1.Matches(newbpstr))
+				{
+//					m_pDBG->Log(_T("MATCH"));
 
-                file = UnixFilename(file);
-//                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
-                long line;
-                lineStr.ToLong(&line);
-                DebuggerState& state = m_pDBG->GetState();
-                int bpindex = state.HasBreakpoint(file, line - 1);
-                DebuggerBreakpoint* bp = state.GetBreakpoint(bpindex);
-                if (bp)
-                {
-//                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
-                    long index;
-                    wxString indexStr = rePendingFound1.GetMatch(newbpstr, 1);
-                    indexStr.ToLong(&index);
-                    // finally! update the breakpoint index
-                    bp->index = index;
-                }
+					wxString file;
+					wxString lineStr;
+
+					if(platform::windows)
+					{
+						file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
+						lineStr = rePendingFound.GetMatch(bpstr, 3);
+					}
+					else
+					{
+						file = rePendingFound.GetMatch(bpstr, 1);
+						lineStr = rePendingFound.GetMatch(bpstr, 2);
+					}
+
+					file = UnixFilename(file);
+	//                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
+					long line;
+					lineStr.ToLong(&line);
+					DebuggerState& state = m_pDBG->GetState();
+					int bpindex = state.HasBreakpoint(file, line - 1);
+					DebuggerBreakpoint* bp = state.GetBreakpoint(bpindex);
+					if (bp)
+					{
+	//                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
+						long index;
+						wxString indexStr = rePendingFound1.GetMatch(newbpstr, 1);
+						indexStr.ToLong(&index);
+						// finally! update the breakpoint index
+						bp->index = index;
+					}
+				}
             }
-            i += 1;
         }
 
         // cursor change
