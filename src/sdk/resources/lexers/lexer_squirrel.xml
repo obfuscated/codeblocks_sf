@@ -38,6 +38,9 @@
 				<Style name="String"
 						index="6,12"
 						fg="0,0,255"/>
+				<Style name="Verbatim String"
+						index="13"
+						fg="0,0,255"/>
 				<Style name="Character"
 						index="7"
 						fg="224,160,0"/>
