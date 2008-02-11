@@ -37,6 +37,14 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
         ProjectFile(cbProject* prj);
         /// Destructor
         ~ProjectFile();
+        
+        /** Change filename of the file. Note that this does only update
+          * the internal variables. It does NOT rename the file on disk...
+          * It updates @c file, @c relativeFilename, @c relativeToCommonTopLevelPath
+          * and finally marks the parent project as modified.
+          * @note This allows renaming only the LAST part of the filename (the name and extension)
+          */
+		void Rename(const wxString& new_name);
 
         /** Make this file belong to an additional build target.
           * @param targetName The build target to add this file to. */
@@ -102,14 +110,12 @@ class ProjectFile  : public BlockAllocated<ProjectFile, 1000>
         wxString GetCustomBuildCommand(const wxString& compilerId);
 
         /** The full filename of this file. Usually you need to read from it and never write to it.
-          * @note If you set this anywhere in code,
-          * you *MUST* call UpdateFileDetails() afterwards or it won't compile anymore
+          * @note Use Rename() if you want to change this or else bad things will happen
           */
         wxFileName file;
 
         /** The relative (to the project) filename of this file. Usually you need to read from it and never write to it.
-          * @note If you set this anywhere in code,
-          * you *MUST* call UpdateFileDetails() afterwards or it won't compile anymore
+          * @note Use Rename() if you want to change this or else bad things will happen
           */
         wxString relativeFilename;
 

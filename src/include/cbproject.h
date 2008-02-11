@@ -655,6 +655,11 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * instead of re-using the existing one (if any).
           */
         virtual void AddToExtensions(const wxString& stringDesc);
+        
+        /** Internal use only.
+          * Updates the internal hashmap of project files.
+          */
+        virtual void ProjectFileRenamed(ProjectFile* pf);
 
     private:
         void Open();

@@ -2142,3 +2142,18 @@ void cbProject::AddToExtensions(const wxString& stringDesc)
         pos = nextPos; // prepare for next loop
     }
 }
+
+void cbProject::ProjectFileRenamed(ProjectFile* pf)
+{
+	for (ProjectFiles::iterator it = m_ProjectFilesMap.begin(); it != m_ProjectFilesMap.end(); ++it)
+	{
+		ProjectFile* itpf = it->second;
+		if (itpf == pf)
+		{
+			// got it
+			m_ProjectFilesMap.erase(it);
+			m_ProjectFilesMap[UnixFilename(pf->file.GetFullPath())] = pf;
+			break;
+		}
+	}
+}

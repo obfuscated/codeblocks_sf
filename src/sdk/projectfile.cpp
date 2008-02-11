@@ -53,6 +53,24 @@ ProjectFile::~ProjectFile()
     m_PFDMap.clear();
 }
 
+void ProjectFile::Rename(const wxString& new_name)
+{
+    wxString path = file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+
+	file.Assign(path + new_name);
+	relativeFilename = relativeFilename.BeforeLast(wxFILE_SEP_PATH);
+	relativeFilename.IsEmpty() || relativeFilename.Append(wxFILE_SEP_PATH);
+	relativeFilename.Append(new_name);
+
+	UpdateFileDetails();
+	if (project)
+	{
+		project->ProjectFileRenamed(this);
+		project->CalculateCommonTopLevelPath();
+		project->SetModified(true);
+	}
+}
+
 void ProjectFile::AddBuildTarget(const wxString& targetName)
 {
     if (buildTargets.Index(targetName) == wxNOT_FOUND)

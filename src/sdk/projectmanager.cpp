@@ -2493,16 +2493,8 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
                 return;
             }
             ProjectFile *pf = ftd->GetProjectFile();
-
-            pf->file.Assign(path + new_name);
-            pf->relativeFilename = pf->relativeFilename.BeforeLast(wxFILE_SEP_PATH);
-            pf->relativeFilename.IsEmpty() || pf->relativeFilename.Append(wxFILE_SEP_PATH);
-            pf->relativeFilename.Append(new_name);
-
-            pf->UpdateFileDetails();
-            prj->CalculateCommonTopLevelPath();
+            pf->Rename(new_name);
             RebuildTree();
-            prj->SetModified(true);
         }
     }
 }
