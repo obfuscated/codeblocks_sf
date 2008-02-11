@@ -21,6 +21,7 @@
 
 #include "cbeditorprintout.h"
 #include "printing_types.h"
+#include <wx/paper.h>
 
 cbEditorPrintout::cbEditorPrintout(const wxString& title, cbStyledTextCtrl* control, bool selectionOnly)
         : wxPrintout(title),
@@ -93,7 +94,10 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
     }
 
     wxPrintData* ppd = &(g_printer->GetPrintDialogData().GetPrintData());
-    wxSize page = ppd->GetPaperSize();
+    // We cannot use GetSize from wxPrintData, because it always returns -1 for page.x and page.y,
+    wxPrintPaperDatabase paperDB;
+    paperDB.CreateDatabase();
+    wxSize page=paperDB.GetSize(ppd->GetPaperId());
     if(ppd->GetOrientation() == wxLANDSCAPE )
     {
         int temp = page.x;
@@ -101,8 +105,9 @@ void cbEditorPrintout::GetPageInfo(int *minPage, int *maxPage, int *selPageFrom,
         page.y = temp;
     }
 
-    page.x = static_cast<int> (page.x * ppiScr.x / 25.4);
-    page.y = static_cast<int> (page.y * ppiScr.y / 25.4);
+    // We have to divide through 254 instead of 25.4, because GetSize() of paperDB returns tenth of millimeters
+    page.x = static_cast<int> (page.x * ppiScr.x / 254);
+    page.y = static_cast<int> (page.y * ppiScr.y / 254);
     m_pageRect = wxRect (0,
                          0,
                          page.x,
