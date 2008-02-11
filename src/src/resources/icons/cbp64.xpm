@@ -1,5 +1,5 @@
 /* XPM */
-static char *workspace64[] = {
+static const char *workspace64[] = {
 /* columns rows colors chars-per-pixel */
 "64 64 257 2",
 "   c #020106",

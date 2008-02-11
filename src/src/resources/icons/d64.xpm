@@ -1,5 +1,5 @@
 /* XPM */
-static char *d64[] = {
+static const char *d64[] = {
 /* columns rows colors chars-per-pixel */
 "64 64 135 2",
 "   c gray21",

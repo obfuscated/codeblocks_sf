@@ -1,5 +1,5 @@
 /* XPM */
-static char *_csd64[] = {
+static const char *_csd64[] = {
 /* columns rows colors chars-per-pixel */
 "64 66 256 2",
 "   c #000F00",

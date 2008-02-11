@@ -1,5 +1,5 @@
 /* XPM */
-static char *app[]={
+static const char *app[]={
 "32 32 11 1",
 "# c None",
 "f c #000083",

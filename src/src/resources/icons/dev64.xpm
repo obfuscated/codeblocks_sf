@@ -1,5 +1,5 @@
 /* XPM */
-static char *dev64[] = {
+static const char *dev64[] = {
 /* columns rows colors chars-per-pixel */
 "64 56 213 2",
 "   c #020202",
