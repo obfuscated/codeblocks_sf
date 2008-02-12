@@ -1152,7 +1152,7 @@ void wxKeyBinder::Attach(wxWindow *p)
     if (wxNOT_FOUND == usableWindows.Index(_T("*"),false)) //+v0.4.4 debugging
     if (wxNOT_FOUND == usableWindows.Index(windowName,false)) //+v0.4.2
     {
-        LOGIT( _T("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str() );
+        //-LOGIT( _T("wxKeyBinder::Attach skipping [%s]"), p->GetName().c_str() );
         return;
     }
 

@@ -291,13 +291,15 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 	//-wxString str = pLclMnuItem->GetLabel();
 
 	wxString str = strText.BeforeFirst('\t');
-	 // GTK is returing '&' as underscore
+	 // GTK is substituting '&' with an underscore
     int idx = 0;
     // change the first underscore to an & mnemonic, all others to blank
     if ( -1 != (idx = str.Find('_'))) str[idx] = '&';
     for ( size_t i=0; i<str.Length(); ++i)
         if ( str[i]=='_'){ str[i] = ' ';}
+    #if defined(LOGGING)
 	 LOGIT( _T("Updating menu item Label[%s]Text[%s]id[%d]"), str.c_str(), strText.c_str(), pLclMnuItem->GetId() );
+    #endif
 
 
 	// on GTK, an optimization in wxMenu::SetText checks
@@ -306,12 +308,16 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
 	// to solve the problem, a space is added or removed
 	// from the label to override this optimization check
 	str.Trim();
+	#if not wxCHECK_VERSION(2, 8, 7) //2007/02/12
 	if (str == pLclMnuItem->GetLabel())
 		str += wxT(" ");
+    #endif
 
 	if (m_nShortcuts <= 0)
 	{
+		#if defined(LOGGING)
 		LOGIT(wxT("wxMenuCmd::Update - no shortcuts defined for [%s]"), str.c_str());
+		#endif
 
 		// no more shortcuts for this menuitem: SetText()
 		// will delete the hotkeys associated...

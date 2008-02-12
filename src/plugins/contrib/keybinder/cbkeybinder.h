@@ -26,7 +26,7 @@
 #include "keybinder.h"
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.44 2007/12/2"
+#define VERSION "1.0.46 2008/02/12"
 // -----------------------------------
 class MyDialog;
 class wxKeyConfigPanel;
@@ -687,7 +687,11 @@ private:
 //          42) Change AddPendingEvent() to ProcessEvent() in wxMenuCmd::Exec()
 //              to avoid crashes when secondary command key would close editors wx284
 // ----------------------------------------------------------------------------
-// commit   1.0.44 2007/12/2
+//  commit  1.0.44 2007/12/2
 //          43) add non-pch logmanager headers
 //          44) fix skipping of previously opened editors
+// ----------------------------------------------------------------------------
+//  commit  1.0.46 2008/02/12
+//          45) Killerbot changes to header includes 2008/12/28
+//          46) Fixed: [ Bug #12823 ] keybinder breaks layout submenu on linux
 // ----------------------------------------------------------------------------
