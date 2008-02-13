@@ -2,6 +2,7 @@
 #include <configmanager.h>
 #include <wx/intl.h>
 #include <wx/dynarray.h>
+#include <wx/textfile.h>
 
 using std::make_pair;
 
@@ -31,6 +32,37 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
       {
         vect.push_back(make_pair(name, hfa));
       }
+  }
+  wxString docspath = ConfigManager::GetFolder(sdBase)+_("/share/codeblocks/docs/");
+  wxString iniFileName =  docspath +_("index.ini");
+  if ((wxFileName::DirExists(docspath)) && (wxFileName::FileExists(iniFileName)))
+  {
+    wxTextFile hFile(iniFileName);
+    hFile.Open();
+    unsigned int cnt = hFile.GetLineCount();
+
+    for(unsigned int i=0; i < cnt; i++)
+    {
+      wxString line = hFile.GetLine(i);
+      if (!line.IsEmpty())
+      {
+        wxString item = line.BeforeFirst('=').Strip();
+        wxString file = line.AfterFirst('=').Strip();
+        file = docspath + wxFileName::GetPathSeparator() + file;
+
+        HelpFileAttrib hfa;
+        hfa.name = file;
+        hfa.isExecutable = false;
+        hfa.openEmbeddedViewer = false;
+        hfa.keywordCase = static_cast<HelpCommon::StringCase> (0);
+        hfa.defaultKeyword = wxEmptyString;
+        if (!item.IsEmpty() && !hfa.name.IsEmpty())
+        {
+          vect.push_back(make_pair(item, hfa));
+        }
+      }
+    }
+    hFile.Close();
   }
 }
 
