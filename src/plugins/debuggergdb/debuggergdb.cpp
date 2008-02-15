@@ -2583,8 +2583,8 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
             // update disassembly
             if (IsWindowReallyShown(m_pDisassembly))
             {
-                long int addrL;
-                cursor.address.ToLong(&addrL, 16);
+                unsigned long int addrL;
+                cursor.address.ToULong(&addrL, 16);
                 m_pDisassembly->SetActiveAddress(addrL);
                 RunCommand(CMD_DISASSEMBLE);
             }

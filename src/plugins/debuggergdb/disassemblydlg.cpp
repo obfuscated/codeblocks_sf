@@ -78,7 +78,7 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
     m_FrameFunction = frame.valid ? frame.function : _T("??");
     m_FrameAddress = _T("??");
     if (frame.valid)
-        m_FrameAddress.Printf(_T("0x%p"), (void*)frame.address);
+        m_FrameAddress.Printf(_T("%p"), (void*)frame.address);
 
     XRCCTRL(*this, "lblFunction", wxStaticText)->SetLabel(m_FrameFunction);
     XRCCTRL(*this, "lblAddress", wxStaticText)->SetLabel(m_FrameAddress);
@@ -86,7 +86,7 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
     m_HasActiveAddr = false;
 
     m_pCode->SetReadOnly(false);
-    if (m_pDbg->IsRunning())
+    if (frame.valid && m_pDbg->IsRunning())
     {
         // if debugger is running, show a message
         m_pCode->SetText(_("\"Please wait while disassemblying...\""));
@@ -111,7 +111,7 @@ void DisassemblyDlg::AddAssemblerLine(unsigned long int addr, const wxString& li
         m_pCode->ClearAll();
     }
     wxString fmt;
-    fmt.Printf(_T("0x%x\t%s\n"), (size_t)addr, line.c_str());
+    fmt.Printf(_T("%p\t%s\n"), (void*)addr, line.c_str());
     m_pCode->AppendText(fmt);
     SetActiveAddress(m_LastActiveAddr);
     m_pCode->SetReadOnly(true);
@@ -126,7 +126,7 @@ void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
     for (int i = 0; i < m_pCode->GetLineCount(); ++i)
     {
         wxString str = m_pCode->GetLine(i).AfterFirst(_T('x')).BeforeFirst(_T('\t'));
-        unsigned long lineaddr;
+        unsigned long int lineaddr;
         if (str.ToULong(&lineaddr, 16) && lineaddr >= addr)
         {
             m_pCode->MarkerDeleteAll(DEBUG_MARKER);

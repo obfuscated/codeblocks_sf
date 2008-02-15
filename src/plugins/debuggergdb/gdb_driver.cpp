@@ -853,7 +853,8 @@ void GDB_driver::ParseOutput(const wxString& output)
 
         // Is the program exited?
         else if (lines[i].StartsWith(_T("Program exited")) ||
-                lines[i].Contains(_T("The program is not being run")))
+                lines[i].Contains(_T("The program is not being run")) ||
+                lines[i].Contains(_T("Target detached")))
         {
             m_pDBG->Log(lines[i]);
             QueueCommand(new DebuggerCmd(this, _T("quit")));
@@ -903,6 +904,7 @@ void GDB_driver::ParseOutput(const wxString& output)
         // general errors
         // we don't deal with them, just relay them back to the user
         else if (lines[i].StartsWith(_T("Error ")) ||
+                lines[i].StartsWith(_T("No such")) ||
                 lines[i].StartsWith(_T("Cannot evaluate")))
         {
             m_pDBG->Log(lines[i]);
