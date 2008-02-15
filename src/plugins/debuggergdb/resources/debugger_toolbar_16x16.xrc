@@ -34,7 +34,7 @@
     <object class="tool" name="idDebuggerMenuStop">
       <tooltip>Stop debugger</tooltip>
       <longhelp>Stop current debugging session</longhelp>
-      <bitmap>images/16x16/stop.png</bitmap>
+      <bitmap>images/16x16/dbgstop.png</bitmap>
     </object>
     <object class="separator" />
     <object class="tool" name="idDebuggerToolWindows">

@@ -22,7 +22,7 @@ DEBUG_RESOURCES = backtrace.xrc \
 	images/dbgstepi.png \
 	images/dbgstepout.png \
 	images/dbgstep.png \
-	images/stop.png \
+	images/dbgstop.png \
 	images/window.png \
 	images/16x16/dbginfo.png \
 	images/16x16/dbgnext.png \
@@ -31,7 +31,7 @@ DEBUG_RESOURCES = backtrace.xrc \
 	images/16x16/dbgstepi.png \
 	images/16x16/dbgstepout.png \
 	images/16x16/dbgstep.png \
-	images/16x16/stop.png \
+	images/16x16/dbgstop.png \
 	images/16x16/window.png
 
 EXTRA_DIST = $(DEBUG_RESOURCES)

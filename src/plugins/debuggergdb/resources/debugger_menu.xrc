@@ -15,7 +15,7 @@
       
       <label>Stop debugger</label>
       
-      <bitmap>images\16x16\stop.png</bitmap>
+      <bitmap>images\16x16\dbgstop.png</bitmap>
       
       <help>Stop current debugging session</help>
     </object>
