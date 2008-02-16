@@ -3,6 +3,7 @@
 #include <manager.h>
 #include <configmanager.h>
 #include <editormanager.h>
+#include <projectmanager.h>
 #include <logmanager.h>
 #include <editorbase.h>
 #include <sdk_events.h>
