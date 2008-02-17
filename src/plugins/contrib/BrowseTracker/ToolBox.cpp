@@ -21,7 +21,7 @@
 
 #include <sdk.h> // Code::Blocks SDK
 //#include <c:\Usr\Proj\cbBeta\trunk\src\src\wxAUI\manager.h>
-#include <wxAUI\manager.h>
+#include <wxAUI/manager.h>
 
 #include "ToolBox.h"
 #include "Version.h"
