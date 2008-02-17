@@ -4,6 +4,8 @@
 #include <wx/dynarray.h>
 #include <wx/textfile.h>
 
+
+using std::find;
 using std::make_pair;
 
 int HelpCommon::m_DefaultHelpIndex = -1;
@@ -33,14 +35,13 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
         vect.push_back(make_pair(name, hfa));
       }
   }
-  wxString docspath = ConfigManager::GetFolder(sdBase)+_("/share/codeblocks/docs/");
-  wxString iniFileName =  docspath +_("index.ini");
+  wxString docspath = ConfigManager::GetFolder(sdBase)+_("/share/codeblocks/docs");
+  wxString iniFileName =  docspath + wxFileName::GetPathSeparator() + _T("index.ini");
   if ((wxFileName::DirExists(docspath)) && (wxFileName::FileExists(iniFileName)))
   {
     wxTextFile hFile(iniFileName);
     hFile.Open();
     unsigned int cnt = hFile.GetLineCount();
-
     for(unsigned int i=0; i < cnt; i++)
     {
       wxString line = hFile.GetLine(i);
@@ -49,20 +50,28 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
         wxString item = line.BeforeFirst('=').Strip();
         wxString file = line.AfterFirst('=').Strip();
         file = docspath + wxFileName::GetPathSeparator() + file;
-
-        HelpFileAttrib hfa;
-        hfa.name = file;
-        hfa.isExecutable = false;
-        hfa.openEmbeddedViewer = false;
-        hfa.keywordCase = static_cast<HelpCommon::StringCase> (0);
-        hfa.defaultKeyword = wxEmptyString;
-        if (!item.IsEmpty() && !hfa.name.IsEmpty())
+        if (!item.IsEmpty() && !file.IsEmpty())
         {
-          vect.push_back(make_pair(item, hfa));
+            HelpCommon::HelpFilesVector::iterator it = find(vect.begin(),vect.end(), item);
+            // insert help file if it is not present in <personality>.conf
+            if (it == vect.end())
+            {
+                HelpFileAttrib hfa;
+                hfa.name = file;
+                hfa.isExecutable = false;
+                hfa.openEmbeddedViewer = false;
+                hfa.keywordCase = static_cast<HelpCommon::StringCase> (0);
+                hfa.defaultKeyword = wxEmptyString;
+                if (!hfa.name.IsEmpty())
+                {
+                  vect.push_back(make_pair(item, hfa));
+                }
+            }
         }
+
       }
     }
-    hFile.Close();
+   hFile.Close();
   }
 }
 
