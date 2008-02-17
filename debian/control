@@ -71,6 +71,7 @@ Description: Contrib plugins for Code::Blocks IDE
     * WYSIWYG forms designer for wxWidgets (wxSmith)
     * Autoversioning
     * ThreadSearch
+    * BrowseTracker
  .
  http://www.codeblocks.org
 

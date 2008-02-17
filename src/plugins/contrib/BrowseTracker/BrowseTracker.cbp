@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="BrowseTracker" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="$(#cb)\devel\share\codeblocks\plugins\BrowseTracker.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="$(#cb)\.objs\plugins\contrib\BrowseTracker" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="$(#cb)\devel\codeblocks.exe" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DNO_LOGGING" />
+					<Add directory="$(#CB.include)" />
+					<Add directory="$(#WX.include)" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#CB.include)\wxscintilla\include" />
+					<Add directory="$(#CB)\src" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add directory="$(#CB)\devel" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 $(#cb)\devel\share\codeblocks\BrowseTracker.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Unit filename="BrowseMarks.cpp" />
+		<Unit filename="BrowseMarks.h" />
+		<Unit filename="BrowseSelector.cpp" />
+		<Unit filename="BrowseSelector.h" />
+		<Unit filename="BrowseTracker.cpp" />
+		<Unit filename="BrowseTracker.h" />
+		<Unit filename="BrowseTrackerCfg.cpp" />
+		<Unit filename="BrowseTrackerCfg.h" />
+		<Unit filename="BrowseTrackerDefs.h" />
+		<Unit filename="BrowseTrackerLayout.cpp" />
+		<Unit filename="BrowseTrackerLayout.h" />
+		<Unit filename="BrowseXpms.h" />
+		<Unit filename="ConfigDlg.cpp" />
+		<Unit filename="ConfigDlg.h" />
+		<Unit filename="Makefile.am" />
+		<Unit filename="ProjectData.cpp" />
+		<Unit filename="ProjectData.h" />
+		<Unit filename="ToolBox.cpp" />
+		<Unit filename="ToolBox.h" />
+		<Unit filename="Version.cpp" />
+		<Unit filename="Version.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

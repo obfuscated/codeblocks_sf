@@ -2,6 +2,10 @@ if BUILD_AUTOVERSIONING
 MAYBE_AUTOVERSIONING=AutoVersioning
 endif
 
+if BUILD_BROWSETRACKER
+MAYBE_BROWSETRACKER=BrowseTracker
+endif
+
 if BUILD_BYOGAMES
 MAYBE_BYOGAMES=byogames
 endif
@@ -63,6 +67,7 @@ MAYBE_WXSMITH=wxSmith wxSmithContribItems
 endif
 
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
+		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
 		$(MAYBE_CBKODERS) \
 		$(MAYBE_CODESNIPPETS) \
@@ -80,6 +85,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_WXSMITH)
 
 DIST_SUBDIRS = AutoVersioning \
+		BrowseTracker \
 		byogames \
 		cb_koders \
 		codesnippets \

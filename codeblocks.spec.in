@@ -217,6 +217,7 @@ Code::Blocks SDK to develop your own plugins.
 %{_bindir}/cb_share_config
 %{_bindir}/codesnippets
 %{pkgdata}/AutoVersioning.zip
+%{pkgdata}/BrowseTracker.zip
 %{pkgdata}/byogames.zip
 %{pkgdata}/cb_koders.zip
 %{pkgdata}/codesnippets.zip
@@ -238,6 +239,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/images/ThreadSearch/*
 %{pkgdata}/lib_finder/*
 %{pkgdata}/plugins/libAutoVersioning.*
+%{pkgdata}/plugins/libBrowseTracker.*
 %{pkgdata}/plugins/libbyogames.*
 %{pkgdata}/plugins/libcb_koders.*
 %{pkgdata}/plugins/libcodesnippets.*

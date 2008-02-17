@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="BrowseTracker-unix" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/codeblocks/plugins/libBrowseTracker.so" prefix_auto="1" extension_auto="1" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Compiler>
+					<Add option="-g" />
+					<Add option="`wx-config --cflags`" />
+					<Add option="-fPIC" />
+					<Add option="-DPIC" />
+					<Add directory="../../../include" />
+					<Add directory="../../../src" />
+					<Add directory="../../../include/wxscintilla/include" />
+					<Add option="-DNO_LOGGING" />
+					<Add option="-DNO_CB_PRECOMP" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="`wx-config --libs`" />
+					<Add library="wxscintilla" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel/share/codeblocks/BrowseTracker.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
+		<Unit filename="BrowseMarks.cpp" />
+		<Unit filename="BrowseMarks.h" />
+		<Unit filename="BrowseSelector.cpp" />
+		<Unit filename="BrowseSelector.h" />
+		<Unit filename="BrowseTracker.cpp" />
+		<Unit filename="BrowseTracker.h" />
+		<Unit filename="BrowseTrackerCfg.cpp" />
+		<Unit filename="BrowseTrackerCfg.h" />
+		<Unit filename="BrowseTrackerDefs.h" />
+		<Unit filename="BrowseTrackerLayout.cpp" />
+		<Unit filename="BrowseTrackerLayout.h" />
+		<Unit filename="BrowseXpms.h" />
+		<Unit filename="ConfigDlg.cpp" />
+		<Unit filename="ConfigDlg.h" />
+		<Unit filename="Makefile.am" />
+		<Unit filename="ProjectData.cpp" />
+		<Unit filename="ProjectData.h" />
+		<Unit filename="ToolBox.cpp" />
+		<Unit filename="ToolBox.h" />
+		<Unit filename="Version.cpp" />
+		<Unit filename="Version.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

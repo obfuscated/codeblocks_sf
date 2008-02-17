@@ -218,6 +218,7 @@ esac
 
 AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_AUTOVERSIONING], [false])
+	AM_CONDITIONAL([BUILD_BROWSETRACKER], [false])
 	AM_CONDITIONAL([BUILD_BYOGAMES], [false])
 	AM_CONDITIONAL([BUILD_CBKODERS], [false])
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
@@ -237,6 +238,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 
 AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_AUTOVERSIONING], [true])
+	AM_CONDITIONAL([BUILD_BROWSETRACKER], [true])
 	AM_CONDITIONAL([BUILD_BYOGAMES], [true])
 	AM_CONDITIONAL([BUILD_CBKODERS], [true])
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
@@ -264,7 +266,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all" compiles all contrib plugins ]
   [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
-  [                        Plugin names are: AutoVersioning,byogames,cbkoders,codesnippets,]
+  [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,cbkoders,codesnippets,]
   [                        		     codestat,dragscroll,envvars, ]
   [                        		     help,keybinder,libfinder,profiler, ]
   [                        		     regex,exporter,symtab,wxsmith ],
@@ -279,6 +281,9 @@ do
 		;;
 	AutoVersioning)
 		AM_CONDITIONAL([BUILD_AUTOVERSIONING], [true])
+		;;
+	BrowseTracker)
+		AM_CONDITIONAL([BUILD_BROWSETRACKER], [true])
 		;;
 	byogames)
 		AM_CONDITIONAL([BUILD_BYOGAMES], [true])
@@ -327,6 +332,9 @@ do
 		;;
 	-AutoVersioning)
 		AM_CONDITIONAL([BUILD_AUTOVERSIONING], [false])
+		;;
+	-BrowseTracker)
+		AM_CONDITIONAL([BUILD_BROWSETRACKER], [false])
 		;;
 	-byogames)
 		AM_CONDITIONAL([BUILD_BYOGAMES], [false])
@@ -382,6 +390,7 @@ AC_MSG_RESULT($plugins)
 
 
 AC_SUBST(BUILD_AUTOVERSIONING)
+AC_SUBST(BUILD_BROWSETRACKER)
 AC_SUBST(BUILD_BYOGAMES)
 AC_SUBST(BUILD_CBKODERS)
 AC_SUBST(BUILD_CODESNIPPETS)

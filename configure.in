@@ -331,6 +331,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/xpmanifest/Makefile
 	src/plugins/contrib/Makefile
 	src/plugins/contrib/AutoVersioning/Makefile
+	src/plugins/contrib/BrowseTracker/Makefile
 	src/plugins/contrib/byogames/Makefile
 	src/plugins/contrib/cb_koders/Makefile
 	src/plugins/contrib/codesnippets/Makefile

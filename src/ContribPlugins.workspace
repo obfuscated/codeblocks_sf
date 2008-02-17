@@ -2,6 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins">
 		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning.cbp" active="1" />
+		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker.cbp" />
 		<Project filename="plugins\contrib\byogames\byogames.cbp" />
 		<Project filename="plugins\contrib\cb_koders\cb_koders.cbp" />
 		<Project filename="plugins\contrib\codesnippets\codesnippets.cbp" />

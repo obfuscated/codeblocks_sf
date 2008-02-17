@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_layout_file>
+	<ActiveTarget name="All" />
+	<File name="BrowseSelector.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="4900" topLine="126" />
+	</File>
+	<File name="BrowseXpms.h" open="0" top="0" tabpos="0">
+		<Cursor position="338" topLine="0" />
+	</File>
+	<File name="ToolBox.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="976" topLine="0" />
+	</File>
+	<File name="Version.cpp" open="0" top="0" tabpos="0">
+		<Cursor position="2023" topLine="44" />
+	</File>
+</CodeBlocks_layout_file>

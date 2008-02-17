@@ -1,4 +1,5 @@
 usr/share/codeblocks/AutoVersioning.zip*
+usr/share/codeblocks/BrowseTracker.zip*
 usr/share/codeblocks/byogames.zip*
 usr/share/codeblocks/cb_koders.zip*
 usr/share/codeblocks/codesnippets.zip*
@@ -20,6 +21,7 @@ usr/share/codeblocks/images/wxsmith*
 usr/share/codeblocks/images/ThreadSearch*
 usr/share/codeblocks/lib_finder/*
 usr/share/codeblocks/plugins/libAutoVersioning.*
+usr/share/codeblocks/plugins/libBrowseTracker.*
 usr/share/codeblocks/plugins/libbyogames.*
 usr/share/codeblocks/plugins/libcb_koders.*
 usr/share/codeblocks/plugins/libcodesnippets.*
