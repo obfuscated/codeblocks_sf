@@ -224,6 +224,9 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
         // look first if MinGW was installed with Code::Blocks (new in beta6)
         m_MasterPath = ConfigManager::GetExecutableFolder();
         if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
+            // if that didn#t do it, look under C::B\MinGW, too (new in 08.02)
+            m_MasterPath += sep + _T("MinGW");
+        if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
         {
             // no... search for MinGW installation dir
             wxString windir = wxGetOSDirectory();
