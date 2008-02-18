@@ -1,7 +1,6 @@
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/wxscintilla/include \
-		-I$(top_srcdir)/src/src
+		-I$(top_srcdir)/src/include/wxscintilla/include
 
 libdir = $(pkgdatadir)/plugins
 
@@ -18,8 +17,7 @@ libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 			BrowseTrackerCfg.cpp \
 			BrowseTrackerLayout.cpp \
 			ConfigDlg.cpp \
-			ProjectData.cpp \
-			ToolBox.cpp
+			ProjectData.cpp
 
 noinst_HEADERS =  	BrowseTracker.h \
 			BrowseSelector.h \
@@ -31,8 +29,7 @@ noinst_HEADERS =  	BrowseTracker.h \
 			BrowseTrackerCfg.h \
 			BrowseTrackerLayout.h \
 			ConfigDlg.h \
-			ProjectData.h \
-			ToolBox.h
+			ProjectData.h
 
 EXTRA_DIST = 	BrowseTracker.cbp \
 		BrowseTracker-unix.cbp

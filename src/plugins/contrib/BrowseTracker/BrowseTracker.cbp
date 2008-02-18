@@ -32,7 +32,6 @@
 					<Add directory="$(#WX.include)" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="$(#CB.include)\wxscintilla\include" />
-					<Add directory="$(#CB)\src" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
