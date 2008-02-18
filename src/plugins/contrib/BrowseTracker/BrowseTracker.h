@@ -24,7 +24,6 @@
 
 #include "cbplugin.h" // for "class cbPlugin"
 #include "BrowseTrackerDefs.h"
-#include "ToolBox.h"
 
 class TiXmlElement;
 class BrowseSelector;
@@ -294,8 +293,6 @@ class BrowseTracker : public cbPlugin
         int             m_ToggleKey;            //Left_Mouse or Ctrl-Left_Mouse
         int             m_LeftMouseDelay;       //milliseconds before testing toggle
         int             m_ClearAllKey;          //Ctrl-Left_Mouse or Ctrl-Left_Mouse_DClick
-
-        ToolBox         m_ToolBox;
 
 		DECLARE_EVENT_TABLE();
 

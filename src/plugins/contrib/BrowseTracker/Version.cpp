@@ -184,6 +184,9 @@ AppVersion::~AppVersion()
 //         69) Fixed: Setting a BookMark via the margin context menu is not seen by BT 2008/01/25
 //         70) rework sizers on settings dlg
 // ----------------------------------------------------------------------------
+//  Commit 1.2.71 2008/02/18
+//         71) removed unnecessary debugging files ToolBox.*
+// ----------------------------------------------------------------------------
 //  Bugs
 //          When searching workspace w/o open project, BT is comatose.
 //              Should say "no project" or some such.

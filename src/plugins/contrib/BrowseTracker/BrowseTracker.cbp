@@ -72,8 +72,6 @@
 		<Unit filename="Makefile.am" />
 		<Unit filename="ProjectData.cpp" />
 		<Unit filename="ProjectData.h" />
-		<Unit filename="ToolBox.cpp" />
-		<Unit filename="ToolBox.h" />
 		<Unit filename="Version.cpp" />
 		<Unit filename="Version.h" />
 		<Unit filename="manifest.xml" />
