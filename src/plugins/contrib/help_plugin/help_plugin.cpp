@@ -383,6 +383,7 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool fromIni)
       helpMenu->AppendSeparator();
     }
 
+#ifdef __WXMSW__
     if (fromIni)
     {
       wxMenuItem *mitem = new wxMenuItem(0, id, help);
@@ -392,6 +393,7 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool fromIni)
       helpMenu->Append(mitem);
     }
     else
+#endif
     {
       helpMenu->Append(id, help);
     }
@@ -432,6 +434,7 @@ void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool
 {
   if (!help.IsEmpty())
   {
+#ifdef __WXMSW__
     if (fromIni)
     {
       wxMenuItem *mitem = new wxMenuItem(0, id, help);
@@ -441,6 +444,7 @@ void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool
       menu->Append(mitem);
     }
     else
+#endif
     {
       menu->Append(id, help);
     }
