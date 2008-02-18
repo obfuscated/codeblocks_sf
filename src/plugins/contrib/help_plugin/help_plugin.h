@@ -31,8 +31,8 @@ class HelpPlugin : public cbPlugin
     void OnViewMANViewer(wxCommandEvent &event);
     void ShowMANViewer(bool show = true);
     void OnFindItem(wxCommandEvent &event);
-    void AddToPopupMenu(wxMenu *menu, int id, const wxString &help);
-    void AddToHelpMenu(int id, const wxString &help);
+    void AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool fromIni = false);
+    void AddToHelpMenu(int id, const wxString &help, bool fromIni = false);
     void RemoveFromHelpMenu(int id, const wxString &help);
     void AddFile();
     HelpCommon::HelpFileAttrib HelpFileFromId(int id);

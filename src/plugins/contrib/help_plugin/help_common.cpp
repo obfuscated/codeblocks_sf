@@ -9,10 +9,12 @@ using std::find;
 using std::make_pair;
 
 int HelpCommon::m_DefaultHelpIndex = -1;
+int HelpCommon::m_NumReadFromIni = 0;
 
 void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
 {
   vect.clear();
+  HelpCommon::setNumReadFromIni(0);
   ConfigManager* conf = Manager::Get()->GetConfigManager(_T("help_plugin"));
   m_DefaultHelpIndex = conf->ReadInt(_T("/default"), -1);
   wxArrayString list = conf->EnumerateSubPaths(_T("/"));
@@ -35,43 +37,46 @@ void HelpCommon::LoadHelpFilesVector(HelpCommon::HelpFilesVector &vect)
         vect.push_back(make_pair(name, hfa));
       }
   }
+
   wxString docspath = ConfigManager::GetFolder(sdBase)+_("/share/codeblocks/docs");
   wxString iniFileName =  docspath + wxFileName::GetPathSeparator() + _T("index.ini");
+
   if ((wxFileName::DirExists(docspath)) && (wxFileName::FileExists(iniFileName)))
   {
     wxTextFile hFile(iniFileName);
     hFile.Open();
     unsigned int cnt = hFile.GetLineCount();
-    for(unsigned int i=0; i < cnt; i++)
+
+    for(unsigned int i = 0; i < cnt; i++)
     {
       wxString line = hFile.GetLine(i);
+
       if (!line.IsEmpty())
       {
-        wxString item = line.BeforeFirst('=').Strip();
-        wxString file = line.AfterFirst('=').Strip();
+        wxString item = line.BeforeLast('=').Strip();
+        wxString file = line.AfterLast('=').Strip();
         file = docspath + wxFileName::GetPathSeparator() + file;
+
         if (!item.IsEmpty() && !file.IsEmpty())
         {
-            HelpCommon::HelpFilesVector::iterator it = find(vect.begin(),vect.end(), item);
-            // insert help file if it is not present in <personality>.conf
-            if (it == vect.end())
+            HelpFileAttrib hfa;
+            hfa.name = file;
+            hfa.isExecutable = false;
+            hfa.openEmbeddedViewer = false;
+            hfa.readFromIni = true;
+            hfa.keywordCase = static_cast<HelpCommon::StringCase> (0);
+            hfa.defaultKeyword = wxEmptyString;
+
+            if (!hfa.name.IsEmpty())
             {
-                HelpFileAttrib hfa;
-                hfa.name = file;
-                hfa.isExecutable = false;
-                hfa.openEmbeddedViewer = false;
-                hfa.keywordCase = static_cast<HelpCommon::StringCase> (0);
-                hfa.defaultKeyword = wxEmptyString;
-                if (!hfa.name.IsEmpty())
-                {
-                  vect.push_back(make_pair(item, hfa));
-                }
+              vect.push_back(make_pair(item, hfa));
+              ++HelpCommon::m_NumReadFromIni;
             }
         }
-
       }
     }
-   hFile.Close();
+
+    hFile.Close();
   }
 }
 
@@ -95,7 +100,7 @@ void HelpCommon::SaveHelpFilesVector(HelpCommon::HelpFilesVector &vect)
     wxString name = it->first;
     hfa = it->second;
 
-    if (!name.IsEmpty() && !hfa.name.IsEmpty())
+    if (!name.IsEmpty() && !hfa.name.IsEmpty() && !hfa.readFromIni)
     {
       wxString key = wxString::Format(_T("/help%d/"), count++);
       conf->Write(key + _T("name"), name);

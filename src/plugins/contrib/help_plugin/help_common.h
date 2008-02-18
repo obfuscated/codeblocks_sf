@@ -20,12 +20,13 @@ class HelpCommon
       wxString name;
       bool isExecutable;
       bool openEmbeddedViewer;
+      bool readFromIni;
       // Patch by Yorgos Pagles: Add keyword case and default
       // keyword substitution attributes in Help file attributes
       StringCase keywordCase;
       wxString defaultKeyword;
 
-      HelpFileAttrib() : isExecutable(false), openEmbeddedViewer(false) { }
+      HelpFileAttrib() : isExecutable(false), openEmbeddedViewer(false), readFromIni(false) { }
     };
 
     typedef pair<wxString, HelpFileAttrib> wxStringPair;
@@ -33,10 +34,13 @@ class HelpCommon
 
   private:
     static int m_DefaultHelpIndex;
+    static int m_NumReadFromIni;
 
   public:
     static int getDefaultHelpIndex();
     static void setDefaultHelpIndex(int index);
+    static int getNumReadFromIni();
+    static void setNumReadFromIni(int num);
     static void LoadHelpFilesVector(HelpFilesVector &vect);
     static void SaveHelpFilesVector(HelpFilesVector &vect);
 
@@ -56,6 +60,16 @@ inline int HelpCommon::getDefaultHelpIndex()
 inline void HelpCommon::setDefaultHelpIndex(int index)
 {
 	m_DefaultHelpIndex = index;
+}
+
+inline int HelpCommon::getNumReadFromIni()
+{
+	return m_NumReadFromIni;
+}
+
+inline void HelpCommon::setNumReadFromIni(int num)
+{
+	m_NumReadFromIni = num;
 }
 
 inline bool operator == (const HelpCommon::wxStringPair &str_pair, const wxString &value)

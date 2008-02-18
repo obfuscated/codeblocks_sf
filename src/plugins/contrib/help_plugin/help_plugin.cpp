@@ -287,11 +287,11 @@ void HelpPlugin::BuildHelpMenu()
     {
         if (counter == HelpCommon::getDefaultHelpIndex())
         {
-            AddToHelpMenu(idHelpMenus[counter], it->first + _T("\tF1"));
+            AddToHelpMenu(idHelpMenus[counter], it->first + _T("\tF1"), it->second.readFromIni);
         }
         else
         {
-            AddToHelpMenu(idHelpMenus[counter], it->first);
+            AddToHelpMenu(idHelpMenus[counter], it->first, it->second.readFromIni);
         }
     }
 
@@ -349,7 +349,7 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
 
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
     {
-      AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first);
+      AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first, it->second.readFromIni);
     }
 
     wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _T(""), wxITEM_NORMAL);
@@ -364,7 +364,7 @@ bool HelpPlugin::BuildToolBar(wxToolBar *toolBar)
 	return false;
 }
 
-void HelpPlugin::AddToHelpMenu(int id, const wxString &help)
+void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool fromIni)
 {
   if (!m_pMenuBar)
   {
@@ -382,7 +382,18 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help)
       helpMenu->AppendSeparator();
     }
 
-    helpMenu->Append(id, help);
+    if (fromIni)
+    {
+      wxMenuItem *mitem = new wxMenuItem(0, id, help);
+      wxFont &font = mitem->GetFont();
+      font.SetWeight(wxFONTWEIGHT_BOLD);
+      mitem->SetFont(font);
+      helpMenu->Append(mitem);
+    }
+    else
+    {
+      helpMenu->Append(id, help);
+    }
   }
 }
 
@@ -416,14 +427,22 @@ void HelpPlugin::RemoveFromHelpMenu(int id, const wxString &help)
   }
 }
 
-void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help)
+void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool fromIni)
 {
-  wxString tmp;
-
   if (!help.IsEmpty())
   {
-    tmp.Append(help);
-    menu->Append(id, tmp);
+    if (fromIni)
+    {
+      wxMenuItem *mitem = new wxMenuItem(0, id, help);
+      wxFont &font = mitem->GetFont();
+      font.SetWeight(wxFONTWEIGHT_BOLD);
+      mitem->SetFont(font);
+      menu->Append(mitem);
+    }
+    else
+    {
+      menu->Append(id, help);
+    }
   }
 }
 

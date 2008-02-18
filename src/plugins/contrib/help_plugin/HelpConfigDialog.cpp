@@ -51,12 +51,12 @@ m_pPlugin(plugin)
   lst->Clear();
   HelpCommon::HelpFilesVector::iterator it;
 
-  for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
+  for (it = m_Vector.begin(); it != m_Vector.end() && !it->second.readFromIni; ++it)
   {
     lst->Append(it->first);
   }
 
-  if (m_Vector.size() != 0)
+  if (m_Vector.size() - HelpCommon::getNumReadFromIni() != 0)
   {
     lst->SetSelection(0);
     m_LastSel = 0;
@@ -84,7 +84,7 @@ void HelpConfigDialog::UpdateEntry(int index)
 
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
 
-  if (index < static_cast<int>(m_Vector.size()))
+  if (index < static_cast<int>(m_Vector.size()) - HelpCommon::getNumReadFromIni())
   {
     m_Vector[index].second.name = XRCCTRL(*this, "txtHelp", wxTextCtrl)->GetValue();
     m_Vector[index].second.isExecutable = XRCCTRL(*this, "chkExecute", wxCheckBox)->IsChecked();
@@ -173,9 +173,10 @@ void HelpConfigDialog::Add(wxCommandEvent &event)
 
   if (!text.IsEmpty())
   {
-    HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), m_Vector.end(), text);
+    HelpCommon::HelpFilesVector::iterator logEnd = m_Vector.end() - HelpCommon::getNumReadFromIni();
+    HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), logEnd, text);
 
-    if (it != m_Vector.end())
+    if (it != logEnd)
     {
       cbMessageBox(_("This title is already in use"), _("Warning"), wxICON_WARNING);
       return;
@@ -215,9 +216,10 @@ void HelpConfigDialog::Rename(wxCommandEvent &event)
 
   if (!text.IsEmpty())
   {
-    HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), m_Vector.end(), text);
+    HelpCommon::HelpFilesVector::iterator logEnd = m_Vector.end() - HelpCommon::getNumReadFromIni();
+    HelpCommon::HelpFilesVector::iterator it = find(m_Vector.begin(), logEnd, text);
 
-    if (it != m_Vector.end())
+    if (it != logEnd)
     {
       cbMessageBox(_("This title is already in use."), _("Warning"), wxICON_WARNING);
       return;
@@ -279,7 +281,11 @@ void HelpConfigDialog::OnUp(wxCommandEvent &event)
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   int helpIndex = HelpCommon::getDefaultHelpIndex();
   int current = lst->GetSelection();
-  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
+
+  if (current < 0 || current >= static_cast<int>(m_Vector.size()) - HelpCommon::getNumReadFromIni())
+  {
+    return;
+  }
 
   if (helpIndex == current)
   {
@@ -304,7 +310,11 @@ void HelpConfigDialog::OnDown(wxCommandEvent &event)
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
   int helpIndex = HelpCommon::getDefaultHelpIndex();
   int current = lst->GetSelection();
-  if ((current<0) || (current>=static_cast<int>(m_Vector.size()))) return;
+
+  if (current < 0 || current >= static_cast<int>(m_Vector.size() - HelpCommon::getNumReadFromIni()))
+  {
+    return;
+  }
 
   if (helpIndex == current)
   {
