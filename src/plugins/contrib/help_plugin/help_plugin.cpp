@@ -31,6 +31,7 @@
 #include <wx/textdlg.h>
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
+#include <wx/menuitem.h>
 #include <wx/mimetype.h>
 #include <wx/filename.h>
 #include <globals.h> // cbMessageBox
