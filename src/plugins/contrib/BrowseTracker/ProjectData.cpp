@@ -204,7 +204,7 @@ BrowseMarks* ProjectData::HashAddBook_Marks( wxString filePath)
 
     if(filePath.IsEmpty()) return 0;
     EditorBase* eb = m_pEdMgr->GetEditor(filePath);
-    #if !defined(__ppc__)
+    #if defined(LOGGING)
     if (not eb) asm("int3"); //trap;
     #endif
     if (not eb) return 0;
