@@ -56,7 +56,7 @@ ProjectData::ProjectData(cbProject* pcbProject)
 // ----------------------------------------------------------------------------
 {
     //ctor
-    #if defined(LOGGING)
+    #if defined(LOGGING) && !defined(__ppc__)
     if (not pcbProject) asm("int3"); /*trap*/;
     #endif
     if (not pcbProject) return;
@@ -178,7 +178,7 @@ BrowseMarks* ProjectData::HashAddBrowse_Marks( const wxString fullPath )
     //EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(filename);
 
     EditorBase* eb = m_pEdMgr->GetEditor(fullPath);
-    #if defined(LOGGING)
+    #if defined(LOGGING) && !defined(__ppc__)
         if(not eb) asm("int3"); /*trap*/
     #endif
     if(not eb) return 0;
@@ -204,7 +204,9 @@ BrowseMarks* ProjectData::HashAddBook_Marks( wxString filePath)
 
     if(filePath.IsEmpty()) return 0;
     EditorBase* eb = m_pEdMgr->GetEditor(filePath);
+    #if !defined(__ppc__)
     if (not eb) asm("int3"); //trap;
+    #endif
     if (not eb) return 0;
     // don't add duplicates
     BrowseMarks* pBook_Marks = GetBook_MarksFromHash( filePath);
