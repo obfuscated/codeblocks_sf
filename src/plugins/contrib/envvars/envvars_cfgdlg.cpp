@@ -1,9 +1,6 @@
 /*
- * This file is part of Code::Blocks Studio, an open-source cross-platform IDE
- * Copyright (C) 2003  Yiannis An. Mandravellos
- *
- * This program is distributed under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -166,14 +163,14 @@ void EnvVarsConfigDlg::LoadSettings()
   {
     // Format: [checked?]|[key]|[value]
     wxArrayString var_array = nsEnvVars::EnvvarStringTokeniser(vars[i]);
-    if (nsEnvVars::EnvvarApply(var_array, lstEnvVars))
+    if (nsEnvVars::EnvvarArrayApply(var_array, lstEnvVars))
       envvars_applied++;
     else
       EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
         active_set_path.c_str(), i);
-	}// for
+  }// for
 
-	if (envvars_total>0)
+  if (envvars_total>0)
     EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
       envvars_applied, envvars_total);
 }// LoadSettings
@@ -183,7 +180,7 @@ void EnvVarsConfigDlg::LoadSettings()
 void EnvVarsConfigDlg::SaveSettings()
 {
 #if TRACE_ENVVARS
-	if (Manager::Get() && Manager::Get()->GetLogManager());
+  if (Manager::Get() && Manager::Get()->GetLogManager());
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SaveSettings")));
 #endif
 
@@ -214,7 +211,7 @@ void EnvVarsConfigDlg::SaveSettings()
     active_set.c_str(), active_set_path.c_str());
   cfg->DeleteSubPath(active_set_path);
 
-	EV_DBGLOG(_T("EnvVars: Saving (new) envvar set '%s'."), active_set.c_str());
+  EV_DBGLOG(_T("EnvVars: Saving (new) envvar set '%s'."), active_set.c_str());
   cfg->SetPath(active_set_path);
 
   for (int i=0; i<(int)lstEnvVars->GetCount(); ++i)
@@ -230,8 +227,8 @@ void EnvVarsConfigDlg::SaveSettings()
 
     wxString cfg_key;
     cfg_key.Printf(_T("EnvVar%d"), i);
-		cfg->Write(cfg_key, txt);
-	}// for
+    cfg->Write(cfg_key, txt);
+  }// for
 
   cfg->Write(_T("/debug_log"), chkDebugLog->GetValue());
 }// SaveSettings
@@ -260,7 +257,7 @@ void EnvVarsConfigDlg::SaveSettingsActiveSet(wxString active_set)
 void EnvVarsConfigDlg::OnSetClick(wxCommandEvent& event)
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnSetClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnSetClick")));
 #endif
 
   SaveSettingsActiveSet(event.GetString());
@@ -272,7 +269,7 @@ void EnvVarsConfigDlg::OnSetClick(wxCommandEvent& event)
 void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnCreateSetClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnCreateSetClick")));
 #endif
 
   wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
@@ -296,7 +293,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
   int idx = choSet->Append(set.MakeLower());
   choSet->SetSelection(idx);
 
-	SaveSettings();
+  SaveSettings();
   LoadSettings();
 }// OnCreateSetClick
 
@@ -305,7 +302,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnCloneSetClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnCloneSetClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnCloneSetClick")));
 #endif
 
   wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
@@ -325,7 +322,7 @@ void EnvVarsConfigDlg::OnCloneSetClick(wxCommandEvent& WXUNUSED(event))
   choSet->SetSelection(idx);
 
   // Clone envvars set in config
-	SaveSettings();
+  SaveSettings();
   LoadSettings();
 }// OnCloneSetClick
 
@@ -334,7 +331,7 @@ void EnvVarsConfigDlg::OnCloneSetClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnRemoveSetClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnRemoveSetClick")));
 #endif
 
   wxChoice* choSet = XRCCTRL(*this, "choSet", wxChoice);
@@ -392,7 +389,7 @@ void EnvVarsConfigDlg::OnRemoveSetClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnToggleEnvVarClick(wxCommandEvent& event)
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnToggleEnvVarClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnToggleEnvVarClick")));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
@@ -427,7 +424,7 @@ void EnvVarsConfigDlg::OnToggleEnvVarClick(wxCommandEvent& event)
 void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnAddEnvVarClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnAddEnvVarClick")));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
@@ -458,7 +455,7 @@ void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnEditEnvVarClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnEditEnvVarClick")));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
@@ -520,7 +517,7 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnDeleteEnvVarClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnDeleteEnvVarClick")));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
@@ -549,7 +546,7 @@ void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnClearEnvVarsClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnClearEnvVarsClick")));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);
@@ -571,7 +568,7 @@ void EnvVarsConfigDlg::OnClearEnvVarsClick(wxCommandEvent& WXUNUSED(event))
 void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
 {
 #if TRACE_ENVVARS
-	Manager::Get()->GetLogManager()->DebugLog(F(_T("OnSetEnvVarsClick")));
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnSetEnvVarsClick")));
 #endif
 
   wxCheckListBox* lstEnvVars = XRCCTRL(*this, "lstEnvVars", wxCheckListBox);

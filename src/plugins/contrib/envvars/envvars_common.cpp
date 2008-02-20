@@ -1,9 +1,6 @@
 /*
- * This file is part of Code::Blocks Studio, an open-source cross-platform IDE
- * Copyright (C) 2003  Yiannis An. Mandravellos
- *
- * This program is distributed under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -350,6 +347,8 @@ bool nsEnvVars::EnvvarDiscard(const wxString &key)
   {
     Manager::Get()->GetLogManager()->Log(F(
       _("Unsetting environment variable '%s' failed."), the_key.c_str()));
+    EV_DBGLOG(_T("EnvVars: Unsetting environment variable '%s' failed."),
+      the_key.c_str());
     return false;
   }
 
@@ -397,6 +396,7 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
   }
   Manager::Get()->GetMacrosManager()->ReplaceMacros(the_value);
 
+  EV_DBGLOG(_T("EnvVars: Trying to set environment variable '%s' to value '%s'..."), the_key.c_str(), the_value.c_str());
   if (!wxSetEnv(the_key, the_value))
   {
     EV_DBGLOG(_T("EnvVars: Setting environment variable '%s' failed."), the_key.c_str());
@@ -410,7 +410,8 @@ bool nsEnvVars::EnvvarApply(const wxString& key, const wxString& value,
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-bool nsEnvVars::EnvvarApply(const wxArrayString& envvar, wxCheckListBox* lstEnvVars)
+bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
+                                 wxCheckListBox* lstEnvVars)
 {
 #if TRACE_ENVVARS
   Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarApply")));
@@ -447,20 +448,31 @@ bool nsEnvVars::EnvvarApply(const wxArrayString& envvar, wxCheckListBox* lstEnvV
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void nsEnvVars::EnvvarSetApply(const wxString& set_name)
+void nsEnvVars::EnvvarSetApply(const wxString& set_name, bool even_if_active)
 {
 #if TRACE_ENVVARS
   Manager::Get()->GetLogManager()->DebugLog(F(_T("EnvvarSetApply")));
 #endif
 
-  // load and apply envvar set from config (to application only)
+  // Load and apply envvar set from config (to application only)
   ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
   if (!cfg)
     return;
 
+  // Stores the currently active envar set that has been successfully applied at last
+  static wxString last_set_applied = wxEmptyString;
+
   wxString set_to_apply = set_name;
   if (set_to_apply.IsEmpty())
     set_to_apply = nsEnvVars::GetActiveSetName();
+
+  // Early exit for a special case requested by even_if_active parameter
+  if (!even_if_active && set_to_apply.IsSameAs(last_set_applied))
+  {
+    EV_DBGLOG(_T("EnvVars: Set '%s' will not be applied (already active)."),
+      set_to_apply.c_str());
+    return;
+  }
 
   // Show currently activated set in debug log (for reference)
   wxString set_path = nsEnvVars::GetSetPathByName(set_to_apply);
@@ -475,15 +487,16 @@ void nsEnvVars::EnvvarSetApply(const wxString& set_name)
   {
     // Format: [checked?]|[key]|[value]
     wxArrayString var_array = nsEnvVars::EnvvarStringTokeniser(vars[i]);
-    if (nsEnvVars::EnvvarApply(var_array))
+    if (nsEnvVars::EnvvarArrayApply(var_array))
       envvars_applied++;
     else
       EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
         set_path.c_str(), i);
-	}// for
+  }// for
 
-	if (envvars_total>0)
-	{
+  if (envvars_total>0)
+  {
+    last_set_applied = set_to_apply;
     EV_DBGLOG(_T("EnvVars: %d/%d envvars applied within C::B focus."),
       envvars_applied, envvars_total);
   }
@@ -521,16 +534,18 @@ void nsEnvVars::EnvvarSetDiscard(const wxString& set_name)
     wxArrayString var_array = nsEnvVars::EnvvarStringTokeniser(vars[i]);
     if (var_array.GetCount()==3)
     {
-      if (nsEnvVars::EnvvarDiscard(var_array[1])) // the key
+      wxString check = var_array[0];
+      bool bCheck = check.Trim(true).Trim(false).IsSameAs(_T("1"))?true:false;
+      if (!bCheck || (bCheck && nsEnvVars::EnvvarDiscard(var_array[1]))) // key
         envvars_discarded++;
     }
     else
       EV_DBGLOG(_T("EnvVars: Invalid envvar in '%s' at position #%d."),
         set_path.c_str(), i);
-	}// for
+  }// for
 
-	if (envvars_total>0)
-	{
+  if (envvars_total>0)
+  {
     EV_DBGLOG(_T("EnvVars: %d/%d envvars discarded within C::B focus."),
       envvars_discarded, envvars_total);
   }

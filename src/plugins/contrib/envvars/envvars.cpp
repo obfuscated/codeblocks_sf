@@ -1,9 +1,6 @@
 /*
- * This file is part of Code::Blocks Studio, an open-source cross-platform IDE
- * Copyright (C) 2003  Yiannis An. Mandravellos
- *
- * This program is distributed under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -134,23 +131,27 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
 
   if (IsAttached())
   {
-    wxString envvar_set = m_ProjectSets[event.GetProject()];
-    if (envvar_set.IsEmpty()) // there is no envvar set to apply
-      nsEnvVars::EnvvarSetApply(); // apply currently active envvar set
-    else                      // there is an envvar set setup to apply
+    wxString prj_envvar_set = m_ProjectSets[event.GetProject()];
+    if (prj_envvar_set.IsEmpty())  // There is no envvar set to apply...
+      // Apply default envvar set (but only, if not already active)
+      nsEnvVars::EnvvarSetApply(wxEmptyString, false);
+    else                           // ...there is an envvar set setup to apply.
     {
-      if (nsEnvVars::EnvvarSetExists(envvar_set))
+      if (nsEnvVars::EnvvarSetExists(prj_envvar_set))
       {
-        EV_DBGLOG(_T("EnvVars: Discarding envvars set '")+nsEnvVars::GetActiveSetName()+_T("'."));
-        nsEnvVars::EnvvarSetDiscard(); // remove currently active envvars
-        if (envvar_set.IsEmpty())
+        EV_DBGLOG(_T("EnvVars: Discarding envvars set '")
+                 +nsEnvVars::GetActiveSetName()+_T("'."));
+        nsEnvVars::EnvvarSetDiscard(); // Remove currently active envvars
+        if (prj_envvar_set.IsEmpty())
           EV_DBGLOG(_T("EnvVars: Setting up default envvars set."));
         else
-          EV_DBGLOG(_T("EnvVars: Setting up envvars set '")+envvar_set+_T("' for activated project."));
-        nsEnvVars::EnvvarSetApply(envvar_set);
+          EV_DBGLOG(_T("EnvVars: Setting up envvars set '")+prj_envvar_set
+                   +_T("' for activated project."));
+        // Apply envvar set always (as the old one has been discarded above)
+        nsEnvVars::EnvvarSetApply(prj_envvar_set);
       }
       else
-        EnvvarSetWarning(envvar_set);
+        EnvvarSetWarning(prj_envvar_set);
     }
   }
 
@@ -165,12 +166,25 @@ void EnvVars::OnProjectClosed(CodeBlocksEvent& event)
   Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectClosed")));
 #endif
 
+  wxString prj_envvar_set = wxEmptyString;
+
   if (IsAttached())
+  {
+    prj_envvar_set = m_ProjectSets[event.GetProject()];
+
+    // If there is an envvar set connected to this project...
+    if (!prj_envvar_set.IsEmpty())
+      // ...make sure it's being discarded
+      nsEnvVars::EnvvarSetDiscard(prj_envvar_set);
+
     m_ProjectSets.erase(event.GetProject());
+  }
 
-  nsEnvVars::EnvvarSetApply(); // apply currently active envvar set
+  // Apply default envvar set (but only, if not already active)
+  nsEnvVars::EnvvarSetApply(wxEmptyString,
+                            prj_envvar_set.IsEmpty() ? false : true);
 
-  event.Skip(); // propagate the event to other listeners
+  event.Skip(); // Propagate the event to other listeners
 }// OnProjectClosed
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
