@@ -66,7 +66,6 @@
 		<Unit filename="avSvnRevision.h" />
 		<Unit filename="avVersionEditorDlg.cpp" />
 		<Unit filename="avVersionEditorDlg.h" />
-		<Unit filename="license.txt" />
 		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
