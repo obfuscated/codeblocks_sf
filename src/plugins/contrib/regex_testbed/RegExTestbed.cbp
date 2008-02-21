@@ -50,6 +50,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />

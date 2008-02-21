@@ -51,6 +51,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#CB.INCLUDE)" />
+			<Add directory="$(#CB.INCLUDE)\wxscintilla\include" />
 			<Add directory="$(#WX.INCLUDE)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

@@ -42,6 +42,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
+			<Add directory="$(#CB.include)\wxscintilla\include" />
 			<Add directory="$(#CB.include)\tinyxml" />
 			<Add directory="$(#CB.include)\scripting\include" />
 			<Add directory="$(#CB.include)\scripting\sqplus" />
@@ -81,14 +82,14 @@
 		<Unit filename="pkgconfigmanager.cpp" />
 		<Unit filename="pkgconfigmanager.h" />
 		<Unit filename="processingdlg.cpp" />
-                <Unit filename="projectconfiguration.cpp" />
-                <Unit filename="projectconfiguration.h" />
-                <Unit filename="projectconfigurationpanel.cpp" />
-                <Unit filename="projectconfigurationpanel.h" />
- 		<Unit filename="processingdlg.h" />
+		<Unit filename="processingdlg.h" />
+		<Unit filename="projectconfiguration.cpp" />
+		<Unit filename="projectconfiguration.h" />
+		<Unit filename="projectconfigurationpanel.cpp" />
+		<Unit filename="projectconfigurationpanel.h" />
 		<Unit filename="resultmap.cpp" />
 		<Unit filename="resultmap.h" />
-		<Unit filename="wxsmith/LibSelectDlg.wxs" />
+		<Unit filename="wxsmith\LibSelectDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
@@ -102,7 +103,6 @@
 			</wxsmith>
 			<envvars />
 			<debugger />
-			<lib_finder />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
