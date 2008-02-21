@@ -728,9 +728,6 @@
 		<Unit filename="include\newfromtemplatedlg.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include\openfilestree.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include\personalitymanager.h">
 			<Option target="sdk" />
 		</Unit>
