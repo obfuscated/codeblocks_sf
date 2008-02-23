@@ -432,8 +432,6 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectClosed));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
-
-    m_InitDone = true;
 }
 
 void CodeCompletion::OnRelease(bool appShutDown)
@@ -1023,6 +1021,15 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // This is to prevent the Splash Screen from delaying so much. By adding the
     // timer, the splash screen is closed and Code::Blocks doesn't take so long
     // in starting.
+    m_InitDone = true;
+
+	// Dreaded DDE-open bug related: do not touch the following lines unless for a good reason
+    
+    // parse any projects opened through DDE or the command-line
+    ParseActiveProjects();
+    ProjectManager* prjMan = Manager::Get()->GetProjectManager();
+	m_NativeParsers.SetClassBrowserProject(prjMan->GetActiveProject());
+
     event.Skip();
 }
 

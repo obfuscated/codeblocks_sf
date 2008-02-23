@@ -200,7 +200,7 @@ void ClassBrowser::UpdateView()
 {
     m_pActiveProject = 0;
     m_ActiveFilename.Clear();
-	if (m_pParser && !Manager::isappShuttingDown())
+	if (m_pParser && !Manager::IsAppShuttingDown())
 	{
 	    m_pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
 	    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();

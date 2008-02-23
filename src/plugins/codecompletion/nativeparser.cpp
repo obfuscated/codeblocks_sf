@@ -163,7 +163,8 @@ void NativeParser::CreateClassBrowser()
         }
         m_ClassBrowserIsFloating = isFloating;
 
-        m_pClassBrowser->SetParser(&m_Parser);
+		// Dreaded DDE-open bug related: do not touch unless for a good reason
+//        m_pClassBrowser->SetParser(&m_Parser);
     }
 }
 
