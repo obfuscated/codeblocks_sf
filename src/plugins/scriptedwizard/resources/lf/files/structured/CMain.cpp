@@ -4,7 +4,8 @@ using namespace lf;
 
 CMain::CMain(render::IRenderWindow* win)
     : rwin(win),
-    smgr(win->getSceneManager(0)),
+    rl3d(win->getRenderLayer3D()),
+    smgr(rl3d->getSceneManager()),
     cam(0),
     camController(0),
     quitNow(false)
@@ -15,7 +16,7 @@ CMain::CMain(render::IRenderWindow* win)
 
 CMain::~CMain()
 {
-    smgr->remove(cam);
+    rl3d->remove(cam);
     smgr->remove(camController);
     cam->drop();
     camController->drop();
@@ -29,10 +30,9 @@ void CMain::run()
 {
     quitNow = false;
 
-    while (!quitNow)
-    {
-        if (!CLFRoot::getInstance().update())
-            break;
+    while (!quitNow && CLFRender::getInstance().update())
+	{
+		// main loop
     }
 }
 
@@ -48,7 +48,7 @@ void CMain::setupScene()
     cam->setPosition(core::vector3df(0.0f, 0.0f, -30.0f));
     cam->setTarget(core::vector3df(0.0f, 0.0f, 0.0f));
 
-    smgr->add(cam);
+    rl3d->add(cam);
     smgr->addSceneNode(cam);
 
     // handle camera control

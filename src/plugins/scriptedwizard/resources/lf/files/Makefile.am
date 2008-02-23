@@ -1,1 +1,1 @@
-SUBDIRS = common quick structured
+SUBDIRS = quick structured

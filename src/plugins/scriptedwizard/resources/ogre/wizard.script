@@ -190,6 +190,7 @@ function SetupProject(project)
 //        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
         target.AddLinkLib(_T("OgreMain_d"));
+        target.AddLinkLib(_T("OIS_d"));
         if (PLATFORM == PLATFORM_MSW)
         {
             target.AddCompilerOption(_T("-D_DEBUG"));
@@ -227,6 +228,7 @@ function SetupProject(project)
 //        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
 
         target.AddLinkLib(_T("OgreMain"));
+        target.AddLinkLib(_T("OIS"));
         if (PLATFORM == PLATFORM_MSW)
         {
             target.AddCompilerOption(_T("-DNDEBUG"));

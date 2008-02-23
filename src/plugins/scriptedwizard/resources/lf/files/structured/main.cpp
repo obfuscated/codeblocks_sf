@@ -6,11 +6,11 @@ using namespace lf;
 int main(int argc, char *argv[])
 {
     // the engine
-    CLFRoot* root = new CLFRoot();
+    initLF();
     
     // the render window
     render::IRenderWindow* rwin;
-    rwin = CLFRoot::getInstance().createRenderWindow(
+    rwin = CLFRender::getInstance().createRenderWindow(
                core::vector2di(0, 0),
                core::vector2di(640, 480),
                32,
@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
     // clean-up
     delete mainClass;
-    delete root;
+    deinitLF();
     
     return 0;
 }

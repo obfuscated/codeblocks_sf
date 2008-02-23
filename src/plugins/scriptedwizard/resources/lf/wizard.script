@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Lightfeather 3D project wizard
+// Lightfeather project wizard
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -8,10 +8,18 @@
 LFPath <- _T("");
 LFQuickProject <- false;
 
+//options
+LF_NVidiaCg <- GetConfigManager().Read(_T("/lf_project_wizard/options/cgshaders"), true);
+LF_NGPlant <- GetConfigManager().Read(_T("/lf_project_wizard/options/ngplant"), true);
+LF_Net <- GetConfigManager().Read(_T("/lf_project_wizard/options/net"), false);
+LF_WxCanvas <- GetConfigManager().Read(_T("/lf_project_wizard/options/wxcanvas"), false);
+LF_LocalConfig <- GetConfigManager().Read(_T("/lf_project_wizard/options/localconfig"), false);
+// TODO: lf-static
+
 function BeginWizard()
 {
     // intro text
-    local intro_msg = _T("Welcome to the new Lightfeather3D project wizard!\n\n" +
+    local intro_msg = _T("Welcome to the new Lightfeather project wizard!\n\n" +
                         "This wizard will guide you to create a new project\n" +
                         "using the Lightfeather 3D rendering engine.\n\n" +
                         "When you 're ready to proceed, please click \"Next\"...");
@@ -28,14 +36,11 @@ function BeginWizard()
     Wizard.AddProjectPathPage();
     Wizard.AddGenericSelectPathPage(_T("LFPath"), lfpath_descr, _T("Please select Lightfeather's location:"), _T(""));
     Wizard.AddGenericSingleChoiceListPage(_T("LFPrjType"), lfprjtype_descr, lfprj_choices, 0);
+    Wizard.AddPage(_T("LfOptions"));
 //    Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false); // no target selections
     Wizard.SetCompilerDefault(_T("gcc"));
-    Wizard.SetDebugTargetDefaults(true, _T("Debug"), _T("DebugLib/"), _T("DebugLib/"));
+    Wizard.SetDebugTargetDefaults(true, _T("Debug"), _T("Debug/"), _T("Debug/"));
     Wizard.SetReleaseTargetDefaults(false, _T(""), _T(""), _T(""));
-//  Wizard.AddBuildTarget(_T("gcc"), _T("Debug"), _T("DebugLib/"), _T("DebugLib/"));
-//  Wizard.AddBuildTarget(_T("gcc"), _T("Debug (DLL)"), _T("Debug/"), _T("Debug/"));
-//  Wizard.AddBuildTarget(_T("gcc"), _T("Release"), _T("ReleaseLib/"), _T("ReleaseLib/"));
-//  Wizard.AddBuildTarget(_T("gcc"), _T("Release (DLL)"), _T("Release/"), _T("Release/"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -78,6 +83,36 @@ function OnLeave_LFPrjType(fwd)
     return true;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Lightfeather options
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_LfOptions(fwd)
+{
+	Wizard.CheckCheckbox(_T("chkCG"), LF_NVidiaCg);
+	Wizard.CheckCheckbox(_T("chkNG"), LF_NGPlant);
+	Wizard.CheckCheckbox(_T("chkNet"), LF_Net);
+	Wizard.CheckCheckbox(_T("chkWx"), LF_WxCanvas);
+	Wizard.CheckCheckbox(_T("chkLocalConfig"), LF_LocalConfig);
+}
+
+function OnLeave_LfOptions(fwd)
+{
+	LF_NVidiaCg = Wizard.IsCheckboxChecked(_T("chkCG"));
+	LF_NGPlant = Wizard.IsCheckboxChecked(_T("chkNG"));
+	LF_Net = Wizard.IsCheckboxChecked(_T("chkNet"));
+	LF_WxCanvas = Wizard.IsCheckboxChecked(_T("chkWx"));
+	LF_LocalConfig = Wizard.IsCheckboxChecked(_T("chkLocalConfig"));
+
+	GetConfigManager().Write(_T("/lf_project_wizard/options/cgshaders"), LF_NVidiaCg);
+	GetConfigManager().Write(_T("/lf_project_wizard/options/ngplant"), LF_NGPlant);
+	GetConfigManager().Write(_T("/lf_project_wizard/options/net"), LF_Net);
+	GetConfigManager().Write(_T("/lf_project_wizard/options/wxcanvas"), LF_WxCanvas);
+	GetConfigManager().Write(_T("/lf_project_wizard/options/localconfig"), LF_LocalConfig);
+
+    return true;
+}
+
 // return the files this project contains
 function GetFilesDir()
 {
@@ -95,59 +130,110 @@ function SetupProject(project)
     // set a variable to reference lf's dir
     project.SetVar(_T("lf"), LFPath, false);
 
+	// set defaults for all targets
+	if (PLATFORM != PLATFORM_MSW)
+	{
+	    project.AddCompilerOption(_T("-fPIC"));
+	    project.AddCompilerOption(_T("-DPIC"));
+	}
+    project.AddCompilerOption(_T("-DPNG_NO_ASSEMBLER_CODE"));
+    
+    if (LF_NVidiaCg)
+    {
+    	if (PLATFORM == PLATFORM_MSW)
+    	{
+			project.AddIncludeDir(_T("$(lf)/ext/Cg/include"));
+			project.AddLibDir(_T("$(lf)/ext/Cg/lib/windows"));
+    	}
+		project.AddCompilerOption(_T("-DHAVE_CG"));
+    }
+    if (LF_NGPlant)
+    {
+    	if (PLATFORM == PLATFORM_MSW)
+			project.AddLibDir(_T("$(lf)/ext/ngplant/lib/devcpp"));
+		else if (PLATFORM == PLATFORM_GTK)
+		{
+			project.AddLibDir(_T("$(lf)/ext/ngplant/lib/linux"));
+			project.AddLibDir(_T("$(lf)/ext/ngplant/lib/linux64"));
+		}
+		else
+			project.AddLibDir(_T("$(lf)/ext/ngplant/lib/mac"));
+		project.AddIncludeDir(_T("$(lf)/ext/ngplant/include"));
+		project.AddCompilerOption(_T("-DHAVE_NGPLANT"));
+    }
+    if (LF_Net)
+		project.AddCompilerOption(_T("-DHAVE_NETWORK"));
+    if (LF_WxCanvas)
+    {
+    	if (PLATFORM == PLATFORM_GTK)
+    	{
+			project.AddCompilerOption(_T("`wx-config --cxxflags`"));
+			project.AddLinkerOption(_T("`wx-config --libs gl`"));
+    	}
+		project.AddCompilerOption(_T("-DLF_HAVE_WX"));
+    }
+	if (LF_LocalConfig)
+		project.AddCompilerOption(_T("-DHAVE_LOCAL_LF_CONFIG"));
+	
+    project.AddIncludeDir(_T("$(lf)/include"));
+
     // first rename "default" target (index 0 - could do it by name too) to "Debug"
     project.RenameBuildTarget(0, _T("Debug"));
 
+    local debugTarget = project.GetBuildTarget(0);
+    debugTarget.SetTargetType(ttConsoleOnly);
+
     // and now duplicate it to create the rest of the targets
     // (easier than creating new targets and adding files manually)
-    project.DuplicateBuildTarget(0, _T("Debug (DLL)"));
     project.DuplicateBuildTarget(0, _T("Release"));
-    project.DuplicateBuildTarget(0, _T("Release (DLL)"));
+    project.DuplicateBuildTarget(0, _T("Standard"));
 
-    local debugTarget = project.GetBuildTarget(0);
-    local debugDllTarget = project.GetBuildTarget(1);
-    local releaseTarget = project.GetBuildTarget(2);
-    local releaseDllTarget = project.GetBuildTarget(3);
+    local releaseTarget = project.GetBuildTarget(1);
+    local standardTarget = project.GetBuildTarget(2);
 
     // Debug
-    debugTarget.SetTargetType(ttConsoleOnly);
-    debugTarget.SetOutputFilename(_T("DebugLib/") + Wizard.GetProjectTitle());
-    debugTarget.SetObjectOutput(_T("DebugLib"));
-//  debugTarget.SetWorkingDir(_T("DebugLib"));
-    debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/debug.script"));
-    debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/staticlib.script"));
-    debugTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
-
-    // Debug (DLL)
-    debugDllTarget.SetTargetType(ttConsoleOnly);
-    debugDllTarget.SetOutputFilename(_T("Debug/") + Wizard.GetProjectTitle());
-    debugDllTarget.SetObjectOutput(_T("Debug"));
-    debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/debug.script"));
-    debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/dll.script"));
-    debugDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
+    TargetFinalSetup(debugTarget, "Debug", true, false);
 
     // Release
-    releaseTarget.SetTargetType(ttConsoleOnly);
-    releaseTarget.SetOutputFilename(_T("ReleaseLib/") + Wizard.GetProjectTitle());
-    releaseTarget.SetObjectOutput(_T("ReleaseLib"));
-    releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/release.script"));
-    releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/staticlib.script"));
-    releaseTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
+    TargetFinalSetup(releaseTarget, "Release", false, false);
 
-    // Release (DLL)
-    releaseDllTarget.SetTargetType(ttConsoleOnly);
-    releaseDllTarget.SetOutputFilename(_T("Release/") + Wizard.GetProjectTitle());
-    releaseDllTarget.SetObjectOutput(_T("Release"));
-    releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/release.script"));
-    releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/dll.script"));
-    releaseDllTarget.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_lightfeather.script"));
-
-    // Project options
-    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/config.script"));
-    project.AddBuildScript(_T("buildscripts/config.script")); // local version overriding global
-    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/base_settings.script"));
-    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_cg.script"));
-    project.AddBuildScript(_T("$(lf)/build/codeblocks/buildscripts/use_freetype.script"));
+    // Standard
+    TargetFinalSetup(standardTarget, "Standard", true, false);
 
     return true;
+}
+
+function TargetFinalSetup(target, dir, isDebug, isLib)
+{
+	// just setup the different things per-target
+    target.SetOutputFilename(_T("bin/" + dir + "/") + Wizard.GetProjectTitle());
+    target.SetObjectOutput(_T("bin/obj/" + dir));
+    
+    target.AddLibDir(_T("$(lf)/bin/" + dir));
+    
+    target.AddLinkLib(_T("Lightfeather"));
+    
+    if (isDebug)
+    {
+    	target.AddCompilerOption(_T("-g"));
+    	target.AddCompilerOption(_T("-DDEBUG"));
+    }
+    else
+    {
+    	target.AddCompilerOption(_T("-O2"));
+    	target.AddCompilerOption(_T("-s"));
+    }
+    
+    if (isLib)
+    {
+		if (LF_NVidiaCg)
+		{
+			target.AddLinkLib(_T("Cg"));
+			target.AddLinkLib(_T("CgGL"));
+		}
+    	target.AddLinkLib(_T("GL"));
+    	target.AddLinkLib(_T("GLU"));
+    	target.AddLinkLib(_T("Xxf86vm"));
+    	target.AddLinkLib(_T("pthread"));
+    }
 }

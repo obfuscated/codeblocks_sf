@@ -2,7 +2,7 @@
 
 using namespace lf;
 
-bool appQuit = false;
+render::IRenderWindow* rwin;
 
 class MyKeyListener : public input::IKeyListener
 {
@@ -13,7 +13,7 @@ public:
     {
         if (event.getKey() == input::KEY_ESCAPE)
         {
-            appQuit = true;
+            rwin->closeWindow();
         }
     }
 };
@@ -21,11 +21,10 @@ public:
 int main(int argc, char *argv[])
 {
     // the engine
-    CLFRoot* root = new CLFRoot();
+    initLF();
     
     // the render window
-    render::IRenderWindow* rwin;
-    rwin = CLFRoot::getInstance().createRenderWindow(
+    rwin = CLFRender::getInstance().createRenderWindow(
                core::vector2di(0, 0),
                core::vector2di(640, 480),
                32,
@@ -39,19 +38,13 @@ int main(int argc, char *argv[])
     MyKeyListener listener;
     rwin->addKeyListener(&listener);
 
-    // create a 2D render layer
-    render::CRenderLayer2D* layer = new render::CRenderLayer2D(core::recti(0,0,0,0));
-    rwin->add(layer);
-    layer->drop();
-    
-    while (!appQuit && root->update())
+    while (CLFRender::getInstance().update())
     {
         // main loop
     }
 
     // clean up
-    delete root;
+    deinitLF();
     
     return 0;
 }
-

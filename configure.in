@@ -291,8 +291,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/files/Makefile
 	src/plugins/scriptedwizard/resources/lf/Makefile
 	src/plugins/scriptedwizard/resources/lf/files/Makefile
-	src/plugins/scriptedwizard/resources/lf/files/common/Makefile
-	src/plugins/scriptedwizard/resources/lf/files/common/buildscripts/Makefile
 	src/plugins/scriptedwizard/resources/lf/files/quick/Makefile
 	src/plugins/scriptedwizard/resources/lf/files/structured/Makefile
 	src/plugins/scriptedwizard/resources/ogre/Makefile

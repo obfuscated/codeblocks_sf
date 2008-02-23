@@ -13,6 +13,7 @@ class CMain : public lf::input::IKeyListener
     private:
 
         lf::render::IRenderWindow* rwin;
+        lf::render::CRenderLayer3D* rl3d;
         lf::scene::CSceneManager* smgr;
 
         lf::scene::C3DCamera *cam;
