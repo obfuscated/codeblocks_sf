@@ -245,6 +245,12 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
 {
     // set some variable for easy reference
     wxString Name = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
+    if (Name.IsEmpty())
+    {
+        cbMessageBox(_T("Please specify a class name to continue."),
+                     _T("Error"), wxOK | wxICON_ERROR);
+        return;
+    }
     wxArrayString NameSpaces;
     wxStringTokenizer tkz(Name, _T("::"));
     Name = wxEmptyString;
@@ -305,7 +311,14 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     int eolmode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), 0);
 
     ForceDirectory(headerFname);
-    cbEditor * new_ed = Manager::Get()->GetEditorManager()->New(headerFname.GetFullPath());
+    cbEditor* new_ed = Manager::Get()->GetEditorManager()->New(headerFname.GetFullPath());
+    if (!new_ed)
+    {
+        cbMessageBox(_T("Class wizard can't continue. Possibly the Header file name is invalid.\n"
+                        "Please check the entered file name."),
+                     _T("Error"), wxICON_ERROR);
+        return;
+    }
     wxString buffer = new_ed->GetControl()->GetText();
     Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer);
 
@@ -406,6 +419,13 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     // now the implementation file
     ForceDirectory(implementationFname);
     new_ed = Manager::Get()->GetEditorManager()->New(implementationFname.GetFullPath());
+    if (!new_ed)
+    {
+        cbMessageBox(_T("Class wizard can't continue. Possibly the Implementation file name is invalid.\n"
+                        "Please check the entered file name."),
+                     _T("Error"), wxICON_ERROR);
+        return;
+    }
     buffer = new_ed->GetControl()->GetText();
     Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer);
 
