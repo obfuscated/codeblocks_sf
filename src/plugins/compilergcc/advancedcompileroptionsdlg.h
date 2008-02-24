@@ -32,7 +32,8 @@ class AdvancedCompilerOptionsDlg : public wxDialog
         void WriteCompilerOptions();
         void ReadExtensions(int nr);
         void DisplayCommand(int cmd, int ext);
-        
+        void CheckForChanges();
+
         CompilerTool* GetCompilerTool(int cmd, int ext);
         void SaveCommands(int cmd, int ext);
 
