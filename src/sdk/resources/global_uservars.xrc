@@ -1,524 +1,494 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxDialog" name="dlgGloabalUservars">
-    <title>Global Variable Editor</title>
-    <object class="wxFlexGridSizer">
-      <rows>0</rows>
-      <cols>1</cols>
-      <growablecols>0,2</growablecols>
-      <object class="sizeritem">
-        <border>5</border>
-        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-        <object class="wxFlexGridSizer">
-          <rows>0</rows>
-          <cols>7</cols>
-          <growablecols>1</growablecols>
-          <object class="sizeritem">
-            <border>10</border>
-            <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-            <object class="wxStaticText">
-              <label>Current Set:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-            <object class="wxChoice" name="selSet">
-              <content>
-                <item>default</item>
-              </content>
-              <size>120,-1</size>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>10,10</size>
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-            <object class="wxButton" name="cloneSet">
-              <label>Clone</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-            <object class="wxButton" name="newSet">
-              <label>New</label>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>20,20</size>
-            <border>5</border>
-            <flag>wxALIGN_CENTER</flag>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-            <object class="wxButton" name="deleteSet">
-              <label>Delete</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>10</border>
-            <flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-            <object class="wxStaticText">
-              <label>Current Variable:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-            <object class="wxChoice" name="selVar">
-              <content/>
-              <size>80,-1</size>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>10,10</size>
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-            <object class="wxButton" name="cloneVar">
-              <label>Clone</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-            <object class="wxButton" name="newVar">
-              <label>New</label>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>20,20</size>
-            <border>5</border>
-            <flag>wxALIGN_CENTER</flag>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER</flag>
-            <object class="wxButton" name="deleteVar">
-              <label>Delete</label>
-            </object>
-          </object>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <border>10</border>
-        <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-        <object class="wxStaticLine" name="ID_LINE">
-          <size>20,-1</size>
-          <style>wxLI_HORIZONTAL</style>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <border>5</border>
-        <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-        <object class="wxFlexGridSizer">
-          <rows>0</rows>
-          <cols>3</cols>
-          <growablecols>0,2</growablecols>
-          <growablerows>0</growablerows>
-          <object class="sizeritem">
-            <border>10</border>
-            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-            <object class="wxStaticText">
-              <label>Builtin fields</label>
-              <font>
-                <size>11</size>
-                <weight>bold</weight>
-                <family>swiss</family>
-                <face>Arial</face>
-              </font>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>10,10</size>
-            <border>5</border>
-            <flag>wxALIGN_CENTER</flag>
-          </object>
-          <object class="sizeritem">
-            <border>10</border>
-            <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-            <object class="wxStaticText">
-              <label>User-defined fields</label>
-              <font>
-                <size>11</size>
-                <weight>bold</weight>
-                <family>swiss</family>
-                <face>Arial</face>
-              </font>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-            <object class="wxFlexGridSizer">
-              <rows>0</rows>
-              <cols>3</cols>
-              <growablecols>1</growablecols>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxStaticText">
-                  <label>base</label>
-                  <font>
-                    <size>11</size>
-                    <weight>bold</weight>
-                    <family>swiss</family>
-                    <face>Arial</face>
-                  </font>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="base">
-                  <value></value>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxButton" name="fs1">
-                  <label>...</label>
-                  <size>20,20</size>
-                </object>
-              </object>
-              <object class="spacer">
-                <size>10,10</size>
-                <border>10</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-              </object>
-              <object class="sizeritem">
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP</flag>
-                <object class="wxStaticText">
-                  <label>the base member is mandatory</label>
-                  <fg>#C0C0C0</fg>
-                </object>
-              </object>
-              <object class="spacer">
-                <size>10,10</size>
-                <border>10</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxStaticText">
-                  <label>include</label>
-                  <font>
-                    <size>10</size>
-                    <weight>bold</weight>
-                    <family>swiss</family>
-                    <face>Arial</face>
-                  </font>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="include">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxButton" name="fs2">
-                  <label>...</label>
-                  <size>20,20</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxStaticText">
-                  <label>lib</label>
-                  <font>
-                    <size>10</size>
-                    <weight>bold</weight>
-                    <family>swiss</family>
-                    <face>Arial</face>
-                  </font>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="lib">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxButton" name="fs3">
-                  <label>...</label>
-                  <size>20,20</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxStaticText">
-                  <label>obj</label>
-                  <font>
-                    <size>10</size>
-                    <weight>bold</weight>
-                    <family>swiss</family>
-                    <face>Arial</face>
-                  </font>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="obj">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxButton" name="fs4">
-                  <label>...</label>
-                  <size>20,20</size>
-                </object>
-              </object>
-              <object class="spacer">
-                <size>10,10</size>
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER</flag>
-              </object>
-              <object class="spacer">
-                <size>10,10</size>
-                <border>5</border>
-                <flag>wxALIGN_CENTER</flag>
-              </object>
-              <object class="spacer">
-                <size>10,10</size>
-                <border>5</border>
-                <flag>wxALIGN_CENTER</flag>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxStaticText">
-                  <label>cflags</label>
-                  <font>
-                    <size>10</size>
-                    <weight>bold</weight>
-                    <family>swiss</family>
-                    <face>Arial</face>
-                  </font>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="cflags">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="spacer">
-                <size>20,20</size>
-                <border>5</border>
-                <flag>wxALIGN_CENTER</flag>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-                <object class="wxStaticText">
-                  <label>lflags</label>
-                  <font>
-                    <size>10</size>
-                    <weight>bold</weight>
-                    <family>swiss</family>
-                    <face>Arial</face>
-                  </font>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxLEFT|wxRIGHT|wxBOTTOM|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="lflags">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="spacer">
-                <size>20,20</size>
-                <border>5</border>
-                <flag>wxALIGN_CENTER</flag>
-              </object>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>10</border>
-            <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-            <object class="wxStaticLine" name="ID_STATICLINE1">
-              <size>-1,120</size>
-              <style>wxLI_VERTICAL</style>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxLEFT|wxTOP|wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-            <object class="wxFlexGridSizer">
-              <rows>0</rows>
-              <cols>2</cols>
-              <growablecols>0,1</growablecols>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n0">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v0">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n1">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v1">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n2">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v2">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n3">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v3">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n4">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v4">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n5">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v5">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="n6">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-              <object class="sizeritem">
-                <border>5</border>
-                <flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_TOP|wxEXPAND</flag>
-                <object class="wxTextCtrl" name="v6">
-                  <value></value>
-                  <size>80,-1</size>
-                </object>
-              </object>
-            </object>
-          </object>
-        </object>
-      </object>
-      <object class="sizeritem">
-        <border>5</border>
-        <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP|wxEXPAND</flag>
-        <object class="wxFlexGridSizer">
-          <rows>0</rows>
-          <cols>2</cols>
-          <growablecols>0</growablecols>
-          <object class="sizeritem">
-            <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-            <object class="wxButton" name="help">
-              <label>?</label>
-              <size>20,20</size>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <border>5</border>
-            <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-            <object class="wxButton" name="wxID_OK">
-              <label>Close</label>
-            </object>
-          </object>
-        </object>
-      </object>
-    </object>
-    <centered>1</centered>
-  </object>
+	<object class="wxDialog" name="dlgGloabalUservars">
+		<title>Global Variable Editor</title>
+		<centered>1</centered>
+		<object class="wxFlexGridSizer">
+			<cols>1</cols>
+			<growablecols>0,2</growablecols>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>7</cols>
+					<growablecols>1</growablecols>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Current Set:</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="selSet">
+							<content>
+								<item>default</item>
+							</content>
+							<size>120,-1</size>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<size>10,10</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="cloneSet">
+							<label>Clone</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="newSet">
+							<label>New</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<size>20,20</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="deleteSet">
+							<label>Delete</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Current Variable:</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="selVar">
+							<size>80,-1</size>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<size>10,10</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="cloneVar">
+							<label>Clone</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="newVar">
+							<label>New</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<size>20,20</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="deleteVar">
+							<label>Delete</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_LINE">
+					<size>20,-1</size>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>10</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>3</cols>
+					<growablecols>0,2</growablecols>
+					<growablerows>0</growablerows>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT3">
+							<label>Builtin fields</label>
+							<font>
+								<size>11</size>
+								<weight>bold</weight>
+								<family>swiss</family>
+								<face>Arial</face>
+							</font>
+						</object>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<size>10,10</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT4">
+							<label>User-defined fields</label>
+							<font>
+								<size>11</size>
+								<weight>bold</weight>
+								<family>swiss</family>
+								<face>Arial</face>
+							</font>
+						</object>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>10</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer">
+							<cols>3</cols>
+							<growablecols>1</growablecols>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT5">
+									<label>base</label>
+									<font>
+										<size>11</size>
+										<weight>bold</weight>
+										<family>swiss</family>
+										<face>Arial</face>
+									</font>
+								</object>
+								<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="base" />
+								<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="fs1">
+									<label>...</label>
+									<size>20,20</size>
+								</object>
+								<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="spacer">
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>10</border>
+								<size>10,10</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT6">
+									<label>the base member is mandatory</label>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+							</object>
+							<object class="spacer">
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>10</border>
+								<size>10,10</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT7">
+									<label>include</label>
+									<font>
+										<size>10</size>
+										<weight>bold</weight>
+										<family>swiss</family>
+										<face>Arial</face>
+									</font>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="include">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="fs2">
+									<label>...</label>
+									<size>20,20</size>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT8">
+									<label>lib</label>
+									<font>
+										<size>10</size>
+										<weight>bold</weight>
+										<family>swiss</family>
+										<face>Arial</face>
+									</font>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="lib">
+									<size>80,-1</size>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="fs3">
+									<label>...</label>
+									<size>20,20</size>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT9">
+									<label>obj</label>
+									<font>
+										<size>10</size>
+										<weight>bold</weight>
+										<family>swiss</family>
+										<face>Arial</face>
+									</font>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="obj">
+									<size>80,-1</size>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="fs4">
+									<label>...</label>
+									<size>20,20</size>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="spacer">
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<size>10,10</size>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<size>10,10</size>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<size>10,10</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT10">
+									<label>cflags</label>
+									<font>
+										<size>10</size>
+										<weight>bold</weight>
+										<family>swiss</family>
+										<face>Arial</face>
+									</font>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="cflags">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<size>20,20</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT11">
+									<label>lflags</label>
+									<font>
+										<size>10</size>
+										<weight>bold</weight>
+										<family>swiss</family>
+										<face>Arial</face>
+									</font>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="lflags">
+									<size>80,-1</size>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<size>20,20</size>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE1">
+							<size>-1,120</size>
+							<style>wxLI_VERTICAL</style>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>10</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer">
+							<cols>2</cols>
+							<growablecols>0,1</growablecols>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n0">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v0">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n1">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v1">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n2">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v2">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n3">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v3">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n4">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v4">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n5">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v5">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="n6">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="v6">
+									<size>80,-1</size>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<growablecols>0</growablecols>
+					<object class="sizeritem">
+						<object class="wxButton" name="help">
+							<label>?</label>
+							<size>20,20</size>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK">
+							<label>Close</label>
+						</object>
+						<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
 </resource>
