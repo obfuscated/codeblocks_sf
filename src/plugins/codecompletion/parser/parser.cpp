@@ -205,12 +205,6 @@ void Parser::ReadOptions()
         cfg->Write(_T("/parser_follow_local_includes"), true);
         cfg->Write(_T("/parser_follow_global_includes"), true);
         cfg->Write(_T("/want_preprocessor"), true);
-
-        InfoWindow::Display(_("Code-completion"),
-                            _("The default options for the code-completion parser\n"
-                            "have changed and your settings have been updated.\n\n"
-                            "You can review them by going to \"Settings->Editor->\n"
-                            "Code-completion and symbols browser\"."));
     }
 
     //m_Pool.SetConcurrentThreads(cfg->ReadInt(_T("/max_threads"), 1)); // Ignore it in the meanwhile

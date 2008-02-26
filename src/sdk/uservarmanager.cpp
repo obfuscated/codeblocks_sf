@@ -252,14 +252,6 @@ void UserVariableManager::Migrate()
 
     activeSet = _T("default");
     current->Exists(_T("/sets/default/foo")); // assert /sets/default
-
-    InfoWindow::Display(_T("Info"),
-                        _("Global compiler variables have been extended.\n\n"
-                          "You can now have several independent sets of GCVs,\n"
-                          "and variables can have user-defined members.\n\n"
-                          "Your existing configuration is being migrated\n"
-                          "and will be available as the \"default\" set."), 10000, 2500);
-
     current->Write(_T("/active"), activeSet);
     wxString oldpath;
     wxString newpath;
