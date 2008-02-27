@@ -1,8 +1,8 @@
-/********************************************************************
-    filename:        compilerICC.h
-    created by:    Yorgos Pagles (yop [at] protiamail.gr)
-    description:    Support of Intel's ICC compiler for CodeBlocks IDE
-********************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
 #ifndef COMPILER_ICC_H
 #define COMPILER_ICC_H
 

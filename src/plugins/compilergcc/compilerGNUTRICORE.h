@@ -1,3 +1,8 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
 #ifndef COMPILER_GNUTRICORE_H
 #define COMPILER_GNUTRICORE_H
 #include <compiler.h>

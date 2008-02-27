@@ -1,12 +1,17 @@
 /*
-* inline long cbSyncExecute(const wxString& command, wxArrayString& output, wxArrayString& error)
-* inline long cbSyncExecute(const wxString& command, wxArrayString& output)
-*
-* Implements behaviour identical to synchronous wxExecute, but uses *safe* yields
-* and is aware of application shutdowns (will stop polling and send SIGTERM to other process).
-*
-* Can be used in place of wxExecute to avoid possible wxYield() reentrancy problems (code completion and tool manager?)
-*/
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
+/*
+ * inline long cbSyncExecute(const wxString& command, wxArrayString& output, wxArrayString& error)
+ * inline long cbSyncExecute(const wxString& command, wxArrayString& output)
+ *
+ * Implements behaviour identical to synchronous wxExecute, but uses *safe* yields
+ * and is aware of application shutdowns (will stop polling and send SIGTERM to other process).
+ *
+ * Can be used in place of wxExecute to avoid possible wxYield() reentrancy problems (code completion and tool manager?)
+ */
 
 #ifndef CBEXECUTE
 #define CBEXECUTE

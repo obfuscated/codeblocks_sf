@@ -1,19 +1,7 @@
-/////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////////////
-// Name:        searchtree.h
-// Purpose:     N-ary Search Tree
-//              The classes used here implement a N-Ary Search Tree for
-//              associative arrays.
-//              Search time for a word of length k is O(k)
-//              Addition of N words of average size k, takes O(N*k) time.
-//
-// Author:      Ricardo Garcia
-// Modified by:
-// Created:     04/12/2005
-// RCS-ID:      $Id$
-// Copyright:   (c) 2005 Ricardo Garcia
-// Licence:     wxWindows licence
-/////////////////////////////////////////////////////////////////////////////
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
 #ifndef SEARCHTREE_H
 #define SEARCHTREE_H
 

@@ -1,5 +1,10 @@
-#ifndef MLDOOORDE
-#define MLDOOORDE
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
+#ifndef INFOPANE_H
+#define INFOPANE_H
 
 
 #include <logmanager.h>

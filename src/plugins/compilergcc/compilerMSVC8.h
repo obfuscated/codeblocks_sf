@@ -1,3 +1,8 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ */
+
 #ifdef __WXMSW__
 // this compiler is valid only in windows
 // for VC8 and VC9 (DevStudio 2005 and 2008 that is)
