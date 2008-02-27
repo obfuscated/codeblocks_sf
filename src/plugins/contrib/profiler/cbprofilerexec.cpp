@@ -1,14 +1,13 @@
-/***************************************************************
- * Name:      cbprofilerexec.cpp
- * Purpose:   Code::Blocks Profiler plugin: main window
- * Author:    Dark Lord & Zlika
- * Created:   07/20/05 21:54:15
- * Copyright: (c) Dark Lord & Zlika
- * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
- * License:   GPL
- **************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
-    #include "sdk.h"
+#include "sdk.h"
 #ifndef CB_PRECOMP
     #include <wx/event.h>
     #include <wx/font.h>

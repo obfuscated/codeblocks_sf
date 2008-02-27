@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      editmimetypesdlg.h
- * Purpose:   Window to edit the supported mime types handling
- * Author:    Yiannis An. Mandravellos<mandrav@codeblocks.org>
- * Created:   03/13/05 14:08:51
- * Copyright: (c) Yiannis An. Mandravellos
- * License:   GPL
- **************************************************************/
-
 #ifndef EDITMIMETYPESDLG_H
 #define EDITMIMETYPESDLG_H
 

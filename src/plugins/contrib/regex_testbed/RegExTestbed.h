@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      RegExTestbed
- * Purpose:   Code::Blocks plugin
- * Author:    Yiannis Mandravellos (mandrav@codeblocks.org)
- * Created:   2006-10-13
- * Copyright: Yiannis Mandravellos
- * License:   GPL
- **************************************************************/
-
 #ifndef REGEXTESTBED_H_INCLUDED
 #define REGEXTESTBED_H_INCLUDED
 

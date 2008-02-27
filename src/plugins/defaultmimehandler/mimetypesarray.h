@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      mimetypesarray.h
- * Purpose:   Contains the definition of the MIME types array
- * Author:    Yiannis An. Mandravellos<mandrav@codeblocks.org>
- * Created:   03/13/05 14:08:51
- * Copyright: (c) Yiannis An. Mandravellos
- * License:   GPL
- **************************************************************/
-
 #ifndef MIMETYPESARRAY_H
 #define MIMETYPESARRAY_H
 

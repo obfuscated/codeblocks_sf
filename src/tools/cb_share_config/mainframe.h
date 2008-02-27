@@ -3,13 +3,13 @@
 
 
 //(*Headers(MainFrame)
-#include <wx/button.h>
-#include <wx/checklst.h>
-#include <wx/frame.h>
-#include <wx/listbox.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/checklst.h>
+#include <wx/listbox.h>
+#include <wx/button.h>
+#include <wx/frame.h>
 //*)
 
 #include <wx/arrstr.h>
@@ -61,29 +61,29 @@ class MainFrame: public wxFrame
 
 
 		//(*Declarations(MainFrame)
-		wxBoxSizer* bszMain;
 		wxBoxSizer* bszSteps;
-		wxStaticBoxSizer* sbsSteps;
-		wxStaticText* lblSteps;
-		wxGridSizer* grsFileLabel;
-		wxStaticText* lblFileSrc;
-		wxStaticText* lblFileDst;
-		wxGridSizer* grsFile;
-		wxFlexGridSizer* flsFileSrc;
-		wxTextCtrl* txtFileSrc;
-		wxButton* btnFileSrc;
-		wxFlexGridSizer* flsFileDst;
-		wxTextCtrl* txtFileDst;
-		wxButton* btnFileDst;
-		wxGridSizer* grsCfg;
-		wxCheckListBox* clbCfgSrc;
-		wxListBox* lstCfgDst;
 		wxGridSizer* grsAction;
-		wxButton* btnTransfer;
-		wxButton* btnUncheck;
-		wxButton* btnExport;
+		wxTextCtrl* txtFileDst;
+		wxStaticBoxSizer* sbsSteps;
+		wxBoxSizer* bszMain;
+		wxStaticText* lblFileSrc;
+		wxCheckListBox* clbCfgSrc;
+		wxButton* btnFileSrc;
 		wxButton* btnSave;
 		wxButton* btnClose;
+		wxButton* btnExport;
+		wxFlexGridSizer* flsFileDst;
+		wxFlexGridSizer* flsFileSrc;
+		wxTextCtrl* txtFileSrc;
+		wxGridSizer* grsFile;
+		wxGridSizer* grsCfg;
+		wxButton* btnFileDst;
+		wxListBox* lstCfgDst;
+		wxStaticText* lblFileDst;
+		wxButton* btnUncheck;
+		wxGridSizer* grsFileLabel;
+		wxButton* btnTransfer;
+		wxStaticText* lblSteps;
 		//*)
 
 //***********************************************************************

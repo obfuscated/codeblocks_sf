@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      devpakupdater.h
- * Purpose:   Code::Blocks plugin
- * Author:    Yiannis Mandravellos<mandrav@codeblocks.org>
- * Created:   05/12/05 15:44:32
- * Copyright: (c) Yiannis Mandravellos
- * License:   GPL
- **************************************************************/
-
 #ifndef DEVPAKUPDATER_H
 #define DEVPAKUPDATER_H
 

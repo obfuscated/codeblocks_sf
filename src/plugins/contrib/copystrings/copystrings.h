@@ -1,11 +1,3 @@
-/***************************************************************
- * Name:      copystrings.cpp
- * Purpose:   Code::Blocks plugin - copies all literal strings to the clipboard
- * Author:    Ricardo Garcia
- * Copyright: (c) 2005 Ricardo Garcia
- * License:   wxWindows License
- **************************************************************/
-
 #ifndef COPYSTRINGS_H
 #define COPYSTRINGS_H
 

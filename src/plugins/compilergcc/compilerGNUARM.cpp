@@ -1,5 +1,10 @@
-/* compilerMINGW.cpp
- * $Id: compilerMINGW.cpp 1429 2005-12-02 23:25:50Z mandrav $
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include <sdk.h>

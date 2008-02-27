@@ -1,10 +1,11 @@
-/***************************************************************
- * Name:      wiz.cpp
- * Purpose:   Code::Blocks plugin
- * Author:    <>
- * Copyright: (c)
- * License:   GPL
- **************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
 #if defined(__GNUG__) && !defined(__APPLE__)
     #pragma implementation "wiz.h"

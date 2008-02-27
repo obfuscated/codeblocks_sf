@@ -1,11 +1,11 @@
-/***************************************************************
- * Name:      devpakupdater.cpp
- * Purpose:   Code::Blocks plugin
- * Author:    Yiannis Mandravellos<mandrav@codeblocks.org>
- * Created:   05/12/05 15:44:32
- * Copyright: (c) Yiannis Mandravellos
- * License:   GPL
- **************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
 #include "devpakupdater.h"
 #include "updatedlg.h"

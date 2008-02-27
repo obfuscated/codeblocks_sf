@@ -1,13 +1,3 @@
-/* cbSplashScreen.h
- *
- * DESCRIPTION:
- *   Generic Splash Screen class with reduced interface able to draw transparent bitmaps.
- *   It was coded to be used in Code::Blocks IDE but I don't care if you use it for your own projects.
- *
- * AUTHOR:
- *   Ceniza
- */
-
 #ifndef CBSPLASH_SCREEN_H
 #define CBSPLASH_SCREEN_H
 

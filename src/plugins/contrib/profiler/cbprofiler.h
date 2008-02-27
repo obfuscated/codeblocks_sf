@@ -1,13 +1,3 @@
-/***************************************************************
- * Name:      cbprofiler.h
- * Purpose:   Code::Blocks plugin
- * Author:    Dark Lord & Zlika
- * Created:   07/20/05 11:12:57
- * Copyright: (c) Dark Lord & Zlika
- * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
- * License:   GPL
- **************************************************************/
-
 #ifndef CBPROFILER_H
 #define CBPROFILER_H
 

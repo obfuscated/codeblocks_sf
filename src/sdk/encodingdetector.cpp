@@ -1,10 +1,19 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-#include "manager.h"
-#include "configmanager.h"
-#include <wx/fontmap.h>
-#include <wx/file.h>
-#include <wx/string.h>
+		#include <wx/fontmap.h>
+		#include <wx/file.h>
+		#include <wx/string.h>
+		#include "manager.h"
+		#include "configmanager.h"
 #endif // CB_PRECOMP
 
 

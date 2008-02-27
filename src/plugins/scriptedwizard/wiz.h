@@ -1,11 +1,3 @@
-/***************************************************************
- * Name:      wiz.h
- * Purpose:   Code::Blocks plugin
- * Author:    <>
- * Copyright: (c)
- * License:   GPL
- **************************************************************/
-
 #ifndef WIZ_H
 #define WIZ_H
 

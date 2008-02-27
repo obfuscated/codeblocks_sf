@@ -1,11 +1,12 @@
-/***************************************************************
- * Name:      editmimetypesdlg.cpp
- * Purpose:   Window to edit the supported mime types handling
- * Author:    Yiannis An. Mandravellos<mandrav@codeblocks.org>
- * Created:   03/13/05 14:08:51
- * Copyright: (c) Yiannis An. Mandravellos
- * License:   GPL
- **************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/button.h>

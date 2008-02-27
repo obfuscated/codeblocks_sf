@@ -1,14 +1,13 @@
-/***************************************************************
- * Name:      cbprofilerconfig.cpp
- * Purpose:   Code::Blocks plugin
- * Author:    Dark Lord & Zlika
- * Created:   07/20/05 15:36:50
- * Copyright: (c) Dark Lord & Zlika
- * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
- * License:   GPL
- **************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
-    #include "sdk.h"
+#include "sdk.h"
 #ifndef CB_PRECOMP
     #include <wx/checkbox.h>
     #include <wx/event.h>

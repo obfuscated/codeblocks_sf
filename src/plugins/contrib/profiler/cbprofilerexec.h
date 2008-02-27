@@ -1,13 +1,3 @@
-/***************************************************************
- * Name:      cbprofilerexec.h
- * Purpose:   Code::Blocks Profiler plugin: main window
- * Author:    Dark Lord & Zlika
- * Created:   07/20/05 21:54:30
- * Copyright: (c) Dark Lord & Zlika
- * Thanks:    Yiannis Mandravellos and his Source code formatter (AStyle) sources
- * License:   GPL
- **************************************************************/
-
 #ifndef CBPROFILEREXEC_H
 #define CBPROFILEREXEC_H
 

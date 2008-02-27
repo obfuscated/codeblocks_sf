@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      CB_Koders
- * Purpose:   Code::Blocks plugin
- * Author:    MortenMacFly (mac-fly@gmx.net)
- * Created:   2006-08-11
- * Copyright: MortenMacFly
- * License:   GPL
- **************************************************************/
-
 #ifndef CB_KODERS_H_INCLUDED
 #define CB_KODERS_H_INCLUDED
 

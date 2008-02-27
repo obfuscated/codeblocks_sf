@@ -1,11 +1,3 @@
-/*
-* This file is part of Code::Blocks Studio, and licensed under the terms of the
-* GNU General Public License version 2, or (at your option) any later version.
-*
-* Contact e-mail: Yiannis An. Mandravellos <mandrav@codeblocks.org>
-* Program URL   : http://www.codeblocks.org
-*/
-
 #ifndef MANAGER_H
 #define MANAGER_H
 

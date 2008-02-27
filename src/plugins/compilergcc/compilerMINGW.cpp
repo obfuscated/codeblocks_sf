@@ -1,14 +1,11 @@
 /*
-* This file is part of Code::Blocks Studio, an open-source cross-platform IDE
-* Copyright (C) 2003  Yiannis An. Mandravellos
-*
-* This program is distributed under the terms of the GNU General Public License as published by
-* the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
-*
-* $Revision$
-* $Id$
-* $HeadURL$
-*/
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
 #include <sdk.h>
 #include <prep.h>
@@ -224,7 +221,7 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
         // look first if MinGW was installed with Code::Blocks (new in beta6)
         m_MasterPath = ConfigManager::GetExecutableFolder();
         if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
-            // if that didn#t do it, look under C::B\MinGW, too (new in 08.02)
+            // if that didn't do it, look under C::B\MinGW, too (new in 08.02)
             m_MasterPath += sep + _T("MinGW");
         if (!wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C))
         {

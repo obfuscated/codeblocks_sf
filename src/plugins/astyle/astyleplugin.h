@@ -1,12 +1,3 @@
-/***************************************************************
- * Name:      astyle.h
- * Purpose:   Code::Blocks plugin
- * Author:    Yiannis Mandravellos<mandrav@codeblocks.org>
- * Created:   05/25/04 10:06:39
- * Copyright: (c) Yiannis Mandravellos
- * License:   GPL
- **************************************************************/
-
 #ifndef ASTYLEPLUGIN_H
 #define ASTYLEPLUGIN_H
 

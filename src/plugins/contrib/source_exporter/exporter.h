@@ -1,11 +1,3 @@
-/***************************************************************
- * Name:      exporter.h
- * Purpose:   Code::Blocks plugin
- * Author:    Ceniza<ceniza@gda.utp.edu.co>
- * Copyright: (c) Ceniza
- * License:   GPL
- **************************************************************/
-
 #ifndef EXPORTER_H
 #define EXPORTER_H
 

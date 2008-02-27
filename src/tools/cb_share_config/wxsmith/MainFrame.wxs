@@ -3,9 +3,9 @@
 	<object class="wxFrame" name="MainFrame">
 		<title>Welcome to Code::Blocks Share Config</title>
 		<centered>1</centered>
-		<style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX|wxMINIMIZE_BOX</style>
 		<bg>wxSYS_COLOUR_BTNFACE</bg>
 		<minsize>640,480</minsize>
+		<style>wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX|wxMINIMIZE_BOX</style>
 		<object class="wxBoxSizer" variable="bszMain" member="yes">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">

@@ -1,3 +1,11 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
 // too lazy to deal with event handlers, we will abuse the "About" box to start a test suite
 // #include this from dlgabout.cpp

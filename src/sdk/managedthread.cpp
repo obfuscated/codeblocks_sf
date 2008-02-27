@@ -1,9 +1,11 @@
-/** ManagedThread : A managed implementation of wxThreads
-  * (c) 2005, Ricardo Garcia
-  * (Developed as an auxiliary library
-  *  for project "Code::Blocks" by Yiannis Mandravelos)
-  * This file is distributed under the wxWindows license
-  */
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
+ * http://www.gnu.org/licenses/lgpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
 
 #include "sdk_precomp.h"
 #include "managedthread.h"
