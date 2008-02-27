@@ -1,15 +1,36 @@
-AUTHORS
--------
+Developers:
+--------------
+Yiannis Mandravellos: Developer - Project leader
+Thomas Denk         : Developer
+Lieven de Cock      : Developer
+Martin Halle        : Developer
+Biplab Modak        : Developer
+Paul A. Jimenez     : Help and AStyle plugins
+Bartlomiej Swiecki  : wxSmith RAD plugin
+Jerome Antoine      : ThreadSearch plugin
+Mario Cupelli       : User's manual
+"tiwag"             : Developer
+Pecan Heber         : Keybinder, BrowseTracker, DragScroll
+                      CodeSnippets plugins
+Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)
+Thomas Lorblanchès  : CodeStat and Profiler plugins
+Ricardo Garcia      : All-hands person
+Anders F Björklund  : wxMAC compatibility
 
-Yiannis Mandravellos <admin@codeblocks.org>: Everything
-Thomas Denk <thomas.denk@gmail.com>: Everything
-Ricardo Garcia <rick_g22@yahoo.com>: Various bits and codecompletion parser/tokenizer updates.
-Paul Andres Jimenez <ceniza@gda.utp.edu.co>: Help and AStyle plugins
-David Perfors <mispunt@users.sourceforge.net>: Unicode tester and future documentation writer
-Bartlomiej Swiecki <byo.spoon@gmail.com>: wxSmith plugin
-Sylvain Prat <sprat@users.sourceforge.net>: MSVC workspace and project importers
-Thomas Lorblanchès <zlika@users.sourceforge.net>: CodeStat and Profiler plugins
+Contributors (in no special order):
+-----------------------------------
+Daniel Orb          : RPM spec file and packages
+Mario Cupelli       : Compiler support for embedded systems
+byo,elvstone, me22  : Conversion to Unicode
+pasgui              : Providing linux nightly packages
+Hakki Dogusan       : DigitalMars compiler support
+ybx                 : OpenWatcom compiler support
+Tim Baker           : Patches for the direct-compile-mode
+                      dependencies generation system
+David Perfors       : Unicode tester and future documentation writer
+Sylvain Prat        : Initial MSVC workspace and project importers
+Chris Raschko       : Design of the 3D logo for Code::Blocks
+J.A. Ortega         : 3D Icon based on the above
 
-A couple of people are still missing from this list. When I asked for their info,
-they didn't get back to me. Let's hope they 'll be included here before the next release...
-Thanks go to them too, anyway ;)
+All contributors that provided patches.
+
