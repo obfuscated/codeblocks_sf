@@ -283,6 +283,7 @@ void BrowseTracker::OnAttach()
     // SettingLoad() of user options;
     BrowseTrackerCfg btCfg;
     btCfg.ReadUserOptions(m_CfgFilenameStr);
+    m_BrowseMarksEnabled = btCfg.m_BrowseMarksEnabled;
     m_UserMarksStyle    = btCfg.m_UserMarksStyle;
     m_ToggleKey         = btCfg.m_ToggleKey;
     m_LeftMouseDelay    = btCfg.m_LeftMouseDelay;
@@ -846,16 +847,16 @@ void BrowseTracker::OnMenuSortBrowse_Marks( wxCommandEvent& event)
 void BrowseTracker::OnMenuConfigBrowse_Marks( wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // sort the BrowseMarks by simply importing them from scintilla
+    // Show user options
 
-    //EditorBase* eb = GetCurrentEditor();
-    //BrowseMarks* pBrowse_Marks = GetBrowse_MarksFromHash(  eb);
-
-    int oldUserMarksStyle = m_UserMarksStyle;
+    int  oldUserMarksStyle = m_UserMarksStyle;
+    bool oldBrowseMarksEnabled = m_BrowseMarksEnabled;
     //invoke user options dialog
     BrowseTrackerCfg btCfg;
     btCfg.GetUserOptions( m_CfgFilenameStr );
 
+    // reset options according to user responses
+    m_BrowseMarksEnabled = btCfg.m_BrowseMarksEnabled;
     m_UserMarksStyle = btCfg.m_UserMarksStyle;
     m_ToggleKey = btCfg.m_ToggleKey;
     m_LeftMouseDelay = btCfg.m_LeftMouseDelay;
@@ -887,6 +888,18 @@ void BrowseTracker::OnMenuConfigBrowse_Marks( wxCommandEvent& event)
     if (oldUserMarksStyle not_eq m_UserMarksStyle)
         SetBrowseMarksStyle( m_UserMarksStyle );
 
+    if (oldBrowseMarksEnabled not_eq m_BrowseMarksEnabled )
+    {
+        // Simulate activation of the current editor so mouse
+        // events get connected.
+        EditorBase* eb = m_pEdMgr->GetBuiltinActiveEditor();
+        if ( eb )
+        {
+            CodeBlocksEvent evt;
+            evt.SetEditor(eb);
+            OnEditorActivated(evt);
+        }
+    }
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::OnMenuClearAllBrowse_Marks(wxCommandEvent& event)
@@ -979,6 +992,8 @@ void BrowseTracker::OnMouseKeyEvent(wxMouseEvent& event)
     // on this line.
 
     if ( (not IsAttached()) || (not m_InitDone) )
+        { event.Skip(); return; }
+    if (not IsBrowseMarksEnabled() )
         { event.Skip(); return; }
 
     if (   ( event.GetEventType() ==  wxEVT_LEFT_UP)
@@ -1370,7 +1385,8 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
         // Set hooks to catch mouse activity
         // ---------------------------------------------------------------------
 
-        if ( not GetBrowse_MarksFromHash( eb ) ) //guard against duplicates
+        if ( IsBrowseMarksEnabled()
+            && (not GetBrowse_MarksFromHash( eb )) ) //guard against duplicates
         {   // new editor
             if (cbed)
             {
@@ -1801,6 +1817,9 @@ void BrowseTracker::OnProjectOpened(CodeBlocksEvent& event)
     // that saved previous BrowseMark and book mark history, and use that data
     // to build/set old saved Browse/Book marks.
 
+    if ( not IsBrowseMarksEnabled() )
+        return;
+
     cbProject* pProject = event.GetProject();
 
     if ( not pProject )
@@ -1888,6 +1907,9 @@ void BrowseTracker::OnProjectClosing(CodeBlocksEvent& event)
     // us to reference CB project and editor related data before CB
     // deletes it all.
 
+    if (not IsBrowseMarksEnabled())
+        return;
+
     cbProject* pProject = event.GetProject();
     if (not pProject) return; //It happens!
 
@@ -1905,7 +1927,7 @@ void BrowseTracker::OnProjectClosing(CodeBlocksEvent& event)
             LOGIT( _T("*CRASH* OnProjectClosing entered w/o project pointer") );
     #endif
     if ( not pProjectData ) return;
-    // Close editors that belogn to the current project
+    // Close editors that belong to the current project
     for (int i=0; i < m_pEdMgr->GetEditorsCount(); ++i)
     {
     	EditorBase* eb = m_pEdMgr->GetEditor(i);
@@ -1955,6 +1977,9 @@ void BrowseTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
     // pointer. Only a cbEVT_EDITOR_ACTIVATE occurs.
 
     event.Skip();
+
+    if (not IsBrowseMarksEnabled() )
+        return;
 
     // allocate a ProjectData to hold activated editors
     cbProject* pCBProject = event.GetProject();
@@ -2036,6 +2061,10 @@ void BrowseTracker::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
     #if defined(LOGGING)
     //-LOGIT( _T("OnProjectLoadingHook [%s]"), loading? wxT("Loading"):wxT("Saving") );
     #endif
+
+    if (not IsBrowseMarksEnabled() )
+        return;
+
     if (loading)
     {
         // dont record CB activated editors while project is loading
@@ -2081,6 +2110,9 @@ void BrowseTracker::OnEditorEventHook(cbEditor* pcbEditor, wxScintillaEvent& eve
 //    Manager::Get()->GetLogManager()->DebugLog(txt);
 
     event.Skip();
+
+    if (not IsBrowseMarksEnabled())
+        return;
 
     //if ( event.GetEventType() != wxEVT_SCI_MODIFIED )
     if ( event.GetEventType() == wxEVT_SCI_MODIFIED )

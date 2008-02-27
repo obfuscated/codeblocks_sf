@@ -165,6 +165,7 @@ class BrowseTracker : public cbPlugin
             //-void        ClearLineBrowseMark(int posn);
             void        ImportBrowse_Marks(cbEditor* ed);
             void        RebuildBrowse_Marks(cbEditor* ed, bool addedlines);
+            bool        IsBrowseMarksEnabled(){return m_BrowseMarksEnabled;}
 
             // Book Marks recording
             void        ToggleBook_Mark(EditorBase* eb);
@@ -288,6 +289,7 @@ class BrowseTracker : public cbPlugin
         wxLongLong      m_MouseDownTime;
         long            m_MouseXPosn;
         long            m_MouseYPosn;
+        bool            m_BrowseMarksEnabled; //user has enabled BrowseTracker
         bool            m_IsMouseDoubleClick;   //last mouse click was a DClick
         int             m_UserMarksStyle;       //BrowseMarks style Browse/Book/Hidden
         int             m_ToggleKey;            //Left_Mouse or Ctrl-Left_Mouse

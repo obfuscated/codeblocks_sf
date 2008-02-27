@@ -187,6 +187,12 @@ AppVersion::~AppVersion()
 //  Commit 1.2.71 2008/02/18
 //         71) removed unnecessary debugging files ToolBox.*
 // ----------------------------------------------------------------------------
+//  Commit 1.2.72 2008/02/19
+//         72) guard all asm(int3) with defined(LOGGING)
+// ----------------------------------------------------------------------------
+//  Commit 1.2.73 2008/02/27
+//         73) Set default BrowseMarks to disabled
+// ----------------------------------------------------------------------------
 //  Bugs
 //          When searching workspace w/o open project, BT is comatose.
 //              Should say "no project" or some such.

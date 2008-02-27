@@ -56,7 +56,7 @@ ProjectData::ProjectData(cbProject* pcbProject)
 // ----------------------------------------------------------------------------
 {
     //ctor
-    #if defined(LOGGING) && !defined(__ppc__)
+    #if defined(LOGGING)
     if (not pcbProject) asm("int3"); /*trap*/;
     #endif
     if (not pcbProject) return;
@@ -178,7 +178,7 @@ BrowseMarks* ProjectData::HashAddBrowse_Marks( const wxString fullPath )
     //EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(filename);
 
     EditorBase* eb = m_pEdMgr->GetEditor(fullPath);
-    #if defined(LOGGING) && !defined(__ppc__)
+    #if defined(LOGGING)
         if(not eb) asm("int3"); /*trap*/
     #endif
     if(not eb) return 0;

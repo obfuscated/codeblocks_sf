@@ -33,6 +33,15 @@ ConfigDlg::ConfigDlg( wxWindow* parent, wxWindowID id, const wxString& title, co
 	
 	bSizer3->Add( 0, 10, 0, 0, 5 );
 	
+	wxBoxSizer* bSizer7;
+	bSizer7 = new wxBoxSizer( wxVERTICAL );
+	
+	Cfg_BrowseMarksEnabled = new wxCheckBox( this, wxID_ANY, wxT("Enable BrowseMarks"), wxDefaultPosition, wxDefaultSize, 0 );
+	
+	bSizer7->Add( Cfg_BrowseMarksEnabled, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	
+	bSizer3->Add( bSizer7, 0, wxALIGN_CENTER_HORIZONTAL|wxEXPAND|wxSHAPED, 5 );
+	
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
 	

@@ -14,8 +14,9 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
-#include <wx/radiobox.h>
+#include <wx/checkbox.h>
 #include <wx/sizer.h>
+#include <wx/radiobox.h>
 #include <wx/slider.h>
 #include <wx/button.h>
 #include <wx/dialog.h>
@@ -38,6 +39,7 @@ class ConfigDlg : public wxDialog
 		wxButton* m_sdbSizer1Cancel;
 	
 	public:
+		wxCheckBox* Cfg_BrowseMarksEnabled;
 		wxRadioBox* Cfg_MarkStyle;
 		wxRadioBox* Cfg_ToggleKey;
 		wxStaticText* m_staticText4;

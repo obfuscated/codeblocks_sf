@@ -46,6 +46,7 @@ void BrowseTrackerCfg::GetUserOptions(wxString configFullPath)
     #endif
 
     // set the current values
+    m_configDlg.Cfg_BrowseMarksEnabled->SetValue( m_BrowseMarksEnabled);
     m_configDlg.Cfg_MarkStyle->SetSelection(m_UserMarksStyle);
     m_configDlg.Cfg_ToggleKey->SetSelection( m_ToggleKey );
 	m_configDlg.Cfg_LeftMouseDelay->SetValue( m_LeftMouseDelay ) ;
@@ -54,6 +55,7 @@ void BrowseTrackerCfg::GetUserOptions(wxString configFullPath)
     m_configDlg.ShowModal();
 
     // get any new user values
+    m_BrowseMarksEnabled = m_configDlg.Cfg_BrowseMarksEnabled->GetValue();
     m_UserMarksStyle = m_configDlg.Cfg_MarkStyle->GetSelection();
     m_ToggleKey = m_configDlg.Cfg_ToggleKey->GetSelection();
 	m_LeftMouseDelay = m_configDlg.Cfg_LeftMouseDelay->GetValue();
@@ -82,6 +84,7 @@ void BrowseTrackerCfg::ReadUserOptions(wxString configFullPath)
                     //0);
     wxFileConfig& cfgFile = *pCfgFile;
 
+	cfgFile.Read( wxT("BrowseMarksEnabled"),        &m_BrowseMarksEnabled, 0 ) ;
 	cfgFile.Read( wxT("BrowseMarksStyle"),          &m_UserMarksStyle, 0 ) ;
 	cfgFile.Read( wxT("BrowseMarksToggleKey"),      &m_ToggleKey, Left_Mouse ) ;
 	cfgFile.Read( wxT("LeftMouseDelay"),            &m_LeftMouseDelay, 200 ) ;
@@ -101,6 +104,7 @@ void BrowseTrackerCfg::SaveUserOptions(wxString configFullPath)
                     //0);
     wxFileConfig& cfgFile = *pCfgFile;
 
+	cfgFile.Write( wxT("BrowseMarksEnabled"),       m_BrowseMarksEnabled ) ;
 	cfgFile.Write( wxT("BrowseMarksStyle"),         m_UserMarksStyle ) ;
     cfgFile.Write( wxT("BrowseMarksToggleKey"),     m_ToggleKey ) ;
     cfgFile.Write( wxT("LeftMouseDelay"),           m_LeftMouseDelay ) ;

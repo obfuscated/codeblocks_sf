@@ -41,6 +41,7 @@ class BrowseTrackerCfg
     ConfigDlg m_configDlg;
 
     wxFileConfig* pCfgFile;
+    int m_BrowseMarksEnabled;
     int m_UserMarksStyle;
     int m_ToggleKey;
 	int m_LeftMouseDelay;
