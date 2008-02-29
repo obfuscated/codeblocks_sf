@@ -102,7 +102,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)\n"
         "Thomas Lorblanchès  : CodeStat and Profiler plugins\n"
         "Ricardo Garcia      : All-hands person\n"
-        "Anders F Björklund  : wxMAC compatibility\n"
+        "Anders F Björklund  : wxMac compatibility\n"
         "\n"
         "Contributors (in no special order):\n"
         "-----------------------------------\n"
