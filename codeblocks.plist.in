@@ -144,11 +144,11 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleGetInfoString</key>
-	<string>CodeBlocks version 1.0 svn @REVISION@, (c) 2006 Code::Blocks</string>
+	<string>CodeBlocks version 1.0 svn @REVISION@, (c) 2004-2008 Code::Blocks</string>
 	<key>CFBundleLongVersionString</key>
-	<string>1.0, (c) 2006 Code::Blocks</string>
+	<string>1.0, (c) 2004-2008 Code::Blocks</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2006 Code::Blocks</string>
+	<string>Copyright 2004-2008, The Code::Blocks Team</string>
 	<key>LSRequiresCarbon</key>
 	<true/>
 </dict>
