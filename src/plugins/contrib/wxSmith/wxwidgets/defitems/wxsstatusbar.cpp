@@ -235,10 +235,16 @@ bool wxsStatusBar::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
         if ( m_Fields < 1 ) m_Fields = 1;
         UpdateArraysSize(m_Fields);
 
-        TiXmlElement* WidthsElem = Element->FirstChildElement("widths");
-        wxString WidthsStr = cbC2U(WidthsElem->GetText());
-        TiXmlElement* StylesElem = Element->FirstChildElement("styles");
-        wxString StylesStr = cbC2U(StylesElem->GetText());
+        wxString WidthsStr;
+        wxString StylesStr;
+        if ( TiXmlElement* WidthsElem = Element->FirstChildElement("widths") )
+        {
+            WidthsStr = cbC2U(WidthsElem->GetText());
+        }
+        if ( TiXmlElement* StylesElem = Element->FirstChildElement("styles") )
+        {
+            StylesStr = cbC2U(StylesElem->GetText());
+        }
 
         for ( int i=0; i<m_Fields; i++ )
         {
