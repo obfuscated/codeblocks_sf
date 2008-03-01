@@ -268,6 +268,8 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     {
         VirtualDestructor = false;
     }
+    bool HasCopyCtor = XRCCTRL(*this, "chkHasCopyCtor", wxCheckBox)->GetValue();
+    bool HasAssignmentOp = XRCCTRL(*this, "chkHasAssignmentOp", wxCheckBox)->GetValue();
 
     wxString Ancestor = XRCCTRL(*this, "txtInheritance", wxTextCtrl)->GetValue();
     wxString AncestorFilename = XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->GetValue();
@@ -363,6 +365,21 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
         buffer << _T('~') << Name << _T("()");
         buffer << (!GenerateImplementation ? _T(" {}") : _T(";")) << eolstr;
     }
+
+    if (HasCopyCtor)
+    {
+        buffer << tabstr << tabstr;
+        buffer << Name << _T("(const ") << Name << _T("& other)");
+        buffer << (!GenerateImplementation ? _T(" {}") : _T(";")) << eolstr;
+    }
+
+    if (HasAssignmentOp)
+    {
+        buffer << tabstr << tabstr;
+        buffer << Name << _T("& ") << _T("operator=(const ") << Name << _T("& other)");
+        buffer << (!GenerateImplementation ? _T(" { return *this; }") : _T(";")) << eolstr;
+    }
+
     buffer << tabstr << _T("protected:") << eolstr;
     buffer << tabstr << _T("private:") << eolstr;
     buffer << _T("};") << eolstr;
@@ -435,6 +452,26 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
         buffer << Name << _T("::~") << Name << _T("()") << eolstr;
         buffer << _T("{") << eolstr;
         buffer << tabstr << _T("//dtor") << eolstr;
+        buffer << _T("}") << eolstr;
+    }
+
+    if (HasCopyCtor)
+    {
+        buffer << eolstr;
+        buffer << Name << _T("::") << Name << _T("(const ") << Name << _T("& other)") << eolstr;;
+        buffer << _T("{") << eolstr;
+        buffer << tabstr << _T("//copy ctor") << eolstr;
+        buffer << _T("}") << eolstr;
+    }
+
+    if (HasAssignmentOp)
+    {
+        buffer << eolstr;
+        buffer << Name << _T("& ") << Name << _T("::operator=(const ") << Name << _T("& rhs)") << eolstr;;
+        buffer << _T("{") << eolstr;
+        buffer << tabstr << _T("if (this == &rhs) return *this; // handle self assignment") << eolstr;
+        buffer << tabstr << _T("//assignment operator") << eolstr;
+        buffer << tabstr << _T("return *this;") << eolstr;
         buffer << _T("}") << eolstr;
     }
 

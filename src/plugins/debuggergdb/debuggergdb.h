@@ -225,7 +225,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         typedef std::map<cbProject*, wxArrayString> SearchDirsMap;
         SearchDirsMap m_SearchDirs;
 
-		typedef std::map<cbProject*, RemoteDebuggingMap> ProjectRemoteDebuggingMap;
+        typedef std::map<cbProject*, RemoteDebuggingMap> ProjectRemoteDebuggingMap;
         ProjectRemoteDebuggingMap m_RemoteDebugging;
 
         int m_HookId; // project loader hook ID

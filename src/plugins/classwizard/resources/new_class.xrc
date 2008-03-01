@@ -59,9 +59,29 @@
                       <checked>1</checked>
                     </object>
                     <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                    <border>5</border>
                   </object>
                   <growablecols>1</growablecols>
+                  <object class="spacer">
+                    <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                    <size>0,0</size>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxCheckBox" name="chkHasCopyCtor">
+                      <label>Has copy ctor</label>
+                    </object>
+                    <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  </object>
+                  <object class="spacer">
+                    <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                    <size>0,0</size>
+                  </object>
+                  <object class="sizeritem">
+                    <object class="wxCheckBox" name="chkHasAssignmentOp">
+                      <label>Has assigment op.</label>
+                    </object>
+                    <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                    <border>5</border>
+                  </object>
                 </object>
                 <flag>wxALL|wxEXPAND</flag>
                 <border>5</border>

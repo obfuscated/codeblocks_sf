@@ -31,6 +31,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/fs_zip.h>
 
+#include "annoyingdialog.h"
 #include "debuggergdb.h"
 #include "debuggerdriver.h"
 #include "debuggeroptionsdlg.h"
@@ -277,8 +278,8 @@ void DebuggerGDB::OnAttach()
         bmp = new wxBitmap(cbLoadBitmap(prefix + _T("contents_16x16.png"), wxBITMAP_TYPE_PNG));
         msgMan->Slot(m_DbgPageIndex).icon = bmp;
 
-		CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, msgMan->Slot(m_DbgPageIndex).title, msgMan->Slot(m_DbgPageIndex).icon);
-		Manager::Get()->ProcessEvent(evtAdd);
+        CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, msgMan->Slot(m_DbgPageIndex).title, msgMan->Slot(m_DbgPageIndex).icon);
+        Manager::Get()->ProcessEvent(evtAdd);
     }
 
     m_pTree = new DebuggerTree(Manager::Get()->GetAppWindow(), this);
@@ -447,8 +448,8 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     //Close debug session when appShutDown
     if (m_State.HasDriver())
     {
-		Stop();
-		wxYieldIfNeeded();
+        Stop();
+        wxYieldIfNeeded();
     }
 
     m_State.CleanUp();
@@ -457,12 +458,12 @@ void DebuggerGDB::OnRelease(bool appShutDown)
     {
         if (m_HasDebugLog)
         {
-			CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
-			Manager::Get()->ProcessEvent(evt);
+            CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
+            Manager::Get()->ProcessEvent(evt);
             m_pDbgLog = 0;
         }
-		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pLog);
-		Manager::Get()->ProcessEvent(evt);
+        CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pLog);
+        Manager::Get()->ProcessEvent(evt);
         m_pLog = 0;
     }
     // vars for Linux console
@@ -501,9 +502,9 @@ void DebuggerGDB::RefreshConfiguration()
 
     if (!log_visible && m_HasDebugLog)
     {
-		CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
-		Manager::Get()->ProcessEvent(evt);
-		m_pDbgLog = 0;
+        CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pDbgLog);
+        Manager::Get()->ProcessEvent(evt);
+        m_pDbgLog = 0;
     }
     else if (log_visible && !m_HasDebugLog)
     {
@@ -514,8 +515,8 @@ void DebuggerGDB::RefreshConfiguration()
         wxBitmap* bmp = new wxBitmap(cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/contents_16x16.png"), wxBITMAP_TYPE_PNG));
         Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon = bmp;
 
-		CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).title, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon);
-		Manager::Get()->ProcessEvent(evtAdd);
+        CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_pDbgLog, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).title, Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).icon);
+        Manager::Get()->ProcessEvent(evtAdd);
     }
     m_HasDebugLog = log_visible;
 }
@@ -628,15 +629,15 @@ wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
 
 RemoteDebuggingMap& DebuggerGDB::GetRemoteDebuggingMap(cbProject* project)
 {
-	if (!project)
-		project = m_pProject;
-	ProjectRemoteDebuggingMap::iterator it = m_RemoteDebugging.find(project);
-	if (it == m_RemoteDebugging.end())
-	{
+    if (!project)
+        project = m_pProject;
+    ProjectRemoteDebuggingMap::iterator it = m_RemoteDebugging.find(project);
+    if (it == m_RemoteDebugging.end())
+    {
         // create an empty set for this project
         it = m_RemoteDebugging.insert(m_RemoteDebugging.begin(), std::make_pair(project, RemoteDebuggingMap()));
-	}
-	return it->second;
+    }
+    return it->second;
 }
 
 
@@ -647,8 +648,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 
     if (loading)
     {
-    	rdprj.clear();
-    	
+        rdprj.clear();
+
         // Hook called when loading project file.
         TiXmlElement* conf = elem->FirstChildElement("debugger");
         if (conf)
@@ -695,7 +696,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                     if (rdOpt->Attribute("skip_ld_path"))
                         rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != _T("0");
 
-					rdprj.insert(rdprj.end(), std::make_pair(bt, rd));
+                    rdprj.insert(rdprj.end(), std::make_pair(bt, rd));
                 }
                 else
                     Manager::Get()->GetLogManager()->Log(_T("Unknown target in remote_debugging: ") + targetName, m_PageIndex, Logger::warning);
@@ -734,16 +735,16 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 // valid targets only
                 if (!it->first)
                     continue;
-				
+
                 RemoteDebugging& rd = it->second;
 
-				// if no different than defaults, skip it
-				if (rd.serialPort.IsEmpty() && rd.ip.IsEmpty() &&
-					rd.additionalCmds.IsEmpty() && rd.additionalCmdsBefore.IsEmpty() &&
-					!rd.skipLDpath)
-				{
-					continue;
-				}
+                // if no different than defaults, skip it
+                if (rd.serialPort.IsEmpty() && rd.ip.IsEmpty() &&
+                    rd.additionalCmds.IsEmpty() && rd.additionalCmdsBefore.IsEmpty() &&
+                    !rd.skipLDpath)
+                {
+                    continue;
+                }
 
                 TiXmlElement* rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
                 rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
@@ -751,19 +752,19 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
                 tgtnode->SetAttribute("conn_type", (int)rd.connType);
                 if (!rd.serialPort.IsEmpty())
-					tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
+                    tgtnode->SetAttribute("serial_port", cbU2C(rd.serialPort));
                 if (!rd.serialBaud.IsEmpty())
-					tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
+                    tgtnode->SetAttribute("serial_baud", cbU2C(rd.serialBaud));
                 if (!rd.ip.IsEmpty())
-					tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
+                    tgtnode->SetAttribute("ip_address", cbU2C(rd.ip));
                 if (!rd.ipPort.IsEmpty())
-					tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
+                    tgtnode->SetAttribute("ip_port", cbU2C(rd.ipPort));
                 if (!rd.additionalCmds.IsEmpty())
-					tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
+                    tgtnode->SetAttribute("additional_cmds", cbU2C(rd.additionalCmds));
                 if (!rd.additionalCmdsBefore.IsEmpty())
-					tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
+                    tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
                 if (rd.skipLDpath)
-					tgtnode->SetAttribute("skip_ld_path", "1");
+                    tgtnode->SetAttribute("skip_ld_path", "1");
             }
         }
     }
@@ -771,27 +772,27 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 
 void DebuggerGDB::DoSwitchToDebuggingLayout()
 {
-	CodeBlocksLayoutEvent queryEvent(cbEVT_QUERY_VIEW_LAYOUT);
-	CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, _("Debugging"));
+    CodeBlocksLayoutEvent queryEvent(cbEVT_QUERY_VIEW_LAYOUT);
+    CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, _("Debugging"));
 
-	Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.c_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.c_str()));
 
-	// query the current layout
-	Manager::Get()->ProcessEvent(queryEvent);
-	m_PreviousLayout = queryEvent.layout;
+    // query the current layout
+    Manager::Get()->ProcessEvent(queryEvent);
+    m_PreviousLayout = queryEvent.layout;
 
-	// switch to debugging layout
-	Manager::Get()->ProcessEvent(switchEvent);
+    // switch to debugging layout
+    Manager::Get()->ProcessEvent(switchEvent);
 }
 
 void DebuggerGDB::DoSwitchToPreviousLayout()
 {
-	CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
+    CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
 
-	Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.c_str() : wxString(_("Code::Blocks default")).c_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.c_str() : wxString(_("Code::Blocks default")).c_str()));
 
-	// switch to previous layout
-	Manager::Get()->ProcessEvent(switchEvent);
+    // switch to previous layout
+    Manager::Get()->ProcessEvent(switchEvent);
 }
 
 void DebuggerGDB::DoWatches()
@@ -1037,10 +1038,10 @@ int DebuggerGDB::Debug()
     m_pTree->GetTree()->DeleteAllItems();
 
     // switch to the debugging log and clear it
-	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
-	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-	Manager::Get()->ProcessEvent(evtSwitch);
-	Manager::Get()->ProcessEvent(evtShow);
+    CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+    CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+    Manager::Get()->ProcessEvent(evtSwitch);
+    Manager::Get()->ProcessEvent(evtShow);
     m_pLog->Clear();
 
     // can only debug projects or attach to processes
@@ -1090,10 +1091,10 @@ int DebuggerGDB::DoDebug()
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 
     // this is always called after EnsureBuildUpToDate() so we should display the build result
-	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
-	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-	Manager::Get()->ProcessEvent(evtSwitch);
-	Manager::Get()->ProcessEvent(evtShow);
+    CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+    CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+    Manager::Get()->ProcessEvent(evtSwitch);
+    Manager::Get()->ProcessEvent(evtShow);
 
     if (m_pCompiler)
     {
@@ -1113,10 +1114,10 @@ int DebuggerGDB::DoDebug()
     Compiler* actualCompiler = 0;
     if (m_PidToAttach == 0)
     {
-		CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
-		CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
-		Manager::Get()->ProcessEvent(evtSwitch);
-		Manager::Get()->ProcessEvent(evtShow);
+        CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+        CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+        Manager::Get()->ProcessEvent(evtSwitch);
+        Manager::Get()->ProcessEvent(evtShow);
 
         msgMan->Log(_("Selecting target: "), m_PageIndex);
         if (!m_pProject->BuildTargetValid(m_ActiveBuildTarget, false))
@@ -1271,31 +1272,31 @@ int DebuggerGDB::DoDebug()
     else // m_PidToAttach != 0
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach);
 
-	RemoteDebugging* rd = 0;
-	RemoteDebuggingMap& rdprj = GetRemoteDebuggingMap();
-	RemoteDebuggingMap::iterator it = rdprj.find(target);
-	if (it != rdprj.end())
-		rd = &it->second;
+    RemoteDebugging* rd = 0;
+    RemoteDebuggingMap& rdprj = GetRemoteDebuggingMap();
+    RemoteDebuggingMap::iterator it = rdprj.find(target);
+    if (it != rdprj.end())
+        rd = &it->second;
 
     wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
-	if (!rd || !rd->skipLDpath)
-	{
-		wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
+    if (!rd || !rd->skipLDpath)
+    {
+        wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
 
-		// setup dynamic linker path
-		if (actualCompiler && target)
-		{
-			wxString newLibPath;
-			const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-			newLibPath << _T(".") << libPathSep;
-			newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
-			if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
-				newLibPath << libPathSep;
-			newLibPath << oldLibPath;
-			wxSetEnv(LIBRARY_ENVVAR, newLibPath);
-			DebugLog(LIBRARY_ENVVAR _T("=") + newLibPath);
-		}
-	}
+        // setup dynamic linker path
+        if (actualCompiler && target)
+        {
+            wxString newLibPath;
+            const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+            newLibPath << _T(".") << libPathSep;
+            newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
+            if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+                newLibPath << libPathSep;
+            newLibPath << oldLibPath;
+            wxSetEnv(LIBRARY_ENVVAR, newLibPath);
+            DebugLog(LIBRARY_ENVVAR _T("=") + newLibPath);
+        }
+    }
 
     // start the gdb process
     wxString wdir = m_pProject ? m_pProject->GetBasePath() : _T(".");
@@ -1303,11 +1304,11 @@ int DebuggerGDB::DoDebug()
     DebugLog(_T("Working dir : ") + wdir);
     int ret = LaunchProcess(cmdline, wdir);
 
-	if (!rd || !rd->skipLDpath)
-	{
-		// restore dynamic linker path
-		wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
-	}
+    if (!rd || !rd->skipLDpath)
+    {
+        // restore dynamic linker path
+        wxSetEnv(LIBRARY_ENVVAR, oldLibPath);
+    }
 
     if (ret != 0)
     {
@@ -1326,12 +1327,12 @@ int DebuggerGDB::DoDebug()
     int i = 50;
     while (i)
     {
-		wxMilliSleep(1);
-		Manager::Yield();
-		--i;
+        wxMilliSleep(1);
+        Manager::Yield();
+        --i;
     }
     if (!m_State.HasDriver())
-		return -1;
+        return -1;
 
     m_State.GetDriver()->Prepare(target, target && target->GetTargetType() == ttConsoleOnly);
     m_State.ApplyBreakpoints();
@@ -1357,7 +1358,7 @@ int DebuggerGDB::DoDebug()
 
     // switch to the user-defined layout for debugging
     if (m_pProcess)
-		DoSwitchToDebuggingLayout();
+        DoSwitchToDebuggingLayout();
 
     return 0;
 } // Debug
@@ -1836,34 +1837,34 @@ void DebuggerGDB::Break()
 {
     // m_Process is PipedProcess I/O; m_Pid is debugger pid
     if (m_pProcess && m_Pid && !IsStopped())
-	{
-		long pid = m_State.GetDriver()->GetChildPID();
-		if (pid <= 0)
-			pid = m_Pid; // try poking gdb directly
-	#ifndef __WXMSW__
-		// non-windows gdb can interrupt the running process. yay!
-		if (pid <= 0) // look out for the "fake" PIDs (killall)
-			cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);
-		else
-			wxKill(pid, wxSIGINT);
-	#else
-		// windows gdb can interrupt the running process too. yay!
-		bool done = false;
-		if (DebugBreakProcessFunc && pid > 0)
-		{
-			Log(_("Trying to pause the running process..."));
-			HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
-			if (proc)
-			{
-				DebugBreakProcessFunc(proc); // yay!
-				CloseHandle(proc);
-				done = true;
-			}
-			else
-				Log(_("Failed."));
-		}
-	#endif
-	}
+    {
+        long pid = m_State.GetDriver()->GetChildPID();
+        if (pid <= 0)
+            pid = m_Pid; // try poking gdb directly
+    #ifndef __WXMSW__
+        // non-windows gdb can interrupt the running process. yay!
+        if (pid <= 0) // look out for the "fake" PIDs (killall)
+            cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);
+        else
+            wxKill(pid, wxSIGINT);
+    #else
+        // windows gdb can interrupt the running process too. yay!
+        bool done = false;
+        if (DebugBreakProcessFunc && pid > 0)
+        {
+            Log(_("Trying to pause the running process..."));
+            HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
+            if (proc)
+            {
+                DebugBreakProcessFunc(proc); // yay!
+                CloseHandle(proc);
+                done = true;
+            }
+            else
+                Log(_("Failed."));
+        }
+    #endif
+    }
 }
 
 void DebuggerGDB::Stop()
@@ -1881,12 +1882,12 @@ void DebuggerGDB::Stop()
             }
             else
             {
-				m_pProcess->CloseOutput();
-				m_pProcess->Kill(pid, wxSIGKILL);
+                m_pProcess->CloseOutput();
+                m_pProcess->Kill(pid, wxSIGKILL);
             }
         }
-		RunCommand(CMD_STOP);
-		m_pProcess->CloseOutput();
+        RunCommand(CMD_STOP);
+        m_pProcess->CloseOutput();
     }
 }
 
@@ -2094,10 +2095,10 @@ void DebuggerGDB::OnAddDataBreakpoint(wxCommandEvent& event)
 
 void DebuggerGDB::OnStop(wxCommandEvent& event)
 {
-	if (!IsStopped())
-		Break();
-	else
-		Stop();
+    if (!IsStopped())
+        Break();
+    else
+        Stop();
 }
 
 void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)
@@ -2488,7 +2489,7 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
     // remove all search dirs stored for this project so we don't have conflicts
     // if a newly opened project happens to use the same memory address
     GetSearchDirs(event.GetProject()).clear();
-    
+
     // the same for remote debugging
     GetRemoteDebuggingMap(event.GetProject()).clear();
 
@@ -2505,10 +2506,12 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
 
     if (event.GetProject() == m_pProject)
     {
-        cbMessageBox(_("The project you were debugging has closed.\n"
-                        "The debugging session will terminate immediately."),
-                    _("Warning"),
-                    wxICON_WARNING);
+        AnnoyingDialog dlg(_("Project closed while debugging message"),
+                           _("The project you were debugging has closed.\n"
+                             "(The application most liekely just finished.)"
+                             "The debugging session will terminate immediately."),
+                            wxART_WARNING, AnnoyingDialog::OK, wxID_OK);
+        dlg.ShowModal();
         Stop();
     }
 }
@@ -2640,14 +2643,14 @@ int DebuggerGDB::RunNixConsole()
     m_ConsoleTty = GetConsoleTty(m_nConsolePid);
     if (not m_ConsoleTty.IsEmpty() )
     {
-    	// show what we found as tty
+        // show what we found as tty
         DebugLog(wxString::Format(wxT("GetConsoleTTY[%s]ConsolePid[%d]"),m_ConsoleTty.c_str(),m_nConsolePid));
         return m_nConsolePid;
     }
     // failed to find the console tty
     DebugLog( wxT("Console Execution error:failed to find console tty."));
     if (m_nConsolePid != 0)
-		::wxKill(m_nConsolePid);
+        ::wxKill(m_nConsolePid);
     m_nConsolePid = 0;
 #endif // !__WWXMSW__
     return -1;
@@ -2670,7 +2673,7 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
     psCmd.Clear();
     if (result != 0)
     {
-    	psCmd << wxT("Result of ps x:") << result;
+        psCmd << wxT("Result of ps x:") << result;
         DebugLog(wxString::Format( _("Execution Error:"), psCmd.c_str()) );
         return wxEmptyString;
     }
@@ -2685,7 +2688,7 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
     int knt = psOutput.GetCount();
     for (int i=knt-1; i>-1; --i)
     {
-    	psCmd = psOutput.Item(i);
+        psCmd = psOutput.Item(i);
         DebugLog(wxString::Format( _("PS result: %s"), psCmd.c_str()) );
         // find the pts/# or tty/# or whatever it's called
         // by seaching the output of "ps x -o tty,pid,command" command.
@@ -2702,9 +2705,9 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
         if (psCmd.Contains(uniqueSleepTimeStr))
         do
         {
-        	// check for correct "sleep" line
+            // check for correct "sleep" line
             if (psCmd.Contains(wxT("-T")))
-				break; //error;wrong sleep line.
+                break; //error;wrong sleep line.
             // found "sleep 93343" string, extract tty field
             ConsTtyStr = wxT("/dev/") + psCmd.BeforeFirst(' ');
             DebugLog(wxString::Format( _("TTY is[%s]"), ConsTtyStr.c_str()) );

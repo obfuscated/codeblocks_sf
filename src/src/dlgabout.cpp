@@ -100,9 +100,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Pecan Heber         : Keybinder, BrowseTracker, DragScroll\n"
         "                      CodeSnippets plugins\n"
         "Arto Jonsson        : CodeSnippets plugin (passed on to Pecan)\n"
-        "Thomas Lorblanchès  : CodeStat and Profiler plugins\n"
+        "Thomas Lorblanches  : CodeStat and Profiler plugins\n"
         "Ricardo Garcia      : All-hands person\n"
-        "Anders F Björklund  : wxMac compatibility\n"
+        "Anders F Bjoerklund : wxMac compatibility\n"
         "\n"
         "Contributors (in no special order):\n"
         "-----------------------------------\n"
@@ -125,8 +125,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
         "Squirrel scripting language (http://www.squirrel-lang.org).\n"
         "The GNU Software Foundation (http://www.gnu.org).\n"
-        "Last, but not least, the open-source community."
-        ));
+        "Last, but not least, the open-source community."));
 	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
 	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(appglobals::AppName);
 	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
