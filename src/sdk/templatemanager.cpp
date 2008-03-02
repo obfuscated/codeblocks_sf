@@ -193,7 +193,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
     {
         // open new project
         if (project_filename.IsEmpty())
-            cbMessageBox(_("User-template saved succesfuly but no project file exists in it!"));
+            cbMessageBox(_("User-template saved successfully but no project file exists in it!"));
         else
         {
             // ask to rename the project file, if need be
@@ -320,7 +320,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     }
 
     if (count == total_count)
-        cbMessageBox(_("User-template saved succesfuly"), _("Information"), wxICON_INFORMATION | wxOK);
+        cbMessageBox(_("User-template saved successfully"), _("Information"), wxICON_INFORMATION | wxOK);
     else
         cbMessageBox(_("Some files could not be saved with the template..."), _("Error"), wxICON_ERROR);
 }
