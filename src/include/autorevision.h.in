@@ -1,9 +1,5 @@
-/*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
- */
-
 /*@REVISION@*/
+//don't include this header, only configmanager-revision.cpp should do this.
 #ifndef AUTOREVISION_H
 #define AUTOREVISION_H
 
