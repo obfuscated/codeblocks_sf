@@ -375,7 +375,7 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
             ( ch == _T('\t') ) ? _T('\t') : _T(' '));
     }
 
-    Code = RebuildCode(BaseIndentation,Code.wc_str(wxConvLocal),(int)Code.Length(),EOL);
+    Code = RebuildCode(BaseIndentation,Code.c_str(),(int)Code.Length(),EOL);
 
     // Fixing up positions to contain or not header / ending sequence
     if ( !CodeHasHeader ) Position += Header.Length();
@@ -463,7 +463,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
             ( ch == _T('\t') ) ? _T('\t') : _T(' '));
     }
 
-    Code = RebuildCode(BaseIndentation,Code.wc_str(wxConvLocal),Code.Length(),EOL);
+    Code = RebuildCode(BaseIndentation,Code.c_str(),Code.Length(),EOL);
 
     // Checking if code has really changed
     if ( Content.Mid(0,EndPosition) == Code )
@@ -479,7 +479,7 @@ bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,c
     return true;
 }
 
-wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wchar_t* Code,int CodeLen,wxString& EOL)
+wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int CodeLen,wxString& EOL)
 {
     wxString Tab;
     bool UseTab = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/use_tab"), false);

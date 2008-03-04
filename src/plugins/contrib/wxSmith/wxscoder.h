@@ -148,7 +148,7 @@ class wxsCoder: public wxEvtHandler
         void FlushTimerEvent(wxTimerEvent& event);
 
         /** \brief Rebuilding code to support current editor settings */
-        wxString RebuildCode(wxString& BaseIndentation,const wchar_t* Code,int CodeLen,wxString& EOL);
+        wxString RebuildCode(wxString& BaseIndentation,const wxChar* Code,int CodeLen,wxString& EOL);
 
         /** \brief Cutting off given number of spaces at every new line */
         wxString CutSpaces(wxString Code,int Count);
