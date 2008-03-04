@@ -395,14 +395,21 @@ bool wxsCoder::ApplyChangesEditor(cbEditor* Editor,const wxString& Header,const 
         return true;
     }
 
+    // Make sure that the code we're replacing is not folded. Otherwise scintilla
+    // does some weird things
+
+    int lineEnd = Ctrl->LineFromPosition(EndPosition);
+    for ( int line = Ctrl->LineFromPosition(Position); line <= lineEnd; line++ )
+    {
+        Ctrl->EnsureVisible(line);
+    }
+
     // Replacing code
     Ctrl->SetTargetStart(Position);
     Ctrl->SetTargetEnd(EndPosition);
     Ctrl->ReplaceTarget(Code);
     Editor->SetModified();
-
-    // TODO: Update fooldings
-	return true;
+    return true;
 }
 
 bool wxsCoder::ApplyChangesString(wxString& BaseContent,const wxString& Header,const wxString& End,wxString& Code,bool CodeHasHeader,bool CodeHasEnd,bool& HasChanged,wxString& EOL)
