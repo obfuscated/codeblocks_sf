@@ -26,32 +26,34 @@
 #include <editormanager.h>
 #include <configmanager.h>
 #include <logmanager.h>
+#include <filemanager.h>
 #include <encodingdetector.h>
 #include <globals.h>
 #include <wx/file.h>
 #include <wx/intl.h>
 #include "cbstyledtextctrl.h"
 
-namespace
-{
-    bool ReadFileContentWithProperEncoding(const wxString& FileName,wxString& Content,wxFontEncoding& Encoding,bool& UseBOM)
-    {
-        EncodingDetector Detector(FileName);
-        if ( !Detector.IsOK() ) return false;
-        Encoding = Detector.GetFontEncoding();
-        if ( Encoding == wxFONTENCODING_ISO8859_1 )
-        {
-            wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
-            Encoding = wxFontMapper::GetEncodingFromName(enc_name);
-        }
-        UseBOM = Detector.UsesBOM();
-        wxFile Fl(FileName,wxFile::read);
-        if ( !Fl.IsOpened() ) return false;
-        if ( !cbRead(Fl,Content,Encoding) ) return false;
-        Content.Remove(0,Detector.GetBOMSizeInBytes() / sizeof(wxChar));
-        return true;
-    }
-}
+//namespace
+//{
+//    EncodingDetector* LoadFile(const wxString& FileName)
+//    {
+//        if ( !wxFileExists(FileName) ) return nullptr;
+//
+//        LoaderBase* Loader = FileManager::Get()->Load(FileName,false);
+//        if ( !Loader ) return nullptr;
+//
+//        EncodingDetector* Detector = new EncodingDetector(Loader);
+//        delete Loader;
+//
+//        if ( !Detector->IsOK() )
+//        {
+//            delete Detector;
+//            return nullptr;
+//        }
+//
+//        return Detector;
+//    }
+//}
 
 static wxsCoder SingletonObject;
 wxsCoder* wxsCoder::Singleton = &SingletonObject;
@@ -160,10 +162,10 @@ wxString wxsCoder::GetCode(const wxString& FileName,const wxString& Header,const
     }
     else
     {
-        wxString Content;
-        wxFontEncoding Encoding;
-        bool UseBOM;
-        if ( !ReadFileContentWithProperEncoding(FixedFileName,Content,Encoding,UseBOM) ) return _T("");
+        EncodingDetector Detector(FixedFileName);
+        if ( !Detector.IsOK() ) return _T("");
+
+        wxString Content = Detector.GetWxStr();
 
         int Position = Content.First(Header);
         if ( Position == -1 ) return _T("");
@@ -208,9 +210,10 @@ wxString wxsCoder::GetFullCode(const wxString& FileName,wxFontEncoding& Encoding
     }
     else
     {
-        wxString Content;
-        if ( !ReadFileContentWithProperEncoding(FixedFileName,Content,Encoding,UseBOM) ) return _T("");
-        return Content;
+        EncodingDetector Detector(FixedFileName);
+        Encoding = Detector.GetFontEncoding();
+        UseBOM = Detector.GetBOMSizeInBytes() > 0;
+        return Detector.IsOK() ? Detector.GetWxStr() : _T("");
     }
 }
 
@@ -242,7 +245,10 @@ void wxsCoder::PutFullCode(const wxString& FileName,const wxString& Code,wxFontE
     }
     else
     {
-        cbSaveToFile(FixedFileName,Code,Encoding,UseBOM);
+        if ( !cbSaveToFile(FixedFileName,Code,Encoding,UseBOM) )
+        {
+            Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write file '%s'"),FixedFileName.c_str()));
+        }
     }
 }
 
@@ -273,20 +279,19 @@ void wxsCoder::FlushFile(const wxString& FileName)
     else
     {
         // Reading file content
-        wxString Content;
-        wxFontEncoding Encoding;
         wxString EOL;
-        bool UseBOM;
         bool HasChanged = false;
 
         //wxStopWatch SW;
-        if ( !ReadFileContentWithProperEncoding(FileName,Content,Encoding,UseBOM) )
+        EncodingDetector Detector(FileName);
+        if ( !Detector.IsOK() )
         {
-            Manager::Get()->GetLogManager()->DebugLog(F(_("wxSmith: Couldn't open file '%s'"),FileName.c_str()));
+            Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't open and properly read file '%s'"),FileName.c_str()));
             return;
         }
         //Manager::Get()->GetLogManager()->DebugLog(F(_T("File read time: %d ms"),SW.Time()));
 
+        wxString Content = Detector.GetWxStr();
         while ( Changes )
         {
             CodeChange* Next = Changes->Next;
@@ -299,7 +304,10 @@ void wxsCoder::FlushFile(const wxString& FileName)
         {
             // Storing the result
             //wxStopWatch SW;
-            cbSaveToFile(FileName,Content,Encoding,UseBOM);
+            if ( !cbSaveToFile(FileName,Content,Detector.GetFontEncoding(),Detector.GetBOMSizeInBytes()>0) )
+            {
+                Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write data to file '%s'"),FileName.c_str()));
+            }
             //Manager::Get()->GetLogManager()->DebugLog(F(_T("File write time: %d ms"),SW.Time()));
         }
     }
@@ -586,7 +594,7 @@ void wxsCoder::Flush(int Delay)
 
 void wxsCoder::FlushAll()
 {
-    wxStopWatch SW;
+    //wxStopWatch SW;
     for ( int i=0; i<(int)CodeChangesFiles.Count(); i++ )
     {
         FlushFile(CodeChangesFiles[i]);
