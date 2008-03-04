@@ -148,12 +148,16 @@ bool EncodingDetector::DetectEncoding(const wxString& filename, bool ConvertToWx
         return false;
     }
 
-    wxByte* buffer = (wxByte*) malloc(sizeof(wxByte) * (size + 1));
+    wxByte* buffer = (wxByte*) malloc(sizeof(wxByte) * (size + 4));
     if (!buffer)
     {
         file.Close();
         return false;
     }
+    buffer[size + 0] = 0;
+    buffer[size + 1] = 0;
+    buffer[size + 2] = 0;
+    buffer[size + 3] = 0;
 
     size_t readBytes = file.Read((void*)buffer, size);
     bool result = false;
