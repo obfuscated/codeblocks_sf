@@ -409,6 +409,7 @@ void wxsSettings::OnApply()
                          wxsSizerFlagsProperty::AlignBottom; break;
     }
 
+    cfg->Write(_T("/defsizer/proportion"), (int)spinProportion->GetValue());
     cfg->Write(_T("/defsizer/flags"), Flags);
     cfg->Write(_T("/defsizer/border"), (int)spinBorder->GetValue());
     cfg->Write(_T("/defsizer/borderdu"),(bool)chkBorderDU->GetValue());
