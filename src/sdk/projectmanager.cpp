@@ -1089,7 +1089,7 @@ bool ProjectManager::QueryCloseWorkspace()
         return true;
 
     // don't ask to save the default workspace, if blank workspace is used on app startup
-    if (m_pWorkspace->IsDefault() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), false) == true)
+    if (m_pWorkspace->IsDefault() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == true)
         return true;
 
     if (m_pWorkspace->GetModified())

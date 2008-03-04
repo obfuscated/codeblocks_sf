@@ -26,7 +26,7 @@
 cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspace"))
 {
     //ctor
-    if (filename.Matches(DEFAULT_WORKSPACE))
+    if (filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty() )
     {
         wxString tmp;
         // if no filename given, use the default workspace
@@ -40,11 +40,14 @@ cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspac
     else
     {
         m_Filename = filename;
-        m_IsDefault = filename.IsEmpty();
     }
     m_IsOK = true;
     m_Modified = false;
-    Load();
+
+    if ( !filename.IsEmpty() )
+    {
+        Load();
+    }
 }
 
 cbWorkspace::~cbWorkspace()
@@ -54,8 +57,6 @@ cbWorkspace::~cbWorkspace()
 void cbWorkspace::Load()
 {
     wxString fname = m_Filename.GetFullPath();
-    if (fname.IsEmpty())
-        return;
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Loading workspace \"%s\""), fname.c_str()));
 
     if (!m_Filename.FileExists())
