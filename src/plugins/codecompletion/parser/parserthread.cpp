@@ -486,7 +486,8 @@ void ParserThread::DoParse()
         }
         else if (token==ParserConsts::kw_friend)
         {
-            SkipToOneOfChars(ParserConsts::semicolon);
+            // friend methods can be either the decl only or an inline implementation
+            SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
             m_Str.Clear();
         }
         else if (token==ParserConsts::kw_class)
@@ -1082,6 +1083,7 @@ void ParserThread::HandleClass(bool isClass)
     {
         wxString current = m_Tokenizer.GetToken(); // class name
         wxString next = m_Tokenizer.PeekToken();
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Found class '%s'"), current.c_str()));
 
         // handle preprocessor directives in class definition, e.g.
         //
