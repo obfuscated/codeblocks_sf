@@ -20,6 +20,7 @@ function WarningsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
@@ -55,6 +56,7 @@ function DebugSymbolsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
@@ -104,6 +106,7 @@ function OptimizationsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
     {
         base.AddCompilerOption(_T("-O2"));

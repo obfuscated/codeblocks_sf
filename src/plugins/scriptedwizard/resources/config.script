@@ -41,7 +41,6 @@ function RegisterWizards()
         RegisterWizard(wizProject, _T("smartwin"),     _T("SmartWin project"),      _T("GUI"));
     RegisterWizard(wizProject,     _T("staticlib"),    _T("Static library"),        _T("Console"));
     RegisterWizard(wizProject,     _T("sharedlib"),    _T("Shared library"),        _T("Console"));
-    RegisterWizard(wizProject,     _T("avr"),          _T("AVR Project"),           _T("Console"));
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("win32gui"),     _T("Win32 GUI project"),     _T("GUI"));
     RegisterWizard(wizProject,     _T("wxwidgets"),    _T("wxWidgets project"),     _T("GUI"));
@@ -54,6 +53,8 @@ function RegisterWizards()
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizTarget,  _T("dll"),          _T("Dynamic Link Library"),  _T("Console"));
     RegisterWizard(wizTarget,      _T("wxwidgets"),    _T("wxWidgets"),             _T("GUI"));
+    RegisterWizard(wizProject,     _T("avr"),          _T("AVR Project"),           _T("Embedded Systems"));
+    RegisterWizard(wizProject,     _T("tricore"),        _T("TriCore"),               _T("Embedded Systems"));
 
     //
     // file wizards
