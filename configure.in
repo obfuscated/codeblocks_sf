@@ -312,6 +312,38 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/files/Makefile
 	src/plugins/scriptedwizard/resources/sys/Makefile
 	src/plugins/scriptedwizard/resources/sys/files/Makefile
+	src/plugins/scriptedwizard/resources/tricore/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/EasyRun-TC1796/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/EasyRun-TC1796/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/EasyRun-TC1796/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1130/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1130/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1130/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1775/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1775/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/phyCORE-TC1775/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1161/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1162/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1766/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1775/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1775/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1775/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1792/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1792/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1792/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1796/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1796/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1796/src/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1920/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1920/h/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1920/src/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/files/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/files/dialog/Makefile
