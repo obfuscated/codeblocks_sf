@@ -328,6 +328,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1130/src/Makefile
 	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1161/Makefile
 	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1162/Makefile
+	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1762/Makefile
 	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/Makefile
 	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/h/Makefile
 	src/plugins/scriptedwizard/resources/tricore/templates/TriBoard-TC1765/src/Makefile
