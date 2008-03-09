@@ -101,6 +101,8 @@ private:
 	wxSortedArrayString  m_FilePaths;         // Array containing all file paths that will be
 	                                          // searched in.
 	TextFileSearcher*    m_pTextFileSearcher; // Searcher object
+	bool m_ShowFileMissingError;
+	bool m_ShowCantOpenFileError;
 };
 
 

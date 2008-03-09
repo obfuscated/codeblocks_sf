@@ -83,6 +83,8 @@ protected:
     wxCheckBox* m_pChkRegExp;
     wxCheckBox* m_pChkThreadSearchEnable;
     wxCheckBox* m_pChkUseDefaultOptionsForThreadSearch;
+    wxCheckBox* m_pChkShowMissingFilesError;
+    wxCheckBox* m_pChkShowCantOpenFileError;
     wxCheckBox* m_pChkShowThreadSearchToolBar;
     wxCheckBox* m_pChkShowThreadSearchWidgets;
     wxCheckBox* m_pChkShowCodePreview;
@@ -106,6 +108,9 @@ public:
     void OnChkShowThreadSearchToolBarClick(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkCodePreview(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkShowThreadSearchWidgetsClick(wxCommandEvent &event); // wxGlade: <event_handler>
+    void OnChkShowMissingFilesErrorClick(wxCommandEvent &event); // wxGlade: <event_handler>
+    void OnChkShowCantOpenFileErrorClick(wxCommandEvent &event); // wxGlade: <event_handler>
+
 }; // wxGlade: end class
 
 

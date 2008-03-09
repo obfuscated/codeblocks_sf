@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="10" />
     <Plugin name="ThreadSearch">
         <Value title="ThreadSearch" />
-        <Value version="1.5" />
+        <Value version="1.6" />
         <Value description="Multi-threaded 'Search in files' with preview window." />
         <Value author="Jerome ANTOINE" />
         <Value authorEmail="" />

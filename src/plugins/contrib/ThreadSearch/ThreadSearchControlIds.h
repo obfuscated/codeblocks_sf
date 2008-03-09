@@ -44,7 +44,9 @@ enum eControlIds
 	idTxtSearchDirPath,
 	idTxtSearchMask,
 	idTmrListCtrlUpdate,
-	idWndLogger
+	idWndLogger,
+	idChkShowMissingFilesError,
+	idChkShowCantOpenFileError
 };
 
 #endif // THREAD_SEARCH_CONTROL_IDS_H

@@ -16,6 +16,7 @@
 	#include <wx/sizer.h>
 	#include <wx/statbox.h>
 	#include <wx/stattext.h>
+	#include "configmanager.h"
 #endif
 
 #include "ThreadSearch.h"
@@ -52,6 +53,8 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     m_pChkRegExp = new wxCheckBox(this, idChkRegularExpression, wxT("Regular expression"));
     m_pChkThreadSearchEnable = new wxCheckBox(this, idChkThreadSearchEnable, wxT("Enable 'Find occurrences' contextual menu item"));
     m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, idChkUseDefaultOptionsOnThreadSearch, wxT("Use default options when running 'Find occurrences' "));
+    m_pChkShowMissingFilesError = new wxCheckBox(this, idChkShowMissingFilesError, wxT("Show error message if file is missing"));
+    m_pChkShowCantOpenFileError = new wxCheckBox(this, idChkShowCantOpenFileError, wxT("Show error message if file cannot be opened"));
     m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, wxT("Show ThreadSearch toolbar."));
     m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, wxT("Show search widgets in ThreadSearch Messages panel."));
     m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, wxT("Show code preview editor."));
@@ -87,9 +90,11 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
 BEGIN_EVENT_TABLE(ThreadSearchConfPanel, wxPanel)
     // begin wxGlade: ThreadSearchConfPanel::event_table
     EVT_CHECKBOX(idChkThreadSearchEnable, ThreadSearchConfPanel::OnThreadSearchEnable)
+    EVT_CHECKBOX(idChkShowMissingFilesError, ThreadSearchConfPanel::OnChkShowMissingFilesErrorClick)
+    EVT_CHECKBOX(idChkShowCantOpenFileError, ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick)
     EVT_CHECKBOX(idChkViewThreadSearchToolBar, ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick)
-    EVT_CHECKBOX(idChkShowCodePreview, ThreadSearchConfPanel::OnChkCodePreview)
     EVT_CHECKBOX(idChkShowThreadSearchWidgets, ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick)
+    EVT_CHECKBOX(idChkShowCodePreview, ThreadSearchConfPanel::OnChkCodePreview)
     // end wxGlade
 END_EVENT_TABLE();
 
@@ -136,6 +141,20 @@ void ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick(wxCommandEvent &ev
 }
 
 
+void ThreadSearchConfPanel::OnChkShowMissingFilesErrorClick(wxCommandEvent &event)
+{
+	Manager::Get()->GetConfigManager(_T("ThreadSearch"))->Write(wxT("/ShowFileMissingError"),event.IsChecked());
+	event.Skip();
+}
+
+
+void ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick(wxCommandEvent &event)
+{
+	Manager::Get()->GetConfigManager(_T("ThreadSearch"))->Write(wxT("/ShowCantOpenFileError"),event.IsChecked());
+	event.Skip();
+}
+
+
 // wxGlade: add ThreadSearchConfPanel event handlers
 
 
@@ -150,6 +169,8 @@ void ThreadSearchConfPanel::set_properties()
     m_pChkRegExp->SetToolTip(wxT("Search expression is a regular expression"));
     m_pChkThreadSearchEnable->SetValue(1);
     m_pChkUseDefaultOptionsForThreadSearch->SetValue(1);
+    m_pChkShowMissingFilesError->SetValue(1);
+    m_pChkShowCantOpenFileError->SetValue(1);
     m_pChkShowThreadSearchToolBar->SetValue(1);
     m_pChkShowThreadSearchWidgets->SetValue(1);
     m_pChkShowCodePreview->SetValue(1);
@@ -159,6 +180,9 @@ void ThreadSearchConfPanel::set_properties()
     m_pRadSplitterWndMode->SetSelection(0);
     m_pRadSortBy->SetSelection(0);
     // end wxGlade
+	ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("ThreadSearch"));
+	m_pChkShowMissingFilesError->SetValue(pCfg->ReadBool(wxT("/ShowFileMissingError"),true));
+	m_pChkShowCantOpenFileError->SetValue(pCfg->ReadBool(wxT("/ShowCantOpenFileError"),true));
 
 	ThreadSearchFindData findData;
 	m_ThreadSearchPlugin.GetFindData(findData);
@@ -271,35 +295,35 @@ void ThreadSearchConfPanel::do_layout()
     SizerSearchIn->Add(m_pPnlSearchIn, 0, wxALL|wxEXPAND, 2);
     SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 2);
     SizerTop->Add(SizerSearchIn, 0, wxALL|wxEXPAND, 4);
-    SizerOptions->Add(m_pChkWholeWord, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerOptions->Add(m_pChkStartWord, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerOptions->Add(m_pChkMatchCase, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerOptions->Add(m_pChkRegExp, 0, wxALL|wxADJUST_MINSIZE, 4);
+    SizerOptions->Add(m_pChkWholeWord, 0, wxALL, 4);
+    SizerOptions->Add(m_pChkStartWord, 0, wxALL, 4);
+    SizerOptions->Add(m_pChkMatchCase, 0, wxALL, 4);
+    SizerOptions->Add(m_pChkRegExp, 0, wxALL, 4);
     SizerTop->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL|wxADJUST_MINSIZE, 4);
+    SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL, 4);
+    SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL, 4);
     wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, wxT("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
-    SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, wxADJUST_MINSIZE, 0);
+    SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, 0, 0);
+    SizerThreadSearchOptions->Add(m_pChkShowMissingFilesError, 0, wxALL, 4);
+    SizerThreadSearchOptions->Add(m_pChkShowCantOpenFileError, 0, wxALL, 4);
     SizerTop->Add(SizerThreadSearchOptions, 0, wxALL|wxEXPAND, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
-    SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
-    SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND|wxADJUST_MINSIZE, 4);
+    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
+    SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL, 4);
+    SizerThreadSearchLayoutGlobal->Add(m_pChkShowCodePreview, 0, wxALL, 4);
+    SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND, 4);
+    SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL, 4);
+    SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL, 4);
+    SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND, 4);
+    SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND, 4);
+    SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->Add(m_pRadSplitterWndMode, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->Add(m_pRadSortBy, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->AddGrowableCol(0);
     SizerThreadSearchGridLayout->AddGrowableCol(1);
-    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND|wxADJUST_MINSIZE, 0);
+    SizerThreadSearchLayout->Add(SizerThreadSearchGridLayout, 1, wxALL|wxEXPAND, 0);
     SizerTop->Add(SizerThreadSearchLayout, 0, wxALL|wxEXPAND, 4);
-    SetAutoLayout(true);
     SetSizer(SizerTop);
     SizerTop->Fit(this);
-    SizerTop->SetSizeHints(this);
     // end wxGlade
 }
 
@@ -411,4 +435,5 @@ void ThreadSearchConfPanel::OnApply()
 	// Notifies plug-in observers (ThreadSearchView)
 	m_ThreadSearchPlugin.Notify();
 }
+
 

@@ -17,6 +17,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 	#include "cbeditor.h"
+	#include "configmanager.h"
 #endif
 
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
@@ -53,6 +54,10 @@ ThreadSearchThread::ThreadSearchThread(ThreadSearchView*           pThreadSearch
 		// Using wxPostEvent, we avoid multi-threaded memory violation.
 		wxPostEvent( m_pThreadSearchView,event);
 	}
+	ConfigManager* pCfg = Manager::Get()->GetConfigManager(_T("ThreadSearch"));
+	m_ShowFileMissingError=pCfg->ReadBool(wxT("/ShowFileMissingError"),true);
+	m_ShowCantOpenFileError=pCfg->ReadBool(wxT("/ShowCantOpenFileError"),true);
+
 }
 
 
@@ -221,20 +226,26 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 		}
 		case TextFileSearcher::idFileNotFound:
 		{
-			ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
-			event.SetString(path + _T(" does not exist."));
-			
-			// Using wxPostEvent, we avoid multi-threaded memory violation.
-			wxPostEvent( m_pThreadSearchView,event);
+			if(m_ShowFileMissingError)
+			{
+				ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+				event.SetString(path + _T(" does not exist."));
+
+				// Using wxPostEvent, we avoid multi-threaded memory violation.
+				wxPostEvent( m_pThreadSearchView,event);
+			}
 			break;
 		}
 		case TextFileSearcher::idFileOpenError:
 		{
-			ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
-			event.SetString(_T("Failed to open ") + path);
-			
-			// Using wxPostEvent, we avoid multi-threaded memory violation.
-			wxPostEvent( m_pThreadSearchView,event);
+			if(m_ShowCantOpenFileError)
+			{
+				ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+				event.SetString(_T("Failed to open ") + path);
+
+				// Using wxPostEvent, we avoid multi-threaded memory violation.
+				wxPostEvent( m_pThreadSearchView,event);
+		    }
 			break;
 		}
 		default:
@@ -268,5 +279,6 @@ void ThreadSearchThread::AddProjectFiles(wxSortedArrayString& sortedArrayString,
 		if ( TestDestroy() == true ) return;
 	}
 }
+
 
 
