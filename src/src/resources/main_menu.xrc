@@ -438,7 +438,7 @@
         <help>Comments the selected block of code</help>
       </object>
       <object class="wxMenuItem" name="idEditUncommentSelected">
-        <label>Un&amp;comment</label>
+        <label>Uncomme&amp;nt</label>
         <accel>Shift-Ctrl-X</accel>
         <help>Uncomments the selected block of code</help>
       </object>
