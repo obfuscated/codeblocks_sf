@@ -630,7 +630,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * and than calls base function.
           */
         virtual void SetTitle(const wxString& title);
-        
+
         /** Access the \<Extensions\> XML node of this project
           *
           * This function is for advanced users only. Use at your own risk
@@ -640,7 +640,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @note This function will never return NULL.
           */
         virtual TiXmlNode* GetExtensionsNode();
-        
+
         /** Convenience function (mainly for scripts) to add nodes/attributes
           * under the \<Extensions\> node.
           *
@@ -676,6 +676,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxString CreateUniqueFilename();
         void NotifyPlugins(wxEventType type, const wxString& targetName = wxEmptyString, const wxString& oldTargetName = wxEmptyString);
         void CopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent);
+        bool VirtualFolderDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
 
         // properties
         VirtualBuildTargetsMap m_VirtualTargets;
@@ -708,7 +709,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool m_ExtendedObjectNamesGeneration;
         wxString m_Notes;
         bool m_AutoShowNotesOnLoad;
-        
+
         // copy of <Extensions> element, in case certain plugins are disabled
         // so that the contents are not lost
         TiXmlElement* m_pExtensionsElement;

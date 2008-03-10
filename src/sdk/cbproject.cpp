@@ -514,30 +514,30 @@ bool cbProject::LoadLayout()
 
 void cbProject::BeginAddFiles()
 {
-	CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_ADD_FILES);
-	event.SetProject(this);
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_ADD_FILES);
+    event.SetProject(this);
+    Manager::Get()->ProcessEvent(event);
 }
 
 void cbProject::EndAddFiles()
 {
-	CodeBlocksEvent event(cbEVT_PROJECT_END_ADD_FILES);
-	event.SetProject(this);
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_PROJECT_END_ADD_FILES);
+    event.SetProject(this);
+    Manager::Get()->ProcessEvent(event);
 }
 
 void cbProject::BeginRemoveFiles()
 {
-	CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_REMOVE_FILES);
-	event.SetProject(this);
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_PROJECT_BEGIN_REMOVE_FILES);
+    event.SetProject(this);
+    Manager::Get()->ProcessEvent(event);
 }
 
 void cbProject::EndRemoveFiles()
 {
-	CodeBlocksEvent event(cbEVT_PROJECT_END_REMOVE_FILES);
-	event.SetProject(this);
-	Manager::Get()->ProcessEvent(event);
+    CodeBlocksEvent event(cbEVT_PROJECT_END_REMOVE_FILES);
+    event.SetProject(this);
+    Manager::Get()->ProcessEvent(event);
 }
 
 ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& filename, bool compile, bool link, unsigned short int weight)
@@ -616,51 +616,51 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 // We solve this issue with a hack (only for the targetIndex == -1 case!):
 // We iterate all available target compilers tool and use generatedFiles from
 // all of them. It works and is also safe.
-	std::map<Compiler*, const CompilerTool*> GenFilesHackMap;
+    std::map<Compiler*, const CompilerTool*> GenFilesHackMap;
     if (targetIndex < 0 || targetIndex >= (int)m_Targets.GetCount())
-	{
-		Compiler* c = CompilerFactory::GetCompiler(GetCompilerID());
-		if (c)
-		{
-			const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
-			if (t->generatedFiles.GetCount())
-			{
-				GenFilesHackMap[c] = t;
-			}
-		}
+    {
+        Compiler* c = CompilerFactory::GetCompiler(GetCompilerID());
+        if (c)
+        {
+            const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
+            if (t->generatedFiles.GetCount())
+            {
+                GenFilesHackMap[c] = t;
+            }
+        }
 
-		for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
-		{
-			Compiler* c = CompilerFactory::GetCompiler(m_Targets[i]->GetCompilerID());
-			if (GenFilesHackMap.find(c) != GenFilesHackMap.end())
-				continue; // compiler already in map
+        for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
+        {
+            Compiler* c = CompilerFactory::GetCompiler(m_Targets[i]->GetCompilerID());
+            if (GenFilesHackMap.find(c) != GenFilesHackMap.end())
+                continue; // compiler already in map
 
-			if (c)
-			{
-				const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
-				if (t->generatedFiles.GetCount())
-				{
-					GenFilesHackMap[c] = t;
-				}
-			}
-		}
-	}
-	else
-	{
-		// targetIndex is valid: just add a single entry to the map
-		Compiler* c = CompilerFactory::GetCompiler(m_Targets[targetIndex]->GetCompilerID());
-		if (c)
-		{
-			const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
-			if (t->generatedFiles.GetCount())
-			{
-				GenFilesHackMap[c] = t;
-			}
-		}
-	}
-	// so... now, if GenFilesHackMap is not empty, we know
-	// 1) this file generates other files and
-	// 2) iterating the map will give us the generated file names :)
+            if (c)
+            {
+                const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
+                if (t->generatedFiles.GetCount())
+                {
+                    GenFilesHackMap[c] = t;
+                }
+            }
+        }
+    }
+    else
+    {
+        // targetIndex is valid: just add a single entry to the map
+        Compiler* c = CompilerFactory::GetCompiler(m_Targets[targetIndex]->GetCompilerID());
+        if (c)
+        {
+            const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
+            if (t->generatedFiles.GetCount())
+            {
+                GenFilesHackMap[c] = t;
+            }
+        }
+    }
+    // so... now, if GenFilesHackMap is not empty, we know
+    // 1) this file generates other files and
+    // 2) iterating the map will give us the generated file names :)
 
     // add the build target
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
@@ -742,32 +742,32 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     {
         // auto-generated files!
         wxFileName tmp = f->file;
-		for (std::map<Compiler*, const CompilerTool*>::const_iterator it = GenFilesHackMap.begin(); it != GenFilesHackMap.end(); ++it)
-		{
-			const CompilerTool* tool = it->second;
-			for (size_t i = 0; i < tool->generatedFiles.GetCount(); ++i)
-			{
-				tmp.SetFullName(tool->generatedFiles[i]);
-				wxString tmps = tmp.GetFullPath();
-				// any macro replacements here, should also be done in
-				// CompilerCommandGenerator::GenerateCommandLine !!!
-				tmps.Replace(_T("$file_basename"), f->file.GetName()); // old way - remove later
-				tmps.Replace(_T("$file_name"), f->file.GetName());
-				tmps.Replace(_T("$file_dir"), f->file.GetPath());
-				tmps.Replace(_T("$file_ext"), f->file.GetExt());
-				tmps.Replace(_T("$file"), f->file.GetFullName());
-				Manager::Get()->GetMacrosManager()->ReplaceMacros(tmps);
+        for (std::map<Compiler*, const CompilerTool*>::const_iterator it = GenFilesHackMap.begin(); it != GenFilesHackMap.end(); ++it)
+        {
+            const CompilerTool* tool = it->second;
+            for (size_t i = 0; i < tool->generatedFiles.GetCount(); ++i)
+            {
+                tmp.SetFullName(tool->generatedFiles[i]);
+                wxString tmps = tmp.GetFullPath();
+                // any macro replacements here, should also be done in
+                // CompilerCommandGenerator::GenerateCommandLine !!!
+                tmps.Replace(_T("$file_basename"), f->file.GetName()); // old way - remove later
+                tmps.Replace(_T("$file_name"), f->file.GetName());
+                tmps.Replace(_T("$file_dir"), f->file.GetPath());
+                tmps.Replace(_T("$file_ext"), f->file.GetExt());
+                tmps.Replace(_T("$file"), f->file.GetFullName());
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(tmps);
 
-				ProjectFile* pfile = AddFile(targetIndex, UnixFilename(tmps));
-				if (!pfile)
-					Manager::Get()->GetLogManager()->DebugLog(_T("Can't add auto-generated file ") + tmps);
-				else
-				{
-					f->generatedFiles.push_back(pfile);
-					pfile->autoGeneratedBy = f;
-				}
-			}
-		}
+                ProjectFile* pfile = AddFile(targetIndex, UnixFilename(tmps));
+                if (!pfile)
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Can't add auto-generated file ") + tmps);
+                else
+                {
+                    f->generatedFiles.push_back(pfile);
+                    pfile->autoGeneratedBy = f;
+                }
+            }
+        }
     }
 
     return f;
@@ -1203,7 +1203,7 @@ bool cbProject::NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to
         return false;
 
     // A special check for virtual folders.
-    if (ftd1->GetKind() == FileTreeData::ftdkVirtualFolder && ftd2->GetKind() == FileTreeData::ftdkVirtualFolder)
+    if (ftd1->GetKind() == FileTreeData::ftdkVirtualFolder || ftd2->GetKind() == FileTreeData::ftdkVirtualFolder)
     {
         wxTreeItemId root = tree->GetRootItem();
         wxTreeItemId toParent = tree->GetItemParent(to);
@@ -1212,6 +1212,10 @@ bool cbProject::NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to
             if (toParent == from)
                 return false;
             toParent = tree->GetItemParent(toParent);
+        }
+        if (!VirtualFolderDragged(tree, from, to))
+        {
+            return false;
         }
     }
 
@@ -1365,6 +1369,147 @@ bool cbProject::VirtualFolderRenamed(wxTreeCtrl* tree, wxTreeItemId node, const 
     SetModified(true);
 
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderRenamed: %s to %s: %s"), old_foldername.c_str(), new_foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
+    return true;
+}
+
+bool cbProject::VirtualFolderDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to)
+{
+    FileTreeData* ftdFrom = static_cast<FileTreeData*>(tree->GetItemData(from));
+    FileTreeData* ftdTo = static_cast<FileTreeData*>(tree->GetItemData(to));
+
+    wxString sep = wxString(wxFileName::GetPathSeparator());
+    wxChar sepChar = wxFileName::GetPathSeparator();
+    wxString fromFolderPath = ftdFrom->GetFolder();
+    wxString toFolderPath = ftdTo->GetFolder();
+
+    wxString fromFolder = fromFolderPath;
+    fromFolder = fromFolder.RemoveLast();
+    fromFolder = fromFolder.AfterLast(sepChar) + sep;
+    wxString toFolder = toFolderPath;
+    toFolder = toFolder.RemoveLast();
+    toFolder = toFolder.AfterLast(sepChar) + sep;
+
+    if (ftdFrom->GetKind() == FileTreeData::ftdkVirtualFolder && ftdTo->GetKind() == FileTreeData::ftdkVirtualFolder)
+    {
+        wxArrayString oldArray = m_VirtualFolders;
+        m_VirtualFolders.Clear();
+        for (size_t i = 0; i < oldArray.GetCount(); ++i)
+        {
+            wxString item = oldArray[i];
+            wxString toFolderStr;
+            if (toFolderPath.StartsWith(fromFolderPath.BeforeFirst(sepChar)))
+            {
+                // The virtual folder is drageed under same root
+                int posFrom = item.Find(fromFolderPath);
+                if (posFrom != wxNOT_FOUND)
+                {
+                    wxString fromFolderStr = item.Mid(posFrom);
+                    item = item.Left(posFrom);
+                    if (!item.IsEmpty())
+                    {
+                        m_VirtualFolders.Add(item);
+                    }
+                }
+                else if (item.IsSameAs(toFolderPath))
+                {
+                    // First add it to folder structure
+                    m_VirtualFolders.Add(item);
+                    wxString fromFolderStr = fromFolderPath;
+                    fromFolderStr = fromFolderStr.RemoveLast();
+                    fromFolderStr = fromFolderStr.AfterLast(wxFileName::GetPathSeparator());
+                    m_VirtualFolders.Add(item + fromFolderStr + sep);
+                }
+                else
+                {
+                    m_VirtualFolders.Add(item);
+                }
+            }
+            else
+            {
+                // A virtual folder has been dropped from a different place
+                if (item.Find(toFolderPath + fromFolder) != wxNOT_FOUND)
+                {
+                    cbMessageBox(_T("Another Virtual folder with same name exists in the destination folder!"),
+                                 _T("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
+                    m_VirtualFolders = oldArray;
+                    return false;
+                }
+                if (item.StartsWith(toFolderPath.BeforeFirst(sepChar)))
+                {
+                    m_VirtualFolders.Add(item);
+                }
+                else if (item.StartsWith(fromFolderPath.BeforeFirst(sepChar)))
+                {
+                    int pos = item.Find(fromFolder);
+                    if (pos == 0)
+                    {
+                        if (!toFolderPath.IsEmpty())
+                        {
+                            m_VirtualFolders.Add(toFolderPath + item);
+                        }
+                    }
+                    else
+                    {
+                        wxString temp = item.Left(pos);
+                        m_VirtualFolders.Add(item.Left(pos));
+                        if (!toFolderPath.IsEmpty())
+                        {
+                            m_VirtualFolders.Add(toFolderPath + item.Mid(pos));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if (ftdFrom->GetKind() == FileTreeData::ftdkVirtualFolder && ftdTo->GetKind() == FileTreeData::ftdkProject)
+    {
+        wxArrayString oldArray = m_VirtualFolders;
+        m_VirtualFolders.Clear();
+
+        m_VirtualFolders.Add(fromFolder);
+
+        for (size_t i = 0; i < oldArray.GetCount(); ++i)
+        {
+            wxString item = oldArray[i];
+            if (item.StartsWith(fromFolder))
+            {
+                // We can't overwrite an existing folder
+                cbMessageBox(_T("Another Virtual folder with same name exists in the Project tree!"),
+                             _T("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
+                m_VirtualFolders.Clear();
+                m_VirtualFolders = oldArray;
+                return false;
+            }
+            else if (item.StartsWith(fromFolderPath))
+            {
+                int pos = item.Find(fromFolderPath);
+                if (pos != wxNOT_FOUND)
+                {
+                    item = item.Mid(pos + fromFolderPath.Length());
+                    if (item.Length() > 1)
+                    {
+                        item = item.Prepend(fromFolder);
+                        if (m_VirtualFolders.Index(item) == wxNOT_FOUND)
+                        {
+                            m_VirtualFolders.Add(item);
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    m_VirtualFolders.Add(item);
+                }
+            }
+            else
+            {
+                m_VirtualFolders.Add(item);
+            }
+        }
+    }
     return true;
 }
 
@@ -2128,15 +2273,15 @@ void cbProject::AddToExtensions(const wxString& stringDesc)
 
 void cbProject::ProjectFileRenamed(ProjectFile* pf)
 {
-	for (ProjectFiles::iterator it = m_ProjectFilesMap.begin(); it != m_ProjectFilesMap.end(); ++it)
-	{
-		ProjectFile* itpf = it->second;
-		if (itpf == pf)
-		{
-			// got it
-			m_ProjectFilesMap.erase(it);
-			m_ProjectFilesMap[UnixFilename(pf->file.GetFullPath())] = pf;
-			break;
-		}
-	}
+    for (ProjectFiles::iterator it = m_ProjectFilesMap.begin(); it != m_ProjectFilesMap.end(); ++it)
+    {
+        ProjectFile* itpf = it->second;
+        if (itpf == pf)
+        {
+            // got it
+            m_ProjectFilesMap.erase(it);
+            m_ProjectFilesMap[UnixFilename(pf->file.GetFullPath())] = pf;
+            break;
+        }
+    }
 }
