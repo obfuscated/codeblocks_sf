@@ -111,7 +111,7 @@ void HelpConfigDialog::UpdateEntry(int index)
     // Patch by Yorgos Pagles: Write the new attributes
     hfa.keywordCase = static_cast<HelpCommon::StringCase>(XRCCTRL(*this, "chkCase", wxChoice)->GetSelection());
     hfa.defaultKeyword = XRCCTRL(*this, "textDefaultKeyword", wxTextCtrl)->GetValue();
-    m_Vector.push_back(make_pair(lst->GetString(index), hfa));
+    m_Vector.insert(m_Vector.end() - HelpCommon::getNumReadFromIni(), make_pair(lst->GetString(index), hfa));
   }
 }
 
