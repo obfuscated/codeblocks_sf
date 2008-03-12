@@ -9,13 +9,14 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #ifdef __WXMSW__
     #include <windows.h>
-    #include <time.h>
 	#include <conio.h>
 	#define wait_key getch
 #else
 	#define wait_key getchar
+	#define execute_command(x) system(x)
 #endif
 #include <string.h>
 
@@ -34,6 +35,40 @@ bool hasSpaces(const char* str)
 	}
 	return false;
 }
+
+#ifdef __WXMSW__
+int execute_command(char *cmdline)
+{
+    //Windows's system() seems to not be able to handle parentheses in
+    //the path, so we have to launch the program a different way.
+
+    SetConsoleTitle(cmdline);
+
+    STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+
+    // Start the child process.
+    CreateProcess( NULL, TEXT(cmdline), NULL, NULL, FALSE, 0,
+                   NULL, NULL, &si, &pi );
+
+    // Wait until child process exits.
+    WaitForSingleObject( pi.hProcess, INFINITE );
+
+    // Get the return value of the child process
+    DWORD ret;
+    GetExitCodeProcess( pi.hProcess, &ret );
+
+    // Close process and thread handles.
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+
+    return ret;
+}
+#endif
 
 int main(int argc, char** argv)
 {
@@ -75,46 +110,25 @@ int main(int argc, char** argv)
         strcat(cmdline, " ");
     }
 
-    //printf("Would run '%s'\n", cmdline);
-    #ifdef __WXMSW__
-        //Windows's system() seems to not be able to handle parentheses in
-        //the path, so we have to launch the program a different way.
+    clock_t cl = clock();
 
-        SetConsoleTitle(cmdline);
+    int ret = execute_command(cmdline);
 
-        STARTUPINFO si;
-        PROCESS_INFORMATION pi;
+    cl = clock() - cl;
+    cl *= 1000;
+    cl /= CLOCKS_PER_SEC;
 
-        ZeroMemory( &si, sizeof(si) );
-        si.cb = sizeof(si);
-        ZeroMemory( &pi, sizeof(pi) );
-
-        // Start the child process.
-		clock_t cl = clock();
-        CreateProcess( NULL, TEXT(cmdline), NULL, NULL, FALSE, 0,
-                       NULL, NULL, &si, &pi );
-
-        // Wait until child process exits.
-        WaitForSingleObject( pi.hProcess, INFINITE );
-
-        cl = clock() - cl;
-        cl *= 1000;
-        cl /= CLOCKS_PER_SEC;
-
-        // Get the return value of the child process
-        DWORD ret;
-        GetExitCodeProcess( pi.hProcess, &ret );
-
-        // Close process and thread handles.
-        CloseHandle( pi.hProcess );
-        CloseHandle( pi.hThread );
-
-		printf("\nProcess returned %ld (0x%lX)   execution time : %0.3f s", ret, ret, ((float)cl)/1000);
-        printf("\nPress any key to continue.\n");
-    #else
-        int ret = system(cmdline);
-        printf("\nPress ENTER to continue.\n");
-    #endif
+    printf("\nProcess returned %d (0x%X)   execution time : %0.3f s", ret, ret, ((float)cl)/1000);
+    printf
+    (
+        "\nPress "
+#ifdef __WXMSW__
+        "any key"
+#else
+        "ENTER"
+#endif
+        " to continue.\n"
+    );
 
     wait_key();
 
