@@ -1804,13 +1804,13 @@
 		<Unit filename="plugins/scriptedwizard/resources/sdl/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/sharedlib/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/smartwin/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/staticlib/wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/resources/sharedlib/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/wxwidgets/wizard.script">
@@ -2613,6 +2613,12 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/CellBuffer.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/CharClassify.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/CharClassify.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/ContractionState.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2736,6 +2742,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexHaskell.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexInno.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexKix.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2764,6 +2773,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexNsis.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexOpal.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexOthers.cxx">
@@ -2805,7 +2817,13 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSpecman.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSpice.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTADS3.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTCL.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTeX.cxx">

@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="default">
 				<Option output="../../devel/cb_share_config" prefix_auto="0" extension_auto="0" />
-				<Option object_output="../../.objs" />
+				<Option object_output="../../.objs/tools/cb_share_config" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 			</Target>
@@ -24,6 +24,8 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
 			<Add option="-DPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
 			<Add directory="../../include" />
 			<Add directory="../../include/tinyxml" />
 		</Compiler>
@@ -43,6 +45,8 @@
 		<Unit filename="wxsmith/MainFrame.wxs" />
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
