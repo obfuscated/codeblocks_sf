@@ -98,7 +98,7 @@ void DisassemblyDlg::Clear(const StackFrame& frame)
     if (frame.valid && m_pDbg->IsRunning())
     {
         // if debugger is running, show a message
-        m_pCode->SetText(_("\"Please wait while disassemblying...\""));
+        m_pCode->SetText(_("\"Please wait while disassembling...\""));
         m_ClearFlag = true; // clear the above message when adding the first line
     }
     else
@@ -159,7 +159,7 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
-        
+
     wxString output;
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (prj)
@@ -167,7 +167,7 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
         output << _("Project title : ") << prj->GetTitle() << _T('\n');
         output << _("Project path  : ") << prj->GetBasePath() << _T('\n') << _T('\n');
     }
-    
+
     output << _("Frame function: ") << m_FrameFunction << _T('\n');
     output << _("Frame address : ") << m_FrameAddress << _T('\n');
     output << wxString(_T('-'), 80) << _T('\n');

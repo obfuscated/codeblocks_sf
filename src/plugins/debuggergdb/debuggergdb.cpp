@@ -1570,7 +1570,7 @@ void DebuggerGDB::RunCommand(int cmd)
 
         case CMD_DISASSEMBLE:
         {
-//            Manager::Get()->GetLogManager()->Log(m_PageIndex, "Disassemblying...");
+//            Manager::Get()->GetLogManager()->Log(m_PageIndex, "Disassembling...");
             if (m_State.HasDriver())
                 m_State.GetDriver()->Disassemble();
             break;
