@@ -33,14 +33,14 @@ using std::string;
 
 namespace
 {
-	const int idCodeFormatterFile = wxNewId();
-	const int idCodeFormatterActiveFile = wxNewId();
-	const int idCodeFormatterProject = wxNewId();
+    const int idCodeFormatterFile = wxNewId();
+    const int idCodeFormatterActiveFile = wxNewId();
+    const int idCodeFormatterProject = wxNewId();
 }
 
 BEGIN_EVENT_TABLE( AStylePlugin, cbPlugin )
-	EVT_MENU( idCodeFormatterActiveFile, AStylePlugin::OnFormatActiveFile )
-	EVT_MENU( idCodeFormatterProject, AStylePlugin::OnFormatProject )
+    EVT_MENU( idCodeFormatterActiveFile, AStylePlugin::OnFormatActiveFile )
+    EVT_MENU( idCodeFormatterProject, AStylePlugin::OnFormatProject )
 END_EVENT_TABLE()
 
 // this auto-registers the plugin
@@ -93,96 +93,96 @@ cbConfigurationPanel* AStylePlugin::GetConfigurationPanel(wxWindow* parent)
 
 void AStylePlugin::BuildModuleMenu( const ModuleType type, wxMenu* menu, const FileTreeData* data )
 {
-	if ( !menu || !IsAttached() )
-		return;
+    if ( !menu || !IsAttached() )
+        return;
 
-	switch ( type )
-	{
-		case mtEditorManager:
-			menu->AppendSeparator();
-			menu->Append( idCodeFormatterActiveFile, _( "Format This File (AStyle)" ), _( "Format the source code in the current file" ) );
-			break;
+    switch ( type )
+    {
+        case mtEditorManager:
+            menu->AppendSeparator();
+            menu->Append( idCodeFormatterActiveFile, _( "Format this file (AStyle)" ), _( "Format the source code in the current file" ) );
+            break;
 
-		case mtProjectManager:
-			if ( data ) switch ( data->GetKind() )
-				{
-					case FileTreeData::ftdkProject:
-						menu->AppendSeparator();
-						menu->Append( idCodeFormatterProject, _( "Format This Project (AStyle)" ), _( "Format the source code in this project" ) );
-						break;
+        case mtProjectManager:
+            if ( data ) switch ( data->GetKind() )
+                {
+                    case FileTreeData::ftdkProject:
+                        menu->AppendSeparator();
+                        menu->Append( idCodeFormatterProject, _( "Format this project (AStyle)" ), _( "Format the source code in this project" ) );
+                        break;
 
-					case FileTreeData::ftdkFile:
-						menu->AppendSeparator();
-						menu->Append( idCodeFormatterProject, _( "Format This File (AStyle)" ), _( "Format the source code in this file" ) );
-						break;
+                    case FileTreeData::ftdkFile:
+                        menu->AppendSeparator();
+                        menu->Append( idCodeFormatterProject, _( "Format this file (AStyle)" ), _( "Format the source code in this file" ) );
+                        break;
 
-					default:
-						// Do nothing.
-						break;
-				}
-			break;
+                    default:
+                        // Do nothing.
+                        break;
+                }
+            break;
 
-		default:
-			break;
-	}
+        default:
+            break;
+    }
 }
 
 void AStylePlugin::OnFormatProject( wxCommandEvent& event )
 {
-	wxTreeCtrl *tree = Manager::Get()->GetProjectManager()->GetTree();
+    wxTreeCtrl *tree = Manager::Get()->GetProjectManager()->GetTree();
 
-	if ( !tree )
-		return;
+    if ( !tree )
+        return;
 
-	wxTreeItemId treeItem =  tree->GetSelection();
+    wxTreeItemId treeItem =  tree->GetSelection();
 
-	if ( !treeItem.IsOk() )
-		return;
+    if ( !treeItem.IsOk() )
+        return;
 
-	const FileTreeData *data = static_cast<FileTreeData*>( tree->GetItemData( treeItem ) );
+    const FileTreeData *data = static_cast<FileTreeData*>( tree->GetItemData( treeItem ) );
 
-	if ( !data )
-		return;
+    if ( !data )
+        return;
 
-	switch ( data->GetKind() )
-	{
-		case FileTreeData::ftdkProject:
-			{
-				cbProject* prj = data->GetProject();
-				wxProgressDialog progressDlg(_("Please wait"), _("Formatting..."), prj->GetFilesCount(), 0, wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_SMOOTH );
-				progressDlg.Show();
-				for ( int i = 0; i < prj->GetFilesCount(); ++i )
-				{
-					ProjectFile* pf = prj->GetFile( i );
-					wxString filename = pf->file.GetFullPath();
+    switch ( data->GetKind() )
+    {
+        case FileTreeData::ftdkProject:
+            {
+                cbProject* prj = data->GetProject();
+                wxProgressDialog progressDlg(_("Please wait"), _("Formatting..."), prj->GetFilesCount(), 0, wxPD_CAN_ABORT|wxPD_AUTO_HIDE|wxPD_SMOOTH );
+                progressDlg.Show();
+                for ( int i = 0; i < prj->GetFilesCount(); ++i )
+                {
+                    ProjectFile* pf = prj->GetFile( i );
+                    wxString filename = pf->file.GetFullPath();
 
-					FileType fileType = FileTypeOf( filename );
-					if ( fileType == ftSource || fileType == ftHeader )
-					{
-						FormatFile( filename );
-						if ( false == progressDlg.Update( i, wxString(_("Formatting ")) + pf->relativeFilename ) )
-							break;
-					}
-				}
-			}
-			break;
+                    FileType fileType = FileTypeOf( filename );
+                    if ( fileType == ftSource || fileType == ftHeader )
+                    {
+                        FormatFile( filename );
+                        if ( false == progressDlg.Update( i, wxString(_("Formatting ")) + pf->relativeFilename ) )
+                            break;
+                    }
+                }
+            }
+            break;
 
-		case FileTreeData::ftdkFile:
-			{
-				ProjectFile* f = data->GetProject()->GetFile( data->GetFileIndex() );
-				if ( f )
-					FormatFile( f->file.GetFullPath() );
-			}
-			break;
+        case FileTreeData::ftdkFile:
+            {
+                ProjectFile* f = data->GetProject()->GetFile( data->GetFileIndex() );
+                if ( f )
+                    FormatFile( f->file.GetFullPath() );
+            }
+            break;
 
         default:
             break;
-	}
+    }
 }
 
 void AStylePlugin::OnFormatActiveFile( wxCommandEvent& event )
 {
-		Execute();
+        Execute();
 }
 
 int AStylePlugin::Execute()
@@ -206,90 +206,90 @@ int AStylePlugin::Execute()
 
 void AStylePlugin::FormatFile( const wxString &filename )
 {
-	cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen( filename );
+    cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen( filename );
 
-	if ( ed )
-	{
-		// File is already open
-		FormatEditor( ed );
-	}
-	else
-	{
-		// File is not open.  We must open it.
-		ed = Manager::Get()->GetEditorManager()->Open( filename );
+    if ( ed )
+    {
+        // File is already open
+        FormatEditor( ed );
+    }
+    else
+    {
+        // File is not open.  We must open it.
+        ed = Manager::Get()->GetEditorManager()->Open( filename );
 
-		if ( ed )
-		{
-			bool changed = FormatEditor( ed );
+        if ( ed )
+        {
+            bool changed = FormatEditor( ed );
 
-			if ( !changed )
-			{
-				// We opened a file and it didn't change.  Close it.
-				Manager::Get()->GetEditorManager()->Close( filename );
-			}
-		}
-	}
+            if ( !changed )
+            {
+                // We opened a file and it didn't change.  Close it.
+                Manager::Get()->GetEditorManager()->Close( filename );
+            }
+        }
+    }
 }
 
 // Special code to compare strings which doesn't care
 // about spaces leading up to the EOL.
 static bool BuffersDiffer( const wxString &a, const wxString &b )
 {
-	const wxChar *aCurrent = a.c_str();
-	const wxChar *bCurrent = b.c_str();
-	const wxChar * const aEnd = aCurrent + a.Len();
-	const wxChar * const bEnd = bCurrent + b.Len();
+    const wxChar *aCurrent = a.c_str();
+    const wxChar *bCurrent = b.c_str();
+    const wxChar * const aEnd = aCurrent + a.Len();
+    const wxChar * const bEnd = bCurrent + b.Len();
 
-	while ( aCurrent != aEnd && bCurrent != bEnd )
-	{
-		if ( *aCurrent != *bCurrent )
-		{
-			// Check for varying space at EOL
-			while ( *aCurrent == ' ' || *aCurrent == '\t' )
-			{
-				if ( ++aCurrent == aEnd )
-					break;
-			}
-			while ( *bCurrent == ' ' || *bCurrent == '\t' )
-			{
-				if ( ++bCurrent == bEnd )
-					break;
-			}
+    while ( aCurrent != aEnd && bCurrent != bEnd )
+    {
+        if ( *aCurrent != *bCurrent )
+        {
+            // Check for varying space at EOL
+            while ( *aCurrent == ' ' || *aCurrent == '\t' )
+            {
+                if ( ++aCurrent == aEnd )
+                    break;
+            }
+            while ( *bCurrent == ' ' || *bCurrent == '\t' )
+            {
+                if ( ++bCurrent == bEnd )
+                    break;
+            }
 
-			// Make sure it was at EOL
-			if ( ( *aCurrent != '\r' && *aCurrent != '\n' ) || ( *bCurrent != '\r' && *bCurrent != '\n' ) )
-				return true;
-		}
+            // Make sure it was at EOL
+            if ( ( *aCurrent != '\r' && *aCurrent != '\n' ) || ( *bCurrent != '\r' && *bCurrent != '\n' ) )
+                return true;
+        }
 
-		++aCurrent;
-		++bCurrent;
-	}
+        ++aCurrent;
+        ++bCurrent;
+    }
 
-	while ( aCurrent != aEnd )
-	{
-		if ( *aCurrent != ' ' && *aCurrent != '\t' )
-		{
-			return true;
-		}
+    while ( aCurrent != aEnd )
+    {
+        if ( *aCurrent != ' ' && *aCurrent != '\t' )
+        {
+            return true;
+        }
 
-	}
+    }
 
-	while ( bCurrent != bEnd )
-	{
-		if ( *bCurrent != ' ' && *bCurrent != '\t' )
-		{
-			return true;
-		}
-	}
+    while ( bCurrent != bEnd )
+    {
+        if ( *bCurrent != ' ' && *bCurrent != '\t' )
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 bool AStylePlugin::FormatEditor( cbEditor *ed )
 {
     if (ed->GetControl()->GetReadOnly())
     {
-        cbMessageBox(_("The file is read-only"), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("The file is read-only!"), _("Error"), wxICON_ERROR);
         return false;
     }
 
@@ -364,22 +364,22 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
 
     bool changed = BuffersDiffer( formattedText, edText );
 
-	if ( changed )
-	{
-		ed->GetControl()->BeginUndoAction();
-		ed->GetControl()->SetText(formattedText);
+    if ( changed )
+    {
+        ed->GetControl()->BeginUndoAction();
+        ed->GetControl()->SetText(formattedText);
 
-		for (std::vector<int>::const_iterator i = new_bookmark.begin(); i != new_bookmark.end(); ++i)
-		{
-			ed->ToggleBookmark(*i);
-		}
+        for (std::vector<int>::const_iterator i = new_bookmark.begin(); i != new_bookmark.end(); ++i)
+        {
+            ed->ToggleBookmark(*i);
+        }
 
-		ed->GetControl()->EndUndoAction();
-		ed->GetControl()->GotoPos(pos);
-		ed->SetModified(true);
-	}
+        ed->GetControl()->EndUndoAction();
+        ed->GetControl()->GotoPos(pos);
+        ed->SetModified(true);
+    }
 
     wxSetCursor(wxNullCursor);
 
-	return changed;
+    return changed;
 }

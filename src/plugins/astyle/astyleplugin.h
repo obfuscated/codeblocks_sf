@@ -10,11 +10,11 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-	#pragma hdrstop
+    #pragma hdrstop
 #endif
 
 #ifndef WX_PRECOMP
-	#include <wx/wx.h>
+    #include <wx/wx.h>
 #endif
 
 #include <cbplugin.h> // the base class we 're inheriting
@@ -28,18 +28,18 @@ class AStylePlugin : public cbToolPlugin
     int Configure();
     int GetConfigurationGroup() const { return cgEditor; }
     cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-	void BuildModuleMenu( const ModuleType type, wxMenu* menu, const FileTreeData* data = 0 );
+    void BuildModuleMenu( const ModuleType type, wxMenu* menu, const FileTreeData* data = 0 );
     int Execute();
 
-	void OnFormatActiveFile( wxCommandEvent& event );
-	void OnFormatProject( wxCommandEvent& event );
-	void FormatFile( const wxString &filename );
-	bool FormatEditor( cbEditor *ed );
+    void OnFormatActiveFile( wxCommandEvent& event );
+    void OnFormatProject( wxCommandEvent& event );
+    void FormatFile( const wxString &filename );
+    bool FormatEditor( cbEditor *ed );
 
     void OnAttach(); // fires when the plugin is attached to the application
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // ASTYLEPLUGIN_H
