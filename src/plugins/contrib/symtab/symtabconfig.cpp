@@ -126,6 +126,7 @@ void SymTabConfigDlg::OnSearch(wxCommandEvent& WXUNUSED(event))
            || cfg->ReadBool(_T("/include_lib"), true)
            || cfg->ReadBool(_T("/include_o"),   false)
            || cfg->ReadBool(_T("/include_obj"), false)
+           || cfg->ReadBool(_T("/include_so"),  false)
            || cfg->ReadBool(_T("/include_dll"), false)) )
     {
       cbMessageBox(_("No file type (include) provided."), _("Error"), wxICON_ERROR | wxOK,
@@ -201,8 +202,9 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
                     << _T("Library files (*.lib)|*.lib|")
                     << _T("Object files (*.o)|*.o|")
                     << _T("Object files (*.obj)|*.obj|")
+                    << _T("Shared object files (*.so)|*.so|")
+                    << _T("Dynamic link library files (*.dll)|*.dll|")
 #ifdef __WXMSW__
-                    << _T("Object files (*.dll)|*.dll|")
                     << _T("All files (*.*)|*.*");
 #else
                     << _T("All files (*)|*");
@@ -259,6 +261,7 @@ void SymTabConfigDlg::ToggleWidgets(int choice)
   XRCCTRL(*this, "chkIncludeLib",  wxCheckBox)->Enable(false);
   XRCCTRL(*this, "chkIncludeO",    wxCheckBox)->Enable(false);
   XRCCTRL(*this, "chkIncludeObj",  wxCheckBox)->Enable(false);
+  XRCCTRL(*this, "chkIncludeSo",   wxCheckBox)->Enable(false);
   XRCCTRL(*this, "chkIncludeDll",  wxCheckBox)->Enable(false);
 
   XRCCTRL(*this, "txtLibrary",     wxTextCtrl)->Enable(false);
@@ -273,6 +276,7 @@ void SymTabConfigDlg::ToggleWidgets(int choice)
     XRCCTRL(*this, "chkIncludeLib",  wxCheckBox)->Enable(true);
     XRCCTRL(*this, "chkIncludeO",    wxCheckBox)->Enable(true);
     XRCCTRL(*this, "chkIncludeObj",  wxCheckBox)->Enable(true);
+    XRCCTRL(*this, "chkIncludeSo",   wxCheckBox)->Enable(true);
     XRCCTRL(*this, "chkIncludeDll",  wxCheckBox)->Enable(true);
   }
   // Search for all symbols in a given library
@@ -308,6 +312,8 @@ void SymTabConfigDlg::LoadSettings()
     cfg->ReadBool(_T("/include_o"),   false));
   XRCCTRL(*this, "chkIncludeObj",     wxCheckBox)->SetValue(
     cfg->ReadBool(_T("/include_obj"), false));
+  XRCCTRL(*this, "chkIncludeSo",      wxCheckBox)->SetValue(
+    cfg->ReadBool(_T("/include_so"),  false));
   XRCCTRL(*this, "chkIncludeDll",     wxCheckBox)->SetValue(
     cfg->ReadBool(_T("/include_dll"), false));
 
@@ -361,6 +367,8 @@ void SymTabConfigDlg::SaveSettings()
     XRCCTRL(*this, "chkIncludeO",    wxCheckBox)->GetValue());
   cfg->Write(_T("/include_obj"),
     XRCCTRL(*this, "chkIncludeObj",  wxCheckBox)->GetValue());
+  cfg->Write(_T("/include_so"),
+    XRCCTRL(*this, "chkIncludeSo",   wxCheckBox)->GetValue());
   cfg->Write(_T("/include_dll"),
     XRCCTRL(*this, "chkIncludeDll",  wxCheckBox)->GetValue());
 

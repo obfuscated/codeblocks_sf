@@ -114,6 +114,14 @@
                               <border>8</border>
                             </object>
                             <object class="sizeritem">
+                              <object class="wxCheckBox" name="chkIncludeSo">
+                                <label>*.so</label>
+                              </object>
+                              <option>1</option>
+                              <flag>wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
+                              <border>8</border>
+                            </object>
+                            <object class="sizeritem">
                               <object class="wxCheckBox" name="chkIncludeDll">
                                 <label>*.dll</label>
                               </object>
