@@ -318,6 +318,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 #ifdef __WXGTK__
 	int m_mouseButtonDownCnt;
 #endif
+
 	Document *pdoc;
 
 	Editor();

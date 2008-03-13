@@ -3588,7 +3588,7 @@ void Editor::DelCharBack(bool allowLineStartDeletion) {
 void Editor::NotifyFocus(bool) {}
 
 void Editor::NotifyStyleToNeeded(int endStyleNeeded) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_STYLENEEDED;
 	scn.position = endStyleNeeded;
 	NotifyParent(scn);
@@ -3599,7 +3599,7 @@ void Editor::NotifyStyleNeeded(Document*, void *, int endStyleNeeded) {
 }
 
 void Editor::NotifyChar(int ch) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_CHARADDED;
 	scn.ch = ch;
 	NotifyParent(scn);
@@ -3612,7 +3612,7 @@ void Editor::NotifyChar(int ch) {
 }
 
 void Editor::NotifySavePoint(bool isSavePoint) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	if (isSavePoint) {
 		scn.nmhdr.code = SCN_SAVEPOINTREACHED;
 	} else {
@@ -3622,13 +3622,13 @@ void Editor::NotifySavePoint(bool isSavePoint) {
 }
 
 void Editor::NotifyModifyAttempt() {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_MODIFYATTEMPTRO;
 	NotifyParent(scn);
 }
 
 void Editor::NotifyDoubleClick(Point pt, bool) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_DOUBLECLICK;
 	scn.line = LineFromLocation(pt);
 	scn.position = PositionFromLocationClose(pt);
@@ -3636,7 +3636,7 @@ void Editor::NotifyDoubleClick(Point pt, bool) {
 }
 
 void Editor::NotifyHotSpotDoubleClicked(int position, bool shift, bool ctrl, bool alt) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_HOTSPOTDOUBLECLICK;
 	scn.position = position;
 	scn.modifiers = (shift ? SCI_SHIFT : 0) | (ctrl ? SCI_CTRL : 0) |
@@ -3645,7 +3645,7 @@ void Editor::NotifyHotSpotDoubleClicked(int position, bool shift, bool ctrl, boo
 }
 
 void Editor::NotifyHotSpotClicked(int position, bool shift, bool ctrl, bool alt) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_HOTSPOTCLICK;
 	scn.position = position;
 	scn.modifiers = (shift ? SCI_SHIFT : 0) | (ctrl ? SCI_CTRL : 0) |
@@ -3654,13 +3654,13 @@ void Editor::NotifyHotSpotClicked(int position, bool shift, bool ctrl, bool alt)
 }
 
 void Editor::NotifyUpdateUI() {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_UPDATEUI;
 	NotifyParent(scn);
 }
 
 void Editor::NotifyPainted() {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_PAINTED;
 	NotifyParent(scn);
 }
@@ -3674,7 +3674,7 @@ bool Editor::NotifyMarginClick(Point pt, bool shift, bool ctrl, bool alt) {
 		x += vs.ms[margin].width;
 	}
 	if ((marginClicked >= 0) && vs.ms[marginClicked].sensitive) {
-		SCNotification scn = {0};
+		SCNotification scn = {{0}};
 		scn.nmhdr.code = SCN_MARGINCLICK;
 		scn.modifiers = (shift ? SCI_SHIFT : 0) | (ctrl ? SCI_CTRL : 0) |
 		                (alt ? SCI_ALT : 0);
@@ -3688,7 +3688,7 @@ bool Editor::NotifyMarginClick(Point pt, bool shift, bool ctrl, bool alt) {
 }
 
 void Editor::NotifyNeedShown(int pos, int len) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_NEEDSHOWN;
 	scn.position = pos;
 	scn.length = len;
@@ -3696,7 +3696,7 @@ void Editor::NotifyNeedShown(int pos, int len) {
 }
 
 void Editor::NotifyDwelling(Point pt, bool state) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = state ? SCN_DWELLSTART : SCN_DWELLEND;
 	scn.position = PositionFromLocationClose(pt);
 	scn.x = pt.x;
@@ -3705,7 +3705,7 @@ void Editor::NotifyDwelling(Point pt, bool state) {
 }
 
 void Editor::NotifyZoom() {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_ZOOM;
 	NotifyParent(scn);
 }
@@ -3717,7 +3717,7 @@ void Editor::NotifyModifyAttempt(Document*, void *) {
 }
 
 void Editor::NotifyMove(int position) {
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_POSCHANGED;
 	scn.position = position;
 	NotifyParent(scn);
@@ -3864,7 +3864,7 @@ void Editor::NotifyModified(Document*, DocModification mh, void *) {
 			NotifyChange();	// Send EN_CHANGE
 		}
 
-		SCNotification scn = {0};
+		SCNotification scn = {{0}};
 		scn.nmhdr.code = SCN_MODIFIED;
 		scn.position = mh.position;
 		scn.modificationType = mh.modificationType;
@@ -3995,7 +3995,7 @@ void Editor::NotifyMacroRecord(unsigned int iMessage, uptr_t wParam, sptr_t lPar
 	}
 
 	// Send notification
-	SCNotification scn = {0};
+	SCNotification scn = {{0}};
 	scn.nmhdr.code = SCN_MACRORECORD;
 	scn.message = iMessage;
 	scn.wParam = wParam;
