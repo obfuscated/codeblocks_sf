@@ -17,9 +17,9 @@ Generel building rules
 ======================
 1. Build or get the wxWidgets libraries however this is done on your platform
 (e.g. packages wxGTK2.4 from Debian/sarge). If the libraries are installed,
-nothing additional has to be done. Otherwise you have to set the $WXSTABLE
+nothing additional has to be done. Otherwise you have to set the $WXWIN
 environment variable to point to the base directory of wxWidgets (e.g.
-"/usr/src/wxWidgets" then "WXSTABLE=/usr/src/wxWidgets").
+"/usr/src/wxWidgets" then "WXWIN=/usr/src/wxWidgets").
 
 2. Extract the sources into a working directory.
 
@@ -42,8 +42,8 @@ MacOS (wxMAC)
 Windows (wxMSW, wxUniv/MSW)
 ---------------------------
 There is a VC++ project file which _requires_ the environment variables
-WXSTABLE pointing to the base directory of wxWidgets (e.g. "C:\Devel\wxWidgets"
-then  "WXSTABLE=C:\Devel\wxWidgets". Build the "wxscintilla - Win32 Release"
+WXWIN pointing to the base directory of wxWidgets (e.g. "C:\Devel\wxWidgets"
+then  "WXWIN=C:\Devel\wxWidgets". Build the "wxscintilla - Win32 Release"
 target.
 
 Building on other ports

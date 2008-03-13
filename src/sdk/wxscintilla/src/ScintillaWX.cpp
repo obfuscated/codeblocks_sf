@@ -42,6 +42,20 @@ private:
 
 
 #if wxUSE_DRAG_AND_DROP
+class wxStartDragTimer : public wxTimer {
+public:
+    wxStartDragTimer(ScintillaWX* swx) {
+        this->swx = swx;
+    }
+
+    void Notify() {
+        swx->DoStartDrag();
+    }
+
+private:
+    ScintillaWX* swx;
+};
+
 bool wxSCIDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data) {
     return swx->DoDropText(x, y, data);
 }
@@ -173,6 +187,35 @@ static wxTextFileType wxConvertEOLMode(int scintillaMode)
 }
 #endif // wxUSE_DATAOBJ
 
+
+static int wxCountLines(const char* text, int scintillaMode)
+{
+    char eolchar;
+
+    switch (scintillaMode) {
+        case wxSCI_EOL_CRLF:
+        case wxSCI_EOL_LF:
+            eolchar = '\n';
+            break;
+        case wxSCI_EOL_CR:
+            eolchar = '\r';
+            break;
+        default:
+            return 0;
+    }
+
+    int count = 0;
+    int i     = 0;
+    while (text[i] != 0) {
+        if (text[i] == eolchar) {
+            count++;
+        }
+        i++;
+    }
+
+    return count;
+}
+
 //----------------------------------------------------------------------
 // Constructor/Destructor
 
@@ -191,10 +234,16 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
     sysCaretHeight = 0;
 #endif
 #endif
+#if wxUSE_DRAG_AND_DROP
+    startDragTimer = new wxStartDragTimer(this);
+#endif
 }
 
 
 ScintillaWX::~ScintillaWX() {
+#if wxUSE_DRAG_AND_DROP
+    delete startDragTimer;
+#endif
     Finalise();
 }
 
@@ -208,6 +257,7 @@ void ScintillaWX::Initialise() {
     dropTarget = new wxSCIDropTarget;
     dropTarget->SetScintilla(this);
     sci->SetDropTarget(dropTarget);
+    dragRectangle = false;
 #endif
 #ifdef __WXMAC__
     vs.extraFontFlag = false;  // UseAntiAliasing
@@ -227,30 +277,38 @@ void ScintillaWX::Finalise() {
 
 void ScintillaWX::StartDrag() {
 #if wxUSE_DRAG_AND_DROP
-    wxString dragText = sci2wx(drag.s, drag.len);
+    // We defer the starting of the DnD, otherwise the LeftUp of a normal
+    // click could be lost and the STC will think it is doing a DnD when the
+    // user just wanted a normal click.
+    startDragTimer->Start (200, true);
+#endif
+}
+
+void ScintillaWX::DoStartDrag() {
+#if wxUSE_DRAG_AND_DROP
+    wxString dragText = sci2wx (drag.s, drag.len);
 
     // Send an event to allow the drag text to be changed
     wxScintillaEvent evt(wxEVT_SCI_START_DRAG, sci->GetId());
-    evt.SetEventObject(sci);
-    evt.SetDragText(dragText);
-    evt.SetDragAllowMove(true);
-    evt.SetPosition(wxMin(sci->GetSelectionStart(),
-                          sci->GetSelectionEnd()));
-    sci->GetEventHandler()->ProcessEvent(evt);
-    dragText = evt.GetDragText();
+    evt.SetEventObject (sci);
+    evt.SetDragText (dragText);
+    evt.SetDragAllowMove (true);
+    evt.SetPosition (wxMin(sci->GetSelectionStart(), sci->GetSelectionEnd()));
+    sci->GetEventHandler()->ProcessEvent (evt);
 
+    dragText = evt.GetDragText();
+    dragRectangle = drag.rectangular;
     if (dragText.Length()) {
-        wxDropSource        source(sci);
-        wxTextDataObject    data(dragText);
-        wxDragResult        result;
+        wxDropSource source(sci);
+        wxTextDataObject data(dragText);
+        wxDragResult result;
 
         source.SetData(data);
         dropWentOutside = true;
         result = source.DoDragDrop(evt.GetDragAllowMove());
-        if (result == wxDragMove && dropWentOutside)
-            ClearSelection();
+        if (result == wxDragMove && dropWentOutside) ClearSelection();
         inDragDrop = false;
-        SetDragPosition(invalidPosition);
+        SetDragPosition (invalidPosition);
     }
 #endif
 }
@@ -421,7 +479,6 @@ void ScintillaWX::CancelModes() {
 }
 
 
-
 void ScintillaWX::Copy() {
     if (currentPos != anchor) {
         SelectionText st;
@@ -437,21 +494,49 @@ void ScintillaWX::Paste() {
 
 #if wxUSE_DATAOBJ
     wxTextDataObject data;
-    bool gotData = false;
+    wxString textString;
+
+    wxWX2MBbuf buf;
+    int   len  = 0;
+    bool  rectangular = false;
 
     if (wxTheClipboard->Open()) {
         wxTheClipboard->UsePrimarySelection(false);
-        gotData = wxTheClipboard->GetData(data);
+        wxCustomDataObject selData(wxDF_PRIVATE);
+        bool gotRectData = wxTheClipboard->GetData(selData);
+
+        if (gotRectData && selData.GetSize()>1) {
+            const char* rectBuf = (const char*)selData.GetData();
+            rectangular = rectBuf[0] == (char)1;
+            len = selData.GetDataSize()-1;
+            char* buffer = new char[len];
+            memcpy (buffer, rectBuf+1, len);
+            textString = sci2wx(buffer, len);
+            delete [] buffer;
+        } else {
+            bool gotData = wxTheClipboard->GetData(data);
+            if (gotData) {
+                textString = wxTextBuffer::Translate (data.GetText(),
+                                                      wxConvertEOLMode(pdoc->eolMode));
+            }
+        }
+        data.SetText(wxEmptyString); // free the data object content
         wxTheClipboard->Close();
     }
-    if (gotData) {
-        wxString   text = wxTextBuffer::Translate(data.GetText(),
-                                                  wxConvertEOLMode(pdoc->eolMode));
-        wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
-        int        len = strlen(buf);
-        pdoc->InsertString(currentPos, buf, len);
-        SetEmptySelection(currentPos + len);
+
+    buf = (wxWX2MBbuf)wx2sci(textString);
+    len  = strlen(buf);
+    int newPos = 0;
+    if (rectangular) {
+        int newLine = pdoc->LineFromPosition (currentPos) + wxCountLines (buf, pdoc->eolMode);
+        int newCol = pdoc->GetColumn(currentPos);
+        PasteRectangular (currentPos, buf, len);
+        newPos = pdoc->FindColumn (newLine, newCol);
+    } else {
+        pdoc->InsertString (currentPos, buf, len);
+        newPos = currentPos + len;
     }
+    SetEmptySelection (newPos);
 #endif // wxUSE_DATAOBJ
 
     pdoc->EndUndoAction();
@@ -460,12 +545,27 @@ void ScintillaWX::Paste() {
 }
 
 
-void ScintillaWX::CopyToClipboard(const SelectionText& st) {
+void ScintillaWX::CopyToClipboard (const SelectionText& st) {
 #if wxUSE_CLIPBOARD
     if (wxTheClipboard->Open()) {
-        wxTheClipboard->UsePrimarySelection(false);
-        wxString text = wxTextBuffer::Translate(sci2wx(st.s, st.len-1));
-        wxTheClipboard->SetData(new wxTextDataObject(text));
+        wxTheClipboard->UsePrimarySelection (false);
+        wxString text = wxTextBuffer::Translate (sci2wx(st.s, st.len-1));
+
+        // composite object will hold "plain text" for pasting in other programs and a custom
+        // object for local use that remembers what kind of selection was made (stream or
+        // rectangular).
+        wxDataObjectComposite* obj = new wxDataObjectComposite();
+        wxCustomDataObject* rectData = new wxCustomDataObject (wxDF_PRIVATE);
+
+        char* buffer = new char[st.len+1];
+        buffer[0] = (st.rectangular)? (char)1 : (char)0;
+        memcpy (buffer+1, st.s, st.len);
+        rectData->SetData (st.len+1, buffer);
+        delete [] buffer;
+
+        obj->Add (rectData, true);
+        obj->Add (new wxTextDataObject (text));
+        wxTheClipboard->SetData (obj);
         wxTheClipboard->Close();
     }
 #else
@@ -684,7 +784,6 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
     PRectangle rcClient = GetClientRectangle();
     paintingAllText = rcPaint.Contains(rcClient);
 
-//    dc->BeginDrawing(); // Deprecated - it's an empty function anyway
     ClipChildren(*dc, rcPaint);
     Paint(surfaceWindow, rcPaint);
 
@@ -695,7 +794,6 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
         FullPaint();
     }
     paintState = notPainting;
-//    dc->EndDrawing(); // Deprecated - it's an empty function anyway
 }
 
 
@@ -806,6 +904,14 @@ void ScintillaWX::DoLeftButtonDown(Point pt, unsigned int curTime, bool shift, b
 
 void ScintillaWX::DoLeftButtonUp(Point pt, unsigned int curTime, bool ctrl) {
     ButtonUp(pt, curTime, ctrl);
+#if wxUSE_DRAG_AND_DROP
+    if (startDragTimer->IsRunning()) {
+        startDragTimer->Stop();
+        SetDragPosition(invalidPosition);
+        SetEmptySelection(PositionFromLocation(pt));
+        ShowCaretAtCurrentPosition();
+    }
+#endif
 }
 
 void ScintillaWX::DoLeftButtonMove(Point pt) {
@@ -829,8 +935,9 @@ void ScintillaWX::DoMiddleButtonUp(Point pt) {
         wxTheClipboard->Close();
     }
     if (gotData) {
-        wxString   text = wxTextBuffer::Translate(data.GetText(),
-                                                  wxConvertEOLMode(pdoc->eolMode));
+        wxString text = wxTextBuffer::Translate (data.GetText(),
+                                                 wxConvertEOLMode(pdoc->eolMode));
+        data.SetText(wxEmptyString); // free the data object content
         wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
         int        len = strlen(buf);
         pdoc->InsertString(currentPos, buf, len);
@@ -873,39 +980,37 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
         key += 'A' - 1;
 
     switch (key) {
-    case WXK_NUMPAD_DOWN:       // fall through
-    case WXK_DOWN:              key = SCK_DOWN;     break;
-    case WXK_NUMPAD_UP:         // fall through
-    case WXK_UP:                key = SCK_UP;       break;
-    case WXK_NUMPAD_LEFT:       // fall through
-    case WXK_LEFT:              key = SCK_LEFT;     break;
-    case WXK_NUMPAD_RIGHT:      // fall through
-    case WXK_RIGHT:             key = SCK_RIGHT;    break;
-    case WXK_NUMPAD_HOME:       // fall through
-    case WXK_HOME:              key = SCK_HOME;     break;
-    case WXK_NUMPAD_END:        // fall through
-    case WXK_END:               key = SCK_END;      break;
+    case WXK_DOWN:              // fall through
+    case WXK_NUMPAD_DOWN:       key = SCK_DOWN;     break;
+    case WXK_UP:                // fall through
+    case WXK_NUMPAD_UP:         key = SCK_UP;       break;
+    case WXK_LEFT:              // fall through
+    case WXK_NUMPAD_LEFT:       key = SCK_LEFT;     break;
+    case WXK_RIGHT:             // fall through
+    case WXK_NUMPAD_RIGHT:      key = SCK_RIGHT;    break;
+    case WXK_HOME:              // fall through
+    case WXK_NUMPAD_HOME:       key = SCK_HOME;     break;
+    case WXK_END:               // fall through
+    case WXK_NUMPAD_END:        key = SCK_END;      break;
 #if !wxCHECK_VERSION(2, 8, 0)
-    case WXK_PRIOR:     		// fall through
+    case WXK_PRIOR:             // fall through
     case WXK_NUMPAD_PRIOR:      // fall through
 #endif
     case WXK_PAGEUP:            // fall through
     case WXK_NUMPAD_PAGEUP:     key = SCK_PRIOR;    break;
 #if !wxCHECK_VERSION(2, 8, 0)
-    case WXK_NEXT:   			// fall through
+    case WXK_NEXT:              // fall through
     case WXK_NUMPAD_NEXT:       // fall through
 #endif
     case WXK_PAGEDOWN:          // fall through
     case WXK_NUMPAD_PAGEDOWN:   key = SCK_NEXT;     break;
-    case WXK_NUMPAD_DELETE:     // fall through
     case WXK_DELETE:            key = SCK_DELETE;   break;
-    case WXK_NUMPAD_INSERT:     // fall through
     case WXK_INSERT:            key = SCK_INSERT;   break;
     case WXK_ESCAPE:            key = SCK_ESCAPE;   break;
     case WXK_BACK:              key = SCK_BACK;     break;
     case WXK_TAB:               key = SCK_TAB;      break;
-    case WXK_NUMPAD_ENTER:      // fall through
-    case WXK_RETURN:            key = SCK_RETURN;   break;
+    case WXK_RETURN:            // fall through
+    case WXK_NUMPAD_ENTER:      key = SCK_RETURN;   break;
     case WXK_ADD:               // fall through
     case WXK_NUMPAD_ADD:        key = SCK_ADD;      break;
     case WXK_SUBTRACT:          // fall through
@@ -972,8 +1077,7 @@ void ScintillaWX::DoOnIdle(wxIdleEvent& evt) {
 bool ScintillaWX::DoDropText(long x, long y, const wxString& data) {
     SetDragPosition(invalidPosition);
 
-    wxString text = wxTextBuffer::Translate(data,
-                                            wxConvertEOLMode(pdoc->eolMode));
+    wxString text = wxTextBuffer::Translate (data, wxConvertEOLMode(pdoc->eolMode));
 
     // Send an event to allow the drag details to be changed
     wxScintillaEvent evt(wxEVT_SCI_DO_DROP, sci->GetId());
@@ -990,7 +1094,7 @@ bool ScintillaWX::DoDropText(long x, long y, const wxString& data) {
         DropAt(evt.GetPosition(),
                wx2sci(evt.GetDragText()),
                dragResult == wxDragMove,
-               false); // TODO: rectangular?
+               dragRectangle);
         return true;
     }
     return false;

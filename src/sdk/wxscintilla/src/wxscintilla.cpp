@@ -95,6 +95,7 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_ZOOM )
 DEFINE_EVENT_TYPE( wxEVT_SCI_HOTSPOT_CLICK )
 DEFINE_EVENT_TYPE( wxEVT_SCI_HOTSPOT_DCLICK )
 DEFINE_EVENT_TYPE( wxEVT_SCI_CALLTIP_CLICK )
+DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_SELECTION )
 
 
 
@@ -144,7 +145,7 @@ wxScintilla::wxScintilla (wxWindow *parent,
                           long style,
                           const wxString& name) {
     m_swx = NULL;
-    Create (parent, id, pos, size, style, name);
+    Create(parent, id, pos, size, style, name);
 }
 
 
@@ -160,6 +161,7 @@ bool wxScintilla::Create (wxWindow *parent,
     if (!wxControl::Create (parent, id, pos, size,
                             style | wxWANTS_CHARS | wxCLIP_CHILDREN,
                             wxDefaultValidator, name)) {
+        wxSafeShowMessage(_T("wxScintilla"),_T("Could not create a new wxControl instance."));
         return false;
     }
 
@@ -167,6 +169,8 @@ bool wxScintilla::Create (wxWindow *parent,
     Scintilla_LinkLexers();
 #endif
     m_swx = new ScintillaWX(this);
+    if (!m_swx)
+        wxSafeShowMessage(_T("wxScintilla"),_T("Could not create a new ScintillaWX instance."));
     m_stopWatch.Start();
     m_lastKeyDownConsumed = FALSE;
     m_vScrollBar = NULL;
@@ -189,7 +193,7 @@ bool wxScintilla::Create (wxWindow *parent,
 }
 
 wxScintilla::~wxScintilla() {
-    delete m_swx;
+    delete m_swx; m_swx = NULL;
 }
 
 
@@ -532,6 +536,11 @@ void wxScintilla::MarkerAddSet (int line, int markerSet) {
     SendMsg (SCI_MARKERADDSET, line, markerSet);
 }
 
+// Set the alpha used for a marker that is drawn in the text area, not the margin.
+void wxScintilla::MarkerSetAlpha (int markerNumber, int alpha) {
+    SendMsg (SCI_MARKERSETALPHA, markerNumber, alpha);
+}
+
 // Set a margin to be either numeric or symbolic.
 void wxScintilla::SetMarginType (int margin, int marginType) {
     SendMsg (SCI_SETMARGINTYPEN, margin, marginType);
@@ -630,6 +639,16 @@ void wxScintilla::StyleSetCase (int style, int caseMode) {
 // Set a style to be a hotspot or not.
 void wxScintilla::StyleSetHotSpot (int style, bool hotspot) {
     SendMsg (SCI_STYLESETHOTSPOT, style, hotspot);
+}
+
+// Get the alpha of the selection.
+int wxScintilla::GetSelAlpha () {
+    return SendMsg (SCI_GETSELALPHA, 0, 0);
+}
+
+// Set the alpha of the selection.
+void wxScintilla::SetSelAlpha (int alpha) {
+    SendMsg (SCI_SETSELALPHA, alpha, 0);
 }
 
 // Set the foreground colour of the selection and whether to use this setting.
@@ -1437,6 +1456,11 @@ void wxScintilla::CallTipSetForegroundHighlight (const wxColour& fore) {
     SendMsg (SCI_CALLTIPSETFOREHLT, wxColourAsLong(fore), 0);
 }
 
+// Enable use of STYLE_CALLTIP and set call tip tab size in pixels.
+void wxScintilla::CallTipUseStyle (int tabSize) {
+    SendMsg (SCI_CALLTIPUSESTYLE, tabSize, 0);
+}
+
 // Find the display line of a document line taking hidden lines into account.
 int wxScintilla::VisibleFromDocLine (int line) {
     return SendMsg (SCI_VISIBLEFROMDOCLINE, line, 0);
@@ -1636,8 +1660,8 @@ void wxScintilla::SetEndAtLastLine (bool endAtLastLine) {
 
 // Retrieve whether the maximum scroll position has the last
 // line at the bottom of the view.
-int wxScintilla::GetEndAtLastLine() {
-    return SendMsg (SCI_GETENDATLASTLINE, 0, 0);
+bool wxScintilla::GetEndAtLastLine() {
+    return SendMsg (SCI_GETENDATLASTLINE, 0, 0) != 0;
 }
 
 // Retrieve the height of a particular line of text in pixels.
@@ -2234,6 +2258,7 @@ void wxScintilla::ChooseCaretX() {
     SendMsg (SCI_CHOOSECARETX, 0, 0);
 }
 
+// Set the focus to this Scintilla widget (GTK+ specific)
 // Grab focus (SCI_GRABFOCUS) not supported
 
 // Set the way the caret is kept visible when going sideway.
@@ -2484,6 +2509,16 @@ void wxScintilla::SelectionDuplicate () {
     SendMsg (SCI_SELECTIONDUPLICATE, 0, 0);
 }
 
+// Get the background alpha of the caret line.
+int wxScintilla::GetCaretLineBackgroundAlpha () {
+    return SendMsg (SCI_GETCARETLINEBACKALPHA, 0, 0);
+}
+
+// Set background alpha of the caret line.
+void wxScintilla::SetCaretLineBackgroundAlpha (int alpha) {
+    SendMsg (SCI_SETCARETLINEBACKALPHA, alpha, 0);
+}
+
 // Start notifying the container of all key presses and commands.
 void wxScintilla::StartRecord () {
     SendMsg (SCI_STARTRECORD, 0, 0);
@@ -2516,18 +2551,22 @@ void wxScintilla::SetProperty (const wxString& key, const wxString& value) {
 
 // Retrieve a value that may be used by a lexer for some optional feature.
 wxString wxScintilla::GetProperty (const wxString& key) {
-    wxMemoryBuffer mbuf(256); //? TODO: make size 256 variable
-    char* buf = (char*)mbuf.GetWriteBuf(256+1);
+    int len = SendMsg (SCI_GETPROPERTY, (long)(const char*)wx2sci(key), (long)NULL);
+    if (!len) return wxEmptyString;
+    wxMemoryBuffer mbuf (len+1);
+    char* buf = (char*)mbuf.GetWriteBuf (len+1);
     SendMsg (SCI_GETPROPERTY, (long)(const char*)wx2sci(key), (long)buf);
-    mbuf.UngetWriteBuf(mbuf.GetBufSize());
-    mbuf.AppendByte(0);
+    mbuf.UngetWriteBuf (len);
+    mbuf.AppendByte (0);
     return sci2wx(buf);
 }
 wxString wxScintilla::GetPropertyExpanded (const wxString& key) {
-    wxMemoryBuffer mbuf(256); //? TODO: make size 256 variable
-    char* buf = (char*)mbuf.GetWriteBuf(256+1);
+    int len = SendMsg (SCI_GETPROPERTYEXPANDED, (long)(const char*)wx2sci(key), (long)NULL);
+    if (!len) return wxEmptyString;
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
     SendMsg (SCI_GETPROPERTYEXPANDED, (long)(const char*)wx2sci(key), (long)buf);
-    mbuf.UngetWriteBuf(mbuf.GetBufSize());
+    mbuf.UngetWriteBuf (len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
 }
@@ -2614,7 +2653,7 @@ void wxScintilla::StyleSetSpec (int styleNum, const wxString& spec) {
 
 // Set style size, face, bold, italic, and underline attributes from
 // a wxFont's attributes.
-void wxScintilla::StyleSetFont (int styleNum, wxFont& font) {
+void wxScintilla::StyleSetFont (int styleNum, const wxFont& font) {
 #ifdef __WXGTK__
     // Ensure that the native font is initialized
     int x, y;
@@ -2703,6 +2742,12 @@ void wxScintilla::StyleSetCharacterSet (int style, int characterSet) {
             break;
         case wxSCI_CHARSET_THAI:
             encoding = wxFONTENCODING_ISO8859_11;
+            break;
+        case wxSCI_CHARSET_CYRILLIC:
+            encoding = wxFONTENCODING_ISO8859_5;
+            break;
+        case wxSCI_CHARSET_8859_15:
+            encoding = wxFONTENCODING_ISO8859_15;
             break;
     }
 
@@ -3116,12 +3161,7 @@ void wxScintilla::NotifyChange() {
 
 static void SetEventText (wxScintillaEvent& evt, const char* text, size_t length) {
     if(!text) return;
-    // The unicode conversion MUST have a null byte to terminate the
-    // string so move it into a buffer first and give it one.
-    wxMemoryBuffer buf(length+1);
-    buf.AppendData ((void*)text, length);
-    buf.AppendByte (0);
-    evt.SetText (sci2wx(buf));
+    evt.SetText(sci2wx(text, length));
 }
 
 void wxScintilla::NotifyParent (SCNotification* _scn) {
@@ -3234,6 +3274,10 @@ void wxScintilla::NotifyParent (SCNotification* _scn) {
 
     case SCN_CALLTIPCLICK:
         evt.SetEventType (wxEVT_SCI_CALLTIP_CLICK);
+        break;
+
+    case SCN_AUTOCSELECTION:
+        evt.SetEventType (wxEVT_SCI_AUTOCOMP_SELECTION);
         break;
 
     default:

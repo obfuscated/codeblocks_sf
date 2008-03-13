@@ -450,13 +450,13 @@ This searches for the first occurrence of a text string in the target defined by
 <div class="divider2"></div>
 <h4><a name="ReplaceTarget">int ReplaceTarget (const wxString& text)</a></h4>
 <p>
-The return value is the length of the replacement string.
+After replacement, the target range refers to the replacement text. The return value is the length of the replacement string.
 </p>
 
 <div class="divider2"></div>
 <h4><a name="ReplaceTargetRE">int ReplaceTargetRE (const wxString& text)</a></h4>
 <p>
-This replaces the target using regular expressions. The replacement string is formed from the text string with any sequences of <code>\1</code> through <code>\9</code> replaced by tagged matches from the most recent regular expression search. The return value is the length of the replacement string.
+This replaces the target using regular expressions. The replacement string is formed from the text string with any sequences of <code>\1</code> through <code>\9</code> replaced by tagged matches from the most recent regular expression search. After replacement, the target range refers to the replacement text. The return value is the length of the replacement string.
 </p>
 
 <div class="divider1"></div>
@@ -1357,6 +1357,10 @@ While the style setting mentioned above change the style numbers associated with
   <td>37</td>
   <td>This style sets the foreground and background colours used when drawing the   indentation guides.</td>
 </tr><tr>
+  <th align="left"><code>STYLE_CALLTIP</code></th>
+  <td>38</td>
+  <td> Call tips normally use the font attributes defined by <code>wxSCI_STYLE_DEFAULT</code>. Use of <a class="message" href="#CallTipUseStyle"><code>CallTipUseStyle</code></a> causes call tips to use this style instead. Only the font face name, font size, foreground and background colours and character set attributes are used.</td>
+</tr><tr>
   <th align="left"><code>wxSCI_STYLE_LASTPREDEFINED</code></th>
   <td>39</td>
   <td>To make it easier for client code to discover the range of styles that are   predefined, this is set to the style number of the last predefined style. This is   currently set to 39 and the last style with an identifier is 37, which reserves space for   future predefined styles.</td>
@@ -1412,7 +1416,7 @@ Sets all styles to have the same attributes as <code>wxSCI_STYLE_DEFAULT</code>.
     <a name="StyleSetBold">void StyleSetBold (int style, bool bold)</a><br />
     <a name="StyleSetItalic">void StyleSetItalic (int style, bool italic)</a></h4>
 <p>
-These (plus <a class="message" href="#StyleSetCharacterSet"><code>StyleSetCharacterSet</code></a>) set the font attributes that are used to match the fonts you request to those available. The <code>fontName</code> is a zero terminated string holding the name of a font. Under Windows, only the first 32 characters of the name are used and the name is not case sensitive. For internal caching, Scintilla tracks fonts by name and does care about the casing of font names, so please be consistent. On GTK+ 2.x, either GDK or Pango can be used to display text. Pango antialiases text and works well with Unicode but GDK is faster. Prepend a '!' character to the font name to use Pango.
+These (plus <a class="message" href="#StyleSetCharacterSet"><code>StyleSetCharacterSet</code></a>) set the font attributes that are used to match the fonts you request to those available. The <code>fontName</code> is a zero terminated string holding the name of a font. Under Windows, only the first 32 characters of the name are used and the name is not case sensitive. For internal caching, Scintilla tracks fonts by name and does care about the casing of font names, so please be consistent. On GTK+ 2.x, either GDK or Pango can be used to display text. Pango antialiases text, works well with Unicode and is better supported in recent versions of GTK+ but GDK is faster. Prepend a '!' character to the font name to use Pango.
 </p>
 
 <div class="divider2"></div>
@@ -1510,12 +1514,16 @@ The selection is shown by changing the foreground and/or background colours. If 
 <ul style="list-style-type:none">
 <li><a class="message" href="#SetSelForeground">void SetSelForeground (bool useSetting, const wxColour& fore)</a></li>
 <li><a class="message" href="#SetSelBackground">void SetSelBackground (bool useSetting, const wxColour& back)</a></li>
+<li><a class="message" href="#SetSelAlpha">void SetSelAlpha (int alpha)</a></li>
+<li><a class="message" href="#GetSelAlpha">int GetSelAlpha()</a></li>
 <li><a class="message" href="#SetCaretForeground">void SetCaretForeground (const wxColour& fore)</a></li>
 <li><a class="message" href="#GetCaretForeground">wxColour GetCaretForeground()</a></li>
 <li><a class="message" href="#SetCaretLineVisible">void SetCaretLineVisible (bool show)</a></li>
 <li><a class="message" href="#GetCaretLineVisible">bool GetCaretLineVisible()</a></li>
 <li><a class="message" href="#SetCaretLineBackground">void SetCaretLineBackground (const wxColour& back)</a></li>
 <li><a class="message" href="#GetCaretLineBackground">wxColour GetCaretLineBackground()</a></li>
+<li><a class="message" href="#SetCaretLineBackgroundAlpha">void SetCaretLineBackgroundAlpha (int alpha)</a></li>
+<li><a class="message" href="#GetCaretLineBackgroundAlpha">int GetCaretLineBackgroundAlpha()</a></li>
 <li><a class="message" href="#SetCaretPeriod">void SetCaretPeriod (int milliseconds)</a></li>
 <li><a class="message" href="#GetCaretPeriod">int GetCaretPeriod()</a></li>
 <li><a class="message" href="#SetCaretWidth">void SetCaretWidth (int pixels)</a></li>
@@ -1539,6 +1547,13 @@ You can choose to override the default selection colouring with these two functi
 </p>
 
 <div class="divider2"></div>
+<h4><a name="SetSelAlpha">void SetSelAlpha (int alpha)</a><br />
+    <a name="GetSelAlpha">GetSelAlpha()</a></h4>
+<p>
+The selection can be drawn translucently in the selection background colour by setting an alpha value.
+</p>
+
+<div class="divider2"></div>
 <h4><a name="SetCaretForeground">void SetCaretForeground (const wxColour& fore)</a><br />
     <a name="GetCaretForeground">wxColour GetCaretForeground()</a></h4>
 <p>
@@ -1550,8 +1565,10 @@ The colour of the caret can be set with <code>SetCaretForeground</code> and retr
     <a name="GetCaretLineVisible">bool GetCaretLineVisible()</a><br />
     <a name="SetCaretLineBackground">void SetCaretLineBackground (const wxColour& back)</a><br />
     <a name="GetCaretLineBackground">wxColour GetCaretLineBackground()</a></h4>
+    <a name="SetCaretLineBackgroundAlpha">void SetCaretLineBackground (int alpha)</a><br />
+    <a name="GetCaretLineBackgroundAlpha">int GetCaretLineBackgroundAlpha()</a></h4>
 <p>
-You can choose to make the background colour of the line containing the caret different. To do this, set the desired background colour with <code>SetCaretLineBackground</code>, then use <code>SetCaretLineVisible (true)</code> to enable the effect. You can cancel the effect with <code>SetCaretLineVisible (false)</code>. The two <code>GetCaret...</code> functions return the state and the colour. This form of background colouring has highest priority when a line has markers that would otherwise change the background colour.
+You can choose to make the background colour of the line containing the caret different. To do this, set the desired background colour with <code>SetCaretLineBackground</code>, then use <code>SetCaretLineVisible (true)</code> to enable the effect. You can cancel the effect with <code>SetCaretLineVisible (false)</code>. The two <code>GetCaret...</code> functions return the state and the colour. This form of background colouring has highest priority when a line has markers that would otherwise change the background colour. The caret line may also be drawn translucently which allows other background colours to show through. This is done by setting the alpha (translucency) value by calling <code>SetCaretLineBackgroundAlpha</code>. When the alpha is not <code>wxSCI_ALPHA_NOALPHA</code>, the caret line is drawn after all other features so will affect the colour of all other features.
 </p>
 
 <div class="divider2"></div>
@@ -1629,7 +1646,7 @@ The margins are numbered 0 to 2. Using a margin number outside the valid range h
 <h4><a name="SetMarginType">void SetMarginType (int margin, int marginType)</a><br />
     <a name="GetMarginType">int GetMarginType (int margin)</a></h4>
 <p>
-These two routines set and get the type of a margin. The margin argument should be 0, 1 or 2. You can use the predefined constants <code>wxSCI_MARGIN_SYMBOL</code> (0) and <code>wxSCI_MARGIN_NUMBER</code> (1) to set a margin as either a line number or a symbol margin. By convention, margin 0 is used for line numbers and the other two are used for symbols.
+These two routines set and get the type of a margin. The margin argument should be 0, 1 or 2. You can use the predefined constants <code>wxSCI_MARGIN_SYMBOL</code> (0) and <code>wxSCI_MARGIN_NUMBER</code> (1) to set a margin as either a line number or a symbol margin. By convention, margin 0 is used for line numbers and the next two are used for symbols. You can  also use the constants <code>wxSCI_MARGIN_BACK</code> (2) and <code>wxSCI_MARGIN_FORE</code> (3) for symbol margins that set their background colour to match the STYLE_DEFAULT background and foreground colours.
 </p>
 
 <div class="divider2"></div>
@@ -1713,24 +1730,25 @@ Two phase drawing is a better but slower way of drawing text. In single phase dr
 <h4><a name="SetCodePage">void SetCodePage (int codePage)</a><br />
     <a name="GetCodePage">int GetCodePage()</a></h4>
 <p>
-Scintilla has some support for Japanese, Chinese and Korean DBCS. Use this with <code>codePage</code> set to the code page number to set Scintilla to use code page information to ensure double byte characters are treated as one character rather than two. This also stops the caret from moving between the two bytes in a double byte character. Call with <code>codePage</code> set to zero to disable DBCS support. The default is <code>SetCodePage (0)</code>.
+Scintilla has some support for Japanese, Chinese and Korean DBCS. Use this with <code>codePage</code> set to the code page number to set Scintilla to use code page information to ensure double byte characters are treated as one character rather than two. This also stops the caret from moving between the two bytes in a double byte character. Do not use this message to choose between different single byte character sets: it doesn't do that. Call with <code>codePage</code> set to zero to disable DBCS support. The default is <code>SetCodePage (0)</code>.
 </p>
 <p>
-Code page <code>wxSCI_CP_UTF8</code> (65001) sets Scintilla into Unicode mode with the document treated as a sequence of characters expressed in UTF-8. The text is converted to the platform's normal Unicode encoding before being drawn by the OS and thus can display Hebrew, Arabic, Cyrillic, and Han characters. Languages which can use two characters stacked vertically in one horizontal space, such as Thai, will mostly work but there are some issues where the characters are drawn separately leading to visual glitches. Bi-directional text is not supported.
+Code page <code>wxSCI_CP_UTF8</code> (65001) sets Scintilla into Unicode mode with the document treated as a sequence of characters expressed in UTF-8. The text is converted to the platform's normal Unicode encoding before being drawn by the OS and thus can display Hebrew, Arabic, Cyrillic, and Han characters. Languages which can use two characters stacked vertically in one horizontal space, such as Thai, will mostly work but there are some issues where the characters are drawn separately leading to visual glitches. Bi-directional text is not supported. Characters outside the Basic Multilingual Plane are unlikely to work.
 </p>
 <p>
-On Windows, code page can be set to 932 (Japanese Shift-JIS), 936 (Simplified Chinese GBK), 949 (Korean), and 950 (Traditional Chinese Big5) although these may require installation of language specific support.
+On Windows, code page can be set to 932 (Japanese Shift-JIS), 936 (Simplified Chinese GBK), 949 (Korean Unified Hangul Code), 950 (Traditional Chinese Big5), or 1361 (Korean Johab) although these may require installation of language specific support.
 </p>
 <p>
 On GTK+, code page <code>wxSCI_CP_DBCS</code> (1) sets Scintilla into multi byte character mode as is required for Japanese language processing with the EUC encoding.
 </p>
 <p>
-For GTK+, the locale should be set to a Unicode locale with a call similar to <code>setlocale (LC_CTYPE, "en_US.UTF-8")</code>. Fonts with an <code>"iso10646"</code> registry should be used in a font set. Font sets are a comma separated list of partial font specifications where each partial font specification can be in the form:<br />
+For GTK+ 1.x, the locale should be set to a Unicode locale with a call similar to <code>setlocale (LC_CTYPE, "en_US.UTF-8")</code>. Fonts with an <code>"iso10646"</code> registry should be used in a font set. Font sets are a comma separated list of partial font specifications where each partial font specification can be in the form:<br />
 <code>foundry-fontface-charsetregistry-encoding</code> or<br />
 <code>fontface-charsetregistry-encoding</code> or <br />
 <code>foundry-fontface</code> or<br />
 <code>fontface</code>.<br />
-An example is <code>"misc-fixed-iso10646-1,*"</code>.
+An example is <code>"misc-fixed-iso10646-1,*"</code>.<br />
+On GTK+ 2.x, Pango fonts should be used rather than font sets.
 </p>
 <p>
 Setting <code>codePage</code> to a non-zero value that is not <code>wxSCI_CP_UTF8</code> is operating system dependent.
@@ -1902,6 +1920,7 @@ The markers are drawn in the order of their numbers, so higher numbered markers 
 <li><a class="message" href="#MarkerDefineBitmap">void MarkerDefineBitmap (int markerNumber, const wxBitmap& bmp)</a></li>
 <li><a class="message" href="#MarkerSetForeground">void MarkerSetForeground (int markerNumber, const wxColour& fore)</a></li>
 <li><a class="message" href="#MarkerSetBackground">void MarkerSetBackground (int markerNumber, const wxColour& back)</a></li>
+<li><a class="message" href="#MarkerSetAlpha">void MarkerSetAlpha (int markerNumber, int alpha)</a></li>
 <li><a class="message" href="#MarkerAdd">int MarkerAdd (int line, int markerNumber)</a></li>
 <li><a class="message" href="#MarkerAddSet">int MarkerAddSet (int line, int markerSet)</a></li>
 <li><a class="message" href="#MarkerDelete">void MarkerDelete (int line, int markerNumber)</a></li>
@@ -2030,6 +2049,12 @@ This table shows which <code>wxSCI_MARK_</code>* symbols should be assigned to w
     <a name="MarkerSetBackground">void MarkerSetBackground (int markerNumber, const wxColour& back)</a></h4>
 <p>
 Set the foreground and background colour of a marker number. Default colours for foreground is <code>black</code>, for background is <code>white</code>. Usually but not always the foreground colour is used to outline a marker symbol and the background colour is used to fill the symbol. Sometimes only one colour is used. The background is also used as the text background when the marker isn't displayed as a margin.
+</p>
+
+<div class="divider2"></div>
+<h4><a name="MarkerSetAlpha">void MarkerSetAlpha (int markerNumber, int alpha)</a></h4>
+<p>
+When markers are drawn in the content area, either because there is no margin for them or they are of <code>wxSCI_MARK_BACKGROUND</code> type, they may be drawn translucently by setting an alpha value.
 </p>
 
 <div class="divider2"></div>
@@ -2350,13 +2375,13 @@ The <code>listType</code> parameter is returned to the container as the <code>wP
 <h3 id="CallTips">Call tips</h3>
 
 <p>
-Call tips are small windows displaying the arguments to a function and are displayed after the user has typed the name of the function. There is some interaction between call tips and autocompletion lists in that showing a call tip cancels any active autocompletion list, and vice versa.
+Call tips are small windows displaying the arguments to a function and are displayed after the user has typed the name of the function. They normally display characters using the font facename, size and character set defined by <a class="message" href="#StyleDefinition"><code>wxSCI_STYLE_DEFAULT</code></a>. You can choose to use <a class="message" href="#StyleCallTip"><code>wxSCI_STYLE_CALLTIP</code></a> to define the facename, size, foreground and background colours and character set with <a class="message" href="#CallTipUseStyle"><code>CallTipUseStyle</code></a>. This also enables support for Tab characters. There is some interaction between call tips and autocompletion lists in that showing a call tip cancels any active autocompletion list, and vice versa.
 </p>
 <p>
 Call tips can highlight part of the text within them. You could use this to highlight the current argument to a function by counting the number of commas (or whatever separator your language uses). See <code>SciTEBase::CharAdded()</code> in <code>SciTEBase.cxx</code> for an example of call tip use.
 </p>
 <p>
-The mouse may be clicked on call tips and this causes a <code><a class="message" href="#wxEVT_SCI_CALLTIPCLICK">wxEVT_SCI_CALLTIPCLICK</a></code> notification to be sent to the container. Small up an down arrows may be displayed within a call tip by, respectively, including the characters '\001', or '\002'. This is useful for showing that there are overloaded variants of one function name and that the user can click on the arrows to cycle through the overloads.
+The mouse may be clicked on call tips and this causes a <code><a class="message" href="#wxEVT_SCI_CALLTIP_CLICK">wxEVT_SCI_CALLTIP_CLICK</a></code> notification to be sent to the container. Small up an down arrows may be displayed within a call tip by, respectively, including the characters '\001', or '\002'. This is useful for showing that there are overloaded variants of one function name and that the user can click on the arrows to cycle through the overloads.
 </p>
 <p>
 Alternatively, call tips can be displayed when you leave the mouse pointer for a while over a word in response to the <code><a class="message" href="#wxEVT_SCI_DWELLSTART">wxEVT_SCI_DWELLSTART</a></code> <a class="jump" href="#Notifications">notification</a> and cancelled in response to <code><a class="message" href="#wxEVT_SCI_DWELLEND">wxEVT_SCI_DWELLEND</a></code>. This method could be used in a debugger to give the value of a variable, or during editing to give information about the word under the pointer.
@@ -2371,14 +2396,15 @@ Alternatively, call tips can be displayed when you leave the mouse pointer for a
 <li><a class="message" href="#CallTipSetBackground">void CallTipSetBackground (const wxColour& back)</a></li>
 <li><a class="message" href="#CallTipSetForeground">void CallTipSetForeground (const wxColour& fore)</a></li>
 <li><a class="message" href="#CallTipSetForegroundHighlight">void CallTipSetForegroundHighlight (const wxColour& fore)</a></li>
+<li><a class="message" href="#CallTipUseStyle">void CallTipUseStyle (int tabSize)</a></li>
 </ul>
 
 <div class="divider2"></div>
 <h4><a name="CallTipShow">void CallTipShow (int pos, const wxString& definition)</a></h4>
 <p>
 Starts the process by displaying the call tip window. If a call tip is already active, this has no effect.<br />
-<code>posStart</code> is the position in the document at which to align the call tip. The call tip text is aligned to start 1 line below this character.<br />
-<code>definition</code> is the call tip text. This can contain multiple lines separated by '\n' (Line Feed, ASCII code 10) characters.
+<code>posStart</code> is the position in the document at which to align the call tip. The call tip text is aligned to start 1 line below this character unless you have included up and/or down arrows in the call tip text in which case the tip is aligned to the right-hand edge of the rightmost arrow. The assumption is that you will start the text with something like "\001 1 of 3 \002".<br />
+<code>definition</code> is the call tip text. This can contain multiple lines separated by '\n' (Line Feed, ASCII code 10) characters. Do not include '\r' (Carriage Return, ASCII code 13), as this will most likely print as an empty box. '\t' (Tab, ASCII code 9) is supported if you set a tabsize with <a class="message" href="#CallTipUseStyle"><code>CallTipUseStyle</code></a>.
 </p>
 
 <div class="divider2"></div>
@@ -2424,6 +2450,12 @@ The colour of call tip text can be set; the default colour is mid gray.
 <h4><a name="CallTipSetForegroundHighlight">void CallTipSetForegroundHighlight (const wxColour& fore)</a></h4>
 <p>
 The colour of highlighted call tip text can be set; the default colour is dark blue.
+</p>
+
+<div class="divider2"></div>
+<h4><a name="CallTipUseStyle">void CallTipUseStyle (int tabSize)</a></h4>
+<p>
+This message changes the style used for call tips from <code>wxSCI_STYLE_DEFAULT</code> to <code>wxSCI_STYLE_CALLTIP</code> and sets a tab size in screen pixels. If <code>tabSize</code> is less than 1, Tab characters are not treated specially. Once this call has been used, the call tip foreground and background colours are also taken from the style.
 </p>
 
 <div class="divider1"></div>
@@ -3000,7 +3032,7 @@ This call allows Windows users to render a range of text into a device context. 
 <code>draw</code> and <code>target</code> should both be set to the device context handle of the output device (usually a printer). If you print to a metafile these will not be the same as Windows metafiles (unlike extended metafiles) do not implement the full API for returning information. In this case, set <code>hdcTarget</code> to the screen DC.<br />
 <code>pageRect</code> is the rectangle <code>{0, 0, maxX, maxY}</code> where <code>maxX+1</code> and <code>maxY+1</code> are the number of physically printable pixels in x and y.<br />
 <code>renderRect</code> is the rectangle to render the text in (which will, of course, fit within the rectangle defined by pageRect).<br />
-<code>startPos</code> and <code>endPos</code> define the start position and maximum position of characters to output.
+<code>startPos</code> and <code>endPos</code> define the start position and maximum position of characters to output. All of each line within this character range is drawn.
 </p>
 <p>
 When printing, the most tedious part is always working out what the margins should be to allow for the non-printable area of the paper and printing a header and footer. If you look at the printing code in SciTE, you will find that most of it is taken up with this. The loop that causes Scintilla to render text is quite simple if you strip out all the margin, non-printable area, header and footer code.
@@ -3088,7 +3120,8 @@ Does the following:<br />
 2. It reduces the reference count of the current document by 1.<br />
 3. If the reference count reaches 0, the document is deleted.<br />
 4. <code>pDoc</code> is set as the new document for the window.<br />
-5. If <code>pDoc</code> was 0, a new, empty document is created and attached to the window.
+5. If <code>pDoc</code> was 0, a new, empty document is created and attached to the window.<br />
+6. If <code>pDoc</code> was not 0, its reference count is increased by 1.
 </p>
 
 <div class="divider2"></div>
@@ -3164,7 +3197,7 @@ The first two mark a range of lines as visible or invisible and then redraw the 
 <h4><a name="SetFoldLevel">void SetFoldLevel (int line, int level)</a><br />
     <a name="GetFoldLevel">int GetFoldLevel (int line)</a></h4>
 <p>
-Set and get a 32-bit value that contains the fold level of a line and some flags associated with folding. The fold level is a number in the range 0 to <code>wxSCI_FOLDLEVELNUMBERMASK</code> (4095). However, the initial fold level is set to <code>wxSCI_FOLDLEVELBASE</code> (1024) to allow unsigned arithmetic on folding levels. There are two addition flag bits. <code>wxSCI_FOLDLEVELWHITEFLAG</code> indicates that the line is blank and allows it to be treated slightly different then its level may indicate. For example, blank lines should generally not be fold points. <code>wxSCI_FOLDLEVELHEADERFLAG</code> indicates that the line is a header (fold point).
+Set and get a 32-bit value that contains the fold level of a line and some flags associated with folding. The fold level is a number in the range 0 to <code>wxSCI_FOLDLEVELNUMBERMASK</code> (4095). However, the initial fold level is set to <code>wxSCI_FOLDLEVELBASE</code> (1024) to allow unsigned arithmetic on folding levels. There are two addition flag bits. <code>wxSCI_FOLDLEVELWHITEFLAG</code> indicates that the line is blank and allows it to be treated slightly different then its level may indicate. For example, blank lines should generally not be fold points and will be considered part of the preceding section even though they may have a lesser fold level. <code>wxSCI_FOLDLEVELHEADERFLAG</code> indicates that the line is a header (fold point).
 </p>
 <p>
 Use <code>GetFoldLevel(line) &amp; wxSCI_FOLDLEVELNUMBERMASK</code> to get the fold level of a line. Likewise, use <code>GetFoldLevel(line) &amp; wxSCI_FOLDLEVEL*FLAG</code> to get the state of the flags. To set the fold level you must or in the associated flags. For instance, to set the level to <code>thisLevel</code> and mark a line as being a fold point use: <code>SetFoldLevel(line, thisLevel | wxSCI_FOLDLEVELHEADERFLAG)</code>.
@@ -3588,12 +3621,45 @@ Alternatively, you might use set 0 for general keywords, set 1 for keywords that
 <h3 id="Notifications">Notifications</h3>
 
 <p>
-Notifications are sent (fired) from the Scintilla control to its container when an event has occurred that may interest the container. Notifications are sent using the <code>WM_NOTIFY</code> message on Windows and the "notify" signal on GTK+.
+Notifications are sent (fired) from the Scintilla control to its container when an event has occurred that may interest the container. Notifications are sent using the <code>WM_NOTIFY</code> message on Windows and the "notify" signal on GTK+. The container is passed a <code>SCNotification</code> structure containing information about the event.
 </p>
+<pre id="SCNotification">
+struct NotifyHeader {   // This matches the Win32 NMHDR structure
+    void *hwndFrom;     // environment specific window handle/pointer
+    uptr_t idFrom;      // CtrlID of the window issuing the notification
+    unsigned int code;  // The wxEVT_SCI_* notification code
+};
+
+struct SCNotification {
+    struct NotifyHeader nmhdr;
+    int position;       // wxEVT_SCI_STYLENEEDED, wxEVT_SCI_DOUBLECLICK, wxEVT_SCI_MODIFIED,
+                        // wxEVT_SCI_DWELLSTART, wxEVT_SCI_DWELLEND, wxEVT_SCI_CALLTIPCLICK,
+                        // wxEVT_SCI_HOTSPOTCLICK, wxEVT_SCI_HOTSPOTDOUBLECLICK
+    int ch;             // wxEVT_SCI_CHARADDED, wxEVT_SCI_KEY
+    int modifiers;      // wxEVT_SCI_KEY, wxEVT_SCI_HOTSPOTCLICK,
+                        // wxEVT_SCI_HOTSPOTDOUBLECLICK
+    int modificationType; // wxEVT_SCI_MODIFIED
+    const char *text;   // wxEVT_SCI_MODIFIED, wxEVT_SCI_USERLISTSELECTION,
+                        // wxEVT_SCI_AUTOCSELECTION
+    int length;         // wxEVT_SCI_MODIFIED
+    int linesAdded;     // wxEVT_SCI_MODIFIED
+    int message;        // wxEVT_SCI_MACRORECORD
+    uptr_t wParam;      // wxEVT_SCI_MACRORECORD
+    sptr_t lParam;      // wxEVT_SCI_MACRORECORD
+    int line;           // wxEVT_SCI_MODIFIED, wxEVT_SCI_DOUBLECLICK
+    int foldLevelNow;   // wxEVT_SCI_MODIFIED
+    int foldLevelPrev;  // wxEVT_SCI_MODIFIED
+    int margin;         // wxEVT_SCI_MARGINCLICK
+    int listType;       // wxEVT_SCI_USERLISTSELECTION, wxEVT_SCI_AUTOCSELECTION
+    int x;              // wxEVT_SCI_DWELLSTART, wxEVT_SCI_DWELLEND
+    int y;              // wxEVT_SCI_DWELLSTART, wxEVT_SCI_DWELLEND
+};
+</pre>
 <p>
 The notification messages that your container can choose to handle and the messages associated with them are:
 </p>
 <ul style="list-style-type:none">
+<li><a class="message" href="#wxEVT_SCI_CHANGE">wxEVT_SCI_CHANGE</a></li>
 <li><a class="message" href="#wxEVT_SCI_STYLENEEDED">wxEVT_SCI_STYLENEEDED</a></li>
 <li><a class="message" href="#wxEVT_SCI_CHARADDED">wxEVT_SCI_CHARADDED</a></li>
 <li><a class="message" href="#wxEVT_SCI_SAVEPOINTREACHED">wxEVT_SCI_SAVEPOINTREACHED</a></li>
@@ -3612,9 +3678,10 @@ The notification messages that your container can choose to handle and the messa
 <li><a class="message" href="#wxEVT_SCI_DWELLSTART">wxEVT_SCI_DWELLSTART</a></li>
 <li><a class="message" href="#wxEVT_SCI_DWELLEND">wxEVT_SCI_DWELLEND</a></li>
 <li><a class="message" href="#wxEVT_SCI_ZOOM">wxEVT_SCI_ZOOM</a></li>
-<li><a class="message" href="#wxEVT_SCI_HOTSPOTCLICK">wxEVT_SCI_HOTSPOTCLICK</a></li>
-<li><a class="message" href="#wxEVT_SCI_HOTSPOTDOUBLECLICK">wxEVT_SCI_HOTSPOTDOUBLECLICK</a></li>
-<li><a class="message" href="#wxEVT_SCI_CALLTIPCLICK">wxEVT_SCI_CALLTIPCLICK</a></li>
+<li><a class="message" href="#wxEVT_SCI_HOTSPOT_CLICK">wxEVT_SCI_HOTSPOT_CLICK</a></li>
+<li><a class="message" href="#wxEVT_SCI_HOTSPOT_DCLICK">wxEVT_SCI_HOTSPOT_DCLICK</a></li>
+<li><a class="message" href="#wxEVT_SCI_CALLTIP_CLICK">wxEVT_SCI_CALLTIP_CLICK</a></li>
+<li><a class="message" href="#wxEVT_SCI_AUTOCOMP_SELECTION">wxEVT_SCI_AUTOCOMP_SELECTION</a></li>
 </ul>
 
 <p>
@@ -3627,6 +3694,7 @@ The following functions are associated with these notifications:
 <li><a class="message" href="#GetMouseDwellTime">int GetMouseDwellTime()</a></li>
 </ul>
 
+<a name="wxEVT_SCI_CHANGE">wxEVT_SCI_CHANGE</a>
 <p>
 The following additional notifications are sent using the <code>WM_COMMAND</code> message on Windows and the "Command" signal on GTK+ to emulate the Windows Edit control:
 </p>
@@ -3649,7 +3717,7 @@ If you used <code><a class="message" href="#SetLexer">SetLexer</a>(wxSCI_LEX_CON
 <div class="divider2"></div>
 <h4><a name="wxEVT_SCI_CHARADDED">wxEVT_SCI_CHARADDED</a></h4>
 <p>
-This is sent when the user types an ordinary text character (as opposed to a command character) that is entered into the text. The container can use this to decide to display a <a class="jump" href="#CallTips">call tip</a> or an <a class="jump" href="#Autocompletion">auto completion list</a>. The character is in <code>SCNotification.ch</code>.
+This is sent when the user types an ordinary text character (as opposed to a command character) that is entered into the text. The container can use this to decide to display a <a class="jump" href="#CallTips">call tip</a> or an <a class="jump" href="#Autocompletion">auto completion list</a>. The character is in <code>SCNotification.ch</code>. This notification is sent before the character has been styled so processing that depends on            styling should instead be performed in the <a class="message" href="#wxEVT_SCI_UPDATEUI"><code>wxEVT_SCI_UPDATEUI</code></a> notification.
 </p>
 
 <div class="divider2"></div>
@@ -3659,7 +3727,7 @@ This is sent when the user types an ordinary text character (as opposed to a com
 Sent to the container when the save point is entered or left, allowing the container to display a "document dirty" indicator and change its menus.
 </p>
 <p>
-See also: <code><a class="message" href="#SetSavePoint">SetSavePoint</a>, <a class="message" href="#GetModify"><code>GetModify</code></a>
+See also: <a class="message" href="#SetSavePoint"><code>SetSavePoint</code></a>, <a class="message" href="#GetModify"><code>GetModify</code></a>
 </p>
 
 <div class="divider2"></div>
@@ -3678,7 +3746,7 @@ Reports all keys pressed. Used on GTK+ because of some problems with keyboard fo
 <div class="divider2"></div>
 <h4><a name="wxEVT_SCI_DOUBLECLICK">wxEVT_SCI_DOUBLECLICK</a></h4>
 <p>
-The mouse button was double clicked in editor. There is no additional information.
+The mouse button was double clicked in editor. The <code>position</code> field is set to the text position of the double click and the <code>line</code> field is set to the line of the double click.
 </p>
 
 <div class="divider2"></div>
@@ -3715,7 +3783,7 @@ This notification is sent when the text or styling of the document changes or is
   <td align="left">Valid for text changes, not for style changes. If we are collecting undo   information this holds a pointer to the text that is handed to the Undo system, otherwise   it is zero.</td>
 </tr><tr>
   <td align="left"><code>line</code></td>
-  <td align="left">The line number at which a fold level or marker change occurred. This is   0 if unused.</td>
+  <td align="left">The line number at which a fold level or marker change occurred. This is   0 if unused and may be -1 if more than one line changed.</td>
 </tr><tr>
   <td align="left"><code>foldLevelNow</code></td>
   <td align="left">The new fold level applied to the line or 0 if this field is unused.</td>
@@ -3950,17 +4018,37 @@ This notification is generated when the user zooms the display using the keyboar
 </p>
 
 <div class="divider2"></div>
-<h4><a name="wxEVT_SCI_HOTSPOTCLICK">wxEVT_SCI_HOTSPOTCLICK</a><br />
-    <a name="wxEVT_SCI_HOTSPOTDOUBLECLICK">wxEVT_SCI_HOTSPOTDOUBLECLICK</a></h4>
+<h4><a name="wxEVT_SCI_HOTSPOT_CLICK">wxEVT_SCI_HOTSPOT_CLICK</a><br />
+    <a name="wxEVT_SCI_HOTSPOT_DCLICK">wxEVT_SCI_HOTSPOT_DCLICK</a></h4>
 <p>
 These notifications are generated when the user clicks or double clicks on  text that is in a style with the hotspot attribute set. This notification can be used to link to variable definitions or web pages. The <code>position</code> field is set the text position of the click or double click and the <code>modifiers</code> field set to the key modifiers held down in a similar manner to <a class="message" href="#wxEVT_SCI_KEY">wxEVT_SCI_KEY</a>.
 </p>
 
 <div class="divider2"></div>
-<h4><a name="wxEVT_SCI_CALLTIPCLICK">wxEVT_SCI_CALLTIPCLICK</a></h4>
+<h4><a name="wxEVT_SCI_CALLTIP_CLICK">wxEVT_SCI_CALLTIP_CLICK</a></h4>
 <p>
 This notification is generated when the user clicks on a calltip. This notification can be used to display the next function prototype when a function name is overloaded with different arguments. The <code>position</code> field is set to 1 if the click is in an up arrow, 2 if in a down arrow, and 0 if elsewhere.
 </p>
+
+<div class="divider2"></div>
+<h4><a name="wxEVT_SCI_AUTOCOMP_SELECTION">wxEVT_SCI_AUTOCOMP_SELECTION</a></h4>
+<p>
+The user has selected an item in an <a class="jump" href="#Autocompletion">autocompletion list</a>. The notification is sent before the selection is inserted. Automatic insertion can be cancelled by sending a <code><a class="message" href="#AutoCompCancel">AutoCompCancel</a></code> message before returning from the notification. The <code>SCNotification</code> fields used are:
+</p>
+<table cellpadding="1" cellspacing="2" border="0" summary="Autocompletion list notification"><tbody>
+<tr>
+  <th align="left">Field</th>
+  <th align="left">Usage</th>
+</tr>
+</tbody><tbody valign="top">
+<tr>
+  <td align="left"><code>lParam</code></td>
+  <td align="left">The start position of the word being completed.</td>
+</tr><tr>
+  <td align="left"><code>text</code></td>
+  <td align="left">The text of the selection.</td>
+</tr>
+</tbody></table>
 
 [<a href="index.php" target=_top accesskey="H">Home</a>]
 </body>

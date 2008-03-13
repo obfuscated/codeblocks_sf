@@ -44,6 +44,8 @@
 #include "Style.h"
 #include "ViewStyle.h"
 #include "AutoComplete.h"
+#include "CharClassify.h"
+#include "RESearch.h"
 #include "Document.h"
 #include "Editor.h"
 #include "ScintillaBase.h"
@@ -146,6 +148,7 @@ public:
     int  DoKeyDown(const wxKeyEvent& event, bool* consumed);
     void DoTick() { Tick(); }
     void DoOnIdle(wxIdleEvent& evt);
+    void DoStartDrag();
 
 #if wxUSE_DRAG_AND_DROP
     bool DoDropText(long x, long y, const wxString& data);
@@ -177,7 +180,10 @@ private:
 #if wxUSE_DRAG_AND_DROP
     wxSCIDropTarget*    dropTarget;
     wxDragResult        dragResult;
+    bool                dragRectangle;
+    wxTimer*            startDragTimer;
 #endif
+
     int                 wheelRotation;
 
     // For use in creating a system caret
@@ -191,7 +197,7 @@ private:
     int sysCaretHeight;
 #endif
 #endif
-    
+
     friend class wxSCICallTip;
 };
 

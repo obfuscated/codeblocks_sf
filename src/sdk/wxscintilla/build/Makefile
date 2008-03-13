@@ -15,6 +15,7 @@ SRC = PlatWX.cpp \
       AutoComplete.cxx \
       CallTip.cxx \
       CellBuffer.cxx \
+      CharClassify.cxx \
       ContractionState.cxx \
       Document.cxx \
       DocumentAccessor.cxx \
@@ -48,6 +49,7 @@ SRC = PlatWX.cpp \
       LexGui4Cli.cxx \
       LexHaskell.cxx \
       LexHTML.cxx \
+      LexInno.cxx \
       LexKix.cxx \
       LexLisp.cxx \
       LexLout.cxx \
@@ -57,6 +59,7 @@ SRC = PlatWX.cpp \
       LexMMIXAL.cxx \
       LexMPT.cxx \
       LexMSSQL.cxx \
+      LexOpal.cxx \
       LexNsis.cxx \
       LexOthers.cxx \
       LexPascal.cxx \
@@ -70,8 +73,10 @@ SRC = PlatWX.cpp \
       LexScriptol.cxx \
       LexSmalltalk.cxx \
       LexSpecman.cxx \
+      LexSpice.cxx \
       LexSQL.cxx \
       LexTADS3.cxx \
+      LexTCL.cxx \
       LexTeX.cxx \
       LexVB.cxx \
       LexVerilog.cxx \

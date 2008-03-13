@@ -12,6 +12,10 @@
 #include <wx/mstream.h>
 #include <wx/image.h>
 #include <wx/imaglist.h>
+#include <wx/tokenzr.h>
+#ifdef wxHAVE_RAW_BITMAP
+#include <wx/rawbmp.h>
+#endif
 
 #include "Platform.h"
 #include "PlatWX.h"
@@ -27,6 +31,7 @@ wxRect wxRectFromPRectangle(PRectangle prc) {
              prc.Width(), prc.Height());
     return r;
 }
+
 PRectangle PRectangleFromwxRect(wxRect rc) {
     return PRectangle(rc.GetLeft(), rc.GetTop(),
                       rc.GetRight()+1, rc.GetBottom()+1);
@@ -44,14 +49,21 @@ wxColour wxColourFromCA(const ColourAllocated& ca) {
 Palette::Palette() {
     used = 0;
     allowRealization = false;
+    size = 100;
+    entries = new ColourPair[size];
 }
 
 Palette::~Palette() {
     Release();
+    delete []entries;
+    entries = 0;
 }
 
 void Palette::Release() {
     used = 0;
+    delete []entries;
+    size = 100;
+    entries = new ColourPair[size];
 }
 
 // This method either adds a colour to the list of wanted colours (want==true)
@@ -64,11 +76,20 @@ void Palette::WantFind(ColourPair &cp, bool want) {
                 return;
         }
 
-        if (used < numEntries) {
-            entries[used].desired = cp.desired;
-            entries[used].allocated.Set(cp.desired.AsLong());
-            used++;
+        if (used >= size) {
+            int sizeNew = size * 2;
+            ColourPair *entriesNew = new ColourPair[sizeNew];
+            for (int j=0; j<size; j++) {
+                entriesNew[j] = entries[j];
+            }
+            delete []entries;
+            entries = entriesNew;
+            size = sizeNew;
         }
+
+        entries[used].desired = cp.desired;
+        entries[used].allocated.Set(cp.desired.AsLong());
+        used++;
     } else {
         for (int i=0; i < used; i++) {
             if (entries[i].desired == cp.desired) {
@@ -82,6 +103,7 @@ void Palette::WantFind(ColourPair &cp, bool want) {
 
 void Palette::Allocate(Window &) {
     if (allowRealization) {
+//? TODO ...
     }
 }
 
@@ -157,6 +179,7 @@ public:
     virtual void FillRectangle(PRectangle rc, ColourAllocated back);
     virtual void FillRectangle(PRectangle rc, Surface &surfacePattern);
     virtual void RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAllocated back);
+    virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourAllocated fill, int alphaFill, ColourAllocated outline, int alphaOutline, int flags);
     virtual void Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back);
     virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource);
 
@@ -183,8 +206,6 @@ public:
     void BrushColour(ColourAllocated back);
     void SetFont(Font &font_);
 };
-
-
 
 SurfaceImpl::SurfaceImpl() :
     hdc(0), hdcOwned(0), bitmap(0),
@@ -309,6 +330,85 @@ void SurfaceImpl::RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAl
     PenColour(fore);
     BrushColour(back);
     hdc->DrawRoundedRectangle(wxRectFromPRectangle(rc), 4);
+}
+
+void SurfaceImpl::AlphaRectangle (PRectangle rc, int cornerSize, ColourAllocated fill, int alphaFill, ColourAllocated outline, int alphaOutline, int WXUNUSED(flags)) {
+
+#ifdef wxHAVE_RAW_BITMAP
+    wxUnusedVar(cornerSize);
+    int x, y;
+    wxRect r = wxRectFromPRectangle(rc);
+    wxBitmap bmp(r.width, r.height, 32);
+    wxAlphaPixelData pixData(bmp);
+    pixData.UseAlpha();
+    wxAlphaPixelData::Iterator p(pixData);
+
+    // Set the fill pixels
+    ColourDesired cdf(fill.AsLong());
+    int red   = cdf.GetRed();
+    int green = cdf.GetGreen();
+    int blue  = cdf.GetBlue();
+#ifdef __WXMSW__
+    int aFill = alphaFill;
+#else
+    int aFill = 0xff;
+#endif
+    for (y=0; y<r.height; y++) {
+        p.MoveTo(pixData, 0, y);
+        for (x=0; x<r.width; x++) {
+            p.Red()   = red   * aFill / 0xff;
+            p.Green() = green * aFill / 0xff;
+            p.Blue()  = blue  * aFill / 0xff;
+            p.Alpha() = alphaFill;
+            ++p;
+        }
+    }
+
+    // Set the outline pixels
+    ColourDesired cdo(outline.AsLong());
+    red   = cdo.GetRed();
+    green = cdo.GetGreen();
+    blue  = cdo.GetBlue();
+#ifdef __WXMSW__
+    int aOutline = alphaOutline;
+#else
+    int aOutline = 0xff;
+#endif
+    for (x=0; x<r.width; x++) {
+        p.MoveTo(pixData, x, 0);
+        p.Red()   = red   * aOutline / 0xff;
+        p.Green() = green * aOutline / 0xff;
+        p.Blue()  = blue  * aOutline / 0xff;
+        p.Alpha() = alphaOutline;
+        p.MoveTo(pixData, x, r.height-1);
+        p.Red()   = red   * aOutline / 0xff;
+        p.Green() = green * aOutline / 0xff;
+        p.Blue()  = blue  * aOutline / 0xff;
+        p.Alpha() = alphaOutline;
+    }
+    for (y=0; y<r.height; y++) {
+        p.MoveTo(pixData, 0, y);
+        p.Red()   = red   * aOutline / 0xff;
+        p.Green() = green * aOutline / 0xff;
+        p.Blue()  = blue  * aOutline / 0xff;
+        p.Alpha() = alphaOutline;
+        p.MoveTo(pixData, r.width-1, y);
+        p.Red()   = red   * aOutline / 0xff;
+        p.Green() = green * aOutline / 0xff;
+        p.Blue()  = blue  * aOutline / 0xff;
+        p.Alpha() = alphaOutline;
+    }
+
+    // Draw the bitmap
+    hdc->DrawBitmap(bmp, r.x, r.y, true);
+
+#else
+    wxUnusedVar(cornerSize);
+    wxUnusedVar(alphaFill);
+    wxUnusedVar(alphaOutline);
+    RectangleDraw(rc, outline, fill);
+#endif
+
 }
 
 void SurfaceImpl::Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back) {
@@ -538,7 +638,7 @@ Window::~Window() {
 
 void Window::Destroy() {
     if (id) {
-        Show(FALSE);
+        Show(false);
         GETWIN(id)->Destroy();
     }
     id = 0;
@@ -575,13 +675,11 @@ void Window::Show(bool show) {
 
 void Window::InvalidateAll() {
     GETWIN(id)->Refresh(false);
-    wxWakeUpIdle();
 }
 
 void Window::InvalidateRectangle(PRectangle rc) {
     wxRect r = wxRectFromPRectangle(rc);
     GETWIN(id)->Refresh(false, &r);
-    wxWakeUpIdle();
 }
 
 void Window::SetFont(Font &font) {
@@ -711,12 +809,12 @@ private:
     CallBackAction      doubleClickAction;
     void*               doubleClickActionData;
 public:
-    wxSCIListBoxWin(wxWindow* parent, wxWindowID id) :
+    wxSCIListBoxWin(wxWindow* parent, wxWindowID id, Point WXUNUSED(location)) :
         wxPopupWindow(parent, wxBORDER_NONE)
     {
         SetBackgroundColour(*wxBLACK);  // for our simple border
 
-        lv = new wxSCIListBox(this, id, wxDefaultPosition, wxDefaultSize,
+        lv = new wxSCIListBox(parent, id, wxDefaultPosition, wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
@@ -728,12 +826,8 @@ public:
         // can't receive focus then we have to pull a fast one and temporarily
         // parent the listctrl on the STC window and then call SetFocus and
         // then reparent it back to the popup.
-//        lv->SetFocus();
-//        lv->Reparent(this);
-
-        // NOTE (mandrav):  Removed the above hack because it causes bad flickering in C::B.
-        //                  I prefer having a "gray" (non-focused) selection, than this
-        //                  flickering...
+        lv->SetFocus();
+        lv->Reparent(this);
 #ifdef __WXMSW__
         lv->Show();
 #endif
@@ -839,9 +933,8 @@ private:
     CallBackAction      doubleClickAction;
     void*               doubleClickActionData;
 public:
-    wxSCIListBoxWin(wxWindow* parent, wxWindowID id) :
-        wxWindow(parent, id, wxDefaultPosition, wxSize(0,0), wxSIMPLE_BORDER )
-    {
+    wxSCIListBoxWin(wxWindow* parent, wxWindowID id, Point location) :
+        wxWindow(parent, id, wxPoint(location.x, location.y), wxSize(0,0), wxSIMPLE_BORDER) {
 
         lv = new wxSCIListBox(this, id, wxDefaultPosition, wxDefaultSize,
                               wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxNO_BORDER);
@@ -872,7 +965,7 @@ public:
 #endif
         if ( !wxPendingDelete.Member(this) )
             wxPendingDelete.Append(this);
-        return TRUE;
+        return true;
     }
 
 
@@ -952,7 +1045,8 @@ private:
     bool                unicodeMode;
     int                 desiredVisibleRows;
     int                 aveCharWidth;
-    int                 maxStrWidth;
+    size_t              maxStrWidth;
+    Point               location; // Caret location at which the list is opened
     wxImageList*        imgList;
     wxArrayInt*         imgTypeMap;
 
@@ -961,7 +1055,7 @@ public:
     ~ListBoxImpl();
 
     virtual void SetFont(Font &font);
-    virtual void Create(Window &parent, int ctrlID, Point location, int lineHeight_, bool unicodeMode_);
+    virtual void Create(Window &parent, int ctrlID, Point location_, int lineHeight_, bool unicodeMode_);
     virtual void SetAverageCharWidth(int width);
     virtual void SetVisibleRows(int rows);
     virtual int GetVisibleRows() const;
@@ -969,6 +1063,7 @@ public:
     virtual int CaretFromEdge();
     virtual void Clear();
     virtual void Append(char *s, int type = -1);
+    virtual void Append(const wxString& text, int type);
     virtual int Length();
     virtual void Select(int n);
     virtual int GetSelection();
@@ -978,7 +1073,6 @@ public:
     virtual void ClearRegisteredImages();
     virtual void SetDoubleClickAction(CallBackAction, void *);
     virtual void SetList(const char* list, char separator, char typesep);
-
 };
 
 
@@ -1006,12 +1100,12 @@ void ListBoxImpl::SetFont(Font &font) {
 }
 
 
-void ListBoxImpl::Create (Window &parent, int ctrlID, Point WXUNUSED(location),
+void ListBoxImpl::Create (Window &parent, int ctrlID, Point location_,
                           int lineHeight_, bool unicodeMode_) {
     lineHeight =  lineHeight_;
     unicodeMode = unicodeMode_;
     maxStrWidth = 0;
-    id = new wxSCIListBoxWin (GETWIN(parent.GetID()), ctrlID);
+    id = new wxSCIListBoxWin (GETWIN(parent.GetID()), ctrlID, location_);
     if (imgList != NULL) GETLB(id)->SetImageList (imgList, wxIMAGE_LIST_SMALL);
 }
 
@@ -1034,7 +1128,7 @@ int ListBoxImpl::GetVisibleRows() const {
 PRectangle ListBoxImpl::GetDesiredRect() {
     // wxListCtrl doesn't have a DoGetBestSize, so instead we kept track of
     // the max size in Append and calculate it here...
-    int maxw = maxStrWidth;
+    int maxw = maxStrWidth * aveCharWidth;
     int maxh ;
 
     // give it a default if there are no lines, and/or add a bit more
@@ -1080,13 +1174,13 @@ void ListBoxImpl::Clear() {
 
 
 void ListBoxImpl::Append(char *s, int type) {
-    wxString text = sci2wx(s);
+    Append(sci2wx(s), type);
+}
+void ListBoxImpl::Append(const wxString& text, int type) {
     long count  = GETLB(id)->GetItemCount();
     long itemID  = GETLB(id)->InsertItem(count, wxEmptyString);
     GETLB(id)->SetItem(itemID, 1, text);
-    int itemWidth = 0;
-    GETLB(id)->GetTextExtent(text, &itemWidth, NULL);
-    maxStrWidth = wxMax(maxStrWidth, itemWidth);
+    maxStrWidth = wxMax(maxStrWidth, text.length());
     if (type != -1) {
         wxCHECK_RET(imgTypeMap, wxT("Unexpected NULL imgTypeMap"));
         long idx = imgTypeMap->Item(type);
@@ -1101,10 +1195,10 @@ int ListBoxImpl::Length() {
 
 
 void ListBoxImpl::Select(int n) {
-    bool select = TRUE;
+    bool select = true;
     if (n == -1) {
         n = 0;
-        select = FALSE;
+        select = false;
     }
     GETLB(id)->Focus(n);
     GETLB(id)->Select(n, select);
@@ -1140,7 +1234,7 @@ void ListBoxImpl::RegisterImage(int type, const char *xpm_data) {
 
     if (! imgList) {
         // assumes all images are the same size
-        imgList = new wxImageList(bmp.GetWidth(), bmp.GetHeight(), TRUE);
+        imgList = new wxImageList(bmp.GetWidth(), bmp.GetHeight(), true);
         imgTypeMap = new wxArrayInt;
     }
 
@@ -1173,30 +1267,20 @@ void ListBoxImpl::SetDoubleClickAction(CallBackAction action, void *data) {
 }
 
 void ListBoxImpl::SetList(const char* list, char separator, char typesep) {
+    GETLB(id)->Freeze();
     Clear();
-    char *words = new char[strlen(list) + 1];
-    if (words) {
-        strcpy (words, list);
-        char *startword = words;
-        char *numword = NULL;
-        int i = 0;
-        for (; words && words[i]; i++) {
-            if (words[i] == separator) {
-                words[i] = '\0';
-                if (numword) *numword = '\0';
-                Append (startword, numword?atoi(numword + 1):-1);
-                startword = words + i + 1;
-                numword = NULL;
-            } else if (words[i] == typesep) {
-                numword = words + i;
-            }
+    wxStringTokenizer tkzr(sci2wx(list), (wxChar)separator);
+    while (tkzr.HasMoreTokens()) {
+        wxString token = tkzr.GetNextToken();
+        long type = -1;
+        int pos = token.Find(typesep);
+        if (pos != -1) {
+            token.Mid(pos+1).ToLong(&type);
+            token.Truncate(pos);
         }
-        if (startword) {
-            if (numword) *numword = '\0';
-            Append(startword, numword?atoi(numword + 1):-1);
-        }
-        delete []words;
+        Append (token, (int)type);
     }
+    GETLB(id)->Thaw();
 }
 
 
@@ -1267,7 +1351,7 @@ unsigned int Platform::DoubleClickTime() {
 }
 
 bool Platform::MouseButtonBounce() {
-    return FALSE;
+    return false;
 }
 void Platform::DebugDisplay(const char *s) {
     wxLogDebug(sci2wx(s));
@@ -1382,13 +1466,20 @@ int Platform::DBCSCharMaxLength() {
 //----------------------------------------------------------------------
 
 ElapsedTime::ElapsedTime() {
-    m_StopWatch.Start();
+    wxLongLong localTime = wxGetLocalTimeMillis();
+    littleBit = localTime.GetLo();
+    bigBit = localTime.GetHi();
 }
 
 double ElapsedTime::Duration(bool reset) {
-    double result = m_StopWatch.Time();
-    if(reset)
-        m_StopWatch.Start();
+    wxLongLong prevTime(bigBit, littleBit);
+    wxLongLong localTime = wxGetLocalTimeMillis();
+    if(reset) {
+        littleBit = localTime.GetLo();
+        bigBit = localTime.GetHi();
+    }
+    wxLongLong duration = localTime - prevTime;
+    double result = duration.ToDouble();
     result /= 1000.0;
     return result;
 }

@@ -29,7 +29,6 @@
 #include <wx/config.h>   // configuration support
 #include <wx/filedlg.h>  // file dialog support
 #include <wx/filename.h> // filename support
-#include <wx/notebook.h> // notebook support
 #include <wx/settings.h> // system settings
 #include <wx/string.h>   // strings support
 #include <wx/image.h>    // images support
@@ -62,9 +61,9 @@ const wxString APP_COPYRIGTH = _T("(C) 2005 Otto Wyss");
 
 #define APP_DESCR _("\
 wxScintilla implements the Scintilla editing control (see \n\
-http://scintilla.sourceforge.net/) with the wxWidgets API. It's \n\
-derived from wxStyledTextCtrl and has the same functionality \n\
-and a rather similar API.\
+http://wxcode.sf.net/components/wxscintilla/website/index.html) \n\
+with the wxWidgets API. It's derived from wxStyledTextCtrl and has the \n\
+same functionality and a rather similar API.\
 ")
 const wxString APP_WEBSITE = _T("http://wxcode.sourceforge.net/");
 const wxString APP_WEBPAGE = _T("components/wxscintilla/website/index.html");
@@ -89,7 +88,6 @@ wxPageSetupData *g_pageSetupData = (wxPageSetupData*) NULL;
 //----------------------------------------------------------------------------
 //! class declarations
 class AppFrame;
-class AppBook;
 
 
 //----------------------------------------------------------------------------
@@ -117,7 +115,6 @@ DECLARE_APP (App);
 //! frame of the application
 class AppFrame: public wxFrame {
     friend class App;
-    friend class AppBook;
     friend class AppAbout;
 
 public:
@@ -309,7 +306,6 @@ AppFrame::AppFrame (const wxString &title)
     // set icon and background
     SetTitle (*g_appname);
     SetIcon (wxICON (mondrian));
-    SetBackgroundColour (_T("WHITE"));
 
     // create menu
     m_menuBar = new wxMenuBar;
@@ -606,16 +602,18 @@ AppAbout::AppAbout (wxWindow *parent,
 
     // about info
     wxFlexGridSizer *aboutinfo = new wxFlexGridSizer (2, 0, 2);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Vendor: ")),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_VENDOR),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Version: ")),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_VERSION),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Written by: ")),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_MAINT),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Licence type: ")),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_LICENCE),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, _("Copyright: ")),0, wxALIGN_LEFT);
-    aboutinfo->Add (new wxStaticText(this, -1, APP_COPYRIGTH),0, wxALIGN_LEFT);
+    aboutinfo->Add (new wxStaticText(this, -1, _("Vendor: ")));
+    aboutinfo->Add (new wxStaticText(this, -1, APP_VENDOR));
+    aboutinfo->Add (new wxStaticText(this, -1, _("Version: ")));
+    aboutinfo->Add (new wxStaticText(this, -1, APP_VERSION));
+    aboutinfo->Add (new wxStaticText(this, -1, _("wxWidgets: ")));
+    aboutinfo->Add (new wxStaticText(this, -1, wxVERSION_STRING));
+    aboutinfo->Add (new wxStaticText(this, -1, _("Written by: ")));
+    aboutinfo->Add (new wxStaticText(this, -1, APP_MAINT));
+    aboutinfo->Add (new wxStaticText(this, -1, _("Licence type: ")));
+    aboutinfo->Add (new wxStaticText(this, -1, APP_LICENCE));
+    aboutinfo->Add (new wxStaticText(this, -1, _("Copyright: ")));
+    aboutinfo->Add (new wxStaticText(this, -1, APP_COPYRIGTH));
 
     // about icontitle//info
     wxBoxSizer *aboutpane = new wxBoxSizer (wxHORIZONTAL);

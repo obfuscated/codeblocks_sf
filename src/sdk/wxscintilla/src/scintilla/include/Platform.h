@@ -21,33 +21,32 @@
 #define PLAT_FOX 0
 
 #if defined(FOX)
-    #undef PLAT_FOX
-    #define PLAT_FOX 1
+#undef PLAT_FOX
+#define PLAT_FOX 1
 
 #elif defined(__WX__)
-    #undef PLAT_WX
-    #define PLAT_WX  1
-    #undef PLAT_WIN
-    #define PLAT_WIN 1
+#undef PLAT_WX
+#define PLAT_WX  1
+#undef PLAT_WIN
+#define PLAT_WIN 1
 
 #elif defined(GTK)
-    #undef PLAT_GTK
-    #define PLAT_GTK 1
-    #undef PLAT_WX
-    #define PLAT_WX  1
+#undef PLAT_GTK
+#define PLAT_GTK 1
+#undef PLAT_WX
+#define PLAT_WX  1
 
-    #ifdef _MSC_VER
-        #undef PLAT_GTK_WIN32
-        #define PLAT_GTK_WIN32 1
-    #endif
+#ifdef _MSC_VER
+#undef PLAT_GTK_WIN32
+#define PLAT_GTK_WIN32 1
+#endif
 
 #else
-    #undef PLAT_WIN
-    #define PLAT_WIN 1
+#undef PLAT_WIN
+#define PLAT_WIN 1
 
 #endif
 
-#include <wx/stopwatch.h>
 
 // Underlying the implementation of the platform classes are platform specific types.
 // Sometimes these need to be passed around by client code so they are defined here
@@ -241,12 +240,15 @@ class Window;	// Forward declaration for Palette
  */
 class Palette {
 	int used;
-	enum {numEntries = 100};
-	ColourPair entries[numEntries];
+	int size;
+	ColourPair *entries;
 #if PLAT_GTK
 	void *allocatedPalette; // GdkColor *
 	int allocatedLen;
 #endif
+	// Private so Palette objects can not be copied
+	Palette(const Palette &) {}
+	Palette &operator=(const Palette &) { return *this; }
 public:
 #if PLAT_WIN
 	void *hpal;
@@ -324,6 +326,8 @@ public:
 	virtual void FillRectangle(PRectangle rc, ColourAllocated back)=0;
 	virtual void FillRectangle(PRectangle rc, Surface &surfacePattern)=0;
 	virtual void RoundedRectangle(PRectangle rc, ColourAllocated fore, ColourAllocated back)=0;
+	virtual void AlphaRectangle(PRectangle rc, int cornerSize, ColourAllocated fill, int alphaFill,
+		ColourAllocated outline, int alphaOutline, int flags)=0;
 	virtual void Ellipse(PRectangle rc, ColourAllocated fore, ColourAllocated back)=0;
 	virtual void Copy(PRectangle rc, Point from, Surface &surfaceSource)=0;
 
@@ -436,8 +440,6 @@ class ElapsedTime {
 public:
 	ElapsedTime();
 	double Duration(bool reset=false);
-private:
-    wxStopWatch m_StopWatch;
 };
 
 /**

@@ -20,7 +20,7 @@
 #ifndef __WXSCINTILLA_H__
 #define __WXSCINTILLA_H__
 
-#define wxSCINTILLA_VERSION _T("1.67.0")
+#define wxSCINTILLA_VERSION _T("1.71.1")
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
@@ -122,15 +122,18 @@
 #define wxSCI_MASK_FOLDERS 0xFE000000
 #define wxSCI_MARGIN_SYMBOL 0
 #define wxSCI_MARGIN_NUMBER 1
+#define wxSCI_MARGIN_BACK 2
+#define wxSCI_MARGIN_FORE 3
 
-// Styles in range 32..37 are predefined for parts of the UI and are not used as normal styles.
-// Styles 38 and 39 are for future use.
+// Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
+// Styles 39 is for future use.
 #define wxSCI_STYLE_DEFAULT 32
 #define wxSCI_STYLE_LINENUMBER 33
 #define wxSCI_STYLE_BRACELIGHT 34
 #define wxSCI_STYLE_BRACEBAD 35
 #define wxSCI_STYLE_CONTROLCHAR 36
 #define wxSCI_STYLE_INDENTGUIDE 37
+#define wxSCI_STYLE_CALLTIP 38
 #define wxSCI_STYLE_LASTPREDEFINED 39
 #define wxSCI_STYLE_MAX 127
 
@@ -168,6 +171,7 @@
 #define wxSCI_INDIC_STRIKE 4
 #define wxSCI_INDIC_HIDDEN 5
 #define wxSCI_INDIC_BOX 6
+#define wxSCI_INDIC_ROUNDBOX 7
 #define wxSCI_INDIC0_MASK 0x20
 #define wxSCI_INDIC1_MASK 0x40
 #define wxSCI_INDIC2_MASK 0x80
@@ -308,6 +312,11 @@
 #define wxSCI_SCMOD_CTRL 2
 #define wxSCI_SCMOD_ALT 4
 
+// Caret line alpha background
+#define wxSCI_ALPHA_TRANSPARENT 0
+#define wxSCI_ALPHA_OPAQUE 255
+#define wxSCI_ALPHA_NOALPHA 256
+
 // For SciLexer.h
 #define wxSCI_LEX_CONTAINER 0
 #define wxSCI_LEX_NULL 1
@@ -383,6 +392,9 @@
 #define wxSCI_LEX_FLAGSHIP 73
 #define wxSCI_LEX_CSOUND 74
 #define wxSCI_LEX_FREEBASIC 75
+#define wxSCI_LEX_INNOSETUP 76
+#define wxSCI_LEX_OPAL 77
+#define wxSCI_LEX_SPICE 78
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 // value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -427,6 +439,30 @@
 #define wxSCI_C_COMMENTDOCKEYWORD 17
 #define wxSCI_C_COMMENTDOCKEYWORDERROR 18
 #define wxSCI_C_GLOBALCLASS 19
+
+// Lexical states for SCLEX_TCL
+#define wxSCI_TCL_DEFAULT 0
+#define wxSCI_TCL_COMMENT 1
+#define wxSCI_TCL_COMMENTLINE 2
+#define wxSCI_TCL_NUMBER 3
+#define wxSCI_TCL_WORD_IN_QUOTE 4
+#define wxSCI_TCL_IN_QUOTE 5
+#define wxSCI_TCL_OPERATOR 6
+#define wxSCI_TCL_IDENTIFIER 7
+#define wxSCI_TCL_SUBSTITUTION 8
+#define wxSCI_TCL_SUB_BRACE 9
+#define wxSCI_TCL_MODIFIER 10
+#define wxSCI_TCL_EXPAND 11
+#define wxSCI_TCL_WORD 12
+#define wxSCI_TCL_WORD2 13
+#define wxSCI_TCL_WORD3 14
+#define wxSCI_TCL_WORD4 15
+#define wxSCI_TCL_WORD5 16
+#define wxSCI_TCL_WORD6 17
+#define wxSCI_TCL_WORD7 18
+#define wxSCI_TCL_WORD8 19
+#define wxSCI_TCL_COMMENT_BOX 20
+#define wxSCI_TCL_BLOCK_COMMENT 21
 
 // Lexical states for SCLEX_HTML, SCLEX_XML
 #define wxSCI_H_DEFAULT 0
@@ -662,6 +698,7 @@
 #define wxSCI_PROPS_SECTION 2
 #define wxSCI_PROPS_ASSIGNMENT 3
 #define wxSCI_PROPS_DEFVAL 4
+#define wxSCI_PROPS_KEY 5
 
 // Lexical states for SCLEX_LATEX
 #define wxSCI_L_DEFAULT 0
@@ -1057,6 +1094,7 @@
 #define wxSCI_CLW_ATTRIBUTE 13
 #define wxSCI_CLW_STANDARD_EQUATE 14
 #define wxSCI_CLW_ERROR 15
+#define wxSCI_CLW_DEPRECATED 16
 
 // Lexical states for SCLEX_LOT
 #define wxSCI_LOT_DEFAULT 0
@@ -1205,6 +1243,7 @@
 #define wxSCI_AU3_SPECIAL 12
 #define wxSCI_AU3_EXPAND 13
 #define wxSCI_AU3_COMOBJ 14
+#define wxSCI_AU3_UDF 15
 
 // Lexical states for SCLEX_APDL
 #define wxSCI_APDL_DEFAULT 0
@@ -1442,6 +1481,44 @@
 #define wxSCI_CSOUND_IRATE_VAR 13
 #define wxSCI_CSOUND_GLOBAL_VAR 14
 #define wxSCI_CSOUND_STRINGEOL 15
+
+// Lexical states for SCLEX_INNOSETUP
+#define wxSCI_INNO_DEFAULT 0
+#define wxSCI_INNO_COMMENT 1
+#define wxSCI_INNO_KEYWORD 2
+#define wxSCI_INNO_PARAMETER 3
+#define wxSCI_INNO_SECTION 4
+#define wxSCI_INNO_PREPROC 5
+#define wxSCI_INNO_PREPROC_INLINE 6
+#define wxSCI_INNO_COMMENT_PASCAL 7
+#define wxSCI_INNO_KEYWORD_PASCAL 8
+#define wxSCI_INNO_KEYWORD_USER 9
+#define wxSCI_INNO_STRING_DOUBLE 10
+#define wxSCI_INNO_STRING_SINGLE 11
+#define wxSCI_INNO_IDENTIFIER 12
+
+// Lexical states for SCLEX_OPAL
+#define wxSCI_OPAL_SPACE 0
+#define wxSCI_OPAL_COMMENT_BLOCK 1
+#define wxSCI_OPAL_COMMENT_LINE 2
+#define wxSCI_OPAL_INTEGER 3
+#define wxSCI_OPAL_KEYWORD 4
+#define wxSCI_OPAL_SORT 5
+#define wxSCI_OPAL_STRING 6
+#define wxSCI_OPAL_PAR 7
+#define wxSCI_OPAL_BOOL_CONST 8
+#define wxSCI_OPAL_DEFAULT 32
+
+// Lexical states for SCLEX_SPICE
+#define wxSCI_SPICE_DEFAULT 0
+#define wxSCI_SPICE_IDENTIFIER 1
+#define wxSCI_SPICE_KEYWORD 2
+#define wxSCI_SPICE_KEYWORD2 3
+#define wxSCI_SPICE_KEYWORD3 4
+#define wxSCI_SPICE_NUMBER 5
+#define wxSCI_SPICE_DELIMITER 6
+#define wxSCI_SPICE_VALUE 7
+#define wxSCI_SPICE_COMMENTLINE 8
 
 
 //-----------------------------------------
@@ -1936,6 +2013,9 @@ public:
     // Add a set of markers to a line.
     void MarkerAddSet (int line, int markerSet);
 
+    // Set the alpha used for a marker that is drawn in the text area, not the margin.
+    void MarkerSetAlpha (int markerNumber, int alpha);
+
     // Set a margin to be either numeric or symbolic.
     void SetMarginType (int margin, int marginType);
 
@@ -1995,6 +2075,12 @@ public:
 
     // Set a style to be a hotspot or not.
     void StyleSetHotSpot (int style, bool hotspot);
+
+    // Get the alpha of the selection.
+    int GetSelAlpha ();
+
+    // Set the alpha of the selection.
+    void SetSelAlpha (int alpha);
 
     // Set the foreground colour of the selection and whether to use this setting.
     void SetSelForeground (bool useSetting, const wxColour& fore);
@@ -2232,6 +2318,12 @@ public:
     // Duplicate the selection. If selection empty duplicate the line containing the caret.
     void SelectionDuplicate ();
 
+    // Get the background alpha of the caret line.
+    int GetCaretLineBackgroundAlpha ();
+
+    // Set background alpha of the caret line.
+    void SetCaretLineBackgroundAlpha (int alpha);
+
     // Show or hide the horizontal scroll bar.
     void SetUseHorizontalScrollBar (bool show);
 
@@ -2457,6 +2549,9 @@ public:
     // Set the foreground colour for the highlighted part of the call tip.
     void CallTipSetForegroundHighlight (const wxColour& fore);
 
+    // Enable use of STYLE_CALLTIP and set call tip tab size in pixels.
+    void CallTipUseStyle (int tabSize);
+
     // Find the display line of a document line taking hidden lines into account.
     int VisibleFromDocLine (int line);
 
@@ -2580,7 +2675,7 @@ public:
 
     // Retrieve whether the maximum scroll position has the last
     // line at the bottom of the view.
-    int GetEndAtLastLine();
+    bool GetEndAtLastLine();
 
     // Retrieve the height of a particular line of text in pixels.
     int TextHeight (int line);
@@ -3120,7 +3215,7 @@ public:
 
     // Set style size, face, bold, italic, and underline attributes from
     // a wxFont's attributes.
-    void StyleSetFont (int styleNum, wxFont& font);
+    void StyleSetFont (int styleNum, const wxFont& font);
 
     // Set all font style attributes at once.
     void StyleSetFontAttr (int styleNum, int size,const wxString& faceName,
@@ -3418,6 +3513,7 @@ BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_EXPORTED_LOCAL_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_CLICK,           1673)
     DECLARE_EXPORTED_LOCAL_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_DCLICK,          1674)
     DECLARE_EXPORTED_LOCAL_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CALLTIP_CLICK,           1675)
+    DECLARE_EXPORTED_LOCAL_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_SELECTION,      1676)
 #else
     DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CHANGE,             1650)
     DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_STYLENEEDED,        1651)
@@ -3444,6 +3540,7 @@ BEGIN_DECLARE_EVENT_TYPES()
     DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_CLICK,      1673)
     DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_HOTSPOT_DCLICK,     1674)
     DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CALLTIP_CLICK,      1675)
+    DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_SELECTION, 1676)
 #endif
 END_DECLARE_EVENT_TYPES()
 #else
@@ -3472,7 +3569,8 @@ END_DECLARE_EVENT_TYPES()
         wxEVT_SCI_ZOOM,
         wxEVT_SCI_HOTSPOT_CLICK,
         wxEVT_SCI_HOTSPOT_DCLICK,
-        wxEVT_SCI_CALLTIP_CLICK
+        wxEVT_SCI_CALLTIP_CLICK,
+        wxEVT_SCI_AUTOCOMP_SELECTION
     };
 #endif
 
@@ -3482,58 +3580,60 @@ END_DECLARE_EVENT_TYPES()
 typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 
 #if !wxCHECK_VERSION(2, 5, 0)
-#define EVT_SCI_CHANGE(id, fn)                  DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHANGE,                id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_STYLENEEDED(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_STYLENEEDED,           id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_CHARADDED(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHARADDED,             id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_SAVEPOINTREACHED(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTREACHED,      id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_SAVEPOINTLEFT(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTLEFT,         id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_ROMODIFYATTEMPT(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ROMODIFYATTEMPT,       id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_KEY(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KEY,                   id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_DOUBLECLICK(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DOUBLECLICK,           id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_UPDATEUI(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_UPDATEUI,              id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_MODIFIED(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MODIFIED,              id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_MACRORECORD(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MACRORECORD,           id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_MARGINCLICK(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MARGINCLICK,           id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_NEEDSHOWN(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_NEEDSHOWN,             id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_POSCHANGED(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_POSCHANGED,            id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_PAINTED(id, fn)                 DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_PAINTED,               id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_USERLISTSELECTION(id, fn)       DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_USERLISTSELECTION,     id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_URIDROPPED(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_URIDROPPED,            id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_DWELLSTART(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLSTART,            id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_DWELLEND(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLEND,              id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_START_DRAG(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_START_DRAG,            id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_DRAG_OVER(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DRAG_OVER,             id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_DO_DROP(id, fn)                 DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DO_DROP,               id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_ZOOM(id, fn)                    DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ZOOM,                  id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_HOTSPOT_CLICK(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_CLICK,         id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_HOTSPOT_DCLICK(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_DCLICK,        id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
-#define EVT_SCI_CALLTIP_CLICK(id, fn))          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CALLTIP_CLICK          id, -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_CHANGE(id, fn)                  DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHANGE,                id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_STYLENEEDED(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_STYLENEEDED,           id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_CHARADDED(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHARADDED,             id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_SAVEPOINTREACHED(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTREACHED,      id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_SAVEPOINTLEFT(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTLEFT,         id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_ROMODIFYATTEMPT(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ROMODIFYATTEMPT,       id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_KEY(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KEY,                   id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_DOUBLECLICK(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DOUBLECLICK,           id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_UPDATEUI(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_UPDATEUI,              id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_MODIFIED(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MODIFIED,              id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_MACRORECORD(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MACRORECORD,           id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_MARGINCLICK(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MARGINCLICK,           id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_NEEDSHOWN(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_NEEDSHOWN,             id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_POSCHANGED(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_POSCHANGED,            id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_PAINTED(id, fn)                 DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_PAINTED,               id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_USERLISTSELECTION(id, fn)       DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_USERLISTSELECTION,     id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_URIDROPPED(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_URIDROPPED,            id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_DWELLSTART(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLSTART,            id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_DWELLEND(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLEND,              id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_START_DRAG(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_START_DRAG,            id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_DRAG_OVER(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DRAG_OVER,             id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_DO_DROP(id, fn)                 DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DO_DROP,               id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_ZOOM(id, fn)                    DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ZOOM,                  id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_HOTSPOT_CLICK(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_CLICK,         id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_HOTSPOT_DCLICK(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_DCLICK,        id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_CALLTIP_CLICK(id, fn))          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CALLTIP_CLICK          id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
+#define EVT_SCI_AUTOCOMP_SELECTION(id, fn))     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_SELECTION     id,       -1, (wxObjectEventFunction) (wxEventFunction) (wxScintillaEventFunction) & fn, (wxObject *) NULL),
 #else
-#define EVT_SCI_CHANGE(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHANGE,                id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_STYLENEEDED(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_STYLENEEDED,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_CHARADDED(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHARADDED,             id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_SAVEPOINTREACHED(id, fn)   DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTREACHED,      id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_SAVEPOINTLEFT(id, fn)      DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTLEFT,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_ROMODIFYATTEMPT(id, fn)    DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ROMODIFYATTEMPT,       id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_KEY(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KEY,                   id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_DOUBLECLICK(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DOUBLECLICK,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_UPDATEUI(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_UPDATEUI,              id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_MODIFIED(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MODIFIED,              id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_MACRORECORD(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MACRORECORD,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_MARGINCLICK(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MARGINCLICK,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_NEEDSHOWN(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_NEEDSHOWN,             id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_PAINTED(id, fn)            DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_PAINTED,               id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_USERLISTSELECTION(id, fn)  DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_USERLISTSELECTION,     id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_URIDROPPED(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_URIDROPPED,            id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_DWELLSTART(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLSTART,            id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_DWELLEND(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLEND,              id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_START_DRAG(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_START_DRAG,            id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_DRAG_OVER(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DRAG_OVER,             id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_DO_DROP(id, fn)            DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DO_DROP,               id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_ZOOM(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ZOOM,                  id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_HOTSPOT_CLICK(id, fn)      DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_HOTSPOT_DCLICK(id, fn)     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_DCLICK,        id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
-#define EVT_SCI_CALLTIP_CLICK(id, fn))     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CALLTIP_CLICK          id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_CHANGE(id, fn)                  DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHANGE,                id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_STYLENEEDED(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_STYLENEEDED,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_CHARADDED(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CHARADDED,             id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_SAVEPOINTREACHED(id, fn)        DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTREACHED,      id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_SAVEPOINTLEFT(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SAVEPOINTLEFT,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_ROMODIFYATTEMPT(id, fn)         DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ROMODIFYATTEMPT,       id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_KEY(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KEY,                   id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_DOUBLECLICK(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DOUBLECLICK,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_UPDATEUI(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_UPDATEUI,              id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_MODIFIED(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MODIFIED,              id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_MACRORECORD(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MACRORECORD,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_MARGINCLICK(id, fn)             DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_MARGINCLICK,           id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_NEEDSHOWN(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_NEEDSHOWN,             id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_PAINTED(id, fn)                 DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_PAINTED,               id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_USERLISTSELECTION(id, fn)       DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_USERLISTSELECTION,     id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_URIDROPPED(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_URIDROPPED,            id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_DWELLSTART(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLSTART,            id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_DWELLEND(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DWELLEND,              id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_START_DRAG(id, fn)              DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_START_DRAG,            id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_DRAG_OVER(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DRAG_OVER,             id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_DO_DROP(id, fn)                 DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_DO_DROP,               id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_ZOOM(id, fn)                    DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ZOOM,                  id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_HOTSPOT_CLICK(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_CLICK,         id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_HOTSPOT_DCLICK(id, fn)          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_DCLICK,        id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_CALLTIP_CLICK(id, fn))          DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_CALLTIP_CLICK          id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
+#define EVT_SCI_AUTOCOMP_SELECTION(id, fn))     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_SELECTION     id, wxID_ANY, (wxObjectEventFunction) (wxEventFunction)  wxStaticCastEvent( wxScintillaEventFunction, & fn ), (wxObject *) NULL),
 #endif
 
 #endif

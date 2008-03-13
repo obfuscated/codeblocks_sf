@@ -752,11 +752,11 @@ static char **ArrayFromWordList(char *wordlist, int *len, bool onlyLineEnds = fa
 	for (int i=0;i<256; i++) {
 		wordSeparator[i] = false;
 	}
-	wordSeparator[(int)'\r'] = true;
-	wordSeparator[(int)'\n'] = true;
+	wordSeparator['\r'] = true;
+	wordSeparator['\n'] = true;
 	if (!onlyLineEnds) {
-		wordSeparator[(int)' '] = true;
-		wordSeparator[(int)'\t'] = true;
+		wordSeparator[' '] = true;
+		wordSeparator['\t'] = true;
 	}
 	for (int j = 0; wordlist[j]; j++) {
 		int curr = static_cast<unsigned char>(wordlist[j]);
@@ -825,12 +825,12 @@ void WordList::SetFromAllocated() {
 	memcpy(wordsNoCase, words, (len + 1) * sizeof (*words));
 }
 
-int cmpString(const void *a1, const void *a2) {
+extern "C" int cmpString(const void *a1, const void *a2) {
 	// Can't work out the correct incantation to use modern casts here
 	return strcmp(*(char**)(a1), *(char**)(a2));
 }
 
-int cmpStringNoCase(const void *a1, const void *a2) {
+extern "C" int cmpStringNoCase(const void *a1, const void *a2) {
 	// Can't work out the correct incantation to use modern casts here
 	return CompareCaseInsensitive(*(char**)(a1), *(char**)(a2));
 }
@@ -875,7 +875,7 @@ bool WordList::InList(const char *s) {
 			j++;
 		}
 	}
-	j = starts[(int)'^'];
+	j = starts['^'];
 	if (j >= 0) {
 		while (words[j][0] == '^') {
 			const char *a = words[j] + 1;
@@ -937,7 +937,7 @@ bool WordList::InListAbbreviated(const char *s, const char marker) {
 			j++;
 		}
 	}
-	j = starts[(int)'^'];
+	j = starts['^'];
 	if (j >= 0) {
 		while (words[j][0] == '^') {
 			const char *a = words[j] + 1;

@@ -13,6 +13,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/AutoComplete.cxx \
 							src/scintilla/src/CallTip.cxx \
 							src/scintilla/src/CellBuffer.cxx \
+							src/scintilla/src/CharClassify.cxx \
 							src/scintilla/src/ContractionState.cxx \
 							src/scintilla/src/DocumentAccessor.cxx \
 							src/scintilla/src/Document.cxx \
@@ -47,6 +48,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/LexGui4Cli.cxx \
 							src/scintilla/src/LexHaskell.cxx \
 							src/scintilla/src/LexHTML.cxx \
+							src/scintilla/src/LexInno.cxx \
 							src/scintilla/src/LexKix.cxx \
 							src/scintilla/src/LexLisp.cxx \
 							src/scintilla/src/LexLout.cxx \
@@ -57,6 +59,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/LexMPT.cxx \
 							src/scintilla/src/LexMSSQL.cxx \
 							src/scintilla/src/LexNsis.cxx \
+							src/scintilla/src/LexOpal.cxx \
 							src/scintilla/src/LexOthers.cxx \
 							src/scintilla/src/LexPascal.cxx \
 							src/scintilla/src/LexPB.cxx \
@@ -64,12 +67,14 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/LexPOV.cxx \
 							src/scintilla/src/LexPS.cxx \
 							src/scintilla/src/LexPython.cxx \
+							src/scintilla/src/LexSpice.cxx \
 							src/scintilla/src/LexRebol.cxx \
 							src/scintilla/src/LexRuby.cxx \
 							src/scintilla/src/LexScriptol.cxx \
 							src/scintilla/src/LexSmalltalk.cxx \
 							src/scintilla/src/LexSpecman.cxx \
 							src/scintilla/src/LexSQL.cxx \
+							src/scintilla/src/LexTCL.cxx \
 							src/scintilla/src/LexTADS3.cxx \
 							src/scintilla/src/LexTeX.cxx \
 							src/scintilla/src/LexVB.cxx \
@@ -99,6 +104,7 @@ noinst_HEADERS = src/scintilla/include/Accessor.h \
 							src/scintilla/src/AutoComplete.h \
 							src/scintilla/src/CallTip.h \
 							src/scintilla/src/CellBuffer.h \
+							src/scintilla/src/CharClassify.h \
 							src/scintilla/src/ContractionState.h \
 							src/scintilla/src/Document.h \
 							src/scintilla/src/DocumentAccessor.h \
