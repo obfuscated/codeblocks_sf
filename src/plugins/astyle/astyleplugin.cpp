@@ -27,6 +27,8 @@
 #include <wx/progdlg.h>
 #include "asstreamiterator.h"
 #include "cbstyledtextctrl.h"
+#include "cbproject.h"
+#include "projectmanager.h"
 
 using std::istringstream;
 using std::string;
