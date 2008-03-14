@@ -2508,7 +2508,7 @@ void DebuggerGDB::OnProjectClosed(CodeBlocksEvent& event)
     {
         AnnoyingDialog dlg(_("Project closed while debugging message"),
                            _("The project you were debugging has closed.\n"
-                             "(The application most liekely just finished.)"
+                             "(The application most likely just finished.)\n"
                              "The debugging session will terminate immediately."),
                             wxART_WARNING, AnnoyingDialog::OK, wxID_OK);
         dlg.ShowModal();
