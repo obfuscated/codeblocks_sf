@@ -1419,6 +1419,7 @@ void ProjectManager::DoOpenFile(ProjectFile* pf, const wxString& filename)
         wxString msg;
         msg.Printf(_("Could not open the file '%s'.\nThe file does not exist."), filename.c_str());
         cbMessageBox(msg, _("Error"));
+        pf->SetFileState(fvsMissing);
         Manager::Get()->GetLogManager()->LogError(msg);
         return;
     }
