@@ -10,14 +10,14 @@
 // Global Vars
 Processor <- _T("");     // The chosen processor
 AvrHex <- false;         // produce Hex file from ELF output ?
-AvrSrec <- false;			   // produce Motorola S-Record files?
-AvrBin <- false;			   // produce Binary image files?
+AvrSrec <- false;              // produce Motorola S-Record files?
+AvrBin <- false;               // produce Binary image files?
 AvrLss <- false;         // produce extended list file from ELF output?
 AvrMap <- false;         // produce Symbol Map file from ELF output?
 AvrExtMem <- false;      // Locate .data in on-board SRAM, or external SRAM
 AvrExtMemAddr <- ""      // The external memory address
 AvrSize <- false;        // Run avr-size after the build 
-AvrF_CPU <- false;	     // Define F_CPU?
+AvrF_CPU <- false;       // Define F_CPU?
 AvrF_CPUValue <- _T(""); // F_CPU textual value
  
 function BeginWizard()
@@ -72,8 +72,8 @@ function OnLeave_processorChoice(fwd)
 function SetupProject(project)
 {   
     // Linker options 
-		local lo_map = ::wxString();
-		local lo_extmem = ::wxString();
+        local lo_map = ::wxString();
+        local lo_extmem = ::wxString();
     
     // Post Build steps
     local pb_avrsize = ::wxString();
@@ -83,88 +83,88 @@ function SetupProject(project)
     local pb_bin = ::wxString();
     local pb_eepsrec = ::wxString();
     local pb_srec = ::wxString();    
-	
-		// Post build commands 	
-		pb_eephex = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.hex");
-		pb_hex = _T("avr-objcopy -O ihex -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).hex");
-		pb_eepbin = _T("avr-objcopy --no-change-warnings --j .eeprom --change-section-lma .eeprom=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.bin");
-		pb_bin = _T("avr-objcopy -O binary -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).bin");
-		pb_eepsrec = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.srec");
-		pb_srec = _T("avr-objcopy -O srec -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).srec");
+    
+        // Post build commands  
+        pb_eephex = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.hex");
+        pb_hex = _T("avr-objcopy -O ihex -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).hex");
+        pb_eepbin = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.bin");
+        pb_bin = _T("avr-objcopy -O binary -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).bin");
+        pb_eepsrec = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.srec");
+        pb_srec = _T("avr-objcopy -O srec -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).srec");
 
-		// avr-size is compiled with patches under winavr to produce a fancy output
-		// which displays the percentage of memory used by the application for the 
-		// target mcu. However, this option is not available under standard binutils
-		// avr-size.
-		if (PLATFORM_MSW == PLATFORM)
-			pb_avrsize = _T("avr-size --mcu=") + Processor + _T(" --format=avr $(TARGET_OUTPUT_FILE)");
-		else
-			pb_avrsize = _T("avr-size $(TARGET_OUTPUT_FILE)");
+        // avr-size is compiled with patches under winavr to produce a fancy output
+        // which displays the percentage of memory used by the application for the 
+        // target mcu. However, this option is not available under standard binutils
+        // avr-size.
+        if (PLATFORM_MSW == PLATFORM)
+            pb_avrsize = _T("avr-size --mcu=") + Processor + _T(" --format=avr $(TARGET_OUTPUT_FILE)");
+        else
+            pb_avrsize = _T("avr-size $(TARGET_OUTPUT_FILE)");
 
-		// Setup the linker options
-		lo_map = _T("-Wl,-Map=$(TARGET_OUTPUT_FILE).map,--cref");
-		
-		// Get external memory start address
-		lo_extmem = _T("-Wl,--section-start=.data=") + AvrExtMemAddr;
-				
+        // Setup the linker options
+        lo_map = _T("-Wl,-Map=$(TARGET_OUTPUT_FILE).map,--cref");
+        
+        // Get external memory start address
+        lo_extmem = _T("-Wl,--section-start=.data=") + AvrExtMemAddr;
+                
     // Project compiler options
     WarningsOn(project, Wizard.GetCompilerID());
-		project.AddCompilerOption(_T("-mmcu=") + Processor);
-		
-		if (AvrF_CPU)
-			project.AddCompilerOption(_T("-DF_CPU=") + AvrF_CPUValue);
-			
-		// Project linker options
-		project.AddLinkerOption(_T("-mmcu=") + Processor);
-		
-		if (AvrMap)
-			project.AddLinkerOption(lo_map);
-		
-		if (AvrExtMem)
-			project.AddLinkerOption(lo_extmem);
-		
-		// Project post-build steps 
-		if (AvrSize)
-			project.AddCommandsAfterBuild(pb_avrsize);
-					
-		if (AvrHex)
-		{
-			project.AddCommandsAfterBuild(pb_hex);
-			project.AddCommandsAfterBuild(pb_eephex);
-		}
+        project.AddCompilerOption(_T("-mmcu=") + Processor);
+        
+        if (AvrF_CPU)
+            project.AddCompilerOption(_T("-DF_CPU=") + AvrF_CPUValue);
+            
+        // Project linker options
+        project.AddLinkerOption(_T("-mmcu=") + Processor);
+        
+        if (AvrMap)
+            project.AddLinkerOption(lo_map);
+        
+        if (AvrExtMem)
+            project.AddLinkerOption(lo_extmem);
+        
+        // Project post-build steps 
+        if (AvrSize)
+            project.AddCommandsAfterBuild(pb_avrsize);
+                    
+        if (AvrHex)
+        {
+            project.AddCommandsAfterBuild(pb_hex);
+            project.AddCommandsAfterBuild(pb_eephex);
+        }
 
-		if (AvrSrec)
-		{
-			project.AddCommandsAfterBuild(pb_srec);
-			project.AddCommandsAfterBuild(pb_eepsrec);
-		}
+        if (AvrSrec)
+        {
+            project.AddCommandsAfterBuild(pb_srec);
+            project.AddCommandsAfterBuild(pb_eepsrec);
+        }
 
-		if (AvrBin)
-		{
-			project.AddCommandsAfterBuild(pb_bin);
-			project.AddCommandsAfterBuild(pb_eepbin);
-		}
+        if (AvrBin)
+        {
+            project.AddCommandsAfterBuild(pb_bin);
+            project.AddCommandsAfterBuild(pb_eepbin);
+        }
 
-					
+                    
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());
     if (!IsNull(target))
     {
-    	target.SetTargetType(ttConsoleOnly);
-    	target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
-    	target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + _T(".elf"));
-    	DebugSymbolsOn(target, Wizard.GetCompilerID());
+        target.SetTargetType(ttConsoleOnly);
+        target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
     }
 
     // Release build target
     target = project.GetBuildTarget(Wizard.GetReleaseName());
     if (!IsNull(target))
-		{
-			target.SetTargetType(ttConsoleOnly);
-			target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
-			target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + _T(".elf"));
-			OptimizationsOn(target, Wizard.GetCompilerID());
-		}
-		
+        {
+            target.SetTargetType(ttConsoleOnly);
+            target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+            target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + _T(".elf"));
+            OptimizationsOn(target, Wizard.GetCompilerID());
+        }
+        
     return true;
 }
