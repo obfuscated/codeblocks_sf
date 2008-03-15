@@ -19,11 +19,13 @@
 // RCS-ID: $Id: BrowseTracker.cpp 47 2008-01-12 20:18:59Z Pecan $
 
 // Notes:
+//
 //      There is no way to know when a project is loading. So we have to accept
-//      editors that are activated during the loading process, then remove them
-//      after the loading finishes.
-//      Trying to use OnProjectLoadingHook did not work because it is not called
-//      if the project xml file has no "extensions" entry.
+//      all editors which are activated during the loading process, then remove them
+//      after the loading finishes. This gives us editors that are only activated
+//      by the user, not by the loading process. Which is what we want.
+//      Trying to use OnProjectLoadingHook does not always work because it is
+//      not called if the project xml file has no "extensions" entry.
 //
 //      cbProject::IsLoading/IsLoadingProject is actually turned OFF while editor
 //      loading takes place. Very wierd.
@@ -76,6 +78,7 @@
 	#include "cbproject.h"
 #endif
 #include "projectloader_hooks.h"
+#include "configurationpanel.h"
 
     #include <wx/dynarray.h> //for wxArray and wxSortedArray
     #include <cbstyledtextctrl.h>
@@ -85,6 +88,8 @@
 	#include <wx/app.h>
 	#include <wx/menu.h>
 	#include <wx/xrc/xmlres.h>
+	#include <wx/fileconf.h>
+
 
 //-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 #include "Version.h"
@@ -93,7 +98,8 @@
 #include "BrowseMarks.h"
 #include "BrowseTrackerDefs.h"
 #include "ProjectData.h"
-#include "BrowseTrackerCfg.h"
+#include "BrowseTrackerConfPanel.h"
+
 //#define BROWSETRACKER_MARKER        9
 //#define BROWSETRACKER_MARKER_STYLE  wxSCI_MARK_DOTDOTDOT
 // ----------------------------------------------------------------------------
@@ -149,7 +155,7 @@ BEGIN_EVENT_TABLE(BrowseTracker, cbPlugin)
 	EVT_MENU(     idMenuClearBrowseMark,    BrowseTracker::OnMenuClearBrowseMark)
 	EVT_MENU(     idMenuClearAllBrowse_Marks,BrowseTracker::OnMenuClearAllBrowse_Marks)
 	EVT_MENU(     idMenuSortBrowse_Marks,    BrowseTracker::OnMenuSortBrowse_Marks)
-	EVT_MENU(     idMenuConfigBrowse_Marks,  BrowseTracker::OnMenuConfigBrowse_Marks)
+	EVT_MENU(     idMenuConfigBrowse_Marks,  BrowseTracker::OnMenuSettings)
    #ifdef LOGGING
 	EVT_MENU(     idMenuTrackerDump,        BrowseTracker::OnMenuTrackerDump)
    #endif
@@ -173,7 +179,8 @@ BrowseTracker::BrowseTracker()
     m_nBrowseMarkPreviousSentry = 0;
     m_nBrowseMarkNextSentry = 0;
     m_nBrowsedEditorCount = 0;
-    //-m_pLoadingProject = 0;
+
+    m_pCfgFile = 0;
 
     m_MouseDownTime = 0;
     m_ToggleKey = Left_Mouse;
@@ -206,9 +213,6 @@ void BrowseTracker::OnAttach()
     m_nBrowseMarkNextSentry = 0;
     m_OnEditorEventHookIgnoreMarkerChanges = true; //used to avoid editor hook overhead
 
-    //-m_pActiveCBProject = 0;
-    //-m_pActiveProjectData = 0;
-    //-m_pLoadingProject = 0;
     m_LoadingProjectFilename = wxT("");
     m_pEdMgr = Manager::Get()->GetEditorManager();
     m_pPrjMgr = Manager::Get()->GetProjectManager();
@@ -280,14 +284,7 @@ void BrowseTracker::OnAttach()
      LOGIT( _T("TrackerCfgFullPath[%s]"),TrackerCfgFullPath.c_str() );
     #endif
 
-    // SettingLoad() of user options;
-    BrowseTrackerCfg btCfg;
-    btCfg.ReadUserOptions(m_CfgFilenameStr);
-    m_BrowseMarksEnabled = btCfg.m_BrowseMarksEnabled;
-    m_UserMarksStyle    = btCfg.m_UserMarksStyle;
-    m_ToggleKey         = btCfg.m_ToggleKey;
-    m_LeftMouseDelay    = btCfg.m_LeftMouseDelay;
-    m_ClearAllKey       = btCfg.m_ClearAllKey;
+    ReadUserOptions( m_CfgFilenameStr );
 
     switch(m_UserMarksStyle)
     {
@@ -487,6 +484,76 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
     popup->Append(pbtMenuItem);
 
 }//BuildModuleMenu
+// ----------------------------------------------------------------------------
+int BrowseTracker::Configure()
+// ----------------------------------------------------------------------------
+{
+	if ( !IsAttached() )
+		return -1;
+
+	// Creates and displays the configuration dialog
+	cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, wxT("BrowseTracker"));
+	cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
+	if (panel)
+	{
+		dlg.AttachConfigurationPanel(panel);
+		PlaceWindow(&dlg);
+		return dlg.ShowModal() == wxID_OK ? 0 : -1;
+	}
+	return -1;
+}
+// ----------------------------------------------------------------------------
+cbConfigurationPanel* BrowseTracker::GetConfigurationPanel(wxWindow* parent)
+// ----------------------------------------------------------------------------
+{
+    // Called by plugin manager to show config panel in global Setting Dialog
+	if ( !IsAttached() )
+		return NULL;
+
+	return new BrowseTrackerConfPanel(*this, parent);
+}
+// ----------------------------------------------------------------------------
+void BrowseTracker::ReadUserOptions(wxString configFullPath)
+// ----------------------------------------------------------------------------
+{
+    if (not m_pCfgFile) m_pCfgFile = new wxFileConfig(
+                    wxEmptyString,              // appname
+                    wxEmptyString,              // vendor
+                    configFullPath,             // local filename
+                    wxEmptyString,              // global file
+                    wxCONFIG_USE_LOCAL_FILE);
+                    //0);
+    wxFileConfig& cfgFile = *m_pCfgFile;
+
+	cfgFile.Read( wxT("BrowseMarksEnabled"),        &m_BrowseMarksEnabled, 0 ) ;
+	cfgFile.Read( wxT("BrowseMarksStyle"),          &m_UserMarksStyle, 0 ) ;
+	cfgFile.Read( wxT("BrowseMarksToggleKey"),      &m_ToggleKey, Left_Mouse ) ;
+	cfgFile.Read( wxT("LeftMouseDelay"),            &m_LeftMouseDelay, 200 ) ;
+	cfgFile.Read( wxT("BrowseMarksClearAllMethod"), &m_ClearAllKey, ClearAllOnSingleClick ) ;
+
+}
+// ----------------------------------------------------------------------------
+void BrowseTracker::SaveUserOptions(wxString configFullPath)
+// ----------------------------------------------------------------------------
+{
+    if (not m_pCfgFile) m_pCfgFile = new wxFileConfig(
+                    wxEmptyString,              // appname
+                    wxEmptyString,              // vendor
+                    configFullPath,             // local filename
+                    wxEmptyString,              // global file
+                    wxCONFIG_USE_LOCAL_FILE);
+                    //0);
+    wxFileConfig& cfgFile = *m_pCfgFile;
+
+	cfgFile.Write( wxT("BrowseMarksEnabled"),       m_BrowseMarksEnabled ) ;
+	cfgFile.Write( wxT("BrowseMarksStyle"),         m_UserMarksStyle ) ;
+    cfgFile.Write( wxT("BrowseMarksToggleKey"),     m_ToggleKey ) ;
+    cfgFile.Write( wxT("LeftMouseDelay"),           m_LeftMouseDelay ) ;
+    cfgFile.Write( wxT("BrowseMarksClearAllMethod"),m_ClearAllKey ) ;
+
+    cfgFile.Flush();
+
+}
 // ----------------------------------------------------------------------------
 wxString BrowseTracker::GetPageFilename(int index)
 // ----------------------------------------------------------------------------
@@ -844,51 +911,36 @@ void BrowseTracker::OnMenuSortBrowse_Marks( wxCommandEvent& event)
     if (eb && pBrowse_Marks) pBrowse_Marks->ImportBrowse_Marks();
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuConfigBrowse_Marks( wxCommandEvent& event)
+void BrowseTracker::OnMenuSettings( wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Show user options
-
-    int  oldUserMarksStyle = m_UserMarksStyle;
-    bool oldBrowseMarksEnabled = m_BrowseMarksEnabled;
-    //invoke user options dialog
-    BrowseTrackerCfg btCfg;
-    btCfg.GetUserOptions( m_CfgFilenameStr );
+    Configure();
+}
+// ----------------------------------------------------------------------------
+void BrowseTracker::OnConfigApply( )
+// ----------------------------------------------------------------------------
+{
+    // Called from OnApply() of BrowseTrackerConfPanel
 
     // reset options according to user responses
-    m_BrowseMarksEnabled = btCfg.m_BrowseMarksEnabled;
-    m_UserMarksStyle = btCfg.m_UserMarksStyle;
-    m_ToggleKey = btCfg.m_ToggleKey;
-    m_LeftMouseDelay = btCfg.m_LeftMouseDelay;
-    m_ClearAllKey = btCfg.m_ClearAllKey;
 
     // Don't allow set and clear_all key to be the same
-    while ( (m_ToggleKey == Ctrl_Left_Mouse) && (m_ClearAllKey == ClearAllOnSingleClick) )
+    if ( (m_ToggleKey == Ctrl_Left_Mouse) && (m_ClearAllKey == ClearAllOnSingleClick) )
     {   wxString msg;
         msg.Printf(_("Program cannot use CTRL-LEFT_MOUSE as both a \nToggle key *AND* a Clear-All-Key"));
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
 
         m_ClearAllKey = ClearAllOnDoubleClick;
-        btCfg.GetUserOptions( m_CfgFilenameStr );
-
-        m_UserMarksStyle = btCfg.m_UserMarksStyle;
-        m_ToggleKey = btCfg.m_ToggleKey;
-        m_LeftMouseDelay = btCfg.m_LeftMouseDelay;
-        m_ClearAllKey = btCfg.m_ClearAllKey;
     }
-
-    // Don't allow set and clear all key to be the same
-    if ( (m_ToggleKey == Ctrl_Left_Mouse) && (m_ClearAllKey == ClearAllOnSingleClick) )
-        m_ClearAllKey = ClearAllOnDoubleClick;
 
 	#if defined(LOGGING)
 	LOGIT( _T("New Config values: BrowseMarksStyle[%d]ToggleKey[%d]MouseDelay[%d]ClearKey[%d]"),
             m_UserMarksStyle, m_ToggleKey, m_LeftMouseDelay, m_ClearAllKey);
 	#endif
-    if (oldUserMarksStyle not_eq m_UserMarksStyle)
+    if (m_OldUserMarksStyle not_eq m_UserMarksStyle)
         SetBrowseMarksStyle( m_UserMarksStyle );
 
-    if (oldBrowseMarksEnabled not_eq m_BrowseMarksEnabled )
+    if (m_OldBrowseMarksEnabled not_eq m_BrowseMarksEnabled )
     {
         // Simulate activation of the current editor so mouse
         // events get connected.
@@ -1381,7 +1433,7 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
 
         // ---------------------------------------------------------------------
         // For new cbEditors, add an entry to the editor cursor positions hash
-        // and allocate a cursor positions array to hold the cursor positions
+        // and allocate a cursor positions array to hold the cursor positions.
         // Set hooks to catch mouse activity
         // ---------------------------------------------------------------------
 
@@ -2054,7 +2106,7 @@ void BrowseTracker::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
     // the loading editors as if the user activated them manually.
     // So we use this hook to tell the recorder NOT to record the loading editors.
 
-    // *Logic Gothcha* When a work space loads, OnProjectActivated() is called for
+    // *Logic Gotcha* When a work space loads, OnProjectActivated() is called for
     // the active project, then loading proceeds for other projects. This can cause
     // the m_bProjectIsLoading flag to be set forever.
 

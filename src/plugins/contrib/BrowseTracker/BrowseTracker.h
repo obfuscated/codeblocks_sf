@@ -25,11 +25,16 @@
 #include "cbplugin.h" // for "class cbPlugin"
 #include "BrowseTrackerDefs.h"
 
+class wxFileConfig;
+
 class TiXmlElement;
 class BrowseSelector;
 class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
+class cbStyledTextCtrl;
+class wxFlatNotebookEvent;
+
 // ----------------------------------------------------------------------------
 // The following have been moved to BrowseTrackerDefs.h
 // ----------------------------------------------------------------------------
@@ -46,6 +51,7 @@ extern int gBrowse_MarkerStyle;
 class BrowseTracker : public cbPlugin
 // ----------------------------------------------------------------------------
 {
+    friend class BrowseTrackerConfPanel;
 
 	public:
 		/** Constructor. */
@@ -54,7 +60,7 @@ class BrowseTracker : public cbPlugin
 		~BrowseTracker();
 
 		/** Invoke configuration dialog. */
-		int Configure() { return 0; }
+		virtual int Configure() ;
 
 		/** Return the plugin's configuration priority.
 		 * This is a number (default is 50) that is used to sort plugins
@@ -67,13 +73,13 @@ class BrowseTracker : public cbPlugin
 		 * Notice that you can logically AND more than one configuration groups,
 		 * so you could set it, for example, as "cgCompiler | cgContribPlugin".
 		*/
-		int GetConfigurationGroup() const { return cgContribPlugin; }
+		int GetConfigurationGroup() const { return cgEditor; }
 
 		/** Return plugin's configuration panel.
 		  * @param parent The parent window.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
-		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
+		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent) ;
 
 		/** Return plugin's configuration panel for projects.
 		 * The panel returned from this function will be added in the project's
@@ -172,6 +178,16 @@ class BrowseTracker : public cbPlugin
             void        ClearLineBookMark();
             bool        LineHasBookMarker(cbStyledTextCtrl* pControl, int line) const;
 
+            void        ReadUserOptions(wxString configFullPath);
+            void        SaveUserOptions(wxString configFullPath);
+            wxFileConfig* GetBrowseTrackerCfgFile(){return m_pCfgFile; }
+            wxString    GetBrowseTrackerCfgFilename(){return m_CfgFilenameStr;}
+
+    protected:
+        bool            m_BrowseMarksEnabled; //user has enabled BrowseTracker
+        int             m_OldUserMarksStyle;
+        bool            m_OldBrowseMarksEnabled;
+
 	private:
 
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
@@ -207,7 +223,8 @@ class BrowseTracker : public cbPlugin
         void OnMenuClearBrowseMark(wxCommandEvent& event);
         void OnMenuClearAllBrowse_Marks(wxCommandEvent& event);
         void OnMenuSortBrowse_Marks( wxCommandEvent& event);
-        void OnMenuConfigBrowse_Marks( wxCommandEvent& event);
+        void OnMenuSettings( wxCommandEvent& event);
+        void OnConfigApply();
 
         void OnMouseKeyEvent(wxMouseEvent& event);
         //-- BOOK marks
@@ -240,8 +257,11 @@ class BrowseTracker : public cbPlugin
 
         void         DumpHash( wxString hashtype);
 
-        wxString        m_CfgFilenameStr;
         bool            m_InitDone;
+        wxString        m_CfgFilenameStr;
+
+        wxFileConfig*   m_pCfgFile;
+
         EditorManager*  m_pEdMgr;
         ProjectManager* m_pPrjMgr;
 		wxWindow*       m_pAppWin;
@@ -289,7 +309,6 @@ class BrowseTracker : public cbPlugin
         wxLongLong      m_MouseDownTime;
         long            m_MouseXPosn;
         long            m_MouseYPosn;
-        bool            m_BrowseMarksEnabled; //user has enabled BrowseTracker
         bool            m_IsMouseDoubleClick;   //last mouse click was a DClick
         int             m_UserMarksStyle;       //BrowseMarks style Browse/Book/Hidden
         int             m_ToggleKey;            //Left_Mouse or Ctrl-Left_Mouse

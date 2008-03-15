@@ -193,6 +193,10 @@ AppVersion::~AppVersion()
 //  Commit 1.2.73 2008/02/27
 //         73) Set default BrowseMarks to disabled
 // ----------------------------------------------------------------------------
+//  Commit 1.2.74 2008/03/15
+//         74) changed user interface
+//             Added Config settings panel to CB config settings menu
+// ----------------------------------------------------------------------------
 //  Bugs
 //          When searching workspace w/o open project, BT is comatose.
 //              Should say "no project" or some such.

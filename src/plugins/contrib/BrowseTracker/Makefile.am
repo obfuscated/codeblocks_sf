@@ -14,9 +14,9 @@ libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 			BrowseSelector.cpp \
 			Version.cpp \
 			BrowseMarks.cpp \
-			BrowseTrackerCfg.cpp \
+			BrowseTrackerConfPanel.cpp \
 			BrowseTrackerLayout.cpp \
-			ConfigDlg.cpp \
+			ConfigPanel.cpp \
 			ProjectData.cpp
 
 noinst_HEADERS =  	BrowseTracker.h \
@@ -26,9 +26,9 @@ noinst_HEADERS =  	BrowseTracker.h \
 			BrowseMarks.h \
 			BrowseXpms.h \
 			BrowseTrackerDefs.h \
-			BrowseTrackerCfg.h \
+			BrowseTrackerConfPanel.h \
 			BrowseTrackerLayout.h \
-			ConfigDlg.h \
+			ConfigPanel.h \
 			ProjectData.h
 
 EXTRA_DIST = 	BrowseTracker.cbp \
