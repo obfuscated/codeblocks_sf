@@ -335,7 +335,7 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 				if ((sc.Match("///") && !sc.Match("////")) || sc.Match("//!"))
 					// Support of Qt/Doxygen doc. style
 					sc.SetState(SCE_C_COMMENTLINEDOC);
-				else if (sc.Match("//(*"))
+				else if (sc.Match("(*"))
 					// Support for wxSmith auto-generated code
 					sc.SetState(SCE_C_WXSMITH);
 				else
