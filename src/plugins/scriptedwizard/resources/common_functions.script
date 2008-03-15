@@ -162,6 +162,10 @@ function CppExceptionsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-xs"));
     }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
+    {
+        base.AddCompilerOption(_T("/EHs"));
+    }
     else
     {
         ShowWarning(_T("This wizard doesn't know how to setup exception flags for this compiler.\n"));
