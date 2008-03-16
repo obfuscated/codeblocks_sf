@@ -286,9 +286,92 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
     wxString extraDir = _T("");
     if (platform::windows)
     {
+        if (wxDirExists(_T("C:\\Program Files\\Intel\\Compiler")))
+        {
+            wxDir icc_dir(_T("C:\\Program Files\\Intel\\Compiler\\C++"));
+            if (icc_dir.IsOpened())
+            {
+                wxArrayString dirs;
+                wxIccDirTraverser IccDirTraverser(dirs);
+                icc_dir.Traverse(IccDirTraverser);
+                if (!dirs.IsEmpty())
+                {
+                    // Now sort the array in reverse order to get the latest version's path
+                    dirs.Sort(true);
+                    m_MasterPath = dirs[0];
+                    m_MasterPath.Append(_T("\\IA32"));
+
+                    // Now check for the installation of MSVC
+                    const wxString msvcIds[3] = { _T("msvc6"),
+                                                  _T("msvctk"),
+                                                  _T("msvc8") };
+                    bool msvcFound = false;
+                    for (int i = 0; i < 3; ++i)
+                    {
+                        Compiler* vcComp = CompilerFactory::GetCompiler(msvcIds[i]);
+                        if (vcComp)
+                        {
+                            if (vcComp->AutoDetectInstallationDir() == adrDetected)
+                            {
+                                const wxString& vcMasterPath = vcComp->GetMasterPath();
+                                AddIncludeDir(vcMasterPath + _T("\\Include"));
+                                AddLibDir(vcMasterPath + _T("\\Lib"));
+                                AddResourceIncludeDir(vcMasterPath + _T("\\Include"));
+
+                                const wxArrayString& vcExtraPaths = vcComp->GetExtraPaths();
+                                for (size_t i = 0; i < vcExtraPaths.GetCount(); ++i)
+                                {
+                                    if (m_ExtraPaths.Index(vcExtraPaths[i]) == wxNOT_FOUND &&
+                                        wxDirExists(vcExtraPaths[i]))
+                                    {
+                                        m_ExtraPaths.Add(vcExtraPaths[i]);
+                                    }
+                                }
+                                const wxArrayString& vcIncludeDirs = vcComp->GetIncludeDirs();
+                                for (size_t i = 0; i < vcIncludeDirs.GetCount(); ++i)
+                                {
+                                    if (wxDirExists(vcIncludeDirs[i]))
+                                    {
+                                        if (m_IncludeDirs.Index(vcIncludeDirs[i]) == wxNOT_FOUND)
+                                        {
+                                            AddIncludeDir(vcIncludeDirs[i]);
+                                        }
+                                        if (m_ResIncludeDirs.Index(vcIncludeDirs[i]) == wxNOT_FOUND)
+                                        {
+                                            AddResourceIncludeDir(vcIncludeDirs[i]);
+                                        }
+                                    }
+                                }
+                                const wxArrayString& vcLibDirs = vcComp->GetLibDirs();
+                                for (size_t i = 0; i < vcLibDirs.GetCount(); ++i)
+                                {
+                                    if (m_LibDirs.Index(vcLibDirs[i]) == wxNOT_FOUND &&
+                                        wxDirExists(vcLibDirs[i]))
+                                    {
+                                        AddLibDir(vcLibDirs[i]);
+                                    }
+                                }
+                                msvcFound = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!msvcFound)
+                    {
+                        cbMessageBox(_T("It seems your computer doesn't have a working MSVC compiler.\n\n"
+                                        "This compiler requires MS compiler for proper functioning and\n"
+                                        "it may not work without it."),
+                                     _T("Error"), wxOK | wxICON_ERROR);
+
+                    }
+                }
+            }
+        }
+
         // Read the ICPP_COMPILER90 environment variable
         wxGetEnv(_T("ICPP_COMPILER90"), &m_MasterPath);
-        extraDir = sep + _T("Ia32");// Intel also provides compiler for Itanium processors
+        extraDir = sep + _T("IA32");// Intel also provides compiler for Itanium processors
 
         if (m_MasterPath.IsEmpty())
         {
@@ -322,11 +405,12 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
         }
     }
 
-    AutoDetectResult ret = wxFileExists(m_MasterPath + extraDir + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
+    AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     if (ret == adrDetected)
     {
-        AddIncludeDir(m_MasterPath + extraDir + sep + _T("Include"));
-        AddLibDir(m_MasterPath + extraDir + sep + _T("Lib"));
+        AddIncludeDir(m_MasterPath + sep + _T("Include"));
+        AddLibDir(m_MasterPath + sep + _T("Lib"));
+        AddResourceIncludeDir(m_MasterPath + sep + _T("Include"));
     }
     // Try to detect the debugger. If not detected succesfully the debugger plugin will
     // complain, so only the autodetection of compiler is considered in return value

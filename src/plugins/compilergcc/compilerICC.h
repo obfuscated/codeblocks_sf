@@ -9,6 +9,7 @@
 #include <wx/dir.h>
 #include <wx/arrstr.h>
 
+#include <globals.h>
 #include <compiler.h>
 
 class wxIccDirTraverser : public wxDirTraverser
@@ -16,6 +17,7 @@ class wxIccDirTraverser : public wxDirTraverser
     public:
         wxIccDirTraverser(wxArrayString& folders) : m_Dirs(folders)
         {
+            m_SepChar = (platform::windows == 1) ? _T('\\') : _T('/');
         }
 
         virtual wxDirTraverseResult OnFile(const wxString& WXUNUSED(filename))
@@ -25,14 +27,17 @@ class wxIccDirTraverser : public wxDirTraverser
 
         virtual wxDirTraverseResult OnDir(const wxString& dirname)
         {
-            if (m_Dirs.Index(dirname) == wxNOT_FOUND
-                && dirname.AfterLast(_T('/')).BeforeFirst(_T('.')).IsNumber())
+            if (m_Dirs.Index(dirname) == wxNOT_FOUND &&
+                dirname.AfterLast(m_SepChar).Contains(_T(".")))
+            {
                 m_Dirs.Add(dirname);
+            }
             return wxDIR_CONTINUE;
         }
 
     private:
         wxArrayString& m_Dirs;
+        wxChar m_SepChar;
 };
 
 
