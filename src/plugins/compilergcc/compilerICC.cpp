@@ -314,6 +314,11 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
                             if (vcComp->AutoDetectInstallationDir() == adrDetected)
                             {
                                 const wxString& vcMasterPath = vcComp->GetMasterPath();
+                                if (m_ExtraPaths.Index(vcMasterPath) == wxNOT_FOUND &&
+                                    wxDirExists(vcMasterPath))
+                                {
+                                    m_ExtraPaths.Add(vcMasterPath);
+                                }
                                 AddIncludeDir(vcMasterPath + _T("\\Include"));
                                 AddLibDir(vcMasterPath + _T("\\Lib"));
                                 AddResourceIncludeDir(vcMasterPath + _T("\\Include"));
@@ -408,9 +413,9 @@ AutoDetectResult CompilerICC::AutoDetectInstallationDir()
     AutoDetectResult ret = wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
     if (ret == adrDetected)
     {
-        AddIncludeDir(m_MasterPath + sep + _T("Include"));
-        AddLibDir(m_MasterPath + sep + _T("Lib"));
-        AddResourceIncludeDir(m_MasterPath + sep + _T("Include"));
+        m_IncludeDirs.Insert(m_MasterPath + sep + _T("Include"), 0);
+        m_LibDirs.Insert(m_MasterPath + sep + _T("Lib"), 0);
+        m_ResIncludeDirs.Insert(m_MasterPath + sep + _T("Include"), 0);
     }
     // Try to detect the debugger. If not detected succesfully the debugger plugin will
     // complain, so only the autodetection of compiler is considered in return value
