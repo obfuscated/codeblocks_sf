@@ -154,7 +154,7 @@ void CompilerMSVC8::Reset()
 
 
     m_Commands[(int)ctCompileObjectCmd].push_back( CompilerTool(_T("$compiler /nologo $options $includes /c $file /Fo$object")) );
-    m_Commands[(int)ctCompileResourceCmd].push_back( CompilerTool(_T("$rescomp $res_includes -fo$resource_output $file")) );
+    m_Commands[(int)ctCompileResourceCmd].push_back( CompilerTool(_T("$rescomp /nologo $res_includes -fo$resource_output $file")) );
     m_Commands[(int)ctLinkExeCmd].push_back( CompilerTool(_T("$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
     m_Commands[(int)ctLinkConsoleExeCmd].push_back( CompilerTool(_T("$linker /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
     m_Commands[(int)ctLinkDynamicCmd].push_back( CompilerTool(_T("$linker /dll /nologo $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options")) );
