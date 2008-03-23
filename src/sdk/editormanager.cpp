@@ -43,6 +43,7 @@
 
 #include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
+#include "encodingdetector.h"
 #include "finddlg.h"
 #include "replacedlg.h"
 #include "confirmreplacedlg.h"
@@ -162,9 +163,9 @@ EditorManager::EditorManager()
     m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE | wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
 
-	Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
     m_Theme = new EditorColourSet(Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/colour_sets/active_colour_set"), COLORSET_DEFAULT));
-	Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet: done."));
+    Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet: done."));
 
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
@@ -227,8 +228,8 @@ void EditorManager::Configure()
 
 void EditorManager::CreateSearchLog()
 {
-	if (Manager::IsBatchBuild())
-		return;
+    if (Manager::IsBatchBuild())
+        return;
 
     wxArrayInt widths;
     wxArrayString titles;
@@ -1519,11 +1520,11 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     control->EndUndoAction();
     wxString msg;
     if (foundcount == 0)
-		msg = _T("No matches found for \"") + data->findText + _T("\"");
+        msg = _T("No matches found for \"") + data->findText + _T("\"");
     else if (replacecount == 0 && foundcount == 1)
-		msg = _T("One match found but not replaced");
+        msg = _T("One match found but not replaced");
     else
-		msg.Printf(_("Replaced %i of %i matches"), replacecount, foundcount);
+        msg.Printf(_("Replaced %i of %i matches"), replacecount, foundcount);
     cbMessageBox(msg, _("Result"), wxICON_INFORMATION);
     control->SetSCIFocus(true);
 
@@ -1959,13 +1960,13 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
         if (pos != -1 && data->start!=data->end)
         {
             int line = control->LineFromPosition(pos);
-			int onScreen = control->LinesOnScreen() >> 1;
-			int l1 = line - onScreen;
-			int l2 = line + onScreen;
-			for(int l=l1; l<=l2;l+=2)		// unfold visible lines on screen
-				control->EnsureVisible(l);
-			control->GotoLine(l1);			// center selection on screen
-			control->GotoLine(l2);
+            int onScreen = control->LinesOnScreen() >> 1;
+            int l1 = line - onScreen;
+            int l2 = line + onScreen;
+            for(int l=l1; l<=l2;l+=2)       // unfold visible lines on screen
+                control->EnsureVisible(l);
+            control->GotoLine(l1);          // center selection on screen
+            control->GotoLine(l2);
             control->GotoLine(line);
             control->SetSelection(pos, pos + lengthFound);
             //            Manager::Get()->GetLogManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
@@ -2198,10 +2199,14 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         cbEditor* ed = IsBuiltinOpen(filesList[i]);
         if (ed)
             control->SetText(ed->GetControl()->GetText());
-        else if (!control->LoadFile(filesList[i])) // else load the file in the control
+        else // else load the file in the control
         {
-            //            LOGSTREAM << _("Failed opening ") << filesList[i] << wxT('\n');
-            continue; // failed
+            EncodingDetector detector(filesList[i]);
+            if (!detector.IsOK())
+            {
+                continue; // failed
+            }
+            control->SetText(detector.GetWxStr());
         }
 
         // now search for first occurence
@@ -2248,11 +2253,11 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
         static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
         if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
         {
-        	CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pSearchLog);
-        	CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
+            CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pSearchLog);
+            CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
 
-			Manager::Get()->ProcessEvent(evtSwitch);
-			Manager::Get()->ProcessEvent(evtShow);
+            Manager::Get()->ProcessEvent(evtSwitch);
+            Manager::Get()->ProcessEvent(evtShow);
         }
         static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
     }
