@@ -1004,7 +1004,9 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
 #endif
     case WXK_PAGEDOWN:          // fall through
     case WXK_NUMPAD_PAGEDOWN:   key = SCK_NEXT;     break;
+    case WXK_NUMPAD_DELETE:     // fall through
     case WXK_DELETE:            key = SCK_DELETE;   break;
+    case WXK_NUMPAD_INSERT:     // fall through
     case WXK_INSERT:            key = SCK_INSERT;   break;
     case WXK_ESCAPE:            key = SCK_ESCAPE;   break;
     case WXK_BACK:              key = SCK_BACK;     break;
