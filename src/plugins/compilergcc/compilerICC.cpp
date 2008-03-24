@@ -8,15 +8,20 @@
  */
 
 #include <sdk.h>
-#include <prep.h>
-#include "compilerICC.h"
-#include <wx/intl.h>
-#include <wx/regex.h>
+#ifndef CB_PRECOMP
+	#include <wx/intl.h>
+	#include <wx/msgdlg.h>
+	#include <wx/regex.h>
+
+	#include "compilerfactory.h"
+	#include "logmanager.h"
+	#include "manager.h"
+#endif // CB_PRECOMP
+
 #include <wx/config.h>
 #include <wx/fileconf.h>
-#include <wx/msgdlg.h>
-#include "manager.h"
-#include "logmanager.h"
+
+#include "compilerICC.h"
 
 CompilerICC::CompilerICC()
     : Compiler(_("Intel C/C++ Compiler"), _T("icc"))
