@@ -3,6 +3,7 @@ SUBDIRS = lib_finder
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
 		-I$(top_srcdir)/src/include/scripting/squirrel \
@@ -24,7 +25,9 @@ liblib_finder_la_SOURCES = 	dirlistdlg.cpp \
 				projectconfiguration.cpp \
 				projectconfigurationpanel.cpp \
 				libselectdlg.cpp \
-				pkgconfigmanager.cpp
+				pkgconfigmanager.cpp \
+				libraryresult.cpp \
+				librariesdlg.cpp
 
 
 noinst_HEADERS =  	dirlistdlg.h \
@@ -37,7 +40,8 @@ noinst_HEADERS =  	dirlistdlg.h \
 			projectconfiguration.h \
 			projectconfigurationpanel.h \
 			libselectdlg.h \
-			pkgconfigmanager.h
+			pkgconfigmanager.h \
+			librariesdlg.h
 
 EXTRA_DIST = 	lib_finder.cbp \
 		update \
