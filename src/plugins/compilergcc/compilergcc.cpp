@@ -2704,8 +2704,11 @@ int CompilerGCC::KillProcess()
         if (!m_Processes[i])
             continue;
 
-        if (platform::windows)
-            Manager::Get()->GetLogManager()->Log(F(_("Aborting process %d ... Be patient!"), i), m_PageIndex);
+		#if defined(WIN32) && defined(ENABLE_SIGTERM)
+			::GenerateConsoleCtrlEvent(0, m_Pid[i]);
+		#endif
+
+
 
         // Close input pipe
         m_Processes[i]->CloseOutput();
