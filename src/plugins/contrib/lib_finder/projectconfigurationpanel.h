@@ -81,6 +81,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		//(*Declarations(ProjectConfigurationPanel)
 		wxButton* m_AddUnknown;
 		wxCheckBox* m_Tree;
+		wxButton* Button1;
 		wxStaticText* StaticText1;
 		wxTreeCtrl* m_KnownLibrariesTree;
 		wxTextCtrl* m_UnknownLibrary;
@@ -104,6 +105,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		static const long ID_STATICTEXT1;
 		static const long ID_TEXTCTRL2;
 		static const long ID_CHECKBOX1;
+		static const long ID_BUTTON5;
 		static const long ID_TEXTCTRL1;
 		static const long ID_BUTTON3;
 		static const long ID_STATICTEXT2;

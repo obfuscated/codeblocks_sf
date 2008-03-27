@@ -54,11 +54,6 @@ class lib_finder: public cbToolPlugin
 
         virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
 
-        void SetGlobalVar(const LibraryResult* Result);
-        void ReadDetectedResults();
-        void ReadPkgConfigResults();
-        void ReadPredefinedResults();
-        void WriteDetectedResults();
         void OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading);
         void OnProjectClose(CodeBlocksEvent& event);
         void OnCompilerStarted(CodeBlocksEvent& event);
@@ -66,12 +61,8 @@ class lib_finder: public cbToolPlugin
         void OnCompilerSetBuildOptions(CodeBlocksEvent& event);
         void SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs);
         bool TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result);
-        bool LoadSearchFilters(LibraryConfigManager* CfgManager);
         void RegisterScripting();
         void UnregisterScripting();
-        void LoadPredefinedResultFromFile(const wxString& FileName);
-
-        bool SameResults(LibraryResult* First, LibraryResult* Second);
 
         // These functions are used in scripting bindings
 		static bool AddLibraryToProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);

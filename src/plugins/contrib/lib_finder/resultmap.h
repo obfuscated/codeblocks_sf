@@ -31,6 +31,7 @@
 
 class wxArrayString;
 class wxString;
+class PkgConfigManager;
 
 WX_DEFINE_ARRAY(LibraryResult*,ResultArray);
 
@@ -45,7 +46,14 @@ WX_DEFINE_ARRAY(LibraryResult*,ResultArray);
 class ResultMap
 {
     public:
+
+        /** \brief Default ctor */
         ResultMap();
+
+        /** \brief Copying ctor */
+        ResultMap(const ResultMap& source);
+
+        /** \brief Dctor - clears all results */
         virtual ~ResultMap();
 
         /** \brief Clearing all results */
@@ -67,7 +75,24 @@ class ResultMap
         /** \brief Getting array of used variable names */
         void GetShortCodes(wxArrayString& Names);
 
+        /** \brief Writing detected results into configuration */
+        void WriteDetectedResults();
+
+        /** \brief Reading detected results from configuration (previous results are cleared) */
+        void ReadDetectedResults();
+
+        /** \brief Reading results from PkgConfig */
+        void ReadPkgConfigResults(PkgConfigManager* m_PkgConfigManager);
+
+        /** \brief Reading predefined results from configuration files */
+        void ReadPredefinedResults();
+
+        /** \brief Copying operator */
+        ResultMap& operator=(const ResultMap& source);
+
     private:
+
+        void LoadPredefinedResultFromFile(const wxString& FileName);
 
         WX_DECLARE_STRING_HASH_MAP(ResultArray,ResultHashMap);
         ResultHashMap Map;

@@ -32,6 +32,7 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../include/wxFlatNotebook/include" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />
 			<Add directory="../../../include/scripting/squirrel" />
@@ -57,9 +58,12 @@
 		<Unit filename="lib_finder/glfw.xml" />
 		<Unit filename="lib_finder/readme.txt" />
 		<Unit filename="lib_finder/wxwidgets.xml" />
+		<Unit filename="librariesdlg.cpp" />
+		<Unit filename="librariesdlg.h" />
 		<Unit filename="libraryconfig.h" />
 		<Unit filename="libraryconfigmanager.cpp" />
 		<Unit filename="libraryconfigmanager.h" />
+		<Unit filename="libraryresult.cpp" />
 		<Unit filename="libraryresult.h" />
 		<Unit filename="libselectdlg.cpp" />
 		<Unit filename="libselectdlg.h" />
@@ -75,6 +79,7 @@
 		<Unit filename="resultmap.cpp" />
 		<Unit filename="resultmap.h" />
 		<Unit filename="wxsmith/LibSelectDlg.wxs" />
+		<Unit filename="wxsmith/LibrariesDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
@@ -84,11 +89,11 @@
 					<wxDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" name="ProcessingDlg" language="CPP" />
 					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
 					<wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />
 			<debugger />
-			<lib_finder />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

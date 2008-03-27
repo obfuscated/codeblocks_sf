@@ -49,6 +49,7 @@ const long ProjectConfigurationPanel::ID_TREECTRL1 = wxNewId();
 const long ProjectConfigurationPanel::ID_STATICTEXT1 = wxNewId();
 const long ProjectConfigurationPanel::ID_TEXTCTRL2 = wxNewId();
 const long ProjectConfigurationPanel::ID_CHECKBOX1 = wxNewId();
+const long ProjectConfigurationPanel::ID_BUTTON5 = wxNewId();
 const long ProjectConfigurationPanel::ID_TEXTCTRL1 = wxNewId();
 const long ProjectConfigurationPanel::ID_BUTTON3 = wxNewId();
 const long ProjectConfigurationPanel::ID_STATICTEXT2 = wxNewId();
@@ -95,13 +96,14 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	wxStaticBoxSizer* StaticBoxSizer2;
 	wxBoxSizer* BoxSizer6;
 	wxBoxSizer* BoxSizer5;
+	wxBoxSizer* BoxSizer7;
 	wxBoxSizer* BoxSizer2;
 	wxStaticBoxSizer* StaticBoxSizer3;
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxBoxSizer* BoxSizer3;
 	wxStaticBoxSizer* m_DisableAuto;
-
+	
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
@@ -140,9 +142,14 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	m_Filter = new wxTextCtrl(this, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
 	BoxSizer4->Add(m_Filter, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer2->Add(BoxSizer4, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
 	m_Tree = new wxCheckBox(this, ID_CHECKBOX1, _("Show as tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
 	m_Tree->SetValue(true);
-	StaticBoxSizer2->Add(m_Tree, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer7->Add(m_Tree, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	Button1 = new wxButton(this, ID_BUTTON5, _("Edit"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON5"));
+	Button1->Hide();
+	BoxSizer7->Add(Button1, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer2->Add(BoxSizer7, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer3->Add(StaticBoxSizer2, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Unknown library"));
 	m_UnknownLibrary = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
@@ -160,7 +167,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	Timer1.SetOwner(this, ID_TIMER1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_UsedLibrariesSelect);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddScriptClick);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddClick);
