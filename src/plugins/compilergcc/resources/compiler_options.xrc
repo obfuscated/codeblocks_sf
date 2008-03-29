@@ -1041,7 +1041,7 @@ Makefile.</label>
                         </object>
                         <object class="sizeritem">
                           <object class="wxStaticText">
-                            <label>Known variables: $$make, $$makefile, $$target,$$file</label>
+                            <label>Known variables: $$make, $$makefile, $$target, $$file</label>
                             <fg>#800000</fg>
                           </object>
                           <flag>wxLEFT|wxRIGHT|wxGROW</flag>
