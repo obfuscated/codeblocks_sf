@@ -292,7 +292,12 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
                     "If you click \"Cancel\", the project/target will remain configured for that compiler and consequently can not be configured and will not be built."),
                     CompilerId.c_str());
-        if(Compiler* compiler = CompilerFactory::SelectCompilerUI(msg))
+        Compiler* compiler = 0;
+        if ((m_pTarget && m_pTarget->SupportsCurrentPlatform()) || (!m_pTarget && m_pProject))
+        {
+            compiler = CompilerFactory::SelectCompilerUI(msg);
+        }
+        if (compiler)
         {    // a new compiler was choosen, proceed as if the user manually selected another compiler
             // that means set the compilerselection list accordingly
             // and go directly to (On)CompilerChanged
@@ -1062,20 +1067,31 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
     // a) adjust to another compiler
     // b) leave that compiler --> no settings can be set then (done by disabling the notebook,
     // as a consequence might need to be re-enabled when another target/project is chosen in the tree)
-    if(compilerIdx != -1)
+    if (compilerIdx != -1)
     {
-        if(wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
-        {
-            nb->Enable();
-        }
+        wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
         XRCCTRL(*this, "cmbCompiler", wxChoice)->SetSelection(compilerIdx);
         // we don't update the compiler index yet, we leave that to CompilerChanged();
         m_pTarget = data->GetTarget();
-        // the new selection might have a differerent compiler settings and/or even a different compiler
-        // load all those new settings
-        m_CurrentCompilerIdx = compilerIdx;
-        m_Options = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetOptions();
-        DoFillCompilerDependentSettings();
+        if (m_pTarget && !m_pTarget->SupportsCurrentPlatform())
+        {
+            if (nb)
+            {
+                nb->Disable();
+            }
+        }
+        else
+        {
+            if (nb)
+            {
+                nb->Enable();
+            }
+            // the new selection might have a differerent compiler settings and/or even a different compiler
+            // load all those new settings
+            m_CurrentCompilerIdx = compilerIdx;
+            m_Options = CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetOptions();
+            DoFillCompilerDependentSettings();
+        }
     }
     else
     {
@@ -1086,7 +1102,12 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
                     "Please choose the compiler you want to use instead and click \"OK\".\n"
                     "If you click \"Cancel\", the project/target will remain configured for that compiler and consequently can not be configured and will not be built."),
                     CompilerId.c_str());
-        if(Compiler* compiler = CompilerFactory::SelectCompilerUI(msg))
+        Compiler* compiler = 0;
+        if (m_pTarget && m_pTarget->SupportsCurrentPlatform())
+        {
+            compiler = CompilerFactory::SelectCompilerUI(msg);
+        }
+        if (compiler)
         {    // a new compiler was choosen, proceed as if the user manually selected another compiler
             // that means set the compilerselection list accordingly
             // and go directly to (On)CompilerChanged
