@@ -1788,6 +1788,9 @@
 		<Unit filename="plugins\scriptedwizard\resources\manifest.xml">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins\scriptedwizard\resources\matlab_csf\wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins\scriptedwizard\resources\ogre\wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -4303,7 +4306,6 @@
 				</resources>
 			</wxsmith>
 			<debugger />
-			<lib_finder />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
