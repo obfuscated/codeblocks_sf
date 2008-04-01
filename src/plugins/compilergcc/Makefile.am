@@ -28,6 +28,7 @@ libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compilergcc.cpp \
 			compilerGDC.cpp \
 			compilerICC.cpp \
+			compilerLCC.cpp \
 			compilermessages.cpp \
 			compilerMINGW.cpp \
 			compilerMINGWgenerator.cpp \
@@ -55,6 +56,7 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilergcc.h \
 			compilerGDC.h \
 			compilerICC.h \
+			compilerLCC.h \
 			compilermessages.h \
 			compilerMINGW.h \
 			compilerMINGWgenerator.h \

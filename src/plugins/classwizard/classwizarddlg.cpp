@@ -187,7 +187,9 @@ void ClassWizardDlg::OnAddMemberVar(wxCommandEvent& event)
         it++;
     }
 
-    wxString method = (noprfx ? memvar.Right(memvar.Length()-prefix.Length()) : memvar );
+    wxString method = ( (noprfx && memvar.StartsWith(prefix)) ?
+                        memvar.Right(memvar.Length()-prefix.Length()) :
+                        memvar );
 
     MemberVar mv;
     mv.Typ = memtyp;

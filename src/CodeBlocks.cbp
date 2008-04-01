@@ -1239,6 +1239,12 @@
 		<Unit filename="plugins\compilergcc\compilerICC.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins\compilergcc\compilerLCC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins\compilergcc\compilerLCC.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins\compilergcc\compilerMINGW.cpp">
 			<Option target="Compiler" />
 		</Unit>

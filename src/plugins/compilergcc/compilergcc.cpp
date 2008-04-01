@@ -60,6 +60,7 @@
     #include "compilerGNUAVR.h"
     #include "compilerGNUMSP430.h"
     #include "compilerCYGWIN.h"
+    #include "compilerLCC.h"
 #endif
 #include "compilerICC.h"
 #include "compilerSDCC.h"
@@ -380,6 +381,7 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerOW);
     CompilerFactory::RegisterCompiler(new CompilerGNUMSP430);
     CompilerFactory::RegisterCompiler(new CompilerCYGWIN);
+    CompilerFactory::RegisterCompiler(new CompilerLCC);
 #endif
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
@@ -2335,7 +2337,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
             if (!CompilerValid(tgt))
             {
                 wxString msg;
-                msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Skipping..."),
+                msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Probably the toolchain path within the compiler options is not setup correctly?! Skipping..."),
                             prj->GetTitle().c_str(), tlist[x].c_str());
                 Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
                 continue;
