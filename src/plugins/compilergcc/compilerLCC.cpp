@@ -11,6 +11,8 @@
 // this compiler is valid only in windows
 
 #include <sdk.h>
+#include "logmanager.h"
+#include "manager.h"
 #include "compilerLCC.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
