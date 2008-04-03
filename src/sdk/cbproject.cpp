@@ -1226,6 +1226,8 @@ bool cbProject::NodeDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to
 
     SetModified(true);
 
+    Manager::Get()->GetProjectManager()->RebuildTree();
+
     return true;
 }
 
