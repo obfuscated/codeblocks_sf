@@ -27,7 +27,8 @@ liblib_finder_la_SOURCES = 	dirlistdlg.cpp \
 				libselectdlg.cpp \
 				pkgconfigmanager.cpp \
 				libraryresult.cpp \
-				librariesdlg.cpp
+				librariesdlg.cpp \
+				headersdetectordlg.cpp
 
 
 noinst_HEADERS =  	dirlistdlg.h \
@@ -41,7 +42,8 @@ noinst_HEADERS =  	dirlistdlg.h \
 			projectconfigurationpanel.h \
 			libselectdlg.h \
 			pkgconfigmanager.h \
-			librariesdlg.h
+			librariesdlg.h \
+			headersdetectordlg.h
 
 EXTRA_DIST = 	lib_finder.cbp \
 		update \

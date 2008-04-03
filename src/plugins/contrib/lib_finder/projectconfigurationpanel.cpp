@@ -36,11 +36,14 @@
 //*)
 
 #include <wx/tokenzr.h>
+#include <wx/choicdlg.h>
 
 #include "lib_finder.h"
+#include "headersdetectordlg.h"
 
 //(*IdInit(ProjectConfigurationPanel)
 const long ProjectConfigurationPanel::ID_LISTBOX1 = wxNewId();
+const long ProjectConfigurationPanel::ID_BUTTON6 = wxNewId();
 const long ProjectConfigurationPanel::ID_CHECKBOX2 = wxNewId();
 const long ProjectConfigurationPanel::ID_BUTTON4 = wxNewId();
 const long ProjectConfigurationPanel::ID_BUTTON1 = wxNewId();
@@ -103,7 +106,7 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxBoxSizer* BoxSizer3;
 	wxStaticBoxSizer* m_DisableAuto;
-	
+
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
@@ -111,6 +114,8 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Libraries used in project"));
 	m_UsedLibraries = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(147,123), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
 	StaticBoxSizer1->Add(m_UsedLibraries, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	Button2 = new wxButton(this, ID_BUTTON6, _("Try to detect missing ones"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON6"));
+	StaticBoxSizer1->Add(Button2, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer5->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	m_DisableAuto = new wxStaticBoxSizer(wxVERTICAL, this, _("Extra settings"));
 	m_NoAuto = new wxCheckBox(this, ID_CHECKBOX2, _("Don\'t setup automatically"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
@@ -167,8 +172,9 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	Timer1.SetOwner(this, ID_TIMER1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_UsedLibrariesSelect);
+	Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::OnButton2Click);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddScriptClick);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_AddClick);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectConfigurationPanel::Onm_RemoveClick);
@@ -575,4 +581,114 @@ void ProjectConfigurationPanel::Onm_AddScriptClick(wxCommandEvent& event)
     m_NoAuto->SetValue(true);
 
     wxMessageBox(_("Script \"lib_finder.script\" successfully added."),_("lib_finder.script Success"),wxOK|wxICON_INFORMATION,this);
+}
+
+void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& event)
+{
+    wxArrayString HeadersBase;
+    if ( HeadersDetectorDlg(this,m_Project,HeadersBase).ShowModal() != wxID_OK )
+    {
+        cbMessageBox( _("Cancelled the search"), _("Cancelled"), wxOK | wxICON_WARNING, this );
+        return;
+    }
+
+    if ( HeadersBase.IsEmpty() )
+    {
+        cbMessageBox( _("Didn't found any #include directive."), _("Error"), wxOK | wxICON_ERROR, this );
+        return;
+    }
+
+    // Getting array of all known libraries
+    ResultArray AllArray;
+    for ( int i=0; i<rtCount; i++ )
+    {
+        m_KnownLibs[i].GetAllResults(AllArray);
+    }
+    wxArrayString NewLibs;
+
+    // Sorting and removing duplicates and processing results
+    HeadersBase.Sort();
+    wxString Previous;
+    for ( size_t i=0; i<HeadersBase.Count(); i++ )
+    {
+        if ( Previous != HeadersBase[i] )
+        {
+            Previous = HeadersBase[i];
+            DetectNewLibs( Previous, AllArray, NewLibs );
+        }
+    }
+
+    // Filtering detected results
+    wxArrayString NewLibsFiltered;
+    NewLibs.Sort();
+    Previous.Clear();
+    for ( size_t i=0; i<NewLibs.Count(); i++ )
+    {
+        if ( Previous != NewLibs[i] )
+        {
+            Previous = NewLibs[i];
+            if ( m_ConfCopy.m_GlobalUsedLibs.Index(Previous) == wxNOT_FOUND )
+            {
+                NewLibsFiltered.Add( Previous );
+            }
+        }
+    }
+
+    if ( NewLibsFiltered.IsEmpty() )
+    {
+        cbMessageBox(
+            _("Didn't found any missing library for your project.\n"
+              "\n"
+              "This may mean that you project is fully configured\n"
+              "or that missing libraries are not yet recognized\n"
+              "or fully supported in lib_finder plugin"),
+            _("No libraries found"),
+            wxOK | wxICON_ASTERISK,
+            this );
+        return;
+    }
+
+    wxArrayInt Choices;
+    wxGetMultipleChoices(
+        Choices,
+        _("Select libraries to include in your project"),
+        _("Adding new libraries"),
+        NewLibsFiltered,
+        this);
+
+    if ( Choices.IsEmpty() )
+    {
+        return;
+    }
+
+    for ( size_t i=0; i<Choices.Count(); i++ )
+    {
+        wxString Library = NewLibsFiltered[ Choices[i] ];
+        m_ConfCopy.m_GlobalUsedLibs.Add(Library);
+        m_UsedLibraries->Append(GetUserListName(Library),new ListItemData(Library));
+    }
+
+    // Make sure that after the scan, used won't be able to manually
+    // add currently selected "known" library (through '<' button)
+    // which has just been added automatically
+    wxTreeEvent ev;
+    Onm_KnownLibrariesTreeSelectionChanged(ev);
+}
+
+void ProjectConfigurationPanel::DetectNewLibs( const wxString& IncludeName, ResultArray& known, wxArrayString& LibsList )
+{
+    wxString FixedInclude = IncludeName;
+    FixedInclude.MakeLower();
+    FixedInclude.Replace(_T("\\"),_T("/"),true);
+    for ( size_t i=0; i<known.Count(); i++ )
+    {
+        for ( size_t j=0; j<known[i]->Headers.Count(); j++ )
+        {
+            if ( FixedInclude.Matches( known[i]->Headers[j].Lower() ) )
+            {
+                LibsList.Add( known[i]->ShortCode );
+                break;
+            }
+        }
+    }
 }

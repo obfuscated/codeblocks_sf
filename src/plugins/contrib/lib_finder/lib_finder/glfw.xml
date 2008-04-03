@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <library name="GL Framework" short_code="glfw" category="Graphics.3d">
 
+    <settings>
+        <header file="gl/glfw.h">
+    </settings>
     <!--
         By default pkg-config should be automatically invoked when
         global_var is equal to pkg-config name of library.

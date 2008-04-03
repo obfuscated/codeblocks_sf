@@ -68,6 +68,8 @@
 		</ExtraCommands>
 		<Unit filename="dirlistdlg.cpp" />
 		<Unit filename="dirlistdlg.h" />
+		<Unit filename="headersdetectordlg.h" />
+		<Unit filename="headersdetectordlg.cpp" />
 		<Unit filename="lib_finder.cpp" />
 		<Unit filename="lib_finder.h" />
 		<Unit filename="lib_finder\codeblocks_sdk.xml" />

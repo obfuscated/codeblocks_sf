@@ -52,6 +52,8 @@
 		</ExtraCommands>
 		<Unit filename="dirlistdlg.cpp" />
 		<Unit filename="dirlistdlg.h" />
+		<Unit filename="headersdetectordlg.cpp" />
+		<Unit filename="headersdetectordlg.h" />
 		<Unit filename="lib_finder.cpp" />
 		<Unit filename="lib_finder.h" />
 		<Unit filename="lib_finder/codeblocks_sdk.xml" />
@@ -78,6 +80,7 @@
 		<Unit filename="projectconfigurationpanel.h" />
 		<Unit filename="resultmap.cpp" />
 		<Unit filename="resultmap.h" />
+		<Unit filename="wxsmith/HeadersDetectorDlg.wxs" />
 		<Unit filename="wxsmith/LibSelectDlg.wxs" />
 		<Unit filename="wxsmith/LibrariesDlg.wxs" />
 		<Extensions>
@@ -90,6 +93,7 @@
 					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
 					<wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

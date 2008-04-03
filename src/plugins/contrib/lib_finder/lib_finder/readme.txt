@@ -141,6 +141,17 @@ There are following settings which can be added:
         The example above show how to add define and library to gcc-like compilers. Note that
         preffered way should be through <add lib="..."/> and <add define="..."/>
 
+    - Include dirs used by this LibraryConfig
+
+        by using this option you can give set of files inside which will be used while
+        scanning application's sources for #include entries. If given entry is found,
+        it's highly probable that given application does require this library.
+
+            <header file="wx/*.h"/>
+
+        Inside the file specification, * and ? wildcards can be used.
+
+
 * Pkg-config support
 
     There may be special switch dedicated to pkg-config available in <config> section.

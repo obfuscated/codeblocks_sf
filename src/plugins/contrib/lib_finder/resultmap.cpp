@@ -113,6 +113,7 @@ void ResultMap::WriteDetectedResults()
         cfg->Write(Path+_T("cflags"),Result->CFlags);
         cfg->Write(Path+_T("lflags"),Result->LFlags);
         cfg->Write(Path+_T("compilers"),Result->Compilers);
+        cfg->Write(Path+_T("headers"),Result->Headers);
     }
 }
 
@@ -146,6 +147,7 @@ void ResultMap::ReadDetectedResults()
         Result->CFlags       = cfg->ReadArrayString(Path+_T("cflags"));
         Result->LFlags       = cfg->ReadArrayString(Path+_T("lflags"));
         Result->Compilers    = cfg->ReadArrayString(Path+_T("compilers"));
+        Result->Headers      = cfg->ReadArrayString(Path+_T("headers"));
 
         if ( Result->ShortCode.IsEmpty() )
         {
@@ -262,6 +264,11 @@ void ResultMap::LoadPredefinedResultFromFile(const wxString& FileName)
                 if ( Name == _T("compiler") )
                 {
                     Result->Compilers.Add(wxString(Sub->Attribute("name"),wxConvUTF8));
+                }
+
+                if ( Name == _T("header") )
+                {
+                    Result->Headers.Add(wxString(Sub->Attribute("file"),wxConvUTF8));
                 }
             }
 

@@ -109,6 +109,8 @@ struct LibraryConfig
      * Internal variables and $(BASE_DIR) may be used here. */
     wxArrayString LFlags;
 
+    /** \brief List of headers used by this library */
+    wxArrayString Headers;
 };
 
 #endif

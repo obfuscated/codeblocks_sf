@@ -85,6 +85,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		wxStaticText* StaticText1;
 		wxTreeCtrl* m_KnownLibrariesTree;
 		wxTextCtrl* m_UnknownLibrary;
+		wxButton* Button2;
 		wxTextCtrl* m_Filter;
 		wxButton* m_AddScript;
 		wxButton* m_Add;
@@ -97,6 +98,7 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 
 		//(*Identifiers(ProjectConfigurationPanel)
 		static const long ID_LISTBOX1;
+		static const long ID_BUTTON6;
 		static const long ID_CHECKBOX2;
 		static const long ID_BUTTON4;
 		static const long ID_BUTTON1;
@@ -124,9 +126,11 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
 		void Onm_UnknownLibraryText(wxCommandEvent& event);
 		void Onm_AddUnknownClick(wxCommandEvent& event);
 		void Onm_AddScriptClick(wxCommandEvent& event);
+		void OnButton2Click(wxCommandEvent& event);
 		//*)
 
 		wxString GetUserListName(const wxString &VarName);
+		void DetectNewLibs( const wxString& IncludeName, ResultArray& known, wxArrayString& LibsList );
 
 		DECLARE_EVENT_TABLE()
 };

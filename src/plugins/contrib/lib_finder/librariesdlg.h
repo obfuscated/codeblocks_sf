@@ -29,6 +29,7 @@ class LibrariesDlg: public wxDialog
     private:
 
         //(*Declarations(LibrariesDlg)
+        wxStaticText* StaticText10;
         wxTextCtrl* m_ObjectsDir;
         wxStaticText* StaticText9;
         wxPanel* Panel5;
@@ -44,6 +45,8 @@ class LibrariesDlg: public wxDialog
         wxTextCtrl* m_BasePath;
         wxButton* Button1;
         wxStaticText* StaticText6;
+        wxTextCtrl* m_Headers;
+        wxPanel* Panel9;
         wxStaticText* StaticText8;
         wxPanel* Panel8;
         wxTextCtrl* m_Compilers;
@@ -123,6 +126,9 @@ class LibrariesDlg: public wxDialog
         static const long ID_PANEL7;
         static const long ID_TEXTCTRL7;
         static const long ID_PANEL2;
+        static const long ID_STATICTEXT11;
+        static const long ID_TEXTCTRL14;
+        static const long ID_PANEL9;
         static const long ID_FLATNOTEBOOK1;
         //*)
 

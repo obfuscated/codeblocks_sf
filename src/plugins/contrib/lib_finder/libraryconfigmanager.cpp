@@ -216,6 +216,12 @@ void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool
                 if ( !Lib.empty()    ) Config->Libs.Add(Lib);
                 if ( !Define.empty() ) Config->Defines.Add(Define);
             }
+
+            if ( Node==_T("header") )
+            {
+                wxString file = wxString(Data->Attribute("file"),wxConvUTF8);
+                if ( !file.empty() ) Config->Headers.Add(file);
+            }
         }
     }
 

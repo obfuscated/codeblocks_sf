@@ -70,7 +70,7 @@ ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,Type
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProcessingDlg::OnButton1Click);
 	//*)
 }
@@ -501,6 +501,8 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
     {
         Result->LFlags.Add(FixVars(Config->LFlags[i],Vars));
     }
+
+    Result->Headers = Config->Headers;
 
     ResultArray& Array = m_FoundResults.GetShortCode(Config->ShortCode);
     Array.Add(Result);

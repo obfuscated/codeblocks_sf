@@ -492,6 +492,29 @@
 												</object>
 												<label>LFlags</label>
 											</object>
+											<object class="notebookpage">
+												<object class="wxPanel" name="ID_PANEL9" variable="Panel9" member="yes">
+													<object class="wxBoxSizer" variable="BoxSizer19" member="no">
+														<orient>wxVERTICAL</orient>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT11" variable="StaticText10" member="yes">
+																<label>Header files used by this library:</label>
+															</object>
+															<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxTextCtrl" name="ID_TEXTCTRL14" variable="m_Headers" member="yes">
+																<style>wxTE_MULTILINE</style>
+															</object>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+															<option>1</option>
+														</object>
+													</object>
+												</object>
+												<label>Headers</label>
+											</object>
 										</object>
 										<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>

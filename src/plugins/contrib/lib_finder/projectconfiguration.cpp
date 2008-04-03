@@ -48,7 +48,7 @@ void ProjectConfiguration::XmlLoad(TiXmlElement* Node,cbProject* Project)
     if ( !LibFinder ) return;
 
     int noauto = 0;
-    if ( LibFinder->QueryIntAttribute("disable_auto",&noauto) == TIXML_SUCCESS && noauto )
+    if ( (LibFinder->QueryIntAttribute("disable_auto",&noauto) == TIXML_SUCCESS) && noauto )
     {
         m_DisableAuto = true;
     }

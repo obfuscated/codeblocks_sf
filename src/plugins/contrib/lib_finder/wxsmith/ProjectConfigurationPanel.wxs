@@ -23,6 +23,14 @@
 										<border>5</border>
 										<option>1</option>
 									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON6" variable="Button2" member="yes">
+											<label>Try to detect missing ones</label>
+											<handler function="OnButton2Click" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
 								</object>
 								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
