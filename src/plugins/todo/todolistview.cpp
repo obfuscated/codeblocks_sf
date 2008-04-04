@@ -23,13 +23,18 @@
   #include "cbeditor.h"
   #include "cbproject.h"
   #include "editormanager.h"
+  #include "filemanager.h"
   #include "globals.h"
   #include "manager.h"
   #include "projectfile.h"
   #include "projectmanager.h"
   //#include "logmanager.h"
 #endif
+
+#include <wx/progdlg.h>
+
 #include "cbstyledtextctrl.h"
+#include "encodingdetector.h"
 
 #include "todolistview.h"
 
@@ -95,7 +100,8 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
         hbs->Add(new wxStaticText(panel, wxID_ANY, _("Scope:")), 0, wxTOP, 4);
 
         m_pSource = new wxComboBox(panel, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 3, &choices[0], wxCB_READONLY);
-        m_pSource->SetSelection(0);
+        int source = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadInt(_T("source"), 0);
+        m_pSource->SetSelection(source);
         hbs->Add(m_pSource, 0, wxLEFT | wxRIGHT, 8);
 
         hbs->Add(new wxStaticText(panel, wxID_ANY, _("User:")), 0, wxTOP, 4);
@@ -211,7 +217,7 @@ void ToDoListView::Parse()
 {
 //    wxBusyCursor busy;
     // based on user prefs, parse files for todo items
-    if(m_ignore)
+    if(m_ignore || (panel && !panel->IsShownOnScreen()) )
         return; // Reentrancy
     Clear();
     m_itemsmap.clear();
@@ -244,6 +250,12 @@ void ToDoListView::Parse()
             cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
             if (!prj)
                 return;
+            wxProgressDialog pd(_T("To-Do Plugin: Processing all files.."),
+                                _T("Processing a big project may take large amount of time.\n\n"
+                                   "Please be patient!\n"),
+                                prj->GetFilesCount(),
+                                Manager::Get()->GetAppWindow(),
+                                wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
             for (int i = 0; i < prj->GetFilesCount(); ++i)
             {
                 ProjectFile* pf = prj->GetFile(i);
@@ -253,6 +265,10 @@ void ToDoListView::Parse()
                     ParseEditor(ed);
                 else
                     ParseFile(filename);
+                if (!pd.Update(i))
+                {
+                    break;
+                }
             }
             break;
         }
@@ -285,12 +301,23 @@ void ToDoListView::ParseFile(const wxString& filename)
     if (!wxFileExists(filename))
         return;
 
-    // open file
     wxString st;
-    wxFile file(filename);
-    if(!cbRead(file,st))
+    LoaderBase* fileBuffer = Manager::Get()->GetFileManager()->Load(filename, true);
+    if (fileBuffer)
+    {
+        EncodingDetector encDetector(fileBuffer);
+        if (encDetector.IsOK())
+        {
+            st = encDetector.GetWxStr();
+            ParseBuffer(st, filename);
+        }
+    }
+    else
+    {
         return;
-    ParseBuffer(st, filename);
+    }
+
+    delete fileBuffer;
 }
 
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
@@ -451,6 +478,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 
 void ToDoListView::OnComboChange(wxCommandEvent& event)
 {
+    Manager::Get()->GetConfigManager( _T("todo_list"))->Write(_T("source"), m_pSource->GetSelection() );
     Parse();
 }
 
