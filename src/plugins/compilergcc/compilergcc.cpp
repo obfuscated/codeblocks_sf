@@ -654,10 +654,6 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 
 void CompilerGCC::Dispatcher(wxCommandEvent& event)
 {
-    // Memorize the currently focused window
-
-    //wxWindow* focused = wxWindow::FindFocus();
-
     int eventId = event.GetId();
 
 //    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher")));
@@ -726,11 +722,12 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
     if (eventId == idMenuSettings)
         OnConfig(event);
 
-    // Return focus to previously focused window
-    /* NOTE (Biplab#1#): Commented the following lines to fix [Bug #10802]. Uncomment this if it
-    breaks anything or replace this with a better fix, when available. */
-    /*if (focused)
-        focused->SetFocus();*/
+    // Return focus to current editor
+    cbEditor* ed = 0;
+    if ( (ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()) )
+    {
+        ed->GetControl()->SetFocus();
+    }
 }
 
 void CompilerGCC::TextURL(wxTextUrlEvent& event)
