@@ -1,4 +1,3 @@
-#include "headersdetectordlg.h"
 
 //(*InternalHeaders(HeadersDetectorDlg)
 #include <wx/sizer.h>
@@ -10,6 +9,7 @@
 //*)
 
 #include <encodingdetector.h>
+#include "headersdetectordlg.h"
 
 //(*IdInit(HeadersDetectorDlg)
 const long HeadersDetectorDlg::ID_STATICTEXT1 = wxNewId();
@@ -38,7 +38,7 @@ HeadersDetectorDlg::HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArr
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxFlexGridSizer* FlexGridSizer1;
 	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-	
+
 	Create(parent, wxID_ANY, _("Detecting missing libraries..."), wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Scanning:"));
@@ -66,7 +66,7 @@ HeadersDetectorDlg::HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArr
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
-	
+
 	Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&HeadersDetectorDlg::OnTimer1Trigger);
 	//*)
 
