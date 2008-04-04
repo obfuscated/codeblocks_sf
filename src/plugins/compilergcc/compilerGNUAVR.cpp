@@ -260,7 +260,13 @@ AutoDetectResult CompilerGNUAVR::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
     if (platform::windows)
-        m_MasterPath = _T("C:\\WinAVR");
+    {
+        m_MasterPath = wxFindFirstFile(_T("C:\\WinAVR*"), wxDIR);
+        if (m_MasterPath.empty())
+        {
+            m_MasterPath = _T("C:\\WinAVR");
+        }
+    }
     else
         m_MasterPath = _T("/usr");
 
