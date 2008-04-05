@@ -55,7 +55,8 @@ Wiz::Wiz()
     m_pWizProjectPathPanel(0),
     m_pWizFilePathPanel(0),
     m_pWizCompilerPanel(0),
-    m_pWizBuildTargetPanel(0)
+    m_pWizBuildTargetPanel(0),
+    m_LaunchIndex(0)
 {
     //ctor
 }
