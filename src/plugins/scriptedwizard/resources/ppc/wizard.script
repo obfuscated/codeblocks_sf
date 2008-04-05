@@ -1,0 +1,161 @@
+derivative <- 1;
+outputvariant <- 1;
+
+function BeginWizard()
+{
+	// this is the text that will appear in the start (intro) page
+	local intro_msg = _T(	"Welcome to the new PowerPC application wizard!\n" +
+				"This wizard will guide you to create a new PowerPC application.\n\n" +
+				"Please click \"Next\" to proceed.");
+
+	local PowerPC_derivatives = _T(	"PowerPC MPC5200;" +
+					"PowerPC MPC565"
+					); // !!! NEW DERIVATIVE: UPDATE FUNCTION SETUPDERIVATIVE, TOO !!!
+	// intro
+	Wizard.AddInfoPage(_T("ConsoleIntro"), intro_msg);
+	// select project name and path
+	Wizard.AddProjectPathPage();
+	// select compiler and configurations
+	Wizard.AddCompilerPage(_T(""), _T("ppc*"), false, false);
+	// select language
+	Wizard.AddGenericSingleChoiceListPage(_T("PowerPCDerivatives"), _T("Please select your PowerPC derivative."), PowerPC_derivatives , derivative);
+
+//	Wizard.AddGenericSingleChoiceListPage(_T("OutputVariant"), _T("Please select the content of your project.\nPlease note: Empty projects are only compilable\nafter adding files!"), _T("Empty project;Compilable project with dummyfiles"), outputvariant);
+}
+//
+//------------------------------------------------------------------------------
+//
+function OnLeave_PowerPCDerivatives(fwd)
+{
+	if (fwd)
+	{
+	derivative = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+	}
+	return true;
+}
+//
+//------------------------------------------------------------------------------
+//
+function GetFilesDir()
+{
+//	if (outputvariant == 0)
+//	{
+//		return _T("");
+//	}
+	switch (derivative)
+	{
+		case 0:
+			return _T("ppc") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("MPC5200");
+			break;
+		case 1:
+			return _T("ppc") + wxFILE_SEP_PATH + _T("files") + wxFILE_SEP_PATH + _T("MPC565");
+			break;
+	}
+}
+//
+//------------------------------------------------------------------------------
+//
+function SetupProject(project)
+{
+	local target;
+	local i;
+
+	// NOTE: Major compiler system drawback here.
+	// Until it is redesigned to allow easier compiler settings,
+	// we have to check the compiler's ID and set options for different compilers...
+	// We make things easier for scripts, by providing a few predefined functions
+	// to setup common settings like "debug", "warnings", etc.
+	// These functions are located in <templates_path>/common_functions.script.
+	// If you add other commonly used functions or bug-fix anything in that file,
+	// please share it with us :)
+
+	// enable compiler warnings (project-wide)
+	WarningsOn(project, Wizard.GetCompilerID());
+	DebugSymbolsOn(project, Wizard.GetCompilerID());
+	OptimizationsOn(project, Wizard.GetCompilerID());
+
+	// Add subdirectories for includes
+	project.AddIncludeDir(_T("src"));
+	project.AddIncludeDir(_T("h"));
+
+	project.AddCompilerOption(_T("-fno-common"));
+	project.AddLinkerOption(_T("-Wl,-Map,map.txt"));
+	project.AddLinkerOption(_T("-T ld/target.ld"));
+
+	SetupDerivative(derivative,project);
+
+	// We setup the targets using SetupTarget() which is conveniently called by Code::Blocks
+	// if we register this wizard as wizTarget type :)
+	// This means that this very wizard can be used both as wizProject *and* as wizTarget ;)
+
+	//configure default target
+	target = project.GetBuildTarget(_T("default"));
+
+	if (IsNull(target))
+        target = project.AddBuildTarget(_T("default"));
+
+	SetupTarget(target, true);
+
+	for (i = 0; i < project.GetFilesCount(); i++)
+	{
+		if ((project.GetFile(i).relativeFilename.Matches(_T("*S"))) || (project.GetFile(i).relativeFilename.Matches(_T("*s"))))
+		{
+			project.GetFile(i).compile = true;
+			project.GetFile(i).link = true;
+		}
+	}
+	// all done!
+	return true;
+}
+//
+//------------------------------------------------------------------------------
+//
+function SetupTarget(target,is_debug)
+{
+	if (IsNull(target))
+		return false;
+
+	local projectname = GetProjectManager().GetActiveProject().GetTitle();
+	target.SetTargetType(ttConsoleOnly);
+
+	target.SetTargetFilenameGenerationPolicy(1, 1);
+	target.SetOutputFilename(target.GetTitle() + wxFILE_SEP_PATH + projectname + _T(".elf"));
+
+	target.SetObjectOutput(target.GetTitle());
+
+	if (is_debug)
+	{
+		// enable debugging symbols for this target
+		DebugSymbolsOn(target, Wizard.GetCompilerID());
+	}
+
+	return true;
+}
+
+function SetupDerivative(derivative,project)
+{
+	if (Wizard.GetCompilerID().Matches(_T("ppc*")))
+	{
+		// Number is index in listbox!
+		switch (derivative)
+		{
+			case 0: // PowerPC MPC5200
+				project.AddCompilerOption(_T("-mcpu=603e"));
+				project.AddCompilerOption(_T("-msoft-float"));
+				project.AddCompilerOption(_T("-meabi"));
+				project.AddCompilerOption(_T("-DDONT_USE_DECREMENTER"));
+				project.AddCompilerOption(_T("-DPHYCORE_MPC5200"));
+				project.AddLinkerOption(_T("-mcpu=603e"));
+				project.AddLinkerOption(_T("-msoft-float"));
+				break;
+
+			case 1: // PowerPC MPC565
+				project.AddCompilerOption(_T("-mcpu=505"));
+				project.AddCompilerOption(_T("-meabi"));
+				project.AddCompilerOption(_T("-D_ARCH_PPC555"));
+				project.AddCompilerOption(_T("-DPHYCORE_MPC565"));
+				project.AddLinkerOption(_T("-mcpu=505"));
+				break;
+		}
+	}
+}
