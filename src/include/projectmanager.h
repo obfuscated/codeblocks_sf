@@ -449,7 +449,9 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnAddFileToProject(wxCommandEvent& event);
         void OnRemoveFileFromProject(wxCommandEvent& event);
         void OnRenameFile(wxCommandEvent& event);
+        void OnSaveProject(wxCommandEvent& event);
         void OnCloseProject(wxCommandEvent& event);
+        void OnSaveFile(wxCommandEvent& event);
         void OnCloseFile(wxCommandEvent& event);
         void OnOpenFile(wxCommandEvent& event);
         void OnOpenWith(wxCommandEvent& event);

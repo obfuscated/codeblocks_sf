@@ -71,6 +71,8 @@ bool ProjectManager::s_CanShutdown = true;
 int ID_ProjectManager = wxNewId();
 int idMenuSetActiveProject = wxNewId();
 int idMenuOpenFile = wxNewId();
+int idMenuSaveProject = wxNewId();
+int idMenuSaveFile = wxNewId();
 int idMenuCloseProject = wxNewId();
 int idMenuCloseFile = wxNewId();
 int idMenuAddFilePopup = wxNewId();
@@ -178,6 +180,8 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuRemoveFolderFilesPopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuRemoveFilePopup, ProjectManager::OnRemoveFileFromProject)
     EVT_MENU(idMenuRenameFile, ProjectManager::OnRenameFile)
+    EVT_MENU(idMenuSaveProject, ProjectManager::OnSaveProject)
+    EVT_MENU(idMenuSaveFile, ProjectManager::OnSaveFile)
     EVT_MENU(idMenuCloseProject, ProjectManager::OnCloseProject)
     EVT_MENU(idMenuCloseFile, ProjectManager::OnCloseFile)
     EVT_MENU(idMenuOpenFile, ProjectManager::OnOpenFile)
@@ -506,9 +510,11 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             cbProject* CurProject = Projects->Item(i);
             if (ProjInTree->GetTitle().IsSameAs(CurProject->GetTitle()))
             {
-                ProjectBuildTarget* CompTarget = CurProject->GetCurrentlyCompilingTarget();
-                if (CompTarget)
+                if(CurProject->GetCurrentlyCompilingTarget())
+                {
                     PopUpMenuOption = false;
+                    break;
+                }
             }
         }
     }
@@ -521,6 +527,8 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         {
             if (ftd->GetProject() != m_pActiveProject)
                 menu.Append(idMenuSetActiveProject, _("Activate project"));
+            menu.Append(idMenuSaveProject, _("Save project"));
+            menu.Enable(idMenuSaveProject, PopUpMenuOption);
             menu.Append(idMenuCloseProject, _("Close project"));
             menu.Enable(idMenuCloseProject, PopUpMenuOption);
             menu.AppendSeparator();
@@ -557,6 +565,8 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
                     caption.Printf(_("Switch to %s"), m_pTree->GetItemText(id).c_str());
                     menu.Append(idMenuOpenFile, caption);
                 }
+                caption.Printf(_("Save %s"), m_pTree->GetItemText(id).c_str());
+                menu.Append(idMenuSaveFile, caption);
                 caption.Printf(_("Close %s"), m_pTree->GetItemText(id).c_str());
                 menu.Append(idMenuCloseFile, caption);
             }
@@ -2107,11 +2117,31 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     }
 }
 
-void ProjectManager::OnCloseProject(wxCommandEvent& event)
+void ProjectManager::OnSaveProject(wxCommandEvent& WXUNUSED(event))
+{
+    wxTreeItemId sel = m_pTree->GetSelection();
+    if(FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
+    {
+        if(cbProject* Project = ftd->GetProject())
+        {
+    		//TODO : does it make sense TO not save project file while compiling ??
+            if(m_IsLoadingProject || Project->GetCurrentlyCompilingTarget())
+    		{
+			    wxBell();
+            }
+            else
+            {
+			    SaveProject(Project);
+            }
+        }
+    }
+} // end of OnSaveProject
+
+void ProjectManager::OnCloseProject(wxCommandEvent& WXUNUSED(event))
 {
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-    cbProject *proj=NULL;
+    cbProject *proj = 0;
     if (ftd)
         proj = ftd->GetProject();
     if(proj)
@@ -2128,21 +2158,37 @@ void ProjectManager::OnCloseProject(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->Refresh();
 }
 
-void ProjectManager::OnCloseFile(wxCommandEvent& event)
+void ProjectManager::OnSaveFile(wxCommandEvent& WXUNUSED(event))
 {
     wxTreeItemId sel = m_pTree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
-
-    if (ftd)
+    if(FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
     {
-        cbProject* project = ftd->GetProject();
-        ProjectFile* f = project->GetFile(ftd->GetFileIndex());
-        if (f)
-            Manager::Get()->GetEditorManager()->Close(f->file.GetFullPath());
+	    if(cbProject* Project = ftd->GetProject())
+    	{
+    	    if(ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
+    	    {
+    	    	Manager::Get()->GetEditorManager()->Save(File->file.GetFullPath());
+    	    }
+    	}
     }
-}
+} // end of OnSaveFile
 
-void ProjectManager::OnOpenFile(wxCommandEvent& event)
+void ProjectManager::OnCloseFile(wxCommandEvent& WXUNUSED(event))
+{
+    wxTreeItemId sel = m_pTree->GetSelection();
+    if (FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel))
+    {
+	    if(cbProject* Project = ftd->GetProject())
+    	{
+    	    if(ProjectFile* File = Project->GetFile(ftd->GetFileIndex()))
+    	    {
+		        Manager::Get()->GetEditorManager()->Close(File->file.GetFullPath());
+    	    }
+    	}
+    }
+} // end of OnCloseFile
+
+void ProjectManager::OnOpenFile(wxCommandEvent& WXUNUSED(event))
 {
     DoOpenSelectedFile();
 }
@@ -2183,11 +2229,12 @@ void ProjectManager::OnOpenWith(wxCommandEvent& event)
     }
 }
 
-void ProjectManager::OnNotes(wxCommandEvent& event)
+void ProjectManager::OnNotes(wxCommandEvent& WXUNUSED(event))
 {
-    cbProject* project = GetActiveProject();
-    if (project)
+    if(cbProject* project = GetActiveProject())
+    {
         project->ShowNotes(false, true);
+    }
 }
 
 void ProjectManager::OnProperties(wxCommandEvent& event)
