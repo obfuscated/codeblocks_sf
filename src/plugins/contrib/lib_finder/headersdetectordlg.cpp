@@ -178,7 +178,7 @@ void HeadersDetectorDlg::ProcessFile( ProjectFile* file, wxArrayString& includes
     content[contentLength] = 0;
 
     bool blockComment = false;
-    for ( size_t pos = 0; pos < contentLength; )
+    for ( size_t pos = 0; pos < static_cast<size_t>(contentLength); )
     {
         // Fetching next line
         char last = 0;
@@ -299,7 +299,7 @@ void HeadersDetectorDlg::ProcessFile( ProjectFile* file, wxArrayString& includes
             last = ch;
             lastCharAdded = thisCharAdded;
         }
-        while ( !lineEnd && pos < contentLength );
+        while ( !lineEnd && pos < static_cast<size_t>(contentLength) );
         line[lineLength] = 0;
 
         // Searching for include

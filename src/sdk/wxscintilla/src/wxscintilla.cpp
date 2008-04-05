@@ -2551,7 +2551,7 @@ void wxScintilla::SetProperty (const wxString& key, const wxString& value) {
 
 // Retrieve a value that may be used by a lexer for some optional feature.
 wxString wxScintilla::GetProperty (const wxString& key) {
-    int len = SendMsg (SCI_GETPROPERTY, (long)(const char*)wx2sci(key), (long)NULL);
+    int len = SendMsg (SCI_GETPROPERTY, (long)(const char*)wx2sci(key), (long)0);
     if (!len) return wxEmptyString;
     wxMemoryBuffer mbuf (len+1);
     char* buf = (char*)mbuf.GetWriteBuf (len+1);
@@ -2561,7 +2561,7 @@ wxString wxScintilla::GetProperty (const wxString& key) {
     return sci2wx(buf);
 }
 wxString wxScintilla::GetPropertyExpanded (const wxString& key) {
-    int len = SendMsg (SCI_GETPROPERTYEXPANDED, (long)(const char*)wx2sci(key), (long)NULL);
+    int len = SendMsg (SCI_GETPROPERTYEXPANDED, (long)(const char*)wx2sci(key), (long)0);
     if (!len) return wxEmptyString;
     wxMemoryBuffer mbuf(len+1);
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
