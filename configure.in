@@ -265,6 +265,40 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/Makefile
 	src/plugins/scriptedwizard/resources/avr/Makefile
 	src/plugins/scriptedwizard/resources/avr/files/Makefile
+	src/plugins/scriptedwizard/resources/arm/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ARM-eval7t/src/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/ek-at91sam7a3/src/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/lpd-lh7a404/src/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/srcMakefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/src/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-AT91M55800/src/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-LPC2294/src/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/h/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/ld/Makefile
+	src/plugins/scriptedwizard/resources/arm/files/phyCORE-PXA255/src/Makefile
 	src/plugins/scriptedwizard/resources/c_file/Makefile
 	src/plugins/scriptedwizard/resources/console/Makefile
 	src/plugins/scriptedwizard/resources/console/c/Makefile
@@ -307,6 +341,16 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/sdl/files/Makefile
 	src/plugins/scriptedwizard/resources/plugins/Makefile
 	src/plugins/scriptedwizard/resources/plugins/templates/Makefile
+	src/plugins/scriptedwizard/resources/ppc/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC565/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC565/h/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC565/ld/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC565/src/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/h/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/ld/Makefile
+	src/plugins/scriptedwizard/resources/ppc/files/MPC5200/src/Makefile
 	src/plugins/scriptedwizard/resources/smartwin/Makefile
 	src/plugins/scriptedwizard/resources/smartwin/files/Makefile
 	src/plugins/scriptedwizard/resources/staticlib/Makefile
