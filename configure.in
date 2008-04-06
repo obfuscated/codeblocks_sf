@@ -282,7 +282,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/Makefile
 	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/h/Makefile
 	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/ld/Makefile
-	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/srcMakefile
+	src/plugins/scriptedwizard/resources/arm/files/olimex-at91sam7sx/src/Makefile
 	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/Makefile
 	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/h/Makefile
 	src/plugins/scriptedwizard/resources/arm/files/olimex-lpc213x/ld/Makefile
