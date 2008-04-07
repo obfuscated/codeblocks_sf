@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetstreectrl.cpp 112 2008-01-07 17:03:31Z Pecan $
+// RCS-ID: $Id: codesnippetstreectrl.cpp 113 2008-01-14 18:31:17Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -44,6 +44,7 @@
 #include <tinyxml/tinyxml.h>
 #include "snippetitemdata.h"
 #include "codesnippetstreectrl.h"
+#include "codesnippetswindow.h"
 #include "snippetsconfig.h"
 #include "messagebox.h"
 #include "menuidentifiers.h"
@@ -139,6 +140,8 @@ bool CodeSnippetsTreeCtrl::IsFileLinkSnippet (wxTreeItemId treeItemId  )
 wxString CodeSnippetsTreeCtrl::GetFileLinkExt (wxTreeItemId treeItemId  )
 // ----------------------------------------------------------------------------
 {
+    //return filename extension
+
     if ( not IsFileLinkSnippet(treeItemId) ) return wxT("");
     wxTreeItemId itemId = treeItemId;
     if ( itemId == (void*)0) itemId = GetSelection();
@@ -167,6 +170,8 @@ void CodeSnippetsTreeCtrl::OnItemSelectChanging(wxTreeEvent& event)
 void CodeSnippetsTreeCtrl::OnItemSelected(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {                                                           //(pecan 2006/9/12)
+    // User selected a tree item. Memorize the selection for
+    // other routines.
 
     //CodeSnippetsTreeCtrl* pTree = (CodeSnippetsTreeCtrl*)event.GetEventObject();
     wxTreeItemId itemId = event.GetItem();
@@ -270,9 +275,12 @@ int CodeSnippetsTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTree
 	}
 }
 // ----------------------------------------------------------------------------
-wxTreeItemId CodeSnippetsTreeCtrl::FindItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType)
+wxTreeItemId CodeSnippetsTreeCtrl::FindTreeItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType)
 // ----------------------------------------------------------------------------
 {
+
+    // Return a tree item id matching string
+
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = GetSnippetsTreeCtrl()->GetFirstChild(node, cookie );
 
@@ -316,7 +324,7 @@ wxTreeItemId CodeSnippetsTreeCtrl::FindItemByLabel(const wxString& searchTerms, 
 
 			if(GetSnippetsTreeCtrl()->ItemHasChildren(item))
 			{
-				wxTreeItemId search = FindItemByLabel(searchTerms, item, requestType);
+				wxTreeItemId search = FindTreeItemByLabel(searchTerms, item, requestType);
 				if(search.IsOk())
 				{
 					return search;
@@ -331,9 +339,11 @@ wxTreeItemId CodeSnippetsTreeCtrl::FindItemByLabel(const wxString& searchTerms, 
    return dummyItem;
 }
 // ----------------------------------------------------------------------------
-wxTreeItemId CodeSnippetsTreeCtrl::FindItemById(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType)
+wxTreeItemId CodeSnippetsTreeCtrl::FindTreeItemByTreeId(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType)
 // ----------------------------------------------------------------------------
 {
+    // Return a tree item matching item reference
+
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = GetSnippetsTreeCtrl()->GetFirstChild(startNode, cookie );
 
@@ -377,7 +387,7 @@ wxTreeItemId CodeSnippetsTreeCtrl::FindItemById(const wxTreeItemId& itemToFind, 
 
 			if(GetSnippetsTreeCtrl()->ItemHasChildren(item))
 			{
-				wxTreeItemId search = FindItemById(itemToFind, item, itemToFindType);
+				wxTreeItemId search = FindTreeItemByTreeId(itemToFind, item, itemToFindType);
 				if(search.IsOk())
 				{
 					return search;
@@ -391,11 +401,77 @@ wxTreeItemId CodeSnippetsTreeCtrl::FindItemById(const wxTreeItemId& itemToFind, 
    wxTreeItemId dummyItem = (void*)(0);
    return dummyItem;
 }
+// ----------------------------------------------------------------------------
+wxTreeItemId CodeSnippetsTreeCtrl::FindTreeItemBySnippetId(const SnippetItemID& IDToFind, const wxTreeItemId& startNode)
+// ----------------------------------------------------------------------------
+{
+    // Return a tree item matching item reference
+
+	wxTreeItemIdValue cookie;
+	wxTreeItemId item = GetSnippetsTreeCtrl()->GetFirstChild(startNode, cookie );
+
+	// Loop through all items
+	while(item.IsOk())
+	{
+		if (const SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(item)))
+		{
+			bool ignoreThisItem = false;
+
+			switch (itemData->GetType())
+			{
+				case SnippetItemData::TYPE_ROOT:
+					ignoreThisItem = true;
+				break;
+
+				case SnippetItemData::TYPE_SNIPPET:
+					if ( IDToFind not_eq itemData->GetID() )
+					{
+						ignoreThisItem = true;
+					}
+				break;
+
+				case SnippetItemData::TYPE_CATEGORY:
+					if ( IDToFind not_eq itemData->GetID() )
+					{
+						ignoreThisItem = true;
+					}
+				break;
+			}
+
+			if (!ignoreThisItem)
+			{
+				wxString label = GetSnippetsTreeCtrl()->GetItemText(item);
+
+				if( IDToFind == itemData->GetID() )
+				{
+					return item;
+				}
+			}
+
+			if(GetSnippetsTreeCtrl()->ItemHasChildren(item))
+			{
+				wxTreeItemId search = FindTreeItemBySnippetId( IDToFind, item );
+				if(search.IsOk())
+				{
+					return search;
+				}
+			}
+
+			item = GetSnippetsTreeCtrl()->GetNextChild(startNode, cookie);
+		}
+	}
+
+   // Return dummy item if search string was not found
+   wxTreeItemId dummyItem = (void*)(0);
+   return dummyItem;
+}
 
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemId& parentID)
 // ----------------------------------------------------------------------------
 {
+    // Translate tree items to xml data
+
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = GetFirstChild(parentID, cookie);
 
@@ -415,6 +491,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 			{
 				// Category
 				element.SetAttribute("type", "category");
+				element.SetAttribute("ID", csU2C(data->GetSnippetIDStr()) );
 
 				// Check if this category has children
 				if(ItemHasChildren(item))
@@ -427,6 +504,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 			{
 				// Snippet
 				element.SetAttribute("type", "snippet");
+				element.SetAttribute("ID", csU2C(data->GetSnippetIDStr()) );
 
 				TiXmlElement snippetElement("snippet");
 				TiXmlText snippetElementText(csU2C(data->GetSnippet()));
@@ -453,17 +531,22 @@ void CodeSnippetsTreeCtrl::SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemI
 void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const wxTreeItemId& parentID)
 // ----------------------------------------------------------------------------
 {
+    // Translate xml data to tree data
+
 	for (; node; node = node->NextSiblingElement())
 	{
 		// Check if the node has attributes
 		const wxString itemName(csC2U(node->Attribute("name")));
 		const wxString itemType(csC2U(node->Attribute("type")));
+		const wxString itemIDstr(csC2U(node->Attribute("ID")));
+		long itemID;
+		itemIDstr.ToLong(&itemID);
 
 		// Check the item type
 		if (itemType == _T("category"))
 		{
 			// Add new category
-			wxTreeItemId newCategoryId = AddCategory(parentID, itemName, false);
+			wxTreeItemId newCategoryId = AddCategory(parentID, itemName, itemID, /*editNow*/false);
 
 			// Load the child items
 			if (!node->NoChildren())
@@ -480,13 +563,13 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 				{
 					if (snippetElementText->ToText())
 					{
-						AddCodeSnippet(parentID, itemName, csC2U(snippetElementText->Value()), false);
+						AddCodeSnippet(parentID, itemName, csC2U(snippetElementText->Value()), itemID,  /*editNow*/false);
 					}
 				}
 				else
 				{
 					// Create a new snippet with no code in it
-					AddCodeSnippet(parentID, itemName, wxEmptyString, false);
+					AddCodeSnippet(parentID, itemName, wxEmptyString, itemID, /*editNow*/false);
 				}
 			}
 			else
@@ -596,11 +679,11 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent,
-                            wxString title, wxString codeSnippet, bool editNow)
+                            wxString title, wxString codeSnippet, long ID, bool editNow)
 // ----------------------------------------------------------------------------
 {
 	wxTreeItemId newItemID = InsertItem(parent, GetLastChild(parent), title, 2, -1,
-                new SnippetItemData(SnippetItemData::TYPE_SNIPPET, codeSnippet));
+                new SnippetItemData(SnippetItemData::TYPE_SNIPPET, codeSnippet, ID) );
 
 	// Sort 'em
 	SortChildren(parent);
@@ -625,10 +708,11 @@ void CodeSnippetsTreeCtrl::AddCodeSnippet(const wxTreeItemId& parent,
 }
 
 // ----------------------------------------------------------------------------
-wxTreeItemId CodeSnippetsTreeCtrl::AddCategory(const wxTreeItemId& parent, wxString title, bool editNow)
+wxTreeItemId CodeSnippetsTreeCtrl::AddCategory(const wxTreeItemId& parent, wxString title, long ID, bool editNow)
 // ----------------------------------------------------------------------------
 {
-	wxTreeItemId newCategoryID = InsertItem(parent, GetLastChild(parent), title, 1, -1, new SnippetItemData(SnippetItemData::TYPE_CATEGORY));
+	wxTreeItemId newCategoryID = InsertItem(parent, GetLastChild(parent), title, 1, -1,
+            new SnippetItemData(SnippetItemData::TYPE_CATEGORY, ID));
 
 	// Sort 'em
 	SortChildren(parent);
@@ -672,12 +756,12 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
     if (not shiftKeyIsDown)
     {
         // put deleted items in .trash category
-        wxTreeItemId trashId = FindItemByLabel(wxT(".trash"), GetRootItem(), CodeSnippetsConfig::SCOPE_CATEGORIES);
+        wxTreeItemId trashId = FindTreeItemByLabel(wxT(".trash"), GetRootItem(), CodeSnippetsConfig::SCOPE_CATEGORIES);
         if ( trashId==(void*)0 )
-            trashId = AddCategory(GetRootItem(), wxT(".trash"), false);
+            trashId = AddCategory(GetRootItem(), wxT(".trash"), /*itemID*/0, /*editNow*/false);
 
         // if item is NOT already in the trash, copy item to .trash category
-        if (not ( FindItemById( itemId, trashId, pItemData->GetType()) ))
+        if (not ( FindTreeItemByTreeId( itemId, trashId, pItemData->GetType()) ))
         {
             TiXmlDocument* pDoc =  CopyTreeNodeToXmlDoc( itemId);
             CopyXmlDocToTreeNode(pDoc, trashId);
@@ -750,10 +834,6 @@ void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
     // -----------------------
     CodeSnippetsTreeCtrl* pTree = (CodeSnippetsTreeCtrl*)event.GetEventObject();
 
-    //#ifdef LOGGING
-    //	 LOGIT( wxT("ScrapList::OnTreeCtrlEvent %p"), pTree );
-    //#endif //LOGGING
-
     #ifdef LOGGING
      LOGIT( _T("TREE_CTRL_BEGIN_DRAG %p"), pTree );
     #endif //LOGGING
@@ -775,7 +855,7 @@ void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
     event.Allow();
 
     // -----------------------------------------
-    // Do *not* event.Skip() or GTK will break
+    // Do *not* event.Skip() or GTK will break.
     //event.Skip();
     // -----------------------------------------
 
@@ -830,7 +910,7 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
     }
 
 
-    // Save the source item node to an Xml Document
+    // Save the source item node to a new Xml Document
     // Load it into the target item node
     // delete the source item node
 
@@ -856,7 +936,7 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
     delete pDoc; pDoc = 0;
 
     // -----------------------------------------
-    // Do *not* event.Skip() or GTK will break
+    // Do *not* event.Skip() or GTK will break.
     //event.Skip();
     // -----------------------------------------
 
@@ -867,11 +947,33 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
 void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // a wxAUI window is not enabling the Tree ctrl so when leaving
-    // the disabled TreeCtrl, the scintilla editor doesnt show the cursor.
-    wxWindow* pw = (wxWindow*)event.GetEventObject();
-    pw->Enable();
-    pw->SetFocus();
+    //*WARNING* child windows of wxAUI windows do not get common events.
+    // unless the parent wxAUI window has/had focus.
+
+    // a wxAUI window is not enabling the Tree ctrl unless the user specifically
+    // clicks on a tree item. Its disabled otherwise, so when leaving
+    // the disabled TreeCtrl, the CodeSnippets child Edit (scintilla editor)
+    // gets no EVT_FOCUS_WINDOW and therefore shows no caret/cursor.
+    // So here, we force the tree ctrl to focus so that the editor
+    // gets a focus event also. Note also, that other common events are not
+    // propagated when a wxAUI window is floating.
+
+    #if defined(LOGGING)
+    //LOGIT( _T("CodeSnippetsTreeCtrl::OnEnterWindow"));
+    #endif
+
+    // If the user is editing a label, don't refocus the control
+    if ( not GetConfig()->GetSnippetsWindow()->IsEditingLabel() )
+    if ( GetConfig()->IsFloatingWindow())
+    {
+        #if defined(LOGGING)
+        //LOGIT( _T("CodeSnippetsCtrl IsFloatingWindow[%s]"), _T("TRUE"));
+        #endif
+        wxWindow* pw = (wxWindow*)event.GetEventObject();
+        pw->Enable();
+        pw->SetFocus();
+    }
+
     event.Skip();
 }
 // ----------------------------------------------------------------------------
@@ -887,7 +989,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     // in the destination window.
 
     #ifdef LOGGING
-     //LOGIT( _T("MOUSE EVT_LEAVE_WINDOW") );
+     LOGIT( _T("CodeSnippetsTreeCtrl::OnLeaveWindow") );
     #endif //LOGGING
 
     // Left mouse key must be down (dragging)
@@ -904,7 +1006,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     // before EVT_END_DRAG, who will clear this flag
     m_bMouseLeftWindow = true;
 
-    // we now have data, create both a simple text and filename drop source
+    // we now have data; create both a simple text and filename drop source
     wxTextDataObject* textData = new wxTextDataObject();
     wxFileDataObject* fileData = new wxFileDataObject();
         // fill text and file sources with snippet
@@ -1083,7 +1185,7 @@ wxTreeItemId CodeSnippetsTreeCtrl::ConvertSnippetToCategory(wxTreeItemId itemId)
 
     // Create new Category
     wxTreeItemId newCategoryId = AddCategory( itemParent,
-                GetItemText(oldItemId), false );
+                GetItemText(oldItemId), GetSnippetID(oldItemId), false );
 
     // Insert old Snippet Item under new Category
     TiXmlElement* root = pDoc->RootElement();
@@ -1251,8 +1353,9 @@ void CodeSnippetsTreeCtrl::EditSnippetAsFileLink()
     // we have an actual file link, not just text.
     // use user specified editor, else hard coded pgms.
     wxString pgmName = GetConfig()->SettingsExternalEditor;
+    #if defined(LOGGING)
     LOGIT( _T("PgmName[%s]"),pgmName.c_str() );
-
+    #endif
     // Do: if external pgm name is blank, or file link doesn't exists
     // must be text only
         if ( pgmName.IsEmpty() || ( not ::wxFileExists(pgmName)) )
@@ -1758,12 +1861,17 @@ void CodeSnippetsTreeCtrl::OnIdle()
             }
             else //This was an external file
             {
-                ;// Modified external files already saved by dialog
+                ;// Modified external files already saved by editor
             }
             // if text item type changed to link, set corrected icon
             if ( pdlg->GetSnippetId().IsOk() )
-                SetSnippetImage(pdlg->GetSnippetId());
-			SetFileChanged(true);
+            {   SetSnippetImage(pdlg->GetSnippetId());
+                #if defined(LOGGING)
+                LOGIT( _T("CodeSnippetsTreeCtrl::OnIdle() saved XML"));
+                #endif
+            }
+			//-SetFileChanged(true);
+			SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
 		}//if
 		if (pdlg && (not m_bShutDown) )
         {

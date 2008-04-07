@@ -27,15 +27,29 @@
 #include "snippetitemdata.h"
 
 // ----------------------------------------------------------------------------
-SnippetItemData::SnippetItemData(SnippetItemType type) : m_Type(type), m_Snippet(wxEmptyString)
+// statics
 // ----------------------------------------------------------------------------
+long SnippetItemData::HighestSnippetID = 0;
+// ----------------------------------------------------------------------------
+SnippetItemData::SnippetItemData(SnippetItemType type, SnippetItemID ID)
+// ----------------------------------------------------------------------------
+    : m_Type(type), m_Snippet(wxEmptyString), m_ID(ID)
 {
+    if ( 0 == m_ID )
+        m_ID = GetNewID();
+    else
+        SetHighestSnippetID(ID);
 }
 
 // ----------------------------------------------------------------------------
-SnippetItemData::SnippetItemData(SnippetItemType type, wxString snippet) : m_Type(type), m_Snippet(snippet)
-// ----------------------------------------------------------------------------
+SnippetItemData::SnippetItemData(SnippetItemType type, wxString snippet, SnippetItemID ID)
+// ---------------------------------------------------------------------------
+    : m_Type(type), m_Snippet(snippet), m_ID(ID)
 {
+    if ( 0 == m_ID )
+        m_ID = GetNewID();
+    else
+        SetHighestSnippetID(ID);
 }
 
 // ----------------------------------------------------------------------------

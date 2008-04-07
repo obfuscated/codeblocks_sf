@@ -72,6 +72,9 @@ class CodeSnippetsWindow : public wxPanel
         wxString GetSnippet( wxTreeItemId itemId ) { return GetSnippetsTreeCtrl()->GetSnippet(itemId);}
         wxTreeItemId GetAssociatedItemID(){return GetSnippetsTreeCtrl()->GetAssociatedItemID();}
 
+        bool IsEditingLabel() {return m_bIsEditingLabel;}
+        void IsEditingLabel( bool trueorfalse) { m_bIsEditingLabel = trueorfalse;}
+
 
 	private:
 		void InitDlg();
@@ -91,6 +94,7 @@ class CodeSnippetsWindow : public wxPanel
 //-		SearchConfiguration     m_SearchConfig;
 		bool                    m_isCheckingForExternallyModifiedFiles;
         TiXmlDocument*          pTiXmlDoc;
+        bool                    m_bIsEditingLabel;
 
 
 		void OnSearchCfg(wxCommandEvent& event);
@@ -129,6 +133,8 @@ class CodeSnippetsWindow : public wxPanel
         void OnMnuFileBackup(wxCommandEvent& event);
         void OnClose(wxCloseEvent& event); //never occurs
         void OnIdle(wxIdleEvent& event);
+        void OnLeaveWindow (wxMouseEvent &event);
+        void OnEnterWindow (wxMouseEvent &event);
 
 		DECLARE_EVENT_TABLE()
 };

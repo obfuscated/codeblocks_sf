@@ -1305,6 +1305,9 @@ bool EditPrint::PrintScaling (wxDC *dc){
 void Edit::OnEnterWindow(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
+    #if defined(LOGGING)
+    //LOGIT( _T("Edit::OnEnterWindow"));
+    #endif
     event.Skip(); return;
 //    // This is really annoying. CodeSnippetsTreeCtrl::ExecuteFrame()
 //    // disables its parent to avoid the user closing the parent and leaving this
@@ -1593,7 +1596,12 @@ void DragScrollEvents::OnMouseEvent(wxMouseEvent& event)    //MSW
     // if "focus follows mouse" enabled, set focus to window
     if (pDS->GetMouseFocusEnabled() )
         if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)
+        {
+            #if defined(LOGGING)
+            //LOGIT( _T("Edit::OnMouseEvent[wxEVT_ENTER_WINDOW]"));
+            #endif
             if (m_pEvtObject) ((wxWindow*)m_pEvtObject)->SetFocus();
+        }
 
 //    // set focus to editor window if mouse is in it
 //    if (event.GetEventType() ==  wxEVT_ENTER_WINDOW)

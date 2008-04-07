@@ -58,8 +58,8 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 		bool        LoadItemsFromFile(const wxString& fileName, bool bAppendItems);
 		void        LoadItemsFromXmlNode(const TiXmlElement* node, const wxTreeItemId& parentID);
 		void        SaveItemsToXmlNode(TiXmlNode* node, const wxTreeItemId& parentID);
-		void        AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, bool editNow);
-		wxTreeItemId AddCategory(const wxTreeItemId& parent, wxString title, bool editNow);
+		void        AddCodeSnippet(const wxTreeItemId& parent, wxString title, wxString codeSnippet, long ID, bool editNow);
+		wxTreeItemId AddCategory(const wxTreeItemId& parent, wxString title, long ID, bool editNow);
         bool        RemoveItem(const wxTreeItemId itemId);
 
         bool        SetFileChanged(bool truefalse) { return m_fileChanged = truefalse; }
@@ -101,6 +101,13 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
                 itemData = pItem->GetSnippet();
                 return itemData;
+            }
+
+        long GetSnippetID( wxTreeItemId itemId )
+            {   wxString itemData = wxEmptyString;
+                if (not itemId.IsOk()) return 0;
+                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
+                return pItem->GetID();
             }
 
         wxString GetSnippetLabel(wxTreeItemId treeItemId=(void*)0)
@@ -193,8 +200,9 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void MSW_MouseMove(int x, int y );
        #endif
 
-        wxTreeItemId FindItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType);
-        wxTreeItemId FindItemById(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType);
+        wxTreeItemId FindTreeItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType);
+        wxTreeItemId FindTreeItemByTreeId(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType);
+        wxTreeItemId FindTreeItemBySnippetId(const SnippetItemID& IDToFind, const wxTreeItemId& startNode);
 
         void EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName=wxEmptyString);
 

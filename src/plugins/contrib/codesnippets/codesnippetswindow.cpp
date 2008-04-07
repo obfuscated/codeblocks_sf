@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: codesnippetswindow.cpp 112 2008-01-07 17:03:31Z Pecan $
+// RCS-ID: $Id: codesnippetswindow.cpp 113 2008-01-14 18:31:17Z Pecan $
 
 #ifdef WX_PRECOMP //
     #include "wx_pch.h"
@@ -161,6 +161,8 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	// EVT_CLOSE Doesn't work on wxAUI windows, this is called from a Connect()
 	EVT_CLOSE( CodeSnippetsWindow::OnClose) //never occurs with wxAUI
 	// EVT_IDLE(   CodeSnippetsWindow::OnIdle) //works ok
+    EVT_LEAVE_WINDOW ( CodeSnippetsWindow::OnLeaveWindow)
+    EVT_ENTER_WINDOW ( CodeSnippetsWindow::OnEnterWindow)
 
 END_EVENT_TABLE()
 
@@ -171,6 +173,7 @@ CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 {
     m_isCheckingForExternallyModifiedFiles = false;
     pTiXmlDoc = 0;
+    m_bIsEditingLabel = false;
 
     if (not GetConfig()->pMainFrame)
         GetConfig()->pMainFrame = parent;
@@ -201,12 +204,30 @@ CodeSnippetsWindow::~CodeSnippetsWindow()
   	GetConfig()->pSnippetsSearchCtrl = 0;
 }
 // ----------------------------------------------------------------------------
-// EVT_CLOSE is not generated from wxAUI windows wx2.6.3
-// This routine is hooked from it's parent
+void CodeSnippetsWindow::OnEnterWindow (wxMouseEvent &event)
+// ----------------------------------------------------------------------------
+{
+    #if defined(LOGGING)
+    //LOGIT( _T("CodeSnippetsWindow::OnEnterWindow"));
+    #endif
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnLeaveWindow (wxMouseEvent &event)
+// ----------------------------------------------------------------------------
+{
+    #if defined(LOGGING)
+    LOGIT( _T("CodeSnippetsWindow::OnLeaveWindow"));
+    #endif
+    event.Skip();
+}
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
+    // EVT_CLOSE is not generated from wxAUI windows wx2.6.3
+    // This routine is hooked from it's parent
+
     // this routine is Connect()ed for wxAUI->OnClose
     // in codesnippets.cpp CreateSnippetsWindow() routine
     // and Disconnect() in codesnippets.cpp OnIdle() when the
@@ -338,6 +359,7 @@ void CodeSnippetsWindow::OnSearchCfg(wxCommandEvent& /*event*/)
 void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
+    // when search window is emtpy, reset the root item name
 	if (m_SearchSnippetCtrl->GetValue().IsEmpty())
 	{
 		// Reset the root node's title
@@ -563,7 +585,8 @@ void CodeSnippetsWindow::OnMnuAddSubCategory(wxCommandEvent& event)
 	// Add new category using the associated item ID
 	CodeSnippetsTreeCtrl* pTree = GetSnippetsTreeCtrl();
 	wxTreeItemId newItem =
-        GetSnippetsTreeCtrl()->AddCategory(GetSnippetsTreeCtrl()->GetAssociatedItemID(), _("New category"), true);
+        GetSnippetsTreeCtrl()->AddCategory(GetSnippetsTreeCtrl()->GetAssociatedItemID(),
+                                    _("New category"),/*snippetID*/0,/*editNow*/true);
 	SetFileChanged(true);
 	if (newItem.IsOk())
 	{
@@ -666,7 +689,7 @@ void CodeSnippetsWindow::OnMnuAddSnippet(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 	// Add new snippet using the associated item ID
-	GetSnippetsTreeCtrl()->AddCodeSnippet(GetAssociatedItemID(), _("New snippet"), wxEmptyString, true);
+	GetSnippetsTreeCtrl()->AddCodeSnippet(GetAssociatedItemID(), _("New snippet"), wxEmptyString, /*newID*/0, /*editNow*/true);
 	SetFileChanged(true);
 }
 
@@ -780,8 +803,8 @@ wxTreeItemId CodeSnippetsWindow::SearchSnippet(const wxString& searchTerms, cons
 				}
 			}
 			item = GetSnippetsTreeCtrl()->GetNextChild(node, cookie);
-		}
-	}
+		}//if
+	}//while
 
    // Return dummy item if search string was not found
    wxTreeItemId dummyItem;
@@ -797,6 +820,7 @@ void CodeSnippetsWindow::OnBeginLabelEdit(wxTreeEvent& event)
 	{
 		event.Veto();
 	}
+	IsEditingLabel(true);
 }
 
 // ----------------------------------------------------------------------------
@@ -818,7 +842,7 @@ void CodeSnippetsWindow::OnMnuSaveSnippets(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 	{
-		GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
+		GetSnippetsTreeCtrl()->SaveItemsToFile( GetConfig()->SettingsSnippetsXmlFullPath );
 		SetFileChanged(false);
 	}
 }
@@ -865,6 +889,7 @@ void CodeSnippetsWindow::OnEndLabelEdit(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
 	// Sort all the parent item's children
+	IsEditingLabel(false);
 	GetSnippetsTreeCtrl()->SortChildren(GetSnippetsTreeCtrl()->GetItemParent(event.GetItem()));
 	SetFileChanged(true);
 }
@@ -1065,6 +1090,7 @@ void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
 			// Replace all tabs with spaces; tabs break the tooltips
 			snippetToolTip.Replace(_T("\t"), _T("    "));
 
+			if ( not snippetToolTip.IsEmpty() ) //avoid " ..." only tooltip
 			if (snippetToolTip.Len() > charsInToolTip || originalLength > charsInToolTip)
 			{
 				snippetToolTip = snippetToolTip.Mid(0, charsInToolTip - 4);
@@ -1343,12 +1369,12 @@ bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 			{
 				case SnippetItemData::TYPE_ROOT:
 					// Add new code snippet to the root
-					m_TreeCtrl->AddCodeSnippet(m_TreeCtrl->GetRootItem(), _("New snippet"), data, true);
+					m_TreeCtrl->AddCodeSnippet(m_TreeCtrl->GetRootItem(), _("New snippet"), data, 0, true);
 				break;
 
 				case SnippetItemData::TYPE_CATEGORY:
 					// Add new code snippet to the category
-					m_TreeCtrl->AddCodeSnippet(item->GetId(), _("New snippet"), data, true);
+					m_TreeCtrl->AddCodeSnippet(item->GetId(), _("New snippet"), data, 0, true);
 				break;
 
 				case SnippetItemData::TYPE_SNIPPET:

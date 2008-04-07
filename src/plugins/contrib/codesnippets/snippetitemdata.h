@@ -40,13 +40,17 @@ class SnippetItemData : public wxTreeItemData
 			TYPE_CATEGORY,	// All category nodes
 			TYPE_SNIPPET	// The actual snippet node
 		};
+        #define SnippetItemID long
 
-		SnippetItemData(SnippetItemType type);
-		SnippetItemData(SnippetItemType type, wxString snippet);
+		SnippetItemData(SnippetItemType type, long ID = 0);
+		SnippetItemData(SnippetItemType type, wxString snippet, long ID = 0);
 		~SnippetItemData();
 
 		SnippetItemType GetType() const { return m_Type; }
 		void            SetType(SnippetItemType type){ m_Type = type;}
+		SnippetItemID   GetID()   const { return m_ID; }
+		wxString        GetSnippetIDStr() const { return wxString::Format(_T("%ld"),m_ID); }
+		void            SetID(SnippetItemID ID){ m_ID = ID;}
 		wxString        GetSnippet() const { return m_Snippet; }
 		void            SetSnippet(wxString snippet){ m_Snippet = snippet;}
 
@@ -67,10 +71,18 @@ class SnippetItemData : public wxTreeItemData
                     return false;
                 return true;
             }
+        long GetNewID(){return ++HighestSnippetID;}
+        long SetHighestSnippetID(long ID)
+            { HighestSnippetID = (HighestSnippetID<ID) ? ID : HighestSnippetID;
+              return HighestSnippetID;
+            }
 
 	private:
 		SnippetItemType m_Type;
 		wxString m_Snippet;
+		SnippetItemID m_ID;
+
+		static long HighestSnippetID;
 };
 
 #endif // SNIPPETITEMDATA_H

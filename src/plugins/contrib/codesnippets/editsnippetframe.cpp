@@ -17,7 +17,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: editsnippetframe.cpp 102 2007-10-29 21:16:50Z Pecan $
+// RCS-ID: $Id: editsnippetframe.cpp 113 2008-01-14 18:31:17Z Pecan $
 
 #include "editsnippetframe.h"
 
@@ -139,10 +139,11 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 {
     //ctor
 
-    //pWaitingSemaphore = pWaitSem;
+    // Get the snippet text associated with this tree id
     m_SnippetItemId = TreeItemId;
     m_EditSnippetText = GetConfig()->GetSnippetsTreeCtrl()->GetSnippet(TreeItemId);
 
+    // Determine wheither this is just text or a filename
     m_EditFileName = m_EditSnippetText.BeforeFirst('\r');
     m_EditFileName = m_EditFileName.BeforeFirst('\n');
     #if defined(BUILDING_PLUGIN)
@@ -153,6 +154,7 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
         /*OK we're editing a physical file, not just text*/;
     else m_EditFileName = wxEmptyString;
 
+    // Snippet label becomes frame title
     m_EditSnippetLabel = GetConfig()->GetSnippetsTreeCtrl()->GetSnippetLabel(TreeItemId);
     m_pReturnCode = pRetcode;
     *pRetcode = 0;
@@ -162,12 +164,8 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
     m_pEdit = NULL;
 
     // set icon and background
-    //SetTitle (m_EditFileName);
-    //if (m_EditFileName.IsEmpty())
-        SetTitle(m_EditSnippetLabel);
-    //SetIcon (wxICON (mondrian));
+    SetTitle(m_EditSnippetLabel);
     SetIcon(GetConfig()->GetSnipImages()->GetSnipListIcon(TREE_IMAGE_ALL_SNIPPETS));
-    //-SetBackgroundColour (_T("WHITE"));
     m_SysWinBkgdColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW); //(pecan 2007/3/27)
     SetBackgroundColour( m_SysWinBkgdColour); //(pecan 2007/3/27)
 
@@ -175,7 +173,7 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
     m_menuBar = new wxMenuBar;
     CreateMenu ();
 
-    // open first page
+    // open first page. this == wxFrame
     m_pEdit = new Edit (this, -1);
 	if (not m_EditFileName.IsEmpty())
                 m_pEdit->LoadFile(m_EditFileName);
@@ -207,25 +205,21 @@ EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode
 	cfgFile.Read( wxT("EditDlgHeight"),     &GetConfig()->nEditDlgHeight, 400 ) ;
 	cfgFile.Read( wxT("EditDlgMaximized"),  &GetConfig()->bEditDlgMaximized, false );
 	//SetSize(GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
+	#if defined(LOGGING)
     LOGIT( _T("EditDlgPosition IN X[%d]Y[%d]Width[%d]Height[%d]"),
         GetConfig()->nEditDlgXpos,GetConfig()->nEditDlgYpos,
         GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight );
+	#endif
     SetSize(GetConfig()->nEditDlgXpos, GetConfig()->nEditDlgYpos, GetConfig()->nEditDlgWidth, GetConfig()->nEditDlgHeight);
 
-//	if (( GetConfig()->IsPlugin()) && (GetConfig()->bEditDlgMaximized) )
-//		Maximize(true);
-
-
-	//EVT_SET_FOCUS, EVT_KILL_FOCUS, EVT_ENTER_WINDER, EVT_LEAVE_WINDOW
-	// never get invoked by wsWidgets for this frame. So we'll connect instead.
-////    m_pEdit->Connect(wxEVT_ENTER_WINDOW,
-////                    (wxObjectEventFunction)(wxEventFunction)
-////                    (wxMouseEventFunction)&EditSnippetFrame::OnEnterWindow,
-////                     NULL, this);
     m_pEdit->Connect(wxEVT_LEAVE_WINDOW,
                     (wxObjectEventFunction)(wxEventFunction)
                     (wxMouseEventFunction)&EditSnippetFrame::OnLeaveWindow,
                      NULL, this);
+    // This event will only occur if the parent (SnippetsTreeCtrl) has
+    // prior focus and an item is active(ie, an item is selected).
+    // The OS focus's the window, but the event does not happen.
+    // A side effect of this is a missing caret/cursor.
     m_pEdit->Connect(wxEVT_SET_FOCUS,
                     (wxObjectEventFunction)(wxEventFunction)
                     (wxFocusEventFunction)&EditSnippetFrame::OnFocusWindow,
@@ -253,16 +247,8 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
 {
     // Called from OnOk/OnCancel routines or OnClose
 
-	// Save the window's size
-	//ConfigManager* cfgMan = Manager::Get()->GetConfigManager(_T("codesnippets"));
-//    wxFileConfig cfgFile(wxEmptyString,     // appname
-//                        wxEmptyString,      // vendor
-//                        GetConfig()->SettingsSnippetsCfgFullPath,      // local filename
-//                        wxEmptyString,      // global file
-//                        wxCONFIG_USE_LOCAL_FILE);
-
     wxFileConfig& cfgFile = *(GetConfig()->GetCfgFile());
-
+    // save last location of the closing editor
     int x,y,w,h;
     GetPosition(&x,&y); GetSize(&w,&h);
     cfgFile.Write( wxT("EditDlgXpos"),  x );
@@ -281,8 +267,6 @@ void EditSnippetFrame::End_SnippetFrame(int wxID_OKorCANCEL)
 
 
     // If parent is waiting on us, post we're finished
-	//if (pWaitingSemaphore)
-    //    pWaitingSemaphore->Post();
 	*m_pReturnCode = (wxID_OKorCANCEL);
 }
 // ----------------------------------------------------------------------------
@@ -304,7 +288,7 @@ wxString EditSnippetFrame::GetText()
 void EditSnippetFrame::OnOK(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // This routine not clled, because Edit is not a dialog
+    // This routine not called, because Edit is not a dialog
     End_SnippetFrame(wxID_OK);
 	//-EndModal(wxID_OK);
 }
@@ -322,7 +306,7 @@ void EditSnippetFrame::OnHelp(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
 	// Link to the Wiki which contains information about the available macros
-	wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Builtin_variables"));
+	//FIXME: wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Builtin_variables"));
 }
 
 // ----------------------------------------------------------------------------
@@ -331,6 +315,9 @@ void EditSnippetFrame::OnHelp(wxCommandEvent& event)
 void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
 // ----------------------------------------------------------------------------
 {
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetFrame::OnCloseWindow"));
+    #endif
     wxCommandEvent evt;
     OnFileClose (evt);
     if (m_pEdit && m_pEdit->Modified()) {
@@ -344,6 +331,13 @@ void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
 void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
 // ----------------------------------------------------------------------------
 {
+    // This event will only occur if the parent (SnippetsTreeCtrl) has
+    // prior focus and is active(ie, an item is selected).
+    // The OS focus's the window, but the event does not happen.
+    // A side effect of this is a missing caret/cursor.
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetFrame::OnFocusWindow"));
+    #endif
     if ( GetConfig()->IsExternalWindow() )
     { event.Skip(); return; }
 
@@ -356,6 +350,9 @@ void EditSnippetFrame::OnFocusWindow (wxFocusEvent &event)
 void EditSnippetFrame::OnKillFocusWindow (wxFocusEvent &event)
 // ----------------------------------------------------------------------------
 {
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetFrame::OnKillFocusWindow"));
+    #endif
     //MakeModal(false);<= using wxFRAME_FLOAT_ON_PARENT works much better
     event.Skip();
 }
@@ -363,7 +360,9 @@ void EditSnippetFrame::OnKillFocusWindow (wxFocusEvent &event)
 void EditSnippetFrame::OnLeaveWindow (wxMouseEvent &event)
 // ----------------------------------------------------------------------------
 {
-
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetFrame::OnLeaveWindow"));
+    #endif
     //MakeModal(false);<= using wxFRAME_FLOAT_ON_PARENT works much better
     event.Skip();
 }

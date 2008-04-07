@@ -16,7 +16,7 @@
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
-// RCS-ID: $Id: version.cpp 112 2008-01-07 17:03:31Z Pecan $
+// RCS-ID: $Id: version.cpp 113 2008-01-14 18:31:17Z Pecan $
 
 #ifdef WX_PRECOMP
     #include "wx_pch.h"
@@ -343,6 +343,22 @@ AppVersion::~AppVersion()
 //  Commit  1.2.113 2008/01/14
 //          113) Fixed: When a pgm started after CodeBlocks, and an editorFrame
 //               started by the context menu wax closed, the external pgm got the focus.
+// ----------------------------------------------------------------------------
+//          2008/03/17
+//          114) Save Doc file in CodeSnippetsTreeCtrl::OnIdle(), not just mark as changed.
+//          2008/03/18
+//          115) Avoid " ..." only tooltip and verify XML text edit wxCancel does not save.
+//          2008/03/19
+//          116) Add unique id to each XML element
+//          117) Add FindTreeItemBySnippetId() routine
+//  Commit  1.2.118 2008/04/7
+//          118) Fixed interference of SetFocus with EditLabel in tree ctrl
+// ----------------------------------------------------------------------------
+//  Bugs
+//        If floating wxAUI window docked with Edit's open, they disappear but
+//          void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)
+//          still thinks they're open, but cannot show them.
+//
 // ----------------------------------------------------------------------------
 //  ToDo    All
 //          Hide/show search box
