@@ -180,7 +180,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         }
                         case 1:
                         {
-                            cbSaveToFile(fn.GetFullPath(), ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
+                            ed->Save();
                             break;
                         }
                         case 2:
