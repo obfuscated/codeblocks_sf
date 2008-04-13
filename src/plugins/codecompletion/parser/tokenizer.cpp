@@ -223,6 +223,11 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
                 SkipToChar(ch);
             }
             MoveToNextChar();
+			
+			// make sure we skip comments
+			if (CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*'))
+				SkipComment();
+            
             if (supportNesting)
             {
                 switch (CurrentChar())
