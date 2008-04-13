@@ -758,10 +758,9 @@ wxString LibrariesDlg::GetDesc(LibraryResult* Configuration)
 void LibrariesDlg::OnWrite(wxCommandEvent& event)
 {
     StoreConfiguration();
-    for ( int i=0; i<rtCount; i++ )
-    {
-        m_KnownLibraries[i] = m_WorkingCopy[i];
-    }
+    //m_WorkingCopy[rtDetected].DebugDump( _T("LibrariesDlg::OnWrite - original") );
+    m_KnownLibraries[rtDetected] = m_WorkingCopy[rtDetected];
+    //m_KnownLibraries[rtDetected].DebugDump( _T("LibrariesDlg::OnWrite - after copy") );
     m_KnownLibraries[rtDetected].WriteDetectedResults();
     event.Skip();
 }
@@ -896,6 +895,8 @@ void LibrariesDlg::Onm_CompilersText(wxCommandEvent& event)
 
 void LibrariesDlg::OnButton1Click(wxCommandEvent& event)
 {
+    StoreConfiguration();
+
     wxString ShortCode = wxGetTextFromUser( _("Enter Shortcode for new library"), _("New library"), wxEmptyString, this );
     if ( ShortCode.IsEmpty() ) return;
 
@@ -904,7 +905,11 @@ void LibrariesDlg::OnButton1Click(wxCommandEvent& event)
     {
         if ( m_WorkingCopy[i].IsShortCode( ShortCode ) )
         {
-            cbMessageBox( _("Library with such shortcode already exists"), _("Error"), wxOK | wxICON_ERROR );
+            cbMessageBox(
+                _("Library with such shortcode already exists.\n"
+                  "If you don't see it, make sure that all known\n"
+                  "libraries (including those from pkg-config\n"
+                  "and predefined ones) are shown."), _("Error"), wxOK | wxICON_ERROR );
             return;
         }
     }
@@ -914,10 +919,13 @@ void LibrariesDlg::OnButton1Click(wxCommandEvent& event)
     LibraryResult* res = new LibraryResult;
     res->Type = rtDetected;
     res->LibraryName = ShortCode;
+    res->ShortCode = ShortCode;
     arr.Add(res);
 
     m_SelectedShortcut = ShortCode;
     RecreateLibrariesListForceRefresh();
+
+    //m_WorkingCopy[rtDetected].DebugDump(_T("After add"));
 }
 
 void LibrariesDlg::OnButton2Click(wxCommandEvent& event)
