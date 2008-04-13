@@ -800,8 +800,8 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
             newToken = TokenExists(newname, localParent);
     }
 
-    // none of the above; check for token under parent
-    if (!newToken)
+    // none of the above; check for token under parent (but not if we 're parsing a temp buffer)
+    if (!newToken && !m_Options.isTemp)
         newToken = TokenExists(name, m_pLastParent, kind);
 
     if (newToken && newToken->m_TokenKind == kind && newToken->m_Args == args)
