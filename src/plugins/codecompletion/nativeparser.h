@@ -61,6 +61,7 @@ class NativeParser : public wxEvtHandler
 		void RereadParserOptions();
 		void AddFileToParser(cbProject* project, const wxString& filename);
 		void RemoveFileFromParser(cbProject* project, const wxString& filename);
+		void ReparseProject(cbProject* project);
 		void ForceReparseActiveProject();
 
 		size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool noPartialMatch = false, bool caseSensitive = false, int caretPos = -1);

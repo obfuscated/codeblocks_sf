@@ -491,6 +491,43 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
         return;
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Add project %s in parsing queue"), project->GetTitle().c_str()));
+    
+    ReparseProject(project);
+}
+
+void NativeParser::RemoveParser(cbProject* project, bool useCache)
+{
+    if (Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0)
+    {
+        m_Parser.Clear();
+        UpdateClassBrowser();
+        return;
+    }
+    if (!project)
+        return;
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing project %s from parsed projects"), project->GetTitle().c_str()));
+    for (int i = 0; i < project->GetFilesCount(); ++i)
+    {
+        ProjectFile* pf = project->GetFile(i);
+        m_Parser.RemoveFile(pf->file.GetFullPath());
+    }
+    UpdateClassBrowser();
+}
+
+void NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
+{
+    m_Parser.Parse(filename, true);
+}
+
+void NativeParser::RemoveFileFromParser(cbProject* project, const wxString& filename)
+{
+    m_Parser.RemoveFile(filename);
+}
+
+// reparses the project files
+// (important thing is it re-reads the project search dirs, adding newly added ones)
+void NativeParser::ReparseProject(cbProject* project)
+{
     Parser* parser = &m_Parser;//new Parser(this);
     AddCompilerDirs(parser, project);
 
@@ -536,35 +573,6 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
         Manager::Get()->GetLogManager()->DebugLog(_T("Passing list of files to parse"));
         parser->BatchParse(files);
     }
-}
-
-void NativeParser::RemoveParser(cbProject* project, bool useCache)
-{
-    if (Manager::Get()->GetProjectManager()->GetProjects()->GetCount() == 0)
-    {
-        m_Parser.Clear();
-        UpdateClassBrowser();
-        return;
-    }
-    if (!project)
-        return;
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing project %s from parsed projects"), project->GetTitle().c_str()));
-    for (int i = 0; i < project->GetFilesCount(); ++i)
-    {
-        ProjectFile* pf = project->GetFile(i);
-        m_Parser.RemoveFile(pf->file.GetFullPath());
-    }
-    UpdateClassBrowser();
-}
-
-void NativeParser::AddFileToParser(cbProject* project, const wxString& filename)
-{
-    m_Parser.Parse(filename, true);
-}
-
-void NativeParser::RemoveFileFromParser(cbProject* project, const wxString& filename)
-{
-    m_Parser.RemoveFile(filename);
 }
 
 // NOTE: it actually forces reparsing of workspace

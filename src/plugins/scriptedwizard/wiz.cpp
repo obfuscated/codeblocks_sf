@@ -446,6 +446,13 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 
             if (files.GetCount() != 0 && contents.GetCount() == files.GetCount())
             {
+            	// prepare the list of targets to add this file to (i.e. all of them)
+            	wxArrayInt targetIndices;
+				for (int x = 0; x < theproject->GetBuildTargetsCount(); ++x)
+					targetIndices.Add(x);
+
+            	theproject->BeginAddFiles();
+            	
                 // ok, we have to generate some files here
                 size_t count = files.GetCount();
                 for (size_t i = 0; i < count; ++i)
@@ -460,12 +467,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
                         {
                             Manager::Get()->GetLogManager()->DebugLog(_T("Generated file ") + actual);
                             // add it to the project
-                            ProjectFile* pf = theproject->AddFile(0, actual);
-                            // to all targets...
-                            for (int x = 1; x < theproject->GetBuildTargetsCount(); ++x)
-                            {
-                                pf->AddBuildTarget(theproject->GetBuildTarget(x)->GetTitle());
-                            }
+                            Manager::Get()->GetProjectManager()->AddFileToProject(actual, theproject, targetIndices);
                         }
                         else
                         {
@@ -473,6 +475,8 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
                         }
                     }
                 }
+
+            	theproject->EndAddFiles();
             }
         }
     }
@@ -718,6 +722,13 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
     // recursively enumerate all files under srcdir
     wxDir::GetAllFiles(enumdirs, &filesList);
 
+	// prepare the list of targets to add this file to (i.e. all of them)
+	wxArrayInt targetIndices;
+	for (int x = 0; x < theproject->GetBuildTargetsCount(); ++x)
+		targetIndices.Add(x);
+
+	theproject->BeginAddFiles();
+	
     // now get each file and copy it to the destination directory,
     // adding it to all targets in the project
     for (unsigned int i = 0; i < filesList.GetCount(); ++i)
@@ -754,13 +765,10 @@ void Wiz::CopyFiles(cbProject* theproject, const wxString&  prjdir, const wxStri
 
         // and add it to the project
         fname.MakeRelativeTo(prjdir);
-        ProjectFile* pf = theproject->AddFile(0, fname.GetFullPath());
-        // to all targets...
-        for (int x = 1; x < theproject->GetBuildTargetsCount(); ++x)
-        {
-            pf->AddBuildTarget(theproject->GetBuildTarget(x)->GetTitle());
-        }
+		Manager::Get()->GetProjectManager()->AddFileToProject(fname.GetFullPath(), theproject, targetIndices);
     }
+    
+    theproject->EndAddFiles();
 }
 
 ////////////////////////

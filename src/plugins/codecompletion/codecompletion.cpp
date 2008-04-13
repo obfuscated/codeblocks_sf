@@ -413,6 +413,7 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
     pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectActivated));
     pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectClosed));
+    pm->RegisterEventSink(cbEVT_PROJECT_SAVE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectSaved));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
 }
@@ -1048,6 +1049,8 @@ void CodeCompletion::ParseActiveProjects()
 
 void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
 {
+//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnWorkspaceChanged"));
+
     // EVT_WORKSPACE_CHANGED is a powerful event, it's sent after any project
     // has finished loading or closing. It's the *LAST* event to be sent when
     // the workspace has been changed, and it's not sent if the application is
@@ -1068,6 +1071,8 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 {
+//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectActivated"));
+
     // The Class browser shouldn't be updated if we're in the middle of loading/closing
     // a project/workspace, because the class browser would need to be updated again.
     // So we need to update it with the EVT_WORKSPACE_CHANGED event, which gets
@@ -1080,6 +1085,8 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
 {
+//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectClosed"));
+
     // After this, the Class Browser needs to be updated. It will happen
     // when we receive the next EVT_PROJECT_ACTIVATED event.
     if (IsAttached() && m_InitDone)
@@ -1090,8 +1097,22 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
     event.Skip();
 }
 
+void CodeCompletion::OnProjectSaved(CodeBlocksEvent& event)
+{
+//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectSaved"));
+
+    // reparse project (compiler search dirs might have changed)
+    if (IsAttached() && m_InitDone)
+    {
+    	m_NativeParsers.ReparseProject(event.GetProject());
+    }
+    event.Skip();
+}
+
 void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
 {
+//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectFileAdded"));
+
     if (IsAttached() && m_InitDone)
         m_NativeParsers.AddFileToParser(event.GetProject(), event.GetString());
     event.Skip();
@@ -1099,6 +1120,8 @@ void CodeCompletion::OnProjectFileAdded(CodeBlocksEvent& event)
 
 void CodeCompletion::OnProjectFileRemoved(CodeBlocksEvent& event)
 {
+//    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectFileRemoved"));
+
     if (IsAttached() && m_InitDone)
         m_NativeParsers.RemoveFileFromParser(event.GetProject(), event.GetString());
     event.Skip();

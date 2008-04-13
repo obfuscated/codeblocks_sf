@@ -94,6 +94,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnWorkspaceChanged(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
+        void OnProjectSaved(CodeBlocksEvent& event);
         void OnProjectFileAdded(CodeBlocksEvent& event);
         void OnProjectFileRemoved(CodeBlocksEvent& event);
         void OnUserListSelection(CodeBlocksEvent& event);
