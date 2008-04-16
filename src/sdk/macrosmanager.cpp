@@ -77,7 +77,7 @@ void MacrosManager::Reset()
     ClearProjectKeys();
     m_re_unx.Compile(_T("([^$]|^)(\\$[({]?(#?[A-Za-z_0-9.]+)[)} /\\]?)"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_re_dos.Compile(_T("([^%]|^)(%(#?[A-Za-z_0-9.]+)%)"), wxRE_EXTENDED | wxRE_NEWLINE);
-    m_re_if.Compile(_T("\\$if\\((.*)\\)[ ]*\\{([^}]*)\\}{1}([ ]*else[ ]*\\{([^}]*)\\})?"), wxRE_EXTENDED | wxRE_NEWLINE);
+    m_re_if.Compile(_T("\\$if\\(([^)]*)\\)[::space::]*(\\{([^}]*)\\})(\\{([^}]*)\\})?"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_re_ifsp.Compile(_T("[^=!<>]+|(([^=!<>]+)[ ]*(=|==|!=|>|<|>=|<=)[ ]*([^=!<>]+))"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_re_script.Compile(_T("(\\[\\[(.*)\\]\\])"), wxRE_EXTENDED | wxRE_NEWLINE);
     m_uVarMan = Manager::Get()->GetUserVariableManager();
@@ -337,7 +337,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     while(m_re_if.Matches(buffer))
     {
         search = m_re_if.GetMatch(buffer, 0);
-        replace = EvalCondition(m_re_if.GetMatch(buffer, 1), m_re_if.GetMatch(buffer, 2), m_re_if.GetMatch(buffer, 4), target);
+        replace = EvalCondition(m_re_if.GetMatch(buffer, 1), m_re_if.GetMatch(buffer, 3), m_re_if.GetMatch(buffer, 5), target);
         buffer.Replace(search, replace, false);
     }
 
@@ -451,8 +451,7 @@ wxString MacrosManager::EvalCondition(const wxString& in_cond, const wxString& t
 
     if(cmpToken.IsEmpty())
         {
-        wxString s(m_re_ifsp.GetMatch(in_cond, 0));
-        if(s.IsEmpty() || s.IsSameAs(_T("0")) || s.IsSameAs(_T("false")))
+        if(cond.IsEmpty() || cond.IsSameAs(_T("0")) || cond.IsSameAs(_T("false")))
             return false_clause;
         return true_clause;
         }
