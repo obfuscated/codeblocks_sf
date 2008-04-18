@@ -235,7 +235,12 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
                     case '{': SkipBlock('{'); break;
                     case '(': SkipBlock('('); break;
                     case '[': SkipBlock('['); break;
-                    case '<': if (PeekToken() != '<') SkipBlock('<'); break; // don't skip if << operator
+                    case '<': // don't skip if << operator
+						if (NextChar() == '<')
+							MoveToNextChar(); // skip it
+						else
+							SkipBlock('<');
+						break; 
                     default: break;
                 }
             }
