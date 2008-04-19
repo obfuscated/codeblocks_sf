@@ -191,7 +191,6 @@
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="include" />
-					<Add directory="include\wxAUI" />
 					<Add directory="include\wxFlatNotebook\include" />
 					<Add directory="include\scripting\include" />
 					<Add directory="include\scripting\sqplus" />
