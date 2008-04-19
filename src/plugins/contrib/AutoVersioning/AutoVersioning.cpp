@@ -34,7 +34,7 @@ const int idMenuCommitChanges = wxNewId();
 const int idMenuChangesLog = wxNewId();
 
 /*
-	KILLERBOT : TODO : is this really needed  ??
+    KILLERBOT : TODO : is this really needed  ??
     EVT_UPDATE_UI(idMenuCommitChanges, AutoVersioning::OnUpdateUI)
     EVT_UPDATE_UI(idMenuAutoVersioning, AutoVersioning::OnUpdateUI)
 */
@@ -65,7 +65,6 @@ AutoVersioning::AutoVersioning()
     ProjectLoaderHooks::HookFunctorBase* AutoVerHook =
       new ProjectLoaderHooks::HookFunctor<AutoVersioning>(this, &AutoVersioning::OnProjectLoadingHook);
     m_AutoVerHookId = ProjectLoaderHooks::RegisterHook(AutoVerHook);
-    m_IsCurrentProjectVersioned = false;
     m_Modified = false;
     m_Project = 0;
 } // end of constructor
@@ -123,85 +122,85 @@ void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
 //{Envent Functions
 void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
 {
-	if(loading)
-	{
-		// TODO (KILLERBOT) : should we have default values, in case something would be missing ?
-		// OPTI : we could choose not to write out default values in the xml --> smaller cbp
-		avConfig Config;
-		m_IsCurrentProjectVersioned = false; // default not active unless we find xml for it
-		const TiXmlElement* Node = elem->FirstChildElement("AutoVersioning");
-		if (Node)
-		{
-			m_IsCurrentProjectVersioned = true;
-			TiXmlHandle Handle(const_cast<TiXmlElement*>(Node));
-			if(const TiXmlElement* pElem = Handle.FirstChildElement("Scheme").ToElement())
-			{
-				int Help = 0;
-				if(pElem->QueryIntAttribute("minor_max", &Help) == TIXML_SUCCESS)
-				{
-					Config.Scheme.MinorMax = static_cast<long>(Help);
-				}
-				if(pElem->QueryIntAttribute("build_max", &Help) == TIXML_SUCCESS)
-				{
-					Config.Scheme.BuildMax = static_cast<long>(Help);
-				}
-				if(pElem->QueryIntAttribute("rev_max", &Help) == TIXML_SUCCESS)
-				{
-					Config.Scheme.RevisionMax = static_cast<long>(Help);
-				}
-				if(pElem->QueryIntAttribute("rev_rand_max", &Help) == TIXML_SUCCESS)
-				{
-					Config.Scheme.RevisionRandMax = static_cast<long>(Help);
-				}
-				if(pElem->QueryIntAttribute("build_times_to_increment_minor", &Help) == TIXML_SUCCESS)
-				{
-					Config.Scheme.BuildTimesToIncrementMinor = static_cast<long>(Help);
-				}
-			}
-			if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement())
-			{
-				Config.Settings.Language = pElem->Attribute("language");
-				Config.Settings.SvnDirectory = pElem->Attribute("svn_directory");
-				Config.Settings.HeaderPath = pElem->Attribute("header_path");
+    if(loading)
+    {
+        // TODO (KILLERBOT) : should we have default values, in case something would be missing ?
+        // OPTI : we could choose not to write out default values in the xml --> smaller cbp
+        avConfig Config;
+        m_IsVersioned[project] = false; // default not active unless we find xml for it
+        const TiXmlElement* Node = elem->FirstChildElement("AutoVersioning");
+        if (Node)
+        {
+            m_IsVersioned[project] = true;
+            TiXmlHandle Handle(const_cast<TiXmlElement*>(Node));
+            if(const TiXmlElement* pElem = Handle.FirstChildElement("Scheme").ToElement())
+            {
+                int Help = 0;
+                if(pElem->QueryIntAttribute("minor_max", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Scheme.MinorMax = static_cast<long>(Help);
+                }
+                if(pElem->QueryIntAttribute("build_max", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Scheme.BuildMax = static_cast<long>(Help);
+                }
+                if(pElem->QueryIntAttribute("rev_max", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Scheme.RevisionMax = static_cast<long>(Help);
+                }
+                if(pElem->QueryIntAttribute("rev_rand_max", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Scheme.RevisionRandMax = static_cast<long>(Help);
+                }
+                if(pElem->QueryIntAttribute("build_times_to_increment_minor", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Scheme.BuildTimesToIncrementMinor = static_cast<long>(Help);
+                }
+            }
+            if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement())
+            {
+                Config.Settings.Language = pElem->Attribute("language");
+                Config.Settings.SvnDirectory = pElem->Attribute("svn_directory");
+                Config.Settings.HeaderPath = pElem->Attribute("header_path");
 
-				int Help = 0;
-				if(pElem->QueryIntAttribute("autoincrement", &Help) == TIXML_SUCCESS)
-				{
-					Config.Settings.Autoincrement = Help?true:false;
-				}
-				if(pElem->QueryIntAttribute("date_declarations", &Help) == TIXML_SUCCESS)
-				{
-					Config.Settings.DateDeclarations = Help?true:false;
-				}
-				if(pElem->QueryIntAttribute("do_auto_increment", &Help) == TIXML_SUCCESS)
-				{
-					Config.Settings.DoAutoIncrement = Help?true:false;
-				}
-				if(pElem->QueryIntAttribute("ask_to_increment", &Help) == TIXML_SUCCESS)
-				{
-					Config.Settings.AskToIncrement = Help?true:false;
-				}
-				if(pElem->QueryIntAttribute("svn", &Help) == TIXML_SUCCESS)
-				{
-					Config.Settings.Svn = Help?true:false;
-				}
-			}
-			if(const TiXmlElement* pElem = Handle.FirstChildElement("Changes_Log").ToElement())
-			{
-				Config.ChangesLog.AppTitle = pElem->Attribute("app_title");
-				Config.ChangesLog.ChangesLogPath = pElem->Attribute("changeslog_path");
+                int Help = 0;
+                if(pElem->QueryIntAttribute("autoincrement", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.Autoincrement = Help?true:false;
+                }
+                if(pElem->QueryIntAttribute("date_declarations", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.DateDeclarations = Help?true:false;
+                }
+                if(pElem->QueryIntAttribute("do_auto_increment", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.DoAutoIncrement = Help?true:false;
+                }
+                if(pElem->QueryIntAttribute("ask_to_increment", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.AskToIncrement = Help?true:false;
+                }
+                if(pElem->QueryIntAttribute("svn", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.Svn = Help?true:false;
+                }
+            }
+            if(const TiXmlElement* pElem = Handle.FirstChildElement("Changes_Log").ToElement())
+            {
+                Config.ChangesLog.AppTitle = pElem->Attribute("app_title");
+                Config.ChangesLog.ChangesLogPath = pElem->Attribute("changeslog_path");
 
-				int Help = 0;
-				if(pElem->QueryIntAttribute("show_changes_editor", &Help) == TIXML_SUCCESS)
-				{
-					Config.ChangesLog.ShowChangesEditor = Help?true:false;
-				}
-			}
-		}
-		avVersionState VersionState;
-		m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()),project->GetBasePath());
+                int Help = 0;
+                if(pElem->QueryIntAttribute("show_changes_editor", &Help) == TIXML_SUCCESS)
+                {
+                    Config.ChangesLog.ShowChangesEditor = Help?true:false;
+                }
+            }
+        }
+        avVersionState VersionState;
+        m_versionHeaderPath = FileNormalize(cbC2U(Config.Settings.HeaderPath.c_str()),project->GetBasePath());
 
-		avHeader VersionHeader;
+        avHeader VersionHeader;
         if(VersionHeader.LoadFile(m_versionHeaderPath))
         {
             VersionState.Values.Major = VersionHeader.GetValue(_("MAJOR"));
@@ -213,80 +212,80 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
             VersionState.Status.Abbreviation = cbU2C(VersionHeader.GetString(_("STATUS_SHORT")));
             VersionState.BuildHistory = VersionHeader.GetValue(_("BUILD_HISTORY"));
         }
-		m_ProjectMap[project] = Config;
-		m_ProjectMapVersionState[project] = VersionState;
-		m_Project = project;
-	}
-	else
-	{
-		// Hook called when saving project file.
+        m_ProjectMap[project] = Config;
+        m_ProjectMapVersionState[project] = VersionState;
+    }
+    else
+    {
+        // Hook called when saving project file.
 
-		// since rev4332, the project keeps a copy of the <Extensions> element
-		// and re-uses it when saving the project (so to avoid losing entries in it
-		// if plugins that use that element are not loaded atm).
-		// so, instead of blindly inserting the element, we must first check it's
-		// not already there (and if it is, clear its contents)
-		if(m_IsCurrentProjectVersioned)
-		{
-			TiXmlElement* node = elem->FirstChildElement("AutoVersioning");
-			if (!node)
-			{
-				node = elem->InsertEndChild(TiXmlElement("AutoVersioning"))->ToElement();
-			}
-			node->Clear();
+        // since rev4332, the project keeps a copy of the <Extensions> element
+        // and re-uses it when saving the project (so to avoid losing entries in it
+        // if plugins that use that element are not loaded atm).
+        // so, instead of blindly inserting the element, we must first check it's
+        // not already there (and if it is, clear its contents)
+        if(m_IsVersioned[project])
+        {
+            TiXmlElement* node = elem->FirstChildElement("AutoVersioning");
+            if (!node)
+            {
+                node = elem->InsertEndChild(TiXmlElement("AutoVersioning"))->ToElement();
+            }
+            node->Clear();
 
-			//Used this instead of GetConfig() since if the project is not activated
-			//before saving, then the m_Project is not updated.
-			//This will happen when having multiple projects opened.
-			avConfig NewConfig = m_ProjectMap[project];
+            //Used this instead of GetConfig() since if the project is not activated
+            //before saving, then the m_Project is not updated.
+            //This will happen when having multiple projects opened.
+            avConfig NewConfig = m_ProjectMap[project];
 
-			TiXmlElement Scheme("Scheme");
-			Scheme.SetAttribute("minor_max", NewConfig.Scheme.MinorMax);
-			Scheme.SetAttribute("build_max", NewConfig.Scheme.BuildMax);
-			Scheme.SetAttribute("rev_max", NewConfig.Scheme.RevisionMax);
-			Scheme.SetAttribute("rev_rand_max", NewConfig.Scheme.RevisionRandMax);
-			Scheme.SetAttribute("build_times_to_increment_minor", NewConfig.Scheme.BuildTimesToIncrementMinor);
-			node->InsertEndChild(Scheme);
-			TiXmlElement Settings("Settings");
-			Settings.SetAttribute("autoincrement", NewConfig.Settings.Autoincrement);
-			Settings.SetAttribute("date_declarations", NewConfig.Settings.DateDeclarations);
-			Settings.SetAttribute("do_auto_increment", NewConfig.Settings.DoAutoIncrement);
-			Settings.SetAttribute("ask_to_increment", NewConfig.Settings.AskToIncrement);
-			Settings.SetAttribute("language", NewConfig.Settings.Language.c_str());
-			Settings.SetAttribute("svn", NewConfig.Settings.Svn);
-			Settings.SetAttribute("svn_directory", NewConfig.Settings.SvnDirectory.c_str());
-			Settings.SetAttribute("header_path", NewConfig.Settings.HeaderPath.c_str());
-			node->InsertEndChild(Settings);
-			TiXmlElement ChangesLog("Changes_Log");
-			ChangesLog.SetAttribute("show_changes_editor", NewConfig.ChangesLog.ShowChangesEditor);
-			ChangesLog.SetAttribute("app_title", NewConfig.ChangesLog.AppTitle.c_str());
-			ChangesLog.SetAttribute("changeslog_path", NewConfig.ChangesLog.ChangesLogPath.c_str());
-			node->InsertEndChild(ChangesLog);
-		}
-		// TODO (KILLERBOT) : what if we decide to not version anymore : how to remove ??
-	}
+            TiXmlElement Scheme("Scheme");
+            Scheme.SetAttribute("minor_max", NewConfig.Scheme.MinorMax);
+            Scheme.SetAttribute("build_max", NewConfig.Scheme.BuildMax);
+            Scheme.SetAttribute("rev_max", NewConfig.Scheme.RevisionMax);
+            Scheme.SetAttribute("rev_rand_max", NewConfig.Scheme.RevisionRandMax);
+            Scheme.SetAttribute("build_times_to_increment_minor", NewConfig.Scheme.BuildTimesToIncrementMinor);
+            node->InsertEndChild(Scheme);
+            TiXmlElement Settings("Settings");
+            Settings.SetAttribute("autoincrement", NewConfig.Settings.Autoincrement);
+            Settings.SetAttribute("date_declarations", NewConfig.Settings.DateDeclarations);
+            Settings.SetAttribute("do_auto_increment", NewConfig.Settings.DoAutoIncrement);
+            Settings.SetAttribute("ask_to_increment", NewConfig.Settings.AskToIncrement);
+            Settings.SetAttribute("language", NewConfig.Settings.Language.c_str());
+            Settings.SetAttribute("svn", NewConfig.Settings.Svn);
+            Settings.SetAttribute("svn_directory", NewConfig.Settings.SvnDirectory.c_str());
+            Settings.SetAttribute("header_path", NewConfig.Settings.HeaderPath.c_str());
+            node->InsertEndChild(Settings);
+            TiXmlElement ChangesLog("Changes_Log");
+            ChangesLog.SetAttribute("show_changes_editor", NewConfig.ChangesLog.ShowChangesEditor);
+            ChangesLog.SetAttribute("app_title", NewConfig.ChangesLog.AppTitle.c_str());
+            ChangesLog.SetAttribute("changeslog_path", NewConfig.ChangesLog.ChangesLogPath.c_str());
+            node->InsertEndChild(ChangesLog);
+        }
+        // TODO (KILLERBOT) : what if we decide to not version anymore : how to remove ??
+    }
 }// OnProjectLoadingHook
 
 void AutoVersioning::OnProjectActivated(CodeBlocksEvent& event)
 {
-	if (IsAttached())
-	{
-		// switch to the settings of the now activated project [I assume it has already been loaded before this triggers]
-		m_Project = event.GetProject();
-	}
+    if (IsAttached())
+    {
+        // switch to the settings of the now activated project [I assume it has already been loaded before this triggers]
+        m_Project = event.GetProject();
+    }
 }// OnProjectActivated
 
 void AutoVersioning::OnProjectClosed(CodeBlocksEvent& event)
 {
-	if (IsAttached())
-	{
-		m_ProjectMap.erase(event.GetProject());
-		m_ProjectMapVersionState.erase(event.GetProject());
-		if(m_Project == event.GetProject())
-		{   // should always be the case (??? we hope ??)
-		    m_Project = 0;
-		}
-	}
+    if (IsAttached())
+    {
+        m_ProjectMap.erase(event.GetProject());
+        m_ProjectMapVersionState.erase(event.GetProject());
+        m_IsVersioned.erase(event.GetProject());
+        if(m_Project == event.GetProject())
+        {   // should always be the case (??? we hope ??)
+            m_Project = 0;
+        }
+    }
 }// OnProjectClosed
 
 // KILLERBOT : TODO : only do this when active (!!!!!!!!!!!), ie when autoversioning this project
@@ -294,51 +293,51 @@ void AutoVersioning::OnProjectClosed(CodeBlocksEvent& event)
 // be activated and each has the compilerstarted/Finished ?????
 void AutoVersioning::OnCompilerStarted(CodeBlocksEvent& event)
 {
-    if (m_Project && IsAttached() && m_IsCurrentProjectVersioned)
+    if (m_Project && IsAttached() && m_IsVersioned[event.GetProject()])
     {
-		if (m_Modified)
-		{
-			const bool doAutoIncrement = GetConfig().Settings.DoAutoIncrement;
-			const bool askToIncrement = GetConfig().Settings.AskToIncrement;
-			if (doAutoIncrement && askToIncrement)
-			{
-				if (wxMessageBox(_("Do you want to increment the version?"),_T(""),wxYES_NO) == wxYES)
-				{
-					CommitChanges();
-				}
-			}
-			else if(doAutoIncrement)
-			{
-				CommitChanges();
-			}
-		}
+        if (m_Modified)
+        {
+            const bool doAutoIncrement = GetConfig().Settings.DoAutoIncrement;
+            const bool askToIncrement = GetConfig().Settings.AskToIncrement;
+            if (doAutoIncrement && askToIncrement)
+            {
+                if (wxMessageBox(_("Do you want to increment the version?"),_T(""),wxYES_NO) == wxYES)
+                {
+                    CommitChanges();
+                }
+            }
+            else if(doAutoIncrement)
+            {
+                CommitChanges();
+            }
+        }
     }
 } // end of OnCompilerStarted
 
 void AutoVersioning::OnCompilerFinished(CodeBlocksEvent& event)
 {
-    if (m_Project && IsAttached() && m_IsCurrentProjectVersioned)
-	{
-		++(GetVersionState().Values.BuildCount);
-	}
+    if (m_Project && IsAttached() && m_IsVersioned[event.GetProject()])
+    {
+        ++(GetVersionState().Values.BuildCount);
+    }
 } // end of OnCompilerFinished
 
 void AutoVersioning::OnTimerVerify(wxTimerEvent& event)
 {
-    if (m_Project && IsAttached() && m_IsCurrentProjectVersioned)
+    if (m_Project && IsAttached() && m_IsVersioned[m_Project])
     {
-		if (!m_Modified)
-		{
-			for (int i=0; i < m_Project->GetFilesCount(); ++i)
-			{
-				const ProjectFile* file = m_Project->GetFile(i);
-				if (file->GetFileState() == fvsModified)
-				{
-					m_Modified = true;
-					break;
-				}
-			}
-		}
+        if (!m_Modified)
+        {
+            for (int i=0; i < m_Project->GetFilesCount(); ++i)
+            {
+                const ProjectFile* file = m_Project->GetFile(i);
+                if (file->GetFileState() == fvsModified)
+                {
+                    m_Modified = true;
+                    break;
+                }
+            }
+        }
     }
 } // end of OnTimerVerify
 
@@ -348,7 +347,7 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
     {
         if (m_Project)
         {
-            if (m_IsCurrentProjectVersioned)
+            if (m_IsVersioned[m_Project])
             {
                 SetVersionAndSettings(*m_Project, true);
                 UpdateVersionHeader();
@@ -357,10 +356,22 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
             {
                 if (wxMessageBox(_("Configure the project \"") + m_Project->GetTitle() + _("\" for Autoversioning?"),_("Autoversioning"),wxYES_NO) == wxYES)
                 {
-					// we activated
-					m_IsCurrentProjectVersioned = true;
-					// just becasue we activated the project becomes modified
-					m_Project->SetModified();
+                    if(wxFileExists(m_Project->GetBasePath() + _T("version.h")))
+                    {
+                        wxMessageBox(
+                         _T("The header version.h already exist on your projects path. "
+                            "The content will be overwritten by the the version info generated code."
+                            "\n\nYou can change the default version.h file on the \"Settings\" Tab."
+                           ),
+                         _T("Warning"),
+                         wxICON_EXCLAMATION  | wxOK
+                        );
+                    }
+
+                    // we activated
+                    m_IsVersioned[m_Project] = true;
+                    // just becasue we activated the project becomes modified
+                    m_Project->SetModified();
 
                     SetVersionAndSettings(*m_Project);
                     UpdateVersionHeader();
@@ -382,7 +393,7 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
 
 void AutoVersioning::OnMenuCommitChanges(wxCommandEvent&)
 {
-    if (m_Project && IsAttached() && m_IsCurrentProjectVersioned)
+    if (m_Project && IsAttached() && m_IsVersioned[m_Project])
     {
         if(m_Modified)
         {
@@ -406,7 +417,7 @@ void AutoVersioning::OnUpdateUI(wxUpdateUIEvent& event)
             {
                 event.Enable(true);
             }
-            else if (m_IsCurrentProjectVersioned)
+            else if (m_IsVersioned[m_Project])
             {
                 if (m_Modified)
                 {
@@ -437,8 +448,8 @@ void AutoVersioning::OnUpdateUI(wxUpdateUIEvent& event)
 //{Functions
 void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
 {
-	// KILLERBOT : in case our struct would have a constructor, then no need to have an if/else here
-	// --> init in correct place then !!!!!!! TODO
+    // KILLERBOT : in case our struct would have a constructor, then no need to have an if/else here
+    // --> init in correct place then !!!!!!! TODO
     m_timerStatus->Stop();
     avVersionEditorDlg VersionEditorDialog((wxWindow*) Manager::Get()->GetAppWindow(), 0L);
 
@@ -497,10 +508,10 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     m_versionHeaderPath = cbC2U(GetConfig().Settings.HeaderPath.c_str());
 
     if(OldConfig != GetConfig())
-    {	// settings have changed => Project is to be considered changed
+    {   // settings have changed => Project is to be considered changed
         Project.SetModified(true);
     }
-	// let's update the current version state values in case they were adjusted in the gui
+    // let's update the current version state values in case they were adjusted in the gui
     // and when the time is right they are put in the version.h (when is that time ???)
     avVersionState OldState = GetVersionState();
     GetVersionState().Values.Major = VersionEditorDialog.GetMajor();
@@ -513,7 +524,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetVersionState().Status.Abbreviation = cbU2C(VersionEditorDialog.GetStatusAbbreviation());
 
     if (!update)
-    {	// first time; we just activated the plug-in on the project; clean start
+    {   // first time; we just activated the plug-in on the project; clean start
         GetVersionState().BuildHistory = 0;
         m_Modified = false;
     }
@@ -528,9 +539,15 @@ void AutoVersioning::UpdateVersionHeader()
 {
     m_timerStatus->Stop();
 
+    //Declares the header guard to be used based on the filename
+    wxFileName filename(cbC2U(GetConfig().Settings.HeaderPath.c_str()));
+    wxString headerGuard = filename.GetName() + _T("_") + filename.GetExt();
+    headerGuard.Replace(_T(" "), _T("_"), true);
+    headerGuard.UpperCase();
+
     wxString headerOutput = _T("");
-    headerOutput << _T("#ifndef VERSION_H") << _T("\n");
-    headerOutput << _T("#define VERSION_H") << _T("\n");
+    headerOutput << _T("#ifndef ") << headerGuard << _T("\n");
+    headerOutput << _T("#define ") << headerGuard  << _T("\n");
     headerOutput << _T("\n");
 
     if(cbC2U(GetConfig().Settings.Language.c_str()) == _T("C++"))
@@ -610,9 +627,9 @@ void AutoVersioning::UpdateVersionHeader()
         headerOutput << _T("}") << _T("\n");
     }
 
-    headerOutput << _T("#endif //VERSION_h\n");
+    headerOutput << _T("#endif //") << headerGuard << _T("\n");
 
-    m_versionHeaderPath = FileNormalize(cbC2U(GetConfig().Settings.HeaderPath.c_str()),m_Project->GetBasePath());;
+    m_versionHeaderPath = FileNormalize(cbC2U(GetConfig().Settings.HeaderPath.c_str()),m_Project->GetBasePath());
     wxFile versionHeaderFile(m_versionHeaderPath, wxFile::write);
     versionHeaderFile.Write(headerOutput);
     versionHeaderFile.Close();
@@ -622,7 +639,7 @@ void AutoVersioning::UpdateVersionHeader()
 
 void AutoVersioning::CommitChanges()
 {
-    if (m_Project && IsAttached() && m_IsCurrentProjectVersioned)
+    if (m_Project && IsAttached() && m_IsVersioned[m_Project])
     {
         if (m_Modified)
         {

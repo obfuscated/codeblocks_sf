@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="AutoVersioning">
         <Value title="AutoVersioning" />
-        <Value version="1.1" />
+        <Value version="1.2" />
         <Value description="Auto increments the version and build number of your application every time a change has been made and stores it in version.h with easy to use variable declarations. Also have a feature for committing changes a la SVN style, a version scheme editor and a change log generator.
 
 Example:
@@ -40,7 +40,7 @@ Declarations available in the AutoVersion namespace on C++ and global on C:
 	  static const char SVN_REVISION[]
 	  static const char SVN_DATE[]
 " />
-        <Value author="JGM" />
+        <Value author="Jefferson Gonzalez" />
         <Value authorEmail="jgmdev@gmail.com" />
         <Value authorWebsite="" />
         <Value thanksTo="Killerbot - Code Optimizations, conversion from version.ini to project file and many more...
