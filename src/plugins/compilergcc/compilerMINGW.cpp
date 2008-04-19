@@ -113,9 +113,11 @@ void CompilerMINGW::Reset()
     m_Options.AddOption(_("Enable standard compiler warnings"), _T("-W"), category);
     m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
     m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
+    m_Options.AddOption(_("Have g++ follow the 1998 ISO C++ language standard"), _T("-std=c++98"), category);
     m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
     m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
     m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
+    m_Options.AddOption(_("Enable Effective-C++ warnings (thanks Scott Myers)"), _T("-Weffc++"), category);
     // optimization
     category = _("Optimization");
     m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
