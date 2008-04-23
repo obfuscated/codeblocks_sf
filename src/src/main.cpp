@@ -1534,10 +1534,11 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 {
-    if (Manager::Get()->GetEditorManager()->Open(filename))
+	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+    if (ed)
     {
         if (addToHistory)
-            AddToRecentFilesHistory(filename);
+            AddToRecentFilesHistory(ed->GetFilename());
         return true;
     }
     return false;

@@ -49,7 +49,6 @@
 #include "annoyingdialog.h"
 #include "genericmultilinenotesdlg.h"
 
-
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 
 
@@ -67,11 +66,13 @@ cbProject::cbProject(const wxString& filename)
     SetCompilerID(CompilerFactory::GetDefaultCompilerID());
     SetModified(false);
 
+	wxString realFile = realpath(filename);
+	
     m_Files.Clear();
-    if (!filename.IsEmpty() && wxFileExists(filename) || wxDirExists(filename))
+    if (!realFile.IsEmpty() && wxFileExists(realFile) || wxDirExists(realFile))
     {
         // existing project
-        m_Filename = filename;
+        m_Filename = realFile;
         m_BasePath = GetBasePath();
         Open();
     }
@@ -79,14 +80,14 @@ cbProject::cbProject(const wxString& filename)
     {
         // new project
         SetModified(true);
-        if (filename.IsEmpty())
+        if (realFile.IsEmpty())
         {
             m_Filename = CreateUniqueFilename();
             m_Loaded = SaveAs();
         }
         else
         {
-            m_Filename = filename;
+            m_Filename = realFile;
             m_Loaded = Save();
         }
         if (m_Loaded)
@@ -703,8 +704,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     }
     fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, GetBasePath());
 
-    wxString fullFilename = fname.GetFullPath();
-    f->file.Assign(fname);
+    wxString fullFilename = realpath(fname.GetFullPath());
+    f->file = fullFilename;
     f->relativeFilename = UnixFilename(local_filename);
 
     // now check if we have already added this file
@@ -1565,7 +1566,7 @@ ProjectFile* cbProject::GetFileByFilename(const wxString& filename, bool isRelat
     if (!isRelative)
     {
         // if the search is not relative, make it
-        wxFileName fname(filename);
+        wxFileName fname(realpath(filename));
         fname.MakeRelativeTo(GetBasePath());
         tmp = fname.GetFullPath();
     }

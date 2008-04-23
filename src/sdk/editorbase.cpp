@@ -75,9 +75,9 @@ END_EVENT_TABLE()
 void EditorBase::InitFilename(const wxString& filename)
 {
     if (filename.IsEmpty())
-        m_Filename = CreateUniqueFilename();
+        m_Filename = realpath(CreateUniqueFilename());
     else
-        m_Filename = filename;
+        m_Filename = realpath(filename);
 
     wxFileName fname;
     fname.Assign(m_Filename);

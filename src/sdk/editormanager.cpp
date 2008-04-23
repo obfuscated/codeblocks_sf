@@ -380,7 +380,7 @@ cbEditor* EditorManager::GetBuiltinEditor(EditorBase* eb)
 
 EditorBase* EditorManager::IsOpen(const wxString& filename)
 {
-    wxString uFilename = UnixFilename(filename);
+    wxString uFilename = UnixFilename(realpath(filename));
     for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         EditorBase* eb = InternalGetEditorBase(i);
@@ -429,7 +429,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos, ProjectFile* da
 cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int pos,ProjectFile* data)
 {
     bool can_updateui = !GetActiveEditor() || !Manager::Get()->GetProjectManager()->IsLoading();
-    wxFileName fn(filename);
+    wxFileName fn(realpath(filename));
     NormalizePath(fn, wxEmptyString);
     wxString fname = UnixFilename(fn.GetFullPath());
     //  Manager::Get()->GetLogManager()->DebugLog("Trying to open '%s'", fname.c_str());

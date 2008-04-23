@@ -696,6 +696,7 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
 {
     if (filename.IsEmpty())
         return 0L;
+	wxString realFile = realpath(filename);
     int count = m_pProjects->GetCount();
     for (int i = 0; i < count; ++i)
     {
@@ -706,10 +707,10 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
             // MS Windows Filenames are case-insensitive, we have to
             // avoid opening the same project if the files are only
             // different in upper/lowercase.
-            if(project->GetFilename().Lower().Matches(filename.Lower()))
+            if(project->GetFilename().Lower().Matches(realFile.Lower()))
                 return project;
 #else
-            if (project->GetFilename().Matches(filename))
+            if (project->GetFilename().Matches(realFile))
                 return project;
 #endif
         }

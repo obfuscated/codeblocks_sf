@@ -32,6 +32,10 @@
 #include "filefilters.h"
 #include "tinyxml/tinywxuni.h"
 
+#ifndef __WXMSW__
+	#include <unistd.h> // readlink
+	#include <sys/stat.h> // lstat
+#endif
 
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 
@@ -973,4 +977,48 @@ namespace platform
         static const windows_version_t theOS = cb_get_os();
         return theOS;
     }
+}
+
+// returns the real path of a file by resolving symlinks
+// not yet optimal but should do for now
+// one thing that's not checked yet are circular symlinks - watch out!
+wxString realpath(const wxString& path)
+{
+#ifdef __WXMSW__
+	// no symlinks support on windows
+	return path;
+#else
+	char buf[2048] = {};
+	struct stat buffer;
+	std::string ret = (const char*)cbU2C(path);
+	size_t lastPos = 0;
+	size_t slashPos = ret.find('/', lastPos);
+	while (slashPos != std::string::npos)
+	{
+		if (lstat(ret.substr(0, slashPos).c_str(), &buffer) == 0)
+		{
+			if (S_ISLNK(buffer.st_mode))
+			{
+				int s = readlink(ret.substr(0, slashPos).c_str(), buf, sizeof(buf));
+				if (s > 0 && buf[0] != '/' && buf[0] != '~')
+				{
+					// relative
+					ret = ret.substr(0, lastPos) + buf + ret.substr(slashPos, ret.size() - slashPos);
+				}
+				else
+				{
+					// absolute
+					ret = buf + ret.substr(slashPos, ret.size() - slashPos);
+				}
+				slashPos = s;
+			}
+		}
+		
+		while (ret[++slashPos] == '/')
+			;
+		lastPos = slashPos;
+		slashPos = ret.find('/', slashPos);
+	}
+	return cbC2U(ret.c_str());
+#endif
 }

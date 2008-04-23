@@ -318,4 +318,9 @@ namespace platform
     extern DLLIMPORT windows_version_t WindowsVersion();
 };
 
+// returns the real path of a file by resolving symlinks
+// not yet optimal but should do for now
+// one thing that's not checked yet are circular symlinks - watch out!
+extern DLLIMPORT wxString realpath(const wxString& path);
+
 #endif // SDK_GLOBALS_H
