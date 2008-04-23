@@ -32,6 +32,11 @@ public:
         m_SkipUnwantedTokens = skip;
     }
 
+    bool IsSkippingUnwantedTokens() const
+    {
+        return m_SkipUnwantedTokens;
+    }
+
     const wxString& GetFilename() const
     {
         return m_Filename;

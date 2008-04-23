@@ -202,11 +202,18 @@ void ParserThread::SkipBlock()
 
 void ParserThread::SkipAngleBraces()
 {
+	// need to force the tokenizer _not_ skip anything
+	// or else default values for template params would cause us to miss everything
+	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+	m_Tokenizer.SetSkipUnwantedTokens(false);
+	
     int nestLvl = 0;
+    // NOTE: only exit this loop with 'break' so the tokenizer's state can
+    // be reset afterwards (i.e. don't use 'return')
     while (true)
     {
         if(TestDestroy())
-            return;
+            break;
         wxString tmp = m_Tokenizer.GetToken();
         if (tmp==ParserConsts::lt)
             ++nestLvl;
@@ -223,6 +230,9 @@ void ParserThread::SkipAngleBraces()
         if (nestLvl <= 0)
             break;
     }
+
+	// reset tokenizer's functionality
+	m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
@@ -1077,6 +1087,12 @@ void ParserThread::HandleNamespace()
 
 void ParserThread::HandleClass(bool isClass)
 {
+	// need to force the tokenizer _not_ skip anything
+	// as we 're manually parsing class decls
+	// don't forget to reset that if you add any early exit condition!
+	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+	m_Tokenizer.SetSkipUnwantedTokens(false);
+
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString ancestors;
     while (1)
@@ -1142,8 +1158,13 @@ void ParserThread::HandleClass(bool isClass)
                     else if (next==ParserConsts::lt)
                     {
                         // template class
-                        m_Tokenizer.GetToken(); // reach "<"
+                        //m_Tokenizer.GetToken(); // reach "<"
+                        // must not "eat" the token,
+                        // SkipAngleBraces() will do it to see what it must match
                         SkipAngleBraces();
+                        // also need to 'unget' the last token (>)
+                        // so next iteration will see the { or ; in 'next'
+                        m_Tokenizer.UngetToken();
                     }
                 }
 //                Manager::Get()->GetLogManager()->DebugLog(F(_T("Ancestors: ") + ancestors));
@@ -1178,7 +1199,11 @@ void ParserThread::HandleClass(bool isClass)
             {
                 Token* newToken = DoAddToken(tkClass, current, lineNr);
                 if (!newToken)
+                {
+					// restore tokenizer's functionality
+					m_Tokenizer.SetSkipUnwantedTokens(oldState);
                     return;
+                }
                 newToken->m_AncestorsString = ancestors;
 
                 m_Tokenizer.GetToken(); // eat {
@@ -1207,6 +1232,9 @@ void ParserThread::HandleClass(bool isClass)
         else
             break;
     }
+
+	// restore tokenizer's functionality
+	m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
