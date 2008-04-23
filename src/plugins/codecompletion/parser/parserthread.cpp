@@ -354,6 +354,11 @@ bool ParserThread::Parse()
 
 void ParserThread::DoParse()
 {
+	// need to reset tokenizer's behavior
+	// don't forget to reset that if you add any early exit condition!
+	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+	m_Tokenizer.SetSkipUnwantedTokens(true);
+
     m_Str.Clear();
     m_LastToken.Clear();
     m_LastUnnamedTokenName.Clear();
@@ -663,6 +668,8 @@ void ParserThread::DoParse()
         }
         m_LastToken = token;
     }
+    // reset tokenizer behavior
+	m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
