@@ -1447,7 +1447,7 @@ void CompilerGCC::DoPrepareQueue()
 {
     if (m_CommandQueue.GetCount() == 0)
     {
-        CodeBlocksEvent evt(cbEVT_COMPILER_STARTED, 0, 0, 0, this);
+        CodeBlocksEvent evt(cbEVT_COMPILER_STARTED, 0, m_Project, 0, this);
         Manager::Get()->ProcessEvent(evt);
 
         ClearLog();
@@ -3611,7 +3611,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
 
     if (!IsProcessRunning())
     {
-        CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, 0, 0, this);
+        CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_Project, 0, this);
         evt.SetInt(m_LastExitCode);
         Manager::Get()->ProcessEvent(evt);
     }
