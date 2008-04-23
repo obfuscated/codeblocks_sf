@@ -260,6 +260,13 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
     return true;
 }
 
+wxString Tokenizer::ReadToEOL(bool nestBraces)
+{
+	unsigned int idx = m_TokenIndex;
+	SkipToEOL(nestBraces);
+	return m_Buffer.Mid(idx, m_TokenIndex - idx);
+}
+
 bool Tokenizer::SkipToEOL(bool nestBraces)
 {
     // skip everything until we find EOL

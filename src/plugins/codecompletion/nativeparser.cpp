@@ -776,7 +776,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
     {
         ++blockStart; // skip {
         int blockEnd = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
-		if (blockEnd < 0 || blockEnd >= ed->GetControl()->GetLength())
+		if (blockEnd < 0 || blockEnd > ed->GetControl()->GetLength())
 			return false;
 
         if (blockStart >= blockEnd)
@@ -836,7 +836,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
 
     wxArrayString ns;
     int pos = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
-    if (pos < 0 || pos >= ed->GetControl()->GetLength())
+    if (pos < 0 || pos > ed->GetControl()->GetLength())
 		return false;
     wxString buffer = ed->GetControl()->GetTextRange(0, pos);
     parser->ParseBufferForUsingNamespace(buffer, ns);
@@ -1318,7 +1318,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     m_LastAIGlobalSearch.Clear();
 
     int pos = caretPos == -1 ? editor->GetControl()->GetCurrentPos() : caretPos;
-    if (pos < 0 || pos >= editor->GetControl()->GetLength())
+    if (pos < 0 || pos > editor->GetControl()->GetLength())
 		return 0;
     m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
     m_EditorEndWord = pos;//editor->GetControl()->WordEndPosition(pos, true);
@@ -1880,7 +1880,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
 
     // cache last result for optimization
     int pos = caretPos == -1 ? control->GetCurrentPos() : caretPos;
-    if (pos < 0 || pos >= control->GetLength())
+    if (pos < 0 || pos > control->GetLength())
 		return -1;
     int line = control->LineFromPosition(pos) + 1;
     if (line == s_LastLine && editor == s_LastEditor)

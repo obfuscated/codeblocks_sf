@@ -63,6 +63,7 @@ public:
     };
     TokenizerOptions m_Options;
 
+    wxString ReadToEOL(bool nestBraces = true); // use with care outside this class!
     bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
 
     static void SetReplacementString(const wxString& from, const wxString& to)

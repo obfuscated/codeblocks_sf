@@ -958,14 +958,14 @@ void ParserThread::HandleDefines()
     // BLAH_BLAH
     if (!token.IsEmpty())
     {
+        // skip the rest of the #define
+        wxString defVal = token + m_Tokenizer.ReadToEOL();
+
         // make sure preprocessor definitions are not going under namespaces or classes!
         Token* oldParent = m_pLastParent;
         m_pLastParent = 0L;
-        DoAddToken(tkPreprocessor, token, lineNr);
+        DoAddToken(tkPreprocessor, token, lineNr, lineNr, m_Tokenizer.GetLineNumber(), defVal, false, true);
         m_pLastParent = oldParent;
-
-        // skip the rest of the #define
-        m_Tokenizer.SkipToEOL();
     }
 }
 
