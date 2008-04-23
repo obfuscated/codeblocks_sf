@@ -380,6 +380,7 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
                     {
                         m_Project->AddFile(i, m_versionHeaderPath, true, true, 0);
                     }
+                    Manager::Get()->GetProjectManager()->RebuildTree();
                     wxMessageBox(_("Project configured!"));
                 }
             }
