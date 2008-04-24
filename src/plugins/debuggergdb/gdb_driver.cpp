@@ -15,6 +15,7 @@
 #include <configmanager.h>
 #include <scriptingmanager.h>
 #include <globals.h>
+#include <infowindow.h>
 
 // static
 GDBTipWindow* GdbCmd_TooltipEvaluation::s_pWin = 0;
@@ -265,6 +266,12 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
         QueueCommand(new DebuggerCmd(this, _T("set new-console on")));
 
     QueueCommand(new DebuggerCmd(this, flavour));
+
+	if (Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("catch_exceptions"), true))
+	{
+		// catch exceptions
+		QueueCommand(new DebuggerCmd(this, _T("catch throw")));
+	}
 
     // define all scripted types
     m_Types.Clear();
@@ -894,9 +901,9 @@ void GDB_driver::ParseOutput(const wxString& output)
                 {
                     // don't ask; it's already shown
                     // just grab the user's attention
-                    cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
+//                    cbMessageBox(lines[i], _("Signal received"), wxICON_ERROR);
                 }
-                else if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
+                else// if (cbMessageBox(wxString::Format(_("%s\nDo you want to view the backtrace?"), lines[i].c_str()), _("Signal received"), wxICON_ERROR | wxYES_NO) == wxID_YES)
                 {
                     // show the backtrace window
                     CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
@@ -904,6 +911,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                     Manager::Get()->ProcessEvent(evt);
                     m_forceUpdate = true;
                 }
+				InfoWindow::Display(_("Signal received"), _T("\n\n") + lines[i] + _T("\n\n"));
                 m_needsUpdate = true;
                 // the backtrace will be generated when NotifyPlugins() is called
                 // and only if the backtrace window is shown

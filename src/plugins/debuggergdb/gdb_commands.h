@@ -21,6 +21,7 @@
 #include <manager.h>
 #include <scriptingmanager.h>
 #include <sqplus.h>
+#include <infowindow.h>
 #include "debugger_defs.h"
 #include "debuggergdb.h"
 #include "gdb_driver.h"
@@ -948,6 +949,9 @@ class GdbCmd_Backtrace : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
+        	int validFrameNumber = -1;
+        	StackFrame validSF;
+        	
             m_pDlg->Clear();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             for (unsigned int i = 0; i < lines.GetCount(); ++i)
@@ -989,11 +993,36 @@ class GdbCmd_Backtrace : public DebuggerCmd
                     {
                         sf.file = reBT2.GetMatch(lines[i], 1);
                         sf.line = reBT2.GetMatch(lines[i], 2);
+						if (validFrameNumber == -1)
+						{
+							validSF = sf;
+							validFrameNumber = sf.number;
+						}
                     }
                     else if (reBT3.Matches(lines[i]))
                         sf.file = reBT3.GetMatch(lines[i], 1);
                     m_pDlg->AddFrame(sf);
                 }
+            }
+            if (validFrameNumber > 0) // if it's 0, then the driver already synced the editor
+            {
+				bool autoSwitch = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("auto_switch_frame"), true);
+            	if (!autoSwitch)
+            	{
+					long line;
+					if (validSF.line.ToLong(&line))
+					{
+						m_pDriver->Log(wxString::Format(_T("Displaying first frame with valid source info (#%d)"), validFrameNumber));
+						m_pDriver->ShowFile(validSF.file, line);
+					}
+            	}
+            	else
+            	{
+					// can't call m_pDriver->SwitchToFrame() here
+					// because it causes a cascade update, never stopping...
+					//m_pDriver->Log(wxString::Format(_T("Switching to frame #%d which has valid source info"), validFrameNumber));
+                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, wxString::Format(_T("frame %d"), validFrameNumber)));
+            	}
             }
 //            m_pDriver->DebugLog(output);
         }
@@ -1355,12 +1384,12 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 			wxString errMsg;
 			
 			if (output.Contains(_T("No route to host")))
-				errMsg << _("Can't connect to the remote system. Verify your connection settings and that the remote system is reachable/powered-on.");
+				errMsg << _("Can't connect to the remote system.\nVerify your connection settings and that\nthe remote system is reachable/powered-on.");
 			else if (output.Contains(_T("Connection refused")))
-				errMsg << _("Connection refused by the remote system. Verify your connection settings and that the GDB server/proxy is running on the remote system.");
+				errMsg << _("Connection refused by the remote system.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
 			else if (output.Contains(_T("Malformed response")) ||
 					output.Contains(_T("packet error")))
-				errMsg << _("Connection can't be established. Verify your connection settings and that the GDB server/proxy is running on the remote system.");
+				errMsg << _("Connection can't be established.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
 
 			if (!errMsg.IsEmpty())
 			{
@@ -1369,7 +1398,7 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 				// tell the user
 				errMsg << _("\nThe exact error message was:\n\n");
 				errMsg << output;
-				cbMessageBox(errMsg, _("Error"), wxICON_ERROR);
+				InfoWindow::Display(_("Error"), errMsg, 10000, 1000); // show for 10 seconds with 1 second delay
 				return;
 			}
 			

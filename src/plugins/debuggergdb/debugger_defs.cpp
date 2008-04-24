@@ -24,6 +24,7 @@
 WX_DEFINE_OBJARRAY(WatchesArray);
 
 const int DEBUGGER_CURSOR_CHANGED = wxNewId();
+const int DEBUGGER_SHOW_FILE_LINE = wxNewId();
 
 DebuggerCmd::DebuggerCmd(DebuggerDriver* driver, const wxString& cmd, bool logToNormalLog)
     : m_Cmd(cmd),

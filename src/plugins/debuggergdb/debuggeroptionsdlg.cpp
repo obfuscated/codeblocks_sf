@@ -30,6 +30,8 @@ DebuggerOptionsDlg::DebuggerOptionsDlg(wxWindow* parent, DebuggerGDB* plugin)
     XRCCTRL(*this, "chkAutoBuild",      wxCheckBox)->SetValue(cfg->ReadBool(_T("auto_build"),            true));
     XRCCTRL(*this, "chkWatchArgs",      wxCheckBox)->SetValue(cfg->ReadBool(_T("watch_args"),            true));
     XRCCTRL(*this, "chkWatchLocals",    wxCheckBox)->SetValue(cfg->ReadBool(_T("watch_locals"),          true));
+    XRCCTRL(*this, "chkCatchExceptions",wxCheckBox)->SetValue(cfg->ReadBool(_T("catch_exceptions"),      true));
+    XRCCTRL(*this, "chkAutoSwitchFrame",wxCheckBox)->SetValue(cfg->ReadBool(_T("auto_switch_frame"),     true));
     XRCCTRL(*this, "chkTooltipEval",    wxCheckBox)->SetValue(cfg->ReadBool(_T("eval_tooltip"),          false));
     XRCCTRL(*this, "chkDebugLog",       wxCheckBox)->SetValue(cfg->ReadBool(_T("debug_log"),             false));
     XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->SetValue(cfg->ReadBool(_T("add_other_search_dirs"), false));
@@ -51,6 +53,8 @@ void DebuggerOptionsDlg::OnApply()
     cfg->Write(_T("auto_build"),            XRCCTRL(*this, "chkAutoBuild",      wxCheckBox)->GetValue());
     cfg->Write(_T("watch_args"),            XRCCTRL(*this, "chkWatchArgs",      wxCheckBox)->GetValue());
     cfg->Write(_T("watch_locals"),          XRCCTRL(*this, "chkWatchLocals",    wxCheckBox)->GetValue());
+    cfg->Write(_T("catch_exceptions"),      XRCCTRL(*this, "chkCatchExceptions",wxCheckBox)->GetValue());
+    cfg->Write(_T("auto_switch_frame"),     XRCCTRL(*this, "chkAutoSwitchFrame",wxCheckBox)->GetValue());
     cfg->Write(_T("eval_tooltip"),          XRCCTRL(*this, "chkTooltipEval",    wxCheckBox)->GetValue());
     cfg->Write(_T("debug_log"),             XRCCTRL(*this, "chkDebugLog",       wxCheckBox)->GetValue());
     cfg->Write(_T("add_other_search_dirs"), XRCCTRL(*this, "chkAddForeignDirs", wxCheckBox)->GetValue());

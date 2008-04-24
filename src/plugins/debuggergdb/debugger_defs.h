@@ -13,6 +13,7 @@ class DebuggerDriver;
 class DebuggerTree;
 
 extern const int DEBUGGER_CURSOR_CHANGED; ///< wxCommandEvent ID fired when the cursor has changed.
+extern const int DEBUGGER_SHOW_FILE_LINE; ///< wxCommandEvent ID fired to display a file/line (w/out changing the cursor)
 
 /** Debugger cursor info.
   *

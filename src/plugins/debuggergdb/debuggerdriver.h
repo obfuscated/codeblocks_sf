@@ -154,6 +154,9 @@ class DebuggerDriver
         /** Request to switch to another thread. */
         virtual void SwitchThread(size_t threadIndex) = 0;
 
+		/** Show a file/line without changing the cursor */
+		void ShowFile(const wxString& file, int line);
+
         void QueueCommand(DebuggerCmd* dcmd, QueuePriority prio = Low); ///< add a command in the queue. The DebuggerCmd will be deleted automatically when finished.
         DebuggerCmd* CurrentCommand(); ///< returns the currently executing command
         void RunQueue(); ///< runs the next command in the queue, if it is idle

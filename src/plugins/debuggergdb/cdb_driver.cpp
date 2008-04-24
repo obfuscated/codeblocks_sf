@@ -13,6 +13,7 @@
 #include <manager.h>
 #include <configmanager.h>
 #include <globals.h>
+#include <infowindow.h>
 
 #define CDB_PROMPT _T("0:000>")
 
@@ -314,10 +315,10 @@ void CDB_driver::ParseOutput(const wxString& output)
             {
                 // don't ask; it's already shown
                 // just grab the user's attention
-                cbMessageBox(lines[i], _("Access violation"), wxICON_ERROR);
+//                cbMessageBox(lines[i], _("Access violation"), wxICON_ERROR);
                 Backtrace();
             }
-            else if (cbMessageBox(wxString::Format(_("%s\n\nDo you want to view the backtrace?"), lines[i].c_str()), _("Access violation"), wxICON_ERROR | wxYES_NO) == wxID_YES)
+            else// if (cbMessageBox(wxString::Format(_("%s\n\nDo you want to view the backtrace?"), lines[i].c_str()), _("Access violation"), wxICON_ERROR | wxYES_NO) == wxID_YES)
             {
                 // show the backtrace window
                 CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
@@ -325,6 +326,7 @@ void CDB_driver::ParseOutput(const wxString& output)
                 Manager::Get()->ProcessEvent(evt);
                 Backtrace();
             }
+            InfoWindow::Display(_("Access violation"), lines[i]);
             break;
         }
 

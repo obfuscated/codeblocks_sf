@@ -73,6 +73,14 @@ void DebuggerDriver::SetArguments(const wxString& args)
     m_Args = args;
 }
 
+void DebuggerDriver::ShowFile(const wxString& file, int line)
+{
+    wxCommandEvent event(DEBUGGER_SHOW_FILE_LINE);
+    event.SetString(file);
+    event.SetInt(line);
+    m_pDBG->ProcessEvent(event);
+}
+
 void DebuggerDriver::NotifyCursorChanged()
 {
     if (!m_Cursor.changed || m_LastCursorAddress == m_Cursor.address)

@@ -53,6 +53,18 @@
 						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkCatchExceptions">
+							<label>Catch C++ exceptions</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkAutoSwitchFrame">
+							<label>When stopping, auto-switch to first frame with valid source info</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+					</object>
+					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkTooltipEval">
 							<label>Evaluate expression under cursor</label>
 							<tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>

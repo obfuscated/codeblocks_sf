@@ -201,6 +201,7 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
 
     EVT_COMMAND(-1, cbCustom_WATCHES_CHANGED, DebuggerGDB::OnWatchesChanged)
     EVT_COMMAND(-1, DEBUGGER_CURSOR_CHANGED, DebuggerGDB::OnCursorChanged)
+    EVT_COMMAND(-1, DEBUGGER_SHOW_FILE_LINE, DebuggerGDB::OnShowFile)
 END_EVENT_TABLE()
 
 DebuggerGDB::DebuggerGDB()
@@ -2535,6 +2536,11 @@ void DebuggerGDB::OnTimer(wxTimerEvent& event)
 void DebuggerGDB::OnWatchesChanged(wxCommandEvent& event)
 {
     DoWatches();
+}
+
+void DebuggerGDB::OnShowFile(wxCommandEvent& event)
+{
+	SyncEditor(event.GetString(), event.GetInt(), false);
 }
 
 void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
