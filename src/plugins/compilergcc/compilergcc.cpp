@@ -1234,19 +1234,12 @@ int CompilerGCC::DoRunQueue()
         dir = m_CdRun;
 
         // setup dynamic linker path
-        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
-        if (compiler)
-        {
-            wxString newLibPath;
-            const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-            newLibPath << _T(".") << libPathSep;
-            newLibPath << GetStringFromArray(compiler->GetLinkerSearchDirs(cmd->target), libPathSep);
-            if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
-                newLibPath << libPathSep;
-            newLibPath << oldLibPath;
-            wxSetEnv(LIBRARY_ENVVAR, newLibPath);
-//            LogMessage(LIBRARY_ENVVAR _T("=") + newLibPath, cltInfo);
-        }
+        wxString newLibPath = GetDynamicLinkerPathForTarget(cmd->target);
+        const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+		if (!newLibPath.IsEmpty() && newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+			newLibPath << libPathSep;
+		newLibPath << oldLibPath;
+		wxSetEnv(LIBRARY_ENVVAR, newLibPath);
     }
 
     // special shell used only for build commands
@@ -1784,7 +1777,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         if (target->GetUseConsoleRunner())
         {
             if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
+            {
                 command << crunnStr << strSPACE;
+
+				// set LD_LIBRARY_PATH
+				command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << (platform::windows ? _T(';') : _T(':'));
+				command << GetDynamicLinkerPathForTarget(target) << strSPACE;
+            }
         }
     }
 
@@ -1861,6 +1860,27 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     m_Project->SetCurrentlyCompilingTarget(0);
     return 0;
+}
+
+wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
+{
+	if (!target)
+	{
+		return wxEmptyString;
+	}
+	
+	Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+	if (compiler)
+	{
+		wxString libPath;
+		const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+		libPath << _T(".") << libPathSep;
+		libPath << GetStringFromArray(compiler->GetLinkerSearchDirs(target), libPathSep);
+		if (!libPath.IsEmpty() && libPath.SubString(libPath.Length() - 1, 1) == libPathSep)
+			libPath.Truncate(libPath.Length() - 1);
+		return libPath;
+	}
+	return wxEmptyString;
 }
 
 wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target)
