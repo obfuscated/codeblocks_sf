@@ -105,7 +105,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                             if(::wxRenameFile(p->GetFilename(), p->GetFilename() + _T(".bak")))
                                 if(p->Save())
                                 {
-                                    CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
+                                    CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
                                     plm->NotifyPlugins(e);
                                 }
                         }
@@ -120,7 +120,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                     {
                         if(p->GetModified() && p->Save())
                         {
-                            CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
+                            CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
                             plm->NotifyPlugins(e);
                         }
                         p->SaveLayout();
@@ -135,7 +135,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                             ProjectLoader loader(p);
                             if(loader.Save(p->GetFilename() + _T(".save")))
                             {
-                                CodeBlocksEvent e(cbEVT_PROJECT_SAVE);
+                                CodeBlocksEvent e(cbEVT_PROJECT_SAVE, 0, p);
                                 plm->NotifyPlugins(e);
                             }
                             p->SetModified(); // the actual project file is still not updated!

@@ -1007,12 +1007,12 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
     // in starting.
     m_InitDone = true;
 
-	// Dreaded DDE-open bug related: do not touch the following lines unless for a good reason
-    
+    // Dreaded DDE-open bug related: do not touch the following lines unless for a good reason
+
     // parse any projects opened through DDE or the command-line
     ParseActiveProjects();
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
-	m_NativeParsers.SetClassBrowserProject(prjMan->GetActiveProject());
+    m_NativeParsers.SetClassBrowserProject(prjMan->GetActiveProject());
 
     event.Skip();
 }
@@ -1102,9 +1102,9 @@ void CodeCompletion::OnProjectSaved(CodeBlocksEvent& event)
 //    Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion::OnProjectSaved"));
 
     // reparse project (compiler search dirs might have changed)
-    if (IsAttached() && m_InitDone)
+    if (IsAttached() && m_InitDone && event.GetProject())
     {
-    	m_NativeParsers.ReparseProject(event.GetProject());
+        m_NativeParsers.ReparseProject(event.GetProject());
     }
     event.Skip();
 }
