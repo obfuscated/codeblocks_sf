@@ -17,6 +17,7 @@
 #include <wx/regex.h>
 #include <wx/tipwin.h>
 #include <wx/tokenzr.h>
+#include "configmanager.h"
 #include <globals.h>
 #include <manager.h>
 #include <scriptingmanager.h>
@@ -513,7 +514,7 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
 			// This can crash because m_BP could already be deleted
 			// and if it isn't deleted already, it will be soon
 			// so there's no point in invalidating the bp number anyway
-			
+
             // invalidate bp number
 //            m_BP->index = -1;
 
@@ -951,7 +952,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
         {
         	int validFrameNumber = -1;
         	StackFrame validSF;
-        	
+
             m_pDlg->Clear();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             for (unsigned int i = 0; i < lines.GetCount(); ++i)
@@ -1352,11 +1353,11 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 						m_Cmd << _T("target remote ") << rd->serialPort;
 				}
 				break;
-				
+
 				default:
 					break;
 			}
-			
+
 			if (!m_Cmd.IsEmpty())
 				driver->Log(_("Connecting to remote target"));
 			else
@@ -1380,9 +1381,9 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 			// Now, we could use a regex to filter these but this might be overkill
 			// since the above errors are the only (?) ones we could get.
 			// So for now we 'll just check them verbatim...
-			
+
 			wxString errMsg;
-			
+
 			if (output.Contains(_T("No route to host")))
 				errMsg << _("Can't connect to the remote system.\nVerify your connection settings and that\nthe remote system is reachable/powered-on.");
 			else if (output.Contains(_T("Connection refused")))
@@ -1401,7 +1402,7 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 				InfoWindow::Display(_("Error"), errMsg, 10000, 1000); // show for 10 seconds with 1 second delay
 				return;
 			}
-			
+
 			m_pDriver->Log(_("Connected"));
 		}
 };
