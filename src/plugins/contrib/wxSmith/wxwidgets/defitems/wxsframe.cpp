@@ -88,6 +88,7 @@ void wxsFrame::OnBuildCreatingCode()
             BuildSetupWindowCode();
             if ( !Icon.IsEmpty() )
             {
+                AddHeader(_T("<wx/icon.h>"), GetInfo().ClassName, hfLocal);
                 Codef(
                     _T("{\n")
                     _T("\twxIcon FrameIcon;\n")
