@@ -1780,9 +1780,12 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             {
                 command << crunnStr << strSPACE;
 
-				// set LD_LIBRARY_PATH
-				command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << (platform::windows ? _T(';') : _T(':'));
-				command << GetDynamicLinkerPathForTarget(target) << strSPACE;
+				if (!platform::windows)
+				{
+					// set LD_LIBRARY_PATH
+					command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << _T(':');
+					command << GetDynamicLinkerPathForTarget(target) << strSPACE;
+				}
             }
         }
     }
