@@ -337,7 +337,7 @@ MainFrame* CodeBlocksApp::InitFrame()
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(0);
-    //frame->Hide(); // shouldn't need this explicitely
+    //frame->Hide(); // shouldn't need this explicitly
 #ifdef __WXMSW__
     if (!m_NoDDE)
     {

@@ -243,7 +243,7 @@ namespace sdk
 
 /*  ---------------------------------------------------------------------------------------------------------
     The compatibility namespace is intended for workarounds that try to cope with incompatibilities in different
-    wxWidgets versions. Since these often involve missing functions or constants, #ifdef is explicitely allowed
+    wxWidgets versions. Since these often involve missing functions or constants, #ifdef is explicitly allowed
     and not frowned upon in this namespace.
 
     wxHideReadonly

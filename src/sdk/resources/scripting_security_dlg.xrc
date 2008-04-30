@@ -73,7 +73,7 @@ command is allowed to execute. Only allow execution of this command if you trust
 the source of this script or you are confident enough that the above command is
 harmless for your system.
 
-If you mark the script as &quot;trusted&quot; you declare that you trust this script and explicitely
+If you mark the script as &quot;trusted&quot; you declare that you trust this script and explicitly
 allow it to execute privileged commands. You should only trust scripts that you wrote
 yourself or if they come from a trusty source.</label>
                 </object>

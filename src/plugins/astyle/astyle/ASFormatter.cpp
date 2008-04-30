@@ -321,7 +321,7 @@ string ASFormatter::nextLine()
 		{
 			appendCurrentChar();
 
-			// explicitely break a line when a line comment's end is found.
+			// explicitly break a line when a line comment's end is found.
 			if (charNum + 1 == (int) currentLine.length())
 			{
 				isInLineBreak = true;
@@ -401,7 +401,7 @@ string ASFormatter::nextLine()
 			formattedLineCommentNum = formattedLine.length();
 			appendSequence(AS_OPEN_LINE_COMMENT);
 			goForward(1);
-			// explicitely break a line when a line comment's end is found.
+			// explicitly break a line when a line comment's end is found.
 			if (charNum + 1 == (int) currentLine.length())
 			{
 				isInLineBreak = true;
@@ -1718,9 +1718,9 @@ void ASFormatter::padOperators(const string *newOperator)
 	                  && newOperator != &AS_RETURN
 	                  && !(newOperator == &AS_MINUS && isInExponent())
 	                  && !(newOperator == &AS_MINUS             // check for negative number
-	                       && (previousNonWSChar == '(' 
-	                           || previousNonWSChar == '=' 
-	                           || previousNonWSChar == ',')) 
+	                       && (previousNonWSChar == '('
+	                           || previousNonWSChar == '='
+	                           || previousNonWSChar == ','))
                       && !(newOperator == &AS_PLUS && isInExponent())
                       && previousOperator != &AS_OPERATOR
                       && !((newOperator == &AS_MULT || newOperator == &AS_BIT_AND)

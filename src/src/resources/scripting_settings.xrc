@@ -134,7 +134,7 @@
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT3">
-												<label>When a script tries to perform any of the following operations, it is first checked&#x0D;&#x0A;whether it is allowed to do so. If it is not, then you are asked whether to allow it&#x0D;&#x0A;or not (on a case-by-case basis).&#x0D;&#x0A;By checking a box below, you explicitely allow the releveant operation to be&#x0D;&#x0A;performed by any script (without you being asked again).</label>
+												<label>When a script tries to perform any of the following operations, it is first checked&#x0D;&#x0A;whether it is allowed to do so. If it is not, then you are asked whether to allow it&#x0D;&#x0A;or not (on a case-by-case basis).&#x0D;&#x0A;By checking a box below, you explicitly allow the releveant operation to be&#x0D;&#x0A;performed by any script (without you being asked again).</label>
 											</object>
 											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>5</border>

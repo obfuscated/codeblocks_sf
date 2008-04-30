@@ -1151,14 +1151,14 @@ Makefile.</label>
                             </object>
                             <object class="sizeritem">
                               <object class="wxCheckBox" name="chkIncludeFileCwd">
-                                <label>Explicitely add currently compiling file's directory to compiler search dirs</label>
+                                <label>Explicitly add currently compiling file's directory to compiler search dirs</label>
                               </object>
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
                             </object>
                             <object class="sizeritem">
                               <object class="wxCheckBox" name="chkIncludePrjCwd">
-                                <label>Explicitely add project's top-level directory to compiler search dirs</label>
+                                <label>Explicitly add project's top-level directory to compiler search dirs</label>
                               </object>
                               <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
                               <border>8</border>
