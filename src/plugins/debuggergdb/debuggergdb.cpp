@@ -1603,53 +1603,99 @@ void DebuggerGDB::RunCommand(int cmd)
 
 bool DebuggerGDB::AddBreakpoint(const wxString& file, int line)
 {
-    if (!IsStopped())
-        return false;
+    const bool debuggerIsRunning = !IsStopped();
+    if (debuggerIsRunning)
+    {
+        Break();
+    }
     m_State.AddBreakpoint(file, line, false);
     if (m_pBreakpointsWindow)
+    {
         m_pBreakpointsWindow->Refresh();
+    }
+    if (debuggerIsRunning)
+    {
+        Continue();
+    }
     return true;
-}
+} // end of AddBreakpoint
 
 bool DebuggerGDB::AddBreakpoint(const wxString& functionSignature)
 {
-    if (!IsStopped())
-        return false;
+    const bool debuggerIsRunning = !IsStopped();
+    if (debuggerIsRunning)
+    {
+        Break();
+    }
     m_State.AddBreakpoint(wxEmptyString, -1, false, functionSignature);
     if (m_pBreakpointsWindow)
+    {
         m_pBreakpointsWindow->Refresh();
+    }
+    if (debuggerIsRunning)
+    {
+        Continue();
+    }
     return true;
-}
+} // end of AddBreakpoint
 
 bool DebuggerGDB::RemoveBreakpoint(const wxString& file, int line)
 {
-    if (!IsStopped())
-        return false;
+    const bool debuggerIsRunning = !IsStopped();
+    if (debuggerIsRunning)
+    {
+        Break();
+    }
     m_State.RemoveBreakpoint(file, line);
     if (m_pBreakpointsWindow)
+    {
         m_pBreakpointsWindow->Refresh();
+    }
+    if (debuggerIsRunning)
+    {
+        Continue();
+    }
     return true;
-}
+} // end of RemoveBreakpoint
 
 bool DebuggerGDB::RemoveBreakpoint(const wxString& functionSignature)
 {
-//    if (!IsStopped())
+//    const bool debuggerIsRunning = !IsStopped();
+//    if (debuggerIsRunning)
+//    {
+//        Break();
+//    }
         return false;
 //    m_State.RemoveBreakpoint(wxEmptyString, event.GetInt());
 //    if (m_pBreakpointsWindow)
+//    {
 //        m_pBreakpointsWindow->Refresh();
+//    }
+//    if (debuggerIsRunning)
+//    {
+//        Continue();
+//    }
 //    return true;
-}
+} // end of RemoveBreakpoint
 
 bool DebuggerGDB::RemoveAllBreakpoints(const wxString& file)
 {
-    if (!IsStopped())
-        return false;
+    const bool debuggerIsRunning = !IsStopped();
+    if (debuggerIsRunning)
+    {
+        Break();
+    }
     m_State.RemoveAllBreakpoints(file);
     if (m_pBreakpointsWindow)
+    {
         m_pBreakpointsWindow->Refresh();
+    }
+    if (debuggerIsRunning)
+    {
+        Continue();
+    }
     return true;
-}
+} // end of RemoveAllBreakpoints
 
 void DebuggerGDB::EditorLinesAddedOrRemoved(cbEditor* editor, int startline, int lines)
 {
@@ -1978,8 +2024,8 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
         mbar->Enable(idMenuStep, en && stopped);
         mbar->Enable(idMenuStepOut, m_pProcess && en && stopped);
         mbar->Enable(idMenuRunToCursor, en && ed && stopped);
-        mbar->Enable(idMenuToggleBreakpoint, en && ed && stopped);
-        mbar->Enable(idMenuRemoveAllBreakpoints, en && ed && stopped);
+        mbar->Enable(idMenuToggleBreakpoint, en && ed);
+        mbar->Enable(idMenuRemoveAllBreakpoints, en && ed);
         mbar->Enable(idMenuSendCommandToGDB, m_pProcess && stopped);
         mbar->Enable(idMenuAddSymbolFile, m_pProcess && stopped);
         mbar->Enable(idMenuStop, m_pProcess && en);

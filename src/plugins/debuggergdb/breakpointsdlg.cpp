@@ -120,8 +120,8 @@ void BreakpointsDlg::FillBreakpoints()
 void BreakpointsDlg::RemoveBreakpoint(int sel)
 {
     // if debugger is running and is not paused, return
-    if (m_State.HasDriver() && !m_State.GetDriver()->IsStopped())
-        return;
+//    if (m_State.HasDriver() && !m_State.GetDriver()->IsStopped())
+//        return;
     // if index is out of range, return
     if (sel < 0 || sel >= (int)m_State.GetBreakpoints().GetCount())
         return;
@@ -153,8 +153,8 @@ void BreakpointsDlg::OnRemove(wxCommandEvent& event)
 void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
 {
     // if debugger is running and is not paused, return
-    if (m_State.HasDriver() && !m_State.GetDriver()->IsStopped())
-        return;
+//    if (m_State.HasDriver() && !m_State.GetDriver()->IsStopped())
+//        return;
     while (m_State.GetBreakpoints().GetCount())
     {
         // if not valid breakpoint, continue with the next one
