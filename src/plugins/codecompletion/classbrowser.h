@@ -50,6 +50,7 @@ class ClassBrowser : public wxPanel
         void OnSearch(wxCommandEvent& event);
         bool FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item);
         wxTreeItemId FindNext(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start);
+        wxTreeItemId FindChild(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start, bool recurse = false, bool partialMatch = false);
         bool RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result);
 
         void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
@@ -62,7 +63,7 @@ class ClassBrowser : public wxPanel
 
         NativeParser* m_NativeParser;
         wxTreeCtrl* m_Tree;
-        wxTextCtrl* m_Search;
+        wxComboBox* m_Search;
         wxTreeCtrl* m_TreeForPopupMenu;
         Parser* m_pParser;
         wxTreeItemId m_RootNode;

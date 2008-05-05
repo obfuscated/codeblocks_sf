@@ -74,6 +74,7 @@ enum BrowserDisplayFilter
     bdfFile = 0,
     bdfProject,
     bdfWorkspace,
+    bdfEverything,
 };
 
 struct BrowserOptions

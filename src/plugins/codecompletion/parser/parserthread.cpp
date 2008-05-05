@@ -174,6 +174,11 @@ wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting
 
 void ParserThread::SkipBlock()
 {
+	// need to force the tokenizer _not_ skip anything
+	// or else default values for template params would cause us to miss everything (because of the '=' symbol)
+	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+	m_Tokenizer.SetSkipUnwantedTokens(false);
+
     // skip tokens until we reach }
     // block nesting is taken into consideration too ;)
 
@@ -198,12 +203,15 @@ void ParserThread::SkipBlock()
         if (level == m_Tokenizer.GetNestingLevel())
             break;
     }
+
+	// reset tokenizer's functionality
+	m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 void ParserThread::SkipAngleBraces()
 {
 	// need to force the tokenizer _not_ skip anything
-	// or else default values for template params would cause us to miss everything
+	// or else default values for template params would cause us to miss everything (because of the '=' symbol)
 	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
 	m_Tokenizer.SetSkipUnwantedTokens(false);
 	
@@ -543,6 +551,8 @@ void ParserThread::DoParse()
 #if 1
         else if (token==ParserConsts::kw_operator)
         {
+			bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+			m_Tokenizer.SetSkipUnwantedTokens(false);
             wxString func = token;
             while (1)
             {
@@ -565,6 +575,7 @@ void ParserThread::DoParse()
                 else
                     break;
             }
+			m_Tokenizer.SetSkipUnwantedTokens(oldState);
             HandleFunction(func, true);
             m_Str.Clear();
         }

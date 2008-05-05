@@ -436,7 +436,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
 
     if (parentTokenIdx == -1)
     {
-        if(m_Options.displayFilter == bdfWorkspace)
+        if(m_Options.displayFilter >= bdfWorkspace)
         {
             it = m_pTokens->m_GlobalNameSpace.begin();
             it_end = m_pTokens->m_GlobalNameSpace.end();
@@ -459,7 +459,7 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
         it_end = parentToken->m_Children.end();
     }
 
-    return AddNodes(tree, parent, it, it_end, tokenKindMask);
+    return AddNodes(tree, parent, it, it_end, tokenKindMask, m_Options.displayFilter == bdfEverything);
 }
 
 bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
@@ -556,7 +556,8 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     if (token->m_IsTemp)
         return false;
 
-    if (m_Options.displayFilter == bdfWorkspace)
+	if (m_Options.displayFilter == bdfEverything ||
+		(m_Options.displayFilter == bdfWorkspace && token->m_IsLocal))
         return true;
 
     if (m_Options.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
@@ -616,8 +617,25 @@ void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
             case sfTypedef: AddChildrenOf(m_pTreeBottom, root, -1, tkTypedef); break;
             case sfToken:
             {
+				wxTreeItemId rootCtorDtor = m_pTreeBottom->AppendItem(root, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
+				wxTreeItemId rootFuncs = m_pTreeBottom->AppendItem(root, _("Functions"), PARSER_IMG_OTHERS_FOLDER);
+				wxTreeItemId rootVars = m_pTreeBottom->AppendItem(root, _("Variables"), PARSER_IMG_SYMBOLS_FOLDER);
+				wxTreeItemId rootOthers = m_pTreeBottom->AppendItem(root, _("Others"), PARSER_IMG_OTHERS_FOLDER);
+				
+				m_pTreeBottom->SetItemBold(rootCtorDtor, true);
+				m_pTreeBottom->SetItemBold(rootFuncs, true);
+				m_pTreeBottom->SetItemBold(rootVars, true);
+				m_pTreeBottom->SetItemBold(rootOthers, true);
+
+                AddChildrenOf(m_pTreeBottom, rootCtorDtor, data->m_pToken->GetSelf(), tkConstructor | tkDestructor);
+                AddChildrenOf(m_pTreeBottom, rootFuncs, data->m_pToken->GetSelf(), tkFunction);
+                AddChildrenOf(m_pTreeBottom, rootVars, data->m_pToken->GetSelf(), tkVariable);
+                AddChildrenOf(m_pTreeBottom, rootOthers, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable));
+                
+                m_pTreeBottom->ExpandAll();
+
                 // add all children, except containers
-                AddChildrenOf(m_pTreeBottom, root, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
+//                AddChildrenOf(m_pTreeBottom, root, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
                 break;
             }
             default: break;

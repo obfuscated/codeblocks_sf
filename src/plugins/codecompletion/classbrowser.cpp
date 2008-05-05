@@ -22,6 +22,7 @@
 #include <wx/utils.h> // wxBusyCursor
 #include <wx/xrc/xmlres.h>
 #include <wx/tipwin.h>
+#include <wx/tokenzr.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <pluginmanager.h>
@@ -37,42 +38,6 @@
 #endif
 
 #include "ccdebuginfo.h"
-
-class myTextCtrl : public wxTextCtrl
-{
-    public:
-        myTextCtrl(ClassBrowser* cb,
-                    wxWindow* parent,
-                    wxWindowID id,
-                    const wxString& value = wxEmptyString,
-                    const wxPoint& pos = wxDefaultPosition,
-                    const wxSize& size = wxDefaultSize,
-                    long style = wxTE_PROCESS_ENTER,
-                    const wxValidator& validator = wxDefaultValidator,
-                    const wxString& name = wxTextCtrlNameStr)
-            : wxTextCtrl(parent, id, value, pos, size, style, validator, name),
-            m_CB(cb)
-            {}
-        virtual ~myTextCtrl() {}
-    protected:
-        ClassBrowser* m_CB;
-
-        // Intercept key presses to handle Enter. */
-        void OnKey(wxKeyEvent& event)
-        {
-            if (event.GetKeyCode() == WXK_RETURN)
-            {
-                wxCommandEvent e;
-                m_CB->OnSearch(e);
-            }
-            else
-                event.Skip();
-        }
-        DECLARE_EVENT_TABLE()
-};
-BEGIN_EVENT_TABLE(myTextCtrl, wxTextCtrl)
-	EVT_KEY_DOWN(myTextCtrl::OnKey)
-END_EVENT_TABLE()
 
 int idMenuJumpToDeclaration = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
@@ -93,6 +58,9 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_EXPANDING(XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
     EVT_TREE_ITEM_COLLAPSING(XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
     EVT_TREE_SEL_CHANGED(XRCID("treeAll"), ClassBrowser::OnTreeItemSelected)
+    
+    EVT_TEXT_ENTER(XRCID("cmbSearch"), ClassBrowser::OnSearch)
+    EVT_COMBOBOX(XRCID("cmbSearch"), ClassBrowser::OnSearch)
 
     EVT_MENU(idMenuJumpToDeclaration, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation, ClassBrowser::OnJumpTo)
@@ -118,8 +86,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
-    m_Search = new myTextCtrl(this, parent, XRCID("txtSearch"));
-    wxXmlResource::Get()->AttachUnknownControl(_T("txtSearch"), m_Search);
+    m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
 
 	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
 
@@ -297,6 +264,30 @@ wxTreeItemId ClassBrowser::FindNext(const wxString& search, wxTreeCtrl* tree, co
 
     // ascend one level now and recurse
     return FindNext(search, tree, tree->GetItemParent(start));
+}
+
+wxTreeItemId ClassBrowser::FindChild(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start, bool recurse, bool partialMatch)
+{
+	wxTreeItemIdValue cookie;
+	wxTreeItemId res = tree->GetFirstChild(start, cookie);
+	while (res.IsOk())
+	{
+		wxString text = tree->GetItemText(res);
+		if ((!partialMatch && text == search) ||
+			(partialMatch && text.StartsWith(search)))
+		{
+			return res;
+		}
+		if (recurse && tree->ItemHasChildren(res))
+		{
+			res = FindChild(search, tree, res, true, partialMatch);
+			if (res.IsOk())
+				return res;
+		}
+		res = m_Tree->GetNextChild(start, cookie);
+	}
+	res.Unset();
+	return res;
 }
 
 bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result)
@@ -508,52 +499,112 @@ void ClassBrowser::OnDebugSmartSense(wxCommandEvent& event)
 
 void ClassBrowser::OnSearch(wxCommandEvent& event)
 {
-    new wxTipWindow(this, _("Searching the symbols tree is currently disabled.\nWe are sorry for the inconvenience."), 240);
-    return;
+	wxString search = m_Search->GetValue();
+	if (search.IsEmpty())
+		return;
 
-    wxString search = m_Search->GetValue().Lower();
-    if (search.IsEmpty())
-        return;
-
-    // search under the selected node
-    wxTreeItemId start = m_Tree->GetSelection();
-    if (!start.IsOk()) // if it's not valid, search the whole tree
-        start = m_Tree->GetRootItem();
-
-    // if the selection matches, skip it; the user already knows...
-    if (FoundMatch(search, m_Tree, start))
-    {
-        if (m_Tree->ItemHasChildren(start))
+	Token* token = 0;
+	TokenIdxSet result;
+    size_t count = m_pParser->GetTokens()->FindMatches(search, result, false, true);
+	if (count == 0)
+	{
+		cbMessageBox(_("No matches were found: ") + search, _("Search failed"));
+		return;
+	}
+	else if (count == 1)
+	{
+		token = m_pParser->GetTokens()->at(*result.begin());
+	}
+	else if (count > 1)
+	{
+        wxArrayString selections;
+        wxArrayInt int_selections;
+        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            wxTreeItemIdValue cookie;
-            start = m_Tree->GetFirstChild(start, cookie);
-        }
-        else
-            start = FindNext(search, m_Tree, start);
-    }
-
-    // as a fallback, start from the root node
-    if (!start.IsOk())
-        start = m_Tree->GetRootItem();
-
-    wxTreeItemId result;
-    if (RecursiveSearch(search, m_Tree, start, result))
-    {
-        m_Tree->SelectItem(result);
-        m_Tree->EnsureVisible(result);
-    }
-    else
-    {
-        // if the search failed and the start node wasn't the root, search again from the root
-        if (start != m_Tree->GetRootItem())
-        {
-            if (RecursiveSearch(m_Search->GetValue().Lower(), m_Tree, m_Tree->GetRootItem(), result))
+            Token* sel = m_pParser->GetTokens()->at(*it);
+            if (sel)
             {
-                m_Tree->SelectItem(result);
-                m_Tree->EnsureVisible(result);
+				selections.Add(sel->DisplayName());
+				int_selections.Add(*it);
             }
         }
-    }
+        if (selections.GetCount() > 1)
+        {
+            int sel = wxGetSingleChoiceIndex(_("Please make a selection:"), _("Multiple matches"), selections);
+            if (sel == -1)
+                return;
+            token = m_pParser->GetTokens()->at(int_selections[sel]);
+        }
+        else if (selections.GetCount() == 1)
+        {    // number of selections can be < result.size() due to the if tests, so in case we fall
+            // back on 1 entry no need to show a selection
+            token = m_pParser->GetTokens()->at(int_selections[0]);
+        }
+	}
+	
+	// time to "walk" the tree
+	if (token)
+	{
+		// store the search in the combobox
+		if (m_Search->FindString(token->m_Name) == wxNOT_FOUND)
+			m_Search->Append(token->m_Name);
+
+		wxTreeCtrl* bottomTree = XRCCTRL(*this, "treeMembers", wxTreeCtrl);
+		if (token->m_ParentIndex == -1 && !(token->m_TokenKind & tkAnyContainer))
+		{
+			// a global non-container: search in special folders only
+			wxTreeItemIdValue cookie;
+			wxTreeItemId res = m_Tree->GetFirstChild(m_Tree->GetRootItem(), cookie);
+			while (res.IsOk())
+			{
+				CBTreeData* data = (CBTreeData*)m_Tree->GetItemData(res);
+				if (data && (data->m_SpecialFolder & (sfGFuncs | sfGVars | sfPreproc | sfTypedef)))
+				{
+					m_Tree->SelectItem(res);
+					wxTreeItemId srch = FindChild(token->m_Name, bottomTree, bottomTree->GetRootItem(), false, true);
+					if (srch.IsOk())
+					{
+						bottomTree->SelectItem(srch);
+						return;
+					}
+				}
+				res = m_Tree->GetNextChild(m_Tree->GetRootItem(), cookie);
+			}
+			return;
+		}
+		
+		// example:
+		//   search="cou"
+		//   token->GetNamespace()="std::"
+		//   token->m_Name="cout"
+		wxTreeItemId start = m_Tree->GetRootItem();
+		wxStringTokenizer tkz(token->GetNamespace(), _T(":"));
+		while (tkz.HasMoreTokens())
+		{
+			wxString part = tkz.GetNextToken();
+			if (!part.IsEmpty())
+			{
+				m_Tree->Expand(start);
+				wxTreeItemId res = FindChild(part, m_Tree, start);
+				if (!res.IsOk())
+					break;
+				start = res;
+			}
+		}
+		// now the actual token
+		m_Tree->Expand(start);
+		m_Tree->SelectItem(start);
+		wxTreeItemId res = FindChild(token->m_Name, m_Tree, start);
+		if (res.IsOk())
+			m_Tree->SelectItem(res);
+		else
+		{
+			// search in bottom tree too
+			wxTreeItemId res = FindChild(token->m_Name, bottomTree, bottomTree->GetRootItem(), true, true);
+			if (res.IsOk())
+				bottomTree->SelectItem(res);
+		}
+	}
 }
 
 void ClassBrowser::BuildTree()
