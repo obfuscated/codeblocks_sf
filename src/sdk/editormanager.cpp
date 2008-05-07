@@ -1038,7 +1038,7 @@ bool EditorManager::SwapActiveHeaderSource()
             if ( !pm )
                 break;
 
-            FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
             if ( !fg )
                 break;
 
@@ -1085,7 +1085,7 @@ bool EditorManager::SwapActiveHeaderSource()
             if ( !pm )
                 break;
 
-            FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
             if ( !fg )
                 break;
 

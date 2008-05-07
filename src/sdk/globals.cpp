@@ -300,7 +300,7 @@ FileType FileTypeOf(const wxString& filename)
         ProjectManager *pm = Manager::Get()->GetProjectManager();
         if ( pm )
         {
-            FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+            FilesGroupsAndMasks* fg = const_cast<FilesGroupsAndMasks*>(pm->GetFilesGroupsAndMasks());
             if ( fg )
             {
                for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
@@ -1039,7 +1039,7 @@ wxString realpath(const wxString& path)
 				slashPos = s;
 			}
 		}
-		
+
 		while (ret[++slashPos] == '/')
 			;
 		lastPos = slashPos;
