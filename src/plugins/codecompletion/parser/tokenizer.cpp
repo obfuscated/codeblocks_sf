@@ -225,10 +225,15 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
             MoveToNextChar();
 			
 			// make sure we skip comments
-			if (CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*'))
-				SkipComment();
+			if (CurrentChar() == '/')
+				SkipComment(); // this will decide if it is a comment
             
-            if (supportNesting)
+            // use 'while' here to cater for consecutive blocks to skip (e.g. sometemplate<foo>(bar)
+            // must skip <foo> and immediately after (bar))
+            // because if we don't, the next block won't be skipped ((bar) in the example) leading to weird
+            // parsing results
+            bool done = false;
+            while (supportNesting && !done)
             {
                 switch (CurrentChar())
                 {
@@ -241,7 +246,7 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
 						else
 							SkipBlock('<');
 						break; 
-                    default: break;
+                    default: done = true; break;
                 }
             }
         }
@@ -267,13 +272,21 @@ wxString Tokenizer::ReadToEOL(bool nestBraces)
 	return m_Buffer.Mid(idx, m_TokenIndex - idx);
 }
 
-bool Tokenizer::SkipToEOL(bool nestBraces)
+bool Tokenizer::SkipToEOL(bool nestBraces, bool skippingComment)
 {
     // skip everything until we find EOL
     while (1)
     {
         while (NotEOF() && CurrentChar() != '\n')
         {
+			if (CurrentChar() == '/' && NextChar() == '*')
+			{
+				SkipComment(false); // don't skip whitespace after the comment
+				if (skippingComment && CurrentChar() == '\n')
+				{
+					continue; // early exit from the loop
+				}
+			}
             if (nestBraces && CurrentChar() == _T('{'))
                 ++m_NestLevel;
             else if (nestBraces && CurrentChar() == _T('}'))
@@ -340,7 +353,7 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
     return true;
 }
 
-bool Tokenizer::SkipComment()
+bool Tokenizer::SkipComment(bool skipWhiteAtEnd) // = true
 {
     // C/C++ style comments
     bool is_comment = CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*');
@@ -354,7 +367,7 @@ bool Tokenizer::SkipComment()
     {
         if (!cstyle)
         {
-            if (!SkipToEOL(false))
+            if (!SkipToEOL(false, true))
                 return false;
             MoveToNextChar();
             break;
@@ -376,9 +389,9 @@ bool Tokenizer::SkipComment()
     }
     if (IsEOF())
         return false;
-    if (!SkipWhiteSpace())
+    if (skipWhiteAtEnd && !SkipWhiteSpace())
         return false;
-    return true;
+    return CurrentChar() == '/' ? SkipComment() : true; // handle chained comments
 }
 
 bool Tokenizer::SkipUnwanted()

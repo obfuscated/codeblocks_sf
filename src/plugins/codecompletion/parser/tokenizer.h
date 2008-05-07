@@ -64,7 +64,7 @@ public:
     TokenizerOptions m_Options;
 
     wxString ReadToEOL(bool nestBraces = true); // use with care outside this class!
-    bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
+    bool SkipToEOL(bool nestBraces = true, bool skippingComment = false); // use with care outside this class!
 
     static void SetReplacementString(const wxString& from, const wxString& to)
     {
@@ -102,7 +102,7 @@ protected:
     bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false);
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
-    bool SkipComment();
+    bool SkipComment(bool skipWhiteAtEnd = true);
 
     bool MoveToNextChar(const unsigned int amount = 1)
     {
