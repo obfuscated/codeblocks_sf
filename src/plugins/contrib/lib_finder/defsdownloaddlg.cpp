@@ -1,3 +1,4 @@
+#include <memory>
 #include "defsdownloaddlg.h"
 
 //(*InternalHeaders(DefsDownloadDlg)
@@ -39,7 +40,7 @@ DefsDownloadDlg::DefsDownloadDlg(wxWindow* parent)
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxBoxSizer* BoxSizer3;
-	
+
 	Create(parent, wxID_ANY, _("Download libraries definitions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);

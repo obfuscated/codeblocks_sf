@@ -1,3 +1,4 @@
+#include <memory>
 #include "webresourcesmanager.h"
 
 #include <globals.h>
