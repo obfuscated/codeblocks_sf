@@ -114,16 +114,16 @@ void ASEnhancer::init(int _indentLength,
                       bool _emptyLineFill)
 {
 	// formatting variables from ASFormatter and ASBeautifier
-	indentLength = _indentLength;
+	indentLengthX = _indentLength;
 	if (_indentString.compare(0, 1, "\t") == 0)
-		useTabs = true;
+		useTabsX = true;
 	else
-		useTabs = false;
-	isCStyle      = _isCStyle;
-	isJavaStyle   = _isJavaStyle;
-	isSharpStyle  = _isSharpStyle;
-	caseIndent    = _caseIndent;
-	emptyLineFill = _emptyLineFill;
+		useTabsX = false;
+	isCStyleX      = _isCStyle;
+	isJavaStyleX   = _isJavaStyle;
+	isSharpStyleX  = _isSharpStyle;
+	caseIndentX    = _caseIndent;
+	emptyLineFillX = _emptyLineFill;
 
 	// unindent variables
 	lineNumber = 0;
@@ -133,6 +133,15 @@ void ASEnhancer::init(int _indentLength,
 	switchDepth = 0;
 	lookingForCaseBracket = false;
 	unindentNextLine = false;
+
+	// switch struct and vector
+	sw.switchBracketCount = 0;
+	sw.unindentDepth = 0;
+	sw.unindentCase = false;
+	swVector.clear();
+
+	nextLineIsEventTable = false;
+	isInEventTable = false;
 
 #if defined(TRACEswitch) || defined(TRACEcase) || defined(TRACEmisc)
 	*traceOut << "New file -------------" << endl;
@@ -150,12 +159,6 @@ void ASEnhancer::init(int _indentLength,
  */
 void ASEnhancer::enhance(string &line)
 {
-	static vector<switchVariables>  swVector;       // stack vector of switch variables
-	static switchVariables sw;                      // switch variables struct
-
-	static bool nextLineIsEventTable;				// begin event table is reached
-	static bool isInEventTable;						// need to indent an event table
-
 	bool   isSpecialChar = false;
 	size_t  lineLength;                             // length of the line being parsed
 
@@ -171,7 +174,7 @@ void ASEnhancer::enhance(string &line)
 
 	if (lineLength == 0
 	        && ! isInEventTable
-	        && ! emptyLineFill)
+	        && ! emptyLineFillX)
 		return;
 
 	// test for unindent on attached brackets
@@ -212,6 +215,7 @@ void ASEnhancer::enhance(string &line)
 
 		// handle quotes (such as 'x' and "Hello Dolly")
 		if (!(isInComment) && (ch == '"' || ch == '\''))
+		{
 			if (!isInQuote)
 			{
 				quoteChar = ch;
@@ -222,6 +226,7 @@ void ASEnhancer::enhance(string &line)
 				isInQuote = false;
 				continue;
 			}
+		}
 
 		if (isInQuote)
 			continue;
@@ -286,7 +291,7 @@ void ASEnhancer::enhance(string &line)
 
 		// just want switch statements from this point
 
-		if (caseIndent || switchDepth == 0)                 // from here just want switch statements
+		if (caseIndentX || switchDepth == 0)               // from here just want switch statements
 			continue;                                      // get next char
 
 		if (line[i] == '{')                                 // if open bracket
@@ -326,13 +331,41 @@ void ASEnhancer::enhance(string &line)
 				sw.unindentCase = false;                    // stop unindenting previous case
 				sw.unindentDepth--;                         // reduce depth
 			}
-			for (; i < lineLength; i++)                     // bypass colon
+			bool isInQuote = false;
+			char quoteChar = ' ';
+			for (; i < lineLength; i++)                     // find colon
 			{
+				if (isInQuote)
+				{
+					if (line[i] == '\\')
+					{
+						i++;								// bypass next char
+						continue;
+					}
+					else if (line[i] == quoteChar)			// check ending quote
+					{
+						isInQuote = false;
+						quoteChar = ' ';
+						continue;
+					}
+					else
+					{
+						continue;							// must close quote before continuing
+					}
+				}
+				if (line[i] == '\'' || line[i] == '\"')	// check opening quote
+				{
+					isInQuote = true;
+					quoteChar = line[i];
+					continue;
+				}
 				if (line[i] == ':')
+				{
 					if ((i + 1 < lineLength) && (line[i + 1] == ':'))
 						i++;								// bypass scope resolution operator
 					else
-						break;
+						break;								// found it
+				}
 			}
 			i++;
 			for (; i < lineLength; i++)                     // bypass whitespace
@@ -373,19 +406,19 @@ void ASEnhancer::enhance(string &line)
 int ASEnhancer::indentLine(string  &line, const int indent) const
 {
 	if (line.length() == 0
-	        && ! emptyLineFill)
+	        && ! emptyLineFillX)
 		return 0;
 
 	size_t charsToInsert;                   	// number of chars to insert
 
-	if (useTabs)                    			// if formatted with tabs
+	if (useTabsX)                    			// if formatted with tabs
 	{
 		charsToInsert = indent;             	// tabs to insert
 		line.insert((size_t) 0, charsToInsert, '\t');    // insert the tabs
 	}
 	else
 	{
-		charsToInsert = indent * indentLength;  // compute chars to insert
+		charsToInsert = indent * indentLengthX;  // compute chars to insert
 		line.insert((size_t)0, charsToInsert, ' ');     // insert the spaces
 	}
 
@@ -412,7 +445,7 @@ int ASEnhancer::unindentLine(string  &line, const int unindent) const
 
 	size_t charsToErase;                    // number of chars to erase
 
-	if (useTabs)                    		// if formatted with tabs
+	if (useTabsX)                    		// if formatted with tabs
 	{
 		charsToErase = unindent;            // tabs to erase
 		if (charsToErase <= whitespace)     // if there is enough whitespace
@@ -422,7 +455,7 @@ int ASEnhancer::unindentLine(string  &line, const int unindent) const
 	}
 	else
 	{
-		charsToErase = unindent * indentLength; // compute chars to erase
+		charsToErase = unindent * indentLengthX; // compute chars to erase
 		if (charsToErase <= whitespace)         // if there is enough whitespace
 			line.erase(0, charsToErase);        // erase the spaces
 		else
@@ -469,6 +502,10 @@ bool ASEnhancer::findKeyword(const string &line, int i, const char *keyword) con
 		         || !isLegalNameCharX(startCh)
 		         || !isLegalNameCharX(endCh))
 		{
+			// is not a keyword if part of a definition
+			char peekChar = peekNextChar(line, wordEnd - 1);
+			if (peekChar == ',' || peekChar == ')')
+				return false;
 			return true;
 		}
 		else
@@ -479,5 +516,26 @@ bool ASEnhancer::findKeyword(const string &line, int i, const char *keyword) con
 
 	return false;
 }
+
+/**
+* peek at the next unread character.
+*
+* @return     	the next unread character.
+* @param line   the line to check.
+* @param i      the current char position on the line.
+*/
+char ASEnhancer::peekNextChar(const string &line, int i) const
+{
+	char ch = ' ';
+	size_t peekNum = line.find_first_not_of(" \t", i + 1);
+
+	if (peekNum == string::npos)
+		return ch;
+
+	ch = line[peekNum];
+
+	return ch;
+}
+
 
 }   // end namespace astyle

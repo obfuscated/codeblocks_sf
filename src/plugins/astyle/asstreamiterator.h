@@ -14,23 +14,28 @@
 
 class ASStreamIterator : public astyle::ASSourceIterator
 {
-	public:
-		ASStreamIterator(cbEditor *cbe, const wxChar *in);
-		virtual ~ASStreamIterator();
+    public:
+        ASStreamIterator(cbEditor *cbe, const wxChar *in);
+        virtual ~ASStreamIterator();
 
-    bool hasMoreLines() const;
-    std::string nextLine();
-    bool FoundBookmark() const { return m_foundBookmark; }
-    void ClearFoundBookmark() { m_foundBookmark = false; }
+        bool hasMoreLines() const;
+        std::string nextLine();
+        std::string peekNextLine();
+        void peekReset();
+        bool FoundBookmark() const { return m_foundBookmark; }
+        void ClearFoundBookmark() { m_foundBookmark = false; }
 
-	protected:
+    protected:
         bool IsEOL(wxChar ch);
         cbEditor *m_cbe;
         const wxChar *m_In;
+        const wxChar *m_PeekStart;
         std::vector<wxChar> m_buffer;
         int m_curline;
         bool m_foundBookmark;
-	private:
+
+    private:
+        std::string readLine();
 };
 
 #endif // ASSTREAMITERATOR_H

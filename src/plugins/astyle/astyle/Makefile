@@ -12,105 +12,156 @@ SRC = astyle_main.cpp \
 vpath %.cpp ../src
 vpath %.h   ../src
 
-# install directory $(ipath)
+# NOTE for java compiles the environment variable $JAVA_HOME must be set
+# example: export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.00
+ifndef JAVA_HOME
+#    JAVA_HOME = /usr/lib/jvm/java-1.5.0-sun-1.5.0.10
+    JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.00
+endif
+
 # set prefix if not defined on the command line
 ifndef prefix
-    prefix=/usr/bin
+    prefix=/usr
 endif
-ipath=$(prefix)
 
 # define macros
+bindir = ../bin
+objdir = obj
+ipath=$(prefix)/bin
 CBASEFLAGS = -W -Wall -fno-rtti -fno-exceptions
+JAVAINCS   = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
+CXX = g++
 INSTALL=install -o $(USER) -g $(USER)
 
 ##################################################
 
 # define compile options for each build
-CFLAGS   = -O3 $(CBASEFLAGS)
+CFLAGS   = -DNDEBUG -O3 $(CBASEFLAGS)
 CFLAGSd  = -g $(CBASEFLAGS)
-CFLAGSs  = -DASTYLE_LIB -O3 -fpic $(CBASEFLAGS)
+CFLAGSs  = -DNDEBUG -DASTYLE_LIB -O3 -fpic $(CBASEFLAGS)
 CFLAGSsd = -DASTYLE_LIB -g -fpic $(CBASEFLAGS)
-CFLAGSa  = -DASTYLE_LIB -O3 $(CBASEFLAGS)
+CFLAGSa  = -DNDEBUG -DASTYLE_LIB -O3 $(CBASEFLAGS)
 CFLAGSad = -DASTYLE_LIB -g $(CBASEFLAGS)
+CFLAGSsj  = -DNDEBUG -DASTYLE_JNI -O3 -fpic $(CBASEFLAGS) $(JAVAINCS)
+CFLAGSsjd = -DASTYLE_JNI -g -fpic $(CBASEFLAGS) $(JAVAINCS)
 
 # object files are built from the source list $(SRC)
 # a suffix is added for each build
-OBJ   = $(patsubst %.cpp,%.o,$(SRC))
-OBJd  = $(patsubst %.cpp,%_d.o,$(SRC))
-OBJs  = $(patsubst %.cpp,%_s.o,$(SRC))
-OBJsd = $(patsubst %.cpp,%_sd.o,$(SRC))
-OBJa  = $(patsubst %.cpp,%_a.o,$(SRC))
-OBJad = $(patsubst %.cpp,%_ad.o,$(SRC))
+OBJ   = $(patsubst %.cpp,$(objdir)/%.o,$(SRC))
+OBJd  = $(patsubst %.cpp,$(objdir)/%_d.o,$(SRC))
+OBJs  = $(patsubst %.cpp,$(objdir)/%_s.o,$(SRC))
+OBJsd = $(patsubst %.cpp,$(objdir)/%_sd.o,$(SRC))
+OBJa  = $(patsubst %.cpp,$(objdir)/%_a.o,$(SRC))
+OBJad = $(patsubst %.cpp,$(objdir)/%_ad.o,$(SRC))
+OBJsj  = $(patsubst %.cpp,$(objdir)/%_sj.o,$(SRC))
+OBJsjd = $(patsubst %.cpp,$(objdir)/%_sjd.o,$(SRC))
 
 # define object file rule (with the suffix) for each build
 
 # OBJ
-%.o:  %.cpp  astyle.h
-	g++ $(CFLAGS) -c -o $@ $<
+$(objdir)/%.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGS) -c -o $@ $<
 
 # OBJd
-%_d.o:  %.cpp  astyle.h
-	g++ $(CFLAGSd) -c -o $@ $<
+$(objdir)/%_d.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSd) -c -o $@ $<
 
 # OBJs
-%_s.o:  %.cpp  astyle.h
-	g++ $(CFLAGSs) -c -o $@ $<
+$(objdir)/%_s.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSs) -c -o $@ $<
 
 # OBJsd
-%_sd.o:  %.cpp  astyle.h
-	g++ $(CFLAGSsd) -c -o $@ $<
+$(objdir)/%_sd.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSsd) -c -o $@ $<
 
 # OBJa
-%_a.o:  %.cpp  astyle.h
-	g++ $(CFLAGSa) -c -o $@ $<
+$(objdir)/%_a.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSa) -c -o $@ $<
 
 # OBJad
-%_ad.o:  %.cpp  astyle.h
-	g++ $(CFLAGSad) -c -o $@ $<
+$(objdir)/%_ad.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSad) -c -o $@ $<
+
+# OBJsj
+$(objdir)/%_sj.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSsj) -c -o $@ $<
+
+# OBJsjd
+$(objdir)/%_sjd.o:  %.cpp  astyle.h
+	@ mkdir -p $(objdir)
+	$(CXX) $(CFLAGSsjd) -c -o $@ $<
 
 ##################################################
 # define build dependencies for each command
 
 release:  astyle
 astyle:  $(OBJ)
-	@ if [ ! -d ../bin ]; then mkdir ../bin; fi
-	g++ -o ../bin/$@ $^
-	strip ../bin/$@
+	@ mkdir -p $(bindir)
+	$(CXX) -s -o $(bindir)/$@ $^
+	@ echo
 
 debug:  astyled
 astyled:  $(OBJd)
-	@ if [ ! -d ../bin ]; then mkdir ../bin; fi
-	g++ -o ../bin/$@ $^
+	@ mkdir -p $(bindir)
+	$(CXX) -o $(bindir)/$@ $^
+	@ echo
 
 shared:  libastyle.so
 libastyle.so:  $(OBJs)
-	@ if [ ! -d ../bin ]; then mkdir ../bin; fi
-	g++ -shared -o ../bin/$@ $^
-	strip ../bin/$@
+	@ mkdir -p $(bindir)
+	$(CXX) -shared -s -o $(bindir)/$@ $^
+	@ echo
 
 shareddebug:  libastyled.so
 libastyled.so:  $(OBJsd)
-	@ if [ ! -d ../bin ]; then mkdir ../bin; fi
-	g++ -shared -o ../bin/$@ $^
+	@ mkdir -p $(bindir)
+	$(CXX) -shared -o $(bindir)/$@ $^
+	@ echo
 
 static:  libastyle.a
 libastyle.a:  $(OBJa)
-	@ if [ ! -d ../bin ]; then mkdir ../bin; fi
-	ar crs ../bin/$@ $^
+	@ mkdir -p $(bindir)
+	ar crs $(bindir)/$@ $^
+	@ echo
 
 staticdebug:  libastyled.a
 libastyled.a:  $(OBJad)
-	@ if [ ! -d ../bin ]; then mkdir ../bin; fi
-	ar crs ../bin/$@ $^
+	@ mkdir -p $(bindir)
+	ar crs $(bindir)/$@ $^
+	@ echo
+
+java:  libastylej.so
+libastylej.so:  $(OBJsj)
+	@ mkdir -p $(bindir)
+	$(CXX) -shared -s -o $(bindir)/$@ $^
+	@ echo
+
+javadebug:  libastylejd.so
+libastylejd.so:  $(OBJsjd)
+	@ mkdir -p $(bindir)
+	$(CXX) -shared -o $(bindir)/$@ $^
+	@ echo
 
 all:  release debug shared shareddebug static staticdebug
 
-clean:
-	rm -f *.o
+javaall:  java javadebug
 
+clean:
+	rm -f $(objdir)/*.o $(bindir)/*astyle*
+
+cleanobj:
+	rm -f $(objdir)/*.o
+	
 install:
 	@ $(INSTALL) -m 755 -d $(ipath)
-	$(INSTALL) -m 755 ../bin/astyle  $(ipath)
+	$(INSTALL) -m 755 $(bindir)/astyle  $(ipath)
 
 uninstall:
 	rm -f $(ipath)/astyle

@@ -86,6 +86,9 @@ const string ASResource::AS_LS_LS_ASSIGN = string("<<=");
 const string ASResource::AS_GR_GR_GR_ASSIGN = string(">>>=");
 const string ASResource::AS_LS_LS_LS_ASSIGN = string("<<<=");
 const string ASResource::AS_RETURN = string("return");
+const string ASResource::AS_CIN = string("cin");
+const string ASResource::AS_COUT = string("cout");
+const string ASResource::AS_CERR = string("cerr");
 
 const string ASResource::AS_EQUAL = string("==");
 const string ASResource::AS_PLUS_PLUS = string("++");
@@ -163,6 +166,9 @@ void ASResource::buildAssignmentOperators(vector<const string*> &assignmentOpera
 	assignmentOperators.push_back(&AS_LS_LS_LS_ASSIGN);
 
 	assignmentOperators.push_back(&AS_RETURN);
+	assignmentOperators.push_back(&AS_CIN);
+	assignmentOperators.push_back(&AS_COUT);
+	assignmentOperators.push_back(&AS_CERR);
 }
 
 /**
@@ -230,7 +236,7 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
  * Build the vector of non-assignment operators.
  * Used by ONLY ASBeautifier.cpp
  *
- * @param nonParenHeaders       a reference to the vector to be built.
+ * @param nonAssignmentOperators       a reference to the vector to be built.
  */
 void ASResource::buildNonAssignmentOperators(vector<const string*> &nonAssignmentOperators)
 {
@@ -278,6 +284,7 @@ void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, in
 
 	if (fileType == SHARP_TYPE)
 	{
+		nonParenHeaders.push_back(&AS_CATCH);		// can be a paren or non-paren header
 		nonParenHeaders.push_back(&AS_FINALLY);
 		nonParenHeaders.push_back(&AS_UNSAFE);
 		nonParenHeaders.push_back(&AS_GET);

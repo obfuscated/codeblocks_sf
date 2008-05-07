@@ -11,7 +11,7 @@
 #include "globals.h"
 
 ASStreamIterator::ASStreamIterator(cbEditor *cbe, const wxChar* in)
-: m_cbe(cbe), m_In(in), m_curline(0), m_foundBookmark(false)
+: m_cbe(cbe), m_In(in), m_PeekStart(0), m_curline(0), m_foundBookmark(false)
 {
 	//ctor
 }
@@ -28,47 +28,67 @@ bool ASStreamIterator::hasMoreLines() const
 
 inline bool ASStreamIterator::IsEOL(wxChar ch)
 {
-  if (ch == _T('\r') || ch == _T('\n'))
-  {
-      return true;
-  }
+    if (ch == _T('\r') || ch == _T('\n'))
+    {
+        return true;
+    }
 
-  return false;
+    return false;
 }
 
 std::string ASStreamIterator::nextLine()
 {
-  // hack: m_curline = 0 is a special case we should not evaluate here
-  if (m_cbe && m_curline && m_cbe->HasBookmark(m_curline))
-  {
-    m_foundBookmark = true;
-  }
-
-  m_buffer.clear();
-
-  while (*m_In != 0)
-  {
-    if (!IsEOL(*m_In))
+    // hack: m_curline = 0 is a special case we should not evaluate here
+    if (m_cbe && m_curline && m_cbe->HasBookmark(m_curline))
     {
-      m_buffer.push_back(*m_In);
+        m_foundBookmark = true;
     }
 
-    ++m_In;
+    return readLine();
+}
 
-    if (IsEOL(*m_In))
+std::string ASStreamIterator::readLine()
+{
+    m_buffer.clear();
+
+    while (*m_In != 0)
     {
-      // if CRLF (two chars) peek next char (avoid duplicating empty-lines)
-      if (*m_In != *(m_In + 1) && IsEOL(*(m_In + 1)))
-      {
+        if (!IsEOL(*m_In))
+        {
+            m_buffer.push_back(*m_In);
+        }
+
         ++m_In;
-      }
 
-      break;
+        if (IsEOL(*m_In))
+        {
+            // if CRLF (two chars) peek next char (avoid duplicating empty-lines)
+            if (*m_In != *(m_In + 1) && IsEOL(*(m_In + 1)))
+            {
+                ++m_In;
+            }
+
+            break;
+        }
     }
-  }
 
-  m_buffer.push_back(0);
-  ++m_curline;
+    m_buffer.push_back(0);
+    ++m_curline;
 
-  return std::string(cbU2C(&m_buffer[0]));
+    return std::string(cbU2C(&m_buffer[0]));
+}
+
+std::string ASStreamIterator::peekNextLine()
+{
+    if (!m_PeekStart)
+    {
+        m_PeekStart = m_In;
+    }
+
+    return readLine();
+}
+
+void ASStreamIterator::peekReset()
+{
+    m_In = m_PeekStart;
 }

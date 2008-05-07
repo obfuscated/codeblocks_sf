@@ -16,7 +16,7 @@
  *   This program is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
+ *   GNU Lesser General Public License for more details.
  *
  *   You should have received a copy of the GNU Lesser General Public
  *   License along with this project; if not, write to the
@@ -31,23 +31,39 @@
 
 #ifdef __VMS
 #define __USE_STD_IOSTREAM 1
-#include <sstream>
+// #include <sstream>
+#include <assert>
+#else
+#include <cassert>
 #endif
 
+#include <string.h>
 #include <string>
 #include <vector>
 #include <cctype>
-#include <cstring>
+
+#ifdef _WIN32
+#define STDCALL __stdcall
+#define EXPORT  __declspec(dllexport)
+#else
+#define STDCALL
+#define EXPORT
+#endif
+
+#ifdef _MSC_VER
+#pragma warning(disable: 4996)  // secure version deprecation warnings for .NET 2005
+#pragma warning(disable: 4267)  // 64 bit signed/unsigned loss of data
+#endif
+
+#ifdef __INTEL_COMPILER
+#pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
+#pragma warning(disable:  444)  // destructor for base class is not virtual
+#pragma warning(disable:  981)  // operands are evaluated in unspecified order
+//#pragma warning(disable: 1418)  // external function with no prior declaration
+#pragma warning(disable: 1419)  // external declaration in primary source file
+#endif
 
 using namespace std;
-
-
-// 4996 - secure version deprecation warnings for .NET 2005
-// 4267 - 64 bit signed/unsigned loss of data
-#ifdef _MSC_VER
-#pragma warning(disable: 4996)
-#pragma warning(disable: 4267)
-#endif
 
 namespace astyle
 {
@@ -71,14 +87,12 @@ enum BracketType   { NULL_TYPE = 0,
 class ASSourceIterator
 {
 	public:
-		int eolWindows;
-		int eolLinux;
-		int eolMacOld;
-		char outputEOL[4];    // output end of line char
-		ASSourceIterator() { eolWindows = eolLinux = eolMacOld = 0; }
+		ASSourceIterator() {}
 		virtual ~ASSourceIterator() {}
 		virtual bool hasMoreLines() const = 0;
 		virtual string nextLine() = 0;
+		virtual string peekNextLine() = 0;
+		virtual void peekReset() = 0;
 };
 
 class ASResource
@@ -110,6 +124,7 @@ class ASResource
 		static const string AS_OPEN_LINE_COMMENT, AS_OPEN_COMMENT, AS_CLOSE_COMMENT;
 		static const string AS_BAR_DEFINE, AS_BAR_INCLUDE, AS_BAR_IF, AS_BAR_EL, AS_BAR_ENDIF;
 		static const string AS_RETURN;
+		static const string AS_CIN, AS_COUT, AS_CERR;
 		static const string AS_ASSIGN, AS_PLUS_ASSIGN, AS_MINUS_ASSIGN, AS_MULT_ASSIGN;
 		static const string AS_DIV_ASSIGN, AS_MOD_ASSIGN, AS_XOR_ASSIGN, AS_OR_ASSIGN, AS_AND_ASSIGN;
 		static const string AS_GR_GR_ASSIGN, AS_LS_LS_ASSIGN, AS_GR_GR_GR_ASSIGN, AS_LS_LS_LS_ASSIGN;
@@ -153,6 +168,7 @@ class ASBeautifier : protected ASResource
 		void setPreprocessorIndent(bool state);
 		int  getIndentLength(void);
 		string getIndentString(void);
+		char peekNextChar(const string &line, int i) const;
 		bool getCaseIndent(void);
 		bool getCStyle(void);
 		bool getJavaStyle(void);
@@ -161,7 +177,6 @@ class ASBeautifier : protected ASResource
 
 	protected:
 		int getNextProgramCharDistance(const string &line, int i);
-//		bool isLegalNameChar(char ch) const;
 		const string *findHeader(const string &line, int i,
 		                         const vector<const string*> &possibleHeaders,
 		                         bool checkBoundry = true);
@@ -172,11 +187,11 @@ class ASBeautifier : protected ASResource
 		bool isJavaStyle;
 		bool isSharpStyle;
 
-		// variables set by ASFormatter - must be updated in preprocessor
-		int  inLineNumber;              // for debugging
-		int  outLineNumber;				// for debugging
+		// variables set by ASFormatter - must be updated in activeBeautifierStack
+		int  inLineNumber;
 		bool lineCommentNoBeautify;
 		bool isNonInStatementArray;
+		bool isSharpAccessor;
 
 	private:
 		ASBeautifier(const ASBeautifier &copy);
@@ -213,6 +228,8 @@ class ASBeautifier : protected ASResource
 		const string *immediatelyPreviousAssignmentOp;
 		const string *probationHeader;
 		bool isInQuote;
+		bool isInVerbatimQuote;
+		bool haveLineContinuationChar;
 		bool isInComment;
 		bool isInCase;
 		bool isInQuestion;
@@ -255,12 +272,14 @@ class ASBeautifier : protected ASResource
 		char currentNonSpaceCh;
 		char currentNonLegalCh;
 		char prevNonLegalCh;
-		char peekNextChar(string &line, int i);
 
 	protected:    // inline functions
 		// check if a specific character can be used in a legal variable/method/class name
 		inline bool isLegalNameChar(char ch) const {
-			return (isalnum(ch) || ch == '.' || ch == '_' || (isJavaStyle && ch == '$') || (isCStyle && ch == '~'));
+			return (isalnum(ch) || ch == '.' || ch == '_'
+			        || (isJavaStyle && ch == '$')
+			        || (isCStyle && ch == '~')
+			        || (isSharpStyle && ch == '@'));	// may be used as a prefix
 		}
 
 		// check if a specific character is a whitespace character
@@ -278,16 +297,19 @@ class ASEnhancer
 		~ASEnhancer();
 		void init(int, string, bool, bool, bool, bool, bool);
 		void enhance(string &line);
+		bool findKeyword(const string &line, int i, const char *header) const;
+		char peekNextChar(const string &line, int i) const;
 
 	private:
-		// set by init function
-		int    indentLength;
-		bool   useTabs;
-		bool   isCStyle;
-		bool   isJavaStyle;
-		bool   isSharpStyle;
-		bool   caseIndent;
-		bool   emptyLineFill;
+		// options from command line or options file
+		// X ending prevents conflict with ASBeautifier variables
+		int  indentLengthX;
+		bool useTabsX;
+		bool isCStyleX;
+		bool isJavaStyleX;
+		bool isSharpStyleX;
+		bool caseIndentX;
+		bool emptyLineFillX;
 
 		// parsing variables
 		int  lineNumber;
@@ -301,33 +323,36 @@ class ASEnhancer
 		bool lookingForCaseBracket;
 		bool unindentNextLine;
 
-		// stringstream for trace
-		stringstream *traceOut;
-
-	private:    // private functions
-		bool findKeyword(const string &line, int i, const char *header) const;
-		int  indentLine(string  &line, const int indent) const;
-		int  unindentLine(string  &line, const int unindent) const;
-
-	private:
 		// struct used by ParseFormattedLine function
 		// contains variables used to unindent the case blocks
 		struct switchVariables {
 			int  switchBracketCount;
 			int  unindentDepth;
 			bool unindentCase;
-
-			switchVariables() {                 // constructor
-				switchBracketCount = 0;
-				unindentDepth = 0;
-				unindentCase = false;
-			}
 		};
+
+		switchVariables sw;                      // switch variables struct
+		vector<switchVariables>  swVector;       // stack vector of switch variables
+
+		// event table variables
+		bool nextLineIsEventTable;				// begin event table is reached
+		bool isInEventTable;					// need to indent an event table
+
+		// stringstream for trace
+		stringstream *traceOut;
+
+	private:    // private functions
+		int  indentLine(string  &line, const int indent) const;
+		int  unindentLine(string  &line, const int unindent) const;
 
 	private:    // inline functions
 		// check if a specific character can be used in a legal variable/method/class name
 		inline bool isLegalNameCharX(char ch) const {
-			return (isalnum(ch) || ch == '.' || ch == '_' || (isJavaStyle && ch == '$') || (isCStyle && ch == '~'));
+			return (isalnum(ch) || ch == '.' || ch == '_'
+			        || (isJavaStyleX && ch == '$')
+			        || (isCStyleX && ch == '~')
+			        || (isSharpStyleX && ch == '@'));	// may be used as a prefix
+
 		}
 
 		// check if a specific character is a whitespace character
@@ -357,7 +382,7 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		void setBreakBlocksMode(bool state);
 		void setBreakClosingHeaderBlocksMode(bool state);
 		void setBreakElseIfsMode(bool state);
-		string fileName;
+		string traceFileName;
 
 	private:
 		void ASformatter(ASFormatter &copy);            // not to be imlpemented
@@ -366,15 +391,15 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		void goForward(int i);
 		void trimNewLine();
 		char peekNextChar() const;
-		BracketType getBracketType() const;
+		BracketType getBracketType();
 		bool getNextChar();
 		bool isBeforeComment() const;
 		bool isBeforeLineEndComment(int startPos) const;
+		bool isNextWordSharpAccessor() const;
 		bool isPointerOrReference() const;
 		bool isUnaryMinus() const;
 		bool isInExponent() const;
 		bool isOneLineBlockReached() const;
-//		bool isNextCharWhiteSpace() const;
 		bool lineBeginsWith(char charToCheck) const;
 		void appendChar(char ch, bool canBreakLine = true);
 		void appendCharInsideComments();
@@ -414,7 +439,7 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		int  charNum;
 		int  spacePadNum;
 		int  templateDepth;
-		int  traceFileNumber;
+		int  traceLineNumber;
 		size_t formattedLineCommentNum;		// comment location on formattedLine
 		size_t previousReadyFormattedLineLength;
 		BracketMode bracketFormatMode;
@@ -431,6 +456,9 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		bool isInTemplate;   // true both in template definitions (e.g. template<class A>) and template usage (e.g. F<int>).
 		bool doesLineStartComment;
 		bool isInQuote;
+		bool isInVerbatimQuote;
+		bool haveLineContinuationChar;
+		bool isInQuoteContinuation;
 		bool isInBlParen;
 		bool isSpecialChar;
 		bool isNonParenHeader;
@@ -441,7 +469,6 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		bool foundPreCommandHeader;
 		bool foundCastOperator;
 		bool isInLineBreak;
-//		bool isInClosingBracketLineBreak;
 		bool endOfCodeReached;
 		bool lineCommentNoIndent;
 		bool isLineReady;
@@ -456,7 +483,7 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		bool shouldBreakOneLineBlocks;
 		bool shouldReparseCurrentChar;
 		bool shouldBreakOneLineStatements;
-		bool shouldBreakLineAfterComments;
+//		bool shouldBreakLineAfterComments;
 		bool shouldBreakClosingHeaderBrackets;
 		bool shouldBreakElseIfs;
 		bool passedSemicolon;
@@ -477,6 +504,8 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 
 		bool isInHeader;
 		bool isImmediatelyPostHeader;
+		bool isInCase;
+		bool isInSharpGenericDefinition;
 
 	private:    // inline functions
 		// append the CURRENT character (curentChar)to the current formatted line.
@@ -492,5 +521,5 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 
 }   // end of namespace astyle
 
-#endif // closes ASTYLE_H
 
+#endif // closes ASTYLE_H
