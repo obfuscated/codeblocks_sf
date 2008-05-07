@@ -1388,7 +1388,7 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
 
     if (!compiler)
     {
-        if(!(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/ignore_invalid_targets"), false)))
+        if(!(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/ignore_invalid_targets"), true)))
         {
             wxString msg;
             msg.Printf(_("The defined compiler for %s cannot be located (ID: %s).\n"

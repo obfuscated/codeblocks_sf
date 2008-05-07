@@ -431,7 +431,7 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 {
     // first thing to do!
     // if we add more constructors in the future, don't forget to set this!
-    m_pData = new cbEditorInternalData(this, fileLdr);
+    m_pData = new cbEditorInternalData(this);//, fileLdr);
     m_pData->m_pFileLoader = fileLdr;
     m_IsBuiltinEditor = true;
 
@@ -1188,6 +1188,10 @@ bool cbEditor::Open(bool detectEncoding)
     st = enc.GetWxStr();
     if (detectEncoding)
     {
+		m_pData->m_useByteOrderMark = enc.UsesBOM();
+		m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
+		m_pData->m_encoding = enc.GetFontEncoding();
+
         SetEncoding(enc.GetFontEncoding());
         m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
         SetUseBom(m_pData->m_byteOrderMarkLength > 0);
