@@ -52,13 +52,13 @@ BEGIN_EVENT_TABLE(LibSelectDlg,wxDialog)
 	EVT_BUTTON(wxID_OK,LibSelectDlg::OnOk)
 END_EVENT_TABLE()
 
-LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names)
+LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addOnly)
 {
 	//(*Initialize(LibSelectDlg)
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-	
+
 	Create(parent, wxID_ANY, _("Setting up libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Select libraries You want to set up:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
@@ -87,6 +87,16 @@ LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names)
 	BoxSizer1->SetSizeHints(this);
 	Center();
 	//*)
+
+	if ( m_AddOnly = addOnly )
+	{
+	    m_DontClear->SetValue( true );
+	    m_ClearSelected->SetValue( false );
+	    m_ClearAll->SetValue( false );
+	    m_DontClear->Disable();
+	    m_ClearSelected->Disable();
+	    m_ClearAll->Disable();
+	}
 
 	m_Libraries->Append(Names);
 
@@ -162,9 +172,13 @@ bool LibSelectDlg::GetClearAllPrevious()
 void LibSelectDlg::OnOk(wxCommandEvent& event)
 {
 	ConfigManager* Cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
-	if ( m_DontClear->GetValue()     ) Cfg->Write(_T("libselect/previous"),0);
-	if ( m_ClearSelected->GetValue() ) Cfg->Write(_T("libselect/previous"),1);
-	if ( m_ClearAll->GetValue()      ) Cfg->Write(_T("libselect/previous"),2);
+
+	if ( !m_DontClear )
+	{
+        if ( m_DontClear->GetValue()     ) Cfg->Write(_T("libselect/previous"),0);
+        if ( m_ClearSelected->GetValue() ) Cfg->Write(_T("libselect/previous"),1);
+        if ( m_ClearAll->GetValue()      ) Cfg->Write(_T("libselect/previous"),2);
+	}
 	Cfg->Write(_T("libselect/setup_global_vars"),m_SetupGlobalVars->GetValue());
     event.Skip();
 }

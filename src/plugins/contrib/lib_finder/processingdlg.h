@@ -37,7 +37,7 @@
 //*)
 
 #include "libraryconfig.h"
-#include "libraryconfigmanager.h"
+#include "librarydetectionmanager.h"
 #include "resultmap.h"
 #include "pkgconfigmanager.h"
 
@@ -48,7 +48,7 @@ class ProcessingDlg: public wxDialog
 {
 	public:
 
-		ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,TypedResults& KnownResults,ResultMap& FoundResults,wxWindowID id = -1);
+		ProcessingDlg(wxWindow* parent, LibraryDetectionManager& Manager, TypedResults& KnownResults, wxWindowID id = -1);
 		virtual ~ProcessingDlg();
 
 		//(*Identifiers(ProcessingDlg)
@@ -60,6 +60,10 @@ class ProcessingDlg: public wxDialog
 		bool ReadDirs(const wxArrayString& Dirs);
 
 		bool ProcessLibs();
+
+		bool ProcessLibs(const wxArrayString& Shortcuts);
+
+		void ApplyResults(bool addOnly);
 
 	protected:
 
@@ -88,9 +92,9 @@ class ProcessingDlg: public wxDialog
 
         bool StopFlag;
         FileNamesMap Map;
-        LibraryConfigManager& m_Manager;
+        LibraryDetectionManager& m_Manager;
         TypedResults& m_KnownResults;
-        ResultMap& m_FoundResults;
+        ResultMap m_FoundResults;
 
 		DECLARE_EVENT_TABLE()
 };

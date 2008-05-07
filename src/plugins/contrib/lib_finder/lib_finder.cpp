@@ -28,6 +28,9 @@
 #include <wx/intl.h>
 #include <wx/string.h>
 #include <wx/dir.h>
+#include <wx/url.h>
+#include <wx/wfstream.h>
+
 
 #include <configmanager.h>
 #include <globals.h>
@@ -37,12 +40,15 @@
 #include <compilerfactory.h>
 #include <sqplus.h>
 #include <sc_base_types.h>
+#include <logmanager.h>
 
 #include "resultmap.h"
 #include "libraryresult.h"
 #include "lib_finder.h"
 #include "projectconfigurationpanel.h"
 #include "librariesdlg.h"
+#include "projectmissinglibs.h"
+
 
 namespace
 {
@@ -54,18 +60,7 @@ namespace
     {
     };
 
-    // Here's some conditional code that will allow to compile this when
-    // both there's patch to add extra event and when there's not
-    #ifdef EVT_COMPILER_SET_BUILD_OPTIONS
-
-        bool ExtraEventPresent = true;
-
-    #else
-
-        bool ExtraEventPresent = false;
-        wxEventType cbEVT_COMPILER_SET_BUILD_OPTIONS = -1;
-
-    #endif
+    static const bool ExtraEventPresent = true;
 };
 
 lib_finder* lib_finder::m_Singleton = 0;
@@ -279,8 +274,13 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
                 Message += _T("  * ") + NoVersion[i];
             }
         }
+        Message += _T("\n");
+        Message += _("Would you like to go to detection dialog ?");
 
-        wxMessageBox(Message,_("LibFinder - error"));
+        if ( cbMessageBox( Message, _("LibFinder - error"), wxYES_NO|wxICON_EXCLAMATION ) == wxID_YES )
+        {
+            ProjectMissingLibs(Manager::Get()->GetAppWindow() ,NotFound,m_KnownLibraries).ShowModal();
+        }
     }
 }
 
@@ -368,6 +368,7 @@ void lib_finder::RegisterScripting()
         .staticFunc(&lib_finder::IsLibraryInProject,"IsLibraryInProject")
         .staticFunc(&lib_finder::RemoveLibraryFromProject,"RemoveLibraryFromProject")
         .staticFunc(&lib_finder::SetupTargetManually,"SetupTarget")
+        .staticFunc(&lib_finder::EnsureIsDefined,"EnsureLibraryDefined")
     ;
 }
 
@@ -461,6 +462,68 @@ bool lib_finder::SetupTargetManually(CompileTargetBase* Target)
     if ( m_Singleton->m_Targets.find(Target) == m_Singleton->m_Targets.end() ) return false;
     m_Singleton->SetupTarget(Target,m_Singleton->m_Targets[Target]);
     return true;
+}
+
+bool lib_finder::EnsureIsDefined(const wxString& ShortCode)
+{
+    if ( !m_Singleton ) return false;
+
+    for ( int i=0; i<rtCount; i++ )
+    {
+        if ( m_Singleton->m_KnownLibraries[i].IsShortCode(ShortCode) )
+        {
+            // Found this library
+            return true;
+        }
+    }
+
+    // Did not foud library
+    return false;
+}
+
+bool lib_finder::TryDownload(const wxString& ShortCode,const wxString& FileName)
+{
+    wxArrayString Urls = Manager::Get()->GetConfigManager(_T("lib_finder"))->ReadArrayString(_T("download_urls"));
+    for ( size_t i=0; i<Urls.Count(); i++ )
+    {
+        wxString Url = Urls[i];
+        if ( Url.IsEmpty() ) continue;
+
+        if ( Url.Last() != _T('/') ) Url.Append(_T('/'));
+        Url << ShortCode << _T(".xml");
+
+        wxURL UrlData(Url);
+        if ( !UrlData.IsOk() )
+        {
+            LogManager::Get()->LogWarning(F(_T("lib_finder: Invalid url '%s'"),Url.c_str()));
+            continue;
+        }
+        UrlData.SetProxy( ConfigManager::GetProxy() );
+
+        wxInputStream* is = UrlData.GetInputStream();
+        if ( !is || !is->IsOk() )
+        {
+            LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't open stream for '%s'"),Url.c_str()));
+            delete is;
+            continue;
+        }
+
+        wxFileOutputStream Output(FileName);
+        if ( !Output.IsOk() )
+        {
+            LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't write to file '%s'"),FileName.c_str()));
+            delete is;
+            return false;
+        }
+
+        is->Read( Output );
+        bool ret = is->IsOk() && Output.IsOk();
+        delete is;
+        return ret;
+    }
+
+    LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't find suitable download url for '%s'"),ShortCode.c_str()));
+    return false;
 }
 
 void lib_finder::OnCompilerStarted(CodeBlocksEvent& event)

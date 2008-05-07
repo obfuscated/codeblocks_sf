@@ -17,7 +17,7 @@ class wxFlatNotebook;
 //*)
 
 #include "resultmap.h"
-#include "libraryconfigmanager.h"
+#include "librarydetectionmanager.h"
 
 class LibrariesDlg: public wxDialog
 {
@@ -65,6 +65,7 @@ class LibrariesDlg: public wxDialog
         wxButton* m_ConfDelete;
         wxFlatNotebook* FlatNotebook1;
         wxButton* Button5;
+        wxButton* Button3;
         wxStaticText* StaticText5;
         wxButton* m_ConfigUp;
         wxButton* Button7;
@@ -86,6 +87,7 @@ class LibrariesDlg: public wxDialog
         static const long ID_CHECKBOX2;
         static const long ID_BUTTON1;
         static const long ID_BUTTON2;
+        static const long ID_BUTTON11;
         static const long ID_BUTTON8;
         static const long ID_LISTBOX2;
         static const long ID_BUTTON9;
@@ -148,6 +150,7 @@ class LibrariesDlg: public wxDialog
         void OnButton2Click(wxCommandEvent& event);
         void Onm_ConfigPosChangeDown(wxCommandEvent& event);
         void Onm_ConfigPosChangeUp(wxCommandEvent& event);
+        void OnButton3Click(wxCommandEvent& event);
         //*)
 
         TypedResults& m_KnownLibraries;
@@ -156,7 +159,7 @@ class LibrariesDlg: public wxDialog
         LibraryResult* m_SelectedConfig;
         bool m_WhileUpdating;
 
-        bool LoadSearchFilters(LibraryConfigManager* CfgManager);
+        bool LoadSearchFilters(LibraryDetectionManager* CfgManager);
         void RecreateLibrariesList(const wxString& Selection);
         void RecreateLibrariesListForceRefresh();
         void SelectLibrary(const wxString& Shortcut);

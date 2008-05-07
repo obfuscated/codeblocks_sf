@@ -25,6 +25,7 @@
 #include <wx/dir.h>
 #include <manager.h>
 #include <configmanager.h>
+#include <logmanager.h>
 
 #include "resultmap.h"
 #include "pkgconfigmanager.h"
@@ -89,13 +90,17 @@ void ResultMap::WriteDetectedResults()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("lib_finder"));
     if ( !cfg ) return;
+    cfg->DeleteSubPath(_T("/stored_results/"));
 
     ResultArray Results;
     GetAllResults(Results);
 
+    LogManager::Get()->DebugLog(_T("********** lib_finder Dump 2 BEGIN *************"));
+
     for ( size_t i=0; i<Results.Count(); i++ )
     {
         LibraryResult* Result = Results[i];
+        Result->DebugDump();
         wxString Path = wxString::Format(_T("/stored_results/res%06d/"),i);
 
         cfg->Write(Path+_T("name"),Result->LibraryName);
@@ -115,6 +120,8 @@ void ResultMap::WriteDetectedResults()
         cfg->Write(Path+_T("compilers"),Result->Compilers);
         cfg->Write(Path+_T("headers"),Result->Headers);
     }
+
+    LogManager::Get()->DebugLog(_T("********** lib_finder Dump 2 END *************"));
 }
 
 void ResultMap::ReadDetectedResults()
@@ -300,4 +307,20 @@ ResultMap& ResultMap::operator=(const ResultMap& source)
     }
 
     return *this;
+}
+
+void ResultMap::DebugDump( const wxString& Name )
+{
+    LogManager::Get()->DebugLog(_T("********** lib_finder Dump ") + Name + _T(" BEGIN *************"));
+    for ( ResultHashMap::const_iterator it = Map.begin(); it != Map.end(); ++it )
+    {
+        LogManager::Get()->DebugLog(_T("ShortCode: ") + it->first);
+
+        const ResultArray& RA = it->second;
+        for ( size_t i = 0; i<RA.Count(); ++i )
+        {
+            RA[i]->DebugDump(_T(" * "));
+        }
+    }
+    LogManager::Get()->DebugLog(_T("********** lib_finder Dump ") + Name + _T(" END *************"));
 }

@@ -39,7 +39,7 @@ class LibSelectDlg: public wxDialog
 {
 	public:
 
-		LibSelectDlg(wxWindow* parent,const wxArrayString& Names);
+		LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addOnly);
 		virtual ~LibSelectDlg();
 
         /** \brief Set list of selected items */
@@ -83,6 +83,8 @@ class LibSelectDlg: public wxDialog
 		//(*Handlers(LibSelectDlg)
 		void OnOk(wxCommandEvent& event);
 		//*)
+
+		bool m_AddOnly;
 
 		DECLARE_EVENT_TABLE()
 };

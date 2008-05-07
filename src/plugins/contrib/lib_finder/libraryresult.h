@@ -65,6 +65,8 @@ struct LibraryResult
 
     bool operator == ( const LibraryResult& compareWith ) const;
     void SetGlobalVar() const;
+
+    void DebugDump(const wxString& Prefix = wxEmptyString);
 };
 
 #endif

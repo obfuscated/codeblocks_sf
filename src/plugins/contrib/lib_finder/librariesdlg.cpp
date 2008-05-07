@@ -22,8 +22,9 @@
 
 #include "dirlistdlg.h"
 #include "processingdlg.h"
-#include "libraryconfigmanager.h"
+#include "librarydetectionmanager.h"
 #include "libselectdlg.h"
+#include "defsdownloaddlg.h"
 
 //(*IdInit(LibrariesDlg)
 const long LibrariesDlg::ID_LISTBOX1 = wxNewId();
@@ -31,6 +32,7 @@ const long LibrariesDlg::ID_CHECKBOX1 = wxNewId();
 const long LibrariesDlg::ID_CHECKBOX2 = wxNewId();
 const long LibrariesDlg::ID_BUTTON1 = wxNewId();
 const long LibrariesDlg::ID_BUTTON2 = wxNewId();
+const long LibrariesDlg::ID_BUTTON11 = wxNewId();
 const long LibrariesDlg::ID_BUTTON8 = wxNewId();
 const long LibrariesDlg::ID_LISTBOX2 = wxNewId();
 const long LibrariesDlg::ID_BUTTON9 = wxNewId();
@@ -137,6 +139,8 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	Button2 = new wxButton(this, ID_BUTTON2, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
 	BoxSizer2->Add(Button2, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	Button3 = new wxButton(this, ID_BUTTON11, _("Download definitions"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON11"));
+	StaticBoxSizer1->Add(Button3, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer14->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Autodetection of libraries"));
 	Button8 = new wxButton(this, ID_BUTTON8, _("Scan"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON8"));
@@ -307,6 +311,7 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&LibrariesDlg::Onm_ShowPkgConfigClick);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&LibrariesDlg::OnButton1Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&LibrariesDlg::OnButton2Click);
+	Connect(ID_BUTTON11,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&LibrariesDlg::OnButton3Click);
 	Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&LibrariesDlg::OnButton8Click);
 	Connect(ID_LISTBOX2,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&LibrariesDlg::Onm_ConfigurationsSelect);
 	Connect(ID_BUTTON9,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&LibrariesDlg::Onm_ConfigPosChangeUp);
@@ -334,11 +339,10 @@ void LibrariesDlg::OnInit(wxInitDialogEvent& event)
 
 void LibrariesDlg::OnButton8Click(wxCommandEvent& event)
 {
-    LibraryConfigManager m_Manager(m_WorkingCopy);
-    ResultMap m_Results;
+    LibraryDetectionManager m_Manager(m_WorkingCopy);
 
     // Loading library search filters
-    if ( !LoadSearchFilters(&m_Manager) )
+    if ( !m_Manager.LoadSearchFilters() )
     {
         cbMessageBox(
             _("Didn't found any search filters used to detect libraries.\n"
@@ -347,129 +351,28 @@ void LibrariesDlg::OnButton8Click(wxCommandEvent& event)
     }
 
     // Getting list of directories to process
-    DirListDlg Dlg(this,Manager::Get()->GetConfigManager(_T("lib_finder"))->ReadArrayString(_T("search_dirs")));
+    DirListDlg Dlg(this);
     if ( Dlg.ShowModal() == wxID_CANCEL ) return;
-    Manager::Get()->GetConfigManager(_T("lib_finder"))->Write(_T("search_dirs"),Dlg.Dirs);
 
     // Do the processing
     FileNamesMap FNMap;
-    ProcessingDlg PDlg(Manager::Get()->GetAppWindow(),m_Manager,m_WorkingCopy,m_Results);
+    ProcessingDlg PDlg(Manager::Get()->GetAppWindow(),m_Manager,m_WorkingCopy);
     PDlg.Show();
     PDlg.MakeModal(true);
-    if ( PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs() )
-    {
-        PDlg.Hide();
-        ResultArray Results;
-        m_Results.GetAllResults(Results);
-        if ( Results.Count() == 0 )
-        {
-            cbMessageBox(_("Didn't found any library"));
-        }
-        else
-        {
-            wxArrayString Names;
-            wxArrayInt Selected;
-            wxString PreviousVar;
-            for ( size_t i=0; i<Results.Count(); ++i )
-            {
-                wxString& Name =
-                    Results[i]->Description.IsEmpty() ?
-                    Results[i]->LibraryName :
-                    Results[i]->Description;
 
-                Names.Add(
-                    wxString::Format(_T("%s : %s"),
-                        Results[i]->ShortCode.c_str(),
-                        Name.c_str()));
-                if ( PreviousVar != Results[i]->ShortCode )
-                {
-                    Selected.Add((int)i);
-                    PreviousVar = Results[i]->ShortCode;
-                }
-            }
+    bool apply = PDlg.ReadDirs(Dlg.Dirs) && PDlg.ProcessLibs();
 
-            LibSelectDlg Dlg(Manager::Get()->GetAppWindow(),Names);
-            Dlg.SetSelections(Selected);
-
-            if ( Dlg.ShowModal() == wxID_OK )
-            {
-                // Fetch selected libraries
-                Selected = Dlg.GetSelections();
-
-                // Clear all results if requested
-                if ( Dlg.GetClearAllPrevious() )
-                {
-                    m_WorkingCopy[rtDetected].Clear();
-                }
-
-                // Here we will store names of libraries set-up so far
-                // by checking entries we will be able to find out whether
-                // we have to clear previous settings
-                wxArrayString AddedLibraries;
-
-                for ( size_t i = 0; i<Selected.Count(); i++ )
-                {
-                    wxString Library = Results[Selected[i]]->ShortCode;
-
-                    if ( true )
-                    {
-                        // Here we set-up internal libraries configuration
-                        if ( Dlg.GetClearSelectedPrevious() )
-                        {
-                            if ( AddedLibraries.Index(Library)==wxNOT_FOUND )
-                            {
-                                // Ok, have to delete previosu results since this is the first
-                                // occurence of this library in new set
-                                ResultArray& Previous = m_WorkingCopy[rtDetected].GetShortCode(Library);
-                                for ( size_t j=0; j<Previous.Count(); j++ )
-                                {
-                                    delete Previous[j];
-                                }
-                                Previous.Clear();
-                            }
-                            AddedLibraries.Add(Library);
-                        }
-                        else if ( Dlg.GetDontClearPrevious() )
-                        {
-                            // Find and remove duplicates
-                            ResultArray& Previous = m_WorkingCopy[rtDetected].GetShortCode(Library);
-                            for ( size_t j=0; j<Previous.Count(); j++ )
-                            {
-                                if ( *Previous[j] == *Results[Selected[i]] )
-                                {
-                                    delete Previous[j];
-                                    Previous.RemoveAt(j--);
-                                }
-                            }
-                        }
-
-                        // Add the result
-                        m_WorkingCopy[rtDetected].GetShortCode(Library).Add(new LibraryResult(*Results[Selected[i]]));
-                    }
-
-                    if ( Dlg.GetSetupGlobalVars() )
-                    {
-                        // Here we set-up global variables
-                        Results[Selected[i]]->SetGlobalVar();
-                    }
-                }
-            }
-        }
-    }
     PDlg.MakeModal(false);
+    PDlg.Hide();
+
+    if ( apply )
+    {
+        PDlg.ApplyResults( false );
+    }
 
     RecreateLibrariesListForceRefresh();
 }
 
-bool LibrariesDlg::LoadSearchFilters(LibraryConfigManager* CfgManager)
-{
-    wxString Sep = wxFileName::GetPathSeparator();
-
-    CfgManager->LoadXmlConfig(ConfigManager::GetFolder(sdDataGlobal) + Sep + _T("lib_finder"));
-    CfgManager->LoadXmlConfig(ConfigManager::GetFolder(sdDataUser)   + Sep + _T("lib_finder"));
-
-    return CfgManager->GetLibraryCount()>0;
-}
 
 void LibrariesDlg::RecreateLibrariesList(const wxString& Selection)
 {
@@ -564,6 +467,7 @@ void LibrariesDlg::SelectLibrary(const wxString& Shortcut)
         return;
     }
 
+    StoreConfiguration();
     m_SelectedShortcut = Shortcut;
     m_Configurations->Clear();
 
@@ -1036,4 +940,9 @@ void LibrariesDlg::Onm_ConfigPosChangeUp(wxCommandEvent& event)
         SelectConfiguration( tmp );
     }
     m_WhileUpdating = false;
+}
+
+void LibrariesDlg::OnButton3Click(wxCommandEvent& event)
+{
+    DefsDownloadDlg(this).ShowModal();
 }

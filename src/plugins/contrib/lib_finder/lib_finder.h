@@ -29,7 +29,7 @@
 #include <sdk_events.h>
 #include <tinyxml/tinyxml.h>
 
-#include "libraryconfigmanager.h"
+#include "librarydetectionmanager.h"
 #include "resultmap.h"
 #include "projectconfiguration.h"
 #include "libraryresult.h"
@@ -63,12 +63,14 @@ class lib_finder: public cbToolPlugin
         bool TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result);
         void RegisterScripting();
         void UnregisterScripting();
+        bool TryDownload(const wxString& ShortCode,const wxString& FileName);
 
         // These functions are used in scripting bindings
 		static bool AddLibraryToProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
 		static bool RemoveLibraryFromProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
 		static bool IsLibraryInProject(const wxString& LibName,cbProject* Project,const wxString& TargetName);
 		static bool SetupTargetManually(CompileTargetBase* Target);
+		static bool EnsureIsDefined(const wxString& ShortCode);
 
         ProjectConfiguration* GetProject(cbProject* Project);
 

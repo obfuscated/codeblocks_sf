@@ -28,19 +28,21 @@
 #include <wx/filename.h>
 #include <wx/string.h>
 
-#include "libraryconfigmanager.h"
-#include "lib_finder.h"
+#include <manager.h>
+#include <configmanager.h>
 
-LibraryConfigManager::LibraryConfigManager(TypedResults& CurrentResults): m_CurrentResults(CurrentResults)
+#include "librarydetectionmanager.h"
+
+LibraryDetectionManager::LibraryDetectionManager(TypedResults& CurrentResults): m_CurrentResults(CurrentResults)
 {
 }
 
-LibraryConfigManager::~LibraryConfigManager()
+LibraryDetectionManager::~LibraryDetectionManager()
 {
     Clear();
 }
 
-void LibraryConfigManager::Clear()
+void LibraryDetectionManager::Clear()
 {
     for ( size_t i=0; i<Libraries.Count(); ++i )
     {
@@ -49,17 +51,18 @@ void LibraryConfigManager::Clear()
     Libraries.Clear();
 }
 
-void LibraryConfigManager::LoadXmlConfig(const wxString& Path)
+int LibraryDetectionManager::LoadXmlConfig(const wxString& Path)
 {
     wxDir Dir(Path);
     wxString Name;
-    if ( !Dir.IsOpened() ) return;
+    if ( !Dir.IsOpened() ) return 0;
 
+    int loaded = 0;
     if ( Dir.GetFirst(&Name,wxEmptyString,wxDIR_DIRS|wxDIR_HIDDEN) )
     {
         do
         {
-            LoadXmlConfig(Path+wxFileName::GetPathSeparator()+Name);
+            loaded += LoadXmlConfig(Path+wxFileName::GetPathSeparator()+Name);
         }
         while ( Dir.GetNext(&Name) );
     }
@@ -68,18 +71,27 @@ void LibraryConfigManager::LoadXmlConfig(const wxString& Path)
     {
         do
         {
-            LoadXmlFile(Path+wxFileName::GetPathSeparator()+Name);
+            loaded += LoadXmlFile(Path+wxFileName::GetPathSeparator()+Name) ? 1 : 0;
         }
         while ( Dir.GetNext(&Name) );
     }
+
+    return loaded;
 }
 
-void LibraryConfigManager::LoadXmlFile(const wxString& Name)
+int LibraryDetectionManager::LoadXmlFile(const wxString& Name)
 {
     TiXmlDocument Doc;
 
-    if ( !Doc.LoadFile(Name.mb_str()) ) return;
+    // TODO: Use built-in loader
+    if ( !Doc.LoadFile( Name.mb_str() ) ) return 0;
 
+    return LoadXmlDoc( Doc );
+}
+
+int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
+{
+    int loaded = 0;
     for ( TiXmlElement* Elem = Doc.FirstChildElement("library");
           Elem;
           Elem = Elem->NextSiblingElement("library") )
@@ -113,19 +125,21 @@ void LibraryConfigManager::LoadXmlFile(const wxString& Name)
             Filter.Type = LibraryFilter::PkgConfig;
             Filter.Value = Initial.ShortCode;
             Config->Filters.push_back(Filter);
-            AddConfig(Config);
+            loaded += AddConfig(Config) ? 1 : 0;
         }
 
         // Load base configuration of library
-        LoadXml(Elem,new LibraryConfig(Initial));
+        loaded += LoadXml(Elem,new LibraryConfig(Initial));
     }
+    return loaded;
 }
 
-void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool Filters,bool Settings)
+int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool Filters,bool Settings)
 {
     wxString Description = wxString(Elem->Attribute("description"),wxConvUTF8);
     if ( !Description.empty() ) Config->Description = Description;
 
+    int loaded = 0;
     for ( TiXmlElement* Data = Elem->FirstChildElement();
           Data;
           Data = Data->NextSiblingElement() )
@@ -137,13 +151,13 @@ void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool
             // Load subnodes
             if ( Node == _T("filters") )
             {
-                LoadXml(Data,Config,true,false);
+                loaded += LoadXml(Data,Config,true,false);
                 continue;
             }
 
             if ( Node == _T("settings") )
             {
-                LoadXml(Data,Config,false,true);
+                loaded += LoadXml(Data,Config,false,true);
                 continue;
             }
 
@@ -235,7 +249,7 @@ void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool
             for ( ;Cfg; Cfg = Cfg->NextSiblingElement("config") )
             {
                 // Append sub-configuration data
-                LoadXml(Cfg,new LibraryConfig(*Config));
+                loaded += LoadXml(Cfg,new LibraryConfig(*Config));
             }
 
             // Config won't be added anywhere so we have to delete it here
@@ -244,12 +258,13 @@ void LibraryConfigManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool
         else
         {
             // No sub-config entry, so let's add this one
-            AddConfig(Config);
+            loaded += AddConfig(Config) ? 1 : 0;
         }
     }
+    return loaded;
 }
 
-bool LibraryConfigManager::CheckConfig(const LibraryConfig* Cfg) const
+bool LibraryDetectionManager::CheckConfig(const LibraryConfig* Cfg) const
 {
     if ( Cfg->LibraryName.empty() ) return false;
     if ( Cfg->ShortCode.empty()   ) return false;
@@ -257,26 +272,95 @@ bool LibraryConfigManager::CheckConfig(const LibraryConfig* Cfg) const
     return true;
 }
 
-const LibraryConfig* LibraryConfigManager::GetLibrary(int Index)
+const LibraryConfig* LibraryDetectionManager::GetLibrary(int Index)
 {
     if ( Index < 0 ) return NULL;
     if ( Index >= GetLibraryCount() ) return NULL;
     return Libraries[Index];
 }
 
-bool LibraryConfigManager::IsPkgConfigEntry(const wxString& Name)
+const LibraryConfig* LibraryDetectionManager::GetLibrary(const wxString& ShortCode)
+{
+    for ( int i=0; i<GetLibraryCount(); i++ )
+    {
+        if ( Libraries[i]->ShortCode == ShortCode )
+        {
+            return Libraries[i];
+        }
+    }
+    return 0;
+}
+
+bool LibraryDetectionManager::IsPkgConfigEntry(const wxString& Name)
 {
     return m_CurrentResults[rtPkgConfig].IsShortCode(Name);
 }
 
-void LibraryConfigManager::AddConfig(LibraryConfig* Cfg)
+bool LibraryDetectionManager::AddConfig(LibraryConfig* Cfg)
 {
     if ( CheckConfig(Cfg) )
     {
         Libraries.push_back(Cfg);
+        return true;
     }
     else
     {
         delete Cfg;
+        return false;
     }
+}
+
+bool LibraryDetectionManager::LoadSearchFilters()
+{
+    wxString Sep = wxFileName::GetPathSeparator();
+
+    int loaded = 0;
+    loaded += LoadXmlConfig(ConfigManager::GetFolder(sdDataGlobal) + Sep + _T("lib_finder"));
+    loaded += LoadXmlConfig(ConfigManager::GetFolder(sdDataUser)   + Sep + _T("lib_finder"));
+
+    return loaded>0;
+}
+
+int LibraryDetectionManager::StoreNewSettingsFile( const wxString& shortcut, const std::vector< char >& content )
+{
+    // Try to parse file's content
+    TiXmlDocument doc;
+    if ( !doc.Parse( &content[0] ) ) return -1;
+
+    // Ensure that this file contains required shortcut
+    if ( !doc.RootElement() ) return -1;
+    if ( !doc.RootElement()->Attribute("short_code") ) return -1;
+    if ( strcmp( doc.RootElement()->Attribute("short_code"), cbU2C(shortcut) ) ) return -1;
+
+    // Finally load new data - this will make sure that we have valid xml structure
+    int AddedConfigs = LoadXmlDoc( doc );
+    if ( !AddedConfigs ) return -1;
+
+    // Search for not-yet existing file name
+    int i=0;
+    wxString BaseName = ConfigManager::GetFolder(sdDataUser) + wxFileName::GetPathSeparator() + _T("lib_finder") + wxFileName::GetPathSeparator();
+    if ( !wxFileName::Mkdir( BaseName, 0777, wxPATH_MKDIR_FULL ) )
+    {
+        return -2;
+    }
+    wxString FileName = BaseName + shortcut + _T(".xml");
+    while ( wxFileName::FileExists( FileName ) || wxFileName::DirExists( FileName ) )
+    {
+        FileName = BaseName + shortcut + wxString::Format(_T("%d.xml"),i++);
+    }
+
+    // Store data
+    wxFile fl( FileName, wxFile::write_excl );
+    if ( !fl.IsOpened() )
+    {
+        return -2;
+    }
+    const char* ptr = &content[0];
+    wxFileOffset len = strlen(ptr);
+    if ( fl.Write( ptr, len ) != len )
+    {
+        return -2;
+    }
+
+    return AddedConfigs;
 }

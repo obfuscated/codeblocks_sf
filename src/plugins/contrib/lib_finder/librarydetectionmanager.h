@@ -40,18 +40,15 @@ class TiXmlElement;
  * After successfull detection, LibraryResult is produced which does hold
  * useful configuration of library
  */
-class LibraryConfigManager
+class LibraryDetectionManager
 {
     public:
 
         /** \brief Ctor */
-        LibraryConfigManager(TypedResults& Results);
+        LibraryDetectionManager(TypedResults& Results);
 
         /** \brief Dctor */
-        ~LibraryConfigManager();
-
-        /** \brief Function loading xml configuration files from specified directory */
-        void LoadXmlConfig(const wxString& Dir);
+        ~LibraryDetectionManager();
 
         /** \brief Function returning number of loaded library configurations */
         inline int GetLibraryCount() const { return (int)Libraries.Count(); }
@@ -59,13 +56,30 @@ class LibraryConfigManager
         /** \brief Function returning configuration for one library */
         const LibraryConfig* GetLibrary(int Index);
 
+        /** \brief Getting library settings by name */
+        const LibraryConfig* GetLibrary(const wxString& Shortcut);
+
+        /** \brief Load search filters from configuration directories */
+        bool LoadSearchFilters();
+
         /** \brief Function clearing current library set */
         void Clear();
 
+        /** \brief Storing new library settings
+         *  \return -1 - invalid data, -2 - couldn't write file, >= 0 - ok
+         */
+        int StoreNewSettingsFile( const wxString& shortcut, const std::vector< char >& content );
+
     private:
 
+        /** \brief Function loading xml configuration files from specified directory */
+        int LoadXmlConfig(const wxString& Dir);
+
         /** \brief Loading configuration from given filename */
-        void LoadXmlFile(const wxString& Name);
+        int LoadXmlFile(const wxString& Name);
+
+        /** \brief Loading configuration from xml document */
+        int LoadXmlDoc(TiXmlDocument& Doc);
 
         /** \brief Loading configuration from given Xml node
          *
@@ -74,7 +88,7 @@ class LibraryConfigManager
          * \param Filters if true, load settings for filters
          * \param Settings if true, load library settings
          */
-        void LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool Filters=true,bool Settings=true);
+        int LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool Filters=true,bool Settings=true);
 
         /** \brief Test if configuration is valid */
         bool CheckConfig(const LibraryConfig* Cfg) const;
@@ -83,7 +97,7 @@ class LibraryConfigManager
         bool IsPkgConfigEntry(const wxString& Name);
 
         /** \brief Adding configuration, if it's not valid it will be deleted */
-        void AddConfig(LibraryConfig* Cfg);
+        bool AddConfig(LibraryConfig* Cfg);
 
         WX_DEFINE_ARRAY(LibraryConfig*,LCArray);
 

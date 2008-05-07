@@ -26,6 +26,9 @@
 #include <wx/dirdlg.h>
 #include <wx/string.h>
 #include <wx/tokenzr.h>
+#include <globals.h>
+#include <configmanager.h>
+
 
 //(*InternalHeaders(DirListDlg)
 #include <wx/intl.h>
@@ -45,13 +48,13 @@ BEGIN_EVENT_TABLE(DirListDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-DirListDlg::DirListDlg(wxWindow* parent,const wxArrayString& Dirs,wxWindowID id)
+DirListDlg::DirListDlg(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(DirListDlg)
 	wxButton* Button1;
 	wxButton* Button2;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	
+
 	Create(parent, id, _("List of directories with libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Scanned directories:"));
@@ -74,19 +77,15 @@ DirListDlg::DirListDlg(wxWindow* parent,const wxArrayString& Dirs,wxWindowID id)
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton1Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton2Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton3Click);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&DirListDlg::OnButton4Click);
 	//*)
-
-	wxString List;
-	for ( size_t i=0; i<Dirs.Count(); i++ )
-	{
-	    List << Dirs[i] << _T("\n");
-	}
-	DirList->SetValue(List);
+	ConfigManager* mgr = Manager::Get()->GetConfigManager( _T("lib_finder") );
+	wxArrayString Dirs = mgr->ReadArrayString(_T("search_dirs"));
+	DirList->SetValue( GetStringFromArray(Dirs,_T("\n")) );
 }
 
 DirListDlg::~DirListDlg()
@@ -114,11 +113,7 @@ void DirListDlg::OnButton3Click(wxCommandEvent& event)
 
 void DirListDlg::OnButton4Click(wxCommandEvent& event)
 {
-    wxStringTokenizer Tknz(DirList->GetValue(),_T("\n"));
-    Dirs.Clear();
-    while ( Tknz.HasMoreTokens() )
-    {
-        Dirs.Add(Tknz.NextToken());
-    }
+    Dirs = wxStringTokenize( DirList->GetValue(), _T("\n"), wxTOKEN_STRTOK );
+    Manager::Get()->GetConfigManager(_T("lib_finder"))->Write(_T("search_dirs"),Dirs);
     EndModal(wxID_OK);
 }

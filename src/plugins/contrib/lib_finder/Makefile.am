@@ -17,40 +17,51 @@ liblib_finder_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -av
 
 liblib_finder_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
-liblib_finder_la_SOURCES = 	dirlistdlg.cpp \
-				lib_finder.cpp \
-				libraryconfigmanager.cpp \
-				processingdlg.cpp \
-				resultmap.cpp \
-				projectconfiguration.cpp \
-				projectconfigurationpanel.cpp \
-				libselectdlg.cpp \
-				pkgconfigmanager.cpp \
-				libraryresult.cpp \
-				librariesdlg.cpp \
-				headersdetectordlg.cpp
+liblib_finder_la_SOURCES = \
+		librariesdlg.cpp \
+		dirlistdlg.cpp \
+		projectmissinglibs.cpp \
+		headersdetectordlg.cpp \
+		webresourcesmanager.cpp \
+		projectconfiguration.cpp \
+		resultmap.cpp \
+		libraryresult.cpp \
+		projectconfigurationpanel.cpp \
+		pkgconfigmanager.cpp \
+		librarydetectionmanager.cpp \
+		libselectdlg.cpp \
+		processingdlg.cpp \
+		defsdownloaddlg.cpp \
+		lib_finder.cpp \
 
 
-noinst_HEADERS =  	dirlistdlg.h \
-			lib_finder.h \
-			libraryconfig.h \
-			libraryconfigmanager.h \
-			libraryresult.h \
-			processingdlg.h \
-			resultmap.h \
-			projectconfiguration.h \
-			projectconfigurationpanel.h \
-			libselectdlg.h \
-			pkgconfigmanager.h \
-			librariesdlg.h \
-			headersdetectordlg.h
+noinst_HEADERS = \
+		librariesdlg.h \
+		projectconfiguration.h \
+		dirlistdlg.h \
+		lib_finder.h \
+		projectmissinglibs.h \
+		webresourcesmanager.h \
+		defsdownloaddlg.h \
+		libraryresult.h \
+		libselectdlg.h \
+		headersdetectordlg.h \
+		librarydetectionmanager.h \
+		pkgconfigmanager.h \
+		resultmap.h \
+		libraryconfig.h \
+		processingdlg.h \
+		projectconfigurationpanel.h \
 
-EXTRA_DIST = 	lib_finder.cbp \
-		update \
-		update.bat \
-		readme.txt \
-		manifest.xml
-#		license.txt 
+
+EXTRA_DIST = 
+	lib_finder.cbp \
+	lib_finder-unix.cbp \
+	update \
+	update.bat \
+	readme.txt \
+	manifest.xml
+#	license.txt
 
 pkgdata_DATA = lib_finder.zip
 CLEANFILES = $(pkgdata_DATA)

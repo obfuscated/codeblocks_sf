@@ -42,7 +42,7 @@ class DirListDlg: public wxDialog
 {
 	public:
 
-		DirListDlg(wxWindow* parent,const wxArrayString& Dirs,wxWindowID id = -1);
+		DirListDlg(wxWindow* parent,wxWindowID id = -1);
 		virtual ~DirListDlg();
 
 		wxArrayString Dirs;

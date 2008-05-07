@@ -11,6 +11,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/lib_finder" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
@@ -50,6 +51,8 @@
 			<Add after="./update" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="defsdownloaddlg.cpp" />
+		<Unit filename="defsdownloaddlg.h" />
 		<Unit filename="dirlistdlg.cpp" />
 		<Unit filename="dirlistdlg.h" />
 		<Unit filename="headersdetectordlg.cpp" />
@@ -63,8 +66,8 @@
 		<Unit filename="librariesdlg.cpp" />
 		<Unit filename="librariesdlg.h" />
 		<Unit filename="libraryconfig.h" />
-		<Unit filename="libraryconfigmanager.cpp" />
-		<Unit filename="libraryconfigmanager.h" />
+		<Unit filename="librarydetectionmanager.cpp" />
+		<Unit filename="librarydetectionmanager.h" />
 		<Unit filename="libraryresult.cpp" />
 		<Unit filename="libraryresult.h" />
 		<Unit filename="libselectdlg.cpp" />
@@ -78,11 +81,17 @@
 		<Unit filename="projectconfiguration.h" />
 		<Unit filename="projectconfigurationpanel.cpp" />
 		<Unit filename="projectconfigurationpanel.h" />
+		<Unit filename="projectmissinglibs.cpp" />
+		<Unit filename="projectmissinglibs.h" />
 		<Unit filename="resultmap.cpp" />
 		<Unit filename="resultmap.h" />
+		<Unit filename="webresourcesmanager.cpp" />
+		<Unit filename="webresourcesmanager.h" />
+		<Unit filename="wxsmith/DefsDownloadDlg1.wxs" />
 		<Unit filename="wxsmith/HeadersDetectorDlg.wxs" />
 		<Unit filename="wxsmith/LibSelectDlg.wxs" />
 		<Unit filename="wxsmith/LibrariesDlg.wxs" />
+		<Unit filename="wxsmith/ProjectMissingLibs.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
@@ -94,6 +103,8 @@
 					<wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" name="DefsDownloadDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" name="ProjectMissingLibs" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

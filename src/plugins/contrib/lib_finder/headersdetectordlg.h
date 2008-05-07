@@ -1,6 +1,8 @@
 #ifndef HEADERSDETECTORDLG_H
 #define HEADERSDETECTORDLG_H
 
+#include <wx/gauge.h>   // Fix MSW bug which forbids using fwd declaration for wxGauge
+
 //(*Headers(HeadersDetectorDlg)
 #include <wx/dialog.h>
 #include <wx/timer.h>

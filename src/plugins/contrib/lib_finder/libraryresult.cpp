@@ -2,6 +2,7 @@
 
 #include <manager.h>
 #include <configmanager.h>
+#include <logmanager.h>
 
 bool LibraryResult::operator == ( const LibraryResult& compareWith ) const
 {
@@ -95,4 +96,14 @@ void LibraryResult::SetGlobalVar() const
     cfg->Write(curr + _T("/obj"),     _ObjPath);
     cfg->Write(curr + _T("/cflags"),  _CFlags);
     cfg->Write(curr + _T("/lflags"),  _LFlags);
+}
+
+
+void LibraryResult::DebugDump(const wxString& Prefix)
+{
+    LogManager::Get()->DebugLog( Prefix + _T(" --- ") + ShortCode + _T(" ---") );
+    LogManager::Get()->DebugLog( Prefix + _T(" Name: ") + LibraryName );
+    LogManager::Get()->DebugLog( Prefix + _T(" Description: ") + Description );
+    LogManager::Get()->DebugLog( Prefix + _T(" BasePath: ") + BasePath );
+    LogManager::Get()->DebugLog( Prefix + _T(" Pkg-Config: ") + PkgConfigVar );
 }

@@ -35,9 +35,10 @@
 #include <wx/string.h>
 //*)
 
-#include "libraryconfigmanager.h"
+#include "librarydetectionmanager.h"
 #include "resultmap.h"
 #include "lib_finder.h"
+#include "libselectdlg.h"
 
 //(*IdInit(ProcessingDlg)
 const long ProcessingDlg::ID_STATICTEXT1 = wxNewId();
@@ -50,11 +51,10 @@ BEGIN_EVENT_TABLE(ProcessingDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryConfigManager& Manager,TypedResults& KnownResults,ResultMap& FoundResults,wxWindowID id):
+ProcessingDlg::ProcessingDlg(wxWindow* parent,LibraryDetectionManager& Manager,TypedResults& KnownResults,wxWindowID id):
     StopFlag(false),
     m_Manager(Manager),
-    m_KnownResults(KnownResults),
-    m_FoundResults(FoundResults)
+    m_KnownResults(KnownResults)
 {
 	//(*Initialize(ProcessingDlg)
 	Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("id"));
@@ -148,11 +148,128 @@ bool ProcessingDlg::ProcessLibs()
     for ( int i=0; i<m_Manager.GetLibraryCount(); ++i )
     {
         if ( StopFlag ) return false;
+        Gauge1->SetValue( i+1 );
         ProcessLibrary(m_Manager.GetLibrary(i));
     }
 
     return !StopFlag;
 }
+
+bool ProcessingDlg::ProcessLibs( const wxArrayString& Shortcuts )
+{
+    Gauge1->SetRange( Shortcuts.Count() );
+
+    for ( size_t i=0; i<Shortcuts.Count(); ++i )
+    {
+        if ( StopFlag ) return false;
+        Gauge1->SetValue( i+1 );
+        const LibraryConfig* cfg = m_Manager.GetLibrary( Shortcuts[i] );
+        if ( cfg ) ProcessLibrary( cfg );
+    }
+
+    return !StopFlag;
+}
+
+void ProcessingDlg::ApplyResults(bool addOnly)
+{
+    ResultArray Results;
+    m_FoundResults.GetAllResults(Results);
+    if ( Results.Count() == 0 )
+    {
+        cbMessageBox(_("Didn't found any library"));
+        return;
+    }
+
+    wxArrayString Names;
+    wxArrayInt Selected;
+    wxString PreviousVar;
+    for ( size_t i=0; i<Results.Count(); ++i )
+    {
+        wxString& Name =
+            Results[i]->Description.IsEmpty() ?
+            Results[i]->LibraryName :
+            Results[i]->Description;
+
+        Names.Add(
+            wxString::Format(_T("%s : %s"),
+                Results[i]->ShortCode.c_str(),
+                Name.c_str()));
+        if ( PreviousVar != Results[i]->ShortCode )
+        {
+            Selected.Add((int)i);
+            PreviousVar = Results[i]->ShortCode;
+        }
+    }
+
+    LibSelectDlg Dlg( this, Names, addOnly );
+    Dlg.SetSelections( Selected );
+
+    if ( Dlg.ShowModal() == wxID_OK )
+    {
+        // Fetch selected libraries
+        Selected = Dlg.GetSelections();
+
+        // Clear all results if requested
+        if ( Dlg.GetClearAllPrevious() )
+        {
+            m_KnownResults[rtDetected].Clear();
+        }
+
+        // Here we will store names of libraries set-up so far
+        // by checking entries we will be able to find out whether
+        // we have to clear previous settings
+        wxArrayString AddedLibraries;
+
+        for ( size_t i = 0; i<Selected.Count(); i++ )
+        {
+            wxString Library = Results[Selected[i]]->ShortCode;
+
+            if ( true )
+            {
+                // Here we set-up internal libraries configuration
+                if ( Dlg.GetClearSelectedPrevious() )
+                {
+                    if ( AddedLibraries.Index(Library)==wxNOT_FOUND )
+                    {
+                        // Ok, have to delete previosu results since this is the first
+                        // occurence of this library in new set
+                        ResultArray& Previous = m_KnownResults[rtDetected].GetShortCode(Library);
+                        for ( size_t j=0; j<Previous.Count(); j++ )
+                        {
+                            delete Previous[j];
+                        }
+                        Previous.Clear();
+                    }
+                    AddedLibraries.Add(Library);
+                }
+                else if ( Dlg.GetDontClearPrevious() )
+                {
+                    // Find and remove duplicates
+                    ResultArray& Previous = m_KnownResults[rtDetected].GetShortCode(Library);
+                    for ( size_t j=0; j<Previous.Count(); j++ )
+                    {
+                        if ( *Previous[j] == *Results[Selected[i]] )
+                        {
+                            delete Previous[j];
+                            Previous.RemoveAt(j--);
+                        }
+                    }
+                }
+
+                // Add the result
+                m_KnownResults[rtDetected].GetShortCode(Library).Add(new LibraryResult(*Results[Selected[i]]));
+            }
+
+            if ( Dlg.GetSetupGlobalVars() )
+            {
+                // Here we set-up global variables
+                Results[Selected[i]]->SetGlobalVar();
+            }
+        }
+    }
+}
+
+
 
 void ProcessingDlg::ProcessLibrary(const LibraryConfig* Config)
 {

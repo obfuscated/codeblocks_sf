@@ -90,6 +90,9 @@ class ResultMap
         /** \brief Copying operator */
         ResultMap& operator=(const ResultMap& source);
 
+        /** \brief Dumping content into debug output */
+        void DebugDump(const wxString& Name);
+
     private:
 
         void LoadPredefinedResultFromFile(const wxString& FileName);
