@@ -40,6 +40,7 @@
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>
 #include <wx/fontutil.h>
+#include <wx/tokenzr.h>
 
 #include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
@@ -50,6 +51,7 @@
 #include "filefilters.h"
 #include "searchresultslog.h"
 #include "projectfileoptionsdlg.h"
+#include "filegroupsandmasks.h"
 
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
@@ -1028,6 +1030,37 @@ bool EditorManager::SwapActiveHeaderSource()
             if (fname.FileExists())
                 break;
 
+// DrewBoo: See if the project manager knows of other extensions
+//   (This could also outright replace the hard-coded extensions above)
+// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
+// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+            ProjectManager *pm = Manager::Get()->GetProjectManager();
+            if ( !pm )
+                break;
+
+            FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+            if ( !fg )
+                break;
+
+            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+            {
+                if ( fg->GetGroupName(i) == _("Sources") )
+                {
+                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
+                    while ( tkz.HasMoreTokens() )
+                    {
+                        wxString token = tkz.GetNextToken();
+                        wxString ext;
+                        if ( token.StartsWith( _("*."), &ext ) )
+                        {
+                            fname.SetExt(ext);
+                            if (fname.FileExists())
+                                break;
+                        }
+                    }
+                    break;
+                }
+            }
         }
         else if (ft == ftSource)
         {
@@ -1043,6 +1076,38 @@ bool EditorManager::SwapActiveHeaderSource()
             fname.SetExt(FileFilters::HXX_EXT);
             if (fname.FileExists())
                 break;
+
+// DrewBoo: See if the project manager knows of other extensions
+//   (This could also outright replace the hard-coded extensions above)
+// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
+// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+            ProjectManager *pm = Manager::Get()->GetProjectManager();
+            if ( !pm )
+                break;
+
+            FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+            if ( !fg )
+                break;
+
+            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+            {
+                if ( fg->GetGroupName(i) == _("Headers") )
+                {
+                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
+                    while ( tkz.HasMoreTokens() )
+                    {
+                        wxString token = tkz.GetNextToken();
+                        wxString ext;
+                        if ( token.StartsWith( _("*."), &ext ) )
+                        {
+                            fname.SetExt(ext);
+                            if (fname.FileExists())
+                                break;
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
 

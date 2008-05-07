@@ -32,6 +32,7 @@
 #include <string>
 #include "filefilters.h"
 #include "tinyxml/tinywxuni.h"
+#include "filegroupsandmasks.h"
 
 #ifndef __WXMSW__
 	#include <unistd.h> // readlink
@@ -289,6 +290,29 @@ FileType FileTypeOf(const wxString& filename)
 
     else if (ext.IsSameAs(FileFilters::SCRIPT_EXT))
         return ftScript;
+
+    // DrewBoo: Before giving up, see if the ProjectManager
+    // considers this extension a source or header
+    // TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
+    // TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+    else
+    {
+        ProjectManager *pm = Manager::Get()->GetProjectManager();
+        if ( pm )
+        {
+            FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+            if ( fg )
+            {
+               for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+               {
+                    if ( fg->GetGroupName(i) == _T("Sources") && fg->MatchesMask( ext, i ) )
+                        return ftSource;
+                    if ( fg->GetGroupName(i) == _T("Headers") && fg->MatchesMask( ext, i ) )
+                        return ftHeader;
+               }
+            }
+        }
+    }
 
     return ftOther;
 }
