@@ -50,13 +50,13 @@ bool WebResourcesManager::LoadDetectionConfigurations(const wxArrayString& baseU
                 if ( !strcmp(doc.RootElement()->Value(),"libfinderlist") )
                 {
                     TiXmlElement* root = doc.RootElement();
-                    for ( TiXmlElement* lib = root->FirstChildElement("lib");
+                    for ( TiXmlElement* lib = root->FirstChildElement("library");
                           lib;
-                          lib = lib->NextSiblingElement("lib") )
+                          lib = lib->NextSiblingElement("library") )
                     {
-                        wxString ShortCode = wxString( lib->Attribute("shortcode"), wxConvUTF8 );
-                        wxString FileName  = wxString( lib->Attribute("filename"),  wxConvUTF8 );
-                        wxString DigiSign  = wxString( lib->Attribute("sign"),      wxConvUTF8 );
+                        wxString ShortCode = wxString( lib->Attribute("short_code"), wxConvUTF8 );
+                        wxString FileName  = wxString( lib->Attribute("file_name"),  wxConvUTF8 );
+                        wxString DigiSign  = wxString( lib->Attribute("sign"),       wxConvUTF8 );
                         if ( !ShortCode.IsEmpty() && !FileName.IsEmpty() )
                         {
                             DetectConfigurationEntry* entry = new DetectConfigurationEntry;
@@ -68,10 +68,11 @@ bool WebResourcesManager::LoadDetectionConfigurations(const wxArrayString& baseU
                             continue;
                         }
                     }
+
+                    continue;
                 }
             }
         }
-
         if ( handler ) handler->Error( _("Invalid data in libraries list in: ") + listUrl, handler->idDownloadList );
     }
 
