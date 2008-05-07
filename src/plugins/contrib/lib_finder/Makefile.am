@@ -32,8 +32,7 @@ liblib_finder_la_SOURCES = \
 		libselectdlg.cpp \
 		processingdlg.cpp \
 		defsdownloaddlg.cpp \
-		lib_finder.cpp \
-
+		lib_finder.cpp
 
 noinst_HEADERS = \
 		librariesdlg.h \
@@ -51,8 +50,7 @@ noinst_HEADERS = \
 		resultmap.h \
 		libraryconfig.h \
 		processingdlg.h \
-		projectconfigurationpanel.h \
-
+		projectconfigurationpanel.h
 
 EXTRA_DIST = 
 	lib_finder.cbp \
