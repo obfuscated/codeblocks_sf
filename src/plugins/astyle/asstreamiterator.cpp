@@ -91,4 +91,5 @@ std::string ASStreamIterator::peekNextLine()
 void ASStreamIterator::peekReset()
 {
     m_In = m_PeekStart;
+    m_PeekStart = 0;
 }
