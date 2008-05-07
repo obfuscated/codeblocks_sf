@@ -1024,6 +1024,10 @@ bool EditorManager::SwapActiveHeaderSource()
             fname.SetExt(FileFilters::CXX_EXT);
             if (fname.FileExists())
                 break;
+            fname.SetExt(FileFilters::INL_EXT);
+            if (fname.FileExists())
+                break;
+
         }
         else if (ft == ftSource)
         {

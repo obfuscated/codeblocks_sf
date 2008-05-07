@@ -204,6 +204,7 @@ namespace ScriptBindings
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::CC_EXT, "EXT_CC");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::CPP_EXT, "EXT_CPP");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::CXX_EXT, "EXT_CXX");
+        BIND_WXSTR_CONSTANT_NAMED(FileFilters::INL_EXT, "EXT_INL");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::H_EXT, "EXT_H");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::HH_EXT, "EXT_HH");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::HPP_EXT, "EXT_HPP");

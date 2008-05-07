@@ -34,6 +34,7 @@ const Associations::Assoc knownTypes[] =
     { FileFilters::CC_EXT,              _T("C++ source file"),               4 },
     { FileFilters::CPP_EXT,             _T("C++ source file"),               4 },
     { FileFilters::CXX_EXT,             _T("C++ source file"),               4 },
+    { FileFilters::INL_EXT,             _T("C++ source file"),               4 },
 
     { FileFilters::H_EXT,               _T("Header file"),                   5 },
     { FileFilters::HH_EXT,              _T("Header file"),                   5 },
