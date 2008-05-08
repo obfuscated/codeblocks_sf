@@ -9,12 +9,50 @@
 #include <cstdlib>
 #include <algorithm>
 #include <string>
+#include <sstream>
+#include <iomanip>
 
 using std::size_t;
 using std::find;
+using std::ostringstream;
+using std::setw;
+using std::right;
 
 namespace
 {
+  // Helper function to calculate the width of a number (ugly way)
+  inline int calcWidth(int num)
+  {
+    if (num < 0)
+    {
+      return 0;
+    }
+
+    int width = 1;
+
+    while ((num /= 10) != 0)
+    {
+      ++width;
+    }
+
+    return width;
+  }
+
+  // Helper function to convert i to a string
+  inline std::string to_string(int i, int width = 0)
+  {
+    ostringstream ostr;
+
+    if (width > 0)
+    {
+      ostr << setw(width) << right;
+    }
+
+    ostr << i;
+
+    return ostr.str();
+  }
+
   // Helper function to write text
   inline void PDFWriteText(wxPdfDocument &pdf, const wxString &text, bool fill)
   {
@@ -91,18 +129,32 @@ void PDFExporter::PDFGetStyles(const EditorColourSet *c_color_set, HighlightLang
   }
 }
 
-void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
+void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text, int lineCount)
 {
   const char *buffer = reinterpret_cast<char *>(styled_text.GetData());
   const size_t buffer_size = styled_text.GetDataLen();
   bool fill = false;
   int tabsize_in_spaces = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/tab_size"), 4);
+  int lineno = 1;
+  int width = calcWidth(lineCount);
+  std::string text;
 
   pdf.AddPage();
 
   if (buffer_size == 0)
   {
     return;
+  }
+
+  if (lineCount != -1)
+  {
+    pdf.SetFont(wxEmptyString);
+    pdf.SetTextColor(*wxBLACK);
+    text += to_string(lineno, width);
+    text += "  ";
+    PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), false);
+    text.clear();
+    ++lineno;
   }
 
   // Get the current style from the first character
@@ -146,8 +198,6 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
       }
     }
   }
-
-  std::string text;
 
   for (size_t i = 0; i < buffer_size; i += 2)
   {
@@ -212,6 +262,18 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
         PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
         text.clear();
         pdf.Ln();
+
+        if (lineCount != -1)
+        {
+          pdf.SetFont(wxEmptyString);
+          pdf.SetTextColor(*wxBLACK);
+          text += to_string(lineno, width);
+          text += "  ";
+          PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), false);
+          text.clear();
+          current_style = defStyleIdx;
+          ++lineno;
+        }
         break;
 
       case '\t':
@@ -227,14 +289,14 @@ void PDFExporter::PDFBody(wxPdfDocument &pdf, const wxMemoryBuffer &styled_text)
   PDFWriteText(pdf, wxString(text.c_str(), wxConvUTF8), fill);
 }
 
-void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set)
+void PDFExporter::Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount)
 {
   wxPdfDocument pdf;
   HighlightLanguage lang = const_cast<EditorColourSet *>(color_set)->GetLanguageForFilename(title);
 
   PDFSetFont(pdf);
   PDFGetStyles(color_set, lang);
-  PDFBody(pdf, styled_text);
+  PDFBody(pdf, styled_text, lineCount);
 
   pdf.SaveAsFile(filename);
 }

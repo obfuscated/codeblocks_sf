@@ -194,7 +194,15 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
 
   cbStyledTextCtrl* ed = cb->GetControl();
   wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
+
+  int lineCount = -1;
+
+  if (wxMessageBox(_("Would you like to have the line numbers printed in the exported file?"), _("Export line numbers"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION) == wxYES)
+  {
+    lineCount = cb->GetControl()->GetLineCount();
+  }
+
   EditorColourSet *ecs = cb->GetColourSet();
 
-  exp->Export(filename, cb->GetFilename(), mb, ecs);
+  exp->Export(filename, cb->GetFilename(), mb, ecs, lineCount);
 }

@@ -11,7 +11,7 @@ using std::string;
 class ODTExporter : public BaseExporter
 {
   public:
-    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set);
+    void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount);
 
   private:
     static const char *ODTManifestFile;
@@ -26,7 +26,7 @@ class ODTExporter : public BaseExporter
     static void ODTCreateDirectoryStructure(wxZipOutputStream &zout);
     static void ODTCreateCommonFiles(wxZipOutputStream &zout);
     static void ODTCreateStylesFile(wxZipOutputStream &zout, const EditorColourSet *color_set, HighlightLanguage lang);
-    static void ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBuffer &styled_text);
+    static void ODTCreateContentFile(wxZipOutputStream &zout, const wxMemoryBuffer &styled_text, int lineCount);
 };
 
 #endif // ODTEXPORTER_INCLUDED

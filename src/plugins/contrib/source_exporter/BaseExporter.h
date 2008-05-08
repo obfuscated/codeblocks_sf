@@ -10,7 +10,7 @@ class BaseExporter
 {
   public:
     virtual ~BaseExporter() = 0;
-    virtual void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set) = 0;
+    virtual void Export(const wxString &filename, const wxString &title, const wxMemoryBuffer &styled_text, const EditorColourSet *color_set, int lineCount) = 0;
 };
 
 #endif // BASEEXPORTER_INCLUDED
