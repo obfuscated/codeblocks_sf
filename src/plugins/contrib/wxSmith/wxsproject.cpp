@@ -375,3 +375,44 @@ void wxsProject::UpdateName()
 {
     wxsResourceTree::Get()->SetItemText(m_TreeItem,GetCBProject()->GetTitle());
 }
+
+bool wxsProject::RecoverWxsFile( const wxString& ResourceDescription )
+{
+    TiXmlDocument doc;
+    doc.Parse( ( _T("<") + ResourceDescription + _T(" />") ).mb_str( wxConvUTF8 ) );
+    if ( doc.Error() )
+    {
+        wxMessageBox( cbC2U( doc.ErrorDesc() ) + wxString::Format(_T(" in %d x %d"), doc.ErrorRow(), doc.ErrorCol() ) );
+        return false;
+    }
+    TiXmlElement* elem = doc.RootElement();
+    if ( !elem )
+    {
+        return false;
+    }
+
+    // Try to build resource of given type
+    wxString Type = cbC2U(elem->Value());
+    wxsResource* Res = wxsResourceFactory::Build(Type,this);
+    if ( !Res ) return false;
+
+    // Read settings
+    if ( !Res->ReadConfig( elem ) )
+    {
+        delete Res;
+        return false;
+    }
+
+    // Prevent duplicating resource names
+    if ( FindResource( Res->GetResourceName() ) )
+    {
+        delete Res;
+        return false;
+    }
+
+    // Finally add the resource
+    m_Resources.Add(Res);
+    Res->BuildTreeEntry(GetResourceTypeTreeId(Type));
+
+    return true;
+}

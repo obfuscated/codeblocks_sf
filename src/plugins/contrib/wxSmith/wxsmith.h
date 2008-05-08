@@ -77,6 +77,12 @@ class wxSmith : public cbPlugin
 		void OnAttach();
 		void OnRelease(bool appShutDown);
 
+		/** \brief Registering scripting stuff */
+		void RegisterScripting();
+
+		/** \brief unregistering scripting stuff */
+		void UnregisterScripting();
+
         /** \brief Getting wxsProject addition for given cbPrject */
         wxsProject* GetSmithProject(cbProject* Proj);
 
@@ -127,6 +133,9 @@ class wxSmith : public cbPlugin
 
         /** \brief Function Generating background panes for resource and property browsers */
         void BuildBrowserParents();
+
+        /** \brief Function allowing to recover invalid wxs file */
+        static bool RecoverWxsFile( const wxString& WxsResourceSettings );
 
         void OnViewBrowsers(wxCommandEvent& event);
         void OnViewResourceBrowser(wxCommandEvent& event);

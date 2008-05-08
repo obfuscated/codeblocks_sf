@@ -34,6 +34,8 @@
 #include "configmanager.h"
 #include <projectmanager.h>
 #include <logmanager.h>
+#include <sqplus.h>
+#include <sc_base_types.h>
 
 namespace
 {
@@ -70,7 +72,6 @@ namespace
     const int placementTwoPanes = 2;
 
     inline int GetBrowserPlacements() { return Manager::Get()->GetConfigManager(_T("wxsmith"))->ReadInt(_T("/browserplacements"),0); }
-
 }
 
 wxSmith* wxSmith::m_Singleton = 0;
@@ -116,6 +117,9 @@ void wxSmith::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectOpened));
 	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectClose));
 	Manager::Get()->RegisterEventSink(cbEVT_PROJECT_RENAMED, new cbEventFunctor<wxSmith, CodeBlocksEvent>(this, &wxSmith::OnProjectRenamed));
+
+	// register scripting stuff
+    RegisterScripting();
 }
 
 void wxSmith::BuildBrowserParents()
@@ -209,6 +213,8 @@ void wxSmith::BuildBrowsers()
 
 void wxSmith::OnRelease(bool appShutDown)
 {
+    UnregisterScripting();
+
     ProjectLoaderHooks::UnregisterHook(m_HookId,true);
     for ( ProjectMapI i = m_ProjectMap.begin(); i!=m_ProjectMap.end(); ++i )
     {
@@ -421,6 +427,40 @@ void wxSmith::ShowResourcesTab()
 {
     wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
     Notebook->SetSelection( Notebook->GetPageIndex(m_Splitter) );
+}
+
+void wxSmith::RegisterScripting()
+{
+    Manager::Get()->GetScriptingManager();
+    if ( SquirrelVM::GetVMPtr() )
+    {
+        SqPlus::RegisterGlobal( &wxSmith::RecoverWxsFile, "WxsRecoverWxsFile" );
+    }
+}
+
+void wxSmith::UnregisterScripting()
+{
+    Manager::Get()->GetScriptingManager();
+    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
+    if ( v )
+    {
+        sq_pushroottable(v);
+        sq_pushstring(v,"WxsRecoverWxsFile",-1);
+        sq_deleteslot(v,-2,false);
+        sq_poptop(v);
+    }
+}
+
+bool wxSmith::RecoverWxsFile( const wxString& WxsResourceSettings )
+{
+    wxSmith* This = wxSmith::Get();
+    if ( !This ) return false;
+    if ( !ProjectManager::Get()->GetActiveProject() ) return false;
+
+    wxsProject* project = This->GetSmithProject( ProjectManager::Get()->GetActiveProject() );
+    if ( !project ) return false;
+
+    return project->RecoverWxsFile( WxsResourceSettings );
 }
 
 // TODO: Move to resources\wxwidgets

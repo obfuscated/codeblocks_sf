@@ -122,6 +122,9 @@ class wxsProject
          */
         void UpdateName();
 
+        /** \brief Try to recover wxs file */
+        bool RecoverWxsFile( const wxString& ResourceDescription );
+
 	private:
 
         WX_DEFINE_ARRAY(wxsResource*,ResourcesT);

@@ -124,7 +124,10 @@ wxsResource::~wxsResource()
         EditorStore->Close();
     }
 
-    wxsTree()->Delete(m_TreeItemId);
+    if ( m_TreeItemId.IsOk() )
+    {
+        wxsTree()->Delete(m_TreeItemId);
+    }
 }
 
 void wxsResource::EditOpen()
