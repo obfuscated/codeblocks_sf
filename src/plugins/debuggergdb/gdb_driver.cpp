@@ -647,6 +647,8 @@ void GDB_driver::SwitchThread(size_t threadIndex)
 {
     ResetCursor();
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("thread %d"), threadIndex)));
+    if (m_pBacktrace)
+	    QueueCommand(new GdbCmd_Backtrace(this, m_pBacktrace));
 }
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
