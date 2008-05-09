@@ -15,6 +15,7 @@
 #include "classbrowserbuilderthread.h"
 
 class NativeParser;
+class wxComboBox;
 class wxTreeCtrl;
 class wxTextCtrl;
 class cbProject;
