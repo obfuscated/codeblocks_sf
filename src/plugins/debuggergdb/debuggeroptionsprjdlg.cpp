@@ -49,6 +49,7 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
 
     control = XRCCTRL(*this, "lstTargets", wxListBox);
     control->Clear();
+	control->Append(_("<Project>"));
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
         control->Append(project->GetBuildTarget(i)->GetTitle());
@@ -64,10 +65,11 @@ DebuggerOptionsProjectDlg::~DebuggerOptionsProjectDlg()
 
 void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
 {
-	m_LastTargetSel = XRCCTRL(*this, "lstTargets", wxListBox)->GetSelection();
+	// -1 because entry 0 is "<Project>"
+	m_LastTargetSel = XRCCTRL(*this, "lstTargets", wxListBox)->GetSelection() - 1;
 
 	ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_LastTargetSel);
-	if (bt && m_CurrentRemoteDebugging.find(bt) != m_CurrentRemoteDebugging.end())
+	if (m_CurrentRemoteDebugging.find(bt) != m_CurrentRemoteDebugging.end())
 	{
 		RemoteDebugging& rd = m_CurrentRemoteDebugging[bt];
 		XRCCTRL(*this, "cmbConnType", wxChoice)->SetSelection((int)rd.connType);
@@ -94,12 +96,12 @@ void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
 
 void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
 {
-	if (m_LastTargetSel == -1)
-		return;
+//	if (m_LastTargetSel == -1)
+//		return;
 
 	ProjectBuildTarget* bt = m_pProject->GetBuildTarget(m_LastTargetSel);
-	if (!bt)
-		return;
+//	if (!bt)
+//		return;
 
 	RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.find(bt);
 	if (it == m_CurrentRemoteDebugging.end())

@@ -676,7 +676,7 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 
                 TiXmlElement* rdOpt = rdElem->FirstChildElement("options");
 
-                if (bt && rdOpt)
+                if (rdOpt)
                 {
                     RemoteDebugging rd;
 
@@ -699,8 +699,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
 
                     rdprj.insert(rdprj.end(), std::make_pair(bt, rd));
                 }
-                else
-                    Manager::Get()->GetLogManager()->Log(_T("Unknown target in remote_debugging: ") + targetName, m_PageIndex, Logger::warning);
+//                else
+//                    Manager::Get()->GetLogManager()->Log(_T("Unknown target in remote_debugging: ") + targetName, m_PageIndex, Logger::warning);
 
                 rdElem = rdElem->NextSiblingElement("remote_debugging");
             }
@@ -733,9 +733,9 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
         {
             for (RemoteDebuggingMap::iterator it = rdprj.begin(); it != rdprj.end(); ++it)
             {
-                // valid targets only
-                if (!it->first)
-                    continue;
+//                // valid targets only
+//                if (!it->first)
+//                    continue;
 
                 RemoteDebugging& rd = it->second;
 
@@ -748,7 +748,8 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                 }
 
                 TiXmlElement* rdnode = node->InsertEndChild(TiXmlElement("remote_debugging"))->ToElement();
-                rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
+                if (it->first)
+					rdnode->SetAttribute("target", cbU2C(it->first->GetTitle()));
 
                 TiXmlElement* tgtnode = rdnode->InsertEndChild(TiXmlElement("options"))->ToElement();
                 tgtnode->SetAttribute("conn_type", (int)rd.connType);
@@ -1273,14 +1274,14 @@ int DebuggerGDB::DoDebug()
     else // m_PidToAttach != 0
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach);
 
-    RemoteDebugging* rd = 0;
     RemoteDebuggingMap& rdprj = GetRemoteDebuggingMap();
-    RemoteDebuggingMap::iterator it = rdprj.find(target);
+    RemoteDebugging rd = rdprj[0]; // project settings
+    RemoteDebuggingMap::iterator it = rdprj.find(target); // target settings
     if (it != rdprj.end())
-        rd = &it->second;
+		rd.MergeWith(it->second);
 
     wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
-    if (!rd || !rd->skipLDpath)
+    if (!rd.skipLDpath)
     {
         wxGetEnv(LIBRARY_ENVVAR, &oldLibPath);
 
@@ -1305,7 +1306,7 @@ int DebuggerGDB::DoDebug()
     DebugLog(_T("Working dir : ") + wdir);
     int ret = LaunchProcess(cmdline, wdir);
 
-    if (!rd || !rd->skipLDpath)
+    if (!rd.skipLDpath)
     {
         // restore dynamic linker path
         wxSetEnv(LIBRARY_ENVVAR, oldLibPath);

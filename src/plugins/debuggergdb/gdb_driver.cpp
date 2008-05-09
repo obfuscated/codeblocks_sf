@@ -343,15 +343,19 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 // remote debugging
 RemoteDebugging* GDB_driver::GetRemoteDebuggingInfo()
 {
-    if (!m_pTarget)
-        return 0;
+//    if (!m_pTarget)
+//        return 0;
 
+	// first, project-level (straight copy)
+    m_MergedRDInfo = m_pDBG->GetRemoteDebuggingMap()[0];
+
+	// then merge with target settings
     RemoteDebuggingMap::iterator it = m_pDBG->GetRemoteDebuggingMap().find(m_pTarget);
     if (it != m_pDBG->GetRemoteDebuggingMap().end())
     {
-        return &(it->second);
+        m_MergedRDInfo.MergeWith(it->second);
     }
-    return 0;
+    return &m_MergedRDInfo;
 }
 
 // Cygwin check code

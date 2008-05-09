@@ -1374,6 +1374,11 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 			// tcp:10.10.1.205:2345: Connection refused.
 			// (no gdb proxy/server running on the specified remote system ip/port)
 			//
+			// tcp:1111:222: Invalid argument.
+			//
+			// sdsdsds: unknown host
+			// tcp:sdsdsds:ddd: No such file or directory.
+			//
 			// Malformed response to offset query, *
 			// Ignoring packet error, continuing...
 			// (serial line errors)
@@ -1390,7 +1395,13 @@ class GdbCmd_RemoteTarget : public DebuggerCmd
 				errMsg << _("Connection refused by the remote system.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
 			else if (output.Contains(_T("Malformed response")) ||
 					output.Contains(_T("packet error")))
+			{
 				errMsg << _("Connection can't be established.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
+			}
+			else if (output.Contains(_T("Invalid argument")))
+				errMsg << _("Invalid argument.\nVerify your connection settings (probably some typo).");
+			else if (output.Contains(_T("unknown host")))
+				errMsg << _("Unknown host.\nVerify your connection settings (probably some typo).");
 
 			if (!errMsg.IsEmpty())
 			{

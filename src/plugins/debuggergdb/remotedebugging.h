@@ -23,11 +23,35 @@ struct RemoteDebugging
 
 	RemoteDebugging() : skipLDpath(false) {}
 	
-	bool IsOk()
+	bool IsOk() const
 	{
 		return connType == Serial
 				? (!serialPort.IsEmpty() && !serialBaud.IsEmpty())
 				: (!ip.IsEmpty() && !ipPort.IsEmpty());
+	}
+	
+	void MergeWith(const RemoteDebugging& other)
+	{
+		if (other.IsOk())
+		{
+			connType = other.connType;
+			serialPort = other.serialPort;
+			serialBaud = other.serialBaud;
+			ip = other.ip;
+			ipPort = other.ipPort;
+		}
+		
+		if (!additionalCmds.IsEmpty() && !other.additionalCmds.IsEmpty())
+			additionalCmds += _T('\n');
+		if (!other.additionalCmds.IsEmpty())
+			additionalCmds += other.additionalCmds;
+		
+		if (!additionalCmdsBefore.IsEmpty() && !other.additionalCmdsBefore.IsEmpty())
+			additionalCmdsBefore += _T('\n');
+		if (!other.additionalCmdsBefore.IsEmpty())
+			additionalCmdsBefore += other.additionalCmdsBefore;
+		
+		skipLDpath = other.skipLDpath;
 	}
 	
 	ConnectionType connType;

@@ -118,6 +118,9 @@ class GDB_driver : public DebuggerDriver
 
         // for remote debugging usage (mainly)
         ProjectBuildTarget* m_pTarget;
+        
+        // merged remote debugging (project-level + target-level)
+        RemoteDebugging m_MergedRDInfo;
 
 }; // GDB_driver
 
