@@ -20,6 +20,7 @@
     #include "manager.h"
     #include "configmanager.h" // ReadBool
     #include "filemanager.h"
+    #include "projectmanager.h"
 #endif
 
 #include "tinyxml/tinyxml.h"
