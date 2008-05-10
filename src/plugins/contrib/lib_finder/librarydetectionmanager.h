@@ -26,7 +26,7 @@
 
 #include <wx/dynarray.h>
 
-#include "libraryconfig.h"
+#include "librarydetectionconfig.h"
 #include "pkgconfigmanager.h"
 
 class wxArrayString;
@@ -54,10 +54,10 @@ class LibraryDetectionManager
         inline int GetLibraryCount() const { return (int)Libraries.Count(); }
 
         /** \brief Function returning configuration for one library */
-        const LibraryConfig* GetLibrary(int Index);
+        const LibraryDetectionConfigSet* GetLibrary(int Index);
 
         /** \brief Getting library settings by name */
-        const LibraryConfig* GetLibrary(const wxString& Shortcut);
+        const LibraryDetectionConfigSet* GetLibrary(const wxString& Shortcut);
 
         /** \brief Load search filters from configuration directories */
         bool LoadSearchFilters();
@@ -85,21 +85,22 @@ class LibraryDetectionManager
          *
          * \param Elem xml node
          * \param Config storage for configuration (data read from node will be appended to current configuration)
+         * \param ConfigSet current configurations set
          * \param Filters if true, load settings for filters
          * \param Settings if true, load library settings
          */
-        int LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool Filters=true,bool Settings=true);
+        int LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& Config,LibraryDetectionConfigSet* ConfigSet,bool Filters=true,bool Settings=true);
 
         /** \brief Test if configuration is valid */
-        bool CheckConfig(const LibraryConfig* Cfg) const;
+        bool CheckConfig(const LibraryDetectionConfig& Cfg) const;
 
         /** \brief Testing if there's library configuration in pkg-config database */
         bool IsPkgConfigEntry(const wxString& Name);
 
         /** \brief Adding configuration, if it's not valid it will be deleted */
-        bool AddConfig(LibraryConfig* Cfg);
+        bool AddConfig(LibraryDetectionConfig& Cfg, LibraryDetectionConfigSet* Set);
 
-        WX_DEFINE_ARRAY(LibraryConfig*,LCArray);
+        WX_DEFINE_ARRAY(LibraryDetectionConfigSet*,LCArray);
 
         LCArray Libraries;
         TypedResults& m_CurrentResults;

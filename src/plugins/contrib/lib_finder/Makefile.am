@@ -48,11 +48,11 @@ noinst_HEADERS = \
 		librarydetectionmanager.h \
 		pkgconfigmanager.h \
 		resultmap.h \
-		libraryconfig.h \
 		processingdlg.h \
+		librarydetectionconfig.h \
 		projectconfigurationpanel.h
 
-EXTRA_DIST = 
+EXTRA_DIST = \
 	lib_finder.cbp \
 	lib_finder-unix.cbp \
 	update \

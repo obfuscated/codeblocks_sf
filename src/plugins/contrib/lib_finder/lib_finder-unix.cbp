@@ -65,7 +65,7 @@
 		<Unit filename="lib_finder/wxwidgets.xml" />
 		<Unit filename="librariesdlg.cpp" />
 		<Unit filename="librariesdlg.h" />
-		<Unit filename="libraryconfig.h" />
+		<Unit filename="librarydetectionconfig.h" />
 		<Unit filename="librarydetectionmanager.cpp" />
 		<Unit filename="librarydetectionmanager.h" />
 		<Unit filename="libraryresult.cpp" />

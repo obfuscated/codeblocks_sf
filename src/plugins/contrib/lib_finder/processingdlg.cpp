@@ -143,13 +143,25 @@ void ProcessingDlg::ReadDir(const wxString& DirName)
 
 bool ProcessingDlg::ProcessLibs()
 {
-    Gauge1->SetRange(m_Manager.GetLibraryCount());
-
+    int TotalCount = 0;
     for ( int i=0; i<m_Manager.GetLibraryCount(); ++i )
     {
-        if ( StopFlag ) return false;
-        Gauge1->SetValue( i+1 );
-        ProcessLibrary(m_Manager.GetLibrary(i));
+        TotalCount += (int)m_Manager.GetLibrary(i)->Configurations.size();
+    }
+
+    Gauge1->SetRange( TotalCount );
+
+    int progress = 1;
+    for ( int i=0; i<m_Manager.GetLibraryCount(); ++i )
+    {
+        const LibraryDetectionConfigSet* Set = m_Manager.GetLibrary(i);
+        for ( size_t j=0; j<Set->Configurations.size(); ++j )
+        {
+            if ( StopFlag ) return false;
+            Gauge1->SetValue( progress++ );
+
+            ProcessLibrary( &Set->Configurations[j], Set );
+        }
     }
 
     return !StopFlag;
@@ -157,14 +169,31 @@ bool ProcessingDlg::ProcessLibs()
 
 bool ProcessingDlg::ProcessLibs( const wxArrayString& Shortcuts )
 {
-    Gauge1->SetRange( Shortcuts.Count() );
+    int TotalCount = 0;
+    for ( int i=0; i<m_Manager.GetLibraryCount(); ++i )
+    {
+        if ( const LibraryDetectionConfigSet* Set = m_Manager.GetLibrary( Shortcuts[i] ) )
+        {
+            TotalCount += (int)Set->Configurations.size();
+        }
+    }
+    Gauge1->SetRange( TotalCount );
 
+    int progress = 1;
     for ( size_t i=0; i<Shortcuts.Count(); ++i )
     {
         if ( StopFlag ) return false;
-        Gauge1->SetValue( i+1 );
-        const LibraryConfig* cfg = m_Manager.GetLibrary( Shortcuts[i] );
-        if ( cfg ) ProcessLibrary( cfg );
+        Gauge1->SetValue( progress++ );
+        if ( const LibraryDetectionConfigSet* Set = m_Manager.GetLibrary( Shortcuts[i] ) )
+        {
+            for ( size_t j=0; j<Set->Configurations.size(); ++j )
+            {
+                if ( StopFlag ) return false;
+                Gauge1->SetValue( progress++ );
+
+                ProcessLibrary( &Set->Configurations[j], Set );
+            }
+        }
     }
 
     return !StopFlag;
@@ -270,35 +299,35 @@ void ProcessingDlg::ApplyResults(bool addOnly)
 }
 
 
-
-void ProcessingDlg::ProcessLibrary(const LibraryConfig* Config)
+void ProcessingDlg::ProcessLibrary(const LibraryDetectionConfig* Config,const LibraryDetectionConfigSet* Set)
 {
     Status->SetLabel(
         wxString::Format(
             _("Searching library \"%s\""),
-            Config->ShortCode.c_str()));
+            Set->ShortCode.c_str()));
 
-    CheckFilter(_T(""),wxStringStringMap(),wxArrayString(),Config,0);
+    CheckFilter(_T(""),wxStringStringMap(),wxArrayString(),Config,Set,0);
 }
 
 void ProcessingDlg::CheckFilter(
     const wxString& OldBasePath,
     const wxStringStringMap& OldVars,
     const wxArrayString& OldCompilers,
-    const LibraryConfig* Config,
+    const LibraryDetectionConfig* Config,
+    const LibraryDetectionConfigSet* Set,
     int WhichFilter)
 {
     if ( (int)Config->Filters.size() <= WhichFilter )
     {
-        FoundLibrary(OldBasePath,OldVars,OldCompilers,Config);
+        FoundLibrary(OldBasePath,OldVars,OldCompilers,Config,Set);
         return;
     }
 
-    const LibraryFilter& Filter = Config->Filters[WhichFilter];
+    const LibraryDetectionFilter& Filter = Config->Filters[WhichFilter];
 
     switch ( Filter.Type )
     {
-        case LibraryFilter::File:
+        case LibraryDetectionFilter::File:
         {
             // Split path
             wxArrayString Pattern;
@@ -359,12 +388,12 @@ void ProcessingDlg::CheckFilter(
                 }
 
                 // Ok, this filter matches, let's advance to next filet
-                CheckFilter(BasePath,Vars,OldCompilers,Config,WhichFilter+1);
+                CheckFilter(BasePath,Vars,OldCompilers,Config,Set,WhichFilter+1);
             }
             break;
         }
 
-        case LibraryFilter::Platform:
+        case LibraryDetectionFilter::Platform:
         {
             wxStringTokenizer Tokenizer(Filter.Value,_T("| \t"));
             bool IsPlatform = false;
@@ -456,12 +485,12 @@ void ProcessingDlg::CheckFilter(
 
             if ( IsPlatform )
             {
-                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,WhichFilter+1);
+                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
             }
             break;
         }
 
-        case LibraryFilter::Exec:
+        case LibraryDetectionFilter::Exec:
         {
             bool IsExec = false;
             if ( wxIsAbsolutePath(Filter.Value) )
@@ -497,26 +526,26 @@ void ProcessingDlg::CheckFilter(
 
             if ( IsExec )
             {
-                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,WhichFilter+1);
+                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
             }
             break;
         }
 
-        case LibraryFilter::PkgConfig:
+        case LibraryDetectionFilter::PkgConfig:
         {
             if ( m_KnownResults[rtPkgConfig].IsShortCode(Filter.Value) )
             {
-                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,WhichFilter+1);
+                CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
             }
             break;
         }
 
-        case LibraryFilter::Compiler:
+        case LibraryDetectionFilter::Compiler:
         {
             if ( OldCompilers.IsEmpty() )
             {
                 // If this is the first compiler filter, let's build new list and continue
-                CheckFilter(OldBasePath,OldVars,wxStringTokenize(Filter.Value,_T("| \t")),Config,WhichFilter+1);
+                CheckFilter(OldBasePath,OldVars,wxStringTokenize(Filter.Value,_T("| \t")),Config,Set,WhichFilter+1);
             }
             else
             {
@@ -535,15 +564,15 @@ void ProcessingDlg::CheckFilter(
 
                 if ( !Compilers.IsEmpty() )
                 {
-                    CheckFilter(OldBasePath,OldVars,Compilers,Config,WhichFilter+1);
+                    CheckFilter(OldBasePath,OldVars,Compilers,Config,Set,WhichFilter+1);
                 }
             }
             break;
         }
 
-        case LibraryFilter::None:
+        case LibraryDetectionFilter::None:
         {
-            CheckFilter(OldBasePath,OldVars,OldCompilers,Config,WhichFilter+1);
+            CheckFilter(OldBasePath,OldVars,OldCompilers,Config,Set,WhichFilter+1);
             break;
         }
     }
@@ -565,7 +594,7 @@ bool ProcessingDlg::IsVariable(const wxString& NamePart) const
     return true;
 }
 
-void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStringMap& OldVars,const wxArrayString& Compilers,const LibraryConfig* Config)
+void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStringMap& OldVars,const wxArrayString& Compilers,const LibraryDetectionConfig* Config,const LibraryDetectionConfigSet* Set)
 {
     wxStringStringMap Vars = OldVars;
     wxString BasePath = OldBasePath;
@@ -575,14 +604,14 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
     LibraryResult* Result = new LibraryResult();
 
     Result->Type = rtDetected;
-    Result->ShortCode = Config->ShortCode;
-    Result->LibraryName = FixVars(Config->LibraryName,Vars);
+    Result->ShortCode = Set->ShortCode;
+    Result->LibraryName = FixVars(Set->LibraryName,Vars);
     Result->BasePath = FixPath(BasePath);
     Result->PkgConfigVar = Config->PkgConfigVar;
     Result->Description = FixVars(Config->Description,Vars);
 
     Result->Compilers = Compilers;
-    Result->Categories = Config->Categories;
+    Result->Categories = Set->Categories;
 
     for ( size_t i=0; i<Config->IncludePaths.Count(); i++ )
     {
@@ -621,7 +650,7 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
 
     Result->Headers = Config->Headers;
 
-    ResultArray& Array = m_FoundResults.GetShortCode(Config->ShortCode);
+    ResultArray& Array = m_FoundResults.GetShortCode(Set->ShortCode);
     Array.Add(Result);
 }
 

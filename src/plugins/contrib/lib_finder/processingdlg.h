@@ -36,7 +36,7 @@
 #include <wx/gauge.h>
 //*)
 
-#include "libraryconfig.h"
+#include "librarydetectionconfig.h"
 #include "librarydetectionmanager.h"
 #include "resultmap.h"
 #include "pkgconfigmanager.h"
@@ -82,11 +82,11 @@ class ProcessingDlg: public wxDialog
 	private:
 
         void ReadDir(const wxString& DirName);
-        void ProcessLibrary(const LibraryConfig* Config);
+        void ProcessLibrary(const LibraryDetectionConfig* Config, const LibraryDetectionConfigSet* Set);
         void SplitPath(const wxString& FileName,wxArrayString& Split);
         bool IsVariable(const wxString& NamePart) const;
-        void CheckFilter(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryConfig *Config,int WhichFilter);
-        void FoundLibrary(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryConfig *Config);
+        void CheckFilter(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryDetectionConfig *Config,const LibraryDetectionConfigSet* Set,int WhichFilter);
+        void FoundLibrary(const wxString& BasePath,const wxStringStringMap& Vars,const wxArrayString& CompilerList,const LibraryDetectionConfig *Config,const LibraryDetectionConfigSet* Set);
         wxString FixVars(wxString Original,const wxStringStringMap& Vars);
         wxString FixPath(wxString Original);
 

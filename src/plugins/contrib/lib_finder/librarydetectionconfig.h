@@ -29,7 +29,7 @@
 #include <vector>
 
 /** \brief Requirement which must be meet for this library to be detected */
-struct LibraryFilter
+struct LibraryDetectionFilter
 {
     enum FilterType
     {
@@ -49,25 +49,16 @@ struct LibraryFilter
 };
 
 /** \brief Configuration of the library */
-struct LibraryConfig
+struct LibraryDetectionConfig
 {
-    /** \brief Name of library, may use internal variables in form $(VAR_NAME) */
-    wxString LibraryName;
-
-    /** \brief ShortCode for this library (used as global var) */
-    wxString ShortCode;
-
     /** \brief Description of the library */
     wxString Description;
-
-    /** \brief Category list */
-    wxArrayString Categories;
 
     /** \brief Pkg-Config variable name */
     wxString PkgConfigVar;
 
     /** \brief Set of filters required by the library */
-    std::vector<LibraryFilter> Filters;
+    std::vector<LibraryDetectionFilter> Filters;
 
     /** \brief Set of include directories. If more than one is provided,
      *  first one will be set in global var, other will be added through
@@ -111,6 +102,25 @@ struct LibraryConfig
 
     /** \brief List of headers used by this library */
     wxArrayString Headers;
+};
+
+/** \brief Structure containing set of detection configurations for given library */
+struct LibraryDetectionConfigSet
+{
+    /** \brief Library's shortcode */
+    wxString ShortCode;
+
+    /** \brief Name of library, may use internal variables in form $(VAR_NAME) */
+    wxString LibraryName;
+
+    /** \brief Category list */
+    wxArrayString Categories;
+
+    /** \brief Version of detection settings */
+    int Version;
+
+    /** \brief Detection settings */
+    std::vector< LibraryDetectionConfig > Configurations;
 };
 
 #endif

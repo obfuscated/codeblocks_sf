@@ -22,6 +22,7 @@
 */
 
 #include <tinyxml/tinyxml.h>
+#include <tinyxml/tinywxuni.h>
 
 #include <wx/arrstr.h>
 #include <wx/dir.h>
@@ -82,10 +83,7 @@ int LibraryDetectionManager::LoadXmlConfig(const wxString& Path)
 int LibraryDetectionManager::LoadXmlFile(const wxString& Name)
 {
     TiXmlDocument Doc;
-
-    // TODO: Use built-in loader
-    if ( !Doc.LoadFile( Name.mb_str() ) ) return 0;
-
+    if ( !TinyXML::LoadDocument( Name, &Doc ) || Doc.Error() ) return 0;
     return LoadXmlDoc( Doc );
 }
 
@@ -96,12 +94,57 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
           Elem;
           Elem = Elem->NextSiblingElement("library") )
     {
-        LibraryConfig Initial;
+        // Load the version of this set
+        int version = 0;
+        if ( Elem->QueryIntAttribute( "version", &version ) != TIXML_SUCCESS )
+        {
+            version = 0;
+        }
 
-        // Read global var name and library name
-        Initial.ShortCode = wxString(Elem->Attribute("short_code"),wxConvUTF8);
-        if ( Initial.ShortCode.empty() ) continue;
-        Initial.LibraryName = wxString(Elem->Attribute("name"),wxConvUTF8);
+        // Load shortcode
+        wxString ShortCode = wxString(Elem->Attribute("short_code"),wxConvUTF8);
+        if ( ShortCode.IsEmpty() )
+        {
+            continue;
+        }
+
+        // Load name
+        wxString Name = wxString( Elem->Attribute("name"), wxConvUTF8 );
+        if ( Name.IsEmpty() )
+        {
+            continue;
+        }
+
+        // Check if we already have setting of this library
+        // I'm to lazy to firbid const_cast here ;)
+        LibraryDetectionConfigSet* OldSet = const_cast< LibraryDetectionConfigSet* > ( GetLibrary( ShortCode ) );
+        LibraryDetectionConfigSet* NewSet = 0;
+
+        if ( OldSet )
+        {
+            // There are detection settings yet, we override only when there's newer
+            // or same version already
+            if ( OldSet->Version > version )
+            {
+                // We do not upgrade
+                continue;
+            }
+
+            OldSet->Categories.Clear();
+            OldSet->Configurations.clear();
+            OldSet->LibraryName.Clear();
+            NewSet = OldSet;
+        }
+        else
+        {
+            NewSet = new LibraryDetectionConfigSet;
+            Libraries.Add( NewSet );
+        }
+
+        // Setup configuration set
+        NewSet->ShortCode = ShortCode;
+        NewSet->Version = version;
+        NewSet->LibraryName = Name;
 
         // Read categories of library
         for ( TiXmlAttribute* attr = Elem->FirstAttribute();
@@ -111,33 +154,34 @@ int LibraryDetectionManager::LoadXmlDoc( TiXmlDocument& Doc )
 //            if ( !strncasecmp(attr->Name(),"category",8) )
             if ( !strncmp(attr->Name(),"category",8) )
             {
-                Initial.Categories.Add(wxString(attr->Value(),wxConvUTF8));
+                NewSet->Categories.Add( wxString( attr->Value(),wxConvUTF8 ) );
             }
         }
 
         // Check if there's corresponding pkg-config entry
-        if ( IsPkgConfigEntry(Initial.ShortCode) )
+        if ( IsPkgConfigEntry(ShortCode) )
         {
-            LibraryConfig* Config = new LibraryConfig(Initial);
-            Config->PkgConfigVar = Initial.ShortCode;
-            Config->Description = Config->LibraryName + _T(" (pkg-config)");
-            LibraryFilter Filter;
-            Filter.Type = LibraryFilter::PkgConfig;
-            Filter.Value = Initial.ShortCode;
-            Config->Filters.push_back(Filter);
-            loaded += AddConfig(Config) ? 1 : 0;
+            LibraryDetectionConfig Config;
+            Config.PkgConfigVar = ShortCode;
+            Config.Description = NewSet->LibraryName + _T(" (pkg-config)");
+            LibraryDetectionFilter Filter;
+            Filter.Type = LibraryDetectionFilter::PkgConfig;
+            Filter.Value = ShortCode;
+            Config.Filters.push_back(Filter);
+            loaded += AddConfig(Config,NewSet) ? 1 : 0;
         }
 
-        // Load base configuration of library
-        loaded += LoadXml(Elem,new LibraryConfig(Initial));
+        // Load libraries
+        LibraryDetectionConfig Initial;
+        loaded += LoadXml( Elem, Initial, NewSet );
     }
     return loaded;
 }
 
-int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bool Filters,bool Settings)
+int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& Config,LibraryDetectionConfigSet* ConfigSet,bool Filters,bool Settings)
 {
     wxString Description = wxString(Elem->Attribute("description"),wxConvUTF8);
-    if ( !Description.empty() ) Config->Description = Description;
+    if ( !Description.empty() ) Config.Description = Description;
 
     int loaded = 0;
     for ( TiXmlElement* Data = Elem->FirstChildElement();
@@ -151,24 +195,24 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bo
             // Load subnodes
             if ( Node == _T("filters") )
             {
-                loaded += LoadXml(Data,Config,true,false);
+                loaded += LoadXml(Data,Config,ConfigSet,true,false);
                 continue;
             }
 
             if ( Node == _T("settings") )
             {
-                loaded += LoadXml(Data,Config,false,true);
+                loaded += LoadXml(Data,Config,ConfigSet,false,true);
                 continue;
             }
 
             // pkgconfig does define both filter and setting
             if ( Node == _T("pkgconfig") )
             {
-                Config->PkgConfigVar = wxString(Data->Attribute("name"),wxConvUTF8);
-                LibraryFilter Filter;
-                Filter.Type = LibraryFilter::PkgConfig;
-                Filter.Value = Config->PkgConfigVar;
-                Config->Filters.push_back(Filter);
+                Config.PkgConfigVar = wxString(Data->Attribute("name"),wxConvUTF8);
+                LibraryDetectionFilter Filter;
+                Filter.Type = LibraryDetectionFilter::PkgConfig;
+                Filter.Value = Config.PkgConfigVar;
+                Config.Filters.push_back(Filter);
                 continue;
             }
         }
@@ -176,21 +220,21 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bo
         if ( Filters )
         {
             // Load filter
-            LibraryFilter::FilterType Type = LibraryFilter::None;
+            LibraryDetectionFilter::FilterType Type = LibraryDetectionFilter::None;
 
-            if ( Node == _T("platform") ) Type = LibraryFilter::Platform; else
-            if ( Node == _T("file") )     Type = LibraryFilter::File;     else
-            if ( Node == _T("exec") )     Type = LibraryFilter::Exec;     else
-            if ( Node == _T("compiler") ) Type = LibraryFilter::Compiler;
+            if ( Node == _T("platform") ) Type = LibraryDetectionFilter::Platform; else
+            if ( Node == _T("file") )     Type = LibraryDetectionFilter::File;     else
+            if ( Node == _T("exec") )     Type = LibraryDetectionFilter::Exec;     else
+            if ( Node == _T("compiler") ) Type = LibraryDetectionFilter::Compiler;
 
-            if ( Type != LibraryFilter::None )
+            if ( Type != LibraryDetectionFilter::None )
             {
-                LibraryFilter Filter;
+                LibraryDetectionFilter Filter;
                 Filter.Type = Type;
                 Filter.Value = wxString(Data->Attribute("name"),wxConvUTF8);
                 if ( !Filter.Value.IsEmpty() )
                 {
-                    Config->Filters.push_back(Filter);
+                    Config.Filters.push_back(Filter);
                 }
                 continue;
             }
@@ -204,9 +248,9 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bo
                 wxString Include = wxString(Data->Attribute("include"),wxConvUTF8);
                 wxString Lib = wxString(Data->Attribute("lib"),wxConvUTF8);
                 wxString Obj = wxString(Data->Attribute("obj"),wxConvUTF8);
-                if ( !Include.empty() ) Config->IncludePaths.Add(Include);
-                if ( !Lib.empty()     ) Config->LibPaths.Add(Lib);
-                if ( !Obj.empty()     ) Config->ObjPaths.Add(Obj);
+                if ( !Include.empty() ) Config.IncludePaths.Add(Include);
+                if ( !Lib.empty()     ) Config.LibPaths.Add(Lib);
+                if ( !Obj.empty()     ) Config.ObjPaths.Add(Obj);
                 continue;
             }
 
@@ -214,8 +258,8 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bo
             {
                 wxString cFlags = wxString(Data->Attribute("cflags"),wxConvUTF8);
                 wxString lFlags = wxString(Data->Attribute("lflags"),wxConvUTF8);
-                if ( !cFlags.empty() ) Config->CFlags.Add(cFlags);
-                if ( !lFlags.empty() ) Config->LFlags.Add(lFlags);
+                if ( !cFlags.empty() ) Config.CFlags.Add(cFlags);
+                if ( !lFlags.empty() ) Config.LFlags.Add(lFlags);
                 continue;
             }
 
@@ -225,16 +269,16 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bo
                 wxString lFlags = wxString(Data->Attribute("lflags"),wxConvUTF8);
                 wxString Lib    = wxString(Data->Attribute("lib")   ,wxConvUTF8);
                 wxString Define = wxString(Data->Attribute("define"),wxConvUTF8);
-                if ( !cFlags.empty() ) Config->CFlags.Add(cFlags);
-                if ( !lFlags.empty() ) Config->LFlags.Add(lFlags);
-                if ( !Lib.empty()    ) Config->Libs.Add(Lib);
-                if ( !Define.empty() ) Config->Defines.Add(Define);
+                if ( !cFlags.empty() ) Config.CFlags.Add(cFlags);
+                if ( !lFlags.empty() ) Config.LFlags.Add(lFlags);
+                if ( !Lib.empty()    ) Config.Libs.Add(Lib);
+                if ( !Define.empty() ) Config.Defines.Add(Define);
             }
 
             if ( Node==_T("header") )
             {
                 wxString file = wxString(Data->Attribute("file"),wxConvUTF8);
-                if ( !file.empty() ) Config->Headers.Add(file);
+                if ( !file.empty() ) Config.Headers.Add(file);
             }
         }
     }
@@ -249,37 +293,33 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryConfig* Config,bo
             for ( ;Cfg; Cfg = Cfg->NextSiblingElement("config") )
             {
                 // Append sub-configuration data
-                loaded += LoadXml(Cfg,new LibraryConfig(*Config));
+                LibraryDetectionConfig Copy(Config);
+                loaded += LoadXml(Cfg,Copy,ConfigSet);
             }
-
-            // Config won't be added anywhere so we have to delete it here
-            delete Config;
         }
         else
         {
             // No sub-config entry, so let's add this one
-            loaded += AddConfig(Config) ? 1 : 0;
+            loaded += AddConfig(Config,ConfigSet) ? 1 : 0;
         }
     }
     return loaded;
 }
 
-bool LibraryDetectionManager::CheckConfig(const LibraryConfig* Cfg) const
+bool LibraryDetectionManager::CheckConfig(const LibraryDetectionConfig& Cfg) const
 {
-    if ( Cfg->LibraryName.empty() ) return false;
-    if ( Cfg->ShortCode.empty()   ) return false;
-    if ( Cfg->Filters.empty()     ) return false;
+    if ( Cfg.Filters.empty() ) return false;
     return true;
 }
 
-const LibraryConfig* LibraryDetectionManager::GetLibrary(int Index)
+const LibraryDetectionConfigSet* LibraryDetectionManager::GetLibrary(int Index)
 {
     if ( Index < 0 ) return NULL;
     if ( Index >= GetLibraryCount() ) return NULL;
     return Libraries[Index];
 }
 
-const LibraryConfig* LibraryDetectionManager::GetLibrary(const wxString& ShortCode)
+const LibraryDetectionConfigSet* LibraryDetectionManager::GetLibrary(const wxString& ShortCode)
 {
     for ( int i=0; i<GetLibraryCount(); i++ )
     {
@@ -296,18 +336,14 @@ bool LibraryDetectionManager::IsPkgConfigEntry(const wxString& Name)
     return m_CurrentResults[rtPkgConfig].IsShortCode(Name);
 }
 
-bool LibraryDetectionManager::AddConfig(LibraryConfig* Cfg)
+bool LibraryDetectionManager::AddConfig(LibraryDetectionConfig& Cfg,LibraryDetectionConfigSet* Set)
 {
     if ( CheckConfig(Cfg) )
     {
-        Libraries.push_back(Cfg);
+        Set->Configurations.push_back(Cfg);
         return true;
     }
-    else
-    {
-        delete Cfg;
-        return false;
-    }
+    return false;
 }
 
 bool LibraryDetectionManager::LoadSearchFilters()
