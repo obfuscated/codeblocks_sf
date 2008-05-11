@@ -159,7 +159,7 @@ doInstall:
             Abort
 accessOK:
         SetOverwrite on
-        File ${WX_BASE}\wxmsw28u_gcc_custom.dll
+        File ${WX_BASE}\wxmsw28u_gcc_cb.dll
         File ${CB_BASE}\cb_console_runner.exe
         File ${CB_BASE}\codeblocks.dll
         File ${CB_BASE}\codeblocks.exe
