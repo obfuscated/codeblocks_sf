@@ -28,9 +28,9 @@ Name CodeBlocks
 !define COMPANY          "The Code::Blocks Team"
 !define URL              http://www.codeblocks.org
 # Possibly required to adjust manually:
-!define WX_BASE          C:\wxMSW-2.8.7\lib\gcc_dll
+!define WX_BASE          D:\Devel\wxWidgets\lib\gcc_dll
 # Possibly required to adjust manually:
-!define CB_BASE          C:\CodeBlocks\src\output
+!define CB_BASE          D:\Devel\CodeBlocks
 !define CB_SHARE         \share
 !define CB_SHARE_CB      ${CB_SHARE}\CodeBlocks
 !define CB_DOCS          ${CB_SHARE_CB}\docs
@@ -43,8 +43,8 @@ Name CodeBlocks
 !define CB_IMG_16        ${CB_IMAGES}\16x16
 !define CB_IMG_SETTINGS  ${CB_IMAGES}\settings
 # Possibly required to adjust manually:
-!define CB_ADDONS        ${CB_BASE}\..\installer
-!define CB_DOCS_SRC      ${CB_BASE}\..\installer
+!define CB_ADDONS        ${CB_BASE}\src\setup
+!define CB_DOCS_SRC      ${CB_BASE}\src\setup
 !ifdef MINGW_BUNDLE
 # Possibly required to adjust manually:
 !define MINGW_BASE       D:\Devel\CodeBlocks_Devel\src\setup\MinGW
@@ -159,7 +159,7 @@ doInstall:
             Abort
 accessOK:
         SetOverwrite on
-        File ${WX_BASE}\wxmsw28u_gcc_cb.dll
+        File ${WX_BASE}\wxmsw28u_gcc_custom.dll
         File ${CB_BASE}\cb_console_runner.exe
         File ${CB_BASE}\codeblocks.dll
         File ${CB_BASE}\codeblocks.exe
