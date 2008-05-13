@@ -1376,6 +1376,13 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     if (!control || !data)
         return -1;
 
+    if (control->GetReadOnly())
+    {
+        cbMessageBox(_("This file is read-only.\nReplacing in a read-only file is not possible."),
+                     _("Warning"), wxICON_EXCLAMATION);
+        return -1;
+    }
+
     bool AdvRegex=false;
     int replacecount=0;
     int foundcount=0;
@@ -1727,6 +1734,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
     // keep a copy of the find struct
     cbFindReplaceData dataCopy = *data;
 
+    int read_only_files_skipped = 0;
     for (int i = 0; i<filesCount && !stop; ++i)
     {
         cbEditor *ed = NULL;
@@ -1773,6 +1781,10 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         }
         //Still NULL?
         if (!control || !ed)
+            continue;
+
+        if (control->GetReadOnly())
+            read_only_files_skipped++;
             continue;
 
         SetActiveEditor(ed);
@@ -1885,7 +1897,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                         stop = true;
                         break;
                 }
-            }
+            }// if
 
             if (!stop)
             {
@@ -1932,8 +1944,8 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                     else
                         data->start -= lengthFound;
                 }
-            }
-        }
+            }// if
+        }// while
 
         control->EndUndoAction(); // undo
 
@@ -1941,6 +1953,13 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         //close the editor
         if (!ed->GetModified() && fileWasNotOpen)
             Close(ed, true);
+    }// for
+
+    if (read_only_files_skipped)
+    {
+        wxString msg;
+        msg.Printf(_("Skipped %d read-only file(s)."), read_only_files_skipped);
+        InfoWindow::Display(_("Warning"), msg);
     }
 
     // if we showed the progress, the app window is frozen; unfreeze it
