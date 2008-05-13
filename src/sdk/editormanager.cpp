@@ -20,6 +20,7 @@
     #include "editormanager.h" // class's header file
     #include "configmanager.h"
     #include <wx/xrc/xmlres.h>
+    #include "infowindow.h"
     #include "logmanager.h"
     #include "projectmanager.h"
     #include "projectfile.h"
