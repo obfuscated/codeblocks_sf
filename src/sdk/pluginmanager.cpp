@@ -191,8 +191,8 @@ bool PluginManager::AttachPlugin(cbPlugin* plugin, bool ignoreSafeMode)
     if (plugin->IsAttached())
         return true;
 
-	if (!s_SafeMode || ignoreSafeMode)
-		plugin->Attach();
+    if (!s_SafeMode || ignoreSafeMode)
+        plugin->Attach();
     return true;
 }
 
@@ -736,7 +736,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
         {
-            Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + fname.GetFullName());
+            Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + actual);
             return false; // not found
         }
 
@@ -767,16 +767,25 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         // actually load XML document
         m_pCurrentlyLoadingManifestDoc = new TiXmlDocument;
         if (!m_pCurrentlyLoadingManifestDoc->Parse(cbU2C(contents)))
+        {
+            Manager::Get()->GetLogManager()->LogError(_T("Plugin manifest could not be parsed: ") + actual);
             return false;
+        }
     }
 
     TiXmlElement* root = m_pCurrentlyLoadingManifestDoc->FirstChildElement("CodeBlocks_plugin_manifest_file");
     if (!root)
+    {
+        Manager::Get()->GetLogManager()->LogError(_T("Plugin resource file not valid (no root element found) for: ") + pluginFilename);
         return false;
+    }
 
     TiXmlElement* version = root->FirstChildElement("SdkVersion");
     if (!version)
+    {
+        Manager::Get()->GetLogManager()->LogError(_T("Plugin resource file not valid (no SdkVersion element found) for: ") + pluginFilename);
         return false;
+    }
 
     // check version
 //    int major;
@@ -978,8 +987,11 @@ int PluginManager::ScanForPlugins(const wxString& path)
             else
                 failed << _T('\n') << filename;
         }
-        delete m_pCurrentlyLoadingManifestDoc;
-        m_pCurrentlyLoadingManifestDoc = 0;
+        if (m_pCurrentlyLoadingManifestDoc)
+        {
+            delete m_pCurrentlyLoadingManifestDoc;
+            m_pCurrentlyLoadingManifestDoc = 0;
+        }
         ok = dir.GetNext(&filename);
     }
     Manager::Get()->GetLogManager()->Log(F(_("Loaded %d plugins"), count));

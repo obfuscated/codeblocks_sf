@@ -27,7 +27,7 @@ LogSlot::LogSlot()
 
 LogSlot::~LogSlot()
 {
-	if(log != &g_null_log)
+	if(log && (log != &g_null_log))
 		delete log;
 }
 

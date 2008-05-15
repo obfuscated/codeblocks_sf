@@ -124,22 +124,22 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         void NotifyPlugins(CodeBlocksEvent& event);
         void NotifyPlugins(CodeBlocksDockEvent& event);
         void NotifyPlugins(CodeBlocksLayoutEvent& event);
-        
+
         static void SetSafeMode(bool on){ s_SafeMode = on; }
         static bool GetSafeMode(){ return s_SafeMode; }
     private:
         PluginManager();
         ~PluginManager();
 
-		void OnScriptMenu(wxCommandEvent& event);
-		void OnScriptModuleMenu(wxCommandEvent& event);
+        void OnScriptMenu(wxCommandEvent& event);
+        void OnScriptModuleMenu(wxCommandEvent& event);
 
         /// @return True if the plugin should be loaded, false if not.
         bool ReadManifestFile(const wxString& pluginFilename,
                                 const wxString& pluginName = wxEmptyString,
                                 PluginInfo* infoOut = 0);
-		void ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
-											wxArrayString& extraFiles);
+        void ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
+                                            wxArrayString& extraFiles);
         bool ExtractFile(const wxString& bundlename,
                         const wxString& src_filename,
                         const wxString& dst_filename,
@@ -175,10 +175,10 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
             PluginInfo info;
         };
         std::vector<PluginRegistration> m_RegisteredPlugins;
-        
+
         static bool s_SafeMode;
-        
-		DECLARE_EVENT_TABLE()
+
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // PLUGINMANAGER_H
