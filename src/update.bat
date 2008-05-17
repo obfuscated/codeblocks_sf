@@ -65,8 +65,8 @@ cd ..\..\..\plugins\debuggergdb\resources
 cd ..\..\..
 
 echo Copying external exception handler
-copy /y setup\exchndl.dll output > nul
-copy /y setup\exchndl.dll devel > nul
+copy /y exchndl.dll output > nul
+copy /y exchndl.dll devel > nul
 echo Copying files
 copy /y %CB_DEVEL_RESDIR%\*.zip %CB_OUTPUT_RESDIR% > nul
 copy /y sdk\resources\lexers\lexer_* %CB_DEVEL_RESDIR%\lexers > nul
