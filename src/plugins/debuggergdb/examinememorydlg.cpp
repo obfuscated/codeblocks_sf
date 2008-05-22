@@ -90,13 +90,13 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
 
         // if it's zero (i.e this is the first row), keep "addr" as starting address for this row.
         // m_LastRowStartingAddress will be set again when we 've consumed this row...
-        addr.ToLong(&m_LastRowStartingAddress, 16);
+        addr.ToULong(&m_LastRowStartingAddress, 16);
     }
 
 #define HEX_OFFSET(a) (a*3)
 #define CHAR_OFFSET(a) (16*3 + 3 + a)
 
-    long hb;
+    unsigned long hb;
     hexbyte.ToLong(&hb, 16);
 //    m_pDbg->Log(wxString::Format(_T("hb=%d, [0]=%c, [1]=%c"), hb, hexbyte[0], hexbyte[1]));
 //    m_pDbg->Log(wxString::Format(_T("HEX_OFFSET(bcmod)=%d, CHAR_OFFSET(bcmod)=%d"), HEX_OFFSET(bcmod), CHAR_OFFSET(bcmod)));
@@ -113,8 +113,8 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
             m_pText->AppendText(_T('\n')); // prepend a newline
         m_LineText[23] = _T('|'); // put a "separator" in the middle (just to ease reading a bit)
 
-        long a;
-        addr.ToLong(&a, 16);
+        unsigned long a;
+        addr.ToULong(&a, 16);
         m_pText->AppendText(wxString::Format(_T("0x%x: %.67s"), m_LastRowStartingAddress, m_LineText));
         for (int i = 0; i < 67; ++i)
             m_LineText[i] = _T(' ');
