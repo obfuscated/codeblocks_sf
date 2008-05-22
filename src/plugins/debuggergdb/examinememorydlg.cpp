@@ -97,7 +97,7 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
 #define CHAR_OFFSET(a) (16*3 + 3 + a)
 
     unsigned long hb;
-    hexbyte.ToLong(&hb, 16);
+    hexbyte.ToULong(&hb, 16);
 //    m_pDbg->Log(wxString::Format(_T("hb=%d, [0]=%c, [1]=%c"), hb, hexbyte[0], hexbyte[1]));
 //    m_pDbg->Log(wxString::Format(_T("HEX_OFFSET(bcmod)=%d, CHAR_OFFSET(bcmod)=%d"), HEX_OFFSET(bcmod), CHAR_OFFSET(bcmod)));
     m_LineText[HEX_OFFSET(bcmod)] = hexbyte[0];
