@@ -60,6 +60,8 @@
 		<Unit filename="dragscroll.h" />
 		<Unit filename="dragscrollcfg.cpp" />
 		<Unit filename="dragscrollcfg.h" />
+		<Unit filename="dragscrollevent.cpp" />
+		<Unit filename="dragscrollevent.h" />
 		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />

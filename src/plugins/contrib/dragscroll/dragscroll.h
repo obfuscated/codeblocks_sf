@@ -24,12 +24,14 @@
 #include <wx/log.h>
 #include <cbplugin.h> // the base class we 're inheriting
 
+#include "dragscrollevent.h"
+
 // ---------------------------------------------------------------------------
 //  Logging / debugging
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.2.07 2008/02/2"
+#define VERSION "1.2.15 2008/05/22"
 //----------------------------------------
 
 #undef LOGGING
@@ -42,7 +44,7 @@
 #endif
 
 // anchor to one and only DragScroll object
-class MyMouseEvents;
+class MouseEventsHandler;
 class cbDragScrollCfg;
 class wxLogWindow;
 class wxObject;
@@ -62,12 +64,14 @@ class cbDragScroll : public cbPlugin
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
      virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+     virtual int Configure(wxWindow* parent = 0);
 
     static cbDragScroll* pDragScroll;
 	protected:
         cbConfigurationPanel* CreatecbCfgPanel(wxWindow* parent);
 
     public:
+        void SearchForScrollableWindows(){OnAppStartupDoneInit();}
         void OnDialogDone(cbDragScrollCfg* pdlg);
 
         bool GetMouseDragScrollEnabled() const { return MouseDragScrollEnabled; }
@@ -80,7 +84,7 @@ class cbDragScroll : public cbPlugin
         //- int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; } removed
         int  GetMouseContextDelay()      const { return MouseContextDelay; }
 
-        wxWindow* m_pMS_Window;
+        wxWindow* m_pCB_AppWindow;
         wxWindow* m_pSearchResultsWindow;
 
 	private:
@@ -93,13 +97,25 @@ class cbDragScroll : public cbPlugin
         void Detach(wxWindow* thisEditor);
         void DetachAll();
         void Attach(wxWindow *p);
-        void DisconnectEvtHandler(MyMouseEvents* thisEvtHandler);
+        void DisconnectEvtHandler(MouseEventsHandler* thisEvtHandler);
+        void CenterChildOnParent(wxWindow* parent, wxWindow* child);
+
+        void OnDragScrollEvent_Dispatcher(wxCommandEvent& event );
+        void OnDragScrollEventAddWindow(wxCommandEvent& event );
+        void OnDragScrollEventRemoveWindow(wxCommandEvent& event );
+        void OnDragScrollEventRescan(wxCommandEvent& event );
+        void OnDragScrollEvent_RereadConfig(wxCommandEvent& event );
+        void OnDragScrollEvent_InvokeConfig(wxCommandEvent& event );
+
+        void OnDragScrollTestRescan(DragScrollEvent& event );
 
         wxWindow* winExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
-        wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-        void OnWindowOpen(wxEvent& event);
-        void OnWindowClose(wxEvent& event);
+        wxString  FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
+        void      OnWindowOpen(wxEvent& event);
+        void      OnWindowClose(wxEvent& event);
+        MouseEventsHandler* GetMouseEventsHandler();
+        void      CleanUpWindowPointerArray();
 
         wxString        m_ConfigFolder;
         wxString        m_ExecuteFolder;
@@ -110,7 +126,9 @@ class cbDragScroll : public cbPlugin
         wxArrayPtrVoid  m_EditorPtrs;
         wxLogWindow*    pMyLog;
         bool            m_bNotebooksAttached;
-        wxArrayPtrVoid  m_EventHandlerArray;
+
+        MouseEventsHandler* m_pMouseEventsHandler; //one and only
+        wxString            m_DragScrollFirstId;
 
         bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
         bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
@@ -121,6 +139,7 @@ class cbDragScroll : public cbPlugin
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
         //-bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows removed
         int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
+
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -135,13 +154,13 @@ class cbDragScroll : public cbPlugin
 #define DRAG_START    1
 #define DRAG_DRAGGING 2
 // ----------------------------------------------------------------------------
-class MyMouseEvents : public wxEvtHandler
+class MouseEventsHandler : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
 
 public:
-    MyMouseEvents(wxWindow *window)
-     { m_Window = window;
+    MouseEventsHandler()
+     {
        m_DragMode       = DRAG_NONE;
        m_MouseHasMoved  = false;
        m_RatioX = 1; m_RatioY = 1;
@@ -149,7 +168,7 @@ public:
        m_Direction      = -1;
        m_gtkContextDelay = 240 ;
      }
-    ~MyMouseEvents();
+    ~MouseEventsHandler();
 
     void OnMouseEvent(wxMouseEvent& event);
 
@@ -157,7 +176,7 @@ private:
     wxWindow*   m_Window;
     int         m_DragMode;
     wxPoint     m_DragStartPos;
-    wxObject*   m_pEvtObject;
+    //-wxObject*   m_pEvtObject;
     bool        m_MouseHasMoved;
     double      m_MouseMoveToLineMoveRatio;
     double      m_RatioX, m_RatioY;
@@ -299,7 +318,7 @@ private:
 //  commit  v0.24   2006/06/14
 // ----------------------------------------------------------------------------
 //  closed  2006/06/16 open    2006/06/15
-//          MyMouseEvents are being leaked because of split windows. When the
+//          MouseEventsHandler are being leaked because of split windows. When the
 //          windows close, no event is sent to allow cleanup before Destroy()
 //          Deleting an eventHandler during Destroy() causes wxWidgets to crash.
 //
@@ -391,6 +410,17 @@ private:
 //  Commit  1.2.07 2008/02/2
 //          06) Fixed: On some Linux's context menu missing in loggers bec mouse
 //              events always reported right-mouse was dragged. (Jens fix)
+// ----------------------------------------------------------------------------
+//  Commit  1.2.15 2008/05/22
+//          08) Allow multiple invocations of OnAppStartupDoneInit() in order
+//              to catch windows that open after we intialize. (2008/03/4)
+//          09) Conversion to use only one event handler (2008/04/22)
+//          10) Optimizations in MouseEventsHanderl
+//          11) SearchForScrollableWindows() as service to external callers
+//          12) Added DragScroll events for rescanning/adding/removing windows
+//          13) Optimized/cleaned up MouseEventHandler
+//          14) Removed OnWindowOpen EditorManager dependencies
+//          15) Add Configure() and event to invoke it. 2008/04/29
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------

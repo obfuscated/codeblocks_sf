@@ -11,10 +11,12 @@ libdragscroll_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -av
 libdragscroll_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libdragscroll_la_SOURCES = dragscroll.cpp \
-			dragscrollcfg.cpp
+			dragscrollcfg.cpp \
+			dragscrollevent.cpp
 
 noinst_HEADERS = dragscroll.h \
-			dragscrollcfg.h
+			dragscrollcfg.h \
+			dragscrollevent.h
 
 EXTRA_DIST = DragScroll.cbp \
 		DragScroll-unix.cbp \
