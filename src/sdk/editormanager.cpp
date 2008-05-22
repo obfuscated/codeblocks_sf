@@ -1785,8 +1785,10 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
             continue;
 
         if (control->GetReadOnly())
+        {
             read_only_files_skipped++;
             continue;
+        }
 
         SetActiveEditor(ed);
         control->BeginUndoAction(); //undo
