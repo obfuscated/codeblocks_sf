@@ -18,13 +18,6 @@
 #endif
 
 //(*InternalHeaders(VirtualBuildTargetsDlg)
-#include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
-#include <wx/intl.h>
-#include <wx/settings.h>
 #include <wx/xrc/xmlres.h>
 //*)
 
@@ -40,8 +33,8 @@ END_EVENT_TABLE()
 VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, cbProject* project)
     : lstAliases(0),
     btnAdd(0),
-    btnEdit(0),
     btnRemove(0),
+    btnEdit(0),
     lstTargets(0),
     m_pProject(project)
 {
@@ -52,6 +45,7 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, c
 	btnEdit = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
 	btnRemove = (wxButton*)FindWindow(XRCID("ID_BUTTON3"));
 	lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLISTBOX1"));
+	
 	Connect(XRCID("ID_LISTBOX1"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
 	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
 	Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);

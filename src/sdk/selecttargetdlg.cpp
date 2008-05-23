@@ -117,7 +117,13 @@ void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
         if (dlg->ShowModal() != wxID_OK)
             return;
         wxFileName fname(dlg->GetPath());
-        obj->SetValue(fname.GetFullName());
+        if (fname.GetFullPath().StartsWith(m_pProject->GetCommonTopLevelPath()))
+        {
+        	fname.MakeRelativeTo(m_pProject->GetCommonTopLevelPath());
+			obj->SetValue(fname.GetFullPath());
+        }
+		else
+			obj->SetValue(fname.GetFullPath());
     }
 } // end of OnHostApplicationButtonClick
 

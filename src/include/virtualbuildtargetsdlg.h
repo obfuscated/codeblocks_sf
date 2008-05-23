@@ -13,12 +13,10 @@
 #endif
 
 //(*Headers(VirtualBuildTargetsDlg)
-#include <wx/button.h>
 #include <wx/checklst.h>
-#include <wx/dialog.h>
 #include <wx/listbox.h>
-#include <wx/sizer.h>
-#include <wx/statline.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
 //*)
 
 class cbProject;
@@ -48,8 +46,8 @@ class VirtualBuildTargetsDlg: public wxDialog
 		//(*Declarations(VirtualBuildTargetsDlg)
 		wxListBox* lstAliases;
 		wxButton* btnAdd;
-		wxButton* btnEdit;
 		wxButton* btnRemove;
+		wxButton* btnEdit;
 		wxCheckListBox* lstTargets;
 		//*)
 

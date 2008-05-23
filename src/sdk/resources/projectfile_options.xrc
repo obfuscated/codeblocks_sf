@@ -1,428 +1,423 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource>
-  <object class="wxDialog" name="dlgProjectFileOptions">
-    <title>Project file options</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxNotebook" name="nbMain">
-          <object class="notebookpage">
-            <label>General</label>
-            <object class="wxPanel" name="tabGeneral">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <rows>2</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>In Project :</label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtProject">
-                        <style>wxTE_MULTILINE|wxTE_READONLY</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>FileName (absolute) :</label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtAbsName">
-                        <style>wxTE_READONLY</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>FileName (relative) :</label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtRelName">
-                        <style>wxTE_READONLY</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxEXPAND</flag>
-                    </object>
-                    <vgap>4</vgap>
-                    <hgap>4</hgap>
-                    <growablecols>1</growablecols>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>4</cols>
-                    <rows>3</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Total Lines : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticTotalLines">
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Empty Lines : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticEmptyLines">
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Actual Code Lines : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticActualLines">
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>File Size : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticFileSize">
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                        <label>35504</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Comment Lines : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticCommentLines">
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                        <label></label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticIncludedFilesLabel">
-                        <label>Included files : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticIncludedFiles">
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                        <label>TBD</label>
-                      </object>
-                    </object>
-                    <vgap>4</vgap>
-                    <hgap>4</hgap>
-                    <growablecols>1</growablecols>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <rows>1</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>File's date/time stamp : </label>
-                      </object>
-                      <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="staticDateTimeStamp">
-                        <label></label>
-                        <font>
-                          <weight>bold</weight>
-                          <size platform="mac">12</size>
-                        </font>
-                      </object>
-                      <flag></flag>
-                    </object>
-                    <vgap>4</vgap>
-                    <hgap>4</hgap>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="spacer">
-                  <size>0,0</size>
-                  <option>1</option>
-                  <flag>wxGROW</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblAutoGen">
-                    <label>This file is auto-generated</label>
-                    <font>
-                      <size>12</size>
-                      <weight>bold</weight>
-                    </font>
-                  </object>
-                  <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Build</label>
-            <object class="wxPanel" name="tabBuild">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkCompile">
-                    <label>Compile file</label>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxCheckBox" name="chkLink">
-                    <label>Link file</label>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>Belongs in targets:</label>
-                    <object class="sizeritem">
-                      <object class="wxCheckListBox" name="lstTargets">
-                        <content/>
-                        <size>-1,150</size>
-                      </object>
-                      <flag>wxEXPAND|wxALL</flag>
-                      <border>4</border>
-                      <option>1</option>
-                    </object>
-                    <orient>wxVERTICAL</orient>
-                  </object>
-                  <flag>wxEXPAND|wxALL</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Priority weight:</label>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxSlider" name="sliderWeight">
-                        <value>50</value>
-                        <min>0</min>
-                        <max>100</max>
-                        <style>wxSL_AUTOTICKS|wxSL_LABELS</style>
-                        <tickfreq>10</tickfreq>
-                        <pagesize>10</pagesize>
-                      </object>
-                      <option>1</option>
-                      <flag>wxGROW</flag>
-                    </object>
-                    <cols>2</cols>
-                    <hgap>8</hgap>
-                    <growablecols>1</growablecols>
-                    <object class="spacer">
-                      <size>0,0</size>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Lower weight means higher priority (order of compiling)</label>
-                        <fg>#A52A2A</fg>
-                      </object>
-                      <flag>wxALIGN_CENTRE</flag>
-                    </object>
-                  </object>
-                  <border>8</border>
-                  <flag>wxALL|wxGROW</flag>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Advanced</label>
-            <object class="wxPanel" name="tabAdvanced">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxFlexGridSizer">
-                    <cols>2</cols>
-                    <rows>2</rows>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Compiler variable:</label>
-                      </object>
-                      <flag>wxTOP|wxRIGHT</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtCompiler">
-                        <style></style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxLEFT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>Object file:</label>
-                      </object>
-                      <flag>wxTOP|wxRIGHT</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtObjName"/>
-                      <option>1</option>
-                      <flag>wxLEFT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <vgap>8</vgap>
-                    <growablecols>1</growablecols>
-                  </object>
-                  <flag>wxALL|wxEXPAND</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticBoxSizer">
-                    <label>Custom build</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText">
-                            <label>For this compiler:</label>
-                          </object>
-                          <flag>wxALIGN_CENTRE_VERTICAL</flag>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxChoice" name="cmbBuildStageCompiler">
-                            <content/>
-                          </object>
-                          <option>1</option>
-                          <flag>wxLEFT|wxGROW</flag>
-                          <border>4</border>
-                        </object>
-                      </object>
-                      <flag>wxALL|wxGROW</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxCheckBox" name="chkBuildStage">
-                        <label>Use custom command to build this file:</label>
-                      </object>
-                      <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxTextCtrl" name="txtBuildStage">
-                        <style>wxTE_MULTILINE</style>
-                      </object>
-                      <option>1</option>
-                      <flag>wxALL|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText">
-                        <label>You can use the same macros as those in advanced compiler options.</label>
-                      </object>
-                      <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxStaticText" name="lblBuildCommand">
-                        <label>Default: </label>
-                      </object>
-                      <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-                      <border>4</border>
-                    </object>
-                  </object>
-                  <option>1</option>
-                  <flag>wxALL|wxGROW</flag>
-                  <border>8</border>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText">
-                    <label>Please, don't change anything unless you really know what you 're doing.
-You could *really* mess-up Code::Blocks' Build System...</label>
-                    <fg>#FF0000</fg>
-                  </object>
-                  <flag>wxBOTTOM|wxLEFT|wxRIGHT</flag>
-                  <border>8</border>
-                </object>
-              </object>
-            </object>
-          </object>
-          <usenotebooksizer>1</usenotebooksizer>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label></label>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="button">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label></label>
-              <label>&amp;Cancel</label>
-            </object>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
-  </object>
+	<object class="wxDialog" name="dlgProjectFileOptions">
+		<title>Project file options</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxNotebook" name="nbMain">
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabGeneral">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>2</cols>
+										<rows>2</rows>
+										<vgap>4</vgap>
+										<hgap>4</hgap>
+										<growablecols>1</growablecols>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT1">
+												<label>In Project :</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtProject">
+												<style>wxTE_MULTILINE|wxTE_READONLY</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT2">
+												<label>FileName (absolute) :</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtAbsName">
+												<style>wxTE_READONLY</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT3">
+												<label>FileName (relative) :</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtRelName">
+												<style>wxTE_READONLY</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>4</cols>
+										<rows>3</rows>
+										<vgap>4</vgap>
+										<hgap>4</hgap>
+										<growablecols>1</growablecols>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT4">
+												<label>Total Lines : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticTotalLines">
+												<label></label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT5">
+												<label>Empty Lines : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticEmptyLines">
+												<label></label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT6">
+												<label>Actual Code Lines : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticActualLines">
+												<label></label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT7">
+												<label>File Size : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticFileSize">
+												<label>35504</label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT8">
+												<label>Comment Lines : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticCommentLines">
+												<label></label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticIncludedFilesLabel">
+												<label>Included files : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticIncludedFiles">
+												<label>TBD</label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>2</cols>
+										<rows>1</rows>
+										<vgap>4</vgap>
+										<hgap>4</hgap>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT9">
+												<label>File&apos;s date/time stamp : </label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="staticDateTimeStamp">
+												<label></label>
+												<font>
+													<size>12</size>
+													<weight>bold</weight>
+												</font>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="spacer">
+									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<option>1</option>
+									<size>0,0</size>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblAutoGen">
+										<label>This file is auto-generated</label>
+										<font>
+											<size>12</size>
+											<weight>bold</weight>
+										</font>
+									</object>
+									<flag>wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+									<border>8</border>
+								</object>
+							</object>
+						</object>
+						<label>General</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabBuild">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxCheckBox" name="chkCompile">
+										<label>Compile file</label>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxCheckBox" name="chkLink">
+										<label>Link file</label>
+									</object>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Belongs in targets:</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckListBox" name="lstTargets">
+												<size>-1,150</size>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>2</cols>
+										<hgap>8</hgap>
+										<growablecols>1</growablecols>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT10">
+												<label>Priority weight:</label>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxSlider" name="sliderWeight">
+												<value>50</value>
+												<tickfreq>10</tickfreq>
+												<pagesize>10</pagesize>
+												<style>wxSL_AUTOTICKS|wxSL_LABELS</style>
+											</object>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<option>1</option>
+										</object>
+										<object class="spacer">
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<size>0,0</size>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT11">
+												<label>Lower weight means higher priority (order of compiling)</label>
+												<fg>#A52A2A</fg>
+											</object>
+											<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+							</object>
+						</object>
+						<label>Build</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabAdvanced">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxFlexGridSizer">
+										<cols>2</cols>
+										<rows>2</rows>
+										<vgap>8</vgap>
+										<growablecols>1</growablecols>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT12">
+												<label>Compiler variable:</label>
+											</object>
+											<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtCompiler" />
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT13">
+												<label>Object file:</label>
+											</object>
+											<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtObjName" />
+											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Custom build</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT14">
+														<label>For this compiler:</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxChoice" name="cmbBuildStageCompiler" />
+													<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBuildStage">
+												<label>Use custom command to build this file:</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtBuildStage">
+												<style>wxTE_MULTILINE</style>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT15">
+												<label>You can use the same macros as those in advanced compiler options.</label>
+											</object>
+											<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="lblBuildCommand">
+												<label>Default: </label>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT16">
+										<label>Please, don&apos;t change anything unless you really know what you &apos;re doing.&#x0A;You could *really* mess-up Code::Blocks&apos; Build System...</label>
+										<fg>#FF0000</fg>
+									</object>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+							</object>
+						</object>
+						<label>Advanced</label>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

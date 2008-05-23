@@ -524,10 +524,6 @@ MainFrame::MainFrame(wxWindow* parent)
 
     ShowHideStartPage();
 
-    // create script console (if needed)
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/show_script_console"), false))
-        ShowHideScriptConsole();
-
     RegisterScriptFunctions();
     RunStartupScripts();
 
@@ -649,6 +645,10 @@ void MainFrame::CreateIDE()
     // editor manager
     m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxAuiPaneInfo().Name(wxT("MainPane")).
                             CentrePane());
+
+	m_pScriptConsole = new ScriptConsole(this, -1);
+    m_LayoutManager.AddPane(m_pScriptConsole, wxAuiPaneInfo().Name(wxT("ScriptConsole")).
+                            Caption(_("Scripting console")).Float().MinSize(100,100));
 
     DoUpdateLayout();
     DoUpdateLayoutColours();
@@ -1761,17 +1761,10 @@ void MainFrame::ShowHideScriptConsole()
 {
     if (Manager::IsBatchBuild())
         return;
-    if (!m_pScriptConsole)
-    {
-        m_pScriptConsole = new ScriptConsole(this, -1);
-        infoPane->AddNonLogger(m_pScriptConsole, _("Script console"));
-    }
-    else
-    {
-        infoPane->DeleteNonLogger(m_pScriptConsole);
-        m_pScriptConsole = 0;
-    }
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/show_script_console"), m_pScriptConsole != 0);
+	bool isVis = IsWindowReallyShown(m_pScriptConsole);
+	CodeBlocksDockEvent evt(isVis ? cbEVT_HIDE_DOCK_WINDOW : cbEVT_SHOW_DOCK_WINDOW);
+	evt.pWindow = m_pScriptConsole;
+	Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::OnStartHereLink(wxCommandEvent& event)
@@ -3576,8 +3569,6 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 void MainFrame::OnViewScriptConsole(wxCommandEvent& event)
 {
     ShowHideScriptConsole();
-    if (m_pScriptConsole)
-        infoPane->ShowNonLogger(m_pScriptConsole);
 }
 
 void MainFrame::OnSearchFind(wxCommandEvent& event)
@@ -3811,7 +3802,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Check(idViewManager, manVis);
     mbar->Check(idViewLogManager, m_LayoutManager.GetPane(infoPane).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
-    mbar->Check(idViewScriptConsole, m_pScriptConsole != 0);
+    mbar->Check(idViewScriptConsole, m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
     mbar->Enable(idViewFocusEditor, ed);
 
