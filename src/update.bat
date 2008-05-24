@@ -36,67 +36,67 @@ if not exist %CB_DEVEL_RESDIR%\scripts md %CB_DEVEL_RESDIR%\scripts\
 set ZIPCMD=zip
 
 echo Packing core UI resources
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\resources.zip src\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\manager_resources.zip sdk\resources\*.xrc sdk\resources\images\*.png > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\start_here.zip src\resources\start_here\*.* > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\resources.zip src\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\manager_resources.zip sdk\resources\*.xrc sdk\resources\images\*.png > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\start_here.zip src\resources\start_here\*.* > nul
 echo Packing plugins UI resources
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\codecompletion.zip plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\openfileslist.zip plugins\openfileslist\manifest.xml > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml plugins\projectsimporter\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc > nul
-%ZIPCMD% -j9 %CB_DEVEL_RESDIR%\xpmanifest.zip plugins\xpmanifest\manifest.xml > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\codecompletion.zip plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\openfileslist.zip plugins\openfileslist\manifest.xml > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml plugins\projectsimporter\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc > nul
+%ZIPCMD% -ju9 %CB_DEVEL_RESDIR%\xpmanifest.zip plugins\xpmanifest\manifest.xml > nul
 echo Packing core UI bitmaps
 cd src\resources
-%ZIPCMD% -0 -q ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\resources.zip images\*.png images\16x16\*.png > nul
 cd ..\..\sdk\resources
-%ZIPCMD% -0 -q ..\..\%CB_DEVEL_RESDIR%\manager_resources.zip images\*.png > nul
+%ZIPCMD% -0 -qu ..\..\%CB_DEVEL_RESDIR%\manager_resources.zip images\*.png > nul
 echo Packing plugins UI bitmaps
 cd ..\..\plugins\compilergcc\resources
-%ZIPCMD% -0 -q ..\..\..\%CB_DEVEL_RESDIR%\compiler.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -qu ..\..\..\%CB_DEVEL_RESDIR%\compiler.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..\plugins\debuggergdb\resources
-%ZIPCMD% -0 -q ..\..\..\%CB_DEVEL_RESDIR%\debugger.zip images\*.png images\16x16\*.png > nul
+%ZIPCMD% -0 -qu ..\..\..\%CB_DEVEL_RESDIR%\debugger.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..
 
 echo Copying external exception handler
-copy /y exchndl.dll output > nul
-copy /y exchndl.dll devel > nul
+xcopy /D /y exchndl.dll output > nul
+xcopy /D /y exchndl.dll devel > nul
 echo Copying files
-copy /y %CB_DEVEL_RESDIR%\*.zip %CB_OUTPUT_RESDIR% > nul
-copy /y sdk\resources\lexers\lexer_* %CB_DEVEL_RESDIR%\lexers > nul
-copy /y sdk\resources\lexers\lexer_* %CB_OUTPUT_RESDIR%\lexers > nul
-copy /y src\resources\images\*.png %CB_DEVEL_RESDIR%\images > nul
-copy /y src\resources\images\settings\*.png %CB_DEVEL_RESDIR%\images\settings > nul
-copy /y src\resources\images\*.png %CB_OUTPUT_RESDIR%\images > nul
-copy /y src\resources\images\settings\*.png %CB_OUTPUT_RESDIR%\images\settings > nul
-copy /y src\resources\images\16x16\*.png %CB_DEVEL_RESDIR%\images\16x16 > nul
-copy /y src\resources\images\16x16\*.png %CB_OUTPUT_RESDIR%\images\16x16 > nul
-copy /y plugins\codecompletion\resources\images\*.png %CB_DEVEL_RESDIR%\images\codecompletion > nul
-copy /y plugins\codecompletion\resources\images\*.png %CB_OUTPUT_RESDIR%\images\codecompletion > nul
+xcopy /D /y %CB_DEVEL_RESDIR%\*.zip %CB_OUTPUT_RESDIR% > nul
+xcopy /D /y sdk\resources\lexers\lexer_* %CB_DEVEL_RESDIR%\lexers > nul
+xcopy /D /y sdk\resources\lexers\lexer_* %CB_OUTPUT_RESDIR%\lexers > nul
+xcopy /D /y src\resources\images\*.png %CB_DEVEL_RESDIR%\images > nul
+xcopy /D /y src\resources\images\settings\*.png %CB_DEVEL_RESDIR%\images\settings > nul
+xcopy /D /y src\resources\images\*.png %CB_OUTPUT_RESDIR%\images > nul
+xcopy /D /y src\resources\images\settings\*.png %CB_OUTPUT_RESDIR%\images\settings > nul
+xcopy /D /y src\resources\images\16x16\*.png %CB_DEVEL_RESDIR%\images\16x16 > nul
+xcopy /D /y src\resources\images\16x16\*.png %CB_OUTPUT_RESDIR%\images\16x16 > nul
+xcopy /D /y plugins\codecompletion\resources\images\*.png %CB_DEVEL_RESDIR%\images\codecompletion > nul
+xcopy /D /y plugins\codecompletion\resources\images\*.png %CB_OUTPUT_RESDIR%\images\codecompletion > nul
 echo Makefile.am > excludes.txt
 echo \.svn\ >> excludes.txt
-xcopy /y /s plugins\scriptedwizard\resources\* %CB_DEVEL_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
-xcopy /y /s plugins\scriptedwizard\resources\* %CB_OUTPUT_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
-xcopy /y templates\common\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /y templates\win32\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /y templates\common\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /y templates\win32\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /y scripts\* %CB_DEVEL_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
-xcopy /y scripts\* %CB_OUTPUT_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
+xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_DEVEL_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
+xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_OUTPUT_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
+xcopy /D /y templates\common\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
+xcopy /D /y templates\win32\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
+xcopy /D /y templates\common\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes.txt > nul
+xcopy /D /y templates\win32\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes.txt > nul
+xcopy /D /y scripts\* %CB_DEVEL_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
+xcopy /D /y scripts\* %CB_OUTPUT_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
 del excludes.txt
-copy /y tips.txt %CB_DEVEL_RESDIR% > nul
-copy /y tips.txt %CB_OUTPUT_RESDIR% > nul
-copy /y tools\ConsoleRunner\cb_console_runner*.exe output > nul
-copy /y tools\ConsoleRunner\cb_console_runner*.exe devel > nul
-copy /y devel\*.exe output > nul
-copy /y devel\*.dll output > nul
-copy /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
+xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
+xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
+xcopy /D /y tools\ConsoleRunner\cb_console_runner*.exe output > nul
+xcopy /D /y tools\ConsoleRunner\cb_console_runner*.exe devel > nul
+xcopy /D /y devel\*.exe output > nul
+xcopy /D /y devel\*.dll output > nul
+xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
 
 echo Stripping debug info from output tree
 strip output\*.exe
