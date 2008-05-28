@@ -116,8 +116,8 @@ namespace
 //#30 0x00403c0a in WinMain (hInstance=0x400000, hPrevInstance=0x0, lpCmdLine=0x241ef9 "", nCmdShow=10) at C:/Devel/wxSmithTest/app.cpp:297
 //#31 0x004076ca in main () at C:/Devel/wxWidgets-2.6.1/include/wx/intl.h:555
 //#50  0x00410c8c in one::~one() (this=0x3d24c8) at main.cpp:14
-static wxRegEx reBT0(_T("#([0-9]+)[ \t]+([^( \t]+)[ \t]+(\\([^)]*\\))")); // case #0
-static wxRegEx reBT1(_T("#([0-9]+)[ \t]+0x([A-Fa-f0-9]+)[ \t]+in[ \t]+([^(]+)[ \t]+(\\([^)]*\\))")); // all other cases (gdb 6.3)
+static wxRegEx reBT0(_T("#([0-9]+)[ \t]+([^(]+)[ \t]+(\\([^)]*\\))")); // case #0
+static wxRegEx reBT1(_T("#([0-9]+)[ \t]+0x([A-Fa-f0-9]+)[ \t]+in[ \t]+(.+)[ \t]+(\\([^)]*\\))[ \t]")); // all other cases (gdb 6.3)
 static wxRegEx reBTX(_T("#([0-9]+)[ \t]+0x([A-Fa-f0-9]+)[ \t]+in[ \t]+([^(]+)[ \t]*(\\([^)]*\\)[ \t]*\\([^)]*\\))")); // all other cases (gdb 5.2)
 static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
@@ -983,6 +983,7 @@ class GdbCmd_Backtrace : public DebuggerCmd
                 else if (reBT0.Matches(lines[i]))
                 {
                     reBT0.GetMatch(lines[i], 1).ToULong(&sf.number);
+                    sf.address = 0;
                     sf.function = reBT0.GetMatch(lines[i], 2) + reBT0.GetMatch(lines[i], 3);
                     matched = true;
                 }
