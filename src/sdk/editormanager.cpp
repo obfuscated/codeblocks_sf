@@ -866,10 +866,10 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 ed->SetModified(true);
             else
             {
-                ed->Close();
                 ProjectFile* pf = ed->GetProjectFile();
                 if (pf)
                     pf->SetFileState(fvsMissing);
+                ed->Close();
             }
             continue;
         }
