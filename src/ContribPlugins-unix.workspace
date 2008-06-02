@@ -10,6 +10,7 @@
 		<Project filename="plugins/contrib/copystrings/copystrings-unix.cbp" />
 		<Project filename="plugins/contrib/dragscroll/DragScroll-unix.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars-unix.cbp" />
+		<Project filename="plugins/contrib/headerfixup/headerfixup-unix.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
 		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />

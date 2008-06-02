@@ -225,6 +225,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_CODESTAT], [false])
 	AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
 	AM_CONDITIONAL([BUILD_ENVVARS], [false])
+	AM_CONDITIONAL([BUILD_HEADERFIXUP], [false])
 	AM_CONDITIONAL([BUILD_HELP], [false])
 	AM_CONDITIONAL([BUILD_KEYBINDER], [false])
 	AM_CONDITIONAL([BUILD_LIBFINDER], [false])
@@ -245,6 +246,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_CODESTAT], [true])
 	AM_CONDITIONAL([BUILD_DRAGSCROLL], [true])
 	AM_CONDITIONAL([BUILD_ENVVARS], [true])
+	AM_CONDITIONAL([BUILD_HEADERFIXUP], [true])
 	AM_CONDITIONAL([BUILD_HELP], [true])
 	AM_CONDITIONAL([BUILD_KEYBINDER], [true])
 	AM_CONDITIONAL([BUILD_LIBFINDER], [true])
@@ -267,7 +269,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
   [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,cbkoders,codesnippets,]
-  [                        		     codestat,dragscroll,envvars, ]
+  [                        		     codestat,dragscroll,envvars,headerfixup ]
   [                        		     help,keybinder,libfinder,profiler, ]
   [                        		     regex,exporter,symtab,wxsmith ],
   plugins="$withval", plugins="none")
@@ -302,6 +304,9 @@ do
 		;;
 	envvars)
 		AM_CONDITIONAL([BUILD_ENVVARS], [true])
+		;;
+	headerfixup)
+		AM_CONDITIONAL([BUILD_HEADERFIXUP], [true])
 		;;
 	help)
 		AM_CONDITIONAL([BUILD_HELP], [true])
@@ -354,6 +359,9 @@ do
 	-envvars)
 		AM_CONDITIONAL([BUILD_ENVVARS], [false])
 		;;
+	-headerfixup)
+		AM_CONDITIONAL([BUILD_HEADERFIXUP], [false])
+		;;
 	-help)
 		AM_CONDITIONAL([BUILD_HELP], [false])
 		;;
@@ -398,6 +406,7 @@ AC_SUBST(BUILD_CODESTAT)
 AC_SUBST(BUILD_COPYSTRINGS)
 AC_SUBST(BUILD_DRAGSCROLL)
 AC_SUBST(BUILD_ENVVARS)
+AC_SUBST(BUILD_HEADERFIXUP)
 AC_SUBST(BUILD_HELP)
 AC_SUBST(BUILD_KEYBINDER)
 AC_SUBST(BUILD_LIBFINDER)

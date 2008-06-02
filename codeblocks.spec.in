@@ -225,6 +225,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/dragscroll.zip
 %{pkgdata}/envvars.zip
 %{pkgdata}/exporter.zip
+%{pkgdata}/headerfixup.zip
 %{pkgdata}/help_plugin.zip
 %{pkgdata}/keybinder.zip
 %{pkgdata}/lib_finder.zip
@@ -247,6 +248,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/plugins/libdragscroll.*
 %{pkgdata}/plugins/libenvvars.*
 %{pkgdata}/plugins/libexporter.*
+%{pkgdata}/plugins/libheaderfixup.*
 %{pkgdata}/plugins/libhelp_plugin.*
 %{pkgdata}/plugins/libkeybinder.*
 %{pkgdata}/plugins/liblib_finder.*

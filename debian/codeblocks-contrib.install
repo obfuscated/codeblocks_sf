@@ -7,6 +7,7 @@ usr/share/codeblocks/codestat.zip*
 usr/share/codeblocks/dragscroll.zip*
 usr/share/codeblocks/envvars.zip*
 usr/share/codeblocks/exporter.zip*
+usr/share/codeblocks/headerfixup.zip*
 usr/share/codeblocks/help_plugin.zip*
 usr/share/codeblocks/keybinder.zip*
 usr/share/codeblocks/lib_finder.zip*
@@ -29,6 +30,7 @@ usr/share/codeblocks/plugins/libcodestat.*
 usr/share/codeblocks/plugins/libdragscroll.*
 usr/share/codeblocks/plugins/libenvvars.*
 usr/share/codeblocks/plugins/libexporter.*
+usr/share/codeblocks/plugins/libheaderfixup.*
 usr/share/codeblocks/plugins/libhelp_plugin.*
 usr/share/codeblocks/plugins/libkeybinder.*
 usr/share/codeblocks/plugins/liblib_finder.*

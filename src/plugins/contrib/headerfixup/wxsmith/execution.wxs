@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="Execution">
+		<title>Header Fixup</title>
+		<centered>1</centered>
+		<handler function="OnClose" entry="EVT_CLOSE" />
+		<object class="wxFlexGridSizer" variable="flsMain" member="yes">
+			<cols>2</cols>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="sizLeft" member="yes">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxRadioBox" name="ID_RB_SCOPE" variable="m_Scope" member="yes">
+							<label>Scope</label>
+							<content>
+								<item>Scan source files in project</item>
+								<item>Scan source files in workspace</item>
+							</content>
+							<size>200,65</size>
+							<tooltip>This will setup on what files to operate: All from active project or whole workspace.</tooltip>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxRadioBox" name="ID_RB_OPTIONS" variable="m_Options" member="yes">
+							<label>Options</label>
+							<content>
+								<item>Use &quot;include.h&quot; (quotation marks)</item>
+								<item>Use &lt;include.h&gt; (brackets)</item>
+							</content>
+							<default>1</default>
+							<size>200,65</size>
+							<tooltip>This will setup the way missing header files are included: By quotation mark or brackets.</tooltip>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="sizAdvancedOptions" member="yes">
+							<label>Advanced options</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_DEBUG_LOG" variable="m_DebugLog" member="yes">
+									<label>Full log of parser operations to debug log</label>
+									<tooltip>This will print *all* interesting parser operations to the C::B debug log.</tooltip>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OBSOLETE_LOG" variable="m_ObsoleteLog" member="yes">
+									<label>Show includes not required for known bindings</label>
+									<tooltip>This will show a list of included files found with unknown bindings which could possibly be removed in the debug log.</tooltip>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_FWD_DECL" variable="m_FwdDecl" member="yes">
+									<label>Try to use forward declarations in headers</label>
+									<tooltip>This will setup if forward declarations shall be used for objects apearing *only* as pointers/references in header files.</tooltip>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxRadioBox" name="ID_RDO_FILE_TYPE" variable="m_FileType" member="yes">
+									<label>File types to process:</label>
+									<content>
+										<item>Process header files only</item>
+										<item>Process implementation files only</item>
+										<item>Process both files (2-step-fix up)</item>
+									</content>
+									<default>2</default>
+									<size>200,85</size>
+									<tooltip>This will setup on what file types the plugin shall operate: Header files, implementation files or both (after each other).</tooltip>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_SIMULATION" variable="m_Simulation" member="yes">
+									<label>Only simulate (do *not* change any files)</label>
+									<tooltip>This will setup if all operation shall be simulated only - interesting in combination with full log to analyse a project without modifications.</tooltip>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="sizRight" member="yes">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="sizHeaderSets" member="yes">
+							<label>Header sets</label>
+							<object class="sizeritem">
+								<object class="wxCheckListBox" name="ID_LST_SETS" variable="m_Sets" member="yes" />
+								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="sizAllNoneInvert" member="yes">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_SELECT_ALL" variable="m_SelectAll" member="yes">
+											<label>All</label>
+											<style>wxBU_EXACTFIT</style>
+											<handler function="OnBtnSelectAllClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_SELECT_NONE" variable="m_SelectNone" member="yes">
+											<label>None</label>
+											<style>wxBU_EXACTFIT</style>
+											<handler function="OnBtnSelectNoneClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_INVERT" variable="m_Invert" member="yes">
+											<label>Invert</label>
+											<style>wxBU_EXACTFIT</style>
+											<handler function="OnBtnInvertClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="sizExecute" member="yes">
+							<label>Execute</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxGauge" name="ID_GAU_PROGRESS" variable="m_Progress" member="yes" />
+								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="sizRunExit" member="yes">
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_RUN" variable="m_Run" member="yes">
+											<label>Run</label>
+											<tooltip>Run the fixup plugin and begin parsing...</tooltip>
+											<handler function="OnBtnRunClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_EXIT" variable="m_Exit" member="yes">
+											<label>Exit</label>
+											<tooltip>Exit the plugin without (further) modifications.</tooltip>
+											<handler function="OnBtnExitClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

@@ -2,8 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="EnvVars Plug-In" />
-		<Option makefile="Makefile.linux" />
+		<Option title="EnvVars" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
@@ -30,6 +29,7 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
+			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="$(#CB.INCLUDE)" />
@@ -58,6 +58,8 @@
 		<Unit filename="project_settings.xrc" />
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

@@ -11,6 +11,7 @@
 		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />
 		<Project filename="plugins\contrib\dragscroll\dragscroll.cbp" />
 		<Project filename="plugins\contrib\envvars\envvars.cbp" />
+		<Project filename="plugins\contrib\headerfixup\headerfixup.cbp" />
 		<Project filename="plugins\contrib\help_plugin\help-plugin.cbp" />
 		<Project filename="plugins\contrib\keybinder\keybinder.cbp" />
 		<Project filename="plugins\contrib\lib_finder\lib_finder.cbp" />

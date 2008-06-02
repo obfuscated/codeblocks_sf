@@ -418,6 +418,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/codestat/resources/Makefile
 	src/plugins/contrib/dragscroll/Makefile
 	src/plugins/contrib/envvars/Makefile
+	src/plugins/contrib/headerfixup/Makefile
 	src/plugins/contrib/help_plugin/Makefile
 	src/plugins/contrib/help_plugin/bzip2/Makefile
 	src/plugins/contrib/help_plugin/zlib/Makefile

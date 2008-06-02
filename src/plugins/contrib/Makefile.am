@@ -34,6 +34,10 @@ if BUILD_HELP
 MAYBE_HELP=help_plugin
 endif
 
+if BUILD_HEADERFIXUP
+MAYBE_HEADERFIXUP=headerfixup
+endif
+
 if BUILD_KEYBINDER
 MAYBE_KEYBINDER=keybinder
 endif
@@ -75,6 +79,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_DRAGSCROLL) \
 		$(MAYBE_ENVVARS) \
 		$(MAYBE_HELP) \
+		$(MAYBE_HEADERFIXUP) \
 		$(MAYBE_KEYBINDER) \
 		$(MAYBE_LIBFINDER) \
 		$(MAYBE_PROFILER) \
@@ -93,6 +98,7 @@ DIST_SUBDIRS = AutoVersioning \
 		dragscroll \
 		envvars \
 		help_plugin \
+		headerfixup \
 		keybinder \
 		lib_finder \
 		profiler \

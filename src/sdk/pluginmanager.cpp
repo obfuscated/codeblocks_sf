@@ -736,7 +736,7 @@ bool PluginManager::ReadManifestFile(const wxString& pluginFilename,
         actual = ConfigManager::LocateDataFile(actual, sdPluginsUser | sdDataUser | sdPluginsGlobal | sdDataGlobal);
         if (actual.IsEmpty())
         {
-            Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + actual);
+            Manager::Get()->GetLogManager()->LogError(_T("Plugin resource not found: ") + fname.GetFullName());
             return false; // not found
         }
 
