@@ -16,7 +16,9 @@
 								<item>Scan source files in project</item>
 								<item>Scan source files in workspace</item>
 							</content>
-							<size>200,65</size>
+							<default>0</default>
+							<dimension>2</dimension>
+							<size>337,70</size>
 							<tooltip>This will setup on what files to operate: All from active project or whole workspace.</tooltip>
 						</object>
 						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -30,7 +32,8 @@
 								<item>Use &lt;include.h&gt; (brackets)</item>
 							</content>
 							<default>1</default>
-							<size>200,65</size>
+							<dimension>2</dimension>
+							<size>337,70</size>
 							<tooltip>This will setup the way missing header files are included: By quotation mark or brackets.</tooltip>
 						</object>
 						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -73,7 +76,8 @@
 										<item>Process both files (2-step-fix up)</item>
 									</content>
 									<default>2</default>
-									<size>200,85</size>
+									<dimension>3</dimension>
+									<size>317,95</size>
 									<tooltip>This will setup on what file types the plugin shall operate: Header files, implementation files or both (after each other).</tooltip>
 								</object>
 								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

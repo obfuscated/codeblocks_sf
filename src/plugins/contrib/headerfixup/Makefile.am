@@ -33,4 +33,4 @@ pkgdata_DATA = headerfixup.zip
 CLEANFILES = $(pkgdata_DATA)
 
 headerfixup.zip:
-    PWD=`pwd` cd $(srcdir) && zip $(PWD)/headerfixup.zip manifest.xml > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/headerfixup.zip manifest.xml > /dev/null
