@@ -12,6 +12,7 @@
   #include "manager.h"
   #include "editormanager.h"
   #include "cbeditor.h"
+  #include "logmanager.h"
 #endif
 
 #include <wx/ffile.h>
