@@ -64,6 +64,7 @@ Description: Contrib plugins for Code::Blocks IDE
     * DragScroll (enhances mouse operations)
     * Setting of environment variables
     * Source exporter to PDF/HTML/ODT/RTF
+    * Header fixup
     * Help
     * Keyboard shortcuts configuration
     * GUI RAD builder (wxSmith)
