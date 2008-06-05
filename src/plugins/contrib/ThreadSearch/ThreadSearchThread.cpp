@@ -50,7 +50,7 @@ ThreadSearchThread::ThreadSearchThread(ThreadSearchView*           pThreadSearch
 	{
 		ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
 		event.SetString(_T("TextFileSearcher could not be instantiated."));
-		
+
 		// Using wxPostEvent, we avoid multi-threaded memory violation.
 		wxPostEvent( m_pThreadSearchView,event);
 	}
@@ -145,7 +145,13 @@ void *ThreadSearchThread::Entry()
 	// if the list is empty, leave
 	if (m_FilePaths.GetCount() == 0)
 	{
-		cbMessageBox(wxT("No files to search in!"), wxT("Error"), wxICON_WARNING);
+		//-cbMessageBox(wxT("No files to search in!"), wxT("Error"), wxICON_WARNING);
+		////(pecan 2008/4/26)
+		// DO NOT issue graphics calls from this thread !!!!!!
+		ThreadSearchEvent event(wxEVT_THREAD_SEARCH_ERROR, -1);
+		event.SetString(_T("No files to search.\nCheck options "));
+		// Using wxPostEvent, we avoid multi-threaded memory violation.
+		wxPostEvent(m_pThreadSearchView,event);
 		return 0;
 	}
 
@@ -215,7 +221,7 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 			ThreadSearchEvent event(wxEVT_THREAD_SEARCH, -1);
 			event.SetString(path);
 			event.SetLineTextArray(m_LineTextArray);
-			
+
 			// Using wxPostEvent, we avoid multi-threaded memory violation.
 			m_pThreadSearchView->PostThreadSearchEvent(event);
 			break;
@@ -245,7 +251,7 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 
 				// Using wxPostEvent, we avoid multi-threaded memory violation.
 				wxPostEvent( m_pThreadSearchView,event);
-		    }
+			}
 			break;
 		}
 		default:
