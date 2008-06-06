@@ -502,7 +502,7 @@ void ScintillaWX::Paste() {
 
     if (wxTheClipboard->Open()) {
         wxTheClipboard->UsePrimarySelection(false);
-        wxCustomDataObject selData(wxDF_PRIVATE);
+        wxCustomDataObject selData(wxDataFormat(wxString(wxT("application/x-cbrectdata"))));
         bool gotRectData = wxTheClipboard->GetData(selData);
 
         if (gotRectData && selData.GetSize()>1) {
@@ -555,7 +555,7 @@ void ScintillaWX::CopyToClipboard (const SelectionText& st) {
         // object for local use that remembers what kind of selection was made (stream or
         // rectangular).
         wxDataObjectComposite* obj = new wxDataObjectComposite();
-        wxCustomDataObject* rectData = new wxCustomDataObject (wxDF_PRIVATE);
+        wxCustomDataObject* rectData = new wxCustomDataObject (wxDataFormat(wxString(wxT("application/x-cbrectdata"))));
 
         char* buffer = new char[st.len+1];
         buffer[0] = (st.rectangular)? (char)1 : (char)0;
