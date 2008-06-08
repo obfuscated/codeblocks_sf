@@ -237,6 +237,7 @@ class MainFrame : public wxFrame
         void OnEditorModified(CodeBlocksEvent& event);
         void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
+        void StartupDone();
     protected:
         void CreateIDE();
         void CreateMenubar();

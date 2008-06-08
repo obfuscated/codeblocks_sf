@@ -527,8 +527,8 @@ MainFrame::MainFrame(wxWindow* parent)
     RegisterScriptFunctions();
     RunStartupScripts();
 
-    m_StartupDone = true;
-    DoUpdateLayout();
+//    m_StartupDone = true;
+//    DoUpdateLayout();
 
 //    if (Manager::Get()->GetLogManager()->HasErrors())
 //    {
@@ -1173,7 +1173,7 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
         return;
 
 	m_LastLayoutIsTemp = isTemp;
-	
+
     wxString layout = m_LayoutViews[name];
     if (layout.IsEmpty())
     {
@@ -1304,7 +1304,7 @@ void MainFrame::DoSelectLayout(const wxString& name)
                 continue;
             items[i]->Check(items[i]->GetText().IsSameAs(name));
         }
-        
+
         if (!m_LastLayoutIsTemp)
 			Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
     }
@@ -4271,4 +4271,10 @@ void MainFrame::OnUnlockLogManager(CodeBlocksLogEvent& event)
         m_LayoutManager.GetPane(infoPane).Show(false);
         DoUpdateLayout();
     }
+}
+
+void MainFrame::StartupDone()
+{
+    m_StartupDone = true;
+    DoUpdateLayout();
 }

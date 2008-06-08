@@ -542,6 +542,8 @@ bool CodeBlocksApp::OnInit()
         SetTopWindow(frame);
         frame->Show();
 
+        frame->StartupDone();
+
         frame->ShowTips(); // this func checks if the user wants tips, so no need to check here
 
         if(platform::windows)
