@@ -97,7 +97,7 @@ strip output/codeblocks${EXEEXT}
 strip output/*.${LIBEXT}
 strip output/share/codeblocks/plugins/*.${LIBEXT}
 
-if [ "x$MSYSTEM" != "x" ] ; then
+if [ "x$MSYSTEM" == "x" ] ; then
   echo Creating launch-scripts
   echo "#!/bin/sh" > output/run.sh
   echo -n "APP_DIR=" >> output/run.sh
