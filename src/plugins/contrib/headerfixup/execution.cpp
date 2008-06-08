@@ -67,7 +67,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   	_("Scan source files in project"),
   	_("Scan source files in workspace")
   };
-  m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RB_SCOPE"));
+  m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_1, 2, 0, wxDefaultValidator, _T("ID_RB_SCOPE"));
   m_Scope->SetSelection(0);
   m_Scope->SetToolTip(_("This will setup on what files to operate: All from active project or whole workspace."));
   sizLeft->Add(m_Scope, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
