@@ -207,6 +207,14 @@ void Execution::OnBtnRunClick(wxCommandEvent& event)
 {
   ToggleControls(true);
 
+  ProjectsArray* Projects = Manager::Get()->GetProjectManager()->GetProjects();
+  if ( !Projects->GetCount() )
+  {
+    cbMessageBox(_("No active project(s) to process."),_T("Header Fixup"));
+    ToggleControls(false);
+    return;
+  }
+
   // Generating list of files to process
   wxArrayString FilesToProcess;
 
@@ -337,6 +345,9 @@ int Execution::RunScan(const wxArrayString& FilesToProcess,
 
 void Execution::AddFilesFromProject(wxArrayString& Files,cbProject* Project)
 {
+  if (!Project)
+    return;
+
   for ( int i=0; i<Project->GetFilesCount(); i++ )
   {
     wxFileName Name = Project->GetFile(i)->file;
