@@ -67,7 +67,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   	_("Scan source files in project"),
   	_("Scan source files in workspace")
   };
-  m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_1, 2, 0, wxDefaultValidator, _T("ID_RB_SCOPE"));
+  m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_1, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_SCOPE"));
   m_Scope->SetSelection(0);
   m_Scope->SetToolTip(_("This will setup on what files to operate: All from active project or whole workspace."));
   sizLeft->Add(m_Scope, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -76,7 +76,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   	_("Use \"include.h\" (quotation marks)"),
   	_("Use <include.h> (brackets)")
   };
-  m_Options = new wxRadioBox(this, ID_RB_OPTIONS, _("Options"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_2, 2, 0, wxDefaultValidator, _T("ID_RB_OPTIONS"));
+  m_Options = new wxRadioBox(this, ID_RB_OPTIONS, _("Options"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_2, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_OPTIONS"));
   m_Options->SetSelection(1);
   m_Options->SetToolTip(_("This will setup the way missing header files are included: By quotation mark or brackets."));
   sizLeft->Add(m_Options, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -99,7 +99,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   	_("Process implementation files only"),
   	_("Process both files (2-step-fix up)")
   };
-  m_FileType = new wxRadioBox(this, ID_RDO_FILE_TYPE, _("File types to process:"), wxDefaultPosition, wxSize(317,95), 3, __wxRadioBoxChoices_3, 3, 0, wxDefaultValidator, _T("ID_RDO_FILE_TYPE"));
+  m_FileType = new wxRadioBox(this, ID_RDO_FILE_TYPE, _("File types to process:"), wxDefaultPosition, wxSize(317,95), 3, __wxRadioBoxChoices_3, 3, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RDO_FILE_TYPE"));
   m_FileType->SetSelection(2);
   m_FileType->SetToolTip(_("This will setup on what file types the plugin shall operate: Header files, implementation files or both (after each other)."));
   sizAdvancedOptions->Add(m_FileType, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
