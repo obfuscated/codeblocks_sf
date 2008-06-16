@@ -1784,7 +1784,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 				{
 					// set LD_LIBRARY_PATH
 					command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << _T(':');
-					command << GetDynamicLinkerPathForTarget(target) << strSPACE;
+					// we have to quote the string, just escape the spaces does not work
+					wxString strLinkerPath=GetDynamicLinkerPathForTarget(target);
+					QuoteStringIfNeeded(strLinkerPath);
+					command << strLinkerPath << strSPACE;
 				}
             }
         }
@@ -1871,7 +1874,7 @@ wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
 	{
 		return wxEmptyString;
 	}
-	
+
 	Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
 	if (compiler)
 	{
