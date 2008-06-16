@@ -121,7 +121,6 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         wxString m_LastIncludeFileFrom;
         wxString m_LastIncludeFile;
-        wxString m_LastKeyword;
 
         wxMenu* m_EditMenu;
         wxMenu* m_SearchMenu;
@@ -149,7 +148,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         wxString m_LastFile;
 
         wxTimer m_FunctionsParsingTimer;
-        
+
         bool m_LexerKeywordsToInclude[9];
 
         DECLARE_EVENT_TABLE()

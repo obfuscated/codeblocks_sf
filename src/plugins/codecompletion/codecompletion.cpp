@@ -116,6 +116,8 @@ int idMenuShowCallTip = wxNewId();
 int idMenuGotoFunction = wxNewId();
 int idMenuGotoPrevFunction = wxNewId();
 int idMenuGotoNextFunction = wxNewId();
+int idMenuGotoDeclaration = wxNewId();
+int idMenuGotoImplementation = wxNewId();
 int idViewClassBrowser = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
@@ -138,6 +140,8 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_MENU(idMenuGotoFunction, CodeCompletion::OnGotoFunction)
     EVT_MENU(idMenuGotoPrevFunction, CodeCompletion::OnGotoPrevFunction)
     EVT_MENU(idMenuGotoNextFunction, CodeCompletion::OnGotoNextFunction)
+    EVT_MENU(idMenuGotoDeclaration, CodeCompletion::OnGotoDeclaration)
+    EVT_MENU(idMenuGotoImplementation, CodeCompletion::OnGotoDeclaration)
     EVT_MENU(idClassMethod, CodeCompletion::OnClassMethod)
     EVT_MENU(idUnimplementedClassMethods, CodeCompletion::OnUnimplementedClassMethods)
     EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
@@ -263,6 +267,8 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_SearchMenu->Append(idMenuGotoFunction, _("Goto function...\tCtrl-Alt-G"));
         m_SearchMenu->Append(idMenuGotoPrevFunction, _("Goto previous function\tCtrl-PgUp"));
         m_SearchMenu->Append(idMenuGotoNextFunction, _("Goto next function\tCtrl-PgDn"));
+        m_SearchMenu->Append(idMenuGotoDeclaration, _("Goto declaration\tCtrl-Shift-."));
+        m_SearchMenu->Append(idMenuGotoImplementation, _("Goto implementation\tCtrl-."));
     }
     else
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Search menu!"));
@@ -287,6 +293,43 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     }
 }
 
+// invariant : on return true : NameUnderCursor is NOT empty
+bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
+{
+    bool ReturnValue = false;
+    if(cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+    {
+        cbStyledTextCtrl* control = ed->GetControl();
+        const int pos = control->GetCurrentPos();
+        const wxString line = control->GetLine(control->LineFromPosition(pos));
+        const wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));
+        wxString inc;
+        if (reg.Matches(line))
+        {
+            inc = reg.GetMatch(line, 1);
+        }
+        if (!inc.IsEmpty())
+        {
+            NameUnderCursor = inc;
+            ReturnValue = true;
+            IsInclude = true;
+        }
+        else
+        {
+            const int ws = control->WordStartPosition(pos, true);
+            const int we = control->WordEndPosition(pos, true);
+            const wxString txt = control->GetTextRange(ws, we);
+            if (!txt.IsEmpty())
+            {
+                NameUnderCursor = txt;
+                ReturnValue = true;
+                IsInclude = false;
+            }
+        }
+    }
+    return ReturnValue;
+} // end of EditorHasNameUnderCursor
+
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
     // if not attached, exit
@@ -299,65 +342,58 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
         if (ed)
         {
             m_LastIncludeFileFrom = ed->GetFilename();
-            cbStyledTextCtrl* control = ed->GetControl();
-            int pos = control->GetCurrentPos();
-            wxString line = control->GetLine(control->LineFromPosition(pos));
-
-            wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));
-            wxString inc;
-            if (reg.Matches(line))
-                inc = reg.GetMatch(line, 1);
-            m_LastIncludeFile.Clear();
-            if (!inc.IsEmpty())
+        }
+        m_LastIncludeFile.Clear();
+        wxString NameUnderCursor;
+        bool IsInclude = false;
+        if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+        {
+            if(IsInclude)
             {
                 wxString msg;
-                msg.Printf(_("Open #include file: '%s'"), inc.c_str());
+                msg.Printf(_("Open #include file: '%s'"), NameUnderCursor.c_str());
                 menu->Insert(0, idOpenIncludeFile, msg);
                 menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
-                m_LastIncludeFile = inc;
-            }
-            else // either #include or keyword-search
-            {
-                int ws = control->WordStartPosition(pos, true);
-                int we = control->WordEndPosition(pos, true);
-                wxString txt = control->GetTextRange(ws, we);
-                m_LastKeyword.Clear();
-                if (!txt.IsEmpty())
-                {
-                    wxString msg;
-                    msg.Printf(_("Find declaration of: '%s'"), txt.c_str());
-                    menu->Insert(0, idGotoDeclaration, msg);
-
-                    msg.Printf(_("Find implementation of: '%s'"), txt.c_str());
-                    menu->Insert(1, idGotoImplementation, msg);
-
-                    menu->Insert(2, wxID_SEPARATOR, wxEmptyString);
-                    m_LastKeyword = txt;
-                }
-            }
-            int insertId = menu->FindItem(_("Insert"));
-            if (insertId != wxNOT_FOUND)
-            {
-                wxMenuItem* insertMenu = menu->FindItem(insertId, NULL);
-                if (insertMenu)
-                {
-                    wxMenu* subMenu = insertMenu->GetSubMenu();
-                    if (subMenu)
-                    {
-                        subMenu->Append(idClassMethod, _("Class method declaration/implementation..."));
-                        subMenu->Append(idUnimplementedClassMethods, _("All class methods without implementation..."));
-                    }
-                    else
-                        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 3!"));
-                }
-                else
-                    Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 2!"));
+                m_LastIncludeFile = NameUnderCursor;
             }
             else
-                Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu!"));
+            {
+                wxString msg;
+                msg.Printf(_("Find declaration of: '%s'"), NameUnderCursor.c_str());
+                menu->Insert(0, idGotoDeclaration, msg);
+
+                msg.Printf(_("Find implementation of: '%s'"), NameUnderCursor.c_str());
+                menu->Insert(1, idGotoImplementation, msg);
+
+                menu->Insert(2, wxID_SEPARATOR, wxEmptyString);
+            }
+        }
+        const int insertId = menu->FindItem(_("Insert"));
+        if (insertId != wxNOT_FOUND)
+        {
+            if (wxMenuItem* insertMenu = menu->FindItem(insertId, 0))
+            {
+                if (wxMenu* subMenu = insertMenu->GetSubMenu())
+                {
+                    subMenu->Append(idClassMethod, _("Class method declaration/implementation..."));
+                    subMenu->Append(idUnimplementedClassMethods, _("All class methods without implementation..."));
+                }
+                else
+                {
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 3!"));
+                }
+            }
+            else
+            {
+                Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 2!"));
+            }
+        }
+        else
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu!"));
         }
     }
-}
+} // end of BuildModuleMenu
 
 bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 {
@@ -445,6 +481,8 @@ void CodeCompletion::OnRelease(bool appShutDown)
         m_SearchMenu->Delete(idMenuGotoFunction);
         m_SearchMenu->Delete(idMenuGotoPrevFunction);
         m_SearchMenu->Delete(idMenuGotoNextFunction);
+        m_SearchMenu->Delete(idMenuGotoDeclaration);
+        m_SearchMenu->Delete(idMenuGotoImplementation);
     }
 }
 
@@ -1514,18 +1552,24 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
 void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    bool hasEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() != 0;
+    const bool HasEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() != 0;
     if (m_EditMenu)
     {
-        m_EditMenu->Enable(idMenuCodeComplete, hasEd);
-        m_EditMenu->Enable(idMenuShowCallTip, hasEd);
+        m_EditMenu->Enable(idMenuCodeComplete, HasEd);
+        m_EditMenu->Enable(idMenuShowCallTip, HasEd);
     }
 
     if (m_SearchMenu)
     {
-        m_SearchMenu->Enable(idMenuGotoFunction,     hasEd);
-        m_SearchMenu->Enable(idMenuGotoPrevFunction, hasEd);
-        m_SearchMenu->Enable(idMenuGotoNextFunction, hasEd);
+        m_SearchMenu->Enable(idMenuGotoFunction,       HasEd);
+        m_SearchMenu->Enable(idMenuGotoPrevFunction,   HasEd);
+        m_SearchMenu->Enable(idMenuGotoNextFunction,   HasEd);
+        wxString NameUnderCursor;
+        bool IsInclude = false;
+        bool HasNameUnderCursor = EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
+        HasNameUnderCursor = HasNameUnderCursor && !IsInclude;
+        m_SearchMenu->Enable(idMenuGotoDeclaration,    HasNameUnderCursor);
+        m_SearchMenu->Enable(idMenuGotoImplementation, HasNameUnderCursor);
     }
 
     if (m_ViewMenu)
@@ -1536,7 +1580,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
     // must do...
     event.Skip();
-}
+} // end of OnUpdateUI
 
 void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
@@ -1621,21 +1665,39 @@ void CodeCompletion::OnUnimplementedClassMethods(wxCommandEvent& event)
 void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-
-    wxString txt = m_LastKeyword;
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Go to decl for '%s'"), txt.c_str());
+    // killerbot : the menu and right click pop up menu ensured there is a name under the cursor
+    // BUT it seems the shortcut keys are not disabled although there menu counter part is
+    // ---> so check is needed and gracefully shut up when the Name under the cursor is empty
+    bool MoveOn = false;
+    wxString NameUnderCursor;
+    bool IsInclude = false;
+    if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+    {
+        if(!IsInclude)
+        {   // alright move on
+            MoveOn = true;
+        }
+    }
+    if(!MoveOn)
+    {
+        return;
+    }
 
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
     if (!parser)
+    {
         parser = m_NativeParsers.FindParserFromActiveProject(); // get parser of active project, then
+    }
     if (!parser)
+    {
         return;
-
+    }
     // get the matching set
     Token* token = 0;
     TokenIdxSet result;
-    parser->GetTokens()->FindMatches(txt, result, true, false);
+    parser->GetTokens()->FindMatches(NameUnderCursor, result, true, false);
 
+//cbMessageBox(wxString::Format(_("TEST: %s %d"), NameUnderCursor.c_str(), result.size()), _("Warning"), wxICON_WARNING);
     // one match
     if (result.size() == 1)
     {
@@ -1654,8 +1716,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             if (sel)
             {
                 // only match tokens that have filename info
-                if ((event.GetId() == idGotoImplementation && !sel->GetImplFilename().IsEmpty()) ||
-                    (event.GetId() == idGotoDeclaration && !sel->GetFilename().IsEmpty()))
+                if ((!sel->GetImplFilename().IsEmpty()) ||
+                    (!sel->GetFilename().IsEmpty()))
                 {
                     selections.Add(sel->DisplayName());
                     int_selections.Add(*it);
@@ -1679,26 +1741,34 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // do we have a token?
     if (token)
     {
-        if(event.GetId() == idGotoImplementation)
+        if(event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation)
         {
-            cbEditor* ed = edMan->Open(token->GetImplFilename());
-            if (ed)
+            if (cbEditor* ed = edMan->Open(token->GetImplFilename()))
+            {
                 ed->GotoLine(token->m_ImplLine - 1);
+            }
             else
-                cbMessageBox(wxString::Format(_("Implementation not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
+            {
+                cbMessageBox(wxString::Format(_("Implementation not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
+            }
         }
         else
         {
-            cbEditor* ed = edMan->Open(token->GetFilename());
-            if (ed)
+            if (cbEditor* ed = edMan->Open(token->GetFilename()))
+            {
                 ed->GotoLine(token->m_Line - 1);
+            }
             else
-                cbMessageBox(wxString::Format(_("Declaration not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
+            {
+                cbMessageBox(wxString::Format(_("Declaration not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
+            }
         }
     }
     else
-        cbMessageBox(wxString::Format(_("Not found: %s"), txt.c_str()), _("Warning"), wxICON_WARNING);
-}
+    {
+        cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
+    }
+} // end of OnGotoDeclaration
 
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
