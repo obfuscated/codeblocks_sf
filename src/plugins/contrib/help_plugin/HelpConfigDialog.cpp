@@ -143,7 +143,7 @@ void HelpConfigDialog::ListChange(wxCommandEvent& event)
 {
   wxListBox *lst = XRCCTRL(*this, "lstHelp", wxListBox);
 
-  if (lst->GetSelection() != m_LastSel)
+  if (lst->GetSelection() != -1 && lst->GetSelection() != m_LastSel)
   {
     UpdateEntry(m_LastSel);
   }
