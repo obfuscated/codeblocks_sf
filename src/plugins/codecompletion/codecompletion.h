@@ -119,9 +119,6 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int m_PageIndex;
         bool m_InitDone;
 
-        wxString m_LastIncludeFileFrom;
-        wxString m_LastIncludeFile;
-
         wxMenu* m_EditMenu;
         wxMenu* m_SearchMenu;
         wxMenu* m_ViewMenu;

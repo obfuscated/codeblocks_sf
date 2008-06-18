@@ -118,6 +118,7 @@ int idMenuGotoPrevFunction = wxNewId();
 int idMenuGotoNextFunction = wxNewId();
 int idMenuGotoDeclaration = wxNewId();
 int idMenuGotoImplementation = wxNewId();
+int idMenuOpenIncludeFile = wxNewId();
 int idViewClassBrowser = wxNewId();
 int idEditorSubMenu = wxNewId();
 int idClassMethod = wxNewId();
@@ -147,6 +148,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_MENU(idGotoDeclaration, CodeCompletion::OnGotoDeclaration)
     EVT_MENU(idGotoImplementation, CodeCompletion::OnGotoDeclaration)
     EVT_MENU(idOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
+    EVT_MENU(idMenuOpenIncludeFile, CodeCompletion::OnOpenIncludeFile)
 
     EVT_MENU(idViewClassBrowser, CodeCompletion::OnViewClassBrowser)
 
@@ -269,6 +271,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         m_SearchMenu->Append(idMenuGotoNextFunction, _("Goto next function\tCtrl-PgDn"));
         m_SearchMenu->Append(idMenuGotoDeclaration, _("Goto declaration\tCtrl-Shift-."));
         m_SearchMenu->Append(idMenuGotoImplementation, _("Goto implementation\tCtrl-."));
+        m_SearchMenu->Append(idMenuOpenIncludeFile, _("Open include file\tCtrl-Alt-."));
     }
     else
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Search menu!"));
@@ -338,12 +341,6 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
     if (type == mtEditorManager)
     {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (ed)
-        {
-            m_LastIncludeFileFrom = ed->GetFilename();
-        }
-        m_LastIncludeFile.Clear();
         wxString NameUnderCursor;
         bool IsInclude = false;
         if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
@@ -354,7 +351,6 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                 msg.Printf(_("Open #include file: '%s'"), NameUnderCursor.c_str());
                 menu->Insert(0, idOpenIncludeFile, msg);
                 menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
-                m_LastIncludeFile = NameUnderCursor;
             }
             else
             {
@@ -483,8 +479,9 @@ void CodeCompletion::OnRelease(bool appShutDown)
         m_SearchMenu->Delete(idMenuGotoNextFunction);
         m_SearchMenu->Delete(idMenuGotoDeclaration);
         m_SearchMenu->Delete(idMenuGotoImplementation);
+        m_SearchMenu->Delete(idMenuOpenIncludeFile);
     }
-}
+} // end of OnRelease
 
 static int SortCCList(const wxString& first, const wxString& second)
 {
@@ -1566,10 +1563,12 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
         m_SearchMenu->Enable(idMenuGotoNextFunction,   HasEd);
         wxString NameUnderCursor;
         bool IsInclude = false;
-        bool HasNameUnderCursor = EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
-        HasNameUnderCursor = HasNameUnderCursor && !IsInclude;
-        m_SearchMenu->Enable(idMenuGotoDeclaration,    HasNameUnderCursor);
-        m_SearchMenu->Enable(idMenuGotoImplementation, HasNameUnderCursor);
+        const bool HasNameUnderCursor = EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
+        const bool GotoEnable = HasNameUnderCursor && !IsInclude;
+        m_SearchMenu->Enable(idMenuGotoDeclaration,    GotoEnable);
+        m_SearchMenu->Enable(idMenuGotoImplementation, GotoEnable);
+        const bool IncludeEnable = HasNameUnderCursor && IsInclude;
+        m_SearchMenu->Enable(idMenuOpenIncludeFile, IncludeEnable);
     }
 
     if (m_ViewMenu)
@@ -1772,6 +1771,28 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
+    wxString LastIncludeFileFrom;
+    if (const cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+    {
+        LastIncludeFileFrom = ed->GetFilename();
+    }
+    // check one more time because menu entries are enabled only when it makes sense
+    // but the shortcut accelerator can always be executed
+    bool MoveOn = false;
+    wxString NameUnderCursor;
+    bool IsInclude = false;
+    if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+    {
+        if(IsInclude)
+        {
+            MoveOn = true;
+        }
+    }
+    if(!MoveOn)
+    { // nothing under cursor or thing under cursor is not an include
+        return;
+    }
+
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
     if (!parser)
     {
@@ -1782,7 +1803,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     {
         // search in all parser's include dirs
         wxString tmp;
-        wxArrayString FoundSet = parser->FindFileInIncludeDirs(m_LastIncludeFile);
+        wxArrayString FoundSet = parser->FindFileInIncludeDirs(NameUnderCursor);
         if(FoundSet.GetCount() > static_cast<size_t>(1))
         {    // more then 1 hit : let the user choose
             SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
@@ -1793,7 +1814,9 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
               tmp = Dialog.GetIncludeFile();
             }
             else
+            {
                 return; // user cancelled the dialog...
+            }
         }
         else if(FoundSet.GetCount())
         {
@@ -1809,8 +1832,8 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     }
 
     // look in the same dir as the source file
-    wxFileName fname = m_LastIncludeFile;
-    fname.Assign(wxFileName(m_LastIncludeFileFrom).GetPath(wxPATH_GET_SEPARATOR) + m_LastIncludeFile);
+    wxFileName fname = NameUnderCursor;
+    fname.Assign(wxFileName(LastIncludeFileFrom).GetPath(wxPATH_GET_SEPARATOR) + NameUnderCursor);
     if (wxFileExists(fname.GetFullPath()))
     {
         EditorManager* edMan = Manager::Get()->GetEditorManager();
@@ -1818,7 +1841,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
         return;
     }
 
-    cbMessageBox(wxString::Format(_("Not found: %s"), m_LastIncludeFile.c_str()), _("Warning"), wxICON_WARNING);
+    cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
 } // end of OnOpenIncludeFile
 
 void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
