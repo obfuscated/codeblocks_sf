@@ -23,26 +23,30 @@
 #include <wx/filedlg.h>
 #include "filefilters.h"
 
-cbWorkspace::cbWorkspace(const wxString& filename) : m_Title(_("Default workspace"))
+cbWorkspace::cbWorkspace(const wxString& filename) :
+    m_IsOK(true),
+    m_IsDefault(true),
+    m_Modified(false),
+    m_Filename(DEFAULT_WORKSPACE),
+    m_Title(_("Default workspace"))
 {
     //ctor
-    if (filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty() )
+    if ( filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty() )
     {
-        wxString tmp;
         // if no filename given, use the default workspace
-        tmp = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH;
+        wxString tmp = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH;
+
         if (!wxDirExists(tmp))
             wxMkdir(tmp, 0755);
+
         tmp << wxFILE_SEP_PATH << DEFAULT_WORKSPACE;
         m_Filename = tmp;
-        m_IsDefault = true;
     }
     else
     {
         m_Filename = filename;
+        m_IsDefault = false;
     }
-    m_IsOK = true;
-    m_Modified = false;
 
     if ( !filename.IsEmpty() )
     {
@@ -75,16 +79,16 @@ void cbWorkspace::Load()
 
     if (FileTypeOf(fname) == ftCodeBlocksWorkspace)
     {
-    	IBaseWorkspaceLoader* pWsp = new WorkspaceLoader;
+        IBaseWorkspaceLoader* pWsp = new WorkspaceLoader;
 
-		wxString Title;
-		m_IsOK = pWsp && (pWsp->Open(fname, Title) || m_IsDefault);
-		if(!Title.IsEmpty())
-		{
-			m_Title = Title;
-		}
+        wxString Title;
+        m_IsOK = pWsp && (pWsp->Open(fname, Title) || m_IsDefault);
+        if(!Title.IsEmpty())
+        {
+            m_Title = Title;
+        }
 
-		delete pWsp;
+        delete pWsp;
     }
 
     m_Filename.SetExt(FileFilters::WORKSPACE_EXT);
@@ -119,10 +123,16 @@ bool cbWorkspace::SaveAs(const wxString& filename)
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return false;
+
     m_Filename = dlg->GetPath();
-    if(m_Filename.GetExt() == wxEmptyString)
+    if (m_Filename.GetExt() == wxEmptyString)
         m_Filename.SetExt(_T("workspace"));
-    m_IsDefault = false;
+
+    if (m_Filename.GetFullName().Matches(DEFAULT_WORKSPACE))
+        m_IsDefault = true;
+    else
+        m_IsDefault = false;
+
     return Save(true);
 }
 
@@ -135,4 +145,5 @@ void cbWorkspace::SetTitle(const wxString& title)
 void cbWorkspace::SetModified(bool modified)
 {
     m_Modified = modified;
+    // Manager::Get()->GetLogManager()->DebugLog(F(_T("Setting workspace to modified = \"%s\""), modified ? _T("true") : _T("false")));
 }
