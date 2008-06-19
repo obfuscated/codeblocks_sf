@@ -18,11 +18,11 @@
     #include <wx/checkbox.h>
     #include <wx/button.h>
     #include <wx/notebook.h>
+    #include <wx/radiobox.h>
 #endif
 
 #include "replacedlg.h"
 
-#include <wx/radiobox.h>
 
 #define CONF_GROUP _T("/replace_options")
 
