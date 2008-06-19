@@ -311,7 +311,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
         ProjectBuildTarget* target = project->GetBuildTarget(i);
-        if (target)
+        if (target && target->SupportsCurrentPlatform())
         {
             if (compiler)
             {
@@ -491,7 +491,7 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
         return;
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Add project %s in parsing queue"), project->GetTitle().c_str()));
-    
+
     ReparseProject(project);
 }
 
