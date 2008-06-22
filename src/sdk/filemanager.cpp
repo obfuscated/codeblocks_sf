@@ -58,7 +58,7 @@ void FileLoader::operator()()
     len = file.Length();
 
     data = new char[len+4];
-	char *dp = data + len;
+    char *dp = data + len;
     *dp++ = '\0';
     *dp++ = '\0';
     *dp++ = '\0';
@@ -100,7 +100,7 @@ void URLLoader::operator()()
 
     data = buffer.Data();
     len = buffer.Length();
-	buffer.Append("\0\0\0\0", 4);
+    buffer.Append("\0\0\0\0", 4);
     Ready();
 }
 
@@ -274,19 +274,40 @@ bool FileManager::Save(const wxString& name, const char* data, size_t len)
     wxString tempName(name + _T(".cbTemp"));
     do
     {
-        wxFile f(tempName, wxFile::write);
-        if(!f.IsOpened())
+        if( !wxCopyFile(name, tempName) )
+        {
             return false;
+        }
 
+        wxFile f(name, wxFile::write);
+        if ( !f.IsOpened() )
+        {
+            return false;
+        }
         if(f.Write(data, len) != len)
         {
             f.Close();
-            wxRemoveFile(tempName);
+            // Keep the backup file as the original file has been destroyed
+            //wxRemoveFile(tempName);
             return false;
         }
+
+        f.Close();
+
     }while(false);
 
-    return ReplaceFile(name, tempName);
+    if (Manager::IsAppShuttingDown())
+    {
+        // app shut down, forget delayed deletion
+        wxRemoveFile(tempName);
+    }
+    else
+    {
+        // issue a delayed deletion of the back'd up (old) file
+        delayedDeleteThread.Queue(new DelayedDelete(tempName));
+    }
+
+    return true;
 }
 
 bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
@@ -309,19 +330,39 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
     wxString tempName(name + _T(".cbTemp"));
     do
     {
-        wxFile f(tempName, wxFile::write);
-        if(!f.IsOpened())
+        if (!wxCopyFile(name, tempName))
+        {
             return false;
+        }
 
+        wxFile f(name, wxFile::write);
+        if ( !f.IsOpened() )
+        {
+            return false;
+        }
         if(WriteWxStringToFile(f, data, encoding, bom) == false)
         {
             f.Close();
-            wxRemoveFile(tempName);
+            // Keep the backup file as the original file has been destroyed
+            //wxRemoveFile(tempName);
             return false;
         }
+
+        f.Close();
+
     }while(false);
 
-    return ReplaceFile(name, tempName);
+    if (Manager::IsAppShuttingDown())
+    {
+        // app shut down, forget delayed deletion
+        wxRemoveFile(tempName);
+    }
+    else
+    {
+        // issue a delayed deletion of the back'd up (old) file
+        delayedDeleteThread.Queue(new DelayedDelete(tempName));
+    }
+    return true;
 }
 
 bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file)
