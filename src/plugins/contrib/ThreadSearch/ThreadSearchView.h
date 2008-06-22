@@ -235,6 +235,7 @@ public:
 																// when user double clicks on a search result
 
 	void OnChkSearchOpenFiles(wxCommandEvent &event);
+	void OnChkSearchTargetFiles(wxCommandEvent &event);
 	void OnChkSearchProjectFiles(wxCommandEvent &event);
 	void OnChkSearchWorkspaceFiles(wxCommandEvent &event);
 	void OnChkSearchDirectoryFiles(wxCommandEvent &event);

@@ -38,12 +38,14 @@ public:
 
 	// Getters
     bool GetSearchInOpenFiles()      const;
+    bool GetSearchInTargetFiles()    const;
     bool GetSearchInProjectFiles()   const;
     bool GetSearchInWorkspaceFiles() const;
     bool GetSearchInDirectory()      const;
 
 	// Setters
     void SetSearchInOpenFiles     (bool bSearchInOpenFiles);
+    void SetSearchInTargetFiles   (bool bSearchInTargetFiles);
     void SetSearchInProjectFiles  (bool bSearchInProjectFiles);
     void SetSearchInWorkspaceFiles(bool bSearchInWorkspaceFiles);
     void SetSearchInDirectory     (bool bSearchInDirectory);
@@ -57,6 +59,7 @@ private:
 protected:
     // begin wxGlade: SearchInPanel::attributes
     wxCheckBox* m_pChkSearchOpenFiles;
+    wxCheckBox* m_pChkSearchTargetFiles;
     wxCheckBox* m_pChkSearchProjectFiles;
     wxCheckBox* m_pChkSearchWorkspaceFiles;
     wxCheckBox* m_pChkSearchDir;
@@ -75,11 +78,15 @@ public:
     // project checkboxes (it is stupid to search both in project and
     // workspace because project is already included in workpsace).
 
-	/** If project checkbox is checked, we uncheck if necessary the workspace checkbox.
+	/** If target checkbox is checked, we uncheck if necessary the project and workspace checkboxes.
+	  */
+    void OnChkSearchTargetFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
+
+	/** If project checkbox is checked, we uncheck if necessary the target and workspace checkboxes.
 	  */
     void OnChkSearchProjectFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
-	/** If workspace checkbox is checked, we uncheck if necessary the project checkbox.
+	/** If workspace checkbox is checked, we uncheck if necessary the target and project checkboxes.
 	  */
     void OnChkSearchWorkspaceFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 }; // wxGlade: end class

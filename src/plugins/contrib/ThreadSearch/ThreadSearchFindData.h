@@ -21,7 +21,8 @@ enum eSearchScope
 	ScopeOpenFiles      = 1,
 	ScopeProjectFiles   = 2,
 	ScopeWorkspaceFiles = 4,
-	ScopeDirectoryFiles = 8
+	ScopeDirectoryFiles = 8,
+	ScopeTargetFiles    = 16
 };
 
 
@@ -39,6 +40,7 @@ public:
 	bool MustSearchInProject  () {return (m_Scope & ScopeProjectFiles)   != 0;}
 	bool MustSearchInWorkspace() {return (m_Scope & ScopeWorkspaceFiles) != 0;}
 	bool MustSearchInDirectory() {return (m_Scope & ScopeDirectoryFiles) != 0;}
+	bool MustSearchInTarget   () {return (m_Scope & ScopeTargetFiles)    != 0;}
 
 	// Setters
 	void SetFindText       (const wxString& findText)   {m_FindText        = findText;}

@@ -275,6 +275,7 @@ void ThreadSearchConfPanel::set_properties()
     m_pPnlDirParams->SetSearchMask(findData.GetSearchMask());
 
     m_pPnlSearchIn->SetSearchInOpenFiles(findData.MustSearchInOpenFiles());
+    m_pPnlSearchIn->SetSearchInTargetFiles(findData.MustSearchInTarget());
     m_pPnlSearchIn->SetSearchInProjectFiles(findData.MustSearchInProject());
     m_pPnlSearchIn->SetSearchInWorkspaceFiles(findData.MustSearchInWorkspace());
     m_pPnlSearchIn->SetSearchInDirectory(findData.MustSearchInDirectory());
@@ -344,6 +345,7 @@ void ThreadSearchConfPanel::OnApply()
 	findData.SetRegEx          (m_pChkRegExp->IsChecked());
 
 	findData.UpdateSearchScope(ScopeOpenFiles,      m_pPnlSearchIn->GetSearchInOpenFiles());
+	findData.UpdateSearchScope(ScopeTargetFiles,    m_pPnlSearchIn->GetSearchInTargetFiles());
 	findData.UpdateSearchScope(ScopeProjectFiles,   m_pPnlSearchIn->GetSearchInProjectFiles());
 	findData.UpdateSearchScope(ScopeWorkspaceFiles, m_pPnlSearchIn->GetSearchInWorkspaceFiles());
 	findData.UpdateSearchScope(ScopeDirectoryFiles, m_pPnlSearchIn->GetSearchInDirectory());

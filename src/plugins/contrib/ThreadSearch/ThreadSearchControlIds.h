@@ -27,6 +27,7 @@ enum eControlIds
 	idChkSearchDirRecurse,
 	idChkSearchDirHidden,
 	idChkSearchOpenFiles,
+	idChkSearchTargetFiles,
 	idChkSearchProjectFiles,
 	idChkSearchWorkspaceFiles,
 	idChkSearchDirectoryFiles,

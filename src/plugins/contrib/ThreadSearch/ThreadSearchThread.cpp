@@ -18,6 +18,7 @@
 #ifndef CB_PRECOMP
 	#include "cbeditor.h"
 	#include "configmanager.h"
+	#include "projectbuildtarget.h"
 #endif
 
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
@@ -119,6 +120,21 @@ void *ThreadSearchThread::Entry()
 		{
 			AddProjectFiles(m_FilePaths, *pProject);
 			if ( TestDestroy() == true ) return 0;
+		}
+	}
+	else if ( m_FindData.MustSearchInTarget() == true )
+	{
+		// Search in target files ?
+		// Necessary only if not already parsed in project part
+		cbProject* pProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+		if ( pProject != NULL )
+		{
+			ProjectBuildTarget *pTarget = pProject->GetBuildTarget(pProject->GetActiveBuildTarget());
+			if ( pTarget != 0 )
+			{
+				AddTargetFiles(m_FilePaths, *pTarget);
+				if ( TestDestroy() == true ) return 0;
+			}
 		}
 	}
 
@@ -282,6 +298,20 @@ void ThreadSearchThread::AddProjectFiles(wxSortedArrayString& sortedArrayString,
 	for ( int i = 0; i < project.GetFilesCount(); ++i )
 	{
 		AddNewItem(sortedArrayString, project.GetFile(i)->file.GetFullPath());
+		if ( TestDestroy() == true ) return;
+	}
+}
+
+
+void ThreadSearchThread::AddTargetFiles(wxSortedArrayString& sortedArrayString, ProjectBuildTarget& target)
+{
+	// Adds target file paths to array only if they do not already exist.
+	// Same path may exist if we parse both open files and target files
+	// for examle.
+	for (FilesList::Node* it = target.GetFilesList().GetFirst(); it; it = it->GetNext())
+	{
+		ProjectFile* pf = it->GetData();
+		AddNewItem(sortedArrayString, pf->file.GetFullPath());
 		if ( TestDestroy() == true ) return;
 	}
 }

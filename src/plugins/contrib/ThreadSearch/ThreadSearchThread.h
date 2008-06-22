@@ -30,6 +30,7 @@
 class wxString;
 
 class cbProject;
+class ProjectBuildTarget;
 class cbStyledTextCtrl;
 
 class TextFileSearcher;
@@ -90,6 +91,12 @@ private:
 	  * @param project           : project whose file paths will be added to sortedArrayString
       */
     void AddProjectFiles(wxSortedArrayString& sortedArrayString, cbProject& project);
+
+    /** Adds target file paths to the strings array avoiding duplicated paths.
+	  * @param sortedArrayString : strings array containing file paths.
+	  * @param target            : target whose file paths will be added to sortedArrayString
+      */
+    void AddTargetFiles(wxSortedArrayString& sortedArrayString, ProjectBuildTarget& target);
 
 	ThreadSearchView*    m_pThreadSearchView; // Worker thread caller
 	ThreadSearchFindData m_FindData;          // Structure containing search parameters

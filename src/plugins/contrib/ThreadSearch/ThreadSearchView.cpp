@@ -139,6 +139,7 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     // end wxGlade
 
     EVT_CHECKBOX(idChkSearchOpenFiles,      ThreadSearchView::OnChkSearchOpenFiles)
+    EVT_CHECKBOX(idChkSearchTargetFiles,    ThreadSearchView::OnChkSearchTargetFiles)
     EVT_CHECKBOX(idChkSearchProjectFiles,   ThreadSearchView::OnChkSearchProjectFiles)
     EVT_CHECKBOX(idChkSearchWorkspaceFiles, ThreadSearchView::OnChkSearchWorkspaceFiles)
     EVT_CHECKBOX(idChkSearchDirectoryFiles, ThreadSearchView::OnChkSearchDirectoryFiles)
@@ -274,6 +275,7 @@ void ThreadSearchView::set_properties()
     m_pPnlDirParams->SetSearchMask(findData.GetSearchMask());
 
     m_pPnlSearchIn->SetSearchInOpenFiles(findData.MustSearchInOpenFiles());
+    m_pPnlSearchIn->SetSearchInTargetFiles(findData.MustSearchInTarget());
     m_pPnlSearchIn->SetSearchInProjectFiles(findData.MustSearchInProject());
     m_pPnlSearchIn->SetSearchInWorkspaceFiles(findData.MustSearchInWorkspace());
     m_pPnlSearchIn->SetSearchInDirectory(findData.MustSearchInDirectory());
@@ -565,6 +567,7 @@ void ThreadSearchView::Update()
 	m_ThreadSearchPlugin.GetFindData(findData);
 
 	m_pPnlSearchIn->SetSearchInOpenFiles     (findData.MustSearchInOpenFiles());
+	m_pPnlSearchIn->SetSearchInTargetFiles   (findData.MustSearchInTarget   ());
 	m_pPnlSearchIn->SetSearchInProjectFiles  (findData.MustSearchInProject  ());
 	m_pPnlSearchIn->SetSearchInWorkspaceFiles(findData.MustSearchInWorkspace());
 	m_pPnlSearchIn->SetSearchInDirectory     (findData.MustSearchInDirectory());
@@ -585,6 +588,13 @@ void ThreadSearchView::Update()
 void ThreadSearchView::OnChkSearchOpenFiles(wxCommandEvent &event)
 {
 	m_ThreadSearchPlugin.GetFindData().UpdateSearchScope(ScopeOpenFiles, event.IsChecked());
+	event.Skip();
+}
+
+
+void ThreadSearchView::OnChkSearchTargetFiles(wxCommandEvent &event)
+{
+	m_ThreadSearchPlugin.GetFindData().UpdateSearchScope(ScopeTargetFiles, event.IsChecked());
 	event.Skip();
 }
 
@@ -649,6 +659,7 @@ void ThreadSearchView::EnableControls(bool enable)
 		idChkSearchDirRecurse,
 		idChkSearchDirHidden,
 		idChkSearchOpenFiles,
+		idChkSearchTargetFiles,
 		idChkSearchProjectFiles,
 		idChkSearchWorkspaceFiles,
 		idChkSearchDirectoryFiles,
