@@ -3,6 +3,7 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
+#include <wx/dynarray.h>
 #include <wx/file.h>
 #include <wx/filefn.h>
 #include <wx/ffile.h>
@@ -376,10 +377,12 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
                     SetVersionAndSettings(*m_Project);
                     UpdateVersionHeader();
 
-                    for (int i = 1; i < m_Project->GetBuildTargetsCount(); ++i)
+                    wxArrayInt target_array;
+                    for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
                     {
-                        m_Project->AddFile(i, m_versionHeaderPath, true, true, 0);
+                        target_array.Add(i);
                     }
+                    Manager::Get()->GetProjectManager()->AddFileToProject(m_versionHeaderPath, m_Project, target_array);
                     Manager::Get()->GetProjectManager()->RebuildTree();
                     wxMessageBox(_("Project configured!"));
                 }
