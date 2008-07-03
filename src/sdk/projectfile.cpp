@@ -54,18 +54,18 @@ void ProjectFile::Rename(const wxString& new_name)
 {
     wxString path = file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
-	file.Assign(path + new_name);
-	relativeFilename = relativeFilename.BeforeLast(wxFILE_SEP_PATH);
-	relativeFilename.IsEmpty() || relativeFilename.Append(wxFILE_SEP_PATH);
-	relativeFilename.Append(new_name);
+    file.Assign(path + new_name);
+    relativeFilename = relativeFilename.BeforeLast(wxFILE_SEP_PATH);
+    relativeFilename.IsEmpty() || relativeFilename.Append(wxFILE_SEP_PATH);
+    relativeFilename.Append(new_name);
 
-	UpdateFileDetails();
-	if (project)
-	{
-		project->ProjectFileRenamed(this);
-		project->CalculateCommonTopLevelPath();
-		project->SetModified(true);
-	}
+    if (project)
+    {
+        project->ProjectFileRenamed(this);
+        project->CalculateCommonTopLevelPath();
+        project->SetModified(true);
+    }
+    UpdateFileDetails();
 }
 
 void ProjectFile::AddBuildTarget(const wxString& targetName)
@@ -80,10 +80,10 @@ void ProjectFile::AddBuildTarget(const wxString& targetName)
         if (target && !target->m_Files.Find(this))
             target->m_Files.Append(this);
     }
-    
+
     // also do this for auto-generated files
     for (size_t i = 0; i < generatedFiles.size(); ++i)
-		generatedFiles[i]->AddBuildTarget(targetName);
+        generatedFiles[i]->AddBuildTarget(targetName);
 }
 
 void ProjectFile::RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName)
@@ -94,7 +94,7 @@ void ProjectFile::RenameBuildTarget(const wxString& oldTargetName, const wxStrin
 
     // also do this for auto-generated files
     for (size_t i = 0; i < generatedFiles.size(); ++i)
-		generatedFiles[i]->RenameBuildTarget(oldTargetName, newTargetName);
+        generatedFiles[i]->RenameBuildTarget(oldTargetName, newTargetName);
 }
 
 void ProjectFile::RemoveBuildTarget(const wxString& targetName)
@@ -115,7 +115,7 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
 
     // also do this for auto-generated files
     for (size_t i = 0; i < generatedFiles.size(); ++i)
-		generatedFiles[i]->RemoveBuildTarget(targetName);
+        generatedFiles[i]->RemoveBuildTarget(targetName);
 }
 
 bool ProjectFile::ShowOptions(wxWindow* parent)
@@ -134,12 +134,12 @@ wxString ProjectFile::GetBaseName() const
 
 const wxString& ProjectFile::GetObjName()
 {
-	if (generatedFiles.size())
-	{
-		// for files generating other files,
-		// report the first generated file's "object name"
-		return generatedFiles[0]->GetObjName();
-	}
+    if (generatedFiles.size())
+    {
+        // for files generating other files,
+        // report the first generated file's "object name"
+        return generatedFiles[0]->GetObjName();
+    }
 
     if (m_ObjName.IsEmpty())
         SetObjName(relativeToCommonTopLevelPath);
@@ -383,12 +383,12 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
         if (pf->GetParentProject())
         {
             wxFileName fname(pf->relativeToCommonTopLevelPath);
-			if (pf->generatedFiles.size())
-			{
-				// for files generating other files,
-				// use the first generated file's "object name"
-				fname.Assign(pf->generatedFiles[0]->relativeToCommonTopLevelPath);
-			}
+            if (pf->generatedFiles.size())
+            {
+                // for files generating other files,
+                // use the first generated file's "object name"
+                fname.Assign(pf->generatedFiles[0]->relativeToCommonTopLevelPath);
+            }
             /* NOTE: In case the source file resides in a different volume
             * than the volume where project file is,
             * then the object file will be created as follows.
