@@ -344,16 +344,17 @@ void Bindings::SetDefaultsWxWidgets()
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxBITMAP"),                     _T("wx/gdicmn.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxCOMPILE_TIME_ASSERT"),        _T("wx/debug.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxCOMPILE_TIME_ASSERT2"),       _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_DECLARE"),          _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_DECLARE_MEMBER"),   _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_LOCKER"),           _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxENTER_CRIT_SECT"),            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFAIL"),                       _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxFAIL_MSG"),                   _T("wx/debug.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_DECLARE"),          _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_DECLARE_MEMBER"),   _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_LOCKER"),           _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxDYNLIB_FUNCTION"),            _T("wx/dynlib.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxENTER_CRIT_SECT"),            _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFAIL"),                       _T("wx/debug.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxFAIL_MSG"),                   _T("wx/debug.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxICON"),                       _T("wx/gdicmn.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLEAVE_CRIT_SECT"),            _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxLL"),                         _T("wx/longlong.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxTRANSLATE"),                  _T("wx/intl.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLEAVE_CRIT_SECT"),            _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxLL"),                         _T("wx/longlong.h"));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxTRANSLATE"),                  _T("wx/intl.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxULL"),                        _T("wx/longlong.h"));
 
   // All ::wx methods
@@ -779,7 +780,7 @@ void Bindings::SetDefaultsWxWidgets()
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxList"),                       _T("wx/list.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxListbook"),                   _T("wx/listbook.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxListCtrl"),                   _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListEvent"),                  _T("wx/listctrl.h "));
+  AddBinding(_T("wxWidgets_2_6_4"),_T("wxListEvent"),                  _T("wx/listctrl.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxListItem"),                   _T("wx/listctrl.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxListItemAttr"),               _T("wx/listctrl.h"));
   AddBinding(_T("wxWidgets_2_6_4"),_T("wxListView"),                   _T("wx/listctrl.h"));
@@ -1045,9 +1046,10 @@ void Bindings::SetDefaultsWxWidgets()
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxBITMAP"),                           _T("wx/gdicmn.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxCOMPILE_TIME_ASSERT"),              _T("wx/debug.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxCOMPILE_TIME_ASSERT2"),             _T("wx/debug.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_DECLARE"),                _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_DECLARE_MEMBER"),         _T("wx/thread.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("wxCRIT_SECT_LOCKER"),                 _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_DECLARE"),                _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_DECLARE_MEMBER"),         _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxCRIT_SECT_LOCKER"),                 _T("wx/thread.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxDYNLIB_FUNCTION"),                  _T("wx/dynlib.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxENTER_CRIT_SECT"),                  _T("wx/thread.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxFAIL"),                             _T("wx/debug.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxFAIL_MSG"),                         _T("wx/debug.h"));
@@ -1545,7 +1547,7 @@ void Bindings::SetDefaultsWxWidgets()
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxListbook"),                         _T("wx/listbook.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxListBox"),                          _T("wx/listbox.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxListCtrl"),                         _T("wx/listctrl.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListEvent"),                        _T("wx/listctrl.h "));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxListEvent"),                        _T("wx/listctrl.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxListItem"),                         _T("wx/listctrl.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxListItemAttr"),                     _T("wx/listctrl.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxListView"),                         _T("wx/listctrl.h"));
