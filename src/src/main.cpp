@@ -2577,6 +2577,9 @@ void MainFrame::OnSize(wxSizeEvent& event)
 
 void MainFrame::OnApplicationClose(wxCloseEvent& event)
 {
+    if (m_InitiatedShutdown)
+        return;
+
     CodeBlocksEvent evt(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evt);
     Manager::Yield();

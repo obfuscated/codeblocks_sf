@@ -16,10 +16,15 @@
 #endif
 
 #include <wx/ffile.h>
+#include <wx/filename.h>
 #include <wx/tokenzr.h>
+#include <wx/regex.h>
 
 #include "cbstyledtextctrl.h"
 #include "fileanalysis.h"
+
+const wxString reInclude = _T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]");
+const wxString reFwdDecl = _T("class[ \\t]*([A-Za-z]+[A-Za-z0-9_]*);");
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -110,6 +115,20 @@ void FileAnalysis::SaveFile(const wxString& Prepend)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+wxString FileAnalysis::GetNextLine()
+{
+  if (HasMoreLines())
+  {
+    wxString LineOfFile = m_LinesOfFile.Item(m_CurrentLine);
+    m_CurrentLine++;
+    return LineOfFile;
+  }
+  else
+    return wxEmptyString;
+}
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
 wxString FileAnalysis::GetEOL()
 {
   wxString EOL = _T('\n');
@@ -142,63 +161,53 @@ wxString FileAnalysis::GetEOL()
 wxArrayString FileAnalysis::ParseForIncludes()
 {
   if (m_Verbose)
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Searching in \"")+m_FileName+_T("\" for included headers...")));
+    m_Log << _T("- Searching in \"") << m_FileName << _T("\" for included headers.\n");
 
   m_IncludedHeaders.Clear();
 
   for ( size_t i=0; i<m_LinesOfFile.GetCount(); i++ )
   {
-    wxString Line = m_LinesOfFile.Item(i); Line.Trim(false);
-    if ( !Line.IsEmpty() && Line.GetChar(0)==_T('#') )
+    wxString Line = m_LinesOfFile.Item(i);
+    const wxRegEx RegEx(reInclude);
+    wxString Include;
+    if (RegEx.Matches(Line))
     {
-      // line with hash in front (e.g. #include, #define, #ifdef...)
-      Line.Remove(0,1).Trim(false);
-      if ( Line.StartsWith(_T("include")) )
+      Include = RegEx.GetMatch(Line, 1);
+    }
+    // Include is empty if the RegEx did *not* match.
+    if (!Include.IsEmpty())
+    {
+      if (m_Verbose)
+        m_Log << _T("- Include detected via RegEx: \"") << Include << _T("\".\n");
+      m_IncludedHeaders.Add(Include);
+
+      // if it's a source file try to obtain the included header file
+      if ( !m_IsHeaderFile )
       {
-        // line with #include in front -> adding included file into list
-        Line.Remove(0,7).Trim(false);
-        if ( Line.StartsWith(_T("\"")) || Line.StartsWith(_T("<")) )
+        wxFileName FileToParseFile(m_FileName);
+        wxFileName IncludeFile(Include); // e.g. myheader.h
+        if ( FileToParseFile.GetName().IsSameAs(IncludeFile.GetName()) )
         {
-          wxChar End = (Line.GetChar(0)==_T('"')) ? _T('"') : _T('>');
-          Line.Remove(0,1);
-          if ( Line.Find(End) != wxNOT_FOUND )
-          {
-            Line.Remove(Line.Find(End));
-            if ( m_IncludedHeaders.Index(Line) == wxNOT_FOUND )
-            {
-              m_IncludedHeaders.Add(Line);
+          if (m_Verbose)
+            m_Log << _T("- Recursing into \"") << IncludeFile.GetFullName() << _T("\" for more included headers.\n");
 
-              // if it's a source file try to obtain the included header file
-              if ( !m_IsHeaderFile )
-              {
-                wxFileName FileToParseFile(m_FileName);
-                wxFileName IncludeFile(Line); // e.g. myheader.h
-                if ( FileToParseFile.GetName().IsSameAs(IncludeFile.GetName()) )
-                {
-                  if (m_Verbose)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Recursing into \"")+IncludeFile.GetFullName()+_T("\" for more included headers...")));
+          // "Recursion" -> do another file analysis on the header file
+          FileAnalysis fa(FileToParseFile.GetPath()+
+                          FileToParseFile.GetPathSeparator()+
+                          IncludeFile.GetFullName());
+          fa.LoadFile();
+          wxArrayString MoreIncludedHeaders = fa.ParseForIncludes();
 
-                  // "Recursion" -> do another file analysis on the header file
-                  FileAnalysis fa(FileToParseFile.GetPath()+
-                                  FileToParseFile.GetPathSeparator()+
-                                  IncludeFile.GetFullName());
-                  fa.LoadFile();
-                  wxArrayString MoreIncludedHeaders = fa.ParseForIncludes();
+          // Only add headers that are not included by the source file
+          for ( size_t i=0; i<MoreIncludedHeaders.GetCount(); i++ )
+            if ( m_IncludedHeaders.Index(MoreIncludedHeaders[i]) == wxNOT_FOUND )
+              m_IncludedHeaders.Add(MoreIncludedHeaders[i]);
 
-                  // Only add headers that are not included by the source file
-                  for ( size_t i=0; i<MoreIncludedHeaders.GetCount(); i++ )
-                    if ( m_IncludedHeaders.Index(MoreIncludedHeaders[i]) == wxNOT_FOUND )
-                      m_IncludedHeaders.Add(MoreIncludedHeaders[i]);
-
-                  m_HasHeaderFile = true;
-                }
-              }
-            }
-          }
+          m_Log << fa.GetLog();
+          m_HasHeaderFile = true;
         }
-      }// definitely line with #include
-      // else: line with e.g. #define, #ifdef or similar (skipped)
-    }// possibly line with #include
+      }
+    }
   }
 
   return m_IncludedHeaders;
@@ -206,13 +215,48 @@ wxArrayString FileAnalysis::ParseForIncludes()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+wxArrayString FileAnalysis::ParseForFwdDecls()
+{
+  if (m_Verbose)
+    m_Log << _T("- Searching in \"") << m_FileName << _T("\" for forward decls.\n");
+
+  m_ForwardDecls.Clear();
+
+  if (!m_IsHeaderFile)
+    return m_ForwardDecls;
+
+  for ( size_t i=0; i<m_LinesOfFile.GetCount(); i++ )
+  {
+    wxString Line = m_LinesOfFile.Item(i);
+    const wxRegEx RegEx(reFwdDecl);
+    wxString FdwDecl;
+    if (RegEx.Matches(Line))
+    {
+      FdwDecl = RegEx.GetMatch(Line, 1);
+    }
+    // Include is empty if the RegEx did *not* match.
+    if (!FdwDecl.IsEmpty())
+    {
+      if (m_Verbose)
+        m_Log << _T("- Forward decl detected via RegEx: \"") << FdwDecl << _T("\".");
+      m_ForwardDecls.Add(FdwDecl);
+    }
+  }
+
+  return m_ForwardDecls;
+}
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
 void FileAnalysis::Reset()
 {
   m_Editor = NULL;
+  m_Log.Clear();
   m_FileName.Empty();
   m_FileContent.Empty();
   m_LinesOfFile.Clear();
   m_IncludedHeaders.Clear();
+  m_ForwardDecls.Clear();
   m_CurrentLine = 0;
   m_IsHeaderFile  = false;
   m_HasHeaderFile = false;

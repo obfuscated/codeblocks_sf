@@ -42,17 +42,7 @@ public:
   { m_CurrentLine = 0; }
 
   /// Returns the nest line in a file for iterators
-  wxString GetNextLine()
-  {
-    if (HasMoreLines())
-    {
-      wxString LineOfFile = m_LinesOfFile.Item(m_CurrentLine);
-      m_CurrentLine++;
-      return LineOfFile;
-    }
-    else
-      return wxEmptyString;
-  }
+  wxString GetNextLine();
 
   /// Detects and returns the end-of-line type of the file
   wxString GetEOL();
@@ -60,9 +50,20 @@ public:
   /// Parses the file for includes and takes included header file into account
   wxArrayString ParseForIncludes();
 
-  /// Returns the includes files (parsed using ParseForIncludes before)
+  /// Returns the include files (parsed using ParseForIncludes before)
   wxArrayString GetIncludes()
   { return m_IncludedHeaders; }
+
+  /// Parses the file for forward declarations (only if it's a header file)
+  wxArrayString ParseForFwdDecls();
+
+  /// Returns the forward declararions (parsed using ParseForForwardDecls before)
+  wxArrayString GetFwdDecls()
+  { return m_ForwardDecls; }
+
+  /// Returns the protocol (log) of the last operation
+  wxString GetLog()
+  { return m_Log; }
 
 protected:
 private:
@@ -70,10 +71,12 @@ private:
   void          Reset();
 
   cbEditor*     m_Editor;          //!< The editor that is being use to parse for contents
+  wxString      m_Log;             //!< The protocol (log) of the current file analysis
   wxString      m_FileName;        //!< The filename of the currently operated file
   wxString      m_FileContent;     //!< The content of the currently operated file
   wxArrayString m_LinesOfFile;     //!< The content (line-by-line) of the currently operated file
   wxArrayString m_IncludedHeaders; //!< A list of included header files of the currently operated file
+  wxArrayString m_ForwardDecls;    //!< A list of forward declarations of the currently operated file
   size_t        m_CurrentLine;     //!< Current line in the file (used for iterators)
   bool          m_Verbose;         //!< Be verbose in debug messages (be silent otherwise)
   bool          m_IsHeaderFile;    //!< Flag whether the currently operated file is a header file (upon file extension)

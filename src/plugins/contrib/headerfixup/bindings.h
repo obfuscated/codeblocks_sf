@@ -41,6 +41,8 @@ public:
 
 private:
 
+  /** \brief Initializing Code::Blocks bindings from configuration */
+  void InitialiseBindingsFromConfig();
   /** \brief Initializing bindings with default values */
   void SetDefaults();
   /** \brief Initializing Code::Blocks bindings with default values */

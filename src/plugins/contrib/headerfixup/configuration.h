@@ -13,12 +13,13 @@
 #endif
 
 //(*Headers(Configuration)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/listbox.h>
 #include <wx/panel.h>
-#include <wx/button.h>
+class wxTextCtrl;
+class wxListBox;
+class wxStaticText;
+class wxBoxSizer;
+class wxButton;
+class wxStaticBoxSizer;
 //*)
 
 #include <wx/event.h>
@@ -41,6 +42,7 @@ public:
   static const long ID_BTN_ADD_GROUP;
   static const long ID_BTN_DELETE_GROUP;
   static const long ID_BTN_RENAME_GROUP;
+  static const long ID_BTN_DEFAULTS;
   static const long ID_LBL_IDENTIFIERS;
   static const long ID_LST_IDENTIFIERS;
   static const long ID_BTN_ADD_IDENTIFIER;
@@ -62,6 +64,7 @@ protected:
   void OnChangeIdentifier(wxCommandEvent& event);
   void OnIdentifiersSelect(wxCommandEvent& event);
   void OnHeadersText(wxCommandEvent& event);
+  void OnBtnDefaultsClick(wxCommandEvent& event);
   //*)
 
   //(*Declarations(Configuration)
@@ -77,6 +80,7 @@ protected:
   wxButton* m_RenameGroup;
   wxButton* m_AddIdentifier;
   wxButton* m_AddGroup;
+  wxButton* m_Defaults;
   wxStaticBoxSizer* sizGroups;
   wxStaticText* lblHeaders;
   wxBoxSizer* sizIdentifiers;
@@ -89,6 +93,7 @@ protected:
 
 private:
 
+  void ShowGroups();
   void SelectGroup(int Number);
   void SelectIdentifier(int Number);
   virtual wxString GetTitle() const

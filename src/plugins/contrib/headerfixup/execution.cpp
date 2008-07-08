@@ -8,8 +8,14 @@
  */
 
 //(*InternalHeaders(Execution)
+#include <wx/sizer.h>
+#include <wx/radiobox.h>
+#include <wx/checklst.h>
+#include <wx/checkbox.h>
 #include <wx/intl.h>
+#include <wx/button.h>
 #include <wx/string.h>
+#include <wx/gauge.h>
 //*)
 
 #include <wx/dialog.h>
@@ -19,13 +25,15 @@
 #include <wx/window.h>
 
 #include <cbproject.h>
+#include <configmanager.h>
 #include <editormanager.h>
 #include <globals.h>
-#include <manager.h>
 #include <logmanager.h>
+#include <manager.h>
 #include <projectfile.h>
 #include <projectmanager.h>
 
+#include "protocol.h"
 #include "execution.h"
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -33,10 +41,11 @@
 //(*IdInit(Execution)
 const long Execution::ID_RB_SCOPE = wxNewId();
 const long Execution::ID_RB_OPTIONS = wxNewId();
-const long Execution::ID_CHK_DEBUG_LOG = wxNewId();
-const long Execution::ID_CHK_OBSOLETE_LOG = wxNewId();
+const long Execution::ID_CHK_IGNORE = wxNewId();
 const long Execution::ID_CHK_FWD_DECL = wxNewId();
+const long Execution::ID_CHK_OBSOLETE_LOG = wxNewId();
 const long Execution::ID_RDO_FILE_TYPE = wxNewId();
+const long Execution::ID_CHK_DEBUG_LOG = wxNewId();
 const long Execution::ID_CHK_SIMULATION = wxNewId();
 const long Execution::ID_LST_SETS = wxNewId();
 const long Execution::ID_BTN_SELECT_ALL = wxNewId();
@@ -70,7 +79,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_Scope = new wxRadioBox(this, ID_RB_SCOPE, _("Scope"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_1, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_SCOPE"));
   m_Scope->SetSelection(0);
   m_Scope->SetToolTip(_("This will setup on what files to operate: All from active project or whole workspace."));
-  sizLeft->Add(m_Scope, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizLeft->Add(m_Scope, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   wxString __wxRadioBoxChoices_2[2] =
   {
   	_("Use \"include.h\" (quotation marks)"),
@@ -79,20 +88,20 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_Options = new wxRadioBox(this, ID_RB_OPTIONS, _("Options"), wxDefaultPosition, wxSize(337,70), 2, __wxRadioBoxChoices_2, 2, wxRA_SPECIFY_ROWS, wxDefaultValidator, _T("ID_RB_OPTIONS"));
   m_Options->SetSelection(1);
   m_Options->SetToolTip(_("This will setup the way missing header files are included: By quotation mark or brackets."));
-  sizLeft->Add(m_Options, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizLeft->Add(m_Options, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizAdvancedOptions = new wxStaticBoxSizer(wxVERTICAL, this, _("Advanced options"));
-  m_DebugLog = new wxCheckBox(this, ID_CHK_DEBUG_LOG, _("Full log of parser operations to debug log"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_DEBUG_LOG"));
-  m_DebugLog->SetValue(false);
-  m_DebugLog->SetToolTip(_("This will print *all* interesting parser operations to the C::B debug log."));
-  sizAdvancedOptions->Add(m_DebugLog, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  m_ObsoleteLog = new wxCheckBox(this, ID_CHK_OBSOLETE_LOG, _("Show includes not required for known bindings"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OBSOLETE_LOG"));
-  m_ObsoleteLog->SetValue(false);
-  m_ObsoleteLog->SetToolTip(_("This will show a list of included files found with unknown bindings which could possibly be removed in the debug log."));
-  sizAdvancedOptions->Add(m_ObsoleteLog, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  m_FwdDecl = new wxCheckBox(this, ID_CHK_FWD_DECL, _("Try to use forward declarations in headers"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_FWD_DECL"));
+  m_Ignore = new wxCheckBox(this, ID_CHK_IGNORE, _("Ignore any existing includes / forward decls"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_IGNORE"));
+  m_Ignore->SetValue(false);
+  m_Ignore->SetToolTip(_("This will work as if there were no incluides / forwards decls at all int the files (as \"from scratch\")."));
+  sizAdvancedOptions->Add(m_Ignore, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  m_FwdDecl = new wxCheckBox(this, ID_CHK_FWD_DECL, _("Try to use forward declarations in header files"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_FWD_DECL"));
   m_FwdDecl->SetValue(false);
   m_FwdDecl->SetToolTip(_("This will setup if forward declarations shall be used for objects apearing *only* as pointers/references in header files."));
   sizAdvancedOptions->Add(m_FwdDecl, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+  m_ObsoleteLog = new wxCheckBox(this, ID_CHK_OBSOLETE_LOG, _("Show includes not required (only for known bindings)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OBSOLETE_LOG"));
+  m_ObsoleteLog->SetValue(false);
+  m_ObsoleteLog->SetToolTip(_("This will show a list of included files in the log (protocol) which were found with unknown bindings that could *possibly* be removed."));
+  sizAdvancedOptions->Add(m_ObsoleteLog, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   wxString __wxRadioBoxChoices_3[3] =
   {
   	_("Process header files only"),
@@ -103,9 +112,13 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_FileType->SetSelection(2);
   m_FileType->SetToolTip(_("This will setup on what file types the plugin shall operate: Header files, implementation files or both (after each other)."));
   sizAdvancedOptions->Add(m_FileType, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  m_Protocol = new wxCheckBox(this, ID_CHK_DEBUG_LOG, _("Show full log of parser operations in a protocol."), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_DEBUG_LOG"));
+  m_Protocol->SetValue(false);
+  m_Protocol->SetToolTip(_("This will show *all* interesting parser operations in a protocol window in the end as summary."));
+  sizAdvancedOptions->Add(m_Protocol, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   m_Simulation = new wxCheckBox(this, ID_CHK_SIMULATION, _("Only simulate (do *not* change any files)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_SIMULATION"));
   m_Simulation->SetValue(false);
-  m_Simulation->SetToolTip(_("This will setup if all operation shall be simulated only - interesting in combination with full log to analyse a project without modifications."));
+  m_Simulation->SetToolTip(_("This will setup if all operation shall be simulated only - interesting in combination with full log (protocol) to analyse a project without modifications."));
   sizAdvancedOptions->Add(m_Simulation, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
   sizLeft->Add(sizAdvancedOptions, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   flsMain->Add(sizLeft, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -115,10 +128,13 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   sizHeaderSets->Add(m_Sets, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizAllNoneInvert = new wxBoxSizer(wxVERTICAL);
   m_SelectAll = new wxButton(this, ID_BTN_SELECT_ALL, _("All"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_SELECT_ALL"));
+  m_SelectAll->SetToolTip(_("Select all."));
   sizAllNoneInvert->Add(m_SelectAll, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_SelectNone = new wxButton(this, ID_BTN_SELECT_NONE, _("None"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_SELECT_NONE"));
+  m_SelectNone->SetToolTip(_("Select none."));
   sizAllNoneInvert->Add(m_SelectNone, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   m_Invert = new wxButton(this, ID_BTN_INVERT, _("Invert"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BTN_INVERT"));
+  m_Invert->SetToolTip(_("Invert selection."));
   sizAllNoneInvert->Add(m_Invert, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizHeaderSets->Add(sizAllNoneInvert, 0, wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
   sizRight->Add(sizHeaderSets, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -140,6 +156,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   flsMain->SetSizeHints(this);
   Center();
 
+  Connect(ID_CHK_SIMULATION,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Execution::OnChkSimulationClick);
   Connect(ID_BTN_SELECT_ALL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnSelectAllClick);
   Connect(ID_BTN_SELECT_NONE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnSelectNoneClick);
   Connect(ID_BTN_INVERT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnInvertClick);
@@ -152,6 +169,8 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   for ( size_t i=0; i<Groups.GetCount(); i++ )
     m_Sets->Check(m_Sets->Append(Groups[i]),true);
   m_Execute = false;
+
+  LoadSettings();
 }// Execution
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -164,10 +183,11 @@ Execution::~Execution()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OnBtnExitClick(wxCommandEvent& event)
+void Execution::OnChkSimulationClick(wxCommandEvent& event)
 {
-  EndModal(wxID_CANCEL);
-}// OnBtnExitClick
+  if (m_Protocol && event.IsChecked())
+    m_Protocol->SetValue(true);
+}
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -192,14 +212,6 @@ void Execution::OnBtnInvertClick(wxCommandEvent& event)
   for ( size_t i=0; i<m_Sets->GetCount(); i++ )
     m_Sets->Check(i,!m_Sets->IsChecked(i));
 }// OnBtnInvertClick
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
-void Execution::OnClose(wxCloseEvent& event)
-{
-  m_Execute = false;
-  event.Skip();
-}// OnClose
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -254,32 +266,157 @@ void Execution::OnBtnRunClick(wxCommandEvent& event)
   if      ( m_FileType->GetSelection()==0 )
   {
     Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Processing header files...")));
+    m_Log << _T("[header files]\n");
     m_Processor   = ProcessHeaderFiles;
     HeadersAdded += RunScan(FilesToProcess,Groups);
   }
   else if ( m_FileType->GetSelection()==1 )
   {
     Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Processing source files...")));
+    m_Log << _T("[source files]\n");
     m_Processor   = ProcessSourceFiles;
     HeadersAdded += RunScan(FilesToProcess,Groups);
   }
   else
   {
     Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Processing header files...")));
+    m_Log << _T("[header files]\n");
     m_Processor   = ProcessHeaderFiles;
     HeadersAdded += RunScan(FilesToProcess,Groups);
+
     Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Processing source files...")));
+    m_Log << _T("\n[source files]\n");
     m_Processor   = ProcessSourceFiles;
     HeadersAdded += RunScan(FilesToProcess,Groups);
   }
 
   if ( HeadersAdded )
-    cbMessageBox(wxString::Format(_("Added %d extra includes."),HeadersAdded),_T("Header Fixup"));
-  else
-    cbMessageBox(_("All files were OK."),_T("Header Fixup"));
+  {
+    wxString log; log.Printf(_("Added %d extra includes.\n"),HeadersAdded);
+    if ( !m_Protocol->IsChecked() )
+      cbMessageBox(log);
 
-  EndModal(0);
+    m_Log << _T("\n--> ") << log;
+  }
+  else
+  {
+    if ( !m_Protocol->IsChecked() )
+      cbMessageBox(_("All files were OK. Nothing to be done."),_T("Header Fixup"));
+
+    m_Log << _("\n--> All files were OK. Nothing to be done.\n");
+  }
+
+  if ( m_Protocol->IsChecked() )
+  {
+    this->Show(false);
+    Protocol Prot(NULL);
+    Prot.SetProtocol(m_Log);
+    Prot.ShowModal();
+  }
+
+  SaveSettings();
+  EndModal(wxID_OK);
 }// OnBtnRunClick
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void Execution::OnBtnExitClick(wxCommandEvent& event)
+{
+  SaveSettings();
+  EndModal(wxID_CANCEL);
+}// OnBtnExitClick
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void Execution::OnClose(wxCloseEvent& event)
+{
+  m_Execute = false;
+  event.Skip();
+}// OnClose
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void Execution::LoadSettings()
+{
+  ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("HeaderFixup"));
+  if (!cfg)
+    return;
+
+  if (m_Scope)
+    m_Scope->SetSelection(cfg->ReadInt(_T("/scope"), 0));
+
+  if (m_Options)
+    m_Options->SetSelection(cfg->ReadInt(_T("/options"), 1));
+
+  if (m_Ignore)
+    m_Ignore->SetValue(cfg->ReadBool(_T("/ignore")));
+
+  if (m_FwdDecl)
+    m_FwdDecl->SetValue(cfg->ReadBool(_T("/fwd_decl")));
+
+  if (m_ObsoleteLog)
+    m_ObsoleteLog->SetValue(cfg->ReadBool(_T("/obsolete_log")));
+
+  if (m_FileType)
+    m_FileType->SetSelection(cfg->ReadInt(_T("/file_type"), 2));
+
+  if (m_Protocol)
+    m_Protocol->SetValue(cfg->ReadBool(_T("/protocol")));
+
+  if (m_Simulation)
+    m_Simulation->SetValue(cfg->ReadBool(_T("/simulation")));
+
+  if (m_Sets)
+  {
+    for (size_t i=0; i<m_Sets->GetCount(); i++)
+    {
+      wxString Sel; Sel.Printf(_T("/selection%d"), i);
+      m_Sets->Check(i, cfg->ReadBool(Sel, true));
+    }
+  }
+}// LoadSettings
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void Execution::SaveSettings()
+{
+  ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("HeaderFixup"));
+  if (!cfg)
+    return;
+
+  if (m_Scope)
+    cfg->Write(_T("/scope"),        m_Scope->GetSelection());
+
+  if (m_Options)
+    cfg->Write(_T("/options"),      m_Options->GetSelection());
+
+  if (m_Ignore)
+    cfg->Write(_T("/ignore"),       m_Ignore->GetValue());
+
+  if (m_FwdDecl)
+    cfg->Write(_T("/fwd_decl"),     m_FwdDecl->GetValue());
+
+  if (m_ObsoleteLog)
+    cfg->Write(_T("/obsolete_log"), m_ObsoleteLog->GetValue());
+
+  if (m_FileType)
+    cfg->Write(_T("/file_type"),    m_FileType->GetSelection());
+
+  if (m_Protocol)
+    cfg->Write(_T("/protocol"),     m_Protocol->GetValue());
+
+  if (m_Simulation)
+    cfg->Write(_T("/simulation"),   m_Simulation->GetValue());
+
+  if (m_Sets)
+  {
+    for (size_t i=0; i<m_Sets->GetCount(); i++)
+    {
+      wxString Sel; Sel.Printf(_T("/selection%d"), i);
+      cfg->Write(Sel, m_Sets->IsChecked(i));
+    }
+  }
+}// SaveSettings
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -290,7 +427,7 @@ void Execution::ToggleControls(bool Disable)
     m_Options->Disable();
     m_Scope->Disable();
 
-    m_DebugLog->Disable();
+    m_Protocol->Disable();
     m_ObsoleteLog->Disable();
     m_FwdDecl->Disable();
     m_FileType->Disable();
@@ -306,7 +443,7 @@ void Execution::ToggleControls(bool Disable)
     m_Options->Enable();
     m_Scope->Enable();
 
-    m_DebugLog->Enable();
+    m_Protocol->Enable();
     m_ObsoleteLog->Enable();
     m_FwdDecl->Enable();
     m_FileType->Enable();
@@ -370,7 +507,7 @@ void Execution::AddFilesFromProject(wxArrayString& Files,cbProject* Project)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
+int Execution::ProcessFile(wxString& GlobalFileName, const wxArrayString& Groups)
 {
   m_FileAnalysis.ReInit(GlobalFileName);
 
@@ -381,15 +518,23 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
     return 0; // implementation files only
 
   Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Processing \"")+GlobalFileName+_T("\"...")));
+  m_Log << _T("\n--- Processing \"") << GlobalFileName << _T("\" ---\n");
 
   // first iteration: scanning the content for existing includes
   m_FileAnalysis.LoadFile();
-  wxArrayString IncludedHeaders = m_FileAnalysis.ParseForIncludes();
+  wxArrayString IncludedHeaders;
+  if (!m_Ignore->GetValue())
+    IncludedHeaders  = m_FileAnalysis.ParseForIncludes();
   wxArrayString RequiredHeaders;
+
+  wxArrayString ExistingFwdDecls;
+  if (!m_Ignore->GetValue())
+    ExistingFwdDecls = m_FileAnalysis.ParseForFwdDecls();
+  wxArrayString RequiredFwdDecls;
 
   bool InMultilineComment = false;
   bool InsideString       = false;
-  wxString PrevToken;
+  m_TokensProcessed.Clear();
   while ( m_FileAnalysis.HasMoreLines() )
   {
     wxString Line = m_FileAnalysis.GetNextLine();
@@ -453,9 +598,20 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
               Token.Append(Ch);
             else
             {
-              OperateToken(PrevToken,Token,Groups,IncludedHeaders,
-                           Ch,Line,RequiredHeaders);
-              PrevToken = Token;
+              // make sure to differ between objects and pointers/references
+              // for forward decls vs. include to work correctly
+              wxString FullToken = Token;
+              if      (nsHeaderFixUp::IsNextChar(_T("*"),Ch,Line))
+                FullToken = Token + _T("*");
+              else if (nsHeaderFixUp::IsNextChar(_T("&"),Ch,Line))
+                FullToken = Token + _T("&");
+
+              if (m_TokensProcessed.Index(FullToken) == wxNOT_FOUND)
+              {
+                OperateToken(Token,Groups,IncludedHeaders,ExistingFwdDecls,
+                             Ch,Line,RequiredHeaders,RequiredFwdDecls);
+                m_TokensProcessed.Add(FullToken);
+              }
               Token.Clear();
             }
           }
@@ -463,6 +619,7 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
       }
     }
   }
+  m_Log << m_FileAnalysis.GetLog();
 
   // Now in RequiredHeaders we have all headers used in this file,
   // in IncludedHeaders we have list of includes from this file.
@@ -476,14 +633,14 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
   // Now check if there *might* be entries not required and report them
   if ( m_ObsoleteLog->IsChecked() )
   {
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: List of included files not required for known bindings:")));
+    m_Log << _T("List of included files not required for known bindings:\n");
     for ( size_t i=0; i<IncludedHeaders.GetCount(); i++ )
     {
       if ( IncludedHeaders[i] != PrevHeader )
       {
         PrevHeader = IncludedHeaders[i];
         if ( RequiredHeaders.Index(PrevHeader) == wxNOT_FOUND )
-          Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: - \"")+PrevHeader+_T("\"")));
+          m_Log << _T("- \"") << PrevHeader << _T("\"\n");
       }
     }
   }
@@ -519,7 +676,7 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
   // Nothing to add so we don't touch original file
   if ( !Added )
   {
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: ")+GlobalFileName+_T("\" requires no update.")));
+    m_Log << _T("- \"") << GlobalFileName << _T("\" requires no update.\n");
     return 0;
   }
 
@@ -530,12 +687,12 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
 
   if ( m_Simulation->IsChecked() )
   {
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: ")+GlobalFileName+_T("\" *would have been* updated (simulation only).")));
+    m_Log << _T("- \"")+GlobalFileName+_T("\" *would have been* updated (simulation only).\n");
   }
   else
   {
     m_FileAnalysis.SaveFile(HeadersCode);
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: ")+GlobalFileName+_T("\" has been updated.")));
+    m_Log << _T("- \"") << GlobalFileName << _T("\" has been updated.\n");
   }
 
   return Added;
@@ -543,14 +700,39 @@ int Execution::ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OperateToken(const wxString&      PrevToken,
-                             const wxString&      Token,
+void Execution::OperateToken(const wxString&      Token,
                              const wxArrayString& Groups,
                              const wxArrayString& IncludedHeaders,
+                             const wxArrayString& ExistingFwdDecls,
                              const wxChar&        Ch,
                              const wxString&      Line,
-                             wxArrayString&       RequiredHeaders)
+                             wxArrayString&       RequiredHeaders,
+                             wxArrayString&       RequiredFwdDecls)
 {
+  // if header file: filter forward declarations
+  if (   m_FileAnalysis.IsHeaderFile()
+      && (ExistingFwdDecls.Index(Token) != wxNOT_FOUND) )
+  {
+    if ( m_Protocol->IsChecked() )
+      m_Log << _T("- Token \"") << Token << _T("\" skipped (exists as forward declaration).\n");
+
+    // now grab header files needed anyways for obsolete log
+    if ( m_ObsoleteLog->IsChecked() )
+    {
+      for ( size_t i=0; i<Groups.GetCount(); i++ )
+      {
+        wxArrayString RequiredHeadersForToken;
+        m_Bindings.GetBindings(Groups[i],Token,RequiredHeadersForToken);
+        for ( size_t j=0; j<RequiredHeadersForToken.GetCount(); j++ )
+        {
+          if ( IncludedHeaders.Index(RequiredHeadersForToken[j]) != wxNOT_FOUND )
+            RequiredHeaders.Add(RequiredHeadersForToken[j]);
+        }
+      }
+    }
+    return;
+  }
+
   // iterate through all groups for bindings
   for ( size_t i=0; i<Groups.GetCount(); i++ )
   {
@@ -559,17 +741,6 @@ void Execution::OperateToken(const wxString&      PrevToken,
 
     if ( !RequiredHeadersForToken.IsEmpty() ) // -> found bindings
     {
-      // if header file: filter forward declarations
-      if ( m_FileAnalysis.IsHeaderFile() && PrevToken.IsSameAs(_T("class")) )
-      {
-        if ( nsHeaderFixUp::IsNextChar(_T(";"),Ch,Line) )
-        {
-          if ( m_DebugLog->IsChecked() )
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Token \"")+Token+_T("\" skipped (used as forward declaration).")));
-          return;
-        }
-      }
-
       for ( size_t i=0; i<RequiredHeadersForToken.GetCount(); i++ )
       {
         // check if required header file is already included
@@ -592,21 +763,15 @@ void Execution::OperateToken(const wxString&      PrevToken,
             }
 
             RequiredHeaders.Add(RequiredHeadersForToken[i]);
-            if ( m_DebugLog->IsChecked() )
-            {
-              Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Token \"")+Token+_T("\" requires entry \"")+
-                     RequiredHeadersForToken[i]+_T("\".")));
-            }
+            if ( m_Protocol->IsChecked() )
+              m_Log << _T("- Token \"") << Token << _T("\" requires entry \"") << RequiredHeadersForToken[i] << _T("\".\n");
           }
         }
         else if ( m_ObsoleteLog->IsChecked() ) // log header file anyway for obsolete record
         {
           RequiredHeaders.Add(RequiredHeadersForToken[i]);
-          if ( m_DebugLog->IsChecked() )
-          {
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("[HeaderFixup]: Token \"")+Token+_T("\" would require entry \"")+
-                   RequiredHeadersForToken[i]+_T("\" (already included).")));
-          }
+          if ( m_Protocol->IsChecked() )
+            m_Log << _T("- Token \"") << Token << _T("\" would require entry \"") << RequiredHeadersForToken[i] << _T("\" (already included).\n");
         }
       }
     }

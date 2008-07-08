@@ -13,13 +13,15 @@
 #endif
 
 //(*Headers(Execution)
-#include <wx/sizer.h>
-#include <wx/radiobox.h>
-#include <wx/checklst.h>
-#include <wx/checkbox.h>
-#include <wx/button.h>
 #include <wx/dialog.h>
-#include <wx/gauge.h>
+class wxGauge;
+class wxCheckBox;
+class wxRadioBox;
+class wxFlexGridSizer;
+class wxBoxSizer;
+class wxButton;
+class wxStaticBoxSizer;
+class wxCheckListBox;
 //*)
 
 #include <wx/arrstr.h>
@@ -44,10 +46,11 @@ public:
   //(*Identifiers(Execution)
   static const long ID_RB_SCOPE;
   static const long ID_RB_OPTIONS;
-  static const long ID_CHK_DEBUG_LOG;
-  static const long ID_CHK_OBSOLETE_LOG;
+  static const long ID_CHK_IGNORE;
   static const long ID_CHK_FWD_DECL;
+  static const long ID_CHK_OBSOLETE_LOG;
   static const long ID_RDO_FILE_TYPE;
+  static const long ID_CHK_DEBUG_LOG;
   static const long ID_CHK_SIMULATION;
   static const long ID_LST_SETS;
   static const long ID_BTN_SELECT_ALL;
@@ -67,15 +70,18 @@ protected:
   void OnBtnInvertClick(wxCommandEvent& event);
   void OnBtnRunClick(wxCommandEvent& event);
   void OnClose(wxCloseEvent& event);
+  void OnChkSimulationClick(wxCommandEvent& event);
   //*)
 
   //(*Declarations(Execution)
+  wxCheckBox* m_Protocol;
   wxRadioBox* m_Scope;
   wxBoxSizer* sizRunExit;
   wxButton* m_Invert;
   wxBoxSizer* sizRight;
   wxStaticBoxSizer* sizHeaderSets;
   wxStaticBoxSizer* sizExecute;
+  wxCheckBox* m_Ignore;
   wxBoxSizer* sizLeft;
   wxFlexGridSizer* flsMain;
   wxRadioBox* m_Options;
@@ -87,7 +93,6 @@ protected:
   wxStaticBoxSizer* sizAdvancedOptions;
   wxButton* m_Run;
   wxRadioBox* m_FileType;
-  wxCheckBox* m_DebugLog;
   wxCheckBox* m_Simulation;
   wxBoxSizer* sizAllNoneInvert;
   wxCheckBox* m_FwdDecl;
@@ -96,16 +101,22 @@ protected:
 
 private:
 
+  void LoadSettings();
+  void SaveSettings();
+
   void ToggleControls(bool Disable);
   int RunScan(const wxArrayString& FilesToProcess, const wxArrayString& Groups);
 
-  void AddFilesFromProject(wxArrayString& Files,cbProject* Project);
+  void AddFilesFromProject(wxArrayString& Files, cbProject* Project);
   int ProcessFile(wxString& GlobalFileName,const wxArrayString& Groups);
-  void OperateToken(const wxString& PrevToken,const wxString& Token,
+  void OperateToken(const wxString&      Token,
                     const wxArrayString& Groups,
                     const wxArrayString& IncludedHeaders,
-                    const wxChar& Ch,const wxString& Line,
-                    wxArrayString& RequiredHeaders);
+                    const wxArrayString& ExistingFwdDecls,
+                    const wxChar&        Ch,
+                    const wxString&      Line,
+                    wxArrayString&       RequiredHeaders,
+                    wxArrayString&       RequiredFwdDecls);
 
   DECLARE_EVENT_TABLE()
 
@@ -115,10 +126,12 @@ private:
     ProcessSourceFiles
   };
 
-  Bindings     m_Bindings;
-  FileAnalysis m_FileAnalysis;
-  bool         m_Execute;
-  EProcessor   m_Processor;
+  wxString      m_Log;
+  wxArrayString m_TokensProcessed;
+  Bindings      m_Bindings;
+  FileAnalysis  m_FileAnalysis;
+  bool          m_Execute;
+  EProcessor    m_Processor;
 };
 
 #endif

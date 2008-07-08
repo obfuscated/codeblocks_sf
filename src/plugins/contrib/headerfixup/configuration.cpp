@@ -8,7 +8,12 @@
  */
 
 //(*InternalHeaders(Configuration)
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/listbox.h>
 #include <wx/intl.h>
+#include <wx/button.h>
 #include <wx/string.h>
 //*)
 
@@ -30,6 +35,7 @@ const long Configuration::ID_LST_GROUPS = wxNewId();
 const long Configuration::ID_BTN_ADD_GROUP = wxNewId();
 const long Configuration::ID_BTN_DELETE_GROUP = wxNewId();
 const long Configuration::ID_BTN_RENAME_GROUP = wxNewId();
+const long Configuration::ID_BTN_DEFAULTS = wxNewId();
 const long Configuration::ID_LBL_IDENTIFIERS = wxNewId();
 const long Configuration::ID_LST_IDENTIFIERS = wxNewId();
 const long Configuration::ID_BTN_ADD_IDENTIFIER = wxNewId();
@@ -51,6 +57,8 @@ END_EVENT_TABLE()
 Configuration::Configuration(wxWindow* parent,wxWindowID id)
 {
   //(*Initialize(Configuration)
+  wxBoxSizer* sizDefaults;
+
   Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizGroups = new wxStaticBoxSizer(wxVERTICAL, this, _("Groups"));
@@ -68,6 +76,10 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
   m_RenameGroup->SetToolTip(_("Rename the selected group..."));
   sizAddDeleteRename->Add(m_RenameGroup, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 2);
   sizGroups->Add(sizAddDeleteRename, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizDefaults = new wxBoxSizer(wxHORIZONTAL);
+  m_Defaults = new wxButton(this, ID_BTN_DEFAULTS, _("Defaults"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_DEFAULTS"));
+  sizDefaults->Add(m_Defaults, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizGroups->Add(sizDefaults, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizMain->Add(sizGroups, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
   sizBindings = new wxStaticBoxSizer(wxVERTICAL, this, _("Bindings"));
   sizIdentifiersHor = new wxBoxSizer(wxHORIZONTAL);
@@ -103,12 +115,13 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
   SetSizer(sizMain);
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
-  
+
   Connect(ID_LST_GROUPS,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&Configuration::OnGroupsSelect);
   Connect(ID_LST_GROUPS,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,(wxObjectEventFunction)&Configuration::OnRenameGroup);
   Connect(ID_BTN_ADD_GROUP,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnBtnAddGroupClick);
   Connect(ID_BTN_DELETE_GROUP,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnBtnDeleteGroupClick);
   Connect(ID_BTN_RENAME_GROUP,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnRenameGroup);
+  Connect(ID_BTN_DEFAULTS,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnBtnDefaultsClick);
   Connect(ID_LST_IDENTIFIERS,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&Configuration::OnIdentifiersSelect);
   Connect(ID_LST_IDENTIFIERS,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,(wxObjectEventFunction)&Configuration::OnChangeIdentifier);
   Connect(ID_BTN_ADD_IDENTIFIER,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnBtnAddIdentifierClick);
@@ -119,10 +132,7 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
 
   m_BlockHeadersText = false;
 
-  for ( Bindings::GroupsT::iterator i = m_Bindings.m_Groups.begin(); i != m_Bindings.m_Groups.end(); ++i )
-    m_Groups->Append(i->first, (void*) &(i->second) );
-
-  SelectGroup(0);
+  ShowGroups();
 }// Configuration
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -132,6 +142,17 @@ Configuration::~Configuration()
   //(*Destroy(Configuration)
   //*)
 }// ~Configuration
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void Configuration::ShowGroups()
+{
+  m_Groups->Clear();
+  for ( Bindings::GroupsT::iterator i = m_Bindings.m_Groups.begin(); i != m_Bindings.m_Groups.end(); ++i )
+    m_Groups->Append(i->first, (void*) &(i->second) );
+
+  SelectGroup(0);
+}
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -275,6 +296,20 @@ void Configuration::OnRenameGroup(wxCommandEvent& event)
   m_Groups->SetClientData(m_Groups->GetSelection(), (void*) &(m_Bindings.m_Groups[GroupName]) );
   SelectGroup(m_Groups->GetSelection());
 }// OnRenameGroup
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void Configuration::OnBtnDefaultsClick(wxCommandEvent& event)
+{
+  if ( cbMessageBox(_("Are you really sure?"),_("Setting defaults"),wxYES|wxNO) != wxID_YES )
+    return;
+
+  // Clean up the bindings and start from scratch...
+  m_Bindings.m_Groups.clear();
+  m_Bindings.SetDefaults();
+
+  ShowGroups();
+}// OnBtnDefaultsClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

@@ -1,15 +1,10 @@
 ToDo's by MortenMacFly:
 
 ...the easy ones:
-- detect existing forward decls
-- detect spaces in includes, e.g. #include < wx/wx.h >
-- add reason for include as a comment just after the include (optional)
-- make the log also available in a report window for inspection/save
 - for the log: Optional: Leave out the files which were not modified.
-- save the UI settings (including selection of libs)
-- optional: open modified files and leave them unsaved
+- save bindings in a separate file, not into the global config
+  (as it grows a lot otherwise)
+- optional: open files, modify them (if needed) and leave them unsaved
 
 ...more complex ones:
-- use RegEx for detection of includes, forward decls... in files
-- an option to ingnore any existing includes
-  (especially in header files to make forward decls more efficient)
+- add reason for include as a comment just after the include (optional)

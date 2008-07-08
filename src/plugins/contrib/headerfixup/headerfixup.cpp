@@ -10,8 +10,10 @@
 #include <wx/window.h>
 
 #include <sdk.h>
+#include <cbproject.h>
 #include <globals.h>
 #include <manager.h>
+#include <projectmanager.h>
 
 #include "headerfixup.h"
 #include "configuration.h"
@@ -71,6 +73,19 @@ int HeaderFixup::Configure()
 
 int HeaderFixup::Execute()
 {
+  // if not attached, exit
+  if (!IsAttached())
+    return -1;
+
+  // if no project is opened -> inform the user and do not operate
+  const cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+  if (!prj)
+  {
+    cbMessageBox(_("You need to open a project/workspace before using this plugin!"),
+                 _T("Header Fixup"), wxICON_ERROR | wxOK);
+    return -1;
+  }
+
   Execution Dlg(NULL);
   Dlg.ShowModal();
   return 0;

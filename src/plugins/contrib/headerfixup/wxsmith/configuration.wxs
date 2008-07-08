@@ -1,177 +1,192 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxPanel" name="Configuration">
-        <object class="wxBoxSizer" variable="sizMain" member="yes">
-            <object class="sizeritem">
-                <object class="wxStaticBoxSizer" variable="sizGroups" member="yes">
-                    <label>Groups</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                        <object class="wxListBox" name="ID_LST_GROUPS" variable="m_Groups" member="yes">
-                            <default>-1</default>
-                            <tooltip>This is a list of all groups of bindings available to the plugin.</tooltip>
-                            <handler function="OnGroupsSelect" entry="EVT_LISTBOX" />
-                            <handler function="OnRenameGroup" entry="EVT_LISTBOX_DCLICK" />
-                        </object>
-                        <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                        <border>5</border>
-                        <option>1</option>
-                    </object>
-                    <object class="sizeritem">
-                        <object class="wxBoxSizer" variable="sizAddDeleteRename" member="yes">
-                            <object class="sizeritem">
-                                <object class="wxButton" name="ID_BTN_ADD_GROUP" variable="m_AddGroup" member="yes">
-                                    <label>Add</label>
-                                    <style>wxBU_EXACTFIT</style>
-                                    <tooltip>Add a new group...</tooltip>
-                                    <handler function="OnBtnAddGroupClick" entry="EVT_BUTTON" />
-                                </object>
-                                <flag>wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                <border>2</border>
-                                <option>1</option>
-                            </object>
-                            <object class="sizeritem">
-                                <object class="wxButton" name="ID_BTN_DELETE_GROUP" variable="m_DeleteGroup" member="yes">
-                                    <label>Delete</label>
-                                    <style>wxBU_EXACTFIT</style>
-                                    <tooltip>Delete the selected group...</tooltip>
-                                    <handler function="OnBtnDeleteGroupClick" entry="EVT_BUTTON" />
-                                </object>
-                                <flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                <border>2</border>
-                                <option>1</option>
-                            </object>
-                            <object class="sizeritem">
-                                <object class="wxButton" name="ID_BTN_RENAME_GROUP" variable="m_RenameGroup" member="yes">
-                                    <label>Rename</label>
-                                    <style>wxBU_EXACTFIT</style>
-                                    <tooltip>Rename the selected group...</tooltip>
-                                    <handler function="OnRenameGroup" entry="EVT_BUTTON" />
-                                </object>
-                                <flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                <border>2</border>
-                                <option>1</option>
-                            </object>
-                        </object>
-                        <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                        <border>5</border>
-                    </object>
-                </object>
-                <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                <border>5</border>
-            </object>
-            <object class="sizeritem">
-                <object class="wxStaticBoxSizer" variable="sizBindings" member="yes">
-                    <label>Bindings</label>
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                        <object class="wxBoxSizer" variable="sizIdentifiersHor" member="yes">
-                            <object class="sizeritem">
-                                <object class="wxBoxSizer" variable="sizIdentifiersVert" member="yes">
-                                    <orient>wxVERTICAL</orient>
-                                    <object class="sizeritem">
-                                        <object class="wxStaticText" name="ID_LBL_IDENTIFIERS" variable="lblIdentifiers" member="yes">
-                                            <label>Identifiers:</label>
-                                        </object>
-                                        <flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                        <border>5</border>
-                                    </object>
-                                    <object class="sizeritem">
-                                        <object class="wxBoxSizer" variable="sizIdentifiers" member="yes">
-                                            <object class="sizeritem">
-                                                <object class="wxListBox" name="ID_LST_IDENTIFIERS" variable="m_Identifiers" member="yes">
-                                                    <default>-1</default>
-                                                    <size>188,115</size>
-                                                    <tooltip>This is a list of all identifiers (tokens) available within the selected group.</tooltip>
-                                                    <handler function="OnIdentifiersSelect" entry="EVT_LISTBOX" />
-                                                    <handler function="OnChangeIdentifier" entry="EVT_LISTBOX_DCLICK" />
-                                                </object>
-                                                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                                <border>5</border>
-                                                <option>1</option>
-                                            </object>
-                                            <object class="sizeritem">
-                                                <object class="wxBoxSizer" variable="sizAddDeleteChange" member="yes">
-                                                    <orient>wxVERTICAL</orient>
-                                                    <object class="sizeritem">
-                                                        <object class="wxButton" name="ID_BTN_ADD_IDENTIFIER" variable="m_AddIdentifier" member="yes">
-                                                            <label>Add</label>
-                                                            <style>wxBU_EXACTFIT</style>
-                                                            <tooltip>Add a new identifier...</tooltip>
-                                                            <handler function="OnBtnAddIdentifierClick" entry="EVT_BUTTON" />
-                                                        </object>
-                                                        <flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                                        <border>5</border>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <object class="wxButton" name="ID_BTN_DELETE_IDENTIFIERS" variable="m_DeleteIdentifier" member="yes">
-                                                            <label>Delete</label>
-                                                            <style>wxBU_EXACTFIT</style>
-                                                            <tooltip>Delete the selected identifier...</tooltip>
-                                                            <handler function="OnBtnDeleteIdentifierClick" entry="EVT_BUTTON" />
-                                                        </object>
-                                                        <flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                                        <border>5</border>
-                                                    </object>
-                                                    <object class="sizeritem">
-                                                        <object class="wxButton" name="ID_BTN_CHANGE_IDENTIFIER" variable="m_ChangeIdentifier" member="yes">
-                                                            <label>Change</label>
-                                                            <style>wxBU_EXACTFIT</style>
-                                                            <tooltip>Change (rename) the selected identifier...</tooltip>
-                                                            <handler function="OnChangeIdentifier" entry="EVT_BUTTON" />
-                                                        </object>
-                                                        <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                                        <border>5</border>
-                                                    </object>
-                                                </object>
-                                                <flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                                <border>5</border>
-                                            </object>
-                                        </object>
-                                        <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                        <border>5</border>
-                                        <option>1</option>
-                                    </object>
-                                </object>
-                                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                <border>5</border>
-                                <option>1</option>
-                            </object>
-                        </object>
-                        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                        <border>5</border>
-                        <option>1</option>
-                    </object>
-                    <object class="sizeritem">
-                        <object class="wxBoxSizer" variable="sizHeaders" member="yes">
-                            <orient>wxVERTICAL</orient>
-                            <object class="sizeritem">
-                                <object class="wxStaticText" name="ID_LBL_HEADERS" variable="lblHeaders" member="yes">
-                                    <label>Headers:</label>
-                                </object>
-                                <flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                <border>5</border>
-                            </object>
-                            <object class="sizeritem">
-                                <object class="wxTextCtrl" name="ID_TXT_HEADERS" variable="m_Headers" member="yes">
-                                    <style>wxTE_PROCESS_ENTER|wxTE_MULTILINE</style>
-                                    <tooltip>This is a list of all header files required for the selected identifier (token) within the selected group.</tooltip>
-                                    <handler function="OnHeadersText" entry="EVT_TEXT" />
-                                </object>
-                                <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                                <border>5</border>
-                                <option>1</option>
-                            </object>
-                        </object>
-                        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                        <border>5</border>
-                        <option>1</option>
-                    </object>
-                </object>
-                <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                <border>5</border>
-                <option>1</option>
-            </object>
-        </object>
-    </object>
+	<object class="wxPanel" name="Configuration">
+		<object class="wxBoxSizer" variable="sizMain" member="yes">
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="sizGroups" member="yes">
+					<label>Groups</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxListBox" name="ID_LST_GROUPS" variable="m_Groups" member="yes">
+							<default>-1</default>
+							<tooltip>This is a list of all groups of bindings available to the plugin.</tooltip>
+							<handler function="OnGroupsSelect" entry="EVT_LISTBOX" />
+							<handler function="OnRenameGroup" entry="EVT_LISTBOX_DCLICK" />
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="sizAddDeleteRename" member="yes">
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BTN_ADD_GROUP" variable="m_AddGroup" member="yes">
+									<label>Add</label>
+									<tooltip>Add a new group...</tooltip>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnBtnAddGroupClick" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>2</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BTN_DELETE_GROUP" variable="m_DeleteGroup" member="yes">
+									<label>Delete</label>
+									<tooltip>Delete the selected group...</tooltip>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnBtnDeleteGroupClick" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>2</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BTN_RENAME_GROUP" variable="m_RenameGroup" member="yes">
+									<label>Rename</label>
+									<tooltip>Rename the selected group...</tooltip>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnRenameGroup" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>2</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="sizDefaults" member="no">
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BTN_DEFAULTS" variable="m_Defaults" member="yes">
+									<label>Defaults</label>
+									<handler function="OnBtnDefaultsClick" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="sizBindings" member="yes">
+					<label>Bindings</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="sizIdentifiersHor" member="yes">
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="sizIdentifiersVert" member="yes">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_LBL_IDENTIFIERS" variable="lblIdentifiers" member="yes">
+											<label>Identifiers:</label>
+										</object>
+										<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="sizIdentifiers" member="yes">
+											<object class="sizeritem">
+												<object class="wxListBox" name="ID_LST_IDENTIFIERS" variable="m_Identifiers" member="yes">
+													<default>-1</default>
+													<size>188,115</size>
+													<tooltip>This is a list of all identifiers (tokens) available within the selected group.</tooltip>
+													<handler function="OnIdentifiersSelect" entry="EVT_LISTBOX" />
+													<handler function="OnChangeIdentifier" entry="EVT_LISTBOX_DCLICK" />
+												</object>
+												<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
+											<object class="sizeritem">
+												<object class="wxBoxSizer" variable="sizAddDeleteChange" member="yes">
+													<orient>wxVERTICAL</orient>
+													<object class="sizeritem">
+														<object class="wxButton" name="ID_BTN_ADD_IDENTIFIER" variable="m_AddIdentifier" member="yes">
+															<label>Add</label>
+															<tooltip>Add a new identifier...</tooltip>
+															<style>wxBU_EXACTFIT</style>
+															<handler function="OnBtnAddIdentifierClick" entry="EVT_BUTTON" />
+														</object>
+														<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="ID_BTN_DELETE_IDENTIFIERS" variable="m_DeleteIdentifier" member="yes">
+															<label>Delete</label>
+															<tooltip>Delete the selected identifier...</tooltip>
+															<style>wxBU_EXACTFIT</style>
+															<handler function="OnBtnDeleteIdentifierClick" entry="EVT_BUTTON" />
+														</object>
+														<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="ID_BTN_CHANGE_IDENTIFIER" variable="m_ChangeIdentifier" member="yes">
+															<label>Change</label>
+															<tooltip>Change (rename) the selected identifier...</tooltip>
+															<style>wxBU_EXACTFIT</style>
+															<handler function="OnChangeIdentifier" entry="EVT_BUTTON" />
+														</object>
+														<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+												</object>
+												<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="sizHeaders" member="yes">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_LBL_HEADERS" variable="lblHeaders" member="yes">
+									<label>Headers:</label>
+								</object>
+								<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TXT_HEADERS" variable="m_Headers" member="yes">
+									<tooltip>This is a list of all header files required for the selected identifier (token) within the selected group.</tooltip>
+									<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE</style>
+									<handler function="OnHeadersText" entry="EVT_TEXT" />
+								</object>
+								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
 </wxsmith>
