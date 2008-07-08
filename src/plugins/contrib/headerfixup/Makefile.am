@@ -16,18 +16,22 @@ libheaderfixup_la_SOURCES = bindings.cpp \
                             execution.cpp \
                             fileanalysis.cpp \
                             headerfixup.cpp \
-                            helper.cpp
+                            helper.cpp \
+                            protocol.cpp
 
 noinst_HEADERS = bindings.h \
                  configuration.h \
                  execution.h \
                  fileanalysis.h \
                  headerfixup.h \
-                 helper.h
+                 helper.h \
+                 protocol.h
 
-EXTRA_DIST = wxsmith/configuration.wxs wxsmith/execution.wxs \
-            headerfixup.cbp \
-            manifest.xml
+EXTRA_DIST = wxsmith/configuration.wxs \
+             wxsmith/execution.wxs \
+             wxsmith/protocol.wxs \
+             headerfixup.cbp \
+             manifest.xml
 
 pkgdata_DATA = headerfixup.zip
 CLEANFILES = $(pkgdata_DATA)
