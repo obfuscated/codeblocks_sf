@@ -63,8 +63,11 @@
 		<Unit filename="helper.cpp" />
 		<Unit filename="helper.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="protocol.cpp" />
+		<Unit filename="protocol.h" />
 		<Unit filename="wxsmith/configuration.wxs" />
 		<Unit filename="wxsmith/execution.wxs" />
+		<Unit filename="wxsmith/protocol.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
