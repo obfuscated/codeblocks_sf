@@ -66,6 +66,10 @@ if BUILD_THREADSEARCH
 MAYBE_THREADSEARCH=ThreadSearch
 endif
 
+if BUILD_VALGRIND
+MAYBE_VALGRIND=Valgrind
+endif
+
 if BUILD_WXSMITH
 MAYBE_WXSMITH=wxSmith wxSmithContribItems
 endif
@@ -87,6 +91,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_SYMTAB) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_THREADSEARCH) \
+		$(MAYBE_VALGRIND) \
 		$(MAYBE_WXSMITH)
 
 DIST_SUBDIRS = AutoVersioning \
@@ -106,6 +111,7 @@ DIST_SUBDIRS = AutoVersioning \
 		symtab \
 		regex_testbed \
 		ThreadSearch \
+		Valgrind \
 		wxSmith \
 		wxSmithContribItems
 

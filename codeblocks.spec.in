@@ -233,6 +233,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/RegExTestbed.zip
 %{pkgdata}/SymTab.zip
 %{pkgdata}/ThreadSearch.zip
+%{pkgdata}/Valgrind.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/images/wxsmith/*

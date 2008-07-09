@@ -73,6 +73,7 @@ Description: Contrib plugins for Code::Blocks IDE
     * Autoversioning
     * ThreadSearch
     * BrowseTracker
+    * Valgrind
  .
  http://www.codeblocks.org
 
