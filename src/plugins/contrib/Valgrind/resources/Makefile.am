@@ -4,4 +4,4 @@ pkgdata_DATA = Valgrind.zip
 CLEANFILES = $(pkgdata_DATA)
 
 Valgrind.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/Valgrind.zip manifest.xml *.xrc > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/Valgrind.zip manifest.xml > /dev/null

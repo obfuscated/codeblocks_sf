@@ -8,12 +8,14 @@ libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libValgrind.la
 
-libcodestat_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libValgrind_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcodestat_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
+libValgrind_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
-libcodestat_la_SOURCES = Valgrind.cpp
+libValgrind_la_SOURCES = Valgrind.cpp \
+            ValgrindListLog.cpp
 
-noinst_HEADERS = Valgrind.h
+noinst_HEADERS = Valgrind.h \
+            ValgrindListLog.h
 
 EXTRA_DIST = 
