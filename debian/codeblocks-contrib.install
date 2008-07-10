@@ -39,6 +39,7 @@ usr/share/codeblocks/plugins/libProfiler.*
 usr/share/codeblocks/plugins/libRegExTestbed.*
 usr/share/codeblocks/plugins/libSymTab.*
 usr/share/codeblocks/plugins/libThreadSearch.*
+usr/share/codeblocks/plugins/libValgrind.*
 usr/share/codeblocks/plugins/libwxsmith.*
 usr/share/codeblocks/plugins/libwxsmithcontribitems.*
 
