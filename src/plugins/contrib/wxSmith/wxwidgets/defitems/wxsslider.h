@@ -38,16 +38,16 @@ class wxsSlider: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        int Value;
-        int Min;
-        int Max;
-        int TickFrequency;
-        int PageSize;
-        int LineSize;
-        int ThumbLength;
-        int Tick;
-        int SelMin;
-        int SelMax;
+        long Value;
+        long Min;
+        long Max;
+        long TickFrequency;
+        long PageSize;
+        long LineSize;
+        long ThumbLength;
+        long Tick;
+        long SelMin;
+        long SelMax;
 };
 
 #endif

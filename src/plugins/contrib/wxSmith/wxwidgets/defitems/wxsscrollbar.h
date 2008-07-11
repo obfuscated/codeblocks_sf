@@ -38,10 +38,10 @@ class wxsScrollBar: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        int Value;
-    	int ThumbSize;
-    	int Range;
-    	int PageSize;
+        long Value;
+    	long ThumbSize;
+    	long Range;
+    	long PageSize;
 
 };
 

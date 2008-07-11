@@ -1220,6 +1220,7 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
 bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter)
 {
     wxStringTokenizer strTok;
+    unsigned long j;
 
     strTok.SetString(layout1, delimiter);
     wxArrayString arLayout1;
@@ -1229,7 +1230,14 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
         while(strTokColon.HasMoreTokens())
         {
             wxString theToken = strTokColon.GetNextToken();
-            if (!theToken.StartsWith(_T("state="))) arLayout1.Add(theToken);
+            if (theToken.StartsWith(_T("state=")))
+            {
+            	theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
+            	theToken.ToULong(&j);
+            	// we filter out the hidden/show state
+            	theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
+            }
+           	arLayout1.Add(theToken);
         }
     }
 
@@ -1241,7 +1249,14 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
         while(strTokColon.HasMoreTokens())
         {
             wxString theToken = strTokColon.GetNextToken();
-            if (!theToken.StartsWith(_T("state="))) arLayout2.Add(theToken);
+            if (theToken.StartsWith(_T("state=")))
+            {
+            	theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
+            	theToken.ToULong(&j);
+            	// we filter out the hidden/show state
+            	theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
+            }
+           	arLayout2.Add(theToken);
         }
     }
 

@@ -40,8 +40,8 @@ class wxsRadioBox: public wxsWidget
 
         wxString Label;
         wxArrayString ArrayChoices;
-        int DefaultSelection;
-        int Dimension;
+        long DefaultSelection;
+        long Dimension;
 };
 
 #endif

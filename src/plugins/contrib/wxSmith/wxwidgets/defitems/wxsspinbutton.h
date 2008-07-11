@@ -38,9 +38,9 @@ class wxsSpinButton: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        int Value;
-        int Min;
-        int Max;
+        long Value;
+        long Min;
+        long Max;
 };
 
 #endif

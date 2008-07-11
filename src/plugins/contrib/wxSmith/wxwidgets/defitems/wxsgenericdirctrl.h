@@ -40,7 +40,7 @@ class wxsGenericDirCtrl: public wxsWidget
 
         wxString DefaultFolder;
     	wxString Filter;
-    	int DefaultFilter;
+    	long DefaultFilter;
 };
 
 #endif

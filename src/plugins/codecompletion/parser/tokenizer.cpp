@@ -557,6 +557,11 @@ wxString Tokenizer::DoGetToken()
         m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
         m_IsOperator = m_Str.IsSameAs(TokenizerConsts::operator_str);
     }
+    else if (c == 178  || c == 179) // fetch ² and ³
+    {
+        m_Str = c;
+        MoveToNextChar();
+    }
     else if (wxIsdigit(CurrentChar()))
     {
         // numbers

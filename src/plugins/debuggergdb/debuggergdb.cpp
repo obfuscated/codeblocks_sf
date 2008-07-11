@@ -1053,6 +1053,8 @@ int DebuggerGDB::Debug()
         return 2;
 
     m_pProject = project;
+    if (m_ActiveBuildTarget.IsEmpty())
+        m_ActiveBuildTarget = m_pProject->GetActiveBuildTarget();
 
     // should we build to make sure project is up-to-date?
     if (Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("auto_build"), true))
@@ -2796,8 +2798,8 @@ void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
 void DebuggerGDB::OnBuildTargetSelected(CodeBlocksEvent& event)
 {
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerGDB::OnBuildTargetSelected: target=%s"), event.GetBuildTargetName().c_str()));
-
     // verify that the project that sent it, is the one we 're debugging
-    if (!m_pProject || event.GetProject() == m_pProject)
+    // and that a project is loaded
+    if (m_pProject && event.GetProject() == m_pProject)
         m_ActiveBuildTarget = event.GetBuildTargetName();
 }

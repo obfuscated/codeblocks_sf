@@ -689,18 +689,22 @@ int CodeBlocksApp::BatchJob()
         }
     }
 
-    wxTaskBarIcon* tbIcon = new wxTaskBarIcon();
-    tbIcon->SetIcon(
-            #ifdef __WXMSW__
-                wxICON(A_MAIN_ICON),
-            #else
-                wxIcon(app),
-            #endif // __WXMSW__
-                _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
-
+    wxTaskBarIcon* tbIcon = 0;
     m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
     PlaceWindow(m_pBatchBuildDialog);
-    m_pBatchBuildDialog->Show();
+    if (!m_Clean)
+    {
+        tbIcon = new wxTaskBarIcon();
+        tbIcon->SetIcon(
+                #ifdef __WXMSW__
+                    wxICON(A_MAIN_ICON),
+                #else
+                    wxIcon(app),
+                #endif // __WXMSW__
+                    _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
+
+        m_pBatchBuildDialog->Show();
+    }
 
     if (m_ReBuild)
     {
@@ -746,8 +750,11 @@ int CodeBlocksApp::BatchJob()
     if (!m_Clean && m_pBatchBuildDialog)
         m_pBatchBuildDialog->ShowModal();
 
-    tbIcon->RemoveIcon();
-    delete tbIcon;
+    if (tbIcon)
+    {
+        tbIcon->RemoveIcon();
+        delete tbIcon;
+    }
     if (m_pBatchBuildDialog)
         m_pBatchBuildDialog->Destroy();
     m_pBatchBuildDialog = 0;
@@ -782,9 +789,13 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
 
     if (m_pBatchBuildDialog && m_BatchWindowAutoClose)
     {
-        m_pBatchBuildDialog->EndModal(wxID_OK);
-        m_pBatchBuildDialog->Destroy();
-        m_pBatchBuildDialog = 0;
+        if (m_pBatchBuildDialog->IsModal())
+            m_pBatchBuildDialog->EndModal(wxID_OK);
+        else
+        {
+            m_pBatchBuildDialog->Destroy();
+            m_pBatchBuildDialog = 0;
+        }
     }
 }
 

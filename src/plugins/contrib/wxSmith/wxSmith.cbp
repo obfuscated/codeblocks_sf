@@ -82,6 +82,7 @@
 			<Add option="-Wl,--enable-auto-image-base" />
 			<Add option="-Wl,--export-all-symbols" />
 			<Add option="-Wl,--add-stdcall-alias" />
+			<Add option="-Wl,--enable-auto-import" />
 			<Add library="txml" />
 			<Add library="propgrid" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />

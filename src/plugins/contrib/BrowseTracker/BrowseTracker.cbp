@@ -35,6 +35,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-Wl,--enable-auto-import" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="libwxscintilla.a" />
 					<Add library="codeblocks" />

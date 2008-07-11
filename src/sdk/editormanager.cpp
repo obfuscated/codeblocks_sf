@@ -911,6 +911,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                            ed->GetFilename().c_str());
                 ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
                 dlg.SetTitle(_("Reload file?"));
+                dlg.GetSizer()->SetSizeHints(&dlg);
                 PlaceWindow(&dlg);
                 ret = dlg.ShowModal();
                 reloadAll = ret == crAll;

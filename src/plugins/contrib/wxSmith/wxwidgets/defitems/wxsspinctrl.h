@@ -39,8 +39,8 @@ class wxsSpinCtrl: public wxsWidget
         virtual void OnEnumWidgetProperties(long Flags);
 
         wxString Value;
-        int Min;
-        int Max;
+        long Min;
+        long Max;
 
 };
 

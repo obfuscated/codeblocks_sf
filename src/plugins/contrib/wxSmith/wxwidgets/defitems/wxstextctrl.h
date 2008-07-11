@@ -39,7 +39,7 @@ class wxsTextCtrl: public wxsWidget
         virtual void OnEnumWidgetProperties(long Flags);
 
         wxString Text;
-        int MaxLength;
+        long MaxLength;
 };
 
 #endif
