@@ -35,9 +35,9 @@ extern int idViewSnippets ;
 //#endif
 
 //-#if defined(__WXMSW__) && !defined(BUILDING_PLUGIN)
-#if !defined(BUILDING_PLUGIN)
-extern int idMenuProperties    ;
-#endif
+//-#if !defined(BUILDING_PLUGIN)
+//-extern int idMenuProperties    ;
+//-#endif
 
 // Search control menu ids
 extern int idSearchSnippetCtrl ;
@@ -68,6 +68,7 @@ extern int idMnuScope           ;
 extern int idMnuScopeSnippets   ;
 extern int idMnuScopeCategories ;
 extern int idMnuScopeBoth       ;
+extern int idMnuSearchExtended  ;
 
 
 #endif // MENUIDENTIFIERS_H_INCLUDED

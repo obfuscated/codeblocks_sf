@@ -32,6 +32,8 @@ class TiXmlElement;
 #include "snippetitemdata.h"
 #include <tinyxml/tinyxml.h>
 #include "snippetproperty.h"
+#include "codesnippetsevent.h"
+#include "snippetsconfig.h"
 
 //#if defined(__WXGTK__)
 //    #include <X11/Xlibint.h>
@@ -64,7 +66,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
 
         bool        SetFileChanged(bool truefalse) { return m_fileChanged = truefalse; }
         bool        GetFileChanged() { return m_fileChanged; }
-        void        SaveFileModificationTime(wxDateTime savedTime = time_t(0));
+        void        FetchFileModificationTime(wxDateTime savedTime = time_t(0));
         wxDateTime  GetSavedFileModificationTime(){ return m_LastXmlModifiedTime;}
         wxTreeItemId ConvertSnippetToCategory(wxTreeItemId itemId);
         void        OnItemSelected(wxTreeEvent& event);
@@ -75,6 +77,8 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void        SaveSnippetAsFileLink();
         void        EditSnippetAsText();
         void        EditSnippetWithMIME();
+
+        void SaveDataAndCloseEditorFrame();
 
         // This OnIdle() is driven from the plugin|app OnIdle routines
         void OnIdle();
@@ -132,9 +136,9 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 if (not IsSnippet(itemId) ) return wxEmptyString;
                 wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
                 fileName = fileName.BeforeFirst('\n');
-                #if defined(BUILDING_PLUGIN)
+                //-#if defined(BUILDING_PLUGIN)
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
-                #endif
+                //-#endif
                 return fileName;
             }
 
@@ -176,6 +180,17 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void            OpenSnippetAsFileLink();
         int             ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem);
 
+        wxTreeItemId FindTreeItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType);
+        wxTreeItemId FindTreeItemByTreeId(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType);
+        wxTreeItemId FindTreeItemBySnippetId(const SnippetItemID& IDToFind, const wxTreeItemId& startNode);
+        wxTreeItemId ResetSnippetsIDs(const wxTreeItemId& startNode);
+        wxTreeItemId FillFileLinksMapArray(const wxTreeItemId& startNode, FileLinksMapArray& fileLinksMapArray);
+
+        // CodeSnippet/ThreadSearch events
+        void OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event);
+        void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
+        void OnCodeSnippetsEvent_GetFileLinks(CodeSnippetsEvent& event);
+
 	private:
 
 	    bool                    m_fileChanged;
@@ -199,10 +214,6 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
        #if defined(__WXMSW__)
         void MSW_MouseMove(int x, int y );
        #endif
-
-        wxTreeItemId FindTreeItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType);
-        wxTreeItemId FindTreeItemByTreeId(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType);
-        wxTreeItemId FindTreeItemBySnippetId(const SnippetItemID& IDToFind, const wxTreeItemId& startNode);
 
         void EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName=wxEmptyString);
 

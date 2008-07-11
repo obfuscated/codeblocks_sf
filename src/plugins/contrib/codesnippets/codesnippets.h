@@ -29,6 +29,7 @@
 
 class CodeSnippetsWindow;
 class wxMemoryMappedFile;
+class CodeSnippetsEvent;
 
 // ----------------------------------------------------------------------------
 class CodeSnippets : public cbPlugin
@@ -170,9 +171,13 @@ class CodeSnippets : public cbPlugin
 		void OnDockWindowVisability(CodeBlocksDockEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
 
+        void OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event);
+        void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
+
+        cbDragScroll* FindDragScroll();
+
 		wxWindow*       m_pAppWin;
-        ProjectManager* m_pPrjMan;
-        wxWindow*       m_pOpenFilesList;
+        ProjectManager* m_pProjectMgr;
         wxTreeCtrl*     m_pMgtTreeBeginDrag;
         wxPoint         m_TreeMousePosn;
         wxTreeItemId    m_TreeItemId;
@@ -180,7 +185,7 @@ class CodeSnippets : public cbPlugin
         int             m_nOnActivateBusy;
         long            m_ExternalPid;
         wxMemoryMappedFile* m_pMappedFile;
-
+        long            m_nDragScrollEventId;
 
 		DECLARE_EVENT_TABLE();
 

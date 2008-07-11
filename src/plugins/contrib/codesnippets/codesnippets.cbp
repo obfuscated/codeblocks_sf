@@ -12,7 +12,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DNO_LOGGING" />
 				</Compiler>
@@ -26,8 +25,8 @@
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="-DNO_LOGGING" />
+					<Add option="-DBUILDING_PLUGIN" />
 				</Compiler>
 			</Target>
 			<Environment>
@@ -59,20 +58,72 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\include\tinyxml" />
+			<Add directory="$(#CB.include)\wxFlatNotebook\include\" />
+			<Add directory="Search" />
+			<Add directory="editor" />
+			<Add directory="." />
 		</Compiler>
 		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add library="wxflatnotebook" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="txml" />
 			<Add library="wxscintilla" />
+			<Add library="codeblocks" />
 			<Add directory="$(#CB)\devel" />
 			<Add directory="$(#CB)\base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#cb)\sdk\wxFlatNotebook" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="Makefile.am" />
+		<Unit filename="Search\DirectoryParamsPanel.cpp" />
+		<Unit filename="Search\DirectoryParamsPanel.h" />
+		<Unit filename="Search\InsertIndexManager.cpp" />
+		<Unit filename="Search\InsertIndexManager.h" />
+		<Unit filename="Search\MainPanel.cpp" />
+		<Unit filename="Search\MainPanel.h" />
+		<Unit filename="Search\SearchInPanel.cpp" />
+		<Unit filename="Search\SearchInPanel.h" />
+		<Unit filename="Search\TextFileSearcher.cpp" />
+		<Unit filename="Search\TextFileSearcher.h" />
+		<Unit filename="Search\TextFileSearcherRegEx.cpp" />
+		<Unit filename="Search\TextFileSearcherRegEx.h" />
+		<Unit filename="Search\TextFileSearcherText.cpp" />
+		<Unit filename="Search\TextFileSearcherText.h" />
+		<Unit filename="Search\ThreadSearch.cpp" />
+		<Unit filename="Search\ThreadSearch.h" />
+		<Unit filename="Search\ThreadSearchConfPanel.cpp" />
+		<Unit filename="Search\ThreadSearchConfPanel.h" />
+		<Unit filename="Search\ThreadSearchControlIds.h" />
+		<Unit filename="Search\ThreadSearchEvent.cpp" />
+		<Unit filename="Search\ThreadSearchEvent.h" />
+		<Unit filename="Search\ThreadSearchFindData.cpp" />
+		<Unit filename="Search\ThreadSearchFindData.h" />
+		<Unit filename="Search\ThreadSearchFrame.cpp" />
+		<Unit filename="Search\ThreadSearchFrame.h" />
+		<Unit filename="Search\ThreadSearchLoggerBase.cpp" />
+		<Unit filename="Search\ThreadSearchLoggerBase.h" />
+		<Unit filename="Search\ThreadSearchLoggerList.cpp" />
+		<Unit filename="Search\ThreadSearchLoggerList.h" />
+		<Unit filename="Search\ThreadSearchLoggerTree.cpp" />
+		<Unit filename="Search\ThreadSearchLoggerTree.h" />
+		<Unit filename="Search\ThreadSearchThread.cpp" />
+		<Unit filename="Search\ThreadSearchThread.h" />
+		<Unit filename="Search\ThreadSearchTrace.cpp" />
+		<Unit filename="Search\ThreadSearchTrace.h" />
+		<Unit filename="Search\ThreadSearchView.cpp" />
+		<Unit filename="Search\ThreadSearchView.h" />
+		<Unit filename="Search\ThreadSearchViewManagerBase.cpp" />
+		<Unit filename="Search\ThreadSearchViewManagerBase.h" />
+		<Unit filename="Search\ThreadSearchViewManagerLayout.cpp" />
+		<Unit filename="Search\ThreadSearchViewManagerLayout.h" />
+		<Unit filename="Search\ThreadSearchViewManagerMessagesNotebook.cpp" />
+		<Unit filename="Search\ThreadSearchViewManagerMessagesNotebook.h" />
+		<Unit filename="Search\logging.h" />
 		<Unit filename="codesnippets.cpp">
 			<Option target="Plugin - Win32" />
 		</Unit>
@@ -85,17 +136,42 @@
 		<Unit filename="codesnippetsapp.h">
 			<Option target="App - Win32" />
 		</Unit>
+		<Unit filename="codesnippetsevent.cpp" />
+		<Unit filename="codesnippetsevent.h" />
 		<Unit filename="codesnippetstreectrl.cpp" />
 		<Unit filename="codesnippetstreectrl.h" />
 		<Unit filename="codesnippetswindow.cpp" />
 		<Unit filename="codesnippetswindow.h" />
-		<Unit filename="defsext.h" />
-		<Unit filename="edit.cpp" />
-		<Unit filename="edit.h" />
+		<Unit filename="csutils.cpp" />
+		<Unit filename="csutils.h" />
+		<Unit filename="editor\defsext.h" />
+		<Unit filename="editor\dragscroll.cpp" />
+		<Unit filename="editor\dragscroll.h" />
+		<Unit filename="editor\dragscrollcfg.cpp" />
+		<Unit filename="editor\dragscrollcfg.h" />
+		<Unit filename="editor\dragscrollevent.cpp" />
+		<Unit filename="editor\dragscrollevent.h" />
+		<Unit filename="editor\editproperties.cpp" />
+		<Unit filename="editor\editproperties.h" />
+		<Unit filename="editor\prefs.cpp" />
+		<Unit filename="editor\prefs.h" />
+		<Unit filename="editor\scbeditor.cpp" />
+		<Unit filename="editor\scbeditor.h" />
+		<Unit filename="editor\seditorbase.cpp" />
+		<Unit filename="editor\seditorbase.h" />
+		<Unit filename="editor\seditorcolourset.cpp" />
+		<Unit filename="editor\seditorcolourset.h" />
+		<Unit filename="editor\seditormanager.cpp" />
+		<Unit filename="editor\seditormanager.h" />
+		<Unit filename="editor\sprintdlg.cpp" />
+		<Unit filename="editor\sprintdlg.h" />
 		<Unit filename="editsnippetframe.cpp" />
 		<Unit filename="editsnippetframe.h" />
-		<Unit filename="finddialogs.cpp" />
-		<Unit filename="finddialogs.h" />
+		<Unit filename="generic.Manifest" />
+		<Unit filename="generic.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="manifest.xml" />
 		<Unit filename="memorymappedfile.cpp" />
 		<Unit filename="memorymappedfile.h" />
 		<Unit filename="menuidentifiers.h" />
@@ -103,8 +179,17 @@
 		<Unit filename="messageBoxForm.h" />
 		<Unit filename="messagebox.cpp" />
 		<Unit filename="messagebox.h" />
-		<Unit filename="prefs.cpp" />
-		<Unit filename="prefs.h" />
+		<Unit filename="resources\Makefile.am" />
+		<Unit filename="resources\allsnippets.png" />
+		<Unit filename="resources\category.png" />
+		<Unit filename="resources\findf.png" />
+		<Unit filename="resources\findfdisabled.png" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\options.png" />
+		<Unit filename="resources\optionsdisabled.png" />
+		<Unit filename="resources\snippet.png" />
+		<Unit filename="resources\stop.png" />
+		<Unit filename="resources\stopdisabled.png" />
 		<Unit filename="settingsdlg.cpp" />
 		<Unit filename="settingsdlg.h" />
 		<Unit filename="settingsdlgform.cpp" />
@@ -115,8 +200,12 @@
 		<Unit filename="snippetproperty.h" />
 		<Unit filename="snippetpropertyform.cpp" />
 		<Unit filename="snippetpropertyform.h" />
-		<Unit filename="snippetsconfig.cpp" />
-		<Unit filename="snippetsconfig.h" />
+		<Unit filename="snippetsconfig.cpp">
+			<Option weight="40" />
+		</Unit>
+		<Unit filename="snippetsconfig.h">
+			<Option weight="40" />
+		</Unit>
 		<Unit filename="snippetsimages.cpp" />
 		<Unit filename="snippetsimages.h" />
 		<Unit filename="update" />

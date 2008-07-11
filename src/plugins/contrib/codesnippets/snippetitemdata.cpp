@@ -25,37 +25,52 @@
 #endif
 
 #include "snippetitemdata.h"
+#include "snippetsconfig.h"
+#include "codesnippetswindow.h"
 
 // ----------------------------------------------------------------------------
 // statics
 // ----------------------------------------------------------------------------
-long SnippetItemData::HighestSnippetID = 0;
-// ----------------------------------------------------------------------------
-SnippetItemData::SnippetItemData(SnippetItemType type, SnippetItemID ID)
-// ----------------------------------------------------------------------------
-    : m_Type(type), m_Snippet(wxEmptyString), m_ID(ID)
-{
-    if ( 0 == m_ID )
-        m_ID = GetNewID();
-    else
-        SetHighestSnippetID(ID);
-}
+long     SnippetItemData::m_HighestSnippetID = 0;
+unsigned SnippetItemData::m_itemsChangedCount = 0;
 
 // ----------------------------------------------------------------------------
-SnippetItemData::SnippetItemData(SnippetItemType type, wxString snippet, SnippetItemID ID)
+SnippetItemData::SnippetItemData(SnippetItemType type, SnippetItemID oldID)
+// ----------------------------------------------------------------------------
+    : m_Type(type), m_Snippet(wxEmptyString), m_ID(oldID)
+{
+    InitializeItem(oldID);
+}
+// ----------------------------------------------------------------------------
+SnippetItemData::SnippetItemData(SnippetItemType type, wxString snippet, SnippetItemID oldID)
 // ---------------------------------------------------------------------------
-    : m_Type(type), m_Snippet(snippet), m_ID(ID)
+    : m_Type(type), m_Snippet(snippet), m_ID(oldID)
 {
-    if ( 0 == m_ID )
-        m_ID = GetNewID();
-    else
-        SetHighestSnippetID(ID);
+    InitializeItem(oldID);
 }
-
 // ----------------------------------------------------------------------------
 SnippetItemData::~SnippetItemData()
 // ----------------------------------------------------------------------------
 {
 	//dtor
+}
+// ----------------------------------------------------------------------------
+void SnippetItemData::InitializeItem(SnippetItemID oldID)
+// ----------------------------------------------------------------------------
+{
+    //m_ID already set by ctor init m_ID(oldID)
+    if ( 0 == oldID )
+        m_ID = GetNewID();
+
+    // if ID is less than highest, must be merging another .xml
+    if ( m_ID < m_HighestSnippetID )
+        if ( GetConfig()->GetSnippetsWindow()->IsAppendingFile() )
+            m_ID = GetNewID();
+
+    if ( oldID not_eq m_ID )
+        m_itemsChangedCount += 1;
+
+    // if ID is greater than highest, set to highest
+    UpdateHighestSnippetID(m_ID);
 }
 

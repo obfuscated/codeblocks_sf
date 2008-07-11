@@ -48,13 +48,14 @@ class CodeSnippetsApp : public wxApp
 	public:
 		virtual bool OnInit();
 		//-void OnActivateApp(wxActivateEvent& event);
+    private:
 
 		DECLARE_EVENT_TABLE()
 };
 
 #endif // CODESNIPPETSAPP_H
 /***************************************************************
- * Name:      CodeSnippetsAppMain.h
+ * Name:      CodeSnippetsAppFrame.h
  * Purpose:   Defines Application Frame
  * Author:    pecan ()
  * Created:   2007-03-18
@@ -66,12 +67,15 @@ class CodeSnippetsApp : public wxApp
 #define CODESNIPPETSAPPMAIN_H
 
 #include <wx/snglinst.h>    //single instance checker
+#include <wx/string.h>    //single instance checker
 
 #include "codesnippetsapp.h"
 #include "snippetsconfig.h"
 #include "codesnippetswindow.h"
 
 class wxMemoryMappedFile;
+class CodeSnippetsEvent;
+class cbDragScroll;
 
 // ----------------------------------------------------------------------------
 class CodeSnippetsAppFrame: public wxFrame
@@ -85,10 +89,14 @@ class CodeSnippetsAppFrame: public wxFrame
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         void OnRecentFileReopen(wxCommandEvent& event);
         void OnRecentFileClearHistory(wxCommandEvent& event);
+        void InitializeDragScroll();
+        bool GetInitXRCResult() {return m_bInitXRC_Result;}
 
 	private:
 
+        void InitCodeSnippetsAppFrame(wxFrame *frame, const wxString& title);
 		CodeSnippetsWindow* GetSnippetsWindow(){return GetConfig()->GetSnippetsWindow();}
+		CodeSnippetsTreeCtrl* GetSnippetsTreeCtrl(){return GetConfig()->GetSnippetsWindow()->GetSnippetsTreeCtrl();}
 
         void OnFileLoad(wxCommandEvent& event);
         void OnFileSave(wxCommandEvent& event);
@@ -101,6 +109,7 @@ class CodeSnippetsAppFrame: public wxFrame
 		void OnFileBackup(wxCommandEvent& event);
 		void OnTimerAlarm(wxTimerEvent& event);
         void OnIdle(wxIdleEvent& event);
+        void OnEventTest(wxCommandEvent &event);
 
         void StartKeepAliveTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
         void StopKeepAliveTimer(){ m_Timer.Stop();}
@@ -110,16 +119,27 @@ class CodeSnippetsAppFrame: public wxFrame
         void TerminateRecentFilesHistory();
         void AddToRecentFilesHistory(const wxString& FileName);
 
+        bool InitializeSDK();
+        bool LoadConfig();
+        wxString GetAppPath();
+        bool InitXRCStuff();
+        void ComplainBadInstall();
+        int ParseCmdLine(wxFrame* handlerFrame);
+
 		wxString            buildInfo;
         wxString            versionStr;
 
         wxSingleInstanceChecker*  m_checker ;
         int                 m_bOnActivateBusy;
-        long                m_lKeepAlivePid;
         wxMemoryMappedFile* m_pMappedFile;
         wxFileHistory*      m_pFilesHistory;
+        bool                m_bInitXRC_Result;
+        EditorManager*      m_pEdMan;
+        LogManager*         m_pMsgMan;
 
         wxTimer             m_Timer;
+        wxString            m_Prefix;           // --prefix="data resources base folder"
+        wxString            m_ConfigFolder;   // dir name of .conf file
 
 		DECLARE_EVENT_TABLE()
 };

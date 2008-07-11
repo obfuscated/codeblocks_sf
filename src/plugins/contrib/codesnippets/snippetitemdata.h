@@ -25,9 +25,9 @@
 #include <wx/treectrl.h>
 #include <wx/string.h>
 
-#if defined(BUILDING_PLUGIN)
+//-#if defined(BUILDING_PLUGIN)
     #include "macrosmanager.h"
-#endif
+//-#endif
 
 // ----------------------------------------------------------------------------
 class SnippetItemData : public wxTreeItemData
@@ -59,30 +59,43 @@ class SnippetItemData : public wxTreeItemData
         bool IsSnippetFile()
             {	// verify snippet is file type snippet
                 if (not IsSnippet() ) return false ;
+                if ( GetSnippetFileLink() not_eq wxEmptyString )
+                    return true;
+                return false;
+            }
+        wxString GetSnippetFileLink()
+            {	// if FileLink, return the filename
+                if (not IsSnippet() ) return wxEmptyString ;
                 wxString FileName = GetSnippet().BeforeFirst('\r');
                          FileName = FileName.BeforeFirst('\n');
-                #if defined(BUILDING_PLUGIN)
+                //-#if defined(BUILDING_PLUGIN)
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(FileName);
-                #endif
+                //-#endif
                 if (FileName.Length() > 128)
-                    return false ;
+                    return wxEmptyString ;
                 if ( (FileName.IsEmpty())
                     || (not ::wxFileExists( FileName)) )
-                    return false;
-                return true;
+                    return wxEmptyString;
+                return FileName;
             }
-        long GetNewID(){return ++HighestSnippetID;}
-        long SetHighestSnippetID(long ID)
-            { HighestSnippetID = (HighestSnippetID<ID) ? ID : HighestSnippetID;
-              return HighestSnippetID;
+
+        long        GetNewID(){return ++m_HighestSnippetID;}
+        static void SetHighestSnippetID( long value){ m_HighestSnippetID = value;}
+        long        UpdateHighestSnippetID(long ID)
+            { m_HighestSnippetID = (m_HighestSnippetID<ID) ? ID : m_HighestSnippetID;
+              return m_HighestSnippetID;
             }
+        static unsigned GetSnippetsItemsChangedCount(){return m_itemsChangedCount;}
+        static void     SetSnippetsItemsChangedCount(unsigned count){m_itemsChangedCount = count;}
 
 	private:
-		SnippetItemType m_Type;
-		wxString m_Snippet;
-		SnippetItemID m_ID;
+        void     InitializeItem(SnippetItemID oldID);
 
-		static long HighestSnippetID;
+		SnippetItemType m_Type;
+		wxString        m_Snippet;
+		SnippetItemID   m_ID;
+		static unsigned m_itemsChangedCount;
+		static long     m_HighestSnippetID;
 };
 
 #endif // SNIPPETITEMDATA_H

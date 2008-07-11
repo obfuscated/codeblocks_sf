@@ -43,7 +43,7 @@
 #pragma hdrstop
 #endif //__BORLANDC__
 
-#if defined(BUILDING_PLUGIN)
+//-#if defined(BUILDING_PLUGIN)
     #include "sdk.h"
     #ifndef CB_PRECOMP
         #include "manager.h"
@@ -56,7 +56,7 @@
         #include "globals.h"
     #endif
 	#include "cbstyledtextctrl.h"
-#endif
+//-#endif
 
 // project headers
 #include "version.h"
@@ -69,7 +69,12 @@
 #include "messagebox.h"
 #include "settingsdlg.h"
 #include "menuidentifiers.h"
+#include "ThreadSearchFrame.h"
+#include "codesnippetsevent.h"
+#include "dragscroll.h"
+#include "dragscrollevent.h"
 
+//#include "../Utils/ToolBox/ToolBox.h"
 
 //-#define SNIPPETS_TREE_IMAGE_COUNT 3
 // above redefined in snipimages.h to 6
@@ -105,6 +110,7 @@ int idMnuConvertToFileLink      = wxNewId();
 int idMnuProperties             = wxNewId();
 int idMnuSettings               = wxNewId();
 int idMnuAbout                  = wxNewId();
+int idMnuTest                   = wxNewId();
 
 // Search config menu items
 int idMnuCaseSensitive          = wxNewId();
@@ -113,6 +119,7 @@ int idMnuScope                  = wxNewId();
 int idMnuScopeSnippets          = wxNewId();
 int idMnuScopeCategories        = wxNewId();
 int idMnuScopeBoth              = wxNewId();
+int idMnuSearchExtended         = wxNewId();
 
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
@@ -138,6 +145,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuProperties,       CodeSnippetsWindow::OnMnuProperties)
 	EVT_MENU(idMnuSettings,         CodeSnippetsWindow::OnMnuSettings)
 	EVT_MENU(idMnuAbout,            CodeSnippetsWindow::OnMnuAbout)
+	EVT_MENU(idMnuTest,             CodeSnippetsWindow::OnMnuTest)
 	// ---
 
 	// Search config menu event
@@ -146,6 +154,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 	EVT_MENU(idMnuScopeCategories, CodeSnippetsWindow::OnMnuChangeScope)
 	EVT_MENU(idMnuScopeBoth, CodeSnippetsWindow::OnMnuChangeScope)
 	EVT_MENU(idMnuClear, CodeSnippetsWindow::OnMnuClear)
+	EVT_MENU(idMnuSearchExtended, CodeSnippetsWindow::OnMnuSearchExtended)
 	// ---
 
 	EVT_BUTTON(idSearchCfgBtn, CodeSnippetsWindow::OnSearchCfg)
@@ -164,19 +173,78 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
     EVT_LEAVE_WINDOW ( CodeSnippetsWindow::OnLeaveWindow)
     EVT_ENTER_WINDOW ( CodeSnippetsWindow::OnEnterWindow)
 
-END_EVENT_TABLE()
+    // --  CodeSnippets Events --
+    //-EVT_CODESNIPPETS_NEW_INDEX(wxID_ANY, CodeSnippetsWindow::OnCodeSnippetsNewIndex)
 
+END_EVENT_TABLE()
+// ////////////////////////////////////////////////////////////////////////////
+// ----------------------------------------------------------------------------
+bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+// ----------------------------------------------------------------------------
+{
+    // This Drop routine refers to dragging external text onto a tree item
+
+	// Set focus to the Code snippets window
+	m_TreeCtrl->SetFocus();
+
+	wxPoint p(x, y);
+	int hitTestFlags = 0;
+
+	// Find out if there's a tree item under the coordinates
+	wxTreeItemId itemID = m_TreeCtrl->HitTest(p, hitTestFlags);
+
+	if (hitTestFlags & wxTREE_HITTEST_ONITEMBUTTON|wxTREE_HITTEST_ONITEMICON|wxTREE_HITTEST_ONITEMLABEL)
+	{
+		// Find out the item type
+		if (SnippetItemData* item = (SnippetItemData*)(m_TreeCtrl->GetItemData(itemID)))
+		{
+			switch (item->GetType())
+			{
+				case SnippetItemData::TYPE_ROOT:
+					// Add new code snippet to the root
+					m_TreeCtrl->AddCodeSnippet(m_TreeCtrl->GetRootItem(), _("New snippet"), data, 0, true);
+				break;
+
+				case SnippetItemData::TYPE_CATEGORY:
+					// Add new code snippet to the category
+					m_TreeCtrl->AddCodeSnippet(item->GetId(), _("New snippet"), data, 0, true);
+				break;
+
+				case SnippetItemData::TYPE_SNIPPET:
+					// Set the snippet's code to match the dropped data
+					item->SetSnippet(data);
+				break;
+			}
+
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	else
+	{
+		return false;
+	}
+}
+// ////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
 CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 // ----------------------------------------------------------------------------
 	: wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize,wxTAB_TRAVERSAL,wxT("csPanel"))
 {
+    m_SnippetsTreeCtrl = 0;
+    m_SearchSnippetCtrl= 0;
+    m_SearchCfgBtn = 0;
     m_isCheckingForExternallyModifiedFiles = false;
     pTiXmlDoc = 0;
     m_bIsEditingLabel = false;
 
     if (not GetConfig()->pMainFrame)
         GetConfig()->pMainFrame = parent;
+    GetConfig()->pSnippetsWindow = this;
+    GetConfig()->SetThreadSearchFrame(0);
 
 	// Initialize the dialog
 	InitDlg();
@@ -186,22 +254,25 @@ CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 	GetConfig()->SettingsLoad();
 
     wxString s(__FUNCTION__, wxConvUTF8);
-    LOGIT(s+wxT("LoadingFile:%s"),GetConfig()->SettingsSnippetsXmlFullPath.c_str());
+    LOGIT(s+wxT("LoadingFile:%s"),GetConfig()->SettingsSnippetsXmlPath.c_str());
 
 	// Load the snippets
-	GetSnippetsTreeCtrl()->LoadItemsFromFile(GetConfig()->SettingsSnippetsXmlFullPath, false);
-    GetSnippetsTreeCtrl()->SaveFileModificationTime();
+	GetSnippetsTreeCtrl()->LoadItemsFromFile(GetConfig()->SettingsSnippetsXmlPath, /*appending=*/false);
+    //-GetSnippetsTreeCtrl()->FetchFileModificationTime(); done by LoadItemsFromFile()
 }
 // ----------------------------------------------------------------------------
 CodeSnippetsWindow::~CodeSnippetsWindow()
 // ----------------------------------------------------------------------------
 {
 	// Save the snippets
-	if ( GetFileChanged() )
-        GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlFullPath);
-
-    if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
-  	GetConfig()->pSnippetsSearchCtrl = 0;
+////	if ( GetSnippetsTreeCtrl() && GetFileChanged() )
+////        GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
+////
+////    if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
+////  	GetConfig()->pSnippetsSearchCtrl = 0;
+    #if defined(LOGGING)
+    LOGIT( _T("~CodeSnippetsWindow:return"));
+    #endif
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnEnterWindow (wxMouseEvent &event)
@@ -217,7 +288,7 @@ void CodeSnippetsWindow::OnLeaveWindow (wxMouseEvent &event)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
-    LOGIT( _T("CodeSnippetsWindow::OnLeaveWindow"));
+    //LOGIT( _T("CodeSnippetsWindow::OnLeaveWindow"));
     #endif
     event.Skip();
 }
@@ -225,34 +296,24 @@ void CodeSnippetsWindow::OnLeaveWindow (wxMouseEvent &event)
 void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // EVT_CLOSE is not generated from wxAUI windows wx2.6.3
-    // This routine is hooked from it's parent
-
-    // this routine is Connect()ed for wxAUI->OnClose
-    // in codesnippets.cpp CreateSnippetsWindow() routine
-    // and Disconnect() in codesnippets.cpp OnIdle() when the
-    // window is closed.
+    // EVT_CLOSE is not generated from wxAUI windows
+    // This routine is called by the App OnClose routines
+    // on plugin OnRelease();
 
     if ( GetConfig()->m_appIsShutdown) { event.Skip(); return;}
 
     if ( not GetConfig()->GetSnippetsWindow() )
         {event.Skip();return;}
+
+    #if defined(LOGGING)
      LOGIT( _T("CodeSnippetsWindow::Onclose Saving Settings"));
+    #endif
     GetConfig()->SettingsSave();
+
     if (GetConfig()->IsPlugin())
     {
         if ( GetConfig()->IsFloatingWindow() )
-        {   GetConfig()->SettingsSaveWinPosition();
-            // This connect was made in codesnippets.cpp OnViewSnippets()
-            // in order to catch the system close button
-            // This Disconnect causes a crash on wxMSW even tho I've verified the pointer is ok
-            //-if ( GetConfig()->m_pEvtCloseConnect )
-            //-{    GetConfig()->m_pEvtCloseConnect->Disconnect( wxEVT_CLOSE_WINDOW,
-            //-        (wxObjectEventFunction)(wxEventFunction)
-            //-        (wxCloseEventFunction) &CodeSnippetsWindow::OnClose,NULL,this);
-            //-    GetConfig()->m_pEvtCloseConnect = 0;
-            //-}
-        }//if
+            GetConfig()->SettingsSaveWinPosition();
     }//if
 
     // crash on shutdown if we don't do this test
@@ -262,10 +323,18 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
         pbar->Check(idViewSnippets, false);
     }
 
-    GetConfig()->m_pEvtCloseConnect = 0;
+    // Close ThreadSearchFrame
+    if ( GetConfig()->GetThreadSearchFrame() )
+        GetConfig()->GetThreadSearchFrame()->Close();
+
+    //-while ( RemoveEventHandler( this )); causes crash
+
     Destroy();
     GetConfig()->pSnippetsWindow = 0;
     event.Skip();
+    #if defined(LOGGING)
+    LOGIT( _T("CodeSnippetsWindow::OnClose END"));
+    #endif
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::InitDlg()
@@ -306,7 +375,6 @@ void CodeSnippetsWindow::InitDlg()
 	GetSnippetsTreeCtrl()->AddRoot(_("All snippets"), 0, -1, rootData);
 	GetConfig()->pSnippetsSearchCtrl = m_SearchSnippetCtrl;
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnSearchCfg(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
@@ -341,6 +409,7 @@ void CodeSnippetsWindow::OnSearchCfg(wxCommandEvent& /*event*/)
 	searchCfgMenu->Append(idMnuScope, _("Scope"), searchScopeMenu);
 	searchCfgMenu->AppendSeparator();
 	searchCfgMenu->Append(idMnuClear, _("Clear"));
+    searchCfgMenu->Append(idMnuSearchExtended, _("Full Search"));
 
 	if (m_SearchSnippetCtrl->GetValue().IsEmpty())
 	{
@@ -354,7 +423,6 @@ void CodeSnippetsWindow::OnSearchCfg(wxCommandEvent& /*event*/)
 	searchCfgMenu->Destroy(idMnuScope);
 	delete searchCfgMenu;
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
@@ -407,7 +475,6 @@ void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 		}
 	}
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
@@ -433,7 +500,6 @@ void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
     OnMnuEditSnippet( ev )        ;
     return;
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
@@ -498,9 +564,14 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
                 }//if IsPlugin
 
 				snippetsTreeMenu->AppendSeparator();
+			    snippetsTreeMenu->Append(idMnuSearchExtended, _("Full Search"));
                 snippetsTreeMenu->Append(idMnuSettings, _("Settings..."));
-               if ( GetConfig()->IsPlugin() )
+               if ( GetConfig()->IsPlugin() ){
                     snippetsTreeMenu->Append(idMnuAbout, _("About..."));
+                    #if defined(LOGGING)
+                    snippetsTreeMenu->Append(idMnuTest, _("Test")); //debugging
+                    #endif
+               }
 			break;
 
             // ---------------------
@@ -534,11 +605,11 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
                         snippetsTreeMenu->Append(idMnuOpenFileLink,_("Open Url"));
                 }
 
-                #if defined(BUILDING_PLUGIN)
+                //-#if defined(BUILDING_PLUGIN)
                 if (GetConfig()->IsPlugin())
                 {   snippetsTreeMenu->Append(idMnuApplySnippet, _("Apply"));
                 }
-                #endif
+                //-#endif
                 if ( IsFileSnippet(itemId) )
                     snippetsTreeMenu->Append(idMnuCopyToClipboard, _("Clipboard <= FileName"));
                 else
@@ -565,19 +636,16 @@ void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
 		delete snippetsTreeMenu;
 	}
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnBeginDrag(wxTreeEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnEndDrag(wxTreeEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuAddSubCategory(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -597,7 +665,6 @@ void CodeSnippetsWindow::OnMnuAddSubCategory(wxCommandEvent& event)
 	if ( (newItem.IsOk()) && (pTree->GetItemText(newItem).IsEmpty()) )
         pTree->RemoveItem(newItem);
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuRemove(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
@@ -659,6 +726,7 @@ void CodeSnippetsWindow::OnMnuPaste(wxCommandEvent& event)
     if (not pTiXmlDoc) return;
 
     // if target item is a snippet type, first convert it to a category
+    // so it'll hold both the old snippet and the new one
     wxTreeItemId targetItem = GetAssociatedItemID();
     if ( IsSnippet(targetItem) )
     {
@@ -683,7 +751,6 @@ void CodeSnippetsWindow::OnMnuConvertToCategory(wxCommandEvent& event)
     GetSnippetsTreeCtrl()->ConvertSnippetToCategory( GetAssociatedItemID());
 
 }//OnMnuConvertToCategory
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuAddSnippet(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
@@ -692,7 +759,6 @@ void CodeSnippetsWindow::OnMnuAddSnippet(wxCommandEvent& /*event*/)
 	GetSnippetsTreeCtrl()->AddCodeSnippet(GetAssociatedItemID(), _("New snippet"), wxEmptyString, /*newID*/0, /*editNow*/true);
 	SetFileChanged(true);
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
 // ----------------------------------------------------------------------------
@@ -705,37 +771,40 @@ void CodeSnippetsWindow::ApplySnippet(const wxTreeItemId& itemID)
 		{
 			return;
 		}
-      #if defined(BUILDING_PLUGIN)
-		// Check that editor is open
-		EditorManager* editorMan = Manager::Get()->GetEditorManager();
-		if(!editorMan)
-		{
-			return;
-		}
+      //-#if defined(BUILDING_PLUGIN)
+        if (GetConfig()->IsPlugin() )
+        {
+            // Check that editor is open
+            EditorManager* editorMan = Manager::Get()->GetEditorManager();
+            if(!editorMan)
+            {
+                return;
+            }
 
-		cbEditor* editor = editorMan->GetBuiltinActiveEditor();
-		if(!editor)
-		{
-			return;
-		}
+            cbEditor* editor = editorMan->GetBuiltinActiveEditor();
+            if(!editor)
+            {
+                return;
+            }
 
-		cbStyledTextCtrl* ctrl = editor->GetControl();
-		if(ctrl)
-		{
-			// Apply the snippet
-			wxString snippet = item->GetSnippet();
-			CheckForMacros(snippet);
-			//wxLeaner: http://forums.codeblocks.org/index.php/topic,5375.new.html#new
-			// Honor target source line indentation
-            snippet.Replace(wxT("\n"), wxT('\n') + editor->GetLineIndentString(ctrl->GetCurrentLine()));
-            ctrl->AddText(snippet);
-		}
-	  #else //NOT defined(BUILDING_PLUGIN)
-        AddTextToClipBoard( item->GetSnippet() );
-	  #endif //defined(BUILDING_PLUGIN)
+            cbStyledTextCtrl* ctrl = editor->GetControl();
+            if(ctrl)
+            {
+                // Apply the snippet
+                wxString snippet = item->GetSnippet();
+                CheckForMacros(snippet);
+                //wxLeaner: http://forums.codeblocks.org/index.php/topic,5375.new.html#new
+                // Honor target source line indentation
+                snippet.Replace(wxT("\n"), wxT('\n') + editor->GetLineIndentString(ctrl->GetCurrentLine()));
+                ctrl->AddText(snippet);
+            }
+        }//ifPlugin
+        //-#else //NOT defined(BUILDING_PLUGIN)
+        else
+            AddTextToClipBoard( item->GetSnippet() );
+        //-#endif //defined(BUILDING_PLUGIN)
 	}
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuApplySnippet(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
@@ -743,11 +812,12 @@ void CodeSnippetsWindow::OnMnuApplySnippet(wxCommandEvent& /*event*/)
 	// Apply the snippet using the associated item id
 	ApplySnippet(GetAssociatedItemID());
 }
-
 // ----------------------------------------------------------------------------
 wxTreeItemId CodeSnippetsWindow::SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node)
 // ----------------------------------------------------------------------------
 {
+    // Search Snippets tree for a label
+
 	wxTreeItemIdValue cookie;
 	wxTreeItemId item = GetSnippetsTreeCtrl()->GetFirstChild(node, cookie );
 
@@ -810,7 +880,6 @@ wxTreeItemId CodeSnippetsWindow::SearchSnippet(const wxString& searchTerms, cons
    wxTreeItemId dummyItem;
    return dummyItem;
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnBeginLabelEdit(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
@@ -822,7 +891,6 @@ void CodeSnippetsWindow::OnBeginLabelEdit(wxTreeEvent& event)
 	}
 	IsEditingLabel(true);
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuLoadSnippetsFromFile(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -832,17 +900,16 @@ void CodeSnippetsWindow::OnMnuLoadSnippetsFromFile(wxCommandEvent& event)
 	{
         LOGIT(wxT("LoadingFile:%s"),dlg.GetPath().c_str());
 		GetSnippetsTreeCtrl()->LoadItemsFromFile(dlg.GetPath(), m_AppendItemsFromFile);
-        GetConfig()->SettingsSnippetsXmlFullPath = dlg.GetPath();
-        SetFileChanged(false);
+        GetConfig()->SettingsSnippetsXmlPath = dlg.GetPath();
+        //-if (not m_AppendItemsFromFile) SetFileChanged(false);
 	}
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuSaveSnippets(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 	{
-		GetSnippetsTreeCtrl()->SaveItemsToFile( GetConfig()->SettingsSnippetsXmlFullPath );
+		GetSnippetsTreeCtrl()->SaveItemsToFile( GetConfig()->SettingsSnippetsXmlPath );
 		SetFileChanged(false);
 	}
 }
@@ -866,7 +933,7 @@ void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
     // copy the XML Index to the new file name
 
     if (GetFileChanged() ) OnMnuSaveSnippets(event);
-    const wxString IndexFile = GetConfig()->SettingsSnippetsXmlFullPath;
+    const wxString IndexFile = GetConfig()->SettingsSnippetsXmlPath;
     wxString bkupName = wxEmptyString;
     unsigned i = 0;
     while (true)
@@ -883,7 +950,6 @@ void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
                 bkupName.c_str()) );
 
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnEndLabelEdit(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
@@ -893,7 +959,6 @@ void CodeSnippetsWindow::OnEndLabelEdit(wxTreeEvent& event)
 	GetSnippetsTreeCtrl()->SortChildren(GetSnippetsTreeCtrl()->GetItemParent(event.GetItem()));
 	SetFileChanged(true);
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuRemoveAll(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
@@ -902,14 +967,12 @@ void CodeSnippetsWindow::OnMnuRemoveAll(wxCommandEvent& /*event*/)
 	GetSnippetsTreeCtrl()->DeleteChildren(GetSnippetsTreeCtrl()->GetRootItem());
 	SetFileChanged(true);
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuCaseSensitive(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
 	GetConfig()->m_SearchConfig.caseSensitive = (not GetConfig()->m_SearchConfig.caseSensitive);
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuChangeScope(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -927,7 +990,6 @@ void CodeSnippetsWindow::OnMnuChangeScope(wxCommandEvent& event)
 		GetConfig()->m_SearchConfig.scope = GetConfig()->SCOPE_BOTH;
 	}
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -936,7 +998,74 @@ void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
 	m_SearchSnippetCtrl->Clear();
 
 }
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuSearchExtended(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    wxWindow* m_pAppWindow = Manager::Get()->GetAppWindow();
+    if ( not m_pAppWindow ) m_pAppWindow = wxTheApp->GetTopWindow();
 
+    // save any changes before handing off the xml file to search
+    if ( GetFileChanged() ){
+        GetSnippetsTreeCtrl()->SaveItemsToFile( GetConfig()->SettingsSnippetsXmlPath );
+        #if defined(LOGGING)
+        LOGIT( _T("OnMnuSearchExtended Saved[%s]"), GetConfig()->SettingsSnippetsXmlPath.c_str());
+        #endif
+    }
+
+    // Simply raise the search window if already loaded
+    wxWindow* pThreadSearchFrame = GetConfig()->GetThreadSearchFrame();
+    if ( pThreadSearchFrame )
+    {
+        pThreadSearchFrame->Raise();
+        pThreadSearchFrame->SetFocus();
+    }
+    else
+    {
+        pThreadSearchFrame = new ThreadSearchFrame((wxFrame*)m_pAppWindow, _T("Snippets Search"));
+        GetConfig()->SetThreadSearchFrame( pThreadSearchFrame );
+    }
+
+    if (pThreadSearchFrame)
+    {
+        pThreadSearchFrame->Show();
+        // Give Snippets ThreadSearch the .xml index filename
+        CodeSnippetsEvent evt( wxEVT_CODESNIPPETS_NEW_INDEX, 0);
+        evt.SetSnippetString( GetConfig()->SettingsSnippetsXmlPath );
+        evt.PostCodeSnippetsEvent(evt);
+
+        ////ToolBox toolbox; //debugging
+        ////toolbox.ShowWindowsAndEvtHandlers(); //debugging
+
+        // Add new code snippets scrollable windows to DragScroll plugin
+        if ( wxEvtHandler* pds = GetConfig()->GetDragScrollEvtHandler())
+        {
+            DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT,idDragScrollRescan);
+            dsevt.SetEventObject( pThreadSearchFrame );
+            dsevt.SetString(wxEmptyString);
+            pds->AddPendingEvent(dsevt);
+        }
+
+    }
+
+}//OnMnuSearchExtended
+// ----------------------------------------------------------------------------
+void CodeSnippetsWindow::CloseThreadSearchFrame()
+// ----------------------------------------------------------------------------
+{
+    // called from CodeSnippetsApp::OnClose()
+    // called from ThreadSearchFrame::OnClose()
+    // just before Destroy()
+
+    //asm("int3"); /*trap*/ //Why?? It's returning to a destroyed frame
+    wxWindow* pThreadSearchFrame = GetConfig()->GetThreadSearchFrame();
+    if ( pThreadSearchFrame )
+    {
+        pThreadSearchFrame->Show(false);
+        pThreadSearchFrame->Destroy();
+        pThreadSearchFrame = 0;
+    }
+}
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -947,16 +1076,15 @@ void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 		if (itemData)
 		{
 		    wxString itemStr = itemData->GetSnippet();
-            #if defined(BUILDING_PLUGIN)
+            //-#if defined(BUILDING_PLUGIN)
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(itemStr);
-            #endif
+            //-#endif
 
 			wxTheClipboard->SetData(new wxTextDataObject(itemStr));
 			wxTheClipboard->Close();
 		}
 	}
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuEditSnippet(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
@@ -1021,7 +1149,6 @@ void CodeSnippetsWindow::OnMnuOpenFileLink(wxCommandEvent& WXUNUSED(event))
 void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 // ----------------------------------------------------------------------------
 {
-    //FIXME: CheckForMacros in App???
 	// Copied from cbEditor::Autocomplete, I admit it
 
     wxPoint currentMousePosn = ::wxGetMousePosition();
@@ -1041,9 +1168,9 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 
 		wxString macroName = snippet.SubString(macroPos + 2, macroPosEnd - 1);
         wxString defaultResult = snippet.SubString(macroPos,macroPosEnd);
-        #if defined(BUILDING_PLUGIN)
+        //-#if defined(BUILDING_PLUGIN)
           Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultResult);
-        #endif
+        //-#endif
 
 		wxString macro = wxGetTextFromUser(wxString::Format(_("Please enter the text for \"%s\":"), macroName.c_str()),
             _("Macro substitution"),defaultResult,0,
@@ -1078,7 +1205,7 @@ void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
 			size_t originalLength = snippetToolTip.Len();
 
 			//// Take the first 255 characters or less, note that the
-			//// wxWidgets documentation doesn't say what is maximum lenght of
+			//// wxWidgets documentation doesn't say what is maximum length of
 			//// the tooltip so this can be increased if needed.
 
 			// Use only first line of snippet
@@ -1129,7 +1256,6 @@ void CodeSnippetsWindow::OnMnuProperties(wxCommandEvent& event)
 	wxTreeItemId itemID = GetAssociatedItemID();
 	GetSnippetsTreeCtrl()->EditSnippetProperties( itemID );
 }
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuSettings(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -1138,11 +1264,22 @@ void CodeSnippetsWindow::OnMnuSettings(wxCommandEvent& event)
     wxString oldWindowState = GetConfig()->GetSettingsWindowState();
     SettingsDlg* pDlg = new SettingsDlg( this );
     pDlg->ShowModal();
-    delete pDlg;
+
     if ( 0 != GetConfig()->GetSettingsWindowState().Cmp(oldWindowState) )
         GetConfig()->m_bWindowStateChanged = true;
-}
 
+    // Invoke the DragScroll settings dialog if we're running as External Application
+    if ( GetConfig()->IsApplication() )
+    if (GetConfig()->SettingsWindowState == _T("External"))
+    {   // Invoke the DragScroll configuration for CodeSnippets. Use position of
+        // dlg to position DragScroll dlg also.
+        DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT, idDragScrollInvokeConfig);
+        dsevt.SetEventObject(pDlg);
+        GetConfig()->GetDragScrollEvtHandler()->ProcessEvent(dsevt);
+    }
+
+    delete pDlg;
+}
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::SetSnippetImage(wxTreeItemId itemId)
 // ----------------------------------------------------------------------------
@@ -1175,14 +1312,14 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     bool b_modified = false;
 
     // Was file deleted?
-    if ( not wxFileExists(GetConfig()->SettingsSnippetsXmlFullPath) )
+    if ( not wxFileExists(GetConfig()->SettingsSnippetsXmlPath) )
     {
         //        if( GetFileChanged() ) // Already set the flag
         //            return;;
         //        wxString msg;
         //        msg.Printf(_("%s \nhas been deleted, or is no longer available.\n"
         //                     "Do you wish to keep the file open?\n"
-        //                     "Yes to keep the file, No to close it."), GetConfig()->SettingsSnippetsXmlFullPath.c_str());
+        //                     "Yes to keep the file, No to close it."), GetConfig()->SettingsSnippetsXmlPath.c_str());
         //        if (messageBox(msg, whichApp + _("File changed!"), wxICON_QUESTION | wxYES_NO) == wxYES)
         //            SetFileChanged(true);
         //        else
@@ -1192,7 +1329,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
         return; //return when file does not exist
     }
 
-    wxFileName fname( GetConfig()->SettingsSnippetsXmlFullPath );
+    wxFileName fname( GetConfig()->SettingsSnippetsXmlPath );
     wxDateTime last = fname.GetModificationTime();
 
     //    ProjectFile* pf = ed->GetProjectFile();
@@ -1227,7 +1364,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
         {
             wxString msg;
             msg.Printf(_("%s\n\nFile is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
-                       GetConfig()->SettingsSnippetsXmlFullPath.c_str());
+                       GetConfig()->SettingsSnippetsXmlPath.c_str());
             if (messageBox(msg, whichApp + _("needs to Reload file?!"), wxICON_QUESTION | wxYES_NO) == wxYES)
                 ret = wxYES;
             else
@@ -1236,25 +1373,24 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
         }
         if ( ret == wxYES )
         {
-            if (not GetSnippetsTreeCtrl()->LoadItemsFromFile(GetConfig()->SettingsSnippetsXmlFullPath, m_AppendItemsFromFile))
+            if (not GetSnippetsTreeCtrl()->LoadItemsFromFile(GetConfig()->SettingsSnippetsXmlPath, m_AppendItemsFromFile))
                 failedFiles = true;
                 // File modification time is saved by LoadItemsFromFile
-                //GetSnippetsTreeCtrl()->SaveFileModificationTime(last);
+                //GetSnippetsTreeCtrl()->FetchFileModificationTime(last);
         }
         else if (ret == wxNO)
-            GetSnippetsTreeCtrl()->SaveFileModificationTime();
+            GetSnippetsTreeCtrl()->FetchFileModificationTime();
     }
 
     if (failedFiles)
     {
         wxString msg;
-        msg.Printf(_("Could not reload file:\n\n%s"), GetConfig()->SettingsSnippetsXmlFullPath.c_str() );
+        msg.Printf(_("Could not reload file:\n\n%s"), GetConfig()->SettingsSnippetsXmlPath.c_str() );
         messageBox(msg, whichApp +  _("Error"), wxICON_ERROR);
     }
     m_isCheckingForExternallyModifiedFiles = false;
 
 } // end of CheckForExternallyModifiedFiles
-
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuEditSnippetAsFileLink(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
@@ -1307,6 +1443,28 @@ void CodeSnippetsWindow::OnMnuAbout(wxCommandEvent& event)
     ShowSnippetsAbout( buildInfo);
 }
 // ----------------------------------------------------------------------------
+void CodeSnippetsWindow::OnMnuTest(wxCommandEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Used to issue assorted tests during debugging
+
+    #if defined(LOGGING)
+    LOGIT( _T("Test::EVT_DRAGSCROLL_EVENT[%d]"),event.GetId() );
+    #endif
+    wxEvtHandler* ph = GetConfig()->GetDragScrollEvtHandler();
+    if (ph){
+        DragScrollEvent dsEvt(wxEVT_DRAGSCROLL_EVENT, idDragScrollRescan);
+        dsEvt.SetEventObject(GetConfig()->GetSnippetsWindow());
+        dsEvt.SetString(GetConfig()->GetSnippetsTreeCtrl()->GetName());
+        int done = ph->ProcessEvent(dsEvt);
+        #if defined(LOGGING)
+        LOGIT( _T("CodeSnippetWindow Issueing EVT_DRAGSCROLL_RESCAN[%s]"), done?_T("success"):_T("failed"));
+        #endif
+        //::wxPostEvent( ph, dsEvt);
+        wxUnusedVar(done);
+    }
+}
+// ----------------------------------------------------------------------------
 void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
 // ----------------------------------------------------------------------------
 {
@@ -1343,57 +1501,21 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
     messageBox(wxT("\n\n")+buildInfo+wxT("\n\n")+helpText, _("About"),wxOK, wxSIMPLE_BORDER);
 
 }
-
-// ////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
-bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+void CodeSnippetsWindow::OnCodeSnippetsNewIndex(CodeSnippetsEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // This Drop routine refers to dragging external text onto a tree item
+    // User loaded a new .xml index file
+    // This event sink is used to test that the event actually
+    // propagated up the event handlers correctly.
 
-	// Set focus to the Code snippets window
-	m_TreeCtrl->SetFocus();
+    wxString snippetString = event.GetSnippetString();
+    #if defined(LOGGING)
+    int snippetID = event.GetSnippetID();
+    LOGIT( _T("CodeSnippetsWindow::OnCodeSnippetsNewIndex id[%d]str[%s]"), snippetID, snippetString.c_str());
+    #endif
 
-	wxPoint p(x, y);
-	int hitTestFlags = 0;
+    event.Skip();
 
-	// Find out if there's a tree item under the coordinates
-	wxTreeItemId itemID = m_TreeCtrl->HitTest(p, hitTestFlags);
-
-	if (hitTestFlags & wxTREE_HITTEST_ONITEMBUTTON|wxTREE_HITTEST_ONITEMICON|wxTREE_HITTEST_ONITEMLABEL)
-	{
-		// Find out the item type
-		if (SnippetItemData* item = (SnippetItemData*)(m_TreeCtrl->GetItemData(itemID)))
-		{
-			switch (item->GetType())
-			{
-				case SnippetItemData::TYPE_ROOT:
-					// Add new code snippet to the root
-					m_TreeCtrl->AddCodeSnippet(m_TreeCtrl->GetRootItem(), _("New snippet"), data, 0, true);
-				break;
-
-				case SnippetItemData::TYPE_CATEGORY:
-					// Add new code snippet to the category
-					m_TreeCtrl->AddCodeSnippet(item->GetId(), _("New snippet"), data, 0, true);
-				break;
-
-				case SnippetItemData::TYPE_SNIPPET:
-					// Set the snippet's code to match the dropped data
-					item->SetSnippet(data);
-				break;
-			}
-
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	else
-	{
-		return false;
-	}
-}
-
+}//OnCodeSnippetsNewIndex
 // ----------------------------------------------------------------------------

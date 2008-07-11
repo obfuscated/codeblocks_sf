@@ -30,6 +30,8 @@
 #include <wx/filedlg.h>
 #include <wx/dirdlg.h>
 
+#include "configmanager.h"
+
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
 #include "settingsdlg.h"
@@ -63,20 +65,28 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
 	// Put the old Snippet XML folder into the textCtrl
     if ( not GetConfig()->SettingsSnippetsFolder.IsEmpty() )
         m_SnippetFileTextCtrl-> SetValue( GetConfig()->SettingsSnippetsFolder );
+
+    // Put the old EditorsStayOnTop options
+    m_EditorsStayOnTopChkBox->SetValue( GetConfig()->GetEditorsStayOnTop() );
+
     // Read Mouse DragScrolling settings
-
-    // "Adaptive Mouse Speed Sensitivity"
-    m_MouseSpeedSlider->SetValue(GetConfig()->MouseDragSensitivity );
-    // "Mouse Movement to Scroll Ratio"
-    m_MouseScrollSlider->SetValue( GetConfig()->MouseToLineRatio );
-    // "Context Menu Delay (millisec)"
-    m_MouseDelaylider->SetValue( GetConfig()->MouseContextDelay );
-
     wxString windowState = GetConfig()->GetSettingsWindowState();
     if ( windowState.Contains(wxT("Floating")) ) {m_RadioFloatBtn->SetValue(true);}
     if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
     if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
 
+    if ( GetConfig()->IsApplication() )
+    if (GetConfig()->SettingsWindowState == _T("External"))
+    if ( GetConfig()->GetKeepAlivePid() == 0 ) // a 0 means not launched from CB
+    {   // Dont show mode choices when running as independent External Application
+        m_RadioFloatBtn->Show(false);
+        m_RadioDockBtn->Show(false);
+    }
+
+    // Show info for CB CfgFolder and CodeSnippets .ini folder
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    m_CfgFolderTextCtrl->SetValue( cfg->GetConfigFolder() );
+    m_IniFolderTextCtrl->SetValue( GetConfig()->SettingsSnippetsCfgPath );
 }
 // ----------------------------------------------------------------------------
 SettingsDlg::~SettingsDlg()
@@ -100,12 +110,8 @@ void SettingsDlg::OnOk(wxCommandEvent& event)
     else
         GetConfig()->SettingsSnippetsFolder = wxEmptyString;
 
-    // "Adaptive Mouse Speed Sensitivity"
-    GetConfig()->MouseDragSensitivity = m_MouseSpeedSlider->GetValue();
-    // "Mouse Movement to Scroll Ratio"
-    GetConfig()->MouseToLineRatio = m_MouseScrollSlider->GetValue();
-    // "Context Menu Delay (millisec)"
-    GetConfig()->MouseContextDelay = m_MouseDelaylider->GetValue();
+    // Get the EditorsStayOnTop options
+    GetConfig()->SetEditorsStayOnTop( m_EditorsStayOnTopChkBox->GetValue() );
 
     wxString windowState = wxT("Floating");
     if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");

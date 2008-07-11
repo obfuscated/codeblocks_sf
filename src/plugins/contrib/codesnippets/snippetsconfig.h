@@ -30,8 +30,12 @@
     class CodeSnippetsConfig;
     class CodeSnippetsTreeCtrl;
     class CodeSnippetsWindow;
+    class SEditorManager;
+    class ThreadSearch;
+    class cbDragScroll;
 
-    extern CodeSnippetsConfig* g_pConfig;
+    //-extern CodeSnippetsConfig* g_pConfig;
+    void SetConfig(CodeSnippetsConfig*);
     CodeSnippetsConfig* GetConfig();
 
     extern int g_activeMenuId;
@@ -40,6 +44,11 @@
 
     wxString csC2U(const char* str);
     const wxWX2MBbuf csU2C(const wxString& str);
+
+// hashmap for fast searches: SnippetItemId, Filename
+WX_DECLARE_STRING_HASH_MAP( long, FileLinksMapArray );
+// hash for frame pointer containing an editor manager
+WX_DECLARE_HASH_MAP( wxFrame*, SEditorManager*, wxPointerHash, wxPointerEqual, EdManagerMapArray );
 // ----------------------------------------------------------------------------
 class CodeSnippetsConfig
 // ----------------------------------------------------------------------------
@@ -64,9 +73,35 @@ class CodeSnippetsConfig
     CodeSnippetsTreeCtrl*   GetSnippetsTreeCtrl(){return pSnippetsTreeCtrl;}
     void                    SetSnippetsTreeCtrl(CodeSnippetsTreeCtrl* p){ pSnippetsTreeCtrl=p;return;}
     wxString                GetVersion(){return m_VersionStr;}
-    wxFileConfig*           GetCfgFile(){return m_pCfgFile;}
     wxString                GetTempDir();
 
+    FileLinksMapArray&      GetFileLinksMapArray(){ return m_fileLinksMapArray;}
+    void                    ClearFileLinksMapArray(){ m_fileLinksMapArray.clear();}
+
+    wxWindow*               GetThreadSearchFrame(){ return m_pThreadSearchFrame;}
+    void                    SetThreadSearchFrame(wxWindow* p){m_pThreadSearchFrame = p;}
+
+    ThreadSearch*           GetThreadSearchPlugin(){ return m_pThreadSearchPlugin;}
+    void                    SetThreadSearchPlugin(ThreadSearch* p){m_pThreadSearchPlugin = p;}
+
+    cbDragScroll*           GetDragScrollPlugin(){ return (cbDragScroll*)GetDragScrollEvtHandler();}
+    wxEvtHandler*           GetDragScrollEvtHandler();
+    void                    SetDragScrollPlugin(cbDragScroll* p){m_pDragScrollPlugin = p;}
+
+    SEditorManager*         GetEditorManager(wxFrame* pFrame);
+    SEditorManager*         GetEditorManager(wxWindow* frame);
+
+    void                    RegisterEditorManager(wxFrame* pFrame, SEditorManager* pEdMgr);
+    void                    RemoveEditorManager(wxFrame* pFrame);
+
+    wxWindow*               GetOpenFilesList(){return m_pOpenFilesList;}
+    void                    SetOpenFilesList(wxWindow* p){m_pOpenFilesList = p;}
+
+    long                    GetKeepAlivePid(){return g_lKeepAlivePid;}
+    void                    SetKeepAlivePid(long pid){g_lKeepAlivePid = pid;}
+
+    bool                    GetEditorsStayOnTop(){return SettingsEditorsStayOnTop;}
+    void                    SetEditorsStayOnTop(bool tf){SettingsEditorsStayOnTop = tf;}
 
     void CenterChildOnParent(wxWindow* child);
 
@@ -102,19 +137,23 @@ class CodeSnippetsConfig
     wxString     AppName;
     wxWindow*    pMainFrame;
     wxMenuBar*   m_pMenuBar;
+
     CodeSnippetsWindow*     pSnippetsWindow;
     CodeSnippetsTreeCtrl*   pSnippetsTreeCtrl;
     wxTextCtrl*             pSnippetsSearchCtrl;
+
 	wxString     SettingsExternalEditor;
-	wxString     SettingsSnippetsXmlFullPath;
-	wxString     SettingsSnippetsCfgFullPath;
+	wxString     SettingsSnippetsXmlPath;
+	wxString     SettingsSnippetsCfgPath;
 	wxString     SettingsSnippetsFolder;
+
     // the key file name as {%HOME%}\codesnippets.ini
     wxString m_ConfigFolder;
     // the programs executable folder
     wxString m_ExecuteFolder;
 
 	bool         SettingsSearchBox;
+	bool         SettingsEditorsStayOnTop;
     SnipImages*  pSnipImages;
     int          nEditDlgXpos;
     int          nEditDlgYpos;
@@ -127,18 +166,27 @@ class CodeSnippetsConfig
     int          windowHeight;
     wxString     m_VersionStr;
     wxString     m_sWindowHandle;
-    SearchConfiguration     m_SearchConfig;
-    wxFileConfig* m_pCfgFile;
-    wxString     SettingsWindowState;
-    bool         m_bWindowStateChanged;
-    bool         m_bIsPlugin;
+    SearchConfiguration
+                  m_SearchConfig;
+    wxString      SettingsWindowState;
+    bool          m_bWindowStateChanged;
+    bool          m_bIsPlugin;
+    wxWindow*     m_pOpenFilesList;
+    // If launched from CB, we'll have its pid
+    long          g_lKeepAlivePid;
 
-    // Mouse DragScrolling settings
-    int         MouseDragSensitivity;
-    int         MouseToLineRatio;
-    int         MouseContextDelay;
+    wxWindow*           m_pThreadSearchFrame;
+    ThreadSearch*       m_pThreadSearchPlugin;
 
-    wxWindow*   m_pEvtCloseConnect;
+    // If DragScroll is loaded, contains address of DragScroll plugin
+    // else contains address of CodeSnippets plugin to allow ProcessEvent()
+    // and AddPendingEvent() to punt without crashing.
+    cbDragScroll*       m_pDragScrollPlugin;
+
+    // filename and SnippetDataitem ID
+    FileLinksMapArray m_fileLinksMapArray;
+    // map frames to an editormanager
+    EdManagerMapArray m_EdManagerMapArray;
 
 };
 

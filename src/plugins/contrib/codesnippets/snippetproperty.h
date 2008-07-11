@@ -28,6 +28,8 @@
 #include <wx/treectrl.h>
 #include "snippetpropertyform.h"
 
+class wxScintilla;
+
 #include "snippetitemdata.h"
 
 // ----------------------------------------------------------------------------
@@ -47,18 +49,18 @@ class SnippetProperty : public SnippetPropertyForm
         void OnSnippetButton(wxCommandEvent& event);
         void OnFileSelectButton(wxCommandEvent& event);
         void OnLeaveWindow(wxMouseEvent& event);
-        void OnEditEvent (wxCommandEvent &event);
-        void OnKeyDownEvent (wxKeyEvent& event);
 
         void InvokeEditOnSnippetText();
         void InvokeEditOnSnippetFile();
 
-        Edit*       GetSnippetEditCtrl(){return m_SnippetEditCtrl;}
-        wxTreeCtrl* GetSnippetsTreeCtrl(){return m_pTreeCtrl;}
-        wxString    GetSnippet(){return m_pSnippetDataItem->GetSnippet();}
-        bool        IsSnippetFile(){return m_pSnippetDataItem->IsSnippetFile();}
+        wxScintilla* GetSnippetEditCtrl(){return m_SnippetEditCtrl;}
+        wxTreeCtrl*  GetSnippetsTreeCtrl(){return m_pTreeCtrl;}
+        wxString     GetSnippet(){return m_pSnippetDataItem->GetSnippet();}
+        bool         IsSnippetFile(){return m_pSnippetDataItem->IsSnippetFile();}
 
-        private:
+    private:
+        void InitSnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemaphore* pWaitSem);
+
         wxTreeItemId        m_TreeItemId;
         SnippetItemData*    m_pSnippetDataItem;
         wxTreeCtrl*         m_pTreeCtrl;

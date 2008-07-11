@@ -354,32 +354,122 @@ AppVersion::~AppVersion()
 //  Commit  1.2.118 2008/04/7
 //          118) Fixed interference of SetFocus with EditLabel in tree ctrl
 // ----------------------------------------------------------------------------
-//  Bugs
-//        If floating wxAUI window docked with Edit's open, they disappear but
-//          void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)
-//          still thinks they're open, but cannot show them.
-//
+//  Search  1 3.__ Port of ThreadSearch to CodeSnippets
+//          01) Added codesnippetsevent 2008/04/1
+//          02) Good execution of ThreadSearchFrame.cpp for extended search. 2008/04/4
+//          03) Dont allow multiple SnippetSearchFrames, do raise/re-focus 2008/04/5
+//               Write conf changes in CodeSnippetsApp::OnClose()
+//          04) Corrected OnClose sequence so that ThreadSearchFrame::OnClose
+//               gets called from CodeSnippetsWindow::OnClose() which gets called
+//               from CodeSnippetsApp::OnClose() 2008/04/6
+//          07) Code to broadcast ThreadSearch CodeSnippets .xml index loading 2008/04/8
+//          08) Added PostCodeSnippetsEvent() routine so that propagation works. 2008/04/9
+//          09) Added codeblocks.dll/resources.zip search to LoadConfig()
+//              to use as global data/ressources path. 2008/04/10
+//          10) Add renumbering of snippet id's before saving
+//              Issue NEW_INDEX event when saving file 2008/04/13
+//          11) Restore ThreadSearchFrame position when created
+//          12) Eliminate duplicate check box choices as in Options to get
+//              some room on main panel. 2008/04/14
+//          13) Fixed Thread splitter window giving no space to log when preview used.
+//              Caused by UnSplit() in ThreadSearchFrame main splitter.
+//          14) Switched PostCodeSnippetsEvent to finding "SCIwindow" to avoid posting
+//              incorrect secondary "Flat Notebook" on wrong child path.
+//          15) Event, array, and routines to search FileLinks in .xml index. 2008/04/15
+//              Optimized filling FileLinksMapArray at Options change and index change
+//          16) Added separate editormanager for extended search frame
+//          17) Solved crashes at ThreadSearchFrame::OnClose:Destroy() by
+//              removing Connects() to CodeSnippetsWindow::OnClose(). wxAUI does
+//              not support wxEVT_CLOSE and it causes crashes
+//          18) Activated CB notebook editor if already open, else use TS notebook
+//          19) Removed all NotifyPlugins calls from TS separate edtiormanagers
+//          20) Incorporate DragScroll into editor; Add DragScrollEvents processing 2008/04/26
+//          21) Unsplit ThreadSearchView when closing last editor
+//          22) fixed hanging "No files to searc in" cbMessageBox
+//          23) SyncLoggerToPreView() to show selection in listCtrl and set focus
+//              in OnTmrListCtrlUpdate() after all windows redrawn.
+//          24) Set selection dirname and filename into status bar
+//          25) Replace LeftMouseClick selection after RightMouseDrag
+//          26) Change /CodeSnippets/images back to /ThreadSearch/Images 2008/04/28
+//          26) DragScroll rescan after "Options" to catch changed windows
+//          27) Removed "CheckItem" for Insert/Append idMenuViewThreadSearch
+//          28) Invoke DragScroll config dlg from CodeSnippetsWindow() via event
+//          29) Removed DragScroll dialog variables from CodeSnippets dialog
+//          30) Change wxFileConfig to consistent local var. Solves config file data errs
+//          31) Allocate EditorManagers per wxFrame 2008/05/1
+//          32) EditSnippetFrame: Close all editors before deleting EditorManager
+//              bec. wxWidgets deletes wxFlatNotebook before calling ~EditorManager().
+//          33) RemoveEventHandler(EditorManager), else crash in ctor.
+//          34) Convert editsnippetframe menu to use cbEditor calls 2008/05/2
+//          35) Removed SEditorManager CreateSearchLog(). Causes Assert crashes.
+//          36) Convert wyo properties dlg to use EditorManager facilities.
+//          37) change SEditorManager notebook ProjectFileOptionsDlg to EditProperies dlg
+//          38) Error msg for missing external editor when using properties ExtEdit button
+//          39) Removed BUILDING_PLUGIN dependency to determine IsPlugin() & IsApplication()
+//          40) Corrections for Linux
+//          41) Create SEditorManager before calling CreateMenu in editsnippetframe
+//          42) Adjustments/Fixes/Hair loss for Linux 2008/04/07
+//          43) Fixed Crash in SetEditorStyleAfterFileOpen() calling cbEditor instead of ScbEditor 2008/04/08
+//          44) Support --prefix="data/resource/base/directory" parameter
+//          45) CodeSnippets plugin absorbs DragScrollEvents when DragScroll not loaded.  2008/05/18
+//          46) Validate DragScroll exists to issue safe DragScrollEvent
+//          47) Correct err in Gotoline when file already open in CB
+//          48) Add "Full Search" item to root context menu 2008/05/19
+//          49) Add DragnDrop to ThreadSearchFrame to open dragged in filenames
+//          50) Fix mouse warping when dragging out of tree and windows overlap
+//          51) Remove old edit KeyDownEvent interference from SnippetProperty class 2008/05/20
+//          52) Put notebook sash back to previous user position after frame resizing
+//              placed it into the middle of the frame.
+//          53) Write EdNotebookSashPosn to config file. Use to set splitter window
+//          54) SetMinimumSashSize so EdNotebook doesnt disappear on sash double click
+//          55) Updated SeparateEditor to Rev 5076
+//          56) Reset T'Search log List colume sizes to last user usage setting
+//          57) Hide m_pChkShowThreadSearchToolBar option in ThreadSearchConfPanel
+//              because CodeSnippets search does not need it.
+//              Hide m_pRadPanelManagement conf option since Layout is not used
+//          58) Fixes to ../resources/Makefile.am and codeblocks-unix.cbp 2008/06/22
+//          59) Change Ctrl-L LineDelete() to LineCut() like CB 2008/06/26
+//          60) Application mode allows edtiors to recede to background 2008/06/26
+//          61) Fix crash when External Application should not invoke DragScroll config 2008/06/26
+//          62) Add EditorsStayOnTop option 2008/06/27
+//          63) Correct "--KeyAlivePid=<pid>" argument format  2008/06/28
+//          64) Add config folder info to Settings dialog
+//          65) Fix error msg caused by calling wxFileConfig with empty path
+//          66) Update ThreadSearchFrame Help About box 2008/07/1
+//          67) On ThreadSearch log double click, highlite categories but edit text snippets 2008/07/1
 // ----------------------------------------------------------------------------
-//  ToDo    All
-//          Hide/show search box
+//  Bugs
+//          2008/04/8
+//          If floating wxAUI window docked with Edit's open, they disappear but
+//            void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)
+//            still thinks they're open, but cannot show them.
+//            Eg. Drag docked CodeSnippets to floating. Open a file. Re-dockit.
+//            Editors disappear. Show(true) didnt work;
+//          2008/05/19
+//          On second open (of a different file) in an editor frame,
+//              DragScrolling didnt work
+//              *Cannot reproduce*
+// ----------------------------------------------------------------------------
+//  ToDo
+//          App:Allow SeparateEditor configuration
+//          App:Allow user to re-clone default.conf
+//          Enable Editor context options, esp. ThreadSearch item
+//
+//  CodeSnippets
 //          Search should continue to next matching item, not just stop (F3?)
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, Drag'nDrop
 //          Add option for ToolTips and max chars shown
-//          #ifdef out linux options dlg spacer (can't with wxFormBuilder)
-//              Maybe just a line instead of a spacer will work
 //          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
 //          Enter key should open/close categories like left/right key
-//          Bug: 2007/08/2
+//  Other
+//          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
+//              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
+//          Bug: 2007/08/2 Cannot fix
 //              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
 //              bug was reported way back in wxGTK 2.1.0
 //          Dragging file out of file panels does not work on Linux. Causes GTK to freeze.
-//  Other
-//          Leak: 2007/10/4 g_printData allocated for each Edit, but only deleted once.
-//              The globals in snippetproperty.cpp should be allocated by instance.
-//          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
-//              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;
+
 // ----------------------------------------------------------------------------
-//
 // ----------------------------------------------------------------------------

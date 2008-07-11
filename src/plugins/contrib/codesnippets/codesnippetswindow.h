@@ -36,6 +36,8 @@ class wxButton;
 class wxTreeCtrl;
 class wxCommandEvent;
 class wxTreeEvent;
+class ThreadSearchFrame;
+class CodeSnippetsEvent;
 
 // ----------------------------------------------------------------------------
 class CodeSnippetsWindow : public wxPanel
@@ -64,17 +66,18 @@ class CodeSnippetsWindow : public wxPanel
         wxImageList*            GetSnipImageList(){ return GetConfig()->GetSnipImages()->GetSnipImageList();}
 
         bool GetFileChanged( )
-            {return GetSnippetsTreeCtrl()->GetFileChanged();}
+            {return GetSnippetsTreeCtrl() && GetSnippetsTreeCtrl()->GetFileChanged();}
         bool SetFileChanged( bool truefalse )
             {return GetSnippetsTreeCtrl()->SetFileChanged(truefalse);}
 
         wxString GetSnippet() { return GetSnippetsTreeCtrl()->GetSnippet();}
         wxString GetSnippet( wxTreeItemId itemId ) { return GetSnippetsTreeCtrl()->GetSnippet(itemId);}
         wxTreeItemId GetAssociatedItemID(){return GetSnippetsTreeCtrl()->GetAssociatedItemID();}
+        void CloseThreadSearchFrame();
 
         bool IsEditingLabel() {return m_bIsEditingLabel;}
         void IsEditingLabel( bool trueorfalse) { m_bIsEditingLabel = trueorfalse;}
-
+        bool IsAppendingFile(){return m_AppendItemsFromFile;}
 
 	private:
 		void InitDlg();
@@ -85,7 +88,10 @@ class CodeSnippetsWindow : public wxPanel
         void CheckForExternallyModifiedFiles();
         void ShowSnippetsAbout(wxString buildInfo);
 		wxTreeItemId SearchSnippet(const wxString& searchTerms, const wxTreeItemId& node);
-		bool IsTreeBusy(){return GetSnippetsTreeCtrl()->IsTreeBusy();}
+		bool IsTreeBusy(){
+		    if (not GetSnippetsTreeCtrl()) return true; //debugging
+		    return GetSnippetsTreeCtrl()->IsTreeBusy();
+        }//IsTreeBusy
 
 		wxTextCtrl*             m_SearchSnippetCtrl;
 		wxButton*               m_SearchCfgBtn;
@@ -96,6 +102,7 @@ class CodeSnippetsWindow : public wxPanel
         TiXmlDocument*          pTiXmlDoc;
         bool                    m_bIsEditingLabel;
 
+        //-Utils utils;
 
 		void OnSearchCfg(wxCommandEvent& event);
 		void OnSearch(wxCommandEvent& event);
@@ -127,14 +134,18 @@ class CodeSnippetsWindow : public wxPanel
         void OnMnuSaveSnippetAsFileLink(wxCommandEvent& event);
         void OnMnuSettings(wxCommandEvent& event);
         void OnMnuAbout(wxCommandEvent& event);
+        void OnMnuTest(wxCommandEvent& event);
         void OnShutdown(wxCloseEvent& event);
         void OnMnuCopy(wxCommandEvent& event);
         void OnMnuPaste(wxCommandEvent& event);
         void OnMnuFileBackup(wxCommandEvent& event);
         void OnClose(wxCloseEvent& event); //never occurs
         void OnIdle(wxIdleEvent& event);
+        void OnMnuSearchExtended(wxCommandEvent& event);
         void OnLeaveWindow (wxMouseEvent &event);
         void OnEnterWindow (wxMouseEvent &event);
+
+        void OnCodeSnippetsNewIndex(CodeSnippetsEvent& event);
 
 		DECLARE_EVENT_TABLE()
 };

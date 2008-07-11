@@ -42,7 +42,7 @@
 #endif
 
 #include <wx/button.h>
-#include "edit.h"
+//-#include "edit.h"
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -50,20 +50,22 @@
 #define ID_FILESELECTBUTTON 1000
 #define ID_SNIPPETBUTTON 1001
 
+class wxScintilla;
 /**
  * Class SnippetPropertyForm
  */
 class SnippetPropertyForm : public wxDialog
 {
+    friend class CodeSnippetsTreeCtrl;
 	private:
 
 	protected:
-		wxStaticText* m_ItemLabelStaticText;
-		wxTextCtrl* m_ItemLabelTextCtrl;
-		wxStaticText* m_SnippetStaticText;
-		Edit*         m_SnippetEditCtrl;
-		wxButton* m_SnippetButton;
-		wxButton* m_FileSelectButton;
+		wxStaticText*   m_ItemLabelStaticText;
+		wxTextCtrl*     m_ItemLabelTextCtrl;
+		wxStaticText*   m_SnippetStaticText;
+		wxScintilla*    m_SnippetEditCtrl;
+		wxButton*       m_SnippetButton;
+		wxButton*       m_FileSelectButton;
 		wxStdDialogButtonSizer* m_sdbSizer1;
 
 	public:
