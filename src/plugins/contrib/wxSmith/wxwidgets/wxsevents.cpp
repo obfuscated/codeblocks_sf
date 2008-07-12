@@ -140,15 +140,15 @@ void wxsEvents::GenerateBindingCode(wxsCoderContext* Context,const wxString& IdS
                             {
                                 // If this is root item, it's threaded as Id one
                                 Context->m_EventsConnectingCode
-                                     << _T("Connect(") << IdString << _T(",")
+                                     << _T("Connect(")
                                      << m_EventArray[i].Type << _T(",(wxObjectEventFunction)&")
                                      << ClassName << _T("::") << m_Functions[i] << _T(");\n");
                             }
                             else
                             {
                                 Context->m_EventsConnectingCode
-                                     << VarNameString << _T("->Connect(") << IdString
-                                     << _T(",") << m_EventArray[i].Type
+                                     << VarNameString << _T("->Connect(")
+                                     << m_EventArray[i].Type
                                      << _T(",(wxObjectEventFunction)&") << ClassName << _T("::") << m_Functions[i]
                                      << _T(",0,this);\n");
                             }
