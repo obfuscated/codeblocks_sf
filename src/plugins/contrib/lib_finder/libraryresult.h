@@ -62,6 +62,7 @@ struct LibraryResult
     wxArrayString LFlags;
     wxArrayString Compilers;
     wxArrayString Headers;
+    wxArrayString Require;
 
     bool operator == ( const LibraryResult& compareWith ) const;
     void SetGlobalVar() const;

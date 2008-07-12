@@ -523,6 +523,29 @@
 												</object>
 												<label>Headers</label>
 											</object>
+											<object class="notebookpage">
+												<object class="wxPanel" name="ID_PANEL10" variable="Panel10" member="yes">
+													<object class="wxBoxSizer" variable="BoxSizer20" member="no">
+														<orient>wxVERTICAL</orient>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT12" variable="StaticText11" member="yes">
+																<label>List of required libraries:</label>
+															</object>
+															<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxTextCtrl" name="ID_TEXTCTRL15" variable="m_Required" member="yes">
+																<style>wxTE_MULTILINE</style>
+															</object>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>5</border>
+															<option>1</option>
+														</object>
+													</object>
+												</object>
+												<label>Requirements</label>
+											</object>
 										</object>
 										<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>

@@ -102,6 +102,9 @@ struct LibraryDetectionConfig
 
     /** \brief List of headers used by this library */
     wxArrayString Headers;
+
+    /** \brief List of other libraries required by this one */
+    wxArrayString Require;
 };
 
 /** \brief Structure containing set of detection configurations for given library */

@@ -649,6 +649,7 @@ void ProcessingDlg::FoundLibrary(const wxString& OldBasePath,const wxStringStrin
     }
 
     Result->Headers = Config->Headers;
+    Result->Require = Config->Require;
 
     ResultArray& Array = m_FoundResults.GetShortCode(Set->ShortCode);
     Array.Add(Result);

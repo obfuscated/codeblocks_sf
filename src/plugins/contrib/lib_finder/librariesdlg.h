@@ -35,6 +35,7 @@ class LibrariesDlg: public wxDialog
         wxPanel* Panel5;
         wxTextCtrl* m_LinkerDir;
         wxCheckBox* m_ShowPkgConfig;
+        wxTextCtrl* m_Required;
         wxTextCtrl* m_LFlags;
         wxTextCtrl* m_PkgConfigName;
         wxButton* m_ConfigDown;
@@ -48,6 +49,7 @@ class LibrariesDlg: public wxDialog
         wxTextCtrl* m_Headers;
         wxPanel* Panel9;
         wxStaticText* StaticText8;
+        wxStaticText* StaticText11;
         wxPanel* Panel8;
         wxTextCtrl* m_Compilers;
         wxPanel* Panel1;
@@ -74,6 +76,7 @@ class LibrariesDlg: public wxDialog
         wxListBox* m_Configurations;
         wxTextCtrl* m_Description;
         wxPanel* Panel2;
+        wxPanel* Panel10;
         wxTextCtrl* m_CFlags;
         wxStaticText* StaticText4;
         wxButton* Button8;
@@ -131,6 +134,9 @@ class LibrariesDlg: public wxDialog
         static const long ID_STATICTEXT11;
         static const long ID_TEXTCTRL14;
         static const long ID_PANEL9;
+        static const long ID_STATICTEXT12;
+        static const long ID_TEXTCTRL15;
+        static const long ID_PANEL10;
         static const long ID_FLATNOTEBOOK1;
         //*)
 

@@ -76,6 +76,9 @@ const long LibrariesDlg::ID_PANEL2 = wxNewId();
 const long LibrariesDlg::ID_STATICTEXT11 = wxNewId();
 const long LibrariesDlg::ID_TEXTCTRL14 = wxNewId();
 const long LibrariesDlg::ID_PANEL9 = wxNewId();
+const long LibrariesDlg::ID_STATICTEXT12 = wxNewId();
+const long LibrariesDlg::ID_TEXTCTRL15 = wxNewId();
+const long LibrariesDlg::ID_PANEL10 = wxNewId();
 const long LibrariesDlg::ID_FLATNOTEBOOK1 = wxNewId();
 //*)
 
@@ -97,6 +100,7 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	wxBoxSizer* BoxSizer6;
 	wxBoxSizer* BoxSizer19;
 	wxBoxSizer* BoxSizer15;
+	wxBoxSizer* BoxSizer20;
 	wxBoxSizer* BoxSizer5;
 	wxBoxSizer* BoxSizer10;
 	wxBoxSizer* BoxSizer7;
@@ -284,6 +288,15 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	Panel9->SetSizer(BoxSizer19);
 	BoxSizer19->Fit(Panel9);
 	BoxSizer19->SetSizeHints(Panel9);
+	Panel10 = new wxPanel(FlatNotebook1, ID_PANEL10, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL10"));
+	BoxSizer20 = new wxBoxSizer(wxVERTICAL);
+	StaticText11 = new wxStaticText(Panel10, ID_STATICTEXT12, _("List of required libraries:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
+	BoxSizer20->Add(StaticText11, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_Required = new wxTextCtrl(Panel10, ID_TEXTCTRL15, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL15"));
+	BoxSizer20->Add(m_Required, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	Panel10->SetSizer(BoxSizer20);
+	BoxSizer20->Fit(Panel10);
+	BoxSizer20->SetSizeHints(Panel10);
 	FlatNotebook1->AddPage(Panel1, _("Base options"), false);
 	FlatNotebook1->AddPage(Panel8, _("Categories"), false);
 	FlatNotebook1->AddPage(Panel2, _("Compilers"), false);
@@ -293,6 +306,7 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	FlatNotebook1->AddPage(Panel7, _("CFlags"), false);
 	FlatNotebook1->AddPage(Panel3, _("LFlags"), false);
 	FlatNotebook1->AddPage(Panel9, _("Headers"), false);
+	FlatNotebook1->AddPage(Panel10, _("Requirements"), false);
 	StaticBoxSizer3->Add(FlatNotebook1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer3->Add(StaticBoxSizer3, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer16->Add(BoxSizer3, 2, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -542,6 +556,8 @@ void LibrariesDlg::SelectConfiguration(LibraryResult* Configuration)
         m_ConfigDown->Disable();
         m_ConfigUp->Disable();
         m_Headers->Disable();
+        m_Required->Clear();
+        m_Required->Disable();
 
         m_WhileUpdating = false;
         return;
@@ -597,6 +613,8 @@ void LibrariesDlg::SelectConfiguration(LibraryResult* Configuration)
     m_Headers->Enable( !DisableAll );
     m_ConfDelete->Enable( !DisableAll && ( m_Configurations->GetCount() > 1 ) );
     m_ConfDuplicate->Enable( true );
+    m_Required->Enable( !DisableAll );
+    m_Required->SetValue( GetStringFromArray(Configuration->Require,_T("\n")));
 
     m_ConfigUp->Disable();
     m_ConfigDown->Disable();
@@ -776,6 +794,7 @@ void LibrariesDlg::StoreConfiguration()
     m_SelectedConfig->CFlags       = wxStringTokenize( m_CFlags->GetValue(),       _T("\n\r"), wxTOKEN_STRTOK );
     m_SelectedConfig->LFlags       = wxStringTokenize( m_LFlags->GetValue(),       _T("\n\r"), wxTOKEN_STRTOK );
     m_SelectedConfig->Headers      = wxStringTokenize( m_Headers->GetValue(),      _T("\n\r"), wxTOKEN_STRTOK );
+    m_SelectedConfig->Require      = wxStringTokenize( m_Required->GetValue(),     _T("\n\r"), wxTOKEN_STRTOK );
 }
 
 void LibrariesDlg::Onm_NameText(wxCommandEvent& event)

@@ -119,6 +119,7 @@ void ResultMap::WriteDetectedResults()
         cfg->Write(Path+_T("lflags"),Result->LFlags);
         cfg->Write(Path+_T("compilers"),Result->Compilers);
         cfg->Write(Path+_T("headers"),Result->Headers);
+        cfg->Write(Path+_T("require"),Result->Require);
     }
 
     LogManager::Get()->DebugLog(_T("********** lib_finder Dump 2 END *************"));
@@ -155,6 +156,7 @@ void ResultMap::ReadDetectedResults()
         Result->LFlags       = cfg->ReadArrayString(Path+_T("lflags"));
         Result->Compilers    = cfg->ReadArrayString(Path+_T("compilers"));
         Result->Headers      = cfg->ReadArrayString(Path+_T("headers"));
+        Result->Require      = cfg->ReadArrayString(Path+_T("require"));
 
         if ( Result->ShortCode.IsEmpty() )
         {
@@ -276,6 +278,11 @@ void ResultMap::LoadPredefinedResultFromFile(const wxString& FileName)
                 if ( Name == _T("header") )
                 {
                     Result->Headers.Add(wxString(Sub->Attribute("file"),wxConvUTF8));
+                }
+
+                if ( Name == _T("require") )
+                {
+                    Result->Require.Add(wxString(Sub->Attribute("library"),wxConvUTF8));
                 }
             }
 

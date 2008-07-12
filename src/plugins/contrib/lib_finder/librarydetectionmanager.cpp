@@ -280,6 +280,12 @@ int LibraryDetectionManager::LoadXml(TiXmlElement* Elem,LibraryDetectionConfig& 
                 wxString file = wxString(Data->Attribute("file"),wxConvUTF8);
                 if ( !file.empty() ) Config.Headers.Add(file);
             }
+
+            if ( Node==_T("require") )
+            {
+                wxString lib = wxString(Data->Attribute("library"),wxConvUTF8);
+                if ( !lib.empty() ) Config.Require.Add(lib);
+            }
         }
     }
 

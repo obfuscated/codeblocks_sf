@@ -191,9 +191,25 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
     wxArrayString NoCompiler;
     wxArrayString NoVersion;
 
+    std::set< wxString > included;
+    std::set< wxString > toInclude;
+
     for ( size_t i=0; i<Libs.Count(); i++ )
     {
-        wxString& Lib = Libs[i];
+        toInclude.insert( Libs[i] );
+    }
+
+    while ( !toInclude.empty() )
+    {
+        wxString Lib = *toInclude.begin();
+        toInclude.erase( toInclude.begin() );
+
+        if ( included.find( Lib ) != included.end() )
+        {
+            // Library already processed
+            continue;
+        }
+        included.insert( Lib );
 
         bool AnyFound   = false;
         bool Added      = false;
@@ -215,6 +231,10 @@ void lib_finder::SetupTarget(CompileTargetBase* Target,const wxArrayString& Libs
                 {
                     if ( TryAddLibrary(Target,Config[j]) )
                     {
+                        for ( size_t k=0; k<Config[j]->Require.GetCount(); k++ )
+                        {
+                            toInclude.insert( Config[j]->Require[k] );
+                        }
                         Added = true;
                         break;
                     }
