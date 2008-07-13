@@ -316,7 +316,20 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
          #if defined(LOGGING)
          LOGIT( _T("ExecCfgName[%s]"),cfgFilenameStr.c_str() );
          #endif
-        if (::wxFileExists(cfgFilenameStr)) break;
+        if (::wxFileExists(cfgFilenameStr))
+        {
+            m_ConfigFolder = m_ExecuteFolder;
+            GetConfig()->SettingsSnippetsCfgPath = m_ExecuteFolder;
+            break;
+        }
+        // if default.conf exists in exec folder, use it as config folder
+        wxString defaultconfStr =  m_ExecuteFolder + wxFILE_SEP_PATH + _T("default.conf");
+        if (::wxFileExists(defaultconfStr))
+        {
+            m_ConfigFolder = m_ExecuteFolder;
+            GetConfig()->SettingsCBConfigPath = m_ExecuteFolder;
+            break;
+        }
 
         //if launched from CB & CodeBlocks has codesnippets.ini, use it
         cfgFilenameStr = m_ConfigFolder+wxFILE_SEP_PATH + GetConfig()->AppName + _T(".ini");
@@ -349,6 +362,11 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     // Initialize Globals
     // ---------------------
     GetConfig()->SettingsSnippetsCfgPath = cfgFilenameStr;
+
+    wxString defaultconfStr =  m_ExecuteFolder + wxFILE_SEP_PATH + _T("default.conf");
+    if (::wxFileExists(defaultconfStr))
+        GetConfig()->SettingsCBConfigPath = m_ExecuteFolder;
+
      #if defined(LOGGING)
      LOGIT( _T("SettingsSnippetsCfgPath[%s]"),GetConfig()->SettingsSnippetsCfgPath.c_str() );
      #endif
@@ -362,26 +380,31 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     }
     // Before initializing CB SDK make sure we have a usable local default.conf
     // in the users application data directory.
-    wxString cbConfigFolder = m_ConfigFolder;
+    wxString cbConfigFolder =  m_ConfigFolder ;
+    wxFileName cbConfigDir( m_ConfigFolder ) ;
+    cbConfigDir.Normalize();
+    cbConfigFolder = cbConfigDir.GetFullPath();
+    wxString prefixPath;
     #if defined(__WXMSW__)
-        cbConfigFolder = cbConfigFolder.BeforeLast('\\');
-        cbConfigFolder.Append( _T("\\codeblocks") );
+        if (cbConfigFolder.EndsWith(_T("codesnippets"), &prefixPath))
+            cbConfigFolder = prefixPath.Append( _T("codeblocks") );
     #else
-        cbConfigFolder = cbConfigFolder.BeforeLast('/');
-        cbConfigFolder.Append(wxT("/.codeblocks"));
+        if (cbConfigFolder.EndsWith(_T(".codesnippets"), &prefixPath))
+            cbConfigFolder = prefixPath.Append(wxT(".codeblocks"));
     #endif
 
     // If the <appdata>/<pgmName>/ dir has no "default.conf", make a copy
-    // of the one found in CB configFolder. If we don't, user will get
+    // of the one found in CB configFolder so that user will get
     // popups about missing cb global variables.
     wxString fileToCopy = cbConfigFolder+_T("/default.conf");
-    if (not wxFileExists(m_ConfigFolder+_T("/default.conf")) )
-    {   bool copied = false;
-        copied = wxCopyFile(fileToCopy, m_ConfigFolder+_T("/default.conf") );
-        #if defined(LOGGING)
-        LOGIT( _T("Copy [%s][%s][%s]"), fileToCopy.c_str(), m_ConfigFolder.c_str(), copied?_T("OK"):_T("FAILED"));
-        #endif
-    }
+    if ( wxFileExists(fileToCopy) )
+        if (not wxFileExists(m_ConfigFolder+_T("/default.conf")) )
+        {   bool copied = false;
+            copied = wxCopyFile(fileToCopy, m_ConfigFolder+_T("/default.conf") );
+            #if defined(LOGGING)
+            LOGIT( _T("Copy [%s][%s][%s]"), fileToCopy.c_str(), m_ConfigFolder.c_str(), copied?_T("OK"):_T("FAILED"));
+            #endif
+        }
 
     #if defined(__WXMSW__)
         // -----------------------------------------
@@ -428,6 +451,14 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
         GetConfig()->m_sWindowHandle = wxEmptyString;
         return;
     }
+
+    // Correct the SDK LIE that .conf is always in the user app directory
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+    GetConfig()->SettingsCBConfigPath = cfg->GetConfigFolder();
+    defaultconfStr =  m_ExecuteFolder + wxFILE_SEP_PATH + _T("default.conf");
+    if (::wxFileExists(defaultconfStr))
+        GetConfig()->SettingsCBConfigPath = m_ExecuteFolder;
+
     // -----------------
     // create a menu bar
     // -----------------
@@ -1129,7 +1160,7 @@ bool CodeSnippetsAppFrame::InitializeSDK()
     // Must execute the GetFolder() statements, else sdk strings will be uninitialized
     wxString userPgmData      = cfg->GetFolder(sdDataUser);
     wxString homeFolder       = cfg->GetHomeFolder();
-    wxString userConfigFolder = cfg->GetConfigFolder();
+    //LIE:LIE:LIE: wxString userConfigFolder = cfg->GetConfigFolder();
     wxString pluginsFolder    = cfg->GetPluginsFolder( /*global =*/ true);
     wxString scriptsFolder    = cfg->GetScriptsFolder(/*global =*/ true);
     wxString dataFolderGlobal = cfg->GetDataFolder(/*global =*/ true);

@@ -187,7 +187,14 @@ void CodeSnippets::OnAttach()
     // Initialize Globals
     // ---------------------------------------
     GetConfig()->SettingsSnippetsCfgPath = m_CfgFilenameStr;
+    #if defined(LOGGING)
      LOGIT( _T("SettingsSnippetsCfgPath[%s]"),GetConfig()->SettingsSnippetsCfgPath.c_str() );
+    #endif
+    GetConfig()->SettingsCBConfigPath = GetConfig()->m_ConfigFolder; //default
+    wxString cbConfigPath = GetConfig()->m_ExecuteFolder + wxFILE_SEP_PATH + _T("default.conf");
+    if (::wxFileExists(cbConfigPath))
+        GetConfig()->SettingsCBConfigPath = GetConfig()->m_ExecuteFolder;
+
     GetConfig()->SettingsLoad();
 
     // Set Drop targets so we can drag items in/out of the Project/Files Tree ctrls

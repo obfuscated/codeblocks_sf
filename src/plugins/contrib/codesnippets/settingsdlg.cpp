@@ -84,8 +84,10 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
     }
 
     // Show info for CB CfgFolder and CodeSnippets .ini folder
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
-    m_CfgFolderTextCtrl->SetValue( cfg->GetConfigFolder() );
+    // CB Manager::GetConfigFolder() LIES. Esp. when the default.conf is in
+    // the executable directory.
+    //ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    m_CfgFolderTextCtrl->SetValue( GetConfig()->SettingsCBConfigPath );
     m_IniFolderTextCtrl->SetValue( GetConfig()->SettingsSnippetsCfgPath );
 }
 // ----------------------------------------------------------------------------

@@ -438,17 +438,20 @@ AppVersion::~AppVersion()
 //          66) Update ThreadSearchFrame Help About box 2008/07/1
 //          67) On ThreadSearch log double click, highlite categories but edit text snippets 2008/07/1
 // ----------------------------------------------------------------------------
+//  Commit 1 3.67 2008/07/12
+// ----------------------------------------------------------------------------
+//  Commit 1 3.68 2008/07/13
+//          68) Fix standalone modules inablility to run as portable exe 2008/07/13
+// ----------------------------------------------------------------------------
 //  Bugs
-//          2008/04/8
+//        2008/04/8
 //          If floating wxAUI window docked with Edit's open, they disappear but
 //            void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)
 //            still thinks they're open, but cannot show them.
 //            Eg. Drag docked CodeSnippets to floating. Open a file. Re-dockit.
 //            Editors disappear. Show(true) didnt work;
-//          2008/05/19
-//          On second open (of a different file) in an editor frame,
-//              DragScrolling didnt work
-//              *Cannot reproduce*
+//        2008/07/11
+//          zero length edit files left in /temp after FullSearch edit of .xml snippet ??
 // ----------------------------------------------------------------------------
 //  ToDo
 //          App:Allow SeparateEditor configuration

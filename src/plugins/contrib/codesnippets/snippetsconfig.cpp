@@ -86,10 +86,11 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     pSnippetsTreeCtrl = 0;
     pSnippetsSearchCtrl = 0;
     m_bIsPlugin = 0;
-	SettingsExternalEditor = wxEmptyString;
+	SettingsExternalEditor  = wxEmptyString;
 	SettingsSnippetsCfgPath = wxEmptyString;
 	SettingsSnippetsXmlPath = wxEmptyString;
-	SettingsSnippetsFolder = wxEmptyString;
+	SettingsSnippetsFolder  = wxEmptyString;
+	SettingsCBConfigPath    = wxEmptyString;
 	SettingsSearchBox = false;
 	SettingsEditorsStayOnTop = true;
 	m_SearchConfig.caseSensitive = false;
@@ -189,13 +190,15 @@ void CodeSnippetsConfig::SettingsLoad()
      LOGIT( _T("SettingsEditorsStayOnTop[%s]"),SettingsEditorsStayOnTop?_T("True"):_T("False") );
     #endif //LOGGING
 
-    // read windowHandle of last pgm instance that ran
+    // read windowHandle of last or current pgm instance that ran
     // CodeSnippetsApp will check if it's actually running
-    cfgFile.Read( wxT("WindowHandle"),  &m_sWindowHandle, wxEmptyString) ;
+    if ( cfgFile.Exists( wxT("WindowHandle")))
+        cfgFile.Read( wxT("WindowHandle"),  &m_sWindowHandle, wxEmptyString) ;
 
     // set a global snippets xml file path
+    wxFileName SettingsFullPath(SettingsSnippetsCfgPath);
     if (SettingsSnippetsXmlPath.IsEmpty())
-        SettingsSnippetsXmlPath = stdPaths.GetUserDataDir() + wxFILE_SEP_PATH +  AppName+ _T(".xml");
+        SettingsSnippetsXmlPath = SettingsFullPath.GetPath() + wxFILE_SEP_PATH +  AppName + _T(".xml");
 
 }
 // ----------------------------------------------------------------------------

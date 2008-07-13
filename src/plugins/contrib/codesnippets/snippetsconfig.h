@@ -146,6 +146,7 @@ class CodeSnippetsConfig
 	wxString     SettingsSnippetsXmlPath;
 	wxString     SettingsSnippetsCfgPath;
 	wxString     SettingsSnippetsFolder;
+	wxString     SettingsCBConfigPath;
 
     // the key file name as {%HOME%}\codesnippets.ini
     wxString m_ConfigFolder;
