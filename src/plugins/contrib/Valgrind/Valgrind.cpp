@@ -1,14 +1,15 @@
 /***************************************************************
  * Name:      Valgrind.cpp
  * Purpose:   Code::Blocks Valgrind plugin: main functions
- * Author:    killerbot
+ * Author:    Lieven de Cock (aka killerbot)
  * Created:   28/07/2007
- * Copyright: (c) killerbot
+ * Copyright: (c) Lieven de Cock (aka killerbot)
  * License:   GPL
   **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/arrstr.h>
+#include <wx/dir.h>
 #include <wx/fs_zip.h>
 #include <wx/intl.h>
 #include <wx/string.h>
@@ -18,6 +19,7 @@
 #include "logmanager.h"
 #include "projectmanager.h"
 #endif
+#include <wx/filefn.h>
 #include "tinyxml/tinyxml.h"
 #include "loggers.h"
 #include "Valgrind.h"
@@ -27,7 +29,14 @@
 namespace
 {
     PluginRegistrant<Valgrind> reg(_T("Valgrind"));
+	int IdMemCheck = wxNewId();
+	int IdCacheGrind = wxNewId();
 };
+
+BEGIN_EVENT_TABLE(Valgrind, cbPlugin)
+	EVT_MENU(IdMemCheck, Valgrind::OnMemCheck)
+	EVT_MENU(IdCacheGrind, Valgrind::OnCachegrind)
+END_EVENT_TABLE()
 
 Valgrind::Valgrind()
 {
@@ -102,6 +111,26 @@ void Valgrind::OnRelease(bool appShutDown)
 	m_ListLog = 0;
 } // end of OnRelease
 
+void Valgrind::BuildMenu(wxMenuBar* MenuBar)
+{
+	//The application is offering its menubar for your plugin,
+	//to add any menu items you want...
+	//Append any items you need in the menu...
+	//NOTE: Be careful in here... The application's menubar is at your disposal.
+	if(!m_IsAttached || !MenuBar)
+	{
+		return;
+	}
+	// we will add our new menu just before the last menu(normally help menu)
+	int MenusCount = MenuBar->GetMenuCount();
+	wxMenu* Menu = new wxMenu;
+	if(MenuBar->Insert(MenusCount - 1, Menu, _("Valgrind")))
+	{ // let's add all the menu entries
+		Menu->Append(IdMemCheck, _("Run Valgrind::MemCheck"), _("Run Valgrind::MemCheck"));
+		Menu->Append(IdCacheGrind, _("Run Valrind::Cachegrind"), _("Run Valrind::Cachegrind"));
+	}
+} // end of BuildMenu
+
 void Valgrind::WriteToLog(const wxString& Text)
 {
 	m_ValgrindLog->Clear();
@@ -128,11 +157,38 @@ Manager::Get()->ProcessEvent(evtShow);
     }
 } // end of AppendToLog
 
-int Valgrind::Execute()
+void Valgrind::ProcessStack(const TiXmlElement& Stack, const wxString& What)
 {
-    // if not attached, exit
-    if (!IsAttached())
-        return -1;
+	// start by doing the first frame (that contains dir/file/line)
+	for(const TiXmlElement* Frame = Stack.FirstChildElement("frame"); Frame;
+		Frame = Frame->NextSiblingElement("frame"))
+	{
+		const TiXmlElement* Dir = Frame->FirstChildElement("dir");
+		const TiXmlElement* File = Frame->FirstChildElement("file");
+		const TiXmlElement* Line = Frame->FirstChildElement("line");
+		const TiXmlElement* Function = Frame->FirstChildElement("fn");
+		if(Dir && File && Line)
+		{
+			const wxString FullName = wxString::FromAscii(Dir->GetText()) + _("/") + wxString::FromAscii(File->GetText());
+			wxArrayString Arr;
+			if(Function)
+			{
+				Arr.Add(FullName);
+				Arr.Add(_(""));
+				Arr.Add(_("In function '") + wxString::FromAscii(Function->GetText()) + _("' :"));
+				m_ListLog->Append(Arr);
+			}
+			Arr.Clear();
+			Arr.Add(FullName);
+			Arr.Add(wxString::FromAscii(Line->GetText()));
+			Arr.Add(What);
+			m_ListLog->Append(Arr);
+		}
+	} // end while
+} // end of ProcessStack
+
+bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
+{
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
 	if (!Project)
@@ -140,7 +196,7 @@ int Valgrind::Execute()
 		wxString msg = _("You need to open a project\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return -1;
+		return false;
 	}
 	// check the project s active target -> it should be executable !!
 	wxString strTarget = Project->GetActiveBuildTarget();
@@ -149,7 +205,7 @@ int Valgrind::Execute()
 		wxString msg = _("You need to have an (executable) target in your open project\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return -1;
+		return false;
 	}
 	// let's get the target
 	ProjectBuildTarget* Target = Project->GetBuildTarget(strTarget); // NOT const because of GetNativeFilename() :-(
@@ -158,17 +214,16 @@ int Valgrind::Execute()
 		wxString msg = _("You need to have an (executable) target in your open project\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return -1;
+		return false;
 	}
 	// check the type of the target
-	wxString ExeTarget;
 	const TargetType TType = Target->GetTargetType();
 	if(!(TType == ttExecutable || TType == ttConsoleOnly))
 	{
 		wxString msg = _("You need to have an ***executable*** target in your open project\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return -1;
+		return false;
 	}
 	else
 	{
@@ -183,10 +238,14 @@ int Valgrind::Execute()
 		wxString msg = _("Your target needs to have been compiled with the -g option\nbefore using the plugin!");
 		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
 		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return -1;
+		return false;
 	}
-	wxString CommandLineArgs = Target->GetExecutionParameters();
-	// allright let's start it up with Valgrind
+	CommandLineArguments = Target->GetExecutionParameters();
+	return true;
+}  // end of CheckRequirements
+
+void Valgrind::DoValgrindVersion()
+{
 	wxString CommandLine = _("valgrind --version");
 	WriteToLog(CommandLine);
 	wxArrayString Output, Errors;
@@ -201,16 +260,27 @@ int Valgrind::Execute()
 	{
 		AppendToLog(Errors[idxCount]);
 	} // end for : idx: idxCount
-	Output.clear();
-	Errors.clear();
-	// and now the real stuff
+	// and clear the list
+	m_ListLog->Clear();
+} // end of DoValgrindVersion
+
+void Valgrind::OnMemCheck(wxCommandEvent& )
+{
+	wxString ExeTarget;
+	wxString CommandLineArguments;
+	if(!CheckRequirements(ExeTarget, CommandLineArguments))
+	{
+		return;
+	}
+	DoValgrindVersion();
 	const bool UseXml = true;
-	CommandLine = _("valgrind --leak-check=yes --xml=yes \"") + ExeTarget + _("\" ") + CommandLineArgs;
-//	CommandLine = _("valgrind --leak-check=yes \"") + ExeTarget + _("\" ") + CommandLineArgs;
+	wxString CommandLine = _("valgrind --leak-check=yes --xml=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
+//	CommandLine = _("valgrind --leak-check=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
 	AppendToLog(CommandLine);
+	wxArrayString Output, Errors;
 	wxExecute(CommandLine, Output, Errors);
-	Count = Output.GetCount();
-	for(int idxCount = 0; idxCount < Count; ++idxCount)
+	size_t Count = Output.GetCount();
+	for(size_t idxCount = 0; idxCount < Count; ++idxCount)
 	{
 		// EXTRA NOTE : it seems the output from valgrind comes on the error channel, not here !!!
 		// it seems that all valgrind stuff starts with == (in case of not xml)
@@ -222,7 +292,7 @@ int Valgrind::Execute()
 	} // end for : idx: idxCount
 	wxString Xml;
 	Count = Errors.GetCount();
-	for(int idxCount = 0; idxCount < Count; ++idxCount)
+	for(size_t idxCount = 0; idxCount < Count; ++idxCount)
 	{
 		Xml += Errors[idxCount];
 		AppendToLog(Errors[idxCount]);
@@ -262,35 +332,72 @@ int Valgrind::Execute()
 		}
 		// loop over the errors
 	}
-	return 0;
-} // end of Execute
+} // end of OnMemCheck
 
-void Valgrind::ProcessStack(const TiXmlElement& Stack, const wxString& What)
+void Valgrind::OnCachegrind(wxCommandEvent& )
 {
-	// start by doing the first frame (that contains dir/file/line)
-	for(const TiXmlElement* Frame = Stack.FirstChildElement("frame"); Frame;
-		Frame = Frame->NextSiblingElement("frame"))
+	wxString ExeTarget;
+	wxString CommandLineArguments;
+	if(!CheckRequirements(ExeTarget, CommandLineArguments))
 	{
-		const TiXmlElement* Dir = Frame->FirstChildElement("dir");
-		const TiXmlElement* File = Frame->FirstChildElement("file");
-		const TiXmlElement* Line = Frame->FirstChildElement("line");
-		const TiXmlElement* Function = Frame->FirstChildElement("fn");
-		if(Dir && File && Line)
+		return;
+	}
+	DoValgrindVersion();
+//	wxString CommandLine = _("valgrind --tool=cachegrind --cachegrind-out-file=\"./") + ExeTarget + _(".cachegrind.out\" \"") + ExeTarget + _("\" ") + CommandLineArguments;
+	wxString CommandLine = _("valgrind --tool=cachegrind \"") + ExeTarget + _("\" ") + CommandLineArguments;
+	AppendToLog(CommandLine);
+	wxArrayString Output, Errors;
+	wxString CurrentDirName = ::wxGetCwd();
+	wxDir CurrentDir(CurrentDirName);
+	wxArrayString CachegrindFiles;
+	if(CurrentDir.IsOpened())
+	{
+		wxString File;
+		if(CurrentDir.GetFirst(&File, _("cachegrind.out.*"), wxDIR_FILES))
 		{
-			const wxString FullName = wxString::FromAscii(Dir->GetText()) + _("/") + wxString::FromAscii(File->GetText());
-			wxArrayString Arr;
-			if(Function)
+			CachegrindFiles.Add(File);
+			while(CurrentDir.GetNext(&File))
 			{
-				Arr.Add(FullName);
-				Arr.Add(_(""));
-				Arr.Add(_("In function '") + wxString::FromAscii(Function->GetText()) + _("' :"));
-				m_ListLog->Append(Arr);
-			}
-			Arr.Clear();
-			Arr.Add(FullName);
-			Arr.Add(wxString::FromAscii(Line->GetText()));
-			Arr.Add(What);
-			m_ListLog->Append(Arr);
+				CachegrindFiles.Add(File);
+			} // end while
 		}
-	} // end while
-} // end of ProcessStack
+	}
+	wxExecute(CommandLine, Output, Errors);
+	size_t Count = Output.GetCount();
+	for(size_t idxCount = 0; idxCount < Count; ++idxCount)
+	{
+		AppendToLog(Output[idxCount]);
+	} // end for : idx: idxCount
+	Count = Errors.GetCount();
+	for(size_t idxCount = 0; idxCount < Count; ++idxCount)
+	{
+		AppendToLog(Errors[idxCount]);
+	} // end for : idx: idxCount
+	// try to find out how the file is named --> cachegrind.out.21807 [cachegrind.out.pid]
+	// or To use an output file name other than the default cachegrind.out, use the --cachegrind-out-file  switch.
+	// http://docs.wxwidgets.org/stable/wx_wxdir.html#wxdirgetfirst
+	// idea : store all cachegrind.out.* filenames, and at finish do the same thing, and when one
+	// is not in that list --> the new one
+	wxString TheCachegrindFile;
+	if(CurrentDir.IsOpened())
+	{
+		wxString File;
+		if(CurrentDir.GetFirst(&File, _("cachegrind.out.*"), wxDIR_FILES))
+		{
+			if(CachegrindFiles.Index(File) == wxNOT_FOUND)
+			{
+				TheCachegrindFile = File;
+			}
+			while(CurrentDir.GetNext(&File) && TheCachegrindFile.IsEmpty())
+			{
+				if(CachegrindFiles.Index(File) == wxNOT_FOUND)
+				{
+					TheCachegrindFile = File;
+					AppendToLog(File);
+				}
+			} // end while
+		}
+	}
+	CommandLine = _("kcachegrind ") + TheCachegrindFile;
+	wxExecute(CommandLine);
+} // end of OnCachegrind
