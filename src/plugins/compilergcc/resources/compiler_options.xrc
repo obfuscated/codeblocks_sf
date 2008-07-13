@@ -253,7 +253,7 @@
                                     <orient>wxHORIZONTAL</orient>
                                     <object class="sizeritem">
                                       <object class="wxListBox" name="lstLibs">
-                                        <content/>
+                                        <style>wxLB_EXTENDED</style>
                                       </object>
                                       <option>1</option>
                                       <flag>wxGROW</flag>
@@ -307,7 +307,7 @@
                                 </object>
                                 <object class="sizeritem">
                                   <object class="wxButton" name="btnCopyLibs">
-                                    <label>Copy all to...</label>
+                                    <label>Copy selected to...</label>
                                     <style>wxBU_EXACTFIT</style>
                                   </object>
                                   <flag>wxALIGN_CENTRE_HORIZONTAL</flag>

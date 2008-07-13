@@ -18,7 +18,7 @@
     #include <wx/event.h>
     #include <wx/filename.h>
     #include <wx/listbox.h>
-	#include <wx/notebook.h>
+    #include <wx/notebook.h>
     #include <wx/stattext.h>
     #include <wx/sizer.h>
     #include <wx/spinctrl.h>
@@ -33,7 +33,7 @@
     #include "logmanager.h"
     #include "projectmanager.h"
 #endif
-#include <wx/choicdlg.h>	// wxGetSingleChoiceIndex
+#include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
 #include "cbexception.h"
@@ -229,7 +229,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
 
     wxTreeCtrl* tree = XRCCTRL(*this, "tcScope", wxTreeCtrl);
     wxSizer* sizer = tree->GetContainingSizer();
-	wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
+    wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook);
     if (!m_pProject)
     {
         // global settings
@@ -325,7 +325,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         // compiler dependent settings
         DoFillCompilerDependentSettings();
     }
-	nb->SetSelection(0);
+    nb->SetSelection(0);
     sizer->Layout();
     Layout();
     GetSizer()->Layout();
@@ -1682,12 +1682,12 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& /*event*/)
     }
 } // OnAddLibClick
 
-void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& /*event*/)
+void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
 
     EditPathDlg dlg(this,
-            lstLibs->GetStringSelection(),
+            event.GetString(),
             m_pProject ? m_pProject->GetBasePath() : _T(""),
             _("Edit library"),
             _("Choose library to link"),
@@ -1698,7 +1698,7 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& /*event*/)
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        lstLibs->SetString(lstLibs->GetSelection(), dlg.GetPath());
+        lstLibs->SetString(event.GetSelection(), dlg.GetPath());
         m_bDirty = true;
     }
 } // OnEditLibClick
@@ -1706,13 +1706,32 @@ void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& /*event*/)
 void CompilerOptionsDlg::OnRemoveLibClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    if (!lstLibs || lstLibs->GetSelection() < 0)
+    if (!lstLibs)
         return;
-    if (cbMessageBox(_("Remove library '")+lstLibs->GetStringSelection()+_("' from the list?"), _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
+
+    wxArrayInt sels;
+    int num = lstLibs->GetSelections(sels);
+    if (num == 1) // mimic old behaviour
     {
-        lstLibs->Delete(lstLibs->GetSelection());
-        m_bDirty = true;
+        if (cbMessageBox(_("Remove library '")+lstLibs->GetString(sels[0])+_("' from the list?"),
+            _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
+        {
+            lstLibs->Delete(sels[0]);
+            m_bDirty = true;
+        }
     }
+    else if (num > 1)
+    {
+        wxString msg; msg.Printf(_("Remove all (%d) selected libraries from the list?"), num);
+        if (cbMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
+        {
+            // remove starting with the last lib. otherwise indizes will change
+            for (size_t i = sels.GetCount(); i>0; i--)
+                lstLibs->Delete(sels[i-1]);
+            m_bDirty = true;
+        }
+    }
+    // else: No lib selected
 } // OnRemoveLibClick
 
 void CompilerOptionsDlg::OnClearLibClick(wxCommandEvent& /*event*/)
@@ -1760,7 +1779,8 @@ void CompilerOptionsDlg::OnCopyLibsClick(wxCommandEvent& /*event*/)
         return;
     for (int i = 0; i < (int)lstLibs->GetCount(); ++i)
     {
-        base->AddLinkLib(lstLibs->GetString(i));
+        if (lstLibs->IsSelected(i))
+            base->AddLinkLib(lstLibs->GetString(i));
     }
 } // OnCopyLibsClick
 
@@ -1850,27 +1870,61 @@ void CompilerOptionsDlg::OnClearExtraPathClick(wxCommandEvent& /*event*/)
 void CompilerOptionsDlg::OnMoveLibUpClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    if (lstLibs->GetSelection() <= 0)
+    if (!lstLibs)
         return;
-    int sel = lstLibs->GetSelection();
-    wxString lib = lstLibs->GetStringSelection();
-    lstLibs->Delete(sel);
-    lstLibs->InsertItems(1, &lib, sel - 1);
-    lstLibs->SetSelection(sel - 1);
-    m_bDirty = true;
+
+    wxArrayInt sels;
+    int num = lstLibs->GetSelections(sels);
+    if (num == 0)
+        return;
+
+    // moving upwards: need to start from the first element
+    // starting at second element, the first one cannot be moved upwards
+    for (size_t i=1; i<lstLibs->GetCount(); i++)
+    {
+        // do not move upwards if the lib before is selected, too
+        if (lstLibs->IsSelected(i) && !lstLibs->IsSelected(i-1))
+        {
+            wxString lib = lstLibs->GetString(i);
+            lstLibs->Delete(i);
+
+            lstLibs->InsertItems(1, &lib, i - 1);
+            lstLibs->SetSelection(i - 1);
+
+            m_bDirty = true;
+        }
+    }
 } // OnMoveLibUpClick
 
 void CompilerOptionsDlg::OnMoveLibDownClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
-    if (lstLibs->GetSelection() == (int)(lstLibs->GetCount()) - 1)
+    if (!lstLibs)
         return;
-    int sel = lstLibs->GetSelection();
-    wxString lib = lstLibs->GetStringSelection();
-    lstLibs->Delete(sel);
-    lstLibs->InsertItems(1, &lib, sel + 1);
-    lstLibs->SetSelection(sel + 1);
-    m_bDirty = true;
+
+    wxArrayInt sels;
+    int num = lstLibs->GetSelections(sels);
+    if (num == 0)
+        return;
+
+    // moving downwards: need to start from the last element
+    // starting at pre-last element, the last one cannot be moved downwards
+    for (size_t i=lstLibs->GetCount()-1; i>0; i--)
+    {
+        // do not move downwards if the lib after is selected, too
+        // notice here: as started with index+1 (due to GetCount)...
+        // ... substract 1 all the way to achive the real index oprated on
+        if (lstLibs->IsSelected(i-1) && !lstLibs->IsSelected(i))
+        {
+            wxString lib = lstLibs->GetString(i-1);
+            lstLibs->Delete(i-1);
+
+            lstLibs->InsertItems(1, &lib, i);
+            lstLibs->SetSelection(i);
+
+            m_bDirty = true;
+        }
+    }
 } // OnMoveLibDownClick
 
 void CompilerOptionsDlg::OnMoveDirUpClick(wxSpinEvent& /*event*/)
@@ -1986,11 +2040,13 @@ void CompilerOptionsDlg::OnAdvancedClick(wxCommandEvent& /*event*/)
 
 void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
+    bool en = false;
+
     wxListBox* control = GetDirsListBox();
     if (control)
     {
         // edit/delete/clear/copy include dirs
-        bool en = control->GetSelection() >= 0;
+        en = control->GetSelection() >= 0;
         XRCCTRL(*this, "btnEditDir",  wxButton)->Enable(en);
         XRCCTRL(*this, "btnDelDir",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearDir", wxButton)->Enable(control->GetCount() != 0);
@@ -2001,20 +2057,27 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     }
 
     // edit/delete/clear/copy/moveup/movedown lib dirs
-    bool en = XRCCTRL(*this, "lstLibs", wxListBox)->GetSelection() >= 0;
-    XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(en);
-    XRCCTRL(*this, "btnDelLib",   wxButton)->Enable(en);
-    XRCCTRL(*this, "btnClearLib", wxButton)->Enable(XRCCTRL(*this, "lstLibs", wxListBox)->GetCount() != 0);
-    XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(XRCCTRL(*this, "lstLibs", wxListBox)->GetCount() != 0);
-    XRCCTRL(*this, "spnLibs",     wxSpinButton)->Enable(en);
+    wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (lstLibs)
+    {
+        wxArrayInt sels_dummy;
+        int num = lstLibs->GetSelections(sels_dummy);
+        en = (num > 0);
+
+        XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(en);
+        XRCCTRL(*this, "btnDelLib",   wxButton)->Enable(en);
+        XRCCTRL(*this, "btnClearLib", wxButton)->Enable(lstLibs->GetCount() != 0);
+        XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(lstLibs->GetCount() != 0);
+        XRCCTRL(*this, "spnLibs",     wxSpinButton)->Enable(en);
+    }
 
     // edit/delete/clear/copy/moveup/movedown extra path
     if (XRCCTRL(*this, "lstExtraPaths", wxListBox))
     {
-      en = XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetSelection() >= 0;
-      XRCCTRL(*this, "btnExtraEdit",   wxButton)->Enable(en);
-      XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en);
-      XRCCTRL(*this, "btnExtraClear",  wxButton)->Enable(XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetCount() != 0);
+        en = XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetSelection() >= 0;
+        XRCCTRL(*this, "btnExtraEdit",   wxButton)->Enable(en);
+        XRCCTRL(*this, "btnExtraDelete", wxButton)->Enable(en);
+        XRCCTRL(*this, "btnExtraClear",  wxButton)->Enable(XRCCTRL(*this, "lstExtraPaths", wxListBox)->GetCount() != 0);
     }
 
     // add/edit/delete/clear vars
