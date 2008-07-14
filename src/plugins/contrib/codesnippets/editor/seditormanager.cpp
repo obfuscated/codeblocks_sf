@@ -65,9 +65,9 @@
 //template<> EditorManager* Mgr<EditorManager>::instance = 0;
 //template<> bool  Mgr<EditorManager>::isShutdown = false;
 
-int ID_NBEditorManager = wxNewId();
-int ID_EditorManager = wxNewId();
-int idEditorManagerCheckFiles = wxNewId();
+int ID_NBSEditorManager = wxNewId();
+int ID_SEditorManager = wxNewId();
+int idSEditorManagerCheckFiles = wxNewId();
 
 // static
 bool SEditorManager::s_CanShutdown = true;
@@ -139,10 +139,10 @@ struct EditorManagerInternalData
 BEGIN_EVENT_TABLE(SEditorManager, wxEvtHandler)
     EVT_APP_STARTUP_DONE(SEditorManager::OnAppDoneStartup)
     EVT_APP_START_SHUTDOWN(SEditorManager::OnAppStartShutdown)
-    EVT_FLATNOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, SEditorManager::OnPageChanged)
-    EVT_FLATNOTEBOOK_PAGE_CHANGING(ID_NBEditorManager, SEditorManager::OnPageChanging)
-    EVT_FLATNOTEBOOK_PAGE_CLOSING(ID_NBEditorManager, SEditorManager::OnPageClosing)
-    EVT_FLATNOTEBOOK_CONTEXT_MENU(ID_NBEditorManager, SEditorManager::OnPageContextMenu)
+    EVT_FLATNOTEBOOK_PAGE_CHANGED(ID_NBSEditorManager, SEditorManager::OnPageChanged)
+    EVT_FLATNOTEBOOK_PAGE_CHANGING(ID_NBSEditorManager, SEditorManager::OnPageChanging)
+    EVT_FLATNOTEBOOK_PAGE_CLOSING(ID_NBSEditorManager, SEditorManager::OnPageClosing)
+    EVT_FLATNOTEBOOK_CONTEXT_MENU(ID_NBSEditorManager, SEditorManager::OnPageContextMenu)
     EVT_MENU(idNBTabSplitHorz, SEditorManager::OnGenericContextMenuHandler)
     EVT_MENU(idNBTabSplitVert, SEditorManager::OnGenericContextMenuHandler)
     EVT_MENU(idNBTabUnsplit, SEditorManager::OnGenericContextMenuHandler)
@@ -155,7 +155,7 @@ BEGIN_EVENT_TABLE(SEditorManager, wxEvtHandler)
     EVT_MENU(idNBTabSaveAll, SEditorManager::OnSaveAll)
     EVT_MENU(idNBSwapHeaderSource, SEditorManager::OnSwapHeaderSource)
     EVT_MENU(idNBProperties, SEditorManager::OnProperties)
-    EVT_MENU(idEditorManagerCheckFiles, SEditorManager::OnCheckForModifiedFiles)
+    EVT_MENU(idSEditorManagerCheckFiles, SEditorManager::OnCheckForModifiedFiles)
 END_EVENT_TABLE()
 
 // class constructor
@@ -180,7 +180,7 @@ void SEditorManager::InitSEditorManager(wxWindow* parent)
     m_pData = new EditorManagerInternalData(this);
 
     //-m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
-    m_pNotebook = new wxFlatNotebook( parent, ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pNotebook = new wxFlatNotebook( parent, ID_NBSEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE | wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
 
     Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
@@ -2709,7 +2709,7 @@ int SEditorManager::GetZoom() const
 int SEditorManager::GetManagerID()
 // ----------------------------------------------------------------------------
 {
-    return ID_NBEditorManager;
+    return ID_NBSEditorManager;
 }
 // ----------------------------------------------------------------------------
 int SEditorManager::GetLongestLinePixelWidth(int top_line, int bottom_line)  //(pecan 2007/3/28)

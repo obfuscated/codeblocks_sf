@@ -24,10 +24,10 @@
 //DLLIMPORT extern int ID_EditorManager;
 //DLLIMPORT extern int idEditorManagerCheckFiles;
 //DLLIMPORT extern int ID_EditorManagerCloseButton;
- extern int ID_NBEditorManager;
- extern int ID_EditorManager;
- extern int idEditorManagerCheckFiles;
- extern int ID_EditorManagerCloseButton;
+ extern int ID_NBSEditorManager;
+ extern int ID_SEditorManager;
+ extern int idSEditorManagerCheckFiles;
+ extern int ID_SEditorManagerCloseButton;
 
 // forward decls
 class SEditorBase;

@@ -133,6 +133,9 @@ void cbDragScroll::OnAttach()
     m_DataFolder = ConfigManager::GetDataFolder();
     m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
     wxString appName = wxConfigBase::Get()->GetAppName();
+    // Correct the SDK lie when .conf is in the execute folder
+    if (::wxFileExists(m_ExecuteFolder + wxFILE_SEP_PATH + _T("default.conf")))
+        m_ConfigFolder = m_ExecuteFolder;
 
     //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
     // remove the double //s from filename //+v0.4.11
