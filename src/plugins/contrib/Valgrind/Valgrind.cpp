@@ -12,6 +12,7 @@
 #include <wx/dir.h>
 #include <wx/fs_zip.h>
 #include <wx/intl.h>
+#include <wx/menu.h>
 #include <wx/string.h>
 #include <wx/xrc/xmlres.h>
 #include "cbproject.h"
