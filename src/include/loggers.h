@@ -11,10 +11,9 @@
 #include <wx/colour.h>
 #include <wx/font.h>
 #include <wx/ffile.h>
+#include <wx/textctrl.h>
 
 class wxListCtrl;
-class wxTextCtrl;
-class wxTextAttr;
 
 class DLLIMPORT StdoutLogger : public Logger
 {

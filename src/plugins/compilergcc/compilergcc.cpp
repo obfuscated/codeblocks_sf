@@ -1101,7 +1101,7 @@ int CompilerGCC::GetNextAvailableProcessIndex() const
 {
     for (size_t i = 0; i < m_ParallelProcessCount; ++i)
     {
-        if (m_Processes[i] == 0 && m_Pid[i] == 0)
+        if ((m_Processes[i] == 0) && (m_Pid[i] == 0))
             return i;
     }
     return -1;
@@ -2870,7 +2870,7 @@ void CompilerGCC::OnIdle(wxIdleEvent& event)
     {
         for (size_t i = 0; i < m_ParallelProcessCount; ++i)
         {
-            if (m_Processes[i] != 0 && ((PipedProcess*)m_Processes[i])->HasInput())
+            if ((m_Processes[i] != 0) && ((PipedProcess*)m_Processes[i])->HasInput())
             {
                 event.RequestMore();
                 break;

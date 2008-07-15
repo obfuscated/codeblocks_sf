@@ -150,6 +150,7 @@ void Bindings::SetDefaultsCodeBlocks()
   AddBinding(_T("CodeBlocks"),_T("GetFile"),                      _T("projectfile.h"));
   AddBinding(_T("CodeBlocks"),_T("GetFileByFilename"),            _T("projectfile.h"));
   AddBinding(_T("CodeBlocks"),_T("GetFileManager"),               _T("filemanager.h"));
+  AddBinding(_T("CodeBlocks"),_T("GetLogManager"),                _T("logmanager.h"));
   AddBinding(_T("CodeBlocks"),_T("GetMacrosManager"),             _T("macrosmanager.h"));
   AddBinding(_T("CodeBlocks"),_T("GetMessageManager"),            _T("messagemanager.h"));
   AddBinding(_T("CodeBlocks"),_T("GetNotebook"),                  _T("wx/wxFlatNotebook/wxFlatNotebook.h"));
