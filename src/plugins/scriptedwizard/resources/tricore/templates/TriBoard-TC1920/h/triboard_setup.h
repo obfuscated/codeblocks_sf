@@ -3,18 +3,18 @@
 * Developed using:
 * Function: TriBoard-TC1920 platform specific setup values
 *
-* Copyright HighTec EDV-Systeme GmbH 1982-2007
+* Copyright HighTec EDV-Systeme GmbH 1982-2008
 *====================================================================*/
 
 #ifndef __TRIBOARD_SETUP_H__
 #define __TRIBOARD_SETUP_H__
 
 #include "tc1920/scu/addr.h"
-#include "tc1920/ebu_lmb3/addr.h"
+#include "tc1920/ebu/addr.h"
 #include "tc1920/pmu/addr.h"
 
 /* initialization value for PLLCLC : set clock to 96 MHz */
-#define VAL_PLLCLC			0x010F0147
+#define VAL_PLLCLC			0x010F0144
 
 
 /* initialization values for External Bus */

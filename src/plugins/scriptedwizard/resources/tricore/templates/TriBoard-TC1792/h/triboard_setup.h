@@ -3,7 +3,7 @@
 * Developed using:
 * Function: TriBoard-TC1792 platform specific setup values
 *
-* Copyright HighTec EDV-Systeme GmbH 1982-2007
+* Copyright HighTec EDV-Systeme GmbH 1982-2008
 *====================================================================*/
 
 #ifndef __TRIBOARD_TC1792_SETUP_H__
@@ -14,7 +14,8 @@
 #include "tc1792/pmi/addr.h"
 
 /* initialization value for PLLCLC : set clock to 150 MHz */
-#define VAL_PLLCLC			0x001D0381
+/* see PLL_TC.H005 TC1796BC-Errata-V1.7: NDIV >= 33 !! */
+#define VAL_PLLCLC			0x003B2382
 
 
 /* initialization values for External Bus */

@@ -16,10 +16,10 @@
 					<rows>2</rows>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblProc">
-							<label>Choose Processor</label>
+							<label>Select hardware:</label>
 							<tooltip>Choose a TriCore derivative to configure the compiler settings.</tooltip>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>3</border>
 					</object>
 					<object class="sizeritem">
@@ -31,22 +31,26 @@
 								<item>TriBoard TC1162</item>
 								<item>TriBoard TC1762</item>
 								<item>TriBoard TC1766</item>
+								<item>EasyKit TC1767</item>
 								<item>TriBoard TC1792</item>
 								<item>TriBoard TC1796</item>
+								<item>TriBoard TC1797</item>
 								<item>phyCORE TC1130</item>
 							</content>
+							<selection>0</selection>
 							<pos>-1,-1</pos>
 							<size>120,-1</size>
+							<style>wxCB_READONLY</style>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblFlashType">
-							<label>Choose Flash Type</label>
+							<label>Choose type of flash:</label>
 							<tooltip>Choose type of flash chip and access mode (32-Bit or 16-Bit).</tooltip>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -58,7 +62,9 @@
 								<item>amd16</item>
 								<item>intel16</item>
 							</content>
+							<selection>0</selection>
 							<size>120,-1</size>
+							<style>wxCB_READONLY</style>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>

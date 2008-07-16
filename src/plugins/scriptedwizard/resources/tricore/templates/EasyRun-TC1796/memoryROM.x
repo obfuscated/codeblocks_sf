@@ -1,7 +1,7 @@
 /*
  * memoryROM.x -- HighTec EasyRun-TC1796 flash memory configuration
  *
- * Copyright (C) 1982-2007 HighTec EDV-Systeme GmbH.
+ * Copyright (C) 1982-2008 HighTec EDV-Systeme GmbH.
  *
  */
 /* __TC1796__ __TC13__ with Core TC1.3 */
@@ -28,12 +28,12 @@ __EBMCFG = 0x0000803C;
 
 MEMORY
 {
-  ext_cram (rx):  org = 0x80020100, len = 1920K
-  ext_dram (w!x): org = 0xa1000000, len = 1M
-  int_cram (rx):  org = 0xd4000000, len = 48K
-  int_dram (w!x): org = 0xd0000000, len = 56K
-  pcp_data (w!x): org = 0xf0050000, len = 16K
-  pcp_text (rx):  org = 0xf0060000, len = 32K
+  ext_cram (rx!p): org = 0x80020100, len = 1920K
+  ext_dram (w!xp): org = 0xa1000000, len = 1M
+  int_cram (rx!p): org = 0xd4000000, len = 48K
+  int_dram (w!xp): org = 0xd0000000, len = 56K
+  pcp_data (wp!x): org = 0xf0050000, len = 16K
+  pcp_text (rxp):  org = 0xf0060000, len = 32K
 }
 
 /* the symbol __TRICORE_DERIVATE_NAME__ will be defined in the crt0.S and is

@@ -1,7 +1,7 @@
 /*
  * memoryROM.x -- TriBoard-TC1792 flash memory configuration
  *
- * Copyright (C) 1982-2007 HighTec EDV-Systeme GmbH.
+ * Copyright (C) 1982-2008 HighTec EDV-Systeme GmbH.
  *
  */
 /* __TC1796__ __TC13__ with Core TC1.3 */
@@ -28,12 +28,12 @@ __EBMCFG = 0x0000803C;
 
 MEMORY
 {
-  ext_cram (rx):  org = 0x84000000, len = 4M
-  ext_dram (w!x): org = 0xa1000000, len = 1M
-  int_cram (rx):  org = 0xd4000000, len = 24K
-  int_dram (w!x): org = 0xd0000000, len = 64K
-  pcp_data (w!x): org = 0xf0050000, len = 8K
-  pcp_text (rx):  org = 0xf0060000, len = 16K
+  ext_cram (rx!p): org = 0x84000000, len = 4M
+  ext_dram (w!xp): org = 0xa1000000, len = 1M
+  int_cram (rx!p): org = 0xd4000000, len = 24K
+  int_dram (w!xp): org = 0xd0000000, len = 64K
+  pcp_data (wp!x): org = 0xf0050000, len = 8K
+  pcp_text (rxp):  org = 0xf0060000, len = 16K
 }
 
 /* the symbol __TRICORE_DERIVATE_NAME__ will be defined in the crt0.S and is

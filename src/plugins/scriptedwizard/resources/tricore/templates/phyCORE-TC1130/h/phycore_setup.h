@@ -10,11 +10,11 @@
 #define __PHYCORE_SETUP_H__
 
 #include "tc1130b/scu/addr.h"
-#include "tc1130b/ebu_lmb4/addr.h"
+#include "tc1130b/ebu/addr.h"
 #include "tc1130b/pmi/addr.h"
 
 /* initialization value for PLLCLC : set clock to 150 MHz */
-#define VAL_PLLCLC			0x001D0381
+#define VAL_PLLCLC			0x001D0382
 
 
 /* initialization values for External Bus */
@@ -41,6 +41,7 @@
 #define VAL_EBU_BUSCON3		0x8092807F
 #define VAL_EBU_BUSAP3		0xFFFFFFFF
 
+/* enable instruction cache */
 #define VAL_PMI_CON0		0x00000000
 
 

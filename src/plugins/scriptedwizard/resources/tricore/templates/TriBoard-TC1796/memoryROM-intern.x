@@ -1,5 +1,5 @@
 /*
- * memoryROM.x -- TriBoard-TC1796 flash memory configuration
+ * memoryInternalROM.x -- TriBoard-TC1796 internal flash memory configuration
  *
  * Copyright (C) 1982-2008 HighTec EDV-Systeme GmbH.
  *
@@ -7,8 +7,8 @@
 /* __TC1796__ __TC13__ with Core TC1.3 */
 __TRICORE_DERIVATE_MEMORY_MAP__ = 0x1796;
 /* the external RAM description */
-__EXT_CODE_RAM_BEGIN = 0x84000000;
-__EXT_CODE_RAM_SIZE = 4M ;
+__EXT_CODE_RAM_BEGIN = 0x80000000;
+__EXT_CODE_RAM_SIZE = 2M;
 __EXT_DATA_RAM_BEGIN = 0xa1000000;
 __EXT_DATA_RAM_SIZE = 1M;
 __RAM_END = __EXT_DATA_RAM_BEGIN + __EXT_DATA_RAM_SIZE;
@@ -28,7 +28,7 @@ __EBMCFG = 0x0000803C;
 
 MEMORY
 {
-  ext_cram (rx!p): org = 0x84000000, len = 4M
+  ext_cram (rx!p): org = 0x80000000, len = 2M
   ext_dram (w!xp): org = 0xa1000000, len = 1M
   int_cram (rx!p): org = 0xd4000000, len = 48K
   int_dram (w!xp): org = 0xd0000000, len = 56K

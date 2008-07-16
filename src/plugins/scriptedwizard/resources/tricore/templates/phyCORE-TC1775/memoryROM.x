@@ -1,7 +1,7 @@
 /*
  * memoryROM.x -- phyCORE-TC1775 flash memory configuration
  *
- * Copyright (C) 1982-2007 HighTec EDV-Systeme GmbH.
+ * Copyright (C) 1982-2008 HighTec EDV-Systeme GmbH.
  *
  */
 
@@ -30,12 +30,12 @@ __EBMCFG = 0x0000808C;
 
 MEMORY
 {
-  ext_cram (rx): org = 0xa4000000, len = 1M
-  ext_dram (w!x): org = 0xa0000000, len = 1M
-  int_cram (rx): org = 0xc0000000, len = 32K
-  int_dram (w!x): org = 0xd0000000, len = 32K
-  pcp_data (w!x): org = 0xf0010000, len = 4K
-  pcp_text (rx): org = 0xf0020000, len = 16K
+  ext_cram (rx!p): org = 0xa4000000, len = 1M
+  ext_dram (w!xp): org = 0xa0000000, len = 1M
+  int_cram (rx!p): org = 0xc0000000, len = 32K
+  int_dram (w!xp): org = 0xd0000000, len = 32K
+  pcp_data (wp!x): org = 0xf0010000, len = 4K
+  pcp_text (rxp):  org = 0xf0020000, len = 16K
 }
 
 /* the symbol __TRICORE_DERIVATE_NAME__ will be defined in the crt0.S and is

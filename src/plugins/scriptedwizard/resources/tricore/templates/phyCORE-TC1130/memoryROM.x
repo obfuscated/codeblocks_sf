@@ -1,7 +1,7 @@
 /*
  * memoryROM.x -- phyCORE-TC1130 flash memory configuration
  *
- * Copyright (C) 1982-2007 HighTec EDV-Systeme GmbH.
+ * Copyright (C) 1982-2008 HighTec EDV-Systeme GmbH.
  *
  */
 /* __TC1130__ __TC13__ with Core TC1.3 */
@@ -28,12 +28,12 @@ __EBMCFG = 0x00009031;
 
 MEMORY
 {
-  ext_cram (rx): org = 0x84000000, len = 4M
-  ext_dram (w!x): org = 0xa0000000, len = 4M
-  int_cram (rx): org = 0xd4000000, len = 32K
-  int_dram (w!x): org = 0xd0000000, len = 28K
-  pcp_data (w!x): org = 0, len = 0
-  pcp_text (rx): org = 0, len = 0
+  ext_cram (rx!p): org = 0x84000000, len = 4M
+  ext_dram (w!xp): org = 0xa0000000, len = 4M
+  int_cram (rx!p): org = 0xd4000000, len = 32K
+  int_dram (w!xp): org = 0xd0000000, len = 28K
+  pcp_data (wp!x): org = 0, len = 0
+  pcp_text (rxp):  org = 0, len = 0
 }
 
 /* the symbol __TRICORE_DERIVATE_NAME__ will be defined in the crt0.S and is

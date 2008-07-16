@@ -3,18 +3,19 @@
 * Developed using:
 * Function: HighTec EasyRun-TC1796 platform specific setup values
 *
-* Copyright HighTec EDV-Systeme GmbH 1982-2007
+* Copyright HighTec EDV-Systeme GmbH 1982-2008
 *====================================================================*/
 
 #ifndef __EASYRUN_SETUP_H__
 #define __EASYRUN_SETUP_H__
 
 #include "tc1796b/scu/addr.h"
-#include "tc1796b/ebu_lmb4/addr.h"
+#include "tc1796b/ebu/addr.h"
 #include "tc1796b/pmi/addr.h"
 
 /* initialization value for PLLCLC : set clock to 150 MHz */
-#define VAL_PLLCLC			0x001D0381
+/* see PLL_TC.H005 TC1796BC-Errata-V1.7: NDIV >= 33 !! */
+#define VAL_PLLCLC			0x003B2382
 
 
 /* initialization values for External Bus */
