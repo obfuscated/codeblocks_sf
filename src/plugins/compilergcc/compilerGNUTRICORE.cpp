@@ -152,9 +152,11 @@ void CompilerGNUTRICORE::Reset()
     m_Options.AddOption(_("TriCore TC1762"), _T("-mcpu=tc1762"), category);
     m_Options.AddOption(_("TriCore TC1765"), _T("-mcpu=tc1765"), category);
     m_Options.AddOption(_("TriCore TC1766"), _T("-mcpu=tc1766"), category);
+    m_Options.AddOption(_("TriCore TC1767"), _T("-mcpu=tc1767"), category);
     m_Options.AddOption(_("TriCore TC1775"), _T("-mcpu=tc1775"), category);
     m_Options.AddOption(_("TriCore TC1792"), _T("-mcpu=tc1792"), category);
     m_Options.AddOption(_("TriCore TC1796"), _T("-mcpu=tc1796"), category);
+    m_Options.AddOption(_("TriCore TC1797"), _T("-mcpu=tc1797"), category);
     m_Options.AddOption(_("TriCore TC1920"), _T("-mcpu=tc1920"), category);
 
     m_Commands[(int)ctCompileObjectCmd].push_back(CompilerTool(_T("$compiler $options $includes -c $file -o $object")));
