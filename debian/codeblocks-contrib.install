@@ -18,7 +18,7 @@ usr/share/codeblocks/ThreadSearch.zip*
 usr/share/codeblocks/Valgrind.zip*
 usr/share/codeblocks/wxsmith.zip*
 usr/share/codeblocks/wxsmithcontribitems.zip*
-usr/share/codeblocks/hexeditor.zip*
+usr/share/codeblocks/HexEditor.zip*
 usr/share/codeblocks/images/codesnippets*
 usr/share/codeblocks/images/wxsmith*
 usr/share/codeblocks/images/ThreadSearch*
@@ -43,5 +43,5 @@ usr/share/codeblocks/plugins/libThreadSearch.*
 usr/share/codeblocks/plugins/libValgrind.*
 usr/share/codeblocks/plugins/libwxsmith.*
 usr/share/codeblocks/plugins/libwxsmithcontribitems.*
-usr/share/codeblocks/plugins/libhexeditor.*
+usr/share/codeblocks/plugins/libHexEditor.*
 

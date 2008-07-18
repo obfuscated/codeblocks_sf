@@ -4,13 +4,13 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 libdir = $(pkgdatadir)/plugins
 
-lib_LTLIBRARIES = libhexeditor.la
+lib_LTLIBRARIES = libHexEditor.la
 
-libhexeditor_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libHexEditor_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libhexeditor_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
+libHexEditor_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
-libhexeditor_la_SOURCES = \
+libHexEditor_la_SOURCES = \
 	FileContentBase.cpp \
 	FileContentBuffered.cpp \
 	HexEditor.cpp \
@@ -29,8 +29,8 @@ EXTRA_DIST = \
 	HexEditor-win.cbp \
 	manifest.xml
 
-pkgdata_DATA = hexeditor.zip
+pkgdata_DATA = HexEditor.zip
 CLEANFILES = $(pkgdata_DATA)
 
-hexeditor.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/hexeditor.zip manifest.xml > /dev/null
+HexEditor.zip: manifest.xml
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/HexEditor.zip manifest.xml > /dev/null
