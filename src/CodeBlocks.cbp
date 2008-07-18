@@ -148,9 +148,9 @@
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--export-all-symbols" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libshfolder.a" />
-					<Add library="libtxml.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="shfolder" />
+					<Add library="txml" />
+					<Add library="wxscintilla" />
 					<Add library="wxflatnotebook" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
@@ -196,24 +196,25 @@
 					<Add directory="include\scripting\sqplus" />
 				</Compiler>
 				<Linker>
-					<Add library="libcodeblocks.a" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="codeblocks" />
 					<Add library="wxaui" />
-					<Add library="libwxscintilla.a" />
-					<Add library="libshfolder.a" />
-					<Add library="libkernel32.a" />
-					<Add library="libuser32.a" />
-					<Add library="libgdi32.a" />
-					<Add library="libcomdlg32.a" />
-					<Add library="libwinspool.a" />
-					<Add library="libwinmm.a" />
-					<Add library="libcomctl32.a" />
-					<Add library="libodbc32.a" />
-					<Add library="libole32.a" />
-					<Add library="liboleaut32.a" />
-					<Add library="libuuid.a" />
-					<Add library="librpcrt4.a" />
-					<Add library="libadvapi32.a" />
-					<Add library="libwsock32.a" />
+					<Add library="wxscintilla" />
+					<Add library="shfolder" />
+					<Add library="kernel32" />
+					<Add library="user32" />
+					<Add library="gdi32" />
+					<Add library="comdlg32" />
+					<Add library="winspool" />
+					<Add library="winmm" />
+					<Add library="comctl32" />
+					<Add library="odbc32" />
+					<Add library="ole32" />
+					<Add library="oleaut32" />
+					<Add library="uuid" />
+					<Add library="rpcrt4" />
+					<Add library="advapi32" />
+					<Add library="wsock32" />
 					<Add directory="devel" />
 					<Add directory="src\wxAUI" />
 				</Linker>
@@ -232,8 +233,8 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -266,8 +267,9 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="depslib" />
 					<Add directory="devel" />
@@ -291,8 +293,9 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -313,8 +316,8 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -334,8 +337,8 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
@@ -373,8 +376,8 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -393,8 +396,9 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -410,8 +414,8 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -427,8 +431,8 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
-					<Add library="libwxscintilla.a" />
+					<Add library="codeblocks" />
+					<Add library="wxscintilla" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -446,7 +450,7 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
-					<Add library="libcodeblocks.a" />
+					<Add library="codeblocks" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -465,6 +469,7 @@
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
 					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="devel" />

@@ -2444,13 +2444,12 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             wxString indent = GetLineIndentString(currLine - 1);
             if (smartIndent)
             {
-                cbStyledTextCtrl* stc = GetControl();
-                 // if the last entered char before newline was an opening curly brace,
-                 // increase indentation level (the closing brace is handled in another block)
+                // if the last entered char before newline was an opening curly brace,
+                // increase indentation level (the closing brace is handled in another block)
 
                 // SMART INDENTING - THIS IS LANGUAGE SPECIFIC, BUT CURRENTLY ONLY IMPLEMENTED FOR C/C++ AND PYTHON
                 wxChar b = m_pData->GetLastNonWhitespaceChar();
-                switch(stc->GetLexer())
+                switch(control->GetLexer())
                 {
                     case wxSCI_LEX_CPP:
                         if (b == _T('{'))
@@ -2483,7 +2482,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     else if (ch == _T('}'))
     {
         bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
-        if (smartIndent)
+        if ( smartIndent && (control->GetLexer() == wxSCI_LEX_CPP) )
         {
             control->BeginUndoAction();
             // undo block indentation, if needed

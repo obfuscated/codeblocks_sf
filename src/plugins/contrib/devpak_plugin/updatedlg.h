@@ -49,6 +49,7 @@ class UpdateDlg : public wxDialog
         UpdateRec* GetRecFromListView();
         void CreateListColumns();
         void AddRecordToList(UpdateRec* rec);
+        wxString GetListColumnText(int idx, int col);
         void SetListColumnText(int idx, int col, const wxString& text);
 
         wxString GetConfFilename();

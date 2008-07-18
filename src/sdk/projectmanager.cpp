@@ -2722,10 +2722,6 @@ void ProjectManager::EndLoadingProject(cbProject* project)
        Thus it should be set to Not Busy only at the end.*/
     m_IsLoadingProject = false;
 
-    #ifdef USE_OPENFILES_TREE
-    Manager::Get()->GetEditorManager()->RebuildOpenedFilesTree();
-    #endif
-
     // sort out any global user vars that need to be defined now (in a batch) :)
     // but only if not loading workspace (else LoadWorkspace() will handle this)
     if (!m_IsLoadingWorkspace)

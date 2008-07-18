@@ -1,8 +1,31 @@
+# ------------------------------------------------------------------
+# This file is part of bzip2/libbzip2, a program and library for
+# lossless, block-sorting data compression.
+#
+# bzip2/libbzip2 version 1.0.5 of 10 December 2007
+# Copyright (C) 1996-2007 Julian Seward <jseward@bzip.org>
+#
+# Please read the WARNING, DISCLAIMER and PATENTS sections in the 
+# README file.
+#
+# This program is released under the terms of the license contained
+# in the file LICENSE.
+# ------------------------------------------------------------------
 
 SHELL=/bin/sh
+
+# To assist in cross-compiling
 CC=gcc
+AR=ar
+RANLIB=ranlib
+LDFLAGS=
+
 BIGFILES=-D_FILE_OFFSET_BITS=64
-CFLAGS=-Wall -Winline -O2 -fomit-frame-pointer -fno-strength-reduce $(BIGFILES)
+CFLAGS=-Wall -Winline -O2 -g $(BIGFILES)
+
+# Where you want it installed when you do 'make install'
+PREFIX=/usr/local
+
 
 OBJS= blocksort.o  \
       huffman.o    \
@@ -15,20 +38,21 @@ OBJS= blocksort.o  \
 all: libbz2.a bzip2 bzip2recover test
 
 bzip2: libbz2.a bzip2.o
-	$(CC) $(CFLAGS) -o bzip2 bzip2.o -L. -lbz2
+	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2 bzip2.o -L. -lbz2
 
 bzip2recover: bzip2recover.o
-	$(CC) $(CFLAGS) -o bzip2recover bzip2recover.o
+	$(CC) $(CFLAGS) $(LDFLAGS) -o bzip2recover bzip2recover.o
 
 libbz2.a: $(OBJS)
 	rm -f libbz2.a
-	ar cq libbz2.a $(OBJS)
-	@if ( test -f /usr/bin/ranlib -o -f /bin/ranlib -o \
-		-f /usr/ccs/bin/ranlib ) ; then \
-		echo ranlib libbz2.a ; \
-		ranlib libbz2.a ; \
+	$(AR) cq libbz2.a $(OBJS)
+	@if ( test -f $(RANLIB) -o -f /usr/bin/ranlib -o \
+		-f /bin/ranlib -o -f /usr/ccs/bin/ranlib ) ; then \
+		echo $(RANLIB) libbz2.a ; \
+		$(RANLIB) libbz2.a ; \
 	fi
 
+check: test
 test: bzip2
 	@cat words1
 	./bzip2 -1  < sample1.ref > sample1.rb2
@@ -45,14 +69,12 @@ test: bzip2
 	cmp sample3.tst sample3.ref
 	@cat words3
 
-PREFIX=/usr
-
 install: bzip2 bzip2recover
-	if ( test ! -d $(PREFIX)/bin ) ; then mkdir $(PREFIX)/bin ; fi
-	if ( test ! -d $(PREFIX)/lib ) ; then mkdir $(PREFIX)/lib ; fi
-	if ( test ! -d $(PREFIX)/man ) ; then mkdir $(PREFIX)/man ; fi
-	if ( test ! -d $(PREFIX)/man/man1 ) ; then mkdir $(PREFIX)/man/man1 ; fi
-	if ( test ! -d $(PREFIX)/include ) ; then mkdir $(PREFIX)/include ; fi
+	if ( test ! -d $(PREFIX)/bin ) ; then mkdir -p $(PREFIX)/bin ; fi
+	if ( test ! -d $(PREFIX)/lib ) ; then mkdir -p $(PREFIX)/lib ; fi
+	if ( test ! -d $(PREFIX)/man ) ; then mkdir -p $(PREFIX)/man ; fi
+	if ( test ! -d $(PREFIX)/man/man1 ) ; then mkdir -p $(PREFIX)/man/man1 ; fi
+	if ( test ! -d $(PREFIX)/include ) ; then mkdir -p $(PREFIX)/include ; fi
 	cp -f bzip2 $(PREFIX)/bin/bzip2
 	cp -f bzip2 $(PREFIX)/bin/bunzip2
 	cp -f bzip2 $(PREFIX)/bin/bzcat
@@ -67,6 +89,24 @@ install: bzip2 bzip2recover
 	chmod a+r $(PREFIX)/include/bzlib.h
 	cp -f libbz2.a $(PREFIX)/lib
 	chmod a+r $(PREFIX)/lib/libbz2.a
+	cp -f bzgrep $(PREFIX)/bin/bzgrep
+	ln -s -f $(PREFIX)/bin/bzgrep $(PREFIX)/bin/bzegrep
+	ln -s -f $(PREFIX)/bin/bzgrep $(PREFIX)/bin/bzfgrep
+	chmod a+x $(PREFIX)/bin/bzgrep
+	cp -f bzmore $(PREFIX)/bin/bzmore
+	ln -s -f $(PREFIX)/bin/bzmore $(PREFIX)/bin/bzless
+	chmod a+x $(PREFIX)/bin/bzmore
+	cp -f bzdiff $(PREFIX)/bin/bzdiff
+	ln -s -f $(PREFIX)/bin/bzdiff $(PREFIX)/bin/bzcmp
+	chmod a+x $(PREFIX)/bin/bzdiff
+	cp -f bzgrep.1 bzmore.1 bzdiff.1 $(PREFIX)/man/man1
+	chmod a+r $(PREFIX)/man/man1/bzgrep.1
+	chmod a+r $(PREFIX)/man/man1/bzmore.1
+	chmod a+r $(PREFIX)/man/man1/bzdiff.1
+	echo ".so man1/bzgrep.1" > $(PREFIX)/man/man1/bzegrep.1
+	echo ".so man1/bzgrep.1" > $(PREFIX)/man/man1/bzfgrep.1
+	echo ".so man1/bzmore.1" > $(PREFIX)/man/man1/bzless.1
+	echo ".so man1/bzdiff.1" > $(PREFIX)/man/man1/bzcmp.1
 
 clean: 
 	rm -f *.o libbz2.a bzip2 bzip2recover \
@@ -93,10 +133,14 @@ bzip2.o: bzip2.c
 bzip2recover.o: bzip2recover.c
 	$(CC) $(CFLAGS) -c bzip2recover.c
 
-DISTNAME=bzip2-1.0.1
-tarfile:
+
+distclean: clean
+	rm -f manual.ps manual.html manual.pdf
+
+DISTNAME=bzip2-1.0.5
+dist: check manual
 	rm -f $(DISTNAME)
-	ln -sf . $(DISTNAME)
+	ln -s -f . $(DISTNAME)
 	tar cvf $(DISTNAME).tar \
 	   $(DISTNAME)/blocksort.c \
 	   $(DISTNAME)/huffman.c \
@@ -110,8 +154,6 @@ tarfile:
 	   $(DISTNAME)/bzlib.h \
 	   $(DISTNAME)/bzlib_private.h \
 	   $(DISTNAME)/Makefile \
-	   $(DISTNAME)/manual.texi \
-	   $(DISTNAME)/manual.ps \
 	   $(DISTNAME)/LICENSE \
 	   $(DISTNAME)/bzip2.1 \
 	   $(DISTNAME)/bzip2.1.preformatted \
@@ -127,15 +169,49 @@ tarfile:
 	   $(DISTNAME)/sample2.bz2 \
 	   $(DISTNAME)/sample3.bz2 \
 	   $(DISTNAME)/dlltest.c \
-	   $(DISTNAME)/*.html \
+	   $(DISTNAME)/manual.html \
+	   $(DISTNAME)/manual.pdf \
+	   $(DISTNAME)/manual.ps \
 	   $(DISTNAME)/README \
 	   $(DISTNAME)/README.COMPILATION.PROBLEMS \
+	   $(DISTNAME)/README.XML.STUFF \
 	   $(DISTNAME)/CHANGES \
 	   $(DISTNAME)/libbz2.def \
 	   $(DISTNAME)/libbz2.dsp \
 	   $(DISTNAME)/dlltest.dsp \
 	   $(DISTNAME)/makefile.msc \
-	   $(DISTNAME)/Y2K_INFO \
 	   $(DISTNAME)/unzcrash.c \
 	   $(DISTNAME)/spewG.c \
-	   $(DISTNAME)/Makefile-libbz2_so
+	   $(DISTNAME)/mk251.c \
+	   $(DISTNAME)/bzdiff \
+	   $(DISTNAME)/bzdiff.1 \
+	   $(DISTNAME)/bzmore \
+	   $(DISTNAME)/bzmore.1 \
+	   $(DISTNAME)/bzgrep \
+	   $(DISTNAME)/bzgrep.1 \
+	   $(DISTNAME)/Makefile-libbz2_so \
+	   $(DISTNAME)/bz-common.xsl \
+	   $(DISTNAME)/bz-fo.xsl \
+	   $(DISTNAME)/bz-html.xsl \
+	   $(DISTNAME)/bzip.css \
+	   $(DISTNAME)/entities.xml \
+	   $(DISTNAME)/manual.xml \
+	   $(DISTNAME)/format.pl \
+	   $(DISTNAME)/xmlproc.sh
+	gzip -v $(DISTNAME).tar
+
+# For rebuilding the manual from sources on my SuSE 9.1 box
+
+MANUAL_SRCS= 	bz-common.xsl bz-fo.xsl bz-html.xsl bzip.css \
+		entities.xml manual.xml 
+
+manual: manual.html manual.ps manual.pdf
+
+manual.ps: $(MANUAL_SRCS)
+	./xmlproc.sh -ps manual.xml
+
+manual.pdf: $(MANUAL_SRCS)
+	./xmlproc.sh -pdf manual.xml
+
+manual.html: $(MANUAL_SRCS)
+	./xmlproc.sh -html manual.xml

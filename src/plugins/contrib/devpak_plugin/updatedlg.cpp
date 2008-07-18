@@ -94,11 +94,13 @@ void UpdateDlg::CreateListColumns()
     lst->InsertColumn(1, _("Version"));
     lst->InsertColumn(2, _("Installed"));
     lst->InsertColumn(3, _("Size"), wxLIST_FORMAT_RIGHT);
+    lst->InsertColumn(4, _("Rev"));
 
-    lst->SetColumnWidth(0, lst->GetSize().x - (64 * 3) - 2); // 1st column takes all remaining space
+    lst->SetColumnWidth(0, lst->GetSize().x - (64 * 3 + 40) - 6 ); // 1st column takes all remaining space
     lst->SetColumnWidth(1, 64);
     lst->SetColumnWidth(2, 64);
     lst->SetColumnWidth(3, 64);
+    lst->SetColumnWidth(4, 40);
 }
 
 void UpdateDlg::AddRecordToList(UpdateRec* rec)
@@ -111,6 +113,18 @@ void UpdateDlg::AddRecordToList(UpdateRec* rec)
     lst->SetItem(idx, 1, rec->version);
     lst->SetItem(idx, 2, rec->installed_version);
     lst->SetItem(idx, 3, rec->size);
+    lst->SetItem(idx, 4, rec->revision);
+}
+
+wxString UpdateDlg::GetListColumnText(int idx, int col) {
+    wxListCtrl* lst = XRCCTRL(*this, "lvFiles", wxListCtrl);
+    int index = idx == -1 ? lst->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED) : idx;
+    wxListItem info;
+    info.SetId(index);
+    info.SetColumn(col);
+    info.SetMask(wxLIST_MASK_TEXT);
+    lst->GetItem(info);
+    return info.GetText();
 }
 
 void UpdateDlg::SetListColumnText(int idx, int col, const wxString& text)
@@ -393,7 +407,9 @@ UpdateRec* UpdateDlg::GetRecFromListView()
     if (index == -1)
         return 0;
     wxString title = lst->GetItemText(index);
-    return FindRecByTitle(title, m_Recs, m_RecsCount);
+    wxString version = GetListColumnText(index, 1);
+    wxString revision = GetListColumnText(index, 4);
+    return FindRec(title, version, revision, m_Recs, m_RecsCount);
 }
 
 void UpdateDlg::DownloadFile(bool dontInstall)

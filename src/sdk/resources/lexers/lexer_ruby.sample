@@ -1,0 +1,10 @@
+# a comment
+while line = file.readline
+  if !comment_line(line)
+    lines.add(line)
+  end
+end
+
+puts "Hello" +
+" World!";
+

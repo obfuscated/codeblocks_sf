@@ -46,10 +46,16 @@ UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& current
     	// fix title
     	// devpaks.org has changed the title to contain some extra info
         // e.g.: [libunicows   Library version: 1.1.1   Devpak revision: 1sid]
-    	// we don't need this extra info, so if we find it we remove it
-    	int pos = rec.title.Find(_T("Library version:"));
+    	int pos = rec.title.Lower().Find(_T("library version:"));
     	if (pos != -1)
     	{
+            int revpos = rec.title.Lower().Find(_T("devpak revision:"));
+            if (revpos != -1) {
+                rec.revision = rec.title.Mid(revpos).AfterFirst(_T(':')).Trim(false);
+                rec.revision.Replace(_T("\t"), _T(" "));
+                rec.revision = rec.revision.BeforeFirst(_T(' '));
+            }
+
     		rec.title.Truncate(pos);
     		rec.title = rec.title.Trim(false);
     		rec.title = rec.title.Trim(true);
@@ -60,7 +66,7 @@ UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& current
     	rec.remote_file = ini.GetKeyValue(i, _T("RemoteFilename"));
     	rec.local_file = ini.GetKeyValue(i, _T("LocalFilename"));
     	rec.groups = GetArrayFromString(ini.GetKeyValue(i, _T("Group")), _T(","));
-    	rec.install = ini.GetKeyValue(i, _T("InstallPath"));
+    	rec.install_path = ini.GetKeyValue(i, _T("InstallPath"));
     	rec.version = ini.GetKeyValue(i, _T("Version"));
         ini.GetKeyValue(i, _T("Size")).ToLong(&rec.bytes);
     	rec.date = ini.GetKeyValue(i, _T("Date"));
@@ -99,12 +105,17 @@ UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& current
     return list;
 }
 
-UpdateRec* FindRecByTitle(const wxString& title, UpdateRec* list, int count)
+UpdateRec* FindRec(const wxString& title, const wxString& version, const wxString& revision, UpdateRec* list, int count)
 {
     for (int i = 0; i < count; ++i)
     {
-        if (list[i].title == title)
-            return &list[i];
+        if (list[i].title == title && list[i].version == version) {
+            if (revision.IsEmpty()) {
+                return &list[i];
+            } else if (list[i].revision == revision) {
+                    return &list[i];
+            }
+        }
     }
     return 0;
 }

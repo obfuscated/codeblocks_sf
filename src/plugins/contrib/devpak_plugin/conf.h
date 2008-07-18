@@ -7,7 +7,7 @@
 
 struct UpdateRec
 {
-    wxString entry;
+    wxString entry;         //! .entry filename for installed
     wxString title;
     wxString name;
     wxString desc;
@@ -15,8 +15,9 @@ struct UpdateRec
     wxString remote_file;
     wxString local_file;
     wxArrayString groups;
-    wxString install;
+    wxString install_path;  //! ignored
     wxString version;
+    wxString revision;
     wxString installed_version;
     long int bytes;
     float kilobytes;
@@ -31,7 +32,7 @@ struct UpdateRec
 extern wxString g_MasterPath;
 
 UpdateRec* ReadConf(const IniParser& ini, int* recCount, const wxString& currentServer, const wxString& appPath);
-UpdateRec* FindRecByTitle(const wxString& title, UpdateRec* list, int count);
+UpdateRec* FindRec(const wxString& title, const wxString& version, const wxString& revision, UpdateRec* list, int count);
 // utility
 wxString GetSizeString(int bytes);
 
