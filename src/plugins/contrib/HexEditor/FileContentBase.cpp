@@ -36,7 +36,7 @@ FileContentBase* FileContentBase::BuildInstance( const wxString& fileName )
         return NULL;
     }
 
-    if ( fl.Length() <= maxBufferedSize )
+    if ( (OffsetT)fl.Length() <= maxBufferedSize )
     {
         return new FileContentBuffered();
     }

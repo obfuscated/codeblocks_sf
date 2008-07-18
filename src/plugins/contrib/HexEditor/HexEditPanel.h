@@ -51,6 +51,8 @@ class HexEditPanel: public EditorBase
 
     private:
 
+        typedef FileContentBase::OffsetT OffsetT;
+
         //(*Declarations(HexEditPanel)
         wxStaticText* m_FloatVal;
         wxStaticText* m_ByteVal;
@@ -114,20 +116,20 @@ class HexEditPanel: public EditorBase
             curChar
         };
 
-        wxString                     m_FileName;
-        FileContentBase*             m_Content;
-        wxString                     m_ErrorString;
-        wxFont*                      m_DrawFont;
-        wxCoord                      m_FontX;
-        wxCoord                      m_FontY;
-        int                          m_Cols;
-        int                          m_Lines;
-        unsigned char*               m_ScreenBuffer;
-        FileContentBase::OffsetT     m_SelectionStart;
-        FileContentBase::OffsetT     m_SelectionEnd;
-        FileContentBase::OffsetT     m_Current;
-        CurrentType                  m_CurrentType;
-        bool                         m_MouseDown;
+        wxString            m_FileName;
+        FileContentBase*    m_Content;
+        wxString            m_ErrorString;
+        wxFont*             m_DrawFont;
+        wxCoord             m_FontX;
+        wxCoord             m_FontY;
+        unsigned int        m_Cols;
+        unsigned int        m_Lines;
+        unsigned char*      m_ScreenBuffer;
+        OffsetT             m_SelectionStart;
+        OffsetT             m_SelectionEnd;
+        OffsetT             m_Current;
+        CurrentType         m_CurrentType;
+        bool                m_MouseDown;
 
 
 
@@ -135,7 +137,7 @@ class HexEditPanel: public EditorBase
         void SetFontSize( int size );
 
         void RecalculateCoefs();
-        void PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned char* buffer, int len, int x, int y, int selStart, int selEnd );
+        void PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned char* buffer, unsigned int len, int x, int y, unsigned int selStart, unsigned int selEnd );
         FileContentBase::OffsetT DetectStartOffset();
         void RefreshStatus();
         void UpdateModified();

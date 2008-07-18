@@ -268,7 +268,7 @@ bool FileContentBuffered::ReadFile(const wxString& fileName)
     m_UndoCurrent = 0;
     m_UndoSaved = 0;
 
-    return fl.Read( &m_Buffer[0], m_Buffer.size() ) == m_Buffer.size();
+    return (size_t)fl.Read( &m_Buffer[0], m_Buffer.size() ) == m_Buffer.size();
 }
 
 const FileContentBuffered::ExtraUndoData* FileContentBuffered::Redo()

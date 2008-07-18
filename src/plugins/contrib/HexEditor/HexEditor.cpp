@@ -88,6 +88,9 @@ void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
                 menu->Append( idOpenHexEdit, _( "Hex editor" ), _( "Open this file in hex editor" ) );
             }
             break;
+
+        default:
+            break;
     }
 }
 

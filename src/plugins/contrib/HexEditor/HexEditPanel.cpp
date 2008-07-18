@@ -253,9 +253,9 @@ void HexEditPanel::OnContentPaint( wxPaintEvent& event )
 
     FileContentBase::OffsetT startOffs = DetectStartOffset();
 
-    int size = m_Content->Read( m_ScreenBuffer, startOffs, m_Lines * m_Cols );
+    OffsetT size = m_Content->Read( m_ScreenBuffer, startOffs, m_Lines * m_Cols );
 
-    for ( int i=0; i< m_Lines; i++ )
+    for ( OffsetT i=0; i< m_Lines; i++ )
     {
         FileContentBase::OffsetT offs = startOffs + i * m_Cols;
         FileContentBase::OffsetT offsMax = offs + m_Lines * m_Cols;
@@ -289,7 +289,7 @@ void HexEditPanel::OnContentScroll( wxScrollEvent& event )
     m_DrawArea->SetFocus();
 }
 
-void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned char* buffer, int len, int x, int y, int selStart, int selEnd )
+void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned char* buffer, unsigned int len, int x, int y, unsigned int selStart, unsigned int selEnd )
 {
     static const char catNoChar = -1;
     static const char catNormal = 0;
@@ -307,7 +307,7 @@ void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned ch
 
     // We need to categorize each character
     char categoryBuffer[ 0x1000 ];
-    for ( int i=0; i<m_Cols && i < 0x1000; i++ )
+    for ( unsigned int i=0; i<m_Cols && i < 0x1000; i++ )
     {
         if ( i >= len )
         {
@@ -347,14 +347,15 @@ void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned ch
     x += m_FontX * 10;
 
     // Now the content
-    int pos = 0;
+    unsigned int pos = 0;
     int x1 = x;
     int x2 = x + m_Cols * 3 * m_FontX + 2 * m_FontX;
 
     while ( pos < len )
     {
         // Search for continous block of data
-        int endPos = pos;
+        unsigned int endPos = pos;
+
         do endPos++;
         while ( endPos < len && categoryBuffer[pos] == categoryBuffer[endPos] );
 
@@ -367,7 +368,7 @@ void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned ch
         wxString text1;
         wxString text2;
 
-        for ( int i = pos; i < endPos; ++i )
+        for ( unsigned int i = pos; i < endPos; ++i )
         {
             unsigned char ch = buffer[ i ];
 
@@ -414,10 +415,10 @@ void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned ch
             ( ch >= 0x20 && ch < 0x7F ) ? ch : ' ', 0
         };
 
-        dc.SetBrush( backgrounds[ catCurNon ] );
-        dc.SetPen  ( backgrounds[ catCurNon ] );
-        dc.SetTextForeground( foregrounds[ catCurNon ] );
-        dc.SetTextBackground( backgrounds[ catCurNon ] );
+        dc.SetBrush( backgrounds[ (int)catCurNon ] );
+        dc.SetPen  ( backgrounds[ (int)catCurNon ] );
+        dc.SetTextForeground( foregrounds[ (int)catCurNon ] );
+        dc.SetTextBackground( backgrounds[ (int)catCurNon ] );
 
         switch ( m_CurrentType )
         {
@@ -442,10 +443,10 @@ void HexEditPanel::PutLine( wxDC& dc, FileContentBase::OffsetT offs, unsigned ch
                 break;
         }
 
-        dc.SetBrush( backgrounds[ catCurCar ] );
-        dc.SetPen  ( backgrounds[ catCurCar ] );
-        dc.SetTextForeground( foregrounds[ catCurCar ] );
-        dc.SetTextBackground( backgrounds[ catCurCar ] );
+        dc.SetBrush( backgrounds[ (int)catCurCar ] );
+        dc.SetPen  ( backgrounds[ (int)catCurCar ] );
+        dc.SetTextForeground( foregrounds[ (int)catCurCar ] );
+        dc.SetTextBackground( backgrounds[ (int)catCurCar ] );
 
         switch ( m_CurrentType )
         {
@@ -658,7 +659,7 @@ void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
             break;
 
         case WXK_UP:
-            if ( m_Current >= m_Cols )
+            if ( m_Current >= (FileContentBase::OffsetT)m_Cols )
             {
                 m_Current -= m_Cols;
                 break;
@@ -674,7 +675,7 @@ void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
             return;
 
         case WXK_PAGEDOWN:
-            for ( int i=0; i<m_Lines/2; i++ )
+            for ( unsigned int i=0; i<m_Lines/2; i++ )
             {
                 if ( m_Current >= m_Content->GetSize() - m_Cols ) break;
                 m_Current += m_Cols;
@@ -682,9 +683,9 @@ void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
             break;
 
         case WXK_PAGEUP:
-            for ( int i=0; i<m_Lines/2; i++ )
+            for ( unsigned int i=0; i<m_Lines/2; i++ )
             {
-                if ( m_Current < m_Cols ) break;
+                if ( m_Current < (FileContentBase::OffsetT)m_Cols ) break;
                 m_Current -= m_Cols;
             }
             break;
@@ -881,14 +882,14 @@ void HexEditPanel::OnDrawAreaLeftDown(wxMouseEvent& event)
     m_DrawArea->SetFocus();
 
     // First we need to detect what the user has clicked on
-    int line = event.GetY() / m_FontY;
+    unsigned line = event.GetY() / m_FontY;
 
     // Just to prevent some weird situation
-    if ( line < 0 ) line = 0;
+    if ( (int)line < 0 ) line = 0;
     if ( line >= m_Lines ) line = m_Lines-1;
 
-    int charpos = event.GetX() / m_FontX - 10;
-    if ( charpos < 0 ) charpos = 0;
+    unsigned charpos = event.GetX() / m_FontX - 10;
+    if ( (int)charpos < 0 ) charpos = 0;
 
     FileContentBase::OffsetT newCurrent = m_Current;
     CurrentType              newCurrentType = m_CurrentType;
