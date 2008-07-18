@@ -21,6 +21,7 @@
 		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch-unix.cbp" />
 		<Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
+		<Project filename="plugins/contrib/HexEditor/HexEditor-unix.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

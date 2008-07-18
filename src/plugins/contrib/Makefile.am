@@ -74,6 +74,10 @@ if BUILD_WXSMITH
 MAYBE_WXSMITH=wxSmith wxSmithContribItems
 endif
 
+if BUILD_HEXEDITOR
+MAYBE_HEXEDITOR=HexEditor
+endif
+
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
@@ -92,7 +96,8 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_VALGRIND) \
-		$(MAYBE_WXSMITH)
+		$(MAYBE_WXSMITH) \
+		$(MAYBE_HEXEDITOR)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
@@ -113,5 +118,6 @@ DIST_SUBDIRS = AutoVersioning \
 		ThreadSearch \
 		Valgrind \
 		wxSmith \
-		wxSmithContribItems
+		wxSmithContribItems \
+		HexEditor
 

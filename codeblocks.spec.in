@@ -236,6 +236,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/Valgrind.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
+%{pkgdata}/hexeditor.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/images/ThreadSearch/*
@@ -260,6 +261,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/plugins/libwxsmith.*
 %{_libdir}/libwxsmithlib.*
 %{pkgdata}/plugins/libwxsmithcontribitems.*
+%{pkgdata}/plugins/libhexeditor.*
 
 %files devel
 %defattr(-,root,root)
