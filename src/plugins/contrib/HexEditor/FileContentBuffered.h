@@ -48,6 +48,9 @@ class FileContentBuffered: public FileContentBase
         /** \brief Check if file was modified */
         bool Modified();
 
+        /** \brief Force current state to be modified or not */
+        void SetModified( bool modified );
+
         /** \brief Getting size of the content */
         OffsetT GetSize();
 

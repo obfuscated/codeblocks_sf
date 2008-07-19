@@ -67,6 +67,9 @@ class FileContentBase
         /** \brief Check if file was modified */
         virtual bool Modified( ) = 0;
 
+        /** \brief Force current state to be modified or not */
+        virtual void SetModified( bool modified ) = 0;
+
         /** \brief Getting size of the content */
         virtual OffsetT GetSize() = 0;
 

@@ -61,6 +61,10 @@ void HexEditor::OnAttach()
 
 void HexEditor::OnRelease(bool appShutDown)
 {
+    if ( !appShutDown )
+    {
+        CloseMyEditors();
+    }
 }
 
 bool HexEditor::BuildToolBar(wxToolBar* toolBar)
@@ -139,4 +143,9 @@ void HexEditor::OnOpenHexEdit( wxCommandEvent& event )
             new HexEditPanel( f->file.GetFullPath(), title );
         }
     }
+}
+
+void HexEditor::CloseMyEditors()
+{
+    HexEditPanel::CloseAllEditors();
 }

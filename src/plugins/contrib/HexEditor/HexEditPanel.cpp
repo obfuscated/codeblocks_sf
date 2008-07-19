@@ -130,6 +130,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnCheckBox1Click);
     m_DrawArea->Connect(wxEVT_PAINT,(wxObjectEventFunction)&HexEditPanel::OnContentPaint,0,this);
     m_DrawArea->Connect(wxEVT_ERASE_BACKGROUND,(wxObjectEventFunction)&HexEditPanel::OnDrawAreaEraseBackground,0,this);
+    m_DrawArea->Connect(wxEVT_KEY_DOWN,(wxObjectEventFunction)&HexEditPanel::OnSpecialKeyDown,0,this);
     m_DrawArea->Connect(wxEVT_CHAR,(wxObjectEventFunction)&HexEditPanel::OnDrawAreaKeyDown,0,this);
     m_DrawArea->Connect(wxEVT_LEFT_DOWN,(wxObjectEventFunction)&HexEditPanel::OnDrawAreaLeftDown,0,this);
     m_DrawArea->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&HexEditPanel::OnDrawAreaLeftUp,0,this);
@@ -169,11 +170,15 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
 
     m_Shortname = title;
     SetTitle( m_Shortname );
+
+    m_AllEditors.insert( this );
 }
 
 
 HexEditPanel::~HexEditPanel()
 {
+    m_AllEditors.erase( this );
+
     delete m_DrawFont;
     m_DrawFont = 0;
 
@@ -592,6 +597,8 @@ void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
 {
     if ( !m_Content || !m_Content->GetSize() ) return;
 
+    Manager::Get()->GetLogManager()->DebugLog( F( _T("%d (%c)"), event.GetKeyCode(), event.GetKeyCode() ) );
+
     switch ( event.GetKeyCode() )
     {
         case WXK_LEFT:
@@ -870,6 +877,11 @@ bool HexEditPanel::GetModified() const
     return m_Content ? m_Content->Modified() : false;
 }
 
+void HexEditPanel::SetModified( bool modified )
+{
+    if ( m_Content ) m_Content->SetModified( modified );
+}
+
 void HexEditPanel::UpdateModified()
 {
     if ( GetModified() )
@@ -1000,3 +1012,35 @@ void HexEditPanel::Redo()
     }
 }
 
+void HexEditPanel::OnSpecialKeyDown(wxKeyEvent& event)
+{
+    if ( event.GetModifiers() == wxMOD_CONTROL )
+    {
+        switch ( event.GetKeyCode() )
+        {
+//            case 'g': ProcessGoto(); return;
+//            case 'f': ProcessSearch(); return;
+        }
+    }
+
+    event.Skip();
+}
+
+bool HexEditPanel::IsHexEditor( EditorBase* editor )
+{
+    return m_AllEditors.find( editor ) != m_AllEditors.end();
+}
+
+void HexEditPanel::CloseAllEditors()
+{
+    EditorsSet s = m_AllEditors;
+    for ( EditorsSet::iterator i = s.begin(); i != s.end(); ++i )
+    {
+        EditorManager::Get()->QueryClose( *i );
+        (*i)->Close();
+    }
+
+    assert( m_AllEditors.empty() );
+}
+
+HexEditPanel::EditorsSet HexEditPanel::m_AllEditors;

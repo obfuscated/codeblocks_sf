@@ -245,6 +245,11 @@ bool FileContentBuffered::Modified()
     return m_UndoSaved != m_UndoCurrent;
 }
 
+void FileContentBuffered::SetModified( bool modified )
+{
+    m_UndoSaved = modified ? &m_UndoInvalid : m_UndoCurrent;
+}
+
 bool FileContentBuffered::WriteFile(const wxString& fileName)
 {
     wxFile fl( fileName, wxFile::write );

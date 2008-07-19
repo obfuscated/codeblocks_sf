@@ -33,8 +33,10 @@
 
 #include <editorbase.h>
 #include <vector>
+#include <set>
 
 #include "FileContentBase.h"
+
 
 class HexEditPanel: public EditorBase
 {
@@ -44,9 +46,18 @@ class HexEditPanel: public EditorBase
 
         virtual ~HexEditPanel();
 
+        /** \brief Check if given editor is HexEditor */
+        static bool IsHexEditor( EditorBase* editor );
+
+        /** \brief Close all editors */
+        static void CloseAllEditors();
+
+
+
     protected:
 
         virtual bool GetModified() const;
+        virtual void SetModified( bool modified );
         virtual bool Save();
 
     private:
@@ -107,7 +118,10 @@ class HexEditPanel: public EditorBase
         void OnDrawAreaLeftUp(wxMouseEvent& event);
         void OnDrawAreaMouseMove(wxMouseEvent& event);
         void OnCheckBox1Click(wxCommandEvent& event);
+        void OnSpecialKeyDown(wxKeyEvent& event);
         //*)
+
+        typedef std::set< EditorBase* > EditorsSet;
 
         enum CurrentType
         {
@@ -131,6 +145,8 @@ class HexEditPanel: public EditorBase
         CurrentType         m_CurrentType;
         bool                m_MouseDown;
 
+        static EditorsSet   m_AllEditors;
+
 
 
         void ReadContent();
@@ -149,7 +165,6 @@ class HexEditPanel: public EditorBase
         virtual bool CanRedo() const;
         virtual void Undo();
         virtual void Redo();
-
 
         DECLARE_EVENT_TABLE()
 };

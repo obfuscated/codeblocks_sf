@@ -32,6 +32,8 @@ class HexEditor : public cbPlugin
         HexEditor();
         virtual ~HexEditor();
 
+        void NotifyEditorOpened( EditorBase* );
+
     protected:
 
         virtual void BuildMenu(wxMenuBar* menuBar);
@@ -41,6 +43,7 @@ class HexEditor : public cbPlugin
         virtual void OnRelease(bool appShutDown);
 
         void OnOpenHexEdit( wxCommandEvent& event );
+        void CloseMyEditors();
 
         DECLARE_EVENT_TABLE()
 };
