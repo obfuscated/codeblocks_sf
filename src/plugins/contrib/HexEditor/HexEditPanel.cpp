@@ -81,7 +81,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_Status = new wxStaticText(this, ID_STATICTEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer3->Add(m_Status, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     CheckBox1 = new wxCheckBox(this, ID_CHECKBOX1, _("Value preview"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
-    CheckBox1->SetValue(false);
+    CheckBox1->SetValue(true);
     BoxSizer3->Add(CheckBox1, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer1->Add(BoxSizer3, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
@@ -164,7 +164,6 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_MouseDown      = false;
 
     m_DrawArea->SetFocus();
-    BoxSizer1->Show( FlexGridSizer1, false );
 
     ((wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook())->Layout();
 
