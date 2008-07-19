@@ -571,7 +571,15 @@ void HexEditPanel::RefreshStatus()
     {
         long double val;
         m_Content->Read( &val, m_Current, sizeof(val) );
-        m_LDoubleVal->SetLabel( wxString::Format(_T("%Lg"), val) );
+        if ( platform::windows )
+        {
+            // MinGW has broken support for long double
+            m_LDoubleVal->SetLabel( wxString::Format(_T("%g"), (double)val) );
+        }
+        else
+        {
+            m_LDoubleVal->SetLabel( wxString::Format(_T("%Lg"), val) );
+        }
     }
     else
     {
