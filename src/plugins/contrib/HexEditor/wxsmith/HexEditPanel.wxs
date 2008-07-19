@@ -19,6 +19,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="CheckBox1" member="yes">
 							<label>Value preview</label>
+							<checked>1</checked>
 							<handler function="OnCheckBox1Click" entry="EVT_CHECKBOX" />
 						</object>
 						<flag>wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
