@@ -444,6 +444,8 @@ AppVersion::~AppVersion()
 //          68) Fix standalone modules inablility to run as portable exe 2008/07/13
 //  Commit 1 3.69 2008/07/14
 //          69) Jens' fix for broken CheckForModifiedFiles
+//  Commit 1 3.70 2008/07/20
+//          69) Fix FullSearch file open crash when CodeCompletion loaded
 // ----------------------------------------------------------------------------
 //  Bugs
 //        2008/04/8
