@@ -2,6 +2,14 @@ INCLUDES = $(WX_CXXFLAGS) \
            -I$(top_srcdir)/src/include \
            -I$(top_srcdir)/src/include/wxscintilla/include
 
+if CB_ON_X86_64
+HF_CXXFLAGS = -O0
+else
+HF_CXXFLAGS =
+endif
+CXXFLAGS = @CXXFLAGS@ $(HF_CXXFLAGS)
+
+
 libdir = $(pkgdatadir)/plugins
 
 lib_LTLIBRARIES = libheaderfixup.la
