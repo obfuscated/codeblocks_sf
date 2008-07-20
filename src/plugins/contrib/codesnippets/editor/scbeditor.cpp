@@ -2677,6 +2677,7 @@ void ScbEditor::OnScintillaEvent(wxScintillaEvent& event)
     // call any hooked functors
     if (!ProjectManager::IsBusy() && EditorHooks::HasRegisteredHooks())
     {
-        EditorHooks::CallHooks((cbEditor*)this, event);
+        // Crash in CodeCompletion if next call enabled //(pecan 2008/7/20)
+        //-EditorHooks::CallHooks((cbEditor*)this, event);
     }
 }
