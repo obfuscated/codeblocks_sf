@@ -76,6 +76,7 @@ const wxEventType cbEVT_EDITOR_CLOSE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_OPEN = wxNewEventType();
 const wxEventType cbEVT_EDITOR_ACTIVATED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_DEACTIVATED = wxNewEventType();
+const wxEventType cbEVT_EDITOR_BEFORE_SAVE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_SAVE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_MODIFIED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_TOOLTIP = wxNewEventType();

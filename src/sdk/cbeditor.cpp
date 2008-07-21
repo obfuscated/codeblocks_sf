@@ -1257,6 +1257,10 @@ bool cbEditor::Save()
         return SaveAs();
     }
 
+    m_pControl->BeginUndoAction();
+    NotifyPlugins(cbEVT_EDITOR_BEFORE_SAVE);
+    m_pControl->EndUndoAction();
+
     if(!cbSaveToFile(m_Filename, m_pControl->GetText(),GetEncoding(),GetUseBom()))
     {
         wxString msg;
