@@ -1685,21 +1685,38 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& /*event*/)
 void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
+    if (!lstLibs)
+        return;
 
-    EditPathDlg dlg(this,
-            event.GetString(),
-            m_pProject ? m_pProject->GetBasePath() : _T(""),
-            _("Edit library"),
-            _("Choose library to link"),
-            false,
-            false,
-            _("Library files (*.a, *.so, *.lib, *.dylib, *.bundle)|*.a;*.so;*.lib;*.dylib;*.bundle|All files (*)|*"));
-
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
+    wxArrayInt sels;
+    int num = lstLibs->GetSelections(sels);
+    if      (num<1)
     {
-        lstLibs->SetString(event.GetSelection(), dlg.GetPath());
-        m_bDirty = true;
+      cbMessageBox(_("Please select a library you wish to edit."),
+                   _("Error"), wxICON_ERROR);
+    }
+    else if (num == 1)
+    {
+      EditPathDlg dlg(this,
+              lstLibs->GetString(sels[0]),
+              m_pProject ? m_pProject->GetBasePath() : _T(""),
+              _("Edit library"),
+              _("Choose library to link"),
+              false,
+              false,
+              _("Library files (*.a, *.so, *.lib, *.dylib, *.bundle)|*.a;*.so;*.lib;*.dylib;*.bundle|All files (*)|*"));
+
+      PlaceWindow(&dlg);
+      if (dlg.ShowModal() == wxID_OK)
+      {
+          lstLibs->SetString(sels[0], dlg.GetPath());
+          m_bDirty = true;
+      }
+    }
+    else
+    {
+      cbMessageBox(_("Please select only *one* library you wish to edit."),
+                   _("Error"), wxICON_ERROR);
     }
 } // OnEditLibClick
 
@@ -2064,7 +2081,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
         int num = lstLibs->GetSelections(sels_dummy);
         en = (num > 0);
 
-        XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(en);
+        XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelLib",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearLib", wxButton)->Enable(lstLibs->GetCount() != 0);
         XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(lstLibs->GetCount() != 0);
