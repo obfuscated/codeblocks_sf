@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="Header Guard">
         <Value title="Header Guard" />
-        <Value version="0.1" />
+        <Value version="0.1.1" />
         <Value description="For the lazy." />
         <Value author="" />
         <Value authorEmail="" />
