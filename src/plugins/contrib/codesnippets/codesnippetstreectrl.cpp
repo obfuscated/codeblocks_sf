@@ -944,7 +944,8 @@ void CodeSnippetsTreeCtrl::OnEndTreeItemDrag(wxTreeEvent& event)
     // if source and target are snippets, create a new category and enclose both.
     if ( IsSnippet(targetItem) )
     {
-        if ( targetItem = ConvertSnippetToCategory(targetItem)) {;}//ok
+        if ( (targetItem = ConvertSnippetToCategory(targetItem)) )
+        {;}//ok
         else return;
         // now targetItem is a category
     }

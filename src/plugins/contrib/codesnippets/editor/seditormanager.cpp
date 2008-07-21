@@ -1242,11 +1242,14 @@ int SEditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 
     FindReplaceBase* dlg;
     if (!replace)
-        dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
+        //-dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
+        dlg = new FindDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, false, false);
     else
-        dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
+        //-dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
+        dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, false, false);
 
-    PlaceWindow(dlg);
+    //-PlaceWindow(dlg);
+    GetConfig()->CenterChildOnParent(dlg);
     if (dlg->ShowModal() == wxID_CANCEL)
     {
         dlg->Destroy();
@@ -2195,6 +2198,10 @@ int SEditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 
 int SEditorManager::FindInFiles(cbFindReplaceData* data)
 {
+    // No find-in-files for CodeSnippets yet (causes crash)
+    return 0; //(pecan 2008/7/20)
+
+
     if (!data || data->findText.IsEmpty())
         return 0;
 

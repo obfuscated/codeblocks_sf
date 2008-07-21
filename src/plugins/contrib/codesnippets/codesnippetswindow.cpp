@@ -193,7 +193,7 @@ bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 	// Find out if there's a tree item under the coordinates
 	wxTreeItemId itemID = m_TreeCtrl->HitTest(p, hitTestFlags);
 
-	if (hitTestFlags & wxTREE_HITTEST_ONITEMBUTTON|wxTREE_HITTEST_ONITEMICON|wxTREE_HITTEST_ONITEMLABEL)
+	if ((hitTestFlags) & (wxTREE_HITTEST_ONITEMBUTTON|wxTREE_HITTEST_ONITEMICON|wxTREE_HITTEST_ONITEMLABEL))
 	{
 		// Find out the item type
 		if (SnippetItemData* item = (SnippetItemData*)(m_TreeCtrl->GetItemData(itemID)))
@@ -730,7 +730,7 @@ void CodeSnippetsWindow::OnMnuPaste(wxCommandEvent& event)
     wxTreeItemId targetItem = GetAssociatedItemID();
     if ( IsSnippet(targetItem) )
     {
-        if ( targetItem = GetSnippetsTreeCtrl()->ConvertSnippetToCategory(targetItem))
+        if (( targetItem = GetSnippetsTreeCtrl()->ConvertSnippetToCategory(targetItem)))
         {;}//ok
         else return;
         // now targetItem is a category

@@ -445,7 +445,10 @@ AppVersion::~AppVersion()
 //  Commit 1 3.69 2008/07/14
 //          69) Jens' fix for broken CheckForModifiedFiles
 //  Commit 1 3.70 2008/07/20
-//          69) Fix FullSearch file open crash when CodeCompletion loaded
+//          70) Fix FullSearch file open crash when CodeCompletion loaded
+//  Commit 1 3.72 2008/07/20
+//          71) Disable Find and FindInFiles in FullSearch Preview window to prevent crashes
+//          72) Disalbe FindInFiles in FullSearch editors (causing crashes)
 // ----------------------------------------------------------------------------
 //  Bugs
 //        2008/04/8
@@ -456,6 +459,8 @@ AppVersion::~AppVersion()
 //            Editors disappear. Show(true) didnt work;
 //        2008/07/11
 //          zero length edit files left in /temp after FullSearch edit of .xml snippet ??
+//		2008/07/21
+//			Find dlg is opening on top of CB. Should open on top of FullSearch
 // ----------------------------------------------------------------------------
 //  ToDo
 //          App:Allow SeparateEditor configuration

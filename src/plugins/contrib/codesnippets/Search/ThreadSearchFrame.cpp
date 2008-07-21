@@ -448,6 +448,14 @@ void ThreadSearchFrame::OnSizeWindow(wxSizeEvent &event)
 void ThreadSearchFrame::OnSearchFind(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    //(pecan 2008/7/20)
+    //Don't search in preview pane, and don't search if no editor is open
+    ScbEditor* sEd = GetConfig()->GetEditorManager(this)->GetBuiltinActiveEditor();
+    if (not sEd)
+        return;
+    if (not ((wxWindow*)(sEd->GetControl()) == wxWindow::FindFocus()))
+        return;
+
     bool bDoMultipleFiles = (event.GetId() == idSearchFindInFiles);
     if(!bDoMultipleFiles)
     {
@@ -455,13 +463,20 @@ void ThreadSearchFrame::OnSearchFind(wxCommandEvent& event)
         bDoMultipleFiles = not GetConfig()->GetEditorManager(this)->GetBuiltinActiveEditor();
     }
     //-Manager::Get()->GetEditorManager()->ShowFindDialog(false, bDoMultipleFiles);
-    GetConfig()->GetEditorManager(this)->ShowFindDialog(false, bDoMultipleFiles);
+    GetConfig()->GetEditorManager(this)->ShowFindDialog(false, false);
 }// end of OnSearchFind
-
 // ----------------------------------------------------------------------------
 void ThreadSearchFrame::OnSearchFindNext(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    //(pecan 2008/7/20) FullSearch
+    //Don't search in preview pane, and don't search if no editor is open
+    ScbEditor* sEd = GetConfig()->GetEditorManager(this)->GetBuiltinActiveEditor();
+    if (not sEd)
+        return;
+    if (not ((wxWindow*)(sEd->GetControl()) == wxWindow::FindFocus()))
+        return;
+
     bool bNext = !(event.GetId() == idSearchFindPrevious);
     //-Manager::Get()->GetEditorManager()->FindNext(bNext);
     GetConfig()->GetEditorManager(this)->FindNext(bNext);
