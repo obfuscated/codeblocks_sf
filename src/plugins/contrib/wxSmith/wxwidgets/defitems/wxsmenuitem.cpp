@@ -225,7 +225,7 @@ bool wxsMenuItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 break;
 
             case Check:
-                Element->InsertEndChild(TiXmlElement("check"))->ToElement()->InsertEndChild(TiXmlText("1"));
+                Element->InsertEndChild(TiXmlElement("checkable"))->ToElement()->InsertEndChild(TiXmlText("1"));
                 break;
 
             case Normal:
@@ -259,14 +259,21 @@ bool wxsMenuItem::OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             {
                 m_Type = Radio;
             }
-            else if ( (Node = Element->FirstChildElement("check")) &&
-                      (cbC2U(Node->GetText())==_T("1")) )
-            {
-                m_Type = Check;
-            }
             else
             {
-                m_Type = Normal;
+                Node = Element->FirstChildElement("checkable");
+
+                // Backward BUG-compatibility
+                if ( !Node ) Node = Element->FirstChildElement("check");
+
+                if ( Node && (cbC2U(Node->GetText())==_T("1")) )
+                {
+                    m_Type = Check;
+                }
+                else
+                {
+                    m_Type = Normal;
+                }
             }
         }
     }
@@ -353,3 +360,18 @@ const wxString& wxsMenuItem::GetClassName()
     }
     return wxsTool::GetClassName();
 }
+
+void wxsMenuItem::OnBuildXRCFetchingCode()
+{
+    // Menu items can not be found through FindWindow stuff, we need to
+    // fetch them using wxMenuBar::FindItem.
+    long Flags = GetPropertiesFlags();
+    if ( (Flags&flVariable) && (Flags&flId) )
+    {
+        AddXRCFetchingCode(
+            GetVarName() + _T(" = GetMenuBar() ? ")
+            _T("(") + GetUserClass() + _T("*)")
+            _T("GetMenuBar()->FindItem(XRCID(\"") + GetIdName() + _T("\")) : NULL;\n"));
+    }
+}
+
