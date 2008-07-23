@@ -279,7 +279,7 @@ struct cbEditorInternalData
 		int a, b;
 		m_pOwner->m_pControl->GetSelection (&a, &b);
 
-		if(a == b || (a == old_a && b == old_b)) // don't hog the CPU when not necessary
+		if (a == old_a && b == old_b) // don't hog the CPU when not necessary
 			return;
 
 		wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
