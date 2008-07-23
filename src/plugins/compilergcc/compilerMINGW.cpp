@@ -206,15 +206,25 @@ void CompilerMINGW::LoadDefaultRegExArray()
 AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
 {
     // try to find MinGW in environment variable PATH first
-    wxPathList list;
-    list.AddEnvList(_T("PATH"));
-    wxString path = list.FindAbsoluteValidPath(m_Programs.C);
-    if (!path.IsEmpty())
+    wxString pathValues;
+    wxGetEnv(_T("PATH"), &pathValues);
+    if (!pathValues.IsEmpty())
     {
-        wxFileName fname(path);
-        fname.RemoveLastDir();
-        m_MasterPath = fname.GetPath(wxPATH_GET_VOLUME);
-        return adrDetected;
+        wxArrayString pathArray;
+        wxString sep = platform::windows ? _T(";") : _T(":");
+        wxChar pathSep = platform::windows ? _T('\\') : _T('/');
+        GetStringFromArray(pathArray, sep);
+        for (size_t i = 0; i < pathArray.GetCount(); ++i)
+        {
+            if (wxFileExists(pathArray[i] + pathSep + m_Programs.C))
+            {
+                if (pathArray[i].AfterLast(pathSep).IsSameAs(_T("bin")))
+                {
+                    m_MasterPath = pathArray[i].BeforeLast(pathSep);
+                    return adrDetected;
+                }
+            }
+        }
     }
 
     wxString sep = wxFileName::GetPathSeparator();
