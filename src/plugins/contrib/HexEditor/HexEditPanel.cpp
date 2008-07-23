@@ -276,7 +276,7 @@ void HexEditPanel::OnContentPaint( wxPaintEvent& event )
             (int)(wxMax( offs, wxMin( offsMax, m_SelectionEnd   ) ) - offs)
             );
 
-        size -= m_Cols;
+        size = ( size > m_Cols ) ? ( size - m_Cols ) : 0;
     }
 }
 
@@ -596,8 +596,6 @@ void HexEditPanel::RefreshStatus()
 void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
 {
     if ( !m_Content || !m_Content->GetSize() ) return;
-
-    Manager::Get()->GetLogManager()->DebugLog( F( _T("%d (%c)"), event.GetKeyCode(), event.GetKeyCode() ) );
 
     switch ( event.GetKeyCode() )
     {
