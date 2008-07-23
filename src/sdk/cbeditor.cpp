@@ -281,6 +281,7 @@ struct cbEditorInternalData
 
 		if (a == old_a && b == old_b) // don't hog the CPU when not necessary
 			return;
+		old_a = a; old_b = b;
 
 		wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
 
