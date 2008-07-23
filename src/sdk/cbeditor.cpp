@@ -273,42 +273,51 @@ struct cbEditorInternalData
 
     void HighlightOccurrences()
     {
-        wxString selectedText = m_pOwner->m_pControl->GetSelectedText();
-        int eof = m_pOwner->m_pControl->GetLength();
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+    	static int old_a;
+    	static int old_b;
 
-        // Set Styling:
-        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_BOX);
-        m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
+		int a, b;
+		m_pOwner->m_pControl->GetSelection (&a, &b);
 
-        // clear all style indications set in a previous run
-        m_pOwner->m_pControl->StartStyling( 0, 0x20 );
-        m_pOwner->m_pControl->SetStyling( eof, 0x00 );
+		if(a == b || (a == old_a && b == old_b)) // don't hog the CPU when not necessary
+			return;
 
-        // check that feature is enabled,
-        // selected text has a minimal length of 3 and contains no spaces
-        if( cfg->ReadBool(_T("/highlight_occurrences"), true)
-               && selectedText.Len() > 2
-               && selectedText.Find(_T(' ')) == wxNOT_FOUND
-               && selectedText.Find(_T('\t')) == wxNOT_FOUND
-               && selectedText.Find(_T('\n')) == wxNOT_FOUND
-        )
-        {
-            // search for every occurence
-            for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText);
-                pos != wxSCI_INVALID_POSITION ;
-                pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText) )
-            {
-                // check that the found occurrence is not the same as the selected
-                if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
-                {
-                    // highlight it
-                    m_pOwner->m_pControl->StartStyling(pos, 0x20);
-                    m_pOwner->m_pControl->SetStyling(selectedText.Len(), 0x20);
-                }
-            }
-        }
-    }
+		wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
+
+		int eof = m_pOwner->m_pControl->GetLength();
+		ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+
+		// Set Styling:
+		m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_BOX);
+		m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
+
+		// clear all style indications set in a previous run
+		m_pOwner->m_pControl->StartStyling( 0, 0x20 );
+		m_pOwner->m_pControl->SetStyling( eof, 0x00 );
+
+		// check that feature is enabled,
+		// selected text has a minimal length of 3 and contains no spaces
+		if( cfg->ReadBool(_T("/highlight_occurrences"), true)
+				&& selectedText.Len() > 2
+				&& selectedText.Find(_T(' ')) == wxNOT_FOUND
+				&& selectedText.Find(_T('\t')) == wxNOT_FOUND
+				&& selectedText.Find(_T('\n')) == wxNOT_FOUND )
+		{
+			// search for every occurence
+			for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText);
+				pos != wxSCI_INVALID_POSITION ;
+				pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText) )
+			{
+				// check that the found occurrence is not the same as the selected
+				if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
+				{
+					// highlight it
+					m_pOwner->m_pControl->StartStyling(pos, 0x20);
+					m_pOwner->m_pControl->SetStyling(selectedText.Len(), 0x20);
+				}
+			}
+		}
+	}
 
     //vars
     bool m_strip_trailing_spaces;
