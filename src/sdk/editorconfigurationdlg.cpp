@@ -121,6 +121,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
    	XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"), 4));
    	XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"), 0));
    	XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true) ? 1 : 0);
+    XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrences"), true));
 
     // NOTE: duplicate line in cbeditor.cpp (CreateEditor)
     const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
@@ -857,6 +858,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/tab_size"),             XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/view_whitespace"),      XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
         cfg->Write(_T("/tab_text_relative"),    XRCCTRL(*this, "rbTabText", wxRadioBox)->GetSelection() ? true : false);
+        cfg->Write(_T("/highlight_occurrences"),XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
 
         // find & replace, regex searches
 

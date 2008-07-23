@@ -271,6 +271,45 @@ struct cbEditorInternalData
         }
     }
 
+    void HighlightOccurrences()
+    {
+        wxString selectedText = m_pOwner->m_pControl->GetSelectedText();
+        int eof = m_pOwner->m_pControl->GetLength();
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+
+        // Set Styling:
+        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_BOX);
+        m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
+
+        // clear all style indications set in a previous run
+        m_pOwner->m_pControl->StartStyling( 0, 0x20 );
+        m_pOwner->m_pControl->SetStyling( eof, 0x00 );
+
+        // check that feature is enabled,
+        // selected text has a minimal length of 3 and contains no spaces
+        if( cfg->ReadBool(_T("/highlight_occurrences"), true)
+               && selectedText.Len() > 2
+               && selectedText.Find(_T(' ')) == wxNOT_FOUND
+               && selectedText.Find(_T('\t')) == wxNOT_FOUND
+               && selectedText.Find(_T('\n')) == wxNOT_FOUND
+        )
+        {
+            // search for every occurence
+            for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText);
+                pos != wxSCI_INVALID_POSITION ;
+                pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText) )
+            {
+                // check that the found occurrence is not the same as the selected
+                if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
+                {
+                    // highlight it
+                    m_pOwner->m_pControl->StartStyling(pos, 0x20);
+                    m_pOwner->m_pControl->SetStyling(selectedText.Len(), 0x20);
+                }
+            }
+        }
+    }
+
     //vars
     bool m_strip_trailing_spaces;
     bool m_ensure_final_line_end;
@@ -622,7 +661,7 @@ void cbEditor::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor 
     m_pControl->MarkerDefine(marker, markerType);
 	m_pControl->MarkerSetForeground(marker, fore);
 	m_pControl->MarkerSetBackground(marker, back);
-	
+
 	if (m_pControl2)
 	{
 		m_pControl2->MarkerDefine(marker, markerType);
@@ -780,7 +819,7 @@ void cbEditor::Split(cbEditor::SplitType split)
     // update controls' look'n'feel
     SetEditorStyleBeforeFileOpen();
     SetEditorStyleAfterFileOpen();
-    
+
     // apply syntax highlighting too
     if (m_pTheme)
         m_pTheme->Apply(m_lang, m_pControl2);
@@ -1472,7 +1511,7 @@ void cbEditor::AutoComplete()
                 code.Replace(_T("$(") + macroName + _T(")"), macro);
                 macroPos = code.Find(_T("$("));
             }
-            
+
             if (canceled)
 				break;
 
@@ -2416,6 +2455,7 @@ void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
     {
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
         HighlightBraces(); // brace highlighting
+        m_pData->HighlightOccurrences();
     }
     OnScintillaEvent(event);
 }

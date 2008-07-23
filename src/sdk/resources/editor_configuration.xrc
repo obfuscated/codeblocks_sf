@@ -330,6 +330,15 @@
 															</object>
 															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 														</object>
+														<object class="sizeritem">
+															<object class="wxCheckBox" name="chkHighlightOccurrences">
+																<label>Highlight occurrences</label>
+																<checked>1</checked>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>5</border>
+															<option>1</option>
+														</object>
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>4</border>
