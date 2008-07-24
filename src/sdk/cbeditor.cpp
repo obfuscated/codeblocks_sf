@@ -279,8 +279,19 @@ struct cbEditorInternalData
 		int a, b;
 		m_pOwner->m_pControl->GetSelection (&a, &b);
 
-		if (a == old_a && b == old_b) // don't hog the CPU when not necessary
+		if (a == b) // don't hog the CPU when not necessary
+		{
+			if (old_a != old_b) // but please clear old marks when the user unselects
+			{
+				m_pOwner->m_pControl->StartStyling(0, 0x20);
+				m_pOwner->m_pControl->SetStyling(m_pOwner->m_pControl->GetLength(), 0x00);
+			}
 			return;
+		}
+
+		if(old_a == a && old_b == b) // whatever the current state is, we've already done it once
+			return;
+
 		old_a = a; old_b = b;
 
 		wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
