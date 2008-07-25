@@ -286,6 +286,9 @@ struct cbEditorInternalData
 				m_pOwner->m_pControl->StartStyling(0, 0x20);
 				m_pOwner->m_pControl->SetStyling(m_pOwner->m_pControl->GetLength(), 0x00);
 			}
+			// clear old_a and old_b or deselecting a text and then select the same text again might not work in some cases
+			// if the user selects with a double-click
+			old_a=old_b=-1;
 			return;
 		}
 
