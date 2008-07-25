@@ -161,6 +161,8 @@ class HexEditPanel: public EditorBase
         void EnsureCarretVisible();
         void ClampCursorToVisibleArea();
 
+        void ProcessGoto();
+
         virtual bool CanUndo() const;
         virtual bool CanRedo() const;
         virtual void Undo();

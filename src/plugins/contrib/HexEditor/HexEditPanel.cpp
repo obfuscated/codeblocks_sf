@@ -35,6 +35,7 @@
 #include <manager.h>
 #include <editormanager.h>
 #include <logmanager.h>
+#include <wx/textdlg.h>
 
 //(*IdInit(HexEditPanel)
 const long HexEditPanel::ID_STATICTEXT1 = wxNewId();
@@ -59,6 +60,8 @@ BEGIN_EVENT_TABLE(HexEditPanel,EditorBase)
 	//(*EventTable(HexEditPanel)
 	//*)
 END_EVENT_TABLE()
+
+HexEditPanel::EditorsSet HexEditPanel::m_AllEditors;
 
 HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     : EditorBase( (wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook(), fileName )
@@ -1012,12 +1015,12 @@ void HexEditPanel::Redo()
 
 void HexEditPanel::OnSpecialKeyDown(wxKeyEvent& event)
 {
-    if ( event.GetModifiers() == wxMOD_CONTROL )
+    if ( event.ControlDown() && !event.AltDown() )
     {
         switch ( event.GetKeyCode() )
         {
-//            case 'g': ProcessGoto(); return;
-//            case 'f': ProcessSearch(); return;
+            case 'G': ProcessGoto(); return;
+//            case 'F': ProcessSearch(); return;
         }
     }
 
@@ -1041,4 +1044,106 @@ void HexEditPanel::CloseAllEditors()
     assert( m_AllEditors.empty() );
 }
 
-HexEditPanel::EditorsSet HexEditPanel::m_AllEditors;
+void HexEditPanel::ProcessGoto()
+{
+    if ( !m_Content ) return;
+    if ( !m_Content->GetSize() ) return;
+
+
+    OffsetT offset;
+    wxString str = wxString::Format( _T("%lld"), m_Current );
+    for ( ;; )
+    {
+        str = wxGetTextFromUser(
+            _("Enter offset\n"
+              "\n"
+              "Available forms are:\n"
+              " * Decimal ( 100 )\n"
+              " * Hexadecimal ( 1AB, 0x1AB, 1ABh )\n"
+              " * Offset from current ( +100, -100, +0x1AB )"),
+            _("Goto offset"),
+            str );
+
+        if ( str.IsEmpty() ) return;
+        str.Trim( true ).Trim( false );
+
+        // Decided to parse manually since wxString::ToULongLong does not work everywhere
+
+        const wxChar* ptr = str.c_str();
+        bool relativePlus  = false;
+        bool relativeMinus = false;
+        bool canBeDec = true;
+        bool canBeHex = true;
+
+        OffsetT dec = 0;
+        OffsetT hex = 0;
+
+        if ( *ptr == _T('+') )
+        {
+            relativePlus = true;
+            ptr++;
+        }
+        else if ( *ptr == _T('-') )
+        {
+            relativeMinus = true;
+            ptr++;
+        }
+
+        while ( wxIsspace( *ptr ) ) ptr++;
+
+        if ( ptr[0] == _T('0') && wxToupper(ptr[1]) == _T('X') )
+        {
+            canBeDec = false;
+            ptr += 2;
+        }
+
+        while ( *ptr )
+        {
+            int digitVal = wxString( _T("0123456789ABCDEF") ).Find( wxToupper( *ptr++ ) );
+
+            if ( digitVal == wxNOT_FOUND )
+            {
+                canBeDec = false;
+                canBeHex = false;
+                break;
+            }
+
+            if ( digitVal >= 10 ) canBeDec = false;
+
+            dec = dec *   10 + digitVal;
+            hex = hex * 0x10 + digitVal;
+
+            if ( wxToupper(ptr[0]) == _T('H') && !ptr[1] )
+            {
+                canBeDec = false;
+                break;
+            }
+        }
+
+        if ( canBeDec || canBeHex )
+        {
+            OffsetT val = canBeDec ? dec : hex;
+            OffsetT max = m_Content->GetSize() - 1;
+            if ( relativePlus )
+            {
+                offset = m_Current + val < max ? m_Current + val : max;
+            }
+            else if ( relativeMinus )
+            {
+                offset = m_Current > val ? m_Current - val : 0;
+            }
+            else
+            {
+                offset = wxMin( max, val );
+            }
+            break;
+        }
+
+        cbMessageBox( _("Invalid offset !!!.\n") );
+    }
+
+    m_Current = offset;
+    RefreshStatus();
+    EnsureCarretVisible();
+    m_DrawArea->Refresh();
+}
