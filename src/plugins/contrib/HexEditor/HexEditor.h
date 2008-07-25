@@ -25,6 +25,8 @@
 
 #include <cbplugin.h>
 
+class ProjectFile;
+
 class HexEditor : public cbPlugin
 {
     public:
@@ -43,7 +45,13 @@ class HexEditor : public cbPlugin
         virtual void OnRelease(bool appShutDown);
 
         void OnOpenHexEdit( wxCommandEvent& event );
+        void OnOpenWithHE ( wxCommandEvent& event );
         void CloseMyEditors();
+
+        void OpenProjectFile( ProjectFile* file );
+        void OpenFileFromName( const wxString& fileName );
+
+        ProjectFile* FindProjectFile( const wxString& fileName );
 
         DECLARE_EVENT_TABLE()
 };

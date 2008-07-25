@@ -29,6 +29,7 @@
 #include <editormanager.h>
 #include <cbproject.h>
 #include <wx/menu.h>
+#include <wx/filedlg.h>
 #include "HexEditor.h"
 #include "HexEditPanel.h"
 
@@ -37,10 +38,12 @@ namespace
     PluginRegistrant<HexEditor> reg( _T("HexEditor") );
 
     const int idOpenHexEdit = wxNewId();
+    const int idOpenWithHE = wxNewId();
 }
 
 BEGIN_EVENT_TABLE( HexEditor, cbPlugin )
     EVT_MENU( idOpenHexEdit, HexEditor::OnOpenHexEdit )
+    EVT_MENU( idOpenWithHE,  HexEditor::OnOpenWithHE )
 END_EVENT_TABLE()
 
 HexEditor::HexEditor()
@@ -100,6 +103,28 @@ void HexEditor::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
 
 void HexEditor::BuildMenu(wxMenuBar* menuBar)
 {
+    int fileMenuIndex = menuBar->FindMenu( _("&File") );
+    if ( fileMenuIndex == wxNOT_FOUND ) return;
+
+    wxMenu* fileMenu = menuBar->GetMenu( fileMenuIndex );
+    if ( !fileMenu ) return;
+
+    LogManager::Get()->DebugLog( _T("menu dump") );
+    wxMenuItemList& list = fileMenu->GetMenuItems();
+    int pos = 0;
+    for ( wxMenuItemList::iterator i = list.begin(); i != list.end(); ++i, ++pos )
+    {
+        wxMenuItem* item = *i;
+        wxString label = item->GetLabel();
+        label.Replace( _T("_"), _T("") );
+        if ( label.StartsWith( _("Open...")) )
+        {
+            fileMenu->Insert( pos+1, idOpenWithHE, _("Open with HexEditor"), _("Open file using HexEditor") );
+            return;
+        }
+    }
+
+    fileMenu->Append( idOpenWithHE, _("Open with HexEditor"), _("Open file using HexEditor") );
 }
 
 void HexEditor::OnOpenHexEdit( wxCommandEvent& event )
@@ -121,29 +146,78 @@ void HexEditor::OnOpenHexEdit( wxCommandEvent& event )
 
     if ( data->GetKind() == FileTreeData::ftdkFile )
     {
-        ProjectFile* f = data->GetProject()->GetFile( data->GetFileIndex() );
-        if ( f )
-        {
-            if ( Manager::Get()->GetEditorManager()->IsOpen( f->file.GetFullPath() ) )
-            {
-                wxMessageBox( _("This file is already opened inside editor.") );
-                return;
-            }
 
-            wxString title;
-            if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true) )
-            {
-                title = f->relativeToCommonTopLevelPath;
-            }
-            else
-            {
-                title = f->file.GetFullName();
-            }
-
-            new HexEditPanel( f->file.GetFullPath(), title );
-        }
+        OpenProjectFile( data->GetProject()->GetFile( data->GetFileIndex() ) );
     }
 }
+
+void HexEditor::OpenProjectFile( ProjectFile* f )
+{
+    if ( !f ) return;
+
+    if ( Manager::Get()->GetEditorManager()->IsOpen( f->file.GetFullPath() ) )
+    {
+        wxMessageBox( _("This file is already opened inside editor.") );
+        return;
+    }
+
+    wxString title;
+    if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/tab_text_relative"), true) )
+    {
+        title = f->relativeToCommonTopLevelPath;
+    }
+    else
+    {
+        title = f->file.GetFullName();
+    }
+
+    new HexEditPanel( f->file.GetFullPath(), title );
+}
+
+void HexEditor::OpenFileFromName(const wxString& fileName)
+{
+    if ( Manager::Get()->GetEditorManager()->IsOpen( fileName ) )
+    {
+        wxMessageBox( _("This file is already opened inside editor.") );
+        return;
+    }
+
+    wxString title = wxFileName( fileName ).GetFullName();
+    new HexEditPanel( fileName, title );
+}
+
+void HexEditor::OnOpenWithHE(wxCommandEvent& event)
+{
+    wxString file = ::wxFileSelector( _("Open file with HexEditor" ) );
+    if ( file.IsEmpty() ) return;
+
+    ProjectFile* f = FindProjectFile( file );
+    if ( f )
+    {
+        OpenProjectFile( f );
+    }
+    else
+    {
+        OpenFileFromName( file );
+    }
+}
+
+ProjectFile* HexEditor::FindProjectFile(const wxString& fileName)
+{
+    ProjectsArray* projects = ProjectManager::Get()->GetProjects();
+    if ( !projects ) return 0;
+
+    for ( size_t i=0; i<projects->Count(); ++i )
+    {
+        cbProject* project = (*projects)[i];
+        if ( !project ) continue;
+        ProjectFile* file = project->GetFileByFilename( fileName, false, false );
+        if ( file ) return file;
+    }
+
+    return 0;
+}
+
 
 void HexEditor::CloseMyEditors()
 {
