@@ -449,9 +449,14 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     if (eb)
     {
         if (eb->IsBuiltinEditor())
+        {
             ed = (cbEditor*)eb;
+        }
         else
+        {
+            s_CanShutdown = true;
             return 0; // is open but not a builtin editor
+        }
     }
 
     if (!ed)
