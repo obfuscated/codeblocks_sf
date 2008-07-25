@@ -1044,8 +1044,8 @@ void Bindings::SetDefaultsWxWidgets()
   AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DEFINE_ARRAY"),                    _T("wx/dynarray.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DEFINE_OBJARRAY"),                 _T("wx/dynarray.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DEFINE_SORTED_ARRAY"),             _T("wx/dynarray.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DECLARE_STRING_HASH_MAP"),         _T("wx/hashmap.h"));
-  AddBinding(_T("wxWidgets_2_6_4"),_T("WX_DECLARE_HASH_MAP"),                _T("wx/hashmap.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DECLARE_STRING_HASH_MAP"),         _T("wx/hashmap.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("WX_DECLARE_HASH_MAP"),                _T("wx/hashmap.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxASSERT"),                           _T("wx/debug.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxASSERT_MIN_BITSIZE"),               _T("wx/debug.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxASSERT_MSG"),                       _T("wx/debug.h"));
