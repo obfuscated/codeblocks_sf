@@ -253,6 +253,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/plugins/libRegExTestbed.*
 %{pkgdata}/plugins/libSymTab.*
 %{pkgdata}/plugins/libThreadSearch.*
+%{pkgdata}/plugins/libValgrind.*
 %{pkgdata}/plugins/libwxsmith.*
 %{pkgdata}/plugins/libwxsmithcontribitems.*
 %{_libdir}/libwxsmithlib.so.*
@@ -272,6 +273,7 @@ Code::Blocks SDK to develop your own plugins.
 - removed selfprovide codeblocks
 - removed subversion dependency
 - changed release and version tag (version now only contains version + revision)
+- added libValgrind.* to file list
 * Thu Jan 03 2008 Daniel Orb <thetuxkeeper@googlemail.com>
 - added missing files to file list (libfinder)
 - changed dependencies for mandriva
