@@ -32,7 +32,8 @@ noinst_HEADERS =  	BrowseTracker.h \
 			ProjectData.h
 
 EXTRA_DIST = 	BrowseTracker.cbp \
-		BrowseTracker-unix.cbp
+		BrowseTracker-unix.cbp \
+		manifest.xml
 
 pkgdata_DATA = BrowseTracker.zip
 CLEANFILES = $(pkgdata_DATA)

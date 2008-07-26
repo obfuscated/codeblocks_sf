@@ -25,7 +25,7 @@ noinst_HEADERS = \
 
 EXTRA_DIST = \
 	wxsmith/HexEditPanel.wxs \
-	HexEditor-lin.cbp \
+	HexEditor-unix.cbp \
 	HexEditor-win.cbp \
 	manifest.xml
 
