@@ -713,6 +713,21 @@ void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
             m_Current = m_Content->GetSize()-1;
             break;
 
+        case WXK_INSERT:
+        {
+            // Insert empty byte at current position
+            FileContentBase::ExtraUndoData data( m_Current, m_CurrentType, m_Current, (m_Current==curChar) ? curChar : curHexHi );
+            m_Content->Add( data, m_Current, 1, 0 );
+            break;
+        }
+
+        case WXK_DELETE:
+        {
+            FileContentBase::ExtraUndoData data( m_Current, m_CurrentType, m_Current, (m_Current==curChar) ? curChar : curHexHi );
+            m_Content->Remove( data, m_Current, 1 );
+            break;
+        }
+
         default:
         {
             int keyCode = event.GetKeyCode();
