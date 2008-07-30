@@ -1057,13 +1057,22 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         Manager::Get()->GetMacrosManager()->ReplaceMacros(textStr);
         //-LOGIT( _T("SnippetsTreeCtrl OnLeaveWindow $macros text[%s]"),textStr.c_str() );
     //-#endif
+
     wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
     textData->SetText( textStr );
 
     wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
     wxString fileName = GetSnippetFileLink(m_MnuAssociatedItemID);
     if (not ::wxFileExists(fileName) ) fileName = wxEmptyString;
+    // If no filename, but text is URL/URI, pass it as a file (esp. for browsers)
+    if ( fileName.IsEmpty())
+    {   if (textStr.StartsWith(_T("http://")))
+            fileName = textStr;
+        if (textStr.StartsWith(_T("file://")))
+            fileName = textStr;
+    }
     fileData->AddFile( (fileName.Len() > 128) ? wxString(wxEmptyString) : fileName );
+
         // set composite data object to contain both text and file data
     wxDataObjectComposite *data = new wxDataObjectComposite();
     data->Add( (wxDataObjectSimple*)textData );
@@ -1072,9 +1081,9 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     wxDropSource source( *data, (wxWindow*)event.GetEventObject()  );
 
     #ifdef LOGGING
-     //LOGIT( _T("DropSource Text[%s],File[%s]"),
-     //           textData->GetText().GetData(),
-     //           fileData->GetFilenames().Item(0).GetData() );
+     LOGIT( _T("DropSource Text[%s], File[%s]"),
+                textData->GetText().c_str(),
+                fileData->GetFilenames().Item(0).c_str() );
     #endif //LOGGING
         // allow both copy and move
     int flags = 0;
@@ -1090,6 +1099,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
             case wxDragNone:    pc = _T("Nothing");   break;
             case wxDragCopy:    pc = _T("Copied");    break;
             case wxDragMove:    pc = _T("Moved");     break;
+            case wxDragLink:    pc = _T("Linked");    break;
             case wxDragCancel:  pc = _T("Cancelled"); break;
             default:            pc = _T("Huh?");      break;
         }

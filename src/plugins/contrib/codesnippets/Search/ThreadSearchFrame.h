@@ -71,6 +71,7 @@ class ThreadSearchFrame: public wxFrame
         bool DoOpenFile(const wxString& filename, bool addToHistory = true);
         void InitializeRecentFilesHistory();
         void AddToRecentFilesHistory(const wxString& filename);
+        void OnFrameActivated(wxActivateEvent& event);
 
         void CreateMenuBar();
         bool InitXRCStuff();
@@ -79,8 +80,10 @@ class ThreadSearchFrame: public wxFrame
         EditorManager*  m_pEdMan;
         ProjectManager* m_pProjectMgr;
         LogManager*     m_pMsgMan;
-
+        int             m_bOnActivateBusy;
         ThreadSearch*   m_pThreadSearch;
+
+
         DECLARE_EVENT_TABLE()
 };
 

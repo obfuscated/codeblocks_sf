@@ -48,7 +48,7 @@ class SnippetProperty : public SnippetPropertyForm
         void OnCancel(wxCommandEvent& event);
         void OnSnippetButton(wxCommandEvent& event);
         void OnFileSelectButton(wxCommandEvent& event);
-        void OnLeaveWindow(wxMouseEvent& event);
+        //-void OnLeaveWindow(wxMouseEvent& event);
 
         void InvokeEditOnSnippetText();
         void InvokeEditOnSnippetFile();

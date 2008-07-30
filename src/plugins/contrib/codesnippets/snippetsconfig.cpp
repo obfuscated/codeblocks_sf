@@ -331,7 +331,7 @@ void CodeSnippetsConfig::SettingsSaveWinPosition()
 
 }
 // ----------------------------------------------------------------------------
-void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child)
+void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child, wxWindow* parentParam )
 // ----------------------------------------------------------------------------
 {
     //For docked window we cannot get its position. Just move
@@ -343,13 +343,15 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child)
     //(pecan 2008/5/04)
     // Now using Plugin code for both app and plugin
     //if ( GetConfig()->IsPlugin() ) // //(pecan 2008/5/04)
-    {   wxPoint parentPosn( GetConfig()->windowXpos+(GetConfig()->windowWidth>>1),
+    {
+        wxPoint parentPosn( GetConfig()->windowXpos+(GetConfig()->windowWidth>>1),
             GetConfig()->windowYpos+(GetConfig()->windowHeight>>1) );
         do {   // place bottomLeft child at bottomLeft of parent window
             int parentx,parenty;
             int parentsizex,parentsizey;
             int childsizex,childsizey;
             wxWindow* parent = child->GetParent();
+            if (parentParam) parent = parentParam;
             if (not parent) break;
             parent->GetScreenPosition(&parentx,&parenty);
             parent->GetSize(&parentsizex,&parentsizey);
@@ -368,39 +370,6 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child)
         child->Move( parentPosn.x, parentPosn.y);
         return;
     }
-
-    ////(pecan 2008/5/04) code now unreachable
-    //// If application window
-    //// Put Top left corner in center of parent (if possible)
-    //
-    //int h; int w;
-    //int x; int y;
-    //wxWindow* mainFrame = child->GetParent();
-    //if (not mainFrame) return;
-    //
-    //// move upper left dialog corner to center of parent
-    //mainFrame->GetPosition(&x, &y );
-    //mainFrame->ClientToScreen(&x, &y );
-    //if ((x == 0) || (y == 0))
-    //    if (GetConfig()->pMainFrame)
-    //        GetConfig()->pMainFrame->GetPosition(&x, &y );
-    //mainFrame->GetClientSize(&w,&h);
-    //
-    //// move child underneath the mouse pointer
-    //wxPoint movePosn = ::wxGetMousePosition();
-    //movePosn.x = x+(w>>2);
-    //movePosn.y = y+(h>>2);
-    //
-    //// Make sure child is not off the screen
-    //wxSize size = child->GetSize();
-    ////-LOGIT( _T("X[%d]Y[%d]width[%d]height[%d]"), x,y,w,h );
-    //
-    //if ( (movePosn.x+size.GetWidth()) > displayX)
-    //    movePosn.x = displayX-size.GetWidth();
-    //if ( (movePosn.y+size.GetHeight()) > displayY)
-    //    movePosn.y = displayY-size.GetHeight();
-    //
-    //child->Move(movePosn.x, movePosn.y);
 
     return;
 }
@@ -525,6 +494,58 @@ wxString CodeSnippetsConfig::GetTempDir()
         ::wxRemoveFile(tempFile);
         return temp_folder;
     #endif
+}
+// ----------------------------------------------------------------------------
+wxFrame* CodeSnippetsConfig::GetEditorManagerFrame(const int index)
+// ----------------------------------------------------------------------------
+{
+    wxFrame* frame;
+    SEditorManager* edMgr;
+    if ( (index < 0) or (index > GetEditorManagerCount()) )
+        return 0;
+    // iterate over all the elements in the class
+    EdManagerMapArray::iterator it;
+    int i = 0;
+    for( it = m_EdManagerMapArray.begin(); it != m_EdManagerMapArray.end(); ++it )
+    {
+        if (i == index)
+        {
+            frame = it->first;
+            edMgr = it->second;
+            return frame;
+        }
+        ++i;
+    }
+    return 0;
+}
+// ----------------------------------------------------------------------------
+SEditorManager* CodeSnippetsConfig::GetEditorManager(const int index)
+// ----------------------------------------------------------------------------
+{
+    wxFrame* frame;
+    SEditorManager* edMgr;
+    if ( (index < 0) or (index > GetEditorManagerCount()) )
+        return 0;
+    // iterate over all the elements in the class
+    EdManagerMapArray::iterator it;
+    int i = 0;
+    for( it = m_EdManagerMapArray.begin(); it != m_EdManagerMapArray.end(); ++it )
+    {
+        if (i == index)
+        {
+            frame = it->first;
+            edMgr = it->second;
+            return edMgr;
+        }
+        ++i;
+    }
+    return 0;
+}
+// ----------------------------------------------------------------------------
+int CodeSnippetsConfig::GetEditorManagerCount()
+// ----------------------------------------------------------------------------
+{
+    return m_EdManagerMapArray.size();
 }
 // ----------------------------------------------------------------------------
 SEditorManager* CodeSnippetsConfig::GetEditorManager(wxWindow* frame)

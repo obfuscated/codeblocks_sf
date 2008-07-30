@@ -99,6 +99,7 @@ class EditSnippetFrame : public wxFrame
         void FileOpen (wxString fname);
         // print preview position and size
         wxRect DeterminePrintSize ();
+        void OnFrameActivated(wxActivateEvent& event);
 
         void End_SnippetFrame(int wxID_OKorCANCEL);
         void CreateMenu ();
@@ -125,6 +126,7 @@ class EditSnippetFrame : public wxFrame
         SEditorManager* m_pEditorManager;
         int             m_ActiveEventId;
         int             m_OncloseWindowEntries;
+        int             m_bOnActivateBusy;
 
         DECLARE_EVENT_TABLE()
 };

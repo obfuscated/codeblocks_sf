@@ -53,7 +53,8 @@ SnippetPropertyForm::SnippetPropertyForm( wxWindow* parent, int id, wxString tit
 	m_ItemLabelStaticText = new wxStaticText( this, ID_DEFAULT, wxT("Label"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer->Add( m_ItemLabelStaticText, 0, wxALL, 5 );
     // Label Text Area
-	m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+	//-m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ItemLabelTextCtrl = new wxTextCtrl( this, ID_DEFAULT, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER  );
 	bSizer->Add( m_ItemLabelTextCtrl, 1, wxALL, 5 );
 
 	sbSizer->Add( bSizer, 0, wxEXPAND, 5 );

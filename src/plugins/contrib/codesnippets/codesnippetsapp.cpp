@@ -44,7 +44,7 @@
 #include <wx/dynlib.h>
 
 #include "configmanager.h"
-#include "editormanager.h"
+#include "seditormanager.h"
 
 #include "version.h"
 #include "codesnippetsapp.h"
@@ -425,10 +425,13 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
             if (pFirstInstance && ::IsWindow(pFirstInstance) )
             {
                 //wxMessageBox(wxT("CodeSnippets is already running."), name);
+                // The following is necessary if the window is in another virtual screen
+                // but it unfortunately returns to the original virtual screen when the
+                // screen is next switched.
+                ::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
+                ::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
+                ::BringWindowToTop(pFirstInstance);
                 SwitchToThisWindow( pFirstInstance, true );
-                //-::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
-                //-::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
-                //-::BringWindowToTop(pFirstInstance);
             }
             // Tell app class we're terminating
             GetConfig()->m_sWindowHandle = wxEmptyString;
@@ -693,10 +696,17 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
     if (m_bOnActivateBusy)
         return;
 
-    // EVT_CLOSE is never called for codesnippetswindow. Maybe bec it derives from
-    // wxPanel, not wxWindow, so we'll invoke it here. It saves the xml indexes.
-    if ( GetConfig()->GetSnippetsWindow() )
-        GetConfig()->GetSnippetsWindow()->OnClose(event);
+    // EVT_CLOSE is never called for codesnippetswindow.
+    // so we'll invoke it here. It saves the xml indexes.
+    if (GetSnippetsWindow())
+            if ( GetSnippetsWindow()->GetFileChanged() )
+                GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
+
+    GetConfig()->GetSnippetsWindow()->OnClose(event);
+
+    // Make sure user cannot re-enable CodeSnippets until a CB restart
+    GetConfig()->m_appIsShutdown = true;
+
     ReleaseMemoryMappedFile();
     // save recently opened indexes
     TerminateRecentFilesHistory();
@@ -805,11 +815,14 @@ void CodeSnippetsAppFrame::OnFileBackup(wxCommandEvent& event)
 void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Application/Codeblocks has been activated
+    // Application/CodeSnippets has been activated
 
     if ( m_bOnActivateBusy ) {event.Skip();return;}
     ++m_bOnActivateBusy;
-    do{
+    #if defined(LOGGING)
+    LOGIT( _T("CodeSnippetsAppFrame::OnActivate[%d]"), m_bOnActivateBusy);
+    #endif
+    do{ //only once
         // Check that it's us that got activated
          if (not event.GetActive()) break;
 
@@ -817,9 +830,32 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
         if (not GetConfig()->GetSnippetsWindow() )  break;
         if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
 
-            CodeSnippetsWindow* p = GetConfig()->GetSnippetsWindow();
-            if (not p) break;
-            p->CheckForExternallyModifiedFiles();
+        CodeSnippetsWindow* p = GetConfig()->GetSnippetsWindow();
+        if (not p) break;
+        p->CheckForExternallyModifiedFiles();
+
+////        This doesn't work to inform other frames that they've been activated
+////        Because this routine is invoked ONLY when the main app frame is activated.
+////        Other frames must have their own EVT_ACTIVATED routine
+////
+////        if  ( (GetConfig()->GetEditorManagerCount() )
+////              && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+////            ){
+////            for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i)
+////            {
+////                // for some reason a mouse up event doesnt make it into scintilla (scintilla bug)
+////                // therefor the workaournd is not to directly call the editorManager, but
+////                // take a detour through an event
+////                // the bug is when the file has been offered to reload, no matter what answer you
+////                // give the mouse is in a selecting mode, adding/removing things to it's selection as you
+////                // move it around
+////                // so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
+////                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSEditorManagerCheckFiles);
+////                wxPostEvent(GetConfig()->GetEditorManager(i), evt);
+////                //-GetConfig()->GetEditorManager(i)->ProcessEvent( evt);
+////            }//for
+////        }//if
+
     }while(0);
 
     m_bOnActivateBusy = 0;

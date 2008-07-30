@@ -31,7 +31,6 @@
 	#include "sdk_events.h"
 	#include "manager.h"
 	#include "projectmanager.h"
-	#include "editormanager.h"
 	#include "personalitymanager.h"
 	#include "cbworkspace.h"
 	#include "cbproject.h"
@@ -79,7 +78,6 @@ namespace
     };
 
 };
-
 int idViewSnippets = wxNewId();
 
 // Events handling
@@ -769,9 +767,9 @@ void CodeSnippets::OnActivate(wxActivateEvent& event)
     // An application has been activated by the OS
 
     if ( m_nOnActivateBusy ) {event.Skip();return;}
-
     ++m_nOnActivateBusy;
-    do{
+
+    do{ //only once
         // check that it's us that was activated
         if (not event.GetActive()) break;
 
@@ -783,6 +781,7 @@ void CodeSnippets::OnActivate(wxActivateEvent& event)
         p->CheckForExternallyModifiedFiles();
 
     }while(0);
+
     m_nOnActivateBusy = 0;
 
     event.Skip();

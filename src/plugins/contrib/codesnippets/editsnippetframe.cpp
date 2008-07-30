@@ -32,6 +32,7 @@
 #include "version.h"
 
 #include "sdk.h"
+#include "configmanager.h"
 #include "cbstyledtextctrl.h"
 #include "wxscintilla/include/wx/wxscintilla.h"
 #include "wx/wxFlatNotebook/wxFlatNotebook.h"
@@ -51,6 +52,8 @@ extern int idEditHighlightMode;
 extern int idEditHighlightModeText;
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE (EditSnippetFrame, wxFrame)
+
+    EVT_ACTIVATE(                    EditSnippetFrame::OnFrameActivated)
     // common
     EVT_CLOSE (                      EditSnippetFrame::OnCloseWindow)
     //-- EVT_CLOSE works, but the next three EVTs never get called
@@ -180,6 +183,7 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
 {
     //ctor
 
+    m_bOnActivateBusy = 0;
     m_ActiveEventId = 0;
     m_OncloseWindowEntries = 0;
 
@@ -1118,5 +1122,52 @@ void EditSnippetFrame::OnEditHighlightMode(wxCommandEvent& event)
         }
     }
 }
+// ----------------------------------------------------------------------------
+void EditSnippetFrame::OnFrameActivated(wxActivateEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // This frame has been activated
+
+    if ( m_bOnActivateBusy ) {event.Skip();return;}
+    ++m_bOnActivateBusy;
+
+    // Check that it's us that got activated
+    if ( event.GetActive() )
+      do { //only once
+
+        // Check that CodeSnippets actually has a file open
+        if (not GetConfig()->GetSnippetsWindow() )  break;
+        if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
+
+        //-wxWindow* mainFrame = GetConfig()->GetMainFrame();
+        //-wxActivateEvent evt(wxEVT_ACTIVATE);
+        //-mainFrame->ProcessEvent(evt);
+        #if defined(LOGGING)
+        LOGIT( _T("EditSnippetFrame::OnAppActivate"));
+        #endif
+        //-if  ( (GetConfig()->GetEditorManagerCount() ) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+        if  ( (GetConfig()->GetEditorManager(this) )
+              && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+            )
+            //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+            {
+                // for some reason a mouse up event doesnt make it into scintilla (scintilla bug)
+                // therefor the workaournd is not to directly call the editorManager, but
+                // take a detour through an event
+                // the bug is when the file has been offered to reload, no matter what answer you
+                // give the mouse is in a selecting mode, adding/removing things to it's selection as you
+                // move it around
+                // so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
+                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSEditorManagerCheckFiles);
+                wxPostEvent(GetConfig()->GetEditorManager(this), evt);
+                //-GetConfig()->GetEditorManager(i)->ProcessEvent( evt);
+            }
+    }while(0); //do only once
+
+    m_bOnActivateBusy = 0;
+    event.Skip();
+    return;
+}
+
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

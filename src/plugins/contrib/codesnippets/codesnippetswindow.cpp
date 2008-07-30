@@ -1295,6 +1295,7 @@ void CodeSnippetsWindow::SetSnippetImage(wxTreeItemId itemId)
 void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
 // ----------------------------------------------------------------------------
 {
+    // This routine checks to see if the .xml file was changed externally
     // when we know we've changed the file internally, finesse this
 
     if ( IsTreeBusy() ) return;

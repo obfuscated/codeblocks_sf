@@ -61,6 +61,9 @@
 #include "scbeditor.h"
 #include "sprintdlg.h"
 #include "editproperties.h"
+#if defined(LOGGING)
+    #include "version.h"
+#endif
 
 //template<> EditorManager* Mgr<EditorManager>::instance = 0;
 //template<> bool  Mgr<EditorManager>::isShutdown = false;
@@ -1248,8 +1251,15 @@ int SEditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         //-dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, !ed, explicitly_find_in_files);
         dlg = new ReplaceDlg(Manager::Get()->GetAppWindow(), phraseAtCursor, hasSelection, false, false);
 
-    //-PlaceWindow(dlg);
-    GetConfig()->CenterChildOnParent(dlg);
+    PlaceWindow(dlg);
+    // Move dlg into the parents frame space //(pecan 2008/7/21)
+    wxPoint mousePosn = ::wxGetMousePosition();
+    wxWindow* parentWin = wxFindWindowAtPoint(mousePosn);
+    if (parentWin)
+        GetConfig()->CenterChildOnParent( dlg, parentWin);
+    else
+        dlg->Move(mousePosn.x, mousePosn.y);
+
     if (dlg->ShowModal() == wxID_CANCEL)
     {
         dlg->Destroy();

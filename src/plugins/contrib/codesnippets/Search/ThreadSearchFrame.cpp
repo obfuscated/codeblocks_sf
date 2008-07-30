@@ -218,9 +218,11 @@ namespace
 //      Events Table
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(ThreadSearchFrame, wxFrame)
-    EVT_SIZE(ThreadSearchFrame::OnSizeWindow)
-    EVT_CLOSE(ThreadSearchFrame::OnClose)
-    EVT_MENU(idMenuQuit, ThreadSearchFrame::OnQuit)
+
+    EVT_ACTIVATE(         ThreadSearchFrame::OnFrameActivated)
+    EVT_SIZE(             ThreadSearchFrame::OnSizeWindow)
+    EVT_CLOSE(            ThreadSearchFrame::OnClose)
+    EVT_MENU(idMenuQuit,  ThreadSearchFrame::OnQuit)
     EVT_MENU(idMenuAbout, ThreadSearchFrame::OnAbout)
     // File
     EVT_MENU(idFileOpen,  ThreadSearchFrame::OnFileOpen)
@@ -228,10 +230,10 @@ BEGIN_EVENT_TABLE(ThreadSearchFrame, wxFrame)
     // Edit
 
     // Search/Find
-    EVT_MENU(idSearchFind, ThreadSearchFrame::OnSearchFind)
-    EVT_MENU(idSearchFindInFiles, ThreadSearchFrame::OnSearchFind)
-    EVT_MENU(idSearchFindNext, ThreadSearchFrame::OnSearchFindNext)
-    EVT_MENU(idSearchFindPrevious, ThreadSearchFrame::OnSearchFindNext)
+    EVT_MENU(idSearchFind,          ThreadSearchFrame::OnSearchFind)
+    EVT_MENU(idSearchFindInFiles,   ThreadSearchFrame::OnSearchFind)
+    EVT_MENU(idSearchFindNext,      ThreadSearchFrame::OnSearchFindNext)
+    EVT_MENU(idSearchFindPrevious,  ThreadSearchFrame::OnSearchFindNext)
 
     EVT_CODESNIPPETS_NEW_INDEX (wxID_ANY,    ThreadSearchFrame::OnCodeSnippetsNewIndex)
 
@@ -243,8 +245,8 @@ ThreadSearchFrame::ThreadSearchFrame(wxFrame* appFrame, const wxString& title)
     : wxFrame(appFrame, -1, title)
       ,m_pFilesHistory(0)
       ,m_pProjectsHistory(0)
+      ,m_bOnActivateBusy(0)
       ,m_pThreadSearch(0)
-
 {
     bool ok = InitThreadSearchFrame( appFrame, title);
     wxUnusedVar(ok);
@@ -944,4 +946,50 @@ void ThreadSearchFrame::OnWindowDestroy(wxEvent& event)
     }
     event.Skip();
 }//OnWindowClose
+// ----------------------------------------------------------------------------
+void ThreadSearchFrame::OnFrameActivated(wxActivateEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // This frame has been activated
+
+    if ( m_bOnActivateBusy ) {event.Skip();return;}
+    ++m_bOnActivateBusy;
+
+    // Check that it's us that got activated
+    if ( event.GetActive() )
+      do { //only once
+
+        // Check that CodeSnippets actually has a file open
+        if (not GetConfig()->GetSnippetsWindow() )  break;
+        if (not GetConfig()->GetSnippetsTreeCtrl() ) break;
+
+        #if defined(LOGGING)
+        LOGIT( _T("ThreadSearchFrame::OnAppActivate"));
+        #endif
+        //-if  ( (GetConfig()->GetEditorManagerCount() ) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+        if  ( (GetConfig()->GetEditorManager(this) )
+              && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/check_modified_files"), true))
+            )
+            //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
+            {
+                // for some reason a mouse up event doesnt make it into scintilla (scintilla bug)
+                // therefor the workaournd is not to directly call the editorManager, but
+                // take a detour through an event
+                // the bug is when the file has been offered to reload, no matter what answer you
+                // give the mouse is in a selecting mode, adding/removing things to it's selection as you
+                // move it around
+                // so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
+
+                // If SEditorManager belongs to this frame, check for modified files
+                wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSEditorManagerCheckFiles);
+                //-wxPostEvent(GetConfig()->GetEditorManager(i), evt);
+                wxPostEvent(GetConfig()->GetEditorManager(this), evt);
+                //-GetConfig()->GetEditorManager(i)->ProcessEvent( evt);
+            }
+    }while(0); //do only once
+
+    m_bOnActivateBusy = 0;
+    event.Skip();
+    return;
+}
 // ----------------------------------------------------------------------------

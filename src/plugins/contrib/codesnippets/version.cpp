@@ -448,7 +448,17 @@ AppVersion::~AppVersion()
 //          70) Fix FullSearch file open crash when CodeCompletion loaded
 //  Commit 1 3.72 2008/07/20
 //          71) Disable Find and FindInFiles in FullSearch Preview window to prevent crashes
-//          72) Disalbe FindInFiles in FullSearch editors (causing crashes)
+//          72) Disable FindInFiles in FullSearch editors (causing crashes)
+//  Commit 1 3.?
+//          73) Center find dlg in parent frame
+//          74) Invoke CheckForModifiedFiles in EditSnippetFrame EVT_ACTIVATE
+//              Invoke CheckForModifiedFiles in ThreadSearchFrame EVT_ACTIVATE
+//          75) Pass URL/URI in dragndrop as file for browsers
+//          76) App:Fix activating first instance when starting secondary instances, then exit
+//          77) {enter} in snippets properties label simulates OK
+//          78) Fixed: App: CodeSnippets XML Index is not being saved OnClose [x].(2008/07/30)
+//          79) Fixed: Loop caused by cross-frame event posting in EVT_ACTIVATE routines
+//          80) Speed up .cbp compile time by sharing .obj directory betwn plugin & standalone
 // ----------------------------------------------------------------------------
 //  Bugs
 //        2008/04/8
@@ -459,13 +469,12 @@ AppVersion::~AppVersion()
 //            Editors disappear. Show(true) didnt work;
 //        2008/07/11
 //          zero length edit files left in /temp after FullSearch edit of .xml snippet ??
-//		2008/07/21
-//			Find dlg is opening on top of CB. Should open on top of FullSearch
 // ----------------------------------------------------------------------------
 //  ToDo
 //          App:Allow SeparateEditor configuration
 //          App:Allow user to re-clone default.conf
 //          Enable Editor context options, esp. ThreadSearch item
+//          File/New menu choice
 //
 //  CodeSnippets
 //          Search should continue to next matching item, not just stop (F3?)

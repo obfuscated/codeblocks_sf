@@ -90,6 +90,9 @@ class CodeSnippetsConfig
 
     SEditorManager*         GetEditorManager(wxFrame* pFrame);
     SEditorManager*         GetEditorManager(wxWindow* frame);
+    int                     GetEditorManagerCount();
+    wxFrame*                GetEditorManagerFrame(const int index);
+    SEditorManager*         GetEditorManager(const int index);
 
     void                    RegisterEditorManager(wxFrame* pFrame, SEditorManager* pEdMgr);
     void                    RemoveEditorManager(wxFrame* pFrame);
@@ -103,7 +106,7 @@ class CodeSnippetsConfig
     bool                    GetEditorsStayOnTop(){return SettingsEditorsStayOnTop;}
     void                    SetEditorsStayOnTop(bool tf){SettingsEditorsStayOnTop = tf;}
 
-    void CenterChildOnParent(wxWindow* child);
+    void CenterChildOnParent( wxWindow* child, wxWindow* parent=0);
 
     bool IsPlugin(){return m_bIsPlugin;}
     bool IsApplication(){return not m_bIsPlugin;}
