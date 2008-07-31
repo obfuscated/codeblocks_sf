@@ -45,6 +45,7 @@ class HexEditor : public cbPlugin
         virtual void OnRelease(bool appShutDown);
 
         void OnOpenHexEdit( wxCommandEvent& event );
+        void OnOpenHexEditFileBrowser( wxCommandEvent& event );
         void OnOpenWithHE ( wxCommandEvent& event );
         void CloseMyEditors();
 
@@ -52,6 +53,8 @@ class HexEditor : public cbPlugin
         void OpenFileFromName( const wxString& fileName );
 
         ProjectFile* FindProjectFile( const wxString& fileName );
+
+        wxString m_browserselectedfile;
 
         DECLARE_EVENT_TABLE()
 };
