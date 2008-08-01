@@ -1160,24 +1160,31 @@ void cbEditor::SetUseBom( bool bom )
     SetModified(true);
 }
 
-bool cbEditor::Reload(bool detectEncoding)
+bool cbEditor::Reload(bool DetectEncoding)
 {
     // keep current pos
-    int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
-    int pos2 = m_pControl2 ? m_pControl2->GetCurrentPos() : 0;
+    const int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
+    const int pos2 = m_pControl2 ? m_pControl2->GetCurrentPos() : 0;
 
     // call open
-    if (!Open(detectEncoding))
+    if (!Open(DetectEncoding))
+    {
         return false;
+    }
+    // Re-establish margin styles, width,  etc
+    SetEditorStyleAfterFileOpen();
 
     // return (if possible) to old pos
     if (m_pControl)
+    {
         m_pControl->GotoPos(pos);
+    }
     if (m_pControl2)
+    {
         m_pControl2->GotoPos(pos2);
-
+    }
     return true;
-}
+} // end of Reload
 
 void cbEditor::Touch()
 {
