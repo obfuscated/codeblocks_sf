@@ -7,13 +7,11 @@
 * Thomas sez: uz tis at yar own risk, an dun blam me.
 */
 
-
 class wxMenuBar;
 class wxMenu;
 class FileTreeData;
 
-#include <cbplugin.h>
-
+#include "cbplugin.h"
 
 class HeaderGuard : public cbPlugin
 {
@@ -25,7 +23,7 @@ class HeaderGuard : public cbPlugin
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
         virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
 
-    protected:
+    private:
 
         virtual void OnAttach();
 
@@ -34,5 +32,4 @@ class HeaderGuard : public cbPlugin
         virtual void OnRelease(bool appShutDown){};
 };
 
-
-#endif /* header guard */
+#endif // header guard

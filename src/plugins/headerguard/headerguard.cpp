@@ -1,7 +1,12 @@
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/intl.h>
+#include <wx/string.h>
+#include "cbeditor.h"
+#include "manager.h"
+#endif
 #include "headerguard.h"
-
-#include <sdk_precomp.h>
-#include <cbstyledtextctrl.h>
+#include "cbstyledtextctrl.h"
 
 namespace
 {
@@ -26,7 +31,7 @@ void HeaderGuard::OnSave(CodeBlocksEvent& event)
 	// therefore we don't really need to scan the full text, checking the first line is good enough and much faster, both here and in build.
 	// It also doesn't choke on external header guards that some people still use.
 	// We're omitting a check for "#pragma once", as that's not standard compliant. It doesn't hurt to add guards around "#pragma once", either.
-	wxString s(ed->GetControl()->GetLine(0).Trim(true).Trim(false));
+	const wxString s(ed->GetControl()->GetLine(0).Trim(true).Trim(false));
 	if(s.StartsWith(_T("#ifndef")) && ( s.Contains(_T("HEADER")) || s.Right(2).IsSameAs(_T("_H")) || s.Contains(_T(" H_")) || s.Contains(_T("_H_")) || s.Contains(_T("_INCLUDED")) ))
 		return;
 
@@ -43,5 +48,5 @@ void HeaderGuard::OnSave(CodeBlocksEvent& event)
 
 	n.Printf(_T("#ifndef HEADER_%X%X\n#define HEADER_%X%X\n\n"), b, c, b, c);
 	ed->GetControl()->InsertText (0, n);
-	ed->GetControl()->InsertText (ed->GetControl()->GetLength(), _T("\n#endif /* header guard */\n"));
+	ed->GetControl()->InsertText (ed->GetControl()->GetLength(), _T("\n#endif // header guard \n"));
 }
