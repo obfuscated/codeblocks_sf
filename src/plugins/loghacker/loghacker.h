@@ -6,20 +6,13 @@
 #ifndef LOGSWITCH_H_INCLUDED
 #define LOGSWITCH_H_INCLUDED
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
+class wxMenuBar;
+class wxMenu;
+class wxWindow;
+class cbProject;
+class FileTreeData;
 
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
-
-#include <cbplugin.h>
-
-
-const int id_text = wxNewId();
-const int id_channel = wxNewId();
-const int id_logger = wxNewId();
-
+#include "cbplugin.h"
 
 class LogHacker : public cbPlugin
 {
@@ -37,9 +30,9 @@ class LogHacker : public cbPlugin
         virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
         virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
 
-    protected:
+    private:
         virtual void OnAttach();
         virtual void OnRelease(bool appShutDown);
 };
 
-#endif
+#endif // LOGSWITCH_H_INCLUDED

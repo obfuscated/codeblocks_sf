@@ -7,9 +7,24 @@
  * $HeadURL$
  */
 
-#include <sdk.h> // Code::Blocks SDK
-#include <configurationpanel.h>
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/arrstr.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/stattext.h>
+#include <wx/sizer.h>
+#include <wx/string.h>
+#include <wx/textctrl.h>
+#include "configmanager.h"
+#include "logmanager.h"
+#endif
+#include "configurationpanel.h"
 #include "loghacker.h"
+
+const int id_text = wxNewId();
+const int id_channel = wxNewId();
+const int id_logger = wxNewId();
 
 namespace
 {
@@ -29,11 +44,9 @@ void LogHacker::OnAttach()
 {
 }
 
-void LogHacker::OnRelease(bool appShutDown)
+void LogHacker::OnRelease(bool /*appShutDown*/)
 {
 }
-
-
 
 class CfgPanel: public cbConfigurationPanel
 {
@@ -73,7 +86,7 @@ void CfgPanel::Create(wxWindow* parent)
 	int slot = 0;
 	while(slot < max_logs)
 	{
-		wxString t = LogManager::Get()->Slot(slot).title;
+		const wxString t = LogManager::Get()->Slot(slot).title;
 
 		if(!!t)
 			channelStrings.Add(t);
