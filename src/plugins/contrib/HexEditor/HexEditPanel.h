@@ -28,6 +28,7 @@
 #include <wx/stattext.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
+#include <wx/button.h>
 #include <wx/scrolbar.h>
 //*)
 
@@ -71,6 +72,7 @@ class HexEditPanel: public EditorBase
         wxStaticText* StaticText2;
         wxStaticText* m_DwordVal;
         wxStaticText* m_LDoubleVal;
+        wxButton* Button1;
         wxStaticText* StaticText6;
         wxStaticText* StaticText8;
         wxStaticText* StaticText1;
@@ -89,6 +91,7 @@ class HexEditPanel: public EditorBase
 
         //(*Identifiers(HexEditPanel)
         static const long ID_STATICTEXT1;
+        static const long ID_BUTTON1;
         static const long ID_CHECKBOX1;
         static const long ID_PANEL1;
         static const long ID_SCROLLBAR1;
@@ -119,6 +122,7 @@ class HexEditPanel: public EditorBase
         void OnDrawAreaMouseMove(wxMouseEvent& event);
         void OnCheckBox1Click(wxCommandEvent& event);
         void OnSpecialKeyDown(wxKeyEvent& event);
+        void OnButton1Click(wxCommandEvent& event);
         //*)
 
         typedef std::set< EditorBase* > EditorsSet;

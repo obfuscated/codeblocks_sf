@@ -21,6 +21,7 @@
 */
 
 #include "HexEditPanel.h"
+#include "ExpressionTester.h"
 
 //(*InternalHeaders(HexEditPanel)
 #include <wx/intl.h>
@@ -39,6 +40,7 @@
 
 //(*IdInit(HexEditPanel)
 const long HexEditPanel::ID_STATICTEXT1 = wxNewId();
+const long HexEditPanel::ID_BUTTON1 = wxNewId();
 const long HexEditPanel::ID_CHECKBOX1 = wxNewId();
 const long HexEditPanel::ID_PANEL1 = wxNewId();
 const long HexEditPanel::ID_SCROLLBAR1 = wxNewId();
@@ -75,14 +77,16 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
 
     //(*Initialize(HexEditPanel)
     Create(parent, wxID_ANY, wxDefaultPosition, wxSize(79,51), wxTAB_TRAVERSAL, _T("wxID_ANY"));
-
+    
     --- End of comment which prevents calling Create() --
     */
-
+    
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     m_Status = new wxStaticText(this, ID_STATICTEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer3->Add(m_Status, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button1 = new wxButton(this, ID_BUTTON1, _("Calc"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
+    BoxSizer3->Add(Button1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     CheckBox1 = new wxCheckBox(this, ID_CHECKBOX1, _("Value preview"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     CheckBox1->SetValue(true);
     BoxSizer3->Add(CheckBox1, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -129,7 +133,8 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     BoxSizer1->Add(FlexGridSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->SetSizeHints(this);
-
+    
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton1Click);
     Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnCheckBox1Click);
     m_DrawArea->Connect(wxEVT_PAINT,(wxObjectEventFunction)&HexEditPanel::OnContentPaint,0,this);
     m_DrawArea->Connect(wxEVT_ERASE_BACKGROUND,(wxObjectEventFunction)&HexEditPanel::OnDrawAreaEraseBackground,0,this);
@@ -1161,4 +1166,9 @@ void HexEditPanel::ProcessGoto()
     RefreshStatus();
     EnsureCarretVisible();
     m_DrawArea->Refresh();
+}
+
+void HexEditPanel::OnButton1Click(wxCommandEvent& event)
+{
+    ExpressionTester( 0, m_Content, m_Current).ShowModal();
 }

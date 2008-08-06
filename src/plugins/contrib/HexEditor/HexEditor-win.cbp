@@ -54,6 +54,14 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+                <Unit filename="ExpressionExecutor.cpp" />
+                <Unit filename="ExpressionExecutor.h" />
+                <Unit filename="ExpressionParser.cpp" />
+                <Unit filename="ExpressionParser.h" />
+                <Unit filename="ExpressionPreprocessed.cpp" />
+                <Unit filename="ExpressionPreprocessed.h" />
+                <Unit filename="ExpressionTester.cpp" />
+                <Unit filename="ExpressionTester.h" />
 		<Unit filename="FileContentBase.cpp" />
 		<Unit filename="FileContentBase.h" />
 		<Unit filename="FileContentBuffered.cpp" />

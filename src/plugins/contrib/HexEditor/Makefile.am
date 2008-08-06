@@ -14,17 +14,26 @@ libHexEditor_la_SOURCES = \
 	FileContentBase.cpp \
 	FileContentBuffered.cpp \
 	HexEditor.cpp \
-	HexEditPanel.cpp
+	HexEditPanel.cpp \
+	ExpressionExecutor.cpp \
+	ExpressionParser.cpp \
+	ExpressionPreprocessed.cpp \
+	ExpressionTester.cpp
 
 noinst_HEADERS = \
 	FileContentBase.h \
 	FileContentBuffered.h \
 	HexEditor.h \
-	HexEditPanel.h
+	HexEditPanel.h \
+	ExpressionExecutor.h \
+	ExpressionParser.h \
+	ExpressionPreprocessed.h \
+	ExpressionTester.h
 
 
 EXTRA_DIST = \
 	wxsmith/HexEditPanel.wxs \
+	wxsmith/ExpressionTester.wxs \
 	HexEditor-unix.cbp \
 	HexEditor-win.cbp \
 	manifest.xml

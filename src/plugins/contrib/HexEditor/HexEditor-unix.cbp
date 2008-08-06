@@ -41,6 +41,14 @@
 			<Add after="zip -j9 ../../../devel/share/codeblocks/HexEditor.zip manifest.xml" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="ExpressionExecutor.cpp" />
+		<Unit filename="ExpressionExecutor.h" />
+		<Unit filename="ExpressionParser.cpp" />
+		<Unit filename="ExpressionParser.h" />
+		<Unit filename="ExpressionPreprocessed.cpp" />
+		<Unit filename="ExpressionPreprocessed.h" />
+		<Unit filename="ExpressionTester.cpp" />
+		<Unit filename="ExpressionTester.h" />
 		<Unit filename="FileContentBase.cpp" />
 		<Unit filename="FileContentBase.h" />
 		<Unit filename="FileContentBuffered.cpp" />
@@ -49,7 +57,9 @@
 		<Unit filename="HexEditPanel.h" />
 		<Unit filename="HexEditor.cpp" />
 		<Unit filename="HexEditor.h" />
+		<Unit filename="Makefile.am" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith/ExpressionTester.wxs" />
 		<Unit filename="wxsmith/HexEditPanel.wxs" />
 		<Extensions>
 			<envvars />
@@ -58,6 +68,7 @@
 			<wxsmith version="1">
 				<resources>
 					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
+					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
 				</resources>
 			</wxsmith>
 			<lib_finder disable_auto="1" />
