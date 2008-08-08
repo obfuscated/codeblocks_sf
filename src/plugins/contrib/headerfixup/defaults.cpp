@@ -1809,9 +1809,9 @@ void Bindings::SetDefaultsWxWidgets()
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizardEvent"),                      _T("wx/wizard.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizardPage"),                       _T("wx/wizard.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxWizardPageSimple"),                 _T("wx/wizard.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlDocument"),                      _T("wx/xrc/xml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlNode"),                          _T("wx/xrc/xml.h"));
-  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlProperty"),                      _T("wx/xrc/xml.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlDocument"),                      _T("wx/xml/xml.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlNode"),                          _T("wx/xml/xml.h"));
+  AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlProperty"),                      _T("wx/xml/xml.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlResource"),                      _T("wx/xrc/xmlres.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxXmlResourceHandler"),               _T("wx/xrc/xmlres.h"));
   AddBinding(_T("wxWidgets_2_8_8"),_T("wxZipClassFactory"),                  _T("wx/zipstrm.h"));
