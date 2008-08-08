@@ -827,12 +827,12 @@ bool DirectCommands::AreExternalDepsOutdated(const wxString& buildOutput, const 
         // let's check the additional output files
         for (size_t x = 0; x < files.GetCount(); ++x)
         {
-            if (files[i].IsEmpty())
+            if (files[x].IsEmpty())
                 continue;
 
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(files[i]);
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(files[x]);
             time_t addT;
-            depsTimeStamp(files[i].mb_str(), &addT);
+            depsTimeStamp(files[x].mb_str(), &addT);
             // if additional file doesn't exist, we can skip it
             if (!addT)
                 continue;
