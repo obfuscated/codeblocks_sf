@@ -40,7 +40,17 @@ namespace Expression
 
         template< typename T > struct Divider
         {
-            inline T operator()( const T& val1, const T& val2 ) { return val1 / val2; }
+            inline T operator()( const T& val1, const T& val2 ) { if ( !val2 ) throw errorDivByZero; return val1 / val2; }
+        };
+
+        template< typename T > struct Moduler
+        {
+            inline T operator()( const T& val1, const T& val2 ) { if ( !val2 ) throw errorDivByZero; return val1 % val2; }
+        };
+
+        template<> struct Moduler< long double >
+        {
+            inline long double operator()( const long double& val1, const long double& val2 ) { throw errorOperation; }
         };
 
         template< typename T > struct Negation
@@ -64,18 +74,19 @@ namespace Expression
 
     wxString Executor::ErrorDesc()
     {
-        wxString pos = wxString::Format( _T("%d: "), m_OperationPos-1 );
+        wxString pos = wxString::Format( _T(" (at %d)"), m_OperationPos-1 );
         switch ( m_Status )
         {
-            case executedSuccessfully: return pos + _("Executed successfully");
-            case errorArgumentIndex:   return pos + _("Invalid index of code arguments");
-            case errorOperationIndex:  return pos + _("Invalid index of operation");
-            case errorStackIndex:      return pos + _("Invalid index of stack");
-            case errorContentIndex:    return pos + _("Invalid address inside the content");
-            case errorOperation:       return pos + _("Invalid operation");
-            case errorType:            return pos + _("Type mismatch");
-            case errorScript:          return pos + _("Script error");
-            default:                   return pos + _("Unknown error");
+            case executedSuccessfully: return _("Executed successfully") + pos;
+            case errorArgumentIndex:   return _("Invalid index of code arguments") + pos;
+            case errorOperationIndex:  return _("Invalid index of operation") + pos;
+            case errorStackIndex:      return _("Invalid index of stack") + pos;
+            case errorContentIndex:    return _("Invalid address inside the content") + pos;
+            case errorOperation:       return _("Invalid operation") + pos;
+            case errorDivByZero:       return _("Divide by zero") + pos;
+            case errorType:            return _("Type mismatch") + pos;
+            case errorScript:          return _("Script error") + pos;
+            default:                   return _("Unknown error") + pos;
         }
     }
 
@@ -169,6 +180,10 @@ namespace Expression
                 BinaryOp< Functors::Divider >( op );
                 break;
 
+            case Operation::mod:
+                BinaryOp< Functors::Moduler >( op );
+                break;
+
             case Operation::neg:
                 UnaryOp< Functors::Negation >( op );
                 break;
@@ -189,7 +204,7 @@ namespace Expression
 
     inline void Executor::PushAddress( const Operation& op, long long address )
     {
-        switch ( op.m_Mod2 )
+        switch ( op.m_Mod1 )
         {
             case Operation::modChar:       PushStack( Content< char               >(address) ); break;
             case Operation::modByte:       PushStack( Content< unsigned char      >(address) ); break;

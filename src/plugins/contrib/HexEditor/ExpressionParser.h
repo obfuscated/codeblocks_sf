@@ -59,6 +59,9 @@ namespace Expression
              */
             wxArrayString GetSuggestions( const wxString& expression, int pos );
 
+            /** \brief Get help string to be shown in dialog boxes */
+            static wxString GetHelpString();
+
         private:
 
             wxString m_ErrorDesc;
@@ -69,21 +72,40 @@ namespace Expression
             const wxChar* m_StartPos;
             const wxChar* m_CurrentPos;
 
-            struct ParseTree
-            {
-                Operation op;
-                ParseTree* first;
-                ParseTree* second;
-
-                ParseTree(): first(0), second(0) {}
-                ~ParseTree() { delete first; delete second; }
-            };
-
             typedef Operation::modifier resType;
 
+            static const resType resNone        = Operation::modNone;
             static const resType resSignedInt   = Operation::modLongLong;
             static const resType resUnsignedInt = Operation::modQword;
             static const resType resFloat       = Operation::modLongDouble;
+
+            /** \brief One node in the parsed syntactic tree */
+            struct ParseTree
+            {
+                resType    m_OutType;           ///< \brief Produced type
+                resType    m_InType;            ///< \brief Required type of inputs
+                Operation  m_Op;                ///< \brief Executed operation
+                ParseTree* m_FirstSub;          ///< \brief First input tree (NULL if no first input)
+                ParseTree* m_SecondSub;         ///< \brief Second input tree (NULL if no second input)
+
+
+                /** \brief Ctor */
+                inline ParseTree()
+                    : m_OutType( Operation::modNone )
+                    , m_InType( Operation::modNone )
+                    , m_FirstSub( 0 )
+                    , m_SecondSub( 0 )
+                {}
+
+                /** \brief Dctor - recursively erase the parse tree */
+                inline ~ParseTree()
+                {
+                    delete m_FirstSub;
+                    delete m_SecondSub;
+                    m_FirstSub = m_SecondSub = 0;
+                }
+            };
+
 
             std::vector< ParseTree* > m_TreeStack;
 
@@ -105,9 +127,19 @@ namespace Expression
             void AddOp(
                 int subArgs,
                 Operation::opCode op,
-                Operation::modifier mod1 = Operation::modNone,
+                resType producedType,
+                resType argumentsType,
+                Operation::modifier mod1,
                 Operation::modifier mod2 = Operation::modNone,
                 short opConst = 0 );
+
+            inline void AddOp1( Operation::opCode op, resType type );
+
+            inline void AddOp1( Operation::opCode op );
+
+            inline void AddOp2( Operation::opCode op, resType type );
+
+            inline void AddOp2( Operation::opCode op );
 
             inline ParseTree* PopTreeStack()
             {
@@ -122,19 +154,13 @@ namespace Expression
                 m_TreeStack.push_back( t );
             }
 
-            inline resType TopType()
-            {
-                assert( !m_TreeStack.empty() );
-                return (resType)m_TreeStack.back()->op.m_Mod1;
-            }
-
-            inline resType TopType( int pos )
-            {
-                assert( (int)m_TreeStack.size() > pos );
-                return (resType)m_TreeStack[ m_TreeStack.size() - pos - 1 ]->op.m_Mod1;
-            }
+            inline resType TopType( int pos );
 
             inline resType HigherType2Top();
+
+            inline resType TopAfterNeg();
+
+            inline resType ModResult2Top();
 
             template< typename T >
             inline int AddArg( T value ) { return m_Output->PushArgument( Value(value) ); }

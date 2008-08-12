@@ -26,10 +26,12 @@
 //(*Headers(HexEditPanel)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
+#include <wx/textctrl.h>
 #include <wx/checkbox.h>
 #include <wx/panel.h>
 #include <wx/button.h>
 #include <wx/scrolbar.h>
+#include <wx/timer.h>
 //*)
 
 #include <editorbase.h>
@@ -37,6 +39,7 @@
 #include <set>
 
 #include "FileContentBase.h"
+#include "ExpressionPreprocessed.h"
 
 
 class HexEditPanel: public EditorBase
@@ -66,6 +69,7 @@ class HexEditPanel: public EditorBase
         typedef FileContentBase::OffsetT OffsetT;
 
         //(*Declarations(HexEditPanel)
+        wxBoxSizer* BoxSizer4;
         wxStaticText* m_FloatVal;
         wxStaticText* m_ByteVal;
         wxStaticText* m_WordVal;
@@ -79,7 +83,13 @@ class HexEditPanel: public EditorBase
         wxBoxSizer* BoxSizer2;
         wxStaticText* StaticText3;
         wxScrollBar* m_ContentScroll;
+        wxButton* Button2;
         wxCheckBox* CheckBox1;
+        wxBoxSizer* PreviewSizer;
+        wxStaticText* m_ExpressionVal;
+        wxStaticText* StaticText5;
+        wxTextCtrl* m_Expression;
+        wxTimer ReparseTimer;
         wxStaticText* m_Status;
         wxBoxSizer* BoxSizer1;
         wxFlexGridSizer* FlexGridSizer1;
@@ -107,6 +117,11 @@ class HexEditPanel: public EditorBase
         static const long ID_STATICTEXT11;
         static const long ID_STATICTEXT12;
         static const long ID_STATICTEXT13;
+        static const long ID_STATICTEXT14;
+        static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON2;
+        static const long ID_STATICTEXT15;
+        static const long ID_TIMER1;
         //*)
 
         //(*Handlers(HexEditPanel)
@@ -123,6 +138,10 @@ class HexEditPanel: public EditorBase
         void OnCheckBox1Click(wxCommandEvent& event);
         void OnSpecialKeyDown(wxKeyEvent& event);
         void OnButton1Click(wxCommandEvent& event);
+        void OnReparseTimerTrigger(wxTimerEvent& event);
+        void Onm_ExpressionText(wxCommandEvent& event);
+        void OnButton2Click(wxCommandEvent& event);
+        void OnExpressionTextEnter(wxCommandEvent& event);
         //*)
 
         typedef std::set< EditorBase* > EditorsSet;
@@ -149,6 +168,9 @@ class HexEditPanel: public EditorBase
         CurrentType         m_CurrentType;
         bool                m_MouseDown;
 
+        wxString                 m_ExpressionError;
+        Expression::Preprocessed m_ExpressionCode;
+
         static EditorsSet   m_AllEditors;
 
 
@@ -166,6 +188,8 @@ class HexEditPanel: public EditorBase
         void ClampCursorToVisibleArea();
 
         void ProcessGoto();
+
+        void ReparseExpression();
 
         virtual bool CanUndo() const;
         virtual bool CanRedo() const;

@@ -167,27 +167,6 @@ void ExpressionTester::OnButton1Click(wxCommandEvent& event)
 
 void ExpressionTester::OnButton2Click(wxCommandEvent& event)
 {
-    cbMessageBox( _(
-        "Recognized operators: +, -, *, /, %, ()\n"
-        "Available constants: PI, E\n"
-        "Current location in the data: @\n"
-        "Reading at given offset:\n"
-        "    byte( <offset> ) - read unsigned byte\n"
-        "    char( <offset> ) - read signed byte\n"
-        "    word) <offset> ) - read unsigned word\n"
-        "    short( <offset> ) - read signed word\n"
-        "    dword( <offset> ) - read unsigned dword\n"
-        "    long( <offset> ) - read signed dword\n"
-        "    qword( <offset> ) - read unsigned qword\n"
-        "    llong( <offset> ) - read signed qword\n"
-        "    float( <offset> ) - read float\n"
-        "    double( <offset> ) - read double\n"
-        "    ldouble( <offset> ) - read long double\n"
-        "\n"
-        "Exapmle:\n"
-        "    word( 4 * dword( @ ) + 128 )\n"
-        "  This code will read dword value at current cursor\n"
-        "  position, multiply it by 4 and add 128 to it,\n"
-        "  the result will be used as address to read word value") );
+    cbMessageBox( Expression::Parser::GetHelpString() );
 
 }

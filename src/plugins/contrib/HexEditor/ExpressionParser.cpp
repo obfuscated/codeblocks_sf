@@ -27,6 +27,7 @@
 namespace Expression
 {
 
+    const Parser::resType Parser::resNone;
     const Parser::resType Parser::resSignedInt;
     const Parser::resType Parser::resUnsignedInt;
     const Parser::resType Parser::resFloat;
@@ -46,6 +47,33 @@ namespace Expression
         return wxArrayString();
     }
 
+    wxString Parser::GetHelpString()
+    {
+        return _(
+        "Recognized operators: +, -, *, /, %, ()\n"
+        "Available constants: PI, E\n"
+        "Current location in the data: @\n"
+        "Reading at given offset:\n"
+        "    byte( <offset> ) - read unsigned byte\n"
+        "    char( <offset> ) - read signed byte\n"
+        "    word) <offset> ) - read unsigned word\n"
+        "    short( <offset> ) - read signed word\n"
+        "    dword( <offset> ) - read unsigned dword\n"
+        "    long( <offset> ) - read signed dword\n"
+        "    qword( <offset> ) - read unsigned qword\n"
+        "    llong( <offset> ) - read signed qword\n"
+        "    float( <offset> ) - read float\n"
+        "    double( <offset> ) - read double\n"
+        "    ldouble( <offset> ) - read long double\n"
+        "\n"
+        "Exapmle:\n"
+        "    word( 4 * dword( @ ) + 128 )\n"
+        "  This code will read dword value at current cursor\n"
+        "  position, multiply it by 4 and add 128 to it,\n"
+        "  the result will be used as address to read word value"
+        );
+    }
+
     bool Parser::Parse(const wxString& expression, Preprocessed& output)
     {
         m_Output = &output;
@@ -56,6 +84,7 @@ namespace Expression
         m_TreeStack.clear();
         m_PiArg = -1;
         m_EArg = -1;
+        output.Clear();
 
         try
         {
@@ -113,17 +142,13 @@ namespace Expression
             if ( Match( _T('+') ) )
             {
                 Mult();
-                AddOp( 2, Operation::add, HigherType2Top() );
+                AddOp2( Operation::add );
             }
             else if ( Match( _T('-') ) )
             {
                 Mult();
-
-                Operation::modifier rt = TopType();
-                if ( rt == resUnsignedInt ) rt = resSignedInt;
-                AddOp( 1, Operation::neg, rt );
-
-                AddOp( 2, Operation::add, HigherType2Top() );
+                AddOp1( Operation::neg, TopAfterNeg() );
+                AddOp2( Operation::add );
             }
             else
             {
@@ -140,21 +165,18 @@ namespace Expression
         {
             if ( Match( _T('*') ) )
             {
-                Mult();
-                AddOp( 2, Operation::mul, HigherType2Top() );
+                Unary();
+                AddOp2( Operation::mul );
             }
             else if ( Match( _T('/') ) )
             {
-                Mult();
-                AddOp( 2, Operation::div, HigherType2Top() );
+                Unary();
+                AddOp2( Operation::div );
             }
             else if ( Match( _T('%') ) )
             {
-                Mult();
-                resType t1 = TopType(0);
-                resType t2 = TopType(1);
-                resType rt = ( t1 == resUnsignedInt && t2 == resUnsignedInt ) ? resUnsignedInt : resSignedInt;
-                AddOp( 2, Operation::mod, rt );
+                Unary();
+                AddOp2( Operation::mod, ModResult2Top() );
             }
             else
             {
@@ -172,9 +194,7 @@ namespace Expression
         else if ( Match( _T('-') ) )
         {
             Unary();
-            Operation::modifier rt = TopType();
-            if ( rt == resUnsignedInt ) rt = resSignedInt;
-            AddOp( 1, Operation::neg, rt );
+            AddOp1( Operation::neg, TopAfterNeg() );
         }
         else
         {
@@ -191,7 +211,7 @@ namespace Expression
         }
         else if ( Match( _T('@') ) )
         {
-            AddOp( 0, Operation::pushCurrent, resUnsignedInt );
+            AddOp( 0, Operation::pushCurrent, resUnsignedInt, resNone, resNone );
         }
         else if ( Number() )
         {
@@ -225,8 +245,11 @@ namespace Expression
             0,
             Operation::loadArg,
             resSignedInt,
+            resNone,
+            resSignedInt,
             Operation::modNone,
             AddArg( value ) );
+
         return true;
     }
 
@@ -268,10 +291,38 @@ namespace Expression
             return false;
         }
 
+        resType result = resNone;
+        switch ( argMod )
+        {
+            case Operation::modChar       :
+            case Operation::modShort      :
+            case Operation::modLong       :
+            case Operation::modLongLong   :
+                result = resSignedInt;
+                break;
+
+            case Operation::modByte       :
+            case Operation::modWord       :
+            case Operation::modDword      :
+            case Operation::modQword      :
+                result = resUnsignedInt;
+                break;
+
+            case Operation::modFloat      :
+            case Operation::modDouble     :
+            case Operation::modLongDouble :
+                result = resFloat;
+                break;
+
+            default:
+                assert( false );
+        }
+
         Require( _T("(") );
         Expression();
         Require( _T(")") );
-        AddOp( 1, Operation::loadMem, Operation::modQword, argMod );
+
+        AddOp( 1, Operation::loadMem, result, resUnsignedInt, argMod );
 
         return true;
     }
@@ -288,29 +339,74 @@ namespace Expression
             0,
             Operation::loadArg,
             resFloat,
+            resNone,
+            resFloat,
             Operation::modNone,
             argNum );
     }
 
 
-    void Parser::AddOp( int subArgs, Operation::opCode op, Operation::modifier mod1, Operation::modifier mod2, short opConst )
+    void Parser::AddOp( int subArgs, Operation::opCode op, resType producedType, resType argumentsType, Operation::modifier mod1, Operation::modifier mod2, short opConst )
     {
         ParseTree* node = new ParseTree;
-        node->op.m_OpCode = op;
-        node->op.m_Mod1 = mod1;
-        node->op.m_Mod2 = mod2;
-        node->op.m_ConstArgument = opConst;
+        node->m_Op.m_OpCode = op;
+        node->m_Op.m_Mod1 = mod1;
+        node->m_Op.m_Mod2 = mod2;
+        node->m_Op.m_ConstArgument = opConst;
+        node->m_OutType = producedType;
+        node->m_InType = argumentsType;
 
-        if ( subArgs > 1 ) node->second = PopTreeStack();
-        if ( subArgs > 0 ) node->first = PopTreeStack();
+        if ( subArgs > 1 ) node->m_SecondSub = PopTreeStack();
+        if ( subArgs > 0 ) node->m_FirstSub  = PopTreeStack();
 
         PushTreeStack( node );
     }
 
+    inline void Parser::AddOp1( Operation::opCode op, resType type )
+    {
+        AddOp( 1, op, type, type, type );
+    }
+
+    inline void Parser::AddOp1( Operation::opCode op )
+    {
+        AddOp1( op, HigherType2Top() );
+    }
+
+    inline void Parser::AddOp2( Operation::opCode op, resType type )
+    {
+        AddOp( 2, op, type, type, type );
+    }
+
+    inline void Parser::AddOp2( Operation::opCode op )
+    {
+        AddOp2( op, HigherType2Top() );
+    }
+
+
+    inline Parser::resType Parser::TopType( int pos )
+    {
+        assert( (int)m_TreeStack.size() > pos );
+        return (resType)m_TreeStack[ m_TreeStack.size() - pos - 1 ]->m_OutType;
+    }
+
+
     inline Parser::resType Parser::HigherType2Top()
     {
-        return HigherType( TopType(), TopType(1) );
+        return HigherType( TopType(0), TopType(1) );
     }
+
+    inline Parser::resType Parser::TopAfterNeg()
+    {
+        return TopType(0) == resUnsignedInt ? resSignedInt : TopType(0);
+    }
+
+    inline Parser::resType Parser::ModResult2Top()
+    {
+        resType t1 = TopType(0);
+        resType t2 = TopType(1);
+        return ( t1 == resUnsignedInt && t2 == resUnsignedInt ) ? resUnsignedInt : resSignedInt;
+    }
+
 
     inline wxChar Parser::Get()
     {
@@ -392,27 +488,27 @@ namespace Expression
 
     void Parser::GenerateCode( ParseTree* tree )
     {
-        GenerateCodeAndConvert( tree->first,  (resType)tree->op.m_Mod1 );
-        GenerateCodeAndConvert( tree->second, (resType)tree->op.m_Mod1 );
-        m_Output->PushOperation( tree->op );
+        GenerateCodeAndConvert( tree->m_FirstSub,  tree->m_InType );
+        GenerateCodeAndConvert( tree->m_SecondSub, tree->m_InType );
+        m_Output->PushOperation( tree->m_Op );
     }
 
     void Parser::GenerateCodeAndConvert( ParseTree* tree, resType type )
     {
         if ( !tree ) return;
         GenerateCode( tree );
-        if ( tree->op.m_Mod1 != type )
+
+        if ( tree->m_OutType != type )
         {
             // We have to convert the result into new type
             Operation op;
             op.m_OpCode = Operation::conv;
             op.m_Mod1 = type;
-            op.m_Mod2 = tree->op.m_Mod1;
+            op.m_Mod2 = tree->m_OutType;
             op.m_ConstArgument = 0;
 
             m_Output->PushOperation( op );
         }
-
     }
 
 }

@@ -37,6 +37,8 @@
 #include <editormanager.h>
 #include <logmanager.h>
 #include <wx/textdlg.h>
+#include "ExpressionExecutor.h"
+#include "ExpressionParser.h"
 
 //(*IdInit(HexEditPanel)
 const long HexEditPanel::ID_STATICTEXT1 = wxNewId();
@@ -56,6 +58,11 @@ const long HexEditPanel::ID_STATICTEXT10 = wxNewId();
 const long HexEditPanel::ID_STATICTEXT11 = wxNewId();
 const long HexEditPanel::ID_STATICTEXT12 = wxNewId();
 const long HexEditPanel::ID_STATICTEXT13 = wxNewId();
+const long HexEditPanel::ID_STATICTEXT14 = wxNewId();
+const long HexEditPanel::ID_TEXTCTRL1 = wxNewId();
+const long HexEditPanel::ID_BUTTON2 = wxNewId();
+const long HexEditPanel::ID_STATICTEXT15 = wxNewId();
+const long HexEditPanel::ID_TIMER1 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(HexEditPanel,EditorBase)
@@ -98,6 +105,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_ContentScroll->SetScrollbar(0, 1, 1, 1);
     BoxSizer2->Add(m_ContentScroll, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     BoxSizer1->Add(BoxSizer2, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    PreviewSizer = new wxBoxSizer(wxVERTICAL);
     FlexGridSizer1 = new wxFlexGridSizer(0, 8, 5, 5);
     FlexGridSizer1->AddGrowableCol(1);
     FlexGridSizer1->AddGrowableCol(4);
@@ -130,8 +138,20 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     FlexGridSizer1->Add(StaticText8, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_LDoubleVal = new wxStaticText(this, ID_STATICTEXT13, _("-9999999999"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT13"));
     FlexGridSizer1->Add(m_LDoubleVal, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(FlexGridSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    PreviewSizer->Add(FlexGridSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
+    StaticText5 = new wxStaticText(this, ID_STATICTEXT14, _("Expression:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT14"));
+    BoxSizer4->Add(StaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_Expression = new wxTextCtrl(this, ID_TEXTCTRL1, _("byte( @ )"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    BoxSizer4->Add(m_Expression, 1, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button2 = new wxButton(this, ID_BUTTON2, _("\?"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
+    BoxSizer4->Add(Button2, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ExpressionVal = new wxStaticText(this, ID_STATICTEXT15, _("-9999999999"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT15"));
+    BoxSizer4->Add(m_ExpressionVal, 1, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    PreviewSizer->Add(BoxSizer4, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(PreviewSizer, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
+    ReparseTimer.SetOwner(this, ID_TIMER1);
     BoxSizer1->SetSizeHints(this);
     
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton1Click);
@@ -154,6 +174,10 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     Connect(ID_SCROLLBAR1,wxEVT_SCROLL_THUMBTRACK,(wxObjectEventFunction)&HexEditPanel::OnContentScroll);
     Connect(ID_SCROLLBAR1,wxEVT_SCROLL_THUMBRELEASE,(wxObjectEventFunction)&HexEditPanel::OnContentScroll);
     Connect(ID_SCROLLBAR1,wxEVT_SCROLL_CHANGED,(wxObjectEventFunction)&HexEditPanel::OnContentScroll);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&HexEditPanel::Onm_ExpressionText);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&HexEditPanel::OnExpressionTextEnter);
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton2Click);
+    Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&HexEditPanel::OnReparseTimerTrigger);
     //*)
 
     // We connect these events manually
@@ -161,6 +185,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_DrawArea->SetBackgroundStyle( wxBG_STYLE_CUSTOM );
     Connect( wxEVT_SET_FOCUS, (wxObjectEventFunction)&HexEditPanel::OnForwardFocus );
 
+    ReparseExpression();
     SetFontSize( 8 );
     ReadContent();
     RecalculateCoefs();
@@ -180,6 +205,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     SetTitle( m_Shortname );
 
     m_AllEditors.insert( this );
+
 }
 
 
@@ -599,6 +625,46 @@ void HexEditPanel::RefreshStatus()
         m_LDoubleVal->SetLabel( _T("-") );
     }
 
+    if ( m_ExpressionError.IsEmpty() )
+    {
+
+        Expression::Executor executor;
+
+        wxStopWatch sw;
+        if ( !executor.Execute( m_ExpressionCode, m_Content, m_Current ) )
+        {
+            m_ExpressionVal->SetLabel( executor.ErrorDesc() );
+        }
+        else
+        {
+            LogManager::Get()->DebugLog( F( _T("HEExpr Calculate: %d"), (int)sw.Time() ) );
+            unsigned long long uint;
+            long long          sint;
+            long double        flt;
+
+            if ( executor.GetResult( uint ) )
+            {
+                m_ExpressionVal->SetLabel( wxString::Format( _T("%llu"), uint) );
+            }
+            else if ( executor.GetResult( sint ) )
+            {
+                m_ExpressionVal->SetLabel( wxString::Format( _T("%lld"), sint ) );
+            }
+            else if ( executor.GetResult( flt ) )
+            {
+                m_ExpressionVal->SetLabel( wxString::Format( _T("%g"), (double)flt ) );
+            }
+            else
+            {
+                m_ExpressionVal->SetLabel( _T("Error") );
+            }
+        }
+    }
+    else
+    {
+        m_ExpressionVal->SetLabel( m_ExpressionError );
+    }
+
 }
 
 void HexEditPanel::OnDrawAreaKeyDown(wxKeyEvent& event)
@@ -984,7 +1050,7 @@ void HexEditPanel::OnDrawAreaMouseMove(wxMouseEvent& event)
 void HexEditPanel::OnCheckBox1Click(wxCommandEvent& event)
 {
     if ( !m_Content ) return;
-    BoxSizer1->Show( FlexGridSizer1, CheckBox1->GetValue() );
+    BoxSizer1->Show( PreviewSizer, CheckBox1->GetValue() );
     m_DrawArea->SetFocus();
     Layout();
 }
@@ -1171,4 +1237,41 @@ void HexEditPanel::ProcessGoto()
 void HexEditPanel::OnButton1Click(wxCommandEvent& event)
 {
     ExpressionTester( 0, m_Content, m_Current).ShowModal();
+}
+
+void HexEditPanel::ReparseExpression()
+{
+    Expression::Parser parser;
+    if ( !parser.Parse( m_Expression->GetValue(), m_ExpressionCode ) )
+    {
+        int pos;
+        m_ExpressionError = parser.ParseErrorDesc( pos );
+    }
+    else
+    {
+        m_ExpressionError.Clear();
+    }
+}
+
+void HexEditPanel::OnReparseTimerTrigger(wxTimerEvent& event)
+{
+    ReparseExpression();
+    RefreshStatus();
+}
+
+void HexEditPanel::Onm_ExpressionText(wxCommandEvent& event)
+{
+    ReparseTimer.Start( 1000, wxTIMER_ONE_SHOT );
+}
+
+void HexEditPanel::OnButton2Click(wxCommandEvent& event)
+{
+    cbMessageBox( Expression::Parser::GetHelpString() );
+}
+
+void HexEditPanel::OnExpressionTextEnter(wxCommandEvent& event)
+{
+    ReparseExpression();
+    RefreshStatus();
+    ReparseTimer.Stop();
 }

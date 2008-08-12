@@ -126,7 +126,6 @@ void HexEditor::BuildMenu(wxMenuBar* menuBar)
     wxMenu* fileMenu = menuBar->GetMenu( fileMenuIndex );
     if ( !fileMenu ) return;
 
-    LogManager::Get()->DebugLog( _T("menu dump") );
     wxMenuItemList& list = fileMenu->GetMenuItems();
     int pos = 0;
     for ( wxMenuItemList::iterator i = list.begin(); i != list.end(); ++i, ++pos )

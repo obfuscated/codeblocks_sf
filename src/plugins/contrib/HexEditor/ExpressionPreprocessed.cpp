@@ -63,7 +63,7 @@ namespace Expression
             {
                 case Operation::endScript:     res += wxString::Format( _T("%d: End\n"), (int)i ); break;
                 case Operation::pushCurrent:   res += wxString::Format( _T("%d: PushCur\n"), (int)i ); break;
-                case Operation::loadMem:       res += wxString::Format( _T("%d: LoadMem %s, %d\n"), (int)i, Type( m_Code[i].m_Mod2 ), (int)m_Code[i].m_ConstArgument ); break;
+                case Operation::loadMem:       res += wxString::Format( _T("%d: LoadMem %s, + %d\n"), (int)i, Type( m_Code[i].m_Mod1 ), (int)m_Code[i].m_ConstArgument ); break;
                 case Operation::loadArg:       res += wxString::Format( _T("%d: LoadArg %s, %d\n"), (int)i, Type( m_Code[i].m_Mod1 ), (int)m_Code[i].m_ConstArgument ); break;
                 case Operation::conv:          res += wxString::Format( _T("%d: Conv    %s -> %s\n"), (int)i, Type( m_Code[i].m_Mod2), Type( m_Code[i].m_Mod1) ); break;
                 case Operation::add:           res += wxString::Format( _T("%d: Add\n"), (int)i ); break;

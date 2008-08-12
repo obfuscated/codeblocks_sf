@@ -37,8 +37,9 @@ namespace Expression
         errorStackIndex,
         errorContentIndex,
         errorOperation,
+        errorDivByZero,
         errorType,
-        errorScript
+        errorScript,
     };
 
     class Value
@@ -172,6 +173,13 @@ namespace Expression
 
             /** \brief Dctor */
             ~Preprocessed();
+
+            /** \brief Clearing the code */
+            inline void Clear()
+            {
+                m_CodeArguments.clear();
+                m_Code.clear();
+            }
 
             /** \brief Push operation onto the end of code */
             inline int PushOperation( const Operation& op )
