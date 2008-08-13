@@ -72,15 +72,33 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
     static wxString regex;
     static wxString text;
+    static bool nocase;
+    static bool newlines;
+    static int library;
 
-    if(event.GetId() == XRCID("ID_NOCASE") || event.GetId() == XRCID("ID_NEWLINES"))
-        regex = _T("$^"); // bullshit
+//    if(event.GetId() == XRCID("ID_NOCASE") || event.GetId() == XRCID("ID_NEWLINES"))
+//        regex = _T("$^"); // bullshit
+//    all UI elements send events quite often (on linux on every mouse mouve, if the parent window
+//    has the focus, on windows even without any user action). So we can not use the event Id to force a new
+//    run of GetBuiltinMatches(), because every time the value of m_quoted and m_output gets upadeted a selection of text in m_quoted
+//    will be reset and therefore the user can not copy it's content (linux) and m_output jumps to the top, so that the user
+//    cannot scroll the text (windows and linux).
+//
 
-    if(regex == m_regex->GetValue() && text == m_text->GetValue())
-        return;
+    if( regex == m_regex->GetValue() &&
+        text == m_text->GetValue() &&
+        nocase == m_nocase->GetValue() &&
+        newlines == m_newlines->GetValue() &&
+        library == m_library->GetSelection())
+        {
+            return;
+        }
 
     regex = m_regex->GetValue();
     text = m_text->GetValue();
+    nocase = m_nocase->GetValue();
+    newlines = m_newlines->GetValue();
+    library = m_library->GetSelection();
 
     wxString tmp(regex);
 

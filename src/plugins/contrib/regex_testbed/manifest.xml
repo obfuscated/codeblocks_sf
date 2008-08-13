@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="0" />
     <Plugin name="RegExTestbed">
         <Value title="Regular expressions testbed" />
-        <Value version="0.1" />
+        <Value version="0.2" />
         <Value description="A testbed for regular expressions." />
         <Value author="Yiannis Mandravellos" />
         <Value authorEmail="mandrav@codeblocks.org" />
