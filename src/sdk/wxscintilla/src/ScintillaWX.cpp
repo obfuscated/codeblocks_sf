@@ -277,10 +277,12 @@ void ScintillaWX::Finalise() {
 
 void ScintillaWX::StartDrag() {
 #if wxUSE_DRAG_AND_DROP
-    // We defer the starting of the DnD, otherwise the LeftUp of a normal
-    // click could be lost and the STC will think it is doing a DnD when the
-    // user just wanted a normal click.
+#if wxVERSION_NUMBER >= 2800 && defined(__WXGTK__)
+	// For recent wxGTKs, DnD won't work if we delay with the timer, so go there direct
+	DoStartDrag();
+#else
     startDragTimer->Start (200, true);
+#endif // wxVERSION_NUMBER >= 2701 && defined(__WXGTK20__)
 #endif
 }
 
@@ -295,6 +297,7 @@ void ScintillaWX::DoStartDrag() {
     evt.SetDragAllowMove (true);
     evt.SetPosition (wxMin(sci->GetSelectionStart(), sci->GetSelectionEnd()));
     sci->GetEventHandler()->ProcessEvent (evt);
+    pdoc->BeginUndoAction();
 
     dragText = evt.GetDragText();
     dragRectangle = drag.rectangular;
@@ -305,11 +308,12 @@ void ScintillaWX::DoStartDrag() {
 
         source.SetData(data);
         dropWentOutside = true;
-        result = source.DoDragDrop(evt.GetDragAllowMove());
+        result = source.DoDragDrop(wxDrag_DefaultMove);
         if (result == wxDragMove && dropWentOutside) ClearSelection();
         inDragDrop = false;
         SetDragPosition (invalidPosition);
     }
+    pdoc->EndUndoAction();
 #endif
 }
 
@@ -483,7 +487,14 @@ void ScintillaWX::Copy() {
     if (currentPos != anchor) {
         SelectionText st;
         CopySelectionRange(&st);
-        CopyToClipboard(st);
+#ifdef __WXGTK__
+		for(int i=0; i<5; i++) {
+			//wxPrintf(wxT("Copying to clipboard %ld\n"), i);
+        	CopyToClipboard(st);
+		}
+#else
+     	CopyToClipboard(st);
+#endif
     }
 }
 
