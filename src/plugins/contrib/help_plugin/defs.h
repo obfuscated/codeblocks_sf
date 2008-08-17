@@ -13,7 +13,8 @@
 #include <ctime>
 #include <cctype>
 #include <cstdio>
-#include <string.h>
+#include <cstring>
+#include <cstdlib>
 
 #define kDebug(x) DummyOutput()
 #define kWarning(x) DummyOutput()
