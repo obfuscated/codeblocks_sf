@@ -87,7 +87,10 @@ void TextCtrlLogger::UpdateSettings()
     style[critical].SetTextColour(*wxWHITE);
     style[critical].SetBackgroundColour(*wxRED);
     style[spacer].SetFont(small_font);
-};
+
+    // Tell control about the font change
+    control->SetFont(default_font);
+} // end of UpdateSettings
 
 void TextCtrlLogger::Append(const wxString& msg, Logger::level lv)
 {
@@ -113,21 +116,21 @@ void TextCtrlLogger::Append(const wxString& msg, Logger::level lv)
         control->SetDefaultStyle(style[lv]);
         control->AppendText(::temp_string);
     }
-};
+}
 
 
 void TextCtrlLogger::Clear()
 {
     if(control)
         control->Clear();
-};
+}
 
 wxWindow* TextCtrlLogger::CreateControl(wxWindow* parent)
 {
     if (!control)
         control = new wxTextCtrl(parent, -1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_READONLY | wxTE_RICH | wxTE_NOHIDESEL | wxTE_AUTO_URL);
     return control;
-};
+}
 
 
 void TimestampTextCtrlLogger::Append(const wxString& msg, Logger::level lv)
@@ -140,14 +143,14 @@ void TimestampTextCtrlLogger::Append(const wxString& msg, Logger::level lv)
 
     control->SetDefaultStyle(style[lv]);
     control->AppendText(::temp_string);
-};
+}
 
 ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont)
     : control(0), fixed(fixedPitchFont),
     titles(titles), widths(widths)
 {
     cbAssert(titles.GetCount() == widths.GetCount());
-};
+}
 
 
 void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
@@ -234,7 +237,16 @@ void ListCtrlLogger::UpdateSettings()
 
     style[spacer].font = small_font;
     style[pagetitle] = style[caption];
-}
+
+    // Tell control and items about the font change
+    control->SetFont(default_font);
+    for (int i = 0; i < control->GetItemCount(); ++i)
+    {
+        wxFont font = control->GetItemFont(i);
+        font.SetPointSize(size);
+        control->SetItemFont( i, font );
+    }//for
+} // end of UpdateSettings
 
 void ListCtrlLogger::Append(const wxString& msg, Logger::level lv)
 {
@@ -279,7 +291,7 @@ void ListCtrlLogger::Clear()
     {
         control->DeleteAllItems();
     }
-};
+}
 
 wxWindow* ListCtrlLogger::CreateControl(wxWindow* parent)
 {
@@ -292,7 +304,7 @@ wxWindow* ListCtrlLogger::CreateControl(wxWindow* parent)
         control->InsertColumn(i, titles[i], wxLIST_FORMAT_LEFT, widths[i]);
     }
     return control;
-};
+}
 
 
 CSS::CSS() :
@@ -326,7 +338,7 @@ void HTMLFileLogger::Append(const wxString& msg, Logger::level lv)
 {
     fputs(msg.mb_str(), f.fp());
     fputs(::newline_string.mb_str(), f.fp());
-};
+}
 
 typedef const char* wxStringSucks;
 
@@ -355,13 +367,13 @@ void HTMLFileLogger::Open(const wxString& filename)
     if(!!css.critical)
         fprintf(f.fp(), ".critical { %s }\n", (wxStringSucks) css.critical.mb_str());
     fputs("</style>\n</head>\n\n<body>", f.fp());
-};
+}
 
 void HTMLFileLogger::Close()
 {
     fputs("</body>\n</html>\n", f.fp());
     FileLogger::Close();
-};
+}
 
 
 
