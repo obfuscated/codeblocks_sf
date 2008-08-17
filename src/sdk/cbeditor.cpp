@@ -273,66 +273,75 @@ struct cbEditorInternalData
 
     void HighlightOccurrences()
     {
-    	static int old_a;
-    	static int old_b;
+        static int old_a;
+        static int old_b;
 
-		int a, b;
-		m_pOwner->m_pControl->GetSelection (&a, &b);
+        int a, b;
+        m_pOwner->m_pControl->GetSelection (&a, &b);
 
-		if (a == b) // don't hog the CPU when not necessary
-		{
-			if (old_a != old_b) // but please clear old marks when the user unselects
-			{
-				m_pOwner->m_pControl->StartStyling(0, 0x20);
-				m_pOwner->m_pControl->SetStyling(m_pOwner->m_pControl->GetLength(), 0x00);
-			}
-			// clear old_a and old_b or deselecting a text and then select the same text again might not work in some cases
-			// if the user selects with a double-click
-			old_a=old_b=-1;
-			return;
-		}
+        if (a == b) // don't hog the CPU when not necessary
+        {
+            if (old_a != old_b) // but please clear old marks when the user unselects
+            {
+                m_pOwner->m_pControl->StartStyling(0, 0x20);
+                m_pOwner->m_pControl->SetStyling(m_pOwner->m_pControl->GetLength(), 0x00);
+            }
+            // clear old_a and old_b or deselecting a text and then select the same text again might not work in some cases
+            // if the user selects with a double-click
+            old_a=old_b=-1;
+            return;
+        }
 
-		if(old_a == a && old_b == b) // whatever the current state is, we've already done it once
-			return;
+        if(old_a == a && old_b == b) // whatever the current state is, we've already done it once
+            return;
 
-		old_a = a; old_b = b;
+        old_a = a; old_b = b;
 
-		wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
+        wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
 
-		int eof = m_pOwner->m_pControl->GetLength();
-		ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        int eof = m_pOwner->m_pControl->GetLength();
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
-		// Set Styling:
-		m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_BOX);
-		m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
+        // Set Styling:
+        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_BOX);
+        m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
 
-		// clear all style indications set in a previous run
-		m_pOwner->m_pControl->StartStyling( 0, 0x20 );
-		m_pOwner->m_pControl->SetStyling( eof, 0x00 );
+        // clear all style indications set in a previous run
+        m_pOwner->m_pControl->StartStyling( 0, 0x20 );
+        m_pOwner->m_pControl->SetStyling( eof, 0x00 );
 
-		// check that feature is enabled,
-		// selected text has a minimal length of 3 and contains no spaces
-		if( cfg->ReadBool(_T("/highlight_occurrences"), true)
-				&& selectedText.Len() > 2
-				&& selectedText.Find(_T(' ')) == wxNOT_FOUND
-				&& selectedText.Find(_T('\t')) == wxNOT_FOUND
-				&& selectedText.Find(_T('\n')) == wxNOT_FOUND )
-		{
-			// search for every occurence
-			for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText);
-				pos != wxSCI_INVALID_POSITION ;
-				pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText) )
-			{
-				// check that the found occurrence is not the same as the selected
-				if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
-				{
-					// highlight it
-					m_pOwner->m_pControl->StartStyling(pos, 0x20);
-					m_pOwner->m_pControl->SetStyling(selectedText.Len(), 0x20);
-				}
-			}
-		}
-	}
+        // check that feature is enabled,
+        // selected text has a minimal length of 3 and contains no spaces
+        if( cfg->ReadBool(_T("/highlight_occurrences"), true)
+                && selectedText.Len() > 2
+                && selectedText.Find(_T(' ')) == wxNOT_FOUND
+                && selectedText.Find(_T('\t')) == wxNOT_FOUND
+                && selectedText.Find(_T('\n')) == wxNOT_FOUND )
+        {
+            int flag = 0;
+            if (cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true))
+            {
+                flag |= wxSCI_FIND_MATCHCASE;
+            }
+            if (cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true))
+            {
+                flag |= wxSCI_FIND_WHOLEWORD;
+            }
+            // search for every occurence
+            for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText, flag);
+                pos != wxSCI_INVALID_POSITION ;
+                pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText, flag) )
+            {
+                // check that the found occurrence is not the same as the selected
+                if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
+                {
+                    // highlight it
+                    m_pOwner->m_pControl->StartStyling(pos, 0x20);
+                    m_pOwner->m_pControl->SetStyling(selectedText.Len(), 0x20);
+                }
+            }
+        }
+    }
 
     //vars
     bool m_strip_trailing_spaces;
@@ -683,22 +692,22 @@ void cbEditor::UpdateProjectFile()
 void cbEditor::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back)
 {
     m_pControl->MarkerDefine(marker, markerType);
-	m_pControl->MarkerSetForeground(marker, fore);
-	m_pControl->MarkerSetBackground(marker, back);
+    m_pControl->MarkerSetForeground(marker, fore);
+    m_pControl->MarkerSetBackground(marker, back);
 
-	if (m_pControl2)
-	{
-		m_pControl2->MarkerDefine(marker, markerType);
-		m_pControl2->MarkerSetForeground(marker, fore);
-		m_pControl2->MarkerSetBackground(marker, back);
-	}
+    if (m_pControl2)
+    {
+        m_pControl2->MarkerDefine(marker, markerType);
+        m_pControl2->MarkerSetForeground(marker, fore);
+        m_pControl2->MarkerSetBackground(marker, back);
+    }
 }
 
 void cbEditor::UnderlineFoldedLines(bool underline)
 {
     m_pControl->SetFoldFlags(underline ? 16 : 0);
     if (m_pControl2)
-		m_pControl2->SetFoldFlags(underline ? 16 : 0);
+        m_pControl2->SetFoldFlags(underline ? 16 : 0);
 }
 
 cbStyledTextCtrl* cbEditor::CreateEditor()
@@ -911,7 +920,7 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
     }
 
     // Folding properties.
-	m_pData->mFoldingLimit = mgr->ReadBool(_T("/folding/limit"), false);
+    m_pData->mFoldingLimit = mgr->ReadBool(_T("/folding/limit"), false);
     m_pData->mFoldingLimitLevel = mgr->ReadInt(_T("/folding/limit_level"), 1);
 
     // EOL properties
@@ -1258,9 +1267,9 @@ bool cbEditor::Open(bool detectEncoding)
     st = enc.GetWxStr();
     if (detectEncoding)
     {
-		m_pData->m_useByteOrderMark = enc.UsesBOM();
-		m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
-		m_pData->m_encoding = enc.GetFontEncoding();
+        m_pData->m_useByteOrderMark = enc.UsesBOM();
+        m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
+        m_pData->m_encoding = enc.GetFontEncoding();
 
         SetEncoding(enc.GetFontEncoding());
         m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
@@ -1536,15 +1545,15 @@ void cbEditor::AutoComplete()
                 wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
                 if (macro.IsEmpty())
                 {
-                	canceled = true;
-                	break;
+                    canceled = true;
+                    break;
                 }
                 code.Replace(_T("$(") + macroName + _T(")"), macro);
                 macroPos = code.Find(_T("$("));
             }
 
             if (canceled)
-				break;
+                break;
 
             control->BeginUndoAction();
 
@@ -1631,30 +1640,30 @@ bool cbEditor::DoFoldLine(int line, int fold)
     cbStyledTextCtrl* ctrl = GetControl();
     int level = ctrl->GetFoldLevel(line);
 
-	// The fold parameter is the type of folding action requested
-	// 0 = Unfold; 1 = Fold; 2 = Toggle folding.
+    // The fold parameter is the type of folding action requested
+    // 0 = Unfold; 1 = Fold; 2 = Toggle folding.
 
-	// Check if the line is a header (fold point).
+    // Check if the line is a header (fold point).
     if (level & wxSCI_FOLDLEVELHEADERFLAG)
     {
-    	bool IsExpanded = ctrl->GetFoldExpanded(line);
+        bool IsExpanded = ctrl->GetFoldExpanded(line);
 
-		// If a fold/unfold request is issued when the block is already
-		// folded/unfolded, ignore the request.
-    	if (fold == 0 && IsExpanded) return true;
-    	if (fold == 1 && !IsExpanded) return true;
+        // If a fold/unfold request is issued when the block is already
+        // folded/unfolded, ignore the request.
+        if (fold == 0 && IsExpanded) return true;
+        if (fold == 1 && !IsExpanded) return true;
 
-    	// Apply the folding level limit only if the current block will be
-    	// folded (that means it's currently expanded), folding level limiter
-    	// must be enabled of course. Unfolding will not be affected.
-    	if (m_pData->mFoldingLimit && IsExpanded)
-    	{
-    		if ((level & wxSCI_FOLDLEVELNUMBERMASK) > (wxSCI_FOLDLEVELBASE + m_pData->mFoldingLimitLevel-1))
-				return false;
-    	}
+        // Apply the folding level limit only if the current block will be
+        // folded (that means it's currently expanded), folding level limiter
+        // must be enabled of course. Unfolding will not be affected.
+        if (m_pData->mFoldingLimit && IsExpanded)
+        {
+            if ((level & wxSCI_FOLDLEVELNUMBERMASK) > (wxSCI_FOLDLEVELBASE + m_pData->mFoldingLimitLevel-1))
+                return false;
+        }
 
-    	ctrl->ToggleFold(line);
-    	return true;
+        ctrl->ToggleFold(line);
+        return true;
     }
     return false;
 }
@@ -1680,48 +1689,48 @@ void cbEditor::SetFoldingIndicator(int id)
     if(id == 0)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 
     //Circle
     else if(id == 1)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_CIRCLEMINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_CIRCLEPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNERCURVE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_CIRCLEPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_CIRCLEPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNERCURVE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_CIRCLEPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 
     //Square
     else if(id == 2)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_BOXMINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 
     //Simple
     else if(id == 3)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_MINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_PLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_PLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_MINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_PLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_PLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_MINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 }
 
@@ -2691,33 +2700,33 @@ void cbEditor::OnZoom(wxScintillaEvent& event)
 // generic scintilla event handler
 void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
 {
-//	wxString txt;
+//  wxString txt;
 //    wxEventType type = event.GetEventType();
-//	if (type == wxEVT_SCI_CHANGE) txt << _T("wxEVT_SCI_CHANGE");
-//	else if (type == wxEVT_SCI_STYLENEEDED) txt << _T("wxEVT_SCI_STYLENEEDED");
-//	else if (type == wxEVT_SCI_CHARADDED) txt << _T("wxEVT_SCI_CHARADDED");
-//	else if (type == wxEVT_SCI_SAVEPOINTREACHED) txt << _T("wxEVT_SCI_SAVEPOINTREACHED");
-//	else if (type == wxEVT_SCI_SAVEPOINTLEFT) txt << _T("wxEVT_SCI_SAVEPOINTLEFT");
-//	else if (type == wxEVT_SCI_ROMODIFYATTEMPT) txt << _T("wxEVT_SCI_ROMODIFYATTEMPT");
-//	else if (type == wxEVT_SCI_KEY) txt << _T("wxEVT_SCI_KEY");
-//	else if (type == wxEVT_SCI_DOUBLECLICK) txt << _T("wxEVT_SCI_DOUBLECLICK");
-//	else if (type == wxEVT_SCI_UPDATEUI) txt << _T("wxEVT_SCI_UPDATEUI");
-//	else if (type == wxEVT_SCI_MODIFIED) txt << _T("wxEVT_SCI_MODIFIED");
-//	else if (type == wxEVT_SCI_MACRORECORD) txt << _T("wxEVT_SCI_MACRORECORD");
-//	else if (type == wxEVT_SCI_MARGINCLICK) txt << _T("wxEVT_SCI_MARGINCLICK");
-//	else if (type == wxEVT_SCI_NEEDSHOWN) txt << _T("wxEVT_SCI_NEEDSHOWN");
-//	else if (type == wxEVT_SCI_PAINTED) txt << _T("wxEVT_SCI_PAINTED");
-//	else if (type == wxEVT_SCI_USERLISTSELECTION) txt << _T("wxEVT_SCI_USERLISTSELECTION");
-//	else if (type == wxEVT_SCI_URIDROPPED) txt << _T("wxEVT_SCI_URIDROPPED");
-//	else if (type == wxEVT_SCI_DWELLSTART) txt << _T("wxEVT_SCI_DWELLSTART");
-//	else if (type == wxEVT_SCI_DWELLEND) txt << _T("wxEVT_SCI_DWELLEND");
-//	else if (type == wxEVT_SCI_START_DRAG) txt << _T("wxEVT_SCI_START_DRAG");
-//	else if (type == wxEVT_SCI_DRAG_OVER) txt << _T("wxEVT_SCI_DRAG_OVER");
-//	else if (type == wxEVT_SCI_DO_DROP) txt << _T("wxEVT_SCI_DO_DROP");
-//	else if (type == wxEVT_SCI_ZOOM) txt << _T("wxEVT_SCI_ZOOM");
-//	else if (type == wxEVT_SCI_HOTSPOT_CLICK) txt << _T("wxEVT_SCI_HOTSPOT_CLICK");
-//	else if (type == wxEVT_SCI_HOTSPOT_DCLICK) txt << _T("wxEVT_SCI_HOTSPOT_DCLICK");
-//	else if (type == wxEVT_SCI_CALLTIP_CLICK) txt << _T("wxEVT_SCI_CALLTIP_CLICK");
+//  if (type == wxEVT_SCI_CHANGE) txt << _T("wxEVT_SCI_CHANGE");
+//  else if (type == wxEVT_SCI_STYLENEEDED) txt << _T("wxEVT_SCI_STYLENEEDED");
+//  else if (type == wxEVT_SCI_CHARADDED) txt << _T("wxEVT_SCI_CHARADDED");
+//  else if (type == wxEVT_SCI_SAVEPOINTREACHED) txt << _T("wxEVT_SCI_SAVEPOINTREACHED");
+//  else if (type == wxEVT_SCI_SAVEPOINTLEFT) txt << _T("wxEVT_SCI_SAVEPOINTLEFT");
+//  else if (type == wxEVT_SCI_ROMODIFYATTEMPT) txt << _T("wxEVT_SCI_ROMODIFYATTEMPT");
+//  else if (type == wxEVT_SCI_KEY) txt << _T("wxEVT_SCI_KEY");
+//  else if (type == wxEVT_SCI_DOUBLECLICK) txt << _T("wxEVT_SCI_DOUBLECLICK");
+//  else if (type == wxEVT_SCI_UPDATEUI) txt << _T("wxEVT_SCI_UPDATEUI");
+//  else if (type == wxEVT_SCI_MODIFIED) txt << _T("wxEVT_SCI_MODIFIED");
+//  else if (type == wxEVT_SCI_MACRORECORD) txt << _T("wxEVT_SCI_MACRORECORD");
+//  else if (type == wxEVT_SCI_MARGINCLICK) txt << _T("wxEVT_SCI_MARGINCLICK");
+//  else if (type == wxEVT_SCI_NEEDSHOWN) txt << _T("wxEVT_SCI_NEEDSHOWN");
+//  else if (type == wxEVT_SCI_PAINTED) txt << _T("wxEVT_SCI_PAINTED");
+//  else if (type == wxEVT_SCI_USERLISTSELECTION) txt << _T("wxEVT_SCI_USERLISTSELECTION");
+//  else if (type == wxEVT_SCI_URIDROPPED) txt << _T("wxEVT_SCI_URIDROPPED");
+//  else if (type == wxEVT_SCI_DWELLSTART) txt << _T("wxEVT_SCI_DWELLSTART");
+//  else if (type == wxEVT_SCI_DWELLEND) txt << _T("wxEVT_SCI_DWELLEND");
+//  else if (type == wxEVT_SCI_START_DRAG) txt << _T("wxEVT_SCI_START_DRAG");
+//  else if (type == wxEVT_SCI_DRAG_OVER) txt << _T("wxEVT_SCI_DRAG_OVER");
+//  else if (type == wxEVT_SCI_DO_DROP) txt << _T("wxEVT_SCI_DO_DROP");
+//  else if (type == wxEVT_SCI_ZOOM) txt << _T("wxEVT_SCI_ZOOM");
+//  else if (type == wxEVT_SCI_HOTSPOT_CLICK) txt << _T("wxEVT_SCI_HOTSPOT_CLICK");
+//  else if (type == wxEVT_SCI_HOTSPOT_DCLICK) txt << _T("wxEVT_SCI_HOTSPOT_DCLICK");
+//  else if (type == wxEVT_SCI_CALLTIP_CLICK) txt << _T("wxEVT_SCI_CALLTIP_CLICK");
 //    Manager::Get()->GetLogManager()->DebugLog(txt);
 
     // call any hooked functors
