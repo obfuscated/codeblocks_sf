@@ -303,7 +303,7 @@ struct cbEditorInternalData
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
         // Set Styling:
-        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_BOX);
+        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_ROUNDBOX);
         m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
 
         // clear all style indications set in a previous run
