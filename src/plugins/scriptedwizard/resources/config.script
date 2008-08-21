@@ -42,6 +42,8 @@ function RegisterWizards()
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("smartwin"),     _T("SmartWin project"),      _T("GUI"));
     RegisterWizard(wizProject,     _T("staticlib"),    _T("Static library"),        _T("Console"));
+    if (PLATFORM == PLATFORM_MSW)
+        RegisterWizard(wizProject, _T("stlport"),      _T("STL port application"),  _T("Console"));
     RegisterWizard(wizProject,     _T("sharedlib"),    _T("Shared library"),        _T("Console"));
     if (PLATFORM == PLATFORM_MSW)
         RegisterWizard(wizProject, _T("win32gui"),     _T("Win32 GUI project"),     _T("GUI"));
