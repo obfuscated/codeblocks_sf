@@ -31,7 +31,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.2.15 2008/05/22"
+#define VERSION "1.3.19 2008/08/17"
 //----------------------------------------
 
 #undef LOGGING
@@ -81,8 +81,10 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragKey()           const { return MouseDragKey; }
         int  GetMouseDragSensitivity()   const { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       const { return MouseToLineRatio; }
-        //- int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; } removed
         int  GetMouseContextDelay()      const { return MouseContextDelay; }
+        int  GetMouseWheelZoom()         const { return MouseWheelZoom; }
+        int  GetRecordZoomFontSize()     const { return RecordZoomFontSize; }
+        int  GetMouseHtmlFontSize()      const { return m_MouseHtmlFontSize; }
 
         wxWindow* m_pCB_AppWindow;
         wxWindow* m_pSearchResultsWindow;
@@ -99,6 +101,11 @@ class cbDragScroll : public cbPlugin
         void Attach(wxWindow *p);
         void DisconnectEvtHandler(MouseEventsHandler* thisEvtHandler);
         void CenterChildOnParent(wxWindow* parent, wxWindow* child);
+        bool IsLoggerControl(const wxTextCtrl* pControl);
+        bool OnMouseWheelInHtmlWindowEvent(wxMouseEvent& event);
+        void OnProjectClose(CodeBlocksEvent& event);
+        void OnStartShutdown(CodeBlocksEvent& event);
+        //-void UpdateAllLoggerWindowFonts(const int pointSize);
 
         void OnDragScrollEvent_Dispatcher(wxCommandEvent& event );
         void OnDragScrollEventAddWindow(wxCommandEvent& event );
@@ -106,6 +113,7 @@ class cbDragScroll : public cbPlugin
         void OnDragScrollEventRescan(wxCommandEvent& event );
         void OnDragScrollEvent_RereadConfig(wxCommandEvent& event );
         void OnDragScrollEvent_InvokeConfig(wxCommandEvent& event );
+        void OnMouseWheelEvent(wxMouseEvent& event);
 
         void OnDragScrollTestRescan(DragScrollEvent& event );
 
@@ -114,8 +122,10 @@ class cbDragScroll : public cbPlugin
         wxString  FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         void      OnWindowOpen(wxEvent& event);
         void      OnWindowClose(wxEvent& event);
+
         MouseEventsHandler* GetMouseEventsHandler();
         void      CleanUpWindowPointerArray();
+        void      UpdateConfigFile();
 
         wxString        m_ConfigFolder;
         wxString        m_ExecuteFolder;
@@ -123,6 +133,7 @@ class cbDragScroll : public cbPlugin
         wxString        m_CfgFilenameStr;
 
         wxArrayString   m_UsableWindows;
+        //-wxArrayString   m_UsableLogs;
         wxArrayPtrVoid  m_EditorPtrs;
         wxLogWindow*    pMyLog;
         bool            m_bNotebooksAttached;
@@ -137,9 +148,10 @@ class cbDragScroll : public cbPlugin
         int  MouseDragKey           ;   //Right or Middle mouse key
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
-        //-bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows removed
         int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
-
+        int  MouseWheelZoom         ;   //MouseWheel zooms tree, text, list controls
+        int  RecordZoomFontSize     ;   //Remember Zoom Font size for all logs
+        int  m_MouseHtmlFontSize    ;   //Ctrl-MouseWheel zoomed htmlWindow font size
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -415,12 +427,18 @@ private:
 //          08) Allow multiple invocations of OnAppStartupDoneInit() in order
 //              to catch windows that open after we intialize. (2008/03/4)
 //          09) Conversion to use only one event handler (2008/04/22)
-//          10) Optimizations in MouseEventsHanderl
+//          10) Optimizations in MouseEventsHandler
 //          11) SearchForScrollableWindows() as service to external callers
 //          12) Added DragScroll events for rescanning/adding/removing windows
 //          13) Optimized/cleaned up MouseEventHandler
 //          14) Removed OnWindowOpen EditorManager dependencies
 //          15) Add Configure() and event to invoke it. 2008/04/29
+// ----------------------------------------------------------------------------
+//  Commit  1.3.18
+//          16) Implement Ctrl-MouseWheel zoom for CB list & tree ctrls
+//          17) Add config options "Ctrl-WheelMouse Zooms" and "Remember Log Zoom"
+//          18) Allow user to ctrl-mouse zoom htmlWindows (eg, Start Here page)
+//          19) Fixed: missing events bec. htmlWindow never issues wxEVT_DESTROY
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------

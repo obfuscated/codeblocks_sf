@@ -43,6 +43,7 @@
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#CB.include)" />
 			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="$(#cb)\src" />
 		</Compiler>
 		<Linker>
 			<Add library="wxmsw28$(WX_SUFFIX)" />

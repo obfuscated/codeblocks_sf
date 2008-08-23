@@ -1,5 +1,6 @@
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/src \
 		-I$(top_srcdir)/src/include/wxscintilla/include
 
 libdir = $(pkgdatadir)/plugins

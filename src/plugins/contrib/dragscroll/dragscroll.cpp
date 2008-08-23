@@ -21,10 +21,26 @@
 	#include "sdk_events.h" // EVT_APP_STARTUP_DONE
 #endif
 #include <wx/fileconf.h> // wxFileConfig
+#include <wx/html/htmlwin.h>
 #include "cbstyledtextctrl.h"
 #include "dragscroll.h"
 #include "dragscrollcfg.h"
 #include "dragscrollevent.h"
+#include "logmanager.h"
+#include "loggers.h"
+#include "projectmanager.h"
+#include "editormanager.h"
+
+#include "startherepage.h"
+// ----------------------------------------------------------------------------
+class dsStartHerePage : public StartHerePage
+// ----------------------------------------------------------------------------
+{
+    //Debugging class to verify code
+    friend class cbDragScroll;
+    dsStartHerePage(wxEvtHandler* owner, wxWindow* parent);
+    ~dsStartHerePage();
+};
 
 // ----------------------------------------------------------------------------
 // Register the plugin
@@ -32,7 +48,6 @@
 namespace
 {
     PluginRegistrant<cbDragScroll> reg(_T("cbDragScroll"));
-
 };
 
 int ID_DLG_DONE = wxNewId();
@@ -109,6 +124,18 @@ void cbDragScroll::OnAttach()
     m_UsableWindows.Add(_T("treeMembers"));
     m_UsableWindows.Add(_T("csTreeCtrl"));  // codesnippets
     m_UsableWindows.Add(_T("sciwindow"));   // editor controls
+    m_UsableWindows.Add(_T("htmlwindow"));  // start here page
+
+    // logs we're interested in for scrolling & zooming
+    // remove when logger.h UpdateSettings() patch accepted
+    //m_UsableLogs.Add(_T("Code::Blocks"));
+    ////-m_UsableLogs.Add(_T("Code::Blocks Debug")); //causes segfault
+    //m_UsableLogs.Add(_T("Search results"));
+    //m_UsableLogs.Add(_T("Build log"));
+    //m_UsableLogs.Add(_T("Build messages"));
+    //m_UsableLogs.Add(_T("Debugger"));
+    //m_UsableLogs.Add(_T("Debugger (debug)"));
+    //m_UsableLogs.Add(_T("Thread search"));
 
     MouseDragScrollEnabled  = true;
     MouseEditorFocusEnabled = false;
@@ -117,8 +144,10 @@ void cbDragScroll::OnAttach()
     MouseDragKey            = 0;
     MouseDragSensitivity    = 5;
     MouseToLineRatio        = 30;
-    //-MouseRightKeyCtrl       = 0 ;
     MouseContextDelay       = 10;
+    MouseWheelZoom          = false;
+    RecordZoomFontSize      = false;
+    m_MouseHtmlFontSize     = 0;
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
@@ -163,8 +192,10 @@ void cbDragScroll::OnAttach()
 	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
 	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
 	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
-	//-cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
 	cfgFile.Read(_T("MouseContextDelay"),       &MouseContextDelay) ;
+	cfgFile.Read(_T("MouseWheelZoom"),          &MouseWheelZoom) ;
+	cfgFile.Read(_T("RecordZoomFontSize"),      &RecordZoomFontSize) ;
+	cfgFile.Read(_T("MouseHtmlFontSize"),       &m_MouseHtmlFontSize, 0) ;
 
 	// Don't allow less than 10 mils on context/scroll delay.
 	if ( MouseContextDelay < 10) { MouseContextDelay = 10;}
@@ -177,8 +208,10 @@ void cbDragScroll::OnAttach()
         LOGIT(_T("MouseDragKey:%d"),            MouseDragKey ) ;
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
-        //-LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
         LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay ) ;
+        LOGIT(_T("MouseWheelZoom:%d"),          MouseWheelZoom ) ;
+        LOGIT(_T("RecordZoomFontSize:%d"),      RecordZoomFontSize ) ;
+        LOGIT(_T("MouseHtmlFontSize:%d"),       m_MouseHtmlFontSize ) ;
     #endif //LOGGING
 
     // Pointer to "Search Results" Window (first listCtrl window)
@@ -207,6 +240,8 @@ void cbDragScroll::OnAttach()
 
 	// register event sink
     Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<cbDragScroll, CodeBlocksEvent>(this, &cbDragScroll::OnAppStartupDone));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<cbDragScroll, CodeBlocksEvent>(this, &cbDragScroll::OnProjectClose));
+    Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<cbDragScroll, CodeBlocksEvent>(this, &cbDragScroll::OnStartShutdown));
 
 	return ;
 }
@@ -241,8 +276,9 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     pDlg->SetMouseDragKey ( MouseDragKey );
     pDlg->SetMouseDragSensitivity ( MouseDragSensitivity );
     pDlg->SetMouseToLineRatio ( MouseToLineRatio );
-    //-pDlg->SetMouseRightKeyCtrl ( MouseRightKeyCtrl );
     pDlg->SetMouseContextDelay ( MouseContextDelay );
+    pDlg->SetMouseWheelZoom ( MouseWheelZoom );
+    pDlg->SetRecordZoomFontSize ( RecordZoomFontSize );
 
     // when the configuration panel is closed with OK, OnDialogDone() will be called
     return pDlg;
@@ -308,8 +344,9 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseDragKey            = pDlg->GetMouseDragKey();
     MouseDragSensitivity    = pDlg->GetMouseDragSensitivity();
     MouseToLineRatio        = pDlg->GetMouseToLineRatio();
-    //- MouseRightKeyCtrl       = pDlg->GetMouseRightKeyCtrl(); removed
     MouseContextDelay       = pDlg->GetMouseContextDelay();
+    MouseWheelZoom          = pDlg->GetMouseWheelZoom();
+    RecordZoomFontSize      = pDlg->GetRecordZoomFontSize() and MouseWheelZoom;
     #ifdef LOGGING
      LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
      LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled);
@@ -318,8 +355,9 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
      LOGIT(_T("MouseDragKey:%d"),            MouseDragKey);
      LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
      LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio);
-     //-LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl);
      LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay);
+     LOGIT(_T("MouseMouseWheelZoom:%d"),     MouseWheelZoom);
+     LOGIT(_T("RecordZoomFontSize:%d"),      RecordZoomFontSize);
      LOGIT(_T("-----------------------------"));
     #endif //LOGGING
 
@@ -347,13 +385,27 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
             AttachRecursively(m_pCB_AppWindow);
             m_bNotebooksAttached = true;
         }
-    }//fi
+    }//if
     else {
         DetachAll();
         m_bNotebooksAttached = false;
-    }//esle
+    }//else
 
     // update/write configuaton file
+    UpdateConfigFile();
+
+}//OnDoConfigRequests
+// ----------------------------------------------------------------------------
+void cbDragScroll::UpdateConfigFile()
+// ----------------------------------------------------------------------------
+{
+
+    // update/write configuaton file
+
+    #if defined(LOGGING)
+    LOGIT(_T("UpdateConfigFile"));
+    #endif
+
     wxFileConfig cfgFile(wxEmptyString,     // appname
                         wxEmptyString,      // vendor
                         m_CfgFilenameStr,   // local filename
@@ -367,10 +419,12 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
 	cfgFile.Write(_T("MouseDragKey"),            MouseDragKey ) ;
 	cfgFile.Write(_T("MouseDragSensitivity"),    MouseDragSensitivity ) ;
 	cfgFile.Write(_T("MouseToLineRatio"),        MouseToLineRatio ) ;
-	//-cfgFile.Write(_T("MouseRightKeyCtrl"),       MouseRightKeyCtrl ) ;
 	cfgFile.Write(_T("MouseContextDelay"),       MouseContextDelay ) ;
+	cfgFile.Write(_T("MouseWheelZoom"),          MouseWheelZoom ) ;
+	cfgFile.Write(_T("RecordZoomFontSize"),      RecordZoomFontSize ) ;
+	cfgFile.Write(_T("MouseHtmlFontSize"),       m_MouseHtmlFontSize ) ;
 
-}
+}//OnDoConfigRequests
 // ----------------------------------------------------------------------------
 void cbDragScroll::OnDragScrollEvent_Dispatcher(wxCommandEvent& event )
 // ----------------------------------------------------------------------------
@@ -455,7 +509,7 @@ void cbDragScroll::OnDragScrollEventRescan(wxCommandEvent& event )
 
     // But first, clean out any dead window pointers. This occurs
     // when a window is deleted w/o being closed first, eg.
-    // ThreadSearch cbStyledTextCtrl preView control.
+    // ThreadSearch cbStyledTextCtrl preView control
     CleanUpWindowPointerArray();
 
     // Rescan for scrollable children starting from the window provided
@@ -496,8 +550,11 @@ void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& event )
 	cfgFile.Read(_T("MouseDragKey"),            &MouseDragKey ) ;
 	cfgFile.Read(_T("MouseDragSensitivity"),    &MouseDragSensitivity ) ;
 	cfgFile.Read(_T("MouseToLineRatio"),        &MouseToLineRatio ) ;
-	//-cfgFile.Read(_T("MouseRightKeyCtrl"),       &MouseRightKeyCtrl) ;
 	cfgFile.Read(_T("MouseContextDelay"),       &MouseContextDelay) ;
+	cfgFile.Read(_T("MouseWheelZoom"),          &MouseWheelZoom) ;
+	cfgFile.Read(_T("RecordZoomFontSize"),      &RecordZoomFontSize) ;
+	cfgFile.Read(_T("RecordZoomFontSize"),      &RecordZoomFontSize) ;
+	cfgFile.Read(_T("MouseHtmlFontSize"),       &m_MouseHtmlFontSize, 0 ) ;
 
 	// Don't allow less than 10 mils on context/scroll delay.
 	if ( MouseContextDelay < 10) { MouseContextDelay = 10;}
@@ -510,8 +567,10 @@ void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& event )
         LOGIT(_T("MouseDragKey:%d"),            MouseDragKey ) ;
         LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity ) ;
         LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio ) ;
-        //-LOGIT(_T("MouseRightKeyCtrl:%d"),       MouseRightKeyCtrl ) ;
         LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay ) ;
+        LOGIT(_T("MouseWheelZoom:%d"),          MouseWheelZoom ) ;
+        LOGIT(_T("RecordZoomFontSize:%d"),      RecordZoomFontSize ) ;
+        LOGIT(_T("MouseHtmlFontSize:%d"),       m_MouseHtmlFontSize ) ;
     #endif //LOGGING
 
 }
@@ -558,6 +617,9 @@ bool cbDragScroll::IsAttachedTo(wxWindow* p)
 {
     if ( wxNOT_FOUND == m_EditorPtrs.Index(p))
         return false;
+    #if defined(LOGGING)
+    LOGIT( _T("IsAttachedTo previously[%p][%s]"), p, p->GetName().c_str());
+    #endif
     return true;
 
 }//IsAttachedTo
@@ -591,7 +653,7 @@ void cbDragScroll::Attach(wxWindow *p)
 
     LOGIT(wxT("cbDS::Attach - attaching to [%s] %p"), p->GetName().c_str(),p);
 
-    //add window to our array, create a mouse event handler
+    // add window to our array, create a mouse event handler
     // and memorize event handler instance
     m_EditorPtrs.Add(p);
 
@@ -621,6 +683,10 @@ void cbDragScroll::Attach(wxWindow *p)
                     (wxObjectEventFunction)(wxEventFunction)
                     (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                      NULL, thisEvtHndlr);
+    p->Connect(wxEVT_MOUSEWHEEL,
+                    (wxObjectEventFunction)(wxEventFunction)
+                    (wxMouseEventFunction)&cbDragScroll::OnMouseWheelEvent,
+                     NULL, this);
 
     #if defined(LOGGING)
      LOGIT(_T("cbDS:Attach Window:%p Handler:%p"), p,thisEvtHndlr);
@@ -696,59 +762,59 @@ wxWindow* cbDragScroll::winExists(wxWindow *parent)
     return NULL;
 }//winExists
 // ----------------------------------------------------------------------------
-void cbDragScroll::Detach(wxWindow* thisEditor)
+void cbDragScroll::Detach(wxWindow* pWindow)
 // ----------------------------------------------------------------------------
 {
-    if ( (thisEditor) && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND))
+    if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
     {
          #if defined(LOGGING)
-          LOGIT(_T("cbDS:Detaching %p"), thisEditor);
+          LOGIT(_T("cbDS:Detaching %p"), pWindow);
          #endif
 
-        //-int edIndex = m_EditorPtrs.Index(thisEditor);
-        //-MouseEventsHandler* thisEvtHandler = (MouseEventsHandler*)m_EventHandlerArray.Item(edIndex);
-        m_EditorPtrs.Remove(thisEditor);
-        //-m_EventHandlerArray.Remove(thisEvtHandler);
+        m_EditorPtrs.Remove(pWindow);
 
         MouseEventsHandler* thisEvtHandler = GetMouseEventsHandler();
-        // If win already deleted, dont worry about receiving events
-	    if ( not winExists(thisEditor) )
+        // If win already deleted, dont worry about disconnectng events
+	    if ( not winExists(pWindow) )
 	    {
-	        LOGIT(_T("cbDS:DetachAll window NOT found %p Handlr: %p"),
-                    thisEditor, thisEvtHandler);
+	        LOGIT(_T("cbDS:Detach window NOT found %p Handlr: %p"),
+                    pWindow, thisEvtHandler);
+            return;
 	    } else {
-            thisEditor->Disconnect(wxEVT_MIDDLE_DOWN,
+            pWindow->Disconnect(wxEVT_MIDDLE_DOWN,
                             (wxObjectEventFunction)(wxEventFunction)
                             (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                              NULL, thisEvtHandler);
-            thisEditor->Disconnect(wxEVT_MIDDLE_UP,
+            pWindow->Disconnect(wxEVT_MIDDLE_UP,
                             (wxObjectEventFunction)(wxEventFunction)
                             (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                              NULL, thisEvtHandler);
-            thisEditor->Disconnect(wxEVT_RIGHT_DOWN,
+            pWindow->Disconnect(wxEVT_RIGHT_DOWN,
                             (wxObjectEventFunction)(wxEventFunction)
                             (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                              NULL, thisEvtHandler);
-            thisEditor->Disconnect(wxEVT_RIGHT_UP,
+            pWindow->Disconnect(wxEVT_RIGHT_UP,
                             (wxObjectEventFunction)(wxEventFunction)
                             (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                              NULL, thisEvtHandler);
-            thisEditor->Disconnect(wxEVT_MOTION,
+            pWindow->Disconnect(wxEVT_MOTION,
                             (wxObjectEventFunction)(wxEventFunction)
                             (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                              NULL, thisEvtHandler);
-            thisEditor->Disconnect(wxEVT_ENTER_WINDOW,
+            pWindow->Disconnect(wxEVT_ENTER_WINDOW,
                             (wxObjectEventFunction)(wxEventFunction)
                             (wxMouseEventFunction)&MouseEventsHandler::OnMouseEvent,
                              NULL, thisEvtHandler);
-        }//fi (not winExists
-
-        //-delete(thisEvtHandler);
+            pWindow->Disconnect(wxEVT_MOUSEWHEEL,
+                            (wxObjectEventFunction)(wxEventFunction)
+                            (wxMouseEventFunction)&cbDragScroll::OnMouseWheelEvent,
+                             NULL, this);
+        }//else
 
         #if defined(LOGGING)
-         LOGIT(_T("Detach: Editor:%p EvtHndlr: %p"),thisEditor,thisEvtHandler);
+         LOGIT(_T("Detach: Editor:%p EvtHndlr: %p"),pWindow,thisEvtHandler);
         #endif
-    }//if (thisEditor..
+    }//if (pWindow..
 }//Detach
 // ----------------------------------------------------------------------------
 void cbDragScroll::DetachAll()
@@ -856,6 +922,54 @@ void cbDragScroll::OnAppStartupDoneInit()
 
     AttachRecursively( m_pCB_AppWindow );
     m_bNotebooksAttached = true;
+
+    // OnWindowOpen() misses the first main.cpp open of the StartHere page.
+    // So find & issue the users font zoom change here.
+    if ( GetMouseWheelZoom() ) do
+    {   // Tell mouse handler to initalize the mouseWheel data
+        // after the htmlWindow is fully initialied
+        const EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(_T("Start here"));
+        if (not sh) break;
+        wxWindow* pWindow = ((dsStartHerePage*)sh)->m_pWin; //htmlWindow
+        if (not pWindow) break;
+        wxMouseEvent wheelEvt(wxEVT_MOUSEWHEEL);
+        wheelEvt.SetEventObject(pWindow);
+        wheelEvt.m_controlDown = true;
+        wheelEvt.m_wheelRotation = 0;
+        pWindow->AddPendingEvent(wheelEvt);
+    }while(0);
+
+}
+// ----------------------------------------------------------------------------
+void cbDragScroll::OnProjectClose(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Ask DragScoll to clean up any orphaned windows and rescan for
+    // (validate) our monitored windows
+
+    // We only want to know if there are no more projects open before
+    // cleaning up
+
+    if (Manager::IsAppShuttingDown())
+        return;
+
+    ProjectsArray* prjary = Manager::Get()->GetProjectManager()->GetProjects();
+    if ( prjary->GetCount() )
+        return;
+
+    // Issue a pending event so we rescan after other events have settled down.
+    DragScrollEvent dsEvt(wxEVT_DRAGSCROLL_EVENT, idDragScrollRescan);
+    dsEvt.SetEventObject( m_pCB_AppWindow);
+    dsEvt.SetString( _T("") );
+    this->AddPendingEvent(dsEvt);
+    return;
+}
+// ----------------------------------------------------------------------------
+void cbDragScroll::OnStartShutdown(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Write out any outstanding config data changes
+    UpdateConfigFile();
 }
 // ----------------------------------------------------------------------------
 void cbDragScroll::OnWindowOpen(wxEvent& event)
@@ -884,15 +998,41 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
         wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
         if ( pWindow )
         {
-            if (pWindow->GetName() ==  _T("SCIwindow"))
-            {   Attach(pWindow);
+            //#if defined(LOGGING)
+            //LOGIT( _T("OnWindowOpen by[%s]"), pWindow->GetName().GetData());
+            //#endif
+            if ( (pWindow->GetName() ==  _T("SCIwindow"))
+                or (pWindow->GetName() ==  _T("htmlWindow")) )
+            {
+                // Clean this address from our array of window pointers.
+                // Some windows are deleted or leaked and never get
+                // a wxEVT_DESTROY (eg., htmlWindow in StartHerePage).
+                Detach(pWindow);
+
                 #ifdef LOGGING
-                    LOGIT( _T("OnWindowOpen Attached:%p name: %s"),
+                    LOGIT( _T("OnWindowOpen Attaching:%p name: %s"),
                             pWindow, pWindow->GetName().GetData() );
                 #endif //LOGGING
+
+                Attach(pWindow);
             }
         }//fi (ed)
-    }//fi m_bNote...
+        if ( pWindow->GetName() ==  _T("htmlWindow"))
+            if ( GetMouseWheelZoom() )
+                {
+                    // Tell mouse handler to initalize the mouseWheel data
+                    // after the htmlWindow is fully initialied
+                    wxMouseEvent wheelEvt(wxEVT_MOUSEWHEEL);
+                    wheelEvt.SetEventObject(pWindow);
+                    wheelEvt.m_controlDown = true;
+                    wheelEvt.m_wheelRotation = 0;
+                    pWindow->AddPendingEvent(wheelEvt);
+                    #if defined(LOGGING)
+                    //LOGIT( _T("OnWindowOpen Issued htmlWindow Zoom event"));
+                    #endif
+                }
+
+    }//if
 
     event.Skip();
 }//OnWindowOpen
@@ -903,7 +1043,9 @@ void cbDragScroll::OnWindowClose(wxEvent& event)
     // wxEVT_DESTROY entry
 
     wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
-
+    #if defined(LOGGING)
+    LOGIT( _T("OnWindowClose[%p]"), pWindow);
+    #endif
     if ( (pWindow) && (m_EditorPtrs.Index(pWindow) != wxNOT_FOUND))
     {   // window is one of ours
         Detach(pWindow);
@@ -914,6 +1056,221 @@ void cbDragScroll::OnWindowClose(wxEvent& event)
     event.Skip();
 }//OnWindowClose
 // ----------------------------------------------------------------------------
+void cbDragScroll::OnMouseWheelEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // This routines does a font zoom when the user uses ctrl-wheelmouse
+    // on one of our monitored tree, list, or text
+    // (non-scintilla) controls.
+
+    cbDragScroll* pDS = cbDragScroll::pDragScroll;
+    if (not pDS->GetMouseWheelZoom() )
+    {   event.Skip(); return; }
+
+    //remember event window pointer
+    wxObject* pEvtObject = event.GetEventObject();
+    wxWindow* pEvtWindow = (wxWindow*)pEvtObject;
+
+    // Ctrl-MouseWheel Zoom for non-scintilla windows
+    if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
+    {
+        bool mouseCtrlKeyDown = event.ControlDown();
+        if (not mouseCtrlKeyDown) {event.Skip(); return;}
+        if ( pEvtWindow->GetName() == _T("SCIwindow"))
+        {event.Skip(); return; }
+        if ( pEvtWindow->GetName() == _T("htmlWindow"))
+        {
+            if ( not OnMouseWheelInHtmlWindowEvent(event))
+                event.Skip();
+            return;
+        }
+
+        #ifdef LOGGING
+        //LOGIT(wxT("OnMouseWheel[%s]"), mouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+        #endif
+
+        int nRotation = event.GetWheelRotation();
+        wxFont ctrlFont = pEvtWindow->GetFont();
+
+        if ( nRotation > 0)
+            ctrlFont.SetPointSize( ctrlFont.GetPointSize()-1);
+        else
+            ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1);
+
+        pEvtWindow->SetFont(ctrlFont);
+
+        // if wxListCtrl, override SetItemFont() because wxWindow->SetFont() won't do it.
+        if ( pEvtWindow->IsKindOf(CLASSINFO(wxListCtrl)) )
+        {
+            wxListCtrl* pListCtrl = (wxListCtrl*)pEvtWindow;
+            for (int i=0; i<pListCtrl->GetItemCount(); ++i)
+            {
+                wxFont font = pListCtrl->GetItemFont(i);
+                font.SetPointSize(ctrlFont.GetPointSize());
+                pListCtrl->SetItemFont( i, font );
+            }//for
+            pEvtWindow->Refresh();
+            pEvtWindow->Update();
+        }//if
+
+        // If Logger, and persistent font size,
+        // update font for all list & text loggers
+        if ( pDS->GetRecordZoomFontSize() )
+            if ( pEvtWindow->IsKindOf(CLASSINFO(wxListCtrl))
+                    or pEvtWindow->IsKindOf(CLASSINFO(wxTextCtrl)) )
+               if ( IsLoggerControl((wxTextCtrl*)pEvtWindow) )
+               {
+                    Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/log_font_size"),ctrlFont.GetPointSize() );
+                    Manager::Get()->GetLogManager()->NotifyUpdate();
+                    // remove this when SetFont/SetItemFont accepted in loggers.cpp
+                    // removed 2008/08/17
+                    //-UpdateAllLoggerWindowFonts(ctrlFont.GetPointSize());
+               }
+    }//if
+
+}//OnMouseWheelEvent
+// ----------------------------------------------------------------------------
+bool cbDragScroll::OnMouseWheelInHtmlWindowEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // This routines does a font zoom when the user uses ctrl-wheelmouse
+    // on one of our monitored html windows
+
+    //-Debugging: to verify we're getting the right window
+    //-const EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(_T("Start here"));
+    //-if (not sh) return false;
+    //-dsStartHerePage* psh = (dsStartHerePage*)sh;
+
+    #if defined(LOGGING)
+    //LOGIT( _T("OnMouseWheelInHtmlWindowEvent Begin"));
+    #endif
+
+    wxHtmlWindow* pEvtWindow = (wxHtmlWindow*)event.GetEventObject();
+    if ( pEvtWindow->GetName() not_eq  _T("htmlWindow"))
+        return false;
+
+    //-Debugging: to verify we get the right window
+    //-if ( psh->m_pWin not_eq (wxHtmlWindow*)pEvtWindow )
+    //-    return false;
+    //-#if defined(LOGGING)
+    //-//LOGIT( _T("Have the StartHerePage[%p]"), psh);
+    //-#endif
+
+    int nRotation = event.GetWheelRotation();
+    wxFont ctrlFont = pEvtWindow->GetFont();
+    if (not m_MouseHtmlFontSize)
+        m_MouseHtmlFontSize = ctrlFont.GetPointSize();
+
+    // a WHEEL Rotation of 0 means just set the last users font.
+    // It's issued by cbDragScroll::OnWindowOpen() to reset users font
+    // when the htmlWindow is re-created.
+    if ( nRotation > 0)
+        ctrlFont.SetPointSize( --m_MouseHtmlFontSize);
+    if ( nRotation < 0)
+        ctrlFont.SetPointSize( ++m_MouseHtmlFontSize);
+    #if defined(LOGGING)
+    //LOGIT( _T("wheel rotation[%d]font[%d]"), nRotation, m_MouseHtmlFontSize);
+    #endif
+
+	int sizes[7] = {};
+	for (int i = 0; i < 7; ++i)
+        sizes[i] = m_MouseHtmlFontSize;
+    //-psh->m_pWin->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]); //debug
+    pEvtWindow->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
+
+    #if defined(LOGGING)
+    //LOGIT( _T("OnMouseWheelInHtmlWindowEvent End"));
+    #endif
+    return true;
+}//OnMouseWheelInHtmlWindowEvent
+// ----------------------------------------------------------------------------
+//  TextCtrlLogger class to allow IsLoggerControl() access to "control" pointer
+// ----------------------------------------------------------------------------
+class dsTextCtrlLogger : public TextCtrlLogger
+{
+   friend class cbDragScroll;
+   public:
+    dsTextCtrlLogger(){};
+    ~dsTextCtrlLogger(){};
+};
+// ----------------------------------------------------------------------------
+bool cbDragScroll::IsLoggerControl(const wxTextCtrl* pControl)
+// ----------------------------------------------------------------------------
+{
+    // Verify that pControl is actually a text or list logger
+    dsTextCtrlLogger* pTextLogger;
+
+    LogManager* pLogMgr = Manager::Get()->GetLogManager();
+    int nNumLogs = 10; //just a guess
+    for (int i=0; i<nNumLogs; ++i)
+    {
+        LogSlot& logSlot = pLogMgr->Slot(i);
+        if (pLogMgr->FindIndex(logSlot.log)== pLogMgr->invalid_log)
+            continue;
+        pTextLogger = (dsTextCtrlLogger*)logSlot.GetLogger();
+        if ( pTextLogger )
+            if ( pTextLogger->control == pControl)
+                return true;
+    }//for
+
+    return false;
+}
+////// ----------------------------------------------------------------------------
+////void cbDragScroll::UpdateAllLoggerWindowFonts(const int pointSize)
+////// ----------------------------------------------------------------------------
+////{
+////    // remove this when SetFont/SetItemFont patch accepted to loggers.h
+////    // removed 2008/08/17
+////
+////    dsTextCtrlLogger* pTextLogger;
+////
+////    LogManager* pLogMgr = Manager::Get()->GetLogManager();
+////    int nNumLogs = 10; //just a guess
+////    for (int i=0; i<nNumLogs; ++i)
+////    {
+////        LogSlot& logSlot = pLogMgr->Slot(i);
+////        if (pLogMgr->FindIndex(logSlot.log)== pLogMgr->invalid_log)
+////            continue;
+////        pTextLogger = (dsTextCtrlLogger*)logSlot.GetLogger();
+////        if ( (not pTextLogger) or (not pTextLogger->control) )
+////            continue;
+////
+////        #if defined(LOGGING)
+////        //LOGIT( _T("Logger Name[%s]"), logSlot.title.c_str());
+////        #endif
+////        // Only update logs with controls
+////        if (wxNOT_FOUND == m_UsableLogs.Index(logSlot.title,false))
+////            continue;
+////
+////        wxFont font;
+////        if ( pTextLogger->control->IsKindOf(CLASSINFO(wxTextCtrl)) )
+////        {
+////            wxTextCtrl* pTextCtrl = pTextLogger->control;
+////            font = pTextCtrl->GetFont();
+////            font.SetPointSize( pointSize);
+////            pTextCtrl->SetFont(font);
+////            continue;
+////        }
+////
+////        if ( pTextLogger->control->IsKindOf(CLASSINFO(wxListCtrl)) )
+////        {
+////            wxListCtrl* pListCtrl = (wxListCtrl*)pTextLogger->control;
+////            font = pListCtrl->GetFont();
+////            font.SetPointSize(pointSize);
+////            pListCtrl->SetFont(font);
+////            for (int i=0; i<pListCtrl->GetItemCount(); ++i)
+////            {   // update font for each list item
+////                font = pListCtrl->GetItemFont(i);
+////                font.SetPointSize(pointSize);
+////                pListCtrl->SetItemFont( i, font );
+////            }//for
+////            pListCtrl->Refresh();
+////            pListCtrl->Update();
+////        }//if
+////    }//for
+////
+////}
+// ----------------------------------------------------------------------------
 //      MOUSE DRAG and SCROLL Routines
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(MouseEventsHandler, wxEvtHandler)
@@ -922,6 +1279,7 @@ BEGIN_EVENT_TABLE(MouseEventsHandler, wxEvtHandler)
 END_EVENT_TABLE()
 // ----------------------------------------------------------------------------
 MouseEventsHandler::~MouseEventsHandler()
+// ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
      LOGIT(_T("MouseEventsHandler dtor"));
@@ -940,10 +1298,6 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
 // ----------------------------------------------------------------------------
 {
 
-    // For efficiency, skip wheel events now
-    if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
-        { event.Skip(); return; }
-
     // Why is an event getting in here when this window doesnt have the OS focus
     wxWindow* pTopWin = ::wxGetActiveWindow();
     if (pTopWin) pTopWin = ::wxGetTopLevelParent(pTopWin);
@@ -953,6 +1307,7 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
 
     //remember event window pointer
     wxObject* pEvtObject = event.GetEventObject();
+    //-wxWindow* pEvtWindow = (wxWindow*)pEvtObject;
     cbDragScroll* pDS = cbDragScroll::pDragScroll;
 
     // if "focus follows mouse" enabled, set focus to window
@@ -1182,11 +1537,11 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
         m_DragMode = DRAG_NONE;
         m_DragStartPos = event.GetPosition();
         #if defined(LOGGING)
-         LOGIT(_T("Down at  X:%d Y:%d"), m_InitX, m_InitY);
+         //LOGIT(_T("Down at  X:%d Y:%d"), m_InitX, m_InitY);
         #endif
 
         wxPoint mouseXY = ((wxWindow*)pEvtObject)->ScreenToClient(wxGetMousePosition());
-        LOGIT(_T("Down MoveTo X:%d Y:%d"), mouseXY.x, mouseXY.y);
+        //LOGIT(_T("Down MoveTo X:%d Y:%d"), mouseXY.x, mouseXY.y);
 
         // wait for possible mouse moves before poping context menu
         for (int i = 0; i < pDS->GetMouseContextDelay();)
@@ -1208,7 +1563,7 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
         else // wait for movement if right mouse key; might be context menu request
         {
             #if defined(LOGGING)
-             LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );
+             //LOGIT(_T("Down delta x:%d y:%d"), scrollx, scrolly );
             #endif
             if (pStyledTextCtrl && (pEvtObject == pStyledTextCtrl) //v0.21
                 && ( ( scrolly > 2) || (scrollx > 2) ))
@@ -1234,16 +1589,6 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
             }//endelse
         }//else wait for movement
 
-        ////        // --------------------------------
-        ////        // Dont do the following on Linux, it kills all context menus
-        ////        // --------------------------------
-        ////        //// If hiding Right mouse keydown from ListCtrls, return v0.22
-        ////        //// RightMouseDown is causing an immediate selection in the control
-        ////        //// This stops it.
-        ////        //-if (pDS->GetMouseRightKeyCtrl()) return; removed
-        ////        //-event.Skip(); //v0.21
-        ////        //-return;
-
         //no mouse movements, so pass off to context menu processing
         event.Skip();
         return;
@@ -1255,7 +1600,7 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
         int lastmode = m_DragMode;
         m_DragMode = DRAG_NONE;
         #if defined(LOGGING)
-         LOGIT( _T("Up") ) ;
+         //LOGIT( _T("Up") ) ;
         #endif
         if (lastmode ==  DRAG_DRAGGING) return;
         // allow non-drag processing
@@ -1284,7 +1629,7 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
          {
             // Start the drag. This will stop the context popup
             #if defined(LOGGING)
-            LOGIT(_T("Drag_Start"));
+            //LOGIT(_T("Drag_Start"));
             #endif
             m_DragMode = DRAG_DRAGGING;
          }
@@ -1332,23 +1677,28 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
         {
                 pStyledTextCtrl->LineScroll (scrollx,scrolly);
         }
-        else //use control scrolling
+        else //use wxControl scrolling
         {
-            // ---------------------------------
-            //The following works in the BuildLog, but now the SearchResults
-            // ---------------------------------
             //use wxTextCtrl scroll for y scrolling
-            if ( scrolly )//&& (classname == wxT("wxTextCtrl")) )
-            {   //LOGIT(wxT("ScrollText x:%d y:%d"),scrollx, scrolly );
+            if ( scrolly && pEvtObject->IsKindOf(CLASSINFO(wxTextCtrl)))
+            {
+                #if defined(LOGGING)
+                //LOGIT(wxT("wxTextCtrl scroll[%d]"), scrolly);
+                #endif
                 ((wxWindow*)pEvtObject)->ScrollLines(scrolly);
             }
-            // Following does not work. GTK does not scroll wxListCtrl
-            //else  // use listCtrl for x scrolling
-            //{    LOGIT(wxT("ScrollList x:%d y:%d"),scrollx, scrolly );
-            //    ((wxListCtrl*)m_pEvtObject)->ScrollList(scrollx,scrolly);
-            //}
-        }//esle
-    }//esle fi (event.Dragging() && m_dragMode != DRAG_NONE)
+            else  // use listCtrl for x scrolling
+            {
+                //NOTE: wxListCtrl->ScrollList(x,y) is not supported under Linux
+                // This is here just in case it gets supported by wxWidgets
+                #if defined(LOGGING)
+                //LOGIT(wxT("wxListCtrl scroll s[%d]y[%d]"), scrollx, scrolly);
+                #endif
+                ((wxListCtrl*)pEvtObject)->ScrollList(scrollx<<2,scrolly);
+            }
+        }//else
+
+    }//else if (event.Dragging() && m_dragMode != DRAG_NONE)
 
     // pass on the event
     event.Skip();

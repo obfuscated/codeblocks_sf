@@ -51,6 +51,14 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	bSizer1->Add( bSizer6, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
+	wxBoxSizer* MouseWheelSizer1;
+	MouseWheelSizer1 = new wxBoxSizer( wxHORIZONTAL );
+	MouseWheelZoom = new wxCheckBox( this, wxID_ANY, wxT("MouseWheelZoom"), wxDefaultPosition, wxDefaultSize, 0 );
+	MouseWheelSizer1->Add( MouseWheelZoom, 0, wxALL, 5 );
+	RecordZoomFontSize = new wxCheckBox( this, wxID_ANY, wxT("Remember Log Zoom"), wxDefaultPosition, wxDefaultSize, 0 );
+	MouseWheelSizer1->Add( RecordZoomFontSize, 0, wxALL, 5 );
+	bSizer1->Add( MouseWheelSizer1, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 
