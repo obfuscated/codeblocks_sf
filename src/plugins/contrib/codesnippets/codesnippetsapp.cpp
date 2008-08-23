@@ -52,7 +52,6 @@
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
 #include "messagebox.h"
-#include "memorymappedfile.h"
 #include "codesnippetsevent.h"
 #include "dragscroll.h"
 #include "dragscrollevent.h"
@@ -112,6 +111,10 @@ END_EVENT_TABLE()
 bool CodeSnippetsApp::OnInit()
 // ----------------------------------------------------------------------------
 {
+
+    //stop wxMessageBox's when running release version
+    wxLog::EnableLogging(false);
+
     // Initialize the one and only global
     // Must be done first to allocate config file
     //-g_pConfig = new CodeSnippetsConfig;
@@ -245,7 +248,8 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     GetConfig()->m_appIsDisabled = 0;
     m_bOnActivateBusy = 0;
     GetConfig()->SetKeepAlivePid(0);
-    m_pMappedFile = 0;
+    //-m_pMappedFile = 0;
+    m_KeepAliveFileName = wxEmptyString;
     m_pFilesHistory = 0;
 
     wxStandardPaths stdPaths;
@@ -257,6 +261,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     GetConfig()->pMainFrame = this;
     //-GetConfig()->AppName = wxTheApp->GetAppName();
     GetConfig()->AppName = wxT("codesnippets");
+
     #if LOGGING
      wxWindow* m_pAppWin = this;
      wxLog::EnableLogging(true);
@@ -273,8 +278,8 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
 
     // If invoked from CodeBlocks? (as opposed to being standalone)
     // there'll be a "--KeepAlivePid=<pid>" argument. This is the CB pid which
-    // has been written to /temp/cbsnippetspid<pid>.plg memory mapped file.
-    // When CB wants us to terminate, the pid will be nulled out.
+    // has been written to /temp/cbsnippetspid<pid>.plg keepAlive file.
+    // When CB wants us to terminate, the file will disappear.
     if ( wxTheApp->argc >1 ) do
     {
         wxString keepAliveArg = wxTheApp->argv[1];
@@ -372,9 +377,9 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
      #endif
     GetConfig()->SettingsLoad();
     // This is an application, force External mode
-    if ( GetConfig()->SettingsWindowState not_eq _T("External") )
+    if ( GetConfig()->GetSettingsWindowState() not_eq _T("External") )
     {
-        GetConfig()->SettingsWindowState = _T("External");
+        GetConfig()->SetSettingsWindowState( _T("External") );
         //-GetConfig()->SettingsSave();
         GetConfig()->SettingsSaveString(wxT("WindowState"), _T("External") );
     }
@@ -413,7 +418,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
         const wxString name = wxString::Format(wxT("CodeSnippets-%s"), wxGetUserId().c_str());
         m_checker = new wxSingleInstanceChecker(name);
 
-        if ( m_checker->IsAnotherRunning() )
+        if ( m_checker->IsAnotherRunning() ) do
         {   // Previous instance is running.
             // Minimize then restore the first instance so pgm appears on active screen
             // Got the first instance handle of the window from the config file
@@ -424,19 +429,30 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
                 pFirstInstance = (HWND)val;
             if (pFirstInstance && ::IsWindow(pFirstInstance) )
             {
-                //wxMessageBox(wxT("CodeSnippets is already running."), name);
-                // The following is necessary if the window is in another virtual screen
-                // but it unfortunately returns to the original virtual screen when the
-                // screen is next switched.
-                ::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
-                ::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
-                ::BringWindowToTop(pFirstInstance);
-                SwitchToThisWindow( pFirstInstance, true );
+                wxString msg = wxT("Another CodeSnippets is already running from this folder.\n");
+                msg << _T("Starting multiple CodeSnippets could scramble this configuration file.\n");
+                msg << _T("Run multiple CodeSnippets anyway?\n");
+                int answer = messageBox( msg, _T("Multiple CodeSnippets"),wxYES_NO );
+                if ( answer == wxYES)
+                    break;
+
+                // The following does not work well; esp. when the first session of
+                // CodeSnippets is in another virtual screen. It doesnt show to the user
+                // the first session.
+                ////wxMessageBox(wxT("CodeSnippets is already running."), name);
+                //// The following is necessary if the window is in another virtual screen
+                //// but it unfortunately returns to the original virtual screen when the
+                //// screen is next switched.
+                //::ShowWindow(pFirstInstance,SW_FORCEMINIMIZE);  //minimize the window
+                //::ShowWindow(pFirstInstance,SW_RESTORE);        //restore the window
+                //::BringWindowToTop(pFirstInstance);
+                //SwitchToThisWindow( pFirstInstance, true );
+
+                // Tell app class we're terminating
+                GetConfig()->m_sWindowHandle = wxEmptyString;
+                return ;
             }
-            // Tell app class we're terminating
-            GetConfig()->m_sWindowHandle = wxEmptyString;
-            return ;
-        }//fi m_checker
+        }while(0);//fi m_checker
     #endif //WXMSW
 
     // This is first instance of program
@@ -450,7 +466,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     //  SDK initialization
     // -------------------------------
     if (not InitializeSDK() )
-    {   // Tell app class we're terminating
+    {   // Got an error.Tell app class we're terminating
         GetConfig()->m_sWindowHandle = wxEmptyString;
         return;
     }
@@ -539,6 +555,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     // Setup KeepAlive check
     // -------------------------------------
     // we may have been invoked with a parameter of KeepAlivePid=####
+    // We terminate when the Pid no longer exists.
     if ( wxTheApp->argc >1 ) do
     {
         wxString keepAliveArg = wxTheApp->argv[1];
@@ -551,24 +568,18 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
          LOGIT( _T("App: KeepAlivePid is [%lu]"), GetConfig()->GetKeepAlivePid() );
          #endif
 
-        // Find the "semaphore" file and map it to memory, when the plugin
-        // clears the KeepAlivePid string, we'll terminate.
-        // To memory map a file there must exists a non-zero length file
         wxString tempDir = GetConfig()->GetTempDir();
-        wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
+        m_KeepAliveFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
          #if defined(LOGGING)
-         LOGIT( _T("mappedFileName[%s]"),mappedFileName.GetData() );
+         LOGIT( _T("KeepAlive FileName[%s]"),m_KeepAliveFileName.GetData() );
          #endif
-        // Map the file
-        m_pMappedFile = new  wxMemoryMappedFile( mappedFileName, true);
-        if ( not m_pMappedFile )  break;
-        if ( not m_pMappedFile->IsOk() )
+        if ( not ::wxFileExists(m_KeepAliveFileName) )
         {
-            messageBox(wxString::Format(wxT("Error %d allocating\n%s\n\n"), m_pMappedFile->GetLastError(), mappedFileName.GetData() ));
-            delete m_pMappedFile;
-            m_pMappedFile = 0;
+            messageBox(wxString::Format(wxT("Error: Did not find KeepAlive File[%s]"), m_KeepAliveFileName.GetData() ));
+            m_KeepAliveFileName = wxEmptyString;
             break;
         }
+
 
         if ( GetConfig()->GetKeepAlivePid() )
         {    StartKeepAliveTimer( 2 );
@@ -702,19 +713,20 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
             if ( GetSnippetsWindow()->GetFileChanged() )
                 GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
 
+    // Save CodeSnippets.ini file
+    //-GetConfig()->SetExternalPersistentOpen(false);
     GetConfig()->GetSnippetsWindow()->OnClose(event);
 
-    // Make sure user cannot re-enable CodeSnippets until a CB restart
+    // Make sure user cannot re-enable CodeSnippets until a restart
     GetConfig()->m_appIsShutdown = true;
 
-    ReleaseMemoryMappedFile();
+    RemoveKeepAliveFile();
     // save recently opened indexes
     TerminateRecentFilesHistory();
 
     // Ask SDK to write config file
     if ( Manager::Get() )
     {
-        //asm("int3"); /*trap*/
         Manager::Free();
         if (wxFileExists(m_ConfigFolder+_T("/default.conf.backup")) )
             wxRemoveFile(m_ConfigFolder+_T("/default.conf.backup")) ;
@@ -866,20 +878,16 @@ void CodeSnippetsAppFrame::OnActivate(wxActivateEvent& event)
 void CodeSnippetsAppFrame::OnTimerAlarm(wxTimerEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // Check the memory mapped file to see if CodeSnippets plugin
-    // cleared its pid. If so, terminate
+    // Check the keepAlive file to see if CodeSnippets plugin
+    // deleted it. If so, terminate
 
-    char* pMappedData = (char*)m_pMappedFile->GetStream();
-    long lPluginPid = atol(pMappedData);
-    wxString keepAlivePid(wxString::Format(wxT("%lu"),GetConfig()->GetKeepAlivePid()));
-    // LOGIT( _T("lPluginPid[%lu] KeepAlivePid[%lu]"), lPluginPid, m_lKeepAlivePid );
-
-
-    if ( lPluginPid != GetConfig()->GetKeepAlivePid() )
+    // Check to see if our KeepAlive file still exixts
+    if ( not ::wxFileExists(m_KeepAliveFileName) )
     {
-        ReleaseMemoryMappedFile();
-        wxCloseEvent evtClose;
-        OnClose(evtClose);
+        RemoveKeepAliveFile();
+        wxCloseEvent evtClose(wxEVT_CLOSE_WINDOW,GetId());
+        evtClose.SetEventObject(this);
+        this->AddPendingEvent(evtClose);
         event.Skip();
         return;
     }
@@ -887,9 +895,10 @@ void CodeSnippetsAppFrame::OnTimerAlarm(wxTimerEvent& event)
     // if our creator pid is gone, terminate this pgm
     if ( GetConfig()->GetKeepAlivePid()  && (not wxProcess::Exists( GetConfig()->GetKeepAlivePid() )) )
     {
-        ReleaseMemoryMappedFile();
-        wxCloseEvent evtClose;
-        OnClose(evtClose);
+        RemoveKeepAliveFile();
+        wxCloseEvent evtClose(wxEVT_CLOSE_WINDOW,GetId());
+        evtClose.SetEventObject(this);
+        this->AddPendingEvent(evtClose);
         event.Skip();
         return;
     }
@@ -914,14 +923,17 @@ void CodeSnippetsAppFrame::OnIdle(wxIdleEvent& event)
     { sb->SetStatusText( versionStr);
     }
 
-    // see if user changed from "external" to "docked" or "floating"
+    // See if user changed from "external" to "docked" or "floating"
+    // This happens when user changes the state in the settings dialog
     if ( GetConfig()->m_bWindowStateChanged )
     {
         // Don't close down if file checking is active
         if (m_bOnActivateBusy)
             {event.Skip(); return;}
-        wxCloseEvent evtClose;
-        OnClose(evtClose);
+        wxCloseEvent evtClose(wxEVT_CLOSE_WINDOW, GetId());
+        //-OnClose(evtClose);
+        evtClose.SetEventObject(this);
+        this->AddPendingEvent( evtClose );
         GetConfig()->m_bWindowStateChanged = false;
     }
 
@@ -955,20 +967,22 @@ void CodeSnippetsAppFrame::OnEventTest(wxCommandEvent &event)
 
 }
 // ----------------------------------------------------------------------------
-bool CodeSnippetsAppFrame::ReleaseMemoryMappedFile()
+bool CodeSnippetsAppFrame::RemoveKeepAliveFile()
 // ----------------------------------------------------------------------------
 {
     // Unmap & delete the memory mapped file used to communicate with the
     // external snippets process
-    if ( not m_pMappedFile ) return true;
-    if ( m_pMappedFile->IsOk() )
-        m_pMappedFile->UnmapFile();
-    delete m_pMappedFile;
-    m_pMappedFile = 0;
-    wxString tempDir = GetConfig()->GetTempDir();
-    wxString keepAlivePid(wxString::Format(wxT("%lu"), GetConfig()->GetKeepAlivePid()));
-    wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
-    bool result = ::wxRemoveFile( mappedFileName );
+    ////if ( not m_pMappedFile ) return true;
+    ////if ( m_pMappedFile->IsOk() )
+    ////    m_pMappedFile->UnmapFile();
+    ////delete m_pMappedFile;
+    ////m_pMappedFile = 0;
+    ////wxString tempDir = GetConfig()->GetTempDir();
+    ////wxString keepAlivePid(wxString::Format(wxT("%lu"), GetConfig()->GetKeepAlivePid()));
+    ////wxString mappedFileName = tempDir + wxT("/cbsnippetspid") +keepAlivePid+ wxT(".plg");
+    ////bool result = ::wxRemoveFile( mappedFileName );
+
+    bool result = ::wxRemoveFile( m_KeepAliveFileName );
     return result;
 }
 // ----------------------------------------------------------------------------
@@ -1141,8 +1155,9 @@ void CodeSnippetsAppFrame::OnRecentFileReopen(wxCommandEvent& event)
     }
     else
     {   // file not found
-        wxString msg(wxString::Format(wxT("File not found:\n%s\n\n"),fname.GetData()));
-        messageBox( msg );
+        //-wxString msg(wxString::Format(wxT("File not found:\n%s\n\n"),fname.GetData()));
+        //-messageBox( msg );
+        AskToRemoveFileFromHistory(m_pFilesHistory, id);
     }
 }//OnFileReopen
 // ----------------------------------------------------------------------------
@@ -1155,6 +1170,17 @@ void CodeSnippetsAppFrame::OnRecentFileClearHistory(wxCommandEvent& event)
     }
 
 }//OnFileOpenRecentClearHistory
+// ----------------------------------------------------------------------------
+void CodeSnippetsAppFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id)
+// ----------------------------------------------------------------------------
+{
+    if (cbMessageBox(_("Can't open file.\nDo you want to remove it from the recent files list?"),
+                    _("Question"),
+                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+    {
+        hist->RemoveFileFromHistory(id);
+    }
+}//AskToRemoveFileFromHistory
 // ----------------------------------------------------------------------------
 bool CodeSnippetsAppFrame::InitializeSDK()
 // ----------------------------------------------------------------------------

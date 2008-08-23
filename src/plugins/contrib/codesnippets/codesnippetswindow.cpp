@@ -178,6 +178,8 @@ BEGIN_EVENT_TABLE(CodeSnippetsWindow, wxPanel)
 
 END_EVENT_TABLE()
 // ////////////////////////////////////////////////////////////////////////////
+//  SnippetsDropTarget
+// ////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
 bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 // ----------------------------------------------------------------------------
@@ -229,6 +231,8 @@ bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 	}
 }
 // ////////////////////////////////////////////////////////////////////////////
+//  CodeSnippetsWindow
+// ////////////////////////////////////////////////////////////////////////////
 // ----------------------------------------------------------------------------
 CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 // ----------------------------------------------------------------------------
@@ -264,14 +268,8 @@ CodeSnippetsWindow::CodeSnippetsWindow(wxWindow* parent)
 CodeSnippetsWindow::~CodeSnippetsWindow()
 // ----------------------------------------------------------------------------
 {
-	// Save the snippets
-////	if ( GetSnippetsTreeCtrl() && GetFileChanged() )
-////        GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
-////
-////    if (pTiXmlDoc) { delete pTiXmlDoc; pTiXmlDoc = 0;}
-////  	GetConfig()->pSnippetsSearchCtrl = 0;
     #if defined(LOGGING)
-    LOGIT( _T("~CodeSnippetsWindow:return"));
+    //LOGIT( _T("~CodeSnippetsWindow:return"));
     #endif
 }
 // ----------------------------------------------------------------------------
@@ -298,7 +296,8 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
 {
     // EVT_CLOSE is not generated from wxAUI windows
     // This routine is called by the App OnClose routines
-    // on plugin OnRelease();
+    // and plugin OnRelease();
+    // This is because CodeSnippetsWindow is a wxPanel and not a wxEventHandler
 
     if ( GetConfig()->m_appIsShutdown) { event.Skip(); return;}
 
@@ -895,7 +894,10 @@ void CodeSnippetsWindow::OnBeginLabelEdit(wxTreeEvent& event)
 void CodeSnippetsWindow::OnMnuLoadSnippetsFromFile(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-	wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
+    // Allow user to specify new filename or old file to load
+	//-wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
+	wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString,
+        _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxOPEN);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         LOGIT(wxT("LoadingFile:%s"),dlg.GetPath().c_str());
@@ -1270,13 +1272,13 @@ void CodeSnippetsWindow::OnMnuSettings(wxCommandEvent& event)
 
     // Invoke the DragScroll settings dialog if we're running as External Application
     if ( GetConfig()->IsApplication() )
-    if (GetConfig()->SettingsWindowState == _T("External"))
-    {   // Invoke the DragScroll configuration for CodeSnippets. Use position of
-        // dlg to position DragScroll dlg also.
-        DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT, idDragScrollInvokeConfig);
-        dsevt.SetEventObject(pDlg);
-        GetConfig()->GetDragScrollEvtHandler()->ProcessEvent(dsevt);
-    }
+        if (GetConfig()->GetSettingsWindowState() == _T("External"))
+        {   // Invoke the DragScroll configuration for CodeSnippets. Use position of
+            // dlg to position DragScroll dlg also.
+            DragScrollEvent dsevt(wxEVT_DRAGSCROLL_EVENT, idDragScrollInvokeConfig);
+            dsevt.SetEventObject(pDlg);
+            GetConfig()->GetDragScrollEvtHandler()->ProcessEvent(dsevt);
+        }
 
     delete pDlg;
 }
@@ -1507,7 +1509,7 @@ void CodeSnippetsWindow::OnCodeSnippetsNewIndex(CodeSnippetsEvent& event)
 // ----------------------------------------------------------------------------
 {
     // User loaded a new .xml index file
-    // This event sink is used to test that the event actually
+    // This event sink is used to debug/test that the event actually
     // propagated up the event handlers correctly.
 
     wxString snippetString = event.GetSnippetString();

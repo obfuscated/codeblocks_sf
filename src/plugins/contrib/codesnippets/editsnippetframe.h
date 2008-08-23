@@ -37,7 +37,8 @@ class CodeBlocksEvent;
 class EditSnippetFrame : public wxFrame
 // ----------------------------------------------------------------------------
 {
-    friend class EditFrameDropTarget;
+    friend class EditFrameDropTextTarget;
+    friend class EditFrameDropFileTarget;
 
     public:
         //! constructor
@@ -106,10 +107,12 @@ class EditSnippetFrame : public wxFrame
         void OnConvertEOL (wxCommandEvent &event);
         void OnEditHighlightMode(wxCommandEvent& event);
         void CreateMenuViewLanguage(wxMenu* menuHilight);
+        void OpenDroppedFiles(const wxArrayString& arrayData);
 
         ScbEditor*      m_pScbEditor;
         wxColour        m_SysWinBkgdColour;    //(pecan 2007/3/27)
-		wxString        m_EditFileName;
+		wxString        m_EditFileName;        // filename if physical file
+		wxString        m_TmpFileName;         // filename if file from xml text
         wxString        m_EditSnippetLabel;
         wxString        m_EditSnippetText;
 

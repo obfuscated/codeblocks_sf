@@ -73,7 +73,6 @@ class CodeSnippetsApp : public wxApp
 #include "snippetsconfig.h"
 #include "codesnippetswindow.h"
 
-class wxMemoryMappedFile;
 class CodeSnippetsEvent;
 class cbDragScroll;
 
@@ -113,11 +112,12 @@ class CodeSnippetsAppFrame: public wxFrame
 
         void StartKeepAliveTimer(int secs){ m_Timer.Start( secs*1000, wxTIMER_ONE_SHOT); }
         void StopKeepAliveTimer(){ m_Timer.Stop();}
-        bool ReleaseMemoryMappedFile();
+        bool RemoveKeepAliveFile();
 
         void InitializeRecentFilesHistory();
         void TerminateRecentFilesHistory();
         void AddToRecentFilesHistory(const wxString& FileName);
+        void AskToRemoveFileFromHistory(wxFileHistory* hist, int id);
 
         bool InitializeSDK();
         bool LoadConfig();
@@ -131,7 +131,7 @@ class CodeSnippetsAppFrame: public wxFrame
 
         wxSingleInstanceChecker*  m_checker ;
         int                 m_bOnActivateBusy;
-        wxMemoryMappedFile* m_pMappedFile;
+        wxString            m_KeepAliveFileName;
         wxFileHistory*      m_pFilesHistory;
         bool                m_bInitXRC_Result;
         EditorManager*      m_pEdMan;

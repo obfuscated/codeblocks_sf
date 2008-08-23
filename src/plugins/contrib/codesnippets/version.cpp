@@ -449,7 +449,8 @@ AppVersion::~AppVersion()
 //  Commit 1 3.72 2008/07/20
 //          71) Disable Find and FindInFiles in FullSearch Preview window to prevent crashes
 //          72) Disable FindInFiles in FullSearch editors (causing crashes)
-//  Commit 1 3.?
+// ----------------------------------------------------------------------------
+//  Commit 1 3.80 2008/07/30
 //          73) Center find dlg in parent frame
 //          74) Invoke CheckForModifiedFiles in EditSnippetFrame EVT_ACTIVATE
 //              Invoke CheckForModifiedFiles in ThreadSearchFrame EVT_ACTIVATE
@@ -460,21 +461,44 @@ AppVersion::~AppVersion()
 //          79) Fixed: Loop caused by cross-frame event posting in EVT_ACTIVATE routines
 //          80) Speed up .cbp compile time by sharing .obj directory betwn plugin & standalone
 // ----------------------------------------------------------------------------
+//  Commit 1 3.--
+//          81) App:Added RemoveFileFromRecentHistory routine
+//          82) Allow user to specify new filename at "Load Index File..."
+//          83) Adjust CodeSnippet TreeCtrl font via Ctrl-MouseWheel
+//          84) Adjust ThreadSearch log font via Ctrl-MouseWheel
+//          85) Delete temporary files created when editing xml text items
+//          86) After external file mod and reload, call ScbEditor::SetEditorStyleAfterFileOpen()
+//              to re-establish margin style, width, etc.
+//          87) Add file dragndrop to EditSnippetFrame
+//          88) Add wxLog::EnableLog(false) for release app to stop wxWidget wxMessageBox's
+//              when user starts CodeSnippets.exe without a CodeBlocks .conf file.
+//          89) Removed memoryMappedFile code for compatibility with non-linux unixes
+//          90) Fixed missing events when CS switched from External to docked/floating
+//          91) Auto start CS app if running in previous session.
+//              Auto show docked or floating when switching from app
+//          92) Ask user if s/he really wants multiple invocations of CS from same folder.
+// ----------------------------------------------------------------------------
 //  Bugs
-//        2008/04/8
-//          If floating wxAUI window docked with Edit's open, they disappear but
-//            void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)
+//      2008/04/8
+//          If floating wxAUI window is docked with Edit's open, they disappear. But
+//            "void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)"
 //            still thinks they're open, but cannot show them.
 //            Eg. Drag docked CodeSnippets to floating. Open a file. Re-dockit.
 //            Editors disappear. Show(true) didnt work;
-//        2008/07/11
-//          zero length edit files left in /temp after FullSearch edit of .xml snippet ??
+//      2008/08/21
+//          First drag of item to a category does not work sometimes. second does.
+//
 // ----------------------------------------------------------------------------
 //  ToDo
+//          Update Wiki for FullSearch instructions
 //          App:Allow SeparateEditor configuration
 //          App:Allow user to re-clone default.conf
 //          Enable Editor context options, esp. ThreadSearch item
-//          File/New menu choice
+//          Port messageBox fixes from cbEdit
+//          App:Put Ctrl-MouseWheel in local DragScroll
+//          Remember Font size from last use, set it in initialization
+//          Use cbEditor API
+//          keybinder capability
 //
 //  CodeSnippets
 //          Search should continue to next matching item, not just stop (F3?)
@@ -491,6 +515,5 @@ AppVersion::~AppVersion()
 //              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
 //              bug was reported way back in wxGTK 2.1.0
 //          Dragging file out of file panels does not work on Linux. Causes GTK to freeze.
-
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

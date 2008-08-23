@@ -86,6 +86,8 @@ protected:
 	/** Dynamic events disconnection. */
 	virtual void DisconnectEvents(wxEvtHandler* pEvtHandler);
 
+    void OnMouseWheelEvent(wxMouseEvent& event);
+
 	wxListCtrl* m_pListLog;
 	long m_LastLeftMouseClickIndex;
 };

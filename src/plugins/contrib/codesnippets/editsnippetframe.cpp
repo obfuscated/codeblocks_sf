@@ -134,33 +134,61 @@ BEGIN_EVENT_TABLE (EditSnippetFrame, wxFrame)
 
 END_EVENT_TABLE ()
 // ----------------------------------------------------------------------------
-class EditFrameDropTarget : public wxTextDropTarget
+class EditFrameDropTextTarget : public wxTextDropTarget
 // ----------------------------------------------------------------------------
 {
     // Drop target used to place dragged data into Properties dialog
 
 	public:
-		EditFrameDropTarget(EditSnippetFrame* window) : m_Window(window) {}
-		~EditFrameDropTarget() {}
+		EditFrameDropTextTarget(EditSnippetFrame* window) : m_Window(window) {}
+		~EditFrameDropTextTarget() {}
 		bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
 	private:
 		EditSnippetFrame* m_Window;
 };
 // ----------------------------------------------------------------------------
-bool EditFrameDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+bool EditFrameDropTextTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 // ----------------------------------------------------------------------------
 {
-    // Put dragged text into SnippetTextCtrl
+    // Put dragged text into TextCtrl
     #ifdef LOGGING
      LOGIT( _T("Dragged Data[%s]"), data.GetData() );
     #endif //LOGGING
     //m_Window->m_pEdit->WriteText(data);
-////    m_Window->m_pEdit->AddText(data);
+    //    m_Window->m_pEdit->AddText(data);
     m_Window->m_pScbEditor->GetControl()->AddText(data);
     return true;
 
 } // end of OnDropText
+// ----------------------------------------------------------------------------
+class EditFrameDropFileTarget : public wxFileDropTarget
+// ----------------------------------------------------------------------------
+{
+    // Drop target used to place dragged data into Properties dialog
 
+	public:
+		EditFrameDropFileTarget(EditSnippetFrame* window) : m_Window(window) {}
+		~EditFrameDropFileTarget() {}
+    bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
+	private:
+		EditSnippetFrame* m_Window;
+};
+// ----------------------------------------------------------------------------
+bool EditFrameDropFileTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& arrayData)
+// ----------------------------------------------------------------------------
+{
+    //NOTE: putting breakpoints in this routine will hang CB
+    // From a console do "gdb cbEdit.exe" instead
+    //asm("int3"); /*trap*/
+
+    if ( arrayData.GetCount())
+        m_Window->OpenDroppedFiles(arrayData);
+    return true;
+
+} // end of OnDropText
+
+// ----------------------------------------------------------------------------
+//  EditSnippetFrame
 // ----------------------------------------------------------------------------
 EditSnippetFrame::EditSnippetFrame(const wxTreeItemId  TreeItemId, int* pRetcode )
 // ----------------------------------------------------------------------------
@@ -186,6 +214,7 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
     m_bOnActivateBusy = 0;
     m_ActiveEventId = 0;
     m_OncloseWindowEntries = 0;
+    m_TmpFileName = wxEmptyString;
 
     // Create EditorManager for this frame and following calls
     m_pEditorManager = new SEditorManager(this);
@@ -230,10 +259,10 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
     }
     else
     {
-        //need temp file for snippet text
-        wxString tmpFilename = wxFileName::GetTempDir();
-        tmpFilename << _T("/")<< m_EditSnippetLabel << _T(".txt");
-        m_pScbEditor = GetEditorManager()->New( tmpFilename );
+        // Need temp file for snippet text
+        m_TmpFileName = wxFileName::GetTempDir();
+        m_TmpFileName << _T("/")<< m_EditSnippetLabel << _T(".txt");
+        m_pScbEditor = GetEditorManager()->New( m_TmpFileName );
         m_pScbEditor->GetControl()->SetText(m_EditSnippetText);
         // SetText() marked the file as modified
         m_pScbEditor->SetModified(false);
@@ -294,12 +323,10 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
                 (CodeBlocksEventFunction)&EditSnippetFrame::OncbEditorSave,
                 NULL, this);
 
-    //SetDropTarget(new EditFrameDropTarget(this));
-
+    SetDropTarget(new EditFrameDropFileTarget(this));
 	m_pScbEditor->SetFocus();
 
 }
-
 // ----------------------------------------------------------------------------
 EditSnippetFrame::~EditSnippetFrame()
 // ----------------------------------------------------------------------------
@@ -323,6 +350,12 @@ EditSnippetFrame::~EditSnippetFrame()
         }
         RemoveEventHandler(m_pEditorManager);
         delete m_pEditorManager;
+    }
+    // Remove any editor temporary file
+    if (not m_TmpFileName.IsEmpty())
+    {
+        ::wxRemoveFile( m_TmpFileName );
+        m_TmpFileName = wxEmptyString;
     }
 }
 // ----------------------------------------------------------------------------
@@ -1168,6 +1201,31 @@ void EditSnippetFrame::OnFrameActivated(wxActivateEvent& event)
     event.Skip();
     return;
 }
+// ----------------------------------------------------------------------------
+void EditSnippetFrame::OpenDroppedFiles( const wxArrayString& arrayData)
+// ----------------------------------------------------------------------------
+{
+    //NOTE: putting breakpoints in this routine will hang CB
+    // From a console do "gdb cbEdit.exe" instead
+    //asm("int3"); /*trap*/
 
+
+    for( int i=0; i<(int)arrayData.GetCount(); ++i)
+    {
+        #ifdef LOGGING
+         LOGIT( _T("Dragged File[%s]"), arrayData.Item(i).c_str() );
+        #endif //LOGGING
+        wxString filename = arrayData.Item(i);
+        if ( wxFileExists(filename) )
+        {
+            ScbEditor* sed = GetEditorManager()->Open( filename );
+            if ( sed )
+            {
+                //FIXME:AddToRecentFilesHistory( filename );
+                //FIXME:DoUpdateStatusBar();
+            }
+        }//if exists
+    }//for
+}
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

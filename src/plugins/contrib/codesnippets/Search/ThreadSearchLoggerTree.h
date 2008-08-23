@@ -80,6 +80,9 @@ protected:
 	/** Dynamic events disconnection. */
 	virtual void DisconnectEvents(wxEvtHandler* pEvtHandler);
 
+    void OnMouseWheelEvent(wxMouseEvent& event);
+
+
 	wxTreeCtrl* m_pTreeLog;
 	bool        m_FirstItemProcessed; // Used to filter wxTree events and process useful ones only.
 };

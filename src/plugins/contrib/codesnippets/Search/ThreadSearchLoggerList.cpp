@@ -92,6 +92,35 @@ void ThreadSearchLoggerList::SetListColumns()
 	m_pListLog->InsertColumn(3, wxT("Text"),      wxLIST_FORMAT_LEFT, textColSize);
 }
 // ----------------------------------------------------------------------------
+void ThreadSearchLoggerList::OnMouseWheelEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Ctrl-MouseWheel rotation changes treeCtrl font
+    //-wxWindow* pParent = m_pListLog->GetParent();
+    //wxWindow* pParent = (wxWindow*)event.GetEventObject();
+    wxWindow* pParent = m_pListLog;
+	if ( not pParent ) return;
+
+    bool mouseCtrlKeyDown = event.ControlDown();
+    #ifdef LOGGING
+     //LOGIT(wxT("treeCtrl:OnMouseWheel[%s]"), m_MouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+    #endif
+    if (not mouseCtrlKeyDown) {event.Skip(); return;}
+
+    int nRotation = event.GetWheelRotation();
+    wxFont ctrlFont = pParent->GetFont();
+
+    if ( nRotation > 0)
+        ctrlFont.SetPointSize( ctrlFont.GetPointSize()-1);
+    else
+        ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1);
+
+    pParent->SetFont(ctrlFont);
+    pParent->Refresh();
+    pParent->Update();
+    return;
+}
+// ----------------------------------------------------------------------------
 void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
 // ----------------------------------------------------------------------------
 {
@@ -199,7 +228,9 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
 		m_pListLog->SetItem(index, 1, filename.GetFullName()); // File name
 		m_pListLog->SetItem(index, 2, words[i]);               // Line index starting from 1
 		m_pListLog->SetItem(index, 3, words[i+1]);             // File line matching search expression
-		m_pListLog->SetItemFont(index, m_ThreadSearchPlugin.m_Conf_font);          //(pecan 2008/3/06)
+
+		//(pecan 2008/7/31) Dont do the following here or Ctrl-MouseWheel cannot change the font size
+		//-m_pListLog->SetItemFont(index, m_ThreadSearchPlugin.m_Conf_font);          //(pecan 2008/3/06)
 
 		// We update preview log for first list item
 		if ( m_pListLog->GetItemCount() == 1 )
@@ -271,6 +302,10 @@ void ThreadSearchLoggerList::ConnectEvents(wxEvtHandler* pEvtHandler)
 	pEvtHandler->Connect(id, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
 						(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
 						&ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
+
+	m_pListLog->Connect(id, wxEVT_MOUSEWHEEL, //(pecan 2008/7/31)
+						(wxObjectEventFunction)(wxEventFunction)(wxMouseEventFunction)
+						&ThreadSearchLoggerList::OnMouseWheelEvent, NULL, static_cast<wxEvtHandler*>(this));
 }
 
 
@@ -285,6 +320,11 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
     pEvtHandler->Disconnect(id, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
+
+	m_pListLog->Disconnect(id, wxEVT_MOUSEWHEEL, //(pecan 2008/7/31)
+						(wxObjectEventFunction)(wxEventFunction)(wxMouseEventFunction)
+						&ThreadSearchLoggerList::OnMouseWheelEvent, NULL, static_cast<wxEvtHandler*>(this));
+
 }
 
 

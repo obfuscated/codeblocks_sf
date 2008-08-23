@@ -54,7 +54,6 @@ libcodesnippets_la_SOURCES = codesnippets.cpp \
 		codesnippetswindow.cpp \
 		csutils.cpp \
 		editsnippetframe.cpp \
-		memorymappedfile.cpp \
 		messageBoxForm.cpp \
 		messagebox.cpp \
 		settingsdlg.cpp \
@@ -107,7 +106,6 @@ noinst_HEADERS =  	codesnippets.h \
 		codesnippetswindow.h \
 		csutils.h \
 		editsnippetframe.h \
-		memorymappedfile.h \
 		menuidentifiers.h \
 		messageBoxForm.h \
 		messagebox.h \

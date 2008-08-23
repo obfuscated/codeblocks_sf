@@ -65,7 +65,8 @@ BEGIN_EVENT_TABLE(CodeSnippetsTreeCtrl, wxTreeCtrl)
 	EVT_TREE_END_DRAG(idSnippetsTreeCtrl,   CodeSnippetsTreeCtrl::OnEndTreeItemDrag)
 	EVT_LEAVE_WINDOW(                       CodeSnippetsTreeCtrl::OnLeaveWindow)
 	EVT_ENTER_WINDOW(                       CodeSnippetsTreeCtrl::OnEnterWindow)
-	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseEvent)
+	EVT_MOTION(                             CodeSnippetsTreeCtrl::OnMouseMotionEvent)
+	EVT_MOUSEWHEEL(                         CodeSnippetsTreeCtrl::OnMouseWheelEvent)
 	EVT_TREE_SEL_CHANGED(idSnippetsTreeCtrl,CodeSnippetsTreeCtrl::OnItemSelected)
 	EVT_TREE_ITEM_RIGHT_CLICK(idSnippetsTreeCtrl, CodeSnippetsTreeCtrl::OnItemRightSelected)
 	//-EVT_IDLE(                               CodeSnippetsTreeCtrl::OnIdle)
@@ -1183,7 +1184,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     return;
 }//OnLeaveWindow
 // ----------------------------------------------------------------------------
-void CodeSnippetsTreeCtrl::OnMouseEvent(wxMouseEvent& event)
+void CodeSnippetsTreeCtrl::OnMouseMotionEvent(wxMouseEvent& event)
 // ----------------------------------------------------------------------------
 {
     //remember event window pointer
@@ -1196,6 +1197,29 @@ void CodeSnippetsTreeCtrl::OnMouseEvent(wxMouseEvent& event)
     #endif
     event.Skip();
 
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::OnMouseWheelEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Ctrl-MouseWheel rotation changes treeCtrl font
+
+    m_MouseCtrlKeyDown = event.ControlDown();
+    #ifdef LOGGING
+     //LOGIT(wxT("treeCtrl:OnMouseWheel[%s]"), m_MouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+    #endif
+    if (not m_MouseCtrlKeyDown) {event.Skip(); return;}
+
+    int nRotation = event.GetWheelRotation();
+    wxFont ctrlFont = GetFont();
+
+    if ( nRotation > 0)
+        ctrlFont.SetPointSize( ctrlFont.GetPointSize()-1);
+    else
+        ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1);
+
+    SetFont(ctrlFont);
+    return;
 }
 // ----------------------------------------------------------------------------
 #if defined(__WXMSW__)

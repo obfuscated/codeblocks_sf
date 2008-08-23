@@ -8,6 +8,10 @@
  */
 
 // Get rid of some precompile warnings when using sdk
+// Stop following warning:
+//warning: .../trunk/src/include/sdk_precomp.h.gch: not used because `EXPORT_LIB' not defined|
+#undef CB_PRECOMP
+
 #ifdef CB_PRECOMP
     #include "sdk_precomp.h"
 #endif

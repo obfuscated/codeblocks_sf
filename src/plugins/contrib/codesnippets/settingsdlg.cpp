@@ -75,8 +75,8 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
     if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
     if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
 
-    if ( GetConfig()->IsApplication() )
-    if (GetConfig()->SettingsWindowState == _T("External"))
+    if ( GetConfig()->IsApplication() ) //and
+    if (GetConfig()->GetSettingsWindowState() == _T("External")) //and
     if ( GetConfig()->GetKeepAlivePid() == 0 ) // a 0 means not launched from CB
     {   // Dont show mode choices when running as independent External Application
         m_RadioFloatBtn->Show(false);
@@ -119,7 +119,7 @@ void SettingsDlg::OnOk(wxCommandEvent& event)
     if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");
     if (m_RadioDockBtn->GetValue() )    windowState = wxT("Docked");
     if (m_RadioExternalBtn->GetValue()) windowState = wxT("External");
-    GetConfig()->SettingsWindowState = windowState;
+    GetConfig()->SetSettingsWindowState( windowState) ;
 
     this->EndModal(wxID_OK);
     LOGIT( _T("OnOK Saving Settings"));

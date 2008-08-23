@@ -172,8 +172,6 @@
 			<Option compilerVar="WINDRES" />
 		</Unit>
 		<Unit filename="manifest.xml" />
-		<Unit filename="memorymappedfile.cpp" />
-		<Unit filename="memorymappedfile.h" />
 		<Unit filename="menuidentifiers.h" />
 		<Unit filename="messageBoxForm.cpp" />
 		<Unit filename="messageBoxForm.h" />

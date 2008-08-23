@@ -105,7 +105,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     windowHeight = 0;
     m_VersionStr = SnippetVersion.GetVersion();
     m_sWindowHandle = wxEmptyString;
-    SettingsWindowState = wxT("Floating");
+    m_SettingsWindowState = wxT("Floating");
     m_bWindowStateChanged = false;
     m_pOpenFilesList = 0;
     m_pThreadSearchPlugin = 0;
@@ -145,7 +145,7 @@ void CodeSnippetsConfig::SettingsLoad()
 	cfgFile.Read( wxT("SnippetFile"),     &SettingsSnippetsXmlPath, wxEmptyString ) ;
 	cfgFile.Read( wxT("SnippetFolder"),   &SettingsSnippetsFolder, wxEmptyString ) ;
 	cfgFile.Read( wxT("ViewSearchBox"),   &GetConfig()->SettingsSearchBox, true ) ;
-	cfgFile.Read( wxT("casesensitive"),     &m_SearchConfig.caseSensitive, true ) ;
+	cfgFile.Read( wxT("casesensitive"),   &m_SearchConfig.caseSensitive, true ) ;
 	int nScope;
 	cfgFile.Read( wxT("scope"),             &nScope, SCOPE_BOTH ) ;
     m_SearchConfig.scope = (SearchScope)nScope;
@@ -153,10 +153,15 @@ void CodeSnippetsConfig::SettingsLoad()
     // read Editors Stay-On-Top of main window option
     cfgFile.Read( _T("EditorsStayOnTop"), &SettingsEditorsStayOnTop, true);
 
+    // Read External App state. Launched App will see it as false because
+    // plugin has not set it true yet, so if this is launched App, set it true
+	cfgFile.Read( wxT("ExternalPersistentOpen"), &m_IsExternalPersistentOpen, false ) ;
+	if ( IsApplication() ) SetExternalPersistentOpen(true);
+
     // read user specified window state (External, Floating, or Docked)
-    cfgFile.Read( wxT("WindowState"), &SettingsWindowState, wxT("Floating") );
+    cfgFile.Read( wxT("WindowState"), &m_SettingsWindowState, wxT("Floating") );
     #if defined(LOGGING)
-     LOGIT( _T("WindowState[%s]"), SettingsWindowState.c_str() );
+     LOGIT( _T("WindowState[%s]"), GetSettingsWindowState().c_str() );
     #endif
     // read last window position
     wxString winPos;
@@ -181,13 +186,14 @@ void CodeSnippetsConfig::SettingsLoad()
     LOGIT( _T("WindowPosition[%s]"),winPos.c_str() );
 
     #ifdef LOGGING
-     LOGIT( _T("SettingsExternalEditor[%s]"),SettingsExternalEditor.c_str() );
+     LOGIT( _T("SettingsExternalEditor[%s]"), SettingsExternalEditor.c_str() );
      LOGIT( _T("SettingsSnippetsXmlPath[%s]"),SettingsSnippetsXmlPath.c_str() );
-     LOGIT( _T("SettingsSnippetsFolder[%s]"),SettingsSnippetsFolder.c_str() );
-     LOGIT( _T("SettingsSearchBox[%d]"),SettingsSearchBox );
-     LOGIT( _T("caseSensitive[%d]"),m_SearchConfig.caseSensitive );
-     LOGIT( _T("SettingsSnippetsXmlPath[%s]"),SettingsSnippetsXmlPath.c_str() );
-     LOGIT( _T("SettingsEditorsStayOnTop[%s]"),SettingsEditorsStayOnTop?_T("True"):_T("False") );
+     LOGIT( _T("SettingsSnippetsFolder[%s]"), SettingsSnippetsFolder.c_str() );
+     LOGIT( _T("SettingsSearchBox[%d]"),      SettingsSearchBox );
+     LOGIT( _T("caseSensitive[%d]"),            m_SearchConfig.caseSensitive );
+     LOGIT( _T("SettingsSnippetsXmlPath[%s]"),  SettingsSnippetsXmlPath.c_str() );
+     LOGIT( _T("SettingsEditorsStayOnTop[%s]"), SettingsEditorsStayOnTop?_T("True"):_T("False") );
+     LOGIT( _T("ExternalPersistentOpen[%s]"),   IsExternalPersistentOpen()?_T("True"):_T("False") );
     #endif //LOGGING
 
     // read windowHandle of last or current pgm instance that ran
@@ -228,28 +234,37 @@ void CodeSnippetsConfig::SettingsSave()
 	cfgFile.Write( wxT("casesensitive"),   m_SearchConfig.caseSensitive ) ;
 	cfgFile.Write( wxT("scope"),           m_SearchConfig.scope );
 	cfgFile.Write( wxT("EditorsStayOnTop"),SettingsEditorsStayOnTop );
-
+	if ( IsPlugin() )
+	{   // Write ExternalPersistent for plugin use only
+        cfgFile.Write( wxT("ExternalPersistentOpen"),IsExternalPersistentOpen() );
+        #if defined(LOGGING)
+        //LOGIT( _T("ExternalPersistentOpen is[%s]"), IsExternalPersistentOpen()?_T("true"):_T("false"));
+        //if (false == IsExternalPersistentOpen()) asm("int3"); /*trap*/
+        #endif
+	}
 
     //wxString lastWindowState = wxT("External");
     //if ( IsFloatingWindow() ) {lastWindowState = wxT("Floating");}
     //if ( IsDockedWindow() ) {lastWindowState = wxT("Docked");}
-     LOGIT( _T("WindowState[%s]"), SettingsWindowState.c_str() );
-    cfgFile.Write( wxT("WindowState"), SettingsWindowState );
+    #if defined(LOGGING)
+     LOGIT( _T("WindowState[%s]"), m_SettingsWindowState.c_str() );
+    #endif
+    cfgFile.Write( wxT("WindowState"), m_SettingsWindowState );
 
     if (IsApplication())
-    if ( GetMainFrame() && GetMainFrame()->IsShown() )
-    {   // record the current window position and size
-        // here, use the main frame, not the snippets window
-        wxWindow* pwin = (wxWindow*)GetMainFrame();;
-        int winXposn, winYposn, winWidth, winHeight;
-        pwin->GetPosition( &winXposn, &winYposn );
-        pwin->GetSize( &winWidth, &winHeight );
+        if ( GetMainFrame() && GetMainFrame()->IsShown() )
+        {   // record the current window position and size
+            // here, use the main frame, not the snippets window
+            wxWindow* pwin = (wxWindow*)GetMainFrame();;
+            int winXposn, winYposn, winWidth, winHeight;
+            pwin->GetPosition( &winXposn, &winYposn );
+            pwin->GetSize( &winWidth, &winHeight );
 
-        wxString winPos;
-        winPos = wxString::Format(wxT("%d %d %d %d"), winXposn,winYposn,winWidth,winHeight);
-        cfgFile.Write(wxT("WindowPosition"),  winPos) ;
-         LOGIT( _T("Saving WindowPosition[%s]"), winPos.c_str() );
-    }
+            wxString winPos;
+            winPos = wxString::Format(wxT("%d %d %d %d"), winXposn,winYposn,winWidth,winHeight);
+            cfgFile.Write(wxT("WindowPosition"),  winPos) ;
+             LOGIT( _T("Saving WindowPosition[%s]"), winPos.c_str() );
+        }
     cfgFile.Flush();
 }
 // ----------------------------------------------------------------------------
@@ -293,11 +308,19 @@ wxString CodeSnippetsConfig::SettingsReadString(const wxString settingName )
 wxString CodeSnippetsConfig::GetSettingsWindowState()
 // ----------------------------------------------------------------------------
 {
-    SettingsWindowState = SettingsReadString(wxT("WindowState"));
+    m_SettingsWindowState = SettingsReadString(wxT("WindowState"));
     //LOGIT( _T("GetSettingsWindowState[%s]"),GetConfig()->SettingsWindowState.c_str() );
-    return GetConfig()->SettingsWindowState;
+    return m_SettingsWindowState;
 }
-
+// ----------------------------------------------------------------------------
+void CodeSnippetsConfig::SetSettingsWindowState(const wxString windowState)
+// ----------------------------------------------------------------------------
+{
+    m_SettingsWindowState = windowState;
+    SettingsSaveString( _T("WindowState"), m_SettingsWindowState );
+    //LOGIT( _T("SetSettingsWindowState[%s]"),GetSettingsWindowState.c_str() );
+    return ;
+}
 // ----------------------------------------------------------------------------
 void CodeSnippetsConfig::SettingsSaveWinPosition()
 // ----------------------------------------------------------------------------

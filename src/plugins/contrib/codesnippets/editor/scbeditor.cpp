@@ -7,6 +7,10 @@
  * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/sdk/cbeditor.cpp $
  */
 
+// Stop following warning:
+//warning: .../trunk/src/include/sdk_precomp.h.gch: not used because `EXPORT_LIB' not defined|
+#undef CB_PRECOMP
+
 #ifdef CB_PRECOMP
 #include "sdk_precomp.h"
 #endif
@@ -1128,6 +1132,9 @@ bool ScbEditor::Reload(bool detectEncoding)
     // call open
     if (!Open(detectEncoding))
         return false;
+
+    // Re-establish margin styles, width,  etc
+    SetEditorStyleAfterFileOpen(); //(pecan 2008/8/01)
 
     // return (if possible) to old pos
     if (m_pControl)

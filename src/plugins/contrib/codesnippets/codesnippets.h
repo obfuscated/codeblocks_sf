@@ -28,7 +28,6 @@
 
 
 class CodeSnippetsWindow;
-class wxMemoryMappedFile;
 class CodeSnippetsEvent;
 
 // ----------------------------------------------------------------------------
@@ -151,8 +150,8 @@ class CodeSnippets : public cbPlugin
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
         long LaunchExternalSnippets();
-        bool ReleaseMemoryMappedFile();
-        void TellExternalSnippetsToTerminate();
+        bool RemoveKeepAliveFile();
+        bool TellExternalSnippetsToTerminate();
         void CloseDockWindow();
         wxWindow* FindOpenFilesListWindow();
 
@@ -170,6 +169,7 @@ class CodeSnippets : public cbPlugin
 		void OnSwitchedViewLayout(CodeBlocksLayoutEvent& event);
 		void OnDockWindowVisability(CodeBlocksDockEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
+        void OnAppStartShutdown(CodeBlocksEvent& event);
 
         void OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event);
         void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
@@ -184,7 +184,8 @@ class CodeSnippets : public cbPlugin
         wxString        m_TreeText;
         int             m_nOnActivateBusy;
         long            m_ExternalPid;
-        wxMemoryMappedFile* m_pMappedFile;
+        wxString        m_KeepAliveFileName;
+        wxFile          m_PidTmpFile;
         long            m_nDragScrollEventId;
 
 		DECLARE_EVENT_TABLE();

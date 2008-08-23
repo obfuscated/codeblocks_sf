@@ -7,10 +7,11 @@
  * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/sdk/editormanager.cpp $
  */
 
-#ifdef CB_PRECOMP
-    #include "sdk_precomp.h"
-#endif
-
+//warning: ...trunk/src/include/sdk_precomp.h.gch: not used because `EXPORT_LIB' not defined|
+//#ifdef CB_PRECOMP
+//    #include "sdk_precomp.h"
+//#endif
+#undef CB_PRECOMP
 #ifndef CB_PRECOMP
     #include <wx/notebook.h>
     #include <wx/menu.h>

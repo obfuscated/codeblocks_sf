@@ -221,7 +221,8 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void OnEndTreeItemDrag(wxTreeEvent& event);
    		void OnLeaveWindow(wxMouseEvent& event);
    		void OnEnterWindow(wxMouseEvent& event);
-        void OnMouseEvent(wxMouseEvent& event);
+        void OnMouseMotionEvent(wxMouseEvent& event);
+        void OnMouseWheelEvent(wxMouseEvent& event);
         void OnShutdown(wxCloseEvent& event);
         //-void OnIdle(wxIdleEvent& event);
 

@@ -57,12 +57,13 @@ class CodeSnippetsConfig
         CodeSnippetsConfig();
         ~CodeSnippetsConfig();
 
-    void SettingsLoad();
-    void SettingsSave();
-    void SettingsSaveWinPosition();
-    void SettingsSaveString(const wxString settingName, const wxString settingValue );
+    void     SettingsLoad();
+    void     SettingsSave();
+    void     SettingsSaveWinPosition();
+    void     SettingsSaveString(const wxString settingName, const wxString settingValue );
     wxString SettingsReadString(const wxString settingName );
     wxString GetSettingsWindowState();
+    void     SetSettingsWindowState(const wxString windowState);
 
     wxWindow*       GetMainFrame(){return pMainFrame;}
     wxMenuBar*      GetMenuBar(){return m_pMenuBar;}
@@ -105,6 +106,8 @@ class CodeSnippetsConfig
 
     bool                    GetEditorsStayOnTop(){return SettingsEditorsStayOnTop;}
     void                    SetEditorsStayOnTop(bool tf){SettingsEditorsStayOnTop = tf;}
+    bool                    IsExternalPersistentOpen(){ return m_IsExternalPersistentOpen;}
+    void                    SetExternalPersistentOpen(const bool trueFalse ){ m_IsExternalPersistentOpen = trueFalse;}
 
     void CenterChildOnParent( wxWindow* child, wxWindow* parent=0);
 
@@ -172,12 +175,13 @@ class CodeSnippetsConfig
     wxString     m_sWindowHandle;
     SearchConfiguration
                   m_SearchConfig;
-    wxString      SettingsWindowState;
+    wxString      m_SettingsWindowState;
     bool          m_bWindowStateChanged;
     bool          m_bIsPlugin;
     wxWindow*     m_pOpenFilesList;
     // If launched from CB, we'll have its pid
     long          g_lKeepAlivePid;
+    bool          m_IsExternalPersistentOpen;
 
     wxWindow*           m_pThreadSearchFrame;
     ThreadSearch*       m_pThreadSearchPlugin;

@@ -60,9 +60,9 @@ void ThreadSearchLoggerTree::SetFocus()
 	m_pTreeLog->SetFocus();
     SyncLoggerToPreview();
 }
-
-
+// ----------------------------------------------------------------------------
 void ThreadSearchLoggerTree::ConnectEvents(wxEvtHandler* pEvtHandler)
+// ----------------------------------------------------------------------------
 {
 	// Dynamic event connections.
 	int id = m_pTreeLog->GetId();
@@ -73,10 +73,15 @@ void ThreadSearchLoggerTree::ConnectEvents(wxEvtHandler* pEvtHandler)
 	pEvtHandler->Connect(id, wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
 			(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
 			&ThreadSearchLoggerTree::OnLoggerTreeDoubleClick, NULL, this);
+
+	m_pTreeLog->Connect(id, wxEVT_MOUSEWHEEL, //(pecan 2008/7/31)
+			(wxObjectEventFunction)(wxEventFunction)(wxMouseEventFunction)
+			&ThreadSearchLoggerTree::OnMouseWheelEvent, NULL, static_cast<wxEvtHandler*>(this));
+
 }
-
-
+// ----------------------------------------------------------------------------
 void ThreadSearchLoggerTree::DisconnectEvents(wxEvtHandler* pEvtHandler)
+// ----------------------------------------------------------------------------
 {
 	// Dynamic event disconnections.
 	int id = m_pTreeLog->GetId();
@@ -87,8 +92,41 @@ void ThreadSearchLoggerTree::DisconnectEvents(wxEvtHandler* pEvtHandler)
 	pEvtHandler->Disconnect(id, wxEVT_COMMAND_TREE_ITEM_ACTIVATED,
 			(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
 			&ThreadSearchLoggerTree::OnLoggerTreeDoubleClick, NULL, this);
-}
 
+	m_pTreeLog->Disconnect(id, wxEVT_MOUSEWHEEL, //(pecan 2008/7/31)
+			(wxObjectEventFunction)(wxEventFunction)(wxMouseEventFunction)
+			&ThreadSearchLoggerTree::OnMouseWheelEvent, NULL, static_cast<wxEvtHandler*>(this));
+}
+// ----------------------------------------------------------------------------
+void ThreadSearchLoggerTree::OnMouseWheelEvent(wxMouseEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // Ctrl-MouseWheel rotation changes treeCtrl font
+
+    //-wxWindow* pParent = m_pListLog->GetParent();
+    wxWindow* pParent = (wxWindow*)event.GetEventObject();
+    //-wxWindow* pParent = m_pListLog;
+	if ( not pParent ) return;
+
+    bool mouseCtrlKeyDown = event.ControlDown();
+    #ifdef LOGGING
+     //LOGIT(wxT("treeCtrl:OnMouseWheel[%s]"), m_MouseCtrlKeyDown?wxT("Down"):wxT("UP") );
+    #endif
+    if (not mouseCtrlKeyDown) {event.Skip(); return;}
+
+    int nRotation = event.GetWheelRotation();
+    wxFont ctrlFont = pParent->GetFont();
+
+    if ( nRotation > 0)
+        ctrlFont.SetPointSize( ctrlFont.GetPointSize()-1);
+    else
+        ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1);
+
+    pParent->SetFont(ctrlFont);
+    pParent->Refresh();
+    pParent->Update();
+    return;
+}
 
 void ThreadSearchLoggerTree::OnLoggerTreeClick(wxTreeEvent& event)
 {
@@ -225,8 +263,9 @@ void ThreadSearchLoggerTree::OnThreadSearchEvent(const ThreadSearchEvent& event)
 																		 words[i].c_str(),     // Line index starting from 1
 																		 words[i+1].c_str())); // File line matching search expression
 
-		m_pTreeLog->SetItemFont(fileItemId, m_ThreadSearchPlugin.m_Conf_font);          //(pecan 2008/3/06)
-		m_pTreeLog->SetItemFont(lineItemId, m_ThreadSearchPlugin.m_Conf_font);          //(pecan 2008/3/06)
+        //(pecan 2008/7/31) Dont do the following, else Ctrl-MouseWheel cannot change fonts
+		//-m_pTreeLog->SetItemFont(fileItemId, m_ThreadSearchPlugin.m_Conf_font);          //(pecan 2008/3/06)
+		//-m_pTreeLog->SetItemFont(lineItemId, m_ThreadSearchPlugin.m_Conf_font);          //(pecan 2008/3/06)
 
 		// We update preview log for first list item
 		if ( (m_FirstItemProcessed == false)                        &&

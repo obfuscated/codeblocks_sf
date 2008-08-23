@@ -574,7 +574,6 @@ void cbDragScroll::OnDragScrollEvent_InvokeConfig(wxCommandEvent& event )
 void cbDragScroll::OnDragScrollTestRescan(wxCommandEvent& event )
 // ----------------------------------------------------------------------------
 {
-    asm("int3"); /*trap*/
     #if defined(LOGGING)
     LOGIT( _T("TEST RESCAN DragScrollevent"));
     #endif
