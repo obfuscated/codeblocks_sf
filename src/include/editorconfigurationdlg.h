@@ -44,6 +44,7 @@ class EditorConfigurationDlg : public wxDialog
         void EndModal(int retCode);
     private:
         void OnPageChanged(wxListbookEvent& event);
+        void OnHighlightColour(wxCommandEvent& event);
         void AddPluginPanels();
         void UpdateListbookImages();
         void CreateColoursSample();

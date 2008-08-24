@@ -389,6 +389,26 @@
                               <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <border>10</border>
                             </object>
+                            <object class="sizeritem">
+                              <object class="wxBoxSizer">
+                                <orient>wxHORIZONTAL</orient>
+                                <object class="sizeritem">
+                                  <object class="wxStaticText" name="stHighlightColour">
+                                    <label>Highlight Colour</label>
+                                  </object>
+                                  <flag>wxRIGHT|wxALIGN_CENTRE_VERTICAL</flag>
+                                  <border>5</border>
+                                </object>
+                                <object class="sizeritem">
+                                  <object class="wxButton" name="btnHighlightColour">
+                                    <label>...</label>
+                                    <bg>#FF0000</bg>
+                                  </object>
+                                </object>
+                              </object>
+                              <flag>wxLEFT</flag>
+                              <border>10</border>
+                            </object>
                           </object>
                           <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>

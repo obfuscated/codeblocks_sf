@@ -81,6 +81,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAutoCompDelete"),      EditorConfigurationDlg::OnAutoCompDelete)
     EVT_CHECKBOX(XRCID("chkDynamicWidth"),      EditorConfigurationDlg::OnDynamicCheck)
     EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),  EditorConfigurationDlg::OnHighlightOccurrences)
+    EVT_BUTTON(XRCID("btnHighlightColour"),         EditorConfigurationDlg::OnHighlightColour)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -122,11 +123,21 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"), 4));
     XRCCTRL(*this, "cmbViewWS", wxComboBox)->SetSelection(cfg->ReadInt(_T("/view_whitespace"), 0));
     XRCCTRL(*this, "rbTabText", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"), true) ? 1 : 0);
-    XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrences"), true));
+
+    // Highlight Occurence
+    bool highlightEnabled = cfg->ReadBool(_T("/highlight_occurrence/enabled"), true);
+    XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->SetValue(highlightEnabled);
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true));
-    XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable(cfg->ReadBool(_T("/highlight_occurrences"), true));
+    XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable(highlightEnabled);
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true));
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable(cfg->ReadBool(_T("/highlight_occurrences"), true));
+    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable(highlightEnabled);
+    long red, green, blue;
+    red     = cfg->ReadInt(_T("/highlight_occurrence/colour_red_value"),    0xff);
+    green   = cfg->ReadInt(_T("/highlight_occurrence/colour_green_value"),  0x00);
+    blue    = cfg->ReadInt(_T("/highlight_occurrence/colour_blue_value"),   0x00);
+    XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(wxColour(red, green, blue));
+    XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable(highlightEnabled);
+    XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable(highlightEnabled);
 
     // NOTE: duplicate line in cbeditor.cpp (CreateEditor)
     const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
@@ -863,9 +874,13 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/tab_size"),             XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/view_whitespace"),      XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
         cfg->Write(_T("/tab_text_relative"),    XRCCTRL(*this, "rbTabText", wxRadioBox)->GetSelection() ? true : false);
-        cfg->Write(_T("/highlight_occurrences"),XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
+        cfg->Write(_T("/highlight_occurrence/enabled"),XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/whole_word"), XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->GetValue());
+        wxColor highlightColour = XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour();
+        cfg->Write(_T("/highlight_occurrence/colour_red_value"),    static_cast<int>(highlightColour.Red())    );
+        cfg->Write(_T("/highlight_occurrence/colour_green_value"),  static_cast<int>(highlightColour.Green())  );
+        cfg->Write(_T("/highlight_occurrence/colour_blue_value"),   static_cast<int>(highlightColour.Blue())   );
 
         // find & replace, regex searches
 
@@ -973,4 +988,23 @@ void EditorConfigurationDlg::OnHighlightOccurrences(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable( event.IsChecked() );
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable( event.IsChecked() );
+    XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable( event.IsChecked() );
+    XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable( event.IsChecked() );
+}
+
+void EditorConfigurationDlg::OnHighlightColour(wxCommandEvent& event)
+{
+    wxColourDialog highlightColourDlg(this);
+    highlightColourDlg.Centre();
+    int result = highlightColourDlg.ShowModal();
+
+    if (result == wxID_OK)
+    {
+        wxColour highlightColour = highlightColourDlg.GetColourData().GetColour();
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        cfg->Write(_T("/highlight_occurrence/colour_red_value"),    static_cast<int>(highlightColour.Red())    );
+        cfg->Write(_T("/highlight_occurrence/colour_green_value"),  static_cast<int>(highlightColour.Green())  );
+        cfg->Write(_T("/highlight_occurrence/colour_blue_value"),   static_cast<int>(highlightColour.Blue())   );
+        XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(highlightColour);
+    }
 }

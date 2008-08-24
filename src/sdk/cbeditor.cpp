@@ -304,7 +304,10 @@ struct cbEditorInternalData
 
         // Set Styling:
         m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_ROUNDBOX);
-        m_pOwner->m_pControl->IndicatorSetForeground( 0, wxColour(0xff, 0x00, 0x00) );
+        wxColour highlightColour(   cfg->ReadInt(_T("/highlight_occurrence/colour_red_value"),   0xff),
+                                    cfg->ReadInt(_T("/highlight_occurrence/colour_green_value"), 0x00),
+                                    cfg->ReadInt(_T("/highlight_occurrence/colour_blue_value"),  0x00) );
+        m_pOwner->m_pControl->IndicatorSetForeground( 0, highlightColour );
 
         // clear all style indications set in a previous run
         m_pOwner->m_pControl->StartStyling( 0, 0x20 );
@@ -312,7 +315,7 @@ struct cbEditorInternalData
 
         // check that feature is enabled,
         // selected text has a minimal length of 3 and contains no spaces
-        if( cfg->ReadBool(_T("/highlight_occurrences"), true)
+        if( cfg->ReadBool(_T("/highlight_occurrence/enabled"), true)
                 && selectedText.Len() > 2
                 && selectedText.Find(_T(' ')) == wxNOT_FOUND
                 && selectedText.Find(_T('\t')) == wxNOT_FOUND
