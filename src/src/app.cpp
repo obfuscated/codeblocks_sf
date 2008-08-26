@@ -118,7 +118,7 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
         if (reCmd.Matches(strData))
         {
             const wxString file = reCmd.GetMatch(strData, 1);
-            if (s_Loading)
+            if (s_Loading || !m_Frame) // iff MainFrame does not yet exist we will put all files to be opened in the delayed queue
             {
                 s_DelayedFilesToOpen.Add(file);
             }
@@ -341,8 +341,7 @@ MainFrame* CodeBlocksApp::InitFrame()
 #ifdef __WXMSW__
     if (!m_NoDDE)
     {
-        g_DDEServer = new DDEServer(frame);
-        g_DDEServer->Create(DDE_SERVICE);
+    	// Set m_Frame in DDE-Server
         g_DDEServer->SetFrame(frame);
     }
 #endif
@@ -413,6 +412,16 @@ bool CodeBlocksApp::OnInit()
 
     SetAppName(_T("codeblocks"));
     s_Loading = true;
+#ifdef __WXMSW__
+    if (!m_NoDDE)
+    {
+        // MainFrame does not exist here, but DDEServer is needed, because WinXp sends dde-command
+        // immediately after application start and we get an error-message
+        // We will set m_Frame explicitely after it is created.
+        g_DDEServer = new DDEServer(0L);
+        g_DDEServer->Create(DDE_SERVICE);
+    }
+#endif
 
     m_pBatchBuildDialog = 0;
     m_BatchExitCode = 0;
