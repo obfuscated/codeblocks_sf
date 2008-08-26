@@ -79,6 +79,7 @@
                             <item>Create backup and save to original file</item>
                             <item>Save to original file</item>
                             <item>Save to .save file</item>
+                            <item>Save project to .save file, backup sources logrotate style</item>
                         </content>
                     </object>
                 </object>

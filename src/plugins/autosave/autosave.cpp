@@ -127,6 +127,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         break;
                     }
                     case 2:
+                    case 3: // doesn't really make sense to keep so many versions of a project file
                     {
                         if (p->IsLoaded() == false)
                             return;
@@ -186,6 +187,28 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         case 2:
                         {
                             cbSaveToFile(fn.GetFullPath() + _T(".save"), ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
+                            ed->SetModified(); // the "real" file has not been saved!
+                            break;
+                        }
+                        case 3:
+                        {
+                            wxString tmp1;
+                            wxString tmp2;
+
+                            for(unsigned int i = 8; i; --i)
+                            {
+                                tmp1.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), i,   fn.GetExt().c_str());
+                                tmp2.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), i+1, fn.GetExt().c_str());
+
+                                if(::wxFileExists(tmp2))
+                                    ::wxRemoveFile(tmp2);
+                                if(::wxFileExists(tmp1))
+                                    ::wxRenameFile(tmp1, tmp2);
+                            }
+
+                            tmp1.Printf(_T("%s/%s.1.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), fn.GetExt().c_str());
+
+                            cbSaveToFile(tmp1, ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
                             ed->SetModified(); // the "real" file has not been saved!
                             break;
                         }
