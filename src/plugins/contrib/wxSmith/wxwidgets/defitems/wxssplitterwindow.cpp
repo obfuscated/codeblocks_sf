@@ -119,8 +119,8 @@ void wxsSplitterWindow::OnBuildCreatingCode()
             else
             {
                 Codef(_T("%ASplit%s(%o, %o);\n"),((Orientation==wxHORIZONTAL) ? _T("Horizontally") : _T("Vertically")),0,1);
+                if ( SashPos != 0 ) Codef(_T("%ASetSashPosition(%d);\n"),SashPos);
             }
-            if ( SashPos != 0 ) Codef(_T("%ASetSashPosition(%d);\n"),SashPos);
             break;
         }
 
