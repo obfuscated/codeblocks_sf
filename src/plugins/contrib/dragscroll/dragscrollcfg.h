@@ -70,7 +70,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
         int  GetMouseToLineRatio()       { return MouseToLineRatio->GetValue(); }
         int  GetMouseContextDelay()      { return MouseContextDelay->GetValue(); }
         bool GetMouseWheelZoom()         { return MouseWheelZoom->GetValue(); }
-        bool GetRecordZoomFontSize()     { return RecordZoomFontSize->GetValue(); }
+        bool IsLogZoomSizePropagated()   { return PropagateLogZoomSize->GetValue(); }
 
         void SetMouseDragScrollEnabled(bool value)
                 { ScrollEnabled->SetValue(value); }
@@ -90,8 +90,8 @@ class cbDragScrollCfg: public cbConfigurationPanel
                 { MouseContextDelay->SetValue(value); }
         void SetMouseWheelZoom(bool value)
                 { MouseWheelZoom->SetValue(value); }
-        void SetRecordZoomFontSize(bool value)
-                { RecordZoomFontSize->SetValue(value); }
+        void SetPropagateLogZoomSize(bool value)
+                { PropagateLogZoomSize->SetValue(value); }
 
 	protected:
 
@@ -104,7 +104,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxCheckBox* EditorFocusEnabled;
 		wxCheckBox* MouseFocusEnabled;
 		wxCheckBox* MouseWheelZoom;
-		wxCheckBox* RecordZoomFontSize;
+		wxCheckBox* PropagateLogZoomSize;
 		wxRadioBox* ScrollDirection;
 		wxStaticText* StaticText2;
 		wxChoice* MouseKeyChoice;

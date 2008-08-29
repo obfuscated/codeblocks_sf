@@ -31,7 +31,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.3.19 2008/08/17"
+#define VERSION "1.3.23 2008/08/26"
 //----------------------------------------
 
 #undef LOGGING
@@ -48,6 +48,7 @@ class MouseEventsHandler;
 class cbDragScrollCfg;
 class wxLogWindow;
 class wxObject;
+class dsTextCtrlLogger;
 
 // ----------------------------------------------------------------------------
 //  cbDragScroll class declaration
@@ -83,11 +84,11 @@ class cbDragScroll : public cbPlugin
         int  GetMouseToLineRatio()       const { return MouseToLineRatio; }
         int  GetMouseContextDelay()      const { return MouseContextDelay; }
         int  GetMouseWheelZoom()         const { return MouseWheelZoom; }
-        int  GetRecordZoomFontSize()     const { return RecordZoomFontSize; }
+        int  IsLogZoomSizePropagated()   const { return PropagateLogZoomSize; }
         int  GetMouseHtmlFontSize()      const { return m_MouseHtmlFontSize; }
 
         wxWindow* m_pCB_AppWindow;
-        wxWindow* m_pSearchResultsWindow;
+        //-wxWindow* m_pSearchResultsWindow;
 
 	private:
         void OnAppStartupDone(CodeBlocksEvent& event);
@@ -101,7 +102,7 @@ class cbDragScroll : public cbPlugin
         void Attach(wxWindow *p);
         void DisconnectEvtHandler(MouseEventsHandler* thisEvtHandler);
         void CenterChildOnParent(wxWindow* parent, wxWindow* child);
-        bool IsLoggerControl(const wxTextCtrl* pControl);
+        dsTextCtrlLogger* IsLoggerControl(const wxTextCtrl* pControl);
         bool OnMouseWheelInHtmlWindowEvent(wxMouseEvent& event);
         void OnProjectClose(CodeBlocksEvent& event);
         void OnStartShutdown(CodeBlocksEvent& event);
@@ -125,6 +126,9 @@ class cbDragScroll : public cbPlugin
 
         MouseEventsHandler* GetMouseEventsHandler();
         void      CleanUpWindowPointerArray();
+        void      SetZoomWindowsStrings(wxString zoomWindowIds, wxString zoomFontSizes)
+                    {m_ZoomWindowIds = zoomWindowIds; m_ZoomFontSizes = zoomFontSizes;}
+        int       GetZoomWindowsArraysFrom(wxString zoomWindowIds, wxString zoomFontSizes);
         void      UpdateConfigFile();
 
         wxString        m_ConfigFolder;
@@ -133,13 +137,16 @@ class cbDragScroll : public cbPlugin
         wxString        m_CfgFilenameStr;
 
         wxArrayString   m_UsableWindows;
-        //-wxArrayString   m_UsableLogs;
-        wxArrayPtrVoid  m_EditorPtrs;
+        wxArrayPtrVoid  m_WindowPtrs;
         wxLogWindow*    pMyLog;
         bool            m_bNotebooksAttached;
 
         MouseEventsHandler* m_pMouseEventsHandler; //one and only
         wxString            m_DragScrollFirstId;
+        wxString            m_ZoomWindowIds;
+        wxString            m_ZoomFontSizes;
+        wxArrayInt          m_ZoomWindowIdsAry;
+        wxArrayInt          m_ZoomFontSizesAry;
 
         bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
         bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
@@ -150,7 +157,7 @@ class cbDragScroll : public cbPlugin
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
         int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
         int  MouseWheelZoom         ;   //MouseWheel zooms tree, text, list controls
-        int  RecordZoomFontSize     ;   //Remember Zoom Font size for all logs
+        int  PropagateLogZoomSize   ;   //Propagate Zoom Font size for all logs
         int  m_MouseHtmlFontSize    ;   //Ctrl-MouseWheel zoomed htmlWindow font size
 
     private:
@@ -188,12 +195,12 @@ private:
     wxWindow*   m_Window;
     int         m_DragMode;
     wxPoint     m_DragStartPos;
-    //-wxObject*   m_pEvtObject;
     bool        m_MouseHasMoved;
     double      m_MouseMoveToLineMoveRatio;
     double      m_RatioX, m_RatioY;
     int         m_StartX, m_StartY;
     int         m_InitX,  m_InitY;
+
     // Scroll Direction move -1(mouse direction) +1(reverse mouse direction)
     int         m_Direction;
     unsigned    m_gtkContextDelay;
@@ -434,11 +441,18 @@ private:
 //          14) Removed OnWindowOpen EditorManager dependencies
 //          15) Add Configure() and event to invoke it. 2008/04/29
 // ----------------------------------------------------------------------------
-//  Commit  1.3.18
+//  Commit  1.3.18 2008/08/23
 //          16) Implement Ctrl-MouseWheel zoom for CB list & tree ctrls
 //          17) Add config options "Ctrl-WheelMouse Zooms" and "Remember Log Zoom"
 //          18) Allow user to ctrl-mouse zoom htmlWindows (eg, Start Here page)
-//          19) Fixed: missing events bec. htmlWindow never issues wxEVT_DESTROY
+//          19) Fixed: missing events bec.StartHere htmlWindow never issues wxEVT_DESTROY
+// ----------------------------------------------------------------------------
+//  Commit  1.3.--
+//          20) Fixed: font sizes increasing across sessions in OnMouseWheelEvent.
+//          21) Save/restore users ctrl-MouseWheel font changes across sessions.
+//          22) Fixed: crash caused by failure in CleanUpWindowPointerArray()
+//          23) Changed option label "MouseWheelZoom" to "Log MouseWheelZoom" to
+//              avoid confusion; even though it applies to other tree and list controls.
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------
