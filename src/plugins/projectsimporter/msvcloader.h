@@ -32,6 +32,7 @@ class MSVCLoader : public IBaseLoader
         void ProcessCompilerOptions(ProjectBuildTarget* target, const wxString& opts);
         void ProcessLinkerOptions(ProjectBuildTarget* target, const wxString& opts);
         void ProcessResourceCompilerOptions(ProjectBuildTarget* target, const wxString& opts);
+        void ProcessPostBuildCommand(ProjectBuildTarget* target, const wxString& cmd);
         wxArrayString OptStringTokeniser(const wxString& opts);
         wxString RemoveQuotes(const wxString& src);
 

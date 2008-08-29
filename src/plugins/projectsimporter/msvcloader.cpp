@@ -123,8 +123,8 @@ bool MSVCLoader::ReadConfigurations()
     {
         wxString line = input.ReadLine();
         ++currentLine;
-        line.Trim(true);
-        line.Trim(false);
+        line.Trim(true).Trim(false);
+
         int size = -1;
         if (line.StartsWith(_T("# TARGTYPE")))
         {
@@ -196,8 +196,8 @@ bool MSVCLoader::ReadConfigurations()
         {
             // read configuration name
             line = line.Mid(size);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
+
             wxString tmp = RemoveQuotes(line);
             // remove the project name part, i.e "anothertest - "
             int idx = tmp.Find('-');
@@ -249,22 +249,44 @@ bool MSVCLoader::ParseConfiguration(int index)
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
-        line.Trim(true);
-        line.Trim(false);
+        line.Trim(true).Trim(false);
 
         // we want empty lines (skipped) or lines starting with #
         // if we encounter a line starting with !, we break out of here
         if (line.GetChar(0) == '!')
+        {
             break;
+        }
+
         if (line.IsEmpty() || line.GetChar(0) != '#')
-            continue;
+        {
+            // Unhandled, but for this exception:
+            if (line.StartsWith(_T("PostBuild_Cmds=")))
+            {
+                line = line.Mid(15);
+
+                while (!line.StartsWith(_T("# End Special Build Tool")))
+                {
+                    bool next_line = line.EndsWith(_T("\\"));
+                    ProcessPostBuildCommand(bt, line);
+
+                    if (!next_line)
+                        break; // exit while-loop
+
+                    // next line (iteration) as post build commands are usually multiple lines
+                    line = input.ReadLine();
+                    line.Trim(true).Trim(false);
+                }
+            }
+            else
+                continue;
+        }
 
 //        if (line.StartsWith("# PROP BASE Output_Dir "))
         if (line.StartsWith(_T("# PROP Output_Dir ")))
         {
             line = line.Mid(18);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             wxString tmp = RemoveQuotes(line);
             if (!line.IsEmpty())
             {
@@ -279,8 +301,7 @@ bool MSVCLoader::ParseConfiguration(int index)
         else if (line.StartsWith(_T("# PROP Intermediate_Dir ")))
         {
             line = line.Mid(24);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             wxString tmp = RemoveQuotes(line);
             if (!line.IsEmpty())
             {
@@ -290,43 +311,37 @@ bool MSVCLoader::ParseConfiguration(int index)
         else if (line.StartsWith(_T("# ADD BASE CPP ")))
         {
             line = line.Mid(15);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             ProcessCompilerOptions(bt, line);
         }
         else if (line.StartsWith(_T("# ADD CPP ")))
         {
             line = line.Mid(10);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             ProcessCompilerOptions(bt, line);
         }
         else if (line.StartsWith(_T("# ADD BASE LINK32 ")))
         {
             line = line.Mid(18);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             ProcessLinkerOptions(bt, line);
         }
         else if (line.StartsWith(_T("# ADD LINK32 ")))
         {
             line = line.Mid(13);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             ProcessLinkerOptions(bt, line);
         }
         else if (line.StartsWith(_T("# ADD BASE RSC "))) // To import resource compiler options
         {
             line = line.Mid(16);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             ProcessResourceCompilerOptions(bt, line);
         }
         else if (line.StartsWith(_T("# ADD RSC ")))
         {
             line = line.Mid(11);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
             ProcessResourceCompilerOptions(bt, line);
         }
     }
@@ -356,14 +371,12 @@ bool MSVCLoader::ParseSourceFiles()
     while (!file.Eof())
     {
         wxString line = input.ReadLine();
-        line.Trim(true);
-        line.Trim(false);
+        line.Trim(true).Trim(false);
 
         if (line.StartsWith(_T("SOURCE=")))
         {
             line = line.Mid(7);
-            line.Trim(true);
-            line.Trim(false);
+            line.Trim(true).Trim(false);
 
             wxString fname (RemoveQuotes(line));
 
@@ -663,6 +676,23 @@ void MSVCLoader::ProcessResourceCompilerOptions(ProjectBuildTarget* target, cons
                 target->AddResourceIncludeDir(RemoveQuotes(array[++i]));
         }
     }
+}
+
+void MSVCLoader::ProcessPostBuildCommand(ProjectBuildTarget* target, const wxString& cmd)
+{
+  wxString post_build_cmd = cmd;
+
+  // remove "line continues", like in:
+  // PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
+  // copy $(OutDir)\NetHackW.exe ..\binary
+  if (post_build_cmd.EndsWith(_T("\\")))
+  {
+      post_build_cmd.RemoveLast(1);
+      post_build_cmd.Trim(true).Trim(false);
+  }
+
+  if (!post_build_cmd.IsEmpty())
+      target->AddCommandsAfterBuild(post_build_cmd);
 }
 
 wxArrayString MSVCLoader::OptStringTokeniser(const wxString& opts)
