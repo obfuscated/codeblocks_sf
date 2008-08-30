@@ -914,9 +914,6 @@
 		<Unit filename="plugins/astyle/astyle/ASResource.cpp">
 			<Option target="AStyle" />
 		</Unit>
-		<Unit filename="plugins/astyle/astyle/INSTALL.TXT">
-			<Option target="AStyle" />
-		</Unit>
 		<Unit filename="plugins/astyle/astyle/Makefile">
 			<Option target="AStyle" />
 		</Unit>
@@ -929,9 +926,6 @@
 		<Unit filename="plugins/astyle/astyle/astyle_main.cpp">
 			<Option compile="0" />
 			<Option link="0" />
-			<Option target="AStyle" />
-		</Unit>
-		<Unit filename="plugins/astyle/astyle/astyle_release_notes.html">
 			<Option target="AStyle" />
 		</Unit>
 		<Unit filename="plugins/astyle/astyle/license.html">
@@ -1621,7 +1615,7 @@
 		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgstep.png">
 			<Option target="Debugger" />
 		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/16x16/stop.png">
+		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgstop.png">
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/images/dbgnext.png">
@@ -1636,7 +1630,7 @@
 		<Unit filename="plugins/debuggergdb/resources/images/dbgstep.png">
 			<Option target="Debugger" />
 		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/stop.png">
+		<Unit filename="plugins/debuggergdb/resources/images/dbgstop.png">
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/memdump.xrc">
@@ -1856,27 +1850,6 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/wizpage.h">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/BuildTargetPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/CompilerPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/FilePathPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/GenericSelectPath.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/GenericSingleChoiceList.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/InfoPanel.wxs">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/wxsmith/ProjectPathPanel.wxs">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/todo/addtododlg.cpp">
@@ -2574,15 +2547,6 @@
 		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/xh_fnb.cpp">
 			<Option target="wxFlatNotebook" />
 		</Unit>
-		<Unit filename="sdk/wxscintilla/samples/test/defsext.h">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/wxscintilla/samples/test/edit.h">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/wxscintilla/samples/test/prefs.h">
-			<Option target="scintilla" />
-		</Unit>
 		<Unit filename="sdk/wxscintilla/src/PlatWX.cpp">
 			<Option target="scintilla" />
 		</Unit>
@@ -3154,9 +3118,6 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/images/folder_open.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/gohome.png">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/images/misc_16x16.png">
