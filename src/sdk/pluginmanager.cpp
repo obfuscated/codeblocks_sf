@@ -898,7 +898,7 @@ void PluginManager::ReadExtraFilesFromManifestFile(const wxString& pluginFilenam
     }
     else
     {
-        Manager::Get()->GetLogManager()->LogError(_T("No plugin manifest file in resource: %s") + actual);
+        Manager::Get()->GetLogManager()->LogError(_T("No plugin manifest file in resource: ") + actual);
         delete fs;
         return;
     }

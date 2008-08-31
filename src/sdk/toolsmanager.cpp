@@ -271,7 +271,7 @@ void ToolsManager::LoadTools()
 
         AddTool(&tool, false);
     }
-    Manager::Get()->GetLogManager()->Log(_("Configured %d tools"), m_Tools.GetCount());
+    Manager::Get()->GetLogManager()->Log(F(_("Configured %d tools"), m_Tools.GetCount()));
 }
 
 void ToolsManager::SaveTools()
