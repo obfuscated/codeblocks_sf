@@ -99,10 +99,12 @@ void EditWatchesDlg::OnRemove(wxCommandEvent& event)
 {
     int sel = XRCCTRL(*this, "lstWatches", wxListBox)->GetSelection();
     m_Watches.RemoveAt(sel);
-    XRCCTRL(*this, "lstWatches", wxListBox)->Delete(sel);
+    // m_LastSel must be reset before calling Delete, because Delete sends a ListBoxSelect event on linux and
+    // therefore leads to a crash in FillRecord, if m_LastSel is not -1, but the last item was removed
     m_LastSel = -1;
+    XRCCTRL(*this, "lstWatches", wxListBox)->Delete(sel);
     FillWatches();
-    sel = sel == (int)XRCCTRL(*this, "lstWatches", wxListBox)->GetCount() - 1 ? sel - 1 : sel;
+    sel = sel == (int)XRCCTRL(*this, "lstWatches", wxListBox)->GetCount() ? sel - 1 : sel;
     FillRecord(sel);
 }
 
