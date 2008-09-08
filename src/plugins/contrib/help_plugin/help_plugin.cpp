@@ -7,27 +7,32 @@
  * $HeadURL$
  */
 
+#include <vector>
+
+#include "sdk.h"
+#ifndef CB_PRECOMP
+  #include <wx/filename.h>
+  #include <wx/fs_zip.h>
+  #include <wx/intl.h>
+  #include <wx/menuitem.h>
+  #include <wx/process.h>
+  #include <wx/xrc/xmlres.h>
+  #include "cbeditor.h"
+  #include "cbproject.h"
+  #include "configmanager.h"
+  #include "editormanager.h"
+  #include "globals.h"
+  #include "logmanager.h"
+  #include "macrosmanager.h"
+  #include "manager.h"
+  #include "projectmanager.h"
+#endif
+
 #include "help_plugin.h"
 #include "MANFrame.h"
 
-#include <wx/process.h>
-#include <wx/intl.h>
 #include <wx/textdlg.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <wx/menuitem.h>
 #include <wx/mimetype.h>
-#include <wx/filename.h>
-#include <globals.h> // cbMessageBox
-#include <manager.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <logmanager.h>
-#include <projectmanager.h>
-#include <cbeditor.h>
-#include <cbproject.h>
-#include <macrosmanager.h>
-#include <vector>
 #include "cbstyledtextctrl.h"
 
 #include <wx/help.h> //(wxWindows chooses the appropriate help controller class)

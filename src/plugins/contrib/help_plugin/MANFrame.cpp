@@ -6,23 +6,23 @@
  * $Id$
  * $HeadURL$
  */
+#include "sdk.h"
+#ifndef CB_PRECOMP
+  #include <wx/arrstr.h>
+  #include <wx/dir.h>
+  #include <wx/filename.h>
+  #include <wx/sizer.h>
+  #include "globals.h" // cbC2U
+#endif
 
 #include "MANFrame.h"
 #include "man2html.h"
 
-#include <wx/sizer.h>
-#include <wx/dir.h>
 #include <wx/sstream.h>
 #include <wx/wfstream.h>
-#include <wx/filename.h>
-#include <wx/arrstr.h>
 #include <stdio.h>
 #include <bzlib.h>
 #include <zlib.h>
-
-#ifndef CB_PRECOMP
-    #include "globals.h" // cbC2U
-#endif
 
 namespace
 {
@@ -32,7 +32,7 @@ namespace
     int textEntryID = wxNewId();
     int htmlWindowID = wxNewId();
 
-    wxString NoSearchDirsSet = _("<html>\n"
+    const wxString NoSearchDirsSet = _("<html>\n"
         "<head>\n"
         "<meta content=\"text/html; charset=ISO-8859-1\"\n"
         "http-equiv=\"content-type\">\n"
@@ -45,7 +45,7 @@ namespace
         "</body>\n"
         "</html>");
 
-    wxString ManPageNotFound = _("<html>\n"
+    const wxString ManPageNotFound = _("<html>\n"
         "<head>\n"
         "<meta content=\"text/html; charset=ISO-8859-1\"\n"
         "http-equiv=\"content-type\">\n"

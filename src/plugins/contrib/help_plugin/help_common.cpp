@@ -7,6 +7,7 @@
  * $HeadURL$
  */
 
+#include <algorithm>
 #include "help_common.h"
 #include <configmanager.h>
 #include <wx/intl.h>

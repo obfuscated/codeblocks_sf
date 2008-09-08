@@ -40,7 +40,7 @@ namespace ProjectLoaderHooks
       * The isLoading argument is true if your hook is called when the project is being loaded,
       * and false when the project is saved.
       */
-    template<class T> class DLLIMPORT HookFunctor : public HookFunctorBase
+    template<class T> class HookFunctor : public HookFunctorBase
     {
         public:
             typedef void (T::*Func)(cbProject*, TiXmlElement*, bool);
