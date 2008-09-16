@@ -93,9 +93,15 @@ void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
     wxMenu* fileMenu = menuBar->GetMenu(0);
     if (fileMenu)
     {
-        // The position is hard-coded. Please adjust it if necessary
-        fileMenu->Insert(7, wxNewId(), _T("&Import project"), m_Menu);
-        fileMenu->InsertSeparator(8);
+        int menuId = 0, id = 0;
+        wxMenuItemList menuItems = fileMenu->GetMenuItems();
+        menuId = fileMenu->FindItem(_T("Recent files"));
+        wxMenuItem* recentFileItem = fileMenu->FindItem(menuId);
+        id = menuItems.IndexOf(recentFileItem);
+        id = (id == wxNOT_FOUND) ? 7 : ++id;
+        // The position is hard-coded to "Recent Files" menu. Please adjust it if necessary
+        fileMenu->Insert(++id, wxNewId(), _T("&Import project"), m_Menu);
+        fileMenu->InsertSeparator(++id);
     }
 }
 
