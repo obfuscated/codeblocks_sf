@@ -52,10 +52,10 @@ class CodeBlocksApp : public wxApp
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
 #ifdef __WXMAC__
-    // in response of an open-document apple event
-    virtual void         MacOpenFile(const wxString &fileName) ;
-    // in response of a print-document apple event
-    virtual void         MacPrintFile(const wxString &fileName) ;
+        // in response of an open-document apple event
+        virtual void         MacOpenFile(const wxString &fileName) ;
+        // in response of a print-document apple event
+        virtual void         MacPrintFile(const wxString &fileName) ;
 #endif
     protected:
         void OnBatchBuildDone(CodeBlocksEvent& event);

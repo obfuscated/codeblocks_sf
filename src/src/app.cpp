@@ -324,24 +324,25 @@ void CodeBlocksApp::InitExceptionHandler()
 bool CodeBlocksApp::InitXRCStuff()
 {
     if (!Manager::LoadResource(_T("resources.zip")))
-	{
-		ComplainBadInstall();
-		return false;
-	}
+    {
+        ComplainBadInstall();
+        return false;
+    }
     return true;
 }
 
 MainFrame* CodeBlocksApp::InitFrame()
 {
     CompileTimeAssertion<wxMinimumVersion<2,6>::eval>::Assert();
+
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(0);
     //frame->Hide(); // shouldn't need this explicitly
 #ifdef __WXMSW__
-    if (!m_NoDDE)
+    if (g_DDEServer && !m_NoDDE)
     {
-    	// Set m_Frame in DDE-Server
+        // Set m_Frame in DDE-Server
         g_DDEServer->SetFrame(frame);
     }
 #endif
@@ -461,8 +462,8 @@ bool CodeBlocksApp::OnInit()
         if(!LoadConfig())
             return false;
 
-		// set safe-mode appropriately
-		PluginManager::SetSafeMode(m_SafeMode);
+        // set safe-mode appropriately
+        PluginManager::SetSafeMode(m_SafeMode);
 
         if(!m_Batch && m_Script.IsEmpty() && !InitXRCStuff())
         {
@@ -501,11 +502,11 @@ bool CodeBlocksApp::OnInit()
 
         if (m_Batch)
         {
-        	// the compiler plugin might be waiting for this
-			CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
-			Manager::Get()->ProcessEvent(event);
+            // the compiler plugin might be waiting for this
+            CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+            Manager::Get()->ProcessEvent(event);
 
-			Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<CodeBlocksApp, CodeBlocksEvent>(this, &CodeBlocksApp::OnBatchBuildDone));
+            Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new cbEventFunctor<CodeBlocksApp, CodeBlocksEvent>(this, &CodeBlocksApp::OnBatchBuildDone));
             s_Loading = false;
             LoadDelayedFiles(frame);
 
@@ -563,9 +564,9 @@ bool CodeBlocksApp::OnInit()
         LoadDelayedFiles(frame);
         Manager::Get()->GetProjectManager()->WorkspaceChanged();
 
-		// all done
-		CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
-		Manager::Get()->ProcessEvent(event);
+        // all done
+        CodeBlocksEvent event(cbEVT_APP_STARTUP_DONE);
+        Manager::Get()->ProcessEvent(event);
 
         return true;
     }
@@ -594,7 +595,7 @@ int CodeBlocksApp::OnExit()
     wxTheClipboard->Flush();
 
 #ifdef __WXMSW__
-    delete g_DDEServer;
+    if (g_DDEServer) delete g_DDEServer;
     if (m_ExceptionHandlerLib)
         FreeLibrary(m_ExceptionHandlerLib);
 #endif
@@ -1018,8 +1019,8 @@ void CodeBlocksApp::MacPrintFile(const wxString & fileName )
 
 void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
 {
-	// allow others to process this event
-	event.Skip();
+    // allow others to process this event
+    event.Skip();
 
     if (s_Loading)
         return; // still loading; we can't possibly be interested for this event ;)
