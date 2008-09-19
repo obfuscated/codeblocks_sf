@@ -2124,7 +2124,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
         int count = XRCCTRL(*this, "cmbCompiler", wxChoice)->GetCount(); // compilers count
         Compiler* compiler = CompilerFactory::GetCompiler(idx);
 
-        XRCCTRL(*this, "btnSetDefaultCompiler", wxButton)->Enable(CompilerFactory::GetDefaultCompilerID() != idx);
+        XRCCTRL(*this, "btnSetDefaultCompiler", wxButton)->Enable(CompilerFactory::GetCompilerIndex(CompilerFactory::GetDefaultCompiler()) != idx);
         XRCCTRL(*this, "btnAddCompiler",        wxButton)->Enable(en);
         XRCCTRL(*this, "btnRenameCompiler",     wxButton)->Enable(en && count);
         XRCCTRL(*this, "btnDelCompiler",        wxButton)->Enable(en &&
