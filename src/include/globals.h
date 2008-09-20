@@ -194,7 +194,7 @@ extern DLLIMPORT bool UsesCommonControls6();
   * Always use this to load bitmaps because it takes care of various
   * issues with pre-XP windows (actually common controls < 6.00).
   */
-extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType = wxBITMAP_TYPE_PNG);
+extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType = wxBITMAP_TYPE_PNG);
 
 // compatibility function
 inline wxBitmap LoadPNGWindows2000Hack(const wxString& filename){ return cbLoadBitmap(filename); }

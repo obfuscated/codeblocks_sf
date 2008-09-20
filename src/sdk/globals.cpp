@@ -711,7 +711,7 @@ bool UsesCommonControls6()
 }
 #endif
 
-wxBitmap cbLoadBitmap(const wxString& filename, int bitmapType)
+wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
 {
     // cache this, can't change while we 're running :)
     static bool oldCommonControls = !UsesCommonControls6();

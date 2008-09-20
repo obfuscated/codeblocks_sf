@@ -7,7 +7,7 @@
  * $HeadURL$
  */
 
-#include <sdk_precomp.h>
+#include "sdk_precomp.h"
 #ifndef CB_PRECOMP
     #include <wx/string.h>
     #include <globals.h>
@@ -276,7 +276,7 @@ namespace ScriptBindings
                 func(&wxColour::Blue, "Blue").
                 func(&wxColour::Green, "Green").
                 func(&wxColour::Red, "Red").
-                func(&wxColour::Ok, "Ok").
+                func(&wxColour::IsOk, "IsOk").
                 func<WXC_SET>(&wxColour::Set, "Set");
     }
 };
