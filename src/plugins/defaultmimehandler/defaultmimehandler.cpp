@@ -181,7 +181,7 @@ int DefaultMimeHandler::OpenFile(const wxString& filename)
     {
         // not yet supported. ask the user how to open it.
         wxString choices[3] = {_("Select an external program to open it"),
-                               _("Open it with the associated application (windows only)"),
+                               _("Open it with the associated application"),
                                _("Open it inside the Code::Blocks editor")};
         wxSingleChoiceDialog dlg(Manager::Get()->GetAppWindow(),
                                 _("Code::Blocks does not yet know how to open this kind of file.\n"
@@ -299,6 +299,12 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
         // easy too. use associated app
         #ifdef __WXMSW__
         ShellExecute(0, wxString(_T("open")).c_str(), filename.c_str(), 0, 0, SW_SHOW);
+        #endif
+        #ifdef __WXGTK__
+        wxExecute(wxString::Format(_T("xdg-open %s")),filename.c_str());
+        #endif
+        #ifdef __WXMAC__
+        wxExecute(wxString::Format(_T("open %s")),filename.c_str());
         #endif
         return 0;
     }
