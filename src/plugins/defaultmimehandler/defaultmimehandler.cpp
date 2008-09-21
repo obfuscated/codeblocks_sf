@@ -301,10 +301,10 @@ int DefaultMimeHandler::DoOpenFile(cbMimeType* mt, const wxString& filename)
         ShellExecute(0, wxString(_T("open")).c_str(), filename.c_str(), 0, 0, SW_SHOW);
         #endif
         #ifdef __WXGTK__
-        wxExecute(wxString::Format(_T("xdg-open %s")),filename.c_str());
+        wxExecute(wxString::Format(_T("xdg-open %s"), filename.c_str()));
         #endif
         #ifdef __WXMAC__
-        wxExecute(wxString::Format(_T("open %s")),filename.c_str());
+        wxExecute(wxString::Format(_T("open %s"), filename.c_str()));
         #endif
         return 0;
     }
