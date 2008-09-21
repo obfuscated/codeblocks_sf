@@ -277,7 +277,7 @@ const wxString& Compiler::GetCommand(CommandType ct, const wxString& fileExtensi
 {
 	size_t catchAll = 0;
 	const CompilerToolsVector& vec = m_Commands[ct];
-	
+
 	if (!fileExtension.IsEmpty())
 	{
 		for (size_t i = 0; i < vec.size(); ++i)
@@ -303,7 +303,7 @@ const CompilerTool& Compiler::GetCompilerTool(CommandType ct, const wxString& fi
 {
 	size_t catchAll = 0;
 	const CompilerToolsVector& vec = m_Commands[ct];
-	
+
 	if (!fileExtension.IsEmpty())
 	{
 		for (size_t i = 0; i < vec.size(); ++i)
@@ -590,14 +590,14 @@ void Compiler::LoadSettings(const wxString& baseKey)
     	wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/macros/") + CommandTypeDescriptions[i]);
     	for (size_t n = 0; n < keys.size(); ++n)
     	{
-    		unsigned long index;
+    		unsigned long index = 0;
     		if (keys[n].Mid(4).ToULong(&index)) // skip 'tool'
     		{
     			while (index >= m_Commands[i].size())
 					m_Commands[i].push_back(CompilerTool());
 				CompilerTool& tool = m_Commands[i][index];
-				
-				wxString key = wxString::Format(_T("%s/macros/%s/tool%d/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), index);
+
+				wxString key = wxString::Format(_T("%s/macros/%s/tool%lu/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), index);
 				tool.command = cfg->Read(key + _T("command"));
 				tool.extensions = cfg->ReadArrayString(key + _T("extensions"));
 				tool.generatedFiles = cfg->ReadArrayString(key + _T("generatedFiles"));
@@ -633,7 +633,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     // the key name
     wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/regex/"));
     wxString group;
-    long index;
+    long index = 0;
     for (size_t i = 0; i < keys.GetCount(); ++i)
     {
         wxString key = keys[i];
@@ -649,7 +649,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
         // read everything and either assign it to an existing regex
         // if the index exists, or add a new regex
 
-        group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), index);
+        group.Printf(_T("%s/regex/re%3.3ld"), tmp.c_str(), index);
         if (!cfg->Exists(group+_T("/description")))
             continue;
 
