@@ -1269,7 +1269,7 @@ bool CodeSnippetsAppFrame::LoadConfig()
     #if defined(__WXMSW__)
     if( m_Prefix.IsEmpty() )
     do{
-        wxCHAR dllPath[1024] = {0};
+        wxChar dllPath[1024] = {0};
         HMODULE dllHandle = LoadLibrary(_T("codeblocks.dll"));
         if (not dllHandle) break;
         DWORD pathLen = GetModuleFileName( dllHandle, dllPath, sizeof(dllPath));
