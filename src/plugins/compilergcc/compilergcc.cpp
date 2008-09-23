@@ -3321,7 +3321,7 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
 //    m_pListLog->GetListControl()->SetColumnWidth(2, wxLIST_AUTOSIZE);
 
     // add to error keeping struct
-    m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(line.mb_str()), msg);
+    m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(wxSafeConvertWX2MB(line)), msg);
 }
 
 void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle, bool updateProgress)

@@ -20,7 +20,7 @@ class DLLIMPORT StdoutLogger : public Logger
 public:
     virtual void Append(const wxString& msg, Logger::level lv)
     {
-        fputs(msg.mb_str(), lv < error ? stdout : stderr);
+        fputs(wxSafeConvertWX2MB(msg), lv < error ? stdout : stderr);
         fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
     }
 };
@@ -35,7 +35,7 @@ public:
 
     virtual void Append(const wxString& msg, Logger::level lv)
     {
-        fputs(msg.mb_str(), f.fp());
+        fputs(wxSafeConvertWX2MB(msg), f.fp());
         fputs(::newline_string.mb_str(), f.fp());
     };
 

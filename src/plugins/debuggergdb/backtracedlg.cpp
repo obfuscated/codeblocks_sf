@@ -133,7 +133,7 @@ void BacktraceDlg::OnDblClick(wxListEvent& event)
     info.m_col = 4;
     wxString line = lst->GetItem(info) ? info.m_text : _T("");
     if (!file.IsEmpty() && !line.IsEmpty())
-        m_pDbg->SyncEditor(file, atoi(line.mb_str()), false);
+        m_pDbg->SyncEditor(file, atoi(wxSafeConvertWX2MB(line)), false);
 }
 
 void BacktraceDlg::OnSave(wxCommandEvent& event)
