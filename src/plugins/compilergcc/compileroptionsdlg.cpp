@@ -2018,7 +2018,7 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
                             XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
                             obj->GetValue(),
                             file_selection,
-                            wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly );
+                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly );
     dlg->SetFilterIndex(0);
 
     PlaceWindow(dlg);

@@ -1994,7 +1994,7 @@ void ProjectManager::OnAddFileToProject(wxCommandEvent& event)
                     basePath,
                     wxEmptyString,
                     FileFilters::GetFilterString(),
-                    wxOPEN | wxMULTIPLE | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
+                    wxFD_OPEN | wxFD_MULTIPLE | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
     dlg.SetFilterIndex(FileFilters::GetIndexForFilterAll());
 
     PlaceWindow(&dlg);
@@ -2047,8 +2047,8 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
                 return;
             }
             prj->BeginRemoveFiles();
-            // we iterate the arry backwards, because if we iterate it normally,
-            // when we remove the first index, the rest become invalid...
+            // we iterate the array backwards, because if we iterate it normally,
+            // when we remove the first index, the rest becomes invalid...
             for (int i = (int)indices.GetCount() - 1; i >= 0; --i)
             {
                 ProjectFile* pf = prj->GetFile(indices[i]);

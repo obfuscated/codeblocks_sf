@@ -640,7 +640,7 @@ void DebuggerTree::OnLoadWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
-                    wxOPEN | wxFILE_MUST_EXIST | wxCHANGE_DIR | compatibility::wxHideReadonly);
+                    wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -686,7 +686,7 @@ void DebuggerTree::OnSaveWatchFile(wxCommandEvent& event)
                     _T(""),
                     _T(""),
                     _T("Watch files (*.watch)|*.watch|Any file (*)|*"),
-                    wxSAVE | wxOVERWRITE_PROMPT);
+                    wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

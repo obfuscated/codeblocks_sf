@@ -211,7 +211,7 @@ void SymTabConfigDlg::OnLibrary(wxCommandEvent& WXUNUSED(event))
 #endif
   wxString es       = wxEmptyString;
 
-  wxFileDialog fd(parent, caption, es, es, wildcard, wxOPEN|compatibility::wxHideReadonly);
+  wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN|compatibility::wxHideReadonly);
   if (fd.ShowModal() == wxID_OK)
   {
     wxString path = fd.GetPath();
@@ -237,7 +237,7 @@ void SymTabConfigDlg::OnNM(wxCommandEvent& WXUNUSED(event))
 
   wxString es = wxEmptyString;
 
-  wxFileDialog fd(parent, caption, es, es, wildcard, wxOPEN|compatibility::wxHideReadonly);
+  wxFileDialog fd(parent, caption, es, es, wildcard, wxFD_OPEN|compatibility::wxHideReadonly);
   if (fd.ShowModal() == wxID_OK)
   {
     wxString path = fd.GetPath();

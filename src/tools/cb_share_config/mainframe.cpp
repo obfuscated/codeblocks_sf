@@ -126,7 +126,7 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
 	bszMain->Fit(this);
 	bszMain->SetSizeHints(this);
 	Center();
-	
+
 	Connect(ID_BTN_FILE_SRC,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileSrcClick);
 	Connect(ID_BTN_FILE_DST,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileDstClick);
 	Connect(ID_BTN_TRANSFER,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnTransferClick);
@@ -351,7 +351,7 @@ void MainFrame::OnBtnExportClick(wxCommandEvent& event)
           wxT("*.conf"),                                          // default extension
           wxT("Code::Blocks configuration files (*.conf)|*.conf|"
               "All files (*.*)|*.*"),                             // wildcards
-          wxSAVE                                                  // flags
+          wxFD_SAVE                                               // flags
         );
         if (!filename.IsEmpty())
         {
@@ -433,9 +433,9 @@ wxString MainFrame::FileSelector()
     wxT("*.conf"),                                   // default extension
     wxT("Code::Blocks configuration files (*.conf)|*.conf|"
         "All files (*.*)|*.*"),                      // wildcards
-    wxOPEN | wxFILE_MUST_EXIST                       // flags
+    wxFD_OPEN | wxFD_FILE_MUST_EXIST                 // flags
 #if (WXWIN_COMPATIBILITY_2_4)
-    | wxHIDE_READONLY
+    | wxFD_HIDE_READONLY
 #endif
   );
 
@@ -465,7 +465,7 @@ bool MainFrame::LoadConfig(const wxString& filename, TiXmlDocument** doc)
     return false;
 
   const char *vers = docroot->Attribute("version");
-  if(!vers || atoi(vers) != 1)
+  if(!vers || wxAtoi(vers) != 1)
   {
     wxMessageBox(wxT("Unknown config file version encountered!"),
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);

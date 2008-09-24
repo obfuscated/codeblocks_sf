@@ -96,15 +96,15 @@ void NativeParser::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, 
         // Hook called when saving project file.
         wxArrayString& pdirs = GetProjectSearchDirs(project);
 
-		// since rev4332, the project keeps a copy of the <Extensions> element
-		// and re-uses it when saving the project (so to avoid losing entries in it
-		// if plugins that use that element are not loaded atm).
-		// so, instead of blindly inserting the element, we must first check it's
-		// not already there (and if it is, clear its contents)
+        // since rev4332, the project keeps a copy of the <Extensions> element
+        // and re-uses it when saving the project (so to avoid losing entries in it
+        // if plugins that use that element are not loaded atm).
+        // so, instead of blindly inserting the element, we must first check it's
+        // not already there (and if it is, clear its contents)
         TiXmlElement* node = elem->FirstChildElement("code_completion");
         if (!node)
-			node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
-		node->Clear();
+            node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
+        node->Clear();
         for (size_t i = 0; i < pdirs.GetCount(); ++i)
         {
             TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
@@ -146,7 +146,7 @@ void NativeParser::CreateClassBrowser()
         }
         m_ClassBrowserIsFloating = isFloating;
 
-		// Dreaded DDE-open bug related: do not touch unless for a good reason
+        // Dreaded DDE-open bug related: do not touch unless for a good reason
 //        m_pClassBrowser->SetParser(&m_Parser);
     }
 }
@@ -578,14 +578,14 @@ void NativeParser::ReparseProject(cbProject* project)
 // NOTE: it actually forces reparsing of workspace
 void NativeParser::ForceReparseActiveProject()
 {
-	m_Parser.Clear();
-	UpdateClassBrowser();
+    m_Parser.Clear();
+    UpdateClassBrowser();
 
-	ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
-	for (size_t i = 0; i < projects->GetCount(); ++i)
-	{
-		AddParser(projects->Item(i), false);
-	}
+    ProjectsArray* projects = Manager::Get()->GetProjectManager()->GetProjects();
+    for (size_t i = 0; i < projects->GetCount(); ++i)
+    {
+        AddParser(projects->Item(i), false);
+    }
 }
 
 Parser* NativeParser::FindParserFromEditor(EditorBase* editor)
@@ -776,8 +776,8 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
     {
         ++blockStart; // skip {
         int blockEnd = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
-		if (blockEnd < 0 || blockEnd > ed->GetControl()->GetLength())
-			return false;
+        if (blockEnd < 0 || blockEnd > ed->GetControl()->GetLength())
+            return false;
 
         if (blockStart >= blockEnd)
             blockStart = blockEnd;
@@ -796,7 +796,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
 #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
             {
-//				Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
+//                Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
                 Manager::Get()->GetLogManager()->DebugLog(_T("Local tokens:"));
                 for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
                 {
@@ -837,7 +837,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
     wxArrayString ns;
     int pos = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > ed->GetControl()->GetLength())
-		return false;
+        return false;
     wxString buffer = ed->GetControl()->GetTextRange(0, pos);
     parser->ParseBufferForUsingNamespace(buffer, ns);
 
@@ -1319,7 +1319,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
 
     int pos = caretPos == -1 ? editor->GetControl()->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > editor->GetControl()->GetLength())
-		return 0;
+        return 0;
     m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
     m_EditorEndWord = pos;//editor->GetControl()->WordEndPosition(pos, true);
     int line = editor->GetControl()->LineFromPosition(pos);
@@ -1881,7 +1881,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
     // cache last result for optimization
     int pos = caretPos == -1 ? control->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > control->GetLength())
-		return -1;
+        return -1;
     int line = control->LineFromPosition(pos) + 1;
     if (line == s_LastLine && editor == s_LastEditor)
     {

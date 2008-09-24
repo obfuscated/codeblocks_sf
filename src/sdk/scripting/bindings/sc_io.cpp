@@ -155,7 +155,7 @@ namespace ScriptBindings
                             wxEmptyString,
                             Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultFile),
                             filter,
-                            wxOPEN | compatibility::wxHideReadonly);
+                            wxFD_OPEN | compatibility::wxHideReadonly);
             PlaceWindow(&dlg);
             if (dlg.ShowModal() == wxID_OK)
                 return dlg.GetPath();

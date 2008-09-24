@@ -1638,7 +1638,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
                  GetConfig()->SettingsSnippetsFolder,   //default directory
                  newFileName,                           //default file
                  wxT("*.*"),                            //wildcards
-                 wxSAVE | wxOVERWRITE_PROMPT);          //style
+                 wxFD_SAVE | wxFD_OVERWRITE_PROMPT);    //style
     // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
     (&dlg)->Move(mousePosn.x, mousePosn.y);

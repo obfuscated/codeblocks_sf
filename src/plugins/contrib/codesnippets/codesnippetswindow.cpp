@@ -897,7 +897,7 @@ void CodeSnippetsWindow::OnMnuLoadSnippetsFromFile(wxCommandEvent& event)
     // Allow user to specify new filename or old file to load
 	//-wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
 	wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString,
-        _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxOPEN);
+        _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxFD_OPEN);
 	if (dlg.ShowModal() == wxID_OK)
 	{
         LOGIT(wxT("LoadingFile:%s"),dlg.GetPath().c_str());
@@ -919,7 +919,7 @@ void CodeSnippetsWindow::OnMnuSaveSnippets(wxCommandEvent& /*event*/)
 void CodeSnippetsWindow::OnMnuSaveSnippetsAs(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
-	wxFileDialog dlg(this, _("Save snippets to file"), wxEmptyString, _T("codesnippets.xml"), _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxSAVE|wxOVERWRITE_PROMPT);
+	wxFileDialog dlg(this, _("Save snippets to file"), wxEmptyString, _T("codesnippets.xml"), _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_OK)
 	{
 		GetSnippetsTreeCtrl()->SaveItemsToFile(dlg.GetPath());

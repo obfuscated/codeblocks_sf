@@ -193,7 +193,7 @@ void FilePathPanel::OnbtnBrowseClick(wxCommandEvent& event)
                             prj ? prj->GetBasePath() : _T(""),
                             txtFilename->GetValue(),
                             m_ExtFilter,
-                            wxSAVE | wxOVERWRITE_PROMPT);
+                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         txtFilename->SetValue(dlg->GetPath());

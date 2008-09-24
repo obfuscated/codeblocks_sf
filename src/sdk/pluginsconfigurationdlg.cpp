@@ -224,7 +224,7 @@ void PluginsConfigurationDlg::OnInstall(wxCommandEvent& event)
                         _("Select plugin to install"),
                         wxEmptyString, wxEmptyString,
                         _T("Code::Blocks Plugins (*.cbplugin)|*.cbplugin"),
-                        wxOPEN | wxFILE_MUST_EXIST | wxMULTIPLE | compatibility::wxHideReadonly);
+                        wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_MULTIPLE | compatibility::wxHideReadonly);
     if (fd.ShowModal() != wxID_OK)
         return;
 

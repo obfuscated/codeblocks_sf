@@ -133,7 +133,7 @@ void BacktraceDlg::OnDblClick(wxListEvent& event)
     info.m_col = 4;
     wxString line = lst->GetItem(info) ? info.m_text : _T("");
     if (!file.IsEmpty() && !line.IsEmpty())
-        m_pDbg->SyncEditor(file, atoi(wxSafeConvertWX2MB(line)), false);
+        m_pDbg->SyncEditor(file, wxAtoi(wxSafeConvertWX2MB(line)), false);
 }
 
 void BacktraceDlg::OnSave(wxCommandEvent& event)
@@ -143,7 +143,7 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
                         wxEmptyString,
                         wxEmptyString,
                         FileFilters::GetFilterAll(),
-                        wxSAVE | wxOVERWRITE_PROMPT);
+                        wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

@@ -1441,7 +1441,7 @@ wxString MainFrame::ShowOpenFileDialog(const wxString& caption, const wxString& 
                             wxEmptyString,
                             wxEmptyString,
                             filter,
-                            wxOPEN | compatibility::wxHideReadonly);
+                            wxFD_OPEN | compatibility::wxHideReadonly);
     wxString sel;
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
@@ -2308,7 +2308,7 @@ void MainFrame::DoOnFileOpen(bool bProject)
                             Path,
                             wxEmptyString,
                             Filters,
-                            wxOPEN | wxMULTIPLE | compatibility::wxHideReadonly);
+                            wxFD_OPEN | wxFD_MULTIPLE | compatibility::wxHideReadonly);
     dlg->SetFilterIndex(StoredIndex);
 
     PlaceWindow(dlg);

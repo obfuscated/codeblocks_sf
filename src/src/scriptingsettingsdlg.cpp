@@ -317,7 +317,7 @@ void ScriptingSettingsDlg::OnBrowse(wxCommandEvent& event)
                             XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
                             XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
                             FileFilters::GetFilterString(_T(".script")),
-                            wxOPEN | compatibility::wxHideReadonly );
+                            wxFD_OPEN | compatibility::wxHideReadonly );
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
     {

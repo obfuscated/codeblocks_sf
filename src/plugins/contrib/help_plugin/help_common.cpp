@@ -7,12 +7,12 @@
  * $HeadURL$
  */
 
-#include <algorithm>
 #include "help_common.h"
 #include <configmanager.h>
 #include <wx/intl.h>
 #include <wx/dynarray.h>
 #include <wx/textfile.h>
+#include <algorithm>
 
 
 using std::find;

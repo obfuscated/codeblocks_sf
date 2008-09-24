@@ -386,12 +386,12 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 else if (m_BP->type == DebuggerBreakpoint::bptData)
                 {
                     if (m_BP->breakOnRead && m_BP->breakOnWrite)
-						m_Cmd << _T("awatch ");
-					else if (m_BP->breakOnRead)
-						m_Cmd << _T("rwatch ");
-					else
-						m_Cmd << _T("watch ");
-					m_Cmd << m_BP->breakAddress;
+                        m_Cmd << _T("awatch ");
+                    else if (m_BP->breakOnRead)
+                        m_Cmd << _T("rwatch ");
+                    else
+                        m_Cmd << _T("watch ");
+                    m_Cmd << m_BP->breakAddress;
                 }
                 //GDB workaround
                 //Use function name if this is C++ constructor/destructor
@@ -442,11 +442,11 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
             {
                 reDataBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
             }
-			else if (reHWBreakpoint.Matches(output))
-			{
-				reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
-				reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
-			}
+            else if (reHWBreakpoint.Matches(output))
+            {
+                reHWBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+                reHWBreakpoint.GetMatch(output, 2).ToULong(&m_BP->address, 16);
+            }
             else
                 m_pDriver->Log(output); // one of the error responses
         }
@@ -465,22 +465,22 @@ class GdbCmd_AddDataBreakpoint : public DebuggerCmd
             m_BP(bp)
         {
             if (m_BP->enabled)
-				m_Cmd << _T("output &") << m_BP->breakAddress;
+                m_Cmd << _T("output &") << m_BP->breakAddress;
         }
         void ParseOutput(const wxString& output)
         {
             // Hardware watchpoint 1: expr
             if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
                 m_pDriver->Log(output);
-			else
-			{
-				if (reGenericHexAddress.Matches(output))
-				{
-					wxString contents = reGenericHexAddress.GetMatch(output, 1);
-					m_BP->breakAddress = _T("*") + contents;
-					m_pDriver->QueueCommand(new GdbCmd_AddBreakpoint(m_pDriver, m_BP), DebuggerDriver::High);
-				}
-			}
+            else
+            {
+                if (reGenericHexAddress.Matches(output))
+                {
+                    wxString contents = reGenericHexAddress.GetMatch(output, 1);
+                    m_BP->breakAddress = _T("*") + contents;
+                    m_pDriver->QueueCommand(new GdbCmd_AddBreakpoint(m_pDriver, m_BP), DebuggerDriver::High);
+                }
+            }
         }
 };
 
@@ -511,9 +511,9 @@ class GdbCmd_RemoveBreakpoint : public DebuggerCmd
             if (!m_BP)
                 return;
 
-			// This can crash because m_BP could already be deleted
-			// and if it isn't deleted already, it will be soon
-			// so there's no point in invalidating the bp number anyway
+            // This can crash because m_BP could already be deleted
+            // and if it isn't deleted already, it will be soon
+            // so there's no point in invalidating the bp number anyway
 
             // invalidate bp number
 //            m_BP->index = -1;
@@ -906,16 +906,16 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
             m_WinRect(tiprect),
             m_What(what)
         {
-        	if (!singleUsage)
-        	{
-				singleUsage = true;
-				m_Cmd << _T("whatis ");
-				m_Cmd << m_What;
-        	}
+            if (!singleUsage)
+            {
+                singleUsage = true;
+                m_Cmd << _T("whatis ");
+                m_Cmd << m_What;
+            }
         }
         ~GdbCmd_FindTooltipType()
         {
-			singleUsage = false;
+            singleUsage = false;
         }
         void ParseOutput(const wxString& output)
         {
@@ -950,8 +950,8 @@ class GdbCmd_Backtrace : public DebuggerCmd
         }
         void ParseOutput(const wxString& output)
         {
-        	int validFrameNumber = -1;
-        	StackFrame validSF;
+            int validFrameNumber = -1;
+            StackFrame validSF;
 
             m_pDlg->Clear();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
@@ -995,11 +995,11 @@ class GdbCmd_Backtrace : public DebuggerCmd
                     {
                         sf.file = reBT2.GetMatch(lines[i], 1);
                         sf.line = reBT2.GetMatch(lines[i], 2);
-						if (validFrameNumber == -1)
-						{
-							validSF = sf;
-							validFrameNumber = sf.number;
-						}
+                        if (validFrameNumber == -1)
+                        {
+                            validSF = sf;
+                            validFrameNumber = sf.number;
+                        }
                     }
                     else if (reBT3.Matches(lines[i]))
                         sf.file = reBT3.GetMatch(lines[i], 1);
@@ -1008,23 +1008,23 @@ class GdbCmd_Backtrace : public DebuggerCmd
             }
             if (validFrameNumber > 0) // if it's 0, then the driver already synced the editor
             {
-				bool autoSwitch = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("auto_switch_frame"), true);
-            	if (!autoSwitch)
-            	{
-					long line;
-					if (validSF.line.ToLong(&line))
-					{
-						m_pDriver->Log(wxString::Format(_T("Displaying first frame with valid source info (#%d)"), validFrameNumber));
-						m_pDriver->ShowFile(validSF.file, line);
-					}
-            	}
-            	else
-            	{
-					// can't call m_pDriver->SwitchToFrame() here
-					// because it causes a cascade update, never stopping...
-					//m_pDriver->Log(wxString::Format(_T("Switching to frame #%d which has valid source info"), validFrameNumber));
+                bool autoSwitch = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("auto_switch_frame"), true);
+                if (!autoSwitch)
+                {
+                    long line;
+                    if (validSF.line.ToLong(&line))
+                    {
+                        m_pDriver->Log(wxString::Format(_T("Displaying first frame with valid source info (#%d)"), validFrameNumber));
+                        m_pDriver->ShowFile(validSF.file, line);
+                    }
+                }
+                else
+                {
+                    // can't call m_pDriver->SwitchToFrame() here
+                    // because it causes a cascade update, never stopping...
+                    //m_pDriver->Log(wxString::Format(_T("Switching to frame #%d which has valid source info"), validFrameNumber));
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, wxString::Format(_T("frame %d"), validFrameNumber)));
-            	}
+                }
             }
 //            m_pDriver->DebugLog(output);
         }
@@ -1314,109 +1314,109 @@ class GdbCmd_ExamineMemory : public DebuggerCmd
 
 class GdbCmd_RemoteBaud : public DebuggerCmd
 {
-	public:
-		GdbCmd_RemoteBaud(DebuggerDriver* driver, const wxString& baud)
-			: DebuggerCmd(driver)
-		{
-			m_Cmd << _T("set remotebaud ") << baud;
-			driver->Log(_("Setting serial connection speed to ") + baud);
-		}
-		void ParseOutput(const wxString& output)
-		{
-		}
+    public:
+        GdbCmd_RemoteBaud(DebuggerDriver* driver, const wxString& baud)
+            : DebuggerCmd(driver)
+        {
+            m_Cmd << _T("set remotebaud ") << baud;
+            driver->Log(_("Setting serial connection speed to ") + baud);
+        }
+        void ParseOutput(const wxString& output)
+        {
+        }
 };
 
 class GdbCmd_RemoteTarget : public DebuggerCmd
 {
-	public:
-		GdbCmd_RemoteTarget(DebuggerDriver* driver, RemoteDebugging* rd)
-			: DebuggerCmd(driver)
-		{
-			switch (rd->connType)
-			{
-				case RemoteDebugging::TCP:
-				{
-					if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-						m_Cmd << _T("target remote tcp:") << rd->ip << _T(":") << rd->ipPort;
-				}
-				break;
+    public:
+        GdbCmd_RemoteTarget(DebuggerDriver* driver, RemoteDebugging* rd)
+            : DebuggerCmd(driver)
+        {
+            switch (rd->connType)
+            {
+                case RemoteDebugging::TCP:
+                {
+                    if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+                        m_Cmd << _T("target remote tcp:") << rd->ip << _T(":") << rd->ipPort;
+                }
+                break;
 
-				case RemoteDebugging::UDP:
-				{
-					if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
-						m_Cmd << _T("target remote udp:") << rd->ip << _T(":") << rd->ipPort;
-				}
-				break;
+                case RemoteDebugging::UDP:
+                {
+                    if (!rd->ip.IsEmpty() && !rd->ipPort.IsEmpty())
+                        m_Cmd << _T("target remote udp:") << rd->ip << _T(":") << rd->ipPort;
+                }
+                break;
 
-				case RemoteDebugging::Serial:
-				{
-					if (!rd->serialPort.IsEmpty())
-						m_Cmd << _T("target remote ") << rd->serialPort;
-				}
-				break;
+                case RemoteDebugging::Serial:
+                {
+                    if (!rd->serialPort.IsEmpty())
+                        m_Cmd << _T("target remote ") << rd->serialPort;
+                }
+                break;
 
-				default:
-					break;
-			}
+                default:
+                    break;
+            }
 
-			if (!m_Cmd.IsEmpty())
-				driver->Log(_("Connecting to remote target"));
-			else
-				m_pDriver->Log(_("Invalid settings for remote debugging!"));
-		}
-		void ParseOutput(const wxString& output)
-		{
-			// This command will either output an error or a breakpoint address info
-			// Connection errors are of the form:
-			//
-			// tcp:10.10.1.205:2345: No route to host.
-			// (remote system can't be contacted on the IP level)
-			//
-			// tcp:10.10.1.205:2345: Connection refused.
-			// (no gdb proxy/server running on the specified remote system ip/port)
-			//
-			// tcp:1111:222: Invalid argument.
-			//
-			// sdsdsds: unknown host
-			// tcp:sdsdsds:ddd: No such file or directory.
-			//
-			// Malformed response to offset query, *
-			// Ignoring packet error, continuing...
-			// (serial line errors)
-			//
-			// Now, we could use a regex to filter these but this might be overkill
-			// since the above errors are the only (?) ones we could get.
-			// So for now we 'll just check them verbatim...
+            if (!m_Cmd.IsEmpty())
+                driver->Log(_("Connecting to remote target"));
+            else
+                m_pDriver->Log(_("Invalid settings for remote debugging!"));
+        }
+        void ParseOutput(const wxString& output)
+        {
+            // This command will either output an error or a breakpoint address info
+            // Connection errors are of the form:
+            //
+            // tcp:10.10.1.205:2345: No route to host.
+            // (remote system can't be contacted on the IP level)
+            //
+            // tcp:10.10.1.205:2345: Connection refused.
+            // (no gdb proxy/server running on the specified remote system ip/port)
+            //
+            // tcp:1111:222: Invalid argument.
+            //
+            // sdsdsds: unknown host
+            // tcp:sdsdsds:ddd: No such file or directory.
+            //
+            // Malformed response to offset query, *
+            // Ignoring packet error, continuing...
+            // (serial line errors)
+            //
+            // Now, we could use a regex to filter these but this might be overkill
+            // since the above errors are the only (?) ones we could get.
+            // So for now we 'll just check them verbatim...
 
-			wxString errMsg;
+            wxString errMsg;
 
-			if (output.Contains(_T("No route to host")))
-				errMsg << _("Can't connect to the remote system.\nVerify your connection settings and that\nthe remote system is reachable/powered-on.");
-			else if (output.Contains(_T("Connection refused")))
-				errMsg << _("Connection refused by the remote system.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
-			else if (output.Contains(_T("Malformed response")) ||
-					output.Contains(_T("packet error")))
-			{
-				errMsg << _("Connection can't be established.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
-			}
-			else if (output.Contains(_T("Invalid argument")))
-				errMsg << _("Invalid argument.\nVerify your connection settings (probably some typo).");
-			else if (output.Contains(_T("unknown host")))
-				errMsg << _("Unknown host.\nVerify your connection settings (probably some typo).");
+            if (output.Contains(_T("No route to host")))
+                errMsg << _("Can't connect to the remote system.\nVerify your connection settings and that\nthe remote system is reachable/powered-on.");
+            else if (output.Contains(_T("Connection refused")))
+                errMsg << _("Connection refused by the remote system.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
+            else if (output.Contains(_T("Malformed response")) ||
+                    output.Contains(_T("packet error")))
+            {
+                errMsg << _("Connection can't be established.\nVerify your connection settings and that\nthe GDB server/proxy is running on the remote system.");
+            }
+            else if (output.Contains(_T("Invalid argument")))
+                errMsg << _("Invalid argument.\nVerify your connection settings (probably some typo).");
+            else if (output.Contains(_T("unknown host")))
+                errMsg << _("Unknown host.\nVerify your connection settings (probably some typo).");
 
-			if (!errMsg.IsEmpty())
-			{
-				m_pDriver->Log(_("Failed"));
+            if (!errMsg.IsEmpty())
+            {
+                m_pDriver->Log(_("Failed"));
 
-				// tell the user
-				errMsg << _("\nThe exact error message was:\n\n");
-				errMsg << output;
-				InfoWindow::Display(_("Error"), errMsg, 10000, 1000); // show for 10 seconds with 1 second delay
-				return;
-			}
+                // tell the user
+                errMsg << _("\nThe exact error message was:\n\n");
+                errMsg << output;
+                InfoWindow::Display(_("Error"), errMsg, 10000, 1000); // show for 10 seconds with 1 second delay
+                return;
+            }
 
-			m_pDriver->Log(_("Connected"));
-		}
+            m_pDriver->Log(_("Connected"));
+        }
 };
 
 #endif // DEBUGGER_COMMANDS_H

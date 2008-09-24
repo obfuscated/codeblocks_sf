@@ -325,7 +325,7 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxPr
 // This function writes the gprof output to a file
 void CBProfilerExecDlg::WriteToFile(wxCommandEvent& event)
 {
-    wxFileDialog filedialog(parent, _("Save gprof output to file"),_T(""),_T(""),_T("*.*"),wxSAVE);
+    wxFileDialog filedialog(parent, _("Save gprof output to file"),_T(""),_T(""),_T("*.*"),wxFD_SAVE);
 
     if (filedialog.ShowModal() == wxID_OK)
     {

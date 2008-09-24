@@ -202,7 +202,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(wxCommandEvent& event)
         _T(""),
         _T(""),
         _("C++ sources (*.cpp)|*.cpp|All files|*.*"),
-        wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
+        wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
     if ( FileName.empty() )
     {
         return;
@@ -235,7 +235,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(wxCommandEvent& event)
         _T("myapp.cpp"),
         _T("cpp"),
         _T("C++ source files|*.cpp|All files|*"),
-        wxSAVE|wxOVERWRITE_PROMPT);
+        wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
 
     if ( FileName.empty() ) return;
 

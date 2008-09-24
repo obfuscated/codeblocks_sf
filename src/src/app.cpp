@@ -450,15 +450,16 @@ bool CodeBlocksApp::OnInit()
 
         if(!LoadConfig())
             return false;
+
 #ifdef __WXMSW__
-    if (!m_NoDDE)
-    {
-        // MainFrame does not exist here, but DDEServer is needed, because WinXp sends dde-command
-        // immediately after application start and we get an error-message
-        // We will set m_Frame explicitely after it is created.
-        g_DDEServer = new DDEServer(0L);
-        g_DDEServer->Create(DDE_SERVICE);
-    }
+        if (!m_NoDDE)
+        {
+            // MainFrame does not exist here, but DDEServer is needed, because WinXp sends dde-command
+            // immediately after application start and we get an error-message
+            // We will set m_Frame explicitely after it is created.
+            g_DDEServer = new DDEServer(0L);
+            g_DDEServer->Create(DDE_SERVICE);
+        }
 #endif
 
         // set safe-mode appropriately

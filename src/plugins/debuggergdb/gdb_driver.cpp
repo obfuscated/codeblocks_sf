@@ -267,11 +267,11 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 
     QueueCommand(new DebuggerCmd(this, flavour));
 
-	if (Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("catch_exceptions"), true))
-	{
-		// catch exceptions
-		QueueCommand(new DebuggerCmd(this, _T("catch throw")));
-	}
+    if (Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("catch_exceptions"), true))
+    {
+        // catch exceptions
+        QueueCommand(new DebuggerCmd(this, _T("catch throw")));
+    }
 
     // define all scripted types
     m_Types.Clear();
@@ -304,7 +304,7 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
 
     RemoteDebugging* rd = GetRemoteDebuggingInfo();
 
-	// send additional gdb commands before establishing remote connection
+    // send additional gdb commands before establishing remote connection
     if (rd)
     {
         if (!rd->additionalCmdsBefore.IsEmpty())
@@ -346,10 +346,10 @@ RemoteDebugging* GDB_driver::GetRemoteDebuggingInfo()
 //    if (!m_pTarget)
 //        return 0;
 
-	// first, project-level (straight copy)
+    // first, project-level (straight copy)
     m_MergedRDInfo = m_pDBG->GetRemoteDebuggingMap()[0];
 
-	// then merge with target settings
+    // then merge with target settings
     RemoteDebuggingMap::iterator it = m_pDBG->GetRemoteDebuggingMap().find(m_pTarget);
     if (it != m_pDBG->GetRemoteDebuggingMap().end())
     {
@@ -652,7 +652,7 @@ void GDB_driver::SwitchThread(size_t threadIndex)
     ResetCursor();
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("thread %d"), threadIndex)));
     if (m_pBacktrace)
-	    QueueCommand(new GdbCmd_Backtrace(this, m_pBacktrace));
+        QueueCommand(new GdbCmd_Backtrace(this, m_pBacktrace));
 }
 
 void GDB_driver::AddBreakpoint(DebuggerBreakpoint* bp)
@@ -743,44 +743,44 @@ void GDB_driver::ParseOutput(const wxString& output)
     // is not satisfied anymore...
     if (platform::windows && want_debug_events)
     {
-    	wxRegEx* re = 0;
-		if ((m_GDBVersionMajor > 6 || (m_GDBVersionMajor == 6 && m_GDBVersionMinor >= 7)) &&
-			output.Contains(_T("CREATE_PROCESS_DEBUG_EVENT")))
-		{
-			re = &reChildPid2;
-		}
-		else if (m_GDBVersionMajor <= 6 && output.Contains(_T("do_initial_child_stuff")))
-		{
-			re = &reChildPid;
-		}
-		
-		if (re)
-		{
-			// got the line with the PID, parse it out:
-			// e.g.
-			// gdb: do_initial_child_stuff: process 1392
-			if (re->Matches(output))
-			{
-				wxString pidStr = re->GetMatch(output, 1);
-				long pid = 0;
-				pidStr.ToLong(&pid);
-				SetChildPID(pid);
-				want_debug_events = false;
-				disable_debug_events = true;
-				m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
-			}
-		}
+        wxRegEx* re = 0;
+        if ((m_GDBVersionMajor > 6 || (m_GDBVersionMajor == 6 && m_GDBVersionMinor >= 7)) &&
+            output.Contains(_T("CREATE_PROCESS_DEBUG_EVENT")))
+        {
+            re = &reChildPid2;
+        }
+        else if (m_GDBVersionMajor <= 6 && output.Contains(_T("do_initial_child_stuff")))
+        {
+            re = &reChildPid;
+        }
+        
+        if (re)
+        {
+            // got the line with the PID, parse it out:
+            // e.g.
+            // gdb: do_initial_child_stuff: process 1392
+            if (re->Matches(output))
+            {
+                wxString pidStr = re->GetMatch(output, 1);
+                long pid = 0;
+                pidStr.ToLong(&pid);
+                SetChildPID(pid);
+                want_debug_events = false;
+                disable_debug_events = true;
+                m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+            }
+        }
     }
     else if (!platform::windows && m_ChildPID == 0)
     {
-    	if (reChildPid3.Matches(output)) // [Switching to Thread -1234655568 (LWP 18590)]
-    	{
-			wxString pidStr = reChildPid3.GetMatch(output, 1);
-			long pid = 0;
-			pidStr.ToLong(&pid);
-			SetChildPID(pid);
-			m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
-    	}
+        if (reChildPid3.Matches(output)) // [Switching to Thread -1234655568 (LWP 18590)]
+        {
+            wxString pidStr = reChildPid3.GetMatch(output, 1);
+            long pid = 0;
+            pidStr.ToLong(&pid);
+            SetChildPID(pid);
+            m_pDBG->Log(wxString::Format(_("Child process PID: %d"), pid));
+        }
     }
 
     if (!want_debug_events &&
@@ -917,7 +917,7 @@ void GDB_driver::ParseOutput(const wxString& output)
                     Manager::Get()->ProcessEvent(evt);
                     m_forceUpdate = true;
                 }
-				InfoWindow::Display(_("Signal received"), _T("\n\n") + lines[i] + _T("\n\n"));
+                InfoWindow::Display(_("Signal received"), _T("\n\n") + lines[i] + _T("\n\n"));
                 m_needsUpdate = true;
                 // the backtrace will be generated when NotifyPlugins() is called
                 // and only if the backtrace window is shown
@@ -951,50 +951,50 @@ void GDB_driver::ParseOutput(const wxString& output)
 
             if (rePendingFound.Matches(bpstr))
             {
-            	// there are cases where 'newbpstr' is not the next message
-            	// e.g. [Switching to thread...]
-            	// so we 'll loop over lines starting with [
+                // there are cases where 'newbpstr' is not the next message
+                // e.g. [Switching to thread...]
+                // so we 'll loop over lines starting with [
 
-				// Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
-				wxString newbpstr = lines[++i];
-				while (i < lines.GetCount() - 1 && newbpstr.StartsWith(_T("[")))
-					newbpstr = lines[++i];
+                // Breakpoint 2, irr::scene::CSceneManager::getSceneNodeFromName (this=0x3fa878, name=0x3fbed8 "MainLevel", start=0x3fa87c) at CSceneManager.cpp:1077
+                wxString newbpstr = lines[++i];
+                while (i < lines.GetCount() - 1 && newbpstr.StartsWith(_T("[")))
+                    newbpstr = lines[++i];
 
                 if (rePendingFound1.Matches(newbpstr))
-				{
-//					m_pDBG->Log(_T("MATCH"));
+                {
+//                    m_pDBG->Log(_T("MATCH"));
 
-					wxString file;
-					wxString lineStr;
+                    wxString file;
+                    wxString lineStr;
 
-					if(platform::windows)
-					{
-						file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
-						lineStr = rePendingFound.GetMatch(bpstr, 3);
-					}
-					else
-					{
-						file = rePendingFound.GetMatch(bpstr, 1);
-						lineStr = rePendingFound.GetMatch(bpstr, 2);
-					}
+                    if(platform::windows)
+                    {
+                        file = rePendingFound.GetMatch(bpstr, 1) + rePendingFound.GetMatch(bpstr, 2);
+                        lineStr = rePendingFound.GetMatch(bpstr, 3);
+                    }
+                    else
+                    {
+                        file = rePendingFound.GetMatch(bpstr, 1);
+                        lineStr = rePendingFound.GetMatch(bpstr, 2);
+                    }
 
-					file = UnixFilename(file);
-	//                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
-					long line;
-					lineStr.ToLong(&line);
-					DebuggerState& state = m_pDBG->GetState();
-					int bpindex = state.HasBreakpoint(file, line - 1);
-					DebuggerBreakpoint* bp = state.GetBreakpoint(bpindex);
-					if (bp)
-					{
-	//                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
-						long index;
-						wxString indexStr = rePendingFound1.GetMatch(newbpstr, 1);
-						indexStr.ToLong(&index);
-						// finally! update the breakpoint index
-						bp->index = index;
-					}
-				}
+                    file = UnixFilename(file);
+    //                m_pDBG->Log(wxString::Format(_T("file: %s, line: %s"), file.c_str(), lineStr.c_str()));
+                    long line;
+                    lineStr.ToLong(&line);
+                    DebuggerState& state = m_pDBG->GetState();
+                    int bpindex = state.HasBreakpoint(file, line - 1);
+                    DebuggerBreakpoint* bp = state.GetBreakpoint(bpindex);
+                    if (bp)
+                    {
+    //                    m_pDBG->Log(_T("Found BP!!! Updating index..."));
+                        long index;
+                        wxString indexStr = rePendingFound1.GetMatch(newbpstr, 1);
+                        indexStr.ToLong(&index);
+                        // finally! update the breakpoint index
+                        bp->index = index;
+                    }
+                }
             }
         }
 

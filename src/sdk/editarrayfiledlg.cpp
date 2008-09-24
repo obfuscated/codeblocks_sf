@@ -81,7 +81,7 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
                     m_BasePath,
                     _T(""),
                     FileFilters::GetFilterAll(),
-                    wxOPEN | compatibility::wxHideReadonly);
+                    wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -100,7 +100,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
                     m_BasePath,
                     list->GetStringSelection(),
                     FileFilters::GetFilterAll(),
-                    wxOPEN | compatibility::wxHideReadonly);
+                    wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

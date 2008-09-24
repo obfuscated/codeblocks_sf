@@ -166,7 +166,7 @@ void EditMimeTypesDlg::OnBrowseProgram(wxCommandEvent& event)
                             wxEmptyString,
                             XRCCTRL(*this, "txtProgram", wxTextCtrl)->GetValue(),
                             FileFilters::GetFilterAll(),
-                            wxOPEN | compatibility::wxHideReadonly);
+                            wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         XRCCTRL(*this, "txtProgram", wxTextCtrl)->SetValue(dlg->GetPath());

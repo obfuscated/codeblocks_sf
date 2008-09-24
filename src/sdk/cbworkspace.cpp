@@ -119,7 +119,7 @@ bool cbWorkspace::SaveAs(const wxString& filename)
                             m_Filename.GetPath(),
                             m_Filename.GetFullName(),
                             FileFilters::GetFilterString(_T('.') + FileFilters::WORKSPACE_EXT),
-                            wxSAVE | wxOVERWRITE_PROMPT);
+                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)
         return false;

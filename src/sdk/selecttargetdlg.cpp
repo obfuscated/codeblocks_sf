@@ -111,7 +111,7 @@ void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
                             #else
                             _("All files (*)|*"),
                             #endif
-                            wxOPEN | wxFILE_MUST_EXIST | compatibility::wxHideReadonly);
+                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
         dlg->SetFilterIndex(0);
         PlaceWindow(dlg);
         if (dlg->ShowModal() != wxID_OK)

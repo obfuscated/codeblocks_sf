@@ -1355,7 +1355,7 @@ bool ScbEditor::SaveAs()
                                          Path,
                                          fname.GetFullName(),
                                          Filters,
-                                         wxSAVE | wxOVERWRITE_PROMPT);
+                                         wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     dlg->SetFilterIndex(StoredIndex);
     PlaceWindow(dlg);
     if (dlg->ShowModal() != wxID_OK)

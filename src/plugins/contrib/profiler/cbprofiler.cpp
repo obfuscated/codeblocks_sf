@@ -188,7 +188,7 @@ int CBProfiler::Execute()
                 else
                 {
                     wxFileDialog filedialog(Manager::Get()->GetAppWindow(), _("Locate profile information"),
-                                            _T(""),_T("gmon.out"),_T("*.*"),wxOPEN|wxFILE_MUST_EXIST|compatibility::wxHideReadonly);
+                                            _T(""),_T("gmon.out"),_T("*.*"),wxFD_OPEN|wxFD_FILE_MUST_EXIST|compatibility::wxHideReadonly);
                     if (filedialog.ShowModal() == wxID_OK)
                     {
                         dataname = filedialog.GetPath();

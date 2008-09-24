@@ -271,7 +271,7 @@ wxString DefaultMimeHandler::ChooseExternalProgram()
                             wxEmptyString,
                             wxEmptyString,
                             FileFilters::GetFilterAll(),
-                            wxOPEN | compatibility::wxHideReadonly);
+                            wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(dlg);
     if (dlg->ShowModal() == wxID_OK)
         return dlg->GetPath();

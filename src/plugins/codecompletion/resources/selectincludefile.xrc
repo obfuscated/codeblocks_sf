@@ -2,7 +2,7 @@
     <object class="wxDialog" name="SelectIncludeFile">
         <title>Candidate include files</title>
         <centered>1</centered>
-        <style>wxCAPTION|wxTHICK_FRAME|wxSYSTEM_MENU|wxRESIZE_BOX|wxCLOSE_BOX</style>
+        <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX</style>
         <object class="wxBoxSizer">
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">

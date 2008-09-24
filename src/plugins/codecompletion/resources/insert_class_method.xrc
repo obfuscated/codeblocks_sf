@@ -135,6 +135,6 @@
         <border>8</border>
       </object>
     </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxRESIZE_BOX</style>
+    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
   </object>
 </resource>
