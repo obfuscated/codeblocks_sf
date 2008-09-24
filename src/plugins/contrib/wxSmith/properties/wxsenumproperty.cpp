@@ -91,7 +91,7 @@ bool wxsEnumProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element
     }
     else
     {
-        VALUE = wxAtoi(Text);
+        VALUE = atoi(Text);
     }
     return true;
 }

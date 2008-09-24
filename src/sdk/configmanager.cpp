@@ -216,7 +216,7 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
         cbThrow(wxString::Format(_T("TinyXML error: %s\nIn file: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), fileName.c_str(), doc->ErrorRow(), doc->ErrorCol()));
 
     const char *vers = docroot->Attribute("version");
-    if(!vers || wxAtoi(vers) != 1)
+    if(!vers || atoi(vers) != 1)
         cbMessageBox(_("ConfigManager encountered an unknown config file version. Continuing happily."), _("Warning"), wxICON_WARNING);
 
     doc->ClearError();

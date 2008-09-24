@@ -465,7 +465,7 @@ bool MainFrame::LoadConfig(const wxString& filename, TiXmlDocument** doc)
     return false;
 
   const char *vers = docroot->Attribute("version");
-  if(!vers || wxAtoi(vers) != 1)
+  if(!vers || atoi(vers) != 1)
   {
     wxMessageBox(wxT("Unknown config file version encountered!"),
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);

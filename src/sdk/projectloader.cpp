@@ -421,7 +421,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
             extendedObjectNames = strncmp(node->Attribute("extended_obj_names"), "1", 1) == 0;
 
         else if (node->Attribute("pch_mode"))
-            pch_mode = (PCHMode)wxAtoi(node->Attribute("pch_mode"));
+            pch_mode = (PCHMode)atoi(node->Attribute("pch_mode"));
 
         else if (node->Attribute("virtualFolders"))
             vfolders = GetArrayFromString(cbC2U(node->Attribute("virtualFolders")), _T(";"));
@@ -545,10 +545,10 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             output = UnixFilename(cbC2U(node->Attribute("output")));
 
         if (node->Attribute("prefix_auto"))
-            prefixPolicy = wxAtoi(node->Attribute("prefix_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
+            prefixPolicy = atoi(node->Attribute("prefix_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
 
         if (node->Attribute("extension_auto"))
-            extensionPolicy = wxAtoi(node->Attribute("extension_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
+            extensionPolicy = atoi(node->Attribute("extension_auto")) == 1 ? tgfpPlatformDefault : tgfpNone;
 
         if (node->Attribute("working_dir"))
             working_dir = UnixFilename(cbC2U(node->Attribute("working_dir")));
@@ -566,7 +566,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
             added = UnixFilename(cbC2U(node->Attribute("additional_output")));
 
         if (node->Attribute("type"))
-            type = wxAtoi(node->Attribute("type"));
+            type = atoi(node->Attribute("type"));
 
         if (node->Attribute("compiler"))
             compilerId = GetValidCompilerID(cbC2U(node->Attribute("compiler")), target->GetTitle());
@@ -579,29 +579,29 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
         // used in versions prior to 1.5
         if (node->Attribute("includeInTargetAll"))
-            includeInTargetAll = wxAtoi(node->Attribute("includeInTargetAll")) != 0;
+            includeInTargetAll = atoi(node->Attribute("includeInTargetAll")) != 0;
 
         if (node->Attribute("createDefFile"))
-            createDefFile = wxAtoi(node->Attribute("createDefFile")) != 0;
+            createDefFile = atoi(node->Attribute("createDefFile")) != 0;
 
         if (node->Attribute("createStaticLib"))
-            createStaticLib = wxAtoi(node->Attribute("createStaticLib")) != 0;
+            createStaticLib = atoi(node->Attribute("createStaticLib")) != 0;
 
         if (node->Attribute("projectCompilerOptionsRelation"))
-            projectCompilerOptionsRelation = wxAtoi(node->Attribute("projectCompilerOptionsRelation"));
+            projectCompilerOptionsRelation = atoi(node->Attribute("projectCompilerOptionsRelation"));
 
         if (node->Attribute("projectLinkerOptionsRelation"))
-            projectLinkerOptionsRelation = wxAtoi(node->Attribute("projectLinkerOptionsRelation"));
+            projectLinkerOptionsRelation = atoi(node->Attribute("projectLinkerOptionsRelation"));
 
         if (node->Attribute("projectIncludeDirsRelation"))
-            projectIncludeDirsRelation = wxAtoi(node->Attribute("projectIncludeDirsRelation"));
+            projectIncludeDirsRelation = atoi(node->Attribute("projectIncludeDirsRelation"));
 
         if (node->Attribute("projectLibDirsRelation"))
-            projectLibDirsRelation = wxAtoi(node->Attribute("projectLibDirsRelation"));
+            projectLibDirsRelation = atoi(node->Attribute("projectLibDirsRelation"));
 
         if (node->Attribute("projectResourceIncludeDirsRelation"))
         {
-            projectResIncludeDirsRelation = wxAtoi(node->Attribute("projectResourceIncludeDirsRelation"));
+            projectResIncludeDirsRelation = atoi(node->Attribute("projectResourceIncludeDirsRelation"));
             // there used to be a bug in this setting and it might have a negative or very big number
             // detect this case and set as default
             if (projectResIncludeDirsRelation < 0 || projectResIncludeDirsRelation >= ortLast)

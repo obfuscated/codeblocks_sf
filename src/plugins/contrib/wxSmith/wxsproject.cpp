@@ -95,7 +95,7 @@ void wxsProject::ReadConfiguration(TiXmlElement* element)
     }
 
     const char* VersionStr = SmithNode->Attribute("version");
-    int Version = VersionStr ? wxAtoi(VersionStr) : 1;
+    int Version = VersionStr ? atoi(VersionStr) : 1;
 
     if ( Version > CurrentVersion )
     {
