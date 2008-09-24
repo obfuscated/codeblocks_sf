@@ -43,6 +43,11 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/dynlib.h>
 
+#if defined(__APPLE__) && defined(__MACH__)
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
+
 #include "configmanager.h"
 #include "seditormanager.h"
 
