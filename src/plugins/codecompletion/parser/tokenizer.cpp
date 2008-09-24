@@ -223,11 +223,11 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
                 SkipToChar(ch);
             }
             MoveToNextChar();
-			
-			// make sure we skip comments
-			if (CurrentChar() == '/')
-				SkipComment(); // this will decide if it is a comment
-            
+
+            // make sure we skip comments
+            if (CurrentChar() == '/')
+                SkipComment(); // this will decide if it is a comment
+
             // use 'while' here to cater for consecutive blocks to skip (e.g. sometemplate<foo>(bar)
             // must skip <foo> and immediately after (bar))
             // because if we don't, the next block won't be skipped ((bar) in the example) leading to weird
@@ -241,11 +241,11 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
                     case '(': SkipBlock('('); break;
                     case '[': SkipBlock('['); break;
                     case '<': // don't skip if << operator
-						if (NextChar() == '<')
-							MoveToNextChar(); // skip it
-						else
-							SkipBlock('<');
-						break; 
+                        if (NextChar() == '<')
+                            MoveToNextChar(); // skip it
+                        else
+                            SkipBlock('<');
+                        break;
                     default: done = true; break;
                 }
             }
@@ -267,9 +267,9 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
 
 wxString Tokenizer::ReadToEOL(bool nestBraces)
 {
-	unsigned int idx = m_TokenIndex;
-	SkipToEOL(nestBraces);
-	return m_Buffer.Mid(idx, m_TokenIndex - idx);
+    unsigned int idx = m_TokenIndex;
+    SkipToEOL(nestBraces);
+    return m_Buffer.Mid(idx, m_TokenIndex - idx);
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces, bool skippingComment)
@@ -279,14 +279,14 @@ bool Tokenizer::SkipToEOL(bool nestBraces, bool skippingComment)
     {
         while (NotEOF() && CurrentChar() != '\n')
         {
-			if (CurrentChar() == '/' && NextChar() == '*')
-			{
-				SkipComment(false); // don't skip whitespace after the comment
-				if (skippingComment && CurrentChar() == '\n')
-				{
-					continue; // early exit from the loop
-				}
-			}
+            if (CurrentChar() == '/' && NextChar() == '*')
+            {
+                SkipComment(false); // don't skip whitespace after the comment
+                if (skippingComment && CurrentChar() == '\n')
+                {
+                    continue; // early exit from the loop
+                }
+            }
             if (nestBraces && CurrentChar() == _T('{'))
                 ++m_NestLevel;
             else if (nestBraces && CurrentChar() == _T('}'))
@@ -362,7 +362,6 @@ bool Tokenizer::SkipComment(bool skipWhiteAtEnd) // = true
 
     bool cstyle = NextChar() == '*';
     MoveToNextChar(2);
-    //MoveToNextChar();
     while (1)
     {
         if (!cstyle)
@@ -479,17 +478,20 @@ wxString Tokenizer::GetToken()
 {
     m_UndoTokenIndex = m_TokenIndex;
     m_UndoLineNumber = m_LineNumber;
-    m_UndoNestLevel = m_NestLevel;
+    m_UndoNestLevel  = m_NestLevel;
+
     if(m_peekavailable)
     {
         m_TokenIndex = m_PeekTokenIndex;
         m_LineNumber = m_PeekLineNumber;
-        m_NestLevel = m_PeekNestLevel;
-        m_curtoken = m_peek;
+        m_NestLevel  = m_PeekNestLevel;
+        m_curtoken   = m_peek;
     }
     else
         m_curtoken = DoGetToken();
+
     m_peekavailable = false;
+
     return ThisOrReplacement(m_curtoken);
 }
 
@@ -535,9 +537,9 @@ wxString Tokenizer::DoGetToken()
     if (m_SkipUnwantedTokens && !SkipUnwanted())
         return wxEmptyString;
 
-	// if m_SkipUnwantedTokens is false, we need to handle comments here too
-	if (!m_SkipUnwantedTokens)
-		SkipComment();
+    // if m_SkipUnwantedTokens is false, we need to handle comments here too
+    if (!m_SkipUnwantedTokens)
+        SkipComment();
 
     int start = m_TokenIndex;
     wxString m_Str;
@@ -652,9 +654,18 @@ wxString Tokenizer::DoGetToken()
                 continue; // we are done here
             }
 
-            if (i < tmp.Length() - 1 && tmp.GetChar(i) == ' ' && tmp.GetChar(i + 1) == ' ')
-                continue; // skip excessive spaces
-            m_Str << tmp.GetChar(i);
+            if (i < tmp.Length() - 1)
+            {
+                if ((tmp.GetChar(i)     == ' ') && (tmp.GetChar(i + 1) == ' '))
+                    continue; // skip excessive spaces
+
+                // in case of c-style comments "i" might already be tmp.Length()
+                // thus do only add the current char otherwise.
+                // otherwise the following statement:
+                // m_Str << _T(')');
+                // below would add another closing bracket.
+                m_Str << tmp.GetChar(i);
+            }
         }
         m_Str << _T(')'); // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
 //        m_Str.Replace(_T("  "), _T(" ")); // replace two-spaces with single-space (introduced if it skipped comments or assignments)

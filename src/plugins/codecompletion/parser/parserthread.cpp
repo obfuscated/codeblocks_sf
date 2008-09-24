@@ -174,10 +174,10 @@ wxChar ParserThread::SkipToOneOfChars(const wxString& chars, bool supportNesting
 
 void ParserThread::SkipBlock()
 {
-	// need to force the tokenizer _not_ skip anything
-	// or else default values for template params would cause us to miss everything (because of the '=' symbol)
-	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
-	m_Tokenizer.SetSkipUnwantedTokens(false);
+    // need to force the tokenizer _not_ skip anything
+    // or else default values for template params would cause us to miss everything (because of the '=' symbol)
+    bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+    m_Tokenizer.SetSkipUnwantedTokens(false);
 
     // skip tokens until we reach }
     // block nesting is taken into consideration too ;)
@@ -204,17 +204,17 @@ void ParserThread::SkipBlock()
             break;
     }
 
-	// reset tokenizer's functionality
-	m_Tokenizer.SetSkipUnwantedTokens(oldState);
+    // reset tokenizer's functionality
+    m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 void ParserThread::SkipAngleBraces()
 {
-	// need to force the tokenizer _not_ skip anything
-	// or else default values for template params would cause us to miss everything (because of the '=' symbol)
-	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
-	m_Tokenizer.SetSkipUnwantedTokens(false);
-	
+    // need to force the tokenizer _not_ skip anything
+    // or else default values for template params would cause us to miss everything (because of the '=' symbol)
+    bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+    m_Tokenizer.SetSkipUnwantedTokens(false);
+
     int nestLvl = 0;
     // NOTE: only exit this loop with 'break' so the tokenizer's state can
     // be reset afterwards (i.e. don't use 'return')
@@ -239,8 +239,8 @@ void ParserThread::SkipAngleBraces()
             break;
     }
 
-	// reset tokenizer's functionality
-	m_Tokenizer.SetSkipUnwantedTokens(oldState);
+    // reset tokenizer's functionality
+    m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result)
@@ -362,10 +362,10 @@ bool ParserThread::Parse()
 
 void ParserThread::DoParse()
 {
-	// need to reset tokenizer's behavior
-	// don't forget to reset that if you add any early exit condition!
-	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
-	m_Tokenizer.SetSkipUnwantedTokens(true);
+    // need to reset tokenizer's behavior
+    // don't forget to reset that if you add any early exit condition!
+    bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+    m_Tokenizer.SetSkipUnwantedTokens(true);
 
     m_Str.Clear();
     m_LastToken.Clear();
@@ -551,8 +551,8 @@ void ParserThread::DoParse()
 #if 1
         else if (token==ParserConsts::kw_operator)
         {
-			bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
-			m_Tokenizer.SetSkipUnwantedTokens(false);
+            bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+            m_Tokenizer.SetSkipUnwantedTokens(false);
             wxString func = token;
             while (1)
             {
@@ -575,7 +575,7 @@ void ParserThread::DoParse()
                 else
                     break;
             }
-			m_Tokenizer.SetSkipUnwantedTokens(oldState);
+            m_Tokenizer.SetSkipUnwantedTokens(oldState);
             HandleFunction(func, true);
             m_Str.Clear();
         }
@@ -680,7 +680,7 @@ void ParserThread::DoParse()
         m_LastToken = token;
     }
     // reset tokenizer behavior
-	m_Tokenizer.SetSkipUnwantedTokens(oldState);
+    m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
@@ -1105,11 +1105,11 @@ void ParserThread::HandleNamespace()
 
 void ParserThread::HandleClass(bool isClass)
 {
-	// need to force the tokenizer _not_ skip anything
-	// as we 're manually parsing class decls
-	// don't forget to reset that if you add any early exit condition!
-	bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
-	m_Tokenizer.SetSkipUnwantedTokens(false);
+    // need to force the tokenizer _not_ skip anything
+    // as we 're manually parsing class decls
+    // don't forget to reset that if you add any early exit condition!
+    bool oldState = m_Tokenizer.IsSkippingUnwantedTokens();
+    m_Tokenizer.SetSkipUnwantedTokens(false);
 
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString ancestors;
@@ -1218,8 +1218,8 @@ void ParserThread::HandleClass(bool isClass)
                 Token* newToken = DoAddToken(tkClass, current, lineNr);
                 if (!newToken)
                 {
-					// restore tokenizer's functionality
-					m_Tokenizer.SetSkipUnwantedTokens(oldState);
+                    // restore tokenizer's functionality
+                    m_Tokenizer.SetSkipUnwantedTokens(oldState);
                     return;
                 }
                 newToken->m_AncestorsString = ancestors;
@@ -1251,8 +1251,8 @@ void ParserThread::HandleClass(bool isClass)
             break;
     }
 
-	// restore tokenizer's functionality
-	m_Tokenizer.SetSkipUnwantedTokens(oldState);
+    // restore tokenizer's functionality
+    m_Tokenizer.SetSkipUnwantedTokens(oldState);
 }
 
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
@@ -1260,6 +1260,8 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'")));
     wxString args = m_Tokenizer.GetToken();
     wxString peek = m_Tokenizer.PeekToken();
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("ParserThread::HandleFunction: name='")+name+_T("', args='")+args+_T("', peek='")+peek+_T("'")));
+
     if (!m_Str.StartsWith(ParserConsts::kw_friend))
     {
         int lineNr = m_Tokenizer.GetLineNumber();
