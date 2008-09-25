@@ -224,7 +224,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Expression" member="yes">
-									<value>byte( @ )</value>
+									<value>byte[ @ ]</value>
 									<style>wxTE_PROCESS_ENTER</style>
 									<handler function="Onm_ExpressionText" entry="EVT_TEXT" />
 									<handler function="OnExpressionTextEnter" entry="EVT_TEXT_ENTER" />

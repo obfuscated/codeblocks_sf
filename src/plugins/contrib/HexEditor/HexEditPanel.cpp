@@ -144,7 +144,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     StaticText5 = new wxStaticText(this, ID_STATICTEXT14, _("Expression:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT14"));
     BoxSizer4->Add(StaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    m_Expression = new wxTextCtrl(this, ID_TEXTCTRL1, _("byte( @ )"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    m_Expression = new wxTextCtrl(this, ID_TEXTCTRL1, _("byte[ @ ]"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     BoxSizer4->Add(m_Expression, 1, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button3 = new wxButton(this, ID_BUTTON3, _("v"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
     BoxSizer4->Add(Button3, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
