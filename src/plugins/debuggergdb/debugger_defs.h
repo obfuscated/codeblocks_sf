@@ -128,6 +128,7 @@ struct DebuggerBreakpoint
         useIgnoreCount(false),
         ignoreCount(0),
         useCondition(false),
+        wantsCondition(false),
         address(0),
         alreadySet(false),
         breakOnRead(false),
@@ -145,6 +146,7 @@ struct DebuggerBreakpoint
     bool useIgnoreCount; ///< Should this breakpoint be ignored for the first X passes? (@c x == @c ignoreCount)
     int ignoreCount; ///< The number of passes before this breakpoint should hit. @c useIgnoreCount must be true.
     bool useCondition; ///< Should this breakpoint hit only if a specific condition is met?
+    bool wantsCondition; ///< Evaluate condition for pending breakpoints at first stop !
     wxString condition; ///< The condition that must be met for the breakpoint to hit. @c useCondition must be true.
     wxString func; ///< The function to set the breakpoint. If this is set, it is preferred over the filename/line combination.
     unsigned long int address; ///< The actual breakpoint address. This is read back from the debugger. *Don't* write to it.

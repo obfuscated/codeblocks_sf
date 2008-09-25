@@ -998,6 +998,21 @@ void GDB_driver::ParseOutput(const wxString& output)
             }
         }
 
+        else if (lines[i].StartsWith(_("Breakpoint ")))
+        {
+            if (rePendingFound1.Matches(lines[i])){
+                long index;
+                rePendingFound1.GetMatch(lines[i],1).ToLong(&index);
+                DebuggerState& state = m_pDBG->GetState();
+                DebuggerBreakpoint* bp = state.GetBreakpointByNumber(index);
+                if(bp && bp->wantsCondition)
+                {
+                    bp->wantsCondition = false;
+                    QueueCommand(new GdbCmd_AddBreakpointCondition(this, bp));
+                    m_needsUpdate = true;
+                }
+            }
+        }
         // cursor change
         else if (lines[i].StartsWith(g_EscapeChar)) // ->->
         {

@@ -123,6 +123,8 @@ static wxRegEx reBT2(_T("\\)[ \t]+[atfrom]+[ \t]+(.*):([0-9]+)"));
 static wxRegEx reBT3(_T("\\)[ \t]+[atfrom]+[ \t]+(.*)"));
 // Breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reBreakpoint(_T("Breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
+// Breakpoint 1 ("/home/jens/codeblocks-build/codeblocks-1.0svn/src/plugins/debuggergdb/gdb_commands.h:125) pending.
+static wxRegEx rePendingBreakpoint(_T("Breakpoint ([0-9]+)[ \\t]\\(\\\"(.+):([0-9]+)\\)[ \\t]pending\\."));
 // Hardware assisted breakpoint 1 at 0x4013d6: file main.cpp, line 8.
 static wxRegEx reHWBreakpoint(_T("Hardware assisted breakpoint ([0-9]+) at (0x[0-9A-Fa-f]+)"));
 // Hardware watchpoint 1: expr
@@ -350,6 +352,12 @@ class GdbCmd_AddBreakpointCondition : public DebuggerCmd
                     m_BP->useCondition = false;
                     m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
                 }
+                else if ( m_BP->alreadySet )
+                {
+                    m_pDriver->RemoveBreakpoint(m_BP);
+                    ((cbEditor*)Manager::Get()->GetEditorManager()->GetActiveEditor())->SetDebugLine(-1);
+                    m_pDriver->Continue();
+                }
             }
 
         }
@@ -428,6 +436,28 @@ class GdbCmd_AddBreakpoint : public DebuggerCmd
                 if (m_BP->useCondition && !m_BP->condition.IsEmpty())
                 {
                     m_pDriver->QueueCommand(new GdbCmd_AddBreakpointCondition(m_pDriver, m_BP), DebuggerDriver::High);
+                }
+
+                // ignore count
+                if (m_BP->useIgnoreCount && m_BP->ignoreCount > 0)
+                {
+                    wxString cmd;
+                    cmd << _T("ignore ") << wxString::Format(_T("%d"), (int) m_BP->index) << _T(" ") << wxString::Format(_T("%d"), (int) m_BP->ignoreCount);
+                    m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, cmd), DebuggerDriver::High);
+                }
+            }
+            else if (rePendingBreakpoint.Matches(output))
+            {
+                if (!m_BP->func.IsEmpty())
+                    m_pDriver->Log(_("GDB workaround for constructor/destructor breakpoints activated."));
+
+                rePendingBreakpoint.GetMatch(output, 1).ToLong(&m_BP->index);
+
+                // conditional breakpoint
+                // condition can not be evaluated for pending breakpoints, so we only set a flag and do this later
+                if (m_BP->useCondition && !m_BP->condition.IsEmpty())
+                {
+                    m_BP->wantsCondition = true;
                 }
 
                 // ignore count
