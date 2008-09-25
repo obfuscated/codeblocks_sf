@@ -15,6 +15,7 @@
 							<default>-1</default>
 							<size>292,119</size>
 							<handler function="Onm_ExpressionsSelect" entry="EVT_LISTBOX" />
+							<handler function="Onm_ExpressionsDClick" entry="EVT_LISTBOX_DCLICK" />
 						</object>
 						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
