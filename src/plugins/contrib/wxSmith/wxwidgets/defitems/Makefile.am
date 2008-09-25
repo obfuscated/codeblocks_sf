@@ -135,7 +135,7 @@ noinst_HEADERS = \
 ./wxsmultichoicedialog.h \
 ./wxssinglechoicedialog.h \
 ./wxssashwindow.h \
-./wxssashlayoutwindow.h
+./wxssashlayoutwindow.h \
 ./wxssingleinstancechecker.h \
 ./wxsstopwatch.h \
 ./wxssymbolpickerdialog.h \
