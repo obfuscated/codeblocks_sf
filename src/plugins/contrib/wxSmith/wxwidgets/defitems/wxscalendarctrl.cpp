@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsCalendarCtrl> Reg(_T("CalendarCtrl"),wxsTWidget,_T("Standard"),30);
+    wxsRegisterItem<wxsCalendarCtrl> Reg(_T("CalendarCtrl"),wxsTWidget,_T("Advanced"),30);
 
     WXS_ST_BEGIN(wxsCalendarCtrlStyles,_T(""))
         WXS_ST_CATEGORY("wxCalendarCtrl")

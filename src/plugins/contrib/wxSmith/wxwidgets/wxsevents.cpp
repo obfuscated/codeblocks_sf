@@ -168,15 +168,3 @@ void wxsEvents::GenerateBindingCode(wxsCoderContext* Context,const wxString& IdS
         }
     }
 }
-
-//bool wxsEvents::ForceVariable()
-//{
-//    for ( int i=0; i<m_Count; i++ )
-//    {
-//        if ( !m_Functions[i].empty() )
-//        {
-//            return true;
-//        }
-//    }
-//    return false;
-//}

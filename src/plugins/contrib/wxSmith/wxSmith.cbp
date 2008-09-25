@@ -456,6 +456,12 @@
 		<Unit filename="wxwidgets\defitems\wxsgenericdirctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsglcanvas.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsglcanvas.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsgrid.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -546,6 +552,18 @@
 		<Unit filename="wxwidgets\defitems\wxsradiobutton.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssashlayoutwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssashlayoutwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssashwindow.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssashwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsscrollbar.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -562,6 +580,12 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxssinglechoicedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssingleinstancechecker.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssingleinstancechecker.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsslider.cpp">
@@ -634,6 +658,18 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsstddialogbuttonsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstopwatch.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxsstopwatch.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssymbolpickerdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets\defitems\wxssymbolpickerdialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxstextctrl.cpp">

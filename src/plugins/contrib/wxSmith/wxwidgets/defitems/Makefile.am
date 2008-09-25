@@ -69,7 +69,13 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsdirdialog.cpp \
 ./wxsfiledialog.cpp \
 ./wxsmultichoicedialog.cpp \
-./wxssinglechoicedialog.cpp
+./wxssinglechoicedialog.cpp \
+./wxssashwindow.cpp \
+./wxssashlayoutwindow.cpp \
+./wxssingleinstancechecker.cpp \
+./wxsstopwatch.cpp \
+./wxssymbolpickerdialog.cpp \
+./wxsglcanvas.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -127,5 +133,11 @@ noinst_HEADERS = \
 ./wxsdirdialog.h \
 ./wxsfiledialog.h \
 ./wxsmultichoicedialog.h \
-./wxssinglechoicedialog.h
+./wxssinglechoicedialog.h \
+./wxssashwindow.h \
+./wxssashlayoutwindow.h
+./wxssingleinstancechecker.h \
+./wxsstopwatch.h \
+./wxssymbolpickerdialog.h \
+./wxsglcanvas.h
 

@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsHtmlWindow> Reg(_T("HtmlWindow"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsHtmlWindow> Reg(_T("HtmlWindow"),wxsTWidget,_T("Advanced"),50);
 
     WXS_ST_BEGIN(wxsHtmlWindowStyles,_T("wxHW_SCROLLBAR_AUTO"))
         WXS_ST_CATEGORY("wxHtmlWindow")

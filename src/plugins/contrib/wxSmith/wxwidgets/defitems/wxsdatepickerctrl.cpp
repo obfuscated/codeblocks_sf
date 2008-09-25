@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDatePickerCtrl> Reg(_T("DatePickerCtrl"),wxsTWidget,_T("Standard"),30);
+    wxsRegisterItem<wxsDatePickerCtrl> Reg(_T("DatePickerCtrl"),wxsTWidget,_T("Advanced"),30);
 
     WXS_ST_BEGIN(wxsDatePickerCtrlStyles,_T("wxDP_DEFAULT|wxDP_SHOWCENTURY"))
         WXS_ST_CATEGORY("wxDatePickerCtrl")

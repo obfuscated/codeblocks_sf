@@ -346,6 +346,8 @@ void wxsFontEditorDlg::ReadData(wxsFontData& Data)
         if ( !Data.HasSize && Data.HasRelativeSize )
         {
             RelSizeUse->SetValue(true);
+
+            // TODO: Shouldn't we also use non-locale-printf fix ?
             RelSizeVal->SetValue(wxString::Format(_T("%f"),Data.RelativeSize));
         }
     }
@@ -442,9 +444,10 @@ void wxsFontEditorDlg::StoreData(wxsFontData& Data)
             Data.SysFont = BaseFontVal->GetStringSelection();
         }
 
-        if ( Data.HasRelativeSize = !SizeVal->GetValue() && RelSizeVal->GetValue() )
+        if ( Data.HasRelativeSize = ( !SizeUse->GetValue() && RelSizeUse->GetValue() ) )
         {
-            RelSizeVal->GetValue().ToDouble(&Data.RelativeSize);
+            wxString val = RelSizeVal->GetValue();
+            val.ToDouble(&Data.RelativeSize);
         }
     }
 

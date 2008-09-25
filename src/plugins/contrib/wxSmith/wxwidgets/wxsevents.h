@@ -75,20 +75,22 @@ struct wxsEventDesc
 #define WXS_EV_END()                                                \
     { wxsEventDesc::EndOfList, _T(""), _T(""), _T(""), _T("") } };
 
-/** \brief Adding all default events */
-#define WXS_EV_DEFAULTS()                                                               \
-                                                                                        \
+/** \brief Adding all default paint events */
+#define WXS_EV_PAINT()                                                                  \
     WXS_EV_CATEGORY(_("Paint events"))                                                  \
     WXS_EV(EVT_PAINT,wxEVT_PAINT,wxPaintEvent,Paint)                                    \
     WXS_EV(EVT_ERASE_BACKGROUND,wxEVT_ERASE_BACKGROUND,wxEraseEvent,EraseBackground)    \
-                                                                                        \
+
+/** \brief Adding all keyboard events */
+#define WXS_EV_KEYBOARD()                                                               \
     WXS_EV_CATEGORY(_("Keyboard events"))                                               \
     WXS_EV(EVT_KEY_DOWN,wxEVT_KEY_DOWN,wxKeyEvent,KeyDown)                              \
     WXS_EV(EVT_KEY_UP,wxEVT_KEY_UP,wxKeyEvent,KeyUp)                                    \
     WXS_EV(EVT_CHAR,wxEVT_CHAR,wxKeyEvent,Char)                                         \
     WXS_EV(EVT_SET_FOCUS,wxEVT_SET_FOCUS,wxFocusEvent,SetFocus)                         \
-    WXS_EV(EVT_KILL_FOCUS,wxEVT_KILL_FOCUS,wxFocusEvent,KillFocus)                      \
-                                                                                        \
+    WXS_EV(EVT_KILL_FOCUS,wxEVT_KILL_FOCUS,wxFocusEvent,KillFocus)
+
+#define WXS_EV_MOUSE()                                                                  \
     WXS_EV_CATEGORY(_T("Mouse events"))                                                 \
     WXS_EV(EVT_LEFT_DOWN,wxEVT_LEFT_DOWN,wxMouseEvent,LeftDown)                         \
     WXS_EV(EVT_LEFT_UP,wxEVT_LEFT_UP,wxMouseEvent,LeftUp)                               \
@@ -105,6 +107,18 @@ struct wxsEventDesc
     WXS_EV(EVT_MOUSEWHEEL,wxEVT_MOUSEWHEEL,wxMouseEvent,MouseWheel)                     \
     WXS_EV(EVT_SET_CURSOR,wxEVT_SET_CURSOR,wxSetCursorEvent,SetCursor)                  \
 
+
+/** \brief Adding all size-related events */
+#define WXS_EV_SIZE()                                                                   \
+    WXS_EV(EVT_SIZE,wxEVT_SIZE,wxSizeEvent,Resize)
+
+
+/** \brief Adding all default events */
+#define WXS_EV_DEFAULTS()                                                               \
+    WXS_EV_PAINT()                                                                      \
+    WXS_EV_KEYBOARD()                                                                   \
+    WXS_EV_MOUSE()                                                                      \
+    WXS_EV_SIZE()
 
 /** \brief Class managing events used by item
  *
@@ -146,14 +160,6 @@ class wxsEvents
 
         /** \brief Function adding handlers to given Xml element */
         void XmlSaveFunctions(TiXmlElement* Element);
-
-        /** \brief Function checking if this item must have variable declared
-         *
-         * Some event handlers are added child item, not to root one. These
-         * widgets MUST be accessed through at least local variable (which is
-         * not always done when loading resources from XRC file).
-         */
-//        bool ForceVariable();
 
 	private:
 

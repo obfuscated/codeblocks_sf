@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGrid> Reg(_T("Grid"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsGrid> Reg(_T("Grid"),wxsTWidget,_T("Advanced"),50);
 
     WXS_ST_BEGIN(wxsGridStyles,_T(""))
         WXS_ST_DEFAULTS()

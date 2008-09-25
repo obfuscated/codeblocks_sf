@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGenericDirCtrl> Reg(_T("GenericDirCtrl"),wxsTWidget,_T("Standard"),30);
+    wxsRegisterItem<wxsGenericDirCtrl> Reg(_T("GenericDirCtrl"),wxsTWidget,_T("Advanced"),30);
 
     WXS_ST_BEGIN(wxsGenericDirCtrlStyles,_T(""))
         WXS_ST_CATEGORY("wxGenericDirCtrl")
