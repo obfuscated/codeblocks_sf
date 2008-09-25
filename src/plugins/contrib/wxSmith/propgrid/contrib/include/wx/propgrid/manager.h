@@ -12,11 +12,15 @@
 #ifndef _WX_PROPGRID_MANAGER_H_
 #define _WX_PROPGRID_MANAGER_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "manager.cpp"
-#endif
-
 #include <wx/propgrid/propgrid.h>
+
+#include <wx/dcclient.h>
+#include <wx/scrolwin.h>
+#include <wx/toolbar.h>
+#include <wx/stattext.h>
+#include <wx/button.h>
+#include <wx/textctrl.h>
+#include <wx/dialog.h> 
 
 // -----------------------------------------------------------------------
 
@@ -85,6 +89,13 @@ public:
     inline wxPropertyGridState* GetStatePtr()
     {
         return this;
+    }
+
+    /** Returns id of the tool bar item that represents this page on wxPropertyGridManager's wxToolBar.
+    */
+    int GetToolId() const
+    {
+        return m_id;
     }
 
     /** See wxPropertyGrid::Insert. */
@@ -209,6 +220,9 @@ wxPG_IPAM_DECL void NAME( wxPGPropNameStr name, AT1 _av1_ ) \
     <tr><td>EVT_PG_PAGE_CHANGED (id, func)</td><td>User changed page in manager.</td></tr>
     <tr><td>EVT_PG_ITEM_COLLAPSED (id, func)</td><td>User collapses a property or category.</td></tr>
     <tr><td>EVT_PG_ITEM_EXPANDED (id, func)</td><td>User expands a property or category.</td></tr>
+    <tr><td>EVT_PG_COMPACT_MODE_ENTERED (id, func)</td><td>User presses the compactor button, compact mode is entered.</td></tr>
+    <tr><td>EVT_PG_EXPANDED_MODE_ENTERED (id, func)</td><td>User presses the compactor button, expanded mode is entered.</td></tr>
+
     <tr><td>EVT_BUTTON (id, func)</td><td>Button in a property editor was clicked. Only occurs if the property doesn't handle button clicks itself.</td></tr>
     <tr><td>EVT_TEXT (id, func)</td><td>wxTextCtrl based editor was updated (but property value was not yet modified)</td></tr>
     </table>
@@ -364,12 +378,9 @@ public:
         m_pPropGrid->ClearModifiedStatus();
     }
 
-    /** Clears the target page.
+    /** Deletes all all properties and all pages.
     */
-    /*inline void ClearTargetPage()
-    {
-        ClearPage(m_targetPage);
-    }*/
+    void Clear();
 
     /** Deletes all properties on given page.
     */
@@ -420,7 +431,7 @@ public:
     {
         long fl = m_windowStyle | wxPG_HIDE_CATEGORIES;
         if ( enable ) fl = m_windowStyle & ~(wxPG_HIDE_CATEGORIES);
-        SetWindowStyleFlag(m_windowStyle);
+        SetWindowStyleFlag(fl);
         return true;
     }
 
@@ -551,6 +562,12 @@ public:
         return (wxPropertyGridPage*)m_arrPages.Item(ind);
     }
 
+    /** Returns page object for given page name. */
+    inline wxPropertyGridPage* GetPage( const wxString& name ) const
+    {
+        return (wxPropertyGridPage*)m_arrPages.Item(GetPageByName(name));
+    }
+
     /** Returns index for a page name. If no match is found, wxNOT_FOUND is returned. */
     int GetPageByName( const wxChar* name ) const;
 
@@ -577,14 +594,14 @@ public:
     }
 
     /** Returns id of previous item under the same parent. */
-    inline wxPGId GetPrevSibling( wxPGId id )
+    inline wxPGId GetPrevSiblingProperty( wxPGId id )
     {
-        return wxPropertyGridState::GetPrevSibling(id);
+        return wxPropertyGridState::GetPrevSiblingProperty(id);
     }
-    inline wxPGId GetPrevSibling( wxPGPropNameStr name )
+    inline wxPGId GetPrevSiblingProperty( wxPGPropNameStr name )
     {
         wxPG_PROP_NAME_CALL_PROLOG_RETVAL(wxNullProperty)
-        return wxPropertyGridState::GetPrevSibling(wxPGIdGen(p));
+        return wxPropertyGridState::GetPrevSiblingProperty(wxPGIdGen(p));
     }
 
     /** Returns id of property with given label (case-sensitive). If there is no
@@ -758,9 +775,11 @@ public:
     void SelectPage( int index );
 
     /** Select and displays a given page. */
-    inline void SelectPage( const wxChar* name )
+    inline void SelectPage( const wxString& label )
     {
-        SelectPage( GetPageByName(name) );
+        int index = GetPageByName(label);
+        wxCHECK_RET( index >= 0, wxT("No page with such name") );
+        SelectPage( index );
     }
 
     /** Select a property. */
@@ -1192,6 +1211,8 @@ protected:
     int             m_nextDescBoxSize;
 
     int             m_targetPage;
+
+    wxWindowID      m_baseId;
 
     unsigned char   m_dragStatus;
 

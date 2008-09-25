@@ -12,11 +12,6 @@
 #ifndef _WX_PROPGRID_ODCOMBO_H_
 #define _WX_PROPGRID_ODCOMBO_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "odcombo.h"
-#endif
-
-
 #include "wx/renderer.h"
 
 
@@ -37,8 +32,9 @@
     #define wxPGRectContains    Contains
 #endif
 
-class wxTextCtrl;
-class wxButton;
+
+class WXDLLEXPORT wxTextCtrl;
+class WXDLLEXPORT wxButton;
 
 #ifdef WXMAKINGLIB_PROPGRID
     #define WXDLLEXPORT_PGODC

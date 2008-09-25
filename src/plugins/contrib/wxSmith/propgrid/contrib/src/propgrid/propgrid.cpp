@@ -9,10 +9,6 @@
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "propgrid.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -1485,12 +1481,12 @@ wxString wxPGPropertyWithChildren::GetValueAsString( int argFlags ) const
                  !(argFlags & wxPG_FULL_VALUE) )
                 break;
 
-            curChild = (wxPGProperty*) m_children.Item(i+1);
-
             if ( curChild->GetParentingType() == 0 )
                 text += wxT("; ");
             else
                 text += wxT(" ");
+
+            curChild = (wxPGProperty*) m_children.Item(i+1);
         }
     }
 
@@ -1777,6 +1773,7 @@ wxPropertyCategoryClass::wxPropertyCategoryClass( const wxString &label, const w
     // don't set colour - prepareadditem method should do this
     m_parentingType = 1;
     m_capFgColIndex = 1;
+    m_textExtent = -1;
 }
 
 
@@ -1790,8 +1787,16 @@ wxString wxPropertyCategoryClass::GetValueAsString( int ) const
     return wxEmptyString;
 }
 
+int wxPropertyCategoryClass::GetTextExtent( const wxWindow* wnd, const wxFont& font ) const
+{
+    if ( m_textExtent > 0 )
+        return m_textExtent;
+    int x = 0, y = 0;
+	((wxWindow*)wnd)->GetTextExtent( m_label, &x, &y, 0, 0, &font );
+    return x;
+}
 
-void wxPropertyCategoryClass::CalculateTextExtent( wxWindow* wnd, wxFont& font )
+void wxPropertyCategoryClass::CalculateTextExtent( wxWindow* wnd, const wxFont& font )
 {
     int x = 0, y = 0;
 	wnd->GetTextExtent( m_label, &x, &y, 0, 0, &font );
@@ -2072,13 +2077,13 @@ wxPGWindowPair wxPGTextCtrlEditor::CreateControls( wxPropertyGrid* propGrid,
         !property->IsKindOf(WX_PG_CLASSINFO(wxCustomProperty)))
         return (wxWindow*) NULL;
 
-    if ( !(property->GetFlags() & wxPG_PROP_UNSPECIFIED) )
-        text = property->GetValueAsString(property->HasFlag(wxPG_PROP_READONLY)?0:wxPG_EDITABLE_VALUE);
-
     int flags = 0;
     if ( (property->GetFlags() & wxPG_PROP_PASSWORD) &&
          property->IsKindOf(WX_PG_CLASSINFO(wxStringProperty)) )
         flags |= wxTE_PASSWORD;
+
+    if ( !(property->GetFlags() & wxPG_PROP_UNSPECIFIED) )
+        text = property->GetValueAsString(property->HasFlag(wxPG_PROP_READONLY)?0:wxPG_EDITABLE_VALUE);
 
     wxWindow* wnd = propGrid->GenerateEditorTextCtrl(pos,sz,text,(wxWindow*)NULL,flags,
                                                      property->GetMaxLength());
@@ -6160,9 +6165,9 @@ void wxPropertyGrid::DoDrawItems2( wxDC& dcMain,
 
     wxPGProperty* selected = m_selected;
 
-/*#if wxPG_REFRESH_CONTROLS_AFTER_REPAINT
-    bool selected_painted = false;
-#endif*/
+#if wxPG_REFRESH_CONTROLS_AFTER_REPAINT
+    bool wasSelectedPainted = false;
+#endif
 
     // NOTE: Clipping and pen/brush switching are main reasons for multi-pass approach.
 
@@ -6420,9 +6425,13 @@ void wxPropertyGrid::DoDrawItems2( wxDC& dcMain,
             // active caption gets nice dotted rectangle
             if ( p == selected )
             {
+            #if wxPG_REFRESH_CONTROLS_AFTER_REPAINT
+                wasSelectedPainted = false;
+            #endif
+
                 wxRect focusRect(text_x+wxPG_XBEFORETEXT-wxPG_CAPRECTXMARGIN,
                                  y-wxPG_CAPRECTYMARGIN,
-                                 pc->GetTextExtent()+(wxPG_CAPRECTXMARGIN*2),
+                                 pc->GetTextExtent(this, m_captionFont)+(wxPG_CAPRECTXMARGIN*2),
                                  m_fontHeight+(wxPG_CAPRECTYMARGIN*2));
                 wxPGDrawFocusRect(dc,focusRect);
 
@@ -6835,6 +6844,17 @@ void wxPropertyGrid::DoDrawItems2( wxDC& dcMain,
     wxLogDebug(wxT("  \\--> ends..."));
 #endif
 
+    // Refresh editor controls (seems not needed on msw)
+    // NOTE: This code is mandatory for GTK!
+#if wxPG_REFRESH_CONTROLS_AFTER_REPAINT
+    if ( wasSelectedPainted )
+    {
+        if ( m_wndPrimary )
+            m_wndPrimary->Refresh();
+        if ( m_wndSecondary )
+            m_wndSecondary->Refresh();
+    }
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -9002,7 +9022,7 @@ bool wxPropertyGrid::HandleMouseClick( int x, unsigned int y, wxMouseEvent &even
                     // Expand, collapse, activate etc. if click on text or left of splitter.
                     if ( x >= text_x
                          &&
-                         ( x < (text_x+pwc->GetTextExtent()+(wxPG_CAPRECTXMARGIN*2))
+                         ( x < (text_x+pwc->GetTextExtent(this, m_captionFont)+(wxPG_CAPRECTXMARGIN*2))
                            ||
                            x < m_splitterx
                          )
@@ -9619,7 +9639,9 @@ void wxPropertyGrid::OnMouseClick( wxMouseEvent &event )
     {
         HandleMouseClick(x,y,event);
     }
+#if !wxCHECK_VERSION(2,8,8)
     event.Skip();
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -9629,7 +9651,9 @@ void wxPropertyGrid::OnMouseRightClick( wxMouseEvent &event )
     int x, y;
     CalcUnscrolledPosition( event.m_x, event.m_y, &x, &y );
     HandleMouseRightClick(x,y,event);
+#if !wxCHECK_VERSION(2,8,8)
     event.Skip();
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -9642,7 +9666,9 @@ void wxPropertyGrid::OnMouseDoubleClick( wxMouseEvent &event )
     int x, y;
     CalcUnscrolledPosition( event.m_x, event.m_y, &x, &y );
     HandleMouseDoubleClick(x,y,event);
+#if !wxCHECK_VERSION(2,8,8)
     event.Skip();
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -9654,7 +9680,9 @@ void wxPropertyGrid::OnMouseMove( wxMouseEvent &event )
     {
         HandleMouseMove(x,y,event);
     }
+#if !wxCHECK_VERSION(2,8,8)
     event.Skip();
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -9666,7 +9694,9 @@ void wxPropertyGrid::OnMouseUp( wxMouseEvent &event )
     {
         HandleMouseUp(x,y,event);
     }
+#if !wxCHECK_VERSION(2,8,8)
     event.Skip();
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -10353,7 +10383,9 @@ void wxPropertyGrid::OnFocusEvent( wxFocusEvent& event )
 void wxPropertyGrid::OnChildFocusEvent( wxChildFocusEvent& event )
 {
     HandleFocusChange((wxWindow*)event.GetEventObject());
+#if !wxCHECK_VERSION(2,8,8)
     event.Skip();
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -11116,6 +11148,8 @@ DEFINE_EVENT_TYPE( wxEVT_PG_PAGE_CHANGED )
 DEFINE_EVENT_TYPE( wxEVT_PG_ITEM_EXPANDED )
 DEFINE_EVENT_TYPE( wxEVT_PG_ITEM_COLLAPSED )
 DEFINE_EVENT_TYPE( wxEVT_PG_DOUBLE_CLICK )
+DEFINE_EVENT_TYPE( wxEVT_PG_COMPACT_MODE_ENTERED )
+DEFINE_EVENT_TYPE( wxEVT_PG_EXPANDED_MODE_ENTERED )
 
 
 wxPropertyGridEvent::wxPropertyGridEvent(wxEventType commandType, int id)
@@ -11279,6 +11313,17 @@ bool wxPropertyContainerMethods::SetPropertyPriority( wxPGId id, int priority )
         m_pState->SetPropertyPriority(p,priority);
 
     return true;
+}
+
+// -----------------------------------------------------------------------
+
+void wxPropertyContainerMethods::SetPropertyReadOnly( wxPGId id, bool readOnly )
+{
+    wxPG_PROP_ID_CALL_PROLOG()
+	if ( readOnly )
+        wxPropertyGridState::SetPropertyAndChildrenFlags(p, wxPG_PROP_READONLY);
+	else
+        wxPropertyGridState::ClearPropertyAndChildrenFlags(p, wxPG_PROP_READONLY);
 }
 
 // -----------------------------------------------------------------------
@@ -11593,7 +11638,7 @@ wxPGId wxPropertyGridState::GetNextProperty( wxPGId id ) const
 
 // -----------------------------------------------------------------------
 
-wxPGId wxPropertyGridState::GetNextSibling( wxPGId id )
+wxPGId wxPropertyGridState::GetNextSiblingProperty( wxPGId id )
 {
     wxPG_PROP_ID_CALL_PROLOG_RETVAL(wxNullProperty)
 
@@ -11605,7 +11650,7 @@ wxPGId wxPropertyGridState::GetNextSibling( wxPGId id )
 
 // -----------------------------------------------------------------------
 
-wxPGId wxPropertyGridState::GetPrevSibling( wxPGId id )
+wxPGId wxPropertyGridState::GetPrevSiblingProperty( wxPGId id )
 {
     wxPG_PROP_ID_CALL_PROLOG_RETVAL(wxNullProperty)
 
@@ -12501,7 +12546,7 @@ void wxPGPropertyWithChildren::PrepareSubProperties()
     wxByte depth = m_depth + 1;
     wxByte depthBgCol = m_depthBgCol;
 
-    wxByte inheritFlags = m_flags & wxPG_INHERITED_PROPFLAGS;
+    FlagType inheritFlags = m_flags & wxPG_INHERITED_PROPFLAGS;
 
     wxByte bgColIndex = m_bgColIndex;
     wxByte fgColIndex = m_fgColIndex;
@@ -12595,7 +12640,6 @@ int wxPropertyGridState::PrepareToAddItem( wxPGProperty* property,
                                            wxPGPropertyWithChildren* scheduledParent )
 {
     wxPropertyGrid* propGrid = m_pPropGrid;
-    wxASSERT( propGrid );
 
     int parenting = property->GetParentingType();
 
@@ -12680,7 +12724,7 @@ int wxPropertyGridState::PrepareToAddItem( wxPGProperty* property,
         property->m_flags |= wxPG_PROP_CUSTOMIMAGE;
     }
 
-    if ( propGrid->GetWindowStyleFlag() & wxPG_LIMITED_EDITING )
+    if ( propGrid && (propGrid->GetWindowStyleFlag() & wxPG_LIMITED_EDITING) )
         property->m_flags |= wxPG_PROP_NOEDITOR;
 
     if ( parenting < 1 )
@@ -12768,8 +12812,9 @@ int wxPropertyGridState::PrepareToAddItem( wxPGProperty* property,
         wxPropertyCategoryClass* pc = (wxPropertyCategoryClass*)property;
         pc->m_parentState = this;
 
-        // Calculate text extent for caption item.
-        pc->CalculateTextExtent(propGrid,propGrid->GetCaptionFont());
+        // Calculate text extent for caption item
+        if ( propGrid )
+            pc->CalculateTextExtent(propGrid, propGrid->GetCaptionFont());
     }
 
     return parenting;

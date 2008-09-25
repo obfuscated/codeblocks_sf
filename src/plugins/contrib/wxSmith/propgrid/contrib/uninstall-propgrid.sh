@@ -28,7 +28,6 @@ rm -f include/wx/propgrid/pg_dox_mainpage.h
 rm -f include/wx/propgrid/propdev.h
 rm -f include/wx/propgrid/propgrid.h
 rm -f include/wx/propgrid/Doxyfile
-rm -f include/wx/propgrid/propgrid.doxygen
 rm -f include/wx/propgrid/*.pyc
 rmdir include/wx/propgrid
 
@@ -164,11 +163,6 @@ rm -f samples/propgrid/mondrian.xpm
 rm -f samples/propgrid/mondrian.ico
 rm -f samples/propgrid/make.sh
 rm -f samples/propgrid/make_clean.sh
-rm -f samples/propgrid/makefile.2.6.1.bcc
-rm -f samples/propgrid/makefile.2.6.1.gcc
-rm -f samples/propgrid/Makefile.2.6.1.in
-rm -f samples/propgrid/makefile.2.6.1.vc
-rm -f samples/propgrid/makefile.2.6.1.wat
 rm -f samples/propgrid/makefile.2.6.2.bcc
 rm -f samples/propgrid/makefile.2.6.2.gcc
 rm -f samples/propgrid/Makefile.2.6.2.in
@@ -199,13 +193,21 @@ rm -f samples/propgrid/makefile.2.8.6.gcc
 rm -f samples/propgrid/Makefile.2.8.6.in
 rm -f samples/propgrid/makefile.2.8.6.vc
 rm -f samples/propgrid/makefile.2.8.6.wat
+rm -f samples/propgrid/makefile.2.8.7.bcc
+rm -f samples/propgrid/makefile.2.8.7.gcc
+rm -f samples/propgrid/Makefile.2.8.7.in
+rm -f samples/propgrid/makefile.2.8.7.vc
+rm -f samples/propgrid/makefile.2.8.7.wat
+rm -f samples/propgrid/makefile.2.9.0.bcc
+rm -f samples/propgrid/makefile.2.9.0.gcc
+rm -f samples/propgrid/Makefile.2.9.0.in
+rm -f samples/propgrid/makefile.2.9.0.vc
+rm -f samples/propgrid/makefile.2.9.0.wat
 rm -f samples/propgrid/makefile.bcc
 rm -f samples/propgrid/makefile.gcc
 rm -f samples/propgrid/Makefile.in
 rm -f samples/propgrid/makefile.vc
 rm -f samples/propgrid/makefile.wat
-rm -f samples/propgrid/propgridsample.2.6.1.dsp
-rm -f samples/propgrid/propgridsample.2.6.1.dsw
 rm -f samples/propgrid/propgridsample.2.6.2.dsp
 rm -f samples/propgrid/propgridsample.2.6.2.dsw
 rm -f samples/propgrid/propgridsample.2.6.3.dsp
@@ -216,8 +218,14 @@ rm -f samples/propgrid/propgridsample.2.8.3.dsp
 rm -f samples/propgrid/propgridsample.2.8.3.dsw
 rm -f samples/propgrid/propgridsample.2.8.4.dsp
 rm -f samples/propgrid/propgridsample.2.8.4.dsw
+rm -f samples/propgrid/propgridsample.2.8.4.sln
+rm -f samples/propgrid/propgridsample.2.8.4.vcproj
 rm -f samples/propgrid/propgridsample.2.8.6.dsp
 rm -f samples/propgrid/propgridsample.2.8.6.dsw
+rm -f samples/propgrid/propgridsample.2.8.7.dsp
+rm -f samples/propgrid/propgridsample.2.8.7.dsw
+rm -f samples/propgrid/propgridsample.2.9.0.dsp
+rm -f samples/propgrid/propgridsample.2.9.0.dsw
 rm -f samples/propgrid/propgridsample_generated.dsp
 rm -f samples/propgrid/propgridsample_generated.dsw
 rm -f samples/propgrid/*.pyc
@@ -249,10 +257,6 @@ rm -rf samples/propgrid/.deps
 rmdir samples/propgrid
 
 rm -f build/propgrid/propgrid.bkl
-rm -f build/propgrid/makefile.2.6.1.bcc
-rm -f build/propgrid/makefile.2.6.1.gcc
-rm -f build/propgrid/makefile.2.6.1.vc
-rm -f build/propgrid/makefile.2.6.1.wat
 rm -f build/propgrid/makefile.2.6.2.bcc
 rm -f build/propgrid/makefile.2.6.2.gcc
 rm -f build/propgrid/makefile.2.6.2.vc
@@ -277,12 +281,18 @@ rm -f build/propgrid/makefile.2.8.6.bcc
 rm -f build/propgrid/makefile.2.8.6.gcc
 rm -f build/propgrid/makefile.2.8.6.vc
 rm -f build/propgrid/makefile.2.8.6.wat
+rm -f build/propgrid/makefile.2.8.7.bcc
+rm -f build/propgrid/makefile.2.8.7.gcc
+rm -f build/propgrid/makefile.2.8.7.vc
+rm -f build/propgrid/makefile.2.8.7.wat
+rm -f build/propgrid/makefile.2.9.0.bcc
+rm -f build/propgrid/makefile.2.9.0.gcc
+rm -f build/propgrid/makefile.2.9.0.vc
+rm -f build/propgrid/makefile.2.9.0.wat
 rm -f build/propgrid/makefile.bcc
 rm -f build/propgrid/makefile.gcc
 rm -f build/propgrid/makefile.vc
 rm -f build/propgrid/makefile.wat
-rm -f build/propgrid/propgrid.2.6.1.dsp
-rm -f build/propgrid/propgrid.2.6.1.dsw
 rm -f build/propgrid/propgrid.2.6.2.dsp
 rm -f build/propgrid/propgrid.2.6.2.dsw
 rm -f build/propgrid/propgrid.2.6.3.dsp
@@ -293,8 +303,13 @@ rm -f build/propgrid/propgrid.2.8.3.dsp
 rm -f build/propgrid/propgrid.2.8.3.dsw
 rm -f build/propgrid/propgrid.2.8.4.dsp
 rm -f build/propgrid/propgrid.2.8.4.dsw
+rm -f build/propgrid/propgrid.2.8.4.vcproj
 rm -f build/propgrid/propgrid.2.8.6.dsp
 rm -f build/propgrid/propgrid.2.8.6.dsw
+rm -f build/propgrid/propgrid.2.8.7.dsp
+rm -f build/propgrid/propgrid.2.8.7.dsw
+rm -f build/propgrid/propgrid.2.9.0.dsp
+rm -f build/propgrid/propgrid.2.9.0.dsw
 rm -f build/propgrid/propgrid_generated.dsp
 rm -f build/propgrid/propgrid_generated.dsw
 rm -f build/propgrid/*.pyc
@@ -331,13 +346,14 @@ rm -f src/propgrid/manager.cpp
 rm -f src/propgrid/odcombo.cpp
 rm -f src/propgrid/propgrid.cpp
 rm -f src/propgrid/props.cpp
-rm -f src/propgrid/Makefile.2.6.1.in
 rm -f src/propgrid/Makefile.2.6.2.in
 rm -f src/propgrid/Makefile.2.6.3.in
 rm -f src/propgrid/Makefile.2.6.4.in
 rm -f src/propgrid/Makefile.2.8.3.in
 rm -f src/propgrid/Makefile.2.8.4.in
 rm -f src/propgrid/Makefile.2.8.6.in
+rm -f src/propgrid/Makefile.2.8.7.in
+rm -f src/propgrid/Makefile.2.9.0.in
 rm -f src/propgrid/Makefile.in
 rm -f src/propgrid/*.pyc
 rm -f src/propgrid/*.o

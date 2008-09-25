@@ -9,10 +9,6 @@
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "manager.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -30,8 +26,6 @@
     #include "wx/window.h"
     #include "wx/panel.h"
     #include "wx/dc.h"
-    #include "wx/dcclient.h"
-    #include "wx/button.h"
     #include "wx/pen.h"
     #include "wx/brush.h"
     #include "wx/cursor.h"
@@ -39,9 +33,7 @@
     #include "wx/settings.h"
     #include "wx/msgdlg.h"
     #include "wx/choice.h"
-    #include "wx/stattext.h"
     #include "wx/textctrl.h"
-    #include "wx/scrolwin.h"
     #include "wx/dirdlg.h"
     #include "wx/combobox.h"
     #include "wx/layout.h"
@@ -49,7 +41,6 @@
     #include "wx/textdlg.h"
     #include "wx/filedlg.h"
     #include "wx/statusbr.h"
-    #include "wx/toolbar.h"
     #include "wx/intl.h"
 #endif
 
@@ -469,6 +460,8 @@ void wxPropertyGridManager::Init2( int style )
     if ( baseId < 0 )
         baseId = wxPG_MAN_ALTERNATE_BASE_ID;
 
+    m_baseId = baseId;
+
 #ifdef __WXMAC__
    // Smaller controls on Mac
    SetWindowVariant(wxWINDOW_VARIANT_SMALL);
@@ -654,7 +647,10 @@ bool wxPropertyGridManager::DoSelectPage( int index )
     else
     {
         if ( !m_emptyPage )
+        {
             m_emptyPage = new wxPropertyGridPage();
+            m_emptyPage->m_pPropGrid = m_pPropGrid;
+        }
 
         nextPage = m_emptyPage;
     }
@@ -741,6 +737,22 @@ void wxPropertyGridManager::SetTargetPage( int index )
     m_targetPage = index;
     m_targetState = ((wxPropertyGridPage*)m_arrPages.Item(index))->GetStatePtr();
 
+}
+
+// -----------------------------------------------------------------------
+
+void wxPropertyGridManager::Clear()
+{
+    m_pPropGrid->Freeze();
+
+    int i;
+    for ( i=(int)GetPageCount()-1; i>=0; i-- )
+        RemovePage(i);
+
+    // Reset toolbar id
+    m_nextTbInd = m_baseId+ID_ADVTBITEMSBASE_OFFSET + 2;
+
+    m_pPropGrid->Thaw();
 }
 
 // -----------------------------------------------------------------------
@@ -877,18 +889,22 @@ int wxPropertyGridManager::InsertPage( int index, const wxString& label,
 
         wxASSERT( m_pToolbar );
 
-        // Add separator before first page.
-        if ( GetPageCount() < 2 && (GetExtraStyle()&wxPG_EX_MODE_BUTTONS) )
-            m_pToolbar->AddSeparator();
+        if ( !(GetExtraStyle()&wxPG_EX_HIDE_PAGE_BUTTONS) )
+        {
+            // Add separator before first page.
+            if ( GetPageCount() < 2 && (GetExtraStyle()&wxPG_EX_MODE_BUTTONS) &&
+                 m_pToolbar->GetToolsCount() < 3 )
+                m_pToolbar->AddSeparator();
 
-        if ( &bmp != &wxNullBitmap )
-            m_pToolbar->AddTool(m_nextTbInd,label,bmp,label,wxITEM_RADIO);
-            //m_pToolbar->InsertTool(index+3,m_nextTbInd,bmp);
-        else
-            m_pToolbar->AddTool(m_nextTbInd,label,wxBitmap( (const char**)gs_xpm_defpage ),
-                label,wxITEM_RADIO);
+            if ( &bmp != &wxNullBitmap )
+                m_pToolbar->AddTool(m_nextTbInd,label,bmp,label,wxITEM_RADIO);
+                //m_pToolbar->InsertTool(index+3,m_nextTbInd,bmp);
+            else
+                m_pToolbar->AddTool(m_nextTbInd,label,wxBitmap( (const char**)gs_xpm_defpage ),
+                    label,wxITEM_RADIO);
 
-        m_nextTbInd++;
+            m_nextTbInd++;
+        }
 
         m_pToolbar->Realize();
     }
@@ -1069,7 +1085,7 @@ void wxPropertyGridManager::RepaintSplitter( wxDC& dc, int new_splittery, int ne
     if ( !desc_too )
         rect_hei = m_splitterHeight;
     dc.DrawRectangle(0,new_splittery,new_width,rect_hei);
-    dc.SetPen ( wxSystemSettings::GetColour ( wxSYS_COLOUR_3DDKSHADOW ) );
+    dc.SetPen ( wxSystemSettings::GetColour( wxSYS_COLOUR_3DDKSHADOW ) );
     int splitter_bottom = new_splittery+m_splitterHeight - 1;
     int box_height = use_hei-splitter_bottom;
     if ( box_height > 1 )
@@ -1115,6 +1131,9 @@ void wxPropertyGridManager::RefreshHelpBox( int new_splittery, int new_width, in
     else
     {
         m_pTxtHelpCaption->SetSize(3,cap_y,new_width-6,cap_hei);
+#if wxCHECK_VERSION(2,6,2)
+        m_pTxtHelpCaption->Wrap(-1);
+#endif
         m_pTxtHelpCaption->Show( true );
         if ( cnt_hei <= 2 )
         {
@@ -1280,9 +1299,9 @@ void wxPropertyGridManager::RefreshProperty( wxPGProperty* p )
 void wxPropertyGridManager::RecreateControls()
 {
 
-    bool was_shown = IsShown();
-    if ( was_shown )
-        Show ( false );
+    bool wasShown = IsShown();
+    if ( wasShown )
+        Show( false );
 
     wxWindowID baseId = m_pPropGrid->GetId();
     if ( baseId < 0 )
@@ -1385,15 +1404,17 @@ void wxPropertyGridManager::RecreateControls()
 
         if ( !m_pTxtHelpCaption )
         {
-            m_pTxtHelpCaption = new wxStaticText (this,baseId+ID_ADVHELPCAPTION_OFFSET,wxT(""));
+            m_pTxtHelpCaption = new wxStaticText(this,baseId+ID_ADVHELPCAPTION_OFFSET,wxT(""));
             m_pTxtHelpCaption->SetFont( m_pPropGrid->m_captionFont );
-            m_pTxtHelpCaption->SetCursor ( *wxSTANDARD_CURSOR );
+            m_pTxtHelpCaption->SetCursor( *wxSTANDARD_CURSOR );
+            m_pTxtHelpCaption->SetBackgroundColour(GetBackgroundColour());
         }
         if ( !m_pTxtHelpContent )
         {
-            m_pTxtHelpContent = new wxStaticText (this,baseId+ID_ADVHELPCONTENT_OFFSET,
+            m_pTxtHelpContent = new wxStaticText(this,baseId+ID_ADVHELPCONTENT_OFFSET,
                 wxT(""),wxDefaultPosition,wxDefaultSize,wxALIGN_LEFT|wxST_NO_AUTORESIZE);
-            m_pTxtHelpContent->SetCursor ( *wxSTANDARD_CURSOR );
+            m_pTxtHelpContent->SetCursor( *wxSTANDARD_CURSOR );
+            m_pTxtHelpContent->SetBackgroundColour(GetBackgroundColour());
         }
     }
     else
@@ -1418,8 +1439,8 @@ void wxPropertyGridManager::RecreateControls()
 
     RecalculatePositions(width,height);
 
-    if ( was_shown )
-        Show ( true );
+    if ( wasShown )
+        Show( true );
 }
 
 // -----------------------------------------------------------------------
@@ -1760,11 +1781,13 @@ void wxPropertyGridManager::OnCompactorClick( wxCommandEvent& WXUNUSED(event) )
     {
         m_pPropGrid->Compact( true );
         m_pButCompactor->SetLabel( _("Expand >>") );
+        m_pPropGrid->SendEvent( wxEVT_PG_COMPACT_MODE_ENTERED, NULL );
     }
     else
     {
         m_pPropGrid->Compact( false );
         m_pButCompactor->SetLabel( _("<< Compact") );
+        m_pPropGrid->SendEvent( wxEVT_PG_EXPANDED_MODE_ENTERED, NULL );
     }
 }
 

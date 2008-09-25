@@ -9,10 +9,6 @@
 // Licence:     wxWindows license
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "advprops.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -169,6 +165,9 @@ public:
 
     virtual bool OnEvent( wxPropertyGrid* propgrid, wxPGProperty* property,
         wxWindow* wnd, wxEvent& event ) const;
+
+private:
+    mutable wxString m_tempString;
 };
 
 
@@ -203,8 +202,9 @@ wxPGWindowPair wxPGSpinCtrlEditor::CreateControls( wxPropertyGrid* propgrid, wxP
 #endif
     wnd2->Create( propgrid, wxPG_SUBID2, butPos, butSz, wxSP_VERTICAL );
     wnd2->SetRange( INT_MIN, INT_MAX );
-    //wnd2->SetRange( 5, 12 );
-    wnd2->SetValue( 0 );
+    long lval = 0;
+    property->GetValueAsString().ToLong(&lval);
+    wnd2->SetValue( lval );
 
     propgrid->Connect( wxPG_SUBID2, wxEVT_SCROLL_LINEUP,
                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
@@ -212,10 +212,12 @@ wxPGWindowPair wxPGSpinCtrlEditor::CreateControls( wxPropertyGrid* propgrid, wxP
     propgrid->Connect( wxPG_SUBID2, wxEVT_SCROLL_LINEDOWN,
                        (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                        &wxPropertyGrid::OnCustomEditorEvent, NULL, propgrid );
+    propgrid->Connect( wxPG_SUBID1, wxEVT_KEY_DOWN,
+                       (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                       &wxPropertyGrid::OnCustomEditorEvent, NULL, propgrid );
 
     // Let's add validator to make sure only numbers can be entered
-    wxString temps;
-    wxTextValidator validator(wxFILTER_NUMERIC, &temps);
+    wxTextValidator validator(wxFILTER_NUMERIC, &m_tempString);
 
 #ifndef __WXPYTHON__
     wxTextCtrl* wnd1 = (wxTextCtrl*) wxPGTextCtrlEditor::CreateControls( propgrid, property, pos, tcSz, NULL );
@@ -236,6 +238,29 @@ bool wxPGSpinCtrlEditor::OnEvent( wxPropertyGrid* propgrid, wxPGProperty* proper
                                   wxWindow* wnd, wxEvent& event ) const
 {
     int evtType = event.GetEventType();
+    int keycode = -1;
+    bool bigStep = false;
+
+    if ( evtType == wxEVT_KEY_DOWN )
+    {
+        wxKeyEvent& keyEvent = (wxKeyEvent&)event;
+        keycode = keyEvent.GetKeyCode();
+
+        if ( keycode == WXK_UP )
+            evtType = wxEVT_SCROLL_LINEUP;
+        else if ( keycode == WXK_DOWN )
+            evtType = wxEVT_SCROLL_LINEDOWN;
+        else if ( keycode == WXK_PAGEUP )
+        {
+            evtType = wxEVT_SCROLL_LINEUP;
+            bigStep = true;
+        }
+        else if ( keycode == WXK_PAGEDOWN )
+        {
+            evtType = wxEVT_SCROLL_LINEDOWN;
+            bigStep = true;
+        }
+    }
 
     if ( evtType == wxEVT_SCROLL_LINEUP || evtType == wxEVT_SCROLL_LINEDOWN )
     {
@@ -251,24 +276,31 @@ bool wxPGSpinCtrlEditor::OnEvent( wxPropertyGrid* propgrid, wxPGProperty* proper
         wxSpinButton* spinButton = (wxSpinButton*) propgrid->GetEditorControlSecondary();
         int spinMin = spinButton->GetMin();
         int spinMax = spinButton->GetMax();
+        long v_l;
 
         if ( property->GetValueType() == wxPG_VALUETYPE(double) )
         {
             double v_d;
+            double step = 1.0;
 
             // Try double
             if ( s.ToDouble(&v_d) )
             {
-                if ( evtType == wxEVT_SCROLL_LINEUP ) v_d += 1.0;
-                else v_d -= 1.0;
+                if ( bigStep )
+                    step *= 10.0;
+
+                if ( evtType == wxEVT_SCROLL_LINEUP ) v_d += step;
+                else v_d -= step;
 
                 // Min/Max
                 double dSpinMin = (double) spinMin;
                 double dSpinMax = (double) spinMax;
                 if ( v_d > dSpinMax ) v_d = dSpinMax;
                 else if ( v_d < dSpinMin ) v_d = dSpinMin;
-
+                
                 wxPropertyGrid::DoubleToString(s, v_d, 6, true, NULL);
+
+                v_l = (long)v_d;
             }
             else
             {
@@ -277,13 +309,16 @@ bool wxPGSpinCtrlEditor::OnEvent( wxPropertyGrid* propgrid, wxPGProperty* proper
         }
         else
         {
-            long v_l;
+            long step = 1;
 
             // Try long
             if ( s.ToLong(&v_l, 0) )
             {
-                if ( evtType == wxEVT_SCROLL_LINEUP ) v_l++;
-                else v_l--;
+                if ( bigStep )
+                    step *= 10;
+
+                if ( evtType == wxEVT_SCROLL_LINEUP ) v_l += step;
+                else v_l -= step;
 
                 // Min/Max
                 if ( v_l > spinMax ) v_l = spinMax;
@@ -297,8 +332,17 @@ bool wxPGSpinCtrlEditor::OnEvent( wxPropertyGrid* propgrid, wxPGProperty* proper
             }
         }
 
+        // We also need to update spinbutton value
+        // (need to do this for proper bigStep support)
+        spinButton->SetValue( v_l );
+
         if ( tc )
+        {
+            int ip = tc->GetInsertionPoint();
+            int lp = tc->GetLastPosition();
             tc->SetValue(s);
+            tc->SetInsertionPoint(ip+(tc->GetLastPosition()-lp));
+        }
 
         return true;
     }
@@ -1299,7 +1343,7 @@ void wxCursorPropertyClass::OnCustomPaint( wxDC& dc,
             wxCursor cursor( cursorindex );
 
         #ifdef __WXMSW__
-            ::DrawIconEx( (HDC)dc.GetHDC(),
+            ::DrawIconEx( wxPG_GetHDCOf(dc),
                           rect.x,
                           rect.y,
                           (HICON)cursor.GetHandle(),
@@ -1738,9 +1782,13 @@ wxPGVariant wxDatePropertyClass::DoGetValue() const
 }
 
 bool wxDatePropertyClass::SetValueFromString( const wxString& text,
-                                                  int WXUNUSED(argFlags) )
+                                              int WXUNUSED(argFlags) )
 {
-    const wxChar* c = m_valueDateTime.ParseFormat(text.c_str(),wxDefaultDateTimeFormat);
+#if wxCHECK_VERSION(2,9,0)
+    const char* c = m_valueDateTime.ParseFormat(text, wxString(wxDefaultDateTimeFormat), wxDefaultDateTime, NULL);
+#else
+    const wxChar* c = m_valueDateTime.ParseFormat(text, wxDefaultDateTimeFormat);
+#endif
 
     return c ? true : false;
 }

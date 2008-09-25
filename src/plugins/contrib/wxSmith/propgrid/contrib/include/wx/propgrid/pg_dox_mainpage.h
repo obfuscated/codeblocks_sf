@@ -13,7 +13,7 @@
 #define __WX_PG_DOX_MAINPAGE_H__
 
 /**
-    \mainpage wxPropertyGrid 1.2.10 Overview
+    \mainpage wxPropertyGrid 1.2.12 Overview
 
       wxPropertyGrid is a specialized two-column grid for editing properties
     such as strings, numbers, flagsets, fonts, and colours. It allows hierarchial,
@@ -287,7 +287,7 @@
     \code
         wxPGId pid = pg->Append( wxParentProperty(wxT("Car"),wxPG_LABEL) );
 
-        pg->AppendIn( pid, wxStringProperty(wxT("Model")),
+        pg->AppendIn( pid, wxStringProperty(wxT("Model"),
                                             wxPG_LABEL,
                                             wxT("Lamborghini Diablo SV")) );
 

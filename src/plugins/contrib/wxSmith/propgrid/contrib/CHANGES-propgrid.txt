@@ -1,4 +1,103 @@
 
+Version 1.2.12 ( Jun-28-2008 )
+
+  New Features:
+
+  - Added wxPropertyGridManager::GetPage(pageName).
+
+  - Added wxPropertyGridManager::Clear() (removes all pages).
+
+  - Added extra style wxPG_EX_HIDE_PAGE_BUTTONS which allows hiding
+    page selector buttons on wxPropertyGridManager toolbar.
+
+  - SpinCtrl editor supports up, down, pageup and pagedown keys.
+
+
+  Changes:
+
+  - GetNextSibling() and GetPrevSibling() had to be changed to
+    GetNextSiblingProperty() and GetPrevSiblingProperty(), respectively,
+    in order to maintain compatibility with latest wxWidgets versions.
+
+  - Default makefiles and project files now use latest stable version
+    (2.8.8) instead of latest dev version (was SVN trunk/2.9.0).
+
+
+  Bugs Fixed:
+
+  - Compile problems with some (new) versions of GCC (was caused by
+    #pragma interface/implementation, removed now).
+
+  - Setting wxSpinButton min/max in EVT_PROPERTY_SELECTED did not work
+    properly since wxSpinButton value was always initialized as 0.
+
+  - SpinCtrl editor could crash in some circumstances
+    (bug #1948521, fix by alain_d99).
+
+  - Mouse handling and scrolling was buggy with latest versions
+    (2.8.8, SVN trunk/2.9).
+
+  - wxPython Bindings: Exceptions in Python implementations of
+    virtual wxPGProperty methods were not printed.
+
+  - It was not possible to add properties to wxPropertyGridPage before
+    it was inserted into wxPropertyGridManager.
+
+  - wxFlagsPropertyClass::SetValueFromString() no longer tries to update
+    child controls that have not yet been created (bug #1863059).
+
+  - WxFileProperty::GetValueAsString() now always returns empty
+    string when filename component is empty (bug #1933931).
+
+  - wxPropertyGridManager's description caption word-wrapped even though
+    it did not expand vertically.
+
+  - manager.h was not self-contained when compiling without pre-compiled
+    headers (thanks Ian Britten).
+
+  - Shell scripts in source archive were not executable.
+
+  - Semicolon could be placed incorrectly for composed value if
+    nested children.
+
+  - SetPropertyReadOnly() did not update children.
+
+  - Value entered in wxIntProperty was interpreted as octal
+    if there were leading zeroes.
+
+  - wxPropertyGridManager::EnableCategories() did not work.
+
+  - Setting attribute of wxBoolProperty asserted unless it was of
+    integer type (bug #1921380, fix by Alex May).
+
+
+
+Version 1.2.11 ( Dec-08-2007 )
+
+  New Features:
+
+  - Events EVT_PG_COMPACT_MODE_ENTERED and EVT_PG_EXPANDED_MODE_ENTERED
+    are now fired when the compactor button is pressed, as appropriate.
+
+  - Makefiles for wxWidgets 2.8.7.
+
+
+  Bugs Fixed:
+
+  - wxPG_PROP_PASSWORD string corrupted when editing
+    (bug #1830210).
+
+  - wxArrayEditorDialog displayed incorrectly on wxMAC (bug #1829215,
+    fix by Marianne Gagnon).
+
+  - Debug messages are no longer shown in the wxPython binary
+    releases.
+
+  - wxPython bindings were lacking support for EVT_PG_ITEM_EXPANDED
+    and EVT_PG_ITEM_COLLAPSED.
+
+
+
 Version 1.2.10 ( Oct-29-2007 )
 
   Bugs Fixed:

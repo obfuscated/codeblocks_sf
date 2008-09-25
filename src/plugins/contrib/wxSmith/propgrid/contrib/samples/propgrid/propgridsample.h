@@ -197,6 +197,8 @@ public:
     void OnPropertyGridKeyEvent( wxKeyEvent& event );
     void OnPropertyGridItemCollapse( wxPropertyGridEvent& event );
     void OnPropertyGridItemExpand( wxPropertyGridEvent& event );
+    void OnPropertyGridCompactEntered( wxPropertyGridEvent& event );
+    void OnPropertyGridExpandedEntered( wxPropertyGridEvent& event );
 
     void OnAbout( wxCommandEvent& event );
 

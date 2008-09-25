@@ -3,12 +3,11 @@
 
     wxPropertyGrid
 
-      By Jaakko Salli (jmsalli79@hotmail.com)
-                      (jaakko.salli@users.sourceforge.net)
+      By Jaakko Salli (jmsalli@users.sourceforge.net)
 
   ************************************************
 
-    Version:   1.2.10
+    Version:   1.2.12
     Requires:  wxWidgets 2.6.0 or later
                ( 1.0.x branch is also compatible with wxWidgets 2.5.2 - 2.6.2 )
     Platforms: Windows - OK; Linux GTK 2.0 - OK;
@@ -16,7 +15,6 @@
     License:   wxWidgets license
 
     Home Pages:     http://wxpropgrid.sourceforge.net/
-                    http://www.geocities.com/jmsalli/propertygrid/index.html
                     At SourceForge: http://sourceforge.net/projects/wxpropgrid/
 
     wxPropertyGrid is a specialized two-column grid for editing properties
@@ -32,6 +30,11 @@
   ------------------------
 
   NOTE: For wxPython instructions and notes, see README-propgrid-wxPython.txt.
+
+  NOTE ABOUT PREBUILT BINARIES: wxPropertyGrid installs as an integrated part of
+    wxWidgets source tree. This means that the Windows installer and Posix shell
+    scripts may not work with prebuilt binaries. However, the newer 1.3.x releases
+    use different build system and should work fine.
 
   WINDOWS
 
@@ -89,10 +92,6 @@
     with tar, then be aware that it is actually only a warning and doesn't
     mean that the archive is corrupt.
 
-  NOTE: "make install" may copy propgrid include files to include/wx instead
-    of include/wx/propgrid. Right now you will have to manually copy the
-    files to the correct location.
-
   NOTE: You may want to manually add propgrid to CONTRIB_SUBDIRS list in
   "$WXDIR/contrib/src/Makefile.in" and
   "$WXDIR/contrib/samples/Makefile.in"
@@ -105,17 +104,6 @@
 
   for documentation generated with doxygen. There should also be a shortcut
   index-propgrid.html at $WXDIR/contrib.
-
-
-  ACKNOWLEDGEMENTS
-  ----------------
-
-    Following people have provided plenty of helpful feedback:
-      Vladimir Vainer, Andrew B, Chris Garrett, Dave Moor, Bernard Duggan,
-      Joachim Hönig.
-
-    Also thanks to Julian Smart, Vadim Zeitlin, Robert Roebling, Robin Dunn,
-    et al. for wxWidgets itself!
 
 
   INSTALLATION TROUBLESHOOTING

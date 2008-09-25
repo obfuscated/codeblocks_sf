@@ -865,6 +865,9 @@ BEGIN_EVENT_TABLE(FormMain, wxFrame)
     EVT_PG_ITEM_COLLAPSED( PGID, FormMain::OnPropertyGridItemCollapse )
     EVT_PG_ITEM_EXPANDED( PGID, FormMain::OnPropertyGridItemExpand )
 
+    EVT_PG_COMPACT_MODE_ENTERED( PGID, FormMain::OnPropertyGridCompactEntered )
+    EVT_PG_EXPANDED_MODE_ENTERED( PGID, FormMain::OnPropertyGridExpandedEntered )
+
     EVT_TEXT( PGID, FormMain::OnPropertyGridTextUpdate )
 
     EVT_KEY_DOWN( FormMain::OnPropertyGridKeyEvent )
@@ -1396,6 +1399,18 @@ void FormMain::OnPropertyGridItemExpand( wxPropertyGridEvent& )
     wxLogDebug(wxT("Item was Expanded"));
 }
 
+void FormMain::OnPropertyGridCompactEntered( wxPropertyGridEvent& )
+{
+    wxLogDebug(wxT("Compactor button pressed"));
+}
+
+// -----------------------------------------------------------------------
+
+void FormMain::OnPropertyGridExpandedEntered( wxPropertyGridEvent& )
+{
+    wxLogDebug(wxT("Expander button pressed"));
+}
+
 // -----------------------------------------------------------------------
 
 // EVT_TEXT handling
@@ -1762,7 +1777,6 @@ void FormMain::OnIterate4Click( wxCommandEvent& WXUNUSED(event) )
 
 void FormMain::OnChangeFlagsPropItemsClick( wxCommandEvent& WXUNUSED(event) )
 {
-
     wxPGId id = m_pPropGridMan->GetPropertyByName(wxT("Window Styles"));
 
     wxPGChoices newChoices;
@@ -2011,7 +2025,7 @@ void FormMain::OnAbout(wxCommandEvent& WXUNUSED(event))
                 wxT("Programmed by %s ( %s ).\n\n")
                 wxT("Powered by %s.\n\n"),
             wxPROPGRID_MAJOR, wxPROPGRID_MINOR, wxPROPGRID_RELEASE,
-            wxT("Jaakko Salli"), wxT("jmsalli79@hotmail.com, jaakko.salli@pp.inet.fi"), wxVERSION_STRING
+            wxT("Jaakko Salli"), wxT("jmsalli@users.sourceforge.net"), wxVERSION_STRING
             );
 
     wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
@@ -2244,7 +2258,7 @@ static void WritePropertiesToFile( wxPropertyGrid* pg, wxPGId id, wxTextFile& f,
             f.AddLine(s);
         }
 
-        id = pg->GetNextSibling(id);
+        id = pg->GetNextSiblingProperty(id);
     }
 }
 
@@ -3161,7 +3175,8 @@ void FormMain::PopulateWithStandardItems ()
     pg->Append( wxSystemColourProperty(wxT("Line Colour"),wxPG_LABEL,
         pg->GetGrid()->GetLineColour()) );
     pg->Append( wxFlagsProperty(wxT("Window Styles"),wxPG_LABEL,
-        m_combinedFlags, GetWindowStyle()) );
+        //m_combinedFlags, GetWindowStyle()) );
+        m_combinedFlags, 0x07) );
 
     //pg->SetPropertyAttribute(wxT("Window Styles"),wxPG_BOOL_USE_DOUBLE_CLICK_CYCLING,(long)1,wxPG_RECURSE);
 
@@ -3314,13 +3329,6 @@ void FormMain::PopulateWithExamples ()
 
     pg->SetDefaultPriority ( wxPG_LOW );
 
-    //pg->Append( wxPropertyCategory(wxT("Examples (low priority)"),wxT("Examples")) );
-    //pg->SetPropertyHelpString ( wxT("Examples"), wxT("This category has example of (almost) every built-in property class. Low priority means they will be hidden in compact mode.") );
-
-    // Add int property - args similar as above. Note that wxPG_LABEL instructs
-    // constructor to use label as name as well.
-    pg->Append( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
-
 #if wxUSE_SPINBTN
     pg->Append( wxIntProperty ( wxT("SpinCtrl"), wxPG_LABEL, 0 ) );
 
@@ -3335,10 +3343,10 @@ void FormMain::PopulateWithExamples ()
 #endif
 
     // Add bool property
-    pg->Append( wxBoolProperty ( wxT("BoolProperty"), wxPG_LABEL, false ) );
+    pg->Append( wxBoolProperty( wxT("BoolProperty"), wxPG_LABEL, false ) );
 
     // Add bool property with check box
-    pg->Append( wxBoolProperty ( wxT("BoolProperty with CheckBox"), wxPG_LABEL, false ) );
+    pg->Append( wxBoolProperty( wxT("BoolProperty with CheckBox"), wxPG_LABEL, false ) );
     pg->SetPropertyAttribute( wxT("BoolProperty with CheckBox"),
                               wxPG_BOOL_USE_CHECKBOX,
                               (long)1 );
@@ -3876,6 +3884,7 @@ FormMain::FormMain(const wxString& title, const wxPoint& pos, const wxSize& size
     // This shows how to combine two constant descriptors
     m_combinedFlags.Add( _fs_windowstyle_labels, _fs_windowstyle_values );
     m_combinedFlags.Add( _fs_framestyle_labels, _fs_framestyle_values );
+
 #if TESTING_WXPROPERTYGRIDADV
 
     wxPropertyGridManager* pgman = m_pPropGridMan =
@@ -3894,7 +3903,7 @@ FormMain::FormMain(const wxString& title, const wxPoint& pos, const wxSize& size
                                   //wxPG_LIMITED_EDITING |
                                   wxTAB_TRAVERSAL |
                                   wxPG_TOOLBAR |
-                                  wxPG_DESCRIPTION
+                                  wxPG_DESCRIPTION //|
                                   //wxPG_COMPACTOR
                                  );
 
@@ -3966,9 +3975,13 @@ FormMain::FormMain(const wxString& title, const wxPoint& pos, const wxSize& size
 
     PopulateWithLibraryConfig();
 
+    // Test that adding property before page is added works
+    wxPropertyGridPage* myPage = new wxMyPropertyGridPage();
+    myPage->Append( wxIntProperty ( wxT("IntProperty"), wxPG_LABEL, 12345678 ) );
+
     // Use wxMyPropertyGridPage (see above) to test the
     // custom wxPropertyGridPage feature.
-    pgman->AddPage(wxT("Examples"),wxNullBitmap,new wxMyPropertyGridPage());
+    pgman->AddPage(wxT("Examples"),wxNullBitmap,myPage);
 
     PopulateWithExamples();
 

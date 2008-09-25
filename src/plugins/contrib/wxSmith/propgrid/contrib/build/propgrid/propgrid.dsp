@@ -55,18 +55,18 @@ RSC=rc.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswunivudll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivu" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29u_adv.lib wxmswuniv29u_core.lib wxbase29u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29u_propgrid.lib"
-# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29u_adv.lib wxmswuniv29u_core.lib wxbase29u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29u_propgrid.lib"
+# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28u_adv.lib wxmswuniv28u_core.lib wxbase28u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28u_adv.lib wxmswuniv28u_core.lib wxbase28u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28u_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Universal Unicode Debug"
 
@@ -80,18 +80,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswunivuddll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivuddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivuddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivuddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivuddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivud" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29ud_adv.lib wxmswuniv29ud_core.lib wxbase29ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29ud_propgrid.lib" /debug
-# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29ud_adv.lib wxmswuniv29ud_core.lib wxbase29ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29ud_propgrid.lib" /debug
+# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28ud_adv.lib wxmswuniv28ud_core.lib wxbase28ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28ud_adv.lib wxmswuniv28ud_core.lib wxbase28ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28ud_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Universal Release"
 
@@ -105,18 +105,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswunivdll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "__WXMSW__" /d "__WXUNIVERSAL__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswuniv" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29_adv.lib wxmswuniv29_core.lib wxbase29.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29_propgrid.lib"
-# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29_adv.lib wxmswuniv29_core.lib wxbase29.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29_propgrid.lib"
+# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28_adv.lib wxmswuniv28_core.lib wxbase28.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28_adv.lib wxmswuniv28_core.lib wxbase28.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Universal Debug"
 
@@ -130,18 +130,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswunivddll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmswuniv290d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswunivddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXUNIVERSAL__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswunivd" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmswuniv28d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29d_adv.lib wxmswuniv29d_core.lib wxbase29d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29d_propgrid.lib" /debug
-# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmswuniv29d_adv.lib wxmswuniv29d_core.lib wxbase29d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv290d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv29d_propgrid.lib" /debug
+# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28d_adv.lib wxmswuniv28d_core.lib wxbase28d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmswuniv28d_adv.lib wxmswuniv28d_core.lib wxbase28d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmswuniv28d_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Unicode Release"
 
@@ -155,18 +155,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswudll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "__WXMSW__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "__WXMSW__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswudll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "__WXMSW__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "__WXMSW__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswu" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28u_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxbase29u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29u_propgrid.lib"
-# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29u_adv.lib wxmsw29u_core.lib wxbase29u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29u_propgrid.lib"
+# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxbase28u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregexu.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28u_adv.lib wxmsw28u_core.lib wxbase28u.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28u_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Unicode Debug"
 
@@ -180,18 +180,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswuddll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswuddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswuddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswuddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswuddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /d "_UNICODE" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswud" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28ud_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29ud_adv.lib wxmsw29ud_core.lib wxbase29ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29ud_propgrid.lib" /debug
-# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29ud_adv.lib wxmsw29ud_core.lib wxbase29ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29ud_propgrid.lib" /debug
+# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxbase28ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexud.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28ud_adv.lib wxmsw28ud_core.lib wxbase28ud.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28ud_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Release"
 
@@ -205,18 +205,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswdll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "__WXMSW__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "__WXMSW__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswdll\wxprec_propgriddll.pch" /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "__WXMSW__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "__WXMSW__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "__WXMSW__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\msw" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29_adv.lib wxmsw29_core.lib wxbase29.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29_propgrid.lib"
-# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29_adv.lib wxmsw29_core.lib wxbase29.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29_propgrid.lib"
+# ADD BASE LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28_adv.lib wxmsw28_core.lib wxbase28.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiff.lib wxjpeg.lib wxpng.lib wxzlib.lib wxregex.lib wxexpat.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28_adv.lib wxmsw28_core.lib wxbase28.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid.lib" /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 DLL Debug"
 
@@ -230,18 +230,18 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_dll"
 # PROP Intermediate_Dir "vc_mswddll\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswddll\wxprec_propgriddll.pch" /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
-# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXBUILDING" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
-# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
-# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /i "..\..\src\propgrid\..\..\..\include" /d "WXBUILDING" /d WXDLLNAME=wxmsw290d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Yu"wx/wxprec.h" /Fp"vc_mswddll\wxprec_propgriddll.pch" /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid_vc_custom.pdb /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /c
+# ADD BASE MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD MTL /nologo /D "WIN32" /D "_USRDLL" /D "DLL_EXPORTS" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXUSINGDLL" /D "WXMAKINGDLL_PROPGRID" /mktyplib203 /win32
+# ADD BASE RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
+# ADD RSC /l 0x409 /d "_DEBUG" /d "__WXMSW__" /d "__WXDEBUG__" /i "..\..\src\propgrid\..\..\..\lib\vc_dll\mswd" /i "..\..\src\propgrid\..\..\..\include" /d WXDLLNAME=wxmsw28d_propgrid_vc_custom /i "..\..\src\propgrid\..\..\include" /d "WXUSINGDLL" /d WXMAKINGDLL_PROPGRID
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29d_adv.lib wxmsw29d_core.lib wxbase29d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29d_propgrid.lib" /debug
-# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib wxmsw29d_adv.lib wxmsw29d_core.lib wxbase29d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw290d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw29d_propgrid.lib" /debug
+# ADD BASE LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28d_adv.lib wxmsw28d_core.lib wxbase28d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid_vc_custom.pdb"
+# ADD LINK32 wxtiffd.lib wxjpegd.lib wxpngd.lib wxzlibd.lib wxregexd.lib wxexpatd.lib kernel32.lib user32.lib gdi32.lib comdlg32.lib winspool.lib winmm.lib shell32.lib comctl32.lib ole32.lib oleaut32.lib uuid.lib rpcrt4.lib advapi32.lib wsock32.lib odbc32.lib wxmsw28d_adv.lib wxmsw28d_core.lib wxbase28d.lib /nologo /dll /machine:i386 /out:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid_vc_custom.dll" /libpath:"..\..\src\propgrid\..\..\..\lib\vc_dll" /implib:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid.lib" /debug /pdb:"..\..\src\propgrid\..\..\..\lib\vc_dll\wxmsw28d_propgrid_vc_custom.pdb"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Universal Unicode Release"
 
@@ -255,16 +255,16 @@ LINK32=link.exe
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswunivu\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "_UNICODE" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29u_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29u_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28u_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28u_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Universal Unicode Debug"
 
@@ -278,16 +278,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswunivud\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "_UNICODE" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29ud_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29ud_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28ud_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28ud_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Universal Release"
 
@@ -301,16 +301,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswuniv\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswuniv\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswuniv\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswuniv\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswuniv" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswuniv\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "__WXUNIVERSAL__" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Universal Debug"
 
@@ -324,16 +324,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswunivd\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswunivd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswunivd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXUNIVERSAL__" /D "__WXDEBUG__" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29d_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv29d_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28d_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmswuniv28d_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Unicode Release"
 
@@ -347,16 +347,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswu\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "_UNICODE" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "_UNICODE" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "_UNICODE" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswu" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28u_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswu\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "_UNICODE" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29u_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29u_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28u_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28u_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Unicode Debug"
 
@@ -370,16 +370,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswud\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswud" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28ud_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswud\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "_UNICODE" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29ud_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29ud_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28ud_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28ud_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Release"
 
@@ -393,16 +393,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_msw\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_msw\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_msw\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_msw\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /c
+# ADD CPP /nologo /FD /MD /O2 /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\msw" /I "..\..\src\propgrid\..\..\..\include" /W4 /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_msw\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "__WXMSW__" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28_propgrid.lib"
 
 !ELSEIF  "$(CFG)" == "propgrid - Win32 Debug"
 
@@ -416,16 +416,16 @@ LIB32=link.exe -lib
 # PROP Output_Dir "..\..\src\propgrid\..\..\..\lib\vc_lib"
 # PROP Intermediate_Dir "vc_mswd\propgrid"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXBUILDING" /c
-# ADD CPP /nologo /FD /MDd /Od /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Gm /GZ /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /D "WXBUILDING" /c
+# ADD BASE CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /c
+# ADD CPP /nologo /FD /MDd /Od /Gm /GR /EHsc /I "..\..\src\propgrid\..\..\..\lib\vc_lib\mswd" /I "..\..\src\propgrid\..\..\..\include" /W4 /Zi /Fd..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28d_propgrid.pdb /Yu"wx/wxprec.h" /Fp"vc_mswd\wxprec_propgridlib.pch" /I "..\..\src\propgrid\..\..\include" /D "WIN32" /D "_LIB" /D "_DEBUG" /D "__WXMSW__" /D "__WXDEBUG__" /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
-# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29d_propgrid.lib"
-# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw29d_propgrid.lib"
+# ADD BASE LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28d_propgrid.lib"
+# ADD LIB32 /nologo /out:"..\..\src\propgrid\..\..\..\lib\vc_lib\wxmsw28d_propgrid.lib"
 
 !ENDIF
 
@@ -452,37 +452,37 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=../../src/propgrid\advprops.cpp
+SOURCE=..\..\src\propgrid\advprops.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\..\..\..\src\common\dummy.cpp
+SOURCE=..\..\src\propgrid\..\..\..\src\common\dummy.cpp
 # ADD BASE CPP /Yc"wx/wxprec.h"
 # ADD CPP /Yc"wx/wxprec.h"
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\extras.cpp
+SOURCE=..\..\src\propgrid\extras.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\manager.cpp
+SOURCE=..\..\src\propgrid\manager.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\odcombo.cpp
+SOURCE=..\..\src\propgrid\odcombo.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\propgrid.cpp
+SOURCE=..\..\src\propgrid\propgrid.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\props.cpp
+SOURCE=..\..\src\propgrid\props.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=../../src/propgrid\..\..\..\src\msw\version.rc
+SOURCE=..\..\src\propgrid\..\..\..\src\msw\version.rc
 
 !IF  "$(CFG)" == "propgrid - Win32 DLL Universal Unicode Release"
 

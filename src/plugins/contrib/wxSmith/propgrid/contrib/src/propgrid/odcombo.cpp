@@ -17,10 +17,6 @@
 // headers
 // ----------------------------------------------------------------------------
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "odcombo.h"
-#endif
-
 #include "wx/wxprec.h"
 
 #ifdef __BORLANDC__
@@ -50,6 +46,7 @@
     #include "wx/msw/uxtheme.h"
 #endif
 
+#include "wx/propgrid/propgrid.h"
 #include "wx/propgrid/odcombo.h"
 
 //
@@ -636,6 +633,9 @@ bool wxPGVListBoxComboPopup::HandleKey( int keycode, bool saturate )
 {
     int value = m_value;
     int itemCount = GetCount();
+
+    if ( itemCount == 0 )
+        return false;
 
     if ( keycode == WXK_DOWN || keycode == WXK_RIGHT )
     {
@@ -3345,7 +3345,7 @@ void wxPGComboControl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
     const bool isEnabled = IsEnabled();
     wxColour bgCol = GetBackgroundColour();
 
-    HDC hDc = GetHdcOf(dc);
+    HDC hDc = wxPG_GetHDCOf(dc);
     HWND hWnd = GetHwndOf(this);
 
     wxUxThemeEngine* theme = NULL;
@@ -3787,20 +3787,30 @@ int wxPGOwnerDrawnComboBox::DoInsertItems(const wxArrayStringsAdapter& items,
                                           void **clientData,
                                           wxClientDataType type)
 {
-    unsigned int i;
-    for ( i=0; i<items.GetCount(); i++ )
+    const unsigned int count = items.GetCount();
+
+    if ( HasFlag(wxCB_SORT) )
     {
-        DoInsert(items[i], pos);
-        if ( clientData )
+        int n = pos;
+
+        for( unsigned int i = 0; i < count; ++i )
         {
-            if ( type == wxClientData_Object )
-                DoSetItemClientObject(pos, (wxClientData*)clientData[i]);
-            else
-                DoSetItemClientData(pos, clientData[i]);
+            int n = GetVListBoxComboPopup()->Append(items[i]);
+            AssignNewItemClientData(n, clientData, i, type);
         }
-        pos++;
+
+        return n;
     }
-    return pos - 1;
+    else
+    {
+        for( unsigned int i = 0; i < count; ++i, ++pos )
+        {
+            GetVListBoxComboPopup()->Insert(items[i], pos);
+            AssignNewItemClientData(pos, clientData, i, type);
+        }
+
+        return pos - 1;
+    }
 }
 #endif
 

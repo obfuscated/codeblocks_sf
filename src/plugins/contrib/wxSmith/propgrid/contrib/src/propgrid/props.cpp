@@ -89,7 +89,7 @@ wxString wxStringPropertyClass::GetValueAsString( int argFlags ) const
 {
     // If string is password and value is for visual purposes,
     // then return asterisks instead the actual string.
-    if ( (m_flags & wxPG_PROP_PASSWORD) && !(argFlags & wxPG_FULL_VALUE) )
+    if ( (m_flags & wxPG_PROP_PASSWORD) && !(argFlags & (wxPG_FULL_VALUE|wxPG_EDITABLE_VALUE)) )
         return wxString(wxChar('*'), m_value.Length());
 
     return m_value;
@@ -165,11 +165,30 @@ bool wxIntPropertyClass::SetValueFromString( const wxString& text, int argFlags 
 
     // We know it is a number, but let's still check
     // the return value.
-    if ( text.IsNumber() && text.ToLong( &value, 0 ) )
+    if ( text.IsNumber() )
     {
-        if ( m_value != value )
+        // Remove leading zeroes, so that the number is not interpreted as octal
+        wxString::const_iterator i = text.begin();
+        wxString::const_iterator iMax = text.end() - 1;  // Let's allow one, last zero though
+
+        int firstNonZeroPos = 0;
+
+        for ( ; i != iMax; i++ )
         {
-            return StdValidationProcedure(value);
+            wxChar c = *i;
+            if ( c != wxT('0') && c != wxT(' ') )
+                break;
+            firstNonZeroPos++;
+        }
+
+        wxString useText = text.substr(firstNonZeroPos, text.length() - firstNonZeroPos);
+
+        if ( useText.ToLong( &value, 0 ) )
+        {
+            if ( m_value != value )
+            {
+                return StdValidationProcedure(value);
+            }
         }
     }
     else if ( argFlags & wxPG_REPORT_ERROR )
@@ -627,10 +646,10 @@ bool wxBoolPropertyClass::SetValueFromInt( long value, int )
 
 void wxBoolPropertyClass::SetAttribute( int id, wxVariant& value )
 {
-    int ival = value.GetLong();
 #if wxPG_INCLUDE_CHECKBOX
     if ( id == wxPG_BOOL_USE_CHECKBOX )
     {
+        int ival = value.GetLong();
         if ( ival )
             m_flags |= wxPG_PROP_USE_CHECKBOX;
         else
@@ -640,6 +659,7 @@ void wxBoolPropertyClass::SetAttribute( int id, wxVariant& value )
 #endif
     if ( id == wxPG_BOOL_USE_DOUBLE_CLICK_CYCLING )
     {
+        int ival = value.GetLong();
         if ( ival )
             m_flags |= wxPG_PROP_USE_DCC;
         else
@@ -1294,7 +1314,7 @@ wxString wxFlagsPropertyClass::GetValueAsString ( int ) const
 }
 
 // Translate string into flag tokens
-bool wxFlagsPropertyClass::SetValueFromString ( const wxString& text, int )
+bool wxFlagsPropertyClass::SetValueFromString( const wxString& text, int )
 {
     if ( !m_choices.IsOk() || !GetItemCount() )
         return false;
@@ -1335,14 +1355,20 @@ bool wxFlagsPropertyClass::SetValueFromString ( const wxString& text, int )
             {
                 long flag = values[i];
                 if ( (new_flags & flag) != (m_value & flag) )
-                    ((wxPGProperty*)m_children.Item( i ))->SetFlag ( wxPG_PROP_MODIFIED );
+                {
+                    if ( m_children.size() > i )
+                        ((wxPGProperty*)m_children.Item( i ))->SetFlag( wxPG_PROP_MODIFIED );
+                }
             }
         else
             for ( i = 0; i < GetItemCount(); i++ )
             {
                 long flag = (1<<i);
                 if ( (new_flags & flag) != (m_value & flag) )
-                    ((wxPGProperty*)m_children.Item( i ))->SetFlag ( wxPG_PROP_MODIFIED );
+                {
+                    if ( m_children.size() > i )
+                    ((wxPGProperty*)m_children.Item( i ))->SetFlag( wxPG_PROP_MODIFIED );
+                }
             }
 
         DoSetValue ( new_flags );
@@ -1641,6 +1667,11 @@ wxPGVariant wxFilePropertyClass::DoGetValue() const
 
 wxString wxFilePropertyClass::GetValueAsString( int argFlags ) const
 {
+    // Always return empty string when name component is empty
+    wxString fullName = m_filename.GetFullName();
+    if ( !fullName.length() )
+        return fullName;
+
     if ( argFlags & wxPG_FULL_VALUE )
     {
         return m_filename.GetFullPath();
@@ -1734,6 +1765,9 @@ void wxFilePropertyClass::SetAttribute( int id, wxVariant& value )
     else if ( id == wxPG_FILE_SHOW_RELATIVE_PATH )
     {
         m_basePath = value.GetString();
+
+        // Make sure wxPG_FILE_SHOW_FULL_PATH is also set
+        m_flags |= wxPG_PROP_SHOW_FULL_FILENAME;
     }
     else if ( id == wxPG_FILE_INITIAL_PATH )
     {
@@ -1977,8 +2011,15 @@ bool wxArrayEditorDialog::Create( wxWindow *parent,
                                   const wxPoint& pos,
                                   const wxSize& sz )
 {
+    // On wxMAC the dialog shows incorrectly if style is not exactly wxCAPTION
+    // FIXME: This should be only a temporary fix.
+#ifdef __WXMAC__
+    int useStyle = wxCAPTION;
+#else
+    int useStyle = style;
+#endif
 
-    bool res = wxDialog::Create(parent,1,caption,pos,sz,style);
+    bool res = wxDialog::Create(parent, wxID_ANY, caption, pos, sz, useStyle);
 
     SetFont(parent->GetFont()); // To allow entering chars of the same set as the propGrid
 
