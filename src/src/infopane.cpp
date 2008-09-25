@@ -74,9 +74,21 @@ void InfoPane::Toggle(size_t i)
         page[i].indexInNB = AddPagePrivate(page[i].window, page[i].title, page[i].icon);
     else
     {
-        RemovePage(page[i].indexInNB);
+        RemovePage(GetPageIndex(page[i].window));
         page[i].indexInNB = -1;
     }
+}
+
+int InfoPane::GetPageIndexByWindow(wxWindow* win)
+{
+    for (int i=0; i < num_pages; i++)
+    {
+        if (page[i].window == win)
+        {
+            return i;
+        }
+    }
+    return -1;
 }
 
 void InfoPane::Show(size_t i)
@@ -85,9 +97,13 @@ void InfoPane::Show(size_t i)
         return;
 
     if(page[i].indexInNB == -1)
+    {
         Toggle(i);
+    }
     else
-        SetSelection(page[i].indexInNB);
+    {
+        SetSelection(GetPageIndex(page[i].window));
+    }
 }
 
 void InfoPane::Show(Logger* logger)
@@ -97,9 +113,13 @@ void InfoPane::Show(Logger* logger)
         if(page[i].logger == logger)
         {
 			if(page[i].indexInNB == -1)
+			{
 				Toggle(i);
+			}
 			else
-				SetSelection(page[i].indexInNB);
+			{
+				SetSelection(GetPageIndex(page[i].window));
+			}
 			return;
         }
     }
@@ -112,9 +132,13 @@ void InfoPane::ShowNonLogger(wxWindow* p)
         if(page[i].window == p)
         {
 			if(page[i].indexInNB == -1)
+			{
 				Toggle(i);
+			}
 			else
-				SetSelection(page[i].indexInNB);
+			{
+				SetSelection(GetPageIndex(p));
+			}
 			return;
         }
     }
@@ -123,7 +147,7 @@ void InfoPane::ShowNonLogger(wxWindow* p)
 
 void InfoPane::OnCopy(wxCommandEvent& event)
 {
-	int i = GetSelection();
+	int i = GetPageIndexByWindow(GetPage(GetSelection()));
 	if (page[i].islogger)
 	{
 		if (event.GetId() == idCopyAllToClipboard)
@@ -135,7 +159,7 @@ void InfoPane::OnCopy(wxCommandEvent& event)
 
 void InfoPane::OnClear(wxCommandEvent& event)
 {
-	int i = GetSelection();
+	int i = GetPageIndexByWindow(GetPage(GetSelection()));
 	if (page[i].islogger)
 		page[i].logger->Clear();
 }
@@ -158,7 +182,7 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
 	wxMenu* view;
     bool any_nonloggers = false;
 
-	if (page[GetSelection()].islogger)
+	if (page[GetPageIndexByWindow(GetPage(GetSelection()))].islogger)
 	{
 		view = new wxMenu;
 
