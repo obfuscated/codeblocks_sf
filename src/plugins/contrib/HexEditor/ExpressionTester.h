@@ -50,6 +50,7 @@ class ExpressionTester: public wxDialog
 		wxStaticText* StaticText1;
 		wxStaticText* StaticText3;
 		wxButton* Button2;
+		wxButton* Button3;
 		wxStaticText* StaticText4;
 		wxStaticText* m_Parsing;
 		wxTextCtrl* m_Dump;
@@ -58,6 +59,7 @@ class ExpressionTester: public wxDialog
 		//(*Identifiers(ExpressionTester)
 		static const long ID_STATICTEXT1;
 		static const long ID_TEXTCTRL1;
+		static const long ID_BUTTON3;
 		static const long ID_STATICTEXT2;
 		static const long ID_STATICTEXT3;
 		static const long ID_STATICTEXT4;
@@ -71,6 +73,7 @@ class ExpressionTester: public wxDialog
 		//(*Handlers(ExpressionTester)
 		void OnButton1Click(wxCommandEvent& event);
 		void OnButton2Click(wxCommandEvent& event);
+		void OnButton3Click(wxCommandEvent& event);
 		//*)
 
 		FileContentBase* m_Content;

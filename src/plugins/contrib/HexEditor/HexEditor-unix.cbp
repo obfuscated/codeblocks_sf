@@ -58,9 +58,12 @@
 		<Unit filename="HexEditor.cpp" />
 		<Unit filename="HexEditor.h" />
 		<Unit filename="Makefile.am" />
+		<Unit filename="SelectStoredExpressionDlg.cpp" />
+		<Unit filename="SelectStoredExpressionDlg.h" />
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxsmith/ExpressionTester.wxs" />
 		<Unit filename="wxsmith/HexEditPanel.wxs" />
+		<Unit filename="wxsmith/SelectStoredExpressionDlg.wxs" />
 		<Extensions>
 			<envvars />
 			<code_completion />
@@ -69,6 +72,7 @@
 				<resources>
 					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
 					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
+					<wxDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<lib_finder disable_auto="1" />

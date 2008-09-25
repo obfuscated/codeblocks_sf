@@ -18,7 +18,8 @@ libHexEditor_la_SOURCES = \
 	ExpressionExecutor.cpp \
 	ExpressionParser.cpp \
 	ExpressionPreprocessed.cpp \
-	ExpressionTester.cpp
+	ExpressionTester.cpp \
+	SelectStoredExpressionDlg.cpp
 
 noinst_HEADERS = \
 	FileContentBase.h \
@@ -28,12 +29,14 @@ noinst_HEADERS = \
 	ExpressionExecutor.h \
 	ExpressionParser.h \
 	ExpressionPreprocessed.h \
-	ExpressionTester.h
+	ExpressionTester.h \
+	SelectStoredExpressionDlg.h
 
 
 EXTRA_DIST = \
 	wxsmith/HexEditPanel.wxs \
 	wxsmith/ExpressionTester.wxs \
+	wxsmith/SelectStoredExpressionDlg.wxs \
 	HexEditor-unix.cbp \
 	HexEditor-win.cbp \
 	manifest.xml

@@ -87,6 +87,7 @@ class HexEditPanel: public EditorBase
         wxCheckBox* CheckBox1;
         wxBoxSizer* PreviewSizer;
         wxStaticText* m_ExpressionVal;
+        wxButton* Button3;
         wxStaticText* StaticText5;
         wxTextCtrl* m_Expression;
         wxTimer ReparseTimer;
@@ -119,6 +120,7 @@ class HexEditPanel: public EditorBase
         static const long ID_STATICTEXT13;
         static const long ID_STATICTEXT14;
         static const long ID_TEXTCTRL1;
+        static const long ID_BUTTON3;
         static const long ID_BUTTON2;
         static const long ID_STATICTEXT15;
         static const long ID_TIMER1;
@@ -142,6 +144,8 @@ class HexEditPanel: public EditorBase
         void Onm_ExpressionText(wxCommandEvent& event);
         void OnButton2Click(wxCommandEvent& event);
         void OnExpressionTextEnter(wxCommandEvent& event);
+        void OnButton3Click(wxCommandEvent& event);
+        void OnButton3Click1(wxCommandEvent& event);
         //*)
 
         typedef std::set< EditorBase* > EditorsSet;

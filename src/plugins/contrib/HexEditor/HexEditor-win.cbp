@@ -55,14 +55,14 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
-                <Unit filename="ExpressionExecutor.cpp" />
-                <Unit filename="ExpressionExecutor.h" />
-                <Unit filename="ExpressionParser.cpp" />
-                <Unit filename="ExpressionParser.h" />
-                <Unit filename="ExpressionPreprocessed.cpp" />
-                <Unit filename="ExpressionPreprocessed.h" />
-                <Unit filename="ExpressionTester.cpp" />
-                <Unit filename="ExpressionTester.h" />
+		<Unit filename="ExpressionExecutor.cpp" />
+		<Unit filename="ExpressionExecutor.h" />
+		<Unit filename="ExpressionParser.cpp" />
+		<Unit filename="ExpressionParser.h" />
+		<Unit filename="ExpressionPreprocessed.cpp" />
+		<Unit filename="ExpressionPreprocessed.h" />
+		<Unit filename="ExpressionTester.cpp" />
+		<Unit filename="ExpressionTester.h" />
 		<Unit filename="FileContentBase.cpp" />
 		<Unit filename="FileContentBase.h" />
 		<Unit filename="FileContentBuffered.cpp" />
@@ -71,7 +71,10 @@
 		<Unit filename="HexEditPanel.h" />
 		<Unit filename="HexEditor.cpp" />
 		<Unit filename="HexEditor.h" />
+		<Unit filename="SelectStoredExpressionDlg.cpp" />
+		<Unit filename="SelectStoredExpressionDlg.h" />
 		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith\SelectStoredExpressionDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
@@ -79,8 +82,11 @@
 			<wxsmith version="1">
 				<resources>
 					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
+					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
+					<wxDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
 				</resources>
 			</wxsmith>
+
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

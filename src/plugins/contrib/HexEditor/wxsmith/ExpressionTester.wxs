@@ -26,11 +26,27 @@
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Expr" member="yes">
-									<value>1 + 2 * 3</value>
-									<handler function="OnButton1Click" entry="EVT_TEXT_ENTER" />
+								<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Expr" member="yes">
+											<value>1 + 2 * 3</value>
+											<handler function="OnButton1Click" entry="EVT_TEXT_ENTER" />
+										</object>
+										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
+											<label>v</label>
+											<style>wxBU_EXACTFIT</style>
+											<handler function="OnButton3Click" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>

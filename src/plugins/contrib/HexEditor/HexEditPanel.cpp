@@ -22,6 +22,7 @@
 
 #include "HexEditPanel.h"
 #include "ExpressionTester.h"
+#include "SelectStoredExpressionDlg.h"
 
 //(*InternalHeaders(HexEditPanel)
 #include <wx/intl.h>
@@ -60,6 +61,7 @@ const long HexEditPanel::ID_STATICTEXT12 = wxNewId();
 const long HexEditPanel::ID_STATICTEXT13 = wxNewId();
 const long HexEditPanel::ID_STATICTEXT14 = wxNewId();
 const long HexEditPanel::ID_TEXTCTRL1 = wxNewId();
+const long HexEditPanel::ID_BUTTON3 = wxNewId();
 const long HexEditPanel::ID_BUTTON2 = wxNewId();
 const long HexEditPanel::ID_STATICTEXT15 = wxNewId();
 const long HexEditPanel::ID_TIMER1 = wxNewId();
@@ -144,6 +146,8 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     BoxSizer4->Add(StaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_Expression = new wxTextCtrl(this, ID_TEXTCTRL1, _("byte( @ )"), wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     BoxSizer4->Add(m_Expression, 1, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button3 = new wxButton(this, ID_BUTTON3, _("v"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
+    BoxSizer4->Add(Button3, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button2 = new wxButton(this, ID_BUTTON2, _("\?"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
     BoxSizer4->Add(Button2, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_ExpressionVal = new wxStaticText(this, ID_STATICTEXT15, _("-9999999999"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT15"));
@@ -176,6 +180,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     Connect(ID_SCROLLBAR1,wxEVT_SCROLL_CHANGED,(wxObjectEventFunction)&HexEditPanel::OnContentScroll);
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&HexEditPanel::Onm_ExpressionText);
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&HexEditPanel::OnExpressionTextEnter);
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton3Click1);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton2Click);
     Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&HexEditPanel::OnReparseTimerTrigger);
     //*)
@@ -1101,6 +1106,14 @@ void HexEditPanel::Redo()
 
 void HexEditPanel::OnSpecialKeyDown(wxKeyEvent& event)
 {
+    LogManager::Get()->DebugLog(
+        F(
+            _T("HexEditPanel::OnSpecialKeyDown: %d (%c%c%c)"),
+            (int)event.GetKeyCode(),
+            event.ControlDown() ? 'C':'c',
+            event.AltDown() ? 'A':'a',
+            event.CmdDown() ? 'M':'m' ) );
+
     if ( event.ControlDown() && !event.AltDown() )
     {
         switch ( event.GetKeyCode() )
@@ -1274,4 +1287,14 @@ void HexEditPanel::OnExpressionTextEnter(wxCommandEvent& event)
     ReparseExpression();
     RefreshStatus();
     ReparseTimer.Stop();
+}
+
+void HexEditPanel::OnButton3Click1(wxCommandEvent& event)
+{
+    SelectStoredExpressionDlg dlg( this, m_Expression->GetValue() );
+    if ( dlg.ShowModal() == wxID_OK )
+    {
+        m_Expression->SetValue( dlg.GetExpression() );
+        OnExpressionTextEnter(event);
+    }
 }

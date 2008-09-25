@@ -24,6 +24,7 @@
 
 #include "ExpressionParser.h"
 #include "ExpressionExecutor.h"
+#include "SelectStoredExpressionDlg.h"
 
 #include <globals.h>
 
@@ -35,6 +36,7 @@
 //(*IdInit(ExpressionTester)
 const long ExpressionTester::ID_STATICTEXT1 = wxNewId();
 const long ExpressionTester::ID_TEXTCTRL1 = wxNewId();
+const long ExpressionTester::ID_BUTTON3 = wxNewId();
 const long ExpressionTester::ID_STATICTEXT2 = wxNewId();
 const long ExpressionTester::ID_STATICTEXT3 = wxNewId();
 const long ExpressionTester::ID_STATICTEXT4 = wxNewId();
@@ -64,6 +66,7 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxFlexGridSizer* FlexGridSizer1;
+	wxBoxSizer* BoxSizer3;
 
 	Create(parent, wxID_ANY, _("ExpressionTester"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -73,8 +76,12 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 	FlexGridSizer1->AddGrowableRow(3);
 	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Expr:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
 	FlexGridSizer1->Add(StaticText1, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
 	m_Expr = new wxTextCtrl(this, ID_TEXTCTRL1, _("1 + 2 * 3"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	FlexGridSizer1->Add(m_Expr, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer3->Add(m_Expr, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	Button3 = new wxButton(this, ID_BUTTON3, _("v"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
+	BoxSizer3->Add(Button3, 0, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	FlexGridSizer1->Add(BoxSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Parsing:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
 	FlexGridSizer1->Add(StaticText2, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
 	m_Parsing = new wxStaticText(this, ID_STATICTEXT3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
@@ -103,6 +110,7 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 	Center();
 
 	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ExpressionTester::OnButton1Click);
+	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton3Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton2Click);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton1Click);
 	//*)
@@ -169,4 +177,14 @@ void ExpressionTester::OnButton2Click(wxCommandEvent& event)
 {
     cbMessageBox( Expression::Parser::GetHelpString() );
 
+}
+
+void ExpressionTester::OnButton3Click(wxCommandEvent& event)
+{
+    SelectStoredExpressionDlg dlg( this, m_Expr->GetValue() );
+    if ( dlg.ShowModal() == wxID_OK )
+    {
+        m_Expr->SetValue( dlg.GetExpression() );
+        OnButton1Click(event);
+    }
 }
