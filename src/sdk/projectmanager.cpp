@@ -1349,7 +1349,7 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
 
 int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets)
 {
-    wxProgressDialog progress(_("Project Manager"), _("Please wait while adding files to project..."), filelist.GetCount());
+    wxProgressDialog progress(_("Project Manager"), _("Please wait while adding files to project..."), filelist.GetCount(), Manager::Get()->GetAppFrame());
 
     if (!project)
         project = GetActiveProject();
