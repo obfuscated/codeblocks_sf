@@ -72,8 +72,12 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
             wxsPropertyContainer* Container = PGContainers[i];
             if ( !PGEnteries[i]->PGRead(Container,this,ID,PGIndexes[i]) )
             {
-                Manager::Get()->GetLogManager()->DebugLogError(
-                    _T("wxSmith: Couldn't read value from wxsPropertyGridManager"));
+                wxString ErrorMsg;
+                ErrorMsg << _T("wxSmith: Couldn't read value from wxsPropertyGridManager")
+                         << _T(", propgrid name=") << PGEnteries[i]->GetPGName()
+                         << _T(", date name=")     << PGEnteries[i]->GetDataName()
+                         << _T(", type name=")     << PGEnteries[i]->GetTypeName();
+                Manager::Get()->GetLogManager()->DebugLogError(ErrorMsg);
             }
 
             // Notifying about property change

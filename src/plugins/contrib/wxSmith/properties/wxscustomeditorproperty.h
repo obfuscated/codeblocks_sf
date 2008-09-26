@@ -34,7 +34,7 @@ class wxsCustomEditorProperty : public wxsProperty
          */
         virtual bool ParseStr(wxsPropertyContainer* Object,wxString Value) { return false; }
 
-        /** \brief Checkig if this property is able to parse string */
+        /** \brief Checking if this property is able to parse string */
         virtual bool CanParseStr() { return false; }
 
     private:
