@@ -1299,8 +1299,12 @@ void wxPageContainer::DoDeletePage(size_t page)
 		m_iActivePage -= 1;
 	}else if (m_iActivePage == (int)page){
 		m_iActivePage = GetPreviousSelection();
-		//PopPageHistory(m_iActivePage);
- 	}
+		//if we delete the last two notebooks previous selection can also be the same page as m_iActivePage
+        while (m_iActivePage >= (int)page){
+            PopPageHistory(m_iActivePage);
+            m_iActivePage = GetPreviousSelection();
+        }
+    }
 
 	m_pagesInfoVec.RemoveAt(page);
 

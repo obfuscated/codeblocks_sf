@@ -284,10 +284,14 @@ bool InfoPane::DeleteLogger(Logger* l)
         {
         	int index = Manager::Get()->GetLogManager()->FindIndex(l);
         	if (index != -1)
+        	{
 				Manager::Get()->GetLogManager()->DeleteLog(index);
+        	}
             
             if (page[i].indexInNB != -1)
-				DeletePage(page[i].indexInNB);
+            {
+				DeletePage(GetPageIndex(page[i].window));
+            }
             
             page[i] = Page();
             return true;
@@ -304,9 +308,11 @@ bool InfoPane::RemoveNonLogger(wxWindow* p)
         if(page[i].window == p)
         {
             if(page[i].islogger)
+            {
                 cbThrow(_T("Bad API usage. Shame on you."));
+            }
 
-            RemovePage(page[i].indexInNB);
+            RemovePage(GetPageIndex(page[i].window));
             page[i] = Page();
             return true;
         }
@@ -322,10 +328,14 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
         if(page[i].window == p)
         {
             if(page[i].islogger)
+            {
                 cbThrow(_T("Bad API usage. Shame on you."));
+            }
 
 			if (page[i].indexInNB != -1)
-				DeletePage(page[i].indexInNB);
+			{
+				DeletePage(GetPageIndex(page[i].window));
+			}
             page[i] = Page();
             return true;
         }
