@@ -30,6 +30,9 @@ ValgrindListLog::ValgrindListLog(const wxArrayString& Titles, wxArrayInt& Widths
 ValgrindListLog::~ValgrindListLog()
 {
 	//dtor
+    if (control && !Manager::IsAppShuttingDown())
+    control->RemoveEventHandler(this);
+
 }
 
 
