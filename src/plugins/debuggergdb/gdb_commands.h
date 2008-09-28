@@ -20,6 +20,8 @@
 #include "configmanager.h"
 #include <globals.h>
 #include <manager.h>
+#include <editormanager.h>
+#include <cbeditor.h>
 #include <scriptingmanager.h>
 #include <sqplus.h>
 #include <infowindow.h>
