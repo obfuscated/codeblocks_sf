@@ -30,12 +30,11 @@ void ThreadSearchViewManagerMessagesNotebook::AddViewToManager()
 	if ( m_IsManaged == false )
 	{
 		// Creates log image
-		wxBitmap bmp;
 		wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-		bmp = cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG);
+		wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("findf.png"), wxBITMAP_TYPE_PNG));
 
 		// Adds log to C::B Messages notebook
-		CodeBlocksLogEvent evtShow(cbEVT_ADD_LOG_WINDOW, m_pThreadSearchView, wxString(_T("Thread search")), &bmp);
+		CodeBlocksLogEvent evtShow(cbEVT_ADD_LOG_WINDOW, m_pThreadSearchView, wxString(_T("Thread search")), bmp);
 		Manager::Get()->ProcessEvent(evtShow);
 
 		CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pThreadSearchView);
