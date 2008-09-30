@@ -42,7 +42,7 @@ namespace
         // the code becomes non cross-platform
 
         wxString res;
-        res.Format( _T("%f"), value );
+        res.Printf( _T("%f"), value );
         res.Replace( _T(","), _T(".") );
         return res;
     }
