@@ -160,6 +160,7 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T(""), _T("no-batch-window-close"),  _T("do not auto-close log window when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T(""), _T("batch-build-notify"),  _T("show message when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_OPTION, _T(""), _T("script"),  _T("execute script file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, _T(""), _T("file"),  _T("open file and optionally jump to specific line (file[:line])"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
@@ -941,6 +942,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     m_Clean = parser.Found(_T("clean"));
                     parser.Found(_T("target"), &m_BatchTarget);
                     parser.Found(_T("script"), &m_Script);
+                    parser.Found(_T("file"), &m_AutoFile);
                     // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
                     m_Batch = m_Build || m_ReBuild || m_Clean;
 
@@ -990,6 +992,33 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
         frame->Open(s_DelayedFilesToOpen[i], true);
     }
     s_DelayedFilesToOpen.Clear();
+    
+    // --file foo.cpp[:line]
+    if (!m_AutoFile.IsEmpty())
+    {
+    	wxString linePart;
+    	long linePos = m_AutoFile.Last(_T(':'));
+    	if (linePos != wxNOT_FOUND)
+    	{
+			linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);
+			m_AutoFile.Remove(linePos);
+    	}
+    	
+//    	Manager::Get()->GetLogManager()->Log(m_AutoFile);
+//    	Manager::Get()->GetLogManager()->Log(linePart);
+    	
+    	if (frame->Open(m_AutoFile, false) && linePos != wxNOT_FOUND)
+		{
+			long line;
+			if (linePart.ToLong(&line))
+			{
+				EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(Manager::Get()->GetEditorManager()->GetEditorsCount() - 1);
+//				Manager::Get()->GetLogManager()->Log(F(_T("%p"), eb));
+				if (eb)
+					eb->GotoLine(line - 1, true);
+			}
+    	}
+    }
 }
 
 

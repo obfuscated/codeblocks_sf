@@ -77,6 +77,7 @@ class CodeBlocksApp : public wxApp
         wxString m_Prefix; // --prefix switch
         wxString m_BatchTarget;
         wxString m_Script;
+        wxString m_AutoFile; // --file foo.cpp[:line]
 
         wxDialog* m_pBatchBuildDialog;
         MainFrame* m_Frame;
