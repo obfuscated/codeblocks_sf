@@ -139,29 +139,52 @@ DDEServer* g_DDEServer = 0L;
 #if wxUSE_CMDLINE_PARSER
 const wxCmdLineEntryDesc cmdLineDesc[] =
 {
-    { wxCMD_LINE_SWITCH, _T("h"), _T("help"), _T("show this help message"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-    { wxCMD_LINE_SWITCH, _T(""), _T("safe-mode"), _T("load in safe mode (all plugins will be disabled)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("h"),  _T("help"),                  _T("show this help message"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_SWITCH, _T("?"),  _T("?"),                     _T("show this help message (alias for help)"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("safe-mode"),             _T("load in safe mode (all plugins will be disabled)"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
 #ifdef __WXMSW__
-    { wxCMD_LINE_SWITCH, _T("na"), _T("no-check-associations"), _T("don't perform any association checks"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T("nd"), _T("no-dde"), _T("don't start a DDE server"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("na"), _T("no-check-associations"), _T("don't perform any association checks"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("nd"), _T("no-dde"),                _T("don't start a DDE server"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
 #endif
-    { wxCMD_LINE_SWITCH, _T("ns"), _T("no-splash-screen"), _T("don't display a splash screen while loading"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T("d"), _T("debug-log"), _T("display application's debug log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T("nc"), _T("no-crash-handler"), _T("don't use the crash handler (useful for debugging C::B)"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, _T(""), _T("prefix"),  _T("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, _T("p"), _T("personality"),  _T("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, _T(""), _T("no-log"),  _T("turn off the application log"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T(""), _T("log-to-file"),  _T("redirect application log to a file"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, _T(""), _T("profile"),  _T("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, _T(""), _T("rebuild"), _T("clean and then build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T(""), _T("build"), _T("just build the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T(""), _T("clean"), _T("clean the project/workspace"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, _T(""), _T("target"),  _T("the target for the batch build"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_SWITCH, _T(""), _T("no-batch-window-close"),  _T("do not auto-close log window when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_SWITCH, _T(""), _T("batch-build-notify"),  _T("show message when batch build is done"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
-    { wxCMD_LINE_OPTION, _T(""), _T("script"),  _T("execute script file"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, _T(""), _T("file"),  _T("open file and optionally jump to specific line (file[:line])"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_PARAM, _T(""), _T(""),  _T("filename(s)"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
+    { wxCMD_LINE_SWITCH, _T("ns"), _T("no-splash-screen"),      _T("don't display a splash screen while loading"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("d"),  _T("debug-log"),             _T("display application's debug log"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T("nc"), _T("no-crash-handler"),      _T("don't use the crash handler (useful for debugging C::B)"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, _T(""),   _T("prefix"),                _T("the shared data dir prefix"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, _T("p"),  _T("personality"),           _T("the personality to use: \"ask\" or <personality-name>"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("no-log"),                _T("turn off the application log"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("log-to-file"),           _T("redirect application log to a file"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, _T(""),   _T("profile"),               _T("synonym to personality"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("rebuild"),               _T("clean and then build the project/workspace"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("build"),                 _T("just build the project/workspace"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("clean"),                 _T("clean the project/workspace"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, _T(""),   _T("target"),                _T("the target for the batch build"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("no-batch-window-close"), _T("do not auto-close log window when batch build is done"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_SWITCH, _T(""),   _T("batch-build-notify"),    _T("show message when batch build is done"),
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
+    { wxCMD_LINE_OPTION, _T(""),   _T("script"),                _T("execute script file"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, _T(""),   _T("file"),                  _T("open file and optionally jump to specific line (file[:line])"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_PARAM,  _T(""),   _T(""),                      _T("filename(s)"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
 };
 #endif // wxUSE_CMDLINE_PARSER
@@ -992,7 +1015,7 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
         frame->Open(s_DelayedFilesToOpen[i], true);
     }
     s_DelayedFilesToOpen.Clear();
-    
+
     // --file foo.cpp[:line]
     if (!m_AutoFile.IsEmpty())
     {
@@ -1003,10 +1026,10 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 			linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);
 			m_AutoFile.Remove(linePos);
     	}
-    	
+
 //    	Manager::Get()->GetLogManager()->Log(m_AutoFile);
 //    	Manager::Get()->GetLogManager()->Log(linePart);
-    	
+
     	if (frame->Open(m_AutoFile, false) && linePos != wxNOT_FOUND)
 		{
 			long line;
