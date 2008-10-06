@@ -1761,6 +1761,17 @@ void cbEditor::ToggleFoldBlockFromLine(int line)
 void cbEditor::GotoLine(int line, bool centerOnScreen)
 {
     cbStyledTextCtrl* control = GetControl();
+
+    // Make sure the line is not folded. This is done before moving to that
+    // line because folding may change the lines layout.
+	control->EnsureVisible(line);
+
+	// If the line or the following is a fold point it will be unfolded, in this way
+	// when the line is a function declaration (or only contains the opening brace of it [yes, that happens sometimes] )
+	// the body is shown.
+	DoFoldLine(line,0);
+	DoFoldLine(line+1,0);
+
     if (centerOnScreen)
     {
         int onScreen = control->LinesOnScreen() >> 1;
@@ -1768,7 +1779,6 @@ void cbEditor::GotoLine(int line, bool centerOnScreen)
         control->GotoLine(line + onScreen);
     }
     control->GotoLine(line);
-    UnfoldBlockFromLine(line); // make sure it's visible (not folded)
 }
 
 bool cbEditor::AddBreakpoint(int line, bool notifyDebugger)
