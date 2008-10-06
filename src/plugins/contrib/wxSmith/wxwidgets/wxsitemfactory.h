@@ -33,6 +33,12 @@
 
 #include <configmanager.h>
 
+#if defined(__WXMSW__) && defined(LoadImage)
+    // Fix Windows winuser.h Header define of LoadImage.
+    #undef LoadImage
+#endif
+
+
 class wxsItem;
 class wxsItemResData;
 

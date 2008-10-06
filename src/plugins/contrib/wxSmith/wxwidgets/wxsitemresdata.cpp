@@ -33,6 +33,12 @@
 #include <wx/clipbrd.h>
 #include <tinyxml/tinywxuni.h>
 
+#if defined(__WXMSW__) && defined(LoadImage)
+    // Fix Windows winuser.h Header define of LoadImage.
+    #undef LoadImage
+#endif
+
+
 using namespace wxsFlags;
 
 namespace

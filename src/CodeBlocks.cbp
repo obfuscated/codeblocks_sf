@@ -369,7 +369,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-include sdk.h" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="include" />
 				</Compiler>
@@ -387,7 +386,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-include sdk.h" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add directory="include" />
 					<Add directory="include\scripting\include" />
