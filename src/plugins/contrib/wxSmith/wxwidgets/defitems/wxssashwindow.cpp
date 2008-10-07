@@ -60,12 +60,11 @@ wxsSashWindow::wxsSashWindow(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsSashWindow::OnBuildPreview(wxWindow* Parent,long Flags) {
-wxSashWindow    *swin;
-
+wxObject* wxsSashWindow::OnBuildPreview(wxWindow* Parent,long Flags)
+{
 // make a thing to display
 
-    swin = new wxSashWindow(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    wxSashWindow *swin = new wxSashWindow(Parent,GetId(),Pos(Parent),Size(Parent),Style());
     SetupWindow(swin, Flags);
 
 // for now, a sash on all edges
@@ -86,37 +85,33 @@ wxSashWindow    *swin;
 
 //------------------------------------------------------------------------------
 
-void wxsSashWindow::OnBuildCreatingCode() {
-wxString    vname;
+void wxsSashWindow::OnBuildCreatingCode()
+{
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+            AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
 
-    if (GetLanguage() == wxsCPP) {
-        AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-        BuildSetupWindowCode();
-        AddChildrenCode();
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
 
-        vname = GetVarName();
-        if (mTop)    Codef(_T("%s->SetSashVisible(wxSASH_TOP,     true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_TOP,    false);\n"), vname.c_str());
+            Codef( _T("%ASetSashVisible(wxSASH_TOP,    %b);\n"), mTop);
+            Codef( _T("%ASetSashVisible(wxSASH_BOTTOM, %b);\n"), mBottom);
+            Codef( _T("%ASetSashVisible(wxSASH_LEFT,   %b);\n"), mLeft);
+            Codef( _T("%ASetSashVisible(wxSASH_RIGHT,  %b);\n"), mRight);
 
-        if (mBottom) Codef(_T("%s->SetSashVisible(wxSASH_BOTTOM,  true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_BOTTOM, false);\n"), vname.c_str());
+            break;
 
-        if (mLeft)   Codef(_T("%s->SetSashVisible(wxSASH_LEFT,    true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_LEFT,   false);\n"), vname.c_str());
-
-        if (mRight)  Codef(_T("%s->SetSashVisible(wxSASH_RIGHT,   true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_RIGHT,  false);\n"), vname.c_str());
+        default:
+            wxsCodeMarks::Unknown(_T("wxsSashWindow::OnBuildCreatingCode"),GetLanguage());
     }
-    else {
-        wxsCodeMarks::Unknown(_T("wxsSashWindow::OnBuildCreatingCode"),GetLanguage());
-    };
 }
 
 //------------------------------------------------------------------------------
 
-void wxsSashWindow::OnEnumContainerProperties(long Flags) {
-
+void wxsSashWindow::OnEnumContainerProperties(long Flags)
+{
     WXS_BOOL(wxsSashWindow, mTop,    _("Drag Top"),    _("dragtop"),    true);
     WXS_BOOL(wxsSashWindow, mBottom, _("Drag Bottom"), _("dragbottom"), true);
     WXS_BOOL(wxsSashWindow, mLeft,   _("Drag Left"),   _("dragleft"),   true);
@@ -125,9 +120,7 @@ void wxsSashWindow::OnEnumContainerProperties(long Flags) {
 
 //------------------------------------------------------------------------------
 
-bool wxsSashWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage) {
-    // TODO: Allow more tools
-
-
+bool wxsSashWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+{
     return true;
 }

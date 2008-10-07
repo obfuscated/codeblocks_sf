@@ -50,19 +50,22 @@ wxsStopWatch::wxsStopWatch(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsStopWatch::OnBuildCreatingCode() {
+void wxsStopWatch::OnBuildCreatingCode()
+{
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+            AddHeader(_T("<wx/stopwatch.h>"),GetInfo().ClassName, 0);
+            BuildSetupWindowCode();
+            break;
 
-    if (GetLanguage() == wxsCPP) {
-        AddHeader(_T("<wx/stopwatch.h>"),GetInfo().ClassName, 0);
-        BuildSetupWindowCode();
+        default:
+            wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"),GetLanguage());
     }
-    else {
-        wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"),GetLanguage());
-    };
 }
 
 //------------------------------------------------------------------------------
 
-void wxsStopWatch::OnEnumToolProperties(long Flags) {
-
+void wxsStopWatch::OnEnumToolProperties(long Flags)
+{
 }

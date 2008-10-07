@@ -19,7 +19,6 @@
 
 // TODO: Enable this item as soon as linux version is stable enough
 
-#define ITEM_DISABLED
 
 
 /*
@@ -29,7 +28,6 @@
 
 #include <wx/glcanvas.h>
 */
-
 
 #include "wxsglcanvas.h"
 
@@ -51,8 +49,6 @@ namespace
 {
 
 
-#ifndef ITEM_DISABLED
-
     wxsRegisterItem<wxsGLCanvas> Reg(
         _T("GLCanvas"),                 // Class name
         wxsTWidget,                     // Item type
@@ -60,17 +56,6 @@ namespace
         75,                             // Priority in palette
         false);                         // We do not allow this item inside XRC files
 
-#else
-
-    // Create dummy struct to prevent compilation errors
-    struct dummy
-    {
-        wxsItemInfo Info;
-    };
-
-    dummy Reg;
-
-#endif
 
     WXS_ST_BEGIN(wxsGLCanvasStyles,_T(""))
         WXS_ST_DEFAULTS()
@@ -93,87 +78,149 @@ wxsGLCanvas::wxsGLCanvas(wxsItemResData* Data):
         wxsGLCanvasStyles)
 {
 
-    mInternalContext = true;
-    mContextVar      = true;
-    mContextVarName  = _("ContextRC");
+//    mInternalContext = true;
+//    mContextVar      = true;
+//    mContextVarName  = _T("ContextRC");
     mRGBA            = true;
-    mBufferSize      = 32;
+    mBufferSize      = 0;
     mLevel           = 0;
     mDoubleBuffer    = true;
     mStereo          = false;
     mAuxBuffers      = 0;
-    mMinRed          = 8;
-    mMinGreen        = 8;
-    mMinBlue         = 8;
-    mMinAlpha        = 8;
-    mDepthSize       = 32;
-    mStencilSize     = 32;
-    mMinAccumRed     = 8;
-    mMinAccumGreen   = 8;
-    mMinAccumBlue    = 8;
-    mMinAccumAlpha   = 8;
-    }
+    mMinRed          = 0;
+    mMinGreen        = 0;
+    mMinBlue         = 0;
+    mMinAlpha        = 0;
+    mDepthSize       = 16;
+    mStencilSize     = 0;
+    mMinAccumRed     = 0;
+    mMinAccumGreen   = 0;
+    mMinAccumBlue    = 0;
+    mMinAccumAlpha   = 0;
+}
 
 //------------------------------------------------------------------------------
 
-void wxsGLCanvas::OnBuildCreatingCode() {
-wxString    vname;
-wxString    aname;
-wxString    dtext;
+void wxsGLCanvas::OnBuildCreatingCode()
+{
 
-    vname = GetVarName();
-    aname = vname + _("Attrib");
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/glcanvas.h>"), GetInfo().ClassName, 0);
 
-    if (GetLanguage() == wxsCPP) {
-        AddHeader(_T("<wx/glcanvas.h>"), GetInfo().ClassName, 0);
+            // Generate unique name for attributes variable
+            wxString aname = GetCoderContext()->GetUniqueName( _T("GLCanvasAttribuets") );
 
-        Codef( _T("wxGLContext* ") + mContextVarName + _T(";\n") );
+            // Generate attributes array
+            Codef( _T("int %v[] = {\n" ), aname.c_str() );
 
-        Codef( _T( "int " ) + aname + _T("[] = {\n") );
-        Codef( _T("\tWX_GL_RGBA,            %d,\n"), (mRGBA ? 1 : 0)            );
-        Codef( _T("\tWX_GL_BUFFER_SIZE,     %d,\n"), mBufferSize                );
-        Codef( _T("\tWX_GL_LEVEL,           %d,\n"), mLevel                     );
-        Codef( _T("\tWX_GL_DOUBLEBUFFER,    %d,\n"), (mDoubleBuffer ? 1 : 0)    );
-        Codef( _T("\tWX_GL_STEREO,          %d,\n"), (mStereo ? 1 : 0)          );
-        Codef( _T("\tWX_GL_AUX_BUFFERS,     %d,\n"), mAuxBuffers                );
-        Codef( _T("\tWX_GL_MIN_RED,         %d,\n"), mMinRed                    );
-        Codef( _T("\tWX_GL_MIN_GREEN,       %d,\n"), mMinGreen                  );
-        Codef( _T("\tWX_GL_MIN_BLUE,        %d,\n"), mMinBlue                   );
-        Codef( _T("\tWX_GL_MIN_ALPHA,       %d,\n"), mMinAlpha                  );
-        Codef( _T("\tWX_GL_DEPTH_SIZE,      %d,\n"), mDepthSize                 );
-        Codef( _T("\tWX_GL_STENCIL_SIZE,    %d,\n"), mStencilSize               );
-        Codef( _T("\tWX_GL_MIN_ACCUM_RED,   %d,\n"), mMinAccumRed               );
-        Codef( _T("\tWX_GL_MIN_ACCUM_GREEN, %d,\n"), mMinAccumGreen             );
-        Codef( _T("\tWX_GL_MIN_ACCUM_BLUE,  %d,\n"), mMinAccumBlue              );
-        Codef( _T("\tWX_GL_MIN_ACCUM_ALPHA, %d,\n"), mMinAccumAlpha             );
-        Codef( _T("\t0, 0 };\n") );
+            if ( mRGBA )
+            {
+                Codef( _T("\tWX_GL_RGBA,\n") );
+            }
 
-        if (mInternalContext) {
-            Codef(_T("%C(%W, %I, %P, %S, %T, %N, %s);\n"),aname.c_str());
-            if (mContextVar) {
-                Codef(_T("%s = %s->GetContext();\n"), mContextVarName.c_str(), vname.c_str());
-            };
+            if ( !mRGBA && mBufferSize > 0 )
+            {
+                Codef( _T("\tWX_GL_BUFFER_SIZE,     %d,\n"), mBufferSize );
+            }
+
+            if ( mLevel )
+            {
+                Codef( _T("\tWX_GL_LEVEL,           %d,\n"), mLevel );
+            }
+
+            if ( mDoubleBuffer )
+            {
+                Codef( _T("\tWX_GL_DOUBLEBUFFER,\n") );
+            }
+
+            if ( mStereo )
+            {
+                Codef( _T("\tWX_GL_STEREO,\n") );
+            }
+
+            if ( mAuxBuffers > 0 )
+            {
+                Codef( _T("\tWX_GL_AUX_BUFFERS,     %d,\n"), mAuxBuffers );
+            }
+
+            if ( mMinRed > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_RED,         %d,\n"), mMinRed );
+            }
+
+            if ( mMinGreen > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_GREEN,       %d,\n"), mMinGreen );
+            }
+
+            if ( mMinBlue > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_BLUE,        %d,\n"), mMinBlue );
+            }
+
+            if ( mMinAlpha > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_ALPHA,       %d,\n"), mMinAlpha );
+            }
+
+            if ( mDepthSize >= 0 )
+            {
+                int size = ( mDepthSize <= 16 ) ? 16 : 32;
+                Codef( _T("\tWX_GL_DEPTH_SIZE,      %d,\n"), size );
+            }
+
+            if ( mStencilSize >= 0 )
+            {
+                Codef( _T("\tWX_GL_STENCIL_SIZE,    %d,\n"), mStencilSize );
+            }
+
+            if ( mMinAccumRed > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_ACCUM_RED,   %d,\n"), mMinAccumRed );
+            }
+
+            if ( mMinAccumGreen > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_ACCUM_GREEN, %d,\n"), mMinAccumGreen );
+            }
+
+            if ( mMinAccumBlue > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_ACCUM_BLUE,  %d,\n"), mMinAccumBlue );
+            }
+
+            if ( mMinAccumAlpha > 0 )
+            {
+                Codef( _T("\tWX_GL_MIN_ACCUM_ALPHA, %d,\n"), mMinAccumAlpha );
+            }
+
+            // We padd the attributes table with two zeros instead of one
+            // just to be sure that messy code (ours or from wxWidgets)
+            // don't crash because of lack of second argument
+            Codef( _T("\t0, 0 };\n") );
+
+            // Now we can create our window
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N, %v);\n"),aname.c_str());
+
+            BuildSetupWindowCode();
+            break;
         }
-        else {
-            Codef(_T("%C(%W, %I, %s, %P, %S, %T, %N);\n"),aname.c_str());
-            if (mContextVar) {
-                Codef(_T("%s = new wxGLContext(%s);\n"), mContextVarName.c_str(), vname.c_str());
-                Codef(_T("%s->SetCurrent(*%s);\n"), mContextVarName.c_str(), vname.c_str());
-            };
-        };
 
-        BuildSetupWindowCode();
-
-    }
-    else {
-        wxsCodeMarks::Unknown(_T("wxsGLCanvas::OnBuildCreatingCode"),GetLanguage());
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsGLCanvas::OnBuildCreatingCode"),GetLanguage());
+        }
     };
 }
 
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsGLCanvas::OnBuildPreview(wxWindow* Parent, long Flags) {
+wxObject* wxsGLCanvas::OnBuildPreview(wxWindow* Parent, long Flags)
+{
 
 // there is a problem importing the OpenGL DLL into this designer DLL
 // so ...
@@ -192,38 +239,35 @@ wxGLCanvas  *gc;
     return gc;
 */
 
-wxPanel     *gc;
-
-    gc = new wxPanel(Parent, GetId(),Pos(Parent),Size(Parent),Style());
+    wxPanel* gc = new wxPanel(Parent, GetId(),Pos(Parent),Size(Parent),Style());
     SetupWindow(gc, Flags);
     return gc;
 }
 
 //------------------------------------------------------------------------------
 
-void wxsGLCanvas::OnEnumWidgetProperties(long Flags) {
-
-    mContextVarName = GetVarName() + _("RC");
-
-    WXS_BOOL(wxsGLCanvas, mInternalContext, _("Use Internal Context"), _T("mInternalContext"), true)
-    WXS_BOOL(wxsGLCanvas, mContextVar,      _("Declare Context"),      _T("mContextVar"),      true)
-
-    WXS_SHORT_STRING(wxsGLCanvas, mContextVarName, _("Context Var Name"), _T("mContextVarName"),  mContextVarName, true)
-
-    WXS_BOOL(wxsGLCanvas, mRGBA,          _("Use True Color"),               _T("mRGBA"),         true)
-    WXS_LONG(wxsGLCanvas, mBufferSize,    _("Bits for buffer "),             _T("mBufferSize"),   32)
+void wxsGLCanvas::OnEnumWidgetProperties(long Flags)
+{
+//    mContextVarName = GetVarName() + _("RC");
+//
+//    WXS_BOOL(wxsGLCanvas, mInternalContext, _("Use Internal Context"), _T("mInternalContext"), true)
+//    WXS_BOOL(wxsGLCanvas, mContextVar,      _("Declare Context"),      _T("mContextVar"),      true)
+//
+//    WXS_SHORT_STRING(wxsGLCanvas, mContextVarName, _("Context Var Name"), _T("mContextVarName"),  mContextVarName, true)
+    WXS_BOOL(wxsGLCanvas, mRGBA,          _("Use True Color"),               _T("mRGBA"),          true)
+    WXS_LONG(wxsGLCanvas, mBufferSize,    _("Bits for buffer "),             _T("mBufferSize"),    0)
     WXS_LONG(wxsGLCanvas, mLevel,         _("Main Buffer"),                  _T("mLevel"),         0)
-    WXS_BOOL(wxsGLCanvas, mDoubleBuffer,  _("Use doublebuffer"),             _T("mDoubleBuffer"), true)
-    WXS_BOOL(wxsGLCanvas, mStereo,        _("Stereoscopic display"),         _T("mStereo"),       false)
+    WXS_BOOL(wxsGLCanvas, mDoubleBuffer,  _("Use doublebuffer"),             _T("mDoubleBuffer"),  true)
+    WXS_BOOL(wxsGLCanvas, mStereo,        _("Stereoscopic display"),         _T("mStereo"),        false)
     WXS_LONG(wxsGLCanvas, mAuxBuffers,    _("Auxiliary buffers count"),      _T("mAuxBuffers"),    0)
-    WXS_LONG(wxsGLCanvas, mMinRed,        _("Red color bits"),               _T("mMinRed"),        8)
-    WXS_LONG(wxsGLCanvas, mMinGreen,      _("Green color bits"),             _T("mMinGreen"),      8)
-    WXS_LONG(wxsGLCanvas, mMinBlue,       _("Blue color bits"),              _T("mMinBlue"),       8)
-    WXS_LONG(wxsGLCanvas, mMinAlpha,      _("Alpha bits"),                   _T("mMinAlpha"),      8)
-    WXS_LONG(wxsGLCanvas, mDepthSize,     _("Bits for Z-buffer (0,16,32)"),  _T("mDepthSize"),    32)
-    WXS_LONG(wxsGLCanvas, mStencilSize,   _("Bits for stencil buffer "),     _T("mStencilSize"),  32)
-    WXS_LONG(wxsGLCanvas, mMinAccumRed,   _("Accumulator Red color bits"),   _T("mMinAccumRed"),   8)
-    WXS_LONG(wxsGLCanvas, mMinAccumGreen, _("Accumulator Green color bits"), _T("mMinAccumGreen"), 8)
-    WXS_LONG(wxsGLCanvas, mMinAccumBlue,  _("Accumulator Blue color bits"),  _T("mMinAccumBlue"),  8)
-    WXS_LONG(wxsGLCanvas, mMinAccumAlpha, _("Accumulator Alpha bits"),       _T("mMinAccumAlpha"), 8)
+    WXS_LONG(wxsGLCanvas, mMinRed,        _("Red color bits"),               _T("mMinRed"),        0)
+    WXS_LONG(wxsGLCanvas, mMinGreen,      _("Green color bits"),             _T("mMinGreen"),      0)
+    WXS_LONG(wxsGLCanvas, mMinBlue,       _("Blue color bits"),              _T("mMinBlue"),       0)
+    WXS_LONG(wxsGLCanvas, mMinAlpha,      _("Alpha bits"),                   _T("mMinAlpha"),      0)
+    WXS_LONG(wxsGLCanvas, mDepthSize,     _("Bits for Z-buffer (0,16,32)"),  _T("mDepthSize"),     0)
+    WXS_LONG(wxsGLCanvas, mStencilSize,   _("Bits for stencil buffer "),     _T("mStencilSize"),   0)
+    WXS_LONG(wxsGLCanvas, mMinAccumRed,   _("Accumulator Red color bits"),   _T("mMinAccumRed"),   0)
+    WXS_LONG(wxsGLCanvas, mMinAccumGreen, _("Accumulator Green color bits"), _T("mMinAccumGreen"), 0)
+    WXS_LONG(wxsGLCanvas, mMinAccumBlue,  _("Accumulator Blue color bits"),  _T("mMinAccumBlue"),  0)
+    WXS_LONG(wxsGLCanvas, mMinAccumAlpha, _("Accumulator Alpha bits"),       _T("mMinAccumAlpha"), 0)
 }

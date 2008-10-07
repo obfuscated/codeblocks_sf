@@ -67,12 +67,11 @@ wxsSashLayoutWindow::wxsSashLayoutWindow(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsSashLayoutWindow::OnBuildPreview(wxWindow* Parent,long Flags) {
-wxSashLayoutWindow    *swin;
-
+wxObject* wxsSashLayoutWindow::OnBuildPreview(wxWindow* Parent,long Flags)
+{
 // make a thing to display
 
-    swin = new wxSashLayoutWindow(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    wxSashLayoutWindow* swin = new wxSashLayoutWindow(Parent,GetId(),Pos(Parent),Size(Parent),Style());
     SetupWindow(swin, Flags);
 
 // for now, a sash on all edges
@@ -107,50 +106,45 @@ wxSashLayoutWindow    *swin;
 
 void wxsSashLayoutWindow::OnBuildCreatingCode()
 {
-wxString    vname;
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+            AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
+            AddHeader(_T("<wx/laywin.h>"), GetInfo().ClassName, 0);
 
-    if (GetLanguage() == wxsCPP) {
-        AddHeader(_T("<wx/sashwin.h>"),GetInfo().ClassName, 0);
-        AddHeader(_T("<wx/laywin.h>"), GetInfo().ClassName, 0);
-        Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
-        BuildSetupWindowCode();
-        AddChildrenCode();
+            Codef(_T("%C(%W, %I, %P, %S, %T, %N);\n"));
+            BuildSetupWindowCode();
+            AddChildrenCode();
 
-        vname = GetVarName();
-        if (mTop)    Codef(_T("%s->SetSashVisible(wxSASH_TOP,     true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_TOP,    false);\n"), vname.c_str());
+            Codef( _T("%ASetSashVisible(wxSASH_TOP,    %b);\n"), mTop);
+            Codef( _T("%ASetSashVisible(wxSASH_BOTTOM, %b);\n"), mBottom);
+            Codef( _T("%ASetSashVisible(wxSASH_LEFT,   %b);\n"), mLeft);
+            Codef( _T("%ASetSashVisible(wxSASH_RIGHT,  %b);\n"), mRight);
 
-        if (mBottom) Codef(_T("%s->SetSashVisible(wxSASH_BOTTOM,  true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_BOTTOM, false);\n"), vname.c_str());
+            if      (mAlign == wxLAYOUT_TOP)    Codef( _T("%ASetAlignment(wxLAYOUT_TOP);\n"));
+            else if (mAlign == wxLAYOUT_BOTTOM) Codef( _T("%ASetAlignment(wxLAYOUT_BOTTOM);\n"));
+            else if (mAlign == wxLAYOUT_LEFT)   Codef( _T("%ASetAlignment(wxLAYOUT_LEFT);\n"));
+            else if (mAlign == wxLAYOUT_RIGHT)  Codef( _T("%ASetAlignment(wxLAYOUT_RIGHT);\n"));
 
-        if (mLeft)   Codef(_T("%s->SetSashVisible(wxSASH_LEFT,    true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_LEFT,   false);\n"), vname.c_str());
+            if (mOrient == wxLAYOUT_HORIZONTAL) Codef(_T("%ASetOrientation(wxLAYOUT_HORIZONTAL);\n"));
+            else                                Codef(_T("%ASetOrientation(wxLAYOUT_VERTICAL);\n"));
 
-        if (mRight)  Codef(_T("%s->SetSashVisible(wxSASH_RIGHT,   true);\n"), vname.c_str());
-        else         Codef(_T("%s->SetSashVisible(wxSASH_RIGHT,  false);\n"), vname.c_str());
+            break;
 
-        if      (mAlign == wxLAYOUT_TOP)    Codef(_T("%s->SetAlignment(wxLAYOUT_TOP);\n"),    vname.c_str());
-        else if (mAlign == wxLAYOUT_BOTTOM) Codef(_T("%s->SetAlignment(wxLAYOUT_BOTTOM);\n"), vname.c_str());
-        else if (mAlign == wxLAYOUT_LEFT)   Codef(_T("%s->SetAlignment(wxLAYOUT_LEFT);\n"),   vname.c_str());
-        else if (mAlign == wxLAYOUT_RIGHT)  Codef(_T("%s->SetAlignment(wxLAYOUT_RIGHT);\n"),  vname.c_str());
-
-        if (mOrient == wxLAYOUT_HORIZONTAL) Codef(_T("%s->SetOrientation(wxLAYOUT_HORIZONTAL);\n"), vname.c_str());
-        else                                Codef(_T("%s->SetOrientation(wxLAYOUT_VERTICAL);\n"),   vname.c_str());
-
+        default:
+            wxsCodeMarks::Unknown(_T("wxsSashLayoutWindow::OnBuildCreatingCode"),GetLanguage());
     }
-    else {
-        wxsCodeMarks::Unknown(_T("wxsSashLayoutWindow::OnBuildCreatingCode"),GetLanguage());
-    };
 }
 
 //------------------------------------------------------------------------------
 
-void wxsSashLayoutWindow::OnEnumContainerProperties(long Flags) {
-static const long    valign[] = {    wxLAYOUT_TOP,       wxLAYOUT_LEFT,       wxLAYOUT_RIGHT,       wxLAYOUT_BOTTOM,   0};
-static const wxChar *nalign[] = {_T("wxLAYOUT_TOP"), _T("wxLAYOUT_LEFT"), _T("wxLAYOUT_RIGHT"), _T("wxLAYOUT_BOTTOM"), 0};
+void wxsSashLayoutWindow::OnEnumContainerProperties(long Flags)
+{
+    static const long    valign[] = {    wxLAYOUT_TOP,       wxLAYOUT_LEFT,       wxLAYOUT_RIGHT,       wxLAYOUT_BOTTOM,   0};
+    static const wxChar *nalign[] = {_T("wxLAYOUT_TOP"), _T("wxLAYOUT_LEFT"), _T("wxLAYOUT_RIGHT"), _T("wxLAYOUT_BOTTOM"), 0};
 
-static const long    vorient[] = {    wxLAYOUT_HORIZONTAL,       wxLAYOUT_VERTICAL,   0};
-static const wxChar *norient[] = {_T("wxLAYOUT_HORIZONTAL"), _T("wxLAYOUT_VERTICAL"), 0};
+    static const long    vorient[] = {    wxLAYOUT_HORIZONTAL,       wxLAYOUT_VERTICAL,   0};
+    static const wxChar *norient[] = {_T("wxLAYOUT_HORIZONTAL"), _T("wxLAYOUT_VERTICAL"), 0};
 
 
     WXS_BOOL(wxsSashLayoutWindow, mTop,    _("Drag Top"),    _("dragtop"),    true);
@@ -165,9 +159,7 @@ static const wxChar *norient[] = {_T("wxLAYOUT_HORIZONTAL"), _T("wxLAYOUT_VERTIC
 
 //------------------------------------------------------------------------------
 
-bool wxsSashLayoutWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage) {
-    // TODO: Allow more tools
-
-
+bool wxsSashLayoutWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+{
     return true;
 }

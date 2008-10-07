@@ -61,19 +61,23 @@ wxsSymbolPickerDialog::wxsSymbolPickerDialog(wxsItemResData* Data):
 
 //------------------------------------------------------------------------------
 
-void wxsSymbolPickerDialog::OnBuildCreatingCode() {
+void wxsSymbolPickerDialog::OnBuildCreatingCode()
+{
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+            AddHeader(_T("<wx/richtext/richtextsymboldlg.h>"),GetInfo().ClassName, 0);
+            Codef(_T("%C( %t, %t, %t, %W, %I, %t, %P, %S, %T);\n"), _T(""), _T(""), _T(""), _T("Title") );
+            BuildSetupWindowCode();
+            break;
 
-    if (GetLanguage() ==  wxsCPP) {
-        AddHeader(_T("<wx/richtext/richtextsymboldlg.h>"),GetInfo().ClassName, 0);
-        Codef(_T("%C( %t, %t, %t, %W, %I, %t, %P, %S, %T);\n"), _T(""), _T(""), _T(""), _T("Title") );
-        BuildSetupWindowCode();
+        default:
+            wxsCodeMarks::Unknown(_T("wxsSymbolPickerDialog::OnBuildCreatingCode"),GetLanguage());
     }
-    else  {
-        wxsCodeMarks::Unknown(_T("wxsSymbolPickerDialog::OnBuildCreatingCode"),GetLanguage());
-    };
 }
 
 //------------------------------------------------------------------------------
 
-void wxsSymbolPickerDialog::OnEnumToolProperties(long Flags) {
+void wxsSymbolPickerDialog::OnEnumToolProperties(long Flags)
+{
 }
