@@ -1691,6 +1691,11 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     {
         return;
     }
+    
+    // prepare a boolean filter for declaration/implementation
+    bool isDecl = event.GetId() == idGotoDeclaration || event.GetId() == idMenuGotoDeclaration;
+    bool isImpl = event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation;
+    
     // get the matching set
     Token* token = 0;
     TokenIdxSet result;
@@ -1700,7 +1705,12 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // one match
     if (result.size() == 1)
     {
-        token = parser->GetTokens()->at(*(result.begin()));
+		Token* sel = parser->GetTokens()->at(*(result.begin()));
+		if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
+			(isDecl && !sel->GetFilename().IsEmpty()))
+		{
+			token = sel;
+		}
     }
     // if more than one match, display a selection dialog
     else if (result.size() > 1)
@@ -1715,8 +1725,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             if (sel)
             {
                 // only match tokens that have filename info
-                if ((!sel->GetImplFilename().IsEmpty()) ||
-                    (!sel->GetFilename().IsEmpty()))
+				if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
+					(isDecl && !sel->GetFilename().IsEmpty()))
                 {
                     selections.Add(sel->DisplayName());
                     int_selections.Add(*it);
@@ -1740,7 +1750,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // do we have a token?
     if (token)
     {
-        if(event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation)
+        if(isImpl)
         {
             if (cbEditor* ed = edMan->Open(token->GetImplFilename()))
             {
