@@ -231,9 +231,11 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/HexEditor.zip
+%{pkgdata}/incrementalSearch.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/images/ThreadSearch/*
+%{pkgdata}/images/IncrementalSearch/*
 %{pkgdata}/lib_finder/*
 %{pkgdata}/plugins/libAutoVersioning.*
 %{pkgdata}/plugins/libBrowseTracker.*
@@ -247,6 +249,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/plugins/libheaderfixup.*
 %{pkgdata}/plugins/libhelp_plugin.*
 %{pkgdata}/plugins/libHexEditor.*
+%{pkgdata}/plugins/libIncrementalSearch.*
 %{pkgdata}/plugins/libkeybinder.*
 %{pkgdata}/plugins/liblib_finder.*
 %{pkgdata}/plugins/libProfiler.*

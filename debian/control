@@ -75,6 +75,7 @@ Description: Contrib plugins for Code::Blocks IDE
     * BrowseTracker
     * Valgrind
     * HexEditor
+    * IncrementalSearch
  .
  http://www.codeblocks.org
 
