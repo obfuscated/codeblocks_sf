@@ -1,3 +1,11 @@
+#include "sdk.h"
+#ifndef CB_PRECOMP
+  #include <wx/xrc/xmlres.h>
+  #include "manager.h"
+  #include "configmanager.h"
+  #include "editormanager.h"
+  #include "cbeditor.h"
+#endif
 #include <cbstyledtextctrl.h>
 #include <configurationpanel.h>
 #include "IncrementalSearch.h"
