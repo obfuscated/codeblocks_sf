@@ -10,14 +10,11 @@
 #ifndef INCREMENTAL_SEARCH_H_INCLUDED
 #define INCREMENTAL_SEARCH_H_INCLUDED
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
+#include <wx/colour.h>
+#include <wx/string.h>
+#include "cbplugin.h" // for "class cbPlugin"
 
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
-#include <cbstyledtextctrl.h>
-#include <cbplugin.h> // for "class cbPlugin"
+class cbStyledTextCtrl;
 
 class IncrementalSearch : public cbPlugin
 {

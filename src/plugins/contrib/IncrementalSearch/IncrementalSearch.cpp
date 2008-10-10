@@ -1,3 +1,4 @@
+#include <cbstyledtextctrl.h>
 #include <configurationpanel.h>
 #include "IncrementalSearch.h"
 #include "IncrementalSearchConfDlg.h"
@@ -384,7 +385,7 @@ void IncrementalSearch::SearchForward(int fromPos)
 {
     // reset the backgroundcolor of the text-control
     m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
-    
+
     // jump to startposition for search
     m_pControl->GotoPos(fromPos);
     m_pControl->SearchAnchor();
