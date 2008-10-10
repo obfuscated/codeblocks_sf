@@ -78,6 +78,10 @@ if BUILD_HEXEDITOR
 MAYBE_HEXEDITOR=HexEditor
 endif
 
+if BUILD_INCSEARCH
+MAYBE_INCSEARCH=IncrementalSearch
+endif
+
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
@@ -97,7 +101,8 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_VALGRIND) \
 		$(MAYBE_WXSMITH) \
-		$(MAYBE_HEXEDITOR)
+		$(MAYBE_HEXEDITOR) \
+		$(MAYBE_INCSEARCH)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
@@ -119,5 +124,6 @@ DIST_SUBDIRS = AutoVersioning \
 		Valgrind \
 		wxSmith \
 		wxSmithContribItems \
-		HexEditor
+		HexEditor \
+		IncrementalSearch
 

@@ -453,6 +453,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmith/wxwidgets/icons/Makefile
 	src/plugins/contrib/wxSmithContribItems/Makefile
 	src/plugins/contrib/HexEditor/Makefile
+	src/plugins/contrib/IncrementalSearch/Makefile
 	src/mime/Makefile
 	src/scripts/Makefile
 	src/tools/Makefile

@@ -237,6 +237,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_VALGRIND], [false])
 	AM_CONDITIONAL([BUILD_WXSMITH], [false])
 	AM_CONDITIONAL([BUILD_HEXEDITOR], [false])
+	AM_CONDITIONAL([BUILD_INCSEARCH], [false])
 ])
 
 AC_DEFUN([BUILD_CONTRIB_ALL], [
@@ -260,6 +261,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_VALGRIND], [true])
 	AM_CONDITIONAL([BUILD_WXSMITH], [true])
 	AM_CONDITIONAL([BUILD_HEXEDITOR], [true])
+	AM_CONDITIONAL([BUILD_INCSEARCH], [true])
 ])
 
 # default to 'none'
@@ -275,7 +277,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,cbkoders,codesnippets,]
   [                        		     codestat,dragscroll,envvars,headerfixup ]
   [                        		     help,keybinder,libfinder,profiler, ]
-  [                        		     regex,exporter,symtab,wxsmith,hexeditor ],
+  [                        		     regex,exporter,symtab,wxsmith,incsearch,hexeditor ],
   plugins="$withval", plugins="none")
 
 plugins=`echo $plugins | sed 's/,/ /g'`
@@ -345,6 +347,9 @@ do
 	hexeditor)
 		AM_CONDITIONAL([BUILD_HEXEDITOR], [true])
 		;;
+	incsearch)
+		AM_CONDITIONAL([BUILD_INCSEARCH], [true])
+		;;
 	-AutoVersioning)
 		AM_CONDITIONAL([BUILD_AUTOVERSIONING], [false])
 		;;
@@ -405,6 +410,9 @@ do
 	-hexeditor)
 		AM_CONDITIONAL([BUILD_HEXEDITOR], [false])
 		;;
+	-incsearch)
+		AM_CONDITIONAL([BUILD_INCSEARCH], [false])
+		;;
 	*)
 		echo "Unknown contrib plugin $plugin, ignoring"
 		;;
@@ -434,6 +442,7 @@ AC_SUBST(BUILD_THREADSEARCH)
 AC_SUBST(BUILD_VALGRIND)
 AC_SUBST(BUILD_WXSMITH)
 AC_SUBST(BUILD_HEXEDITOR)
+AC_SUBST(BUILD_INCSEARCH)
 
 GCC_PCH=0
 PCH_FLAGS=
