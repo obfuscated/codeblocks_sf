@@ -29,11 +29,8 @@
               <label>User:</label>
             </object>
           </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <size>0,0</size>
-              <label></label>
-            </object>
+          <object class="spacer">
+            <size>0,0</size>
           </object>
           <object class="sizeritem">
             <object class="wxChoice" name="chcUser">
@@ -63,17 +60,39 @@
               <label>Type:</label>
             </object>
           </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Priority (1-9):</label>
-            </object>
-          </object>
+          <object class="spacer"/>
+          
           <object class="sizeritem">
             <object class="wxChoice" name="chcType">
               <content/>
             </object>
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
+          </object>
+          <object class="sizeritem">
+            <object class="wxBoxSizer">
+              <orient>wxHORIZONTAL</orient>
+              <object class="sizeritem">
+                <object class="wxButton" name="btAddType">
+                  <label>Add new type</label>
+                </object>
+              </object>
+              <object class="sizeritem">
+                <object class="wxButton" name="btDelType">
+                  <label>Delete type</label>
+                </object>
+              </object>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Priority (1-9):</label>
+            </object>
+          </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Position:</label>
+            </object>
           </object>
           <object class="sizeritem">
             <object class="wxSpinCtrl" name="spnPriority">
@@ -84,16 +103,8 @@
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Position:</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Comment style:</label>
-            </object>
-          </object>
+          
+          
           <object class="sizeritem">
             <object class="wxChoice" name="chcPosition">
               <content>
@@ -106,6 +117,12 @@
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
+          <object class="sizeritem">
+            <object class="wxStaticText">
+              <label>Comment style:</label>
+            </object>
+          </object>
+          <object class="spacer"/>
           <object class="sizeritem">
             <object class="wxChoice" name="chcStyle">
               <content>
@@ -120,6 +137,7 @@
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
+          <object class="spacer"/>
         </object>
         <option>1</option>
         <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>

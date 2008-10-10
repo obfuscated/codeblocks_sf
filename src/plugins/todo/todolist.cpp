@@ -53,9 +53,9 @@ BEGIN_EVENT_TABLE(ToDoList, cbPlugin)
 END_EVENT_TABLE()
 
 ToDoList::ToDoList() :
-m_InitDone(false),
-m_ParsePending(false),
-m_StandAlone(true)
+    m_InitDone(false),
+    m_ParsePending(false),
+    m_StandAlone(true)
 {
     //ctor
     if(!Manager::LoadResource(_T("todo.zip")))
@@ -204,6 +204,23 @@ int ToDoList::Configure()
 //    return 0;
 }
 
+void ToDoList::LoadUsers()
+{
+    m_Users.Clear();
+
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("users"), &m_Users);
+
+    if(m_Users.GetCount() == 0)
+        m_Users.Add(wxGetUserId());
+
+    SaveUsers();
+}
+
+void ToDoList::SaveUsers()
+{
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), m_Users);
+}
+
 void ToDoList::LoadTypes()
 {
     m_Types.Clear();
@@ -215,7 +232,11 @@ void ToDoList::LoadTypes()
         m_Types.Add(_T("TODO"));
         m_Types.Add(_T("@todo"));
         m_Types.Add(_T("\\todo"));
+
         m_Types.Add(_T("FIXME"));
+        m_Types.Add(_T("@fixme"));
+        m_Types.Add(_T("\\fixme"));
+
         m_Types.Add(_T("NOTE"));
         m_Types.Add(_T("@note"));
         m_Types.Add(_T("\\note"));
@@ -269,7 +290,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
         return;
 
     // display todo dialog
-    AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Types);
+    AddTodoDlg dlg(Manager::Get()->GetAppWindow(), m_Users, m_Types);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

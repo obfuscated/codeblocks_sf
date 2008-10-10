@@ -44,6 +44,8 @@ class ToDoList : public cbPlugin
         void OnReparseCurrent(CodeBlocksEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnStartParsingProjects(wxTimerEvent& event);
+        void LoadUsers();
+        void SaveUsers();
         void LoadTypes();
         void SaveTypes();
         void ParseCurrent(bool forced = false);
@@ -55,6 +57,7 @@ class ToDoList : public cbPlugin
         bool m_InitDone;
         bool m_ParsePending;
         bool m_StandAlone;
+        wxArrayString m_Users;
         wxArrayString m_Types;
         wxTimer m_timer;
 
