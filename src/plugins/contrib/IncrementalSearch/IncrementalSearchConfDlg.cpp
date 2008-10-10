@@ -1,8 +1,16 @@
-#include "IncrementalSearchConfDlg.h"
-
+#include "sdk.h"
 #ifndef CB_PRECOMP
+  #include <wx/button.h>
+  #include <wx/checkbox>
+  #include <wx/colordlg.h>
+  #include <wx/event.h>
+  #include "configmanager.h"
+  #include "manager.h"
 #endif
+#include <wx/colour.h>
 #include <wx/xrc/xmlres.h>
+
+#include "IncrementalSearchConfDlg.h"
 
 BEGIN_EVENT_TABLE(IncrementalSearchConfDlg,wxPanel)
     EVT_BUTTON(XRCID("btnIncSearchConfColourFound"),IncrementalSearchConfDlg::OnChooseColour)
@@ -16,11 +24,10 @@ IncrementalSearchConfDlg::IncrementalSearchConfDlg(wxWindow* parent)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("IncrementalSearchConfDlg"),_("wxPanel"));
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-    long red, green, blue;
 
-    red     = cfg->ReadInt(_("/incremental_search/text_found_colour_red_value"),    0xa0);
-    green   = cfg->ReadInt(_("/incremental_search/text_found_colour_green_value"),  0x20);
-    blue    = cfg->ReadInt(_("/incremental_search/text_found_colour_blue_value"),   0xf0);
+    long red     = cfg->ReadInt(_("/incremental_search/text_found_colour_red_value"),    0xa0);
+    long green   = cfg->ReadInt(_("/incremental_search/text_found_colour_green_value"),  0x20);
+    long blue    = cfg->ReadInt(_("/incremental_search/text_found_colour_blue_value"),   0xf0);
     XRCCTRL(*this, "btnIncSearchConfColourFound", wxButton)->SetBackgroundColour(wxColour(red, green, blue));
     red     = cfg->ReadInt(_("/incremental_search/highlight_colour_red_value"),    0xff);
     green   = cfg->ReadInt(_("/incremental_search/highlight_colour_green_value"),  0xa5);
@@ -71,7 +78,7 @@ void IncrementalSearchConfDlg::OnChooseColour(wxCommandEvent& event)
 
     if(pButton && !strEntry.empty())
     {
-        int result = tempColourDlg.ShowModal();
+        const int result = tempColourDlg.ShowModal();
 
         if (result == wxID_OK)
         {
@@ -90,4 +97,4 @@ void IncrementalSearchConfDlg::SaveSettings()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_("editor"));
     cfg->Write(_("/incremental_search/center_found_text_on_screen"), (bool) XRCCTRL(*this, "chkIncSearchConfCenterText", wxCheckBox)->IsChecked());
 }
- 
+
