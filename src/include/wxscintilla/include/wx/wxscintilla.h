@@ -172,6 +172,7 @@
 #define wxSCI_INDIC_HIDDEN 5
 #define wxSCI_INDIC_BOX 6
 #define wxSCI_INDIC_ROUNDBOX 7
+#define wxSCI_INDIC_HIGHLIGHT 31 // please change also in Scintilla.h !!
 #define wxSCI_INDIC0_MASK 0x20
 #define wxSCI_INDIC1_MASK 0x40
 #define wxSCI_INDIC2_MASK 0x80

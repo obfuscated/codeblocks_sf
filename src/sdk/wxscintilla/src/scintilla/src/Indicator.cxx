@@ -69,6 +69,12 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		rcBox.left = rc.left;
 		rcBox.right = rc.right;
 		surface->AlphaRectangle(rcBox, 1, fore.allocated, 30, fore.allocated, 50, 0);
+	} else if (style == INDIC_HIGHLIGHT) {
+		PRectangle rcBox = rcLine;
+		rcBox.top = rcLine.top + 1;
+		rcBox.left = rc.left;
+		rcBox.right = rc.right;
+		surface->AlphaRectangle(rcBox, 1, fore.allocated, 100, fore.allocated, 255, 0);
 	} else {	// Either INDIC_PLAIN or unknown
 		surface->MoveTo(rc.left, ymid);
 		surface->LineTo(rc.right, ymid);

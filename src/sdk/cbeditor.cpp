@@ -303,7 +303,7 @@ struct cbEditorInternalData
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
         // Set Styling:
-        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_ROUNDBOX);
+        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_HIGHLIGHT);
         wxColour highlightColour(   cfg->ReadInt(_T("/highlight_occurrence/colour_red_value"),   0xff),
                                     cfg->ReadInt(_T("/highlight_occurrence/colour_green_value"), 0x00),
                                     cfg->ReadInt(_T("/highlight_occurrence/colour_blue_value"),  0x00) );
