@@ -1,0 +1,74 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxBitmap" name="MenuBitmap">images/incsearchfocus.png</object>
+  <object class="wxToolBarAddOn" name="incremental_search_toolbar_16x16">
+    <object class="wxTextCtrl" name="idIncSearchText">
+	  <size>160,-1</size>
+	  <style>wxTE_PROCESS_ENTER</style>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idIncSearchPrev">
+      <tooltip>Prev</tooltip>
+      <longhelp>Jump to previous occurence</longhelp>
+      <bitmap>images/16x16/incsearchprev.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchNext">
+      <tooltip>Next</tooltip>
+      <longhelp>Jump to next occurence</longhelp>
+      <bitmap>images/16x16/incsearchnext.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchHighlight">
+      <tooltip>Highlight</tooltip>
+      <longhelp>Highlight all occurences</longhelp>
+      <bitmap>images/16x16/incsearchhighlight.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchSelectOnly">
+      <tooltip>Selected text</tooltip>
+      <longhelp>Search only inside selected text</longhelp>
+      <bitmap>images/16x16/incsearchselectedonly.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchMatchCase">
+      <tooltip>Match case</tooltip>
+      <longhelp>Only show phrases that match the exact case</longhelp>
+      <bitmap>images/16x16/incsearchcase.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+  </object>
+  <object class="wxToolBarAddOn" name="incremental_search_toolbar">
+    <object class="wxTextCtrl" name="idIncSearchText">
+	  <size>160,-1</size>
+	  <style>wxTE_PROCESS_ENTER</style>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idIncSearchPrev">
+      <tooltip>Prev</tooltip>
+      <longhelp>Jump to previous occurence</longhelp>
+      <bitmap>images/incsearchprev.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchNext">
+      <tooltip>Next</tooltip>
+      <longhelp>Jump to next occurence</longhelp>
+      <bitmap>images/incsearchnext.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchHighlight">
+      <tooltip>Highlight</tooltip>
+      <longhelp>Highlight all occurences</longhelp>
+      <bitmap>images/incsearchhighlight.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchSelectOnly">
+      <tooltip>Selected text</tooltip>
+      <longhelp>Search only inside selected text</longhelp>
+      <bitmap>images/incsearchselectedonly.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchMatchCase">
+      <tooltip>Match case</tooltip>
+      <longhelp>Only show phrases that match the exact case</longhelp>
+      <bitmap>images/incsearchcase.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+  </object>
+</resource>
