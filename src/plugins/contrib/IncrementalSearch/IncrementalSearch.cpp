@@ -124,7 +124,12 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
 		// find "Find previous" and insert after it
 		for (size_t i = 0; i < items.GetCount(); ++i)
 		{
+#if wxCHECK_VERSION(2,8,5)
 			if (items[i]->GetLabelText(items[i]->GetItemLabelText()) == _("Find previous"))
+#else
+			if (items[i]->GetLabelFromText(items[i]->GetLabel()) == _("Find previous"))
+#endif
+			
 			{
 				menu->Insert(++i, itemTmp);
 				return;
