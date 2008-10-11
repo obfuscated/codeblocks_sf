@@ -15,9 +15,11 @@ libIncrementalSearch_la_SOURCES = IncrementalSearch.cpp \
 
 noinst_HEADERS = IncrementalSearch.h
 
-EXTRA_DIST = $(srcdir)/*.cbp \
-			IncrementalSearchToolbar.xrc \
-			manifest.xml
+EXTRA_DIST = 	$(srcdir)/*.cbp \
+		IncrementalSearchToolbar.xrc \
+		manifest.xml \
+		$(srcdir)/images/*.png \
+		$(srcdir)/images/16x16/*.png
 
 pkgdata_DATA = IncrementalSearch.zip
 
