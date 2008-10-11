@@ -100,14 +100,14 @@ void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
         id = menuItems.IndexOf(recentFileItem);
         id = (id == wxNOT_FOUND) ? 7 : ++id;
         // The position is hard-coded to "Recent Files" menu. Please adjust it if necessary
-        fileMenu->Insert(++id, wxNewId(), _T("&Import project"), m_Menu);
+        fileMenu->Insert(++id, wxNewId(), _("&Import project"), m_Menu);
         fileMenu->InsertSeparator(++id);
     }
 }
 
 bool ProjectsImporter::CanHandleFile(const wxString& filename) const
 {
-    FileType ft = FileTypeOf(filename);
+    const FileType ft = FileTypeOf(filename);
     return ft == ftDevCppProject ||
            ft == ftMSVC6Project ||
            ft == ftMSVC6Workspace ||
@@ -117,7 +117,7 @@ bool ProjectsImporter::CanHandleFile(const wxString& filename) const
 
 int ProjectsImporter::OpenFile(const wxString& filename)
 {
-    FileType ft = FileTypeOf(filename);
+    const FileType ft = FileTypeOf(filename);
     switch (ft)
     {
         case ftDevCppProject: // fallthrough

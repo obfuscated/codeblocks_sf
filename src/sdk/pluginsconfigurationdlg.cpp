@@ -96,7 +96,7 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     initialInfo << _("Have you saved your work first?");
     initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
     initialInfo << _("If a plugin is not well-written, it could cause Code::Blocks to crash ");
-    initialInfo << _T("when performing any operation on it...");
+    initialInfo << _("when performing any operation on it...");
 
 	if (PluginManager::GetSafeMode())
 	{
@@ -104,7 +104,7 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
 		initialInfo << _("Code::Blocks started up in \"safe-mode\"");
 		initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
 		initialInfo << _("All plugins were disabled on startup so that you can troubleshoot ");
-		initialInfo << _T("problematic plugins. Enable plugins at will now...");
+		initialInfo << _("problematic plugins. Enable plugins at will now...");
 	}
 
     initialInfo << _T("</font></i><br /></body></html>\n");
