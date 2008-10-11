@@ -1,13 +1,13 @@
 #include "sdk.h"
+
 #ifndef CB_PRECOMP
-  #include <wx/xrc/xmlres.h>
-  #include "manager.h"
-  #include "configmanager.h"
-  #include "editormanager.h"
-  #include "cbeditor.h"
+    #include <wx/xrc/xmlres.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <cbeditor.h>
 #endif
+
 #include <cbstyledtextctrl.h>
-#include <configurationpanel.h>
 #include "IncrementalSearch.h"
 #include "IncrementalSearchConfDlg.h"
 
@@ -35,19 +35,20 @@ END_EVENT_TABLE()
 // constructor
 IncrementalSearch::IncrementalSearch():
         m_SearchText(wxEmptyString),
-        m_textCtrlBG_Default( wxColour(255,255,255)),
+        m_textCtrlBG_Default( wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW) ),
         m_pToolbar(0l),
         m_pTextCtrl(0l),
         m_pControl(0l),
-        m_NewPos(0),
-        m_OldPos(0),
-        m_SelStart(0),
-        m_SelEnd(0),
-        m_MinPos(0),
-        m_MaxPos(0),
+        m_NewPos(-1),
+        m_OldPos(-1),
+        m_SelStart(-1),
+        m_SelEnd(-1),
+        m_MinPos(-1),
+        m_MaxPos(-1),
+        m_flags(0),
         m_Highlight(false),
-        m_SelectedOnly(false),
-        m_flags(0)
+        m_SelectedOnly(false)
+
 {
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
@@ -71,9 +72,11 @@ void IncrementalSearch::OnAttach()
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
-    m_pControl = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl() : 0;    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
+    m_pControl = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl() : 0;
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     mbar->Enable(idIncSearchFocus, m_pControl);
+
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
 }
@@ -106,15 +109,15 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
 	{
 		return;
 	}
-	int idx = menuBar->FindMenu(wxT("Search"));
+	int idx = menuBar->FindMenu(_("Search"));
 	if (idx != wxSCI_INVALID_POSITION)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);
 		wxMenuItemList& items = menu->GetMenuItems();
 		wxMenuItem* itemTmp = new wxMenuItem(   menu,
                                                 idIncSearchFocus,
-                                                wxT("&Incremental search\tCtrl-I"),
-                                                wxT("Set focus on Incremental Search input and show the toolbar, if hidden") );
+                                                _("&Incremental search\tCtrl-I"),
+                                                _("Set focus on Incremental Search input and show the toolbar, if hidden") );
 
         itemTmp->SetBitmap(wxBitmap(wxXmlResource::Get()->LoadBitmap(_T("MenuBitmap"))));
         itemTmp->Enable(m_pControl);
@@ -174,8 +177,8 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
 	{
 		return false;
 	}
-    wxString is16x16 = Manager::isToolBar16x16(toolBar) ? _("_16x16") : _("");
-    Manager::Get()->AddonToolBar(toolBar,_("incremental_search_toolbar") + is16x16);
+    wxString is16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
+    Manager::Get()->AddonToolBar(toolBar,_T("incremental_search_toolbar") + is16x16);
     toolBar->Realize();
     m_pToolbar  =toolBar;
     m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), false);
@@ -335,13 +338,13 @@ void IncrementalSearch::HighlightText()
     // then set the new ones (if any)
     if(m_NewPos != wxSCI_INVALID_POSITION && !m_SearchText.empty())
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_("editor"));
-        wxColour colourTextFound(   cfg->ReadInt(_("/incremental_search/text_found_colour_red_value"),   0xa0),
-                                    cfg->ReadInt(_("/incremental_search/text_found_colour_green_value"), 0x20),
-                                    cfg->ReadInt(_("/incremental_search/text_found_colour_blue_value"),  0xf0) );
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        wxColour colourTextFound(   cfg->ReadInt(_T("/incremental_search/text_found_colour_red_value"),   0xa0),
+                                    cfg->ReadInt(_T("/incremental_search/text_found_colour_green_value"), 0x20),
+                                    cfg->ReadInt(_T("/incremental_search/text_found_colour_blue_value"),  0xf0) );
 
         // center last found phrase on the screen, if wanted
-        if(cfg->ReadBool(_("/incremental_search/center_found_text_on_screen"), true))
+        if(cfg->ReadBool(_T("/incremental_search/center_found_text_on_screen"), true))
         {
             int line = m_pControl->LineFromPosition(m_NewPos);
             int onScreen = m_pControl->LinesOnScreen() >> 1;
@@ -364,9 +367,9 @@ void IncrementalSearch::HighlightText()
         if(m_Highlight)
         {
             // highlight all occurrences of the found phrase if wanted
-            wxColour colourTextHighlight(   cfg->ReadInt(_("/incremental_search/highlight_colour_red_value"),   0xff),
-                                            cfg->ReadInt(_("/incremental_search/highlight_colour_green_value"), 0xa5),
-                                            cfg->ReadInt(_("/incremental_search/highlight_colour_blue_value"),  0x00) );
+            wxColour colourTextHighlight(   cfg->ReadInt(_T("/incremental_search/highlight_colour_red_value"),   0xff),
+                                            cfg->ReadInt(_T("/incremental_search/highlight_colour_green_value"), 0xa5),
+                                            cfg->ReadInt(_T("/incremental_search/highlight_colour_blue_value"),  0x00) );
             m_pControl->IndicatorSetForeground(2, colourTextHighlight);
             m_pControl->IndicatorSetStyle(2, wxSCI_INDIC_HIGHLIGHT);
             for ( int pos = m_pControl->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags);
@@ -404,10 +407,10 @@ void IncrementalSearch::SearchForward(int fromPos)
     VerifyRange();
     if(m_NewPos == wxSCI_INVALID_POSITION)
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_("editor"));
-        wxColour colourTextCtrlBG_Wrapped(  cfg->ReadInt(_("/incremental_search/wrapped_colour_red_value"),   0x7f),
-                                            cfg->ReadInt(_("/incremental_search/wrapped_colour_green_value"), 0x7f),
-                                            cfg->ReadInt(_("/incremental_search/wrapped_colour_blue_value"),  0xff) );
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        wxColour colourTextCtrlBG_Wrapped(  cfg->ReadInt(_T("/incremental_search/wrapped_colour_red_value"),   0x7f),
+                                            cfg->ReadInt(_T("/incremental_search/wrapped_colour_green_value"), 0x7f),
+                                            cfg->ReadInt(_T("/incremental_search/wrapped_colour_blue_value"),  0xff) );
         // if not found or out of range, wrap search
         m_pControl->GotoPos(m_MinPos);
         m_pControl->SearchAnchor();
@@ -418,9 +421,9 @@ void IncrementalSearch::SearchForward(int fromPos)
         VerifyRange();
         if(m_NewPos == wxSCI_INVALID_POSITION)
         {
-            wxColour colourTextCtrlBG_NotFound( cfg->ReadInt(_("/incremental_search/text_not_found_colour_red_value"),   0xff),
-                                                cfg->ReadInt(_("/incremental_search/text_not_found_colour_green_value"), 0x7f),
-                                                cfg->ReadInt(_("/incremental_search/text_not_found_colour_blue_value"),  0x7f) );
+            wxColour colourTextCtrlBG_NotFound( cfg->ReadInt(_T("/incremental_search/text_not_found_colour_red_value"),   0xff),
+                                                cfg->ReadInt(_T("/incremental_search/text_not_found_colour_green_value"), 0x7f),
+                                                cfg->ReadInt(_T("/incremental_search/text_not_found_colour_blue_value"),  0x7f) );
             // if still not found, show it by colouring the textCtrl
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
@@ -442,10 +445,10 @@ void IncrementalSearch::SearchBackward(int fromPos)
     VerifyRange();
     if(m_NewPos == wxSCI_INVALID_POSITION)
     {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_("editor"));
-        wxColour colourTextCtrlBG_Wrapped(  cfg->ReadInt(_("/incremental_search/wrapped_colour_red_value"),   0x7f),
-                                            cfg->ReadInt(_("/incremental_search/wrapped_colour_green_value"), 0x7f),
-                                            cfg->ReadInt(_("/incremental_search/wrapped_colour_blue_value"),  0xff) );
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+        wxColour colourTextCtrlBG_Wrapped(  cfg->ReadInt(_T("/incremental_search/wrapped_colour_red_value"),   0x7f),
+                                            cfg->ReadInt(_T("/incremental_search/wrapped_colour_green_value"), 0x7f),
+                                            cfg->ReadInt(_T("/incremental_search/wrapped_colour_blue_value"),  0xff) );
         // if not found or out of range, wrap search
         m_pControl->GotoPos(m_MaxPos);
         m_pControl->SearchAnchor();
@@ -456,9 +459,9 @@ void IncrementalSearch::SearchBackward(int fromPos)
         VerifyRange();
         if(m_NewPos == wxSCI_INVALID_POSITION)
         {
-            wxColour colourTextCtrlBG_NotFound( cfg->ReadInt(_("/incremental_search/text_not_found_colour_red_value"),   0xff),
-                                                cfg->ReadInt(_("/incremental_search/text_not_found_colour_green_value"), 0x7f),
-                                                cfg->ReadInt(_("/incremental_search/text_not_found_colour_blue_value"),  0x7f) );
+            wxColour colourTextCtrlBG_NotFound( cfg->ReadInt(_T("/incremental_search/text_not_found_colour_red_value"),   0xff),
+                                                cfg->ReadInt(_T("/incremental_search/text_not_found_colour_green_value"), 0x7f),
+                                                cfg->ReadInt(_T("/incremental_search/text_not_found_colour_blue_value"),  0x7f) );
             // if still not found, show it by colouring the textCtrl
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
