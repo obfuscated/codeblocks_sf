@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * Copyright: 2008 Jens Lody
+ * 
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ -->
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
 	<object class="wxPanel" name="IncrementalSearchConfDlg">
 		<object class="wxBoxSizer">
@@ -100,14 +110,94 @@
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
 					<label>Other settings</label>
+					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkIncSearchConfCenterText">
 							<label>center the line containing the found text on screen</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer">
+							<label>Default button states</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxGridSizer">
+									<cols>2</cols>
+									<rows>3</rows>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT5">
+											<label>State of &quot;Highlight&quot; button</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxChoice" name="idIncSearchHighlightDefault">
+											<content>
+												<item>defaults to off</item>
+												<item>defaults to on</item>
+												<item>save last state</item>
+											</content>
+											<selection>0</selection>
+										</object>
+										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT6">
+											<label>State of &quot;Selected text&quot; button</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxChoice" name="idIncSearchSelectedDefault">
+											<content>
+												<item>defaults to off</item>
+												<item>defaults to on</item>
+												<item>save last state</item>
+											</content>
+											<selection>0</selection>
+										</object>
+										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT7">
+											<label>State of &quot;Match case&quot; button</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxChoice" name="idIncSearchMatchCaseDefault">
+											<content>
+												<item>defaults to off</item>
+												<item>defaults to on</item>
+												<item>save last state</item>
+											</content>
+											<selection>0</selection>
+										</object>
+										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
 					</object>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
