@@ -110,7 +110,7 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
 		return;
 	}
 	int idx = menuBar->FindMenu(_("Search"));
-	if (idx != wxSCI_INVALID_POSITION)
+	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);
 		wxMenuItemList& items = menu->GetMenuItems();
@@ -129,7 +129,7 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
 #else
 			if (items[i]->GetLabelFromText(items[i]->GetLabel()) == _("Find previous"))
 #endif
-			
+
 			{
 				menu->Insert(++i, itemTmp);
 				return;
