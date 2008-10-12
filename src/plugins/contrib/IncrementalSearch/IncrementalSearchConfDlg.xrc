@@ -113,7 +113,7 @@
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkIncSearchConfCenterText">
-							<label>center the line containing the found text on screen</label>
+							<label>Center the line containing the found text on screen</label>
 							<checked>1</checked>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -122,7 +122,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticBoxSizer">
-							<label>Default button states</label>
+							<label>Toolbar settings</label>
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxGridSizer">
@@ -130,7 +130,7 @@
 									<rows>3</rows>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT5">
-											<label>State of &quot;Highlight&quot; button</label>
+											<label>&quot;Highlight&quot;-button</label>
 										</object>
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
@@ -139,8 +139,8 @@
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchHighlightDefault">
 											<content>
-												<item>defaults to off</item>
-												<item>defaults to on</item>
+												<item>off</item>
+												<item>on</item>
 												<item>save last state</item>
 											</content>
 											<selection>0</selection>
@@ -151,7 +151,7 @@
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT6">
-											<label>State of &quot;Selected text&quot; button</label>
+											<label>&quot;Selected text&quot;-button</label>
 										</object>
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
@@ -160,8 +160,8 @@
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchSelectedDefault">
 											<content>
-												<item>defaults to off</item>
-												<item>defaults to on</item>
+												<item>off</item>
+												<item>on</item>
 												<item>save last state</item>
 											</content>
 											<selection>0</selection>
@@ -172,7 +172,7 @@
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT7">
-											<label>State of &quot;Match case&quot; button</label>
+											<label>&quot;Match case&quot;-button</label>
 										</object>
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
@@ -181,8 +181,8 @@
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchMatchCaseDefault">
 											<content>
-												<item>defaults to off</item>
-												<item>defaults to on</item>
+												<item>off</item>
+												<item>on</item>
 												<item>save last state</item>
 											</content>
 											<selection>0</selection>
