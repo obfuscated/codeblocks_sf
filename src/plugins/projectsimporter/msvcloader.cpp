@@ -29,6 +29,7 @@
 #endif
 
 #include <wx/stream.h>
+#include <wx/tokenzr.h>
 
 #include "prep.h"
 #include "importers_globals.h"
@@ -40,8 +41,8 @@
  * compatibility function in wxWidgets-2.8. So in future it will be dropped.
  */
 
-MSVCLoader::MSVCLoader(cbProject* project)
-    : m_pProject(project),
+MSVCLoader::MSVCLoader(cbProject* project) :
+    m_pProject(project),
     m_ConvertSwitches(true)
 {
     //ctor
@@ -680,19 +681,27 @@ void MSVCLoader::ProcessResourceCompilerOptions(ProjectBuildTarget* target, cons
 
 void MSVCLoader::ProcessPostBuildCommand(ProjectBuildTarget* target, const wxString& cmd)
 {
-  wxString post_build_cmd = cmd;
+    wxString post_build_cmd = cmd;
 
-  // remove "line continues", like in:
-  // PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
-  // copy $(OutDir)\NetHackW.exe ..\binary
-  if (post_build_cmd.EndsWith(_T("\\")))
-  {
-      post_build_cmd.RemoveLast(1);
-      post_build_cmd.Trim(true).Trim(false);
-  }
+    // remove "line continues", like in:
+    // PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
+    // copy $(OutDir)\NetHackW.exe ..\binary
+    if (post_build_cmd.EndsWith(_T("\\")))
+        post_build_cmd.RemoveLast(1).Trim(true).Trim(false);
 
-  if (!post_build_cmd.IsEmpty())
-      target->AddCommandsAfterBuild(post_build_cmd);
+    if (!post_build_cmd.IsEmpty())
+    {
+        // Some weirdness: VC6 separates commands by a linefeed OR a TAB (?!)
+        // Linefeeds are handled by the caller, we do handle tabs here only.
+        wxStringTokenizer tkz(post_build_cmd, wxT("\t"));
+        while (tkz.HasMoreTokens())
+        {
+            // process token
+            wxString current_post_build_cmd = tkz.GetNextToken().Trim(true).Trim(false);
+            if (!current_post_build_cmd.IsEmpty())
+                target->AddCommandsAfterBuild(current_post_build_cmd);
+        }
+    }
 }
 
 wxArrayString MSVCLoader::OptStringTokeniser(const wxString& opts)

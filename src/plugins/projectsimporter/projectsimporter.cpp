@@ -279,10 +279,13 @@ int ProjectsImporter::LoadWorkspace(const wxString& filename)
         {
             wksp->SetTitle(Title);
         }
+        wksp->SetModified(true);
     }
-    wksp->SetModified(true);
-    delete pWsp;
+    else
+        cbMessageBox(_("Failed to import *any* projects from workspace file."), _("Error"), wxICON_ERROR);
 
+    delete pWsp;
     Manager::Get()->GetProjectManager()->EndLoadingWorkspace();
+
     return 0;
 }
