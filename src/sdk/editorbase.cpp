@@ -380,7 +380,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
         }
         else if (id == idMsdn)
         {
-            wxLaunchDefaultBrowser(wxString(_T("http://search.microsoft.com/search/results.aspx?qu=")) << URLEncode(lastWord) << _T("&View=msdn"));
+            wxLaunchDefaultBrowser(wxString(_T("http://social.msdn.microsoft.com/Search/en-US/?query=")) << URLEncode(lastWord) << _T("&ac=8"));
         }
     }
     else
