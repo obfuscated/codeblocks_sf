@@ -349,6 +349,13 @@ void IncrementalSearch::SearchText()
         m_pToolbar->EnableTool(XRCID("idIncSearchClear"), false);
         m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), false);
         m_pToolbar->EnableTool(XRCID("idIncSearchNext"), false);
+        // reset the backgroundcolor of the text-control
+        m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
+        // windows does not update the backgroundcolor immediately, so we have to force it here
+        #ifdef __WXMSW__
+        m_pTextCtrl->Refresh();
+        m_pTextCtrl->Update();
+        #endif
     }
     HighlightText();
 }
@@ -476,6 +483,11 @@ void IncrementalSearch::SearchForward(int fromPos)
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
     }
+    // windows does not update the backgroundcolor immediately, so we have to force it here
+    #ifdef __WXMSW__
+    m_pTextCtrl->Refresh();
+    m_pTextCtrl->Update();
+    #endif
 }
 
 void IncrementalSearch::SearchBackward(int fromPos)
@@ -514,4 +526,9 @@ void IncrementalSearch::SearchBackward(int fromPos)
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
     }
+    // windows does not update the backgroundcolor immediately, so we have to force it here
+    #ifdef __WXMSW__
+    m_pTextCtrl->Refresh();
+    m_pTextCtrl->Update();
+    #endif
 }
