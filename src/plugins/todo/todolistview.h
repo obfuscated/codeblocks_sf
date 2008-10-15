@@ -41,33 +41,40 @@ class ToDoListView : public ListCtrlLogger, public wxEvtHandler
     public:
         ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& types);
         ~ToDoListView();
+        virtual wxWindow* CreateControl(wxWindow* parent);
+
         void Parse();
         void ParseCurrent(bool forced);
-        virtual wxWindow* CreateControl(wxWindow* parent);
-        wxWindow* GetWindow(){ return panel; }
+        wxWindow* GetWindow(){ return m_pPanel; }
+
     private:
         void LoadUsers();
         void FillList();
+        void SortList();
+        void FillListControl();
         void ParseEditor(cbEditor* pEditor);
         void ParseFile(const wxString& filename);
         void ParseBuffer(const wxString& buffer, const wxString& filename);
         int CalculateLineNumber(const wxString& buffer, int upTo);
+        void FocusEntry(size_t index);
 
         void OnComboChange(wxCommandEvent& event);
         void OnListItemSelected(wxCommandEvent& event);
         void OnButtonRefresh(wxCommandEvent& event);
-        void OnDoubleClick( wxCommandEvent& event ); //pecan 1/2/2006 12PM
-        void FocusEntry(size_t index);            //pecan 1/2/2006 12PM
+        void OnDoubleClick( wxCommandEvent& event );
+        void OnColClick( wxListEvent& event );
 
-        wxWindow* panel;
-        TodoItemsMap m_itemsmap;
+        wxWindow* m_pPanel;
+        TodoItemsMap m_ItemsMap;
         ToDoItems m_Items;
         wxComboBox* m_pSource;
         wxComboBox* m_pUser;
         wxButton* m_pRefresh;
         const wxArrayString& m_Types;
         wxString m_LastFile;
-        bool m_ignore;
+        bool m_Ignore;
+        bool m_SortAscending;
+        int m_SortColumn;
 
         DECLARE_EVENT_TABLE()
 };
