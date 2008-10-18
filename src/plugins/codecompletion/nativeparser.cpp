@@ -1026,7 +1026,8 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
             break;
         int line = ed->GetControl()->GetCurrentLine();
         lineText = ed->GetControl()->GetLine(line);
-        end = lineText.Length();
+        end = ed->GetControl()->GetCurrentPos() - ed->GetControl()->PositionFromLine(line);
+//        end = lineText.Length();
         int nest = 0;
         while (end > 0)
         {

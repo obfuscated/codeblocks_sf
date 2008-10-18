@@ -28,9 +28,11 @@
 
 #include "crc32.h"
 #include "menuitemsmanager.h"
+#include "genericmultilinenotesdlg.h"
 #include "scripting/sqplus/sqplus.h"
 #include "scripting/bindings/scriptbindings.h"
 #include "scripting/bindings/sc_plugin.h"
+#include "scripting/include/sqstdstring.h"
 
 template<> ScriptingManager* Mgr<ScriptingManager>::instance = 0;
 template<> bool  Mgr<ScriptingManager>::isShutdown = false;
@@ -78,6 +80,7 @@ ScriptingManager::ScriptingManager()
         cbThrow(_T("Can't create scripting engine!"));
 
     sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptsPrintFunc);
+    sqstd_register_stringlib(SquirrelVM::GetVMPtr());
 
     RefreshTrusts();
 
@@ -225,7 +228,18 @@ void ScriptingManager::DisplayErrors(SquirrelError* exception, bool clearErrors)
 {
     wxString msg = GetErrorString(exception, clearErrors);
     if (!msg.IsEmpty())
-        cbMessageBox(msg, _("Script errors"), wxICON_ERROR);
+    {
+		if (cbMessageBox(_("Script errors have occured...\nPress 'Yes' to see the exact errors."),
+							_("Script errors"),
+							wxICON_ERROR | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
+		{
+			GenericMultiLineNotesDlg dlg(Manager::Get()->GetAppWindow(),
+										_("Script errors"),
+										msg,
+										true);
+			dlg.ShowModal();
+		}
+    }
 }
 
 void ScriptingManager::InjectScriptOutput(const wxString& output)

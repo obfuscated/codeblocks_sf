@@ -28,7 +28,13 @@
 namespace
 {
     PluginRegistrant<ClassWizard> reg(_T("ClassWizard"));
+    
+    int idLaunch = wxNewId();
 }
+
+BEGIN_EVENT_TABLE(ClassWizard, cbPlugin)
+	EVT_MENU(idLaunch, ClassWizard::OnLaunch)
+END_EVENT_TABLE()
 
 ClassWizard::ClassWizard()
 {
@@ -44,13 +50,47 @@ ClassWizard::~ClassWizard()
 
 void ClassWizard::OnAttach()
 {
+	m_FileNewMenu = 0;
+	cbPlugin::OnAttach();
 }
 
 void ClassWizard::OnRelease(bool appShutDown)
 {
+	if (m_FileNewMenu)
+	{
+		m_FileNewMenu->Delete(idLaunch);
+		m_FileNewMenu = 0;
+	}
+	cbPlugin::OnRelease(appShutDown);
 }
 
-int ClassWizard::Execute()
+void ClassWizard::BuildMenu(wxMenuBar* menuBar)
+{
+	if (m_FileNewMenu)
+	{
+		m_FileNewMenu->Delete(idLaunch);
+		m_FileNewMenu = 0;
+	}
+
+    int pos = menuBar->FindMenu(_("&File"));
+    if (pos != wxNOT_FOUND)
+    {
+        wxMenu* fm = menuBar->GetMenu(pos);
+        int id = fm->FindItem(_("New"));
+        wxMenuItem* mn = fm->FindItem(id);
+        m_FileNewMenu = mn ? mn->GetSubMenu() : 0;
+        if (m_FileNewMenu)
+        {
+			m_FileNewMenu->Insert(2, idLaunch, _("Class..."));
+        }
+		else
+			Manager::Get()->GetLogManager()->DebugLog(_T("Could not find File->New menu!"));
+    }
+    else
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find File menu!"));
+}
+
+void ClassWizard::OnLaunch(wxCommandEvent& event)
 {
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     cbProject* prj = prjMan->GetActiveProject();
@@ -78,8 +118,5 @@ int ClassWizard::Execute()
                 prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, targets);
             prjMan->RebuildTree();
         }
-        return 0;
     }
-
-    return -1;
 }
