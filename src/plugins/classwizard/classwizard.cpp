@@ -7,16 +7,18 @@
  * $HeadURL$
  */
 
-#include <sdk.h>
+#include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/fs_zip.h>
 #include <wx/intl.h>
+#include <wx/menu.h>
 #include <wx/string.h>
 #include <wx/utils.h>
 #include <wx/xrc/xmlres.h>
 #include "cbproject.h"
 #include "configmanager.h"
 #include "globals.h"
+#include "logmanager.h"
 #include "manager.h"
 #include "projectmanager.h"
 #endif
@@ -28,7 +30,7 @@
 namespace
 {
     PluginRegistrant<ClassWizard> reg(_T("ClassWizard"));
-    
+
     int idLaunch = wxNewId();
 }
 
@@ -72,7 +74,7 @@ void ClassWizard::BuildMenu(wxMenuBar* menuBar)
 		m_FileNewMenu = 0;
 	}
 
-    int pos = menuBar->FindMenu(_("&File"));
+    const int pos = menuBar->FindMenu(_("&File"));
     if (pos != wxNOT_FOUND)
     {
         wxMenu* fm = menuBar->GetMenu(pos);
