@@ -121,6 +121,14 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
+						<object class="wxCheckBox" name="idIncSearchSelectOnEscape">
+							<label>Select last found phrase when leaving Incremental Search with ESC</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
 						<object class="wxStaticBoxSizer">
 							<label>Toolbar settings</label>
 							<orient>wxVERTICAL</orient>

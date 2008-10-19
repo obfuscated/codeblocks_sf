@@ -86,9 +86,10 @@ void IncrementalSearch::OnAttach()
     // (see: does not need) this plugin...
     m_pControl = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl() : 0;
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    mbar->Enable(idIncSearchFocus, m_pControl);
+    mbar->Enable(idIncSearchFocus, m_pControl != 0);
 
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<IncrementalSearch, CodeBlocksEvent>(this, &IncrementalSearch::OnEditorEvent));
 
@@ -154,9 +155,9 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
                                                 _("Set focus on Incremental Search input and show the toolbar, if hidden") );
 
         itemTmp->SetBitmap(wxBitmap(wxXmlResource::Get()->LoadBitmap(_T("MenuBitmap"))));
-        itemTmp->Enable(m_pControl);
         // find "Find previous" and insert after it
-        for (size_t i = 0; i < items.GetCount(); ++i)
+        size_t i = 0;
+        for (i = 0; i < items.GetCount(); ++i)
         {
 #if wxCHECK_VERSION(2,8,5)
             if (items[i]->GetLabelText(items[i]->GetItemLabelText()) == _("Find previous"))
@@ -165,14 +166,17 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
 #endif
 
             {
-                menu->Insert(++i, itemTmp);
-                return;
+                ++i;
+                break;
             }
         }
-
-        // not found, just append
-        menu->AppendSeparator();
-        menu->Append(itemTmp);
+        // if not found, just append with seperator
+        if(i == items.GetCount())
+        {
+            menu->InsertSeparator(i++);
+        }
+        menu->Insert(i, itemTmp);
+        menuBar->Enable(idIncSearchFocus, m_pControl != 0);
     }
 }
 
@@ -186,11 +190,11 @@ void IncrementalSearch::OnEditorEvent(CodeBlocksEvent& event)
     m_pControl = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl() : 0;
     m_pTextCtrl->Enable(m_pControl != 0);
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    mbar->Enable(idIncSearchFocus, m_pControl);
+    mbar->Enable(idIncSearchFocus, m_pControl != 0);
 
     m_pToolbar->EnableTool(XRCID("idIncSearchClear"), !m_SearchText.empty());
 
-    if (m_pControl)
+    if (m_pControl != 0)
     {
         m_SearchText=m_pTextCtrl->GetValue();
         m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), !m_SearchText.empty());
@@ -229,7 +233,11 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     m_pTextCtrl = XRCCTRL(*toolBar, "idIncSearchText", wxTextCtrl);
     if (m_pTextCtrl)
     {
+        m_pTextCtrl->Connect(wxEVT_KEY_DOWN,
+                              (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
+                              &IncrementalSearch::OnKeyDown , 0, this);
         m_textCtrlBG_Default = m_pTextCtrl->GetBackgroundColour();
+        m_pTextCtrl->Enable(m_pControl != 0);
         m_pToolbar->ToggleTool(XRCID("idIncSearchHighlight"),m_Highlight);
         m_pToolbar->ToggleTool(XRCID("idIncSearchSelectOnly"),m_SelectedOnly);
         m_pToolbar->ToggleTool(XRCID("idIncSearchMatchCase"),m_flags & wxSCI_FIND_MATCHCASE);
@@ -240,12 +248,53 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
         return false;
     }
 }
+
+void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
+{
+    if(!m_IsAttached || (m_pControl == 0))
+    {
+        event.Skip();
+        return;
+    }
+    if(event.GetModifiers() == wxMOD_ALT && event.GetKeyCode() == WXK_DELETE)
+    {
+        DoClearText();
+    }
+    else if(event.GetModifiers() == wxMOD_NONE && event.GetKeyCode() == WXK_ESCAPE)
+    {
+        // delete all stylings for found phrases
+        m_pControl->StartStyling(0, 0x40);
+        m_pControl->SetStyling(m_pControl->GetLength(), 0x00);
+        // then for highlighted phrases
+        m_pControl->StartStyling(0, 0x80);
+        m_pControl->SetStyling(m_pControl->GetLength(), 0x00);
+        m_pControl->GotoPos(m_NewPos);
+        if(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/incremental_search/select_found_text_on_escape"),false))
+        {
+            m_SelStart = m_NewPos;
+            m_SelEnd = m_SelStart + m_SearchText.length();
+            m_OldPos = m_NewPos;
+            m_pControl->SetSelection(m_SelStart, m_SelEnd);
+        }
+        m_pControl->SetFocus();
+    }
+    else
+    {
+        event.Skip();
+    }
+}
+
 void IncrementalSearch::OnFocusToolbar(wxCommandEvent& event)
 {
     if (!m_IsAttached)
     {
         return;
     }
+    DoFocusToolbar();
+}
+
+void IncrementalSearch::DoFocusToolbar()
+{
     if (!IsWindowReallyShown(m_pToolbar))
     {
         CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
@@ -253,12 +302,18 @@ void IncrementalSearch::OnFocusToolbar(wxCommandEvent& event)
         Manager::Get()->ProcessEvent(evt);
     }
     m_pTextCtrl->SetFocus();
+    m_pTextCtrl->SetInsertionPointEnd();
 }
 
 void IncrementalSearch::OnToggleHighlight(wxCommandEvent& event)
 {
-    m_Highlight = m_pToolbar->GetToolState(XRCID("idIncSearchHighlight"));
-    if (!m_pControl)
+    DoToggleHighlight(m_pToolbar->GetToolState(XRCID("idIncSearchHighlight")));
+}
+
+void IncrementalSearch::DoToggleHighlight(bool checked)
+{
+    m_Highlight = checked;
+    if (m_pControl == 0)
     {
         return;
     }
@@ -267,8 +322,13 @@ void IncrementalSearch::OnToggleHighlight(wxCommandEvent& event)
 
 void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent& event)
 {
-    m_SelectedOnly = m_pToolbar->GetToolState(XRCID("idIncSearchSelectOnly"));
-    if (!m_pControl)
+    DoToggleSelectedOnly(m_pToolbar->GetToolState(XRCID("idIncSearchSelectOnly")));
+}
+
+void IncrementalSearch::DoToggleSelectedOnly(bool checked)
+{
+    m_SelectedOnly = checked;
+    if (m_pControl == 0)
     {
         return;
     }
@@ -277,8 +337,13 @@ void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent& event)
 
 void IncrementalSearch::OnToggleMatchCase(wxCommandEvent& event)
 {
-    m_flags = m_pToolbar->GetToolState(XRCID("idIncSearchMatchCase"))?wxSCI_FIND_MATCHCASE:0;
-    if (!m_pControl)
+    DoToggleMatchCase(m_pToolbar->GetToolState(XRCID("idIncSearchMatchCase")));
+}
+
+void IncrementalSearch::DoToggleMatchCase(bool checked)
+{
+    m_flags = checked?wxSCI_FIND_MATCHCASE:0;
+    if (m_pControl == 0)
     {
         return;
     }
@@ -287,7 +352,7 @@ void IncrementalSearch::OnToggleMatchCase(wxCommandEvent& event)
 
 void IncrementalSearch::OnTextChanged(wxCommandEvent& event)
 {
-    if (!m_pControl)
+    if (m_pControl == 0)
     {
         return;
     }
@@ -296,6 +361,10 @@ void IncrementalSearch::OnTextChanged(wxCommandEvent& event)
 
 void IncrementalSearch::VerifyPosition()
 {
+    if (m_pControl == 0)
+    {
+        return;
+    }
     // if selection changed, the user has clicked with the mous inside the editor
     // so set new startposition for search and remember it
     m_SelStart=m_pControl->GetSelectionStart();
@@ -309,6 +378,10 @@ void IncrementalSearch::VerifyPosition()
 
 void IncrementalSearch::VerifyRange()
 {
+    if (m_pControl == 0)
+    {
+        return;
+    }
     // if we should only search in selection, we have to verify that we did not leave its range
     // searchForward can work without it, because we can specify a range to search in, but searchBackward
     // uses FindPrev and so we can not specify a range.
@@ -362,11 +435,21 @@ void IncrementalSearch::SearchText()
 
 void IncrementalSearch::OnClearText(wxCommandEvent& event)
 {
+    DoClearText();
+}
+
+void IncrementalSearch::DoClearText()
+{
     m_pTextCtrl->Clear();
     SearchText();
 }
 
 void IncrementalSearch::OnSearchPrev(wxCommandEvent& event)
+{
+    DoSearchPrev();
+}
+
+void IncrementalSearch::DoSearchPrev()
 {
     VerifyPosition();
     // we search backward from one character before the ending of the last found phrase
@@ -376,6 +459,11 @@ void IncrementalSearch::OnSearchPrev(wxCommandEvent& event)
 
 void IncrementalSearch::OnSearchNext(wxCommandEvent& event)
 {
+    DoSearchNext();
+}
+
+void IncrementalSearch::DoSearchNext()
+{
     VerifyPosition();
     // start search from the next character
     SearchForward(m_NewPos + 1);
@@ -384,6 +472,10 @@ void IncrementalSearch::OnSearchNext(wxCommandEvent& event)
 
 void IncrementalSearch::HighlightText()
 {
+    if (m_pControl == 0)
+    {
+        return;
+    }
     // first delete all stylings for found phrases
     m_pControl->StartStyling(0, 0x40);
     m_pControl->SetStyling(m_pControl->GetLength(), 0x00);
@@ -410,6 +502,9 @@ void IncrementalSearch::HighlightText()
             m_pControl->GotoLine(l1);          // center selection on screen
             m_pControl->GotoLine(l2);
         }
+        // make sure found text is visible, even if it's in a column far righ
+        m_pControl->GotoPos(m_NewPos+m_SearchText.length());
+        m_pControl->EnsureCaretVisible();
         m_pControl->GotoPos(m_NewPos);
         m_pControl->SearchAnchor();
         // and highlight it
@@ -418,7 +513,6 @@ void IncrementalSearch::HighlightText()
         m_pControl->StartStyling(m_NewPos,0x40);
         m_pControl->SetStyling(m_SearchText.Len(), 0x40);
         // make sure line is Visible, if it was folded
-        m_pControl->EnsureVisible(m_pControl->LineFromPosition(m_NewPos));
         if (m_Highlight)
         {
             // highlight all occurrences of the found phrase if wanted
@@ -445,10 +539,16 @@ void IncrementalSearch::HighlightText()
     // reset selection, without moving caret, as SetSelection does
     m_pControl->SetAnchor(m_SelStart);
     m_pControl->SetCurrentPos(m_SelEnd);
+    // make sure Toolbar (textctrl) is still focused, to make it reachable for keystrokes
+    DoFocusToolbar();
 }
 
 void IncrementalSearch::SearchForward(int fromPos)
 {
+    if (m_pControl == 0)
+    {
+        return;
+    }
     // reset the backgroundcolor of the text-control
     m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
 
@@ -492,6 +592,10 @@ void IncrementalSearch::SearchForward(int fromPos)
 
 void IncrementalSearch::SearchBackward(int fromPos)
 {
+    if (m_pControl == 0)
+    {
+        return;
+    }
     // reset the backgroundcolor of the text-control
     m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
 

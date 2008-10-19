@@ -70,6 +70,7 @@ IncrementalSearchConfDlg::IncrementalSearchConfDlg(wxWindow* parent)
 
     // get value from conf-file or predefine them with default value
     XRCCTRL(*this, "chkIncSearchConfCenterText", wxCheckBox)->SetValue(cfg->ReadBool(_T("/incremental_search/center_found_text_on_screen"),true));
+    XRCCTRL(*this, "idIncSearchSelectOnEscape", wxCheckBox)->SetValue(cfg->ReadBool(_T("/incremental_search/select_found_text_on_escape"),false));
     XRCCTRL(*this, "idIncSearchHighlightDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/highlight_default_state"),0));
     XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/selected_default_state"),0));
     XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0));
@@ -128,6 +129,7 @@ void IncrementalSearchConfDlg::SaveSettings()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     cfg->Write(_T("/incremental_search/center_found_text_on_screen"), XRCCTRL(*this, "chkIncSearchConfCenterText", wxCheckBox)->IsChecked());
+    cfg->Write(_T("/incremental_search/select_found_text_on_escape"),XRCCTRL(*this, "idIncSearchSelectOnEscape", wxCheckBox)->IsChecked());
     cfg->Write(_T("/incremental_search/highlight_default_state"),XRCCTRL(*this, "idIncSearchHighlightDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/selected_default_state"),XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/match_case_default_state"),XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->GetSelection());

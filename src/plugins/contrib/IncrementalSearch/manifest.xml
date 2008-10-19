@@ -13,7 +13,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="IncrementalSearch">
         <Value title="IncrementalSearch" />
-        <Value version="0.3" />
+        <Value version="0.4" />
         <Value description="" />
         <Value author="Jens Lody" />
         <Value authorEmail="debian@jenslody.de" />
