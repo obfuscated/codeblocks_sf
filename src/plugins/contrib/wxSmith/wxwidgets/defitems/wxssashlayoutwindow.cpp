@@ -1,6 +1,7 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2008 Ron Collins
+* Copyright (C) 2008 Bartlomiej Swiecki
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -153,7 +154,7 @@ void wxsSashLayoutWindow::OnEnumContainerProperties(long Flags)
     WXS_BOOL(wxsSashLayoutWindow, mRight,  _("Drag Right"),  _("dragright"),  true);
 
     WXS_ENUM(wxsSashLayoutWindow, mAlign,  _("Alignment"),   _T("alignment"),   valign,  nalign,  wxLAYOUT_LEFT);
-    WXS_ENUM(wxsSashLayoutWindow, mOrient, _("Orientation"), _T("rrientation"), vorient, norient, wxLAYOUT_HORIZONTAL);
+    WXS_ENUM(wxsSashLayoutWindow, mOrient, _("Orientation"), _T("orientation"), vorient, norient, wxLAYOUT_HORIZONTAL);
 
 }
 

@@ -1,6 +1,7 @@
 /*
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006-2007  Bartlomiej Swiecki
+* Copyright (C) 2006-2008  Bartlomiej Swiecki
+* Copyright (C) 2008 Ron Collins
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -38,8 +39,21 @@ class wxsGrid: public wxsWidget
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
 
-        long Cols;
-        long Rows;
+        long            m_ColsCount;                ///< \brief Number of columns
+        long            m_RowsCount;                ///< \brief number of rows
+        bool            m_ReadOnly;                 ///< \brief Can edit grid?
+        bool            m_GridLines;                ///< \brief Display grid lines?
+        long            m_LabelRowHeight;           ///< \brief Size of top row of labels
+        long            m_LabelColWidth;            ///< \brief Size of left column of labels
+        long            m_DefaultRowSize;           ///< \brief Default row height
+        long            m_DefaultColSize;           ///< \brief Default col width
+        wxsColourData   m_LabelTextColour;          ///< \brief Colour for all labels
+        wxsFontData     m_LabelFont;                ///< \brief Font for all labels
+
+        wxArrayString   m_ColLabels;                ///< \brief Text for column labels
+        wxArrayString   m_RowLabels;                ///< \brief Text for row labels
+        wxArrayString   m_CellText;                 ///< \brief Text for each cell
+
 };
 
 #endif
