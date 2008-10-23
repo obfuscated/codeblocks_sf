@@ -24,6 +24,38 @@
 
 namespace Expression
 {
+//    Value::Value( const Value& copyFrom )
+//    {
+//        *this = copyFrom;
+//    }
+//
+//    // TODO: is there any other way to make sure that all members of union are copied correctly ?
+//    Value& Value::operator=( const Value& copyFrom )
+//    {
+//        m_Type        = copyFrom.m_Type;
+//        m_SignedInt   = copyFrom.m_SignedInt;
+//        m_UnsignedInt = copyFrom.m_UnsignedInt;
+//        m_Float       = copyFrom.m_Float;
+//        return *this;
+//    }
+
+    bool Value::operator< ( const Value& second ) const
+    {
+        if ( m_Type != second.m_Type )
+        {
+            return m_Type < second.m_Type;
+        }
+
+        switch ( m_Type )
+        {
+            case tSignedInt:   return m_SignedInt   < second.m_SignedInt;
+            case tUnsignedInt: return m_UnsignedInt < second.m_UnsignedInt;
+            case tFloat:       return m_Float       < second.m_Float;
+        }
+
+        assert( false );
+        return true;
+    }
 
     Preprocessed::Preprocessed()
     {
@@ -71,6 +103,11 @@ namespace Expression
                 case Operation::div:           res += wxString::Format( _T("%d: Div\n"), (int)i ); break;
                 case Operation::mod:           res += wxString::Format( _T("%d: Mod\n"), (int)i ); break;
                 case Operation::neg:           res += wxString::Format( _T("%d: Neg\n"), (int)i ); break;
+                case Operation::fnSin:         res += wxString::Format( _T("%d: Sin\n"), (int)i ); break;
+                case Operation::fnCos:         res += wxString::Format( _T("%d: Cos\n"), (int)i ); break;
+                case Operation::fnTan:         res += wxString::Format( _T("%d: Tan\n"), (int)i ); break;
+                case Operation::fnLn:          res += wxString::Format( _T("%d: Ln\n"),  (int)i ); break;
+                case Operation::fnPow:         res += wxString::Format( _T("%d: Pow\n"), (int)i ); break;
                 default:                       res += wxString::Format( _T("%d: ???\n"), (int)i ); break;
             }
         }

@@ -29,6 +29,8 @@
 #include <wx/string.h>
 #include <wx/arrstr.h>
 
+#include <map>
+
 namespace Expression
 {
 
@@ -64,13 +66,13 @@ namespace Expression
 
         private:
 
-            wxString m_ErrorDesc;
-            int      m_ErrorPos;
+            wxString m_ErrorDesc;           ///< \brief Error description if parsing failed
+            int      m_ErrorPos;            ///< \brief Error position if parsing failed
 
-            Preprocessed* m_Output;
+            Preprocessed* m_Output;         ///< \brief Here the output should be stored
 
-            const wxChar* m_StartPos;
-            const wxChar* m_CurrentPos;
+            const wxChar* m_StartPos;       ///< \brief Beginning of the parse buffer
+            const wxChar* m_CurrentPos;     ///< \brief Current parsing positon
 
             typedef Operation::modifier resType;
 
@@ -82,11 +84,12 @@ namespace Expression
             /** \brief One node in the parsed syntactic tree */
             struct ParseTree
             {
-                resType    m_OutType;           ///< \brief Produced type
-                resType    m_InType;            ///< \brief Required type of inputs
-                Operation  m_Op;                ///< \brief Executed operation
-                ParseTree* m_FirstSub;          ///< \brief First input tree (NULL if no first input)
-                ParseTree* m_SecondSub;         ///< \brief Second input tree (NULL if no second input)
+                resType    m_OutType;       ///< \brief Produced type
+                resType    m_InType;        ///< \brief Required type of inputs
+                Operation  m_Op;            ///< \brief Executed operation
+                ParseTree* m_FirstSub;      ///< \brief First input tree (NULL if no first input)
+                ParseTree* m_SecondSub;     ///< \brief Second input tree (NULL if no second input)
+                Value      m_ArgValue;      ///< \brief Value of argument in case of loadArg operation
 
 
                 /** \brief Ctor */
@@ -95,6 +98,7 @@ namespace Expression
                     , m_InType( Operation::modNone )
                     , m_FirstSub( 0 )
                     , m_SecondSub( 0 )
+                    , m_ArgValue( 0 )
                 {}
 
                 /** \brief Dctor - recursively erase the parse tree */
@@ -106,25 +110,49 @@ namespace Expression
                 }
             };
 
+            std::vector< ParseTree* > m_TreeStack;      ///< \brief Current parsing tree
+            std::map< Value, int >    m_ArgMap;         ///< \brief Map for finding argument duplicates
 
-            std::vector< ParseTree* > m_TreeStack;
-
-
-            int m_PiArg;
-            int m_EArg;
-
+            /** \brief Base parsing function */
             void Parse();
-            void Expression();
-            void Add();
-            void Mult();
-            void Unary();
-            void Primary();
-            bool Number();
-            bool Const();
-            bool Memory();
-            void ConstArg( int& argNum, long double value );
 
-            void AddOp(
+            /** \brief Parse at expression level */
+            void Expression();
+
+            /** \brief Parse at additive operations level */
+            void Add();
+
+            /** \brief Parse at multiplying operations level */
+            void Mult();
+
+            /** \brief Parse at unary operators level */
+            void Unary();
+
+            /** \brief Parse at primary expression level */
+            void Primary();
+
+            /** \brief Try to parse number */
+            bool Number();
+
+            /** \brief Try to parse predefined constant */
+            bool Const();
+
+            /** \brief Try to parse memory-accessing expression */
+            bool Memory();
+
+            /** \brief Try to parse function invocation */
+            bool Function();
+
+            /** \brief Generic operation emiting function
+             *  \param subArgs number of sub arguments, must be 0, 1 or 2
+             *  \param op operation code
+             *  \param producedType type of data this operation produces
+             *  \param argumentsType required type of arguments
+             *  \param mod1 first operation modifier (interpretation depends on operation code)
+             *  \param mod2 second operation modifier (interpretation depends on operation code)
+             *  \param opConst const helper value (interpretation depends on operation code)
+             */
+            inline void AddOp(
                 int subArgs,
                 Operation::opCode op,
                 resType producedType,
@@ -133,14 +161,56 @@ namespace Expression
                 Operation::modifier mod2 = Operation::modNone,
                 short opConst = 0 );
 
+            /** \brief Emit operation requiring one argument
+             *  \param op operation code
+             *  \param type produced type
+             *
+             * Following assumptions are given:
+             *  required type <- type,
+             *  produced type <- type,
+             *  mod1 <- type,
+             *  mod2 <- none,
+             *  const <- 0
+             *
+             */
             inline void AddOp1( Operation::opCode op, resType type );
 
+            /** \brief Emit operation requiring one argument
+             *  \param op operation code
+             *
+             * This function works as the other version of AddOp1, type is taken from
+             * the argument value
+             */
             inline void AddOp1( Operation::opCode op );
 
+            /** \brief Emit operation requiring two argument
+             *  \param op operation code
+             *  \param type produced type
+             *
+             * Following assumptions are given:
+             *  required type <- type,
+             *  produced type <- type,
+             *  mod1 <- type,
+             *  mod2 <- none,
+             *  const <- 0
+             *
+             */
             inline void AddOp2( Operation::opCode op, resType type );
 
+            /** \brief Emit operation requiring two argument
+             *  \param op operation code
+             *
+             * This function works as the other version of AddOp1,
+             * type is calculated from HighetType2Top() (more precise type
+             * of two arguments used)
+             */
             inline void AddOp2( Operation::opCode op );
 
+            /** \brief Emit operation that will emit the value on the stack */
+            template< class T >
+            inline void ConstArg( T value, resType type );
+
+            /** \brief Pop argument from tree stack and return it */
             inline ParseTree* PopTreeStack()
             {
                 assert( !m_TreeStack.empty() );
@@ -149,21 +219,30 @@ namespace Expression
                 return ret;
             }
 
+            /** \brief Push argument onto tree stack */
             inline void PushTreeStack( ParseTree* t )
             {
                 m_TreeStack.push_back( t );
             }
 
+            /** \brief Fetch produced type from tree stack at given position */
             inline resType TopType( int pos );
 
+            /** \brief Calculate "higher" (more precise) type from last two arguments on tree stack */
             inline resType HigherType2Top();
 
+            /** \brief Calculate type of top after the negation (unsigned->signed) */
             inline resType TopAfterNeg();
 
+            /** \brief Calculate type of modulo operation at two top arguments on tree stack */
             inline resType ModResult2Top();
 
-            template< typename T >
-            inline int AddArg( T value ) { return m_Output->PushArgument( Value(value) ); }
+            /** \brief Add argument to args code section in produced output
+             *
+             * This function finds duplicates of arguments and retuns previous id
+             * if argument was used before
+             */
+            inline int AddArg( const Value& value );
 
             inline wxChar Get();
             inline wxChar Get( int shift );

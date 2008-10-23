@@ -25,12 +25,14 @@
 #include "ExpressionParser.h"
 #include "ExpressionExecutor.h"
 #include "SelectStoredExpressionDlg.h"
+#include "TestCasesDlg.h"
+
 
 #include <globals.h>
 
 //(*InternalHeaders(ExpressionTester)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 //(*IdInit(ExpressionTester)
@@ -43,6 +45,7 @@ const long ExpressionTester::ID_STATICTEXT4 = wxNewId();
 const long ExpressionTester::ID_STATICTEXT5 = wxNewId();
 const long ExpressionTester::ID_STATICTEXT6 = wxNewId();
 const long ExpressionTester::ID_TEXTCTRL2 = wxNewId();
+const long ExpressionTester::ID_BUTTON4 = wxNewId();
 const long ExpressionTester::ID_BUTTON2 = wxNewId();
 const long ExpressionTester::ID_BUTTON1 = wxNewId();
 //*)
@@ -62,11 +65,11 @@ ExpressionTester::ExpressionTester( wxWindow* parent, FileContentBase* content, 
 void ExpressionTester::BuildContent(wxWindow* parent)
 {
 	//(*Initialize(ExpressionTester)
+	wxFlexGridSizer* FlexGridSizer1;
+	wxBoxSizer* BoxSizer3;
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	wxFlexGridSizer* FlexGridSizer1;
-	wxBoxSizer* BoxSizer3;
 
 	Create(parent, wxID_ANY, _("ExpressionTester"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -96,6 +99,9 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 	FlexGridSizer1->Add(m_Dump, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer1->Add(FlexGridSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+	Button4 = new wxButton(this, ID_BUTTON4, _("Auto test"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
+	Button4->SetToolTip(_("Perform automatic parser and executor test"));
+	BoxSizer2->Add(Button4, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer2->Add(15,9,1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	Button2 = new wxButton(this, ID_BUTTON2, _("\?"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
 	BoxSizer2->Add(Button2, 0, wxRIGHT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
@@ -111,6 +117,7 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 
 	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ExpressionTester::OnButton1Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton3Click);
+	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton4Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton2Click);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton1Click);
 	//*)
@@ -187,4 +194,10 @@ void ExpressionTester::OnButton3Click(wxCommandEvent& event)
         m_Expr->SetValue( dlg.GetExpression() );
         OnButton1Click(event);
     }
+}
+
+void ExpressionTester::OnButton4Click(wxCommandEvent& event)
+{
+    TestCasesDlg dlg( this );
+    dlg.ShowModal();
 }

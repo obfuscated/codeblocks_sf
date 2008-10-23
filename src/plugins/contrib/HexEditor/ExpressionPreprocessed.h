@@ -24,6 +24,7 @@
 #define EXPRESSIONPREPROCESSED_H
 
 #include <vector>
+#include <ostream>
 #include <wx/string.h>
 
 namespace Expression
@@ -42,6 +43,7 @@ namespace Expression
         errorScript,
     };
 
+    /** \brief Holder for value type */
     class Value
     {
         public:
@@ -60,6 +62,8 @@ namespace Expression
             Value( double v             ) { SetFloat( v ); }
             Value( long double v        ) { SetFloat( v ); }
 
+            //Value( const Value& copyFrom );
+
             inline bool IsSignedInt()   { return m_Type == tSignedInt; }
             inline bool IsUnsignedInt() { return m_Type == tUnsignedInt; }
             inline bool IsFloat()       { return m_Type == tFloat; }
@@ -67,6 +71,56 @@ namespace Expression
             inline signed long long   GetSignedInt()   { if ( !IsSignedInt()   ) throw errorType; return m_SignedInt; }
             inline unsigned long long GetUnsignedInt() { if ( !IsUnsignedInt() ) throw errorType; return m_UnsignedInt; }
             inline long double        GetFloat()       { if ( !IsFloat()       ) throw errorType; return m_Float; }
+
+            //Value& operator= ( const Value& copyFrom );
+            bool operator< ( const Value& second ) const;
+
+            template< typename T >
+            inline bool operator== ( T value )
+            {
+                if ( IsSignedInt()   ) return value == (T)m_SignedInt;
+                if ( IsUnsignedInt() ) return value == (T)m_UnsignedInt;
+                if ( IsFloat()       ) return value == (T)m_Float;
+                return false;
+            }
+
+            template< typename T >
+            inline bool operator< ( T value )
+            {
+                if ( IsSignedInt()   ) return value > (T)m_SignedInt;
+                if ( IsUnsignedInt() ) return value > (T)m_UnsignedInt;
+                if ( IsFloat()       ) return value > (T)m_Float;
+                return false;
+            }
+
+            template< typename T >
+            inline bool operator<= ( T value )
+            {
+                if ( IsSignedInt()   ) return value >= (T)m_SignedInt;
+                if ( IsUnsignedInt() ) return value >= (T)m_UnsignedInt;
+                if ( IsFloat()       ) return value >= (T)m_Float;
+                return false;
+            }
+
+            template< typename T >
+            inline bool operator> ( T value )
+            {
+                return !operator<= ( value );
+            }
+
+            template< typename T >
+            inline bool operator>= ( T value )
+            {
+                return !operator< ( value );
+            }
+
+            friend inline std::ostream& operator<< ( std::ostream& out, Value& v )
+            {
+                if ( v.IsSignedInt()   ) out << v.m_SignedInt << "(sint)";
+                if ( v.IsUnsignedInt() ) out << v.m_UnsignedInt << "(uint)";
+                if ( v.IsFloat()       ) out << v.m_Float << "(float)";
+                return out;
+            }
 
         private:
 
@@ -105,12 +159,13 @@ namespace Expression
             }
     };
 
+    /** \brief Structure of one opcode */
     struct Operation
     {
-        // Operation's code
+        /** \brief Operation's code */
         enum opCode
         {
-            //Notyfi aboud the end of the script
+            // Notyfi aboud the end of the script
             endScript = 0,
 
             // Push "current" address onto stack top modified with const argument
@@ -134,7 +189,17 @@ namespace Expression
 
             // Unary operators, pops operand from stack top and push the result
             neg,
-            conv
+            conv,
+
+            // Call to function with one argument, arg popped from the stack, result pushed back
+            fnSin,
+            fnCos,
+            fnTan,
+            fnLn,
+
+            // Call to function with two arguments
+            fnPow,
+
         };
 
         // Argument modifiers
@@ -155,7 +220,7 @@ namespace Expression
             modLongDouble,
         };
 
-        unsigned m_OpCode: 4;
+        unsigned m_OpCode: 8;
         unsigned m_Mod1:   4;
         unsigned m_Mod2:   4;
 

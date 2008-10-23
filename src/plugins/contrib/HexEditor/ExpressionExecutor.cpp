@@ -23,6 +23,7 @@
 #include "ExpressionExecutor.h"
 
 #include <wx/intl.h>
+#include <math.h>
 
 namespace Expression
 {
@@ -115,6 +116,12 @@ namespace Expression
         return true;
     }
 
+    Value Executor::GetResult( )
+    {
+        if ( m_Stack.size() != 1 ) return Value( 0 );
+        return m_Stack.front();
+    }
+
     bool Executor::Run()
     {
         m_Stack.clear();
@@ -191,6 +198,29 @@ namespace Expression
             case Operation::conv:
                 UnaryOp2< Functors::Convert >( op );
                 break;
+
+            case Operation::fnSin:
+                ReplaceStack( Value( sinl( GetStack().GetFloat() ) ) );
+                break;
+
+            case Operation::fnCos:
+                ReplaceStack( Value( cosl( GetStack().GetFloat() ) ) );
+                break;
+
+            case Operation::fnTan:
+                ReplaceStack( Value( tanl( GetStack().GetFloat() ) ) );
+                break;
+
+            case Operation::fnLn:
+                ReplaceStack( Value( logl( GetStack().GetFloat() ) ) );
+                break;
+
+            case Operation::fnPow:
+            {
+                Value p = GetStack(); PopStack();
+                ReplaceStack( Value( powl( GetStack().GetFloat(), p.GetFloat() ) ) );
+                break;
+            }
 
             default:
                 throw errorOperation;

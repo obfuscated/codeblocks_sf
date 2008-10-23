@@ -27,6 +27,12 @@
 namespace Expression
 {
 
+    namespace
+    {
+        const long double CONST_PI = 3.1415926535897932384626433832795028841971L;
+        const long double CONST_E  = 2.7182818284590452353602874713526624977572L;
+    }
+
     const Parser::resType Parser::resNone;
     const Parser::resType Parser::resSignedInt;
     const Parser::resType Parser::resUnsignedInt;
@@ -65,6 +71,10 @@ namespace Expression
         "    float[ <offset> ] - read float\n"
         "    double[ <offset> ] - read double\n"
         "    ldouble[ <offset> ] - read long double\n"
+        "Functions:\n"
+        "    sin(a), cos(a), tan(a), ctg(a) - a is angle in radians\n"
+        "    pow(a, b)\n"
+        "    ln(a), log(a,b)\n"
         "\n"
         "Exapmle:\n"
         "    word[ 4 * dword[ @ ] + 128 ]\n"
@@ -82,8 +92,6 @@ namespace Expression
         m_StartPos = expression.c_str();
         m_CurrentPos = m_StartPos;
         m_TreeStack.clear();
-        m_PiArg = -1;
-        m_EArg = -1;
         output.Clear();
 
         try
@@ -223,6 +231,11 @@ namespace Expression
         }
         else if ( Memory() )
         {
+            EatWhite();
+        }
+        else if ( Function() )
+        {
+            EatWhite();
         }
         else
         {
@@ -232,7 +245,7 @@ namespace Expression
 
     bool Parser::Number()
     {
-        if ( !wxIsdigit( Get() ) ) return false;
+        if ( !wxIsdigit( Get() ) && Get() != _T('.') ) return false;
 
         long long value = 0;
         while ( wxIsdigit( Get() ) )
@@ -241,15 +254,26 @@ namespace Expression
             Next();
         }
 
-        AddOp(
-            0,
-            Operation::loadArg,
-            resSignedInt,
-            resNone,
-            resSignedInt,
-            Operation::modNone,
-            AddArg( value ) );
+        if ( Get() == _T('.') )
+        {
+            Next();
 
+            // We have an floating point number
+            long double fpValue = value;
+            long double fpPlace = 0.1L;
+
+            while ( wxIsdigit( Get() ) )
+            {
+                fpValue = fpValue + fpPlace * ( Get() - _T('0') );
+                fpPlace *= 0.1L;
+                Next();
+            }
+
+            ConstArg( fpValue, resFloat );
+            return true;
+        }
+
+        ConstArg( value, resSignedInt );
         return true;
     }
 
@@ -257,13 +281,74 @@ namespace Expression
     {
         if ( Match( _T("PI") ) )
         {
-            ConstArg( m_PiArg, 3.1415926535897932384626433832795028841971L );
+            ConstArg( CONST_PI, resFloat );
             return true;
         }
 
         if ( Match( _T("E") ) )
         {
-            ConstArg( m_EArg,  2.7182818284590452353602874713526624977572L );
+            ConstArg( CONST_E, resFloat );
+            return true;
+        }
+
+        return false;
+    }
+
+    inline bool Parser::Function()
+    {
+        // Unary functions
+        Operation::opCode code =
+            Match( _T("sin") ) ? Operation::fnSin :
+            Match( _T("cos") ) ? Operation::fnCos :
+            Match( _T("tan") ) ? Operation::fnTan :
+            Match( _T("tg" ) ) ? Operation::fnTan :
+            Match( _T("ln" ) ) ? Operation::fnLn  :
+                                 Operation::endScript;
+
+        if ( code != Operation::endScript )
+        {
+            Require( _T("(") );
+            Expression();
+            Require( _T(")") );
+            AddOp1( code, resFloat );
+            return true;
+        }
+
+        // Simulate ctg from equation: ctg(a) = -tg( a + 90 degrees )
+        if ( Match( _T("ctg") ) )
+        {
+            Require( _T("(") );
+            Expression();
+            Require( _T(")") );
+            ConstArg( CONST_PI / 2, resFloat );
+            AddOp2( Operation::add );
+            AddOp1( Operation::fnTan, resFloat );
+            AddOp1( Operation::neg, resFloat );
+            return true;
+        }
+
+        // binary functinos
+        if ( Match( _T("pow") ) )
+        {
+            Require( _T("(") );
+            Expression();
+            Require( _T(",") );
+            Expression();
+            Require( _T(")") );
+            AddOp2( Operation::fnPow, resFloat );
+            return true;
+        }
+
+        if ( Match( _T("log") ) )
+        {
+            Require( _T("(") );
+            Expression();
+            Require( _T(",") );
+            AddOp1( Operation::fnLn, resFloat );
+            Expression();
+            Require( _T(")") );
+            AddOp1( Operation::fnLn, resFloat );
+            AddOp2( Operation::div );
             return true;
         }
 
@@ -328,25 +413,7 @@ namespace Expression
     }
 
 
-    inline void Parser::ConstArg( int& argNum, long double value )
-    {
-        if ( argNum < 0 )
-        {
-            argNum = AddArg( value );
-        }
-
-        AddOp(
-            0,
-            Operation::loadArg,
-            resFloat,
-            resNone,
-            resFloat,
-            Operation::modNone,
-            argNum );
-    }
-
-
-    void Parser::AddOp( int subArgs, Operation::opCode op, resType producedType, resType argumentsType, Operation::modifier mod1, Operation::modifier mod2, short opConst )
+    inline void Parser::AddOp( int subArgs, Operation::opCode op, resType producedType, resType argumentsType, Operation::modifier mod1, Operation::modifier mod2, short opConst )
     {
         ParseTree* node = new ParseTree;
         node->m_Op.m_OpCode = op;
@@ -369,7 +436,7 @@ namespace Expression
 
     inline void Parser::AddOp1( Operation::opCode op )
     {
-        AddOp1( op, HigherType2Top() );
+        AddOp1( op, TopType( 0 ) );
     }
 
     inline void Parser::AddOp2( Operation::opCode op, resType type )
@@ -382,13 +449,27 @@ namespace Expression
         AddOp2( op, HigherType2Top() );
     }
 
+    template< typename T >
+    inline void Parser::ConstArg( T value, resType type )
+    {
+        ParseTree* node = new ParseTree;
+        node->m_Op.m_OpCode = Operation::loadArg;
+        node->m_Op.m_Mod1 = type;
+        node->m_Op.m_Mod2 = resNone;
+        node->m_Op.m_ConstArgument = 0;
+        node->m_OutType = type;
+        node->m_InType = resNone;
+        node->m_ArgValue = value;
+
+        PushTreeStack( node );
+    }
+
 
     inline Parser::resType Parser::TopType( int pos )
     {
         assert( (int)m_TreeStack.size() > pos );
         return (resType)m_TreeStack[ m_TreeStack.size() - pos - 1 ]->m_OutType;
     }
-
 
     inline Parser::resType Parser::HigherType2Top()
     {
@@ -407,6 +488,14 @@ namespace Expression
         return ( t1 == resUnsignedInt && t2 == resUnsignedInt ) ? resUnsignedInt : resSignedInt;
     }
 
+    inline int Parser::AddArg( const Value& value )
+    {
+        if ( m_ArgMap.find( value ) == m_ArgMap.end() )
+        {
+            m_ArgMap[ value ] = m_Output->PushArgument( value );
+        }
+        return m_ArgMap[ value ];
+    }
 
     inline wxChar Parser::Get()
     {
@@ -488,6 +577,12 @@ namespace Expression
 
     void Parser::GenerateCode( ParseTree* tree )
     {
+        if ( tree->m_Op.m_OpCode == Operation::loadArg )
+        {
+            // We generate args section during GenerateCode phase
+            tree->m_Op.m_ConstArgument = AddArg( tree->m_ArgValue );
+        }
+
         GenerateCodeAndConvert( tree->m_FirstSub,  tree->m_InType );
         GenerateCodeAndConvert( tree->m_SecondSub, tree->m_InType );
         m_Output->PushOperation( tree->m_Op );
@@ -502,9 +597,9 @@ namespace Expression
         {
             // We have to convert the result into new type
             Operation op;
-            op.m_OpCode = Operation::conv;
-            op.m_Mod1 = type;
-            op.m_Mod2 = tree->m_OutType;
+            op.m_OpCode        = Operation::conv;
+            op.m_Mod1          = type;
+            op.m_Mod2          = tree->m_OutType;
             op.m_ConstArgument = 0;
 
             m_Output->PushOperation( op );

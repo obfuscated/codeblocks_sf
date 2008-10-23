@@ -24,11 +24,11 @@
 #define EXPRESSIONTESTER_H
 
 //(*Headers(ExpressionTester)
+#include <wx/dialog.h>
 #include <wx/sizer.h>
+#include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
 //*)
 
 #include "FileContentBase.h"
@@ -43,17 +43,18 @@ class ExpressionTester: public wxDialog
 	private:
 
 		//(*Declarations(ExpressionTester)
-		wxStaticText* StaticText2;
+		wxButton* Button4;
 		wxButton* Button1;
-		wxStaticText* m_Result;
-		wxTextCtrl* m_Expr;
-		wxStaticText* StaticText1;
-		wxStaticText* StaticText3;
+		wxStaticText* m_Parsing;
 		wxButton* Button2;
 		wxButton* Button3;
-		wxStaticText* StaticText4;
-		wxStaticText* m_Parsing;
+		wxStaticText* StaticText1;
+		wxTextCtrl* m_Expr;
+		wxStaticText* StaticText3;
 		wxTextCtrl* m_Dump;
+		wxStaticText* StaticText4;
+		wxStaticText* StaticText2;
+		wxStaticText* m_Result;
 		//*)
 
 		//(*Identifiers(ExpressionTester)
@@ -66,6 +67,7 @@ class ExpressionTester: public wxDialog
 		static const long ID_STATICTEXT5;
 		static const long ID_STATICTEXT6;
 		static const long ID_TEXTCTRL2;
+		static const long ID_BUTTON4;
 		static const long ID_BUTTON2;
 		static const long ID_BUTTON1;
 		//*)
@@ -74,6 +76,7 @@ class ExpressionTester: public wxDialog
 		void OnButton1Click(wxCommandEvent& event);
 		void OnButton2Click(wxCommandEvent& event);
 		void OnButton3Click(wxCommandEvent& event);
+		void OnButton4Click(wxCommandEvent& event);
 		//*)
 
 		FileContentBase* m_Content;

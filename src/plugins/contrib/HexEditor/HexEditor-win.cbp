@@ -61,6 +61,8 @@
 		<Unit filename="ExpressionParser.h" />
 		<Unit filename="ExpressionPreprocessed.cpp" />
 		<Unit filename="ExpressionPreprocessed.h" />
+		<Unit filename="ExpressionTestCases.cpp" />
+		<Unit filename="ExpressionTestCases.h" />
 		<Unit filename="ExpressionTester.cpp" />
 		<Unit filename="ExpressionTester.h" />
 		<Unit filename="FileContentBase.cpp" />
@@ -73,8 +75,13 @@
 		<Unit filename="HexEditor.h" />
 		<Unit filename="SelectStoredExpressionDlg.cpp" />
 		<Unit filename="SelectStoredExpressionDlg.h" />
+		<Unit filename="TestCasesDlg.cpp" />
+		<Unit filename="TestCasesDlg.h" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="wxsmith\SelectStoredExpressionDlg.wxs" />
+		<Unit filename="wxsmith/ExpressionTester.wxs" />
+		<Unit filename="wxsmith/HexEditPanel.wxs" />
+		<Unit filename="wxsmith/SelectStoredExpressionDlg.wxs" />
+		<Unit filename="wxsmith/TestCasesDlg.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
@@ -84,6 +91,7 @@
 					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
 					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
 					<wxDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 

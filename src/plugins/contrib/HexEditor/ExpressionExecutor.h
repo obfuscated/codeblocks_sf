@@ -55,6 +55,7 @@ namespace Expression
             bool GetResult( unsigned long long& val );
             bool GetResult( long long& val );
             bool GetResult( long double& val );
+            Value GetResult();
 
         private:
 
@@ -77,6 +78,12 @@ namespace Expression
             inline void PushStack( const Value& v )
             {
                 m_Stack.push_back( v );
+            }
+
+            inline void ReplaceStack( const Value& v, int pos = 0 )
+            {
+                if ( (unsigned) pos >= m_Stack.size() ) throw errorStackIndex;
+                m_Stack[ m_Stack.size() - pos - 1 ] = v;
             }
 
             template< typename T > Value Content( long long address )
