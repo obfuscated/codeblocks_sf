@@ -122,7 +122,7 @@ namespace Expression
             Value& v = m_CodeArguments[i];
             if ( v.IsFloat() )
             {
-                res += wxString::Format( _T("%d -> Float: %Lf\n"), (int)i, v.GetFloat() );
+                res += wxString::Format( _T("%d -> Float: %f\n"), (int)i, (double)v.GetFloat() );
             }
             else if ( v.IsSignedInt() )
             {

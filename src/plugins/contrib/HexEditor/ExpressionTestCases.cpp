@@ -37,17 +37,17 @@ namespace Expression
         TestValue( _T("1"),   1 );
         TestValue( _T("-1"), -1 );
         TestValue( _T("10"), 10 );
-        TestValue( _T("E - E"), 0 );
+        TestValueEps( _T("E - E"), 0 );
     }
 
     template<>
     void TestCases::Test<4>()
     {
-        TestValue( _T("10.0"), 10 );
-        TestValue( _T("20."),  20 );
-        TestValue( _T("0.1"), 0.1 );
-        TestValue( _T("0.12345432123454321"), 0.12345432123454321 );
-        TestValue( _T(".123"), 0.123 );
+        TestValueEps( _T("10.0"), 10 );
+        TestValueEps( _T("20."),  20 );
+        TestValueEps( _T("0.1"), 0.1 );
+        TestValueEps( _T("0.12345432123454321"), 0.12345432123454321 );
+        TestValueEps( _T(".123"), 0.123 );
     }
 
     template<>
@@ -58,7 +58,7 @@ namespace Expression
         TestValue( _T("3 * 4"), 12 );
         TestValue( _T("5 % 3"),  2 );
         TestValue( _T("5 / 2"),  2 );
-        TestValue( _T("5 / 2."), 2.5 );
+        TestValueEps( _T("5 / 2."), 2.5 );
     }
 
     template<>

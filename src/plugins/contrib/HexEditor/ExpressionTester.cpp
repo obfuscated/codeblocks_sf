@@ -159,7 +159,7 @@ void ExpressionTester::OnButton1Click(wxCommandEvent& event)
             }
             else if ( exec.GetResult( v3 ) )
             {
-                m_Result->SetLabel( wxString::Format( _T("%Lf"), v3 ) );
+                m_Result->SetLabel( wxString::Format( _T("%f"), (double)v3 ) );
             }
             else
             {
