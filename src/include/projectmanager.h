@@ -240,6 +240,11 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * the user-selected build targets.
           */
         int AddMultipleFilesToProject(const wxArrayString& filelist, cbProject* project, wxArrayInt& targets);
+        /** Remove a file from a project.
+          * @param pfile The file to remove from the project.
+          * @param project The project to remove this file from. If NULL, the active project is used.
+          */
+        void RemoveFileFromProject(ProjectFile* pfile, cbProject* project);
         /** Utility function. Displays a single selection list of a project's
           * build targets to choose from.
           * @param project The project to use. If NULL, the active project is used.
