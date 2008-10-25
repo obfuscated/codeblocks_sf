@@ -595,7 +595,7 @@ wxPdfFontTrueType::UpdateUsedChars(const wxString& s)
       m_usedChars->Add(ch);
     }
   }
-  delete mbstr;
+  delete [] mbstr;
 }
 
 int
