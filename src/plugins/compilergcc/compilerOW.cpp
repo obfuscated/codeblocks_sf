@@ -117,7 +117,7 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("optimize floating-point for Pentium"), wxT("-fp5"), category);
     m_Options.AddOption(wxT("optimize floating-point for Pentium Pro"), wxT("-fp6"), category);
 
-    category = wxT("Compiler options");
+    category = wxT("Executable type options");
 
     m_Options.AddOption(wxT("compile and link for DOS"), wxT("-bcl=dos"), category);
     m_Options.AddOption(wxT("compile and link for Linux"), wxT("-bcl=linux"), category);
@@ -125,6 +125,8 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("compile and link for OS/2"), wxT("-bcl=os2"), category);
     m_Options.AddOption(wxT("compile and link for QNX"), wxT("-bcl=qnx"), category);
     m_Options.AddOption(wxT("compile and link for Windows"), wxT("-bcl=windows"), category);
+
+    category = wxT("Object type options");
 
     m_Options.AddOption(wxT("compile for DOS"), wxT("-bt=dos"), category);
     m_Options.AddOption(wxT("compile for Linux"), wxT("-bt=linux"), category);
@@ -135,6 +137,7 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("compile for QNX"), wxT("-bt=qnx"), category);
     m_Options.AddOption(wxT("compile for Windows"), wxT("-bt=windows"), category);
 
+    category = wxT("Compiler options");
 
     m_Options.AddOption(wxT("generate browsing information"), wxT("-db"), category);
     m_Options.AddOption(wxT("set error limit number (set ERROR_LIMIT in custom variables)"), wxT("-e=$(ERROR_LIMIT)"), category);
@@ -162,16 +165,7 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("(C++) check for 8.3 file names"), wxT("-ft"), category);
     m_Options.AddOption(wxT("(C++) no check for 8.3 file names"), wxT("-fx"), category);
     m_Options.AddOption(wxT("set code group name (define CODEGROUP in custom variables)"), wxT("-g=$(CODEGROUP)"), category);
-    m_Options.AddOption(wxT("codeview debug format"), wxT("-hc"), category);
-    m_Options.AddOption(wxT("dwarf debug format"), wxT("-hd"), category);
-    m_Options.AddOption(wxT("watcom debug format"), wxT("-hw"), category);
     m_Options.AddOption(wxT("change char default to signed"), wxT("-j"), category);
-    m_Options.AddOption(wxT("memory model flat"), wxT("-mf"), category);
-    m_Options.AddOption(wxT("memory model small"), wxT("-ms"), category);
-    m_Options.AddOption(wxT("memory model medium"), wxT("-mm"), category);
-    m_Options.AddOption(wxT("memory model compact"), wxT("-mc"), category);
-    m_Options.AddOption(wxT("memory model large"), wxT("-ml"), category);
-    m_Options.AddOption(wxT("memory model huge"), wxT("-mh"), category);
     m_Options.AddOption(wxT("set CODE class name (define CODECLASS in custom variables)"), wxT("-nc=$(CODECLASS)"), category);
     m_Options.AddOption(wxT("set data segment name (define DATANAME in custom variables)"), wxT("-nd=$(DATANAME)"), category);
     m_Options.AddOption(wxT("set module name (define MODULENAME in custom variables)"), wxT("-nm=$(MODULENAME)"), category);
@@ -183,14 +177,6 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("touch stack through SS first"), wxT("-st"), category);
     m_Options.AddOption(wxT("output func declarations to .def"), wxT("-v"), category);
     m_Options.AddOption(wxT("VC++ compat: alloca allowed in arg lists"), wxT("-vcap"), category);
-    m_Options.AddOption(wxT("set warning level to 0 (suppress warnings)"), wxT("=w=0"), category);
-    m_Options.AddOption(wxT("set warning level to 1"), wxT("-w=1"), category);
-    m_Options.AddOption(wxT("set warning level to 2"), wxT("-w=2"), category);
-    m_Options.AddOption(wxT("set warning level to 3"), wxT("-w=3"), category);
-    m_Options.AddOption(wxT("disable warning message (define DIS_WARN in custom variables)"), wxT("-wcd=$(DIS_WARN)"), category);
-    m_Options.AddOption(wxT("enable warning message (define ENA_WARN in custom variables)"), wxT("-wce=$(ENA_WARN)"), category);
-    m_Options.AddOption(wxT("treat all warnings as errors"), wxT("-we"), category);
-    m_Options.AddOption(wxT("set warning level to max"), wxT("-wx"), category);
     m_Options.AddOption(wxT("(C++) enable RTTI"), wxT("-xr"), category);
     m_Options.AddOption(wxT("disable language extensions (ANSI/ISO compliance)"), wxT("-za"), category);
     m_Options.AddOption(wxT("enable language extensions"), wxT("-ze"), category);
@@ -230,6 +216,26 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("generate code for MS Windows"), wxT("-zw"), category);
     m_Options.AddOption(wxT("remove @size from __stdcall func."), wxT("-zz"), category);
 
+    category = wxT("Memory model options");
+
+    m_Options.AddOption(wxT("memory model flat"), wxT("-mf"), category);
+    m_Options.AddOption(wxT("memory model small"), wxT("-ms"), category);
+    m_Options.AddOption(wxT("memory model medium"), wxT("-mm"), category);
+    m_Options.AddOption(wxT("memory model compact"), wxT("-mc"), category);
+    m_Options.AddOption(wxT("memory model large"), wxT("-ml"), category);
+    m_Options.AddOption(wxT("memory model huge"), wxT("-mh"), category);
+
+    category = wxT("Warning options");
+
+    m_Options.AddOption(wxT("set warning level to 0 (suppress warnings)"), wxT("-w=0"), category);
+    m_Options.AddOption(wxT("set warning level to 1"), wxT("-w=1"), category);
+    m_Options.AddOption(wxT("set warning level to 2"), wxT("-w=2"), category);
+    m_Options.AddOption(wxT("set warning level to 3"), wxT("-w=3"), category);
+    m_Options.AddOption(wxT("disable warning message (define DIS_WARN in custom variables)"), wxT("-wcd=$(DIS_WARN)"), category);
+    m_Options.AddOption(wxT("enable warning message (define ENA_WARN in custom variables)"), wxT("-wce=$(ENA_WARN)"), category);
+    m_Options.AddOption(wxT("treat all warnings as errors"), wxT("-we"), category);
+    m_Options.AddOption(wxT("set warning level to max"), wxT("-wx"), category);
+
     category = wxT("Debugging options");
 
     m_Options.AddOption(wxT("no debugging information"), wxT("-d0"), category);
@@ -242,6 +248,9 @@ void CompilerOW::Reset()
     m_Options.AddOption(wxT("full symbolic debugging with unreferenced type names"), wxT("-d3"), category);
     m_Options.AddOption(wxT("(C++) d3 plus debug inlines; emit inlines as external out-of-line functions"), wxT("-d3i"), category);
     m_Options.AddOption(wxT("(C++) d3 plus debug inlines; emit inlines as static out-of-line functions"), wxT("-d3s"), category);
+    m_Options.AddOption(wxT("codeview debug format"), wxT("-hc"), category);
+    m_Options.AddOption(wxT("dwarf debug format"), wxT("-hd"), category);
+    m_Options.AddOption(wxT("watcom debug format"), wxT("-hw"), category);
 
     category = wxT("Optimization options");
 

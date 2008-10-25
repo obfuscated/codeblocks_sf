@@ -26,6 +26,12 @@ class CompilerOWGenerator : public CompilerCommandGenerator
         wxString MapTargetType(const wxString& Opt, int target_type);
         // This maps debug related compiler options to wlink.exe options
         wxString MapDebugOptions(const wxString& Opt);
+        // Open Watcom supports: Watcom debugger, Dwarf (default), CodeView
+        void MapDebuggerOptions(const wxString& Opt);
+
+    private:
+        // Debugger name which will later be used in MapDebugOptions
+        wxString m_DebuggerType;
 };
 
 
