@@ -2523,7 +2523,11 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
 
         if(name != new_name)
         {
+        #ifdef __WXMSW__
+            if (!wxRenameFile(path + name, path + new_name, true))
+        #else
             if (!wxRenameFile(path + name, path + new_name, false))
+        #endif
             {
                 wxBell();
                 return;
