@@ -1192,7 +1192,7 @@ int DebuggerGDB::DoDebug()
     if (cmdexe.IsEmpty())
     {
         cbMessageBox(_("The debugger executable is not set.\n"
-                       "To set it, go to \"Settings/Compiler and debugger\", switch to the \"Programs\" tab,\n"
+                       "To set it, go to \"Settings/Compiler and debugger\", switch to the \"Toolchain executables\" tab,\n"
                        "and select the debugger program."), _("Error"), wxICON_ERROR);
         msgMan->Log(_("Aborted"), m_PageIndex);
         m_Canceled = true;
