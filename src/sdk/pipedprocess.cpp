@@ -171,8 +171,6 @@ void PipedProcess::ForfeitStreams()
 
 bool PipedProcess::HasInput()
 {
-    bool hasInput = false;
-
     if (IsErrorAvailable())
     {
         cbTextInputStream serr(*GetErrorStream());
@@ -185,7 +183,7 @@ bool PipedProcess::HasInput()
 		wxPostEvent(m_Parent, event);
 // 		m_Parent->ProcessEvent(event);
 
-        hasInput = true;
+        return true;
     }
 
     if (IsInputAvailable())
@@ -200,10 +198,10 @@ bool PipedProcess::HasInput()
 		wxPostEvent(m_Parent, event);
 // 		m_Parent->ProcessEvent(event);
 
-        hasInput = true;
+        return true;
     }
 
-    return hasInput;
+    return false;
 }
 
 void PipedProcess::OnTerminate(int pid, int status)
