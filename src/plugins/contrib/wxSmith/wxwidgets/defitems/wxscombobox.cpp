@@ -34,6 +34,7 @@ namespace
         WXS_ST(wxCB_SORT)
         WXS_ST(wxCB_READONLY)
         WXS_ST(wxCB_DROPDOWN)
+        WXS_ST(wxTE_PROCESS_ENTER)
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 
