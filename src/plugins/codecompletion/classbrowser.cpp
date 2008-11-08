@@ -87,6 +87,9 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
     m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
+    
+    if (platform::windows)
+		m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
 	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
 
