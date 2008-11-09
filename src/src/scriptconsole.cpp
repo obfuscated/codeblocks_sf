@@ -77,7 +77,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
 	Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
-	txtCommand = new wxComboBox(Panel1, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
+	txtCommand = new wxComboBox(Panel1, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN|wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_COMBOBOX1"));
 	wxFont txtCommandFont(10,wxMODERN,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
 	txtCommand->SetFont(txtCommandFont);
 	BoxSizer2->Add(txtCommand, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);

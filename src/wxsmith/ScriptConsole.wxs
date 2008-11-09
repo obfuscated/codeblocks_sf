@@ -24,6 +24,7 @@
 									<size>10</size>
 									<family>modern</family>
 								</font>
+								<style>wxCB_DROPDOWN|wxTE_PROCESS_ENTER</style>
 								<handler function="OnbtnExecuteClick" entry="EVT_TEXT_ENTER" />
 							</object>
 							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
