@@ -49,9 +49,9 @@ namespace
 
     const wxChar* NamesPtr[ResourcesCount] =
     {
-        _T("wxDialog"),
-        _T("wxFrame"),
-        _T("wxPanel")
+        _("wxDialog"),
+        _("wxFrame"),
+        _("wxPanel")
     };
 
     wxArrayString Names(ResourcesCount,NamesPtr);

@@ -128,7 +128,7 @@ void wxsResourceFactory::BuildSmithMenu(wxMenu* menu)
     for ( HashT::iterator i=m_Hash.begin(); i!=m_Hash.end(); ++i )
     {
         if ( i->second.m_Factory == 0 ) continue;
-        wxString MenuEntry = _T("Add ") + i->first;
+        wxString MenuEntry = _("Add ") + i->first;
         menu->Append(i->second.m_MenuId,MenuEntry);
     }
 }

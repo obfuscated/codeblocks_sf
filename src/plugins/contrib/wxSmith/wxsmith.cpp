@@ -269,7 +269,7 @@ void wxSmith::BuildMenu(wxMenuBar* menuBar)
 	}
 
 	// Generate entries in "view" menu
-    int idx = menuBar->FindMenu(_("View"));
+    int idx = menuBar->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
         wxMenu* view = menuBar->GetMenu(idx);
