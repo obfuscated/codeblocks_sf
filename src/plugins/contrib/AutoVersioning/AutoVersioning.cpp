@@ -108,7 +108,7 @@ void AutoVersioning::OnRelease(bool appShutDown)
 
 void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
 {
-    int idProject = menuBar->FindMenu(_("Project"));
+    int idProject = menuBar->FindMenu(_("&Project"));
     if (idProject != wxNOT_FOUND)
     {
         wxMenu* project = menuBar->GetMenu(idProject);
