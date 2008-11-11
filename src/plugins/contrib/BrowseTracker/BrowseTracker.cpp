@@ -413,7 +413,7 @@ void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
 {
     m_pMenuBar = menuBar;
 
-	int idx = menuBar->FindMenu(_("View"));
+	int idx = menuBar->FindMenu(_("&View"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
