@@ -95,7 +95,7 @@ void ProjectsImporter::BuildMenu(wxMenuBar* menuBar)
     {
         int menuId = 0, id = 0;
         wxMenuItemList menuItems = fileMenu->GetMenuItems();
-        menuId = fileMenu->FindItem(_T("Recent files"));
+        menuId = fileMenu->FindItem(_T("R&ecent files"));
         wxMenuItem* recentFileItem = fileMenu->FindItem(menuId);
         id = menuItems.IndexOf(recentFileItem);
         id = (id == wxNOT_FOUND) ? 7 : ++id;
