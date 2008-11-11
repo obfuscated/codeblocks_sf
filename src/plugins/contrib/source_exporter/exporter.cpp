@@ -94,7 +94,7 @@ void Exporter::BuildMenu(wxMenuBar *menuBar)
 
   // decide where to insert in "File" menu
   size_t printPos = file->GetMenuItemCount() - 4; // the default location
-  int printID = file->FindItem(_("Print"));
+  int printID = file->FindItem(_("Print..."));
 
   if (printID != wxNOT_FOUND)
   {
