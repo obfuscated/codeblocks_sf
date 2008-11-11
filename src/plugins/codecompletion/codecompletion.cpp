@@ -277,7 +277,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Search menu!"));
 
     // add the classbrowser window in the "View" menu
-    int idx = menuBar->FindMenu(_("View"));
+    int idx = menuBar->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
         m_ViewMenu = menuBar->GetMenu(idx);
@@ -1691,11 +1691,11 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     {
         return;
     }
-    
+
     // prepare a boolean filter for declaration/implementation
     bool isDecl = event.GetId() == idGotoDeclaration || event.GetId() == idMenuGotoDeclaration;
     bool isImpl = event.GetId() == idGotoImplementation || event.GetId() == idMenuGotoImplementation;
-    
+
     // get the matching set
     Token* token = 0;
     TokenIdxSet result;

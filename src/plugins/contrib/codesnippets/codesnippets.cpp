@@ -340,7 +340,7 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
     GetConfig()->m_pMenuBar = menuBar;
     bool isSet = false;
 
-	int idx = menuBar->FindMenu(_("View"));
+	int idx = menuBar->FindMenu(_("&View"));
 	if (idx != wxNOT_FOUND) do
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);

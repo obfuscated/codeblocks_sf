@@ -153,7 +153,7 @@ void ToDoList::OnRelease(bool appShutDown)
 
 void ToDoList::BuildMenu(wxMenuBar* menuBar)
 {
-    int idx = menuBar->FindMenu(_("View"));
+    int idx = menuBar->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
         wxMenu* view = menuBar->GetMenu(idx);

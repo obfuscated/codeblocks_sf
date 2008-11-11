@@ -273,7 +273,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 	//Append any items you need in the menu...
 	//NOTE: Be careful in here... The application's menubar is at your disposal.
 	size_t i;
-	int idx = menuBar->FindMenu(wxT("View"));
+	int idx = menuBar->FindMenu(wxT("&View"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);

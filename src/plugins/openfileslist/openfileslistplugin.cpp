@@ -144,7 +144,7 @@ void OpenFilesListPlugin::BuildMenu(wxMenuBar* menuBar)
         return;
 
     // add the open files list in the "View" menu
-    int idx = menuBar->FindMenu(_("View"));
+    int idx = menuBar->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
         m_ViewMenu = menuBar->GetMenu(idx);
