@@ -123,6 +123,7 @@ void IncrementalSearch::OnRelease(bool appShutDown)
     {
         cfg->Write(_T("/incremental_search/match_case"),m_flags & wxSCI_FIND_MATCHCASE);
     }
+    // TODO : KILLERBOT : menu entries should be removed, right ?????
 }
 
 cbConfigurationPanel* IncrementalSearch::GetConfigurationPanel(wxWindow* parent)
@@ -144,7 +145,7 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
     {
         return;
     }
-    int idx = menuBar->FindMenu(_("Search"));
+    int idx = menuBar->FindMenu(_("Sea&rch"));
     if (idx != wxNOT_FOUND)
     {
         wxMenu* menu = menuBar->GetMenu(idx);

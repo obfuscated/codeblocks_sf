@@ -215,16 +215,16 @@ void ThreadSearch::OnRelease(bool appShutDown)
 	// Removes Thread search menu item from the View menu
 	RemoveMenuItems();
 
-	m_pToolbar = NULL;
+	m_pToolbar = 0;
 
-	if ( m_pThreadSearchView != NULL )
+	if ( m_pThreadSearchView != 0 )
 	{
 		m_pViewManager->RemoveViewFromManager();
 		m_pThreadSearchView->Destroy();
 	}
 
 	delete m_pViewManager;
-	m_pViewManager = NULL;
+	m_pViewManager = 0;
 }
 
 
@@ -298,7 +298,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 		}
 	}
 
-	idx = menuBar->FindMenu(wxT("Search"));
+	idx = menuBar->FindMenu(wxT("Sea&rch"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);
@@ -330,21 +330,21 @@ void ThreadSearch::RemoveMenuItems()
 {
 	// Removes 'Thread search' item from View and Search menu
 	wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-	int idx = menuBar->FindMenu(wxT("View"));
+	int idx = menuBar->FindMenu(wxT("&View"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
-		if ( viewMenu != NULL )
+		if ( viewMenu != 0 )
 		{
 			viewMenu->Remove(idMenuViewThreadSearch);
 		}
 	}
 
-	idx = menuBar->FindMenu(wxT("Search"));
+	idx = menuBar->FindMenu(wxT("Sea&rch"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* searchMenu = menuBar->GetMenu(idx);
-		if ( searchMenu != NULL )
+		if ( searchMenu != 0 )
 		{
 			searchMenu->Remove(idMenuSearchThreadSearch);
 		}
