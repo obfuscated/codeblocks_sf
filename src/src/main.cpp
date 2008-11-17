@@ -1334,10 +1334,12 @@ void MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
     {
         SetToolBar(0);
 
-#ifdef __WXMSW__
+#if defined __WXMSW__ && !wxCHECK_VERSION(2, 8, 9)
         // HACK: for all windows versions (including XP *without* using a manifest file),
         //       the best size for a toolbar is not correctly calculated by wxWidgets/wxAUI/whatever.
         //       so we try to help the situation a little. It's not perfect, but it works.
+        // not needed for versions >= 2.8.9: fixed in upstream, toolbars with standard-controls
+        // are much too large with it (at least on w2k).
         if (!UsesCommonControls6()) // all windows versions, including XP without a manifest file
         {
             // calculate the total width of all wxWindow* in the toolbar (if any)
@@ -1645,6 +1647,10 @@ void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& pref
 
         case 3: // vc8
             nbstyle = wxFNB_VC8;
+            break;
+
+        case 4: // ff2
+            nbstyle = wxFNB_FF2;
             break;
 
         default:

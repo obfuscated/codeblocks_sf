@@ -260,9 +260,11 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     // commenting it out fixes the problem (along with some XRC surgery)
     // if this causes problems with earlier wx versions we might need to
     // add a platform/version #ifdef...
+    // the former commented out code leads to problems with wxGTK (parts of long static texts not shown)
+    // seems to work without the comments on wx2.8.9 on linux and windows
 
     // make sure everything is laid out properly
-//    GetSizer()->SetSizeHints(this);
+    GetSizer()->SetSizeHints(this);
 }
 
 EditorConfigurationDlg::~EditorConfigurationDlg()
