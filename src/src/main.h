@@ -307,7 +307,7 @@ class MainFrame : public wxFrame
         EditorManager* m_pEdMan;
         ProjectManager* m_pPrjMan;
         LogManager* m_pMsgMan;
-        InfoPane *infoPane;
+        InfoPane *m_pInfoPane;
 
         wxToolBar* m_pToolbar;
         PluginToolbarsMap m_PluginsTools;

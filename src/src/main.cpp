@@ -453,7 +453,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pEdMan(0L),
        m_pPrjMan(0L),
        m_pMsgMan(0L),
-       infoPane(0),
+       m_pInfoPane(0L),
        m_pToolbar(0L),
        m_ToolsMenu(0L),
        m_HelpPluginsMenu(0L),
@@ -670,8 +670,8 @@ void MainFrame::SetupGUILogging()
 
     if(!Manager::IsBatchBuild())
     {
-        infoPane = new InfoPane(this);
-        m_LayoutManager.AddPane(infoPane, wxAuiPaneInfo().
+        m_pInfoPane = new InfoPane(this);
+        m_LayoutManager.AddPane(m_pInfoPane, wxAuiPaneInfo().
                                   Name(wxT("MessagesPane")).Caption(_("Logs & others")).
                                   BestSize(wxSize(clientsize.GetWidth(), bottomH)).//MinSize(wxSize(50,50)).
                                   Bottom());
@@ -680,16 +680,16 @@ void MainFrame::SetupGUILogging()
 
         for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
         {
-            if((log = mgr->Slot(i).GetLogger()->CreateControl(infoPane)))
-                infoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
+            if((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
+                m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
         }
     }
     else
     {
         m_pBatchBuildDialog = new BatchLogWindow(this, _("Batch build"));
         wxSizer* s = new wxBoxSizer(wxVERTICAL);
-        infoPane = new InfoPane(m_pBatchBuildDialog);
-        s->Add(infoPane, 1, wxEXPAND);
+        m_pInfoPane = new InfoPane(m_pBatchBuildDialog);
+        s->Add(m_pInfoPane, 1, wxEXPAND);
         m_pBatchBuildDialog->SetSizer(s);
 
         // setting &g_null_log causes the app to crash on exit for some reason...
@@ -698,7 +698,7 @@ void MainFrame::SetupGUILogging()
     }
 
     mgr->NotifyUpdate();
-    infoPane->SetDropTarget(new wxMyFileDropTarget(this));
+    m_pInfoPane->SetDropTarget(new wxMyFileDropTarget(this));
 }
 
 
@@ -1111,7 +1111,7 @@ void MainFrame::LoadWindowState()
 
     // load manager and messages selected page
     Manager::Get()->GetProjectManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
-    infoPane->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
+    m_pInfoPane->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
 #ifndef __WXMAC__
     int x = 0;
@@ -1154,7 +1154,7 @@ void MainFrame::SaveWindowState()
 
     // save manager and messages selected page
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetProjectManager()->GetNotebook()->GetSelection());
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), infoPane->GetSelection());
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), m_pInfoPane->GetSelection());
 
     // save window size and position
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/maximized"), IsMaximized());
@@ -1681,7 +1681,7 @@ void MainFrame::DoUpdateEditorStyle()
     wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
     DoUpdateEditorStyle(fn, _T("editor"), wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_X_ON_TAB | wxFNB_NO_X_BUTTON);
 
-    fn = infoPane;
+    fn = m_pInfoPane;
     DoUpdateEditorStyle(fn, _T("message"), wxFNB_NO_X_BUTTON);
 
     fn = Manager::Get()->GetProjectManager()->GetNotebook();
@@ -2647,7 +2647,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
         SaveWindowState();
 
     m_LayoutManager.DetachPane(Manager::Get()->GetProjectManager()->GetNotebook());
-    m_LayoutManager.DetachPane(infoPane);
+    m_LayoutManager.DetachPane(m_pInfoPane);
     m_LayoutManager.DetachPane(Manager::Get()->GetEditorManager()->GetNotebook());
 
     m_LayoutManager.UnInit();
@@ -2663,8 +2663,8 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     if (!Manager::IsBatchBuild())
     {
-        infoPane->Destroy();
-        infoPane = 0;
+        m_pInfoPane->Destroy();
+        m_pInfoPane = 0L;
     }
 
     Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
@@ -3702,6 +3702,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     if (m_pToolbar)
     {
         m_pToolbar->EnableTool(idFileSave, ed && ed->GetModified());
+        m_pToolbar->EnableTool(idFileSaveAllFiles, canSaveFiles);
         m_pToolbar->EnableTool(idFileSaveAll, canSaveAll);
         m_pToolbar->EnableTool(idFilePrint, Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
     }
@@ -3824,7 +3825,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     bool manVis = m_LayoutManager.GetPane(Manager::Get()->GetProjectManager()->GetNotebook()).IsShown();
 
     mbar->Check(idViewManager, manVis);
-    mbar->Check(idViewLogManager, m_LayoutManager.GetPane(infoPane).IsShown());
+    mbar->Check(idViewLogManager, m_LayoutManager.GetPane(m_pInfoPane).IsShown());
     mbar->Check(idViewStatusbar, GetStatusBar() && GetStatusBar()->IsShown());
     mbar->Check(idViewScriptConsole, m_LayoutManager.GetPane(m_pScriptConsole).IsShown());
     mbar->Check(idViewFullScreen, IsFullScreen());
@@ -3917,7 +3918,7 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
     if (event.GetId() == idViewManager)
         win = Manager::Get()->GetProjectManager()->GetNotebook();
     else if (event.GetId() == idViewLogManager)
-        win = infoPane;
+        win = m_pInfoPane;
     else if (event.GetId() == idViewToolMain)
         win = m_pToolbar;
     else
@@ -4233,12 +4234,12 @@ void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)
         return;
     wxWindow* p = event.window;
     if (p)
-        infoPane->AddNonLogger(p, event.title, event.icon);
+        m_pInfoPane->AddNonLogger(p, event.title, event.icon);
     else
     {
-        p = event.logger->CreateControl(infoPane);
+        p = event.logger->CreateControl(m_pInfoPane);
         if(p)
-            infoPane->AddLogger(event.logger, p, event.title, event.icon);
+            m_pInfoPane->AddLogger(event.logger, p, event.title, event.icon);
     }
     Manager::Get()->GetLogManager()->NotifyUpdate();
 }
@@ -4248,17 +4249,17 @@ void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
     if (Manager::IsAppShuttingDown())
         return;
     if (event.window)
-        infoPane->RemoveNonLogger(event.window);
+        m_pInfoPane->RemoveNonLogger(event.window);
     else
-        infoPane->DeleteLogger(event.logger);
+        m_pInfoPane->DeleteLogger(event.logger);
 }
 
 void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
 {
     if (event.window)
-        infoPane->ShowNonLogger(event.window);
+        m_pInfoPane->ShowNonLogger(event.window);
     else if (event.logger)
-        infoPane->Show(event.logger);
+        m_pInfoPane->Show(event.logger);
 }
 
 void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)
@@ -4266,7 +4267,7 @@ void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)
     if (!m_AutoHideLogs)
         return;
 
-    m_LayoutManager.GetPane(infoPane).Show(true);
+    m_LayoutManager.GetPane(m_pInfoPane).Show(true);
     DoUpdateLayout();
 }
 
@@ -4275,7 +4276,7 @@ void MainFrame::OnHideLogManager(CodeBlocksLogEvent& event)
     if (!m_AutoHideLogs || m_AutoHideLockCounter > 0)
         return;
 
-    m_LayoutManager.GetPane(infoPane).Show(false);
+    m_LayoutManager.GetPane(m_pInfoPane).Show(false);
     DoUpdateLayout();
 }
 
@@ -4292,7 +4293,7 @@ void MainFrame::OnUnlockLogManager(CodeBlocksLogEvent& event)
         return;
     if (--m_AutoHideLockCounter == 0)
     {
-        m_LayoutManager.GetPane(infoPane).Show(false);
+        m_LayoutManager.GetPane(m_pInfoPane).Show(false);
         DoUpdateLayout();
     }
 }
