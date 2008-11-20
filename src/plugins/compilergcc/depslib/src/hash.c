@@ -263,7 +263,11 @@ hashstat( struct hash *hp )
 		run = here;
 	}
 
+#ifdef __LP64__ // avoid warning on 64-bit machines
+	printf( "%s table: %d+%d+%d (%dK+%luK) items+table+hash, %f density\n",
+#else
 	printf( "%s table: %d+%d+%d (%dK+%dK) items+table+hash, %f density\n",
+#endif
 		hp->name, 
 		count, 
 		hp->items.nel,
