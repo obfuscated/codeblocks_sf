@@ -81,7 +81,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAutoCompDelete"),      EditorConfigurationDlg::OnAutoCompDelete)
     EVT_CHECKBOX(XRCID("chkDynamicWidth"),      EditorConfigurationDlg::OnDynamicCheck)
     EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),  EditorConfigurationDlg::OnHighlightOccurrences)
-    EVT_BUTTON(XRCID("btnHighlightColour"),         EditorConfigurationDlg::OnHighlightColour)
+    EVT_BUTTON(XRCID("btnHighlightColour"),         EditorConfigurationDlg::OnChooseColour)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -992,21 +992,4 @@ void EditorConfigurationDlg::OnHighlightOccurrences(wxCommandEvent& event)
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable( event.IsChecked() );
     XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable( event.IsChecked() );
     XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable( event.IsChecked() );
-}
-
-void EditorConfigurationDlg::OnHighlightColour(wxCommandEvent& event)
-{
-    wxColourDialog highlightColourDlg(this);
-    highlightColourDlg.Centre();
-    int result = highlightColourDlg.ShowModal();
-
-    if (result == wxID_OK)
-    {
-        wxColour highlightColour = highlightColourDlg.GetColourData().GetColour();
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-        cfg->Write(_T("/highlight_occurrence/colour_red_value"),    static_cast<int>(highlightColour.Red())    );
-        cfg->Write(_T("/highlight_occurrence/colour_green_value"),  static_cast<int>(highlightColour.Green())  );
-        cfg->Write(_T("/highlight_occurrence/colour_blue_value"),   static_cast<int>(highlightColour.Blue())   );
-        XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(highlightColour);
-    }
 }

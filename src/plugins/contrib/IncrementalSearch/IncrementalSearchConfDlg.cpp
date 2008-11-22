@@ -82,46 +82,16 @@ IncrementalSearchConfDlg::~IncrementalSearchConfDlg()
 
 void IncrementalSearchConfDlg::OnChooseColour(wxCommandEvent& event)
 {
-    wxColourDialog tempColourDlg(this);
-    tempColourDlg.Centre();
-    wxString strEntry = _T("");
-    wxButton* pButton = 0L;
+    wxColourData data;
+    wxWindow* sender = FindWindowById(event.GetId());
+    data.SetColour(sender->GetBackgroundColour());
 
-    if (event.GetId() == XRCID("btnIncSearchConfColourFound"))
+    wxColourDialog dlg(this, &data);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
     {
-        strEntry = _T("text_found");
-        pButton=XRCCTRL(*this, "btnIncSearchConfColourFound", wxButton);
-    }
-    else if (event.GetId() == XRCID("btnIncSearchConfColourHighlight"))
-    {
-        strEntry = _T("highlight");
-        pButton=XRCCTRL(*this, "btnIncSearchConfColourHighlight", wxButton);
-    }
-    else if (event.GetId() == XRCID("btnIncSearchConfNotFoundBG"))
-    {
-        strEntry = _T("text_not_found");
-        pButton=XRCCTRL(*this, "btnIncSearchConfNotFoundBG", wxButton);
-    }
-    else if (event.GetId() == XRCID("btnIncSearchConfWrappedBG"))
-    {
-        strEntry = _T("wrapped");
-        pButton=XRCCTRL(*this, "btnIncSearchConfWrappedBG", wxButton);
-    }
-
-
-    if (pButton && !strEntry.empty())
-    {
-        const int result = tempColourDlg.ShowModal();
-
-        if (result == wxID_OK)
-        {
-            wxColour tempColour = tempColourDlg.GetColourData().GetColour();
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-            cfg->Write(_T("/incremental_search/")+strEntry+_T("_colour_red_value"),    static_cast<int>(tempColour.Red())    );
-            cfg->Write(_T("/incremental_search/")+strEntry+_T("_colour_green_value"),  static_cast<int>(tempColour.Green())  );
-            cfg->Write(_T("/incremental_search/")+strEntry+_T("_colour_blue_value"),   static_cast<int>(tempColour.Blue())   );
-            pButton->SetBackgroundColour(tempColour);
-        }
+        wxColour colour = dlg.GetColourData().GetColour();
+        sender->SetBackgroundColour(colour);
     }
 }
 
@@ -133,5 +103,26 @@ void IncrementalSearchConfDlg::SaveSettings()
     cfg->Write(_T("/incremental_search/highlight_default_state"),XRCCTRL(*this, "idIncSearchHighlightDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/selected_default_state"),XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/match_case_default_state"),XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->GetSelection());
+
+    wxColor tmpColour = XRCCTRL(*this, "btnIncSearchConfColourFound", wxButton)->GetBackgroundColour();
+    cfg->Write(_T("/incremental_search/text_found_colour_red_value"),    static_cast<int>(tmpColour.Red())    );
+    cfg->Write(_T("/incremental_search/text_found_colour_green_value"),  static_cast<int>(tmpColour.Green())  );
+    cfg->Write(_T("/incremental_search/text_found_colour_blue_value"),   static_cast<int>(tmpColour.Blue())   );
+
+    tmpColour = XRCCTRL(*this, "btnIncSearchConfColourHighlight", wxButton)->GetBackgroundColour();
+    cfg->Write(_T("/incremental_search/highlight_colour_red_value"),    static_cast<int>(tmpColour.Red())    );
+    cfg->Write(_T("/incremental_search/highlight_colour_green_value"),  static_cast<int>(tmpColour.Green())  );
+    cfg->Write(_T("/incremental_search/highlight_colour_blue_value"),   static_cast<int>(tmpColour.Blue())   );
+
+    tmpColour = XRCCTRL(*this, "btnIncSearchConfNotFoundBG", wxButton)->GetBackgroundColour();
+    cfg->Write(_T("/incremental_search/text_not_found_colour_red_value"),    static_cast<int>(tmpColour.Red())    );
+    cfg->Write(_T("/incremental_search/text_not_found_colour_green_value"),  static_cast<int>(tmpColour.Green())  );
+    cfg->Write(_T("/incremental_search/text_not_found_colour_blue_value"),   static_cast<int>(tmpColour.Blue())   );
+
+    tmpColour = XRCCTRL(*this, "btnIncSearchConfWrappedBG", wxButton)->GetBackgroundColour();
+    cfg->Write(_T("/incremental_search/wrapped_colour_red_value"),    static_cast<int>(tmpColour.Red())    );
+    cfg->Write(_T("/incremental_search/wrapped_colour_green_value"),  static_cast<int>(tmpColour.Green())  );
+    cfg->Write(_T("/incremental_search/wrapped_colour_blue_value"),   static_cast<int>(tmpColour.Blue())   );
 }
+
 
