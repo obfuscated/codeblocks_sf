@@ -1,3 +1,6 @@
+#ifndef HEADER_11B1A2D480ED23E5
+#define HEADER_11B1A2D480ED23E5
+
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
@@ -28,9 +31,8 @@ template <class T, unsigned int pool_size, const bool debug>
 class BlockAllocator
 {
     template <class U>
-    class LinkedBlock
+    union LinkedBlock
     {
-    public:
         LinkedBlock<U> *next;
         char data[sizeof(U)];
     };
@@ -94,7 +96,7 @@ public:
         if(first == 0)
             AllocBlockPushBack();
 
-        void *p = &(first->data);
+        void *p = first;
         first = first->next;
         return p;
     };
@@ -104,7 +106,7 @@ public:
         if(BlkAllc::enable_global_debug || debug)
             --ref_count;
 
-        PushFront((LinkedBlock<T> *) ((char *) ptr - sizeof(void*)));
+        PushFront((LinkedBlock<T> *) ptr);
     };
 };
 
@@ -134,3 +136,5 @@ BlockAllocator<T, pool_size, debug> BlockAllocated<T, pool_size, debug>::allocat
 
 
 #endif
+
+#endif // header guard
