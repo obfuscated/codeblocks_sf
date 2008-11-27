@@ -1,6 +1,3 @@
-#ifndef HEADER_11B1A2D480ED23E5
-#define HEADER_11B1A2D480ED23E5
-
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
@@ -133,8 +130,4 @@ public:
 template<class T, unsigned int pool_size, const bool debug>
 BlockAllocator<T, pool_size, debug> BlockAllocated<T, pool_size, debug>::allocator;
 
-
-
 #endif
-
-#endif // header guard
