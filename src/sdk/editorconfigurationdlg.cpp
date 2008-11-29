@@ -131,11 +131,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable(highlightEnabled);
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true));
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable(highlightEnabled);
-    long red, green, blue;
-    red     = cfg->ReadInt(_T("/highlight_occurrence/colour_red_value"),    0xff);
-    green   = cfg->ReadInt(_T("/highlight_occurrence/colour_green_value"),  0x00);
-    blue    = cfg->ReadInt(_T("/highlight_occurrence/colour_blue_value"),   0x00);
-    XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(wxColour(red, green, blue));
+    XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
     XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable(highlightEnabled);
     XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable(highlightEnabled);
 
@@ -879,10 +875,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/highlight_occurrence/enabled"),XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/whole_word"), XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->GetValue());
-        wxColor highlightColour = XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour();
-        cfg->Write(_T("/highlight_occurrence/colour_red_value"),    static_cast<int>(highlightColour.Red())    );
-        cfg->Write(_T("/highlight_occurrence/colour_green_value"),  static_cast<int>(highlightColour.Green())  );
-        cfg->Write(_T("/highlight_occurrence/colour_blue_value"),   static_cast<int>(highlightColour.Blue())   );
+        cfg->Write(_T("/highlight_occurrence/colour"),XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour());
 
         // find & replace, regex searches
 
