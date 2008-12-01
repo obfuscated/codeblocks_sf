@@ -46,6 +46,9 @@ int idDereferenceValue = wxNewId();
 int idWatchThis = wxNewId();
 int idChangeValue = wxNewId();
 
+// [0]: 0 <repeats 27 times>
+static wxRegEx reRepeatedElements(_T("repeats ([0-9]+) times>"));
+
 #ifndef __WXMSW__
 /*
     Under wxGTK, I have noticed that wxTreeCtrl is not sending a EVT_COMMAND_RIGHT_CLICK
@@ -389,7 +392,18 @@ void DebuggerTree::ParseEntry(WatchTreeEntry& entry, Watch* watch, wxString& tex
             {
                 // take array indexing into account (if applicable)
                 if (array_index != -1)
-                    tmp.Prepend(wxString::Format(_T("[%d]: "), array_index++));
+                {
+                    tmp.Prepend(wxString::Format(_T("[%d]: "), array_index));
+                    // if array element would occur multiple times, gdb adds as default "<repeated xx times> to the output
+                    // so we have to look for it and increase the array_index correctly
+                    // as default we increase by 1
+                    long incIndex = 1;
+                    if (reRepeatedElements.Matches(tmp))
+                    {
+                        reRepeatedElements.GetMatch(tmp, 1).ToLong(&incIndex);
+                    }
+                    array_index += incIndex;
+                }
 
                 newchild = &entry.AddChild(tmp, watch);
             }
