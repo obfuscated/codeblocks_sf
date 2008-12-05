@@ -173,6 +173,35 @@ struct cbEditorInternalData
         return 0;
     }
 
+    wxChar GetNextNonWhitespaceCharOfLine(int position = -1, int *pos = 0)
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+
+        if (position == -1)
+            position = control->GetCurrentPos();
+
+        while (position < control->GetLength())
+        {
+            wxChar c = control->GetCharAt(position);
+
+            if ( c == _T('\n') || c ==  _T('\r') )
+            {
+                if ( pos ) *pos = position;
+                return 0;
+            }
+
+            if ( c !=  _T(' ') && c != _T('\t') )
+            {
+                if ( pos ) *pos = position;
+                return c;
+            }
+
+            position++;
+        }
+
+        return 0;
+    }
+
     int FindBlockStart(int position, wxChar blockStart, wxChar blockEnd, bool skipNested = true)
     {
         cbStyledTextCtrl* control = m_pOwner->GetControl();
@@ -2574,10 +2603,24 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                     case wxSCI_LEX_CPP:
                         if (b == _T('{'))
                         {
-                            if(control->GetUseTabs())
-                                indent << _T('\t'); // 1 tab
+                            int nonblankpos;
+                            wxChar c = m_pData->GetNextNonWhitespaceCharOfLine(pos, &nonblankpos);
+
+                            if ( c != _T('}') )
+                            {
+                                if(control->GetUseTabs())
+                                    indent << _T('\t'); // 1 tab
+                                else
+                                    indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
+                            }
                             else
-                                indent << wxString(_T(' '), control->GetTabWidth()); // n spaces
+                            {
+                                if ( pos != nonblankpos )
+                                {
+                                    control->SetCurrentPos(nonblankpos);
+                                    control->DeleteBack();
+                                }
+                            }
                         }
                         break;
                     case wxSCI_LEX_PYTHON:
