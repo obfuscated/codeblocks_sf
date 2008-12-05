@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11"  release="12" />
+    <Plugin name="tidycmt">
+        <Value title="tidycmt" />
+        <Value version="0.1.1" />
+        <Value description="For the anal but lazy." />
+        <Value author="" />
+        <Value authorEmail="" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="NFL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>
