@@ -661,6 +661,8 @@ void MainFrame::CreateIDE()
 
 void MainFrame::SetupGUILogging()
 {
+    // allow new docked windows to use be 3/4 of the available space, the default (0.3) is sometimes too small, especially for "Logs & others"
+    m_LayoutManager.SetDockSizeConstraint(0.75,0.75);
     m_AutoHideLogs = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
 
     int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
@@ -3934,6 +3936,10 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
 
     if (win)
     {
+        // use last visible size as BestSize, Logs & others does no longer "forget" it's size
+        if (!event.IsChecked())
+             m_LayoutManager.GetPane(win).BestSize(win->GetSize());
+
         m_LayoutManager.GetPane(win).Show(event.IsChecked());
         DoUpdateLayout();
     }
