@@ -321,7 +321,6 @@ class MainFrame : public wxFrame
         bool m_StartupDone;
         bool m_InitiatedShutdown;
 
-        bool m_AutoHideLogs;
         int m_AutoHideLockCounter;
 
         wxString m_LastLayoutName;

@@ -459,7 +459,6 @@ MainFrame::MainFrame(wxWindow* parent)
        m_HelpPluginsMenu(0L),
        m_StartupDone(false), // one-time flag
        m_InitiatedShutdown(false),
-       m_AutoHideLogs(false),
        m_AutoHideLockCounter(0),
        m_LastLayoutIsTemp(false),
        m_pScriptConsole(0),
@@ -663,7 +662,6 @@ void MainFrame::SetupGUILogging()
 {
     // allow new docked windows to use be 3/4 of the available space, the default (0.3) is sometimes too small, especially for "Logs & others"
     m_LayoutManager.SetDockSizeConstraint(0.75,0.75);
-    m_AutoHideLogs = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false);
 
     int bottomH = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_height"), 150);
     wxSize clientsize = GetClientSize();
@@ -1142,6 +1140,14 @@ void MainFrame::LoadWindowState()
 void MainFrame::SaveWindowState()
 {
     DoCheckCurrentLayoutForChanges(false);
+
+    // first delete all previos layouts, otherwise they might remain
+    // if the new amount of layouts is less than the previous, because only the first layouts will be overwritten
+    wxArrayString subs = Manager::Get()->GetConfigManager(_T("app"))->EnumerateSubPaths(_T("/main_frame/layout"));
+    for (size_t i = 0; i < subs.GetCount(); ++i)
+    {
+        Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/main_frame/layout/") + subs[i]);
+    }
 
     int count = 0;
     for (LayoutViewsMap::iterator it = m_LayoutViews.begin(); it != m_LayoutViews.end(); ++it)
@@ -4270,7 +4276,7 @@ void MainFrame::OnSwitchToLogWindow(CodeBlocksLogEvent& event)
 
 void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)
 {
-    if (!m_AutoHideLogs)
+    if (!Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false))
         return;
 
     m_LayoutManager.GetPane(m_pInfoPane).Show(true);
@@ -4279,7 +4285,8 @@ void MainFrame::OnShowLogManager(CodeBlocksLogEvent& event)
 
 void MainFrame::OnHideLogManager(CodeBlocksLogEvent& event)
 {
-    if (!m_AutoHideLogs || m_AutoHideLockCounter > 0)
+    if (!Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false) ||
+           m_AutoHideLockCounter > 0)
         return;
 
     m_LayoutManager.GetPane(m_pInfoPane).Show(false);
@@ -4288,14 +4295,15 @@ void MainFrame::OnHideLogManager(CodeBlocksLogEvent& event)
 
 void MainFrame::OnLockLogManager(CodeBlocksLogEvent& event)
 {
-    if (!m_AutoHideLogs)
+    if (!Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false))
         return;
     ++m_AutoHideLockCounter;
 }
 
 void MainFrame::OnUnlockLogManager(CodeBlocksLogEvent& event)
 {
-    if (!m_AutoHideLogs && m_AutoHideLockCounter > 0)
+    if (!Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_hide"), false) &&
+           m_AutoHideLockCounter > 0)
         return;
     if (--m_AutoHideLockCounter == 0)
     {

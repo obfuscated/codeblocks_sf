@@ -3633,7 +3633,12 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
 {
     m_BuildJob = bjIdle;
     if (showNothingToBeDone)
+    {
         LogMessage(_("Nothing to be done.\n"));
+        // if message manager is auto-hiding, unlock it (i.e. close it)
+        CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
+        Manager::Get()->ProcessEvent(evtShow);
+    }
 
     if (!IsProcessRunning())
     {
