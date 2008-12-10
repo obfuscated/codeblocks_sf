@@ -25,6 +25,8 @@
 
 #include <wx/string.h>
 
+class HexEditViewBase;
+
 /** \brief Abstract class for managing content of some file */
 class FileContentBase
 {
@@ -36,16 +38,18 @@ class FileContentBase
         /** \brief Structure used as a base of undo data */
         struct ExtraUndoData
         {
-            OffsetT m_PosBefore;
-            char    m_PosTypeBefore;
-            OffsetT m_PosAfter;
-            char    m_PosTypeAfter;
+            HexEditViewBase* m_View;        ///< \brief View which was active while performing the change
+            OffsetT          m_PosBefore;   ///< \brief Position before the change
+            int              m_PosBeforeF;  ///< \brief View-defined flags before the change (for example bit no before the change)
+            OffsetT          m_PosAfter;    ///< \brief Position after the change
+            int              m_PosAfterF;   ///< \brief View-defined flags after the change
 
-            inline ExtraUndoData( OffsetT posBefore, char posTypeBefore, OffsetT posAfter, char posTypeAfter )
-                : m_PosBefore( posBefore )
-                , m_PosTypeBefore( posTypeBefore )
-                , m_PosAfter( posAfter )
-                , m_PosTypeAfter( posTypeAfter )
+            inline ExtraUndoData( HexEditViewBase* view, OffsetT posBefore, int posBeforeF, OffsetT posAfter, int posAfterF )
+                : m_View      ( view       )
+                , m_PosBefore ( posBefore  )
+                , m_PosBeforeF( posBeforeF )
+                , m_PosAfter  ( posAfter   )
+                , m_PosAfterF ( posAfterF  )
             {
             }
 

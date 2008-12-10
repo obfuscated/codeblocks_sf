@@ -17,6 +17,41 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON4" variable="m_DigitBits" member="yes">
+							<label>Hex</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton4Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON6" variable="m_BlockSize" member="yes">
+							<label>1B</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="Onm_BlockSizeClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON5" variable="m_Endianess" member="yes">
+							<label>BE</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="Onm_EndianessClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
+							<size>10,-1</size>
+							<style>wxLI_VERTICAL</style>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
 						<object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
 							<label>Calc</label>
 							<style>wxBU_EXACTFIT</style>
@@ -271,6 +306,44 @@
 		<object class="wxTimer" name="ID_TIMER1" variable="ReparseTimer" member="yes">
 			<oneshoot>1</oneshoot>
 			<handler function="OnReparseTimerTrigger" entry="EVT_TIMER" />
+		</object>
+		<object class="wxMenu" variable="m_BaseMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM2" variable="MenuItem2" member="yes">
+				<label>Bin</label>
+				<handler function="OnSetBaseBin" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM1" variable="MenuItem1" member="yes">
+				<label>Hex</label>
+				<handler function="OnSetBaseHex" entry="EVT_MENU" />
+			</object>
+		</object>
+		<object class="wxMenu" variable="m_EndianessMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM3" variable="MenuItem3" member="yes">
+				<label>Big Endian</label>
+				<handler function="OnSetEndianessBig" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM4" variable="MenuItem4" member="yes">
+				<label>Little Endian</label>
+				<handler function="OnSetEndianessLittle" entry="EVT_MENU" />
+			</object>
+		</object>
+		<object class="wxMenu" variable="m_BlockSizeMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM5" variable="MenuItem5" member="yes">
+				<label>1 Byte</label>
+				<handler function="OnSetBlockSize1" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM6" variable="MenuItem6" member="yes">
+				<label>2 Bytes</label>
+				<handler function="OnSetBlockSize2" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM7" variable="MenuItem7" member="yes">
+				<label>4 Bytes</label>
+				<handler function="OnSetBlockSize4" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenuItem" name="ID_MENUITEM8" variable="MenuItem8" member="yes">
+				<label>8 Bytes</label>
+				<handler function="OnSetBlockSize8" entry="EVT_MENU" />
+			</object>
 		</object>
 	</object>
 </wxsmith>

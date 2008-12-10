@@ -21,7 +21,11 @@ libHexEditor_la_SOURCES = \
 	ExpressionTester.cpp \
 	ExpressionTestCases.cpp \
 	TestCasesDlg.cpp \
-	SelectStoredExpressionDlg.cpp
+	SelectStoredExpressionDlg.cpp \
+	CharacterView.cpp \
+	DigitView.cpp \
+	HexEditLineBuffer.cpp \
+	HexEditViewBase.cpp
 
 noinst_HEADERS = \
 	FileContentBase.h \
@@ -34,7 +38,12 @@ noinst_HEADERS = \
 	ExpressionTester.h \
 	ExpressionTestCases.h \
 	TestCasesDlg.h \
-	SelectStoredExpressionDlg.h
+	SelectStoredExpressionDlg.h \
+	CharacterView.h \
+	DigitView.h \
+	HexEditLineBuffer.h \
+	HexEditViewBase.h
+
 
 
 EXTRA_DIST = \

@@ -55,6 +55,10 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Unit filename="CharacterView.cpp" />
+		<Unit filename="CharacterView.h" />
+		<Unit filename="DigitView.cpp" />
+		<Unit filename="DigitView.h" />
 		<Unit filename="ExpressionExecutor.cpp" />
 		<Unit filename="ExpressionExecutor.h" />
 		<Unit filename="ExpressionParser.cpp" />
@@ -69,8 +73,12 @@
 		<Unit filename="FileContentBase.h" />
 		<Unit filename="FileContentBuffered.cpp" />
 		<Unit filename="FileContentBuffered.h" />
+		<Unit filename="HexEditLineBuffer.cpp" />
+		<Unit filename="HexEditLineBuffer.h" />
 		<Unit filename="HexEditPanel.cpp" />
 		<Unit filename="HexEditPanel.h" />
+		<Unit filename="HexEditViewBase.cpp" />
+		<Unit filename="HexEditViewBase.h" />
 		<Unit filename="HexEditor.cpp" />
 		<Unit filename="HexEditor.h" />
 		<Unit filename="SelectStoredExpressionDlg.cpp" />
