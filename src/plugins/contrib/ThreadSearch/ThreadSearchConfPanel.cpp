@@ -55,6 +55,7 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, idChkUseDefaultOptionsOnThreadSearch, wxT("Use default options when running 'Find occurrences' "));
     m_pChkShowMissingFilesError = new wxCheckBox(this, idChkShowMissingFilesError, wxT("Show error message if file is missing"));
     m_pChkShowCantOpenFileError = new wxCheckBox(this, idChkShowCantOpenFileError, wxT("Show error message if file cannot be opened"));
+    m_pChkDeletePreviousResults = new wxCheckBox(this, idChkChkDeletePreviousResults, wxT("Delete previous results at search begin"));
     m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, wxT("Show ThreadSearch toolbar."));
     m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, wxT("Show search widgets in ThreadSearch Messages panel."));
     m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, wxT("Show code preview editor."));
@@ -171,6 +172,7 @@ void ThreadSearchConfPanel::set_properties()
     m_pChkUseDefaultOptionsForThreadSearch->SetValue(1);
     m_pChkShowMissingFilesError->SetValue(1);
     m_pChkShowCantOpenFileError->SetValue(1);
+    m_pChkDeletePreviousResults->SetValue(1);
     m_pChkShowThreadSearchToolBar->SetValue(1);
     m_pChkShowThreadSearchWidgets->SetValue(1);
     m_pChkShowCodePreview->SetValue(1);
@@ -199,6 +201,7 @@ void ThreadSearchConfPanel::set_properties()
     m_pChkShowThreadSearchToolBar->SetValue(m_ThreadSearchPlugin.IsToolbarVisible());
     m_pChkShowThreadSearchWidgets->SetValue(m_ThreadSearchPlugin.GetShowSearchControls());
     m_pChkShowCodePreview->SetValue(m_ThreadSearchPlugin.GetShowCodePreview());
+    m_pChkDeletePreviousResults->SetValue(m_ThreadSearchPlugin.GetDeletePreviousResults());
 
     int radIndex = 0;
     switch (m_ThreadSearchPlugin.GetManagerType())
@@ -307,6 +310,7 @@ void ThreadSearchConfPanel::do_layout()
     SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, 0, 0);
     SizerThreadSearchOptions->Add(m_pChkShowMissingFilesError, 0, wxALL, 4);
     SizerThreadSearchOptions->Add(m_pChkShowCantOpenFileError, 0, wxALL, 4);
+    SizerThreadSearchOptions->Add(m_pChkDeletePreviousResults, 0, wxALL, 4);
     SizerTop->Add(SizerThreadSearchOptions, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchToolBar, 0, wxALL, 4);
     SizerThreadSearchLayoutGlobal->Add(m_pChkShowThreadSearchWidgets, 0, wxALL, 4);
@@ -356,6 +360,7 @@ void ThreadSearchConfPanel::OnApply()
 	m_ThreadSearchPlugin.SetUseDefValsForThreadSearch(m_pChkUseDefaultOptionsForThreadSearch->IsChecked());
 	m_ThreadSearchPlugin.SetShowSearchControls(m_pChkShowThreadSearchWidgets->IsChecked());
 	m_ThreadSearchPlugin.SetShowCodePreview(m_pChkShowCodePreview->IsChecked());
+	m_ThreadSearchPlugin.SetDeletePreviousResults(m_pChkDeletePreviousResults->IsChecked());
 	m_ThreadSearchPlugin.SetDisplayLogHeaders(m_pChkDisplayLogHeaders->IsChecked());
 	m_ThreadSearchPlugin.SetDrawLogLines(m_pChkDrawLogLines->IsChecked());
 

@@ -21,6 +21,7 @@ class wxEvtHandler;
 class ThreadSearch;
 class ThreadSearchView;
 class ThreadSearchEvent;
+class ThreadSearchFindData;
 
 
 class ThreadSearchLoggerBase
@@ -58,6 +59,9 @@ public:
 
 	/** Removes all items from logger. */
 	virtual void Clear() = 0;
+
+	/** Called on search begin to prepare logger. */
+	virtual void OnSearchBegin(const ThreadSearchFindData& findData) = 0;
 
 	/** Returns logger window. */
 	virtual wxWindow* GetWindow() = 0;

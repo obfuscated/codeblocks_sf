@@ -160,8 +160,7 @@ void ThreadSearchView::OnCboSearchExprEnter(wxCommandEvent &event)
 	// Event handler used when user clicks on enter after typing
 	// in combo box text control.
 	// Runs a multi threaded search.
-	ThreadSearchFindData findData;
-	m_ThreadSearchPlugin.GetFindData(findData);
+	ThreadSearchFindData findData = m_ThreadSearchPlugin.GetFindData();
 	findData.SetFindText(m_pCboSearchExpr->GetValue());
 	ThreadedSearch(findData);
 }
@@ -197,8 +196,7 @@ void ThreadSearchView::OnBtnSearchClick(wxCommandEvent &event)
 		else
 		{
 			// We start the thread search
-			ThreadSearchFindData findData;
-			m_ThreadSearchPlugin.GetFindData(findData);
+			ThreadSearchFindData findData = m_ThreadSearchPlugin.GetFindData();
 			findData.SetFindText(m_pCboSearchExpr->GetValue());
 			ThreadedSearch(findData);
 		}
@@ -345,8 +343,8 @@ void ThreadSearchView::ThreadedSearch(const ThreadSearchFindData& aFindData)
 	{
 		ThreadSearchFindData findData(aFindData);
 
-		// Removes logger items
-		Clear();
+		// Prepares logger
+		m_pLogger->OnSearchBegin(aFindData);
 
 		// Two steps thread creation
 		m_pFindThread = new ThreadSearchThread(this, findData);
@@ -895,12 +893,6 @@ void ThreadSearchView::ApplySplitterSettings(bool showCodePreview, long splitter
 			m_pSplitter->Unsplit(m_pPnlPreview);
 		}
 	}
-}
-
-
-void ThreadSearchView::Clear()
-{
-	m_pLogger->Clear();
 }
 
 

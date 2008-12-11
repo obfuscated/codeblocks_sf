@@ -85,6 +85,7 @@ protected:
     wxCheckBox* m_pChkUseDefaultOptionsForThreadSearch;
     wxCheckBox* m_pChkShowMissingFilesError;
     wxCheckBox* m_pChkShowCantOpenFileError;
+    wxCheckBox* m_pChkDeletePreviousResults;
     wxCheckBox* m_pChkShowThreadSearchToolBar;
     wxCheckBox* m_pChkShowThreadSearchWidgets;
     wxCheckBox* m_pChkShowCodePreview;

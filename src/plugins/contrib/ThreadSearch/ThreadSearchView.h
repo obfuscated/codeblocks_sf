@@ -64,8 +64,6 @@ public:
     /** Destructor. */
     ~ThreadSearchView();
 
-	virtual void Clear();
-
 	/** Runs the worker thread search.
 	  * @param aFindData : structure containing all search parameters :
 	  *                    text, whole word, case, directory...

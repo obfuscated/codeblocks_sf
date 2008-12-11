@@ -121,17 +121,18 @@ public:
 	void Notify();
 
 	// Setters
-	void SetCtxMenuIntegration(bool ctxMenuIntegration)    {m_CtxMenuIntegration = ctxMenuIntegration;}
-	void SetUseDefValsForThreadSearch(bool useDefVals)     {m_UseDefValsForThreadSearch = useDefVals;}
-	void SetShowSearchControls(bool showSearchControls)    {m_ShowSearchControls = showSearchControls;}
-	void SetShowDirControls(bool showDirControls)          {m_ShowDirControls = showDirControls;}
-	void SetShowCodePreview(bool showCodePreview)          {m_ShowCodePreview = showCodePreview;}
-	void SetDisplayLogHeaders(bool displayLogHeaders)      {m_DisplayLogHeaders = displayLogHeaders;}
-	void SetDrawLogLines(bool drawLogLines)                {m_DrawLogLines = drawLogLines;}
-	void SetFindData(const ThreadSearchFindData& findData) {m_FindData = findData;}
+	void SetCtxMenuIntegration(bool ctxMenuIntegration)       {m_CtxMenuIntegration = ctxMenuIntegration;}
+	void SetUseDefValsForThreadSearch(bool useDefVals)        {m_UseDefValsForThreadSearch = useDefVals;}
+	void SetShowSearchControls(bool showSearchControls)       {m_ShowSearchControls = showSearchControls;}
+	void SetShowDirControls(bool showDirControls)             {m_ShowDirControls = showDirControls;}
+	void SetShowCodePreview(bool showCodePreview)             {m_ShowCodePreview = showCodePreview;}
+	void SetDeletePreviousResults(bool deletePreviousResults) {m_DeletePreviousResults = deletePreviousResults;}
+	void SetDisplayLogHeaders(bool displayLogHeaders)         {m_DisplayLogHeaders = displayLogHeaders;}
+	void SetDrawLogLines(bool drawLogLines)                   {m_DrawLogLines = drawLogLines;}
+	void SetFindData(const ThreadSearchFindData& findData)    {m_FindData = findData;}
 
 	void SetManagerType (ThreadSearchViewManagerBase::eManagerTypes mgrType);
-	void SetLoggerType (ThreadSearchLoggerBase::eLoggerTypes       lgrType) {m_LoggerType = lgrType;}
+	void SetLoggerType (ThreadSearchLoggerBase::eLoggerTypes        lgrType)      {m_LoggerType   = lgrType;}
 	void SetSplitterMode(wxSplitMode                                splitterMode) {m_SplitterMode = splitterMode;}
 	void SetFileSorting (InsertIndexManager::eFileSorting           fileSorting)  {m_FileSorting  = fileSorting;}
 
@@ -141,6 +142,7 @@ public:
 	bool GetShowSearchControls()                     const {return m_ShowSearchControls;}
 	bool GetShowDirControls()                        const {return m_ShowDirControls;}
 	bool GetShowCodePreview()                        const {return m_ShowCodePreview;}
+	bool GetDeletePreviousResults()                  const {return m_DeletePreviousResults;}
 	bool GetDisplayLogHeaders()                      const {return m_DisplayLogHeaders;}
 	bool GetDrawLogLines()                           const {return m_DrawLogLines;}
 	void GetFindData(ThreadSearchFindData& findData) const {findData = m_FindData;}
@@ -285,6 +287,7 @@ private:
     bool                                 m_ShowSearchControls;        // True if user wants to use message tab controls
     bool                                 m_ShowDirControls;           // True if user wants to display directory specific controls
     bool                                 m_ShowCodePreview;           // True if user wants to benefit from code preview
+    bool                                 m_DeletePreviousResults;     // True if logger contents is deleted at search begin
     ThreadSearchLoggerBase::eLoggerTypes m_LoggerType;                // Logger type, can be a list or a tree
     bool                                 m_DisplayLogHeaders;         // Show/Hide column headers in wxListCtrl logger
     bool                                 m_DrawLogLines;              // Draw lines between columns in wxListCtrl logger

@@ -29,6 +29,7 @@ ThreadSearchLoggerList::ThreadSearchLoggerList(ThreadSearchView& threadSearchVie
 											   wxPanel* pParent,
 											   long id)
 					   : ThreadSearchLoggerBase(threadSearchView, threadSearchPlugin, fileSorting)
+					   , m_IndexOffset(0)
 {
 	m_pListLog = new wxListCtrl(pParent, id, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER);
 	m_pListLog->SetMinSize(wxSize(100,100));
@@ -77,15 +78,18 @@ void ThreadSearchLoggerList::SetListColumns()
 void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
 {
 	// Manages list log left (single) click
-    // Gets file path and line from list control
-	wxString filepath(wxEmptyString);
-	long line;
-	if ( GetFileLineFromListEvent(event, filepath, line) == false )
+	if ( IsSelectedLineResultLine() )
 	{
-		cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
-		return;
+		// Gets file path and line from list control
+		wxString filepath(wxEmptyString);
+		long line;
+		if ( GetFileLineFromListEvent(event, filepath, line) == false )
+		{
+			cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
+			return;
+		}
+		m_ThreadSearchView.OnLoggerClick(filepath, line);
 	}
-	m_ThreadSearchView.OnLoggerClick(filepath, line);
 	event.Skip();
 }
 
@@ -93,15 +97,18 @@ void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
 void ThreadSearchLoggerList::OnLoggerListDoubleClick(wxListEvent& event)
 {
 	// Manages list log left double click
-    // Gets file path and line from list control
-    wxString filepath(wxEmptyString);
-    long line;
-    if ( GetFileLineFromListEvent(event, filepath, line) == false )
-    {
-		cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
-    	return;
-    }
-    m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
+	if ( IsSelectedLineResultLine() )
+	{
+		// Gets file path and line from list control
+		wxString filepath(wxEmptyString);
+		long line;
+		if ( GetFileLineFromListEvent(event, filepath, line) == false )
+		{
+			cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
+			return;
+		}
+		m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
+	}
     event.Skip();
 }
 
@@ -147,6 +154,32 @@ bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& event, wxStri
 }
 
 
+bool ThreadSearchLoggerList::IsSelectedLineResultLine()
+{
+	bool isResultLine = false;
+	wxListItem listItem;
+
+	do {
+		// Finds selected item index
+		long index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if ( index == -1 ) break;
+
+		// First, gets file dir
+		wxString filedir;
+		listItem.m_itemId = index;
+		listItem.m_col    = 0;
+		listItem.m_mask   = wxLIST_MASK_TEXT;
+
+		if ( m_pListLog->GetItem(listItem) == false ) break;
+
+		filedir = listItem.GetText();
+		isResultLine = !filedir.StartsWith(_("=>"));
+	} while ( 0 );
+
+	return isResultLine;
+}
+
+
 void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
 {
 	// A search event has been sent by the worker thread.
@@ -160,6 +193,7 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
 	// Use of Freeze Thaw to enhance speed and limit blink effect
 	m_pListLog->Freeze();
 	long index = m_IndexManager.GetInsertionIndex(filename.GetFullPath(), words.GetCount()/2);
+	index += m_IndexOffset;
 	for (size_t i = 0; i < words.GetCount(); i += 2)
 	{
 		m_pListLog->InsertItem(index, filename.GetPath());     // Directory
@@ -242,4 +276,25 @@ void ThreadSearchLoggerList::Clear()
 {
 	m_pListLog->DeleteAllItems();
     m_IndexManager.Reset();
+	m_IndexOffset = 0;
+}
+
+
+void ThreadSearchLoggerList::OnSearchBegin(const ThreadSearchFindData& findData)
+{
+	if ( m_ThreadSearchPlugin.GetDeletePreviousResults() )
+	{
+		Clear();
+		m_IndexOffset = 0;
+	}
+	else
+	{
+		m_IndexManager.Reset();
+		long index = m_pListLog->GetItemCount();
+		m_pListLog->InsertItem(index, wxString::Format(_("=> %s"), findData.GetFindText().c_str()));
+		m_pListLog->SetItem(index, 1, _("========="));
+		m_pListLog->SetItem(index, 2, _("==="));
+		m_pListLog->SetItem(index, 3, _("============"));
+		m_IndexOffset = m_pListLog->GetItemCount();
+	}
 }
