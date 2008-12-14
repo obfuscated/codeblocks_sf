@@ -233,11 +233,10 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
 %{pkgdata}/HexEditor.zip
-%{pkgdata}/incrementalSearch.zip
+%{pkgdata}/IncrementalSearch.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/images/ThreadSearch/*
-%{pkgdata}/images/IncrementalSearch/*
 %{pkgdata}/lib_finder/*
 %{pkglib}/plugins/libAutoVersioning.*
 %{pkglib}/plugins/libBrowseTracker.*
@@ -270,59 +269,63 @@ Code::Blocks SDK to develop your own plugins.
 %{_libdir}/libwxsmithlib.so
 %{_libdir}/libwxsmithlib.la
 %{_libdir}/pkgconfig/codeblocks.pc
+%{_libdir}/pkgconfig/wxsmith.pc
 %{_includedir}/%{name}/*
+%{_includedir}/wxsmith/*
 
 %changelog
-* Sat Jul 26 2008 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Dec 14 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- some fixes for changes in rev 5334
+* Sat Jul 26 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - moved libwxsmithlib.so and .la into devel package
 - removed selfprovide codeblocks
 - removed subversion dependency
 - changed release and version tag (version now only contains version + revision)
 - added libValgrind.* to file list
-* Thu Jan 03 2008 Daniel Orb <thetuxkeeper@googlemail.com>
+* Thu Jan 03 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - added missing files to file list (libfinder)
 - changed dependencies for mandriva
 - some clean-ups
-* Wed Nov 14 2007 Daniel Orb <thetuxkeeper@googlemail.com>
+* Wed Nov 14 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - added new plugin to file list
 - added make job number "detection"
-* Sun Oct 14 2007 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Oct 14 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - applied changes made on opensuse buildservice
-* Mon Apr 16 2007 Daniel Orb <thetuxkeeper@googlemail.com>
+* Mon Apr 16 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - added wxsmithcontribitems files to filelist
-* Fri Jan  5 2007 Daniel Orb <thetuxkeeper@googlemail.com>
+* Fri Jan  5 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - changed prefix on suse to default (from /opt/gnome to /usr)
-* Sun Dec  2 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Dec  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - Added RegExTestbed plugin to filelist
-* Sun Nov  5 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Nov  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - applied patch #1605
 - renamed _mandriva to _mandrake
-* Wed Oct 11 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Wed Oct 11 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - Added cb_share_config to filelist
-* Sun Aug 20 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Aug 20 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - Added missing files to filelist
-* Sat Jul 22 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sat Jul 22 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - adapted versioning to autotools
-* Fri Jul 14 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Fri Jul 14 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - added man pages to filelist
 * Tue Jul 11 2006 Yiannis Mandravellos <mandrav@codeblocks.org>
 - removed pluginwizard files
 - replaced libprojectwizard by libscriptedwizard (renamed)
-* Tue Jul 11 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Tue Jul 11 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - removed libwxscintilla from filelist
-* Mon Jul 10 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Mon Jul 10 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - fixed wrong path of fedora-release file
 - fixed mixed cases in one description macro call
 - removed and added finally again libwxscintilla from/to filelist
 - added versions to some buildrequires
 - added byogames plugin to filelist
-* Sun Mar  5 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Mar  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - rewrite of release tag setting
-* Mon Jan  5 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Mon Jan  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - had to add Mandriva specific requires
-* Mon Jan  2 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Mon Jan  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - simplified the changes made before
-* Sun Jan  1 2006 Daniel Orb <thetuxkeeper@googlemail.com>
+* Sun Jan  1 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - added distribution check (SuSE, Fedora, Mandriva/Mandrake)
 - added distribution specific Requires and BuildRequires
 - added run of update-mime-database if installed

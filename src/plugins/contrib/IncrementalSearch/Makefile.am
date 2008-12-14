@@ -13,7 +13,8 @@ libIncrementalSearch_la_LIBADD = $(PLUGIN_WX_LIBS) \
 libIncrementalSearch_la_SOURCES = IncrementalSearch.cpp \
 				IncrementalSearchConfDlg.cpp
 
-noinst_HEADERS = IncrementalSearch.h
+noinst_HEADERS = IncrementalSearch.h \
+		IncrementalSearchConfDlg.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		IncrementalSearchToolbar.xrc \
