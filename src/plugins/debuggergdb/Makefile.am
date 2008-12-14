@@ -7,9 +7,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/scripting/include \
     	-I$(top_srcdir)/src/include/scripting/sqplus
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libdebugger.la
+pluginlib_LTLIBRARIES = libdebugger.la
 
 libdebugger_la_LDFLAGS = $(WX_GTK2_LIBS) -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

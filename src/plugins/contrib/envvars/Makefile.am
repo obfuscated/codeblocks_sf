@@ -2,10 +2,10 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 pkgdata_DATA = envvars.zip
 
-lib_LTLIBRARIES = libenvvars.la
+pluginlib_LTLIBRARIES = libenvvars.la
 
 libenvvars_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

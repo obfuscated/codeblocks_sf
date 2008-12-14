@@ -4,9 +4,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 CXXFLAGS = @CXXFLAGS@  -O0
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libheaderfixup.la
+pluginlib_LTLIBRARIES = libheaderfixup.la
 
 libheaderfixup_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

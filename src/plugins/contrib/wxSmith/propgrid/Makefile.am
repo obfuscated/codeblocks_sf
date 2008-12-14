@@ -17,8 +17,9 @@ libpropgrid_la_SOURCES = ./contrib/src/propgrid/advprops.cpp \
 EXTRA_DIST = ./contrib/readme-propgrid.txt \
 			./contrib/CHANGES-propgrid.txt
 
+sdkdir=$(includedir)/wxsmith/contrib/include/wx/propgrid/
 
-noinst_HEADERS = ./contrib/include/wx/propgrid/advprops.h \
+sdk_HEADERS = ./contrib/include/wx/propgrid/advprops.h \
 			./contrib/include/wx/propgrid/extras.h \
 			./contrib/include/wx/propgrid/manager.h \
 			./contrib/include/wx/propgrid/odcombo.h \

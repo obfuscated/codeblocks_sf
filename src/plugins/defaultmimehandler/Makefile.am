@@ -4,9 +4,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libdefaultmimehandler.la
+pluginlib_LTLIBRARIES = libdefaultmimehandler.la
 
 libdefaultmimehandler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

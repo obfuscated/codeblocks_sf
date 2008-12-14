@@ -28,7 +28,9 @@ libwxsmith_wxwidgets_properties_la_SOURCES = \
 ./wxsbitmapiconproperty.cpp \
 ./wxssimplefonteditordlg.cpp
 
-noinst_HEADERS = \
+sdkdir=$(includedir)/wxsmith/wxwidgets/properties/
+ 
+sdk_HEADERS = \
 ./wxsdimensionproperty.h \
 ./wxsbitmapiconproperty.h \
 ./wxsarraystringcheckeditordlg.h \

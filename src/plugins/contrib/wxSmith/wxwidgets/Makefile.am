@@ -61,7 +61,9 @@ libwxsmith_wxwidgets_la_SOURCES = \
 ./wxscodercontext.cpp \
 ./wxscodegenerator.cpp
 
-noinst_HEADERS = \
+sdkdir=$(includedir)/wxsmith/wxwidgets/
+ 
+sdk_HEADERS = \
 ./wxsitemresdata.h \
 ./wxspredefinedids.h \
 ./wxsdrawingwindow.h \

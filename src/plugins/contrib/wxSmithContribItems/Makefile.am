@@ -9,9 +9,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(srcdir)/wxchart/wxchart-1.0/include \
 		-I$(srcdir)/wxthings/wxthings/include
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libwxsmithcontribitems.la
+pluginlib_LTLIBRARIES = libwxsmithcontribitems.la
 
 libwxsmithcontribitems_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

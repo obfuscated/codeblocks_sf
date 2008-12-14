@@ -8,9 +8,9 @@ INCLUDES = $(WX_CXXFLAGS) \
         -I$(top_srcdir)/src/include/wxFlatNotebook/include
 
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-##lib_LTLIBRARIES = codesnippets
+##pluginlib_LTLIBRARIES = codesnippets 
 bin_PROGRAMS = codesnippets
 
 codesnippets_LDFLAGS = $(WX_GTK2_LIBS)

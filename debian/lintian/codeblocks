@@ -1,0 +1,4 @@
+codeblocks binary: binary-without-manpage usr/bin/cb_console_runner
+codeblocks binary: binary-without-manpage usr/bin/cb_share_config
+codeblocks binary: binary-without-manpage usr/bin/codeblocks
+codeblocks binary: binary-without-manpage usr/bin/codesnippets

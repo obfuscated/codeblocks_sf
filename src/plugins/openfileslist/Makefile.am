@@ -2,9 +2,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libopenfileslist.la
+pluginlib_LTLIBRARIES = libopenfileslist.la
 
 libopenfileslist_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

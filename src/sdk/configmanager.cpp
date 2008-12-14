@@ -53,6 +53,9 @@ wxString ConfigManager::config_folder;
 wxString ConfigManager::home_folder;
 wxString ConfigManager::data_path_user;
 wxString ConfigManager::data_path_global;
+#ifdef CB_AUTOCONF
+wxString ConfigManager::plugin_path_global; 
+#endif 
 wxString ConfigManager::app_path;
 wxString ConfigManager::temp_folder;
 bool ConfigManager::relo = 0;
@@ -467,7 +470,11 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
             return ::wxGetCwd();
 
         case sdPluginsGlobal:
+#ifndef CB_AUTOCONF
             return ConfigManager::data_path_global + _T("/plugins");
+#else 
+            return ConfigManager::plugin_path_global; 
+#endif 
 
         case sdPluginsUser:
             return ConfigManager::data_path_user   + _T("/plugins");
@@ -1377,6 +1384,15 @@ void ConfigManager::InitPaths()
         else
             ConfigManager::data_path_global = wxStandardPathsBase::Get().GetDataDir();
     }
+#ifdef CB_AUTOCONF 
+    if (plugin_path_global.IsEmpty()) 
+    { 
+       if(platform::windows || platform::macosx) 
+          ConfigManager::plugin_path_global = data_path_global; 
+       else 
+          ConfigManager::plugin_path_global = wxStandardPathsBase::Get().GetPluginsDir() + _T("/plugins"); 
+    } 
+#endif 
 
     ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + _T("/share/codeblocks");
 

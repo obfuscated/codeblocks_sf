@@ -6,9 +6,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/propgrid/include
 
-lib_LTLIBRARIES = libwxsmith.la
+pluginlib_LTLIBRARIES = libwxsmith.la
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
 libwxsmith_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

@@ -9,9 +9,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 
 AM_CXXFLAGS = -DDEPSLIB_UNIX
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libcompiler.la
+pluginlib_LTLIBRARIES = libcompiler.la
 
 libcompiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

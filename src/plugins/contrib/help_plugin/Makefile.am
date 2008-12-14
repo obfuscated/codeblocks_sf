@@ -15,9 +15,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
 		-include "sdk.h"
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libhelp_plugin.la
+pluginlib_LTLIBRARIES = libhelp_plugin.la
 
 libhelp_plugin_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

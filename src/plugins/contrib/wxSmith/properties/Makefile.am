@@ -27,7 +27,9 @@ libwxsmith_properties_la_SOURCES = \
 ./wxscustomeditorproperty.cpp \
 ./wxspropertycontainer.cpp
 
-noinst_HEADERS = \
+sdkdir=$(includedir)/wxsmith/properties
+ 
+sdk_HEADERS = \
 ./wxspropertycontainer.h \
 ./wxsproperties.h \
 ./wxsboolproperty.h \

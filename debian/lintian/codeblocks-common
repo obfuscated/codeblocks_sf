@@ -1,0 +1,2 @@
+codeblocks-common binary: desktop-command-not-in-package /usr/share/applications/codeblocks.desktop codeblocks
+codeblocks-common binary: script-not-executable ./usr/share/codeblocks/lexers/lexer_bash.sample

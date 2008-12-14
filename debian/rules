@@ -24,7 +24,9 @@ else
 	CFLAGS += -O2
 endif
 
-config.status: configure
+config.status: config-stamp 
+ 
+config-stamp: 
 	dh_testdir
 	# Add here commands to configure the package.
 	CFLAGS="$(CFLAGS)" \
@@ -35,6 +37,8 @@ config.status: configure
 		--prefix=/usr \
 		--mandir=\$${prefix}/share/man \
 		--infodir=\$${prefix}/share/info
+
+	touch config-stamp 
 
 
 build: build-stamp
@@ -48,13 +52,16 @@ build-stamp:  config.status
 
 	touch build-stamp
 
-clean:
+clean: 
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
 
 	# Add here commands to clean up after the build process.
-	-$(MAKE) distclean
+	#-$(MAKE) distclean 
+	[ ! -f Makefile ] || $(MAKE) distclean 
+ 
+ 
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config.sub
 endif

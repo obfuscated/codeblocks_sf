@@ -1,24 +1,16 @@
 Source: codeblocks
-Section: x11
+Section: devel
 Priority: optional
-Maintainer: Yiannis Mandravellos <mandrav@codeblocks.org>
-Build-Depends: debhelper, autotools-dev, libc6-dev, libstdc++6-4.0-dev, libwxgtk2.6-dev, wx-common, zip
-Standards-Version: 3.6.1
-
-Package: libcodeblocks0
-Architecture: any
-Depends: binutils (>= 2.14.90.0.7), coreutils, file, libc6, libgcc1 (>= 1 ), libmagic1, libncurses5, libstdc++6, zlib1g
-Description: Code::Blocks shared library
- This package contains the Code::Blocks shared library
- .
- http://www.codeblocks.org
+Maintainer: Jens Lody <jens@codeblocks.org>
+Build-Depends: debhelper, autotools-dev, libstdc++6-4.1-dev | libstdc++6-4.2-dev | libstdc++6-4.3-dev, libwxgtk2.8-dev, wx-common, zip, libgtk2.0-dev
+Standards-Version: 3.8.0
 
 Package: codeblocks
 Architecture: any
-Depends: libcodeblocks0
-Recommends: gcc | g++, gdb, codeblocks-contrib
-Suggests: libwxgtk2.6-dev, wx-common
-Description: Code::Blocks integrated development environment (IDE)
+Depends:  codeblocks-common (= ${source:Version}), libcodeblocks0 (= ${binary:Version}), libc6
+Recommends: gcc | g++, gdb, codeblocks-contrib (= ${binary:Version})
+Suggests: libwxgtk2.8-dev, wx-common
+Description: cross-platform integrated development environment (IDE)
  Code::Blocks is the open-source, cross-platform Integrated Development
  Environment (IDE).
  It is based on a self-developed plugin framework allowing unlimited
@@ -34,29 +26,58 @@ Description: Code::Blocks integrated development environment (IDE)
     * To-do list
     * Extensible wizard based on scripts (for creating new projects/targets/etc)
     * Autosave (saves your work in the unfortunate case of a crash)
+ It's a svn-download and may contain bugs.
+ .
+ http://www.codeblocks.org
+
+Package: libcodeblocks0
+Architecture: any
+Section: libs
+Depends:  ${shlibs:Depends}, binutils (>= 2.14.90.0.7), file, libmagic1, libncurses5, zlib1g, libc6
+Description: Code::Blocks shared library
+ This package contains the Code::Blocks shared library.
+ It's a svn-download and may contain bugs.
+ .
+ http://www.codeblocks.org
+
+Package: codeblocks-common
+Architecture: all
+Conflicts: codeblocks (<< ${binary:Version})
+Description: cross-platform integrated development environment (IDE)
+ Code::Blocks is the open-source, cross-platform Integrated Development
+ Environment (IDE).
+ This package contains the architecture-independent files of codeblocks.
+ It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org
 
 Package: codeblocks-dbg
+Priority: extra
 Architecture: any
-Depends: codeblocks
+Depends: codeblocks (= ${binary:Version})
 Description: Code::Blocks debugging libraries
  These are the debugging libraries for the 'codeblocks' package.
+ It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org
 
 Package: libwxsmithlib0
 Architecture: any
-Depends: libcodeblocks0
-Description: wxSmith shared library (wxSmith is a Code::Blocks plugin for RAD GUI editing)
- This package contains the wxSmith shared library.
+Section: libs
+Depends: libcodeblocks0 (= ${binary:Version}), libc6
+Recommends: codeblocks-contrib (= ${binary:Version})
+Description: wxSmith shared library
+ This package contains the shared library for wxSmith a Code::Blocks plugin for
+ RAD GUI editing.
+ wxSmith is included in the codeblocks-contrib package.
+ It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org
 
 Package: codeblocks-contrib
 Architecture: any
-Depends: codeblocks, libwxsmithlib0
-Description: Contrib plugins for Code::Blocks IDE
+Depends: codeblocks-contrib-common (= ${source:Version}), codeblocks (= ${binary:Version}), libwxsmithlib0 (= ${binary:Version}), libc6
+Description: contrib plugins for Code::Blocks IDE
  This package extends Code::Blocks functionality a great deal with the included
  plugins. These are:
     * Code profiler (based on gprof)
@@ -76,24 +97,68 @@ Description: Contrib plugins for Code::Blocks IDE
     * Valgrind
     * HexEditor
     * IncrementalSearch
+ It's a svn-download and may contain bugs.
+ .
+ http://www.codeblocks.org
+
+Package: codeblocks-contrib-common
+Architecture: all
+Conflicts: codeblocks-contrib (<< ${binary:Version})
+Description: contrib plugins for Code::Blocks IDE
+ This package contains the architecture-independent files of the
+ codeblocks-contrib plugins.
+ It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org
 
 Package: codeblocks-dev
 Architecture: any
+Section: libdevel
+Depends: libcodeblocks0 (= ${binary:Version}), codeblocks-headers (= ${source:Version})
+Description: cross-platform integrated development environment (IDE) - development files
+ Contains the development libraries for creating Code::Blocks plugins.
+ It's a svn-download and may contain bugs.
+ .
+ http://www.codeblocks.org
+
+Package: codeblocks-headers
+Architecture: all
 Section: devel
-Depends: libcodeblocks0
-Description: Code::Blocks development files (SDK)
- Contains the development files (headers and libraries) for creating
- Code::Blocks plugins.
+Conflicts: codeblocks-dev (<< ${source:Version})
+Description: cross-platform integrated development environment (IDE) - development files
+ Contains the development headers for creating Code::Blocks plugins.
+ It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org
 
 Package: libwxsmithlib0-dev
 Architecture: any
-Section: devel
-Depends: libcodeblocks0
+Section: libdevel
+Depends: wxsmith-dev (= ${binary:Version})
+Conflicts: libwxsmithlib0-dev (<< ${source:Version})
+Description: wxSmith development metapackage
+ This is a transitional dummy package to ensure clean upgrades to new
+ package and directory structure.
+ .
+ http://www.codeblocks.org
+
+Package: wxsmith-dev
+Architecture: any
+Section: libdevel
+Depends: libcodeblocks0 (= ${binary:Version}), wxsmith-headers (= ${source:Version})
+Replaces: libwxsmithlib0-dev
 Description: wxSmith development files
  Contains the development libraries for wxSmith (Code::Blocks plugin)
+ It's a svn-download and may contain bugs.
+ .
+ http://www.codeblocks.org
+
+Package: wxsmith-headers
+Architecture: all
+Section: devel
+Conflicts: wxsmith-dev (<< ${source:Version})
+Description: wxSmith development files
+ Contains the development headers for wxSmith (Code::Blocks plugin)
+ It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org

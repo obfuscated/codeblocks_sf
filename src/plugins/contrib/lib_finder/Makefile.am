@@ -9,9 +9,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/scripting/squirrel \
 		-I$(top_srcdir)/src/include/scripting/bindings
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = liblib_finder.la
+pluginlib_LTLIBRARIES = liblib_finder.la
 
 liblib_finder_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

@@ -3,9 +3,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/src \
 		-I$(top_srcdir)/src/include/wxscintilla/include
 
-libdir = $(pkgdatadir)/plugins
+pluginlibdir = $(pkglibdir)/plugins
 
-lib_LTLIBRARIES = libdragscroll.la
+pluginlib_LTLIBRARIES = libdragscroll.la
 
 libdragscroll_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

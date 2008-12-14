@@ -444,6 +444,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/Valgrind/Makefile
 	src/plugins/contrib/Valgrind/resources/Makefile
 	src/plugins/contrib/wxSmith/Makefile
+	src/plugins/contrib/wxSmith/wxsmith.pc
 	src/plugins/contrib/wxSmith/propgrid/Makefile
 	src/plugins/contrib/wxSmith/plugin/Makefile
 	src/plugins/contrib/wxSmith/properties/Makefile

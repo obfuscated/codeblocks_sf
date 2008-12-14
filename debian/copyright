@@ -1,10 +1,16 @@
-This package was debianized by Yiannis Mandravellos <mandrav@codeblocks.org> on
-Sat, 25 Feb 2006 12:26:36 +0200.
+This package was debianized by Jens Lody <jens@codeblocks.org> on 
+Thu, 04 Oct 2007 20:52:21 +0200. 
+
+It was originally debianized by Yiannis Mandravellos <mandrav@codeblocks.org>
+on Sat, 25 Feb 2006 12:26:36 +0200. 
 
 It was exported from svn://svn.berlios.de/codeblocks/trunk.
-The only extra thing performed before debianization, was to run bootstrap to generate the autotools build configuration.
+The only extra thing performed before debianization, was to run bootstrap to
+generate the autotools build configuration.
 
-Copyright Holder: Yiannis Mandravellos <mandrav@codeblocks.org>
+Code::Blocks is licensed under the GPL Version 3. 
 
-License: see /usr/share/common-licenses/GPL
+License: see /usr/share/common-licenses/GPL-3 
 
+Copyright:
+Copyright (c) 1985 - 2008 by Yiannis Mandravellos <mandrav@codeblocks.org>
