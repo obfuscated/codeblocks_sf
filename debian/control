@@ -88,15 +88,19 @@ Description: contrib plugins for Code::Blocks IDE
     * Header fixup
     * Help
     * Keyboard shortcuts configuration
-    * GUI RAD builder (wxSmith)
+    * RAD gui-builder for wxWidgets (wxSmith)
     * Selection of small games for relaxing between coding sessions! (BYOGames)
-    * WYSIWYG forms designer for wxWidgets (wxSmith)
     * Autoversioning
     * ThreadSearch
     * BrowseTracker
     * Valgrind
     * HexEditor
     * IncrementalSearch
+    * Codesnippets
+    * Library finder
+    * Regular expression testbed
+    * Symbol table plugin
+    * CB koders
  It's a svn-download and may contain bugs.
  .
  http://www.codeblocks.org
