@@ -44,26 +44,26 @@ libwxsmithlib_la_SOURCES = \
 ./wxsautoresourcetreeimage.cpp
 
 sdkdir=$(includedir)/wxsmith/
- 
+
 sdk_HEADERS = \
 ./wxsadvqpp.h  \
+./wxsadvqppchild.h \
 ./wxsautoresourcetreeimage.h \
 ./wxscodinglang.h \
-./wxsresourcetree.h \
-./wxsresourcetreeitemdata.h 
- 
-noinst_HEADERS = \
-./wxsadvqppchild.h \
-./wxscoder.h \
-./wxseditor.h \
-./wxsextresmanager.h \
 ./wxsgui.h \
 ./wxsguifactory.h \
-./wxsmith.h \
-./wxsmithmime.h \
+./wxseditor.h \
 ./wxsproject.h \
 ./wxsresource.h \
 ./wxsresourcefactory.h \
+./wxsresourcetree.h \
+./wxsresourcetreeitemdata.h
+
+noinst_HEADERS = \
+./wxscoder.h \
+./wxsextresmanager.h \
+./wxsmith.h \
+./wxsmithmime.h \
 ./wxsstoringsplitterwindow.h \
 ./wxsversionconverter.h \
 ./wxssettings.h
