@@ -43,6 +43,7 @@
 #include <editormanager.h>
 #include <logmanager.h>
 #include <wx/textdlg.h>
+#include <wx/numdlg.h>
 
 namespace
 {
@@ -60,6 +61,7 @@ namespace
 
 //(*IdInit(HexEditPanel)
 const long HexEditPanel::ID_STATICTEXT1 = wxNewId();
+const long HexEditPanel::ID_BUTTON7 = wxNewId();
 const long HexEditPanel::ID_BUTTON4 = wxNewId();
 const long HexEditPanel::ID_BUTTON6 = wxNewId();
 const long HexEditPanel::ID_BUTTON5 = wxNewId();
@@ -94,6 +96,31 @@ const long HexEditPanel::ID_MENUITEM5 = wxNewId();
 const long HexEditPanel::ID_MENUITEM6 = wxNewId();
 const long HexEditPanel::ID_MENUITEM7 = wxNewId();
 const long HexEditPanel::ID_MENUITEM8 = wxNewId();
+const long HexEditPanel::ID_MENUITEM9 = wxNewId();
+const long HexEditPanel::ID_MENUITEM11 = wxNewId();
+const long HexEditPanel::ID_MENUITEM12 = wxNewId();
+const long HexEditPanel::ID_MENUITEM13 = wxNewId();
+const long HexEditPanel::ID_MENUITEM14 = wxNewId();
+const long HexEditPanel::ID_MENUITEM15 = wxNewId();
+const long HexEditPanel::ID_MENUITEM16 = wxNewId();
+const long HexEditPanel::ID_MENUITEM17 = wxNewId();
+const long HexEditPanel::ID_MENUITEM18 = wxNewId();
+const long HexEditPanel::ID_MENUITEM32 = wxNewId();
+const long HexEditPanel::ID_MENUITEM10 = wxNewId();
+const long HexEditPanel::ID_MENUITEM20 = wxNewId();
+const long HexEditPanel::ID_MENUITEM21 = wxNewId();
+const long HexEditPanel::ID_MENUITEM22 = wxNewId();
+const long HexEditPanel::ID_MENUITEM23 = wxNewId();
+const long HexEditPanel::ID_MENUITEM24 = wxNewId();
+const long HexEditPanel::ID_MENUITEM25 = wxNewId();
+const long HexEditPanel::ID_MENUITEM26 = wxNewId();
+const long HexEditPanel::ID_MENUITEM27 = wxNewId();
+const long HexEditPanel::ID_MENUITEM19 = wxNewId();
+const long HexEditPanel::ID_MENUITEM29 = wxNewId();
+const long HexEditPanel::ID_MENUITEM30 = wxNewId();
+const long HexEditPanel::ID_MENUITEM31 = wxNewId();
+const long HexEditPanel::ID_MENUITEM33 = wxNewId();
+const long HexEditPanel::ID_MENUITEM28 = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(HexEditPanel,EditorBase)
@@ -109,6 +136,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     , m_Content( 0 )
     , m_DrawFont( 0 )
     , m_MouseDown( false )
+    , m_ColsMode( CM_ANY )
 {
     /*
     --- Begin of comment which prevents calling Create() --
@@ -123,14 +151,16 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     m_Status = new wxStaticText(this, ID_STATICTEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer3->Add(m_Status, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ColsModeBtn = new wxButton(this, ID_BUTTON7, _("Cols"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON7"));
+    BoxSizer3->Add(m_ColsModeBtn, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_DigitBits = new wxButton(this, ID_BUTTON4, _("Hex"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON4"));
     BoxSizer3->Add(m_DigitBits, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_BlockSize = new wxButton(this, ID_BUTTON6, _("1B"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON6"));
     BoxSizer3->Add(m_BlockSize, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_Endianess = new wxButton(this, ID_BUTTON5, _("BE"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON5"));
     BoxSizer3->Add(m_Endianess, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_VERTICAL, _T("ID_STATICLINE1"));
-    BoxSizer3->Add(StaticLine1, 0, wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticLine1 = new wxStaticLine(this, ID_STATICLINE1, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL, _T("ID_STATICLINE1"));
+    BoxSizer3->Add(StaticLine1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button1 = new wxButton(this, ID_BUTTON1, _("Calc"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
     BoxSizer3->Add(Button1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     CheckBox1 = new wxCheckBox(this, ID_CHECKBOX1, _("Value preview"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
@@ -209,8 +239,62 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_BlockSizeMenu.Append(MenuItem7);
     MenuItem8 = new wxMenuItem((&m_BlockSizeMenu), ID_MENUITEM8, _("8 Bytes"), wxEmptyString, wxITEM_NORMAL);
     m_BlockSizeMenu.Append(MenuItem8);
+    MenuItem9 = new wxMenuItem((&m_ColsModeMenu), ID_MENUITEM9, _("Any"), wxEmptyString, wxITEM_NORMAL);
+    m_ColsModeMenu.Append(MenuItem9);
+    MenuItem10 = new wxMenu();
+    MenuItem11 = new wxMenuItem(MenuItem10, ID_MENUITEM11, _("1"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem11);
+    MenuItem12 = new wxMenuItem(MenuItem10, ID_MENUITEM12, _("2"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem12);
+    MenuItem13 = new wxMenuItem(MenuItem10, ID_MENUITEM13, _("3"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem13);
+    MenuItem14 = new wxMenuItem(MenuItem10, ID_MENUITEM14, _("4"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem14);
+    MenuItem15 = new wxMenuItem(MenuItem10, ID_MENUITEM15, _("5"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem15);
+    MenuItem16 = new wxMenuItem(MenuItem10, ID_MENUITEM16, _("6"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem16);
+    MenuItem17 = new wxMenuItem(MenuItem10, ID_MENUITEM17, _("7"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem17);
+    MenuItem18 = new wxMenuItem(MenuItem10, ID_MENUITEM18, _("8"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem18);
+    MenuItem10->AppendSeparator();
+    MenuItem32 = new wxMenuItem(MenuItem10, ID_MENUITEM32, _("Other"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem10->Append(MenuItem32);
+    m_ColsModeMenu.Append(ID_MENUITEM10, _("Exactly"), MenuItem10, wxEmptyString);
+    MenuItem19 = new wxMenu();
+    MenuItem20 = new wxMenuItem(MenuItem19, ID_MENUITEM20, _("2"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem20);
+    MenuItem21 = new wxMenuItem(MenuItem19, ID_MENUITEM21, _("3"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem21);
+    MenuItem22 = new wxMenuItem(MenuItem19, ID_MENUITEM22, _("4"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem22);
+    MenuItem23 = new wxMenuItem(MenuItem19, ID_MENUITEM23, _("5"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem23);
+    MenuItem24 = new wxMenuItem(MenuItem19, ID_MENUITEM24, _("6"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem24);
+    MenuItem25 = new wxMenuItem(MenuItem19, ID_MENUITEM25, _("7"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem25);
+    MenuItem26 = new wxMenuItem(MenuItem19, ID_MENUITEM26, _("8"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem26);
+    MenuItem19->AppendSeparator();
+    MenuItem27 = new wxMenuItem(MenuItem19, ID_MENUITEM27, _("Other"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem19->Append(MenuItem27);
+    m_ColsModeMenu.Append(ID_MENUITEM19, _("Multiple of"), MenuItem19, wxEmptyString);
+    MenuItem28 = new wxMenu();
+    MenuItem29 = new wxMenuItem(MenuItem28, ID_MENUITEM29, _("2"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem28->Append(MenuItem29);
+    MenuItem30 = new wxMenuItem(MenuItem28, ID_MENUITEM30, _("4"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem28->Append(MenuItem30);
+    MenuItem31 = new wxMenuItem(MenuItem28, ID_MENUITEM31, _("8"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem28->Append(MenuItem31);
+    MenuItem28->AppendSeparator();
+    MenuItem33 = new wxMenuItem(MenuItem28, ID_MENUITEM33, _("Other"), wxEmptyString, wxITEM_NORMAL);
+    MenuItem28->Append(MenuItem33);
+    m_ColsModeMenu.Append(ID_MENUITEM28, _("Power of"), MenuItem28, wxEmptyString);
     BoxSizer1->SetSizeHints(this);
 
+    Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_ColsModeClick);
     Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton4Click);
     Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_BlockSizeClick);
     Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_EndianessClick);
@@ -247,6 +331,28 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     Connect(ID_MENUITEM6,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetBlockSize2);
     Connect(ID_MENUITEM7,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetBlockSize4);
     Connect(ID_MENUITEM8,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetBlockSize8);
+    Connect(ID_MENUITEM9,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul1);
+    Connect(ID_MENUITEM11,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue1);
+    Connect(ID_MENUITEM12,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue2);
+    Connect(ID_MENUITEM13,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue3);
+    Connect(ID_MENUITEM14,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue4);
+    Connect(ID_MENUITEM15,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue5);
+    Connect(ID_MENUITEM16,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue6);
+    Connect(ID_MENUITEM17,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue7);
+    Connect(ID_MENUITEM18,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValue8);
+    Connect(ID_MENUITEM32,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsValueOther);
+    Connect(ID_MENUITEM20,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul2);
+    Connect(ID_MENUITEM21,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul3);
+    Connect(ID_MENUITEM22,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul4);
+    Connect(ID_MENUITEM23,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul5);
+    Connect(ID_MENUITEM24,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul6);
+    Connect(ID_MENUITEM25,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul7);
+    Connect(ID_MENUITEM26,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMul8);
+    Connect(ID_MENUITEM27,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsMulOther);
+    Connect(ID_MENUITEM29,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsPower2);
+    Connect(ID_MENUITEM30,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsPower4);
+    Connect(ID_MENUITEM31,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsPower8);
+    Connect(ID_MENUITEM33,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&HexEditPanel::OnSetColsPowerOther);
     //*)
 
     // We connect these events manually
@@ -386,7 +492,34 @@ void HexEditPanel::RecalculateCoefs()
 
     // Now we need to find such number of bytes to be multiple of cumulativeBlockSize
     // and try not to cross maxByteInLine
-    m_LineBytes = std::max( (int)(maxByteInLine / cumulativeBlockSize), 1 ) * cumulativeBlockSize;
+
+    // Additionally we try to mach required columns count,
+    // this is a little bit naive approach but will work in generic way
+    int maxColumns = std::max( (int)(maxByteInLine / cumulativeBlockSize), 1 );
+    for ( int i=maxColumns;; i-- )
+    {
+        if ( i<1 )
+        {
+            for ( i=maxColumns+1; i<0x1000; ++i )
+            {
+                if ( MatchColumnsCount( i ) )
+                {
+                    maxColumns = i;
+                    break;
+                }
+            }
+            break;
+        }
+
+        if ( MatchColumnsCount( i ) )
+        {
+            maxColumns = i;
+            break;
+        }
+    }
+
+    m_ColsCount = maxColumns;
+    m_LineBytes = maxColumns * cumulativeBlockSize;
 
     // Calculate column positions
     for ( int i=0; i<MAX_VIEWS; ++i )
@@ -664,6 +797,14 @@ void HexEditPanel::RefreshStatus()
         }
 
         m_BlockSize->SetLabel( wxString::Format( _("%dB"), m_DigitView->GetBlockBytes() ) );
+
+        switch ( m_ColsMode )
+        {
+            case CM_SPECIFIED: m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d"), m_ColsValue ) ); break;
+            case CM_MULT:      m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( n * %d )"), m_ColsCount, m_ColsValue ) ); break;
+            case CM_POWER:     m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( n ^ %d )"), m_ColsCount, m_ColsValue ) ); break;
+            default:           m_ColsModeBtn->SetLabel( wxString::Format( _("Cols: %d ( Any )"), m_ColsCount ) );
+        }
     }
 }
 
@@ -1330,3 +1471,158 @@ void HexEditPanel::OnSetBlockSize8(wxCommandEvent& event)
     m_DigitView->SetBlockBytes( 8 );
     DisplayChanged();
 }
+
+void HexEditPanel::Onm_ColsModeClick(wxCommandEvent& event)
+{
+    PopupMenu( &m_ColsModeMenu );
+}
+
+void HexEditPanel::OnSetColsMul1(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 1 );
+}
+
+void HexEditPanel::OnSetColsMul2(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 2 );
+}
+
+void HexEditPanel::OnSetColsMul3(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 3 );
+}
+
+void HexEditPanel::OnSetColsMul4(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 4 );
+}
+
+void HexEditPanel::OnSetColsMul5(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 5 );
+}
+
+void HexEditPanel::OnSetColsMul6(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 6 );
+}
+
+void HexEditPanel::OnSetColsMul7(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 7 );
+}
+
+void HexEditPanel::OnSetColsMul8(wxCommandEvent& event)
+{
+    ColsMode( CM_MULT, 8 );
+}
+
+void HexEditPanel::OnSetColsMulOther(wxCommandEvent& event)
+{
+    long val = ::wxGetNumberFromUser( _("Enter number"), _("Enter number"), _("Colums setting"), 2, 2, 100, this );
+    if ( val > 0 ) ColsMode( CM_MULT, val );
+}
+
+void HexEditPanel::OnSetColsValue1(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 1 );
+}
+
+void HexEditPanel::OnSetColsValue2(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 2 );
+}
+
+void HexEditPanel::OnSetColsValue3(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 3 );
+}
+
+void HexEditPanel::OnSetColsValue4(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 4 );
+}
+
+void HexEditPanel::OnSetColsValue5(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 5 );
+}
+
+void HexEditPanel::OnSetColsValue6(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 6 );
+}
+
+void HexEditPanel::OnSetColsValue7(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 7 );
+}
+
+void HexEditPanel::OnSetColsValue8(wxCommandEvent& event)
+{
+    ColsMode( CM_SPECIFIED, 8 );
+}
+
+void HexEditPanel::OnSetColsValueOther(wxCommandEvent& event)
+{
+    long val = ::wxGetNumberFromUser( _("Enter number"), _("Enter number"), _("Colums setting"), 1, 1, 100, this );
+    if ( val > 0 ) ColsMode( CM_SPECIFIED, val );
+}
+
+void HexEditPanel::OnSetColsPower2(wxCommandEvent& event)
+{
+    ColsMode( CM_POWER, 2 );
+}
+
+void HexEditPanel::OnSetColsPower4(wxCommandEvent& event)
+{
+    ColsMode( CM_POWER, 4 );
+}
+
+void HexEditPanel::OnSetColsPower8(wxCommandEvent& event)
+{
+    ColsMode( CM_POWER, 8 );
+}
+
+void HexEditPanel::OnSetColsPowerOther(wxCommandEvent& event)
+{
+    long val = ::wxGetNumberFromUser( _("Enter number"), _("Enter number"), _("Colums setting"), 2, 2, 100, this );
+    if ( val > 0 ) ColsMode( CM_POWER, val );
+}
+
+void HexEditPanel::ColsMode(int mode, int value)
+{
+    m_ColsMode = mode;
+    m_ColsValue = value;
+
+    if ( m_ColsMode == CM_MULT && m_ColsValue == 1 )
+    {
+        m_ColsMode = CM_ANY;
+    }
+
+    DisplayChanged();
+}
+
+bool HexEditPanel::MatchColumnsCount(int colsCount)
+{
+    switch ( m_ColsMode )
+    {
+        case CM_MULT:
+            return ( colsCount % m_ColsValue ) == 0;
+
+        case CM_SPECIFIED:
+            return colsCount == m_ColsValue;
+
+        case CM_POWER:
+            while ( colsCount > 1 )
+            {
+                if ( colsCount % m_ColsValue ) return false;
+                colsCount /= m_ColsValue;
+            }
+            return true;
+
+        default:
+            return true;
+    }
+}
+

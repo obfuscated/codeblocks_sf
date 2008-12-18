@@ -17,6 +17,15 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON7" variable="m_ColsModeBtn" member="yes">
+							<label>Cols</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="Onm_ColsModeClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
 						<object class="wxButton" name="ID_BUTTON4" variable="m_DigitBits" member="yes">
 							<label>Hex</label>
 							<style>wxBU_EXACTFIT</style>
@@ -45,10 +54,9 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
-							<size>10,-1</size>
 							<style>wxLI_VERTICAL</style>
 						</object>
-						<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -343,6 +351,108 @@
 			<object class="wxMenuItem" name="ID_MENUITEM8" variable="MenuItem8" member="yes">
 				<label>8 Bytes</label>
 				<handler function="OnSetBlockSize8" entry="EVT_MENU" />
+			</object>
+		</object>
+		<object class="wxMenu" variable="m_ColsModeMenu" member="yes">
+			<object class="wxMenuItem" name="ID_MENUITEM9" variable="MenuItem9" member="yes">
+				<label>Any</label>
+				<handler function="OnSetColsMul1" entry="EVT_MENU" />
+			</object>
+			<object class="wxMenu" name="ID_MENUITEM10" variable="MenuItem10" member="yes">
+				<label>Exactly</label>
+				<object class="wxMenuItem" name="ID_MENUITEM11" variable="MenuItem11" member="yes">
+					<label>1</label>
+					<handler function="OnSetColsValue1" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM12" variable="MenuItem12" member="yes">
+					<label>2</label>
+					<handler function="OnSetColsValue2" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM13" variable="MenuItem13" member="yes">
+					<label>3</label>
+					<handler function="OnSetColsValue3" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM14" variable="MenuItem14" member="yes">
+					<label>4</label>
+					<handler function="OnSetColsValue4" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM15" variable="MenuItem15" member="yes">
+					<label>5</label>
+					<handler function="OnSetColsValue5" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM16" variable="MenuItem16" member="yes">
+					<label>6</label>
+					<handler function="OnSetColsValue6" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM17" variable="MenuItem17" member="yes">
+					<label>7</label>
+					<handler function="OnSetColsValue7" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM18" variable="MenuItem18" member="yes">
+					<label>8</label>
+					<handler function="OnSetColsValue8" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM32" variable="MenuItem32" member="yes">
+					<label>Other</label>
+					<handler function="OnSetColsValueOther" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" name="ID_MENUITEM19" variable="MenuItem19" member="yes">
+				<label>Multiple of</label>
+				<object class="wxMenuItem" name="ID_MENUITEM20" variable="MenuItem20" member="yes">
+					<label>2</label>
+					<handler function="OnSetColsMul2" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM21" variable="MenuItem21" member="yes">
+					<label>3</label>
+					<handler function="OnSetColsMul3" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM22" variable="MenuItem22" member="yes">
+					<label>4</label>
+					<handler function="OnSetColsMul4" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM23" variable="MenuItem23" member="yes">
+					<label>5</label>
+					<handler function="OnSetColsMul5" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM24" variable="MenuItem24" member="yes">
+					<label>6</label>
+					<handler function="OnSetColsMul6" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM25" variable="MenuItem25" member="yes">
+					<label>7</label>
+					<handler function="OnSetColsMul7" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM26" variable="MenuItem26" member="yes">
+					<label>8</label>
+					<handler function="OnSetColsMul8" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM27" variable="MenuItem27" member="yes">
+					<label>Other</label>
+					<handler function="OnSetColsMulOther" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" name="ID_MENUITEM28" variable="MenuItem28" member="yes">
+				<label>Power of</label>
+				<object class="wxMenuItem" name="ID_MENUITEM29" variable="MenuItem29" member="yes">
+					<label>2</label>
+					<handler function="OnSetColsPower2" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM30" variable="MenuItem30" member="yes">
+					<label>4</label>
+					<handler function="OnSetColsPower4" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="ID_MENUITEM31" variable="MenuItem31" member="yes">
+					<label>8</label>
+					<handler function="OnSetColsPower8" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="ID_MENUITEM33" variable="MenuItem33" member="yes">
+					<label>Other</label>
+					<handler function="OnSetColsPowerOther" entry="EVT_MENU" />
+				</object>
 			</object>
 		</object>
 	</object>
