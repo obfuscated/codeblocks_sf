@@ -15,9 +15,9 @@
 * You should have received a copy of the GNU General Public License
 * along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision:$
-* $Id:$
-* $HeadURL:$
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include "HexEditPanel.h"
@@ -135,6 +135,9 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     , m_FileName( fileName )
     , m_Content( 0 )
     , m_DrawFont( 0 )
+    , m_Current( 0 )
+    , m_CurrentBlockStart( 0 )
+    , m_CurrentBlockEnd( 0 )
     , m_MouseDown( false )
     , m_ColsMode( CM_ANY )
 {
@@ -585,7 +588,7 @@ void HexEditPanel::OnContentPaint( wxPaintEvent& event )
         // Add offset to view buffer
         for ( size_t i=8; i-->0; )
         {
-            buff.PutChar( "0123456789ABCDEF"[ ( offs >> ( i << 3 ) ) & 0xF ] );
+            buff.PutChar( "0123456789ABCDEF"[ ( offs >> ( i << 2 ) ) & 0xF ] );
         }
         buff.PutChar(':');
 
