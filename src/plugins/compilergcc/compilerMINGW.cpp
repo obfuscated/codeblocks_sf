@@ -210,10 +210,9 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
     wxGetEnv(_T("PATH"), &pathValues);
     if (!pathValues.IsEmpty())
     {
-        wxArrayString pathArray;
         wxString sep = platform::windows ? _T(";") : _T(":");
         wxChar pathSep = platform::windows ? _T('\\') : _T('/');
-        GetStringFromArray(pathArray, sep);
+        wxArrayString pathArray = GetArrayFromString(pathValues, sep);
         for (size_t i = 0; i < pathArray.GetCount(); ++i)
         {
             if (wxFileExists(pathArray[i] + pathSep + m_Programs.C))
