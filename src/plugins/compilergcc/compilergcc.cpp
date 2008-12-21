@@ -839,35 +839,47 @@ void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPat
          * locate duplicate entries. */
         wxArrayString envPathArr = GetArrayFromString(envPath, path_sep);
 
-        // add extra compiler paths in PATH
+        // add extra compiler paths and masterpath to PATH
+        // and make sure they come before rest of path, because otherwise different
+        // versions of the executables might lead to problems
+        // => masterPath + extraPath + PATH
         wxString oldpath = envPath;
         envPath.Clear();
         for (unsigned int i = 0; i < extraPaths.GetCount(); ++i)
         {
-            #if wxCHECK_VERSION(2, 8, 0)
-            if (!extraPaths[i].IsEmpty() &&
-                (envPathArr.Index(extraPaths[i], caseSensitive) == wxNOT_FOUND))
-            #else
             if (!extraPaths[i].IsEmpty())
-            #endif
             {
+                int index = envPathArr.Index(extraPaths[i], caseSensitive);
+                if(index != wxNOT_FOUND)
+                {
+                    envPathArr.RemoveAt(index);
+                }
                 envPath += extraPaths[i] + path_sep;
             }
         }
-        envPath = envPath + oldpath;
 
         // add bin path to PATH env. var.
         wxString pathCheck = masterPath + sep + _T("bin");
-        if  (wxFileExists(pathCheck + sep + gcc) &&
-            (envPathArr.Index(pathCheck, caseSensitive) == wxNOT_FOUND))
+        if  (wxFileExists(pathCheck + sep + gcc))
         {
+            int index = envPathArr.Index(pathCheck, caseSensitive);
+            if(index != wxNOT_FOUND)
+            {
+                envPathArr.RemoveAt(index);
+            }
             envPath = masterPath + sep + _T("bin") + path_sep + envPath;
         }
-        else if (wxFileExists(masterPath + sep + gcc) &&
-                (envPathArr.Index(masterPath, caseSensitive) == wxNOT_FOUND))
+        else if (wxFileExists(masterPath + sep + gcc))
         {
+            int index = envPathArr.Index(masterPath, caseSensitive);
+            if(index != wxNOT_FOUND)
+            {
+                envPathArr.RemoveAt(index);
+            }
             envPath = masterPath + path_sep + envPath;
         }
+        envPath = envPath + GetStringFromArray(envPathArr, path_sep, false);
+//        Manager::Get()->GetLogManager()->Log(F(_T("Changing PATH from %s to %s"), oldpath.c_str(), envPath.c_str()));
         wxSetEnv(_T("PATH"), envPath);
     }
 }
