@@ -86,9 +86,25 @@ protected:
 	/** Dynamic events disconnection. */
 	virtual void DisconnectEvents(wxEvtHandler* pEvtHandler);
 
+	/** Contextual menu event handler */
+	void OnLoggerTreeContextualMenu(wxTreeEvent& event);
+
+	/** Delete item menu event handler */
+	void OnDeleteTreeItem(wxCommandEvent& event);
+
+	/** Delete item menu event handler */
+	void OnDeleteAllTreeItems(wxCommandEvent& event);
+
+	/** Deletes an item from the tree */
+	void DeleteTreeItem(wxTreeItemId id);
+
+	/** Deletes all items from the tree */
+	void DeleteTreeItems();
+
 	wxTreeCtrl*  m_pTreeLog;
 	bool         m_FirstItemProcessed; // Used to filter wxTree events and process useful ones only.
 	wxTreeItemId m_FilesParentId;
+	wxTreeItemId m_ToDeleteItemId;
 };
 
 #endif // THREAD_SEARCH_LOGGER_TREE_H

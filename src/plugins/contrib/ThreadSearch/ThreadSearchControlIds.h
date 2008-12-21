@@ -23,6 +23,8 @@ enum eControlIds
 	idMenuViewThreadSearch,
 	idMenuSearchThreadSearch,
 	idMenuCtxThreadSearch,
+	idMenuCtxDeleteItem,
+	idMenuCtxDeleteAllItems,
 	idCboSearchExpr,
 	idChkSearchDirRecurse,
 	idChkSearchDirHidden,

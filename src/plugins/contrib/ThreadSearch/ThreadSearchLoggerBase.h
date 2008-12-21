@@ -16,6 +16,7 @@
 
 class wxWindow;
 class wxPanel;
+class wxPoint;
 class wxEvtHandler;
 
 class ThreadSearch;
@@ -84,6 +85,9 @@ protected:
 
 	/** Dynamic events disconnection. */
 	virtual void DisconnectEvents(wxEvtHandler* pEvtHandler) = 0;
+
+	/** Displays contextual menu. */
+	void ShowMenu(const wxPoint& point);
 
 	ThreadSearchView& m_ThreadSearchView;
 	ThreadSearch&     m_ThreadSearchPlugin;

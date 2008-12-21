@@ -8,15 +8,20 @@
  * License:   GPL
  **************************************************************/
 
+#include <wx/gdicmn.h>
+#include <wx/menu.h>
+
 #include "ThreadSearchLoggerBase.h"
 #include "ThreadSearchLoggerList.h"
 #include "ThreadSearchLoggerTree.h"
+#include "ThreadSearchView.h"
+#include "ThreadSearchControlIds.h"
 #include "ThreadSearch.h"
 
 ThreadSearchLoggerBase* ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
 																			ThreadSearch&     threadSearchPlugin,
 																			eLoggerTypes      loggerType,
-															 InsertIndexManager::eFileSorting fileSorting,
+																			InsertIndexManager::eFileSorting fileSorting,
 																			wxPanel*          pParent,
 																			long              id)
 {
@@ -36,9 +41,18 @@ ThreadSearchLoggerBase* ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(Thre
 
 void ThreadSearchLoggerBase::Update()
 {
-	if ( m_ThreadSearchPlugin.GetFileSorting() != m_IndexManager.GetFileSorting() )
-	{
-		Clear();
-		m_IndexManager.SetFileSorting(m_ThreadSearchPlugin.GetFileSorting());
-	}
+	Clear();
+	m_IndexManager.SetFileSorting(m_ThreadSearchPlugin.GetFileSorting());
+}
+
+
+void ThreadSearchLoggerBase::ShowMenu(const wxPoint& point)
+{
+	bool enable = !m_ThreadSearchView.IsSearchRunning();
+	wxMenu menu(_(""));
+	wxMenuItem* menuItem = menu.Append(idMenuCtxDeleteItem, _("&Delete item"));
+	menuItem->Enable(enable);
+	menuItem = menu.Append(idMenuCtxDeleteAllItems, _("Delete &all items"));
+	menuItem->Enable(enable);
+	GetWindow()->PopupMenu(&menu, point);
 }

@@ -1,6 +1,6 @@
 /***************************************************************
  * Name:      ThreadSearchLoggerList
- * Purpose:   ThreadSearchLoggerTree implements the
+ * Purpose:   ThreadSearchLoggerList implements the
  *            ThreadSearchLoggerBase interface with a wxListCtrl.
  * Author:    Jerome ANTOINE
  * Created:   2007-07-28
@@ -15,6 +15,7 @@
 
 #include <wx/listctrl.h>
 #include <wx/dynarray.h>
+#include <wx/gdicmn.h>
 
 #include "ThreadSearch.h"
 #include "ThreadSearchView.h"
@@ -78,7 +79,7 @@ void ThreadSearchLoggerList::SetListColumns()
 void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
 {
 	// Manages list log left (single) click
-	if ( IsSelectedLineResultLine() )
+	if ( IsLineResultLine() )
 	{
 		// Gets file path and line from list control
 		wxString filepath(wxEmptyString);
@@ -97,7 +98,7 @@ void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
 void ThreadSearchLoggerList::OnLoggerListDoubleClick(wxListEvent& event)
 {
 	// Manages list log left double click
-	if ( IsSelectedLineResultLine() )
+	if ( IsLineResultLine() )
 	{
 		// Gets file path and line from list control
 		wxString filepath(wxEmptyString);
@@ -154,14 +155,16 @@ bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& event, wxStri
 }
 
 
-bool ThreadSearchLoggerList::IsSelectedLineResultLine()
+bool ThreadSearchLoggerList::IsLineResultLine(long index /* -1 */)
 {
 	bool isResultLine = false;
 	wxListItem listItem;
 
 	do {
-		// Finds selected item index
-		long index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+		if ( index == -1 )
+			// Finds selected item index
+			index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+
 		if ( index == -1 ) break;
 
 		// First, gets file dir
@@ -255,6 +258,18 @@ void ThreadSearchLoggerList::ConnectEvents(wxEvtHandler* pEvtHandler)
 	pEvtHandler->Connect(id, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
 						(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
 						&ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
+
+#if wxUSE_MENUS
+	pEvtHandler->Connect(id, wxEVT_CONTEXT_MENU,
+			(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+			&ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
+
+	pEvtHandler->Connect(idMenuCtxDeleteItem, wxEVT_COMMAND_MENU_SELECTED,
+			wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
+
+	pEvtHandler->Connect(idMenuCtxDeleteAllItems, wxEVT_COMMAND_MENU_SELECTED,
+			wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
+#endif // wxUSE_MENUS
 }
 
 
@@ -269,6 +284,95 @@ void ThreadSearchLoggerList::DisconnectEvents(wxEvtHandler* pEvtHandler)
     pEvtHandler->Disconnect(id, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &ThreadSearchLoggerList::OnLoggerListDoubleClick, NULL, static_cast<wxEvtHandler*>(this));
+
+#if wxUSE_MENUS
+	pEvtHandler->Disconnect(id, wxEVT_CONTEXT_MENU,
+			(wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+			&ThreadSearchLoggerList::OnLoggerListContextualMenu, NULL, this);
+
+	pEvtHandler->Disconnect(idMenuCtxDeleteItem, wxEVT_COMMAND_MENU_SELECTED,
+			wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteListItem), NULL, this);
+
+	pEvtHandler->Disconnect(idMenuCtxDeleteAllItems, wxEVT_COMMAND_MENU_SELECTED,
+			wxCommandEventHandler(ThreadSearchLoggerList::OnDeleteAllListItems), NULL, this);
+#endif // wxUSE_MENUS
+}
+
+
+void ThreadSearchLoggerList::OnLoggerListContextualMenu(wxContextMenuEvent& event)
+{
+	wxPoint point = event.GetPosition();
+
+	// If from keyboard
+	if ( (point.x == -1) && (point.y == -1) )
+	{
+		wxSize size = m_pListLog->GetSize();
+		point.x = size.x / 2;
+		point.y = size.y / 2;
+	}
+	else
+	{
+		point = m_pListLog->ScreenToClient(point);
+		long tmp;
+		int flags;
+		if ( m_pListLog->HitTest(point, flags, &tmp) == wxNOT_FOUND )
+		{
+			return;
+		}
+	}
+	ShowMenu(point);
+}
+
+
+void ThreadSearchLoggerList::OnDeleteListItem(wxCommandEvent& event)
+{
+	// Finds selected item index
+	long index = m_pListLog->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+	if ( index != -1 )
+	{
+		long start = index;
+		long end = index;
+		if ( IsLineResultLine(index) )
+		{
+			if ( (index > 0) && !IsLineResultLine(index - 1) &&
+				 ((index == m_pListLog->GetItemCount() - 1) || !IsLineResultLine(index + 1)) )
+			{
+				start--;
+			}
+		}
+		else
+		{
+			index++;
+			while ( (index < m_pListLog->GetItemCount()) && IsLineResultLine(index) )
+			{
+				end = index;
+				index++;
+			}
+		}
+
+		for (int i = end; i >= start; i--)
+		{
+			DeleteListItem(i);
+		}
+	}
+}
+
+
+void ThreadSearchLoggerList::OnDeleteAllListItems(wxCommandEvent& event)
+{
+	DeleteListItems();
+}
+
+
+void ThreadSearchLoggerList::DeleteListItem(long index)
+{
+	m_pListLog->DeleteItem(index);
+}
+
+
+void ThreadSearchLoggerList::DeleteListItems()
+{
+	Clear();
 }
 
 
