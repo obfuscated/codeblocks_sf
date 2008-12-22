@@ -43,8 +43,9 @@ void TidyCmt::OnSave(CodeBlocksEvent& event)
 			unsigned int pad = len - s.length() - 8 - ctrl->GetLineIndentation(i);
 			s = _T("//---- ") + s + _T(' ') + wxString(_T('-'), pad);
 
-			ctrl->SetSelection(a, b);  // this must be the most stupid way on earth of doing it,
-			ctrl->ReplaceSelection(s); // but there seems to be no SetTextRange or similar function
+			ctrl->SetTargetStart(a);
+			ctrl->SetTargetEnd(b);
+			ctrl->ReplaceTarget(s);
 		}
 		if(s.StartsWith(_T("/*--")) && s.EndsWith(_T("*/")))
 		{
@@ -55,9 +56,9 @@ void TidyCmt::OnSave(CodeBlocksEvent& event)
 			unsigned int pad = len - s.length() - 10 - ctrl->GetLineIndentation(i);
 			s = _T("/*---- ") + s + _T(' ') + wxString(_T('-'), pad) + _T("*/");
 
-			ctrl->SetSelection(a, b);
-			ctrl->ReplaceSelection(s);
+			ctrl->SetTargetStart(a);
+			ctrl->SetTargetEnd(b);
+			ctrl->ReplaceTarget(s);
 		}
 	}
-	ctrl->SetSelection(0,0);
 }
