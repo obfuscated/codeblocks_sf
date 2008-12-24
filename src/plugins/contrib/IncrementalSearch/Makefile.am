@@ -2,9 +2,9 @@ INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include
 
-pluginlibdir = $(pkglibdir)/plugins
+libdir = $(pkgdatadir)/plugins
 
-pluginlib_LTLIBRARIES = libIncrementalSearch.la
+lib_LTLIBRARIES = libIncrementalSearch.la
 
 libIncrementalSearch_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
@@ -13,8 +13,7 @@ libIncrementalSearch_la_LIBADD = $(PLUGIN_WX_LIBS) \
 libIncrementalSearch_la_SOURCES = IncrementalSearch.cpp \
 				IncrementalSearchConfDlg.cpp
 
-noinst_HEADERS = IncrementalSearch.h \
-		IncrementalSearchConfDlg.h
+noinst_HEADERS = IncrementalSearch.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		IncrementalSearchToolbar.xrc \

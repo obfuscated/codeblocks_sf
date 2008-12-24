@@ -1792,15 +1792,15 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             {
                 command << crunnStr << strSPACE;
 
-				if (!platform::windows)
-				{
-					// set LD_LIBRARY_PATH
-					command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << _T(':');
-					// we have to quote the string, just escape the spaces does not work
-					wxString strLinkerPath=GetDynamicLinkerPathForTarget(target);
-					QuoteStringIfNeeded(strLinkerPath);
-					command << strLinkerPath << strSPACE;
-				}
+                if (!platform::windows)
+                {
+                    // set LD_LIBRARY_PATH
+                    command << LIBRARY_ENVVAR << _T("=$") << LIBRARY_ENVVAR << _T(':');
+                    // we have to quote the string, just escape the spaces does not work
+                    wxString strLinkerPath=GetDynamicLinkerPathForTarget(target);
+                    QuoteStringIfNeeded(strLinkerPath);
+                    command << strLinkerPath << strSPACE;
+                }
             }
         }
     }
@@ -1882,10 +1882,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
 wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
 {
-	if (!target)
-	{
-		return wxEmptyString;
-	}
+    if (!target)
+    {
+        return wxEmptyString;
+    }
 
 	Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
 	if (compiler)
@@ -2741,9 +2741,9 @@ int CompilerGCC::KillProcess()
         if (!m_Processes[i])
             continue;
 
-		#if defined(WIN32) && defined(ENABLE_SIGTERM)
-			::GenerateConsoleCtrlEvent(0, m_Pid[i]);
-		#endif
+        #if defined(WIN32) && defined(ENABLE_SIGTERM)
+            ::GenerateConsoleCtrlEvent(0, m_Pid[i]);
+        #endif
 
 
 

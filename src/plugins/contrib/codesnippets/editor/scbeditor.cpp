@@ -959,13 +959,13 @@ void ScbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // if user wants "Home" key to set cursor to the very beginning of line
     if (mgr->ReadBool(_T("/simplified_home"), false))
     {
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NULL, wxSCI_CMD_HOME);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM, wxSCI_CMD_HOME);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMEEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMERECTEXTEND);
     }
     else // else set default "Home" key behavior
     {
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NULL, wxSCI_CMD_VCHOME);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM, wxSCI_CMD_VCHOME);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMEEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMERECTEXTEND);
     }

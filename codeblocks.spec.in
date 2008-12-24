@@ -237,6 +237,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/images/ThreadSearch/*
+%{pkgdata}/images/IncrementalSearch/*
 %{pkgdata}/lib_finder/*
 %{pkglib}/plugins/libAutoVersioning.*
 %{pkglib}/plugins/libBrowseTracker.*

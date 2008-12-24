@@ -3,7 +3,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(srcdir)/src/scintilla/include \
 			-I$(srcdir)/src/scintilla/src
 			
-AM_CPPFLAGS = -DSCI_LEXER -DLINK_LEXERS -DGTK
+AM_CPPFLAGS = -DSCI_LEXER -DLINK_LEXERS -DGTK -D__WX__
 
 noinst_LTLIBRARIES = libwxscintilla.la
 
@@ -20,6 +20,20 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/Editor.cxx \
 							src/scintilla/src/ExternalLexer.cxx \
 							src/scintilla/src/Indicator.cxx \
+							src/scintilla/src/Decoration.cxx \
+							src/scintilla/src/LexASY.cxx \
+							src/scintilla/src/LexAbaqus.cxx \
+							src/scintilla/src/LexCmake.cxx \
+							src/scintilla/src/LexD.cxx \
+							src/scintilla/src/LexGAP.cxx \
+							src/scintilla/src/LexMagik.cxx \
+							src/scintilla/src/LexPLM.cxx \
+							src/scintilla/src/LexPowerShell.cxx \
+							src/scintilla/src/LexProgress.cxx \
+							src/scintilla/src/LexR.cxx \
+							src/scintilla/src/PositionCache.cxx \
+							src/scintilla/src/RunStyles.cxx \
+							src/scintilla/src/RunStyles.h \
 							src/scintilla/src/KeyMap.cxx \
 							src/scintilla/src/KeyWords.cxx \
 							src/scintilla/src/LexAda.cxx \
@@ -58,6 +72,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/LexMMIXAL.cxx \
 							src/scintilla/src/LexMPT.cxx \
 							src/scintilla/src/LexMSSQL.cxx \
+							src/scintilla/src/LexMySQL.cxx \
 							src/scintilla/src/LexNsis.cxx \
 							src/scintilla/src/LexOpal.cxx \
 							src/scintilla/src/LexOthers.cxx \
@@ -101,6 +116,11 @@ noinst_HEADERS = src/scintilla/include/Accessor.h \
 							src/scintilla/include/Scintilla.h \
 							src/scintilla/include/ScintillaWidget.h \
 							src/scintilla/include/WindowAccessor.h \
+							src/scintilla/src/CharacterSet.h \
+							src/scintilla/src/Decoration.h \
+							src/scintilla/src/Partitioning.h \
+							src/scintilla/src/PositionCache.h \
+							src/scintilla/src/SplitVector.h \
 							src/scintilla/src/AutoComplete.h \
 							src/scintilla/src/CallTip.h \
 							src/scintilla/src/CellBuffer.h \

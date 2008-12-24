@@ -307,16 +307,20 @@ struct cbEditorInternalData
     {
         static int old_a;
         static int old_b;
+        // chosed a high value for indicator, in the hope not to interfere with the indicators used by some lexers (,
+        // if they get updated from deprecated oldstyle indicators somedays.
+        const int theIndicator = 10;
 
         int a, b;
         m_pOwner->m_pControl->GetSelection (&a, &b);
 
+        m_pOwner->m_pControl->SetIndicatorCurrent(theIndicator);
+        
         if (a == b) // don't hog the CPU when not necessary
         {
             if (old_a != old_b) // but please clear old marks when the user unselects
             {
-                m_pOwner->m_pControl->StartStyling(0, 0x20);
-                m_pOwner->m_pControl->SetStyling(m_pOwner->m_pControl->GetLength(), 0x00);
+                m_pOwner->m_pControl->IndicatorClearRange(0, m_pOwner->m_pControl->GetLength());
             }
             // clear old_a and old_b or deselecting a text and then select the same text again might not work in some cases
             // if the user selects with a double-click
@@ -340,8 +344,7 @@ struct cbEditorInternalData
         m_pOwner->m_pControl->IndicatorSetForeground( 0, highlightColour );
 
         // clear all style indications set in a previous run
-        m_pOwner->m_pControl->StartStyling( 0, 0x20 );
-        m_pOwner->m_pControl->SetStyling( eof, 0x00 );
+        m_pOwner->m_pControl->IndicatorClearRange(0, m_pOwner->m_pControl->GetLength());
 
         // check that feature is enabled,
         // selected text has a minimal length of 3 and contains no spaces
@@ -351,6 +354,12 @@ struct cbEditorInternalData
                 && selectedText.Find(_T('\t')) == wxNOT_FOUND
                 && selectedText.Find(_T('\n')) == wxNOT_FOUND )
         {
+            m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
+            wxColour highlightColour(   cfg->ReadInt(_T("/highlight_occurrence/colour_red_value"),   0xff),
+                                        cfg->ReadInt(_T("/highlight_occurrence/colour_green_value"), 0x00),
+                                        cfg->ReadInt(_T("/highlight_occurrence/colour_blue_value"),  0x00) );
+            m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
+
             int flag = 0;
             if (cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true))
             {
@@ -369,8 +378,7 @@ struct cbEditorInternalData
                 if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
                 {
                     // highlight it
-                    m_pOwner->m_pControl->StartStyling(pos, 0x20);
-                    m_pOwner->m_pControl->SetStyling(selectedText.Len(), 0x20);
+                    m_pOwner->m_pControl->IndicatorFillRange(pos, selectedText.length());
                 }
             }
         }
@@ -813,6 +821,9 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
         wxEVT_SCI_HOTSPOT_CLICK,
         wxEVT_SCI_HOTSPOT_DCLICK,
         wxEVT_SCI_CALLTIP_CLICK,
+//        wxEVT_SCI_AUTOCOMP_SELECTION,
+//        wxEVT_SCI_INDICATOR_CLICK,
+//        wxEVT_SCI_INDICATOR_RELEASE,
 
         -1 // to help enumeration of this array
     };
@@ -1038,13 +1049,13 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // if user wants "Home" key to set cursor to the very beginning of line
     if (mgr->ReadBool(_T("/simplified_home"), false))
     {
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NULL, wxSCI_CMD_HOME);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM, wxSCI_CMD_HOME);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMEEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMERECTEXTEND);
     }
     else // else set default "Home" key behavior
     {
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NULL, wxSCI_CMD_VCHOME);
+        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM, wxSCI_CMD_VCHOME);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMEEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMERECTEXTEND);
     }
@@ -1060,8 +1071,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         //otherwise to the start/end of the entire line.
         //alt+home/end go to start/end of the entire line.
         //in unwrapped mode, there is no difference between home/end and alt+home/end
-        control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_NULL,wxSCI_CMD_VCHOMEWRAP);
-        control->CmdKeyAssign(wxSCI_KEY_END,wxSCI_SCMOD_NULL,wxSCI_CMD_LINEENDWRAP);
+        control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_NORM,wxSCI_CMD_VCHOMEWRAP);
+        control->CmdKeyAssign(wxSCI_KEY_END,wxSCI_SCMOD_NORM,wxSCI_CMD_LINEENDWRAP);
         control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOME);
         control->CmdKeyAssign(wxSCI_KEY_END,wxSCI_SCMOD_ALT,wxSCI_CMD_LINEEND);
         control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT,wxSCI_CMD_VCHOMEWRAPEXTEND);
@@ -2806,6 +2817,9 @@ void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
 //  else if (type == wxEVT_SCI_HOTSPOT_CLICK) txt << _T("wxEVT_SCI_HOTSPOT_CLICK");
 //  else if (type == wxEVT_SCI_HOTSPOT_DCLICK) txt << _T("wxEVT_SCI_HOTSPOT_DCLICK");
 //  else if (type == wxEVT_SCI_CALLTIP_CLICK) txt << _T("wxEVT_SCI_CALLTIP_CLICK");
+//  else if (type == wxEVT_SCI_AUTOCOMP_SELECTION) txt << _T("wxEVT_SCI_AUTOCOMP_SELECTION");
+//  else if (type == wxEVT_SCI_INDICATOR_CLICK) txt << _T("wxEVT_SCI_INDICATOR_CLICK");
+//  else if (type == wxEVT_SCI_INDICATOR_RELEASE) txt << _T("wxEVT_SCI_INDICATOR_RELEASE");
 //    Manager::Get()->GetLogManager()->DebugLog(txt);
 
     // call any hooked functors

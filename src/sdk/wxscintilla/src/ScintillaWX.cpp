@@ -310,7 +310,7 @@ void ScintillaWX::DoStartDrag() {
         dropWentOutside = true;
         result = source.DoDragDrop(wxDrag_DefaultMove);
         if (result == wxDragMove && dropWentOutside) ClearSelection();
-        inDragDrop = false;
+        inDragDrop = ddNone;
         SetDragPosition (invalidPosition);
     }
     pdoc->EndUndoAction();

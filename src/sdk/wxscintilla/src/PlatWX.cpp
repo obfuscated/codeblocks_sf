@@ -735,6 +735,11 @@ void Window::SetTitle (const char *s) {
 }
 
 
+PRectangle Window::GetMonitorRect(Point) {
+	return PRectangle();
+}
+
+
 //----------------------------------------------------------------------
 // Helper classes for ListBox
 
@@ -1499,10 +1504,10 @@ wxString sci2wx(const char* str, size_t len)
     if (!len)
         return wxEmptyString;
 
-    size_t wclen = UCS2Length(str, len);
+    size_t wclen = UTF16Length(str, len);
     wxWCharBuffer buffer(wclen+1);
 
-    size_t actualLen = UCS2FromUTF8(str, len, buffer.data(), wclen+1);
+    size_t actualLen = UTF16FromUTF8(str, len, buffer.data(), wclen+1);
     return wxString(buffer.data(), actualLen);
 }
 
@@ -1513,7 +1518,7 @@ const wxWX2MBbuf wx2stc(const wxString& str)
     size_t len           = UTF8Length(wcstr, wclen);
 
     wxCharBuffer buffer(len+1);
-    UTF8FromUCS2(wcstr, wclen, buffer.data(), len);
+    UTF8FromUTF16(wcstr, wclen, buffer.data(), len);
 
     // TODO check NULL termination!!
 

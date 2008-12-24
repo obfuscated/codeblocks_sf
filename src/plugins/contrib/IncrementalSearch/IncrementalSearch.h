@@ -80,7 +80,8 @@ private:
     int m_flags;
     bool m_Highlight;
     bool m_SelectedOnly;
-
+    const int m_IndicFound;
+    const int m_IndicHighlight;
     DECLARE_EVENT_TABLE();
 };
 

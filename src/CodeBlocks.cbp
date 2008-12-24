@@ -3654,6 +3654,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\include\Scintilla.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\include\Scintilla.iface">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\include\ScintillaWidget.h">
 			<Option target="scintilla" />
 		</Unit>
@@ -3684,10 +3687,19 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\CharClassify.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\CharacterSet.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\ContractionState.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\ContractionState.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Decoration.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Decoration.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\Document.cxx">
@@ -3732,10 +3744,16 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAPDL.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexASY.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAU3.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAVE.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAbaqus.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexAda.cxx">
@@ -3771,6 +3789,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCaml.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCmake.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexConf.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3778,6 +3799,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexCsound.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexD.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexEScript.cxx">
@@ -3796,6 +3820,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexFortran.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexGAP.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexGui4Cli.cxx">
@@ -3831,10 +3858,16 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMSSQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMagik.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMatlab.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMetapost.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMySQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexNsis.cxx">
@@ -3849,6 +3882,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPB.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPLM.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPOV.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3861,7 +3897,16 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPerl.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPowerShell.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexProgress.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexPython.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexR.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexRebol.cxx">
@@ -3912,6 +3957,15 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LineMarker.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Partitioning.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PositionCache.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PositionCache.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\PropSet.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3921,6 +3975,12 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\RESearch.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RunStyles.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\RunStyles.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\SVector.h">
 			<Option target="scintilla" />
 		</Unit>
@@ -3928,6 +3988,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\ScintillaBase.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\SplitVector.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\Style.cxx">
