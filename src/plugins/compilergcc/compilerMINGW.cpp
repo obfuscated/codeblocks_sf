@@ -109,8 +109,8 @@ void CompilerMINGW::Reset()
 
     // warnings
     m_Options.AddOption(_("In C mode, support all ISO C90 programs. In C++ mode, remove GNU extensions that conflict with ISO C++"), _T("-ansi"), category);
-    m_Options.AddOption(_("Enable all compiler warnings (overrides every other setting)"), _T("-Wall"), category);
-    m_Options.AddOption(_("Enable standard compiler warnings"), _T("-W"), category);
+    m_Options.AddOption(_("Enable all compiler warnings (overrides many other setting)"), _T("-Wall"), category);
+    m_Options.AddOption(_("Enable extra compiler warnings"), _T("-Wextra"), category);
     m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
     m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
     m_Options.AddOption(_("Have g++ follow the 1998 ISO C++ language standard"), _T("-std=c++98"), category);
@@ -118,6 +118,7 @@ void CompilerMINGW::Reset()
     m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
     m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
     m_Options.AddOption(_("Enable Effective-C++ warnings (thanks Scott Myers)"), _T("-Weffc++"), category);
+    m_Options.AddOption(_("Warn whenever a switch statement does not have a default case"), _T("-Wswitch-default"), category);
     // optimization
     category = _("Optimization");
     m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
