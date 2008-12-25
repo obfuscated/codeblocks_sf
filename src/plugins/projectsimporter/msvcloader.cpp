@@ -683,9 +683,11 @@ void MSVCLoader::ProcessPostBuildCommand(ProjectBuildTarget* target, const wxStr
 {
     wxString post_build_cmd = cmd;
 
-    // remove "line continues", like in:
-    // PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
-    // copy $(OutDir)\NetHackW.exe ..\binary
+/*
+     remove "line continues", like in:
+     PostBuild_Cmds=if NOT exist ..\binary\*.* mkdir ..\binary	\
+     copy $(OutDir)\NetHackW.exe ..\binary
+*/
     if (post_build_cmd.EndsWith(_T("\\")))
         post_build_cmd.RemoveLast(1).Trim(true).Trim(false);
 

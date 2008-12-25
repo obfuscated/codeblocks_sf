@@ -339,10 +339,6 @@ struct cbEditorInternalData
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
         // Set Styling:
-        m_pOwner->m_pControl->IndicatorSetStyle(0, wxSCI_INDIC_HIGHLIGHT);
-        wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
-        m_pOwner->m_pControl->IndicatorSetForeground( 0, highlightColour );
-
         // clear all style indications set in a previous run
         m_pOwner->m_pControl->IndicatorClearRange(0, m_pOwner->m_pControl->GetLength());
 
@@ -355,9 +351,7 @@ struct cbEditorInternalData
                 && selectedText.Find(_T('\n')) == wxNOT_FOUND )
         {
             m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
-            wxColour highlightColour(   cfg->ReadInt(_T("/highlight_occurrence/colour_red_value"),   0xff),
-                                        cfg->ReadInt(_T("/highlight_occurrence/colour_green_value"), 0x00),
-                                        cfg->ReadInt(_T("/highlight_occurrence/colour_blue_value"),  0x00) );
+        wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
             m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
 
             int flag = 0;
