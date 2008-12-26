@@ -3358,10 +3358,10 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
         {
             m_BuildLogContents << _T("<b>");
         }
-        // replace the ´ family by "
+        // replace the Â´ family by "
         wxString Quoted = message;
-        Quoted.Replace(_("‘"), _("\""), true);
-        Quoted.Replace(_("’"), _("\""), true);
+        Quoted.Replace(_("â€˜"), _("\""), true);
+        Quoted.Replace(_("â€™"), _("\""), true);
         m_BuildLogContents << Quoted;
 
         if (isTitle)
