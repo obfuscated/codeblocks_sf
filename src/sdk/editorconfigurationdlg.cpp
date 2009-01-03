@@ -93,7 +93,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     m_Lang(HL_NONE),
     m_DefCodeFileType(0),
     m_ThemeModified(false),
-    m_LastAutoCompKeyword(-1)
+    m_LastAutoCompKeyword(-1),
+    m_EnableChangebar(false)
 {
     wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigureEditor"));
 
@@ -106,6 +107,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_indent"), true));
     XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/smart_indent"), true));
     XRCCTRL(*this, "chkUseTab", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_tab"), false));
+    m_EnableChangebar = cfg->ReadBool(_T("/margin/use_changebar"), true);
+    XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->SetValue(m_EnableChangebar);
     XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_indent_guides"), false));
     XRCCTRL(*this, "chkTabIndents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/tab_indents"), true));
     XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/backspace_unindents"), true));
@@ -918,14 +921,35 @@ void EditorConfigurationDlg::EndModal(int retCode)
 
         //gutter
         cfg->Write(_T("/gutter/mode"),          XRCCTRL(*this, "lstGutterMode", wxChoice)->GetSelection());
-        cfg->Write(_T("/gutter/colour"),            XRCCTRL(*this, "btnGutterColour", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/gutter/colour"),        XRCCTRL(*this, "btnGutterColour", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/gutter/column"),        XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
 
         //margin
-        cfg->Write(_T("/margin/width_chars"), XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/margin/dynamic_width"), XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
+        cfg->Write(_T("/margin/width_chars"),       XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/margin/dynamic_width"),     XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
         cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
-
+        //changebar
+        bool enableChangebar = XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->GetValue();
+        cfg->Write(_T("/margin/use_changebar"),        enableChangebar);
+        if (enableChangebar != m_EnableChangebar)
+        {
+            //if the folding has been disabled, first unfold
+            //all blocks in all editors
+            EditorManager *em = Manager::Get()->GetEditorManager();
+            for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
+            {
+                cbEditor *ed = em->GetBuiltinEditor(em->GetEditor(idx));
+                if(ed)
+                {
+                    // if we enable changeCollection, we also have to empty Undo-Buffer, to avoid inconsistences,
+                    // if we disable it, there is no need to do that
+                    enableChangebar?
+                        ed->DeleteHistory():
+                        ed->SetChangeCollection(false);
+                    ed->ShowChangebarMargin(enableChangebar);
+                }
+            }
+        }
         // default code : first update what's in the current txtCtrl,
         // and then write them all to the config file (even if unmodified)
         int sel = XRCCTRL(*this, "cmbDefCodeFileType", wxComboBox)->GetSelection();

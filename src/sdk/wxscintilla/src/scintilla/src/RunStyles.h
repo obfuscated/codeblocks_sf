@@ -39,6 +39,10 @@ public:
 	void InsertSpace(int position, int insertLength);
 	void DeleteAll();
 	void DeleteRange(int position, int deleteLength);
+ 
+    char *PersistantForm() const; 
+    void FromPersistant(const char *form); 
+    static bool PersistantSame(const char *form1, const char *form2); 
 };
 
 #ifdef SCI_NAMESPACE

@@ -2031,6 +2031,12 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         {
             files.Add(prj->GetFile(i)->relativeFilename);
         }
+        if (files.Count()==0)
+        {
+            cbMessageBox(_("This project does not contain any files to remove."),
+                         _("Error"), wxICON_WARNING);
+            return;
+        }
         wxString msg;
         msg.Printf(_("Select files to remove from %s:"), prj->GetTitle().c_str());
         MultiSelectDlg dlg(0, files, false, msg);

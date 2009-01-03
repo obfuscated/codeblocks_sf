@@ -168,11 +168,15 @@ public:
 	int Redo();
 	bool CanUndo() { return cb.CanUndo(); }
 	bool CanRedo() { return cb.CanRedo(); }
-	void DeleteUndoHistory() { cb.DeleteUndoHistory(); }
+    void DeleteUndoHistory(bool collectChangeHistory=false) { cb.DeleteUndoHistory(collectChangeHistory); } 
 	bool SetUndoCollection(bool collectUndo) {
 		return cb.SetUndoCollection(collectUndo);
 	}
 	bool IsCollectingUndo() { return cb.IsCollectingUndo(); }
+    void DeleteChangeCollection() { cb.DeleteChangeCollection(); } 
+	bool SetChangeCollection(bool collectChange) {
+		return cb.SetChangeCollection(collectChange);
+	}
 	void BeginUndoAction() { cb.BeginUndoAction(); }
 	void EndUndoAction() { cb.EndUndoAction(); }
 	void SetSavePoint();
@@ -218,6 +222,7 @@ public:
 	void ClearLevels() { cb.ClearLevels(); }
 	int GetLastChild(int lineParent, int level=-1);
 	int GetFoldParent(int line);
+    int GetChanged(int line) { return cb.GetChanged(line); } 
 
 	void Indent(bool forwards);
 	int ExtendWordSelect(int pos, int delta, bool onlyWordCharacters=false);

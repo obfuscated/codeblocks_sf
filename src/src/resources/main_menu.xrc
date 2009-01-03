@@ -164,6 +164,11 @@
         <accel>Ctrl-Shift-Z</accel>
         <help>Redo the last editing operation</help>
       </object>
+      <object class="wxMenuItem" name="idEditDeleteHistory">
+        <label>Delete History</label>
+        <bitmap>images\16x16\delete_History.png</bitmap>
+        <help>Delete the Undo- and (if exists) Changebar-history</help>
+      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditCut">
         <label>Cu&amp;t</label>
@@ -573,6 +578,18 @@
         <bitmap>images\16x16\goto.png</bitmap>
         <accel>Ctrl-G</accel>
         <help>Goto a specific line</help>
+      </object>
+      <object class="wxMenuItem" name="idSearchGotoNextChanged">
+        <label>Goto next changed line</label>
+        <bitmap>images\16x16\filefindnext.png</bitmap>
+        <accel>Ctrl-F3</accel>
+        <help>Goto next changed line</help>
+      </object>
+      <object class="wxMenuItem" name="idSearchGotoPreviousChanged">
+        <label>Goto previous changed line</label>
+        <bitmap>images\16x16\filefindprev.png</bitmap>
+        <accel>Ctrl-Shift-F3</accel>
+        <help>Goto previous changed line</help>
       </object>
     </object>
     <object class="wxMenu" name="menu_project">

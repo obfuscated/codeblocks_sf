@@ -131,6 +131,7 @@ int idFilePrev = wxNewId();
 
 int idEditUndo = XRCID("idEditUndo");
 int idEditRedo = XRCID("idEditRedo");
+int idEditDeleteHistory = XRCID("idEditDeleteHistory");
 int idEditCopy = XRCID("idEditCopy");
 int idEditCut = XRCID("idEditCut");
 int idEditPaste = XRCID("idEditPaste");
@@ -216,6 +217,8 @@ int idSearchFindPrevious = XRCID("idSearchFindPrevious");
 int idSearchReplace = XRCID("idSearchReplace");
 int idSearchReplaceInFiles = XRCID("idSearchReplaceInFiles");
 int idSearchGotoLine = XRCID("idSearchGotoLine");
+int idSearchGotoNextChanged = XRCID("idSearchGotoNextChanged");
+int idSearchGotoPreviousChanged = XRCID("idSearchGotoPreviousChanged");
 
 int idSettingsEnvironment = XRCID("idSettingsEnvironment");
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
@@ -262,6 +265,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_UPDATE_UI(idEditUndo, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditDeleteHistory, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCopy, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCut, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditPaste, MainFrame::OnEditMenuUpdateUI)
@@ -295,6 +299,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idSearchReplace, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchReplaceInFiles, MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchGotoLine, MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchGotoNextChanged, MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchGotoPreviousChanged, MainFrame::OnSearchMenuUpdateUI)
 
     EVT_UPDATE_UI(idViewToolMain, MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewLogManager, MainFrame::OnViewMenuUpdateUI)
@@ -345,6 +351,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(idEditUndo,  MainFrame::OnEditUndo)
     EVT_MENU(idEditRedo,  MainFrame::OnEditRedo)
+    EVT_MENU(idEditDeleteHistory,  MainFrame::OnEditDeleteHistory)
     EVT_MENU(idEditCopy,  MainFrame::OnEditCopy)
     EVT_MENU(idEditCut,  MainFrame::OnEditCut)
     EVT_MENU(idEditPaste,  MainFrame::OnEditPaste)
@@ -409,6 +416,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idSearchReplace, MainFrame::OnSearchReplace)
     EVT_MENU(idSearchReplaceInFiles, MainFrame::OnSearchReplace)
     EVT_MENU(idSearchGotoLine, MainFrame::OnSearchGotoLine)
+    EVT_MENU(idSearchGotoNextChanged, MainFrame::OnSearchGotoNextChanged)
+    EVT_MENU(idSearchGotoPreviousChanged, MainFrame::OnSearchGotoPrevChanged)
 
     EVT_MENU(idViewLayoutSave, MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewLayoutDelete, MainFrame::OnViewLayoutDelete)
@@ -2216,6 +2225,12 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
     if (project)
         wxSetWorkingDirectory(project->GetBasePath());
     cbEditor* ed = Manager::Get()->GetEditorManager()->New();
+    if(ed)
+    {
+        // initially start change-collection if configured on empty files
+        ed->GetControl()->SetChangeCollection(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
+    }
+
     if (ed && ed->IsOK())
     {
         AddToRecentFilesHistory(ed->GetFilename());
@@ -2725,6 +2740,13 @@ void MainFrame::OnEditRedo(wxCommandEvent& event)
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
         ed->Redo();
+}
+
+void MainFrame::OnEditDeleteHistory(wxCommandEvent& event)
+{
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (ed)
+        ed->DeleteHistory();
 }
 
 void MainFrame::OnEditCopy(wxCommandEvent& event)
@@ -3657,6 +3679,24 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnSearchGotoNextChanged(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if(ed)
+    {
+        ed->GotoNextChanged();
+    }
+}
+
+void MainFrame::OnSearchGotoPrevChanged(wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if(ed)
+    {
+        ed->GotoPreviousChanged();
+    }
+}
+
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
 {
     dlgAbout* dlg = new dlgAbout(this);
@@ -3756,6 +3796,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Enable(idEditUndo, canUndo);
     mbar->Enable(idEditRedo, canRedo);
+    mbar->Enable(idEditDeleteHistory, canUndo || canRedo);
     mbar->Enable(idEditCut, canCut);
     mbar->Enable(idEditCopy, hasSel);
     mbar->Enable(idEditPaste, canPaste);
@@ -3869,12 +3910,23 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
     cbEditor* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor()) : 0;
+
+    bool enableGotoChanged = false;
+
+    if(ed)
+    {
+        enableGotoChanged = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true) && (ed->CanUndo() || ed->CanRedo());
+    }
+
     wxMenuBar* mbar = GetMenuBar();
 
     // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
     mbar->Enable(idSearchFindNext, ed);
     mbar->Enable(idSearchFindPrevious, ed);
     mbar->Enable(idSearchGotoLine, ed);
+    mbar->Enable(idSearchGotoNextChanged, enableGotoChanged);
+    mbar->Enable(idSearchGotoPreviousChanged, enableGotoChanged);
+
 
 //    if (m_pToolbar)
 //    {

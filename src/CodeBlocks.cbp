@@ -132,7 +132,7 @@
 				<Option external_deps="base\tinyxml\libtxml.a;sdk\propgrid\libpropgrid.a;sdk\wxFlatNotebook\libwxflatnotebook.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations" />
+				<Option parameters="--debug-log --no-check-associations -nd" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -184,7 +184,7 @@
 				<Option external_deps="src\wxAUI\libwxaui.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns" />
+				<Option parameters="--debug-log --no-check-associations -ns -nd" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />

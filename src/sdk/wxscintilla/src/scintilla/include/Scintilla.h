@@ -120,6 +120,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARK_FULLRECT 26
 #define SC_MARK_LEFTRECT 27
 #define SC_MARK_CHARACTER 10000
+#define SC_MARKNUM_CHANGEUNSAVED 23 
+#define SC_MARKNUM_CHANGESAVED 24 
 #define SC_MARKNUM_FOLDEREND 25
 #define SC_MARKNUM_FOLDEROPENMID 26
 #define SC_MARKNUM_FOLDERMIDTAIL 27
@@ -127,7 +129,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARKNUM_FOLDERSUB 29
 #define SC_MARKNUM_FOLDER 30
 #define SC_MARKNUM_FOLDEROPEN 31
-#define SC_MASK_FOLDERS 0xFE000000
+#define SC_MASK_FOLDERS 0xFF800000 
 #define SCI_MARKERDEFINE 2040
 #define SCI_MARKERSETFORE 2041
 #define SCI_MARKERSETBACK 2042
@@ -144,6 +146,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARGIN_NUMBER 1
 #define SC_MARGIN_BACK 2
 #define SC_MARGIN_FORE 3
+#define SC_MARGIN_CHANGED 4 
 #define SCI_SETMARGINTYPEN 2240
 #define SCI_GETMARGINTYPEN 2241
 #define SCI_SETMARGINWIDTHN 2242
@@ -393,6 +396,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_VISIBLEFROMDOCLINE 2220
 #define SCI_DOCLINEFROMVISIBLE 2221
 #define SCI_WRAPCOUNT 2235
+#define SCI_SETCHANGECOLLECTION 2236
+#define SCI_GETCHANGEDLINE 2237
 #define SC_FOLDLEVELBASE 0x400
 #define SC_FOLDLEVELWHITEFLAG 0x1000
 #define SC_FOLDLEVELHEADERFLAG 0x2000

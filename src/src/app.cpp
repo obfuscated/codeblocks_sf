@@ -40,14 +40,14 @@
 #include "splashscreen.h"
 #include "crashhandler.h"
 #include "cbstyledtextctrl.h"
+#include <wx/ipc.h> 
 
 #include <sqplus.h>
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
-#else
-    #include "associations.h"
 #endif
+#include "associations.h" 
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <sys/param.h>
@@ -78,7 +78,6 @@ namespace
 wxArrayString s_DelayedFilesToOpen;
 bool s_Loading = false;
 
-#ifdef __WXMSW__
 
 class DDEServer : public wxServer
 {
@@ -96,6 +95,7 @@ class DDEConnection : public wxConnection
     public:
         DDEConnection(MainFrame* frame) : m_Frame(frame) {}
         bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
+        bool OnDisconnect(); 
     private:
         MainFrame* m_Frame;
 };
@@ -118,24 +118,54 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
         if (reCmd.Matches(strData))
         {
             const wxString file = reCmd.GetMatch(strData, 1);
-            if (s_Loading || !m_Frame) // iff MainFrame does not yet exist we will put all files to be opened in the delayed queue
+            // always put files in the delayed queue, the will either be loaded in OnDisconnect, or after creating of MainFrame 
+            // if we open the files directly it can lead to an applicaton hang (at least when opening C::B's project-file on linux) 
+            s_DelayedFilesToOpen.Add(file); 
+        } 
+        return true; 
+    } 
+    else if (strData.StartsWith(_T("[OpenLine(\""))) 
+    { 
+        wxRegEx reCmd(_T("\"(.*)\"")); 
+        if (reCmd.Matches(strData)) 
+        { 
+            wxString file = reCmd.GetMatch(strData, 1); 
+            if (!s_Loading && m_Frame) 
             {
-                s_DelayedFilesToOpen.Add(file);
-            }
-            else if (m_Frame)
-            {
-                m_Frame->Open(file, true); // add to history, files that open through DDE
+                CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp; 
+                cb->SetAutoFile(file); 
             }
         }
         return true;
     }
-
+    else if (strData.StartsWith(_T("[Raise]"))) 
+    { 
+        m_Frame->Raise(); 
+        return true; 
+    } 
     return false;
 }
 
+bool DDEConnection::OnDisconnect() 
+{ 
+    // delayed files will be loaded automatically if MainFrame already exists, 
+    // otherwise it happens automatically in OnInit after MainFrame is created 
+    if(m_Frame) 
+    { 
+        CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp; 
+        cb->LoadDelayedFiles(m_Frame); 
+    } 
+    return true; 
+} 
+ 
 DDEServer* g_DDEServer = 0L;
-#endif
 
+class DDEClient: public wxClient { 
+    public: 
+        DDEClient(void) {} 
+        wxConnectionBase *OnMakeConnection(void) { return new DDEConnection(0l); } 
+}; 
+ 
 #if wxUSE_CMDLINE_PARSER
 const wxCmdLineEntryDesc cmdLineDesc[] =
 {
@@ -151,6 +181,10 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
     { wxCMD_LINE_SWITCH, _T("nd"), _T("no-dde"),                _T("don't start a DDE server"),
       wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
 #endif
+#ifndef __WXMSW__ 
+    { wxCMD_LINE_SWITCH, _T("ni"), _T("no-ipc"),                _T("don't start an IPC server"), 
+      wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL }, 
+#endif 
     { wxCMD_LINE_SWITCH, _T("ns"), _T("no-splash-screen"),      _T("don't display a splash screen while loading"),
       wxCMD_LINE_VAL_NONE, wxCMD_LINE_PARAM_OPTIONAL },
     { wxCMD_LINE_SWITCH, _T("d"),  _T("debug-log"),             _T("display application's debug log"),
@@ -363,13 +397,11 @@ MainFrame* CodeBlocksApp::InitFrame()
     wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(0);
     //frame->Hide(); // shouldn't need this explicitly
-#ifdef __WXMSW__
     if (g_DDEServer && !m_NoDDE)
     {
         // Set m_Frame in DDE-Server
         g_DDEServer->SetFrame(frame);
     }
-#endif
     if (ParseCmdLine(frame) == 0)
     {
         if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
@@ -475,17 +507,6 @@ bool CodeBlocksApp::OnInit()
         if(!LoadConfig())
             return false;
 
-#ifdef __WXMSW__
-        if (!m_NoDDE)
-        {
-            // MainFrame does not exist here, but DDEServer is needed, because WinXp sends dde-command
-            // immediately after application start and we get an error-message
-            // We will set m_Frame explicitely after it is created.
-            g_DDEServer = new DDEServer(0L);
-            g_DDEServer->Create(DDE_SERVICE);
-        }
-#endif
-
         // set safe-mode appropriately
         PluginManager::SetSafeMode(m_SafeMode);
 
@@ -495,11 +516,76 @@ bool CodeBlocksApp::OnInit()
             return false;
         }
 
-        Splash splash(!m_Batch && m_Script.IsEmpty() &&
-                      !m_NoSplash &&
-                      Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true));
+        InitLocale(); 
 
-        InitLocale();
+        if(!m_NoDDE && !m_Batch && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_ipc"), true)) 
+        { 
+            // Create a new client 
+            DDEClient *client = new DDEClient; 
+            DDEConnection* connection = 0l; 
+            connection = (DDEConnection *)client->MakeConnection(_T("localhost"), DDE_SERVICE, DDE_TOPIC); 
+ 
+            if(connection) 
+            { 
+                wxArrayString strFilesInCommandLine; 
+                wxCmdLineParser& parser = *Manager::GetCmdLineParser(); 
+                parser.SetDesc(cmdLineDesc); 
+                parser.SetCmdLine(argc, argv); 
+ 
+                // search for valid filenames passed as argument on commandline 
+                // we cann not use "FileTypeOf" here, because it can crash if it tries to Get the projectmanager, 
+                // before the MainFrame exists 
+                if (parser.Parse(false) == 0) 
+                { 
+                    int count = parser.GetParamCount(); 
+                    for ( int param = 0; param < count; ++param ) 
+                    { 
+                        if(wxFile::Exists(parser.GetParam(param))) 
+                            strFilesInCommandLine.Add(parser.GetParam(param)); 
+                    } 
+                } 
+ 
+                if (strFilesInCommandLine.Count() > 0) 
+                { 
+                    for(size_t i = 0; i < strFilesInCommandLine.Count(); i++) 
+                    { 
+                        wxFileName fn(strFilesInCommandLine[i]); 
+                        fn.Normalize(); // really important so that two same files with different names are not loaded twice 
+                        // filenames have to be sent with full path, or they can not be found in most cases 
+                        connection->Execute(_T("[Open(\"") + fn.GetFullPath() +_T("\"]")); 
+                    } 
+                } 
+ 
+                if (!m_AutoFile.empty()) 
+                { 
+                    // filenames have to be sent with full path, or they can not be found in most cases, 
+                    // to get full path we have to split off the name 
+                    wxFileName fn(m_AutoFile.BeforeLast(_T(':'))); 
+                    fn.Normalize(); // really important so that two same files with different names are not loaded twice 
+                    if(m_AutoFile.Find(_T(":")) != wxNOT_FOUND) 
+                    { 
+                        connection->Execute(_T("[OpenLine(\"") + fn.GetFullPath() + _T(":") + m_AutoFile.AfterLast(_T(':')) +_T("\"]")); 
+                    } 
+                    else 
+                    { 
+                        connection->Execute(_T("[Open(\"") + fn.GetFullPath() +_T("\"]")); 
+                    } 
+                } 
+                // on linux C::B has to be raised explicitely if it's wanted 
+                if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/raise_via_ipc"), true)) 
+                { 
+                    connection->Execute(_T("[Raise]")); 
+                } 
+                // return false to end the application 
+                return false; 
+            } 
+        } 
+        // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves 
+        if (!m_NoDDE) 
+        { 
+            g_DDEServer = new DDEServer(0L); 
+            g_DDEServer->Create(DDE_SERVICE); 
+        } 
         m_pSingleInstance = 0;
         if(Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true))
         {
@@ -508,7 +594,7 @@ bool CodeBlocksApp::OnInit()
             m_pSingleInstance = new wxSingleInstanceChecker(name, ConfigManager::GetTempFolder());
             if (m_pSingleInstance->IsAnotherRunning())
             {
-                splash.Hide();
+ 
                 /* NOTE: Due to a recent change in logging code, this visual warning got disabled.
                    So the wxLogError() has been changed to a wxMessageBox(). */
                 wxMessageBox(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."),
@@ -516,7 +602,11 @@ bool CodeBlocksApp::OnInit()
                 return false;
             }
         }
-
+        // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC 
+        // we also don't need it, if only a single instance is allowed 
+        Splash splash(!m_Batch && m_Script.IsEmpty() && 
+                      !m_NoSplash && 
+                      Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true)); 
         InitDebugConsole();
 
         Manager::SetBatchBuild(m_Batch || !m_Script.IsEmpty());
@@ -618,8 +708,8 @@ int CodeBlocksApp::OnExit()
 {
     wxTheClipboard->Flush();
 
+    if (g_DDEServer) delete g_DDEServer; 
 #ifdef __WXMSW__
-    if (g_DDEServer) delete g_DDEServer;
     if (m_ExceptionHandlerLib)
         FreeLibrary(m_ExceptionHandlerLib);
 #endif
@@ -885,6 +975,11 @@ wxString CodeBlocksApp::GetAppPath() const
     return base;
 }
 
+void CodeBlocksApp::SetAutoFile(wxString& file) 
+{ 
+    m_AutoFile = file; 
+} 
+ 
 int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 {
     // code shamelessely taken from the console wxWindows sample :)
@@ -946,6 +1041,8 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 #ifdef __WXMSW__
                     m_NoDDE = parser.Found(_T("no-dde"));
                     m_NoAssocs = parser.Found(_T("no-check-associations"));
+#else 
+                    m_NoDDE = parser.Found(_T("no-ipc")); 
 #endif
                     m_SafeMode = parser.Found(_T("safe-mode"));
                     m_NoSplash = parser.Found(_T("no-splash-screen"));
@@ -1020,7 +1117,8 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
     if (!m_AutoFile.IsEmpty())
     {
     	wxString linePart;
-    	long linePos = m_AutoFile.Last(_T(':'));
+        // wxString::Last is deprecated 
+        long linePos = m_AutoFile.Find(_T(':'), true); 
     	if (linePos != wxNOT_FOUND)
     	{
 			linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);

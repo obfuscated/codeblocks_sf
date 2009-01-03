@@ -1611,6 +1611,12 @@ void Editor::PaintSelMargin(Surface *surfWindow, PRectangle &rc) {
 					}
 				}
 
+                int changed = pdoc->GetChanged(lineDoc); 
+                if (changed == 1)  
+                    marks |= 1 << SC_MARKNUM_CHANGEUNSAVED; 
+                if (changed == 2)  
+                    marks |= 1 << SC_MARKNUM_CHANGESAVED; 
+ 
 				marks &= vs.ms[margin].mask;
 				PRectangle rcMarker = rcSelMargin;
 				rcMarker.top = yposScreen;
@@ -6028,8 +6034,70 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return (pdoc->CanUndo() && !pdoc->IsReadOnly()) ? 1 : 0;
 
 	case SCI_EMPTYUNDOBUFFER:
-		pdoc->DeleteUndoHistory();
+        pdoc->DeleteUndoHistory(wParam != 0); 
+        Redraw();
 		return 0;
+
+	case SCI_SETCHANGECOLLECTION:
+        pdoc->SetChangeCollection(wParam != 0); 
+		return 0;
+
+	case SCI_GETCHANGEDLINE: {
+	    int fromLine = static_cast<int>(wParam);
+	    if (fromLine < 0)
+	    {
+            fromLine = 0;
+	    }
+	    int toLine = static_cast<int>(lParam);
+	    if (toLine > pdoc->LinesTotal())
+	    {
+	        toLine = pdoc->LinesTotal();
+	    }
+
+	    if(fromLine <= toLine)
+	    {
+            for (int i = fromLine; i <= toLine; i++)
+            {
+                if(pdoc->GetChanged(i) != 0)
+                {
+                    return i;
+                }
+            }
+            // if nothing found we wrap and start from the beginning
+            if (fromLine > 0)
+            {
+                for (int i = 0; i <= fromLine; i++)
+                {
+                    if(pdoc->GetChanged(i) != 0)
+                    {
+                        return i;
+                    }
+                }
+            }
+	    }
+	    else
+	    {
+            for (int i = fromLine; i >= toLine; i--)
+            {
+                if(pdoc->GetChanged(i) != 0)
+                {
+                    return i;
+                }
+            }
+            // if nothing found we wrap and start from the end
+            if (fromLine < (pdoc->LinesTotal() - 1))
+            {
+                for (int i = (pdoc->LinesTotal() - 1); i >= fromLine; i--)
+                {
+                    if(pdoc->GetChanged(i) != 0)
+                    {
+                        return i;
+                    }
+                }
+            }
+	    }
+	    return -1;
+	}
 
 	case SCI_GETFIRSTVISIBLELINE:
 		return topLine;

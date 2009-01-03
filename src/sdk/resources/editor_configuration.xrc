@@ -589,6 +589,15 @@
                       <flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
+                    <object class="sizeritem">
+                      <object class="wxCheckBox" name="chkUseChangebar">
+                        <label>Use Changebar</label>
+                        <checked>1</checked>
+                      </object>
+                      <flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                      <border>5</border>
+                      <option>1</option>
+                    </object>
                   </object>
                   <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>

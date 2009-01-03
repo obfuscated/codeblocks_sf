@@ -29,10 +29,6 @@
     #include "resources/icons/app.xpm"
 #endif
 
-#ifdef __WXMSW__
-    #include <wx/ipc.h>
-#endif
-
 #include <wx/splash.h>
 #include <wx/snglinst.h>
 #include "manager.h"
@@ -51,6 +47,8 @@ class CodeBlocksApp : public wxApp
         void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
+        void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files 
+        void SetAutoFile(wxString& file); // method to set m_AutoFile 
 #ifdef __WXMAC__
         // in response of an open-document apple event
         virtual void         MacOpenFile(const wxString &fileName) ;
@@ -72,7 +70,6 @@ class CodeBlocksApp : public wxApp
         void ComplainBadInstall();
         void SetupPersonality(const wxString& personality);
 
-        void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
 
         wxString m_Prefix; // --prefix switch
         wxString m_BatchTarget;
@@ -98,8 +95,8 @@ class CodeBlocksApp : public wxApp
 
         void InitAssociations();
 
-#ifdef __WXMSW__
         bool m_NoDDE; // no DDE
+#ifdef __WXMSW__ 
         bool m_NoAssocs; // no associations check
         HINSTANCE m_ExceptionHandlerLib;
 #endif

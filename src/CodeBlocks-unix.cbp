@@ -119,7 +119,7 @@
 				<Option external_deps="base/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations" />
+				<Option parameters="--debug-log --no-check-associations -ni" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add directory="include" />
@@ -161,7 +161,7 @@
 				<Option external_deps="src/wxAUI/libwxaui.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -ns" />
+				<Option parameters="--debug-log -ns -ni" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectResourceIncludeDirsRelation="0" />
@@ -336,7 +336,6 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
-					<Add option='-include &quot;sdk.h&quot;' />
 					<Add directory="include" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
@@ -357,7 +356,6 @@
 				<Option projectIncludeDirsRelation="2" />
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
-					<Add option='-include &quot;sdk.h&quot;' />
 					<Add directory="include" />
 				</Compiler>
 				<Linker>

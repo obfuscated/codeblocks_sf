@@ -434,9 +434,6 @@ wxString MainFrame::FileSelector()
     wxT("Code::Blocks configuration files (*.conf)|*.conf|"
         "All files (*.*)|*.*"),                      // wildcards
     wxFD_OPEN | wxFD_FILE_MUST_EXIST                 // flags
-#if (WXWIN_COMPATIBILITY_2_4)
-    | wxFD_HIDE_READONLY
-#endif
   );
 
   return filename;

@@ -21,7 +21,6 @@
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
 			<Add option="-Winvalid-pch" />
-			<Add option='-include &quot;wx_pch.h&quot;' />
 			<Add option="-D__GNUWIN32__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DUSE_PCH" />

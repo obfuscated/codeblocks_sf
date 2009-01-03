@@ -28,6 +28,7 @@ class EnvironmentSettingsDlg : public wxDialog
         void OnNbDefaults(wxCommandEvent& event);
         void OnChooseColour(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnUseIpcCheck(wxCommandEvent& event); 
         void OnPlaceCheck(wxCommandEvent& event);
         void OnHeadCheck(wxCommandEvent& event);
         void OnAutoHide(wxCommandEvent& event);

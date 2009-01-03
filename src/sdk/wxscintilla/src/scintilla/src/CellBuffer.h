@@ -41,6 +41,25 @@ public:
 	void CombineWith(MarkerHandleSet *other);
 };
 
+class LineChanges { 
+    bool collecting; 
+    RunStyles state; 
+    int edition; 
+public: 
+    LineChanges(); 
+    ~LineChanges(); 
+    void AdvanceEdition(); 
+    int GetEdition() const; 
+    char *PersistantForm() const; 
+    void SetChanges(const char *changesState); 
+    void InsertText(int line, int edition, bool undoing); 
+    void InsertLine(int line, bool undoing); 
+    void RemoveLine(int line, bool undoing); 
+    void EnableChangeCollection(bool collecting_, int lines); 
+    void ClearChanged(); 
+    int GetChanged(int line) const; 
+}; 
+ 
 /**
  * The line vector contains information about each of the lines in a cell buffer.
  */
@@ -51,6 +70,7 @@ class LineVector {
 	SplitVector<int> levels;
 	/// Handles are allocated sequentially and should never have to be reused as 32 bit ints are very big.
 	int handleCurrent;
+    LineChanges changes; 
 
 public:
 
@@ -63,10 +83,10 @@ public:
 	int SetLevel(int line, int level);
 	int GetLevel(int line);
 
-	void InsertText(int line, int delta);
-	void InsertLine(int line, int position);
+    void InsertText(int line, int delta, int edition, bool undoing); 
+    void InsertLine(int line, int position, bool undoing); 
 	void SetLineStart(int line, int position);
-	void RemoveLine(int line);
+    void RemoveLine(int line, bool undoing); 
 	int Lines() const {
 		return starts.Partitions();
 	}
@@ -81,6 +101,15 @@ public:
 	void DeleteMark(int line, int markerNum, bool all);
 	void DeleteMarkFromHandle(int markerHandle);
 	int LineFromHandle(int markerHandle);
+ 
+    void EnableChangeCollection(bool changesCollecting_); 
+    void DeleteChangeCollection(); 
+    int GetChanged(int line) const; 
+    void SetSavePoint(); 
+    int GetChangesEdition() const; 
+    void PerformingUndo(bool undo); 
+    char *PersistantForm() const; 
+    void SetChanges(const char *changesState); 
 };
 
 enum actionType { insertAction, removeAction, startAction };
@@ -113,6 +142,8 @@ class UndoHistory {
 	int currentAction;
 	int undoSequenceDepth;
 	int savePoint;
+    int savePointEffective; 
+    int **changeActions; 
 
 	void EnsureUndoRoom();
 
@@ -120,17 +151,21 @@ public:
 	UndoHistory();
 	~UndoHistory();
 
-	void AppendAction(actionType at, int position, char *data, int length, bool &startSequence);
+    void AppendAction(actionType at, int position, char *data, int length, bool &startSequence, char *persistantChanges); 
 
 	void BeginUndoAction();
 	void EndUndoAction();
 	void DropUndoSequence();
 	void DeleteUndoHistory();
 
+    void DeleteChangeHistory(); 
+    void EnableChangeHistory(bool enable); 
+ 
 	/// The save point is a marker in the undo stack where the container has stated that
 	/// the buffer was saved. Undo and redo can move over the save point.
 	void SetSavePoint();
 	bool IsSavePoint() const;
+    bool BeforeSavePointEffective(int action) const; 
 
 	/// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
 	/// called that many times. Similarly for redo.
@@ -138,10 +173,13 @@ public:
 	int StartUndo();
 	const Action &GetUndoStep() const;
 	void CompletedUndoStep();
+    char *GetChangesStep() const; 
 	bool CanRedo() const;
 	int StartRedo();
 	const Action &GetRedoStep() const;
 	void CompletedRedoStep();
+ 
+    int Edition() const; 
 };
 
 /**
@@ -178,8 +216,8 @@ public:
 	int Lines() const;
 	int LineStart(int line) const;
 	int LineFromPosition(int pos) { return lv.LineFromPosition(pos); }
-	void InsertLine(int line, int position);
-	void RemoveLine(int line);
+    void InsertLine(int line, int position, bool undoing); 
+    void RemoveLine(int line, bool undoing); 
 	const char *InsertString(int position, const char *s, int insertLength, bool &startSequence);
 
 	/// Setting styles for positions outside the range of the buffer is safe and has no effect.
@@ -205,15 +243,21 @@ public:
 	void DeleteAllMarks(int markerNum);
 	int LineFromHandle(int markerHandle);
 
+    void EnableChangeCollection(bool changesCollecting_); 
+    bool SetChangeCollection(bool collectChange);
+    void DeleteChangeCollection();
+    int GetChanged(int line) const; 
+    int GetChangesEdition() const; 
+ 
 	/// Actions without undo
-	void BasicInsertString(int position, const char *s, int insertLength);
-	void BasicDeleteChars(int position, int deleteLength);
+    void BasicInsertString(int position, const char *s, int insertLength, bool undoing); 
+    void BasicDeleteChars(int position, int deleteLength, bool undoing); 
 
 	bool SetUndoCollection(bool collectUndo);
 	bool IsCollectingUndo();
 	void BeginUndoAction();
 	void EndUndoAction();
-	void DeleteUndoHistory();
+    void DeleteUndoHistory(bool collectChangeHistory); 
 
 	/// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
 	/// called that many times. Similarly for redo.

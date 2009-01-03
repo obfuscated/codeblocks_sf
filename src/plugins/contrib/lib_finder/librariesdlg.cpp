@@ -123,7 +123,7 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	wxFlexGridSizer* FlexGridSizer1;
 	wxBoxSizer* BoxSizer3;
 	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-
+	
 	Create(parent, wxID_ANY, _("Registered libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer16 = new wxBoxSizer(wxHORIZONTAL);
@@ -319,7 +319,7 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_LISTBOX1,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&LibrariesDlg::Onm_LibrariesSelect);
 	Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&LibrariesDlg::Onm_ShowPredefinedClick);
 	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&LibrariesDlg::Onm_ShowPkgConfigClick);

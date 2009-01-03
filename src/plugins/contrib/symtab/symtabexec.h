@@ -55,7 +55,6 @@ public:
   int         Execute  (struct_config config);
 
   // The following needs to be public (used by a global wxCALLBACK method)
-  wxListCtrl* GetListCtrl()      { return m_ListCtrl;        };
   int         GetSortColumn()    { return ms_iSortColumn;    };
   int         GetSortAscending() { return ms_bSortAscending; };
 

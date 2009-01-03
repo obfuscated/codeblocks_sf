@@ -12,13 +12,17 @@
 #ifdef __WXMSW__
     #include <wx/msw/registry.h>
     #include <shlobj.h> // for SHChangeNotify()
-    #define DDE_SERVICE    _T("CODEBLOCKS")
-    #define DDE_TOPIC    _T("CodeBlocksDDEServer")
     #ifdef __CBDEBUG__
         #include <windows.h>
         #include <wincon.h>
     #endif
+    #define DDE_SERVICE    _T("CODEBLOCKS")
+#else
+    #define DDE_SERVICE    _T("/tmp/CODEBLOCKS.socket")
 #endif
+#define DDE_TOPIC    _T("CodeBlocksDDEServer")
+#include <wx/ipc.h>
+
 class wxCheckListBox;
 class wxWindow;
 class wxCommandEvent;

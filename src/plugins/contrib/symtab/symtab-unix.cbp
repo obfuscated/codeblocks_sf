@@ -24,7 +24,6 @@
 			<Add option="-Uunix" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fPIC" />
-			<Add option='-include &quot;sdk.h&quot;' />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="$(CBDIR)/include" />

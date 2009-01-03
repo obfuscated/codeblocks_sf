@@ -57,7 +57,8 @@ const wxString g_EditorModified = _T("*");
 
 static const int lineMargin      = 0; // Line numbers
 static const int markerMargin    = 1; // Bookmarks, Breakpoints...
-static const int foldingMargin   = 2;
+static const int changebarMargin = 2;
+static const int foldingMargin   = 3;
 
 
 /* This struct holds private data for the cbEditor class.
@@ -173,29 +174,26 @@ struct cbEditorInternalData
         return 0;
     }
 
+    /** Get the last non-whitespace character from position in line */
     wxChar GetNextNonWhitespaceCharOfLine(int position = -1, int *pos = 0)
     {
         cbStyledTextCtrl* control = m_pOwner->GetControl();
-
         if (position == -1)
             position = control->GetCurrentPos();
 
         while (position < control->GetLength())
         {
             wxChar c = control->GetCharAt(position);
-
             if ( c == _T('\n') || c ==  _T('\r') )
             {
                 if ( pos ) *pos = position;
                 return 0;
             }
-
             if ( c !=  _T(' ') && c != _T('\t') )
             {
                 if ( pos ) *pos = position;
                 return c;
             }
-
             position++;
         }
 
@@ -315,7 +313,7 @@ struct cbEditorInternalData
         m_pOwner->m_pControl->GetSelection (&a, &b);
 
         m_pOwner->m_pControl->SetIndicatorCurrent(theIndicator);
-        
+
         if (a == b) // don't hog the CPU when not necessary
         {
             if (old_a != old_b) // but please clear old marks when the user unselects
@@ -351,7 +349,7 @@ struct cbEditorInternalData
                 && selectedText.Find(_T('\n')) == wxNOT_FOUND )
         {
             m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
-        wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
+            wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
             m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
 
             int flag = 0;
@@ -404,6 +402,7 @@ const int idEmptyMenu = wxNewId();
 const int idEdit = wxNewId();
 const int idUndo = wxNewId();
 const int idRedo = wxNewId();
+const int idDeleteHistory = wxNewId();
 const int idCut = wxNewId();
 const int idCopy = wxNewId();
 const int idPaste = wxNewId();
@@ -444,6 +443,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 
     EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
     EVT_MENU(idRedo, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idDeleteHistory, cbEditor::OnContextMenuEntry)
     EVT_MENU(idCut, cbEditor::OnContextMenuEntry)
     EVT_MENU(idCopy, cbEditor::OnContextMenuEntry)
     EVT_MENU(idPaste, cbEditor::OnContextMenuEntry)
@@ -1127,7 +1127,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetFoldFlags(16);
         control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
         control->SetMarginWidth(foldingMargin, 16);
-        control->SetMarginMask(foldingMargin, wxSCI_MASK_FOLDERS);
+        control->SetMarginMask(foldingMargin, wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED)));
         control->SetMarginSensitive(foldingMargin, 1);
 
         /*Default behaviour
@@ -1156,6 +1156,22 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
     else
         control->SetMarginWidth(foldingMargin, 0);
+ 
+    // changebar margin 
+    if (mgr->ReadBool(_T("/margin/use_changebar"), true))
+    {
+        control->SetMarginWidth(changebarMargin, 4);
+        control->SetMarginType(changebarMargin,  wxSCI_MARGIN_SYMBOL); 
+        control->SetMarginWidth(changebarMargin, 4); 
+        control->SetMarginMask(changebarMargin, (1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED) ); 
+     
+        control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_LEFTRECT); 
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04)); 
+        control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_LEFTRECT); 
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED, wxColour(0x04, 0xFF, 0x50)); 
+    }
+    else
+        control->SetMarginWidth(changebarMargin, 0);
 }
 
 // static
@@ -1336,8 +1352,10 @@ bool cbEditor::Open(bool detectEncoding)
         SetUseBom(m_pData->m_byteOrderMarkLength > 0);
     }
 
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    
     m_pControl->InsertText(0, st);
-    m_pControl->EmptyUndoBuffer();
+    m_pControl->EmptyUndoBuffer(mgr->ReadBool(_T("/margin/use_changebar"), true));
     m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
 
     // mark the file read-only, if applicable
@@ -2005,6 +2023,68 @@ void cbEditor::Redo()
     GetControl()->Redo();
 }
 
+void cbEditor::DeleteHistory()
+{
+    cbAssert(GetControl());
+    GetControl()->EmptyUndoBuffer(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
+}
+
+void cbEditor::GotoNextChanged()
+{
+    cbAssert(GetControl());
+    cbStyledTextCtrl* p_Control = GetControl();
+    int fromLine = p_Control->LineFromPosition(p_Control->GetCurrentPos());
+    int toLine = p_Control->GetLineCount() - 1;
+    if(fromLine == toLine)
+    {
+        fromLine = 0;
+    }
+    else
+    {
+        fromLine++;
+    }
+
+    int newLine = p_Control->FindChangedLine(fromLine, toLine);
+    if(newLine != wxSCI_INVALID_POSITION)
+    {
+        p_Control->GotoLine(newLine);
+    }
+}
+
+void cbEditor::GotoPreviousChanged()
+{
+    cbAssert(GetControl());
+    cbStyledTextCtrl* p_Control = GetControl();
+    int fromLine = p_Control->LineFromPosition(p_Control->GetCurrentPos());
+    int toLine = 0;
+    if(fromLine == toLine)
+    {
+        fromLine = p_Control->GetLineCount() - 1;
+        }
+        else
+        {
+            fromLine--;
+        }
+
+    int newLine = p_Control->FindChangedLine(fromLine, toLine);
+    if(newLine != wxSCI_INVALID_POSITION)
+    {
+        p_Control->GotoLine(newLine);
+    }
+}
+
+void cbEditor::ShowChangebarMargin(bool show)
+{
+    cbAssert(GetControl());
+    GetControl()->SetMarginWidth(changebarMargin, show?4:0);
+}
+
+void cbEditor::SetChangeCollection(bool collectChange)
+{
+    cbAssert(GetControl());
+    GetControl()->SetChangeCollection(collectChange);
+}
+
 void cbEditor::Cut()
 {
     cbAssert(GetControl());
@@ -2196,6 +2276,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu = new wxMenu;
         menu->Append(idUndo, _("Undo"));
         menu->Append(idRedo, _("Redo"));
+        menu->Append(idDeleteHistory, _("Delete History"));
         menu->AppendSeparator();
         menu->Append(idCut, _("Cut"));
         menu->Append(idCopy, _("Copy"));
@@ -2211,6 +2292,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 
         menu->Enable(idUndo, control->CanUndo());
         menu->Enable(idRedo, control->CanRedo());
+        menu->Enable(idDeleteHistory, control->CanUndo() || control->CanRedo());
         menu->Enable(idCut, !control->GetReadOnly() && hasSel);
         menu->Enable(idCopy, hasSel);
 
@@ -2321,7 +2403,8 @@ bool cbEditor::OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type
         wxPoint clientpos(ScreenToClient(position));
         const int margin = m_pControl->GetMarginWidth(lineMargin) +     // numbers, if present
                            m_pControl->GetMarginWidth(markerMargin) +   // breakpoints, bookmarks... if present
-                           m_pControl->GetMarginWidth(foldingMargin);   // folding, if present
+                           m_pControl->GetMarginWidth(foldingMargin) +  // folding, if present
+                           m_pControl->GetMarginWidth(changebarMargin); // changebar, if present
         wxRect r = m_pControl->GetRect();
 
         bool inside1 = r.Contains(clientpos);
@@ -2466,6 +2549,8 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         control->Undo();
     else if (id == idRedo)
         control->Redo();
+    else if (id == idDeleteHistory)
+        control->EmptyUndoBuffer(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
     else if (id == idCut)
         control->Cut();
     else if (id == idCopy)

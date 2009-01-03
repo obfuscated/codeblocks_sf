@@ -209,6 +209,21 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Redo changes. */
         virtual void Redo(){}
 
+        /** Clear Undo- (and Changebar-) history */
+        virtual void DeleteHistory(){}
+        
+        /** Goto next changed line */
+        virtual void GotoNextChanged(){}
+
+        /** Goto previous changed line */
+        virtual void GotoPreviousChanged(){}
+
+        /** Show (or hide) the changebar margin */
+        virtual void ShowChangebarMargin(bool show){}
+
+        /** Enable or disable changebar */
+        virtual void SetChangeCollection(bool collectChange){}
+        
         /** Cut selected text/object to clipboard. */
         virtual void Cut(){}
 

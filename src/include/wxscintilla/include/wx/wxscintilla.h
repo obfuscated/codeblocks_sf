@@ -112,6 +112,8 @@
 #define wxSCI_MARK_CHARACTER 10000
 
 // Markers used for outlining column.
+#define wxSCI_MARKNUM_CHANGEUNSAVED 23 
+#define wxSCI_MARKNUM_CHANGESAVED 24 
 #define wxSCI_MARKNUM_FOLDEREND 25
 #define wxSCI_MARKNUM_FOLDEROPENMID 26
 #define wxSCI_MARKNUM_FOLDERMIDTAIL 27
@@ -119,11 +121,12 @@
 #define wxSCI_MARKNUM_FOLDERSUB 29
 #define wxSCI_MARKNUM_FOLDER 30
 #define wxSCI_MARKNUM_FOLDEROPEN 31
-#define wxSCI_MASK_FOLDERS 0xFE000000
+#define wxSCI_MASK_FOLDERS 0xFF800000 
 #define wxSCI_MARGIN_SYMBOL 0
 #define wxSCI_MARGIN_NUMBER 1
 #define wxSCI_MARGIN_BACK 2
 #define wxSCI_MARGIN_FORE 3
+#define wxSCI_MARGIN_CHANGED 4 
 
 // Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
 // Style 39 is for future use.
@@ -2139,6 +2142,13 @@ public:
     // history and discarding them.
     void SetUndoCollection(bool collectUndo);
 
+    // Choose between collecting actions into the changes
+    // history and discarding them.
+    void SetChangeCollection(bool collectChange);
+
+    // Find a changed line, if fromLine > toLine search is performed backwards.
+    int FindChangedLine (const int fromLine, const int toLine) const;
+
     // Select all the text in the document.
     void SelectAll();
 
@@ -2731,7 +2741,7 @@ public:
     bool CanUndo() const;
 
     // Delete the undo history.
-    void EmptyUndoBuffer();
+    void EmptyUndoBuffer(bool collectChangeHistory=false);
 
     // Undo one action in the undo history.
     void Undo();

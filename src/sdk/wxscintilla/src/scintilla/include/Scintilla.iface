@@ -273,7 +273,9 @@ val SC_MARK_LEFTRECT=27
 val SC_MARK_CHARACTER=10000
 
 enu MarkerOutline=SC_MARKNUM_
-# Markers used for outlining column.
+# Markers used for outlining and changed column. 
+val SC_MARKNUM_CHANGEUNSAVED=23 
+val SC_MARKNUM_CHANGESAVED=24 
 val SC_MARKNUM_FOLDEREND=25
 val SC_MARKNUM_FOLDEROPENMID=26
 val SC_MARKNUM_FOLDERMIDTAIL=27
@@ -325,6 +327,7 @@ val SC_MARGIN_SYMBOL=0
 val SC_MARGIN_NUMBER=1
 val SC_MARGIN_BACK=2
 val SC_MARGIN_FORE=3
+val SC_MARGIN_CHANGED=4 
 
 # Set a margin to be either numeric or symbolic.
 set void SetMarginTypeN=2240(int margin, int marginType)
