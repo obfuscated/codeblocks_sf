@@ -114,7 +114,7 @@ class MainFrame : public wxFrame
 
         void OnEditUndo(wxCommandEvent& event);
         void OnEditRedo(wxCommandEvent& event);
-        void OnEditDeleteHistory(wxCommandEvent& event);
+        void OnEditClearHistory(wxCommandEvent& event);
         void OnEditCopy(wxCommandEvent& event);
         void OnEditCut(wxCommandEvent& event);
         void OnEditPaste(wxCommandEvent& event);

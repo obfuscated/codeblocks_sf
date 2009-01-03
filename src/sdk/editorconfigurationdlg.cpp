@@ -944,7 +944,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
                     // if we enable changeCollection, we also have to empty Undo-Buffer, to avoid inconsistences,
                     // if we disable it, there is no need to do that
                     enableChangebar?
-                        ed->DeleteHistory():
+                        ed->ClearHistory():
                         ed->SetChangeCollection(false);
                     ed->ShowChangebarMargin(enableChangebar);
                 }

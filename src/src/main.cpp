@@ -131,7 +131,7 @@ int idFilePrev = wxNewId();
 
 int idEditUndo = XRCID("idEditUndo");
 int idEditRedo = XRCID("idEditRedo");
-int idEditDeleteHistory = XRCID("idEditDeleteHistory");
+int idEditClearHistory = XRCID("idEditClearHistory");
 int idEditCopy = XRCID("idEditCopy");
 int idEditCut = XRCID("idEditCut");
 int idEditPaste = XRCID("idEditPaste");
@@ -265,7 +265,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_UPDATE_UI(idEditUndo, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo, MainFrame::OnEditMenuUpdateUI)
-    EVT_UPDATE_UI(idEditDeleteHistory, MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditClearHistory, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCopy, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCut, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditPaste, MainFrame::OnEditMenuUpdateUI)
@@ -351,7 +351,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_MENU(idEditUndo,  MainFrame::OnEditUndo)
     EVT_MENU(idEditRedo,  MainFrame::OnEditRedo)
-    EVT_MENU(idEditDeleteHistory,  MainFrame::OnEditDeleteHistory)
+    EVT_MENU(idEditClearHistory,  MainFrame::OnEditClearHistory)
     EVT_MENU(idEditCopy,  MainFrame::OnEditCopy)
     EVT_MENU(idEditCut,  MainFrame::OnEditCut)
     EVT_MENU(idEditPaste,  MainFrame::OnEditPaste)
@@ -2742,11 +2742,11 @@ void MainFrame::OnEditRedo(wxCommandEvent& event)
         ed->Redo();
 }
 
-void MainFrame::OnEditDeleteHistory(wxCommandEvent& event)
+void MainFrame::OnEditClearHistory(wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
-        ed->DeleteHistory();
+        ed->ClearHistory();
 }
 
 void MainFrame::OnEditCopy(wxCommandEvent& event)
@@ -3796,7 +3796,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
     mbar->Enable(idEditUndo, canUndo);
     mbar->Enable(idEditRedo, canRedo);
-    mbar->Enable(idEditDeleteHistory, canUndo || canRedo);
+    mbar->Enable(idEditClearHistory, canUndo || canRedo);
     mbar->Enable(idEditCut, canCut);
     mbar->Enable(idEditCopy, hasSel);
     mbar->Enable(idEditPaste, canPaste);

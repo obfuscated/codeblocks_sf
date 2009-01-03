@@ -210,7 +210,7 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual void Redo(){}
 
         /** Clear Undo- (and Changebar-) history */
-        virtual void DeleteHistory(){}
+        virtual void ClearHistory(){}
         
         /** Goto next changed line */
         virtual void GotoNextChanged(){}

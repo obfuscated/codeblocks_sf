@@ -164,10 +164,11 @@
         <accel>Ctrl-Shift-Z</accel>
         <help>Redo the last editing operation</help>
       </object>
-      <object class="wxMenuItem" name="idEditDeleteHistory">
-        <label>Delete History</label>
+      <object class="wxMenuItem" name="idEditClearHistory">
+        <label>Clear changes history</label>
         <bitmap>images\16x16\delete_History.png</bitmap>
-        <help>Delete the Undo- and (if exists) Changebar-history</help>
+        <help>Clear the undo-/redo- and (if exists) changebar-history</help>
+        <bitmap>images\16x16\history_clear.png</bitmap>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditCut">

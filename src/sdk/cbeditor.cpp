@@ -402,7 +402,7 @@ const int idEmptyMenu = wxNewId();
 const int idEdit = wxNewId();
 const int idUndo = wxNewId();
 const int idRedo = wxNewId();
-const int idDeleteHistory = wxNewId();
+const int idClearHistory = wxNewId();
 const int idCut = wxNewId();
 const int idCopy = wxNewId();
 const int idPaste = wxNewId();
@@ -443,7 +443,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
 
     EVT_MENU(idUndo, cbEditor::OnContextMenuEntry)
     EVT_MENU(idRedo, cbEditor::OnContextMenuEntry)
-    EVT_MENU(idDeleteHistory, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idClearHistory, cbEditor::OnContextMenuEntry)
     EVT_MENU(idCut, cbEditor::OnContextMenuEntry)
     EVT_MENU(idCopy, cbEditor::OnContextMenuEntry)
     EVT_MENU(idPaste, cbEditor::OnContextMenuEntry)
@@ -2023,7 +2023,7 @@ void cbEditor::Redo()
     GetControl()->Redo();
 }
 
-void cbEditor::DeleteHistory()
+void cbEditor::ClearHistory()
 {
     cbAssert(GetControl());
     GetControl()->EmptyUndoBuffer(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
@@ -2276,7 +2276,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu = new wxMenu;
         menu->Append(idUndo, _("Undo"));
         menu->Append(idRedo, _("Redo"));
-        menu->Append(idDeleteHistory, _("Delete History"));
+        menu->Append(idClearHistory, _("Clear changes history"));
         menu->AppendSeparator();
         menu->Append(idCut, _("Cut"));
         menu->Append(idCopy, _("Copy"));
@@ -2292,7 +2292,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 
         menu->Enable(idUndo, control->CanUndo());
         menu->Enable(idRedo, control->CanRedo());
-        menu->Enable(idDeleteHistory, control->CanUndo() || control->CanRedo());
+        menu->Enable(idClearHistory, control->CanUndo() || control->CanRedo());
         menu->Enable(idCut, !control->GetReadOnly() && hasSel);
         menu->Enable(idCopy, hasSel);
 
@@ -2549,7 +2549,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         control->Undo();
     else if (id == idRedo)
         control->Redo();
-    else if (id == idDeleteHistory)
+    else if (id == idClearHistory)
         control->EmptyUndoBuffer(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
     else if (id == idCut)
         control->Cut();

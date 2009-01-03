@@ -265,7 +265,7 @@ class DLLIMPORT cbEditor : public EditorBase
         // in EditorBase.
         void Undo();
         void Redo();
-        void DeleteHistory();
+        void ClearHistory();
         void GotoNextChanged();
         void GotoPreviousChanged();
         void ShowChangebarMargin(bool show=true);
