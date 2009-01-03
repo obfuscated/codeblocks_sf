@@ -46,6 +46,30 @@
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Interprocess communication (needs application restart to take effect)</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkUseIPC">
+												<label>Use an already running instance instead of starting a new one (if possible)</label>
+												<checked>1</checked>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>3</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkRaiseViaIPC">
+												<label>Bring it on top afterwards</label>
+												<checked>1</checked>
+											</object>
+											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>3</border>
+										</object>
+									</object>
+									<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
 									<object class="wxBoxSizer">
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAssociations">
