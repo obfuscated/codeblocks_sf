@@ -1915,29 +1915,32 @@ void MainFrame::InitializeRecentFilesHistory()
         if (!menu)
             return;
         wxMenu* recentFiles = 0;
-        wxMenuItem* clear = menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+        menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
         if (recentFiles)
         {
-            recentFiles->Remove(clear);
-
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_files"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
             {
                 if(wxFileExists(files[i]))
+                {
                     m_pFilesHistory->AddFileToHistory(files[i]);
+                }
             }
-            m_pFilesHistory->UseMenu(recentFiles);
-            m_pFilesHistory->AddFilesToMenu(recentFiles);
-            if (recentFiles->GetMenuItemCount())
-                recentFiles->AppendSeparator();
-            recentFiles->Append(clear);
+            if (m_pFilesHistory->GetCount() > 0)
+            {
+                recentFiles->InsertSeparator(0);
+                for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
+                {
+                    recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_FILE1 + i,
+                        wxString::Format(_T("&%d "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
+                }
+            }
         }
         wxMenu* recentProjects = 0;
-        clear = menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
+        menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
         if (recentProjects)
         {
             m_pProjectsHistory = new wxFileHistory(9, wxID_FILE10);
-            recentProjects->Remove(clear);
 
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
@@ -1945,11 +1948,15 @@ void MainFrame::InitializeRecentFilesHistory()
                 if(wxFileExists(files[i]))
                     m_pProjectsHistory->AddFileToHistory(files[i]);
             }
-            m_pProjectsHistory->UseMenu(recentProjects);
-            m_pProjectsHistory->AddFilesToMenu(recentProjects);
-            if (recentProjects->GetMenuItemCount())
-                recentProjects->AppendSeparator();
-            recentProjects->Append(clear);
+            if (m_pProjectsHistory->GetCount() > 0)
+            {
+                recentProjects->InsertSeparator(0);
+                for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
+                {
+                    recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE10 + i,
+                        wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
+                }
+            }
         }
     }
 }
@@ -1976,10 +1983,10 @@ void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
 
     // because we append "clear history" menu to the end of the list,
     // each time we must add a history item we have to:
-    // a) remove "Clear history"
-    // b) clear the menu
-    // c) fill it with the history items
-    // and d) append "Clear history"...
+    // a) remove "Clear history" (Biplab#1: Don't remove or you'll loose icon)
+    // b) clear the menu (Biplab#1: except the last item)
+    // c) fill it with the history items (Biplab#1: by inserting them)
+    // and d) append "Clear history"... (Biplab#1: Not needed, item has not been removed)
     wxMenuBar* mbar = GetMenuBar();
     if (!mbar)
         return;
@@ -1990,22 +1997,22 @@ void MainFrame::AddToRecentFilesHistory(const wxString& FileName)
     if (!menu)
         return;
     wxMenu* recentFiles = 0;
-    wxMenuItem* clear = menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
-    if (clear && recentFiles)
+    menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
+    if (recentFiles)
     {
-        // a)
-        recentFiles->Remove(clear);
-        // b)
-        m_pFilesHistory->RemoveMenu(recentFiles);
-        while (recentFiles->GetMenuItemCount())
+        while (recentFiles->GetMenuItemCount() > 1)
+        {
             recentFiles->Delete(recentFiles->GetMenuItems()[0]);
-        // c)
-        m_pFilesHistory->UseMenu(recentFiles);
-        m_pFilesHistory->AddFilesToMenu(recentFiles);
-        // d)
-        if (recentFiles->GetMenuItemCount())
-            recentFiles->AppendSeparator();
-        recentFiles->Append(clear);
+        }
+        if (m_pFilesHistory->GetCount() > 0)
+        {
+            recentFiles->InsertSeparator(0);
+            for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
+            {
+                recentFiles->Insert(recentFiles->GetMenuItemCount() - 2, wxID_FILE1 + i,
+                    wxString::Format(_T("&%d "), i + 1) + m_pFilesHistory->GetHistoryFile(i));
+            }
+        }
     }
 
     // update start here page
@@ -2050,22 +2057,22 @@ void MainFrame::AddToRecentProjectsHistory(const wxString& FileName)
     if (!menu)
         return;
     wxMenu* recentProjects = 0;
-    wxMenuItem* clear = menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
-    if (clear && recentProjects)
+    menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
+    if (recentProjects)
     {
-        // a)
-        recentProjects->Remove(clear);
-        // b)
-        m_pProjectsHistory->RemoveMenu(recentProjects);
-        while (recentProjects->GetMenuItemCount())
+        while (recentProjects->GetMenuItemCount() > 1)
+        {
             recentProjects->Delete(recentProjects->GetMenuItems()[0]);
-        // c)
-        m_pProjectsHistory->UseMenu(recentProjects);
-        m_pProjectsHistory->AddFilesToMenu(recentProjects);
-        // d)
-        if (recentProjects->GetMenuItemCount())
-            recentProjects->AppendSeparator();
-        recentProjects->Append(clear);
+        }
+        if (m_pProjectsHistory->GetCount() > 0)
+        {
+            recentProjects->InsertSeparator(0);
+            for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
+            {
+                recentProjects->Insert(recentProjects->GetMenuItemCount() - 2, wxID_FILE10 + i,
+                    wxString::Format(_T("&%d "), i + 1) + m_pProjectsHistory->GetHistoryFile(i));
+            }
+        }
     }
 
     // update start here page
@@ -2095,7 +2102,19 @@ void MainFrame::TerminateRecentFilesHistory()
                     wxMenu* recentFiles = 0;
                     menu->FindItem(idFileOpenRecentFileClearHistory, &recentFiles);
                     if (recentFiles)
-                        m_pFilesHistory->RemoveMenu(recentFiles);
+                    {
+                        if (!Manager::IsAppShuttingDown())
+                        {
+                            while (recentFiles->GetMenuItemCount() > 1)
+                            {
+                                recentFiles->Delete(recentFiles->GetMenuItems()[0]);
+                            }
+                        }
+                        else
+                        {
+                            m_pFilesHistory->RemoveMenu(recentFiles);
+                        }
+                    }
                 }
             }
         }
@@ -2107,7 +2126,9 @@ void MainFrame::TerminateRecentFilesHistory()
     {
         wxArrayString files;
         for (unsigned int i = 0; i < m_pProjectsHistory->GetCount(); ++i)
+        {
             files.Add(m_pProjectsHistory->GetHistoryFile(i));
+        }
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/recent_projects"), files);
 
         wxMenuBar* mbar = GetMenuBar();
@@ -2122,7 +2143,19 @@ void MainFrame::TerminateRecentFilesHistory()
                     wxMenu* recentProjects = 0;
                     menu->FindItem(idFileOpenRecentProjectClearHistory, &recentProjects);
                     if (recentProjects)
-                        m_pProjectsHistory->RemoveMenu(recentProjects);
+                    {
+                        if (!Manager::IsAppShuttingDown())
+                        {
+                            while (recentProjects->GetMenuItemCount() > 1)
+                            {
+                                recentProjects->Delete(recentProjects->GetMenuItems()[0]);
+                            }
+                        }
+                        else
+                        {
+                            m_pProjectsHistory->RemoveMenu(recentProjects);
+                        }
+                    }
                 }
             }
         }
@@ -2388,6 +2421,7 @@ void MainFrame::OnFileOpenRecentProjectClearHistory(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_projects"));
 
     // update start here page
+    InitializeRecentFilesHistory();
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (sh)
         ((StartHerePage*)sh)->Reload();
@@ -2412,6 +2446,7 @@ void MainFrame::OnFileOpenRecentClearHistory(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("app"))->DeleteSubPath(_T("/recent_files"));
 
     // update start here page
+    InitializeRecentFilesHistory();
     EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (sh)
         ((StartHerePage*)sh)->Reload();
@@ -3921,8 +3956,10 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
     wxMenuBar* mbar = GetMenuBar();
 
     // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
+    mbar->Enable(idSearchFind, ed);
     mbar->Enable(idSearchFindNext, ed);
     mbar->Enable(idSearchFindPrevious, ed);
+    mbar->Enable(idSearchReplace, ed);
     mbar->Enable(idSearchGotoLine, ed);
     mbar->Enable(idSearchGotoNextChanged, enableGotoChanged);
     mbar->Enable(idSearchGotoPreviousChanged, enableGotoChanged);
