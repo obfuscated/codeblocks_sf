@@ -109,7 +109,7 @@ void CompilerMINGW::Reset()
 
     // warnings
     m_Options.AddOption(_("In C mode, support all ISO C90 programs. In C++ mode, remove GNU extensions that conflict with ISO C++"), _T("-ansi"), category);
-    m_Options.AddOption(_("Enable all compiler warnings (overrides many other setting)"), _T("-Wall"), category);
+    m_Options.AddOption(_("Enable all compiler warnings (overrides many other settings)"), _T("-Wall"), category);
     m_Options.AddOption(_("Enable extra compiler warnings"), _T("-Wextra"), category);
     m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
     m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
@@ -123,6 +123,10 @@ void CompilerMINGW::Reset()
     m_Options.AddOption(_("Warn if a global function is defined without a previous declaration"), _T("-Wmissing-declarations"), category);
     m_Options.AddOption(_("Warn if the compiler detects that code will never be executed"), _T("-Wunreachable-code"), category);
     m_Options.AddOption(_("Warn if a function can not be inlined and it was declared as inline"), _T("-Winline"), category);
+    m_Options.AddOption(_("Warn if floating point values are used in equality comparisons"), _T("-Wfloat-equal"), category);
+    m_Options.AddOption(_("Warn if an undefined identifier is evaluated in an '#if' directive"), _T("-Wundef"), category);
+    m_Options.AddOption(_("Warn whenever a pointer is cast such that the required alignment of the target is increased"), _T("-Wcast-align"), category);
+    m_Options.AddOption(_("Warn if anything is declared more than once in the same scope"), _T("-Wredundant-decls"), category);
     // optimization
     category = _("Optimization");
     m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
