@@ -130,17 +130,17 @@ bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxI
         if (reCmd.Matches(strData)) 
         { 
             wxString file = reCmd.GetMatch(strData, 1); 
-            if (!s_Loading && m_Frame) 
-            {
-                CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp; 
-                cb->SetAutoFile(file); 
-            }
+            CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
+            cb->SetAutoFile(file);
         }
         return true;
     }
     else if (strData.StartsWith(_T("[Raise]"))) 
     { 
-        m_Frame->Raise(); 
+        if (m_Frame)
+        {
+            m_Frame->Raise();
+        }
         return true; 
     } 
     return false;
@@ -150,7 +150,7 @@ bool DDEConnection::OnDisconnect()
 { 
     // delayed files will be loaded automatically if MainFrame already exists, 
     // otherwise it happens automatically in OnInit after MainFrame is created 
-    if(m_Frame) 
+    if(!s_Loading && m_Frame)
     { 
         CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp; 
         cb->LoadDelayedFiles(m_Frame); 
