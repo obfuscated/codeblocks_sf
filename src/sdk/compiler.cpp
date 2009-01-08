@@ -576,6 +576,11 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.MAKE = cfg->Read(tmp + _T("/make"), m_Programs.MAKE);
     m_Programs.DBG = cfg->Read(tmp + _T("/debugger"), m_Programs.DBG);
 
+    // set member variable containing the version string with the configurated toolchain executables, not only
+    // with the default ones, otherwise we might have an empty version-string
+    // Some MinGW installations do not includee "mingw32-gcc" !!
+    SetVersionString();
+
     SetCompilerOptions(GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxEmptyString)));
     SetLinkerOptions(GetArrayFromString(cfg->Read(tmp + _T("/linker_options"), wxEmptyString)));
     SetIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/include_dirs"), wxEmptyString)));
