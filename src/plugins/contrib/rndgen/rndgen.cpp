@@ -61,6 +61,10 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			int rnd = rand() % (arg+1);
 			replace.Printf(_T("%u"), rnd);
 			s.Replace(search, replace, false);
+
+			ctrl->SetTargetStart(a);
+			ctrl->SetTargetEnd(b);
+			ctrl->ReplaceTarget(s);
 		}
 		else if(alnum_re.Matches(s))
 		{
@@ -71,11 +75,10 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			for(unsigned int i = 0; i<arg; ++i)
 				replace += c[rand() % c.length()];
 			s.Replace(search, replace, false);
+
+			ctrl->SetTargetStart(a);
+			ctrl->SetTargetEnd(b);
+			ctrl->ReplaceTarget(s);
 		}
-
-
-		ctrl->SetTargetStart(a);
-		ctrl->SetTargetEnd(b);
-		ctrl->ReplaceTarget(s);
 	}
 }
