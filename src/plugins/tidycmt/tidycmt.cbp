@@ -52,6 +52,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Linker>
+			<Add option="--enable-auto-image-base" />
+		</Linker>
 		<Unit filename="manifest.xml" />
 		<Unit filename="tidycmt.cpp" />
 		<Unit filename="tidycmt.h" />

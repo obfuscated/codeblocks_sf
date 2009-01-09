@@ -110,6 +110,7 @@
 					<Add directory="include\wxscintilla\include" />
 				</ResourceCompiler>
 				<Linker>
+					<Add option="--enable-auto-image-base" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="gdi32" />
 				</Linker>

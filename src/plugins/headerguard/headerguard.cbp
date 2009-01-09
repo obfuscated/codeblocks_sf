@@ -52,6 +52,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Linker>
+			<Add option="--enable-auto-image-base" />
+		</Linker>
 		<Unit filename="headerguard.cpp" />
 		<Unit filename="headerguard.h" />
 		<Unit filename="manifest.xml" />
