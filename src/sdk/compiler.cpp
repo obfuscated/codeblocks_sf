@@ -275,54 +275,54 @@ const wxArrayString& Compiler::GetLinkerSearchDirs(ProjectBuildTarget* target)
 
 const wxString& Compiler::GetCommand(CommandType ct, const wxString& fileExtension) const
 {
-	size_t catchAll = 0;
-	const CompilerToolsVector& vec = m_Commands[ct];
+    size_t catchAll = 0;
+    const CompilerToolsVector& vec = m_Commands[ct];
 
-	if (!fileExtension.IsEmpty())
-	{
-		for (size_t i = 0; i < vec.size(); ++i)
-		{
-			if (vec[i].extensions.GetCount() == 0)
-			{
-				catchAll = i;
-				continue;
-			}
-			for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
-			{
-				if (vec[i].extensions[n] == fileExtension)
-				{
-					return vec[i].command;
-				}
-			}
-		}
-	}
-	return vec[catchAll].command;
+    if (!fileExtension.IsEmpty())
+    {
+        for (size_t i = 0; i < vec.size(); ++i)
+        {
+            if (vec[i].extensions.GetCount() == 0)
+            {
+                catchAll = i;
+                continue;
+            }
+            for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
+            {
+                if (vec[i].extensions[n] == fileExtension)
+                {
+                    return vec[i].command;
+                }
+            }
+        }
+    }
+    return vec[catchAll].command;
 }
 
 const CompilerTool& Compiler::GetCompilerTool(CommandType ct, const wxString& fileExtension) const
 {
-	size_t catchAll = 0;
-	const CompilerToolsVector& vec = m_Commands[ct];
+    size_t catchAll = 0;
+    const CompilerToolsVector& vec = m_Commands[ct];
 
-	if (!fileExtension.IsEmpty())
-	{
-		for (size_t i = 0; i < vec.size(); ++i)
-		{
-			if (vec[i].extensions.GetCount() == 0)
-			{
-				catchAll = i;
-				continue;
-			}
-			for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
-			{
-				if (vec[i].extensions[n] == fileExtension)
-				{
-					return vec[i];
-				}
-			}
-		}
-	}
-	return vec[catchAll];
+    if (!fileExtension.IsEmpty())
+    {
+        for (size_t i = 0; i < vec.size(); ++i)
+        {
+            if (vec[i].extensions.GetCount() == 0)
+            {
+                catchAll = i;
+                continue;
+            }
+            for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
+            {
+                if (vec[i].extensions[n] == fileExtension)
+                {
+                    return vec[i];
+                }
+            }
+        }
+    }
+    return vec[catchAll];
 }
 
 void Compiler::MirrorCurrentSettings()
@@ -437,16 +437,16 @@ void Compiler::SaveSettings(const wxString& baseKey)
 
     for (int i = 0; i < ctCount; ++i)
     {
-    	for (size_t n = 0; n < m_Commands[i].size(); ++n)
-    	{
-			if (n >= m_Mirror.Commands[i].size() || m_Mirror.Commands[i][n] != m_Commands[i][n])
-			{
-				wxString key = wxString::Format(_T("%s/macros/%s/tool%d/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), n);
-				cfg->Write(key + _T("command"), m_Commands[i][n].command);
-				cfg->Write(key + _T("extensions"), m_Commands[i][n].extensions);
-				cfg->Write(key + _T("generatedFiles"), m_Commands[i][n].generatedFiles);
-			}
-    	}
+        for (size_t n = 0; n < m_Commands[i].size(); ++n)
+        {
+            if (n >= m_Mirror.Commands[i].size() || m_Mirror.Commands[i][n] != m_Commands[i][n])
+            {
+                wxString key = wxString::Format(_T("%s/macros/%s/tool%d/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), n);
+                cfg->Write(key + _T("command"), m_Commands[i][n].command);
+                cfg->Write(key + _T("extensions"), m_Commands[i][n].extensions);
+                cfg->Write(key + _T("generatedFiles"), m_Commands[i][n].generatedFiles);
+            }
+        }
     }
 
     // switches
@@ -575,6 +575,8 @@ void Compiler::LoadSettings(const wxString& baseKey)
     m_Programs.WINDRES = cfg->Read(tmp + _T("/res_compiler"), m_Programs.WINDRES);
     m_Programs.MAKE = cfg->Read(tmp + _T("/make"), m_Programs.MAKE);
     m_Programs.DBG = cfg->Read(tmp + _T("/debugger"), m_Programs.DBG);
+    
+    SetVersionString();
 
     SetCompilerOptions(GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxEmptyString)));
     SetLinkerOptions(GetArrayFromString(cfg->Read(tmp + _T("/linker_options"), wxEmptyString)));
@@ -587,22 +589,22 @@ void Compiler::LoadSettings(const wxString& baseKey)
 
     for (int i = 0; i < ctCount; ++i)
     {
-    	wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/macros/") + CommandTypeDescriptions[i]);
-    	for (size_t n = 0; n < keys.size(); ++n)
-    	{
-    		unsigned long index = 0;
-    		if (keys[n].Mid(4).ToULong(&index)) // skip 'tool'
-    		{
-    			while (index >= m_Commands[i].size())
-					m_Commands[i].push_back(CompilerTool());
-				CompilerTool& tool = m_Commands[i][index];
+        wxArrayString keys = cfg->EnumerateSubPaths(tmp + _T("/macros/") + CommandTypeDescriptions[i]);
+        for (size_t n = 0; n < keys.size(); ++n)
+        {
+            unsigned long index = 0;
+            if (keys[n].Mid(4).ToULong(&index)) // skip 'tool'
+            {
+                while (index >= m_Commands[i].size())
+                    m_Commands[i].push_back(CompilerTool());
+                CompilerTool& tool = m_Commands[i][index];
 
-				wxString key = wxString::Format(_T("%s/macros/%s/tool%lu/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), index);
-				tool.command = cfg->Read(key + _T("command"));
-				tool.extensions = cfg->ReadArrayString(key + _T("extensions"));
-				tool.generatedFiles = cfg->ReadArrayString(key + _T("generatedFiles"));
-    		}
-    	}
+                wxString key = wxString::Format(_T("%s/macros/%s/tool%lu/"), tmp.c_str(), CommandTypeDescriptions[i].c_str(), index);
+                tool.command = cfg->Read(key + _T("command"));
+                tool.extensions = cfg->ReadArrayString(key + _T("extensions"));
+                tool.generatedFiles = cfg->ReadArrayString(key + _T("generatedFiles"));
+            }
+        }
     }
 
     // switches
