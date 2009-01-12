@@ -581,7 +581,7 @@ bool CodeBlocksApp::OnInit()
             } 
         } 
         // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves 
-        if (!m_NoDDE) 
+        if (!m_NoDDE && !m_Batch)
         { 
             g_DDEServer = new DDEServer(0L); 
             g_DDEServer->Create(DDE_SERVICE); 
