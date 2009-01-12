@@ -167,12 +167,12 @@ void LineChanges::InsertText(int line, int edition, bool undoing) {
     } 
 } 
  
-void LineChanges::InsertLine(int line, bool undoing) { 
+void LineChanges::InsertLine(int line, int edition, bool undoing) {
     if (collecting && !undoing) { 
         state.InsertSpace(line, 1); 
         int linePosition = line; 
         int fillLength = 1; 
-        if (state.FillRange(linePosition, 1, fillLength))  
+        if (state.FillRange(linePosition, edition, fillLength))
             AdvanceEdition(); 
     } 
 } 
@@ -268,12 +268,12 @@ void LineVector::InsertText(int line, int delta, int edition, bool undoing) {
     changes.InsertText(line, edition, undoing); 
 }
 
-void LineVector::InsertLine(int line, int position, bool undoing) { 
+void LineVector::InsertLine(int line, int position, int edition, bool undoing) {
 	starts.InsertPartition(line, position);
 	if (markers.Length()) {
 		markers.Insert(line, 0);
 	}
-    changes.InsertLine(line, undoing); 
+    changes.InsertLine(line, edition, undoing);
 	if (levels.Length()) {
 		int level = SC_FOLDLEVELBASE;
 		if ((line > 0) && (line < Lines())) {
@@ -920,8 +920,8 @@ int CellBuffer::GetChangesEdition() const {
  
 // Without undo
 
-void CellBuffer::InsertLine(int line, int position, bool undoing) { 
-    lv.InsertLine(line, position, undoing); 
+void CellBuffer::InsertLine(int line, int position, int edition, bool undoing) {
+    lv.InsertLine(line, position, edition, undoing);
 	if (lineStates.Length()) {
 		lineStates.EnsureLength(line);
 		lineStates.Insert(line, 0);
@@ -950,21 +950,21 @@ void CellBuffer::BasicInsertString(int position, const char *s, int insertLength
 	char chAfter = substance.ValueAt(position + insertLength);
 	if (chPrev == '\r' && chAfter == '\n') {
 		// Splitting up a crlf pair at position
-        InsertLine(lineInsert, position, undoing); 
+        InsertLine(lineInsert, position, uh.Edition(), undoing);
 		lineInsert++;
 	}
 	char ch = ' ';
 	for (int i = 0; i < insertLength; i++) {
 		ch = s[i];
 		if (ch == '\r') {
-            InsertLine(lineInsert, (position + i) + 1, undoing); 
+            InsertLine(lineInsert, (position + i) + 1, uh.Edition(), undoing);
 			lineInsert++;
 		} else if (ch == '\n') {
 			if (chPrev == '\r') {
 				// Patch up what was end of line
 				lv.SetLineStart(lineInsert - 1, (position + i) + 1);
 			} else {
-                InsertLine(lineInsert, (position + i) + 1, undoing); 
+                InsertLine(lineInsert, (position + i) + 1, uh.Edition(), undoing);
 				lineInsert++;
 			}
 		}

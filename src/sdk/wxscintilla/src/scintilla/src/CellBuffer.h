@@ -53,7 +53,7 @@ public:
     char *PersistantForm() const; 
     void SetChanges(const char *changesState); 
     void InsertText(int line, int edition, bool undoing); 
-    void InsertLine(int line, bool undoing); 
+    void InsertLine(int line, int edition, bool undoing);
     void RemoveLine(int line, bool undoing); 
     void EnableChangeCollection(bool collecting_, int lines); 
     void ClearChanged(); 
@@ -84,7 +84,7 @@ public:
 	int GetLevel(int line);
 
     void InsertText(int line, int delta, int edition, bool undoing); 
-    void InsertLine(int line, int position, bool undoing); 
+    void InsertLine(int line, int position, int edition, bool undoing);
 	void SetLineStart(int line, int position);
     void RemoveLine(int line, bool undoing); 
 	int Lines() const {
@@ -216,7 +216,7 @@ public:
 	int Lines() const;
 	int LineStart(int line) const;
 	int LineFromPosition(int pos) { return lv.LineFromPosition(pos); }
-    void InsertLine(int line, int position, bool undoing); 
+    void InsertLine(int line, int position, int edition, bool undoing);
     void RemoveLine(int line, bool undoing); 
 	const char *InsertString(int position, const char *s, int insertLength, bool &startSequence);
 
