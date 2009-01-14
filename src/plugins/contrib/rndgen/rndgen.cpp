@@ -34,7 +34,8 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 		return;
 
 	wxRegEx int_re(_T("([0-9]+)\\ *;?\\ */\\*(\\ *RANDGEN:INT\\((.*))\\*/"));
-	wxRegEx alnum_re(_T("\\\"([^\"]+)\\\"\\ *;?\\ */\\*(\\ *RANDGEN:ALNUM\\((.*))\\*/"));
+//	wxRegEx alnum_re(_T("\\\"([^\"]+)\\\"\\ *;?\\ */\\*(\\ *RANDGEN:ALNUM\\((.*))\\*/"));
+	wxRegEx alnum_re(_T("\\\"([^\\\"]+)\\\"\\ *;?\\ */\\*(\\ *RANDGEN:(ALNUM|DIGITS|CHARS|UPPERCHARS|LOWERCHARS)\\((.*))\\*/"));
 
 	wxString c(_T("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 
@@ -70,10 +71,34 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 		{
 			wxString search = alnum_re.GetMatch(s, 1);
 			long arg;
-			alnum_re.GetMatch(s, 3).ToLong(&arg);
+			wxString what = alnum_re.GetMatch(s, 3);
+			alnum_re.GetMatch(s, 4).ToLong(&arg);
 			wxString replace;
-			for(unsigned int i = 0; i<arg; ++i)
-				replace += c[rand() % c.length()];
+			if(what == _T("ALNUM"))
+			{
+				for(int i = 0; i<arg; ++i)
+					replace += c[rand() % c.length()];
+			}
+			if(what == _T("DIGITS"))
+			{
+				for(int i = 0; i<arg; ++i)
+					replace += c[rand() % 10];
+			}
+			if(what == _T("CHARS"))
+			{
+				for(int i = 0; i<arg; ++i)
+					replace += c[10+ rand() % (c.length() - 10)];
+			}
+			if(what == _T("UPPERCHARS"))
+			{
+				for(int i = 0; i<arg; ++i)
+					replace += c[36 + rand() % 26];
+			}
+			if(what == _T("LOWERCHARS"))
+			{
+				for(int i = 0; i<arg; ++i)
+					replace += c[10 + rand() % 26];
+			}
 			s.Replace(search, replace, false);
 
 			ctrl->SetTargetStart(a);
