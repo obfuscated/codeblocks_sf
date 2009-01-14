@@ -323,10 +323,12 @@ void CompilerMINGW::SetVersionString()
             masterpath = _T("/usr");
     }
     wxString gcc_command = masterpath + sep + _T("bin") + sep + m_Programs.C;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(gcc_command);
     if (!wxFileExists(gcc_command))
         return;
+
     long result = wxExecute(gcc_command + _T(" --version"), output, errors, wxEXEC_NODISABLE);
-    if (result > 0)
+    if(result != 0)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Error in executing ") + gcc_command);
     }
