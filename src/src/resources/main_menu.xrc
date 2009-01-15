@@ -166,7 +166,7 @@
       </object>
       <object class="wxMenuItem" name="idEditClearHistory">
         <label>Clear changes history</label>
-        <bitmap>images\16x16\delete_History.png</bitmap>
+        <bitmap>images\16x16\history_clear.png</bitmap>
         <help>Clear the undo-/redo- and (if exists) changebar-history</help>
         <bitmap>images\16x16\history_clear.png</bitmap>
       </object>
