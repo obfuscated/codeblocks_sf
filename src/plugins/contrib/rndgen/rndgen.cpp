@@ -8,10 +8,19 @@
 #include "RndGen.h"
 #include "cbstyledtextctrl.h"
 
-// already done by wxWidgets
-// #include <stdlib.h>
+#if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
+	#include <random>
+    inline void ini_random() { };
+	inline unsigned int random()
+	{
+		static std::mersenne_twister<unsigned int, 32, 624, 397, 31, 0x9908b0df, 11, 7, 0x9d2c5680, 15, 0xefc60000, 18> randgen(time(0));
+		return randgen();
+	};
+#else
+	inline void ini_random() { srand(time(0)); };
+	inline int random() { return rand(); };
+#endif
 
-const unsigned int len = 112;
 
 namespace
 {
@@ -25,7 +34,7 @@ void RndGen::OnAttach()
 
 void RndGen::OnSave(CodeBlocksEvent& event)
 {
-	srand(time(0));
+	ini_random();
 	cbEditor* ed = (cbEditor*) event.GetEditor();
 	cbStyledTextCtrl* ctrl = ed->GetControl();
 
@@ -59,7 +68,7 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			long arg;
 			int_re.GetMatch(s, 3).ToLong(&arg);
 			wxString replace;
-			int rnd = rand() % (arg+1);
+			int rnd = random() % (arg+1);
 			replace.Printf(_T("%u"), rnd);
 			s.Replace(search, replace, false);
 
@@ -77,27 +86,27 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			if(what == _T("ALNUM"))
 			{
 				for(int i = 0; i<arg; ++i)
-					replace += c[rand() % c.length()];
+					replace += c[random() % c.length()];
 			}
 			if(what == _T("DIGITS"))
 			{
 				for(int i = 0; i<arg; ++i)
-					replace += c[rand() % 10];
+					replace += c[random() % 10];
 			}
 			if(what == _T("CHARS"))
 			{
 				for(int i = 0; i<arg; ++i)
-					replace += c[10+ rand() % (c.length() - 10)];
+					replace += c[10+ random() % (c.length() - 10)];
 			}
 			if(what == _T("UPPERCHARS"))
 			{
 				for(int i = 0; i<arg; ++i)
-					replace += c[36 + rand() % 26];
+					replace += c[36 + random() % 26];
 			}
 			if(what == _T("LOWERCHARS"))
 			{
 				for(int i = 0; i<arg; ++i)
-					replace += c[10 + rand() % 26];
+					replace += c[10 + random() % 26];
 			}
 			s.Replace(search, replace, false);
 
