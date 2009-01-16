@@ -177,7 +177,9 @@ bool wxScintilla::Create (wxWindow *parent,
         wxSafeShowMessage(_T("wxScintilla"),_T("Could not create a new ScintillaWX instance."));
     m_stopWatch.Start();
     m_lastKeyDownConsumed = false;
-    m_lastWheelTimestamp = 0;
+    // we need this here, because wxEvent::GetTimestamp() returns negative values on some systems
+    // and therefore blocks mousewheel events. Big thanks to DrewBoo
+    m_lastWheelTimestamp = std::numeric_limits<long>::min();
     m_vScrollBar = NULL;
     m_hScrollBar = NULL;
 #if wxUSE_UNICODE
