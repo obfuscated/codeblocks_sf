@@ -786,7 +786,7 @@ bool EditorManager::SaveActive()
 
 bool EditorManager::SaveAs(int index)
 {
-    cbEditor* ed = GetBuiltinEditor(GetEditor(index));
+    EditorBase* ed = InternalGetEditorBase(index);
     if(!ed)
         return false;
     return ed->SaveAs();
@@ -794,7 +794,7 @@ bool EditorManager::SaveAs(int index)
 
 bool EditorManager::SaveActiveAs()
 {
-    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+    EditorBase* ed = GetActiveEditor();
     if (ed)
     {
         return ed->SaveAs();
