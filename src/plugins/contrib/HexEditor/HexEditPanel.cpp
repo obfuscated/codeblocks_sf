@@ -34,16 +34,18 @@
 #include <wx/intl.h>
 //*)
 
-#include <wx/intl.h>
-#include <wx/string.h>
-#include <wx/sizer.h>
-#include <wx/dcclient.h>
 #include <wx/dcbuffer.h>
+#include <wx/dcclient.h>
+#include <wx/filedlg.h>
+#include <wx/filename.h>
+#include <wx/numdlg.h>
+#include <wx/sizer.h>
+#include <wx/textdlg.h>
+
 #include <manager.h>
 #include <editormanager.h>
+#include <configmanager.h>
 #include <logmanager.h>
-#include <wx/textdlg.h>
-#include <wx/numdlg.h>
 
 namespace
 {
@@ -1027,6 +1029,34 @@ bool HexEditPanel::Save()
     bool ret = m_Content->WriteFile( GetFilename() );
     UpdateModified();
     return ret;
+}
+
+bool HexEditPanel::SaveAs()
+{
+    wxFileName fname;
+    fname.Assign(GetFilename());
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
+
+    wxString Path = fname.GetPath();
+
+    if(mgr && Path.IsEmpty())
+        Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
+
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
+                      _("Save file"),
+                      Path,
+                      fname.GetFullName(),
+                      _T("*.*"),//m_filecontent->GetWildcard(),
+                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+
+    if (dlg.ShowModal() != wxID_OK) // cancelled out
+    {
+        UpdateModified();
+        return false;
+    }
+
+    SetFilename(dlg.GetPath());
+    return Save();
 }
 
 bool HexEditPanel::GetModified() const

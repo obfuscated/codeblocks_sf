@@ -65,6 +65,7 @@ class HexEditPanel: public EditorBase
         virtual bool GetModified() const;
         virtual void SetModified( bool modified );
         virtual bool Save();
+        virtual bool SaveAs();
 
     private:
 
