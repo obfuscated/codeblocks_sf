@@ -1366,7 +1366,7 @@ void ParserThread::HandleEnum()
 
     Token* newEnum = 0L;
     unsigned int level = 0;
-    if (wxIsalpha(token.GetChar(0)))
+    if (wxIsalpha(token.GetChar(0)) || token.GetChar(0) == '_')
     {
         if (m_Tokenizer.PeekToken().GetChar(0) != '{')
             return;
@@ -1405,7 +1405,7 @@ void ParserThread::HandleEnum()
         {
             // this "if", avoids non-valid enumerators
             // like a comma (if no enumerators follow)
-            if (wxIsalpha(token.GetChar(0)))
+            if (wxIsalpha(token.GetChar(0)) || token.GetChar(0) == '_')
             {
                 Token* lastParent = m_pLastParent;
                 m_pLastParent = newEnum;
