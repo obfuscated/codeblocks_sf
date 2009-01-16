@@ -990,7 +990,7 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 {
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
     wxTreeItemId sel = tree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
+    FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : 0;
     if (!ftd)
         return 0L;
     // copy ftd to a new instance, because after the SetProject() call
@@ -1248,10 +1248,10 @@ int CompilerGCC::DoRunQueue()
         // setup dynamic linker path
         wxString newLibPath = GetDynamicLinkerPathForTarget(cmd->target);
         const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-		if (!newLibPath.IsEmpty() && newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
-			newLibPath << libPathSep;
-		newLibPath << oldLibPath;
-		wxSetEnv(LIBRARY_ENVVAR, newLibPath);
+        if (!newLibPath.IsEmpty() && newLibPath.Mid(newLibPath.Length() - 1, 1) != libPathSep)
+            newLibPath << libPathSep;
+        newLibPath << oldLibPath;
+        wxSetEnv(LIBRARY_ENVVAR, newLibPath);
     }
 
     // special shell used only for build commands
@@ -1783,6 +1783,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
                 //                 -- Csh Programming Considered Harmful
                 command << DEFAULT_CONSOLE_SHELL << strSPACE;
             }
+            // each shell execution must be enclosed to "":
+            // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
+            // here is first \"
+            command << _T("\"");
         }
 
         // should console runner be used?
@@ -1823,6 +1827,10 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     {
         command << execStr << strSPACE;
         command << target->GetExecutionParameters();
+        // each shell execution must be enclosed to "":
+        // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
+        // here is last \"
+        command << _T("\"");
     }
     else
     {
@@ -1887,18 +1895,18 @@ wxString CompilerGCC::GetDynamicLinkerPathForTarget(ProjectBuildTarget* target)
         return wxEmptyString;
     }
 
-	Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
-	if (compiler)
-	{
-		wxString libPath;
-		const wxString libPathSep = platform::windows ? _T(";") : _T(":");
-		libPath << _T(".") << libPathSep;
-		libPath << GetStringFromArray(compiler->GetLinkerSearchDirs(target), libPathSep);
-		if (!libPath.IsEmpty() && libPath.SubString(libPath.Length() - 1, 1) == libPathSep)
-			libPath.Truncate(libPath.Length() - 1);
-		return libPath;
-	}
-	return wxEmptyString;
+    Compiler* compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
+    if (compiler)
+    {
+        wxString libPath;
+        const wxString libPathSep = platform::windows ? _T(";") : _T(":");
+        libPath << _T(".") << libPathSep;
+        libPath << GetStringFromArray(compiler->GetLinkerSearchDirs(target), libPathSep);
+        if (!libPath.IsEmpty() && libPath.Mid(libPath.Length() - 1, 1) == libPathSep)
+            libPath.Truncate(libPath.Length() - 1);
+        return libPath;
+    }
+    return wxEmptyString;
 }
 
 wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target)
@@ -3095,7 +3103,7 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
 {
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
     wxTreeItemId sel = tree->GetSelection();
-    FileTreeData* ftd = (FileTreeData*)tree->GetItemData(sel);
+    FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : 0;
     if (ftd)
     {
         // 'configure' selected target, if other than 'All'

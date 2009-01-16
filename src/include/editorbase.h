@@ -111,6 +111,13 @@ class DLLIMPORT EditorBase : public wxPanel
           * @return True on success, false otherwise. */
         virtual bool Save() { return true; }
 
+        /** @brief Save editor contents under a different filename.
+          *
+          * Save editor contents under a different filename.
+          * The default implementation does nothing and returns true.
+          * @return True on success, false otherwise. */
+        virtual bool SaveAs() { return true; }
+
         /** @brief Is this a built-in editor?
           *
           * Query if this is a built-in editor (a.k.a cbEditor).
@@ -262,6 +269,16 @@ class DLLIMPORT EditorBase : public wxPanel
           * @return True if the editor is read-only, false if not.
           */
         virtual bool IsReadOnly() const { return false; }
+
+        /** Can the editor select everything?
+          *
+          * @return True if the editor can select all content, false if not.
+          */
+        virtual bool CanSelectAll() const { return false; }
+
+        /** Select everything in the editor
+          */
+        virtual void SelectAll() { return; }
     protected:
         /** Initializes filename data.
           * @param filename The editor's filename for initialization.

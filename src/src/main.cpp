@@ -2969,9 +2969,9 @@ void MainFrame::OnEditLowerCase(wxCommandEvent& event)
 
 void MainFrame::OnEditSelectAll(wxCommandEvent& event)
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
-        ed->GetControl()->SelectAll();
+        ed->SelectAll();
 }
 
 CommentToken GetCommentToken(cbStyledTextCtrl* stc)
@@ -3808,6 +3808,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     bool canRedo = false;
     bool canPaste = false;
     bool canCut = false;
+    bool canSelAll = false;
     int eolMode = -1;
 
     if(Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
@@ -3827,6 +3828,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         hasSel = eb->HasSelection();
         canPaste = eb->CanPaste();
         canCut = !eb->IsReadOnly() && hasSel;
+        canSelAll = eb->CanSelectAll();
     }
 
     mbar->Enable(idEditUndo, canUndo);
@@ -3838,7 +3840,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditSwapHeaderSource, ed);
     mbar->Enable(idEditGotoMatchingBrace, ed);
     mbar->Enable(idEditHighlightMode, ed);
-    mbar->Enable(idEditSelectAll, ed);
+    mbar->Enable(idEditSelectAll, canSelAll);
     mbar->Enable(idEditBookmarks, ed);
     mbar->Enable(idEditFolding, ed);
     mbar->Enable(idEditEOLMode, ed);

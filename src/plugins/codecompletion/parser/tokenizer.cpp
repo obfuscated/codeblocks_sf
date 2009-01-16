@@ -619,6 +619,10 @@ wxString Tokenizer::DoGetToken()
         // fix-up arguments (remove excessive spaces/tabs/newlines)
         for (unsigned int i = 0; i < tmp.Length() - 1; ++i)
         {
+            //skip spaces before '=' and ','
+            if (tmp.GetChar(i) == ' ' && (tmp.GetChar(i + 1) == ',' || tmp.GetChar(i + 1) == '='))
+				continue;
+
             if (tmp.GetChar(i) == '/' && tmp.GetChar(i + 1) == '*')
             {
                 // skip C comments

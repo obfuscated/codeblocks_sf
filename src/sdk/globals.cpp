@@ -1027,6 +1027,7 @@ wxString realpath(const wxString& path)
 			if (S_ISLNK(buffer.st_mode))
 			{
 				int s = readlink(ret.substr(0, slashPos).c_str(), buf, sizeof(buf));
+				buf[s] = 0;
 				if (s > 0 && buf[0] != '/' && buf[0] != '~')
 				{
 					// relative
@@ -1036,6 +1037,11 @@ wxString realpath(const wxString& path)
 				{
 					// absolute
 					ret = buf + ret.substr(slashPos, ret.size() - slashPos);
+
+					// start again at the beginning in case the path returned also
+					// has symlinks. For example if using /etc/alternatives this will
+					// be the case
+					s = 0;
 				}
 				slashPos = s;
 			}

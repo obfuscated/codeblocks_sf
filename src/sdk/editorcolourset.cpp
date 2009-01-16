@@ -172,7 +172,7 @@ void EditorColourSet::LoadAvailableSets()
 HighlightLanguage EditorColourSet::AddHighlightLanguage(int lexer, const wxString& name)
 {
     if (lexer <= wxSCI_LEX_NULL ||
-        lexer > wxSCI_LEX_FREEBASIC ||
+        lexer > wxSCI_LEX_PO ||
         name.IsEmpty())
     {
         return HL_NONE;

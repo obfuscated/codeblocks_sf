@@ -2691,6 +2691,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                 switch(control->GetLexer())
                 {
                     case wxSCI_LEX_CPP:
+                    case wxSCI_LEX_D:
                         if (b == _T('{'))
                         {
                             int nonblankpos;
@@ -2735,7 +2736,7 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     else if (ch == _T('}'))
     {
         bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
-        if ( smartIndent && (control->GetLexer() == wxSCI_LEX_CPP) )
+        if ( smartIndent && ( (control->GetLexer() == wxSCI_LEX_CPP) || (control->GetLexer() == wxSCI_LEX_D) ) )
         {
             control->BeginUndoAction();
             // undo block indentation, if needed
@@ -2906,4 +2907,14 @@ void cbEditor::OnScintillaEvent(wxScintillaEvent& event)
     {
         EditorHooks::CallHooks(this, event);
     }
+}
+
+bool cbEditor::CanSelectAll() const
+{
+    return GetControl()->GetLength() > 0;
+}
+
+void cbEditor::SelectAll()
+{
+    GetControl()->SelectAll();
 }

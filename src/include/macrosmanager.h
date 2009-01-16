@@ -36,8 +36,9 @@ protected:
     ProjectBuildTarget* m_lastTarget;
     cbProject* m_lastProject;
     EditorBase* m_lastEditor;
-    wxFileName m_prjname;
+    wxFileName m_prjname, m_wkspname;
     wxString m_AppPath, m_DataPath, m_Plugins, m_ActiveEditorFilename,
+    m_WorkspaceFilename, m_WorkspaceName, m_WorkspaceDir,
     m_ProjectFilename, m_ProjectName, m_ProjectDir, m_ProjectTopDir,
     m_ProjectFiles, m_Makefile, m_TargetOutputDir, m_TargetName,
     m_TargetOutputBaseName, m_TargetFilename;

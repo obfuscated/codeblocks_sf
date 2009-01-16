@@ -1081,7 +1081,9 @@ int DebuggerGDB::Debug()
     // the same applies for m_Canceled: it is true if DoDebug() was launched but
     // returned an error
     if (!m_WaitingCompilerToFinish && !m_State.HasDriver() && !m_Canceled)
+    {
         return DoDebug();
+    }
 
     return 0;
 }
@@ -1294,7 +1296,7 @@ int DebuggerGDB::DoDebug()
             const wxString libPathSep = platform::windows ? _T(";") : _T(":");
             newLibPath << _T(".") << libPathSep;
             newLibPath << GetStringFromArray(actualCompiler->GetLinkerSearchDirs(target), libPathSep);
-            if (newLibPath.SubString(newLibPath.Length() - 1, 1) != libPathSep)
+            if (newLibPath.Mid(newLibPath.Length() - 1, 1) != libPathSep)
                 newLibPath << libPathSep;
             newLibPath << oldLibPath;
             wxSetEnv(LIBRARY_ENVVAR, newLibPath);

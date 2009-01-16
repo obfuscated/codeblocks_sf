@@ -29,6 +29,7 @@
     #include "resources/icons/app.xpm"
 #endif
 
+#include <wx/taskbar.h>
 #include <wx/splash.h>
 #include <wx/snglinst.h>
 #include "manager.h"
@@ -57,6 +58,7 @@ class CodeBlocksApp : public wxApp
 #endif
     protected:
         void OnBatchBuildDone(CodeBlocksEvent& event);
+        void OnTBIconLeftDown(wxTaskBarIconEvent& event);
         bool LoadConfig();
         void InitDebugConsole();
         void InitExceptionHandler();

@@ -1413,7 +1413,7 @@ wxArrayInt ProjectManager::AskForMultiBuildTargetIndex(cbProject* project)
     for (int i = 0; i < count; ++i)
         array.Add(prj->GetBuildTarget(i)->GetTitle());
 
-    MultiSelectDlg dlg(0, array, false, _("Select the targets this file should belong to:"));
+    MultiSelectDlg dlg(0, array, true, _("Select the targets this file should belong to:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         indices = dlg.GetSelectedIndices();
@@ -2039,7 +2039,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
         }
         wxString msg;
         msg.Printf(_("Select files to remove from %s:"), prj->GetTitle().c_str());
-        MultiSelectDlg dlg(0, files, false, msg);
+        MultiSelectDlg dlg(0, files, true, msg);
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {

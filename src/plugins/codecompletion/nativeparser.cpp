@@ -1132,17 +1132,17 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
     while (repeat)
     {
         repeat = false;
-        while (x >= 0 && (wxIsalnum(line.GetChar(x)) || line.GetChar(x) == '_'))
+        while ((x >= 0) && (wxIsalnum(line.GetChar(x)) || line.GetChar(x) == '_'))
             --x;
 
-        if (x > 0 &&
-            (line.GetChar(x) == '>' && line.GetChar(x - 1) == '-') ||
-            (line.GetChar(x) == ':' && line.GetChar(x - 1) == ':'))
+        if ( (x > 0) &&
+             ( (line.GetChar(x) == '>' && line.GetChar(x - 1) == '-') ||
+               (line.GetChar(x) == ':' && line.GetChar(x - 1) == ':') ) )
         {
             x -= 2;
             repeat = true;
         }
-        else if (x >= 0 && line.GetChar(x) == '.')
+        else if ((x >= 0) && (line.GetChar(x) == '.'))
         {
             --x;
             repeat = true;
@@ -1152,11 +1152,11 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
         {
             // now we 're just before the "." or "->" or "::"
             // skip any whitespace
-            while (x >= 0 && (line.GetChar(x) == ' ' || line.GetChar(x) == '\t'))
+            while ((x >= 0) && (line.GetChar(x) == ' ' || line.GetChar(x) == '\t'))
                 --x;
 
             // check for function/array/cast ()
-            if (x >= 0 && (line.GetChar(x) == ')' || line.GetChar(x) == ']'))
+            if ((x >= 0) && (line.GetChar(x) == ')' || line.GetChar(x) == ']'))
             {
                 ++nest;
                 while (--x >= 0 && nest != 0)
@@ -1170,7 +1170,7 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
                         case '(': --nest; break;
                     }
                 }
-                if (x > 0 && (wxIsalnum(line.GetChar(x - 1)) || line.GetChar(x - 1) == '_'))
+                if ((x > 0) && (wxIsalnum(line.GetChar(x - 1)) || line.GetChar(x - 1) == '_'))
                     --x;
             }
         }
@@ -1192,7 +1192,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     wxString res;
     int nest = 0;
 
-    if (startAt < line.Length() && line.GetChar(startAt) == '(')
+    if ((startAt < line.Length()) && (line.GetChar(startAt) == '('))
     {
         while (startAt < line.Length() &&
                 (line.GetChar(startAt) == '*' ||
@@ -1206,13 +1206,13 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     }
 
 //    Manager::Get()->GetLogManager()->DebugLog(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
-    while (startAt < line.Length() && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
+    while ((startAt < line.Length()) && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
     {
         res << line.GetChar(startAt);
         ++startAt;
     }
 
-    while (nest > 0 && startAt < line.Length())
+    while ((nest > 0) && (startAt < line.Length()))
     {
         if (line.GetChar(startAt) == ')')
             --nest;
@@ -1220,7 +1220,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     }
     //Manager::Get()->GetLogManager()->DebugLog("Done nest: at %d (%c): res=%s", startAt, line.GetChar(startAt), res.c_str());
 
-    if (startAt < line.Length() && (line.GetChar(startAt) == '(' || line.GetChar(startAt) == '['))
+    if ((startAt < line.Length()) && (line.GetChar(startAt) == '(' || line.GetChar(startAt) == '['))
     {
         is_function = line.GetChar(startAt) == '(';
 
