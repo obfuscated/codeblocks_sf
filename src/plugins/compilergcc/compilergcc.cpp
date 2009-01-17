@@ -1786,7 +1786,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
             // each shell execution must be enclosed to "":
             // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
             // here is first \"
-            command << _T("\"");
+            command << strQUOTE;
         }
 
         // should console runner be used?
@@ -1830,7 +1830,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // each shell execution must be enclosed to "":
         // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
         // here is last \"
-        command << _T("\"");
+        if( target->GetTargetType() == ttConsoleOnly && !platform::windows)
+            command << strQUOTE;
     }
     else
     {
