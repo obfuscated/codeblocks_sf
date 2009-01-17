@@ -18,6 +18,7 @@
 #include <wx/filename.h>
 #include <wx/filefn.h>
 #include "manager.h"
+#include "macrosmanager.h"
 #include "logmanager.h"
 #include "compilerMINGWgenerator.h"
 

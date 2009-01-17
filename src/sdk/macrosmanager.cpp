@@ -12,6 +12,7 @@
 #ifndef CB_PRECOMP
     #include <wx/menu.h>
 
+    #include "cbworkspace.h"
     #include "projectmanager.h"
     #include "editormanager.h"
     #include "logmanager.h"
