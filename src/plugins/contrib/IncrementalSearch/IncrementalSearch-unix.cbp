@@ -22,14 +22,13 @@
 					<Add option="-fPIC" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
-					<Add directory="$(#CB.include)" />
-					<Add directory="$(#CB.include)/wxscintilla/include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../include/wxscintilla/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
 					<Add library="codeblocks" />
-					<Add directory="$(#CB.lib)" />
-					<Add directory="$(#CB)/devel" />
+					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -jq9 ../../../devel/share/codeblocks/IncrementalSearch.zip manifest.xml *.xrc" />
