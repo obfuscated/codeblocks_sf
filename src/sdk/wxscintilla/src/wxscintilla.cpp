@@ -14,7 +14,7 @@
 // Copyright:   (c) 2004 wxCode
 // Licence:     wxWindows
 /////////////////////////////////////////////////////////////////////////////
-
+#include <limits>
 #include <ctype.h>
 
 #include "ScintillaWX.h"
