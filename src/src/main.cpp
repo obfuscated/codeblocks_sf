@@ -2969,9 +2969,9 @@ void MainFrame::OnEditLowerCase(wxCommandEvent& event)
 
 void MainFrame::OnEditSelectAll(wxCommandEvent& event)
 {
-    EditorBase* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
-        ed->SelectAll();
+    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (eb)
+        eb->SelectAll();
 }
 
 CommentToken GetCommentToken(cbStyledTextCtrl* stc)
