@@ -34,7 +34,7 @@ using namespace wxsFlags;
 
 namespace
 {
-    wxString DoubleToString( double value )
+    wxString wxsDoubleToString( double value )
     {
         // Because GCC uses locale settings to determine
         // whether to use dot or comma as floating point separator
@@ -232,7 +232,7 @@ wxString wxsFontData::BuildFontCode(const wxString& FontName,wxsCoderContext* Co
                          << _T(".SetPointSize((int)(")
                          << FontName
                          << _T(".GetPointSize() * ")
-                         << DoubleToString(RelativeSize)
+                         << wxsDoubleToString(RelativeSize)
                          << _T("));\n");
                 }
                 if ( HasStyle )
@@ -447,7 +447,7 @@ bool wxsFontProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
 
     if ( VALUE.HasRelativeSize )
     {
-        XmlSetString(Element,DoubleToString(VALUE.RelativeSize),_T("relativesize"));
+        XmlSetString(Element, wxsDoubleToString(VALUE.RelativeSize), _T("relativesize"));
     }
 
     return true;
