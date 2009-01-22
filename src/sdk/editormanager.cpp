@@ -786,18 +786,18 @@ bool EditorManager::SaveActive()
 
 bool EditorManager::SaveAs(int index)
 {
-    EditorBase* ed = InternalGetEditorBase(index);
-    if(!ed)
+    EditorBase* eb = InternalGetEditorBase(index);
+    if(!eb)
         return false;
-    return ed->SaveAs();
+    return eb->SaveAs();
 }
 
 bool EditorManager::SaveActiveAs()
 {
-    EditorBase* ed = GetActiveEditor();
-    if (ed)
+    EditorBase* eb = GetActiveEditor();
+    if (eb)
     {
-        return ed->SaveAs();
+        return eb->SaveAs();
     }
     return true;
 }
