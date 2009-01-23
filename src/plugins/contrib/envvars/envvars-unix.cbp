@@ -29,17 +29,15 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
-			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
-			<Add directory="$(#CB.INCLUDE)" />
-			<Add directory="$(#CB.INCLUDE)/wxscintilla/include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="codeblocks" />
-			<Add directory="$(#CB)/devel" />
-			<Add directory="$(#CB.LIB)" />
+			<Add directory="../../../devel" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 $(#cb)/devel/share/codeblocks/envvars.zip manifest.xml *.xrc" />

@@ -21,20 +21,18 @@
 					<Add option="-Uunix" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-Winvalid-pch" />
-					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
-					<Add directory="$(#CB.include)" />
-					<Add directory="$(#CB.include)/wxscintilla/include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../include/wxscintilla/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add directory="$(#CB.lib)" />
-					<Add directory="$(#CB)/devel" />
-					<Add directory="$(#CB)/sdk/tinyxml" />
+					<Add directory="../../../devel" />
+					<Add directory="../../../sdk/tinyxml" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel/share/codeblocks/headerfixup.zip manifest.xml" />
@@ -49,8 +47,6 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
-		<Unit filename="headerfixup.cpp" />
-		<Unit filename="headerfixup.h" />
 		<Unit filename="bindings.cpp" />
 		<Unit filename="bindings.h" />
 		<Unit filename="configuration.cpp" />
@@ -60,6 +56,8 @@
 		<Unit filename="execution.h" />
 		<Unit filename="fileanalysis.cpp" />
 		<Unit filename="fileanalysis.h" />
+		<Unit filename="headerfixup.cpp" />
+		<Unit filename="headerfixup.h" />
 		<Unit filename="helper.cpp" />
 		<Unit filename="helper.h" />
 		<Unit filename="manifest.xml" />
@@ -79,9 +77,6 @@
 			</wxsmith>
 			<SVNInside Login="" Password="" ConnectStatus="1" NeedsPassword="0" />
 			<debugger />
-			<lib_finder>
-				<target name="default" />
-			</lib_finder>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

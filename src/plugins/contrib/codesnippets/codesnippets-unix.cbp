@@ -35,9 +35,9 @@
 			<Add option="`pkg-config --cflags gtk+-2.0`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add directory="$(#cb)/include" />
-			<Add directory="$(#cb)/include/wxscintilla/include" />
-			<Add directory="$(#cb)/include/wxFlatNotebook/include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../include/wxFlatNotebook/include" />
 			<Add directory="." />
 			<Add directory="editor" />
 			<Add directory="Search" />
@@ -171,6 +171,7 @@
 		<Extensions>
 			<code_completion />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
