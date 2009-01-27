@@ -342,6 +342,14 @@ void ProjectLoader::DoMakeCommands(TiXmlElement* parentNode, CompileTargetBase* 
     node = parentNode->FirstChildElement("DistClean");
     if (node && node->Attribute("command"))
         target->SetMakeCommandFor(mcDistClean, cbC2U(node->Attribute("command")));
+
+    node = parentNode->FirstChildElement("AskRebuildNeeded");
+    if (node && node->Attribute("command"))
+        target->SetMakeCommandFor(mcAskRebuildNeeded, cbC2U(node->Attribute("command")));
+
+    node = parentNode->FirstChildElement("SilentBuild");
+    if (node && node->Attribute("command"))
+        target->SetMakeCommandFor(mcSilentBuild, cbC2U(node->Attribute("command")));
 }
 
 void ProjectLoader::DoVirtualTargets(TiXmlElement* parentNode)
@@ -1098,6 +1106,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         AddElement(makenode, "CompileFile", "command", m_pProject->GetMakeCommandFor(mcCompileFile));
         AddElement(makenode, "Clean", "command", m_pProject->GetMakeCommandFor(mcClean));
         AddElement(makenode, "DistClean", "command", m_pProject->GetMakeCommandFor(mcDistClean));
+        AddElement(makenode, "AskRebuildNeeded", "command", m_pProject->GetMakeCommandFor(mcAskRebuildNeeded));
+        AddElement(makenode, "SilentBuild", "command", m_pProject->GetMakeCommandFor(mcSilentBuild));
     }
 
     prjnode->InsertEndChild(TiXmlElement("Build"));
@@ -1225,6 +1235,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             AddElement(makenode, "CompileFile", "command", target->GetMakeCommandFor(mcCompileFile));
             AddElement(makenode, "Clean", "command", target->GetMakeCommandFor(mcClean));
             AddElement(makenode, "DistClean", "command", target->GetMakeCommandFor(mcDistClean));
+            AddElement(makenode, "AskRebuildNeeded", "command", target->GetMakeCommandFor(mcAskRebuildNeeded));
+            AddElement(makenode, "SilentBuild", "command", target->GetMakeCommandFor(mcSilentBuild));
         }
     }
 

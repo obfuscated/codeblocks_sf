@@ -1016,11 +1016,36 @@
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT21">
 																<label>Dist-clean project/target:</label>
+																<hidden>1</hidden>
 															</object>
 															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 														</object>
 														<object class="sizeritem">
-															<object class="wxTextCtrl" name="txtMakeCmd_DistClean" />
+															<object class="wxTextCtrl" name="txtMakeCmd_DistClean">
+																<hidden>1</hidden>
+															</object>
+															<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>8</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT27">
+																<label>Ask if rebuild is needed:</label>
+															</object>
+															<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+														</object>
+														<object class="sizeritem">
+															<object class="wxTextCtrl" name="txtMakeCmd_AskRebuildNeeded" />
+															<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>8</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxStaticText" name="ID_STATICTEXT28">
+																<label>Silent build:</label>
+															</object>
+															<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+														</object>
+														<object class="sizeritem">
+															<object class="wxTextCtrl" name="txtMakeCmd_SilentBuild" />
 															<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>8</border>
 														</object>

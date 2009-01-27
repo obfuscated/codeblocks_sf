@@ -120,6 +120,8 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(mcDistClean);
         BIND_INT_CONSTANT(mcBuild);
         BIND_INT_CONSTANT(mcCompileFile);
+        BIND_INT_CONSTANT(mcAskRebuildNeeded);
+        BIND_INT_CONSTANT(mcSilentBuild);
 
         // PCHMode
         BIND_INT_CONSTANT(pchSourceDir);

@@ -50,122 +50,124 @@
 //          - directory add/edit and libray add/edit : check if it already existed
 
 BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
-    EVT_UPDATE_UI(            XRCID("btnEditDir"),            CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnDelDir"),             CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnClearDir"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnCopyDirs"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("spnDirs"),               CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnEditVar"),            CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnDeleteVar"),          CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnClearVar"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("cmbCompilerPolicy"),     CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("cmbLinkerPolicy"),       CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("cmbIncludesPolicy"),     CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("cmbLibDirsPolicy"),      CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("cmbResDirsPolicy"),      CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnSetDefaultCompiler"), CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnAddCompiler"),        CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnRenameCompiler"),     CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnDelCompiler"),        CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnResetCompiler"),      CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnAddLib"),             CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnEditLib"),            CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnDelLib"),             CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnClearLib"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnCopyLibs"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("spnLibs"),               CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtMasterPath"),         CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnMasterPath"),         CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnExtraAdd"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnExtraEdit"),          CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnExtraDelete"),        CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnExtraClear"),         CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtCcompiler"),          CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnCcompiler"),          CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtCPPcompiler"),        CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnCPPcompiler"),        CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtLinker"),             CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnLinker"),             CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtLibLinker"),          CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnLibLinker"),          CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtDebugger"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnDebugger"),           CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtResComp"),            CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnResComp"),            CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("txtMake"),               CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("btnMake"),               CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("cmbCompiler"),           CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnEditDir"),                      CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnDelDir"),                       CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnClearDir"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnCopyDirs"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("spnDirs"),                         CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnEditVar"),                      CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnDeleteVar"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnClearVar"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbCompilerPolicy"),               CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbLinkerPolicy"),                 CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbIncludesPolicy"),               CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbLibDirsPolicy"),                CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbResDirsPolicy"),                CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnSetDefaultCompiler"),           CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnAddCompiler"),                  CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnRenameCompiler"),               CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnDelCompiler"),                  CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnResetCompiler"),                CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnAddLib"),                       CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnEditLib"),                      CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnDelLib"),                       CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnClearLib"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnCopyLibs"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("spnLibs"),                         CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtMasterPath"),                   CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnMasterPath"),                   CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnExtraAdd"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnExtraEdit"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnExtraDelete"),                  CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnExtraClear"),                   CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtCcompiler"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnCcompiler"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtCPPcompiler"),                  CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnCPPcompiler"),                  CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtLinker"),                       CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnLinker"),                       CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtLibLinker"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnLibLinker"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtDebugger"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnDebugger"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtResComp"),                      CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnResComp"),                      CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("txtMake"),                         CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnMake"),                         CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("cmbCompiler"),                     CompilerOptionsDlg::OnUpdateUI)
     //
-    EVT_TREE_SEL_CHANGED(      XRCID("tcScope"),              CompilerOptionsDlg::OnTreeSelectionChange)
-    EVT_TREE_SEL_CHANGING(     XRCID("tcScope"),              CompilerOptionsDlg::OnTreeSelectionChanging)
-    EVT_CHOICE(                XRCID("cmbCategory"),          CompilerOptionsDlg::OnCategoryChanged)
-    EVT_CHOICE(                XRCID("cmbCompiler"),          CompilerOptionsDlg::OnCompilerChanged)
-    EVT_LISTBOX_DCLICK(        XRCID("lstVars"),              CompilerOptionsDlg::OnEditVarClick)
-    EVT_BUTTON(                XRCID("btnSetDefaultCompiler"),CompilerOptionsDlg::OnSetDefaultCompilerClick)
-    EVT_BUTTON(                XRCID("btnAddCompiler"),       CompilerOptionsDlg::OnAddCompilerClick)
-    EVT_BUTTON(                XRCID("btnRenameCompiler"),    CompilerOptionsDlg::OnEditCompilerClick)
-    EVT_BUTTON(                XRCID("btnDelCompiler"),       CompilerOptionsDlg::OnRemoveCompilerClick)
-    EVT_BUTTON(                XRCID("btnResetCompiler"),     CompilerOptionsDlg::OnResetCompilerClick)
-    EVT_BUTTON(                XRCID("btnAddDir"),            CompilerOptionsDlg::OnAddDirClick)
-    EVT_BUTTON(                XRCID("btnEditDir"),           CompilerOptionsDlg::OnEditDirClick)
-    EVT_LISTBOX_DCLICK(        XRCID("lstIncludeDirs"),       CompilerOptionsDlg::OnEditDirClick)
-    EVT_LISTBOX_DCLICK(        XRCID("lstLibDirs"),           CompilerOptionsDlg::OnEditDirClick)
-    EVT_LISTBOX_DCLICK(        XRCID("lstResDirs"),           CompilerOptionsDlg::OnEditDirClick)
-    EVT_BUTTON(                XRCID("btnDelDir"),            CompilerOptionsDlg::OnRemoveDirClick)
-    EVT_BUTTON(                XRCID("btnClearDir"),          CompilerOptionsDlg::OnClearDirClick)
-    EVT_BUTTON(                XRCID("btnCopyDirs"),          CompilerOptionsDlg::OnCopyDirsClick)
-    EVT_BUTTON(                XRCID("btnAddLib"),            CompilerOptionsDlg::OnAddLibClick)
-    EVT_BUTTON(                XRCID("btnEditLib"),           CompilerOptionsDlg::OnEditLibClick)
-    EVT_LISTBOX_DCLICK(        XRCID("lstLibs"),              CompilerOptionsDlg::OnEditLibClick)
-    EVT_BUTTON(                XRCID("btnDelLib"),            CompilerOptionsDlg::OnRemoveLibClick)
-    EVT_BUTTON(                XRCID("btnClearLib"),          CompilerOptionsDlg::OnClearLibClick)
-    EVT_BUTTON(                XRCID("btnCopyLibs"),          CompilerOptionsDlg::OnCopyLibsClick)
-    EVT_LISTBOX_DCLICK(        XRCID("lstExtraPaths"),        CompilerOptionsDlg::OnEditExtraPathClick)
-    EVT_BUTTON(                XRCID("btnExtraAdd"),          CompilerOptionsDlg::OnAddExtraPathClick)
-    EVT_BUTTON(                XRCID("btnExtraEdit"),         CompilerOptionsDlg::OnEditExtraPathClick)
-    EVT_BUTTON(                XRCID("btnExtraDelete"),       CompilerOptionsDlg::OnRemoveExtraPathClick)
-    EVT_BUTTON(                XRCID("btnExtraClear"),        CompilerOptionsDlg::OnClearExtraPathClick)
-    EVT_SPIN_UP(               XRCID("spnLibs"),              CompilerOptionsDlg::OnMoveLibUpClick)
-    EVT_SPIN_DOWN(             XRCID("spnLibs"),              CompilerOptionsDlg::OnMoveLibDownClick)
-    EVT_SPIN_UP(               XRCID("spnDirs"),              CompilerOptionsDlg::OnMoveDirUpClick)
-    EVT_SPIN_DOWN(             XRCID("spnDirs"),              CompilerOptionsDlg::OnMoveDirDownClick)
-    EVT_BUTTON(                XRCID("btnAddVar"),            CompilerOptionsDlg::OnAddVarClick)
-    EVT_BUTTON(                XRCID("btnEditVar"),           CompilerOptionsDlg::OnEditVarClick)
-    EVT_BUTTON(                XRCID("btnDeleteVar"),         CompilerOptionsDlg::OnRemoveVarClick)
-    EVT_BUTTON(                XRCID("btnClearVar"),          CompilerOptionsDlg::OnClearVarClick)
-    EVT_BUTTON(                XRCID("btnMasterPath"),        CompilerOptionsDlg::OnMasterPathClick)
-    EVT_BUTTON(                XRCID("btnAutoDetect"),        CompilerOptionsDlg::OnAutoDetectClick)
-    EVT_BUTTON(                XRCID("btnCcompiler"),         CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnCPPcompiler"),       CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnLinker"),            CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnLibLinker"),         CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnDebugger"),          CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnResComp"),           CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnMake"),              CompilerOptionsDlg::OnSelectProgramClick)
-    EVT_BUTTON(                XRCID("btnAdvanced"),          CompilerOptionsDlg::OnAdvancedClick)
-    EVT_CHOICE(                XRCID("cmbCompilerPolicy"),    CompilerOptionsDlg::OnDirty)
-    EVT_CHOICE(                XRCID("cmbLinkerPolicy"),      CompilerOptionsDlg::OnDirty)
-    EVT_CHOICE(                XRCID("cmbIncludesPolicy"),    CompilerOptionsDlg::OnDirty)
-    EVT_CHOICE(                XRCID("cmbLibDirsPolicy"),     CompilerOptionsDlg::OnDirty)
-    EVT_CHOICE(                XRCID("cmbResDirsPolicy"),     CompilerOptionsDlg::OnDirty)
-    EVT_CHOICE(                XRCID("cmbLogging"),           CompilerOptionsDlg::OnDirty)
-    EVT_CHECKBOX(              XRCID("chkAlwaysRunPost"),     CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtCompilerOptions"),   CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtCompilerDefines"),   CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtLinkerOptions"),     CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtCmdBefore"),         CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtCmdAfter"),          CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMasterPath"),        CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtCcompiler"),         CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtCPPcompiler"),       CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtLinker"),            CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtLibLinker"),         CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtResComp"),           CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMake"),              CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMakeCmd_Build"),     CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMakeCmd_Compile"),   CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMakeCmd_Clean"),     CompilerOptionsDlg::OnDirty)
-    EVT_TEXT(                  XRCID("txtMakeCmd_DistClean"), CompilerOptionsDlg::OnDirty)
+    EVT_TREE_SEL_CHANGED(      XRCID("tcScope"),                        CompilerOptionsDlg::OnTreeSelectionChange)
+    EVT_TREE_SEL_CHANGING(     XRCID("tcScope"),                        CompilerOptionsDlg::OnTreeSelectionChanging)
+    EVT_CHOICE(                XRCID("cmbCategory"),                    CompilerOptionsDlg::OnCategoryChanged)
+    EVT_CHOICE(                XRCID("cmbCompiler"),                    CompilerOptionsDlg::OnCompilerChanged)
+    EVT_LISTBOX_DCLICK(        XRCID("lstVars"),                        CompilerOptionsDlg::OnEditVarClick)
+    EVT_BUTTON(                XRCID("btnSetDefaultCompiler"),          CompilerOptionsDlg::OnSetDefaultCompilerClick)
+    EVT_BUTTON(                XRCID("btnAddCompiler"),                 CompilerOptionsDlg::OnAddCompilerClick)
+    EVT_BUTTON(                XRCID("btnRenameCompiler"),              CompilerOptionsDlg::OnEditCompilerClick)
+    EVT_BUTTON(                XRCID("btnDelCompiler"),                 CompilerOptionsDlg::OnRemoveCompilerClick)
+    EVT_BUTTON(                XRCID("btnResetCompiler"),               CompilerOptionsDlg::OnResetCompilerClick)
+    EVT_BUTTON(                XRCID("btnAddDir"),                      CompilerOptionsDlg::OnAddDirClick)
+    EVT_BUTTON(                XRCID("btnEditDir"),                     CompilerOptionsDlg::OnEditDirClick)
+    EVT_LISTBOX_DCLICK(        XRCID("lstIncludeDirs"),                 CompilerOptionsDlg::OnEditDirClick)
+    EVT_LISTBOX_DCLICK(        XRCID("lstLibDirs"),                     CompilerOptionsDlg::OnEditDirClick)
+    EVT_LISTBOX_DCLICK(        XRCID("lstResDirs"),                     CompilerOptionsDlg::OnEditDirClick)
+    EVT_BUTTON(                XRCID("btnDelDir"),                      CompilerOptionsDlg::OnRemoveDirClick)
+    EVT_BUTTON(                XRCID("btnClearDir"),                    CompilerOptionsDlg::OnClearDirClick)
+    EVT_BUTTON(                XRCID("btnCopyDirs"),                    CompilerOptionsDlg::OnCopyDirsClick)
+    EVT_BUTTON(                XRCID("btnAddLib"),                      CompilerOptionsDlg::OnAddLibClick)
+    EVT_BUTTON(                XRCID("btnEditLib"),                     CompilerOptionsDlg::OnEditLibClick)
+    EVT_LISTBOX_DCLICK(        XRCID("lstLibs"),                        CompilerOptionsDlg::OnEditLibClick)
+    EVT_BUTTON(                XRCID("btnDelLib"),                      CompilerOptionsDlg::OnRemoveLibClick)
+    EVT_BUTTON(                XRCID("btnClearLib"),                    CompilerOptionsDlg::OnClearLibClick)
+    EVT_BUTTON(                XRCID("btnCopyLibs"),                    CompilerOptionsDlg::OnCopyLibsClick)
+    EVT_LISTBOX_DCLICK(        XRCID("lstExtraPaths"),                  CompilerOptionsDlg::OnEditExtraPathClick)
+    EVT_BUTTON(                XRCID("btnExtraAdd"),                    CompilerOptionsDlg::OnAddExtraPathClick)
+    EVT_BUTTON(                XRCID("btnExtraEdit"),                   CompilerOptionsDlg::OnEditExtraPathClick)
+    EVT_BUTTON(                XRCID("btnExtraDelete"),                 CompilerOptionsDlg::OnRemoveExtraPathClick)
+    EVT_BUTTON(                XRCID("btnExtraClear"),                  CompilerOptionsDlg::OnClearExtraPathClick)
+    EVT_SPIN_UP(               XRCID("spnLibs"),                        CompilerOptionsDlg::OnMoveLibUpClick)
+    EVT_SPIN_DOWN(             XRCID("spnLibs"),                        CompilerOptionsDlg::OnMoveLibDownClick)
+    EVT_SPIN_UP(               XRCID("spnDirs"),                        CompilerOptionsDlg::OnMoveDirUpClick)
+    EVT_SPIN_DOWN(             XRCID("spnDirs"),                        CompilerOptionsDlg::OnMoveDirDownClick)
+    EVT_BUTTON(                XRCID("btnAddVar"),                      CompilerOptionsDlg::OnAddVarClick)
+    EVT_BUTTON(                XRCID("btnEditVar"),                     CompilerOptionsDlg::OnEditVarClick)
+    EVT_BUTTON(                XRCID("btnDeleteVar"),                   CompilerOptionsDlg::OnRemoveVarClick)
+    EVT_BUTTON(                XRCID("btnClearVar"),                    CompilerOptionsDlg::OnClearVarClick)
+    EVT_BUTTON(                XRCID("btnMasterPath"),                  CompilerOptionsDlg::OnMasterPathClick)
+    EVT_BUTTON(                XRCID("btnAutoDetect"),                  CompilerOptionsDlg::OnAutoDetectClick)
+    EVT_BUTTON(                XRCID("btnCcompiler"),                   CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnCPPcompiler"),                 CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnLinker"),                      CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnLibLinker"),                   CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnDebugger"),                    CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnResComp"),                     CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnMake"),                        CompilerOptionsDlg::OnSelectProgramClick)
+    EVT_BUTTON(                XRCID("btnAdvanced"),                    CompilerOptionsDlg::OnAdvancedClick)
+    EVT_CHOICE(                XRCID("cmbCompilerPolicy"),              CompilerOptionsDlg::OnDirty)
+    EVT_CHOICE(                XRCID("cmbLinkerPolicy"),                CompilerOptionsDlg::OnDirty)
+    EVT_CHOICE(                XRCID("cmbIncludesPolicy"),              CompilerOptionsDlg::OnDirty)
+    EVT_CHOICE(                XRCID("cmbLibDirsPolicy"),               CompilerOptionsDlg::OnDirty)
+    EVT_CHOICE(                XRCID("cmbResDirsPolicy"),               CompilerOptionsDlg::OnDirty)
+    EVT_CHOICE(                XRCID("cmbLogging"),                     CompilerOptionsDlg::OnDirty)
+    EVT_CHECKBOX(              XRCID("chkAlwaysRunPost"),               CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtCompilerOptions"),             CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtCompilerDefines"),             CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtLinkerOptions"),               CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtCmdBefore"),                   CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtCmdAfter"),                    CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMasterPath"),                  CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtCcompiler"),                   CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtCPPcompiler"),                 CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtLinker"),                      CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtLibLinker"),                   CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtResComp"),                     CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMake"),                        CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMakeCmd_Build"),               CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMakeCmd_Compile"),             CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMakeCmd_Clean"),               CompilerOptionsDlg::OnDirty)
+//    EVT_TEXT(                  XRCID("txtMakeCmd_DistClean"),           CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMakeCmd_AskRebuildNeeded"),    CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtMakeCmd_SilentBuild"),         CompilerOptionsDlg::OnDirty)
     EVT_CHAR_HOOK(CompilerOptionsDlg::OnMyCharHook)
 END_EVENT_TABLE()
 
@@ -259,11 +261,8 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->Enable(en);
         XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->Enable(en);
-
-        // disable "Commands" elements, if project is using custom makefile
-        XRCCTRL(*this, "txtCmdBefore", wxTextCtrl)->Enable(!en);
-        XRCCTRL(*this, "txtCmdAfter", wxTextCtrl)->Enable(!en);
-        XRCCTRL(*this, "chkAlwaysRunPost", wxCheckBox)->Enable(!en);
+        XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->Enable(en);
+        XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->Enable(en);
     }
 
     // let's start filling in all the panels of the configuration dialog
@@ -337,6 +336,17 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     this->SetSizeHints(min_width+140,min_height,-1,-1);
 #endif
     this->SetSize(-1, -1, 0, 0);
+    // disable some elements, if project is using custom makefile
+    // we do this after the layout is done, so the resulting dialog has always the same size
+    if(project && project->IsMakefileCustom())
+    {
+        nb->RemovePage(2); // remove "Search directories" page
+        nb->RemovePage(1); // remove "Linker settings" page
+        nb->RemovePage(0); // remove "Compiler settings" page
+        XRCCTRL(*this, "tabCompiler", wxPanel)->Show(false);
+        XRCCTRL(*this, "tabLinker", wxPanel)->Show(false);
+        XRCCTRL(*this, "tabDirs", wxPanel)->Show(false);
+    }
 } // constructor
 
 CompilerOptionsDlg::~CompilerOptionsDlg()
@@ -755,6 +765,8 @@ void CompilerOptionsDlg::DoLoadOptions()
             XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcCompileFile));
             XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcClean));
             XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcDistClean));
+            XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcAskRebuildNeeded));
+            XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcSilentBuild));
         }
         else
         {
@@ -779,6 +791,8 @@ void CompilerOptionsDlg::DoLoadOptions()
             XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcCompileFile));
             XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcClean));
             XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcDistClean));
+            XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcAskRebuildNeeded));
+            XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcSilentBuild));
         }
     }
     TextToOptions();
@@ -916,6 +930,8 @@ void CompilerOptionsDlg::DoSaveOptions()
             m_pProject->SetMakeCommandFor(mcCompileFile, XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->GetValue());
             m_pProject->SetMakeCommandFor(mcClean, XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->GetValue());
             m_pProject->SetMakeCommandFor(mcDistClean, XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->GetValue());
+            m_pProject->SetMakeCommandFor(mcAskRebuildNeeded, XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->GetValue());
+            m_pProject->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->GetValue());
         }
         else
         {
@@ -939,6 +955,8 @@ void CompilerOptionsDlg::DoSaveOptions()
             m_pTarget->SetMakeCommandFor(mcCompileFile, XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->GetValue());
             m_pTarget->SetMakeCommandFor(mcClean, XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->GetValue());
             m_pTarget->SetMakeCommandFor(mcDistClean, XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->GetValue());
+            m_pTarget->SetMakeCommandFor(mcAskRebuildNeeded, XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->GetValue());
+            m_pTarget->SetMakeCommandFor(mcSilentBuild, XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->GetValue());
         }
     }
 } // DoSaveOptions

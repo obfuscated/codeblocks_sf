@@ -363,6 +363,8 @@ void CompilerGCC::OnAttach()
     m_pLastBuildingTarget = 0;
     m_RunTargetPostBuild = false;
     m_RunProjectPostBuild = false;
+    m_Clean = false;
+    m_Build = false;
     m_DeleteTempMakefile = true;
     m_IsWorkspaceOperation = false;
 
@@ -979,6 +981,9 @@ void CompilerGCC::ClearLog()
     if (m_IsWorkspaceOperation)
         return;
 
+    if (IsProcessRunning())
+        return;
+
     CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_Log);
     Manager::Get()->ProcessEvent(evtSwitch);
 
@@ -1487,15 +1492,16 @@ void CompilerGCC::DoDeleteTempMakefile()
     m_LastTempMakefile = _T("");
 }
 
-bool CompilerGCC::UseMake(ProjectBuildTarget* target)
+bool CompilerGCC::UseMake(cbProject* project)
 {
-    if (!m_Project)
+    if(!project)
+        project = m_Project;
+    if (!project)
         return false;
-    wxString idx = m_Project->GetCompilerID();
+    wxString idx = project->GetCompilerID();
     if (CompilerFactory::GetCompiler(idx))
     {
-        if (m_Project->IsMakefileCustom())
-            return true;
+        return project->IsMakefileCustom();
     }
     return false;
 }
@@ -1565,7 +1571,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
         }
     }
 
-    PrintBanner();
+    PrintBanner(baBuild);
     wxSetWorkingDirectory(m_Project->GetBasePath());
 
     if (UseMake())
@@ -1584,7 +1590,7 @@ bool CompilerGCC::DoCreateMakefile(bool temporary, const wxString& makefile)
     return true;
 }
 
-void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
+void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTarget* target)
 {
     if (!CompilerValid(target))
         return;
@@ -1595,8 +1601,14 @@ void CompilerGCC::PrintBanner(cbProject* prj, ProjectBuildTarget* target)
     if (!prj)
         prj = m_Project;
 
+    wxString Action = _("Build");
+    if (action ==  baClean)
+    {
+        Action = _("Clean");
+    }
     wxString banner;
-    banner.Printf(_("-------------- Build: %s in %s ---------------"),
+    banner.Printf(_("-------------- %s: %s in %s ---------------"),
+                    Action.c_str(),
                     target
                         ? target->GetTitle().c_str()
                         : _("\"no target\""),
@@ -1943,63 +1955,22 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
 int CompilerGCC::Clean(const wxString& target)
 {
-    wxString realTarget = target;
-    if (realTarget.IsEmpty())
-        realTarget = GetTargetString();
-    if (realTarget.IsEmpty())
-        return -1;
+    return DoBuild(target, true, false);
+}
 
-    if (!m_IsWorkspaceOperation)
-    {
-        DoPrepareQueue();
-    }
-
-    wxArrayString clean;
-    if (!m_Project)
-    {
-        if (!Manager::Get()->GetEditorManager()->GetActiveEditor())
-          return -1;
-
-        DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
-        clean = dc.GetCleanSingleFileCommand(Manager::Get()->GetEditorManager()->GetActiveEditor()->GetFilename());
-        DoClean(clean);
-        Manager::Get()->GetLogManager()->Log(_("Cleaned object and output files"), m_PageIndex);
-    }
-
-    // generate build jobs
-    PreprocessJob(m_Project, realTarget);
-    if (m_BuildJobTargetsList.empty())
-        return -1;
-
-    // loop all jobs and add them in the queue
-    while (!m_BuildJobTargetsList.empty())
-    {
-        BuildJobTarget bjt = GetNextJob();
-        wxSetWorkingDirectory(bjt.project->GetBasePath());
-        ProjectBuildTarget* bt = bjt.project->GetBuildTarget(bjt.targetName);
-        CompilerFactory::GetCompiler(bt->GetCompilerID())->Init(bjt.project);
-
-        if (UseMake())
-        {
-            wxString cmd = GetMakeCommandFor(mcClean, bjt.project, bt);
-            m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, bjt.project, bt));
-            return DoRunQueue();
-        }
-        else
-        {
-            DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), bjt.project, m_PageIndex);
-            clean = dc.GetCleanCommands(bt, true);
-            DoClean(clean);
-            Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), bjt.project->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
-        }
-    }
-
-    if (!m_IsWorkspaceOperation)
-    {
-        Manager::Get()->GetLogManager()->Log(_("Done."), m_PageIndex);
-//        Manager::Get()->GetLogManager()->Close();
-    }
-    return 0;
+bool CompilerGCC::DoCleanWithMake(const wxString& cmd)
+{
+    wxArrayString output, errors;
+    long result = wxExecute(cmd, output, errors, wxEXEC_SYNC);
+//    for(size_t i = 0; i < output.GetCount(); i++)
+//    {
+//        Manager::Get()->GetLogManager()->Log(F(_("%s"), output[i].c_str()), m_PageIndex);
+//    }
+//    for(size_t i = 0; i < errors.GetCount(); i++)
+//    {
+//        Manager::Get()->GetLogManager()->Log(F(_("%s"), errors[i].c_str()), m_PageIndex);
+//    }
+    return (result == 0);
 }
 
 int CompilerGCC::DistClean(const wxString& target)
@@ -2026,7 +1997,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
         wxSetWorkingDirectory(m_Project->GetBasePath());
     CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
 
-    if (UseMake(target))
+    if (UseMake())
     {
         wxString cmd = GetMakeCommandFor(mcDistClean, m_Project, target);
         m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_Project, target));
@@ -2120,6 +2091,7 @@ wxString StateToString(BuildState bs)
         case bsNone: return _T("bsNone");
         case bsProjectPreBuild: return _T("bsProjectPreBuild");
         case bsTargetPreBuild: return _T("bsTargetPreBuild");
+        case bsTargetClean: return _T("bsTargetClean");
         case bsTargetBuild: return _T("bsTargetBuild");
         case bsTargetPostBuild: return _T("bsTargetPostBuild");
         case bsProjectPostBuild: return _T("bsProjectPostBuild");
@@ -2130,10 +2102,42 @@ wxString StateToString(BuildState bs)
 
 BuildState CompilerGCC::GetNextStateBasedOnJob()
 {
+    bool clean = m_Clean;
+    bool build = m_Build;
+
     switch (m_BuildState)
     {
         case bsProjectPreBuild: return bsTargetPreBuild;
-        case bsTargetPreBuild: return bsTargetBuild;
+        {
+            if (clean && !build)
+            {
+                return bsTargetClean;
+            }
+            return bsTargetPreBuild;
+        }
+
+        case bsTargetPreBuild:
+        {
+            if (clean)
+            {
+                return bsTargetClean;
+            }
+            else if (build)
+            {
+                return bsTargetBuild;
+            }
+            return bsTargetPostBuild;
+        }
+
+        case bsTargetClean:
+        {
+            if (build)
+            {
+                return bsTargetBuild;
+            }
+            return bsTargetPostBuild;
+        }
+
         case bsTargetBuild: return bsTargetPostBuild;
 
         // advance target in the project
@@ -2148,7 +2152,12 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
                     // same project, switch target
                     bj = GetNextJob(); // remove job from queue
                     m_BuildingTargetName = bj.targetName;
-                    return bsTargetPreBuild; // switching targets
+                    // switching targets
+                    if (clean && !build)
+                    {
+                        return bsTargetClean;
+                    }
+                    return bsTargetPreBuild;
                 }
                 // switch project
                 return bsProjectPostBuild;
@@ -2165,7 +2174,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             if (m_pBuildingProject)
                 m_pBuildingProject->SetCurrentlyCompilingTarget(0);
             m_NextBuildState = bsProjectPreBuild;
-            return DoBuild() >= 0 ? bsProjectPreBuild : bsNone;
+            return DoBuild(clean, build) >= 0 ? bsProjectPreBuild : bsNone;
         }
 
         default:
@@ -2203,10 +2212,10 @@ void CompilerGCC::BuildStateManagement()
             SwitchCompiler(bt->GetCompilerID());
 
 //        Manager::Get()->GetLogManager()->Log(m_PageIndex, _T("CHANGE *****> m_BuildState=%s, m_NextBuildState=%s, m_pBuildingProject=%p, bt=%p (%p)"), StateToString(m_BuildState).c_str(), StateToString(m_NextBuildState).c_str(), m_pBuildingProject, bt, m_pLastBuildingTarget);
-        if ((m_pBuildingProject == m_pLastBuildingProject && m_NextBuildState == bsTargetPreBuild) || m_NextBuildState == bsProjectPreBuild)
-        {
-            PrintBanner(m_pBuildingProject, bt);
-        }
+//        if ((m_pBuildingProject == m_pLastBuildingProject && m_NextBuildState == bsTargetPreBuild) || m_NextBuildState == bsProjectPreBuild)
+//        {
+//            PrintBanner(baBuild, m_pBuildingProject, bt);
+//        }
 
         // avoid calling Compiler::Init() twice below, if it is the same compiler
         Compiler* initCompiler = 0;
@@ -2259,10 +2268,64 @@ void CompilerGCC::BuildStateManagement()
             break;
         }
 
+        case bsTargetClean:
+        {
+            PrintBanner(baClean, m_pBuildingProject, bt);
+
+            if (UseMake(m_pBuildingProject))
+            {
+                wxString cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
+                if(DoCleanWithMake(cmd))
+                {
+                    Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
+                }
+                else
+                {
+                    Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
+                }
+            }
+            else
+            {
+                wxArrayString clean = dc.GetCleanCommands(bt, true);
+                DoClean(clean);
+                Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
+            }
+            break;
+        }
+
         case bsTargetBuild:
         {
+            PrintBanner(baBuild, m_pBuildingProject, bt);
+
             // run target build
-            cmds = dc.GetCompileCommands(bt);
+            if (UseMake(m_pBuildingProject))
+            {
+                wxArrayString output, error;
+                if(wxExecute(GetMakeCommandFor(mcAskRebuildNeeded, m_pBuildingProject, bt), output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
+                {
+                    switch (CompilerFactory::GetCompiler(bt->GetCompilerID())->GetSwitches().logging)
+                    {
+                        case clogFull:
+                            cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Running command: ") + GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
+                            cmds.Add(GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
+                            break;
+
+                        case clogSimple:
+                            cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
+                        case clogNone:
+                            cmds.Add(GetMakeCommandFor(mcSilentBuild, m_pBuildingProject, bt));
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                cmds = dc.GetCompileCommands(bt);
+            }
+
             bool hasCommands = cmds.GetCount();
             m_RunTargetPostBuild = hasCommands;
             m_RunProjectPostBuild = hasCommands;
@@ -2433,7 +2496,7 @@ CompilerGCC::BuildJobTarget& CompilerGCC::PeekNextJob()
     return m_BuildJobTargetsList.front();
 }
 
-int CompilerGCC::DoBuild()
+int CompilerGCC::DoBuild(bool clean, bool build)
 {
     BuildJobTarget bj = GetNextJob();
 
@@ -2452,19 +2515,14 @@ int CompilerGCC::DoBuild()
     m_pBuildingProject = bj.project;
     m_BuildingTargetName = bj.targetName;
     ProjectBuildTarget* bt = bj.project->GetBuildTarget(bj.targetName);
+
+    m_Clean = clean;
+    m_Build = build;
+
     if (!bt || !CompilerValid(bt))
         return -2;
 
-    wxString cmd;
-    if (UseMake())
-    {
-        wxString cmd = GetMakeCommandFor(mcBuild, bj.project, bt);
-        m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, bj.project, bt));
-    }
-    else
-    {
-        BuildStateManagement();
-    }
+    BuildStateManagement();
     return 0;
 }
 
@@ -2528,7 +2586,7 @@ void CompilerGCC::CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps)
     }
 }
 
-int CompilerGCC::Build(const wxString& target)
+int CompilerGCC::DoBuild(const wxString& target, bool clean, bool build)
 {
     wxString realTarget = target;
     if (realTarget.IsEmpty())
@@ -2548,45 +2606,30 @@ int CompilerGCC::Build(const wxString& target)
     if (realTarget.IsEmpty())
         return -1;
 
-    DoClearErrors();
-    InitBuildLog(false);
-
     if (!m_IsWorkspaceOperation)
+    {
+        DoClearErrors();
+        InitBuildLog(false);
+//    if (!m_IsWorkspaceOperation)
         DoPrepareQueue();
-
-    if (UseMake())
-    {
-        // make sure all project files are saved
-        if (m_Project && !m_Project->SaveAllFiles())
-            Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
-
-        // generate build jobs
-        PreprocessJob(m_Project, realTarget);
-        if (m_BuildJobTargetsList.empty())
-            return -1;
-
-        // loop all jobs and add them in the queue
-        while (!m_BuildJobTargetsList.empty())
-        {
-            BuildJobTarget bjt = GetNextJob();
-            ProjectBuildTarget* bt = bjt.project->GetBuildTarget(bjt.targetName);
-            if (bt)
-            {
-                wxString cmd = GetMakeCommandFor(mcBuild, bjt.project, bt);
-                m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, bjt.project, bt));
-            }
-        }
     }
-    else
+
+    PreprocessJob(m_Project, realTarget);
+    if (m_BuildJobTargetsList.empty())
     {
-        PreprocessJob(m_Project, realTarget);
-        if (m_BuildJobTargetsList.empty())
-            return -1;
-        InitBuildState(bjProject, realTarget);
-        if (DoBuild())
-            return -2;
+        return -1;
+    }
+    InitBuildState(bjProject, realTarget);
+    if (DoBuild(clean, build))
+    {
+        return -2;
     }
     return DoRunQueue();
+}
+
+int CompilerGCC::Build(const wxString& target)
+{
+    return DoBuild(target, false, true);
 }
 
 int CompilerGCC::Build(ProjectBuildTarget* target)
@@ -2601,65 +2644,10 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::Rebuild(const wxString& target)
 {
-    wxString realTarget = target;
-    if (realTarget.IsEmpty())
-        realTarget = GetTargetString();
-    if (realTarget.IsEmpty())
-        return -1;
-
-    if (!StopRunningDebugger())
-        return -1;
-
-    // make sure all project files are saved
-    if (m_Project && !m_Project->SaveAllFiles())
-        Manager::Get()->GetLogManager()->Log(_("Could not save all files..."));
-
-    if (!m_IsWorkspaceOperation)
-        DoPrepareQueue();
-
-//    Manager::Get()->GetMacrosManager()->Reset();
-
-    Compiler* cmp = CompilerFactory::GetCompiler(m_CompilerId);
-    if (cmp)
-        cmp->Init(m_Project);
-
-    if (UseMake())
-    {
-        CompilerCommand* cc;
-        wxString cmd;
-
-        // generate build jobs
-        PreprocessJob(m_Project, realTarget);
-        if (m_BuildJobTargetsList.empty())
-            return -1;
-
-        // loop all jobs and add them in the queue
-        while (!m_BuildJobTargetsList.empty())
-        {
-            BuildJobTarget bjt = GetNextJob();
-            ProjectBuildTarget* bt = bjt.project->GetBuildTarget(bjt.targetName);
-            if (bt)
-            {
-                cmd = GetMakeCommandFor(mcClean, bjt.project, bt);
-                cc = new CompilerCommand(cmd, wxEmptyString, bjt.project, bt);
-                m_CommandQueue.Add(cc);
-
-                cmd = GetMakeCommandFor(mcBuild, bjt.project, bt);
-                cc = new CompilerCommand(cmd, wxEmptyString, bjt.project, bt);
-                cc->mustWait = true; // wait for clean commands to finish
-                m_CommandQueue.Add(cc);
-            }
-        }
-    }
-    else
-    {
-        Clean(realTarget);
-        Build(realTarget);
-    }
-    return DoRunQueue();
+    return DoBuild(target, true, true);
 }
 
-int CompilerGCC::BuildWorkspace(const wxString& target)
+int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build)
 {
     wxString realTarget = target;
     if (realTarget.IsEmpty())
@@ -2695,44 +2683,24 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
     InitBuildState(bjWorkspace, realTarget);
 
-    DoBuild();
+    DoBuild(clean,build);
     m_IsWorkspaceOperation = false;
     return DoRunQueue();
 }
 
+int CompilerGCC::BuildWorkspace(const wxString& target)
+{
+    return DoWorkspaceBuild(target, false, true);
+}
+
 int CompilerGCC::RebuildWorkspace(const wxString& target)
 {
-    int ret = CleanWorkspace(target);
-    if (ret != 0)
-        return ret;
-    ret = BuildWorkspace(target);
-    return ret;
+    return DoWorkspaceBuild(target, true, true);
 }
 
 int CompilerGCC::CleanWorkspace(const wxString& target)
 {
-    if (!StopRunningDebugger())
-        return -1;
-
-    DoPrepareQueue();
-    ClearLog();
-    m_IsWorkspaceOperation = true;
-
-    ResetBuildState();
-    cbProject* bak = m_Project;
-    ProjectsArray* arr = Manager::Get()->GetProjectManager()->GetProjects();
-    for (size_t i = 0; i < arr->GetCount(); ++i)
-    {
-        m_Project = arr->Item(i);
-        Clean(target);
-    }
-    ResetBuildState();
-    m_Project = bak;
-
-    m_IsWorkspaceOperation = false;
-    Manager::Get()->GetLogManager()->Log(_("Done."), m_PageIndex);
-//    Manager::Get()->GetLogManager()->Close();
-    return 0;
+    return DoWorkspaceBuild(target, true, false);
 }
 
 int CompilerGCC::KillProcess()
@@ -2832,7 +2800,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 
     ProjectFile* pf = m_Project ? m_Project->GetFileByFilename(file, true, false) : 0;
     ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
-    bool useMake = UseMake(bt);
+    bool useMake = UseMake();
 
     if (!pf)
     {
@@ -3658,7 +3626,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
     m_BuildJob = bjIdle;
     if (showNothingToBeDone)
     {
-        LogMessage(_("Nothing to be done.\n"));
+        LogMessage(m_Clean?_("Done.\n"):_("Nothing to be done.\n"));
         // if message manager is auto-hiding, unlock it (i.e. close it)
         CodeBlocksLogEvent evtShow(cbEVT_HIDE_LOG_MANAGER);
         Manager::Get()->ProcessEvent(evtShow);

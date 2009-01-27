@@ -52,6 +52,7 @@ enum BuildState
 {
     bsNone = 0,
     bsProjectPreBuild,
+    bsTargetClean,
     bsTargetPreBuild,
     bsTargetBuild,
     bsTargetPostBuild,
@@ -65,6 +66,12 @@ enum LogTarget
     ltFile      = 0x02,
 
     ltAll       = 0xff
+};
+
+enum BuildAction
+{
+    baClean = 0,
+    baBuild
 };
 
 class wxTimerEvent;
@@ -187,13 +194,15 @@ class CompilerGCC : public cbCompilerPlugin
         void LogMessage(const wxString& message, CompilerLineType lt = cltNormal, LogTarget log = ltAll, bool forceErrorColour = false, bool isTitle = false, bool updateProgress = false);
         void SaveBuildLog();
         void InitBuildLog(bool workspaceBuild);
-        void PrintBanner(cbProject* prj = 0, ProjectBuildTarget* target = 0);
-        bool UseMake(ProjectBuildTarget* target = 0);
+        void PrintBanner(BuildAction action, cbProject* prj = 0, ProjectBuildTarget* target = 0);
+        bool UseMake(cbProject* project = 0);
         bool CompilerValid(ProjectBuildTarget* target = 0);
         ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
         ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
         wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
-        int DoBuild();
+        int DoBuild(bool clean, bool build);
+        int DoBuild(const wxString& target, bool clean, bool build);
+        int DoWorkspaceBuild(const wxString& target, bool clean, bool build);
         void CalculateWorkspaceDependencies(wxArrayInt& deps);
         void CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps);
         void InitBuildState(BuildJob job, const wxString& target);
@@ -209,6 +218,7 @@ class CompilerGCC : public cbCompilerPlugin
         void UpdateProjectTargets(cbProject* project);
         wxString GetTargetString(int index = -1);
         void DoClean(const wxArrayString& commands);
+        bool DoCleanWithMake(const wxString& cmd);
 
         // active target, currently building project or active project
         wxString GetCurrentCompilerID(ProjectBuildTarget* target);
@@ -276,6 +286,9 @@ class CompilerGCC : public cbCompilerPlugin
         BuildState m_NextBuildState;
         cbProject* m_pLastBuildingProject;
         ProjectBuildTarget* m_pLastBuildingTarget;
+        // Clean and Build
+        bool m_Clean;
+        bool m_Build;
         // to decide if post-build steps should run
         bool m_RunTargetPostBuild;
         bool m_RunProjectPostBuild;

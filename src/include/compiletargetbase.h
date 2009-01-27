@@ -46,6 +46,8 @@ enum MakeCommand
     mcDistClean,
     mcBuild,
     mcCompileFile,
+    mcAskRebuildNeeded,
+    mcSilentBuild,
 
     /// *Don't* use this. It's only used internally for enumerations...
     mcLast

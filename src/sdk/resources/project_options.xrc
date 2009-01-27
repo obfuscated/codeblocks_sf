@@ -94,7 +94,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT5">
-														<label>(the file must exist, no Makefile will be auto-generated)</label>
+														<label>(the file must exist, no Makefile will be auto-generated)&#x0A;If you make changes here, the special settings in the projects build options&#x0A;will only be enabled (or disabled), if the project is saved.</label>
 														<fg>#800000</fg>
 													</object>
 													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
