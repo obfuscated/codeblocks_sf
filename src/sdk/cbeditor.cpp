@@ -592,6 +592,12 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
         SetModified(true);
         m_IsOK = false;
     }
+    // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
+    // and/or by plugins, that use markers, like browsemarks-plugin
+    m_pControl->SetMarginMask(lineMargin, 0);
+    m_pControl->SetMarginMask(markerMargin, 0);
+    m_pControl->SetMarginMask(changebarMargin, 0);
+    m_pControl->SetMarginMask(foldingMargin, 0);
 }
 
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
@@ -1098,7 +1104,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetMarginWidth(markerMargin, 16);
     control->SetMarginType(markerMargin, wxSCI_MARGIN_SYMBOL);
     control->SetMarginSensitive(markerMargin, mgr->ReadBool(_T("/margin_1_sensitive"), true));
-    control->SetMarginMask(markerMargin, (1 << BOOKMARK_MARKER) |
+    // use "|" here or we might break plugins that use the margin (like browsemarks)
+    control->SetMarginMask(markerMargin, control->GetMarginMask(markerMargin) |
+                                         (1 << BOOKMARK_MARKER) |
                                          (1 << BREAKPOINT_MARKER) |
                                          (1 << DEBUG_MARKER) |
                                          (1 << ERROR_MARKER));
@@ -1127,7 +1135,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetFoldFlags(16);
         control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
         control->SetMarginWidth(foldingMargin, 16);
-        control->SetMarginMask(foldingMargin, wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED)));
+        // use "|" here or we might break plugins that use the margin (none at the moment)
+        control->SetMarginMask(foldingMargin, control->GetMarginMask(foldingMargin) |
+                                              wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED)));
         control->SetMarginSensitive(foldingMargin, 1);
 
         /*Default behaviour
@@ -1156,19 +1166,21 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
     else
         control->SetMarginWidth(foldingMargin, 0);
- 
-    // changebar margin 
+
+    // changebar margin
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
     {
         control->SetMarginWidth(changebarMargin, 4);
-        control->SetMarginType(changebarMargin,  wxSCI_MARGIN_SYMBOL); 
-        control->SetMarginWidth(changebarMargin, 4); 
-        control->SetMarginMask(changebarMargin, (1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED) ); 
-     
-        control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_LEFTRECT); 
-        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04)); 
-        control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_LEFTRECT); 
-        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED, wxColour(0x04, 0xFF, 0x50)); 
+        control->SetMarginType(changebarMargin,  wxSCI_MARGIN_SYMBOL);
+        control->SetMarginWidth(changebarMargin, 4);
+        // use "|" here or we might break plugins that use the margin (none at the moment)
+        control->SetMarginMask(changebarMargin, control->GetMarginMask(changebarMargin) |
+                                                (1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED) );
+
+        control->MarkerDefine(wxSCI_MARKNUM_CHANGEUNSAVED, wxSCI_MARK_LEFTRECT);
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGEUNSAVED, wxColour(0xFF, 0xE6, 0x04));
+        control->MarkerDefine(wxSCI_MARKNUM_CHANGESAVED, wxSCI_MARK_LEFTRECT);
+        control->MarkerSetBackground(wxSCI_MARKNUM_CHANGESAVED, wxColour(0x04, 0xFF, 0x50));
     }
     else
         control->SetMarginWidth(changebarMargin, 0);
@@ -1353,7 +1365,7 @@ bool cbEditor::Open(bool detectEncoding)
     }
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-    
+
     m_pControl->InsertText(0, st);
     m_pControl->EmptyUndoBuffer(mgr->ReadBool(_T("/margin/use_changebar"), true));
     m_pControl->SetModEventMask(wxSCI_MODEVENTMASKALL);
