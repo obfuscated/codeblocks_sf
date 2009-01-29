@@ -582,6 +582,13 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());
     m_pSizer->SetItemMinSize(m_pControl, 32, 32);
 
+    // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
+    // and/or by plugins, that use markers, like browsemarks-plugin
+    m_pControl->SetMarginMask(lineMargin, 0);
+    m_pControl->SetMarginMask(markerMargin, 0);
+    m_pControl->SetMarginMask(changebarMargin, 0);
+    m_pControl->SetMarginMask(foldingMargin, 0);
+
     SetEditorStyleBeforeFileOpen();
     m_IsOK = Open();
     SetEditorStyleAfterFileOpen();
@@ -592,12 +599,6 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
         SetModified(true);
         m_IsOK = false;
     }
-    // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
-    // and/or by plugins, that use markers, like browsemarks-plugin
-    m_pControl->SetMarginMask(lineMargin, 0);
-    m_pControl->SetMarginMask(markerMargin, 0);
-    m_pControl->SetMarginMask(changebarMargin, 0);
-    m_pControl->SetMarginMask(foldingMargin, 0);
 }
 
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
