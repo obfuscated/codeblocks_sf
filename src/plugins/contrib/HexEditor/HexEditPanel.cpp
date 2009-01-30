@@ -13,7 +13,7 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
+* along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
 * $Revision$
 * $Id$
@@ -993,6 +993,8 @@ void HexEditPanel::ClampCursorToVisibleArea()
 
 void HexEditPanel::PropagateOffsetChange( int flagsForCurrentView )
 {
+    if ( !m_Content ) return;
+
     OffsetT startOffs  = DetectStartOffset();
 
     OffsetT blockStart = m_Current;

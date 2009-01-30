@@ -11,38 +11,41 @@ libHexEditor_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avo
 libHexEditor_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
 libHexEditor_la_SOURCES = \
-	FileContentBase.cpp \
-	FileContentBuffered.cpp \
-	HexEditor.cpp \
-	HexEditPanel.cpp \
+	CharacterView.cpp \
+	DigitView.cpp \
 	ExpressionExecutor.cpp \
 	ExpressionParser.cpp \
 	ExpressionPreprocessed.cpp \
-	ExpressionTester.cpp \
 	ExpressionTestCases.cpp \
-	TestCasesDlg.cpp \
-	SelectStoredExpressionDlg.cpp \
-	CharacterView.cpp \
-	DigitView.cpp \
+	ExpressionTester.cpp \
+	FileContentBase.cpp \
+	FileContentBuffered.cpp \
+	FileContentDisk.cpp \
 	HexEditLineBuffer.cpp \
-	HexEditViewBase.cpp
+	HexEditor.cpp \
+	HexEditPanel.cpp \
+	HexEditViewBase.cpp \
+	SelectStoredExpressionDlg.cpp \
+	TestCasesDlg.cpp
+
 
 noinst_HEADERS = \
-	FileContentBase.h \
-	FileContentBuffered.h \
-	HexEditor.h \
-	HexEditPanel.h \
+	CharacterView.h \
+	DigitView.h \
 	ExpressionExecutor.h \
 	ExpressionParser.h \
 	ExpressionPreprocessed.h \
-	ExpressionTester.h \
 	ExpressionTestCases.h \
-	TestCasesDlg.h \
-	SelectStoredExpressionDlg.h \
-	CharacterView.h \
-	DigitView.h \
+	ExpressionTester.h \
+	FileContentBase.h \
+	FileContentBuffered.h \
+	FileContentDisk.h \
 	HexEditLineBuffer.h \
-	HexEditViewBase.h
+	HexEditor.h \
+	HexEditPanel.h \
+	HexEditViewBase.h \
+	SelectStoredExpressionDlg.h \
+	TestCasesDlg.h
 
 
 

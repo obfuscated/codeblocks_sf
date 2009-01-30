@@ -73,6 +73,8 @@
 		<Unit filename="FileContentBase.h" />
 		<Unit filename="FileContentBuffered.cpp" />
 		<Unit filename="FileContentBuffered.h" />
+                <Unit filename="FileContentDisk.cpp" />
+ 		<Unit filename="FileContentDisk.h" />
 		<Unit filename="HexEditLineBuffer.cpp" />
 		<Unit filename="HexEditLineBuffer.h" />
 		<Unit filename="HexEditPanel.cpp" />

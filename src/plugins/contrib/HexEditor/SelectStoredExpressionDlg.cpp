@@ -13,11 +13,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
+* along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision:$
-* $Id:$
-* $HeadURL:$
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include "SelectStoredExpressionDlg.h"
@@ -25,8 +25,8 @@
 #include <wx/textdlg.h>
 
 //(*InternalHeaders(SelectStoredExpressionDlg)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 //(*IdInit(SelectStoredExpressionDlg)
@@ -57,11 +57,11 @@ SelectStoredExpressionDlg::SelectStoredExpressionDlg(wxWindow* parent,const wxSt
 void SelectStoredExpressionDlg::BuildContent(wxWindow* parent)
 {
 	//(*Initialize(SelectStoredExpressionDlg)
+	wxBoxSizer* BoxSizer3;
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
-	wxStaticBoxSizer* StaticBoxSizer1;
-	wxBoxSizer* BoxSizer3;
 	wxStdDialogButtonSizer* StdDialogButtonSizer1;
+	wxStaticBoxSizer* StaticBoxSizer1;
 
 	Create(parent, wxID_ANY, _("Stored Expressions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);

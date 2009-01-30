@@ -13,11 +13,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
+* along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision:$
-* $Id:$
-* $HeadURL:$
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #include "FileContentBuffered.h"
@@ -25,144 +25,108 @@
 #include <wx/file.h>
 #include <algorithm>
 
-FileContentBuffered::ModificationData FileContentBuffered::m_UndoInvalid;
+/** \brief Internal modification class */
+class FileContentBuffered::IntModificationData: public FileContentBuffered::ModificationData
+{
+    public:
+
+        IntModificationData( std::vector< char >& buffer ): m_Buffer( buffer ) {}
+
+        enum typeEnum
+        {
+            change,         ///< \brief Some content was changed
+            added,          ///< \brief Some data was inserted
+            removed,        ///< \brief Some data was removed
+        };
+
+        std::vector< char >& m_Buffer;
+
+        typeEnum             m_Type;
+        OffsetT              m_Position;
+        std::vector< char >  m_OldData;
+        std::vector< char >  m_NewData;
+
+        void Apply()
+        {
+            switch ( m_Type )
+            {
+                case added:
+                {
+                    assert( m_Buffer.size() >= m_Position );
+                    m_Buffer.insert( m_Buffer.begin() + m_Position, m_NewData.begin(), m_NewData.end() );
+                    break;
+                }
+
+                case removed:
+                {
+                    assert( m_Buffer.size() > m_Position );
+                    assert( m_Buffer.size() >= m_Position + m_OldData.size() );
+                    m_Buffer.erase( m_Buffer.begin() + m_Position, m_Buffer.begin() + m_Position + m_OldData.size() );
+                    break;
+                }
+
+                case change:
+                {
+                    assert( m_Buffer.size() > m_Position );
+                    assert( m_Buffer.size() >= m_Position + m_NewData.size() );
+                    assert( m_OldData.size() == m_NewData.size() );
+
+                    std::copy( m_NewData.begin(), m_NewData.end(), m_Buffer.begin() + m_Position );
+                    break;
+                }
+            }
+        }
+
+        void Revert()
+        {
+            switch ( m_Type )
+            {
+                case removed:
+                {
+                    assert( m_Buffer.size() >= m_Position );
+                    m_Buffer.insert( m_Buffer.begin() + m_Position, m_OldData.begin(), m_OldData.end() );
+                    break;
+                }
+
+                case added:
+                {
+                    assert( m_Buffer.size() > m_Position );
+                    assert( m_Buffer.size() >= m_Position + m_NewData.size() );
+                    m_Buffer.erase( m_Buffer.begin() + m_Position, m_Buffer.begin() + m_Position + m_NewData.size() );
+                    break;
+                }
+
+                case change:
+                {
+                    assert( m_Buffer.size() > m_Position );
+                    assert( m_Buffer.size() >= m_Position + m_OldData.size() );
+                    assert( m_OldData.size() == m_NewData.size() );
+
+                    std::copy( m_OldData.begin(), m_OldData.end(), m_Buffer.begin() + m_Position );
+                    break;
+                }
+            }
+        }
+
+        OffsetT Length()
+        {
+            return m_OldData.empty() ? m_NewData.size() : m_OldData.size();
+        }
+};
 
 FileContentBuffered::FileContentBuffered()
-    : m_UndoBuffer ( 0 )
-    , m_UndoLast   ( 0 )
-    , m_UndoCurrent( 0 )
-    , m_UndoSaved  ( 0 )
 {
 }
 
 FileContentBuffered::~FileContentBuffered()
 {
-    RemoveUndoFrom( m_UndoBuffer );
-    m_UndoCurrent = 0;
 }
 
-void FileContentBuffered::InsertAndApplyModification( ModificationData* mod )
+FileContentBuffered::ModificationData* FileContentBuffered::BuildAddModification( OffsetT position, OffsetT length, const void* data )
 {
-    RemoveUndoFrom( m_UndoCurrent );
-
-    mod->m_Next = 0;
-    mod->m_Prev = m_UndoLast;
-    if ( m_UndoLast )
-    {
-        m_UndoLast->m_Next = mod;
-    }
-    else
-    {
-        m_UndoBuffer = mod;
-    }
-    m_UndoLast = mod;
-
-    if ( !m_UndoSaved )
-    {
-        m_UndoSaved = mod;
-    }
-
-    ApplyModification( mod );
-    m_UndoCurrent = 0;
-}
-
-void FileContentBuffered::ApplyModification( ModificationData* mod )
-{
-    switch ( mod->m_Type )
-    {
-        case ModificationData::added:
-        {
-            assert( m_Buffer.size() >= mod->m_Position );
-            m_Buffer.insert( m_Buffer.begin() + mod->m_Position, mod->m_NewData.begin(), mod->m_NewData.end() );
-            break;
-        }
-
-        case ModificationData::removed:
-        {
-            assert( m_Buffer.size() > mod->m_Position );
-            assert( m_Buffer.size() >= mod->m_Position + mod->m_OldData.size() );
-            m_Buffer.erase( m_Buffer.begin() + mod->m_Position, m_Buffer.begin() + mod->m_Position + mod->m_OldData.size() );
-            break;
-        }
-
-        case ModificationData::change:
-        {
-            assert( m_Buffer.size() > mod->m_Position );
-            assert( m_Buffer.size() >= mod->m_Position + mod->m_NewData.size() );
-            assert( mod->m_OldData.size() == mod->m_NewData.size() );
-
-            std::copy( mod->m_NewData.begin(), mod->m_NewData.end(), m_Buffer.begin() + mod->m_Position );
-            break;
-        }
-    }
-}
-
-void FileContentBuffered::RevertModification( ModificationData* mod )
-{
-    switch ( mod->m_Type )
-    {
-        case ModificationData::removed:
-        {
-            assert( m_Buffer.size() >= mod->m_Position );
-            m_Buffer.insert( m_Buffer.begin() + mod->m_Position, mod->m_OldData.begin(), mod->m_OldData.end() );
-            break;
-        }
-
-        case ModificationData::added:
-        {
-            assert( m_Buffer.size() > mod->m_Position );
-            assert( m_Buffer.size() >= mod->m_Position + mod->m_NewData.size() );
-            m_Buffer.erase( m_Buffer.begin() + mod->m_Position, m_Buffer.begin() + mod->m_Position + mod->m_NewData.size() );
-            break;
-        }
-
-        case ModificationData::change:
-        {
-            assert( m_Buffer.size() > mod->m_Position );
-            assert( m_Buffer.size() >= mod->m_Position + mod->m_OldData.size() );
-            assert( mod->m_OldData.size() == mod->m_NewData.size() );
-
-            std::copy( mod->m_OldData.begin(), mod->m_OldData.end(), m_Buffer.begin() + mod->m_Position );
-            break;
-        }
-    }
-}
-
-void FileContentBuffered::RemoveUndoFrom( ModificationData* mod )
-{
-    if ( !mod ) return;
-
-    m_UndoLast = mod->m_Prev;
-    if ( m_UndoLast )
-    {
-        m_UndoLast->m_Next = 0;
-    }
-    else
-    {
-        m_UndoBuffer = 0;
-    }
-
-    while ( mod )
-    {
-        if ( mod == m_UndoSaved )
-        {
-            m_UndoSaved = &m_UndoInvalid;
-        }
-
-        ModificationData* tmp = mod;
-        mod = mod->m_Next;
-        delete tmp;
-    }
-}
-
-FileContentBuffered::OffsetT FileContentBuffered::Add( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length, void* data)
-{
-    if ( !length ) return 0;
-
-    ModificationData* mod = new ModificationData;
-    mod->m_Type      = ModificationData::added;
-    mod->m_Position  = position;
-    mod->m_ExtraData = extraUndoData;
+    IntModificationData* mod = new IntModificationData( m_Buffer );
+    mod->m_Type     = IntModificationData::added;
+    mod->m_Position = position;
 
     mod->m_NewData.resize( length );
     if ( data )
@@ -170,36 +134,31 @@ FileContentBuffered::OffsetT FileContentBuffered::Add( const ExtraUndoData& extr
         std::copy( (char*)data, (char*)data + length, mod->m_NewData.begin() );
     }
 
-    InsertAndApplyModification( mod );
-
-    return length;
+    return mod;
 }
 
-FileContentBuffered::OffsetT FileContentBuffered::Remove( const ExtraUndoData& extraUndoData,OffsetT position, OffsetT length)
+FileContentBuffered::ModificationData* FileContentBuffered::BuildRemoveModification( OffsetT position, OffsetT length )
 {
     if ( position > m_Buffer.size() ) return 0;
+
     if ( position + length > m_Buffer.size() )
     {
         length = m_Buffer.size() - position;
         if ( !length ) return 0;
     }
 
-    ModificationData* mod = new ModificationData;
-    mod->m_Type      = ModificationData::removed;
+    IntModificationData* mod = new IntModificationData( m_Buffer );
+    mod->m_Type      = IntModificationData::removed;
     mod->m_Position  = position;
-    mod->m_ExtraData = extraUndoData;
-
     mod->m_OldData.resize( length );
+
     std::copy( m_Buffer.begin() + position, m_Buffer.begin() + position + length, mod->m_OldData.begin() );
 
-    InsertAndApplyModification( mod );
-
-    return length;
+    return mod;
 }
 
-FileContentBuffered::OffsetT FileContentBuffered::Write( const ExtraUndoData& extraUndoData, const void* buff, OffsetT position, OffsetT length )
+FileContentBuffered::ModificationData* FileContentBuffered::BuildChangeModification( OffsetT position, OffsetT length, const void* data )
 {
-    if ( !buff ) return 0;
     if ( position > m_Buffer.size() ) return 0;
     if ( position + length > m_Buffer.size() )
     {
@@ -207,19 +166,19 @@ FileContentBuffered::OffsetT FileContentBuffered::Write( const ExtraUndoData& ex
         if ( !length ) return 0;
     }
 
-    ModificationData* mod = new ModificationData;
-    mod->m_Type     = ModificationData::change;
+    IntModificationData* mod = new IntModificationData( m_Buffer );
+    mod->m_Type     = IntModificationData::change;
     mod->m_Position = position;
     mod->m_OldData.resize( length );
     mod->m_NewData.resize( length );
-    mod->m_ExtraData = extraUndoData;
 
     std::copy( m_Buffer.begin() + position, m_Buffer.begin() + position + length, mod->m_OldData.begin() );
-    std::copy( (char*)buff, (char*)buff + length, mod->m_NewData.begin() );
+    if ( data )
+    {
+        std::copy( (char*)data, (char*)data + length, mod->m_NewData.begin() );
+    }
 
-    InsertAndApplyModification( mod );
-
-    return length;
+    return mod;
 }
 
 FileContentBuffered::OffsetT FileContentBuffered::Read( void* buff, OffsetT position, OffsetT length)
@@ -240,23 +199,13 @@ FileContentBuffered::OffsetT FileContentBuffered::GetSize()
     return m_Buffer.size();
 }
 
-bool FileContentBuffered::Modified()
-{
-    return m_UndoSaved != m_UndoCurrent;
-}
-
-void FileContentBuffered::SetModified( bool modified )
-{
-    m_UndoSaved = modified ? &m_UndoInvalid : m_UndoCurrent;
-}
-
 bool FileContentBuffered::WriteFile(const wxString& fileName)
 {
     wxFile fl( fileName, wxFile::write );
     if ( !fl.IsOpened() ) return false;
     if ( fl.Write( &m_Buffer[0], m_Buffer.size() ) == m_Buffer.size() )
     {
-        m_UndoSaved = m_UndoCurrent;
+        UndoNotifySaved();
         return true;
     }
     return false;
@@ -269,51 +218,7 @@ bool FileContentBuffered::ReadFile(const wxString& fileName)
 
     m_Buffer.resize( fl.Length() );
 
-    RemoveUndoFrom( m_UndoBuffer );
-    m_UndoCurrent = 0;
-    m_UndoSaved = 0;
+    UndoClear();
 
     return (size_t)fl.Read( &m_Buffer[0], m_Buffer.size() ) == m_Buffer.size();
 }
-
-const FileContentBuffered::ExtraUndoData* FileContentBuffered::Redo()
-{
-    if ( !m_UndoCurrent ) return 0;
-
-    ApplyModification( m_UndoCurrent );
-    const ExtraUndoData* ret = &m_UndoCurrent->m_ExtraData;
-
-    m_UndoCurrent = m_UndoCurrent->m_Next;
-
-    return ret;
-}
-
-const FileContentBuffered::ExtraUndoData* FileContentBuffered::Undo()
-{
-    if ( m_UndoCurrent == m_UndoBuffer ) return 0;
-
-    if ( !m_UndoCurrent )
-    {
-        m_UndoCurrent = m_UndoLast;
-        assert ( m_UndoCurrent->m_Next == 0 );
-    }
-    else
-    {
-        assert( m_UndoCurrent->m_Prev != 0 );
-        m_UndoCurrent = m_UndoCurrent->m_Prev;
-    }
-    RevertModification( m_UndoCurrent );
-
-    return &m_UndoCurrent->m_ExtraData;
-}
-
-bool FileContentBuffered::CanRedo()
-{
-    return m_UndoCurrent != 0;
-}
-
-bool FileContentBuffered::CanUndo()
-{
-    return m_UndoCurrent != m_UndoBuffer;
-}
-

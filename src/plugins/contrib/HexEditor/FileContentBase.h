@@ -13,11 +13,11 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
+* along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
 *
-* $Revision:$
-* $Id:$
-* $HeadURL:$
+* $Revision$
+* $Id$
+* $HeadURL$
 */
 
 #ifndef FILECONTENTBASE_H
@@ -57,10 +57,10 @@ class FileContentBase
         };
 
         /** \brief Ctor */
-        FileContentBase() {}
+        FileContentBase();
 
         /** \brief Dctor */
-        virtual ~FileContentBase() {}
+        virtual ~FileContentBase();
 
         /** \brief Reading the data from the file */
         virtual bool ReadFile( const wxString& fileName ) = 0;
@@ -69,10 +69,10 @@ class FileContentBase
         virtual bool WriteFile( const wxString& fileName ) = 0;
 
         /** \brief Check if file was modified */
-        virtual bool Modified( ) = 0;
+        bool Modified();
 
         /** \brief Force current state to be modified or not */
-        virtual void SetModified( bool modified ) = 0;
+        void SetModified( bool modified );
 
         /** \brief Getting size of the content */
         virtual OffsetT GetSize() = 0;
@@ -91,14 +91,14 @@ class FileContentBase
          *  \param length number of bytes to read
          *  \return number of bytes actually written
          */
-        virtual OffsetT Write( const ExtraUndoData& extraUndoData, const void* buff, OffsetT position, OffsetT length ) = 0;
+        OffsetT Write( const ExtraUndoData& extraUndoData, const void* buff, OffsetT position, OffsetT length );
 
         /** \brief Deleting some range of data
          *  \param position beginning position of block to remove
          *  \param length length of block to remove in bytes
          *  \return number of bytes removed
          */
-        virtual OffsetT Remove( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length ) = 0;
+        OffsetT Remove( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length );
 
         /** \brief Inserting data
          *  \param position location in content where new data will be added
@@ -106,23 +106,23 @@ class FileContentBase
          *  \param data buffer with data to use for new location, if NULL, new block will be zero-filled
          *  \return number of bytes added
          */
-        virtual OffsetT Add( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length, void* data = 0 ) = 0;
+        OffsetT Add( const ExtraUndoData& extraUndoData, OffsetT position, OffsetT length, void* data = 0 );
 
         /** \brief Check if we can undo */
-        virtual bool CanUndo() = 0;
+        bool CanUndo();
 
         /** \brief Check if we can redo */
-        virtual bool CanRedo() = 0;
+        bool CanRedo();
 
         /** \brief Do undo
          *  \return undo data passed while doing the modification we undo
          */
-        virtual const ExtraUndoData* Undo() = 0;
+        const ExtraUndoData* Undo();
 
         /** \brief Do redo
          *  \return undo data passed while doing the modification we redo
          */
-        virtual const ExtraUndoData* Redo() = 0;
+        const ExtraUndoData* Redo();
 
         /** \brief Helper function to read one byte */
         inline unsigned char ReadByte( OffsetT position )
@@ -139,6 +139,75 @@ class FileContentBase
 
         /** \brief Build implementation of this class */
         static FileContentBase* BuildInstance( const wxString& fileName );
+
+    protected:
+
+        /** \brief Base class for representation of one change inside of the code */
+        class ModificationData
+        {
+            public:
+
+                /** \brief Ctor */
+                inline ModificationData() {}
+
+                /** \brief Dctor forcing the class to have vtable */
+                virtual ~ModificationData() {}
+
+                /** \brief Apply the modification */
+                virtual void Apply() = 0;
+
+                /** \brief Revert the modification */
+                virtual void Revert() = 0;
+
+                /** \brief Get the length of modification */
+                virtual OffsetT Length() = 0;
+
+            private:
+
+                ModificationData*   m_Next;     ///< \brief Next element in modificatoin list
+                ModificationData*   m_Prev;     ///< \brief Previous element in modification list
+                ExtraUndoData       m_Data;     ///< \brief Extra data used outside
+
+                friend class FileContentBase;   ///< \brief To allow operations on m_Next and m_Prev
+        };
+
+        /** \brief Create modification object for change operation */
+        virtual ModificationData* BuildChangeModification( OffsetT position, OffsetT length, const void* data = 0 ) = 0;
+
+        /** \brief Create modification object for data add operation */
+        virtual ModificationData* BuildAddModification( OffsetT position, OffsetT length, const void* data = 0 ) = 0;
+
+        /** \brief Create modification object for data remove operation */
+        virtual ModificationData* BuildRemoveModification( OffsetT position, OffsetT length ) = 0;
+
+        /** \brief Notify that undo has been saved at current position */
+        inline void UndoNotifySaved() { m_UndoSaved = m_UndoCurrent; }
+
+        /** \brief Clear all undo history */
+        inline void UndoClear() { RemoveUndoFrom( m_UndoBuffer ); m_UndoCurrent = 0; m_UndoSaved = 0; }
+
+    private:
+
+        ModificationData*   m_UndoBuffer;       ///< \brief Undo buffer
+        ModificationData*   m_UndoLast;         ///< \brief Last element in undo buffer
+        ModificationData*   m_UndoCurrent;      ///< \brief Current undo position
+        ModificationData*   m_UndoSaved;        ///< \brief Position of element where the file was "saved" last time (or opened)
+
+        /** \brief Dummy class to simulate invalid bur also harmless entry in undo buffer */
+        class InvalidModificationData: public ModificationData
+        {
+            void    Apply () { }
+            void    Revert() { }
+            OffsetT Length() { return 0; }
+        };
+
+        static InvalidModificationData m_UndoInvalid;
+
+
+        void InsertAndApplyModification( ModificationData* mod );
+        void RemoveUndoFrom( ModificationData* mod );
+        void ApplyModification( ModificationData* mod );
+        void RevertModification( ModificationData* mod );
 };
 
 #endif
