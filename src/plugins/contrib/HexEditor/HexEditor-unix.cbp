@@ -11,7 +11,7 @@
 				<Option output="../../../devel/share/codeblocks/plugins/libHexEditor.so" prefix_auto="0" extension_auto="0" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="-d" />
+				<Option parameters="--debug-log -ns -ni" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option projectCompilerOptionsRelation="0" />
 			</Target>
@@ -59,6 +59,8 @@
 		<Unit filename="FileContentBase.h" />
 		<Unit filename="FileContentBuffered.cpp" />
 		<Unit filename="FileContentBuffered.h" />
+		<Unit filename="FileContentDisk.cpp" />
+		<Unit filename="FileContentDisk.h" />
 		<Unit filename="HexEditLineBuffer.cpp" />
 		<Unit filename="HexEditLineBuffer.h" />
 		<Unit filename="HexEditPanel.cpp" />
