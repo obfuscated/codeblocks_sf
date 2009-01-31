@@ -145,7 +145,7 @@ void ToDoList::OnRelease(bool appShutDown)
     else
     {
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
-        evt.window = m_pListLog->GetWindow();
+//        evt.window = m_pListLog->GetWindow();
         Manager::Get()->ProcessEvent(evt);
     }
     m_pListLog = 0;
