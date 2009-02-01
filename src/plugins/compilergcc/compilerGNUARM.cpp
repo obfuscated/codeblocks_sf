@@ -93,13 +93,28 @@ void CompilerGNUARM::Reset()
 
     // warnings
     m_Options.AddOption(_("In C mode, support all ISO C90 programs. In C++ mode, remove GNU extensions that conflict with ISO C++"), _T("-ansi"), category);
-    m_Options.AddOption(_("Enable all compiler warnings (overrides every other setting)"), _T("-Wall"), category);
+    m_Options.AddOption(_("Enable all compiler warnings (overrides many other settings)"), _T("-Wall"), category);
+    m_Options.AddOption(_("Enable extra compiler warnings"), _T("-Wextra"), category);
     m_Options.AddOption(_("Enable standard compiler warnings"), _T("-W"), category);
     m_Options.AddOption(_("Stop compiling after first error"), _T("-Wfatal-errors"), category);
     m_Options.AddOption(_("Inhibit all warning messages"), _T("-w"), category);
+    m_Options.AddOption(_("Have g++ follow the 1998 ISO C++ language standard"), _T("-std=c++98"), category);
     m_Options.AddOption(_("Enable warnings demanded by strict ISO C and ISO C++"), _T("-pedantic"), category);
     m_Options.AddOption(_("Treat as errors the warnings demanded by strict ISO C and ISO C++"), _T("-pedantic-errors"), category);
     m_Options.AddOption(_("Warn if main() is not conformant"), _T("-Wmain"), category);
+    m_Options.AddOption(_("Enable Effective-C++ warnings (thanks Scott Myers)"), _T("-Weffc++"), category);
+    m_Options.AddOption(_("Warn whenever a switch statement does not have a default case"), _T("-Wswitch-default"), category);
+    m_Options.AddOption(_("Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"), _T("-Wswitch-enum"), category);
+    m_Options.AddOption(_("Warn if a user supplied include directory does not exist"), _T("-Wmissing-include-dirs"), category);
+    m_Options.AddOption(_("Warn if a global function is defined without a previous declaration"), _T("-Wmissing-declarations"), category);
+    m_Options.AddOption(_("Warn if the compiler detects that code will never be executed"), _T("-Wunreachable-code"), category);
+    m_Options.AddOption(_("Warn if a function can not be inlined and it was declared as inline"), _T("-Winline"), category);
+    m_Options.AddOption(_("Warn if floating point values are used in equality comparisons"), _T("-Wfloat-equal"), category);
+    m_Options.AddOption(_("Warn if an undefined identifier is evaluated in an '#if' directive"), _T("-Wundef"), category);
+    m_Options.AddOption(_("Warn whenever a pointer is cast such that the required alignment of the target is increased"), _T("-Wcast-align"), category);
+    m_Options.AddOption(_("Warn if anything is declared more than once in the same scope"), _T("-Wredundant-decls"), category);
+    m_Options.AddOption(_("Warn about unitialized variables which are initialized with themselves"), _T("-Winit-self"), category);
+
     // optimization
     category = _("Optimization");
     m_Options.AddOption(_("Strip all symbols from binary (minimizes size)"), _T(""), category, _T("-s"), true, _T("-g -ggdb"), _("Stripping the binary will strip debugging symbols as well!"));
