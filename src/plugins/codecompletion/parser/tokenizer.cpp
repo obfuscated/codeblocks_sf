@@ -399,7 +399,7 @@ bool Tokenizer::SkipUnwanted()
             (!m_IsOperator && CurrentChar() == '=') ||
             (!m_IsOperator && CurrentChar() == '[') ||
             CurrentChar() == '?' ||
-            CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*') )
+            (CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*') ))
     {
         bool skipPreprocessor = false; // used for #include
         while (m_Buffer.Mid(m_TokenIndex, 2) == _T("//") ||
