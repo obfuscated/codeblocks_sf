@@ -9,11 +9,11 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-		#include <wx/fontmap.h>
-		#include <wx/file.h>
-		#include <wx/string.h>
-		#include "manager.h"
-		#include "configmanager.h"
+    #include <wx/fontmap.h>
+    #include <wx/file.h>
+    #include <wx/string.h>
+    #include "manager.h"
+    #include "configmanager.h"
 #endif // CB_PRECOMP
 
 
@@ -111,24 +111,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
     if (outlen == 0)
     {
-        // Possibly the conversion has failed. Let's try with System-default encoding
-        if (platform::windows)
-        {
-            m_Encoding = wxLocale::GetSystemEncoding();
-        }
-        else
-        {
-            // We can rely on the UTF-8 detection code ;-)
-            m_Encoding = wxFONTENCODING_ISO8859_1;
-        }
-
-        wxCSConv conv(m_Encoding);
-        wxWCharBuffer wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-        m_ConvStr = wxString(wideBuff);
-    }
-
-    if (outlen == 0)
-    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Encoding conversion has failed!"));
         return false;
     }
 
@@ -173,6 +156,16 @@ bool EncodingDetector::DetectEncoding(const wxString& filename, bool ConvertToWx
 
 bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool ConvertToWxString)
 {
+    ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
+    wxString encname = cfgMgr->Read(_T("/default_encoding"));
+
+    if (cfgMgr->ReadInt(_T("/default_encoding/use_option"), 0) == 1)
+    {
+        // Bypass C::B's auto-detection
+        m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
+        return true;
+    }
+
     if (!buffer)
         return false;
     if (size >= 4)
@@ -222,11 +215,8 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         }
         else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
         {
-            // Use user-specified one
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-            wxString encname = cfg->Read(_T("/default_encoding"));
-            wxFontMapper fontmap;
-            m_Encoding = fontmap.CharsetToEncoding(encname);
+            // Use user-specified one; as a fallback
+            m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
         }
 
         m_UseBOM = false;

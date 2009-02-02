@@ -58,11 +58,19 @@
                       <border>4</border>
                       <option>1</option>
                     </object>
+                  </object>
+                  <flag>wxLEFT|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxStaticBoxSizer">
+                    <label>Encoding</label>
+                    <orient>wxVERTICAL</orient>
                     <object class="sizeritem">
                       <object class="wxBoxSizer">
                         <object class="sizeritem">
                           <object class="wxStaticText" name="ID_STATICTEXT22">
-                            <label>Default encoding when opening files:</label>
+                            <label>Use encoding when opening files:</label>
                           </object>
                           <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                           <border>5</border>
@@ -81,8 +89,19 @@
                       <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                       <border>4</border>
                     </object>
+                    <object class="sizeritem">
+                      <object class="wxRadioBox" name="rbEncodingUseOption">
+                        <label>Use this encoding</label>
+                        <content>
+                          <item>As fallback encoding</item>
+                          <item>As Default encoding (Bypass C::B's auto-detection)</item>
+                        </content>
+                        <selection>0</selection>
+                      </object>
+                      <flag>wxEXPAND</flag>
+                    </object>
                   </object>
-                  <flag>wxLEFT|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP|wxFIXED_MINSIZE</flag>
                   <border>8</border>
                 </object>
                 <object class="sizeritem">
