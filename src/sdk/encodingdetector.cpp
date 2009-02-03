@@ -13,6 +13,7 @@
     #include <wx/file.h>
     #include <wx/string.h>
     #include "manager.h"
+    #include "logmanager.h"
     #include "configmanager.h"
 #endif // CB_PRECOMP
 
@@ -163,64 +164,65 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
     {
         // Bypass C::B's auto-detection
         m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
-        return true;
     }
-
-    if (!buffer)
-        return false;
-    if (size >= 4)
+    else
     {
-        // BOM is max 4 bytes
-        char buff[4] = {'\0'};
-        memcpy(buff, buffer, 4);
+        if (!buffer)
+            return false;
+        if (size >= 4)
+        {
+            // BOM is max 4 bytes
+            char buff[4] = {'\0'};
+            memcpy(buff, buffer, 4);
 
-        if (memcmp(buff, "\xEF\xBB\xBF", 3) == 0)
-        {
-            m_UseBOM = true;
-            m_BOMSizeInBytes = 3;
-            m_Encoding = wxFONTENCODING_UTF8;
-        }
-        else if (memcmp(buff, "\x00\x00\xFE\xFF", 4) == 0)
-        {
-            m_UseBOM = true;
-            m_BOMSizeInBytes = 4;
-            m_Encoding = wxFONTENCODING_UTF32BE;
-        }
-        else if (memcmp(buff, "\xFF\xFE\x00\x00", 4) == 0)
-        {
-            m_UseBOM = true;
-            m_BOMSizeInBytes = 4;
-            m_Encoding = wxFONTENCODING_UTF32LE;
-        }
-        else if (memcmp(buff, "\xFE\xFF", 2) == 0)
-        {
-            m_UseBOM = true;
-            m_BOMSizeInBytes = 2;
-            m_Encoding = wxFONTENCODING_UTF16BE;
-        }
-        else if (memcmp(buff, "\xFF\xFE", 2) == 0)
-        {
-            m_UseBOM = true;
-            m_BOMSizeInBytes = 2;
-            m_Encoding = wxFONTENCODING_UTF16LE;
-        }
-    }
-
-
-    if (!m_UseBOM)
-    {
-        if (DetectUTF8((wxByte*)buffer, size))
-        {
-            m_Encoding = wxFONTENCODING_UTF8;
-        }
-        else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
-        {
-            // Use user-specified one; as a fallback
-            m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
+            if (memcmp(buff, "\xEF\xBB\xBF", 3) == 0)
+            {
+                m_UseBOM = true;
+                m_BOMSizeInBytes = 3;
+                m_Encoding = wxFONTENCODING_UTF8;
+            }
+            else if (memcmp(buff, "\x00\x00\xFE\xFF", 4) == 0)
+            {
+                m_UseBOM = true;
+                m_BOMSizeInBytes = 4;
+                m_Encoding = wxFONTENCODING_UTF32BE;
+            }
+            else if (memcmp(buff, "\xFF\xFE\x00\x00", 4) == 0)
+            {
+                m_UseBOM = true;
+                m_BOMSizeInBytes = 4;
+                m_Encoding = wxFONTENCODING_UTF32LE;
+            }
+            else if (memcmp(buff, "\xFE\xFF", 2) == 0)
+            {
+                m_UseBOM = true;
+                m_BOMSizeInBytes = 2;
+                m_Encoding = wxFONTENCODING_UTF16BE;
+            }
+            else if (memcmp(buff, "\xFF\xFE", 2) == 0)
+            {
+                m_UseBOM = true;
+                m_BOMSizeInBytes = 2;
+                m_Encoding = wxFONTENCODING_UTF16LE;
+            }
         }
 
-        m_UseBOM = false;
-        m_BOMSizeInBytes = 0;
+
+        if (!m_UseBOM)
+        {
+            if (DetectUTF8((wxByte*)buffer, size))
+            {
+                m_Encoding = wxFONTENCODING_UTF8;
+            }
+            else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
+            {
+                // Use user-specified one; as a fallback
+                m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
+            }
+
+            m_UseBOM = false;
+            m_BOMSizeInBytes = 0;
+        }
     }
 
     if (ConvertToWxString)
