@@ -114,11 +114,37 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
     {
         wxString msg;
         msg.Printf(_T("Encoding conversion has failed!\n"
-                      "Encoding choosen was: %s (ID: %d)"),
+                      "Encoding choosen was: %s (ID: %d)\n"
+                      "Trying to use the system locale settings..."),
                    wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
                    m_Encoding);
         Manager::Get()->GetLogManager()->DebugLog(msg);
-        return false;
+
+        // Possibly the conversion has failed. Let's try with System-default encoding
+        if (platform::windows)
+        {
+            m_Encoding = wxLocale::GetSystemEncoding();
+        }
+        else
+        {
+            // We can rely on the UTF-8 detection code ;-)
+            m_Encoding = wxFONTENCODING_ISO8859_1;
+        }
+
+        wxCSConv conv_system(m_Encoding);
+        wideBuff = conv_system.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+        m_ConvStr = wxString(wideBuff);
+
+        if (outlen == 0)
+        {
+            msg.Printf(_T("Encoding conversion has finally failed!\n"
+                          "Last encoding choosen was: %s (ID: %d)\n"
+                          "Don't know what to do."),
+                       wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                       m_Encoding);
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+            return false;
+        }
     }
 
     return true;
@@ -169,6 +195,13 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
     {
         // Bypass C::B's auto-detection
         m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
+
+        wxString msg;
+        msg.Printf(_T("Warning: bypassing C::B's auto-detection!\n"
+                      "Encoding requested is: %s (ID: %d)"),
+                   wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                   m_Encoding);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
     }
     else
     {
@@ -213,22 +246,44 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
         }
 
 
-        if (!m_UseBOM)
+        if (m_UseBOM)
+        {
+            wxString msg;
+            msg.Printf(_T("Detected encoding via BOM: %s (ID: %d)"),
+                       wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                       m_Encoding);
+            Manager::Get()->GetLogManager()->DebugLog(msg);
+        }
+        else
         {
             if (DetectUTF8((wxByte*)buffer, size))
             {
                 m_Encoding = wxFONTENCODING_UTF8;
             }
-            else if (!DetectUTF16((wxByte*)buffer, size) && !DetectUTF32((wxByte*)buffer, size))
+            else if (   (!DetectUTF16((wxByte*)buffer, size))
+                     && (!DetectUTF32((wxByte*)buffer, size)) )
             {
                 // Use user-specified one; as a fallback
                 m_Encoding = wxFontMapper::Get()->CharsetToEncoding(encname, false);
+
+                wxString msg;
+                msg.Printf(_T("Warning: Using user specified encoding as fallback!\n"
+                              "Encoding fallback is: %s (ID: %d)"),
+                           wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                           m_Encoding);
+                Manager::Get()->GetLogManager()->DebugLog(msg);
             }
 
             m_UseBOM = false;
             m_BOMSizeInBytes = 0;
         }
     }
+
+    wxString msg;
+    msg.Printf(_T("Final encoding detected: %s (ID: %d)"),
+               wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+               m_Encoding);
+    Manager::Get()->GetLogManager()->DebugLog(msg);
 
     if (ConvertToWxString)
     {
