@@ -93,8 +93,15 @@ wxString EncodingDetector::GetWxStr() const
 
 bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 {
+    LogManager* logmgr = Manager::Get()->GetLogManager();
+    wxString    logmsg;
+
     if (!buffer || size == 0)
+    {
+        logmsg.Printf(_T("Encoding conversion has failed (buffer is empty)!"));
+        logmgr->DebugLog(logmsg);
         return false;
+    }
 
     if (m_BOMSizeInBytes > 0)
     {
@@ -112,37 +119,45 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
     if (outlen == 0)
     {
-        wxString msg;
-        msg.Printf(_T("Encoding conversion has failed!\n"
-                      "Encoding choosen was: %s (ID: %d)\n"
-                      "Trying to use the system locale settings..."),
-                   wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
-                   m_Encoding);
-        Manager::Get()->GetLogManager()->DebugLog(msg);
+        logmsg.Printf(_T("Encoding conversion using settings has failed!\n"
+                         "Encoding choosen was: %s (ID: %d)"),
+                      wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                      m_Encoding);
+        logmgr->DebugLog(logmsg);
 
-        // Possibly the conversion has failed. Let's try with System-default encoding
-        if (platform::windows)
+        // Try system locale (if requested by the settings)
+        ConfigManager* cfgMgr = Manager::Get()->GetConfigManager(_T("editor"));
+        if (cfgMgr->ReadBool(_T("/default_encoding/use_system"), true))
         {
-            m_Encoding = wxLocale::GetSystemEncoding();
+            // Conversion has failed. Let's try with system-default encoding.
+            logmgr->DebugLog(_T("Trying system locale as fallback..."));
+            if (platform::windows)
+            {
+                m_Encoding = wxLocale::GetSystemEncoding();
+            }
+            else
+            {
+                // We can rely on the UTF-8 detection code ;-)
+                m_Encoding = wxFONTENCODING_ISO8859_1;
+            }
+
+            wxCSConv conv_system(m_Encoding);
+            wideBuff = conv_system.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
+            m_ConvStr = wxString(wideBuff);
+
+            if (outlen == 0)
+            {
+                logmsg.Printf(_T("Encoding conversion using system locale fallback has failed!\n"
+                                 "Last encoding choosen was: %s (ID: %d)\n"
+                                 "Don't know what to do."),
+                              wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                              m_Encoding);
+                logmgr->DebugLog(logmsg);
+                return false;
+            }
         }
         else
         {
-            // We can rely on the UTF-8 detection code ;-)
-            m_Encoding = wxFONTENCODING_ISO8859_1;
-        }
-
-        wxCSConv conv_system(m_Encoding);
-        wideBuff = conv_system.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-        m_ConvStr = wxString(wideBuff);
-
-        if (outlen == 0)
-        {
-            msg.Printf(_T("Encoding conversion has finally failed!\n"
-                          "Last encoding choosen was: %s (ID: %d)\n"
-                          "Don't know what to do."),
-                       wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
-                       m_Encoding);
-            Manager::Get()->GetLogManager()->DebugLog(msg);
             return false;
         }
     }

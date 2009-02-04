@@ -52,7 +52,7 @@
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
-                        <orient></orient>
+                        <orient/>
                       </object>
                       <flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                       <border>4</border>
@@ -84,7 +84,7 @@
                           <border>8</border>
                           <option>1</option>
                         </object>
-                        <orient></orient>
+                        <orient/>
                       </object>
                       <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
                       <border>4</border>
@@ -94,11 +94,25 @@
                         <label>Use this encoding</label>
                         <content>
                           <item>As fallback encoding</item>
-                          <item>As Default encoding (Bypass C::B's auto-detection)</item>
+                          <item>As default encoding (bypassing C::B's auto-detection)</item>
                         </content>
                         <selection>0</selection>
+                        <style>wxRA_SPECIFY_COLS</style>
                       </object>
-                      <flag>wxEXPAND</flag>
+                      <flag>wxEXPAND|wxFIXED_MINSIZE</flag>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxBoxSizer">
+                        <object class="sizeritem">
+                          <object class="wxCheckBox" name="chkEncodingUseSystem">
+                            <label>If conversion fails using the settings above, try system locale settings</label>
+                            <checked>1</checked>
+                          </object>
+                        </object>
+                        <orient>wxHORIZONTAL</orient>
+                      </object>
+                      <flag>wxALL|wxEXPAND</flag>
+                      <border>4</border>
                     </object>
                   </object>
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP|wxFIXED_MINSIZE</flag>
@@ -153,7 +167,7 @@
                                   <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                   <border>16</border>
                                 </object>
-                                <orient></orient>
+                                <orient/>
                               </object>
                               <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
@@ -222,7 +236,7 @@
                                   <border>16</border>
                                   <option>1</option>
                                 </object>
-                                <orient></orient>
+                                <orient/>
                               </object>
                               <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                               <option>1</option>
@@ -295,7 +309,7 @@
                                   <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                                   <border>16</border>
                                 </object>
-                                <orient></orient>
+                                <orient/>
                               </object>
                               <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
@@ -370,10 +384,11 @@
                           <item>name only (no path information)</item>
                           <item>relative filename (to the project file)</item>
                         </content>
+                        <selection>0</selection>
                         <style>wxRA_SPECIFY_COLS</style>
                       </object>
-                      <flag>wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <option>1</option>
+                      <flag>wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
                     <object class="sizeritem">
                       <object class="wxStaticBoxSizer">
@@ -550,7 +565,7 @@
                       <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                       <border>10</border>
                     </object>
-                    <orient></orient>
+                    <orient/>
                   </object>
                   <flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                 </object>
@@ -593,7 +608,7 @@
                               <flag>wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
                               <border>10</border>
                             </object>
-                            <orient></orient>
+                            <orient/>
                           </object>
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
@@ -785,7 +800,7 @@
                           <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <border>4</border>
                         </object>
-                        <orient></orient>
+                        <orient/>
                       </object>
                       <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
@@ -819,7 +834,7 @@
                           </object>
                           <flag>wxALIGN_RIGHT|wxALIGN_TOP</flag>
                         </object>
-                        <orient></orient>
+                        <orient/>
                       </object>
                       <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                     </object>
@@ -903,7 +918,7 @@
                               </object>
                               <flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                             </object>
-                            <orient></orient>
+                            <orient/>
                           </object>
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
@@ -921,15 +936,15 @@
                       <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
-                    <orient></orient>
+                    <orient/>
                   </object>
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
                 </object>
                 <object class="sizeritem">
                   <object class="unknown" name="txtColoursSample">
-                    <style></style>
-                    <style></style>
+                    <style/>
+                    <style/>
                   </object>
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
@@ -1028,8 +1043,8 @@
                         </object>
                         <object class="sizeritem">
                           <object class="unknown" name="txtAutoCompCode">
-                            <style></style>
-                            <style></style>
+                            <style/>
+                            <style/>
                           </object>
                           <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                           <option>1</option>
@@ -1048,7 +1063,7 @@
                               </object>
                               <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                             </object>
-                            <orient></orient>
+                            <orient/>
                           </object>
                           <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
                         </object>
@@ -1090,7 +1105,7 @@
                       <flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
                       <border>4</border>
                     </object>
-                    <orient></orient>
+                    <orient/>
                   </object>
                   <flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
@@ -1128,12 +1143,12 @@
         <object class="wxStdDialogButtonSizer">
           <object class="button">
             <object class="wxButton" name="wxID_OK">
-              <label></label>
+              <label/>
             </object>
           </object>
           <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
-              <label></label>
+              <label/>
             </object>
           </object>
         </object>

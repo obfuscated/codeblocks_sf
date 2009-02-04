@@ -198,7 +198,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
         }
         cmbEnc->SetSelection(sel);
     }
-    XRCCTRL(*this, "rbEncodingUseOption", wxRadioBox)->SetSelection(cfg->ReadInt(_T("/default_encoding/use_option"), 0));
+    XRCCTRL(*this, "rbEncodingUseOption",  wxRadioBox)->SetSelection(cfg->ReadInt(_T("/default_encoding/use_option"), 0));
+    XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->SetValue(cfg->ReadBool(_T("/default_encoding/use_system"), true));
 
     // auto-complete
     CreateAutoCompText();
@@ -979,6 +980,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
             cfg->Write(_T("/default_encoding"), cmbEnc->GetStringSelection());
         }
         cfg->Write(_T("/default_encoding/use_option"), XRCCTRL(*this, "rbEncodingUseOption", wxRadioBox)->GetSelection());
+        cfg->Write(_T("/default_encoding/use_system"), XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->GetValue());
 
         // save any changes in auto-completion
         wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);
