@@ -112,7 +112,12 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
 
     if (outlen == 0)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Encoding conversion has failed!"));
+        wxString msg;
+        msg.Printf(_T("Encoding conversion has failed!\n"
+                      "Encoding choosen was: %s (ID: %d)"),
+                   wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
+                   m_Encoding);
+        Manager::Get()->GetLogManager()->DebugLog(msg);
         return false;
     }
 
