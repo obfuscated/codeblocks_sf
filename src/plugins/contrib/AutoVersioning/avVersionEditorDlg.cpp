@@ -251,7 +251,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     BoxSizer7->Add(BoxSizer15, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer5->Add(BoxSizer7, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-    wxString __wxRadioBoxChoices_1[2] = 
+    wxString __wxRadioBoxChoices_1[2] =
     {
         _("C"),
         _("C++")
@@ -360,7 +360,7 @@ void avVersionEditorDlg::SetMajor(long value)
 {
     m_major = value;
     wxString strValue;
-    strValue.Printf(_T("%d"),value);
+    strValue.Printf(_T("%ld"),value);
     txtMajorVersion->SetValue(strValue);
 }
 
@@ -368,7 +368,7 @@ void avVersionEditorDlg::SetMinor(long value)
 {
     m_minor = value;
     wxString strValue;
-    strValue.Printf(_T("%d"),value);
+    strValue.Printf(_T("%ld"),value);
     txtMinorVersion->SetValue(strValue);
 }
 
@@ -376,7 +376,7 @@ void avVersionEditorDlg::SetBuild(long value)
 {
     m_build = value;
     wxString strValue;
-    strValue.Printf(_T("%d"),value);
+    strValue.Printf(_T("%ld"),value);
     txtBuildNumber->SetValue(strValue);
 }
 
@@ -384,7 +384,7 @@ void avVersionEditorDlg::SetRevision(long value)
 {
     m_revision = value;
     wxString strValue;
-    strValue.Printf(_T("%d"),value);
+    strValue.Printf(_T("%ld"),value);
     txtRevisionNumber->SetValue(strValue);
 }
 
@@ -392,7 +392,7 @@ void avVersionEditorDlg::SetCount(long value)
 {
     m_count = value;
     wxString strValue;
-    strValue.Printf(_T("%d"),value);
+    strValue.Printf(_T("%ld"),value);
     txtBuildCount->SetValue(strValue);
 }
 //}
@@ -496,7 +496,7 @@ void avVersionEditorDlg::SetMinorMaximum(long value)
 {
 	m_minorMaximun = value;
 	wxString strValue;
-	strValue.Printf(_T("%d"),value);
+	strValue.Printf(_T("%ld"),value);
 	txtMinorMaximun->SetValue(strValue);
 }
 
@@ -504,7 +504,7 @@ void avVersionEditorDlg::SetBuildMaximum(long value)
 {
 	m_buildMaximun = value;
 	wxString strValue;
-	strValue.Printf(_T("%d"),value);
+	strValue.Printf(_T("%ld"),value);
 	txtBuildNumberMaximun->SetValue(strValue);
 }
 
@@ -512,7 +512,7 @@ void avVersionEditorDlg::SetRevisionMaximum(long value)
 {
 	m_revisionMaximun = value;
 	wxString strValue;
-	strValue.Printf(_T("%d"),value);
+	strValue.Printf(_T("%ld"),value);
 	txtRevisionMax->SetValue(strValue);
 }
 
@@ -520,7 +520,7 @@ void avVersionEditorDlg::SetRevisionRandomMaximum(long value)
 {
 	m_revisionRandomMaximun = value;
 	wxString strValue;
-	strValue.Printf(_T("%d"),value);
+	strValue.Printf(_T("%ld"),value);
 	txtRevisionRandom->SetValue(strValue);
 }
 
@@ -528,7 +528,7 @@ void avVersionEditorDlg::SetBuildTimesToMinorIncrement(long value)
 {
 	m_buildTimesToMinorIncrement = value;
 	wxString strValue;
-	strValue.Printf(_T("%d"),value);
+	strValue.Printf(_T("%ld"),value);
 	txtBuildTimes->SetValue(strValue);
 }
 //}

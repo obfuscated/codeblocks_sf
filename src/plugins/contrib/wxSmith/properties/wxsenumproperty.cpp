@@ -116,7 +116,7 @@ bool wxsEnumProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
             // Did not found value, storing as integer
         }
 
-        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),VALUE))));
+        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"),VALUE))));
         return true;
     }
     return false;

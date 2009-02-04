@@ -51,8 +51,8 @@ wxString wxsPositionSizeData::GetPositionCode(wxsCoderContext* Context)
             return IsDefault ?
                 _T("wxDefaultPosition") :
                 DialogUnits ?
-                    wxString::Format(_T("wxDLG_UNIT(%s,wxPoint(%d,%d))"),Context->m_WindowParent.c_str(),X,Y) :
-                    wxString::Format(_T("wxPoint(%d,%d)"),X,Y);
+                    wxString::Format(_T("wxDLG_UNIT(%s,wxPoint(%ld,%ld))"),Context->m_WindowParent.c_str(),X,Y) :
+                    wxString::Format(_T("wxPoint(%ld,%ld)"),X,Y);
         }
 
         default:
@@ -73,8 +73,8 @@ wxString wxsPositionSizeData::GetSizeCode(wxsCoderContext* Context)
             return IsDefault ?
                 _T("wxDefaultSize") :
                 DialogUnits ?
-                    wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,%d))"),Context->m_WindowParent.c_str(),X,Y) :
-                    wxString::Format(_T("wxSize(%d,%d)"),X,Y);
+                    wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,%ld))"),Context->m_WindowParent.c_str(),X,Y) :
+                    wxString::Format(_T("wxSize(%ld,%ld)"),X,Y);
         }
 
         default:
@@ -250,7 +250,7 @@ bool wxsPositionSizeProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement
     if ( !DEFVALUE )
     {
         wxString Str;
-        Str.Printf(_T("%d,%d%s"),XVALUE,YVALUE,DUVALUE ? _T("d") : wxEmptyString);
+        Str.Printf(_T("%ld,%ld%s"),XVALUE,YVALUE,DUVALUE ? _T("d") : wxEmptyString);
         Element->InsertEndChild(TiXmlText(cbU2C(Str)));
         return true;
     }

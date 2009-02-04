@@ -758,7 +758,7 @@ wxPdfDocument::PutPages()
 
     NewObj();
     OutAscii(wxString(_T("<<")) + filter + wxString(_T("/Length ")) +
-             wxString::Format(_T("%ld"), CalculateStreamLength(p->TellO())) + wxString(_T(">>")));
+             wxString::Format(_T("%d"), CalculateStreamLength(p->TellO())) + wxString(_T(">>")));
     PutStream(*p);
     Out("endobj");
     if (m_compress)
@@ -927,7 +927,7 @@ wxPdfDocument::PutShaders()
         Out("/Decode[0 1 0 1 0 1 0 1 0 1]");
         Out("/BitsPerFlag 8");
         wxMemoryOutputStream* p = grad->GetBuffer();
-        OutAscii(wxString::Format(_T("/Length %ld"), CalculateStreamLength(p->TellO())));
+        OutAscii(wxString::Format(_T("/Length %d"), CalculateStreamLength(p->TellO())));
         Out(">>");
         PutStream(*p);
         Out("endobj");
@@ -1549,7 +1549,7 @@ wxPdfDocument::PutTemplates()
       p = &(currentTemplate->m_buffer);
     }
 
-    OutAscii(wxString::Format(_T("/Length %ld >>"), CalculateStreamLength(p->TellO())));
+    OutAscii(wxString::Format(_T("/Length %d >>"), CalculateStreamLength(p->TellO())));
     PutStream(*p);
     Out("endobj");
     if (m_compress)

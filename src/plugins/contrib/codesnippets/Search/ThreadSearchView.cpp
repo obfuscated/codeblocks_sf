@@ -538,7 +538,7 @@ void ThreadSearchView::OnLoggerClick(const wxString& file, long line)
     {
         long snippetID = it->second;
         CodeSnippetsEvent evt(wxEVT_CODESNIPPETS_SELECT, snippetID);
-        wxString strID = wxString::Format(_T("type=\"snippet\" ID=\"%d\""), snippetID);
+        wxString strID = wxString::Format(_T("type=\"snippet\" ID=\"%ld\""), snippetID);
         evt.SetSnippetString( strID );
         evt.PostCodeSnippetsEvent(evt);
     }

@@ -244,7 +244,7 @@ void cbDragScroll::OnAttach()
 	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
 	pInfo->version = wxT(VERSION);
 	// Allow other plugins to find our Event ID
-	m_DragScrollFirstId = wxString::Format( _T("%ld"), wxEVT_DRAGSCROLL_EVENT);
+	m_DragScrollFirstId = wxString::Format( _T("%d"), wxEVT_DRAGSCROLL_EVENT);
 	pInfo->authorWebsite = m_DragScrollFirstId;
 
 	#if defined(LOGGING)

@@ -71,7 +71,7 @@ bool wxsLongProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Elemen
 {
     if ( VALUE != Default )
     {
-        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),VALUE))));
+        Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"),VALUE))));
         return true;
     }
     return false;

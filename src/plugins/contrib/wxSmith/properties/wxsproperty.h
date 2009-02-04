@@ -225,9 +225,9 @@ class wxsProperty
          *  \param Value - value
          *  \param SubChild - value of sub node, if empty, Elem will be used
          */
-        static void XmlSetLong(TiXmlElement* Elem,long Value,const wxString& SubChild = wxEmptyString)
+        static void XmlSetLong(TiXmlElement* Elem, long Value, const wxString& SubChild = wxEmptyString)
         {
-            XmlSetString(Elem,wxString::Format(_T("%d"),Value),SubChild);
+            XmlSetString(Elem,wxString::Format(_T("%ld"),Value),SubChild);
         }
 
         /** \brief Helper function for fetching bool value from xml element

@@ -539,7 +539,7 @@ int SymTabExecDlg::ParseOutputSuccess(wxString lib, wxString filter)
 
         if (item!=-1)
         {
-          s_item.Printf(_T("%6d"), item);
+          s_item.Printf(_T("%6ld"), item);
           m_ListCtrl->SetItem(item, 0, s_item);
 
           // Symbols can have colons in it, too        -> like Class::Method()

@@ -570,7 +570,7 @@ void AutoVersioning::UpdateVersionHeader()
         long ubuntuYearNumber = 0;
         actualDate.Format(_T("%y")).ToLong(&ubuntuYearNumber);
         wxString ubuntuYear;
-        ubuntuYear.Printf(_T("%d"),ubuntuYearNumber);
+        ubuntuYear.Printf(_T("%ld"),ubuntuYearNumber);
         headerOutput << _T("\t") << _T("static const double UBUNTU_VERSION_STYLE = ") << ubuntuYear << actualDate.Format(_T(".%m")) << _T(";\n");
         headerOutput << _T("\t") << _T("\n");
     }
@@ -582,29 +582,29 @@ void AutoVersioning::UpdateVersionHeader()
 
     wxString myPrintf;
     headerOutput << _T("\t") << _T("//Standard Version Type") << _T("\n");
-    myPrintf.Printf(_T("%d"), GetVersionState().Values.Major);
+    myPrintf.Printf(_T("%ld"), GetVersionState().Values.Major);
     headerOutput << _T("\t") << _T("static const long MAJOR = ") << myPrintf << _T(";\n");
-    myPrintf.Printf(_T("%d"), GetVersionState().Values.Minor);
+    myPrintf.Printf(_T("%ld"), GetVersionState().Values.Minor);
     headerOutput << _T("\t") << _T("static const long MINOR = ") << myPrintf << _T(";\n");
-    myPrintf.Printf(_T("%d"), GetVersionState().Values.Build);
+    myPrintf.Printf(_T("%ld"), GetVersionState().Values.Build);
     headerOutput << _T("\t") << _T("static const long BUILD = ") << myPrintf << _T(";\n");
-    myPrintf.Printf(_T("%d"), GetVersionState().Values.Revision);
+    myPrintf.Printf(_T("%ld"), GetVersionState().Values.Revision);
     headerOutput << _T("\t") << _T("static const long REVISION = ") << myPrintf << _T(";\n");
     headerOutput << _T("\t") << _T("\n");
 
     headerOutput << _T("\t") << _T("//Miscellaneous Version Types") << _T("\n");
-    myPrintf.Printf(_T("%d"), GetVersionState().Values.BuildCount);
+    myPrintf.Printf(_T("%ld"), GetVersionState().Values.BuildCount);
     headerOutput << _T("\t") << _T("static const long BUILDS_COUNT = ") << myPrintf << _T(";\n");
 
-    myPrintf.Printf(_T("%d,%d,%d,%d"), GetVersionState().Values.Major, GetVersionState().Values.Minor,
+    myPrintf.Printf(_T("%ld,%ld,%ld,%ld"), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << _T("\t") << _T("#define RC_FILEVERSION ") << myPrintf << _T("\n");
 
-    myPrintf.Printf(_T("\"%d, %d, %d, %d\\0\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
+    myPrintf.Printf(_T("\"%ld, %ld, %ld, %ld\\0\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << _T("\t") << _T("#define RC_FILEVERSION_STRING ") << myPrintf << _T("\n");
 
-    myPrintf.Printf(_T("\"%d.%d.%d.%d\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
+    myPrintf.Printf(_T("\"%ld.%ld.%ld.%ld\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
     headerOutput << _T("\t") << _T("static const char FULLVERSION_STRING[] = ") << myPrintf << _T(";\n");
 
@@ -621,7 +621,7 @@ void AutoVersioning::UpdateVersionHeader()
 
     headerOutput << _T("\t") << _T("\n");
     headerOutput << _T("\t") << _T("//These values are to keep track of your versioning state, don't modify them.") << _T("\n");
-    myPrintf.Printf(_T("%d"), GetVersionState().BuildHistory);
+    myPrintf.Printf(_T("%ld"), GetVersionState().BuildHistory);
     headerOutput << _T("\t") << _T("static const long BUILD_HISTORY = ") << myPrintf << _T(";\n");
 
     headerOutput << _T("\t") << _T("\n\n");
@@ -714,16 +714,16 @@ void AutoVersioning::GenerateChanges()
         changesTitle.Replace(_T("%y"), actualDate.Format(_T("%Y")));
 
         wxString value;
-        value.Printf(_T("%d"), GetVersionState().Values.Major);
+        value.Printf(_T("%ld"), GetVersionState().Values.Major);
         changesTitle.Replace(_T("%M"), value);
 
-        value.Printf(_T("%d"), GetVersionState().Values.Minor);
+        value.Printf(_T("%ld"), GetVersionState().Values.Minor);
         changesTitle.Replace(_T("%m"), value);
 
-        value.Printf(_T("%d"), GetVersionState().Values.Build);
+        value.Printf(_T("%ld"), GetVersionState().Values.Build);
         changesTitle.Replace(_T("%b"), value);
 
-        value.Printf(_T("%d"), GetVersionState().Values.Revision);
+        value.Printf(_T("%ld"), GetVersionState().Values.Revision);
         changesTitle.Replace(_T("%r"), value);
 
         value.Printf(_T("%d"), GetConfig().Settings.Svn?1:0);

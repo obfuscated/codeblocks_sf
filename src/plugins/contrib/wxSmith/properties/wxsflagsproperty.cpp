@@ -127,7 +127,7 @@ bool wxsFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Eleme
         }
         else
         {
-            Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"),VALUE))));
+            Element->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%ld"),VALUE))));
         }
         return true;
     }

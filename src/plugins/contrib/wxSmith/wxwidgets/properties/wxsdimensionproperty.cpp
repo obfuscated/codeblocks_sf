@@ -29,7 +29,7 @@ wxString wxsDimensionData::GetPixelsCode(wxsCoderContext* Context)
     {
         case wxsCPP:
         {
-            if ( !DialogUnits ) return wxString::Format(_T("%d"),Value);
+            if ( !DialogUnits ) return wxString::Format(_T("%ld"),Value);
             return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
         }
 
@@ -147,7 +147,7 @@ bool wxsDimensionProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* E
 {
     if ( VALUE != DefaultValue || UNITS != DefaultDialogUnits )
     {
-        wxString Buffer = wxString::Format(_T("%d"),VALUE);
+        wxString Buffer = wxString::Format(_T("%ld"),VALUE);
         if ( UNITS )
         {
             Buffer.Append(_T("d"));

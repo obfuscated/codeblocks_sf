@@ -69,7 +69,7 @@ wxString wxsSizerExtra::AllParamsCode(wxsCoderContext* Ctx)
     switch ( Ctx->m_Language )
     {
         case wxsCPP:
-            return wxString::Format(_T("%d, "),Proportion) +
+            return wxString::Format(_T("%ld, "),Proportion) +
                    wxsSizerFlagsProperty::GetString(Flags) +
                    _T(", ") << Border.GetPixelsCode(Ctx);
 

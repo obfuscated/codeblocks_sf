@@ -75,7 +75,7 @@ void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, unsigned long i
     wxString fmt;
     fmt.Printf(_T("0x%x"), (size_t)value);
     m_pList->SetItem(idx, 1, fmt);
-    fmt.Printf(_T("%u"), value);
+    fmt.Printf(_T("%lu"), value);
     m_pList->SetItem(idx, 2, fmt);
 
     for (int i = 0; i < 3; ++i)

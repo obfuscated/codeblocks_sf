@@ -56,8 +56,8 @@ bool wxsPropertyStream::GetLong(const wxString &Name, long& Value, long Default)
 
 bool wxsPropertyStream::PutLong(const wxString &Name, long& Value, long Default)
 {
-    wxString Data = wxString::Format(_T("%d"),Value);
-    if ( !PutString(Name,Data,wxString::Format(_T("%d"),Default)) ) return false;
+    wxString Data = wxString::Format(_T("%ld"),Value);
+    if ( !PutString(Name,Data,wxString::Format(_T("%ld"),Default)) ) return false;
     Data.ToLong(&Value);
     return true;
 }
@@ -96,8 +96,8 @@ bool wxsPropertyStream::GetULong(const wxString &Name, unsigned long& Value, uns
 
 bool wxsPropertyStream::PutULong(const wxString &Name, unsigned long& Value, unsigned long Default)
 {
-    wxString Data = wxString::Format(_T("%u"),Value);
-    if ( !PutString(Name,Data,wxString::Format(_T("%u"),Default)) ) return false;
+    wxString Data = wxString::Format(_T("%lu"),Value);
+    if ( !PutString(Name,Data,wxString::Format(_T("%lu"),Default)) ) return false;
     Data.ToULong(&Value);
     return true;
 }
