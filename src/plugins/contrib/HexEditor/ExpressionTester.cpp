@@ -24,6 +24,7 @@
 
 #include "ExpressionParser.h"
 #include "ExpressionExecutor.h"
+#include "ExpressionTestCases.h"
 #include "SelectStoredExpressionDlg.h"
 #include "TestCasesDlg.h"
 
@@ -198,6 +199,5 @@ void ExpressionTester::OnButton3Click(wxCommandEvent& event)
 
 void ExpressionTester::OnButton4Click(wxCommandEvent& event)
 {
-    TestCasesDlg dlg( this );
-    dlg.ShowModal();
+    TestCasesDlg( this, Expression::GetTests() ).ShowModal();
 }

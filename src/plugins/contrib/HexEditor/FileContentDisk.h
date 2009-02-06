@@ -24,6 +24,7 @@
 #define FILECONTENTDISK_H
 
 #include "FileContentBase.h"
+#include "TestCasesBase.h"
 
 #include <vector>
 #include <wx/file.h>
@@ -54,6 +55,12 @@ class FileContentDisk: public FileContentBase
 
         /** \brief Reading some part of data */
         virtual OffsetT Read( void* buff, OffsetT position, OffsetT length );
+
+        /** \brief Return collection of tests for this class */
+        static TestCasesBase& GetTests();
+
+        class TestData;
+
 
     protected:
 

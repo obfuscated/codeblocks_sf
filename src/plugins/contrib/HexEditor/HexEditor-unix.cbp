@@ -72,8 +72,10 @@
 		<Unit filename="Makefile.am" />
 		<Unit filename="SelectStoredExpressionDlg.cpp" />
 		<Unit filename="SelectStoredExpressionDlg.h" />
+		<Unit filename="TestCasesBase.h" />
 		<Unit filename="TestCasesDlg.cpp" />
 		<Unit filename="TestCasesDlg.h" />
+		<Unit filename="TestCasesHelper.h" />
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxsmith/ExpressionTester.wxs" />
 		<Unit filename="wxsmith/HexEditPanel.wxs" />

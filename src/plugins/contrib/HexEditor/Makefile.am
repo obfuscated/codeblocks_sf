@@ -45,7 +45,9 @@ noinst_HEADERS = \
 	HexEditPanel.h \
 	HexEditViewBase.h \
 	SelectStoredExpressionDlg.h \
-	TestCasesDlg.h
+	TestCasesBase.h \
+	TestCasesDlg.h \
+	TestCasesHelper.h
 
 
 

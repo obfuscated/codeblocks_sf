@@ -29,6 +29,10 @@
 #include "DigitView.h"
 #include "HexEditLineBuffer.h"
 
+#include "ExpressionTestCases.h"
+#include "FileContentDisk.h"
+#include "TestCasesDlg.h"
+
 //(*InternalHeaders(HexEditPanel)
 #include <wx/string.h>
 #include <wx/intl.h>
@@ -41,6 +45,7 @@
 #include <wx/numdlg.h>
 #include <wx/sizer.h>
 #include <wx/textdlg.h>
+#include <wx/choicdlg.h>
 
 #include <manager.h>
 #include <editormanager.h>
@@ -69,6 +74,7 @@ const long HexEditPanel::ID_BUTTON6 = wxNewId();
 const long HexEditPanel::ID_BUTTON5 = wxNewId();
 const long HexEditPanel::ID_STATICLINE1 = wxNewId();
 const long HexEditPanel::ID_BUTTON1 = wxNewId();
+const long HexEditPanel::ID_BUTTON8 = wxNewId();
 const long HexEditPanel::ID_CHECKBOX1 = wxNewId();
 const long HexEditPanel::ID_PANEL1 = wxNewId();
 const long HexEditPanel::ID_SCROLLBAR1 = wxNewId();
@@ -168,6 +174,8 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     BoxSizer3->Add(StaticLine1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     Button1 = new wxButton(this, ID_BUTTON1, _("Calc"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
     BoxSizer3->Add(Button1, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button4 = new wxButton(this, ID_BUTTON8, _("Test"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON8"));
+    BoxSizer3->Add(Button4, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     CheckBox1 = new wxCheckBox(this, ID_CHECKBOX1, _("Value preview"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     CheckBox1->SetValue(true);
     BoxSizer3->Add(CheckBox1, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -304,6 +312,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_BlockSizeClick);
     Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_EndianessClick);
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton1Click);
+    Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton4Click1);
     Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnCheckBox1Click);
     m_DrawArea->Connect(wxEVT_PAINT,(wxObjectEventFunction)&HexEditPanel::OnContentPaint,0,this);
     m_DrawArea->Connect(wxEVT_ERASE_BACKGROUND,(wxObjectEventFunction)&HexEditPanel::OnDrawAreaEraseBackground,0,this);
@@ -757,7 +766,7 @@ void HexEditPanel::RefreshStatus()
         }
         else
         {
-            LogManager::Get()->DebugLog( F( _T("HEExpr Calculate: %d"), (int)sw.Time() ) );
+//            LogManager::Get()->DebugLog( F( _T("HEExpr Calculate: %d"), (int)sw.Time() ) );
             unsigned long long uint;
             long long          sint;
             long double        flt;
@@ -1241,13 +1250,13 @@ void HexEditPanel::Redo()
 
 void HexEditPanel::OnSpecialKeyDown(wxKeyEvent& event)
 {
-    LogManager::Get()->DebugLog(
-        F(
-            _T("HexEditPanel::OnSpecialKeyDown: %d (%c%c%c)"),
-            (int)event.GetKeyCode(),
-            event.ControlDown() ? 'C':'c',
-            event.AltDown() ? 'A':'a',
-            event.CmdDown() ? 'M':'m' ) );
+//    LogManager::Get()->DebugLog(
+//        F(
+//            _T("HexEditPanel::OnSpecialKeyDown: %d (%c%c%c)"),
+//            (int)event.GetKeyCode(),
+//            event.ControlDown() ? 'C':'c',
+//            event.AltDown() ? 'A':'a',
+//            event.CmdDown() ? 'M':'m' ) );
 
     if ( event.ControlDown() && !event.AltDown() )
     {
@@ -1661,3 +1670,24 @@ bool HexEditPanel::MatchColumnsCount(int colsCount)
     }
 }
 
+void HexEditPanel::OnButton4Click1(wxCommandEvent& event)
+{
+    wxString tests[] =
+    {
+        _("Expression parser"),
+        _("On-Disk file edition")
+    };
+
+    int index = wxGetSingleChoiceIndex( _("Select tests to perform"), _("Self tests"), sizeof( tests ) / sizeof( tests[0] ), tests, this );
+    TestCasesBase* test = 0;
+
+    switch ( index )
+    {
+        case 0: test = &Expression::GetTests(); break;
+        case 1: test = &FileContentDisk::GetTests(); break;
+    }
+
+    if ( !test ) return;
+
+    TestCasesDlg( this, *test ).ShowModal();
+}

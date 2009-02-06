@@ -28,8 +28,8 @@
 
 namespace
 {
-    const FileContentBase::OffsetT maxBufferedSize = 1024 * 1024 * 4;
-    const FileContentBase::OffsetT maxAnySize      = 1024L * 1024L * 1024L;  // 1 GB limit
+    const FileContentBase::OffsetT maxBufferedSize = 1024L * 1024L * 4;
+    const FileContentBase::OffsetT maxAnySize      = 1024L * 1024L * 1024L * 2;  // 2 GB limit
 }
 
 FileContentBase::InvalidModificationData FileContentBase::m_UndoInvalid;
@@ -47,10 +47,10 @@ FileContentBase* FileContentBase::BuildInstance( const wxString& fileName )
         return new FileContentBuffered();
     }
 
-//    if ( (OffsetT)fl.Length() <= maxAnySize )
-//    {
-//        return new FileContentDisk();
-//    }
+    if ( (OffsetT)fl.Length() <= maxAnySize )
+    {
+        return new FileContentDisk();
+    }
 
 
     return NULL;

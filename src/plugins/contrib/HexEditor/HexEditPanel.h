@@ -96,6 +96,7 @@ class HexEditPanel: public EditorBase
         wxScrollBar* m_ContentScroll;
         wxStaticText* m_FloatVal;
         wxMenuItem* MenuItem32;
+        wxButton* Button4;
         wxMenuItem* MenuItem20;
         wxStaticText* m_DwordVal;
         wxButton* Button1;
@@ -153,6 +154,7 @@ class HexEditPanel: public EditorBase
         static const long ID_BUTTON5;
         static const long ID_STATICLINE1;
         static const long ID_BUTTON1;
+        static const long ID_BUTTON8;
         static const long ID_CHECKBOX1;
         static const long ID_PANEL1;
         static const long ID_SCROLLBAR1;
@@ -263,6 +265,7 @@ class HexEditPanel: public EditorBase
         void OnSetColsPower4(wxCommandEvent& event);
         void OnSetColsPower8(wxCommandEvent& event);
         void OnSetColsPowerOther(wxCommandEvent& event);
+        void OnButton4Click1(wxCommandEvent& event);
         //*)
 
         typedef std::set< EditorBase* > EditorsSet;

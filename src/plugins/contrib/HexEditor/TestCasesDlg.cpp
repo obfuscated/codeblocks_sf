@@ -38,8 +38,9 @@ BEGIN_EVENT_TABLE(TestCasesDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-TestCasesDlg::TestCasesDlg(wxWindow* parent): m_Thread( 0 )
+TestCasesDlg::TestCasesDlg(wxWindow* parent, TestCasesBase& tests): m_Tests( tests ), m_Thread( 0 )
 {
+    m_Tests.InitOutput( *this );
 	BuildContent(parent);
 }
 
@@ -88,7 +89,7 @@ TestCasesDlg::~TestCasesDlg()
 
 int TestCasesDlg::Entry()
 {
-    m_Result  = PerformTests();
+    m_Result  = m_Tests.PerformTests();
     m_Running = false;
     return 0;
 }

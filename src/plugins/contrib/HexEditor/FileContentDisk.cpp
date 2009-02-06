@@ -21,9 +21,12 @@
 */
 
 #include "FileContentDisk.h"
+#include "TestCasesHelper.h"
+
+#include <wx/utils.h>
+#include <wx/progdlg.h>
 
 #include <algorithm>
-#include <wx/utils.h>
 #include <logmanager.h>
 #include <annoyingdialog.h>
 
@@ -69,7 +72,7 @@ class FileContentDisk::DiskModificationData: public FileContentBase::Modificatio
         /** \brief Get the length of modification */
         virtual OffsetT Length()
         {
-            return m_DataAfter.size();
+            return wxMax( m_DataBefore.size(), m_DataAfter.size() );
         }
 
         inline std::vector< char >& GetDataBefore() { return m_DataBefore; }
@@ -121,7 +124,12 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
 
     if ( fileName != m_FileName )
     {
-        return WriteToDifferentFile( fileName );
+        if ( WriteToDifferentFile( fileName ) )
+        {
+            UndoNotifySaved();
+            return true;
+        }
+        return false;
     }
 
     // 1. The easiest possible save scenario occurs when
@@ -131,21 +139,34 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
     //    Hex editor is used to change bytes not to insert or remove them
 
     bool noShiftedDiskBlocks = true;
-    for ( size_t i=0; i<m_Contents.size(); ++i )
+    if ( GetSize() < (OffsetT)m_File.Length() )
     {
-        DataBlock* block = m_Contents[i];
-        if ( !block->IsFromDisk() ) continue;
-
-        if ( block->fileStart != block->start )
+        // We can not save data on the same file if the file size has decreased
+        noShiftedDiskBlocks = false;
+    }
+    else
+    {
+        for ( size_t i=0; i<m_Contents.size(); ++i )
         {
-            noShiftedDiskBlocks = false;
-            break;
+            DataBlock* block = m_Contents[i];
+            if ( !block->IsFromDisk() ) continue;
+
+            if ( block->fileStart != block->start )
+            {
+                noShiftedDiskBlocks = false;
+                break;
+            }
         }
     }
 
     if ( noShiftedDiskBlocks )
     {
-        return WriteFileEasiest( );
+        if ( WriteFileEasiest( ) )
+        {
+            UndoNotifySaved();
+            return true;
+        }
+        return false;
     }
 
     // 2. We detect whether modifications can be made on one file (I.E. no temporary files needed)
@@ -156,12 +177,24 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
     //    amount of data writes to the file does not cross some limit.
 
     bool noExtraFilesNeeded = false;
-
-    // TODO: Write the detection algorithm and save routine
+    if ( GetSize() < (OffsetT)m_File.Length() )
+    {
+        // We can not save data on the same file if the file size has decreased
+        noShiftedDiskBlocks = false;
+    }
+    else
+    {
+        // TODO: Write the detection algorithm and save routine
+    }
 
     if ( noExtraFilesNeeded )
     {
-        return WriteFileOnDisk( );
+        if ( WriteFileOnDisk() )
+        {
+            UndoNotifySaved();
+            return true;
+        }
+        return false;
     }
 
     // 3. The last, slowest but the savest method in case of disk blocks shifted require temporary
@@ -199,7 +232,12 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
                 return false;
             }
 
-            return WriteFileOnDisk( );
+            if ( WriteFileOnDisk() )
+            {
+                UndoNotifySaved();
+                return true;
+            }
+            return false;
         }
         else
         {
@@ -215,7 +253,7 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
     if ( size > 16 * 1024 * 1024 )
     {
         if ( AnnoyingDialog(
-            _("HexEdit: Save will take long time"),
+            _("HexEdit: Save may take long time"),
             _("Saving the file may take long time.\n"
               "Do you want to continue?\n") ).ShowModal() != wxID_YES )
         {
@@ -223,7 +261,12 @@ bool FileContentDisk::WriteFile(const wxString& fileName)
         }
     }
 
-    return WriteFileTemporary( );
+    if ( WriteFileTemporary() )
+    {
+        UndoNotifySaved();
+        return true;
+    }
+    return false;
 }
 
 FileContentDisk::OffsetT FileContentDisk::GetSize()
@@ -615,6 +658,10 @@ void FileContentDisk::MergeBlocks( size_t startPosition )
         lastMergedBlock++;
     }
 
+
+    // Return if nothing to do
+    if ( firstMergedBlock == lastMergedBlock ) return;
+
     // Now we have following state:
     //  firstMergedBlock - index inside m_Contents vector for first
     //                     block in merged sequence
@@ -623,7 +670,7 @@ void FileContentDisk::MergeBlocks( size_t startPosition )
 
     DataBlock* block = m_Contents[ firstMergedBlock ];
 
-    if ( isFromDisk )
+    if ( !isFromDisk )
     {
         // To speed things a little bit first we calculate size of concatenated
         // block and reserve space for it
@@ -661,14 +708,31 @@ void FileContentDisk::MergeBlocks( size_t startPosition )
 
 bool FileContentDisk::WriteFileEasiest( )
 {
-    // TODO: Progress bar
-    // FIXME: Potentially unsafe when there's hex edit refresh while saving since
-    //        we delete m_Contents blocks in meantime
+    static const int maxProgress = 10000;
+
+    wxProgressDialog dlg( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
+        Manager::Get()->GetAppWindow(),
+        wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
+    dlg.Update( 0 );
+
     DataBlock* newBlock = new DataBlock;
     newBlock->start = 0;
     newBlock->fileStart = 0;
     newBlock->size = 0;
 
+
+    // Calculate total number of bytes to be written
+    OffsetT totalSize = 0;
+    for ( size_t i=0; i<m_Contents.size(); ++i )
+    {
+        if ( !m_Contents[ i ]->IsFromDisk() )
+        {
+            totalSize += m_Contents[ i ]->size;
+        }
+    }
+
+    // Save the data
+    OffsetT totalWritten = 0;
     for ( size_t i=0; i<m_Contents.size(); ++i )
     {
         DataBlock* block = m_Contents[ i ];
@@ -693,6 +757,9 @@ bool FileContentDisk::WriteFileEasiest( )
 
                 left -= thisSize;
                 pos  += thisSize;
+                totalWritten += thisSize;
+
+                dlg.Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
             }
         }
 
@@ -793,7 +860,16 @@ bool FileContentDisk::WriteToDifferentFile(const wxString& fileName)
 
 bool FileContentDisk::WriteToFile(wxFile& file)
 {
-    // TODO: Progress bar
+    static const int maxProgress = 10000;
+
+    wxProgressDialog dlg( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
+        Manager::Get()->GetAppWindow(),
+        wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
+    dlg.Update( 0 );
+
+    OffsetT totalSize = GetSize();
+    OffsetT totalWritten = 0;
+
     for ( size_t i=0; i<m_Contents.size(); ++i )
     {
         DataBlock* block = m_Contents[ i ];
@@ -821,6 +897,9 @@ bool FileContentDisk::WriteToFile(wxFile& file)
                 }
 
                 left -= read;
+                totalWritten += read;
+
+                dlg.Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
             }
         }
         else
@@ -839,6 +918,9 @@ bool FileContentDisk::WriteToFile(wxFile& file)
 
                 left -= thisSize;
                 pos  += thisSize;
+                totalWritten += thisSize;
+
+                dlg.Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
             }
 
         }
@@ -857,4 +939,284 @@ void FileContentDisk::ResetBlocks()
     first->size = m_File.Length();
 
     m_Contents.push_back( first );
+}
+
+class FileContentDisk::TestData
+{
+    public:
+
+        TestData()
+        {
+            // Open temporary file to make sure we won't harm anybody
+            OpenTempFile();
+        }
+
+        ~TestData()
+        {
+            CloseTempFile();
+        }
+
+        void Reset( int initialSize = 1 )
+        {
+            CloseTempFile();
+            OpenTempFile( initialSize );
+        }
+
+        /** \brief Check if the mirrored data is the same as the original one */
+        bool MirrorCheck()
+        {
+            char Buff[0x1000];
+
+            if ( m_ContentMirror.size() != m_Content.GetSize() )
+            {
+                return false;
+            }
+
+            OffsetT pos = 0;
+            for ( size_t left = m_ContentMirror.size(); left > 0; )
+            {
+                size_t thisBlock = wxMin( left, sizeof(Buff) );
+                if ( m_Content.Read( Buff, pos, thisBlock ) != thisBlock )
+                {
+                    return false;
+                }
+                char* ptr1 = Buff;
+                char* ptr2 = &m_ContentMirror[ pos ];
+
+                if ( memcmp( ptr1, ptr2, thisBlock ) )
+                {
+                    return false;
+                }
+
+                left -= thisBlock;
+                pos  += thisBlock;
+            }
+
+            return true;
+        }
+
+        /** \brief Write random data at given position with given length */
+        bool Write( OffsetT position, OffsetT length )
+        {
+            std::vector< char > buff = TempBuff( (int)length );
+
+            if ( m_Content.Write( ExtraUndoData(), &buff[0], position, length ) != length )
+            {
+                return false;
+            }
+
+            for ( size_t i=0; i<buff.size(); ++i )
+            {
+                if ( position + i < m_ContentMirror.size() )
+                {
+                    m_ContentMirror[ position+i ] = buff [ i ];
+                }
+            }
+
+            return MirrorCheck();
+        }
+
+        /** \brief Remove given block of data */
+        bool Remove( OffsetT position, OffsetT length )
+        {
+            if ( m_Content.Remove( ExtraUndoData(), position, length ) != length ) return false;
+
+            if ( position < m_ContentMirror.size() )
+            {
+                m_ContentMirror.erase(
+                    m_ContentMirror.begin() + position,
+                    m_ContentMirror.begin() + wxMin( m_ContentMirror.size(), position + length ) );
+            }
+
+            return MirrorCheck();
+        }
+
+        /** \brief Add new block of data */
+        bool Add( OffsetT position, OffsetT length )
+        {
+            std::vector< char > buff = TempBuff( (int)length );
+
+            if ( m_Content.Add( ExtraUndoData(), position, length, &buff[0] ) != length )
+            {
+                return false;
+            }
+
+            if ( position <= m_ContentMirror.size() )
+            {
+                m_ContentMirror.insert( m_ContentMirror.begin() + position, buff.begin(), buff.end() );
+            }
+
+            return MirrorCheck();
+        }
+
+        /** \brief Save the file */
+        bool Save()
+        {
+            m_Content.WriteFile( m_Content.m_FileName );
+            return MirrorCheck();
+        }
+
+    protected:
+
+        size_t Size() { return m_ContentMirror.size(); }
+        void   ResetBlocks() { m_Content.ResetBlocks(); }
+
+    private:
+
+        std::vector< char > TempBuff( int length )
+        {
+            std::vector< char > buff( length );
+            for ( size_t i=0; i<buff.size(); ++i ) buff[ i ] = (char)( rand() );
+            return buff;
+        }
+
+        /** \brief Open temporary file in the filecontent object */
+        void OpenTempFile( int initialSize = 1 )
+        {
+            m_Content.m_FileName = wxFileName::CreateTempFileName( wxEmptyString, &m_Content.m_File );
+
+            std::vector< char > buff = TempBuff( initialSize );
+            m_Content.m_File.Write( &buff[0], initialSize );
+
+            m_Content.ResetBlocks();
+            m_ContentMirror.clear();
+            m_ContentMirror.swap( buff );
+        }
+
+        /** \brief Close temporary fileif it has been openeed */
+        void CloseTempFile()
+        {
+            // Close and erase the file we were working on
+            m_Content.m_File.Close();
+            wxRemoveFile( m_Content.m_FileName );
+        }
+
+
+        FileContentDisk m_Content;
+        std::vector< char > m_ContentMirror;
+};
+
+typedef TestCasesHelper< FileContentDisk::TestData > TestCases;
+static TestCases testCases;
+
+TestCasesBase & FileContentDisk::GetTests()
+{
+    return testCases;
+}
+
+template<>
+template<>
+void TestCases::Test<1>()
+{
+    Reset( 1024 );
+
+    for ( int i=0; i<1024; i++ )
+    {
+        Ensure( Write( i, 1 ), _T("Writing one byte" ) );
+    }
+}
+
+template<>
+template<>
+void TestCases::Test<2>()
+{
+    Reset( 1024 );
+
+    for ( int i=0; i<1024; i+=2 )
+    {
+        Ensure( Write( i, 1 ), _T("Writing one byte with one byte left untouched" ) );
+    }
+}
+
+
+template<>
+template<>
+void TestCases::Test<3>()
+{
+    Reset( 1024 );
+
+    for ( int i=0; i<1024; i++ )
+    {
+        size_t pos = rand() % 1024;
+        size_t size = rand() % ( 1024 - pos );
+        Ensure( Write( pos, size ), _T("Writing random block of data" ) );
+    }
+}
+
+
+template<>
+template<>
+void TestCases::Test<4>()
+{
+    Reset( 1024 * 1024 );
+    Ensure( MirrorCheck(), _T("Broken from the beginning") );
+
+    for ( int i=0; i<128; i++ )
+    {
+
+        switch ( rand() % 10 )
+        {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            {
+                size_t pos  = rand() % ( Size() );
+                size_t size = rand() % ( Size() - pos );
+                Ensure( Write( pos, size ), _T("Stress test over 1MB initial file size - write" ) );
+                break;
+            }
+
+            case 6:
+            case 7:
+            {
+                size_t pos  = rand() % ( Size() );
+                size_t size = 100;
+                Ensure( Add( pos, size ), _T("Stress test over 1MB initial file size - add" ) );
+                break;
+            }
+
+            case 8:
+            case 9:
+            {
+                size_t pos  = rand() % ( Size() - 100 );
+                size_t size = 100;
+                Ensure( Remove( pos, size ), _T("Stress test over 1MB initial file size - remove" ) );
+                break;
+            }
+        }
+    }
+
+    Ensure( Save(), _T("Save complicated file") );
+}
+
+template<>
+template<>
+void TestCases::Test<5>()
+{
+    Reset( 1024 );
+
+    for ( int i=0; i<1024; i+=2 )
+    {
+        Ensure( Write( i, 1 ), _T("Writing one byte" ) );
+    }
+
+    Ensure( Save(), _T("Save file using simple method (chees layout)") );
+}
+
+template<>
+template<>
+void TestCases::Test<6>()
+{
+    Reset( 1024*1024 );
+
+    Ensure( Remove( 1024*1023, 1024 ), _T("Removing 1kB from the end of 1MB file") );
+
+    Ensure( Save(), _T("Saving file after removing some part at the end") );
+
+    ResetBlocks();
+
+    Ensure( MirrorCheck(), _T("Saving file after removing some part at the end (2)") );
 }

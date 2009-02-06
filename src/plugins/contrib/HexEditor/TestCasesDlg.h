@@ -32,16 +32,21 @@
 //*)
 #include <wx/thread.h>
 
-#include "ExpressionTestCases.h"
+#include "TestCasesBase.h"
 
-class TestCasesDlg: public wxDialog, public Expression::TestCases
+class TestCasesDlg: public wxDialog, public TestCasesBase::Output
 {
 	public:
 
-		TestCasesDlg(wxWindow* parent);
+		TestCasesDlg(wxWindow* parent, TestCasesBase& tests);
 		virtual ~TestCasesDlg();
 
-	private:
+	protected:
+
+		virtual void AddLog( const wxString& logLine );
+		virtual bool StopTest();
+
+    private:
 
 		//(*Declarations(TestCasesDlg)
 		wxListBox* ListBox1;
@@ -61,8 +66,6 @@ class TestCasesDlg: public wxDialog, public Expression::TestCases
 		void OnClose(wxCloseEvent& event);
 		//*)
 
-		virtual void AddLog( const wxString& logLine );
-		virtual bool StopTest();
 		virtual int Entry();
 
 		void BuildContent(wxWindow* parent);
@@ -80,6 +83,7 @@ class TestCasesDlg: public wxDialog, public Expression::TestCases
                 virtual ExitCode Entry() { return (ExitCode)m_Dlg->Entry(); }
 		};
 
+        TestCasesBase&    m_Tests;
         MyThread*         m_Thread;
 		wxCriticalSection m_Section;
         wxArrayString     m_NewLogs;
