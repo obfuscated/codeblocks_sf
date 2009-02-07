@@ -1,6 +1,6 @@
 /*
 * This file is part of HexEditor plugin for Code::Blocks Studio
-* Copyright (C) 2008 Bartlomiej Swiecki
+* Copyright (C) 2008-2009 Bartlomiej Swiecki
 *
 * HexEditor plugin is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@
 namespace
 {
     const FileContentBase::OffsetT maxBufferedSize = 1024L * 1024L * 4;
-    const FileContentBase::OffsetT maxAnySize      = 1024L * 1024L * 1024L * 2;  // 2 GB limit
+    const FileContentBase::OffsetT maxAnySize      = 0x8000000000000000ULL;//1024L * 1024L * 1024L * 2;  // 2 GB limit
 }
 
 FileContentBase::InvalidModificationData FileContentBase::m_UndoInvalid;

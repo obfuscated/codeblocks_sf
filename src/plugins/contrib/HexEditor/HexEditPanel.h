@@ -1,6 +1,6 @@
 /*
 * This file is part of HexEditor plugin for Code::Blocks Studio
-* Copyright (C) 2008 Bartlomiej Swiecki
+* Copyright (C) 2008-2009 Bartlomiej Swiecki
 *
 * HexEditor plugin is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -266,6 +266,8 @@ class HexEditPanel: public EditorBase
         void OnSetColsPower8(wxCommandEvent& event);
         void OnSetColsPowerOther(wxCommandEvent& event);
         void OnButton4Click1(wxCommandEvent& event);
+        void OnContentScrollTop(wxScrollEvent& event);
+        void OnContentScrollBottom(wxScrollEvent& event);
         //*)
 
         typedef std::set< EditorBase* > EditorsSet;
@@ -314,6 +316,10 @@ class HexEditPanel: public EditorBase
         int                      m_ColsMode;
         int                      m_ColsValue;
         int                      m_ColsCount;
+
+        OffsetT                  m_LinesPerScrollUnit;          ///< \brief Number of lines per one scroll unit
+        int                      m_LastScrollUnits;             ///< \brief Last position of the scroll (in scroll units)
+        OffsetT                  m_LastScrollPos;               ///< \brief Last position of the scroll as offset in file
 
         static EditorsSet        m_AllEditors;                  ///< \brief Set of all opened editors, used to close all editors when plugin is being unloaded
 

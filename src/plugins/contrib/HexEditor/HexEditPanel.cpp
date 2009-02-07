@@ -1,6 +1,6 @@
 /*
 * This file is part of HexEditor plugin for Code::Blocks Studio
-* Copyright (C) 2008 Bartlomiej Swiecki
+* Copyright (C) 2008-2009 Bartlomiej Swiecki
 *
 * HexEditor plugin is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -375,12 +375,23 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     Connect( wxEVT_SET_FOCUS, (wxObjectEventFunction)&HexEditPanel::OnForwardFocus );
 
     m_ActiveView = 0;
+    m_LastScrollPos = 0;
+    m_LastScrollUnits = 0;
+    m_LinesPerScrollUnit = 1;
     CreateViews();
     RecalculateCoefs();
 
     ReparseExpression();
     SetFontSize( 8 );
     ReadContent();
+
+    if ( m_Content && m_Content->GetSize() > 0x40000000ULL )
+    {
+        // Because of the filesize we have to map scroll units
+        // to some number of lines
+        m_LinesPerScrollUnit = m_Content->GetSize() / 0x20000000ULL;
+    }
+
     RefreshStatus();
 
     m_Current = 0;
@@ -548,11 +559,15 @@ void HexEditPanel::RecalculateCoefs()
     // Adjust scroll bar
     OffsetT contentSize = m_Content ? m_Content->GetSize() : 0;
 
+    int totalLines = ( contentSize + m_LineBytes          - 1 ) / m_LineBytes;
+    int totalUnits = ( totalLines  + m_LinesPerScrollUnit - 1 ) / m_LinesPerScrollUnit;
+    int thumbLines = ( m_Lines     + m_LinesPerScrollUnit - 1 ) / m_LinesPerScrollUnit;
+
     m_ContentScroll->SetScrollbar(
         m_ContentScroll->GetThumbPosition(),
-        m_Lines,
-        ( contentSize + m_LineBytes - 1 ) / m_LineBytes,
-        m_Lines );
+        thumbLines,
+        totalUnits,
+        thumbLines );
 }
 
 void HexEditPanel::OnContentPaint( wxPaintEvent& event )
@@ -630,10 +645,51 @@ void HexEditPanel::OnContentScroll( wxScrollEvent& event )
         return;
     }
 
+    if ( m_ContentScroll->GetThumbPosition() == 0 )
+    {
+        DetectStartOffset();
+        m_LastScrollPos   = 0;
+    }
+    else if ( m_ContentScroll->GetThumbPosition() >= m_ContentScroll->GetRange() - m_ContentScroll->GetThumbSize() )
+    {
+        DetectStartOffset();
+        int totalLines = m_Content->GetSize() / m_LineBytes;
+        m_LastScrollPos = totalLines - m_Lines + 1;
+    }
+
     ClampCursorToVisibleArea();
     m_DrawArea->Refresh();
     RefreshStatus();
     m_DrawArea->SetFocus();
+}
+
+void HexEditPanel::OnContentScrollTop(wxScrollEvent& event)
+{
+    if ( !m_Content || !m_Content->GetSize() )
+    {
+        return;
+    }
+
+    m_LastScrollPos   = 0;
+
+    LogManager::Get()->DebugLog( _T("Top") );
+
+    OnContentScroll( event );
+}
+
+void HexEditPanel::OnContentScrollBottom(wxScrollEvent& event)
+{
+    if ( !m_Content || !m_Content->GetSize() )
+    {
+        return;
+    }
+
+    int totalLines = m_Content->GetSize() / m_LineBytes;
+    m_LastScrollPos = totalLines - m_Lines + 1;
+
+    LogManager::Get()->DebugLog( _T("Top") );
+
+    OnContentScroll( event );
 }
 
 void HexEditPanel::OnContentSize( wxSizeEvent& event )
@@ -646,7 +702,35 @@ void HexEditPanel::OnContentSize( wxSizeEvent& event )
 
 FileContentBase::OffsetT HexEditPanel::DetectStartOffset()
 {
-    return m_ContentScroll->GetThumbPosition() * m_LineBytes;
+    if ( !m_Content ) return 0;
+
+    int currentUnits = m_ContentScroll->GetThumbPosition();
+
+    if ( currentUnits < m_LastScrollUnits )
+    {
+        FileContentBase::OffsetT diff = ( m_LastScrollUnits - currentUnits ) * m_LinesPerScrollUnit;
+        if ( m_LastScrollPos < diff )
+        {
+            m_LastScrollPos = 0;
+        }
+        else
+        {
+            m_LastScrollPos -= diff;
+        }
+    }
+    else if ( currentUnits > m_LastScrollUnits )
+    {
+        m_LastScrollPos += ( currentUnits - m_LastScrollUnits ) * m_LinesPerScrollUnit;
+        FileContentBase::OffsetT maxScrollPos = ( m_Content->GetSize() + m_LineBytes - 1 ) / m_LineBytes;
+        if ( m_LastScrollPos >= maxScrollPos )
+        {
+            m_LastScrollPos = maxScrollPos-1;
+        }
+    }
+
+    m_LastScrollUnits = currentUnits;
+
+    return m_LastScrollPos * m_LineBytes;
 }
 
 void HexEditPanel::OnContentMouseWheel(wxMouseEvent& event)
@@ -960,12 +1044,20 @@ void HexEditPanel::EnsureCarretVisible()
 
     if ( line < startLine )
     {
-        m_ContentScroll->SetThumbPosition( line );
+        m_LastScrollPos   = line;
+        m_LastScrollUnits = line / m_LinesPerScrollUnit;
+
+        m_ContentScroll->SetThumbPosition( m_LastScrollUnits );
         m_DrawArea->Refresh();
     }
     else if ( line >= endLine )
     {
-        m_ContentScroll->SetThumbPosition( line - m_Lines + 1 );
+        line = line - m_Lines + 1;
+
+        m_LastScrollPos   = line;
+        m_LastScrollUnits = line / m_LinesPerScrollUnit;
+
+        m_ContentScroll->SetThumbPosition( m_LastScrollUnits );
         m_DrawArea->Refresh();
     }
 }
@@ -1691,3 +1783,4 @@ void HexEditPanel::OnButton4Click1(wxCommandEvent& event)
 
     TestCasesDlg( this, *test ).ShowModal();
 }
+
