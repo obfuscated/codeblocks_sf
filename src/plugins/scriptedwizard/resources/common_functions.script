@@ -39,6 +39,10 @@ function WarningsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-wx")); // max. warning level
     }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
+    {
+        base.AddCompilerOption(_T("-w-"));
+    }
     else
     {
         ShowWarning(_T("This wizard doesn't know how to setup warning flags for this compiler.\n"));
@@ -60,6 +64,7 @@ function DebugSymbolsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
@@ -138,6 +143,10 @@ function OptimizationsOn(base, compilerID)
         base.AddCompilerOption(_T("-ot")); // optimize for time
         base.AddCompilerOption(_T("-ox")); // Maximum optimization
     }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
+    {
+        base.AddCompilerOption(_T("-o"));
+    }
     else
     {
         ShowWarning(_T("This wizard doesn't know how to setup optimisation flags for this compiler.\n"));
@@ -164,6 +173,10 @@ function CppExceptionsOn(base, compilerID)
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
         base.AddCompilerOption(_T("-xs"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
+    {
+        base.AddCompilerOption(_T("-Ae"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
     {
