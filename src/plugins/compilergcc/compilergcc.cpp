@@ -1706,6 +1706,7 @@ int CompilerGCC::Run(const wxString& target)
 
 int CompilerGCC::Run(ProjectBuildTarget* target)
 {
+    bool commandIsQuoted = false; // remeber if we quoted the command, avoid uneeded quotes, because they break execution with "konsole" under KDE
     if (!CheckProject())
     {
         if (Manager::Get()->GetEditorManager()->GetActiveEditor())
@@ -1794,11 +1795,12 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
                 //  and its use for such purposes should be strictly banned!"
                 //                 -- Csh Programming Considered Harmful
                 command << DEFAULT_CONSOLE_SHELL << strSPACE;
+                // each shell execution must be enclosed to "":
+                // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
+                // here is first \"
+                command << strQUOTE;
+                commandIsQuoted = true;
             }
-            // each shell execution must be enclosed to "":
-            // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
-            // here is first \"
-            command << strQUOTE;
         }
 
         // should console runner be used?
@@ -1842,7 +1844,7 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         // each shell execution must be enclosed to "":
         // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
         // here is last \"
-        if( target->GetTargetType() == ttConsoleOnly && !platform::windows)
+        if(commandIsQuoted)
             command << strQUOTE;
     }
     else
