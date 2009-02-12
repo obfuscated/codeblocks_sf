@@ -17,12 +17,37 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON10" variable="Button6" member="yes">
+							<label>Goto</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton6Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON9" variable="Button5" member="yes">
+							<label>Search</label>
+							<style>wxBU_EXACTFIT</style>
+							<handler function="OnButton5Click" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
+							<style>wxLI_VERTICAL</style>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
 						<object class="wxButton" name="ID_BUTTON7" variable="m_ColsModeBtn" member="yes">
 							<label>Cols</label>
 							<style>wxBU_EXACTFIT</style>
 							<handler function="Onm_ColsModeClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">

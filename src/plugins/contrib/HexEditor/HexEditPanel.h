@@ -86,6 +86,7 @@ class HexEditPanel: public EditorBase
         wxMenuItem* MenuItem30;
         wxTextCtrl* m_Expression;
         wxBoxSizer* BoxSizer3;
+        wxStaticLine* StaticLine2;
         wxMenu m_EndianessMenu;
         wxStaticText* m_ExpressionVal;
         wxStaticText* m_LDoubleVal;
@@ -116,6 +117,7 @@ class HexEditPanel: public EditorBase
         wxMenu m_BlockSizeMenu;
         wxMenuItem* MenuItem3;
         wxStaticLine* StaticLine1;
+        wxButton* Button5;
         wxMenuItem* MenuItem9;
         wxStaticText* StaticText8;
         wxStaticText* m_WordVal;
@@ -141,6 +143,7 @@ class HexEditPanel: public EditorBase
         wxStaticText* m_ByteVal;
         wxStaticText* m_Status;
         wxMenuItem* MenuItem8;
+        wxButton* Button6;
         wxMenuItem* MenuItem14;
         wxButton* m_Endianess;
         wxButton* m_DigitBits;
@@ -148,6 +151,9 @@ class HexEditPanel: public EditorBase
 
         //(*Identifiers(HexEditPanel)
         static const long ID_STATICTEXT1;
+        static const long ID_BUTTON10;
+        static const long ID_BUTTON9;
+        static const long ID_STATICLINE2;
         static const long ID_BUTTON7;
         static const long ID_BUTTON4;
         static const long ID_BUTTON6;
@@ -268,6 +274,8 @@ class HexEditPanel: public EditorBase
         void OnButton4Click1(wxCommandEvent& event);
         void OnContentScrollTop(wxScrollEvent& event);
         void OnContentScrollBottom(wxScrollEvent& event);
+        void OnButton6Click(wxCommandEvent& event);
+        void OnButton5Click(wxCommandEvent& event);
         //*)
 
         typedef std::set< EditorBase* > EditorsSet;
@@ -349,6 +357,9 @@ class HexEditPanel: public EditorBase
 
         /** \brief Process GOTO request */
         void ProcessGoto();
+
+        /** \brief Process search request */
+        void ProcessSearch();
 
         /** \brief Reparse expression entered by the user in preview bar */
         void ReparseExpression();

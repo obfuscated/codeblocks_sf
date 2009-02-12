@@ -25,6 +25,7 @@ libHexEditor_la_SOURCES = \
 	HexEditor.cpp \
 	HexEditPanel.cpp \
 	HexEditViewBase.cpp \
+	SearchDialog.cpp \
 	SelectStoredExpressionDlg.cpp \
 	TestCasesDlg.cpp
 
@@ -44,6 +45,7 @@ noinst_HEADERS = \
 	HexEditor.h \
 	HexEditPanel.h \
 	HexEditViewBase.h \
+	SearchDialog.h \
 	SelectStoredExpressionDlg.h \
 	TestCasesBase.h \
 	TestCasesDlg.h \
@@ -54,6 +56,7 @@ noinst_HEADERS = \
 EXTRA_DIST = \
 	wxsmith/HexEditPanel.wxs \
 	wxsmith/ExpressionTester.wxs \
+	wxsmith/SearchDialog.wxs \
 	wxsmith/SelectStoredExpressionDlg.wxs \
 	wxsmith/TestCasesDlg.wxs \
 	HexEditor-unix.cbp \

@@ -32,6 +32,7 @@
 #include "ExpressionTestCases.h"
 #include "FileContentDisk.h"
 #include "TestCasesDlg.h"
+#include "SearchDialog.h"
 
 //(*InternalHeaders(HexEditPanel)
 #include <wx/string.h>
@@ -68,6 +69,9 @@ namespace
 
 //(*IdInit(HexEditPanel)
 const long HexEditPanel::ID_STATICTEXT1 = wxNewId();
+const long HexEditPanel::ID_BUTTON10 = wxNewId();
+const long HexEditPanel::ID_BUTTON9 = wxNewId();
+const long HexEditPanel::ID_STATICLINE2 = wxNewId();
 const long HexEditPanel::ID_BUTTON7 = wxNewId();
 const long HexEditPanel::ID_BUTTON4 = wxNewId();
 const long HexEditPanel::ID_BUTTON6 = wxNewId();
@@ -162,8 +166,14 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
     m_Status = new wxStaticText(this, ID_STATICTEXT1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer3->Add(m_Status, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button6 = new wxButton(this, ID_BUTTON10, _("Goto"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON10"));
+    BoxSizer3->Add(Button6, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Button5 = new wxButton(this, ID_BUTTON9, _("Search"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON9"));
+    BoxSizer3->Add(Button5, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticLine2 = new wxStaticLine(this, ID_STATICLINE2, wxDefaultPosition, wxDefaultSize, wxLI_VERTICAL, _T("ID_STATICLINE2"));
+    BoxSizer3->Add(StaticLine2, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_ColsModeBtn = new wxButton(this, ID_BUTTON7, _("Cols"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON7"));
-    BoxSizer3->Add(m_ColsModeBtn, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer3->Add(m_ColsModeBtn, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_DigitBits = new wxButton(this, ID_BUTTON4, _("Hex"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON4"));
     BoxSizer3->Add(m_DigitBits, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     m_BlockSize = new wxButton(this, ID_BUTTON6, _("1B"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON6"));
@@ -307,6 +317,8 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_ColsModeMenu.Append(ID_MENUITEM28, _("Power of"), MenuItem28, wxEmptyString);
     BoxSizer1->SetSizeHints(this);
 
+    Connect(ID_BUTTON10,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton6Click);
+    Connect(ID_BUTTON9,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton5Click);
     Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_ColsModeClick);
     Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::OnButton4Click);
     Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&HexEditPanel::Onm_BlockSizeClick);
@@ -1355,7 +1367,7 @@ void HexEditPanel::OnSpecialKeyDown(wxKeyEvent& event)
         switch ( event.GetKeyCode() )
         {
             case 'G': ProcessGoto(); return;
-//            case 'F': ProcessSearch(); return;
+            case 'F': ProcessSearch(); return;
         }
     }
 
@@ -1482,6 +1494,24 @@ void HexEditPanel::ProcessGoto()
     RefreshStatus();
     EnsureCarretVisible();
     m_DrawArea->Refresh();
+}
+
+void HexEditPanel::ProcessSearch()
+{
+    if ( !m_Content ) return;
+    if ( !m_Content->GetSize() ) return;
+
+    SearchDialog dlg( this, m_Content, m_Current );
+    if ( dlg.ShowModal() == wxID_OK )
+    {
+        m_Current = dlg.GetOffset();
+        PropagateOffsetChange();
+        RefreshStatus();
+        EnsureCarretVisible();
+        m_DrawArea->Refresh();
+    }
+
+    m_DrawArea->SetFocus();
 }
 
 void HexEditPanel::OnButton1Click(wxCommandEvent& event)
@@ -1784,3 +1814,13 @@ void HexEditPanel::OnButton4Click1(wxCommandEvent& event)
     TestCasesDlg( this, *test ).ShowModal();
 }
 
+
+void HexEditPanel::OnButton6Click(wxCommandEvent& event)
+{
+    ProcessGoto();
+}
+
+void HexEditPanel::OnButton5Click(wxCommandEvent& event)
+{
+    ProcessSearch();
+}

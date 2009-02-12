@@ -70,6 +70,8 @@
 		<Unit filename="HexEditor.cpp" />
 		<Unit filename="HexEditor.h" />
 		<Unit filename="Makefile.am" />
+		<Unit filename="SearchDialog.cpp" />
+		<Unit filename="SearchDialog.h" />
 		<Unit filename="SelectStoredExpressionDlg.cpp" />
 		<Unit filename="SelectStoredExpressionDlg.h" />
 		<Unit filename="TestCasesBase.h" />
@@ -79,6 +81,7 @@
 		<Unit filename="manifest.xml" />
 		<Unit filename="wxsmith/ExpressionTester.wxs" />
 		<Unit filename="wxsmith/HexEditPanel.wxs" />
+		<Unit filename="wxsmith/SearchDialog.wxs" />
 		<Unit filename="wxsmith/SelectStoredExpressionDlg.wxs" />
 		<Unit filename="wxsmith/TestCasesDlg.wxs" />
 		<Extensions>
@@ -91,6 +94,7 @@
 					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
 					<wxDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
 					<wxDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<lib_finder disable_auto="1" />
