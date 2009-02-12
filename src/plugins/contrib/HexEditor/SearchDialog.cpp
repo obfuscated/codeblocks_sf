@@ -1,3 +1,25 @@
+/*
+* This file is part of HexEditor plugin for Code::Blocks Studio
+* Copyright (C) 2009 Bartlomiej Swiecki
+*
+* HexEditor plugin is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Frsee Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* HexEditor pluging is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
+*
+* $Revision: 5445 $
+* $Id: FileContentDisk.cpp 5445 2009-02-07 00:35:09Z byo $
+* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/HexEditor/FileContentDisk.cpp $
+*/
+
 #include "SearchDialog.h"
 #include "ExpressionParser.h"
 #include "ExpressionExecutor.h"
@@ -28,6 +50,7 @@ const long SearchDialog::ID_RADIOBUTTON2 = wxNewId();
 const long SearchDialog::ID_RADIOBUTTON3 = wxNewId();
 const long SearchDialog::ID_BUTTON1 = wxNewId();
 const long SearchDialog::ID_RADIOBOX2 = wxNewId();
+const long SearchDialog::ID_RADIOBOX1 = wxNewId();
 //*)
 
 SearchDialog::SearchDialog( wxWindow* parent, FileContentBase* content, FileContentBase::OffsetT current ): m_Content( content ), m_Offset( current )
@@ -71,6 +94,14 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	m_StartFrom = new wxRadioBox(this, ID_RADIOBOX2, _("Start from"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX2"));
 	m_StartFrom->SetSelection(0);
 	BoxSizer3->Add(m_StartFrom, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	wxString __wxRadioBoxChoices_2[2] =
+	{
+		_("Up"),
+		_("Down")
+	};
+	m_Direction = new wxRadioBox(this, ID_RADIOBOX1, _("Direction"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX1"));
+	m_Direction->SetSelection(1);
+	BoxSizer3->Add(m_Direction, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer1->Add(BoxSizer3, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
 	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
@@ -99,6 +130,12 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	}
 	m_SearchValue->SetSelection( 0 );
 	m_StartFrom->SetSelection( cfg->ReadInt( CONF_GROUP _T("/origin") ) );
+	m_Direction->SetSelection( cfg->ReadInt( CONF_GROUP _T("/direction") ) );
+
+	int type = cfg->ReadInt( CONF_GROUP _T("/hexedit/type") );
+	m_SearchTypeString    ->SetValue( type==0 );
+	m_SearchTypeHex       ->SetValue( type==1 );
+	m_SearchTypeExpression->SetValue( type==2 );
 
 	Connect( wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SearchDialog::OnOk) );
 }
@@ -107,7 +144,14 @@ SearchDialog::~SearchDialog()
 {
 	ConfigManager* cfg = GetConfigManager();
 
-	cfg->Write( CONF_GROUP _T("/origin"), m_StartFrom->GetSelection() );
+	cfg->Write( CONF_GROUP _T("/origin"),    (int)m_StartFrom->GetSelection() );
+	cfg->Write( CONF_GROUP _T("/direction"), (int)m_Direction->GetSelection() );
+
+	int type =
+        m_SearchTypeString->GetValue() ? 0 :
+        m_SearchTypeHex   ->GetValue() ? 1 : 2;
+
+    cfg->Write( CONF_GROUP _T("/hexedit/type"), type );
 
 	wxString value = m_SearchValue->GetValue();
 
@@ -173,7 +217,7 @@ void SearchDialog::SearchHex( const wxChar* text )
             continue;
         }
 
-        int digitVal = wxString( _T("012345678ABCDEF") ).Find( wxToupper( *text ) );
+        int digitVal = wxString( _T("0123456789ABCDEF") ).Find( wxToupper( *text ) );
         if ( digitVal < 0 || digitVal >= 0x10 )
         {
             cbMessageBox( _("Invalid hex string, allowed characters are: hex digits and spaces"), _("Invalid hex string") );
@@ -217,89 +261,176 @@ void SearchDialog::SearchBuffer(const unsigned char* data, size_t length)
         return;
     }
 
+    bool backwards = m_Direction->GetSelection() == 0;
+    bool fromStart = m_StartFrom->GetSelection() != 0;
+
     std::vector< unsigned char > buff( wxMax( 2*length, 0x10000 ) );
 
     wxProgressDialog dlg( _("Searching..."), _("Search in progress"), 1000, this, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT );
 
     typedef FileContentBase::OffsetT OffsetT;
 
-    OffsetT pos      = m_StartFrom->GetSelection()==0 ? m_Offset+1 : 0ULL;
-    OffsetT left     = m_Content->GetSize() - pos;
-    OffsetT buffFill = m_Content->Read( &buff[0], pos, wxMin( left, buff.size() ) );
-
-    OffsetT startPos = pos;
-
-    if ( !buffFill )
+    if ( backwards )
     {
-        ReadError();
-        return;
-    }
+        OffsetT pos      = fromStart ? m_Content->GetSize() : m_Offset + length - 1;
+        pos              = wxMin( pos, m_Content->GetSize() );
+        OffsetT buffFill = wxMin( pos, buff.size() );
+        OffsetT left     = pos;
+        buffFill         = m_Content->Read( &buff[0], pos - buffFill, buffFill );
+        OffsetT startPos = pos;
 
-    left -= buffFill;
-
-    while ( buffFill >= length )
-    {
-        int offs = BlockCompare( &buff[0], buffFill, data, length );
-        if ( offs >= 0 )
-        {
-            FoundAt( pos + offs );
-            return;
-        }
-
-        if ( !left ) break;
-
-        size_t shift = buffFill - length + 1;
-
-        memmove( &buff[0], &buff[ shift ], length-1 );
-        buffFill -= shift;
-        pos      += shift;
-
-
-        OffsetT nowRead = m_Content->Read( &buff[ length-1 ], pos + length - 1, wxMin( left, buff.size() - length + 1 ) );
-        if ( !nowRead )
+        if ( !buffFill )
         {
             ReadError();
             return;
         }
 
-        buffFill += nowRead;
-        left     -= nowRead;
+        pos  -= buffFill;
+        left -= buffFill;
 
-
-        if ( !dlg.Update( (int)( (long double)(pos-startPos) / (long double)(m_Content->GetSize() -startPos )* 1000.0 ) ) )
+        while ( buffFill >= length )
         {
-            Cancel();
+            int offs = BlockCompare( &buff[0], buffFill, data, length, true );
+            if ( offs >= 0 )
+            {
+                FoundAt( pos + offs );
+                return;
+            }
+
+            if ( !left ) break;
+
+            size_t shift = buffFill - length + 1;
+            shift = wxMin( shift, left );
+
+            memmove( &buff[ shift ], &buff[ 0 ], length-1 );
+
+            OffsetT nowRead = m_Content->Read( &buff[ 0 ], pos - shift, shift );
+            if ( nowRead < shift )
+            {
+                ReadError();
+                return;
+            }
+
+            pos  -= shift;
+            left -= shift;
+
+            if ( !dlg.Update( (int)( (long double)(startPos-pos) / (long double)(startPos ) * 1000.0 ) ) )
+            {
+                Cancel();
+                return;
+            }
+        }
+
+    }
+    else
+    {
+        OffsetT pos      = fromStart ? 0ULL : m_Offset+1;
+        OffsetT left     = m_Content->GetSize() - pos;
+        OffsetT buffFill = m_Content->Read( &buff[0], pos, wxMin( left, buff.size() ) );
+
+        OffsetT startPos = pos;
+
+        if ( !left )
+        {
+            NotFound();
             return;
+        }
+
+        if ( !buffFill )
+        {
+            ReadError();
+            return;
+        }
+
+        left -= buffFill;
+
+        while ( buffFill >= length )
+        {
+            int offs = BlockCompare( &buff[0], buffFill, data, length, false );
+            if ( offs >= 0 )
+            {
+                FoundAt( pos + offs );
+                return;
+            }
+
+            if ( !left ) break;
+
+            size_t shift = buffFill - length + 1;
+
+            memmove( &buff[0], &buff[ shift ], length-1 );
+            buffFill -= shift;
+            pos      += shift;
+
+
+            OffsetT nowRead = m_Content->Read( &buff[ length-1 ], pos + length - 1, wxMin( left, buff.size() - length + 1 ) );
+            if ( !nowRead )
+            {
+                ReadError();
+                return;
+            }
+
+            buffFill += nowRead;
+            left     -= nowRead;
+
+
+            if ( !dlg.Update( (int)( (long double)(pos-startPos) / (long double)(m_Content->GetSize() - startPos )* 1000.0 ) ) )
+            {
+                Cancel();
+                return;
+            }
         }
     }
 
     NotFound();
 }
 
-int SearchDialog::BlockCompare(const unsigned char* searchIn, size_t inLength, const unsigned char* searchFor, size_t forLength)
+int SearchDialog::BlockCompare(const unsigned char* searchIn, size_t inLength, const unsigned char* searchFor, size_t forLength, bool backwards )
 {
-    int pos = 0;
-    while ( inLength >= forLength )
+    if ( !backwards )
     {
-        const unsigned char* firstCharPosition = ( const unsigned char* ) memchr( searchIn, *searchFor, inLength - forLength + 1 );
-        if ( !firstCharPosition ) return -1;
-
-        pos      += firstCharPosition - searchIn;
-        inLength -= firstCharPosition - searchIn;
-        searchIn  = firstCharPosition;
-
-
-        // First char matches, search for next ones
-        assert( inLength >= forLength );
-        if ( !memcmp( searchIn + 1, searchFor + 1, forLength - 1 ) )
+        int pos = 0;
+        while ( inLength >= forLength )
         {
-            return pos;
-        }
+            const unsigned char* firstCharPosition = ( const unsigned char* ) memchr( searchIn, *searchFor, inLength - forLength + 1 );
+            if ( !firstCharPosition ) return -1;
 
-        // No match, start searching from next character
-        pos++;
-        searchIn++;
-        inLength--;
+            pos      += firstCharPosition - searchIn;
+            inLength -= firstCharPosition - searchIn;
+            searchIn  = firstCharPosition;
+
+
+            // First char matches, search for next ones
+            assert( inLength >= forLength );
+            if ( forLength <= 1 || !memcmp( searchIn + 1, searchFor + 1, forLength - 1 ) )
+            {
+                return pos;
+            }
+
+            // No match, start searching from next character
+            pos++;
+            searchIn++;
+            inLength--;
+        }
+    }
+    else
+    {
+        int pos = inLength - forLength;
+        while ( pos >= 0 )
+        {
+            const unsigned char* firstCharPosition = ( const unsigned char* ) memrchr( searchIn, *searchFor, pos + 1 );
+            if ( !firstCharPosition ) return -1;
+
+            pos = firstCharPosition - searchIn;
+
+            // First char matches, search for next ones
+            assert( pos >= 0 );
+            if ( forLength <= 1 || !memcmp( searchIn + pos + 1, searchFor + 1, forLength - 1 ) )
+            {
+                return pos;
+            }
+
+            pos--;
+        }
     }
 
     return -1;
@@ -322,11 +453,31 @@ void SearchDialog::SearchExpression(const wxString& expression)
 
     typedef FileContentBase::OffsetT OffsetT;
 
-    OffsetT pos      = m_StartFrom->GetSelection()==0 ? m_Offset : 0ULL;
-    OffsetT left     = m_Content->GetSize() - pos;
-    OffsetT startPos = pos;
+    bool backwards = m_Direction->GetSelection() == 0;
+    bool fromStart = m_StartFrom->GetSelection() != 0;
 
-    for ( int i = 1; left; pos++, left-- )
+
+    OffsetT pos;
+    OffsetT size;
+    OffsetT cnt = 0;
+    signed char posStep;
+
+
+    if ( backwards )
+    {
+        pos     = fromStart ? m_Content->GetSize() : m_Offset;
+        size    = pos;
+        posStep = -1;
+        pos--;
+    }
+    else
+    {
+        pos     = fromStart ? 0ULL : m_Offset + 1;
+        size    = m_Content->GetSize() - pos;
+        posStep = 1;
+    }
+
+    for ( int i = 1; cnt < size; pos += posStep, cnt++ )
     {
         if ( executor.Execute( preprocessed, m_Content, pos ) )
         {
@@ -345,12 +496,12 @@ void SearchDialog::SearchExpression(const wxString& expression)
 
         if ( !--i )
         {
-            if ( !dlg.Update( (int)( (long double)(pos-startPos) / (long double)(m_Content->GetSize() -startPos )* 1000.0 ) ) )
+            if ( !dlg.Update( (int)( (long double)(cnt) / (long double)(size) * 1000.0 ) ) )
             {
                 Cancel();
                 return;
             }
-            i = 100;
+            i = 0x1000;
         }
     }
 

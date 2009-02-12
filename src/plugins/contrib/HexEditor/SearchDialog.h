@@ -1,3 +1,25 @@
+/*
+* This file is part of HexEditor plugin for Code::Blocks Studio
+* Copyright (C) 2009 Bartlomiej Swiecki
+*
+* HexEditor plugin is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Frsee Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* HexEditor pluging is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with HexEditor. If not, see <http://www.gnu.org/licenses/>.
+*
+* $Revision: 5445 $
+* $Id: FileContentDisk.cpp 5445 2009-02-07 00:35:09Z byo $
+* $HeadURL: svn+ssh://byo@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/HexEditor/FileContentDisk.cpp $
+*/
+
 #ifndef SEARCHDIALOG_H
 #define SEARCHDIALOG_H
 
@@ -31,6 +53,7 @@ class SearchDialog: public wxDialog
 		static const long ID_RADIOBUTTON3;
 		static const long ID_BUTTON1;
 		static const long ID_RADIOBOX2;
+		static const long ID_RADIOBOX1;
 		//*)
 
 		//(*Declarations(SearchDialog)
@@ -38,6 +61,7 @@ class SearchDialog: public wxDialog
 		wxComboBox* m_SearchValue;
 		wxRadioButton* m_SearchTypeExpression;
 		wxButton* Button1;
+		wxRadioBox* m_Direction;
 		wxRadioBox* m_StartFrom;
 		wxRadioButton* m_SearchTypeHex;
 		//*)
@@ -57,7 +81,7 @@ class SearchDialog: public wxDialog
 		void ReadError();
 		void Cancel();
 
-		static int BlockCompare( const unsigned char* searchIn, size_t inLength, const unsigned char* searchFor, size_t forLength );
+		static int BlockCompare( const unsigned char* searchIn, size_t inLength, const unsigned char* searchFor, size_t forLength, bool backwards );
 
 		FileContentBase*         m_Content;
 		FileContentBase::OffsetT m_Offset;

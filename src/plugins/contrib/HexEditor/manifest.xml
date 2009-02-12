@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="HexEditor">
         <Value title="HexEditor" />
-        <Value version="0.3" />
+        <Value version="0.5" />
         <Value description="" />
         <Value author="Bartlomiej Swiecki" />
         <Value authorEmail="" />
