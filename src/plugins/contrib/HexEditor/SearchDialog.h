@@ -2,11 +2,11 @@
 #define SEARCHDIALOG_H
 
 //(*Headers(SearchDialog)
+#include <wx/combobox.h>
 #include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/radiobut.h>
-#include <wx/textctrl.h>
 #include <wx/radiobox.h>
 //*)
 
@@ -25,7 +25,7 @@ class SearchDialog: public wxDialog
 		void BuildContent(wxWindow* parent);
 
 		//(*Identifiers(SearchDialog)
-		static const long ID_TEXTCTRL1;
+		static const long ID_COMBOBOX1;
 		static const long ID_RADIOBUTTON1;
 		static const long ID_RADIOBUTTON2;
 		static const long ID_RADIOBUTTON3;
@@ -35,10 +35,10 @@ class SearchDialog: public wxDialog
 
 		//(*Declarations(SearchDialog)
 		wxRadioButton* m_SearchTypeString;
+		wxComboBox* m_SearchValue;
 		wxRadioButton* m_SearchTypeExpression;
 		wxButton* Button1;
 		wxRadioBox* m_StartFrom;
-		wxTextCtrl* m_SearchValue;
 		wxRadioButton* m_SearchTypeHex;
 		//*)
 

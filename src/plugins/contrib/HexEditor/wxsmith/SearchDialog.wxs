@@ -11,10 +11,7 @@
 					<label>Search for</label>
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_SearchValue" member="yes">
-							<value>Text</value>
-							<size>350,27</size>
-							<style>wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB</style>
+						<object class="wxComboBox" name="ID_COMBOBOX1" variable="m_SearchValue" member="yes">
 							<handler function="OnOk" entry="EVT_TEXT_ENTER" />
 						</object>
 						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

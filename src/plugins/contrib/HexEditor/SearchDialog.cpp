@@ -2,7 +2,6 @@
 #include "ExpressionParser.h"
 #include "ExpressionExecutor.h"
 
-
 //(*InternalHeaders(SearchDialog)
 #include <wx/string.h>
 #include <wx/intl.h>
@@ -11,9 +10,19 @@
 #include <globals.h>
 #include <vector>
 #include <wx/progdlg.h>
+#include <manager.h>
+#include <configmanager.h>
+
+#define CONF_NAME  _T("editor")
+#define CONF_GROUP _T("/find_options")
+
+namespace
+{
+    ConfigManager* GetConfigManager() { return Manager::Get()->GetConfigManager( CONF_NAME ); }
+}
 
 //(*IdInit(SearchDialog)
-const long SearchDialog::ID_TEXTCTRL1 = wxNewId();
+const long SearchDialog::ID_COMBOBOX1 = wxNewId();
 const long SearchDialog::ID_RADIOBUTTON1 = wxNewId();
 const long SearchDialog::ID_RADIOBUTTON2 = wxNewId();
 const long SearchDialog::ID_RADIOBUTTON3 = wxNewId();
@@ -38,7 +47,7 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	Create(parent, wxID_ANY, _("Search..."), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Search for"));
-	m_SearchValue = new wxTextCtrl(this, ID_TEXTCTRL1, _("Text"), wxDefaultPosition, wxSize(350,27), wxTE_PROCESS_ENTER|wxTE_PROCESS_TAB, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+	m_SearchValue = new wxComboBox(this, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
 	StaticBoxSizer1->Add(m_SearchValue, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	m_SearchTypeString = new wxRadioButton(this, ID_RADIOBUTTON1, _("String"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
@@ -72,16 +81,46 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 
-	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&SearchDialog::OnOk);
+	Connect(ID_COMBOBOX1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&SearchDialog::OnOk);
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&SearchDialog::OnButton1Click);
 	//*)
 
+	ConfigManager* cfg = GetConfigManager();
+
     m_SearchValue->SetFocus();
+
+    wxArrayString last = cfg->ReadArrayString( CONF_GROUP _T("/last") );
+	for ( size_t i = 0; i < last.GetCount(); ++i )
+	{
+		if ( !last[i].IsEmpty())
+		{
+		    m_SearchValue->Append( last[i] );
+        }
+	}
+	m_SearchValue->SetSelection( 0 );
+	m_StartFrom->SetSelection( cfg->ReadInt( CONF_GROUP _T("/origin") ) );
+
 	Connect( wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SearchDialog::OnOk) );
 }
 
 SearchDialog::~SearchDialog()
 {
+	ConfigManager* cfg = GetConfigManager();
+
+	cfg->Write( CONF_GROUP _T("/origin"), m_StartFrom->GetSelection() );
+
+	wxString value = m_SearchValue->GetValue();
+
+	wxArrayString last = cfg->ReadArrayString( CONF_GROUP _T("/last") );
+    int lastPos = last.Index( value );
+    if ( lastPos != wxNOT_FOUND )
+    {
+        last.RemoveAt( lastPos );
+    }
+    last.Insert( value, 0 );
+
+    cfg->Write( CONF_GROUP _T("/last"), last );
+
 	//(*Destroy(SearchDialog)
 	//*)
 }
@@ -184,7 +223,7 @@ void SearchDialog::SearchBuffer(const unsigned char* data, size_t length)
 
     typedef FileContentBase::OffsetT OffsetT;
 
-    OffsetT pos      = m_StartFrom->GetSelection()==0 ? m_Offset : 0ULL;
+    OffsetT pos      = m_StartFrom->GetSelection()==0 ? m_Offset+1 : 0ULL;
     OffsetT left     = m_Content->GetSize() - pos;
     OffsetT buffFill = m_Content->Read( &buff[0], pos, wxMin( left, buff.size() ) );
 
