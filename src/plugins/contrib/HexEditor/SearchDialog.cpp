@@ -54,8 +54,9 @@ namespace
     #else
 
         // Custom implementation, may be much slower
-        inline const void* my_memrchr( const void* s, int c, size_t n )
+        inline const void* my_memrchr( const void* _s, int c, size_t n )
         {
+            const char* s = (const char*)_s;
             for ( size_t i=n; i-->0; )
             {
                 if ( s[ i ] == c ) return s+i;
