@@ -41,6 +41,29 @@
 namespace
 {
     ConfigManager* GetConfigManager() { return Manager::Get()->GetConfigManager( CONF_NAME ); }
+
+
+    #if defined ( __linux__ )  || defined ( LINUX )
+
+        // Use native implementation
+        inline const void* my_memrchr( const void* s, int c, size_t n )
+        {
+            return memrchr( s, c, n );
+        }
+
+    #else
+
+        // Custom implementation, may be much slower
+        inline const void* my_memrchr( const void* s, int c, size_t n )
+        {
+            for ( size_t i=n; i-->0; )
+            {
+                if ( s[ i ] == c ) return s+i;
+            }
+            return 0;
+        }
+
+    #endif
 }
 
 //(*IdInit(SearchDialog)
@@ -417,7 +440,7 @@ int SearchDialog::BlockCompare(const unsigned char* searchIn, size_t inLength, c
         int pos = inLength - forLength;
         while ( pos >= 0 )
         {
-            const unsigned char* firstCharPosition = ( const unsigned char* ) memrchr( searchIn, *searchFor, pos + 1 );
+            const unsigned char* firstCharPosition = ( const unsigned char* ) my_memrchr( searchIn, *searchFor, pos + 1 );
             if ( !firstCharPosition ) return -1;
 
             pos = firstCharPosition - searchIn;
