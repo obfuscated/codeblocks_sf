@@ -27,6 +27,8 @@
 #include <wx/progdlg.h>
 
 #include <algorithm>
+#include <memory>
+
 #include <logmanager.h>
 #include <annoyingdialog.h>
 
@@ -89,7 +91,7 @@ class FileContentDisk::DiskModificationData: public FileContentBase::Modificatio
 };
 
 
-FileContentDisk::FileContentDisk()
+FileContentDisk::FileContentDisk(): m_TestMode( false )
 {
 }
 
@@ -710,10 +712,12 @@ bool FileContentDisk::WriteFileEasiest( )
 {
     static const int maxProgress = 10000;
 
-    wxProgressDialog dlg( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
-        Manager::Get()->GetAppWindow(),
-        wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
-    dlg.Update( 0 );
+    std::auto_ptr< wxProgressDialog > dlg(
+        m_TestMode ? 0 : new wxProgressDialog( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
+                    Manager::Get()->GetAppWindow(),
+                    wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
+
+    if ( dlg.get() ) dlg->Update( 0 );
 
     DataBlock* newBlock = new DataBlock;
     newBlock->start = 0;
@@ -759,7 +763,7 @@ bool FileContentDisk::WriteFileEasiest( )
                 pos  += thisSize;
                 totalWritten += thisSize;
 
-                dlg.Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
+                if ( dlg.get() ) dlg->Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
             }
         }
 
@@ -862,10 +866,12 @@ bool FileContentDisk::WriteToFile(wxFile& file)
 {
     static const int maxProgress = 10000;
 
-    wxProgressDialog dlg( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
-        Manager::Get()->GetAppWindow(),
-        wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
-    dlg.Update( 0 );
+    std::auto_ptr< wxProgressDialog > dlg(
+        m_TestMode ? 0 : new wxProgressDialog( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
+                    Manager::Get()->GetAppWindow(),
+                    wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
+
+    if ( dlg.get() ) dlg->Update( 0 );
 
     OffsetT totalSize = GetSize();
     OffsetT totalWritten = 0;
@@ -899,7 +905,7 @@ bool FileContentDisk::WriteToFile(wxFile& file)
                 left -= read;
                 totalWritten += read;
 
-                dlg.Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
+                if ( dlg.get() ) dlg->Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
             }
         }
         else
@@ -920,7 +926,7 @@ bool FileContentDisk::WriteToFile(wxFile& file)
                 pos  += thisSize;
                 totalWritten += thisSize;
 
-                dlg.Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
+                if ( dlg.get() ) dlg->Update( (int)( (double)totalWritten / (double)totalSize * (double)maxProgress ) );
             }
 
         }
@@ -947,6 +953,7 @@ class FileContentDisk::TestData
 
         TestData()
         {
+            m_Content.m_TestMode = true;
             // Open temporary file to make sure we won't harm anybody
             OpenTempFile();
         }

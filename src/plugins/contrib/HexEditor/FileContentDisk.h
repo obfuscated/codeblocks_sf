@@ -97,6 +97,7 @@ class FileContentDisk: public FileContentBase
         wxString                  m_FileName;    ///< \brief Name of opened file
         wxFile                    m_File;        ///< \brief File used as disk source
         std::vector< DataBlock* > m_Contents;    ///< \brief Contents of the data in form of blocks sorted by start offsets
+        bool                      m_TestMode;    ///< \brief Flag indicating that we're running internal tests
 
         /** \brief Delete all data blocks */
         void ClearBlocks();
