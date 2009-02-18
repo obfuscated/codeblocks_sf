@@ -56,6 +56,7 @@ enum BuildState
     bsTargetPreBuild,
     bsTargetBuild,
     bsTargetPostBuild,
+    bsTargetDone,
     bsProjectPostBuild,
     bsProjectDone
 };

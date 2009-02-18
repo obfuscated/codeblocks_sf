@@ -2099,6 +2099,7 @@ wxString StateToString(BuildState bs)
         case bsTargetClean: return _T("bsTargetClean");
         case bsTargetBuild: return _T("bsTargetBuild");
         case bsTargetPostBuild: return _T("bsTargetPostBuild");
+        case bsTargetDone: return _T("bsTargetDone");
         case bsProjectPostBuild: return _T("bsProjectPostBuild");
         case bsProjectDone: return _T("bsProjectDone");
     }
@@ -2140,13 +2141,17 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             {
                 return bsTargetBuild;
             }
-            return bsTargetPostBuild;
+            return bsTargetDone;
         }
 
-        case bsTargetBuild: return bsTargetPostBuild;
+        case bsTargetBuild:
+            return bsTargetPostBuild;
+
+        case bsTargetPostBuild:
+            return bsTargetDone;
 
         // advance target in the project
-        case bsTargetPostBuild:
+        case bsTargetDone:
         {
             // get next build job
             if (m_BuildJob != bjTarget)
@@ -2165,13 +2170,19 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
                     return bsTargetPreBuild;
                 }
                 // switch project
+                // don't run postbuild step, if we only clean the project
+                if(build)
+                {
                 return bsProjectPostBuild;
+                }
+                return bsProjectDone;
             }
             m_pBuildingProject->SetCurrentlyCompilingTarget(0);
             break; // all done
         }
 
-        case bsProjectPostBuild: return bsProjectDone;
+        case bsProjectPostBuild:
+            return bsProjectDone;
 
         case bsProjectDone:
         {
@@ -2260,7 +2271,8 @@ void CompilerGCC::BuildStateManagement()
     {
         case bsProjectPreBuild:
         {
-            // run project pre-build steps
+            // don't run project pre-build steps if we only clan it
+            if(m_Build)
             cmds = dc.GetPreBuildCommands(0);
             break;
         }
