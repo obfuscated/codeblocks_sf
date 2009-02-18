@@ -1960,18 +1960,21 @@ int CompilerGCC::Clean(const wxString& target)
     return DoBuild(target, true, false);
 }
 
-bool CompilerGCC::DoCleanWithMake(const wxString& cmd)
+bool CompilerGCC::DoCleanWithMake(const wxString& cmd, bool showOutput)
 {
     wxArrayString output, errors;
     long result = wxExecute(cmd, output, errors, wxEXEC_SYNC);
-//    for(size_t i = 0; i < output.GetCount(); i++)
-//    {
-//        Manager::Get()->GetLogManager()->Log(F(_("%s"), output[i].c_str()), m_PageIndex);
-//    }
-//    for(size_t i = 0; i < errors.GetCount(); i++)
-//    {
-//        Manager::Get()->GetLogManager()->Log(F(_("%s"), errors[i].c_str()), m_PageIndex);
-//    }
+    if(showOutput)
+    {
+        for(size_t i = 0; i < output.GetCount(); i++)
+        {
+            Manager::Get()->GetLogManager()->Log(F(_("%s"), output[i].c_str()), m_PageIndex);
+        }
+        for(size_t i = 0; i < errors.GetCount(); i++)
+        {
+            Manager::Get()->GetLogManager()->Log(F(_("%s"), errors[i].c_str()), m_PageIndex);
+        }
+    }
     return (result == 0);
 }
 
@@ -2109,7 +2112,7 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
 
     switch (m_BuildState)
     {
-        case bsProjectPreBuild: return bsTargetPreBuild;
+        case bsProjectPreBuild:
         {
             if (clean && !build)
             {
@@ -2277,7 +2280,22 @@ void CompilerGCC::BuildStateManagement()
             if (UseMake(m_pBuildingProject))
             {
                 wxString cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
-                if(DoCleanWithMake(cmd))
+                bool cleanOK = false;
+                switch (CompilerFactory::GetCompiler(bt->GetCompilerID())->GetSwitches().logging)
+                {
+                    case clogFull:
+                        cleanOK = DoCleanWithMake(cmd, true);
+                        break;
+
+                    case clogSimple:
+                    case clogNone:
+                        cleanOK = DoCleanWithMake(cmd);
+                        break;
+
+                    default:
+                        break;
+                }
+                if(cleanOK)
                 {
                     Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
                 }
