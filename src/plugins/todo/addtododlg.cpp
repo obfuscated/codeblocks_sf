@@ -50,7 +50,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& users, wxArrayString& ty
 
     if (!lastUser.IsEmpty())
     {
-        int sel = cmb->FindString(lastUser);
+        int sel = cmb->FindString(lastUser, true);
         if (sel != -1)
             cmb->SetSelection(sel);
     }
@@ -80,7 +80,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& users, wxArrayString& ty
 
     if (!lastType.IsEmpty())
     {
-        int sel = cmb->FindString(lastType);
+        int sel = cmb->FindString(lastType, true);
         if (sel != -1)
             cmb->SetSelection(sel);
     }
@@ -90,7 +90,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& users, wxArrayString& ty
     cmb = XRCCTRL(*this, "chcStyle", wxChoice);
     if (!lastStyle.IsEmpty())
     {
-        int sel = cmb->FindString(lastStyle);
+        int sel = cmb->FindString(lastStyle, true);
         if (sel != -1)
             cmb->SetSelection(sel);
     }
@@ -98,7 +98,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& users, wxArrayString& ty
     cmb = XRCCTRL(*this, "chcPosition", wxChoice);
     if (!lastPos.IsEmpty())
     {
-        int sel = cmb->FindString(lastPos);
+        int sel = cmb->FindString(lastPos, true);
         if (sel != -1)
             cmb->SetSelection(sel);
     }
@@ -151,19 +151,21 @@ void AddTodoDlg::EndModal(int retVal)
         // "save" users
         wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
         m_Users.Clear();
-        if (cmb->FindString(cmb->GetStringSelection()) == wxNOT_FOUND)
+        if (cmb->FindString(cmb->GetStringSelection(), true) == wxNOT_FOUND)
             m_Users.Add(cmb->GetStringSelection());
-        for (int i = 0; i < (int)cmb->GetCount(); ++i)
+        for (unsigned int i = 0; i < cmb->GetCount(); ++i)
             m_Users.Add(cmb->GetString(i));
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), m_Users);
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_user"), cmb->GetStringSelection());
 
         // "save" types
         cmb = XRCCTRL(*this, "chcType", wxChoice);
         m_Types.Clear();
-        if (cmb->FindString(cmb->GetStringSelection()) == wxNOT_FOUND)
+        if (cmb->FindString(cmb->GetStringSelection(), true) == wxNOT_FOUND)
             m_Types.Add(cmb->GetStringSelection());
-        for (int i = 0; i < (int)cmb->GetCount(); ++i)
+        for (unsigned int i = 0; i < cmb->GetCount(); ++i)
             m_Types.Add(cmb->GetString(i));
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types"), m_Types);
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_type"), cmb->GetStringSelection());
 
         cmb = XRCCTRL(*this, "chcStyle", wxChoice);
