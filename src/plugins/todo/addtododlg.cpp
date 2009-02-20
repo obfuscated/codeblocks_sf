@@ -28,7 +28,7 @@ BEGIN_EVENT_TABLE(AddTodoDlg, wxDialog)
     EVT_BUTTON(XRCID("btDelType"), AddTodoDlg::OnDelType)
 END_EVENT_TABLE()
 
-AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString& users, wxArrayString& types) :
+AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types) :
     m_Users(users),
     m_Types(types)
 {

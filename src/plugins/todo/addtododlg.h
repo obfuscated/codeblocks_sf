@@ -32,8 +32,7 @@ enum ToDoCommentType
 class AddTodoDlg : public wxDialog
 {
     public:
-        // make sure the users/types live as long (or longer) then this dialog
-        AddTodoDlg(wxWindow* parent, wxArrayString& users, wxArrayString& types);
+        AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types);
         ~AddTodoDlg();
 
         wxString GetText() const;
@@ -50,10 +49,9 @@ class AddTodoDlg : public wxDialog
         void OnAddType(wxCommandEvent& event);
         void OnDelType(wxCommandEvent& event);
 
-        wxArrayString& m_Users;
-        wxArrayString& m_Types;
+        wxArrayString m_Users;
+        wxArrayString m_Types;
         DECLARE_EVENT_TABLE()
 };
 
 #endif // ADDTODODLG_H
-

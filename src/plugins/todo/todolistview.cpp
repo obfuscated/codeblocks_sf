@@ -410,14 +410,28 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
             bool isValid = false; // found it in a comment?
             bool isC = false; // C or C++ style comment?
 
-//#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
-
             // first check what type of comment we have
             wxString allowedChars = _T(" \t/*");
             wxChar lastChar = _T('\0');
             while (idx >= 0)
             {
+                // Check for special cases: compiler warnings, errors
+                if      ((idx>=8) && buffer.Mid(idx-8, 8).IsSameAs(_T("#warning")))
+                {
+                    isValid = true;
+                    break;
+                }
+                else if ((idx>=6) && buffer.Mid(idx-6, 6).IsSameAs(_T("#error")))
+                {
+                    isValid = true;
+                    break;
+                }
+
                 wxChar c = buffer.GetChar(--idx);
+                // Check for EOL's and terminate early (saving time)
+                if (c == _T('\r') || c == _T('\n'))
+                    break;
+
                 if ((int)allowedChars.Index(c) != wxNOT_FOUND)
                 {
                     if (c == _T('/') && (lastChar == _T('/') || lastChar == _T('*')))
@@ -429,10 +443,18 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 }
                 else
                     break;
+
                 lastChar = c;
             }
 
-//Manager::Get()->GetLogManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", isC ? "C" : "C++", m_Types[i].c_str(), pos);
+//wxString msg;
+//msg.Printf(_T("Found %s %s style %s at %d"),
+//           isValid ? _T("valid") : _T("invalid"),
+//           isC     ? _T("C")     : _T("C++"),
+//           m_Types[i].c_str(),
+//           pos);
+//Manager::Get()->GetLogManager()->DebugLog(msg);
+
             if (isValid)
             {
                 ToDoItem item;
