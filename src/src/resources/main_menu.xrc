@@ -475,15 +475,15 @@
     <object class="wxMenu" name="menu_view">
       <label>&amp;View</label>
       <object class="wxMenu" name="idViewLayouts">
-        <label>Layouts</label>
+        <label>Perspectives</label>
         <object class="separator"/>
         <object class="wxMenuItem" name="idViewLayoutSave">
           <label>Save current</label>
-          <help>Save current layout</help>
+          <help>Save current perspective</help>
         </object>
         <object class="wxMenuItem" name="idViewLayoutDelete">
           <label>Delete current</label>
-          <help>Delete current layout</help>
+          <help>Delete current perspective</help>
         </object>
       </object>
       <object class="wxMenu" name="idViewToolbars">
