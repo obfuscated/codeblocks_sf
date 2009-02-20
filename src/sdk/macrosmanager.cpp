@@ -325,8 +325,12 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("NOW_UTC")]  = nowGMT.Format(_T("%Y-%m-%d-%H.%M"));
     macros[_T("NOW_L_UTC")]  = nowGMT.Format(_T("%Y-%m-%d-%H.%M.%S"));
     macros[_T("WEEKDAY_UTC")] = nowGMT.Format(_T("%A"));
-}
 
+
+	wxDateTime january_1_2009(1, wxDateTime::Jan, 2009, 0, 0, 0, 0);
+	wxTimeSpan ts = now.Subtract(january_1_2009);
+    macros[_T("DAYCOUNT")] = wxString::Format(_T("%d"), ts.GetDays());
+}
 
 void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, bool subrequest)
 {
