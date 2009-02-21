@@ -1222,7 +1222,7 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, boo
     if (viewLayouts && viewLayouts->FindItem(name) == wxNOT_FOUND)
     {
         int id = wxNewId();
-        viewLayouts->InsertCheckItem(viewLayouts->GetMenuItemCount() - 3, id, name, wxString::Format(_("Switch to %s layout"), name.c_str()));
+        viewLayouts->InsertCheckItem(viewLayouts->GetMenuItemCount() - 3, id, name, wxString::Format(_("Switch to %s perspective"), name.c_str()));
         Connect( id,  wxEVT_COMMAND_MENU_SELECTED,
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)&MainFrame::OnViewLayout);
         m_PluginIDsMap[id] = name;
@@ -1290,7 +1290,7 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
     if (!m_LastLayoutName.IsEmpty() && LayoutDifferent(lastlayout, m_LastLayoutData))
     {
         AnnoyingDialog dlg(_("Layout changed"),
-                            wxString::Format(_("The layout '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
+                            wxString::Format(_("The perspective '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
                             wxART_QUESTION,
                             canCancel ? AnnoyingDialog::YES_NO_CANCEL : AnnoyingDialog::YES_NO,
                             wxID_YES);
@@ -3600,7 +3600,7 @@ void MainFrame::OnViewLayout(wxCommandEvent& event)
 void MainFrame::OnViewLayoutSave(wxCommandEvent& event)
 {
     wxString def = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
-    wxString name = wxGetTextFromUser(_("Enter the name for this layout"), _("Save current layout"), def);
+    wxString name = wxGetTextFromUser(_("Enter the name for this perspective"), _("Save current perspective"), def);
     if (!name.IsEmpty())
     {
         DoFixToolbarsLayout();
@@ -3612,7 +3612,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
 {
     if (m_LastLayoutName == gDefaultLayout)
     {
-        if (cbMessageBox(_("The default layout cannot be deleted. It can always be reverted to "
+        if (cbMessageBox(_("The default perspective cannot be deleted. It can always be reverted to "
                         "a predefined state though.\nDo you want to revert it now?"),
                         _("Confirmation"),
                         wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
@@ -3623,7 +3623,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
         return;
     }
 
-    if (cbMessageBox(wxString::Format(_("Are you really sure you want to delete the layout '%s'?"), m_LastLayoutName.c_str()),
+    if (cbMessageBox(wxString::Format(_("Are you really sure you want to delete the perspective '%s'?"), m_LastLayoutName.c_str()),
                     _("Confirmation"),
                     wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
     {
@@ -3646,7 +3646,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& event)
                 m_PluginIDsMap.erase(it2);
         }
 
-        cbMessageBox(wxString::Format(_("Layout '%s' deleted.\nWill now revert to layout '%s'..."), m_LastLayoutName.c_str(), gDefaultLayout.c_str()),
+        cbMessageBox(wxString::Format(_("Perspective '%s' deleted.\nWill now revert to perspective '%s'..."), m_LastLayoutName.c_str(), gDefaultLayout.c_str()),
                         _("Information"), wxICON_INFORMATION);
 
         // finally, revert to the default layout
