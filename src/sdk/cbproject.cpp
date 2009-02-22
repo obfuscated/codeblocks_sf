@@ -1766,7 +1766,9 @@ ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& n
         }
         SetModified(true);
         m_Targets.Add(newTarget);
-        NotifyPlugins(cbEVT_BUILDTARGET_ADDED, newName);
+        // send also the old target name, so plugins see that the target is duplicated and not a new one added
+        // so that plugin specific parameters can be copied, too.
+        NotifyPlugins(cbEVT_BUILDTARGET_ADDED, newName, target->GetTitle());
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
     }
     return newTarget;
@@ -1841,11 +1843,12 @@ bool cbProject::RemoveBuildTarget(int index)
             pf->RemoveBuildTarget(target->GetTitle());
         }
 
+        // notify plugins, before the target is deleted, to make a cleanup possible before the target is really deleted
+        NotifyPlugins(cbEVT_BUILDTARGET_REMOVED, oldTargetName);
         // finally remove the target
         delete target;
         m_Targets.RemoveAt(index);
         SetModified(true);
-        NotifyPlugins(cbEVT_BUILDTARGET_REMOVED, oldTargetName);
         NotifyPlugins(cbEVT_PROJECT_TARGETS_MODIFIED);
         return true;
     }

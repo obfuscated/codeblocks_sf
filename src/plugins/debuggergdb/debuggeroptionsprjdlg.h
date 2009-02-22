@@ -33,6 +33,9 @@ class DebuggerOptionsProjectDlg : public cbConfigurationPanel
         void OnDelete(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
 	private:
+        void OnBuildTargetRemoved(CodeBlocksEvent& event);
+        void OnBuildTargetAdded(CodeBlocksEvent& event);
+        void OnBuildTargetRenamed(CodeBlocksEvent& event);
 		void LoadCurrentRemoteDebuggingRecord();
 		void SaveCurrentRemoteDebuggingRecord();
 

@@ -57,10 +57,109 @@ DebuggerOptionsProjectDlg::DebuggerOptionsProjectDlg(wxWindow* parent, DebuggerG
     control->SetSelection(-1);
 
     LoadCurrentRemoteDebuggingRecord();
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_REMOVED, new cbEventFunctor<DebuggerOptionsProjectDlg, CodeBlocksEvent>(this, &DebuggerOptionsProjectDlg::OnBuildTargetRemoved));
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_ADDED, new cbEventFunctor<DebuggerOptionsProjectDlg, CodeBlocksEvent>(this, &DebuggerOptionsProjectDlg::OnBuildTargetAdded));
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_RENAMED, new cbEventFunctor<DebuggerOptionsProjectDlg, CodeBlocksEvent>(this, &DebuggerOptionsProjectDlg::OnBuildTargetRenamed));
 }
 
 DebuggerOptionsProjectDlg::~DebuggerOptionsProjectDlg()
 {
+    Manager::Get()->RemoveAllEventSinksFor(this);
+}
+
+void DebuggerOptionsProjectDlg::OnBuildTargetRemoved(CodeBlocksEvent& event)
+{
+    cbProject* project = event.GetProject();
+    if(project != m_pProject)
+    {
+        return;
+    }
+    wxString theTarget = event.GetBuildTargetName();
+    for (RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.begin(); it != m_CurrentRemoteDebugging.end(); ++it)
+    {
+        // find our target
+        if ( !it->first || it->first->GetTitle() != theTarget)
+            continue;
+
+        m_CurrentRemoteDebugging.erase(it);
+        // if we erased it, just break, there can only be one map per target
+        break;
+    }
+    wxListBox* lstBox = XRCCTRL(*this, "lstTargets", wxListBox);
+    int idx = lstBox->FindString(theTarget);
+    if (idx > 0)
+    {
+        lstBox->Delete(idx);
+    }
+    if((size_t)idx > lstBox->GetCount())
+    {
+        idx--;
+    }
+    lstBox->SetSelection(idx);
+    LoadCurrentRemoteDebuggingRecord();
+}
+
+void DebuggerOptionsProjectDlg::OnBuildTargetAdded(CodeBlocksEvent& event)
+{
+    cbProject* project = event.GetProject();
+    if(project != m_pProject)
+    {
+        return;
+    }
+    wxString newTarget = event.GetBuildTargetName();
+    wxString oldTarget = event.GetOldBuildTargetName();
+    if(!oldTarget.IsEmpty())
+    {
+        for (RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.begin(); it != m_CurrentRemoteDebugging.end(); ++it)
+        {
+            // find our target
+            if ( !it->first || it->first->GetTitle() != oldTarget)
+                continue;
+            ProjectBuildTarget* bt = m_pProject->GetBuildTarget(newTarget);
+            if(bt)
+                m_CurrentRemoteDebugging.insert(m_CurrentRemoteDebugging.end(), std::make_pair(bt, it->second));
+            // if we inserted it, just break, there can only be one map per target
+            break;
+        }
+    }
+    wxListBox* lstBox = XRCCTRL(*this, "lstTargets", wxListBox);
+    int idx = lstBox->FindString(newTarget);
+    if (idx == wxNOT_FOUND)
+    {
+        idx = lstBox->Append(newTarget);
+    }
+    lstBox->SetSelection(idx);
+    LoadCurrentRemoteDebuggingRecord();
+}
+
+void DebuggerOptionsProjectDlg::OnBuildTargetRenamed(CodeBlocksEvent& event)
+{
+    cbProject* project = event.GetProject();
+    if(project != m_pProject)
+    {
+        return;
+    }
+    wxString newTarget = event.GetBuildTargetName();
+    wxString oldTarget = event.GetOldBuildTargetName();
+    for (RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.begin(); it != m_CurrentRemoteDebugging.end(); ++it)
+    {
+        // find our target
+        if ( !it->first || it->first->GetTitle() != oldTarget)
+            continue;
+        it->first->SetTitle(newTarget);
+        // if we renamed it, just break, there can only be one map per target
+        break;
+    }
+    
+    wxListBox* lstBox = XRCCTRL(*this, "lstTargets", wxListBox);
+    int idx = lstBox->FindString(oldTarget);
+    if (idx == wxNOT_FOUND)
+    {
+        return;
+    }
+    lstBox->SetString(idx, newTarget);
+    lstBox->SetSelection(idx);
+    LoadCurrentRemoteDebuggingRecord();
 }
 
 void DebuggerOptionsProjectDlg::LoadCurrentRemoteDebuggingRecord()
