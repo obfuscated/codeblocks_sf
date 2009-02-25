@@ -64,7 +64,7 @@ static SQInteger setVar(StackHandler & sa,VarRef * vr,void * data) {
   if (vr->access & (VAR_ACCESS_READ_ONLY|VAR_ACCESS_CONSTANT)) {
     ScriptStringVar256 msg;
     const SQChar * el = sa.GetString(2);
-    SCSNPRINTF(msg.s,sizeof(msg),sqT("setVar(): Cannot write to constant: %s"),el);
+    SCSNPRINTF(msg.s,sizeof(msg.s),sqT("setVar(): Cannot write to constant: %s"),el);
     throw SquirrelError(msg.s);
   } // if
   switch (vr->type) {
@@ -114,7 +114,7 @@ static SQInteger setVar(StackHandler & sa,VarRef * vr,void * data) {
   case TypeInfo<SQUserPointer>::TypeID: {
     ScriptStringVar256 msg;
     const SQChar * el = sa.GetString(2);
-    SCSNPRINTF(msg.s,sizeof(msg),sqT("setVar(): Cannot write to an SQUserPointer: %s"),el);
+    SCSNPRINTF(msg.s,sizeof(msg.s),sqT("setVar(): Cannot write to an SQUserPointer: %s"),el);
     throw SquirrelError(msg.s);
   } // case
   case TypeInfo<ScriptStringVarBase>::TypeID: {
@@ -175,7 +175,7 @@ static SQInteger getVar(StackHandler & sa,VarRef * vr,void * data) {
   case VAR_TYPE_INSTANCE:
     if (!CreateNativeClassInstance(sa.GetVMPtr(),vr->typeName,data,0)) { // data = address. Allocates memory.
       ScriptStringVar256 msg;
-      SCSNPRINTF(msg.s,sizeof(msg),sqT("getVar(): Could not create instance: %s"),vr->typeName);
+      SCSNPRINTF(msg.s,sizeof(msg.s),sqT("getVar(): Could not create instance: %s"),vr->typeName);
       throw SquirrelError(msg.s);
     } // if
     return 1;
