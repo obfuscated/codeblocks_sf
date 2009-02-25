@@ -970,13 +970,13 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms()
     }
     CompilerPrograms progs;
     wxString masterPath = XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue();
-    progs.C = XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->GetValue();
-    progs.CPP = XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->GetValue();
-    progs.LD = XRCCTRL(*this, "txtLinker", wxTextCtrl)->GetValue();
-    progs.LIB = XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->GetValue();
-    progs.WINDRES = XRCCTRL(*this, "txtResComp", wxTextCtrl)->GetValue();
-    progs.MAKE = XRCCTRL(*this, "txtMake", wxTextCtrl)->GetValue();
-    progs.DBG = XRCCTRL(*this, "txtDebugger", wxTextCtrl)->GetValue();
+    progs.C = (XRCCTRL(*this, "txtCcompiler", wxTextCtrl)->GetValue()).Trim();
+    progs.CPP = (XRCCTRL(*this, "txtCPPcompiler", wxTextCtrl)->GetValue()).Trim();
+    progs.LD = (XRCCTRL(*this, "txtLinker", wxTextCtrl)->GetValue()).Trim();
+    progs.LIB = (XRCCTRL(*this, "txtLibLinker", wxTextCtrl)->GetValue()).Trim();
+    progs.WINDRES = (XRCCTRL(*this, "txtResComp", wxTextCtrl)->GetValue()).Trim();
+    progs.MAKE = (XRCCTRL(*this, "txtMake", wxTextCtrl)->GetValue()).Trim();
+    progs.DBG = (XRCCTRL(*this, "txtDebugger", wxTextCtrl)->GetValue()).Trim();
     compiler->SetPrograms(progs);
     compiler->SetMasterPath(masterPath);
     compiler->SetOptions(m_Options); //LDC : DOES NOT BELONG HERE !!!
