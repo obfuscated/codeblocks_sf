@@ -29,13 +29,13 @@ GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow* parent, const wxStr
     SetTitle(caption);
 
     XRCCTRL(*this, "txtNotes", wxTextCtrl)->SetValue(m_Notes);
-    XRCCTRL(*this, "txtNotes", wxTextCtrl)->SetEditable(!m_ReadOnly);
-
     if (m_ReadOnly)
     {
-        wxWindow* win = FindWindowById(wxID_OK, this);
-        if (win)
+        XRCCTRL(*this, "txtNotes", wxTextCtrl)->Disable();
+        if (wxWindow* win = FindWindowById(wxID_CANCEL, this))
+        {
             win->Enable(false);
+        }
     }
 }
 
@@ -46,7 +46,9 @@ GenericMultiLineNotesDlg::~GenericMultiLineNotesDlg()
 
 void GenericMultiLineNotesDlg::EndModal(int retCode)
 {
-    if (retCode == wxID_OK)
+    if (retCode == wxID_OK && !m_ReadOnly)
+    {
         m_Notes = XRCCTRL(*this, "txtNotes", wxTextCtrl)->GetValue();
+    }
     wxDialog::EndModal(retCode);
 }
