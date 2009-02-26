@@ -15,6 +15,7 @@
 class cbProject;
 class wxListBox;
 class DebuggerGDB;
+class CodeBlocksEvent;
 
 class DebuggerOptionsProjectDlg : public cbConfigurationPanel
 {
