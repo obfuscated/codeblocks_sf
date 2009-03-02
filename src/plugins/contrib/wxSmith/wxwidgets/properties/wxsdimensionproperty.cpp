@@ -30,7 +30,7 @@ wxString wxsDimensionData::GetPixelsCode(wxsCoderContext* Context)
         case wxsCPP:
         {
             if ( !DialogUnits ) return wxString::Format(_T("%ld"),Value);
-            return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%d,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
+            return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
         }
 
         default:
