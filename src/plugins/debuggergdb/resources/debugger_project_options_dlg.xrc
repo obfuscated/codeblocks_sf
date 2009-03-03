@@ -257,7 +257,64 @@
 										</object>
 									</object>
 								</object>
-								<label>Additional commands</label>
+								<label>Additional GDB commands</label>
+							</object>
+							<object class="notebookpage">
+								<object class="wxPanel" name="ID_PANEL3">
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxFlexGridSizer">
+												<cols>2</cols>
+												<vgap>4</vgap>
+												<hgap>4</hgap>
+												<growablecols>1</growablecols>
+												<growablerows>0,1</growablerows>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT11">
+														<label>Before connection:</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtShellCmdsBefore">
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
+													</object>
+													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT12">
+														<label>After connection:</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtShellCmdsAfter">
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP|wxVSCROLL</style>
+													</object>
+													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT10">
+												<label>Tip: the additional shell commands will be issued no matter&#x0A;if you define a remote target connection or not</label>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+										</object>
+									</object>
+								</object>
+								<label>Additional shell commands</label>
 							</object>
 						</object>
 						<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

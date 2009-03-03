@@ -22,14 +22,14 @@ struct RemoteDebugging
 	};
 
 	RemoteDebugging() : skipLDpath(false) {}
-	
+
 	bool IsOk() const
 	{
 		return connType == Serial
 				? (!serialPort.IsEmpty() && !serialBaud.IsEmpty())
 				: (!ip.IsEmpty() && !ipPort.IsEmpty());
 	}
-	
+
 	void MergeWith(const RemoteDebugging& other)
 	{
 		if (other.IsOk())
@@ -40,20 +40,30 @@ struct RemoteDebugging
 			ip = other.ip;
 			ipPort = other.ipPort;
 		}
-		
+
 		if (!additionalCmds.IsEmpty() && !other.additionalCmds.IsEmpty())
 			additionalCmds += _T('\n');
 		if (!other.additionalCmds.IsEmpty())
 			additionalCmds += other.additionalCmds;
-		
+
 		if (!additionalCmdsBefore.IsEmpty() && !other.additionalCmdsBefore.IsEmpty())
 			additionalCmdsBefore += _T('\n');
 		if (!other.additionalCmdsBefore.IsEmpty())
 			additionalCmdsBefore += other.additionalCmdsBefore;
-		
+
 		skipLDpath = other.skipLDpath;
+
+		if (!additionalShellCmdsAfter.IsEmpty() && !other.additionalShellCmdsAfter.IsEmpty())
+			additionalShellCmdsAfter += _T('\n');
+		if (!other.additionalShellCmdsAfter.IsEmpty())
+			additionalShellCmdsAfter += other.additionalShellCmdsAfter;
+
+		if (!additionalShellCmdsBefore.IsEmpty() && !other.additionalShellCmdsBefore.IsEmpty())
+			additionalShellCmdsBefore += _T('\n');
+		if (!other.additionalShellCmdsBefore.IsEmpty())
+			additionalShellCmdsBefore += other.additionalShellCmdsBefore;
 	}
-	
+
 	ConnectionType connType;
 	wxString serialPort;
 	wxString serialBaud;
@@ -61,6 +71,8 @@ struct RemoteDebugging
 	wxString ipPort;
 	wxString additionalCmds; ///< commands after remote connection established
 	wxString additionalCmdsBefore; ///< commands before establishing remote connection
+	wxString additionalShellCmdsAfter; ///< shell commands after remote connection established
+	wxString additionalShellCmdsBefore; ///< shell commands before establishing remote connection
 	bool skipLDpath; ///< skip adjusting LD_LIBRARY_PATH before launching debugger
 };
 

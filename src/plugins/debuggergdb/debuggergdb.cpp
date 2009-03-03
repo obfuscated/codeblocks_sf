@@ -696,6 +696,10 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                         rd.additionalCmdsBefore = cbC2U(rdOpt->Attribute("additional_cmds_before"));
                     if (rdOpt->Attribute("skip_ld_path"))
                         rd.skipLDpath = cbC2U(rdOpt->Attribute("skip_ld_path")) != _T("0");
+                    if (rdOpt->Attribute("additional_shell_cmds_after"))
+                        rd.additionalShellCmdsAfter = cbC2U(rdOpt->Attribute("additional_shell_cmds_after"));
+                    if (rdOpt->Attribute("additional_shell_cmds_before"))
+                        rd.additionalShellCmdsBefore = cbC2U(rdOpt->Attribute("additional_shell_cmds_before"));
 
                     rdprj.insert(rdprj.end(), std::make_pair(bt, rd));
                 }
@@ -767,6 +771,10 @@ void DebuggerGDB::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, b
                     tgtnode->SetAttribute("additional_cmds_before", cbU2C(rd.additionalCmdsBefore));
                 if (rd.skipLDpath)
                     tgtnode->SetAttribute("skip_ld_path", "1");
+                if (!rd.additionalShellCmdsAfter.IsEmpty())
+                    tgtnode->SetAttribute("additional_shell_cmds_after", cbU2C(rd.additionalShellCmdsAfter));
+                if (!rd.additionalShellCmdsBefore.IsEmpty())
+                    tgtnode->SetAttribute("additional_shell_cmds_before", cbU2C(rd.additionalShellCmdsBefore));
             }
         }
     }
@@ -1283,7 +1291,7 @@ int DebuggerGDB::DoDebug()
     RemoteDebuggingMap::iterator it = rdprj.find(target); // target settings
     if (it != rdprj.end())
 		rd.MergeWith(it->second);
-
+//////////////////killerbot : most probably here : execute the shell commands (we could access the per target debugger settings)
     wxString oldLibPath; // keep old PATH/LD_LIBRARY_PATH contents
     if (!rd.skipLDpath)
     {
@@ -2390,6 +2398,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
         m_bIsConsole = false;
     }
     #endif
+    ///killerbot : run there the post shell commands ?
 }
 
 void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
