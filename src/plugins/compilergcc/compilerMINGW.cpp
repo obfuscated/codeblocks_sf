@@ -153,6 +153,7 @@ void CompilerMINGW::Reset()
     m_Options.AddOption(_("Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"), _T("-march=prescott"), category);
     m_Options.AddOption(_("Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"), _T("-march=nocona"), category);
     m_Options.AddOption(_("Intel Pentium M (MMX, SSE, SSE2)"), _T("-march=pentium-m"), category);
+    m_Options.AddOption(_("Intel Core2 (MMX, SSE, SSE2, SSE3, SSSE3, 64bit extensions)"), _T("-march=core2"), category);
     m_Options.AddOption(_("AMD K6 (MMX)"), _T("-march=k6"), category);
     m_Options.AddOption(_("AMD K6-2 (MMX, 3DNow!)"), _T("-march=k6-2"), category);
     m_Options.AddOption(_("AMD K6-3 (MMX, 3DNow!)"), _T("-march=k6-3"), category);
