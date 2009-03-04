@@ -37,7 +37,7 @@ CompileTargetBase::CompileTargetBase()
     m_MakeCommands[mcClean]             = _T("$make -f $makefile clean$target");
     m_MakeCommands[mcDistClean]         = _T("$make -f $makefile distclean$target");
     m_MakeCommands[mcAskRebuildNeeded]  = _T("$make -q -f $makefile $target");
-    m_MakeCommands[mcSilentBuild]  = _T("$make -s -f $makefile $target");
+    m_MakeCommands[mcSilentBuild]       = _T("$make -s -f $makefile $target");
     m_MakeCommandsModified = false;
 }
 
