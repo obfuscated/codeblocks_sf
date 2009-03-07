@@ -61,7 +61,8 @@ IncrementalSearch::IncrementalSearch():
         m_Highlight(false),
         m_SelectedOnly(false),
         m_IndicFound(20),
-        m_IndicHighlight(21)
+        m_IndicHighlight(21),
+        m_LengthFound(0)
 
 {
     // Make sure our resources are available.
@@ -275,7 +276,7 @@ void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
         if(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/incremental_search/select_found_text_on_escape"),false))
         {
             m_SelStart = m_NewPos;
-            m_SelEnd = m_SelStart + m_SearchText.length();
+            m_SelEnd = m_SelStart + m_LengthFound;
             m_OldPos = m_NewPos;
             m_pControl->SetSelection(m_SelStart, m_SelEnd);
         }
@@ -379,24 +380,16 @@ void IncrementalSearch::VerifyPosition()
     }
 }
 
-void IncrementalSearch::VerifyRange()
+void IncrementalSearch::SetRange()
 {
     if (m_pControl == 0)
     {
         return;
     }
-    // if we should only search in selection, we have to verify that we did not leave its range
-    // searchForward can work without it, because we can specify a range to search in, but searchBackward
-    // uses FindPrev and so we can not specify a range.
-    // to make the functions more similar to each other, we use it in both
     if ( m_SelectedOnly)
     {
         m_MinPos=m_SelStart;
         m_MaxPos=m_SelEnd;
-        if ((m_NewPos + (int)m_SearchText.length()) > m_SelEnd || m_NewPos < m_SelStart)
-        {
-            m_NewPos=wxSCI_INVALID_POSITION;
-        }
     }
     else
     {
@@ -417,7 +410,7 @@ void IncrementalSearch::SearchText()
         m_pToolbar->EnableTool(XRCID("idIncSearchClear"), true);
         m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), true);
         m_pToolbar->EnableTool(XRCID("idIncSearchNext"), true);
-        SearchForward(m_NewPos);
+        DoSearch(m_NewPos);
     }
     else
     {
@@ -455,8 +448,10 @@ void IncrementalSearch::OnSearchPrev(wxCommandEvent& event)
 void IncrementalSearch::DoSearchPrev()
 {
     VerifyPosition();
+    // (re-)define m_MinPos and m_MaxPos, they might have changed
+    SetRange();
     // we search backward from one character before the ending of the last found phrase
-    SearchBackward(m_NewPos+m_SearchText.length()-1);
+    DoSearch(m_NewPos + m_LengthFound - 1, m_MaxPos, m_MinPos);
     HighlightText();
 }
 
@@ -469,7 +464,10 @@ void IncrementalSearch::DoSearchNext()
 {
     VerifyPosition();
     // start search from the next character
-    SearchForward(m_NewPos + 1);
+    // (re-)define m_MinPos and m_MaxPos, they might have changed
+    SetRange();
+    // we search backward from one character before the ending of the last found phrase
+    DoSearch(m_NewPos + 1, m_MinPos, m_MaxPos);
     HighlightText();
 }
 
@@ -512,7 +510,7 @@ void IncrementalSearch::HighlightText()
         m_pControl->IndicatorSetForeground(m_IndicFound, colourTextFound);
         m_pControl->IndicatorSetStyle(m_IndicFound, wxSCI_INDIC_HIGHLIGHT);
         m_pControl->SetIndicatorCurrent(m_IndicFound);
-        m_pControl->IndicatorFillRange(m_NewPos, m_SearchText.Len());
+        m_pControl->IndicatorFillRange(m_NewPos, m_LengthFound);
         
         if (m_Highlight)
         {
@@ -530,7 +528,7 @@ void IncrementalSearch::HighlightText()
                 {
                     // highlight it
                     m_pControl->EnsureVisible(m_pControl->LineFromPosition(pos)); // make sure line is Visible, if it was folded
-                    m_pControl->IndicatorFillRange(pos, m_SearchText.Len());
+                    m_pControl->IndicatorFillRange(pos, m_LengthFound);
                 }
             }
         }
@@ -542,78 +540,31 @@ void IncrementalSearch::HighlightText()
     DoFocusToolbar();
 }
 
-void IncrementalSearch::SearchForward(int fromPos)
+void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
 {
     if (m_pControl == 0)
     {
         return;
     }
+    if (startPos == wxSCI_INVALID_POSITION && endPos == wxSCI_INVALID_POSITION)
+    {
+        startPos = m_MinPos;
+        endPos = m_MaxPos;
+    }
     // reset the backgroundcolor of the text-control
     m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
 
-    // jump to startposition for search
-    m_pControl->GotoPos(fromPos);
-    m_pControl->SearchAnchor();
-    // do the search
-    m_NewPos=m_pControl->SearchNext(m_flags,m_SearchText);
-    // verify that we are in allowed range (in case we only search in selection),
-    // and define Min- and MaxPos (the selection can have changed since last search)
-    VerifyRange();
+    m_NewPos=m_pControl->FindText(fromPos, endPos, m_SearchText, m_flags, &m_LengthFound);
+    
     if (m_NewPos == wxSCI_INVALID_POSITION)
     {
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
         wxColour colourTextCtrlBG_Wrapped(cfg->ReadColour(_T("/incremental_search/wrapped_colour"), wxColour(127, 127, 255)));
         // if not found or out of range, wrap search
-        m_pControl->GotoPos(m_MinPos);
-        m_pControl->SearchAnchor();
         // show that search wrapped, by colouring the textCtrl
         m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_Wrapped);
         // search again
-        m_NewPos=m_pControl->SearchNext(m_flags,m_SearchText);
-        VerifyRange();
-        if (m_NewPos == wxSCI_INVALID_POSITION)
-        {
-            wxColour colourTextCtrlBG_NotFound(cfg->ReadColour(_T("/incremental_search/text_not_found_colour"), wxColour(255, 127, 127)));
-            // if still not found, show it by colouring the textCtrl
-            m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
-        }
-    }
-    // windows does not update the backgroundcolor immediately, so we have to force it here
-    #ifdef __WXMSW__
-    m_pTextCtrl->Refresh();
-    m_pTextCtrl->Update();
-    #endif
-}
-
-void IncrementalSearch::SearchBackward(int fromPos)
-{
-    if (m_pControl == 0)
-    {
-        return;
-    }
-    // reset the backgroundcolor of the text-control
-    m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
-
-    // jump to startposition for search
-    m_pControl->GotoPos(fromPos);
-    m_pControl->SearchAnchor();
-    // do the search
-    m_NewPos=m_pControl->SearchPrev(m_flags,m_SearchText);
-    // verify that we are in allowed range (in case we only search in selection),
-    // and define Min- and MaxPos (the selection can have changed since last search)
-    VerifyRange();
-    if (m_NewPos == wxSCI_INVALID_POSITION)
-    {
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-        wxColour colourTextCtrlBG_Wrapped(cfg->ReadColour(_T("/incremental_search/wrapped_colour"), wxColour(127, 127, 255)));
-        // if not found or out of range, wrap search
-        m_pControl->GotoPos(m_MaxPos);
-        m_pControl->SearchAnchor();
-        // show that search wrapped, by colouring the textCtrl
-        m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_Wrapped);
-        // search again
-        m_NewPos=m_pControl->SearchPrev(m_flags,m_SearchText);
-        VerifyRange();
+        m_NewPos=m_pControl->FindText(startPos, fromPos, m_SearchText, m_flags, &m_LengthFound);
         if (m_NewPos == wxSCI_INVALID_POSITION)
         {
             wxColour colourTextCtrlBG_NotFound(cfg->ReadColour(_T("/incremental_search/text_not_found_colour"), wxColour(255, 127, 127)));

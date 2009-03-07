@@ -62,10 +62,9 @@ private:
     void DoFocusToolbar();
     void HighlightText();
     void SearchText();
-    void SearchForward(int fromPos);
-    void SearchBackward(int fromPos);
+    void DoSearch(int fromPos, int startPos=wxSCI_INVALID_POSITION, int endPos=wxSCI_INVALID_POSITION);
     void VerifyPosition();
-    void VerifyRange();
+    void SetRange();
     wxString m_SearchText;
     wxColour m_textCtrlBG_Default;
     wxToolBar* m_pToolbar;
@@ -82,6 +81,7 @@ private:
     bool m_SelectedOnly;
     const int m_IndicFound;
     const int m_IndicHighlight;
+    int m_LengthFound;
     DECLARE_EVENT_TABLE();
 };
 

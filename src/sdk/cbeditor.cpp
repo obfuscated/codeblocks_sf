@@ -362,15 +362,16 @@ struct cbEditorInternalData
                 flag |= wxSCI_FIND_WHOLEWORD;
             }
             // search for every occurence
-            for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText, flag);
+            int lengthFound = 0; // we need this to work properly with multibyte characters
+            for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText, flag, &lengthFound);
                 pos != wxSCI_INVALID_POSITION ;
-                pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText, flag) )
+                pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
             {
                 // check that the found occurrence is not the same as the selected
                 if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
                 {
                     // highlight it
-                    m_pOwner->m_pControl->IndicatorFillRange(pos, selectedText.length());
+                    m_pOwner->m_pControl->IndicatorFillRange(pos, lengthFound);
                 }
             }
         }
