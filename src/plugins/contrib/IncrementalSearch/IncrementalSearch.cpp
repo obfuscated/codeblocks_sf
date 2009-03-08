@@ -396,6 +396,8 @@ void IncrementalSearch::SetRange()
         m_MinPos=0;
         m_MaxPos=m_pControl->GetLength();
     }
+    m_NewPos=std::min(m_NewPos, m_MaxPos);
+    m_NewPos=std::max(m_NewPos, m_MinPos);
 }
 
 void IncrementalSearch::SearchText()
@@ -404,6 +406,7 @@ void IncrementalSearch::SearchText()
     m_SearchText=m_pTextCtrl->GetValue();
     // renew the start position, the user might have changed it by moving the caret
     VerifyPosition();
+    SetRange();
     if (!m_SearchText.empty())
     {
         // perform search
@@ -564,7 +567,7 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
         // show that search wrapped, by colouring the textCtrl
         m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_Wrapped);
         // search again
-        m_NewPos=m_pControl->FindText(startPos, fromPos, m_SearchText, m_flags, &m_LengthFound);
+        m_NewPos=m_pControl->FindText(startPos, endPos, m_SearchText, m_flags, &m_LengthFound);
         if (m_NewPos == wxSCI_INVALID_POSITION)
         {
             wxColour colourTextCtrlBG_NotFound(cfg->ReadColour(_T("/incremental_search/text_not_found_colour"), wxColour(255, 127, 127)));
