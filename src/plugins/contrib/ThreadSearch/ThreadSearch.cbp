@@ -19,7 +19,7 @@
 					<Add library="codeblocks" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="wxscintilla" />
-					<Add directory="$(#CB)\devel" />
+					<Add directory="..\..\..\devel" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
@@ -47,14 +47,14 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNO_LOGGING" />
-			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\wxscintilla\include" />
-			<Add directory="$(#cb.include)\wxFlatNotebook\include" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\include\wxFlatNotebook\include" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ExtraCommands>
-			<Add after="zip -j9 $(#cb)\devel\share\codeblocks\ThreadSearch.zip manifest.xml" />
+			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\ThreadSearch.zip manifest.xml" />
 			<Add after="update.bat" />
 			<Mode after="always" />
 		</ExtraCommands>

@@ -40,16 +40,15 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
-			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\wxscintilla\include" />
-			<Add directory="$(#cb)\src" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\src" />
+			<Add directory="..\..\..\include\wxscintilla\include" />
 		</Compiler>
 		<Linker>
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
-			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB.lib)" />
+			<Add directory="..\..\..\devel" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>

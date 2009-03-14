@@ -31,16 +31,15 @@
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="$(#WX.include)" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-					<Add directory="$(#cb)\include" />
-					<Add directory="$(#cb)\include\wxscintilla\include" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\include\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="codeblocks" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-					<Add directory="$(#cb.lib)" />
-					<Add directory="$(#cb)\devel" />
+					<Add directory="..\..\..\devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\HexEditor.zip manifest.xml" />
@@ -93,11 +92,11 @@
 		<Unit filename="TestCasesDlg.h" />
 		<Unit filename="TestCasesHelper.h" />
 		<Unit filename="manifest.xml" />
-		<Unit filename="wxsmith/ExpressionTester.wxs" />
-		<Unit filename="wxsmith/HexEditPanel.wxs" />
-		<Unit filename="wxsmith/SearchDialog.wxs" />
-		<Unit filename="wxsmith/SelectStoredExpressionDlg.wxs" />
-		<Unit filename="wxsmith/TestCasesDlg.wxs" />
+		<Unit filename="wxsmith\ExpressionTester.wxs" />
+		<Unit filename="wxsmith\HexEditPanel.wxs" />
+		<Unit filename="wxsmith\SearchDialog.wxs" />
+		<Unit filename="wxsmith\SelectStoredExpressionDlg.wxs" />
+		<Unit filename="wxsmith\TestCasesDlg.wxs" />
 		<Extensions>
 			<envvars />
 			<code_completion />

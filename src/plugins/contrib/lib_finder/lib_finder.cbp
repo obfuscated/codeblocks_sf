@@ -42,14 +42,14 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
-			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\wxscintilla\include" />
-			<Add directory="$(#CB.include)\wxFlatNotebook\include" />
-			<Add directory="$(#CB.include)\tinyxml" />
-			<Add directory="$(#CB.include)\scripting\include" />
-			<Add directory="$(#CB.include)\scripting\sqplus" />
-			<Add directory="$(#CB.include)\scripting\squirrel" />
-			<Add directory="$(#CB.include)\scripting\bindings" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\include\wxFlatNotebook\include" />
+			<Add directory="..\..\..\include\tinyxml" />
+			<Add directory="..\..\..\include\scripting\include" />
+			<Add directory="..\..\..\include\scripting\sqplus" />
+			<Add directory="..\..\..\include\scripting\squirrel" />
+			<Add directory="..\..\..\include\scripting\bindings" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -60,9 +60,8 @@
 			<Add library="txml" />
 			<Add library="codeblocks" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="$(#CB.lib)" />
-			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB)\base\tinyxml" />
+			<Add directory="..\..\..\devel" />
+			<Add directory="..\..\..\base\tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
@@ -109,23 +108,23 @@
 		<Unit filename="wxsmith\LibSelectDlg.wxs" />
 		<Unit filename="wxsmith\LibrariesDlg.wxs" />
 		<Unit filename="wxsmith\ProjectMissingLibs.wxs" />
-                <Extensions>
-                        <code_completion />
-                        <wxsmith version="1">
-                                <gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
-                                <resources>
-                                        <wxDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" fwddecl="1" name="DirListDlg" language="CPP" />
-                                        <wxDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" fwddecl="1" name="ProcessingDlg" language="CPP" />
-                                        <wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
-                                        <wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
-                                        <wxDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
-                                        <wxDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
-                                        <wxDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" fwddecl="1" name="DefsDownloadDlg" language="CPP" />
-                                        <wxDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" fwddecl="1" name="ProjectMissingLibs" language="CPP" />
-                                </resources>
-                        </wxsmith>
-                        <envvars />
-                        <debugger />
-                </Extensions>
+		<Extensions>
+			<code_completion />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" fwddecl="1" name="DirListDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" fwddecl="1" name="ProcessingDlg" language="CPP" />
+					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
+					<wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" fwddecl="1" name="DefsDownloadDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" fwddecl="1" name="ProjectMissingLibs" language="CPP" />
+				</resources>
+			</wxsmith>
+			<envvars />
+			<debugger />
+		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

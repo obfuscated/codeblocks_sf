@@ -49,8 +49,8 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="$(#CB.INCLUDE)" />
-			<Add directory="$(#CB.INCLUDE)\wxscintilla\include" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\wxscintilla\include" />
 			<Add directory="$(#WX.INCLUDE)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
@@ -61,8 +61,7 @@
 		<Linker>
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#CB)\devel" />
-			<Add directory="$(#CB.LIB)" />
+			<Add directory="..\..\..\devel" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>

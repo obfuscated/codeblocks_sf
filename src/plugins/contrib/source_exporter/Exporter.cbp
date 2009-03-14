@@ -57,8 +57,8 @@
 			<Add option="-DWXMAKINGLIB_WXPDFDOC" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="$(#CB.include)" />
-			<Add directory="$(#CB.include)\wxscintilla\include" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\wxscintilla\include" />
 			<Add directory="wxPdfDocument\include" />
 		</Compiler>
 		<ResourceCompiler>
@@ -69,8 +69,7 @@
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="$(#CB.lib)" />
-			<Add directory="$(#CB)\devel" />
+			<Add directory="..\..\..\devel" />
 		</Linker>
 		<Unit filename="BaseExporter.cpp">
 			<Option target="default" />

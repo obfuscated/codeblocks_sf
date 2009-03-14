@@ -40,9 +40,9 @@
 			<Add option="-DWXMAKINGLIB_PROPGRID" />
 			<Add option="-DWXMAKINGDLL_THINGS" />
 			<Add option="-DWXMAKINGDLL_CHART" />
-			<Add directory="$(#cb.include)" />
-			<Add directory="$(#cb.include)\wxscintilla\include" />
-			<Add directory="$(#cb.include)\wxFlatNotebook\include" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\include\wxFlatNotebook\include" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\wxSmith\propgrid\contrib\include" />
@@ -51,10 +51,11 @@
 			<Add directory="wxthings\wxthings\include" />
 		</Compiler>
 		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
 			<Add library="wxsmithlib" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add directory="$(#cb)\devel" />
+			<Add directory="..\..\..\devel" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
