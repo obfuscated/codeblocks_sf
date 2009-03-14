@@ -398,7 +398,7 @@ int LibraryDetectionManager::StoreNewSettingsFile( const wxString& shortcut, con
         return -2;
     }
     const char* ptr = &content[0];
-    wxFileOffset len = strlen(ptr);
+    size_t len = strlen(ptr);
     if ( fl.Write( ptr, len ) != len )
     {
         return -2;
