@@ -29,10 +29,10 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: SearchInPanel::SearchInPanel
-    m_pChkSearchOpenFiles = new wxCheckBox(this, idChkSearchOpenFiles, wxT("Open files"));
-    m_pChkSearchTargetFiles = new wxCheckBox(this, idChkSearchTargetFiles, wxT("Target files"));
-    m_pChkSearchProjectFiles = new wxCheckBox(this, idChkSearchProjectFiles, wxT("Project files"));
-    m_pChkSearchWorkspaceFiles = new wxCheckBox(this, idChkSearchWorkspaceFiles, wxT("Workspace files"));
+    m_pChkSearchOpenFiles = new wxCheckBox(this, idChkSearchOpenFiles, wxT("Open"));
+    m_pChkSearchTargetFiles = new wxCheckBox(this, idChkSearchTargetFiles, wxT("Target"));
+    m_pChkSearchProjectFiles = new wxCheckBox(this, idChkSearchProjectFiles, wxT("Project"));
+    m_pChkSearchWorkspaceFiles = new wxCheckBox(this, idChkSearchWorkspaceFiles, wxT("Workspace"));
     m_pChkSearchDir = new wxCheckBox(this, idChkSearchDirectoryFiles, wxT("Directory"));
 
     set_properties();

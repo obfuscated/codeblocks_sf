@@ -42,6 +42,9 @@ class wxContextMenuEvent;
 class wxSplitterWindow;
 class wxStaticBoxSizer;
 class wxBoxSizer;
+class wxBitmap;
+class wxBitmapButton;
+class wxStaticLine;
 
 class ThreadSearch;
 class ThreadSearchEvent;
@@ -170,11 +173,13 @@ protected:
     // begin wxGlade: ThreadSearchView::attributes
     wxStaticBox* m_pSizerSearchDirItems_staticbox;
     wxComboBox* m_pCboSearchExpr;
-    wxButton* m_pBtnSearch;
-    wxButton* m_pBtnOptions;
+    wxBitmapButton* m_pBtnSearch;
+    wxBitmapButton* m_pBtnOptions;
+	wxStaticLine* m_pStaticLine1;
     wxStaticText* m_pStaTxtSearchIn;
     SearchInPanel* m_pPnlSearchIn;
-    wxButton* m_pBtnShowDirItems;
+    wxStaticLine* m_pStaticLine2;
+    wxBitmapButton* m_pBtnShowDirItems;
     DirectoryParamsPanel* m_pPnlDirParams;
     cbStyledTextCtrl* m_pSearchPreview;
     wxPanel* m_pPnlPreview;
