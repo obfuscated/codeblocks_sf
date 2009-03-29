@@ -287,6 +287,11 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
             {
                 CollapseItem(parent);
                 // tree->SetItemHasChildren(parent, false);
+                // existing is the last item an gets deleted in CollapseItem and at least on 64-bit linux it can
+                // lead to a crash, because we use it again some lines later, but m_pItem is not 0 in some rare cases,
+                // and therefore IsOk returns true !!
+                // so we leave the function here
+                return;
             }
             else
             {
