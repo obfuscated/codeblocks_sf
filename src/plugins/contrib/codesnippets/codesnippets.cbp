@@ -60,6 +60,7 @@
 			<Add directory="Search" />
 			<Add directory="editor" />
 			<Add directory="." />
+			<Add directory="..\..\..\include\tinyxml" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
