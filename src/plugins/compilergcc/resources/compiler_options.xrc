@@ -1218,6 +1218,34 @@
 															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>8</border>
 														</object>
+														<object class="sizeritem">
+															<object class="wxStaticLine" name="ID_STATICLINE8" />
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>8</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxStaticBoxSizer">
+																<label>Rebuild Workspace</label>
+																<orient>wxVERTICAL</orient>
+																<object class="sizeritem">
+																	<object class="wxCheckBox" name="chkRebuildSeperately">
+																		<label>Clean and Build all projects/targets one by one</label>
+																	</object>
+																	<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	<border>8</border>
+																</object>
+																<object class="sizeritem">
+																	<object class="wxStaticText" name="ID_STATICTEXT29">
+																		<label>NOTE: Default is to clean all projects/targets at once, before building them.</label>
+																		<fg>#800000</fg>
+																	</object>
+																	<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	<border>8</border>
+																</object>
+															</object>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<border>8</border>
+														</object>
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>8</border>

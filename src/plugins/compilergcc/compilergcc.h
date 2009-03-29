@@ -173,7 +173,7 @@ class CompilerGCC : public cbCompilerPlugin
 
         void SaveOptions();
         void LoadOptions();
-        void DoPrepareQueue();
+        void DoPrepareQueue(bool clearLog=true);
         int DoRunQueue();
         bool DoCreateMakefile(bool temporary = true, const wxString& makefile = _T(""));
         void DoDeleteTempMakefile();
@@ -203,7 +203,7 @@ class CompilerGCC : public cbCompilerPlugin
         wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
         int DoBuild(bool clean, bool build);
         int DoBuild(const wxString& target, bool clean, bool build);
-        int DoWorkspaceBuild(const wxString& target, bool clean, bool build);
+        int DoWorkspaceBuild(const wxString& target, bool clean, bool build, bool clearLog=true);
         void CalculateWorkspaceDependencies(wxArrayInt& deps);
         void CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps);
         void InitBuildState(BuildJob job, const wxString& target);

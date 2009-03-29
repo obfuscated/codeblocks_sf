@@ -1453,14 +1453,15 @@ wxString CompilerGCC::GetTargetString(int index)
     return wxEmptyString;
 }
 
-void CompilerGCC::DoPrepareQueue()
+void CompilerGCC::DoPrepareQueue(bool clearLog)
 {
     if (m_CommandQueue.GetCount() == 0)
     {
         CodeBlocksEvent evt(cbEVT_COMPILER_STARTED, 0, m_Project, 0, this);
         Manager::Get()->ProcessEvent(evt);
 
-        ClearLog();
+        if(clearLog)
+            ClearLog();
         DoClearErrors();
         // wxStartTimer();
         m_StartTimer = wxGetLocalTimeMillis();
@@ -2679,7 +2680,7 @@ int CompilerGCC::Rebuild(const wxString& target)
     return DoBuild(target, true, true);
 }
 
-int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build)
+int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build, bool clearLog)
 {
     wxString realTarget = target;
     if (realTarget.IsEmpty())
@@ -2690,8 +2691,7 @@ int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build
     if (!StopRunningDebugger())
         return -1;
 
-    DoPrepareQueue();
-    ClearLog();
+    DoPrepareQueue(clearLog);
     m_IsWorkspaceOperation = true;
 
     InitBuildLog(true);
@@ -2727,7 +2727,11 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
 int CompilerGCC::RebuildWorkspace(const wxString& target)
 {
-    return DoWorkspaceBuild(target, true, true);
+    if(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false))
+    {
+        return DoWorkspaceBuild(target, true, true);
+    }
+    return DoWorkspaceBuild(target, true, false) + DoWorkspaceBuild(target, false, true, false);
 }
 
 int CompilerGCC::CleanWorkspace(const wxString& target)

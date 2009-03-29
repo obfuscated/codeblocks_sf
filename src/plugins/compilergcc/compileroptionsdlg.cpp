@@ -503,6 +503,11 @@ void CompilerOptionsDlg::DoFillOthers()
         spn->SetRange(0, 1000);
         spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50));
     }
+
+    chk = XRCCTRL(*this, "chkRebuildSeperately", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false));
+
 } // DoFillOthers
 
 void CompilerOptionsDlg::DoFillTree()
@@ -2204,6 +2209,12 @@ void CompilerOptionsDlg::OnApply()
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
     if (spn)
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/max_reported_errors"), (int)spn->GetValue());
+
+    chk = XRCCTRL(*this, "chkRebuildSeperately", wxCheckBox);
+    if (chk)
+    {
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/rebuild_seperately"), (bool)chk->IsChecked());
+    }
 
     m_Compiler->SaveOptions();
     m_Compiler->SetupEnvironment();
