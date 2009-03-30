@@ -130,6 +130,7 @@ void CompilerMINGW::Reset()
     m_Options.AddOption(_("Warn whenever a pointer is cast such that the required alignment of the target is increased"), _T("-Wcast-align"), category);
     m_Options.AddOption(_("Warn if anything is declared more than once in the same scope"), _T("-Wredundant-decls"), category);
     m_Options.AddOption(_("Warn about unitialized variables which are initialized with themselves"), _T("-Winit-self"), category);
+    m_Options.AddOption(_("Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"), _T("-Wshadow"), category);
 
     // optimization
     category = _("Optimization");
