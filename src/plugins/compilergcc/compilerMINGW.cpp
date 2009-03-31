@@ -141,6 +141,7 @@ void CompilerMINGW::Reset()
     m_Options.AddOption(_("Optimize fully (for speed)"), _T("-O3"), category);
     m_Options.AddOption(_("Optimize generated code (for size)"), _T("-Os"), category);
     m_Options.AddOption(_("Expensive optimizations"), _T("-fexpensive-optimizations"), category);
+    m_Options.AddOption(_("Don't keep the frame pointer in a register for functions that don't need one"), _T("-fomit-frame-pointer"), category);
     // machine dependent options - cpu arch
     category = _("CPU architecture tuning (choose none, or only one of these)");
     m_Options.AddOption(_("i386"), _T("-march=i386"), category);
