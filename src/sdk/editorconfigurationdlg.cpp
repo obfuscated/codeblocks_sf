@@ -107,6 +107,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_indent"), true));
     XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/smart_indent"), true));
     XRCCTRL(*this, "chkUseTab", wxCheckBox)->SetValue(cfg->ReadBool(_T("/use_tab"), false));
+    m_EnableScrollWidthTracking = cfg->ReadBool(_T("/margin/scroll_width_tracking"), false);
+    XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->SetValue(m_EnableScrollWidthTracking);
     m_EnableChangebar = cfg->ReadBool(_T("/margin/use_changebar"), true);
     XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->SetValue(m_EnableChangebar);
     XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_indent_guides"), false));
@@ -930,6 +932,21 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/margin/width_chars"),       XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/margin/dynamic_width"),     XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
         cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
+        //scrollbar
+        bool enableScrollWidthTracking = XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->GetValue();
+        cfg->Write(_T("/margin/scroll_width_tracking"),     enableScrollWidthTracking);
+        if (enableScrollWidthTracking != m_EnableScrollWidthTracking)
+        {
+            EditorManager *em = Manager::Get()->GetEditorManager();
+            for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
+            {
+                cbEditor *ed = em->GetBuiltinEditor(em->GetEditor(idx));
+                if(ed)
+                {
+                    ed->SetScrollWidthTracking(enableScrollWidthTracking);
+                }
+            }
+        }
         //changebar
         bool enableChangebar = XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->GetValue();
         cfg->Write(_T("/margin/use_changebar"),        enableChangebar);

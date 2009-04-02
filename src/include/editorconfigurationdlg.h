@@ -68,6 +68,7 @@ class EditorConfigurationDlg : public wxDialog
         ConfigurationPanelsArray m_PluginPanels;
         wxString m_FontString; // This is to store font data temporarily
         bool m_EnableChangebar; // remember whether changebar was enabled or not
+        bool m_EnableScrollWidthTracking; // remember whether scrollbarwidthtracking was enabled or not
 
         DECLARE_EVENT_TABLE()
 };

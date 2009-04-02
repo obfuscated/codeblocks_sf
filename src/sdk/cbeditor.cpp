@@ -1186,6 +1186,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
     else
         control->SetMarginWidth(changebarMargin, 0);
+
+    control->SetScrollWidthTracking(mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
 }
 
 // static
@@ -2097,6 +2099,12 @@ void cbEditor::SetChangeCollection(bool collectChange)
 {
     cbAssert(GetControl());
     GetControl()->SetChangeCollection(collectChange);
+}
+
+void cbEditor::SetScrollWidthTracking(bool trackWidth)
+{
+    cbAssert(GetControl());
+    GetControl()->SetScrollWidthTracking(trackWidth);
 }
 
 void cbEditor::Cut()

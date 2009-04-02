@@ -747,6 +747,20 @@
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>4</border>
                 </object>
+                <object class="sizeritem">
+		  <object class="wxStaticBoxSizer">
+		    <label>Scrollbar</label>
+		    <object class="sizeritem">
+		      <object class="wxCheckBox" name="chkScrollWidthTracking">
+		        <label>Automatically determine the width of the horizontal scrollbar (use with care)</label>
+		      </object>
+		      <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+		      <border>4</border>
+		    </object>
+		  </object>
+		  <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+		  <border>5</border>
+                </object>
               </object>
             </object>
             <label>Margins and caret</label>

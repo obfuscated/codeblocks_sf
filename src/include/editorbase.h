@@ -230,6 +230,9 @@ class DLLIMPORT EditorBase : public wxPanel
 
         /** Enable or disable changebar */
         virtual void SetChangeCollection(bool collectChange){}
+
+        /** Enable or disable ScrollWidthTracking */
+        virtual void SetScrollWidthTracking(bool trackWidth){}
         
         /** Cut selected text/object to clipboard. */
         virtual void Cut(){}
