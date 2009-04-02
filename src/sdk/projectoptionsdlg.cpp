@@ -68,6 +68,7 @@ BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxDialog)
     EVT_BUTTON(    XRCID("btnBrowseOutputFilename"),   ProjectOptionsDlg::OnBrowseOutputFilenameClick)
     EVT_BUTTON(    XRCID("btnBrowseWorkingDir"),       ProjectOptionsDlg::OnBrowseDirClick)
     EVT_BUTTON(    XRCID("btnBrowseObjectDir"),        ProjectOptionsDlg::OnBrowseDirClick)
+    EVT_BUTTON(    XRCID("btnExecutionDir"),           ProjectOptionsDlg::OnBrowseDirClick)
     EVT_BUTTON(    XRCID("btnVirtualBuildTargets"),    ProjectOptionsDlg::OnVirtualTargets)
     EVT_BUTTON(    XRCID("btnExternalDeps"),           ProjectOptionsDlg::OnEditDepsClick)
     EVT_BUTTON(    XRCID("btnExportTarget"),           ProjectOptionsDlg::OnExportTargetClick)
@@ -110,6 +111,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     XRCCTRL(*this, "txtPlatformProj", wxTextCtrl)->SetValue(GetStringFromPlatforms(m_Project->GetPlatforms()));
     XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->SetValue(m_Project->GetMakefile());
     XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->SetValue(m_Project->IsMakefileCustom());
+    XRCCTRL(*this, "txtExecutionDir", wxTextCtrl)->SetValue(m_Project->GetMakefileExecutionDir());
     XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->SetSelection((int)m_Project->GetModeForPCH());
 
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
@@ -687,6 +689,8 @@ void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
         targettext = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     else if (event.GetId() == XRCID("btnBrowseObjectDir"))
         targettext = XRCCTRL(*this, "txtObjectDir", wxTextCtrl);
+    else if (event.GetId() == XRCID("btnExecutionDir"))
+        targettext = XRCCTRL(*this, "txtExecutionDir", wxTextCtrl);
     else
         return;
 
@@ -1021,6 +1025,10 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnToggleCheckmarks", wxButton)->Enable(!customMake && en);
     list->Enable(!customMake);
 
+    // enable some stuff if using a custom makefile
+    XRCCTRL(*this, "txtExecutionDir", wxTextCtrl)->Enable(customMake);
+    XRCCTRL(*this, "btnExecutionDir", wxTextCtrl)->Enable(customMake);
+
     // scripts page
     wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
     tc->Enable(!customMake);
@@ -1055,6 +1063,7 @@ void ProjectOptionsDlg::EndModal(int retCode)
         m_Project->RenameInTree(m_Project->GetTitle());
         m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
         m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());
+        m_Project->SetMakefileExecutionDir(XRCCTRL(*this, "txtExecutionDir", wxTextCtrl)->GetValue());
         m_Project->SetTargetType(TargetType(XRCCTRL(*this, "cmbProjectType", wxComboBox)->GetSelection()));
         m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
         m_Project->SetExtendedObjectNamesGeneration(XRCCTRL(*this, "chkExtendedObjNames", wxCheckBox)->GetValue());

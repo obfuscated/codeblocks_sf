@@ -1933,11 +1933,14 @@ wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, Pro
     wxString compilerId = target ? target->GetCompilerID() : project->GetCompilerID();
     if (!CompilerFactory::IsValidCompilerID(compilerId))
         compilerId = CompilerFactory::GetDefaultCompilerID();
-    wxString command = target ? target->GetMakeCommandFor(cmd) : project->GetMakeCommandFor(cmd);
+    wxString command = target && !target->GetMakeCommandFor(cmd).empty() ?
+                       target->GetMakeCommandFor(cmd) : project->GetMakeCommandFor(cmd);
 
     command.Replace(_T("$makefile"), project->GetMakefile());
     command.Replace(_T("$make"), CompilerFactory::GetCompiler(compilerId)->GetPrograms().MAKE);
     command.Replace(_T("$target"), target ? target->GetTitle() : _T(""));
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(command);
+
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("Make: %s"), command.c_str()));
     return command;
 }
@@ -1964,6 +1967,7 @@ int CompilerGCC::Clean(const wxString& target)
 bool CompilerGCC::DoCleanWithMake(const wxString& cmd, bool showOutput)
 {
     wxArrayString output, errors;
+    wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
     long result = wxExecute(cmd, output, errors, wxEXEC_SYNC);
     if(showOutput)
     {
@@ -2334,6 +2338,7 @@ void CompilerGCC::BuildStateManagement()
             if (UseMake(m_pBuildingProject))
             {
                 wxArrayString output, error;
+                wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
                 if(wxExecute(GetMakeCommandFor(mcAskRebuildNeeded, m_pBuildingProject, bt), output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
                 {
                     switch (CompilerFactory::GetCompiler(bt->GetCompilerID())->GetSwitches().logging)
@@ -3321,7 +3326,28 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
             }
         }
         // actually log message
-        LogWarningOrError(clt, m_pBuildingProject, compiler->GetLastErrorFilename(), compiler->GetLastErrorLine(), compiler->GetLastError());
+        wxString last_error_filename = compiler->GetLastErrorFilename();
+        if (UseMake())
+        {
+            wxFileName last_error_file(last_error_filename);
+            if (!last_error_file.IsAbsolute())
+            {
+                cbProject* project = m_Project;
+                if (m_pLastBuildingTarget)
+                {
+                    project = m_pLastBuildingTarget->GetParentProject();
+                }
+                else
+                {
+                    AskForActiveProject();
+                    project = m_Project;
+                }
+                last_error_file.PrependDir(project->GetExecutionDir());
+                last_error_file.MakeRelativeTo(project->GetBasePath());
+                last_error_filename = last_error_file.GetFullPath();
+            }
+        }
+        LogWarningOrError(clt, m_pBuildingProject, last_error_filename, compiler->GetLastErrorLine(), compiler->GetLastError());
     }
 
     // add to log

@@ -47,7 +47,7 @@ void CompilerQueue::Add(CompilerCommand* cmd)
     if (cmd)
     {
         if (cmd->dir.IsEmpty() && cmd->project)
-            cmd->dir = cmd->project->GetBasePath();
+            cmd->dir = cmd->project->GetExecutionDir();
         m_Commands.Append(cmd);
     }
 }

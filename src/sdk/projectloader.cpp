@@ -385,6 +385,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     wxString title;
     wxString makefile;
     bool makefile_custom = false;
+    wxString execution_dir;
     wxString defaultTarget;
     wxString compilerId = _T("gcc");
     bool extendedObjectNames = false;
@@ -412,6 +413,9 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
 
         else if (node->Attribute("makefile_is_custom"))
             makefile_custom = strncmp(node->Attribute("makefile_is_custom"), "1", 1) == 0;
+
+        else if (node->Attribute("execution_dir"))
+            execution_dir = cbC2U(node->Attribute("execution_dir"));
 
         // old default_target (int) node
         else if (node->QueryIntAttribute("default_target", &m_1_4_to_1_5_deftarget) == TIXML_SUCCESS)
@@ -450,6 +454,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetPlatforms(platformsFinal);
     m_pProject->SetMakefile(makefile);
     m_pProject->SetMakefileCustom(makefile_custom);
+    m_pProject->SetMakefileExecutionDir(execution_dir);
     m_pProject->SetDefaultExecuteTarget(defaultTarget);
     m_pProject->SetCompilerID(compilerId);
     m_pProject->SetExtendedObjectNamesGeneration(extendedObjectNames);
@@ -1078,6 +1083,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         AddElement(prjnode, "Option", "makefile", m_pProject->GetMakefile());
     if (m_pProject->IsMakefileCustom())
         AddElement(prjnode, "Option", "makefile_is_custom", 1);
+    if (m_pProject->GetMakefileExecutionDir() != m_pProject->GetBasePath())
+        AddElement(prjnode, "Option", "execution_dir", m_pProject->GetMakefileExecutionDir());
     if (m_pProject->GetModeForPCH() != pchObjectDir)
         AddElement(prjnode, "Option", "pch_mode", (int)m_pProject->GetModeForPCH());
     if (!m_pProject->GetDefaultExecuteTarget().IsEmpty() && m_pProject->GetDefaultExecuteTarget() != m_pProject->GetFirstValidBuildTargetName())

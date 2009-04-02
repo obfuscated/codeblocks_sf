@@ -1550,6 +1550,34 @@ const wxString& cbProject::GetMakefile()
     return m_Makefile;
 }
 
+void cbProject::SetMakefileExecutionDir(const wxString& dir)
+{
+    if (m_MakefileExecutionDir != dir)
+    {
+        m_MakefileExecutionDir = dir;
+        SetModified(true);
+    }
+}
+
+wxString cbProject::GetMakefileExecutionDir()
+{
+    if (m_MakefileExecutionDir.IsEmpty())
+    {
+        wxFileName execution_dir(GetBasePath());
+        m_MakefileExecutionDir = execution_dir.GetFullPath();
+    }
+    return m_MakefileExecutionDir;
+}
+
+wxString cbProject::GetExecutionDir()
+{
+    if(!m_CustomMakefile)
+    {
+        return GetBasePath();
+    }
+    return GetMakefileExecutionDir();
+}
+
 ProjectFile* cbProject::GetFile(int index)
 {
     FilesList::Node* node = m_Files.Item(index);

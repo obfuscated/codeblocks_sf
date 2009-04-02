@@ -165,6 +165,24 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** @return True if the project is using a custom Makefile for compilation, false if not. */
         bool IsMakefileCustom(){ return m_CustomMakefile; }
 
+        /** Allow the specification of specific execution directory if the project use a custom Makefile.
+          * Defaults to the projects base path, if no custom makefile is used.
+          * @param dir The directory the custom Makefile should be executed from.
+          */
+        void SetMakefileExecutionDir(const wxString& dir);
+
+        /** @return The execution directory for the custom Makefile.
+          * Defaults to the projects base path, if no custom makefile is used.
+          */
+        wxString GetMakefileExecutionDir();
+
+        /** @return Either the execution directory for the custom Makefile or
+          * the projects base path.
+          * Defaults to the projects base path, if no custom makefile is used.
+          * Used to unify the call to the function.
+          */
+        wxString GetExecutionDir();
+
         /** Is there a build target (virtual or real) by @c name?
           * @param name The build target's name.
           * @param virtuals_too Include virtual build targets in query.
@@ -686,6 +704,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxString m_DefaultExecuteTarget;
         wxString m_Makefile;
         bool m_CustomMakefile;
+        mutable wxString m_MakefileExecutionDir;
 
         FilesList m_Files;
         wxArrayString m_ExpandedNodes;
