@@ -1,13 +1,12 @@
 [Desktop Entry]
 Version=1.0
-Encoding=UTF-8
+Type=Application
 Name=Code::Blocks IDE
 Comment=Configurable and extensible IDE
 Exec=codeblocks %F
-Icon=codeblocks.png
+Icon=codeblocks
 Terminal=false
 X-MultipleArgs=false
-Type=Application
-Categories=Application;Development;
+Categories=Development;IDE;GTK;
 StartupNotify=true
 MimeType=application/x-codeblocks;application/x-codeblocks-workspace;
