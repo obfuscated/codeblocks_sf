@@ -14,7 +14,7 @@
  * License:   GPL
  **************************************************************/
  #include <wx/datetime.h>
-
+ #include <wx/intl.h>
  #include "ThreadSearchTrace.h"
 
 
