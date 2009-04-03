@@ -286,7 +286,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 			if (items[i]->IsSeparator())
 			{
 				menu->InsertCheckItem(i, idMenuViewThreadSearch, wxT("Thread search"),
-									  wxT("Toggle displaying the 'Thread search' panel"));
+									  _("Toggle displaying the 'Thread search' panel"));
 				break;
 			}
 		}
@@ -295,11 +295,11 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 		{
 			// not found, just append
 			menu->AppendCheckItem(idMenuViewThreadSearch, wxT("Thread search"),
-								  wxT("Toggle displaying the 'Thread search' panel"));
+								  _("Toggle displaying the 'Thread search' panel"));
 		}
 	}
 
-	idx = menuBar->FindMenu(wxT("Sea&rch"));
+	idx = menuBar->FindMenu(_("Sea&rch"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* menu = menuBar->GetMenu(idx);
@@ -311,7 +311,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 			if (items[i]->IsSeparator())
 			{
 				menu->Insert(i, idMenuSearchThreadSearch, wxT("Thread search"),
-								wxT("Perform a Threaded search with the current word"));
+								_("Perform a Threaded search with the current word"));
 				menu->InsertSeparator(i);
 				break;
 			}
@@ -321,7 +321,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 		{
 			// not found, just append
 			menu->Append(idMenuSearchThreadSearch, wxT("Thread search"),
-							wxT("Perform a Threaded search with the current word"));
+							_("Perform a Threaded search with the current word"));
 			menu->AppendSeparator();
 		}
 	}
@@ -331,7 +331,7 @@ void ThreadSearch::RemoveMenuItems()
 {
 	// Removes 'Thread search' item from View and Search menu
 	wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
-	int idx = menuBar->FindMenu(wxT("&View"));
+	int idx = menuBar->FindMenu(_("&View"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
@@ -341,7 +341,7 @@ void ThreadSearch::RemoveMenuItems()
 		}
 	}
 
-	idx = menuBar->FindMenu(wxT("Sea&rch"));
+	idx = menuBar->FindMenu(_("Sea&rch"));
 	if (idx != wxNOT_FOUND)
 	{
 		wxMenu* searchMenu = menuBar->GetMenu(idx);
@@ -421,7 +421,7 @@ void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const F
 		// Gets current word
 		if ( GetCursorWord(m_SearchedWord) == true )
 		{
-			wxString sText = wxT("Find occurrences of: '") + m_SearchedWord + wxT("'");
+			wxString sText = _("Find occurrences of: '") + m_SearchedWord + wxT("'");
 
 			// Tries to find the 'Find implementation' item to adds the
 			// 'Find occurrences' item just after or appends it at the end
@@ -452,7 +452,7 @@ int ThreadSearch::GetInsertionMenuIndex(const wxMenu* const pCtxMenu)
 	const wxMenuItemList ItemsList = pCtxMenu->GetMenuItems();
 	for (int i = 0; i < (int)ItemsList.GetCount(); ++i)
 	{
-		if (ItemsList[i]->GetLabel().StartsWith(_T("Find implementation of:")) )
+		if (ItemsList[i]->GetLabel().StartsWith(_("Find implementation of:")) )
 		{
 			return ++i;
 		}
@@ -593,9 +593,9 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
 	wxBitmapButton* pBtnSearch     = new wxBitmapButton(toolBar, idBtnSearch, wxBitmap(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG));
 	wxBitmapButton* pBtnOptions    = new wxBitmapButton(toolBar, idBtnOptions, wxBitmap(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG));
 
-	m_pCboSearchExpr->SetToolTip(wxT("Text to search"));
-	pBtnSearch->SetToolTip(wxT("Run search"));
-	pBtnOptions->SetToolTip(wxT("Show options window"));
+	m_pCboSearchExpr->SetToolTip(_("Text to search"));
+	pBtnSearch->SetToolTip(_("Run search"));
+	pBtnOptions->SetToolTip(_("Show options window"));
 
 	pBtnSearch->SetBitmapDisabled(wxBitmap(prefix + wxT("findfdisabled.png"), wxBITMAP_TYPE_PNG));
 	pBtnOptions->SetBitmapDisabled(wxBitmap(prefix + wxT("optionsdisabled.png"), wxBITMAP_TYPE_PNG));

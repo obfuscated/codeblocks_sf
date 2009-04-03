@@ -69,10 +69,10 @@ void ThreadSearchLoggerList::SetListColumns()
 {
 	m_pListLog->ClearAll();
 
-	m_pListLog->InsertColumn(0, wxT("Directory"), wxLIST_FORMAT_LEFT, 100);
-	m_pListLog->InsertColumn(1, wxT("File"),      wxLIST_FORMAT_LEFT, 100);
-	m_pListLog->InsertColumn(2, wxT("Line"),      wxLIST_FORMAT_RIGHT, 50);
-	m_pListLog->InsertColumn(3, wxT("Text"),      wxLIST_FORMAT_LEFT, 500);
+	m_pListLog->InsertColumn(0, _("Directory"), wxLIST_FORMAT_LEFT, 100);
+	m_pListLog->InsertColumn(1, _("File"),      wxLIST_FORMAT_LEFT, 100);
+	m_pListLog->InsertColumn(2, _("Line"),      wxLIST_FORMAT_RIGHT, 50);
+	m_pListLog->InsertColumn(3, _("Text"),      wxLIST_FORMAT_LEFT, 500);
 }
 
 
@@ -86,7 +86,7 @@ void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
 		long line;
 		if ( GetFileLineFromListEvent(event, filepath, line) == false )
 		{
-			cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
+			cbMessageBox(_("Failed to retrieve file path and line number"),_("Error"), wxICON_ERROR);
 			return;
 		}
 		m_ThreadSearchView.OnLoggerClick(filepath, line);
@@ -105,7 +105,7 @@ void ThreadSearchLoggerList::OnLoggerListDoubleClick(wxListEvent& event)
 		long line;
 		if ( GetFileLineFromListEvent(event, filepath, line) == false )
 		{
-			cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
+			cbMessageBox(_("Failed to retrieve file path and line number"), _("Error"), wxICON_ERROR);
 			return;
 		}
 		m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);
@@ -211,7 +211,7 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
 			long line = 0;
 			if ( words[i].ToLong(&line) == false )
 			{
-				cbMessageBox(wxT("Failed to convert line number from %s") + words[i], wxT("Error"), wxICON_ERROR);
+				cbMessageBox(_("Failed to convert line number from %s") + words[i], _("Error"), wxICON_ERROR);
 			}
 			else
 			{

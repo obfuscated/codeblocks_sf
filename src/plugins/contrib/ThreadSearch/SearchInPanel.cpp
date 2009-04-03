@@ -29,11 +29,11 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
     // begin wxGlade: SearchInPanel::SearchInPanel
-    m_pChkSearchOpenFiles = new wxCheckBox(this, idChkSearchOpenFiles, wxT("Open"));
-    m_pChkSearchTargetFiles = new wxCheckBox(this, idChkSearchTargetFiles, wxT("Target"));
-    m_pChkSearchProjectFiles = new wxCheckBox(this, idChkSearchProjectFiles, wxT("Project"));
-    m_pChkSearchWorkspaceFiles = new wxCheckBox(this, idChkSearchWorkspaceFiles, wxT("Workspace"));
-    m_pChkSearchDir = new wxCheckBox(this, idChkSearchDirectoryFiles, wxT("Directory"));
+    m_pChkSearchOpenFiles = new wxCheckBox(this, idChkSearchOpenFiles, _("Open"));
+    m_pChkSearchTargetFiles = new wxCheckBox(this, idChkSearchTargetFiles, _("Target"));
+    m_pChkSearchProjectFiles = new wxCheckBox(this, idChkSearchProjectFiles, _("Project"));
+    m_pChkSearchWorkspaceFiles = new wxCheckBox(this, idChkSearchWorkspaceFiles, _("Workspace"));
+    m_pChkSearchDir = new wxCheckBox(this, idChkSearchDirectoryFiles, _("Directory"));
 
     set_properties();
     do_layout();
@@ -142,13 +142,13 @@ void SearchInPanel::OnChkSearchWorkspaceFilesClick(wxCommandEvent &event)
 void SearchInPanel::set_properties()
 {
     // begin wxGlade: SearchInPanel::set_properties
-    m_pChkSearchOpenFiles->SetToolTip(wxT("Search in open files"));
+    m_pChkSearchOpenFiles->SetToolTip(_("Search in open files"));
     m_pChkSearchOpenFiles->SetValue(1);
-    m_pChkSearchTargetFiles->SetToolTip(wxT("Search in target files"));
-    m_pChkSearchProjectFiles->SetToolTip(wxT("Search in project files"));
+    m_pChkSearchTargetFiles->SetToolTip(_("Search in target files"));
+    m_pChkSearchProjectFiles->SetToolTip(_("Search in project files"));
     m_pChkSearchProjectFiles->SetValue(1);
-    m_pChkSearchWorkspaceFiles->SetToolTip(wxT("Search in workspace files"));
-    m_pChkSearchDir->SetToolTip(wxT("Search in directory files"));
+    m_pChkSearchWorkspaceFiles->SetToolTip(_("Search in workspace files"));
+    m_pChkSearchDir->SetToolTip(_("Search in directory files"));
     // end wxGlade
 }
 

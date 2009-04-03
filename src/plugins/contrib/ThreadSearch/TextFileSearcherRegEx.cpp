@@ -62,7 +62,7 @@ bool TextFileSearcherRegEx::IsOk(wxString* pErrorMessage)
 	bool ok = m_RegEx.IsValid();
 	if ( !ok && pErrorMessage )
 	{
-		*pErrorMessage = _T("Bad regular expression.");
+		*pErrorMessage = _("Bad regular expression.");
 	}
 	return ok;
 }

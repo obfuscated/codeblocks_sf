@@ -34,9 +34,9 @@ DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoi
 {
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
     m_pTxtSearchDirPath = new wxTextCtrl(this, idTxtSearchDirPath, wxEmptyString);
-    m_pBtnSelectDir = new wxButton(this, idBtnDirSelectClick, wxT("Select"));
-    m_pChkSearchDirRecursively = new wxCheckBox(this, idChkSearchDirRecurse, wxT("Recurse"));
-    m_pChkSearchDirHiddenFiles = new wxCheckBox(this, idChkSearchDirHidden, wxT("Hidden"));
+    m_pBtnSelectDir = new wxButton(this, idBtnDirSelectClick, _("Select"));
+    m_pChkSearchDirRecursively = new wxCheckBox(this, idChkSearchDirRecurse, _("Recurse"));
+    m_pChkSearchDirHiddenFiles = new wxCheckBox(this, idChkSearchDirHidden, _("Hidden"));
     m_pTxtMask = new wxTextCtrl(this, idTxtSearchMask, wxT("*.*"));
 
     set_properties();
@@ -64,7 +64,7 @@ void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent &event)
 
 void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
 {
-	wxDirDialog DlgDir(this, _T("Select directory"), wxGetCwd());
+	wxDirDialog DlgDir(this, _("Select directory"), wxGetCwd());
 	if ( DlgDir.ShowModal() == wxID_OK )
 	{
 		m_pTxtSearchDirPath->SetValue(DlgDir.GetPath());
@@ -86,11 +86,11 @@ void DirectoryParamsPanel::OnChkClickEvent(wxCommandEvent &event)
 void DirectoryParamsPanel::set_properties()
 {
     // begin wxGlade: DirectoryParamsPanel::set_properties
-    m_pTxtSearchDirPath->SetToolTip(wxT("Directory to search in files"));
-    m_pBtnSelectDir->SetToolTip(wxT("Browse for directory to search in"));
-    m_pChkSearchDirRecursively->SetToolTip(wxT("Search in directory files recursively"));
+    m_pTxtSearchDirPath->SetToolTip(_("Directory to search in files"));
+    m_pBtnSelectDir->SetToolTip(_("Browse for directory to search in"));
+    m_pChkSearchDirRecursively->SetToolTip(_("Search in directory files recursively"));
     m_pChkSearchDirRecursively->SetValue(1);
-    m_pChkSearchDirHiddenFiles->SetToolTip(wxT("Search in directory hidden files"));
+    m_pChkSearchDirHiddenFiles->SetToolTip(_("Search in directory hidden files"));
     m_pChkSearchDirHiddenFiles->SetValue(1);
     m_pTxtMask->SetToolTip(wxT("*.cpp;*.c;*.h"));
     // end wxGlade
@@ -106,7 +106,7 @@ void DirectoryParamsPanel::do_layout()
     SizerTop->Add(m_pChkSearchDirRecursively, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SizerTop->Add(m_pChkSearchDirHiddenFiles, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SizerTop->Add(m_pTxtMask, 1, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    wxStaticText* m_pStatTxtMask = new wxStaticText(this, -1, wxT("mask"));
+    wxStaticText* m_pStatTxtMask = new wxStaticText(this, -1, _("mask"));
     SizerTop->Add(m_pStatTxtMask, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     SetAutoLayout(true);
     SetSizer(SizerTop);

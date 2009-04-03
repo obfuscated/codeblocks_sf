@@ -39,48 +39,48 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL);
 
     // begin wxGlade: ThreadSearchConfPanel::ThreadSearchConfPanel
-    SizerOptions_staticbox = new wxStaticBox(this, -1, wxT("Options"));
-    SizerThreadSearchOptions_staticbox = new wxStaticBox(this, -1, wxT("Thread search options"));
-    SizerThreadSearchLayoutGlobal_staticbox = new wxStaticBox(this, -1, wxT("Show/Hide"));
-    SizerListControlOptions_staticbox = new wxStaticBox(this, -1, wxT("List control options"));
-    SizerThreadSearchLayout_staticbox = new wxStaticBox(this, -1, wxT("Layout"));
-    SizerSearchIn_staticbox = new wxStaticBox(this, -1, wxT("Search in files:"));
+    SizerOptions_staticbox = new wxStaticBox(this, -1, _("Options"));
+    SizerThreadSearchOptions_staticbox = new wxStaticBox(this, -1, _("Thread search options"));
+    SizerThreadSearchLayoutGlobal_staticbox = new wxStaticBox(this, -1, _("Show/Hide"));
+    SizerListControlOptions_staticbox = new wxStaticBox(this, -1, _("List control options"));
+    SizerThreadSearchLayout_staticbox = new wxStaticBox(this, -1, _("Layout"));
+    SizerSearchIn_staticbox = new wxStaticBox(this, -1, _("Search in files:"));
     m_pPnlSearchIn = new SearchInPanel(this, wxID_ANY);
     m_pPnlDirParams = new DirectoryParamsPanel(this, wxID_ANY);
-    m_pChkWholeWord = new wxCheckBox(this, idChkWholeWord, wxT("Whole word"));
-    m_pChkStartWord = new wxCheckBox(this, idChkStartWord, wxT("Start word"));
-    m_pChkMatchCase = new wxCheckBox(this, idChkMatchCase, wxT("Match case"));
-    m_pChkRegExp = new wxCheckBox(this, idChkRegularExpression, wxT("Regular expression"));
-    m_pChkThreadSearchEnable = new wxCheckBox(this, idChkThreadSearchEnable, wxT("Enable 'Find occurrences' contextual menu item"));
-    m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, idChkUseDefaultOptionsOnThreadSearch, wxT("Use default options when running 'Find occurrences' "));
-    m_pChkShowMissingFilesError = new wxCheckBox(this, idChkShowMissingFilesError, wxT("Show error message if file is missing"));
-    m_pChkShowCantOpenFileError = new wxCheckBox(this, idChkShowCantOpenFileError, wxT("Show error message if file cannot be opened"));
-    m_pChkDeletePreviousResults = new wxCheckBox(this, idChkChkDeletePreviousResults, wxT("Delete previous results at search begin"));
-    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, wxT("Show ThreadSearch toolbar."));
-    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, wxT("Show search widgets in ThreadSearch Messages panel."));
-    m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, wxT("Show code preview editor."));
-    m_pChkDisplayLogHeaders = new wxCheckBox(this, idChkDisplayLogHeaders, wxT("Display header in log window."));
-    m_pChkDrawLogLines = new wxCheckBox(this, idChkDrawLogLines, wxT("Draw lines between log columns."));
+    m_pChkWholeWord = new wxCheckBox(this, idChkWholeWord, _("Whole word"));
+    m_pChkStartWord = new wxCheckBox(this, idChkStartWord, _("Start word"));
+    m_pChkMatchCase = new wxCheckBox(this, idChkMatchCase, _("Match case"));
+    m_pChkRegExp = new wxCheckBox(this, idChkRegularExpression, _("Regular expression"));
+    m_pChkThreadSearchEnable = new wxCheckBox(this, idChkThreadSearchEnable, _("Enable 'Find occurrences' contextual menu item"));
+    m_pChkUseDefaultOptionsForThreadSearch = new wxCheckBox(this, idChkUseDefaultOptionsOnThreadSearch, _("Use default options when running 'Find occurrences' "));
+    m_pChkShowMissingFilesError = new wxCheckBox(this, idChkShowMissingFilesError, _("Show error message if file is missing"));
+    m_pChkShowCantOpenFileError = new wxCheckBox(this, idChkShowCantOpenFileError, _("Show error message if file cannot be opened"));
+    m_pChkDeletePreviousResults = new wxCheckBox(this, idChkChkDeletePreviousResults, _("Delete previous results at search begin"));
+    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, _("Show ThreadSearch toolbar."));
+    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, _("Show search widgets in ThreadSearch Messages panel."));
+    m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, _("Show code preview editor."));
+    m_pChkDisplayLogHeaders = new wxCheckBox(this, idChkDisplayLogHeaders,_("Display header in log window."));
+    m_pChkDrawLogLines = new wxCheckBox(this, idChkDrawLogLines, _("Draw lines between log columns."));
     const wxString m_pRadPanelManagement_choices[] = {
-        wxT("Messages notebook"),
-        wxT("Layout")
+        _("Messages notebook"),
+        _("Layout")
     };
-    m_pRadPanelManagement = new wxRadioBox(this, wxID_ANY, wxT("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadPanelManagement = new wxRadioBox(this, wxID_ANY, _("ThreadSearch panel management by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadPanelManagement_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadLoggerType_choices[] = {
-        wxT("List"),
-        wxT("Tree")
+        _("List"),
+        _("Tree")
     };
-    m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, wxT("Logger type"), wxDefaultPosition, wxDefaultSize, 2, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadLoggerType = new wxRadioBox(this, wxID_ANY, _("Logger type"), wxDefaultPosition, wxDefaultSize, 2, m_pRadLoggerType_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadSplitterWndMode_choices[] = {
-        wxT("Horizontal"),
-        wxT("Vertical")
+        _("Horizontal"),
+        _("Vertical")
     };
-    m_pRadSplitterWndMode = new wxRadioBox(this, wxID_ANY, wxT("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadSplitterWndMode = new wxRadioBox(this, wxID_ANY, _("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadSortBy_choices[] = {
-        wxT("file path"),
-        wxT("file name")
+        _("file path"),
+        _("file name")
     };
-    m_pRadSortBy = new wxRadioBox(this, wxID_ANY, wxT("Sort results by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSortBy_choices, 1, wxRA_SPECIFY_ROWS);
+    m_pRadSortBy = new wxRadioBox(this, wxID_ANY, _("Sort results by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSortBy_choices, 1, wxRA_SPECIFY_ROWS);
 
     set_properties();
     do_layout();
@@ -111,8 +111,8 @@ void ThreadSearchConfPanel::OnChkShowThreadSearchToolBarClick(wxCommandEvent &ev
 {
 	if ( (event.IsChecked() == false) && (m_pChkShowThreadSearchWidgets->GetValue() == false) )
 	{
-		if ( wxID_YES != cbMessageBox(wxT("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
-									  wxT("Sure ?"), wxICON_QUESTION|wxYES_NO) )
+		if ( wxID_YES != cbMessageBox(_("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
+									  _("Sure ?"), wxICON_QUESTION|wxYES_NO) )
 		{
 			m_pChkShowThreadSearchToolBar->SetValue(true);
 		}
@@ -132,8 +132,8 @@ void ThreadSearchConfPanel::OnChkShowThreadSearchWidgetsClick(wxCommandEvent &ev
 {
 	if ( (event.IsChecked() == false) && (m_pChkShowThreadSearchToolBar->GetValue() == false) )
 	{
-		if ( wxID_YES != cbMessageBox(wxT("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
-									  wxT("Sure ?"), wxICON_QUESTION|wxYES_NO) )
+		if ( wxID_YES != cbMessageBox(_("Do you really want to hide both ThreadSearch toolbar and widgets ?"),
+									  _("Sure ?"), wxICON_QUESTION|wxYES_NO) )
 		{
 			m_pChkShowThreadSearchWidgets->SetValue(true);
 		}
@@ -162,12 +162,12 @@ void ThreadSearchConfPanel::OnChkShowCantOpenFileErrorClick(wxCommandEvent &even
 void ThreadSearchConfPanel::set_properties()
 {
     // begin wxGlade: ThreadSearchConfPanel::set_properties
-    m_pChkWholeWord->SetToolTip(wxT("Search text matches only whole words"));
+    m_pChkWholeWord->SetToolTip(_("Search text matches only whole words"));
     m_pChkWholeWord->SetValue(1);
-    m_pChkStartWord->SetToolTip(wxT("Matches only word starting with search expression"));
-    m_pChkMatchCase->SetToolTip(wxT("Case sensitive search."));
+    m_pChkStartWord->SetToolTip(_("Matches only word starting with search expression"));
+    m_pChkMatchCase->SetToolTip(_("Case sensitive search."));
     m_pChkMatchCase->SetValue(1);
-    m_pChkRegExp->SetToolTip(wxT("Search expression is a regular expression"));
+    m_pChkRegExp->SetToolTip(_("Search expression is a regular expression"));
     m_pChkThreadSearchEnable->SetValue(1);
     m_pChkUseDefaultOptionsForThreadSearch->SetValue(1);
     m_pChkShowMissingFilesError->SetValue(1);
@@ -306,7 +306,7 @@ void ThreadSearchConfPanel::do_layout()
     SizerTop->Add(SizerOptions, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchOptions->Add(m_pChkThreadSearchEnable, 0, wxALL, 4);
     SizerThreadSearchOptions->Add(m_pChkUseDefaultOptionsForThreadSearch, 0, wxALL, 4);
-    wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, wxT("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
+    wxStaticText* m_pStaDefaultOptions = new wxStaticText(this, wxID_ANY, _("       ('Whole word' = true, 'Start word' = false, 'Match case' = true, 'Regular expression' = false)"));
     SizerThreadSearchOptions->Add(m_pStaDefaultOptions, 0, 0, 0);
     SizerThreadSearchOptions->Add(m_pChkShowMissingFilesError, 0, wxALL, 4);
     SizerThreadSearchOptions->Add(m_pChkShowCantOpenFileError, 0, wxALL, 4);

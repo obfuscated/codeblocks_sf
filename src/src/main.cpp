@@ -1861,7 +1861,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     wxString buf = event.GetString();
     wxString links;
 
-    links << _T("<b>Recent projects</b><br>\n");
+    links << _("<b>Recent projects</b><br>\n");
     if (m_pProjectsHistory->GetCount())
     {
         links << _T("<ul>");
@@ -1877,7 +1877,7 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     else
         links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent projects<br>\n");
 
-    links << _T("<br><b>Recent files</b><br>\n");
+    links << _("<br><b>Recent files</b><br>\n");
     if (m_pFilesHistory->GetCount())
     {
         links << _T("<ul>");
@@ -1896,6 +1896,11 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 
     // update page
     buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
+	buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
+	buf.Replace(_T("CB_TXT_OPEN_PROJECT"), _("Open an existing project"));
+	buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
+	buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
+	buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
     ((StartHerePage*)sh)->SetPageContent(buf);
 }
 

@@ -125,7 +125,7 @@ void ThreadSearchLoggerTree::OnLoggerTreeClick(wxTreeEvent& event)
 		long line;
 		if ( GetFileLineFromTreeEvent(event, filepath, line) == false )
 		{
-			cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
+			cbMessageBox(_("Failed to retrieve file path and line number"), _("Error"), wxICON_ERROR);
 			return;
 		}
 		m_ThreadSearchView.OnLoggerClick(filepath, line);
@@ -145,7 +145,7 @@ void ThreadSearchLoggerTree::OnLoggerTreeDoubleClick(wxTreeEvent& event)
 		long line;
 		if ( GetFileLineFromTreeEvent(event, filepath, line) == false )
 		{
-			cbMessageBox(wxT("Failed to retrieve file path and line number"), wxT("Error"), wxICON_ERROR);
+			cbMessageBox(_("Failed to retrieve file path and line number"), _("Error"), wxICON_ERROR);
 			return;
 		}
 		m_ThreadSearchView.OnLoggerDoubleClick(filepath, line);

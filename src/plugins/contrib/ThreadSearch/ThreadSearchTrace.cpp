@@ -75,14 +75,14 @@ void ThreadSearchTrace::Uninit()
 TraceBeginEndOfMethod::TraceBeginEndOfMethod(const wxString& method)
 					  :m_Method(method)
 {
-	wxString begin(_T("Begin of "));
+	wxString begin(_("Begin of "));
 	begin += m_Method;
 	ThreadSearchTrace::Trace(begin);
 }
 
 TraceBeginEndOfMethod::~TraceBeginEndOfMethod()
 {
-	wxString end(_T("End of "));
+	wxString end(_("End of "));
 	end += m_Method;
 	ThreadSearchTrace::Trace(end);
 }
