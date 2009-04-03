@@ -1027,7 +1027,7 @@ void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
     // enable some stuff if using a custom makefile
     XRCCTRL(*this, "txtExecutionDir", wxTextCtrl)->Enable(customMake);
-    XRCCTRL(*this, "btnExecutionDir", wxTextCtrl)->Enable(customMake);
+    XRCCTRL(*this, "btnExecutionDir", wxButton)->Enable(customMake);
 
     // scripts page
     wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
