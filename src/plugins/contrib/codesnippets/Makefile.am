@@ -116,12 +116,15 @@ noinst_HEADERS =  	codesnippets.h \
 		snippetpropertyform.h \
 		snippetsconfig.h \
 		snippetsimages.h \
-		version.h
+		version.h \
+		wx_pch.h
 
 man_MANS = codesnippets.1
 
 EXTRA_DIST = 	codesnippets.cbp \
 		codesnippets-unix.cbp \
+		generic.rc \
+		generic.manifest \
 		update.bat \
 		update \
 		readme.html \
