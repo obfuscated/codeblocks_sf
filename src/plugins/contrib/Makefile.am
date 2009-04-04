@@ -111,7 +111,7 @@ DIST_SUBDIRS = AutoVersioning \
 		codesnippets \
 		codestat \
 		copystrings \
-		devpak \
+		devpak_plugin \
 		dragscroll \
 		envvars \
 		help_plugin \
