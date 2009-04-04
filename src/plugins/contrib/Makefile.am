@@ -110,6 +110,8 @@ DIST_SUBDIRS = AutoVersioning \
 		cb_koders \
 		codesnippets \
 		codestat \
+		copystrings \
+		devpak \
 		dragscroll \
 		envvars \
 		help_plugin \
