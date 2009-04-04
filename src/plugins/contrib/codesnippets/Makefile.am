@@ -124,7 +124,7 @@ man_MANS = codesnippets.1
 EXTRA_DIST = 	codesnippets.cbp \
 		codesnippets-unix.cbp \
 		generic.rc \
-		generic.manifest \
+		generic.Manifest \
 		update.bat \
 		update \
 		readme.html \
