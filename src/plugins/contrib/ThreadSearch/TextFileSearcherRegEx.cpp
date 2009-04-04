@@ -11,6 +11,7 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 	// Required extra includes
+	#include <wx/intl.h>
 	#include <wx/string.h>
 #endif
 
