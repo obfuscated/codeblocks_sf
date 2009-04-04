@@ -73,3 +73,6 @@ noinst_HEADERS = advancedcompileroptionsdlg.h \
 			compilerTcc.h \
 			directcommands.h \
 			makefilegenerator.h
+
+EXTRA_DIST = compilerMSVC8.h \
+			compilerMSVC8.cpp
