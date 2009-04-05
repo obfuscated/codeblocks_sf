@@ -82,6 +82,7 @@ Description: contrib plugins for Code::Blocks IDE
  plugins. These are:
     * Code profiler (based on gprof)
     * Code statistics (SLOCs etc)
+    * Copy strings
     * DragScroll (enhances mouse operations)
     * Setting of environment variables
     * Source exporter to PDF/HTML/ODT/RTF

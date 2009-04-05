@@ -22,6 +22,10 @@ if BUILD_CODESTAT
 MAYBE_CODESTAT=codestat
 endif
 
+if BUILD_COPYSTRINGS
+MAYBE_COPYSTRINGS=copystrings
+endif
+
 if BUILD_DRAGSCROLL
 MAYBE_DRAGSCROLL=dragscroll
 endif
@@ -88,6 +92,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_CBKODERS) \
 		$(MAYBE_CODESNIPPETS) \
 		$(MAYBE_CODESTAT) \
+		$(MAYBE_COPYSTRINGS) \
 		$(MAYBE_DRAGSCROLL) \
 		$(MAYBE_ENVVARS) \
 		$(MAYBE_HELP) \
@@ -110,6 +115,8 @@ DIST_SUBDIRS = AutoVersioning \
 		cb_koders \
 		codesnippets \
 		codestat \
+		copystrings \
+		devpak_plugin \
 		dragscroll \
 		envvars \
 		help_plugin \

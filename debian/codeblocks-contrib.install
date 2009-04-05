@@ -4,6 +4,7 @@ usr/lib/codeblocks/plugins/libbyogames.*
 usr/lib/codeblocks/plugins/libcb_koders.* 
 usr/lib/codeblocks/plugins/libcodesnippets.* 
 usr/lib/codeblocks/plugins/libcodestat.* 
+usr/lib/codeblocks/plugins/libcopystrings.* 
 usr/lib/codeblocks/plugins/libdragscroll.* 
 usr/lib/codeblocks/plugins/libenvvars.* 
 usr/lib/codeblocks/plugins/libexporter.* 
