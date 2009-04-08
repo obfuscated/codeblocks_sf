@@ -9,7 +9,6 @@ EXTRA_DIST = 	blocksort.c \
 		bzlib_private.h \
 		Makefile-libbz2_so \
 		makefile.msc \
-		Makefile.org \
 		CHANGES \
 		LICENSE \
 		README \
