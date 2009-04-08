@@ -18,6 +18,7 @@ noinst_HEADERS = IncrementalSearch.h \
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		IncrementalSearchToolbar.xrc \
+		IncrementalSearchConfDlg.xrc \
 		manifest.xml \
 		update \
 		update.bat \
