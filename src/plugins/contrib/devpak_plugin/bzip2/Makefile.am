@@ -7,6 +7,7 @@ EXTRA_DIST = 	blocksort.c \
 		randtable.c \
 		bzlib.h \
 		bzlib_private.h \
+		Makefile.original \
 		Makefile-libbz2_so \
 		makefile.msc \
 		CHANGES \
