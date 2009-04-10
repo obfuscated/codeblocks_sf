@@ -132,3 +132,5 @@ $(top_srcdir)/src/include/sdk_precomp.h.gch: $(ALLHEADERS)
 
 clean-local:
 	-rm -f $(top_srcdir)/src/include/sdk_precomp.h.gch
+
+EXTRA_DIST = autorevision.h
