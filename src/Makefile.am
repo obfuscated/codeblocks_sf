@@ -6,6 +6,7 @@ EXTRA_DIST = CodeBlocks.cbp \
 		CodeBlocks-unix.cbp \
 		ContribPlugins.workspace \
 		ContribPlugins-unix.workspace \
+		exchndl.dll \
 		update \
 		update.bat \
 		sdk.doxy
