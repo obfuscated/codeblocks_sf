@@ -60,6 +60,23 @@ wxString ConfigManager::app_path;
 wxString ConfigManager::temp_folder;
 bool ConfigManager::relo = 0;
 
+#ifdef __WINDOWS__
+wxString GetPortableConfigDir()
+{
+    DWORD bufLen = 32780;
+    TCHAR buffer[32780];
+    int ret = GetEnvironmentVariable(_T("APPDATA"), buffer, bufLen);
+    if (ret == 0)
+    {
+        return wxStandardPathsBase::Get().GetUserDataDir();
+    }
+    else
+    {
+        return wxString::Format(_T("%s\\codeblocks"), buffer);
+    }
+}
+#endif
+
 namespace CfgMgrConsts
 {
     const wxString app_path(_T("app_path"));
@@ -172,7 +189,11 @@ CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
 
     if(cfg.IsEmpty())
     {
+        #ifdef __WINDOWS__
+        cfg = GetPortableConfigDir() + wxFILE_SEP_PATH + personality + _T(".conf");
+        #else
         cfg = wxStandardPathsBase::Get().GetUserDataDir() + wxFILE_SEP_PATH + personality + _T(".conf");
+        #endif
         doc = new TiXmlDocument();
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
         doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
@@ -187,7 +208,11 @@ wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
 {
     wxPathList searchPaths;
 
+#ifdef __WINDOWS__
+    wxString u(GetPortableConfigDir() + wxFILE_SEP_PATH + filename);
+#else
     wxString u(wxStandardPathsBase::Get().GetUserDataDir() + wxFILE_SEP_PATH + filename);
+#endif
     wxString e(::DetermineExecutablePath() + wxFILE_SEP_PATH +filename);
 
     if(::wxFileExists(u))
@@ -1369,7 +1394,11 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
 
 void ConfigManager::InitPaths()
 {
+#ifdef __WINDOWS__
+    ConfigManager::config_folder = GetPortableConfigDir();
+#else
     ConfigManager::config_folder = wxStandardPathsBase::Get().GetUserDataDir();
+#endif
     ConfigManager::home_folder = wxStandardPathsBase::Get().GetUserConfigDir();
     ConfigManager::app_path = ::DetermineExecutablePath();
     wxString res_path = ::DetermineResourcesPath();
