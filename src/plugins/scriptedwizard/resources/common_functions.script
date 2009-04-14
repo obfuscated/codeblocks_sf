@@ -18,7 +18,7 @@ function WarningsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("/W3"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
@@ -59,7 +59,7 @@ function DebugSymbolsOn(base, compilerID)
         base.AddCompilerOption(_T("/D_DEBUG"));
         base.AddLinkerOption(_T("/DEBUG"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
@@ -109,7 +109,7 @@ function OptimizationsOn(base, compilerID)
         base.AddCompilerOption(_T("/Ox"));
         base.AddCompilerOption(_T("/DNDEBUG"));
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
@@ -119,7 +119,7 @@ function OptimizationsOn(base, compilerID)
     {
         base.AddCompilerOption(_T("-O2"));
 
-        if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm-elf-gcc"))
+        if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc")) )
         {
