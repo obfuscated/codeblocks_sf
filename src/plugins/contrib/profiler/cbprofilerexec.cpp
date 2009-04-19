@@ -252,7 +252,7 @@ size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxPr
         long item = outputFlatProfileArea->InsertItem(next,_T(""));
         outputFlatProfileArea->SetItemData(item, next);
         // check that we have spaces where spaces are supposed to be
-		if (msg[n].Len() > spacePos[6]) {
+		if (msg[n].Len() > spacePos[5]) {
 			bool need_parsing = false;
 			for (int i=0; i<6; ++i)
 			{
