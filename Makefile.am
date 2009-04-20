@@ -1,4 +1,4 @@
-SUBDIRS = src
+SUBDIRS = src debian
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = codeblocks.pc
