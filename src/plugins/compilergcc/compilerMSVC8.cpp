@@ -65,7 +65,7 @@ void CompilerMSVC8::Reset()
 
     //Language
     m_Options.AddOption(_("Produce debugging symbols"),
-                        _T("/Zi /D_DEBUG"),
+                        _T("/Zi"),
                         _("Language"),
                         _T("/DEBUG"),
                         true,
