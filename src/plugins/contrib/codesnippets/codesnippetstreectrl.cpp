@@ -91,6 +91,7 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
     m_bShutDown = false;
     m_mimeDatabase = 0;
     m_pEvtTreeCtrlBeginDrag = 0;
+    m_LastXmlModifiedTime = time_t(0);            //2009/03/15
 
     m_pSnippetsTreeCtrl = this;
     GetConfig()->SetSnippetsTreeCtrl(this);
@@ -1071,6 +1072,9 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
             fileName = textStr;
         if (textStr.StartsWith(_T("file://")))
             fileName = textStr;
+        // Remove anything pass the first \n or \r {v1.3.92}
+        fileName = fileName.BeforeFirst('\n');
+        fileName = fileName.BeforeFirst('\r');
     }
     fileData->AddFile( (fileName.Len() > 128) ? wxString(wxEmptyString) : fileName );
 

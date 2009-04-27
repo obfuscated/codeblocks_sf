@@ -48,6 +48,7 @@ class MouseEventsHandler;
 class cbDragScrollCfg;
 class wxLogWindow;
 class wxObject;
+class dsTextCtrlLogger;
 
 // ----------------------------------------------------------------------------
 //  cbDragScroll class declaration
@@ -55,6 +56,7 @@ class wxObject;
 class cbDragScroll : public cbPlugin
 {
     friend class CodeSnippetsAppFrame;
+    friend class MouseEventHandler;
 	public:
 		cbDragScroll();
 		~cbDragScroll();
@@ -82,19 +84,22 @@ class cbDragScroll : public cbPlugin
         int  GetMouseDragKey()           const { return MouseDragKey; }
         int  GetMouseDragSensitivity()   const { return MouseDragSensitivity; }
         int  GetMouseToLineRatio()       const { return MouseToLineRatio; }
-        //- int  GetMouseRightKeyCtrl()      { return MouseRightKeyCtrl; } removed
         int  GetMouseContextDelay()      const { return MouseContextDelay; }
+        int  GetMouseWheelZoom()         const { return MouseWheelZoom; }
+        int  IsLogZoomSizePropagated()   const { return PropagateLogZoomSize; }
+        int  GetMouseHtmlFontSize()      const { return m_MouseHtmlFontSize; }
+
         void OnAppStartupDoneInit();
+        bool IsAttachedTo(wxWindow* p);
+        void SetWindowZoom(wxWindow* pWxWindow);
 
         wxWindow* m_pCB_AppWindow;
-        wxWindow* m_pSearchResultsWindow;
-        //-not used in CodeSnippetsApp- wxString  m_DragScrollFirstId;
+
 
 	private:
         void OnAppStartupDone(CodeBlocksEvent& event);
         void OnDoConfigRequests(wxUpdateUIEvent& event);
 
-        bool IsAttachedTo(wxWindow* p);
         void AttachRecursively(wxWindow *p);
         void Detach(wxWindow* thisEditor);
         void DetachAll();
@@ -109,14 +114,24 @@ class cbDragScroll : public cbPlugin
         void OnDragScrollTestRescan(wxCommandEvent& event );
         void OnDragScrollEvent_RereadConfig(wxCommandEvent& event );
         void OnDragScrollEvent_InvokeConfig(wxCommandEvent& event );
+        void OnMouseWheelEvent(wxMouseEvent& event);
+        dsTextCtrlLogger* IsLoggerControl(const wxTextCtrl* pControl);
+        bool OnMouseWheelInHtmlWindowEvent(wxMouseEvent& event);
+        void OnProjectClose(CodeBlocksEvent& event);
+        void OnStartShutdown(CodeBlocksEvent& event);
 
         wxWindow* winExists(wxWindow *parent);
         wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
         wxString  FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         void      OnWindowOpen(wxEvent& event);
         void      OnWindowClose(wxEvent& event);
+
         MouseEventsHandler* GetMouseEventsHandler();
         void      CleanUpWindowPointerArray();
+        void      SetZoomWindowsStrings(wxString zoomWindowIds, wxString zoomFontSizes)
+                    {m_ZoomWindowIds = zoomWindowIds; m_ZoomFontSizes = zoomFontSizes;}
+        int       GetZoomWindowsArraysFrom(wxString zoomWindowIds, wxString zoomFontSizes);
+        void      UpdateConfigFile();
 
         wxString        m_ConfigFolder;
         wxString        m_ExecuteFolder;
@@ -124,11 +139,18 @@ class cbDragScroll : public cbPlugin
         wxString        m_CfgFilenameStr;
 
         wxArrayString   m_UsableWindows;
-        wxArrayPtrVoid  m_EditorPtrs;
+        wxArrayPtrVoid  m_WindowPtrs;
         wxLogWindow*    pMyLog;
         bool            m_bNotebooksAttached;
         //-deprecated-wxArrayPtrVoid  m_EventHandlerArray;
         MouseEventsHandler* m_pMouseEventsHandler; //one and only
+
+        wxString            m_DragScrollFirstId;
+        wxString            m_ZoomWindowIds;
+        wxString            m_ZoomFontSizes;
+        wxArrayInt          m_ZoomWindowIdsAry;
+        wxArrayInt          m_ZoomFontSizesAry;
+
 
         bool MouseDragScrollEnabled ;   //Enable/Disable mouse event handler
         bool MouseEditorFocusEnabled;   //Enable/Disable mouse focus() editor
@@ -137,8 +159,10 @@ class cbDragScroll : public cbPlugin
         int  MouseDragKey           ;   //Right or Middle mouse key
         int  MouseDragSensitivity   ;   //Adaptive speed sensitivity
         int  MouseToLineRatio       ;   //Percentage of mouse moves that make a line
-        //-bool MouseRightKeyCtrl      ;   //Hide Right mouse down from ListCtrl windows removed
         int  MouseContextDelay      ;   //Linux context menu delay to catch possible mouse scroll move
+        int  MouseWheelZoom         ;   //MouseWheel zooms tree, text, list controls
+        int  PropagateLogZoomSize   ;   //Propagate Zoom Font size for all logs
+        int  m_MouseHtmlFontSize    ;   //Ctrl-MouseWheel zoomed htmlWindow font size
 
         PluginInfo* plugin ;            //pointer to plugin info or null
 

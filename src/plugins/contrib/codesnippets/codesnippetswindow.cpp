@@ -217,7 +217,7 @@ bool SnippetsDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 					item->SetSnippet(data);
 				break;
 			}
-
+            m_TreeCtrl->SetFileChanged(true); //{v1.3.94}
 			return true;
 		}
 		else
@@ -1334,6 +1334,10 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
 
     wxFileName fname( GetConfig()->SettingsSnippetsXmlPath );
     wxDateTime last = fname.GetModificationTime();
+    #if defined(LOGGING)
+    LOGIT( _T("SnippetsXmlPath[%s]time[%s]"),
+                fname.GetFullPath().c_str(), last.Format().c_str());
+    #endif
 
     //    ProjectFile* pf = ed->GetProjectFile();
     //
@@ -1357,6 +1361,13 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     //    }
 
     //Was File content changed?
+    wxDateTime fileModTime = GetSnippetsTreeCtrl()->GetSavedFileModificationTime();
+    #if defined(LOGGING)
+    LOGIT( _T("FileModTime[%s]"), fileModTime.Format().c_str());
+    #endif
+    if ( fileModTime == time_t(0) ) //not yet initialized
+        b_modified = false;
+    else
     if ( last.IsLaterThan(GetSnippetsTreeCtrl()->GetSavedFileModificationTime()) )
         b_modified = true;
 

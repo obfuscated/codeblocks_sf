@@ -175,6 +175,8 @@ class CodeSnippets : public cbPlugin
         void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
 
         cbDragScroll* FindDragScroll();
+        wxString      GetCBConfigFile();
+        wxString      GetCBConfigDir();
 
 		wxWindow*       m_pAppWin;
         ProjectManager* m_pProjectMgr;

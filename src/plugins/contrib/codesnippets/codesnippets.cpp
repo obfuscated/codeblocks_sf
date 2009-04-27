@@ -148,17 +148,14 @@ void CodeSnippets::OnAttach()
     // ---------------------------------------
     // determine location of settings
     // ---------------------------------------
-    wxStandardPaths stdPaths;
     //memorize the key file name as {%HOME%}\codesnippets.ini
-    GetConfig()->m_ConfigFolder = stdPaths.GetUserDataDir();
-    //-wxString m_ExecuteFolder = stdPaths.GetDataDir();
+    GetConfig()->m_ConfigFolder = GetCBConfigDir();
     #if defined(LOGGING)
      LOGIT( _T("Argv[0][%s] Cwd[%s]"), wxTheApp->argv[0], ::wxGetCwd().GetData() );
     #endif
     GetConfig()->m_ExecuteFolder = FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString);
 
-    //GTK GetConfigFolder is returning double "//?, eg, "/home/pecan//.codeblocks"
-    // remove the double //s from filename //+v0.4.11
+    // remove the double //s from filenames
     GetConfig()->m_ConfigFolder.Replace(_T("//"),_T("/"));
     GetConfig()->m_ExecuteFolder.Replace(_T("//"),_T("/"));
     #if defined(LOGGING)
@@ -174,13 +171,13 @@ void CodeSnippets::OnAttach()
     #endif
 
     // if codesnippets.ini is in the executable folder, use it
-    // else use the default config folder
+    // else use the config folder
     wxString m_CfgFilenameStr = GetConfig()->m_ExecuteFolder + wxFILE_SEP_PATH;
     if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
     m_CfgFilenameStr << GetConfig()->AppName + _T(".ini");
 
     if (::wxFileExists(m_CfgFilenameStr)) {;/*OK Use exe path*/}
-    else // use the default.conf folder
+    else // use the .conf folder
     {   m_CfgFilenameStr = GetConfig()->m_ConfigFolder + wxFILE_SEP_PATH;
         if (not m_Personality.IsEmpty()) m_CfgFilenameStr <<  m_Personality + wxT(".") ;
         m_CfgFilenameStr << GetConfig()->AppName + _T(".ini");
@@ -340,7 +337,7 @@ void CodeSnippets::BuildMenu(wxMenuBar* menuBar)
     GetConfig()->m_pMenuBar = menuBar;
     bool isSet = false;
 
-	int idx = menuBar->FindMenu(_("&View"));
+	int idx = menuBar->FindMenu(_("View"));
 	if (idx != wxNOT_FOUND) do
 	{
 		wxMenu* viewMenu = menuBar->GetMenu(idx);
@@ -1732,6 +1729,22 @@ cbDragScroll* CodeSnippets::FindDragScroll()
     }
 
     return GetConfig()->GetDragScrollPlugin();
+}
+// ----------------------------------------------------------------------------
+wxString CodeSnippets::GetCBConfigFile()
+// ----------------------------------------------------------------------------
+{
+    PersonalityManager* PersMan = Manager::Get()->GetPersonalityManager();
+    wxString personality = PersMan->GetPersonality();
+    ConfigManager* CfgMan = Manager::Get()->GetConfigManager(_T("app"));
+    wxString current_conf_file = CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown);
+    return current_conf_file;
+}
+// ----------------------------------------------------------------------------
+wxString CodeSnippets::GetCBConfigDir()
+// ----------------------------------------------------------------------------
+{
+    return GetCBConfigFile().BeforeLast(wxFILE_SEP_PATH);
 }
 //// ----------------------------------------------------------------------------
 //void CodeSnippets::OnWindowDestroy(wxEvent& event)

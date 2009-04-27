@@ -236,8 +236,6 @@ CodeSnippetsAppFrame::CodeSnippetsAppFrame(wxFrame* frame, const wxString& title
 CodeSnippetsAppFrame::~CodeSnippetsAppFrame()
 // ----------------------------------------------------------------------------
 {
-    if ( GetConfig()->GetDragScrollPlugin() )
-        GetConfig()->GetDragScrollPlugin()->OnRelease(true);
 }//dtor
 // ----------------------------------------------------------------------------
 void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxString& title)
@@ -711,6 +709,13 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
      // Don't close down if file checking is active
     if (m_bOnActivateBusy)
         return;
+
+    if ( GetConfig()->GetDragScrollPlugin() )
+    {
+        CodeBlocksEvent cbEvent;
+        GetConfig()->GetDragScrollPlugin()->OnStartShutdown( cbEvent);
+        GetConfig()->GetDragScrollPlugin()->OnRelease(true);
+    }
 
     // EVT_CLOSE is never called for codesnippetswindow.
     // so we'll invoke it here. It saves the xml indexes.
