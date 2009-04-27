@@ -254,6 +254,8 @@ class BrowseTracker : public cbPlugin
         ProjectData* GetProjectDataByProjectName( wxString filePath);
         ProjectData* GetProjectDataByEditorName( wxString filePath);
         cbProject*   GetProject(EditorBase* eb);
+        wxString     GetCBConfigFile();
+        wxString     GetCBConfigDir();
 
         void         DumpHash( wxString hashtype);
 
