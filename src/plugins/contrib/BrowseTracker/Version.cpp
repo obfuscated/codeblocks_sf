@@ -200,6 +200,9 @@ AppVersion::~AppVersion()
 //  Commit 1.2.75 2009/04/26
 //         75) Added GetCBConfigDir() to call routines that check for APPDATA var
 // ----------------------------------------------------------------------------
+//  Commit 1.2.76 2009/04/28
+//         76) Add include ConfigManager for linux
+// ----------------------------------------------------------------------------
 //  Bugs
 //          When searching workspace w/o open project, BT is comatose.
 //              Should say "no project" or some such.
