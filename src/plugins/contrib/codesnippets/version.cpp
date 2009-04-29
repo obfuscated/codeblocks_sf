@@ -484,6 +484,10 @@ AppVersion::~AppVersion()
 //          97) Added zoom functions to Apps DragScroll class
 //          98) Added GetCBConfigDir() to call routines that check for user APPDATA var
 // ----------------------------------------------------------------------------
+//  Commit 1 3.99 2009/04/29
+//          99) App: check for standalone execution before closing in OnClose() to
+//              avoid error "can't delete default.conf.cbTemp"
+// ----------------------------------------------------------------------------
 //  Bugs
 //      2008/04/8
 //          If floating wxAUI window is docked with Edit's open, they disappear. But

@@ -734,7 +734,8 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
     // save recently opened indexes
     TerminateRecentFilesHistory();
 
-    // Ask SDK to write config file
+    // If not started by CB, ask SDK to write config file
+    if ( 0 == GetConfig()->GetKeepAlivePid() )
     if ( Manager::Get() )
     {
         Manager::Free();
