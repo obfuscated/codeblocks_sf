@@ -14,7 +14,7 @@ libcopystrings_la_SOURCES = copystrings.cpp
 
 noinst_HEADERS = copystrings.h
 
-EXTRA_DIST = 	*.cbp \
+EXTRA_DIST = 	$(srcdir)/*.cbp \
 		manifest.xml
 
 pkgdata_DATA = copystrings.zip
