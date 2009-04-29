@@ -8746,6 +8746,8 @@ void wxPropertyGrid::PGAdjustScrollbars( int y )
 {
     // Adjust scrollbars.
 
+	if (wxPG_PIXELS_PER_UNIT == 0) return; /* avoid division by zero */
+
 	y += wxPG_PIXELS_PER_UNIT+2; // One more scrollbar unit + 2 pixels.
     int y_amount = y/wxPG_PIXELS_PER_UNIT;
 
