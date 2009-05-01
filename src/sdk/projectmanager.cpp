@@ -1547,7 +1547,11 @@ bool ProjectManager::AddProjectDependency(cbProject* base, cbProject* dependsOn)
         arr->Add(dependsOn);
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
+        #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("%s now depends on %s (%d deps)"), base->GetTitle().wx_str(), dependsOn->GetTitle().wx_str(), arr->GetCount()));
+        #else
         Manager::Get()->GetLogManager()->DebugLog(F(_T("%s now depends on %s (%d deps)"), base->GetTitle().c_str(), dependsOn->GetTitle().c_str(), arr->GetCount()));
+        #endif
     }
     return true;
 }
@@ -1564,7 +1568,11 @@ void ProjectManager::RemoveProjectDependency(cbProject* base, cbProject* doesNot
     ProjectsArray* arr = it->second;
     arr->Remove(doesNotDependOn);
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("%s now does not depend on %s (%d deps)"), base->GetTitle().wx_str(), doesNotDependOn->GetTitle().wx_str(), arr->GetCount()));
+    #else
     Manager::Get()->GetLogManager()->DebugLog(F(_T("%s now does not depend on %s (%d deps)"), base->GetTitle().c_str(), doesNotDependOn->GetTitle().c_str(), arr->GetCount()));
+    #endif
     // if it was the last dependency, delete the array
     if (!arr->GetCount())
     {
@@ -1626,7 +1634,11 @@ void ProjectManager::RemoveProjectFromAllDependencies(cbProject* base)
         else
             ++it;
     }
+    #if wxCHECK_VERSION(2, 9, 0)
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removed %s from all deps"), base->GetTitle().wx_str()));
+    #else
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Removed %s from all deps"), base->GetTitle().c_str()));
+    #endif
 }
 
 const ProjectsArray* ProjectManager::GetDependenciesForProject(cbProject* base)
