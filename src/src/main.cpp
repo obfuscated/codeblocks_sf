@@ -749,10 +749,18 @@ void MainFrame::RunStartupScripts()
                     else if (!se.menu.IsEmpty())
                         Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
                     else
+                    #if wxCHECK_VERSION(2, 9, 0)
+                        Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.wx_str()));
+                    #else
                         Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.c_str()));
+                    #endif
                 }
                 else
+                #if wxCHECK_VERSION(2, 9, 0)
+                    Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.wx_str()));
+                #else
                     Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.c_str()));
+                #endif
             }
             catch (SquirrelError& exception)
             {
@@ -1029,7 +1037,11 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
 
     while(!item)
     {
+        #if wxCHECK_VERSION(2, 9, 0)
+        if(!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetItemLabelText()) > 0)
+        #else
         if(!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetLabel()) > 0)
+        #endif
             item = menu->Insert(pos, id, title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
 
         --pos;
@@ -1334,7 +1346,11 @@ void MainFrame::DoSelectLayout(const wxString& name)
         {
             if (!items[i]->IsCheckable())
                 continue;
+            #if wxCHECK_VERSION(2, 9, 0)
+            items[i]->Check(items[i]->GetItemLabel().IsSameAs(name));
+            #else
             items[i]->Check(items[i]->GetText().IsSameAs(name));
+            #endif
         }
 
         if (!m_LastLayoutIsTemp)
@@ -1627,7 +1643,11 @@ void MainFrame::DoUpdateStatusBar()
         SetStatusText(ed->GetEncodingName(), panel++);
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
+        #if wxCHECK_VERSION(2, 9, 0)
+        SetStatusText(ed->GetModified() ? _("Modified") : _T(""), panel++);
+        #else
         SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
+        #endif
         SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
         SetStatusText(personality, panel++);
     }
@@ -3483,7 +3503,11 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
                 {
                     wxMenuItem* item = hl->FindItem(event.GetId());
                     if (item)
+                    #if wxCHECK_VERSION(2, 9, 0)
+                        lang = theme->GetHighlightLanguage(item->GetItemLabelText());
+                    #else
                         lang = theme->GetHighlightLanguage(item->GetLabel());
+                    #endif
                 }
             }
             ed->SetLanguage(lang);
@@ -4116,7 +4140,11 @@ void MainFrame::OnPluginLoaded(CodeBlocksEvent& event)
         DoAddPlugin(plug);
         const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plug);
         wxString msg = info ? info->title : wxString(_("<Unknown plugin>"));
+        #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("%s plugin activated"), msg.wx_str()));
+        #else
         Manager::Get()->GetLogManager()->DebugLog(F(_T("%s plugin activated"), msg.c_str()));
+        #endif
     }
 }
 
