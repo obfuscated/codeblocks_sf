@@ -29,6 +29,11 @@
 #include "annoyingdialog.h"
 #include <wx/choice.h>
 #include <wx/textdlg.h> //wxTextEntryDialog
+
+#if wxCHECK_VERSION(2, 9, 0)
+#include <wx/unichar.h>
+#endif
+
 #include <ctype.h>
 
 template<> UserVariableManager* Mgr<UserVariableManager>::instance = 0;
@@ -102,7 +107,11 @@ class UsrGlblMgrEditDialog : public wxDialog
         }
 
     for(unsigned int i = 0; i < s.length(); ++i)
+    #if wxCHECK_VERSION(2, 9, 0)
+        s[i] = isalnum(s.GetChar(i)) ? s.GetChar(i) : wxUniChar('_');
+    #else
         s[i] = isalnum(s.GetChar(i)) ? s.GetChar(i) : _T('_');
+    #endif
 
     if(s.GetChar(0) == _T('_'))
             s.Prepend(_T("set"));
