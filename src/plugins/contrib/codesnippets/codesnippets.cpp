@@ -30,6 +30,7 @@
 	#include <wx/string.h>
 	#include "sdk_events.h"
 	#include "manager.h"
+	#include "configmanager.h"
 	#include "projectmanager.h"
 	#include "personalitymanager.h"
 	#include "cbworkspace.h"
