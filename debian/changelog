@@ -1,3 +1,10 @@
+codeblocks (8.02svn5484) unstable; urgency=low
+
+  * Nightly linux build
+  * add libtool and automake to build depend
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 18:47:34 +0200 
+ 
 codeblocks (8.02svn5409) unstable; urgency=low
 
   * Nightly linux build
