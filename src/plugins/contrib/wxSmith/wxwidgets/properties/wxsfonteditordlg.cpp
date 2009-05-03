@@ -439,19 +439,19 @@ void wxsFontEditorDlg::StoreData(wxsFontData& Data)
     }
     else
     {
-        if ( Data.HasSysFont = BaseFontUse->GetValue() )
+        if ( (Data.HasSysFont = BaseFontUse->GetValue()) )
         {
             Data.SysFont = BaseFontVal->GetStringSelection();
         }
 
-        if ( Data.HasRelativeSize = ( !SizeUse->GetValue() && RelSizeUse->GetValue() ) )
+        if ( (Data.HasRelativeSize = ( !SizeUse->GetValue() && RelSizeUse->GetValue() )) )
         {
             wxString val = RelSizeVal->GetValue();
             val.ToDouble(&Data.RelativeSize);
         }
     }
 
-    if ( Data.HasFamily = FamUse->GetValue() )
+    if ( (Data.HasFamily = FamUse->GetValue()) )
     {
         switch ( FamVal->GetSelection() )
         {
@@ -465,9 +465,9 @@ void wxsFontEditorDlg::StoreData(wxsFontData& Data)
         }
     }
 
-    if ( Data.HasEncoding = EncodUse->GetValue() )
+    if ( (Data.HasEncoding = EncodUse->GetValue()) )
     {
-        int Index = EncodVal->GetSelection();
+        const int Index = EncodVal->GetSelection();
         if ( Index == wxNOT_FOUND )
         {
             Data.HasEncoding = false;
@@ -478,26 +478,26 @@ void wxsFontEditorDlg::StoreData(wxsFontData& Data)
         }
     }
 
-    if ( Data.HasSize = SizeUse->GetValue() )
+    if ( (Data.HasSize = SizeUse->GetValue()) )
     {
         Data.Size = SizeVal->GetValue();
     }
 
-    if ( Data.HasStyle = StyleUse->GetValue() )
+    if ( (Data.HasStyle = StyleUse->GetValue()) )
     {
         if ( StyleNorm->GetValue() ) Data.Style = wxFONTSTYLE_NORMAL;
         if ( StyleItal->GetValue() ) Data.Style = wxFONTSTYLE_ITALIC;
         if ( StyleSlant->GetValue() ) Data.Style = wxFONTSTYLE_SLANT;
     }
 
-    if ( Data.HasWeight = WeightUse->GetValue() )
+    if ( (Data.HasWeight = WeightUse->GetValue()) )
     {
         if ( WeightLight->GetValue() ) Data.Weight = wxFONTWEIGHT_LIGHT;
         if ( WeightNorm->GetValue() ) Data.Weight = wxFONTWEIGHT_NORMAL;
         if ( WeightBold->GetValue() ) Data.Weight = wxFONTWEIGHT_BOLD;
     }
 
-    if ( Data.HasUnderlined = UnderUse->GetValue() )
+    if ( (Data.HasUnderlined = UnderUse->GetValue()) )
     {
         if ( UnderYes->GetValue() ) Data.Underlined = true;
         if ( UnderNo->GetValue() ) Data.Underlined = false;

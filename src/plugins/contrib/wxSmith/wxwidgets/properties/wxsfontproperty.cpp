@@ -317,32 +317,32 @@ bool wxsFontProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element
     wxString Val;
 
     // Fetching size
-    if ( VALUE.HasSize = XmlGetString(Element,Val,_T("size")) )
+    if ( (VALUE.HasSize = XmlGetString(Element,Val,_T("size")) ))
     {
         Val.ToLong(&VALUE.Size);
     }
 
-    if ( VALUE.HasStyle = XmlGetString(Element,Val,_T("style")) )
+    if ( (VALUE.HasStyle = XmlGetString(Element,Val,_T("style")) ))
     {
         if ( Val == _T("italic") ) VALUE.Style = wxFONTSTYLE_ITALIC; else
         if ( Val == _T("slant") )  VALUE.Style = wxFONTSTYLE_SLANT;  else
                                    VALUE.Style = wxFONTSTYLE_NORMAL;
     }
 
-    if ( VALUE.HasWeight = XmlGetString(Element,Val,_T("weight")) )
+    if ( (VALUE.HasWeight = XmlGetString(Element,Val,_T("weight")) ))
     {
         if ( Val == _T("bold") )  VALUE.Weight = wxBOLD;   else
         if ( Val == _T("light") ) VALUE.Weight = wxLIGHT;  else
                                   VALUE.Weight = wxNORMAL;
     }
 
-    if ( VALUE.HasUnderlined = XmlGetString(Element,Val,_T("underlined")) )
+    if ( (VALUE.HasUnderlined = XmlGetString(Element,Val,_T("underlined")) ))
     {
         if ( Val == _T("1" ) ) VALUE.Underlined = true;
         else                   VALUE.Underlined = false;
     }
 
-    if ( VALUE.HasFamily = XmlGetString(Element,Val,_T("family")) )
+    if ( (VALUE.HasFamily = XmlGetString(Element,Val,_T("family")) ))
     {
         if ( Val == _T("decorative") ) VALUE.Family = wxDECORATIVE; else
         if ( Val == _T("roman") )      VALUE.Family = wxROMAN;      else
@@ -367,7 +367,7 @@ bool wxsFontProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element
     VALUE.HasEncoding = XmlGetString(Element,VALUE.Encoding,_T("encoding"));
     VALUE.HasSysFont = XmlGetString(Element,VALUE.SysFont,_T("sysfont"));
 
-    if ( VALUE.HasRelativeSize = XmlGetString(Element,Val,_T("relativesize")) )
+    if ( (VALUE.HasRelativeSize = XmlGetString(Element,Val,_T("relativesize")) ))
     {
         Val.ToDouble(&VALUE.RelativeSize);
     }

@@ -88,7 +88,7 @@ LibSelectDlg::LibSelectDlg(wxWindow* parent,const wxArrayString& Names,bool addO
 	Center();
 	//*)
 
-	if ( m_AddOnly = addOnly )
+	if ( (m_AddOnly = addOnly) )
 	{
 	    m_DontClear->SetValue( true );
 	    m_ClearSelected->SetValue( false );
