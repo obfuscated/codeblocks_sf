@@ -58,7 +58,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_EXPANDING(XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
     EVT_TREE_ITEM_COLLAPSING(XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
     EVT_TREE_SEL_CHANGED(XRCID("treeAll"), ClassBrowser::OnTreeItemSelected)
-    
+
     EVT_TEXT_ENTER(XRCID("cmbSearch"), ClassBrowser::OnSearch)
     EVT_COMBOBOX(XRCID("cmbSearch"), ClassBrowser::OnSearch)
 
@@ -87,7 +87,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
 
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
     m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
-    
+
     if (platform::windows)
 		m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
@@ -439,7 +439,11 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 
 				wxFocusEvent ev(wxEVT_SET_FOCUS);
 				ev.SetWindow(this);
+				#if wxCHECK_VERSION(2, 9, 0)
+				ed->GetControl()->GetEventHandler()->AddPendingEvent(ev);
+				#else
 				ed->GetControl()->AddPendingEvent(ev);
+				#endif
 			}
         }
     }
@@ -544,7 +548,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             token = m_pParser->GetTokens()->at(int_selections[0]);
         }
 	}
-	
+
 	// time to "walk" the tree
 	if (token)
 	{
@@ -575,7 +579,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
 			}
 			return;
 		}
-		
+
 		// example:
 		//   search="cou"
 		//   token->GetNamespace()="std::"
