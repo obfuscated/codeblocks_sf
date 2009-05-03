@@ -80,7 +80,11 @@ void MSVCWorkspaceBase::updateProjects() {
                 wxString s = proj._project->GetBuildTarget(k)->GetTitle();
                 if (_workspaceConfigurations.Index(s) == wxNOT_FOUND) {
                     _workspaceConfigurations.Add(s);
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("workspace config: '%s'"), s.wx_str()));
+                    #else
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("workspace config: '%s'"), s.c_str()));
+                    #endif
                 }
             }
         }
@@ -88,7 +92,11 @@ void MSVCWorkspaceBase::updateProjects() {
 
     for (projIt = _projects.begin(); projIt != _projects.end(); ++projIt) {
         proj = projIt->second;
+        #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Project %s, %d dependencies"), proj._project->GetTitle().wx_str(), proj._dependencyList.GetCount()));
+        #else
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Project %s, %d dependencies"), proj._project->GetTitle().c_str(), proj._dependencyList.GetCount()));
+        #endif
         for (i=0; i<proj._dependencyList.GetCount(); ++i) {
             depIt = _projects.find(proj._dependencyList[i]);
             if ( depIt != _projects.end()) { // dependency found
@@ -149,7 +157,11 @@ void MSVCWorkspaceBase::updateProjects() {
                         continue;
                     }
 
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Match '%s' to '%s'"), targetProj->GetFullTitle().wx_str(), targetDep->GetFullTitle().wx_str()));
+                    #else
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("Match '%s' to '%s'"), targetProj->GetFullTitle().c_str(), targetDep->GetFullTitle().c_str()));
+                    #endif
 
                     // now, update dependencies
                     TargetType type = targetDep->GetTargetType();
