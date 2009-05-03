@@ -340,7 +340,9 @@ void SurfaceImpl::AlphaRectangle (PRectangle rc, int cornerSize, ColourAllocated
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp(r.width, r.height, 32);
     wxAlphaPixelData pixData(bmp);
-    pixData.UseAlpha();
+    #if !wxCHECK_VERSION(2, 9, 0)
+    pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
+    #endif
     wxAlphaPixelData::Iterator p(pixData);
 
     // Set the fill pixels
