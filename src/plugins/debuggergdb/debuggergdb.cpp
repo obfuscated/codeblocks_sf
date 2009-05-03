@@ -785,7 +785,11 @@ void DebuggerGDB::DoSwitchToDebuggingLayout()
     CodeBlocksLayoutEvent queryEvent(cbEVT_QUERY_VIEW_LAYOUT);
     CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, _("Debugging"));
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.wx_str()));
+    #else
     Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), switchEvent.layout.c_str()));
+    #endif
 
     // query the current layout
     Manager::Get()->ProcessEvent(queryEvent);
@@ -799,7 +803,11 @@ void DebuggerGDB::DoSwitchToPreviousLayout()
 {
     CodeBlocksLayoutEvent switchEvent(cbEVT_SWITCH_VIEW_LAYOUT, m_PreviousLayout);
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.wx_str() : wxString(_("Code::Blocks default")).wx_str()));
+    #else
     Manager::Get()->GetLogManager()->DebugLog(F(_("Switching layout to \"%s\""), !switchEvent.layout.IsEmpty() ? switchEvent.layout.c_str() : wxString(_("Code::Blocks default")).c_str()));
+    #endif
 
     // switch to previous layout
     Manager::Get()->ProcessEvent(switchEvent);
