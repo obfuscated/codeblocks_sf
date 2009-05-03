@@ -29,6 +29,8 @@ config.status: config-stamp
 config-stamp: 
 	dh_testdir
 	# Add here commands to configure the package.
+	[ -x configure ] || ./bootstrap
+	./updateChangeLog.sh
 	CFLAGS="$(CFLAGS)" \
 		./configure \
 		--with-contrib-plugins=all \

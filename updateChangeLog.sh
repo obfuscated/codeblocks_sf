@@ -6,7 +6,7 @@
 #
 # $Revision$
 # $Id$
-# $HeadURL: svn+ssh://jenslody@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/src/dlgaboutplugin.cpp $
+# $HeadURL:$
 #
 
 REV_TO=${1:-"HEAD"}

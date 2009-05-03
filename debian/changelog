@@ -1,6 +1,13 @@
-codeblocks (8.02svn5484) unstable; urgency=low
+codeblocks (8.02svn5586) unstable; urgency=low
 
-  * Nightly linux build
+  * add subversion and xsltproc to build dependcies
+  * run bootstrap if needed
+  * automatically update ChangeLog to HEAD
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 21:43:39 +0200 
+ 
+codeblocks (8.02svn5584) unstable; urgency=low
+
   * add libtool and automake to build depend
 
  -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 18:47:34 +0200 
