@@ -93,7 +93,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, Parser* parser, Token* token)
 	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* BoxSizer2;
 	wxPanel* Panel3;
-	
+
 	Create(parent,id,_("Code-completion debug tool"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxTAB_TRAVERSAL,_T("wxDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	Notebook1 = new wxNotebook(this,ID_NOTEBOOK1,wxDefaultPosition,wxDefaultSize,0,_T("ID_NOTEBOOK1"));
@@ -326,7 +326,11 @@ void CCDebugInfo::DisplayTokenInfo()
     txtIsLocal->SetLabel(m_pToken->m_IsLocal ? _T("Yes") : _T("No"));
     txtIsTemp->SetLabel(m_pToken->m_IsTemp ? _T("Yes") : _T("No"));
     txtNamespace->SetLabel(m_pToken->GetNamespace());
+    #if wxCHECK_VERSION(2, 9, 0)
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _T("<Global namespace>"), m_pToken->m_ParentIndex));
+    #else
     txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _T("<Global namespace>"), m_pToken->m_ParentIndex));
+    #endif
     FillChildren();
     FillAncestors();
     FillDescendants();
@@ -348,7 +352,11 @@ void CCDebugInfo::FillChildren()
     for (TokenIdxSet::iterator it = m_pToken->m_Children.begin(); it != m_pToken->m_Children.end(); ++it)
     {
         Token* child = tokens->at(*it);
+        #if wxCHECK_VERSION(2, 9, 0)
+        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.wx_str() : _T("<invalid token>"), *it));
+        #else
         cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.c_str() : _T("<invalid token>"), *it));
+        #endif
     }
     cmbChildren->SetSelection(0);
 }
@@ -360,7 +368,11 @@ void CCDebugInfo::FillAncestors()
     for (TokenIdxSet::iterator it = m_pToken->m_Ancestors.begin(); it != m_pToken->m_Ancestors.end(); ++it)
     {
         Token* ancestor = tokens->at(*it);
+        #if wxCHECK_VERSION(2, 9, 0)
+        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.wx_str() : _T("<invalid token>"), *it));
+        #else
         cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.c_str() : _T("<invalid token>"), *it));
+        #endif
     }
     cmbAncestors->SetSelection(0);
 }
@@ -372,7 +384,11 @@ void CCDebugInfo::FillDescendants()
     for (TokenIdxSet::iterator it = m_pToken->m_Descendants.begin(); it != m_pToken->m_Descendants.end(); ++it)
     {
         Token* descendant = tokens->at(*it);
+        #if wxCHECK_VERSION(2, 9, 0)
+        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.wx_str() : _T("<invalid token>"), *it));
+        #else
         cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.c_str() : _T("<invalid token>"), *it));
+        #endif
     }
     cmbDescendants->SetSelection(0);
 }
