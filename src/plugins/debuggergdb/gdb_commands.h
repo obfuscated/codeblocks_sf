@@ -62,7 +62,11 @@ namespace
 
     while (count < sizeof(T) * 2) // be sure we don't keep adding more to ret
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      switch (str[pos].GetValue())
+      #else
       switch (str[pos])
+      #endif
       {
         case _T('0'):
         case _T('1'):
