@@ -452,7 +452,11 @@ int ThreadSearch::GetInsertionMenuIndex(const wxMenu* const pCtxMenu)
 	const wxMenuItemList ItemsList = pCtxMenu->GetMenuItems();
 	for (int i = 0; i < (int)ItemsList.GetCount(); ++i)
 	{
+		#if wxCHECK_VERSION(2, 9, 0)
+		if (ItemsList[i]->GetItemLabelText().StartsWith(_("Find implementation of:")) )
+		#else
 		if (ItemsList[i]->GetLabel().StartsWith(_("Find implementation of:")) )
+		#endif
 		{
 			return ++i;
 		}
