@@ -474,7 +474,11 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
     {
         wxMenuItem* item = pbtMenu->FindItemByPosition(i);
         int menuId = item->GetId();
+        #if wxCHECK_VERSION(2, 9, 0)
+        wxString menuLabel = item->GetItemLabelText();
+        #else
         wxString menuLabel = item->GetLabel();
+        #endif
         ///LOGIT( _T("OnContextMenu insert[%s]"),menuLabel.c_str() );
         wxMenuItem* pContextItem= new wxMenuItem(0, menuId, menuLabel);
         sub_menu->Append( pContextItem );
