@@ -19,7 +19,7 @@ TAR::TAR(const wxString& filename)
     m_SkipBytes(0),
     m_Size(0)
 {
-    if (filename)
+    if (!filename.IsEmpty())
         Open(filename);
 }
 
