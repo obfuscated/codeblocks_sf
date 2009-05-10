@@ -106,10 +106,6 @@
         <label>Save wor&amp;kspace as...</label>
         <help>Save current workspace under a different name</help>
       </object>
-      <object class="wxMenuItem" name="idFileCloseWorkspace">
-        <label>Close workspace</label>
-        <help>Close current workspace</help>
-      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveAll">
         <label>Save everything</label>
@@ -136,6 +132,10 @@
       <object class="wxMenuItem" name="idFileCloseAllProjects">
         <label>Close all projects</label>
         <help>Close all opened projects</help>
+      </object>
+      <object class="wxMenuItem" name="idFileCloseWorkspace">
+        <label>Close workspace</label>
+        <help>Close current workspace</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFilePrint">
