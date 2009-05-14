@@ -1056,7 +1056,11 @@ void cbDragScroll::SetWindowZoom(wxWindow* pWxWindow)
                 wheelEvt.SetEventObject(pWindow);
                 wheelEvt.m_controlDown = true;
                 wheelEvt.m_wheelRotation = 0;
+                #if wxCHECK_VERSION(2, 9, 0)
+                pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
+                #else
                 pWindow->AddPendingEvent(wheelEvt);
+                #endif
                 #if defined(LOGGING)
                 LOGIT( _T("OnAppStartupDoneInit Issued Wheel Zoom event [%p][%d][%s]size[%d]"),pWindow, pWindow->GetId(), pWindow->GetName().c_str(),fontSize);
                 #endif

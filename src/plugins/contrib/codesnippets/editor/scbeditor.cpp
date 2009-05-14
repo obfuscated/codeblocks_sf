@@ -524,7 +524,11 @@ void ScbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strA
     event.SetY(yArg);
     //-wxPostEvent(Manager::Get()->GetAppWindow(), event);
     //-Manager::Get()->GetPluginManager()->NotifyPlugins(event);
+    #if wxCHECK_VERSION(2, 9, 0)
+    parent->GetEventHandler()->ProcessEvent(event);
+    #else
     parent->ProcessEvent(event);
+    #endif
 }
 
 void ScbEditor::DestroySplitView()
