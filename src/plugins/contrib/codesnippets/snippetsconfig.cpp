@@ -232,7 +232,7 @@ void CodeSnippetsConfig::SettingsSave()
 	cfgFile.Write( wxT("SnippetFolder"),   SettingsSnippetsFolder ) ;
 	cfgFile.Write( wxT("ViewSearchBox"),   SettingsSearchBox ) ;
 	cfgFile.Write( wxT("casesensitive"),   m_SearchConfig.caseSensitive ) ;
-	cfgFile.Write( wxT("scope"),           m_SearchConfig.scope );
+	cfgFile.Write( wxT("scope"),           int(m_SearchConfig.scope) );
 	cfgFile.Write( wxT("EditorsStayOnTop"),SettingsEditorsStayOnTop );
 	if ( IsPlugin() )
 	{   // Write ExternalPersistent for plugin use only

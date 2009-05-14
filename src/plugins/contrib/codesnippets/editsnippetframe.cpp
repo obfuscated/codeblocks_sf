@@ -1148,7 +1148,11 @@ void EditSnippetFrame::OnEditHighlightMode(wxCommandEvent& event)
                 {
                     wxMenuItem* item = hl->FindItem(event.GetId());
                     if (item)
+                    #if wxCHECK_VERSION(2, 9, 0)
+                        lang = theme->GetHighlightLanguage(item->GetItemLabelText());
+                    #else
                         lang = theme->GetHighlightLanguage(item->GetLabel());
+                    #endif
                 }
             }
             ed->SetLanguage(lang);

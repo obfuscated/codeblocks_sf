@@ -95,8 +95,13 @@ bool CodeSnippetsEvent::PostCodeSnippetsEvent(const CodeSnippetsEvent& event)
     // Propagate the event to ThreadSearchFrame
     if ( pSearchPath && pCodeSnippetsTreeCtrl)
     {
+        #if wxCHECK_VERSION(2, 9, 0)
+        pSearchPath->GetEventHandler()->AddPendingEvent( (wxEvent&)event );
+        pCodeSnippetsTreeCtrl->GetEventHandler()->AddPendingEvent( (wxEvent&)event );
+        #else
         pSearchPath->AddPendingEvent( (wxEvent&)event );
         pCodeSnippetsTreeCtrl->AddPendingEvent( (wxEvent&)event );
+        #endif
     }
     else
     {
@@ -143,8 +148,13 @@ bool CodeSnippetsEvent::ProcessCodeSnippetsEvent(const CodeSnippetsEvent& event)
     // Propagate the event to ThreadSearchFrame
     if ( pSearchPath && pCodeSnippetsTreeCtrl)
     {
+        #if wxCHECK_VERSION(2, 9, 0)
+        pSearchPath->GetEventHandler()->ProcessEvent( (wxEvent&)event );
+        pCodeSnippetsTreeCtrl->GetEventHandler()->ProcessEvent( (wxEvent&)event );
+        #else
         pSearchPath->ProcessEvent( (wxEvent&)event );
         pCodeSnippetsTreeCtrl->ProcessEvent( (wxEvent&)event );
+        #endif
     }
     else
     {
