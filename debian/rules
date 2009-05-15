@@ -8,6 +8,7 @@
 
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
+export DH_ALWAYS_EXCLUDE=.svn
 
 
 # These are used for cross-compiling and for saving the configure script
@@ -57,7 +58,7 @@ build-stamp:  config.status
 clean: 
 	dh_testdir
 	dh_testroot
-	rm -f build-stamp 
+	rm -f *-stamp 
 
 	# Add here commands to clean up after the build process.
 	#-$(MAKE) distclean 
@@ -105,7 +106,7 @@ binary-arch: build install
 #	dh_installinfo
 	dh_installman
 	dh_link
-	dh_strip --dbg-package=codeblocks
+	dh_strip --dbg-package=codeblocks-dbg
 	dh_compress
 	dh_fixperms
 #	dh_perl
