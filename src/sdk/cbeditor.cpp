@@ -1139,7 +1139,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetMarginWidth(foldingMargin, 16);
         // use "|" here or we might break plugins that use the margin (none at the moment)
         control->SetMarginMask(foldingMargin, control->GetMarginMask(foldingMargin) |
-                                              wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED)));
+                                              (wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED))));
         control->SetMarginSensitive(foldingMargin, 1);
 
         /*Default behaviour
