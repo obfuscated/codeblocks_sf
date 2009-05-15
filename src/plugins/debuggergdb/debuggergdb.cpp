@@ -1230,6 +1230,19 @@ int DebuggerGDB::DoDebug()
                                         m_pExamineMemoryDlg,
                                         m_pThreadsDlg);
 
+    // Notify debugger plugins so they could start a GDB server process
+    PluginManager *plm = Manager::Get()->GetPluginManager();
+    CodeBlocksEvent evt(cbEVT_DEBUGGER_STARTED);
+    plm->NotifyPlugins(evt);
+    int nRet = evt.GetInt();
+    if (nRet < 0)
+    {
+        cbMessageBox(_T("A plugin interrupted the debug process."));
+        msgMan->Log(_("Aborted by plugin"), m_PageIndex);
+        m_Canceled = true;
+        return -1;
+    }
+    // Continue
 
     // create gdb launch command
     wxString cmd;
@@ -1535,6 +1548,7 @@ void DebuggerGDB::RunCommand(int cmd)
     switch (cmd)
     {
         case CMD_CONTINUE:
+        {
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
             {
@@ -1543,15 +1557,19 @@ void DebuggerGDB::RunCommand(int cmd)
             }
 //            QueueCommand(new DebuggerCmd(this, _T("cont")));
             break;
+        }
 
         case CMD_STEP:
+        {
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
                 m_State.GetDriver()->Step();
 //            QueueCommand(new DebuggerCmd(this, _T("next")));
             break;
+        }
 
         case CMD_STEP_INSTR:
+        {
             ClearActiveMarkFromAllEditors();
             if (!IsWindowReallyShown(m_pDisassembly))
             {
@@ -1562,33 +1580,42 @@ void DebuggerGDB::RunCommand(int cmd)
                 m_State.GetDriver()->StepInstruction();
 //            QueueCommand(new DebuggerCmd(this, _T("nexti")));
             break;
+        }
 
         case CMD_STEPIN:
+        {
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
                 m_State.GetDriver()->StepIn();
 //            QueueCommand(new DebuggerCmd(this, _T("step")));
             break;
+        }
 
         case CMD_STEPOUT:
+        {
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
                 m_State.GetDriver()->StepOut();
 //            QueueCommand(new DebuggerCmd(this, _T("finish")));
             break;
+        }
 
         case CMD_STOP:
+        {
             ClearActiveMarkFromAllEditors();
             if (m_State.HasDriver())
                 m_State.GetDriver()->Stop();
 //            QueueCommand(new DebuggerCmd(this, _T("quit")));
             break;
+        }
 
         case CMD_BACKTRACE:
+        {
 //            Manager::Get()->GetLogManager()->Log(m_PageIndex, "Running back-trace...");
             if (m_State.HasDriver())
                 m_State.GetDriver()->Backtrace();
             break;
+        }
 
         case CMD_DISASSEMBLE:
         {
@@ -1610,12 +1637,14 @@ void DebuggerGDB::RunCommand(int cmd)
         {
             if (m_State.HasDriver())
                 m_State.GetDriver()->MemoryDump();
+            break;
         }
 
         case CMD_RUNNINGTHREADS:
         {
             if (m_State.HasDriver())
                 m_State.GetDriver()->RunningThreads();
+            break;
         }
 
         default: break;
@@ -1932,7 +1961,11 @@ void DebuggerGDB::Break()
                 Log(_("Failed."));
         }
     #endif
-    }
+        // Notify debugger plugins for end of debug session
+        PluginManager *plm = Manager::Get()->GetPluginManager();
+        CodeBlocksEvent evt(cbEVT_DEBUGGER_PAUSED);
+        plm->NotifyPlugins(evt);
+	}
 }
 
 void DebuggerGDB::Stop()
@@ -2393,6 +2426,11 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
                         _("Error"),
                         wxICON_STOP);
     }
+
+    // Notify debugger plugins for end of debug session
+    PluginManager *plm = Manager::Get()->GetPluginManager();
+    CodeBlocksEvent evt(cbEVT_DEBUGGER_FINISHED);
+    plm->NotifyPlugins(evt);
 
     // switch to the user-defined layout when finished debugging
     DoSwitchToPreviousLayout();
