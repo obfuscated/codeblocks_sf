@@ -447,9 +447,15 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
                 "Line number: %s\n"
                 "Message: %s"),
                 clt == cltNormal ? _("Normal") : (clt == cltInfo ? _("Info") : (clt == cltError ? _("Error") : _("Warning"))),
+            #if wxCHECK_VERSION(2, 9, 0)
+                compiler->GetLastErrorFilename().wx_str(),
+                compiler->GetLastErrorLine().wx_str(),
+                compiler->GetLastError().wx_str()
+            #else
                 compiler->GetLastErrorFilename().c_str(),
                 compiler->GetLastErrorLine().c_str(),
                 compiler->GetLastError().c_str()
+            #endif
                 );
 
     cbMessageBox(msg, _("Test results"), wxICON_INFORMATION);
