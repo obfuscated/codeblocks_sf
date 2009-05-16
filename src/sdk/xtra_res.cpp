@@ -68,7 +68,7 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param,
         const unsigned char *alpha = image.GetAlpha();
         unsigned char *rgb = (unsigned char *) calloc(w * h, 3);
         unsigned char *a = (unsigned char *) calloc(w * h, 1);
-        
+
         // copy Data/Alpha from smaller bitmap to larger bitmap
         for (int row = 0; row < bh; row++)
         {
@@ -92,16 +92,23 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         wxCHECK_MSG(m_toolbar, NULL, _("Incorrect syntax of XRC resource: tool not within a toolbar!"));
 
         wxSize bitmapSize = m_toolbar->GetToolBitmapSize();
-        
+
         if (GetPosition() != wxDefaultPosition)
         {
             m_toolbar->AddTool(GetID(),
+            #if wxCHECK_VERSION(2, 9, 0)
+                               wxEmptyString,
+            #endif
                                GetCenteredBitmap(_T("bitmap"), wxART_TOOLBAR, bitmapSize),
                                GetCenteredBitmap(_T("bitmap2"), wxART_TOOLBAR, bitmapSize),
+            #if !wxCHECK_VERSION(2, 9, 0)
                                GetBool(_T("toggle")),
                                GetPosition().x,
                                GetPosition().y,
                                NULL,
+            #else
+                               wxITEM_NORMAL,
+            #endif
                                GetText(_T("tooltip")),
                                GetText(_T("longhelp")));
            if (GetBool(_T("disabled")))
@@ -241,9 +248,15 @@ bool wxToolBarAddOnXmlHandler::CanHandle(wxXmlNode *node)
 //
 // Don't ask me why... >:-|
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    bool istbar = node->GetAttribute(wxT("class"), wxEmptyString).Matches(_T("wxToolBarAddOn"));
+    bool istool = node->GetAttribute(wxT("class"), wxEmptyString).Matches(_T("tool"));
+    bool issep = node->GetAttribute(wxT("class"), wxEmptyString).Matches(_T("separator"));
+    #else
     bool istbar = node->GetPropVal(wxT("class"), wxEmptyString).Matches(_T("wxToolBarAddOn"));
     bool istool = node->GetPropVal(wxT("class"), wxEmptyString).Matches(_T("tool"));
     bool issep = node->GetPropVal(wxT("class"), wxEmptyString).Matches(_T("separator"));
+    #endif
 
     return ((!m_isInside && istbar) ||
             (m_isInside && istool) ||
