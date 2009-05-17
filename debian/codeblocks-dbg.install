@@ -1,0 +1,16 @@
+usr/bin/cb_console_runner usr/lib/debug/usr/bin
+usr/bin/cb_share_config usr/lib/debug/usr/bin
+usr/bin/codeblocks usr/lib/debug/usr/bin
+usr/lib/codeblocks/plugins/libastyle.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libautosave.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libclasswizard.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libcodecompletion.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libcompiler.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libdebugger.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libdefaultmimehandler.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libopenfileslist.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libprojectsimporter.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libscriptedwizard.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/codeblocks/plugins/libtodo.* usr/lib/debug/usr/lib/codeblocks/plugins
+usr/lib/libcodeblocks.so.0 usr/lib/debug/usr/lib
+usr/lib/libcodeblocks.so.0.0.1 usr/lib/debug/usr/lib

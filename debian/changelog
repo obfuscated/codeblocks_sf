@@ -1,3 +1,20 @@
+codeblocks (8.02svn5607) unstable; urgency=low
+
+  * reorganised debug-packages after changing compatibility level to 5:
+    codeblocks shared library is now in codeblocks-dbg,
+    added codeblocks-contrib-dbg package containing debug libraries for
+    the contrib-plugins,
+  * moved codesnippets executable from codeblocks to contrib-plugins
+    package
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 17 May 2009 23:15:02 +0200 
+ 
+codeblocks (8.02svn5600) unstable; urgency=low
+
+  * some changes to make debian-files more standard-compliant
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 05 May 2009 22:45:16 +0200 
+ 
 codeblocks (8.02svn5586) unstable; urgency=low
 
   * add subversion and xsltproc to build dependcies

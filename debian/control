@@ -104,6 +104,15 @@ Description: contrib plugins for Code::Blocks IDE
  codeblocks-contrib plugins.
  It's a svn-download and may contain bugs.
 
+Package: codeblocks-contrib-dbg
+Priority: extra
+Architecture: any
+Section: debug
+Depends: codeblocks-contrib (= ${binary:Version}), codeblocks-dbg (= ${binary:Version})
+Description: Debugging libraries for the Code::Blocks contrib plugins
+ These are the debugging libraries for the 'codeblocks-contrib' package.
+ It's a svn-download and may contain bugs.
+
 Package: codeblocks-dev
 Architecture: any
 Section: libdevel
