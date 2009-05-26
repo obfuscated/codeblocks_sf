@@ -1013,8 +1013,11 @@ void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
         //LOGIT( _T("CodeSnippetsCtrl IsFloatingWindow[%s]"), _T("TRUE"));
         #endif
         wxWindow* pw = (wxWindow*)event.GetEventObject();
-        pw->Enable();
-        pw->SetFocus();
+        // only if forground is our window, set focus
+        if ( pw == ::wxGetActiveWindow() )
+        {   pw->Enable();
+            pw->SetFocus();
+        }
     }
 
     event.Skip();

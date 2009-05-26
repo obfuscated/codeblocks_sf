@@ -741,6 +741,8 @@ void CodeSnippetsAppFrame::OnClose(wxCloseEvent &event)
         Manager::Free();
         if (wxFileExists(m_ConfigFolder+_T("/default.conf.backup")) )
             wxRemoveFile(m_ConfigFolder+_T("/default.conf.backup")) ;
+        if (wxFileExists(m_ConfigFolder+_T("/default.conf.cbTemp")) )
+            wxRemoveFile(m_ConfigFolder+_T("/default.conf.cbTemp")) ;
     }
 
     Destroy();
