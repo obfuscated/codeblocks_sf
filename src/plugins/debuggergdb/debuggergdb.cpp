@@ -2495,7 +2495,12 @@ void DebuggerGDB::OnValueTooltip(CodeBlocksEvent& event)
     if (!ed)
         return;
 
-    int style = event.GetInt();
+    if(ed->IsContextMenuOpened())
+    {
+    	return;
+    }
+
+    const int style = event.GetInt();
     if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
         return;
 

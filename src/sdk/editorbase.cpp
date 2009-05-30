@@ -388,3 +388,8 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
         event.Skip();
     }
 }
+
+bool EditorBase::IsContextMenuOpened() const
+{
+    return m_pData->m_DisplayingPopupMenu;
+}

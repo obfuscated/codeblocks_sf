@@ -218,7 +218,7 @@ class DLLIMPORT EditorBase : public wxPanel
 
         /** Clear Undo- (and Changebar-) history */
         virtual void ClearHistory(){}
-        
+
         /** Goto next changed line */
         virtual void GotoNextChanged(){}
 
@@ -233,7 +233,7 @@ class DLLIMPORT EditorBase : public wxPanel
 
         /** Enable or disable ScrollWidthTracking */
         virtual void SetScrollWidthTracking(bool trackWidth){}
-        
+
         /** Cut selected text/object to clipboard. */
         virtual void Cut(){}
 
@@ -282,6 +282,12 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Select everything in the editor
           */
         virtual void SelectAll() { return; }
+
+        /** Is there a context (right click) menu open
+          *
+          * @return True if a context menu is open, false if not.
+          */
+        virtual bool IsContextMenuOpened() const;
     protected:
         /** Initializes filename data.
           * @param filename The editor's filename for initialization.
