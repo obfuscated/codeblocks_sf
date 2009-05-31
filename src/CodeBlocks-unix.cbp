@@ -3008,12 +3008,6 @@
 		<Unit filename="src/infopane.h">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/ipc.cpp">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/ipc.h">
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/main.cpp">
 			<Option target="src" />
 		</Unit>
