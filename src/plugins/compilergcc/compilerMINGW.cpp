@@ -311,6 +311,9 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
 
 void CompilerMINGW::SetVersionString()
 {
+    /*  NOTE (Biplab#9#): There is a critical bug which blocks C::B from starting up.
+        So we'll disable version string checking till we fix the bug. */
+    #if !wxCHECK_VERSION(2, 9, 0) && defined(__WXMSW__)
     wxArrayString output, errors;
     wxString sep = wxFileName::GetPathSeparator();
     wxString masterpath = m_MasterPath;
@@ -355,4 +358,5 @@ void CompilerMINGW::SetVersionString()
             }
         }
     }
+    #endif
 }
