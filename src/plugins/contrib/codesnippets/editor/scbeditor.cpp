@@ -2588,37 +2588,37 @@ void ScbEditor::OnEditorModified(wxScintillaEvent& event)
 //        << wxString::Format(_T("%d"), event.GetLinesAdded());
 //    Manager::Get()->GetLogManager()->DebugLog(txt);
 
-    // whenever event.GetLinesAdded() != 0, we must re-set breakpoints for lines greater
-    // than LineFromPosition(event.GetPosition())
-    int linesAdded = event.GetLinesAdded();
-    bool isAdd = event.GetModificationType() & wxSCI_MOD_INSERTTEXT;
-    bool isDel = event.GetModificationType() & wxSCI_MOD_DELETETEXT;
-    if ((isAdd || isDel) && linesAdded != 0)
-    {
-        // in case of no line numbers to be shown no need to set
-        // NOTE : on every modification of the Editor we consult ConfigManager
-        //        hopefully not to time consuming, otherwise we make a member out of it
-        ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-        if (mgr->ReadBool(_T("/show_line_numbers"), true))
-        {
-            m_pData->SetLineNumberColWidth();
-        }
-
-        // NB: I don't think polling for each debugger every time will slow things down enough
-        // to worry about unless there are automated tasks that call this routine regularly
-        //
-        // well, scintilla events happen regularly
-        // although we only reach this part of the code only if a line has been added/removed
-        // so, yes, it might not be that bad after all
-        PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
-        int startline = m_pControl->LineFromPosition(event.GetPosition());
-        for(size_t i=0;i<arr.GetCount();i++)
-        {
-            cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
-            debugger->EditorLinesAddedOrRemoved((cbEditor*)this, startline, linesAdded);
-        }
-
-    }
+    ////// whenever event.GetLinesAdded() != 0, we must re-set breakpoints for lines greater
+    ////// than LineFromPosition(event.GetPosition())
+    ////int linesAdded = event.GetLinesAdded();
+    ////bool isAdd = event.GetModificationType() & wxSCI_MOD_INSERTTEXT;
+    ////bool isDel = event.GetModificationType() & wxSCI_MOD_DELETETEXT;
+    ////if ((isAdd || isDel) && linesAdded != 0)
+    ////{
+    ////    // in case of no line numbers to be shown no need to set
+    ////    // NOTE : on every modification of the Editor we consult ConfigManager
+    ////    //        hopefully not to time consuming, otherwise we make a member out of it
+    ////    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    ////    if (mgr->ReadBool(_T("/show_line_numbers"), true))
+    ////    {
+    ////        m_pData->SetLineNumberColWidth();
+    ////    }
+    ////
+    ////    // NB: I don't think polling for each debugger every time will slow things down enough
+    ////    // to worry about unless there are automated tasks that call this routine regularly
+    ////    //
+    ////    // well, scintilla events happen regularly
+    ////    // although we only reach this part of the code only if a line has been added/removed
+    ////    // so, yes, it might not be that bad after all
+    ////    PluginsArray arr = Manager::Get()->GetPluginManager()->GetOffersFor(ptDebugger);
+    ////    int startline = m_pControl->LineFromPosition(event.GetPosition());
+    ////    for(size_t i=0;i<arr.GetCount();i++)
+    ////    {
+    ////        cbDebuggerPlugin* debugger = (cbDebuggerPlugin*)arr[i];
+    ////        debugger->EditorLinesAddedOrRemoved((cbEditor*)this, startline, linesAdded);
+    ////    }
+    ////
+    ////}
 
     OnScintillaEvent(event);
 } // end of OnEditorModified
