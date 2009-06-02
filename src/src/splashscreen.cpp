@@ -27,7 +27,11 @@ void cbSplashScreen::DoPaint(wxDC &dc)
   static const wxString revision = ConfigManager::GetRevisionString();
 
   #ifdef __WIN32__
+  #if wxCHECK_VERSION(2, 9, 0)
+  dc.SetDeviceClippingRegion(r);
+  #else
   dc.SetClippingRegion(r);
+  #endif
   #endif
 
   dc.DrawBitmap(m_label, 0, 0, false);
