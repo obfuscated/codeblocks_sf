@@ -694,7 +694,7 @@ void CodeCompletion::CodeCompleteIncludes()
         return;
 
     Parser* parser = m_NativeParsers.FindParserFromActiveEditor();
-    bool caseSens = parser ? parser->Options().caseSensitive : false;
+    const bool caseSens = parser ? parser->Options().caseSensitive : false;
 
     FileType ft = FileTypeOf(ed->GetShortName());
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
@@ -752,7 +752,7 @@ void CodeCompletion::CodeCompleteIncludes()
     if (files.GetCount() != 0)
     {
         files.Sort();
-        ed->GetControl()->AutoCompSetIgnoreCase(caseSens);
+        ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
         ed->GetControl()->AutoCompShow(pos - lineStartPos - found, GetStringFromArray(files, _T(" ")));
     }
 }
