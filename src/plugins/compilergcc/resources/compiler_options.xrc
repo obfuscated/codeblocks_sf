@@ -1225,7 +1225,7 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxStaticBoxSizer">
-																<label>Rebuild Workspace</label>
+																<label>Rebuild Workspace / Project</label>
 																<orient>wxVERTICAL</orient>
 																<object class="sizeritem">
 																	<object class="wxCheckBox" name="chkRebuildSeperately">

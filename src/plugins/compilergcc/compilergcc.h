@@ -202,7 +202,7 @@ class CompilerGCC : public cbCompilerPlugin
         ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
         wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
         int DoBuild(bool clean, bool build);
-        int DoBuild(const wxString& target, bool clean, bool build);
+        int DoBuild(const wxString& target, bool clean, bool build, bool clearLog=true);
         int DoWorkspaceBuild(const wxString& target, bool clean, bool build, bool clearLog=true);
         void CalculateWorkspaceDependencies(wxArrayInt& deps);
         void CalculateProjectDependencies(cbProject* prj, wxArrayInt& deps);
