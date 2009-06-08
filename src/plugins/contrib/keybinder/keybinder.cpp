@@ -884,7 +884,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         // Find matching menu item in keybinder array of commands
         wxCmd*  pCmd = 0;
         changed = 0;
-        wxString menuItemLabel = pMenuItem->GetLabel();
+        wxString menuItemLabel = pMenuItem->GetLabel().Trim();
         //-wxString menuItemKeyStr = pMenuItem->GetText().AfterFirst('\t');
         //^^ This will not work on wxGTK. GTK GetText() doesn't contain the shortcut
         wxString menuItemKeyStr;
@@ -1041,7 +1041,7 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
             GetMenuItemAccStr(pMenuItem, menuItemKeyStr);
             #ifdef LOGGING
              //LOGIT(wxT("UpdateAllCmd ById Ok on:[%d][%s] key[%s]"),
-             //       pMenuItem->GetId(),pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
+             //       pMenuItem->GetId(),pMenuItem->GetLabel().Trim().GetData(), menuItemKeyStr.GetData() );
             #endif
             m_arrCmd.Item(k)->Update(pMenuItem);
             // *^^* pMenuItem will be invalid now if item was destroyed/created/updated **
@@ -1063,11 +1063,11 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
 ////                // be assigned to the first. So "Cut" (line)Ctrl-T will end up in
 ////                // "Cut"(marked), overwriting Ctrl-X
 ////                // Try to find the wxCmd that matches this menu label
-////                if (-1 != (k = FindMatchingName(pMenuItem->GetLabel() )))
+////                if (-1 != (k = FindMatchingName(pMenuItem->GetLabel().Trim() )))
 ////                {   // Look for wxCmd with this menu label
 ////                    #ifdef LOGGING
 ////                     LOGIT(wxT("UpdateAllCmd ByLabel on:%d:%d:%p:[%s] key[%s]"),
-////                            j,k,pMenuItem,pMenuItem->GetLabel().GetData(), menuItemKeyStr.GetData() );
+////                            j,k,pMenuItem,pMenuItem->GetLabel().Trim().GetData(), menuItemKeyStr.GetData() );
 ////                    #endif
 ////                    m_arrCmd.Item(k)->Update(pMenuItem);
 ////                }//if
@@ -1133,17 +1133,17 @@ int wxKeyBinder::FindHandlerIdxFor(wxWindow *p) const
 // ----------------------------------------------------------------------------
 void wxKeyBinder::Attach(wxWindow *p)
 {
-    LOGIT( _T("wxKeyBinder:Attach for [%p]"), p );
+    //-LOGIT( _T("wxKeyBinder:Attach for [%p]"), p );
 
 	if (!p || IsAttachedTo(p))
 		return;		// already attached !!!
 
-    LOGIT( _T("wxKeyBinder:Attach2[%p]"), p );
+    //-LOGIT( _T("wxKeyBinder:Attach2[%p]"), p );
 
 	if (p->GetExtraStyle() & wxWS_EX_TRANSIENT)
 		return;		// do not attach ourselves to temporary windows !!
 
-    LOGIT( _T("wxKeyBinder:Attach3[%p]"), p );
+    //-LOGIT( _T("wxKeyBinder:Attach3[%p]"), p );
 
     //+v0.4.4 we allow only static windows to be attached by codeblocks
     // Disappearing frames/windows cause crashes
@@ -2151,8 +2151,16 @@ wxString wxKeyConfigPanel::GetSelCmdStr() const
 bool wxKeyConfigPanel::IsSelectedValidCmd() const
 // ----------------------------------------------------------------------------
 {
+////	if (IsUsingTreeCtrl())
+////		return GetSelCmdId().IsOk();
+
 	if (IsUsingTreeCtrl())
-		return GetSelCmdId().IsOk();
+	{
+	    // if tree item is a sub-menu don't allow key assignment //(pecan 2009/6/04)
+	    if (m_pCommandsTree->ItemHasChildren(m_pCommandsTree->GetSelection()))
+            return false;
+	    return GetSelCmdId().IsOk();
+	}
 	else
 		return m_pCommandsList->GetSelection() >= 0;
 }

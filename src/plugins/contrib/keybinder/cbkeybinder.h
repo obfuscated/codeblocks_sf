@@ -26,7 +26,7 @@
 #include "keybinder.h"
 
 // --Version-Rlease-Feature-Fix-------
-#define VERSION "1.0.46 2008/02/12"
+#define VERSION "1.0.48 2009/06/8"
 // -----------------------------------
 class MyDialog;
 class wxKeyConfigPanel;
@@ -695,3 +695,8 @@ private:
 //          45) Killerbot changes to header includes 2008/12/28
 //          46) Fixed: [ Bug #12823 ] keybinder breaks layout submenu on linux
 // ----------------------------------------------------------------------------
+//  Commit  1.0.48 2009/06/8
+//          47) If tree item is a sub-menu don't allow key assignment
+//          48) Change KeyBinder menu access from GetLabel() to GetLabel().Trim() (wx2.8.9/10)
+// ----------------------------------------------------------------------------
+
