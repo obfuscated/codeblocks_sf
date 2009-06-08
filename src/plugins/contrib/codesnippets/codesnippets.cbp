@@ -79,6 +79,8 @@
 			<Add after="update.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="GenericMessageBox.cpp" />
+		<Unit filename="GenericMessageBox.h" />
 		<Unit filename="Makefile.am" />
 		<Unit filename="Search\DirectoryParamsPanel.cpp" />
 		<Unit filename="Search\DirectoryParamsPanel.h" />
@@ -173,10 +175,6 @@
 		</Unit>
 		<Unit filename="manifest.xml" />
 		<Unit filename="menuidentifiers.h" />
-		<Unit filename="messageBoxForm.cpp" />
-		<Unit filename="messageBoxForm.h" />
-		<Unit filename="messagebox.cpp" />
-		<Unit filename="messagebox.h" />
 		<Unit filename="resources\Makefile.am" />
 		<Unit filename="resources\allsnippets.png" />
 		<Unit filename="resources\category.png" />

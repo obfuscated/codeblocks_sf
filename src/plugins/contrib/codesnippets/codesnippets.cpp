@@ -47,7 +47,7 @@
 #include "codesnippets.h"
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
-#include "messagebox.h"
+#include "GenericMessageBox.h"
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
 #include "dragscrollevent.h"
 
@@ -1658,7 +1658,7 @@ long CodeSnippets::LaunchExternalSnippets()
     #endif
     if ( 0 != result )
     {  wxString msg(wxString::Format(wxT("Error [%d] Launching\n %s\n"),result, PgmFullPath.c_str()));
-       messageBox( msg );
+       GenericMessageBox( msg );
     }
 
     return result;

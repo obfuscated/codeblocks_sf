@@ -53,6 +53,8 @@
 		<ExtraCommands>
 			<Add after="./update" />
 		</ExtraCommands>
+		<Unit filename="GenericMessageBox.cpp" />
+		<Unit filename="GenericMessageBox.h" />
 		<Unit filename="Makefile.am" />
 		<Unit filename="Search/DirectoryParamsPanel.cpp" />
 		<Unit filename="Search/DirectoryParamsPanel.h" />
@@ -146,10 +148,6 @@
 		<Unit filename="finddialogs.cpp" />
 		<Unit filename="finddialogs.h" />
 		<Unit filename="menuidentifiers.h" />
-		<Unit filename="messageBoxForm.cpp" />
-		<Unit filename="messageBoxForm.h" />
-		<Unit filename="messagebox.cpp" />
-		<Unit filename="messagebox.h" />
 		<Unit filename="settingsdlg.cpp" />
 		<Unit filename="settingsdlg.h" />
 		<Unit filename="settingsdlgform.cpp" />

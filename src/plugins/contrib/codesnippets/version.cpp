@@ -496,6 +496,10 @@ AppVersion::~AppVersion()
 //  Commit 1.3.103 2009/06/1
 //          103) Fix crash when backspace\cut after Ctrl-A
 // ----------------------------------------------------------------------------
+//  Commit  1.3.105 2009/06/8
+//          104) Set dragged textdata like dragged filename for FireFox3
+//          105) Replace home grown messageBox with GenericMessaageBox
+// ----------------------------------------------------------------------------
 //  Bugs
 //      2008/04/8
 //          If floating wxAUI window is docked with Edit's open, they disappear. But
