@@ -19,4 +19,5 @@ man_MANS = cb_share_config.1
 
 EXTRA_DIST = cb_share_config.cbp \
 		cb_share_config-unix.cbp \
+		wxsmith/*.wxs \
 		$(man_MANS)
