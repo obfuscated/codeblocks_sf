@@ -71,7 +71,7 @@ void IncrementalSearchConfDlg::OnChooseColour(wxCommandEvent& event)
 void IncrementalSearchConfDlg::SaveSettings()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-    // save checkbox/chice-settings
+    // save checkbox/choice-settings
     cfg->Write(_T("/incremental_search/center_found_text_on_screen"),   XRCCTRL(*this, "chkIncSearchConfCenterText", wxCheckBox)->IsChecked());
     cfg->Write(_T("/incremental_search/select_found_text_on_escape"),   XRCCTRL(*this, "idIncSearchSelectOnEscape", wxCheckBox)->IsChecked());
     cfg->Write(_T("/incremental_search/highlight_default_state"),       XRCCTRL(*this, "idIncSearchHighlightDefault", wxChoice)->GetSelection());

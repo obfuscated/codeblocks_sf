@@ -116,6 +116,7 @@ bool FileFilters::GetFilterIndexFromName(const wxString& FiltersList, const wxSt
         {
             Index = idxList/2;
             bFound = true;
+            break;
         }
     } // end for : idx : idxList
     return bFound;
