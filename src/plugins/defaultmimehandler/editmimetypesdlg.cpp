@@ -161,15 +161,15 @@ void EditMimeTypesDlg::OnDelete(wxCommandEvent& event)
 
 void EditMimeTypesDlg::OnBrowseProgram(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(0,
-                            _("Select program"),
-                            wxEmptyString,
-                            XRCCTRL(*this, "txtProgram", wxTextCtrl)->GetValue(),
-                            FileFilters::GetFilterAll(),
-                            wxFD_OPEN | compatibility::wxHideReadonly);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() == wxID_OK)
-        XRCCTRL(*this, "txtProgram", wxTextCtrl)->SetValue(dlg->GetPath());
+    wxFileDialog dlg(0,
+                     _("Select program"),
+                     wxEmptyString,
+                     XRCCTRL(*this, "txtProgram", wxTextCtrl)->GetValue(),
+                     FileFilters::GetFilterAll(),
+                     wxFD_OPEN | compatibility::wxHideReadonly);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+        XRCCTRL(*this, "txtProgram", wxTextCtrl)->SetValue(dlg.GetPath());
 }
 
 void EditMimeTypesDlg::OnApply()

@@ -266,15 +266,15 @@ cbMimeType* DefaultMimeHandler::FindMimeTypeFor(const wxString& filename)
 
 wxString DefaultMimeHandler::ChooseExternalProgram()
 {
-    wxFileDialog* dlg = new wxFileDialog(0,
-                            _("Select program"),
-                            wxEmptyString,
-                            wxEmptyString,
-                            FileFilters::GetFilterAll(),
-                            wxFD_OPEN | compatibility::wxHideReadonly);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() == wxID_OK)
-        return dlg->GetPath();
+    wxFileDialog dlg(0,
+                     _("Select program"),
+					wxEmptyString,
+					wxEmptyString,
+					FileFilters::GetFilterAll(),
+					wxFD_OPEN | compatibility::wxHideReadonly);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+        return dlg.GetPath();
     return wxEmptyString;
 }
 

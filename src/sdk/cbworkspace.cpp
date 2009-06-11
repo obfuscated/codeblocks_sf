@@ -122,17 +122,17 @@ bool cbWorkspace::Save(bool force)
 
 bool cbWorkspace::SaveAs(const wxString& filename)
 {
-    wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
-                            _("Save workspace"),
-                            m_Filename.GetPath(),
-                            m_Filename.GetFullName(),
-                            FileFilters::GetFilterString(_T('.') + FileFilters::WORKSPACE_EXT),
-                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() != wxID_OK)
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
+                     _("Save workspace"),
+                     m_Filename.GetPath(),
+                     m_Filename.GetFullName(),
+                     FileFilters::GetFilterString(_T('.') + FileFilters::WORKSPACE_EXT),
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
         return false;
 
-    m_Filename = dlg->GetPath();
+    m_Filename = dlg.GetPath();
     if (m_Filename.GetExt() == wxEmptyString)
         m_Filename.SetExt(_T("workspace"));
 

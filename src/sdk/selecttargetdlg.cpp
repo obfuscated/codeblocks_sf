@@ -102,21 +102,21 @@ void SelectTargetDlg::OnHostApplicationButtonClick(wxCommandEvent& /*event*/)
 {
     if(wxTextCtrl* obj = XRCCTRL(*this, "txtHostApp", wxTextCtrl))
     {
-        wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Select host application"),
-                            _T(""),
-                            obj->GetValue(),
-                            #ifdef __WXMSW__
-                            _("Executable files (*.exe)|*.exe"),
-                            #else
-                            _("All files (*)|*"),
-                            #endif
-                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
-        dlg->SetFilterIndex(0);
-        PlaceWindow(dlg);
-        if (dlg->ShowModal() != wxID_OK)
+        wxFileDialog dlg(this,
+                         _("Select host application"),
+                         _T(""),
+                         obj->GetValue(),
+#ifdef __WXMSW__
+                         _("Executable files (*.exe)|*.exe"),
+#else
+                         _("All files (*)|*"),
+#endif
+                         wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly);
+        dlg.SetFilterIndex(0);
+        PlaceWindow(&dlg);
+        if (dlg.ShowModal() != wxID_OK)
             return;
-        wxFileName fname(dlg->GetPath());
+        wxFileName fname(dlg.GetPath());
         if (fname.GetFullPath().StartsWith(m_pProject->GetCommonTopLevelPath()))
         {
         	fname.MakeRelativeTo(m_pProject->GetCommonTopLevelPath());

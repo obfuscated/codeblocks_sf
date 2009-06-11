@@ -166,26 +166,23 @@ void ScriptConsole::OnbtnLoadClick(wxCommandEvent& event)
 {
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
     wxString path = mgr->Read(_T("/file_dialogs/file_run_script/directory"), wxEmptyString);
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Load script"),
-                            path,
-                            wxEmptyString,
-                            _T("Script files (*.script)|*.script"),
-                            wxFD_OPEN | compatibility::wxHideReadonly);
-    if (dlg->ShowModal() == wxID_OK)
+    wxFileDialog dlg(this,
+                     _("Load script"),
+                     path,
+                     wxEmptyString,
+                     _T("Script files (*.script)|*.script"),
+                     wxFD_OPEN | compatibility::wxHideReadonly);
+    if (dlg.ShowModal() == wxID_OK)
     {
-        mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg->GetDirectory());
-        if (Manager::Get()->GetScriptingManager()->LoadScript(dlg->GetPath()))
-        {
+        mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg.GetDirectory());
+        if (Manager::Get()->GetScriptingManager()->LoadScript(dlg.GetPath()))
             Log(_("Loaded succesfully"));
-        }
         else
         {
             Log(_("Failed..."));
             txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
         }
     }
-    dlg->Destroy();
 	txtCommand->SetFocus();
 }
 

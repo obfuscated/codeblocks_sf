@@ -312,16 +312,16 @@ void ScriptingSettingsDlg::OnRemoveScript(wxCommandEvent& event)
 
 void ScriptingSettingsDlg::OnBrowse(wxCommandEvent& event)
 {
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Select script file"),
-                            XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
-                            XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
-                            FileFilters::GetFilterString(_T(".script")),
-                            wxFD_OPEN | compatibility::wxHideReadonly );
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() == wxID_OK)
+    wxFileDialog dlg(this,
+                     _("Select script file"),
+                     XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
+                     XRCCTRL(*this, "txtScript", wxTextCtrl)->GetValue(),
+                     FileFilters::GetFilterString(_T(".script")),
+                     wxFD_OPEN | compatibility::wxHideReadonly );
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
     {
-        wxString sel = UnixFilename(dlg->GetPath());
+        wxString sel = UnixFilename(dlg.GetPath());
         wxString userdir = UnixFilename(ConfigManager::GetFolder(sdScriptsUser));
         wxString globaldir = UnixFilename(ConfigManager::GetFolder(sdScriptsGlobal));
         wxFileName f(sel);
@@ -335,7 +335,6 @@ void ScriptingSettingsDlg::OnBrowse(wxCommandEvent& event)
         }
         XRCCTRL(*this, "txtScript", wxTextCtrl)->SetValue(f.GetFullPath());
     }
-    dlg->Destroy();
 }
 
 void ScriptingSettingsDlg::OnTrustSelection(wxListEvent& event)

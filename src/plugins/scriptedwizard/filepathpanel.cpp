@@ -188,16 +188,15 @@ void FilePathPanel::OntxtFilenameText(wxCommandEvent& event)
 void FilePathPanel::OnbtnBrowseClick(wxCommandEvent& event)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Select filename"),
-                            prj ? prj->GetBasePath() : _T(""),
-                            txtFilename->GetValue(),
-                            m_ExtFilter,
-                            wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() == wxID_OK)
-        txtFilename->SetValue(dlg->GetPath());
-    dlg->Destroy();
+    wxFileDialog dlg(this,
+                     _("Select filename"),
+                     prj ? prj->GetBasePath() : _T(""),
+                     txtFilename->GetValue(),
+                     m_ExtFilter,
+                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+        txtFilename->SetValue(dlg.GetPath());
 }
 
 void FilePathPanel::OnchkAddToProjectChange(wxCommandEvent& event)
