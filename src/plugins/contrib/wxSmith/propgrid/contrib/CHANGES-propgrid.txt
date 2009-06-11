@@ -1,4 +1,13 @@
 
+Version 1.2.13 ( ?-?-2008 )
+
+  Bugs Fixed:
+
+  - wxPGTextCtrlEditor::UpdateControl() destroyed property's value if
+    it had flags wxPG_PROP_PASSWORD (bug #2046081, fix by Nicholas John).
+
+
+
 Version 1.2.12 ( Jun-28-2008 )
 
   New Features:

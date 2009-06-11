@@ -2115,7 +2115,14 @@ void wxPGTextCtrlEditor::DrawValue( wxDC& dc, wxPGProperty* property, const wxRe
 void wxPGTextCtrlEditor::UpdateControl( wxPGProperty* property, wxWindow* ctrl ) const
 {
     wxPGDeclareRealTextCtrl(ctrl);
-    tc->SetValue(property->GetDisplayedString());
+    wxString s;
+
+    if ( tc->HasFlag(wxTE_PASSWORD) )
+        s = property->GetValueAsString(wxPG_FULL_VALUE);
+    else
+        s = property->GetDisplayedString();
+
+    tc->SetValue(s);    
 }
 
 

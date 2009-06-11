@@ -25,7 +25,7 @@
 
 // NB: Do *NOT * remove this.
 #if defined(SWIG) || defined(SWIG_TYPE_TABLE)
-    #ifndef __WXPYTHON__
+    #if !defined(__WXPYTHON__) && !defined(__NOTWXPYTHON__)
         #define __WXPYTHON__
     #endif
 #endif
