@@ -2008,7 +2008,7 @@ void cbProject::ReOrderTargets(const wxArrayString& nameOrder)
             if (vt.Index(nameOrder[i]) != wxNOT_FOUND)
             {
                 vt.Remove(nameOrder[i]);
-                vt.Insert(nameOrder[i], i);
+                vt.Insert(nameOrder[i], (vt.Count()<=i) ? vt.Count()-1 : i);
             }
         }
     }
