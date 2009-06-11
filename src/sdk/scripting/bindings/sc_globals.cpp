@@ -118,6 +118,14 @@ namespace ScriptBindings
         return wxGetTextFromUser(message, caption, default_value);
     }
 
+    long tointeger(wxString const &str)
+    {
+        long value;
+        if(!str.ToLong(&value))
+            return -1;
+        return value;
+    }
+
     void Register_Globals()
     {
         // global funcs
@@ -168,5 +176,6 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(wx_GetNumberFromUser, "wxGetNumberFromUser");
         SqPlus::RegisterGlobal(wx_GetPasswordFromUser, "wxGetPasswordFromUser");
         SqPlus::RegisterGlobal(wx_GetTextFromUser, "wxGetTextFromUser");
+        SqPlus::RegisterGlobal(tointeger, "tointeger");
     }
 }
