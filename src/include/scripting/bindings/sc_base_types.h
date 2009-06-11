@@ -25,10 +25,15 @@
 #include <cbeditor.h>
 #include <sqplus.h>
 
-DECLARE_INSTANCE_TYPE(wxString);
+// wx primitives and types
 DECLARE_INSTANCE_TYPE(wxArrayString);
-DECLARE_INSTANCE_TYPE(wxFileName);
 DECLARE_INSTANCE_TYPE(wxColour);
+DECLARE_INSTANCE_TYPE(wxFileName);
+DECLARE_INSTANCE_TYPE(wxPoint);
+DECLARE_INSTANCE_TYPE(wxSize);
+DECLARE_INSTANCE_TYPE(wxString);
+
+// C::B primitives and types
 DECLARE_INSTANCE_TYPE(ConfigManager);
 DECLARE_INSTANCE_TYPE(EditorManager);
 DECLARE_INSTANCE_TYPE(UserVariableManager);
