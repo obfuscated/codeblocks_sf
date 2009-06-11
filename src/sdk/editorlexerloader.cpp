@@ -90,6 +90,7 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
     DoStyles(style, node);
     DoKeywords(style, node);
     DoSampleCode(style, node);
+    DoLangAttributes(style, node);
 }
 
 void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
@@ -189,4 +190,25 @@ void EditorLexerLoader::DoSampleCode(HighlightLanguage language, TiXmlElement* n
     int debugLine = sample->Attribute("debug_line") ? atol(sample->Attribute("debug_line")) : -1;
     int errorLine = sample->Attribute("error_line") ? atol(sample->Attribute("error_line")) : -1;
     m_pTarget->SetSampleCode(language, code, breakLine, debugLine, errorLine);
+}
+
+void EditorLexerLoader::DoLangAttributes(HighlightLanguage language, TiXmlElement* node)
+{
+    TiXmlElement* attribs = node->FirstChildElement("LanguageAttributes");
+    if ( !attribs )
+        return;
+
+    bool CaseSensitive = attribs->Attribute("CaseSensitive") ? atol(attribs->Attribute("CaseSensitive")) != 0 : false;
+    m_pTarget->SetCaseSensitivity(language, CaseSensitive);
+
+
+    CommentToken token;
+    token.lineComment = wxString( attribs->Attribute("LineComment"), wxConvUTF8 );
+    token.streamCommentStart = wxString( attribs->Attribute("StreamCommentStart"), wxConvUTF8 );
+    token.streamCommentEnd = wxString( attribs->Attribute("StreamCommentEnd"), wxConvUTF8 );
+    token.boxCommentStart = wxString( attribs->Attribute("BoxCommentStart"), wxConvUTF8 );
+    token.boxCommentMid = wxString( attribs->Attribute("BoxCommentMid"), wxConvUTF8 );
+    token.boxCommentEnd = wxString( attribs->Attribute("BoxCommentEnd"), wxConvUTF8 );
+
+    m_pTarget->SetCommentToken(language, token);
 }

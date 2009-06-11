@@ -150,5 +150,13 @@
 						breakpoint_line="7"
 						debug_line="10"
 						error_line="12"/>
+                <LanguageAttributes
+                    LineComment="'"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

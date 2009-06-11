@@ -134,5 +134,13 @@
 						breakpoint_line="3"
 						debug_line="4"
 						error_line="9"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart="=begin"
+                    StreamCommentEnd="=end"
+                    BoxCommentStart="=begin"
+                    BoxCommentMid=""
+                    BoxCommentEnd="=end"
+                    CaseSensitive="1"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

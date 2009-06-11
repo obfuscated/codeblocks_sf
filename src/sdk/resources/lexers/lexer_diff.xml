@@ -30,5 +30,13 @@
                         index="6"
                         fg="0,0,128"/>
                 <SampleCode value="lexer_diff.sample"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

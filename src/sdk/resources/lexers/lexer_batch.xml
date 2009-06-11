@@ -43,5 +43,13 @@
                                    rmdir rd shift time type ver verify vol com con lpt nul"/>
                 </Keywords>
                 <SampleCode value="lexer_batch.sample"/>
+                <LanguageAttributes
+                    LineComment="REM "
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

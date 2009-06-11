@@ -102,5 +102,13 @@
                                    speak-punctuation speak-numeral"/>
 				</Keywords>
                 <SampleCode value="lexer_css.sample"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="0"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

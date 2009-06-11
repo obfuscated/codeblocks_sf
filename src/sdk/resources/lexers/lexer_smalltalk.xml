@@ -99,5 +99,13 @@
 						breakpoint_line="12"
 						debug_line="17"
 						error_line="23"/>
+                <LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="&quot;"
+                    StreamCommentEnd="&quot;"
+                    BoxCommentStart="&quot;"
+                    BoxCommentMid=""
+                    BoxCommentEnd="&quot;"
+                    CaseSensitive="1"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

@@ -40,5 +40,13 @@
                         fg="0,0,0"
                         italics="1"/>
 				<SampleCode value="lexer_xml.sample"/>
+				<LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="&lt;!--"
+                    StreamCommentEnd="--&gt;"
+                    BoxCommentStart="&lt;!-- "
+                    BoxCommentMid="  -- "
+                    BoxCommentEnd="  --&gt;"
+                    CaseSensitive="1"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

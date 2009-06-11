@@ -24,5 +24,13 @@
                         index="4"
                         fg="128,128,0"/>
                 <SampleCode value="lexer_properties.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

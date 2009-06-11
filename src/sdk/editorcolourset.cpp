@@ -809,3 +809,41 @@ void EditorColourSet::SetSampleCode(HighlightLanguage lang, const wxString& samp
     mset.m_DebugLine = debugLine;
     mset.m_ErrorLine = errorLine;
 }
+
+void EditorColourSet::SetCommentToken(HighlightLanguage lang, CommentToken token)
+{
+    if (lang == HL_NONE)
+        return;
+    m_Sets[lang].comment = token;
+}
+
+CommentToken EditorColourSet::GetCommentToken(HighlightLanguage lang)
+{
+    CommentToken com;
+    com.lineComment        = _T("");
+    com.streamCommentStart = _T("");
+    com.streamCommentEnd   = _T("");
+    com.boxCommentStart    = _T("");
+    com.boxCommentMid      = _T("");
+    com.boxCommentEnd      = _T("");
+
+    if (lang != HL_NONE)
+    {
+        com = m_Sets[lang].comment;
+    }
+    return com;
+}
+
+void EditorColourSet::SetCaseSensitivity(HighlightLanguage lang, bool CaseSensitive)
+{
+    if ( lang == HL_NONE )
+        return;
+    m_Sets[lang].m_CaseSensitive = CaseSensitive;
+}
+
+bool EditorColourSet::GetCaseSensitivity(HighlightLanguage lang)
+{
+    if ( lang == HL_NONE )
+        return false;
+    return m_Sets[lang].m_CaseSensitive;
+}

@@ -77,5 +77,13 @@
                 </Keywords>
                 <SampleCode value="lexer_hitasm.sample"
                         error_line="50"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"/>
         </Lexer>
 </CodeBlocks_lexer_properties>

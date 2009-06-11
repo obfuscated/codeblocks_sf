@@ -51,5 +51,13 @@
 				</Keywords>
 				<SampleCode value="lexer_lua.sample"
 						error_line="9"/>
+                <LanguageAttributes
+                    LineComment="--"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

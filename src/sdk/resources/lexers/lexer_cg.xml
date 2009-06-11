@@ -163,5 +163,12 @@
 				</Keywords>
 				<SampleCode value="lexer_cg.sample"
 						error_line="23"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

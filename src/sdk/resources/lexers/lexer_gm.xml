@@ -67,5 +67,12 @@
 				</Keywords>
 				<SampleCode value="lexer_gm.sample"
 						error_line="9"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"/>
 		</Lexer>
 </CodeBlocks_lexer_properties>

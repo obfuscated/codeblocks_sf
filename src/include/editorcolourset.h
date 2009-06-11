@@ -39,6 +39,15 @@ struct OptionColour
 };
 WX_DEFINE_ARRAY(OptionColour*, OptionColours);
 
+struct CommentToken {
+    wxString lineComment;
+    wxString streamCommentStart;
+    wxString streamCommentEnd;
+    wxString boxCommentStart;
+    wxString boxCommentMid;
+    wxString boxCommentEnd;
+};
+
 struct OptionSet
 {
     wxString m_Langs;
@@ -53,6 +62,9 @@ struct OptionSet
 
     wxString m_originalKeywords[wxSCI_KEYWORDSET_MAX + 1]; // wxSCI_KEYWORDSET_MAX+1 keyword sets
     wxArrayString m_originalFileMasks;
+
+    CommentToken comment;
+    bool m_CaseSensitive;
 };
 WX_DECLARE_STRING_HASH_MAP(OptionSet, OptionSetsMap);
 
@@ -97,6 +109,10 @@ class EditorColourSet
 		void SetFileMasks(HighlightLanguage lang, const wxString& masks, const wxString& = _(","));
 		wxString GetSampleCode(HighlightLanguage lang, int* breakLine, int* debugLine, int* errorLine);
 		void SetSampleCode(HighlightLanguage lang, const wxString& sample, int breakLine, int debugLine, int errorLine);
+        CommentToken GetCommentToken(HighlightLanguage lang);
+        void SetCommentToken(HighlightLanguage lang, CommentToken token);
+        bool GetCaseSensitivity(HighlightLanguage lang);
+        void SetCaseSensitivity(HighlightLanguage lang, bool CaseSensitive);
 	protected:
 	private:
 		void DoApplyStyle(cbStyledTextCtrl* control, int value, OptionColour* option);
