@@ -1492,23 +1492,26 @@ bool cbEditor::SaveAs()
     {
         Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
     }
-    wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
                                          Path,
                                          fname.GetFullName(),
                                          Filters,
                                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    dlg->SetFilterIndex(StoredIndex);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() != wxID_OK)
+    dlg.SetFilterIndex(StoredIndex);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
     {  // cancelled out
         return false;
     }
-    m_Filename = dlg->GetPath();
+    m_Filename = dlg.GetPath();
     Manager::Get()->GetLogManager()->Log(m_Filename);
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
     SetEditorTitle(m_Shortname);
+    // invalidate m_pProjectFile, because if kept, it would point to the ProjectFile with old name and
+    // cause ProjectManager::RemoveFileFromProject called via context menu to crash
+    SetProjectFile(0);
     //Manager::Get()->GetLogManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
     SetModified(true);
@@ -1516,16 +1519,15 @@ bool cbEditor::SaveAs()
     // store the last used filter and directory
     if(mgr)
     {
-        int Index = dlg->GetFilterIndex();
+        int Index = dlg.GetFilterIndex();
         wxString Filter;
         if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
         {
             mgr->Write(_T("/file_dialogs/save_file_as/filter"), Filter);
         }
-        wxString Test = dlg->GetDirectory();
-        mgr->Write(_T("/file_dialogs/save_file_as/directory"), dlg->GetDirectory());
+        wxString Test = dlg.GetDirectory();
+        mgr->Write(_T("/file_dialogs/save_file_as/directory"), dlg.GetDirectory());
     }
-    dlg->Destroy();
     return Save();
 } // end of SaveAs
 
@@ -1855,13 +1857,13 @@ void cbEditor::GotoLine(int line, bool centerOnScreen)
 
     // Make sure the line is not folded. This is done before moving to that
     // line because folding may change the lines layout.
-	control->EnsureVisible(line);
+    control->EnsureVisible(line);
 
-	// If the line or the following is a fold point it will be unfolded, in this way
-	// when the line is a function declaration (or only contains the opening brace of it [yes, that happens sometimes] )
-	// the body is shown.
-	DoFoldLine(line,0);
-	DoFoldLine(line+1,0);
+    // If the line or the following is a fold point it will be unfolded, in this way
+    // when the line is a function declaration (or only contains the opening brace of it [yes, that happens sometimes] )
+    // the body is shown.
+    DoFoldLine(line,0);
+    DoFoldLine(line+1,0);
 
     if (centerOnScreen)
     {
@@ -2703,7 +2705,10 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
         if (autoIndent && currLine > 0)
         {
             wxString indent = GetLineIndentString(currLine - 1);
-            if (smartIndent)
+            if (   smartIndent
+                && (   (control->GetLexer() == wxSCI_LEX_CPP)
+                    || (control->GetLexer() == wxSCI_LEX_D)
+                    || (control->GetLexer() == wxSCI_LEX_PYTHON) ) )
             {
                 // if the last entered char before newline was an opening curly brace,
                 // increase indentation level (the closing brace is handled in another block)
