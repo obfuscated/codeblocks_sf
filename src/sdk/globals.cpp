@@ -298,17 +298,17 @@ FileType FileTypeOf(const wxString& filename)
     // TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
     else
     {
-        ProjectManager *pm = Manager::Get()->GetProjectManager();
-        if ( pm )
+        ProjectManager *prjMgr = Manager::Get()->GetProjectManager();
+        if ( prjMgr )
         {
-            FilesGroupsAndMasks* fg = const_cast<FilesGroupsAndMasks*>(pm->GetFilesGroupsAndMasks());
-            if ( fg )
+            const FilesGroupsAndMasks* fgm = prjMgr->GetFilesGroupsAndMasks();
+            if (fgm)
             {
-               for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+               for (unsigned int i = 0; i != fgm->GetGroupsCount(); ++i)
                {
-                    if ( fg->GetGroupName(i) == _T("Sources") && fg->MatchesMask( ext, i ) )
+                    if (fgm->GetGroupName(i) == _T("Sources") && fgm->MatchesMask(ext, i))
                         return ftSource;
-                    if ( fg->GetGroupName(i) == _T("Headers") && fg->MatchesMask( ext, i ) )
+                    if (fgm->GetGroupName(i) == _T("Headers") && fgm->MatchesMask(ext, i))
                         return ftHeader;
                }
             }

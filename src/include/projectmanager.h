@@ -57,7 +57,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         wxFlatNotebook* GetNotebook() { return m_pNotebook; }
 
-        const FilesGroupsAndMasks* GetFilesGroupsAndMasks() { return m_pFileGroups; }
+        const FilesGroupsAndMasks* GetFilesGroupsAndMasks() const { return m_pFileGroups; }
 
         // Can the app shutdown? (actually: is ProjectManager busy at the moment?)
         static bool CanShutdown(){ return s_CanShutdown; }

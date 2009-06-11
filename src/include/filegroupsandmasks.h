@@ -65,7 +65,7 @@ class DLLIMPORT FilesGroupsAndMasks
           * \param ext The extension to query
           * \param group Group index to match
           * \return Extension matches the group in question? */
-        bool MatchesMask(const wxString& ext, unsigned int group);
+        bool MatchesMask(const wxString& ext, unsigned int group) const;
 
     private:
         /** Load groups/masks from config */

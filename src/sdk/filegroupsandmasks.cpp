@@ -167,7 +167,7 @@ wxString FilesGroupsAndMasks::GetGroupName(unsigned int group) const
 {
     if (group >= m_Groups.GetCount())
         return wxEmptyString;
-    FileGroups* fg = m_Groups[group];
+    const FileGroups* fg = m_Groups[group];
     return fg->groupName;
 }
 
@@ -175,15 +175,15 @@ wxString FilesGroupsAndMasks::GetFileMasks(unsigned int group) const
 {
     if (group >= m_Groups.GetCount())
         return wxEmptyString;
-    FileGroups* fg = m_Groups[group];
+    const FileGroups* fg = m_Groups[group];
     return GetStringFromArray(fg->fileMasks);
 }
 
-bool FilesGroupsAndMasks::MatchesMask(const wxString& ext, unsigned int group)
+bool FilesGroupsAndMasks::MatchesMask(const wxString& ext, unsigned int group) const
 {
     if (ext.IsEmpty() || group >= m_Groups.GetCount())
         return false;
-    FileGroups* fg = m_Groups[group];
+    const FileGroups* fg = m_Groups[group];
     for (unsigned int i = 0; i < fg->fileMasks.GetCount(); ++i)
     {
         if (ext.Matches(fg->fileMasks[i]))
