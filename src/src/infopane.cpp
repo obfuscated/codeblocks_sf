@@ -74,6 +74,12 @@ void InfoPane::Toggle(size_t i)
         page[i].indexInNB = AddPagePrivate(page[i].window, page[i].title, page[i].icon);
     else
     {
+        // Hide the window, otherwise the controls remain partly visible on some windows-versions
+        // if we toggle the active logger
+        if(page[i].window)
+        {
+            page[i].window->Hide();
+        }
         RemovePage(GetPageIndex(page[i].window));
         page[i].indexInNB = -1;
     }
