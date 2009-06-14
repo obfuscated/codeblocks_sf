@@ -89,6 +89,16 @@ namespace SqPlus
         enum {TypeID=VAR_TYPE_INT,Size=sizeof(unsigned short)};
         operator ScriptVarType() { return ScriptVarType(TypeID); }
     };
+#ifdef _SQ64
+    template<>
+    struct TypeInfo<SQInt32>
+    {
+        const SQChar * typeName;
+        TypeInfo() : typeName(sqT("int")) {}
+        enum {TypeID=VAR_TYPE_INT,Size=sizeof(SQInt32)};
+        operator ScriptVarType() { return ScriptVarType(TypeID); }
+    };
+#endif
 };
 
 #endif // SC_BASE_TYPES_H
