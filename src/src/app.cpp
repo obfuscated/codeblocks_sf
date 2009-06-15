@@ -850,19 +850,16 @@ int CodeBlocksApp::BatchJob()
     wxTaskBarIcon* tbIcon = 0;
     m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
     PlaceWindow(m_pBatchBuildDialog);
-    if (!m_Clean)
-    {
-        tbIcon = new wxTaskBarIcon();
-        tbIcon->SetIcon(
-                #ifdef __WXMSW__
-                    wxICON(A_MAIN_ICON),
-                #else
-                    wxIcon(app),
-                #endif // __WXMSW__
-                    _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
+    tbIcon = new wxTaskBarIcon();
+    tbIcon->SetIcon(
+            #ifdef __WXMSW__
+                wxICON(A_MAIN_ICON),
+            #else
+                wxIcon(app),
+            #endif // __WXMSW__
+                _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
 
-        m_pBatchBuildDialog->Show();
-    }
+    m_pBatchBuildDialog->Show();
 
     if (m_ReBuild)
     {

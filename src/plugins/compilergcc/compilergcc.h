@@ -290,6 +290,9 @@ class CompilerGCC : public cbCompilerPlugin
         // Clean and Build
         bool m_Clean;
         bool m_Build;
+        // if set and we are reaching NotifyJobDone, we know that we have finished the
+        // last step in a clean/build (aka rebuild)-process and send the cbEVT_COMPILER_FINISHED
+        bool m_LastBuildStep;
         // to decide if post-build steps should run
         bool m_RunTargetPostBuild;
         bool m_RunProjectPostBuild;

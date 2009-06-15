@@ -317,6 +317,9 @@ CompilerGCC::CompilerGCC()
     m_NextBuildState(bsNone),
     m_pLastBuildingProject(0),
     m_pLastBuildingTarget(0),
+    m_Clean(false),
+    m_Build(false),
+    m_LastBuildStep(true),
     m_RunTargetPostBuild(false),
     m_RunProjectPostBuild(false),
     m_DeleteTempMakefile(true),
@@ -365,6 +368,7 @@ void CompilerGCC::OnAttach()
     m_RunProjectPostBuild = false;
     m_Clean = false;
     m_Build = false;
+    m_LastBuildStep = true;
     m_DeleteTempMakefile = true;
     m_IsWorkspaceOperation = false;
 
@@ -1993,6 +1997,7 @@ int CompilerGCC::Clean(ProjectBuildTarget* target)
 
 int CompilerGCC::Clean(const wxString& target)
 {
+    m_LastBuildStep = true;
     return DoBuild(target, true, false);
 }
 
@@ -2743,6 +2748,7 @@ int CompilerGCC::DoBuild(const wxString& target, bool clean, bool build, bool cl
 
 int CompilerGCC::Build(const wxString& target)
 {
+    m_LastBuildStep = true;
     return DoBuild(target, false, true);
 }
 
@@ -2758,11 +2764,14 @@ int CompilerGCC::Rebuild(ProjectBuildTarget* target)
 
 int CompilerGCC::Rebuild(const wxString& target)
 {
-    if(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false))
+    m_LastBuildStep = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false);
+    if(m_LastBuildStep)
     {
         return DoBuild(target, true, true);
     }
-    return DoBuild(target, true, false) + DoBuild(target, false, true, false);
+    int result = DoBuild(target, true, false);
+    m_LastBuildStep = true;
+    return result + DoBuild(target, false, true, false);
 }
 
 int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build, bool clearLog)
@@ -2816,11 +2825,14 @@ int CompilerGCC::BuildWorkspace(const wxString& target)
 
 int CompilerGCC::RebuildWorkspace(const wxString& target)
 {
-    if(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false))
+    m_LastBuildStep = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false);
+    if(m_LastBuildStep)
     {
         return DoWorkspaceBuild(target, true, true);
     }
-    return DoWorkspaceBuild(target, true, false) + DoWorkspaceBuild(target, false, true, false);
+    int result = DoWorkspaceBuild(target, true, false);
+    m_LastBuildStep = true;
+    return result + DoWorkspaceBuild(target, false, true, false);
 }
 
 int CompilerGCC::CleanWorkspace(const wxString& target)
@@ -3790,6 +3802,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 
 void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
 {
+    if(!m_LastBuildStep)
+    {
+        return;
+    }
+
     m_BuildJob = bjIdle;
     if (showNothingToBeDone)
     {
