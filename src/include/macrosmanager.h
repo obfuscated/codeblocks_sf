@@ -35,7 +35,6 @@ public:
 protected:
     ProjectBuildTarget* m_lastTarget;
     cbProject* m_lastProject;
-    EditorBase* m_lastEditor;
     wxFileName m_prjname, m_wkspname;
     wxString m_AppPath, m_DataPath, m_Plugins, m_ActiveEditorFilename,
     m_WorkspaceFilename, m_WorkspaceName, m_WorkspaceDir,

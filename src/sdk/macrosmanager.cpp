@@ -70,7 +70,7 @@ void MacrosManager::Reset()
 {
     m_lastProject = 0;
     m_lastTarget = 0;
-    m_lastEditor = 0;
+    m_ActiveEditorFilename = wxEmptyString;
 
     m_AppPath = UnixFilename(ConfigManager::GetExecutableFolder());
     m_Plugins = UnixFilename(ConfigManager::GetPluginsFolder());
@@ -157,12 +157,11 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     if(!editor)
     {
         m_ActiveEditorFilename = wxEmptyString;
-        m_lastEditor = 0;
     }
-    else if(editor != m_lastEditor)
+    // don't use pointer to editor here, because this might be the same, even after closing one file and opening a new one
+    else if(editor->GetFilename() != m_ActiveEditorFilename)
     {
-        m_ActiveEditorFilename = UnixFilename(editor->GetFilename());
-        m_lastEditor = editor;
+        m_ActiveEditorFilename = editor->GetFilename();
     }
     if(!project)
     {
@@ -307,8 +306,8 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
     macros[_T("TARGET_NAME")]    = m_TargetName;
     macros[_T("TARGET_OUTPUT_BASENAME")]    = m_TargetOutputBaseName;
     macros[_T("TARGET_OUTPUT_FILE")]    = m_TargetFilename;
-    macros[_T("ACTIVE_EDITOR_FILENAME")] = m_ActiveEditorFilename;
-    wxFileName fn(m_ActiveEditorFilename);
+    macros[_T("ACTIVE_EDITOR_FILENAME")] = UnixFilename(m_ActiveEditorFilename);
+    wxFileName fn(macros[_T("ACTIVE_EDITOR_FILENAME")]);
     macros[_T("ACTIVE_EDITOR_DIRNAME")]  = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     macros[_T("ACTIVE_EDITOR_STEM")]  = fn.GetName();
     macros[_T("ACTIVE_EDITOR_EXT")]  = fn.GetExt();
@@ -358,8 +357,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
                 target = project->GetBuildTarget(project->GetActiveBuildTarget());
         }
     }
-
-    if(project != m_lastProject || target != m_lastTarget || editor != m_lastEditor)
+    if(project != m_lastProject || target != m_lastTarget || editor->GetFilename() != m_ActiveEditorFilename )
         RecalcVars(project, editor, target);
 
     wxString search;
