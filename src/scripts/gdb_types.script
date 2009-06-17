@@ -36,6 +36,8 @@ function RegisterTypes(driver)
         _T("Evaluate_StlVector"),
         _T("Parse_StlVector")
     );
+
+    Log(_T("RegisterTypes is being called"));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -132,40 +134,65 @@ function Parse_StlString(a_str, start)
 
 function Evaluate_StlVector(type, a_str, start, count)
 {
-    local oper = _T(".");
-
-    if (type.Find(_T("*"), false) > 0)
-        oper = _T("->");
-
-    local t = type.AfterFirst('<').BeforeFirst(',');
-    local result = _T("output ((") + t + _T("*)") + a_str + oper + _T("begin())[") + start + _T("]@");
-    if (count != 0)
-        result = result + count;
-    else
-        result = result + a_str + oper + _T("size() - ") + start;
+    local result = _T("pvector ") + a_str;
     return result;
 }
 
 function Parse_StlVector(a_str, start)
 {
-    // add [] indexes in front of each value
-    local len = a_str.length();
-    local c = 0;
-    local index = start;
-    local result = _T("");
-    while (c < len)
+    local size_pos = a_str.Find(_T("Vector size = "));
+
+    if (size_pos < 0)
+        return _T("");
+
+    // copy the end of the a_str, so we don't search the whole string when we look for capacity
+    local vector_info_str = a_str.Mid(size_pos, a_str.length() - size_pos);
+    size_pos = 0;
+
+    local capacity_pos = vector_info_str.Find(_T("Vector capacity = "));
+    if (capacity_pos < 0)
+        return _T("");
+
+    local size_value = vector_info_str.Mid(14, capacity_pos - 15);
+    local size = wxString_ToLong(size_value);
+
+    local capacity_end_pos = vector_info_str.Find(_T("Element"));
+    if(capacity_end_pos < 0)
+        return _T("");
+    capacity_pos += 18;
+    local capacity_value = vector_info_str.Mid(capacity_pos, capacity_end_pos - capacity_pos - 1);
+    local element_type_value = vector_info_str.Mid(capacity_end_pos + 15,
+                                                   vector_info_str.length() - capacity_end_pos - 15);
+
+    local result = _T("[size] = ") + size_value + _T("\n");
+    result += _T("[capacity] = ") + capacity_value + _T("\n");
+    result += _T("[element type] = ") + element_type_value + _T("\n");
+
+    local value_str = a_str;
+    for(local item = 0; item < size; item += 1)
     {
-        local char = a_str.GetChar(c);
-        result.AddChar(char);
-        switch (char)
+        local elem_str = _T("elem[") + item + _T("]: ");
+        local elem_start = value_str.Find(elem_str);
+        local elem_end = 0;
+        if(item == size - 1)
+            elem_end = value_str.Find(_T("Vector size"));
+        else
+            elem_end = value_str.Find(_T("elem[") + (item + 1) + _T("]: "));
+
+        if(elem_start >= 0 && elem_end >= 0)
         {
-            case '{':
-            case ',':
-                result = result + _T("[") + (index++) + _T("] = ");
-                break;
-            default: break;
+            local elem_value = value_str.Mid(elem_start, elem_end - elem_start);
+            local equal_pos = elem_value.Find(_T(" = "));
+            if(equal_pos >= 0)
+                elem_value.Remove(0, equal_pos + 3);
+            result += _T("[") + item + _T("] = ") + elem_value + _T("\n");
         }
-        ++c;
+
+        value_str.Remove(0, elem_end);
     }
-    return result;
+    if(result.length() > 0)
+    {
+        return _T("{ " ) + result + _T(" } ");
+    }
+    return "";
 }

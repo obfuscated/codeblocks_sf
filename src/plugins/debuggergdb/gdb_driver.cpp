@@ -277,6 +277,10 @@ void GDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
     m_Types.Clear();
     InitializeScripting();
 
+    wxString StlDebugCommand(_T("source $DATAPATH/scripts/stl-views-1.0.3.gdb"));
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(StlDebugCommand);
+    QueueCommand(new DebuggerCmd(this, StlDebugCommand));
+
     // pass user init-commands
     wxString init = Manager::Get()->GetConfigManager(_T("debugger"))->Read(_T("init_commands"), wxEmptyString);
     // commands are passed in one go, in case the user defines functions in there
