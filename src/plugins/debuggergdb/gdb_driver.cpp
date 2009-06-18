@@ -12,6 +12,7 @@
 #include "gdb_commands.h"
 #include "debuggerstate.h"
 #include <manager.h>
+#include <macrosmanager.h>
 #include <configmanager.h>
 #include <scriptingmanager.h>
 #include <globals.h>
