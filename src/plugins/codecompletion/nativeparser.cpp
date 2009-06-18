@@ -271,7 +271,7 @@ void NativeParser::ClearParsers()
 
 void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
 {
-    if (!parser)
+    if (!parser || !project)
         return;
 
     // do not clean include dirs: we use a single parser for the whole workspace

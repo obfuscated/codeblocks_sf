@@ -357,7 +357,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
                 target = project->GetBuildTarget(project->GetActiveBuildTarget());
         }
     }
-    if(project != m_lastProject || target != m_lastTarget || editor->GetFilename() != m_ActiveEditorFilename )
+    if(project != m_lastProject || target != m_lastTarget || (editor && (editor->GetFilename() != m_ActiveEditorFilename)) )
         RecalcVars(project, editor, target);
 
     wxString search;
