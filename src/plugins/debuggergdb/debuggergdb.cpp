@@ -233,8 +233,8 @@ class DebugLogPanel : public wxPanel
 public:
     DebugLogPanel(wxWindow *parent, DebugTextCtrlLogger *text_control_logger, DebuggerState &debugger_state) :
         wxPanel(parent),
-        m_text_control_logger(text_control_logger),
-        m_debugger_state(debugger_state)
+        m_debugger_state(debugger_state),
+        m_text_control_logger(text_control_logger)
     {
         int idDebug_LogEntryControl = wxNewId();
         int idDebug_ExecuteButton = wxNewId();
