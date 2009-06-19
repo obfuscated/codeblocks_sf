@@ -14,6 +14,7 @@
 
 //(*Headers(ScriptConsole)
 #include <wx/sizer.h>
+#include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/panel.h>
 #include <wx/bmpbuttn.h>
@@ -31,6 +32,7 @@ class ScriptConsole: public wxPanel
 
 		//(*Identifiers(ScriptConsole)
 		static const long ID_TEXTCTRL1;
+		static const long ID_STATICTEXT1;
 		static const long ID_COMBOBOX1;
 		static const long ID_BITMAPBUTTON1;
 		static const long ID_BITMAPBUTTON2;
@@ -46,6 +48,7 @@ class ScriptConsole: public wxPanel
 		//*)
 
 		//(*Declarations(ScriptConsole)
+		wxStaticText* lblCommand;
 		wxBitmapButton* btnClear;
 		wxComboBox* txtCommand;
 		wxBitmapButton* btnExecute;

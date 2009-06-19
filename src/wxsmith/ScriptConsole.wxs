@@ -19,6 +19,13 @@
 					<bg>wxSYS_COLOUR_BTNFACE</bg>
 					<object class="wxBoxSizer" variable="BoxSizer2" member="no">
 						<object class="sizeritem">
+							<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblCommand" member="yes">
+								<label>Command:</label>
+							</object>
+							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+						</object>
+						<object class="sizeritem">
 							<object class="wxComboBox" name="ID_COMBOBOX1" variable="txtCommand" member="yes">
 								<font>
 									<size>10</size>

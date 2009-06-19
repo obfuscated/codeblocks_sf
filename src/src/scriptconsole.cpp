@@ -33,6 +33,7 @@
 
 //(*IdInit(ScriptConsole)
 const long ScriptConsole::ID_TEXTCTRL1 = wxNewId();
+const long ScriptConsole::ID_STATICTEXT1 = wxNewId();
 const long ScriptConsole::ID_COMBOBOX1 = wxNewId();
 const long ScriptConsole::ID_BITMAPBUTTON1 = wxNewId();
 const long ScriptConsole::ID_BITMAPBUTTON2 = wxNewId();
@@ -67,7 +68,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	//(*Initialize(ScriptConsole)
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
-
+	
 	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
@@ -77,6 +78,8 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
 	Panel1->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+	lblCommand = new wxStaticText(Panel1, ID_STATICTEXT1, _("Command:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+	BoxSizer2->Add(lblCommand, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	txtCommand = new wxComboBox(Panel1, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, wxCB_DROPDOWN|wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_COMBOBOX1"));
 	wxFont txtCommandFont(10,wxMODERN,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
 	txtCommand->SetFont(txtCommandFont);
@@ -99,7 +102,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_COMBOBOX1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnLoadClick);
