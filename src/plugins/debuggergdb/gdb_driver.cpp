@@ -624,7 +624,8 @@ void GDB_driver::MemoryDump()
 
 void GDB_driver::RunningThreads()
 {
-    QueueCommand(new GdbCmd_Threads(this, m_pThreads));
+    if (m_pThreads)
+        QueueCommand(new GdbCmd_Threads(this, m_pThreads));
 }
 
 void GDB_driver::InfoFrame()
