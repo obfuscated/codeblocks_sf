@@ -105,7 +105,7 @@ private:
   { }
 
   Bindings m_Bindings;
-  bool m_BlockHeadersText;
+  bool     m_BlockHeadersText;
 
   DECLARE_EVENT_TABLE()
 };

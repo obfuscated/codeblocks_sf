@@ -58,7 +58,7 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
 {
   //(*Initialize(Configuration)
   wxBoxSizer* sizDefaults;
-
+  
   Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizGroups = new wxStaticBoxSizer(wxVERTICAL, this, _("Groups"));
@@ -115,7 +115,7 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
   SetSizer(sizMain);
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
-
+  
   Connect(ID_LST_GROUPS,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&Configuration::OnGroupsSelect);
   Connect(ID_LST_GROUPS,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,(wxObjectEventFunction)&Configuration::OnRenameGroup);
   Connect(ID_BTN_ADD_GROUP,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnBtnAddGroupClick);
@@ -152,7 +152,7 @@ void Configuration::ShowGroups()
     m_Groups->Append(i->first, (void*) &(i->second) );
 
   SelectGroup(0);
-}
+}// ShowGroups
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

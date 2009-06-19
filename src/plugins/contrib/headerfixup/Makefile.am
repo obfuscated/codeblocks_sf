@@ -29,10 +29,10 @@ noinst_HEADERS = bindings.h \
                  helper.h \
                  protocol.h
 
-EXTRA_DIST = wxsmith/configuration.wxs \
+EXTRA_DIST = $(srcdir)/*.cbp \
+             wxsmith/configuration.wxs \
              wxsmith/execution.wxs \
              wxsmith/protocol.wxs \
-             headerfixup.cbp \
              manifest.xml
 
 pkgdata_DATA = headerfixup.zip

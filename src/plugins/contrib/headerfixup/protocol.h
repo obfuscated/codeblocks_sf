@@ -16,24 +16,22 @@
 #include <wx/dialog.h>
 class wxTextCtrl;
 class wxStaticText;
-class wxFlexGridSizer;
+class wxBoxSizer;
 class wxButton;
 class wxStaticBoxSizer;
 //*)
 
 class wxCommandEvent;
 class wxWindow;
-#include <wx/string.h>
+class wxString;
 
 class Protocol: public wxDialog
 {
 public:
 
   Protocol(wxWindow* parent,wxWindowID id = -1);
-  virtual ~Protocol();
 
-  void SetProtocol(const wxString & Protocol)
-  { if (m_Protocol) m_Protocol->SetValue(Protocol); }
+  void SetProtocol(const wxArrayString& Protocol);
 
   //(*Identifiers(Protocol)
   static const long ID_LBL_PROTOCOL;
@@ -47,7 +45,9 @@ protected:
   //*)
 
   //(*Declarations(Protocol)
+  wxBoxSizer* sizMain;
   wxTextCtrl* m_Protocol;
+  wxStaticBoxSizer* sizProtocol;
   wxStaticText* lblProtocol;
   wxButton* m_OK;
   //*)

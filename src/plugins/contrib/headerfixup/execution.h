@@ -17,7 +17,6 @@
 class wxGauge;
 class wxCheckBox;
 class wxRadioBox;
-class wxFlexGridSizer;
 class wxBoxSizer;
 class wxButton;
 class wxStaticBoxSizer;
@@ -26,7 +25,6 @@ class wxCheckListBox;
 
 #include <wx/arrstr.h>
 #include <wx/event.h>
-#include <wx/string.h>
 
 #include <cbproject.h>
 
@@ -35,6 +33,7 @@ class wxCheckListBox;
 #include "helper.h"
 
 class wxWindow;
+class wxString;
 
 class Execution: public wxDialog
 {
@@ -75,6 +74,7 @@ protected:
 
   //(*Declarations(Execution)
   wxCheckBox* m_Protocol;
+  wxBoxSizer* sizMain;
   wxRadioBox* m_Scope;
   wxBoxSizer* sizRunExit;
   wxButton* m_Invert;
@@ -83,7 +83,6 @@ protected:
   wxStaticBoxSizer* sizExecute;
   wxCheckBox* m_Ignore;
   wxBoxSizer* sizLeft;
-  wxFlexGridSizer* flsMain;
   wxRadioBox* m_Options;
   wxButton* m_Exit;
   wxButton* m_SelectAll;
@@ -126,7 +125,7 @@ private:
     ProcessSourceFiles
   };
 
-  wxString      m_Log;
+  wxArrayString m_Log;
   wxArrayString m_TokensProcessed;
   Bindings      m_Bindings;
   FileAnalysis  m_FileAnalysis;
