@@ -666,66 +666,46 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
 
     if (eventId == idMenuRun)
         OnRun(event);
-
-    if (eventId == idMenuCompileAndRun)
+    else if (eventId == idMenuCompileAndRun)
         OnCompileAndRun(event);
-
-    if (eventId == idMenuCompile)
+    else if (eventId == idMenuCompile)
         OnCompile(event);
-
-    if (eventId == idMenuCompileFromProjectManager)
+    else if (eventId == idMenuCompileFromProjectManager)
         OnCompile(event);
-
-    if (eventId == idMenuCompileFile)
+    else if (eventId == idMenuCompileFile)
         OnCompileFile(event);
-
-    if (eventId == idMenuCompileFileFromProjectManager)
+    else if (eventId == idMenuCompileFileFromProjectManager)
         OnCompileFile(event);
-
-    if (eventId == idMenuRebuild)
+    else if (eventId == idMenuRebuild)
         OnRebuild(event);
-
-    if (eventId == idMenuRebuildFromProjectManager)
+    else if (eventId == idMenuRebuildFromProjectManager)
         OnRebuild(event);
-
-    if (eventId == idMenuCompileAll)
+    else if (eventId == idMenuCompileAll)
         OnCompileAll(event);
-
-    if (eventId == idMenuRebuildAll)
+    else if (eventId == idMenuRebuildAll)
         OnRebuildAll(event);
-
-    if (eventId == idMenuProjectCompilerOptions ||
-        eventId == idMenuProjectCompilerOptionsFromProjectManager)
+    else if (   eventId == idMenuProjectCompilerOptions
+	         || eventId == idMenuProjectCompilerOptionsFromProjectManager )
         OnProjectCompilerOptions(event);
-
-    if (eventId == idMenuTargetCompilerOptions)
+    else if (eventId == idMenuTargetCompilerOptions)
         OnTargetCompilerOptions(event);
-
-    if (eventId == idMenuClean)
+    else if (eventId == idMenuClean)
         OnClean(event);
-
-    if (eventId == idMenuCleanAll)
+    else if (eventId == idMenuCleanAll)
         OnCleanAll(event);
-
-    if (eventId == idMenuCleanFromProjectManager)
+    else if (eventId == idMenuCleanFromProjectManager)
         OnClean(event);
-
-    if (eventId == idMenuKillProcess)
+    else if (eventId == idMenuKillProcess)
         OnKillProcess(event);
-
-    if (eventId == idMenuNextError)
+    else if (eventId == idMenuNextError)
         OnNextError(event);
-
-    if (eventId == idMenuPreviousError)
+    else if (eventId == idMenuPreviousError)
         OnPreviousError(event);
-
-    if (eventId == idMenuClearErrors)
+    else if (eventId == idMenuClearErrors)
         OnClearErrors(event);
-
-    if (eventId == idMenuExportMakefile)
+    else if (eventId == idMenuExportMakefile)
         OnExportMakefile(event);
-
-    if (eventId == idMenuSettings)
+    else if (eventId == idMenuSettings)
         OnConfig(event);
 
     // Return focus to current editor

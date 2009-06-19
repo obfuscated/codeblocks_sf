@@ -40,6 +40,8 @@ class BreakpointsDlg;
 class ExamineMemoryDlg;
 class ThreadsDlg;
 
+class DebugTextCtrlLogger;
+
 class DebuggerGDB : public cbDebuggerPlugin
 {
         DebuggerState m_State;
@@ -181,8 +183,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnInfoSignals(wxCommandEvent& event);
 
         wxMenu* m_pMenu;
-        TextCtrlLogger* m_pLog;
-        TextCtrlLogger* m_pDbgLog;
+        DebugTextCtrlLogger* m_pLog;
+        DebugTextCtrlLogger* m_pDbgLog;
         PipedProcess* m_pProcess;
         wxToolBar* m_pTbar;
         int m_PageIndex;

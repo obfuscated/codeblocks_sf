@@ -204,6 +204,164 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_COMMAND(-1, DEBUGGER_SHOW_FILE_LINE, DebuggerGDB::OnShowFile)
 END_EVENT_TABLE()
 
+
+class DebugTextCtrlLogger : public TextCtrlLogger
+{
+public:
+    DebugTextCtrlLogger(DebuggerState &state,
+                        bool fixedPitchFont = false) :
+        TextCtrlLogger(fixedPitchFont),
+        m_state(state),
+        m_panel(NULL)
+    {
+    }
+
+    wxWindow* CreateTextCtrl(wxWindow *parent)
+    {
+        return TextCtrlLogger::CreateControl(parent);
+    }
+
+    virtual wxWindow* CreateControl(wxWindow* parent);
+
+private:
+    DebuggerState &m_state;
+    wxPanel     *m_panel;
+};
+
+class DebugLogPanel : public wxPanel
+{
+public:
+    DebugLogPanel(wxWindow *parent, DebugTextCtrlLogger *text_control_logger, DebuggerState &debugger_state) :
+        wxPanel(parent),
+        m_text_control_logger(text_control_logger),
+        m_debugger_state(debugger_state)
+    {
+        int idDebug_LogEntryControl = wxNewId();
+        int idDebug_ExecuteButton = wxNewId();
+        int idDebug_ClearButton = wxNewId();
+        int idDebug_LoadButton = wxNewId();
+
+        wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+        wxBoxSizer *control_sizer = new wxBoxSizer(wxHORIZONTAL);
+
+        wxWindow *text_control = text_control_logger->CreateTextCtrl(this);
+        sizer->Add(text_control, wxEXPAND, wxEXPAND | wxALL , 0);
+        sizer->Add(control_sizer, 0, wxEXPAND | wxALL, 0);
+
+        wxStaticText *label = new wxStaticText(this, wxID_ANY, _T("Command:"),
+                                               wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
+
+        m_command_entry = new wxComboBox(this, idDebug_LogEntryControl, wxEmptyString,
+                                         wxDefaultPosition, wxDefaultSize, 0, 0,
+                                         wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+
+        wxBitmap execute_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),
+                                                           wxART_BUTTON);
+        wxBitmap clear_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DELETE")),wxART_BUTTON);
+        wxBitmap file_open_bitmap =wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),
+                                                            wxART_BUTTON);
+
+        wxBitmapButton *button_execute;
+        button_execute = new wxBitmapButton(this, idDebug_ExecuteButton, execute_bitmap, wxDefaultPosition,
+                                            wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
+                                            _T("idDebug_ExecuteButton"));
+        button_execute->SetToolTip(_("Execute current command"));
+
+        wxBitmapButton *button_load = new wxBitmapButton(this, idDebug_LoadButton, file_open_bitmap, wxDefaultPosition,
+                                                         wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
+                                                         _T("idDebug_LoadButton"));
+        button_load->SetDefault();
+        button_load->SetToolTip(_("Load from file"));
+
+        wxBitmapButton *button_clear = new wxBitmapButton(this, idDebug_ClearButton, clear_bitmap, wxDefaultPosition,
+                                                          wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
+                                                          _T("idDebug_ClearButton"));
+        button_clear->SetDefault();
+        button_clear->SetToolTip(_("Clear output window"));
+
+        control_sizer->Add(label, 0, wxALIGN_CENTER | wxALL, 2);
+        control_sizer->Add(m_command_entry, wxEXPAND, wxEXPAND | wxALL, 2);
+        control_sizer->Add(button_execute, 0, wxEXPAND | wxALL, 0);
+        control_sizer->Add(button_load, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+        control_sizer->Add(button_clear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+
+        SetSizer(sizer);
+
+        Connect(idDebug_LogEntryControl,
+                wxEVT_COMMAND_TEXT_ENTER,
+                wxObjectEventFunction(&DebugLogPanel::OnEntryCommand));
+        Connect(idDebug_ExecuteButton,
+                wxEVT_COMMAND_BUTTON_CLICKED,
+                wxObjectEventFunction(&DebugLogPanel::OnEntryCommand));
+        Connect(idDebug_ClearButton,
+                wxEVT_COMMAND_BUTTON_CLICKED,
+                wxObjectEventFunction(&DebugLogPanel::OnClearLog));
+        Connect(idDebug_LoadButton,
+                wxEVT_COMMAND_BUTTON_CLICKED,
+                wxObjectEventFunction(&DebugLogPanel::OnLoadFile));
+
+    }
+
+    void OnEntryCommand(wxCommandEvent& event)
+    {
+        assert(m_command_entry);
+        wxString cmd = m_command_entry->GetValue();
+        cmd.Trim(false);
+        cmd.Trim(true);
+
+        if (cmd.IsEmpty())
+            return;
+        if(m_debugger_state.HasDriver())
+        {
+            m_debugger_state.GetDriver()->QueueCommand(new DebuggerCmd(m_debugger_state.GetDriver(), cmd, true));
+
+            if (m_command_entry->FindString(cmd) == wxNOT_FOUND)
+                m_command_entry->Insert(cmd, 0);
+            m_command_entry->SetValue(wxEmptyString);
+        }
+    }
+
+    void OnClearLog(wxCommandEvent& event)
+    {
+        assert(m_command_entry);
+        assert(m_text_control_logger);
+        m_text_control_logger->Clear();
+        m_command_entry->SetFocus();
+    }
+
+    void OnLoadFile(wxCommandEvent& event)
+    {
+        if(!m_debugger_state.HasDriver())
+            return;
+
+        ConfigManager* manager = Manager::Get()->GetConfigManager(_T("app"));
+        wxString path = manager->Read(_T("/file_dialogs/file_run_dbg_script/directory"), wxEmptyString);
+
+        wxFileDialog dialog(this, _("Load script"), path, wxEmptyString,
+                            _T("Debugger script files (*.gdb)|*.gdb"), wxFD_OPEN | compatibility::wxHideReadonly);
+
+        if(dialog.ShowModal() == wxID_OK)
+        {
+            manager->Write(_T("/file_dialogs/file_run_dbg_script/directory"), dialog.GetDirectory());
+
+            DebuggerCmd *cmd = new DebuggerCmd(m_debugger_state.GetDriver(), _T("source ") + dialog.GetPath(), true);
+            m_debugger_state.GetDriver()->QueueCommand(cmd);
+        }
+    }
+private:
+    DebuggerState &m_debugger_state;
+    DebugTextCtrlLogger *m_text_control_logger;
+    wxComboBox  *m_command_entry;
+};
+
+wxWindow* DebugTextCtrlLogger::CreateControl(wxWindow* parent)
+{
+    if(!m_panel)
+        m_panel = new DebugLogPanel(parent, this, m_state);
+
+    return m_panel;
+}
+
 DebuggerGDB::DebuggerGDB()
     : m_State(this),
     m_pMenu(0L),
@@ -258,7 +416,7 @@ void DebuggerGDB::OnAttach()
     m_TimerPollDebugger.SetOwner(this, idTimerPollDebugger);
 
     LogManager* msgMan = Manager::Get()->GetLogManager();
-    m_pLog = new TextCtrlLogger(true);
+    m_pLog = new DebugTextCtrlLogger(m_State, true);
     m_PageIndex = msgMan->SetLog(m_pLog);
     msgMan->Slot(m_PageIndex).title = _("Debugger");
     // set log image
@@ -272,7 +430,7 @@ void DebuggerGDB::OnAttach()
     m_HasDebugLog = Manager::Get()->GetConfigManager(_T("debugger"))->ReadBool(_T("debug_log"), false);
     if (m_HasDebugLog)
     {
-        m_pDbgLog = new TextCtrlLogger(true);
+        m_pDbgLog = new DebugTextCtrlLogger(m_State, true);
         m_DbgPageIndex = msgMan->SetLog(m_pDbgLog);
         msgMan->Slot(m_DbgPageIndex).title = _("Debugger (debug)");
         // set log image
@@ -509,7 +667,7 @@ void DebuggerGDB::RefreshConfiguration()
     }
     else if (log_visible && !m_HasDebugLog)
     {
-        m_pDbgLog = new TextCtrlLogger(true);
+        m_pDbgLog = new DebugTextCtrlLogger(m_State, true);
         m_DbgPageIndex = Manager::Get()->GetLogManager()->SetLog(m_pDbgLog);
         Manager::Get()->GetLogManager()->Slot(m_DbgPageIndex).title = _("Debugger (debug)");
         // set log image
