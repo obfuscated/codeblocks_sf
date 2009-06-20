@@ -4,9 +4,9 @@ desktop_DATA = $(srcdir)/codeblocks.desktop
 xdgmimedir = $(datadir)/mime/packages
 xdgmime_DATA = codeblocks.xml
 
-mimeicondir = $(datadir)/icons/gnome/48x48/mimetypes
-mimeicon_DATA = $(srcdir)/gnome-mime-application-x-codeblocks.png \
-                            $(srcdir)/gnome-mime-application-x-codeblocks-workspace.png
+mimeicondir = $(datadir)/icons/hicolor/48x48/mimetypes
+mimeicon_DATA = $(srcdir)/application-x-codeblocks.png \
+                            $(srcdir)/application-x-codeblocks-workspace.png
 
 pixmapdir = $(datadir)/pixmaps
 pixmap_DATA = $(srcdir)/codeblocks.png
@@ -28,7 +28,7 @@ install-data-hook: install-xdgmimeDATA
 		update-desktop-database; \
 	  fi; \
 	  if which gtk-update-icon-cache>/dev/null 2>&1; then \
-		gtk-update-icon-cache --force $(DESTDIR)$(datadir)/icons/gnome; \
+		gtk-update-icon-cache --force $(DESTDIR)$(datadir)/icons/hicolor; \
 	  fi \
 	fi
 
@@ -41,6 +41,6 @@ uninstall-hook:
 		update-desktop-database; \
 	  fi; \
 	  if which gtk-update-icon-cache>/dev/null 2>&1; then \
-		gtk-update-icon-cache --force $(DESTDIR)$(datadir)/icons/gnome; \
+		gtk-update-icon-cache --force $(DESTDIR)$(datadir)/icons/hicolor; \
 	  fi \
 	fi

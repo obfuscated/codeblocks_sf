@@ -10,11 +10,36 @@
 #export DH_VERBOSE=1
 
 
+
+#----------------------------------------------------------------------------
+#Packages to build
+package_core_bin		:= codeblocks
+package_core_data		:= codeblocks-common
+package_core_lib		:= libcodeblocks0
+package_core_debug		:= codeblocks-dbg
+package_core_dev_libs		:= codeblocks-dev
+package_core_dev_headers	:= codeblocks-headers
+
+package_contrib_bin		:= codeblocks-contrib
+package_contrib_data		:= codeblocks-contrib-common
+package_contrib_debug		:= codeblocks-contrib-dbg
+
+package_wxsmith_lib		:= libwxsmithlib0
+package_wxsmith_dev_libs	:= wxsmith-dev
+package_wxsmith_dev_headers	:= wxsmith-headers
+
+packages_core		:= $(package_core_bin) $(package_core_data) \
+			   $(package_core_lib) $(package_core_dev_libs) \
+			   $(package_core_dev_headers)
+
+packages_contrib	:= $(package_contrib_bin) $(package_contrib_data) \
+			   $(package_wxsmith_lib) $(package_wxsmith_dev_libs) \
+			   $(package_wxsmith_dev_headers)
+#----------------------------------------------------------------------------
 # These are used for cross-compiling and for saving the configure script
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
 
 CFLAGS = -Wall -g
 
@@ -79,6 +104,8 @@ install: build
 	dh_testroot
 	dh_clean -k 
 	dh_installdirs -ptmp usr/share/doc
+	dpkg-gensymbols -p$(package_core_lib) -Odebian/$(package_core_lib).symbols
+	dpkg-gensymbols -p$(package_wxsmith_lib) -Odebian/$(package_wxsmith_lib).symbols
 
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
@@ -92,25 +119,17 @@ binary-arch: build install
 	dh_testroot
 	dh_installchangelogs ChangeLog
 	dh_installdocs
-	dh_installexamples
 	dh_install --fail-missing --sourcedir=debian/tmp
 	dh_installmenu
-#	dh_installdebconf	
-#	dh_installlogrotate
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
-#	dh_installinit
-#	dh_installcron
-#	dh_installinfo
+	dh_installmime
 	dh_installman
+	dh_icons
 	dh_link
-	dh_strip -Ncodeblocks-dbg -Ncodeblocks-contrib-dbg
+	dh_strip $(addprefix -p,$(packages_core)) --dbg-package=$(package_core_debug)
+	dh_strip $(addprefix -p,$(packages_contrib)) --dbg-package=$(package_contrib_debug)
 	dh_compress
 	dh_fixperms
-#	dh_perl
-#	dh_python
-	dh_makeshlibs
+	dh_makeshlibs -N$(package_contrib_bin)
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol

@@ -1,4 +1,5 @@
-#!/bin/sh -e
+#!/bin/sh
+set -e
 
 [ -f /usr/share/codeblocks/lexers/lexer_bash.sample ] && chmod +x /usr/share/codeblocks/lexers/lexer_bash.sample
 

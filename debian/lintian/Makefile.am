@@ -1,2 +1,3 @@
 EXTRA_DIST = 	codeblocks \
-		codeblocks-common
+		codeblocks-common \
+		codeblocks-contrib

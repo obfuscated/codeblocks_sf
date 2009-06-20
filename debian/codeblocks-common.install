@@ -1,5 +1,5 @@
-usr/share/applications
-usr/share/codeblocks/icons
+usr/share/applications/
+usr/share/codeblocks/icons/
 usr/share/codeblocks/images/*.png
 usr/share/codeblocks/images/16x16
 usr/share/codeblocks/images/codecompletion
@@ -22,9 +22,9 @@ usr/share/codeblocks/scriptedwizard.zip*
 usr/share/codeblocks/start_here.zip
 usr/share/codeblocks/todo.zip*
 usr/share/codeblocks/tips.txt
-usr/share/doc
-usr/share/icons
-usr/share/man
-usr/share/mime
-usr/share/pixmaps
-../lintian/codeblocks-common  usr/share/lintian/overrides
+usr/share/icons/
+usr/share/man/man1/cb_*
+usr/share/man/man1/codeblocks*
+usr/share/mime/
+usr/share/pixmaps/
+../lintian/codeblocks-common  usr/share/lintian/overrides/

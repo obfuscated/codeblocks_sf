@@ -23,7 +23,7 @@ This will adapt the project's configuration file to your environment. This only 
 
 After this, type the following:
 
-./configure --enable-contrib
+./configure --with-contrib-plugins=all
 make
 make install
 

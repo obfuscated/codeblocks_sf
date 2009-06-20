@@ -22,3 +22,4 @@ usr/lib/codeblocks/plugins/libThreadSearch.*
 usr/lib/codeblocks/plugins/libValgrind.* 
 usr/lib/codeblocks/plugins/libwxsmith.* 
 usr/lib/codeblocks/plugins/libwxsmithcontribitems.* 
+../lintian/codeblocks-contrib  usr/share/lintian/overrides/

@@ -1,3 +1,12 @@
+codeblocks (8.02svn5671) unstable; urgency=low
+
+  * more fixes to debian build system, sources and packages are now
+    lintian-clean, except for some words guessed as spelling-errors.
+  * changed name and installation directory for mimetype-icons
+  * fixed typo
+
+ -- Jens Lody <jens@codeblocks.org>  Sat, 20 Jun 2009 00:10:04 +0200
+
 codeblocks (8.02svn5607) unstable; urgency=low
 
   * reorganised debug-packages after changing compatibility level to 5:
