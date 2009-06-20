@@ -884,7 +884,11 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         // Find matching menu item in keybinder array of commands
         wxCmd*  pCmd = 0;
         changed = 0;
+        #if wxCHECK_VERSION(2, 9, 0)
+        wxString menuItemLabel = pMenuItem->GetItemLabelText().Trim();
+        #else
         wxString menuItemLabel = pMenuItem->GetLabel().Trim();
+        #endif
         //-wxString menuItemKeyStr = pMenuItem->GetText().AfterFirst('\t');
         //^^ This will not work on wxGTK. GTK GetText() doesn't contain the shortcut
         wxString menuItemKeyStr;
@@ -1053,9 +1057,17 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
                 && (not wxMenuCmd::IsNumericMenuItem(pMenuItem)) )
             {
                 #ifdef LOGGING
+                 #if wxCHECK_VERSION(2, 9, 0)
+                 LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabel().GetData() );
+                 #else
                  LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
+                 #endif
                 #else
+                 #if wxCHECK_VERSION(2, 9, 0)
+                 Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetItemLabel().GetData()));
+                 #else
                  Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
+                 #endif
                 #endif
 ////                // When a .ini id cannot be found: (menu ids have shifted)
 ////                // The following code causes real problems when menu labels are duplicates
