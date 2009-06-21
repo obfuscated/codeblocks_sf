@@ -1054,7 +1054,7 @@ wxPdfFontOpenTypeUnicode::ConvertCID2GID(const wxString& s)
     charIter = (*m_gn).find(s[i]);
     if (charIter != (*m_gn).end())
     {
-      t.Append(charIter->second);
+      t.Append(wxChar(charIter->second));
     }
     else
     {
