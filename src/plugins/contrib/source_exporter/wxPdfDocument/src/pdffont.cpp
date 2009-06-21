@@ -463,11 +463,19 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxT("file"))
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      value = child->GetAttribute(_T("name"), _T(""));
+      #else
       value = child->GetPropVal(_T("name"), _T(""));
+      #endif
       if (value.Length() > 0)
       {
         m_file = value;
+        #if wxCHECK_VERSION(2, 9, 0)
+        value = child->GetAttribute(_T("originalsize"), _T(""));
+        #else
         value = child->GetPropVal(_T("originalsize"), _T(""));
+        #endif
         if (value.Length() > 0 && value.ToLong(&number))
         {
           bFile = true;
@@ -482,7 +490,11 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxT("widths"))
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      wxString subsetting = child->GetAttribute(_T("subsetting"), _T("disabled"));
+      #else
       wxString subsetting = child->GetPropVal(_T("subsetting"), _T("disabled"));
+      #endif
       m_subsetSupport = (subsetting == _T("enabled"));
       bWidth = true;
       m_cw = new wxPdfCharWidthMap();
@@ -497,12 +509,21 @@ wxPdfFontTrueType::LoadFontMetrics(wxXmlNode* root)
         long charId, charWidth, glyph;
         if (charNode->GetName() == wxT("char"))
         {
+          #if wxCHECK_VERSION(2, 9, 0)
+          strId = charNode->GetAttribute(_T("id"), _T(""));
+          if (m_subsetSupport)
+          {
+            strGn = charNode->GetAttribute(_T("gn"), _T(""));
+          }
+          strWidth = charNode->GetAttribute(_T("width"), _T(""));
+          #else
           strId = charNode->GetPropVal(_T("id"), _T(""));
           if (m_subsetSupport)
           {
             strGn = charNode->GetPropVal(_T("gn"), _T(""));
           }
           strWidth = charNode->GetPropVal(_T("width"), _T(""));
+          #endif
           if (strId.Length() > 0 && strId.ToLong(&charId) &&
               strWidth.Length() > 0 && strWidth.ToLong(&charWidth))
           {
@@ -688,16 +709,28 @@ wxPdfFontTrueTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxT("file"))
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      value = child->GetAttribute(_T("ctg"), _T(""));
+      #else
       value = child->GetPropVal(_T("ctg"), _T(""));
+      #endif
       if (value.Length() > 0)
       {
         bFile = true;
         m_ctg = value;
+        #if wxCHECK_VERSION(2, 9, 0)
+        value = child->GetAttribute(_T("name"), _T(""));
+        #else
         value = child->GetPropVal(_T("name"), _T(""));
+        #endif
         if (value.Length() > 0)
         {
           m_file = value;
+          #if wxCHECK_VERSION(2, 9, 0)
+          value = child->GetAttribute(_T("originalsize"), _T(""));
+          #else
           value = child->GetPropVal(_T("originalsize"), _T(""));
+          #endif
           if (value.Length() > 0 && value.ToLong(&number))
           {
             bFile = true;
@@ -728,8 +761,13 @@ wxPdfFontTrueTypeUnicode::LoadFontMetrics(wxXmlNode* root)
         long charId, charWidth;
         if (charNode->GetName() == wxT("char"))
         {
+          #if wxCHECK_VERSION(2, 9, 0)
+          strId = charNode->GetAttribute(_T("id"), _T(""));
+          strWidth = charNode->GetAttribute(_T("width"), _T(""));
+          #else
           strId = charNode->GetPropVal(_T("id"), _T(""));
           strWidth = charNode->GetPropVal(_T("width"), _T(""));
+          #endif
           if (strId.Length() > 0 && strId.ToLong(&charId) &&
               strWidth.Length() > 0 && strWidth.ToLong(&charWidth))
           {
@@ -920,16 +958,28 @@ wxPdfFontOpenTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxT("file"))
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      value = child->GetAttribute(_T("ctg"), _T(""));
+      #else
       value = child->GetPropVal(_T("ctg"), _T(""));
+      #endif
       if (value.Length() > 0)
       {
         bFile = true;
         m_ctg = value;
+        #if wxCHECK_VERSION(2, 9, 0)
+        value = child->GetAttribute(_T("name"), _T(""));
+        #else
         value = child->GetPropVal(_T("name"), _T(""));
+        #endif
         if (value.Length() > 0)
         {
           m_file = value;
+          #if wxCHECK_VERSION(2, 9, 0)
+          value = child->GetAttribute(_T("originalsize"), _T(""));
+          #else
           value = child->GetPropVal(_T("originalsize"), _T(""));
+          #endif
           if (value.Length() > 0 && value.ToLong(&number))
           {
             bFile = true;
@@ -951,7 +1001,11 @@ wxPdfFontOpenTypeUnicode::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxT("widths"))
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      wxString subsetting = child->GetAttribute(_T("subsetting"), _T("disabled"));
+      #else
       wxString subsetting = child->GetPropVal(_T("subsetting"), _T("disabled"));
+      #endif
       m_subsetSupport = (subsetting == _T("enabled"));
       bWidth = true;
       m_cw = new wxPdfCharWidthMap();
@@ -966,12 +1020,21 @@ wxPdfFontOpenTypeUnicode::LoadFontMetrics(wxXmlNode* root)
         long charId, glyph, charWidth;
         if (charNode->GetName() == wxT("char"))
         {
+          #if wxCHECK_VERSION(2, 9, 0)
+          strId = charNode->GetAttribute(_T("id"), _T(""));
+          if (m_subsetSupport)
+          {
+            strGn = charNode->GetAttribute(_T("gn"), _T(""));
+          }
+          strWidth = charNode->GetAttribute(_T("width"), _T(""));
+          #else
           strId = charNode->GetPropVal(_T("id"), _T(""));
           if (m_subsetSupport)
           {
             strGn = charNode->GetPropVal(_T("gn"), _T(""));
           }
           strWidth = charNode->GetPropVal(_T("width"), _T(""));
+          #endif
           if (strId.Length() > 0 && strId.ToLong(&charId) &&
               strWidth.Length() > 0 && strWidth.ToLong(&charWidth))
           {
@@ -1127,16 +1190,28 @@ wxPdfFontType1::LoadFontMetrics(wxXmlNode* root)
     }
     else if (child->GetName() == wxT("file"))
     {
+      #if wxCHECK_VERSION(2, 9, 0)
+      value = child->GetAttribute(_T("name"), _T(""));
+      #else
       value = child->GetPropVal(_T("name"), _T(""));
+      #endif
       if (value.Length() > 0)
       {
         m_file = value;
+        #if wxCHECK_VERSION(2, 9, 0)
+        value = child->GetAttribute(_T("size1"), _T(""));
+        #else
         value = child->GetPropVal(_T("size1"), _T(""));
+        #endif
         if (value.Length() > 0 && value.ToLong(&number))
         {
           bFile = true;
           m_size1 = number;
+          #if wxCHECK_VERSION(2, 9, 0)
+          value = child->GetAttribute(_T("size2"), _T(""));
+          #else
           value = child->GetPropVal(_T("size2"), _T(""));
+          #endif
           if (value.Length() > 0 && value.ToLong(&number))
           {
             m_size2 = number;
@@ -1160,8 +1235,13 @@ wxPdfFontType1::LoadFontMetrics(wxXmlNode* root)
         long charId, charWidth;
         if (charNode->GetName() == wxT("char"))
         {
+          #if wxCHECK_VERSION(2, 9, 0)
+          strId = charNode->GetAttribute(_T("id"), _T(""));
+          strWidth = charNode->GetAttribute(_T("width"), _T(""));
+          #else
           strId = charNode->GetPropVal(_T("id"), _T(""));
           strWidth = charNode->GetPropVal(_T("width"), _T(""));
+          #endif
           if (strId.Length() > 0 && strId.ToLong(&charId) &&
               strWidth.Length() > 0 && strWidth.ToLong(&charWidth))
           {
@@ -1292,11 +1372,19 @@ wxPdfFontType0::LoadFontMetrics(wxXmlNode* root)
     {
       m_ordering = wxEmptyString;
       m_supplement = wxEmptyString;
+      #if wxCHECK_VERSION(2, 9, 0)
+      value = child->GetAttribute(_T("ordering"), _T(""));
+      #else
       value = child->GetPropVal(_T("ordering"), _T(""));
+      #endif
       if (value.Length() > 0)
       {
         m_ordering = value;
+        #if wxCHECK_VERSION(2, 9, 0)
+        value = child->GetAttribute(_T("supplement"), _T(""));
+        #else
         value = child->GetPropVal(_T("supplement"), _T(""));
+        #endif
         if (value.Length() > 0)
         {
           bRegistry = true;
@@ -1319,8 +1407,13 @@ wxPdfFontType0::LoadFontMetrics(wxXmlNode* root)
         long charId, charWidth;
         if (charNode->GetName() == wxT("char"))
         {
+          #if wxCHECK_VERSION(2, 9, 0)
+          strId = charNode->GetAttribute(_T("id"), _T(""));
+          strWidth = charNode->GetAttribute(_T("width"), _T(""));
+          #else
           strId = charNode->GetPropVal(_T("id"), _T(""));
           strWidth = charNode->GetPropVal(_T("width"), _T(""));
+          #endif
           if (strId.Length() > 0 && strId.ToLong(&charId) &&
               strWidth.Length() > 0 && strWidth.ToLong(&charWidth))
           {
