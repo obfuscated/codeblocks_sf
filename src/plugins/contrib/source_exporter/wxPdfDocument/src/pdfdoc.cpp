@@ -133,7 +133,7 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
     m_wPt = m_fwPt;
     m_hPt = m_fhPt;
   }
-  
+
   m_curOrientation = m_defOrientation;
   m_w = m_wPt / m_k;
   m_h = m_hPt / m_k;
@@ -143,16 +143,16 @@ wxPdfDocument::wxPdfDocument(int orientation, const wxString& unit, wxPaperSize 
   // Page margins (1 cm)
   double margin = 28.35 / m_k;
   SetMargins(margin, margin);
-  
+
   // Interior cell margin (1 mm)
   m_cMargin = margin / 10;
-  
+
   // Line width (0.2 mm)
   m_lineWidth = .567 / m_k;
-  
+
   // Automatic page break
   SetAutoPageBreak(true, 2*margin);
-  
+
   // Full width display mode
   SetDisplayMode(wxPDF_ZOOM_FULLWIDTH);
   m_zoomFactor = 100.;
@@ -500,10 +500,10 @@ wxPdfDocument::AddPage(int orientation)
 
   // Start new page
   BeginPage(orientation);
-  
+
   // Set line cap style to square
   Out("2 J");
-  
+
   // Set line width
   m_lineWidth = lw;
   OutAscii(Double2String(lw*m_k,2)+wxString(_T(" w")));
@@ -513,7 +513,7 @@ wxPdfDocument::AddPage(int orientation)
   {
     SetFont(family, style, size);
   }
-  
+
   // Set colors
   m_drawColor = dc;
   if (dc != wxPdfColour(0))
@@ -543,7 +543,7 @@ wxPdfDocument::AddPage(int orientation)
   {
     SetFont(family, style, size);
   }
-  
+
   // Restore colors
   if (m_drawColor != dc)
   {
@@ -661,7 +661,11 @@ wxPdfDocument::AddFont(const wxString& family, const wxString& style, const wxSt
 
   wxString fontType;
   wxXmlNode* root = fontMetrics.GetRoot();
+  #if wxCHECK_VERSION(2, 9, 0)
+  if (!root->GetAttribute(_T("type"), &fontType))
+  #else
   if (!root->GetPropVal(_T("type"), &fontType))
+  #endif
   {
     // Font type not specified
     wxLogDebug(_T("wxPdfDocument::AddFont: Font type not specified for font '%s'."), family.c_str());
@@ -771,7 +775,7 @@ wxPdfDocument::AddFontCJK(const wxString& family)
     fontName = font->second->GetName();
     fontName += wxString(_T(",Italic"));
     font->second->SetName(fontName);
-    
+
     AddFont(family, _T("BI"), fontFile);
     fontkey = lcFamily + wxString(_T("BI"));
     font = (*m_fonts).find(fontkey);
@@ -991,7 +995,7 @@ wxPdfDocument::Cell(double w, double h, const wxString& txt, int border, int ln,
     OutAscii(s, newline);
     s = _T("");
   }
-  
+
   if (txt.Length() > 0)
   {
     double width = GetStringWidth(txt);
@@ -1276,7 +1280,7 @@ wxPdfDocument::TextBox(double w, double h, const wxString& txt,
 {
   double xi = m_x;
   double yi = m_y;
-  
+
   double hrow  = m_fontSize;
   int textrows = LineCount(w, txt);
   int maxrows  = (int) floor(h / hrow);
@@ -1760,7 +1764,7 @@ wxPdfDocument::CloseAndGetBuffer()
   {
     Close();
   }
-  
+
   return m_buffer;
 }
 
@@ -1946,7 +1950,7 @@ wxPdfDocument::Close()
   {
     AddPage();
   }
-  
+
   // Page footer
   m_inFooter = true;
   Footer();
@@ -2055,8 +2059,8 @@ wxPdfDocument::RGB2String(const wxColour& color)
   double r = color.Red();
   double g = color.Green();
   double b = color.Blue();
-  wxString rgb = Double2String(r/255.,3) + _T(" ") + 
-                 Double2String(g/255.,3) + _T(" ") + 
+  wxString rgb = Double2String(r/255.,3) + _T(" ") +
+                 Double2String(g/255.,3) + _T(" ") +
                  Double2String(b/255.,3);
   return rgb;
 }
@@ -2180,7 +2184,7 @@ wxPdfDocument::Convert2Roman(int value)
 
     while (value > 0)
     {
-      currentDigit = value % 10;   
+      currentDigit = value % 10;
       if (currentDigit == 4 || currentDigit == 9)
       {
         result.Prepend(romans.Mid(pos  - currentDigit / 4, 1));
@@ -2212,7 +2216,7 @@ wxPdfDocument::Convert2Roman(int value)
 double
 wxPdfDocument::ForceRange(double value, double minValue, double maxValue)
 {
-  if (value < minValue) 
+  if (value < minValue)
   {
     value = minValue;
   }
