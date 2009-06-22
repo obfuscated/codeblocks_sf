@@ -409,6 +409,7 @@ void CodeSnippetsWindow::OnSearchCfg(wxCommandEvent& /*event*/)
 	searchCfgMenu->AppendSeparator();
 	searchCfgMenu->Append(idMnuClear, _("Clear"));
     searchCfgMenu->Append(idMnuSearchExtended, _("Full Search"));
+    searchCfgMenu->Append(idMnuSettings, _("Settings..."));
 
 	if (m_SearchSnippetCtrl->GetValue().IsEmpty())
 	{
@@ -1485,9 +1486,9 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
 
     //wxString msg = wxbuildinfo(long_f);
     wxString helpText;
-    helpText << wxT(" Each Snippet item may specify either text or a File Link.\n")
+    helpText << wxT("\n\n Each Snippet item may specify either text or a File Link.\n")
              << wxT("\n")
-             << wxT(" Snippets may be edited from within the context menu \n")
+             << wxT(" Snippets may be edited via the context menu \n")
              << wxT("\n")
 
              << wxT(" File Link snippets are created by dragging text to a new snippet, \n")
@@ -1512,8 +1513,9 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
              << wxT(" will open the file. Dragging it into the edit area will \n")
              << wxT(" insert the text.\n");
 
-    GenericMessageBox(wxT("\n\n")+buildInfo+wxT("\n\n")+helpText, _("About"),wxOK);
-    //wxMessageBox(wxT("\n\n")+buildInfo+wxT("\n\n")+helpText, _("About"),wxOK);
+    GenericMessageBox( wxT("\n\n")+ buildInfo + helpText, _("About"),wxOK);
+
+    //wxMessageBox( wxT("\n\n") + buildInfo + wxT("\n\n") + helpText, _("About"), wxOK) ;
 
 }
 // ----------------------------------------------------------------------------

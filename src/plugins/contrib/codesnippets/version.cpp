@@ -500,6 +500,11 @@ AppVersion::~AppVersion()
 //          104) Set dragged textdata like dragged filename for FireFox3
 //          105) Replace home grown messageBox with GenericMessaageBox
 // ----------------------------------------------------------------------------
+//  Commit  1.3.107 2009/06/22
+//          106) Add "Settings..." to plugin ">" button menu.
+//          107) Use APPDATA envar on first run since CodeBlocks returns ""
+//               for config folder in OnAttach().
+// ----------------------------------------------------------------------------
 //  Bugs
 //      2008/04/8
 //          If floating wxAUI window is docked with Edit's open, they disappear. But
@@ -507,12 +512,6 @@ AppVersion::~AppVersion()
 //            still thinks they're open, but cannot show them.
 //            Eg. Drag docked CodeSnippets to floating. Open a file. Re-dockit.
 //            Editors disappear. Show(true) didnt work;
-//      2008/08/21
-//          First drag of item to a category does not work sometimes. second does.
-//      2008/10/11
-//          After dragging item, next edit uses dragged item, not newly clicked item
-//      2009/01/10
-//          double clicking for new edit item caused old edit item window to appear.
 //
 // ----------------------------------------------------------------------------
 //  ToDo
@@ -520,7 +519,6 @@ AppVersion::~AppVersion()
 //          App:Allow SeparateEditor configuration
 //          App:Allow user to re-clone default.conf
 //          Enable Editor context options, esp. ThreadSearch item
-//          Port messageBox fixes from cbEdit
 //          Use cbEditor API
 //          keybinder capability ?
 //
@@ -539,5 +537,15 @@ AppVersion::~AppVersion()
 //              wxGTK 2.8.4 cashes when dragging fast out of Mgt/File trees
 //              bug was reported way back in wxGTK 2.1.0
 //          Dragging file out of file panels does not work on Linux. Causes GTK to freeze.
+//          2008/08/21
+//          First drag of item to a category does not work sometimes. second does.
+//          This seems to be ok with wx2.8.10
+//          2008/10/11
+//          After dragging item, next edit uses dragged item, not newly clicked item
+//          This seems to be fixed with wx2.8.10
+//          2009/01/10
+//          double clicking for new edit item caused old edit item window to appear.
+//          This seems to be fixed with wx2.8.10
+//
 // ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------

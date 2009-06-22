@@ -41,7 +41,8 @@
 	#include <wx/stdpaths.h>
 	#include <wx/process.h>
 
-#include <wx/dnd.h>
+    #include <wx/dnd.h>
+    #include <wx/utils.h>
 
 #include "version.h"
 #include "codesnippets.h"
@@ -1739,6 +1740,19 @@ wxString CodeSnippets::GetCBConfigFile()
     wxString personality = PersMan->GetPersonality();
     ConfigManager* CfgMan = Manager::Get()->GetConfigManager(_T("app"));
     wxString current_conf_file = CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown);
+
+    // Config manager will return an empty string on the first run of CodeBlocks
+    if (current_conf_file.IsEmpty())
+    {
+        wxString appdata;
+        if ( personality == _T("default") )
+            personality = _T("");
+        // Get APPDATA env var and append ".codeblocks" to it
+        wxGetEnv(_T("APPDATA"), &appdata);
+        current_conf_file = appdata +
+                    wxFILE_SEP_PATH + _T("codeblocks") + wxFILE_SEP_PATH
+                    + personality + _T(".codesnippets.ini");
+    }
     return current_conf_file;
 }
 // ----------------------------------------------------------------------------
