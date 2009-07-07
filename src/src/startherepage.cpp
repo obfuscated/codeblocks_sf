@@ -63,7 +63,13 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 
     wxString resPath = ConfigManager::ReadDataPath();
-	m_pWin = new MyHtmlWin(this, idWin, wxPoint(0,0), GetSize());
+
+    // avoid gtk-critical because of sizes less than -1 (can happen with wxAuiNotebook)
+    wxSize size = GetSize();
+    size.x = std::max(size.x, -1);
+    size.y = std::max(size.y, -1);
+
+    m_pWin = new MyHtmlWin(this, idWin, wxPoint(0,0), size);
 
 	// set default font sizes based on system default font size
 

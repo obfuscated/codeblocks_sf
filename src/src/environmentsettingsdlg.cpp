@@ -8,6 +8,7 @@
  */
 
 #include <sdk.h>
+#include <wx/aui/aui.h>
 #include <wx/button.h>
 #include <wx/xrc/xmlres.h>
 #include <manager.h>
@@ -54,13 +55,8 @@ const wxString base_imgs[] =
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
 BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
-    EVT_UPDATE_UI(-1, EnvironmentSettingsDlg::OnUpdateUI)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
     EVT_BUTTON(XRCID("btnManageAssocs"), EnvironmentSettingsDlg::OnManageAssocs)
-    EVT_BUTTON(XRCID("btnFNBorder"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnFNFrom"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnFNTo"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnNbDefaults"), EnvironmentSettingsDlg::OnNbDefaults)
     EVT_BUTTON(XRCID("btnAuiCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiActiveCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
@@ -167,17 +163,13 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(i18n);
 
     const wxLanguageInfo *info = wxLocale::FindLanguageInfo(cfg->Read(_T("/locale/language")));
-    if(info);
+    if(info)
         XRCCTRL(*this, "cbxLanguage", wxComboBox)->SetStringSelection(info->Description);
 
 
     // tab "Notebook"
     XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->SetSelection(cfg->ReadInt(_T("/environment/tabs_style"), 0));
-    XRCCTRL(*this, "chkSmartTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_smart"), 0));
     XRCCTRL(*this, "chkListTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/tabs_list"), 0));
-    XRCCTRL(*this, "btnFNBorder", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
-    XRCCTRL(*this, "btnFNFrom", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
-    XRCCTRL(*this, "btnFNTo", wxButton)->SetBackgroundColour(cfg->ReadColour(_T("/environment/gradient_to"), *wxWHITE));
 
     // tab "Docking"
     XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/environment/aui/border_size"), m_pArt->GetMetric(wxAUI_DOCKART_PANE_BORDER_SIZE)));
@@ -319,13 +311,6 @@ void EnvironmentSettingsDlg::OnManageAssocs(wxCommandEvent& event)
 #endif
 }
 
-void EnvironmentSettingsDlg::OnNbDefaults(wxCommandEvent& event)
-{
-    XRCCTRL(*this, "btnFNBorder", wxButton)->SetBackgroundColour(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW)));
-    XRCCTRL(*this, "btnFNFrom", wxButton)->SetBackgroundColour(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)));
-    XRCCTRL(*this, "btnFNTo", wxButton)->SetBackgroundColour(wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE)));
-}
-
 void EnvironmentSettingsDlg::OnChooseColour(wxCommandEvent& event)
 {
     wxColourData data;
@@ -375,14 +360,6 @@ void EnvironmentSettingsDlg::OnSettingsIconsSize(wxCommandEvent& event)
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)event.GetSelection());
 }
 
-void EnvironmentSettingsDlg::OnUpdateUI(wxUpdateUIEvent& event)
-{
-    bool en = XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->GetSelection() == 1;
-    XRCCTRL(*this, "btnFNBorder", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnFNFrom", wxButton)->Enable(en);
-    XRCCTRL(*this, "btnFNTo", wxButton)->Enable(en);
-}
-
 void EnvironmentSettingsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
@@ -427,11 +404,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
 
         // tab "Appearence"
         cfg->Write(_T("/environment/tabs_style"),           (int)XRCCTRL(*this, "cmbEditorTabs", wxComboBox)->GetSelection());
-        cfg->Write(_T("/environment/tabs_smart"),           (bool)XRCCTRL(*this, "chkSmartTabs", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/tabs_list"),           (bool)XRCCTRL(*this, "chkListTabs", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/gradient_border"),      XRCCTRL(*this, "btnFNBorder", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/gradient_from"),        XRCCTRL(*this, "btnFNFrom", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/environment/gradient_to"),          XRCCTRL(*this, "btnFNTo", wxButton)->GetBackgroundColour());
         cfg->Write(_T("/environment/aui/border_size"),          (int)XRCCTRL(*this, "spnAuiBorder", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/sash_size"),            (int)XRCCTRL(*this, "spnAuiSash", wxSpinCtrl)->GetValue());
         cfg->Write(_T("/environment/aui/caption_size"),         (int)XRCCTRL(*this, "spnAuiCaption", wxSpinCtrl)->GetValue());

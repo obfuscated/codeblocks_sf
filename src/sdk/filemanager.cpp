@@ -19,6 +19,7 @@
 #include "cbstyledtextctrl.h"
 
 #include <wx/url.h>
+#include <wx/encconv.h>
 
 template<> FileManager* Mgr<FileManager>::instance = 0;
 template<> bool  Mgr<FileManager>::isShutdown = false;
@@ -208,25 +209,67 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
     if(data.length() == 0)
         return true;
 
-
-    if( encoding == wxFONTENCODING_UTF16 || encoding == wxFONTENCODING_UTF16LE || encoding == wxFONTENCODING_UTF16BE ||
-        encoding == wxFONTENCODING_UTF32 || encoding == wxFONTENCODING_UTF32LE || encoding == wxFONTENCODING_UTF32BE)
+    size_t inlen = data.Len(), outlen = 0;
+    wxCharBuffer mbBuff;
+    if ( encoding == wxFONTENCODING_UTF7 )
     {
-    #if defined(UNICODE) || defined(_UNICODE)
-        /* NOTE (Biplab#1#): The following code (used for wx-2.8.x) can handle all encodings
-        *  effectively (including UTF-8). Therefore it may also be brought out of this if {} statement.
-        */
-        wxCSConv conv(encoding);
+        wxMBConvUTF7 conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF8 )
+    {
+        wxMBConvUTF8 conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF16BE )
+    {
+        wxMBConvUTF16BE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF16LE )
+    {
+        wxMBConvUTF16LE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF32BE )
+    {
+        wxMBConvUTF32BE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF32LE )
+    {
+        wxMBConvUTF32LE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else
+    {
+        // try wxEncodingConverter first, even it it only works for
+        // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
+        // but it's much, much faster than wxCSConv (at least on linux)
+        wxEncodingConverter conv;
+        // should be long enough
+        char* tmp = new char[2*inlen];
 
-        size_t inlen = data.Length(), outlen = 0;
-        wxCharBuffer mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.c_str(), tmp))
+        {
+            mbBuff = tmp;
+            outlen = strlen(mbBuff); // should be correct, because Convert has returned true
+        }
+        else
+    {
+            // try wxCSConv, if nothing else works
+        wxCSConv conv(encoding);
+            mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+        }
+        delete[] tmp;
+    }
+     // if conversion to chosen encoding succeeded, we write the file to disk
+    if(outlen > 0)
+    {
         return f.Write(mbBuff, outlen) == outlen;
-    #else
-        // For ANSI builds, dump the char* to file.
-        return (f.Write(data.c_str(), data.Length()) == data.Length());
-    #endif
     }
 
+    // if conversion to chosen encoding does not succeed, we try UTF-8 instead
     size_t size = 0;
     wxCSConv conv(encoding);
     wxCharBuffer buf = data.mb_str(conv);

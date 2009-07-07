@@ -33,17 +33,19 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../include/wxscintilla/include" />
-			<Add directory="../../../include/wxFlatNotebook/include" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />
 			<Add directory="../../../include/scripting/squirrel" />
 			<Add directory="../../../include/scripting/bindings" />
+			<Add directory="../wxSmithContribItems/wxflatnotebook/wxFlatNotebook/include" />
+			<Add directory="../../../include/mozilla_chardet" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add library="txml" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
+			<Add library="wxflatnotebook" />
 			<Add directory="../../../devel" />
 			<Add directory="../../../base/tinyxml" />
 		</Linker>
@@ -61,7 +63,6 @@
 		<Unit filename="lib_finder.h" />
 		<Unit filename="lib_finder/codeblocks_sdk.xml" />
 		<Unit filename="lib_finder/glfw.xml" />
-		<Unit filename="lib_finder/readme.txt" />
 		<Unit filename="lib_finder/wxwidgets.xml" />
 		<Unit filename="librariesdlg.cpp" />
 		<Unit filename="librariesdlg.h" />

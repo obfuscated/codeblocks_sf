@@ -80,13 +80,14 @@ wxFont wxsFontData::BuildFont()
     if ( !SysFont.empty() && HasSysFont )
     {
         wxFont Base;
-        if ( SysFont == _T("wxSYS_OEM_FIXED_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT);
-        if ( SysFont == _T("wxSYS_ANSI_FIXED_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
-        if ( SysFont == _T("wxSYS_ANSI_VAR_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_ANSI_VAR_FONT);
-        if ( SysFont == _T("wxSYS_SYSTEM_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
-        if ( SysFont == _T("wxSYS_DEVICE_DEFAULT_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_DEVICE_DEFAULT_FONT);
-        if ( SysFont == _T("wxSYS_DEFAULT_GUI_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-        if ( !Base.Ok() ) Base = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+        if      ( SysFont == _T("wxSYS_OEM_FIXED_FONT") )      Base = wxSystemSettings::GetFont(wxSYS_OEM_FIXED_FONT);
+        else if ( SysFont == _T("wxSYS_ANSI_FIXED_FONT") )     Base = wxSystemSettings::GetFont(wxSYS_ANSI_FIXED_FONT);
+        else if ( SysFont == _T("wxSYS_ANSI_VAR_FONT") )       Base = wxSystemSettings::GetFont(wxSYS_ANSI_VAR_FONT);
+        else if ( SysFont == _T("wxSYS_SYSTEM_FONT") )         Base = wxSystemSettings::GetFont(wxSYS_SYSTEM_FONT);
+        else if ( SysFont == _T("wxSYS_DEVICE_DEFAULT_FONT") ) Base = wxSystemSettings::GetFont(wxSYS_DEVICE_DEFAULT_FONT);
+        else if ( SysFont == _T("wxSYS_DEFAULT_GUI_FONT") )    Base = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+        
+        if ( !Base.Ok() )                                      Base = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 
         if ( HasSize ) Base.SetPointSize(Size);
         else if ( HasRelativeSize ) Base.SetPointSize((int)(Base.GetPointSize() * RelativeSize));

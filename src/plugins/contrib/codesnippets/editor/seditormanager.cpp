@@ -56,7 +56,7 @@
 #include "projectfileoptionsdlg.h"
 #include "filegroupsandmasks.h"
 
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
 #include "snippetsconfig.h"
 #include "seditormanager.h" // class's header file
 #include "scbeditor.h"
@@ -143,10 +143,10 @@ struct EditorManagerInternalData
 BEGIN_EVENT_TABLE(SEditorManager, wxEvtHandler)
     EVT_APP_STARTUP_DONE(SEditorManager::OnAppDoneStartup)
     EVT_APP_START_SHUTDOWN(SEditorManager::OnAppStartShutdown)
-    EVT_FLATNOTEBOOK_PAGE_CHANGED(ID_NBSEditorManager, SEditorManager::OnPageChanged)
-    EVT_FLATNOTEBOOK_PAGE_CHANGING(ID_NBSEditorManager, SEditorManager::OnPageChanging)
-    EVT_FLATNOTEBOOK_PAGE_CLOSING(ID_NBSEditorManager, SEditorManager::OnPageClosing)
-    EVT_FLATNOTEBOOK_CONTEXT_MENU(ID_NBSEditorManager, SEditorManager::OnPageContextMenu)
+    EVT_AUINOTEBOOK_PAGE_CHANGED(ID_NBSEditorManager, SEditorManager::OnPageChanged)
+    EVT_AUINOTEBOOK_PAGE_CHANGING(ID_NBSEditorManager, SEditorManager::OnPageChanging)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(ID_NBSEditorManager, SEditorManager::OnPageClose)
+    EVT_AUINOTEBOOK_TAB_RIGHT_UP(ID_NBSEditorManager, SEditorManager::OnTabRightUp)
     EVT_MENU(idNBTabSplitHorz, SEditorManager::OnGenericContextMenuHandler)
     EVT_MENU(idNBTabSplitVert, SEditorManager::OnGenericContextMenuHandler)
     EVT_MENU(idNBTabUnsplit, SEditorManager::OnGenericContextMenuHandler)
@@ -183,9 +183,8 @@ void SEditorManager::InitSEditorManager(wxWindow* parent)
     GetConfig()->RegisterEditorManager( (wxFrame*)parent, this );
     m_pData = new EditorManagerInternalData(this);
 
-    //-m_pNotebook = new wxFlatNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
-    m_pNotebook = new wxFlatNotebook( parent, ID_NBSEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
-    m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxFNB_DEFAULT_STYLE | wxFNB_MOUSE_MIDDLE_CLOSES_TABS));
+    m_pNotebook = new wxAuiNotebook( parent, ID_NBSEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_MIDDLE_CLICK_CLOSE));
 
     Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
 
@@ -426,7 +425,7 @@ ScbEditor* SEditorManager::GetBuiltinEditor(SEditorBase* eb)
 SEditorBase* SEditorManager::IsOpen(const wxString& filename)
 {
     wxString uFilename = UnixFilename(realpath(filename));
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         SEditorBase* eb = InternalGetEditorBase(i);
         if (!eb)
@@ -455,7 +454,7 @@ void SEditorManager::SetColourSet(SEditorColourSet* theme)
     //-m_Theme = new EditorColourSet(*theme);
     m_Theme = new SEditorColourSet(*theme);
 
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         ScbEditor* ed = InternalGetBuiltinEditor(i);
         if (ed)
@@ -641,7 +640,7 @@ void SEditorManager::RemoveEditorBase(SEditorBase* eb, bool deleteObject)
     //    LOGSTREAM << wxString::Format(_T("RemoveEditorBase(): ed=%p, title=%s\n"), eb, eb ? eb->GetFilename().c_str() : _T(""));
     int page = FindPageFromEditor(eb);
    if (page != -1 && !Manager::isappShuttingDown())
-        m_pNotebook->RemovePage(page, false);
+        m_pNotebook->RemovePage(page /*, false */);
 
     //    if (deleteObject)
     //        eb->Destroy();
@@ -649,7 +648,7 @@ void SEditorManager::RemoveEditorBase(SEditorBase* eb, bool deleteObject)
 
 bool SEditorManager::UpdateSnippetFiles(cbProject* project)
 {
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         ScbEditor* ed = InternalGetBuiltinEditor(i);
         if (!ed)
@@ -688,7 +687,7 @@ bool SEditorManager::CloseAllExcept(SEditorBase* editor,bool dontsave)
 {
     if(!dontsave)
     {
-        for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
         {
             SEditorBase* eb = InternalGetEditorBase(i);
             if(eb && eb != editor && !QueryClose(eb))
@@ -744,7 +743,7 @@ bool SEditorManager::QueryClose(SEditorBase *ed)
 
 int SEditorManager::FindPageFromEditor(SEditorBase* eb)
 {
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         if (m_pNotebook->GetPage(i) == eb)
             return i;
@@ -769,7 +768,7 @@ bool SEditorManager::Close(SEditorBase* editor,bool dontsave)
                     return false;
             wxString filename = editor->GetFilename();
             //            LOGSTREAM << wxString::Format(_T("Close(): ed=%p, title=%s\n"), editor, editor ? editor->GetTitle().c_str() : _T(""));
-            m_pNotebook->DeletePage(idx, true);
+            m_pNotebook->DeletePage(idx /*, true */);
         }
     }
     return true;
@@ -843,7 +842,7 @@ bool SEditorManager::SaveActiveAs()
 
 bool SEditorManager::SaveAll()
 {
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         SEditorBase* ed = InternalGetEditorBase(i);
         if (ed && ed->GetModified() && !ed->Save())
@@ -872,7 +871,7 @@ void SEditorManager::Print(PrintScope ps, PrintColourMode pcm, bool line_numbers
     {
     case psAllOpenEditors:
         {
-            for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+            for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
             {
                 ScbEditor* ed = InternalGetBuiltinEditor(i);
                 if (ed)
@@ -898,7 +897,7 @@ void SEditorManager::CheckForExternallyModifiedFiles()
 
     bool reloadAll = false; // flag to stop bugging the user
     wxArrayString failedFiles; // list of files failed to reload
-    for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         ScbEditor* ed = InternalGetBuiltinEditor(i);
         bool b_modified = false;
@@ -1705,7 +1704,7 @@ int SEditorManager::ReplaceInFiles(cbFindReplaceData* data)
     else if (data->scope == 1) // find in open files
     {
         // fill the search list with the open files
-        for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
         {
             ScbEditor* ed = InternalGetBuiltinEditor(i);
             if (ed)
@@ -2254,7 +2253,7 @@ int SEditorManager::FindInFiles(cbFindReplaceData* data)
     else if (data->scope == 1) // find in open files
     {
         // fill the search list with the open files
-        for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
         {
             ScbEditor* ed = InternalGetBuiltinEditor(i);
             if (ed)
@@ -2504,7 +2503,7 @@ void SEditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
         ed->Unsplit();
 }
 
-void SEditorManager::OnPageChanged(wxFlatNotebookEvent& event)
+void SEditorManager::OnPageChanged(wxAuiNotebookEvent& event)
 {
     SEditorBase* eb = static_cast<SEditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
     //    LOGSTREAM << wxString::Format(_T("OnPageChanged(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
@@ -2518,7 +2517,7 @@ void SEditorManager::OnPageChanged(wxFlatNotebookEvent& event)
     event.Skip(); // allow others to process it too
 }
 
-void SEditorManager::OnPageChanging(wxFlatNotebookEvent& event)
+void SEditorManager::OnPageChanging(wxAuiNotebookEvent& event)
 {
     SEditorBase* eb = static_cast<SEditorBase*>(m_pNotebook->GetPage(event.GetOldSelection()));
     //    LOGSTREAM << wxString::Format(_T("OnPageChanging(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
@@ -2529,16 +2528,16 @@ void SEditorManager::OnPageChanging(wxFlatNotebookEvent& event)
     event.Skip(); // allow others to process it too
 }
 
-void SEditorManager::OnPageClosing(wxFlatNotebookEvent& event)
+void SEditorManager::OnPageClose(wxAuiNotebookEvent& event)
 {
     SEditorBase* eb = static_cast<SEditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
-    //    LOGSTREAM << wxString::Format(_T("OnPageClosing(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
+    //    LOGSTREAM << wxString::Format(_T("OnPageClose(): ed=%p, title=%s\n"), eb, eb ? eb->GetTitle().c_str() : _T(""));
     if (!QueryClose(eb))
         event.Veto();
     event.Skip(); // allow others to process it too
 }
 
-void SEditorManager::OnPageContextMenu(wxFlatNotebookEvent& event)
+void SEditorManager::OnTabRightUp(wxAuiNotebookEvent& event)
 {
     if (event.GetSelection() == -1)
         return;
@@ -2635,13 +2634,13 @@ void SEditorManager::OnSwapHeaderSource(wxCommandEvent& event)
 void SEditorManager::OnTabPosition(wxCommandEvent& event)
 {
     long style = m_pNotebook->GetWindowStyleFlag();
-    style &= ~wxFNB_BOTTOM;
+    style &= ~wxAUI_NB_BOTTOM;
 
     if (event.GetId() == idNBTabBottom)
-        style |= wxFNB_BOTTOM;
+        style |= wxAUI_NB_BOTTOM;
     m_pNotebook->SetWindowStyleFlag(style);
     // (style & wxFNB_BOTTOM) saves info only about the the tabs position
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"), (bool)(style & wxFNB_BOTTOM));
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"), (bool)(style & wxAUI_NB_BOTTOM));
 }
 
 void SEditorManager::OnProperties(wxCommandEvent& event)

@@ -47,7 +47,7 @@ MAYBE_KEYBINDER=keybinder
 endif
 
 if BUILD_LIBFINDER
-MAYBE_LIBFINDER=lib_finder
+MAYBE_LIBFINDER=wxSmith wxSmithContribItems lib_finder
 endif
 
 if BUILD_PROFILER
@@ -75,7 +75,15 @@ MAYBE_VALGRIND=Valgrind
 endif
 
 if BUILD_WXSMITH
-MAYBE_WXSMITH=wxSmith wxSmithContribItems
+MAYBE_WXSMITH=wxSmith
+endif
+
+if BUILD_WXSMITHCONTRIB
+MAYBE_WXSMITHCONTRIB=wxSmith  wxSmithContribItems
+endif
+
+if BUILD_WXSMITHAUI
+MAYBE_WXSMITHAUI=wxSmith wxSmithContribItems  wxSmithAui
 endif
 
 if BUILD_HEXEDITOR
@@ -98,7 +106,6 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_HELP) \
 		$(MAYBE_HEADERFIXUP) \
 		$(MAYBE_KEYBINDER) \
-		$(MAYBE_LIBFINDER) \
 		$(MAYBE_PROFILER) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
@@ -106,6 +113,9 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_VALGRIND) \
 		$(MAYBE_WXSMITH) \
+		$(MAYBE_WXSMITHCONTRIB) \
+		$(MAYBE_WXSMITHAUI) \
+		$(MAYBE_LIBFINDER) \
 		$(MAYBE_HEXEDITOR) \
 		$(MAYBE_INCSEARCH)
 
@@ -122,7 +132,6 @@ DIST_SUBDIRS = AutoVersioning \
 		help_plugin \
 		headerfixup \
 		keybinder \
-		lib_finder \
 		profiler \
 		source_exporter \
 		symtab \
@@ -131,6 +140,8 @@ DIST_SUBDIRS = AutoVersioning \
 		Valgrind \
 		wxSmith \
 		wxSmithContribItems \
+		wxSmithAui \
+		lib_finder \
 		HexEditor \
 		IncrementalSearch
 

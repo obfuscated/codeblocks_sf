@@ -72,7 +72,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 		rcBox.top = rcLine.top + 1;
 		rcBox.left = rc.left;
 		rcBox.right = rc.right;
-		surface->AlphaRectangle(rcBox, 1, fore.allocated, 30, fore.allocated, 50, 0);
+		surface->AlphaRectangle(rcBox, 1, fore.allocated, fillAlpha, fore.allocated, 50, 0);
 	} else if (style == INDIC_HIGHLIGHT) {
 		PRectangle rcBox = rcLine;
 		rcBox.top = rcLine.top + 1;

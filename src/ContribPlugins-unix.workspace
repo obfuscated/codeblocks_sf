@@ -13,7 +13,6 @@
 		<Project filename="plugins/contrib/headerfixup/headerfixup-unix.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin-unix.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
-		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />
 		<Project filename="plugins/contrib/profiler/cbprofiler.unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter-unix.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed-unix.cbp" />
@@ -21,6 +20,9 @@
 		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch-unix.cbp" />
 		<Project filename="plugins/contrib/Valgrind/Valgrind-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
+		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp" />
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui.cbp" />
+		<Project filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor-unix.cbp" />
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch-unix.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />

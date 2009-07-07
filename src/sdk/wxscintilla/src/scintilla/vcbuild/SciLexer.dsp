@@ -206,6 +206,10 @@ SOURCE=..\src\LexCmake.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\LexCOBOL.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\LexConf.cxx
 # End Source File
 # Begin Source File
@@ -318,6 +322,10 @@ SOURCE=..\src\LexMySQL.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\LexNimrod.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\LexNsis.cxx
 # End Source File
 # Begin Source File
@@ -347,6 +355,10 @@ SOURCE=..\src\LexPLM.cxx
 # Begin Source File
 
 SOURCE=..\src\LexPOV.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\LexPowerPro.cxx
 # End Source File
 # Begin Source File
 
@@ -386,6 +398,14 @@ SOURCE=..\src\LexSmalltalk.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\LexSML.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\LexSorcus.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\LexSpecman.cxx
 # End Source File
 # Begin Source File
@@ -399,6 +419,14 @@ SOURCE=..\src\LexSQL.cxx
 # Begin Source File
 
 SOURCE=..\src\LexTADS3.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\LexTACL.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\LexTAL.cxx
 # End Source File
 # Begin Source File
 
@@ -427,6 +455,10 @@ SOURCE=..\src\LexYAML.cxx
 # Begin Source File
 
 SOURCE=..\src\LineMarker.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=..\src\PerLine.cxx
 # End Source File
 # Begin Source File
 

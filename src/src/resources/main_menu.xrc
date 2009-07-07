@@ -533,6 +533,11 @@
         <label>Focus editor</label>
         <help>Set focus on the active editor</help>
       </object>
+      <object class="wxMenuItem" name="idViewSwitchTabs">
+        <label>S&amp;witch Tabs</label>
+        <accel>Ctrl+Tab</accel>
+        <help>Switch between open editor tabs</help>
+      </object>
     </object>
     <object class="wxMenu" name="menu_search">
       <label>Sea&amp;rch</label>

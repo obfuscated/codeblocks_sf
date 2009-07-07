@@ -58,10 +58,12 @@
 #include "batchbuild.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/aui/auibook.h>
 
 #include "uservarmanager.h"
 #include "infowindow.h"
+#include "notebookstyles.h"
+#include "switcherdlg.h"
 
 class wxMyFileDropTarget : public wxFileDropTarget
 {
@@ -208,6 +210,7 @@ int idViewLogManager = XRCID("idViewLogManager");
 int idViewStatusbar = XRCID("idViewStatusbar");
 int idViewScriptConsole = XRCID("idViewScriptConsole");
 int idViewFocusEditor = XRCID("idViewFocusEditor");
+int idViewSwitchTabs = XRCID("idViewSwitchTabs");
 int idViewFullScreen = XRCID("idViewFullScreen");
 
 int idSearchFind = XRCID("idSearchFind");
@@ -427,6 +430,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idViewStatusbar, MainFrame::OnToggleStatusBar)
     EVT_MENU(idViewScriptConsole, MainFrame::OnViewScriptConsole)
     EVT_MENU(idViewFocusEditor, MainFrame::OnFocusEditor)
+    EVT_MENU(idViewSwitchTabs, MainFrame::OnSwitchTabs)
     EVT_MENU(idViewFullScreen, MainFrame::OnToggleFullScreen)
 
     EVT_MENU(idSettingsEnvironment, MainFrame::OnSettingsEnvironment)
@@ -923,6 +927,28 @@ void MainFrame::CreateMenubar()
     }
 
     Manager::Get()->GetToolsManager()->BuildToolsMenu(m_ToolsMenu);
+
+    // Ctrl+Tab workaround for non windows platforms:
+    if ((platform::carbon) || (platform::gtk))
+    {
+        // Find the menu item for tab switching:
+        tmpidx = mbar->FindMenu(_("&View"));
+        if (tmpidx != wxNOT_FOUND)
+        {
+            wxMenu* view = mbar->GetMenu(tmpidx);
+            wxMenuItem* switch_item = view->FindItem(idViewSwitchTabs);
+            if (switch_item)
+            {
+                // Change the accelerator for this menu item:
+                wxString accel;
+                if (platform::carbon)
+                    accel = wxT("Alt+Tab");
+                else if (platform::gtk)
+                    accel = wxT("Ctrl+,");
+                switch_item->SetItemLabel(wxString(_("S&witch Tabs")) + wxT("\t") + accel);
+            }
+        }
+    }
 
     SetMenuBar(mbar);
     InitializeRecentFilesHistory();
@@ -1502,13 +1528,22 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 DoCloseCurrentWorkspace())
             {
                 wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
+                ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
                 bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
-                if (ret && addToHistory)
+                if(!ret)
+                {
+                    ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
+                }
+                else if (addToHistory)
+                {
                     AddToRecentProjectsHistory(Manager::Get()->GetProjectManager()->GetWorkspace()->GetFilename());
+                }
                 return ret;
             }
             else
+            {
                 return false;
+            }
             break;
 
         //
@@ -1571,13 +1606,17 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
         return false;
     }
 
+    ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
     cbProject* prj = Manager::Get()->GetProjectManager()->LoadProject(filename, true);
     if (prj)
     {
         if (addToHistory)
+        {
             AddToRecentProjectsHistory(prj->GetFilename());
+        }
         return true;
     }
+    ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
     return false;
 }
 
@@ -1664,64 +1703,53 @@ void MainFrame::DoUpdateStatusBar()
 #endif // wxUSE_STATUSBAR
 }
 
-void MainFrame::DoUpdateEditorStyle(wxFlatNotebook* target, const wxString& prefix, long defaultStyle)
+void MainFrame::DoUpdateEditorStyle(wxAuiNotebook* target, const wxString& prefix, long defaultStyle)
 {
     if (!target)
         return;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    target->SetTabCtrlHeight(-1);
     long nbstyle = cfg->ReadInt(_T("/environment/tabs_style"), 0);
     switch (nbstyle)
     {
-        case 1: // gradient
-            nbstyle = wxFNB_FANCY_TABS;
+        case 1: // simple style
+            target->SetArtProvider(new wxAuiSimpleTabArt());
             break;
 
-        case 2: // vc71
-            nbstyle = wxFNB_VC71;
+        case 2: // VC 7.1 style
+            target->SetArtProvider(new NbStyleVC71());
             break;
 
-        case 3: // vc8
-            nbstyle = wxFNB_VC8;
+        case 3: // Firefox 2 style
+            target->SetArtProvider(new NbStyleFF2());
             break;
 
-        case 4: // ff2
-            nbstyle = wxFNB_FF2;
-            break;
-
-        default:
-            nbstyle = 0;
+        default: // default style
+            target->SetArtProvider(new wxAuiDefaultTabArt());
             break;
     }
-    nbstyle |= defaultStyle;
-    if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
-        nbstyle |= wxFNB_BOTTOM;
 
-    if (cfg->ReadBool(_T("/environment/tabs_smart")))
-        nbstyle |= wxFNB_SMART_TABS;
+    nbstyle = defaultStyle;
+    if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
+        nbstyle |= wxAUI_NB_BOTTOM;
 
     if (cfg->ReadBool(_T("/environment/tabs_list")))
-    {
-        nbstyle |= wxFNB_DROPDOWN_TABS_LIST;
-        nbstyle |= wxFNB_NO_NAV_BUTTONS;
-    }
+        nbstyle |= wxAUI_NB_WINDOWLIST_BUTTON;
 
     target->SetWindowStyleFlag(nbstyle);
-    target->SetGradientColorBorder(cfg->ReadColour(_T("/environment/gradient_border"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW))));
-    target->SetGradientColorFrom(cfg->ReadColour(_T("/environment/gradient_from"), wxColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE))));
-    target->SetGradientColorTo(cfg->ReadColour(_T("/environment/gradient_to"), *wxWHITE));
 }
 
 void MainFrame::DoUpdateEditorStyle()
 {
-    wxFlatNotebook* fn = Manager::Get()->GetEditorManager()->GetNotebook();
-    DoUpdateEditorStyle(fn, _T("editor"), wxFNB_MOUSE_MIDDLE_CLOSES_TABS | wxFNB_X_ON_TAB | wxFNB_NO_X_BUTTON);
+    wxAuiNotebook* an = Manager::Get()->GetEditorManager()->GetNotebook();
+    DoUpdateEditorStyle(an, _T("editor"), wxAUI_NB_DEFAULT_STYLE | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 
-    fn = m_pInfoPane;
-    DoUpdateEditorStyle(fn, _T("message"), wxFNB_NO_X_BUTTON);
+    an = m_pInfoPane;
+    DoUpdateEditorStyle(an, _T("message"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT);
 
-    fn = Manager::Get()->GetProjectManager()->GetNotebook();
-    DoUpdateEditorStyle(fn, _T("project"), wxFNB_NO_X_BUTTON);
+    an = Manager::Get()->GetProjectManager()->GetNotebook();
+    DoUpdateEditorStyle(an, _T("project"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE);
 }
 
 void MainFrame::DoUpdateLayoutColours()
@@ -3924,6 +3952,51 @@ void MainFrame::OnFocusEditor(wxCommandEvent& event)
         ed->GetControl()->SetFocus();
 }
 
+void MainFrame::OnSwitchTabs(wxCommandEvent& event)
+{
+    // Get the notebook from the editormanager:
+    wxAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+    if (!nb)
+        return;
+
+    // Create container and add all open editors:
+    wxSwitcherItems items;
+    items.AddGroup(_("Open files"), wxT("editors"));
+    for (size_t i = 0; i < nb->GetPageCount(); ++i)
+    {
+        wxString title = nb->GetPageText(i);
+        wxWindow* window = nb->GetPage(i);
+
+        items.AddItem(title, title, i, nb->GetPageBitmap(i)).SetWindow(window);
+    }
+
+    // Select the focused editor:
+    int idx = items.GetIndexForFocus();
+    if (idx != wxNOT_FOUND)
+        items.SetSelection(idx);
+
+    // Create the switcher dialog
+    wxSwitcherDialog dlg(items, wxGetApp().GetTopWindow());
+
+    // Ctrl+Tab workaround for non windows platforms:
+    if (platform::cocoa)
+        dlg.SetModifierKey(WXK_ALT);
+    else if (platform::gtk)
+        dlg.SetExtraNavigationKey(wxT(','));
+
+    // Finally show the dialog:
+    int answer = dlg.ShowModal();
+
+    // If necessary change the selected editor:
+    if ((answer == wxID_OK) && (dlg.GetSelection() != -1))
+    {
+        wxSwitcherItem& item = items.GetItem(dlg.GetSelection());
+        wxWindow* win = item.GetWindow();
+        nb->SetSelection(item.GetId());
+        win->SetFocus();
+    }
+}
+
 void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
 {
     ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR// | wxFULLSCREEN_NOSTATUSBAR
@@ -4056,7 +4129,6 @@ void MainFrame::OnProjectActivated(CodeBlocksEvent& event)
 
 void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 {
-    ShowHideStartPage(true);
     event.Skip();
 }
 

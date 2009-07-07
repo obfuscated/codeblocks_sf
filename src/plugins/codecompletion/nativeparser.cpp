@@ -26,7 +26,7 @@
 #include <wx/regex.h>
 #include <wx/log.h> // for wxSafeShowMessage()
 #include <tinyxml/tinyxml.h>
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
 #include "cbstyledtextctrl.h"
 
 

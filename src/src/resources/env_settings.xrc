@@ -373,9 +373,8 @@
 											<object class="wxComboBox" name="cmbEditorTabs">
 												<content>
 													<item>Default</item>
-													<item>Fancy gradient</item>
+													<item>Simple tabs</item>
 													<item>Microsoft (tm) Visual Studio 7.1</item>
-													<item>Microsoft (tm) Visual Studio 8</item>
 													<item>Firefox 2</item>
 												</content>
 												<style>wxCB_READONLY</style>
@@ -391,67 +390,6 @@
 								<object class="spacer">
 									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<size>0,16</size>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticBoxSizer">
-										<label>Gradient style colours</label>
-										<orient>wxVERTICAL</orient>
-										<object class="sizeritem">
-											<object class="wxFlexGridSizer">
-												<cols>2</cols>
-												<vgap>4</vgap>
-												<hgap>4</hgap>
-												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT2">
-														<label>Border colour:</label>
-													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-												</object>
-												<object class="sizeritem">
-													<object class="wxButton" name="btnFNBorder" />
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-												</object>
-												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT3">
-														<label>From colour:</label>
-													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-												</object>
-												<object class="sizeritem">
-													<object class="wxButton" name="btnFNFrom" />
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-												</object>
-												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT4">
-														<label>To colour:</label>
-													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-												</object>
-												<object class="sizeritem">
-													<object class="wxButton" name="btnFNTo" />
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-												</object>
-											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-											<border>4</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxButton" name="btnNbDefaults">
-												<label>Read from system theme</label>
-											</object>
-											<flag>wxTOP|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-											<border>24</border>
-										</object>
-									</object>
-									<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-									<border>8</border>
-								</object>
-								<object class="sizeritem">
-									<object class="wxCheckBox" name="chkSmartTabs">
-										<label>Use Smart Tab-switching scheme</label>
-									</object>
-									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-									<border>8</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkListTabs">

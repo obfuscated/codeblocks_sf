@@ -1,3 +1,1272 @@
+2009-06-19 10:52  mortenmacfly
+
+svn5664:  - updated script console with a label so it looks like
+	  the debugger's console
+
+2009-06-19 07:24  mortenmacfly
+
+svn5663:  * debugger: applied patch #2773 (UI to send command to
+	  the debugger directly). Thanks oBFusCATed!
+	  - couple of fixes, backport from wxaui branch
+
+2009-06-19 07:24  mortenmacfly
+
+svn5662:  * debugger: applied patch #2773 (UI to send command to
+	  the debugger directly). Thanks oBFusCATed!
+	  - couple of fixes, backport from wxaui branch
+
+2009-06-19 06:50  mortenmacfly
+
+svn5659:  - envvars plugin: wxWidgets 2.9.0 compatibility (thanks
+	  stahta01)
+
+2009-06-18 08:23  mortenmacfly
+
+svn5657:  * fixed 2 possible crash candidates
+
+2009-06-18 04:59  killerbot
+
+svn5656:  - include fix
+
+2009-06-17 21:34  jenslody
+
+svn5654:  * fixed an issue that makes it impossible for
+	  macrosmanager to recognize that the file in the active editor has
+	  changed (see
+	  http://forums.codeblocks.org/index.php/topic,10714.msg73420.html
+	  for details)
+
+2009-06-17 21:13  killerbot
+
+svn5653:  * support vector debugging
+
+2009-06-15 21:58  jenslody
+
+svn5650:  * fix a crash when rebuilding from commandline or
+	  windows-explorer, and all targets/projects are cleaned at once
+	  before they get build
+
+2009-06-14 11:32  jenslody
+
+svn5648:  * 64-bit build-fix, nedded for new wxWidgets bindings
+
+2009-06-12 22:03  jenslody
+
+svn5645:  * fix a bug on some windwos-versions, where the
+	  controls of a ListControlLogger remain partly visible after
+	  removing the active logger
+
+2009-06-11 07:59  mortenmacfly
+
+svn5642:  - dialog optimisations
+
+2009-06-11 07:58  mortenmacfly
+
+svn5641:  - cb_share_config: added wxs files to distr
+
+2009-06-11 07:57  mortenmacfly
+
+svn5640:  - fixed a logic bug in equality operator
+
+2009-06-11 07:57  mortenmacfly
+
+svn5639:  - minor enhancement
+	  - spelling correction
+
+2009-06-11 07:56  mortenmacfly
+
+svn5638:  * udpates to script bindings
+
+2009-06-11 07:56  mortenmacfly
+
+svn5637:  - make ESC key function for confirm replace dialog
+
+2009-06-11 07:55  mortenmacfly
+
+svn5636:  - replace macros for compiler options (thanks Biplab)
+
+2009-06-11 07:54  mortenmacfly
+
+svn5635:  - minor bug fix in indexing
+
+2009-06-11 07:54  mortenmacfly
+
+svn5634:  - fixed minor bug
+	  - dialog optimisations
+	  - apply smartindent only for languages supported
+
+2009-06-11 07:53  mortenmacfly
+
+svn5633:  - const correctnes
+
+2009-06-11 07:51  mortenmacfly
+
+svn5632:  * updated progrid in wxSmith (minor bug-fix, latest
+	  1.2.x release)
+
+2009-06-11 07:49  mortenmacfly
+
+svn5631:  * applied patch#2651 Thanks a lot!
+
+2009-06-11 07:12  mortenmacfly
+
+svn5630:  * updated script bindings
+
+2009-06-11 06:57  killerbot
+
+svn5629:  - in preparation for vector debugging
+
+2009-06-08 16:32  killerbot
+
+svn5628:  - build fix
+
+2009-06-08 16:26  killerbot
+
+svn5627:  - build fix
+
+2009-06-08 14:34  pecan
+
+svn5626:  KeyBinder 1.0.48 2009/06/8
+	  - If tree item is a sub-menu don't allow key assignment
+	  - Change KeyBinder menu access from GetLabel() to
+	  GetLabel().Trim() (wx2.8.9/10)
+
+2009-06-08 14:31  pecan
+
+svn5625:  -Adding CodeSnippets GenericMessageBox
+
+2009-06-08 14:27  pecan
+
+svn5624:  -Replaced home grown messagebox with
+	  wxGenericMessageBox
+
+2009-06-08 14:25  pecan
+
+svn5623:  CodeSnippets 1.3.105 2009/06/8
+	  - Set dragged textdata like dragged filename for FireFox3
+	  - Replace home grown messageBox with wxGenericMessaageBox
+
+2009-06-07 20:25  jenslody
+
+svn5622:  * change the rebuild project behaviour similar to
+	  rebuild workspace (update to r5492)
+
+2009-06-05 09:23  thomasdenk
+
+svn5621:  - Fixed "narrowing conversion of from 'unsigned int' to
+	  'wxChar' inside { }" error (breaks build for gcc 4.4)
+
+2009-06-04 14:02  killerbot
+
+svn5620:  -little fix in CodeCompletion wrt Case Sensitivity
+
+2009-06-02 15:38  biplab
+
+svn5618:  * wx-2.9 migration: Removed deprecated function call in
+	  src/splashscreen.cpp.
+
+2009-06-01 16:54  pecan
+
+svn5617:  CodeSnippets 1.3.103 2009/06/1
+	  - Fix crash when backspace\cut after Ctrl-A (Thanks Loaden)
+
+2009-05-31 16:00  biplab
+
+svn5616:  * wx-2.9 migration: Temporarily disabled compiler
+	  version detection with wx-2.9 to fix a lock-up during C::B
+	  startup.
+
+2009-05-31 14:40  jenslody
+
+svn5615:  * added regex for linker-warning and another
+	  linker-error; removed ipc.cpp and ipc.h from project-file,
+	  because they are not used, but can lead to an internal compiler
+	  error with gcc >= 4.3 on 64-bit systems
+
+2009-05-30 21:30  killerbot
+
+svn5614:  * don't show code completion tooltip when debugging [we
+	  want to see the value tooltip in case it has been enabled]
+
+2009-05-30 16:45  killerbot
+
+svn5613:  - build fix (gcc 4.4)
+
+2009-05-30 07:19  killerbot
+
+svn5612:  * patch applied : don't show debugging value tooltip
+	  when a context menu is open (will greatly improve the "right
+	  click : Add" watch functionality)
+
+2009-05-26 18:45  pecan
+
+svn5611:  CodeSnippets 1.3.102 2009/05/26
+	  - Remove app default.conf.cbtemp from /APPDATA/codesnippets in
+	  OnClose;
+	  - Correct .cbtemp name to .cbTemp for linux
+	  - Don't raise focus when ::wxActiveWindow != CodeSnippetsTreeCtrl
+	  in OnEnterWindow()
+
+2009-05-17 22:06  jenslody
+
+svn5607:  * debian build:
+	  - reorganised debug-packages, needed after changing compatibility
+	  level to 5,
+	  because the codeblocks-dbg package became a little too large (40
+	  MB):
+	  codeblocks shared library is now in codeblocks-dbg,
+	  added codeblocks-contrib-dbg package containing debug libraries
+	  for
+	  the contrib-plugins;
+	  - moved codesnippets executable from codeblocks- to
+	  contrib-plugins-package
+
+2009-05-16 13:47  mortenmacfly
+
+svn5604:  * compiler: added regex for "cannot open output file"
+	  (TODO: Probably valid for other compilers, too?!)
+
+2009-05-16 12:43  biplab
+
+svn5603:  * wx-2.9 migration: Fixes for CompilerGCC plugin.
+
+2009-05-16 08:42  biplab
+
+svn5602:  * wx-2.9 migration: Removed deprecated function calls
+	  from xtra_res.cpp.
+
+2009-05-15 23:10  jenslody
+
+svn5601:  * fix a possible compiler-warning
+
+2009-05-15 22:43  jenslody
+
+svn5600:  * change some debian files to be more compliant to
+	  uptodate standards
+
+2009-05-15 07:02  mortenmacfly
+
+svn5599:  * debugger: send debugger events and react accordingly
+	  (applied patch #2632)
+	  - few consistency / style changes
+
+2009-05-14 15:58  biplab
+
+svn5598:  * wx-2.9 migration: Fixes for Help plugin.
+
+2009-05-14 15:56  biplab
+
+svn5597:  * wx-2.9 migration: Fixes for EnvVars plugin.
+
+2009-05-14 15:54  biplab
+
+svn5596:  * wx-2.9 migration: Fixes for CodeSnippets plugin -
+	  removed deprecated functions calls, fixed several build
+	  issues.(Portion thanks to Tim S.).
+
+2009-05-14 15:47  biplab
+
+svn5595:  * wx-2.9 migration: Fixes for CodeSnippets plugin
+	  (Portion thanks to Tim S.).
+
+2009-05-14 15:36  biplab
+
+svn5594:  * wx-2.9 migration: Fixes for CodeSnippets plugin
+	  (Thanks Tim S.).
+
+2009-05-10 21:22  killerbot
+
+svn5593:  - C++Ox for gcc option
+
+2009-05-10 09:23  biplab
+
+svn5592:  * Grouped: Close workspace menu item with other Close
+	  menuitems.
+
+2009-05-09 12:17  biplab
+
+svn5591:  * wx-2.9 migration: Fixes for ByoGames plugin (Thanks
+	  Tim S.).
+
+2009-05-09 12:10  biplab
+
+svn5590:  * wx-2.9 migration: Fixes for DevPak plugin.
+
+2009-05-09 12:07  biplab
+
+svn5589:  * wx-2.9 migration: Replaced deprecated code from
+	  BrowseTracker plugin.
+
+2009-05-05 15:41  biplab
+
+svn5588:  * wx-2.9 migration: Fixes for DragScroll plugin.
+
+2009-05-05 15:40  biplab
+
+svn5587:  * wx-2.9 migration: Fixes for ThreadSearch plugin.
+
+2009-05-03 21:37  jenslody
+
+svn5586:  * added subversion and xsltproc to build-dependencies
+	  for debian/ubuntu; run bootstrap in debian-buildprocess, if
+	  needed; automatically update ChangeLog to HEAD in
+	  debian-buildprocess by running updateChangeLog.sh
+
+2009-05-03 19:23  killerbot
+
+svn5585:  - remove a few warnings
+
+2009-05-03 16:50  jenslody
+
+svn5584:  * added libtool and automake to build-dependencies for
+	  debian/ubuntu
+
+2009-05-03 13:46  biplab
+
+svn5583:  * wx-2.9 migration: Fixes for
+	  src/plugins/projectsimporter/projectsimporter.cpp.
+
+2009-05-03 13:45  biplab
+
+svn5582:  * wx-2.9 migration: Fixes for
+	  src/plugins/projectsimporter/msvcworkspaceloader.cpp.
+
+2009-05-03 13:44  biplab
+
+svn5581:  * wx-2.9 migration: Fixes for
+	  src/plugins/projectsimporter/msvcworkspacebase.cpp.
+
+2009-05-03 13:43  biplab
+
+svn5580:  * wx-2.9 migration: Fixes for
+	  src/plugins/projectsimporter/msvcloader.cpp.
+
+2009-05-03 13:42  biplab
+
+svn5579:  * wx-2.9 migration: Fixes for
+	  src/plugins/projectsimporter/msvc7workspaceloader.cpp.
+
+2009-05-03 13:41  biplab
+
+svn5578:  * wx-2.9 migration: Fixes for
+	  src/plugins/projectsimporter/msvc7loader.cpp.
+
+2009-05-03 10:49  biplab
+
+svn5577:  * wx-2.9 migration: Fixes for
+	  sdk/wxscintilla/src/PlatWX.cpp.
+
+2009-05-03 06:25  biplab
+
+svn5576:  * wx-2.9 migration: Fixes for
+	  src/plugins/xpmanifest/windowsxplooknfeel.cpp.
+
+2009-05-03 06:24  biplab
+
+svn5575:  * wx-2.9 migration: Fixes for
+	  src/plugins/scriptedwizard/wiz.cpp.
+
+2009-05-03 06:21  biplab
+
+svn5574:  * wx-2.9 migration: Fixes for
+	  src/plugins/debuggergdb/gdb_commands.h.
+
+2009-05-03 06:19  biplab
+
+svn5573:  * wx-2.9 migration: Fixes for
+	  src/plugins/debuggergdb/debuggergdb.cpp.
+
+2009-05-03 06:18  biplab
+
+svn5572:  * wx-2.9 migration: More fixes for
+	  src/plugins/compilergcc.cpp.
+
+2009-05-03 05:31  biplab
+
+svn5571:  * wx-2.9 migration: Fixes for
+	  src/plugins/codecompletion/nativeparser.cpp.
+
+2009-05-03 05:29  biplab
+
+svn5570:  * wx-2.9 migration: Fixes for
+	  src/plugins/codecompletion/classbrowser.cpp.
+
+2009-05-03 05:28  biplab
+
+svn5569:  * wx-2.9 migration: Fixes for
+	  src/plugins/codecompletion/ccdebuginfo.cpp.
+
+2009-05-03 05:25  biplab
+
+svn5568:  * wx-2.9 migration: Fixes for sdk/toolsmanager.cpp.
+
+2009-05-03 05:21  biplab
+
+svn5567:  * wx-2.9 migration: Fixes for sdk/compilerfactory.cpp.
+
+2009-05-03 05:13  biplab
+
+svn5566:  * wx-2.9 migration: Fixes for sdk/projectfile.cpp.
+
+2009-05-03 03:47  biplab
+
+svn5565:  * wx-2.9 migration: Fixes for sdk/compiler.cpp.
+
+2009-05-03 03:45  biplab
+
+svn5564:  * wx-2.9 migration: Fixes for sdk/cbworkspace.cpp.
+
+2009-05-02 18:16  killerbot
+
+svn5563:  - include fix
+
+2009-05-01 14:54  biplab
+
+svn5562:  * wx-2.9 migration: Fixes for
+	  src/plugins/compilergcc.cpp.
+
+2009-05-01 14:53  biplab
+
+svn5561:  * wx-2.9 migration: Fixes for
+	  src/plugins/compilerGDC.cpp.
+
+2009-05-01 14:45  biplab
+
+svn5560:  * wx-2.9 migration: Fixes for src/main.cpp.
+
+2009-05-01 14:42  biplab
+
+svn5559:  * wx-2.9 migration: Fixes for associations.cpp.
+
+2009-05-01 14:41  biplab
+
+svn5558:  * wx-2.9 migration: Fixes for app.cpp.
+
+2009-05-01 13:28  biplab
+
+svn5557:  * wx-2.9 migration: Fixes for cbProject.
+
+2009-05-01 13:22  biplab
+
+svn5556:  * wx-2.9 migration: Fixes for UserVarManager.
+
+2009-05-01 13:12  biplab
+
+svn5555:  * wx-2.9 migration: Fixes for ProjectManager.
+
+2009-04-29 22:33  afb
+
+svn5554:  * avoid division by zero, in wxSmith on macosx
+
+2009-04-29 17:48  pecan
+
+svn5553:  CodeSnppets 1 3.99 2009/04/29
+	  - App: check for standalone execution before closing in OnClose()
+	  to avoid error "can't delete default.conf.cbTemp"
+
+2009-04-29 13:38  pecan
+
+svn5552:  -BrowseTracker: add missing include quote
+
+2009-04-29 08:55  afb
+
+svn5551:  - fix make dist issue
+
+2009-04-28 17:07  pecan
+
+svn5550:  cbBrowseTrackr 1.2.76 2009/04/28
+	  - Add include ConfigManager for linux
+
+2009-04-27 16:08  biplab
+
+svn5549:  * wx-2.9 migration: More fixes to SDK.
+
+2009-04-27 15:51  biplab
+
+svn5548:  * wx-2.9 migration: More fixes.
+
+2009-04-27 15:49  biplab
+
+svn5547:  * wx-2.9 migration: More fixes.
+
+2009-04-27 15:46  biplab
+
+svn5546:  * wx-2.9 migration: More fixes.
+
+2009-04-27 13:14  pecan
+
+svn5545:  CodeSnippets 1 3.98 2009/04/26
+	  When passing URL, remove anything pass \r or \n
+	  Fixed: A dragged URL item to a snippet did not save. CS did not
+	  know it had changed.
+	  Added zoom functions to Apps DragScroll class
+	  Added GetCBConfigDir() to call routines that check for user
+	  APPDATA var
+
+2009-04-27 13:11  pecan
+
+svn5544:  Added GetCBConfigDir() to call routines that check for
+	  APPDATA var
+
+2009-04-26 13:59  biplab
+
+svn5542:  * wx-2.9 migration: wxFNB patch to use new event
+	  handling system.
+
+2009-04-21 16:00  biplab
+
+svn5539:  * Fixed: [Bug #14424] It is not possible to create .pdb
+	  file in Release version.
+
+2009-04-20 03:52  jenslody
+
+svn5538:  * added debian-subdir to main Makefile.am (for make
+	  dist)
+
+2009-04-19 15:14  biplab
+
+svn5537:  * Fixed: [Bug #14969] profiler/cbprofilerexec.cpp:255:
+	  Array index out of bounds
+
+2009-04-14 15:25  biplab
+
+svn5536:  * Applied: [Patch #2730] miss armelfgcc in the
+	  common_functions.script (in modified form)
+
+2009-04-13 14:47  biplab
+
+svn5534:  * Modified: Code::Blocks configuration directory
+	  retrieval code to make it portable on Windows.
+
+2009-04-11 04:38  biplab
+
+svn5532:  * Modified: make dist behaviour to generate source
+	  tarball in .tar.bz2 format. This would reduce the size of tarball
+	  by 15-20%.
+
+2009-04-11 01:54  biplab
+
+svn5529:  * Added: Makefile.in to exclude list in update.bat
+
+2009-04-10 02:22  biplab
+
+svn5527:  * Renamed: Original Makefile to Makefile.original and
+	  added it to make dist.
+
+2009-04-10 01:47  biplab
+
+svn5526:  * Fixed: Make dist to include exchndl.dll file.
+
+2009-04-10 01:45  biplab
+
+svn5525:  * Fixed: Make dist to include autorevision.h header.
+
+2009-04-08 16:13  biplab
+
+svn5524:  * Fixed: Make dist in DevPak plugin.
+
+2009-04-08 15:43  biplab
+
+svn5522:  * Fixed: Make dist bug in Incremental Search plugin.
+
+2009-04-05 16:37  jenslody
+
+svn5520:  * Fixes for automake-system: make dist now includes
+	  debian-subdir, copystrings and devpak_plugin; copystrings-plugin
+	  (unix) can now be build with automake-system
+
+2009-04-04 06:20  biplab
+
+svn5519:  * Fixed: Non-PCH build (Thanks Tim for patch)
+
+2009-04-04 04:16  biplab
+
+svn5518:  * Reverted: Addition of CopyStrings and DevPak to make
+	  dist. Some additional works needed.
+
+2009-04-04 03:58  biplab
+
+svn5515:  * Fixed: Broken make dist in IncrementalSearch plugin.
+
+2009-04-04 03:53  biplab
+
+svn5513:  * Fixed: Typo in last commit.
+
+2009-04-04 03:38  biplab
+
+svn5510:  * Fixed: Broken make dist in CodeSnippets plugin.
+
+2009-04-04 03:34  biplab
+
+svn5509:  * Fixed: Typo in last commit.
+
+2009-04-04 03:24  biplab
+
+svn5508:  * Fixed: CopyString and DevPak plugin were not included
+	  by make dist.
+
+2009-04-04 03:20  biplab
+
+svn5505:  * Fixed: Broken make dist in (Compilergcc) plugin.
+
+2009-04-03 18:16  killerbot
+
+svn5504:  - include fix (build was broken)
+
+2009-04-03 16:08  biplab
+
+svn5503:  * Applied: Xaviou's patch for better translation of
+	  C::B.
+
+2009-04-03 15:45  biplab
+
+svn5500:  * Fixed: Broken make dist.
+
+2009-04-03 06:48  jenslody
+
+svn5499:  * updated desktop-file for linux to be more standard
+	  conform
+
+2009-04-03 04:27  jenslody
+
+svn5498:  * fixed a typo in last commit, thanks mmkider
+
+2009-04-02 22:07  jenslody
+
+svn5497:  * added the possibility to specify the execution
+	  directory for custom makefiles, based on a patch of gryphon
+
+2009-04-02 22:02  jenslody
+
+svn5496:  * added the option to determine the width of horizontal
+	  scrollbar automatically (see "Settings -> Editor -> Margin and
+	  caret"), needed to scroll in very long lines
+
+2009-03-31 18:25  killerbot
+
+svn5495:  - gcc compiler option : -fomit-frame-pointer
+
+2009-03-30 18:38  killerbot
+
+svn5493:  - added -Wshadow warning option
+
+2009-03-29 19:17  jenslody
+
+svn5492:  * make the rebuild workspace-behaviour configurable:
+	  default is to clean the entire workspace, before building the
+	  projects/targets; alternatively the projects/targets will be
+	  cleaned and buildone by one; see Compiler settings -> Other
+	  settings
+
+2009-03-29 11:23  jenslody
+
+svn5491:  * fix a bug in codecompletion, that leads to a crash in
+	  some cases
+
+2009-03-29 10:35  jenslody
+
+svn5490:  * readded include-path for tinyxml for byogames and
+	  codesnippets on windows , otherwise build is broken with MinGW
+	  3.4.5 shipped with 8.02 release
+
+2009-03-27 21:56  mariocupelli
+
+svn5489:  ThreadSearch:
+	  - use icons search, options, searchdir for ThreadSearch settings
+
+2009-03-14 18:41  jenslody
+
+svn5486:  * remove #cb's in contrib plugins in our repo (windows)
+
+2009-03-14 18:34  jenslody
+
+svn5485:  * remove remaining #cb's in contrib plugins in our repo
+	  (linux)
+
+2009-03-14 17:59  jenslody
+
+svn5484:  * avoid compiler warnings on linux
+
+2009-03-11 16:29  jenslody
+
+svn5483:  updated app.xpm to make C::B on linux use the same
+	  (3d-)icon in titlebar as on windows
+
+2009-03-08 14:00  jenslody
+
+svn5482:  IncrementalSearch-plugin: fixed a bug that slipped in
+	  with last commit
+
+2009-03-07 20:42  jenslody
+
+svn5481:  IncrementalSearch-plugin and HighlightOccurences: fixed
+	  a bug when highlighting non-ASCII characters, like german umlauts
+	  or chinese chars (both) or auto-selecting text found by IncSearch
+	  when leaving toolbar with ESC (IncSearch)
+
+2009-03-04 10:38  mortenmacfly
+
+svn5480:  * project options: autoext. does not work correctly
+	  (fixes bug #15341)
+
+2009-03-03 20:56  killerbot
+
+svn5477:  - compiler option (gdc/ming) for Intel Core2
+
+2009-03-03 20:04  killerbot
+
+svn5476:  - so first fundaments for pre/post remotedebugging
+	  shell commands
+
+2009-03-02 18:57  killerbot
+
+svn5475:  - ansi build fix
+
+2009-02-26 13:17  killerbot
+
+svn5473:  make project notes window at load more intuitive
+
+2009-02-26 08:29  jenslody
+
+svn5472:  * non PCH build fix
+
+2009-02-25 15:29  biplab
+
+svn5471:  * Fixed: One build issue reported by Mephistopheles.
+
+2009-02-25 10:05  killerbot
+
+svn5470:  - compiler toolchain executables : trim trailing
+	  whitespace [some users had an issue with this]
+
+2009-02-22 10:24  jenslody
+
+svn5469:  * enhanced handling of adding, deleting, duplicating
+	  and renaming build targets in debugger-plugin, fixes a crash that
+	  occurs if extra-commands or remote-debugging parameters are used
+	  in a target, that should be deleted
+
+2009-02-21 00:09  jenslody
+
+svn5467:  - change some dialog texts in addition to last commit
+	  (layout is renamed to perspective)
+
+2009-02-20 23:30  mariocupelli
+
+svn5466:  - rename menu View->Layout in View->Perspectives
+
+2009-02-20 19:03  thomasdenk
+
+svn5464:  - added daycount build variable
+
+2009-02-20 06:37  mortenmacfly
+
+svn5461:  * todo plugin: make plugin handle #warning and #error
+	  correctly
+	  - todo plugin: improve speed while searching for todo items;
+	  minor code cleanup
+
+2009-02-19 15:21  mortenmacfly
+
+svn5459:  * todo plugin: actually make the plugin really (!)
+	  remember new users/types (case sensitive)
+
+2009-02-18 21:12  jenslody
+
+svn5458:  * don't run postbuild-steps if we only clean the
+	  project
+
+2009-02-18 11:52  jenslody
+
+svn5457:  * custom-makefiles: - changed clean-process, to show
+	  output, if full commandline logging is turned on
+	  - don't run prebuild-commands in clean-process
+
+2009-02-14 11:03  byo
+
+svn5456:  HexEdit: Fixed crashing internal test cases, caused by
+	  using wxProgressDialog from other thread
+
+2009-02-13 09:47  byo
+
+svn5455:  HexEdit: Fix the fix (jay, I don't like to work in
+	  hurry ;) )
+
+2009-02-13 09:37  byo
+
+svn5454:  HexEdit: Workaround missing memrchr on platforms other
+	  than linux
+
+2009-02-12 23:24  byo
+
+svn5453:  HexEdit: (version 0.5 ready)
+	  * Implemented backward search
+	  * Few bugfixes
+
+2009-02-12 23:21  byo
+
+svn5452:  HexEdit: (version 0.5 ready)
+	  * Implemented backward search
+	  * Few bugfixes
+
+2009-02-12 20:04  byo
+
+svn5451:  HexEdit: Integrated internal search with normal
+	  editor's search history
+
+2009-02-12 00:30  byo
+
+svn5450:  HexEdit: Implemented search support
+
+2009-02-11 18:47  jenslody
+
+svn5449:  * avoid unneded quotes in commands, otherwise using of
+	  "konsole" unde KDE gets broken, fix for issue coming in with rev
+	  5410
+
+2009-02-08 04:40  biplab
+
+svn5448:  * Added: Digital Mars C/C++ compiler Debug options,
+	  Warning options, Optimization options & Exception options to
+	  scripted wizard.
+
+2009-02-07 12:15  biplab
+
+svn5446:  * Fixed: [Bug #15121] PlatMacOSX.cxx:324: Mismatching
+	  allocation and deallocation
+
+2009-02-07 00:35  byo
+
+svn5445:  HexEdit: Resolved problems related to 32-bit resolution
+	  of scrollbar, HexEdit can now support files with size up to about
+	  10^19
+
+2009-02-07 00:34  byo
+
+svn5444:  HexEdit: Resolved problems related to 32-bit resolution
+	  of scrollbar, HexEdit can now support files with size up to about
+	  10^19
+
+2009-02-06 21:55  byo
+
+svn5443:  HexEdit: Added support for files up to 2GB (unchanged
+	  data is read directly from the file)
+
+2009-02-06 21:54  byo
+
+svn5442:  HexEdit: Added support for files up to 2GB (unchanged
+	  data is read directly from the file)
+
+2009-02-06 17:33  thomasdenk
+
+svn5441:  - Use low fragmentation heap under Windows, for what
+	  it's worth
+
+2009-02-04 19:11  killerbot
+
+svn5440:  - remove warnings
+
+2009-02-04 15:35  mortenmacfly
+
+svn5439:  - encoding detector: make fallback solution optional
+	  (to explicitely force a user to enable the fallback solution)
+
+2009-02-04 14:11  mortenmacfly
+
+svn5438:  * encoding detector: using system locale as
+	  backup-solution has returned
+	  - encoding detector: added some more messages, helping to track
+	  errors
+
+2009-02-04 11:15  mortenmacfly
+
+svn5437:  - encoding detector: better error description to find
+	  the root of why a conversion has failed
+
+2009-02-03 15:23  biplab
+
+svn5436:  * Fixed: File can't be opened if "As Default encoding
+	  ..." option is selected.
+	  * Fixed: Non-PCH build (Thanks Tim S)
+
+2009-02-02 19:11  byo
+
+svn5435:  wxSmith: Fixed event names for wxListbook and
+	  wxChoicebook (thanks goes for kencamargo for finding this)
+
+2009-02-02 18:59  killerbot
+
+svn5434:  - remove warning
+
+2009-02-02 18:57  killerbot
+
+svn5433:  - bugfix : && <--> || : thanks GCC for the nice
+	  warnings :-)
+
+2009-02-02 15:56  biplab
+
+svn5432:  * Modified: Default encoding settings. Now user can set
+	  an encoding as a Default one or as a fallback one.
+	  * Fixed: [Bug #15158] Cannot open source code in F10
+
+2009-02-01 22:02  killerbot
+
+svn5431:  - updated warning settings
+
+2009-01-31 23:50  jenslody
+
+svn5429:  * fixed a crash, that happened when todo-list gets
+	  disabled, when it is in message pane
+
+2009-01-30 21:03  byo
+
+svn5426:  HexEdit: Committed some WIP code for big files support
+	  (reading from disk while editing), still disabled since not yet
+	  tested well
+
+2009-01-30 21:02  byo
+
+svn5425:  HexEdit: Committed some WIP code for big files support
+	  (reading from disk while editing), still disabled since not yet
+	  tested well
+
+2009-01-29 22:57  jenslody
+
+svn5423:  * fixed error (margins initially not shown) , that came
+	  in with last commit
+
+2009-01-28 17:08  jenslody
+
+svn5422:  * fix to make the editor respect margin masks set by
+	  plugins like browsetracker,
+	  fixes the blue-line-problem:
+	  http://forums.codeblocks.org/index.php/topic,9998.msg69512.html
+
+2009-01-27 20:27  jenslody
+
+svn5421:  * Improvements and fixes for custom makefiles
+	  build-system, especially for use of multiple custom makefile
+	  projects in one workspace.
+	  Based on a patch of gryphon.
+
+2009-01-23 08:41  mortenmacfly
+
+svn5419:  - do not use #cb in contrib plugins in our repo
+
+2009-01-22 14:03  biplab
+
+svn5418:  * Fixed: [Bug #15075] rename DoubleToString to avoid
+	  conflict with wxWidgets (By applying [Patch #2653] rename
+	  DoubleToString to avoid conflict with wxWidgets)
+
+2009-01-22 08:26  mortenmacfly
+
+svn5416:  - consistency with other files
+
+2009-01-18 16:17  mortenmacfly
+
+svn5414:  - SelectAll was still not using EditorBase (thanks
+	  danselmi)
+
+2009-01-17 16:23  biplab
+
+svn5412:  * Fixed: codeblocks.desktop file.
+
+2009-01-17 16:09  biplab
+
+svn5411:  * IncrementalSearch: Removed use of global variables
+	  from Unix project file to make it consistent with other project
+	  files.
+
+2009-01-17 13:39  jenslody
+
+svn5410:  * avoid trailing quotes in some cases, use
+	  "platform-dependent" quotes
+
+2009-01-17 08:27  killerbot
+
+svn5409:  - add missing include
+
+2009-01-17 08:24  killerbot
+
+svn5408:  - pch fixes
+
+2009-01-16 20:32  jenslody
+
+svn5407:  * fixed wxscintilla bug, that leads to not working
+	  mousewheels on some systems. Thanks to DrewBoo.
+	  Closes #15054
+
+2009-01-16 15:36  mortenmacfly
+
+svn5406:  * HexEdit plugin: Make use of new SaveAs API (thanks
+	  danselmi)
+	  - HexEdit plugin: Make sure the entry in the "File" menu is not
+	  at the bottom :)
+
+2009-01-16 13:49  mortenmacfly
+
+svn5405:  - applied missing modifications for SaveAs patch
+
+2009-01-16 09:38  mortenmacfly
+
+svn5404:  - CC: allow "_" as first character in enums, too
+
+2009-01-16 09:31  mortenmacfly
+
+svn5403:  * allow raising batch-build dialog via icon (applied
+	  patch from the forums)
+	  * move SaveAs to EditorBase so that plugin can make better use of
+	  it
+	  * added CanSelectAll and SelectAll to EditorBase (suggested in
+	  the forums for plugins)
+	  * provide workspace built-in variables as macros (applied patch
+	  from the forums)
+	  * skip spaces before "=" and "," in tokenizer (suggested in the
+	  forums)
+	  * applied wxScintilla/D-lexer related patch (provided in the
+	  forums)
+	  * applied patch to realpath to fix problems with symlinks
+	  (suggested in the forums)
+	  - allow multiple selection when adding file(s) to a project
+	  (suggested in the forums)
+	  - use Mid instead of SubString for wxString (suggested in the
+	  forums)
+	  - check FileTreeData to be OK to avoid potential crashes in
+	  compiler
+	  - (probably) some logical fixed in CC parser (it can't harm ;-))
+
+2009-01-15 12:28  thomasdenk
+
+svn5402:  - Use MT19937 rather than rand() in C++0x mode
+
+2009-01-15 06:36  jenslody
+
+svn5401:  * corrected icon for "Edit -> Clear changes history"
+
+2009-01-14 15:22  thomasdenk
+
+svn5400:  - extended rndgen functionality, added test case
+
+2009-01-14 06:55  jenslody
+
+svn5399:  * expand variables, before trying to get the
+	  version-string for gcc/MinGW-compilers
+
+2009-01-14 06:52  jenslody
+
+svn5398:  * updated copyright time to 2009
+
+2009-01-12 23:13  jenslody
+
+svn5397:  * Fixed bug in changebar.
+	  Closes: #15029.
+
+2009-01-12 22:46  jenslody
+
+svn5396:  * if we are in batch-mode, no DDE/IPC-server should be
+	  started
+
+2009-01-12 16:20  killerbot
+
+svn5395:  - few more warnings settings
+
+2009-01-10 09:46  biplab
+
+svn5394:  * Re-revert: Back to changes made in rev 5390. That
+	  change is necessary.
+
+2009-01-09 16:22  biplab
+
+svn5393:  * Reverted: Commit in revision 5390. That change is not
+	  necessary as -
+	  1. SetVersionString() is not implemented for all compilers.
+	  2. If the binary name is wrong, then it won't even work at all.
+	  Thus no change in code is required. In case binary name is
+	  different, an auto-detection would result in detecting proper
+	  version string.
+
+2009-01-09 13:34  thomasdenk
+
+svn5392:  - Added auto-imagebase option where it was missing,
+	  this should avoid relocations at startup
+
+2009-01-08 20:09  jenslody
+
+svn5390:  * set member-variable that holds the version-string,
+	  after (!) we read the toolchain executables from configuration
+
+2009-01-08 14:56  thomasdenk
+
+svn5389:  - don't change lines that don't need it
+
+2009-01-08 14:48  thomasdenk
+
+svn5388:  - rndgen checkin
+
+2009-01-07 17:18  jenslody
+
+svn5386:  * fix possible crash-candidate in new
+	  IPC/DDE-implementation
+
+2009-01-05 21:24  killerbot
+
+svn5382:  - extended the warning options some more
+
+2009-01-04 04:49  biplab
+
+svn5380:  * Fixed: Menu option "Clear history" looses icon in
+	  File > Recent files & Recent projects.
+	  * Fixed: Few menu items enable/disabling.
+
+2009-01-03 19:31  mortenmacfly
+
+svn5379:  - removed duplicate header guard of last commit
+
+2009-01-03 16:00  jenslody
+
+svn5375:  * renamed menu-entry for empty undo- and
+	  changebar-buffer to "Clear changes history", function names are
+	  changed accordingly
+
+2009-01-03 10:30  jenslody
+
+svn5374:  * added file missing in commit 5373
+
+2009-01-03 09:21  mandrav
+
+svn5373:  - merged "scintilla" branch to trunk (r5321-r5372).
+
+2008-12-30 11:05  jenslody
+
+svn5368:  * fixed the drag and drop-bug coming up with new
+	  scintilla version
+
+2008-12-28 16:47  killerbot
+
+svn5367:  - no need for translation
+
+2008-12-26 16:07  killerbot
+
+svn5363:  - some more warning options for GCC
+
+2008-12-26 15:48  killerbot
+
+svn5362:  - update to previous commit, windows encoding got me
+
+2008-12-26 15:34  killerbot
+
+svn5361:   - little fix so that html log looks ok in browser
+	  (quoting)
+
+2008-12-25 14:18  jenslody
+
+svn5356:  * get rid of another warning during build of C::B,
+	  fixed a minor issue coming with scintilla merge
+
+2008-12-25 14:07  killerbot
+
+svn5355:  * some better warning options for GCC
+
+2008-12-25 11:45  jenslody
+
+svn5354:  * IncrementalSearch-plugin: some more changes that got
+	  lost while merging with new scintilla-branch
+
+2008-12-25 08:14  killerbot
+
+svn5353:  - 1 further fix to makefile.am
+
+2008-12-25 08:09  killerbot
+
+svn5352:  - fix makefile.am (got broken due to merge ??)
+
+2008-12-24 20:21  killerbot
+
+svn5351:  - remove warning
+
+2008-12-24 15:15  biplab
+
+svn5350:  * Merged: MySQL lexer missed in last branch merging.
+
+2008-12-24 13:48  biplab
+
+svn5349:  * Fixed: Build warning under GCC-4.3.x
+
+2008-12-24 13:36  mandrav
+
+svn5348:  - merged "scintilla" branch to trunk (r5247-r5320).
+
+2008-12-23 16:18  biplab
+
+svn5347:  * Updated: Makefile.am to reflect changes in last
+	  commit.
+
+2008-12-23 16:14  biplab
+
+svn5346:  * Removed: Unnecessary files from wxScintilla folder.
+
+2008-12-22 08:46  thomasdenk
+
+svn5345:  - Applied Byo's proposal for scroll-free replace
+
+2008-12-21 23:29  jenslody
+
+svn5344:  * make sure that masterpath and extrapath of a
+	  toolchain executable come before default systempath in
+	  executables environment, to avoid conflicts with different
+	  versions with the same name
+
+2008-12-21 22:30  dje
+
+svn5343:  ThreadSearch: implemented the possibility to remove
+	  search results from list or tree control.
+
+2008-12-21 20:27  jenslody
+
+svn5342:  * fixed bug in compiler autodetection for MinGW / gcc
+
+2008-12-20 10:37  byo
+
+svn5341:  HexEdit: Fixed calculation of address
+
+2008-12-19 16:00  biplab
+
+svn5340:  * Fixed: Build error under certain configurations (More
+	  to follow).
+
+2008-12-18 21:47  byo
+
+svn5339:  HexEdit: Added ability to change the way columns count
+	  is calculated
+
+2008-12-17 06:04  jenslody
+
+svn5338:  * added some missing headers to wxSmith's pkg-config
+	  list
+
+2008-12-14 22:03  daniel2000
+
+svn5336:  - some fixes for jens' changes in rev5334
+	  - missing header in makefile (for make dist)
+
+2008-12-14 15:43  jenslody
+
+svn5335:  * added missing contrib-plugin names in debian control
+	  file
+
+2008-12-14 00:07  jenslody
+
+svn5334:  * changed directory-layout if codeblocks gets build
+	  with automake, to make it more compliant with the "Filesystem
+	  Hierarchy Standard"
+	  * changed debian package-layout, to have arch-independent and
+	  arch-dependent files in different packages
+	  * added wxsmith development headers and a wxsmith conf-file for
+	  pkgconfig
+	  * added update-script for ChangeLog on linux-systems (needs to be
+	  called manually at the moment)
+
 2008-12-11 22:52  dje
 
 svn5333:  * ThreadSearch plugin : implemented the possibility to

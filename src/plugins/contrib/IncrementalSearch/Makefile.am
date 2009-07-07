@@ -29,7 +29,7 @@ pkgdata_DATA = IncrementalSearch.zip
 
 CLEANFILES = $(pkgdata_DATA)
 
-IncrementalSearch.zip: manifest.xml IncrementalSearchToolbar.xrc
+IncrementalSearch.zip: manifest.xml IncrementalSearchToolbar.xrc IncrementalSearchConfDlg.xrc
 	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/IncrementalSearch.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings

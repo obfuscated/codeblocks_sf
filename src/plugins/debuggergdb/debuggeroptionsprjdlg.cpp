@@ -91,7 +91,7 @@ void DebuggerOptionsProjectDlg::OnBuildTargetRemoved(CodeBlocksEvent& event)
     {
         lstBox->Delete(idx);
     }
-    if((size_t)idx > lstBox->GetCount())
+    if((size_t)idx >= lstBox->GetCount())
     {
         idx--;
     }

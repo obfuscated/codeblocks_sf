@@ -112,8 +112,8 @@
 #define wxSCI_MARK_CHARACTER 10000
 
 // Markers used for outlining column.
-#define wxSCI_MARKNUM_CHANGEUNSAVED 23 
-#define wxSCI_MARKNUM_CHANGESAVED 24 
+#define wxSCI_MARKNUM_CHANGEUNSAVED 23
+#define wxSCI_MARKNUM_CHANGESAVED 24
 #define wxSCI_MARKNUM_FOLDEREND 25
 #define wxSCI_MARKNUM_FOLDEROPENMID 26
 #define wxSCI_MARKNUM_FOLDERMIDTAIL 27
@@ -121,12 +121,12 @@
 #define wxSCI_MARKNUM_FOLDERSUB 29
 #define wxSCI_MARKNUM_FOLDER 30
 #define wxSCI_MARKNUM_FOLDEROPEN 31
-#define wxSCI_MASK_FOLDERS 0xFF800000 
+#define wxSCI_MASK_FOLDERS 0xFF800000
 #define wxSCI_MARGIN_SYMBOL 0
 #define wxSCI_MARGIN_NUMBER 1
 #define wxSCI_MARGIN_BACK 2
 #define wxSCI_MARGIN_FORE 3
-#define wxSCI_MARGIN_CHANGED 4 
+#define wxSCI_MARGIN_CHANGED 4
 
 // Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
 // Style 39 is for future use.
@@ -285,6 +285,10 @@
 #define wxSTI_CARETSTYLE_INVISIBLE 0
 #define wxSTI_CARETSTYLE_LINE 1
 #define wxSTI_CARETSTYLE_BLOCK 2
+#define wxSTI_ANNOTATION_HIDDEN 0
+#define wxSTI_ANNOTATION_STANDARD 1
+#define wxSTI_ANNOTATION_BOXED 2
+#define wxSTI_UNDO_MAY_COALESCE 1
 
 // Maximum value of keywordSet parameter of SetKeyWords.
 #define wxSCI_KEYWORDSET_MAX 8
@@ -309,6 +313,9 @@
 #define wxSTI_STARTACTION 0x2000
 #define wxSTI_MOD_CHANGEINDICATOR 0x4000
 #define wxSTI_MOD_CHANGELINESTATE 0x8000
+#define wxSTI_MOD_CHANGEMARGIN 0x10000
+#define wxSTI_MOD_CHANGEANNOTATION 0x20000
+#define wxSTI_MOD_CONTAINER 0x40000
 #define wxSCI_MODEVENTMASKALL 0xFFFF
 
 // Symbolic key codes and modifier flags.
@@ -431,6 +438,13 @@
 #define wxSCI_LEX_POWERSHELL 88
 #define wxSCI_LEX_MYSQL 89
 #define wxSCI_LEX_PO 90
+#define wxSTI_LEX_TAL 91
+#define wxSTI_LEX_COBOL 92
+#define wxSTI_LEX_TACL 93
+#define wxSTI_LEX_SORCUS 94
+#define wxSTI_LEX_POWERPRO 95
+#define wxSTI_LEX_NIMROD 96
+#define wxSTI_LEX_SML 97
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 // value assigned in sequence from SCLEX_AUTOMATIC+1.
@@ -1773,6 +1787,70 @@
 #define wxSCI_PO_MSGCTXT_TEXT 7
 #define wxSCI_PO_FUZZY 8
 
+// Lexical states for SCLEX_PASCAL
+#define wxSCI_PAS_DEFAULT 0
+#define wxSCI_PAS_IDENTIFIER 1
+#define wxSCI_PAS_COMMENT 2
+#define wxSCI_PAS_COMMENT2 3
+#define wxSCI_PAS_COMMENTLINE 4
+#define wxSCI_PAS_PREPROCESSOR 5
+#define wxSCI_PAS_PREPROCESSOR2 6
+#define wxSCI_PAS_NUMBER 7
+#define wxSCI_PAS_HEXNUMBER 8
+#define wxSCI_PAS_WORD 9
+#define wxSCI_PAS_STRING 10
+#define wxSCI_PAS_STRINGEOL 11
+#define wxSCI_PAS_CHARACTER 12
+#define wxSCI_PAS_OPERATOR 13
+#define wxSCI_PAS_ASM 14
+
+// Lexical state for SCLEX_SORCUS
+#define wxSCI_SORCUS_DEFAULT 0
+#define wxSCI_SORCUS_COMMAND 1
+#define wxSCI_SORCUS_PARAMETER 2
+#define wxSCI_SORCUS_COMMENTLINE 3
+#define wxSCI_SORCUS_STRING 4
+#define wxSCI_SORCUS_STRINGEOL 5
+#define wxSCI_SORCUS_IDENTIFIER 6
+#define wxSCI_SORCUS_OPERATOR 7
+#define wxSCI_SORCUS_NUMBER 8
+#define wxSCI_SORCUS_CONSTANT 9
+
+// Lexical state for SCLEX_POWERPRO
+#define wxSCI_POWERPRO_DEFAULT 0
+#define wxSCI_POWERPRO_COMMENTBLOCK 1
+#define wxSCI_POWERPRO_COMMENTLINE 2
+#define wxSCI_POWERPRO_NUMBER 3
+#define wxSCI_POWERPRO_WORD 4
+#define wxSCI_POWERPRO_WORD2 5
+#define wxSCI_POWERPRO_WORD3 6
+#define wxSCI_POWERPRO_WORD4 7
+#define wxSCI_POWERPRO_DOUBLEQUOTEDSTRING 8
+#define wxSCI_POWERPRO_SINGLEQUOTEDSTRING 9
+#define wxSCI_POWERPRO_LINECONTINUE 10
+#define wxSCI_POWERPRO_OPERATOR 11
+#define wxSCI_POWERPRO_IDENTIFIER 12
+#define wxSCI_POWERPRO_STRINGEOL 13
+#define wxSCI_POWERPRO_VERBATIM 14
+#define wxSCI_POWERPRO_ALTQUOTE 15
+#define wxSCI_POWERPRO_FUNCTION 16
+
+// Lexical states for SCLEX_SML
+#define wxSCI_SML_DEFAULT 0
+#define wxSCI_SML_IDENTIFIER 1
+#define wxSCI_SML_TAGNAME 2
+#define wxSCI_SML_KEYWORD 3
+#define wxSCI_SML_KEYWORD2 4
+#define wxSCI_SML_KEYWORD3 5
+#define wxSCI_SML_LINENUM 6
+#define wxSCI_SML_OPERATOR 7
+#define wxSCI_SML_NUMBER 8
+#define wxSCI_SML_CHAR 9
+#define wxSCI_SML_STRING 11
+#define wxSCI_SML_COMMENT 12
+#define wxSCI_SML_COMMENT1 13
+#define wxSCI_SML_COMMENT2 14
+#define wxSCI_SML_COMMENT3 15
 
 //-----------------------------------------
 // Commands that can be bound to keystrokes
@@ -2669,7 +2747,7 @@ public:
     int GetPrintColourMode() const;
 
     // Find some text in the document.
-    int FindText(int minPos, int maxPos, const wxString& text, int flags, int* lengthFound = NULL);
+    int FindText(int minPos, int maxPos, const wxString& text, int flags=0, int* lengthFound = NULL);
 
     // On Windows, will draw the document into a display context such as a printer.
     int FormatRange(bool   doDraw,
@@ -2735,7 +2813,7 @@ public:
     void SetReadOnly(bool readOnly);
 
     // Will a paste succeed?
-    bool CanPaste();
+    bool CanPaste() const;
 
     // Are there any undoable actions in the undo history?
     bool CanUndo() const;
@@ -3555,6 +3633,93 @@ public:
 
     // Are keys always interpreted as Unicode?
     bool GetKeysUnicode() const;
+
+    // Set the alpha fill colour of the given indicator.
+    void IndicSetAlpha(int indicator, int alpha);
+
+    // Get the alpha fill colour of the given indicator.
+    int IndicGetAlpha(int indicator) const;
+
+    // Set extra ascent for each line
+    void SetExtraAscent(int extraAscent);
+
+    // Get extra ascent for each line
+    int GetExtraAscent() const;
+
+    // Set extra descent for each line
+    void SetExtraDescent(int extraDescent);
+
+    // Get extra descent for each line
+    int GetExtraDescent() const;
+
+    // Which symbol was defined for markerNumber with MarkerDefine
+    int MarkerSymbolDefined(int markerNumber);
+
+    // Set the text in the text margin for a line
+    void MarginSetText(int line, const wxString& text);
+
+    // Get the text in the text margin for a line
+    wxString MarginGetText(int line) const;
+
+    // Set the style number for the text margin for a line
+    void MarginSetStyle(int line, int style);
+
+    // Get the style number for the text margin for a line
+    int MarginGetStyle(int line) const;
+
+    // Set the style in the text margin for a line
+    void MarginSetStyles(int line, const wxString& styles);
+
+    // Get the styles in the text margin for a line
+    wxString MarginGetStyles(int line) const;
+
+    // Clear the margin text on all lines
+    void MarginTextClearAll();
+
+    // Get the start of the range of style numbers used for margin text
+    void MarginSetStyleOffset(int style);
+
+    // Get the start of the range of style numbers used for margin text
+    int MarginGetStyleOffset() const;
+
+    // Set the annotation text for a line
+    void AnnotationSetText(int line, const wxString& text);
+
+    // Get the annotation text for a line
+    wxString AnnotationGetText(int line) const;
+
+    // Set the style number for the annotations for a line
+    void AnnotationSetStyle(int line, int style);
+
+    // Get the style number for the annotations for a line
+    int AnnotationGetStyle(int line) const;
+
+    // Set the annotation styles for a line
+    void AnnotationSetStyles(int line, const wxString& styles);
+
+    // Get the annotation styles for a line
+    wxString AnnotationGetStyles(int line) const;
+
+    // Get the number of annotation lines for a line
+    int AnnotationGetLines(int line) const;
+
+    // Clear the annotations from all lines
+    void AnnotationClearAll();
+
+    // Set the visibility for the annotations for a view
+    void AnnotationSetVisible(int visible);
+
+    // Get the visibility for the annotations for a view
+    int AnnotationGetVisible() const;
+
+    // Get the start of the range of style numbers used for annotations
+    void AnnotationSetStyleOffset(int style);
+
+    // Get the start of the range of style numbers used for annotations
+    int AnnotationGetStyleOffset() const;
+
+    // Add a container action to the undo stack
+    void AddUndoAction(int token, int flags);
 
     // Start notifying the container of all key presses and commands.
     void StartRecord();

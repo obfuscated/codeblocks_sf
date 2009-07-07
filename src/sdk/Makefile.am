@@ -1,12 +1,12 @@
-SUBDIRS = scripting wxscintilla wxFlatNotebook resources
+SUBDIRS = scripting wxscintilla resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/include/wxscintilla/include \
 			-I$(top_srcdir)/src/include/tinyxml \
 			-I$(top_srcdir)/src/include/scripting/include \
-			-I$(top_srcdir)/src/include/scripting/sqplus \
-			-I$(top_srcdir)/src/include/wxFlatNotebook/include
+ 			-I$(top_srcdir)/src/include/scripting/sqplus \
+			-I$(top_srcdir)/src/include/mozilla_chardet
 
 lib_LTLIBRARIES = libcodeblocks.la
 
@@ -18,8 +18,7 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 			scripting/sqstdlib/libsqstdlib.la \
 			scripting/squirrel/libsquirrel.la \
 			../base/tinyxml/libtinyxml.la \
-			wxscintilla/libwxscintilla.la \
-			wxFlatNotebook/libwxflatnotebook.la
+			wxscintilla/libwxscintilla.la
 
 libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						autodetectcompilers.cpp \
@@ -105,4 +104,35 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						virtualbuildtargetsdlg.cpp \
 						workspaceloader.cpp \
 						xtra_res.cpp  \
-						nullptr.cpp
+						nullptr.cpp \
+						mozilla_chardet/src/CharDistribution.cpp \
+						mozilla_chardet/src/JpCntx.cpp \
+						mozilla_chardet/src/LangBulgarianModel.cpp \
+						mozilla_chardet/src/LangCyrillicModel.cpp \
+						mozilla_chardet/src/LangGreekModel.cpp \
+						mozilla_chardet/src/LangHebrewModel.cpp \
+						mozilla_chardet/src/LangHungarianModel.cpp \
+						mozilla_chardet/src/LangThaiModel.cpp \
+						mozilla_chardet/src/nsBig5Prober.cpp \
+						mozilla_chardet/src/nsCharSetProber.cpp \
+						mozilla_chardet/src/nsEscCharsetProber.cpp \
+						mozilla_chardet/src/nsEscSM.cpp \
+						mozilla_chardet/src/nsEUCJPProber.cpp \
+						mozilla_chardet/src/nsEUCKRProber.cpp \
+						mozilla_chardet/src/nsEUCTWProber.cpp \
+						mozilla_chardet/src/nsGB2312Prober.cpp \
+						mozilla_chardet/src/nsHebrewProber.cpp \
+						mozilla_chardet/src/nsLatin1Prober.cpp \
+						mozilla_chardet/src/nsMBCSGroupProber.cpp \
+						mozilla_chardet/src/nsMBCSSM.cpp \
+						mozilla_chardet/src/nsSBCharSetProber.cpp \
+						mozilla_chardet/src/nsSBCSGroupProber.cpp \
+						mozilla_chardet/src/nsSJISProber.cpp \
+						mozilla_chardet/src/nsUniversalDetector.cpp \
+						mozilla_chardet/src/nsUTF8Prober.cpp
+
+EXTRA_DIST =  	mozilla_chardet/src/Big5Freq.tab \
+		mozilla_chardet/src/EUCKRFreq.tab \
+		mozilla_chardet/src/EUCTWFreq.tab \
+		mozilla_chardet/src/GB2312Freq.tab \
+		mozilla_chardet/src/JISFreq.tab

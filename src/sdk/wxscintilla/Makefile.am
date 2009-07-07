@@ -24,13 +24,17 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/LexASY.cxx \
 							src/scintilla/src/LexAbaqus.cxx \
 							src/scintilla/src/LexCmake.cxx \
+							src/scintilla/src/LexCOBOL.cxx \
 							src/scintilla/src/LexD.cxx \
 							src/scintilla/src/LexGAP.cxx \
 							src/scintilla/src/LexMagik.cxx \
+							src/scintilla/src/LexNimrod.cxx \
 							src/scintilla/src/LexPLM.cxx \
+							src/scintilla/src/LexPowerPro.cxx \
 							src/scintilla/src/LexPowerShell.cxx \
 							src/scintilla/src/LexProgress.cxx \
 							src/scintilla/src/LexR.cxx \
+							src/scintilla/src/LexSML.cxx \
 							src/scintilla/src/PositionCache.cxx \
 							src/scintilla/src/RunStyles.cxx \
 							src/scintilla/src/RunStyles.h \
@@ -87,16 +91,20 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 							src/scintilla/src/LexRuby.cxx \
 							src/scintilla/src/LexScriptol.cxx \
 							src/scintilla/src/LexSmalltalk.cxx \
+							src/scintilla/src/LexSorcus.cxx \
 							src/scintilla/src/LexSpecman.cxx \
 							src/scintilla/src/LexSQL.cxx \
-							src/scintilla/src/LexTCL.cxx \
 							src/scintilla/src/LexTADS3.cxx \
+							src/scintilla/src/LexTACL.cxx \
+							src/scintilla/src/LexTAL.cxx \
+							src/scintilla/src/LexTCL.cxx \
 							src/scintilla/src/LexTeX.cxx \
 							src/scintilla/src/LexVB.cxx \
 							src/scintilla/src/LexVerilog.cxx \
 							src/scintilla/src/LexVHDL.cxx \
 							src/scintilla/src/LexYAML.cxx \
 							src/scintilla/src/LineMarker.cxx \
+							src/scintilla/src/PerLine.cxx \
 							src/scintilla/src/PropSet.cxx \
 							src/scintilla/src/RESearch.cxx \
 							src/scintilla/src/ScintillaBase.cxx \
@@ -133,6 +141,7 @@ noinst_HEADERS = src/scintilla/include/Accessor.h \
 							src/scintilla/src/Indicator.h \
 							src/scintilla/src/KeyMap.h \
 							src/scintilla/src/LineMarker.h \
+							src/scintilla/src/PerLine.h \
 							src/scintilla/src/RESearch.h \
 							src/scintilla/src/SVector.h \
 							src/scintilla/src/ScintillaBase.h \

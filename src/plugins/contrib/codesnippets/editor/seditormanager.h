@@ -31,8 +31,8 @@
 
 // forward decls
 class SEditorBase;
-class wxFlatNotebook;
-class wxFlatNotebookEvent;
+class wxAuiNotebook;
+class wxAuiNotebookEvent;
 class wxMenuBar;
 class SEditorColourSet;
 class cbProject;
@@ -65,7 +65,7 @@ class SEditorManager : public wxEvtHandler
         SEditorManager(const SEditorManager& rhs) { cbThrow(_T("Can't call SEditorManager's copy ctor!!!")); }
         virtual void operator=(const SEditorManager& rhs){ cbThrow(_T("Can't assign an SEditorManager* !!!")); }
 
-        wxFlatNotebook* GetNotebook(){ return m_pNotebook; }
+        wxAuiNotebook* GetNotebook(){ return m_pNotebook; }
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
@@ -135,10 +135,10 @@ class SEditorManager : public wxEvtHandler
         int GetLongestLinePixelWidth( int top_line = -1, int bottom_line = -1); //(pecan 2007/4/04)
 
         void OnGenericContextMenuHandler(wxCommandEvent& event);
-        void OnPageChanged(wxFlatNotebookEvent& event);
-        void OnPageChanging(wxFlatNotebookEvent& event);
-        void OnPageClosing(wxFlatNotebookEvent& event);
-        void OnPageContextMenu(wxFlatNotebookEvent& event);
+        void OnPageChanged(wxAuiNotebookEvent& event);
+        void OnPageChanging(wxAuiNotebookEvent& event);
+        void OnPageClose(wxAuiNotebookEvent& event);
+        void OnTabRightUp(wxAuiNotebookEvent& event);
         void OnClose(wxCommandEvent& event);
         void OnCloseAll(wxCommandEvent& event);
         void OnCloseAllOthers(wxCommandEvent& event);
@@ -184,7 +184,7 @@ class SEditorManager : public wxEvtHandler
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int ReplaceInFiles(cbFindReplaceData* data);
 
-        wxFlatNotebook* m_pNotebook;
+        wxAuiNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
         SEditorColourSet* m_Theme;
         ListCtrlLogger* m_pSearchLog;

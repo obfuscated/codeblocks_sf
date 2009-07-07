@@ -85,6 +85,8 @@ Description: contrib plugins for Code::Blocks IDE
     * Help
     * Keyboard shortcuts configuration
     * RAD gui-builder for wxWidgets (wxSmith)
+    * wxSmith contrib items
+    * wxSmith AUI
     * Selection of small games for relaxing between coding sessions! (BYOGames)
     * Autoversioning
     * ThreadSearch

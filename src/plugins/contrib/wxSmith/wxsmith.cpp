@@ -28,7 +28,7 @@
 #include "wxsresourcefactory.h"
 #include "properties/wxsproperties.h"
 
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/aui/auibook.h>
 #include <projectloader_hooks.h>
 #include "manager.h"
 #include "configmanager.h"
@@ -175,7 +175,7 @@ void wxSmith::BuildBrowserParents()
 
         default:
         {
-            wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+            wxAuiNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
             wxASSERT(Notebook!=0);
 
             // Creating main splitting object
@@ -425,7 +425,7 @@ wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
 
 void wxSmith::ShowResourcesTab()
 {
-    wxFlatNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+    wxAuiNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
     Notebook->SetSelection( Notebook->GetPageIndex(m_Splitter) );
 }
 

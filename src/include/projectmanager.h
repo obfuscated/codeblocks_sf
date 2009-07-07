@@ -27,8 +27,8 @@ class wxImageList;
 class ProjectFile;
 class FilesGroupsAndMasks;
 class cbWorkspace;
-class wxFlatNotebook;
-class wxFlatNotebookEvent;
+class wxAuiNotebook;
+class wxAuiNotebookEvent;
 
 DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
@@ -55,7 +55,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         ProjectManager(const ProjectManager& rhs) { cbThrow(_T("Can't call ProjectManager's copy ctor!!!")); }
         virtual void operator=(const ProjectManager& rhs){ cbThrow(_T("Can't assign an ProjectManager* !!!")); }
 
-        wxFlatNotebook* GetNotebook() { return m_pNotebook; }
+        wxAuiNotebook* GetNotebook() { return m_pNotebook; }
 
         const FilesGroupsAndMasks* GetFilesGroupsAndMasks() const { return m_pFileGroups; }
 
@@ -440,6 +440,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void InitPane();
         void BuildTree();
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
+        void OnTabContextMenu(wxAuiNotebookEvent& event);
         void OnTabPosition(wxCommandEvent& event);
         void OnProjectFileActivated(wxTreeEvent& event);
         void OnExecParameters(wxCommandEvent& event);
@@ -483,7 +484,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         int DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
         void RemoveFilesRecursively(wxTreeItemId& sel_id);
 
-        wxFlatNotebook* m_pNotebook;
+        wxAuiNotebook* m_pNotebook;
         wxTreeCtrl* m_pTree;
         wxTreeItemId m_TreeRoot;
         cbProject* m_pActiveProject;

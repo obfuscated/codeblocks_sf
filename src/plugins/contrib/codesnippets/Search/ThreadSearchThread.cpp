@@ -19,7 +19,7 @@
 	#include "cbeditor.h"
 #endif
 
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/aui/auibook.h>
 
 #include "ThreadSearchThread.h"
 #include "ThreadSearchEvent.h"

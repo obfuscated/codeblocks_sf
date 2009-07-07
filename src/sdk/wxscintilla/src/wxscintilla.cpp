@@ -29,7 +29,7 @@
 
 //----------------------------------------------------------------------
 
-const wxChar* wxSCINameStr = _T("SCIwindow");
+const wxChar* wxSCINameStr = wxT("SCIwindow");
 
 #ifdef MAKELONG
 #undef MAKELONG
@@ -55,7 +55,7 @@ static wxColour wxColourFromLong(long c) {
 
 static wxColour wxColourFromSpec(const wxString& spec) {
     // spec should be a colour name or "#RRGGBB"
-    if (spec.GetChar(0) == _T('#')) {
+    if (spec.GetChar(0) == wxT('#')) {
 
         long red, green, blue;
         red = green = blue = 0;
@@ -147,7 +147,8 @@ wxScintilla::wxScintilla (wxWindow *parent,
                           const wxPoint& pos,
                           const wxSize& size,
                           long style,
-                          const wxString& name) {
+                          const wxString& name)
+{
     m_swx = NULL;
     Create(parent, id, pos, size, style, name);
 }
@@ -158,14 +159,15 @@ bool wxScintilla::Create (wxWindow *parent,
                           const wxPoint& pos,
                           const wxSize& size,
                           long style,
-                          const wxString& name) {
+                          const wxString& name)
+{
 #ifdef __WXMAC__
     style |= wxVSCROLL | wxHSCROLL;
 #endif
     if (!wxControl::Create (parent, id, pos, size,
                             style | wxWANTS_CHARS | wxCLIP_CHILDREN,
                             wxDefaultValidator, name)) {
-        wxSafeShowMessage(_T("wxScintilla"),_T("Could not create a new wxControl instance."));
+        wxSafeShowMessage(wxT("wxScintilla"),wxT("Could not create a new wxControl instance."));
         return false;
     }
 
@@ -174,7 +176,7 @@ bool wxScintilla::Create (wxWindow *parent,
 #endif
     m_swx = new ScintillaWX(this);
     if (!m_swx)
-        wxSafeShowMessage(_T("wxScintilla"),_T("Could not create a new ScintillaWX instance."));
+        wxSafeShowMessage(wxT("wxScintilla"),wxT("Could not create a new ScintillaWX instance."));
     m_stopWatch.Start();
     m_lastKeyDownConsumed = false;
     // we need this here, because wxEvent::GetTimestamp() returns negative values on some systems
@@ -518,10 +520,10 @@ int wxScintilla::GetTabWidth() const
 void wxScintilla::SetCodePage (int codePage) {
 #if wxUSE_UNICODE
     wxASSERT_MSG (codePage == wxSCI_CP_UTF8,
-                  _T("Only wxSCI_CP_UTF8 may be used when wxUSE_UNICODE is on."));
+                  wxT("Only wxSCI_CP_UTF8 may be used when wxUSE_UNICODE is on."));
 #else
     wxASSERT_MSG (codePage != wxSCI_CP_UTF8,
-                  _T("wxSCI_CP_UTF8 may not be used when wxUSE_UNICODE is off."));
+                  wxT("wxSCI_CP_UTF8 may not be used when wxUSE_UNICODE is off."));
 #endif
     SendMsg(SCI_SETCODEPAGE, codePage);
 }
@@ -1590,7 +1592,7 @@ void wxScintilla::SetReadOnly (bool readOnly)
 }
 
 // Will a paste succeed?
-bool wxScintilla::CanPaste()
+bool wxScintilla::CanPaste() const
 {
     return SendMsg(SCI_CANPASTE, 0, 0) != 0;
 }
@@ -3218,6 +3220,212 @@ bool wxScintilla::GetKeysUnicode() const
     return SendMsg(SCI_GETKEYSUNICODE, 0, 0) != 0;
 }
 
+// Set the alpha fill colour of the given indicator.
+void wxScintilla::IndicSetAlpha(int indicator, int alpha)
+{
+    SendMsg(SCI_INDICSETALPHA, indicator, alpha);
+}
+
+// Get the alpha fill colour of the given indicator.
+int wxScintilla::IndicGetAlpha(int indicator) const
+{
+    return SendMsg(SCI_INDICGETALPHA, indicator, 0);
+}
+
+// Set extra ascent for each line
+void wxScintilla::SetExtraAscent(int extraAscent)
+{
+    SendMsg(SCI_SETEXTRAASCENT, extraAscent, 0);
+}
+
+// Get extra ascent for each line
+int wxScintilla::GetExtraAscent() const
+{
+    return SendMsg(SCI_GETEXTRAASCENT, 0, 0);
+}
+
+// Set extra descent for each line
+void wxScintilla::SetExtraDescent(int extraDescent)
+{
+    SendMsg(SCI_SETEXTRADESCENT, extraDescent, 0);
+}
+
+// Get extra descent for each line
+int wxScintilla::GetExtraDescent() const
+{
+    return SendMsg(SCI_GETEXTRADESCENT, 0, 0);
+}
+
+// Which symbol was defined for markerNumber with MarkerDefine
+int wxScintilla::MarkerSymbolDefined(int markerNumber)
+{
+    return SendMsg(SCI_MARKERSYMBOLDEFINED, markerNumber, 0);
+}
+
+// Set the text in the text margin for a line
+void wxScintilla::MarginSetText(int line, const wxString& text)
+{
+    SendMsg(SCI_MARGINSETTEXT, line, (sptr_t)(const char*)wx2sci(text));
+}
+
+// Get the text in the text margin for a line
+wxString wxScintilla::MarginGetText(int line) const
+{
+    int len = LineLength(line);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_MARGINGETTEXT, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Set the style number for the text margin for a line
+void wxScintilla::MarginSetStyle(int line, int style)
+{
+    SendMsg(SCI_MARGINSETSTYLE, line, style);
+}
+
+// Get the style number for the text margin for a line
+int wxScintilla::MarginGetStyle(int line) const
+{
+    return SendMsg(SCI_MARGINGETSTYLE, line, 0);
+}
+
+// Set the style in the text margin for a line
+void wxScintilla::MarginSetStyles(int line, const wxString& styles)
+{
+    SendMsg(SCI_MARGINSETSTYLES, line, (sptr_t)(const char*)wx2sci(styles));
+}
+
+// Get the styles in the text margin for a line
+wxString wxScintilla::MarginGetStyles(int line) const
+{
+    int len = LineLength(line);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_MARGINGETSTYLES, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Clear the margin text on all lines
+void wxScintilla::MarginTextClearAll()
+{
+    SendMsg(SCI_MARGINTEXTCLEARALL, 0, 0);
+}
+
+// Get the start of the range of style numbers used for margin text
+void wxScintilla::MarginSetStyleOffset(int style)
+{
+    SendMsg(SCI_MARGINSETSTYLEOFFSET, style, 0);
+}
+
+// Get the start of the range of style numbers used for margin text
+int wxScintilla::MarginGetStyleOffset() const
+{
+    return SendMsg(SCI_MARGINGETSTYLEOFFSET, 0, 0);
+}
+
+// Set the annotation text for a line
+void wxScintilla::AnnotationSetText(int line, const wxString& text)
+{
+    SendMsg(SCI_ANNOTATIONSETTEXT, line, (sptr_t)(const char*)wx2sci(text));
+}
+
+// Get the annotation text for a line
+wxString wxScintilla::AnnotationGetText(int line) const
+{
+    int len = LineLength(line);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_ANNOTATIONGETTEXT, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Set the style number for the annotations for a line
+void wxScintilla::AnnotationSetStyle(int line, int style)
+{
+    SendMsg(SCI_ANNOTATIONSETSTYLE, line, style);
+}
+
+// Get the style number for the annotations for a line
+int wxScintilla::AnnotationGetStyle(int line) const
+{
+    return SendMsg(SCI_ANNOTATIONGETSTYLE, line, 0);
+}
+
+// Set the annotation styles for a line
+void wxScintilla::AnnotationSetStyles(int line, const wxString& styles)
+{
+    SendMsg(SCI_ANNOTATIONSETSTYLES, line, (sptr_t)(const char*)wx2sci(styles));
+}
+
+// Get the annotation styles for a line
+wxString wxScintilla::AnnotationGetStyles(int line) const
+{
+    int len = LineLength(line);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_ANNOTATIONGETSTYLES, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Get the number of annotation lines for a line
+int wxScintilla::AnnotationGetLines(int line) const
+{
+    return SendMsg(SCI_ANNOTATIONGETLINES, line, 0);
+}
+
+// Clear the annotations from all lines
+void wxScintilla::AnnotationClearAll()
+{
+    SendMsg(SCI_ANNOTATIONCLEARALL, 0, 0);
+}
+
+// Set the visibility for the annotations for a view
+void wxScintilla::AnnotationSetVisible(int visible)
+{
+    SendMsg(SCI_ANNOTATIONSETVISIBLE, visible, 0);
+}
+
+// Get the visibility for the annotations for a view
+int wxScintilla::AnnotationGetVisible() const
+{
+    return SendMsg(SCI_ANNOTATIONGETVISIBLE, 0, 0);
+}
+
+// Get the start of the range of style numbers used for annotations
+void wxScintilla::AnnotationSetStyleOffset(int style)
+{
+    SendMsg(SCI_ANNOTATIONSETSTYLEOFFSET, style, 0);
+}
+
+// Get the start of the range of style numbers used for annotations
+int wxScintilla::AnnotationGetStyleOffset() const
+{
+    return SendMsg(SCI_ANNOTATIONGETSTYLEOFFSET, 0, 0);
+}
+
+// Add a container action to the undo stack
+void wxScintilla::AddUndoAction(int token, int flags)
+{
+    SendMsg(SCI_ADDUNDOACTION, token, flags);
+}
+
 // Start notifying the container of all key presses and commands.
 void wxScintilla::StartRecord ()
 {
@@ -3331,38 +3539,38 @@ int wxScintilla::GetCurrentLine () {
 //
 void wxScintilla::StyleSetSpec (int styleNum, const wxString& spec) {
 
-    wxStringTokenizer tkz (spec, _T(","));
+    wxStringTokenizer tkz (spec, wxT(","));
     while (tkz.HasMoreTokens()) {
         wxString token = tkz.GetNextToken();
 
         wxString option = token.BeforeFirst(':');
         wxString val = token.AfterFirst(':');
 
-        if (option == _T("bold"))
+        if (option == wxT("bold"))
             StyleSetBold(styleNum, true);
 
-        else if (option == _T("italic"))
+        else if (option == wxT("italic"))
             StyleSetItalic(styleNum, true);
 
-        else if (option == _T("underline"))
+        else if (option == wxT("underline"))
             StyleSetUnderline(styleNum, true);
 
-        else if (option == _T("eol"))
+        else if (option == wxT("eol"))
             StyleSetEOLFilled(styleNum, true);
 
-        else if (option == _T("size")) {
+        else if (option == wxT("size")) {
             long points;
             if (val.ToLong(&points))
                 StyleSetSize(styleNum, points);
         }
 
-        else if (option == _T("face"))
+        else if (option == wxT("face"))
             StyleSetFaceName(styleNum, val);
 
-        else if (option == _T("fore"))
+        else if (option == wxT("fore"))
             StyleSetForeground(styleNum, wxColourFromSpec(val));
 
-        else if (option == _T("back"))
+        else if (option == wxT("back"))
             StyleSetBackground(styleNum, wxColourFromSpec(val));
     }
 }
@@ -3393,7 +3601,7 @@ void wxScintilla::StyleSetFont (int styleNum, wxFont& font) {
 #ifdef __WXGTK__
     // Ensure that the native font is initialized
     int x, y;
-    GetTextExtent (_T("X"), &x, &y, NULL, NULL, &font);
+    GetTextExtent (wxT("X"), &x, &y, NULL, NULL, &font);
 #endif
     int            size     = font.GetPointSize();
     wxString       faceName = font.GetFaceName();

@@ -21,9 +21,10 @@
     #include "cbproject.h" // FileTreeData
     #include <wx/wfstream.h>
 #endif
-#include "cbstyledtextctrl.h"
 
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
+
+#include "cbstyledtextctrl.h"
 
 // needed for initialization of variables
 int editorbase_RegisterId(int id)

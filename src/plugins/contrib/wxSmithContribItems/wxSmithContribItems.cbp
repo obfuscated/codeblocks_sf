@@ -6,6 +6,44 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
+			<Target title="wxFlatNotebook">
+				<Option output="..\..\..\devel\wxflatnotebook.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add directory="wxflatnotebook\wxFlatNotebook\include" />
+				</Compiler>
+			</Target>
+			<Target title="wxChartCtrl">
+				<Option output="..\..\..\devel\wxchartctrl.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-DWXMAKINGDLL_CHART" />
+					<Add directory="wxchart\wxchart-1.0\include" />
+				</Compiler>
+			</Target>
+			<Target title="wxCustomButton">
+				<Option output="..\..\..\devel\wxcustombutton.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-DWXMAKINGDLL_THINGS" />
+					<Add directory="wxthings\wxthings\include" />
+				</Compiler>
+			</Target>
 			<Target title="wxSmithContribItems">
 				<Option platforms="Windows;" />
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxSmithContribItems.dll" prefix_auto="0" extension_auto="0" />
@@ -13,6 +51,33 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="$(#cb)\devel\codeblocks.exe" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWXMAKINGLIB_PROPGRID" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\include\wxscintilla\include" />
+					<Add directory="..\wxSmith\propgrid\contrib\include" />
+					<Add directory="..\wxSmith" />
+					<Add directory="wxchart\wxchart-1.0\include" />
+					<Add directory="wxthings\wxthings\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="wxflatnotebook" />
+					<Add library="wxsmithlib" />
+					<Add library="codeblocks" />
+					<Add library="wxchartctrl" />
+					<Add library="wxcustombutton" />
+					<Add directory="wxflatnotebook" />
+					<Add directory="..\..\..\devel" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithContribItems.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
@@ -20,7 +85,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxSmithContribItems;" />
+			<Add alias="All" targets="wxFlatNotebook;wxChartCtrl;wxCustomButton;wxSmithContribItems;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-g" />
@@ -29,151 +94,262 @@
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
-			<Add option="-DcbDEBUG" />
-			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-DWXMAKINGLIB_PROPGRID" />
-			<Add option="-DWXMAKINGDLL_THINGS" />
-			<Add option="-DWXMAKINGDLL_CHART" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
-			<Add directory="..\..\..\include\wxFlatNotebook\include" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\wxSmith\propgrid\contrib\include" />
-			<Add directory="..\wxSmith" />
-			<Add directory="wxchart\wxchart-1.0\include" />
-			<Add directory="wxthings\wxthings\include" />
+			<Add directory="wxflatnotebook\wxFlatNotebook\include" />
 		</Compiler>
 		<Linker>
-			<Add option="-Wl,--enable-auto-import" />
-			<Add library="wxsmithlib" />
-			<Add library="codeblocks" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add directory="..\..\..\devel" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
-		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithContribItems.zip manifest.xml" />
-		</ExtraCommands>
-		<Unit filename="manifest.xml" />
-		<Unit filename="wxSmithContribItems.cpp" />
-		<Unit filename="wxSmithContribItems.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\axis.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\bar3dchartpoints.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\barchartpoints.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chart.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zin.bmp" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zin.xpm" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zot.bmp" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zot.xpm" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartcolors.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartctrl.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartdef.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpoints.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpointstypes.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\charttypes.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\chartwindow.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\label.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\legend.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\legendwindow.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\pie3dchartpoints.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\piechartpoints.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\points.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\xaxis.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\xaxiswindow.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\yaxis.h" />
-		<Unit filename="wxchart\wxchart-1.0\include\wx\yaxiswindow.h" />
-		<Unit filename="wxchart\wxchart-1.0\src\axis.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\bar3dchartpoints.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\barchartpoints.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\chart.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\chartcolors.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\chartctrl.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\chartwindow.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\label.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\legend.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\legendwindow.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\pie3dchartpoints.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\piechartpoints.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\points.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\xaxis.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\xaxiswindow.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\yaxis.cpp" />
-		<Unit filename="wxchart\wxchart-1.0\src\yaxiswindow.cpp" />
-		<Unit filename="wxchart\wxchart16.png" />
-		<Unit filename="wxchart\wxchart16.xpm" />
-		<Unit filename="wxchart\wxchart32.png" />
-		<Unit filename="wxchart\wxchart32.xpm" />
-		<Unit filename="wxchart\wxschart.cpp" />
-		<Unit filename="wxchart\wxschart.h" />
-		<Unit filename="wxflatnotebook\images\flatnote16.png" />
-		<Unit filename="wxflatnotebook\images\flatnote16.xpm" />
-		<Unit filename="wxflatnotebook\images\flatnote32.png" />
-		<Unit filename="wxflatnotebook\images\flatnote32.xpm" />
-		<Unit filename="wxflatnotebook\wxsFlatNotebook.cpp" />
-		<Unit filename="wxflatnotebook\wxsFlatNotebook.h" />
-		<Unit filename="wxthings\wxscustombutton.cpp" />
-		<Unit filename="wxthings\wxscustombutton.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\block.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\bmpcombo.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\dropdown.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\filebrws.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\genergdi.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\geometry.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\medsort.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\menubtn.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\optvalue.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\range.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\spinctld.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\thingdef.h" />
-		<Unit filename="wxthings\wxthings\include\wx\things\toggle.h" />
-		<Unit filename="wxthings\wxthings\src\block.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="manifest.xml">
+			<Option target="wxSmithContribItems" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\bmpcombo.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxSmithContribItems.cpp">
+			<Option target="wxSmithContribItems" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\dropdown.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxSmithContribItems.h">
+			<Option target="wxSmithContribItems" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\filebrws.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\axis.h">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\genergdi.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\bar3dchartpoints.h">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\geometry.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\barchartpoints.h">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\menubtn.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chart.h">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\optvalue.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zin.bmp">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\range.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zin.xpm">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\spinctld.cpp">
-			<Option compile="0" />
-			<Option link="0" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zot.bmp">
+			<Option target="wxChartCtrl" />
 		</Unit>
-		<Unit filename="wxthings\wxthings\src\toggle.cpp" />
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartart\chart_zot.xpm">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartcolors.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartctrl.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartdef.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpointstypes.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\charttypes.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartwindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\label.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\legend.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\legendwindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\pie3dchartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\piechartpoints.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\points.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\xaxis.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\xaxiswindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\yaxis.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\yaxiswindow.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\axis.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\bar3dchartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\barchartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\chart.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\chartcolors.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\chartctrl.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\chartwindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\label.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\legend.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\legendwindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\pie3dchartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\piechartpoints.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\points.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\xaxis.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\xaxiswindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\yaxis.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\yaxiswindow.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart16.png">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxchart\wxchart16.xpm">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxchart\wxchart32.png">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxchart\wxchart32.xpm">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxchart\wxschart.cpp">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxchart\wxschart.h">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxflatnotebook\images\flatnote16.png">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxflatnotebook\images\flatnote16.xpm">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxflatnotebook\images\flatnote32.png">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxflatnotebook\images\flatnote32.xpm">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\fnb_customize_dlg.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\fnb_resources.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\fnb_singleton.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\fnb_smart_ptr.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\popup_dlg.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\renderer.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\wxFNBDropTarget.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\wxFlatNotebook.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\wxFlatNotebookSDK.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\include\wx\wxFlatNotebook\xh_fnb.h">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\src\wxFlatNotebook\fnb_customize_dlg.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\src\wxFlatNotebook\fnb_resources.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\src\wxFlatNotebook\popup_dlg.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\src\wxFlatNotebook\renderer.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\src\wxFlatNotebook\wxFlatNotebook.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxFlatNotebook\src\wxFlatNotebook\xh_fnb.cpp">
+			<Option target="wxFlatNotebook" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxsFlatNotebook.cpp">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxflatnotebook\wxsFlatNotebook.h">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxcustombutton16.png">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxcustombutton16.xpm">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxcustombutton32.png">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxcustombutton32.xpm">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxscustombutton.cpp">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxscustombutton.h">
+			<Option target="wxSmithContribItems" />
+		</Unit>
+		<Unit filename="wxthings\wxthings\include\wx\things\toggle.h">
+			<Option target="wxCustomButton" />
+		</Unit>
+		<Unit filename="wxthings\wxthings\src\toggle.cpp">
+			<Option target="wxCustomButton" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />

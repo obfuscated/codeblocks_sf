@@ -54,7 +54,7 @@ class wxsSizerFlagsProperty: public wxsProperty
          *  \param Offset   offset to long handling border flags
          *  \param Priority         priority of this property
          */
-		wxsSizerFlagsProperty(long Offset,int Priority);
+        wxsSizerFlagsProperty(long Offset,int Priority);
 
         /** \brief Returning type of this property */
         virtual const wxString GetTypeName() { return _T("SizerFlags"); }

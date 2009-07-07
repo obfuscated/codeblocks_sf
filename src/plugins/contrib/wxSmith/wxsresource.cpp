@@ -24,7 +24,7 @@
 #include "wxsextresmanager.h"
 #include "wxsresourcetreeitemdata.h"
 
-#include <wx/wxFlatNotebook/wxFlatNotebook.h>
+#include <wx/aui/auibook.h>
 #include <editormanager.h>
 
 namespace

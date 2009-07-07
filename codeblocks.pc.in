@@ -15,5 +15,4 @@ Cflags: -I${includedir}/@PACKAGE@ \
 			-I${includedir}/@PACKAGE@/scripting/include \
 			-I${includedir}/@PACKAGE@/scripting/bindings \
 			-I${includedir}/@PACKAGE@/scripting/sqplus \
-			-I${includedir}/@PACKAGE@/wxFlatNotebook/include \
 			-I${includedir}/@PACKAGE@/wxscintilla/include

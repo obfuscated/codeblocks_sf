@@ -9,23 +9,15 @@
 
 #include <logmanager.h>
 
-#ifdef CB_USE_AUI_NOTEBOOK
-    #include <wx/aui/auibook.h>
-    typedef wxAuiNotebook InfoPaneNotebook;
-    typedef wxAuiNotebook PieceOfShitBaseClass;
-    static const int infopane_flags = wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT;
-#else
-    #include <wx/wxFlatNotebook/wxFlatNotebook.h>
-    typedef wxFlatNotebook InfoPaneNotebook;
-    typedef wxPanel PieceOfShitBaseClass;
-    static const int infopane_flags = wxFNB_NO_X_BUTTON | wxFNB_FF2;
-#endif
+#include <wx/aui/auibook.h>
+
+static const int infopane_flags = wxAUI_NB_WINDOWLIST_BUTTON | wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT;
 
 class wxWindow;
 class wxCommandEvent;
 class wxMouseEvent;
 
-class InfoPane : public InfoPaneNotebook
+class InfoPane : public wxAuiNotebook
 {
     DECLARE_EVENT_TABLE()
 
@@ -53,6 +45,8 @@ class InfoPane : public InfoPaneNotebook
     void OnCopy(wxCommandEvent& event);
     void OnClear(wxCommandEvent& event);
     void ContextMenu(wxContextMenuEvent& event);
+    void OnTabContextMenu(wxAuiNotebookEvent& event);
+    void OnTabPosition(wxCommandEvent& event);
 
 	int AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
 public:

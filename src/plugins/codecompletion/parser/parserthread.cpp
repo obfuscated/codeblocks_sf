@@ -18,6 +18,8 @@
 #include <cctype>
 #include <queue>
 
+#define PARSER_DEBUG_OUTPUT 0
+
 int THREAD_START = wxNewId();
 int THREAD_END = wxNewId();
 int NEW_TOKEN = wxNewId();
@@ -380,8 +382,8 @@ void ParserThread::DoParse()
         wxString token = m_Tokenizer.GetToken();
         if (token.IsEmpty())
             continue;
-#if 0
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("m_Str='%s', token='%s'"), m_Str.c_str(), token.c_str()));
+#if PARSER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("\tDoParse Loop:m_Str='%s', token='%s'"), m_Str.c_str(), token.c_str()));
 #endif
 
         if (token==ParserConsts::semicolon)
@@ -592,8 +594,8 @@ void ParserThread::DoParse()
                     m_EncounteredTypeNamespaces.empty() &&
                     (!m_pLastParent || m_pLastParent->m_Name != token)) // if func has same name as current scope (class)
                 {
-                    m_Str.Clear();
-                    m_Tokenizer.GetToken(); // eat args ()
+                    wxString arg = m_Tokenizer.GetToken(); // eat args ()
+                    m_Str = token+arg;
                 }
                 else if (peek.GetChar(0) == '(' && m_Options.handleFunctions)
                 {
@@ -1237,6 +1239,7 @@ void ParserThread::HandleClass(bool isClass)
 
                 m_pLastParent = lastParent;
                 m_LastScope = lastScope;
+                m_LastUnnamedTokenName = current;
                 break;
             }
             else if (next==ParserConsts::semicolon) // forward decl; we don't care
@@ -1257,11 +1260,14 @@ void ParserThread::HandleClass(bool isClass)
 
 void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 {
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'")));
+#if PARSER_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding function '")+name+_T("': m_Str='")+m_Str+_T("'")));
+#endif
     wxString args = m_Tokenizer.GetToken();
     wxString peek = m_Tokenizer.PeekToken();
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("ParserThread::HandleFunction: name='")+name+_T("', args='")+args+_T("', peek='")+peek+_T("'")));
-
+#if PARSER_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("ParserThread::HandleFunction: name='")+name+_T("', args='")+args+_T("', peek='")+peek+_T("'")));
+#endif
     if (!m_Str.StartsWith(ParserConsts::kw_friend))
     {
         int lineNr = m_Tokenizer.GetLineNumber();
@@ -1332,6 +1338,9 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             m_Tokenizer.GetToken();
             peek = m_Tokenizer.PeekToken();
         }
+#if PARSER_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'")));
+#endif
         Token* NewToken =  DoAddToken(kind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
         if(NewToken)
         {
@@ -1474,8 +1483,14 @@ void ParserThread::HandleTypedef()
             token == ParserConsts::kw_struct)
         {
             // "typedef struct|class"
+#if PARSER_DEBUG_OUTPUT
+            Manager::Get()->GetLogManager()->DebugLog(F(_("Before HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.c_str()));
+#endif
             HandleClass(token == ParserConsts::kw_class);
             token = m_LastUnnamedTokenName;
+#if PARSER_DEBUG_OUTPUT
+            Manager::Get()->GetLogManager()->DebugLog(F(_("After HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.c_str()));
+#endif
         }
         else if (token == ParserConsts::kw_enum)
         {
@@ -1564,8 +1579,9 @@ void ParserThread::HandleTypedef()
 
     // no return type
     m_Str.Clear();
-
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Adding typedef: name '%s', ancestor: '%s'"), components.front().c_str(), ancestor.c_str());
+#if PARSER_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(F(_("Adding typedef: name='%s', ancestor='%s'"), components.front().c_str(), ancestor.c_str()));
+#endif
     Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
     if (tdef)
     {

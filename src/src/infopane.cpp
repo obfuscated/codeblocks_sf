@@ -25,46 +25,44 @@ namespace
 	int idClear = wxNewId();
 	int idCopySelectedToClipboard = wxNewId();
 	int idCopyAllToClipboard = wxNewId();
+	int idNB = wxNewId();
+	int idNB_TabTop = wxNewId();
+	int idNB_TabBottom = wxNewId();
 };
 
-BEGIN_EVENT_TABLE(InfoPane, PieceOfShitBaseClass)
+BEGIN_EVENT_TABLE(InfoPane, wxAuiNotebook)
     EVT_MENU(idClear,  InfoPane::OnClear)
     EVT_MENU_RANGE(idCopySelectedToClipboard, idCopyAllToClipboard,  InfoPane::OnCopy)
     EVT_MENU(wxID_ANY,  InfoPane::OnMenu)
     EVT_CONTEXT_MENU(InfoPane::ContextMenu)
+    EVT_AUINOTEBOOK_TAB_RIGHT_UP(idNB, InfoPane::OnTabContextMenu)
+    EVT_MENU(idNB_TabTop, InfoPane::OnTabPosition)
+    EVT_MENU(idNB_TabBottom, InfoPane::OnTabPosition)
 END_EVENT_TABLE()
 
 
-InfoPane::InfoPane(wxWindow* parent) : InfoPaneNotebook(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
+InfoPane::InfoPane(wxWindow* parent) : wxAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
 {
 	defaultBitmap = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/edit_16x16.png"), wxBITMAP_TYPE_PNG);
-	
+	if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
+		SetWindowStyleFlag(GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
+
     wxRegisterId(baseID + num_pages);
     for(int i = 0; i < num_pages; ++i)
     {
         page[i] = Page();
     }
-
-#ifndef CB_USE_AUI_NOTEBOOK
-    SetImageList(new wxFlatNotebookImageList);
-#endif
 }
 
 InfoPane::~InfoPane()
 {
-    delete GetImageList();
 }
 
 int InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon)
 {
 	const wxBitmap& bmp = icon ? *icon : defaultBitmap;
 
-#ifdef CB_USE_AUI_NOTEBOOK
 	AddPage(p, title, false, bmp);
-#else
-    GetImageList()->push_back(bmp);
-	AddPage(p, title, false, GetImageList()->size() - 1);
-#endif
 	return GetPageCount() - 1;
 }
 
@@ -200,7 +198,7 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
 	}
 	else
 		view = &menu;
-	
+
     for(int i = 0; i < num_pages; ++i)
     {
         if(page[i].window)
@@ -235,8 +233,27 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
     PopupMenu(&menu);
 }
 
+void InfoPane::OnTabContextMenu(wxAuiNotebookEvent& event)
+{
+    wxMenu* NBmenu = new wxMenu();
+    NBmenu->Append(idNB_TabTop, _("Tabs at top"));
+    NBmenu->Append(idNB_TabBottom, _("Tabs at bottom"));
+    PopupMenu(NBmenu);
+    delete NBmenu;
+}
 
+void InfoPane::OnTabPosition(wxCommandEvent& event)
+{
+    long style = GetWindowStyleFlag();
+    style &= ~wxAUI_NB_BOTTOM;
 
+    if (event.GetId() == idNB_TabBottom)
+        style |= wxAUI_NB_BOTTOM;
+    SetWindowStyleFlag(style);
+    Refresh();
+    // (style & wxAUI_NB_BOTTOM) saves info only about the the tabs position
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/infopane_tabs_bottom"), (bool)(style & wxAUI_NB_BOTTOM));
+}
 
 int InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon)
 {
@@ -283,7 +300,7 @@ bool InfoPane::DeleteLogger(Logger* l)
 	{
 		return false;
 	}
-	
+
     for(int i = 0; i < num_pages; ++i)
     {
         if(page[i].logger == l)
@@ -293,12 +310,12 @@ bool InfoPane::DeleteLogger(Logger* l)
         	{
 				Manager::Get()->GetLogManager()->DeleteLog(index);
         	}
-            
+
             if (page[i].indexInNB != -1)
             {
 				DeletePage(GetPageIndex(page[i].window));
             }
-            
+
             page[i] = Page();
             return true;
         }

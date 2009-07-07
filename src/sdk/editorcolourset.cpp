@@ -438,11 +438,15 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
     if (lang == HL_NONE)
         return;
 
-    // first load the default colours to all styles (ignoring some built-in styles)
+    // first load the default colours to all styles used by the actual lexer (ignoring some built-in styles)
     OptionColour* defaults = GetOptionByName(lang, _("Default"));
+    OptionSet& mset = m_Sets[lang];
+    control->SetLexer(mset.m_Lexers);
+    control->SetStyleBits(control->GetStyleBitsNeeded());
     if (defaults)
     {
-        for (int i = 0; i < wxSCI_STYLE_MAX; ++i)
+        int countStyles = 1 << control->GetStyleBits();
+        for (int i = 0; i < countStyles; ++i)
         {
             if (i < 33 || i > 39)
                 DoApplyStyle(control, i, defaults);
@@ -453,7 +457,6 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
     // this makes sure it stays the correct colour
     control->StyleSetForeground(wxSCI_STYLE_LINENUMBER, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
 
-    OptionSet& mset = m_Sets[lang];
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
         OptionColour* opt = mset.m_Colours.Item(i);
@@ -494,8 +497,6 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
 //            }
         }
     }
-    control->SetLexer(mset.m_Lexers);
-    control->SetStyleBits(control->GetStyleBitsNeeded());
     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
     {
         control->SetKeyWords(i, mset.m_Keywords[i]);

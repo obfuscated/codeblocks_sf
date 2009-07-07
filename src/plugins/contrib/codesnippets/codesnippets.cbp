@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="Plugin - Win32">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\plugin\" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -21,7 +21,7 @@
 			</Target>
 			<Target title="App - Win32">
 				<Option output="..\..\..\devel\codesnippets.exe" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\app\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -39,7 +39,6 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-g" />
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
@@ -55,17 +54,16 @@
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\include\wxscintilla\include" />
 			<Add directory="..\..\..\src" />
-			<Add directory="..\..\..\include\wxFlatNotebook\include" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="Search" />
 			<Add directory="editor" />
 			<Add directory="." />
 			<Add directory="..\..\..\include\tinyxml" />
+			<Add directory="..\..\..\include\mozilla_chardet" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
-			<Add library="wxflatnotebook" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="txml" />
 			<Add library="wxscintilla" />
@@ -73,7 +71,6 @@
 			<Add directory="..\..\..\devel" />
 			<Add directory="..\..\..\base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\..\sdk\wxFlatNotebook" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />

@@ -19,7 +19,7 @@ noinst_HEADERS = cbkeybinder.h \
 			keybinder.h \
 			menuutils.h
 
-EXTRA_DIST = keybinder.cbp manifest.xml
+EXTRA_DIST = $(srcdir)/*.cbp manifest.xml
 
 
 pkgdata_DATA = keybinder.zip

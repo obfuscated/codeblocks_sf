@@ -32,7 +32,6 @@
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/wxscintilla/include" />
-			<Add directory="../../../include/wxFlatNotebook/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

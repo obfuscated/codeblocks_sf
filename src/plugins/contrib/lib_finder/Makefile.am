@@ -3,11 +3,12 @@ SUBDIRS = lib_finder
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
-		-I$(top_srcdir)/src/include/wxFlatNotebook/include \
+		-I$(srcdir)/../wxSmithContribItems/wxflatnotebook/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
 		-I$(top_srcdir)/src/include/scripting/squirrel \
-		-I$(top_srcdir)/src/include/scripting/bindings
+		-I$(top_srcdir)/src/include/scripting/bindings \
+		-I$(top_srcdir)/src/include/mozilla_chardet
 
 pluginlibdir = $(pkglibdir)/plugins
 
@@ -15,7 +16,9 @@ pluginlib_LTLIBRARIES = liblib_finder.la
 
 liblib_finder_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-liblib_finder_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
+liblib_finder_la_LIBADD = $(PLUGIN_WX_LIBS) \
+		../../../sdk/libcodeblocks.la \
+		../wxSmithContribItems/wxflatnotebook/wxFlatNotebook/libwxflatnotebook.la
 
 liblib_finder_la_SOURCES = \
 		librariesdlg.cpp \
@@ -58,7 +61,8 @@ EXTRA_DIST = \
 	update \
 	update.bat \
 	readme.txt \
-	manifest.xml
+	manifest.xml \
+	wxsmith/*.wxs
 #	license.txt
 
 pkgdata_DATA = lib_finder.zip

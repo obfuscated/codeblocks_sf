@@ -21,11 +21,11 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/dnd.h>
 #include <wx/utils.h>
+#include <wx/aui/auibook.h>
 
 
 #include <filefilters.h>
 #include <cbworkspace.h>
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 
 #include "ThreadSearchFrame.h"
 #include "ThreadSearch.h"
@@ -361,8 +361,8 @@ void ThreadSearchFrame::OnClose(wxCloseEvent &event)
 
     //-if (GetConfig()->IsApplication())
     {   // we have to close all open editors or we'll crash
-        // in wxFlatNoteBook::GetPageCount(). EditoManager call wxFlatnotebook
-        // to close 'em, but wxFlatnotebook has alread been deleted by
+        // in wxAuiNoteBook::GetPageCount(). EditoManager call wxAuiNotebook
+        // to close 'em, but wxAuiNotebook has alread been deleted by
         // wxWidgets Destory().
         SEditorManager* pEdMan = GetConfig()->GetEditorManager(this);
         if (pEdMan)

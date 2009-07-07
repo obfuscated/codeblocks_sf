@@ -626,8 +626,8 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     {
         // popup menu on a project
         menu->AppendSeparator();
-        menu->Append(idMenuCompileFromProjectManager, _("Build\tCtrl-F9"));
-        menu->Append(idMenuRebuildFromProjectManager, _("Rebuild\tCtrl-F11"));
+        menu->Append(idMenuCompileFromProjectManager, _("Build"));
+        menu->Append(idMenuRebuildFromProjectManager, _("Rebuild"));
         menu->Append(idMenuCleanFromProjectManager, _("Clean"));
         menu->AppendSeparator();
         menu->Append(idMenuProjectCompilerOptionsFromProjectManager, _("Build options..."));

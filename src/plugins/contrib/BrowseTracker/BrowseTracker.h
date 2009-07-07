@@ -33,7 +33,7 @@ class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
 class cbStyledTextCtrl;
-class wxFlatNotebookEvent;
+class wxAuiNotebookEvent;
 
 // ----------------------------------------------------------------------------
 // The following have been moved to BrowseTrackerDefs.h
@@ -215,7 +215,7 @@ class BrowseTracker : public cbPlugin
         void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
         void OnStartShutdown(CodeBlocksEvent& event);
-        void OnPageChanged(wxFlatNotebookEvent& event);
+        void OnPageChanged(wxAuiNotebookEvent& event);
 
         void OnMenuBrowseMarkPrevious(wxCommandEvent& event);
         void OnMenuBrowseMarkNext(wxCommandEvent& event);

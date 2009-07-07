@@ -1,6 +1,3 @@
-#ifndef HEADER_799C3ACA6BDBCBC9
-#define HEADER_799C3ACA6BDBCBC9
-
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
@@ -267,5 +264,3 @@ inline bool LoadStringFromFile(wxInputStream* f, wxString& str)
 }
 
 #endif // TOKEN_H
-
-#endif // header guard

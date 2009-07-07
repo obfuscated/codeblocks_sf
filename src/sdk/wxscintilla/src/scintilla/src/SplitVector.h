@@ -43,7 +43,7 @@ protected:
 	/// reallocating if more space needed.
 	void RoomFor(int insertionLength) {
 		if (gapLength <= insertionLength) {
-			if (growSize * 6 < size)
+			while (growSize < size / 6)
 				growSize *= 2;
 			ReAllocate(size + insertionLength + growSize);
 		}
@@ -97,7 +97,7 @@ public:
 
 	/// Retrieve the character at a particular position.
 	/// Retrieving positions outside the range of the buffer returns 0.
-	/// The assertions here are disabled since calling code can be
+	/// The assertions here are disabled since calling code can be 
 	/// simpler if out of range access works and returns 0.
 	T ValueAt(int position) const {
 		if (position < part1Length) {
@@ -182,7 +182,7 @@ public:
 		}
 	}
 
-	/// Ensure at least length elements allocated,
+	/// Ensure at least length elements allocated, 
 	/// appending zero valued elements if needed.
 	void EnsureLength(int wantedLength) {
 		if (Length() < wantedLength) {

@@ -16,8 +16,8 @@ libcb_koders_la_SOURCES = kodersdialog.cpp \
 noinst_HEADERS = kodersdialog.h \
 			cb_koders.h
 
-EXTRA_DIST = wxsmith/KodersDialog.wxs \
-			cb_koders.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
+		wxsmith/KodersDialog.wxs \
 			manifest.xml
 
 pkgdata_DATA = cb_koders.zip

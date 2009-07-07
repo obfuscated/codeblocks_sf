@@ -232,6 +232,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/Valgrind.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
+%{pkgdata}/wxsmithaui.zip
 %{pkgdata}/HexEditor.zip
 %{pkgdata}/IncrementalSearch.zip
 %{pkgdata}/images/wxsmith/*
@@ -261,6 +262,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libValgrind.*
 %{pkglib}/plugins/libwxsmith.*
 %{pkglib}/plugins/libwxsmithcontribitems.*
+%{pkglib}/plugins/libwxsmithaui.*
 %{_libdir}/libwxsmithlib.so.*
 
 %files devel

@@ -92,7 +92,6 @@
 	#include <wx/fileconf.h>
 
 
-//-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 #include "Version.h"
 #include "BrowseTracker.h"
 #include "BrowseSelector.h"
@@ -2702,23 +2701,4 @@ wxString BrowseTracker::GetCBConfigDir()
 //        else ++index;
 //    }//for
 //}
-////// ----------------------------------------------------------------------------
-////void BrowseTracker::OnPageChanged(wxFlatNotebookEvent& event)
-////// ----------------------------------------------------------------------------
-////{
-////    event.Skip(); // allow others to process it too
-////
-////    //-EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
-////    wxFlatNotebook* pNotebook = (wxFlatNotebook*)event.GetEventObject();
-////    int page = event.GetSelection();
-////    EditorBase* eb = static_cast<EditorBase*>(pNotebook->GetPage(page));
-////    LOGIT( _T("OnPageChanged eb[%p] title[%s]"), eb, eb ? eb->GetTitle().c_str() : _T(""));
-////
-////    // focus editor
-////    // The following still doesn't set focus to the new editor/page
-////    if (eb) eb->Show();
-////    if (eb) eb->SetFocus();
-////    // Try to focus the editor in UpdateUI;
-////    m_UpdateUIFocusEditor = true;
-////}
 // ----------------------------------------------------------------------------

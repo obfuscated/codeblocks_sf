@@ -18,4 +18,4 @@ libValgrind_la_SOURCES = Valgrind.cpp \
 noinst_HEADERS = Valgrind.h \
             ValgrindListLog.h
 
-EXTRA_DIST = 
+EXTRA_DIST = $(srcdir)/*.cbp

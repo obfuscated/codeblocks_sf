@@ -26,7 +26,7 @@
 #include <wx/button.h>
 #include <wx/frame.h>
 #include <wx/treectrl.h>
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
 
 //class Edit;
 class ScbEditor;
@@ -77,7 +77,7 @@ class EditSnippetFrame : public wxFrame
 
         void OnCloseWindow (wxCloseEvent &event);
         ////void OnWindowDestroy( wxCommandEvent event );
-        void OnPageClosing( wxFlatNotebookEvent event );
+        void OnPageClose( wxAuiNotebookEvent event );
         void OnFileCheckModified();
 
         //! properties

@@ -9,9 +9,8 @@
 		<Build>
 			<Target title="wxPropertyGrid">
 				<Option platforms="Windows;" />
-				<Option output="propgrid\libpropgrid" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxPropertyGrid" />
+				<Option output="..\..\..\devel\libpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmith" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -67,12 +66,12 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\include\wxscintilla\include" />
-			<Add directory="..\..\..\include\wxFlatNotebook\include" />
 			<Add directory="..\..\..\include\scripting\include" />
 			<Add directory="..\..\..\include\scripting\squirrel" />
 			<Add directory="..\..\..\include\scripting\sqplus" />
 			<Add directory="..\..\..\include\scripting\bindings" />
 			<Add directory="propgrid\contrib\include" />
+			<Add directory="..\..\..\include\mozilla_chardet" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -91,7 +90,6 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\devel" />
 			<Add directory="..\..\..\base\tinyxml" />
-			<Add directory="propgrid" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />

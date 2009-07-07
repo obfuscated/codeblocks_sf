@@ -103,20 +103,10 @@
 					<Add directory="include/wxscintilla/include" />
 				</ResourceCompiler>
 			</Target>
-			<Target title="wxFlatNotebook">
-				<Option output="sdk/wxFlatNotebook/libwxflatnotebook.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Option projectResourceIncludeDirsRelation="2" />
-				<Compiler>
-					<Add directory="include/wxFlatNotebook/include" />
-				</Compiler>
-			</Target>
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
-				<Option external_deps="base/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;sdk/wxFlatNotebook/libwxflatnotebook.a;" />
+				<Option external_deps="base/tinyxml/libtxml.a;sdk/propgrid/libpropgrid.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-check-associations -ni" />
@@ -127,38 +117,25 @@
 					<Add directory="include/scripting/bindings" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
-					<Add directory="include/wxFlatNotebook/include" />
+					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
 					<Add library="txml" />
 					<Add library="wxscintilla" />
-					<Add library="wxflatnotebook" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />
 					<Add directory="devel" />
 					<Add directory="sdk/scripting/lib" />
 					<Add directory="sdk/propgrid" />
-					<Add directory="sdk/wxFlatNotebook" />
 				</Linker>
 				<ExtraCommands>
 					<Add before="build_tools/autorevision/auto_revision +wx +int +t . include/autorevision.h" />
 				</ExtraCommands>
 			</Target>
-			<Target title="wxAUI">
-				<Option output="src/wxAUI/libwxaui.a" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
-				<Option type="2" />
-				<Option compiler="gcc" />
-				<Option projectResourceIncludeDirsRelation="2" />
-				<Compiler>
-					<Add directory="src/wxAUI" />
-				</Compiler>
-			</Target>
 			<Target title="src">
 				<Option output="devel/codeblocks" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
-				<Option external_deps="src/wxAUI/libwxaui.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log -ns -ni" />
@@ -169,17 +146,14 @@
 				<Compiler>
 					<Add option="-DENABLE_BINRELOC" />
 					<Add directory="include" />
-					<Add directory="src/wxAUI" />
-					<Add directory="include/wxFlatNotebook/include" />
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
+					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add library="wxaui" />
 					<Add library="wxscintilla" />
 					<Add directory="devel" />
-					<Add directory="src/wxAUI" />
 				</Linker>
 			</Target>
 			<Target title="AStyle">
@@ -266,7 +240,6 @@
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add directory="include" />
-					<Add directory="include/wxFlatNotebook/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -320,6 +293,7 @@
 				<Option projectLibDirsRelation="2" />
 				<Compiler>
 					<Add directory="include" />
+					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -372,6 +346,7 @@
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add directory="include" />
+					<Add directory="include/mozilla_chardet" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -400,9 +375,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;wxAUI;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
-			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxFlatNotebook;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -462,9 +437,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/cbexception.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/cbexecute.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/cbfunctor.h">
@@ -633,6 +605,78 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/menuitemsmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/CharDistribution.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/JpCntx.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsBig5Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsCharSetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsCodingStateMachine.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsEUCJPProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsEUCKRProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsEUCTWProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsError.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsEscCharsetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsGB2312Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsHebrewProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsLatin1Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsMBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsPkgInt.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsSBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsSBCharSetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsSJISProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsUTF8Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsUniversalDetector.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nscore.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/prcpucfg.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/prmem.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/prtypes.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/multiselectdlg.h">
@@ -862,33 +906,6 @@
 		<Unit filename="include/workspaceloader.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_customize_dlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_resources.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_singleton.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/fnb_smart_ptr.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/popup_dlg.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/renderer.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFNBDropTarget.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/wxFlatNotebook.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/wxFlatNotebook/include/wx/wxFlatNotebook/xh_fnb.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/wxscintilla/include/wx/wxscintilla.h">
 			<Option target="sdk" />
 		</Unit>
@@ -911,9 +928,6 @@
 			<Option target="AStyle" />
 		</Unit>
 		<Unit filename="plugins/astyle/astyle/ASResource.cpp">
-			<Option target="AStyle" />
-		</Unit>
-		<Unit filename="plugins/astyle/astyle/Makefile">
 			<Option target="AStyle" />
 		</Unit>
 		<Unit filename="plugins/astyle/astyle/astyle.h">
@@ -1352,10 +1366,6 @@
 		<Unit filename="plugins/compilergcc/depslib/src/lists.h">
 			<Option target="Compiler depslib" />
 		</Unit>
-		<Unit filename="plugins/compilergcc/depslib/src/main.c">
-			<Option compilerVar="CC" />
-			<Option target="Compiler depslib" />
-		</Unit>
 		<Unit filename="plugins/compilergcc/depslib/src/newstr.c">
 			<Option compilerVar="CC" />
 			<Option target="Compiler depslib" />
@@ -1576,9 +1586,6 @@
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/breakpoints.xrc">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/cpuregisters.xrc">
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/debugger_menu.xrc">
@@ -1898,9 +1905,7 @@
 			<Option target="Squirrel std library" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
-			<Option target="wxAUI" />
 			<Option target="src" />
 			<Option target="AStyle" />
 			<Option target="Compiler depslib" />
@@ -2074,6 +2079,96 @@
 		<Unit filename="sdk/menuitemsmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/Big5Freq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/CharDistribution.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/EUCKRFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/EUCTWFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/GB2312Freq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/JISFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/JpCntx.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangBulgarianModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangCyrillicModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangGreekModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangHebrewModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangHungarianModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangThaiModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsBig5Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsCharSetProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEUCJPProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEUCKRProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEUCTWProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEscCharsetProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEscSM.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsGB2312Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsHebrewProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsLatin1Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsMBCSGroupProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsMBCSSM.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsSBCSGroupProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsSBCharSetProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsSJISProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsUTF8Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsUniversalDetector.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/multiselectdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2187,9 +2282,7 @@
 			<Option target="Squirrel std library" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
-			<Option target="wxAUI" />
 			<Option target="src" />
 			<Option target="AStyle" />
 			<Option target="Compiler depslib" />
@@ -2528,24 +2621,6 @@
 		<Unit filename="sdk/workspaceloader.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_customize_dlg.cpp">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/fnb_resources.cpp">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/popup_dlg.cpp">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/renderer.cpp">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/wxFlatNotebook.cpp">
-			<Option target="wxFlatNotebook" />
-		</Unit>
-		<Unit filename="sdk/wxFlatNotebook/src/wxFlatNotebook/xh_fnb.cpp">
-			<Option target="wxFlatNotebook" />
-		</Unit>
 		<Unit filename="sdk/wxscintilla/src/PlatWX.cpp">
 			<Option target="scintilla" />
 		</Unit>
@@ -2702,6 +2777,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexCLW.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexCOBOL.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexCPP.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2792,6 +2870,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexMySQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexNimrod.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexNsis.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2819,6 +2900,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexPerl.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexPowerPro.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexPowerShell.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2837,6 +2921,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexRuby.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSML.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -2846,13 +2933,22 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSmalltalk.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSorcus.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSpecman.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexSpice.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTACL.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTADS3.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTAL.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LexTCL.cxx">
@@ -2880,6 +2976,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/Partitioning.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/PerLine.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/PerLine.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/PositionCache.cxx">
@@ -2966,9 +3068,6 @@
 		<Unit filename="src/appglobals.h">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/aui_compat.h">
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/batchbuild.h">
 			<Option target="src" />
 		</Unit>
@@ -3012,6 +3111,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/main.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/notebookstyles.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/notebookstyles.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/prefix.cpp">
@@ -3220,9 +3325,7 @@
 			<Option target="Squirrel std library" />
 			<Option target="SqPlus" />
 			<Option target="scintilla" />
-			<Option target="wxFlatNotebook" />
 			<Option target="sdk" />
-			<Option target="wxAUI" />
 			<Option target="src" />
 			<Option target="AStyle" />
 			<Option target="Compiler depslib" />
@@ -3285,11 +3388,11 @@
 		<Unit filename="src/startherepage.h">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/wxAUI/manager.cpp">
-			<Option target="wxAUI" />
+		<Unit filename="src/switcherdlg.cpp">
+			<Option target="src" />
 		</Unit>
-		<Unit filename="src/wxAUI/manager.h">
-			<Option target="wxAUI" />
+		<Unit filename="src/switcherdlg.h">
+			<Option target="src" />
 		</Unit>
 		<Unit filename="tips.txt">
 			<Option target="src" />

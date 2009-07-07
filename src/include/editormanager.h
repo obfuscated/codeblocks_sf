@@ -27,8 +27,8 @@ DLLIMPORT extern int ID_EditorManagerCloseButton;
 
 // forward decls
 class EditorBase;
-class wxFlatNotebook;
-class wxFlatNotebookEvent;
+class wxAuiNotebook;
+class wxAuiNotebookEvent;
 class wxMenuBar;
 class EditorColourSet;
 class cbProject;
@@ -58,7 +58,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         EditorManager(const EditorManager& rhs) { cbThrow(_T("Can't call EditorManager's copy ctor!!!")); }
         virtual void operator=(const EditorManager& rhs){ cbThrow(_T("Can't assign an EditorManager* !!!")); }
 
-        wxFlatNotebook* GetNotebook(){ return m_pNotebook; }
+        wxAuiNotebook* GetNotebook(){ return m_pNotebook; }
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
@@ -124,10 +124,10 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void CheckForExternallyModifiedFiles();
 
         void OnGenericContextMenuHandler(wxCommandEvent& event);
-        void OnPageChanged(wxFlatNotebookEvent& event);
-        void OnPageChanging(wxFlatNotebookEvent& event);
-        void OnPageClosing(wxFlatNotebookEvent& event);
-        void OnPageContextMenu(wxFlatNotebookEvent& event);
+        void OnPageChanged(wxAuiNotebookEvent& event);
+        void OnPageChanging(wxAuiNotebookEvent& event);
+        void OnPageClose(wxAuiNotebookEvent& event);
+        void OnPageContextMenu(wxAuiNotebookEvent& event);
         void OnClose(wxCommandEvent& event);
         void OnCloseAll(wxCommandEvent& event);
         void OnCloseAllOthers(wxCommandEvent& event);
@@ -169,7 +169,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int ReplaceInFiles(cbFindReplaceData* data);
 
-        wxFlatNotebook* m_pNotebook;
+        wxAuiNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
         EditorColourSet* m_Theme;
         ListCtrlLogger* m_pSearchLog;

@@ -168,7 +168,7 @@ private:
 	wxTimer             m_Timer;                   // Used for events update
 	long                m_StoppingThread;          // Used not to do more than one thread termination.
 
-	bool                m_bNotebookSizerSet;       // sizer added for wxFlatNotebook
+	bool                m_bNotebookSizerSet;       // sizer added for wxAuiNotebook
 	wxWindow*           m_pParent;                 // parent window/frame //(pecan 2008/4/03)
 	wxFrame*            m_pTSFrame;                // ThreadSearchFrame pointer
 

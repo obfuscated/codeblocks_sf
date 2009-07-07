@@ -36,7 +36,7 @@
 
 #include "cbstyledtextctrl.h"
 
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
 #include "snippetsconfig.h"
 // ----------------------------------------------------------------------------
 //  resources

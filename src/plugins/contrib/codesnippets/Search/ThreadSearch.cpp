@@ -21,7 +21,7 @@
 #include "ThreadSearchView.h"
 #include "ThreadSearchConfPanel.h"
 #include "ThreadSearchControlIds.h"
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
 #include "version.h" //(pecan 2008/2/28)
 #include "MainPanel.h"
 #include "codesnippetsevent.h"

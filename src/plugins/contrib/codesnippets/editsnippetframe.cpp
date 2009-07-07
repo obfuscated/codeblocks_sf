@@ -35,7 +35,7 @@
 #include "configmanager.h"
 #include "cbstyledtextctrl.h"
 #include "wxscintilla/include/wx/wxscintilla.h"
-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
+#include <wx/aui/auibook.h>
 
 #include "defsext.h"
 #include "prefs.h"
@@ -312,10 +312,10 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
 ////                    (wxCommandEventFunction) &EditSnippetFrame::OnWindowDestroy,
 ////                    NULL, this);
 
-    //EVT_FLATNOTEBOOK_PAGE_CLOSING(ID_NBEditorManager, SEditorManager::OnPageClosing)
-    Connect(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING,
+    //EVT_AUINOTEBOOK_PAGE_CLOSE(ID_NBEditorManager, SEditorManager::OnPageClose)
+    Connect(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,
                 (wxObjectEventFunction)(wxEventFunction)
-                (wxFlatNotebookEventFunction)&EditSnippetFrame::OnPageClosing,
+                (wxAuiNotebookEventFunction)&EditSnippetFrame::OnPageClose,
                 NULL, this);
 
     Connect(cbEVT_EDITOR_SAVE,
@@ -337,7 +337,7 @@ EditSnippetFrame::~EditSnippetFrame()
     if (m_pEditorManager)
     {
         // Better close all open editors before deleting EditorManager
-        // or wxFlatNotebook will crash since it's deleted before
+        // or wxAuiNotebook will crash since it's deleted before
         // the EditorManager close calls.
         if ( m_pEditorManager )
         {   ScbEditor* ed;
@@ -562,19 +562,19 @@ void EditSnippetFrame::OncbEditorSave( CodeBlocksEvent& event )
     }
 }
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnPageClosing( wxFlatNotebookEvent event )
+void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
 // ----------------------------------------------------------------------------
 {
-    //Connect(wxEVT_COMMAND_FLATNOTEBOOK_PAGE_CLOSING,
+    //Connect(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,
     //            (wxObjectEventFunction)(wxEventFunction)
-    //            wxFlatNotebookEventHandler(EditSnippetFrame::OnPageClosing),
+    //            wxAuiNotebookEventHandler(EditSnippetFrame::OnPageClose),
     //            NULL, this);
 
     // This event on a notebook tab close context menu
     // or window closed from title banner
 
     event.Skip();
-    wxFlatNotebook* pnb = (wxFlatNotebook*)event.GetEventObject();
+    wxAuiNotebook* pnb = (wxAuiNotebook*)event.GetEventObject();
     SEditorBase* eb = static_cast<SEditorBase*>(pnb->GetPage(event.GetSelection()));
     if (m_pScbEditor && (eb == m_pScbEditor) )
     {   // Save local XML data (snippet text)
@@ -604,7 +604,7 @@ void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
     LOGIT( _T("EditSnippetFrame::OnCloseWindow"));
     #endif
 
-    // Set guard! Loop can occur here from OnPageClosing call!
+    // Set guard! Loop can occur here from OnPageClose call!
     if (m_OncloseWindowEntries++)
         return;
 

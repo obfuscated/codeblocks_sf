@@ -1647,7 +1647,7 @@ void MakefileGenerator::DoAddMakefileTarget_Objs(wxString& buffer)
     buffer << _T('\n');
 }
 
-int SortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
+static int SortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
 {
     return (*one)->weight - (*two)->weight;
 }

@@ -101,6 +101,9 @@ struct cbEditorInternalData
 
         if (m_pFileLoader)
         {
+#ifdef fileload_measuring
+            wxStopWatch sw;
+#endif
             EncodingDetector enc(fileLoader);
             if (enc.IsOK())
             {
@@ -108,6 +111,9 @@ struct cbEditorInternalData
                 m_useByteOrderMark = enc.UsesBOM();
                 m_encoding = enc.GetFontEncoding();
             }
+#ifdef fileload_measuring
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Encoding via fileloader took : %d ms"),(int)sw.Time()));
+#endif
         }
     }
 
@@ -757,7 +763,12 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
 {
     m_ID = wxNewId();
 
-    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, m_pControl ? wxDefaultSize : GetSize());
+    // avoid gtk-critical because of sizes less than -1 (can happen with wxAuiNotebook)
+    wxSize size = m_pControl ? wxDefaultSize : GetSize();
+    size.x = std::max(size.x, -1);
+    size.y = std::max(size.y, -1);
+
+    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, size);
     control->UsePopUp(false);
 
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
@@ -868,6 +879,18 @@ void cbEditor::Split(cbEditor::SplitType split)
     // create the right control
     m_pControl2 = CreateEditor();
 
+    // update controls' look'n'feel
+    // do it here (before) document is attached, speeds up syntaxhighlighting
+    // we do not call "SetEditorStyleAfterFileOpen" here becaus it calls SetLanguage for the already loaded text inside
+    // the left control and slows down loaduing of large files a lot.
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
+    UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
+    InternalSetEditorStyleBeforeFileOpen(m_pControl2);
+
+    if (m_pTheme)
+        m_pTheme->Apply(m_lang, m_pControl2);
+
     // and make it a live copy of left control
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
@@ -895,13 +918,8 @@ void cbEditor::Split(cbEditor::SplitType split)
             break;
     }
 
-    // update controls' look'n'feel
-    SetEditorStyleBeforeFileOpen();
     SetEditorStyleAfterFileOpen();
 
-    // apply syntax highlighting too
-    if (m_pTheme)
-        m_pTheme->Apply(m_lang, m_pControl2);
 
     // make sure the line numbers margin is correct for the new control
     m_pControl2->SetMarginWidth(lineMargin, m_pControl->GetMarginWidth(lineMargin));
@@ -1296,7 +1314,9 @@ void cbEditor::DetectEncoding( )
 {
     if (!m_pData)
         return;
-
+#ifdef fileload_measuring
+    wxStopWatch sw;
+#endif
     EncodingDetector detector(m_Filename);
     if (!detector.IsOK())
         return;
@@ -1313,6 +1333,9 @@ void cbEditor::DetectEncoding( )
         wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
         m_pData->m_encoding = wxFontMapper::GetEncodingFromName(enc_name);
     }
+#ifdef fileload_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Encoding via filename took : %d ms"),(int)sw.Time()));
+#endif
 }
 
 void cbEditor::SetLanguage( HighlightLanguage lang )
@@ -1355,6 +1378,9 @@ bool cbEditor::Open(bool detectEncoding)
         m_pData->m_pFileLoader = Manager::Get()->GetFileManager()->Load(m_Filename, false);
     }
 
+#ifdef fileload_measuring
+    wxStopWatch sw;
+#endif
     EncodingDetector enc((wxByte*)m_pData->m_pFileLoader->GetData(), m_pData->m_pFileLoader->GetLength());
     st = enc.GetWxStr();
     if (detectEncoding)
@@ -1369,6 +1395,10 @@ bool cbEditor::Open(bool detectEncoding)
     }
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+#ifdef fileload_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("cbEditor::Open() => Encoding detection and conversion took : %d ms"),(int)sw.Time()));
+    sw.Start();
+#endif
 
     m_pControl->InsertText(0, st);
     m_pControl->EmptyUndoBuffer(mgr->ReadBool(_T("/margin/use_changebar"), true));
@@ -1377,7 +1407,7 @@ bool cbEditor::Open(bool detectEncoding)
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
-    SetLanguage(HL_AUTO);
+//    SetLanguage(HL_AUTO); // bottleneck !!! no need to set it here, it's already done in SetEditorStyleBeforeFileOpen
 
     if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
         FoldAll();
@@ -1397,7 +1427,9 @@ bool cbEditor::Open(bool detectEncoding)
         delete m_pData->m_pFileLoader;
         m_pData->m_pFileLoader = 0;
     }
-
+#ifdef fileload_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("loading into editor needs : %d ms"),(int)sw.Time()));
+#endif
     return true;
 }
 

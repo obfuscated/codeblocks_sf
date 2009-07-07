@@ -99,7 +99,7 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
     }
 }
 
-int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
+static int MySortProjectFilesByWeight(ProjectFile** one, ProjectFile** two)
 {
     return (*one)->weight - (*two)->weight;
 }

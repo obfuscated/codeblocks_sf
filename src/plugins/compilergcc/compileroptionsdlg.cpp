@@ -2056,18 +2056,18 @@ void CompilerOptionsDlg::OnSelectProgramClick(wxCommandEvent& event)
     wxString file_selection = _("All files (*)|*");
     if (platform::windows)
         file_selection = _("Executable files (*.exe)|*.exe");
-    wxFileDialog* dlg = new wxFileDialog(this,
-                            _("Select file"),
-                            XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
-                            obj->GetValue(),
-                            file_selection,
-                            wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly );
-    dlg->SetFilterIndex(0);
+    wxFileDialog dlg(this,
+                     _("Select file"),
+                     XRCCTRL(*this, "txtMasterPath", wxTextCtrl)->GetValue() + _T("/bin"),
+                     obj->GetValue(),
+                     file_selection,
+                     wxFD_OPEN | wxFD_FILE_MUST_EXIST | compatibility::wxHideReadonly );
+    dlg.SetFilterIndex(0);
 
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() != wxID_OK)
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
         return;
-    wxFileName fname(dlg->GetPath());
+    wxFileName fname(dlg.GetPath());
     obj->SetValue(fname.GetFullName());
     m_bDirty = true;
 } // OnSelectProgramClick
