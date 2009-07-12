@@ -47,8 +47,8 @@ class InfoPane : public wxAuiNotebook
     void ContextMenu(wxContextMenuEvent& event);
     void OnTabContextMenu(wxAuiNotebookEvent& event);
     void OnTabPosition(wxCommandEvent& event);
-
-	int AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+    void DoShowContextMenu();
+    int AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
 public:
 
     InfoPane(wxWindow* parent);

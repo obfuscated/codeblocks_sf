@@ -4129,6 +4129,7 @@ void MainFrame::OnProjectActivated(CodeBlocksEvent& event)
 
 void MainFrame::OnProjectOpened(CodeBlocksEvent& event)
 {
+    ShowHideStartPage(true);
     event.Skip();
 }
 
