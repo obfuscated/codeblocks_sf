@@ -446,9 +446,11 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
     if (defaults)
     {
         int countStyles = 1 << control->GetStyleBits();
-        for (int i = 0; i < countStyles; ++i)
+        // walk until countStyles, otherwise the background-colour is only set for characters,
+        // not for empty background
+        for (int i = 0; i <= countStyles; ++i)
         {
-            if (i < 33 || i > 39)
+            if (i < 33 || (i > 39 && i < wxSCI_STYLE_MAX))
                 DoApplyStyle(control, i, defaults);
         }
     }
