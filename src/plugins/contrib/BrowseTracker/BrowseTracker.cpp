@@ -90,8 +90,9 @@
 	#include <wx/menu.h>
 	#include <wx/xrc/xmlres.h>
 	#include <wx/fileconf.h>
+    #include <wx/aui/auibook.h>
 
-
+//-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 #include "Version.h"
 #include "BrowseTracker.h"
 #include "BrowseSelector.h"
@@ -174,7 +175,7 @@ BrowseTracker::BrowseTracker()
     m_CurrEditorIndex = 0;
     m_LastEditorIndex = 0;
     m_bProjectIsLoading = false;
-	m_UpdateUIFocusEditor = false;
+	m_UpdateUIFocusEditor = 0;
     m_nRemoveEditorSentry = 0;
     m_nBrowseMarkPreviousSentry = 0;
     m_nBrowseMarkNextSentry = 0;
@@ -187,6 +188,7 @@ BrowseTracker::BrowseTracker()
     m_LeftMouseDelay = 200;
     m_ClearAllKey = ClearAllOnSingleClick;
     m_IsMouseDoubleClick = false;
+    m_UpdateUIEditorIndex = 0;
 
 }
 // ----------------------------------------------------------------------------
@@ -207,7 +209,7 @@ void BrowseTracker::OnAttach()
 	m_apEditors.Alloc(MaxEntries);
 	for (int i=0; i<MaxEntries ; ++i ) m_apEditors[i] = 0;
 	m_nBrowsedEditorCount = 0;
-	m_UpdateUIFocusEditor = false;
+	m_UpdateUIFocusEditor = 0;
 	m_nRemoveEditorSentry = 0;
     m_nBrowseMarkPreviousSentry = 0;
     m_nBrowseMarkNextSentry = 0;
@@ -473,11 +475,7 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
     {
         wxMenuItem* item = pbtMenu->FindItemByPosition(i);
         int menuId = item->GetId();
-        #if wxCHECK_VERSION(2, 9, 0)
-        wxString menuLabel = item->GetItemLabelText();
-        #else
         wxString menuLabel = item->GetLabel();
-        #endif
         ///LOGIT( _T("OnContextMenu insert[%s]"),menuLabel.c_str() );
         wxMenuItem* pContextItem= new wxMenuItem(0, menuId, menuLabel);
         sub_menu->Append( pContextItem );
@@ -690,15 +688,14 @@ void BrowseTracker::SetSelection(int index)
     EditorBase* eb = GetEditor(index);
     if (eb)
     {
-        //-int page = Manager::Get()->GetEditorManager()->FindPageFromEditor(eb);
         Manager::Get()->GetEditorManager()->SetActiveEditor(eb);
         #if defined(LOGGING)
         LOGIT( _T("SetSelection[%d] editor[%p][%s]"), index, eb, eb->GetShortName().c_str() );
         #endif
 
         // Tell OnIdle to focus the new editor. CB sdk editorManager::OnUpdateUI used to
-        // do this for us, but someone broke it.
-        m_UpdateUIFocusEditor = true;
+        // do this for us, but something broke it.
+        m_UpdateUIFocusEditor = eb;
     }
 }
 // ----------------------------------------------------------------------------
@@ -717,6 +714,9 @@ void BrowseTracker::OnMenuTrackerSelect(wxCommandEvent& event)
     m_popupWin->ShowModal();
     m_popupWin->Destroy();
     m_popupWin = 0;
+    // BrowseSelector returns the index of the selected editor in m_UpdateUIEditorIndex
+    // Activate the new editor
+    SetSelection( m_UpdateUIEditorIndex );
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::OnMenuBrowseMarkPrevious(wxCommandEvent& event)
@@ -1381,9 +1381,6 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
     // Structures are: a hash to point to a class holding editor cursor postiions used
     // as a history to place markers.
 
-    //NB: This event is entered twice when an editor is activated. The first has
-    // no cbEditor attached. The second does.
-
     event.Skip();
 
     if (IsAttached() && m_InitDone) do
@@ -1448,6 +1445,7 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
             {
                 HashAddBrowse_Marks( eb->GetFilename() ); //create hashs and book/browse marks arrays
 
+                // Debugging statements
                 ////DumpHash(wxT("BrowseMarks"));
                 ////DumpHash(wxT("BookMarks"));
                 ////m_pActiveProjectData->DumpHash(wxT("BrowseMarks"));
@@ -1557,16 +1555,21 @@ void BrowseTracker::OnIdle(wxIdleEvent& event)
     // is active since there's no idle time. User will have to click into
     // the editor window to activate it.
     // This used to be done by the CB editor manager, but someone removed the UI hook.
-    if (!Manager::Get()->IsAppShuttingDown() && m_UpdateUIFocusEditor)
+    if ((not Manager::Get()->IsAppShuttingDown()) && m_UpdateUIFocusEditor)
     {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (ed)
-        {    ed->GetControl()->SetFocus();
+        if (m_UpdateUIFocusEditor)
+        {
+            EditorBase* eb = m_UpdateUIFocusEditor;
+            m_UpdateUIFocusEditor = 0;
+            Manager::Get()->GetEditorManager()->SetActiveEditor(eb);
+            eb->SetFocus();
             #if defined(LOGGING)
-            ////LOGIT( _T("OnIdle Focused Editor[%p] Title[%s]"), ed, ed->GetTitle().c_str() );
+             LOGIT( _T("OnIdle Focused Editor[%p] Title[%s]"), eb, eb->GetTitle().c_str() );
             #endif
+            // re-sort the browse marks
+            wxCommandEvent ev;
+            OnMenuSortBrowse_Marks(ev);
         }
-        m_UpdateUIFocusEditor = false;
     }
      event.Skip();
 }
@@ -2701,4 +2704,23 @@ wxString BrowseTracker::GetCBConfigDir()
 //        else ++index;
 //    }//for
 //}
+////// ----------------------------------------------------------------------------
+////void BrowseTracker::OnPageChanged(wxFlatNotebookEvent& event)
+////// ----------------------------------------------------------------------------
+////{
+////    event.Skip(); // allow others to process it too
+////
+////    //-EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
+////    wxFlatNotebook* pNotebook = (wxFlatNotebook*)event.GetEventObject();
+////    int page = event.GetSelection();
+////    EditorBase* eb = static_cast<EditorBase*>(pNotebook->GetPage(page));
+////    LOGIT( _T("OnPageChanged eb[%p] title[%s]"), eb, eb ? eb->GetTitle().c_str() : _T(""));
+////
+////    // focus editor
+////    // The following still doesn't set focus to the new editor/page
+////    if (eb) eb->Show();
+////    if (eb) eb->SetFocus();
+////    // Try to focus the editor in UpdateUI;
+////    m_UpdateUIFocusEditor = true;
+////}
 // ----------------------------------------------------------------------------

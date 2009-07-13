@@ -33,7 +33,7 @@ class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
 class cbStyledTextCtrl;
-class wxAuiNotebookEvent;
+class wxFlatNotebookEvent;
 
 // ----------------------------------------------------------------------------
 // The following have been moved to BrowseTrackerDefs.h
@@ -152,36 +152,38 @@ class BrowseTracker : public cbPlugin
 		// ---
 
     public:
-            wxString    GetPageFilename(int TrackerIndex);
-            wxString    GetPageFilename(EditorBase* eb);
-            EditorBase* GetEditor(int index);
-            int         GetEditor(EditorBase* eb);
-            EditorBase* GetCurrentEditor();
-            int         GetCurrentEditorIndex();
-            EditorBase* GetPreviousEditor();
-            int         GetPreviousEditorIndex();
-            int         GetEditorBrowsedCount();
-            void        SetSelection(int nEditorIndex);
-            void        AddEditor(EditorBase* eb);
-            void        RemoveEditor(EditorBase* eb);
-            void        ClearEditor(int index);
-            void        RecordBrowseMark(EditorBase* eb);
-            //-void        RecordBrowseMarkPosition(EditorBase*, int pos);
-            void        ClearLineBrowseMark(bool removeScreenMark);
-            //-void        ClearLineBrowseMark(int posn);
-            void        ImportBrowse_Marks(cbEditor* ed);
-            void        RebuildBrowse_Marks(cbEditor* ed, bool addedlines);
-            bool        IsBrowseMarksEnabled(){return m_BrowseMarksEnabled;}
+        wxString    GetPageFilename(int TrackerIndex);
+        wxString    GetPageFilename(EditorBase* eb);
+        EditorBase* GetEditor(int index);
+        int         GetEditor(EditorBase* eb);
+        EditorBase* GetCurrentEditor();
+        int         GetCurrentEditorIndex();
+        EditorBase* GetPreviousEditor();
+        int         GetPreviousEditorIndex();
+        int         GetEditorBrowsedCount();
+        void        SetSelection(int nEditorIndex);
+        void        AddEditor(EditorBase* eb);
+        void        RemoveEditor(EditorBase* eb);
+        void        ClearEditor(int index);
+        void        RecordBrowseMark(EditorBase* eb);
+        //-void        RecordBrowseMarkPosition(EditorBase*, int pos);
+        void        ClearLineBrowseMark(bool removeScreenMark);
+        //-void        ClearLineBrowseMark(int posn);
+        void        ImportBrowse_Marks(cbEditor* ed);
+        void        RebuildBrowse_Marks(cbEditor* ed, bool addedlines);
+        bool        IsBrowseMarksEnabled(){return m_BrowseMarksEnabled;}
 
-            // Book Marks recording
-            void        ToggleBook_Mark(EditorBase* eb);
-            void        ClearLineBookMark();
-            bool        LineHasBookMarker(cbStyledTextCtrl* pControl, int line) const;
+        // Book Marks recording
+        void        ToggleBook_Mark(EditorBase* eb);
+        void        ClearLineBookMark();
+        bool        LineHasBookMarker(cbStyledTextCtrl* pControl, int line) const;
 
-            void        ReadUserOptions(wxString configFullPath);
-            void        SaveUserOptions(wxString configFullPath);
-            wxFileConfig* GetBrowseTrackerCfgFile(){return m_pCfgFile; }
-            wxString    GetBrowseTrackerCfgFilename(){return m_CfgFilenameStr;}
+        void        ReadUserOptions(wxString configFullPath);
+        void        SaveUserOptions(wxString configFullPath);
+        wxFileConfig* GetBrowseTrackerCfgFile(){return m_pCfgFile; }
+        wxString    GetBrowseTrackerCfgFilename(){return m_CfgFilenameStr;}
+
+        int         m_UpdateUIEditorIndex;
 
     protected:
         bool            m_BrowseMarksEnabled; //user has enabled BrowseTracker
@@ -215,7 +217,7 @@ class BrowseTracker : public cbPlugin
         void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
         void OnStartShutdown(CodeBlocksEvent& event);
-        void OnPageChanged(wxAuiNotebookEvent& event);
+        void OnPageChanged(wxFlatNotebookEvent& event);
 
         void OnMenuBrowseMarkPrevious(wxCommandEvent& event);
         void OnMenuBrowseMarkNext(wxCommandEvent& event);
@@ -283,12 +285,11 @@ class BrowseTracker : public cbPlugin
         ArrayOfEditorBasePtrs  m_apEditors;
         int             m_nBrowsedEditorCount;
         BrowseSelector* m_popupWin;
-        bool            m_UpdateUIFocusEditor;
+        EditorBase*     m_UpdateUIFocusEditor;
         int             m_nRemoveEditorSentry;
         int             m_nBrowseMarkPreviousSentry;
         int             m_nBrowseMarkNextSentry;
         bool            m_OnEditorEventHookIgnoreMarkerChanges;
-
 
         EbBrowse_MarksHash m_EdBook_MarksHash;
         EbBrowse_MarksHash m_EbBrowse_MarksHash;

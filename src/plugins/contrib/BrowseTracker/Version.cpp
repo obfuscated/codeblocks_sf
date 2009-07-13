@@ -203,6 +203,10 @@ AppVersion::~AppVersion()
 //  Commit 1.2.76 2009/04/28
 //         76) Add include ConfigManager for linux
 // ----------------------------------------------------------------------------
+//  Commit 1.2.78 2009/07/13
+//         77) Fix activation by keyboard after wxAuiNotebook added.
+//         78) Sort browse marks in idle time.
+// ----------------------------------------------------------------------------
 //  Bugs
 //          When searching workspace w/o open project, BT is comatose.
 //              Should say "no project" or some such.

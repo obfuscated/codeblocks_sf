@@ -137,6 +137,7 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 
 	SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
 	m_listBox->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
+	////PopulateListControl( static_cast<wxFlatNotebook*>( parent ) );
 	PopulateListControl( static_cast<EditorBase*>( parent ) );
 
 	// Create the bitmap, only once
@@ -247,7 +248,10 @@ void BrowseSelector::CloseDialog()
 	if ((m_selectedItem > -1) && (m_selectedItem < MaxEntries))
 	{   std::map<int, int>::iterator iter = m_indexMap.find(m_selectedItem);
         LOGIT( _T("ListBox[%d] Map[%d]"), m_selectedItem, iter->second );
-        m_pBrowseTracker->SetSelection( iter->second );
+        // we have to end the dlg before activating the editor or else
+        // the old editor get re-activated.
+        //-m_pBrowseTracker->SetSelection( iter->second ); logic error
+        m_pBrowseTracker->m_UpdateUIEditorIndex = iter->second;
 	}
 
 	EndModal( wxID_OK );

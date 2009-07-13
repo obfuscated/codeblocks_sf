@@ -26,7 +26,7 @@
 #include <wx/bitmap.h>
 
 class wxListBox;
-class wxAuiNotebook;
+class wxFlatNotebook;
 class wxPanel;
 
 // ----------------------------------------------------------------------------
