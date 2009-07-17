@@ -708,12 +708,12 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
         else
             m_Shortname = m_pProjectFile->file.GetFullName();
         SetEditorTitle(m_Shortname);
-    }
 
-    if (!wxFileExists(m_Filename))
-        m_pProjectFile->SetFileState(fvsMissing);
-    else if (!wxFile::Access(m_Filename.c_str(), wxFile::write)) // readonly
-        m_pProjectFile->SetFileState(fvsReadOnly);
+        if (!wxFileExists(m_Filename))
+            m_pProjectFile->SetFileState(fvsMissing);
+        else if (!wxFile::Access(m_Filename.c_str(), wxFile::write)) // readonly
+            m_pProjectFile->SetFileState(fvsReadOnly);
+    }
 
 #if 0
     wxString dbg;
