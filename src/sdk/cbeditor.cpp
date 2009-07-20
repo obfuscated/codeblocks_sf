@@ -2260,7 +2260,9 @@ void cbEditor::HighlightBraces()
     if (newPos == wxSCI_INVALID_POSITION)
     {
         if(currPos > 0)
+        {
             currPos--;
+        }
         newPos = control->BraceMatch(currPos);
     }
     wxChar ch = control->GetCharAt(currPos);
@@ -2268,12 +2270,21 @@ void cbEditor::HighlightBraces()
         ch == _T('}') || ch == _T(']') || ch == _T(')'))
     {
         if (newPos != wxSCI_INVALID_POSITION)
+        {
             control->BraceHighlight(currPos, newPos);
+            const int currColum = control->GetColumn(currPos);
+            const int newColum = control->GetColumn(newPos);
+            control->SetHighlightGuide((currColum < newColum) ? currColum :newColum);
+        }
         else
+        {
             control->BraceBadLight(currPos);
+        }
     }
     else
+    {
         control->BraceHighlight(-1, -1);
+    }
 }
 
 int cbEditor::GetLineIndentInSpaces(int line) const
@@ -2288,11 +2299,17 @@ int cbEditor::GetLineIndentInSpaces(int line) const
     for (unsigned int i = 0; i < len; ++i)
     {
         if (text[i] == _T(' '))
+        {
             ++spaceCount;
+        }
         else if (text[i] == _T('\t'))
+        {
             spaceCount += control->GetTabWidth();
+        }
         else
+        {
             break;
+        }
     }
     return spaceCount;
 }
@@ -2309,9 +2326,13 @@ wxString cbEditor::GetLineIndentString(int line) const
     for (unsigned int i = 0; i < len; ++i)
     {
         if (text[i] == _T(' ') || text[i] == _T('\t'))
+        {
             indent << text[i];
+        }
         else
+        {
             break;
+        }
     }
     return indent;
 }
