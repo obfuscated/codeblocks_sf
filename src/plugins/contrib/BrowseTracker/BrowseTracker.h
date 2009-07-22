@@ -203,6 +203,7 @@ class BrowseTracker : public cbPlugin
 		void OnMenuTrackerDump(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnIdle(wxIdleEvent& event);
+        void OnWindowSetFocus(wxFocusEvent& event);
 
 		void OnEditorDeactivated(CodeBlocksEvent& event);
 		void OnEditorActivated(CodeBlocksEvent& event);

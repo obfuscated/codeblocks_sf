@@ -207,6 +207,13 @@ AppVersion::~AppVersion()
 //         77) Fix activation by keyboard after wxAuiNotebook added.
 //         78) Sort browse marks in idle time.
 // ----------------------------------------------------------------------------
+//  Commit  1.2.80 2009/07/22
+//      79) Call OnEditorActivated() from OnEditorOpened() because editors actived
+//          by Alt-G, "Swap header/source", and "Recent files" have no cbEditor
+//          associated in EVT_EDITOR_ACTIVATED, and GetActiveEditor() returns NULL.
+//      80) Hack to find editor's project. Since wxAuiNotebook, the initial
+//          EVT_EDITOR_ACTIVATED has no cbEditor or cbProject associated.
+// ----------------------------------------------------------------------------
 //  Bugs
 //          When searching workspace w/o open project, BT is comatose.
 //              Should say "no project" or some such.
