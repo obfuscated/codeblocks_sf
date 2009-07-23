@@ -227,6 +227,139 @@ struct cbEditorInternalData
         return -1;
     }
 
+    bool IsComment( int style )
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        switch ( control->GetLexer() )
+        {
+            case wxSCI_LEX_CPP:
+                return  style == wxSCI_C_COMMENT ||
+                        style == wxSCI_C_COMMENTLINE ||
+                        style == wxSCI_C_COMMENTDOC ||
+                        style == wxSCI_C_COMMENTDOCKEYWORD ||
+                        style == wxSCI_C_COMMENTDOCKEYWORDERROR ||
+                        style == wxSCI_C_COMMENTLINEDOC;
+            case wxSCI_LEX_D:
+                return  style == wxSCI_D_COMMENT ||
+                        style == wxSCI_D_COMMENTLINE ||
+                        style == wxSCI_D_COMMENTDOC ||
+                        style == wxSCI_D_COMMENTDOCKEYWORD ||
+                        style == wxSCI_D_COMMENTDOCKEYWORDERROR ||
+                        style == wxSCI_D_COMMENTLINEDOC;
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    bool IsPreprocessor( int style )
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        if ( control->GetLexer() == wxSCI_LEX_CPP )
+            return  style == wxSCI_C_PREPROCESSOR;
+        return false;
+    }
+
+    bool IsCharacterOrString( int  style )
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        switch ( control->GetLexer() )
+        {
+            case wxSCI_LEX_CPP:
+                return style == wxSCI_C_STRING || style == wxSCI_C_CHARACTER;
+            case wxSCI_LEX_D:
+                return style == wxSCI_D_STRING || style == wxSCI_D_CHARACTER;
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    bool IsCharacter( int  style )
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        switch ( control->GetLexer() )
+        {
+            case wxSCI_LEX_CPP:
+                return style == wxSCI_C_CHARACTER;
+            case wxSCI_LEX_D:
+                return style == wxSCI_D_CHARACTER;
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    void DoBraceCompletion(const wxChar& ch)
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        int pos = control->GetCurrentPos();
+        int style = control->GetStyleAt(pos);
+        if ( IsComment(style) || IsPreprocessor(style) )
+            return;
+        if ( ch == _T('\'') )
+        {
+            if ( control->GetCharAt(pos) == ch && pos > 1 && control->GetCharAt(pos-2) != _T('\\') )
+            {
+                control->DeleteBack();
+                control->GotoPos(pos);
+            }
+            else
+            {
+                if ( control->GetCharAt(pos-2) == _T('\\') || IsCharacterOrString(style) )
+                    return;
+                control->AddText(ch);
+                control->GotoPos(pos);
+            }
+            return;
+        }
+        if ( ch == _T('"') )
+        {
+            if (control->GetCharAt(pos) == ch && pos > 1 && control->GetCharAt(pos-2) != _T('\\') )
+            {
+                control->DeleteBack();
+                control->GotoPos(pos);
+            }
+            else
+            {
+                if ( control->GetCharAt(pos-2) == _T('\\') || IsCharacter(style) )
+                    return;
+                control->AddText(ch);
+                control->GotoPos(pos);
+            }
+            return;
+        }
+        if ( IsCharacterOrString(style) )
+            return;
+        wxString leftBrace(_T("([{"));
+        wxString rightBrace(_T(")]}"));
+        int index = leftBrace.find(ch);
+        if (index != wxNOT_FOUND)
+        {
+            control->AddText(rightBrace.GetChar(index));
+            control->GotoPos(pos);
+            if (ch == _T('{'))
+            {
+                control->NewLine();
+                control->GotoPos(pos);
+                return;
+            }
+        }
+        else
+        {
+            index = rightBrace.find(ch);
+            if (index != wxNOT_FOUND)
+            {
+                if (control->GetCharAt(pos) == ch)
+                {
+                    control->DeleteBack();
+                    control->GotoPos(pos);
+                    return;
+                }
+            }
+        }
+    }
+
     /** Strip Trailing Blanks before saving */
     void StripTrailingSpaces()
     {
@@ -2842,6 +2975,15 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                 }
             }
             control->EndUndoAction();
+        }
+    }
+
+    bool braceCompletion = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/brace_completion"), true);
+    if ( braceCompletion )
+    {
+        if ( control->GetLexer() == wxSCI_LEX_CPP || control->GetLexer() == wxSCI_LEX_D )
+        {
+            m_pData->DoBraceCompletion(ch );
         }
     }
 
