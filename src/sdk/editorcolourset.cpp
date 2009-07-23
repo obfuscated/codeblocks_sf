@@ -60,6 +60,8 @@ EditorColourSet::EditorColourSet(const EditorColourSet& other) // copy ctor
         mset.m_BreakLine = it->second.m_BreakLine;
         mset.m_DebugLine = it->second.m_DebugLine;
         mset.m_ErrorLine = it->second.m_ErrorLine;
+        mset.comment = it->second.comment;
+        mset.m_CaseSensitive = it->second.m_CaseSensitive;
         const OptionColours& value = it->second.m_Colours;
         for (unsigned int i = 0; i < value.GetCount(); ++i)
         {
