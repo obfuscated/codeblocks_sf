@@ -10,6 +10,8 @@ wxsmithcontribitems_LTLIBRARIES = libwxflatnotebook.la
 
 libwxflatnotebook_la_LDFLAGS = -version-info 0:1:0
 
+libwxflatnotebook_la_LIBADD = $(WX_LIBS)
+
 libwxflatnotebook_la_SOURCES = \
 ./src/wxFlatNotebook/fnb_customize_dlg.cpp \
 ./src/wxFlatNotebook/fnb_resources.cpp \

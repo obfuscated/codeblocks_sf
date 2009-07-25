@@ -10,6 +10,8 @@ wxsmithcontribitems_LTLIBRARIES = libwxcustombutton.la
 
 libwxcustombutton_la_LDFLAGS = -version-info 0:1:0
 
+libwxcustombutton_la_LIBADD = $(WX_LIBS) 
+
 libwxcustombutton_la_SOURCES = \
 ./src/toggle.cpp
 

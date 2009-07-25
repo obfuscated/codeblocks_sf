@@ -11,6 +11,8 @@ wxsmithcontribitems_LTLIBRARIES = libwxchartctrl.la
 
 libwxchartctrl_la_LDFLAGS = -version-info 0:1:0
 
+libwxchartctrl_la_LIBADD = $(WX_LIBS)
+
 libwxchartctrl_la_SOURCES = \
 ./src/axis.cpp \
 ./src/barchartpoints.cpp \
