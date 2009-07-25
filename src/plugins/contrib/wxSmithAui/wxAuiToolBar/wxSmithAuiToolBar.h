@@ -20,6 +20,9 @@
 #define WXSMITHAUITOOLBAR_H
 
 #include <wx/wx.h>
+
+#if wxCHECK_VERSION(2,8,9)
+
 #include <wx/aui/auibar.h>
 
 class wxSmithAuiToolBar : public wxAuiToolBar
@@ -35,5 +38,7 @@ class wxSmithAuiToolBar : public wxAuiToolBar
     protected:
     private:
 };
+
+#endif // wxCHECK_VERSION(2,8,9)
 
 #endif // WXSMITHAUITOOLBAR_H
