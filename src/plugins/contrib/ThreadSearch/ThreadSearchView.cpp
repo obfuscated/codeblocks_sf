@@ -20,6 +20,7 @@
 #endif
 
 #include "cbstyledtextctrl.h"
+#include "encodingdetector.h"
 #include "SearchInPanel.h"
 #include "DirectoryParamsPanel.h"
 #include "ThreadSearch.h"
@@ -433,8 +434,11 @@ bool ThreadSearchView::UpdatePreview(const wxString& file, long line)
 		m_PreviewFilePath = file;
 		m_PreviewFileDate = filename.GetModificationTime();
 
+        EncodingDetector enc(m_PreviewFilePath);
+        success = enc.IsOK();
+        m_pSearchPreview->InsertText(0, enc.GetWxStr());
+
 		// Colorize
-		success =  m_pSearchPreview->LoadFile(m_PreviewFilePath);
 		cbEditor::ApplyStyles(m_pSearchPreview);
 		EditorColourSet EdColSet;
 		EdColSet.Apply(EdColSet.GetLanguageForFilename(m_PreviewFilePath), m_pSearchPreview);

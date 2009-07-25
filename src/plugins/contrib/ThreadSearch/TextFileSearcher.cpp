@@ -13,6 +13,8 @@
 	#include <globals.h>
 #endif
 
+#include "encodingdetector.h"
+
 #include <wx/filename.h>
 
 #include "TextFileSearcher.h"
@@ -63,10 +65,71 @@ TextFileSearcher::eFileSearcherReturn TextFileSearcher::FindInFile(const wxStrin
 	}
 
 	// File open
-	if ( !m_TextFile.Open(filePath, wxConvFile) )
-	{
-		return idFileOpenError;
-	}
+	EncodingDetector enc(filePath);
+    if( !enc.IsOK())
+    {
+        return idFileOpenError;
+    }
+	wxFontEncoding fe =  enc.GetFontEncoding();
+
+    if ( fe == wxFONTENCODING_UTF7 )
+    {
+        wxMBConvUTF7 conv;
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+    }
+    else if ( fe == wxFONTENCODING_UTF8 )
+    {
+        wxMBConvUTF8 conv;
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+    }
+    else if ( fe == wxFONTENCODING_UTF16BE )
+    {
+        wxMBConvUTF16BE conv;
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+    }
+    else if ( fe == wxFONTENCODING_UTF16LE )
+    {
+        wxMBConvUTF16LE conv;
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+    }
+    else if ( fe == wxFONTENCODING_UTF32BE )
+    {
+        wxMBConvUTF32BE conv;
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+    }
+    else if ( fe == wxFONTENCODING_UTF32LE )
+    {
+        wxMBConvUTF32LE conv;
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+    }
+    else
+    {
+        wxCSConv conv(fe);
+        if ( !m_TextFile.Open(filePath, conv) )
+        {
+            return idFileOpenError;
+        }
+
+    }
+
 
 	// Tests all file lines
 	for ( size_t i = 0; i < m_TextFile.GetLineCount(); ++i )

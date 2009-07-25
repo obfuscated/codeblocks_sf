@@ -32,6 +32,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../include/mozilla_chardet" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
