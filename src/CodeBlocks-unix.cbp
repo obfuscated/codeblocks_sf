@@ -860,6 +860,8 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk.h">
+			<Option compile="1" />
+			<Option weight="0" />
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk_common.h">
