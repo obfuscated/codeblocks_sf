@@ -393,7 +393,7 @@ int wxSwitcherItems::HitTest(const wxPoint& pt) const
     for (size_t i = 0; i < m_items.GetCount(); i++)
     {
         wxSwitcherItem& item = m_items[i];
-        if (item.GetRect().Contains(pt))
+        if ( !item.GetIsGroup() && item.GetRect().Contains(pt))
             return (int) i;
     }
 

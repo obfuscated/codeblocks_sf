@@ -3992,8 +3992,11 @@ void MainFrame::OnSwitchTabs(wxCommandEvent& event)
     {
         wxSwitcherItem& item = items.GetItem(dlg.GetSelection());
         wxWindow* win = item.GetWindow();
-        nb->SetSelection(item.GetId());
-        win->SetFocus();
+        if(win)
+        {
+            nb->SetSelection(item.GetId());
+            win->SetFocus();
+        }
     }
 }
 
