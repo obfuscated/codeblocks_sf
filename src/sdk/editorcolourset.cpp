@@ -441,7 +441,7 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
         return;
 
     // first load the default colours to all styles used by the actual lexer (ignoring some built-in styles)
-    OptionColour* defaults = GetOptionByName(lang, _("Default"));
+    OptionColour* defaults = GetOptionByName(lang, _T("Default"));
     OptionSet& mset = m_Sets[lang];
     control->SetLexer(mset.m_Lexers);
     control->SetStyleBits(control->GetStyleBitsNeeded());
