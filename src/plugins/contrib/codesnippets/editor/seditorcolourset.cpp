@@ -447,7 +447,7 @@ void SEditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control)
         return;
 
     // first load the default colours to all styles (ignoring some built-in styles)
-    SOptionColour* defaults = GetOptionByName(lang, _("Default"));
+    SOptionColour* defaults = GetOptionByName(lang, _T("Default"));
     if (defaults)
     {
         for (int i = 0; i < wxSCI_STYLE_MAX; ++i)
