@@ -1879,7 +1879,7 @@ void CompilerOptionsDlg::OnEditExtraPathClick(wxCommandEvent& /*event*/)
         return;
 
     wxFileName dir(control->GetString(control->GetSelection()) + wxFileName::GetPathSeparator());
-    wxString initial = _T("");
+    wxString initial = control->GetString(control->GetSelection()); // might be a macro
     if (dir.DirExists())
         initial = dir.GetPath(wxPATH_GET_VOLUME);
 

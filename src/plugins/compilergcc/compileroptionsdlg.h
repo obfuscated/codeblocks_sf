@@ -128,4 +128,3 @@ class CompilerOptionsDlg : public cbConfigurationPanel
 };
 
 #endif // COMPILEROPTIONSDLG_H
-
