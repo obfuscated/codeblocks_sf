@@ -138,7 +138,12 @@ void CompilerSDCC::Reset()
     m_Commands[(int)ctGenDependenciesCmd].push_back(CompilerTool(_T("$compiler -MM $options -MF $dep_object -MT $object $includes $file")));
     m_Commands[(int)ctLinkExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects")));
     m_Commands[(int)ctLinkConsoleExeCmd].push_back(CompilerTool(_T("$linker $libdirs -o $exe_output $options $link_options $libs $link_objects")));
-    //m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output")));
+    // Invalid:
+    // m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker -r $static_output $link_objects\n\tranlib $exe_output")));
+    // But the following seems to work according:
+    // http://forums.codeblocks.org/index.php/topic,10748.msg73648.html#msg73648
+    // http://forums.codeblocks.org/index.php/topic,10741.msg73652.html#msg73652
+    m_Commands[(int)ctLinkStaticCmd].push_back(CompilerTool(_T("$lib_linker -r $static_output $link_objects")));
     m_Commands[(int)ctLinkNativeCmd] = m_Commands[(int)ctLinkConsoleExeCmd]; // unsupported currently
 
     LoadDefaultRegExArray();
