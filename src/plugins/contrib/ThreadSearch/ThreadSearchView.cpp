@@ -436,7 +436,7 @@ bool ThreadSearchView::UpdatePreview(const wxString& file, long line)
 
         EncodingDetector enc(m_PreviewFilePath);
         success = enc.IsOK();
-        m_pSearchPreview->InsertText(0, enc.GetWxStr());
+        m_pSearchPreview->SetText(enc.GetWxStr());
 
 		// Colorize
 		cbEditor::ApplyStyles(m_pSearchPreview);
