@@ -62,7 +62,7 @@ EXTRA_DIST = \
 	update.bat \
 	readme.txt \
 	manifest.xml \
-	wxsmith/*.wxs
+	$(srcdir)/wxsmith/*.wxs
 #	license.txt
 
 pkgdata_DATA = lib_finder.zip
