@@ -701,8 +701,6 @@ wxString CompilerCommandGenerator::SetupCompilerOptions(Compiler* compiler, Proj
     // compiler options
     result << GetStringFromArray(compiler->GetCompilerOptions(), _T(' ')) << _T(" ");
 
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(result, target);
-
     wxString bt = ExpandBackticks(result);
     SearchDirsFromBackticks(compiler, target, bt);
 
@@ -729,8 +727,6 @@ wxString CompilerCommandGenerator::SetupLinkerOptions(Compiler* compiler, Projec
 
     // linker options
     result << GetStringFromArray(compiler->GetLinkerOptions(), _T(' '));
-
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(result, target);
 
     wxString bt = ExpandBackticks(result);
     SearchDirsFromBackticks(compiler, target, bt);
