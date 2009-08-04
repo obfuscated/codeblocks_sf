@@ -65,7 +65,7 @@ TextFileSearcher::eFileSearcherReturn TextFileSearcher::FindInFile(const wxStrin
 	}
 
 	// File open
-	EncodingDetector enc(filePath);
+	EncodingDetector enc(filePath, false);
     if( !enc.IsOK())
     {
         return idFileOpenError;

@@ -434,7 +434,7 @@ bool ThreadSearchView::UpdatePreview(const wxString& file, long line)
 		m_PreviewFilePath = file;
 		m_PreviewFileDate = filename.GetModificationTime();
 
-        EncodingDetector enc(m_PreviewFilePath);
+        EncodingDetector enc(m_PreviewFilePath, false);
         success = enc.IsOK();
         m_pSearchPreview->SetText(enc.GetWxStr());
 
