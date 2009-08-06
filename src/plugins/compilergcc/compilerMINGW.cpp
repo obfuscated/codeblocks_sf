@@ -314,9 +314,12 @@ void CompilerMINGW::SetVersionString()
     /*  NOTE (Biplab#9#): There is a critical bug which blocks C::B from starting up.
         So we'll disable version string checking till we fix the bug. */
     #if !wxCHECK_VERSION(2, 9, 0) && defined(__WXMSW__)
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Compiler detection for compiler ID: '") + GetID() + _T("' (parent ID= '") + GetParentID() + _T("')"));
+
     wxArrayString output, errors;
     wxString sep = wxFileName::GetPathSeparator();
-    wxString masterpath = m_MasterPath;
+    wxString master_path = m_MasterPath;
+    wxString compiler_exe = m_Programs.C;
 
     /* We should read the master path from the configuration manager as
      * the m_MasterPath is empty if AutoDetectInstallationDir() is not
@@ -324,37 +327,66 @@ void CompilerMINGW::SetVersionString()
      */
     ConfigManager* cmgr = Manager::Get()->GetConfigManager(_T("compiler"));
     if (cmgr)
-        cmgr->Read(_T("/sets/gcc/master_path"), &masterpath);
-
-    if (masterpath.IsEmpty())
     {
-        if (platform::windows)
-            masterpath = _T("C:\\MinGW");
+        wxString settings_path;
+        wxString compiler_path;
+        /* Differ between user-defined compilers (copies of base compilers) */
+        if (GetParentID().IsEmpty())
+        {
+            settings_path = _T("/sets/")      + GetID() + _T("/master_path");
+            compiler_path = _T("/sets/")      + GetID() + _T("/c_compiler");
+        }
         else
-            masterpath = _T("/usr");
+        {
+            settings_path = _T("/user_sets/") + GetID() + _T("/master_path");
+            compiler_path = _T("/user_sets/") + GetID() + _T("/c_compiler");
+        }
+        cmgr->Read(settings_path, &master_path);
+        cmgr->Read(compiler_path, &compiler_exe);
     }
-    wxString gcc_command = masterpath + sep + _T("bin") + sep + m_Programs.C;
+    if (master_path.IsEmpty())
+    {
+        /* Notice: In general this is bad luck as e.g. all copies of a
+         * compiler have a different path, most likely.
+         * Thus the following might even return a wrong command!
+         */
+        if (platform::windows)
+            master_path = _T("C:\\MinGW");
+        else
+            master_path = _T("/usr");
+    }
+    wxString gcc_command = master_path + sep + _T("bin") + sep + compiler_exe;
+
     Manager::Get()->GetMacrosManager()->ReplaceMacros(gcc_command);
     if (!wxFileExists(gcc_command))
+    {
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Compiler not found: ") + gcc_command);
         return;
+    }
 
+//    Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Issuing command: ") + gcc_command);
     long result = wxExecute(gcc_command + _T(" --version"), output, errors, wxEXEC_NODISABLE);
     if(result != 0)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Error in executing ") + gcc_command);
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version detection: Error executing command."));
     }
     else
     {
         if (output.GetCount() > 0)
         {
+//            Manager::Get()->GetLogManager()->DebugLog(_T("Extracting compiler version from: ") + output[0]);
             wxRegEx reg_exp;
             if (reg_exp.Compile(_T("[0-9][.][0-9][.][0-9]")) && reg_exp.Matches(output[0]))
+            {
                 m_VersionString = reg_exp.GetMatch(output[0]);
+//                Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version via RegExp: ") + m_VersionString);
+            }
             else
             {
                 m_VersionString = output[0].Mid(10);
                 m_VersionString = m_VersionString.Left(5);
                 m_VersionString.Trim(false);
+//                Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version: ") + m_VersionString);
             }
         }
     }

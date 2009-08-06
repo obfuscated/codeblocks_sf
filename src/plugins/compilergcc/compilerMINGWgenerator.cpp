@@ -35,8 +35,9 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
 {
     wxString result = CompilerCommandGenerator::SetupIncludeDirs(compiler, target);
     m_VerStr = compiler->GetVersionString();
-    wxString pch_prepend;
+    wxString pch_prepend = wxEmptyString;
     bool IsGcc4 = m_VerStr.Left(1).IsSameAs(_T("4"));
+    bool HasPCH = false; // We don't know yet if there are any header files to be compiled...
 
     // for PCH to work, the very first include dir *must* be the object output dir
     // *only* if PCH is generated in the object output dir
@@ -64,6 +65,7 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
                     else
                         pch_prepend << _T("-iquote") << dir << _T(' ');
                 }
+                HasPCH = true; // there is at least one header file to be compiled
             }
         }
         // for gcc-4.0+, use the following:
@@ -78,9 +80,11 @@ wxString CompilerMINGWGenerator::SetupIncludeDirs(Compiler* compiler, ProjectBui
             pch_prepend << compiler->GetSwitches().includeDirs << includedDirs[i] << _T(' ');
         }
         pch_prepend << _T("-I. ");
-        result.Prepend(pch_prepend);
     }
 
     // add in array
+    if (HasPCH)
+        result.Prepend(pch_prepend);
+
     return result;
 }
