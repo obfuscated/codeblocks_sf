@@ -52,7 +52,7 @@ nsUniversalDetector::nsUniversalDetector(PRUint32 aLanguageFilter)
     mInTag = PR_FALSE;
     mEscCharSetProber = nsnull;
 
-    mStart = PR_TRUE;
+//    mStart = PR_TRUE; // not needed for C::B (jens 2009-08-05)
     mDetectedCharset = nsnull;
     mGotData = PR_FALSE;
     mInputState = ePureAscii;
@@ -80,7 +80,7 @@ nsUniversalDetector::Reset()
     mBestGuess = -1;   //illegal value as signal
     mInTag = PR_FALSE;
 
-    mStart = PR_TRUE;
+//    mStart = PR_TRUE; // not needed for C::B (jens 2009-08-05)
     mDetectedCharset = nsnull;
     mGotData = PR_FALSE;
     mInputState = ePureAscii;
@@ -107,50 +107,51 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
     if (aLen > 0)
         mGotData = PR_TRUE;
 
-    //If the data starts with BOM, we know it is UTF
-    if (mStart)
-    {
-        mStart = PR_FALSE;
-        if (aLen > 3)
-            switch (aBuf[0])
-            {
-            case '\xEF':
-                if (('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2]))
-                    // EF BB BF  UTF-8 encoded BOM
-            mDetectedCharset = "UTF-8";
-        break;
-        case '\xFE':
-          if (('\xFF' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
-            // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
-            mDetectedCharset = "X-ISO-10646-UCS-4-3412";
-          else if ('\xFF' == aBuf[1])
-            // FE FF  UTF-16, big endian BOM
-            mDetectedCharset = "UTF-16";
-        break;
-        case '\x00':
-          if (('\x00' == aBuf[1]) && ('\xFE' == aBuf[2]) && ('\xFF' == aBuf[3]))
-            // 00 00 FE FF  UTF-32, big-endian BOM
-            mDetectedCharset = "UTF-32";
-          else if (('\x00' == aBuf[1]) && ('\xFF' == aBuf[2]) && ('\xFE' == aBuf[3]))
-            // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
-            mDetectedCharset = "X-ISO-10646-UCS-4-2143";
-        break;
-        case '\xFF':
-          if (('\xFE' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
-            // FF FE 00 00  UTF-32, little-endian BOM
-            mDetectedCharset = "UTF-32";
-          else if ('\xFE' == aBuf[1])
-            // FF FE  UTF-16, little endian BOM
-            mDetectedCharset = "UTF-16";
-        break;
-      }  // switch
-
-      if (mDetectedCharset)
-      {
-        mDone = PR_TRUE;
-        return NS_OK;
-      }
-  }
+// don't need to check for BOM, C::B does it itself (jens 2009-08-05)
+//    //If the data starts with BOM, we know it is UTF
+//    if (mStart)
+//    {
+//        mStart = PR_FALSE;
+//        if (aLen > 3)
+//            switch (aBuf[0])
+//            {
+//            case '\xEF':
+//                if (('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2]))
+//                    // EF BB BF  UTF-8 encoded BOM
+//            mDetectedCharset = "UTF-8";
+//        break;
+//        case '\xFE':
+//          if (('\xFF' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
+//            // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
+//            mDetectedCharset = "X-ISO-10646-UCS-4-3412";
+//          else if ('\xFF' == aBuf[1])
+//            // FE FF  UTF-16, big endian BOM
+//            mDetectedCharset = "UTF-16";
+//        break;
+//        case '\x00':
+//          if (('\x00' == aBuf[1]) && ('\xFE' == aBuf[2]) && ('\xFF' == aBuf[3]))
+//            // 00 00 FE FF  UTF-32, big-endian BOM
+//            mDetectedCharset = "UTF-32";
+//          else if (('\x00' == aBuf[1]) && ('\xFF' == aBuf[2]) && ('\xFE' == aBuf[3]))
+//            // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
+//            mDetectedCharset = "X-ISO-10646-UCS-4-2143";
+//        break;
+//        case '\xFF':
+//          if (('\xFE' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
+//            // FF FE 00 00  UTF-32, little-endian BOM
+//            mDetectedCharset = "UTF-32";
+//          else if ('\xFE' == aBuf[1])
+//            // FF FE  UTF-16, little endian BOM
+//            mDetectedCharset = "UTF-16";
+//        break;
+//      }  // switch
+//
+//      if (mDetectedCharset)
+//      {
+//        mDone = PR_TRUE;
+//        return NS_OK;
+//      }
+//  }
 
     PRUint32 i;
     for (i = 0; i < aLen; i++)
@@ -184,9 +185,12 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
                     if (nsnull == mCharSetProbers[1])
                         return NS_ERROR_OUT_OF_MEMORY;
                 }
-                mCharSetProbers[2] = new nsLatin1Prober;
                 if (nsnull == mCharSetProbers[2])
-                    return NS_ERROR_OUT_OF_MEMORY;
+                {
+                    mCharSetProbers[2] = new nsLatin1Prober; 
+                    if (nsnull == mCharSetProbers[2])
+                        return NS_ERROR_OUT_OF_MEMORY;
+                }
             }
         }
         else

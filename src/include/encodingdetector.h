@@ -41,10 +41,10 @@ class DLLIMPORT EncodingDetector :
         void Report(const char* aCharset);
 
         bool m_IsOK;
-		bool m_UseBOM;
-		bool m_UseLog;
-		int m_BOMSizeInBytes;
-		wxFontEncoding m_Encoding;
+        bool m_UseBOM;
+        bool m_UseLog;
+        int m_BOMSizeInBytes;
+        wxFontEncoding m_Encoding;
 	private:
         wxString mResult;
         wxString m_ConvStr;

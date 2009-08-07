@@ -76,7 +76,7 @@ protected:
     nsInputState  mInputState;
     PRBool  mDone;
     PRBool  mInTag;
-    PRBool  mStart;
+//    PRBool  mStart; // not needed for C::B (jens 2009-08-05)
     PRBool  mGotData;
     char    mLastChar;
    const char *  mDetectedCharset;
