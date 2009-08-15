@@ -246,7 +246,7 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
 
     if (GetItemFont().Ok())
     {
-        standardFont = GetItemFont();   
+        standardFont = GetItemFont();
         groupFont = wxFont(standardFont.GetPointSize(), standardFont.GetFamily(), standardFont.GetStyle(),
             wxBOLD, standardFont.GetUnderlined(), standardFont.GetFaceName());
     }
@@ -281,7 +281,7 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
             dc.SetTextForeground(item.GetTextColour());
         else
             dc.SetTextForeground(standardTextColour);
-        
+
         if (item.GetFont().Ok())
             dc.SetFont(item.GetFont());
         else
@@ -332,7 +332,7 @@ wxSize wxSwitcherItems::CalculateItemSize(wxDC& dc)
     int maxHeight = 40;
 
     if (GetItemFont().Ok())
-        standardFont = GetItemFont();   
+        standardFont = GetItemFont();
 
     size_t i;
     for (i = 0; i < m_items.GetCount(); i++)
@@ -426,7 +426,11 @@ bool wxMultiColumnListCtrl::Create(wxWindow* parent, wxWindowID id, const wxPoin
 {
     wxControl::Create(parent, id, pos, size, style);
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    SetInitialSize(size);
+    #else
     SetInitialBestSize(size);
+    #endif
 
     return true;
 }
@@ -442,13 +446,13 @@ void wxMultiColumnListCtrl::SendCloseEvent()
     wxWindow* topLevel = GetParent();
     while (topLevel && !topLevel->IsTopLevel())
         topLevel = topLevel->GetParent();
-    
+
     if (topLevel)
     {
         wxCloseEvent closeEvent(wxEVT_CLOSE_WINDOW, topLevel->GetId());
         closeEvent.SetEventObject(topLevel);
         closeEvent.SetCanVeto(false);
-        
+
         topLevel->GetEventHandler()->ProcessEvent(closeEvent);
         return;
     }
@@ -545,11 +549,11 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
         m_items.SetSelection(m_items.GetSelection() + 1);
         if (m_items.GetSelection() >= m_items.GetItemCount())
             m_items.SetSelection(0);
-        
+
         AdvanceToNextSelectableItem(1);
 
         GenerateSelectionEvent();
-        
+
         Refresh();
     }
     else if (event.GetKeyCode() == WXK_UP || event.GetKeyCode() == WXK_NUMPAD_UP)
@@ -557,31 +561,31 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
         m_items.SetSelection(m_items.GetSelection() - 1);
         if (m_items.GetSelection() < 0)
             m_items.SetSelection(m_items.GetItemCount() - 1);
-        
+
         AdvanceToNextSelectableItem(-1);
 
         GenerateSelectionEvent();
-        
+
         Refresh();
     }
     else if (event.GetKeyCode() == WXK_HOME || event.GetKeyCode() == WXK_NUMPAD_HOME)
     {
         m_items.SetSelection(0);
-        
+
         AdvanceToNextSelectableItem(1);
 
         GenerateSelectionEvent();
-        
+
         Refresh();
     }
     else if (event.GetKeyCode() == WXK_END || event.GetKeyCode() == WXK_NUMPAD_END)
     {
         m_items.SetSelection(m_items.GetItemCount() - 1);
-        
+
         AdvanceToNextSelectableItem(-1);
 
         GenerateSelectionEvent();
-        
+
         Refresh();
     }
     else if (event.GetKeyCode() == WXK_LEFT || event.GetKeyCode() == WXK_NUMPAD_LEFT)
@@ -608,7 +612,7 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
         AdvanceToNextSelectableItem(-1);
 
         GenerateSelectionEvent();
-        
+
         Refresh();
     }
     else if (event.GetKeyCode() == WXK_RIGHT || event.GetKeyCode() == WXK_NUMPAD_RIGHT)
@@ -635,7 +639,7 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
         AdvanceToNextSelectableItem(1);
 
         GenerateSelectionEvent();
-        
+
         Refresh();
     }
     else
