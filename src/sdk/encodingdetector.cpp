@@ -391,12 +391,13 @@ bool EncodingDetector::DetectEncoding(const wxByte* buffer, size_t size, bool Co
             m_Encoding = wxFontMapper::Get()->CharsetToEncoding(DoIt((char*)buffer, size), false);
             if(m_Encoding == wxFONTENCODING_DEFAULT)
             {
-                m_Encoding = wxLocale::GetSystemEncoding();
+                wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
+                m_Encoding = wxFontMapper::GetEncodingFromName(enc_name);
                 if(m_UseLog)
                 {
                     wxString msg;
                     msg.Printf(_T("Text seems to be pure ASCII!\n"
-                                  "We tried to find out systems default-encoding: %s (ID: %d)"),
+                                  "We use user specified encoding: %s (ID: %d)"),
                                wxFontMapper::Get()->GetEncodingDescription(m_Encoding).c_str(),
                                m_Encoding);
                     Manager::Get()->GetLogManager()->DebugLog(msg);
