@@ -581,19 +581,15 @@ bool CodeBlocksApp::OnInit()
                 {
                     connection->Execute(_T("[Raise]"));
                 }
-
                 connection->Disconnect();
                 delete connection;
-				connection = 0;
-            }
-
-            delete client;
-
-            if (connection)
-            {
+                delete client;
                 // return false to end the application
+
                 return false;
             }
+            // free memory DDE-/IPC-clients, if we are here connection could not be established and there is no need to free it
+            delete client;
         }
         // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
         if (!m_NoDDE && !m_Batch)
