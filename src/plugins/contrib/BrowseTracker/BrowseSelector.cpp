@@ -137,7 +137,6 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 
 	SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
 	m_listBox->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-	////PopulateListControl( static_cast<wxFlatNotebook*>( parent ) );
 	PopulateListControl( static_cast<EditorBase*>( parent ) );
 
 	// Create the bitmap, only once

@@ -26,6 +26,7 @@ template<> bool  Mgr<FileManager>::isShutdown = false;
 
 LoaderBase::~LoaderBase()
 {
+    WaitReady();
     delete[] data;
 };
 

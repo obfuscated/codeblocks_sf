@@ -20,32 +20,34 @@ template<> LogManager* Mgr<LogManager>::instance = 0;
 template<> bool  Mgr<LogManager>::isShutdown = false;
 
 LogSlot::LogSlot()
-	: log(0),
-	icon(0)
+    : log(0),
+    icon(0)
 {
 }
 
 LogSlot::~LogSlot()
 {
-	if(log != &g_null_log)
-		delete log;
+    if(log != &g_null_log)
+        delete log;
+    if (icon)
+        delete icon;
 }
 
 size_t LogSlot::Index() const
 {
-	return index;
+    return index;
 }
 
 void LogSlot::SetLogger(Logger* in)
 {
-	if(log != &g_null_log)
-		delete log;
-	log = in;
+    if(log != &g_null_log)
+        delete log;
+    log = in;
 }
 
 Logger* LogSlot::GetLogger() const
 {
-	return log;
+    return log;
 }
 
 
@@ -76,8 +78,8 @@ LogManager::LogManager()
 
 LogManager::~LogManager()
 {
-	for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
-		delete i->second;
+    for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
+        delete i->second;
 }
 
 size_t LogManager::SetLog(Logger* l, int i)
@@ -114,22 +116,22 @@ void LogManager::NotifyUpdate()
 
 void LogManager::DeleteLog(int i)
 {
-	SetLog(&g_null_log, i);
+    SetLog(&g_null_log, i);
 }
 
 LogSlot& LogManager::Slot(int i)
 {
-	return slot[i];
+    return slot[i];
 }
 
 size_t LogManager::FindIndex(Logger* l)
 {
-	for(unsigned int i = invalid_log; i < max_logs; ++i)
-	{
-		if(slot[i].log == l)
-			return i;
-	}
-	return invalid_log;
+    for(unsigned int i = invalid_log; i < max_logs; ++i)
+    {
+        if(slot[i].log == l)
+            return i;
+    }
+    return invalid_log;
 }
 
 
@@ -137,48 +139,48 @@ size_t LogManager::FindIndex(Logger* l)
 
 wxArrayString LogManager::ListAvailable()
 {
-	wxArrayString as;
+    wxArrayString as;
 
-	for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
-		as.Add(i->first);
+    for(inst_map_t::iterator i = instMap.begin(); i != instMap.end(); ++i)
+        as.Add(i->first);
 
-	return as;
+    return as;
 }
 
 bool LogManager::FilenameRequired(const wxString& name)
 {
-	inst_map_t::iterator i = instMap.find(name);
+    inst_map_t::iterator i = instMap.find(name);
 
-	if(i != instMap.end())
-		return i->second->RequiresFilename();
-	else
-		return false;
+    if(i != instMap.end())
+        return i->second->RequiresFilename();
+    else
+        return false;
 }
 
 Logger* LogManager::New(const wxString& name)
 {
-	inst_map_t::iterator i;
+    inst_map_t::iterator i;
 
-	if((i = instMap.find(name)) != instMap.end())
-		return i->second->New();
-	else
-		return new NullLogger;
+    if((i = instMap.find(name)) != instMap.end())
+        return i->second->New();
+    else
+        return new NullLogger;
 }
 
 void LogManager::Register(const wxString& name, InstantiatorBase* ins)
 {
-	instMap[name] = ins;
+    instMap[name] = ins;
 }
 
 void LogManager::Panic(const wxString& msg, const wxString& component)
 {
-	wxString title(_T("Panic: "));
-	title.Append(component);
+    wxString title(_T("Panic: "));
+    title.Append(component);
 
-	if(!component)
-		title.Append(_T("Code::Blocks"));
+    if(!component)
+        title.Append(_T("Code::Blocks"));
 
-	wxSafeShowMessage(title, msg);
+    wxSafeShowMessage(title, msg);
 };
 
 

@@ -195,7 +195,7 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
             wxCSConv conv(m_Encoding);
             wideBuff = conv.cMB2WC((char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
         }
-        delete tmp;
+        delete [] tmp;
     }
 
     m_ConvStr = wxString(wideBuff);

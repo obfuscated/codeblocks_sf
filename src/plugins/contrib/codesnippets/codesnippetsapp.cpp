@@ -1416,11 +1416,21 @@ void CodeSnippetsAppFrame::ComplainBadInstall()
 
 const wxCmdLineEntryDesc cmdLineDesc[] =
 {
-    { wxCMD_LINE_SWITCH, CMD_ENTRY("h"), CMD_ENTRY("help"), CMD_ENTRY("show this help message"), wxCMD_LINE_VAL_NONE, wxCMD_LINE_OPTION_HELP },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""), CMD_ENTRY("prefix"),  CMD_ENTRY("the shared data dir prefix"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY("p"), CMD_ENTRY("personality"),  CMD_ENTRY("the personality to use: \"ask\" or <personality-name>"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""), CMD_ENTRY("profile"),  CMD_ENTRY("synonym to personality"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
-    { wxCMD_LINE_OPTION, CMD_ENTRY(""), CMD_ENTRY("KeepAlivePid"),  CMD_ENTRY("launchers pid"), wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_SWITCH, CMD_ENTRY("h"), CMD_ENTRY("help"),
+	  CMD_ENTRY("show this help message"),
+	  wxCMD_LINE_VAL_NONE,   wxCMD_LINE_OPTION_HELP     },
+    { wxCMD_LINE_OPTION, CMD_ENTRY(""),  CMD_ENTRY("prefix"),
+	  CMD_ENTRY("the shared data dir prefix"),
+	  wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, CMD_ENTRY("p"), CMD_ENTRY("personality"),
+	  CMD_ENTRY("the personality to use: \"ask\" or <personality-name>"),
+	  wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, CMD_ENTRY(""),  CMD_ENTRY("profile"),
+	  CMD_ENTRY("synonym to personality"),
+	  wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, CMD_ENTRY(""),  CMD_ENTRY("KeepAlivePid"),
+	  CMD_ENTRY("launchers pid"),
+	  wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_NONE }
 };
 #endif // wxUSE_CMDLINE_PARSER

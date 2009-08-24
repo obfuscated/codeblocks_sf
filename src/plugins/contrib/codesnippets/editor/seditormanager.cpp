@@ -640,7 +640,7 @@ void SEditorManager::RemoveEditorBase(SEditorBase* eb, bool deleteObject)
     //    LOGSTREAM << wxString::Format(_T("RemoveEditorBase(): ed=%p, title=%s\n"), eb, eb ? eb->GetFilename().c_str() : _T(""));
     int page = FindPageFromEditor(eb);
    if (page != -1 && !Manager::isappShuttingDown())
-        m_pNotebook->RemovePage(page /*, false */);
+         m_pNotebook->RemovePage(page);
 
     //    if (deleteObject)
     //        eb->Destroy();
@@ -768,7 +768,7 @@ bool SEditorManager::Close(SEditorBase* editor,bool dontsave)
                     return false;
             wxString filename = editor->GetFilename();
             //            LOGSTREAM << wxString::Format(_T("Close(): ed=%p, title=%s\n"), editor, editor ? editor->GetTitle().c_str() : _T(""));
-            m_pNotebook->DeletePage(idx /*, true */);
+            m_pNotebook->DeletePage(idx);
         }
     }
     return true;

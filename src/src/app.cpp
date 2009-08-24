@@ -581,6 +581,16 @@ bool CodeBlocksApp::OnInit()
                 {
                     connection->Execute(_T("[Raise]"));
                 }
+
+                connection->Disconnect();
+                delete connection;
+				connection = 0;
+            }
+
+            delete client;
+
+            if (connection)
+            {
                 // return false to end the application
                 return false;
             }
@@ -642,6 +652,7 @@ bool CodeBlocksApp::OnInit()
             if(loader->GetData())
                 Manager::Get()->GetScriptingManager()->LoadBuffer(cbC2U(loader->GetData()));
 
+            delete loader;
             frame->Close();
             return true;
         }

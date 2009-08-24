@@ -29,12 +29,12 @@ ProjectLayoutLoader::ProjectLayoutLoader(cbProject* project)
     : m_pProject(project),
     m_TopProjectFile(0L)
 {
-	//ctor
+    //ctor
 }
 
 ProjectLayoutLoader::~ProjectLayoutLoader()
 {
-	//dtor
+    //dtor
 }
 
 // IMPORTANT! We have to be careful of what to unicode and what not to.
@@ -110,7 +110,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
                     m_TopProjectFile = pf;
             }
             if (elem->QueryIntAttribute("tabpos", &tabpos) == TIXML_SUCCESS)
-				pf->editorTabPos = tabpos;
+                pf->editorTabPos = tabpos;
 
             TiXmlElement* cursor = elem->FirstChildElement();
             if (cursor)
@@ -144,18 +144,18 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
     tgtidx->SetAttribute("name", cbU2C(m_pProject->GetActiveBuildTarget()));
 
-	ProjectFile* active = 0L;
+    ProjectFile* active = 0L;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	if (ed)
-		active = ed->GetProjectFile();
+    if (ed)
+        active = ed->GetProjectFile();
 
-	int count = m_pProject->GetFilesCount();
-	for (int i = 0; i < count; ++i)
-	{
-		ProjectFile* f = m_pProject->GetFile(i);
+    int count = m_pProject->GetFilesCount();
+    for (int i = 0; i < count; ++i)
+    {
+        ProjectFile* f = m_pProject->GetFile(i);
 
-		if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
-		{
+        if (f->editorOpen || f->editorPos || f->editorTopLine || f->editorTabPos)
+        {
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
             node->SetAttribute("name", cbU2C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
@@ -165,16 +165,16 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
             TiXmlElement* cursor = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor")));
             cursor->SetAttribute("position", f->editorPos);
             cursor->SetAttribute("topLine", f->editorTopLine);
-		}
-	}
-	const wxArrayString& en = m_pProject->ExpandedNodes();
-	for (unsigned int i = 0; i < en.GetCount(); ++i)
-	{
-		if (!en[i].IsEmpty())
-		{
+        }
+    }
+    const wxArrayString& en = m_pProject->ExpandedNodes();
+    for (unsigned int i = 0; i < en.GetCount(); ++i)
+    {
+        if (!en[i].IsEmpty())
+        {
             TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Expand")));
             node->SetAttribute("folder", cbU2C(en[i]));
-		}
-	}
+        }
+    }
     return cbSaveTinyXMLDocument(&doc, filename);
 }

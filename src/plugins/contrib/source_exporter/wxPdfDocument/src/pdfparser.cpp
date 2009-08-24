@@ -186,8 +186,8 @@ wxPdfParser::GetSourceInfo(wxPdfInfo& info)
   {
     typedef void (wxPdfInfo::*InfoSetter) (const wxString& value);
     const wxChar* entryList[] = { _T("/Title"),        _T("/Author"),   _T("/Subject"),
-                            _T("/Keywords"),     _T("/Creator"), _T("/Producer"),
-                            _T("/CreationDate"), _T("/ModDate"),
+                                  _T("/Keywords"),     _T("/Creator"), _T("/Producer"),
+                                  _T("/CreationDate"), _T("/ModDate"),
                             NULL }; //, "Trapped")
     InfoSetter entryFunc[] = { &wxPdfInfo::SetTitle,        &wxPdfInfo::SetAuthor,  &wxPdfInfo::SetSubject,
                                &wxPdfInfo::SetKeywords,     &wxPdfInfo::SetCreator, &wxPdfInfo::SetProducer,

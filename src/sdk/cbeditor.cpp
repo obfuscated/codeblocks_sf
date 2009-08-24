@@ -299,14 +299,14 @@ struct cbEditorInternalData
             return;
         if ( ch == _T('\'') )
         {
-            if ( control->GetCharAt(pos) == ch && pos > 1 && control->GetCharAt(pos-2) != _T('\\') )
+            if ( (control->GetCharAt(pos) == ch) && (pos > 1) && (control->GetCharAt(pos-2) != _T('\\')) )
             {
                 control->DeleteBack();
                 control->GotoPos(pos);
             }
             else
             {
-                if ( control->GetCharAt(pos-2) == _T('\\') || IsCharacterOrString(style) )
+                if ( (control->GetCharAt(pos-2) == _T('\\')) || IsCharacterOrString(style) )
                     return;
                 control->AddText(ch);
                 control->GotoPos(pos);
@@ -315,14 +315,14 @@ struct cbEditorInternalData
         }
         if ( ch == _T('"') )
         {
-            if (control->GetCharAt(pos) == ch && pos > 1 && control->GetCharAt(pos-2) != _T('\\') )
+            if ( (control->GetCharAt(pos) == ch) && (pos > 1) && (control->GetCharAt(pos-2) != _T('\\')) )
             {
                 control->DeleteBack();
                 control->GotoPos(pos);
             }
             else
             {
-                if ( control->GetCharAt(pos-2) == _T('\\') || IsCharacter(style) )
+                if ( (control->GetCharAt(pos-2) == _T('\\')) || IsCharacter(style) )
                     return;
                 control->AddText(ch);
                 control->GotoPos(pos);
@@ -366,7 +366,7 @@ struct cbEditorInternalData
         }
     }
 
-    /** Strip Trailing Blanks before saving */
+    /** Strip trailing blanks before saving */
     void StripTrailingSpaces()
     {
         cbStyledTextCtrl* control = m_pOwner->GetControl();

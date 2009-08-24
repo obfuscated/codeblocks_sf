@@ -21,7 +21,7 @@ class cbTool
         LAUNCH_VISIBLE_DETACHED
     };
 
-    cbTool() { m_MenuId = -1; }
+    cbTool() { m_LaunchOption = LAUNCH_NEW_CONSOLE_WINDOW; m_MenuId = -1; }
     // getters
     wxString GetName() const {return m_Name;}
     wxString GetCommand() const {return m_Command;}

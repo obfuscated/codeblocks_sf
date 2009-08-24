@@ -33,7 +33,7 @@
     #include "xtra_res.h" // our new ToolBarAddOn handler
 #endif
 
-#include <wx/app.h>	// wxTheApp
+#include <wx/app.h>    // wxTheApp
 #include <wx/toolbar.h>
 #include <wx/fs_mem.h>
 
@@ -49,41 +49,51 @@ Manager::Manager() : m_pAppWindow(0)
 
 Manager::~Manager()
 {
-	// remove all event sinks
+    // remove all event sinks
+    for (EventSinksMap::iterator mit = m_EventSinks.begin(); mit != m_EventSinks.end(); ++mit)
+    {
+        EventSinksArray::iterator it = mit->second.begin();
+        while (mit->second.size())
+        {
+            delete (*(mit->second.begin()));
+            mit->second.erase(mit->second.begin());
+        }
+    }
 
-	for (EventSinksMap::iterator mit = m_EventSinks.begin(); mit != m_EventSinks.end(); ++mit)
-	{
-		EventSinksArray::iterator it = mit->second.begin();
-		while (mit->second.size())
-		{
-			delete (*(mit->second.begin()));
-			mit->second.erase(mit->second.begin());
-		}
-	}
+    for (DockEventSinksMap::iterator mit = m_DockEventSinks.begin(); mit != m_DockEventSinks.end(); ++mit)
+    {
+        DockEventSinksArray::iterator it = mit->second.begin();
+        while (mit->second.size())
+        {
+            delete (*(mit->second.begin()));
+            mit->second.erase(mit->second.begin());
+        }
+    }
 
-	for (DockEventSinksMap::iterator mit = m_DockEventSinks.begin(); mit != m_DockEventSinks.end(); ++mit)
-	{
-		DockEventSinksArray::iterator it = mit->second.begin();
-		while (mit->second.size())
-		{
-			delete (*(mit->second.begin()));
-			mit->second.erase(mit->second.begin());
-		}
-	}
+    for (LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.begin(); mit != m_LayoutEventSinks.end(); ++mit)
+    {
+        LayoutEventSinksArray::iterator it = mit->second.begin();
+        while (mit->second.size())
+        {
+            delete (*(mit->second.begin()));
+            mit->second.erase(mit->second.begin());
+        }
+    }
 
-	for (LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.begin(); mit != m_LayoutEventSinks.end(); ++mit)
-	{
-		LayoutEventSinksArray::iterator it = mit->second.begin();
-		while (mit->second.size())
-		{
-			delete (*(mit->second.begin()));
-			mit->second.erase(mit->second.begin());
-		}
-	}
+    for (LogEventSinksMap::iterator mit = m_LogEventSinks.begin(); mit != m_LogEventSinks.end(); ++mit)
+    {
+        LogEventSinksArray::iterator it = mit->second.begin();
+        while (mit->second.size())
+        {
+            delete (*(mit->second.begin()));
+            mit->second.erase(mit->second.begin());
+        }
+    }
+
 
 //    Shutdown();
     CfgMgrBldr::Free(); // only terminate config at the very last moment
-//	FileManager::Free();
+//    FileManager::Free();
 }
 
 
@@ -107,8 +117,8 @@ Manager* Manager::Get(wxFrame *appWindow)
 
 Manager* Manager::Get()
 {
-	if (!instance)
-		instance = new Manager;
+    if (!instance)
+        instance = new Manager;
     return instance;
 }
 
@@ -145,79 +155,79 @@ void Manager::Shutdown()
     appShuttingDown = true;
 
     ToolsManager::Free();
-	TemplateManager::Free();
-	PluginManager::Free();
-	ScriptingManager::Free();
-	ProjectManager::Free();
-	EditorManager::Free();
-	PersonalityManager::Free();
-	MacrosManager::Free();
-	UserVariableManager::Free();
-	LogManager::Free();
+    TemplateManager::Free();
+    PluginManager::Free();
+    ScriptingManager::Free();
+    ProjectManager::Free();
+    EditorManager::Free();
+    PersonalityManager::Free();
+    MacrosManager::Free();
+    UserVariableManager::Free();
+    LogManager::Free();
 }
 
 bool Manager::ProcessEvent(CodeBlocksEvent& event)
 {
-	if (IsAppShuttingDown())
-		return false;
+    if (IsAppShuttingDown())
+        return false;
 
-	EventSinksMap::iterator mit = m_EventSinks.find(event.GetEventType());
-	if (mit != m_EventSinks.end())
-	{
-		for (EventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-		{
-			(*it)->Call(event);
-		}
-	}
-	return true;
+    EventSinksMap::iterator mit = m_EventSinks.find(event.GetEventType());
+    if (mit != m_EventSinks.end())
+    {
+        for (EventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+        {
+            (*it)->Call(event);
+        }
+    }
+    return true;
 }
 
 bool Manager::ProcessEvent(CodeBlocksDockEvent& event)
 {
-	if (IsAppShuttingDown())
-		return false;
+    if (IsAppShuttingDown())
+        return false;
 
-	DockEventSinksMap::iterator mit = m_DockEventSinks.find(event.GetEventType());
-	if (mit != m_DockEventSinks.end())
-	{
-		for (DockEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-		{
-			(*it)->Call(event);
-		}
-	}
-	return true;
+    DockEventSinksMap::iterator mit = m_DockEventSinks.find(event.GetEventType());
+    if (mit != m_DockEventSinks.end())
+    {
+        for (DockEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+        {
+            (*it)->Call(event);
+        }
+    }
+    return true;
 }
 
 bool Manager::ProcessEvent(CodeBlocksLayoutEvent& event)
 {
-	if (IsAppShuttingDown())
-		return false;
+    if (IsAppShuttingDown())
+        return false;
 
-	LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.find(event.GetEventType());
-	if (mit != m_LayoutEventSinks.end())
-	{
-		for (LayoutEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-		{
-			(*it)->Call(event);
-		}
-	}
-	return true;
+    LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.find(event.GetEventType());
+    if (mit != m_LayoutEventSinks.end())
+    {
+        for (LayoutEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+        {
+            (*it)->Call(event);
+        }
+    }
+    return true;
 }
 
 bool Manager::ProcessEvent(CodeBlocksLogEvent& event)
 {
-	if (IsAppShuttingDown())
-		return false;
+    if (IsAppShuttingDown())
+        return false;
 
-	LogEventSinksMap::iterator mit = m_LogEventSinks.find(event.GetEventType());
-	if (mit != m_LogEventSinks.end())
-	{
-		for (LogEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
-		{
-			(*it)->Call(event);
-		}
-	}
-	return true;
+    LogEventSinksMap::iterator mit = m_LogEventSinks.find(event.GetEventType());
+    if (mit != m_LogEventSinks.end())
+    {
+        for (LogEventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+        {
+            (*it)->Call(event);
+        }
+    }
+    return true;
 }
 
 
@@ -404,102 +414,102 @@ bool Manager::LoadResource(const wxString& file)
 
 wxCmdLineParser* Manager::GetCmdLineParser()
 {
-	return &m_CmdLineParser;
+    return &m_CmdLineParser;
 }
 
 void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksEvent>* functor)
 {
-	m_EventSinks[eventType].push_back(functor);
+    m_EventSinks[eventType].push_back(functor);
 }
 
 void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksDockEvent>* functor)
 {
-	m_DockEventSinks[eventType].push_back(functor);
+    m_DockEventSinks[eventType].push_back(functor);
 }
 
 void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLayoutEvent>* functor)
 {
-	m_LayoutEventSinks[eventType].push_back(functor);
+    m_LayoutEventSinks[eventType].push_back(functor);
 }
 
 void Manager::RegisterEventSink(wxEventType eventType, IEventFunctorBase<CodeBlocksLogEvent>* functor)
 {
-	m_LogEventSinks[eventType].push_back(functor);
+    m_LogEventSinks[eventType].push_back(functor);
 }
 
 void Manager::RemoveAllEventSinksFor(void* owner)
 {
-	for (EventSinksMap::iterator mit = m_EventSinks.begin(); mit != m_EventSinks.end(); ++mit)
-	{
-		EventSinksArray::iterator it = mit->second.begin();
-		bool endIsInvalid = false;
-		while (!endIsInvalid && it != mit->second.end())
-		{
-			if ((*it) && (*it)->GetThis() == owner)
-			{
-				EventSinksArray::iterator it2 = it++;
-				endIsInvalid = it == mit->second.end();
-				delete (*it2);
-				mit->second.erase(it2);
-			}
-			else
-				++it;
-		}
-	}
+    for (EventSinksMap::iterator mit = m_EventSinks.begin(); mit != m_EventSinks.end(); ++mit)
+    {
+        EventSinksArray::iterator it = mit->second.begin();
+        bool endIsInvalid = false;
+        while (!endIsInvalid && it != mit->second.end())
+        {
+            if ((*it) && (*it)->GetThis() == owner)
+            {
+                EventSinksArray::iterator it2 = it++;
+                endIsInvalid = it == mit->second.end();
+                delete (*it2);
+                mit->second.erase(it2);
+            }
+            else
+                ++it;
+        }
+    }
 
-	for (DockEventSinksMap::iterator mit = m_DockEventSinks.begin(); mit != m_DockEventSinks.end(); ++mit)
-	{
-		DockEventSinksArray::iterator it = mit->second.begin();
-		bool endIsInvalid = false;
-		while (!endIsInvalid && it != mit->second.end())
-		{
-			if ((*it) && (*it)->GetThis() == owner)
-			{
-				DockEventSinksArray::iterator it2 = it++;
-				endIsInvalid = it == mit->second.end();
-				delete (*it2);
-				mit->second.erase(it2);
-			}
-			else
-				++it;
-		}
-	}
+    for (DockEventSinksMap::iterator mit = m_DockEventSinks.begin(); mit != m_DockEventSinks.end(); ++mit)
+    {
+        DockEventSinksArray::iterator it = mit->second.begin();
+        bool endIsInvalid = false;
+        while (!endIsInvalid && it != mit->second.end())
+        {
+            if ((*it) && (*it)->GetThis() == owner)
+            {
+                DockEventSinksArray::iterator it2 = it++;
+                endIsInvalid = it == mit->second.end();
+                delete (*it2);
+                mit->second.erase(it2);
+            }
+            else
+                ++it;
+        }
+    }
 
-	for (LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.begin(); mit != m_LayoutEventSinks.end(); ++mit)
-	{
-		LayoutEventSinksArray::iterator it = mit->second.begin();
-		bool endIsInvalid = false;
-		while (!endIsInvalid && it != mit->second.end())
-		{
-			if ((*it) && (*it)->GetThis() == owner)
-			{
-				LayoutEventSinksArray::iterator it2 = it++;
-				endIsInvalid = it == mit->second.end();
-				delete (*it2);
-				mit->second.erase(it2);
-			}
-			else
-				++it;
-		}
-	}
+    for (LayoutEventSinksMap::iterator mit = m_LayoutEventSinks.begin(); mit != m_LayoutEventSinks.end(); ++mit)
+    {
+        LayoutEventSinksArray::iterator it = mit->second.begin();
+        bool endIsInvalid = false;
+        while (!endIsInvalid && it != mit->second.end())
+        {
+            if ((*it) && (*it)->GetThis() == owner)
+            {
+                LayoutEventSinksArray::iterator it2 = it++;
+                endIsInvalid = it == mit->second.end();
+                delete (*it2);
+                mit->second.erase(it2);
+            }
+            else
+                ++it;
+        }
+    }
 
-	for (LogEventSinksMap::iterator mit = m_LogEventSinks.begin(); mit != m_LogEventSinks.end(); ++mit)
-	{
-		LogEventSinksArray::iterator it = mit->second.begin();
-		bool endIsInvalid = false;
-		while (!endIsInvalid && it != mit->second.end())
-		{
-			if ((*it) && (*it)->GetThis() == owner)
-			{
-				LogEventSinksArray::iterator it2 = it++;
-				endIsInvalid = it == mit->second.end();
-				delete (*it2);
-				mit->second.erase(it2);
-			}
-			else
-				++it;
-		}
-	}
+    for (LogEventSinksMap::iterator mit = m_LogEventSinks.begin(); mit != m_LogEventSinks.end(); ++mit)
+    {
+        LogEventSinksArray::iterator it = mit->second.begin();
+        bool endIsInvalid = false;
+        while (!endIsInvalid && it != mit->second.end())
+        {
+            if ((*it) && (*it)->GetThis() == owner)
+            {
+                LogEventSinksArray::iterator it2 = it++;
+                endIsInvalid = it == mit->second.end();
+                delete (*it2);
+                mit->second.erase(it2);
+            }
+            else
+                ++it;
+        }
+    }
 }
 
 bool Manager::appShuttingDown = false;
