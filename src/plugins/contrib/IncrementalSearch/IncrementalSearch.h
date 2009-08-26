@@ -69,7 +69,7 @@ private:
     wxColour m_textCtrlBG_Default;
     wxToolBar* m_pToolbar;
     wxTextCtrl* m_pTextCtrl;
-    cbStyledTextCtrl* m_pControl;
+    cbEditor* m_pEditor;
     int m_NewPos;
     int m_OldPos;
     int m_SelStart;
@@ -82,7 +82,8 @@ private:
     const int m_IndicFound;
     const int m_IndicHighlight;
     int m_LengthFound;
-    DECLARE_EVENT_TABLE();
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // INCREMENTAL_SEARCH_H_INCLUDED
