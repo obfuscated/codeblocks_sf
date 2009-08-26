@@ -777,11 +777,13 @@ void cbEditor::DestroySplitView()
 
 cbStyledTextCtrl* cbEditor::GetControl() const
 {
-    // return the focused control (left or right)
+    // return the last focused control (left or right)
     if (m_pControl2)
     {
-        wxWindow* focused = wxWindow::FindFocus();
-        if (focused == m_pControl2)
+        // every time a control gets the focus it stores the actual timestamp, the timestamp defaults to 0 so the
+        // greater is the timestamp of the control that had the focus last time
+        // finding the focused window does not work if another control has the keyboard-focus
+        if( m_pControl2->GetLastFocusTime() > m_pControl->GetLastFocusTime() )
             return m_pControl2;
     }
     return m_pControl;

@@ -13,6 +13,7 @@
 //#endif
 
 #include <wx/string.h>
+#include <wx/timer.h>
 #include "cbstyledtextctrl.h"
 #include "editorbase.h" // DisplayContextMenu
 #include "prep.h" // platform::gtk
@@ -21,11 +22,13 @@ BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
     EVT_KILL_FOCUS(cbStyledTextCtrl::OnKillFocus)
     EVT_MIDDLE_DOWN(cbStyledTextCtrl::OnGPM)
+    EVT_SET_FOCUS(cbStyledTextCtrl::OnGetFocus)
 END_EVENT_TABLE()
 
 cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos, const wxSize& size, long style)
     : wxScintilla(pParent, id, pos, size, style),
-    m_pParent(pParent)
+    m_pParent(pParent),
+    m_lastFocusTime(0L)
 {
     //ctor
 }
@@ -50,6 +53,14 @@ void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
     }
     event.Skip();
 } // end of OnKillFocus
+
+void cbStyledTextCtrl::OnGetFocus(wxFocusEvent& event)
+{
+    // store timestamp for use in cbEditor::GetControl()
+    // don't use event.GetTimeStamp(), because the focus event has no timestamp !
+    m_lastFocusTime = wxGetLocalTimeMillis();
+    event.Skip();
+} // end of OnGetFocus
 
 void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 {

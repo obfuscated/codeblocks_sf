@@ -7,6 +7,7 @@
 #define CBSTYLEDTEXTCTRL_H_INCLUDED
 
 #include "wx/wxscintilla.h"
+#include <wx/longlong.h>
 
 class wxContextMenuEvent;
 class wxFocusEvent;
@@ -17,12 +18,16 @@ class cbStyledTextCtrl : public wxScintilla
     public:
         cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
         virtual ~cbStyledTextCtrl();
+        wxDateTime GetLastFocusTime() const {return m_lastFocusTime;}
     private:
         void OnContextMenu(wxContextMenuEvent& event);
         void OnKillFocus(wxFocusEvent& event);
+        void OnGetFocus(wxFocusEvent& event);
         void OnGPM(wxMouseEvent& event);
 
         wxWindow* m_pParent;
+        wxLongLong m_lastFocusTime;
+
         DECLARE_EVENT_TABLE()
 };
 
