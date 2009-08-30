@@ -19,7 +19,7 @@ class ASStreamIterator : public astyle::ASSourceIterator
         virtual ~ASStreamIterator();
 
         bool hasMoreLines() const;
-        std::string nextLine();
+        std::string nextLine(bool emptyLineWasDeleted = false);
         std::string peekNextLine();
         void peekReset();
         bool FoundBookmark() const { return m_foundBookmark; }

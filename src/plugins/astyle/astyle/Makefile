@@ -15,8 +15,8 @@ vpath %.h   ../src
 # NOTE for java compiles the environment variable $JAVA_HOME must be set
 # example: export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.00
 ifndef JAVA_HOME
-#    JAVA_HOME = /usr/lib/jvm/java-1.5.0-sun-1.5.0.10
-    JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.00
+#	JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.10
+JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.13
 endif
 
 # set prefix if not defined on the command line
@@ -25,7 +25,7 @@ ifndef prefix
 endif
 
 # define macros
-bindir = ../bin
+bindir = bin
 objdir = obj
 ipath=$(prefix)/bin
 CBASEFLAGS = -W -Wall -fno-rtti -fno-exceptions
@@ -59,12 +59,12 @@ OBJsjd = $(patsubst %.cpp,$(objdir)/%_sjd.o,$(SRC))
 # define object file rule (with the suffix) for each build
 
 # OBJ
-$(objdir)/%.o:  %.cpp  astyle.h
+$(objdir)/%.o:  %.cpp  astyle.h  astyle_main.h
 	@ mkdir -p $(objdir)
 	$(CXX) $(CFLAGS) -c -o $@ $<
 
 # OBJd
-$(objdir)/%_d.o:  %.cpp  astyle.h
+$(objdir)/%_d.o:  %.cpp  astyle.h  astyle_main.h
 	@ mkdir -p $(objdir)
 	$(CXX) $(CFLAGSd) -c -o $@ $<
 

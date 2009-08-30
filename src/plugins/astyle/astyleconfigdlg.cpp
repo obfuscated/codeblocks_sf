@@ -27,11 +27,14 @@
 #endif
 
 BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
-  EVT_RADIOBUTTON(XRCID("rbAnsi"), AstyleConfigDlg::OnStyleChange)
-  EVT_RADIOBUTTON(XRCID("rbKr"), AstyleConfigDlg::OnStyleChange)
-  EVT_RADIOBUTTON(XRCID("rbLinux"), AstyleConfigDlg::OnStyleChange)
-  EVT_RADIOBUTTON(XRCID("rbGNU"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbAllman"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbJava"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbKr"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbStroustrup"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbWhitesmith"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbBanner"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbGNU"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbLinux"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbCustom"), AstyleConfigDlg::OnStyleChange)
   EVT_BUTTON(XRCID("Preview"), AstyleConfigDlg::OnPreview)
 END_EVENT_TABLE()
@@ -57,31 +60,123 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
 
   switch (style)
   {
-    case aspsAnsi:
-      sample = _T("namespace foospace\n{\n    int Foo()\n    {\n        if (isBar)\n        {\n            bar();\n            return 1;\n        }\n        else\n            return 0;\n    }\n}");
-      XRCCTRL(*this, "rbAnsi", wxRadioButton)->SetValue(true);
+#define AS_ALLMAN "\
+int Foo(bool isBar)\n\
+{\n\
+    if (isBar)\n\
+    {\n\
+        bar();\n\
+        return 1;\n\
+    }\n\
+    else\n\
+        return 0;\n\
+}"
+    case aspsAllman:
+      sample = _T(AS_ALLMAN);
+      XRCCTRL(*this, "rbAllman", wxRadioButton)->SetValue(true);
       break;
-
-    case aspsKr:
-      sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n        } else\n            return 0;\n    }\n}");
-      XRCCTRL(*this, "rbKr", wxRadioButton)->SetValue(true);
-      break;
-
-    case aspsLinux:
-      sample = _T("namespace foospace\n{\n        int Foo()\n        {\n                if (isBar) {\n                        bar();\n                        return 1;\n                } else\n                        return 0;\n        }\n}");
-      XRCCTRL(*this, "rbLinux", wxRadioButton)->SetValue(true);
-      break;
-
-    case aspsGnu:
-      sample = _T("namespace foospace\n  {\n    int Foo()\n    {\n      if (isBar)\n        {\n          bar();\n          return 1;\n        }\n      else\n        return 0;\n    }\n  }");
-      XRCCTRL(*this, "rbGNU", wxRadioButton)->SetValue(true);
-      break;
-
+#undef AS_ALLMAN
+#define AS_JAVA "\
+int Foo(bool isBar) {\n\
+    if (isBar) {\n\
+        bar();\n\
+        return 1;\n\
+    } else\n\
+        return 0;\n\
+}"
     case aspsJava:
-      sample = _T("namespace foospace {\n    int Foo() {\n        if (isBar) {\n            bar();\n            return 1;\n        } else\n            return 0;\n    }\n}");
+      sample = _T(AS_JAVA);
       XRCCTRL(*this, "rbJava", wxRadioButton)->SetValue(true);
       break;
-
+#undef AS_JAVA
+#define AS_KR "\
+int Foo(bool isBar)\n\
+{\n\
+    if (isBar) {\n\
+        bar();\n\
+        return 1;\n\
+    } else\n\
+        return 0;\n\
+}"
+    case aspsKr:
+      sample = _T(AS_KR);
+      XRCCTRL(*this, "rbKr", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_KR
+#define AS_STROUSTRUP "\
+int Foo(bool isBar)\n\
+{\n\
+    if (isBar) {\n\
+        bar();\n\
+        return 1;\n\
+    } else\n\
+        return 0;\n\
+}"
+    case aspsStroustrup:
+      sample = _T(AS_STROUSTRUP);
+      XRCCTRL(*this, "rbStroustrup", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_STROUSTRUP
+#define AS_WHITESMITH "\
+int Foo(bool isBar)\n\
+    {\n\
+    if (isBar)\n\
+        {\n\
+        bar();\n\
+        return 1;\n\
+        }\n\
+    else\n\
+        return 0;\n\
+    }"
+    case aspsWhitesmith:
+      sample = _T(AS_WHITESMITH);
+      XRCCTRL(*this, "rbWhitesmith", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_WHITESMITH
+#define AS_BANNER "\
+int Foo(bool isBar) {\n\
+    if (isBar) {\n\
+        bar();\n\
+        return 1;\n\
+        }\n\
+    else\n\
+        return 0;\n\
+    }"
+    case aspsBanner:
+      sample = _T(AS_BANNER);
+      XRCCTRL(*this, "rbBanner", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_BANNER
+#define AS_GNU "\
+int Foo(bool isBar)\n\
+{\n\
+  if (isBar)\n\
+    {\n\
+      bar();\n\
+      return 1;\n\
+    }\n\
+  else\n\
+    return 0;\n\
+}"
+    case aspsGnu:
+      sample = _T(AS_GNU);
+      XRCCTRL(*this, "rbGNU", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_GNU
+#define AS_LINUX "\
+int Foo(bool isBar)\n\
+{\n\
+        if (isBar) {\n\
+                bar();\n\
+                return 1;\n\
+        } else\n\
+                return 0;\n\
+}"
+    case aspsLinux:
+      sample = _T(AS_LINUX);
+      XRCCTRL(*this, "rbLinux", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_LINUX
     default:
       XRCCTRL(*this, "rbCustom", wxRadioButton)->SetValue(true);
       break;
@@ -106,7 +201,8 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
   XRCCTRL(*this, "chkIndentNamespaces", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->Enable(!en);
-  XRCCTRL(*this, "cmbBreakType", wxComboBox)->Enable(!en);
+  XRCCTRL(*this, "cmbBracketFormatMode", wxComboBox)->Enable(!en);
+  XRCCTRL(*this, "cmbPointerAlign", wxComboBox)->Enable(!en);
   XRCCTRL(*this, "chkBreakClosing", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->Enable(!en);
@@ -122,16 +218,22 @@ void AstyleConfigDlg::SetStyle(AStylePredefinedStyle style)
 
 void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
 {
-  if (event.GetId() == XRCID("rbAnsi"))
-    SetStyle(aspsAnsi);
-  else if (event.GetId() == XRCID("rbKr"))
-    SetStyle(aspsKr);
-  else if (event.GetId() == XRCID("rbLinux"))
-    SetStyle(aspsLinux);
-  else if (event.GetId() == XRCID("rbGNU"))
-    SetStyle(aspsGnu);
+  if (event.GetId() == XRCID("rbAllman"))
+    SetStyle(aspsAllman);
   else if (event.GetId() == XRCID("rbJava"))
     SetStyle(aspsJava);
+  else if (event.GetId() == XRCID("rbKr"))
+    SetStyle(aspsKr);
+  else if (event.GetId() == XRCID("rbStroustrup"))
+    SetStyle(aspsStroustrup);
+  else if (event.GetId() == XRCID("rbWhitesmith"))
+    SetStyle(aspsWhitesmith);
+  else if (event.GetId() == XRCID("rbBanner"))
+    SetStyle(aspsBanner);
+  else if (event.GetId() == XRCID("rbGNU"))
+    SetStyle(aspsGnu);
+  else if (event.GetId() == XRCID("rbLinux"))
+    SetStyle(aspsLinux);
   else if (event.GetId() == XRCID("rbCustom"))
     SetStyle(aspsCustom);
 }
@@ -183,7 +285,8 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "chkIndentNamespaces", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_namespaces"), false));
   XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_labels"), false));
   XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_preprocessor"), false));
-  XRCCTRL(*this, "cmbBreakType", wxComboBox)->SetValue(cfg->Read(_T("/break_type"), _T("None")));
+  XRCCTRL(*this, "cmbBracketFormatMode", wxComboBox)->SetValue(cfg->Read(_T("/bracket_format_mode"), _T("None")));
+  XRCCTRL(*this, "cmbPointerAlign", wxComboBox)->SetValue(cfg->Read(_T("/pointer_align"), _T("None")));
   XRCCTRL(*this, "chkBreakClosing", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_closing"), false));
   XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks"), false));
   XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_elseifs"), false));
@@ -204,18 +307,24 @@ void AstyleConfigDlg::SaveSettings()
   ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("astyle"));
   int style = 0;
 
-  if (XRCCTRL(*this, "rbAnsi", wxRadioButton)->GetValue())
+  if (XRCCTRL(*this, "rbAllman", wxRadioButton)->GetValue())
     style = 0;
-  else if (XRCCTRL(*this, "rbKr", wxRadioButton)->GetValue())
-    style = 1;
-  else if (XRCCTRL(*this, "rbLinux", wxRadioButton)->GetValue())
-    style = 2;
-  else if (XRCCTRL(*this, "rbGNU", wxRadioButton)->GetValue())
-    style = 3;
   else if (XRCCTRL(*this, "rbJava", wxRadioButton)->GetValue())
+    style = 1;
+  else if (XRCCTRL(*this, "rbKr", wxRadioButton)->GetValue())
+    style = 2;
+  else if (XRCCTRL(*this, "rbStroustrup", wxRadioButton)->GetValue())
+    style = 3;
+  else if (XRCCTRL(*this, "rbWhitesmith", wxRadioButton)->GetValue())
     style = 4;
-  else if (XRCCTRL(*this, "rbCustom", wxRadioButton)->GetValue())
+  else if (XRCCTRL(*this, "rbBanner", wxRadioButton)->GetValue())
     style = 5;
+  else if (XRCCTRL(*this, "rbGNU", wxRadioButton)->GetValue())
+    style = 6;
+  else if (XRCCTRL(*this, "rbLinux", wxRadioButton)->GetValue())
+    style = 7;
+  else if (XRCCTRL(*this, "rbCustom", wxRadioButton)->GetValue())
+    style = 8;
 
   cfg->Write(_T("/style"), style);
   cfg->Write(_T("/indentation"), XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->GetValue());
@@ -229,7 +338,8 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/indent_namespaces"), XRCCTRL(*this, "chkIndentNamespaces", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_labels"), XRCCTRL(*this, "chkIndentLabels", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preprocessor"), XRCCTRL(*this, "chkIndentPreprocessor", wxCheckBox)->GetValue());
-  cfg->Write(_T("/break_type"), XRCCTRL(*this, "cmbBreakType", wxComboBox)->GetValue());
+  cfg->Write(_T("/bracket_format_mode"), XRCCTRL(*this, "cmbBracketFormatMode", wxComboBox)->GetValue());
+  cfg->Write(_T("/pointer_align"), XRCCTRL(*this, "cmbPointerAlign", wxComboBox)->GetValue());
   cfg->Write(_T("/break_closing"), XRCCTRL(*this, "chkBreakClosing", wxCheckBox)->GetValue());
   cfg->Write(_T("/break_blocks"), XRCCTRL(*this, "chkBreakBlocks", wxCheckBox)->GetValue());
   cfg->Write(_T("/break_elseifs"), XRCCTRL(*this, "chkBreakElseIfs", wxCheckBox)->GetValue());

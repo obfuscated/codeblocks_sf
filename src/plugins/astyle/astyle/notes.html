@@ -4,22 +4,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Artistic Style - Release Notes</title>
-    <meta http-equiv="Content-Language"
-          content="en-us" />
-    <meta http-equiv="Content-Type"
-          content="text/html; charset=us-ascii" />
-    <style type="text/css">
-    /*<![CDATA[*/
-    <!-- 
-    body {margin-top:0.5in; margin-right:0.8in; margin-bottom:0.5in; margin-left:0.8in;}
-    h1 {color:#0000A0; text-align:center; font-style:italic; font-size:200%;}
-    h2 {color:#0000A0;}
-    h3 {color:#0000A0;}
-    p  {font-size:105%;} 
-    li {font-size:105%;}   
-    -->
-    /*]]>*/
-    </style>
+    <meta http-equiv="Content-Language" content="en-us" />
+    <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <link href="styles.css" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -27,7 +14,232 @@
 
     <p>&nbsp;</p>
 
-    <h3 id="1.22">Artistic Style 1.22&nbsp; (April 2008)</h3>
+    <h3 id="_1.24">Artistic Style 1.24&nbsp; (pending)</h3>
+
+    <ul>
+        <li>Add &#8209;&#8209;brackets=horstmann (-g) to place run&#8209;in statements on the
+            same line as an opening bracket. </li>
+        <li>Add --style=horstmann (-A9) using horstmann brackets to predefined styles. </li>
+        <li>Add new option &#8209;&#8209;pad&#8209;header (&#8209;H) from Mario Gleichmann to insert 
+            space padding after paren headers. </li>
+        <li>Add new options &#8209;&#8209;align&#8209;pointer=type (-k1), &#8209;&#8209;align&#8209;pointer=middle
+            (-k2) and &#8209;&#8209;align&#8209;pointer=name (-k3) from J P Nurmi. </li>
+        <li>Remove .tmp file by using ostringstream insteadof ofstream.</li>
+        <li>Remove option preserve-date (-Z).</li>
+        <li>Change "class" statement continuation lines to one indent.</li>
+        <li>Change default formatting to leave paren headers unchanged instead of always inserting
+            space padding after them. </li>
+        <li>Change &#8209;&#8209;unpad&#8209;paren to unpad headers unless padding is requested.
+        </li>
+        <li>Change NONE_MODE brackets to allow run-in statements from horstmann type brackets.</li>
+        <li>Change array brackets to allow run-in statements from horstmann type brackets.</li>
+        <li>Change style=stroustroup to 5 spaces per indent.</li>
+        <li>Change spaces per tab minimum value from 1 to 2.</li>
+        <li>Change --min-conditional-indent to allow for statements preceded by a bracket (horstmann
+            brackets). </li>
+        <li>Change predefined styles to allow changes to spaces per indent.</li>
+        <li>Change ASBeautifier to output the entire comment line instead of characters. </li>
+        <li>Improve recognition of pointers and references vs. arithmetic operators.</li>
+        <li>Improve recognition of arithmetic operators for --pad-oper (-p) option. </li>
+        <li>Fix to recognize parens in template definitions.</li>
+        <li>Fix recognition of class initializer when class description contains multiple lines.</li>
+        <li>Fix identification of pointer dereferences and address-of indicators.</li>
+        <li>Fix from Colin D Bennett to fix 64-bit comparison. </li>
+        <li>Fix console error procedure to terminate on an error.</li>
+        <li>Fix 'return' statement for padding or not pading arithmetic operators.</li>
+        <li>Fix C# 'delegate' and 'unchecked' not being identified as keywords.</li>
+        <li>Fix to check for max-instatement-indent when the previous line ends with an opening
+            paren.</li>
+        <li>Fix predefined style options to allow the use of --indent=tab (-t) and --indent=force-tab
+            (-T) options.</li>
+        <li>Fix in-statement indent to allow for non-indentation tabs in the line.</li>
+        <li>Fix formatting problems with non in-statement arrays. </li>
+        <li>Fix infinite loop when #else with missing #if.</li>
+        <li>Fix MinGW file globbing by moving the _CRT_glob variable outside the astyle namespace. </li>
+        <li>Fix Borland string compares to check for comparison past the end of string. </li>
+        <li>Fix &#8209;&#8209;fill&#8209;empty&#8209;lines when &#8209;&#8209;indent=force&#8209;tab
+            is also used.</li>
+        <li>Fix break-blocks formatting with preceding mixed comments and line comments.</li>
+        <li>Fix not breaking a closing bracket following a comment.</li>
+        <li>Fix attached brackets to not change empty brackets when both are on the same line. </li>
+        <li>Fix attached brackets sometimes deleting a previous comment line when the bracket
+            cannot be attached.</li>
+        <li>Fix attached brackets attaching a cosing header to a single line block.</li>
+        <li>Fix broken brackets breaking a single line block before a comment.</li>
+        <li>Fix 'extern' keyword using in-statement inents instead of tab indents. </li>
+        <li>Fix deleting a space before a line end comment when attaching 'else' to a closing
+            bracket. </li>
+        <li>Fix adding a space before a line end comment when the comment is preceded by a tab.</li>
+        <li>Fix to leave tab indentation on no-indent line comments.</li>
+        <li>Fix comments when a bracket is added or removed from a line.</li>
+        <li>Fix indenting preprocessor statements in a wxWidgets or MFC macro.</li>
+        <li>Changes from Ettl Martin for cppcheck compilance. </li>
+        <li>Change space padding of line end comments to one space when the proper alignment
+            cannot be maintained.</li>
+        <li>Remove trace file from ASFormatter and use 'cout' instead. </li>
+        <li>Split the help display "Formatting Options" into "Formatting Options" and "Padding
+            Options".</li>
+        <li>Change comment formatting in ASFormatter to output the entire comment instead of
+            single characters.</li>
+        <li>Change quote formatting in ASFormatter to output the entire string instead of single
+            characters.</li>
+        <li>Remove peekNextChar() function from ASBeautifier and use the function in ASBase.</li>
+        <li>Fix memory leak reporting of global and static class member vectors. </li>
+        <li>Refactor to implement unit testing and improve decomposition:
+        <ul>
+            <li>Replace multiple conditional statement with isOkToBreakBlock function.</li>
+            <li>Extract function formatCinToCout. </li>
+            <li>Encapsulate global variables isModeManuallySet. </li>
+            <li>Extract function isLineBreakBeforeClosingHeader. </li>
+            <li>Change standardizePath to be called when the vector entry is built. </li>
+            <li>Move formatFile call from getFilePaths to main.</li>
+            <li>Change g_console from an object to an object pointer to allow rebuilding the object.</li>
+            <li>Change processOptions function to return to main instead of exiting.</li>
+            <li>Move multi-line comment alignment from ASBeautifier to ASFormatter. </li>
+            <li>Extract functions formatOpeningBracket, formatClosingBracket and isCurrentBracketBroken.</li>
+            <li>Extract functions formatCommentOpener and formatCommentBody.</li>
+            <li>Extract functions formatLineCommentOpener and formatLineCommentBody.</li>
+            <li>Extract functions formatQuoteOpener and formatQuoteBody. </li>
+        </ul>
+    </li>
+    </ul>
+    
+    <h3 id="_1.23">Artistic Style 1.23&nbsp; (February 2009)</h3>
+
+    <ul>
+        <li>Add --brackets=stroustrup (-u) to bracket types. </li>
+        <li>Add --style=stroustrup to predefined styles. </li>
+        <li>Add --style=whitesmith to predefined styles.</li>
+        <li>Add --style=banner to predefined styles.</li>
+        <li>Add --style=k&amp;r and --style=k/r to predefined styles. </li>
+        <li>Add --style=allman and --style=bsd to predefined styles. </li>
+        <li>Change --style=kr to --style=java.</li>
+        <li>Add short options -A1 thru -A8 for predefined styles.</li>
+        <li>Change the following long options to eliminate duplicate keys (the short options have not changed).
+            <ul>
+                <li>--force-indent=tab=# changed to --indent=force-tab=#</li>
+                <li>--brackets=break-closing changed to --break-closing-brackets</li>
+                <li>--pad=oper changed to --pad-oper</li>
+                <li>--pad=paren changed to --pad-paren</li>
+                <li>--pad=paren-out changed to --pad-paren-out</li>
+                <li>--pad=paren-out changed to --pad-paren-in</li>
+                <li>--unpad=paren changed to --unpad-paren</li>
+                <li>--one-line=keep-statement changed to --keep-one-line-statements</li>
+                <li>--one-line=keep-blocks changed to --keep-one-line-blocks</li>
+            </ul>
+        </li>
+        
+        <li>Add new option --indent=force-tab (assumes tab setting is 4).</li>
+        <li>Add new option --delete&#8209;empty&#8209;lines to delete the empty lines within a function.</li>
+        <li>Add new option --formatted (-Q) to display only the files that are formatted. </li>
+        <li>Change --convert-tabs to replace tabs with spaces and maintain the correct spacing. </li>
+        <li>Change --indent-blocks to indent only blocks within a function.</li>
+        <li>Change --indent-blocks to NOT indent the opening bracket for namespaces, classes, and interfaces. </li>
+        <li>Change --indent-blocks and --indent-brackets to NOT indent namespaces unless --indent-namespaces is used.</li>
+        <li>Change --indent-blocks and --indent-brackets to always break closing headers so the 'else' aligns with the 
+                    corresponding 'if'.</li>
+        <li>Change --indent-blocks and --indent-brackets to be mutually exclusive (--indent&#8209;blocks will be used).
+        </li>
+        <li>Fix --indent-blocks indenting a java 'interface' statement.&nbsp; </li>
+        <li>Fix --indent-blocks to indenting opening brackets in a java method containing a 'throws' clause. </li>
+        <li>Fix --indent-blocks indenting opening brackets in a java static constructor. </li>
+        <li>Fix --indent-blocks formatting in a C++ const function. </li>
+        <li>Fix --indent&#8209;brackets indenting brackets within comments. </li>
+        <li>Move set-up of predefined styles to ASFormatter so the style options will override all other options.</li>
+        <li>Fix --else-if statements to join by default. </li>
+        <li>Fix to always space pad after semi&#8209;colons.</li>
+        <li>Fix --pad-oper to space pad all commas.</li>
+        <li>Fix --break&#8209;blocks and --break&#8209;blocks=all options.
+        <ul>
+                <li>Fix to recognize a semi&#8209;colon as end of block when brackets are not used.</li>
+            <li>Fix to break comments preceding a block so that comments are kept with the block. </li>
+            <li>Fix 'for' statement semi&#8209;colons being mistaken for the end of a statement.</li>
+            <li>Fix bracketFormatMode of&nbsp; NONE_MODE to break closing headers.</li>
+            <li>Fix incorrect breaking of a block that follows a comment. </li>
+            <li>Fix breaking of opening and closing headers preceded by a comment.</li>
+            <li>Fix breaking of statements when comments follow a header block. </li>
+            <li>Fix incorrectly breaking blocks for namespaces, interfaces, and classes. </li>
+            <li>Fix incorrectly breaking blocks for access modifiers when keep-one-line-statements
+                is used. </li>
+            <li>Fix to NOT break single line blocks. </li>
+            <li>Fix breaking a closing 'while' statement in a do-while block. </li>
+            <li>Fix preprocessor directives not resetting all variables. </li>
+            <li>Fix peekNextText function not correctly identifying an end of file condition.</li>
+        </ul>
+        </li>
+                
+        <li>Add C# lambda expression arrow '=&gt;' to list of operators so pad&#8209;oper will not separate. </li>
+        <li>Add C# '??' to list of operators so pad&#8209;oper will not separate. </li>
+        <li>Fix C# to identify 'add' and 'remove' methods as command type brackets. </li>
+        <li>Fix C# indentation of closing headers 'set' and 'remove'.</li>
+        <li>Fix C# to identify methods containing a 'where' keyword as block headers.&nbsp; </li>
+        <li>Fix C# files to recognize preprocessor statements. </li>
+        <li>Fix C# indentation following a #region statement containing a keyword. </li>
+        <li>Fix C# to recognize nullable types so --pad&#8209;paren will not separate (e.g. 'int?'). </li>
+        <li>Fix C# to recognize non-generic default values (e.g. 'default(int)'). </li>
+        <li>Fix C# indentation when a class declaration contains multiple class statements. </li>
+        <li>Fix C# linux bracket placement for an&nbsp; interface statement. </li>
+        <li>Fix C# --break-elseifs also breaking 'catch' statements. </li>
+        <li>Fix C# --break-blocks breaking of 'set' and 'remove' statements.</li>        
+        <li>Fix Java static constructor not being identified as a command type bracket.</li>        
+        <li>Fix Java 'new' array not having an in statement indent. </li>
+        <li>Refactor NONE_MODE in ASFormatter to use common procedures with other bracket types.</li>
+        <li>Refactor astyle_main to improve maintainability.
+            <ul>
+                <li>New class ASConsole to encapsulate console variables. </li>
+                <li>New header file astyle_main.h </li>
+                <li>Move console only functions to ASConsole class.</li>
+                <li>New functions processOptions and processFilePath to improve decomposition.</li>
+            </ul>
+        </li>
+        <li>Apply patches from Eran Ifrah to remove memory leaks.</li>  
+        <li>Apply patches from Max Horn for the unary plus operator.</li>
+        <li>Fix initialization of vector stack objects to remove memory leaks.</li>              
+        <li>Add comma (,) to valid options separators in the options file. </li> 
+        <li>Change to display all (instead of one) --exclude errors before abort.</li>
+        <li>Change astyle namespace to include all of astyle_main except the functions called externally. </li>
+        <li>Change licensing comments from LGPL version 2.1 to LGPL version 3.</li>
+        <li>Change JNI function call from GetVersion to AStyleGetVersion.</li>
+        <li>Remove &#39;extern&#39; keyword from headers, nonParenHeaders, PreBlockStatements, and &nbsp;PreCommandHeaders.
+        </li>
+        <li>Fix not always space padding a closing bracket. </li>
+        <li>Fix not space padding a closing header when breaking one line statements. </li>
+        <li>Fix --keep-one-line-blocks breaking closing headers on broken brackets. </li>
+        <li>Fix incorrectly attaching a bracket inside a comment after the end of a statement.</li>
+        <li>Add number of output lines processed to the --verbose option display.</li>
+        <li>Remove trace file from ASEnhancer and use &#39;cout&#39; instead.</li>
+        <li>Replace INIT_CONTAINER and DELETE_CONTAINER macros with template functions.</li>
+        <li>Replace IS_A macro with isBracketType function.</li>
+        <li>Add GCC extended operators '&lt;?' and '&gt;?' (min and max) to list of operators.</li>
+        <li>Fix indentation and breaking of lines in struct and class bit fields.</li>
+        <li>Fix indentation of struct definitions.</li>
+        <li>Add &#39;union&#39; to preDefinitionHeaders.</li>
+        <li>Change preBlockStatements and preDefinitionHeaders to be dependent on file type.</li>
+        <li>Fix a single quote mark used as an apostrophe in preprocessor directives being processed as a quotation.</li>
+        <li>Fix linux bracket formatting in nested namespaces. &nbsp;</li>
+        <li>Fix --pad&#8209;paren&#8209;in not converting a tab to spaces if convert&#8209;tabs is requested.</li>
+        <li>Fix incorrectly breaking a closing bracket when a header is not present.</li>
+        <li>Fix inserting duplicate bracketTypeStack entries when preprocessor directives contain unmatched brackets.</li>
+        <li>Fix bracketFormatMode of&nbsp; NONE_MODE to correctly break single line blocks.&nbsp; </li>
+        <li>Fix --keep&#8209;one&#8209;line&#8209;blocks breaking 'if' statements when --break&#8209;elseifs is used.</li>
+        <li>Remove inefficiencies for speed improvement.
+            <ul>
+            <li>Reduce calls to frequently used functions by first checking for specific requirements.</li>
+                <li>New class ASBase to inline frequently used functions and eliminate duplication between classes.</li>
+                <li>Change ASEnhancer from inherited to embedded to eliminate scope resolution requirements.</li>
+                <li>Change ASFormatter to output words instead of characters. </li>
+                <li>Resequence operator vectors and add new findHeader and findOperator functions. </li>
+            </ul>
+        </li>            
+        <li>Fix NONE_MODE brackets to break a statement on the same line as an opening broken bracket.</li>
+        <li>Add 'errno' message for file and directory errors in the Linux build.</li>
+        <li>Add error checking for file remove and rename procedure.</li>
+        <li>Fix Linux abort for file sizes over 2 GB.</li>
+        <li>Fix searching the entire directory when only one file is requested.</li>
+        <li>Change --preserve-date increment to 2 units for Visual Studio 2008. </li>
+        </ul>
+        
+    <h3 id="_1.22">Artistic Style 1.22&nbsp; (April 2008)</h3>
 
     <ul>
         <li>New --recursive (-r, -R) option to recursively process sub directories.</li>
@@ -188,7 +400,7 @@
         <li>Fix brackets=attach deleting a preceding blank line in array type brackets.</li>
     </ul>
 
-    <h3 id="1.21">Artistic Style 1.21&nbsp; (June 2007)</h3>
+    <h3 id="_1.21">Artistic Style 1.21&nbsp; (June 2007)</h3>
 
     <ul>
         <li>New function, formatArrayBrackets, to improve array formatting and indentation.</li>
@@ -1249,5 +1461,13 @@
     </ul>
 
     <p>&nbsp;</p>
+
+    <center style="margin-left:-0.4in;">
+    <a href="http://sourceforge.net/projects/astyle"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=16" 
+    width="150" height="40" alt="[SourceForge.net Logo]" /></a>
+    </center>
+
+    <p>&nbsp;</p>
+    
 </body>
 </html>

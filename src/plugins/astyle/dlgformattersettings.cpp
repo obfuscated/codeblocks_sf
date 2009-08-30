@@ -29,121 +29,57 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 {
   int style = 0;
 
-  if (XRCCTRL(*m_dlg, "rbAnsi", wxRadioButton)->GetValue())
+  if (XRCCTRL(*m_dlg, "rbAllman", wxRadioButton)->GetValue())
     style = 0;
-  else if (XRCCTRL(*m_dlg, "rbKr", wxRadioButton)->GetValue())
-    style = 1;
-  else if (XRCCTRL(*m_dlg, "rbLinux", wxRadioButton)->GetValue())
-    style = 2;
-  else if (XRCCTRL(*m_dlg, "rbGNU", wxRadioButton)->GetValue())
-    style = 3;
   else if (XRCCTRL(*m_dlg, "rbJava", wxRadioButton)->GetValue())
+    style = 1;
+  else if (XRCCTRL(*m_dlg, "rbKr", wxRadioButton)->GetValue())
+    style = 2;
+  else if (XRCCTRL(*m_dlg, "rbStroustrup", wxRadioButton)->GetValue())
+    style = 3;
+  else if (XRCCTRL(*m_dlg, "rbWhitesmith", wxRadioButton)->GetValue())
     style = 4;
-  else if (XRCCTRL(*m_dlg, "rbCustom", wxRadioButton)->GetValue())
+  else if (XRCCTRL(*m_dlg, "rbBanner", wxRadioButton)->GetValue())
     style = 5;
+  else if (XRCCTRL(*m_dlg, "rbLinux", wxRadioButton)->GetValue())
+    style = 6;
+  else if (XRCCTRL(*m_dlg, "rbGNU", wxRadioButton)->GetValue())
+    style = 7;
+  else if (XRCCTRL(*m_dlg, "rbCustom", wxRadioButton)->GetValue())
+    style = 8;
 
   switch (style)
   {
-    case 0: // ansi
-      formatter.setBracketIndent(false);
-      formatter.setTabIndentation(4);
-      formatter.setSpaceIndentation(4);
-      formatter.setBracketFormatMode(astyle::BREAK_MODE);
-      formatter.setClassIndent(false);
-      formatter.setSwitchIndent(false);
-      formatter.setNamespaceIndent(true);
-      formatter.setBlockIndent(false);
-      formatter.setBreakClosingHeaderBracketsMode(false);
-      formatter.setBreakBlocksMode(false);
-      formatter.setBreakElseIfsMode(false);
-      formatter.setOperatorPaddingMode(false);
-      formatter.setParensOutsidePaddingMode(false);
-      formatter.setParensInsidePaddingMode(false);
-      formatter.setParensUnPaddingMode(false);
-      formatter.setSingleStatementsMode(true);
-      formatter.setBreakOneLineBlocksMode(true);
+    case 0: // Allman (ANSI)
+      formatter.setFormattingStyle(astyle::STYLE_ALLMAN);
       break;
 
-    case 1: // K&R
-      formatter.setBracketIndent(false);
-      formatter.setTabIndentation(4);
-      formatter.setSpaceIndentation(4);
-      formatter.setBracketFormatMode(astyle::ATTACH_MODE);
-      formatter.setClassIndent(false);
-      formatter.setSwitchIndent(false);
-      formatter.setNamespaceIndent(true);
-      formatter.setBlockIndent(false);
-      formatter.setBreakClosingHeaderBracketsMode(false);
-      formatter.setBreakBlocksMode(false);
-      formatter.setBreakElseIfsMode(false);
-      formatter.setOperatorPaddingMode(false);
-      formatter.setParensOutsidePaddingMode(false);
-      formatter.setParensInsidePaddingMode(false);
-      formatter.setParensUnPaddingMode(false);
-      formatter.setSingleStatementsMode(true);
-      formatter.setBreakOneLineBlocksMode(true);
+    case 1: // Java
+      formatter.setFormattingStyle(astyle::STYLE_JAVA);
       break;
 
-    case 2: // Linux
-      formatter.setBracketIndent(false);
-      formatter.setTabIndentation(8);
-      formatter.setSpaceIndentation(8);
-      formatter.setBracketFormatMode(astyle::BDAC_MODE);
-      formatter.setClassIndent(false);
-      formatter.setSwitchIndent(false);
-      formatter.setNamespaceIndent(true);
-      formatter.setBlockIndent(false);
-      formatter.setBreakClosingHeaderBracketsMode(false);
-      formatter.setBreakBlocksMode(false);
-      formatter.setBreakElseIfsMode(false);
-      formatter.setOperatorPaddingMode(false);
-      formatter.setParensOutsidePaddingMode(false);
-      formatter.setParensInsidePaddingMode(false);
-      formatter.setParensUnPaddingMode(false);
-      formatter.setSingleStatementsMode(true);
-      formatter.setBreakOneLineBlocksMode(true);
+    case 2: // K&R
+      formatter.setFormattingStyle(astyle::STYLE_KandR);
       break;
 
-    case 3: // GNU
-      formatter.setBracketIndent(false);
-      formatter.setTabIndentation(2);
-      formatter.setSpaceIndentation(2);
-      formatter.setBracketFormatMode(astyle::BREAK_MODE);
-      formatter.setClassIndent(false);
-      formatter.setSwitchIndent(false);
-      formatter.setNamespaceIndent(true);
-      formatter.setBlockIndent(true);
-      formatter.setBreakClosingHeaderBracketsMode(false);
-      formatter.setBreakBlocksMode(false);
-      formatter.setBreakElseIfsMode(false);
-      formatter.setOperatorPaddingMode(false);
-      formatter.setParensOutsidePaddingMode(false);
-      formatter.setParensInsidePaddingMode(false);
-      formatter.setParensUnPaddingMode(false);
-      formatter.setSingleStatementsMode(true);
-      formatter.setBreakOneLineBlocksMode(true);
+    case 3: // Stroustrup
+      formatter.setFormattingStyle(astyle::STYLE_STROUSTRUP);
       break;
 
-    case 4: // Java
-      formatter.setJavaStyle();
-      //formatter.modeSetManually = true;
-      formatter.setBracketIndent(false);
-      formatter.setTabIndentation(4);
-      formatter.setSpaceIndentation(4);
-      formatter.setBracketFormatMode(astyle::ATTACH_MODE);
-      //formatter.setClassIndent(false);
-      formatter.setSwitchIndent(false);
-      //formatter.setNamespaceIndent(true);
-      formatter.setBlockIndent(false);
-      formatter.setBreakClosingHeaderBracketsMode(false);
-      formatter.setBreakBlocksMode(false);
-      formatter.setBreakElseIfsMode(false);
-      formatter.setOperatorPaddingMode(false);
-      formatter.setParensInsidePaddingMode(false);
-      formatter.setParensOutsidePaddingMode(false);
-      formatter.setParensUnPaddingMode(false);
-      formatter.setSingleStatementsMode(true);
-      formatter.setBreakOneLineBlocksMode(true);
+    case 4: // Whitesmith
+      formatter.setFormattingStyle(astyle::STYLE_WHITESMITH);
+      break;
+
+    case 5: // Banner
+      formatter.setFormattingStyle(astyle::STYLE_BANNER);
+      break;
+
+    case 6: // Linux
+      formatter.setFormattingStyle(astyle::STYLE_LINUX);
+      break;
+
+    case 7: // GNU
+      formatter.setFormattingStyle(astyle::STYLE_GNU);
       break;
 
     default: // Custom
@@ -169,26 +105,49 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setLabelIndent(XRCCTRL(*m_dlg, "chkIndentLabels", wxCheckBox)->GetValue());
       formatter.setPreprocessorIndent(XRCCTRL(*m_dlg, "chkIndentPreprocessor", wxCheckBox)->GetValue());
 
-      wxString breakType = XRCCTRL(*m_dlg, "cmbBreakType", wxComboBox)->GetValue();
+      wxString brackedFormatMode = XRCCTRL(*m_dlg, "cmbBracketFormatMode", wxComboBox)->GetValue();
 
-      if (breakType == _T("Break"))
-      {
-        formatter.setBracketFormatMode(astyle::BREAK_MODE);
-      }
-      else if (breakType == _T("Attach"))
+      if (brackedFormatMode == _T("Attach"))
       {
         formatter.setBracketFormatMode(astyle::ATTACH_MODE);
       }
-      else if (breakType == _T("Linux"))
+      else if (brackedFormatMode == _T("Break"))
       {
-        formatter.setBracketFormatMode(astyle::BDAC_MODE);
+        formatter.setBracketFormatMode(astyle::BREAK_MODE);
+      }
+      else if (brackedFormatMode == _T("Linux"))
+      {
+        formatter.setBracketFormatMode(astyle::LINUX_MODE);
+      }
+      else if (brackedFormatMode == _T("Stroustrup"))
+      {
+        formatter.setBracketFormatMode(astyle::STROUSTRUP_MODE);
       }
       else
       {
         formatter.setBracketFormatMode(astyle::NONE_MODE);
       }
 
-      formatter.setBreakBlocksMode(XRCCTRL(*m_dlg, "chkBreakClosing", wxCheckBox)->GetValue());
+      wxString pointerAlign = XRCCTRL(*m_dlg, "cmbPointerAlign", wxComboBox)->GetValue();
+
+      if (pointerAlign == _T("Type"))
+      {
+        formatter.setPointerAlignment(astyle::ALIGN_TYPE);
+      }
+      else if (pointerAlign == _T("Middle"))
+      {
+        formatter.setPointerAlignment(astyle::ALIGN_MIDDLE);
+      }
+      else if (pointerAlign == _T("Name"))
+      {
+        formatter.setPointerAlignment(astyle::ALIGN_NAME);
+      }
+      else
+      {
+        formatter.setPointerAlignment(astyle::ALIGN_NONE);
+      }
+
+      formatter.setBreakClosingHeaderBracketsMode(XRCCTRL(*m_dlg, "chkBreakClosing", wxCheckBox)->GetValue());
       formatter.setBreakBlocksMode(XRCCTRL(*m_dlg, "chkBreakBlocks", wxCheckBox)->GetValue());
       formatter.setBreakElseIfsMode(XRCCTRL(*m_dlg, "chkBreakElseIfs", wxCheckBox)->GetValue());
       formatter.setOperatorPaddingMode(XRCCTRL(*m_dlg, "chkPadOperators", wxCheckBox)->GetValue());

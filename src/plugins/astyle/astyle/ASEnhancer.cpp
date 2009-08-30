@@ -1,59 +1,30 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- *   ASEnhancer.cpp
+ *   Copyright (C) 2006-2009 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 1998-2002 by Tal Davidson
+ *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
- *   This file is a part of "Artistic Style" - an indentation and
+ *   This file is a part of Artistic Style - an indentation and
  *   reformatting tool for C, C++, C# and Java source files.
- *   http://astyle.sourceforge.net
+ *   <http://astyle.sourceforge.net>
  *
- *   The "Artistic Style" project, including all files needed to
- *   compile it, is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU Lesser General Public
- *   License as published by the Free Software Foundation; either
- *   version 2.1 of the License, or (at your option) any later
- *   version.
+ *   Artistic Style is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- *   This program is distributed in the hope that it will be useful,
+ *   Artistic Style is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Lesser General Public
- *   License along with this project; if not, write to the
- *   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- *   Boston, MA  02110-1301, USA.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Artistic Style.  If not, see <http://www.gnu.org/licenses/>.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 
-// can trace only if NDEBUG is not defined
-#ifndef NDEBUG
-// #define TRACEswitch
-// #define TRACEcase
-// #define TRACEmisc
-#endif
-
 #include "astyle.h"
-
-#include <iostream>
-#include <fstream>
-#include <sstream>
-
-#ifdef TRACEswitch
-#define TRswitch(a,b)   *traceOut << lineNumber << a << b << endl;
-#else
-#define TRswitch(a,b)   ((void)0)
-#endif // TRACEswitch
-#ifdef TRACEcase
-#define TRcase(a,b)     *traceOut << lineNumber << a << b << endl;
-#else
-#define TRcase(a,b)     ((void)0)
-#endif // TRACEcase
-#ifdef TRACEmisc
-#define TRmisc(a)       *traceOut << lineNumber << a << endl;
-#else
-#define TRmisc(a)       ((void)0)
-#endif // TRACEmisc
 
 
 namespace astyle
@@ -66,38 +37,16 @@ namespace astyle
  */
 ASEnhancer::ASEnhancer()
 {
-	// variables are initialized by init()
-	traceOut = new stringstream;
+	// the following prevents warning messages with cppcheck
+	// it will NOT compile if activated
+//	init();
 }
 
 /**
  * Destructor of ASEnhancer
- * Display the TRACE entries.
  */
 ASEnhancer::~ASEnhancer()
 {
-#if defined(TRACEswitch) || defined(TRACEcase) || defined(TRACEmisc)
-	string line;
-	string msg = "TRACE Entries\n\n";
-	char countLine[50];
-	int count = 0;
-
-	while (getline(*traceOut, line))
-	{
-		msg += line + '\n';
-		count++;
-	}
-	sprintf(countLine, "\n%d Entries", count);
-	msg += countLine;
-	// write a text file to "My Documents" (Windows)
-	char filename [_MAX_PATH + _MAX_FNAME + _MAX_EXT + 1];   // full path and filename
-	strcpy(filename, getenv("USERPROFILE"));
-	strcat(filename, "\\My Documents\\tracee.txt");
-	ofstream outfile(filename);
-	outfile << msg;
-	outfile.close();
-#endif
-	delete traceOut;
 }
 
 /**
@@ -105,25 +54,23 @@ ASEnhancer::~ASEnhancer()
  *
  * init() is called each time an ASFormatter object is initialized.
  */
-void ASEnhancer::init(int _indentLength,
+void ASEnhancer::init(int fileType,
+                      int _indentLength,
                       string _indentString,
-                      bool _isCStyle,
-                      bool _isJavaStyle,
-                      bool _isSharpStyle,
                       bool _caseIndent,
                       bool _emptyLineFill)
 {
 	// formatting variables from ASFormatter and ASBeautifier
-	indentLengthX = _indentLength;
-	if (_indentString.compare(0, 1, "\t") == 0)
-		useTabsX = true;
+	ASBase::init(fileType);
+	indentLength = _indentLength;
+	if (_indentString == "\t")
+		useTabs = true;
 	else
-		useTabsX = false;
-	isCStyleX      = _isCStyle;
-	isJavaStyleX   = _isJavaStyle;
-	isSharpStyleX  = _isSharpStyle;
-	caseIndentX    = _caseIndent;
-	emptyLineFillX = _emptyLineFill;
+		useTabs = false;
+
+	caseIndent    = _caseIndent;
+	emptyLineFill = _emptyLineFill;
+	quoteChar = '\'';
 
 	// unindent variables
 	lineNumber = 0;
@@ -142,10 +89,6 @@ void ASEnhancer::init(int _indentLength,
 
 	nextLineIsEventTable = false;
 	isInEventTable = false;
-
-#if defined(TRACEswitch) || defined(TRACEcase) || defined(TRACEmisc)
-	*traceOut << "New file -------------" << endl;
-#endif
 }
 
 /**
@@ -160,10 +103,9 @@ void ASEnhancer::init(int _indentLength,
 void ASEnhancer::enhance(string &line)
 {
 	bool   isSpecialChar = false;
-	size_t  lineLength;                             // length of the line being parsed
+	size_t  lineLength = line.length();
 
 	lineNumber++;
-	lineLength = line.length();
 
 	// check for beginning of event table
 	if (nextLineIsEventTable)
@@ -174,7 +116,7 @@ void ASEnhancer::enhance(string &line)
 
 	if (lineLength == 0
 	        && ! isInEventTable
-	        && ! emptyLineFillX)
+	        && ! emptyLineFill)
 		return;
 
 	// test for unindent on attached brackets
@@ -183,7 +125,7 @@ void ASEnhancer::enhance(string &line)
 		sw.unindentDepth++;
 		sw.unindentCase = true;
 		unindentNextLine = false;
-		TRcase(" unindent case ", sw.unindentDepth);
+//      cout << " unindent case " << sw.unindentDepth << endl;
 	}
 
 	// parse characters in the current line.
@@ -193,7 +135,7 @@ void ASEnhancer::enhance(string &line)
 		char ch = line[i];
 
 		// bypass whitespace
-		if (isWhiteSpaceX(ch))
+		if (isWhiteSpace(ch))
 			continue;
 
 		// handle special characters (i.e. backslash+character such as \n, \t, ...)
@@ -258,30 +200,35 @@ void ASEnhancer::enhance(string &line)
 
 		// if we have reached this far then we are NOT in a comment or string of special characters
 
-		if (line[i] == '{')                                 // if open bracket
+		if (line[i] == '{')
 			bracketCount++;
 
-		if (line[i] == '}')                     // if close bracket
+		if (line[i] == '}')
 			bracketCount--;
+
+		bool isPotentialKeyword = isCharPotentialHeader(line, i);
 
 		// ----------------  process event tables  --------------------------------------
 
 		// check for event table begin
-		if (findKeyword(line, i, "BEGIN_EVENT_TABLE")
-		        || findKeyword(line, i, "BEGIN_MESSAGE_MAP"))
-			nextLineIsEventTable = true;
+		if (isPotentialKeyword)
+		{
+			if (findKeyword(line, i, "BEGIN_EVENT_TABLE")
+			        || findKeyword(line, i, "BEGIN_MESSAGE_MAP"))
+				nextLineIsEventTable = true;
 
-		// check for event table end
-		if (findKeyword(line, i, "END_EVENT_TABLE")
-		        || findKeyword(line, i, "END_MESSAGE_MAP"))
-			isInEventTable = false;
+			// check for event table end
+			if (findKeyword(line, i, "END_EVENT_TABLE")
+			        || findKeyword(line, i, "END_MESSAGE_MAP"))
+				isInEventTable = false;
+		}
 
 		// ----------------  process switch statements  ---------------------------------
 
-		if (findKeyword(line, i, "switch"))                 // if switch statement
+		if (isPotentialKeyword && findKeyword(line, i, "switch"))
 		{
-			switchDepth++;                                  // bump switch depth
-			TRswitch(" switch ", switchDepth);
+			switchDepth++;
+//          cout << " switch " <<  switchDepth << endl;
 			swVector.push_back(sw);                         // save current variables
 			sw.switchBracketCount = 0;
 			sw.unindentCase = false;                        // don't clear case until end of switch
@@ -291,18 +238,18 @@ void ASEnhancer::enhance(string &line)
 
 		// just want switch statements from this point
 
-		if (caseIndentX || switchDepth == 0)               // from here just want switch statements
-			continue;                                      // get next char
+		if (caseIndent || switchDepth == 0)               // from here just want switch statements
+			continue;
 
-		if (line[i] == '{')                                 // if open bracket
+		if (line[i] == '{')
 		{
 			sw.switchBracketCount++;
 			if (lookingForCaseBracket)                      // if 1st after case statement
 			{
 				sw.unindentCase = true;                     // unindenting this case
-				sw.unindentDepth++;                         // bump depth
+				sw.unindentDepth++;
 				lookingForCaseBracket = false;              // not looking now
-				TRcase(" unindent case ", sw.unindentDepth);
+//              cout << " unindent case " <<  sw.unindentDepth << endl;
 			}
 			continue;
 		}
@@ -314,7 +261,7 @@ void ASEnhancer::enhance(string &line)
 			sw.switchBracketCount--;
 			if (sw.switchBracketCount == 0)                 // if end of switch statement
 			{
-				TRswitch("  endsw ", switchDepth);
+//              cout << "  endsw " << switchDepth << endl;
 				switchDepth--;                              // one less switch
 				sw = swVector.back();                       // restore sw struct
 				swVector.pop_back();                        // remove last entry from stack
@@ -324,7 +271,8 @@ void ASEnhancer::enhance(string &line)
 
 		// look for case or default header
 
-		if (findKeyword(line, i, "case") || findKeyword(line, i, "default"))
+		if (isPotentialKeyword
+		        && (findKeyword(line, i, "case") || findKeyword(line, i, "default")))
 		{
 			if (sw.unindentCase)                            // if unindented last case
 			{
@@ -339,10 +287,10 @@ void ASEnhancer::enhance(string &line)
 				{
 					if (line[i] == '\\')
 					{
-						i++;								// bypass next char
+						i++;                                // bypass next char
 						continue;
 					}
-					else if (line[i] == quoteChar)			// check ending quote
+					else if (line[i] == quoteChar)          // check ending quote
 					{
 						isInQuote = false;
 						quoteChar = ' ';
@@ -350,10 +298,10 @@ void ASEnhancer::enhance(string &line)
 					}
 					else
 					{
-						continue;							// must close quote before continuing
+						continue;                           // must close quote before continuing
 					}
 				}
-				if (line[i] == '\'' || line[i] == '\"')	// check opening quote
+				if (line[i] == '\'' || line[i] == '\"')		// check opening quote
 				{
 					isInQuote = true;
 					quoteChar = line[i];
@@ -362,23 +310,23 @@ void ASEnhancer::enhance(string &line)
 				if (line[i] == ':')
 				{
 					if ((i + 1 < lineLength) && (line[i + 1] == ':'))
-						i++;								// bypass scope resolution operator
+						i++;                                // bypass scope resolution operator
 					else
-						break;								// found it
+						break;                              // found it
 				}
 			}
 			i++;
 			for (; i < lineLength; i++)                     // bypass whitespace
 			{
-				if (!(isWhiteSpaceX(line[i])))
+				if (!(isWhiteSpace(line[i])))
 					break;
 			}
-			if (i < lineLength)                             // check for bracket
+			if (i < lineLength)
 			{
-				if (line[i] == '{')                         // if bracket found
+				if (line[i] == '{')
 				{
 					sw.switchBracketCount++;
-					unindentNextLine = true;                // start unindenting on next line
+					unindentNextLine = true;
 					continue;
 				}
 			}
@@ -386,13 +334,23 @@ void ASEnhancer::enhance(string &line)
 			i--;                                            // need to check for comments
 			continue;
 		}
+
+		if (isPotentialKeyword)
+		{
+			string name = getCurrentWord(line, i);          // bypass the entire name
+			i += name.length() - 1;
+		}
+
 	}   // end of for loop
 
-	if (isInEventTable) 									// if need to indent
-		indentLine(line, 1);               					//    do it
+	if (isInEventTable)                                     // if need to indent
+	{
+		if (line[0] != '#')
+			indentLine(line, 1);
+	}
 
 	if (sw.unindentDepth > 0)                               // if need to unindent
-		unindentLine(line, sw.unindentDepth);               //    do it
+		unindentLine(line, sw.unindentDepth);
 }
 
 /**
@@ -406,19 +364,19 @@ void ASEnhancer::enhance(string &line)
 int ASEnhancer::indentLine(string  &line, const int indent) const
 {
 	if (line.length() == 0
-	        && ! emptyLineFillX)
+	        && ! emptyLineFill)
 		return 0;
 
-	size_t charsToInsert;                   	// number of chars to insert
+	size_t charsToInsert;                       // number of chars to insert
 
-	if (useTabsX)                    			// if formatted with tabs
+	if (useTabs)                                // if formatted with tabs
 	{
-		charsToInsert = indent;             	// tabs to insert
+		charsToInsert = indent;                 // tabs to insert
 		line.insert((size_t) 0, charsToInsert, '\t');    // insert the tabs
 	}
 	else
 	{
-		charsToInsert = indent * indentLengthX;  // compute chars to insert
+		charsToInsert = indent * indentLength;  // compute chars to insert
 		line.insert((size_t)0, charsToInsert, ' ');     // insert the spaces
 	}
 
@@ -445,7 +403,7 @@ int ASEnhancer::unindentLine(string  &line, const int unindent) const
 
 	size_t charsToErase;                    // number of chars to erase
 
-	if (useTabsX)                    		// if formatted with tabs
+	if (useTabs)                            // if formatted with tabs
 	{
 		charsToErase = unindent;            // tabs to erase
 		if (charsToErase <= whitespace)     // if there is enough whitespace
@@ -455,7 +413,7 @@ int ASEnhancer::unindentLine(string  &line, const int unindent) const
 	}
 	else
 	{
-		charsToErase = unindent * indentLengthX; // compute chars to erase
+		charsToErase = unindent * indentLength; // compute chars to erase
 		if (charsToErase <= whitespace)         // if there is enough whitespace
 			line.erase(0, charsToErase);        // erase the spaces
 		else
@@ -463,78 +421,6 @@ int ASEnhancer::unindentLine(string  &line, const int unindent) const
 	}
 
 	return charsToErase;
-}
-
-/**
- * check if a specific line position contains a keyword.
- *
- * @return    true if the word was found. false if the word was not found.
- */
-bool ASEnhancer::findKeyword(const string &line, int i, const char *keyword) const
-{
-	if (line.compare(i, strlen(keyword), keyword) == 0)
-	{
-		// check that this is a header and not a part of a longer word
-		// (e.g. not at its begining, not at its middle...)
-
-		int lineLength = line.length();
-		int wordEnd = i + strlen(keyword);
-		char startCh = keyword[0];      // first char of header
-		char endCh = 0;                // char just after header
-		char prevCh = 0;               // char just before header
-
-		if (wordEnd < lineLength)
-		{
-			endCh = line[wordEnd];
-		}
-		if (i > 0)
-		{
-			prevCh = line[i-1];
-		}
-
-		if (prevCh != 0
-		        && isLegalNameCharX(startCh)
-		        && isLegalNameCharX(prevCh))
-		{
-			return false;
-		}
-		else if (wordEnd >= lineLength
-		         || !isLegalNameCharX(startCh)
-		         || !isLegalNameCharX(endCh))
-		{
-			// is not a keyword if part of a definition
-			char peekChar = peekNextChar(line, wordEnd - 1);
-			if (peekChar == ',' || peekChar == ')')
-				return false;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-
-	return false;
-}
-
-/**
-* peek at the next unread character.
-*
-* @return     	the next unread character.
-* @param line   the line to check.
-* @param i      the current char position on the line.
-*/
-char ASEnhancer::peekNextChar(const string &line, int i) const
-{
-	char ch = ' ';
-	size_t peekNum = line.find_first_not_of(" \t", i + 1);
-
-	if (peekNum == string::npos)
-		return ch;
-
-	ch = line[peekNum];
-
-	return ch;
 }
 
 

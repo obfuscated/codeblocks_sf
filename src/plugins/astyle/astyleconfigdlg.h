@@ -11,11 +11,14 @@
 
 enum AStylePredefinedStyle
 {
-  aspsAnsi = 0,
-  aspsKr,
-  aspsLinux,
-  aspsGnu,
+  aspsAllman = 0,
   aspsJava,
+  aspsKr,
+  aspsStroustrup,
+  aspsWhitesmith,
+  aspsBanner,
+  aspsGnu,
+  aspsLinux,
   aspsCustom
 };
 

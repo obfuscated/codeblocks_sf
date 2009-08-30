@@ -1,27 +1,25 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- *   astyle.h
+ *   Copyright (C) 2006-2009 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 1998-2002 by Tal Davidson
+ *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
- *   This file is a part of "Artistic Style" - an indentation and
+ *   This file is a part of Artistic Style - an indentation and
  *   reformatting tool for C, C++, C# and Java source files.
- *   http://astyle.sourceforge.net
+ *   <http://astyle.sourceforge.net>
  *
- *   The "Artistic Style" project, including all files needed to
- *   compile it, is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU Lesser General Public
- *   License as published by the Free Software Foundation; either
- *   version 2.1 of the License, or (at your option) any later
- *   version.
+ *   Artistic Style is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- *   This program is distributed in the hope that it will be useful,
+ *   Artistic Style is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Lesser General Public
- *   License along with this project; if not, write to the
- *   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- *   Boston, MA  02110-1301, USA.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Artistic Style.  If not, see <http://www.gnu.org/licenses/>.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
@@ -31,7 +29,6 @@
 
 #ifdef __VMS
 #define __USE_STD_IOSTREAM 1
-// #include <sstream>
 #include <assert>
 #else
 #include <cassert>
@@ -59,8 +56,8 @@
 #pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
 #pragma warning(disable:  444)  // destructor for base class is not virtual
 #pragma warning(disable:  981)  // operands are evaluated in unspecified order
-//#pragma warning(disable: 1418)  // external function with no prior declaration
-#pragma warning(disable: 1419)  // external declaration in primary source file
+// #pragma warning(disable: 1418)  // external function with no prior declaration
+// #pragma warning(disable: 1419)  // external declaration in primary source file
 #endif
 
 using namespace std;
@@ -73,16 +70,50 @@ enum FileType      { C_TYPE=0, JAVA_TYPE=1, SHARP_TYPE=2 };
 /* The enums below are not recognized by 'vectors' in Microsoft Visual C++
    V5 when they are part of a namespace!!!  Use Visual C++ V6 or higher.
 */
-enum BracketMode   { NONE_MODE, ATTACH_MODE, BREAK_MODE, BDAC_MODE };
+enum FormatStyle   { STYLE_NONE,
+                     STYLE_ALLMAN,
+                     STYLE_JAVA,
+                     STYLE_KandR,
+                     STYLE_STROUSTRUP,
+                     STYLE_WHITESMITH,
+                     STYLE_BANNER,
+                     STYLE_GNU,
+                     STYLE_LINUX,
+                     STYLE_HORSTMANN,
+                     STYLE_1TBS
+                   };
+
+enum BracketMode   { NONE_MODE,
+                     ATTACH_MODE,
+                     BREAK_MODE,
+                     LINUX_MODE,
+                     STROUSTRUP_MODE,
+                     HORSTMANN_MODE,
+                     BDAC_MODE = LINUX_MODE
+                   };
 
 enum BracketType   { NULL_TYPE = 0,
-                     NAMESPACE_TYPE = 1,		// also a DEFINITION_TYPE
-                     CLASS_TYPE = 2,			// also a DEFINITION_TYPE
-                     DEFINITION_TYPE = 4,
-                     COMMAND_TYPE = 8,
-                     ARRAY_TYPE  = 16,          // arrays and enums
-                     SINGLE_LINE_TYPE = 32
+                     NAMESPACE_TYPE = 1,        // also a DEFINITION_TYPE
+                     CLASS_TYPE = 2,            // also a DEFINITION_TYPE
+                     STRUCT_TYPE = 4,           // also a DEFINITION_TYPE
+                     INTERFACE_TYPE = 8,        // also a DEFINITION_TYPE
+                     DEFINITION_TYPE = 16,
+                     COMMAND_TYPE = 32,
+                     ARRAY_NIS_TYPE = 64,       // also an ARRAY_TYPE
+                     ARRAY_TYPE = 128,			// arrays and enums
+                     EXTERN_TYPE = 256,			// extern "C". not a command type extern
+                     SINGLE_LINE_TYPE = 512
                    };
+
+enum PointerAlign { ALIGN_NONE,
+                    ALIGN_TYPE,
+                    ALIGN_MIDDLE,
+                    ALIGN_NAME
+                  };
+
+//----------------------------------------------------------------------------
+// Class ASSourceIterator
+//----------------------------------------------------------------------------
 
 class ASSourceIterator
 {
@@ -90,10 +121,14 @@ class ASSourceIterator
 		ASSourceIterator() {}
 		virtual ~ASSourceIterator() {}
 		virtual bool hasMoreLines() const = 0;
-		virtual string nextLine() = 0;
+		virtual string nextLine(bool emptyLineWasDeleted = false) = 0;
 		virtual string peekNextLine() = 0;
 		virtual void peekReset() = 0;
 };
+
+//----------------------------------------------------------------------------
+// Class ASResource
+//----------------------------------------------------------------------------
 
 class ASResource
 {
@@ -101,12 +136,13 @@ class ASResource
 		void buildAssignmentOperators(vector<const string*> &assignmentOperators);
 		void buildCastOperators(vector<const string*> &castOperators);
 		void buildHeaders(vector<const string*> &headers, int fileType, bool beautifier=false);
+		void buildIndentableHeaders(vector<const string*> &indentableHeaders);
 		void buildNonAssignmentOperators(vector<const string*> &nonAssignmentOperators);
 		void buildNonParenHeaders(vector<const string*> &nonParenHeaders, int fileType, bool beautifier=false);
 		void buildOperators(vector<const string*> &operators);
-		void buildPreBlockStatements(vector<const string*> &preBlockStatements);
-		void buildPreCommandHeaders(vector<const string*> &preCommandHeaders);
-		void buildPreDefinitionHeaders(vector<const string*> &preDefinitionHeaders);
+		void buildPreBlockStatements(vector<const string*> &preBlockStatements, int fileType);
+		void buildPreCommandHeaders(vector<const string*> &preCommandHeaders, int fileType);
+		void buildPreDefinitionHeaders(vector<const string*> &preDefinitionHeaders, int fileType);
 
 	public:
 		static const string AS_IF, AS_ELSE;
@@ -115,9 +151,9 @@ class ASResource
 		static const string AS_SWITCH, AS_CASE, AS_DEFAULT;
 		static const string AS_TRY, AS_CATCH, AS_THROWS, AS_FINALLY;
 		static const string AS_PUBLIC, AS_PROTECTED, AS_PRIVATE;
-		static const string AS_CLASS, AS_STRUCT, AS_UNION, AS_INTERFACE, AS_NAMESPACE, AS_EXTERN;
-		static const string AS_STATIC;
-		static const string AS_CONST;
+		static const string AS_CLASS, AS_STRUCT, AS_UNION, AS_INTERFACE, AS_NAMESPACE;
+		static const string AS_EXTERN, AS_ENUM;
+		static const string AS_STATIC, AS_CONST, AS_WHERE, AS_NEW;
 		static const string AS_SYNCHRONIZED;
 		static const string AS_OPERATOR, AS_TEMPLATE;
 		static const string AS_OPEN_BRACKET, AS_CLOSE_BRACKET;
@@ -128,8 +164,11 @@ class ASResource
 		static const string AS_ASSIGN, AS_PLUS_ASSIGN, AS_MINUS_ASSIGN, AS_MULT_ASSIGN;
 		static const string AS_DIV_ASSIGN, AS_MOD_ASSIGN, AS_XOR_ASSIGN, AS_OR_ASSIGN, AS_AND_ASSIGN;
 		static const string AS_GR_GR_ASSIGN, AS_LS_LS_ASSIGN, AS_GR_GR_GR_ASSIGN, AS_LS_LS_LS_ASSIGN;
+		static const string AS_GCC_MIN_ASSIGN, AS_GCC_MAX_ASSIGN;
 		static const string AS_EQUAL, AS_PLUS_PLUS, AS_MINUS_MINUS, AS_NOT_EQUAL, AS_GR_EQUAL, AS_GR_GR_GR, AS_GR_GR;
-		static const string AS_LS_EQUAL, AS_LS_LS_LS, AS_LS_LS, AS_ARROW, AS_AND, AS_OR;
+		static const string AS_LS_EQUAL, AS_LS_LS_LS, AS_LS_LS;
+		static const string AS_QUESTION_QUESTION, AS_EQUAL_GR;
+		static const string AS_ARROW, AS_AND, AS_OR;
 		static const string AS_COLON_COLON, AS_PAREN_PAREN, AS_BLPAREN_BLPAREN;
 		static const string AS_PLUS, AS_MINUS, AS_MULT, AS_DIV, AS_MOD, AS_GR, AS_LS;
 		static const string AS_NOT, AS_BIT_XOR, AS_BIT_OR, AS_BIT_AND, AS_BIT_NOT;
@@ -137,10 +176,87 @@ class ASResource
 		static const string AS_ASM;
 		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED;
 		static const string AS_GET, AS_SET, AS_ADD, AS_REMOVE;
+		static const string AS_DELEGATE, AS_UNCHECKED;
 		static const string AS_CONST_CAST, AS_DYNAMIC_CAST, AS_REINTERPRET_CAST, AS_STATIC_CAST;
-};
+};  // Class ASResource
 
-class ASBeautifier : protected ASResource
+//----------------------------------------------------------------------------
+// Class ASBase
+//----------------------------------------------------------------------------
+
+class ASBase
+{
+	private:
+		// all variables should be set by the "init" function
+		int baseFileType;      // a value from enum FileType
+
+	protected:
+		ASBase() { baseFileType = C_TYPE; }
+		~ASBase() {}
+
+		// functions definitions are at the end of ASResource.cpp
+		bool findKeyword(const string &line, int i, const string &keyword) const;
+		string getCurrentWord(const string& line, size_t charNum) const;
+
+	protected:
+
+		void init(int fileTypeArg) { baseFileType = fileTypeArg; }
+		bool isCStyle() const { return (baseFileType == C_TYPE); }
+		bool isJavaStyle() const { return (baseFileType == JAVA_TYPE); }
+		bool isSharpStyle() const { return (baseFileType == SHARP_TYPE); }
+
+		// check if a specific character can be used in a legal variable/method/class name
+		bool isLegalNameChar(char ch) const {
+			if (isWhiteSpace(ch)) return false;
+			if ((unsigned) ch > 127) return false;
+			return (isalnum(ch)
+			        || ch == '.' || ch == '_'
+			        || (isJavaStyle() && ch == '$')
+			        || (isSharpStyle() && ch == '@'));  // may be used as a prefix
+		}
+
+		// check if a specific character can be part of a header
+		bool isCharPotentialHeader(const string &line, size_t i) const {
+			assert(!isWhiteSpace(line[i]));
+			char prevCh = ' ';
+			if (i > 0) prevCh = line[i-1];
+			if (!isLegalNameChar(prevCh) && isLegalNameChar(line[i]))
+				return true;
+			return false;
+		}
+
+		// check if a specific character can be part of an operator
+		bool isCharPotentialOperator(char ch) const {
+			assert(!isWhiteSpace(ch));
+			if ((unsigned) ch > 127) return false;
+			return (ispunct(ch)
+			        && ch != '{' && ch != '}'
+			        && ch != '(' && ch != ')'
+			        && ch != '[' && ch != ']'
+			        && ch != ';' && ch != ','
+			        && ch != '#' && ch != '\\'
+			        && ch != '\'' && ch != '\"');
+		}
+
+		// check if a specific character is a whitespace character
+		bool isWhiteSpace(char ch) const { return (ch == ' ' || ch == '\t'); }
+
+		// peek at the next unread character.
+		char peekNextChar(const string &line, int i) const {
+			char ch = ' ';
+			size_t peekNum = line.find_first_not_of(" \t", i + 1);
+			if (peekNum == string::npos)
+				return ch;
+			ch = line[peekNum];
+			return ch;
+		}
+};  // Class ASBase
+
+//----------------------------------------------------------------------------
+// Class ASBeautifier
+//----------------------------------------------------------------------------
+
+class ASBeautifier : protected ASResource, protected ASBase
 {
 	public:
 		ASBeautifier();
@@ -166,47 +282,54 @@ class ASBeautifier : protected ASResource
 		void setSharpStyle();
 		void setEmptyLineFill(bool state);
 		void setPreprocessorIndent(bool state);
+		int  getFileType();
 		int  getIndentLength(void);
 		string getIndentString(void);
-		char peekNextChar(const string &line, int i) const;
+		bool getBracketIndent(void);
+		bool getBlockIndent(void);
 		bool getCaseIndent(void);
-		bool getCStyle(void);
-		bool getJavaStyle(void);
-		bool getSharpStyle(void);
+		bool getClassIndent(void);
 		bool getEmptyLineFill(void);
+		bool getForceTabIndentation(void);
+		bool getSwitchIndent(void);
 
 	protected:
-		int getNextProgramCharDistance(const string &line, int i);
-		const string *findHeader(const string &line, int i,
-		                         const vector<const string*> &possibleHeaders,
-		                         bool checkBoundry = true);
-		string trim(const string &str);
+		void deleteStaticVectors();
+		const string* findHeader(const string &line, int i,
+		                         const vector<const string*> &possibleHeaders) const;
+		const string* findOperator(const string &line, int i,
+		                           const vector<const string*> &possibleOperators) const;
+		int getNextProgramCharDistance(const string &line, int i) const;
 		int  indexOf(vector<const string*> &container, const string *element);
-		int  fileType;
-		bool isCStyle;
-		bool isJavaStyle;
-		bool isSharpStyle;
+		string trim(const string &str);
 
 		// variables set by ASFormatter - must be updated in activeBeautifierStack
 		int  inLineNumber;
+		int  horstmannIndentInStatement;
+		int  nonInStatementBracket;
 		bool lineCommentNoBeautify;
 		bool isNonInStatementArray;
 		bool isSharpAccessor;
+		bool isSharpDelegate;
+		bool isInExtern;
+		bool isInEnum;
 
 	private:
 		ASBeautifier(const ASBeautifier &copy);
-		void operator=(ASBeautifier&); // not to be implemented
+		ASBeautifier& operator=(ASBeautifier&);        // not to be implemented
 
 		void initStatic();
 		void registerInStatementIndent(const string &line, int i, int spaceTabCount,
-		                               int minIndent, bool updateParenStack);
+		                               int tabIncrementIn, int minIndent, bool updateParenStack);
 		string preLineWS(int spaceTabCount, int tabCount);
 
+		static int beautifierFileType;
 		static vector<const string*> headers;
 		static vector<const string*> nonParenHeaders;
 		static vector<const string*> preBlockStatements;
 		static vector<const string*> assignmentOperators;
 		static vector<const string*> nonAssignmentOperators;
+		static vector<const string*> indentableHeaders;
 
 		ASSourceIterator *sourceIterator;
 		vector<ASBeautifier*> *waitingBeautifierStack;
@@ -218,14 +341,20 @@ class ASBeautifier : protected ASResource
 		vector<int> *blockParenDepthStack;
 		vector<bool> *blockStatementStack;
 		vector<bool> *parenStatementStack;
+		vector<bool> *bracketBlockStateStack;
 		vector<int> *inStatementIndentStack;
 		vector<int> *inStatementIndentStackSizeStack;
 		vector<int> *parenIndentStack;
-		vector<bool> *bracketBlockStateStack;
+		int convertTabToSpaces(int i, int tabIncrementIn) const;
+		bool isClassAccessModifier(string& line) const;
+		template<typename T> void deleteContainer(T &container);
+		void deleteContainer(vector<vector<const string*>*>* &container);
+		template<typename T> void initContainer(T &container, T value);
+
+	private:  // variables
 		string indentString;
 		const string *currentHeader;
 		const string *previousLastLineHeader;
-		const string *immediatelyPreviousAssignmentOp;
 		const string *probationHeader;
 		bool isInQuote;
 		bool isInVerbatimQuote;
@@ -235,7 +364,6 @@ class ASBeautifier : protected ASResource
 		bool isInQuestion;
 		bool isInStatement;
 		bool isInHeader;
-		bool isInOperator;
 		bool isInTemplate;
 		bool isInDefine;
 		bool isInDefineDefinition;
@@ -254,15 +382,17 @@ class ASBeautifier : protected ASResource
 		bool shouldForceTabIndentation;
 		bool emptyLineFill;
 		bool backslashEndsPrevLine;
+		bool lineOpensComment;
 		bool blockCommentNoIndent;
 		bool blockCommentNoBeautify;
 		bool previousLineProbationTab;
+		int  fileType;
 		int  minConditionalIndent;
 		int  parenDepth;
 		int  indentLength;
 		int  blockTabCount;
-		int  leadingWhiteSpaces;
 		int  maxInStatementIndent;
+		int  classInitializerTabs;
 		int  templateDepth;
 		int  prevFinalLineSpaceTabCount;
 		int  prevFinalLineTabCount;
@@ -272,44 +402,26 @@ class ASBeautifier : protected ASResource
 		char currentNonSpaceCh;
 		char currentNonLegalCh;
 		char prevNonLegalCh;
+};  // Class ASBeautifier
 
-	protected:    // inline functions
-		// check if a specific character can be used in a legal variable/method/class name
-		inline bool isLegalNameChar(char ch) const {
-			return (isalnum(ch) || ch == '.' || ch == '_'
-			        || (isJavaStyle && ch == '$')
-			        || (isCStyle && ch == '~')
-			        || (isSharpStyle && ch == '@'));	// may be used as a prefix
-		}
+//----------------------------------------------------------------------------
+// Class ASEnhancer
+//----------------------------------------------------------------------------
 
-		// check if a specific character is a whitespace character
-		inline bool isWhiteSpace(char ch) const {
-			return (ch == ' ' || ch == '\t');
-		}
-};
-
-
-class ASEnhancer
+class ASEnhancer : protected ASBase
 {
-	public:
-		// functions
+	public:  // functions
 		ASEnhancer();
 		~ASEnhancer();
-		void init(int, string, bool, bool, bool, bool, bool);
+		void init(int, int, string, bool, bool);
 		void enhance(string &line);
-		bool findKeyword(const string &line, int i, const char *header) const;
-		char peekNextChar(const string &line, int i) const;
 
 	private:
 		// options from command line or options file
-		// X ending prevents conflict with ASBeautifier variables
-		int  indentLengthX;
-		bool useTabsX;
-		bool isCStyleX;
-		bool isJavaStyleX;
-		bool isSharpStyleX;
-		bool caseIndentX;
-		bool emptyLineFillX;
+		int  indentLength;
+		bool useTabs;
+		bool caseIndent;
+		bool emptyLineFill;
 
 		// parsing variables
 		int  lineNumber;
@@ -335,85 +447,118 @@ class ASEnhancer
 		vector<switchVariables>  swVector;       // stack vector of switch variables
 
 		// event table variables
-		bool nextLineIsEventTable;				// begin event table is reached
-		bool isInEventTable;					// need to indent an event table
+		bool nextLineIsEventTable;              // begin event table is reached
+		bool isInEventTable;                    // need to indent an event table
 
-		// stringstream for trace
-		stringstream *traceOut;
-
-	private:    // private functions
+	private:  // functions
 		int  indentLine(string  &line, const int indent) const;
 		int  unindentLine(string  &line, const int unindent) const;
+};  // Class ASEnhancer
 
-	private:    // inline functions
-		// check if a specific character can be used in a legal variable/method/class name
-		inline bool isLegalNameCharX(char ch) const {
-			return (isalnum(ch) || ch == '.' || ch == '_'
-			        || (isJavaStyleX && ch == '$')
-			        || (isCStyleX && ch == '~')
-			        || (isSharpStyleX && ch == '@'));	// may be used as a prefix
+//----------------------------------------------------------------------------
+// Class ASFormatter
+//----------------------------------------------------------------------------
 
-		}
-
-		// check if a specific character is a whitespace character
-		inline bool isWhiteSpaceX(char ch) const {
-			return (ch == ' ' || ch == '\t');
-		}
-};
-
-
-class ASFormatter : public ASBeautifier, private ASEnhancer
+class ASFormatter : public ASBeautifier
 {
-	public:
+	public:	// functions
 		ASFormatter();
 		virtual ~ASFormatter();
 		virtual void init(ASSourceIterator* iter);
 		virtual bool hasMoreLines() const;
 		virtual string nextLine();
+		bool getIndentManuallySet();
+		bool getModeManuallySet();
+		void setFormattingStyle(FormatStyle style);
+		void setAddBracketsMode(bool state);
+		void setAddOneLineBracketsMode(bool state);
 		void setBracketFormatMode(BracketMode mode);
 		void setBreakClosingHeaderBracketsMode(bool state);
-		void setOperatorPaddingMode(bool mode);
-		void setParensOutsidePaddingMode(bool mode);
-		void setParensInsidePaddingMode(bool mode);
-		void setParensUnPaddingMode(bool state);
-		void setBreakOneLineBlocksMode(bool state);
-		void setSingleStatementsMode(bool state);
-		void setTabSpaceConversionMode(bool state);
 		void setBreakBlocksMode(bool state);
 		void setBreakClosingHeaderBlocksMode(bool state);
 		void setBreakElseIfsMode(bool state);
-		string traceFileName;
+		void setBreakOneLineBlocksMode(bool state);
+		void setDeleteEmptyLinesMode(bool state);
+		void setIndentManuallySet(bool state);
+		void setModeManuallySet(bool state);
+		void setOperatorPaddingMode(bool mode);
+		void setParensOutsidePaddingMode(bool mode);
+		void setParensInsidePaddingMode(bool mode);
+		void setParensHeaderPaddingMode(bool mode);
+		void setParensUnPaddingMode(bool state);
+		void setPointerAlignment(PointerAlign alignment);
+		void setSingleStatementsMode(bool state);
+		void setTabSpaceConversionMode(bool state);
 
-	private:
-		void ASformatter(ASFormatter &copy);            // not to be imlpemented
-		void operator=(ASFormatter&);                  // not to be implemented
-		void staticInit();
-		void goForward(int i);
-		void trimNewLine();
+	private:  // functions
+		void ASformatter(ASFormatter &copy);           // not to be imlpemented
+		ASFormatter& operator=(ASFormatter&);          // not to be implemented
+		template<typename T> void deleteContainer(T &container);
+		template<typename T> void initContainer(T &container, T value);
 		char peekNextChar() const;
 		BracketType getBracketType();
+		bool commentAndHeaderFollows() const;
 		bool getNextChar();
+		bool getNextLine(bool emptyLineWasDeleted = false);
 		bool isBeforeComment() const;
-		bool isBeforeLineEndComment(int startPos) const;
-		bool isNextWordSharpAccessor() const;
+		bool isBeforeAnyComment() const;
+		bool isBeforeAnyLineEndComment(int startPos) const;
+		bool isBeforeMultipleLineEndComments(int startPos) const;
+		bool isBracketType(BracketType a, BracketType b) const;
+		bool isCurrentBracketBroken() const;
+		bool isDereferenceOrAddressOf() const;
+		bool isEmptyLine(const string &line) const;
+		bool isIndentManuallySet;
+		bool isModeManuallySet;
+		bool isNextWordSharpNonParenHeader(int startChar) const;
+		bool isNonInStatementArrayBracket() const;
 		bool isPointerOrReference() const;
-		bool isUnaryMinus() const;
+		bool isPointerOrReferenceCentered() const;
+		bool isUnaryOperator() const;
 		bool isInExponent() const;
 		bool isOneLineBlockReached() const;
-		bool lineBeginsWith(char charToCheck) const;
-		void appendChar(char ch, bool canBreakLine = true);
+		bool isNextCharOpeningBracket(int startChar) const;
+		bool isOkToBreakBlock(BracketType bracketType) const;
+//		bool lineBeginsWith(char charToCheck) const;
+		int  getCurrentLineCommentAdjustment();
+		int  getNextLineCommentAdjustment();
+		void addBracketsToStatement();;
 		void appendCharInsideComments();
 		void appendSequence(const string &sequence, bool canBreakLine = true);
 		void appendSpacePad();
 		void appendSpaceAfter();
 		void breakLine();
+		void buildLanguageVectors();
+		void checkForFollowingHeader(const string& firstLine);
+		void convertTabToSpaces();
+		void deleteContainer(vector<BracketType>* &container);
+		void formatArrayRunIn();
+		void formatRunIn();
+		void goForward(int i);
+		void initContainer(vector<BracketType>* &container, vector<BracketType>* value);
+		void initNewLine();
 		void padOperators(const string *newOperator);
 		void padParens();
-		void formatBrackets(BracketType bracketType);
 		void formatArrayBrackets(BracketType bracketType, bool isOpeningArrayBracket);
+		void formatClosingBracket(BracketType bracketType);
+		void formatCommentBody();
+		void formatCommentOpener();
+		void formatLineCommentBody();
+		void formatLineCommentOpener();
+		void formatOpeningBracket(BracketType bracketType);
+		void formatQuoteBody();
+		void formatQuoteOpener();
+		void formatPointerOrReference();
 		void adjustComments();
-		const string *findHeader(const vector<const string*> &headers, bool checkBoundry = true);
+		void isLineBreakBeforeClosingHeader();
+		void setBreakBlocksVariables();
+		void fixOptionVariableConflicts();
+		void processPreprocessor();
+		string getPreviousWord(const string& line, int currPos) const;
+		string peekNextText(const string& firstLine, bool endOnEmptyLine=false) const;
 
+	private:  // variables
+		static int formatterFileType;
 		static vector<const string*> headers;
 		static vector<const string*> nonParenHeaders;
 		static vector<const string*> preDefinitionHeaders;
@@ -423,6 +568,8 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		static vector<const string*> castOperators;
 
 		ASSourceIterator *sourceIterator;
+		ASEnhancer *enhancer;
+
 		vector<const string*> *preBracketHeaderStack;
 		vector<BracketType> *bracketTypeStack;
 		vector<int> *parenStack;
@@ -430,31 +577,46 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		string currentLine;
 		string formattedLine;
 		const string *currentHeader;
-		const string *previousOperator;    // used ONLY by pad=oper
+		const string *previousOperator;    // used ONLY by pad-oper
 		char currentChar;
 		char previousChar;
 		char previousNonWSChar;
 		char previousCommandChar;
 		char quoteChar;
 		int  charNum;
+		int  preprocBracketTypeStackSize;
+		int  tabIncrementIn;
 		int  spacePadNum;
+		int  nextLineSpacePadNum;
 		int  templateDepth;
 		int  traceLineNumber;
-		size_t formattedLineCommentNum;		// comment location on formattedLine
+		int  horstmannIndentChars;
+		size_t leadingSpaces;
+		size_t formattedLineCommentNum;     // comment location on formattedLine
+		size_t currentLineBracketNum;		// first bracket location on currentLine
 		size_t previousReadyFormattedLineLength;
+		FormatStyle formattingStyle;
 		BracketMode bracketFormatMode;
 		BracketType previousBracketType;
+		PointerAlign pointerAlignment;
 		bool isVirgin;
 		bool shouldPadOperators;
 		bool shouldPadParensOutside;
 		bool shouldPadParensInside;
+		bool shouldPadHeader;
 		bool shouldUnPadParens;
 		bool shouldConvertTabs;
 		bool isInLineComment;
 		bool isInComment;
+		bool noTrimCommentContinuation;
 		bool isInPreprocessor;
 		bool isInTemplate;   // true both in template definitions (e.g. template<class A>) and template usage (e.g. F<int>).
 		bool doesLineStartComment;
+		bool lineEndsInCommentOnly;
+		bool lineIsLineCommentOnly;
+		bool lineIsEmpty;
+		bool isImmediatelyPostCommentOnly;
+		bool isImmediatelyPostEmptyLine;
 		bool isInQuote;
 		bool isInVerbatimQuote;
 		bool haveLineContinuationChar;
@@ -466,6 +628,8 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		bool foundPreDefinitionHeader;
 		bool foundNamespaceHeader;
 		bool foundClassHeader;
+		bool foundStructHeader;
+		bool foundInterfaceHeader;
 		bool foundPreCommandHeader;
 		bool foundCastOperator;
 		bool isInLineBreak;
@@ -480,18 +644,31 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		bool isCharImmediatelyPostOpenBlock;
 		bool isCharImmediatelyPostCloseBlock;
 		bool isCharImmediatelyPostTemplate;
+		bool isCharImmediatelyPostReturn;
+		bool isCharImmediatelyPostOperator;
+//		bool previousBracketIsBroken;
+		bool breakCurrentOneLineBlock;
+		bool isInHorstmannRunIn;
+		bool currentLineBeginsWithBracket;
 		bool shouldBreakOneLineBlocks;
 		bool shouldReparseCurrentChar;
 		bool shouldBreakOneLineStatements;
-//		bool shouldBreakLineAfterComments;
 		bool shouldBreakClosingHeaderBrackets;
 		bool shouldBreakElseIfs;
+		bool shouldAddBrackets;
+		bool shouldAddOneLineBrackets;
+		bool shouldDeleteEmptyLines;
+		bool needHeaderOpeningBracket;
+		bool shouldBreakLineAtNextChar;
 		bool passedSemicolon;
 		bool passedColon;
+		bool clearNonInStatement;
 		bool isImmediatelyPostComment;
 		bool isImmediatelyPostLineComment;
 		bool isImmediatelyPostEmptyBlock;
 		bool isImmediatelyPostPreprocessor;
+		bool isImmediatelyPostReturn;
+		bool isImmediatelyPostOperator;
 
 		bool shouldBreakBlocks;
 		bool shouldBreakClosingHeaderBlocks;
@@ -505,21 +682,60 @@ class ASFormatter : public ASBeautifier, private ASEnhancer
 		bool isInHeader;
 		bool isImmediatelyPostHeader;
 		bool isInCase;
-		bool isInSharpGenericDefinition;
+		bool isJavaStaticConstructor;
 
-	private:    // inline functions
-		// append the CURRENT character (curentChar)to the current formatted line.
-		inline void appendCurrentChar(bool canBreakLine = true) {
+	private:  // inline functions
+		// append a character to the current formatted line.
+		void appendChar(char ch, bool canBreakLine) {
+			if (canBreakLine && isInLineBreak)
+				breakLine();
+			formattedLine.append(1, ch);
+			isImmediatelyPostCommentOnly = false;
+		}
+
+		// append the CURRENT character (curentChar) to the current formatted line.
+		void appendCurrentChar(bool canBreakLine = true) {
 			appendChar(currentChar, canBreakLine);
 		}
 
 		// check if a specific sequence exists in the current placement of the current line
-		inline bool isSequenceReached(const char *sequence) const {
+		bool isSequenceReached(const char *sequence) const {
 			return currentLine.compare(charNum, strlen(sequence), sequence) == 0;
 		}
-};
 
-}   // end of namespace astyle
+		// call ASBase::findHeader for the current character
+		const string *findHeader(const vector<const string*> &headers) {
+			return ASBeautifier::findHeader(currentLine, charNum, headers);
+		}
+
+		// call ASBase::findOperator for the current character
+		const string *findOperator(const vector<const string*> &headers) {
+			return ASBeautifier::findOperator(currentLine, charNum, headers);
+		}
+};  // Class ASFormatter
+
+
+//----------------------------------------------------------------------------
+// astyle namespace global declarations
+//----------------------------------------------------------------------------
+// sort comparison functions for ASResource
+bool sortOnLength(const string *a, const string *b);
+bool sortOnName(const string *a, const string *b);
+
+}   // end of astyle namespace
+
+// end of astyle namespace  --------------------------------------------------
+
+
+//----------------------------------------------------------------------------
+// declarations for library build
+// global because they are called externally and are NOT part of the namespace
+//----------------------------------------------------------------------------
+
+typedef void (STDCALL *fpError)(int, char*);       // pointer to callback error handler
+typedef char* (STDCALL *fpAlloc)(unsigned long);   // pointer to callback memory allocation
+extern "C" EXPORT char* STDCALL AStyleMain(const char*, const char*, fpError, fpAlloc);
+extern "C" EXPORT const char* STDCALL AStyleGetVersion (void);
 
 
 #endif // closes ASTYLE_H

@@ -1,32 +1,31 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- *   ASResource.cpp
+ *   Copyright (C) 2006-2009 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 1998-2002 by Tal Davidson
+ *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
- *   This file is a part of "Artistic Style" - an indentation and
+ *   This file is a part of Artistic Style - an indentation and
  *   reformatting tool for C, C++, C# and Java source files.
- *   http://astyle.sourceforge.net
+ *   <http://astyle.sourceforge.net>
  *
- *   The "Artistic Style" project, including all files needed to
- *   compile it, is free software; you can redistribute it and/or
- *   modify it under the terms of the GNU Lesser General Public
- *   License as published by the Free Software Foundation; either
- *   version 2.1 of the License, or (at your option) any later
- *   version.
+ *   Artistic Style is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
  *
- *   This program is distributed in the hope that it will be useful,
+ *   Artistic Style is distributed in the hope that it will be useful,
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of
  *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *   GNU Lesser General Public License for more details.
  *
- *   You should have received a copy of the GNU Lesser General Public
- *   License along with this project; if not, write to the
- *   Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- *   Boston, MA  02110-1301, USA.
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Artistic Style.  If not, see <http://www.gnu.org/licenses/>.
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 
 #include "astyle.h"
+#include <algorithm>
 
 
 namespace astyle
@@ -45,6 +44,7 @@ const string ASResource::AS_UNION = string("union");
 const string ASResource::AS_INTERFACE = string("interface");
 const string ASResource::AS_NAMESPACE = string("namespace");
 const string ASResource::AS_EXTERN = string("extern");
+const string ASResource::AS_ENUM = string("enum");
 const string ASResource::AS_PUBLIC = string("public");
 const string ASResource::AS_PROTECTED = string("protected");
 const string ASResource::AS_PRIVATE = string("private");
@@ -57,6 +57,8 @@ const string ASResource::AS_CATCH = string("catch");
 const string ASResource::AS_FINALLY = string("finally");
 const string ASResource::AS_THROWS = string("throws");
 const string ASResource::AS_CONST = string("const");
+const string ASResource::AS_WHERE = string("where");
+const string ASResource::AS_NEW = string("new");
 
 const string ASResource::AS_ASM = string("asm");
 
@@ -85,6 +87,9 @@ const string ASResource::AS_GR_GR_ASSIGN = string(">>=");
 const string ASResource::AS_LS_LS_ASSIGN = string("<<=");
 const string ASResource::AS_GR_GR_GR_ASSIGN = string(">>>=");
 const string ASResource::AS_LS_LS_LS_ASSIGN = string("<<<=");
+const string ASResource::AS_GCC_MIN_ASSIGN = string("<?");
+const string ASResource::AS_GCC_MAX_ASSIGN = string(">?");
+
 const string ASResource::AS_RETURN = string("return");
 const string ASResource::AS_CIN = string("cin");
 const string ASResource::AS_COUT = string("cout");
@@ -100,6 +105,8 @@ const string ASResource::AS_GR_GR_GR = string(">>>");
 const string ASResource::AS_LS_EQUAL = string("<=");
 const string ASResource::AS_LS_LS = string("<<");
 const string ASResource::AS_LS_LS_LS = string("<<<");
+const string ASResource::AS_QUESTION_QUESTION = string("??");
+const string ASResource::AS_EQUAL_GR = string("=>");            // C# lambda expression arrow
 const string ASResource::AS_ARROW = string("->");
 const string ASResource::AS_AND = string("&&");
 const string ASResource::AS_OR = string("||");
@@ -132,12 +139,37 @@ const string ASResource::AS_GET = string("get");
 const string ASResource::AS_SET = string("set");
 const string ASResource::AS_ADD = string("add");
 const string ASResource::AS_REMOVE = string("remove");
+const string ASResource::AS_DELEGATE = string("delegate");
+const string ASResource::AS_UNCHECKED = string("unchecked");
 
 const string ASResource::AS_CONST_CAST = string("const_cast");
 const string ASResource::AS_DYNAMIC_CAST = string("dynamic_cast");
 const string ASResource::AS_REINTERPRET_CAST = string("reinterpret_cast");
 const string ASResource::AS_STATIC_CAST = string("static_cast");
 
+
+/**
+ * Sort comparison function.
+ * Compares the length of the value of pointers in the vectors.
+ * The LONGEST strings will be first in the vector.
+ *
+ * @params the string pointers to be compared.
+ */
+bool sortOnLength(const string *a, const string *b)
+{
+	return (*a).length() > (*b).length();
+}
+
+/**
+ * Sort comparison function.
+ * Compares the value of pointers in the vectors.
+ *
+ * @params the string pointers to be compared.
+ */
+bool sortOnName(const string *a, const string *b)
+{
+	return *a < *b;
+}
 
 /**
  * Build the vector of assignment operators.
@@ -165,10 +197,7 @@ void ASResource::buildAssignmentOperators(vector<const string*> &assignmentOpera
 	// Unknown
 	assignmentOperators.push_back(&AS_LS_LS_LS_ASSIGN);
 
-	assignmentOperators.push_back(&AS_RETURN);
-	assignmentOperators.push_back(&AS_CIN);
-	assignmentOperators.push_back(&AS_COUT);
-	assignmentOperators.push_back(&AS_CERR);
+	sort(assignmentOperators.begin(), assignmentOperators.end(), sortOnLength);
 }
 
 /**
@@ -202,16 +231,6 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
 	headers.push_back(&AS_TRY);
 	headers.push_back(&AS_CATCH);
 
-	if (beautifier)
-	{
-		headers.push_back(&AS_CASE);
-		headers.push_back(&AS_DEFAULT);
-		headers.push_back(&AS_CONST);
-		headers.push_back(&AS_STATIC);
-		headers.push_back(&AS_EXTERN);
-		headers.push_back(&AS_TEMPLATE);
-	}
-
 	if (fileType == JAVA_TYPE)
 	{
 		headers.push_back(&AS_FINALLY);
@@ -223,13 +242,47 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
 		headers.push_back(&AS_FINALLY);
 		headers.push_back(&AS_FOREACH);
 		headers.push_back(&AS_LOCK);
-		headers.push_back(&AS_UNSAFE);
+//      headers.push_back(&AS_UNSAFE);
 		headers.push_back(&AS_FIXED);
 		headers.push_back(&AS_GET);
 		headers.push_back(&AS_SET);
 		headers.push_back(&AS_ADD);
 		headers.push_back(&AS_REMOVE);
 	}
+
+	if (beautifier)
+	{
+		headers.push_back(&AS_CASE);
+		headers.push_back(&AS_DEFAULT);
+
+		if (fileType == C_TYPE)
+		{
+			headers.push_back(&AS_CONST);
+			headers.push_back(&AS_TEMPLATE);
+		}
+
+		if (fileType == JAVA_TYPE)
+		{
+			headers.push_back(&AS_STATIC);         // for static constructor
+		}
+	}
+	sort(headers.begin(), headers.end(), sortOnName);
+}
+
+/**
+ * Build the vector of indentable headers.
+ * Used by ONLY ASBeautifier.cpp
+ *
+ * @param indentableHeaders     a reference to the vector to be built.
+ */
+void ASResource::buildIndentableHeaders(vector<const string*> &indentableHeaders)
+{
+	indentableHeaders.push_back(&AS_RETURN);
+	indentableHeaders.push_back(&AS_COUT);
+	indentableHeaders.push_back(&AS_CERR);
+	indentableHeaders.push_back(&AS_CIN);
+
+	sort(indentableHeaders.begin(), indentableHeaders.end(), sortOnName);
 }
 
 /**
@@ -253,6 +306,8 @@ void ASResource::buildNonAssignmentOperators(vector<const string*> &nonAssignmen
 	nonAssignmentOperators.push_back(&AS_ARROW);
 	nonAssignmentOperators.push_back(&AS_AND);
 	nonAssignmentOperators.push_back(&AS_OR);
+
+	sort(nonAssignmentOperators.begin(), nonAssignmentOperators.end(), sortOnLength);
 }
 
 /**
@@ -267,16 +322,6 @@ void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, in
 	nonParenHeaders.push_back(&AS_DO);
 	nonParenHeaders.push_back(&AS_TRY);
 
-	if (beautifier)
-	{
-		nonParenHeaders.push_back(&AS_CASE);
-		nonParenHeaders.push_back(&AS_DEFAULT);
-		nonParenHeaders.push_back(&AS_CONST);
-		nonParenHeaders.push_back(&AS_STATIC);
-		nonParenHeaders.push_back(&AS_EXTERN);
-		nonParenHeaders.push_back(&AS_TEMPLATE);
-	}
-
 	if (fileType == JAVA_TYPE)
 	{
 		nonParenHeaders.push_back(&AS_FINALLY);
@@ -284,14 +329,30 @@ void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, in
 
 	if (fileType == SHARP_TYPE)
 	{
-		nonParenHeaders.push_back(&AS_CATCH);		// can be a paren or non-paren header
+		nonParenHeaders.push_back(&AS_CATCH);       // can be a paren or non-paren header
 		nonParenHeaders.push_back(&AS_FINALLY);
-		nonParenHeaders.push_back(&AS_UNSAFE);
+//      nonParenHeaders.push_back(&AS_UNSAFE);
 		nonParenHeaders.push_back(&AS_GET);
 		nonParenHeaders.push_back(&AS_SET);
 		nonParenHeaders.push_back(&AS_ADD);
 		nonParenHeaders.push_back(&AS_REMOVE);
 	}
+
+	if (beautifier)
+	{
+		nonParenHeaders.push_back(&AS_CASE);
+		nonParenHeaders.push_back(&AS_DEFAULT);
+		if (fileType == C_TYPE)
+		{
+			nonParenHeaders.push_back(&AS_CONST);
+			nonParenHeaders.push_back(&AS_TEMPLATE);
+		}
+		if (fileType == JAVA_TYPE)
+		{
+			nonParenHeaders.push_back(&AS_STATIC);
+		}
+	}
+	sort(nonParenHeaders.begin(), nonParenHeaders.end(), sortOnName);
 }
 
 /**
@@ -324,6 +385,10 @@ void ASResource::buildOperators(vector<const string*> &operators)
 	operators.push_back(&AS_LS_LS_ASSIGN);
 	operators.push_back(&AS_LS_LS_LS);
 	operators.push_back(&AS_LS_LS);
+	operators.push_back(&AS_QUESTION_QUESTION);
+	operators.push_back(&AS_EQUAL_GR);
+	operators.push_back(&AS_GCC_MIN_ASSIGN);
+	operators.push_back(&AS_GCC_MAX_ASSIGN);
 	operators.push_back(&AS_ARROW);
 	operators.push_back(&AS_AND);
 	operators.push_back(&AS_OR);
@@ -343,26 +408,39 @@ void ASResource::buildOperators(vector<const string*> &operators)
 	operators.push_back(&AS_BIT_AND);
 	operators.push_back(&AS_BIT_NOT);
 	operators.push_back(&AS_BIT_XOR);
-	operators.push_back(&AS_OPERATOR);
-	operators.push_back(&AS_COMMA);
-	operators.push_back(&AS_RETURN);
+
+	sort(operators.begin(), operators.end(), sortOnLength);
 }
 
 /**
  * Build the vector of pre-block statements.
  * Used by ONLY ASBeautifier.cpp
+ * NOTE: Cannot be both a header and a preBlockStatement.
  *
  * @param preBlockStatements        a reference to the vector to be built.
  */
-void ASResource::buildPreBlockStatements(vector<const string*> &preBlockStatements)
+void ASResource::buildPreBlockStatements(vector<const string*> &preBlockStatements, int fileType)
 {
 	preBlockStatements.push_back(&AS_CLASS);
-	preBlockStatements.push_back(&AS_STRUCT);
-	preBlockStatements.push_back(&AS_UNION);
-	preBlockStatements.push_back(&AS_INTERFACE);
-	preBlockStatements.push_back(&AS_NAMESPACE);
-	preBlockStatements.push_back(&AS_THROWS);
-	preBlockStatements.push_back(&AS_EXTERN);
+	if (fileType == C_TYPE)
+	{
+		preBlockStatements.push_back(&AS_STRUCT);
+		preBlockStatements.push_back(&AS_UNION);
+		preBlockStatements.push_back(&AS_NAMESPACE);
+	}
+	if (fileType == JAVA_TYPE)
+	{
+		preBlockStatements.push_back(&AS_INTERFACE);
+		preBlockStatements.push_back(&AS_THROWS);
+	}
+	if (fileType == SHARP_TYPE)
+	{
+		preBlockStatements.push_back(&AS_INTERFACE);
+		preBlockStatements.push_back(&AS_NAMESPACE);
+		preBlockStatements.push_back(&AS_WHERE);
+		preBlockStatements.push_back(&AS_STRUCT);
+	}
+	sort(preBlockStatements.begin(), preBlockStatements.end(), sortOnName);
 }
 
 /**
@@ -371,26 +449,96 @@ void ASResource::buildPreBlockStatements(vector<const string*> &preBlockStatemen
  *
  * @param preCommandHeaders     a reference to the vector to be built.
  */
-void ASResource::buildPreCommandHeaders(vector<const string*> &preCommandHeaders)
+void ASResource::buildPreCommandHeaders(vector<const string*> &preCommandHeaders, int fileType)
 {
-	preCommandHeaders.push_back(&AS_EXTERN);
-	preCommandHeaders.push_back(&AS_THROWS);
-	preCommandHeaders.push_back(&AS_CONST);
+	if (fileType == C_TYPE)
+	{
+		preCommandHeaders.push_back(&AS_CONST);
+	}
+
+	if (fileType == JAVA_TYPE)
+	{
+		preCommandHeaders.push_back(&AS_THROWS);
+	}
+
+	if (fileType == SHARP_TYPE)
+	{
+		preCommandHeaders.push_back(&AS_WHERE);
+	}
+
+	sort(preCommandHeaders.begin(), preCommandHeaders.end(), sortOnName);
 }
 
 /**
  * Build the vector of pre-definition headers.
  * Used by ONLY ASFormatter.cpp
+ * NOTE: Do NOT add 'enum' here. It is an array type bracket.
+ * NOTE: Do NOT add 'extern' here. Do not want an extra indent.
  *
  * @param preDefinitionHeaders      a reference to the vector to be built.
  */
-void ASResource::buildPreDefinitionHeaders(vector<const string*> &preDefinitionHeaders)
+void ASResource::buildPreDefinitionHeaders(vector<const string*> &preDefinitionHeaders, int fileType)
 {
 	preDefinitionHeaders.push_back(&AS_CLASS);
-	preDefinitionHeaders.push_back(&AS_INTERFACE);
-	preDefinitionHeaders.push_back(&AS_NAMESPACE);
-	preDefinitionHeaders.push_back(&AS_STRUCT);
+	if (fileType == C_TYPE)
+	{
+		preDefinitionHeaders.push_back(&AS_STRUCT);
+		preDefinitionHeaders.push_back(&AS_UNION);
+		preDefinitionHeaders.push_back(&AS_NAMESPACE);
+	}
+	if (fileType == JAVA_TYPE)
+	{
+		preDefinitionHeaders.push_back(&AS_INTERFACE);
+	}
+	if (fileType == SHARP_TYPE)
+	{
+		preDefinitionHeaders.push_back(&AS_STRUCT);
+		preDefinitionHeaders.push_back(&AS_INTERFACE);
+		preDefinitionHeaders.push_back(&AS_NAMESPACE);
+	}
+	sort(preDefinitionHeaders.begin(), preDefinitionHeaders.end(), sortOnName);
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *                             ASBase Funtions
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+// check if a specific line position contains a keyword.
+bool ASBase::findKeyword(const string &line, int i, const string &keyword) const
+{
+	assert(isCharPotentialHeader(line, i));
+	// check the word
+	const size_t keywordLength = keyword.length();
+	const size_t wordEnd = i + keywordLength;
+	if (wordEnd > line.length())
+		return false;
+	if (line.compare(i, keywordLength, keyword) != 0)
+		return false;
+	// check that this is not part of a longer word
+	if (wordEnd == line.length())
+		return true;
+	if (isLegalNameChar(line[wordEnd]))
+		return false;
+	// is not a keyword if part of a definition
+	const char peekChar = peekNextChar(line, wordEnd - 1);
+	if (peekChar == ',' || peekChar == ')')
+		return false;
+	return true;
+}
+
+// get the current word on a line
+// i must point to the beginning of the word
+string ASBase::getCurrentWord(const string& line, size_t charNum) const
+{
+	assert(isCharPotentialHeader(line, charNum));
+	size_t lineLength = line.length();
+	size_t i;
+	for (i = charNum; i < lineLength; i++)
+	{
+		if (!isLegalNameChar(line[i]))
+			break;
+	}
+	return line.substr(charNum, i - charNum);
+}
 
 }   // end namespace astyle
