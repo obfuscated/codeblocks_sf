@@ -130,7 +130,7 @@ cbMouseSapCfg::cbMouseSapCfg(wxWindow* parent, MouseSap* pOwner, wxWindowID id)
 void cbMouseSapCfg::OnApply()
 // ----------------------------------------------------------------------------
 {
-    pOwnerClass->OnDialogDone(this);
+//TODO : FIX THIS    pOwnerClass->OnDialogDone(this);
 }
 // ----------------------------------------------------------------------------
 cbMouseSapCfg::~cbMouseSapCfg()
