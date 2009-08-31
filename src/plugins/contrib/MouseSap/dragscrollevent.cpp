@@ -12,7 +12,7 @@
  * License:   GPL
  **************************************************************/
 
- #include "DragScrollEvent.h"
+ #include "dragscrollevent.h"
  #include "manager.h"
  #include "pluginmanager.h"
 
