@@ -5,7 +5,7 @@ BEGIN_EVENT_TABLE(cbMouseSapCfg,cbConfigurationPanel)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
-cbMouseSapCfg::cbMouseSapCfg(wxWindow* parent, cbMouseSap* pOwner, wxWindowID id)
+cbMouseSapCfg::cbMouseSapCfg(wxWindow* parent, MouseSap* pOwner, wxWindowID id)
 // ----------------------------------------------------------------------------
     :pOwnerClass(pOwner)
 {

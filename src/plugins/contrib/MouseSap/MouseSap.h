@@ -52,6 +52,8 @@ class MMSapEvents;
 class MouseSapCfg;
 class wxLogWindow;
 class wxObject;
+class wxScintillaEvent;
+class cbStyledTextCtrl;
 
 // ----------------------------------------------------------------------------
 //  MouseSap class declaration

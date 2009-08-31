@@ -27,7 +27,7 @@ class cbMouseSapCfg: public cbConfigurationPanel
 {
 
 	public:
-		cbMouseSapCfg(wxWindow* parent, cbMouseSap* pOwnerClass, wxWindowID id = -1);
+		cbMouseSapCfg(wxWindow* parent, MouseSap* pOwnerClass, wxWindowID id = -1);
 		virtual ~cbMouseSapCfg();
     public:
         // virtual routines required by cbConfigurationPanel
@@ -38,7 +38,7 @@ class cbMouseSapCfg: public cbConfigurationPanel
 
         // pointer to owner of the configuration diaglog needed to
         // complete the OnApply/OnCancel EndModal() logic
-        cbMouseSap* pOwnerClass;
+        MouseSap* pOwnerClass;
 
 
 		//(*Identifiers(cbMouseSapCfg)
