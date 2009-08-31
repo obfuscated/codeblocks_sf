@@ -94,6 +94,10 @@ if BUILD_INCSEARCH
 MAYBE_INCSEARCH=IncrementalSearch
 endif
 
+if BUILD_MOUSESAP
+MAYBE_MOUSESAP=MouseSap
+endif
+
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
@@ -117,7 +121,8 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_WXSMITHAUI) \
 		$(MAYBE_LIBFINDER) \
 		$(MAYBE_HEXEDITOR) \
-		$(MAYBE_INCSEARCH)
+		$(MAYBE_INCSEARCH) \
+		$(MAYBE_MOUSESAP)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
@@ -143,5 +148,6 @@ DIST_SUBDIRS = AutoVersioning \
 		wxSmithAui \
 		lib_finder \
 		HexEditor \
-		IncrementalSearch
+		IncrementalSearch \
+		MouseSap
 

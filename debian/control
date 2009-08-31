@@ -99,6 +99,7 @@ Description: contrib plugins for Code::Blocks IDE
     * Regular expression testbed
     * Symbol table plugin
     * CB koders
+    * MouseSap
  It's a svn-download and may contain bugs.
 
 Package: codeblocks-contrib-common

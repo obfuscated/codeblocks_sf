@@ -235,6 +235,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/wxsmithaui.zip
 %{pkgdata}/HexEditor.zip
 %{pkgdata}/IncrementalSearch.zip
+%{pkgdata}/MouseSap.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/images/ThreadSearch/*
@@ -260,6 +261,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libSymTab.*
 %{pkglib}/plugins/libThreadSearch.*
 %{pkglib}/plugins/libValgrind.*
+%{pkglib}/plugins/libMouseSap.*
 %{pkglib}/plugins/libwxsmith.*
 %{pkglib}/plugins/libwxsmithcontribitems.*
 %{pkglib}/plugins/libwxsmithaui.*

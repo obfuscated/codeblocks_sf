@@ -26,5 +26,6 @@
 		<Project filename="plugins\contrib\HexEditor\HexEditor-win.cbp" />
 		<Project filename="tools\cb_share_config\cb_share_config.cbp" />
 		<Project filename="plugins\contrib\IncrementalSearch\IncrementalSearch.cbp" />
+		<Project filename="plugins\contrib\MouseSap\MouseSap.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

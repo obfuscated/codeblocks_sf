@@ -20,6 +20,7 @@ usr/lib/codeblocks/plugins/libRegExTestbed.*
 usr/lib/codeblocks/plugins/libSymTab.* 
 usr/lib/codeblocks/plugins/libThreadSearch.* 
 usr/lib/codeblocks/plugins/libValgrind.* 
+usr/lib/codeblocks/plugins/libMouseSap.* 
 usr/lib/codeblocks/plugins/libwxsmith.* 
 usr/lib/codeblocks/plugins/libwxsmithcontribitems.* 
 usr/lib/codeblocks/plugins/libwxSmithAui.*
