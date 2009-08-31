@@ -11,42 +11,42 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option host_application="../../../devel/codeblocks" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-g" />
+					<Add option="-Ulinux" />
+					<Add option="-Uunix" />
+					<Add option="`wx-config --cflags`" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fPIC" />
+					<Add option="`pkg-config --cflags gtk+-2.0`" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add directory="../../../include" />
+					<Add directory="../../../include/wxscintilla/include" />
+				</Compiler>
+				<Linker>
+					<Add option="`wx-config --libs`" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel/share/codeblocks/MouseSap.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
 			</Target>
-			<Compiler>
-				<Add option="-Wall" />
-				<Add option="-g" />
-				<Add option="-Ulinux" />
-				<Add option="-Uunix" />
-				<Add option="`wx-config --cflags`" />
-				<Add option="-fmessage-length=0" />
-				<Add option="-fexceptions" />
-				<Add option="-Winvalid-pch" />
-				<Add option="-fPIC" />
-				<Add option="`pkg-config --cflags gtk+-2.0`" />
-				<Add option="-DcbDEBUG" />
-				<Add option="-DCB_PRECOMP" />
-				<Add directory="../../../include" />
-				<Add directory="../../../include/wxscintilla/include" />
-			</Compiler>
-			<Linker>
-				<Add option="`wx-config --libs`" />
-				<Add library="libcodeblocks.a" />
-				<Add directory="../../../devel" />
-			</Linker>
-			<ExtraCommands>
-				<Add after="zip -j9 ../../../devel/share/codeblocks/MouseSap.zip manifest.xml" />
-				<Mode after="always" />
-			</ExtraCommands>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
 		<Unit filename="MouseSap.cpp" />
 		<Unit filename="MouseSap.h" />
-		<Unit filename="MouseSapcfg.cpp" />
-		<Unit filename="MouseSapcfg.h" />
+		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
+			<envvars />
+			<debugger />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>

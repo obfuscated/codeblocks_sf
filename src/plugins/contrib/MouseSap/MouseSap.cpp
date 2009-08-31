@@ -33,10 +33,13 @@
 #include <wx/strconv.h>
 #include "cbstyledtextctrl.h"
 #include "MouseSap.h"
-#include "dragscrollevent.h"
 
 #if defined(__WXGTK__)
+    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
+    // in newer glib-headers
+    #define GSocket GLibSocket
     #include "gtk/gtk.h"
+    #undef GSocket
 #endif
 
 // Register the plugin

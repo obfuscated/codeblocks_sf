@@ -283,9 +283,10 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
   [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,cbkoders,codesnippets,]
-  [                        		     codestat,copystrings, dragscroll,envvars,headerfixup ]
+  [                        		     codestat,copystrings, dragscroll,envvars,headerfixup, ]
   [                        		     help,keybinder,libfinder,profiler,regex,exporter, ]
-  [                        		     symtab,wxsmith,wxsmithcontrib,wxsmithaui,incsearch,hexeditor ],
+  [                        		     symtab,wxsmith,wxsmithcontrib,wxsmithaui,incsearch,hexeditor, ]
+  [                        		     MouseSap ],
   plugins="$withval", plugins="none")
 
 plugins=`echo $plugins | sed 's/,/ /g'`
