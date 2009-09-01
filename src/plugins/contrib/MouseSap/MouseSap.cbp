@@ -11,7 +11,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\cbMouseSap" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../devel/codeblocks" />
+				<Option host_application="..\..\..\devel\codeblocks" />
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="-g" />
@@ -31,15 +31,14 @@
 					<Add directory="$(#WX.include)" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="$(#WX)\contrib\include" />
-					<Add directory="$(#CB.include)" />
-					<Add directory="$(#CB.include)\wxscintilla\include" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\include\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add directory="$(#CB)\devel" />
-					<Add directory="$(#CB.lib)" />
+					<Add directory="..\..\..\devel" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
@@ -57,8 +56,6 @@
 		</VirtualTargets>
 		<Unit filename="MouseSap.cpp" />
 		<Unit filename="MouseSap.h" />
-		<Unit filename="MouseSapcfg.cpp" />
-		<Unit filename="MouseSapcfg.h" />
 		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
