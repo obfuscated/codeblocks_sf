@@ -31,7 +31,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.3.23 2008/08/26"
+#define VERSION "1.3.24 2009/09/4"
 //----------------------------------------
 
 #undef LOGGING
@@ -447,12 +447,15 @@ private:
 //          18) Allow user to ctrl-mouse zoom htmlWindows (eg, Start Here page)
 //          19) Fixed: missing events bec.StartHere htmlWindow never issues wxEVT_DESTROY
 // ----------------------------------------------------------------------------
-//  Commit  1.3.--
+//  Commit  1.3.23 2008/08/29
 //          20) Fixed: font sizes increasing across sessions in OnMouseWheelEvent.
 //          21) Save/restore users ctrl-MouseWheel font changes across sessions.
 //          22) Fixed: crash caused by failure in CleanUpWindowPointerArray()
 //          23) Changed option label "MouseWheelZoom" to "Log MouseWheelZoom" to
 //              avoid confusion; even though it applies to other tree and list controls.
+// ----------------------------------------------------------------------------
+//  Commit 1.3.24 2009/09/4
+//          24) Fix crash when loading .cbp via dde. OnAppStartupDoneInit()
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------
