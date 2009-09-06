@@ -968,7 +968,11 @@ void cbDragScroll::OnAppStartupDoneInit()
         wheelEvt.SetEventObject(pWindow);
         wheelEvt.m_controlDown = true;
         wheelEvt.m_wheelRotation = 0;
+        #if wxCHECK_VERSION(2, 9, 0)
+        pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
+        #else
         pWindow->AddPendingEvent(wheelEvt);
+        #endif
     }while(0);
 
     // Issue SetFont() for saved font sizes on our monitored windows
@@ -1008,7 +1012,11 @@ void cbDragScroll::OnAppStartupDoneInit()
                 wheelEvt.SetEventObject(pWindow);
                 wheelEvt.m_controlDown = true;
                 wheelEvt.m_wheelRotation = 0;
+                #if wxCHECK_VERSION(2, 9, 0)
+                pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
+                #else
                 pWindow->AddPendingEvent(wheelEvt);
+                #endif
                 #if defined(LOGGING)
                 //LOGIT( _T("OnAppStartupDoneInit Issued Wheel Zoom event 0[%p]size[%d]"),pWindow, fontSize);
                 #endif
@@ -1145,7 +1153,11 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
                     wheelEvt.SetEventObject(pWindow);
                     wheelEvt.m_controlDown = true;
                     wheelEvt.m_wheelRotation = 0; //set user font
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
+                    #else
                     pWindow->AddPendingEvent(wheelEvt);
+                    #endif
                     #if defined(LOGGING)
                     //LOGIT( _T("OnWindowOpen Issued htmlWindow Zoom event"));
                     #endif
