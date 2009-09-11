@@ -650,7 +650,11 @@ void wxChartCtrl::OnScroll(
 {
     //    if (event.GetEventType() != wxEVT_SCROLLWIN_THUMBTRACK)
     {
+        #if wxCHECK_VERSION(2, 9, 0)
+        wxScrolledWindow::HandleOnScroll( event );
+        #else
         wxScrolledWindow::OnScroll( event );
+        #endif
         RedrawXAxis();
     }
 
