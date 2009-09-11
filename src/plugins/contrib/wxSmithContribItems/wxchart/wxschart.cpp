@@ -104,7 +104,11 @@ void wxsChart::OnBuildCreatingCode()
             if ( StyleCode.IsEmpty() ) StyleCode = _T("0");
             else                       StyleCode.RemoveLast();
 
+            #if wxCHECK_VERSION(2, 9, 0)
+            Codef(_T("%C(%W,%I,(STYLE)(%s),%P,%S,%T);\n"),StyleCode.wx_str());
+            #else
             Codef(_T("%C(%W,%I,(STYLE)(%s),%P,%S,%T);\n"),StyleCode.c_str());
+            #endif
 
             Codef(_T("{\n"));
             for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
@@ -129,15 +133,27 @@ void wxsChart::OnBuildCreatingCode()
 
                 wxString VarStr = wxString::Format(_T("PointSet%d"),(int)i);
 
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("\twxChartPoints* %v = %s(%t);\n"),VarStr.wx_str(),GenStr.wx_str(),Desc->Name.wx_str());
+                #else
                 Codef(_T("\twxChartPoints* %v = %s(%t);\n"),VarStr.c_str(),GenStr.c_str(),Desc->Name.c_str());
+                #endif
 
                 for ( size_t j=0; j<Desc->Points.Count(); j++ )
                 {
                     wxString PointStr = wxString::Format(_T("%lf,%lf"),Desc->Points[j]->X,Desc->Points[j]->Y);
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("\t%v->Add(%t,%s);\n"),VarStr.wx_str(),Desc->Points[j]->Name.wx_str(),PointStr.wx_str());
+                    #else
                     Codef(_T("\t%v->Add(%t,%s);\n"),VarStr.c_str(),Desc->Points[j]->Name.c_str(),PointStr.c_str());
+                    #endif
                 }
 
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("\t%AAdd(%v);\n"),VarStr.wx_str());
+                #else
                 Codef(_T("\t%AAdd(%v);\n"),VarStr.c_str());
+                #endif
             }
             Codef(_T("}\n"));
 
