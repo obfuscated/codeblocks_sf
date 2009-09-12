@@ -251,7 +251,11 @@ inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding 
         // should be long enough
         char* tmp = new char[2*inlen];
 
+        #if wxCHECK_VERSION(2, 9, 0)
+        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
+        #else
         if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.c_str(), tmp))
+        #endif
         {
             mbBuff = tmp;
             outlen = strlen(mbBuff); // should be correct, because Convert has returned true
