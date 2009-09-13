@@ -1,406 +1,378 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <resource version="2.3.0.1" xmlns="http://www.wxwidgets.org/wxxrc">
-  <object class="wxPanel" name="dlgAstyleConfig">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <flag>wxGROW|wxLEFT</flag>
-        <border>8</border>
-        <option>1</option>
-        <object class="wxNotebook" name="nbMain">
-          <object class="notebookpage">
-            <label>Style</label>
-            <object class="wxPanel" name="tabStyle">
-              <style>wxTAB_TRAVERSAL</style>
-              <object class="wxBoxSizer">
-                <orient>wxHORIZONTAL</orient>
-                <object class="sizeritem">
-                  <flag>wxGROW|wxALL</flag>
-                  <border>8</border>
-                  <object class="wxStaticBoxSizer" name="wxID_ANY">
-                    <orient>wxVERTICAL</orient>
-                    <label>Styles</label>
-                    <object class="sizeritem">
-                      <object class="wxRadioButton" name="rbAllman">
-                        <label>Allman (ANSI)</label>
-                      </object>
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxRadioButton" name="rbJava">
-                        <label>Java</label>
-                        <value>0</value>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxRadioButton" name="rbKr">
-                        <label>K&amp;&amp;R</label>
-                        <value>0</value>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxRadioButton" name="rbStroustrup">
-                        <label>Stroustrup</label>
-                      </object>
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxRadioButton" name="rbWhitesmith">
-                        <label>Whitesmith</label>
-                      </object>
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxRadioButton" name="rbBanner">
-                        <label>Banner</label>
-                      </object>
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxRadioButton" name="rbLinux">
-                        <label>Linux</label>
-                        <value>0</value>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxRadioButton" name="rbGNU">
-                        <label>GNU</label>
-                        <value>0</value>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxLEFT|wxRIGHT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxRadioButton" name="rbCustom">
-                        <label>Custom</label>
-                        <value>0</value>
-                      </object>
-                    </object>
-                  </object>
-                </object>
-                <object class="sizeritem">
-                  <flag>wxGROW|wxRIGHT|wxTOP|wxBOTTOM</flag>
-                  <border>8</border>
-                  <option>1</option>
-                  <object class="wxStaticBoxSizer" name="wxID_ANY">
-                    <orient>wxVERTICAL</orient>
-                    <label>Sample</label>
-                    <object class="sizeritem">
-                      <flag>wxGROW|wxALL</flag>
-                      <border>8</border>
-                      <option>1</option>
-                      <object class="wxTextCtrl" name="txtSample">
-                        <style>wxTE_MULTILINE|wxHSCROLL</style>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_CENTER_HORIZONTAL|wxALL</flag>
-                      <border>5</border>
-                      <object class="wxButton" name="Preview">
-                        <label>Preview</label>
-                      </object>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Indentation</label>
-            <object class="wxPanel" name="tabIndentation">
-              <style>wxTAB_TRAVERSAL</style>
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <flag>wxGROW|wxALL</flag>
-                  <border>8</border>
-                  <option>1</option>
-                  <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT</flag>
-                      <border>0</border>
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <flag>wxALIGN_TOP|wxTOP|wxADJUST_MINSIZE</flag>
-                          <border>4</border>
-                          <object class="wxStaticText" name="wxID_STATIC">
-                            <label>Indentation size (in spaces):</label>
-                          </object>
-                        </object>
-                        <object class="sizeritem">
-                          <flag>wxALIGN_TOP|wxLEFT</flag>
-                          <border>8</border>
-                          <object class="wxSpinCtrl" name="spnIndentation">
-                            <value>4</value>
-                            <min>1</min>
-                            <max>16</max>
-                          </object>
-                        </object>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkUseTab">
-                        <label>Use TABs instead of spaces</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkForceUseTabs">
-                        <label>Force using TABs</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentClasses">
-                        <label>Indent classes (keywords public:, protected: and private:)</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentSwitches">
-                        <label>Indent switches (keyword case:)</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentCase">
-                        <label>Indent case: statement in switches (commands under case:)</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentBrackets">
-                        <label>Indent brackets</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentBlocks">
-                        <label>Indent blocks</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentNamespaces">
-                        <label>Indent namespaces</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentLabels">
-                        <label>Indent labels</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkIndentPreprocessor">
-                        <label>Indent multi-line preprocessor definitions</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-          <object class="notebookpage">
-            <label>Formatting</label>
-            <object class="wxPanel" name="tabFormatting">
-              <style>wxTAB_TRAVERSAL</style>
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <flag>wxGROW|wxALL</flag>
-                  <border>8</border>
-                  <option>1</option>
-                  <object class="wxBoxSizer">
-                    <orient>wxVERTICAL</orient>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT</flag>
-                      <border>0</border>
-                      <object class="wxBoxSizer">
-                        <orient>wxHORIZONTAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText" name="wxID_STATIC">
-                            <label>Bracket format mode:</label>
-                          </object>
-                          <flag>wxALIGN_TOP|wxTOP|wxADJUST_MINSIZE</flag>
-                          <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbBracketFormatMode">
-                            <content>
-                              <item>None</item>
-                              <item>Attach</item>
-                              <item>Break</item>
-                              <item>Linux</item>
-                              <item>Stroupstrup</item>
-                            </content>
-                            <selection>0</selection>
-                            <style>wxCB_DROPDOWN</style>
-                          </object>
-                          <flag>wxALIGN_TOP|wxLEFT</flag>
-                          <border>8</border>
-                        </object>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <object class="wxBoxSizer">
-                        <object class="sizeritem">
-                          <object class="wxStaticText" name="wxID_STATIC">
-                            <label>Pointer alignment:</label>
-                          </object>
-                          <flag>wxALIGN_TOP|wxTOP|wxADJUST_MINSIZE</flag>
-                          <border>4</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxComboBox" name="cmbPointerAlign">
-                            <content>
-                              <item>None</item>
-                              <item>Type</item>
-                              <item>Middle</item>
-                              <item>Name</item>
-                            </content>
-                            <selection>0</selection>
-                            <style>wxCB_DROPDOWN</style>
-                          </object>
-                          <flag>wxALIGN_TOP|wxLEFT</flag>
-                          <border>8</border>
-                        </object>
-                        <orient>wxHORIZONTAL</orient>
-                      </object>
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkBreakClosing">
-                        <label>Break closing headers from Attach or Linux brackets</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkBreakBlocks">
-                        <label>Pad empty lines around header blocks (e.g. 'if', 'while'...)</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkBreakElseIfs">
-                        <label>Break 'else if()' header combinations into seperate lines</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkPadOperators">
-                        <label>Insert space padding around operators</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkPadParensOut">
-                        <label>Insert space padding around parenthesies on the outside</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkPadParensIn">
-                        <label>Insert space padding around parenthesies on the inside</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkUnpadParens">
-                        <label>Remove extra space padding around parenthesis</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkKeepComplex">
-                        <label>Don't break complex statements and multiple statements residing in a single line</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkKeepBlocks">
-                        <label>Don't break one-line blocks</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkConvertTabs">
-                        <label>Convert TABs to spaces</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                    <object class="sizeritem">
-                      <flag>wxALIGN_LEFT|wxTOP</flag>
-                      <border>8</border>
-                      <object class="wxCheckBox" name="chkFillEmptyLines">
-                        <label>Fill empty lines with the whitespace of their previous lines</label>
-                        <checked>0</checked>
-                      </object>
-                    </object>
-                  </object>
-                </object>
-              </object>
-            </object>
-          </object>
-        </object>
-      </object>
-    </object>
-  </object>
+	<object class="wxPanel" name="dlgAstyleConfig">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxNotebook" name="nbMain">
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabStyle">
+							<object class="wxBoxSizer">
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Styles</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbAllman">
+												<label>Allman (ANSI)</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbJava">
+												<label>Java</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbKr">
+												<label>K&amp;&amp;R</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbStroustrup">
+												<label>Stroustrup</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbWhitesmith">
+												<label>Whitesmith</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbBanner">
+												<label>Banner</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbGNU">
+												<label>Gnu</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbLinux">
+												<label>Linux</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbHorstmann">
+												<label>Horstmann</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxRadioButton" name="rbCustom">
+												<label>Custom</label>
+											</object>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Sample</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtSample">
+												<style>wxTE_MULTILINE|wxHSCROLL</style>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxButton" name="Preview">
+												<label>Preview</label>
+											</object>
+											<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+											<border>5</border>
+										</object>
+									</object>
+									<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Style</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabIndentation">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="wxID_STATIC">
+														<label>Indentation size (in spaces):</label>
+													</object>
+													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxSpinCtrl" name="spnIndentation">
+														<value>4</value>
+														<min>1</min>
+														<max>16</max>
+													</object>
+													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>8</border>
+												</object>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkUseTab">
+												<label>Use TABs instead of spaces</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkForceUseTabs">
+												<label>Force using TABs</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentClasses">
+												<label>Indent classes (keywords public:, protected: and private:)</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentSwitches">
+												<label>Indent switches (keyword case:)</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentCase">
+												<label>Indent case: statement in switches (commands under case:)</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentBrackets">
+												<label>Indent brackets</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentBlocks">
+												<label>Indent blocks</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentNamespaces">
+												<label>Indent namespaces</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentLabels">
+												<label>Indent labels</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentPreprocessor">
+												<label>Indent multi-line preprocessor definitions</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Indentation</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabFormatting">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxBoxSizer">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT1">
+														<label>Bracket format mode:</label>
+													</object>
+													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxComboBox" name="cmbBracketFormatMode">
+														<content>
+															<item>None</item>
+															<item>Attach</item>
+															<item>Break</item>
+															<item>Linux</item>
+															<item>Stroupstrup</item>
+														</content>
+														<selection>0</selection>
+														<style>wxCB_DROPDOWN</style>
+													</object>
+													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>8</border>
+												</object>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT2">
+														<label>Pointer alignment:</label>
+													</object>
+													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxComboBox" name="cmbPointerAlign">
+														<content>
+															<item>None</item>
+															<item>Type</item>
+															<item>Middle</item>
+															<item>Name</item>
+														</content>
+														<selection>0</selection>
+														<style>wxCB_DROPDOWN</style>
+													</object>
+													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>8</border>
+												</object>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBreakClosing">
+												<label>Break closing headers from Attach or Linux brackets</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBreakBlocks">
+												<label>Pad empty lines around header blocks (e.g. &apos;if&apos;, &apos;while&apos;...)</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBreakElseIfs">
+												<label>Break &apos;else if()&apos; header combinations into seperate lines</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkPadOperators">
+												<label>Insert space padding around operators</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkPadParensOut">
+												<label>Insert space padding around parenthesies on the outside</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkPadParensIn">
+												<label>Insert space padding around parenthesies on the inside</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkUnpadParens">
+												<label>Remove extra space padding around parenthesis</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkKeepComplex">
+												<label>Don&apos;t break complex statements and multiple statements residing in a single line</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkKeepBlocks">
+												<label>Don&apos;t break one-line blocks</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkConvertTabs">
+												<label>Convert TABs to spaces</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkFillEmptyLines">
+												<label>Fill empty lines with the whitespace of their previous lines</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>8</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Formatting</label>
+					</object>
+				</object>
+				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
 </resource>

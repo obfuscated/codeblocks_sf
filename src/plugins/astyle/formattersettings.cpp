@@ -9,6 +9,7 @@
 
 #include <sdk.h>
 #include "formattersettings.h"
+#include "astylepredefinedstyles.h"
 #include <configmanager.h>
 
 FormatterSettings::FormatterSettings()
@@ -29,36 +30,40 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
   switch (style)
   {
-    case 0: // Allman (ANSI)
+    case aspsAllman: // Allman (ANSI)
       formatter.setFormattingStyle(astyle::STYLE_ALLMAN);
       break;
 
-    case 1: // Java
+    case aspsJava: // Java
       formatter.setFormattingStyle(astyle::STYLE_JAVA);
       break;
 
-    case 2: // K&R
+    case aspsKr: // K&R
       formatter.setFormattingStyle(astyle::STYLE_KandR);
       break;
 
-    case 3: // Stroustrup
+    case aspsStroustrup: // Stroustrup
       formatter.setFormattingStyle(astyle::STYLE_STROUSTRUP);
       break;
 
-    case 4: // Whitesmith
+    case aspsWhitesmith: // Whitesmith
       formatter.setFormattingStyle(astyle::STYLE_WHITESMITH);
       break;
 
-    case 5: // Banner
+    case aspsBanner: // Banner
       formatter.setFormattingStyle(astyle::STYLE_BANNER);
       break;
 
-    case 6: // Linux
+    case aspsGnu: // GNU
+      formatter.setFormattingStyle(astyle::STYLE_GNU);
+      break;
+
+    case aspsLinux: // Linux
       formatter.setFormattingStyle(astyle::STYLE_LINUX);
       break;
 
-    case 7: // GNU
-      formatter.setFormattingStyle(astyle::STYLE_GNU);
+    case aspsHorstmann: // Horstmann
+      formatter.setFormattingStyle(astyle::STYLE_HORSTMANN);
       break;
 
     default: // Custom

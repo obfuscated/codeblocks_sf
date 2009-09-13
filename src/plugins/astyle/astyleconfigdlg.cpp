@@ -35,6 +35,7 @@ BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
   EVT_RADIOBUTTON(XRCID("rbBanner"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbGNU"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbLinux"), AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbHorstmann"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbCustom"), AstyleConfigDlg::OnStyleChange)
   EVT_BUTTON(XRCID("Preview"), AstyleConfigDlg::OnPreview)
 END_EVENT_TABLE()
@@ -177,6 +178,20 @@ int Foo(bool isBar)\n\
       XRCCTRL(*this, "rbLinux", wxRadioButton)->SetValue(true);
       break;
 #undef AS_LINUX
+#define AS_HORSTMANN "\
+int Foo(bool isBar)\n\
+{  if (isBar)\n\
+   {  bar();\n\
+      return 1;\n\
+   }\n\
+   else\n\
+      return 0;\n\
+}"
+    case aspsHorstmann:
+      sample = _T(AS_HORSTMANN);
+      XRCCTRL(*this, "rbHorstmann", wxRadioButton)->SetValue(true);
+      break;
+#undef AS_HORSTMANN
     default:
       XRCCTRL(*this, "rbCustom", wxRadioButton)->SetValue(true);
       break;
@@ -234,6 +249,8 @@ void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
     SetStyle(aspsGnu);
   else if (event.GetId() == XRCID("rbLinux"))
     SetStyle(aspsLinux);
+  else if (event.GetId() == XRCID("rbHorstmann"))
+    SetStyle(aspsHorstmann);
   else if (event.GetId() == XRCID("rbCustom"))
     SetStyle(aspsCustom);
 }
@@ -308,23 +325,25 @@ void AstyleConfigDlg::SaveSettings()
   int style = 0;
 
   if (XRCCTRL(*this, "rbAllman", wxRadioButton)->GetValue())
-    style = 0;
+    style = aspsAllman;
   else if (XRCCTRL(*this, "rbJava", wxRadioButton)->GetValue())
-    style = 1;
+    style = aspsJava;
   else if (XRCCTRL(*this, "rbKr", wxRadioButton)->GetValue())
-    style = 2;
+    style = aspsKr;
   else if (XRCCTRL(*this, "rbStroustrup", wxRadioButton)->GetValue())
-    style = 3;
+    style = aspsStroustrup;
   else if (XRCCTRL(*this, "rbWhitesmith", wxRadioButton)->GetValue())
-    style = 4;
+    style = aspsWhitesmith;
   else if (XRCCTRL(*this, "rbBanner", wxRadioButton)->GetValue())
-    style = 5;
+    style = aspsBanner;
   else if (XRCCTRL(*this, "rbGNU", wxRadioButton)->GetValue())
-    style = 6;
+    style = aspsGnu;
   else if (XRCCTRL(*this, "rbLinux", wxRadioButton)->GetValue())
-    style = 7;
+    style = aspsLinux;
+  else if (XRCCTRL(*this, "rbHorstmann", wxRadioButton)->GetValue())
+    style = aspsHorstmann;
   else if (XRCCTRL(*this, "rbCustom", wxRadioButton)->GetValue())
-    style = 8;
+    style = aspsCustom;
 
   cfg->Write(_T("/style"), style);
   cfg->Write(_T("/indentation"), XRCCTRL(*this, "spnIndentation", wxSpinCtrl)->GetValue());

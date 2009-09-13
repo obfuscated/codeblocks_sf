@@ -273,7 +273,7 @@ static bool BuffersDiffer( const wxString &a, const wxString &b )
         {
             return true;
         }
-
+        ++aCurrent;
     }
 
     while ( bCurrent != bEnd )
@@ -282,6 +282,7 @@ static bool BuffersDiffer( const wxString &a, const wxString &b )
         {
             return true;
         }
+        ++bCurrent;
     }
 
     return false;

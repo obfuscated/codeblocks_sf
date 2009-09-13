@@ -7,20 +7,8 @@
 #define ASTYLECONFIGDLG_H
 
 #include <wx/intl.h>
+#include "astylepredefinedstyles.h"
 #include "configurationpanel.h"
-
-enum AStylePredefinedStyle
-{
-  aspsAllman = 0,
-  aspsJava,
-  aspsKr,
-  aspsStroustrup,
-  aspsWhitesmith,
-  aspsBanner,
-  aspsGnu,
-  aspsLinux,
-  aspsCustom
-};
 
 class AstyleConfigDlg : public cbConfigurationPanel
 {
