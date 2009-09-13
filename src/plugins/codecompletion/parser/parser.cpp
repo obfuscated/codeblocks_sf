@@ -31,6 +31,8 @@
       #include "editorbase.h"
 #endif
 
+#define PARSER_DEBUG_OUTPUT 0
+
 static const char CACHE_MAGIC[] = "CCCACHE_1_3";
 static const int batch_timer_delay = 500;
 static const int reparse_timer_delay = 250;
@@ -500,14 +502,16 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             if (!canparse)
             {
                if(opts.loader) // if a loader is already open at this point, the caller must clean it up
-                   Manager::Get()->GetLogManager()->DebugLog(_T("CodeCompletion Plugin: FileLoader memory leak likely loading file ")+bufferOrFilename);
+                   Manager::Get()->GetLogManager()->DebugLog(_T("Parse() : CodeCompletion Plugin: FileLoader memory leak likely loading file ")+bufferOrFilename);
                break;
             }
             if(!opts.loader) //this should always be true (memory will leak if a loader has already been initialized before this point)
                 opts.loader=Manager::Get()->GetFileManager()->Load(bufferOrFilename, false);
         }
 
-//        Manager::Get()->GetLogManager()->DebugLog(_T("Creating task for: %s"), buffOrFile.c_str());
+#if PARSER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Parse() : Creating task for: %s"), buffOrFile.c_str()));
+#endif
         ParserThread* thread = new ParserThread(this,
                                                 buffOrFile,
                                                 isLocal,
@@ -528,7 +532,9 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             m_IsBatch = true;
             m_Pool.BatchBegin();
         }
-//        Manager::Get()->GetLogManager()->DebugLog(_T("parsing %s"),buffOrFile.c_str());
+#if PARSER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Parse() : Parsing %s"),buffOrFile.c_str()));
+#endif
         if(m_IgnoreThreadEvents)
             m_IgnoreThreadEvents = false;
         #ifdef CODECOMPLETION_PROFILING
@@ -779,7 +785,9 @@ bool Parser::WriteToCache(wxOutputStream* f)
 
     for (i = 0; i < tcount; ++i)
     {
-        // Manager::Get()->GetLogManager()->DebugLog(_T("Token #%d, offset %d"),i,f->TellO());
+#if PARSER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("WriteToCache() : Token #%d, offset %d"),i,f->TellO()));
+#endif
         Token* token = m_pTokens->at(i);
         SaveIntToFile(f,(token!=0) ? 1 : 0);
         if(token)
@@ -809,10 +817,12 @@ void Parser::AddIncludeDir(const wxString& file)
 
     if(m_IncludeDirs.Index(base) == wxNOT_FOUND)
     {
-//        Manager::Get()->GetLogManager()->DebugLog(_T("Adding %s"), base.c_str());
+#if PARSER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("AddIncludeDir() : Adding %s"), base.c_str()));
+#endif
         m_IncludeDirs.Add(base);
     }
-} // end of AddIncludeDir
+}
 
 wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
 {
@@ -844,11 +854,13 @@ wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
             if(firstonly)
                 break;
         }
-    } // end for : idx : idxSearch
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Searching %s"), file.c_str());
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Found %d"), FoundSet.GetCount());
+    }
+#if PARSER_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindFileInIncludeDirs() : Searching %s"), file.c_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindFileInIncludeDirs() : Found %d"), FoundSet.GetCount()));
+#endif
     return FoundSet;
-} // end of FindFileInIncludeDirs
+}
 
 void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {

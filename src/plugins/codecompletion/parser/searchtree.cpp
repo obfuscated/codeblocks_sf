@@ -11,23 +11,23 @@
 
 // *** SearchTreeIterator ***
 
-BasicSearchTreeIterator::BasicSearchTreeIterator() :
-m_CurNode(0),
-m_eof(false),
-m_pTree(0),
-m_LastTreeSize(0),
-m_LastAddedNode(0)
+BasicSearchTreeIterator::BasicSearchTreeIterator()
+    : m_CurNode(0),
+    m_eof(false),
+    m_pTree(0),
+    m_LastTreeSize(0),
+    m_LastAddedNode(0)
 {
     m_Stack.clear();
     m_Stack2.clear();
 }
 
-BasicSearchTreeIterator::BasicSearchTreeIterator(BasicSearchTree* tree) :
-m_CurNode(0),
-m_eof(false),
-m_pTree(tree),
-m_LastTreeSize(0),
-m_LastAddedNode(0)
+BasicSearchTreeIterator::BasicSearchTreeIterator(BasicSearchTree* tree)
+    : m_CurNode(0),
+    m_eof(false),
+    m_pTree(tree),
+    m_LastTreeSize(0),
+    m_LastAddedNode(0)
 {
     if(m_pTree)
     {

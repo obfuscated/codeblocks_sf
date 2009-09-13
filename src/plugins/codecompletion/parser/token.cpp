@@ -13,6 +13,8 @@
 #include <wx/intl.h>
 #include <wx/tokenzr.h>
 
+#define TOKEN_DEBUG_OUTPUT 0
+
 inline void SaveTokenIdxSetToFile(wxOutputStream* f,const TokenIdxSet& data)
 {
     SaveIntToFile(f, (int)(data.size()));
@@ -213,17 +215,17 @@ wxString Token::GetTokenKindString() const
 {
     switch (m_TokenKind)
     {
-        case tkClass: return _T("class");
-        case tkNamespace: return _T("namespace");
-        case tkTypedef: return _T("typedef");
-        case tkEnum: return _T("enum");
-        case tkEnumerator: return _T("enumerator");
-        case tkFunction: return _T("function");
-        case tkConstructor: return _T("constructor");
-        case tkDestructor: return _T("destructor");
+        case tkClass:        return _T("class");
+        case tkNamespace:    return _T("namespace");
+        case tkTypedef:      return _T("typedef");
+        case tkEnum:         return _T("enum");
+        case tkEnumerator:   return _T("enumerator");
+        case tkFunction:     return _T("function");
+        case tkConstructor:  return _T("constructor");
+        case tkDestructor:   return _T("destructor");
         case tkPreprocessor: return _T("preprocessor");
-        case tkVariable: return _T("variable");
-        default: return wxEmptyString; // tkUndefined
+        case tkVariable:     return _T("variable");
+        default:             return wxEmptyString; // tkUndefined
     }
 }
 
@@ -231,10 +233,10 @@ wxString Token::GetTokenScopeString() const
 {
     switch (m_Scope)
     {
-        case tsPrivate: return _T("private");
+        case tsPrivate:   return _T("private");
         case tsProtected: return _T("protected");
-        case tsPublic: return _T("public");
-        default: return wxEmptyString;
+        case tsPublic:    return _T("public");
+        default:          return wxEmptyString;
     }
 }
 
@@ -336,7 +338,7 @@ bool Token::SerializeIn(wxInputStream* f)
             result = false;
             break;
         }
-    }while(false);
+    } while(false);
     return result;
 }
 
@@ -377,7 +379,6 @@ m_modified(false)
     m_FilesToBeReparsed.clear();
     m_TopNameSpaces.clear();
     m_GlobalNameSpace.clear();
-
 }
 
 
@@ -575,6 +576,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     TokenIdxSet::iterator it;
 
     // Step 2: Detach token from its ancestors
+
     nodes = (oldToken->m_DirectAncestors);
     for(it = nodes.begin();it!=nodes.end(); it++)
     {
@@ -589,6 +591,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     oldToken->m_DirectAncestors.clear();
 
     // Step 3: Remove children
+
     nodes = (oldToken->m_Children); // Copy the list to avoid interference
     for(it = nodes.begin();it!=nodes.end(); it++)
         RemoveToken(*it);
@@ -596,6 +599,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     oldToken->m_Children.clear();
 
     // Step 4: Remove descendants
+
     nodes = oldToken->m_Descendants; // Copy the list to avoid interference
     for(it = nodes.begin();it!=nodes.end(); it++)
     {
@@ -610,6 +614,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     oldToken->m_Descendants.clear();
 
     // Step 5: Detach token from the SearchTrees
+
     int idx2 = m_Tree.GetItemNo(oldToken->m_Name);
     if(idx2)
     {
@@ -625,6 +630,7 @@ void TokensTree::RemoveToken(Token* oldToken)
     }
 
     // Step 6: Finally, remove it from the list.
+
     RemoveTokenFromList(idx);
 }
 
@@ -757,7 +763,9 @@ void TokensTree::RecalcFreeList()
 
 void TokensTree::RecalcData()
 {
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Calculating full inheritance tree"));
+#if TOKEN_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(_T("RecalcData() : Calculating full inheritance tree."));
+#endif
 
     // first loop to convert ancestors string to token indices for each token
     for (size_t i = 0; i < size(); ++i)
@@ -776,16 +784,18 @@ void TokensTree::RecalcData()
 
         token->m_DirectAncestors.clear();
         token->m_Ancestors.clear();
-//        Manager::Get()->GetLogManager()->DebugLog(_T(" : '%s'"), token->m_Name.c_str());
-
-        //Manager::Get()->GetLogManager()->DebugLog("Token %s, Ancestors %s", token->m_Name.c_str(), token->m_AncestorsString.c_str());
+#if TOKEN_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Token %s, Ancestors %s"), token->m_Name.c_str(), token->m_AncestorsString.c_str()));
+#endif
         wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
         while (tkz.HasMoreTokens())
         {
             wxString ancestor = tkz.GetNextToken();
             if (ancestor.IsEmpty() || ancestor == token->m_Name)
                 continue;
-//            Manager::Get()->GetLogManager()->DebugLog(_T("Ancestor %s"), ancestor.c_str());
+#if TOKEN_DEBUG_OUTPUT
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Ancestor %s"), ancestor.c_str()));
+#endif
             // ancestors might contain namespaces, e.g. NS::Ancestor
             if (ancestor.Find(_T("::")) != wxNOT_FOUND)
             {
@@ -805,13 +815,19 @@ void TokensTree::RecalcData()
                 }
                 if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass)// && !ancestorToken->m_IsTypedef)
                 {
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("Resolved to %s"), ancestorToken->m_Name.c_str());
+#if TOKEN_DEBUG_OUTPUT
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Resolved to %s"), ancestorToken->m_Name.c_str()));
+#endif
                     token->m_Ancestors.insert(ancestorToken->GetSelf());
                     ancestorToken->m_Descendants.insert(i);
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("   + '%s'"), ancestorToken->m_Name.c_str());
+#if TOKEN_DEBUG_OUTPUT
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.c_str()));
+#endif
                 }
-//                else
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("   ! '%s' (unresolved)"), ancestor.c_str());
+#if TOKEN_DEBUG_OUTPUT
+                else
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.c_str()));
+#endif
             }
             else // no namespaces in ancestor
             {
@@ -826,11 +842,15 @@ void TokensTree::RecalcData()
                     {
                         token->m_Ancestors.insert(*it);
                         ancestorToken->m_Descendants.insert(i);
-//                        Manager::Get()->GetLogManager()->DebugLog(_T("   + '%s'"), ancestorToken->m_Name.c_str());
+#if TOKEN_DEBUG_OUTPUT
+                        Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.c_str()));
+#endif
                     }
                 }
-//                if (result.empty())
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("   ! '%s' (unresolved)"), ancestor.c_str());
+#if TOKEN_DEBUG_OUTPUT
+                if (result.empty())
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.c_str()));
+#endif
             }
         }
 
@@ -838,7 +858,9 @@ void TokensTree::RecalcData()
 
         if (!token->m_IsLocal) // global symbols are linked once
         {
-            //Manager::Get()->GetLogManager()->DebugLog("Removing ancestor string from %s", token->m_Name.c_str(), token->m_Name.c_str());
+#if TOKEN_DEBUG_OUTPUT
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.c_str(), token->m_Name.c_str()));
+#endif
             token->m_AncestorsString.Clear();
         }
     }
@@ -869,12 +891,16 @@ void TokensTree::RecalcData()
             }
         }
 
-//        // debug loop
-//        Manager::Get()->GetLogManager()->DebugLog(_T("Ancestors for %s:"),token->m_Name.c_str());
-//        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
-//            Manager::Get()->GetLogManager()->DebugLog(_T(" + %s"), at(*it)->m_Name.c_str());
+#if TOKEN_DEBUG_OUTPUT
+        // debug loop
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Ancestors for %s:"),token->m_Name.c_str()));
+        for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  + %s"), at(*it)->m_Name.c_str()));
+#endif
     }
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Full inheritance calculated."));
+#if TOKEN_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(_T("RecalcData() : Full inheritance calculated."));
+#endif
 }
 
 // caches the inheritance info for each token (recursive function)
@@ -892,7 +918,9 @@ void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
     // only classes take part in inheritance
     if (!(ancestor->m_TokenKind & (tkClass | tkTypedef)))
         return;
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Anc: '%s'"), ancestor->m_Name.c_str());
+#if TOKEN_DEBUG_OUTPUT
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcFullInheritance() : Anc: '%s'"), ancestor->m_Name.c_str()));
+#endif
 
     // for all its ancestors
     for (TokenIdxSet::iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); it++)

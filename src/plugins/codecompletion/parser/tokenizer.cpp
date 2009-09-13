@@ -16,15 +16,17 @@
 #include <cctype>
 #include <globals.h>
 
+#define TOKENIZER_DEBUG_OUTPUT 0
+
 namespace TokenizerConsts
 {
-const wxString colon(_T(":"));
-const wxString colon_colon(_T("::"));
+const wxString colon       (_T(":"));
+const wxString colon_colon (_T("::"));
 const wxString operator_str(_T("operator"));
-const wxString include_str(_T("#include"));
-const wxString if_str(_T("#if"));
-const wxString hash(_T("#"));
-const wxString tabcrlf(_T("\t\n\r"));
+const wxString include_str (_T("#include"));
+const wxString if_str      (_T("#if"));
+const wxString hash        (_T("#"));
+const wxString tabcrlf     (_T("\t\n\r"));
 };
 
 // static
@@ -71,25 +73,41 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
     {
         if (m_Filename.IsEmpty())
         {
-//            cbMessageBox(_T("Tokenizer::Init() called without filename..."));
+#if TOKENIZER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : Called without filename.")));
+#endif
             return false;
         }
     }
     else
+    {
         m_Filename = filename;
+#if TOKENIZER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : m_Filename='%s'"), m_Filename.c_str()));
+#endif
+    }
 
     if (!wxFileExists(m_Filename))
+    {
+#if TOKENIZER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : File '%s' does not exist."), m_Filename.c_str()));
+#endif
         return false;
+    }
 
     if (!ReadFile())
     {
-//        cbMessageBox(_T("File ") + filename + _T(" does not exist..."));
+#if TOKENIZER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : File '%s' could not be read."), m_Filename.c_str()));
+#endif
         return false;
     }
 
     if (!m_BufferLen)
     {
-        //cbMessageBox("File is empty!");
+#if TOKENIZER_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : File '%s' is empty."), m_Filename.c_str()));
+#endif
         return false;
     }
 
@@ -100,10 +118,8 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
 bool Tokenizer::InitFromBuffer(const wxString& buffer)
 {
     BaseInit();
-    m_BufferLen = buffer.Length();
-    m_Buffer.Alloc(m_BufferLen + 1);
     m_Buffer = buffer;
-    m_Buffer += _T(' ');
+    m_BufferLen = buffer.Length();
     m_IsOK = true;
     m_Filename.Clear();
     return true;
@@ -142,14 +158,14 @@ bool Tokenizer::ReadFile()
         // same code as in cbC2U() but with the addition of the string length (3rd param in unicode version)
         // and the fallback encoding conversion
 #if wxUSE_UNICODE
-        m_Buffer = wxString(data, wxConvUTF8, m_BufferLen + 1);
+        m_Buffer = wxString(data, wxConvUTF8, m_BufferLen);
         if (m_Buffer.Length() == 0)
         {
             // could not read as utf-8 encoding, try iso8859-1
-            m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen + 1);
+            m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen);
         }
 #else
-        m_Buffer = wxString(data, m_BufferLen + 1);
+        m_Buffer = wxString(data, m_BufferLen);
 #endif
 
         if (m_BufferLen != m_Buffer.Length())
@@ -159,10 +175,6 @@ bool Tokenizer::ReadFile()
             m_BufferLen = m_Buffer.Length();
 //            asm("int $3;");
         }
-
-        // add 'sentinel' to the end of the string (not counted to the length of the string)
-        m_Buffer += _T(' ');
-
         return data != 0;
     };
 
@@ -176,13 +188,6 @@ bool Tokenizer::ReadFile()
         return false;
     m_BufferLen = m_Buffer.Length();
 
-    // add 'sentinel' to the end of the string (not counted to the length of the string)
-
-    // (In the above cbRead() we don't specify the allocated length of m_Buffer so the
-    // call below might force reallocation of the string. However the documentation of
-    // wxWidgets says that the available memory in string is always a multiple of 16,
-    // so we have only 1/16 probability that this happens)
-    m_Buffer += _T(' ');
     return true;
 }
 
@@ -312,12 +317,7 @@ bool Tokenizer::SkipToEOL(bool nestBraces, bool skippingComment)
         wxChar last = PreviousChar();
         // if DOS line endings, we 've hit \r and we skip to \n...
         if (last == '\r')
-        {
-            if (m_TokenIndex - 2 >= 0)
-                last = m_Buffer.GetChar(m_TokenIndex - 2);
-            else
-                last = _T('\0');
-        }
+            last = m_Buffer.GetChar(m_TokenIndex - 2);
         if (IsEOF() || last != '\\')
             break;
         else
