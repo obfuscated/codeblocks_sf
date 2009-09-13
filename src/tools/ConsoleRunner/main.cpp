@@ -9,14 +9,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
+#include <sys/time.h>
 #ifdef __WXMSW__
     #include <windows.h>
 	#include <conio.h>
 	#define wait_key getch
 #else
 	#define wait_key getchar
-	#define execute_command(x) system(x)
 #endif
 #include <string.h>
 
@@ -36,9 +35,9 @@ bool hasSpaces(const char* str)
 	return false;
 }
 
-#ifdef __WXMSW__
 int execute_command(char *cmdline)
 {
+#ifdef __WXMSW__
     //Windows's system() seems to not be able to handle parentheses in
     //the path, so we have to launch the program a different way.
 
@@ -67,8 +66,18 @@ int execute_command(char *cmdline)
     CloseHandle( pi.hThread );
 
     return ret;
-}
+#else
+    int ret = system(cmdline);
+    if(WIFEXITED(ret))
+    {
+        return WEXITSTATUS(ret);
+    }
+    else
+    {
+        return -1;
+    }
 #endif
+}
 
 int main(int argc, char** argv)
 {
@@ -110,15 +119,16 @@ int main(int argc, char** argv)
         strcat(cmdline, " ");
     }
 
-    clock_t cl = clock();
+    timeval tv;
+    gettimeofday(&tv, NULL);
+    double cl = tv.tv_sec + (double)tv.tv_usec / 1000000;
 
     int ret = execute_command(cmdline);
 
-    cl = clock() - cl;
-    cl *= 1000;
-    cl /= CLOCKS_PER_SEC;
+    gettimeofday(&tv, NULL);
+    cl = (tv.tv_sec + (double)tv.tv_usec / 1000000) - cl;
 
-    printf("\nProcess returned %d (0x%X)   execution time : %0.3f s", ret, ret, ((float)cl)/1000);
+    printf("\nProcess returned %d (0x%X)   execution time : %0.3f s", ret, ret, cl);
     printf
     (
         "\nPress "
