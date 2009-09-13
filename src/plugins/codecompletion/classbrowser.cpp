@@ -48,12 +48,16 @@ int idCBViewModeFlat = wxNewId();
 int idCBViewModeStructured = wxNewId();
 int idMenuForceReparse = wxNewId();
 int idMenuDebugSmartSense = wxNewId();
+int idCBSortByAlpabet = wxNewId();
+int idCBSortByKind = wxNewId();
+int idCBSortByScope = wxNewId();
+int idCBBottomTree = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
-	EVT_TREE_ITEM_ACTIVATED(XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
+    EVT_TREE_ITEM_ACTIVATED(XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeMembers"), ClassBrowser::OnTreeItemRightClick)
 
-	EVT_TREE_ITEM_ACTIVATED(XRCID("treeAll"), ClassBrowser::OnTreeItemDoubleClick)
+    EVT_TREE_ITEM_ACTIVATED(XRCID("treeAll"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeAll"), ClassBrowser::OnTreeItemRightClick)
     EVT_TREE_ITEM_EXPANDING(XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
     EVT_TREE_ITEM_COLLAPSING(XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
@@ -70,28 +74,34 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBExpandNS, ClassBrowser::OnCBExpandNS)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
     EVT_MENU(idMenuDebugSmartSense, ClassBrowser::OnDebugSmartSense)
+    EVT_MENU(idCBSortByAlpabet, ClassBrowser::OnSetSortType)
+    EVT_MENU(idCBSortByKind, ClassBrowser::OnSetSortType)
+    EVT_MENU(idCBSortByScope, ClassBrowser::OnSetSortType)
+    EVT_MENU(idCBBottomTree, ClassBrowser::OnCBViewMode)
     EVT_CHOICE(XRCID("cmbView"), ClassBrowser::OnViewScope)
     EVT_BUTTON(XRCID("btnSearch"), ClassBrowser::OnSearch)
+
 END_EVENT_TABLE()
 
 // class constructor
 ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     : m_NativeParser(np),
     m_TreeForPopupMenu(0),
-	m_pParser(0L),
-	m_pActiveProject(0),
-	m_Semaphore(0, 1),
-	m_pBuilderThread(0)
+    m_pParser(0L),
+    m_pActiveProject(0),
+    m_Semaphore(0, 1),
+    m_pBuilderThread(0)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
     m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
 
     if (platform::windows)
-		m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
+        m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
-	m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
+    m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
+    m_TreeBottom = XRCCTRL(*this, "treeMembers", wxTreeCtrl);
 
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
@@ -123,17 +133,17 @@ ClassBrowser::~ClassBrowser()
 
 void ClassBrowser::SetParser(Parser* parser)
 {
-	if (parser != m_pParser || m_pParser->ClassBrowserOptions().displayFilter == bdfProject)
-	{
-		UnlinkParser();
-		if(parser)
-		{
+    if (parser != m_pParser || m_pParser->ClassBrowserOptions().displayFilter == bdfProject)
+    {
+        UnlinkParser();
+        if(parser)
+        {
 //            parser->AbortBuildingTree();
             parser->m_pClassBrowser = this;
             m_pParser = parser;
             UpdateView();
-		}
-	}
+        }
+    }
 }
 
 void ClassBrowser::UnlinkParser()
@@ -153,23 +163,37 @@ void ClassBrowser::UpdateView()
 {
     m_pActiveProject = 0;
     m_ActiveFilename.Clear();
-	if (m_pParser && !Manager::IsAppShuttingDown())
-	{
-	    m_pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
-	    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-	    if (ed)
-	    {
+    if (m_pParser && !Manager::IsAppShuttingDown())
+    {
+        m_pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (ed)
+        {
             //m_ActiveFilename = ed->GetFilename().BeforeLast(_T('.'));
             // the above line is a bug (see https://developer.berlios.de/patch/index.php?func=detailpatch&patch_id=1559&group_id=5358)
             m_ActiveFilename = ed->GetFilename().AfterLast(wxFILE_SEP_PATH);
             m_ActiveFilename = ed->GetFilename().BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + m_ActiveFilename.BeforeLast(_T('.'));
 
             m_ActiveFilename.Append(_T('.'));
-	    }
-		BuildTree();
-	}
-	else
-		m_Tree->DeleteAllItems();
+        }
+
+        BuildTree();
+
+        wxSplitterWindow* splitter = XRCCTRL(*this, "splitterWin", wxSplitterWindow);
+        if (m_pParser->ClassBrowserOptions().treeMembers)
+        {
+            splitter->SplitHorizontally(m_Tree, m_TreeBottom);
+            m_TreeBottom->Show(true);
+        }
+        else
+        {
+            splitter->Unsplit();
+            m_TreeBottom->Show(false);
+        }
+
+    }
+    else
+        m_Tree->DeleteAllItems();
 }
 
 void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt)
@@ -187,10 +211,10 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
         return;
 
 #if wxUSE_MENUS
-	wxString caption;
+    wxString caption;
     wxMenu *menu=new wxMenu(wxEmptyString);
 
-	CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
+    CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
     if (ctd && ctd->m_pToken)
     {
         switch (ctd->m_pToken->m_TokenKind)
@@ -206,6 +230,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
         }
     }
 
+    const BrowserOptions& options = m_pParser->ClassBrowserOptions();
     if (tree == m_Tree)
     {
         // only in top tree
@@ -229,12 +254,37 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
             menu->Check(idMenuDebugSmartSense, s_DebugSmartSense);
         }
 
-        menu->Check(idCBViewInheritance, m_pParser ? m_pParser->ClassBrowserOptions().showInheritance : false);
-        menu->Check(idCBExpandNS, m_pParser ? m_pParser->ClassBrowserOptions().expandNS : false);
+        menu->Check(idCBViewInheritance, m_pParser ? options.showInheritance : false);
+        menu->Check(idCBExpandNS, m_pParser ? options.expandNS : false);
     }
+
+    menu->AppendSeparator();
+    menu->AppendCheckItem(idCBSortByAlpabet, _("Sort alphabetically"));
+    menu->AppendCheckItem(idCBSortByKind, _("Sort by kind"));
+    menu->AppendCheckItem(idCBSortByScope, _("Sort by access"));
+
+    const BrowserSortType& bst = options.sortType;
+    switch (bst)
+    {
+        case bstAlphabet:
+            menu->Check(idCBSortByAlpabet, true);
+            break;
+        case bstKind:
+            menu->Check(idCBSortByKind, true);
+            break;
+        case bstScope:
+        default:
+            menu->Check(idCBSortByScope, true);
+            break;
+    }
+
+    menu->AppendSeparator();
+    menu->AppendCheckItem(idCBBottomTree, _("Display bottom tree"));
+    menu->Check(idCBBottomTree, options.treeMembers);
 
     if (menu->GetMenuItemCount() != 0)
         PopupMenu(menu);
+
     delete menu; // Prevents memory leak
 #endif // wxUSE_MENUS
 }
@@ -271,26 +321,26 @@ wxTreeItemId ClassBrowser::FindNext(const wxString& search, wxTreeCtrl* tree, co
 
 wxTreeItemId ClassBrowser::FindChild(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start, bool recurse, bool partialMatch)
 {
-	wxTreeItemIdValue cookie;
-	wxTreeItemId res = tree->GetFirstChild(start, cookie);
-	while (res.IsOk())
-	{
-		wxString text = tree->GetItemText(res);
-		if ((!partialMatch && text == search) ||
-			(partialMatch && text.StartsWith(search)))
-		{
-			return res;
-		}
-		if (recurse && tree->ItemHasChildren(res))
-		{
-			res = FindChild(search, tree, res, true, partialMatch);
-			if (res.IsOk())
-				return res;
-		}
-		res = m_Tree->GetNextChild(start, cookie);
-	}
-	res.Unset();
-	return res;
+    wxTreeItemIdValue cookie;
+    wxTreeItemId res = tree->GetFirstChild(start, cookie);
+    while (res.IsOk())
+    {
+        wxString text = tree->GetItemText(res);
+        if ((!partialMatch && text == search) ||
+            (partialMatch && text.StartsWith(search)))
+        {
+            return res;
+        }
+        if (recurse && tree->ItemHasChildren(res))
+        {
+            res = FindChild(search, tree, res, true, partialMatch);
+            if (res.IsOk())
+                return res;
+        }
+        res = m_Tree->GetNextChild(start, cookie);
+    }
+    res.Unset();
+    return res;
 }
 
 bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result)
@@ -311,9 +361,9 @@ bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, con
     if (!child.IsOk())
         return RecursiveSearch(search, tree, FindNext(search, tree, parent), result);
 
-	while (child.IsOk())
-	{
-	    if (FoundMatch(search, tree, child))
+    while (child.IsOk())
+    {
+        if (FoundMatch(search, tree, child))
         {
             result = child;
             return true;
@@ -324,7 +374,7 @@ bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, con
                 return true;
         }
         child = tree->GetNextChild(parent, cookie);
-	}
+    }
 
     return RecursiveSearch(search, tree, FindNext(search, tree, parent), result);
 }
@@ -334,15 +384,15 @@ bool ClassBrowser::RecursiveSearch(const wxString& search, wxTreeCtrl* tree, con
 void ClassBrowser::OnTreeItemRightClick(wxTreeEvent& event)
 {
     wxTreeCtrl* tree = (wxTreeCtrl*)event.GetEventObject();
-	tree->SelectItem(event.GetItem());
+    tree->SelectItem(event.GetItem());
     ShowMenu(tree, event.GetItem(), event.GetPoint());// + tree->GetPosition());
 }
 
 void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 {
     wxTreeCtrl* tree = m_TreeForPopupMenu;
-	wxTreeItemId id = tree->GetSelection();
-	CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
+    wxTreeItemId id = tree->GetSelection();
+    CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
     if (ctd)
     {
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -355,26 +405,26 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
             else
                 fname.Assign(ctd->m_pToken->GetFilename());
             NormalizePath(fname,base);
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
-			if (ed)
-			{
+            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+            if (ed)
+            {
                 int line;
                 if (event.GetId() == idMenuJumpToImplementation)
                     line = ctd->m_pToken->m_ImplLine - 1;
                 else
                     line = ctd->m_pToken->m_Line - 1;
-				ed->GotoLine(line);
-//				// try to move the caret on the exact token
-//				int lineOffset = ed->GetControl()->GetCurLine().Find(ctd->m_pToken->m_Name);
-//				if (lineOffset != wxNOT_FOUND)
-//				{
+                ed->GotoLine(line);
+//                // try to move the caret on the exact token
+//                int lineOffset = ed->GetControl()->GetCurLine().Find(ctd->m_pToken->m_Name);
+//                if (lineOffset != wxNOT_FOUND)
+//                {
 //                    int pos = ed->GetControl()->PositionFromLine(line) + lineOffset;
 //                    ed->GetControl()->GotoPos(pos);
 //                    // select the token
 //                    int posend = ed->GetControl()->WordEndPosition(pos, true);
 //                    ed->GetControl()->SetSelection(pos, posend);
-//				}
-			}
+//                }
+            }
         }
     }
 }
@@ -382,8 +432,8 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
 void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 {
     wxTreeCtrl* tree = (wxTreeCtrl*)event.GetEventObject();
-	wxTreeItemId id = event.GetItem();
-	CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
+    wxTreeItemId id = event.GetItem();
+    CBTreeData* ctd = (CBTreeData*)tree->GetItemData(id);
     if (ctd && ctd->m_pToken)
     {
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
@@ -396,18 +446,18 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (prj)
         {
-			bool toImp = false;
-			switch (ctd->m_pToken->m_TokenKind)
-			{
-			case tkConstructor:
+            bool toImp = false;
+            switch (ctd->m_pToken->m_TokenKind)
+            {
+            case tkConstructor:
             case tkDestructor:
             case tkFunction:
                 if (ctd->m_pToken->m_ImplLine != 0 && !ctd->m_pToken->GetImplFilename().IsEmpty())
                     toImp = true;
-				break;
-			default:
-				break;
-			}
+                break;
+            default:
+                break;
+            }
 
             wxString base = prj->GetBasePath();
             wxFileName fname;
@@ -417,41 +467,41 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
                 fname.Assign(ctd->m_pToken->GetFilename());
 
             NormalizePath(fname, base);
-        	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
-			if (ed)
-			{
-				int line;
+            cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
+            if (ed)
+            {
+                int line;
                 if (toImp)
                     line = ctd->m_pToken->m_ImplLine - 1;
                 else
                     line = ctd->m_pToken->m_Line - 1;
-				ed->GotoLine(line);
-//				// try to move the caret on the exact token
-//				int lineOffset = ed->GetControl()->GetCurLine().Find(ctd->m_pToken->m_Name);
-//				if (lineOffset != wxNOT_FOUND)
-//				{
+                ed->GotoLine(line);
+//                // try to move the caret on the exact token
+//                int lineOffset = ed->GetControl()->GetCurLine().Find(ctd->m_pToken->m_Name);
+//                if (lineOffset != wxNOT_FOUND)
+//                {
 //                    int pos = ed->GetControl()->PositionFromLine(line) + lineOffset;
 //                    ed->GetControl()->GotoPos(pos);
 //                    // select the token
 //                    int posend = ed->GetControl()->WordEndPosition(pos, true);
 //                    ed->GetControl()->SetSelection(pos, posend);
-//				}
+//                }
 
-				wxFocusEvent ev(wxEVT_SET_FOCUS);
-				ev.SetWindow(this);
+                wxFocusEvent ev(wxEVT_SET_FOCUS);
+                ev.SetWindow(this);
 				#if wxCHECK_VERSION(2, 9, 0)
 				ed->GetControl()->GetEventHandler()->AddPendingEvent(ev);
 				#else
-				ed->GetControl()->AddPendingEvent(ev);
+                ed->GetControl()->AddPendingEvent(ev);
 				#endif
-			}
+            }
         }
     }
 }
 
 void ClassBrowser::OnRefreshTree(wxCommandEvent& event)
 {
-	UpdateView();
+    UpdateView();
 }
 
 void ClassBrowser::OnForceReparse(wxCommandEvent& event)
@@ -462,41 +512,47 @@ void ClassBrowser::OnForceReparse(wxCommandEvent& event)
 
 void ClassBrowser::OnCBViewMode(wxCommandEvent& event)
 {
-	if (!m_pParser)
-		return;
+    if (!m_pParser)
+        return;
 
-	if (event.GetId() == idCBViewInheritance)
-		m_pParser->ClassBrowserOptions().showInheritance = event.IsChecked();
+    BrowserOptions& options = m_pParser->ClassBrowserOptions();
 
-	m_pParser->WriteOptions();
-	UpdateView();
+    if (event.GetId() == idCBViewInheritance)
+        options.showInheritance = event.IsChecked();
+    if (event.GetId() == idCBExpandNS)
+        options.expandNS = event.IsChecked();
+    if (event.GetId() == idCBBottomTree)
+        options.treeMembers = event.IsChecked();
+
+    m_pParser->WriteOptions();
+    UpdateView();
 }
 
 void ClassBrowser::OnCBExpandNS(wxCommandEvent& event)
 {
-	if (!m_pParser)
-		return;
+    if (!m_pParser)
+        return;
 
-	if (event.GetId() == idCBExpandNS)
-		m_pParser->ClassBrowserOptions().expandNS = event.IsChecked();
+    if (event.GetId() == idCBExpandNS)
+        m_pParser->ClassBrowserOptions().expandNS = event.IsChecked();
 
-	m_pParser->WriteOptions();
-	UpdateView();
+    m_pParser->WriteOptions();
+    UpdateView();
 }
 
 void ClassBrowser::OnViewScope(wxCommandEvent& event)
 {
-	if (m_pParser)
-	{
-		m_pParser->ClassBrowserOptions().displayFilter = (BrowserDisplayFilter)event.GetSelection();
-		m_pParser->WriteOptions();
+    if (m_pParser)
+    {
+        m_pParser->ClassBrowserOptions().displayFilter = (BrowserDisplayFilter)event.GetSelection();
+        m_pParser->WriteOptions();
         UpdateView();
-	}
-	else
-	{
-	    // we have no parser; just write the setting in the configuration
+    }
+    else
+    {
+        // we have no parser; just write the setting in the configuration
         Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_display_filter"), (int)event.GetSelection());
-	}
+    }
 }
 
 void ClassBrowser::OnDebugSmartSense(wxCommandEvent& event)
@@ -504,26 +560,43 @@ void ClassBrowser::OnDebugSmartSense(wxCommandEvent& event)
     s_DebugSmartSense = !s_DebugSmartSense;
 }
 
+void ClassBrowser::OnSetSortType(wxCommandEvent& event)
+{
+    BrowserSortType bst;
+    if (event.GetId() == idCBSortByAlpabet) bst = bstAlphabet;
+    else if (event.GetId() == idCBSortByKind) bst = bstKind;
+    else bst = bstScope;
+
+    if (m_pParser)
+    {
+        m_pParser->ClassBrowserOptions().sortType = bst;
+        m_pParser->WriteOptions();
+        UpdateView();
+    }
+    else
+        Manager::Get()->GetConfigManager(_T("code_completion"))->Write(_T("/browser_sort_type"), (int)bst);
+}
+
 void ClassBrowser::OnSearch(wxCommandEvent& event)
 {
-	wxString search = m_Search->GetValue();
-	if (search.IsEmpty())
-		return;
+    wxString search = m_Search->GetValue();
+    if (search.IsEmpty())
+        return;
 
-	Token* token = 0;
-	TokenIdxSet result;
+    Token* token = 0;
+    TokenIdxSet result;
     size_t count = m_pParser->GetTokens()->FindMatches(search, result, false, true);
-	if (count == 0)
-	{
-		cbMessageBox(_("No matches were found: ") + search, _("Search failed"));
-		return;
-	}
-	else if (count == 1)
-	{
-		token = m_pParser->GetTokens()->at(*result.begin());
-	}
-	else if (count > 1)
-	{
+    if (count == 0)
+    {
+        cbMessageBox(_("No matches were found: ") + search, _("Search failed"));
+        return;
+    }
+    else if (count == 1)
+    {
+        token = m_pParser->GetTokens()->at(*result.begin());
+    }
+    else if (count > 1)
+    {
         wxArrayString selections;
         wxArrayInt int_selections;
         for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
@@ -531,8 +604,8 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             Token* sel = m_pParser->GetTokens()->at(*it);
             if (sel)
             {
-				selections.Add(sel->DisplayName());
-				int_selections.Add(*it);
+                selections.Add(sel->DisplayName());
+                int_selections.Add(*it);
             }
         }
         if (selections.GetCount() > 1)
@@ -547,71 +620,70 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             // back on 1 entry no need to show a selection
             token = m_pParser->GetTokens()->at(int_selections[0]);
         }
-	}
+    }
 
-	// time to "walk" the tree
-	if (token)
-	{
-		// store the search in the combobox
-		if (m_Search->FindString(token->m_Name) == wxNOT_FOUND)
-			m_Search->Append(token->m_Name);
+    // time to "walk" the tree
+    if (token)
+    {
+        // store the search in the combobox
+        if (m_Search->FindString(token->m_Name) == wxNOT_FOUND)
+            m_Search->Append(token->m_Name);
 
-		wxTreeCtrl* bottomTree = XRCCTRL(*this, "treeMembers", wxTreeCtrl);
-		if (token->m_ParentIndex == -1 && !(token->m_TokenKind & tkAnyContainer))
-		{
-			// a global non-container: search in special folders only
-			wxTreeItemIdValue cookie;
-			wxTreeItemId res = m_Tree->GetFirstChild(m_Tree->GetRootItem(), cookie);
-			while (res.IsOk())
-			{
-				CBTreeData* data = (CBTreeData*)m_Tree->GetItemData(res);
-				if (data && (data->m_SpecialFolder & (sfGFuncs | sfGVars | sfPreproc | sfTypedef)))
-				{
-					m_Tree->SelectItem(res);
-					wxTreeItemId srch = FindChild(token->m_Name, bottomTree, bottomTree->GetRootItem(), false, true);
-					if (srch.IsOk())
-					{
-						bottomTree->SelectItem(srch);
-						return;
-					}
-				}
-				res = m_Tree->GetNextChild(m_Tree->GetRootItem(), cookie);
-			}
-			return;
-		}
+        if (token->m_ParentIndex == -1 && !(token->m_TokenKind & tkAnyContainer))
+        {
+            // a global non-container: search in special folders only
+            wxTreeItemIdValue cookie;
+            wxTreeItemId res = m_Tree->GetFirstChild(m_Tree->GetRootItem(), cookie);
+            while (res.IsOk())
+            {
+                CBTreeData* data = (CBTreeData*)m_Tree->GetItemData(res);
+                if (data && (data->m_SpecialFolder & (sfGFuncs | sfGVars | sfPreproc | sfTypedef)))
+                {
+                    m_Tree->SelectItem(res);
+                    wxTreeItemId srch = FindChild(token->m_Name, m_TreeBottom, m_TreeBottom->GetRootItem(), false, true);
+                    if (srch.IsOk())
+                    {
+                        m_TreeBottom->SelectItem(srch);
+                        return;
+                    }
+                }
+                res = m_Tree->GetNextChild(m_Tree->GetRootItem(), cookie);
+            }
+            return;
+        }
 
-		// example:
-		//   search="cou"
-		//   token->GetNamespace()="std::"
-		//   token->m_Name="cout"
-		wxTreeItemId start = m_Tree->GetRootItem();
-		wxStringTokenizer tkz(token->GetNamespace(), _T(":"));
-		while (tkz.HasMoreTokens())
-		{
-			wxString part = tkz.GetNextToken();
-			if (!part.IsEmpty())
-			{
-				m_Tree->Expand(start);
-				wxTreeItemId res = FindChild(part, m_Tree, start);
-				if (!res.IsOk())
-					break;
-				start = res;
-			}
-		}
-		// now the actual token
-		m_Tree->Expand(start);
-		m_Tree->SelectItem(start);
-		wxTreeItemId res = FindChild(token->m_Name, m_Tree, start);
-		if (res.IsOk())
-			m_Tree->SelectItem(res);
-		else
-		{
-			// search in bottom tree too
-			wxTreeItemId res = FindChild(token->m_Name, bottomTree, bottomTree->GetRootItem(), true, true);
-			if (res.IsOk())
-				bottomTree->SelectItem(res);
-		}
-	}
+        // example:
+        //   search="cou"
+        //   token->GetNamespace()="std::"
+        //   token->m_Name="cout"
+        wxTreeItemId start = m_Tree->GetRootItem();
+        wxStringTokenizer tkz(token->GetNamespace(), _T(":"));
+        while (tkz.HasMoreTokens())
+        {
+            wxString part = tkz.GetNextToken();
+            if (!part.IsEmpty())
+            {
+                m_Tree->Expand(start);
+                wxTreeItemId res = FindChild(part, m_Tree, start);
+                if (!res.IsOk())
+                    break;
+                start = res;
+            }
+        }
+        // now the actual token
+        m_Tree->Expand(start);
+        m_Tree->SelectItem(start);
+        wxTreeItemId res = FindChild(token->m_Name, m_Tree, start);
+        if (res.IsOk())
+            m_Tree->SelectItem(res);
+        else
+        {
+            // search in bottom tree too
+            wxTreeItemId res = FindChild(token->m_Name, m_TreeBottom, m_TreeBottom->GetRootItem(), true, true);
+            if (res.IsOk())
+                m_TreeBottom->SelectItem(res);
+        }
+    }
 }
 
 void ClassBrowser::BuildTree()
@@ -619,7 +691,8 @@ void ClassBrowser::BuildTree()
     if (Manager::IsAppShuttingDown())
         return;
 
-    bool created_builderthread = false;
+    // tree shall only be  created in case of a new builder thread
+    bool create_tree = false;
 
     // create the thread if needed
     if (!m_pBuilderThread)
@@ -627,28 +700,25 @@ void ClassBrowser::BuildTree()
         m_pBuilderThread = new ClassBrowserBuilderThread(m_Semaphore, &m_pBuilderThread);
         m_pBuilderThread->Create();
         m_pBuilderThread->Run();
-#ifdef __WXMSW__
-        // workaround only needed for windows (DDE server issue)
-        created_builderthread = true;
-#endif
+        create_tree = true; // new builder thread - need to create new tree
     }
 
     // initialise it
     m_pBuilderThread->Init(m_pParser,
                             m_Tree,
-                            XRCCTRL(*this, "treeMembers", wxTreeCtrl),
+                            m_TreeBottom,
                             m_ActiveFilename,
                             m_pActiveProject,
                             m_pParser->ClassBrowserOptions(),
                             m_pParser->GetTokens(),
-                            created_builderthread);
+                            create_tree);
 
     // and launch it
-    if (!created_builderthread)
+    if (!create_tree)
     {
         m_Semaphore.Post();
     }
-} // end of BuildTree
+}
 
 void ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)
 {
@@ -666,7 +736,7 @@ void ClassBrowser::OnTreeItemCollapsing(wxTreeEvent& event)
 
 void ClassBrowser::OnTreeItemSelected(wxTreeEvent& event)
 {
-    if (m_pBuilderThread)
+    if (m_pBuilderThread && m_pParser->ClassBrowserOptions().treeMembers)
         m_pBuilderThread->SelectItem(event.GetItem());
     event.Allow();
 }

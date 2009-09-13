@@ -21,6 +21,59 @@
 
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 
+// CBAlphabetCompare
+int CBAlphabetCompare::operator() (CBTreeData* lhs, CBTreeData* rhs)
+{
+    if (!lhs->m_pToken || !rhs->m_pToken) return 1;
+    //if () return -1;
+    return wxStricmp(lhs->m_pToken->DisplayName(), rhs->m_pToken->DisplayName());
+}
+
+// CBKindCompare
+CBKindCompare::CBKindCompare()
+{
+    TokenKind prior[] =
+    {
+        tkNamespace,
+        tkClass,
+        tkEnum,
+        tkTypedef,
+        tkConstructor,
+        tkDestructor,
+        tkFunction,
+        tkVariable
+    };
+    m_KindPrior.assign(prior, prior + sizeof(prior)/sizeof(prior[0]));
+}
+
+int CBKindCompare::operator() (CBTreeData* lhs, CBTreeData* rhs)
+{
+    if (lhs->m_TokenKind == rhs->m_TokenKind)
+        return m_CompareEquals(lhs, rhs);
+
+    size_t l_prior, r_prior;
+    l_prior = r_prior = m_KindPrior.size();
+    for (size_t i = 0; i < m_KindPrior.size(); ++i)
+    {
+        if (m_KindPrior[i] == lhs->m_TokenKind) l_prior = i;
+        if (m_KindPrior[i] == rhs->m_TokenKind) r_prior = i;
+    }
+
+    return (l_prior == r_prior) ? m_CompareEquals(lhs, rhs) : l_prior - r_prior;
+}
+
+// CBScopeCompare
+int CBScopeCompare::operator() (CBTreeData* lhs, CBTreeData* rhs)
+{
+    if (lhs->m_SpecialFolder != sfToken || rhs->m_SpecialFolder != sfToken)
+        return 1;
+    if (lhs->m_pToken->m_Scope == rhs->m_pToken->m_Scope)
+        return m_CompareEquals(lhs, rhs);
+
+    return rhs->m_pToken->m_Scope - lhs->m_pToken->m_Scope;
+}
+
+// ClassBrowserBuilderThread
 ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrowserBuilderThread** threadVar)
     : wxThread(wxTHREAD_JOINABLE),
     m_Semaphore(sem),
@@ -30,7 +83,8 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrow
     m_pUserData(0),
     m_Options(),
     m_pTokens(0),
-    m_ppThreadVar(threadVar)
+    m_ppThreadVar(threadVar),
+    m_pDataCompare(0)
 {
     //ctor
 }
@@ -109,7 +163,7 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
 
     if (build_tree)
     {
-        BuildTree();
+        BuildTree(false);
     }
 }
 
@@ -132,46 +186,32 @@ void* ClassBrowserBuilderThread::Entry()
             // henceforth the ifdef guard
             // the questions remains if it is the correct solution
             if(!::wxIsMainThread())
-            {
                 ::wxMutexGuiEnter();
-            }
         }
 
         BuildTree();
 
-        if (TestDestroy() || Manager::IsAppShuttingDown())
-        {
-            if(platform::gtk)
-            {
-                if(!::wxIsMainThread())
-                {
-                    ::wxMutexGuiLeave();
-                }
-            }
-            break;
-        }
-
-		m_pTreeTop->Freeze();
-        ExpandNamespaces(m_pTreeTop->GetRootItem());
-	    m_pTreeTop->Thaw();
-
         if(platform::gtk)
         {
-            // this code (PART 2/2) seems to be good on linux
-            // because of it the libcairo crash on dualcore processors
-            // is gone, but on windows it has very bad influence,
-            // henceforth the ifdef guard
-            // the questions remains if it is the correct solution
+          // this code (PART 2/2) seems to be good on linux
+          // because of it the libcairo crash on dualcore processors
+          // is gone, but on windows it has very bad influence,
+          // henceforth the ifdef guard
+          // the questions remains if it is the correct solution
             if(!::wxIsMainThread())
-            {
                 ::wxMutexGuiLeave();
-            }
         }
     }
 
     m_pParser = 0;
     m_pTreeTop = 0;
     m_pTreeBottom = 0;
+
+    if (m_pDataCompare)
+    {
+        delete m_pDataCompare;
+        m_pDataCompare = 0;
+    }
 
     /*if (m_ppThreadVar)
         *m_ppThreadVar = 0;*/
@@ -180,31 +220,38 @@ void* ClassBrowserBuilderThread::Entry()
 
 void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
 {
-	if (!m_Options.expandNS || !node.IsOk())
-		return;
+    if (TestDestroy() || Manager::IsAppShuttingDown())
+        return;
 
-	wxTreeItemIdValue enumerationCookie;
+    if (!m_Options.expandNS || !node.IsOk())
+        return;
+
+    wxTreeItemIdValue enumerationCookie;
     wxTreeItemId existing = m_pTreeTop->GetFirstChild(node, enumerationCookie);
     while (existing.IsOk())
     {
-		CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(existing);
-		if (data && data->m_pToken && data->m_pToken->m_TokenKind == tkNamespace)
-		{
-//			Manager::Get()->GetLogManager()->DebugLog(F(_T("Auto-expanding: ") + data->m_pToken->m_Name));
-			m_pTreeTop->Expand(existing);
-			ExpandNamespaces(existing); // recurse
-		}
+        CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(existing);
+        if (data && data->m_pToken && data->m_pToken->m_TokenKind == tkNamespace)
+        {
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Auto-expanding: ") + data->m_pToken->m_Name));
+            m_pTreeTop->Expand(existing);
+            ExpandNamespaces(existing); // recurse
+        }
 
-    	existing = m_pTreeTop->GetNextSibling(existing);
-	}
+        existing = m_pTreeTop->GetNextSibling(existing);
+    }
 }
 
-void ClassBrowserBuilderThread::BuildTree()
+void ClassBrowserBuilderThread::BuildTree(bool useLock)
 {
-    if (Manager::IsAppShuttingDown())
+    if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 //    wxMutexLocker lock(m_BuildMutex);
 
+#ifdef buildtree_measuring
+wxStopWatch sw;
+long delay = 0;
+#endif
     m_pTreeTop->SetImageList(m_pParser->GetImageList());
     m_pTreeBottom->SetImageList(m_pParser->GetImageList());
 
@@ -215,38 +262,122 @@ void ClassBrowserBuilderThread::BuildTree()
         m_pTreeTop->SetItemHasChildren(root);
     }
 
-    m_pTreeTop->Hide();
-    m_pTreeBottom->Hide();
-    m_pTreeTop->Freeze();
-    m_pTreeBottom->Freeze();
-
-	RemoveInvalidNodes(m_pTreeTop, root);
-	RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
-
-    if (!TestDestroy() && !Manager::IsAppShuttingDown())
+    if (m_pDataCompare)
     {
-        // the tree is completely dynamic: it is populated when a node expands/collapses.
-        // so, by expanding the root node, we already instruct it to fill the top level :)
-        //
-        // this technique makes it really fast to draw (we only draw what's expanded) and
-        // has very minimum memory overhead since it contains as few items as possible.
-        // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
-        m_pTreeTop->Expand(root);
-
-        if(platform::gtk)
-        {
-            // seems like the "expand" event comes too late in wxGTK,
-            // so make it happen now
-            ExpandItem(root);
-        }
+        delete m_pDataCompare;
+        m_pDataCompare = 0;
     }
 
-    m_pTreeBottom->Thaw();
-    m_pTreeTop->Thaw();
-    m_pTreeBottom->Show();
-    m_pTreeTop->Show();
+    switch (m_Options.sortType)
+    {
+        case bstAlphabet:
+            m_pDataCompare = new CBAlphabetCompare;
+            break;
+        case bstKind:
+            m_pDataCompare = new CBKindCompare;
+            break;
+        case bstScope:
+        default:
+            m_pDataCompare = new CBScopeCompare;
+            break;
+    }
 
-    SelectNode(m_pTreeTop->GetSelection()); // refresh selection
+    m_ExpandedVect.clear();
+    SaveExpandedItems(m_pTreeTop, root, 0);
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving expanded items took : %ld ms"),delay));
+#endif
+
+    SaveSelectedItem();
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving selected items took : %ld ms"),delay));
+#endif
+
+    if (m_Options.treeMembers)
+    {
+        m_pTreeBottom->Hide();
+        m_pTreeBottom->Freeze();
+    }
+    m_pTreeTop->Hide();
+    m_pTreeTop->Freeze();
+
+    RemoveInvalidNodes(m_pTreeTop, root);
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),delay));
+#endif
+    if (m_Options.treeMembers)
+    {
+        RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),delay));
+#endif
+    }
+
+    if (TestDestroy() || Manager::IsAppShuttingDown())
+        return;
+
+    // the tree is completely dynamic: it is populated when a node expands/collapses.
+    // so, by expanding the root node, we already instruct it to fill the top level :)
+    //
+    // this technique makes it really fast to draw (we only draw what's expanded) and
+    // has very minimum memory overhead since it contains as few items as possible.
+    // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
+
+    CollapseItem(root, useLock);
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Collapsing root item took : %ld ms"),delay));
+#endif
+    // Bottleneck: Takes ~4 secs on C::B workspace:
+    m_pTreeTop->Expand(root);
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item took : %ld ms"),delay));
+#endif
+
+    // seems like the "expand" event comes too late in wxGTK, so make it happen now
+    if(platform::gtk)
+        ExpandItem(root);
+
+    ExpandSavedItems(m_pTreeTop, root, 0);
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding saved items took : %ld ms"),delay));
+#endif
+    // Bottleneck: Takes ~4 secs on C::B workspace:
+    SelectSavedItem();
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Selecting saved item took : %ld ms"),delay));
+#endif
+
+    if (m_Options.treeMembers)
+    {
+        m_pTreeBottom->Thaw();
+        m_pTreeBottom->Show();
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),delay));
+#endif
+    }
+
+    ExpandNamespaces(m_pTreeTop->GetRootItem());
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),delay));
+#endif
+
+    m_pTreeTop->Thaw();
+    // Bottleneck: Takes ~4 secs on C::B workspace:
+    m_pTreeTop->Show();
+#ifdef buildtree_measuring
+delay = sw.Time()-delay;
+Manager::Get()->GetLogManager()->DebugLog(F(_T("Thawing/Showing top tree took : %ld ms"),delay));
+#endif
 }
 
 #if 1
@@ -260,7 +391,6 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
 
     // we 'll loop backwards so we can delete nodes without problems
     wxTreeItemId existing = tree->GetLastChild(parent);
-    wxTreeItemId root = tree->GetRootItem();
     while (parent.IsOk() && existing.IsOk())
     {
         bool removeCurrent = false;
@@ -268,9 +398,12 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
         CBTreeData* data = (CBTreeData*)(tree->GetItemData(existing));
 
         if (tree == m_pTreeBottom)
+        {
             removeCurrent = true;
+        }
         else if (data && data->m_pToken)
         {
+
             if (m_pTokens->at(data->m_TokenIndex) != data->m_pToken ||
                 (data->m_Ticket && data->m_Ticket != data->m_pToken->GetTicket()) ||
                 !TokenMatchesFilter(data->m_pToken))
@@ -278,10 +411,12 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                 removeCurrent = true;
             }
         }
+
         if(removeCurrent)
         {
             if(hasChildren)
                 tree->DeleteChildren(existing);
+
             wxTreeItemId next = tree->GetPrevSibling(existing);
             if(!next.IsOk() && parent.IsOk() && tree == m_pTreeTop && tree->GetChildrenCount(parent, false) == 1 )
             {
@@ -342,13 +477,13 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
                     CollapseItem(parent);
                     return;
                 }
-				else
-				{
-//                	Manager::Get()->GetLogManager()->DebugLog(F(_T("Item %s is invalid"), tree->GetItemText(existing).c_str()));
-					wxTreeItemId next = tree->GetPrevSibling(existing);
-					tree->Delete(existing);
-					existing = next;
-				}
+                else
+                {
+//                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Item %s is invalid"), tree->GetItemText(existing).c_str()));
+                    wxTreeItemId next = tree->GetPrevSibling(existing);
+                    tree->Delete(existing);
+                    existing = next;
+                }
 
                 // if this was the last child of its parent, collapse the parent
 //                if (isLastChild)
@@ -365,9 +500,9 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemI
 //        tree->Delete(parent);
 }
 #endif
-wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CBTreeData* data, bool sorted)
+
+wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex, CBTreeData* data)
 {
-    sorted = sorted & tree == m_pTreeTop && data; // sorting only for the top tree
     SpecialFolder new_type = data->m_SpecialFolder;
     bool newIsNamespace = data->m_TokenKind == tkNamespace;
 
@@ -391,7 +526,7 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
             return existing;
         }
 
-        if (sorted)
+        if (data)
         {
             CBTreeData* existing_data = (CBTreeData*)tree->GetItemData(existing);
             if (existing_data)
@@ -407,14 +542,16 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
                 // then go namespaces, alphabetically
                 else if (newIsNamespace &&
                         existing_data->m_TokenKind == tkNamespace &&
-                        name.CompareTo(itemText, wxString::ignoreCase) >= 0)
+                        (*m_pDataCompare)(data, existing_data) >= 0)
+                        //name.CompareTo(itemText, wxString::ignoreCase) >= 0)
                 {
                     insert_after = existing;
                 }
                 // then everything else, alphabetically
                 else if (!newIsNamespace &&
                         (existing_data->m_TokenKind == tkNamespace ||
-                        name.CompareTo(itemText, wxString::ignoreCase) >= 0))
+                        (*m_pDataCompare)(data, existing_data) >= 0))
+                        //name.CompareTo(itemText, wxString::ignoreCase) >= 0))
                 {
                     insert_after = existing;
                 }
@@ -423,34 +560,28 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(wxTreeCtrl* tree, wxTr
         existing = tree->GetNextChild(parent, cookie);
     }
 
-    if (sorted)
+    if (data)
         existing = tree->InsertItem(parent, insert_after, name, imgIndex, imgIndex, data);
     else
         existing = tree->AppendItem(parent, name, imgIndex, imgIndex, data);
+
     return existing;
 }
 
-bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask)
+bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask, bool sorted, int tokenScopeMask)
 {
     if (TestDestroy() || Manager::IsAppShuttingDown())
         return false;
 
     Token* parentToken = 0;
-    TokenIdxSet::iterator it;
-    TokenIdxSet::iterator it_end;
+    TokenIdxSet* tokens = 0;
 
     if (parentTokenIdx == -1)
     {
         if(m_Options.displayFilter >= bdfWorkspace)
-        {
-            it = m_pTokens->m_GlobalNameSpace.begin();
-            it_end = m_pTokens->m_GlobalNameSpace.end();
-        }
+            tokens = &m_pTokens->m_GlobalNameSpace;
         else
-        {
-            it = m_CurrentGlobalTokensSet.begin();
-            it_end = m_CurrentGlobalTokensSet.end();
-        }
+            tokens = &m_CurrentGlobalTokensSet;
     }
     else
     {
@@ -460,11 +591,10 @@ bool ClassBrowserBuilderThread::AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId par
 //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Token not found?!?")));
             return false;
         }
-        it = parentToken->m_Children.begin();
-        it_end = parentToken->m_Children.end();
+        tokens = &parentToken->m_Children;
     }
 
-    return AddNodes(tree, parent, it, it_end, tokenKindMask, m_Options.displayFilter == bdfEverything);
+    return AddNodes(tree, parent, *tokens, tokenKindMask, tokenScopeMask, m_Options.displayFilter == bdfEverything, sorted);
 }
 
 bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
@@ -476,7 +606,7 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId pa
     if (!token)
         return false;
 
-    return AddNodes(tree, parent, token->m_DirectAncestors.begin(), token->m_DirectAncestors.end(), tkClass | tkTypedef, true);
+    return AddNodes(tree, parent, token->m_DirectAncestors, tkClass | tkTypedef, 0, true, true);
 }
 
 bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance)
@@ -491,13 +621,13 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId 
     bool inh = m_Options.showInheritance;
     m_Options.showInheritance = allowInheritance;
 
-    bool ret = AddNodes(tree, parent, token->m_Descendants.begin(), token->m_Descendants.end(), tkClass | tkTypedef, true);
+    bool ret = AddNodes(tree, parent, token->m_Descendants, tkClass | tkTypedef, 0, true, true);
 
     m_Options.showInheritance = inh;
     return ret;
 }
 
-bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask, bool allowGlobals)
+bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, int tokenKindMask, int tokenScopeMask, bool allowGlobals, bool sorted)
 {
     int count = 0;
     set<unsigned long, less<unsigned long> > tickets;
@@ -517,15 +647,19 @@ bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, 
         }
     }
 
+    TokenIdxSet::iterator start = tokens.begin();
+    TokenIdxSet::iterator end = tokens.end();
+
     for ( ; start != end; ++start)
     {
         Token* token = m_pTokens->at(*start);
         if (token &&
             (token->m_TokenKind & tokenKindMask) &&
-            (allowGlobals || token->m_IsLocal) &&
-            TokenMatchesFilter(token))
+            (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask) &&
+            (allowGlobals || token->m_IsLocal ||
+            TokenMatchesFilter(token)))
         {
-            if(tree == m_pTreeTop && tickets.find(token->GetTicket()) != tickets.end())
+            if(tree == m_pTreeTop && sorted && tickets.find(token->GetTicket()) != tickets.end())
                 continue; // dupe
             ++count;
             int img = m_pParser->GetTokenKindImage(token);
@@ -533,26 +667,40 @@ bool ClassBrowserBuilderThread::AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, 
             wxString str = token->m_Name;
             if (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
                 str << token->m_Args;
-            if (!token->m_ActualType.IsEmpty())
-                 str = str + _T(" : ") + token->m_ActualType;
+            // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
+//            if (!token->m_ActualType.IsEmpty())
+//                 str = str + _T(" : ") + token->m_ActualType;
+            if (!token->m_Type.IsEmpty())
+                 str = str + _T(" : ") + token->m_Type;
 
-            if (tree == m_pTreeTop)
+            if (sorted)
             {
                 wxTreeItemId child = AddNodeIfNotThere(tree, parent, str, img, new CBTreeData(sfToken, token, tokenKindMask));
+
                 // mark as expanding if it is a container
+                int kind = tkClass | tkNamespace | tkEnum;
                 if (token->m_TokenKind == tkClass)
-                    tree->SetItemHasChildren(child, m_Options.showInheritance || TokenContainsChildrenOfKind(token, tkClass | tkNamespace | tkEnum));
+                {
+                    if (!m_Options.treeMembers)
+                        kind |= tkTypedef | tkFunction | tkVariable | tkEnum;
+                    tree->SetItemHasChildren(child, m_Options.showInheritance || TokenContainsChildrenOfKind(token, kind));
+                }
                 else if (token->m_TokenKind & (tkNamespace | tkEnum))
-                    tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, tkClass | tkNamespace | tkEnum));
+                {
+                    if (!m_Options.treeMembers)
+                        kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator;
+                    tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, kind));
+                }
             }
             else // the bottom tree needs no checks
                 tree->AppendItem(parent, str, img, img, new CBTreeData(sfToken, token));
         }
     }
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Sorting...")));
-    if (tree == m_pTreeBottom) // only sort alphabetically the bottom tree
+
+    //Manager::Get()->GetLogManager()->DebugLog(F(_T("Sorting...")));
+    if (!sorted) // fast alphabetical sort
         tree->SortChildren(parent);
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Added %d nodes"), count));
+    //Manager::Get()->GetLogManager()->DebugLog(F(_T("Added %d nodes"), count));
     return count != 0;
 }
 
@@ -561,8 +709,8 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
     if (token->m_IsTemp)
         return false;
 
-	if (m_Options.displayFilter == bdfEverything ||
-		(m_Options.displayFilter == bdfWorkspace && token->m_IsLocal))
+    if (m_Options.displayFilter == bdfEverything ||
+        (m_Options.displayFilter == bdfWorkspace && token->m_IsLocal))
         return true;
 
     if (m_Options.displayFilter == bdfFile && !m_CurrentTokenSet.empty())
@@ -600,53 +748,93 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
     return false;
 }
 
-void ClassBrowserBuilderThread::SelectNode(wxTreeItemId node)
+void ClassBrowserBuilderThread::AddMembersOf(wxTreeCtrl* tree, wxTreeItemId node)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown() || (!(node.IsOk())))
+   if (TestDestroy() || Manager::IsAppShuttingDown() || !node.IsOk())
         return;
 
-    m_pTreeBottom->Freeze();
-    wxTreeItemId root = m_pTreeBottom->GetRootItem();
-    if (!root)
-        root = m_pTreeBottom->AddRoot(_T("Members")); // not visible, so don't translate
-    else
-        m_pTreeBottom->DeleteChildren(root);
     CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(node);
+
+    bool bottom = (tree == m_pTreeBottom);
+    if (bottom)
+    {
+        tree->Freeze();
+        tree->DeleteAllItems();
+        node = tree->AddRoot(_T("Members")); // not visible, so don't translate
+    }
+
     if (data)
     {
         switch (data->m_SpecialFolder)
         {
-            case sfGFuncs: AddChildrenOf(m_pTreeBottom, root, -1, tkFunction); break;
-            case sfGVars: AddChildrenOf(m_pTreeBottom, root, -1, tkVariable); break;
-            case sfPreproc: AddChildrenOf(m_pTreeBottom, root, -1, tkPreprocessor); break;
-            case sfTypedef: AddChildrenOf(m_pTreeBottom, root, -1, tkTypedef); break;
+            case sfGFuncs: AddChildrenOf(tree, node, -1, tkFunction, false); break;
+            case sfGVars: AddChildrenOf(tree, node, -1, tkVariable, false); break;
+            case sfPreproc: AddChildrenOf(tree, node, -1, tkPreprocessor, false); break;
+            case sfTypedef: AddChildrenOf(tree, node, -1, tkTypedef, false); break;
             case sfToken:
             {
-				wxTreeItemId rootCtorDtor = m_pTreeBottom->AppendItem(root, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
-				wxTreeItemId rootFuncs = m_pTreeBottom->AppendItem(root, _("Functions"), PARSER_IMG_OTHERS_FOLDER);
-				wxTreeItemId rootVars = m_pTreeBottom->AppendItem(root, _("Variables"), PARSER_IMG_SYMBOLS_FOLDER);
-				wxTreeItemId rootOthers = m_pTreeBottom->AppendItem(root, _("Others"), PARSER_IMG_OTHERS_FOLDER);
-				
-				m_pTreeBottom->SetItemBold(rootCtorDtor, true);
-				m_pTreeBottom->SetItemBold(rootFuncs, true);
-				m_pTreeBottom->SetItemBold(rootVars, true);
-				m_pTreeBottom->SetItemBold(rootOthers, true);
+                if (bottom)
+                {
+                    if (m_Options.sortType == bstKind && !(data->m_pToken->m_TokenKind & tkEnum))
+                    {
+                        wxTreeItemId rootCtorDtor = tree->AppendItem(node, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
+                        wxTreeItemId rootFuncs = tree->AppendItem(node, _("Functions"), PARSER_IMG_FUNCS_FOLDER);
+                        wxTreeItemId rootVars = tree->AppendItem(node, _("Variables"), PARSER_IMG_VARS_FOLDER);
+                        wxTreeItemId rootOthers = tree->AppendItem(node, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 
-                AddChildrenOf(m_pTreeBottom, rootCtorDtor, data->m_pToken->GetSelf(), tkConstructor | tkDestructor);
-                AddChildrenOf(m_pTreeBottom, rootFuncs, data->m_pToken->GetSelf(), tkFunction);
-                AddChildrenOf(m_pTreeBottom, rootVars, data->m_pToken->GetSelf(), tkVariable);
-                AddChildrenOf(m_pTreeBottom, rootOthers, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable));
-                
-                m_pTreeBottom->ExpandAll();
+                        AddChildrenOf(tree, rootCtorDtor, data->m_pToken->GetSelf(), tkConstructor | tkDestructor);
+                        AddChildrenOf(tree, rootFuncs, data->m_pToken->GetSelf(), tkFunction);
+                        AddChildrenOf(tree, rootVars, data->m_pToken->GetSelf(), tkVariable);
+                        AddChildrenOf(tree, rootOthers, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable));
+                    }
+                    else if (m_Options.sortType == bstScope && data->m_pToken->m_TokenKind & tkClass)
+                    {
+                        wxTreeItemId rootPublic = tree->AppendItem(node, _("Public"), PARSER_IMG_CLASS_FOLDER);
+                        wxTreeItemId rootProtected = tree->AppendItem(node, _("Protected"), PARSER_IMG_FUNCS_FOLDER);
+                        wxTreeItemId rootPrivate = tree->AppendItem(node, _("Private"), PARSER_IMG_VARS_FOLDER);
+
+                        AddChildrenOf(tree, rootPublic, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum), true, tsPublic);
+                        AddChildrenOf(tree, rootProtected, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum), true, tsProtected);
+                        AddChildrenOf(tree, rootPrivate, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum), true, tsPrivate);
+                    }
+                    else
+                    {
+                        AddChildrenOf(tree, node, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
+                        break;
+                    }
+
+                    wxTreeItemId existing = tree->GetLastChild(tree->GetRootItem());
+                    while (existing.IsOk())
+                    {
+                        wxTreeItemId next = tree->GetPrevSibling(existing);
+
+                        if (tree->GetChildrenCount(existing) > 0)
+                            tree->SetItemBold(existing, true);
+                        else
+                        {
+                            tree->Delete(existing);
+                            existing = next;
+                            continue;
+                        }
+                        existing = tree->GetPrevSibling(existing);
+                    }
+                }
+                else
+                    AddChildrenOf(tree, node, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
 
                 // add all children, except containers
-//                AddChildrenOf(m_pTreeBottom, root, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
+                // AddChildrenOf(tree, node, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum));
                 break;
             }
             default: break;
         }
     }
-    m_pTreeBottom->Thaw();
+
+    if (bottom)
+    {
+        tree->ExpandAll();
+        tree->Thaw();
+    }
 }
 
 // checks if there are respective children and colors the nodes
@@ -678,10 +866,16 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(wxTreeCtrl* tree, wxTreeIte
             break; // we have everything, stop iterating...
     }
 
-    wxTreeItemId gfuncs = AddNodeIfNotThere(m_pTreeTop, parent, _("Global functions"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
+    wxTreeItemId gfuncs = AddNodeIfNotThere(m_pTreeTop, parent, _("Global functions"), PARSER_IMG_FUNCS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
     wxTreeItemId tdef = AddNodeIfNotThere(m_pTreeTop, parent, _("Global typedefs"), PARSER_IMG_TYPEDEF_FOLDER, new CBTreeData(sfTypedef, 0, tkTypedef, -1));
-    wxTreeItemId gvars = AddNodeIfNotThere(m_pTreeTop, parent, _("Global variables"), PARSER_IMG_OTHERS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
+    wxTreeItemId gvars = AddNodeIfNotThere(m_pTreeTop, parent, _("Global variables"), PARSER_IMG_VARS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
     wxTreeItemId preproc = AddNodeIfNotThere(m_pTreeTop, parent, _("Preprocessor symbols"), PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
+
+    bool bottom = m_Options.treeMembers;
+    m_pTreeTop->SetItemHasChildren(gfuncs, !bottom && hasGF);
+    m_pTreeTop->SetItemHasChildren(tdef, !bottom && hasTD);
+    m_pTreeTop->SetItemHasChildren(gvars, !bottom && hasGV);
+    m_pTreeTop->SetItemHasChildren(preproc, !bottom && hasGP);
 
     wxColour black = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     wxColour grey = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
@@ -699,7 +893,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
-    wxMutexLocker lock(m_BuildMutex);
+//    wxMutexLocker lock(m_BuildMutex);
     CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(item);
     if (data)
     {
@@ -746,14 +940,19 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             default: break;
         }
     }
+    if (m_pParser && !m_Options.treeMembers)
+    {
+        AddMembersOf(m_pTreeTop, item);
+    }
 //    Manager::Get()->GetLogManager()->DebugLog(F(_("E: %d items"), m_pTreeTop->GetCount()));
 }
 
-void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item)
+void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
 {
     if (TestDestroy() || Manager::IsAppShuttingDown())
         return;
 
+    if (useLock)
     wxMutexLocker lock(m_BuildMutex);
 #ifndef __WXGTK__
     m_pTreeTop->CollapseAndReset(item); // this freezes gtk
@@ -770,6 +969,121 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
         return;
 
     wxMutexLocker lock(m_BuildMutex);
-    SelectNode(item);
+
+    wxTreeCtrl* tree = (m_Options.treeMembers) ? m_pTreeBottom : m_pTreeTop;
+    AddMembersOf(tree, item);
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Select ") + m_pTreeTop->GetItemText(item)));
+}
+
+void ClassBrowserBuilderThread::SaveExpandedItems(wxTreeCtrl* tree, wxTreeItemId parent, int level)
+{
+    if (TestDestroy() || Manager::IsAppShuttingDown())
+        return;
+
+    wxTreeItemIdValue cookie;
+    wxTreeItemId existing = tree->GetFirstChild(parent, cookie);
+    while (existing.IsOk())
+    {
+        CBTreeData* data = (CBTreeData*)(tree->GetItemData(existing));
+        if (tree->GetChildrenCount(existing,false) > 0)
+        {
+            m_ExpandedVect.push_back(CBExpandedItemData(data, level));
+
+            SaveExpandedItems(tree, existing, level + 1);
+        }
+
+        existing = tree->GetNextSibling(existing);
+    }
+}
+
+void ClassBrowserBuilderThread::ExpandSavedItems(wxTreeCtrl* tree, wxTreeItemId parent, int level)
+{
+    if (TestDestroy() || Manager::IsAppShuttingDown())
+        return;
+
+    wxTreeItemIdValue cookie;
+    wxTreeItemId existing = tree->GetFirstChild(parent, cookie);
+    while (existing.IsOk() && !m_ExpandedVect.empty())
+    {
+        CBTreeData* data = (CBTreeData*)(tree->GetItemData(existing));
+        CBExpandedItemData saved = m_ExpandedVect.front();
+
+        if (level == saved.GetLevel() &&
+            wxStrcmp(data->m_TokenName, saved.GetData().m_TokenName) == 0 &&
+            data->m_TokenKind == saved.GetData().m_TokenKind &&
+            data->m_SpecialFolder == saved.GetData().m_SpecialFolder)
+        {
+            tree->Expand(existing);
+            //ExpandItem(existing);
+
+            m_ExpandedVect.pop_front();
+
+            if (m_ExpandedVect.empty())
+                return;
+
+            saved = m_ExpandedVect.front(); //next saved
+            if (saved.GetLevel() < level)
+                return;
+
+            if (saved.GetLevel() > level)
+                ExpandSavedItems(tree, existing, saved.GetLevel());
+        }
+
+        existing = tree->GetNextSibling(existing);
+    }
+
+    //remove non-existing by now saved items
+    while(!m_ExpandedVect.empty() && m_ExpandedVect.front().GetLevel() > level)
+        m_ExpandedVect.pop_front();
+
+    //m_ExpandedVect.clear();
+}
+
+void ClassBrowserBuilderThread::SaveSelectedItem()
+{
+    if (TestDestroy() || Manager::IsAppShuttingDown())
+        return;
+
+    m_SelectedPath.clear();
+
+    wxTreeItemId item = m_pTreeTop->GetSelection();
+    while(item.IsOk() && item != m_pTreeTop->GetRootItem())
+    {
+        CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(item);
+        m_SelectedPath.push_front(*data);
+
+        item = m_pTreeTop->GetItemParent(item);
+    }
+}
+
+void ClassBrowserBuilderThread::SelectSavedItem()
+{
+    if (TestDestroy() || Manager::IsAppShuttingDown())
+        return;
+
+    wxTreeItemId parent = m_pTreeTop->GetRootItem();
+
+    wxTreeItemIdValue cookie;
+    wxTreeItemId item = m_pTreeTop->GetFirstChild(parent, cookie);
+
+    while (!m_SelectedPath.empty() && item.IsOk())
+    {
+        CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(item);
+        CBTreeData* saved = &m_SelectedPath.front();
+
+        if (data->m_SpecialFolder == saved->m_SpecialFolder &&
+            wxStrcmp(data->m_TokenName, saved->m_TokenName) == 0 &&
+            data->m_TokenKind == saved->m_TokenKind)
+        {
+            wxTreeItemIdValue cookie;
+            parent = item;
+            item = m_pTreeTop->GetFirstChild(item, cookie);
+            m_SelectedPath.pop_front();
+        }
+        else
+            item = m_pTreeTop->GetNextSibling(item);
+    }
+
+    m_pTreeTop->SelectItem(parent, true);
+    m_SelectedPath.clear();
 }

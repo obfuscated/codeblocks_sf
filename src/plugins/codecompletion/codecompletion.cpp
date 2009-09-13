@@ -679,6 +679,62 @@ int CodeCompletion::CodeComplete()
     return -5;
 }
 
+bool TestIncludeLine(wxString const &line)
+{
+    size_t index = line.find(_T('#'));
+    if(index == wxString::npos)
+        return false;
+    ++index;
+
+    for(; index < line.length(); ++index)
+    {
+        if(line[index] != _T(' ') && line[index] != _T('\t'))
+        {
+            if(line.Mid(index, 7) == _T("include"))
+                return true;
+            break;
+        }
+    }
+    return false;
+}
+
+wxArrayString GetIncludeDirs(cbProject &project)
+{
+    wxArrayString dirs;
+    {
+        wxArrayString target_dirs = project.GetIncludeDirs();
+
+        for(size_t ii = 0; ii < target_dirs.GetCount(); ++ii)
+        {
+            wxFileName filename;
+            NormalizePath(filename, target_dirs[ii]);
+
+            wxString fullname = filename.GetFullPath();
+            fullname.Replace(_T("\\"), _T("/"), true);
+            if(dirs.Index(fullname) == wxNOT_FOUND)
+                dirs.Add(fullname);
+        }
+    }
+
+    wxString target_name = project.GetActiveBuildTarget();
+    ProjectBuildTarget *target = project.GetBuildTarget(target_name);
+    if(target)
+    {
+        wxArrayString target_dirs = target->GetIncludeDirs();
+        for(size_t ii = 0; ii < target_dirs.GetCount(); ++ii)
+        {
+            wxFileName filename;
+            NormalizePath(filename, target_dirs[ii]);
+
+            wxString fullname = filename.GetFullPath();
+            fullname.Replace(_T("\\"), _T("/"), true);
+            if(dirs.Index(fullname) == wxNOT_FOUND)
+                dirs.Add(fullname);
+        }
+    }
+    return dirs;
+}
+
 void CodeCompletion::CodeCompleteIncludes()
 {
     if (!IsAttached() || !m_InitDone)
@@ -705,34 +761,20 @@ void CodeCompletion::CodeCompleteIncludes()
     wxString line = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
     //Manager::Get()->GetLogManager()->DebugLog("#include cc for \"%s\"", line.c_str());
     line.Trim();
-    if (line.IsEmpty() || !line.StartsWith(_T("#include")))
+    if (line.IsEmpty() || !TestIncludeLine(line))
         return;
 
-    // find opening quote (" or <)
-    int idx = pos - lineStartPos;
-    int found = -1;
-    wxString filename;
-    while (idx > 0)
-    {
-        wxChar c = line.GetChar(idx);
-        if (c == _T('>'))
-            return; // the quote is closed already...
-        else if (c == _T('"') || c == _T('<'))
-        {
-            if (found != -1)
-                return; // the already found quote was the closing one...
-            found = idx + 1;
-        }
-        else if (c != _T(' ') && c != _T('\t') && !found)
-            filename << c;
-        --idx;
-    }
-
-    // take care: found might point at the end of the string (out of bounds)
-    // in this case: #include "(<-code-completion at this point)
-    //Manager::Get()->GetLogManager()->DebugLog("#include using \"%s\" (starting at %d)", filename.c_str(), found);
-    if (found == -1)
+    size_t quote_pos = line.find(_T('"'));
+    if(quote_pos == wxString::npos)
+        quote_pos = line.find(_T('<'));
+    if(quote_pos == wxString::npos || quote_pos > static_cast<size_t>(pos - lineStartPos))
         return;
+    ++quote_pos;
+
+    wxString filename = line.substr(quote_pos, pos - lineStartPos - quote_pos);
+    filename.Replace(_T("\\"), _T("/"), true);
+
+    wxArrayString include_dirs = GetIncludeDirs(*pPrj);
 
     // fill a list of matching project files
     wxArrayString files;
@@ -741,19 +783,39 @@ void CodeCompletion::CodeCompleteIncludes()
         ProjectFile* pf = pPrj->GetFile(i);
         if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
         {
-            wxFileName fname(pf->relativeFilename);
-            if (files.Index(pf->relativeFilename) == wxNOT_FOUND)
-                files.Add(pf->relativeFilename);
-            if (files.Index(fname.GetFullName()) == wxNOT_FOUND)
-                files.Add(fname.GetFullName());
+            wxString current_filename = pf->relativeFilename;
+            current_filename.Replace(_T("\\"), _T("/"), true);
+            if(current_filename.find(filename) != wxString::npos)
+            {
+                if(include_dirs.GetCount() > 0)
+                {
+                    bool found = false;
+                    for(size_t dir_index = 0; dir_index < include_dirs.GetCount(); ++dir_index)
+                    {
+                        wxString const &dir = include_dirs[dir_index];
+                        if(current_filename.StartsWith(dir))
+                        {
+                            files.Add(current_filename.substr(dir.length()));
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if(!found)
+                        files.Add(current_filename);
+                }
+                else
+                    files.Add(current_filename);
+            }
         }
     }
 
     if (files.GetCount() != 0)
     {
         files.Sort();
+        ed->GetControl()->ClearRegisteredImages();
         ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
-        ed->GetControl()->AutoCompShow(pos - lineStartPos - found, GetStringFromArray(files, _T(" ")));
+        ed->GetControl()->AutoCompShow(pos - lineStartPos - quote_pos, GetStringFromArray(files, _T(" ")));
     }
 }
 
@@ -1055,7 +1117,7 @@ void CodeCompletion::OnAppDoneStartup(CodeBlocksEvent& event)
 void CodeCompletion::OnCodeCompleteTimer(wxTimerEvent& event)
 {
     if (Manager::Get()->GetEditorManager()->FindPageFromEditor(m_pCodeCompletionLastEditor) == -1)
-        return; // editor is invalid (prbably closed already)
+        return; // editor is invalid (probably closed already)
 
     // ask for code-completion *only* if the editor is still after the "." or "->" operator
     if (m_pCodeCompletionLastEditor->GetControl()->GetCurrentPos() == m_LastPosForCodeCompletion)
@@ -1492,7 +1554,7 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
         EditorBase* base = event.GetEditor();
         cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
-        if (!ed)
+        if (!ed || ed->IsContextMenuOpened())
             return;
 
         if (ed->GetControl()->CallTipActive())
@@ -1876,8 +1938,10 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 //    else if (event.GetEventType() == wxEVT_SCI_MODIFIED)
 //        Manager::Get()->GetLogManager()->DebugLog(_T("wxEVT_SCI_MODIFIED"));
 
-    if (event.GetEventType() == wxEVT_SCI_CHARADDED &&
-        !control->AutoCompActive()) // not already active autocompletion
+    if ((event.GetKey() == '.') && control->AutoCompActive())
+        control->AutoCompCancel();
+
+    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
     {
         // a character was just added in the editor
         m_timerCodeCompletion.Stop();

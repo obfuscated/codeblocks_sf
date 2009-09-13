@@ -94,7 +94,7 @@ static const unsigned char win1251BulgarianCharToOrderMap[] =
 //first 1024 sequences:3.0618%
 //rest  sequences:     0.2992%
 //negative sequences:  0.0020%
-static const char BulgarianLangModel[] = 
+static const char BulgarianLangModel[] =
 {
 0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,2,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,3,3,3,2,2,3,2,2,1,2,2,
@@ -226,7 +226,7 @@ static const char BulgarianLangModel[] =
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 };
 
-const SequenceModel Latin5BulgarianModel = 
+const SequenceModel Latin5BulgarianModel =
 {
   Latin5_BulgarianCharToOrderMap,
   BulgarianLangModel,
@@ -235,7 +235,7 @@ const SequenceModel Latin5BulgarianModel =
   "ISO-8859-5"
 };
 
-const SequenceModel Win1251BulgarianModel = 
+const SequenceModel Win1251BulgarianModel =
 {
   win1251BulgarianCharToOrderMap,
   BulgarianLangModel,

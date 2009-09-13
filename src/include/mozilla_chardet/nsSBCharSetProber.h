@@ -61,7 +61,7 @@ typedef struct
 
 class nsSingleByteCharSetProber : public nsCharSetProber{
 public:
-  nsSingleByteCharSetProber(const SequenceModel *model) 
+  nsSingleByteCharSetProber(const SequenceModel *model)
     :mModel(model), mReversed(PR_FALSE), mNameProber(0) { Reset(); }
   nsSingleByteCharSetProber(const SequenceModel *model, PRBool reversed, nsCharSetProber* nameProber)
     :mModel(model), mReversed(reversed), mNameProber(nameProber) { Reset(); }

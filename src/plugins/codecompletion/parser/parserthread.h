@@ -79,6 +79,7 @@ class ParserThread : public cbThreadedTask
         virtual void SetTokens(TokensTree* tokens);
         const wxString& GetFilename() const { return m_Filename; }
     protected:
+        enum EClassType { ctStructure = 0, ctClass = 1, ctUnion = 3 };
         wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
         void DoParse();
         void SkipBlock();
@@ -87,7 +88,9 @@ class ParserThread : public cbThreadedTask
         void HandleDefines();
         void HandlePreprocessorBlocks(const wxString& preproc);
         void HandleNamespace();
-        void HandleClass(bool isClass = true);
+        void ReadVarNames();
+        void ReadClsNames(wxString& ancestor);
+        void HandleClass(EClassType ct);
         void HandleFunction(const wxString& name, bool isOperator = false);
         void HandleEnum();
         void HandleTypedef();

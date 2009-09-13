@@ -111,7 +111,10 @@ protected:
         {
             ++m_TokenIndex;
             if (IsEOF())
+            {
+                m_TokenIndex = m_BufferLen;
                 return false;
+            }
 
             if (CurrentChar() == _T('\n'))
                 ++m_LineNumber;
@@ -121,7 +124,10 @@ protected:
         {
             m_TokenIndex += amount;
             if (IsEOF())
+            {
+                m_TokenIndex = m_BufferLen;
                 return false;
+            }
 
             if (CurrentChar() == _T('\n'))
                 ++m_LineNumber;
@@ -131,37 +137,38 @@ protected:
 
     wxChar CurrentChar() const
     {
-        return m_Buffer.GetChar(m_TokenIndex);
+        if(m_TokenIndex < m_BufferLen)
+            return m_Buffer.GetChar(m_TokenIndex);
+        return 0;
     };
 
     wxChar CurrentCharMoveNext()
     {
-        size_t i = m_TokenIndex++;
-
         if(m_TokenIndex < m_BufferLen)
-            return m_Buffer.GetChar(i);
-        else
-            return 0;
+            m_TokenIndex++;
+        return CurrentChar();
     };
 
     wxChar NextChar() const
     {
-        if ((m_TokenIndex + 1) >= m_BufferLen) //    m_TokenIndex + 1) < 0  can never be true
+        if ((m_TokenIndex + 1) >= m_BufferLen) // m_TokenIndex + 1) < 0  can never be true
             return 0;
+
         return m_Buffer.GetChar(m_TokenIndex + 1);
     };
 
     wxChar PreviousChar() const
     {
-        if ((m_TokenIndex - 1) < 0)       //   (m_TokenIndex - 1) >= m_BufferLen can never be true
+        if (((m_TokenIndex - 1) < 0 || (m_BufferLen==0) )) // (m_TokenIndex - 1) >= m_BufferLen can never be true
             return 0;
+
         return m_Buffer.GetChar(m_TokenIndex - 1);
     };
 
     void CompactSpaces(wxString& str) const  // zero-alloc single-copy  --- wxString::Replace has to do an awful lot of copying
     {
         if(str.size() < 3)
-        return;
+            return;
 //          str.Replace(_T("  "), _T(" "));   // replace two-spaces with single-space (introduced if it skipped comments or assignments)
 //          str.Replace(_T("( "), _T("("));
 //          str.Replace(_T(" )"), _T(")"));
@@ -207,21 +214,23 @@ private:
 
     wxString m_Filename;
     wxString m_Buffer;
-    wxString m_peek;
-    wxString m_curtoken;
-    bool m_peekavailable;
     unsigned int m_BufferLen;
-    unsigned int m_NestLevel; // keep track of block nesting { }
-    unsigned int m_UndoNestLevel;
+
+    wxString     m_Token;
     unsigned int m_TokenIndex;
-    unsigned int m_UndoTokenIndex;
     unsigned int m_LineNumber;
+    unsigned int m_NestLevel; // keep track of block nesting { }
+    unsigned int m_SavedNestingLevel;
+
+    unsigned int m_UndoTokenIndex;
     unsigned int m_UndoLineNumber;
+    unsigned int m_UndoNestLevel;
+
+    bool         m_PeekAvailable;
+    wxString     m_PeekToken;
     unsigned int m_PeekTokenIndex;
     unsigned int m_PeekLineNumber;
     unsigned int m_PeekNestLevel;
-
-    unsigned int m_SavedNestingLevel;
 
     bool m_IsOK;
     bool m_IsOperator;

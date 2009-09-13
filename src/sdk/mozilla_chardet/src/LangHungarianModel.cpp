@@ -91,7 +91,7 @@ static const unsigned char win1250HungarianCharToOrderMap[] =
 //first 1024 sequences:5.2623%
 //rest  sequences:     0.8894%
 //negative sequences:  0.0009%
-static const char HungarianLangModel[] = 
+static const char HungarianLangModel[] =
 {
 0,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,1,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
 3,3,3,3,3,3,3,3,3,3,2,3,3,3,3,3,3,3,3,2,2,3,3,1,1,2,2,2,2,2,1,2,
@@ -223,7 +223,7 @@ static const char HungarianLangModel[] =
 0,1,1,1,1,1,1,0,1,1,0,1,0,1,0,0,1,1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,
 };
 
-const SequenceModel Latin2HungarianModel = 
+const SequenceModel Latin2HungarianModel =
 {
   Latin2_HungarianCharToOrderMap,
   HungarianLangModel,
@@ -232,7 +232,7 @@ const SequenceModel Latin2HungarianModel =
   "ISO-8859-2"
 };
 
-const SequenceModel Win1250HungarianModel = 
+const SequenceModel Win1250HungarianModel =
 {
   win1250HungarianCharToOrderMap,
   HungarianLangModel,

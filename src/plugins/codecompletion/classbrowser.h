@@ -36,6 +36,8 @@ class ClassBrowser : public wxPanel
         const Parser* GetParserPtr() { return m_pParser; }
         void UnlinkParser();
         void UpdateView();
+
+        void OnSize(wxSizeEvent& event);
     private:
         friend class myTextCtrl;
         void OnTreeItemDoubleClick(wxTreeEvent& event);
@@ -44,9 +46,10 @@ class ClassBrowser : public wxPanel
         void OnRefreshTree(wxCommandEvent& event);
         void OnForceReparse(wxCommandEvent& event);
         void OnCBViewMode(wxCommandEvent& event);
-		void OnCBExpandNS(wxCommandEvent& event);
+        void OnCBExpandNS(wxCommandEvent& event);
         void OnViewScope(wxCommandEvent& event);
         void OnDebugSmartSense(wxCommandEvent& event);
+        void OnSetSortType(wxCommandEvent& event);
 
         void OnSearch(wxCommandEvent& event);
         bool FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item);
@@ -64,6 +67,7 @@ class ClassBrowser : public wxPanel
 
         NativeParser* m_NativeParser;
         wxTreeCtrl* m_Tree;
+        wxTreeCtrl* m_TreeBottom;
         wxComboBox* m_Search;
         wxTreeCtrl* m_TreeForPopupMenu;
         Parser* m_pParser;

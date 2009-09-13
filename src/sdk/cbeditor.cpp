@@ -341,19 +341,19 @@ struct cbEditorInternalData
         if (index != wxNOT_FOUND && unWant.find(control->GetCharAt(pos)) != wxNOT_FOUND)
         #endif
         {
-                control->AddText(rightBrace.GetChar(index));
-                control->GotoPos(pos);
-                if (ch == _T('{'))
-                {
+            control->AddText(rightBrace.GetChar(index));
+            control->GotoPos(pos);
+            if (ch == _T('{'))
+            {
                     const wxRegEx reg(_T("^[ \t]*{}[ \t]*"));
                     if (reg.Matches(control->GetCurLine()))
                     {
+                control->NewLine();
+                control->GotoPos(pos);
                         control->NewLine();
-                        control->GotoPos(pos);
-                        control->NewLine();
-                        return;
-                    }
-                }
+                return;
+            }
+        }
         }
         else
         {

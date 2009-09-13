@@ -1248,21 +1248,20 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
             ++startAt;
         }
     }
-
-//    Manager::Get()->GetLogManager()->DebugLog(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
-    while ((startAt < line.Length()) && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
+    //Manager::Get()->GetLogManager()->DebugLog(F(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
+    while ((startAt < line.Length()) && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_' || line.GetChar(startAt) == ' ' || line.GetChar(startAt) == '\t'))
     {
         res << line.GetChar(startAt);
         ++startAt;
     }
-
+    res.Trim();
     while ((nest > 0) && (startAt < line.Length()))
     {
         if (line.GetChar(startAt) == ')')
             --nest;
         ++startAt;
     }
-    //Manager::Get()->GetLogManager()->DebugLog("Done nest: at %d (%c): res=%s", startAt, line.GetChar(startAt), res.c_str());
+    //Manager::Get()->GetLogManager()->DebugLog(F(_T("Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
 
     if ((startAt < line.Length()) && (line.GetChar(startAt) == '(' || line.GetChar(startAt) == '['))
     {
@@ -1398,6 +1397,11 @@ size_t NativeParser::AI(TokenIdxSet& result,
         actual = lineText;
         col = actual.Length() - 1;
     }
+
+#ifdef DEBUG_CC_AI
+    if (s_DebugSmartSense)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI enter, actual: \"%s\""), actual.c_str()));
+#endif
 
     static cbEditor* cached_editor = 0;
     static int cached_editor_start_word = 0;
@@ -1610,6 +1614,32 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Looping %d results"), local_result.size()));
 #endif
 
+    if (local_result.size() == 1)
+    {
+        int id = *local_result.begin();
+        Token* token = tree->at(id);
+
+        if (token->m_TokenKind == tkTypedef)
+        {
+            std::queue<ParserComponent> type_components;
+            BreakUpComponents(parser, token->m_ActualType, type_components);
+
+            while(!components.empty())
+            {
+                ParserComponent comp = components.front();
+                components.pop();
+                type_components.push(comp);
+            }
+
+    #ifdef DEBUG_CC_AI
+            if (s_DebugSmartSense)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Replacing %s to %s"), token->m_Name.c_str(), token->m_ActualType.c_str()));
+    #endif
+            return FindAIMatches(parser, type_components, result, parentTokenIdx, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
+        }
+
+    }
+
     // loop all matches, and recurse
     for (TokenIdxSet::iterator it = local_result.begin(); it != local_result.end(); it++)
     {
@@ -1790,9 +1820,9 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
 #ifdef DEBUG_CC_AI
     if (s_DebugSmartSense)
     #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet: search '%s', parent='%s'"), search.wx_str(), parent ? parent->m_Name.wx_str() : _T("Global namespace")));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet: search '%s', parent='%s (%d), isPrefix=%d'"), search.wx_str(), parent ? parent->m_Name.wx_str() : _T("Global namespace"), parent ? parent->GetSelf() : 0, isPrefix ? 1 : 0));
     #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet: search '%s', parent='%s'"), search.c_str(), parent ? parent->m_Name.c_str() : _T("Global namespace")));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet: search '%s', parent='%s (%d), isPrefix=%d'"), search.c_str(), parent ? parent->m_Name.c_str() : _T("Global namespace"), parent ? parent->GetSelf() : 0, isPrefix ? 1 : 0));
     #endif
 #endif
     if (parent)

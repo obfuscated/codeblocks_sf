@@ -463,7 +463,7 @@ int TokensTree::TokenExists(const wxString& name, int parent, short int kindMask
         Token* curtoken = m_Tokens[result];
         if(!curtoken)
             continue;
-        if((parent<0 || curtoken->m_ParentIndex == parent) && curtoken->m_TokenKind & kindMask)
+        if((parent < 0 || curtoken->m_ParentIndex == parent) && curtoken->m_TokenKind & kindMask)
             return result;
     }
     return -1;
@@ -598,7 +598,14 @@ void TokensTree::RemoveToken(Token* oldToken)
     // Step 4: Remove descendants
     nodes = oldToken->m_Descendants; // Copy the list to avoid interference
     for(it = nodes.begin();it!=nodes.end(); it++)
-        RemoveToken(*it);
+    {
+        if(*it == idx) // that should not happen, we can not be our own descendant, but in fact that can happen with boost
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("Break out the loop to remove descendants, to avoid a crash. We can not be our own descendant !!"));
+            break;
+        }
+         RemoveToken(*it);
+    }
     // m_Descendants SHOULD be empty by now - but clear anyway.
     oldToken->m_Descendants.clear();
 
@@ -695,6 +702,7 @@ void TokensTree::RemoveFile(int index)
         if(idx < 0 || (size_t)idx > m_Tokens.size())
             continue;
         Token* the_token = at(idx);
+
         if(!the_token)
             continue;
 

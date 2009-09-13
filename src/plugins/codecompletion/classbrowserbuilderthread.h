@@ -48,6 +48,55 @@ class CBTreeData : public wxTreeItemData
         unsigned long m_Ticket;
 };
 
+class CBExpandedItemData
+{
+	public:
+		CBExpandedItemData(const CBTreeData* data, const int level):
+			m_Data(*data),
+			m_Level(level)
+		{
+		}
+		int GetLevel() const { return m_Level; }
+		const CBTreeData& GetData() { return m_Data; }
+	private:
+		CBTreeData m_Data;	// copy of tree item data
+		int m_Level; 		// nesting level in the tree
+};
+
+class CBTreeDataCompare
+{
+	public:
+		virtual ~CBTreeDataCompare() {}
+		virtual int operator() (CBTreeData* lhs, CBTreeData* rhs) = 0;
+};
+
+class CBAlphabetCompare: public CBTreeDataCompare
+{
+	public:
+		virtual int operator() (CBTreeData* lhs, CBTreeData* rhs);
+};
+
+class CBKindCompare: public CBTreeDataCompare
+{
+	public:
+		CBKindCompare();
+		virtual int operator() (CBTreeData* lhs, CBTreeData* rhs);
+	private:
+		std::vector<TokenKind> m_KindPrior;
+		CBAlphabetCompare m_CompareEquals;
+};
+
+class CBScopeCompare: public CBTreeDataCompare
+{
+	public:
+		virtual int operator() (CBTreeData* lhs, CBTreeData* rhs);
+	private:
+		CBKindCompare m_CompareEquals;
+};
+
+typedef std::deque<CBExpandedItemData> ExpandedItemVect;
+typedef std::deque<CBTreeData> SelectedItemPath;
+
 class ClassBrowserBuilderThread : public wxThread
 {
     public:
@@ -64,23 +113,23 @@ class ClassBrowserBuilderThread : public wxThread
                     bool build_tree);
         void AbortBuilding();
         void ExpandItem(wxTreeItemId item);
-        void CollapseItem(wxTreeItemId item);
+        void CollapseItem(wxTreeItemId item, bool useLock=true);
         void SelectItem(wxTreeItemId item);
     protected:
         virtual void* Entry();
 
-        void BuildTree();
+        void BuildTree(bool useLock=true);
         void RemoveInvalidNodes(wxTreeCtrl* tree, wxTreeItemId parent);
-        wxTreeItemId AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, CBTreeData* data = 0, bool sorted = true);
-        bool AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask = 0xffff);
+        wxTreeItemId AddNodeIfNotThere(wxTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, CBTreeData* data = 0);
+        bool AddChildrenOf(wxTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask = 0xffff, bool sorted = true, int tokenScopeMask = 0);
         bool AddAncestorsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
         bool AddDescendantsOf(wxTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance = true);
-        bool AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, TokenIdxSet::iterator start, TokenIdxSet::iterator end, int tokenKindMask = 0xffff, bool allowGlobals = false);
-        void SelectNode(wxTreeItemId node);
+        bool AddNodes(wxTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false, bool sorted = true);
+        void AddMembersOf(wxTreeCtrl* tree, wxTreeItemId node);
         bool TokenMatchesFilter(Token* token);
         bool TokenContainsChildrenOfKind(Token* token, int kind);
         bool CreateSpecialFolders(wxTreeCtrl* tree, wxTreeItemId parent);
-		void ExpandNamespaces(wxTreeItemId node);
+        void ExpandNamespaces(wxTreeItemId node);
 
         wxSemaphore& m_Semaphore;
         Parser* m_pParser;
@@ -99,7 +148,15 @@ class ClassBrowserBuilderThread : public wxThread
 
 
         wxMutex m_BuildMutex;
+        CBTreeDataCompare* m_pDataCompare;
     private:
+        void SaveExpandedItems(wxTreeCtrl* tree, wxTreeItemId parent, int level);
+        void ExpandSavedItems(wxTreeCtrl* tree, wxTreeItemId parent, int level);
+        void SaveSelectedItem();
+        void SelectSavedItem();
+
+        ExpandedItemVect m_ExpandedVect;
+        SelectedItemPath m_SelectedPath;
 };
 
 #endif // CLASSBROWSERBUILDERTHREAD_H
