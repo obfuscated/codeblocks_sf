@@ -459,47 +459,43 @@ struct cbEditorInternalData
         const int theIndicator = 10;
 
         int a, b;
-        m_pOwner->m_pControl->GetSelection (&a, &b);
+        m_pOwner->GetControl()->GetSelection(&a, &b);
 
-        m_pOwner->m_pControl->SetIndicatorCurrent(theIndicator);
-
-        if (a == b) // don't hog the CPU when not necessary
-        {
-            if (old_a != old_b) // but please clear old marks when the user unselects
-            {
-                m_pOwner->m_pControl->IndicatorClearRange(0, m_pOwner->m_pControl->GetLength());
-            }
-            // clear old_a and old_b or deselecting a text and then select the same text again might not work in some cases
-            // if the user selects with a double-click
-            old_a=old_b=-1;
-            return;
-        }
+        m_pOwner->GetControl()->SetIndicatorCurrent(theIndicator);
 
         if(old_a == a && old_b == b) // whatever the current state is, we've already done it once
             return;
 
         old_a = a; old_b = b;
 
-        wxString selectedText(m_pOwner->m_pControl->GetTextRange(a, b));
+		wxString selectedText(m_pOwner->GetControl()->GetTextRange(a, b));
 
         int eof = m_pOwner->m_pControl->GetLength();
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
         // Set Styling:
-        // clear all style indications set in a previous run
-        m_pOwner->m_pControl->IndicatorClearRange(0, m_pOwner->m_pControl->GetLength());
+        // clear all style indications set in a previous run (is also done once after text gets unselected)
+        m_pOwner->GetControl()->IndicatorClearRange(0, eof);
 
         // check that feature is enabled,
         // selected text has a minimal length of 3 and contains no spaces
         if( cfg->ReadBool(_T("/highlight_occurrence/enabled"), true)
-                && selectedText.Len() > 2
+                && selectedText.Len() > 2        // if there is no text selected (a == b), it stops here and does not hog the cpu further
                 && selectedText.Find(_T(' ')) == wxNOT_FOUND
                 && selectedText.Find(_T('\t')) == wxNOT_FOUND
                 && selectedText.Find(_T('\n')) == wxNOT_FOUND )
         {
-            m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
             wxColour highlightColour(cfg->ReadColour(_T("/highlight_occurrence/colour"), wxColour(255, 0, 0)));
-            m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
+            if ( m_pOwner->m_pControl )
+            {
+                m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
+                m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
+            }
+            if ( m_pOwner->m_pControl2 )
+            {
+                m_pOwner->m_pControl2->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
+                m_pOwner->m_pControl2->IndicatorSetForeground(theIndicator, highlightColour );
+            }
 
             int flag = 0;
             if (cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true))
@@ -512,16 +508,14 @@ struct cbEditorInternalData
             }
             // search for every occurence
             int lengthFound = 0; // we need this to work properly with multibyte characters
-            for ( int pos = m_pOwner->m_pControl->FindText(0, eof, selectedText, flag, &lengthFound);
+            for ( int pos = m_pOwner->GetControl()->FindText(0, eof, selectedText, flag, &lengthFound);
                 pos != wxSCI_INVALID_POSITION ;
-                pos = m_pOwner->m_pControl->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
+                pos = m_pOwner->GetControl()->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
             {
-                // check that the found occurrence is not the same as the selected
-                if ( pos != m_pOwner->m_pControl->GetSelectionStart() )
-                {
-                    // highlight it
-                    m_pOwner->m_pControl->IndicatorFillRange(pos, lengthFound);
-                }
+                //does not make sense anymoer: check that the found occurrence is not the same as the selected
+                // since it is not selected in the second view
+                // so highlight it
+                m_pOwner->m_pControl->IndicatorFillRange(pos, lengthFound);
             }
         }
     }
