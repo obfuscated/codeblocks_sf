@@ -41,15 +41,15 @@ class FileManager;
 
 class DLLIMPORT Manager
 {
-    void OnMenu(wxCommandEvent& event);
     wxFrame* m_pAppWindow;
     static bool appShuttingDown;
     static bool blockYields;
     static bool isBatch;
     static wxCmdLineParser m_CmdLineParser;
-
     Manager();
     ~Manager();
+
+    void OnMenu(wxCommandEvent& event);
 
 public:
     static void SetBatchBuild(bool is_batch);

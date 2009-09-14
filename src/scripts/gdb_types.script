@@ -37,7 +37,7 @@ function RegisterTypes(driver)
         _T("Parse_StlVector")
     );
 
-    Log(_T("RegisterTypes is being called"));
+    Log(_T("Registering types for the debugger."));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -164,9 +164,12 @@ function Parse_StlVector(a_str, start)
     local element_type_value = vector_info_str.Mid(capacity_end_pos + 15,
                                                    vector_info_str.length() - capacity_end_pos - 15);
 
-    local result = _T("[size] = ") + size_value + _T("\n");
-    result += _T("[capacity] = ") + capacity_value + _T("\n");
-    result += _T("[element type] = ") + element_type_value + _T("\n");
+    local result = _T("[size] = ") + size_value + _T(",\n");
+    result += _T("[capacity] = ") + capacity_value + _T(",\n");
+    result += _T("[element type] = ") + element_type_value;
+
+    if(size > 0)
+        result += _T(",\n");
 
     local value_str = a_str;
     for(local item = 0; item < size; item += 1)
@@ -185,8 +188,12 @@ function Parse_StlVector(a_str, start)
             local equal_pos = elem_value.Find(_T(" = "));
             if(equal_pos >= 0)
                 elem_value.Remove(0, equal_pos + 3);
+            if(item > 0)
+                result += _T(",");
             result += _T("[") + item + _T("] = ") + elem_value + _T("\n");
         }
+        else
+            break;
 
         value_str.Remove(0, elem_end);
     }

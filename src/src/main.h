@@ -261,7 +261,7 @@ class MainFrame : public wxFrame
         void DoFixToolbarsLayout();
         bool DoCheckCurrentLayoutForChanges(bool canCancel = true);
 
-        void AskToRemoveFileFromHistory(wxFileHistory* hist, int id);
+        void AskToRemoveFileFromHistory(wxFileHistory* hist, int id, bool cannot_open = true);
 
         void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
         void RemoveEditorFromWindowMenu(const wxString& filename);

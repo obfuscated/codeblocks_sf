@@ -145,6 +145,75 @@ struct cbEditorInternalData
         return eolstring;
     }
     // funcs
+    int GetFirstBraceInLine(int string_style)
+    {
+        cbStyledTextCtrl* control = m_pOwner->GetControl();
+        int curr_position = control->GetCurrentPos();
+        int position = curr_position;
+        int min_brace_position = position;
+        int closing_braces = 0;
+        bool found_brace = false;
+        bool has_braces = false;
+
+        while (position)
+        {
+            wxChar c = control->GetCharAt(--position);
+
+            int style = control->GetStyleAt(position);
+            if(style == string_style)
+                continue;
+
+            if (c == _T(';'))
+            {
+                found_brace = false;
+                break;
+            }
+            else if (c == _T(')'))
+            {
+                ++closing_braces;
+                has_braces = true;
+            }
+            else if (c == _T('('))
+            {
+				has_braces = true;
+                if(closing_braces > 0)
+                    --closing_braces;
+                else if(!found_brace)
+                {
+                    min_brace_position = position + 1;
+                    found_brace = true;
+                    break;
+                }
+            }
+            else if (c == _T('\n') && position + 1 != curr_position && !has_braces)
+            {
+                break;
+            }
+        }
+
+        if (!found_brace)
+            return -1;
+
+		int tab_characters = 0;
+
+        while (position)
+        {
+            wxChar c = control->GetCharAt(--position);
+            if (c == _T('\n') && position + 1 != curr_position)
+            {
+                break;
+            }
+            else if (c == _T('\t'))
+                ++tab_characters;
+        }
+
+        if (control->GetUseTabs())
+        {
+            position -= tab_characters * control->GetTabWidth();
+        }
+        return min_brace_position - position - 1;
+    }
+
     /** Get the last non-whitespace character before position */
     wxChar GetLastNonWhitespaceChar(int position = -1)
     {
@@ -336,9 +405,9 @@ struct cbEditorInternalData
         int index = leftBrace.find(ch);
         const wxString unWant(_T(");\n\r\t\b "));
         #if wxCHECK_VERSION(2, 9, 0)
-        if (index != wxNOT_FOUND && unWant.find(wxUniChar(control->GetCharAt(pos))) != wxNOT_FOUND)
+        if ((index != wxNOT_FOUND) && (unWant.find(wxUniChar(control->GetCharAt(pos))) != wxNOT_FOUND))
         #else
-        if (index != wxNOT_FOUND && unWant.find(control->GetCharAt(pos)) != wxNOT_FOUND)
+        if ((index != wxNOT_FOUND) && (unWant.find(control->GetCharAt(pos)) != wxNOT_FOUND))
         #endif
         {
             control->AddText(rightBrace.GetChar(index));
@@ -512,9 +581,8 @@ struct cbEditorInternalData
                 pos != wxSCI_INVALID_POSITION ;
                 pos = m_pOwner->GetControl()->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
             {
-                //does not make sense anymoer: check that the found occurrence is not the same as the selected
-                // since it is not selected in the second view
-                // so highlight it
+                // does not make sense anymore: check that the found occurrence is not the same as the selected,
+                // since it is not selected in the second view -> so highlight it
                 m_pOwner->m_pControl->IndicatorFillRange(pos, lengthFound);
             }
         }
@@ -573,6 +641,8 @@ const int idSplitVert = wxNewId();
 const int idUnsplit = wxNewId();
 const int idConfigureEditor = wxNewId();
 const int idProperties = wxNewId();
+const int idAddFileToProject = wxNewId();
+const int idRemoveFileFromProject = wxNewId();
 
 const int idBookmarkAdd = wxNewId();
 const int idBookmarkRemove = wxNewId();
@@ -607,6 +677,8 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idFoldingToggleCurrent, cbEditor::OnContextMenuEntry)
     EVT_MENU(idConfigureEditor, cbEditor::OnContextMenuEntry)
     EVT_MENU(idProperties, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idAddFileToProject, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idRemoveFileFromProject, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkAdd, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarkRemove, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBreakpointAdd, cbEditor::OnContextMenuEntry)
@@ -2594,6 +2666,15 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             popup->Append(idConfigureEditor, _("Configure editor..."));
         popup->Append(idProperties, _("Properties..."));
 
+        if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
+        {
+            popup->AppendSeparator();
+
+            if (m_pProjectFile)
+                popup->Append(idRemoveFileFromProject, _("Remove file from project"));
+            else
+                popup->Append(idAddFileToProject, _("Add file to active project"));
+        }
         // remove "Insert/Empty" if more than one entry
         wxMenu* insert = 0;
         wxMenuItem* insertitem = popup->FindItem(idInsert);
@@ -2825,6 +2906,27 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
             dlg.ShowModal();
         }
     }
+    else if (id == idAddFileToProject)
+    {
+        cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+
+        wxArrayInt targets;
+        if (Manager::Get()->GetProjectManager()->AddFileToProject(m_Filename, prj, targets) != 0)
+        {
+            ProjectFile* pf = prj->GetFileByFilename(m_Filename, false);
+            SetProjectFile(pf);
+            Manager::Get()->GetProjectManager()->RebuildTree();
+        }
+    }
+    else if (id == idRemoveFileFromProject)
+    {
+        if (m_pProjectFile)
+        {
+            cbProject *prj = m_pProjectFile->GetParentProject();
+            Manager::Get()->GetProjectManager()->RemoveFileFromProject(m_pProjectFile, prj);
+            Manager::Get()->GetProjectManager()->RebuildTree();
+        }
+    }
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);
     else if (id == idBreakpointEdit)
@@ -2911,6 +3013,23 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                 {
                     case wxSCI_LEX_CPP:
                     case wxSCI_LEX_D:
+                        {
+                            int string_style = control->GetLexer() == wxSCI_LEX_CPP ? wxSCI_C_STRING : wxSCI_D_STRING;
+
+                            int brace_position = m_pData->GetFirstBraceInLine(string_style);
+                            if (brace_position >= 0)
+                            {
+                                if(control->GetUseTabs())
+                                {
+                                    brace_position /= control->GetTabWidth();
+                                    indent = wxString(_T('\t'), brace_position);
+                                }
+                                else
+                                    indent = wxString(_T(' '), brace_position); // n spaces
+                                break;
+                            }
+                        }
+
                         if (b == _T('{'))
                         {
                             int nonblankpos;

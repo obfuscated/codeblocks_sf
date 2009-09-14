@@ -1883,13 +1883,35 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
             }
         }
     }
+    else if(link.StartsWith(_T("CB_CMD_DELETE_HISTORY_")))
+    {
+        wxFileHistory* hist = link.StartsWith(_T("CB_CMD_DELETE_HISTORY_PROJECT_")) ? m_pProjectsHistory : m_pFilesHistory;
+        unsigned long count;
+        link.AfterLast(_T('_')).ToULong(&count);
+        --count;
+        if(count < hist->GetCount())
+        {
+            AskToRemoveFileFromHistory(hist, count, false);
+        }
+    }
 }
 
-void MainFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id)
+void MainFrame::AskToRemoveFileFromHistory(wxFileHistory* hist, int id, bool cannot_open)
 {
-    if (cbMessageBox(_("Can't open file.\nDo you want to remove it from the recent files list?"),
-                    _("Question"),
-                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+    wxString question(_("Do you want to remove it from the recent files list?"));
+    wxString query(wxEmptyString);
+    if (cannot_open)
+    {
+        query << _("The file cannot be opened (probably it's not available anymore).")
+              << _T("\n") << question;
+    }
+    else
+    {
+        query << question;
+    }
+
+
+    if (cbMessageBox(query, _("Question"), wxYES_NO | wxICON_QUESTION) == wxID_YES)
     {
         hist->RemoveFileFromHistory(id);
         // update start here page
@@ -1918,8 +1940,12 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         {
             if (i >= (int)m_pProjectsHistory->GetCount())
                 break;
-            links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a></li>"),
-                                        i + 1, m_pProjectsHistory->GetHistoryFile(i).c_str());
+            links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a>"),
+                                      i + 1, m_pProjectsHistory->GetHistoryFile(i).c_str());
+            links << _T("&nbsp;&nbsp;"); // Some space between the HTML links
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%d\">X</a>"),
+                                      i + 1);
+            links << _T("</li>");
         }
         links << _T("</ul><br>");
     }
@@ -1934,8 +1960,13 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         {
             if (i >= (int)m_pFilesHistory->GetCount())
                 break;
-            links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a></li>"),
-                                        i + 1, m_pFilesHistory->GetHistoryFile(i).c_str());
+            links << _T("<li>");
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a>"),
+                                      i + 1, m_pFilesHistory->GetHistoryFile(i).c_str());
+            links << _T("&nbsp;&nbsp;"); // Some space between the HTML links
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%d\">X</a>"),
+                                      i + 1);
+            links << _T("</li>");
         }
         links << _T("</ul>");
     }

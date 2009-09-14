@@ -157,6 +157,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
 
     EVT_TREE_ITEM_ACTIVATED(ID_ProjectManager, ProjectManager::OnProjectFileActivated)
     EVT_TREE_ITEM_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnTreeItemRightClick)
+    EVT_TREE_KEY_DOWN(ID_ProjectManager, ProjectManager::OnKeyDown)
     EVT_COMMAND_RIGHT_CLICK(ID_ProjectManager, ProjectManager::OnRightClick)
 
     EVT_AUINOTEBOOK_TAB_RIGHT_UP(idNB, ProjectManager::OnTabContextMenu)
@@ -1754,12 +1755,18 @@ void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
         if (ftd->GetProject() != m_pActiveProject)
         {
             SetProject(ftd->GetProject(), false);
-            // prevent item expand state toggle when project is activated
-            #ifdef __WXMSW__
-            // toggle it one time so that it is toggled back by wx
-            m_pTree->IsExpanded(id) ? m_pTree->Collapse(id) : m_pTree->Expand(id);
-            #endif
         }
+        // prevent item expand state toggle when project is activated
+        // toggle it one time so that it is toggled back by wx
+        m_pTree->IsExpanded(id) ? m_pTree->Collapse(id) : m_pTree->Expand(id);
+    }
+    else if (ftd && (ftd->GetKind() == FileTreeData::ftdkVirtualGroup || ftd->GetKind() == FileTreeData::ftdkFolder))
+    {
+        m_pTree->IsExpanded(id) ? m_pTree->Collapse(id) : m_pTree->Expand(id);
+    }
+    else if (!ftd && m_pWorkspace)
+    {
+        m_pTree->IsExpanded(m_TreeRoot) ? m_pTree->Collapse(m_TreeRoot) : m_pTree->Expand(m_TreeRoot);
     }
     else
         DoOpenSelectedFile();
@@ -2089,14 +2096,18 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     }
     else if (event.GetId() == idMenuRemoveFilePopup)
     {
-        // remove single file
-        prj->BeginRemoveFiles();
-        RemoveFileFromProject(ftd->GetProjectFile(), prj);
-        prj->CalculateCommonTopLevelPath();
-        if (prj->GetCommonTopLevelPath() == oldpath)
-            m_pTree->Delete(sel);
-        prj->EndRemoveFiles();
-        RebuildTree();
+        ProjectFile *prjfile = ftd->GetProjectFile();
+		if(prjfile)
+        {
+            // remove single file
+            prj->BeginRemoveFiles();
+            RemoveFileFromProject(prjfile, prj);
+            prj->CalculateCommonTopLevelPath();
+            if (prj->GetCommonTopLevelPath() == oldpath)
+                m_pTree->Delete(sel);
+            prj->EndRemoveFiles();
+            RebuildTree();
+        }
     }
     else if (event.GetId() == idMenuRemoveFolderFilesPopup)
     {
@@ -2841,5 +2852,16 @@ void ProjectManager::EndLoadingWorkspace()
     else
     {
         CloseWorkspace();
+    }
+}
+
+void ProjectManager::OnKeyDown(wxTreeEvent& event)
+{
+    const wxKeyEvent& key_event = event.GetKeyEvent();
+
+    if(key_event.GetKeyCode() == WXK_DELETE || key_event.GetKeyCode() == WXK_NUMPAD_DELETE)
+    {
+        wxCommandEvent command(0, idMenuRemoveFilePopup);
+        OnRemoveFileFromProject(command);
     }
 }

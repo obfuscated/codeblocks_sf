@@ -85,7 +85,7 @@ enum BrowserDisplayFilter
     bdfFile = 0,
     bdfProject,
     bdfWorkspace,
-    bdfEverything,
+    bdfEverything
 };
 
 enum BrowserSortType

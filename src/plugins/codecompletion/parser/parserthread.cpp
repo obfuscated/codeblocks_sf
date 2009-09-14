@@ -1393,6 +1393,8 @@ void ParserThread::HandleClass(EClassType ct)
                     }
                 }
             }
+            else
+                m_Tokenizer.GetToken();
         }
         else
             break;
@@ -1599,8 +1601,6 @@ void ParserThread::HandleEnum()
                 //walk to , or }
                 SkipToOneOfChars(ParserConsts::commaclbrace);
             }
-            else
-                m_Tokenizer.GetToken();
         }
     }
 //    // skip to ;

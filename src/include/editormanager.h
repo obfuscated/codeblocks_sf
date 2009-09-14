@@ -136,6 +136,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnSwapHeaderSource(wxCommandEvent& event);
         void OnTabPosition(wxCommandEvent& event);
         void OnProperties(wxCommandEvent& event);
+        void OnAddFileToProject(wxCommandEvent& event);
+        void OnRemoveFileFromProject(wxCommandEvent& event);
         void OnAppDoneStartup(wxCommandEvent& event);
         void OnAppStartShutdown(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);

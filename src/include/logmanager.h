@@ -12,17 +12,17 @@
 
 namespace
 {
-	static const unsigned int max_logs = ((65535^61>>3)<<2)*!!!!sizeof(int*)%63;
+    static const unsigned int max_logs = 32;
 
-	inline wxString F(const wxChar* msg, ...)
-	{
-		va_list arg_list;
-		va_start(arg_list, msg);
-		::temp_string = wxString::FormatV(msg, arg_list);
-		va_end(arg_list);
+    inline wxString F(const wxChar* msg, ...)
+    {
+        va_list arg_list;
+        va_start(arg_list, msg);
+        ::temp_string = wxString::FormatV(msg, arg_list);
+        va_end(arg_list);
 
         return ::temp_string;
-	};
+    };
 
     static NullLogger g_null_log;
 }
@@ -50,21 +50,24 @@ struct LogSlot
 class DLLIMPORT LogManager : public Mgr<LogManager>
 {
 public:
-		struct InstantiatorBase{ virtual Logger* New(){ return 0; }; virtual bool RequiresFilename() const { return false; }; virtual ~InstantiatorBase(){}; };
-		template<typename type, bool requires_filename = false> struct Instantiator : public InstantiatorBase{ virtual Logger* New(){ return new type; }; virtual bool RequiresFilename() const { return requires_filename; }; };
+        struct InstantiatorBase{ virtual Logger* New() { return 0; }; virtual bool RequiresFilename() const { return false; }; virtual ~InstantiatorBase() {}; };
+        template<typename type, bool requires_filename = false> struct Instantiator : public InstantiatorBase{ virtual Logger* New() { return new type; }; virtual bool RequiresFilename() const { return requires_filename; }; };
 
 private:
-		typedef std::map<wxString, InstantiatorBase*> inst_map_t;
-		inst_map_t instMap;
+        typedef std::map<wxString, InstantiatorBase*> inst_map_t;
+        inst_map_t instMap;
 
         LogSlot slot[max_logs+1];
 
-		LogManager();
-		~LogManager();
+        LogManager();
+        ~LogManager();
 
 
         friend class Mgr<LogManager>;
         friend class Manager;
+
+        void ClearLogInternal(int i) { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Clear(); };
+        void LogInternal(const wxString& msg, int i, Logger::level lv) { if ((i>=0) && (i<=(int)max_logs) && (slot[i].log!=&g_null_log)) slot[i].log->Append(msg, lv); };
 
 public:
         enum { no_index = -1, invalid_log, stdout_log, app_log, debug_log};
@@ -77,7 +80,7 @@ public:
          * On error, SetLog() returns invalid_log
          */
         size_t SetLog(Logger* l, int index = no_index);
-		void DeleteLog(int i);
+        void DeleteLog(int i);
         LogSlot& Slot(int i);
         size_t FindIndex(Logger* l);
 
@@ -100,18 +103,18 @@ public:
          *     Plugins should call Panic() with the plugin's name as the component argument.
          */
 
-		void Log(const wxString& msg, int i = app_log, Logger::level lv = Logger::info) { slot[i].log->Append(msg, lv); };
-		void LogWarning(const wxString& msg, int i = app_log) { Log(msg, i, Logger::warning); };
-		void LogError(const wxString& msg, int i = app_log) { Log(msg, i, Logger::error); };
+        void Log(const wxString& msg, int i = app_log, Logger::level lv = Logger::info) { LogInternal(msg, i, lv); };
+        void LogWarning(const wxString& msg, int i = app_log) { Log(msg, i, Logger::warning); };
+        void LogError(const wxString& msg, int i = app_log) { Log(msg, i, Logger::error); };
 
-		void Panic(const wxString& msg, const wxString& component = wxEmptyString);
+        void Panic(const wxString& msg, const wxString& component = wxEmptyString);
 
-		void DebugLog(const wxString& msg, Logger::level lv = Logger::info) { Log(msg, debug_log, lv); };
-		void DebugLogError(const wxString& msg) { DebugLog(msg, Logger::error); };
+        void DebugLog(const wxString& msg, Logger::level lv = Logger::info) { Log(msg, debug_log, lv); };
+        void DebugLogError(const wxString& msg) { DebugLog(msg, Logger::error); };
 
-		void LogToStdOut(const wxString& msg, Logger::level lv = Logger::info) { Log(msg, stdout_log, lv); };
+        void LogToStdOut(const wxString& msg, Logger::level lv = Logger::info) { Log(msg, stdout_log, lv); };
 
-        void ClearLog(int i) { slot[i].log->Clear(); };
+        void ClearLog(int i) { ClearLogInternal(i); };
 
 
 
@@ -121,21 +124,21 @@ public:
          * ------------------------------------------------------------------------------------------------------
          * These functions allow to obtain a list of names for all generic Loggers that are presently available
          * and to create a new Logger by name without knowing the type at compile time.
-		 *
+         *
          *   logptr = LogManager::Get()->New(_T("stdout"));     // does exactly the same as
-		 *   logptr = new StdoutLogger();
-		 *
+         *   logptr = new StdoutLogger();
+         *
          * You normally do not need to worry about creating Loggers. Only ever consider using these functions if you
          * really have to (want to) change the global behaviour of Code::Blocks for some reason.
          */
-		wxArrayString ListAvailable();
-		Logger* New(const wxString& name);
-		bool FilenameRequired(const wxString& name);
-		/*
-		 * Add a logger to the registry of "available Logger types". Unless you are adding a general Logger which should
-		 * be accessible by name, you will not need this function. Having said that, you probably NEVER need this function.
-		 */
-		void Register(const wxString& name, InstantiatorBase* ins);
+        wxArrayString ListAvailable();
+        Logger* New(const wxString& name);
+        bool FilenameRequired(const wxString& name);
+        /*
+         * Add a logger to the registry of "available Logger types". Unless you are adding a general Logger which should
+         * be accessible by name, you will not need this function. Having said that, you probably NEVER need this function.
+         */
+        void Register(const wxString& name, InstantiatorBase* ins);
 
 
 

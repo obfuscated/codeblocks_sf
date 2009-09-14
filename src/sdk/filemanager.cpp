@@ -24,6 +24,7 @@
 template<> FileManager* Mgr<FileManager>::instance = 0;
 template<> bool  Mgr<FileManager>::isShutdown = false;
 
+// ***** class: LoaderBase *****
 LoaderBase::~LoaderBase()
 {
     WaitReady();
@@ -48,6 +49,7 @@ size_t LoaderBase::GetLength()
     return len;
 };
 
+// ***** class: FileLoader *****
 void FileLoader::operator()()
 {
     if(!wxFile::Access(fileName, wxFile::read))
@@ -75,6 +77,7 @@ void FileLoader::operator()()
     Ready();
 }
 
+// ***** class: URLLoader *****
 void URLLoader::operator()()
 {
     wxURL url(fileName);
@@ -106,11 +109,11 @@ void URLLoader::operator()()
     Ready();
 }
 
+// ***** class: FileManager *****
 FileManager::FileManager()
     : fileLoaderThread(false),
     uncLoaderThread(false),
-    urlLoaderThread(false)//,
-//  delayedDeleteThread(false)
+    urlLoaderThread(false)
 {
 }
 
@@ -167,144 +170,6 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
     fileLoaderThread.Queue(fl);
     return fl;
 }
-
-
-
-inline bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
-{
-    const char* mark = 0;
-    size_t mark_length = 0;
-    if (bom)
-    {
-        switch (encoding)
-        {
-        case wxFONTENCODING_UTF8:
-            mark = "\xEF\xBB\xBF";
-            mark_length = 3;
-            break;
-        case wxFONTENCODING_UTF16BE:
-            mark = "\xFE\xFF";
-            mark_length = 2;
-            break;
-        case wxFONTENCODING_UTF16LE:
-            mark = "\xFF\xFE";
-            mark_length = 2;
-            break;
-        case wxFONTENCODING_UTF32BE:
-            mark = "\x00\x00\xFE\xFF";
-            mark_length = 4;
-            break;
-        case wxFONTENCODING_UTF32LE:
-            mark = "\xFF\xFE\x00\x00";
-            mark_length = 4;
-            break;
-        case wxFONTENCODING_SYSTEM:
-        default:
-            break;
-        }
-    }
-
-    if(f.Write(mark, mark_length) != mark_length)
-        return false;
-
-    if(data.length() == 0)
-        return true;
-
-    size_t inlen = data.Len(), outlen = 0;
-    wxCharBuffer mbBuff;
-    if ( encoding == wxFONTENCODING_UTF7 )
-    {
-        wxMBConvUTF7 conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF8 )
-    {
-        wxMBConvUTF8 conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF16BE )
-    {
-        wxMBConvUTF16BE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF16LE )
-    {
-        wxMBConvUTF16LE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF32BE )
-    {
-        wxMBConvUTF32BE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else if ( encoding == wxFONTENCODING_UTF32LE )
-    {
-        wxMBConvUTF32LE conv;
-        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-    }
-    else
-    {
-        // try wxEncodingConverter first, even it it only works for
-        // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
-        // but it's much, much faster than wxCSConv (at least on linux)
-        wxEncodingConverter conv;
-        // should be long enough
-        char* tmp = new char[2*inlen];
-
-        #if wxCHECK_VERSION(2, 9, 0)
-        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
-        #else
-        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.c_str(), tmp))
-        #endif
-        {
-            mbBuff = tmp;
-            outlen = strlen(mbBuff); // should be correct, because Convert has returned true
-        }
-        else
-    {
-            // try wxCSConv, if nothing else works
-        wxCSConv conv(encoding);
-            mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
-        }
-        delete[] tmp;
-    }
-     // if conversion to chosen encoding succeeded, we write the file to disk
-    if(outlen > 0)
-    {
-        return f.Write(mbBuff, outlen) == outlen;
-    }
-
-    // if conversion to chosen encoding does not succeed, we try UTF-8 instead
-    size_t size = 0;
-    wxCSConv conv(encoding);
-    wxCharBuffer buf = data.mb_str(conv);
-
-    if(!buf || !(size = strlen(buf)))
-    {
-        buf = data.mb_str(wxConvUTF8);
-
-        if(!buf || !(size = strlen(buf)))
-            {
-                cbMessageBox(_T(    "The file could not be saved because it contains characters "
-                                    "that can neither be represented in your current code page, "
-                                    "nor be converted to UTF-8.\n"
-                                    "The latter should actually not be possible.\n\n"
-                                    "Please check your language/encoding settings and try saving again." ),
-                                    _("Failure"), wxICON_WARNING | wxOK );
-                return false;
-            }
-        else
-            {
-                InfoWindow::Display(_("Encoding Changed"),
-                                    _("The saved document contained characters\n"
-                                      "which were illegal in the selected encoding.\n\n"
-                                      "The file's encoding has been changed to UTF-8\n"
-                                      "to prevent you from losing data."), 8000);
-            }
-    }
-
-    return f.Write(buf, size);
-};
 
 bool FileManager::Save(const wxString& name, const char* data, size_t len)
 {
@@ -447,4 +312,140 @@ bool FileManager::ReplaceFile(const wxString& old_file, const wxString& new_file
     }
 
     return false;
+}
+
+bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
+{
+    const char* mark = 0;
+    size_t mark_length = 0;
+    if (bom)
+    {
+        switch (encoding)
+        {
+        case wxFONTENCODING_UTF8:
+            mark = "\xEF\xBB\xBF";
+            mark_length = 3;
+            break;
+        case wxFONTENCODING_UTF16BE:
+            mark = "\xFE\xFF";
+            mark_length = 2;
+            break;
+        case wxFONTENCODING_UTF16LE:
+            mark = "\xFF\xFE";
+            mark_length = 2;
+            break;
+        case wxFONTENCODING_UTF32BE:
+            mark = "\x00\x00\xFE\xFF";
+            mark_length = 4;
+            break;
+        case wxFONTENCODING_UTF32LE:
+            mark = "\xFF\xFE\x00\x00";
+            mark_length = 4;
+            break;
+        case wxFONTENCODING_SYSTEM:
+        default:
+            break;
+        }
+    }
+
+    if(f.Write(mark, mark_length) != mark_length)
+        return false;
+
+    if(data.length() == 0)
+        return true;
+
+    size_t inlen = data.Len(), outlen = 0;
+    wxCharBuffer mbBuff;
+    if ( encoding == wxFONTENCODING_UTF7 )
+    {
+        wxMBConvUTF7 conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF8 )
+    {
+        wxMBConvUTF8 conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF16BE )
+    {
+        wxMBConvUTF16BE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF16LE )
+    {
+        wxMBConvUTF16LE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF32BE )
+    {
+        wxMBConvUTF32BE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else if ( encoding == wxFONTENCODING_UTF32LE )
+    {
+        wxMBConvUTF32LE conv;
+        mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+    }
+    else
+    {
+        // try wxEncodingConverter first, even it it only works for
+        // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
+        // but it's much, much faster than wxCSConv (at least on linux)
+        wxEncodingConverter conv;
+        // should be long enough
+        char* tmp = new char[2*inlen];
+
+        #if wxCHECK_VERSION(2, 9, 0)
+        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
+        #else
+        if(conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.c_str(), tmp))
+        #endif
+        {
+            mbBuff = tmp;
+            outlen = strlen(mbBuff); // should be correct, because Convert has returned true
+        }
+        else
+    {
+            // try wxCSConv, if nothing else works
+        wxCSConv conv(encoding);
+            mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
+        }
+        delete[] tmp;
+    }
+     // if conversion to chosen encoding succeeded, we write the file to disk
+    if(outlen > 0)
+    {
+        return f.Write(mbBuff, outlen) == outlen;
+    }
+
+    // if conversion to chosen encoding does not succeed, we try UTF-8 instead
+    size_t size = 0;
+    wxCSConv conv(encoding);
+    wxCharBuffer buf = data.mb_str(conv);
+
+    if(!buf || !(size = strlen(buf)))
+    {
+        buf = data.mb_str(wxConvUTF8);
+
+        if(!buf || !(size = strlen(buf)))
+        {
+            cbMessageBox(_T(    "The file could not be saved because it contains characters "
+                                "that can neither be represented in your current code page, "
+                                "nor be converted to UTF-8.\n"
+                                "The latter should actually not be possible.\n\n"
+                                "Please check your language/encoding settings and try saving again." ),
+                                _("Failure"), wxICON_WARNING | wxOK );
+            return false;
+        }
+        else
+        {
+            InfoWindow::Display(_("Encoding Changed"),
+                                _("The saved document contained characters\n"
+                                  "which were illegal in the selected encoding.\n\n"
+                                  "The file's encoding has been changed to UTF-8\n"
+                                  "to prevent you from losing data."), 8000);
+		}
+    }
+
+    return f.Write(buf, size);
 }

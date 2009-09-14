@@ -111,7 +111,10 @@ protected:
         {
             ++m_TokenIndex;
             if (IsEOF())
+            {
+                m_TokenIndex = m_BufferLen;
                 return false;
+            }
 
             if (CurrentChar() == _T('\n'))
                 ++m_LineNumber;
@@ -121,7 +124,10 @@ protected:
         {
             m_TokenIndex += amount;
             if (IsEOF())
+            {
+                m_TokenIndex = m_BufferLen;
                 return false;
+            }
 
             if (CurrentChar() == _T('\n'))
                 ++m_LineNumber;
@@ -138,12 +144,9 @@ protected:
 
     wxChar CurrentCharMoveNext()
     {
-        size_t i = m_TokenIndex++;
-
         if(m_TokenIndex < m_BufferLen)
-            return m_Buffer.GetChar(i);
-        else
-            return 0;
+            m_TokenIndex++;
+        return CurrentChar();
     };
 
     wxChar NextChar() const

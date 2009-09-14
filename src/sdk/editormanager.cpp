@@ -104,6 +104,8 @@ static const int idNBSwapHeaderSource = wxNewId();
 static const int idNBTabTop = wxNewId();
 static const int idNBTabBottom = wxNewId();
 static const int idNBProperties = wxNewId();
+static const int idNBAddFileToProject = wxNewId();
+static const int idNBRemoveFileFromProject = wxNewId();
 
 /** *******************************************************
   * struct EditorManagerInternalData                      *
@@ -147,6 +149,8 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBTabSaveAll, EditorManager::OnSaveAll)
     EVT_MENU(idNBSwapHeaderSource, EditorManager::OnSwapHeaderSource)
     EVT_MENU(idNBProperties, EditorManager::OnProperties)
+    EVT_MENU(idNBAddFileToProject, EditorManager::OnAddFileToProject)
+    EVT_MENU(idNBRemoveFileFromProject, EditorManager::OnRemoveFileFromProject)
     EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
 END_EVENT_TABLE()
 
@@ -2516,6 +2520,16 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
 
         pop->AppendSeparator();
         pop->Append(-1, _("Split view"), splitMenu);
+
+        if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
+        {
+            pop->AppendSeparator();
+
+            if (ed->GetProjectFile())
+                pop->Append(idNBRemoveFileFromProject, _("Remove file from project"));
+            else
+                pop->Append(idNBAddFileToProject, _("Add file to active project"));
+        }
     }
 
     bool any_modified = false;
@@ -2593,6 +2607,31 @@ void EditorManager::OnProperties(wxCommandEvent& event)
         ProjectFileOptionsDlg dlg(Manager::Get()->GetAppWindow(), GetActiveEditor()->GetFilename());
         PlaceWindow(&dlg);
         dlg.ShowModal();
+    }
+}
+
+void EditorManager::OnAddFileToProject(wxCommandEvent& event)
+{
+    cbProject *project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    wxString fname = GetBuiltinActiveEditor()->GetFilename();
+
+    wxArrayInt targets;
+    if (Manager::Get()->GetProjectManager()->AddFileToProject(fname, project, targets) != 0)
+    {
+        ProjectFile* pf = project->GetFileByFilename(fname, false);
+        GetBuiltinActiveEditor()->SetProjectFile(pf);
+        Manager::Get()->GetProjectManager()->RebuildTree();
+    }
+}
+
+void EditorManager::OnRemoveFileFromProject(wxCommandEvent& event)
+{
+    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
+    if (pf) // should be in any case, otherwise something went wrong between popup menu creation and here
+    {
+        cbProject *project = pf->GetParentProject();
+        Manager::Get()->GetProjectManager()->RemoveFileFromProject(pf, project);
+        Manager::Get()->GetProjectManager()->RebuildTree();
     }
 }
 

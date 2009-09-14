@@ -22,6 +22,7 @@
     #include "configmanager.h"
 #endif
 
+// ***** class: LoaderBase *****
 class LoaderBase : public AbstractJob
 {
     wxSemaphore sem;
@@ -57,7 +58,7 @@ public:
     size_t GetLength();
 };
 
-
+// ***** class: FileLoader *****
 class FileLoader : public LoaderBase
 {
 public:
@@ -65,7 +66,7 @@ public:
     void operator()();
 };
 
-
+// ***** class: DelayedDelete *****
 /*
 * Delete a file after a grace period. This is useful since we do not know when the filesystem will sync its data to disk.
 * In fact, the filesystem might be on a physically separate machine.
@@ -98,12 +99,11 @@ public:
     };
 };
 
-
-
+// ***** class: AutoBuffer *****
 class AutoBuffer
 {
-std::auto_ptr<char> ptr;
-size_t len;
+  std::auto_ptr<char> ptr;
+  size_t len;
 
 public:
     AutoBuffer() : ptr(0), len(0){};
@@ -128,7 +128,7 @@ public:
     char *Data() const {return ptr.get();};
 };
 
-
+// ***** class: URLLoader *****
 class URLLoader : public LoaderBase
 {
 AutoBuffer buffer;
@@ -137,7 +137,7 @@ public:
     void operator()();
 };
 
-
+// ***** class: NullLoader *****
 class NullLoader : public LoaderBase
 {
 public:
@@ -145,7 +145,7 @@ public:
     void operator()(){};
 };
 
-
+// ***** class: FileManager *****
 class FileManager : public Mgr<FileManager>
 {
     BackgroundThread fileLoaderThread;
@@ -162,7 +162,7 @@ public:
     bool Save(const wxString& file, const char* data, size_t len);
 private:
     bool ReplaceFile(const wxString& old_file, const wxString& new_file);
+    bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom);
 };
-
 
 #endif
