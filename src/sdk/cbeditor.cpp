@@ -1093,11 +1093,12 @@ void cbEditor::Split(cbEditor::SplitType split)
     // update controls' look'n'feel
     // do it here (before) document is attached, speeds up syntaxhighlighting
     // we do not call "SetEditorStyleAfterFileOpen" here becaus it calls SetLanguage for the already loaded text inside
-    // the left control and slows down loaduing of large files a lot.
+    // the left control and slows down loading of large files a lot.
+    InternalSetEditorStyleBeforeFileOpen(m_pControl2);
+
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
     SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
     UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
-    InternalSetEditorStyleBeforeFileOpen(m_pControl2);
 
     if (m_pTheme)
         m_pTheme->Apply(m_lang, m_pControl2);
@@ -1205,11 +1206,11 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
 
     InternalSetEditorStyleBeforeFileOpen(m_pControl);
 
-    SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
-    UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
-
     if (m_pControl2)
         InternalSetEditorStyleBeforeFileOpen(m_pControl2);
+
+    SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
+    UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
 
     SetLanguage( HL_AUTO );
 }
