@@ -1246,6 +1246,70 @@
 															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 															<border>8</border>
 														</object>
+														<object class="sizeritem">
+															<object class="wxStaticLine" name="ID_STATICLINE_IGNORE"/>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>8</border>
+														</object>
+														<object class="sizeritem">
+															<object class="wxFlexGridSizer">
+																<object class="sizeritem">
+																	<object class="wxBoxSizer">
+																		<object class="sizeritem">
+																			<object class="wxStaticText" name="ID_STATICTEXT27">
+																				<label>Compiler output to be ignored:</label>
+																			</object>
+																			<flag>wxBOTTOM|wxEXPAND</flag>
+																			<border>8</border>
+																		</object>
+																		<object class="sizeritem">
+																			<object class="wxFlexGridSizer">
+																				<object class="sizeritem">
+																					<object class="wxTextCtrl" name="txtIgnore"/>
+																					<option>1</option>
+																					<flag>wxBOTTOM|wxEXPAND</flag>
+																					<border>8</border>
+																				</object>
+																				<object class="sizeritem">
+																					<object class="wxButton" name="btnIgnoreAdd">
+																						<label>Add</label>
+																					</object>
+																					<flag>wxBOTTOM|wxLEFT</flag>
+																					<border>8</border>
+																				</object>
+																				<object class="spacer">
+																					<flag>wxEXPAND</flag>
+																				</object>
+																				<object class="sizeritem">
+																					<object class="wxButton" name="btnIgnoreRemove">
+																						<label>Remove</label>
+																					</object>
+																					<flag>wxLEFT</flag>
+																					<border>8</border>
+																				</object>
+																				<cols>2</cols>
+																				<growablecols>0</growablecols>
+																			</object>
+																			<flag>wxEXPAND</flag>
+																		</object>
+																		<orient>wxVERTICAL</orient>
+																	</object>
+																	<flag>wxEXPAND</flag>
+																	<border>0</border>
+																</object>
+																<object class="sizeritem">
+																	<object class="wxListBox" name="lstIgnore"/>
+																	<option>1</option>
+																	<flag>wxLEFT|wxEXPAND</flag>
+																	<border>8</border>
+																</object>
+																<cols>2</cols>
+																<growablecols>1</growablecols>
+																<growablerows/>
+															</object>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<border>8</border>
+														</object>
 													</object>
 													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>8</border>

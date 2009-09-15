@@ -144,9 +144,9 @@ protected:
 
     wxChar CurrentCharMoveNext()
     {
-        if(m_TokenIndex < m_BufferLen)
-            m_TokenIndex++;
-        return CurrentChar();
+        wxChar c = CurrentChar();
+        m_TokenIndex++;
+        return c;
     };
 
     wxChar NextChar() const
@@ -193,7 +193,7 @@ protected:
     };
 
 private:
-    bool CharInString(const wxChar ch, const wxChar* chars) const
+    inline bool CharInString(const wxChar ch, const wxChar* chars) const
     {
         int len = wxStrlen(chars);
         for (int i = 0; i < len; ++i)
@@ -212,8 +212,8 @@ private:
         return str;
     }
 
-    wxString m_Filename;
-    wxString m_Buffer;
+    wxString     m_Filename;
+    wxString     m_Buffer;
     unsigned int m_BufferLen;
 
     wxString     m_Token;
@@ -232,13 +232,13 @@ private:
     unsigned int m_PeekLineNumber;
     unsigned int m_PeekNestLevel;
 
-    bool m_IsOK;
-    bool m_IsOperator;
-    bool m_LastWasPreprocessor;
-    wxString m_LastPreprocessor;
-    bool m_SkipUnwantedTokens;
+    bool         m_IsOK;
+    bool         m_IsOperator;
+    bool         m_LastWasPreprocessor;
+    wxString     m_LastPreprocessor;
+    bool         m_SkipUnwantedTokens;
 
-    LoaderBase* m_pLoader;
+    LoaderBase*  m_pLoader;
 
     static ConfigManagerContainer::StringToStringMap s_Replacements;
 };

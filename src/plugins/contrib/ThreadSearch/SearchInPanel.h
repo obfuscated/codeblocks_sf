@@ -26,7 +26,8 @@
 class wxWindow;
 class wxCheckBox;
 class wxCommandEvent;
-
+class wxBitmapButton;
+class wxImageList;
 
 class SearchInPanel: public wxPanel {
 public:
@@ -58,37 +59,62 @@ private:
 
 protected:
     // begin wxGlade: SearchInPanel::attributes
-    wxCheckBox* m_pChkSearchOpenFiles;
-    wxCheckBox* m_pChkSearchTargetFiles;
-    wxCheckBox* m_pChkSearchProjectFiles;
-    wxCheckBox* m_pChkSearchWorkspaceFiles;
-    wxCheckBox* m_pChkSearchDir;
+    wxBitmapButton* m_pBtnSearchOpenFiles;
+    wxBitmapButton* m_pBtnSearchTargetFiles;
+    wxBitmapButton* m_pBtnSearchProjectFiles;
+    wxBitmapButton* m_pBtnSearchWorkspaceFiles;
+    wxBitmapButton* m_pBtnSearchDir;
     // end wxGlade
+
+    /** @brief Buttonstates
+     *
+     * Since wxBitmapButton cannot toggle like wxCheckBox,
+     * the "state" must be saved in extra variables
+     * @{
+     */
+    bool m_StateSearchOpenFiles;
+    bool m_StateSearchTargetFiles;
+    bool m_StateSearchProjectFiles;
+    bool m_StateSearchWorkspaceFiles;
+    bool m_StateSearchDirectoryFiles;
+    /** @} */
+
+    /** @brief Imagelist for the search-in buttons
+     *
+     * The imagelist makes it possible to use images without
+     * calculating their name when they change
+     */
+    wxImageList* m_pButtonImages;
 
     DECLARE_EVENT_TABLE();
 
 public:
-	/** Gets all checkboxes click events to forward them to
-	  * the parent window..
+	/** Gets all buttons click events to forward them to the parent window..
 	  */
-    void OnChkClickEvent(wxCommandEvent &event); // wxGlade: <event_handler>
+    void OnBtnClickEvent(wxCommandEvent &event); // wxGlade: <event_handler>
 
-    // The 2 following methods work together. It offers a kind of
-    // radio boxes group. They make impossible to select both workspace and
-    // project checkboxes (it is stupid to search both in project and
-    // workspace because project is already included in workpsace).
+    // The 3 following methods work together. It offers a kind of
+    // radio boxes group. They make impossible to select both workspace,
+    // project and target buttons (it is stupid to search both in project
+    // and workspace because project is already included in workpsace).
 
-	/** If target checkbox is checked, we uncheck if necessary the project and workspace checkboxes.
-	  */
-    void OnChkSearchTargetFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
+    /** @brief Event for scope button is clicked (target scope)
+     *
+     * Scope for project and workspace are switched off.
+     */
+    void OnBtnSearchTargetFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
-	/** If project checkbox is checked, we uncheck if necessary the target and workspace checkboxes.
-	  */
-    void OnChkSearchProjectFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
+    /** @brief Event for scope button is clicked (project scope)
+     *
+     * Scope for target and workspace are switched off.
+     */
+    void OnBtnSearchProjectFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
-	/** If workspace checkbox is checked, we uncheck if necessary the target and project checkboxes.
-	  */
-    void OnChkSearchWorkspaceFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
+    /** @brief Event for scope button is clicked (workspace scope)
+     *
+     * Scope for target and project are switched off.
+     */
+    void OnBtnSearchWorkspaceFilesClick(wxCommandEvent &event); // wxGlade: <event_handler>
 }; // wxGlade: end class
 
 

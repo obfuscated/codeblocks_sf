@@ -979,6 +979,10 @@
 		<Unit filename="plugins/autosave/autosave.h">
 			<Option target="Autosave" />
 		</Unit>
+		<Unit filename="plugins/autosave/manifest.xml">
+			<Option compilerVar="CC" />
+			<Option target="Autosave" />
+		</Unit>
 		<Unit filename="plugins/classwizard/classwizard.cpp">
 			<Option target="Class wizard" />
 		</Unit>
@@ -989,6 +993,9 @@
 			<Option target="Class wizard" />
 		</Unit>
 		<Unit filename="plugins/classwizard/classwizarddlg.h">
+			<Option target="Class wizard" />
+		</Unit>
+		<Unit filename="plugins/classwizard/resources/manifest.xml">
 			<Option target="Class wizard" />
 		</Unit>
 		<Unit filename="plugins/classwizard/resources/new_class.xrc">
@@ -1677,6 +1684,12 @@
 		<Unit filename="plugins/defaultmimehandler/resources/edit_files_handling.xrc">
 			<Option target="Default MIME handler" />
 		</Unit>
+		<Unit filename="plugins/defaultmimehandler/resources/manifest.xml">
+			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins/openfileslist/manifest.xml">
+			<Option target="Open files list" />
+		</Unit>
 		<Unit filename="plugins/openfileslist/openfileslistplugin.cpp">
 			<Option target="Open files list" />
 		</Unit>
@@ -1876,6 +1889,9 @@
 			<Option target="To-do" />
 		</Unit>
 		<Unit filename="plugins/todo/resources/ask_type.xrc">
+			<Option target="To-do" />
+		</Unit>
+		<Unit filename="plugins/todo/resources/manifest.xml">
 			<Option target="To-do" />
 		</Unit>
 		<Unit filename="plugins/todo/resources/settings.xrc">
@@ -2297,6 +2313,9 @@
 			<Option target="Autosave" />
 		</Unit>
 		<Unit filename="sdk/resources/global_uservars.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/images/16x16/Makefile.am">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/incremental_select_list.xrc">

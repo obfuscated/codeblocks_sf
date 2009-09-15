@@ -45,6 +45,7 @@ class wxBoxSizer;
 class wxBitmap;
 class wxBitmapButton;
 class wxStaticLine;
+class wxImageList;
 
 class ThreadSearch;
 class ThreadSearchEvent;
@@ -237,11 +238,11 @@ public:
     void OnLoggerDoubleClick(const wxString& file, long line);  // Called by ThreadSearchLoggerBase derived instance
 																// when user double clicks on a search result
 
-	void OnChkSearchOpenFiles(wxCommandEvent &event);
-	void OnChkSearchTargetFiles(wxCommandEvent &event);
-	void OnChkSearchProjectFiles(wxCommandEvent &event);
-	void OnChkSearchWorkspaceFiles(wxCommandEvent &event);
-	void OnChkSearchDirectoryFiles(wxCommandEvent &event);
+	void OnBtnSearchOpenFiles(wxCommandEvent &event);
+	void OnBtnSearchTargetFiles(wxCommandEvent &event);
+	void OnBtnSearchProjectFiles(wxCommandEvent &event);
+	void OnBtnSearchWorkspaceFiles(wxCommandEvent &event);
+	void OnBtnSearchDirectoryFiles(wxCommandEvent &event);
 	void OnChkSearchDirRecurse(wxCommandEvent &event);
 	void OnChkSearchDirHidden(wxCommandEvent &event);
 

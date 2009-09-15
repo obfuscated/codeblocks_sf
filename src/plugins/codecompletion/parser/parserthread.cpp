@@ -444,7 +444,6 @@ void ParserThread::DoParse()
                 HandleTypedef();
             else
                 SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
-//            SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
             m_Str.Clear();
         }
         else if (token==ParserConsts::kw_return ||
@@ -455,7 +454,8 @@ void ParserThread::DoParse()
         }
         else if (token==ParserConsts::kw_const)
         {
-            m_Str.Clear();
+            // do nothing, just skip keyword "const", otherwise uncomment:
+            //m_Str.Clear();
         }
         else if (token==ParserConsts::kw_extern)
         {
@@ -469,21 +469,19 @@ void ParserThread::DoParse()
             else
             {
                 // do nothing, just skip keyword "extern", otherwise uncomment:
-                // SkipToOneOfChars(ParserConsts::semicolon); // skip externs
+                //SkipToOneOfChars(ParserConsts::semicolon); // skip externs
             }
             m_Str.Clear();
         }
         else if (token.StartsWith(ParserConsts::kw__asm))
         {
             SkipToOneOfChars(ParserConsts::semicolon, true);
-            //m_Str.Clear();
         }
         else if (token==ParserConsts::kw_static ||
             token==ParserConsts::kw_virtual ||
             token==ParserConsts::kw_inline)
         {
             // do nothing (skip it)
-            //m_Str.Clear();
         }
         else if (token==ParserConsts::hash)
         {
@@ -511,7 +509,6 @@ void ParserThread::DoParse()
             m_Str.Clear();
             if (m_Tokenizer.PeekToken() == ParserConsts::lt) // should be!
                 SkipAngleBraces();
-//            SkipToOneOfChars(ParserConsts::gtsemicolon, true);
         }
         else if (token==ParserConsts::kw_friend)
         {
@@ -671,7 +668,6 @@ void ParserThread::DoParse()
                         else
                             SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
                     }
-                    //m_Str.Clear();
                 }
                 else
                 {
@@ -797,14 +793,10 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
     if (name.IsEmpty())
         return 0; // oops!
 
-//    if (m_Options.useBuffer && !m_Options.isTemp && TokenExists(name, m_pLastParent, kind))
-//        return 0;
     s_MutexProtection.Enter();
     Token* newToken = 0;
     wxString newname(name);
     m_Str.Trim();
-//if (name == _T("AlsoDoSomething"))
-//    asm("int $3;");
     if (kind == tkDestructor)
     {
         // special class destructors case

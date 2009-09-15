@@ -34,7 +34,7 @@
 #include "sdk.h"
 #include "configmanager.h"
 #include "cbstyledtextctrl.h"
-#include "wxscintilla/include/wx/wxscintilla.h"
+#include <wx/wxscintilla.h>
 #include <wx/aui/auibook.h>
 
 #include "defsext.h"

@@ -77,7 +77,7 @@ BEGIN_EVENT_TABLE(ThreadSearch, cbPlugin)
 	EVT_UPDATE_UI (idMenuEditCopy,           ThreadSearch::OnMnuEditCopyUpdateUI)
     EVT_MENU      (idMenuEditPaste,          ThreadSearch::OnMnuEditPaste)
 	EVT_BUTTON    (idBtnOptions,             ThreadSearch::OnBtnOptionsClick)
-	EVT_BUTTON    (idBtnSearch,              ThreadSearch::OnBtnSearchClick)
+	EVT_TOOL      (idBtnSearch,              ThreadSearch::OnBtnSearchClick)
     EVT_TEXT_ENTER(idCboSearchExpr,          ThreadSearch::OnCboSearchExprEnter)
     EVT_TEXT      (idCboSearchExpr,          ThreadSearch::OnCboSearchExprEnter)
 // ---------------------------------------------------------------------------
@@ -592,21 +592,26 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
 	m_pToolbar = toolBar;
 	m_pThreadSearchView->SetToolBar(toolBar);
 
-	wxString prefix                = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/");
+    wxString prefix;
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
+    if (cfg->ReadBool(_T("/environment/toolbar_size"),true))
+    {
+        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/16x16/");
+        m_pToolbar->SetToolBitmapSize(wxSize(16,16));
+    }
+    else
+    {
+        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/22x22/");
+        m_pToolbar->SetToolBitmapSize(wxSize(22,22));
+    }
 	m_pCboSearchExpr               = new wxComboBox    (toolBar, idCboSearchExpr, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, NULL, wxCB_DROPDOWN);
-	wxBitmapButton* pBtnSearch     = new wxBitmapButton(toolBar, idBtnSearch, wxBitmap(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG));
-	wxBitmapButton* pBtnOptions    = new wxBitmapButton(toolBar, idBtnOptions, wxBitmap(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG));
 
 	m_pCboSearchExpr->SetToolTip(_("Text to search"));
-	pBtnSearch->SetToolTip(_("Run search"));
-	pBtnOptions->SetToolTip(_("Show options window"));
 
-	pBtnSearch->SetBitmapDisabled(wxBitmap(prefix + wxT("findfdisabled.png"), wxBITMAP_TYPE_PNG));
-	pBtnOptions->SetBitmapDisabled(wxBitmap(prefix + wxT("optionsdisabled.png"), wxBITMAP_TYPE_PNG));
 
 	toolBar->AddControl(m_pCboSearchExpr);
-	toolBar->AddControl(pBtnSearch);
-	toolBar->AddControl(pBtnOptions);
+	toolBar->AddTool(idBtnSearch,_(""),wxBitmap(prefix + wxT("findf.png"), wxBITMAP_TYPE_PNG),wxBitmap(prefix + wxT("findfdisabled.png"), wxBITMAP_TYPE_PNG),wxITEM_NORMAL,_("Run search")); //Control(pBtnSearch);
+	toolBar->AddTool(idBtnOptions,_(""),wxBitmap(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG),wxBitmap(prefix + wxT("optionsdisabled.png"), wxBITMAP_TYPE_PNG),wxITEM_NORMAL,_("Show options window")); //Control(pBtnSearch);
 
 	toolBar->Realize();
 	#if wxCHECK_VERSION(2, 8, 0)

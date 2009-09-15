@@ -3363,6 +3363,19 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
 {
+    wxArrayString ignore_output = Manager::Get()->GetConfigManager(_T("compiler"))->ReadArrayString(_T("/ignore_output"));
+    if (!ignore_output.IsEmpty())
+    {
+        for (size_t i = 0; i<ignore_output.GetCount(); ++i)
+        {
+            if (output.Find(ignore_output.Item(i)) != wxNOT_FOUND)
+            {
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Ignoring compiler output: %s"), output.c_str()));
+                return;
+            }
+        }
+    }
+
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
     CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 

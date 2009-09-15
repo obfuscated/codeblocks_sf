@@ -44,7 +44,7 @@
 #include "defsext.h"
 #include "dragscrollevent.h"
 #include "version.h"
-#include "wxscintilla/include/wx/wxscintilla.h"
+#include <wx/wxscintilla.h>
 
 
    BEGIN_EVENT_TABLE(SnippetProperty, SnippetPropertyForm)

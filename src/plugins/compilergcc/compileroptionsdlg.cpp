@@ -95,6 +95,8 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(            XRCID("txtMake"),                         CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnMake"),                         CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("cmbCompiler"),                     CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnIgnoreAdd"),                    CompilerOptionsDlg::OnUpdateUI)
+    EVT_UPDATE_UI(            XRCID("btnIgnoreRemove"),                 CompilerOptionsDlg::OnUpdateUI)
     //
     EVT_TREE_SEL_CHANGED(      XRCID("tcScope"),                        CompilerOptionsDlg::OnTreeSelectionChange)
     EVT_TREE_SEL_CHANGING(     XRCID("tcScope"),                        CompilerOptionsDlg::OnTreeSelectionChanging)
@@ -143,6 +145,8 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_BUTTON(                XRCID("btnResComp"),                     CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnMake"),                        CompilerOptionsDlg::OnSelectProgramClick)
     EVT_BUTTON(                XRCID("btnAdvanced"),                    CompilerOptionsDlg::OnAdvancedClick)
+    EVT_BUTTON(                XRCID("btnIgnoreAdd"),                   CompilerOptionsDlg::OnIgnoreAddClick)
+    EVT_BUTTON(                XRCID("btnIgnoreRemove"),                CompilerOptionsDlg::OnIgnoreRemoveClick)
     EVT_CHOICE(                XRCID("cmbCompilerPolicy"),              CompilerOptionsDlg::OnDirty)
     EVT_CHOICE(                XRCID("cmbLinkerPolicy"),                CompilerOptionsDlg::OnDirty)
     EVT_CHOICE(                XRCID("cmbIncludesPolicy"),              CompilerOptionsDlg::OnDirty)
@@ -512,6 +516,13 @@ void CompilerOptionsDlg::DoFillOthers()
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/rebuild_seperately"), false));
 
+    wxListBox* lst = XRCCTRL(*this, "lstIgnore", wxListBox);
+    if (lst)
+    {
+        wxArrayString IgnoreOutput;
+        IgnoreOutput = Manager::Get()->GetConfigManager(_T("compiler"))->ReadArrayString(_T("/ignore_output"));
+        ArrayString2ListBox(IgnoreOutput, lst);
+    }
 } // DoFillOthers
 
 void CompilerOptionsDlg::DoFillTree()
@@ -1927,6 +1938,34 @@ void CompilerOptionsDlg::OnClearExtraPathClick(wxCommandEvent& /*event*/)
     }
 } // OnClearExtraPathClick
 
+void CompilerOptionsDlg::OnIgnoreAddClick(wxCommandEvent& /*event*/)
+{
+    wxListBox*  list = XRCCTRL(*this, "lstIgnore", wxListBox);
+    wxTextCtrl* text = XRCCTRL(*this, "txtIgnore", wxTextCtrl);
+
+    wxString ignore_str = text->GetValue().Trim();
+    if (   (ignore_str.Len()>0)
+        && (list->FindString(ignore_str)==wxNOT_FOUND) )
+    {
+        list->Append(ignore_str);
+        m_bDirty = true;
+    }
+} // OnIgnoreAddClick
+
+void CompilerOptionsDlg::OnIgnoreRemoveClick(wxCommandEvent& /*event*/)
+{
+    wxListBox* list = XRCCTRL(*this, "lstIgnore", wxListBox);
+    if (!list || list->IsEmpty())
+        return;
+
+    int selection = list->GetSelection();
+    if (selection!=wxNOT_FOUND)
+    {
+        list->Delete(selection);
+        m_bDirty = true;
+    }
+} // OnIgnoreRemoveClick
+
 void CompilerOptionsDlg::OnMoveLibUpClick(wxSpinEvent& /*event*/)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
@@ -2183,6 +2222,16 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     {
         XRCCTRL(*this, "chkFullHtmlLog", wxCheckBox)->Enable(XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox)->IsChecked());
     }
+    if (   XRCCTRL(*this, "lstIgnore",       wxListBox)
+        && XRCCTRL(*this, "btnIgnoreRemove", wxButton) ) // page exists?
+    {
+        XRCCTRL(*this, "btnIgnoreRemove", wxButton)->Enable(XRCCTRL(*this, "lstIgnore", wxListBox)->GetCount()>0);
+    }
+    if (   XRCCTRL(*this, "txtIgnore",    wxTextCtrl)
+        && XRCCTRL(*this, "btnIgnoreAdd", wxButton) ) // page exists?
+    {
+        XRCCTRL(*this, "btnIgnoreAdd", wxButton)->Enable(XRCCTRL(*this, "txtIgnore", wxTextCtrl)->GetValue().Trim().Len()>0);
+    }
 } // OnUpdateUI
 
 void CompilerOptionsDlg::OnApply()
@@ -2234,6 +2283,14 @@ void CompilerOptionsDlg::OnApply()
     if (chk)
     {
         Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/rebuild_seperately"), (bool)chk->IsChecked());
+    }
+
+    wxListBox* lst = XRCCTRL(*this, "lstIgnore", wxListBox);
+    if (lst)
+    {
+        wxArrayString IgnoreOutput;
+        ListBox2ArrayString(IgnoreOutput, lst);
+        Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/ignore_output"), IgnoreOutput);
     }
 
     m_Compiler->SaveOptions();

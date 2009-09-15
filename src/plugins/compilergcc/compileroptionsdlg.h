@@ -106,6 +106,8 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnEditExtraPathClick(wxCommandEvent& event);
         void OnRemoveExtraPathClick(wxCommandEvent& event);
         void OnClearExtraPathClick(wxCommandEvent& event);
+        void OnIgnoreAddClick(wxCommandEvent& event);
+        void OnIgnoreRemoveClick(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDirty(wxCommandEvent& event); // some controls who change their value -> dirty
         void OnMyCharHook(wxKeyEvent& event);

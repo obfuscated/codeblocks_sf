@@ -53,17 +53,17 @@
 
 const wxString g_EditorModified = _T("*");
 
-#define ERROR_MARKER        1
-#define ERROR_STYLE            wxSCI_MARK_SMALLRECT
+#define ERROR_MARKER          1
+#define ERROR_STYLE           wxSCI_MARK_SMALLRECT
 
-#define BOOKMARK_MARKER        2
-#define BOOKMARK_STYLE         wxSCI_MARK_ARROW
+#define BOOKMARK_MARKER       2
+#define BOOKMARK_STYLE        wxSCI_MARK_ARROW
 
-#define BREAKPOINT_MARKER    3
-#define BREAKPOINT_STYLE     wxSCI_MARK_CIRCLE
+#define BREAKPOINT_MARKER     3
+#define BREAKPOINT_STYLE      wxSCI_MARK_CIRCLE
 
-#define DEBUG_MARKER        4
-#define DEBUG_STYLE         wxSCI_MARK_ARROW
+#define DEBUG_MARKER          4
+#define DEBUG_STYLE           wxSCI_MARK_ARROW
 
 
 
@@ -650,29 +650,34 @@ void ScbEditor::UpdateProjectFile()
 void ScbEditor::SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back)
 {
     m_pControl->MarkerDefine(marker, markerType);
-	m_pControl->MarkerSetForeground(marker, fore);
-	m_pControl->MarkerSetBackground(marker, back);
+    m_pControl->MarkerSetForeground(marker, fore);
+    m_pControl->MarkerSetBackground(marker, back);
 
-	if (m_pControl2)
-	{
-		m_pControl2->MarkerDefine(marker, markerType);
-		m_pControl2->MarkerSetForeground(marker, fore);
-		m_pControl2->MarkerSetBackground(marker, back);
-	}
+    if (m_pControl2)
+    {
+        m_pControl2->MarkerDefine(marker, markerType);
+        m_pControl2->MarkerSetForeground(marker, fore);
+        m_pControl2->MarkerSetBackground(marker, back);
+    }
 }
 
 void ScbEditor::UnderlineFoldedLines(bool underline)
 {
     m_pControl->SetFoldFlags(underline ? 16 : 0);
     if (m_pControl2)
-		m_pControl2->SetFoldFlags(underline ? 16 : 0);
+        m_pControl2->SetFoldFlags(underline ? 16 : 0);
 }
 
 cbStyledTextCtrl* ScbEditor::CreateEditor()
 {
     m_ID = wxNewId();
 
-    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, m_pControl ? wxDefaultSize : GetSize());
+    // avoid gtk-critical because of sizes less than -1 (can happen with wxAuiNotebook)
+    wxSize size = m_pControl ? wxDefaultSize : GetSize();
+    size.x = std::max(size.x, -1);
+    size.y = std::max(size.y, -1);
+
+    cbStyledTextCtrl* control = new cbStyledTextCtrl(this, m_ID, wxDefaultPosition, size);
     control->UsePopUp(false);
 
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString);
@@ -738,6 +743,9 @@ cbStyledTextCtrl* ScbEditor::CreateEditor()
         wxEVT_SCI_HOTSPOT_CLICK,
         wxEVT_SCI_HOTSPOT_DCLICK,
         wxEVT_SCI_CALLTIP_CLICK,
+//        wxEVT_SCI_AUTOCOMP_SELECTION,
+//        wxEVT_SCI_INDICATOR_CLICK,
+//        wxEVT_SCI_INDICATOR_RELEASE,
 
         -1 // to help enumeration of this array
     };
@@ -780,6 +788,18 @@ void ScbEditor::Split(ScbEditor::SplitType split)
     // create the right control
     m_pControl2 = CreateEditor();
 
+    // update controls' look'n'feel
+    // do it here (before) document is attached, speeds up syntaxhighlighting
+    // we do not call "SetEditorStyleAfterFileOpen" here becaus it calls SetLanguage for the already loaded text inside
+    // the left control and slows down loaduing of large files a lot.
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
+    UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
+    InternalSetEditorStyleBeforeFileOpen(m_pControl2);
+
+    if (m_pTheme)
+        m_pTheme->Apply(m_lang, m_pControl2);
+
     // and make it a live copy of left control
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
@@ -807,13 +827,8 @@ void ScbEditor::Split(ScbEditor::SplitType split)
             break;
     }
 
-    // update controls' look'n'feel
-    SetEditorStyleBeforeFileOpen();
     SetEditorStyleAfterFileOpen();
 
-    // apply syntax highlighting too
-    if (m_pTheme)
-        m_pTheme->Apply(m_lang, m_pControl2);
 
     // make sure the line numbers margin is correct for the new control
     m_pControl2->SetMarginWidth(0, m_pControl->GetMarginWidth(0));
@@ -878,7 +893,7 @@ void ScbEditor::SetEditorStyleBeforeFileOpen()
     }
 
     // Folding properties.
-	m_pData->mFoldingLimit = mgr->ReadBool(_T("/folding/limit"), false);
+    m_pData->mFoldingLimit = mgr->ReadBool(_T("/folding/limit"), false);
     m_pData->mFoldingLimitLevel = mgr->ReadInt(_T("/folding/limit_level"), 1);
 
     // EOL properties
@@ -975,7 +990,7 @@ void ScbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
 
     control->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
-    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false));
+    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false)?wxSTI_IV_LOOKBOTH:wxSTI_IV_NONE);
     control->SetTabIndents(mgr->ReadBool(_T("/tab_indents"), true));
     control->SetBackSpaceUnIndents(mgr->ReadBool(_T("/backspace_unindents"), true));
     control->SetWrapMode(mgr->ReadBool(_T("/word_wrap"), false));
@@ -1130,22 +1145,26 @@ void ScbEditor::SetUseBom( bool bom )
 bool ScbEditor::Reload(bool detectEncoding)
 {
     // keep current pos
-    int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
-    int pos2 = m_pControl2 ? m_pControl2->GetCurrentPos() : 0;
+    const int pos = m_pControl ? m_pControl->GetCurrentPos() : 0;
+    const int pos2 = m_pControl2 ? m_pControl2->GetCurrentPos() : 0;
 
     // call open
     if (!Open(detectEncoding))
+    {
         return false;
-
+    }
     // Re-establish margin styles, width,  etc
-    SetEditorStyleAfterFileOpen(); //(pecan 2008/8/01)
+    SetEditorStyleAfterFileOpen();
 
     // return (if possible) to old pos
     if (m_pControl)
+    {
         m_pControl->GotoPos(pos);
+    }
     if (m_pControl2)
+    {
         m_pControl2->GotoPos(pos2);
-
+    }
     return true;
 }
 
@@ -1181,7 +1200,6 @@ void ScbEditor::SetLanguage( HighlightLanguage lang )
 {
     if (m_pTheme)
     {
-        //?m_lang = m_pTheme->Apply((cbEditor*)this, lang);
         m_lang = m_pTheme->Apply(this, lang);
     }
     else
@@ -1222,9 +1240,9 @@ bool ScbEditor::Open(bool detectEncoding)
     st = enc.GetWxStr();
     if (detectEncoding)
     {
-		m_pData->m_useByteOrderMark = enc.UsesBOM();
-		m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
-		m_pData->m_encoding = enc.GetFontEncoding();
+        m_pData->m_useByteOrderMark = enc.UsesBOM();
+        m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
+        m_pData->m_encoding = enc.GetFontEncoding();
 
         SetEncoding(enc.GetFontEncoding());
         m_pData->m_byteOrderMarkLength = enc.GetBOMSizeInBytes();
@@ -1238,7 +1256,7 @@ bool ScbEditor::Open(bool detectEncoding)
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
     m_pControl->SetReadOnly(read_only);
-    SetLanguage(HL_AUTO);
+//    SetLanguage(HL_AUTO); // bottleneck !!! no need to set it here, it's already done in SetEditorStyleBeforeFileOpen
 
     if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/fold_all_on_open"), false))
         FoldAll();
@@ -1312,7 +1330,6 @@ bool ScbEditor::Save()
     m_pControl->SetSavePoint();
     SetModified(false);
 
-    //-NotifyPlugins(cbEVT_EDITOR_SAVE);
     return true;
 } // end of Save
 
@@ -1354,19 +1371,19 @@ bool ScbEditor::SaveAs()
     {
         Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
     }
-    wxFileDialog* dlg = new wxFileDialog(Manager::Get()->GetAppWindow(),
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
                                          _("Save file"),
                                          Path,
                                          fname.GetFullName(),
                                          Filters,
                                          wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-    dlg->SetFilterIndex(StoredIndex);
-    PlaceWindow(dlg);
-    if (dlg->ShowModal() != wxID_OK)
+    dlg.SetFilterIndex(StoredIndex);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() != wxID_OK)
     {  // cancelled out
         return false;
     }
-    m_Filename = dlg->GetPath();
+    m_Filename = dlg.GetPath();
     Manager::Get()->GetLogManager()->Log(m_Filename);
     fname.Assign(m_Filename);
     m_Shortname = fname.GetFullName();
@@ -1378,16 +1395,15 @@ bool ScbEditor::SaveAs()
     // store the last used filter and directory
     if(mgr)
     {
-        int Index = dlg->GetFilterIndex();
+        int Index = dlg.GetFilterIndex();
         wxString Filter;
         if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
         {
             mgr->Write(_T("/file_dialogs/save_file_as/filter"), Filter);
         }
-        wxString Test = dlg->GetDirectory();
-        mgr->Write(_T("/file_dialogs/save_file_as/directory"), dlg->GetDirectory());
+        wxString Test = dlg.GetDirectory();
+        mgr->Write(_T("/file_dialogs/save_file_as/directory"), dlg.GetDirectory());
     }
-    dlg->Destroy();
     return Save();
 } // end of SaveAs
 
@@ -1501,15 +1517,15 @@ void ScbEditor::AutoComplete()
                 wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
                 if (macro.IsEmpty())
                 {
-                	canceled = true;
-                	break;
+                    canceled = true;
+                    break;
                 }
                 code.Replace(_T("$(") + macroName + _T(")"), macro);
                 macroPos = code.Find(_T("$("));
             }
 
             if (canceled)
-				break;
+                break;
 
             control->BeginUndoAction();
 
@@ -1596,30 +1612,30 @@ bool ScbEditor::DoFoldLine(int line, int fold)
     cbStyledTextCtrl* ctrl = GetControl();
     int level = ctrl->GetFoldLevel(line);
 
-	// The fold parameter is the type of folding action requested
-	// 0 = Unfold; 1 = Fold; 2 = Toggle folding.
+    // The fold parameter is the type of folding action requested
+    // 0 = Unfold; 1 = Fold; 2 = Toggle folding.
 
-	// Check if the line is a header (fold point).
+    // Check if the line is a header (fold point).
     if (level & wxSCI_FOLDLEVELHEADERFLAG)
     {
-    	bool IsExpanded = ctrl->GetFoldExpanded(line);
+        bool IsExpanded = ctrl->GetFoldExpanded(line);
 
-		// If a fold/unfold request is issued when the block is already
-		// folded/unfolded, ignore the request.
-    	if (fold == 0 && IsExpanded) return true;
-    	if (fold == 1 && !IsExpanded) return true;
+        // If a fold/unfold request is issued when the block is already
+        // folded/unfolded, ignore the request.
+        if (fold == 0 && IsExpanded) return true;
+        if (fold == 1 && !IsExpanded) return true;
 
-    	// Apply the folding level limit only if the current block will be
-    	// folded (that means it's currently expanded), folding level limiter
-    	// must be enabled of course. Unfolding will not be affected.
-    	if (m_pData->mFoldingLimit && IsExpanded)
-    	{
-    		if ((level & wxSCI_FOLDLEVELNUMBERMASK) > (wxSCI_FOLDLEVELBASE + m_pData->mFoldingLimitLevel-1))
-				return false;
-    	}
+        // Apply the folding level limit only if the current block will be
+        // folded (that means it's currently expanded), folding level limiter
+        // must be enabled of course. Unfolding will not be affected.
+        if (m_pData->mFoldingLimit && IsExpanded)
+        {
+            if ((level & wxSCI_FOLDLEVELNUMBERMASK) > (wxSCI_FOLDLEVELBASE + m_pData->mFoldingLimitLevel-1))
+                return false;
+        }
 
-    	ctrl->ToggleFold(line);
-    	return true;
+        ctrl->ToggleFold(line);
+        return true;
     }
     return false;
 }
@@ -1645,36 +1661,36 @@ void ScbEditor::SetFoldingIndicator(int id)
     if(id == 0)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_ARROW, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_ARROWDOWN, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_BACKGROUND, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 
     //Circle
     else if(id == 1)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_CIRCLEMINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_CIRCLEPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNERCURVE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_CIRCLEPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_CIRCLEPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNERCURVE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_CIRCLEPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_CIRCLEMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 
     //Square
     else if(id == 2)
     {
         SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_BOXMINUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
-		SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
+        SetMarkerStyle(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER, wxColor(0xff, 0xff, 0xff), wxColor(0x80, 0x80, 0x80));
     }
 
     //Simple
@@ -1714,6 +1730,17 @@ void ScbEditor::ToggleFoldBlockFromLine(int line)
 void ScbEditor::GotoLine(int line, bool centerOnScreen)
 {
     cbStyledTextCtrl* control = GetControl();
+
+    // Make sure the line is not folded. This is done before moving to that
+    // line because folding may change the lines layout.
+    control->EnsureVisible(line);
+
+    // If the line or the following is a fold point it will be unfolded, in this way
+    // when the line is a function declaration (or only contains the opening brace of it [yes, that happens sometimes] )
+    // the body is shown.
+    DoFoldLine(line,0);
+    DoFoldLine(line+1,0);
+
     if (centerOnScreen)
     {
         int onScreen = control->LinesOnScreen() >> 1;
@@ -1721,7 +1748,6 @@ void ScbEditor::GotoLine(int line, bool centerOnScreen)
         control->GotoLine(line + onScreen);
     }
     control->GotoLine(line);
-    UnfoldBlockFromLine(line); // make sure it's visible (not folded)
 }
 
 bool ScbEditor::AddBreakpoint(int line, bool notifyDebugger)
@@ -2010,7 +2036,9 @@ void ScbEditor::HighlightBraces()
     if (newPos == wxSCI_INVALID_POSITION)
     {
         if(currPos > 0)
+        {
             currPos--;
+        }
         newPos = control->BraceMatch(currPos);
     }
     wxChar ch = control->GetCharAt(currPos);
@@ -2018,12 +2046,21 @@ void ScbEditor::HighlightBraces()
         ch == _T('}') || ch == _T(']') || ch == _T(')'))
     {
         if (newPos != wxSCI_INVALID_POSITION)
+        {
             control->BraceHighlight(currPos, newPos);
+            const int currColum = control->GetColumn(currPos);
+            const int newColum = control->GetColumn(newPos);
+            control->SetHighlightGuide((currColum < newColum) ? currColum :newColum);
+        }
         else
+        {
             control->BraceBadLight(currPos);
+        }
     }
     else
+    {
         control->BraceHighlight(-1, -1);
+    }
 }
 
 int ScbEditor::GetLineIndentInSpaces(int line) const
@@ -2038,11 +2075,17 @@ int ScbEditor::GetLineIndentInSpaces(int line) const
     for (unsigned int i = 0; i < len; ++i)
     {
         if (text[i] == _T(' '))
+        {
             ++spaceCount;
+        }
         else if (text[i] == _T('\t'))
+        {
             spaceCount += control->GetTabWidth();
+        }
         else
+        {
             break;
+        }
     }
     return spaceCount;
 }
@@ -2059,9 +2102,13 @@ wxString ScbEditor::GetLineIndentString(int line) const
     for (unsigned int i = 0; i < len; ++i)
     {
         if (text[i] == _T(' ') || text[i] == _T('\t'))
+        {
             indent << text[i];
+        }
         else
+        {
             break;
+        }
     }
     return indent;
 }
@@ -2522,7 +2569,7 @@ void ScbEditor::OnEditorCharAdded(wxScintillaEvent& event)
     else if (ch == _T('}'))
     {
         bool smartIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/smart_indent"), true);
-        if (smartIndent)
+        if ( smartIndent && ( (control->GetLexer() == wxSCI_LEX_CPP) || (control->GetLexer() == wxSCI_LEX_D) ) )
         {
             control->BeginUndoAction();
             // undo block indentation, if needed
@@ -2683,6 +2730,9 @@ void ScbEditor::OnScintillaEvent(wxScintillaEvent& event)
 //	else if (type == wxEVT_SCI_HOTSPOT_CLICK) txt << _T("wxEVT_SCI_HOTSPOT_CLICK");
 //	else if (type == wxEVT_SCI_HOTSPOT_DCLICK) txt << _T("wxEVT_SCI_HOTSPOT_DCLICK");
 //	else if (type == wxEVT_SCI_CALLTIP_CLICK) txt << _T("wxEVT_SCI_CALLTIP_CLICK");
+//	else if (type == wxEVT_SCI_AUTOCOMP_SELECTION) txt << _T("wxEVT_SCI_AUTOCOMP_SELECTION");
+//	else if (type == wxEVT_SCI_INDICATOR_CLICK) txt << _T("wxEVT_SCI_INDICATOR_CLICK");
+//	else if (type == wxEVT_SCI_INDICATOR_RELEASE) txt << _T("wxEVT_SCI_INDICATOR_RELEASE");
 //    Manager::Get()->GetLogManager()->DebugLog(txt);
 
     // call any hooked functors

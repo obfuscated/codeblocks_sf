@@ -36,7 +36,7 @@
 #pragma hdrstop
 #endif //__BORLANDC__
 
-#include "wxscintilla/include/wx/wxscintilla.h"
+#include <wx/wxscintilla.h>
 #include "snippetpropertyform.h"
 //-#include "edit.h"
 

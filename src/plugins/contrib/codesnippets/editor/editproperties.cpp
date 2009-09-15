@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
-#include <wxscintilla/include/wx/wxscintilla.h>  // scintilla edit control
+#include <wx/wxscintilla.h>  // scintilla edit control
 
 #include "sdk.h"
 #include "editproperties.h"
