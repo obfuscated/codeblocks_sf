@@ -476,7 +476,7 @@ bool ThreadSearchView::UpdatePreview(const wxString& file, long line)
 
 		int startPos = m_pSearchPreview->PositionFromLine(line);
 		int endPos   = m_pSearchPreview->GetLineEndPosition(line);
-		m_pSearchPreview->SetSelectionVoid(endPos, startPos);
+		m_pSearchPreview->SetSelection(endPos, startPos);
 	}
 
 	// Enable read only
