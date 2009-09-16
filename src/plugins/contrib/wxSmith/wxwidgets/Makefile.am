@@ -60,7 +60,7 @@ libwxsmith_wxwidgets_la_SOURCES = \
 ./wxscodegenerator.cpp
 
 sdkdir=$(includedir)/wxsmith/wxwidgets/
- 
+
 sdk_HEADERS = \
 ./wxsitemresdata.h \
 ./wxspredefinedids.h \

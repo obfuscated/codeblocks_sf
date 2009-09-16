@@ -34,7 +34,11 @@ wxsPropertyGridManager::wxsPropertyGridManager(
     const wxPoint& pos,
     const wxSize& size,
     long style,
+    #if wxCHECK_VERSION(2, 9, 0)
+    const char* name):
+    #else
     const wxChar* name):
+    #endif
         wxPropertyGridManager(parent,id,pos,size,style,name),
         MainContainer(0)
 {
@@ -251,8 +255,13 @@ void wxsPropertyGridManager::StoreSelected(SelectionData* Data)
 
     Data->m_PageIndex = GetSelectedPage();
 
+    #if wxCHECK_VERSION(2, 9, 0)
+    wxPGId Selected = GetSelection();
+    if ( Selected != NULL )
+    #else
     wxPGId Selected = GetSelectedProperty();
     if ( wxPGIdIsOk(Selected) )
+    #endif
     {
         Data->m_PropertyName = GetPropertyName(Selected);
     }

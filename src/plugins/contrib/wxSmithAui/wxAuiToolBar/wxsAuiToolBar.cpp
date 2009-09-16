@@ -309,6 +309,15 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                     }
 
                     Codef(_T("%AAddTool(%s, %t, %i, %i, %s, %t, %t, NULL);\n"),
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Child->GetIdName().wx_str(),
+                        Extra->m_Label.wx_str(),
+                        &Bitmap,_T("wxART_TOOLBAR"),
+                        &DisabledBitmap,_T("wxART_TOOLBAR"),
+                        ItemKind.wx_str(),
+                        Item->m_ShortHelp.wx_str(),
+                        Item->m_LongHelp.wx_str());
+                        #else
                         Child->GetIdName().c_str(),
                         Extra->m_Label.c_str(),
                         &Bitmap,_T("wxART_TOOLBAR"),
@@ -316,9 +325,15 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                         ItemKind.c_str(),
                         Item->m_ShortHelp.c_str(),
                         Item->m_LongHelp.c_str());
+                        #endif
                     if ( Item->m_DropDown && (Item->m_ItemKind == wxITEM_NORMAL) )
                     {
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Codef(_T("%ASetToolDropDown(%s, true);\n"),Item->GetIdName().wx_str());
+                        #else
                         Codef(_T("%ASetToolDropDown(%s, true);\n"),Item->GetIdName().c_str());
+                        #endif
+
                     }
                 }
                 else if ( ClassName == _T("wxAuiToolBarSeparator") )
@@ -330,11 +345,20 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                     wxsAuiToolBarLabel* Label = (wxsAuiToolBarLabel*) Child;
                     if ( Label->m_IsDefault )
                     {
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Codef(_T("%AAddLabel(%s, %t);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str());
+                        #else
                         Codef(_T("%AAddLabel(%s, %t);\n"),Child->GetIdName().c_str(),Extra->m_Label.c_str());
+                        #endif
+
                     }
                     else
                     {
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Codef(_T("%AAddLabel(%s, %t, %d);\n"),Child->GetIdName().wx_str(),Extra->m_Label.wx_str(),Label->m_Width);
+                        #else
                         Codef(_T("%AAddLabel(%s, %t, %d);\n"),Child->GetIdName().c_str(),Extra->m_Label.c_str(),Label->m_Width);
+                        #endif
                     }
                 }
                 else if ( ClassName == _T("wxAuiToolBarSpacer") )
@@ -346,12 +370,21 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                 else
                 {
                     // If child is not any of wxAuiToolBarItems, it is a wxControl
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("%AAddControl(%o, %t);\n"),i,Extra->m_Label.wx_str());
+                    if ( !Extra->m_Enabled && Child->GetBaseProps()->m_Enabled ) Codef(_T("%s->Enable(false);\n"),Child->GetVarName().wx_str());
+                    #else
                     Codef(_T("%AAddControl(%o, %t);\n"),i,Extra->m_Label.c_str());
                     if ( !Extra->m_Enabled && Child->GetBaseProps()->m_Enabled ) Codef(_T("%s->Enable(false);\n"),Child->GetVarName().c_str());
+                    #endif
                     continue;
                 }
 
+                #if wxCHECK_VERSION(2, 9, 0)
+                if ( !Extra->m_Enabled ) Codef(_T("%AEnableTool(%s, false);\n"),Child->GetIdName().wx_str());
+                #else
                 if ( !Extra->m_Enabled ) Codef(_T("%AEnableTool(%s, false);\n"),Child->GetIdName().c_str());
+                #endif
             }
 
             Codef(_T("%ARealize();\n"));

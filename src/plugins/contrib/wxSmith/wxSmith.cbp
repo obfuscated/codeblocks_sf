@@ -65,13 +65,13 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\mozilla_chardet" />
 			<Add directory="..\..\..\include\wxscintilla\include" />
 			<Add directory="..\..\..\include\scripting\include" />
 			<Add directory="..\..\..\include\scripting\squirrel" />
 			<Add directory="..\..\..\include\scripting\sqplus" />
 			<Add directory="..\..\..\include\scripting\bindings" />
 			<Add directory="propgrid\contrib\include" />
-			<Add directory="..\..\..\include\mozilla_chardet" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -83,9 +83,9 @@
 			<Add option="-Wl,--enable-auto-import" />
 			<Add library="txml" />
 			<Add library="propgrid" />
+			<Add library="wxscintilla" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add library="wxscintilla" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\devel" />

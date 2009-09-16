@@ -57,14 +57,22 @@ void wxsStatusBar::OnBuildCreatingCode()
                 wxString WidthsVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarWidths"));
                 wxString StylesVarName = GetCoderContext()->GetUniqueName(_T("__wxStatusBarStyles"));
 
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("int %v[%d] = { "),WidthsVarName.wx_str(),m_Fields);
+                #else
                 Codef(_T("int %v[%d] = { "),WidthsVarName.c_str(),m_Fields);
+                #endif
                 for ( int i=0; i<m_Fields; i++ )
                 {
                     Codef( _T("%d%s"),
                         m_VarWidth[i]?-m_Widths[i]:m_Widths[i],
                         i==(m_Fields-1) ? _T(" };\n") : _T(", "));
                 }
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("int %v[%d] = { "),StylesVarName.wx_str(),m_Fields);
+                #else
                 Codef(_T("int %v[%d] = { "),StylesVarName.c_str(),m_Fields);
+                #endif
                 for ( int i=0; i<m_Fields; i++ )
                 {
                     Codef(_T("%s%s"),
@@ -73,8 +81,13 @@ void wxsStatusBar::OnBuildCreatingCode()
                                                      _T("wxSB_NORMAL"),
                         i==(m_Fields-1) ? _T(" };\n") : _T(", "));
                 }
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.wx_str());
+                Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.wx_str());
+                #else
                 Codef(_T("%ASetFieldsCount(%d,%v);\n"),m_Fields,WidthsVarName.c_str());
                 Codef(_T("%ASetStatusStyles(%d,%v);\n"),m_Fields,StylesVarName.c_str());
+                #endif
                 Codef(_T("SetStatusBar(%O);\n"));
             }
             BuildSetupWindowCode();

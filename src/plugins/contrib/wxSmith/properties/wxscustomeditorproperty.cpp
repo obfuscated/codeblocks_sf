@@ -25,7 +25,9 @@
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
 #include <wx/propgrid/propgrid.h>
+#if !wxCHECK_VERSION(2, 9, 0)
 #include <wx/propgrid/propdev.h>
+#endif
 #include <wx/propgrid/advprops.h>
 #include <wx/propgrid/manager.h>
 

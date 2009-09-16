@@ -69,7 +69,11 @@ void wxsComboBox::OnBuildCreatingCode()
                 {
                     Codef(_T("%ASetSelection( "));;
                 }
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef( _T("%AAppend(%t)"), ArrayChoices[i].wx_str());
+                #else
                 Codef( _T("%AAppend(%t)"), ArrayChoices[i].c_str());
+                #endif
                 if ( DefaultSelection == (int)i )
                 {
                     Codef(_T(" )"));

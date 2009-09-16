@@ -33,6 +33,10 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 
+#if wxCHECK_VERSION(2, 9, 0)
+#define wxPGId                          wxPGProperty*
+#endif
+
 class wxsPropertyContainer;
 class wxsProperty;
 
@@ -56,7 +60,11 @@ class wxsPropertyGridManager: public wxPropertyGridManager
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize,
             long style = wxPGMAN_DEFAULT_STYLE,
+            #if wxCHECK_VERSION(2, 9, 0)
+            const char* name = wxPropertyGridManagerNameStr);
+            #else
             const wxChar* name = wxPropertyGridManagerNameStr);
+            #endif
 
         /** \brief Dctor */
         virtual ~wxsPropertyGridManager();

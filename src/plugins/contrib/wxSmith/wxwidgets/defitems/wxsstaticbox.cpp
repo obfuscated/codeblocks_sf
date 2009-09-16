@@ -52,7 +52,11 @@ void wxsStaticBox::OnBuildCreatingCode()
         case wxsCPP:
         {
             AddHeader(_T("<wx/statbox.h>"),GetInfo().ClassName,hfInPCH);
+            #if wxCHECK_VERSION(2, 9, 0)
+            Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.wx_str());
+            #else
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %N);\n"),Label.c_str());
+            #endif
             BuildSetupWindowCode();
             return;
         }

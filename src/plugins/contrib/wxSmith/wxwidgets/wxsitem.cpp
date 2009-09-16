@@ -232,10 +232,18 @@ void wxsItem::BuildSetupWindowCode()
             if ( PropertiesFlags&flColours )
             {
                 wxString FGCol = m_BaseProperties.m_Fg.BuildCode(GetCoderContext());
+                #if wxCHECK_VERSION(2, 9, 0)
+                if ( !FGCol.empty() ) Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.wx_str());
+                #else
                 if ( !FGCol.empty() ) Codef(_T("%ASetForegroundColour(%s);\n"),FGCol.c_str());
+                #endif
 
                 wxString BGCol = m_BaseProperties.m_Bg.BuildCode(GetCoderContext());
+                #if wxCHECK_VERSION(2, 9, 0)
+                if ( !BGCol.empty() ) Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.wx_str());
+                #else
                 if ( !BGCol.empty() ) Codef(_T("%ASetBackgroundColour(%s);\n"),BGCol.c_str());
+                #endif
             }
 
             if ( PropertiesFlags&flFont )
@@ -243,12 +251,21 @@ void wxsItem::BuildSetupWindowCode()
                 wxString FontVal = m_BaseProperties.m_Font.BuildFontCode(GetVarName() + _T("Font"), GetCoderContext());
                 if ( !FontVal.empty() )
                 {
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("%s%ASetFont(%sFont);\n"),FontVal.wx_str(),GetVarName().wx_str());
+                    #else
                     Codef(_T("%s%ASetFont(%sFont);\n"),FontVal.c_str(),GetVarName().c_str());
+                    #endif
                 }
             }
 
+            #if wxCHECK_VERSION(2, 9, 0)
+            if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.wx_str());
+            if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.wx_str());
+            #else
             if ( (PropertiesFlags&flToolTip)  && !m_BaseProperties.m_ToolTip.IsEmpty()  )   Codef(_T("%ASetToolTip(%t);\n"),m_BaseProperties.m_ToolTip.c_str());
             if ( (PropertiesFlags&flHelpText) && !m_BaseProperties.m_HelpText.IsEmpty() )   Codef(_T("%ASetHelpText(%t);\n"),m_BaseProperties.m_HelpText.c_str());
+            #endif
             if ( (PropertiesFlags&flExtraCode) && !m_BaseProperties.m_ExtraCode.IsEmpty() )
             {
                 wxString& ExtraCode = m_BaseProperties.m_ExtraCode;
@@ -265,7 +282,11 @@ void wxsItem::BuildSetupWindowCode()
                 wxString ExStyleStr = m_BaseProperties.m_StyleSet->GetString(m_BaseProperties.m_ExStyleBits,true,wxsCPP);
                 if ( ExStyleStr != _T("0") )
                 {
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("%ASetExtraStyle( %AGetExtraStyle() | %s );\n"),ExStyleStr.wx_str());
+                    #else
                     Codef(_T("%ASetExtraStyle( %AGetExtraStyle() | %s );\n"),ExStyleStr.c_str());
+                    #endif
                 }
             }
 
@@ -917,7 +938,11 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
 
                         default:
                         {
+                            #if wxCHECK_VERSION(2, 9, 0)
+                            Result.Append(*Fmt);
+                            #else
                             *Result.Append(*Fmt);
+                            #endif
                         }
                     }
                     Fmt++;

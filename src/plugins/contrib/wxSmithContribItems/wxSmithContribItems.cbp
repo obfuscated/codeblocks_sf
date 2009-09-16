@@ -72,7 +72,6 @@
 					<Add library="wxchartctrl" />
 					<Add library="wxcustombutton" />
 					<Add directory="wxflatnotebook" />
-					<Add directory="..\..\..\devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithContribItems.zip manifest.xml" />
@@ -105,6 +104,7 @@
 		</Compiler>
 		<Linker>
 			<Add library="wxmsw28$(WX_SUFFIX)" />
+			<Add directory="..\..\..\devel" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="manifest.xml">

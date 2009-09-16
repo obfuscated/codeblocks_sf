@@ -28,7 +28,7 @@ libwxsmith_properties_la_SOURCES = \
 ./wxspropertycontainer.cpp
 
 sdkdir=$(includedir)/wxsmith/properties
- 
+
 sdk_HEADERS = \
 ./wxspropertycontainer.h \
 ./wxsproperties.h \

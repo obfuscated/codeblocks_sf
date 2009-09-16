@@ -212,10 +212,18 @@ void wxsContainer::AddChildrenCode()
                     wxString ChildAccessPrefix = Child->GetAccessPrefix(GetLanguage());
                     if ( GetBaseProps()->m_Size.IsDefault )
                     {
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Codef(_T("%sFit(%O);\n"),ChildAccessPrefix.wx_str());
+                        #else
                         Codef(_T("%sFit(%O);\n"),ChildAccessPrefix.c_str());
+                        #endif
                     }
 
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.wx_str());
+                    #else
                     Codef(_T("%sSetSizeHints(%O);\n"),ChildAccessPrefix.c_str());
+                    #endif
                 }
             }
 

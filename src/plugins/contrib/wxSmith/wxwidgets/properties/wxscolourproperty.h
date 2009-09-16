@@ -27,7 +27,11 @@
 #include "../wxscodercontext.h"
 
 #include <wx/dialog.h>
+#if wxCHECK_VERSION(2, 9, 0)
+#include <wx/propgrid/editors.h>
+#else
 #include <wx/propgrid/propdev.h>
+#endif
 #include <wx/propgrid/advprops.h>
 
 #define wxsCOLOUR_DEFAULT   (wxPG_COLOUR_CUSTOM - 1)

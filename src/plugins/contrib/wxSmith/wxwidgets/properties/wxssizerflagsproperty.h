@@ -40,15 +40,17 @@ class wxsSizerFlagsProperty: public wxsProperty
         static const long BorderBottom          = 0x0002;
         static const long BorderLeft            = 0x0004;
         static const long BorderRight           = 0x0008;
-        static const long Expand                = 0x0010;
-        static const long Shaped                = 0x0020;
-        static const long FixedMinSize          = 0x0040;
-        static const long AlignLeft             = 0x0080;
-        static const long AlignRight            = 0x0100;
-        static const long AlignTop              = 0x0200;
-        static const long AlignBottom           = 0x0400;
-        static const long AlignCenterVertical   = 0x0800;
-        static const long AlignCenterHorizontal = 0x1000;
+        static const long BorderAll             = 0x0010;
+        static const long BorderPrevAll         = 0x0020;
+        static const long Expand                = 0x0040;
+        static const long Shaped                = 0x0080;
+        static const long FixedMinSize          = 0x0100;
+        static const long AlignLeft             = 0x0200;
+        static const long AlignRight            = 0x0400;
+        static const long AlignTop              = 0x0800;
+        static const long AlignBottom           = 0x1000;
+        static const long AlignCenterVertical   = 0x2000;
+        static const long AlignCenterHorizontal = 0x4000;
 
         /** \brief Ctor
          *  \param Offset   offset to long handling border flags
@@ -81,9 +83,6 @@ class wxsSizerFlagsProperty: public wxsProperty
         static void FixFlags(long& Flags);
 
         long Offset;
-
-        static const long BorderAll = 0x10000;
-        static const long BorderPrevAll = 0x20000;
 
         static const long BorderMask = BorderTop|BorderBottom|BorderLeft|BorderRight;
         static const long AlignHMask = AlignLeft|AlignRight|AlignCenterHorizontal;

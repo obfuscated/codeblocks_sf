@@ -56,7 +56,12 @@ bool wxsFlagsProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManage
 {
     if ( UpdateEnteries )
     {
+        #if wxCHECK_VERSION(2, 9, 0)
+        wxPGChoices choices = Grid->GetGrid()->GetSelection()->GetChoices();  
+        choices.Set(Names,Values);
+        #else
         Grid->GetPropertyChoices(Id).Set(Names,Values);
+        #endif
     }
     Grid->SetPropertyValue(Id,VALUE);
     return true;

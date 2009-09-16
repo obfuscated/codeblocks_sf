@@ -64,7 +64,11 @@ void wxsSingleInstanceChecker::OnBuildCreatingCode()
             }
             else
             {
+                #if wxCHECK_VERSION(2, 9, 0)
+                Codef(_T("%C(%n + wxGetUserId() + _T(\"_Guard\"));\n"), ( AppName + _T("_") ).wx_str() );
+                #else
                 Codef(_T("%C(%n + wxGetUserId() + _T(\"_Guard\"));\n"), ( AppName + _T("_") ).c_str() );
+                #endif
             }
             BuildSetupWindowCode();
             break;
