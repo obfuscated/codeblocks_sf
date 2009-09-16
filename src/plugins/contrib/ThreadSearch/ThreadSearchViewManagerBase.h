@@ -58,7 +58,6 @@ public:
 	virtual bool ShowView(bool show = true) = 0;
 
 	/** Return true if view is visible.
-	  * @param show : true => show, false => hide
 	  * @return true if view is visible.
 	  */
 	virtual bool IsViewShown() = 0;

@@ -99,7 +99,7 @@ public:
 	  * If the plugin does not need to add items in the menu,
 	  * just do nothing ;)
 	  * @param type the module that's preparing a popup menu
-	  * @param menu pointer to the popup menu
+	  * @param pMenu pointer to the popup menu
 	  * @param data pointer to FileTreeData object (to access/modify the file tree)
 	  */
 	virtual void BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const FileTreeData* data = 0);
@@ -206,6 +206,7 @@ protected:
 	  *                       the panel is managed by the MessageManager during last save.
 	  * @param sashPosition : position of the splitter window.
 	  * @param mgrType      : type of view manager (Messages notebook, layout)
+	  * @param searchPatterns : - undocumented -
 	  */
 	virtual void LoadConfig(bool &showPanel, int &sashPosition,
 							ThreadSearchViewManagerBase::eManagerTypes& mgrType,
@@ -213,10 +214,11 @@ protected:
 
 	/** This method saves the plugin configuration to default.conf using
 	  * the standard ConfigManager
-	  * @param ShowPanel :    boolean telling if ThreadSearch panel is managed
+	  * @param showPanel :    boolean telling if ThreadSearch panel is managed
 	  *                       by the MessageManager.
 	  * @param sashPosition : position of the splitter window.
 	  * @param mgrType :      Type of view manager (Messages notebook, layout)
+	  * @param searchPatterns : - undocumented -
 	  */
 	virtual void SaveConfig(bool showPanel, int sashPosition,
 							ThreadSearchViewManagerBase::eManagerTypes mgrType,
