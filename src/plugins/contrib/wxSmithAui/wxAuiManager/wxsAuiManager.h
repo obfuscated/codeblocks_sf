@@ -90,8 +90,8 @@ class wxsAuiPaneInfoExtra: public wxsPropertyContainer
             m_PaneBorder(true),
             m_Visible(true),
             m_DestroyOnClose(false),
-            m_LastDockDirection(0),
-            m_FirstAdd(true)
+            m_FirstAdd(true),
+            m_LastDockDirection(0)
         {
         }
 

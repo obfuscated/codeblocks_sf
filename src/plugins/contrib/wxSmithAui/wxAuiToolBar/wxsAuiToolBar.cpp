@@ -306,6 +306,10 @@ void wxsAuiToolBar::OnBuildCreatingCode()
                             ItemKind = _T("wxITEM_CHECK");
                             break;
                         }
+                        default:
+                        {
+                            break;
+                        }
                     }
 
                     Codef(_T("%AAddTool(%s, %t, %i, %i, %s, %t, %t, NULL);\n"),
@@ -434,7 +438,8 @@ void wxsAuiToolBar::UpdateCurrentSelection()
     for ( int i=0; i<GetChildCount(); i++ )
     {
         if ( m_CurrentSelection == GetChild(i) ) return;
-        wxsAuiToolBarExtra* Extra = (wxsAuiToolBarExtra*)GetChildExtra(i);
+        // Extra below is currently un-used
+        // wxsAuiToolBarExtra* Extra = (wxsAuiToolBarExtra*)GetChildExtra(i);
         if ( i==0 )
         {
             NewCurrentSelection = GetChild(i);
