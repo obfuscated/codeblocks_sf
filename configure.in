@@ -439,6 +439,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/ThreadSearch/Makefile
 	src/plugins/contrib/ThreadSearch/resources/Makefile
 	src/plugins/contrib/ThreadSearch/resources/images/Makefile
+	src/plugins/contrib/ThreadSearch/resources/images/16x16/Makefile
+	src/plugins/contrib/ThreadSearch/resources/images/22x22/Makefile
 	src/plugins/contrib/Valgrind/Makefile
 	src/plugins/contrib/Valgrind/resources/Makefile
 	src/plugins/contrib/wxSmith/Makefile
