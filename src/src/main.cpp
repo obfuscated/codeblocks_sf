@@ -1932,46 +1932,45 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     wxString buf = event.GetString();
     wxString links;
 
-    links << _("<b>Recent projects</b><br>\n");
+    links << _("<table>\n<tr><td colspan=\"2\"><b>Recent projects</b></td></tr>\n");
     if (m_pProjectsHistory->GetCount())
     {
-        links << _T("<ul>");
         for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_pProjectsHistory->GetCount())
                 break;
-            links << wxString::Format(_T("<li><a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a>"),
-                                      i + 1, m_pProjectsHistory->GetHistoryFile(i).c_str());
-            links << _T("&nbsp;&nbsp;"); // Some space between the HTML links
-            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%d\">X</a>"),
+            links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%d\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       i + 1);
-            links << _T("</li>");
+            links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
+            links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_PROJECT_%d\">%s</a>"),
+                                      i + 1, m_pProjectsHistory->GetHistoryFile(i).c_str());
+            links << _T("</td></tr>\n");
         }
-        links << _T("</ul><br>");
     }
     else
-        links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent projects<br>\n");
+        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;No recent projects</td></tr>\n");
 
-    links << _("<br><b>Recent files</b><br>\n");
+    links << _("</table>\n<table>\n<tr><td colspan=\"2\"><b>Recent files</b></td></tr>\n");
     if (m_pFilesHistory->GetCount())
     {
-        links << _T("<ul>");
         for (int i = 0; i < 9; ++i)
         {
             if (i >= (int)m_pFilesHistory->GetCount())
                 break;
-            links << _T("<li>");
+            links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
+            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%d\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
+                                      i + 1);
+            links << _T("<img alt=\"\"  width=\"10\" src=\"blank.png\" /></td><td width=\"10\">");
             links << wxString::Format(_T("<a href=\"CB_CMD_OPEN_HISTORY_FILE_%d\">%s</a>"),
                                       i + 1, m_pFilesHistory->GetHistoryFile(i).c_str());
-            links << _T("&nbsp;&nbsp;"); // Some space between the HTML links
-            links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%d\">X</a>"),
-                                      i + 1);
-            links << _T("</li>");
+            links << _T("</td></tr>\n");
         }
-        links << _T("</ul>");
     }
     else
-        links << _T("&nbsp;&nbsp;&nbsp;&nbsp;No recent files<br>\n");
+        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;No recent files</td></tr>\n");
+
+    links << _("</table>\n");
 
 
     // update page
