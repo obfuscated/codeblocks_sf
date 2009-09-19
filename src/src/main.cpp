@@ -1932,7 +1932,9 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     wxString buf = event.GetString();
     wxString links;
 
-    links << _("<table>\n<tr><td colspan=\"2\"><b>Recent projects</b></td></tr>\n");
+    links << _T("<table>\n<tr><td colspan=\"2\"><b>");
+    links << _("Recent projects");
+    links << _T("</b></td></tr>\n");
     if (m_pProjectsHistory->GetCount())
     {
         for (int i = 0; i < 9; ++i)
@@ -1949,9 +1951,15 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         }
     }
     else
-        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;No recent projects</td></tr>\n");
+    {
+        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
+        links << _("No recent projects");
+        links << _T("</td></tr>\n");
+    }
 
-    links << _("</table>\n<table>\n<tr><td colspan=\"2\"><b>Recent files</b></td></tr>\n");
+    links << _T("</table>\n<table>\n<tr><td colspan=\"2\"><b>");
+    links << _("Recent files");
+    links <<_T("</b></td></tr>\n");
     if (m_pFilesHistory->GetCount())
     {
         for (int i = 0; i < 9; ++i)
@@ -1968,9 +1976,13 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
         }
     }
     else
-        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;No recent files</td></tr>\n");
+    {
+        links << _T("<tr><td style=\"width:2em;\"></td><td>&nbsp;&nbsp;&nbsp;&nbsp;");
+        links << _("No recent files");
+        links << _T("</td></tr>\n");
+    }
 
-    links << _("</table>\n");
+    links << _T("</table>\n");
 
 
     // update page
