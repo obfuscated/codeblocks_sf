@@ -643,7 +643,7 @@ void ThreadSearch::OnBtnSearchClick(wxCommandEvent &event)
     {
         // In this case, user wants to stops search,
         // we just transmit event
-        m_pThreadSearchView->ProcessEvent(event);
+        m_pThreadSearchView->OnBtnSearchClick(event);
 
     }
     else
