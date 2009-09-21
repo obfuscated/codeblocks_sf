@@ -21,15 +21,15 @@ DEFINE_EVENT_TYPE(wxEVT_THREAD_SEARCH_ERROR)
 IMPLEMENT_DYNAMIC_CLASS(ThreadSearchEvent, wxCommandEvent)
 
 ThreadSearchEvent::ThreadSearchEvent(wxEventType commandType, int id)
-					 :wxCommandEvent(commandType, id)
+                     :wxCommandEvent(commandType, id)
 {
 }
 
 
 ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event)
-				  :wxCommandEvent(Event)
+                  :wxCommandEvent(Event)
 {
-	m_LineTextArray = Event.GetLineTextArray();
+    m_LineTextArray = Event.GetLineTextArray();
 }
 
 

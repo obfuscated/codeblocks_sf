@@ -19,40 +19,40 @@
 #include "ThreadSearch.h"
 
 ThreadSearchLoggerBase* ThreadSearchLoggerBase::BuildThreadSearchLoggerBase(ThreadSearchView& threadSearchView,
-																			ThreadSearch&     threadSearchPlugin,
-																			eLoggerTypes      loggerType,
-																			InsertIndexManager::eFileSorting fileSorting,
-																			wxPanel*          pParent,
-																			long              id)
+                                                                            ThreadSearch&     threadSearchPlugin,
+                                                                            eLoggerTypes      loggerType,
+                                                                            InsertIndexManager::eFileSorting fileSorting,
+                                                                            wxPanel*          pParent,
+                                                                            long              id)
 {
-	ThreadSearchLoggerBase* pLogger = NULL;
+    ThreadSearchLoggerBase* pLogger = NULL;
 
-	if ( loggerType == TypeList )
-	{
-		pLogger = new ThreadSearchLoggerList(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
-	}
-	else
-	{
-		pLogger = new ThreadSearchLoggerTree(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
-	}
-	return pLogger;
+    if ( loggerType == TypeList )
+    {
+        pLogger = new ThreadSearchLoggerList(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
+    }
+    else
+    {
+        pLogger = new ThreadSearchLoggerTree(threadSearchView, threadSearchPlugin, fileSorting , pParent, id);
+    }
+    return pLogger;
 }
 
 
 void ThreadSearchLoggerBase::Update()
 {
-	Clear();
-	m_IndexManager.SetFileSorting(m_ThreadSearchPlugin.GetFileSorting());
+    Clear();
+    m_IndexManager.SetFileSorting(m_ThreadSearchPlugin.GetFileSorting());
 }
 
 
 void ThreadSearchLoggerBase::ShowMenu(const wxPoint& point)
 {
-	bool enable = !m_ThreadSearchView.IsSearchRunning();
-	wxMenu menu(_(""));
-	wxMenuItem* menuItem = menu.Append(idMenuCtxDeleteItem, _("&Delete item"));
-	menuItem->Enable(enable);
-	menuItem = menu.Append(idMenuCtxDeleteAllItems, _("Delete &all items"));
-	menuItem->Enable(enable);
-	GetWindow()->PopupMenu(&menu, point);
+    bool enable = !m_ThreadSearchView.IsSearchRunning();
+    wxMenu menu(_(""));
+    wxMenuItem* menuItem = menu.Append(idMenuCtxDeleteItem, _("&Delete item"));
+    menuItem->Enable(enable);
+    menuItem = menu.Append(idMenuCtxDeleteAllItems, _("Delete &all items"));
+    menuItem->Enable(enable);
+    GetWindow()->PopupMenu(&menu, point);
 }

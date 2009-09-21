@@ -13,25 +13,25 @@
 #include "ThreadSearchViewManagerLayout.h"
 
 ThreadSearchViewManagerBase* ThreadSearchViewManagerBase::BuildThreadSearchViewManagerBase(
-																			ThreadSearchView* pView,
-																			bool              addViewToManager,
-																			eManagerTypes     managerType)
+                                                                            ThreadSearchView* pView,
+                                                                            bool              addViewToManager,
+                                                                            eManagerTypes     managerType)
 {
-	ThreadSearchViewManagerBase* pMgr = 0;
+    ThreadSearchViewManagerBase* pMgr = 0;
 
-	if ( managerType == TypeMessagesNotebook )
-	{
-		pMgr = new ThreadSearchViewManagerMessagesNotebook(pView);
-	}
-	else
-	{
-		// ThreadSearchViewManagerLayout is the default view manager
-		// No error management on managerType
-		pMgr = new ThreadSearchViewManagerLayout(pView);
-	}
-	if ( addViewToManager == true )
-	{
-		pMgr->AddViewToManager();
-	}
-	return pMgr;
+    if ( managerType == TypeMessagesNotebook )
+    {
+        pMgr = new ThreadSearchViewManagerMessagesNotebook(pView);
+    }
+    else
+    {
+        // ThreadSearchViewManagerLayout is the default view manager
+        // No error management on managerType
+        pMgr = new ThreadSearchViewManagerLayout(pView);
+    }
+    if ( addViewToManager == true )
+    {
+        pMgr->AddViewToManager();
+    }
+    return pMgr;
 }

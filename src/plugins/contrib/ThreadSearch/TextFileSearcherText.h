@@ -19,22 +19,22 @@
 class TextFileSearcherText : public TextFileSearcher
 {
 public:
-	/** Constructor. */
-	// We don't use ThreadSearchFindData to limit coupling
-	TextFileSearcherText(const wxString& searchText, bool matchCase, bool matchWordBegin,
-						 bool matchWord);
+    /** Constructor. */
+    // We don't use ThreadSearchFindData to limit coupling
+    TextFileSearcherText(const wxString& searchText, bool matchCase, bool matchWordBegin,
+                         bool matchWord);
 
-	/** Destructor. */
-	virtual ~TextFileSearcherText()	{}
+    /** Destructor. */
+    virtual ~TextFileSearcherText()    {}
 
-	/** Return true if Line matches search text.
-	  * This method is inherited from TextFileSearcher and is used to implement
-	  * different search strategies. In TextFileSearcherText, the basic text search
-	  * is implemented.
-	  * @param line : the text line to match.
-	  * @return true if line matches search text.
-	  */
-	virtual bool MatchLine(wxString line);
+    /** Return true if Line matches search text.
+      * This method is inherited from TextFileSearcher and is used to implement
+      * different search strategies. In TextFileSearcherText, the basic text search
+      * is implemented.
+      * @param line : the text line to match.
+      * @return true if line matches search text.
+      */
+    virtual bool MatchLine(wxString line);
 };
 
 #endif // TEXT_FILE_SEARCHER_TEXT_H

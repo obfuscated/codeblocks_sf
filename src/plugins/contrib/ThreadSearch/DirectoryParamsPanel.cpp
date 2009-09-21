@@ -17,12 +17,12 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-	#include <wx/textctrl.h>
-	#include <wx/button.h>
-	#include <wx/checkbox.h>
-	#include <wx/dirdlg.h>
-	#include <wx/sizer.h>
-	#include <wx/stattext.h>
+    #include <wx/textctrl.h>
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/dirdlg.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
 #endif
 
 #include "DirectoryParamsPanel.h"
@@ -46,37 +46,37 @@ DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoi
 
 
 BEGIN_EVENT_TABLE(DirectoryParamsPanel, wxPanel)
-	// begin wxGlade: DirectoryParamsPanel::event_table
-	EVT_TEXT(idTxtSearchDirPath, DirectoryParamsPanel::OnTxtTextEvent)
-	EVT_BUTTON(idBtnDirSelectClick, DirectoryParamsPanel::OnBtnDirSelectClick)
-	EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkClickEvent)
-	EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkClickEvent)
-	EVT_TEXT(idTxtSearchMask, DirectoryParamsPanel::OnTxtTextEvent)
-	// end wxGlade
+    // begin wxGlade: DirectoryParamsPanel::event_table
+    EVT_TEXT(idTxtSearchDirPath, DirectoryParamsPanel::OnTxtTextEvent)
+    EVT_BUTTON(idBtnDirSelectClick, DirectoryParamsPanel::OnBtnDirSelectClick)
+    EVT_CHECKBOX(idChkSearchDirRecurse, DirectoryParamsPanel::OnChkClickEvent)
+    EVT_CHECKBOX(idChkSearchDirHidden, DirectoryParamsPanel::OnChkClickEvent)
+    EVT_TEXT(idTxtSearchMask, DirectoryParamsPanel::OnTxtTextEvent)
+    // end wxGlade
 END_EVENT_TABLE();
 
 
 void DirectoryParamsPanel::OnTxtTextEvent(wxCommandEvent &event)
 {
-	event.Skip();
+    event.Skip();
 }
 
 
 void DirectoryParamsPanel::OnBtnDirSelectClick(wxCommandEvent &event)
 {
-	wxDirDialog DlgDir(this, _("Select directory"), wxGetCwd());
-	if ( DlgDir.ShowModal() == wxID_OK )
-	{
-		m_pTxtSearchDirPath->SetValue(DlgDir.GetPath());
-	}
+    wxDirDialog DlgDir(this, _("Select directory"), wxGetCwd());
+    if ( DlgDir.ShowModal() == wxID_OK )
+    {
+        m_pTxtSearchDirPath->SetValue(DlgDir.GetPath());
+    }
 
-	event.Skip();
+    event.Skip();
 }
 
 
 void DirectoryParamsPanel::OnChkClickEvent(wxCommandEvent &event)
 {
-	event.Skip();
+    event.Skip();
 }
 
 

@@ -23,30 +23,30 @@
 class ThreadSearchTrace : protected wxFile, protected wxMutex
 {
 public:
-	/** Destructor. */
-	~ThreadSearchTrace() {};
+    /** Destructor. */
+    ~ThreadSearchTrace() {};
 
-	static bool Init(const wxString& path);
-	static void Uninit();
-	static bool Trace(const wxString& str);
+    static bool Init(const wxString& path);
+    static void Uninit();
+    static bool Trace(const wxString& str);
 
 private:
-	/** Constructor. */
-	ThreadSearchTrace() {};
+    /** Constructor. */
+    ThreadSearchTrace() {};
 
-	static ThreadSearchTrace* ms_Tracer;
+    static ThreadSearchTrace* ms_Tracer;
 };
 
 
 class TraceBeginEndOfMethod
 {
 public:
-	TraceBeginEndOfMethod(const wxString& method);
+    TraceBeginEndOfMethod(const wxString& method);
 
-	~TraceBeginEndOfMethod();
+    ~TraceBeginEndOfMethod();
 
 private:
-	wxString m_Method;
+    wxString m_Method;
 };
 
 #endif // THREAD_SEARCH_TRACE_H

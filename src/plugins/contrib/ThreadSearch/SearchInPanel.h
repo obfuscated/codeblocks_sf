@@ -34,17 +34,17 @@ public:
     // begin wxGlade: SearchInPanel::ids
     // end wxGlade
 
-	/** Constructor. */
+    /** Constructor. */
     SearchInPanel(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
-	// Getters
+    // Getters
     bool GetSearchInOpenFiles()      const;
     bool GetSearchInTargetFiles()    const;
     bool GetSearchInProjectFiles()   const;
     bool GetSearchInWorkspaceFiles() const;
     bool GetSearchInDirectory()      const;
 
-	// Setters
+    // Setters
     void SetSearchInOpenFiles     (bool bSearchInOpenFiles);
     void SetSearchInTargetFiles   (bool bSearchInTargetFiles);
     void SetSearchInProjectFiles  (bool bSearchInProjectFiles);
@@ -89,8 +89,8 @@ protected:
     DECLARE_EVENT_TABLE();
 
 public:
-	/** Gets all buttons click events to forward them to the parent window..
-	  */
+    /** Gets all buttons click events to forward them to the parent window..
+      */
     void OnBtnClickEvent(wxCommandEvent &event); // wxGlade: <event_handler>
 
     // The 3 following methods work together. It offers a kind of

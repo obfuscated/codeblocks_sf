@@ -36,16 +36,16 @@ public:
     // begin wxGlade: DirectoryParamsPanel::ids
     // end wxGlade
 
-	/** Constructor. */
+    /** Constructor. */
     DirectoryParamsPanel(wxWindow* parent, int id, const wxPoint& pos=wxDefaultPosition, const wxSize& size=wxDefaultSize, long style=0);
 
-	// Getters
+    // Getters
     wxString GetSearchDirPath()        const;
     bool     GetSearchDirRecursively() const;
     bool     GetSearchDirHidden()      const;
     wxString GetSearchMask()           const;
 
-	// Setters
+    // Setters
     void     SetSearchDirPath(const wxString& sDirPath);
     void     SetSearchDirRecursively(bool bRecurse);
     void     SetSearchDirHidden(bool bSearchHidden);
@@ -69,16 +69,16 @@ protected:
     DECLARE_EVENT_TABLE();
 
 public:
-	/** Gets all text events to forward them to the parent window.
-	  */
+    /** Gets all text events to forward them to the parent window.
+      */
     void OnTxtTextEvent(wxCommandEvent &event); // wxGlade: <event_handler>
 
-	/** Runs a dialog to set directory path.
-	  */
+    /** Runs a dialog to set directory path.
+      */
     void OnBtnDirSelectClick(wxCommandEvent &event); // wxGlade: <event_handler>
 
-	/** Gets all checkboxes click events to forward them to the parent window.
-	  */
+    /** Gets all checkboxes click events to forward them to the parent window.
+      */
     void OnChkClickEvent(wxCommandEvent &event); // wxGlade: <event_handler>
 }; // wxGlade: end class
 

@@ -17,8 +17,8 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-	#include <wx/checkbox.h>
-	#include <wx/sizer.h>
+    #include <wx/checkbox.h>
+    #include <wx/sizer.h>
 #endif
 
 #include "SearchInPanel.h"

@@ -19,42 +19,42 @@
 class InsertIndexManager
 {
 public:
-	enum eFileSorting
-	{
-		SortByFilePath = 0,    // C:\a\b.txt < C:\b\a.txt
-		SortByFileName         // C:\a\b.txt > C:\b\a.txt
-	};
+    enum eFileSorting
+    {
+        SortByFilePath = 0,    // C:\a\b.txt < C:\b\a.txt
+        SortByFileName         // C:\a\b.txt > C:\b\a.txt
+    };
 
 public:
-	/** Constructor. */
-	InsertIndexManager(eFileSorting fileSorting = SortByFilePath)
-					: m_SortedStringArray()
-	                , m_FileSorting(fileSorting)
-	{
-	}
+    /** Constructor. */
+    InsertIndexManager(eFileSorting fileSorting = SortByFilePath)
+                    : m_SortedStringArray()
+                    , m_FileSorting(fileSorting)
+    {
+    }
 
-	/** Destructor. */
-	virtual ~InsertIndexManager() {}
+    /** Destructor. */
+    virtual ~InsertIndexManager() {}
 
-	/** GetInsertionIndex
-	  * Return the index where the file must be inserted.
-	  * Index is found according to sorting strategy (m_FileSorting)
-	  * @param filePath        : path of the file to insert
-	  * @param nbItemstoInsert : number of items to insert
-	  * @return index of the file to insert
-	  */
-	long GetInsertionIndex(const wxString& filePath, long nbItemstoInsert = 1);
+    /** GetInsertionIndex
+      * Return the index where the file must be inserted.
+      * Index is found according to sorting strategy (m_FileSorting)
+      * @param filePath        : path of the file to insert
+      * @param nbItemstoInsert : number of items to insert
+      * @return index of the file to insert
+      */
+    long GetInsertionIndex(const wxString& filePath, long nbItemstoInsert = 1);
 
-	/** Reset : clears array of paths */
-	void Reset() {m_SortedStringArray.Empty();}
+    /** Reset : clears array of paths */
+    void Reset() {m_SortedStringArray.Empty();}
 
-	// Accessors
-	eFileSorting GetFileSorting() const                   {return m_FileSorting;}
-	void         SetFileSorting(eFileSorting fileSorting) {m_FileSorting = fileSorting;}
+    // Accessors
+    eFileSorting GetFileSorting() const                   {return m_FileSorting;}
+    void         SetFileSorting(eFileSorting fileSorting) {m_FileSorting = fileSorting;}
 
 private:
-	wxSortedArrayString m_SortedStringArray;
-	eFileSorting        m_FileSorting;
+    wxSortedArrayString m_SortedStringArray;
+    eFileSorting        m_FileSorting;
 };
 
 #endif // INSERT_INDEX_MANAGER_H

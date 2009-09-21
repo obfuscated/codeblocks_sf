@@ -40,24 +40,24 @@ public:
     // begin wxGlade: ThreadSearchConfPanel::ids
     // end wxGlade
 
-	/** Constructor. */
+    /** Constructor. */
     ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, wxWindow* parent = NULL, wxWindowID id = -1);
 
-	/** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
-	wxString GetTitle()          const {return wxT("Thread search");}
+    /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
+    wxString GetTitle()          const {return wxT("Thread search");}
 
-	/** Returns string used to build active/inactive images path in the left column
-	  * of the "Settings/Environment" dialog.
-	  */
-	wxString GetBitmapBaseName() const {return wxT("ThreadSearch");}
+    /** Returns string used to build active/inactive images path in the left column
+      * of the "Settings/Environment" dialog.
+      */
+    wxString GetBitmapBaseName() const {return wxT("ThreadSearch");}
 
-	/** Called automatically when user clicks on OK
-	  */
-	void OnApply();
+    /** Called automatically when user clicks on OK
+      */
+    void OnApply();
 
-	/** Called automatically when user clicks on Cancel
-	  */
-	void OnCancel() {}
+    /** Called automatically when user clicks on Cancel
+      */
+    void OnCancel() {}
 
 private:
     // begin wxGlade: ThreadSearchConfPanel::methods
@@ -100,11 +100,11 @@ protected:
     DECLARE_EVENT_TABLE();
 
 public:
-	/** The m_pChkThreadSearchEnable checkbox is used to enable/disable 'Find occurrences'
-	  * contextual menu integration.
-	  * This method disables the m_pChkUseDefaultOptionsForThreadSearch checkbox if
-	  * 'Find occurrences' is not present in the contextual menu.
-	  */
+    /** The m_pChkThreadSearchEnable checkbox is used to enable/disable 'Find occurrences'
+      * contextual menu integration.
+      * This method disables the m_pChkUseDefaultOptionsForThreadSearch checkbox if
+      * 'Find occurrences' is not present in the contextual menu.
+      */
     void OnThreadSearchEnable(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkShowThreadSearchToolBarClick(wxCommandEvent &event); // wxGlade: <event_handler>
     void OnChkCodePreview(wxCommandEvent &event); // wxGlade: <event_handler>

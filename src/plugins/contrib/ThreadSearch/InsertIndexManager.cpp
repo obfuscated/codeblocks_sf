@@ -18,24 +18,24 @@
 
 long InsertIndexManager::GetInsertionIndex(const wxString& filePath, long nbItemstoInsert /*= 1*/)
 {
-	wxASSERT(nbItemstoInsert > 0);
-	wxFileName fileName(filePath);
-	wxString   string(filePath);
-	long index;
+    wxASSERT(nbItemstoInsert > 0);
+    wxFileName fileName(filePath);
+    wxString   string(filePath);
+    long index;
 
-	if ( m_FileSorting == SortByFileName )
-	{
-		string = fileName.GetFullName();
-	}
-	string.MakeUpper();
+    if ( m_FileSorting == SortByFileName )
+    {
+        string = fileName.GetFullName();
+    }
+    string.MakeUpper();
 
-	for (long i = 0; i < nbItemstoInsert; ++i)
-	{
-		m_SortedStringArray.Add(string);
-		if ( i == 0 )
-		{
-			index = m_SortedStringArray.Index(string.c_str());
-		}
-	}
-	return index;
+    for (long i = 0; i < nbItemstoInsert; ++i)
+    {
+        m_SortedStringArray.Add(string);
+        if ( i == 0 )
+        {
+            index = m_SortedStringArray.Index(string.c_str());
+        }
+    }
+    return index;
 }
