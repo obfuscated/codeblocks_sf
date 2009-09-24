@@ -482,7 +482,7 @@ void CodeCompletion::OnRelease(bool appShutDown)
         m_SearchMenu->Delete(idMenuGotoImplementation);
         m_SearchMenu->Delete(idMenuOpenIncludeFile);
     }
-} // end of OnRelease
+}
 
 static int SortCCList(const wxString& first, const wxString& second)
 {
@@ -492,18 +492,21 @@ static int SortCCList(const wxString& first, const wxString& second)
     {
         if (*a != *b)
         {
-            if (*a == _T('?') && *b != _T('?'))
+            if      ((*a == _T('?')) && (*b != _T('?')))
                 return -1;
-            else if (*a != _T('?') && *b == _T('?'))
+            else if ((*a != _T('?')) && (*b == _T('?')))
                 return 1;
-            else if (*a == _T('?') && *b == _T('?'))
+            else if ((*a == _T('?')) && (*b == _T('?')))
                 return 0;
-            if (*a == _T('_') && *b != _T('_'))
+
+            if      ((*a == _T('_')) && (*b != _T('_')))
                 return 1;
-            else if (*a != _T('_') && *b == _T('_'))
+            else if ((*a != _T('_')) && (*b == _T('_')))
                 return -1;
+
             wxChar lowerA = wxTolower(*a);
             wxChar lowerB = wxTolower(*b);
+
             if (lowerA != lowerB)
                 return lowerA - lowerB;
         }
@@ -584,7 +587,7 @@ int CodeCompletion::CodeComplete()
                 items.Add(tmp);
                 if (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
                 {
-                    searchItem[token->m_Name] = token->m_Args.size();
+                    searchItem[token->m_Name] = token->m_Args.size()-2;
                 }
                 if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
                 {
@@ -650,6 +653,11 @@ int CodeCompletion::CodeComplete()
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Done generating tokens list"));
 #endif
+            // Remove duplicate items
+            for (size_t i=0; i<items.Count()-1; i++)
+                if (items.Item(i)==items.Item(i+1))
+                    items.RemoveAt(i);
+
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
             ed->GetControl()->AutoCompSetFillUps(cfg->Read(_T("/fillup_chars"), wxEmptyString));
@@ -1954,9 +1962,12 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             control->AutoCompCancel();
             int pos = control->GetCurrentPos();
             int start = control->WordStartPosition(pos, true);
-
-            control->AddText(itemText.substr(pos - start)+_T("()"));
-            if ((*it).second)
+            control->SetTargetStart(start);
+            control->SetTargetEnd(pos);
+            control->ReplaceTarget(itemText+_T("()"));
+            pos = control->GetCurrentPos();
+            control->GotoPos(pos + itemText.size()+2);
+            if ((*it).second != 0)
             {
                 pos = control->GetCurrentPos();
                 control->GotoPos(pos - 1);
