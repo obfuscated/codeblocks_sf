@@ -142,6 +142,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
 
         int StartIdxNameSpaceInScope;
         int m_CurrentLine;
+        map<wxString, int> searchItem;
         wxString m_LastFile;
 
         wxTimer m_FunctionsParsingTimer;

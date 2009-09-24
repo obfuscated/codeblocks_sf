@@ -1051,7 +1051,13 @@ void ParserThread::HandleNamespace()
     if (ns == ParserConsts::opbrace)
     {
         // parse inside anonymous namespace
+        Token*     lastParent = m_pLastParent;
+        TokenScope lastScope  = m_LastScope;
+
         DoParse();
+
+        m_pLastParent = lastParent;
+        m_LastScope   = lastScope;
     }
     else
     {

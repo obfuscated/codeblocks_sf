@@ -8,7 +8,11 @@
  */
 
 #include <sdk.h>
+
 #include "nativeparser.h"
+#include "classbrowser.h"
+#include "parser/parser.h"
+
 #include <manager.h>
 #include <configmanager.h>
 #include <projectmanager.h>
@@ -19,17 +23,14 @@
 #include <cbeditor.h>
 #include <cbproject.h>
 #include <cbexception.h>
-#include "classbrowser.h"
-#include "parser/parser.h"
+#include <cbstyledtextctrl.h>
 #include <compilerfactory.h>
 #include <projectloader_hooks.h>
-#include <wx/regex.h>
-#include <wx/log.h> // for wxSafeShowMessage()
 #include <tinyxml/tinyxml.h>
+
 #include <wx/aui/auibook.h>
-#include "cbstyledtextctrl.h"
-
-
+#include <wx/log.h> // for wxSafeShowMessage()
+#include <wx/regex.h>
 #include <wx/wfstream.h>
 
 #include <cctype>
@@ -1249,12 +1250,11 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
         }
     }
     //Manager::Get()->GetLogManager()->DebugLog(F(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
-    while ((startAt < line.Length()) && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_' || line.GetChar(startAt) == ' ' || line.GetChar(startAt) == '\t'))
+    while ((startAt < line.Length()) && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
     {
         res << line.GetChar(startAt);
         ++startAt;
     }
-    res.Trim();
     while ((nest > 0) && (startAt < line.Length()))
     {
         if (line.GetChar(startAt) == ')')
@@ -1400,7 +1400,11 @@ size_t NativeParser::AI(TokenIdxSet& result,
 
 #ifdef DEBUG_CC_AI
     if (s_DebugSmartSense)
+    #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI enter, actual: \"%s\""), actual.wx_str()));
+    #else
         Manager::Get()->GetLogManager()->DebugLog(F(_T("AI enter, actual: \"%s\""), actual.c_str()));
+    #endif
 #endif
 
     static cbEditor* cached_editor = 0;
@@ -1633,7 +1637,11 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
     #ifdef DEBUG_CC_AI
             if (s_DebugSmartSense)
+            #if wxCHECK_VERSION(2, 9, 0)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Replacing %s to %s"), token->m_Name.wx_str(), token->m_ActualType.wx_str()));
+            #else
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Replacing %s to %s"), token->m_Name.c_str(), token->m_ActualType.c_str()));
+            #endif
     #endif
             return FindAIMatches(parser, type_components, result, parentTokenIdx, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
         }

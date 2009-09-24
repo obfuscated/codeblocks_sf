@@ -6,14 +6,16 @@
 #ifndef NATIVEPARSER_H
 #define NATIVEPARSER_H
 
+#include "parser/parser.h"
+
 #include <queue>
 #include <map>
 
 #include <wx/event.h>
 #include <wx/hashmap.h> // TODO: replace with std::map
-#include "parser/parser.h"
 
-#define DEBUG_CC_AI
+#define DEBUG_CC_AI 0
+
 extern bool s_DebugSmartSense;
 
 // forward decls
@@ -21,7 +23,6 @@ class cbEditor;
 class EditorBase;
 class cbProject;
 class ClassBrowser;
-//class Parser;
 class Token;
 
 WX_DECLARE_HASH_MAP(cbProject*, Parser*, wxPointerHash, wxPointerEqual, ParsersMap);
