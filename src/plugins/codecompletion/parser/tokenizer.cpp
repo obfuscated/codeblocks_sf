@@ -119,7 +119,7 @@ bool Tokenizer::InitFromBuffer(const wxString& buffer)
 {
     BaseInit();
     m_BufferLen = buffer.Length();
-    m_Buffer.Alloc(m_BufferLen + 1);
+    m_Buffer.Alloc(m_BufferLen + 1); // + 1 => sentinel
     m_Buffer = buffer;
     m_Buffer += _T(' ');
     m_IsOK = true;
@@ -160,14 +160,14 @@ bool Tokenizer::ReadFile()
         // same code as in cbC2U() but with the addition of the string length (3rd param in unicode version)
         // and the fallback encoding conversion
 #if wxUSE_UNICODE
-        m_Buffer = wxString(data, wxConvUTF8, m_BufferLen + 1);
+        m_Buffer = wxString(data, wxConvUTF8, m_BufferLen + 1); // + 1 => sentinel
         if (m_Buffer.Length() == 0)
         {
             // could not read as utf-8 encoding, try iso8859-1
-            m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen + 1);
+            m_Buffer = wxString(data, wxConvISO8859_1, m_BufferLen + 1); // + 1 => sentinel
         }
 #else
-        m_Buffer = wxString(data, m_BufferLen + 1);
+        m_Buffer = wxString(data, m_BufferLen + 1); // + 1 => sentinel
 #endif
 
         if (m_BufferLen != m_Buffer.Length())
@@ -208,10 +208,25 @@ bool Tokenizer::SkipWhiteSpace()
 {
     // skip spaces, tabs, etc.
     while (CurrentChar() <= _T(' ') && MoveToNextChar()) // don't check EOF when MoveToNextChar already does, also replace isspace() which calls msvcrt.dll
-        ;                                                // with a dirty hack:  CurrentChar() <= ' ' is "good enough" here
+        ;                                                // with a dirty hack: CurrentChar() <= ' ' is "good enough" here
     if (IsEOF())
         return false;
     return true;
+}
+
+bool Tokenizer::SkipToCharBreak()
+{
+  if (PreviousChar() != '\\')
+      return true;
+  else
+  {
+      // check for "\\"
+      if (   ((m_TokenIndex - 2) >= 0)
+          && ((m_TokenIndex - 2) <= m_BufferLen)
+          && (m_Buffer.GetChar(m_TokenIndex - 2) == '\\') )
+          return true;
+  }
+  return false;
 }
 
 bool Tokenizer::SkipToChar(const wxChar& ch)
@@ -225,14 +240,8 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
         if (IsEOF())
             return false;
 
-        if (PreviousChar() != '\\')
-            break;
-        else
-        {
-            // check for "\\"
-            if (((m_TokenIndex - 2) >= 0) && ((m_TokenIndex - 2) >= m_BufferLen) && (m_Buffer.GetChar(m_TokenIndex - 2) == '\\'))
-                break;
-        }
+        if (SkipToCharBreak()) break;
+
         MoveToNextChar();
     }
     return true;
@@ -281,14 +290,9 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
                 }
             }
         }
-        if (PreviousChar() != '\\')
-            break;
-        else
-        {
-            // check for "\\"
-            if (((m_TokenIndex - 2) >= 0) && ((m_TokenIndex - 2) >= m_BufferLen) && (m_Buffer.GetChar(m_TokenIndex - 2) == '\\'))
-                break;
-        }
+
+        if (SkipToCharBreak()) break;
+
         MoveToNextChar();
     }
     if (IsEOF())

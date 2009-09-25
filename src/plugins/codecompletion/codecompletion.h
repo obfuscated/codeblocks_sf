@@ -11,6 +11,7 @@
 #include <cbproject.h>
 #include <sdk_events.h>
 #include <wx/string.h>
+
 #include "nativeparser.h"
 
 #include <wx/timer.h>

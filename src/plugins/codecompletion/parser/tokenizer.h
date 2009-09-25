@@ -98,6 +98,7 @@ protected:
     wxString DoGetToken();
     bool ReadFile();
     bool SkipWhiteSpace();
+    bool SkipToCharBreak();
     bool SkipToChar(const wxChar& ch);
     bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false);
     bool SkipBlock(const wxChar& ch);
