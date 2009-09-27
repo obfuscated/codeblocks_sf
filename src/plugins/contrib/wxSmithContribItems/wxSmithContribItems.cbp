@@ -4,12 +4,13 @@
 	<Project>
 		<Option title="wxSmith - Contrib Items" />
 		<Option pch_mode="2" />
+		<Option default_target="wxSmithContribItems" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxFlatNotebook">
 				<Option output="..\..\..\devel\wxflatnotebook.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems\wxflatnotebook" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -21,7 +22,7 @@
 			<Target title="wxChartCtrl">
 				<Option output="..\..\..\devel\wxchartctrl.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems\wxchart" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -34,7 +35,7 @@
 			<Target title="wxCustomButton">
 				<Option output="..\..\..\devel\wxcustombutton.dll" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems\wxthings" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -47,10 +48,13 @@
 			<Target title="wxSmithContribItems">
 				<Option platforms="Windows;" />
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\wxSmithContribItems.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithContribItems" />
+				<Option external_deps="..\..\..\devel\wxsmithlib.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="$(#cb)\devel\codeblocks.exe" />
+				<Option parameters="--debug-log -na -ns -nd" />
+				<Option host_application="./codeblocks" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />

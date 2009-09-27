@@ -4,6 +4,7 @@
 	<Project>
 		<Option title="Exporter" />
 		<Option pch_mode="0" />
+		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="wxPdfDocument">
@@ -17,11 +18,13 @@
 			</Target>
 			<Target title="default">
 				<Option output="..\..\..\devel\share\CodeBlocks\plugins\Exporter.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel" />
 				<Option object_output="..\..\..\.objs\plugins\contrib\Exporter" />
 				<Option external_deps="libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option parameters="--debug-log -na -ns -nd" />
+				<Option host_application=".\codeblocks.exe" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Linker>
 					<Add library="libwxPdfDocument.a" />
