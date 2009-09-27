@@ -10,7 +10,7 @@ Package: codeblocks
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, codeblocks-common (= ${source:Version}), libcodeblocks0 (= ${binary:Version})
 Recommends: gcc | g++, gdb, codeblocks-contrib (= ${binary:Version})
-Suggests: libwxgtk2.8-dev, wx-common
+Suggests: libwxgtk2.8-dev, wx-common, xterm
 Description: cross-platform integrated development environment (IDE)
  Code::Blocks is the open-source, cross-platform Integrated Development
  Environment (IDE).
