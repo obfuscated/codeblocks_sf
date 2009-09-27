@@ -67,7 +67,7 @@ MAYBE_SYMTAB=symtab
 endif
 
 if BUILD_THREADSEARCH
-MAYBE_THREADSEARCH=ThreadSearch
+MAYBE_THREADSEARCH=wxSmith wxSmithContribItems ThreadSearch
 endif
 
 if BUILD_VALGRIND

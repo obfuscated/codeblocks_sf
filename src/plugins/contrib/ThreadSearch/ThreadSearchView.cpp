@@ -30,6 +30,7 @@
 #include "ThreadSearchFindData.h"
 #include "ThreadSearchConfPanel.h"
 #include "ThreadSearchControlIds.h"
+#include "wx/tglbtn.h"
 
 
 // Max number of items in search history combo box
@@ -154,11 +155,11 @@ BEGIN_EVENT_TABLE(ThreadSearchView, wxPanel)
     EVT_SPLITTER_DCLICK(-1, ThreadSearchView::OnSplitterDoubleClick)
     // end wxGlade
 
-    EVT_BUTTON(idBtnSearchOpenFiles,      ThreadSearchView::OnBtnSearchOpenFiles)
-    EVT_BUTTON(idBtnSearchTargetFiles,    ThreadSearchView::OnBtnSearchTargetFiles)
-    EVT_BUTTON(idBtnSearchProjectFiles,   ThreadSearchView::OnBtnSearchProjectFiles)
-    EVT_BUTTON(idBtnSearchWorkspaceFiles, ThreadSearchView::OnBtnSearchWorkspaceFiles)
-    EVT_BUTTON(idBtnSearchDirectoryFiles, ThreadSearchView::OnBtnSearchDirectoryFiles)
+    EVT_TOGGLEBUTTON(idBtnSearchOpenFiles,      ThreadSearchView::OnBtnSearchOpenFiles)
+    EVT_TOGGLEBUTTON(idBtnSearchTargetFiles,    ThreadSearchView::OnBtnSearchTargetFiles)
+    EVT_TOGGLEBUTTON(idBtnSearchProjectFiles,   ThreadSearchView::OnBtnSearchProjectFiles)
+    EVT_TOGGLEBUTTON(idBtnSearchWorkspaceFiles, ThreadSearchView::OnBtnSearchWorkspaceFiles)
+    EVT_TOGGLEBUTTON(idBtnSearchDirectoryFiles, ThreadSearchView::OnBtnSearchDirectoryFiles)
     EVT_CHECKBOX(idChkSearchDirRecurse,   ThreadSearchView::OnChkSearchDirRecurse)
     EVT_CHECKBOX(idChkSearchDirHidden,    ThreadSearchView::OnChkSearchDirHidden)
 

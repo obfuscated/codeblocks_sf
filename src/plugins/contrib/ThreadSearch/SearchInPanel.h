@@ -26,7 +26,7 @@
 class wxWindow;
 class wxCheckBox;
 class wxCommandEvent;
-class wxBitmapButton;
+class wxCustomButton;
 class wxImageList;
 
 class SearchInPanel: public wxPanel {
@@ -59,32 +59,13 @@ private:
 
 protected:
     // begin wxGlade: SearchInPanel::attributes
-    wxBitmapButton* m_pBtnSearchOpenFiles;
-    wxBitmapButton* m_pBtnSearchTargetFiles;
-    wxBitmapButton* m_pBtnSearchProjectFiles;
-    wxBitmapButton* m_pBtnSearchWorkspaceFiles;
-    wxBitmapButton* m_pBtnSearchDir;
+    wxCustomButton* m_pBtnSearchOpenFiles;
+    wxCustomButton* m_pBtnSearchTargetFiles;
+    wxCustomButton* m_pBtnSearchProjectFiles;
+    wxCustomButton* m_pBtnSearchWorkspaceFiles;
+    wxCustomButton* m_pBtnSearchDir;
     // end wxGlade
 
-    /** @brief Buttonstates
-     *
-     * Since wxBitmapButton cannot toggle like wxCheckBox,
-     * the "state" must be saved in extra variables
-     * @{
-     */
-    bool m_StateSearchOpenFiles;
-    bool m_StateSearchTargetFiles;
-    bool m_StateSearchProjectFiles;
-    bool m_StateSearchWorkspaceFiles;
-    bool m_StateSearchDirectoryFiles;
-    /** @} */
-
-    /** @brief Imagelist for the search-in buttons
-     *
-     * The imagelist makes it possible to use images without
-     * calculating their name when they change
-     */
-    wxImageList* m_pButtonImages;
 
     DECLARE_EVENT_TABLE();
 

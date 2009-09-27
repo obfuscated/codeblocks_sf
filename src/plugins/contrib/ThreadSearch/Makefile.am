@@ -3,7 +3,8 @@ SUBDIRS = resources
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/include/wxscintilla/include \
-		-I$(top_srcdir)/src/include/mozilla_chardet
+		-I$(top_srcdir)/src/include/mozilla_chardet \
+		-I$(top_srcdir)/src/plugins/contrib/wxSmithContribItems/wxthings/wxthings/include
 
 pluginlibdir = $(pkglibdir)/plugins
 
@@ -11,7 +12,7 @@ pluginlib_LTLIBRARIES = libThreadSearch.la
 
 libThreadSearch_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libThreadSearch_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
+libThreadSearch_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la ../wxSmithContribItems/wxthings/wxthings/libwxcustombutton.la
 
 libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
 			InsertIndexManager.cpp \

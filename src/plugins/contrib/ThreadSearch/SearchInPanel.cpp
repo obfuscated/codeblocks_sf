@@ -21,6 +21,9 @@
     #include <wx/sizer.h>
 #endif
 
+#include "wx/things/toggle.h"
+#include "wx/tglbtn.h"
+
 #include "SearchInPanel.h"
 #include "ThreadSearchControlIds.h"
 
@@ -30,40 +33,24 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
 {
     //{ Getting the imagesize for the buttons (16x16 or 22x22) and the appropriate path
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    int toolbar_size = cfg->ReadBool(_T("/environment/toolbar_size"),true)?1:0;
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/") + (toolbar_size==1?_T("16x16/"):_T("22x22/"));
-    //}
-    //{ The images are stored in triples in a wxImageList to simplify and accelerate the assignment.
-    // The order is: normal - disabled - selected
-    //
-    m_pButtonImages = new wxImageList(toolbar_size == 1?16:22, toolbar_size == 1?16:22);
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("openfiles.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("openfilesdisabled.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("openfilesselected.png"), wxBITMAP_TYPE_PNG));
+    bool toolbar_size = cfg->ReadBool(_T("/environment/toolbar_size"),true);
+    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/") + (toolbar_size?_T("16x16/"):_T("22x22/"));
 
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("target.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("targetdisabled.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("targetselected.png"), wxBITMAP_TYPE_PNG));
+    // create a dummy button to get the standard button-size,
+    // wxCustomButton does not do that properly (at least not on linux)
+    wxBitmapButton dummyBtn(this, wxID_ANY, wxBitmap(prefix + wxT("openfiles.png"), wxBITMAP_TYPE_PNG));
+    wxSize dummySize = dummyBtn.GetSize();
 
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("project.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("projectdisabled.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("projectselected.png"), wxBITMAP_TYPE_PNG));
-
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("workspace.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("workspacedisabled.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("workspaceselected.png"), wxBITMAP_TYPE_PNG));
-
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("folder.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("folderdisabled.png"), wxBITMAP_TYPE_PNG));
-    m_pButtonImages->Add(wxBitmap(prefix + wxT("folderselected.png"), wxBITMAP_TYPE_PNG));
-    //}
-
-    // begin wxGlade: SearchInPanel::SearchInPanel
-    m_pBtnSearchOpenFiles = new wxBitmapButton(this, idBtnSearchOpenFiles, m_pButtonImages->GetBitmap(0));
-    m_pBtnSearchTargetFiles = new wxBitmapButton(this, idBtnSearchTargetFiles, m_pButtonImages->GetBitmap(3));
-    m_pBtnSearchProjectFiles = new wxBitmapButton(this, idBtnSearchProjectFiles, m_pButtonImages->GetBitmap(6));
-    m_pBtnSearchWorkspaceFiles = new wxBitmapButton(this, idBtnSearchWorkspaceFiles, m_pButtonImages->GetBitmap(9));
-    m_pBtnSearchDir = new wxBitmapButton(this, idBtnSearchDirectoryFiles, m_pButtonImages->GetBitmap(12));
+    m_pBtnSearchOpenFiles = new wxCustomButton(this, idBtnSearchOpenFiles, wxBitmap(prefix + wxT("openfiles.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
+    m_pBtnSearchOpenFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("openfilesdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchTargetFiles = new wxCustomButton(this, idBtnSearchTargetFiles, wxBitmap(prefix + wxT("target.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
+    m_pBtnSearchTargetFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("targetdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchProjectFiles = new wxCustomButton(this, idBtnSearchProjectFiles, wxBitmap(prefix + wxT("project.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
+    m_pBtnSearchProjectFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("projectdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchWorkspaceFiles = new wxCustomButton(this, idBtnSearchWorkspaceFiles, wxBitmap(prefix + wxT("workspace.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
+    m_pBtnSearchWorkspaceFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("workspacedisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchDir = new wxCustomButton(this, idBtnSearchDirectoryFiles, wxBitmap(prefix + wxT("folder.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
+    m_pBtnSearchDir->SetBitmapDisabled(wxBitmap(prefix + wxT("folderdisabled.png"), wxBITMAP_TYPE_PNG));
 
     set_properties();
     do_layout();
@@ -73,26 +60,17 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
 
 BEGIN_EVENT_TABLE(SearchInPanel, wxPanel)
     // begin wxGlade: SearchInPanel::event_table
-    EVT_BUTTON(idBtnSearchOpenFiles, SearchInPanel::OnBtnClickEvent)
-    EVT_BUTTON(idBtnSearchTargetFiles, SearchInPanel::OnBtnSearchTargetFilesClick)
-    EVT_BUTTON(idBtnSearchProjectFiles, SearchInPanel::OnBtnSearchProjectFilesClick)
-    EVT_BUTTON(idBtnSearchWorkspaceFiles, SearchInPanel::OnBtnSearchWorkspaceFilesClick)
-    EVT_BUTTON(idBtnSearchDirectoryFiles, SearchInPanel::OnBtnClickEvent)
+    EVT_TOGGLEBUTTON(idBtnSearchOpenFiles, SearchInPanel::OnBtnClickEvent)
+    EVT_TOGGLEBUTTON(idBtnSearchTargetFiles, SearchInPanel::OnBtnSearchTargetFilesClick)
+    EVT_TOGGLEBUTTON(idBtnSearchProjectFiles, SearchInPanel::OnBtnSearchProjectFilesClick)
+    EVT_TOGGLEBUTTON(idBtnSearchWorkspaceFiles, SearchInPanel::OnBtnSearchWorkspaceFilesClick)
+    EVT_TOGGLEBUTTON(idBtnSearchDirectoryFiles, SearchInPanel::OnBtnClickEvent)
     // end wxGlade
 END_EVENT_TABLE();
 
 
 void SearchInPanel::OnBtnClickEvent(wxCommandEvent &event)
 {
-    switch ( event.GetId() )
-    {
-        case idBtnSearchOpenFiles:
-            SetSearchInOpenFiles(!m_StateSearchOpenFiles);
-            break;
-        case idBtnSearchDirectoryFiles:
-            SetSearchInDirectory(!m_StateSearchDirectoryFiles);
-            break;
-    }
     event.Skip();
 }
 
@@ -101,8 +79,7 @@ void SearchInPanel::OnBtnSearchTargetFilesClick(wxCommandEvent &event)
 {
     // If target scope becomes checked, we uncheck if necessary project
     // and workspace.
-    SetSearchInTargetFiles(!m_StateSearchTargetFiles);
-    if (m_StateSearchTargetFiles)
+    if(event.GetInt())
     {
         SetSearchInProjectFiles(false);
         SetSearchInWorkspaceFiles(false);
@@ -115,8 +92,7 @@ void SearchInPanel::OnBtnSearchProjectFilesClick(wxCommandEvent &event)
 {
     // If project scope becomes checked, we uncheck if necessary target
     // and workspace.
-    SetSearchInProjectFiles(!m_StateSearchProjectFiles);
-    if (m_StateSearchProjectFiles)
+    if (event.GetInt())
     {
         SetSearchInTargetFiles(false);
         SetSearchInWorkspaceFiles(false);
@@ -129,8 +105,7 @@ void SearchInPanel::OnBtnSearchWorkspaceFilesClick(wxCommandEvent &event)
 {
     // If workspace scope becomes checked, we uncheck if necessary target
     // and project.
-    SetSearchInWorkspaceFiles(!m_StateSearchWorkspaceFiles);
-    if (m_StateSearchWorkspaceFiles)
+    if (event.GetInt())
     {
         SetSearchInTargetFiles(false);
         SetSearchInProjectFiles(false);
@@ -146,20 +121,10 @@ void SearchInPanel::set_properties()
 {
     // begin wxGlade: SearchInPanel::set_properties
     m_pBtnSearchOpenFiles->SetToolTip(_("Search in open files"));
-    m_pBtnSearchOpenFiles->SetBitmapDisabled(m_pButtonImages->GetBitmap(1));
-    m_pBtnSearchOpenFiles->SetSize(m_pBtnSearchOpenFiles->GetBestSize());
     m_pBtnSearchTargetFiles->SetToolTip(_("Search in target files"));
-    m_pBtnSearchTargetFiles->SetBitmapDisabled(m_pButtonImages->GetBitmap(4));
-    m_pBtnSearchTargetFiles->SetSize(m_pBtnSearchTargetFiles->GetBestSize());
     m_pBtnSearchProjectFiles->SetToolTip(_("Search in project files"));
-    m_pBtnSearchProjectFiles->SetBitmapDisabled(m_pButtonImages->GetBitmap(7));
-    m_pBtnSearchProjectFiles->SetSize(m_pBtnSearchProjectFiles->GetBestSize());
     m_pBtnSearchWorkspaceFiles->SetToolTip(_("Search in workspace files"));
-    m_pBtnSearchWorkspaceFiles->SetBitmapDisabled(m_pButtonImages->GetBitmap(10));
-    m_pBtnSearchWorkspaceFiles->SetSize(m_pBtnSearchWorkspaceFiles->GetBestSize());
     m_pBtnSearchDir->SetToolTip(_("Search in directory files"));
-    m_pBtnSearchDir->SetBitmapDisabled(m_pButtonImages->GetBitmap(13));
-    m_pBtnSearchDir->SetSize(m_pBtnSearchDir->GetBestSize());
     // end wxGlade
 }
 
@@ -182,37 +147,32 @@ void SearchInPanel::do_layout()
 
 
 //{ Getters
-bool SearchInPanel::GetSearchInOpenFiles()      const {return m_StateSearchOpenFiles;}
-bool SearchInPanel::GetSearchInTargetFiles()    const {return m_StateSearchTargetFiles;}
-bool SearchInPanel::GetSearchInProjectFiles()   const {return m_StateSearchProjectFiles;}
-bool SearchInPanel::GetSearchInWorkspaceFiles() const {return m_StateSearchWorkspaceFiles;}
-bool SearchInPanel::GetSearchInDirectory()      const {return m_StateSearchDirectoryFiles;}
+bool SearchInPanel::GetSearchInOpenFiles()      const {return m_pBtnSearchOpenFiles->GetValue();}
+bool SearchInPanel::GetSearchInTargetFiles()    const {return m_pBtnSearchTargetFiles->GetValue();}
+bool SearchInPanel::GetSearchInProjectFiles()   const {return m_pBtnSearchProjectFiles->GetValue();}
+bool SearchInPanel::GetSearchInWorkspaceFiles() const {return m_pBtnSearchWorkspaceFiles->GetValue();}
+bool SearchInPanel::GetSearchInDirectory()      const {return m_pBtnSearchDir->GetValue();}
 //}
 
 //{ Setters
 void SearchInPanel::SetSearchInOpenFiles(bool bSearchInOpenFiles)
 {
-    m_StateSearchOpenFiles=bSearchInOpenFiles;
-    m_pBtnSearchOpenFiles->SetBitmapLabel(m_pButtonImages->GetBitmap(bSearchInOpenFiles?2:0));
+    m_pBtnSearchOpenFiles->SetValue(bSearchInOpenFiles);
 }
 void SearchInPanel::SetSearchInTargetFiles(bool bSearchInTargetFiles)
 {
-    m_StateSearchTargetFiles=bSearchInTargetFiles;
-    m_pBtnSearchTargetFiles->SetBitmapLabel(m_pButtonImages->GetBitmap(bSearchInTargetFiles?5:3));
+    m_pBtnSearchTargetFiles->SetValue(bSearchInTargetFiles);
 }
 void SearchInPanel::SetSearchInProjectFiles(bool bSearchInProjectFiles)
 {
-    m_StateSearchProjectFiles=bSearchInProjectFiles;
-    m_pBtnSearchProjectFiles->SetBitmapLabel(m_pButtonImages->GetBitmap(bSearchInProjectFiles?8:6));
+    m_pBtnSearchProjectFiles->SetValue(bSearchInProjectFiles);
 }
 void SearchInPanel::SetSearchInWorkspaceFiles(bool bSearchInWorkspaceFiles)
 {
-    m_StateSearchWorkspaceFiles=bSearchInWorkspaceFiles;
-    m_pBtnSearchWorkspaceFiles->SetBitmapLabel(m_pButtonImages->GetBitmap(bSearchInWorkspaceFiles?11:9));
+    m_pBtnSearchWorkspaceFiles->SetValue(bSearchInWorkspaceFiles);
 }
 void SearchInPanel::SetSearchInDirectory(bool bSearchInDirectoryFiles)
 {
-    m_StateSearchDirectoryFiles=bSearchInDirectoryFiles;
-    m_pBtnSearchDir->SetBitmapLabel(m_pButtonImages->GetBitmap(bSearchInDirectoryFiles?14:12));
+    m_pBtnSearchDir->SetValue(bSearchInDirectoryFiles);
 }
 //}
