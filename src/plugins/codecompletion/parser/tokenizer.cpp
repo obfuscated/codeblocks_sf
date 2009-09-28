@@ -293,7 +293,9 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
 
         if (SkipToCharBreak()) break;
 
-        MoveToNextChar();
+        // if we are at buffer-end MoveToNextChar returns false, but does not change the token-index,
+        // break to avoid endless loops
+        if(!MoveToNextChar()) break;
     }
     if (IsEOF())
         return false;
