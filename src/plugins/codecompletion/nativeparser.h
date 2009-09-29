@@ -68,10 +68,10 @@ class NativeParser : public wxEvtHandler
         size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool noPartialMatch = false, bool caseSensitive = false, int caretPos = -1);
 
         const wxString& GetCodeCompletionItems();
-        const wxArrayString& GetCallTips(int chars_per_line);
-        int GetCallTipCommas(){ return m_CallTipCommas; }
-        int CountCommas(const wxString& calltip, int start);
         void GetCallTipHighlight(const wxString& calltip, int* start, int* end);
+        int CountCommas(const wxString& calltip, int start);
+        const wxArrayString& GetCallTips(int chars_per_line);
+        int GetCallTipCommas() const { return m_CallTipCommas; }
 
         int GetEditorStartWord() const { return m_EditorStartWord; }
         int GetEditorEndWord() const { return m_EditorEndWord; }
@@ -131,21 +131,21 @@ class NativeParser : public wxEvtHandler
         bool SkipWhitespaceForward(cbEditor* editor, int& pos);
         bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
 
-        Parser m_Parser;
-        int m_EditorStartWord;
-        int m_EditorEndWord;
-        wxString m_CCItems;
-        wxArrayString m_CallTips;
-        int m_CallTipCommas;
-        ClassBrowser* m_pClassBrowser;
-        bool m_GettingCalltips; // flag while getting calltips
-        bool m_ClassBrowserIsFloating;
+        Parser               m_Parser;
+        int                  m_EditorStartWord;
+        int                  m_EditorEndWord;
+        wxString             m_CCItems;
+        wxArrayString        m_CallTips;
+        int                  m_CallTipCommas;
+        ClassBrowser*        m_pClassBrowser;
+        bool                 m_GettingCalltips; // flag while getting calltips
+        bool                 m_ClassBrowserIsFloating;
 
-        bool m_LastAISearchWasGlobal; // true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
-        wxString m_LastAIGlobalSearch; // same case like above, it holds the search string
+        bool                 m_LastAISearchWasGlobal; // true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
+        wxString             m_LastAIGlobalSearch; // same case like above, it holds the search string
 
         ProjectSearchDirsMap m_ProjectSearchDirsMap;
-        int m_HookId; // project loader hook ID
+        int                  m_HookId; // project loader hook ID
 
         DECLARE_EVENT_TABLE()
 };

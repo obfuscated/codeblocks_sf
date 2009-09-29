@@ -1350,7 +1350,12 @@ void ParserThread::HandleClass(EClassType ct)
                 HandleFunction(current);
                 break;
             }
-            else if (next.GetChar(0) != '*')
+            else if (next.GetChar(0) == '*' || next.GetChar(0) == '&' )
+            {
+                m_Str << current;
+                break;
+            }
+            else
             {
                 // might be instantiation, see the following
                 /*
@@ -1391,8 +1396,7 @@ void ParserThread::HandleClass(EClassType ct)
                     }
                 }
             }
-            else
-                m_Tokenizer.GetToken();
+
         }
         else
             break;

@@ -545,14 +545,14 @@ int CodeCompletion::CodeComplete()
     if (m_NativeParsers.MarkItemsByAI(result, parser->Options().useSmartSense) > 0 ||
         m_NativeParsers.LastAISearchWasGlobal()) // enter even if no match (code-complete C++ keywords)
     {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("%d results"), result.size()));
 #endif
         size_t max_match = cfg->ReadInt(_T("/max/matches"), 16384);
         if (result.size() <= max_match)
         {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Generating tokens list"));
 #endif
@@ -606,7 +606,7 @@ int CodeCompletion::CodeComplete()
             if (m_NativeParsers.LastAISearchWasGlobal())
             {
                 // empty or partial search phrase: add theme keywords in search list
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                 if (s_DebugSmartSense)
                     Manager::Get()->GetLogManager()->DebugLog(_T("Last AI search was global: adding theme keywords in list"));
 #endif
@@ -638,7 +638,7 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
 #endif
@@ -649,7 +649,7 @@ int CodeCompletion::CodeComplete()
                 items.Sort();
             else
                 items.Sort(SortCCList);
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Done generating tokens list"));
 #endif
@@ -679,7 +679,7 @@ int CodeCompletion::CodeComplete()
     }
     else if (!ed->GetControl()->CallTipActive())
     {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
 #endif

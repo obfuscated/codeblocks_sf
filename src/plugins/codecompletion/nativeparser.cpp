@@ -178,8 +178,7 @@ void NativeParser::UpdateClassBrowser()
     if (m_pClassBrowser && m_Parser.Done() && !Manager::isappShuttingDown())
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("Updating class browser..."));
-//            m_pClassBrowser->SetParser(&m_Parser);
-            m_pClassBrowser->UpdateView();
+        m_pClassBrowser->UpdateView();
         Manager::Get()->GetLogManager()->DebugLog(_T("Class browser updated."));
     }
 }
@@ -295,7 +294,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         if(NormalizePath(dir,base))
         {
             parser->AddIncludeDir(dir.GetFullPath());
-//            Manager::Get()->GetLogManager()->DebugLog(_T("Parser prj dir: ") + dir.GetFullPath());
+#if DEBUG_CC_AI
+            Manager::Get()->GetLogManager()->DebugLog(_T("Parser prj dir: ") + dir.GetFullPath());
+#endif
         }
         else
         #if wxCHECK_VERSION(2, 9, 0)
@@ -328,7 +329,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                     if(NormalizePath(dir,base))
                     {
                         parser->AddIncludeDir(dir.GetFullPath());
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
+#if DEBUG_CC_AI
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
+#endif
                     }
                     else
                     #if wxCHECK_VERSION(2, 9, 0)
@@ -349,7 +352,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 if(NormalizePath(dir,base))
                 {
                     parser->AddIncludeDir(dir.GetFullPath());
-//                    Manager::Get()->GetLogManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
+#if DEBUG_CC_AI
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Parser tgt dir: ") + dir.GetFullPath());
+#endif
                 }
                 else
                 #if wxCHECK_VERSION(2, 9, 0)
@@ -393,7 +398,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             if (NormalizePath(dir,base))
             {
                 parser->AddIncludeDir(dir.GetFullPath());
-//                Manager::Get()->GetLogManager()->DebugLog(_T("Parser cmp dir: ") + dir.GetFullPath());
+#if DEBUG_CC_AI
+                Manager::Get()->GetLogManager()->DebugLog(_T("Parser cmp dir: ") + dir.GetFullPath());
+#endif
             }
             else
             #if wxCHECK_VERSION(2, 9, 0)
@@ -415,7 +422,9 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             gcc_compiler_dirs = GetGCCCompilerDirs(((Compilers[idxCompiler])->GetPrograms()).CPP, base);
           }
 
-          // Manager::Get()->GetLogManager()->DebugLog(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount());
+#if DEBUG_CC_AI
+          Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount()));
+#endif
           for (size_t i=0; i<gcc_compiler_dirs.GetCount(); i++)
             parser->AddIncludeDir(gcc_compiler_dirs[i]);
         }
@@ -425,72 +434,78 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         Manager::Get()->GetLogManager()->DebugLog(_T("No compilers found!"));
     }
     delete [] Compilers;
-} // end of AddCompilerDirs
+}
 
 wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, const wxString &base)
 {
     wxArrayString gcc_compiler_dirs;
 
     // for starters , only do this for gnu compiler
-//    Manager::Get()->GetLogManager()->DebugLog(_T("CompilerID ") + CompilerID);
-    //    wxString Command("mingw32-g++ -v -E -x c++ - < nul");
-    // specifying "< nul", does not seem to work
-    // workaround : create a dummy file (let's hope it does not exist)
+    //Manager::Get()->GetLogManager()->DebugLog(_T("CompilerID ") + CompilerID);
+    //
+    //   windows: mingw32-g++ -v -E -x c++ nul
+    //   linux  : g++ -v -E -x c++ /dev/null
     // do the trick only for c++, not needed then for C (since this is a subset of C++)
-    wxString DummyFileName = wxFileName::CreateTempFileName(_T("Dummy_z4hsdkl9nf7ba3L9nv41"));
-    if(!DummyFileName.IsEmpty())
+
+
+    // let's construct the command
+    // use a null file handler
+    // both works fine in Windows and linux
+
+#ifdef __WXMSW__
+    wxString Command = cpp_compiler + _T(" -v -E -x c++ nul");
+#else
+    wxString Command = cpp_compiler + _T(" -v -E -x c++ /dev/null");
+#endif
+
+    // action time  (everything shows up on the error stream
+    wxArrayString Output, Errors;
+    wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
+    int nCount = Errors.GetCount();
+    // the include dir (1 per line) show up between the lines
+    // #include <...> search starts here:
+    // End of search list
+    //   let's hope this does not change too quickly, otherwise we need
+    // to adjust our search code (for several versions ...)
+    bool bStart = false;
+    for(int idxCount = 0; idxCount < nCount; ++idxCount)
     {
-        // let's construct the command
-        wxString Command = cpp_compiler + _T(" -v -E -x c++ ") + DummyFileName;
-        // action time  (everything shows up on the error stream
-        wxArrayString Output, Errors;
-        wxExecute(Command, Output, Errors, wxEXEC_NODISABLE);
-        int nCount = Errors.GetCount();
-        // the include dir (1 per line) show up between the lines
-        // #include <...> search starts here:
-        // End of search list
-        //   let's hope this does not change too quickly, otherwise we need
-        // to adjust our search code (for several versions ...)
-        bool bStart = false;
-        for(int idxCount = 0; idxCount < nCount; ++idxCount)
+        if (!bStart && Errors[idxCount] == _("#include <...> search starts here:"))
         {
-            if (!bStart && Errors[idxCount] == _("#include <...> search starts here:"))
-            {
-                bStart = true;
-            }
-            else if (bStart && Errors[idxCount] == _("End of search list."))
-            {
-                bStart = false; // could jump out of for loop if we want
-            }
-            else if (bStart)
-            {
+            bStart = true;
+        }
+        else if (bStart && Errors[idxCount] == _("End of search list."))
+        {
+            bStart = false; // could jump out of for loop if we want
+        }
+        else if (bStart)
+        {
 //                Manager::Get()->GetLogManager()->DebugLog("include dir " + Errors[idxCount]);
-                // get rid of the leading space (more general : any whitespace)in front
-                wxRegEx reg(_T("^[ \t]*(.*)"));
-                if(reg.Matches(Errors[idxCount]))
+            // get rid of the leading space (more general : any whitespace)in front
+            wxRegEx reg(_T("^[ \t]*(.*)"));
+            if(reg.Matches(Errors[idxCount]))
+            {
+                wxString out = reg.GetMatch(Errors[idxCount], 1);
+                if(!out.IsEmpty())
                 {
-                    wxString out = reg.GetMatch(Errors[idxCount], 1);
-                    if(!out.IsEmpty())
+                    wxFileName dir(out);
+                    if (NormalizePath(dir,base))
                     {
-                        wxFileName dir(out);
-                        if (NormalizePath(dir,base))
-                        {
-                            Manager::Get()->GetLogManager()->DebugLog(_T("Caching GCC dir: ") + dir.GetFullPath());
-                            gcc_compiler_dirs.Add(dir.GetFullPath());
-                        }
-                        else
-                        #if wxCHECK_VERSION(2, 9, 0)
-                            Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
-                        #else
-                            Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
-                        #endif
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Caching GCC dir: ") + dir.GetFullPath());
+                        gcc_compiler_dirs.Add(dir.GetFullPath());
                     }
+                    else
+                    #if wxCHECK_VERSION(2, 9, 0)
+                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
+                    #else
+                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
+                    #endif
                 }
             }
-        } // end for : idx : idxCount
-        // clean up our temp file
-        ::wxRemoveFile(DummyFileName);
-    } // Dummy is open
+        }
+    } // end for : idx : idxCount
+
+
 
     return gcc_compiler_dirs;
 }
@@ -735,7 +750,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
     if (!parser->Done())
         return false;
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("Parse function arguments"));
 #endif
@@ -749,7 +764,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
             if (!token)
                 continue;
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T(" + Function match: ") + token->m_Name);
 #endif
@@ -762,7 +777,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
                 buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
                 buffer << _T(';'); // aid parser ;)
                 buffer.Trim();
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                 if (s_DebugSmartSense)
                 #if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("Parsing arguments: \"%s\""), buffer.wx_str()));
@@ -772,7 +787,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
 #endif
                 if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
                 {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                     if (s_DebugSmartSense)
                         Manager::Get()->GetLogManager()->DebugLog(_T("ERROR parsing arguments"));
 #endif
@@ -783,7 +798,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
     }
     else
     {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(_T("Could not determine current function's namespace..."));
 #endif
@@ -803,7 +818,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
     if (!parser->Done())
         return false;
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("Parse local block"));
 #endif
@@ -823,17 +838,17 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
         buffer.Trim();
         if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
         {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("ERROR parsing block:\n") + buffer);
 #endif
         }
         else
         {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
             {
-//                Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
                 Manager::Get()->GetLogManager()->DebugLog(_T("Local tokens:"));
                 for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
                 {
@@ -848,7 +863,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
     }
     else
     {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(_T("Could not determine current block start..."));
 #endif
@@ -866,7 +881,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
         return false;
     TokensTree* tree = parser->GetTokens();
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("Parse file scope for \"using namespace\""));
 #endif
@@ -897,7 +912,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
             }
             parentIdx = id;
         }
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense && parentIdx != -1)
         {
             Token* token = tree->at(parentIdx);
@@ -985,26 +1000,6 @@ const wxString& NativeParser::GetCodeCompletionItems()
     return m_CCItems;
 }
 
-// count commas in lineText (nesting parentheses)
-int NativeParser::CountCommas(const wxString& lineText, int start)
-{
-    int commas = 0;
-    int nest = 0;
-    while (true)
-    {
-        wxChar c = lineText.GetChar(start++);
-        if (c == '\0')
-            break;
-        else if (c == '(')
-            ++nest;
-        else if (c == ')')
-            --nest;
-        else if (c == ',' && nest == 0)
-            ++commas;
-    }
-    return commas;
-}
-
 // set start and end to the calltip highlight region, based on m_CallTipCommas (calculated in GetCallTips())
 void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int* end)
 {
@@ -1045,6 +1040,26 @@ void NativeParser::GetCallTipHighlight(const wxString& calltip, int* start, int*
     }
     if (*end == 0)
         *end = calltip.Length() - 1;
+}
+
+// count commas in lineText (nesting parentheses)
+int NativeParser::CountCommas(const wxString& lineText, int start)
+{
+    int commas = 0;
+    int nest = 0;
+    while (true)
+    {
+        wxChar c = lineText.GetChar(start++);
+        if (c == '\0')
+            break;
+        else if (c == '(')
+            ++nest;
+        else if (c == ')')
+            --nest;
+        else if (c == ',' && nest == 0)
+            ++commas;
+    }
+    return commas;
 }
 
 const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
@@ -1124,7 +1139,9 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
         delete lock;
     m_GettingCalltips = false;
     m_CallTipCommas = commas;
-//    Manager::Get()->GetLogManager()->DebugLog(_T("m_CallTipCommas=%d"), m_CallTipCommas);
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("m_CallTipCommas=%d"), m_CallTipCommas));
+#endif
     return m_CallTips;
 }
 
@@ -1147,9 +1164,10 @@ void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, i
     {
         wxChar c = original_str.GetChar(pos);
 
-        if (c == _T(','))
+        if      (c == _T(','))
             last_comma = pos;
-        else if (c == _T(' ') || c == _T('\t'))
+        else if (   (c == _T(' '))
+                 || (c == _T('\t')) )
             last_space = pos;
 
         if (pos % chars_per_line == 0 && last_comma != -1)
@@ -1164,72 +1182,149 @@ void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, i
     }
 }
 
+static bool InsideToken(int startAt, const wxString& line)
+{
+    return (   (startAt >= 0)
+            && (startAt < line.Length())
+            && (   (wxIsalnum(line.GetChar(startAt)))
+                || (line.GetChar(startAt) == '_') ) );
+}
+static int BeginOfToken(int startAt, const wxString& line)
+{
+    while (   (startAt >= 0)
+           && (startAt < line.Length())
+           && (   (wxIsalnum(line.GetChar(startAt)))
+               || (line.GetChar(startAt) == '_') ) )
+        --startAt;
+    return startAt;
+}
+static int BeforeToken(int startAt, const wxString& line)
+{
+    if (   (startAt > 0)
+        && (startAt < line.Length() + 1)
+        && (   (wxIsalnum(line.GetChar(startAt - 1)))
+            || (line.GetChar(startAt - 1) == '_') ) )
+        --startAt;
+    return startAt;
+}
+static bool IsOperator(int startAt, const wxString& line)
+{
+    return (   (startAt > 0)
+            && (startAt < line.Length())
+            && (   (   (line.GetChar(startAt) == '>')
+                    && (line.GetChar(startAt - 1) == '-') )
+                || (   (line.GetChar(startAt) == ':')
+                    && (line.GetChar(startAt - 1) == ':') ) ) );
+}
+static bool IsOperatorDot(int startAt, const wxString& line)
+{
+    return (   (startAt >= 0)
+            && (startAt < line.Length())
+            && (line.GetChar(startAt) == '.') );
+}
+static int BeforeWhitespace(int startAt, const wxString& line)
+{
+    while (   (startAt >= 0)
+           && (startAt < line.Length())
+           && (   (line.GetChar(startAt) == ' ')
+               || (line.GetChar(startAt) == '\t') ) )
+        --startAt;
+    return startAt;
+}
+static int AfterWhitespace(int startAt, const wxString& line)
+{
+    if (startAt < 0)
+        startAt = 0;
+    while (   (startAt < line.Length())
+           && (   (line.GetChar(startAt) == ' ')
+               || (line.GetChar(startAt) == '\t') ) )
+        ++startAt;
+    return startAt;
+}
+static bool IsOpeningBracket(int startAt, const wxString& line)
+{
+    return (   (startAt < line.Length())
+            && (   (line.GetChar(startAt) == '(')
+                || (line.GetChar(startAt) == '[') ) );
+}
+static bool IsClosingBracket(int startAt, const wxString& line)
+{
+    return (   (startAt >= 0)
+            && (   (line.GetChar(startAt) == ')')
+                || (line.GetChar(startAt) == ']') ) );
+}
+
 unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 {
-    int x = line.Length() - 1;
+    int startAt = line.Length() - 1;
     int nest = 0;
 
     bool repeat = true;
     while (repeat)
     {
         repeat = false;
-        while ((x >= 0) && (wxIsalnum(line.GetChar(x)) || line.GetChar(x) == '_'))
-            --x;
+        // Go back to the beginning of the function/variable (token)
+        startAt = BeginOfToken(startAt, line);
 
-        if ( (x > 0) &&
-             ( (line.GetChar(x) == '>' && line.GetChar(x - 1) == '-') ||
-               (line.GetChar(x) == ':' && line.GetChar(x - 1) == ':') ) )
+        // Check for [Class]. ('.' pressed)
+        if (IsOperatorDot(startAt, line))
         {
-            x -= 2;
-            repeat = true;
+            --startAt;
+            repeat = true; // yes -> repeat.
         }
-        else if ((x >= 0) && (line.GetChar(x) == '.'))
+        // Check for [Class]-> ('>' pressed)
+        // Check for [Class]:: (':' pressed)
+        else if (IsOperator(startAt, line))
         {
-            --x;
-            repeat = true;
+            startAt -= 2;
+            repeat = true; // yes -> repeat.
         }
 
         if (repeat)
         {
-            // now we 're just before the "." or "->" or "::"
+            // now we're just before the "." or "->" or "::"
             // skip any whitespace
-            while ((x >= 0) && (line.GetChar(x) == ' ' || line.GetChar(x) == '\t'))
-                --x;
+            startAt = BeforeWhitespace(startAt, line);
 
             // check for function/array/cast ()
-            if ((x >= 0) && (line.GetChar(x) == ')' || line.GetChar(x) == ']'))
+            if (IsClosingBracket(startAt, line))
             {
                 ++nest;
-                while (--x >= 0 && nest != 0)
+                while (   (--startAt >= 0)
+                       && (nest != 0) )
                 {
                     #if wxCHECK_VERSION(2, 9, 0)
-                    switch (line.GetChar(x).GetValue())
+                    switch (line.GetChar(startAt).GetValue())
                     #else
-                    switch (line.GetChar(x))
+                    switch (line.GetChar(startAt))
                     #endif
                     {
                         case ']':
-                        case ')': ++nest; break;
+                        case ')': ++nest; --startAt; break;
 
                         case '[':
-                        case '(': --nest; break;
+                        case '(': --nest; --startAt; break;
+
                     }
+
+                    startAt = BeforeWhitespace(startAt, line);
+
+                    if (IsClosingBracket(startAt, line))
+                        ++nest;
                 }
-                if ((x > 0) && (wxIsalnum(line.GetChar(x - 1)) || line.GetChar(x - 1) == '_'))
-                    --x;
+
+                startAt = BeforeToken(startAt, line);
             }
         }
     }
-    ++x;
+    ++startAt;
 
-    if (x < 0)
-        x = 0;
+    startAt = AfterWhitespace(startAt, line);
 
-    while (line.GetChar(x) == ' ' || line.GetChar(x) == '\t')
-        ++x;
-
-    //Manager::Get()->GetLogManager()->DebugLog("Starting at %d \"%s\"", x, line.Mid(x).c_str());
-    return x;
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Starting at %d \"%s\""), startAt, line.Mid(startAt).c_str()));
+#endif
+    return startAt;
 }
 
 wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function)
@@ -1237,38 +1332,47 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     wxString res;
     int nest = 0;
 
-    if ((startAt < line.Length()) && (line.GetChar(startAt) == '('))
+    if (   (startAt < line.Length())
+        && (line.GetChar(startAt) == '(') )
     {
-        while (startAt < line.Length() &&
-                (line.GetChar(startAt) == '*' ||
-                line.GetChar(startAt) == '&' ||
-                line.GetChar(startAt) == '('))
+        while (   (startAt < line.Length())
+               && (   (line.GetChar(startAt) == '*')
+                   || (line.GetChar(startAt) == '&')
+                   || (line.GetChar(startAt) == '(') ) )
         {
             if (line.GetChar(startAt) == '(')
                 ++nest;
             ++startAt;
         }
     }
-    //Manager::Get()->GetLogManager()->DebugLog(F(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
-    while ((startAt < line.Length()) && (wxIsalnum(line.GetChar(startAt)) || line.GetChar(startAt) == '_'))
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
+#endif
+    while (InsideToken(startAt, line))
     {
         res << line.GetChar(startAt);
         ++startAt;
     }
-    while ((nest > 0) && (startAt < line.Length()))
+    while (   (nest > 0)
+           && (startAt < line.Length()) )
     {
         if (line.GetChar(startAt) == ')')
             --nest;
         ++startAt;
     }
-    //Manager::Get()->GetLogManager()->DebugLog(F(_T("Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
 
-    if ((startAt < line.Length()) && (line.GetChar(startAt) == '(' || line.GetChar(startAt) == '['))
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
+#endif
+
+    startAt = AfterWhitespace(startAt, line);
+    if (IsOpeningBracket(startAt, line))
     {
         is_function = line.GetChar(startAt) == '(';
 
         ++nest;
-        while (startAt < line.Length() - 1 && nest != 0)
+        while (   (startAt < line.Length()-1)
+               && (nest != 0) )
         {
             ++startAt;
             #if wxCHECK_VERSION(2, 9, 0)
@@ -1278,16 +1382,22 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
             #endif
             {
                 case ']':
-                case ')': --nest; break;
+                case ')': --nest; ++startAt; break;
 
                 case '[':
-                case '(': ++nest; break;
+                case '(': ++nest; ++startAt; break;
             }
+
+            startAt = AfterWhitespace(startAt, line);
+
+            if (IsOpeningBracket(startAt, line))
+                ++nest;
         }
-        ++startAt;
     }
 
-    //Manager::Get()->GetLogManager()->DebugLog("Return at %d (%c): res=%s", startAt, line.GetChar(startAt), res.c_str());
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
+#endif
     return res;
 }
 
@@ -1314,37 +1424,42 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
         return wxEmptyString;
 
     bool is_function = false;
-    unsigned int x = FindCCTokenStart(line);
-    wxString res = GetNextCCToken(line, x, is_function);
-//    Manager::Get()->GetLogManager()->DebugLog(_T("FindCCTokenStart returned %d \"%s\""), x, line.c_str());
-//    Manager::Get()->GetLogManager()->DebugLog(_T("GetNextCCToken returned %d \"%s\""), x, res.c_str());
+    unsigned int startAt = FindCCTokenStart(line);
+    wxString res = GetNextCCToken(line, startAt, is_function);
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCCTokenStart returned %d \"%s\""), startAt, line.c_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetNextCCToken returned %d \"%s\""), startAt, res.c_str()));
+#endif
 
-    if (x == line.Length())
+    if (startAt == line.Length())
         line.Clear();
     else
     {
         // skip whitespace
-        while (line.GetChar(x) == ' ' || line.GetChar(x) == '\t')
-            ++x;
+        startAt = AfterWhitespace(startAt, line);
 
-        if (line.GetChar(x) == '.')
+        // Check for [Class]. ('.' pressed)
+        if (IsOperatorDot(startAt, line))
         {
             tokenType = pttClass;
-            line.Remove(0, x + 1);
+            line.Remove(0, startAt + 1);
         }
-        else if ((x < line.Length() - 1 && line.GetChar(x) == '-' && line.GetChar(x + 1) == '>') ||
-            (x < line.Length() - 1 && line.GetChar(x) == ':' && line.GetChar(x + 1) == ':'))
+        // Check for [Class]-> ('>' pressed)
+        // Check for [Class]:: (':' pressed)
+        else if (IsOperator(startAt, line))
         {
-            if (line.GetChar(x) == ':')
+            if (line.GetChar(startAt) == ':')
                 tokenType = pttNamespace;
             else
                 tokenType = pttClass;
-            line.Remove(0, x + 2);
+            line.Remove(0, startAt + 2);
         }
         else
             line.Clear();
     }
-//    Manager::Get()->GetLogManager()->DebugLog(_T("Left \"%s\""), line.c_str());
+#if DEBUG_CC_AI
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Left \"%s\""), line.c_str()));
+#endif
 
     if (is_function)
         tokenType = pttFunction;
@@ -1369,16 +1484,15 @@ size_t NativeParser::AI(TokenIdxSet& result,
     if (pos < 0 || pos > editor->GetControl()->GetLength())
         return 0;
     m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
-    m_EditorEndWord = pos;//editor->GetControl()->WordEndPosition(pos, true);
+    m_EditorEndWord = pos; //editor->GetControl()->WordEndPosition(pos, true);
     int line = editor->GetControl()->LineFromPosition(pos);
 
     wxString searchtext;
-    //Manager::Get()->GetLogManager()->DebugLog("********* START **********");
 
     TokensTree* tree = parser->GetTokens();
     if(!tree)
         return 0;
-//    Token* parentToken = 0L;
+
     wxString actual;
     int col;
     wxString tabwidth;
@@ -1398,7 +1512,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
         col = actual.Length() - 1;
     }
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
     #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("AI enter, actual: \"%s\""), actual.wx_str()));
@@ -1421,7 +1535,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
         cached_results_count == 0 &&
         actual.StartsWith(cached_search))
     {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(_T("Aborting search: last attempt returned 0 results"));
 #endif
@@ -1434,7 +1548,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
         return 0;
     }
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
     {
         Manager::Get()->GetLogManager()->DebugLog(_T("========================================================="));
@@ -1458,7 +1572,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
             if (!token)
                 continue;
             scope_result.insert(token->m_ParentIndex);
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
             {
                 Token* parent = parser->GetTokens()->at(token->m_ParentIndex);
@@ -1507,7 +1621,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     // actually find all matches in selected namespaces
     for (TokenIdxSet::iterator it = search_scope->begin(); it != search_scope->end(); ++it)
     {
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
         {
             Token* scopeToken = tree->at(*it);
@@ -1522,7 +1636,8 @@ size_t NativeParser::AI(TokenIdxSet& result,
     }
 
     cached_editor = editor;
-    cached_editor_start_word = m_EditorStartWord;
+    if (result.size() || (m_EditorEndWord - m_EditorStartWord))
+        cached_editor_start_word = m_EditorStartWord;
     cached_search = actual;
     cached_results_count = result.size();
 
@@ -1582,7 +1697,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     if (components.empty())
         return 0;
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches - enter"));
 #endif
@@ -1604,7 +1719,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     // we 'll only add tokens in the result set if we get matches for the last token
     bool is_last = components.empty();
     wxString searchtext = parser_component.component;
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("Search for ") + searchtext);
 #endif
@@ -1613,7 +1728,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     TokenIdxSet local_result;
     GenerateResultSet(tree, searchtext, parentTokenIdx, local_result, caseSensitive || !is_last, is_last && !noPartialMatch, kindMask);
 //    tree->FindMatches(searchtext, local_result, caseSensitive || !is_last, is_last && !noPartialMatch);
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Looping %d results"), local_result.size()));
 #endif
@@ -1635,7 +1750,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 type_components.push(comp);
             }
 
-    #ifdef DEBUG_CC_AI
+    #if DEBUG_CC_AI
             if (s_DebugSmartSense)
             #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Replacing %s to %s"), token->m_Name.wx_str(), token->m_ActualType.wx_str()));
@@ -1671,7 +1786,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             continue; // done with this token
         }
 
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
         if (s_DebugSmartSense)
         #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Match: '%s' (%d) : '%s'"), token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
@@ -1696,7 +1811,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             // the parent to search under is a bit troubling, because of namespaces
             // what we 'll do is search under current parent and traverse up the parentship
             // until we find a result, or reach -1...
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
             if (s_DebugSmartSense)
             #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Looking for type: '%s' (%d components)"), actual.wx_str(), type_components.size()));
@@ -1719,7 +1834,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 if (parent && parent->GetParentToken())
                 {
                     temp_search_scope.insert(parent->GetParentToken()->GetSelf());
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                     if (s_DebugSmartSense)
                         Manager::Get()->GetLogManager()->DebugLog(_T("Implicit search scope added: ") + parent->GetParentToken()->m_Name);
 #endif
@@ -1729,7 +1844,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             while (!search_scope || itsearch != temp_search_scope.end())
             {
                 Token* parent = tree->at(*itsearch);
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                 if (s_DebugSmartSense)
                 #if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T(" : looking under '%s'"), parent ? parent->m_Name.wx_str() : _T("Global namespace")));
@@ -1765,7 +1880,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                         ++it;
                     }
                 }
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                 if (s_DebugSmartSense)
                 {
                     #if wxCHECK_VERSION(2, 9, 0)
@@ -1789,7 +1904,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         else
             FindAIMatches(parser, components, result, id, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
     }
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches - leave"));
 #endif
@@ -1825,7 +1940,7 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
         return 0;
 
     Token* parent = tree->at(parentIdx);
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
     #if wxCHECK_VERSION(2, 9, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet: search '%s', parent='%s (%d), isPrefix=%d'"), search.wx_str(), parent ? parent->m_Name.wx_str() : _T("Global namespace"), parent ? parent->GetSelf() : 0, isPrefix ? 1 : 0));
@@ -2025,7 +2140,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
             if (token->m_ImplLineStart <= (size_t)line && token->m_ImplLineEnd >= (size_t)line)
             {
                 // got it :)
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
                 if (s_DebugSmartSense)
                 #if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("Current function: %s (at line %d)"), token->DisplayName().wx_str(), token->m_ImplLine));
@@ -2055,7 +2170,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
             }
         }
     }
-#ifdef DEBUG_CC_AI
+#if DEBUG_CC_AI
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(_T("Can't determine current function..."));
 #endif
