@@ -187,6 +187,10 @@ void InfoPane::ContextMenu(wxContextMenuEvent& event)
 
 void InfoPane::OnTabContextMenu(wxAuiNotebookEvent& event)
 {
+    if (event.GetSelection() == -1)
+        return;
+    // select the notebook that sends the event, because the context menu-entries act on the actual selected tab
+    SetSelection(event.GetSelection());
     DoShowContextMenu();
 }
 

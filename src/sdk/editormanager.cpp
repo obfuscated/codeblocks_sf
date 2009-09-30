@@ -2487,6 +2487,8 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
 {
     if (event.GetSelection() == -1)
         return;
+    // select the notebook that sends the event, because the context menu-entries act on the actual selected tab
+    m_pNotebook->SetSelection(event.GetSelection());
     wxMenu* pop = new wxMenu;
     pop->Append(idNBTabClose, _("Close"));
     if (GetEditorsCount() > 1)
