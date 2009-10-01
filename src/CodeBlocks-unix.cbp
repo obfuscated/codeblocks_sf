@@ -1082,72 +1082,6 @@
 		<Unit filename="plugins/codecompletion/resources/classbrowser.xrc">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/class.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/class_folder.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/ctor_private.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/ctor_protected.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/ctor_public.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/dtor_private.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/dtor_protected.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/dtor_public.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/enum.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/enumerator.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/enums_folder.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/method_private.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/method_protected.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/method_public.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/namespace.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/others_folder.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/preproc.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/preproc_folder.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/symbols_folder.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/var_private.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/var_protected.png">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="plugins/codecompletion/resources/images/var_public.png">
-			<Option target="Code-completion" />
-		</Unit>
 		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1444,30 +1378,6 @@
 		<Unit filename="plugins/compilergcc/resources/compiler_toolbar_16x16.xrc">
 			<Option target="Compiler" />
 		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/16x16/compile.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/16x16/compilerun.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/16x16/rebuild.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/16x16/run.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/compile.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/compilerun.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/rebuild.png">
-			<Option target="Compiler" />
-		</Unit>
-		<Unit filename="plugins/compilergcc/resources/images/run.png">
-			<Option target="Compiler" />
-		</Unit>
 		<Unit filename="plugins/debuggergdb/backtracedlg.cpp">
 			<Option target="Debugger" />
 		</Unit>
@@ -1616,36 +1526,6 @@
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/edit_watches_dlg.xrc">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgnext.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgrun.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgrunto.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgstep.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/16x16/dbgstop.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/dbgnext.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/dbgrun.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/dbgrunto.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/dbgstep.png">
-			<Option target="Debugger" />
-		</Unit>
-		<Unit filename="plugins/debuggergdb/resources/images/dbgstop.png">
 			<Option target="Debugger" />
 		</Unit>
 		<Unit filename="plugins/debuggergdb/resources/memdump.xrc">
@@ -3182,153 +3062,6 @@
 		<Unit filename="src/resources/icons/h.ico">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/resources/images/16x16/editcopy.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/editcut.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/editpaste.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/filefind.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/filefindnext.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/filefindprev.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/filenew.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/fileopen.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/filesave.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/folder.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/folder_new.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/folder_open.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/newproject.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/redo.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/searchreplace.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/searchreplacef.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/16x16/undo.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/ascii.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/codeblocks.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/compile.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/compilerun.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/contents_16x16.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/dbgnext.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/dbgrun.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/dbgrunto.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/dbgstep.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/edit_16x16.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/editcopy.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/editcut.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/editpaste.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/filefind.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/filenew.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/fileopen.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/filesave.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/filesaveas.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/flag_16x16.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/folder.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/folder_new.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/folder_open.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/misc_16x16.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/newproject.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/rebuild.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/redo.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/run.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/searchreplace.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/source.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/splash.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/stop.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/images/undo.png">
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/resources/main_menu.xrc">
 			<Option target="src" />
 		</Unit>
@@ -3364,25 +3097,7 @@
 		<Unit filename="src/resources/scripting_settings.xrc">
 			<Option target="src" />
 		</Unit>
-		<Unit filename="src/resources/start_here/cb.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/start_here/new.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/start_here/open.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/start_here/reopen.png">
-			<Option target="src" />
-		</Unit>
 		<Unit filename="src/resources/start_here/start_here.html">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/start_here/title.png">
-			<Option target="src" />
-		</Unit>
-		<Unit filename="src/resources/start_here/www.png">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/scriptconsole.cpp">

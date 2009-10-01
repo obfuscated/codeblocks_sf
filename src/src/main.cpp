@@ -658,7 +658,7 @@ void MainFrame::CreateIDE()
     m_LayoutManager.AddPane(m_pEdMan->GetNotebook(), wxAuiPaneInfo().Name(wxT("MainPane")).
                             CentrePane());
 
-	m_pScriptConsole = new ScriptConsole(this, -1);
+    m_pScriptConsole = new ScriptConsole(this, -1);
     m_LayoutManager.AddPane(m_pScriptConsole, wxAuiPaneInfo().Name(wxT("ScriptConsole")).
                             Caption(_("Scripting console")).Float().MinSize(100,100));
 
@@ -1227,7 +1227,7 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     if (m_LastLayoutName != name && !DoCheckCurrentLayoutForChanges(true))
         return;
 
-	m_LastLayoutIsTemp = isTemp;
+    m_LastLayoutIsTemp = isTemp;
 
     wxString layout = m_LayoutViews[name];
     if (layout.IsEmpty())
@@ -1287,12 +1287,12 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
             wxString theToken = strTokColon.GetNextToken();
             if (theToken.StartsWith(_T("state=")))
             {
-            	theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
-            	theToken.ToULong(&j);
-            	// we filter out the hidden/show state
-            	theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
+                theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
+                theToken.ToULong(&j);
+                // we filter out the hidden/show state
+                theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
             }
-           	arLayout1.Add(theToken);
+               arLayout1.Add(theToken);
         }
     }
 
@@ -1306,12 +1306,12 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
             wxString theToken = strTokColon.GetNextToken();
             if (theToken.StartsWith(_T("state=")))
             {
-            	theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
-            	theToken.ToULong(&j);
-            	// we filter out the hidden/show state
-            	theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
+                theToken=theToken.Right(theToken.Len() - wxString(_T("state=")).Len());
+                theToken.ToULong(&j);
+                // we filter out the hidden/show state
+                theToken=wxString::Format(_("state=%d"),j & wxAuiPaneInfo::optionHidden);
             }
-           	arLayout2.Add(theToken);
+               arLayout2.Add(theToken);
         }
     }
 
@@ -1380,7 +1380,7 @@ void MainFrame::DoSelectLayout(const wxString& name)
         }
 
         if (!m_LastLayoutIsTemp)
-			Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
+            Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), name);
     }
 }
 
@@ -1622,7 +1622,7 @@ bool MainFrame::DoOpenProject(const wxString& filename, bool addToHistory)
 
 bool MainFrame::DoOpenFile(const wxString& filename, bool addToHistory)
 {
-	cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
+    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename);
     if (ed)
     {
         if (addToHistory)
@@ -1848,10 +1848,10 @@ void MainFrame::ShowHideScriptConsole()
 {
     if (Manager::IsBatchBuild())
         return;
-	bool isVis = IsWindowReallyShown(m_pScriptConsole);
-	CodeBlocksDockEvent evt(isVis ? cbEVT_HIDE_DOCK_WINDOW : cbEVT_SHOW_DOCK_WINDOW);
-	evt.pWindow = m_pScriptConsole;
-	Manager::Get()->ProcessEvent(evt);
+    bool isVis = IsWindowReallyShown(m_pScriptConsole);
+    CodeBlocksDockEvent evt(isVis ? cbEVT_HIDE_DOCK_WINDOW : cbEVT_SHOW_DOCK_WINDOW);
+    evt.pWindow = m_pScriptConsole;
+    Manager::Get()->ProcessEvent(evt);
 }
 
 void MainFrame::OnStartHereLink(wxCommandEvent& event)
@@ -1987,11 +1987,11 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
 
     // update page
     buf.Replace(_T("CB_VAR_RECENT_FILES_AND_PROJECTS"), links);
-	buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
-	buf.Replace(_T("CB_TXT_OPEN_PROJECT"), _("Open an existing project"));
-	buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
-	buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
-	buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
+    buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
+    buf.Replace(_T("CB_TXT_OPEN_PROJECT"), _("Open an existing project"));
+    buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
+    buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
+    buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
     ((StartHerePage*)sh)->SetPageContent(buf);
 }
 

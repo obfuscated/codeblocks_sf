@@ -1025,6 +1025,9 @@
 			<Option link="0" />
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins\astyle\astyle\astyle_main.h">
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins\astyle\astyleconfigdlg.cpp">
 			<Option target="AStyle" />
 		</Unit>

@@ -117,38 +117,37 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnFunction(wxCommandEvent& event);
         void ParseFunctionsAndFillToolbar(bool force = false);
 
-        int m_PageIndex;
-        bool m_InitDone;
+        int                                m_PageIndex;
+        bool                               m_InitDone;
 
-        wxMenu* m_EditMenu;
-        wxMenu* m_SearchMenu;
-        wxMenu* m_ViewMenu;
-        NativeParser m_NativeParsers;
-        set<cbProject*,less<cbProject*> > m_ParsedProjects;
+        wxMenu*                            m_EditMenu;
+        wxMenu*                            m_SearchMenu;
+        wxMenu*                            m_ViewMenu;
+        NativeParser                       m_NativeParser;
+        set<cbProject*, less<cbProject*> > m_ParsedProjects;
 
-        int m_EditorHookId;
-        int m_LastPosForCodeCompletion;
-        wxTimer m_timerCodeCompletion;
-        cbEditor* m_pCodeCompletionLastEditor;
-        int m_ActiveCalltipsNest;
+        int                                m_EditorHookId;
+        int                                m_LastPosForCodeCompletion;
+        wxTimer                            m_TimerCodeCompletion;
+        wxTimer                            m_TimerFunctionsParsing;
+        cbEditor*                          m_pCodeCompletionLastEditor;
+        int                                m_ActiveCalltipsNest;
 
-        bool m_IsAutoPopup;
+        bool                               m_IsAutoPopup;
 
-        wxChoice* m_Function;
-        wxChoice* m_Scope;
-        FunctionsScopeVec m_FunctionsScope;
-        NameSpaceVec m_NameSpaces;
-        FunctionsScopeMap m_AllFunctionsScopes;
-        bool m_ToolbarChanged;
+        wxChoice*                          m_Function;
+        wxChoice*                          m_Scope;
+        FunctionsScopeVec                  m_FunctionsScope;
+        NameSpaceVec                       m_NameSpaces;
+        FunctionsScopeMap                  m_AllFunctionsScopes;
+        bool                               m_ToolbarChanged;
 
-        int StartIdxNameSpaceInScope;
-        int m_CurrentLine;
-        map<wxString, int> searchItem;
-        wxString m_LastFile;
+        int                                m_StartIdxNameSpaceInScope;
+        int                                m_CurrentLine;
+        map<wxString, int>                 m_SearchItem;
+        wxString                           m_LastFile;
 
-        wxTimer m_FunctionsParsingTimer;
-
-        bool m_LexerKeywordsToInclude[9];
+        bool                               m_LexerKeywordsToInclude[9];
 
         DECLARE_EVENT_TABLE()
 };

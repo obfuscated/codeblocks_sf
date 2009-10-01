@@ -61,8 +61,8 @@ Parser::Parser(wxEvtHandler* parent)
     m_pClassBrowser(0),
     m_TreeBuildingStatus(0),
     m_TreeBuildingTokenIdx(0),
-    m_timer(this, TIMER_ID),
-    m_batchtimer(this,BATCH_TIMER_ID),
+    m_Timer(this, TIMER_ID),
+    m_BatchTimer(this,BATCH_TIMER_ID),
     m_StopWatchRunning(false),
     m_LastStopWatchTime(0),
     m_IgnoreThreadEvents(false),
@@ -452,7 +452,7 @@ bool Parser::ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBl
 
 void Parser::BatchParse(const wxArrayString& filenames)
 {
-    m_batchtimer.Stop();
+    m_BatchTimer.Stop();
     m_IsBatch = true;
     m_Pool.BatchBegin();
     for (unsigned int i = 0; i < filenames.GetCount(); ++i)
@@ -462,7 +462,7 @@ void Parser::BatchParse(const wxArrayString& filenames)
     }
 
     // Allow future parses to take place in this same run
-    m_batchtimer.Start(batch_timer_delay,wxTIMER_ONE_SHOT);
+    m_BatchTimer.Start(batch_timer_delay,wxTIMER_ONE_SHOT);
 }
 
 bool Parser::Parse(const wxString& filename, bool isLocal, LoaderBase* loader)
@@ -525,7 +525,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             break;
         }
 
-        bool use_timer = m_batchtimer.IsRunning();
+        bool use_timer = m_BatchTimer.IsRunning();
         if(!m_IsBatch && wxThread::IsMain())
         {
             use_timer = true;
@@ -539,7 +539,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             m_IgnoreThreadEvents = false;
         #ifdef CODECOMPLETION_PROFILING
         StartStopWatch();
-        m_batchtimer.Stop();
+        m_BatchTimer.Stop();
         thread->Parse();
         #else
         m_Pool.AddTask(thread, true);
@@ -548,7 +548,7 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
         // For every parse, reset the countdown to -batch_timer_delay.
         // This will give us a tolerance period before the next parse job is queued.
         if(use_timer)
-            m_batchtimer.Start(batch_timer_delay,wxTIMER_ONE_SHOT);
+            m_BatchTimer.Start(batch_timer_delay,wxTIMER_ONE_SHOT);
         result = true;
     }while(false);
     return result;
@@ -621,7 +621,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
         m_pTokens->FlagFileForReparsing(file);
     }
     m_NeedsReparse = true;
-    m_timer.Start(reparse_timer_delay,wxTIMER_ONE_SHOT);
+    m_Timer.Start(reparse_timer_delay,wxTIMER_ONE_SHOT);
     return true;
 }
 

@@ -20,42 +20,42 @@
     #include <wx/imaglist.h>
 #endif // STANDALONE
 
-#define PARSER_IMG_NONE         	-2
-#define PARSER_IMG_CLASS_FOLDER     	0
-#define PARSER_IMG_CLASS            	1
-#define PARSER_IMG_CLASS_PRIVATE    	2
-#define PARSER_IMG_CLASS_PROTECTED  	3
-#define PARSER_IMG_CLASS_PUBLIC     	4
-#define PARSER_IMG_CTOR_PRIVATE     	5
-#define PARSER_IMG_CTOR_PROTECTED   	6
-#define PARSER_IMG_CTOR_PUBLIC      	7
-#define PARSER_IMG_DTOR_PRIVATE     	8
-#define PARSER_IMG_DTOR_PROTECTED   	9
-#define PARSER_IMG_DTOR_PUBLIC      	10
-#define PARSER_IMG_FUNC_PRIVATE     	11
-#define PARSER_IMG_FUNC_PROTECTED   	12
-#define PARSER_IMG_FUNC_PUBLIC      	13
-#define PARSER_IMG_VAR_PRIVATE      	14
-#define PARSER_IMG_VAR_PROTECTED    	15
-#define PARSER_IMG_VAR_PUBLIC       	16
-#define PARSER_IMG_PREPROCESSOR     	17
-#define PARSER_IMG_ENUM             	18
-#define PARSER_IMG_ENUM_PRIVATE			19
-#define PARSER_IMG_ENUM_PROTECTED		20
-#define PARSER_IMG_ENUM_PUBLIC			21
-#define PARSER_IMG_ENUMERATOR       	22
-#define PARSER_IMG_NAMESPACE        	23
-#define PARSER_IMG_TYPEDEF       		24
-#define PARSER_IMG_TYPEDEF_PRIVATE		25
-#define PARSER_IMG_TYPEDEF_PROTECTED	26
-#define PARSER_IMG_TYPEDEF_PUBLIC		27
-#define PARSER_IMG_SYMBOLS_FOLDER   	28
-#define PARSER_IMG_VARS_FOLDER     		29
-#define PARSER_IMG_FUNCS_FOLDER     	30
-#define PARSER_IMG_ENUMS_FOLDER     	31
-#define PARSER_IMG_PREPROC_FOLDER   	32
-#define PARSER_IMG_OTHERS_FOLDER		33
-#define PARSER_IMG_TYPEDEF_FOLDER   	34
+#define PARSER_IMG_NONE                -2
+#define PARSER_IMG_CLASS_FOLDER         0
+#define PARSER_IMG_CLASS                1
+#define PARSER_IMG_CLASS_PRIVATE        2
+#define PARSER_IMG_CLASS_PROTECTED      3
+#define PARSER_IMG_CLASS_PUBLIC         4
+#define PARSER_IMG_CTOR_PRIVATE         5
+#define PARSER_IMG_CTOR_PROTECTED       6
+#define PARSER_IMG_CTOR_PUBLIC          7
+#define PARSER_IMG_DTOR_PRIVATE         8
+#define PARSER_IMG_DTOR_PROTECTED       9
+#define PARSER_IMG_DTOR_PUBLIC          10
+#define PARSER_IMG_FUNC_PRIVATE         11
+#define PARSER_IMG_FUNC_PROTECTED       12
+#define PARSER_IMG_FUNC_PUBLIC          13
+#define PARSER_IMG_VAR_PRIVATE          14
+#define PARSER_IMG_VAR_PROTECTED        15
+#define PARSER_IMG_VAR_PUBLIC           16
+#define PARSER_IMG_PREPROCESSOR         17
+#define PARSER_IMG_ENUM                 18
+#define PARSER_IMG_ENUM_PRIVATE         19
+#define PARSER_IMG_ENUM_PROTECTED       20
+#define PARSER_IMG_ENUM_PUBLIC          21
+#define PARSER_IMG_ENUMERATOR           22
+#define PARSER_IMG_NAMESPACE            23
+#define PARSER_IMG_TYPEDEF              24
+#define PARSER_IMG_TYPEDEF_PRIVATE      25
+#define PARSER_IMG_TYPEDEF_PROTECTED    26
+#define PARSER_IMG_TYPEDEF_PUBLIC       27
+#define PARSER_IMG_SYMBOLS_FOLDER       28
+#define PARSER_IMG_VARS_FOLDER          29
+#define PARSER_IMG_FUNCS_FOLDER         30
+#define PARSER_IMG_ENUMS_FOLDER         31
+#define PARSER_IMG_PREPROC_FOLDER       32
+#define PARSER_IMG_OTHERS_FOLDER        33
+#define PARSER_IMG_TYPEDEF_FOLDER       34
 
 #define PARSER_IMG_MIN PARSER_IMG_CLASS_FOLDER
 #define PARSER_IMG_MAX PARSER_IMG_OTHERS_FOLDER
@@ -90,18 +90,18 @@ enum BrowserDisplayFilter
 
 enum BrowserSortType
 {
-	bstAlphabet	= 0,
-	bstKind,
-	bstScope
+    bstAlphabet = 0,
+    bstKind,
+    bstScope
 };
 
 struct BrowserOptions
 {
-    bool showInheritance; // default: false
-    bool expandNS; // default: false (auto-expand namespaces)
-    bool treeMembers; //
-    BrowserDisplayFilter displayFilter; // default: bdfWorkspace
-    BrowserSortType	sortType; //
+    bool                 showInheritance; // default: false
+    bool                 expandNS;        // default: false (auto-expand namespaces)
+    bool                 treeMembers;     //
+    BrowserDisplayFilter displayFilter;   // default: bdfWorkspace
+    BrowserSortType      sortType;        //
 };
 
 class ClassBrowser;
@@ -178,37 +178,38 @@ class Parser : public wxEvtHandler
         void ConnectEvents();
         void DisconnectEvents();
 
-        ParserOptions m_Options;
-        BrowserOptions m_BrowserOptions;
-        SearchTree<wxString> m_GlobalIncludes;
-        wxArrayString m_IncludeDirs;
-        wxEvtHandler* m_pParent;
-        wxTreeItemId m_RootNode;
+        ParserOptions                  m_Options;
+        BrowserOptions                 m_BrowserOptions;
+        SearchTree<wxString>           m_GlobalIncludes;
+        wxArrayString                  m_IncludeDirs;
+        wxEvtHandler*                  m_pParent;
+        wxTreeItemId                   m_RootNode;
 #ifndef STANDALONE
-        wxImageList* m_pImageList;
+        wxImageList*                   m_pImageList;
     protected:
         // the following three members are used to detect changes between
         // in-mem data and cache
         bool m_UsingCache; // true if loaded from cache
 
-        cbThreadPool m_Pool;
-        TokensTree* m_pTokens;
-        TokensTree* m_pTempTokens;
+        cbThreadPool                   m_Pool;
+        TokensTree*                    m_pTokens;
+        TokensTree*                    m_pTempTokens;
         set<wxString, less<wxString> > m_LocalFiles;
-        bool m_NeedsReparse;
-        bool m_IsBatch;
-        ClassBrowser* m_pClassBrowser; // Which class browser are we updating?
-        int m_TreeBuildingStatus; // 0 = Done; 1 = Needs update; 2 = Updating.
-        size_t m_TreeBuildingTokenIdx; // Bookmark for the tree-building process
+        bool                           m_NeedsReparse;
+        bool                           m_IsBatch;
+        ClassBrowser*                  m_pClassBrowser; // Which class browser are we updating?
+        int                            m_TreeBuildingStatus; // 0 = Done; 1 = Needs update; 2 = Updating.
+        size_t                         m_TreeBuildingTokenIdx; // Bookmark for the tree-building process
     private:
-        wxTimer m_timer,m_batchtimer;
-        wxStopWatch m_StopWatch;
-        bool m_StopWatchRunning;
-        long m_LastStopWatchTime;
-        bool m_IgnoreThreadEvents;
-        bool m_ShuttingDown;
+        wxTimer                        m_Timer;
+        wxTimer                        m_BatchTimer;
+        wxStopWatch                    m_StopWatch;
+        bool                           m_StopWatchRunning;
+        long                           m_LastStopWatchTime;
+        bool                           m_IgnoreThreadEvents;
+        bool                           m_ShuttingDown;
 
-        ClassBrowserBuilderThread* m_pClassBrowserBuilderThread;
+        ClassBrowserBuilderThread*     m_pClassBrowserBuilderThread;
 
 #endif // STANDALONE
 

@@ -27,8 +27,8 @@ static wxCriticalSection s_mutexListProtection;
 
 struct ParserThreadOptions
 {
-    ParserThreadOptions()
-        : useBuffer(false),
+    ParserThreadOptions() :
+        useBuffer(false),
         bufferSkipBlocks(false),
         bufferSkipOuterBlocks(false),
         wantPreprocessor(true),
@@ -46,19 +46,19 @@ struct ParserThreadOptions
      * buffer. The resulting tokens will be temporary, too,
      * and will be deleted when the next file is parsed.
      */
-    bool useBuffer;
-    bool bufferSkipBlocks;
-    bool bufferSkipOuterBlocks; // classes, namespaces and functions
-    bool wantPreprocessor;
-    bool followLocalIncludes;
-    bool followGlobalIncludes;
-    bool isTemp;
+    bool        useBuffer;
+    bool        bufferSkipBlocks;
+    bool        bufferSkipOuterBlocks; // classes, namespaces and functions
+    bool        wantPreprocessor;
+    bool        followLocalIncludes;
+    bool        followGlobalIncludes;
+    bool        isTemp;
 
-    bool handleFunctions;
-    bool handleVars;
-    bool handleClasses;
-    bool handleEnums;
-    bool handleTypedefs;
+    bool        handleFunctions;
+    bool        handleVars;
+    bool        handleClasses;
+    bool        handleEnums;
+    bool        handleTypedefs;
 
     LoaderBase* loader; // if not NULL, load through filemanager (using threads)
 };
@@ -102,28 +102,26 @@ class ParserThread : public cbThreadedTask
         wxString GetQueueAsNamespaceString(std::queue<wxString>& q); // NOTICE: clears the queue too
         Token* FindTokenFromQueue(std::queue<wxString>& q, Token* parent = 0, bool createIfNotExist = false, Token* parentIfCreated = 0);
 
-        Tokenizer m_Tokenizer;
-        Parser* m_pParent;
-        TokensTree* m_pTokens;
-        Token* m_pLastParent;
-        TokenScope m_LastScope;
-        wxString m_Filename;
-        unsigned int m_File;
-        bool m_IsLocal;
-        wxString m_Str;
-        wxString m_LastToken;
-        ParserThreadOptions m_Options;
+        Tokenizer            m_Tokenizer;
+        Parser*              m_pParent;
+        TokensTree*          m_pTokens;
+        Token*               m_pLastParent;
+        TokenScope           m_LastScope;
+        wxString             m_Filename;
+        unsigned int         m_File;
+        bool                 m_IsLocal;
+        wxString             m_Str;
+        wxString             m_LastToken;
+        ParserThreadOptions  m_Options;
         std::queue<wxString> m_EncounteredNamespaces; // for member funcs implementation
         std::queue<wxString> m_EncounteredTypeNamespaces; // namespaces in types
-        wxString m_LastUnnamedTokenName;
-        bool m_ParsingTypedef; // this makes a difference in unnamed class/struct/enum handling
-
-        int m_PreprocessorIfCount; // handle nesting of #if...#if...#else...#endif...#endif
+        wxString             m_LastUnnamedTokenName;
+        bool                 m_ParsingTypedef; // this makes a difference in unnamed class/struct/enum handling
+        int                  m_PreprocessorIfCount; // handle nesting of #if...#if...#else...#endif...#endif
+        bool                 m_IsBuffer;
+        wxString             m_Buffer;
 
         bool InitTokenizer();
-
-        bool m_IsBuffer;
-        wxString m_Buffer;
 };
 
 #endif // PARSERTHREAD_H

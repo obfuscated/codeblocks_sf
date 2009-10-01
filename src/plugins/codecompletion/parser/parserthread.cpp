@@ -1652,15 +1652,6 @@ void ParserThread::HandleTypedef()
         if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
 
-#if 0
-        if (token == ParserConsts::kw_union)
-        {
-            // "typedef union" is not supported
-            SkipToOneOfChars(ParserConsts::semicolon, true);
-            break;
-        }
-        else
-#endif
         if (   token == ParserConsts::kw_class
             || token == ParserConsts::kw_struct
             || token == ParserConsts::kw_union)
@@ -1771,7 +1762,6 @@ void ParserThread::HandleTypedef()
 #if PARSERTHREAD_DEBUG_OUTPUT
     Manager::Get()->GetLogManager()->DebugLog(F(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s'"), components.front().c_str(), ancestor.c_str()));
 #endif
-//    Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
     Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
     if (tdef)
     {

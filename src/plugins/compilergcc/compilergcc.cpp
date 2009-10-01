@@ -3370,7 +3370,11 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         {
             if (output.Find(ignore_output.Item(i)) != wxNOT_FOUND)
             {
+            #if wxCHECK_VERSION(2, 9, 0)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Ignoring compiler output: %s"), output.wx_str()));
+            #else
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Ignoring compiler output: %s"), output.c_str()));
+            #endif
                 return;
             }
         }
