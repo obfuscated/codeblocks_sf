@@ -1207,7 +1207,7 @@ static int BeforeToken(int startAt, const wxString& line)
         --startAt;
     return startAt;
 }
-static bool IsOperator(int startAt, const wxString& line)
+static bool IsOperatorEnd(int startAt, const wxString& line)
 {
     return (   (startAt > 0)
             && (startAt < line.Length())
@@ -1216,6 +1216,16 @@ static bool IsOperator(int startAt, const wxString& line)
                 || (   (line.GetChar(startAt) == ':')
                     && (line.GetChar(startAt - 1) == ':') ) ) );
 }
+static bool IsOperatorBegin(int startAt, const wxString& line)
+{
+    return (   (startAt > 0)
+            && (startAt + 1< line.Length())
+            && (   (   (line.GetChar(startAt ) == '-') )
+                    && (line.GetChar(startAt + 1) == '>')
+                || (   (line.GetChar(startAt) == ':')
+                    && (line.GetChar(startAt + 1) == ':') ) ) );
+}
+
 static bool IsOperatorDot(int startAt, const wxString& line)
 {
     return (   (startAt >= 0)
@@ -1274,7 +1284,7 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
         }
         // Check for [Class]-> ('>' pressed)
         // Check for [Class]:: (':' pressed)
-        else if (IsOperator(startAt, line))
+        else if (IsOperatorEnd(startAt, line))
         {
             startAt -= 2;
             repeat = true; // yes -> repeat.
@@ -1394,6 +1404,9 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
                 ++nest;
         }
     }
+    if (IsOperatorBegin(startAt, line))
+        ++startAt;
+
 
 #if DEBUG_CC_AI
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
@@ -1446,7 +1459,7 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
         }
         // Check for [Class]-> ('>' pressed)
         // Check for [Class]:: (':' pressed)
-        else if (IsOperator(startAt, line))
+        else if (IsOperatorEnd(startAt, line))
         {
             if (line.GetChar(startAt) == ':')
                 tokenType = pttNamespace;
