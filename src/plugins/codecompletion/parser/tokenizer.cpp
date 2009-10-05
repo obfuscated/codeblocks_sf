@@ -214,19 +214,26 @@ bool Tokenizer::SkipWhiteSpace()
     return true;
 }
 
-bool Tokenizer::SkipToCharBreak()
+bool Tokenizer::IsEscapedChar()
 {
-  if (PreviousChar() != '\\')
-      return true;
-  else
-  {
-      // check for "\\"
-      if (   ((m_TokenIndex - 2) >= 0)
-          && ((m_TokenIndex - 2) <= m_BufferLen)
-          && (m_Buffer.GetChar(m_TokenIndex - 2) == '\\') )
-          return true;
-  }
-  return false;
+    // Easy: If porevious char is not a backslash, too than it's surely escape'd
+    if (PreviousChar() != '\\')
+        return true;
+    else
+    {
+        // check for multiple backslashes, e.g. "\\"
+        unsigned int numBackslash = 2; // for sure we have at least two at this point
+        while(   ((m_TokenIndex - numBackslash) >= 0)
+              && ((m_TokenIndex - numBackslash) <= m_BufferLen)
+              && (m_Buffer.GetChar(m_TokenIndex - numBackslash) == '\\') )
+            ++numBackslash; // another one...
+
+        if ( (numBackslash%2) == 1) // number of backslashes (including current char) is odd
+            return true;            // eg: "\""
+        else                        // number of backslashes (including current char) is even
+            return false;           // eg: "\\""
+    }
+    return false;
 }
 
 bool Tokenizer::SkipToChar(const wxChar& ch)
@@ -240,7 +247,7 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
         if (IsEOF())
             return false;
 
-        if (SkipToCharBreak()) break;
+        if (IsEscapedChar()) break;
 
         MoveToNextChar();
     }
@@ -291,7 +298,7 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
             }
         }
 
-        if (SkipToCharBreak()) break;
+        if (IsEscapedChar()) break;
 
         // if we are at buffer-end MoveToNextChar returns false, but does not change the token-index,
         // break to avoid endless loops

@@ -1762,7 +1762,8 @@ void ParserThread::HandleTypedef()
 #if PARSERTHREAD_DEBUG_OUTPUT
     Manager::Get()->GetLogManager()->DebugLog(F(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s'"), components.front().c_str(), ancestor.c_str()));
 #endif
-    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
+//    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
+    Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
     if (tdef)
     {
         if (!is_function_pointer)
@@ -1786,11 +1787,13 @@ void ParserThread::ReadClsNames(wxString& ancestor)
         if (current==ParserConsts::comma)
             continue;
         else if (current==ParserConsts::semicolon)
-            {
-                m_Tokenizer.UngetToken();
-                break;
-            }
-        else if (wxIsalpha(current.GetChar(0)))
+        {
+            m_Tokenizer.UngetToken();
+            break;
+        }
+        else if (   wxIsalpha(current.GetChar(0))
+                 && (   (m_Tokenizer.PeekToken() == ParserConsts::semicolon)
+                     || (m_Tokenizer.PeekToken() == ParserConsts::comma)) )
         {
 #if PARSERTHREAD_DEBUG_OUTPUT
             Manager::Get()->GetLogManager()->DebugLog(F(_T("ReadClsNames() : Adding variable '%s' as '%s' to '%s'"), current.c_str(), m_Str.c_str(), (m_pLastParent?m_pLastParent->m_Name.c_str():_T("<no-parent>"))));
@@ -1803,9 +1806,11 @@ void ParserThread::ReadClsNames(wxString& ancestor)
                 wxString tempAncestor = ancestor;
                 newToken->m_AncestorsString = tempAncestor;
             }
-
         }
         else // unexpected
+        {
+            m_Tokenizer.UngetToken();
             break;
+        }
     }
 }
