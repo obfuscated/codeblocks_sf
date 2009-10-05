@@ -632,8 +632,7 @@
 												<checked>1</checked>
 											</object>
 											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
-											<option>1</option>
+											<border>4</border>
 										</object>
 									</object>
 									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

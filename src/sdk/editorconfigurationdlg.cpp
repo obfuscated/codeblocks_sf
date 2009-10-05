@@ -936,27 +936,13 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/margin/dynamic_width"),     XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
         cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
         //scrollbar
-        bool enableScrollWidthTracking = XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->GetValue();
-        cfg->Write(_T("/margin/scroll_width_tracking"),     enableScrollWidthTracking);
-        if (enableScrollWidthTracking != m_EnableScrollWidthTracking)
-        {
-            EditorManager *em = Manager::Get()->GetEditorManager();
-            for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
-            {
-                cbEditor *ed = em->GetBuiltinEditor(em->GetEditor(idx));
-                if(ed)
-                {
-                    ed->SetScrollWidthTracking(enableScrollWidthTracking);
-                }
-            }
-        }
+        cfg->Write(_T("/margin/scroll_width_tracking"),     XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->GetValue());
+
         //changebar
         bool enableChangebar = XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->GetValue();
         cfg->Write(_T("/margin/use_changebar"),        enableChangebar);
         if (enableChangebar != m_EnableChangebar)
         {
-            //if the folding has been disabled, first unfold
-            //all blocks in all editors
             EditorManager *em = Manager::Get()->GetEditorManager();
             for (int idx = 0; idx<em->GetEditorsCount(); ++idx)
             {
@@ -968,7 +954,6 @@ void EditorConfigurationDlg::EndModal(int retCode)
                     enableChangebar?
                         ed->ClearHistory():
                         ed->SetChangeCollection(false);
-                    ed->ShowChangebarMargin(enableChangebar);
                 }
             }
         }

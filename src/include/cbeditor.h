@@ -268,9 +268,7 @@ class DLLIMPORT cbEditor : public EditorBase
         void ClearHistory();
         void GotoNextChanged();
         void GotoPreviousChanged();
-        void ShowChangebarMargin(bool show=true);
         void SetChangeCollection(bool collectChange);
-        void SetScrollWidthTracking(bool trackWidth);
         void Cut();
         void Copy();
         void Paste();

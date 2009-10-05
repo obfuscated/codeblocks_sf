@@ -225,14 +225,8 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Goto previous changed line */
         virtual void GotoPreviousChanged(){}
 
-        /** Show (or hide) the changebar margin */
-        virtual void ShowChangebarMargin(bool show){}
-
         /** Enable or disable changebar */
         virtual void SetChangeCollection(bool collectChange){}
-
-        /** Enable or disable ScrollWidthTracking */
-        virtual void SetScrollWidthTracking(bool trackWidth){}
 
         /** Cut selected text/object to clipboard. */
         virtual void Cut(){}
