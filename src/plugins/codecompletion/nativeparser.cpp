@@ -1633,7 +1633,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
 }
 
 // Breaks up the phrase for code-completion.
-// Suppose the user has invokde code-completion in this piece of code:
+// Suppose the user has invoked code-completion in this piece of code:
 //
 //   Ogre::Root::getSingleton().|
 //
@@ -1652,6 +1652,15 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
     wxString tmp = actual;
 
     // break up components of phrase
+    if (s_DebugSmartSense)
+    {
+        #if wxCHECK_VERSION(2, 9, 0)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Breaking up '%s'"), tmp.wx_str()));
+        #else
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Breaking up '%s'"), tmp.c_str()));
+        #endif
+    }
+
     while (true)
     {
         wxString tok = GetCCToken(tmp, tokenType);
@@ -1659,6 +1668,28 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
         ParserComponent pc;
         pc.component = tok;
         pc.token_type = tokenType;
+        if (s_DebugSmartSense)
+        {
+            wxString tokenTypeString;
+            switch (tokenType)
+            {
+                case (pttFunction):
+                {   tokenTypeString = _T("Function");   break; }
+                case (pttClass):
+                {   tokenTypeString = _T("Class");      break; }
+                case (pttNamespace):
+                {   tokenTypeString = _T("Namespace");  break; }
+                case (pttSearchText):
+                {   tokenTypeString = _T("SearchText"); break; }
+                default:
+                {   tokenTypeString = _T("Undefined");         }
+            }
+            #if wxCHECK_VERSION(2, 9, 0)
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found component: '%s' (%s)"), tok.wx_str(), tokenTypeString.wx_str()));
+            #else
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found component: '%s' (%s)"), tok.c_str(), tokenTypeString.c_str()));
+            #endif
+        }
         components.push(pc);
 
         if (tokenType == pttSearchText)
@@ -1686,7 +1717,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         return 0;
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches - enter"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("----- FindAIMatches - enter -----"));
 
     TokensTree* tree = parser->GetTokens();
 
@@ -1716,35 +1747,6 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Looping %d results"), local_result.size()));
-
-    if (local_result.size() == 1)
-    {
-        int id = *local_result.begin();
-        Token* token = tree->at(id);
-
-        if (token->m_TokenKind == tkTypedef)
-        {
-            std::queue<ParserComponent> type_components;
-            BreakUpComponents(parser, token->m_ActualType, type_components);
-
-            while(!components.empty())
-            {
-                ParserComponent comp = components.front();
-                components.pop();
-                type_components.push(comp);
-            }
-
-            if (s_DebugSmartSense)
-            #if wxCHECK_VERSION(2, 9, 0)
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() : Replacing %s to %s"), token->m_Name.wx_str(), token->m_ActualType.wx_str()));
-            #else
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() : Replacing %s to %s"), token->m_Name.c_str(), token->m_ActualType.c_str()));
-            #endif
-
-            return FindAIMatches(parser, type_components, result, parentTokenIdx, noPartialMatch, caseSensitive, use_inheritance, kindMask, search_scope);
-        }
-
-    }
 
     // loop all matches, and recurse
     for (TokenIdxSet::iterator it = local_result.begin(); it != local_result.end(); it++)
@@ -1780,8 +1782,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
         // is the token a function or variable (i.e. is not a type)
         if (!searchtext.IsEmpty() &&
-            (parser_component.token_type != pttSearchText /*||
-            m_GettingCalltips*/) && // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
+            (parser_component.token_type != pttSearchText
+            /* || m_GettingCalltips */ ) && // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
             !token->m_ActualType.IsEmpty())
         {
             // the token is not a type
@@ -1789,6 +1791,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             TokenIdxSet type_result;
             std::queue<ParserComponent> type_components;
             wxString actual = token->m_ActualType;
+
             // TODO: ignore builtin types (void, int, etc)
             BreakUpComponents(parser, actual, type_components);
             // the parent to search under is a bit troubling, because of namespaces
@@ -1806,7 +1809,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             TokenIdxSet temp_search_scope;
             if (search_scope)
                 temp_search_scope = *search_scope;
-            TokenIdxSet::iterator itsearch;
+
             // add grand-parent as search scope (if none defined)
             // this helps with namespaces when the token's type doesn't contain
             // namespace info. In that case (with the code here) we 're searching in
@@ -1821,6 +1824,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                         Manager::Get()->GetLogManager()->DebugLog(_T("Implicit search scope added: ") + parent->GetParentToken()->m_Name);
                 }
             }
+
+            TokenIdxSet::iterator itsearch;
             itsearch = temp_search_scope.begin();
             while (!search_scope || itsearch != temp_search_scope.end())
             {
@@ -1828,9 +1833,9 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
                 if (s_DebugSmartSense)
                 #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T(" : looking under '%s'"), parent ? parent->m_Name.wx_str() : _T("Global namespace")));
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Now looking under '%s'"), parent ? parent->m_Name.wx_str() : _T("Global namespace")));
                 #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T(" : looking under '%s'"), parent ? parent->m_Name.c_str() : _T("Global namespace")));
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Now looking under '%s'"), parent ? parent->m_Name.c_str()  : _T("Global namespace")));
                 #endif
 
                 do
@@ -1876,6 +1881,14 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                     #endif
                 }
             }
+            else if (s_DebugSmartSense)
+            {
+                #if wxCHECK_VERSION(2, 9, 0)
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("No types matched '%s'."), token->m_ActualType.wx_str()));
+                #else
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("No types matched '%s'."), token->m_ActualType.c_str()));
+                #endif
+            }
         }
 
         // if no more components, add to result set
@@ -1887,7 +1900,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     }
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches - leave"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("----- FindAIMatches - leave -----"));
 
     return result.size();
 }
