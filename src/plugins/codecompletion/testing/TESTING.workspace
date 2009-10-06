@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="TESTING">
+		<Project filename="duplicate_header.cbp" />
+		<Project filename="namespaces.cbp" />
+		<Project filename="structs_typedefs.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
