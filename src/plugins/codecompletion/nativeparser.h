@@ -14,8 +14,6 @@
 #include <wx/event.h>
 #include <wx/hashmap.h> // TODO: replace with std::map
 
-#define DEBUG_CC_AI 0
-
 extern bool s_DebugSmartSense;
 
 // forward decls

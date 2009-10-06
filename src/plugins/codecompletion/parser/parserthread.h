@@ -69,14 +69,14 @@ class ParserThread : public cbThreadedTask
         ParserThread(Parser* parent,
                     const wxString& bufferOrFilename,
                     bool isLocal,
-                    ParserThreadOptions& options,
-                    TokensTree* tree);
+                    ParserThreadOptions& parserThreadOptions,
+                    TokensTree* tokensTree);
         virtual ~ParserThread();
         int Execute(){ return Parse() ? 0 : 1; }
         bool Parse();
         bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
         virtual void* DoRun();
-        virtual void SetTokens(TokensTree* tokens);
+        virtual void SetTokens(TokensTree* tokensTree);
         const wxString& GetFilename() const { return m_Filename; }
     protected:
         enum EClassType { ctStructure = 0, ctClass = 1, ctUnion = 3 };
@@ -104,10 +104,11 @@ class ParserThread : public cbThreadedTask
 
         Tokenizer            m_Tokenizer;
         Parser*              m_pParent;
-        TokensTree*          m_pTokens;
+        TokensTree*          m_pTokensTree;
         Token*               m_pLastParent;
         TokenScope           m_LastScope;
         wxString             m_Filename;
+        unsigned int         m_FileSize;
         unsigned int         m_File;
         bool                 m_IsLocal;
         wxString             m_Str;

@@ -90,22 +90,30 @@ namespace ParserConsts
 ParserThread::ParserThread(Parser* parent,
                             const wxString& bufferOrFilename,
                             bool isLocal,
-                            ParserThreadOptions& options,
-                            TokensTree* tree)
-    : m_pParent(parent),
-    m_pTokens(tree),
+                            ParserThreadOptions& parserThreadOptions,
+                            TokensTree* tokensTree) :
+    m_Tokenizer(),
+    m_pParent(parent),
+    m_pTokensTree(tokensTree),
     m_pLastParent(0),
+    m_LastScope(tsUndefined),
+    m_Filename(wxEmptyString),
+    m_FileSize(0),
     m_File(0),
     m_IsLocal(isLocal),
-    m_Options(options),
+    m_Str(wxEmptyString),
+    m_LastToken(wxEmptyString),
+    m_Options(parserThreadOptions),
+    m_EncounteredNamespaces(),
+    m_EncounteredTypeNamespaces(),
+    m_LastUnnamedTokenName(wxEmptyString),
     m_ParsingTypedef(false),
     m_PreprocessorIfCount(0),
-    m_IsBuffer(options.useBuffer),
+    m_IsBuffer(parserThreadOptions.useBuffer),
     m_Buffer(bufferOrFilename)
 {
-    //ctor
-    m_Tokenizer.m_Options.wantPreprocessor = options.wantPreprocessor;
-    m_LastScope = tsUndefined;
+    // ctor
+    m_Tokenizer.m_Options.wantPreprocessor = parserThreadOptions.wantPreprocessor;
 }
 
 ParserThread::~ParserThread()
@@ -131,9 +139,9 @@ void ParserThread::Log(const wxString& log)
 //    Manager::ProcessPendingEvents();
 }
 
-void ParserThread::SetTokens(TokensTree* tokens)
+void ParserThread::SetTokens(TokensTree* tokensTree)
 {
-    m_pTokens = tokens;
+    m_pTokensTree = tokensTree;
 }
 
 void* ParserThread::DoRun()
@@ -263,7 +271,7 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
 
     while (m_Tokenizer.NotEOF())
     {
-        if (!m_pTokens || TestDestroy())
+        if (!m_pTokensTree || TestDestroy())
             return false;
 
         wxString token = m_Tokenizer.GetToken();
@@ -316,6 +324,10 @@ bool ParserThread::InitTokenizer()
         if (!m_IsBuffer)
         {
             m_Filename = m_Buffer;
+            m_FileSize = wxFile(m_Filename).Length();
+#if PARSERTHREAD_DEBUG_OUTPUT
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%d."), m_Filename.c_str(), m_FileSize));
+#endif
             bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
             Delete(m_Options.loader);
             return ret;
@@ -338,13 +350,13 @@ bool ParserThread::Parse()
 
     do
     {
-        if (!m_pTokens || !m_Tokenizer.IsOK())
+        if (!m_pTokensTree || !m_Tokenizer.IsOK())
             break;
 
         if(!m_Options.useBuffer) // Parse a file
         {
             s_MutexProtection.Enter();
-            m_File = m_pTokens->ReserveFileForParsing(m_Filename);
+            m_File = m_pTokensTree->ReserveFileForParsing(m_Filename);
             s_MutexProtection.Leave();
             if(!m_File)
                 break;
@@ -355,7 +367,7 @@ bool ParserThread::Parse()
         if(!m_Options.useBuffer) // Parsing a file
         {
             s_MutexProtection.Enter();
-            m_pTokens->FlagFileAsParsed(m_Filename);
+            m_pTokensTree->FlagFileAsParsed(m_Filename);
             s_MutexProtection.Leave();
         }
         result = true;
@@ -378,7 +390,7 @@ void ParserThread::DoParse()
         m_EncounteredNamespaces.pop();
     while (m_Tokenizer.NotEOF())
     {
-        if (!m_pTokens || TestDestroy())
+        if (!m_pTokensTree || TestDestroy())
             break;
 
         wxString token = m_Tokenizer.GetToken();
@@ -656,7 +668,7 @@ void ParserThread::DoParse()
                         m_EncounteredNamespaces.push(token);
                     m_Tokenizer.GetToken(); // eat ::
                 }
-                else if (   m_pTokens
+                else if (   m_pTokensTree
                          && (   (peek==ParserConsts::semicolon)
                              || (   (m_Options.useBuffer && (peek.GetChar(0) == _T('(')))
                                  && (!m_Str.Contains(ParserConsts::dcolon)) ) ) )
@@ -684,12 +696,12 @@ void ParserThread::DoParse()
 Token* ParserThread::TokenExists(const wxString& name, Token* parent, short int kindMask)
 {
     Token* result;
-    if (!m_pTokens)
+    if (!m_pTokensTree)
         return 0;
     int parentidx = !parent ? -1 : parent->GetSelf();
     // no critical section needed here:
     // all functions that call this, already entered a critical section.
-    result = m_pTokens->at(m_pTokens->TokenExists(name, parentidx, kindMask));
+    result = m_pTokensTree->at(m_pTokensTree->TokenExists(name, parentidx, kindMask));
     return result;
 }
 
@@ -770,7 +782,7 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
         result->m_TokenKind = q.empty() ? tkClass : tkNamespace;
         result->m_IsLocal = m_IsLocal;
         result->m_ParentIndex = parentIfCreated ? parentIfCreated->GetSelf() : -1;
-        int newidx = m_pTokens->insert(result);
+        int newidx = m_pTokensTree->insert(result);
         if (parentIfCreated)
             parentIfCreated->AddChild(newidx);
 #if PARSERTHREAD_DEBUG_OUTPUT
@@ -832,7 +844,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
     wxString newTokenArgs = (newToken) ? (newToken->m_Args) : _T("");
     if (newToken && newToken->m_TokenKind == kind && newTokenArgs == args)
     {
-        m_pTokens->m_modified = true;
+        m_pTokensTree->m_modified = true;
     }
     else
     {
@@ -842,7 +854,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
         newToken->m_TokenKind = kind;
         newToken->m_Scope = m_LastScope;
         newToken->m_Args = args;
-        int newidx = m_pTokens->insert(newToken);
+        int newidx = m_pTokensTree->insert(newToken);
         if (finalParent)
             finalParent->AddChild(newidx);
     }
@@ -878,7 +890,7 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
         newToken->m_ImplLine = line;
         newToken->m_ImplLineStart = implLineStart;
         newToken->m_ImplLineEnd = implLineEnd;
-        m_pTokens->m_FilesMap[newToken->m_ImplFile].insert(newToken->GetSelf());
+        m_pTokensTree->m_FilesMap[newToken->m_ImplFile].insert(newToken->GetSelf());
     }
 
     while (!m_EncounteredNamespaces.empty())
@@ -952,7 +964,7 @@ void ParserThread::HandleIncludes()
 
             {
                 wxCriticalSectionLocker lock(s_MutexProtection);
-                if(m_pTokens->IsFileParsed(real_filename))
+                if(m_pTokensTree->IsFileParsed(real_filename))
                     break; // Already being parsed elsewhere
             }
 
@@ -1440,18 +1452,18 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             localParent = FindTokenFromQueue(q);
         }
 
-        bool CtorDtor = m_pLastParent && name == m_pLastParent->m_Name;
-        if (!CtorDtor)
-            CtorDtor = localParent && name == localParent->m_Name;
-        if (!CtorDtor && m_Options.useBuffer)
-            CtorDtor = isCtor || isDtor;
+        bool isCtorOrDtor = m_pLastParent && name == m_pLastParent->m_Name;
+        if (!isCtorOrDtor)
+            isCtorOrDtor = localParent && name == localParent->m_Name;
+        if (!isCtorOrDtor && m_Options.useBuffer)
+            isCtorOrDtor = isCtor || isDtor;
 
-        TokenKind kind = !CtorDtor ? tkFunction : (isDtor ? tkDestructor : tkConstructor);
-
-//        Log("Adding function '"+name+"': m_Str='"+m_Str+"'"+", enc_ns="+(m_EncounteredNamespaces.GetCount()?m_EncounteredNamespaces[0]:"nil"));
+#if PARSERTHREAD_DEBUG_OUTPUT
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Adding function '%s', ': m_Str='%s', enc_ns='%s'."), name.c_str(), m_Str.c_str(), m_EncounteredNamespaces.size() ? m_EncounteredNamespaces.front().c_str() : wxT("nil")));
+#endif
 
         bool isImpl = false;
-        bool IsConst = false;
+        bool isConst = false;
         while (!peek.IsEmpty()) // !eof
         {
             if (peek == ParserConsts::colon) // probably a ctor with member initializers
@@ -1468,9 +1480,11 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineStart = m_Tokenizer.GetLineNumber();
                 SkipBlock(); // skip  to matching }
                 lineEnd = m_Tokenizer.GetLineNumber();
-#if PARSERTHREAD_DEBUG_OUTPUT
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Skipped function %s impl. from %d to %d"), name.c_str(), lineStart, lineEnd));
+#if !PARSERTHREAD_DEBUG_OUTPUT
+                // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
+                if (!m_IsBuffer && ((lineEnd-lineStart) > (int)(m_FileSize*0.1)))
 #endif
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."), name.c_str(), lineStart, lineEnd, m_Filename.c_str(), m_FileSize));
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
@@ -1479,7 +1493,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             }
             else if (peek == ParserConsts::kw_const)
             {
-                IsConst= true;
+                isConst= true;
             }
             else
             {
@@ -1493,10 +1507,11 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 #if PARSERTHREAD_DEBUG_OUTPUT
         Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'")));
 #endif
-        Token* NewToken =  DoAddToken(kind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
-        if(NewToken)
+        TokenKind tokenKind = !isCtorOrDtor ? tkFunction : (isDtor ? tkDestructor : tkConstructor);
+        Token* newToken =  DoAddToken(tokenKind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
+        if (newToken)
         {
-            NewToken->m_IsConst = IsConst;
+            newToken->m_IsConst = isConst;
         }
     }
 }

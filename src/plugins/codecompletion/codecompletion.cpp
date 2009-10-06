@@ -545,17 +545,14 @@ int CodeCompletion::CodeComplete()
     if (m_NativeParser.MarkItemsByAI(result, parser->Options().useSmartSense) > 0 ||
         m_NativeParser.LastAISearchWasGlobal()) // enter even if no match (code-complete C++ keywords)
     {
-#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("%d results"), result.size()));
-#endif
+
         size_t max_match = cfg->ReadInt(_T("/max/matches"), 16384);
         if (result.size() <= max_match)
         {
-#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Generating tokens list"));
-#endif
             wxImageList* ilist = parser->GetImageList();
             ed->GetControl()->ClearRegisteredImages();
             bool caseSens = parser ? parser->Options().caseSensitive : false;
@@ -606,10 +603,8 @@ int CodeCompletion::CodeComplete()
             if (m_NativeParser.LastAISearchWasGlobal())
             {
                 // empty or partial search phrase: add theme keywords in search list
-#if DEBUG_CC_AI
                 if (s_DebugSmartSense)
                     Manager::Get()->GetLogManager()->DebugLog(_T("Last AI search was global: adding theme keywords in list"));
-#endif
                 EditorColourSet* theme = ed->GetColourSet();
                 if (theme)
                 {
@@ -638,10 +633,9 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-#if DEBUG_CC_AI
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
-#endif
+
             if (items.GetCount() == 0)
                 return -2;
 
@@ -649,10 +643,10 @@ int CodeCompletion::CodeComplete()
                 items.Sort();
             else
                 items.Sort(SortCCList);
-#if DEBUG_CC_AI
+
             if (s_DebugSmartSense)
                 Manager::Get()->GetLogManager()->DebugLog(_T("Done generating tokens list"));
-#endif
+
             // Remove duplicate items
             for (size_t i=0; i<items.Count()-1; i++)
                 if (items.Item(i)==items.Item(i+1))
@@ -679,10 +673,9 @@ int CodeCompletion::CodeComplete()
     }
     else if (!ed->GetControl()->CallTipActive())
     {
-#if DEBUG_CC_AI
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
-#endif
+
         if (!parser->Done())
         {
             wxString msg = _("C++ Parser is still parsing files...");
@@ -1953,6 +1946,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     if ((event.GetKey() == '.') && control->AutoCompActive())
         control->AutoCompCancel();
+
     if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
     {
         wxString itemText = event.GetText();
@@ -1974,7 +1968,9 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
         }
     }
-    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
+
+    if (   (event.GetEventType() == wxEVT_SCI_CHARADDED)
+        && (!control->AutoCompActive()) ) // not already active autocompletion)
     {
         // a character was just added in the editor
         m_TimerCodeCompletion.Stop();
