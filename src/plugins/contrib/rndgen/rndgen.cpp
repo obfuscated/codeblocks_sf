@@ -8,6 +8,8 @@
 #include "RndGen.h"
 #include "cbstyledtextctrl.h"
 
+#define SCI_SETUNDOCOLLECTION 2012
+
 #if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
 	#include <random>
     inline void ini_random() { };
@@ -41,6 +43,9 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 	wxString quicktest = ctrl->GetText();
 	if(quicktest.Contains(_T("RANDGEN:")) == false)
 		return;
+
+	int pos = ctrl->GetCurrentPos();
+	ctrl->SendMsg(SCI_SETUNDOCOLLECTION, 0, 0);
 
 	wxRegEx int_re(_T("([0-9]+)\\ *;?\\ */\\*(\\ *RANDGEN:INT\\((.*))\\*/"));
 //	wxRegEx alnum_re(_T("\\\"([^\"]+)\\\"\\ *;?\\ */\\*(\\ *RANDGEN:ALNUM\\((.*))\\*/"));
@@ -115,4 +120,6 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			ctrl->ReplaceTarget(s);
 		}
 	}
+	ctrl->SendMsg(SCI_SETUNDOCOLLECTION, 1, 0);
+	ctrl->SetCurrentPos(pos);
 }

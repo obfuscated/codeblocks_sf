@@ -8,6 +8,8 @@
 #include "tidycmt.h"
 #include "cbstyledtextctrl.h"
 
+#define SCI_SETUNDOCOLLECTION 2012
+
 const unsigned int len = 112;
 
 namespace
@@ -26,6 +28,9 @@ void TidyCmt::OnSave(CodeBlocksEvent& event)
 	cbStyledTextCtrl* ctrl = ed->GetControl();
 
 	unsigned int n = ctrl->GetLineCount();
+
+	int pos = ctrl->GetCurrentPos();
+	ctrl->SendMsg(SCI_SETUNDOCOLLECTION, 0, 0);
 
 	for(unsigned int i = 0; i < n; ++i)
 	{
@@ -61,4 +66,6 @@ void TidyCmt::OnSave(CodeBlocksEvent& event)
 			ctrl->ReplaceTarget(s);
 		}
 	}
+	ctrl->SendMsg(SCI_SETUNDOCOLLECTION, 1, 0);
+	ctrl->SetCurrentPos(pos);
 }
