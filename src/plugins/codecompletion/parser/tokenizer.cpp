@@ -18,6 +18,13 @@
 
 #define TOKENIZER_DEBUG_OUTPUT 0
 
+#if TOKENIZER_DEBUG_OUTPUT
+    #define TRACE(format, args...)\
+    Manager::Get()->GetLogManager()->DebugLog(F( format , ## args))
+#else
+    #define TRACE(format, args...)
+#endif
+
 namespace TokenizerConsts
 {
 const wxString colon       (_T(":"));
@@ -54,15 +61,13 @@ Tokenizer::Tokenizer(const wxString& filename)
     m_SkipUnwantedTokens(true),
     m_pLoader(0)
 {
-    //ctor
-    m_Options.wantPreprocessor = false;
+    m_TokenizerOptions.wantPreprocessor = false;
     if (!m_Filename.IsEmpty())
         Init(m_Filename);
 }
 
 Tokenizer::~Tokenizer()
 {
-    //dtor
 }
 
 bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
@@ -73,41 +78,31 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
     {
         if (m_Filename.IsEmpty())
         {
-#if TOKENIZER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : Called without filename.")));
-#endif
+            TRACE(_T("Init() : Called without filename."));
             return false;
         }
     }
     else
     {
         m_Filename = filename;
-#if TOKENIZER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : m_Filename='%s'"), m_Filename.c_str()));
-#endif
+        TRACE(_T("Init() : m_Filename='%s'"), m_Filename.c_str());
     }
 
     if (!wxFileExists(m_Filename))
     {
-#if TOKENIZER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : File '%s' does not exist."), m_Filename.c_str()));
-#endif
+        TRACE(_T("Init() : File '%s' does not exist."), m_Filename.c_str());
         return false;
     }
 
     if (!ReadFile())
     {
-#if TOKENIZER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : File '%s' could not be read."), m_Filename.c_str()));
-#endif
+        TRACE(_T("Init() : File '%s' could not be read."), m_Filename.c_str());
         return false;
     }
 
     if (!m_BufferLen)
     {
-#if TOKENIZER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Init() : File '%s' is empty."), m_Filename.c_str()));
-#endif
+        TRACE(_T("Init() : File '%s' is empty."), m_Filename.c_str());
         return false;
     }
 
@@ -149,9 +144,12 @@ void Tokenizer::BaseInit()
 
 bool Tokenizer::ReadFile()
 {
+    bool success = false;
+    wxString fileName = wxEmptyString;
     if (m_pLoader)
     {
-        char* data = m_pLoader->GetData();
+        fileName = m_pLoader->FileName();
+        char* data  = m_pLoader->GetData();
         m_BufferLen = m_pLoader->GetLength();
 
         // the following code is faster than DetectEncodingAndConvert()
@@ -170,38 +168,44 @@ bool Tokenizer::ReadFile()
         m_Buffer = wxString(data, m_BufferLen + 1); // + 1 => sentinel
 #endif
 
-        if (m_BufferLen != m_Buffer.Length())
-        {
-            // inconsistency!
-            // correct it to avoid crashes but this file will probably NOT be parsed correctly
-            m_BufferLen = m_Buffer.Length();
-//            asm("int $3;");
-        }
+        success = (data != 0);
+    }
+    else
+    {
+        if (!wxFileExists(m_Filename))
+            return false;
 
-        // add 'sentinel' to the end of the string (not counted to the length of the string)
-        m_Buffer += _T(' ');
+        // open file
+        wxFile file(m_Filename);
 
-        return data != 0;
-    };
+        if (!cbRead(file, m_Buffer))
+            return false;
 
-    if (!wxFileExists(m_Filename))
-        return false;
+        fileName = m_Filename;
+        success = true;
+    }
+/*
+    size_t replacements  = m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_D)"), _T("namespace std {"),       true);
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_P)"), _T("namespace std {"),       true);
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NESTED_NAMESPACE"),                        _T("}"),                     true);
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),                         _T("namespace tr1 {"),       true);
+           // The following must be before replacing "_GLIBCXX_END_NAMESPACE"!!!
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE_TR1"),                           _T("}"),                     true);
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(__gnu_cxx)"),                  _T("namespace __gnu_cxx {"), true);
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(std)"),                        _T("namespace std {"),       true);
+           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE"),                               _T("}"),                     true);
 
-    // open file
-    wxFile file(m_Filename);
-
-    if (!cbRead(file,m_Buffer))
-        return false;
+#if TOKENIZER_DEBUG_OUTPUT
+    if (replacements)
+        TRACE(F(_T("Did %d replacements in buffer of '%s'."), replacements, fileName.c_str()));
+#endif
+*/
     m_BufferLen = m_Buffer.Length();
 
     // add 'sentinel' to the end of the string (not counted to the length of the string)
-
-    // (In the above cbRead() we don't specify the allocated length of m_Buffer so the
-    // call below might force reallocation of the string. However the documentation of
-    // wxWidgets says that the available memory in string is always a multiple of 16,
-    // so we have only 1/16 probability that this happens)
     m_Buffer += _T(' ');
-    return true;
+
+    return success;
 }
 
 bool Tokenizer::SkipWhiteSpace()
@@ -209,14 +213,16 @@ bool Tokenizer::SkipWhiteSpace()
     // skip spaces, tabs, etc.
     while (CurrentChar() <= _T(' ') && MoveToNextChar()) // don't check EOF when MoveToNextChar already does, also replace isspace() which calls msvcrt.dll
         ;                                                // with a dirty hack: CurrentChar() <= ' ' is "good enough" here
+
     if (IsEOF())
         return false;
+
     return true;
 }
 
 bool Tokenizer::IsEscapedChar()
 {
-    // Easy: If porevious char is not a backslash, too than it's surely escape'd
+    // Easy: If previous char is not a backslash, too than it's surely escape'd
     if (PreviousChar() != '\\')
         return true;
     else
@@ -253,7 +259,6 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
     }
     return true;
 }
-
 
 bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
 {
@@ -476,7 +481,7 @@ bool Tokenizer::SkipUnwanted()
                 (CurrentChar() == 'i' && NextChar() == 'f') || // if(|def|ndef)
                 (CurrentChar() == 'e' && NextChar() == 'l') || // el(se|if)
                 (CurrentChar() == 'e' && NextChar() == 'n') || // en(dif)
-                (m_Options.wantPreprocessor && CurrentChar() == 'd' && NextChar() == 'e')) // de(fine)
+                (m_TokenizerOptions.wantPreprocessor && CurrentChar() == 'd' && NextChar() == 'e')) // de(fine)
             {
                 // ok, we have something like #in(clude)
                 m_LastWasPreprocessor = true;
@@ -594,7 +599,7 @@ wxString Tokenizer::DoGetToken()
         SkipComment();
 
     int start = m_TokenIndex;
-    wxString m_Str;
+    wxString str;
     wxChar c = CurrentChar();
 
     if (c == '_' || wxIsalpha(c))
@@ -602,145 +607,89 @@ wxString Tokenizer::DoGetToken()
         // keywords, identifiers, etc.
 
         // operator== is cheaper than wxIsalnum, also MoveToNextChar already includes IsEOF
-        while (  ( CurrentChar() == '_' ||
-                   wxIsalnum(CurrentChar()) ) && MoveToNextChar()  )
-        ;
+        while (    ( (c == '_') || (wxIsalnum(c)) )
+               &&  MoveToNextChar() )
+            c = CurrentChar(); // repeat
 
         if (IsEOF())
             return wxEmptyString;
-        m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
-        m_IsOperator = m_Str.IsSameAs(TokenizerConsts::operator_str);
+
+        str = m_Buffer.Mid(start, m_TokenIndex - start);
+        m_IsOperator = str.IsSameAs(TokenizerConsts::operator_str);
     }
 #ifdef __WXMSW__ // This is a Windows only bug!
     else if (c == 178 || c == 179 || c == 185) // fetch ² and ³
     {
-        m_Str = c;
+        str = c;
         MoveToNextChar();
     }
 #endif
-    else if (wxIsdigit(CurrentChar()))
+    else if (wxIsdigit(c))
     {
         // numbers
         while (NotEOF() && CharInString(CurrentChar(), _T("0123456789.abcdefABCDEFXxLl")))
             MoveToNextChar();
+
         if (IsEOF())
             return wxEmptyString;
-        m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
+
+        str = m_Buffer.Mid(start, m_TokenIndex - start);
         m_IsOperator = false;
     }
-    else if (CurrentChar() == '"' ||
-            CurrentChar() == '\'')
+    else if ( (c == '"') || (c == '\'') )
     {
         // string, char, etc.
-        wxChar match = CurrentChar();
+        wxChar match = c;
+
         MoveToNextChar();  // skip starting ' or "
+
         if (!SkipToChar(match))
             return wxEmptyString;
+
         MoveToNextChar(); // skip ending ' or "
-        m_Str = m_Buffer.Mid(start, m_TokenIndex - start);
+
+        str = m_Buffer.Mid(start, m_TokenIndex - start);
     }
-    else if (CurrentChar() == ':')
+    else if (c == ':')
     {
         if (NextChar() == ':')
         {
             MoveToNextChar();
             MoveToNextChar();
-            m_Str.assign(TokenizerConsts::colon_colon); // this only copies a pointer, but operator= allocates memory and does a memcpy!
+            // this only copies a pointer, but operator= allocates memory and does a memcpy!
+            str.assign(TokenizerConsts::colon_colon);
         }
         else
         {
             MoveToNextChar();
-            m_Str.assign(TokenizerConsts::colon);
+            str.assign(TokenizerConsts::colon);
         }
     }
-    else if (CurrentChar() == '(')
+    else if (c == '(')
     {
         m_IsOperator = false;
+
         // skip blocks () []
         if (!SkipBlock(CurrentChar()))
             return wxEmptyString;
-        wxString tmp = m_Buffer.Mid(start, m_TokenIndex - start);
-//        tmp.Replace(_T("\t"), _T(" ")); // replace tabs with spaces
-//        tmp.Replace(_T("\n"), _T(" ")); // replace LF with spaces
-//        tmp.Replace(_T("\r"), _T(" ")); // replace CR with spaces
-        { // this is much faster:
-            size_t i;
-            while((i = tmp.find_first_of(TokenizerConsts::tabcrlf)) != wxString::npos)
-                tmp[i] = _T(' ');
-        }
-        // fix-up arguments (remove excessive spaces/tabs/newlines)
-        for (unsigned int i = 0; i < tmp.Length() - 1; ++i)
-        {
-            //skip spaces before '=' and ','
-            if (tmp.GetChar(i) == ' ' && (tmp.GetChar(i + 1) == ',' || tmp.GetChar(i + 1) == '='))
-                continue;
 
-            if (tmp.GetChar(i) == '/' && tmp.GetChar(i + 1) == '*')
-            {
-                // skip C comments
-                i += 2;
-                while (i < tmp.Length() - 1)
-                {
-                    if (tmp.GetChar(i) == '*' && tmp.GetChar(i + 1) == '/')
-                        break;
-                    ++i;
-                }
-                if (i >= tmp.Length() - 1 || tmp.GetChar(i + 1) != '/')
-                    continue; // we failed...
-                i += 2;
-            }
-            else if (tmp.GetChar(i) == '=')
-            {
-                // skip default assignments
-                ++i;
-                int level = 0; // nesting parenthesis
-                while (i < tmp.Length())
-                {
-                    if (tmp.GetChar(i) == '(')
-                        ++level;
-                    else if (tmp.GetChar(i) == ')')
-                        --level;
-                    if ((tmp.GetChar(i) == ',' && level == 0) ||
-                        (tmp.GetChar(i) == ')' && level < 0))
-                        break;
-                    ++i;
-                }
-                if (i < tmp.Length() && tmp.GetChar(i) == ',')
-                    --i;
-                continue; // we are done here
-            }
-
-            if (i < tmp.Length() - 1)
-            {
-                if ((tmp.GetChar(i)     == ' ') && (tmp.GetChar(i + 1) == ' '))
-                    continue; // skip excessive spaces
-
-                // in case of c-style comments "i" might already be tmp.Length()
-                // thus do only add the current char otherwise.
-                // otherwise the following statement:
-                // m_Str << _T(')');
-                // below would add another closing bracket.
-                m_Str << tmp.GetChar(i);
-            }
-        }
-        m_Str << _T(')'); // add closing parenthesis (see "i < tmp.Length() - 1" in previous "for")
-//        m_Str.Replace(_T("  "), _T(" ")); // replace two-spaces with single-space (introduced if it skipped comments or assignments)
-//        m_Str.Replace(_T("( "), _T("("));
-//        m_Str.Replace(_T(" )"), _T(")"));
-        //Str.Replace is massive overkill here since it has to allocate one new block per replacement
-        CompactSpaces(m_Str);
+        str = FixArgument(m_Buffer.Mid(start, m_TokenIndex - start));
+        CompactSpaces(str);
     }
     else
     {
-        if (CurrentChar() == '{')
+        if      (c == '{')
             ++m_NestLevel;
-        else if (CurrentChar() == '}')
+        else if (c == '}')
             --m_NestLevel;
-        m_Str = CurrentChar();
+
+        str = c;
         MoveToNextChar();
     }
 
-    if (m_LastWasPreprocessor && !m_Str.IsSameAs(_T("#")) && !m_LastPreprocessor.IsSameAs(_T("#")))
+    if (    m_LastWasPreprocessor
+        && !str.IsSameAs(_T("#"))
+        && !m_LastPreprocessor.IsSameAs(_T("#")) )
     {
         if (!m_LastPreprocessor.IsSameAs(TokenizerConsts::include_str))
         {
@@ -752,8 +701,94 @@ wxString Tokenizer::DoGetToken()
     }
 
     if (m_LastWasPreprocessor)
-        m_LastPreprocessor << m_Str;
+        m_LastPreprocessor << str;
+
     m_LastWasPreprocessor = false;
 
-    return m_Str;
+    return str;
+}
+
+wxString Tokenizer::FixArgument(wxString src)
+{
+    wxString dst;
+
+    // str.Replace is massive overkill here since it has to allocate one new block per replacement
+    { // this is much faster:
+        size_t i;
+        while((i = src.find_first_of(TokenizerConsts::tabcrlf)) != wxString::npos)
+            src[i] = _T(' ');
+    }
+
+    // fix-up arguments (remove excessive spaces/tabs/newlines)
+    for (unsigned int i = 0; i < src.Length() - 1; ++i)
+    {
+        // skip spaces before '=' and ','
+        if (   (src.GetChar(i) == ' ')
+            && (   (src.GetChar(i + 1) == ',')
+                || (src.GetChar(i + 1) == '=') ) )
+            continue;
+
+        if (   (src.GetChar(i)     == '/')
+            && (src.GetChar(i + 1) == '*') )
+        {
+            // skip C comments
+            i += 2;
+            while (i < src.Length() - 1)
+            {
+                if (   (src.GetChar(i)     == '*')
+                    && (src.GetChar(i + 1) == '/') )
+                    break;
+                ++i;
+            }
+
+            if (   (i >= src.Length() - 1)
+                || (src.GetChar(i + 1) != '/') )
+                continue; // we failed...
+
+            i += 2;
+        }
+        else if (src.GetChar(i) == '=')
+        {
+            // skip default assignments
+            ++i;
+            int level = 0; // nesting parenthesis
+            while (i < src.Length())
+            {
+                if      (src.GetChar(i) == '(')
+                    ++level;
+                else if (src.GetChar(i) == ')')
+                    --level;
+
+                if (   (src.GetChar(i) == ',' && level == 0)
+                    || (src.GetChar(i) == ')' && level < 0) )
+                    break;
+
+                ++i;
+            }
+
+            if (   (i < src.Length())
+                && (src.GetChar(i) == ',') )
+                --i;
+            continue; // we are done here
+        }
+
+        if (i < src.Length() - 1)
+        {
+            if (   (src.GetChar(i)     == ' ')
+                && (src.GetChar(i + 1) == ' ') )
+                continue; // skip excessive spaces
+
+            // in case of c-style comments "i" might already be src.Length()
+            // thus do only add the current char otherwise.
+            // otherwise the following statement:
+            // dst << _T(')');
+            // below would add another closing bracket.
+            dst << src.GetChar(i);
+        }
+    }
+
+    dst << _T(')'); // add closing parenthesis (see "i < src.Length() - 1" in previous "for")
+    // str.Replace is massive overkill here since it has to allocate one new block per replacement
+
+    return dst;
 }

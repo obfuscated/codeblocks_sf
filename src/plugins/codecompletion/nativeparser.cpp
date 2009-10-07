@@ -37,6 +37,13 @@
 
 #define NATIVE_PARSER_DEBUG_OUTPUT 0
 
+#if NATIVE_PARSER_DEBUG_OUTPUT
+    #define TRACE(format, args...)\
+    Manager::Get()->GetLogManager()->DebugLog(F( format , ## args))
+#else
+    #define TRACE(format, args...)
+#endif
+
 bool s_DebugSmartSense = false;
 
 BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
@@ -296,9 +303,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
         if(NormalizePath(dir,base))
         {
             parser->AddIncludeDir(dir.GetFullPath());
-#if NATIVE_PARSER_DEBUG_OUTPUT
-            Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerDirs() : Parser prj dir: ") + dir.GetFullPath());
-#endif
+            TRACE(_T("AddCompilerDirs() : Parser prj dir: ") + dir.GetFullPath());
         }
         else
         #if wxCHECK_VERSION(2, 9, 0)
@@ -331,9 +336,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                     if(NormalizePath(dir,base))
                     {
                         parser->AddIncludeDir(dir.GetFullPath());
-#if NATIVE_PARSER_DEBUG_OUTPUT
-                        Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerDirs() : Parser tgt dir: ") + dir.GetFullPath());
-#endif
+                        TRACE(_T("AddCompilerDirs() : Parser tgt dir: ") + dir.GetFullPath());
                     }
                     else
                     #if wxCHECK_VERSION(2, 9, 0)
@@ -354,9 +357,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 if(NormalizePath(dir,base))
                 {
                     parser->AddIncludeDir(dir.GetFullPath());
-#if NATIVE_PARSER_DEBUG_OUTPUT
-                    Manager::Get()->GetLogManager()->DebugLog(_T("AddCompilerDirs() : Parser tgt dir: ") + dir.GetFullPath());
-#endif
+                    TRACE(_T("AddCompilerDirs() : Parser tgt dir: ") + dir.GetFullPath());
                 }
                 else
                 #if wxCHECK_VERSION(2, 9, 0)
@@ -400,9 +401,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             if (NormalizePath(dir,base))
             {
                 parser->AddIncludeDir(dir.GetFullPath());
-#if NATIVE_PARSER_DEBUG_OUTPUT
-                Manager::Get()->GetLogManager()->DebugLog(_T("Parser cmp dir: ") + dir.GetFullPath());
-#endif
+                TRACE(_T("Parser cmp dir: ") + dir.GetFullPath());
             }
             else
             #if wxCHECK_VERSION(2, 9, 0)
@@ -423,10 +422,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             Manager::Get()->GetLogManager()->DebugLog(_T("Caching internal gcc dirs for adding to parser..."));
             gcc_compiler_dirs = GetGCCCompilerDirs(((Compilers[idxCompiler])->GetPrograms()).CPP, base);
           }
-
-#if NATIVE_PARSER_DEBUG_OUTPUT
-          Manager::Get()->GetLogManager()->DebugLog(F(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount()));
-#endif
+          TRACE(_T("Adding %d cached gcc dirs to parser..."), gcc_compiler_dirs.GetCount());
           for (size_t i=0; i<gcc_compiler_dirs.GetCount(); i++)
             parser->AddIncludeDir(gcc_compiler_dirs[i]);
         }
@@ -1122,9 +1118,9 @@ const wxArrayString& NativeParser::GetCallTips(int chars_per_line)
         delete lock;
     m_GettingCalltips = false;
     m_CallTipCommas = commas;
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCallTips() : m_CallTipCommas=%d"), m_CallTipCommas));
-#endif
+
+    TRACE(_T("GetCallTips() : m_CallTipCommas=%d"), m_CallTipCommas);
+
     return m_CallTips;
 }
 
@@ -1314,9 +1310,9 @@ unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 
     startAt = AfterWhitespace(startAt, line);
 
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCCTokenStart() : Starting at %d \"%s\""), startAt, line.Mid(startAt).c_str()));
-#endif
+
+    TRACE(_T("FindCCTokenStart() : Starting at %d \"%s\""), startAt, line.Mid(startAt).c_str());
+
     return startAt;
 }
 
@@ -1338,9 +1334,9 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
             ++startAt;
         }
     }
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetNextCCToken() : at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
-#endif
+
+    TRACE(_T("GetNextCCToken() : at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
+
     while (InsideToken(startAt, line))
     {
         res << line.GetChar(startAt);
@@ -1354,9 +1350,7 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
         ++startAt;
     }
 
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetNextCCToken() : Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
-#endif
+    TRACE(_T("GetNextCCToken() : Done nest: at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
 
     startAt = AfterWhitespace(startAt, line);
     if (IsOpeningBracket(startAt, line))
@@ -1390,10 +1384,8 @@ wxString NativeParser::GetNextCCToken(const wxString& line, unsigned int& startA
     if (IsOperatorBegin(startAt, line))
         ++startAt;
 
+    TRACE(_T("GetNextCCToken() : Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str());
 
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetNextCCToken() : Return at %d (%c): res=%s"), startAt, line.GetChar(startAt), res.c_str()));
-#endif
     return res;
 }
 
@@ -1422,10 +1414,10 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
     bool is_function = false;
     unsigned int startAt = FindCCTokenStart(line);
     wxString res = GetNextCCToken(line, startAt, is_function);
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCCToken() : FindCCTokenStart returned %d \"%s\""), startAt, line.c_str()));
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCCToken() : GetNextCCToken returned %d \"%s\""), startAt, res.c_str()));
-#endif
+
+    TRACE(_T("GetCCToken() : FindCCTokenStart returned %d \"%s\""), startAt, line.c_str());
+    TRACE(_T("GetCCToken() : GetNextCCToken returned %d \"%s\""), startAt, res.c_str());
+
 
     if (startAt == line.Len())
         line.Clear();
@@ -1453,9 +1445,8 @@ wxString NativeParser::GetCCToken(wxString& line, ParserTokenType& tokenType)
         else
             line.Clear();
     }
-#if NATIVE_PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GetCCToken() : Left \"%s\""), line.c_str()));
-#endif
+
+    TRACE(_T("GetCCToken() : Left \"%s\""), line.c_str());
 
     if (is_function)
         tokenType = pttFunction;
