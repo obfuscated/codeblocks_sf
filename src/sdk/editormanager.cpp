@@ -41,7 +41,6 @@
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>
 #include <wx/fontutil.h>
-#include <wx/tokenzr.h>
 #include <wx/aui/auibook.h>
 
 #include "editorcolourset.h"
@@ -154,7 +153,6 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles)
 END_EVENT_TABLE()
 
-// class constructor
 EditorManager::EditorManager()
         : m_pNotebook(0L),
         m_LastFindReplaceData(0L),
@@ -180,7 +178,6 @@ EditorManager::EditorManager()
     m_zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/zoom"));
 }
 
-// class destructor
 EditorManager::~EditorManager()
 {
     SaveAutoComplete();
@@ -192,7 +189,7 @@ EditorManager::~EditorManager()
     delete m_LastFindReplaceData;
     delete m_pData;
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/zoom"), m_zoom);
-} // end of destructor
+}
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
 {
@@ -230,7 +227,7 @@ void EditorManager::Configure()
             }
         }
     }
-} // end of Configure
+}
 
 void EditorManager::CreateSearchLog()
 {
@@ -440,7 +437,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     wxString fname = UnixFilename(fn.GetFullPath());
     //  Manager::Get()->GetLogManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
-        return NULL;
+        return 0;
     //  Manager::Get()->GetLogManager()->DebugLog("File exists '%s'", fname.c_str());
 
     // disallow application shutdown while opening files
@@ -501,7 +498,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
                 ProjectFile* pf = prj->GetFileByFilename(ed->GetFilename(), false);
                 if (pf)
                 {
-                    Manager::Get()->GetLogManager()->DebugLog(_T("found ") + pf->file.GetFullPath());
+//                    Manager::Get()->GetLogManager()->DebugLog(_T("Found ") + pf->file.GetFullPath());
                     data = pf;
                     break;
                 }
@@ -559,7 +556,7 @@ cbEditor* EditorManager::New(const wxString& newFileName)
 //        //DeletePage(ed->GetPageIndex());
 //        ed->Destroy();
 //        Manager::Get()->GetAppWindow()->SetTitle(old_title); // Though I can't reproduce the bug, this does no harm
-//        return 0L;
+//        return 0;
 //    }
 
     // add default text
@@ -948,7 +945,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
     m_isCheckingForExternallyModifiedFiles = false;
-} // end of CheckForExternallyModifiedFiles
+}
 
 bool EditorManager::SwapActiveHeaderSource()
 {
@@ -958,11 +955,13 @@ bool EditorManager::SwapActiveHeaderSource()
 
     FileType ft = FileTypeOf(ed->GetFilename());
     if (ft != ftHeader && ft != ftSource)
-        return 0L;
+        return false;
+
+    // because ft == ftHeader || ftSource, the extension has at least 1 character
+    bool extStartsWithCapital = wxIsupper(wxFileName(ed->GetFilename()).GetExt()[0]);
 
     // create a list of search dirs
     wxArrayString dirs;
-
     cbProject* project = 0;
 
     // if the file in question belongs to a different open project,
@@ -977,22 +976,91 @@ bool EditorManager::SwapActiveHeaderSource()
     if (!project)
         project = Manager::Get()->GetProjectManager()->GetActiveProject();
 
-    // get project's include dirs
     if (project)
     {
+        // get project's include dirs
         dirs = project->GetIncludeDirs();
 
-        // first add all paths that contain project files
-        for (int i = 0; i < project->GetFilesCount(); ++i)
+        if (opf)
         {
-            ProjectFile* pf = project->GetFile(i);
-            if (pf)
+            wxString const &activeName = opf->file.GetName();
+
+            // first try to find the file among the opened files
+            for (int i = 0; i < GetEditorsCount(); ++i)
             {
+                cbEditor* edit = GetBuiltinEditor(GetEditor(i));
+                if (!edit)
+                    continue;
+
+                ProjectFile* pf = edit->GetProjectFile();
+                if (!pf)
+                    continue;
+
+                if (pf->file.GetName() == activeName)
+                {
+                    wxFileName const & fname = pf->file;
+                    FileType ft_other = FileTypeOf(fname.GetFullName());
+                    if (   (    ((ft == ftHeader) && (ft_other == ftSource))
+                             || ((ft == ftSource) && (ft_other == ftHeader)) )
+                        && (wxIsupper(fname.GetExt()[0]) == extStartsWithCapital) )
+                    {
+                        if (fname.FileExists())
+                        {
+                            cbEditor* newEd = Open(fname.GetFullPath());
+                            if (newEd!=0L) // we found and were able to open it
+                                return true; // --> RETURN
+                        }
+                    }
+                }
+            }
+
+            // second try to find in the project files - at the same time
+            // build the directory list for further searching if not
+            // successful now
+            for (int i = 0; i < project->GetFilesCount(); ++i)
+            {
+                ProjectFile* pf = project->GetFile(i);
+                if (!pf)
+                    continue;
+
+                wxString dir = pf->file.GetPath(wxPATH_GET_VOLUME);
+                if (dirs.Index(dir) == wxNOT_FOUND)
+                    dirs.Add(dir);
+
+                if (pf->file.GetName() == activeName)
+                {
+                    wxFileName const & fname = pf->file;
+                    FileType ft_other = FileTypeOf(fname.GetFullName());
+                    if (   (    ((ft == ftHeader) && (ft_other == ftSource))
+                             || ((ft == ftSource) && (ft_other == ftHeader)) )
+                        && (wxIsupper(fname.GetExt()[0]) == extStartsWithCapital) )
+                    {
+                        if (fname.FileExists())
+                        {
+                            cbEditor* newEd = Open(fname.GetFullPath());
+                            if (newEd!=0L) // we found and were able to open it
+                                return true; // --> RETURN
+                        }
+                    }
+                }
+            }
+        }
+        else // no opf
+        {
+            // build the directory list for further searching if opf not available
+            for (int i = 0; i < project->GetFilesCount(); ++i)
+            {
+                ProjectFile* pf = project->GetFile(i);
+                if (!pf)
+                    continue;
+
                 wxString dir = pf->file.GetPath(wxPATH_GET_VOLUME);
                 if (dirs.Index(dir) == wxNOT_FOUND)
                     dirs.Add(dir);
             }
         }
+
+        // if not found, continue building the list of directories for further searching
 
         // get targets include dirs
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
@@ -1002,13 +1070,14 @@ bool EditorManager::SwapActiveHeaderSource()
             {
                 for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
                 {
+                    // TODO (Morten#5#): target include dirs might override project include dirs, take append/prepend option into account
                     wxString dir = target->GetIncludeDirs()[ti];
                     if (dirs.Index(dir) == wxNOT_FOUND)
                         dirs.Add(dir);
                 }
             }
         }
-    }
+    } // project
 
     wxFileName fname;
     wxFileName fn(ed->GetFilename());
@@ -1016,108 +1085,27 @@ bool EditorManager::SwapActiveHeaderSource()
 
     for (unsigned int i = 0; i < dirs.GetCount(); ++i)
     {
-        fname.Assign(dirs[i] + wxFileName::GetPathSeparator() + fn.GetFullName());
+        ProjectManager *pm = Manager::Get()->GetProjectManager();
+        if ( !pm )
+            break;
+
+        wxString dir = dirs[i]; // might contain macros -> replace them
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
+
+        fname.Assign(dir + wxFileName::GetPathSeparator() + fn.GetFullName());
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Looking for '%s', dir='%s'."), fname.GetFullPath().c_str(), dir.c_str()));
         if (!fname.IsAbsolute() && project)
         {
             fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to '%s'."), fname.GetFullPath().c_str()));
         }
-        //Manager::Get()->GetLogManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
-        if (ft == ftHeader)
+
+        wxString HeaderSource = pm->GetHeaderSource(fname);
+        if (!HeaderSource.IsEmpty())
         {
-            fname.SetExt(FileFilters::C_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::CC_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::CPP_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::CXX_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::INL_EXT);
-            if (fname.FileExists())
-                break;
-
-// DrewBoo: See if the project manager knows of other extensions
-//   (This could also outright replace the hard-coded extensions above)
-// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
-// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
-            ProjectManager *pm = Manager::Get()->GetProjectManager();
-            if ( !pm )
-                break;
-
-            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
-            if ( !fg )
-                break;
-
-            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
-            {
-                if ( fg->GetGroupName(i) == _("Sources") )
-                {
-                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
-                    while ( tkz.HasMoreTokens() )
-                    {
-                        wxString token = tkz.GetNextToken();
-                        wxString ext;
-                        if ( token.StartsWith( _("*."), &ext ) )
-                        {
-                            fname.SetExt(ext);
-                            if (fname.FileExists())
-                                break;
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        else if (ft == ftSource)
-        {
-            fname.SetExt(FileFilters::H_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::HH_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::HPP_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::HXX_EXT);
-            if (fname.FileExists())
-                break;
-
-// DrewBoo: See if the project manager knows of other extensions
-//   (This could also outright replace the hard-coded extensions above)
-// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
-// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
-            ProjectManager *pm = Manager::Get()->GetProjectManager();
-            if ( !pm )
-                break;
-
-            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
-            if ( !fg )
-                break;
-
-            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
-            {
-                if ( fg->GetGroupName(i) == _("Headers") )
-                {
-                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
-                    while ( tkz.HasMoreTokens() )
-                    {
-                        wxString token = tkz.GetNextToken();
-                        wxString ext;
-                        if ( token.StartsWith( _("*."), &ext ) )
-                        {
-                            fname.SetExt(ext);
-                            if (fname.FileExists())
-                                break;
-                        }
-                    }
-                    break;
-                }
-            }
+            fname.SetFullName(HeaderSource);
+//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Located '%s'."), fname.GetFullPath().c_str()));
+            break;
         }
     }
 
@@ -1125,14 +1113,13 @@ bool EditorManager::SwapActiveHeaderSource()
     {
         //Manager::Get()->GetLogManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
         cbEditor* newEd = Open(fname.GetFullPath());
-        //if (newEd)
-        //    newEd->SetProjectFile(ed->GetProjectFile());
-        return newEd;
+        if (newEd!=0L) // we found and were able to open it
+            return true; // --> RETURN;
     }
 
     // We couldn't find the file, maybe it does not exist. Ask the user if we
     // should create it:
-    if (cbMessageBox(_("The file does not exist. Do you want to create it?"),
+    if (cbMessageBox(_("The file seems not to exist. Do you want to create it?"),
                 _("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
         cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -1148,23 +1135,28 @@ bool EditorManager::SwapActiveHeaderSource()
         // overwrite an existing file with our suggestion.
 
         cbEditor* newEd = New(fn.GetFullPath());
-        if (cbMessageBox(_("Do you want to add this new file in the active project?"),
-                    _("Add file to project"),
-                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+        if (project)
         {
-            wxArrayInt targets;
-            if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+            if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+                        _("Add file to project"),
+                        wxYES_NO | wxICON_QUESTION) == wxID_YES)
             {
-                ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
-                newEd->SetProjectFile(pf);
-                Manager::Get()->GetProjectManager()->RebuildTree();
+                wxArrayInt targets;
+                if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+                {
+                    ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
+                    newEd->SetProjectFile(pf);
+                    Manager::Get()->GetProjectManager()->RebuildTree();
+                }
             }
         }
+
         // verify that the open files are still in sync
         // the new file might have overwritten an existing one)
         Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
     }
-    return 0L;
+
+    return false;
 }
 
 int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
@@ -1285,7 +1277,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
         m_LastFindReplaceData->findInFiles = false;
     }
     return ReturnValue;
-} // end of ShowFindDialog
+}
 
 void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace)
 {
@@ -1379,7 +1371,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         data->start = ( replace ? 0 : control->GetCurrentPos() );
         data->end   = control->GetLength();
     }
-} // end of CalculateFindReplaceStartEnd
+}
 
 int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
 {

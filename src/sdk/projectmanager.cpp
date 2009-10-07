@@ -35,12 +35,14 @@
     #include "cbexception.h"  // for cbassert
 #endif
 
-#include <wx/utils.h>
-#include <wx/textdlg.h>
-#include <wx/progdlg.h>
-#include <wx/filedlg.h>
-#include <wx/choicdlg.h>
 #include <wx/aui/auibook.h>
+#include <wx/busyinfo.h>
+#include <wx/choicdlg.h>
+#include <wx/filedlg.h>
+#include <wx/progdlg.h>
+#include <wx/textdlg.h>
+#include <wx/tokenzr.h>
+#include <wx/utils.h>
 
 #include "incrementalselectlistdlg.h"
 #include "filegroupsandmasks.h"
@@ -428,6 +430,69 @@ It is duplicated in ShowMenu() */
 
 void ProjectManager::ReleaseMenu(wxMenuBar* menuBar)
 {
+}
+
+wxString ProjectManager::GetHeaderSource(const wxFileName &fname)
+{
+    const FilesGroupsAndMasks* fg = GetFilesGroupsAndMasks();
+    if ( !fg )
+        return wxEmptyString;
+
+    FileType ft = FileTypeOf(fname.GetFullName());
+
+    // If header file provided, return source (if found)
+    if (ft == ftHeader)
+    {
+        for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+        {
+            if ( fg->GetGroupName(i) == _("Sources") )
+            {
+                wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
+                while ( tkz.HasMoreTokens() )
+                {
+                    wxString token = tkz.GetNextToken();
+                    wxString ext;
+                    if ( token.StartsWith( _("*."), &ext ) )
+                    {
+                        wxFileName fn(fname);
+                        fn.SetExt(ext);
+//                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Trying to locate '%s'."), fn.GetFullPath().c_str()));
+                        if (fn.FileExists())
+                            return fn.GetFullPath();
+                    }
+                }
+                break;
+            }
+        }
+    }
+    // If source file provided, return header (if found)
+    else if (ft == ftSource)
+    {
+        for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+        {
+            if ( fg->GetGroupName(i) == _("Headers") )
+            {
+                wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
+                while ( tkz.HasMoreTokens() )
+                {
+                    wxString token = tkz.GetNextToken();
+                    wxString ext;
+                    if ( token.StartsWith( _("*."), &ext ) )
+                    {
+                        wxFileName fn(fname);
+                        fn.SetExt(ext);
+//                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Trying to locate '%s'."), fn.GetFullPath().c_str()));
+                        if (fn.FileExists())
+                            return fn.GetFullPath();
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Cannot locate opposite of '%s'."), fname.GetFullPath().c_str()));
+    return wxEmptyString;
 }
 
 wxString ProjectManager::GetDefaultPath()
@@ -2712,7 +2777,6 @@ void ProjectManager::EndLoadingProject(cbProject* project)
     s_CanShutdown = true;
     if (!m_IsLoadingProject)
         return;
-    //m_IsLoadingProject = false;
 
     if (project)
     {
