@@ -529,21 +529,17 @@ int CodeCompletion::CodeComplete()
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-//    if (ft != ftHeader && ft != ftSource) // only parse source/header files
-//        return -4;
 
     Parser* parser = m_NativeParser.FindParserFromEditor(ed);
     if (!parser)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser ?!?"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Active editor has no associated parser?!"));
         return -4;
     }
 
-//    wxBusyCursor busy;
-
     TokenIdxSet result;
-    if (m_NativeParser.MarkItemsByAI(result, parser->Options().useSmartSense) > 0 ||
-        m_NativeParser.LastAISearchWasGlobal()) // enter even if no match (code-complete C++ keywords)
+    if (  (m_NativeParser.MarkItemsByAI(result, parser->Options().useSmartSense) > 0)
+        || m_NativeParser.LastAISearchWasGlobal() ) // enter even if no match (code-complete C++ keywords)
     {
         if (s_DebugSmartSense)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("%d results"), result.size()));
@@ -552,16 +548,17 @@ int CodeCompletion::CodeComplete()
         if (result.size() <= max_match)
         {
             if (s_DebugSmartSense)
-                Manager::Get()->GetLogManager()->DebugLog(_T("Generating tokens list"));
+                Manager::Get()->GetLogManager()->DebugLog(_T("Generating tokens list..."));
+
             wxImageList* ilist = parser->GetImageList();
             ed->GetControl()->ClearRegisteredImages();
+
             bool caseSens = parser ? parser->Options().caseSensitive : false;
-            wxArrayString items;
-            int pos = ed->GetControl()->GetCurrentPos();
+            wxArrayString items; items.Alloc(result.size());
+            int pos   = ed->GetControl()->GetCurrentPos();
             int start = ed->GetControl()->WordStartPosition(pos, true);
             wxArrayInt already_registered;
             std::set< wxString, std::less<wxString> > unique_strings; // check against this before inserting a new string in the list
-            items.Alloc(result.size());
             TokensTree* tokens = parser->GetTokens();
             for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
             {
@@ -569,9 +566,11 @@ int CodeCompletion::CodeComplete()
                 Token* token = tokens->at(*it);
                 if (!token || token->m_Name.IsEmpty())
                     continue;
+
                 // check hashmap for unique_strings
                 if (unique_strings.find(token->m_Name) != unique_strings.end())
                     continue;
+
                 unique_strings.insert(token->m_Name);
                 int iidx = parser->GetTokenKindImage(token);
                 if (already_registered.Index(iidx) == wxNOT_FOUND)
@@ -592,6 +591,7 @@ int CodeCompletion::CodeComplete()
                     {
                         if (unique_strings.find(token->m_Aliases[i]) != unique_strings.end())
                             continue;
+
                         unique_strings.insert(token->m_Aliases[i]);
                         wxString tmp;
                         tmp << token->m_Aliases[i] << wxString::Format(_T("?%d"), iidx);
@@ -605,6 +605,7 @@ int CodeCompletion::CodeComplete()
                 // empty or partial search phrase: add theme keywords in search list
                 if (s_DebugSmartSense)
                     Manager::Get()->GetLogManager()->DebugLog(_T("Last AI search was global: adding theme keywords in list"));
+
                 EditorColourSet* theme = ed->GetColourSet();
                 if (theme)
                 {
@@ -633,11 +634,12 @@ int CodeCompletion::CodeComplete()
                 }
             }
 
-            if (s_DebugSmartSense)
-                Manager::Get()->GetLogManager()->DebugLog(_T("0 results"));
-
             if (items.GetCount() == 0)
+            {
+                if (s_DebugSmartSense)
+                    Manager::Get()->GetLogManager()->DebugLog(_T("No items found."));
                 return -2;
+            }
 
             if (caseSens)
                 items.Sort();
@@ -649,8 +651,10 @@ int CodeCompletion::CodeComplete()
 
             // Remove duplicate items
             for (size_t i=0; i<items.Count()-1; i++)
+            {
                 if (items.Item(i)==items.Item(i+1))
                     items.RemoveAt(i);
+            }
 
             ed->GetControl()->AutoCompSetIgnoreCase(!caseSens);
             ed->GetControl()->AutoCompSetCancelAtStart(true);
@@ -660,13 +664,15 @@ int CodeCompletion::CodeComplete()
             ed->GetControl()->AutoCompSetDropRestOfWord(m_IsAutoPopup ? false : true);
             wxString final = GetStringFromArray(items, _T(" "));
             final.RemoveLast(); // remove last space
+
             ed->GetControl()->AutoCompShow(pos - start, final);
             return 0;
         }
         else if (!ed->GetControl()->CallTipActive())
         {
-            wxString msg = _("Too many results.Please edit results' limit in code-completion options,\n"
-                            "or type at least one more character to narrow the scope down...");
+            wxString msg = _("Too many results.\n"
+                             "Please edit results' limit in code-completion options,\n"
+                             "or type at least one more character to narrow the scope down.");
             ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
             return -2;
         }
@@ -682,6 +688,7 @@ int CodeCompletion::CodeComplete()
             ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
         }
     }
+
     return -5;
 }
 

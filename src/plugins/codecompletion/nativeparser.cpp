@@ -779,10 +779,12 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
                 #else
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("Parsing arguments: \"%s\""), buffer.c_str()));
                 #endif
-                    if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
-                    {
-                        Manager::Get()->GetLogManager()->DebugLog(_T("ERROR parsing arguments"));
-                    }
+                }
+
+                if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
+                {
+                    if (s_DebugSmartSense)
+                        Manager::Get()->GetLogManager()->DebugLog(_T("Error parsing arguments."));
                 }
             }
         }
