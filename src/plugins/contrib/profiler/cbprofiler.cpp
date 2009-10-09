@@ -45,10 +45,12 @@ CBProfiler::CBProfiler()
         NotifyMissingFile(_T("Profiler.zip"));
     }
 }
+
 CBProfiler::~CBProfiler()
 {
     //dtor
 }
+
 void CBProfiler::OnAttach()
 {
     // do whatever initialization you need for your plugin
@@ -58,6 +60,7 @@ void CBProfiler::OnAttach()
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
 }
+
 void CBProfiler::OnRelease(bool appShutDown)
 {
     // do de-initialization for your plugin
@@ -66,6 +69,7 @@ void CBProfiler::OnRelease(bool appShutDown)
     // NOTE: after this function, the inherited member variable
     // IsAttached() will be FALSE...
 }
+
 cbConfigurationPanel* CBProfiler::GetConfigurationPanel(wxWindow* parent)
 {
     // if not attached, exit
@@ -75,6 +79,7 @@ cbConfigurationPanel* CBProfiler::GetConfigurationPanel(wxWindow* parent)
     CBProfilerConfigDlg* dlg = new CBProfilerConfigDlg(parent);
     return dlg;
 }
+
 int CBProfiler::Execute()
 {
     // if not attached, exit
@@ -222,16 +227,18 @@ int CBProfiler::Execute()
 
     // Loading configuration
     struct_config config;
-    config.chkAnnSource = cfg->ReadBool(_T("/ann_source_chk"), false);
-    config.txtAnnSource = cfg->Read(_T("/ann_source_txt"), wxEmptyString);
-    config.chkMinCount  = cfg->ReadBool(_T("/min_count_chk"), false);
-    config.spnMinCount  = cfg->ReadInt(_T("/min_count_spn"), 0);
-    config.chkBrief     = cfg->ReadBool(_T("/brief"), false);
-    config.chkFileInfo  = cfg->ReadBool(_T("/file_info"), false);
-    config.chkNoStatic  = cfg->ReadBool(_T("/no_static"), false);
-    config.chkMinCount  = cfg->ReadBool(_T("/min_count_chk"), false);
-    config.chkSum       = cfg->ReadBool(_T("/sum"), false);
-    config.txtExtra     = cfg->Read(_T("/extra_txt"), wxEmptyString);
+    config.chkAnnSource        = cfg->ReadBool(_T("/ann_source_chk"), false);
+    config.txtAnnSource        = cfg->Read(_T("/ann_source_txt"), wxEmptyString);
+    config.chkMinCount         = cfg->ReadBool(_T("/min_count_chk"), false);
+    config.spnMinCount         = cfg->ReadInt(_T("/min_count_spn"), 0);
+    config.chkBrief            = cfg->ReadBool(_T("/brief"), false);
+    config.chkFileInfo         = cfg->ReadBool(_T("/file_info"), false);
+    config.chkUnusedFunctions  = cfg->ReadBool(_T("/unused_functions"), false);
+    config.chkStaticCallGraph  = cfg->ReadBool(_T("/static_call_graph"), false);
+    config.chkNoStatic         = cfg->ReadBool(_T("/no_static"), false);
+    config.chkMinCount         = cfg->ReadBool(_T("/min_count_chk"), false);
+    config.chkSum              = cfg->ReadBool(_T("/sum"), false);
+    config.txtExtra            = cfg->Read(_T("/extra_txt"), wxEmptyString);
 
     // If we got this far, all is left is to call gprof!!!
     dlg = new CBProfilerExecDlg(Manager::Get()->GetAppWindow());

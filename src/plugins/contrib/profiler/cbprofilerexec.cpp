@@ -21,6 +21,7 @@
     #include "manager.h"
     #include "logmanager.h"
 #endif
+#include <wx/busyinfo.h>
 #include <wx/colour.h>
 #include <wx/ffile.h>
 #include <wx/filedlg.h>
@@ -29,6 +30,7 @@
 
 BEGIN_EVENT_TABLE(CBProfilerExecDlg, wxDialog)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstFlatProfile"), CBProfilerExecDlg::FindInCallGraph)
+    EVT_LIST_ITEM_ACTIVATED(XRCID("lstCallGraph"),   CBProfilerExecDlg::JumpInCallGraph)
     EVT_BUTTON             (XRCID("btnExport"),      CBProfilerExecDlg::WriteToFile)
     EVT_LIST_COL_CLICK     (XRCID("lstFlatProfile"), CBProfilerExecDlg::OnColumnClick)
 END_EVENT_TABLE()
@@ -39,27 +41,31 @@ int  CBProfilerExecDlg::sortColumn    = -1;
 
 int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_config config)
 {
-    //this->parent = parent;
-
     // gprof optional parameters
     wxString param = config.txtExtra;
-    if (config.chkAnnSource) param << _T(" -A")  << config.txtAnnSource;
-    if (config.chkMinCount)  param << _T(" -m ") << config.spnMinCount;
-    if (config.chkBrief)     param << _T(" -b");
-    if (config.chkFileInfo)  param << _T(" -i");
-    if (config.chkNoStatic)  param << _T(" -a");
-    if (config.chkSum)       param << _T(" -s");
+    if (config.chkAnnSource && !config.txtAnnSource.IsEmpty()) param << _T(" -A")  << config.txtAnnSource;
+    if (config.chkMinCount)                                    param << _T(" -m ") << config.spnMinCount;
+    if (config.chkBrief)                                       param << _T(" -b");
+    if (config.chkFileInfo)                                    param << _T(" -i");
+    if (config.chkUnusedFunctions)                             param << _T(" -z");
+    if (config.chkStaticCallGraph)                             param << _T(" -c");
+    if (config.chkNoStatic)                                    param << _T(" -a");
+    if (config.chkSum)                                         param << _T(" -s");
 
     wxString cmd;
     cmd << _T("gprof ") << param << _T(" \"") << exename << _T("\" \"") << dataname << _T("\"");
 
-    wxProgressDialog progress(_("C::B Profiler plugin"),_("Launching gprof. Please wait..."));
-    int pid = wxExecute(cmd, gprof_output, gprof_errors);
-    progress.Update(100);
+    int pid = -1;
+
+    { // begin lifetime of wxBusyInfo
+      wxBusyInfo wait(_("Please wait, while running gprof..."));
+      Manager::Get()->GetLogManager()->DebugLog(F(_T("Profiler: Running command %s"), cmd.c_str()));
+      pid = wxExecute(cmd, gprof_output, gprof_errors);
+    } // end lifetime of wxBusyInfo
 
     if (pid == -1)
     {
-        wxString msg = _("Unable to execute Gprof\nBe sure it is in the OS global path\nC::B Profiler could not complete the operation");
+        wxString msg = _("Unable to execute gprof.\nBe sure the gprof executable is in the OS global path.\nC::B Profiler could not complete the operation.");
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, (wxWindow*)Manager::Get()->GetAppWindow());
         Manager::Get()->GetLogManager()->DebugLog(msg);
 
@@ -69,13 +75,13 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     {
         wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCBProfilerExec"));
         wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
-        outputFlatProfileArea=XRCCTRL(*this, "lstFlatProfile", wxListCtrl);
-        outputHelpFlatProfileArea=XRCCTRL(*this, "txtHelpFlatProfile", wxTextCtrl);
+        outputFlatProfileArea     = XRCCTRL(*this, "lstFlatProfile",     wxListCtrl);
+        outputHelpFlatProfileArea = XRCCTRL(*this, "txtHelpFlatProfile", wxTextCtrl);
         outputHelpFlatProfileArea->SetFont(font);
-        outputCallGraphArea=XRCCTRL(*this, "lstCallGraph", wxListCtrl);
-        outputHelpCallGraphArea=XRCCTRL(*this, "txtHelpCallGraph", wxTextCtrl);
+        outputCallGraphArea       = XRCCTRL(*this, "lstCallGraph",       wxListCtrl);
+        outputHelpCallGraphArea   = XRCCTRL(*this, "txtHelpCallGraph",   wxTextCtrl);
         outputHelpCallGraphArea->SetFont(font);
-        outputMiscArea=XRCCTRL(*this, "txtMisc", wxTextCtrl);
+        outputMiscArea            = XRCCTRL(*this, "txtMisc",            wxTextCtrl);
         outputMiscArea->SetFont(font);
 
         if(!gprof_output.IsEmpty())
@@ -87,46 +93,40 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     return 0;
 }
 
-void CBProfilerExecDlg::ShowOutput(wxArrayString msg, bool error)
+void CBProfilerExecDlg::ShowOutput(const wxArrayString& msg, bool error)
 {
-    wxString output;
-    size_t   count = msg.GetCount();
-    if ( !count )
+    const size_t maxcount(msg.GetCount());
+    if ( !maxcount )
         return;
 
     if (!error)
     {
-        wxProgressDialog progress(_("C::B Profiler plugin"),_("Parsing profile information. Please wait..."));
+        wxProgressDialog progress(_("C::B Profiler plugin"),_("Parsing profile information. Please wait..."), maxcount, NULL, wxPD_AUTO_HIDE|wxPD_APP_MODAL|wxPD_SMOOTH);
+
         // Parsing Flat Profile
-        size_t n = 0;
-        if (msg[n].Find(_T("Flat profile")) != -1)
-            n = ParseFlatProfile(msg, n, progress);
+        size_t count(0);
+        if (msg[count].Find(_T("Flat profile")) != -1)
+            ParseFlatProfile(msg, progress, maxcount, count);
 
         // Parsing Call Graph
-        if (msg[n].Find(_T("Call graph")) != -1)
-            n = ParseCallGraph(msg, ++n, progress);
+        if (msg[count].Find(_T("Call graph"))   != -1)
+            ParseCallGraph(msg, progress, maxcount, count);
 
         // The rest of the lines, if any, is printed in the Misc tab
-        progress.Update((100*n)/(count-1),_("Parsing profile information. Please wait..."));
-        for ( ; n < count; ++n )
-        {
-            output << msg[n] << _T("\n");
-            progress.Update((100*n)/(count-1));
-        }
-        outputMiscArea->SetValue(output);
-        progress.Update(100);
+        ParseMisc(msg, progress, maxcount, count);
     }
     else
     {
-        for (size_t n = 0; n < count; ++n )
+        wxString output;
+        for (size_t count(0); count < maxcount; ++count )
         {
-            output << msg[n] << _T("\n");
+            output << msg[count] << _T("\n");
         }
         outputMiscArea->SetValue(output);
-        wxColour colour(255,0,0);
+        const wxColour colour(255,0,0);
         outputMiscArea->SetForegroundColour(colour);
-        XRCCTRL(*this, "tabs", wxNotebook)->SetSelection(2);
     }
+
     ShowModal();
 }
 
@@ -137,249 +137,6 @@ CBProfilerExecDlg::~CBProfilerExecDlg()
 void CBProfilerExecDlg::EndModal(int retCode)
 {
     wxDialog::EndModal(retCode);
-}
-
-size_t CBProfilerExecDlg::ParseCallGraph(wxArrayString msg, size_t begin, wxProgressDialog &progress)
-{
-    size_t   n;
-    size_t next = 0;
-    wxListItem item;
-
-    // Setting colums names
-    outputCallGraphArea->InsertColumn(0, _T("index"), wxLIST_FORMAT_CENTRE);
-    outputCallGraphArea->InsertColumn(1, _T("% time"), wxLIST_FORMAT_CENTRE);
-    outputCallGraphArea->InsertColumn(2, _T("self"), wxLIST_FORMAT_CENTRE);
-    outputCallGraphArea->InsertColumn(3, _T("children"), wxLIST_FORMAT_CENTRE);
-    outputCallGraphArea->InsertColumn(4, _T("called"), wxLIST_FORMAT_CENTRE);
-    outputCallGraphArea->InsertColumn(5, _T("name"));
-
-    // Jump header lines
-    while ((begin < msg.GetCount())&&(msg[begin].Find(_T("index % time")) == -1))
-    {
-        ++begin;
-    }
-    ++begin;
-
-    progress.Update((100*begin)/(msg.GetCount()-1),_("Parsing Call Graph information. Please wait..."));
-
-    // Parsing Call Graph
-    for (n = begin ; n < msg.GetCount(); ++n )
-    {
-        if ((msg[n].IsEmpty())||(msg[n].Find(wxChar(0x0C)) != -1))
-            break;
-        outputCallGraphArea->InsertItem(next,_T(""));
-        char first_char = msg[n].GetChar(0);
-        if (first_char == '-')
-        {
-            outputCallGraphArea->SetItem(next, 0, _T(""));
-            item.Clear();
-            item.SetId(next);
-            item.SetBackgroundColour(*wxLIGHT_GREY);
-            outputCallGraphArea->SetItem(item);
-        }
-        else
-        {
-            outputCallGraphArea->SetItem(next, 0, ((msg[n].Mid(0,6)).Trim(true)).Trim(false));
-            outputCallGraphArea->SetItem(next, 1, ((msg[n].Mid(6,6)).Trim(true)).Trim(false));
-            outputCallGraphArea->SetItem(next, 2, ((msg[n].Mid(12,8)).Trim(true)).Trim(false));
-            outputCallGraphArea->SetItem(next, 3, ((msg[n].Mid(20,8)).Trim(true)).Trim(false));
-            outputCallGraphArea->SetItem(next, 4, ((msg[n].Mid(28,17)).Trim(true)).Trim(false));
-            outputCallGraphArea->SetItem(next, 5, msg[n].Mid(45));
-            if (first_char != '[')
-            {
-                item.Clear();
-                item.SetId(next);
-                item.SetTextColour(wxTheColourDatabase->Find(_T("GREY")));
-                outputCallGraphArea->SetItem(item);
-            }
-        }
-        progress.Update((100*n)/(msg.GetCount()-1));
-        ++next;
-    }
-
-    // Resize columns
-    outputCallGraphArea->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER );
-    outputCallGraphArea->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER );
-    outputCallGraphArea->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER );
-    outputCallGraphArea->SetColumnWidth(3, wxLIST_AUTOSIZE_USEHEADER );
-    outputCallGraphArea->SetColumnWidth(4, wxLIST_AUTOSIZE_USEHEADER );
-    outputCallGraphArea->SetColumnWidth(5, wxLIST_AUTOSIZE);
-
-    // Printing Call Graph Help
-    wxString output_help;
-    for ( ; n < msg.GetCount(); ++n )
-    {
-        if (msg[n].Find(wxChar(0x0C)) != -1)
-            break;
-        output_help << msg[n] << _T("\n");
-        progress.Update((100*n)/(msg.GetCount()-1));
-    }
-    outputHelpCallGraphArea->SetValue(output_help);
-
-    return ++n;
-}
-
-size_t CBProfilerExecDlg::ParseFlatProfile(wxArrayString msg, size_t begin, wxProgressDialog &progress)
-{
-    size_t   n;
-    size_t next = 0;
-
-    // Setting colums names
-    outputFlatProfileArea->InsertColumn(0, _T("% time"), wxLIST_FORMAT_CENTRE);
-    outputFlatProfileArea->InsertColumn(1, _T("cum. sec."), wxLIST_FORMAT_CENTRE);
-    outputFlatProfileArea->InsertColumn(2, _T("self sec."), wxLIST_FORMAT_CENTRE);
-    outputFlatProfileArea->InsertColumn(3, _T("calls"), wxLIST_FORMAT_CENTRE);
-    outputFlatProfileArea->InsertColumn(4, _T("self s/call"), wxLIST_FORMAT_CENTRE);
-    outputFlatProfileArea->InsertColumn(5, _T("total s/call"), wxLIST_FORMAT_CENTRE);
-    outputFlatProfileArea->InsertColumn(6, _T("name"));
-
-    // Jump header lines
-    while ((begin < msg.GetCount())&&(msg[begin].Find(_T("time   seconds")) == -1))
-    {
-        ++begin;
-    }
-    ++begin;
-
-    progress.Update((100*begin)/(msg.GetCount()-1),_("Parsing Flat Profile information. Please wait..."));
-
-
-    unsigned int spacePos[6] = {6, 16, 25, 34, 43, 52};
-    // Parsing Call Graph
-    for (n = begin ; n < msg.GetCount(); ++n )
-    {
-        if ((msg[n].IsEmpty())||(msg[n].Find(wxChar(0x0C)) != -1))
-            break;
-        long item = outputFlatProfileArea->InsertItem(next,_T(""));
-        outputFlatProfileArea->SetItemData(item, next);
-        // check that we have spaces where spaces are supposed to be
-        if (msg[n].Len() > spacePos[5]) {
-            bool need_parsing = false;
-            for (int i=0; i<6; ++i)
-            {
-                if (msg[n][spacePos[i]] != ' ')
-                {
-                    need_parsing = true;
-                    break;
-                }
-            }
-            // if profile output is not in perfect table format
-            // manually parse for space positions
-            if (need_parsing)
-            {
-                int count=0; int i=0; int len = msg[n].Len();
-                while (i < len && count < 6) {
-                    // we start with spaces
-                    while (msg[n][i] == ' ' && ++i < len);
-                    if (i>=len) break;
-                    // now we parse everything else than
-                    while (msg[n][i] != ' ' && ++i < len);
-                    if (i>=len) break;
-                    // found a new space position
-                    spacePos[count++] = i;
-                }
-            }
-        }
-
-        outputFlatProfileArea->SetItem(next, 0, ((msg[n].Mid(0,spacePos[0])).Trim(true)).Trim(false));
-        for (int i=1; i<6; ++i)
-            outputFlatProfileArea->SetItem(next, i,
-                ((msg[n].Mid(spacePos[i-1],spacePos[i] - spacePos[i-1])).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 6, ((msg[n].Mid(spacePos[5])).Trim(true)).Trim(false));
-
-/*
-        outputFlatProfileArea->SetItem(next, 0, ((msg[n].Mid(0,6)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 1, ((msg[n].Mid(6,10)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 2, ((msg[n].Mid(16,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 3, ((msg[n].Mid(25,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 4, ((msg[n].Mid(34,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 5, ((msg[n].Mid(43,9)).Trim(true)).Trim(false));
-        outputFlatProfileArea->SetItem(next, 6, ((msg[n].Mid(52)).Trim(true)).Trim(false));
-*/
-        progress.Update((100*n)/(msg.GetCount()-1));
-        ++next;
-    }
-
-    // Resize columns
-    outputFlatProfileArea->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER );
-    outputFlatProfileArea->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER );
-    outputFlatProfileArea->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER );
-    outputFlatProfileArea->SetColumnWidth(3, wxLIST_AUTOSIZE_USEHEADER );
-    outputFlatProfileArea->SetColumnWidth(4, wxLIST_AUTOSIZE_USEHEADER );
-    outputFlatProfileArea->SetColumnWidth(5, wxLIST_AUTOSIZE_USEHEADER );
-    outputFlatProfileArea->SetColumnWidth(6, wxLIST_AUTOSIZE);
-
-    wxString output_help;
-    // Printing Flat Profile Help
-    for ( ; n < msg.GetCount(); ++n )
-    {
-        if (msg[n].Find(wxChar(0x0C)) != -1)
-            break;
-        output_help << msg[n] << _T("\n");
-        progress.Update((100*n)/(msg.GetCount()-1));
-    }
-    outputHelpFlatProfileArea->SetValue(output_help);
-
-    return ++n;
-}
-
-// This function writes the gprof output to a file
-void CBProfilerExecDlg::WriteToFile(wxCommandEvent& event)
-{
-    wxFileDialog filedialog(parent, _("Save gprof output to file"),_T(""),_T(""),_T("*.*"),wxFD_SAVE);
-
-    if (filedialog.ShowModal() == wxID_OK)
-    {
-        wxFFile file(filedialog.GetPath().c_str(), _T("w"));
-        for (size_t n=0; n<gprof_output.GetCount(); ++n)
-        {
-            file.Write(gprof_output[n]);
-            file.Write(_T("\n"));
-        }
-        file.Close();
-    }
-}
-
-// This function retrieve the selected function in the call graph tab
-void CBProfilerExecDlg::FindInCallGraph(wxListEvent& event)
-{
-    // We retrieve the name of the function on the line selected
-    wxListItem item;
-    item.SetId(event.GetIndex());
-    item.SetColumn(6);
-    item.SetMask(wxLIST_MASK_TEXT);
-    outputFlatProfileArea->GetItem(item);
-    wxString function_name = item.GetText();
-
-    // Then search this name in the call graph
-    wxString indexColumn, functionColumn;
-    int n;
-    for (n=0; n<outputCallGraphArea->GetItemCount(); ++n)
-    {
-        item.Clear();
-        item.SetId(n);
-        item.SetColumn(0);
-        item.SetMask(wxLIST_MASK_TEXT);
-        outputCallGraphArea->GetItem(item);
-        indexColumn = item.GetText();
-        if ((indexColumn.Mid(0,1)).CompareTo(_T("[")) == 0)
-        {
-            item.Clear();
-            item.SetId(n);
-            item.SetColumn(5);
-            item.SetMask(wxLIST_MASK_TEXT);
-            outputCallGraphArea->GetItem(item);
-            functionColumn = item.GetText();
-            if (functionColumn.Find(function_name) != -1)
-                break;
-        }
-    }
-
-    // Scrolling to the desired line in the "Call Graph" tab
-    if (n < outputCallGraphArea->GetItemCount())
-    {
-        outputCallGraphArea->EnsureVisible(n);
-        XRCCTRL(*this, "tabs", wxNotebook)->SetSelection(1);
-    }
 }
 
 // Sorting function of the flat profile columns
@@ -452,4 +209,313 @@ void CBProfilerExecDlg::OnColumnClick(wxListEvent& event)
 
     sortColumn = event.GetColumn();
     outputFlatProfileArea->SortItems(SortFunction, (long)this);
+}
+
+void CBProfilerExecDlg::ParseMisc(const wxArrayString& msg, wxProgressDialog &progress, const size_t maxcount, size_t &count)
+{
+    // parsing
+    wxString output;
+    progress.Update(count, _("Parsing miscellaneous information. Please wait..."));
+    for ( ; count < maxcount; ++count )
+    {
+        if (count%10) progress.Update(count);
+        output << msg[count] << _T("\n");
+    }
+    outputMiscArea->SetValue(output);
+}
+
+void CBProfilerExecDlg::ParseCallGraph(const wxArrayString& msg, wxProgressDialog &progress, const size_t maxcount, size_t& count)
+{
+    // Setting colums names
+    outputCallGraphArea->InsertColumn(0, _T("index"),    wxLIST_FORMAT_CENTRE);
+    outputCallGraphArea->InsertColumn(1, _T("% time"),   wxLIST_FORMAT_CENTRE);
+    outputCallGraphArea->InsertColumn(2, _T("self"),     wxLIST_FORMAT_CENTRE);
+    outputCallGraphArea->InsertColumn(3, _T("children"), wxLIST_FORMAT_CENTRE);
+    outputCallGraphArea->InsertColumn(4, _T("called"),   wxLIST_FORMAT_CENTRE);
+    outputCallGraphArea->InsertColumn(5, _T("name"));
+
+    // Jump header lines
+    progress.Update(count,_("Parsing call graph information. Please wait..."));
+    while ( (count < maxcount) && (msg[count].Find(_T("index % time")) == -1) )
+    {
+        if (count%10) progress.Update(count);
+        ++count;
+    }
+    ++count;
+
+    // Parsing Call Graph
+    size_t next(0);
+    wxListItem item;
+    wxString TOKEN;
+
+    // setting listctrl default text colour for secondary lines
+    const wxColour COLOUR(wxTheColourDatabase->Find(_T("GREY")));
+
+    for ( ; count < maxcount; ++count )
+    {
+        if (count%10) progress.Update(count);
+
+        TOKEN = msg[count];
+        if ( (TOKEN.IsEmpty()) || (TOKEN.Find(wxChar(0x0C)) != -1) )
+            break;
+
+        outputCallGraphArea->InsertItem(count,_T(""));
+        char first_char = TOKEN.GetChar(0);
+        // treating the empty separator lines
+        if (first_char == '-')
+        {
+            outputCallGraphArea->SetItem(next, 0, _T(""));
+            item.Clear();
+            item.SetId(next);
+            item.SetBackgroundColour(*wxLIGHT_GREY);
+            outputCallGraphArea->SetItem(item);
+        }
+        else
+        {
+            outputCallGraphArea->SetItem(next, 0, TOKEN(0,6).Trim(true).Trim(false));
+            outputCallGraphArea->SetItem(next, 1, TOKEN(6,6).Trim(true).Trim(false));
+            outputCallGraphArea->SetItem(next, 2, TOKEN(12,8).Trim(true).Trim(false));
+            outputCallGraphArea->SetItem(next, 3, TOKEN(20,8).Trim(true).Trim(false));
+            outputCallGraphArea->SetItem(next, 4, TOKEN(28,17).Trim(true).Trim(false));
+            outputCallGraphArea->SetItem(next, 5, TOKEN.Mid(45));
+            if (first_char != '[')
+            {
+                outputCallGraphArea->SetItemTextColour(next,COLOUR);
+            }
+        }
+        ++next;
+    }
+
+    // Resize columns
+    outputCallGraphArea->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER );
+    outputCallGraphArea->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER );
+    outputCallGraphArea->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER );
+    outputCallGraphArea->SetColumnWidth(3, wxLIST_AUTOSIZE_USEHEADER );
+    outputCallGraphArea->SetColumnWidth(4, wxLIST_AUTOSIZE );
+    outputCallGraphArea->SetColumnWidth(5, wxLIST_AUTOSIZE);
+
+    // Printing Call Graph Help
+    wxString output_help;
+    for ( ; count < maxcount; ++count )
+    {
+        if (count%10) progress.Update(count);
+
+        TOKEN = msg[count];
+        if (TOKEN.Find(wxChar(0x0C)) != -1)
+            break;
+
+        output_help << TOKEN << _T("\n");
+    }
+    outputHelpCallGraphArea->SetValue(output_help);
+
+    ++count;
+}
+
+void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDialog &progress, const size_t maxcount, size_t &count)
+{
+    // Setting colums names
+    outputFlatProfileArea->InsertColumn(0, _T("% time"),        wxLIST_FORMAT_CENTRE);
+    outputFlatProfileArea->InsertColumn(1, _T("cum. sec."),     wxLIST_FORMAT_CENTRE);
+    outputFlatProfileArea->InsertColumn(2, _T("self sec."),     wxLIST_FORMAT_CENTRE);
+    outputFlatProfileArea->InsertColumn(3, _T("calls"),         wxLIST_FORMAT_CENTRE);
+    outputFlatProfileArea->InsertColumn(4, _T("self ms/call"),  wxLIST_FORMAT_CENTRE);
+    outputFlatProfileArea->InsertColumn(5, _T("total ms/call"), wxLIST_FORMAT_CENTRE);
+    outputFlatProfileArea->InsertColumn(6, _T("name"));
+
+    // Jump header lines
+    progress.Update(count,_("Parsing flat profile information. Please wait..."));
+    while ((count < maxcount)&&(msg[count].Find(_T("time   seconds")) == -1))
+    {
+        ++count;
+    }
+    ++count;
+
+    // Parsing Call Graph
+    size_t next(0);
+    unsigned int spacePos[6] = {6, 16, 25, 34, 43, 52};
+    wxString TOKEN;
+    for ( ; count < maxcount; ++count )
+    {
+        if (count%10) progress.Update(count);
+
+        TOKEN = msg[count];
+        if ( (TOKEN.IsEmpty()) || (TOKEN.Find(wxChar(0x0C)) != -1) )
+            break;
+
+        long item = outputFlatProfileArea->InsertItem(next,_T(""));
+        outputFlatProfileArea->SetItemData(item, next);
+        // check that we have spaces where spaces are supposed to be
+        if (TOKEN.Len() > spacePos[5]) {
+            bool need_parsing = false;
+            for (int i=0; i<6; ++i)
+            {
+                if (TOKEN[spacePos[i]] != ' ')
+                {
+                    need_parsing = true;
+                    break;
+                }
+            }
+            // if profile output is not in perfect table format
+            // manually parse for space positions
+            if (need_parsing)
+            {
+                int count=0; int i=0; int len = TOKEN.Len();
+                while (i < len && count < 6) {
+                    // we start with spaces
+                    while (TOKEN[i] == ' ' && ++i < len);
+                    if (i>=len) break;
+                    // now we parse everything else than
+                    while (TOKEN[i] != ' ' && ++i < len);
+                    if (i>=len) break;
+                    // found a new space position
+                    spacePos[count++] = i;
+                }
+            }
+        }
+
+        outputFlatProfileArea->SetItem(next, 0, ((TOKEN.Mid(0,spacePos[0])).Trim(true)).Trim(false));
+        for (int i(1); i<6; ++i)
+            outputFlatProfileArea->SetItem(next, i,((TOKEN.Mid(spacePos[i-1],spacePos[i] - spacePos[i-1])).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 6, ((TOKEN.Mid(spacePos[5])).Trim(true)).Trim(false));
+
+/*
+        outputFlatProfileArea->SetItem(next, 0, ((TOKEN.Mid(0,6)).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 1, ((TOKEN.Mid(6,10)).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 2, ((TOKEN.Mid(16,9)).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 3, ((TOKEN.Mid(25,9)).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 4, ((TOKEN.Mid(34,9)).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 5, ((TOKEN.Mid(43,9)).Trim(true)).Trim(false));
+        outputFlatProfileArea->SetItem(next, 6, ((TOKEN.Mid(52)).Trim(true)).Trim(false));
+*/
+        ++next;
+    }
+
+    // Resize columns
+    outputFlatProfileArea->SetColumnWidth(0, wxLIST_AUTOSIZE_USEHEADER );
+    outputFlatProfileArea->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER );
+    outputFlatProfileArea->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER );
+    outputFlatProfileArea->SetColumnWidth(3, wxLIST_AUTOSIZE );
+    outputFlatProfileArea->SetColumnWidth(4, wxLIST_AUTOSIZE_USEHEADER );
+    outputFlatProfileArea->SetColumnWidth(5, wxLIST_AUTOSIZE_USEHEADER );
+    outputFlatProfileArea->SetColumnWidth(6, wxLIST_AUTOSIZE);
+
+    // Printing Flat Profile Help
+    wxString output_help;
+    for ( ; count < maxcount; ++count )
+    {
+        if (count%10) progress.Update(count);
+
+        TOKEN = msg[count];
+        if (TOKEN.Find(wxChar(0x0C)) != -1)
+            break;
+
+        output_help << msg[count] << _T("\n");
+    }
+    outputHelpFlatProfileArea->SetValue(output_help);
+
+    ++count;
+}
+
+// This function writes the gprof output to a file
+void CBProfilerExecDlg::WriteToFile(wxCommandEvent& event)
+{
+    wxFileDialog filedialog(parent,
+                            _("Save gprof output to file"),
+                            wxEmptyString,
+                            wxEmptyString,
+                            _T("*.*"),
+                            wxFD_SAVE);
+
+    if (filedialog.ShowModal() == wxID_OK)
+    {
+        wxFFile file(filedialog.GetPath().c_str(), _T("w"));
+        for (size_t n=0; n<gprof_output.GetCount(); ++n)
+        {
+            file.Write(gprof_output[n]);
+            file.Write(_T("\n"));
+        }
+        file.Close();
+    }
+}
+
+// This function retrieves the selected function in the call graph tab
+void CBProfilerExecDlg::FindInCallGraph(wxListEvent& event)
+{
+    // We retrieve the name of the function on the line selected
+    wxListItem item;
+    item.SetId(event.GetIndex());
+    item.SetColumn(6);
+    item.SetMask(wxLIST_MASK_TEXT);
+    outputFlatProfileArea->GetItem(item);
+    const wxString function_name(item.GetText());
+
+    // Then search this name in the call graph
+    wxString indexColumn;
+    int n;
+    for (n=0; n<outputCallGraphArea->GetItemCount(); ++n)
+    {
+        item.Clear();
+        item.SetId(n);
+        item.SetColumn(0);
+        item.SetMask(wxLIST_MASK_TEXT);
+        outputCallGraphArea->GetItem(item);
+        indexColumn = item.GetText();
+        if ((indexColumn.Mid(0,1)).CompareTo(_T("[")) == 0)
+        {
+            item.Clear();
+            item.SetId(n);
+            item.SetColumn(5);
+            item.SetMask(wxLIST_MASK_TEXT);
+            outputCallGraphArea->GetItem(item);
+            if (item.GetText().Find(function_name) != -1)
+                break;
+        }
+    }
+
+    // Scrolling to the desired line in the "Call Graph" tab
+    outputCallGraphArea->SetItemState(item,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
+    outputCallGraphArea->EnsureVisible(n);
+    XRCCTRL(*this, "tabs", wxNotebook)->SetSelection(1);
+}
+
+// This function jumpes to the selected function in the call graph tab
+void CBProfilerExecDlg::JumpInCallGraph(wxListEvent& event)
+{
+    // We retrieve the name of the function on the line selected
+    wxListItem item;
+    item.SetId(event.GetIndex());
+    item.SetColumn(5);
+    item.SetMask(wxLIST_MASK_TEXT);
+    outputCallGraphArea->GetItem(item);
+    const wxString function_name(item.GetText());
+
+    // Then search this name in the call graph
+    wxString indexColumn;
+    int n;
+    const int maxcount(outputCallGraphArea->GetItemCount());
+    for (n=0; n<maxcount; ++n)
+    {
+        item.Clear();
+        item.SetId(n);
+        item.SetColumn(0);
+        item.SetMask(wxLIST_MASK_TEXT);
+        outputCallGraphArea->GetItem(item);
+        indexColumn = item.GetText();
+
+        if ((indexColumn.Mid(0,1)).CompareTo(_T("[")) == 0)
+        {
+            item.Clear();
+            item.SetId(n);
+            item.SetColumn(5);
+            item.SetMask(wxLIST_MASK_TEXT);
+            outputCallGraphArea->GetItem(item);
+
+            if (function_name.Find(item.GetText()) != wxNOT_FOUND)
+                break;
+        }
+    }
+
+    // Scrolling to the desired line in the "Call Graph" tab
+    outputCallGraphArea->SetItemState(item,wxLIST_STATE_SELECTED,wxLIST_STATE_SELECTED);
+    outputCallGraphArea->EnsureVisible(n);
 }
