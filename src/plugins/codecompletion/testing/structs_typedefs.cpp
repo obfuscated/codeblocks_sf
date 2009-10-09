@@ -1,3 +1,5 @@
+#include <cstdarg>
+
 struct _s
 {
   int   x;
@@ -30,7 +32,10 @@ typedef class _c_inner
   float m;
 } t_c_inner;
 
-typedef unsigned int iiiiiiiiiiiiiiii;
+typedef unsigned int i_uinteger;
+
+typedef void   t_void   (int errnum, const char *msg, va_list ap);
+typedef void (*t_p_void)(int errnum, const char *msg, va_list ap);
 
 int main (void)
 {
@@ -75,7 +80,13 @@ int main (void)
 //    ptc_inner.
 //    ptc_inner->
 
-//    ii
+//    i_
+
+    t_void     tv;
+    t_p_void   tpv;
+
+//    tp(
+//    tpv(
 
     return 0;
 }

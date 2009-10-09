@@ -1765,6 +1765,7 @@ void ParserThread::HandleTypedef()
         {
             tdef->m_AncestorsString = ancestor;
             tdef->m_ActualType = ancestor;
+            tdef->m_Type = ancestor;
         }
         else
             tdef->m_ActualType = ancestor + args;

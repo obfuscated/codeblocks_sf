@@ -628,16 +628,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
 void Parser::Clear()
 {
     DisconnectEvents();
-//    if(m_ShuttingDown)
-//    {
-//        Manager::Get()->GetLogManager()->DebugLog(_T("Terminating threads..."));
-//    }
-    TerminateAllThreads(); //
-//    if(m_ShuttingDown)
-//    {
-//        Manager::Get()->GetLogManager()->DebugLog(_T("Done."));
-//    }
-
+    TerminateAllThreads();
     Manager::ProcessPendingEvents();
 
     m_IncludeDirs.Clear();

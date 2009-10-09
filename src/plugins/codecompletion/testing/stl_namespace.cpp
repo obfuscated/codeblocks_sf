@@ -2,6 +2,7 @@
 #include <vector>
 
 using namespace std;
+
 void nop (void)
 {
 //  std::
@@ -9,6 +10,6 @@ void nop (void)
   string s;
 //  s.
 
-  vector v;
+  vector<int> v;
 //  v.
 }

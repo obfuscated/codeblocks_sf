@@ -8,6 +8,6 @@ int main (void)
   std::string s;
 //  s.
 
-  std::vector v;
+  std::vector<int> v;
 //  v.
 }
