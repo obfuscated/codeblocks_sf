@@ -835,7 +835,11 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
         {
             if (s_DebugSmartSense)
             {
+                #if wxCHECK_VERSION(2, 9, 0)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.wx_str()));
+                #else
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
+                #endif
                 Manager::Get()->GetLogManager()->DebugLog(_T("Local tokens:"));
                 for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
                 {
