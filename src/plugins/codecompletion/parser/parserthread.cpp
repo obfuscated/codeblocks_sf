@@ -1478,7 +1478,11 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
                 if (!m_IsBuffer && ((lineEnd-lineStart) > (int)(m_FileSize*0.1)))
 #endif
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."), name.wx_str(), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize));
+                    #else
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."), name.c_str(), lineStart, lineEnd, m_Filename.c_str(), m_FileSize));
+                    #endif
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
