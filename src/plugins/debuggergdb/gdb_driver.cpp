@@ -861,7 +861,13 @@ void GDB_driver::ParseOutput(const wxString& output)
             // it's the gdb banner. Just display the version and "eat" the rest
             m_pDBG->Log(_("Debugger name and version: ") + lines[i]);
             // keep major and minor version numbers handy
-            wxString major = lines[i].Right(lines[i].Length() - 8);
+            wxRegEx re(_T("([0-9.]+)"));
+            if (!re.Matches(lines[i]))
+            {
+                m_pDBG->Log(_T("Unable to determine the version of gdb"));
+                break;
+            }
+            wxString major = re.GetMatch(lines[i],0);
             wxString minor = major;
             major = major.BeforeFirst(_T('.')); // 6.3.2 -> 6
             minor = minor.AfterFirst(_T('.')); // 6.3.2 -> 3.2
