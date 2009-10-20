@@ -9,6 +9,8 @@
 
 #include <sdk.h>
 #include <globals.h>
+#include "logmanager.h"
+#include "manager.h"
 #include "token.h"
 #include <wx/intl.h>
 #include <wx/tokenzr.h>

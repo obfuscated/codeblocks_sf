@@ -26,6 +26,7 @@
     #include "projectfile.h"
     #include "pluginmanager.h"
     #include "manager.h"
+    #include "macrosmanager.h"
     #include "filemanager.h"
     #include "sdk_events.h"
     #include "projectbuildtarget.h"

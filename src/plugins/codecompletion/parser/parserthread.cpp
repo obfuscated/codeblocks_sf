@@ -13,6 +13,7 @@
 #include <wx/app.h>
 #include <wx/msgdlg.h>
 #include <manager.h>
+#include "logmanager.h"
 #include <globals.h>
 
 #include <cctype>

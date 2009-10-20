@@ -17,8 +17,11 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
+    #include <wx/bitmap.h>
+    #include <wx/bmpbuttn.h>
     #include <wx/checkbox.h>
     #include <wx/sizer.h>
+    #include "configmanager.h"
 #endif
 
 #include "wx/things/toggle.h"
