@@ -23,7 +23,7 @@
 #define MyComplex if (true) while (true) { break; } // a comment
 #define MyMultiline while (true) \
                     { \
-                      if (false) break; \
+                      if (true) break; \
                     }
 
 #if defined(__WXMOTIF__) || defined(__WXGTK__)
