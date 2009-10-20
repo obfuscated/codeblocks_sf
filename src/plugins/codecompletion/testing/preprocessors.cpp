@@ -20,10 +20,10 @@
 #define MyStr3    "this is a string" /* short C style comment */
 #define MyStr4    "this is a string" /* long multi-line
                                         C style comment */
-#define MyComplex if (true) while (false)) { break; } // a comment
-#define MyMultiline while (false) \
+#define MyComplex if (true) while (true) { break; } // a comment
+#define MyMultiline while (true) \
                     { \
-                      if (true) break; \
+                      if (false) break; \
                     }
 
 #if defined(__WXMOTIF__) || defined(__WXGTK__)
