@@ -4,6 +4,7 @@
 		<Project filename="duplicate_header.cbp" />
 		<Project filename="function_args.cbp" />
 		<Project filename="namespaces.cbp" />
+		<Project filename="preprocessors.cbp" />
 		<Project filename="stl.cbp" />
 		<Project filename="structs_typedefs.cbp" />
 	</Workspace>
