@@ -58,7 +58,7 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     int pid = -1;
 
     { // begin lifetime of wxBusyInfo
-      wxBusyInfo wait(_("Please wait, while running gprof..."));
+      wxBusyInfo wait(_("Please wait, while running gprof..."), this);
       Manager::Get()->GetLogManager()->DebugLog(F(_T("Profiler: Running command %s"), cmd.c_str()));
       pid = wxExecute(cmd, gprof_output, gprof_errors);
     } // end lifetime of wxBusyInfo
@@ -218,7 +218,7 @@ void CBProfilerExecDlg::ParseMisc(const wxArrayString& msg, wxProgressDialog &pr
     progress.Update(count, _("Parsing miscellaneous information. Please wait..."));
     for ( ; count < maxcount; ++count )
     {
-        if (count%10) progress.Update(count);
+        if ((count%10) == 0) progress.Update(count);
         output << msg[count] << _T("\n");
     }
     outputMiscArea->SetValue(output);
@@ -238,7 +238,7 @@ void CBProfilerExecDlg::ParseCallGraph(const wxArrayString& msg, wxProgressDialo
     progress.Update(count,_("Parsing call graph information. Please wait..."));
     while ( (count < maxcount) && (msg[count].Find(_T("index % time")) == -1) )
     {
-        if (count%10) progress.Update(count);
+        if ((count%10) == 0) progress.Update(count);
         ++count;
     }
     ++count;
@@ -253,7 +253,7 @@ void CBProfilerExecDlg::ParseCallGraph(const wxArrayString& msg, wxProgressDialo
 
     for ( ; count < maxcount; ++count )
     {
-        if (count%10) progress.Update(count);
+        if ((count%10) == 0) progress.Update(count);
 
         TOKEN = msg[count];
         if ( (TOKEN.IsEmpty()) || (TOKEN.Find(wxChar(0x0C)) != -1) )
@@ -298,7 +298,7 @@ void CBProfilerExecDlg::ParseCallGraph(const wxArrayString& msg, wxProgressDialo
     wxString output_help;
     for ( ; count < maxcount; ++count )
     {
-        if (count%10) progress.Update(count);
+        if ((count%10) == 0) progress.Update(count);
 
         TOKEN = msg[count];
         if (TOKEN.Find(wxChar(0x0C)) != -1)
@@ -336,7 +336,7 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
     wxString TOKEN;
     for ( ; count < maxcount; ++count )
     {
-        if (count%10) progress.Update(count);
+        if ((count%10) == 0) progress.Update(count);
 
         TOKEN = msg[count];
         if ( (TOKEN.IsEmpty()) || (TOKEN.Find(wxChar(0x0C)) != -1) )
@@ -403,7 +403,7 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
     wxString output_help;
     for ( ; count < maxcount; ++count )
     {
-        if (count%10) progress.Update(count);
+        if ((count%10) == 0) progress.Update(count);
 
         TOKEN = msg[count];
         if (TOKEN.Find(wxChar(0x0C)) != -1)
@@ -478,7 +478,7 @@ void CBProfilerExecDlg::FindInCallGraph(wxListEvent& event)
     XRCCTRL(*this, "tabs", wxNotebook)->SetSelection(1);
 }
 
-// This function jumpes to the selected function in the call graph tab
+// This function jumps to the selected function in the call graph tab
 void CBProfilerExecDlg::JumpInCallGraph(wxListEvent& event)
 {
     // We retrieve the name of the function on the line selected

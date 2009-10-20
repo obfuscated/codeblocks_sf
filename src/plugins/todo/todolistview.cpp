@@ -299,9 +299,9 @@ void ToDoListView::SortList()
                     swap = item1.user.CmpNoCase(item2.user);
                     break;
                 case 3: // priority
-                    if      (item1.priority > item2.priority)
+                    if      (item1.priorityStr > item2.priorityStr)
                         swap =  1;
-                    else if (item1.priority < item2.priority)
+                    else if (item1.priorityStr < item2.priorityStr)
                         swap = -1;
                     else
                         swap =  0;
@@ -393,7 +393,6 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
     // our version...
     // TODO (mandrav#0#): Implement code to do this and the other...
     // and a generic version...
-    // TODO: Implement code to do this and the other...
 
     m_ItemsMap[filename].clear();
 

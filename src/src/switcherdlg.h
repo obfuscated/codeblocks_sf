@@ -278,7 +278,7 @@ public:
     void ShowDescription(int i);
 
     void SetBorderColour(const wxColour& colour) { m_borderColour = colour; }
-   
+
     // Set an extra key that can be used to cycle through items,
     // in case not using the Ctrl+Tab combination
     void SetExtraNavigationKey(int keyCode);

@@ -1196,6 +1196,15 @@ void HexEditPanel::UpdateModified()
     }
 }
 
+void HexEditPanel::SetFilename(const wxString& filename)
+{
+    EditorBase::SetFilename(filename);
+    //m_Filename = filename; done by EditorBase::SetFilename
+    wxFileName fname;
+    fname.Assign(m_Filename);
+    m_Shortname = fname.GetFullName();
+}
+
 void HexEditPanel::OnDrawAreaLeftDown(wxMouseEvent& event)
 {
     if ( !m_Content ) return;

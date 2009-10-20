@@ -334,7 +334,7 @@ void CodeBlocksApp::InitAssociations()
 {
 #ifdef __WXMSW__
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if (!m_NoAssocs && cfg->ReadBool(_T("/environment/check_associations"), true))
+    if (m_Assocs && cfg->ReadBool(_T("/environment/check_associations"), true))
     {
         if (!Associations::Check())
         {
@@ -401,8 +401,8 @@ MainFrame* CodeBlocksApp::InitFrame()
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
     SetTopWindow(0);
-    //frame->Hide(); // shouldn't need this explicitly
-    if (g_DDEServer && !m_NoDDE)
+
+    if (g_DDEServer && m_DDE)
     {
         // Set m_Frame in DDE-Server
         g_DDEServer->SetFrame(frame);
@@ -492,7 +492,7 @@ bool CodeBlocksApp::OnInit()
     // NOTE: crash handler explicitly disabled because it causes problems
     //       with plugins loading/unloading...
     //
-    // static CrashHandler crash_handler(m_NoCrashHandler);
+    // static CrashHandler crash_handler(!m_CrashHandler);
 
     // we'll do this once and for all at startup
     wxFileSystem::AddHandler(new wxZipFSHandler);
@@ -523,7 +523,7 @@ bool CodeBlocksApp::OnInit()
 
         InitLocale();
 
-        if(!m_NoDDE && !m_Batch && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_ipc"), true))
+        if(m_DDE && !m_Batch && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/use_ipc"), true))
         {
             // Create a new client
             DDEClient *client = new DDEClient;
@@ -592,7 +592,7 @@ bool CodeBlocksApp::OnInit()
             delete client;
         }
         // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
-        if (!m_NoDDE && !m_Batch)
+        if (m_DDE && !m_Batch)
         {
             g_DDEServer = new DDEServer(0L);
             g_DDEServer->Create(DDE_SERVICE);
@@ -615,8 +615,7 @@ bool CodeBlocksApp::OnInit()
         }
         // Splash screen moved to this place, otherwise it would be short visible, even if we only pass filenames via DDE/IPC
         // we also don't need it, if only a single instance is allowed
-        Splash splash(!m_Batch && m_Script.IsEmpty() &&
-                      !m_NoSplash &&
+        Splash splash(!m_Batch && m_Script.IsEmpty() && m_Splash &&
                       Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/show_splash"), true));
         InitDebugConsole();
 
@@ -624,6 +623,8 @@ bool CodeBlocksApp::OnInit()
         Manager::Get()->GetScriptingManager();
         MainFrame* frame = 0; frame = InitFrame();
         m_Frame = frame;
+
+        if (m_SafeMode) wxLog::EnableLogging(true); // re-enable logging in safe-mode
 
         if (m_Batch)
         {
@@ -1087,15 +1088,15 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
                     wxString val;
                     parser.Found(_T("prefix"), &m_Prefix);
 #ifdef __WXMSW__
-                    m_NoDDE = parser.Found(_T("no-dde"));
-                    m_NoAssocs = parser.Found(_T("no-check-associations"));
+                    m_DDE = !parser.Found(_T("no-dde"));
+                    m_Assocs = !parser.Found(_T("no-check-associations"));
 #else
-                    m_NoDDE = parser.Found(_T("no-ipc"));
+                    m_DDE = !parser.Found(_T("no-ipc"));
 #endif
                     m_SafeMode = parser.Found(_T("safe-mode"));
-                    m_NoSplash = parser.Found(_T("no-splash-screen"));
+                    m_Splash = !parser.Found(_T("no-splash-screen"));
                     m_HasDebugLog = parser.Found(_T("debug-log"));
-                    m_NoCrashHandler = parser.Found(_T("no-crash-handler"));
+                    m_CrashHandler = !parser.Found(_T("no-crash-handler"));
                     if (parser.Found(_T("personality"), &val) ||
                         parser.Found(_T("profile"), &val))
                     {

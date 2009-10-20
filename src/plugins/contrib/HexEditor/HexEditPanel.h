@@ -66,6 +66,7 @@ class HexEditPanel: public EditorBase
         virtual void SetModified( bool modified );
         virtual bool Save();
         virtual bool SaveAs();
+        virtual void SetFilename(const wxString& filename);
 
     private:
 

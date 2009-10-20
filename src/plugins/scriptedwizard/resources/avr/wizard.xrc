@@ -13,56 +13,47 @@
 			<object class="sizeritem">
 				<object class="wxComboBox" name="comboboxProc">
 					<content>
-						<item>avr1</item>
+						<item>at43usb320</item>
+						<item>at43usb355</item>
+						<item>at76c711</item>
+						<item>at86rf401</item>
+						<item>at90c8534</item>
+						<item>at90can128</item>
+						<item>at90can32</item>
+						<item>at90can64</item>
+						<item>at90pwm1</item>
+						<item>at90pwm2</item>
+						<item>at90pwm216</item>
+						<item>at90pwm2b</item>
+						<item>at90pwm3</item>
+						<item>at90pwm316</item>
+						<item>at90pwm3b</item>
+						<item>at90pwm81</item>
 						<item>at90s1200</item>
-						<item>attiny11</item>
-						<item>attiny12</item>
-						<item>attiny15</item>
-						<item>attiny28</item>
-						<item>avr2</item>
 						<item>at90s2313</item>
 						<item>at90s2323</item>
 						<item>at90s2333</item>
 						<item>at90s2343</item>
-						<item>attiny22</item>
-						<item>attiny26</item>
 						<item>at90s4414</item>
 						<item>at90s4433</item>
 						<item>at90s4434</item>
 						<item>at90s8515</item>
-						<item>at90c8534</item>
 						<item>at90s8535</item>
-						<item>avr25</item>
-						<item>attiny13</item>
-						<item>attiny2313</item>
-						<item>attiny24</item>
-						<item>attiny44</item>
-						<item>attiny84</item>
-						<item>attiny25</item>
-						<item>attiny45</item>
-						<item>attiny85</item>
-						<item>attiny261</item>
-						<item>attiny461</item>
-						<item>attiny861</item>
-						<item>at86rf401</item>
-						<item>avr3</item>
-						<item>atmega103</item>
-						<item>atmega603</item>
-						<item>at43usb320</item>
-						<item>at43usb355</item>
-						<item>at76c711</item>
-						<item>atmega48</item>
-						<item>atmega8</item>
-						<item>avr4</item>
-						<item>atmega8515</item>
-						<item>atmega8535</item>
-						<item>atmega88</item>
-						<item>atmega84</item>
-						<item>at90pwm1</item>
-						<item>at90pwm2</item>
-						<item>at90pwm3</item>
+						<item>at90scr100</item>
+						<item>at90usb1286</item>
+						<item>at90usb1287</item>
+						<item>at90usb162</item>
+						<item>at90usb646</item>
+						<item>at90usb647</item>
 						<item>at90usb82</item>
-						<item>avr5</item>
+						<item>at94k</item>
+						<item>ata6289</item>
+						<item>atmega103</item>
+						<item>atmega128</item>
+						<item>atmega1280</item>
+						<item>atmega1281</item>
+						<item>atmega1284p</item>
+						<item>atmega128rfa1</item>
 						<item>atmega16</item>
 						<item>atmega161</item>
 						<item>atmega162</item>
@@ -71,20 +62,36 @@
 						<item>atmega165</item>
 						<item>atmega165p</item>
 						<item>atmega168</item>
+						<item>atmega168p</item>
 						<item>atmega169</item>
 						<item>atmega169p</item>
+						<item>atmega16hva</item>
+						<item>atmega16hvb</item>
+						<item>atmega16m1</item>
+						<item>atmega16u4</item>
+						<item>atmega2560</item>
+						<item>atmega2561</item>
 						<item>atmega32</item>
 						<item>atmega323</item>
 						<item>atmega324p</item>
 						<item>atmega325</item>
-						<item>atmega325p</item>
 						<item>atmega3250</item>
 						<item>atmega3250p</item>
+						<item>atmega325p</item>
+						<item>atmega328p</item>
 						<item>atmega329</item>
-						<item>atmega329p</item>
 						<item>atmega3290</item>
 						<item>atmega3290p</item>
+						<item>atmega329p</item>
+						<item>atmega32c1</item>
+						<item>atmega32hvb</item>
+						<item>atmega32m1</item>
+						<item>atmega32u4</item>
+						<item>atmega32u6</item>
 						<item>atmega406</item>
+						<item>atmega48</item>
+						<item>atmega48p</item>
+						<item>atmega4hvd</item>
 						<item>atmega64</item>
 						<item>atmega640</item>
 						<item>atmega644</item>
@@ -93,22 +100,69 @@
 						<item>atmega6450</item>
 						<item>atmega649</item>
 						<item>atmega6490</item>
-						<item>atmega128</item>
-						<item>atmega1280</item>
-						<item>atmega1281</item>
-						<item>atmega16hva</item>
-						<item>at90can32</item>
-						<item>at90can64</item>
-						<item>at90can128</item>
-						<item>at90usb162</item>
-						<item>at90usb646</item>
-						<item>at90usb647</item>
-						<item>at90usb1286</item>
-						<item>at90usb1287</item>
-						<item>at94k</item>
+						<item>atmega64c1</item>
+						<item>atmega64m1</item>
+						<item>atmega8</item>
+						<item>atmega8515</item>
+						<item>atmega8535</item>
+						<item>atmega88</item>
+						<item>atmega88p</item>
+						<item>atmega8hva</item>
+						<item>atmega8hvd</item>
+						<item>attiny11</item>
+						<item>attiny12</item>
+						<item>attiny13</item>
+						<item>attiny13a</item>
+						<item>attiny15</item>
+						<item>attiny167</item>
+						<item>attiny22</item>
+						<item>attiny2313</item>
+						<item>attiny24</item>
+						<item>attiny25</item>
+						<item>attiny26</item>
+						<item>attiny261</item>
+						<item>attiny28</item>
+						<item>attiny327</item>
+						<item>attiny43u</item>
+						<item>attiny44</item>
+						<item>attiny45</item>
+						<item>attiny461</item>
+						<item>attiny48</item>
+						<item>attiny84</item>
+						<item>attiny85</item>
+						<item>attiny861</item>
+						<item>attiny87</item>
+						<item>attiny88</item>
+						<item>atxmega128a1</item>
+						<item>atxmega128a3</item>
+						<item>atxmega16a4</item>
+						<item>atxmega16d4</item>
+						<item>atxmega256a3</item>
+						<item>atxmega256a3b</item>
+						<item>atxmega32a4</item>
+						<item>atxmega32d4</item>
+						<item>atxmega64a1</item>
+						<item>atxmega64a3</item>
+						<item>avr1</item>
+						<item>avr2</item>
+						<item>avr25</item>
+						<item>avr3</item>
+						<item>avr31</item>
+						<item>avr35</item>
+						<item>avr4</item>
+						<item>avr5</item>
+						<item>avr51</item>
 						<item>avr6</item>
-						<item>atmega2560</item>
-						<item>atmega2561</item>
+						<item>avrxmega1</item>
+						<item>avrxmega2</item>
+						<item>avrxmega3</item>
+						<item>avrxmega4</item>
+						<item>avrxmega5</item>
+						<item>avrxmega6</item>
+						<item>avrxmega7</item>
+						<item>m3000f</item>
+						<item>m3000s</item>
+						<item>m3001b</item>
 					</content>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

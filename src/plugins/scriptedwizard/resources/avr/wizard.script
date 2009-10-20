@@ -83,14 +83,20 @@ function SetupProject(project)
     local pb_bin = ::wxString();
     local pb_eepsrec = ::wxString();
     local pb_srec = ::wxString();    
-    
-        // Post build commands  
+    local pb_lss = ::wxString();
+
+        // Post build commands
         pb_eephex = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O ihex $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.hex");
         pb_hex = _T("avr-objcopy -O ihex -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).hex");
         pb_eepbin = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O binary $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.bin");
         pb_bin = _T("avr-objcopy -O binary -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).bin");
         pb_eepsrec = _T("avr-objcopy --no-change-warnings -j .eeprom --change-section-lma .eeprom=0 -O srec $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).eep.srec");
         pb_srec = _T("avr-objcopy -O srec -R .eeprom -R .eesafe $(TARGET_OUTPUT_FILE) $(TARGET_OUTPUT_FILE).srec");
+
+        if ( PLATFORM == PLATFORM_MSW )
+            pb_lss = _T("cmd /c \"avr-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_FILE).lss\"");
+        else
+            pb_lss = _T("avr-objdump -h -S $(TARGET_OUTPUT_FILE) > $(TARGET_OUTPUT_FILE).lss");
 
         // avr-size is compiled with patches under winavr to produce a fancy output
         // which displays the percentage of memory used by the application for the 
@@ -145,7 +151,10 @@ function SetupProject(project)
             project.AddCommandsAfterBuild(pb_eepbin);
         }
 
-                    
+        if ( AvrLss )
+            project.AddCommandsAfterBuild(pb_lss);
+
+
     // Debug build target
     local target = project.GetBuildTarget(Wizard.GetDebugName());
     if (!IsNull(target))

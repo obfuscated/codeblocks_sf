@@ -15,6 +15,13 @@
 
 #define TOKEN_DEBUG_OUTPUT 0
 
+#if TOKEN_DEBUG_OUTPUT
+    #define TRACE(format, args...)\
+    Manager::Get()->GetLogManager()->DebugLog(F( format , ## args))
+#else
+    #define TRACE(format, args...)
+#endif
+
 inline void SaveTokenIdxSetToFile(wxOutputStream* f,const TokenIdxSet& data)
 {
     SaveIntToFile(f, (int)(data.size()));
@@ -504,12 +511,16 @@ size_t TokensTree::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSe
     int numitems = m_Tree.FindMatches(s,lists,caseSensitive,is_prefix);
     if(!numitems)
         return 0;
+    // now the lists contains indexes to all the matching keywords
     TokenIdxSet* curset;
     set<size_t>::iterator it;
     TokenIdxSet::iterator it2;
+    // first loop will find all the keywords
     for(it = lists.begin(); it != lists.end(); it++)
     {
         curset = &(m_Tree.GetItemAtPos(*it));
+        // second loop will get all the items maped by the same keyword,
+        // for example, we have ClassA::foo, ClassB::foo ...
         for(it2 = curset->begin();it2 != curset->end(); it2++)
         {
             if (kindMask == 0xffff || (at(*it)->m_TokenKind & kindMask))
@@ -790,10 +801,7 @@ void TokensTree::RecalcFreeList()
 
 void TokensTree::RecalcData()
 {
-#if TOKEN_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(_T("RecalcData() : Calculating full inheritance tree."));
-#endif
-
+    TRACE(_T("RecalcData() : Calculating full inheritance tree."));
     // first loop to convert ancestors string to token indices for each token
     for (size_t i = 0; i < size(); ++i)
     {
@@ -811,18 +819,20 @@ void TokensTree::RecalcData()
 
         token->m_DirectAncestors.clear();
         token->m_Ancestors.clear();
-#if TOKEN_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Token %s, Ancestors %s"), token->m_Name.c_str(), token->m_AncestorsString.c_str()));
-#endif
+
+        TRACE(_T("RecalcData() : Token %s, Ancestors %s"),
+              token->m_Name.wx_str(),
+              token->m_AncestorsString.wx_str());
+
         wxStringTokenizer tkz(token->m_AncestorsString, _T(","));
         while (tkz.HasMoreTokens())
         {
             wxString ancestor = tkz.GetNextToken();
             if (ancestor.IsEmpty() || ancestor == token->m_Name)
                 continue;
-#if TOKEN_DEBUG_OUTPUT
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Ancestor %s"), ancestor.c_str()));
-#endif
+
+            TRACE(_T("RecalcData() : Ancestor %s"), ancestor.wx_str());
+
             // ancestors might contain namespaces, e.g. NS::Ancestor
             if (ancestor.Find(_T("::")) != wxNOT_FOUND)
             {
@@ -842,19 +852,14 @@ void TokensTree::RecalcData()
                 }
                 if (ancestorToken && ancestorToken != token && ancestorToken->m_TokenKind == tkClass)// && !ancestorToken->m_IsTypedef)
                 {
-#if TOKEN_DEBUG_OUTPUT
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Resolved to %s"), ancestorToken->m_Name.c_str()));
-#endif
+                    TRACE(_T("RecalcData() : Resolved to %s"), ancestorToken->m_Name.wx_str());
                     token->m_Ancestors.insert(ancestorToken->GetSelf());
                     ancestorToken->m_Descendants.insert(i);
-#if TOKEN_DEBUG_OUTPUT
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.c_str()));
-#endif
+                    TRACE(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.wx_str());
+
                 }
-#if TOKEN_DEBUG_OUTPUT
                 else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.c_str()));
-#endif
+                    TRACE(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.wx_str());
             }
             else // no namespaces in ancestor
             {
@@ -865,18 +870,20 @@ void TokensTree::RecalcData()
                 {
                     Token* ancestorToken = at(*it);
                     // only classes take part in inheritance
-                    if (ancestorToken && ancestorToken != token && (ancestorToken->m_TokenKind == tkClass || ancestorToken->m_TokenKind == tkEnum))// && !ancestorToken->m_IsTypedef)
+                    if (   ancestorToken
+                        && (ancestorToken != token)
+                        && (   (ancestorToken->m_TokenKind == tkClass)
+                            || (ancestorToken->m_TokenKind == tkEnum)
+                            || (ancestorToken->m_TokenKind == tkTypedef) ) ) // && !ancestorToken->m_IsTypedef)
                     {
                         token->m_Ancestors.insert(*it);
                         ancestorToken->m_Descendants.insert(i);
-#if TOKEN_DEBUG_OUTPUT
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.c_str()));
-#endif
+                        TRACE(_T("RecalcData() :  + '%s'"), ancestorToken->m_Name.wx_str());
                     }
                 }
 #if TOKEN_DEBUG_OUTPUT
                 if (result.empty())
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.c_str()));
+                    TRACE(_T("RecalcData() :  ! '%s' (unresolved)"), ancestor.wx_str());
 #endif
             }
         }
@@ -885,9 +892,7 @@ void TokensTree::RecalcData()
 
         if (!token->m_IsLocal) // global symbols are linked once
         {
-#if TOKEN_DEBUG_OUTPUT
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.c_str(), token->m_Name.c_str()));
-#endif
+            TRACE(_T("RecalcData() : Removing ancestor string from %s"), token->m_Name.wx_str(), token->m_Name.wx_str());
             token->m_AncestorsString.Clear();
         }
     }
@@ -920,14 +925,12 @@ void TokensTree::RecalcData()
 
 #if TOKEN_DEBUG_OUTPUT
         // debug loop
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() : Ancestors for %s:"),token->m_Name.c_str()));
+        TRACE(_T("RecalcData() : Ancestors for %s:"),token->m_Name.wx_str());
         for (TokenIdxSet::iterator it = token->m_Ancestors.begin(); it != token->m_Ancestors.end(); it++)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcData() :  + %s"), at(*it)->m_Name.c_str()));
+            TRACE(_T("RecalcData() :  + %s"), at(*it)->m_Name.wx_str());
 #endif
     }
-#if TOKEN_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(_T("RecalcData() : Full inheritance calculated."));
-#endif
+    TRACE(_T("RecalcData() : Full inheritance calculated."));
 }
 
 // caches the inheritance info for each token (recursive function)
@@ -945,9 +948,8 @@ void TokensTree::RecalcFullInheritance(int parentIdx, TokenIdxSet& result)
     // only classes take part in inheritance
     if (!(ancestor->m_TokenKind & (tkClass | tkTypedef)))
         return;
-#if TOKEN_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("RecalcFullInheritance() : Anc: '%s'"), ancestor->m_Name.c_str()));
-#endif
+
+    TRACE(_T("RecalcFullInheritance() : Anc: '%s'"), ancestor->m_Name.wx_str());
 
     // for all its ancestors
     for (TokenIdxSet::iterator it = ancestor->m_Ancestors.begin(); it != ancestor->m_Ancestors.end(); it++)
@@ -1019,8 +1021,9 @@ void TokensTree::MarkFileTokensAsLocal(size_t file, bool local, void* userData)
 size_t TokensTree::ReserveFileForParsing(const wxString& filename,bool preliminary)
 {
     size_t index = GetFileIndex(filename);
-    if(m_FilesToBeReparsed.count(index) &&
-       (!m_FilesStatus.count(index) || m_FilesStatus[index]==fpsDone))
+    if (   m_FilesToBeReparsed.count(index)
+	    && (  !m_FilesStatus.count(index)
+		    || m_FilesStatus[index]==fpsDone) )
     {
         RemoveFile(filename);
         m_FilesToBeReparsed.erase(index);

@@ -65,7 +65,7 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionGradientColour"), EnvironmentSettingsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnAuiInactiveCaptionTextColour"), EnvironmentSettingsDlg::OnChooseColour)
-    EVT_CHECKBOX(XRCID("chkUseIPC"), EnvironmentSettingsDlg::OnUseIpcCheck) 
+    EVT_CHECKBOX(XRCID("chkUseIPC"), EnvironmentSettingsDlg::OnUseIpcCheck)
     EVT_CHECKBOX(XRCID("chkDoPlace"), EnvironmentSettingsDlg::OnPlaceCheck)
     EVT_CHECKBOX(XRCID("chkPlaceHead"), EnvironmentSettingsDlg::OnHeadCheck)
     EVT_CHECKBOX(XRCID("chkAutoHideMessages"), EnvironmentSettingsDlg::OnAutoHide)
@@ -98,16 +98,16 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     // tab "General"
     XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/show_splash"), true));
     XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/single_instance"), true));
-#ifdef __WXMSW__ 
-    static_cast<wxStaticBoxSizer*>(XRCCTRL(*this, "chkUseIPC", wxCheckBox)->GetContainingSizer())->GetStaticBox()->SetLabel(_("Dynamic Data Exchange (needs application restart to take effect)")); 
-#endif 
-    bool useIpc = cfg->ReadBool(_T("/environment/use_ipc"), true); 
-    XRCCTRL(*this, "chkUseIPC", wxCheckBox)->SetValue(useIpc); 
-    XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/raise_via_ipc"), true)); 
-    XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(useIpc); 
- 
-    XRCCTRL(*this, "chkAssociations", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"), true));
-    XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
+#ifdef __WXMSW__
+    static_cast<wxStaticBoxSizer*>(XRCCTRL(*this, "chkUseIPC", wxCheckBox)->GetContainingSizer())->GetStaticBox()->SetLabel(_("Dynamic Data Exchange (needs application restart to take effect)"));
+#endif
+    bool useIpc = cfg->ReadBool(_T("/environment/use_ipc"), true);
+    XRCCTRL(*this, "chkUseIPC",      wxCheckBox)->SetValue(useIpc);
+    XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/raise_via_ipc"), true));
+    XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(useIpc);
+
+    XRCCTRL(*this, "chkAssociations",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"), true));
+    XRCCTRL(*this, "chkModifiedFiles",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"), true));
     XRCCTRL(*this, "chkInvalidTargets", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/ignore_invalid_targets"), true));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleTerm", wxTextCtrl);
@@ -329,16 +329,16 @@ void EnvironmentSettingsDlg::OnChooseColour(wxCommandEvent& event)
 void EnvironmentSettingsDlg::OnAutoHide(wxCommandEvent& event)
 {
     bool en = XRCCTRL(*this, "chkAutoHideMessages", wxCheckBox)->GetValue();
-    XRCCTRL(*this, "chkAutoShowMessagesOnSearch", wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoShowMessagesOnWarn", wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoShowMessagesOnErr", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnSearch",   wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnWarn",     wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkAutoShowMessagesOnErr",      wxCheckBox)->Enable(en);
 }
 
-void EnvironmentSettingsDlg::OnUseIpcCheck(wxCommandEvent& event) 
-{ 
-    XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(event.IsChecked()); 
-} 
- 
+void EnvironmentSettingsDlg::OnUseIpcCheck(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->Enable(event.IsChecked());
+}
+
 void EnvironmentSettingsDlg::OnPlaceCheck(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkPlaceHead", wxCheckBox)->Enable(event.IsChecked());
@@ -372,8 +372,8 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         // tab "General"
         cfg->Write(_T("/environment/show_splash"),           (bool) XRCCTRL(*this, "chkShowSplash", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/single_instance"),       (bool) XRCCTRL(*this, "chkSingleInstance", wxCheckBox)->GetValue());
-        cfg->Write(_T("/environment/use_ipc"),               (bool) XRCCTRL(*this, "chkUseIPC", wxCheckBox)->GetValue()); 
-        cfg->Write(_T("/environment/raise_via_ipc"),         (bool) XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->GetValue()); 
+        cfg->Write(_T("/environment/use_ipc"),               (bool) XRCCTRL(*this, "chkUseIPC", wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/raise_via_ipc"),         (bool) XRCCTRL(*this, "chkRaiseViaIPC", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_associations"),    (bool) XRCCTRL(*this, "chkAssociations", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_modified_files"),  (bool) XRCCTRL(*this, "chkModifiedFiles", wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/ignore_invalid_targets"),(bool) XRCCTRL(*this, "chkInvalidTargets", wxCheckBox)->GetValue());

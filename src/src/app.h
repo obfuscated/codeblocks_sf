@@ -48,8 +48,8 @@ class CodeBlocksApp : public wxApp
         void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
-        void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files 
-        void SetAutoFile(wxString& file); // method to set m_AutoFile 
+        void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
+        void SetAutoFile(wxString& file); // method to set m_AutoFile
 #ifdef __WXMAC__
         // in response of an open-document apple event
         virtual void         MacOpenFile(const wxString &fileName) ;
@@ -90,16 +90,16 @@ class CodeBlocksApp : public wxApp
         bool m_Clean;
         bool m_HasProject;
         bool m_HasWorkSpace;
-        bool m_NoSplash; // no splash screen
+        bool m_Splash; // splash screen enabled
         bool m_HasDebugLog; // display debug log
-        bool m_NoCrashHandler; // no crash handler
+        bool m_CrashHandler; // crash handler enabled
         bool m_SafeMode; // all plugins disabled
 
         void InitAssociations();
 
-        bool m_NoDDE; // no DDE
-#ifdef __WXMSW__ 
-        bool m_NoAssocs; // no associations check
+        bool m_DDE; // DDE enabled?
+#ifdef __WXMSW__
+        bool m_Assocs; // associations check enabled
         HINSTANCE m_ExceptionHandlerLib;
 #endif
         int m_BatchExitCode;
