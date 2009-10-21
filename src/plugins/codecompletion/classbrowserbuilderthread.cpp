@@ -716,7 +716,7 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
     }
 
     tree->SortChildren(parent);
-    tree->RemoveDoubles(parent);
+//    tree->RemoveDoubles(parent);
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added %d nodes"), count));
 #endif
