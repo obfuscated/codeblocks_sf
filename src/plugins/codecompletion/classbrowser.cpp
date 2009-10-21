@@ -48,6 +48,7 @@ int idCBViewModeFlat = wxNewId();
 int idCBViewModeStructured = wxNewId();
 int idMenuForceReparse = wxNewId();
 int idMenuDebugSmartSense = wxNewId();
+int idCBNoSort = wxNewId();
 int idCBSortByAlpabet = wxNewId();
 int idCBSortByKind = wxNewId();
 int idCBSortByScope = wxNewId();
@@ -74,6 +75,7 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBExpandNS, ClassBrowser::OnCBExpandNS)
     EVT_MENU(idCBViewModeFlat, ClassBrowser::OnCBViewMode)
     EVT_MENU(idMenuDebugSmartSense, ClassBrowser::OnDebugSmartSense)
+    EVT_MENU(idCBNoSort, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByAlpabet, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByKind, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByScope, ClassBrowser::OnSetSortType)
@@ -100,8 +102,18 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     if (platform::windows)
         m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
-    m_Tree = XRCCTRL(*this, "treeAll", wxTreeCtrl);
-    m_TreeBottom = XRCCTRL(*this, "treeMembers", wxTreeCtrl);
+
+    wxTreeCtrl* tmp = XRCCTRL(*this, "treeAll", CBTreeCtrl);
+    wxSplitterWindow* winTmp = (wxSplitterWindow*)tmp->GetParent();
+
+    m_Tree = new CBTreeCtrl(tmp->GetParent(), tmp->GetId(), tmp->GetPosition(), tmp->GetSize(), tmp->GetWindowStyleFlag());
+    winTmp->ReplaceWindow(tmp, m_Tree);
+    delete tmp;
+
+    tmp = XRCCTRL(*this, "treeMembers", CBTreeCtrl);
+    m_TreeBottom = new CBTreeCtrl(tmp->GetParent(), tmp->GetId(), tmp->GetPosition(), tmp->GetSize(), tmp->GetWindowStyleFlag());
+    winTmp->ReplaceWindow(tmp, m_TreeBottom);
+    delete tmp;
 
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
@@ -259,6 +271,7 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
     }
 
     menu->AppendSeparator();
+    menu->AppendCheckItem(idCBNoSort, _("Do not sort"));
     menu->AppendCheckItem(idCBSortByAlpabet, _("Sort alphabetically"));
     menu->AppendCheckItem(idCBSortByKind, _("Sort by kind"));
     menu->AppendCheckItem(idCBSortByScope, _("Sort by access"));
@@ -273,8 +286,11 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt
             menu->Check(idCBSortByKind, true);
             break;
         case bstScope:
-        default:
             menu->Check(idCBSortByScope, true);
+            break;
+        case bstNone:
+        default:
+            menu->Check(idCBNoSort, true);
             break;
     }
 
@@ -565,7 +581,8 @@ void ClassBrowser::OnSetSortType(wxCommandEvent& event)
     BrowserSortType bst;
     if (event.GetId() == idCBSortByAlpabet) bst = bstAlphabet;
     else if (event.GetId() == idCBSortByKind) bst = bstKind;
-    else bst = bstScope;
+    else if (event.GetId() == idCBSortByScope) bst = bstScope;
+    else bst = bstNone;
 
     if (m_pParser)
     {

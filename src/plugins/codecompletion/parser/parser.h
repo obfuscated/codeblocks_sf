@@ -92,7 +92,8 @@ enum BrowserSortType
 {
     bstAlphabet = 0,
     bstKind,
-    bstScope
+    bstScope,
+    bstNone
 };
 
 struct BrowserOptions

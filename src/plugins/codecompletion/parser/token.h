@@ -53,14 +53,15 @@ enum TokenScope
 
 enum TokenKind
 {
-    tkClass         = 0x0001,
-    tkNamespace     = 0x0002,
-    tkTypedef       = 0x0004, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
-    tkConstructor   = 0x0008,
-    tkDestructor    = 0x0010,
-    tkFunction      = 0x0020,
-    tkVariable      = 0x0040,
-    tkEnum          = 0x0080,
+    // changed order to reflect the priority
+    tkNamespace     = 0x0001,
+    tkClass         = 0x0002,
+    tkEnum          = 0x0004,
+    tkTypedef       = 0x0008, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
+    tkConstructor   = 0x0010,
+    tkDestructor    = 0x0020,
+    tkFunction      = 0x0040,
+    tkVariable      = 0x0080,
     tkEnumerator    = 0x0100,
     tkPreprocessor  = 0x0200,
 

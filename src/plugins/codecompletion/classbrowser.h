@@ -66,8 +66,8 @@ class ClassBrowser : public wxPanel
         void OnTreeItemCollapsing(wxTreeEvent& event);
 
         NativeParser* m_NativeParser;
-        wxTreeCtrl* m_Tree;
-        wxTreeCtrl* m_TreeBottom;
+        CBTreeCtrl* m_Tree;
+        CBTreeCtrl* m_TreeBottom;
         wxComboBox* m_Search;
         wxTreeCtrl* m_TreeForPopupMenu;
         Parser* m_pParser;
