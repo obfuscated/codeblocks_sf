@@ -136,41 +136,38 @@ wxString Token::GetParentName()
 wxString Token::DisplayName() const
 {
     wxString result;
-    if (m_TokenKind == tkClass)
-    {
-        result << _T("class ") << m_Name << _T(" {...}");
-        return result;
-    }
+    if      (m_TokenKind == tkClass)
+        return result << _T("class ")     << m_Name << _T(" {...}");
     else if (m_TokenKind == tkNamespace)
-    {
-        result << _T("namespace ") << m_Name << _T(" {...}");
-        return result;
-    }
+        return result << _T("namespace ") << m_Name << _T(" {...}");
     else if (m_TokenKind == tkEnum)
-    {
-        return result << _T("enum ") << m_Name << _T(" {...}");
-    }
+        return result << _T("enum ")      << m_Name << _T(" {...}");
     else if (m_TokenKind == tkTypedef)
     {
-        result << _T("typedef") ;
+        result << _T("typedef");
+
         if (!m_Type.IsEmpty())
             result << _T(" ") << m_Type;
-        result << _T(" ") << m_Name;
-        return result;
+
+        if (result.find('*', true) != wxNOT_FOUND)
+        {
+            result.RemoveLast();
+            return result << m_Name << _T(")") <<  m_Args;
+        }
+        return result << _T(" ") << m_Name;
     }
     else if (m_TokenKind == tkPreprocessor)
     {
         result << _T("#define ") << m_Name << m_Args;
-        if(!m_Type.IsEmpty())
-            result << _T(" ") << m_Type;
-        return result;
-    }
-    else
-    {
         if (!m_Type.IsEmpty())
-            result << m_Type << _T(" ");
-        return result << GetNamespace() << m_Name << m_Args;
+            return result << _T(" ") << m_Type;
     }
+
+    // else
+    if (!m_Type.IsEmpty())
+        result << m_Type << _T(" ");
+
+    return result << GetNamespace() << m_Name << m_Args;
 }
 
 Token* Token::GetParentToken()

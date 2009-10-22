@@ -57,7 +57,7 @@ Tokenizer::Tokenizer(const wxString& filename)
     m_PeekNestLevel(0),
     m_IsOK(false),
     m_IsOperator(false),
-    m_LastWasPreprocessor(false),
+    m_IsPreprocessor(false),
     m_SkipUnwantedTokens(true),
     m_pLoader(0)
 {
@@ -137,7 +137,7 @@ void Tokenizer::BaseInit()
     m_PeekNestLevel       = 0;
     m_IsOK                = false;
     m_IsOperator          = false;
-    m_LastWasPreprocessor = false;
+    m_IsPreprocessor      = false;
     m_LastPreprocessor.Clear();
     m_Buffer.Clear();
 }
@@ -211,8 +211,10 @@ bool Tokenizer::ReadFile()
 bool Tokenizer::SkipWhiteSpace()
 {
     // skip spaces, tabs, etc.
-    while (CurrentChar() <= _T(' ') && MoveToNextChar()) // don't check EOF when MoveToNextChar already does, also replace isspace() which calls msvcrt.dll
-        ;                                                // with a dirty hack: CurrentChar() <= ' ' is "good enough" here
+    // don't check EOF when MoveToNextChar already does, also replace isspace() which calls msvcrt.dll
+    // with a dirty hack: CurrentChar() <= ' ' is "good enough" here
+    while (CurrentChar() <= _T(' ') && MoveToNextChar())
+        ;
 
     if (IsEOF())
         return false;
@@ -220,6 +222,9 @@ bool Tokenizer::SkipWhiteSpace()
     return true;
 }
 
+// only be called when we are in a C-string,
+// To check whether the current charactor is the real end of C-string
+// See SkipToStringEnd() for more details
 bool Tokenizer::IsEscapedChar()
 {
     // Easy: If previous char is not a backslash, too than it's surely escape'd
@@ -242,12 +247,28 @@ bool Tokenizer::IsEscapedChar()
     return false;
 }
 
+// expect we are not in a C-string
 bool Tokenizer::SkipToChar(const wxChar& ch)
 {
     // skip everything until we find ch
+
+    while (CurrentChar() != ch && MoveToNextChar())  // don't check EOF when MoveToNextChar already does
+        ;
+
+    if (IsEOF())
+        return false;
+
+    return true;
+}
+
+//  For example: X"ABCDEFG\"HIJKLMN"Y
+//  We are now at A, and would skip to Y
+//  The double quote before H is a "C-escaped-character", We shouldn't quite from that
+bool Tokenizer::SkipToStringEnd(const wxChar& ch)
+{
     while(true)
     {
-        while (CurrentChar() != ch && MoveToNextChar())  // don't check EOF when MoveToNextChar already does
+        while (CurrentChar() != ch && MoveToNextChar()) // don't check EOF when MoveToNextChar already does
             ;
 
         if (IsEOF())
@@ -260,57 +281,59 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
     return true;
 }
 
+// return true if we really skip a string, that means m_TokenIndex has changed.
+bool Tokenizer::SkipString()
+{
+    if (CurrentChar() == '"' || CurrentChar() == '\'')
+    {
+        // this is the case that match is inside a string!
+        wxChar ch = CurrentChar();
+        MoveToNextChar();
+        SkipToStringEnd(ch);
+        MoveToNextChar();
+        return true;
+    }
+
+    return false;
+}
+
+// expect we are not in a C-string.
 bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
 {
-    // skip everything until we find any one of chars
-    while (1)
+    while (NotEOF() && !CharInString(CurrentChar(), chars))
     {
-        while (NotEOF() && !CharInString(CurrentChar(), chars))
+        MoveToNextChar();
+
+        while(SkipString()||SkipComment())
+            ;
+
+        // use 'while' here to cater for consecutive blocks to skip (e.g. sometemplate<foo>(bar)
+        // must skip <foo> and immediately after (bar))
+        // because if we don't, the next block won't be skipped ((bar) in the example) leading to weird
+        // parsing results
+        bool done = false;
+        while (supportNesting && !done)
         {
-            if (CurrentChar() == '"' || CurrentChar() == '\'')
+            switch (CurrentChar())
             {
-                // this is the case that match is inside a string!
-                wxChar ch = CurrentChar();
-                MoveToNextChar();
-                SkipToChar(ch);
-            }
-            MoveToNextChar();
-
-            // make sure we skip comments
-            if (CurrentChar() == '/')
-                SkipComment(); // this will decide if it is a comment
-
-            // use 'while' here to cater for consecutive blocks to skip (e.g. sometemplate<foo>(bar)
-            // must skip <foo> and immediately after (bar))
-            // because if we don't, the next block won't be skipped ((bar) in the example) leading to weird
-            // parsing results
-            bool done = false;
-            while (supportNesting && !done)
-            {
-                switch (CurrentChar())
-                {
-                    case '{': SkipBlock('{'); break;
-                    case '(': SkipBlock('('); break;
-                    case '[': SkipBlock('['); break;
-                    case '<': // don't skip if << operator
-                        if (NextChar() == '<')
-                            MoveToNextChar(2); // skip it and also the next '<' or the next '<' leads to a SkipBlock('<');
-                        else
-                            SkipBlock('<');
-                        break;
-                    default: done = true; break;
-                }
+                case '{': SkipBlock('{'); break;
+                case '(': SkipBlock('('); break;
+                case '[': SkipBlock('['); break;
+                case '<': // don't skip if << operator
+                    if (NextChar() == '<')
+                        MoveToNextChar(2); // skip it and also the next '<' or the next '<' leads to a SkipBlock('<');
+                    else
+                        SkipBlock('<');
+                    break;
+                default: done = true; break;
             }
         }
 
-        if (IsEscapedChar()) break;
-
-        // if we are at buffer-end MoveToNextChar returns false, but does not change the token-index,
-        // break to avoid endless loops
-        if(!MoveToNextChar()) break;
     }
+
     if (IsEOF())
         return false;
+
     return true;
 }
 
@@ -378,128 +401,141 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
     }
 
     MoveToNextChar();
-    int count = 1; // counter for nested blocks (xxx())
+    int nestLevel = 1; // counter for nested blocks (xxx())
     while (NotEOF())
     {
-        bool noMove = false;
-        if (CurrentChar() == '/')
-            SkipComment(); // this will decide if it is a comment
 
-        if (CurrentChar() == '"' || CurrentChar() == '\'')
-        {
-            // this is the case that match is inside a string!
-            wxChar ch = CurrentChar();
-            MoveToNextChar();
-            SkipToChar(ch);
-            MoveToNextChar();
-            // don't move to next char below if concatenating strings (e.g. printf("" ""))
-            if (CurrentChar() == '"' || CurrentChar() == '\'')
-                noMove = true;
-        }
+        while(SkipString() || SkipComment())
+            ;
+
         if (CurrentChar() == ch)
-            ++count;
+            ++nestLevel;
         else if (CurrentChar() == match)
-            --count;
-        if (!noMove)
-            MoveToNextChar();
-        if (count == 0)
+            --nestLevel;
+
+        MoveToNextChar();
+
+        if (nestLevel == 0)
             break;
     }
+
     if (IsEOF())
         return false;
     return true;
 }
 
-bool Tokenizer::SkipComment(bool skipWhiteAtEnd) // = true
+// if we really move forward, return true, which means we have the new m_TokenIndex
+// if we stay here, return false
+bool Tokenizer::SkipComment(bool skipEndWhite)
 {
-    // C/C++ style comments
-    bool is_comment = CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*');
-    if (!is_comment)
-        return true;
+    bool cstyle;            // C or C++ style comments
 
-    bool cstyle = NextChar() == '*';
-    MoveToNextChar(2);
-    while (1)
+    //check the comment prompt
+    if (CurrentChar() == '/')
     {
-        if (!cstyle)
+        if      (NextChar() == '*')
+            cstyle = true;
+        else if (NextChar() == '/')
+            cstyle = false;
+        else
+            return false; // Not a comment, return false;
+    }
+    else
+        return false;     // Not a comment, return false;
+
+    MoveToNextChar(2);    // Skip the comment prompt
+
+
+    // Here, we are in the comment body
+    while(true)
+    {
+        if (cstyle)      // C style comment
         {
-            if (!SkipToEOL(false, true))
-                return false;
+            SkipToChar('/');
+            if (PreviousChar() == '*') // end of a C style comment
+            {
+                MoveToNextChar();
+                break;
+            }
+            if(!MoveToNextChar())
+                break;
+        }
+        else             // C++ style comment
+        {
+            SkipToEOL(false, true); // nestBrace = false, skipComment = true
             MoveToNextChar();
             break;
         }
-        else
-        {
-            if (SkipToChar('/'))
-            {
-                if (PreviousChar() == '*')
-                {
-                    MoveToNextChar();
-                    break;
-                }
-                MoveToNextChar();
-            }
-            else
-                return false;
-        }
     }
+
     if (IsEOF())
         return false;
-    if (skipWhiteAtEnd && !SkipWhiteSpace())
-        return false;
-    return CurrentChar() == '/' ? SkipComment() : true; // handle chained comments
+
+    if (skipEndWhite)
+    {
+        if (!SkipWhiteSpace())
+            return false;
+        SkipComment();
+        return true;
+    }
+
+    return true;
 }
 
 bool Tokenizer::SkipUnwanted()
 {
-    while (CurrentChar() == '#' ||
-            (!m_IsOperator && CurrentChar() == '=') ||
-            (!m_IsOperator && CurrentChar() == '[') ||
-            CurrentChar() == '?' ||
-            (CurrentChar() == '/' && (NextChar() == '/' || NextChar() == '*') ))
+    wxChar current = CurrentChar();
+    wxChar next    = NextChar();
+
+    // always expect there is comment follows.
+    // So skip chained comments and spaces
+    SkipComment();
+
+    while (    current == '#'
+            || (!m_IsOperator && current == '=')
+            || (!m_IsOperator && current == '[')
+            || current == '?')
     {
-        bool skipPreprocessor = false; // used for #include
-        while (m_Buffer.Mid(m_TokenIndex, 2) == _T("//") ||
-                m_Buffer.Mid(m_TokenIndex, 2) == _T("/*"))
-        {
-            // C/C++ style comments
-            SkipComment();
-            if (IsEOF())
-                return false;
-            if (!SkipWhiteSpace())
-                return false;
-        }
+        bool earlyExit = false; // used for some C preprocessor, break from whil loop
 
         while (CurrentChar() == '#')
         {
             // preprocessor directives
-            // we only care for #include and #define, for now
+            // we only care for # include and # define, for now
             unsigned int backupIdx = m_TokenIndex;
             MoveToNextChar();
             SkipWhiteSpace();
-            if ((CurrentChar() == 'i' && NextChar() == 'n') || // in(clude)
-                (CurrentChar() == 'i' && NextChar() == 'f') || // if(|def|ndef)
-                (CurrentChar() == 'e' && NextChar() == 'l') || // el(se|if)
-                (CurrentChar() == 'e' && NextChar() == 'n') || // en(dif)
-                (m_TokenizerOptions.wantPreprocessor && CurrentChar() == 'd' && NextChar() == 'e')) // de(fine)
+
+            current = CurrentChar();
+            next    = NextChar();
+
+            if (   (current == 'i' && next == 'n')  // in(clude)
+                || (current == 'i' && next == 'f')  // if(|def|ndef)
+                || (current == 'e' && next == 'l')  // el(se|if)
+                || (current == 'e' && next == 'n')  // en(dif)
+                || (  m_TokenizerOptions.wantPreprocessor// de(fine)
+                      && CurrentChar() == 'd'
+                      && NextChar() == 'e'))
             {
-                // ok, we have something like #in(clude)
-                m_LastWasPreprocessor = true;
-                m_LastPreprocessor.Clear();
-                m_TokenIndex = backupIdx; // keep #
-                skipPreprocessor = true;
+                // ok, we have these C proprocessor to deal
+                m_IsPreprocessor = true;
+                m_TokenIndex = backupIdx; // keep #, revert the TokenIndex
+                earlyExit = true;
                 break;
             }
             else
             {
-                // skip the rest for now...
+                // skip the rest for now...  like: #pragma XXXXX
                 SkipToEOL(false);
                 if (!SkipWhiteSpace())
                     return false;
             }
-            if (skipPreprocessor)
+            if (earlyExit) // we want to break loop now!!
                 break;
         }
+
+        if (earlyExit)
+            break;
 
         while (CurrentChar() == '[')
         {
@@ -525,8 +561,14 @@ bool Tokenizer::SkipUnwanted()
             if (!SkipToOneOfChars(_T(";}")))
                 return false;
         }
-        if (skipPreprocessor)
-            break;
+
+        if (!SkipWhiteSpace())
+            return false;
+
+        SkipComment();     // skip chained comments and spaces
+
+        current = CurrentChar();
+        next    = NextChar();
     }
     return true;
 }
@@ -549,7 +591,7 @@ wxString Tokenizer::GetToken()
 
     m_PeekAvailable = false;
 
-    return ThisOrReplacement(m_Token);
+    return m_Token;
 }
 
 wxString Tokenizer::PeekToken()
@@ -598,10 +640,11 @@ wxString Tokenizer::DoGetToken()
     if (!m_SkipUnwantedTokens)
         SkipComment();
 
-    int start = m_TokenIndex;
-    wxString str;
-    wxChar c = CurrentChar();
+    int  start       = m_TokenIndex;
+    bool needReplace = false;
 
+    wxString str;
+    wxChar   c = CurrentChar();
     if (c == '_' || wxIsalpha(c))
     {
         // keywords, identifiers, etc.
@@ -614,6 +657,7 @@ wxString Tokenizer::DoGetToken()
         if (IsEOF())
             return wxEmptyString;
 
+        needReplace = true;
         str = m_Buffer.Mid(start, m_TokenIndex - start);
         m_IsOperator = str.IsSameAs(TokenizerConsts::operator_str);
     }
@@ -638,16 +682,8 @@ wxString Tokenizer::DoGetToken()
     }
     else if ( (c == '"') || (c == '\'') )
     {
-        // string, char, etc.
-        wxChar match = c;
-
-        MoveToNextChar();  // skip starting ' or "
-
-        if (!SkipToChar(match))
-            return wxEmptyString;
-
-        MoveToNextChar(); // skip ending ' or "
-
+        SkipString();
+        //Now, we are after the end of the C-string, so return the whole string as a token.
         str = m_Buffer.Mid(start, m_TokenIndex - start);
     }
     else if (c == ':')
@@ -687,23 +723,9 @@ wxString Tokenizer::DoGetToken()
         MoveToNextChar();
     }
 
-    if (    m_LastWasPreprocessor
-        && !str.IsSameAs(_T("#"))
-        && !m_LastPreprocessor.IsSameAs(_T("#")) )
-    {
-        if (!m_LastPreprocessor.IsSameAs(TokenizerConsts::include_str))
-        {
-            // except for #include and #if[[n]def], all other preprocessor directives need only
-            // one word exactly after the directive, e.g. #define THIS_WORD
-            SkipToEOL();
-        }
-        m_LastPreprocessor.Clear();
-    }
 
-    if (m_LastWasPreprocessor)
-        m_LastPreprocessor << str;
-
-    m_LastWasPreprocessor = false;
+    if (needReplace)
+        return MacroReplace(str);
 
     return str;
 }
@@ -792,3 +814,69 @@ wxString Tokenizer::FixArgument(wxString src)
 
     return dst;
 }
+
+/*
+  Just do the macro replace like below:
+  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_D)"), _T("namespace std {"),       true);
+  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_P)"), _T("namespace std {"),       true);
+  m_Buffer.Replace(_T("_GLIBCXX_END_NESTED_NAMESPACE"),                        _T("}"),                     true);
+  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),                         _T("namespace tr1 {"),       true);
+  // The following must be before replacing "_GLIBCXX_END_NAMESPACE"!!!
+  m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE_TR1"),                           _T("}"),                     true);
+  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(__gnu_cxx)"),                  _T("namespace __gnu_cxx {"), true);
+  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(std)"),                        _T("namespace std {"),       true);
+  m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE"),                               _T("}"),                     true);
+*/
+wxString Tokenizer::MacroReplace(const wxString str)
+{
+   ConfigManagerContainer::StringToStringMap::const_iterator it = s_Replacements.find(str);
+
+    if (it != s_Replacements.end())
+    {
+        // match one!
+        wxString key   = it->first;
+        wxString value = it->second;
+        if (value[0]=='+' && CurrentChar()=='(')
+        {
+            unsigned int start = m_TokenIndex;
+            m_Buffer[start] = ' ';
+            bool fillSpace = false;
+            while (m_Buffer[start]!=')')
+            {
+                if (m_Buffer[start]==',')
+                    fillSpace = true;
+
+                if (fillSpace==true)
+                    m_Buffer[start]=' ';
+
+                start++;
+            }
+            m_Buffer[start] = '{';
+            return value.Remove(0,1);
+        }
+        else if (value[0] == '-')
+        {
+            unsigned int lenKey = key.Len();
+            value = value.Remove(0,1);
+            unsigned int lenValue = value.Len();
+
+            for (int i=1; i<=lenKey; i++)
+            {
+                if (i < lenValue)
+                    m_Buffer[m_TokenIndex-i] = value[lenValue-i];
+                else
+                    m_Buffer[m_TokenIndex-i] = ' ';
+            }
+
+            int firstSpace = value.First(' ');
+            // adjust m_TokenIndex
+            m_TokenIndex = m_TokenIndex - lenValue + firstSpace;
+
+            return value.Mid(0,firstSpace);
+        }
+        else
+            return value;
+    }
+    return str;
+}
+

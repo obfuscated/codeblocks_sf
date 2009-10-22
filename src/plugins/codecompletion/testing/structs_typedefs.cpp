@@ -6,7 +6,7 @@ struct _s
   float y;
 };
 typedef struct _s t_s;
-typedef _s (*t_ptr)(int a, int b);
+typedef _s (*t_ptr_s)(int a, int b);
 
 typedef struct _s_inner
 {

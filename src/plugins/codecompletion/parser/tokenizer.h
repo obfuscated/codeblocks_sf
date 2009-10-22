@@ -27,6 +27,11 @@ public:
     wxString PeekToken();
     void UngetToken();
 
+    void SetOperatorState(bool state)
+    {
+        m_IsOperator = state;
+    }
+
     void SetTokenizerOption(bool wantPreprocessor)
     {
       m_TokenizerOptions.wantPreprocessor = wantPreprocessor;
@@ -115,6 +120,8 @@ protected:
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
     bool SkipComment(bool skipWhiteAtEnd = true);
+    bool SkipString();
+    bool SkipToStringEnd(const wxChar& ch);
 
     bool MoveToNextChar(const unsigned int amount = 1)
     {
@@ -221,6 +228,8 @@ private:
         return str;
     };
 
+    wxString MacroReplace(const wxString str);
+
     TokenizerOptions m_TokenizerOptions;
     wxString         m_Filename;
     wxString         m_Buffer;
@@ -244,7 +253,7 @@ private:
 
     bool             m_IsOK;
     bool             m_IsOperator;
-    bool             m_LastWasPreprocessor;
+    bool             m_IsPreprocessor;
     wxString         m_LastPreprocessor;
     bool             m_SkipUnwantedTokens;
 

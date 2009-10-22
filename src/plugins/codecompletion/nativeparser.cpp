@@ -1837,7 +1837,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
                 do
                 {
-                    // types are searched as whole words, case-sensitive and only classes/namespaces
+                    // types are searched as whole words, case sensitive and only classes/namespaces
                     if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkTypedef | tkEnum, &temp_search_scope) != 0)
                         break;
                     if (!parent)

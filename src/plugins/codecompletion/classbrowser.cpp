@@ -184,9 +184,13 @@ void ClassBrowser::UpdateView()
             //m_ActiveFilename = ed->GetFilename().BeforeLast(_T('.'));
             // the above line is a bug (see https://developer.berlios.de/patch/index.php?func=detailpatch&patch_id=1559&group_id=5358)
             m_ActiveFilename = ed->GetFilename().AfterLast(wxFILE_SEP_PATH);
-            m_ActiveFilename = ed->GetFilename().BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + m_ActiveFilename.BeforeLast(_T('.'));
-
-            m_ActiveFilename.Append(_T('.'));
+            if (m_ActiveFilename.Find(_T('.')) != wxNOT_FOUND)
+            {
+                m_ActiveFilename = ed->GetFilename().BeforeLast(wxFILE_SEP_PATH) + wxFILE_SEP_PATH + m_ActiveFilename.BeforeLast(_T('.'));
+                m_ActiveFilename.Append(_T('.'));
+            }
+            else
+                m_ActiveFilename = ed->GetFilename();
         }
 
         BuildTree();
