@@ -41,50 +41,50 @@ BEGIN_EVENT_TABLE(FindDlg, wxDialog)
 END_EVENT_TABLE()
 
 FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, bool findInFilesOnly, bool findInFilesActive)
-	: FindReplaceBase(parent, initial, hasSelection),
-	m_Complete(!findInFilesOnly)
+    : FindReplaceBase(parent, initial, hasSelection),
+    m_Complete(!findInFilesOnly)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgFind"));
+    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgFind"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
-	// load last searches
-	wxArrayString previous;
-	cfg->Read(CONF_GROUP _T("/last"), &previous);
-	for (unsigned int i = 0; i < previous.GetCount(); ++i)
-	{
-		if (!previous[i].IsEmpty())
-		{
-			XRCCTRL(*this, "cmbFind1", wxComboBox)->Append(previous[i]);
-			XRCCTRL(*this, "cmbFind2", wxComboBox)->Append(previous[i]);
+    // load last searches
+    wxArrayString previous;
+    cfg->Read(CONF_GROUP _T("/last"), &previous);
+    for (unsigned int i = 0; i < previous.GetCount(); ++i)
+    {
+        if (!previous[i].IsEmpty())
+        {
+            XRCCTRL(*this, "cmbFind1", wxComboBox)->Append(previous[i]);
+            XRCCTRL(*this, "cmbFind2", wxComboBox)->Append(previous[i]);
         }
-	}
+    }
 
-	// find options
-	XRCCTRL(*this, "cmbFind1", wxComboBox)->SetValue(initial);
-	XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_word1"), false));
-	XRCCTRL(*this, "chkStartWord1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/start_word1"), false));
-	XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case1"), false));
-	XRCCTRL(*this, "chkRegEx1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex1"), false));
-	XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/auto_wrap_search"), true));
-	XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/findUsesSelectedText"), false));
+    // find options
+    XRCCTRL(*this, "cmbFind1", wxComboBox)->SetValue(initial);
+    XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_word1"), false));
+    XRCCTRL(*this, "chkStartWord1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/start_word1"), false));
+    XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case1"), false));
+    XRCCTRL(*this, "chkRegEx1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex1"), false));
+    XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/auto_wrap_search"), true));
+    XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/findUsesSelectedText"), false));
 
-	XRCCTRL(*this, "rbDirection", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/direction"), 1));
-	XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue()); // if regex, only forward searches
-	XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
-	XRCCTRL(*this, "rbScope1", wxRadioBox)->SetSelection(hasSelection);
-	//XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
+    XRCCTRL(*this, "rbDirection", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/direction"), 1));
+    XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue()); // if regex, only forward searches
+    XRCCTRL(*this, "rbOrigin", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/origin"), 0));
+    XRCCTRL(*this, "rbScope1", wxRadioBox)->SetSelection(hasSelection);
+    //XRCCTRL(*this, "rbScope1", wxRadioBox)->Enable(hasSelection);
 
-	// find in files options
-	XRCCTRL(*this, "cmbFind2", wxComboBox)->SetValue(initial);
-	XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_word2"), false));
-	XRCCTRL(*this, "chkStartWord2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/start_word2"), false));
-	XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case2"), false));
-	XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex2"), false));
-	XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/delete_old_searches2"), true));
-	XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/scope2"), 0));
+    // find in files options
+    XRCCTRL(*this, "cmbFind2", wxComboBox)->SetValue(initial);
+    XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_word2"), false));
+    XRCCTRL(*this, "chkStartWord2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/start_word2"), false));
+    XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case2"), false));
+    XRCCTRL(*this, "chkRegEx2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/regex2"), false));
+    XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/delete_old_searches2"), true));
+    XRCCTRL(*this, "rbScope2", wxRadioBox)->SetSelection(cfg->ReadInt(CONF_GROUP _T("/scope2"), 0));
     UpdateUI();
 
-	// find in files search path options
+    // find in files search path options
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (prj && g_LastUsedProject != prj)
     {
@@ -98,16 +98,16 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
     XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_recursive"), false));
     XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
 
-	if (!m_Complete)
-	{
+    if (!m_Complete)
+    {
         XRCCTRL(*this, "nbFind", wxNotebook)->DeletePage(0); // no active editor, so only find-in-files
         XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
-	}
-	else if (findInFilesActive)
-	{
-		XRCCTRL(*this, "nbFind", wxNotebook)->SetSelection(1); // Search->Find in Files was selected
-		XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
-	}
+    }
+    else if (findInFilesActive)
+    {
+        XRCCTRL(*this, "nbFind", wxNotebook)->SetSelection(1); // Search->Find in Files was selected
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+    }
 }
 
 FindDlg::~FindDlg()
@@ -119,12 +119,12 @@ FindDlg::~FindDlg()
     cfg->Write(CONF_GROUP _T("/search_recursive"), XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/search_hidden"), XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->GetValue());
 
-	// save last searches (up to 10)
+    // save last searches (up to 10)
     wxComboBox* combo;
-	if (IsFindInFiles())
+    if (IsFindInFiles())
         combo = XRCCTRL(*this, "cmbFind2", wxComboBox);
-	else
-		combo = XRCCTRL(*this, "cmbFind1", wxComboBox);
+    else
+        combo = XRCCTRL(*this, "cmbFind1", wxComboBox);
     wxArrayString previous;
     for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)
     {
@@ -140,8 +140,8 @@ FindDlg::~FindDlg()
 
     cfg->Write(CONF_GROUP _T("/last"), previous);
 
-	if (m_Complete)
-	{
+    if (m_Complete)
+    {
         // find options
         cfg->Write(CONF_GROUP _T("/match_word1"), XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->GetValue());
         cfg->Write(CONF_GROUP _T("/start_word1"), XRCCTRL(*this, "chkStartWord1", wxCheckBox)->GetValue());
@@ -152,20 +152,20 @@ FindDlg::~FindDlg()
 
         cfg->Write(CONF_GROUP _T("/direction"), XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection());
         cfg->Write(CONF_GROUP _T("/origin"), XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection());
-	}
+    }
 
-	// find in files options
-	cfg->Write(CONF_GROUP _T("/match_word2"), XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->GetValue());
-	cfg->Write(CONF_GROUP _T("/start_word2"), XRCCTRL(*this, "chkStartWord2", wxCheckBox)->GetValue());
-	cfg->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
-	cfg->Write(CONF_GROUP _T("/regex2"), XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue());
-	cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
-	cfg->Write(CONF_GROUP _T("/scope2"), XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection());
+    // find in files options
+    cfg->Write(CONF_GROUP _T("/match_word2"), XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/start_word2"), XRCCTRL(*this, "chkStartWord2", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/match_case2"), XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/regex2"), XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
+    cfg->Write(CONF_GROUP _T("/scope2"), XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection());
 }
 
 wxString FindDlg::GetFindString() const
 {
-	if (IsFindInFiles())
+    if (IsFindInFiles())
         return XRCCTRL(*this, "cmbFind2", wxComboBox)->GetValue();
     else
         return XRCCTRL(*this, "cmbFind1", wxComboBox)->GetValue();
@@ -173,12 +173,12 @@ wxString FindDlg::GetFindString() const
 
 bool FindDlg::IsFindInFiles() const
 {
-	return !m_Complete || XRCCTRL(*this, "nbFind", wxNotebook)->GetSelection() == 1;
+    return !m_Complete || XRCCTRL(*this, "nbFind", wxNotebook)->GetSelection() == 1;
 }
 
 bool FindDlg::GetDeleteOldSearches() const
 {
-	if (IsFindInFiles())
+    if (IsFindInFiles())
         return XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue();
     else
         return true;  // checkbox doesn't exist in Find dialog
@@ -186,54 +186,54 @@ bool FindDlg::GetDeleteOldSearches() const
 
 bool FindDlg::GetMatchWord() const
 {
-	if (IsFindInFiles())
-		return XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->GetValue();
-	else
-		return XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->GetValue();
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "chkWholeWord2", wxCheckBox)->GetValue();
+    else
+        return XRCCTRL(*this, "chkWholeWord1", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetStartWord() const
 {
-	if (IsFindInFiles())
-		return XRCCTRL(*this, "chkStartWord2", wxCheckBox)->GetValue();
-	else
-		return XRCCTRL(*this, "chkStartWord1", wxCheckBox)->GetValue();
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "chkStartWord2", wxCheckBox)->GetValue();
+    else
+        return XRCCTRL(*this, "chkStartWord1", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetMatchCase() const
 {
-	if (IsFindInFiles())
-		return XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue();
-	else
-		return XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->GetValue();
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "chkMatchCase2", wxCheckBox)->GetValue();
+    else
+        return XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetRegEx() const
 {
-	if (IsFindInFiles())
-		return XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue();
-	else
-		return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "chkRegEx2", wxCheckBox)->GetValue();
+    else
+        return XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue();
 }
 bool FindDlg::GetAutoWrapSearch() const
 {
-	if (IsFindInFiles())
-		return false; // not for search in files
-	else
-		return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
+    if (IsFindInFiles())
+        return false; // not for search in files
+    else
+        return XRCCTRL(*this, "chkAutoWrapSearch", wxCheckBox)->GetValue();
 }
 
 bool FindDlg::GetFindUsesSelectedText() const
 {
- 	if (IsFindInFiles())
-		return false;
-	else
-		return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
+     if (IsFindInFiles())
+        return false;
+    else
+        return XRCCTRL(*this, "chkFindUsesSelectedText", wxCheckBox)->GetValue();
 }
 
 int FindDlg::GetDirection() const
 {
-	if (IsFindInFiles())
+    if (IsFindInFiles())
         return 1;
     else
         return XRCCTRL(*this, "rbDirection", wxRadioBox)->GetSelection();
@@ -241,7 +241,7 @@ int FindDlg::GetDirection() const
 
 int FindDlg::GetOrigin() const
 {
-	if (IsFindInFiles())
+    if (IsFindInFiles())
         return 1;
     else
         return XRCCTRL(*this, "rbOrigin", wxRadioBox)->GetSelection();
@@ -249,10 +249,10 @@ int FindDlg::GetOrigin() const
 
 int FindDlg::GetScope() const
 {
-	if (IsFindInFiles())
-		return XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection();
-	else
-		return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
+    if (IsFindInFiles())
+        return XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection();
+    else
+        return XRCCTRL(*this, "rbScope1", wxRadioBox)->GetSelection();
 }
 
 bool FindDlg::GetRecursive() const
@@ -277,7 +277,7 @@ wxString FindDlg::GetSearchMask() const
 
 void FindDlg::UpdateUI()
 {
-    bool on = XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection() == 2; // find in search path
+    bool on = XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection() == 3; // find in search path
     XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->Enable(on);
     XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->Enable(on);
     XRCCTRL(*this, "btnBrowsePath", wxButton)->Enable(on);
@@ -310,7 +310,7 @@ void FindDlg::OnFindChange(wxNotebookEvent& event)
 
 void FindDlg::OnRegEx(wxCommandEvent& event)
 {
-	if (m_Complete)
+    if (m_Complete)
         XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
 }
 

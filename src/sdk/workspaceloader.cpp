@@ -174,6 +174,13 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     return true;
 }
 
+static wxString ExportFilename(const wxFileName &filename)
+{
+    wxString fn = filename.GetFullPath();
+    fn.Replace(_T("\\"), _T("/"), true);
+    return fn;
+}
+
 bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
 {
     const char* ROOT_TAG = "CodeBlocks_workspace_file";
@@ -198,7 +205,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
         fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
 
         TiXmlElement* node = static_cast<TiXmlElement*>(wksp->InsertEndChild(TiXmlElement("Project")));
-        node->SetAttribute("filename", cbU2C(fname.GetFullPath()));
+        node->SetAttribute("filename", cbU2C( ExportFilename(fname) ) );
         if (prj == Manager::Get()->GetProjectManager()->GetActiveProject())
             node->SetAttribute("active", 1);
 
@@ -211,7 +218,7 @@ bool WorkspaceLoader::Save(const wxString& title, const wxString& filename)
                 fname.Assign(prj->GetFilename());
                 fname.MakeRelativeTo(wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
                 TiXmlElement* dnode = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Depends")));
-                dnode->SetAttribute("filename", cbU2C(fname.GetFullPath()));
+                dnode->SetAttribute("filename", cbU2C( ExportFilename(fname) ) );
             }
         }
     }

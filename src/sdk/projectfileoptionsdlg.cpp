@@ -212,8 +212,12 @@ void ProjectFileOptionsDlg::FillGeneralProperties(const wxString& fileName)
     langCPP.ext.Add(_T("cc"));
     langCPP.ext.Add(_T("cxx"));
     langCPP.ext.Add(_T("cpp"));
+    langCPP.ext.Add(_T("c++"));
     langCPP.ext.Add(_T("h"));
+    langCPP.ext.Add(_T("hh"));
+    langCPP.ext.Add(_T("hxx"));
     langCPP.ext.Add(_T("hpp"));
+    langCPP.ext.Add(_T("h++"));
     langCPP.single_line_comment = _T("//");
     langCPP.multiple_line_comment[0] = _T("/*");
     langCPP.multiple_line_comment[1] = _T("*/");

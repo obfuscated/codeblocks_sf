@@ -1224,7 +1224,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->replaceText = dlg->GetReplaceString();
 
     m_LastFindReplaceData->findInFiles = dlg->IsFindInFiles();
-    if(!m_LastFindReplaceData->findInFiles)
+    if (!m_LastFindReplaceData->findInFiles)
     {
         //AutoWrapSearch does not exist in FindInFiles dialog
         m_LastFindReplaceData->autoWrapSearch = dlg->GetAutoWrapSearch();
@@ -1247,7 +1247,7 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->hiddenSearch = dlg->GetHidden();
     m_LastFindReplaceData->initialreplacing = false;
     m_LastFindReplaceData->NewSearch = true;
-    if(control)
+    if (control)
     {   // if editor : store the selection start/end
         // only use this in case of !findInFiles and scope==1 (search in selection)
         m_LastFindReplaceData->SearchInSelectionStart = control->GetSelectionStart();
@@ -1301,7 +1301,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         // that's the value they have [no selection : ssta=send=cpos])
         // only do this when it's a new search (when the search is continued (F3/Shift-F3)
         // there can be a selection, the last found match)
-        if(data->scope== 0 && data->NewSearch && (ssta != cpos || send != cpos))
+        if ((data->scope == 0) && data->NewSearch && (ssta != cpos || send != cpos))
         {
             ssta = cpos;
             send = cpos;
@@ -1333,7 +1333,7 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
         // selected text, if user has deslected since last, then change scope
         if (data->scope == 1 &&
             control->GetSelectionStart()==control->GetSelectionEnd())
-                data->scope = 0;
+                data->scope = 0; // global
 
         if (data->scope == 1) // selected text
         {
@@ -2004,9 +2004,9 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 
     wxRegEx re;
     #ifdef wxHAS_REGEX_ADVANCED
-    if(AdvRegex)
+    if (AdvRegex)
     {
-        if(data->matchCase)
+        if (data->matchCase)
             re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE);
         else
             re.Compile(data->findText,wxRE_ADVANCED|wxRE_NEWLINE|wxRE_ICASE);
@@ -2018,7 +2018,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     bool wrapAround = false;
     int StartPos = 0;
     int EndPos = control->GetLength();
-    if(data->scope == 1)
+    if (data->scope == 1) // selectd text
     {
         StartPos = data->SearchInSelectionStart;
         EndPos = data->SearchInSelectionEnd;
@@ -2074,7 +2074,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                      (!data->directionDown && data->start != EndPos)     )
             {
                 wxString msg;
-                if(!data->scope == 1)
+                if (!data->scope == 1) // selected text
                 {
                     if (data->directionDown)
                         msg = _("Text not found.\nSearch from the start of the document?");
@@ -2095,7 +2095,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
                 {
                     wrapAround = true; // signal the wrap-around
-                    if(!data->scope == 1)
+                    if (!data->scope == 1) // selected text
                     {
                         if (data->directionDown)
                         {
@@ -2108,7 +2108,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                             data->end = 0;
                         }
                     }
-                    else
+                    else // global
                     {
                         if (data->directionDown)
                         {
@@ -2162,7 +2162,17 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
     // let's make a list of all the files to search in
     wxArrayString filesList;
 
-    if (data->scope == 0) // find in project files
+    if (data->scope == 0) // find in open files
+    {
+        // fill the search list with the open files
+        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        {
+            cbEditor* ed = InternalGetBuiltinEditor(i);
+            if (ed)
+                filesList.Add(ed->GetFilename());
+        }
+    }
+    else if (data->scope == 1) // find in project files
     {
         // fill the search list with all the project files
         cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -2187,34 +2197,7 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             }
         }
     }
-    else if (data->scope == 1) // find in open files
-    {
-        // fill the search list with the open files
-        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
-        {
-            cbEditor* ed = InternalGetBuiltinEditor(i);
-            if (ed)
-                filesList.Add(ed->GetFilename());
-        }
-    }
-    else if (data->scope == 2) // find in custom search path and mask
-    {
-        // fill the search list with the files found under the search path
-        int flags = wxDIR_FILES |
-                    (data->recursiveSearch ? wxDIR_DIRS : 0) |
-                    (data->hiddenSearch ? wxDIR_HIDDEN : 0);
-        wxArrayString masks = GetArrayFromString(data->searchMask);
-        if (!masks.GetCount())
-            masks.Add(_T("*"));
-        unsigned int count = masks.GetCount();
-
-        for (unsigned int i = 0; i < count; ++i)
-        {
-            // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)
-            wxDir::GetAllFiles(data->searchPath, &filesList, masks[i], flags);
-        }
-    }
-    else if (data->scope == 3) // find in workspace
+    else if (data->scope == 2) // find in workspace
     {
         // loop over all the projects in the workspace (they are contained in the ProjectManager)
         const ProjectsArray* pProjects = Manager::Get()->GetProjectManager()->GetProjects();
@@ -2247,6 +2230,23 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
                 } // end for : idx : idxFile
             }
         } // end for : idx : idxProject
+    }
+    else if (data->scope == 3) // find in custom search path and mask
+    {
+        // fill the search list with the files found under the search path
+        int flags = wxDIR_FILES |
+                    (data->recursiveSearch ? wxDIR_DIRS : 0) |
+                    (data->hiddenSearch ? wxDIR_HIDDEN : 0);
+        wxArrayString masks = GetArrayFromString(data->searchMask);
+        if (!masks.GetCount())
+            masks.Add(_T("*"));
+        unsigned int count = masks.GetCount();
+
+        for (unsigned int i = 0; i < count; ++i)
+        {
+            // wxDir::GetAllFiles() does *not* clear the array, so it suits us just fine ;)
+            wxDir::GetAllFiles(data->searchPath, &filesList, masks[i], flags);
+        }
     }
 
     // if the list is empty, leave
