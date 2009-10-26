@@ -68,7 +68,7 @@
 									<cols>2</cols>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
-											<label>Drag Assistance Type:</label>
+											<label>Drag assistance type:</label>
 										</object>
 										<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
@@ -106,7 +106,7 @@
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
-											<label>Drag Parent Colour:</label>
+											<label>Drag parent colour:</label>
 										</object>
 										<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>

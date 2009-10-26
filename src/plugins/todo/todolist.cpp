@@ -96,7 +96,7 @@ void ToDoList::OnAttach()
     {
         LogManager* msgMan = Manager::Get()->GetLogManager();
         m_ListPageIndex = msgMan->SetLog(m_pListLog);
-        msgMan->Slot(m_ListPageIndex).title = _("To-Do");
+        msgMan->Slot(m_ListPageIndex).title = _("Todo");
 
         CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
         Manager::Get()->ProcessEvent(evt);
@@ -109,7 +109,7 @@ void ToDoList::OnAttach()
 
         CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
         evt.name = _T("TodoListPanev2.0.0");
-        evt.title = _("To-Do list");
+        evt.title = _("Todo list");
         evt.pWindow = m_pListLog->GetWindow();
         evt.dockSide = CodeBlocksDockEvent::dsFloating;
         evt.desiredSize.Set(352, 94);
@@ -164,12 +164,12 @@ void ToDoList::BuildMenu(wxMenuBar* menuBar)
         {
             if (items[i]->IsSeparator())
             {
-                view->InsertCheckItem(i, idViewTodo, _("To-Do list"), _("Toggle displaying the To-Do list"));
+                view->InsertCheckItem(i, idViewTodo, _("Todo list"), _("Toggle displaying the To-Do list"));
                 return;
             }
         }
         // not found, just append
-        view->AppendCheckItem(idViewTodo, _("To-Do list"), _("Toggle displaying the To-Do list"));
+        view->AppendCheckItem(idViewTodo, _("Todo list"), _("Toggle displaying the To-Do list"));
     }
 }
 
@@ -180,7 +180,7 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTr
     if (type == mtEditorManager)
     {
         menu->AppendSeparator();
-        menu->Append(idAddTodo, _("Add To-Do item..."), _("Add new To-Do item..."));
+        menu->Append(idAddTodo, _("Add Todo item..."), _("Add new Todo item..."));
     }
 }
 
@@ -394,7 +394,7 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
     wxString text = dlg.GetText();
     if (CmtType != tdctC)
     {
-        // make sure that multi-line notes, don't break the to-do
+        // make sure that multi-line notes, don't break the todo
         if (text.Replace(_T("\r\n"), _T("\\\r\n")) == 0)
             text.Replace(_T("\n"), _T("\\\n"));
         // now see if there were already a backslash before newline

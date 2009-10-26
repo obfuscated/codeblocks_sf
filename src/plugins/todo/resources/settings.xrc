@@ -6,14 +6,14 @@
             <orient>wxVERTICAL</orient>
             <object class="sizeritem">
                 <object class="wxCheckBox" name="chkAutoRefresh">
-                    <label>Auto-refresh To-Do list (NOT recommended for large projects)</label>
+                    <label>Auto-refresh Todo list (NOT recommended for large projects)</label>
                 </object>
                 <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
                 <border>8</border>
             </object>
             <object class="sizeritem">
                 <object class="wxCheckBox" name="chkMessagesPane">
-                    <label>Include the To-do list in the messages pane (will take place after restart)</label>
+                    <label>Include the Todo list in the messages pane (will take place after restart)</label>
                 </object>
                 <flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
                 <border>8</border>

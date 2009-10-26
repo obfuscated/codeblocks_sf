@@ -163,7 +163,7 @@ void ToDoListView::Parse()
             cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
             if (!prj)
                 return;
-            wxProgressDialog pd(_T("To-Do Plugin: Processing all files.."),
+            wxProgressDialog pd(_T("Todo Plugin: Processing all files.."),
                                 _T("Processing a big project may take large amount of time.\n\n"
                                    "Please be patient!\n"),
                                 prj->GetFilesCount(),

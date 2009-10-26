@@ -102,7 +102,7 @@
 												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="chkEncodingFindLatin2">
-														<label>try to detect latin-2 encodings (use with care: can break latin-1 detection)</label>
+														<label>Try to detect latin-2 encodings (use with care: can break latin-1 detection)</label>
 													</object>
 													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 												</object>
@@ -415,7 +415,7 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkHighlightOccurrencesCaseSensitive">
-																<label>Case-sensitive</label>
+																<label>Case sensitive</label>
 																<checked>1</checked>
 															</object>
 															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -433,7 +433,7 @@
 															<object class="wxBoxSizer">
 																<object class="sizeritem">
 																	<object class="wxStaticText" name="stHighlightColour">
-																		<label>Highlight Colour</label>
+																		<label>Highlight colour</label>
 																	</object>
 																	<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 																	<border>5</border>
@@ -516,7 +516,7 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Folding Style</label>
+										<label>Folding style</label>
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblIndicator">
@@ -540,7 +540,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkUnderlineFoldedLine">
-												<label>Underline Folded Line</label>
+												<label>Underline folded line</label>
 												<checked>1</checked>
 											</object>
 											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -628,7 +628,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkUseChangebar">
-												<label>Use Changebar</label>
+												<label>Use changebar</label>
 												<checked>1</checked>
 											</object>
 											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

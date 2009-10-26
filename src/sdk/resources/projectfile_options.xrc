@@ -34,7 +34,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT2">
-												<label>FileName (absolute) :</label>
+												<label>File name (absolute) :</label>
 											</object>
 											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
@@ -47,7 +47,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT3">
-												<label>FileName (relative) :</label>
+												<label>File name (relative) :</label>
 											</object>
 											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										</object>

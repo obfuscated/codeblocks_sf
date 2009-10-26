@@ -2564,7 +2564,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu->Append(idUpperCase, _("UPPERCASE"));
         menu->Append(idLowerCase, _("lowercase"));
         menu->AppendSeparator();
-        menu->Append(idSelectAll, _("Select All"));
+        menu->Append(idSelectAll, _("Select all"));
 
         bool hasSel = control->GetSelectionEnd() - control->GetSelectionStart() != 0;
 
@@ -2587,15 +2587,15 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
     {
         menu = new wxMenu;
         menu->Append(idBookmarksToggle, _("Toggle bookmark"));
-        menu->Append(idBookmarksPrevious, _("Previous bookmark"));
-        menu->Append(idBookmarksNext, _("Next bookmark"));
+        menu->Append(idBookmarksPrevious, _("Goto previous bookmark"));
+        menu->Append(idBookmarksNext, _("Goto next bookmark"));
     }
     else if(id == idFolding)
     {
         menu = new wxMenu;
         menu->Append(idFoldingFoldAll, _("Fold all"));
         menu->Append(idFoldingUnfoldAll, _("Unfold all"));
-        menu->Append(idFoldingToggleAll, _("Toggle all folds"));
+        menu->Append(idFoldingToggleAll, _("Toggle all"));
         menu->AppendSeparator();
         menu->Append(idFoldingFoldCurrent, _("Fold current block"));
         menu->Append(idFoldingUnfoldCurrent, _("Unfold current block"));

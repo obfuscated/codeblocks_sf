@@ -114,8 +114,8 @@ void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
         wxMenu* project = menuBar->GetMenu(idProject);
         project->AppendSeparator();
         project->Append(idMenuAutoVersioning, _("Autoversioning"), _("Manage your project version"));
-        project->Append(idMenuCommitChanges, _("Increment Version"), _("Increments and update the version info"));
-        project->Append(idMenuChangesLog, _("Changes Log"), _("View and edit the actual changes"));
+        project->Append(idMenuCommitChanges, _("Increment version"), _("Increments and update the version info"));
+        project->Append(idMenuChangesLog, _("Changes log"), _("View and edit the actual changes"));
     }
 }
 //}

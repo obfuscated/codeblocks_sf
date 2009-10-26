@@ -34,7 +34,7 @@ DirectoryParamsPanel::DirectoryParamsPanel(wxWindow* parent, int id, const wxPoi
 {
     // begin wxGlade: DirectoryParamsPanel::DirectoryParamsPanel
     m_pTxtSearchDirPath = new wxTextCtrl(this, idTxtSearchDirPath, wxEmptyString);
-    m_pBtnSelectDir = new wxButton(this, idBtnDirSelectClick, _("Select"));
+    m_pBtnSelectDir = new wxButton(this, idBtnDirSelectClick, _("..."));
     m_pChkSearchDirRecursively = new wxCheckBox(this, idChkSearchDirRecurse, _("Recurse"));
     m_pChkSearchDirHiddenFiles = new wxCheckBox(this, idChkSearchDirHidden, _("Hidden"));
     m_pTxtMask = new wxTextCtrl(this, idTxtSearchMask, wxT("*.*"));

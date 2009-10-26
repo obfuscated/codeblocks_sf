@@ -632,7 +632,7 @@ void MainFrame::CreateIDE()
     wxSize clientsize = GetClientSize();
 
     // Create CloseFullScreen Button, and hide it initially
-    m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close Fullscreen" ), wxDefaultPosition );
+    m_pCloseFullScreenBtn = new wxButton(this, idCloseFullScreen, _( "Close full screen" ), wxDefaultPosition );
     m_pCloseFullScreenBtn->Show( false );
 
     // project manager
@@ -4047,7 +4047,7 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
     ShowFullScreen( !IsFullScreen(), wxFULLSCREEN_NOTOOLBAR// | wxFULLSCREEN_NOSTATUSBAR
                     | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION );
 
-    // Create fullscreen-close button if we're in fullscreen
+    // Create full screen-close button if we're in full screen
     if( IsFullScreen() )
     {
         //

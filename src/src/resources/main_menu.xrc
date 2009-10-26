@@ -29,8 +29,8 @@
           <help>Create a new custom something :-)</help>
         </object>
         <object class="wxMenuItem" name="idFileNewUser">
-          <label>From user template...</label>
-          <help>Create a new project based on a previously saved user template</help>
+          <label>From template...</label>
+          <help>Create a new project based on a previously saved template</help>
         </object>
       </object>
       <object class="separator"/>
@@ -64,13 +64,13 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSave">
-        <label>&amp;Save</label>
+        <label>&amp;Save file</label>
         <bitmap>images\16x16\filesave.png</bitmap>
         <accel>Ctrl-S</accel>
         <help>Save the active file</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveAs">
-        <label>Save &amp;as...</label>
+        <label>Save file &amp;as...</label>
         <bitmap>images\16x16\filesaveas.png</bitmap>
         <help>Save the active file under a different name</help>
       </object>
@@ -90,8 +90,8 @@
         <help>Save active project under a different name</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectTemplate">
-        <label>Save project as user-template...</label>
-        <help>Keep this project as a user-template to base new projects on</help>
+        <label>Save project as template...</label>
+        <help>Keep this project as a template to base new projects on</help>
       </object>
       <object class="wxMenuItem" name="idFileSaveProjectAllProjects">
         <label>Save all projects</label>
@@ -235,7 +235,7 @@
           <help>Unfold all</help>
         </object>
         <object class="wxMenuItem" name="idEditToggleAllFolds">
-          <label>&amp;Toggle all folds</label>
+          <label>&amp;Toggle all</label>
           <accel>Shift-F12</accel>
           <help>Toggle all folds</help>
         </object>
@@ -453,11 +453,11 @@
         <help>Toggles the commentation of the selected block of code</help>
       </object>
       <object class="wxMenuItem" name="idEditStreamCommentSelected">
-        <label>Stream-Comme&amp;nt</label>
+        <label>Stream-comme&amp;nt</label>
         <help>Comments the selected code</help>
       </object>
       <object class="wxMenuItem" name="idEditBoxCommentSelected">
-        <label>Box-Comme&amp;nt</label>
+        <label>Box-comme&amp;nt</label>
         <help>Boxcomments the selected lines of code</help>
       </object>
       <object class="separator"/>
@@ -523,8 +523,8 @@
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idViewFullScreen">
-        <label>F&amp;ullScreen</label>
-        <help>Switch to FullScreen view</help>
+        <label>F&amp;ull screen</label>
+        <help>Switch to full screen view</help>
         <checkable>1</checkable>
         <enabled>1</enabled>
       </object>
@@ -534,7 +534,7 @@
         <help>Set focus on the active editor</help>
       </object>
       <object class="wxMenuItem" name="idViewSwitchTabs">
-        <label>S&amp;witch Tabs</label>
+        <label>S&amp;witch tabs</label>
         <accel>Ctrl+Tab</accel>
         <help>Switch between open editor tabs</help>
       </object>
@@ -548,7 +548,7 @@
         <help>Search for text</help>
       </object>
       <object class="wxMenuItem" name="idSearchFindInFiles">
-        <label>&amp;Find in Files...</label>
+        <label>&amp;Find in files...</label>
         <bitmap>images\16x16\findf.png</bitmap>
         <accel>Ctrl-Shift-F</accel>
         <help>Search for text</help>
@@ -573,7 +573,7 @@
         <help>Find and replace text</help>
       </object>
       <object class="wxMenuItem" name="idSearchReplaceInFiles">
-        <label>&amp;Replace in Files...</label>
+        <label>&amp;Replace in files...</label>
         <bitmap>images\16x16\searchreplacef.png</bitmap>
         <accel>Ctrl-Shift-R</accel>
         <help>Find and replace text</help>

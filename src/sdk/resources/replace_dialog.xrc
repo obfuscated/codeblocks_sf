@@ -230,8 +230,8 @@
                         <style>wxRA_SPECIFY_COLS</style>
                         <label>Scope</label>
                         <content>
-                          <item>&amp;Project files</item>
                           <item>&amp;Open files</item>
+                          <item>&amp;Project files</item>
                           <item>Workspace files</item>
                         </content>
                       </object>

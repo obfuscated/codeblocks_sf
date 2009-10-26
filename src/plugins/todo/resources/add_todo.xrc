@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <resource>
   <object class="wxDialog" name="dlgAddToDo">
-    <title>Add To-Do item</title>
+    <title>Add Todo item</title>
     <centered>1</centered>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>
@@ -61,7 +61,7 @@
             </object>
           </object>
           <object class="spacer"/>
-          
+
           <object class="sizeritem">
             <object class="wxChoice" name="chcType">
               <content/>
@@ -103,8 +103,7 @@
             <flag>wxBOTTOM|wxEXPAND</flag>
             <border>8</border>
           </object>
-          
-          
+
           <object class="sizeritem">
             <object class="wxChoice" name="chcPosition">
               <content>

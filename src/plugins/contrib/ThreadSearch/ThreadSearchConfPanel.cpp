@@ -56,11 +56,11 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     m_pChkShowMissingFilesError = new wxCheckBox(this, idChkShowMissingFilesError, _("Show error message if file is missing"));
     m_pChkShowCantOpenFileError = new wxCheckBox(this, idChkShowCantOpenFileError, _("Show error message if file cannot be opened"));
     m_pChkDeletePreviousResults = new wxCheckBox(this, idChkChkDeletePreviousResults, _("Delete previous results at search begin"));
-    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, _("Show ThreadSearch toolbar."));
-    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, _("Show search widgets in ThreadSearch Messages panel."));
-    m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, _("Show code preview editor."));
-    m_pChkDisplayLogHeaders = new wxCheckBox(this, idChkDisplayLogHeaders,_("Display header in log window."));
-    m_pChkDrawLogLines = new wxCheckBox(this, idChkDrawLogLines, _("Draw lines between log columns."));
+    m_pChkShowThreadSearchToolBar = new wxCheckBox(this, idChkViewThreadSearchToolBar, _("Show ThreadSearch toolbar"));
+    m_pChkShowThreadSearchWidgets = new wxCheckBox(this, idChkShowThreadSearchWidgets, _("Show search widgets in ThreadSearch Messages panel"));
+    m_pChkShowCodePreview = new wxCheckBox(this, idChkShowCodePreview, _("Show code preview editor"));
+    m_pChkDisplayLogHeaders = new wxCheckBox(this, idChkDisplayLogHeaders,_("Display header in log window"));
+    m_pChkDrawLogLines = new wxCheckBox(this, idChkDrawLogLines, _("Draw lines between log columns"));
     const wxString m_pRadPanelManagement_choices[] = {
         _("Messages notebook"),
         _("Layout")
@@ -77,8 +77,8 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
     };
     m_pRadSplitterWndMode = new wxRadioBox(this, wxID_ANY, _("Splitter window mode"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSplitterWndMode_choices, 1, wxRA_SPECIFY_ROWS);
     const wxString m_pRadSortBy_choices[] = {
-        _("file path"),
-        _("file name")
+        _("File path"),
+        _("File name")
     };
     m_pRadSortBy = new wxRadioBox(this, wxID_ANY, _("Sort results by"), wxDefaultPosition, wxDefaultSize, 2, m_pRadSortBy_choices, 1, wxRA_SPECIFY_ROWS);
 

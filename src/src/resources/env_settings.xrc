@@ -39,7 +39,7 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkSingleInstance">
-										<label>Allow only one running instance (needs application restart to take effect)</label>
+										<label>Allow only one running instance (will take place after restart)</label>
 										<checked>1</checked>
 									</object>
 									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -47,11 +47,11 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
-										<label>Interprocess communication (needs application restart to take effect)</label>
+										<label>Interprocess communication (will take place after restart)</label>
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkUseIPC">
-												<label>Use an already running instance instead of starting a new one (if possible)</label>
+												<label>Use an already running instance (if possible)</label>
 												<checked>1</checked>
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -111,8 +111,8 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkInvalidTargets">
-										<label>Ignore Invalid Targets</label>
-										<tooltip>When checked the user will not be prompted to deal with Invalid Targets, &#x0A;during the build process they will be ignored (example : the target&apos;s compiler is not installed)</tooltip>
+										<label>Ignore invalid targets</label>
+										<tooltip>When checked the user will not be prompted to deal with invalid targets, &#x0A;during the build process they will be ignored (example : the target&apos;s compiler is not installed)</tooltip>
 									</object>
 									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
@@ -210,7 +210,7 @@
 									<object class="wxBoxSizer">
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkI18N">
-												<label>Internationalization  (needs restart)</label>
+												<label>Internationalization (will take place after restart)</label>
 												<style>wxCHK_2STATE</style>
 											</object>
 											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

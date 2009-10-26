@@ -14,7 +14,7 @@
   <object class="wxToolBarAddOn" name="incremental_search_toolbar_16x16">
     <object class="tool" name="idIncSearchClear">
       <tooltip>Clear</tooltip>
-      <longhelp>Clear contents of Textcontrol</longhelp>
+      <longhelp>Clear contents of textcontrol</longhelp>
       <bitmap>images/16x16/incsearchclear.png</bitmap>
     </object>
     <object class="wxTextCtrl" name="idIncSearchText">
@@ -24,17 +24,17 @@
     <object class="separator"/>
     <object class="tool" name="idIncSearchPrev">
       <tooltip>Prev</tooltip>
-      <longhelp>Jump to previous occurence</longhelp>
+      <longhelp>Jump to previous occurrence</longhelp>
       <bitmap>images/16x16/incsearchprev.png</bitmap>
     </object>
     <object class="tool" name="idIncSearchNext">
       <tooltip>Next</tooltip>
-      <longhelp>Jump to next occurence</longhelp>
+      <longhelp>Jump to next occurrence</longhelp>
       <bitmap>images/16x16/incsearchnext.png</bitmap>
     </object>
     <object class="tool" name="idIncSearchHighlight">
       <tooltip>Highlight</tooltip>
-      <longhelp>Highlight all occurences</longhelp>
+      <longhelp>Highlight all occurrences</longhelp>
       <bitmap>images/16x16/incsearchhighlight.png</bitmap>
       <toggle>1</toggle>
     </object>
@@ -46,7 +46,7 @@
     </object>
     <object class="tool" name="idIncSearchMatchCase">
       <tooltip>Match case</tooltip>
-      <longhelp>Only show phrases that match the exact case</longhelp>
+      <longhelp>Only show phrases that match the case</longhelp>
       <bitmap>images/16x16/incsearchcase.png</bitmap>
       <toggle>1</toggle>
     </object>
@@ -54,7 +54,7 @@
   <object class="wxToolBarAddOn" name="incremental_search_toolbar">
     <object class="tool" name="idIncSearchClear">
       <tooltip>Clear</tooltip>
-      <longhelp>Clear contents of Textcontrol</longhelp>
+      <longhelp>Clear contents of textcontrol</longhelp>
       <bitmap>images/incsearchclear.png</bitmap>
     </object>
     <object class="wxTextCtrl" name="idIncSearchText">
@@ -64,17 +64,17 @@
     <object class="separator"/>
     <object class="tool" name="idIncSearchPrev">
       <tooltip>Prev</tooltip>
-      <longhelp>Jump to previous occurence</longhelp>
+      <longhelp>Jump to previous occurrence</longhelp>
       <bitmap>images/incsearchprev.png</bitmap>
     </object>
     <object class="tool" name="idIncSearchNext">
       <tooltip>Next</tooltip>
-      <longhelp>Jump to next occurence</longhelp>
+      <longhelp>Jump to next occurrence</longhelp>
       <bitmap>images/incsearchnext.png</bitmap>
     </object>
     <object class="tool" name="idIncSearchHighlight">
       <tooltip>Highlight</tooltip>
-      <longhelp>Highlight all occurences</longhelp>
+      <longhelp>Highlight all occurrences</longhelp>
       <bitmap>images/incsearchhighlight.png</bitmap>
       <toggle>1</toggle>
     </object>
@@ -86,7 +86,7 @@
     </object>
     <object class="tool" name="idIncSearchMatchCase">
       <tooltip>Match case</tooltip>
-      <longhelp>Only show phrases that match the exact case</longhelp>
+      <longhelp>Only show phrases that match the case</longhelp>
       <bitmap>images/incsearchcase.png</bitmap>
       <toggle>1</toggle>
     </object>
