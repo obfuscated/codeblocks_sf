@@ -322,6 +322,54 @@
 						<label>Scheme</label>
 					</object>
 					<object class="notebookpage">
+						<object class="wxPanel" name="ID_CODE_PANEL" variable="pnlCode" member="yes">
+							<object class="wxBoxSizer" variable="codeSizer" member="no">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_HEADER_GUARD_LABEL" variable="lblHeaderGuard" member="yes">
+										<label>Header guard:</label>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="ID_HEADER_GUARD_TEXT" variable="txtHeaderGuard" member="yes">
+										<value>VERSION__H</value>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_NAMESPACE_LABEL" variable="lblNamespace" member="yes">
+										<label>Namespace:</label>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="ID_NAMESPACE_TEXT" variable="txtNameSpace" member="yes">
+										<value>AutoVersion</value>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_PREFIX_LABEL" variable="lblPrefix" member="yes">
+										<label>Variables prefix:</label>
+									</object>
+									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="ID_PREFIX_TEXT" variable="txtPrefix" member="yes" />
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+								</object>
+							</object>
+						</object>
+						<label>Code</label>
+					</object>
+					<object class="notebookpage">
 						<object class="wxPanel" name="ID_SETTINGS_PANEL" variable="pnlSettings" member="yes">
 							<object class="wxBoxSizer" variable="settingsSizer" member="yes">
 								<orient>wxVERTICAL</orient>
@@ -507,7 +555,6 @@
 					</object>
 					<object class="notebookpage">
 						<object class="wxPanel" name="ID_CHANGES_PANEL" variable="pnlChanges" member="yes">
-							<pos>231,17</pos>
 							<object class="wxBoxSizer" variable="changesSizer" member="yes">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
@@ -589,7 +636,7 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2" variable="lblCurrentProject" member="yes">
-					<label>Current Project: </label>
+					<label>Current Project:</label>
 					<style>wxALIGN_CENTRE</style>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

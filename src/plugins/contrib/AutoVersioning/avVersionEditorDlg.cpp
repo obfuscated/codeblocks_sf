@@ -46,6 +46,13 @@ const long avVersionEditorDlg::ID_REVISIONRANDOM_TEXT = wxNewId();
 const long avVersionEditorDlg::ID_BUILDTIMES_LABEL = wxNewId();
 const long avVersionEditorDlg::ID_BUILDTIMES_TEXT = wxNewId();
 const long avVersionEditorDlg::ID_SCHEME_PANEL = wxNewId();
+const long avVersionEditorDlg::ID_HEADER_GUARD_LABEL = wxNewId();
+const long avVersionEditorDlg::ID_HEADER_GUARD_TEXT = wxNewId();
+const long avVersionEditorDlg::ID_NAMESPACE_LABEL = wxNewId();
+const long avVersionEditorDlg::ID_NAMESPACE_TEXT = wxNewId();
+const long avVersionEditorDlg::ID_PREFIX_LABEL = wxNewId();
+const long avVersionEditorDlg::ID_PREFIX_TEXT = wxNewId();
+const long avVersionEditorDlg::ID_CODE_PANEL = wxNewId();
 const long avVersionEditorDlg::ID_AUTO_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_DATES_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_COMMIT_CHECK = wxNewId();
@@ -93,6 +100,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     wxBoxSizer* BoxSizer13;
     wxBoxSizer* BoxSizer11;
     wxBoxSizer* BoxSizer14;
+    wxBoxSizer* codeSizer;
 
     Create(parent, wxID_ANY, _("Auto Versioning Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxRESIZE_BORDER, _T("wxID_ANY"));
     SetClientSize(wxSize(469,364));
@@ -150,7 +158,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     lblStatus = new wxStaticText(pnlStatus, ID_SATUS_LABEL, _("Software Status:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_SATUS_LABEL"));
     statusSizer->Add(lblStatus, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     cmbStatus = new wxComboBox(pnlStatus, ID_STATUS_COMBOBOX, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_STATUS_COMBOBOX"));
-    cmbStatus->SetSelection( cmbStatus->Append(_("Alpha")) );
+    cmbStatus->Append(_("Alpha"));
     cmbStatus->Append(_("Beta"));
     cmbStatus->Append(_("Release"));
     cmbStatus->Append(_("Release Candidate"));
@@ -162,7 +170,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     StaticText1 = new wxStaticText(pnlStatus, ID_STATICTEXT1, _("Abbreviation:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     statusSizer->Add(StaticText1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     cmbAbbreviation = new wxComboBox(pnlStatus, ID_ABBREVIATION_COMBOBOX, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_ABBREVIATION_COMBOBOX"));
-    cmbAbbreviation->SetSelection( cmbAbbreviation->Append(_("a")) );
+    cmbAbbreviation->Append(_("a"));
     cmbAbbreviation->Append(_("b"));
     cmbAbbreviation->Append(_("r"));
     cmbAbbreviation->Append(_("rc"));
@@ -210,6 +218,23 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     pnlScheme->SetSizer(schemeSizer);
     schemeSizer->Fit(pnlScheme);
     schemeSizer->SetSizeHints(pnlScheme);
+    pnlCode = new wxPanel(nbAutoVersioning, ID_CODE_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_CODE_PANEL"));
+    codeSizer = new wxBoxSizer(wxVERTICAL);
+    lblHeaderGuard = new wxStaticText(pnlCode, ID_HEADER_GUARD_LABEL, _("Header guard:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_HEADER_GUARD_LABEL"));
+    codeSizer->Add(lblHeaderGuard, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
+    txtHeaderGuard = new wxTextCtrl(pnlCode, ID_HEADER_GUARD_TEXT, _("VERSION_H"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_HEADER_GUARD_TEXT"));
+    codeSizer->Add(txtHeaderGuard, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+    lblNamespace = new wxStaticText(pnlCode, ID_NAMESPACE_LABEL, _("Namespace:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_NAMESPACE_LABEL"));
+    codeSizer->Add(lblNamespace, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
+    txtNameSpace = new wxTextCtrl(pnlCode, ID_NAMESPACE_TEXT, _("AutoVersion"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_NAMESPACE_TEXT"));
+    codeSizer->Add(txtNameSpace, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+    lblPrefix = new wxStaticText(pnlCode, ID_PREFIX_LABEL, _("Variables prefix:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_PREFIX_LABEL"));
+    codeSizer->Add(lblPrefix, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
+    txtPrefix = new wxTextCtrl(pnlCode, ID_PREFIX_TEXT, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_PREFIX_TEXT"));
+    codeSizer->Add(txtPrefix, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    pnlCode->SetSizer(codeSizer);
+    codeSizer->Fit(pnlCode);
+    codeSizer->SetSizeHints(pnlCode);
     pnlSettings = new wxPanel(nbAutoVersioning, ID_SETTINGS_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_SETTINGS_PANEL"));
     settingsSizer = new wxBoxSizer(wxVERTICAL);
     BoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
@@ -281,7 +306,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     pnlSettings->SetSizer(settingsSizer);
     settingsSizer->Fit(pnlSettings);
     settingsSizer->SetSizeHints(pnlSettings);
-    pnlChanges = new wxPanel(nbAutoVersioning, ID_CHANGES_PANEL, wxPoint(231,17), wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_CHANGES_PANEL"));
+    pnlChanges = new wxPanel(nbAutoVersioning, ID_CHANGES_PANEL, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_CHANGES_PANEL"));
     changesSizer = new wxBoxSizer(wxVERTICAL);
     chkChanges = new wxCheckBox(pnlChanges, ID_GENERATECHANGES_CHECKBOX, _("Show changes editor when incrementing version"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_GENERATECHANGES_CHECKBOX"));
     chkChanges->SetValue(false);
@@ -311,10 +336,11 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     nbAutoVersioning->AddPage(pnlVersionValues, _("Version Values"), true);
     nbAutoVersioning->AddPage(pnlStatus, _("Status"), false);
     nbAutoVersioning->AddPage(pnlScheme, _("Scheme"), false);
+    nbAutoVersioning->AddPage(pnlCode, _("Code"), false);
     nbAutoVersioning->AddPage(pnlSettings, _("Settings"), false);
     nbAutoVersioning->AddPage(pnlChanges, _("Changes Log"), false);
     mainSizer->Add(nbAutoVersioning, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    lblCurrentProject = new wxStaticText(this, ID_STATICTEXT2, _("Current Project: "), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
+    lblCurrentProject = new wxStaticText(this, ID_STATICTEXT2, _("Current Project:"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
     mainSizer->Add(lblCurrentProject, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     buttonsSizer = new wxBoxSizer(wxHORIZONTAL);
     btnAccept = new wxButton(this, ID_ACCEPT, _("&Accept"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_ACCEPT"));
@@ -341,7 +367,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
     Connect(ID_ACCEPT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnAcceptClick);
     Connect(ID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnCancelClick);
     Connect(ID_VALIDATE_TIMER,wxEVT_TIMER,(wxObjectEventFunction)&avVersionEditorDlg::OnTmrValidateInputTrigger);
-    Connect(wxID_ANY,wxEVT_ENTER_WINDOW,(wxObjectEventFunction)&avVersionEditorDlg::OnMouseEnter);
+    Connect(wxEVT_ENTER_WINDOW,(wxObjectEventFunction)&avVersionEditorDlg::OnMouseEnter);
     //*)
 
     tmrValidateInput.Stop();
@@ -556,6 +582,26 @@ void avVersionEditorDlg::SetChangesTitle(const wxString& value)
 }
 //}
 
+//{Code
+void avVersionEditorDlg::SetHeaderGuard(const wxString& value)
+{
+    m_headerGuard = value;
+    txtHeaderGuard->SetValue(value);
+}
+
+void avVersionEditorDlg::SetNamespace(const wxString& value)
+{
+    m_namespace = value;
+    txtNameSpace->SetValue(value);
+}
+
+void avVersionEditorDlg::SetPrefix(const wxString& value)
+{
+    m_prefix = value;
+    txtPrefix->SetValue(value);
+}
+//}
+
 void avVersionEditorDlg::SetCurrentProject(const wxString& projectName)
 {
     lblCurrentProject->SetLabel(lblCurrentProject->GetLabel() + projectName);
@@ -594,6 +640,10 @@ void avVersionEditorDlg::OnAcceptClick(wxCommandEvent&)
     m_changes = chkChanges->IsChecked();
     m_changesTitle = txtChangesTitle->GetValue();
     m_changesLogPath = txtChangesLogPath->GetValue();
+
+    m_headerGuard = txtHeaderGuard->GetValue();
+    m_namespace = txtNameSpace->GetValue();
+    m_prefix = txtPrefix->GetValue();
 
     EndModal(0);
 }

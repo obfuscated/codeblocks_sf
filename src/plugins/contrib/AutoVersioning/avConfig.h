@@ -44,6 +44,21 @@ struct avScheme
 	}
 };
 
+struct avCode
+{
+	std::string HeaderGuard;
+	std::string NameSpace;
+	std::string Prefix;
+
+	avCode() : HeaderGuard("VERSION_H"), NameSpace("AutoVersion"), Prefix(""){}
+
+	bool operator!=(const avCode& Other) const
+	{
+	    return (HeaderGuard != Other.HeaderGuard || NameSpace != Other.NameSpace ||
+                Prefix != Other.Prefix);
+	}
+};
+
 struct avSettings
 {
 	bool Autoincrement;
@@ -81,6 +96,7 @@ struct avChangesLog
 
 struct avConfig
 {
+    avCode Code;
 	avScheme Scheme;
 	avSettings Settings;
 	avChangesLog ChangesLog;
@@ -88,7 +104,7 @@ struct avConfig
 	bool operator!=(const avConfig& Other) const
 	{
 	    return (Scheme != Other.Scheme || Settings != Other.Settings ||
-                ChangesLog != Other.ChangesLog);
+                ChangesLog != Other.ChangesLog || Code != Other.Code);
 	}
 };
 

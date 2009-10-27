@@ -49,6 +49,9 @@ private:
     long m_revisionRandomMaximun;
     long m_buildTimesToMinorIncrement;
     long m_changes;
+    wxString m_headerGuard;
+    wxString m_namespace;
+    wxString m_prefix;
     wxString m_svnDirectory;
     wxString m_status;
     wxString m_statusAbbreviation;
@@ -96,6 +99,13 @@ public:
 		static const long ID_BUILDTIMES_LABEL;
 		static const long ID_BUILDTIMES_TEXT;
 		static const long ID_SCHEME_PANEL;
+		static const long ID_HEADER_GUARD_LABEL;
+		static const long ID_HEADER_GUARD_TEXT;
+		static const long ID_NAMESPACE_LABEL;
+		static const long ID_NAMESPACE_TEXT;
+		static const long ID_PREFIX_LABEL;
+		static const long ID_PREFIX_TEXT;
+		static const long ID_CODE_PANEL;
 		static const long ID_AUTO_CHECK;
 		static const long ID_DATES_CHECK;
 		static const long ID_COMMIT_CHECK;
@@ -181,6 +191,7 @@ public:
 		wxButton* btnChangesLogPath;
 		wxStaticText* lblHeaderPath;
 		wxBoxSizer* settingsSizer;
+		wxStaticText* lblNamespace;
 		wxTextCtrl* txtChangesLogPath;
 		wxStaticText* StaticText1;
 		wxBoxSizer* buttonsSizer;
@@ -192,6 +203,8 @@ public:
 		wxBoxSizer* BoxSizer12;
 		wxStaticLine* StaticLine4;
 		wxStaticLine* StaticLine2;
+		wxPanel* pnlCode;
+		wxTextCtrl* txtHeaderGuard;
 		wxStaticText* lblRevisionMax;
 		wxButton* btnSvnDir;
 		wxCheckBox* chkSvn;
@@ -206,18 +219,22 @@ public:
 		wxStaticLine* StaticLine3;
 		wxStaticLine* StaticLine1;
 		wxBoxSizer* changesSizer;
+		wxStaticText* lblPrefix;
 		wxBoxSizer* BoxSizer1;
 		wxPanel* pnlChanges;
 		wxBoxSizer* BoxSizer9;
 		wxButton* btnAccept;
 		wxStaticText* lblStatus;
 		wxTextCtrl* txtBuildCount;
+		wxTextCtrl* txtNameSpace;
 		wxPanel* pnlScheme;
 		wxStaticText* lblBuild;
 		wxBoxSizer* BoxSizer3;
 		wxTimer tmrValidateInput;
+		wxTextCtrl* txtPrefix;
 		wxTextCtrl* txtRevisionMax;
 		wxCheckBox* chkAskCommit;
+		wxStaticText* lblHeaderGuard;
 		wxTextCtrl* txtSvnDir;
 		wxTextCtrl* txtMinorVersion;
 		wxStaticText* lblMinor;
@@ -286,6 +303,15 @@ public:
 	bool GetChanges() const {return m_changes;}
 	wxString GetChangesLogPath() const {return m_changesLogPath;}
 	wxString GetChangesTitle() const {return m_changesTitle;}
+
+	void SetHeaderGuard(const wxString& value);
+	void SetNamespace(const wxString& value);
+	void SetPrefix(const wxString& value);
+
+	wxString GetHeaderGuard() const {return m_headerGuard;}
+	wxString GetNamespace() const {return m_namespace;}
+	wxString GetPrefix() const {return m_prefix;}
+
 
 };
 

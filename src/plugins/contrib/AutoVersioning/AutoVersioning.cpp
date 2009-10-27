@@ -186,6 +186,12 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
                     Config.Settings.Svn = Help?true:false;
                 }
             }
+            if(const TiXmlElement* pElem = Handle.FirstChildElement("Code").ToElement())
+            {
+                Config.Code.HeaderGuard = pElem->Attribute("header_guard");
+                Config.Code.NameSpace = pElem->Attribute("namespace");
+                Config.Code.Prefix = pElem->Attribute("prefix");
+            }
             if(const TiXmlElement* pElem = Handle.FirstChildElement("Changes_Log").ToElement())
             {
                 Config.ChangesLog.AppTitle = pElem->Attribute("app_title");
@@ -261,6 +267,11 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
             ChangesLog.SetAttribute("app_title", NewConfig.ChangesLog.AppTitle.c_str());
             ChangesLog.SetAttribute("changeslog_path", NewConfig.ChangesLog.ChangesLogPath.c_str());
             node->InsertEndChild(ChangesLog);
+            TiXmlElement Code("Code");
+            Code.SetAttribute("header_guard", NewConfig.Code.HeaderGuard.c_str());
+            Code.SetAttribute("namespace", NewConfig.Code.NameSpace.c_str());
+            Code.SetAttribute("prefix", NewConfig.Code.Prefix.c_str());
+            node->InsertEndChild(Code);
         }
         // TODO (KILLERBOT) : what if we decide to not version anymore : how to remove ??
     }
@@ -488,6 +499,10 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     VersionEditorDialog.SetChangesTitle(cbC2U(GetConfig().ChangesLog.AppTitle.c_str()));
     VersionEditorDialog.SetChangesLogPath(cbC2U(GetConfig().ChangesLog.ChangesLogPath.c_str()));
 
+    VersionEditorDialog.SetHeaderGuard(cbC2U(GetConfig().Code.HeaderGuard.c_str()));
+    VersionEditorDialog.SetNamespace(cbC2U(GetConfig().Code.NameSpace.c_str()));
+    VersionEditorDialog.SetPrefix(cbC2U(GetConfig().Code.Prefix.c_str()));
+
     VersionEditorDialog.ShowModal();
     // allright let's call all the getters
     avConfig OldConfig = GetConfig();
@@ -507,6 +522,9 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetConfig().ChangesLog.ShowChangesEditor = VersionEditorDialog.GetChanges();
     GetConfig().ChangesLog.AppTitle = cbU2C(VersionEditorDialog.GetChangesTitle());
     GetConfig().ChangesLog.ChangesLogPath = cbU2C(VersionEditorDialog.GetChangesLogPath());
+    GetConfig().Code.HeaderGuard = cbU2C(VersionEditorDialog.GetHeaderGuard());
+    GetConfig().Code.NameSpace = cbU2C(VersionEditorDialog.GetNamespace());
+    GetConfig().Code.Prefix = cbU2C(VersionEditorDialog.GetPrefix());
 
     //Save Header path
     m_versionHeaderPath = cbC2U(GetConfig().Settings.HeaderPath.c_str());
@@ -545,9 +563,25 @@ void AutoVersioning::UpdateVersionHeader()
 
     //Declares the header guard to be used based on the filename
     wxFileName filename(cbC2U(GetConfig().Settings.HeaderPath.c_str()));
-    wxString headerGuard = filename.GetName() + _T("_") + filename.GetExt();
-    headerGuard.Replace(_T(" "), _T("_"), true);
-    headerGuard.UpperCase();
+    wxString headerGuard;
+
+    if(cbC2U(GetConfig().Code.HeaderGuard.c_str()) == _T(""))
+    {
+        headerGuard = filename.GetName() + _T("_") + filename.GetExt();
+        headerGuard.Replace(_T(" "), _T("_"), true);
+        headerGuard.UpperCase();
+    }
+    else
+    {
+        headerGuard = cbC2U(GetConfig().Code.HeaderGuard.c_str());
+    }
+
+    wxString prefix = cbC2U(GetConfig().Code.Prefix.c_str());
+
+    if(prefix != _T(""))
+    {
+        prefix = prefix + _T("_");
+    }
 
     wxString headerOutput = _T("");
     headerOutput << _T("#ifndef ") << headerGuard << _T("\n");
@@ -556,7 +590,7 @@ void AutoVersioning::UpdateVersionHeader()
 
     if(cbC2U(GetConfig().Settings.Language.c_str()) == _T("C++"))
     {
-        headerOutput << _T("namespace AutoVersion{") << _T("\n");
+        headerOutput << _T("namespace ") << cbC2U(GetConfig().Code.NameSpace.c_str()) << _T("{") << _T("\n");
         headerOutput << _T("\t") << _T("\n");
     }
 
@@ -564,49 +598,49 @@ void AutoVersioning::UpdateVersionHeader()
     {
         wxDateTime actualDate = wxDateTime::Now();
         headerOutput << _T("\t") << _T("//Date Version Types") << _T("\n");
-        headerOutput << _T("\t") << _T("static const char DATE[] = ") << actualDate.Format(_T("\"%d\"")) << _T(";\n");
-        headerOutput << _T("\t") << _T("static const char MONTH[] = ") << actualDate.Format(_T("\"%m\"")) << _T(";\n");
-        headerOutput << _T("\t") << _T("static const char YEAR[] = ") << actualDate.Format(_T("\"%Y\"")) << _T(";\n");
+        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("DATE[] = ") << actualDate.Format(_T("\"%d\"")) << _T(";\n");
+        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("MONTH[] = ") << actualDate.Format(_T("\"%m\"")) << _T(";\n");
+        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("YEAR[] = ") << actualDate.Format(_T("\"%Y\"")) << _T(";\n");
         long ubuntuYearNumber = 0;
         actualDate.Format(_T("%y")).ToLong(&ubuntuYearNumber);
         wxString ubuntuYear;
         ubuntuYear.Printf(_T("%ld"),ubuntuYearNumber);
-        headerOutput << _T("\t") << _T("static const double UBUNTU_VERSION_STYLE = ") << ubuntuYear << actualDate.Format(_T(".%m")) << _T(";\n");
+        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("UBUNTU_VERSION_STYLE[] = \"") << ubuntuYear << actualDate.Format(_T(".%m")) << _T("\";\n");
         headerOutput << _T("\t") << _T("\n");
     }
 
     headerOutput << _T("\t") << _T("//Software Status") << _T("\n");
-    headerOutput << _T("\t") << _T("static const char STATUS[] = \"") << cbC2U(GetVersionState().Status.SoftwareStatus.c_str()) << _T("\";\n");
-    headerOutput << _T("\t") << _T("static const char STATUS_SHORT[] = \"") << cbC2U(GetVersionState().Status.Abbreviation.c_str()) << _T("\";\n");
+    headerOutput << _T("\t") << _T("static const char ") << prefix << _T("STATUS[] = \"") << cbC2U(GetVersionState().Status.SoftwareStatus.c_str()) << _T("\";\n");
+    headerOutput << _T("\t") << _T("static const char ") << prefix << _T("STATUS_SHORT[] = \"") << cbC2U(GetVersionState().Status.Abbreviation.c_str()) << _T("\";\n");
     headerOutput << _T("\t") << _T("\n");
 
     wxString myPrintf;
     headerOutput << _T("\t") << _T("//Standard Version Type") << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Major);
-    headerOutput << _T("\t") << _T("static const long MAJOR = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("MAJOR = ") << myPrintf << _T(";\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Minor);
-    headerOutput << _T("\t") << _T("static const long MINOR = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("MINOR = ") << myPrintf << _T(";\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Build);
-    headerOutput << _T("\t") << _T("static const long BUILD = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("BUILD = ") << myPrintf << _T(";\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Revision);
-    headerOutput << _T("\t") << _T("static const long REVISION = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("REVISION = ") << myPrintf << _T(";\n");
     headerOutput << _T("\t") << _T("\n");
 
     headerOutput << _T("\t") << _T("//Miscellaneous Version Types") << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.BuildCount);
-    headerOutput << _T("\t") << _T("static const long BUILDS_COUNT = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("BUILDS_COUNT = ") << myPrintf << _T(";\n");
 
     myPrintf.Printf(_T("%ld,%ld,%ld,%ld"), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
-    headerOutput << _T("\t") << _T("#define RC_FILEVERSION ") << myPrintf << _T("\n");
+    headerOutput << _T("\t") << _T("#define ") << prefix << _T("RC_FILEVERSION ") << myPrintf << _T("\n");
 
     myPrintf.Printf(_T("\"%ld, %ld, %ld, %ld\\0\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
-    headerOutput << _T("\t") << _T("#define RC_FILEVERSION_STRING ") << myPrintf << _T("\n");
+    headerOutput << _T("\t") << _T("#define ") << prefix << _T("RC_FILEVERSION_STRING ") << myPrintf << _T("\n");
 
     myPrintf.Printf(_T("\"%ld.%ld.%ld.%ld\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
-    headerOutput << _T("\t") << _T("static const char FULLVERSION_STRING[] = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const char ") << prefix << _T("FULLVERSION_STRING[] = ") << myPrintf << _T(";\n");
 
     if(GetConfig().Settings.Svn)
     {
@@ -615,14 +649,14 @@ void AutoVersioning::UpdateVersionHeader()
             wxMessageBox(_("Svn configuration files not found.\nVerify the Autoversioning svn directory."),_("Error"),wxICON_ERROR);
         headerOutput << _T("\t") << _T("\n");
         headerOutput << _T("\t") << _T("//SVN Version") << _T("\n");
-        headerOutput << _T("\t") << _T("static const char SVN_REVISION[] = ") << _T("\"") + revision + _T("\"")<< _T(";\n");
-        headerOutput << _T("\t") << _T("static const char SVN_DATE[] = ") << _T("\"") + date + _T("\"")<< _T(";\n");
+        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("SVN_REVISION[] = ") << _T("\"") + revision + _T("\"")<< _T(";\n");
+        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("SVN_DATE[] = ") << _T("\"") + date + _T("\"")<< _T(";\n");
     }
 
     headerOutput << _T("\t") << _T("\n");
     headerOutput << _T("\t") << _T("//These values are to keep track of your versioning state, don't modify them.") << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().BuildHistory);
-    headerOutput << _T("\t") << _T("static const long BUILD_HISTORY = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("BUILD_HISTORY = ") << myPrintf << _T(";\n");
 
     headerOutput << _T("\t") << _T("\n\n");
 

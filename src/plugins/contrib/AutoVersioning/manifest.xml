@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="AutoVersioning">
         <Value title="AutoVersioning" />
-        <Value version="1.2" />
+        <Value version="1.3" />
         <Value description="Auto increments the version and build number of your application every time a change has been made and stores it in version.h with easy to use variable declarations. Also have a feature for committing changes a la SVN style, a version scheme editor and a change log generator.
 
 Example:
