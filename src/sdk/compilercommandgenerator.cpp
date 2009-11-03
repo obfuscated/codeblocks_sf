@@ -226,7 +226,8 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     }
     else
     {
-        wxFileName fname(file);
+        // filename might be quoted, so unquote it if needed or extension can be 'c"'
+        wxFileName fname(UnquoteStringIfNeeded(file));
         if (fname.GetExt().Lower().Matches(_T("c")))
             compilerStr = compiler->GetPrograms().C;
         else
