@@ -214,15 +214,19 @@ AppVersion::~AppVersion()
 //      80) Hack to find editor's project. Since wxAuiNotebook, the initial
 //          EVT_EDITOR_ACTIVATED has no cbEditor or cbProject associated.
 // ----------------------------------------------------------------------------
-//  Bugs
-//          When searching workspace w/o open project, BT is comatose.
-//              Should say "no project" or some such.
+//  Commit 1.2.84 2009/11/7
+//       81) Set browse marks sorting flag in OnEditorActivated()
+//       82) Set BrowseSelector width window by filename width
+//       83) Added JumpTracker; record each activated cursor posn within a half-page
+//       84) Activate previously active editor when secondary project closes.
+// ----------------------------------------------------------------------------
+//  //FIXME: Bugs
 //          Requires CB to be restarted after Install before Alt-Left/Right work.
 //          When CB reloads a changed editor, the marks are missing
 //          In one fell swoop: uninstall BrowseTracker, reInstall it,
 //              click on a project. CB::OnProjectHook call crashes.
 // ----------------------------------------------------------------------------
-//  ToDo    All
+//  //TODO:   All
 //          Config dialog: Max tracked editors Max tracked lines etc
 //          Navigation toolbar arrows
 //          Shadow the menuitem cmdkey definitions w/ wxMenuItem->GetAccel()

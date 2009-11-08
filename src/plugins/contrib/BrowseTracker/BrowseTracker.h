@@ -33,7 +33,7 @@ class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
 class cbStyledTextCtrl;
-class wxAuiNotebookEvent;
+class JumpTracker;
 
 // ----------------------------------------------------------------------------
 // The following have been moved to BrowseTrackerDefs.h
@@ -195,8 +195,6 @@ class BrowseTracker : public cbPlugin
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
         void     GetCurrentScreenPositions();
 
-		void OnMenuTrackBackward(wxCommandEvent& event);
-		void OnMenuTrackforward(wxCommandEvent& event);
 		void OnMenuTrackerClear(wxCommandEvent& event);
         void OnMenuTrackerSelect(wxCommandEvent& event);
 
@@ -229,7 +227,10 @@ class BrowseTracker : public cbPlugin
         void OnMenuSettings( wxCommandEvent& event);
         void OnConfigApply();
 
+		void TrackEditorBackward();
+		void TrackEditorForward();
         void OnMouseKeyEvent(wxMouseEvent& event);
+
         //-- BOOK marks
         void AddBook_Mark(EditorBase* eb, int line = -1);
         void OnBook_MarksToggle(wxCommandEvent& event);
@@ -318,6 +319,9 @@ class BrowseTracker : public cbPlugin
         int             m_ToggleKey;            //Left_Mouse or Ctrl-Left_Mouse
         int             m_LeftMouseDelay;       //milliseconds before testing toggle
         int             m_ClearAllKey;          //Ctrl-Left_Mouse or Ctrl-Left_Mouse_DClick
+        bool            m_bProjectClosing;      // project close in progress
+
+        JumpTracker*    m_pJumpTracker;
 
 		DECLARE_EVENT_TABLE();
 

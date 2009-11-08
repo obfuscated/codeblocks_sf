@@ -242,8 +242,9 @@ void BrowseMarks::ImportBrowse_Marks()
     //-EditorBase* eb = m_pEditorBase ;
     EditorBase* eb = m_pEdMgr->GetEditor(m_filePath);
     #if defined(LOGGING)
-    if (not eb) asm("int3"); /*trap*/
+    LOGIT(_T("ImportBrowse_Marks entered with no active editor base."));
     #endif
+    // This can happens when editing script for example .
     if (not eb) return;
     cbEditor* pcbEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor( eb ) ;
     if (not pcbEditor) return;

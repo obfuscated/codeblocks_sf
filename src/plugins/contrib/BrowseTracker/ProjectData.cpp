@@ -38,6 +38,7 @@
 	#include <wx/app.h>
 	#include <wx/menu.h>
 
+//-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 #include "Version.h"
 #include "BrowseMarks.h"
 #include "BrowseTrackerDefs.h"

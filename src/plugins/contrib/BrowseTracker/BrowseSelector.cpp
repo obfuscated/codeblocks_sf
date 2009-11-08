@@ -98,6 +98,7 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 	m_listBox = new wxListBox(this, wxID_ANY, wxDefaultPosition, wxSize(200, 150), 0, NULL, flags);
 
 	static int panelHeight = 0;
+	static int fontWidth = 0;
 	if( panelHeight == 0 )
 	{
 		wxMemoryDC mem_dc;
@@ -112,6 +113,10 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 		int w;
 		mem_dc.GetTextExtent(wxT("Tp"), &w, &panelHeight);
 		panelHeight += 4; // Place a spacer of 2 pixels
+
+		font.SetWeight( wxNORMAL );
+		mem_dc.SetFont(font);
+        fontWidth = mem_dc.GetCharWidth();
 
 		// Out signpost bitmap is 24 pixels
 		if( panelHeight < 24 )
@@ -137,7 +142,13 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 
 	SetBackgroundColour( wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE) );
 	m_listBox->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-	PopulateListControl( static_cast<EditorBase*>( parent ) );
+
+	////PopulateListControl( static_cast<wxFlatNotebook*>( parent ) );
+	int maxFilenameWidth = PopulateListControl( static_cast<EditorBase*>( parent ) );
+    wxRect rect = m_panel->GetRect();
+    int textWidth = fontWidth * maxFilenameWidth;
+    rect.width = wxMax(textWidth, rect.width );
+    m_panel->SetSize(rect);
 
 	// Create the bitmap, only once
 	if( !m_bmp.Ok() )
@@ -195,7 +206,7 @@ void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
 	LOGIT( _T("OnNavigationKey Selection[%d]"), itemToSelect );
 }
 // ----------------------------------------------------------------------------
-void BrowseSelector::PopulateListControl(EditorBase* pEditor)
+int BrowseSelector::PopulateListControl(EditorBase* pEditor)
 // ----------------------------------------------------------------------------
 {
     wxString editorFilename;
@@ -203,6 +214,7 @@ void BrowseSelector::PopulateListControl(EditorBase* pEditor)
     // memorize current selection
 	int selection = m_pBrowseTracker->GetCurrentEditorIndex();
 	int maxCount     = MaxEntries;
+	int maxWidth     = 40;
 
 
 	int itemIdx = 0;
@@ -210,7 +222,9 @@ void BrowseSelector::PopulateListControl(EditorBase* pEditor)
 	{
         editorFilename = m_pBrowseTracker->GetPageFilename(c) ;
         if (not editorFilename.IsEmpty())
-        {   m_listBox->Append( editorFilename );
+        {
+            maxWidth = wxMax(maxWidth, (int)editorFilename.Length());
+            m_listBox->Append( editorFilename );
             m_indexMap[itemIdx] = c;
             if ( selection == c ) selection = itemIdx;
             itemIdx++;
@@ -228,6 +242,8 @@ void BrowseSelector::PopulateListControl(EditorBase* pEditor)
 	dummy.m_keyCode = WXK_LEFT;
 	if (m_bDirection) dummy.m_keyCode = WXK_RIGHT;
 	OnNavigationKey(dummy);
+
+	return maxWidth;
 }
 
 // ----------------------------------------------------------------------------
