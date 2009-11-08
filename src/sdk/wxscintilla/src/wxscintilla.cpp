@@ -26,6 +26,9 @@
 #include <wx/image.h>
 #include <wx/file.h>
 
+#ifdef __WXGTK__
+    #include <wx/dcbuffer.h>
+#endif
 
 //----------------------------------------------------------------------
 
@@ -3969,7 +3972,13 @@ void wxScintilla::AppendTextRaw (const char* text)
 // Event handlers
 
 void wxScintilla::OnPaint (wxPaintEvent& WXUNUSED(evt)) {
+#ifdef __WXGTK__
+    // avoid flickering, thanks Eran for the patch
+	// On Mac / Windows there is no real need for this
+    wxBufferedPaintDC dc(this);
+#else
     wxPaintDC dc(this);
+#endif
     m_swx->DoPaint(&dc, GetUpdateRegion().GetBox());
 }
 
