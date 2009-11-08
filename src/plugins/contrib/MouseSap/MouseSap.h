@@ -35,7 +35,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "0.1.5 2008/02/18"
+#define VERSION "1.1.5 2009/11/8"
 //----------------------------------------
 
 #undef LOGGING
@@ -148,7 +148,7 @@ class MMSapEvents : public wxEvtHandler
 
         void OnMouseEvent(wxMouseEvent& event);
         void OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed);
-        void PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed );
+        void PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState );
         void OnKillFocusEvent( wxFocusEvent& event );
         void DumpClipboard();
 
@@ -169,6 +169,9 @@ class MMSapEvents : public wxEvtHandler
 //          04) Removed unnecessary event handler mangling
 //          05) wxTheClipboard->UsePrimarySelection(false); in PastFromClipboard()
 // ----------------------------------------------------------------------------
+//  Commit  1.1.5 2009/11/8
+//          Shift-MiddleMouse will paste over marked area if cursor also in marked
+//          else insert pasted data.
 //  ToDo
 // ----------------------------------------------------------------------------
 #endif // MouseSap_H

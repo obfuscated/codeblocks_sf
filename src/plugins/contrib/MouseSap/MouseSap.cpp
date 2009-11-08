@@ -613,10 +613,12 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
 
     const wxString selectedText = ed->GetSelectedText();
 
-    // If no current selection, use paste from the clipboard
-    if ( selectedText.IsEmpty() )
+    // If no current selection, or shift key is down, use paste from the clipboard
+    bool shiftKeyState = ::wxGetKeyState(WXK_SHIFT);
+
+    if (  shiftKeyState || selectedText.IsEmpty() )
     {
-        PasteFromClipboard( event, ed );
+        PasteFromClipboard( event, ed, shiftKeyState );
         return;
     }
 
@@ -659,7 +661,7 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
 
 } // end of OnGPM
 // ----------------------------------------------------------------------------
-void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed )
+void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed, bool shiftKeyState )
 // ----------------------------------------------------------------------------
 {
     // Set the current position to the mouse click point and
@@ -673,6 +675,9 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed 
     if(pos == wxSCI_INVALID_POSITION)
         return;
 
+    int start = ed->GetSelectionStart();
+    int end = ed->GetSelectionEnd();
+
     wxTextDataObject data;
     bool gotData = false;
     if (wxTheClipboard->Open())
@@ -682,10 +687,19 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed 
         wxTheClipboard->UsePrimarySelection(false);
         wxTheClipboard->Close();
     }
-    if (gotData) {
+    if (gotData)
+    {
         wxString text = data.GetText() ;
-        ed->InsertText(pos, text);
-        ed->SetSelection(pos, pos + text.Length());
+        //if shiftstate
+        if (  shiftKeyState
+                &&  ((pos >= start) && (pos <= end) )
+           )
+                ed->Paste();
+        else
+        {
+            ed->InsertText(pos, text);
+            ed->SetSelection(pos, pos + text.Length());
+        }
     }
 
 }
