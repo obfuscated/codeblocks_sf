@@ -692,9 +692,14 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed,
         wxString text = data.GetText() ;
         //if shiftstate
         if (  shiftKeyState
-                &&  ((pos >= start) && (pos <= end) )
-           )
-                ed->Paste();
+                &&  ((pos >= start) && (pos <= end) ) )
+        {
+            //-ed->Paste(); does not work on linux
+            ed->SetTargetStart(start);
+            ed->SetTargetEnd(end);
+            ed->ReplaceTarget(text);
+
+        }
         else
         {
             ed->InsertText(pos, text);

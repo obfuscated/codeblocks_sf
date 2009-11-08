@@ -35,7 +35,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.1.5 2009/11/8"
+#define VERSION "1.1.7 2009/11/8"
 //----------------------------------------
 
 #undef LOGGING
@@ -169,9 +169,10 @@ class MMSapEvents : public wxEvtHandler
 //          04) Removed unnecessary event handler mangling
 //          05) wxTheClipboard->UsePrimarySelection(false); in PastFromClipboard()
 // ----------------------------------------------------------------------------
-//  Commit  1.1.5 2009/11/8
-//          Shift-MiddleMouse will paste over marked area if cursor also in marked
-//          else insert pasted data.
+//  Commit  1.1.7 2009/11/8
+//          06) Shift-MiddleMouse will paste over marked area if cursor also in marked
+//              else insert pasted data.
+//          07) Change Paste() to SetTarget() for Linux
 //  ToDo
 // ----------------------------------------------------------------------------
 #endif // MouseSap_H
