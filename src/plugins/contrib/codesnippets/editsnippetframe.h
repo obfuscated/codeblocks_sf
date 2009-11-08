@@ -75,7 +75,8 @@ class EditSnippetFrame : public wxFrame
         void OncbEditorSave( CodeBlocksEvent& event );
         void OnMenuFileClose (wxCommandEvent& event);
 
-        void OnCloseWindow (wxCloseEvent &event);
+        void OnCloseFrameOrWindow(wxCloseEvent &event);
+        //-void OnCloseWindow (wxCloseEvent &event);
         ////void OnWindowDestroy( wxCommandEvent event );
         void OnPageClose( wxAuiNotebookEvent event );
         void OnFileCheckModified();

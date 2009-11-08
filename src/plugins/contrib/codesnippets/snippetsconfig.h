@@ -104,8 +104,15 @@ class CodeSnippetsConfig
     long                    GetKeepAlivePid(){return g_lKeepAlivePid;}
     void                    SetKeepAlivePid(long pid){g_lKeepAlivePid = pid;}
 
+    wxString                GetAppParent() {return m_AppParent;}
+    void                    SetAppParent(const wxString& appParent) {m_AppParent = appParent;}
+
     bool                    GetEditorsStayOnTop(){return SettingsEditorsStayOnTop;}
     void                    SetEditorsStayOnTop(bool tf){SettingsEditorsStayOnTop = tf;}
+
+    bool                    GetToolTipsOption(){return SettingsToolTipsOption;}
+    void                    SetToolTipsOption(bool tf){SettingsToolTipsOption = tf;}
+
     bool                    IsExternalPersistentOpen(){ return m_IsExternalPersistentOpen;}
     void                    SetExternalPersistentOpen(const bool trueFalse ){ m_IsExternalPersistentOpen = trueFalse;}
 
@@ -141,6 +148,7 @@ class CodeSnippetsConfig
     bool         m_appIsShutdown;
     bool         m_appIsDisabled;
     wxString     AppName;
+    wxString     m_AppParent;
     wxWindow*    pMainFrame;
     wxMenuBar*   m_pMenuBar;
 
@@ -161,6 +169,7 @@ class CodeSnippetsConfig
 
 	bool         SettingsSearchBox;
 	bool         SettingsEditorsStayOnTop;
+	bool         SettingsToolTipsOption;
     SnipImages*  pSnipImages;
     int          nEditDlgXpos;
     int          nEditDlgYpos;

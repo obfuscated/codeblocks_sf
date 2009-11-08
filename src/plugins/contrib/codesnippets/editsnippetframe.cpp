@@ -34,7 +34,8 @@
 #include "sdk.h"
 #include "configmanager.h"
 #include "cbstyledtextctrl.h"
-#include <wx/wxscintilla.h>
+//-#include "wxscintilla/include/wx/wxscintilla.h"  //svn5785
+#include <wx/wxscintilla.h>                         //svn5785
 #include <wx/aui/auibook.h>
 
 #include "defsext.h"
@@ -55,7 +56,7 @@ BEGIN_EVENT_TABLE (EditSnippetFrame, wxFrame)
 
     EVT_ACTIVATE(                    EditSnippetFrame::OnFrameActivated)
     // common
-    EVT_CLOSE (                      EditSnippetFrame::OnCloseWindow)
+    EVT_CLOSE (                      EditSnippetFrame::OnCloseFrameOrWindow)
     //-- EVT_CLOSE works, but the next three EVTs never get called
     EVT_SET_FOCUS  (                 EditSnippetFrame::OnFocusWindow)
     EVT_KILL_FOCUS (                 EditSnippetFrame::OnKillFocusWindow)
@@ -179,7 +180,6 @@ bool EditFrameDropFileTarget::OnDropFiles(wxCoord x, wxCoord y, const wxArrayStr
 {
     //NOTE: putting breakpoints in this routine will hang CB
     // From a console do "gdb cbEdit.exe" instead
-    //asm("int3"); /*trap*/
 
     if ( arrayData.GetCount())
         m_Window->OpenDroppedFiles(arrayData);
@@ -227,6 +227,8 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
     m_EditFileName = m_EditSnippetText.BeforeFirst('\r');
     m_EditFileName = m_EditFileName.BeforeFirst('\n');
     //-#if defined(BUILDING_PLUGIN)
+    static const wxString delim(_T("$%["));
+    if( m_EditFileName.find_first_of(delim) != wxString::npos )
         Manager::Get()->GetMacrosManager()->ReplaceMacros(m_EditFileName);
     //-#endif
 
@@ -307,6 +309,9 @@ void EditSnippetFrame::InitEditSnippetFrame(const wxTreeItemId  TreeItemId, int*
                     (wxObjectEventFunction)(wxEventFunction)
                     (wxFocusEventFunction)&EditSnippetFrame::OnKillFocusWindow,
                      NULL, this);
+
+    // wxEVT_DESTROY won't work for us because the window is already deleted and
+    // therefore don't get to save any file changes.
 ////    m_pScbEditor->Connect( wxEVT_DESTROY,
 ////                    (wxObjectEventFunction) (wxEventFunction)
 ////                    (wxCommandEventFunction) &EditSnippetFrame::OnWindowDestroy,
@@ -545,7 +550,7 @@ void EditSnippetFrame::OnFileSaveAs (wxCommandEvent &WXUNUSED(event))
 void EditSnippetFrame::OncbEditorSave( CodeBlocksEvent& event )
 // ----------------------------------------------------------------------------
 {
-    // called before actually saveing the data. Used here to save
+    // called before actually saving the data. Used here to save
     // snippet XML data that is never written to a physical file.
 
     event.Skip();
@@ -565,6 +570,10 @@ void EditSnippetFrame::OncbEditorSave( CodeBlocksEvent& event )
 void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
 // ----------------------------------------------------------------------------
 {
+    #if defined(LOGGING)
+    LOGIT( _T("EditSnippetFrame::OnPageClose"));
+    #endif
+
     //Connect(wxEVT_COMMAND_AUINOTEBOOK_PAGE_CLOSE,
     //            (wxObjectEventFunction)(wxEventFunction)
     //            wxAuiNotebookEventHandler(EditSnippetFrame::OnPageClose),
@@ -595,28 +604,54 @@ void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
     }
 }
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
+void EditSnippetFrame::OnCloseFrameOrWindow(wxCloseEvent &event)
 // ----------------------------------------------------------------------------
 {
     // window will be destroyed by CodeSnippetTreeCtrl::OnIdle()
-    // after it copies the snippet text and get return code
+    // after it copies the snippet text and gets return code
     #if defined(LOGGING)
-    LOGIT( _T("EditSnippetFrame::OnCloseWindow"));
+    LOGIT( _T("EditSnippetFrame::OnCloseFrameOrWindow"));
     #endif
 
+    if ( event.GetEventObject() == this)
+    {   // frame is closing
+    	#if defined(LOGGING)
+    	LOGIT( _T("Frame is closing"));
+    	#endif
+        SEditorBase* eb = GetEditorManager()->GetActiveEditor();
+        if (eb)
+            GetEditorManager()->CloseAll();
+        // Allow all events to clear before frame destroy
+        Manager::Yield();
+        Destroy();
+        return;
+    }
     // Set guard! Loop can occur here from OnPageClose call!
     if (m_OncloseWindowEntries++)
         return;
 
-    if (GetEditorManager()->GetEditorsCount() )
-        GetEditorManager()->CloseAll();
+    int knt = m_pEditorManager->GetEditorsCount();
+    if (not knt)
+    {
+        End_SnippetFrame(m_nReturnCode);
+        Show(false);
+        // Ask SnippetsTreeCtrl to Save and Destroy the editor frame
+        GetConfig()->GetSnippetsTreeCtrl()->SaveDataAndCloseEditorFrame();
+    }
 
-    End_SnippetFrame(m_nReturnCode);
-    // Ask SnippetsTreeCtrl to Save and Destroy the editor frame
-    Show(false);
-    GetConfig()->GetSnippetsTreeCtrl()->SaveDataAndCloseEditorFrame();
-
+    m_OncloseWindowEntries = (m_OncloseWindowEntries<1)? 0 : --m_OncloseWindowEntries;
 }
+//// ----------------------------------------------------------------------------
+//void EditSnippetFrame::OnCloseWindow (wxCloseEvent &event)
+//// ----------------------------------------------------------------------------
+//{
+//    // wxEVT_DESTROY
+//    // This won't work for us because we dont get to save changed text
+//    // before the window is deleted.
+//    #if defined(LOGGING)
+//    LOGIT( _T("EditSnippetFrame::OnCloseWindow"));
+//    #endif
+//}
 // ----------------------------------------------------------------------------
 void EditSnippetFrame::OnMenuFileClose (wxCommandEvent &event)
 // ----------------------------------------------------------------------------
@@ -1189,7 +1224,7 @@ void EditSnippetFrame::OnFrameActivated(wxActivateEvent& event)
             //-for (int i = 0; i < GetConfig()->GetEditorManagerCount(); ++i) <--causes loop betwn ThreadSearchFrame and EditSnippetFrame
             {
                 // for some reason a mouse up event doesnt make it into scintilla (scintilla bug)
-                // therefor the workaournd is not to directly call the editorManager, but
+                // therefore the workaournd is not to directly call the editorManager, but
                 // take a detour through an event
                 // the bug is when the file has been offered to reload, no matter what answer you
                 // give the mouse is in a selecting mode, adding/removing things to it's selection as you
@@ -1202,7 +1237,7 @@ void EditSnippetFrame::OnFrameActivated(wxActivateEvent& event)
     }while(0); //do only once
 
     m_bOnActivateBusy = 0;
-    event.Skip();
+    //-event.Skip();
     return;
 }
 // ----------------------------------------------------------------------------
@@ -1211,7 +1246,6 @@ void EditSnippetFrame::OpenDroppedFiles( const wxArrayString& arrayData)
 {
     //NOTE: putting breakpoints in this routine will hang CB
     // From a console do "gdb cbEdit.exe" instead
-    //asm("int3"); /*trap*/
 
 
     for( int i=0; i<(int)arrayData.GetCount(); ++i)

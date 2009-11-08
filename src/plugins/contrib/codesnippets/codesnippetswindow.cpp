@@ -35,6 +35,7 @@
 #endif
     #include <wx/filename.h>
     #include <wx/toplevel.h>
+    #include <wx/tooltip.h>
 
 // wxWidget headers not include in wx_pch.h
     #include <wx/clipbrd.h>
@@ -297,7 +298,6 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
     // EVT_CLOSE is not generated from wxAUI windows
     // This routine is called by the App OnClose routines
     // and plugin OnRelease();
-    // This is because CodeSnippetsWindow is a wxPanel and not a wxEventHandler
 
     if ( GetConfig()->m_appIsShutdown) { event.Skip(); return;}
 
@@ -326,10 +326,15 @@ void CodeSnippetsWindow::OnClose(wxCloseEvent& event)
     if ( GetConfig()->GetThreadSearchFrame() )
         GetConfig()->GetThreadSearchFrame()->Close();
 
-    //-while ( RemoveEventHandler( this )); causes crash
+    // Destroy() only for standalone CodeSnippets
+    // If being called from plugins OnRelease(),  Destroy()
+    // will crash wxAuiNotebook on CB termination.
+    if (not GetConfig()->IsPlugin())
+    {
+        Destroy();
+        GetConfig()->pSnippetsWindow = 0;
+    }
 
-    Destroy();
-    GetConfig()->pSnippetsWindow = 0;
     event.Skip();
     #if defined(LOGGING)
     LOGIT( _T("CodeSnippetsWindow::OnClose END"));
@@ -479,11 +484,24 @@ void CodeSnippetsWindow::OnSearch(wxCommandEvent& /*event*/)
 void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
 // ----------------------------------------------------------------------------
 {
-
     // Double click on snippet item
     // if shift key is down, apply the snippet, else edit it.
 
     if ( IsTreeBusy() ) return;
+
+	// Get the item associated with the event
+	wxTreeItemId itemId = event.GetItem();
+    SnippetItemData* eventItem = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(event.GetItem()));
+
+    if (eventItem->GetType() == SnippetItemData::TYPE_CATEGORY)
+    {   //expand or collapse the tree category
+        wxTreeCtrl* ptree = ((wxTreeCtrl*)event.GetEventObject());
+        if (ptree->IsExpanded(itemId))
+            ptree->Collapse(itemId);
+        else
+            ptree->Expand(itemId);
+        return;
+    }
 
     if (::wxGetKeyState(WXK_SHIFT) )
     {    ApplySnippet(event.GetItem());
@@ -1060,7 +1078,7 @@ void CodeSnippetsWindow::CloseThreadSearchFrame()
     // called from ThreadSearchFrame::OnClose()
     // just before Destroy()
 
-    //asm("int3"); /*trap*/ //Why?? It's returning to a destroyed frame
+    //Why?? It's returning to a destroyed frame
     wxWindow* pThreadSearchFrame = GetConfig()->GetThreadSearchFrame();
     if ( pThreadSearchFrame )
     {
@@ -1080,6 +1098,8 @@ void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 		{
 		    wxString itemStr = itemData->GetSnippet();
             //-#if defined(BUILDING_PLUGIN)
+            static const wxString delim(_T("$%["));
+            if( itemStr.find_first_of(delim) != wxString::npos )
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(itemStr);
             //-#endif
 
@@ -1172,7 +1192,9 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
 		wxString macroName = snippet.SubString(macroPos + 2, macroPosEnd - 1);
         wxString defaultResult = snippet.SubString(macroPos,macroPosEnd);
         //-#if defined(BUILDING_PLUGIN)
-          Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultResult);
+        static const wxString delim(_T("$%["));
+        if( defaultResult.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultResult);
         //-#endif
 
 		wxString macro = wxGetTextFromUser(wxString::Format(_("Please enter the text for \"%s\":"), macroName.c_str()),
@@ -1198,6 +1220,9 @@ void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
 {
 	// "My eyes! The goggles do nothing!"
 	//
+	if (not GetConfig()->GetToolTipsOption())
+        return;
+
 	// Use the following only on wxWidgets 2.8.
 	#if wxCHECK_VERSION(2, 8, 0)
 	if (const SnippetItemData* itemData = (SnippetItemData*)(GetSnippetsTreeCtrl()->GetItemData(event.GetItem())))
@@ -1336,8 +1361,8 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     wxFileName fname( GetConfig()->SettingsSnippetsXmlPath );
     wxDateTime last = fname.GetModificationTime();
     #if defined(LOGGING)
-    LOGIT( _T("SnippetsXmlPath[%s]time[%s]"),
-                fname.GetFullPath().c_str(), last.Format().c_str());
+    //LOGIT( _T("SnippetsXmlPath[%s]time[%s]"),
+    //            fname.GetFullPath().c_str(), last.Format().c_str());
     #endif
 
     //    ProjectFile* pf = ed->GetProjectFile();
@@ -1364,7 +1389,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     //Was File content changed?
     wxDateTime fileModTime = GetSnippetsTreeCtrl()->GetSavedFileModificationTime();
     #if defined(LOGGING)
-    LOGIT( _T("FileModTime[%s]"), fileModTime.Format().c_str());
+    //LOGIT( _T("FileModTime[%s]"), fileModTime.Format().c_str());
     #endif
     if ( fileModTime == time_t(0) ) //not yet initialized
         b_modified = false;

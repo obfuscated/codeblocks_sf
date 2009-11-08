@@ -137,6 +137,8 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
                 fileName = fileName.BeforeFirst('\n');
                 //-#if defined(BUILDING_PLUGIN)
+                static const wxString delim(_T("$%["));
+                if( fileName.find_first_of(delim) != wxString::npos )
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
                 //-#endif
                 return fileName;
@@ -225,6 +227,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void OnMouseWheelEvent(wxMouseEvent& event);
         void OnShutdown(wxCloseEvent& event);
         //-void OnIdle(wxIdleEvent& event);
+        void CreateDirLevels(const wxString& pathNameIn);
 
 		// Must use this so overridden OnCompareItems() works on MSW,
 		// see wxWidgets Samples -> TreeCtrl sample

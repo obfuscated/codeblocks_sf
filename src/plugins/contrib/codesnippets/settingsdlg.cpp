@@ -68,6 +68,8 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
 
     // Put the old EditorsStayOnTop options
     m_EditorsStayOnTopChkBox->SetValue( GetConfig()->GetEditorsStayOnTop() );
+    // Put the old ToolTip options
+    m_ToolTipsChkBox->SetValue( GetConfig()->GetToolTipsOption() );
 
     // Read Mouse DragScrolling settings
     wxString windowState = GetConfig()->GetSettingsWindowState();
@@ -114,6 +116,8 @@ void SettingsDlg::OnOk(wxCommandEvent& event)
 
     // Get the EditorsStayOnTop options
     GetConfig()->SetEditorsStayOnTop( m_EditorsStayOnTopChkBox->GetValue() );
+    // Get the ToolTips options
+    GetConfig()->SetToolTipsOption( m_ToolTipsChkBox->GetValue() );
 
     wxString windowState = wxT("Floating");
     if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");

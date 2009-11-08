@@ -47,6 +47,7 @@ class CodeSnippetsApp : public wxApp
 {
 	public:
 		virtual bool OnInit();
+		virtual int OnExit();
 		//-void OnActivateApp(wxActivateEvent& event);
     private:
 
@@ -125,6 +126,10 @@ class CodeSnippetsAppFrame: public wxFrame
         bool InitXRCStuff();
         void ComplainBadInstall();
         int ParseCmdLine(wxFrame* handlerFrame);
+        void ImportCBResources();
+        wxString GetCBExeFolder();
+        bool FileImport(const wxString& source, const wxString& dest);
+        wxString Normalize(const wxString& filenamein);
 
 		wxString            buildInfo;
         wxString            versionStr;

@@ -93,12 +93,17 @@ SettingsDlgForm::SettingsDlgForm( wxWindow* parent, wxWindowID id, const wxStrin
 	bSizer->Add( bSizer10, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer51;
-	bSizer51 = new wxBoxSizer( wxVERTICAL );
+	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
 	
 	m_EditorsStayOnTopChkBox = new wxCheckBox( this, wxID_ANY, wxT("Editors Stay On Top"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_EditorsStayOnTopChkBox->SetValue(true);
 	
 	bSizer51->Add( m_EditorsStayOnTopChkBox, 0, wxALL, 5 );
+	
+	m_ToolTipsChkBox = new wxCheckBox( this, wxID_ANY, wxT("ToolTips"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_ToolTipsChkBox->SetValue(true);
+	
+	bSizer51->Add( m_ToolTipsChkBox, 0, wxALL, 5 );
 	
 	bSizer->Add( bSizer51, 1, wxEXPAND, 5 );
 	

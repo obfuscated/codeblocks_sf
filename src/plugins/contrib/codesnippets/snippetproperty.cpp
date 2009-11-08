@@ -44,8 +44,8 @@
 #include "defsext.h"
 #include "dragscrollevent.h"
 #include "version.h"
-#include <wx/wxscintilla.h>
-
+//#include "wxscintilla/include/wx/wxscintilla.h"   //svn5785
+#include <wx/wxscintilla.h>                         //svn5785
 
    BEGIN_EVENT_TABLE(SnippetProperty, SnippetPropertyForm)
     EVT_BUTTON(wxID_OK,             SnippetProperty::OnOk)

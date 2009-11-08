@@ -49,6 +49,7 @@ class SettingsDlgForm : public wxDialog
 		wxRadioButton* m_RadioExternalBtn;
 		
 		wxCheckBox* m_EditorsStayOnTopChkBox;
+		wxCheckBox* m_ToolTipsChkBox;
 		wxStaticText* m_CfgFolderStaticText;
 		wxStaticText* m_IniFolderStaticText;
 		wxStdDialogButtonSizer* m_sdbSizer;
@@ -58,7 +59,7 @@ class SettingsDlgForm : public wxDialog
 	public:
 		wxTextCtrl* m_CfgFolderTextCtrl;
 		wxTextCtrl* m_IniFolderTextCtrl;
-		SettingsDlgForm( wxWindow* parent, wxWindowID id = ID_DEFAULT, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,360 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+		SettingsDlgForm( wxWindow* parent, wxWindowID id = ID_DEFAULT, const wxString& title = wxEmptyString, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,389 ), long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 		~SettingsDlgForm();
 	
 };

@@ -93,6 +93,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
 	SettingsCBConfigPath    = wxEmptyString;
 	SettingsSearchBox = false;
 	SettingsEditorsStayOnTop = true;
+	SettingsToolTipsOption = true;
 	m_SearchConfig.caseSensitive = false;
 	m_SearchConfig.scope = SCOPE_BOTH;
     pSnipImages = 0;
@@ -111,6 +112,7 @@ CodeSnippetsConfig::CodeSnippetsConfig()
     m_pThreadSearchPlugin = 0;
     m_pDragScrollPlugin = 0;
     g_lKeepAlivePid = 0;
+    m_AppParent = wxEmptyString;
 
 }
 
@@ -152,6 +154,8 @@ void CodeSnippetsConfig::SettingsLoad()
 
     // read Editors Stay-On-Top of main window option
     cfgFile.Read( _T("EditorsStayOnTop"), &SettingsEditorsStayOnTop, true);
+    // read Editors ToolTips option
+    cfgFile.Read( _T("ToolTipsOption"), &SettingsToolTipsOption, true);
 
     // Read External App state. Launched App will see it as false because
     // plugin has not set it true yet, so if this is launched App, set it true
@@ -193,6 +197,7 @@ void CodeSnippetsConfig::SettingsLoad()
      LOGIT( _T("caseSensitive[%d]"),            m_SearchConfig.caseSensitive );
      LOGIT( _T("SettingsSnippetsXmlPath[%s]"),  SettingsSnippetsXmlPath.c_str() );
      LOGIT( _T("SettingsEditorsStayOnTop[%s]"), SettingsEditorsStayOnTop?_T("True"):_T("False") );
+     LOGIT( _T("SettingsToolTipsOption[%s]"),   SettingsToolTipsOption?_T("True"):_T("False") );
      LOGIT( _T("ExternalPersistentOpen[%s]"),   IsExternalPersistentOpen()?_T("True"):_T("False") );
     #endif //LOGGING
 
@@ -234,12 +239,12 @@ void CodeSnippetsConfig::SettingsSave()
 	cfgFile.Write( wxT("casesensitive"),   m_SearchConfig.caseSensitive ) ;
 	cfgFile.Write( wxT("scope"),           int(m_SearchConfig.scope) );
 	cfgFile.Write( wxT("EditorsStayOnTop"),SettingsEditorsStayOnTop );
+	cfgFile.Write( wxT("ToolTipsOption"),  SettingsToolTipsOption );
 	if ( IsPlugin() )
 	{   // Write ExternalPersistent for plugin use only
         cfgFile.Write( wxT("ExternalPersistentOpen"),IsExternalPersistentOpen() );
         #if defined(LOGGING)
         //LOGIT( _T("ExternalPersistentOpen is[%s]"), IsExternalPersistentOpen()?_T("true"):_T("false"));
-        //if (false == IsExternalPersistentOpen()) asm("int3"); /*trap*/
         #endif
 	}
 
@@ -472,7 +477,6 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
 
     // Floating windows have different parents than their original MainFrame
     // if parent window == CodeBlocks MainFrame, then docked
-    //asm("int3"); /*trap*/
     if ( pwSnippet == pwCodeBlocks )
     {
         #if defined(LOGGING)

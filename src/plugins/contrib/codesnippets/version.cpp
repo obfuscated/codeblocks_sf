@@ -505,6 +505,20 @@ AppVersion::~AppVersion()
 //          107) Use APPDATA envar on first run since CodeBlocks returns ""
 //               for config folder in OnAttach().
 // ----------------------------------------------------------------------------
+//  Commit 1.3.118 2009/11/8
+//          107) re-enable context menu for editors. Needs more work
+//          108) Added config option to turn off tooltips
+//          109) Added Save/Close to context menu and filtered entries
+//          110) Correct behavior of Close() for editor tabs in SEditorManager
+//          111) Import CB resouces when using external codesnippets folder
+//          112) Validate dir structure before saving .xml file (SaveItemsToFile)
+//          113) Double click or Enter key on category expands or collapses tree item
+//          114) Fix behavior of docked/floating window at OnRelease()
+//          115) Call macro replace only if text has some of "$%["
+//          116) Add support for vendors other than "codeblocks"
+//          117) Fix erroneous double entry into "Save Index As" routine
+//          118) Fix crash in SEditorManager::CheckForExternallyModifiedFiles();
+// ----------------------------------------------------------------------------
 //  Bugs
 //      2008/04/8
 //          If floating wxAUI window is docked with Edit's open, they disappear. But
@@ -516,20 +530,14 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  ToDo
 //          Update Wiki for FullSearch instructions
-//          App:Allow SeparateEditor configuration
-//          App:Allow user to re-clone default.conf
 //          Enable Editor context options, esp. ThreadSearch item
-//          Use cbEditor API
-//          keybinder capability ?
 //
 //  CodeSnippets
 //          Search should continue to next matching item, not just stop (F3?)
 //          Help should invoke browser for wiki article
 //          Update wiki for Re-arranging Tree items/multi-editing/.trash
 //              backup, wrapper execution, Drag'nDrop
-//          Add option for ToolTips and max chars shown
-//          Iconize(false) did not work on Linux. check when GTK is at 2.8.4
-//          Enter key should open/close categories like left/right key
+//
 //  Other
 //          Wierd but Ok Department: Dragging a file within .trash asks to "Delete file?"
 //              But who'll do that? Reason: OnEndTreeItemDrag() calls RemoveItem() from .trash;

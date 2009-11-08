@@ -69,6 +69,8 @@ class SnippetItemData : public wxTreeItemData
                 wxString FileName = GetSnippet().BeforeFirst('\r');
                          FileName = FileName.BeforeFirst('\n');
                 //-#if defined(BUILDING_PLUGIN)
+                static const wxString delim(_T("$%["));
+                if( FileName.find_first_of(delim) != wxString::npos )
                     Manager::Get()->GetMacrosManager()->ReplaceMacros(FileName);
                 //-#endif
                 if (FileName.Length() > 128)

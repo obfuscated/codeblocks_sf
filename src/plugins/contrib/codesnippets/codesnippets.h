@@ -297,7 +297,7 @@ class DropTargetsComposite: public wxDataObjectComposite
 ////    virtual bool GiveFeedback(wxDragResult WXUNUSED(effect))
 ////        {
 ////            LOGIT( _T("DropSource GiveFeedBack"));
-////            //asm("int3");
+////
 ////            return true;
 ////            //return false;
 ////        }

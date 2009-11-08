@@ -53,12 +53,8 @@
 #include "dragscrollevent.h"
 
 #if defined(__WXGTK__)
-    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
-    // in newer glib-headers
-    #define GSocket GLibSocket
-    #include <gdk/gdkx.h>
-    #undef GSocket
     #include "wx/gtk/win_gtk.h"
+    #include <gdk/gdkx.h>
 #endif
 
 // ----------------------------------------------------------------------------
@@ -229,7 +225,6 @@ void CodeSnippets::OnAttach()
 
     m_nOnActivateBusy = 0;
     m_ExternalPid = 0;
-    //-m_pMappedFile = 0;
     m_KeepAliveFileName = wxEmptyString;
     GetConfig()->m_appIsShutdown = false;
     GetConfig()->m_appIsDisabled = false;
@@ -304,12 +299,10 @@ void CodeSnippets::OnRelease(bool appShutDown)
     {   wxMilliSleep(10) ; wxYield();
     }
 
-
-    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-    //CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
-    evt.pWindow = GetSnippetsWindow();
-    Manager::Get()->ProcessEvent(evt);
-
+    //-CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    //--CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
+    //-evt.pWindow = GetSnippetsWindow();
+    //-Manager::Get()->ProcessEvent(evt);
 
     Disconnect(wxEVT_IDLE,
             wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
@@ -326,8 +319,8 @@ void CodeSnippets::OnRelease(bool appShutDown)
                 GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
 
     wxCloseEvent closeevt;
+    closeevt.SetEventObject(GetConfig()->GetSnippetsWindow());
     GetConfig()->GetSnippetsWindow()->OnClose(closeevt);
-    //GetConfig()->GetSnippetsWindow()->Destroy();
 
     // Make sure user cannot re-enable CodeSnippets until a CB restart
     GetConfig()->m_appIsShutdown = true;
@@ -448,7 +441,11 @@ void CodeSnippets::OnAppStartShutdown(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     //NOTE: This Event is begin called twice from main.cpp
+    if (GetConfig()->m_appIsShutdown)
+        return;
     GetConfig()->SettingsSave();
+    // Call OnRelease() before CodeBlocks actually closes down or we'll crash
+    OnRelease(true);
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::CreateSnippetWindow()
@@ -580,14 +577,14 @@ void CodeSnippets::OnViewSnippets(wxCommandEvent& event)
             TellExternalSnippetsToTerminate();
             RemoveKeepAliveFile();
             m_ExternalPid = 0;
-            //asm("int3"); /*trap*/
+
             GetConfig()->SetExternalPersistentOpen(false);
             return;
         }
     }
     else if ( m_ExternalPid )
     {   // user changed from Independent window to some other type(docked or floating) ;
-        //asm("int3"); /*trap*/
+
         TellExternalSnippetsToTerminate();
         RemoveKeepAliveFile();
         m_ExternalPid = 0;
@@ -1248,7 +1245,9 @@ void CodeSnippets::OnTreeDragEvent(wxTreeEvent& event)
 
         //-#if defined(BUILDING_PLUGIN)
             // substitute any $(macro) text
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(m_TreeText);
+            static const wxString delim(_T("$%["));
+            if( m_TreeText.find_first_of(delim) != wxString::npos )
+                Manager::Get()->GetMacrosManager()->ReplaceMacros(m_TreeText);
             #if defined(LOGGING)
             LOGIT( _T("$macros substitute[%s]"),m_TreeText.c_str() );
             #endif
@@ -1650,7 +1649,8 @@ long CodeSnippets::LaunchExternalSnippets()
         #endif
     }while(0);
 
-    wxString pgmArgs( wxString::Format( wxT("--KeepAlivePid=%lu"), ::wxGetProcessId() ) );
+    wxString appName = wxTheApp->GetAppName();
+    wxString pgmArgs( wxString::Format( wxT("--KeepAlivePid=%lu --AppParent=%s"), ::wxGetProcessId(), appName.c_str() ) );
     wxString command = PgmFullPath + wxT(" ") + pgmArgs;
 
     #if defined(LOGGING)
@@ -1684,6 +1684,8 @@ wxWindow* CodeSnippets::FindOpenFilesListWindow()
         #if defined(LOGGING)
         LOGIT( _T("idMenuOpenFilesList:[%d]"), idMenuOpenFilesList );
         #endif
+        // Hack: we know that the id is assigned in a namespace with wxNewId() just
+        // before the menu id is.
         idWindowOpenFilesList = idMenuOpenFilesList - 1;
         wxWindow* pOpenFilesListWin = wxWindow::FindWindowById( idWindowOpenFilesList, pFrame);
         if (pOpenFilesListWin)
@@ -1754,7 +1756,8 @@ wxString CodeSnippets::GetCBConfigFile()
         // Get APPDATA env var and append ".codeblocks" to it
         wxGetEnv(_T("APPDATA"), &appdata);
         current_conf_file = appdata +
-                    wxFILE_SEP_PATH + _T("codeblocks") + wxFILE_SEP_PATH
+                    //-wxFILE_SEP_PATH + _T("codeblocks") + wxFILE_SEP_PATH
+                    wxFILE_SEP_PATH + wxTheApp->GetAppName() + wxFILE_SEP_PATH
                     + personality + _T(".codesnippets.ini");
     }
     return current_conf_file;

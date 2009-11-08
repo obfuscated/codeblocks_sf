@@ -52,15 +52,12 @@
 #include "codesnippetsevent.h"
 #include "snippetsconfig.h"
 #include "dragscrollevent.h"
+#include "FileImport.h"
 #include "version.h"
 
 #if defined(__WXGTK__)
-    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
-    // in newer glib-headers
-    #define GSocket GLibSocket
-    #include <gdk/gdkx.h>
-    #undef GSocket
     #include "wx/gtk/win_gtk.h"
+    #include <gdk/gdkx.h>
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(CodeSnippetsTreeCtrl, wxTreeCtrl)
@@ -122,9 +119,12 @@ bool CodeSnippetsTreeCtrl::IsFileSnippet (wxTreeItemId treeItemId  )
     fileName = fileName.BeforeFirst('\n');
     // substitute $macros with actual text
     //-#if defined(BUILDING_PLUGIN)
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+        static const wxString delim(_T("$%["));
+        if( fileName.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
         //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
     //-#endif
+
     if ( not ::wxFileExists( fileName) ) return false;
     return true;
 }
@@ -140,7 +140,9 @@ bool CodeSnippetsTreeCtrl::IsFileLinkSnippet (wxTreeItemId treeItemId  )
     fileName = fileName.BeforeFirst('\n');
     // substitute $macros with actual text
     //-#if defined(BUILDING_PLUGIN)
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+        static const wxString delim(_T("$%["));
+        if( fileName.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
         //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
     //-#endif
     if (fileName.Length() > 128)
@@ -166,7 +168,9 @@ wxString CodeSnippetsTreeCtrl::GetFileLinkExt (wxTreeItemId treeItemId  )
     fileName = fileName.BeforeFirst('\n');
     // substitute $macros with actual text
     //-#if defined(BUILDING_PLUGIN)
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
+        static const wxString delim(_T("$%["));
+        if( fileName.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
         //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
     //-#endif
     if ( not ::wxFileExists( fileName) ) return wxT("");
@@ -613,6 +617,9 @@ void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
 {
     // This routine also called from codesnippets.cpp::OnRelease()
 
+    // verify all dir levels exist
+    CreateDirLevels(fileName);
+
     SnippetItemData::SetHighestSnippetID( 0 );
     ResetSnippetsIDs( GetRootItem() );
 
@@ -629,7 +636,11 @@ void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
 
 	doc.InsertEndChild(snippetsElement);
 
-	doc.SaveFile(fileName.mb_str());
+	int rc = doc.SaveFile(fileName.mb_str());
+    if(not rc)
+    {   wxString msg = wxString::Format(_T("ERROR: Failed to save %s"), fileName.c_str());
+        wxMessageBox(msg, _T("ERROR"));
+    }
 	SetFileChanged(false);
 	SnippetItemData::SetSnippetsItemsChangedCount(0);
 	FetchFileModificationTime();
@@ -641,7 +652,7 @@ void CodeSnippetsTreeCtrl::SaveItemsToFile(const wxString& fileName)
     evt.PostCodeSnippetsEvent(evt);
 
     #ifdef LOGGING
-     LOGIT( _T("File saved:[%s]"),fileName.c_str() );
+     if (rc) LOGIT( _T("File saved:[%s]"),fileName.c_str() );
     #endif //LOGGING
 }
 
@@ -1064,7 +1075,9 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     wxString textStr = GetSnippet(m_MnuAssociatedItemID) ;
     //-#if defined(BUILDING_PLUGIN)
         // substitute any $(macro) text
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(textStr);
+        static const wxString delim(_T("$%["));
+        if( textStr.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(textStr);
         //-LOGIT( _T("SnippetsTreeCtrl OnLeaveWindow $macros text[%s]"),textStr.c_str() );
     //-#endif
 
@@ -1633,7 +1646,9 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     wxFileName snippetFileName( newFileName) ;
     //-#if defined(BUILDING_PLUGIN)
         // substitute any $(macro) text
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(newFileName);
+        static const wxString delim(_T("$%["));
+        if( newFileName.find_first_of(delim) != wxString::npos )
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(newFileName);
         //-LOGIT( _T("$macros substitute[%s]"),newFileName.c_str() );
     //-#endif
 
@@ -2046,31 +2061,6 @@ void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
     event.Skip(); return;
-////    // Here because our Connect() intercepted wxTheApp EVT_CLOSE
-////    // Blink this modeless dialog just like it was a modal dialog
-////        //    wxWindow* oldTop = wxTheApp->GetTopWindow();
-////        //    wxDialog* pdlg = this->m_pTopDialog;
-////        //    wxTheApp->SetTopWindow( pdlg );
-////        //    pdlg->RequestUserAttention();
-////        //    wxTheApp->SetTopWindow(oldTop);
-////        //    event.Veto();
-////        //    //event.Skip(); causes app to crash
-////
-////    // This bool prevents crash when CodeBlocks is shutdown;
-////    this->m_bShutDown = true;
-////    for (size_t i = 0; i < this->m_aDlgPtrs.GetCount(); ++i )
-////    {
-////        wxDialog* pdlg = this->m_aDlgPtrs.Item(i);
-////        if (pdlg) pdlg->ProcessEvent(event);
-////    }
-////    #if defined(BUILDING_PLUGIN)
-////      // Enable the plugin View menu item
-////        asm("int3");
-////        Manager::Get()->GetAppWindow()->GetMenuBar()->Enable(idViewSnippets, true);
-////    #endif
-////
-////    event.Skip();
-////    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event)
@@ -2304,4 +2294,12 @@ wxTreeItemId CodeSnippetsTreeCtrl::FillFileLinksMapArray(const wxTreeItemId& sta
 
    // Return dummy item if search string was not found
    return dummyItem;
+}
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::CreateDirLevels(const wxString& pathNameIn)
+// ----------------------------------------------------------------------------
+{
+    // FileImport Traverser will create any missing directories
+    FileImportTraverser fit(_T("dummy"), pathNameIn);
+    return;
 }
