@@ -77,6 +77,7 @@
 	#include "projectmanager.h"
 	#include "cbproject.h"
 	#include "configmanager.h"
+	#include "logmanager.h"
 #endif
 #include "projectloader_hooks.h"
 #include "configurationpanel.h"

@@ -214,7 +214,7 @@ AppVersion::~AppVersion()
 //      80) Hack to find editor's project. Since wxAuiNotebook, the initial
 //          EVT_EDITOR_ACTIVATED has no cbEditor or cbProject associated.
 // ----------------------------------------------------------------------------
-//  Commit 1.2.84 2009/11/7
+//  Testing 1.2.84 2009/11/7
 //       81) Set browse marks sorting flag in OnEditorActivated()
 //       82) Set BrowseSelector width window by filename width
 //       83) Added JumpTracker; record each activated cursor posn within a half-page

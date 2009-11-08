@@ -216,7 +216,7 @@ class BrowseTracker : public cbPlugin
         void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
         void OnStartShutdown(CodeBlocksEvent& event);
-        void OnPageChanged(wxAuiNotebookEvent& event);
+        //-void OnPageChanged(wxAuiNotebookEvent& event);
 
         void OnMenuBrowseMarkPrevious(wxCommandEvent& event);
         void OnMenuBrowseMarkNext(wxCommandEvent& event);
