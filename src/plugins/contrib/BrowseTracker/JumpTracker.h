@@ -28,6 +28,7 @@ WX_DECLARE_OBJARRAY(JumpData, ArrayOfJumpData);
 
 // ----------------------------------------------------------------------------
 class JumpTracker : public cbPlugin
+//class JumpTracker : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
     friend class BrowseTracker;
@@ -110,6 +111,9 @@ class JumpTracker : public cbPlugin
         void OnMenuJumpNext(wxCommandEvent &event);
         void OnMenuJumpClear(wxCommandEvent &event);
         void OnMenuJumpDump(wxCommandEvent &event);
+
+        //-bool IsAttached() {return m_IsAttached;}
+        //bool m_IsAttached;
 
     private:
         void JumpDataAdd(const wxString& filename, const long posn);

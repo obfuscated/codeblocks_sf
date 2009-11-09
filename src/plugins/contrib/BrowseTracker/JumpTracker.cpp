@@ -25,7 +25,7 @@ WX_DEFINE_OBJARRAY(ArrayOfJumpData);
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<JumpTracker> reg(_T("JumpTracker"));
+    //-PluginRegistrant<JumpTracker> reg(_T("JumpTracker"));
     int idMenuJumpView = wxNewId();
     int idMenuJumpBack = wxNewId();
     int idMenuJumpNext = wxNewId();
@@ -66,6 +66,7 @@ JumpTracker::JumpTracker()
     m_Cursor = maxJumpEntries;
     m_ArrayOfJumpData.Clear();
     m_bProjectClosing = false;
+    m_IsAttached = false;
 
 }
 // ----------------------------------------------------------------------------
@@ -101,6 +102,21 @@ void JumpTracker::OnAttach()
     //    // Set current plugin version
     //	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
     //	pInfo->version = plgnVersion.GetVersion();
+
+    wxWindow* appWin = Manager::Get()->GetAppWindow();
+    appWin->PushEventHandler(this);
+    appWin->Connect(idMenuJumpBack, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &JumpTracker::OnMenuJumpBack, 0, this);
+    appWin->Connect(idMenuJumpNext, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &JumpTracker::OnMenuJumpNext, 0, this);
+    appWin->Connect(idMenuJumpClear, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &JumpTracker::OnMenuJumpClear, 0, this);
+    appWin->Connect(idMenuJumpDump, -1, wxEVT_COMMAND_MENU_SELECTED,
+            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+            &JumpTracker::OnMenuJumpDump, 0, this);
 
     // Codeblocks Events registration
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI   , new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorUpdateEvent));
@@ -172,27 +188,6 @@ void JumpTracker::BuildMenu(wxMenuBar* menuBar)
     // must insert at 0; it moves there after using "config tools..." anyway
     //pToolsMenu->Insert(0, idMenuAVRStudioStart, _("AVRStudio"), _("AVR Studio Start"));
 
-//    EVT_MENU( idMenuJumpBack,  JumpTracker::OnMenuJumpBack)
-//    EVT_MENU( idMenuJumpNext,  JumpTracker::OnMenuJumpNext)
-//    EVT_MENU( idMenuJumpClear, JumpTracker::OnMenuJumpClear)
-//    EVT_MENU( idMenuJumpDump,  JumpTracker::OnMenuJumpDump)
-
-    wxWindow* appWin = Manager::Get()->GetAppWindow();
-    appWin->PushEventHandler(this);
-
-    appWin->Connect(idMenuJumpBack, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpBack, 0, this);
-    appWin->Connect(idMenuJumpNext, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpNext, 0, this);
-    appWin->Connect(idMenuJumpClear, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpClear, 0, this);
-    appWin->Connect(idMenuJumpDump, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpDump, 0, this);
-
 }
 // ----------------------------------------------------------------------------
 void JumpTracker::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
@@ -202,7 +197,7 @@ void JumpTracker::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     //Check the parameter \"type\" and see which module it is
     //and append any items you need in the menu...
     //TIP: for consistency, add a separator as the first item...
-    NotImplemented(_T("JumpTracker::BuildModuleMenu()"));
+    //-NotImplemented(_T("JumpTracker::BuildModuleMenu()"));
 }
 // ----------------------------------------------------------------------------
 bool JumpTracker::BuildToolBar(wxToolBar* toolBar)
@@ -211,7 +206,7 @@ bool JumpTracker::BuildToolBar(wxToolBar* toolBar)
     //The application is offering its toolbar for your plugin,
     //to add any toolbar items you want...
     //Append any items you need on the toolbar...
-    NotImplemented(_T("JumpTracker::BuildToolBar()"));
+    //-NotImplemented(_T("JumpTracker::BuildToolBar()"));
 
     // return true if you add toolbar items
     return false;
@@ -222,6 +217,7 @@ void JumpTracker::OnEditorUpdateEvent(CodeBlocksEvent& event)
 {
     //asm("int3"); /*trap*/
     event.Skip();
+
     if ( m_bShuttingDown )
         return;
 
@@ -278,6 +274,7 @@ void JumpTracker::OnEditorActivated(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Record this activation event and place activation in history
+    event.Skip();
 
     if (m_bShuttingDown) return;
     if (not IsAttached()) return;
@@ -325,6 +322,8 @@ void JumpTracker::OnStartShutdown(CodeBlocksEvent& event)
 void JumpTracker::OnProjectClosing(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
+    event.Skip();
+
     // This hook occurs before the editors are closed. That allows
     // us to reference CB project and editor related data before CB
     // deletes it all.
@@ -341,6 +340,8 @@ void JumpTracker::OnProjectClosing(CodeBlocksEvent& event)
 void JumpTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
+    event.Skip();
+
     // NB: EVT_PROJECT_ACTIVATE is occuring before EVT_PROJECT_OPEN
     // NB: EVT_EDITOR_ACTIVATE event occur before EVT_PROJECT_ACTIVATE or EVT_PROJECT_OPEN
 

@@ -214,11 +214,12 @@ AppVersion::~AppVersion()
 //      80) Hack to find editor's project. Since wxAuiNotebook, the initial
 //          EVT_EDITOR_ACTIVATED has no cbEditor or cbProject associated.
 // ----------------------------------------------------------------------------
-//  Testing 1.2.84 2009/11/7
+//  Commit 1.2.85 2009/11/9
 //       81) Set browse marks sorting flag in OnEditorActivated()
 //       82) Set BrowseSelector width window by filename width
 //       83) Added JumpTracker; record each activated cursor posn within a half-page
 //       84) Activate previously active editor when secondary project closes.
+//       85  Fix crash when disabling plugins (in BuildMenu)
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //          Requires CB to be restarted after Install before Alt-Left/Right work.

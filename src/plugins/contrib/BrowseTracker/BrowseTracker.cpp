@@ -428,7 +428,8 @@ void BrowseTracker::OnRelease(bool appShutDown)
 void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
 // ----------------------------------------------------------------------------
 {
-    m_pJumpTracker->BuildMenu(menuBar);
+    if (m_pJumpTracker)
+        m_pJumpTracker->BuildMenu(menuBar);
 
     m_pMenuBar = menuBar;
 
