@@ -53,8 +53,12 @@
 #include "dragscrollevent.h"
 
 #if defined(__WXGTK__)
-    #include "wx/gtk/win_gtk.h"
+    // hack to avoid name-conflict between wxWidgets GSocket and the one defined
+    // in newer glib-headers
+    #define GSocket GLibSocket
     #include <gdk/gdkx.h>
+    #undef GSocket
+    #include "wx/gtk/win_gtk.h"
 #endif
 
 // ----------------------------------------------------------------------------
