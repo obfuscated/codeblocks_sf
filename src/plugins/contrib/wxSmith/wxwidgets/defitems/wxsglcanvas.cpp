@@ -111,7 +111,7 @@ void wxsGLCanvas::OnBuildCreatingCode()
             AddHeader(_T("<wx/glcanvas.h>"), GetInfo().ClassName, 0);
 
             // Generate unique name for attributes variable
-            wxString aname = GetCoderContext()->GetUniqueName( _T("GLCanvasAttribuets") );
+            wxString aname = GetCoderContext()->GetUniqueName( _T("GLCanvasAttributes") );
 
             // Generate attributes array
             #if wxCHECK_VERSION(2, 9, 0)
