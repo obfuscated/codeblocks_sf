@@ -5,6 +5,7 @@
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker-unix.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames-unix.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder-unix.cbp" />
+		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp" />
 		<Project filename="plugins/contrib/cb_koders/cb_koders-unix.cbp" />
 		<Project filename="plugins/contrib/codesnippets/codesnippets-unix.cbp" />
 		<Project filename="plugins/contrib/codestat/codestat-unix.cbp" />

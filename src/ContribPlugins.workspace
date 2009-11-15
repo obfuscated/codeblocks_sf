@@ -3,6 +3,7 @@
 	<Workspace title="All contrib plugins">
 		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning.cbp" active="1" />
 		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker.cbp" />
+		<Project filename="plugins\contrib\Cccc\Cccc.cbp" />
 		<Project filename="plugins\contrib\codesnippets\codesnippets.cbp" />
 		<Project filename="plugins\contrib\codestat\codestat.cbp" />
 		<Project filename="plugins\contrib\copystrings\copystrings.cbp" />

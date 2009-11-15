@@ -98,6 +98,10 @@ if BUILD_MOUSESAP
 MAYBE_MOUSESAP=MouseSap
 endif
 
+if BUILD_CCCC
+MAYBE_CCCC=Cccc
+endif
+
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
@@ -123,6 +127,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_HEXEDITOR) \
 		$(MAYBE_INCSEARCH) \
 		$(MAYBE_MOUSESAP)
+		$(MAYBE_CCCC)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
@@ -149,5 +154,6 @@ DIST_SUBDIRS = AutoVersioning \
 		lib_finder \
 		HexEditor \
 		IncrementalSearch \
-		MouseSap
+		MouseSap \
+		Cccc
 
