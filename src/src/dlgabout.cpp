@@ -12,7 +12,7 @@
 #ifdef __WXMAC__
 #include <wx/font.h>
 #endif //__WXMAC__
-#include <wx/image.h>	// wxImage
+#include <wx/image.h>    // wxImage
 #include <wx/intl.h>
 #include <wx/stattext.h>
 #include <wx/string.h>
@@ -22,7 +22,7 @@
 #include "configmanager.h"
 #endif
 #include <wx/bitmap.h>
-#include <wx/dcmemory.h>	// wxMemoryDC
+#include <wx/dcmemory.h>    // wxMemoryDC
 #include <wx/statbmp.h>
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
@@ -36,23 +36,23 @@ dlgAbout::dlgAbout(wxWindow* parent)
 
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
-					             _(" is a full-featured IDE (Integrated Development Environment) "
-					"aiming to make the individual developer (and the development team) "
-					"work in a nice programming environment offering everything he/they "
-					"would ever need from a program of that kind.\n"
-					"Its pluggable architecture allows you, the developer, to add "
-					"any kind of functionality to the core program, through the use of "
-					"plugins...\n");
+                                 _(" is a full-featured IDE (Integrated Development Environment) "
+                    "aiming to make the individual developer (and the development team) "
+                    "work in a nice programming environment offering everything he/they "
+                    "would ever need from a program of that kind.\n"
+                    "Its pluggable architecture allows you, the developer, to add "
+                    "any kind of functionality to the core program, through the use of "
+                    "plugins...\n");
 
-	wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_new.png");
+    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_new.png");
 
 
-	wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
+    wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
 
     wxImage im;
     im.LoadFile(file, wxBITMAP_TYPE_PNG );
     im.ConvertAlphaToMask();
-	wxBitmap bmp(im);
+    wxBitmap bmp(im);
 
     {   // copied from splashscreen.cpp
         const wxString release(wxT(RELEASE));
@@ -78,13 +78,11 @@ dlgAbout::dlgAbout(wxWindow* parent)
         dc.DrawText(revision, 92 - c, y + b);
     }
 
-	bmpControl->SetBitmap(bmp);
+    bmpControl->SetBitmap(bmp);
 
-
-
-	XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + appglobals::AppBuildTimestamp);
-	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
-	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
+    XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + appglobals::AppBuildTimestamp);
+    XRCCTRL(*this, l"txtDescription", wxTextCtrl)->SetValue(description);
+    XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
         "Developers:\n"
         "--------------\n"
         "Yiannis Mandravellos: Developer - Project leader\n"
@@ -92,6 +90,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Lieven de Cock      : Developer\n"
         "Martin Halle        : Developer\n"
         "Biplab Modak        : Developer\n"
+        "Jens Lody           : Developer\n"
         "Paul A. Jimenez     : Help and AStyle plugins\n"
         "Bartlomiej Swiecki  : wxSmith RAD plugin\n"
         "Jerome Antoine      : ThreadSearch plugin\n"
@@ -126,26 +125,26 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Squirrel scripting language (http://www.squirrel-lang.org).\n"
         "The GNU Software Foundation (http://www.gnu.org).\n"
         "Last, but not least, the open-source community."));
-	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
-	XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(appglobals::AppName);
-	XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
-	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
-	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(appglobals::AppContactEmail);
-	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(appglobals::AppUrl);
+    XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetValue(LICENSE_GPL);
+    XRCCTRL(*this, "lblName", wxStaticText)->SetLabel(appglobals::AppName);
+    XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
+    XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(_("The Code::Blocks Team"));
+    XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(appglobals::AppContactEmail);
+    XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(appglobals::AppUrl);
 
 #ifdef __WXMAC__
-	// Courier 8 point is not readable on Mac OS X, increase font size:
-	wxFont font1 = XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->GetFont();
-	font1.SetPointSize(10);
-	XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetFont(font1);
-	wxFont font2 = XRCCTRL(*this, "txtLicense", wxTextCtrl)->GetFont();
-	font2.SetPointSize(10);
-	XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetFont(font2);
+    // Courier 8 point is not readable on Mac OS X, increase font size:
+    wxFont font1 = XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->GetFont();
+    font1.SetPointSize(10);
+    XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetFont(font1);
+    wxFont font2 = XRCCTRL(*this, "txtLicense", wxTextCtrl)->GetFont();
+    font2.SetPointSize(10);
+    XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetFont(font2);
 #endif
 }
 
 // class destructor
 dlgAbout::~dlgAbout()
 {
-	// insert your code here
+    // insert your code here
 }

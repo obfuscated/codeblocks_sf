@@ -229,7 +229,11 @@ namespace ScriptBindings
         typedef void(wxFileName::*WXFN_ASSIGN_FN)(const wxFileName&);
         typedef void(wxFileName::*WXFN_ASSIGN_STR)(const wxString&, wxPathFormat);
         typedef wxString(wxFileName::*WXFN_GETPATH)(int, wxPathFormat)const;
+#if wxCHECK_VERSION(2, 9, 1)
+        typedef bool(wxFileName::*WXFN_SETCWD)()const;
+#else
         typedef bool(wxFileName::*WXFN_SETCWD)();
+#endif
 
         SqPlus::SQClassDef<wxFileName>("wxFileName").
                 emptyCtor().

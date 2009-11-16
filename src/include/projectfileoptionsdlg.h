@@ -13,23 +13,29 @@ class ProjectFile;
 
 class ProjectFileOptionsDlg : public wxDialog
 {
-	public:
-		ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);
-		ProjectFileOptionsDlg(wxWindow* parent, const wxString& fileName);
-		~ProjectFileOptionsDlg();
-		void OnCompilerCombo(wxCommandEvent& event);
-		void OnUpdateUI(wxUpdateUIEvent& event);
-		void EndModal(int retCode);
-	private:
-		void FillGeneralProperties(const wxString& fileName);
+    public:
+        ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);
+        ProjectFileOptionsDlg(wxWindow* parent, const wxString& fileName);
+        ~ProjectFileOptionsDlg();
+
+        void OnReadOnlyCheck(wxCommandEvent& event);
+        void OnCompilerCombo(wxCommandEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
+        void EndModal(int retCode);
+
+    private:
+        void FillGeneralProperties();
         void FillCompilers();
         void UpdateBuildCommand();
         void SaveBuildCommandSelection();
+        bool ToggleFileReadOnly(bool setReadOnly);
 
-		ProjectFile* m_ProjectFile;
-		int m_LastBuildStageCompilerSel;
+        ProjectFile* m_ProjectFile;
+        wxString     m_FileNameStr;
+        wxFileName   m_FileName;
+        int          m_LastBuildStageCompilerSel;
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif // PROJECTFILEOPTIONSDLG_H

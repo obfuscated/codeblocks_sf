@@ -62,7 +62,7 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
-					<label>Text Control backgrounds</label>
+					<label>Text control backgrounds</label>
 					<object class="sizeritem">
 						<object class="wxGridSizer">
 							<cols>2</cols>

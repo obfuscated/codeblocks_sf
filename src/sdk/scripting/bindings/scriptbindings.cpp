@@ -281,6 +281,43 @@ namespace ScriptBindings
         }
         return sa.ThrowError("Invalid arguments to \"ProjectManager::AddFileToProject\"");
     }
+
+    SQInteger ProjectManager_GetProjectCount(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        int count = sa.GetParamCount();
+        if (count != 1)
+            return sa.ThrowError("Invalid arguments to \"ProjectManager::GetProjectCount\"");
+        else
+        {
+            ProjectManager *manager = SqPlus::GetInstance<ProjectManager, false>(v, 1);
+            int project_count = manager->GetProjects()->GetCount();
+            return sa.Return((SQInteger)project_count);
+        }
+    }
+
+    SQInteger ProjectManager_GetProject(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        int count = sa.GetParamCount();
+        if (count != 2)
+            return sa.ThrowError("Invalid arguments to \"ProjectManager::GetProject\"");
+        else
+        {
+            ProjectManager *manager = SqPlus::GetInstance<ProjectManager, false>(v, 1);
+            int index = sa.GetInt(2);
+            int project_count = manager->GetProjects()->GetCount();
+            if(index >= project_count)
+                return sa.ThrowError("Index out of bounds in \"ProjectManager::GetProject\"");
+            else
+            {
+                cbProject *project = (*manager->GetProjects())[index];
+                SqPlus::Push(v, project);
+                return 1;
+            }
+        }
+    }
+
     SQInteger cbEditor_SetText(HSQUIRRELVM v)
     {
         StackHandler sa(v);
@@ -520,6 +557,8 @@ namespace ScriptBindings
                 func(&ProjectManager::GetDefaultPath, "GetDefaultPath").
                 func(&ProjectManager::SetDefaultPath, "SetDefaultPath").
                 func(&ProjectManager::GetActiveProject, "GetActiveProject").
+                staticFuncVarArgs(&ProjectManager_GetProjectCount, "GetProjectCount", "*").
+                staticFuncVarArgs(&ProjectManager_GetProject, "GetProject", "*").
                 func(&ProjectManager::SetProject, "SetProject").
                 func(&ProjectManager::LoadWorkspace, "LoadWorkspace").
                 func(&ProjectManager::SaveWorkspace, "SaveWorkspace").

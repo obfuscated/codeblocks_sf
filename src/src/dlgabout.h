@@ -12,11 +12,11 @@ class wxWindow;
 
 class dlgAbout : public wxDialog
 {
-	public:
-		// class constructor
-		dlgAbout(wxWindow* parent);
-		// class destructor
-		~dlgAbout();
+    public:
+        // class constructor
+        dlgAbout(wxWindow* parent);
+        // class destructor
+        ~dlgAbout();
 };
 
 #endif // DLGABOUT_H
