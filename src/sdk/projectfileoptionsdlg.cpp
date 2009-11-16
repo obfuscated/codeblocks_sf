@@ -24,6 +24,12 @@
     #include <wx/stattext.h>
 #endif
 
+#if (__WXMSW__)
+// TODO: equivalent??? -> #include <errno.h>
+#else
+#include <errno.h>
+#endif
+
 #include "projectfileoptionsdlg.h"
 #include <wx/slider.h>
 #include <wx/notebook.h>
