@@ -81,7 +81,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     bmpControl->SetBitmap(bmp);
 
     XRCCTRL(*this, "lblBuildTimestamp", wxStaticText)->SetLabel(wxString(_("Build: ")) + appglobals::AppBuildTimestamp);
-    XRCCTRL(*this, l"txtDescription", wxTextCtrl)->SetValue(description);
+    XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(description);
     XRCCTRL(*this, "txtThanksTo", wxTextCtrl)->SetValue(_(
         "Developers:\n"
         "--------------\n"
