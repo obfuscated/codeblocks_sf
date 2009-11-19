@@ -198,7 +198,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& f
     m_FileName(),
     m_LastBuildStageCompilerSel(-1)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptions"),_T("wxDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectFileOptions"),_T("wxDialog"));
 
     FillGeneralProperties();
 
