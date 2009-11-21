@@ -13,14 +13,14 @@
 
 class CompilerCYGWIN : public CompilerMINGW
 {
-	public:
-		CompilerCYGWIN();
-		~CompilerCYGWIN();
+    public:
+        CompilerCYGWIN();
+        ~CompilerCYGWIN();
         virtual void Reset();
         virtual AutoDetectResult AutoDetectInstallationDir();
-	protected:
+    protected:
         virtual Compiler* CreateCopy();
-	private:
+    private:
 
 };
 

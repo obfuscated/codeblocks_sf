@@ -10,11 +10,11 @@
 
 class CompilerTcc : public Compiler
 {
-	public:
-		CompilerTcc();
-		virtual ~CompilerTcc();
+    public:
+        CompilerTcc();
+        virtual ~CompilerTcc();
         virtual void Reset();
-		virtual void LoadDefaultRegExArray();
+        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();

@@ -35,17 +35,17 @@ void CompilerCYGWIN::Reset()
 {
     CompilerMINGW::Reset();
 
-	m_Programs.C = _T("gcc.exe");
-	m_Programs.CPP = _T("g++.exe");
-	m_Programs.LD = _T("g++.exe");
-	m_Programs.DBG = _T("gdb.exe");
-	m_Programs.LIB = _T("ar.exe");
-	m_Programs.WINDRES = _T("windres.exe");
-	m_Programs.MAKE = _T("make.exe");
+    m_Programs.C = _T("gcc.exe");
+    m_Programs.CPP = _T("g++.exe");
+    m_Programs.LD = _T("g++.exe");
+    m_Programs.DBG = _T("gdb.exe");
+    m_Programs.LIB = _T("ar.exe");
+    m_Programs.WINDRES = _T("windres.exe");
+    m_Programs.MAKE = _T("make.exe");
 
     m_Switches.forceFwdSlashes = true;
 
-	m_Options.AddOption(_("Do not use cygwin specific functionality"), _T("-mno-cygwin"), _("General"));
+    m_Options.AddOption(_("Do not use cygwin specific functionality"), _T("-mno-cygwin"), _("General"));
 }
 
 AutoDetectResult CompilerCYGWIN::AutoDetectInstallationDir()

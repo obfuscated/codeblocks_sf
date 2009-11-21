@@ -287,7 +287,7 @@ AutoDetectResult CompilerGNUMSP430::AutoDetectInstallationDir()
 {
     wxString sep = wxFileName::GetPathSeparator();
 #ifdef __WXMSW__
-	m_MasterPath = _T("C:\\HighTec\\Msp430"); // just a guess
+    m_MasterPath = _T("C:\\HighTec\\Msp430"); // just a guess
 
     //    wxLogNull ln;
         wxRegKey key; // defaults to HKCR

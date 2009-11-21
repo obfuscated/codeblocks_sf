@@ -14,15 +14,15 @@
 
 class CompilerMSVC8 : public Compiler
 {
-	public:
-		CompilerMSVC8();
-		virtual ~CompilerMSVC8();
+    public:
+        CompilerMSVC8();
+        virtual ~CompilerMSVC8();
         virtual void Reset();
-		virtual void LoadDefaultRegExArray();
+        virtual void LoadDefaultRegExArray();
         virtual AutoDetectResult AutoDetectInstallationDir();
-	protected:
+    protected:
         Compiler * CreateCopy();
-	private:
+    private:
 };
 
 #endif // COMPILERMSVC8_H

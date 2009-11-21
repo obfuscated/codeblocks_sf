@@ -222,10 +222,10 @@ AutoDetectResult CompilerGNUPOWERPC::AutoDetectInstallationDir()
      if (key.Exists() && key.Open(wxRegKey::Read))
      {
      // found; read it
-	if (key.HasValue(_T("InstallPath")))
-     	{
-     		key.QueryValue(_T("InstallPath"), m_MasterPath);
-     	}
+    if (key.HasValue(_T("InstallPath")))
+        {
+            key.QueryValue(_T("InstallPath"), m_MasterPath);
+        }
       }
 #else
      m_MasterPath = _T("/usr/local/ppc");
