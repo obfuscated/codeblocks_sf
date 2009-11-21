@@ -21,34 +21,34 @@
 
 class DataBreakpointDlg: public wxDialog
 {
-	public:
+    public:
 
-		DataBreakpointDlg(wxWindow* parent,wxWindowID id = -1,bool enabled=true,int selection=1);
-		virtual ~DataBreakpointDlg();
+        DataBreakpointDlg(wxWindow* parent,wxWindowID id = -1,bool enabled=true,int selection=1);
+        virtual ~DataBreakpointDlg();
 
-		//(*Identifiers(DataBreakpointDlg)
-		static const long ID_CHECKBOX1;
-		static const long ID_RADIOBOX1;
-		//*)
-		
-		bool IsEnabled();
-		int GetSelection();
+        //(*Identifiers(DataBreakpointDlg)
+        static const long ID_CHECKBOX1;
+        static const long ID_RADIOBOX1;
+        //*)
+        
+        bool IsEnabled();
+        int GetSelection();
 
-	protected:
+    protected:
 
-		//(*Handlers(DataBreakpointDlg)
-		//*)
+        //(*Handlers(DataBreakpointDlg)
+        //*)
 
-		//(*Declarations(DataBreakpointDlg)
-		wxBoxSizer* BoxSizer1;
-		wxCheckBox* CheckBox1;
-		wxRadioBox* RadioBox1;
-		wxStdDialogButtonSizer* StdDialogButtonSizer1;
-		//*)
+        //(*Declarations(DataBreakpointDlg)
+        wxBoxSizer* BoxSizer1;
+        wxCheckBox* CheckBox1;
+        wxRadioBox* RadioBox1;
+        wxStdDialogButtonSizer* StdDialogButtonSizer1;
+        //*)
 
-	private:
+    private:
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

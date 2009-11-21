@@ -224,9 +224,9 @@ void GDBTipWindow::OnMouseClick(wxMouseEvent& WXUNUSED(event))
 
 void GDBTipWindow::OnKey(wxKeyEvent& event)
 {
-	Close();
-	
-	// not using event.Skip() here to save us from a bad crash...
+    Close();
+    
+    // not using event.Skip() here to save us from a bad crash...
 }
 
 #if wxUSE_POPUPWIN
@@ -272,8 +272,8 @@ void GDBTipWindow::Close()
 #if wxUSE_POPUPWIN
     Show(false);
     #ifdef __WXGTK__
-		if ( m_view->HasCapture() )
-			m_view->ReleaseMouse();
+        if ( m_view->HasCapture() )
+            m_view->ReleaseMouse();
     #endif
     delete this;//Destroy();
 #else
@@ -550,7 +550,7 @@ void GDBTipWindowView::OnMouseMove(wxMouseEvent& event)
     const wxRect& rectBound = m_parent->m_rectBound;
 
     if ( rectBound.width &&
-		!rectBound.Contains(ClientToScreen(event.GetPosition())) )
+        !rectBound.Contains(ClientToScreen(event.GetPosition())) )
     {
         // mouse left the bounding rect, disappear
         m_parent->Close();

@@ -35,6 +35,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkAutoBuild">
 							<label>Auto-build project to ensure up-to-date</label>
+							<tooltip>Automatic project build before debug session is started</tooltip>
 						</object>
 						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 					</object>
@@ -73,7 +74,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkDebugLog">
-							<label>Display debugger&apos;s  log</label>
+							<label>Display debugger&apos;s log</label>
 							<tooltip>If enabled, the debugger&apos;s raw input/output will be logged in a separate log page</tooltip>
 						</object>
 						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -88,6 +89,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkDoNotRun">
 							<label>Do *not* run the debugee</label>
+							<tooltip>If enabled, the debugger will not a send a run/continue command</tooltip>
 						</object>
 						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 					</object>
