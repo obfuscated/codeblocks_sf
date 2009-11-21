@@ -2,6 +2,7 @@ usr/lib/codeblocks/plugins/libAutoVersioning.*
 usr/lib/codeblocks/plugins/libBrowseTracker.* 
 usr/lib/codeblocks/plugins/libbyogames.* 
 usr/lib/codeblocks/plugins/libCccc.* 
+usr/lib/codeblocks/plugins/libCppCheck.* 
 usr/lib/codeblocks/plugins/libcb_koders.* 
 usr/bin/codesnippets
 usr/lib/codeblocks/plugins/libcodesnippets.* 

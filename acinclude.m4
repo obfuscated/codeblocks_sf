@@ -243,6 +243,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_INCSEARCH], [false])
 	AM_CONDITIONAL([BUILD_MOUSESAP], [false])
 	AM_CONDITIONAL([BUILD_CCCC], [false])
+	AM_CONDITIONAL([BUILD_CPPCHECK], [false])
 ])
 
 AC_DEFUN([BUILD_CONTRIB_ALL], [
@@ -272,6 +273,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_INCSEARCH], [true])
 	AM_CONDITIONAL([BUILD_MOUSESAP], [true])
 	AM_CONDITIONAL([BUILD_CCCC], [true])
+	AM_CONDITIONAL([BUILD_CPPCHECK], [true])
 ])
 
 # default to 'none'
@@ -284,10 +286,10 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all" compiles all contrib plugins ]
   [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
-  [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,cbkoders,codesnippets,]
+  [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,]
   [                        		     codestat,copystrings, dragscroll,envvars,headerfixup, ]
   [                        		     help,hexeditor,incsearch,keybinder,libfinder,MouseSap, ]
-  [                        		     profiler,regex,exporter,symtab,ThreadSearch,wxsmith, ]
+  [                        		     profiler,regex,exporter,symtab,ThreadSearch,Valgrind,wxsmith, ]
   [                        		     wxsmithcontrib,wxsmithaui ],
   plugins="$withval", plugins="none")
 
@@ -376,6 +378,9 @@ do
 	Cccc)
 		AM_CONDITIONAL([BUILD_CCCC], [true])
 		;;
+	CppCheck)
+		AM_CONDITIONAL([BUILD_CPPCHECK], [true])
+		;;
 	-AutoVersioning)
 		AM_CONDITIONAL([BUILD_AUTOVERSIONING], [false])
 		;;
@@ -454,6 +459,9 @@ do
 	-Cccc)
 		AM_CONDITIONAL([BUILD_CCCC], [false])
 		;;
+	-CppCheck)
+		AM_CONDITIONAL([BUILD_CPPCHECK], [false])
+		;;
 	*)
 		echo "Unknown contrib plugin $plugin, ignoring"
 		;;
@@ -488,6 +496,7 @@ AC_SUBST(BUILD_HEXEDITOR)
 AC_SUBST(BUILD_INCSEARCH)
 AC_SUBST(BUILD_MOUSESAP)
 AC_SUBST(BUILD_CCCC)
+AC_SUBST(BUILD_CPPCHECK)
 
 GCC_PCH=0
 PCH_FLAGS=

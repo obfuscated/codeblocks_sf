@@ -100,7 +100,8 @@ Description: contrib plugins for Code::Blocks IDE
     * Symbol table plugin
     * CB koders
     * MouseSap
-    * Ccccccccc
+    * Cccc
+    * CppCheck
  It's a svn-download and may contain bugs.
 
 Package: codeblocks-contrib-common

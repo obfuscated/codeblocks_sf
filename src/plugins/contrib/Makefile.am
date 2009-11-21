@@ -102,6 +102,10 @@ if BUILD_CCCC
 MAYBE_CCCC=Cccc
 endif
 
+if BUILD_CPPCHECK
+MAYBE_CPPCHECK=CppCheck
+endif
+
 SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_BROWSETRACKER) \
 		$(MAYBE_BYOGAMES) \
@@ -127,7 +131,8 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_HEXEDITOR) \
 		$(MAYBE_INCSEARCH) \
 		$(MAYBE_MOUSESAP) \
-		$(MAYBE_CCCC)
+		$(MAYBE_CCCC) \
+		$(MAYBE_CPPCHECK)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
@@ -155,5 +160,6 @@ DIST_SUBDIRS = AutoVersioning \
 		HexEditor \
 		IncrementalSearch \
 		MouseSap \
-		Cccc
+		Cccc \
+		CppCheck
 
