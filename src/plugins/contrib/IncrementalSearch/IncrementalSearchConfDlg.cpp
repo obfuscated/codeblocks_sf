@@ -47,6 +47,7 @@ IncrementalSearchConfDlg::IncrementalSearchConfDlg(wxWindow* parent)
     XRCCTRL(*this, "idIncSearchHighlightDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/highlight_default_state"),0));
     XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/selected_default_state"),0));
     XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0));
+    XRCCTRL(*this, "idIncSearchRegExDefault", wxChoice)->SetSelection(cfg->ReadInt(_T("/incremental_search/regex_default_state"),0));
 }
 
 IncrementalSearchConfDlg::~IncrementalSearchConfDlg()
@@ -77,6 +78,7 @@ void IncrementalSearchConfDlg::SaveSettings()
     cfg->Write(_T("/incremental_search/highlight_default_state"),       XRCCTRL(*this, "idIncSearchHighlightDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/selected_default_state"),        XRCCTRL(*this, "idIncSearchSelectedDefault", wxChoice)->GetSelection());
     cfg->Write(_T("/incremental_search/match_case_default_state"),      XRCCTRL(*this, "idIncSearchMatchCaseDefault", wxChoice)->GetSelection());
+    cfg->Write(_T("/incremental_search/regex_default_state"),           XRCCTRL(*this, "idIncSearchRegExDefault", wxChoice)->GetSelection());
 
     // save colour-values
     cfg->Write(_T("/incremental_search/text_found_colour"),             XRCCTRL(*this, "btnIncSearchConfColourFound", wxButton)->GetBackgroundColour());

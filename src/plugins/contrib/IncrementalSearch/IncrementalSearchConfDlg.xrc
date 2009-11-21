@@ -135,7 +135,7 @@
 							<object class="sizeritem">
 								<object class="wxGridSizer">
 									<cols>2</cols>
-									<rows>3</rows>
+									<rows>4</rows>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="ID_STATICTEXT5">
 											<label>&quot;Highlight&quot;-button</label>
@@ -196,6 +196,27 @@
 											<selection>0</selection>
 										</object>
 										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT8">
+											<label>&quot;Regular Expression&quot;-button</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxChoice" name="idIncSearchRegExDefault">
+											<content>
+												<item>off</item>
+												<item>on</item>
+												<item>save last state</item>
+											</content>
+											<selection>0</selection>
+										</object>
+										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>

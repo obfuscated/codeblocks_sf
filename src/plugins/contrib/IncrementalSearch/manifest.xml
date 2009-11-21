@@ -4,7 +4,7 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * Copyright: 2008 Jens Lody
- * 
+ *
  * $Revision$
  * $Id$
  * $HeadURL$
@@ -13,7 +13,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="IncrementalSearch">
         <Value title="IncrementalSearch" />
-        <Value version="0.6" />
+        <Value version="0.7" />
         <Value description="Searches and highlights a marked text incrementally within the open editor." />
         <Value author="Jens Lody" />
         <Value authorEmail="debian@jenslody.de" />

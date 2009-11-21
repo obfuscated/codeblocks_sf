@@ -53,12 +53,14 @@ private:
     void OnToggleHighlight(wxCommandEvent& event);
     void OnToggleSelectedOnly(wxCommandEvent& event);
     void OnToggleMatchCase(wxCommandEvent& event);
+    void OnToggleUseRegex(wxCommandEvent& event);
     void DoClearText();
     void DoSearchPrev();
     void DoSearchNext();
     void DoToggleHighlight(bool checked);
     void DoToggleSelectedOnly(bool checked);
     void DoToggleMatchCase(bool checked);
+    void DoToggleUseRegex(bool checked);
     void DoFocusToolbar();
     void HighlightText();
     void SearchText();

@@ -4,7 +4,7 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
  * Copyright: 2008 Jens Lody
- * 
+ *
  * $Revision$
  * $Id$
  * $HeadURL$
@@ -50,6 +50,12 @@
       <bitmap>images/16x16/incsearchcase.png</bitmap>
       <toggle>1</toggle>
     </object>
+    <object class="tool" name="idIncSearchUseRegex">
+      <tooltip>Use regex</tooltip>
+      <longhelp>Use regular expressions for search</longhelp>
+      <bitmap>images/16x16/incsearchregex.png</bitmap>
+      <toggle>1</toggle>
+    </object>
   </object>
   <object class="wxToolBarAddOn" name="incremental_search_toolbar">
     <object class="tool" name="idIncSearchClear">
@@ -88,6 +94,12 @@
       <tooltip>Match case</tooltip>
       <longhelp>Only show phrases that match the case</longhelp>
       <bitmap>images/incsearchcase.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchUseRegex">
+      <tooltip>Use regex</tooltip>
+      <longhelp>Use regular expressions for search</longhelp>
+      <bitmap>images/incsearchregex.png</bitmap>
       <toggle>1</toggle>
     </object>
   </object>

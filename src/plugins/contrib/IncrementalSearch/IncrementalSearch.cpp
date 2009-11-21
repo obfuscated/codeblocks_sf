@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(IncrementalSearch, cbPlugin)
     EVT_TOOL(XRCID("idIncSearchHighlight"), IncrementalSearch::OnToggleHighlight)
     EVT_TOOL(XRCID("idIncSearchSelectOnly"), IncrementalSearch::OnToggleSelectedOnly)
     EVT_TOOL(XRCID("idIncSearchMatchCase"), IncrementalSearch::OnToggleMatchCase)
+    EVT_TOOL(XRCID("idIncSearchUseRegex"), IncrementalSearch::OnToggleUseRegex)
     EVT_TEXT(XRCID("idIncSearchText"), IncrementalSearch::OnTextChanged)
     EVT_TEXT_ENTER(XRCID("idIncSearchText"), IncrementalSearch::OnSearchNext)
 END_EVENT_TABLE()
@@ -103,7 +104,9 @@ void IncrementalSearch::OnAttach()
     sel = cfg->ReadInt(_T("/incremental_search/selected_default_state"),0);
     m_SelectedOnly = (sel == 1) || ((sel == 2) && cfg->ReadBool(_T("/incremental_search/search_selected_only"),false));
     sel = cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0);
-    m_flags = ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/match_case"),false)))?wxSCI_FIND_MATCHCASE:0;
+    m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/match_case"),false)))?wxSCI_FIND_MATCHCASE:0;
+    sel = cfg->ReadInt(_T("/incremental_search/regex_default_state"),0);
+    m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/regex"),false)))?wxSCI_FIND_REGEXP:0;
 }
 
 void IncrementalSearch::OnRelease(bool appShutDown)
@@ -125,6 +128,10 @@ void IncrementalSearch::OnRelease(bool appShutDown)
     if (cfg->ReadInt(_T("/incremental_search/match_case_default_state"),0) == 2)
     {
         cfg->Write(_T("/incremental_search/match_case"),m_flags & wxSCI_FIND_MATCHCASE);
+    }
+    if (cfg->ReadInt(_T("/incremental_search/regex_default_state"),0) == 2)
+    {
+        cfg->Write(_T("/incremental_search/regex"),m_flags & wxSCI_FIND_REGEXP);
     }
     // TODO : KILLERBOT : menu entries should be removed, right ?????
     // TODO : JENS : no, the menubar gets recreated after a plugin changes (install, uninstall or unload), see MainFrame::PluginsUpdated(plugin, status)
@@ -202,7 +209,7 @@ void IncrementalSearch::OnEditorEvent(CodeBlocksEvent& event)
     if (m_pTextCtrl->IsEnabled())
     {
         m_SearchText=m_pTextCtrl->GetValue();
-        m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), !m_SearchText.empty());
+        m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), !m_SearchText.empty() && ((m_flags & wxSCI_FIND_REGEXP) == 0));
         m_pToolbar->EnableTool(XRCID("idIncSearchNext"), !m_SearchText.empty());
         m_NewPos=m_pEditor->GetControl()->GetCurrentPos();
         m_OldPos=m_NewPos;
@@ -246,6 +253,7 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
         m_pToolbar->ToggleTool(XRCID("idIncSearchHighlight"),m_Highlight);
         m_pToolbar->ToggleTool(XRCID("idIncSearchSelectOnly"),m_SelectedOnly);
         m_pToolbar->ToggleTool(XRCID("idIncSearchMatchCase"),m_flags & wxSCI_FIND_MATCHCASE);
+        m_pToolbar->ToggleTool(XRCID("idIncSearchUseRegex"),m_flags & wxSCI_FIND_REGEXP);
         return true;
     }
     else
@@ -348,7 +356,36 @@ void IncrementalSearch::OnToggleMatchCase(wxCommandEvent& event)
 
 void IncrementalSearch::DoToggleMatchCase(bool checked)
 {
-    m_flags = checked?wxSCI_FIND_MATCHCASE:0;
+    if(checked)
+    {
+        m_flags |= wxSCI_FIND_MATCHCASE;
+    }
+    else
+    {
+        m_flags &=  ~wxSCI_FIND_MATCHCASE;
+    }
+    if (!m_pEditor || !m_pEditor->GetControl())
+    {
+        return;
+    }
+    SearchText();
+}
+
+void IncrementalSearch::OnToggleUseRegex(wxCommandEvent& event)
+{
+    DoToggleUseRegex(m_pToolbar->GetToolState(XRCID("idIncSearchUseRegex")));
+}
+
+void IncrementalSearch::DoToggleUseRegex(bool checked)
+{
+    if(checked)
+    {
+        m_flags |= wxSCI_FIND_REGEXP;
+    }
+    else
+    {
+        m_flags &=  ~wxSCI_FIND_REGEXP;
+    }
     if (!m_pEditor || !m_pEditor->GetControl())
     {
         return;
@@ -414,7 +451,7 @@ void IncrementalSearch::SearchText()
     {
         // perform search
         m_pToolbar->EnableTool(XRCID("idIncSearchClear"), true);
-        m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), true);
+        m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), (m_flags & wxSCI_FIND_REGEXP) == 0);
         m_pToolbar->EnableTool(XRCID("idIncSearchNext"), true);
         DoSearch(m_NewPos);
     }
@@ -541,16 +578,17 @@ void IncrementalSearch::HighlightText()
                 ctrlRight->IndicatorSetStyle(m_IndicHighlight, wxSCI_INDIC_HIGHLIGHT);
                 ctrlRight->SetIndicatorCurrent(m_IndicHighlight);
             }
-            for ( int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags);
-                    pos != wxSCI_INVALID_POSITION ;
-                    pos = control->FindText(pos+=1, m_MaxPos, m_SearchText, m_flags) )
+            int actualLength=0; // needed for regex-search, because the length of found text can vary
+            for ( int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags, &actualLength);
+                    pos != wxSCI_INVALID_POSITION && actualLength > 0;
+                    pos = control->FindText(pos+=1, m_MaxPos, m_SearchText, m_flags, &actualLength) )
             {
                 // check that this occurrence is not the same as the one we just found
-                if ( pos != m_NewPos )
+                if ( pos > (m_NewPos + m_LengthFound) || pos < m_NewPos )
                 {
                     // highlight it
                     control->EnsureVisible(control->LineFromPosition(pos)); // make sure line is Visible, if it was folded
-                    control->IndicatorFillRange(pos, m_LengthFound);
+                    control->IndicatorFillRange(pos, actualLength);
                 }
             }
         }
@@ -579,7 +617,7 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
 
     m_NewPos=control->FindText(fromPos, endPos, m_SearchText, m_flags, &m_LengthFound);
 
-    if (m_NewPos == wxSCI_INVALID_POSITION)
+    if (m_NewPos == wxSCI_INVALID_POSITION || m_LengthFound == 0)
     {
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
         wxColour colourTextCtrlBG_Wrapped(cfg->ReadColour(_T("/incremental_search/wrapped_colour"), wxColour(127, 127, 255)));
@@ -588,12 +626,16 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
         m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_Wrapped);
         // search again
         m_NewPos=control->FindText(startPos, endPos, m_SearchText, m_flags, &m_LengthFound);
-        if (m_NewPos == wxSCI_INVALID_POSITION)
+        if (m_NewPos == wxSCI_INVALID_POSITION  || m_LengthFound == 0)
         {
             wxColour colourTextCtrlBG_NotFound(cfg->ReadColour(_T("/incremental_search/text_not_found_colour"), wxColour(255, 127, 127)));
             // if still not found, show it by colouring the textCtrl
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
+    }
+    if (m_NewPos != wxSCI_INVALID_POSITION && m_LengthFound > 0)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("Text found at %d, length %d => "), m_NewPos, m_LengthFound) + control->GetTextRange(m_NewPos, m_NewPos + m_LengthFound));
     }
     // windows does not update the backgroundcolor immediately, so we have to force it here
     #ifdef __WXMSW__
