@@ -89,7 +89,7 @@ cp -fu tips.txt output/share/codeblocks > /dev/null
 cp -fu tools/ConsoleRunner/cb_console_runner${EXEEXT} output > /dev/null
 cp -fu tools/ConsoleRunner/cb_console_runner${EXEEXT} devel > /dev/null
 cp -fu devel/codeblocks${EXEEXT} output > /dev/null
-cp -fu devel/cb_share_config${EXEEXT} output > /dev/null
+# cp -fu devel/cb_share_config${EXEEXT} output > /dev/null
 cp -fu devel/*.${LIBEXT} output > /dev/null
 cp -fu ${RESDIR}/plugins/*.${LIBEXT} output/share/codeblocks/plugins > /dev/null
 # Now remove the exclude pattern file
@@ -97,9 +97,9 @@ rm excludes.txt
 
 echo Stripping debug info from output tree
 strip output/codeblocks${EXEEXT}
-strip output/cb_share_config${EXEEXT}
+# strip output/cb_share_config${EXEEXT}
 strip output/cb_console_runner${EXEEXT}
-strip output/codesnippets${EXEEXT}
+# strip output/codesnippets${EXEEXT}
 strip output/*.${LIBEXT}
 strip output/share/codeblocks/plugins/*.${LIBEXT}
 
