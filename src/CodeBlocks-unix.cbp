@@ -973,6 +973,9 @@
 		<Unit filename="plugins/astyle/resources/configuration.xrc">
 			<Option target="AStyle" />
 		</Unit>
+		<Unit filename="plugins/astyle/resources/manifest.xml">
+			<Option target="AStyle" />
+		</Unit>
 		<Unit filename="plugins/autosave/autosave.cpp">
 			<Option target="Autosave" />
 		</Unit>
@@ -980,7 +983,6 @@
 			<Option target="Autosave" />
 		</Unit>
 		<Unit filename="plugins/autosave/manifest.xml">
-			<Option compilerVar="CC" />
 			<Option target="Autosave" />
 		</Unit>
 		<Unit filename="plugins/classwizard/classwizard.cpp">
@@ -2193,9 +2195,6 @@
 			<Option target="Autosave" />
 		</Unit>
 		<Unit filename="sdk/resources/global_uservars.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/images/16x16/Makefile.am">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/incremental_select_list.xrc">

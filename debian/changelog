@@ -1,4 +1,4 @@
-codeblocks (8.02svn5670) unstable; urgency=low
+codeblocks (8.02svn5933) unstable; urgency=low
 
   * more fixes to debian build system, sources and packages are now
     lintian-clean, except for some words guessed as spelling-errors.
