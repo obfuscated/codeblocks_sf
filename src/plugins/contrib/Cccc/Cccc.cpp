@@ -112,6 +112,7 @@ int Cccc::Execute()
 	}
 
 	cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
+	::wxSetWorkingDirectory(Project->GetBasePath());
 	const long Files = Project->GetFilesCount();
 	wxString ListOfFileNames;
 	for (int File = 0; File < Files; ++File)
