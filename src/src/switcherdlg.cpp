@@ -426,7 +426,7 @@ bool wxMultiColumnListCtrl::Create(wxWindow* parent, wxWindowID id, const wxPoin
 {
     wxControl::Create(parent, id, pos, size, style);
 
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(2, 8, 0)
     SetInitialSize(size);
     #else
     SetInitialBestSize(size);
