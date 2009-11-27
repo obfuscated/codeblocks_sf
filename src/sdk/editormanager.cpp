@@ -539,7 +539,11 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
     if (page != -1)
         m_pNotebook->SetSelection(page);
     if (ed->IsBuiltinEditor())
+    {
         static_cast<cbEditor*>(ed)->GetControl()->SetFocus();
+        CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, ed);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+    }
 }
 
 cbEditor* EditorManager::New(const wxString& newFileName)
