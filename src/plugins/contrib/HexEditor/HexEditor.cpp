@@ -133,7 +133,7 @@ void HexEditor::BuildMenu(wxMenuBar* menuBar)
         wxMenuItem* item = *i;
         wxString label = item->GetLabel();
         label.Replace( _T("_"), _T("") );
-        if ( label.Contains( _("Open...")) )
+        if ( label.Contains( _("&Open...")) )
         {
             fileMenu->Insert( pos+1, idOpenWithHE, _("Open with HexEditor"), _("Open file using HexEditor") );
             return;

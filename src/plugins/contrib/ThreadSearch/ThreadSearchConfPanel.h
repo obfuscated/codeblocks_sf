@@ -44,7 +44,7 @@ public:
     ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, wxWindow* parent = NULL, wxWindowID id = -1);
 
     /** Returns the title displayed in the left column of the "Settings/Environment" dialog. */
-    wxString GetTitle()          const {return wxT("Thread search");}
+    wxString GetTitle()          const {return _("Thread search");}
 
     /** Returns string used to build active/inactive images path in the left column
       * of the "Settings/Environment" dialog.

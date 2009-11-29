@@ -396,7 +396,7 @@ void HelpPlugin::RemoveFromHelpMenu(int id, const wxString &help)
     return;
   }
 
-  int pos = m_pMenuBar->FindMenu(_("Help"));
+  int pos = m_pMenuBar->FindMenu(_("&Help"));
 
   if (pos != wxNOT_FOUND)
   {

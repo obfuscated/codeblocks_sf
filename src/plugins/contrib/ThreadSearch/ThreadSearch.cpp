@@ -274,7 +274,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
     //Append any items you need in the menu...
     //NOTE: Be careful in here... The application's menubar is at your disposal.
     size_t i;
-    int idx = menuBar->FindMenu(wxT("&View"));
+    int idx = menuBar->FindMenu(_("&View"));
     if (idx != wxNOT_FOUND)
     {
         wxMenu* menu = menuBar->GetMenu(idx);
@@ -285,7 +285,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
         {
             if (items[i]->IsSeparator())
             {
-                menu->InsertCheckItem(i, idMenuViewThreadSearch, wxT("Thread search"),
+                menu->InsertCheckItem(i, idMenuViewThreadSearch, _("Thread search"),
                                       _("Toggle displaying the 'Thread search' panel"));
                 break;
             }
@@ -294,7 +294,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
         if ( i == items.GetCount() )
         {
             // not found, just append
-            menu->AppendCheckItem(idMenuViewThreadSearch, wxT("Thread search"),
+            menu->AppendCheckItem(idMenuViewThreadSearch, _("Thread search"),
                                   _("Toggle displaying the 'Thread search' panel"));
         }
     }
@@ -310,7 +310,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
         {
             if (items[i]->IsSeparator())
             {
-                menu->Insert(i, idMenuSearchThreadSearch, wxT("Thread search"),
+                menu->Insert(i, idMenuSearchThreadSearch, _("Thread search"),
                                 _("Perform a Threaded search with the current word"));
                 menu->InsertSeparator(i);
                 break;
@@ -320,7 +320,7 @@ void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
         if ( i == items.GetCount() )
         {
             // not found, just append
-            menu->Append(idMenuSearchThreadSearch, wxT("Thread search"),
+            menu->Append(idMenuSearchThreadSearch, _("Thread search"),
                             _("Perform a Threaded search with the current word"));
             menu->AppendSeparator();
         }
