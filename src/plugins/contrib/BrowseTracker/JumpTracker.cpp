@@ -80,7 +80,7 @@ void JumpTracker::OnAttach()
 // ----------------------------------------------------------------------------
 {
     // do whatever initialization you need for your plugin
-    // NOTE: after this function, the inherited member variable
+    // :NOTE: after this function, the inherited member variable
     // m_IsAttached will be TRUE...
     // You should check for it in other functions, because if it
     // is FALSE, it means that the application did *not* "load"
@@ -369,7 +369,7 @@ void JumpTracker::JumpDataAdd(const wxString& filename, const long posn)
         m_Cursor = 0;
 
     #if defined(LOGGING)
-    LOGIT( _T("JumpDataAdd[%s][%ld][%d]"), filename.c_str(), posn, m_Cursor);
+    LOGIT( _T("JT JumpDataAdd[%s][%ld][%d]"), filename.c_str(), posn, m_Cursor);
     #endif
 
     do {

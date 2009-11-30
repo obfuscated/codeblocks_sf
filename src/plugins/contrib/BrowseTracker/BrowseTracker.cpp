@@ -174,6 +174,8 @@ BrowseTracker::BrowseTracker()
     //-m_nCurrentEditorIndex = 0;
     m_CurrEditorIndex = 0;
     m_LastEditorIndex = 0;
+    m_apEditors.Clear();
+
     m_bProjectIsLoading = false;
 	m_UpdateUIFocusEditor = 0;
     m_nRemoveEditorSentry = 0;
@@ -191,7 +193,9 @@ BrowseTracker::BrowseTracker()
     m_UpdateUIEditorIndex = 0;
     m_pJumpTracker = 0;
     m_bProjectClosing = false;
-
+    m_bAppShutdown = false;
+    m_nProjectClosingFileCount = 0;
+    m_LastEbDeactivated = 0;
 }
 // ----------------------------------------------------------------------------
 BrowseTracker::~BrowseTracker()
@@ -317,26 +321,26 @@ void BrowseTracker::OnAttach()
 
 	// Hook to plugin events
 
-    // EVT_APP_START_SHUTDOWN(  BrowseTracker::OnRelease)
+    // EVT_APP_START_SHUTDOWN
     Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnStartShutdown));
 
     // -- Editor Events
-    // EVT_EDITOR_ACTIVATED(   BrowseTracker::OnEditorActivated)
+    // EVT_EDITOR_ACTIVATED
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnEditorActivated));
-    // EVT_EDITOR_DEACTIVATED(   BrowseTracker::OnEditorActivated)
-    //-Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnEditorDeactivated));
-    // EVT_EDITOR_CLOSE(       BrowseTracker::OnEditorClosed)
+    // EVT_EDITOR_DEACTIVATED
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnEditorDeactivated));
+    // EVT_EDITOR_CLOSE
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnEditorClosed));
-    // EVT_EDITOR_OPEN(       BrowseTracker::OnEditorOpen)
+    // EVT_EDITOR_OPEN
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnEditorOpened));
 
     // -- Project events
-    // EVT_PROJECT_OPEN(       BrowseTracker::OnProjectOpened)
+    // EVT_PROJECT_OPEN
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnProjectOpened));
-    // EVT_PROJECT_CLOSE(       BrowseTracker::OnProjectOpened)
+    // EVT_PROJECT_CLOSE
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnProjectClosing));
 
-    // EVT_PROJECT_ACTIVATE(   BrowseTracker::OnProjectActivated)
+    // EVT_PROJECT_ACTIVATE
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<BrowseTracker, CodeBlocksEvent>(this, &BrowseTracker::OnProjectActivatedEvent));
 
     // hook to project loading procedure
@@ -1317,6 +1321,7 @@ void BrowseTracker::OnMenuTrackerDump(wxCommandEvent& event)
             wxString edName = GetPageFilename(i);
             LOGIT( _T("BT Index[%d]Editor[%p]Name[%s]"), i, GetEditor(i), edName.c_str()  );;
         }
+        return; //FIXME: remove this
         for (EbBrowse_MarksHash::iterator it = m_EbBrowse_MarksHash.begin(); it != m_EbBrowse_MarksHash.end(); ++it)
         {
             LOGIT( _T("BT Hash Ed[%p] AryPtr[%p]"), it->first, it->second );
@@ -1416,7 +1421,14 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
         if ( m_bProjectIsLoading )
         {
             #if defined(LOGGING)
-            LOGIT( _T("BT [OnEditorActivated ignored: Project Loading[ %s]"), editorFullPath.c_str());
+            LOGIT( _T("BT OnEditorActivated ignored: Project Loading[%s]"), editorFullPath.c_str());
+            #endif
+             return;
+        }
+        if ( m_bProjectClosing )
+        {
+            #if defined(LOGGING)
+            LOGIT( _T("BT OnEditorActivated ignored: Project Closing[%s]"), editorFullPath.c_str());
             #endif
              return;
         }
@@ -1591,24 +1603,29 @@ void BrowseTracker::OnIdle(wxIdleEvent& event)
     // is active since there's no idle time. User will have to click into
     // the editor window to activate it.
     // This used to be done by the CB editor manager, but someone removed the UI hook.
+    if (m_bAppShutdown)
+        return;
     if ((not Manager::Get()->IsAppShuttingDown()) && m_UpdateUIFocusEditor)
     {
         if (m_UpdateUIFocusEditor)
         {
             EditorBase* eb = m_UpdateUIFocusEditor;
-            if (not eb) return;
             m_UpdateUIFocusEditor = 0;
-            Manager::Get()->GetEditorManager()->SetActiveEditor(eb);
-             eb->SetFocus();
-            #if defined(LOGGING)
-             LOGIT( _T("BT OnIdle Focused Editor[%p] Title[%s]"), eb, eb->GetTitle().c_str() );
-            #endif
+            if (not eb) return;
+            if (not IsEditorBaseOpen(eb)) return;
+            if( Manager::Get()->GetEditorManager()->GetActiveEditor() not_eq eb )
+            {   Manager::Get()->GetEditorManager()->SetActiveEditor(eb);
+                eb->SetFocus();
+                #if defined(LOGGING)
+                LOGIT( _T("BT OnIdle Focused Editor[%p] Title[%s]"), eb, eb->GetTitle().c_str() );
+                #endif
+            }
             // re-sort the browse marks
             wxCommandEvent ev;
             OnMenuSortBrowse_Marks(ev);
         }
     }
-}
+}//OnIdle
 // ----------------------------------------------------------------------------
 void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
@@ -1617,7 +1634,9 @@ void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
     //wxMessageBox(_T("BrowseTracker: CB initiated OnStartShutdown"));
     LOGIT( _T("BT BrowseTracker: CB initiated OnStartShutdown"));
     #endif
+    Manager::Get()->GetLogManager()->Log(_T("BrowseTracker OnStartShutdown() initiated."));
     event.Skip();
+    m_bAppShutdown = true;
     OnRelease(true);
 }
 // ----------------------------------------------------------------------------
@@ -1631,11 +1650,14 @@ void BrowseTracker::OnEditorDeactivated(CodeBlocksEvent& event)
     //12:14:33: Editor DE-activated[03894E88][Version.cpp]
     //12:14:33: Editor Activated[03894E88][Version.cpp]
 
+    if (m_bAppShutdown) return;
     EditorBase* eb = event.GetEditor();
+    if (not eb) return;
     if (IsAttached() && m_InitDone)
     {
+        m_LastEbDeactivated = eb;
         #if defined(LOGGING)
-        ///LOGIT( _T("BT Editor DE-ACTIVATED[%p][%s]"), eb, eb->GetShortName().c_str() );
+        LOGIT( _T("BT Editor DE-ACTIVATED[%p][%s]"), eb, eb->GetShortName().c_str() );
         wxUnusedVar(eb);
         #endif
     }
@@ -1716,7 +1738,7 @@ void BrowseTracker::OnEditorClosed(CodeBlocksEvent& event)
         ProjectData* pProjectData = GetProjectDataByEditorName( filePath);
 
         #if defined(LOGGING)
-            LOGIT( _T("BT Closing Eb[%p][%s]"), eb, eb->GetShortName().c_str() );
+            LOGIT( _T("BT OnEditorClosed Eb[%p][%s]"), eb, eb->GetShortName().c_str() );
             ///LOGIT( _T("BT Closing Eb[%p][%s]"), eb, eb->GetFilename().c_str() );
         #endif
 
@@ -1754,7 +1776,21 @@ void BrowseTracker::OnEditorClosed(CodeBlocksEvent& event)
                 #endif
                 RemoveEditor(GetEditor(i));
             }//if
-    }//if
+
+        // Activate the previously active editor. EditorManager::OnUpdateUI used to do this
+        // but wzAuiNotebook broke it. wxAuiNotebook always activates the last page(tab).
+        if ( m_LastEbDeactivated and IsEditorBaseOpen(m_LastEbDeactivated) )
+            m_UpdateUIFocusEditor = m_LastEbDeactivated;
+        else
+            m_UpdateUIFocusEditor = GetPreviousEditor();
+        #if defined(LOGGING)
+        if (m_UpdateUIFocusEditor)
+        LOGIT( _T("BT OnEditorClosed activating eb[%s]"), m_UpdateUIFocusEditor->GetShortName().c_str());
+        #endif
+
+    }//if(IsAttached() && m_InitDone)
+
+
 }//OnEditorClosed
 // ----------------------------------------------------------------------------
 void BrowseTracker::OnWindowSetFocus(wxFocusEvent& event)
@@ -2028,6 +2064,7 @@ void BrowseTracker::OnProjectClosing(CodeBlocksEvent& event)
         return;
 
     m_bProjectClosing = true;
+    m_nProjectClosingFileCount = 0;
 
     cbProject* pProject = event.GetProject();
     if (not pProject) return; //It happens!
@@ -2046,6 +2083,7 @@ void BrowseTracker::OnProjectClosing(CodeBlocksEvent& event)
             LOGIT( _T("BT *CRASH* OnProjectClosing entered w/o project pointer") );
     #endif
     if ( not pProjectData ) return;
+
     // Close editors that belong to the current project
     for (int i=0; i < m_pEdMgr->GetEditorsCount(); ++i)
     {
@@ -2057,6 +2095,7 @@ void BrowseTracker::OnProjectClosing(CodeBlocksEvent& event)
             evt.SetEditor(eb);
             evt.SetString(eb->GetFilename());
             OnEditorClosed( evt );
+            m_nProjectClosingFileCount += 1;
         }
         else{
             #if defined(LOGGING)
@@ -2161,17 +2200,23 @@ void BrowseTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
     }
 
     // Previous project was closing
-    if (m_bProjectClosing)
+    if (m_bProjectClosing) do
     {
         m_bProjectClosing = false;
         // wxAUI activates the last displayed tab of a previous project
         // We want to activate the previously *active* tab
-        m_UpdateUIFocusEditor =  GetPreviousEditor();
+        if (m_nProjectClosingFileCount)
+            m_UpdateUIFocusEditor =  GetPreviousEditor();
+        else
+            m_UpdateUIFocusEditor =  GetCurrentEditor();
         #if defined(LOGGING)
         if (m_UpdateUIFocusEditor)
+        {   LOGIT( _T("BT OnProjectActivated m_nProjectClosingFileCount[%d]"), m_nProjectClosingFileCount);
             LOGIT( _T("BT OnProjectActivated setting Next Ed[%s]"), m_UpdateUIFocusEditor->GetShortName().c_str());
+        }
         #endif
-    }
+        m_nProjectClosingFileCount = 0;
+    }while(0);
 
 }//OnProjectActivatedEvent
 // ----------------------------------------------------------------------------
@@ -2722,7 +2767,23 @@ wxString BrowseTracker::GetCBConfigDir()
 {
     return GetCBConfigFile().BeforeLast(wxFILE_SEP_PATH);
 }
-
+// ----------------------------------------------------------------------------
+bool BrowseTracker::IsEditorBaseOpen(EditorBase* eb)
+// ----------------------------------------------------------------------------
+{
+    wxAuiNotebook* m_pNotebook = Manager::Get()->GetEditorManager()->GetNotebook();
+    for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    {
+        //wxWindow* winPage = m_pNotebook->GetPage(i);
+        //#if defined(LOGGING)
+        //if ( winPage )
+        //    LOGIT( _T("IsEditorBaseOpen[%s]"), ((EditorBase*)winPage)->GetShortName().c_str());
+        //#endif
+        if (m_pNotebook->GetPage(i) == eb)
+            return true;
+    }
+    return false;
+}
 //// ----------------------------------------------------------------------------
 //void BrowseTracker::OnMenuTrackBackward(wxCommandEvent& event)
 //// ----------------------------------------------------------------------------

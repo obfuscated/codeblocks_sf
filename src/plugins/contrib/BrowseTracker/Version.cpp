@@ -221,11 +221,22 @@ AppVersion::~AppVersion()
 //       84) Activate previously active editor when secondary project closes.
 //       85  Fix crash when disabling plugins (in BuildMenu)
 // ----------------------------------------------------------------------------
+//  Commit 1.2.90 2009/11/30
+//       86) Add Shutdown test to OnIdle
+//       87) OnCloseEditor, Activate the previously active edtor, not the last tab
+//           EditorManager::OnUpdateUI() used to do this. wxAuiNotebook broke it.
+//       88) OnProjectClosing() ignore recording closing editors
+//           OnProjectActivated() activate the current edtior for this project (not last tab).
+//       89) Record last deactivated editor; OnEditorClose activate last deactivated editor (vs. last tab)
+//       90) Fixed: loop in OnIdle() after svn 5939 changes
+// ----------------------------------------------------------------------------
 //  //FIXME: Bugs
-//          Requires CB to be restarted after Install before Alt-Left/Right work.
+//      01) Requires CB to be restarted after Install before Alt-Left/Right work.
 //          When CB reloads a changed editor, the marks are missing
-//          In one fell swoop: uninstall BrowseTracker, reInstall it,
+//       2) In one fell swoop: uninstall BrowseTracker, reInstall it,
 //              click on a project. CB::OnProjectHook call crashes.
+//       3) When second project loaded w/no editors to open, BT switches
+//          to previous editor of the first project. It should stay put.
 // ----------------------------------------------------------------------------
 //  //TODO:   All
 //          Config dialog: Max tracked editors Max tracked lines etc

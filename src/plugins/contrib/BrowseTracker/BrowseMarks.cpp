@@ -62,7 +62,7 @@ BrowseMarks::BrowseMarks(wxString fullPath )
     m_fileShortName = fname.GetFullName();
 
     //#if defined(LOGGING)
-    //LOGIT( _T("BrowseMarks[%s][%s]"),m_filePath.c_str() ,m_fileShortName.c_str() );
+    //LOGIT( _T("BT BrowseMarks[%s][%s]"),m_filePath.c_str() ,m_fileShortName.c_str() );
     //#endif
 
     m_EdPosnArray.Alloc(MaxEntries);
@@ -77,7 +77,7 @@ void BrowseMarks::SetBrowseMarksStyle( int userStyle )
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
-    LOGIT( _T("BrowseMarks::SetBrowseMarksStyle[%d]"), userStyle );
+    LOGIT( _T("BT BrowseMarks::SetBrowseMarksStyle[%d]"), userStyle );
     #endif
     EditorBase* eb = m_pEdMgr->GetEditor(m_filePath);
     #if defined(LOGGING)
@@ -120,13 +120,13 @@ void BrowseMarks::SetBrowseMarksStyle( int userStyle )
     // the following stmt seems to do nothing for wxSCI_MARK_DOTDOTDOT
     pControl->MarkerSetBackground( GetBrowseMarkerId(), wxColour(0xA0, 0xA0, 0xFF));
     #if defined(LOGGING)
-    LOGIT( _T("BrowseMarks::UserStyle[%d]MarkerId[%d]MarkerStyle[%d]"),userStyle,GetBrowseMarkerId(), GetBrowseMarkerStyle() );
+    LOGIT( _T("BT BrowseMarks::UserStyle[%d]MarkerId[%d]MarkerStyle[%d]"),userStyle,GetBrowseMarkerId(), GetBrowseMarkerStyle() );
     #endif
 
     // When the Marker types only change style, our work is done.
     // Scintilla did the work for us.
     #if defined(LOGGING)
-    LOGIT( _T("OldBrowseMarkerId[%d] NewBrowseMarkerId[%d]"), OldBrowseMarkerId, GetBrowseMarkerId() );
+    LOGIT( _T("BT OldBrowseMarkerId[%d] NewBrowseMarkerId[%d]"), OldBrowseMarkerId, GetBrowseMarkerId() );
     #endif
     if ( OldBrowseMarkerId == GetBrowseMarkerId() )
         return;
@@ -213,17 +213,17 @@ void BrowseMarks::CopyMarksFrom(const BrowseMarks& otherBrowse_Marks)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
-    ///LOGIT( _T("CopyMarksFrom BrowseMarks[%p]To[%p]"), &otherBrowse_Marks, this );
+    ///LOGIT( _T("BT CopyMarksFrom BrowseMarks[%p]To[%p]"), &otherBrowse_Marks, this );
     #endif
     for (int i=0; i<MaxEntries; ++i)
     {
         m_EdPosnArray[i] = otherBrowse_Marks.m_EdPosnArray[i];
         //#if defined(LOGGING)
-        //LOGIT( _T("CopyMarksFrom lhs[%d]rhs[%d]"),m_EdPosnArray[i],otherBrowse_Marks.m_EdPosnArray[i]  );
+        //LOGIT( _T("BT CopyMarksFrom lhs[%d]rhs[%d]"),m_EdPosnArray[i],otherBrowse_Marks.m_EdPosnArray[i]  );
         //#endif
     }
     ////#if defined(LOGGING)
-    ////LOGIT( _T("CopyMarksFrom[%s]To[%s]"),
+    ////LOGIT( _T("BT CopyMarksFrom[%s]To[%s]"),
     ////            ((BrowseMarks&)otherBrowse_Marks).GetFilePath().c_str(),
     ////            GetFilePath().c_str() );
     ////#endif
@@ -236,13 +236,13 @@ void BrowseMarks::ImportBrowse_Marks()
     // rebuild BrowseMarks from scintilla browse marks
 
     #if defined(LOGGING)
-    ///LOGIT( _T("ImportBrowse_Marks") );
+    ///LOGIT( _T("BT ImportBrowse_Marks") );
     #endif
 
     //-EditorBase* eb = m_pEditorBase ;
     EditorBase* eb = m_pEdMgr->GetEditor(m_filePath);
     #if defined(LOGGING)
-    LOGIT(_T("ImportBrowse_Marks entered with no active editor base."));
+    LOGIT(_T("BT ImportBrowse_Marks entered with no active editor base."));
     #endif
     // This can happens when editing script for example .
     if (not eb) return;
@@ -564,18 +564,18 @@ void BrowseMarks::Dump()
 
     #if defined(LOGGING)
     EditorBase* eb = m_pEdMgr->GetEditor(m_filePath);
-    LOGIT( _T("--BrowseMarks for[%p][%s]--"), eb, m_fileShortName.c_str() );
+    LOGIT( _T("BT --BrowseMarks for[%p][%s]--"), eb, m_fileShortName.c_str() );
     cbEditor* cbed = 0;
     cbStyledTextCtrl* control = 0;
     //cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (eb) cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
     if (cbed) control = cbed->GetControl();
-    LOGIT( _T("Array[%p] Current[%d]Last[%d]"), this, m_currIndex, m_lastIndex);
+    LOGIT( _T("BT Array[%p] Current[%d]Last[%d]"), this, m_currIndex, m_lastIndex);
     for (int i=0; i<MaxEntries; ++i )
     {
             int pos = m_EdPosnArray[i];
             if (control && (pos != -1))
-            LOGIT( _T("Array[%p] index[%d]Line[%d]Pos[%d]"), this, i, control->LineFromPosition(pos) ,pos );
+            LOGIT(_T("BT Array[%p] index[%d]Line[%d]Pos[%d]"), this, i, control->LineFromPosition(pos) ,pos );
             else
             LOGIT( _T("Array[%p] index[%d]Pos[%d]"), this, i, pos );
     }

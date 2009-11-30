@@ -33,7 +33,6 @@ class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
 class cbStyledTextCtrl;
-class wxAuiNotebookEvent;
 class JumpTracker;
 
 // ----------------------------------------------------------------------------
@@ -261,6 +260,7 @@ class BrowseTracker : public cbPlugin
         cbProject*   GetProject(EditorBase* eb);
         wxString     GetCBConfigFile();
         wxString     GetCBConfigDir();
+        bool         IsEditorBaseOpen(EditorBase* eb);
 
         void         DumpHash( wxString hashtype);
 
@@ -289,6 +289,7 @@ class BrowseTracker : public cbPlugin
         int             m_nBrowsedEditorCount;
         BrowseSelector* m_popupWin;
         EditorBase*     m_UpdateUIFocusEditor;
+        EditorBase*     m_LastEbDeactivated;
         int             m_nRemoveEditorSentry;
         int             m_nBrowseMarkPreviousSentry;
         int             m_nBrowseMarkNextSentry;
@@ -298,7 +299,7 @@ class BrowseTracker : public cbPlugin
         EbBrowse_MarksHash m_EbBrowse_MarksHash;
 
         ProjectDataHash m_ProjectDataHash;
-;
+
         int             m_CurrScrLine;
         int             m_CurrScrTopLine;
         int             m_CurrLinesOnScreen;
@@ -321,6 +322,8 @@ class BrowseTracker : public cbPlugin
         int             m_LeftMouseDelay;       //milliseconds before testing toggle
         int             m_ClearAllKey;          //Ctrl-Left_Mouse or Ctrl-Left_Mouse_DClick
         bool            m_bProjectClosing;      // project close in progress
+        bool            m_bAppShutdown;
+        int             m_nProjectClosingFileCount;
 
         JumpTracker*    m_pJumpTracker;
 

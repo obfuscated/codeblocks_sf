@@ -28,7 +28,6 @@ WX_DECLARE_OBJARRAY(JumpData, ArrayOfJumpData);
 
 // ----------------------------------------------------------------------------
 class JumpTracker : public cbPlugin
-//class JumpTracker : public wxEvtHandler
 // ----------------------------------------------------------------------------
 {
     friend class BrowseTracker;
