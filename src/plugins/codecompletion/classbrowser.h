@@ -35,7 +35,7 @@ class ClassBrowser : public wxPanel
         const Parser& GetParser(){ return *m_pParser; }
         const Parser* GetParserPtr() { return m_pParser; }
         void UnlinkParser();
-        void UpdateView();
+        void UpdateView(bool checkHeaderSwap = false);
 
         void OnSize(wxSizeEvent& event);
     private:
@@ -65,13 +65,13 @@ class ClassBrowser : public wxPanel
         void OnTreeItemExpanding(wxTreeEvent& event);
         void OnTreeItemCollapsing(wxTreeEvent& event);
 
-        NativeParser* m_NativeParser;
-        CBTreeCtrl* m_Tree;
-        CBTreeCtrl* m_TreeBottom;
-        wxComboBox* m_Search;
-        wxTreeCtrl* m_TreeForPopupMenu;
-        Parser* m_pParser;
-        wxTreeItemId m_RootNode;
+        NativeParser*   m_NativeParser;
+        CBTreeCtrl*     m_Tree;
+        CBTreeCtrl*     m_TreeBottom;
+        wxComboBox*     m_Search;
+        wxTreeCtrl*     m_TreeForPopupMenu;
+        Parser*         m_pParser;
+        wxTreeItemId    m_RootNode;
 
         // filtering
         wxString m_ActiveFilename;

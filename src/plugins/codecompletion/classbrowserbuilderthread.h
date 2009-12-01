@@ -22,6 +22,7 @@ enum SpecialFolder
     sfTypedef       = 0x0020, // typedefs node
     sfBase          = 0x0040, // base classes node
     sfDerived       = 0x0080, // derived classes node
+    sfMacro         = 0x0100, // global macro node
 };
 
 class CBTreeData : public wxTreeItemData

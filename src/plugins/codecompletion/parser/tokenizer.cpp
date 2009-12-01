@@ -482,7 +482,7 @@ bool Tokenizer::SkipComment(bool skipEndWhite)
     return true;
 }
 
-bool Tokenizer::SkipUnwanted()
+bool Tokenizer::SkipUnwanted(bool bGetValue)
 {
     wxChar current = CurrentChar();
     wxChar next    = NextChar();
@@ -548,6 +548,12 @@ bool Tokenizer::SkipUnwanted()
 
         while (CurrentChar() == '=')
         {
+            if (bGetValue)
+            {
+                MoveToNextChar();
+                SkipWhiteSpace();
+                return true;
+            }
             // skip assignments
             // TODO: what happens with operators?
             if (!SkipToOneOfChars(_T(",;}"), true))
@@ -573,13 +579,17 @@ bool Tokenizer::SkipUnwanted()
     return true;
 }
 
-wxString Tokenizer::GetToken()
+wxString Tokenizer::GetToken(bool bGetValue, bool bTemplate)
 {
     m_UndoTokenIndex = m_TokenIndex;
     m_UndoLineNumber = m_LineNumber;
     m_UndoNestLevel  = m_NestLevel;
 
-    if(m_PeekAvailable)
+    if (bGetValue)
+    {
+        m_Token = DoGetToken(bGetValue, bTemplate);
+    }
+    else if(m_PeekAvailable)
     {
         m_TokenIndex = m_PeekTokenIndex;
         m_LineNumber = m_PeekLineNumber;
@@ -587,14 +597,14 @@ wxString Tokenizer::GetToken()
         m_Token      = m_PeekToken;
     }
     else
-        m_Token = DoGetToken();
+        m_Token = DoGetToken(bGetValue, bTemplate);
 
     m_PeekAvailable = false;
 
     return m_Token;
 }
 
-wxString Tokenizer::PeekToken()
+wxString Tokenizer::PeekToken(bool bGetValue, bool bTemplate)
 {
     if(!m_PeekAvailable)
     {
@@ -602,7 +612,7 @@ wxString Tokenizer::PeekToken()
         unsigned int undoTokenIndex = m_TokenIndex;
         unsigned int undoLineNumber = m_LineNumber;
         unsigned int undoNestLevel  = m_NestLevel;
-        m_PeekToken                 = DoGetToken();
+        m_PeekToken                 = DoGetToken(bGetValue, bTemplate);
         m_PeekTokenIndex            = m_TokenIndex;
         m_PeekLineNumber            = m_LineNumber;
         m_PeekNestLevel             = m_NestLevel;
@@ -625,7 +635,7 @@ void Tokenizer::UngetToken()
     m_PeekAvailable  = true;
 }
 
-wxString Tokenizer::DoGetToken()
+wxString Tokenizer::DoGetToken(bool bGetValue, bool bTemplate)
 {
     if (IsEOF())
         return wxEmptyString;
@@ -633,7 +643,7 @@ wxString Tokenizer::DoGetToken()
     if (!SkipWhiteSpace())
         return wxEmptyString;
 
-    if (m_SkipUnwantedTokens && !SkipUnwanted())
+    if (m_SkipUnwantedTokens && !SkipUnwanted(bGetValue))
         return wxEmptyString;
 
     // if m_SkipUnwantedTokens is false, we need to handle comments here too
@@ -700,6 +710,20 @@ wxString Tokenizer::DoGetToken()
             MoveToNextChar();
             str.assign(TokenizerConsts::colon);
         }
+    }
+    else if (CurrentChar() == '<' && bTemplate)
+    {
+        wxChar match = _T('>');
+        MoveToNextChar();
+        if (!SkipToOneOfChars(_T(">\r\n")), false)
+            return wxEmptyString;
+
+        MoveToNextChar();
+        wxString tmp = m_Buffer.Mid(start+1,m_TokenIndex-start-2);
+        tmp.Trim();
+        str = _T("<");
+        str += tmp;
+        str += _T(">"); // m_Buffer.Mid(start, m_TokenIndex - start);
     }
     else if (c == '(')
     {

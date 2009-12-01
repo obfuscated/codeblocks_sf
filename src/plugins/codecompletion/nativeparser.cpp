@@ -52,8 +52,8 @@ BEGIN_EVENT_TABLE(NativeParser, wxEvtHandler)
     EVT_MENU(PARSER_END, NativeParser::OnParserEnd)
 END_EVENT_TABLE()
 
-NativeParser::NativeParser()
-    : m_Parser(this),
+NativeParser::NativeParser() :
+    m_Parser(this),
     m_EditorStartWord(-1),
     m_EditorEndWord(-1),
     m_CallTipCommas(0),
@@ -306,11 +306,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
             TRACE(_T("AddCompilerDirs() : Parser prj dir: ") + dir.GetFullPath());
         }
         else
-        #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
-        #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
-        #endif
 
     }
 
@@ -339,11 +335,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                         TRACE(_T("AddCompilerDirs() : Parser tgt dir: ") + dir.GetFullPath());
                     }
                     else
-                    #if wxCHECK_VERSION(2, 9, 0)
                         Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
-                    #else
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
-                    #endif
                 }
             }
 
@@ -360,11 +352,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                     TRACE(_T("AddCompilerDirs() : Parser tgt dir: ") + dir.GetFullPath());
                 }
                 else
-                #if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
-                #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
-                #endif
             }
             // get the compiler
             wxString CompilerIndex = target->GetCompilerID();
@@ -404,11 +392,7 @@ void NativeParser::AddCompilerDirs(Parser* parser, cbProject* project)
                 TRACE(_T("Parser cmp dir: ") + dir.GetFullPath());
             }
             else
-            #if wxCHECK_VERSION(2, 9, 0)
                 Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
-            #else
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
-            #endif
         }
 
         // find out which compiler, if gnu, do the special trick
@@ -493,11 +477,8 @@ wxArrayString NativeParser::GetGCCCompilerDirs(const wxString &cpp_compiler, con
                         gcc_compiler_dirs.Add(dir.GetFullPath());
                     }
                     else
-                    #if wxCHECK_VERSION(2, 9, 0)
                         Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.wx_str(),base.wx_str()));
-                    #else
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"),out.c_str(),base.c_str()));
-                    #endif
+
                 }
             }
         }
@@ -524,11 +505,7 @@ void NativeParser::AddParser(cbProject* project, bool useCache)
     if (!project)
         return;
 
-    #if wxCHECK_VERSION(2, 9, 0)
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Add project %s in parsing queue"), project->GetTitle().wx_str()));
-    #else
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Add project %s in parsing queue"), project->GetTitle().c_str()));
-    #endif
 
     ReparseProject(project);
 }
@@ -543,11 +520,9 @@ void NativeParser::RemoveParser(cbProject* project, bool useCache)
     }
     if (!project)
         return;
-    #if wxCHECK_VERSION(2, 9, 0)
+
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing project %s from parsed projects"), project->GetTitle().wx_str()));
-    #else
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing project %s from parsed projects"), project->GetTitle().c_str()));
-    #endif
+
     for (int i = 0; i < project->GetFilesCount(); ++i)
     {
         ProjectFile* pf = project->GetFile(i);
@@ -585,11 +560,8 @@ void NativeParser::ReparseProject(cbProject* project)
         if (NormalizePath(dir, base))
             parser->AddIncludeDir(dir.GetFullPath());
         else
-        #if wxCHECK_VERSION(2, 9, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), path.wx_str(), base.wx_str()));
-        #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Error normalizing path: '%s' from '%s'"), path.c_str(), base.c_str()));
-        #endif
+
     }
 
     wxArrayString files;
@@ -749,7 +721,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
         return false;
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("Parse function arguments"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("ParseFunctionArguments() Parse function arguments"));
 
     TokenIdxSet proc_result;
     if (FindCurrentFunctionToken(ed, proc_result, caretPos) != 0)
@@ -761,7 +733,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
                 continue;
 
             if (s_DebugSmartSense)
-                Manager::Get()->GetLogManager()->DebugLog(_T("+ Function match: ") + token->m_Name);
+                Manager::Get()->GetLogManager()->DebugLog(_T("ParseFunctionArguments() + Function match: ") + token->m_Name);
 
             if (!token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
             {
@@ -774,17 +746,13 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
 
                 if (s_DebugSmartSense)
                 {
-                #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Parsing arguments: \"%s\""), buffer.wx_str()));
-                #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Parsing arguments: \"%s\""), buffer.c_str()));
-                #endif
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseFunctionArguments() Parsing arguments: \"%s\""), buffer.wx_str()));
                 }
 
                 if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
                 {
                     if (s_DebugSmartSense)
-                        Manager::Get()->GetLogManager()->DebugLog(_T("Error parsing arguments."));
+                        Manager::Get()->GetLogManager()->DebugLog(_T("ParseFunctionArguments() Error parsing arguments."));
                 }
             }
         }
@@ -793,7 +761,7 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
     else
     {
         if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(_T("Could not determine current function's namespace..."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("ParseFunctionArguments() Could not determine current function's namespace..."));
     }
     return false;
 }
@@ -811,7 +779,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
         return false;
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("Parse local block"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("ParseLocalBlock() Parse local block"));
 
     int blockStart = FindCurrentFunctionStart(ed, 0, 0, caretPos);
     if (blockStart != -1)
@@ -829,23 +797,23 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
         if (!buffer.IsEmpty() && !parser->ParseBuffer(buffer, false, false, true))
         {
             if (s_DebugSmartSense)
-                Manager::Get()->GetLogManager()->DebugLog(_T("ERROR parsing block:\n") + buffer);
+                Manager::Get()->GetLogManager()->DebugLog(_T("ParseLocalBlock() ERROR parsing block:\n") + buffer);
         }
         else
         {
             if (s_DebugSmartSense)
             {
-                #if wxCHECK_VERSION(2, 9, 0)
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.wx_str()));
-                #else
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Block:\n%s"), buffer.c_str()));
-                #endif
-                Manager::Get()->GetLogManager()->DebugLog(_T("Local tokens:"));
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseLocalBlock() Block:\n%s"), buffer.wx_str()));
+                Manager::Get()->GetLogManager()->DebugLog(_T("ParseLocalBlock() Local tokens:"));
                 for (size_t i = 0; i < parser->GetTokens()->size(); ++i)
                 {
                     Token* t = parser->GetTokens()->at(i);
                     if (t && t->m_IsTemp)
-                        Manager::Get()->GetLogManager()->DebugLog(_T(" + ") + t->DisplayName());
+                    {
+                       Manager::Get()->GetLogManager()->DebugLog(
+                            _T("ParseLocalBlock() + ") + t->DisplayName() + _T(" parent = ") + t->GetParentName()  );
+                    }
+
                 }
             }
             return true;
@@ -854,7 +822,7 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
     else
     {
         if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(_T("Could not determine current block start..."));
+            Manager::Get()->GetLogManager()->DebugLog(_T("ParseLocalBlock() Could not determine current block start..."));
     }
     return false;
 }
@@ -870,12 +838,14 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
     TokensTree* tree = parser->GetTokens();
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("Parse file scope for \"using namespace\""));
+        Manager::Get()->GetLogManager()->DebugLog(_T("ParseUsingNamespace() Parse file scope for \"using namespace\""));
 
     wxArrayString ns;
     int pos = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > ed->GetControl()->GetLength())
         return false;
+
+    //Get the buffer from begin of the editor to the current caret position
     wxString buffer = ed->GetControl()->GetTextRange(0, pos);
     parser->ParseBufferForUsingNamespace(buffer, ns);
 
@@ -902,11 +872,7 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
         if (s_DebugSmartSense && parentIdx != -1)
         {
             Token* token = tree->at(parentIdx);
-            #if wxCHECK_VERSION(2, 9, 0)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found %s%s"), token->GetNamespace().wx_str(), token->m_Name.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found %s%s"), token->GetNamespace().c_str(), token->m_Name.c_str()));
-            #endif
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseUsingNamespace() Found %s%s"), token->GetNamespace().wx_str(), token->m_Name.wx_str()));
         }
         search_scope.insert(parentIdx);
     }
@@ -914,8 +880,15 @@ bool NativeParser::ParseUsingNamespace(cbEditor* ed, TokenIdxSet& search_scope, 
     return true;
 }
 
+// Here, we collect the "using namespace XXXX" directives
+// Also, we locate the current caret in which function, then, add the function parameters to Token trie
+// Also, the variables in the function body( local block ) was add to the Token trie
 size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI, bool noPartialMatch, bool caseSensitive, int caretPos)
 {
+
+    if (s_DebugSmartSense)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("MarkItemsByAI()")));
+
     result.clear();
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -952,7 +925,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI, bool n
                 result.insert(i);
             return result.size();
         }
-
+        // we have correctly collected all the tokens, so we will do the artificial intelligence search
         return AI(result, ed, parser, wxEmptyString, noPartialMatch, caseSensitive, &search_scope, caretPos);
     }
     return 0;
@@ -1486,6 +1459,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     if(!tree)
         return 0;
 
+    // Get the actual search text, such as "objA.m_aaa.m_bbb"
     wxString actual;
     int col;
     wxString tabwidth;
@@ -1506,28 +1480,25 @@ size_t NativeParser::AI(TokenIdxSet& result,
     }
 
     if (s_DebugSmartSense)
-    #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI enter, actual: \"%s\""), actual.wx_str()));
-    #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI enter, actual: \"%s\""), actual.c_str()));
-    #endif
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() AI enter, actual: \"%s\""), actual.wx_str()));
 
-    static cbEditor* cached_editor = 0;
-    static int cached_editor_start_word = 0;
-    static wxString cached_search;
-    static size_t cached_results_count = 0;
+
+    static cbEditor* cached_editor            = 0;
+    static int       cached_editor_start_word = 0;
+    static wxString  cached_search;
+    static size_t    cached_results_count     = 0;
 
     // early-out opportunity
     // if the user starts typing a token that in our last search had 0 results,
     // and we see that he's continuing typing for that same token,
     // don't even bother to search
-    if (cached_editor == editor &&
-        cached_editor_start_word == m_EditorStartWord &&
-        cached_results_count == 0 &&
-        actual.StartsWith(cached_search))
+    if (   cached_editor == editor
+        && cached_editor_start_word == m_EditorStartWord
+        && cached_results_count == 0
+        && actual.StartsWith(cached_search))
     {
         if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(_T("Aborting search: last attempt returned 0 results"));
+            Manager::Get()->GetLogManager()->DebugLog(_T("AI() AI leave, Aborting search: last attempt returned 0 results"));
 
         // but set m_LastAISearchWasGlobal correctly so C++ keywords can be shown
         std::queue<ParserComponent> components;
@@ -1538,14 +1509,11 @@ size_t NativeParser::AI(TokenIdxSet& result,
         return 0;
     }
 
+    // Do the whole job here
     if (s_DebugSmartSense)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("========================================================="));
-        #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Doing AI for '%s':"), actual.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Doing AI for '%s':"), actual.c_str()));
-        #endif
+        Manager::Get()->GetLogManager()->DebugLog(_T("AI() ========================================================="));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() Doing AI for '%s':"), actual.wx_str()));
     }
 
     // find current function's namespace so we can include local scope's tokens
@@ -1564,12 +1532,20 @@ size_t NativeParser::AI(TokenIdxSet& result,
             if (s_DebugSmartSense)
             {
                 Token* parent = parser->GetTokens()->at(token->m_ParentIndex);
-                Manager::Get()->GetLogManager()->DebugLog(_T("Adding search namespace: ") + (parent ? parent->m_Name : _T("Global namespace")));
+                Manager::Get()->GetLogManager()->DebugLog(_T("AI() Adding search namespace: ") + (parent ? parent->m_Name : _T("Global namespace")));
             }
         }
     }
 
+    // add additional search scopes???
+    // for example, we are here:
+    /*  void ClassA::FunctionB(int paraC){
+            m_aaa
+    */
+    // then, ClassA should be added as a search_scope, the global scope should be added too.
 
+    // if search_scope is already defined, then, add scope_result to search_scope
+    // otherwise we just set search_scope as scope_result
     if (!search_scope)
         search_scope = &scope_result;
     else
@@ -1594,8 +1570,6 @@ size_t NativeParser::AI(TokenIdxSet& result,
             ++it;
     }
 
-    // always add scope -1 (i.e. global namespace)
-    search_scope->insert(-1);
 
     // find all other matches
     std::queue<ParserComponent> components;
@@ -1611,20 +1585,33 @@ size_t NativeParser::AI(TokenIdxSet& result,
         if (s_DebugSmartSense)
         {
             Token* scopeToken = tree->at(*it);
-            #if wxCHECK_VERSION(2, 9, 0)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Parent scope: '%s' (%d)"), scopeToken ? scopeToken->m_Name.wx_str() : _T("Global namespace"), *it));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Parent scope: '%s' (%d)"), scopeToken ? scopeToken->m_Name.c_str() : _T("Global namespace"), *it));
-            #endif
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() Parent scope: '%s' (%d)"),
+                                                        scopeToken ? scopeToken->m_Name.wx_str() : _T("Global namespace"),
+                                                        *it));
         }
         FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
     }
+
+
+    if (result.size()<1) // found nothing in the search_scope, add global namespace
+    {
+        if (s_DebugSmartSense)
+        {
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() result is zero, so, add the Global namespace")));
+        }
+        search_scope->insert(-1);
+        FindAIMatches(parser, components, result, -1, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
+    }
+
 
     cached_editor = editor;
     if (result.size() || (m_EditorEndWord - m_EditorStartWord))
         cached_editor_start_word = m_EditorStartWord;
     cached_search = actual;
     cached_results_count = result.size();
+
+    if (s_DebugSmartSense)
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() AI leave, returned %d results"),result.size()));
 
     return result.size();
 }
@@ -1650,13 +1637,7 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
 
     // break up components of phrase
     if (s_DebugSmartSense)
-    {
-        #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Breaking up '%s'"), tmp.wx_str()));
-        #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Breaking up '%s'"), tmp.c_str()));
-        #endif
-    }
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("BreakUpComponents() Breaking up '%s'"), tmp.wx_str()));
 
     while (true)
     {
@@ -1665,6 +1646,8 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
         ParserComponent pc;
         pc.component = tok;
         pc.token_type = tokenType;
+
+        // Debug smart sense: output the component's name and type.
         if (s_DebugSmartSense)
         {
             wxString tokenTypeString;
@@ -1681,12 +1664,9 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
                 default:
                 {   tokenTypeString = _T("Undefined");         }
             }
-            #if wxCHECK_VERSION(2, 9, 0)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found component: '%s' (%s)"), tok.wx_str(), tokenTypeString.wx_str()));
-            #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Found component: '%s' (%s)"), tok.c_str(), tokenTypeString.c_str()));
-            #endif
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("BreakUpComponents() Found component: '%s' (%s)"), tok.wx_str(), tokenTypeString.wx_str()));
         }
+
         components.push(pc);
 
         if (tokenType == pttSearchText)
@@ -1700,6 +1680,9 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
 // This function decides most of what gets included in the auto-completion list
 // presented to the user.
 // It's called recursively for each component of the std::queue argument.
+// for example: objA.objB.function()
+// components is a queue of:  'objA'  'objB' 'function'. we deal with objA firstly.
+//
 size_t NativeParser::FindAIMatches(Parser* parser,
                                 std::queue<ParserComponent> components,
                                 TokenIdxSet& result,
@@ -1714,7 +1697,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         return 0;
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("----- FindAIMatches - enter -----"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - enter -----"));
 
     TokensTree* tree = parser->GetTokens();
 
@@ -1732,18 +1715,22 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     }
 
     // we 'll only add tokens in the result set if we get matches for the last token
-    bool is_last = components.empty();
+    bool isLastComponent = components.empty();
     wxString searchtext = parser_component.component;
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("Search for ") + searchtext);
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Search for %s, isLast = %d"),
+                                                    searchtext.wx_str(),
+                                                    isLastComponent?1:0));
 
     // get a set of matches for the current token
     TokenIdxSet local_result;
-    GenerateResultSet(tree, searchtext, parentTokenIdx, local_result, caseSensitive || !is_last, is_last && !noPartialMatch, kindMask);
+    GenerateResultSet(tree, searchtext, parentTokenIdx, local_result,
+                      caseSensitive || !isLastComponent,
+                      isLastComponent && !noPartialMatch, kindMask);
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Looping %d results"), local_result.size()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Looping %d results"), local_result.size()));
 
     // loop all matches, and recurse
     for (TokenIdxSet::iterator it = local_result.begin(); it != local_result.end(); it++)
@@ -1771,17 +1758,14 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         }
 
         if (s_DebugSmartSense)
-        #if wxCHECK_VERSION(2, 9, 0)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Match: '%s' (%d) : '%s'"), token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
-        #else
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Match: '%s' (%d) : '%s'"), token->m_Name.c_str(), id, token->m_ActualType.c_str()));
-        #endif
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Match: '%s' (%d) : '%s'"), token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
+
 
         // is the token a function or variable (i.e. is not a type)
-        if (!searchtext.IsEmpty() &&
-            (parser_component.token_type != pttSearchText
-            /* || m_GettingCalltips */ ) && // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
-            !token->m_ActualType.IsEmpty())
+        if (    !searchtext.IsEmpty()
+             && (parser_component.token_type != pttSearchText)
+	         /* || m_GettingCalltips */ // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
+             && !token->m_ActualType.IsEmpty() )
         {
             // the token is not a type
             // find its type's ID and use this as parent instead of (*it)
@@ -1796,11 +1780,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
             // until we find a result, or reach -1...
 
             if (s_DebugSmartSense)
-            #if wxCHECK_VERSION(2, 9, 0)
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Looking for type: '%s' (%d components)"), actual.wx_str(), type_components.size()));
-            #else
-                Manager::Get()->GetLogManager()->DebugLog(F(_T("Looking for type: '%s' (%d components)"), actual.c_str(), type_components.size()));
-            #endif
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Looking for type: '%s' (%d components)"), actual.wx_str(), type_components.size()));
 
             // search under all search-scope namespaces too
             TokenIdxSet temp_search_scope;
@@ -1818,7 +1798,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 {
                     temp_search_scope.insert(parent->GetParentToken()->GetSelf());
                     if (s_DebugSmartSense)
-                        Manager::Get()->GetLogManager()->DebugLog(_T("Implicit search scope added: ") + parent->GetParentToken()->m_Name);
+                        Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches() Implicit search scope added:") + parent->GetParentToken()->m_Name);
                 }
             }
 
@@ -1829,16 +1809,20 @@ size_t NativeParser::FindAIMatches(Parser* parser,
                 Token* parent = tree->at(*itsearch);
 
                 if (s_DebugSmartSense)
-                #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Now looking under '%s'"), parent ? parent->m_Name.wx_str() : _T("Global namespace")));
-                #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Now looking under '%s'"), parent ? parent->m_Name.c_str()  : _T("Global namespace")));
-                #endif
-
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Now looking under '%s'"),
+                                                                parent ? parent->m_Name.wx_str() : _T("Global namespace")));
                 do
                 {
                     // types are searched as whole words, case sensitive and only classes/namespaces
-                    if (FindAIMatches(parser, type_components, type_result, parent ? parent->GetSelf() : -1, true, false, false, tkClass | tkNamespace | tkTypedef | tkEnum, &temp_search_scope) != 0)
+                    if (FindAIMatches(parser,
+                                      type_components,
+                                      type_result,
+                                      parent ? parent->GetSelf() : -1,
+                                      true,
+                                      false,
+                                      false,
+                                      tkClass | tkNamespace | tkTypedef | tkEnum,
+                                      &temp_search_scope) != 0)
                         break;
                     if (!parent)
                         break;
@@ -1867,29 +1851,21 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
                 if (s_DebugSmartSense)
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Type: '%s' (%d)"), tree->at(id)->m_Name.wx_str(), id));
                     if (type_result.size() > 1)
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Multiple types matched for '%s': %d results"), token->m_ActualType.wx_str(), type_result.size()));
-                    #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Type: '%s' (%d)"), tree->at(id)->m_Name.c_str(), id));
-                    if (type_result.size() > 1)
-                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Multiple types matched for '%s': %d results"), token->m_ActualType.c_str(), type_result.size()));
-                    #endif
+                        Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Multiple types matched for '%s': %d results"),
+                                                                    token->m_ActualType.wx_str(),
+                                                                    type_result.size()));
                 }
             }
             else if (s_DebugSmartSense)
             {
-                #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("No types matched '%s'."), token->m_ActualType.wx_str()));
-                #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("No types matched '%s'."), token->m_ActualType.c_str()));
-                #endif
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() No types matched '%s'."), token->m_ActualType.wx_str()));
             }
         }
 
         // if no more components, add to result set
-        if (is_last)
+        if (isLastComponent)
             result.insert(id);
         // else recurse this function using id as a parent
         else
@@ -1897,7 +1873,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     }
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("----- FindAIMatches - leave -----"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches() ----- FindAIMatches - leave -----"));
 
     return result.size();
 }
@@ -1919,24 +1895,27 @@ inline bool MatchType(TokenKind kind, short int kindMask)
     return kind & kindMask;
 }
 
-size_t NativeParser::GenerateResultSet(TokensTree* tree,
-                                        const wxString& search,
-                                        int parentIdx,
-                                        TokenIdxSet& result,
-                                        bool caseSens,
-                                        bool isPrefix,
-                                        short int kindMask)
+size_t NativeParser::GenerateResultSet(TokensTree*     tree,
+                                       const wxString& search,
+                                       int             parentIdx,
+                                       TokenIdxSet&    result,
+                                       bool            caseSens,
+                                       bool            isPrefix,
+                                       short int       kindMask)
 {
     if (!tree)
         return 0;
 
     Token* parent = tree->at(parentIdx);
     if (s_DebugSmartSense)
-    #if wxCHECK_VERSION(2, 9, 0)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("search '%s', parent='%s (%d), isPrefix=%d'"), search.wx_str(), parent ? parent->m_Name.wx_str() : _T("Global namespace"), parent ? parent->GetSelf() : 0, isPrefix ? 1 : 0));
-    #else
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("search '%s', parent='%s (%d), isPrefix=%d'"), search.c_str(), parent ? parent->m_Name.c_str() : _T("Global namespace"), parent ? parent->GetSelf() : 0, isPrefix ? 1 : 0));
-    #endif
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet() search '%s', parent='%s (id:%d, type:%s), isPrefix=%d'"),
+                                                    search.wx_str(),
+                                                    parent ? parent->m_Name.wx_str() : _T("Global namespace"),
+                                                    parent ? parent->GetSelf() : 0,
+                                                    parent ? parent->GetTokenKindString().wx_str():0,
+                                                    isPrefix ? 1 : 0));
+
+    // parent == null means we are searching in the global scope
     if (parent)
     {
         // we got a parent; add its children
@@ -2023,6 +2002,67 @@ size_t NativeParser::GenerateResultSet(TokensTree* tree,
     }
 
     // done
+    return result.size();
+}
+
+size_t NativeParser::GenerateResultSet(Parser*         parser,
+                                       const wxString& search,
+                                       int             parentIdx,
+                                       TokenIdxSet&    result,
+                                       bool            caseSens,
+                                       bool            isPrefix,
+                                       short int       kindMask)
+{
+    if (!parser)
+        return 0;
+
+    if (search.IsEmpty())
+    {
+        Token* parent = parser->GetTokens()->at(parentIdx);
+        if (parent)
+        {
+            for (TokenIdxSet::iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
+            {
+                Token* token = parser->GetTokens()->at(*it);
+                if (token)
+                    result.insert(*it);
+            }
+            for (TokenIdxSet::iterator it = parent->m_Ancestors.begin(); it != parent->m_Ancestors.end(); ++it)
+            {
+                Token* ancestor = parser->GetTokens()->at(*it);
+                if (!ancestor)
+                    continue;
+                for (TokenIdxSet::iterator it2 = ancestor->m_Children.begin(); it2 != ancestor->m_Children.end(); ++it2)
+                {
+                    Token* token = parser->GetTokens()->at(*it2);
+                    if (token)
+                    {
+                        result.insert(*it2);
+                        if (token->m_TokenKind == tkEnum) // check enumerators for match too
+                        {
+                            for (TokenIdxSet::iterator it3 = token->m_Children.begin(); it3 != token->m_Children.end(); ++it3)
+                            result.insert(*it3);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        TokenIdxSet tempResult;
+        if (parser->FindMatches(search, tempResult, caseSens, isPrefix))
+        {
+            for (TokenIdxSet::iterator it = tempResult.begin(); it != tempResult.end(); ++it)
+            {
+                Token* token = parser->GetTokens()->at(*it);
+                if (token && (token->m_ParentIndex ==parentIdx))
+                    result.insert(*it);
+
+            }
+        }
+    }
+
     return result.size();
 }
 
@@ -2130,11 +2170,9 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
             {
                 // got it :)
                 if (s_DebugSmartSense)
-                #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Current function: %s (at line %d)"), token->DisplayName().wx_str(), token->m_ImplLine));
-                #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("Current function: %s (at line %d)"), token->DisplayName().c_str(), token->m_ImplLine));
-                #endif
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Current function: %s (at line %d)"),
+                                                                token->DisplayName().wx_str(),
+                                                                token->m_ImplLine));
 
                 s_LastNS = token->GetNamespace();
                 s_LastPROC = token->m_Name;
@@ -2160,7 +2198,7 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
     }
 
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(_T("Can't determine current function..."));
+        Manager::Get()->GetLogManager()->DebugLog(_T("FindCurrentFunctionStart() Can't determine current function..."));
 
     s_LastResult = -1;
     return -1;
@@ -2252,17 +2290,20 @@ void NativeParser::OnParserEnd(wxCommandEvent& event)
     event.Skip();
 }
 
+// there is a bug, some times, OnEditorActivated received, but ed == 0;
 void NativeParser::OnEditorActivated(EditorBase* editor)
 {
     if (!m_pClassBrowser)
         return;
+
     cbEditor* ed = editor && editor->IsBuiltinEditor() ? static_cast<cbEditor*>(editor) : 0;
     if (ed)
     {
         Parser* parser = FindParserFromEditor(ed);
         if (parser && parser->ClassBrowserOptions().displayFilter == bdfFile)
         {
-            m_pClassBrowser->UpdateView();
+            // check header and implementation file swap, if yes, don't need to rebuild browser tree
+            m_pClassBrowser->UpdateView(true);
         }
     }
 }

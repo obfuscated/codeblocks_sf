@@ -137,7 +137,7 @@ wxString Token::DisplayName() const
 {
     wxString result;
     if      (m_TokenKind == tkClass)
-        return result << _T("class ")     << m_Name << _T(" {...}");
+        return result << _T("class ")     << m_Name << m_RealArgs << _T(" {...}");
     else if (m_TokenKind == tkNamespace)
         return result << _T("namespace ") << m_Name << _T(" {...}");
     else if (m_TokenKind == tkEnum)
@@ -166,6 +166,9 @@ wxString Token::DisplayName() const
     // else
     if (!m_Type.IsEmpty())
         result << m_Type << _T(" ");
+
+	if (m_TokenKind == tkEnumerator)
+		return 	result << GetNamespace() << m_Name << _T("=") << m_Args;
 
     return result << GetNamespace() << m_Name << m_Args;
 }
@@ -257,6 +260,7 @@ wxString Token::GetTokenKindString() const
         case tkConstructor:  return _T("constructor");
         case tkDestructor:   return _T("destructor");
         case tkPreprocessor: return _T("preprocessor");
+		case tkMacro:		 return _T("macro");
         case tkVariable:     return _T("variable");
         default:             return wxEmptyString; // tkUndefined
     }
@@ -559,7 +563,8 @@ int TokensTree::AddToken(Token* newToken,int forceidx)
     if(!newToken)
         return -1;
 
-    const wxString& name = newToken->m_Name;
+    const wxString & name = newToken->m_Name;
+
     static TokenIdxSet tmp_tokens = TokenIdxSet();
     // tmp_tokens.clear();
 

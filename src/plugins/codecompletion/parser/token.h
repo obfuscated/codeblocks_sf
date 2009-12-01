@@ -64,6 +64,7 @@ enum TokenKind
     tkVariable      = 0x0080,
     tkEnumerator    = 0x0100,
     tkPreprocessor  = 0x0200,
+    tkMacro 	    = 0x0400,
 
     // convenient masks
     tkAnyContainer  = tkClass | tkNamespace | tkTypedef,
@@ -104,6 +105,7 @@ class Token  : public BlockAllocated<Token, 10000>
         wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
         wxString m_Name;
         wxString m_Args;
+        wxString m_RealArgs;
         wxString m_AncestorsString; // all ancestors comma-separated list
         unsigned int m_File;
         unsigned int m_Line;

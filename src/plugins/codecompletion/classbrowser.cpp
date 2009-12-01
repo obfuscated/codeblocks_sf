@@ -39,20 +39,31 @@
 
 #include "ccdebuginfo.h"
 
-int idMenuJumpToDeclaration = wxNewId();
+
+#define CLASS_BROWSER_DEBUG_OUTPUT 0
+
+#if CLASS_BROWSER_DEBUG_OUTPUT
+    #define TRACE(format, args...)\
+    Manager::Get()->GetLogManager()->DebugLog(F( format , ## args))
+#else
+    #define TRACE(format, args...)
+#endif
+
+int idMenuJumpToDeclaration    = wxNewId();
 int idMenuJumpToImplementation = wxNewId();
-int idMenuRefreshTree = wxNewId();
-int idCBViewInheritance = wxNewId();
-int idCBExpandNS = wxNewId();
-int idCBViewModeFlat = wxNewId();
-int idCBViewModeStructured = wxNewId();
-int idMenuForceReparse = wxNewId();
-int idMenuDebugSmartSense = wxNewId();
-int idCBNoSort = wxNewId();
-int idCBSortByAlpabet = wxNewId();
-int idCBSortByKind = wxNewId();
-int idCBSortByScope = wxNewId();
-int idCBBottomTree = wxNewId();
+int idMenuRefreshTree          = wxNewId();
+int idCBViewInheritance        = wxNewId();
+int idCBExpandNS               = wxNewId();
+int idCBViewModeFlat           = wxNewId();
+int idCBViewModeStructured     = wxNewId();
+int idMenuForceReparse         = wxNewId();
+int idMenuDebugSmartSense      = wxNewId();
+int idCBNoSort                 = wxNewId();
+int idCBSortByAlpabet          = wxNewId();
+int idCBSortByKind             = wxNewId();
+int idCBSortByScope            = wxNewId();
+int idCBBottomTree             = wxNewId();
+
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_TREE_ITEM_ACTIVATED(XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
@@ -171,10 +182,13 @@ void ClassBrowser::UnlinkParser()
     }
 }
 
-void ClassBrowser::UpdateView()
+void ClassBrowser::UpdateView(bool checkHeaderSwap)
 {
     m_pActiveProject = 0;
+    TRACE(_T("ClassBrowser::UpdateView(), the old m_ActiveFilename = %s"),m_ActiveFilename.wx_str());
+    wxString oldActiveFilename = m_ActiveFilename;
     m_ActiveFilename.Clear();
+
     if (m_pParser && !Manager::IsAppShuttingDown())
     {
         m_pActiveProject = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -192,6 +206,14 @@ void ClassBrowser::UpdateView()
             else
                 m_ActiveFilename = ed->GetFilename();
         }
+        TRACE(_T("ClassBrowser::UpdateView(), the new m_ActiveFilename = %s"),m_ActiveFilename.wx_str());
+
+        if (checkHeaderSwap && oldActiveFilename.IsSameAs(m_ActiveFilename))
+        {
+            TRACE(_T("ClassBrowser::UpdateView() match the old filename, return!"));
+            return;
+        }
+
 
         BuildTree();
 

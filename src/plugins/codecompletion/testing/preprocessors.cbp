@@ -8,7 +8,7 @@
 		<Build>
 			<Target title="preprocessors">
 				<Option output=".bin\preprocessors" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".objs\" />
+				<Option object_output="..\..\..\.objs\plugins\codecompletion\testing" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 			</Target>

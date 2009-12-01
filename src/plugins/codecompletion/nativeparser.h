@@ -104,7 +104,7 @@ class NativeParser : public wxEvtHandler
         size_t BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
         bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
         size_t GenerateResultSet(TokensTree* tree, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
-
+        size_t GenerateResultSet(Parser* parser, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
         bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
         const wxString& LastAIGlobalSearch() const { return m_LastAIGlobalSearch; }
 

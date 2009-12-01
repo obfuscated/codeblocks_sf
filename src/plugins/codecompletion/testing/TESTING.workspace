@@ -3,6 +3,7 @@
 	<Workspace title="TESTING">
 		<Project filename="duplicate_header.cbp" />
 		<Project filename="function_args.cbp" />
+		<Project filename="function_decls.cbp" />
 		<Project filename="namespaces.cbp" />
 		<Project filename="preprocessors.cbp" />
 		<Project filename="stl.cbp" />

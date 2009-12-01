@@ -23,8 +23,8 @@ public:
 
     bool Init(const wxString& filename = wxEmptyString, LoaderBase* loader = 0);
     bool InitFromBuffer(const wxString& buffer);
-    wxString GetToken();
-    wxString PeekToken();
+    wxString GetToken(bool bGetValue = false, bool bTemplate = false);
+    wxString PeekToken(bool bGetValue = false, bool bTemplate = false);
     void UngetToken();
 
     void SetOperatorState(bool state)
@@ -110,7 +110,7 @@ public:
 
 protected:
     void BaseInit();
-    wxString DoGetToken();
+    wxString DoGetToken(bool bGetValue = false, bool bTemplate = false);
     wxString FixArgument(wxString src);
     bool ReadFile();
     bool SkipWhiteSpace();
@@ -118,7 +118,7 @@ protected:
     bool SkipToChar(const wxChar& ch);
     bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false);
     bool SkipBlock(const wxChar& ch);
-    bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
+    bool SkipUnwanted(bool bGetValue); // skips comments, assignments, preprocessor etc.
     bool SkipComment(bool skipWhiteAtEnd = true);
     bool SkipString();
     bool SkipToStringEnd(const wxChar& ch);

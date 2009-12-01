@@ -56,9 +56,14 @@
 #define PARSER_IMG_PREPROC_FOLDER       32
 #define PARSER_IMG_OTHERS_FOLDER        33
 #define PARSER_IMG_TYPEDEF_FOLDER       34
+#define PARSER_IMG_MACRO                35
+#define PARSER_IMG_MACRO_PRIVATE        36
+#define PARSER_IMG_MACRO_PROTECTED      37
+#define PARSER_IMG_MACRO_PUBLIC         38
+#define PARSER_IMG_MACRO_FOLDER         39
 
 #define PARSER_IMG_MIN PARSER_IMG_CLASS_FOLDER
-#define PARSER_IMG_MAX PARSER_IMG_OTHERS_FOLDER
+#define PARSER_IMG_MAX PARSER_IMG_MACRO_FOLDER
 
 extern int PARSER_END;
 class ClassTreeData : public BlockAllocated<ClassTreeData, 500>, public wxTreeItemData
@@ -117,8 +122,8 @@ class Parser : public wxEvtHandler
         ~Parser();
 
         void BatchParse(const wxArrayString& filenames);
-        bool Parse(const wxString& filename, bool isLocal = true, LoaderBase* loader = 0);
-        bool Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadOptions& opts);
+        bool Parse(const wxString& filename,         bool isLocal = true, LoaderBase* loader = 0);
+        bool Parse(const wxString& bufferOrFilename, bool isLocal,        ParserThreadOptions& opts);
         bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
         bool ParseBufferForFunctions(const wxString& buffer);
         bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
@@ -142,16 +147,16 @@ class Parser : public wxEvtHandler
         void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
         void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
         void SetTokenKindImage(int kind, const wxIcon& icon);
-        wxImageList* GetImageList(){ return m_pImageList; }
+        wxImageList* GetImageList() { return m_pImageList; }
 #endif // STANDALONE
         Token* FindTokenByName(const wxString& name, bool globalsOnly = true, short int kindMask = 0xFFFF) const;
         Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
-        size_t FindMatches(const wxString& s,TokenList& result,bool caseSensitive = true,bool is_prefix = true);
+        size_t FindMatches(const wxString& s, TokenList&   result, bool caseSensitive = true, bool is_prefix = true);
+        size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive = true, bool is_prefix = true);
+        ParserOptions& Options() { return m_Options; }
+        BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
 
-        ParserOptions& Options(){ return m_Options; }
-        BrowserOptions& ClassBrowserOptions(){ return m_BrowserOptions; }
-
-        void ClearIncludeDirs(){ m_IncludeDirs.Clear(); }
+        void ClearIncludeDirs() { m_IncludeDirs.Clear(); }
         void AddIncludeDir(const wxString& dir);
         const wxArrayString& GetIncludeDirs() const { return m_IncludeDirs; }
         wxString GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal);
@@ -166,8 +171,8 @@ class Parser : public wxEvtHandler
         void LinkInheritance(bool tempsOnly = false);
         void MarkFileTokensAsLocal(const wxString& filename, bool local, void* userData = 0);
 
-        unsigned int GetMaxThreads()const { return m_Pool.GetConcurrentThreads(); }
-        void SetMaxThreads(unsigned int max){ m_Pool.SetConcurrentThreads(max); }
+        unsigned int GetMaxThreads() const { return m_Pool.GetConcurrentThreads(); }
+        void SetMaxThreads(unsigned int max) { m_Pool.SetConcurrentThreads(max); }
 
         void TerminateAllThreads();
     protected:

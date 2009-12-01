@@ -688,7 +688,11 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
             int img = m_pParser->GetTokenKindImage(token);
 
             wxString str = token->m_Name;
-            if (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
+            if (   (token->m_TokenKind == tkFunction)
+			    || (token->m_TokenKind == tkConstructor)
+				|| (token->m_TokenKind == tkDestructor)
+				|| (token->m_TokenKind == tkMacro)
+				|| (token->m_TokenKind == tkClass) )
                 str << token->m_Args;
             // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
 //            if (!token->m_ActualType.IsEmpty())
@@ -703,13 +707,13 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
             if (token->m_TokenKind == tkClass)
             {
                 if (!m_Options.treeMembers)
-                    kind |= tkTypedef | tkFunction | tkVariable | tkEnum;
+                    kind |= tkTypedef | tkFunction | tkVariable | tkEnum | tkMacro;
                 tree->SetItemHasChildren(child, m_Options.showInheritance || TokenContainsChildrenOfKind(token, kind));
             }
             else if (token->m_TokenKind & (tkNamespace | tkEnum))
             {
                 if (!m_Options.treeMembers)
-                    kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator;
+                    kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator | tkMacro;
                 tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, kind));
             }
         }
@@ -780,30 +784,38 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
 #ifdef buildtree_measuring
     wxStopWatch sw;
 #endif
+
         tree->Freeze();
+
+
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->Freeze() took : %d ms"),sw.Time()));
     sw.Start();
 #endif
+
         tree->DeleteAllItems();
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->DeleteAllItems() took : %d ms"),sw.Time()));
     sw.Start();
 #endif
+
         node = tree->AddRoot(_T("Members")); // not visible, so don't translate
+
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->AddRoot() took : %d ms"),sw.Time()));
 #endif
     }
 
+    wxTreeItemId firstItem;
     if (data)
     {
         switch (data->m_SpecialFolder)
         {
-            case sfGFuncs: AddChildrenOf(tree, node, -1, tkFunction, false); break;
-            case sfGVars: AddChildrenOf(tree, node, -1, tkVariable, false); break;
-            case sfPreproc: AddChildrenOf(tree, node, -1, tkPreprocessor, false); break;
-            case sfTypedef: AddChildrenOf(tree, node, -1, tkTypedef, false); break;
+            case sfGFuncs  : AddChildrenOf(tree, node, -1, tkFunction,     false); break;
+            case sfGVars   : AddChildrenOf(tree, node, -1, tkVariable,     false); break;
+            case sfPreproc : AddChildrenOf(tree, node, -1, tkPreprocessor, false); break;
+            case sfTypedef : AddChildrenOf(tree, node, -1, tkTypedef,      false); break;
+            case sfMacro   : AddChildrenOf(tree, node, -1, tkMacro,        false); break;
             case sfToken:
             {
                 if (bottom)
@@ -813,12 +825,16 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
                         wxTreeItemId rootCtorDtor = tree->AppendItem(node, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
                         wxTreeItemId rootFuncs = tree->AppendItem(node, _("Functions"), PARSER_IMG_FUNCS_FOLDER);
                         wxTreeItemId rootVars = tree->AppendItem(node, _("Variables"), PARSER_IMG_VARS_FOLDER);
+                        wxTreeItemId rootMacro = tree->AppendItem(node, _("Macros"), PARSER_IMG_MACRO_FOLDER);
                         wxTreeItemId rootOthers = tree->AppendItem(node, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 
                         AddChildrenOf(tree, rootCtorDtor, data->m_pToken->GetSelf(), tkConstructor | tkDestructor);
                         AddChildrenOf(tree, rootFuncs, data->m_pToken->GetSelf(), tkFunction);
                         AddChildrenOf(tree, rootVars, data->m_pToken->GetSelf(), tkVariable);
-                        AddChildrenOf(tree, rootOthers, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable));
+                        AddChildrenOf(tree, rootMacro, data->m_pToken->GetSelf(), tkMacro);
+                        AddChildrenOf(tree, rootOthers, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacro));
+
+                        firstItem = rootCtorDtor;
                     }
                     else if (m_Options.sortType == bstScope && data->m_pToken->m_TokenKind & tkClass)
                     {
@@ -829,6 +845,8 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
                         AddChildrenOf(tree, rootPublic, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum), tsPublic);
                         AddChildrenOf(tree, rootProtected, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum), tsProtected);
                         AddChildrenOf(tree, rootPrivate, data->m_pToken->GetSelf(), ~(tkNamespace | tkClass | tkEnum), tsPrivate);
+
+                        firstItem = rootPublic;
                     }
                     else
                     {
@@ -866,6 +884,11 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
     if (bottom)
     {
         tree->ExpandAll();
+        if (firstItem.IsOk())
+        {
+            tree->ScrollTo(firstItem);
+            tree->EnsureVisible(firstItem);
+        }
         tree->Thaw();
     }
 }
@@ -877,6 +900,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
     bool hasGV = false;
     bool hasGP = false;
     bool hasTD = false;
+    bool hasGM = false;
 
     // loop all tokens in global namespace and see if we have matches
     TokensTree* tt = m_pParser->GetTokens();
@@ -887,6 +911,8 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
         {
             if (!hasGF && token->m_TokenKind == tkFunction)
                 hasGF = true;
+            else if (!hasGM && token->m_TokenKind == tkMacro)
+                hasGM = true;
             else if (!hasGV && token->m_TokenKind == tkVariable)
                 hasGV = true;
             else if (!hasGP && token->m_TokenKind == tkPreprocessor)
@@ -895,20 +921,22 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
                 hasTD = true;
         }
 
-        if (hasGF && hasGV && hasGP && hasTD)
+        if (hasGF && hasGV && hasGP && hasTD && hasGM)
             break; // we have everything, stop iterating...
     }
 
-    wxTreeItemId gfuncs = AddNodeIfNotThere(m_pTreeTop, parent, _("Global functions"), PARSER_IMG_FUNCS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
-    wxTreeItemId tdef = AddNodeIfNotThere(m_pTreeTop, parent, _("Global typedefs"), PARSER_IMG_TYPEDEF_FOLDER, new CBTreeData(sfTypedef, 0, tkTypedef, -1));
-    wxTreeItemId gvars = AddNodeIfNotThere(m_pTreeTop, parent, _("Global variables"), PARSER_IMG_VARS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
+    wxTreeItemId gfuncs  = AddNodeIfNotThere(m_pTreeTop, parent, _("Global functions"), PARSER_IMG_FUNCS_FOLDER, new CBTreeData(sfGFuncs, 0, tkFunction, -1));
+    wxTreeItemId tdef    = AddNodeIfNotThere(m_pTreeTop, parent, _("Global typedefs"), PARSER_IMG_TYPEDEF_FOLDER, new CBTreeData(sfTypedef, 0, tkTypedef, -1));
+    wxTreeItemId gvars   = AddNodeIfNotThere(m_pTreeTop, parent, _("Global variables"), PARSER_IMG_VARS_FOLDER, new CBTreeData(sfGVars, 0, tkVariable, -1));
     wxTreeItemId preproc = AddNodeIfNotThere(m_pTreeTop, parent, _("Preprocessor symbols"), PARSER_IMG_PREPROC_FOLDER, new CBTreeData(sfPreproc, 0, tkPreprocessor, -1));
+    wxTreeItemId gmacro  = AddNodeIfNotThere(m_pTreeTop, parent, _("Global macros"), PARSER_IMG_MACRO_FOLDER, new CBTreeData(sfMacro, 0, tkMacro, -1));
 
     bool bottom = m_Options.treeMembers;
     m_pTreeTop->SetItemHasChildren(gfuncs, !bottom && hasGF);
     m_pTreeTop->SetItemHasChildren(tdef, !bottom && hasTD);
     m_pTreeTop->SetItemHasChildren(gvars, !bottom && hasGV);
     m_pTreeTop->SetItemHasChildren(preproc, !bottom && hasGP);
+    m_pTreeTop->SetItemHasChildren(gmacro, !bottom && hasGM);
 
     wxColour black = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     wxColour grey = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
@@ -917,8 +945,9 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
     tree->SetItemTextColour(gvars, hasGV ? black : grey);
     tree->SetItemTextColour(preproc, hasGP ? black : grey);
     tree->SetItemTextColour(tdef, hasTD ? black : grey);
+    tree->SetItemTextColour(gmacro, hasGM ? black : grey);
 
-    return hasGF || hasGV || hasGP || hasTD;
+    return hasGF || hasGV || hasGP || hasTD || hasGM;
 }
 
 void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
@@ -938,7 +967,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             case sfRoot:
             {
                 CreateSpecialFolders(m_pTreeTop, item);
-                AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef));
+                AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef | tkMacro));
                 break;
             }
             case sfBase: AddAncestorsOf(m_pTreeTop, item, data->m_pToken->GetSelf()); break;

@@ -193,8 +193,13 @@ void CodeCompletion::LoadTokenReplacements()
 
     if (!cfg->Exists(_T("token_replacements")))
     {
-        // first run; add default replacements
+        // first run; add default replacements string
         Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"), _T("std"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE"), _T("+namespace"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NESTED_NAMESPACE"), _T("}"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"), _T("}"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"), _T("-namespace tr1 {"));
     }
     else
         cfg->Read(_T("token_replacements"), &repl);
@@ -748,6 +753,8 @@ wxArrayString GetIncludeDirs(cbProject &project)
     return dirs;
 }
 
+// Do the code completion when we enter:
+// #include "| or #include <|
 void CodeCompletion::CodeCompleteIncludes()
 {
     if (!IsAttached() || !m_InitDone)
@@ -784,6 +791,7 @@ void CodeCompletion::CodeCompleteIncludes()
         return;
     ++quote_pos;
 
+    // now, we are after the quote prompt
     wxString filename = line.substr(quote_pos, pos - lineStartPos - quote_pos);
     filename.Replace(_T("\\"), _T("/"), true);
 
@@ -823,6 +831,7 @@ void CodeCompletion::CodeCompleteIncludes()
         }
     }
 
+    // popup the auto completion window
     if (files.GetCount() != 0)
     {
         files.Sort();
@@ -923,6 +932,8 @@ int CodeCompletion::DoClassMethodDeclImpl()
     }
 
     wxString filename = ed->GetFilename();
+
+    // open the insert class dialog
     InsertClassMethodDlg dlg(Manager::Get()->GetAppWindow(), parser, filename);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
