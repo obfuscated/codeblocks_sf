@@ -7,10 +7,6 @@
 // Licence:     wxWidgets
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "range.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -46,8 +42,8 @@ bool wxRangeInt::Combine(int i, bool only_if_touching)
 {
     if (only_if_touching)
     {
-        if      (i == m_min-1) { m_min--; return true; }
-        else if (i == m_max+1) { m_max++; return true; }
+        if      (i == m_min-1) { m_min = i; return true; }
+        else if (i == m_max+1) { m_max = i; return true; }
     }
     else
     {
@@ -63,11 +59,11 @@ bool wxRangeInt::Combine( const wxRangeInt &r, bool only_if_touching )
     {
         if (Touches(r))
         {
-            *this+=r;
+            *this += r;
             return true;
         }
     }
-    else
+    else if (!IsEmpty() && !r.IsEmpty())
     {
         bool added = false;
         if (r.m_min < m_min) { m_min = r.m_min; added = true; }
@@ -360,13 +356,13 @@ bool wxRangeDouble::Combine( const wxRangeDouble &r, bool only_if_touching )
 {
     if (only_if_touching)
     {
-        if (Contains(r))
+        if ((r.m_min <= m_max) && (r.m_max >= m_min))//Contains(r))
         {
             *this+=r;
             return true;
         }
     }
-    else
+    else if (!IsEmpty() && !r.IsEmpty())
     {
         bool added = false;
         if (r.m_min < m_min) { m_min = r.m_min; added = true; }

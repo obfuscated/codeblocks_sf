@@ -15,6 +15,9 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "label.h"
+#endif
 
 #include "wx/charttypes.h"
 
@@ -31,11 +34,11 @@ enum LABEL_POSITION
 
 //+++-S-cd-------------------------------------------------------------------
 //  NAME:       wxLabel
-//  DESC:
+//  DESC:       
 //  INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxLabel
+WXDLLIMPEXP_CHART class wxLabel
 {
 public:
     void Draw(CHART_HPAINT hp, int x, int y, ChartColor c,

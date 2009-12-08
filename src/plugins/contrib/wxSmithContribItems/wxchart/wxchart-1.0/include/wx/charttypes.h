@@ -15,6 +15,9 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "charttypes.h"
+#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -29,20 +32,6 @@
 #endif
 
 #include "wx/chartdef.h"
-
-
-//----------------------------------------------------------------------------
-// consts
-//----------------------------------------------------------------------------
-const int DEFAULT_BAR_WIDTH			= 20;		// pixels
-const int DEFAULT_BAR3D_WIDTH		= 25;		// pixels
-const int DEFAULT_GAP_WIDTH			= 20;		// pixels
-const int DEFAULT_SCROLL_STEP		= 30;		// pixels
-const int DEFAULT_SIZE_HEIGHT		= 40;		// pixels
-
-const int MIN_BAR_WIDTH				= 3;		// pixels
-const int MIN_BAR3D_WIDTH			= 5;		// pixels
-const int MIN_GAP_WIDTH				= 3;		// pixels
 
 //----------------------------------------------------------------------------
 // Types
@@ -59,20 +48,21 @@ typedef struct
 	int h;
 } CHART_RECT, *CHART_HRECT;
 
-// Device Context
+// Device Context 
 typedef wxDC* CHART_HPAINT;
 
 // Chart value and Color
 typedef double ChartValue;
 typedef unsigned long ChartColor;
 
+#if 0
 // Keep track of the size of the charts
 struct ChartSizes
 {
-	ChartSizes() : nbar(0), nbar3d(0),
-				   wbar(DEFAULT_BAR_WIDTH), wbar3d(DEFAULT_BAR3D_WIDTH),
-				   gap(DEFAULT_GAP_WIDTH), scroll(DEFAULT_SCROLL_STEP),
-				   s_height(DEFAULT_SIZE_HEIGHT) {};
+	ChartSizes();// : nbar(0), nbar3d(0), 
+				 //  wbar(DEFAULT_BAR_WIDTH), wbar3d(DEFAULT_BAR3D_WIDTH),
+				 //  gap(DEFAULT_GAP_WIDTH), scroll(DEFAULT_SCROLL_STEP),
+				 //  s_height(DEFAULT_SIZE_HEIGHT) {};
 	int nbar;
 	int nbar3d;
 	int wbar;
@@ -81,5 +71,6 @@ struct ChartSizes
 	int scroll;
 	int s_height;
 };
+#endif
 
 #endif // __CHARTTYPES_H__

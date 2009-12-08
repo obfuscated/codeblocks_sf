@@ -15,6 +15,9 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "chart.h"
+#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -29,6 +32,10 @@
 
 #include "wx/chartpoints.h"
 
+// External Classes
+//-----------------
+class wxChartSizes;
+
 //----------------------------------------------------------------------------
 // Declare Array/List of Points
 //----------------------------------------------------------------------------
@@ -36,11 +43,11 @@ WX_DECLARE_OBJARRAY(wxChartPoints*, ListChartPoints);
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxChart
-//	DESC:
+//	DESC:		
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxChart
+WXDLLIMPEXP_CHART class wxChart
 {
 public:
 	wxChart();
@@ -67,8 +74,8 @@ public:
 
 	// Set sizes for drawing
 	//----------------------
-	void SetSizes(ChartSizes sizes);
-    ChartSizes GetSizes() const;
+	void SetSizes(wxChartSizes *sizes);
+    wxChartSizes* GetSizes() const;
 
 	// Draw chart
 	//-----------

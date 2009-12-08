@@ -19,6 +19,10 @@
 #include "wx/charttypes.h"
 #include "wx/chartpointstypes.h"
 
+// External Classes
+//-----------------
+class wxChartSizes;
+
 //+++-S-te-------------------------------------------------------------------
 //  NAME:       wxDISPLAY_LABEL
 //  DESC:       Specify how to display Label on Chart.
@@ -26,10 +30,12 @@
 //----------------------------------------------------------------------E-+++
 enum wxDISPLAY_LABEL
 {
-    NONE,   // no label
-    XVALUE, // display x value
-    YVALUE, // display y value
-    NAME    // display custom label
+    NONE,           // no label
+    XVALUE,         // display x value
+    YVALUE,         // display y value
+    XVALUE_FLOAT,   // display x value with 1 decimal number
+    YVALUE_FLOAT,   // display y value with 1 decimal number
+    NAME            // display custom label
 };
 
 
@@ -39,7 +45,7 @@ enum wxDISPLAY_LABEL
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxChartPoints
+WXDLLIMPEXP_CHART class wxChartPoints
 {
 
 public:
@@ -77,8 +83,8 @@ public:
 	// Set sizes for drawing
 	// pure virtual functions
 	//-----------------------
-	virtual void SetSizes(ChartSizes sizes) = 0;
-	virtual const ChartSizes& GetSizes() const = 0;
+	virtual void SetSizes(wxChartSizes* sizes) = 0;
+	virtual wxChartSizes* GetSizes() const = 0;
 
 	// Get/Set Color
 	// pure virtual functions
@@ -123,13 +129,13 @@ private:
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		op==()
-//	DESC:
-//	PARAMETERS:	const wxChartPoints& c,
+//	DESC:		
+//	PARAMETERS:	const wxChartPoints& c, 
 //				const wxChartPointsTypes& t
 //	RETURN:		bool
 //----------------------------------------------------------------------E-+++
 inline bool operator==(
-	const wxChartPoints& c,
+	const wxChartPoints& c, 
 	const wxChartPointsTypes& t
 )
 {

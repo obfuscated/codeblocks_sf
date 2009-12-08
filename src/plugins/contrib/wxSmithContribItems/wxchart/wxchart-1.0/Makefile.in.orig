@@ -62,7 +62,8 @@ WXCHART_LIB_OBJECTS =  \
 	wxchart_lib_xaxis.o \
 	wxchart_lib_xaxiswindow.o \
 	wxchart_lib_yaxis.o \
-	wxchart_lib_yaxiswindow.o
+	wxchart_lib_yaxiswindow.o \
+	wxchart_lib_chartsizes.o
 WXCHART_DLL_CXXFLAGS = $(__WX_SHAREDDEFINE_p) -I./include \
 	-DWXMAKINGDLL_WXCHART $(PIC_FLAG) $(WX_CXXFLAGS) $(CPPFLAGS) $(CXXFLAGS)
 WXCHART_DLL_OBJECTS =  \
@@ -82,7 +83,8 @@ WXCHART_DLL_OBJECTS =  \
 	wxchart_dll_xaxis.o \
 	wxchart_dll_xaxiswindow.o \
 	wxchart_dll_yaxis.o \
-	wxchart_dll_yaxiswindow.o
+	wxchart_dll_yaxiswindow.o \
+	wxchart_dll_chartsizes.o
 MINIMAL_CXXFLAGS = $(__WX_SHAREDDEFINE_p) -I./include $(WX_CXXFLAGS) \
 	$(CPPFLAGS) $(CXXFLAGS)
 MINIMAL_OBJECTS =  \
@@ -174,7 +176,8 @@ uninstall:
 	$(DESTDIR)$(includedir)/wx/xaxis.h \
 	$(DESTDIR)$(includedir)/wx/xaxiswindow.h \
 	$(DESTDIR)$(includedir)/wx/yaxis.h \
-	$(DESTDIR)$(includedir)/wx/yaxiswindow.h
+	$(DESTDIR)$(includedir)/wx/yaxiswindow.h \
+	$(DESTDIR)$(includedir)/wx/chartsizes.h
 	rm -f $(libdir)/*wxchart*
 
 install-strip: install
@@ -399,6 +402,9 @@ wxchart_dll_yaxis.o: $(srcdir)/./src/yaxis.cpp
 
 wxchart_dll_yaxiswindow.o: $(srcdir)/./src/yaxiswindow.cpp
 	$(CXXC) -c -o $@ $(WXCHART_DLL_CXXFLAGS) $(srcdir)/./src/yaxiswindow.cpp
+
+wxchart_dll_chartsizes.o: $(srcdir)/./src/chartsizes.cpp
+	$(CXXC) -c -o $@ $(WXCHART_DLL_CXXFLAGS) $(srcdir)/./src/chartsizes.cpp
 
 minimal_wxchart.o: $(srcdir)/./samples/wxchart.cpp
 	$(CXXC) -c -o $@ $(MINIMAL_CXXFLAGS) $(srcdir)/./samples/wxchart.cpp

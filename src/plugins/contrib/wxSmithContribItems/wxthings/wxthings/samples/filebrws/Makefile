@@ -1,63 +1,74 @@
-# Makefile for sheetdemo example for the wxsheet lib (UNIX).
+# ----------------------------------------------------------------------------
+# Purpose : Makefile for wxthings filebrws - UNIX or cygwin using gmake (gcc)
+# Author : John Labenski
+# Copyright : John Labenski 2006
+# License : wxWidgets license
+# ----------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------
 # wxWidgets build settings
 
-WXCONFIG := wx-config
+WXCONFIG   := wx-config
 
-WXDIR      = $(shell $(WXCONFIG) --prefix)
-WXEXECDIR  = $(shell $(WXCONFIG) --exec-prefix)
-WXLIBDIR   = $(WXEXECDIR)/lib
+WXDIR      := $(shell $(WXCONFIG) --prefix)
+WXEXECDIR  := $(shell $(WXCONFIG) --exec-prefix)
+WXLIBDIR   := $(WXEXECDIR)/lib
 
-WXBASENAME = $(shell $(WXCONFIG) --basename)
-WXVERSION  = $(shell $(WXCONFIG) --version)
-WXRELEASE  = $(shell $(WXCONFIG) --release)
+WXBASENAME := $(shell $(WXCONFIG) --basename)
+WXVERSION  := $(shell $(WXCONFIG) --version)
+WXRELEASE  := $(shell $(WXCONFIG) --release)
 
-WXCXX      = $(shell $(WXCONFIG) --cxx)
-WXCXXFLAGS = $(shell $(WXCONFIG) --cxxflags)
-WXLIBS     = $(shell $(WXCONFIG) --libs)
+WXCXX      := $(shell $(WXCONFIG) --cxx)
+WXCXXFLAGS := $(shell $(WXCONFIG) --cxxflags)
+WXLIBS     := $(shell $(WXCONFIG) --libs)
 
-WXSTC_LIB  = $(WXBASENAME)_stc-$(WXRELEASE)
+WXSTC_LIB  := $(WXBASENAME)_stc-$(WXRELEASE)
 
 # ----------------------------------------------------------------------------
+# Settings for the library
 
+WXTHINGS_LIBDIR  = $(WXLIBDIR)
 WXTHINGS_LIBNAME = $(WXBASENAME)_wxthings-$(WXRELEASE)
-WXTHINGS_LIBDIR = $(WXLIBDIR)
+WXTHINGS_LIBNAME := $(patsubst wx_%,wxcode_%,$(WXTHINGS_LIBNAME))
 
-LIBVERSION_CURRENT=1
-LIBVERSION_REVISION=0
-LIBVERSION_AGE=0
+LIBVERSION_CURRENT  = 1
+LIBVERSION_REVISION = 0
+LIBVERSION_AGE      = 0
 
 TARGET_LIBNAME = lib$(WXTHINGS_LIBNAME)
-
-TARGET_LIB_STATIC = $(WXTHINGS_LIBDIR)/$(TARGET_LIBNAME).a
-TARGET_LIB_SHARED = $(WXTHINGS_LIBDIR)/$(TARGET_LIBNAME).so.$(LIBVERSION_CURRENT).$(LIBVERSION_REVISION).$(LIBVERSION_AGE)
+TARGET_LIBNAME_STATIC = $(TARGET_LIBNAME).a
+TARGET_LIBNAME_SHARED = $(TARGET_LIBNAME).so.$(LIBVERSION_CURRENT).$(LIBVERSION_REVISION).$(LIBVERSION_AGE)
+TARGET_LIB_STATIC = $(WXTHINGS_LIBDIR)/$(TARGET_LIBNAME_STATIC)
+TARGET_LIB_SHARED = $(WXTHINGS_LIBDIR)/$(TARGET_LIBNAME_SHARED)
 TARGET_LIB_LINK1  = $(TARGET_LIBNAME).so.$(LIBVERSION_CURRENT)
 TARGET_LIB_LINK2  = $(TARGET_LIBNAME).so
 
 # ----------------------------------------------------------------------------
 
-WXSTEDIT_LIBDIR = ../../../wxstedit
+WXSTEDIT_DIR = ../../../wxstedit
 WXSTEDIT_LIBNAME = $(WXBASENAME)_stedit-$(WXRELEASE)
+WXSTEDIT_LIBNAME := $(patsubst wx_%,wxcode_%,$(WXSTEDIT_LIBNAME))
 
 # ----------------------------------------------------------------------------
+# CXX flags and libs
 
-CXXFLAGS = $(WXCXXFLAGS) -MMD -g  -Wall -Wunused -Wunused-parameter
+CXXFLAGS = $(WXCXXFLAGS) -MMD -g  -Wall -Wunused -Wunused-parameter -fPIC -DPIC
 LDLIBS   = $(WXLIBS)
 CXX      = $(WXCXX)
 
 # -pg in libs and defs for profiling
 PROFILE = #-pg
-APPEXTRADEFS = -I$(WXDIR)/contrib/include -I../../include -I$(WXSTEDIT_LIBDIR)/include $(PROFILE)
-APPEXTRALIBS =  -l$(WXSTC_LIB) $(PROFILE)
+APPEXTRADEFS = -I../../include $(PROFILE) # -I$(WXDIR)/contrib/include -I$(WXSTEDIT_DIR)/include
+APPEXTRALIBS = $(PROFILE) # -l$(WXSTC_LIB)
 
 # ----------------------------------------------------------------------------
+# Source files, objects to link
 
 PROGRAM = wxfilebrowser
 
 OBJECTS = wxfilebrowser.o
 
-DEPFILES=$(OBJECTS:.o=.d)
+DEPFILES := $(OBJECTS:.o=.d)
 
 .cpp.o:
 	$(CXX) -c $(CXXFLAGS) $(APPEXTRADEFS) -o $@ $<
@@ -65,7 +76,7 @@ DEPFILES=$(OBJECTS:.o=.d)
 all: $(WXSTEDIT_LIBNAME) $(WXTHINGS_LIBNAME) $(PROGRAM)
 
 $(WXSTEDIT_LIBNAME) :
-	@(cd $(WXSTEDIT_LIBDIR)/src && make)
+	@(cd $(WXSTEDIT_DIR)/src && make)
 
 $(WXTHINGS_LIBNAME) :
 	@(cd ../../src && make)
@@ -90,4 +101,3 @@ cleanall: clean
 
 
 -include $(DEPFILES)
-

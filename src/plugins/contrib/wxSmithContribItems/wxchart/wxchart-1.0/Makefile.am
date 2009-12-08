@@ -26,6 +26,7 @@ libwxchartctrl_la_SOURCES = \
 ./src/bar3dchartpoints.cpp \
 ./src/chartcolors.cpp \
 ./src/chartctrl.cpp \
+./src/chartsizes.cpp \
 ./src/label.cpp \
 ./src/legendwindow.cpp \
 ./src/piechartpoints.cpp \
@@ -45,6 +46,7 @@ sdk_HEADERS = \
 ./include/wx/chart.h \
 ./include/wx/chartpoints.h \
 ./include/wx/chartpointstypes.h \
+./include/wx/chartsizes.h \
 ./include/wx/charttypes.h \
 ./include/wx/chartwindow.h \
 ./include/wx/legend.h \

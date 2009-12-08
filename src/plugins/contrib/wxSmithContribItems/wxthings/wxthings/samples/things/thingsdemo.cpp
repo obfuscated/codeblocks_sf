@@ -31,6 +31,9 @@
 #include "wx/things/spinctld.h"
 #include "wx/things/menubtn.h"
 #include "wx/things/bmpcombo.h"
+#include "wx/things/filebrws.h"
+#include "wx/things/matrix2d.h"
+#include "wx/things/range.h"
 
 /* XPM */
 static char *mondrian_xpm[] = {
@@ -82,8 +85,9 @@ static char *mondrian_xpm[] = {
 
 enum
 {
-    Minimal_Quit,
-    Minimal_About = wxID_ABOUT,
+    ID_FILEBROWSER = wxID_HIGHEST + 1,
+    ID_TEST_MATRIX,
+    ID_TEST_RANGE
 };
 
 // ----------------------------------------------------------------------------
@@ -100,6 +104,10 @@ public:
 
     wxScrolledWindow *CreateButtonPage(wxWindow *parent);
 
+    bool CheckControlId(int win_id) const;
+
+    void OnTestMatrix(wxCommandEvent& event);
+    void OnTestRange(wxCommandEvent& event);
     void OnQuit(wxCommandEvent& WXUNUSED(event)) { Close(true); }
     void OnAbout(wxCommandEvent& event);
 
@@ -110,10 +118,11 @@ public:
     void OnButton(wxCommandEvent &event);
     void OnMenu(wxCommandEvent &event);
     void OnComboBox(wxCommandEvent &event);
+    void OnFileBrowser(wxFileBrowserEvent &event);
 
-    wxTextCtrl *m_textCtrl;
-
-    wxNotebook *m_notebook;
+    wxNotebook       *m_notebook;
+    wxTextCtrl       *m_textCtrl;
+    wxScrolledWindow *m_buttonPage;
 
 private:
     DECLARE_EVENT_TABLE()
@@ -128,8 +137,8 @@ class MyApp : public wxApp
 public:
     virtual bool OnInit()
     {
-        MyFrame *frame = new MyFrame(_T("Minimal wxWidgets App"),
-                                 wxPoint(50, 50), wxSize(450, 400));
+        MyFrame *frame = new MyFrame(_T("wxThings Demo App"),
+                                     wxPoint(50, 50), wxSize(450, 400));
         frame->Show(true);
 
         return true;
@@ -141,16 +150,24 @@ public:
 // ----------------------------------------------------------------------------
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
-    EVT_MENU(Minimal_Quit,  MyFrame::OnQuit)
-    EVT_MENU(Minimal_About, MyFrame::OnAbout)
+    EVT_MENU (ID_TEST_MATRIX, MyFrame::OnTestMatrix)
+    EVT_MENU (ID_TEST_RANGE,  MyFrame::OnTestRange)
 
-    EVT_SPINCTRL    (wxID_ANY, MyFrame::OnSpin)
-    EVT_TEXT_ENTER  (wxID_ANY, MyFrame::OnTextEnter)
-    EVT_TEXT        (wxID_ANY, MyFrame::OnText)
-    EVT_TOGGLEBUTTON(wxID_ANY, MyFrame::OnToggle)
-    EVT_BUTTON      (wxID_ANY, MyFrame::OnButton)
-    EVT_MENU        (wxID_ANY, MyFrame::OnMenu)
-    EVT_COMBOBOX    (wxID_ANY, MyFrame::OnComboBox)
+    EVT_MENU (wxID_EXIT,      MyFrame::OnQuit)
+    EVT_MENU (wxID_ABOUT,     MyFrame::OnAbout)
+
+    EVT_SPINCTRL     (wxID_ANY, MyFrame::OnSpin)
+    EVT_TEXT_ENTER   (wxID_ANY, MyFrame::OnTextEnter)
+    EVT_TEXT         (wxID_ANY, MyFrame::OnText)
+    EVT_TOGGLEBUTTON (wxID_ANY, MyFrame::OnToggle)
+    EVT_BUTTON       (wxID_ANY, MyFrame::OnButton)
+    EVT_MENU         (wxID_ANY, MyFrame::OnMenu)
+    EVT_COMBOBOX     (wxID_ANY, MyFrame::OnComboBox)
+
+    EVT_FILEBROWSER_FILE_SELECTED  (wxID_ANY, MyFrame::OnFileBrowser)
+    EVT_FILEBROWSER_FILE_ACTIVATED (wxID_ANY, MyFrame::OnFileBrowser)
+    EVT_FILEBROWSER_DIR_SELECTED   (wxID_ANY, MyFrame::OnFileBrowser)
+    EVT_FILEBROWSER_DIR_ACTIVATED  (wxID_ANY, MyFrame::OnFileBrowser)
 END_EVENT_TABLE()
 
 IMPLEMENT_APP(MyApp)
@@ -160,38 +177,44 @@ IMPLEMENT_APP(MyApp)
 // ----------------------------------------------------------------------------
 
 MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size, long style)
-       : wxFrame(NULL, -1, title, pos, size, style)
+        :wxFrame(NULL, wxID_ANY, title, pos, size, style)
 {
-#if wxUSE_MENUS
-    wxMenu *menuFile = new wxMenu;
-    menuFile->Append(Minimal_Quit, _T("E&xit\tAlt-X"), _T("Quit this program"));
+    m_notebook   = NULL;
+    m_textCtrl   = NULL;
+    m_buttonPage = NULL;
+
+    wxMenu *fileMenu = new wxMenu;
+    fileMenu->Append(ID_TEST_MATRIX, _T("Test wx&Matrix2D"), _T("Test wxMatrix2D routines"));
+    fileMenu->Append(ID_TEST_RANGE,  _T("Test wx&RangeInt/Double"), _T("Test wxRangeInt/Double routines"));
+    fileMenu->AppendSeparator();
+    fileMenu->Append(wxID_EXIT, _T("E&xit\tAlt-X"), _T("Quit this program"));
 
     wxMenu *helpMenu = new wxMenu;
-    helpMenu->Append(Minimal_About, _T("&About...\tF1"), _T("Show about dialog"));
+    helpMenu->Append(wxID_ABOUT, _T("&About...\tF1"), _T("Show about dialog"));
 
     wxMenuBar *menuBar = new wxMenuBar();
-    menuBar->Append(menuFile, _T("&File"));
+    menuBar->Append(fileMenu, _T("&File"));
     menuBar->Append(helpMenu, _T("&Help"));
 
     SetMenuBar(menuBar);
-#endif // wxUSE_MENUS
 
-#if wxUSE_STATUSBAR
     // create a status bar just for fun (by default with 1 pane only)
     CreateStatusBar(2);
     SetStatusText(_T("Welcome to wxWidgets!"));
-#endif // wxUSE_STATUSBAR
 
     wxInitAllImageHandlers();
 
     wxSplitterWindow *splitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxDefaultSize, wxSP_3D);
     splitter->SetMinimumPaneSize(20);
 
-    m_textCtrl = new wxTextCtrl( splitter, -1, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxVSCROLL|wxHSCROLL );
+    m_notebook = new wxNotebook(splitter, wxID_ANY);
+    m_textCtrl = new wxTextCtrl( splitter, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxVSCROLL|wxHSCROLL );
 
-    m_notebook = new wxNotebook(splitter, -1);
+    m_buttonPage = CreateButtonPage(m_notebook);
+    m_notebook->AddPage(m_buttonPage, wxT("Controls"));
 
-    m_notebook->AddPage(CreateButtonPage(m_notebook), wxT("Controls"));
+    wxFileBrowser* fileBrowser = new wxFileBrowser(m_notebook, ID_FILEBROWSER);
+    m_notebook->AddPage(fileBrowser, wxT("wxFileBrowser"));
 
     splitter->SplitHorizontally(m_notebook, m_textCtrl, 300);
 }
@@ -252,15 +275,15 @@ wxScrolledWindow *MyFrame::CreateButtonPage(wxWindow *parent)
 
     cbutton = new wxCustomButton( panel, ID++, wxT("Left"), mondrian, wxDefaultPosition, wxDefaultSize, wxCUSTBUT_BUTTON|wxCUSTBUT_LEFT );
     cbutton->SetMargins(wxSize(20,20), true);
-    cbutton->Enable(false);
     item0->Add( cbutton, 0, wxALIGN_CENTRE|wxALL, 5 );
 
     cbutton = new wxCustomButton( panel, ID++, wxT("Right"), mondrian, wxDefaultPosition, wxDefaultSize, wxCUSTBUT_TOGGLE|wxCUSTBUT_RIGHT );
     cbutton->SetMargins(wxSize(20,20), true);
     item0->Add( cbutton, 0, wxALIGN_CENTRE|wxALL, 5 );
 
-    cbutton = new wxCustomButton( panel, ID++, wxT("Top"), mondrian, wxDefaultPosition, wxDefaultSize, wxCUSTBUT_BUT_DCLICK_TOG|wxCUSTBUT_TOP );
+    cbutton = new wxCustomButton( panel, ID++, wxT("Top Disabled"), mondrian, wxDefaultPosition, wxDefaultSize, wxCUSTBUT_BUT_DCLICK_TOG|wxCUSTBUT_TOP );
     cbutton->SetMargins(wxSize(20,20), true);
+    cbutton->Enable(false);
     item0->Add( cbutton, 0, wxALIGN_CENTRE|wxALL, 5 );
 
     cbutton = new wxCustomButton( panel, ID++, wxT("Bottom"), mondrian, wxDefaultPosition, wxDefaultSize, wxCUSTBUT_TOG_DCLICK_BUT|wxCUSTBUT_BOTTOM );
@@ -327,40 +350,45 @@ wxScrolledWindow *MyFrame::CreateButtonPage(wxWindow *parent)
     labels.Add(wxT("Hello     9"));
     labels.Add(wxT("Hello 10asdasda"));
 
-    wxBitmapComboBox *bmpcombo = new wxBitmapComboBox(panel, ID++, labels, bitmaps);
+    wxBmpComboBox *bmpcombo = new wxBmpComboBox(panel, ID++, labels, bitmaps);
     item0->Add( bmpcombo, 0, wxALIGN_CENTRE|wxALL, 5 );
 
     bitmaps.Clear();
     bitmaps.Add(wxBitmap(wxImage(mondrian.ConvertToImage()).Scale(16,16)), 9);
-    bmpcombo = new wxBitmapComboBox(panel, ID++, labels, bitmaps);
+    bmpcombo = new wxBmpComboBox(panel, ID++, labels, bitmaps);
     item0->Add( bmpcombo, 0, wxALIGN_CENTRE|wxALL, 5 );
 */
 
-    wxString labels[9] = { wxT("Hello"),
-                           wxT("Hello 1"),
-                           wxT("H"),
-                           wxT("Hello 3"),
-                           wxT("Hello 4 "),
-                           wxT("Hello 5"),
-                           wxT("Hello 7 "),
-                           wxT("Hello     9"),
-                           wxT("Hello 10asdasda") };
+#define BMPCOMBO_LABEL_COUNT 9
 
-    wxBitmapComboBox *bmpcombo1 = new wxBitmapComboBox(panel, ID++, wxEmptyString,
-                                 wxDefaultPosition, wxDefaultSize, 9, labels);
+    wxString labels[BMPCOMBO_LABEL_COUNT] = {
+        wxT("Hello"),
+        wxT("Hello 1"),
+        wxT("H"),
+        wxT("Hello 3"),
+        wxT("Hello 4 "),
+        wxT("Hello 5"),
+        wxT("Hello 7 "),
+        wxT("Hello     9"),
+        wxT("Hello 10asdasda") };
 
-    wxBitmapComboBox *bmpcombo2 = new wxBitmapComboBox(panel, ID++, wxEmptyString,
-                                 wxDefaultPosition, wxDefaultSize, 9, labels);
+    wxBmpComboBox *bmpcombo1 = new wxBmpComboBox(panel, ID++,
+                                    wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                    BMPCOMBO_LABEL_COUNT, labels);
+
+    wxBmpComboBox *bmpcombo2 = new wxBmpComboBox(panel, ID++,
+                                    wxEmptyString, wxDefaultPosition, wxDefaultSize,
+                                    BMPCOMBO_LABEL_COUNT, labels);
 
     // freeze while adding items
     bmpcombo1->Freeze();
     bmpcombo2->Freeze();
 
     wxImage mondrianImage(mondrian.ConvertToImage());
-    for (int n=0; n<9; n++)
+    for (int n = 0; n < BMPCOMBO_LABEL_COUNT; n++)
     {
-        bmpcombo1->SetBitmap(n, wxBitmap(mondrianImage.Scale(n*3+8,n*3+8)));
-        bmpcombo2->SetBitmap(n, wxBitmap(mondrianImage.Scale(16,16)));
+        bmpcombo1->SetItemBitmap(n, wxBitmap(mondrianImage.Scale(n*3+8,n*3+8)));
+        bmpcombo2->SetItemBitmap(n, wxBitmap(mondrianImage.Scale(16,16)));
     }
     // after adding items use Thaw to CalcLayout
     bmpcombo1->Thaw();
@@ -376,43 +404,260 @@ wxScrolledWindow *MyFrame::CreateButtonPage(wxWindow *parent)
     return panel;
 }
 
+// We only want to print events from the controls
+bool MyFrame::CheckControlId(int win_id) const
+{
+    return m_buttonPage && (m_buttonPage->FindWindow(win_id) != NULL);
+}
+
 void MyFrame::OnSpin(wxSpinEvent &event)
 {
-    m_textCtrl->AppendText(wxString::Format(wxT("%s Spin id %d, val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+    if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_SPINCTRL(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
 }
 void MyFrame::OnTextEnter(wxCommandEvent& event)
 {
-    if (m_textCtrl->GetId() != event.GetId())
-        m_textCtrl->AppendText(wxString::Format(wxT("%s TextEnter id %d, val '%s'\n"), wxNow().c_str(), event.GetId(), event.GetString().c_str()));
+    if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_TEXT_ENTER(id %d) val '%s'\n"), wxNow().c_str(), event.GetId(), event.GetString().c_str()));
 }
 void MyFrame::OnText(wxCommandEvent& event)
 {
-    if (m_textCtrl->GetId() != event.GetId())
-        m_textCtrl->AppendText(wxString::Format(wxT("%s TextUpdated id %d, val '%s'\n"), wxNow().c_str(), event.GetId(), event.GetString().c_str()));
+    if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_TEXT(id %d) val '%s'\n"), wxNow().c_str(), event.GetId(), event.GetString().c_str()));
 }
 void MyFrame::OnToggle(wxCommandEvent &event)
 {
-    m_textCtrl->AppendText(wxString::Format(wxT("%s Toggle id %d, val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+    if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_TOGGLEBUTTON(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
 }
 void MyFrame::OnButton(wxCommandEvent &event)
 {
-    m_textCtrl->AppendText(wxString::Format(wxT("%s Button id %d, val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+    if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_BUTTON(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
 }
 void MyFrame::OnMenu(wxCommandEvent &event)
 {
-    m_textCtrl->AppendText(wxString::Format(wxT("%s Menu id %d, val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+    //if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_MENU(id %d) val %d\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
 }
 void MyFrame::OnComboBox(wxCommandEvent &event)
 {
-    m_textCtrl->AppendText(wxString::Format(wxT("%s ComboBox id %d, val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+    if (CheckControlId(event.GetId()))
+        m_textCtrl->AppendText(wxString::Format(wxT("%s EVT_COMBOBOX(id %d) val %ld\n"), wxNow().c_str(), event.GetId(), event.GetInt()));
+}
+
+void MyFrame::OnFileBrowser(wxFileBrowserEvent &event)
+{
+    wxEventType evtType = event.GetEventType();
+    wxString evtTypeStr, msg(wxNow());
+
+    if (evtType == wxEVT_FILEBROWSER_FILE_SELECTED)
+        evtTypeStr = wxT("wxEVT_FILEBROWSER_FILE_SELECTED");
+    else if (evtType == wxEVT_FILEBROWSER_FILE_ACTIVATED)
+        evtTypeStr = wxT("wxEVT_FILEBROWSER_FILE_ACTIVATED");
+    else if (evtType == wxEVT_FILEBROWSER_DIR_SELECTED)
+        evtTypeStr = wxT("wxEVT_FILEBROWSER_DIR_SELECTED");
+    else if (evtType == wxEVT_FILEBROWSER_DIR_ACTIVATED)
+        evtTypeStr = wxT("wxEVT_FILEBROWSER_DIR_ACTIVATED");
+    else
+        evtTypeStr = wxT("UNKNOWN EVENT TYPE!");
+
+    m_textCtrl->AppendText(wxString::Format(wxT("%s %s(id %d) val %ld\n"), wxNow().c_str(), evtTypeStr.c_str(), event.GetId(), event.GetInt()));
+}
+
+// ============================================================================
+#define wxSF wxString::Format
+
+int bad_matrix_tests = 0;
+
+void DisplayMatrix(wxTextCtrl* textCtrl, const wxMatrix2D& matrix, const wxString& prepend, const wxString& test)
+{
+    wxString t(wxT(" : No test\n"));
+    if (!test.IsEmpty())
+    {
+        int res = matrix.ToString() == test;
+        if (res == 0) bad_matrix_tests++;
+        t = wxString::Format(wxT(" : Test Ok %d\n"), res);
+    }
+
+    textCtrl->AppendText(prepend + t + matrix.ToString(wxT("\t")) + wxT("\n\n"));
+
+    // print the comparison string for test
+    //wxString s(matrix.ToString()); s.Replace(wxT("\n"), wxT("\\n"), true);
+    //textCtrl->AppendText(wxT("wxT(\"") + s + wxT("\")\n\n"));
+}
+
+void MyFrame::OnTestMatrix(wxCommandEvent& WXUNUSED(event))
+{
+    bad_matrix_tests = 0;
+
+    wxDialog dlg(this, wxID_ANY, wxT("Test wxMatrx2D"),
+                 wxDefaultPosition, wxSize(600, 400), wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
+    wxTextCtrl* textCtrl = new wxTextCtrl(&dlg, wxID_ANY, wxEmptyString,
+                                          wxDefaultPosition, wxDefaultSize,
+                                          wxTE_MULTILINE);
+    textCtrl->SetSize(dlg.GetClientSize());
+
+    double test_data[] = { 1, 2, 3, 4,  5, 6, 7, 8 };
+    wxMatrix2D matrix4x2(4, 2, test_data);
+    DisplayMatrix(textCtrl, matrix4x2, wxT("Initial matrix4x2 = [1 2 3 4; 5 6 7 8]"), wxT("1 2 3 4\n5 6 7 8"));
+
+    DisplayMatrix(textCtrl, matrix4x2.Transpose(), wxT("matrix4x2.Transpose()"), wxT("1 5\n2 6\n3 7\n4 8"));
+
+    DisplayMatrix(textCtrl, matrix4x2.Rotate90(1), wxT("matrix4x2.Rotate90(1) clockwise"), wxT("5 1\n6 2\n7 3\n8 4"));
+    DisplayMatrix(textCtrl, matrix4x2.Rotate90(2), wxT("matrix4x2.Rotate90(2)"), wxT("8 7 6 5\n4 3 2 1"));
+    DisplayMatrix(textCtrl, matrix4x2.Rotate90(3), wxT("matrix4x2.Rotate90(3)"), wxT("4 8\n3 7\n2 6\n1 5"));
+
+    DisplayMatrix(textCtrl, matrix4x2.Mirror(true), wxT("matrix4x2.Mirror(true) horiz"), wxT("4 3 2 1\n8 7 6 5"));
+    DisplayMatrix(textCtrl, matrix4x2.Mirror(false), wxT("matrix4x2.Mirror(false) vert"), wxT("5 6 7 8\n1 2 3 4"));
+
+    DisplayMatrix(textCtrl, matrix4x2.SubMatrix(wxRect(0, 0, 4, 2)), wxT("matrix4x2.SubRect(0, 0, 4, 2)"), wxT("1 2 3 4\n5 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.SubMatrix(wxRect(1, 0, 2, 2)), wxT("matrix4x2.SubRect(1, 0, 2, 2)"), wxT("2 3\n6 7"));
+
+    DisplayMatrix(textCtrl, matrix4x2.SubRows(0, 1), wxT("matrix4x2.SubRows(0, 1)"), wxT("1 2 3 4\n5 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.SubRows(1, 1), wxT("matrix4x2.SubRows(1, 1)"), wxT("5 6 7 8"));
+
+    DisplayMatrix(textCtrl, matrix4x2.SubCols(0, 3), wxT("matrix4x2.SubCols(0, 3)"), wxT("1 2 3 4\n5 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.SubCols(1, 1), wxT("matrix4x2.SubCols(1, 1)"), wxT("2\n6"));
+    DisplayMatrix(textCtrl, matrix4x2.SubCols(2, 3), wxT("matrix4x2.SubCols(2, 3)"), wxT("3 4\n7 8"));
+
+    wxMatrix2D matrix2x4(matrix4x2, true); matrix2x4.Reshape(2, 4);
+    DisplayMatrix(textCtrl, matrix2x4, wxT("matrix4x2.Reshape(2, 4)"), wxT("1 2\n3 4\n5 6\n7 8"));
+
+    wxMatrix2D matrix4x2neg(matrix4x2.Mult(-1), true);
+    DisplayMatrix(textCtrl, matrix4x2.AppendRows(matrix4x2neg), wxT("matrix4x2.AppendRows(matrix4x2neg) (insert at -1)"), wxT("1 2 3 4\n5 6 7 8\n-1 -2 -3 -4\n-5 -6 -7 -8"));
+    DisplayMatrix(textCtrl, matrix4x2.InsertRows(0, matrix4x2neg), wxT("matrix4x2.InsertRows(0, matrix4x2neg)"), wxT("-1 -2 -3 -4\n-5 -6 -7 -8\n1 2 3 4\n5 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.InsertRows(1, matrix4x2neg), wxT("matrix4x2.InsertRows(1, matrix4x2neg)"), wxT("1 2 3 4\n-1 -2 -3 -4\n-5 -6 -7 -8\n5 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.InsertRows(2, matrix4x2neg), wxT("matrix4x2.InsertRows(2, matrix4x2neg)"), wxT("1 2 3 4\n5 6 7 8\n-1 -2 -3 -4\n-5 -6 -7 -8"));
+
+    DisplayMatrix(textCtrl, matrix4x2.AppendCols(matrix4x2neg), wxT("matrix4x2.AppendCols(matrix4x2neg) (insert at -1)"), wxT("1 2 3 4 -1 -2 -3 -4\n5 6 7 8 -5 -6 -7 -8"));
+    DisplayMatrix(textCtrl, matrix4x2.InsertCols(0, matrix4x2neg), wxT("matrix4x2.InsertCols(0, matrix4x2neg)"), wxT("-1 -2 -3 -4 1 2 3 4\n-5 -6 -7 -8 5 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.InsertCols(1, matrix4x2neg), wxT("matrix4x2.InsertCols(1, matrix4x2neg)"), wxT("1 -1 -2 -3 -4 2 3 4\n5 -5 -6 -7 -8 6 7 8"));
+    DisplayMatrix(textCtrl, matrix4x2.InsertCols(2, matrix4x2neg), wxT("matrix4x2.InsertCols(2, matrix4x2neg)"), wxT("1 2 -1 -2 -3 -4 3 4\n5 6 -5 -6 -7 -8 7 8"));
+
+    DisplayMatrix(textCtrl, matrix4x2.Add(matrix4x2), wxT("matrix4x2.Add(matrix4x2)"), wxT("2 4 6 8\n10 12 14 16"));
+    DisplayMatrix(textCtrl, matrix4x2.Mult(matrix4x2.Transpose()), wxT("matrix4x2.Mult(matrix4x2.Transpose())"), wxT("30 70\n70 174"));
+    DisplayMatrix(textCtrl, matrix4x2.MultElement(matrix4x2), wxT("matrix4x2.MultElement(matrix4x2)"), wxT("1 4 9 16\n25 36 49 64"));
+    DisplayMatrix(textCtrl, matrix4x2.Pow(2), wxT("matrix4x2.Pow(2)"), wxT("1 4 9 16\n25 36 49 64"));
+
+    double square3[] = { 1, 2, 3,  4, 5, 6,  7, 8, 9 };
+    wxMatrix2D matrix3x3(3, 3, square3);
+    DisplayMatrix(textCtrl, matrix3x3, wxT("Initial square matrix3x3"), wxT("1 2 3\n4 5 6\n7 8 9"));
+    DisplayMatrix(textCtrl, matrix3x3.RotateSquare45(true), wxT("matrix3x3.RotateSquare45(true)"), wxT("4 1 2\n7 5 3\n8 9 6"));
+    DisplayMatrix(textCtrl, matrix3x3.RotateSquare45(false), wxT("matrix3x3.RotateSquare45(false)"), wxT("2 3 6\n1 5 9\n4 7 8"));
+
+    double square5[] = { 1, 2, 3, 4, 5,  6, 7, 8, 9, 10,  11, 12, 13, 14, 15,  16, 17, 18, 19, 20,  21, 22, 23, 24, 25 };
+    wxMatrix2D matrix5x5(5, 5, square5);
+    DisplayMatrix(textCtrl, matrix5x5, wxT("Initial square matrix5x5"), wxT("1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15\n16 17 18 19 20\n21 22 23 24 25"));
+    DisplayMatrix(textCtrl, matrix5x5.RotateSquare45(true), wxT("matrix5x5.RotateSquare45(true)"), wxT("11 6 1 2 3\n16 12 7 8 4\n21 17 13 9 5\n22 18 19 14 10\n23 24 25 20 15"));
+    DisplayMatrix(textCtrl, matrix5x5.RotateSquare45(false), wxT("matrix5x5.RotateSquare45(false)"), wxT("3 4 5 10 15\n2 8 9 14 20\n1 7 13 19 25\n6 12 17 18 24\n11 16 21 22 23"));
+
+    wxMatrix2D identMatrix5x5; identMatrix5x5.CreateIdentity(5);
+    DisplayMatrix(textCtrl, matrix5x5.Mult(identMatrix5x5), wxT("matrix5x5.Mult(identMatrix5x5 from CreateIdentity(5))"), wxT("1 2 3 4 5\n6 7 8 9 10\n11 12 13 14 15\n16 17 18 19 20\n21 22 23 24 25"));
+
+    textCtrl->AppendText(wxString::Format(wxT("\n\nTests that Failed : %d\n"), bad_matrix_tests));
+
+    dlg.ShowModal();
+}
+
+int bad_range_tests = 0;
+
+void DisplayRangeInt(wxTextCtrl* textCtrl, const wxRangeInt& range, const wxString& prepend, bool test)
+{
+    if (!test) bad_range_tests++;
+
+    textCtrl->AppendText(prepend +
+                         wxString::Format(wxT(" : Ok %d : (%d %d)=%d\n\n"),
+                         test, range.GetMin(), range.GetMax(), range.GetRange()));
+}
+
+void MyFrame::OnTestRange(wxCommandEvent& WXUNUSED(event))
+{
+    bad_range_tests = 0;
+
+    wxDialog dlg(this, wxID_ANY, wxT("Test wxRangeInt/Double"),
+                 wxDefaultPosition, wxSize(600, 400), wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER);
+    wxTextCtrl* textCtrl = new wxTextCtrl(&dlg, wxID_ANY, wxEmptyString,
+                                          wxDefaultPosition, wxDefaultSize,
+                                          wxTE_MULTILINE);
+    textCtrl->SetSize(dlg.GetClientSize());
+
+    int ans = 0;
+
+    wxRangeInt range2_8(2, 8);
+    DisplayRangeInt(textCtrl, range2_8, wxT("Initial wxRangeInt(2, 8)"), range2_8.GetRange() == 7);
+
+    ans = range2_8.Position(1); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(1) = %d"), ans), ans == -1);
+    ans = range2_8.Position(2); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(2) = %d"), ans), ans == 0);
+    ans = range2_8.Position(8); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(8) = %d"), ans), ans == 0);
+    ans = range2_8.Position(9); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Position(9) = %d"), ans), ans == 1);
+
+    ans = range2_8.Contains(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(0,1)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(1,2)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(3,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(12,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(3,4)) = %d"), ans), ans != 0);
+    ans = range2_8.Contains(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(2,8)) = %d"), ans), ans != 0);
+    ans = range2_8.Contains(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(8,9)) = %d"), ans), ans == 0);
+    ans = range2_8.Contains(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Contains(wxRangeInt(1,9)) = %d"), ans), ans == 0);
+
+    wxRangeInt range2_8_i;
+    range2_8_i = range2_8.Intersect(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(0,1))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Intersect(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(1,2))")), range2_8_i == wxRangeInt(2,2));
+    range2_8_i = range2_8.Intersect(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(3,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Intersect(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(12,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Intersect(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(3,4))")), range2_8_i == wxRangeInt(3,4));
+    range2_8_i = range2_8.Intersect(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(2,8))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Intersect(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(8,9))")), range2_8_i == wxRangeInt(8,8));
+    range2_8_i = range2_8.Intersect(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Intersect(wxRangeInt(1,9))")), range2_8_i == wxRangeInt(2,8));
+
+    range2_8_i = range2_8.Union(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(0,1))")), range2_8_i == wxRangeInt(0,8));
+    range2_8_i = range2_8.Union(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(1,2))")), range2_8_i == wxRangeInt(1,8));
+    range2_8_i = range2_8.Union(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(3,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Union(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(12,-2))")), range2_8_i.IsEmpty());
+    range2_8_i = range2_8.Union(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(3,4))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Union(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(2,8))")), range2_8_i == wxRangeInt(2,8));
+    range2_8_i = range2_8.Union(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(8,9))")), range2_8_i == wxRangeInt(2,9));
+    range2_8_i = range2_8.Union(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Union(wxRangeInt(1,9))")), range2_8_i == wxRangeInt(1,9));
+
+    ans = range2_8.Touches(wxRangeInt(0,1));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(0,1)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(1,2));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(1,2)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(3,-2));  DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(3,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Touches(wxRangeInt(12,-2)); DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(12,-2)) = %d"), ans), ans == 0);
+    ans = range2_8.Touches(wxRangeInt(3,4));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(3,4)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(2,8));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(2,8)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(8,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(8,9)) = %d"), ans), ans != 0);
+    ans = range2_8.Touches(wxRangeInt(1,9));   DisplayRangeInt(textCtrl, range2_8, wxSF(wxT("range2_8.Touches(wxRangeInt(1,9)) = %d"), ans), ans != 0);
+
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(0,1), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,1), false) = %d"), ans), range2_8_i == wxRangeInt(0,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,2), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,2), false) = %d"), ans), range2_8_i == wxRangeInt(1,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,-2), false);  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,-2), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(12,-2), false); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(12,-2), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,4), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,4), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(2,8), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(2,8), false) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(8,9), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(8,9), false) = %d"), ans), range2_8_i == wxRangeInt(2,9));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,9), false);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,9), false) = %d"), ans), range2_8_i == wxRangeInt(1,9));
+
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(0,0), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,0), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(0,1), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(0,1), true) = %d"), ans), range2_8_i == wxRangeInt(0,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,2), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,2), true) = %d"), ans), range2_8_i == wxRangeInt(1,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,-2), true);  DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,-2), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(12,-2), true); DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(12,-2), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(3,4), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(3,4), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(2,8), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(2,8), true) = %d"), ans), range2_8_i == wxRangeInt(2,8));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(8,9), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(8,9), true) = %d"), ans), range2_8_i == wxRangeInt(2,9));
+    range2_8_i.Set(2,8); ans = range2_8_i.Combine(wxRangeInt(1,9), true);   DisplayRangeInt(textCtrl, range2_8_i, wxSF(wxT("range2_8.Combine(wxRangeInt(1,9), true) = %d"), ans), range2_8_i == wxRangeInt(1,9));
+
+    textCtrl->AppendText(wxString::Format(wxT("\n\nTests that Failed : %d\n"), bad_range_tests));
+
+    dlg.ShowModal();
 }
 
 void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 {
     wxString msg;
-    msg.Printf( _T("This is the About dialog of the thingsdemo sample.\n")
-                _T("Welcome to %s"), wxVERSION_STRING);
+    msg.Printf( _T("This is the About dialog of the wxThingsDemo sample.\n")
+                _T("Welcome to %s compiled with %s"), WXTHINGS_VERSION_STRING, wxVERSION_STRING);
 
-    wxMessageBox(msg, _T("About Minimal"), wxOK | wxICON_INFORMATION, this);
+    wxMessageBox(msg, _T("About wxThingsDemo"), wxOK | wxICON_INFORMATION, this);
 }
-

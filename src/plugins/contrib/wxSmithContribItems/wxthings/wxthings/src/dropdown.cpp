@@ -9,10 +9,6 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "dropdown.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -29,6 +25,8 @@
 #include "wx/things/dropdown.h"
 #include "wx/things/toggle.h"
 #include "wx/renderer.h"
+
+#if wxUSE_POPUPWIN
 
 /* XPM */
 static const char *down_arrow_xpm_data[] = {
@@ -147,7 +145,7 @@ void DropDownPopup::OnTimer( wxTimerEvent &WXUNUSED(event) )
     //wxPrintf(wxT("**DropDownPopup::OnTimer mouse %d %d -- %d %d %d\n"), m_mouse.x, m_mouse.y, m_popped_handler, m_child, m_handlerPopup); fflush(stdout);
     // pop the event handler if inside the child window or
     // restore the event handler if not in the child window
-    if (clientRect.Inside(m_mouse))
+    if (clientRect.Contains(m_mouse))
         PopPopupHandler(child);
     else
         PushPopupHandler(child);
@@ -167,7 +165,7 @@ void DropDownPopup::OnIdle( wxIdleEvent& event )
         //wxPrintf(wxT("**DropDownPopup::OnIdle mouse %d %d -- %d %d %d\n"), m_mouse.x, m_mouse.y, m_popped_handler, m_child, m_handlerPopup); fflush(stdout);
         // pop the event handler if inside the child window or
         // restore the event handler if not in the child window
-        if (clientRect.Inside(m_mouse))
+        if (clientRect.Contains(m_mouse))
             PopPopupHandler(child);
         else
             PushPopupHandler(child);
@@ -253,7 +251,7 @@ bool DropDownPopup::ProcessLeftDown( wxMouseEvent &event )
         }
     }
 
-    if (GetClientRect().Inside(m_mouse))
+    if (GetClientRect().Contains(m_mouse))
         return false;
 
     Dismiss();
@@ -403,3 +401,5 @@ void DropDownBase::OnDropButton( wxCommandEvent &WXUNUSED(event))
     else
         ShowPopup();
 }
+
+#endif // wxUSE_POPUPWIN

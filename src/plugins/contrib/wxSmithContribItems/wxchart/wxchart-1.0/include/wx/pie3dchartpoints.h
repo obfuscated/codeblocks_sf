@@ -15,10 +15,17 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "pie3dchartpoints.h"
+#endif
 
 #include "wx/points.h"
 #include "wx/chartcolors.h"
 #include "wx/chartpoints.h"
+
+// External Classes
+//-----------------
+class wxChartSizes;
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxPie3DChartPoints
@@ -26,7 +33,7 @@
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxPie3DChartPoints : public wxChartPoints
+WXDLLIMPEXP_CHART class wxPie3DChartPoints : public wxChartPoints
 {
 public:
 
@@ -41,8 +48,8 @@ public:
     // If this is allow after the bcp is out of scope the list has
     // a pointer which has been deallocated!
     //------------------------------------------------------------
-    static wxPie3DChartPoints* CreateWxPie3DChartPoints(wxString name,
-            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false);
+    static wxPie3DChartPoints* CreateWxPie3DChartPoints(wxString name, 
+            ChartColor c = wxCHART_NOCOLOR, bool showlabel = false); 
 
 	virtual ~wxPie3DChartPoints() {};
 
@@ -72,8 +79,8 @@ public:
 
 	// Set sizes for drawing
 	//----------------------
-	void SetSizes(ChartSizes sizes);
-	const ChartSizes& GetSizes() const;
+	void SetSizes(wxChartSizes *sizes);
+	wxChartSizes* GetSizes() const;
 
 	// Get/Set Color
 	//--------------
@@ -88,7 +95,7 @@ public:
 	// Add point
 	//----------
 	void Add(wxString name, ChartValue x, ChartValue y);
-	void Add(wxString name, ChartValue x, ChartValue y,
+	void Add(wxString name, ChartValue x, ChartValue y, 
 			 ChartColor c);
 
 	// Set/Get Display option
@@ -102,9 +109,9 @@ private:
 	ChartColor m_Color;
 	double m_Zoom;
 	wxDISPLAY_LABEL m_PieTag;
-    bool m_ShowLabel;
-	ChartSizes m_Sizes;
-
+    bool m_ShowLabel;   
+	wxChartSizes *m_Sizes;
+    
     // ctor
     // has to be created on the heap!
     //-------------------------------

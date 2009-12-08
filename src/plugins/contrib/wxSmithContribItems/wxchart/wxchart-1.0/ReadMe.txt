@@ -39,7 +39,12 @@
  ChangeLog
  ---------
  
- 1.0 - first version of wxChart at wxCode
+ 0.1 - first version of wxChart at wxCode
+
+ 0.2 - This is mainly a bug fixes release.
+	The only new feature is the possibility to write the chart to file JPEG, GIF...
+
+
  
  
  [optionally: Known bugs, Author's info, ... ]

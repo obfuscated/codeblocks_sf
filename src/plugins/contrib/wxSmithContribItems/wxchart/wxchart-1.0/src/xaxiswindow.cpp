@@ -14,6 +14,9 @@
 //----------------------------------------------------------------------------
 
 // wx
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma implementation "xaxiswindow.h"
+#endif
 
 // For compilers that support precompilation, includes "wx.h".
 #include <wx/wxprec.h>
@@ -27,6 +30,7 @@
 #endif
 
 #include "wx/xaxiswindow.h"
+#include "wx/chartsizes.h"
 
 IMPLEMENT_DYNAMIC_CLASS(wxXAxisWindow, wxWindow)
 
@@ -39,13 +43,13 @@ END_EVENT_TABLE()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	wxScrolledWindow* parent
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxXAxisWindow::wxXAxisWindow(
 	 wxScrolledWindow *parent
-):  wxWindow(parent, -1, wxDefaultPosition,
+):  wxWindow(parent, -1, wxDefaultPosition, 
 			 wxSize(XAXIS_WIDTH, XAXIS_HEIGHT)/*, wxSIMPLE_BORDER*/),
 	m_WinParent(parent)
 {
@@ -54,7 +58,7 @@ wxXAxisWindow::wxXAxisWindow(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetVirtualMax
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	ChartValue v
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -67,7 +71,7 @@ void wxXAxisWindow::SetVirtualMax(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetVirtualMin
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	ChartValue v
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -80,7 +84,7 @@ void wxXAxisWindow::SetVirtualMin(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetVirtualMax
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -91,7 +95,7 @@ ChartValue wxXAxisWindow::GetVirtualMax() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetVirtualMin
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -131,7 +135,7 @@ double wxXAxisWindow::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxXAxisWindow::SetSizes(
-	ChartSizes sizes
+	wxChartSizes *sizes
 )
 {
 	m_XAxis.SetSizes( sizes );
@@ -143,7 +147,7 @@ void wxXAxisWindow::SetSizes(
 //	PARAMETERS:	ChartSizes sizes
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-const ChartSizes& wxXAxisWindow::GetSizes() const
+const wxChartSizes* wxXAxisWindow::GetSizes() const
 {
 	return ( m_XAxis.GetSizes() );
 }
@@ -171,14 +175,14 @@ void wxXAxisWindow::Draw(
 	GetClientSize( &r.w, &r.h );
 
 	//-----------------------------------------------------------------------
-	// Draw x-axis
+	// Draw x-axis 
 	//-----------------------------------------------------------------------
 	m_XAxis.Draw( hp, &r );
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnPaint()
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	wxPaintEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -196,7 +200,7 @@ void wxXAxisWindow::OnPaint(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnMouse()
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	wxMouseEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++

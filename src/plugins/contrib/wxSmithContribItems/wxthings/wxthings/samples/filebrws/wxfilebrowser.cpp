@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
-// Name:        things.cpp
-// Purpose:     wxThings control test program
+// Name:        wxfilebrowser.cpp
+// Purpose:     wxFileBrowser control test program
 // Author:      John Labenski
 // Modified by:
 // Created:     04/01/98

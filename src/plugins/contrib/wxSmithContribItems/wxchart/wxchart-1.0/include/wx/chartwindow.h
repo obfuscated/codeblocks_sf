@@ -15,6 +15,9 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "chartwindow.h"
+#endif
 
 #ifdef __BORLANDC__
 #pragma hdrstop
@@ -27,13 +30,18 @@
 
 #include "wx/chart.h"
 
+//----------------------------------------------------------------------------
+// Classes
+//----------------------------------------------------------------------------
+class wxChartSizes;
+
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		CWxChartWindow
-//	DESC:
+//	DESC:		
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxChartWindow : public wxWindow
+WXDLLIMPEXP_CHART class wxChartWindow : public wxWindow
 {
 public:
 
@@ -70,8 +78,8 @@ public:
 
     // Set sizes for drawing
     //----------------------
-    void SetSizes(ChartSizes sizes);
-    ChartSizes GetSizes() const;
+    void SetSizes(wxChartSizes *sizes);
+    wxChartSizes *GetSizes() const;
 
 	// Draw chart points
 	//------------------
@@ -80,12 +88,12 @@ public:
 private:
 	wxChart m_Chart;
 	wxScrolledWindow *m_WinParent;
-    bool m_UseGrid;
-
+    bool m_UseGrid;   
+       
     // Draw helper function
     //-----------------
     void DrawHLines(CHART_HPAINT hp, CHART_HRECT hr);
-
+    
 	// wxWindows events
 	//-----------------
     void OnPaint(wxPaintEvent &event);
@@ -102,25 +110,25 @@ private:
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	CChartPoints* cp
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 inline void wxChartWindow::Add(
 	wxChartPoints* cp
-)
-{
-	m_Chart.Add( cp );
+) 
+{ 
+	m_Chart.Add( cp ); 
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Clear()
-//	DESC:
+//	DESC:		
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-inline void wxChartWindow::Clear()
-{
+inline void wxChartWindow::Clear() 
+{ 
 	m_Chart.Clear();
 }
 
@@ -224,7 +232,7 @@ inline double wxChartWindow::GetZoom() const
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 inline void wxChartWindow::SetSizes(
-    ChartSizes sizes
+    wxChartSizes *sizes
 )
 {
     m_Chart.SetSizes( sizes );
@@ -236,7 +244,7 @@ inline void wxChartWindow::SetSizes(
 //  PARAMETERS: None
 //  RETURN:     ChartSizes sizes
 //----------------------------------------------------------------------E-+++
-inline ChartSizes wxChartWindow::GetSizes() const
+inline wxChartSizes *wxChartWindow::GetSizes() const
 {
     return m_Chart.GetSizes();
 }

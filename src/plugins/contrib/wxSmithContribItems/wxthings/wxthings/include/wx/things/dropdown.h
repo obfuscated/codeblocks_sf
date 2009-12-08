@@ -33,16 +33,14 @@ DoShowPopup() - this is called from ShowPopup after creating the m_popupWin.
 #ifndef _WX_DROPDOWNBASE_H_
 #define _WX_DROPDOWNBASE_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "dropdown.h"
-#endif
-
 #include "wx/popupwin.h"
 #include "wx/things/thingdef.h"
 
+#if wxUSE_POPUPWIN
+
 class WXDLLEXPORT wxTimer;
 class WXDLLEXPORT wxTimerEvent;
-class WXDLLEXPORT wxCustomButton;
+class WXDLLIMPEXP_THINGS wxCustomButton;
 class WXDLLIMPEXP_THINGS DropDownPopup;
 
 #define DROPDOWN_DROP_WIDTH  14  // these are the default sizes
@@ -163,5 +161,7 @@ private:
     DECLARE_DYNAMIC_CLASS(DropDownPopup)
     DECLARE_EVENT_TABLE()
 };
+
+#endif // wxUSE_POPUPWIN
 
 #endif  // _WX_DROPDOWNBASE_H_

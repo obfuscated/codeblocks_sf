@@ -10,10 +10,6 @@
 #ifndef __WX_FILEBROWSER_H__
 #define __WX_FILEBROWSER_H__
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "filebrws.h"
-#endif
-
 #include "wx/listctrl.h"
 #include "wx/dirctrl.h"
 #include "wx/filedlg.h"

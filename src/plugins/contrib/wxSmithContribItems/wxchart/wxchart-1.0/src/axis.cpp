@@ -13,7 +13,7 @@
 // Headers
 //----------------------------------------------------------------------------
 #include "wx/axis.h"
-
+#include "wx/chartsizes.h"
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
@@ -100,7 +100,7 @@ void wxAxis::SetZoom(
 //----------------------------------------------------------------------E-+++
 double wxAxis::GetZoom()
 {
-	return ( m_Zoom );
+    return ( m_Sizes->GetXZoom() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -110,12 +110,10 @@ double wxAxis::GetZoom()
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxAxis::SetSizes(
-	ChartSizes sizes
+	wxChartSizes *sizes
 )
 {
-	// default copy ctor
-	//------------------
-	m_Sizes = sizes;
+    m_Sizes = sizes;
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -124,7 +122,7 @@ void wxAxis::SetSizes(
 //	PARAMETERS:	None
 //	RETURN:		ChartSizes sizes
 //----------------------------------------------------------------------E-+++
-const ChartSizes& wxAxis::GetSizes() const
+wxChartSizes* wxAxis::GetSizes() const
 {
 	return ( m_Sizes );
 }

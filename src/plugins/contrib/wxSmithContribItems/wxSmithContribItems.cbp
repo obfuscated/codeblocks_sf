@@ -54,7 +54,7 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log -na -ns -nd" />
-				<Option host_application="./codeblocks" />
+				<Option host_application=".\codeblocks" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -159,6 +159,9 @@
 		<Unit filename="wxchart\wxchart-1.0\include\wx\chartpointstypes.h">
 			<Option target="wxChartCtrl" />
 		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\include\wx\chartsizes.h">
+			<Option target="wxChartCtrl" />
+		</Unit>
 		<Unit filename="wxchart\wxchart-1.0\include\wx\charttypes.h">
 			<Option target="wxChartCtrl" />
 		</Unit>
@@ -211,6 +214,9 @@
 			<Option target="wxChartCtrl" />
 		</Unit>
 		<Unit filename="wxchart\wxchart-1.0\src\chartctrl.cpp">
+			<Option target="wxChartCtrl" />
+		</Unit>
+		<Unit filename="wxchart\wxchart-1.0\src\chartsizes.cpp">
 			<Option target="wxChartCtrl" />
 		</Unit>
 		<Unit filename="wxchart\wxchart-1.0\src\chartwindow.cpp">

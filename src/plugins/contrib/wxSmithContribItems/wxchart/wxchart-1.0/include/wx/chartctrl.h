@@ -16,20 +16,25 @@
 // Headers
 //----------------------------------------------------------------------------
 
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "chartctrl.h"
+#endif
+
 #include <wx/scrolwin.h>
 
-#include "chartwindow.h"
-#include "legendwindow.h"
-#include "xaxiswindow.h"
-#include "yaxiswindow.h"
+#include "wx/chartwindow.h"
+#include "wx/legendwindow.h"
+#include "wx/xaxiswindow.h"
+#include "wx/yaxiswindow.h"
 
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
-
+    
 // ChartCtrl styles
 //-----------------
-enum STYLE
+
+enum wxChartStyle
 {
     USE_NONE        = 0,
     USE_AXIS_X      = 0x01,
@@ -38,25 +43,41 @@ enum STYLE
     USE_ZOOM_BUT    = 0x08,
     USE_DEPTH_BUT   = 0x10,
     USE_GRID        = 0x20,
-    DEFAULT_STYLE   = USE_AXIS_X | USE_AXIS_Y | USE_LEGEND |
+    DEFAULT_STYLE   = USE_AXIS_X | USE_AXIS_Y | USE_LEGEND | 
                         USE_ZOOM_BUT | USE_DEPTH_BUT | USE_GRID
 };
 
+// chart image type
+//-----------------
+
+enum wxChartImageType
+{
+    wxCHART_BMP = wxBITMAP_TYPE_BMP,
+    wxCHART_GIF = wxBITMAP_TYPE_GIF,
+    wxCHART_PNG = wxBITMAP_TYPE_PNG,
+    wxCHART_JPEG = wxBITMAP_TYPE_JPEG
+};
+
+// Extern classes
+//---------------
+
+class wxChartSizes;
+
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxChartCtrl
-//	DESC:
+//	DESC:		
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxChartCtrl : public wxScrolledWindow
+WXDLLIMPEXP_CHART class wxChartCtrl : public wxScrolledWindow
 {
 public:
 
 	wxChartCtrl() {};	// for IMPLEMENT_DYNAMIC_CLASS
-    wxChartCtrl(wxWindow *parent, wxWindowID id,
-				 STYLE style = DEFAULT_STYLE,
-				 const wxPoint &pos = wxDefaultPosition,
-			     const wxSize &size = wxDefaultSize,
+    wxChartCtrl(wxWindow *parent, wxWindowID id, 
+				 wxChartStyle style = DEFAULT_STYLE,
+				 const wxPoint &pos = wxDefaultPosition, 
+			     const wxSize &size = wxDefaultSize, 
 				 int flags = wxSIMPLE_BORDER);
 
 	~wxChartCtrl();
@@ -72,6 +93,7 @@ public:
 	void ZoomIn();
 	void ZoomOut();
 	void Resize();
+    void Fit();
 
 	// 3D depth utility
 	//-----------------
@@ -80,20 +102,20 @@ public:
 
 	// Write chart to file
 	//--------------------
-	void WriteToFile(wxString file);
+	void WriteToFile(wxString file, wxChartImageType type);
 
 private:
 	double m_xZoom;
-	STYLE m_Style;
-	ChartSizes m_Sizes;
-	wxChartWindow	*m_ChartWin;
-	wxLegendWindow	*m_LegendWin;
-	wxXAxisWindow	*m_XAxisWin;
-	wxYAxisWindow	*m_YAxisWin;
+	wxChartStyle m_Style;
+	wxChartWindow *m_ChartWin;
+	wxLegendWindow *m_LegendWin;
+	wxXAxisWindow *m_XAxisWin;
+	wxYAxisWindow *m_YAxisWin;
+    wxChartSizes *m_Sizes;
 
 	// Calculate width
 	//----------------
-	int CalWidth(int n, int nbar, int nbar3d,
+	int CalWidth(int n, int nbar, int nbar3d, 
 				 int wbar, int wbar3d, int gap);
 
 	// Zoom utility
@@ -104,11 +126,15 @@ private:
 	//---------------
 	void SetSizes();
 
+    // Set Image Type
+    void LoadImageHandler(wxChartImageType type);
+    
 	// scroll bar utility
 	//-------------------
 	void ResetScrollbar();
 	void RedrawXAxis();
 	void RedrawYAxis();
+    void RedrawLegend();
 	void RedrawEverything();
 
     // events

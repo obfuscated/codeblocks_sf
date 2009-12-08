@@ -38,10 +38,6 @@ Differences to wxSpinCtrl:
 #ifndef __wxSPINCTRLDBL_H__
 #define __wxSPINCTRLDBL_H__
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "spinctld.h"
-#endif
-
 #include "wx/spinbutt.h"
 #include "wx/spinctrl.h" // for EVT_SPINCTRL
 #include "wx/things/thingdef.h"
@@ -182,6 +178,7 @@ protected:
                            int sizeFlags = wxSIZE_AUTO);
 
     virtual wxSize DoGetBestSize() const;
+    virtual void DoSetToolTip( wxToolTip *tip );
 
     void OnFocus( wxFocusEvent& event );  // pass focus to textctrl, for wxTAB_TRAVERSAL
     void OnKillFocus( wxFocusEvent &event );

@@ -17,13 +17,17 @@
 //----------------------------------------------------------------------------
 #include "wx/charttypes.h"
 
+// External Classes
+//-----------------
+class wxChartSizes;
+
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxAxis
-//	DESC:
+//	DESC:		
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxAxis
+WXDLLIMPEXP_CHART class wxAxis
 {
 public:
 	wxAxis(ChartValue max = 0, ChartValue min = 0);
@@ -47,14 +51,14 @@ public:
 
 	// Set sizes for drawing
 	//----------------------
-	virtual void SetSizes(ChartSizes sizes);
-	virtual const ChartSizes& GetSizes() const;
+	virtual void SetSizes(wxChartSizes *sizes);
+	virtual wxChartSizes* GetSizes() const;
 
 private:
 	ChartValue m_vMax;
 	ChartValue m_vMin;
 	double m_Zoom;
-	ChartSizes m_Sizes;
+	wxChartSizes *m_Sizes;
 };
 
 #endif // __XAXIS_H__

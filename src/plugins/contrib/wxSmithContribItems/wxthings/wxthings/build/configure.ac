@@ -3,22 +3,23 @@
 # RCS-ID: $Id$
 #
 # A basic "configure.ac" for a wxCode component.
-# See 
+# See
 #    http://www.gnu.org/software/autoconf/manual/autoconf-2.57/html_mono/autoconf.html
 # for more info about autoconf and the autoconf macros.
 # ======================================================================================
 
-
 # Init this configure script with basic info about the component
 # (DON'T PUT ANYTHING BEFORE AC_INIT, JUST COMMENTS)
-AC_INIT([wxXml2], [1.5], [frm@sourceforge.net])
+AC_INIT([wxthings], [1.0.0], [jrl1@sourceforge.net])
+AC_CONFIG_AUX_DIR(build)
 
 # ENABLES/DISABLES THE DEBUG MODE FOR THIS CONFIGURE SCRIPT
-#DBG_CONFIGURE=1
+#WX_DEBUG_CONFIGURE=1
 
+# we need the wxCode/build/bakefiles in your local repository to generate a configure
+# script from this configure.ac file since wxcode.m4 is required....
 m4_include(../../../build/autoconf/wxcode.m4)
-AM_WXCODE_INIT
-
+WXCODE_INIT
 
 
 
@@ -31,36 +32,23 @@ AM_WXCODE_INIT
 ## component's bakefile, then you can leave this section as is
 #####################################################################
 
-AM_OPTIONS_WXCONFIG
-AM_OPTIONS_WXPRESETS
-
-
+WXCODE_OPTIONS([debug,unicode,shared,toolkit,wxshared,wxversion])
 
 
 
 ## CONFIGURE CHECKS
 ##
-## Here you should use the AC_CHECK_LIB, AC_COMPILE_IFELSE, 
+## Here you should use the AC_CHECK_LIB, AC_COMPILE_IFELSE,
 ## AC_LINK_IFELSE, etc macros to check that the libraries required
 ## by your component exist on the host machine and match your
 ## required options (version, build settings, etc)
 #####################################################################
 
-AM_WXCODE_CHECKS([2.4.0])       # 2.4.0 is the minimum required version of wx
+WXCODE_CHECKS([2.8.0], [core,base])      # we need at least wxWidgets 2.8 to work
 
-
-# check for the libxml2 library
-# AM_PATH_XML([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]]])
-# Test for XML, and define XML_CPPFLAGS and XML_LIBS
-AM_PATH_XML2([2.6.1], [],
-	[AC_MSG_ERROR([Cannot found the libxml2 library or your libxml2 is too old (libxml2 > 2.6.1 is required); download it from http://xmlsoft.org])])
-
-# add all XML stuff that we've found...
-CXXFLAGS="$CXXFLAGS $XML_CPPFLAGS"
-CFLAGS="$CFLAGS $XML_CPPFLAGS"
-LDFLAGS="$LDFLAGS $WX_LIBS $XML_LIBS"
-
+# add GTK include/lib paths
+CPPFLAGS="$CPPFLAGS `pkg-config gtk+-2.0 --cflags`"
 
 
 # end in a nice way the configure script
-AM_WXCODE_END
+WXCODE_END

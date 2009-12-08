@@ -15,16 +15,19 @@
 //----------------------------------------------------------------------------
 // Headers
 //----------------------------------------------------------------------------
+#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
+#pragma interface "xaxis.h"
+#endif
 
 #include "wx/axis.h"
 
 //+++-S-cd-------------------------------------------------------------------
 //	NAME:		wxXAxis
-//	DESC:
+//	DESC:		
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-class WXDLLIMPEXP_CHART wxXAxis : public wxAxis
+WXDLLIMPEXP_CHART class wxXAxis : public wxAxis
 {
 
 public:

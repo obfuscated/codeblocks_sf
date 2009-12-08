@@ -68,14 +68,10 @@ You have to #include "wx/tglbtn.h" for EVT_TOGGLEBUTTON
 #ifndef _WX_CUSTOMBUTTON_H_
 #define _WX_CUSTOMBUTTON_H_
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma interface "toggle.h"
-#endif
-
 #include "wx/things/thingdef.h"
 
-class wxTimer;
-class wxTimerEvent;
+class WXDLLEXPORT wxTimer;
+class WXDLLEXPORT wxTimerEvent;
 
 //-----------------------------------------------------------------------------
 // wxCustomButton styles
@@ -169,7 +165,8 @@ public:
     long GetButtonStyle() const { return m_button_style; }
     bool SetButtonStyle( long style );
 
-    // Set the text label, wxEmptyString for none
+    // Get/Set the text label, wxEmptyString for none
+    wxString GetLabel() const { return m_labelString; }
     void SetLabel( const wxString &label );
 
     // set the bitmaps, ONLY this Label bitmap is used for calculating control size
@@ -213,7 +210,10 @@ protected:
     void Redraw();
     virtual void Paint( wxDC &dc );
 
+    // hack for finding the size this should be before creation
+    // we cannot call SetSize() if this is a child of toolbar in GTK w/o crashing
     virtual wxSize DoGetBestSize() const;
+    wxSize DoGetBestSize_(wxWindow* win) const;
 
     virtual void SendEvent();
 
@@ -227,6 +227,8 @@ protected:
     int m_down;         // toggle state if m_down%2 then depressed
     bool m_focused;     // mouse in window
     long m_button_style;
+
+    wxString m_labelString;
 
     // the bitmaps for various states
     wxBitmap m_bmpLabel,

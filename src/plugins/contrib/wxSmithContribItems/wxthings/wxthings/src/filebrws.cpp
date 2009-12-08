@@ -6,10 +6,6 @@
 // License:     wxWidgets
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "filebrws.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -545,7 +541,7 @@ void OpenWithDialog::OnButton(wxCommandEvent& event)
                                                 wxFileNameFromPath(startPath),
                                                 wxEmptyString,
                                                 filters,
-                                                wxOPEN|wxFILE_MUST_EXIST );
+                                                wxFD_OPEN|wxFD_FILE_MUST_EXIST );
             if (!fileName.IsEmpty())
             {
                 fileName += wxT(" \"") + m_fileData.GetFilePath() + wxT("\"");
@@ -825,7 +821,11 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
     if (!wxControl::Create(parent, id, pos, size, style, wxDefaultValidator, name))
         return false;
 
-    wxInitAllImageHandlers(); // need this for the icons
+    // disable the log in case image handlers have already been initialized
+    {
+        wxLogNull logNull;
+        wxInitAllImageHandlers(); // need this for the icons
+    }
 
     // Find what directory to start with
     if (!GetPathFromFilePath(dir, m_path))
@@ -1024,6 +1024,18 @@ void wxFileBrowser::OnSize( wxSizeEvent &event )
     //wxPrintf(wxT("OnSize GetSize(%d %d) Event(%d %d)\n"), GetSize().x, GetSize().y, event.GetSize().x, event.GetSize().y); fflush(stdout);
     event.Skip();
     DoSize();
+
+    // The m_pathCombo disappears for horiz resizing, just send another event
+#if !wxCHECK_VERSION(2, 7, 0) && __WXMSW__
+    if (event.GetId() == GetId())
+    {
+        wxSizeEvent newEvent(event);
+        newEvent.SetId(GetId()+1);
+        AddPendingEvent(newEvent);
+    }
+    else
+        event.Skip(false);
+#endif // !wxCHECK_VERSION(2, 7, 0) && __WXMSW__
 }
 
 // The code in src/gtk/window.cpp wxWindow::DoSetSize fails since
@@ -1115,7 +1127,7 @@ void wxFileBrowser::DoSize()
 
 wxSize wxFileBrowser::DoGetBestSize() const
 {
-    return wxSize(200,400);
+    return wxSize(250,400);
     //return wxControl::DoGetBestSize();
 }
 
@@ -1514,7 +1526,7 @@ wxString AddDelete_wxFILE_SEP_PATH(const wxString &path_, bool add_sep)
 {
     wxString path(path_);
 
-#if __UNIX__
+#ifdef __UNIX__
     if (path.IsEmpty()) return wxFILE_SEP_PATH;
 #endif
 
@@ -2152,6 +2164,7 @@ void wxFileBrowser::OnListMenu(wxCommandEvent &event)
             wxFileData *fd = GetFocusedListItem();
             if (!fd) return;
 
+            wxLogNull logNull;
             wxImage image(fd->GetFilePath());
             if (image.Ok())
             {
@@ -2160,7 +2173,7 @@ void wxFileBrowser::OnListMenu(wxCommandEvent &event)
                                 wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 
                 wxScrolledWindow *scrWin = new wxScrolledWindow(&dialog, -1);
-                wxStaticBitmap *statBitmap = new wxStaticBitmap(scrWin, -1, wxBitmap(image));
+                new wxStaticBitmap(scrWin, -1, wxBitmap(image));
 
                 // not necessary in MSW
                 int ext = 0; //dialog.GetSize().GetWidth() - dialog.GetClientSize().GetWidth();

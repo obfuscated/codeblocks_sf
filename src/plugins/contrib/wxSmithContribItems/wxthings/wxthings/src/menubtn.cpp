@@ -9,10 +9,6 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "menubtn.h"
-#endif
-
 // For compilers that support precompilation, includes "wx/wx.h".
 #include "wx/wxprec.h"
 
@@ -81,7 +77,7 @@ public:
         {
             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
 
-            if (GetRect().Inside(p) || labelBut->GetRect().Inside(p))
+            if (GetRect().Contains(p) || labelBut->GetRect().Contains(p))
             {
                 m_focused = true;
 
@@ -125,7 +121,7 @@ public:
         {
             wxPoint p = GetParent()->ScreenToClient(wxGetMousePosition());
 
-            if (GetRect().Inside(p) || dropBut->GetRect().Inside(p))
+            if (GetRect().Contains(p) || dropBut->GetRect().Contains(p))
             {
                 m_focused = true;
 
@@ -247,7 +243,8 @@ void wxMenuButton::OnButton( wxCommandEvent &event)
         bool check_next = false;
 
         // find the next available radio item to check
-        for (wxMenuItemList::Node *node = items.GetFirst(); node; node = node->GetNext())
+        wxMenuItemList::compatibility_iterator node;
+        for (node = items.GetFirst(); node; node = node->GetNext())
         {
             wxMenuItem *mi = (wxMenuItem*)node->GetData();
             if (mi && (mi->GetKind() == wxITEM_RADIO))
@@ -287,7 +284,8 @@ int wxMenuButton::GetSelection() const
 
     const wxMenuItemList &items = m_menu->GetMenuItems();
 
-    for (wxMenuItemList::Node *node = items.GetFirst(); node; node = node->GetNext())
+    wxMenuItemList::compatibility_iterator node;
+    for (node = items.GetFirst(); node; node = node->GetNext())
     {
         wxMenuItem *mi = (wxMenuItem*)node->GetData();
         if (mi && (mi->GetKind() == wxITEM_RADIO))

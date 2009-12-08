@@ -7,10 +7,6 @@
 // Licence:     wxWidgets
 /////////////////////////////////////////////////////////////////////////////
 
-#if defined(__GNUG__) && !defined(NO_GCC_PRAGMA)
-    #pragma implementation "block.h"
-#endif
-
 // For compilers that support precompilation, includes "wx.h".
 #include "wx/wxprec.h"
 
@@ -206,6 +202,24 @@ void TestBlocks()
 }
 #endif //TEST_BLOCKS
 
+int wxBlockInt::IsLarger(const wxBlockInt &b) const
+{
+    wxInt32 width    = m_x2 - m_x1 + 1,
+            height   = m_y2 - m_y1 + 1,
+            b_width  = b.m_x2 - b.m_x1 + 1,
+            b_height = b.m_y2 - b.m_y1 + 1;
+
+    if ((width <= 0) || (height <= 0))
+        return (b_width > 0) && (b_height > 0) ? -1 : 0;
+    if ((b_width <= 0) || (b_height <= 0))
+        return (width > 0) && (height > 0) ? 1 : 0;
+
+    wxDouble w_bw = wxDouble(width)/b_width,
+             bh_h = wxDouble(b_height)/height;
+
+    return (w_bw == bh_h) ? 0 : ((w_bw > bh_h) ? 1 : -1);
+}
+
 bool wxBlockInt::Touches(const wxBlockInt &b) const // see Intersects
 {
     //if (((wxMax(m_x1, b.m_x1)) <= (wxMin(m_x2, b.m_x2))) &&
@@ -336,6 +350,23 @@ bool wxBlockInt::Delete( const wxBlockInt &block,
 //=============================================================================
 // wxBlockDouble
 //=============================================================================
+
+int wxBlockDouble::IsLarger(const wxBlockDouble &b) const
+{
+    wxDouble width    = m_x2 - m_x1,
+             height   = m_y2 - m_y1,
+             b_width  = b.m_x2 - b.m_x1,
+             b_height = b.m_y2 - b.m_y1;
+
+    if ((width <= 0) || (height <= 0))
+        return (b_width > 0) && (b_height > 0) ? -1 : 0;
+    if ((b_width <= 0) || (b_height <= 0))
+        return (width > 0) && (height > 0) ? 1 : 0;
+
+    wxDouble w_bw = width/b_width,
+             bh_h = b_height/height;
+    return (w_bw == bh_h) ? 0 : ((w_bw > bh_h) ? 1 : -1);
+}
 
 bool wxBlockDouble::Touches(const wxBlockDouble &b) const // see Intersects
 {
@@ -920,7 +951,7 @@ bool wxBlockDoubleSelection::DoDoMinimize(wxArrayBlockDouble &blocks)
 //=============================================================================
 
 wxBlockIntSelectionIterator::wxBlockIntSelectionIterator( const wxBlockIntSelection &sel,
-                                                          wxBISI_Type type )
+                                                          wxBLOCKINT_SELITER_Type type )
 {
     m_type = type;
     WX_APPEND_ARRAY(m_blocks, sel.GetBlockArray());
@@ -929,7 +960,7 @@ wxBlockIntSelectionIterator::wxBlockIntSelectionIterator( const wxBlockIntSelect
 }
 
 wxBlockIntSelectionIterator::wxBlockIntSelectionIterator( const wxArrayBlockInt &blocks,
-                                                          wxBISI_Type type )
+                                                          wxBLOCKINT_SELITER_Type type )
 {
     m_type = type;
     WX_APPEND_ARRAY(m_blocks, blocks);
@@ -945,7 +976,7 @@ void wxBlockIntSelectionIterator::Reset()
 
 bool wxBlockIntSelectionIterator::GetNext(wxBlockInt &block)
 {
-    wxCHECK_MSG(m_type == wxBISI_BLOCK, false, wxT("wrong selection type"));
+    wxCHECK_MSG(m_type == wxBLOCKINT_SELITER_BLOCK, false, wxT("wrong selection type"));
     if (m_block_index+1 < int(m_blocks.GetCount()))
     {
         ++m_block_index;
@@ -958,7 +989,7 @@ bool wxBlockIntSelectionIterator::GetNext(wxBlockInt &block)
 
 bool wxBlockIntSelectionIterator::GetNext(wxPoint2DInt &pt)
 {
-    wxCHECK_MSG(m_type == wxBISI_POINT, false, wxT("wrong selection type"));
+    wxCHECK_MSG(m_type == wxBLOCKINT_SELITER_POINT, false, wxT("wrong selection type"));
     if ((m_blocks.GetCount() < 1u) || (m_block_index >= int(m_blocks.GetCount())))
         return false;
 
