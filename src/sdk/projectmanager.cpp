@@ -2603,7 +2603,8 @@ void ProjectManager::OnRenameFile(wxCommandEvent& event)
         if(name != new_name)
         {
         #ifdef __WXMSW__
-            if (!wxRenameFile(path + name, path + new_name, true))
+            // only overwrite files, if the names are the same, but with different cases
+            if (!wxRenameFile(path + name, path + new_name, (name.Lower() == new_name.Lower())))
         #else
             if (!wxRenameFile(path + name, path + new_name, false))
         #endif
