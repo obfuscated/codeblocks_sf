@@ -17,16 +17,17 @@ class TextCtrlLogger;
 class Cccc : public cbToolPlugin
 {
 public:
-	Cccc();
-	~Cccc();
-	void OnAttach(); // fires when the plugin is attached to the application
-	void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	int Execute();
+    Cccc();
+    ~Cccc();
+    void OnAttach(); // fires when the plugin is attached to the application
+    void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    int Execute();
 private:
-	void AppendToLog(const wxString& Text);
+    void AppendToLog(const wxString& Text);
 
-	TextCtrlLogger*	m_CcccLog;	//!< log tab in the message pane
-	int m_LogPageIndex;	//!< index of our log tab (can this change during run time ??)
+    TextCtrlLogger* m_CcccLog;      //!< log tab in the message pane
+    int             m_LogPageIndex; //!< index of our log tab (can this change during run time ??)
+    wxString        m_CcccApp;      //!< The path to the application (provided by the user on request)
 };
 
 #endif // CCCC_H_INCLUDED
