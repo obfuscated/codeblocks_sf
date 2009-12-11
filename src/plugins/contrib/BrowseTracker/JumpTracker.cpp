@@ -67,6 +67,7 @@ JumpTracker::JumpTracker()
     m_ArrayOfJumpData.Clear();
     m_bProjectClosing = false;
     m_IsAttached = false;
+    m_bJumpInProgress = false;
 
 }
 // ----------------------------------------------------------------------------
@@ -102,6 +103,8 @@ void JumpTracker::OnAttach()
     //    // Set current plugin version
     //	PluginInfo* pInfo = (PluginInfo*)(Manager::Get()->GetPluginManager()->GetPluginInfo(this));
     //	pInfo->version = plgnVersion.GetVersion();
+
+    m_bJumpInProgress = false;
 
     wxWindow* appWin = Manager::Get()->GetAppWindow();
     appWin->PushEventHandler(this);
@@ -219,6 +222,8 @@ void JumpTracker::OnEditorUpdateEvent(CodeBlocksEvent& event)
     event.Skip();
 
     if ( m_bShuttingDown )
+        return;
+    if (m_bJumpInProgress)
         return;
 
     cbEditor* ed =  Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -358,6 +363,11 @@ void JumpTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
 void JumpTracker::JumpDataAdd(const wxString& filename, const long posn)
 // ----------------------------------------------------------------------------
 {
+    // Do not record old jump locations when a jump is in progress
+    // Caused by activating an editor inside the jump routines
+    if (m_bJumpInProgress)
+        return;
+
     // if current entry is identical, return
     if (m_Cursor == JumpDataContains(filename, posn))
         return;
@@ -431,50 +441,60 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &event)
     LOGIT( _T("JT [%s]"), _T("OnMenuJumpBack"));
     #endif
 
-    int count = m_ArrayOfJumpData.GetCount();
-    if (not count) return;
+    m_bJumpInProgress = true;
 
-    if ( count > 1 )
-        m_Cursor -= 1;
-    if (m_Cursor < 0)
-        m_Cursor = maxJumpEntries-1;
-    if (m_Cursor > (int)count-1)
-        m_Cursor = count-1;
+    do {
+        int count = m_ArrayOfJumpData.GetCount();
+        if (not count) break;
 
-    EditorManager* edmgr = Manager::Get()->GetEditorManager();
-    int cursor = m_Cursor;
-    wxString edFilename;
-    long edPosn;
-    bool found = false;
-    for (int i = 0; i<count; ++i, --cursor)
-    {
-        if (cursor < 0) cursor = count-1;
-        JumpData& jumpBack = m_ArrayOfJumpData.Item(cursor);
-        edFilename = jumpBack.GetFilename();
-        edPosn = jumpBack.GetPosition();
-        if (not edmgr->IsOpen(edFilename))
-            continue;
-        found = true;
-        break;
-    }
-    if (not found) return;
+        if ( count > 1 )
+            m_Cursor -= 1;
+        if (m_Cursor < 0)
+            m_Cursor = maxJumpEntries-1;
+        if (m_Cursor > (int)count-1)
+            m_Cursor = count-1;
 
-    m_Cursor = cursor;
+        EditorManager* edmgr = Manager::Get()->GetEditorManager();
+        int cursor = m_Cursor;
+        wxString edFilename;
+        long edPosn;
+        bool found = false;
+        for (int i = 0; i<count; ++i, --cursor)
+        {
+            if (cursor < 0) cursor = count-1;
+            JumpData& jumpBack = m_ArrayOfJumpData.Item(cursor);
+            edFilename = jumpBack.GetFilename();
+            edPosn = jumpBack.GetPosition();
+            if (not edmgr->IsOpen(edFilename))
+                continue;
+            found = true;
+            break;
+        }
+        if (not found) break;
 
+        m_Cursor = cursor;
+
+        #if defined(LOGGING)
+        LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.c_str(), edPosn, m_Cursor);
+        #endif
+        // activate editor
+        EditorBase* eb = edmgr->GetEditor(edFilename);
+        if (not eb) break;
+
+        edmgr->SetActiveEditor(eb); // cause a cbEVT_EditorActivated event
+        // position to editor line
+        cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+        if (not cbed) break;
+
+        cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
+        cbed->GetControl()->GotoPos(edPosn);
+
+    }while(0);
+
+    m_bJumpInProgress = false;
     #if defined(LOGGING)
-    LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.c_str(), edPosn, m_Cursor);
+    LOGIT( _T("JT [%s]"), _T("END OnMenuJumpBack"));
     #endif
-    // activate editor
-    EditorBase* eb = edmgr->GetEditor(edFilename);
-    if (not eb) return;
-
-    edmgr->SetActiveEditor(eb);
-    // position to editor line
-    cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
-    if (not cbed) return;
-
-    cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
-    cbed->GetControl()->GotoPos(edPosn);
 
     return;
 }
@@ -486,49 +506,53 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &event)
     //LOGIT( _T("JT [%s]"), _T("OnMenuJumpNext"));
     #endif
 
-    int count = m_ArrayOfJumpData.GetCount();
-    if (not count) return;
+    m_bJumpInProgress = true;
+    do {
+        int count = m_ArrayOfJumpData.GetCount();
+        if (not count) break;
 
-    if ( count > 1 )
-        m_Cursor += 1;
-    if (m_Cursor > (int)count-1)
-        m_Cursor = 0;
+        if ( count > 1 )
+            m_Cursor += 1;
+        if (m_Cursor > (int)count-1)
+            m_Cursor = 0;
 
-    EditorManager* edmgr = Manager::Get()->GetEditorManager();
-    int cursor = m_Cursor;
-    wxString edFilename;
-    long edPosn;
-    bool found = false;
-    for (int i = 0; i<count; ++i, ++cursor)
-    {
-        if (cursor > count-1) cursor = 0;
-        JumpData& jumpNext = m_ArrayOfJumpData.Item(cursor);
-        edFilename = jumpNext.GetFilename();
-        edPosn = jumpNext.GetPosition();
-        if (not edmgr->IsOpen(edFilename))
-            continue;
-        found = true;
-        break;
-    }
-    if (not found) return;
+        EditorManager* edmgr = Manager::Get()->GetEditorManager();
+        int cursor = m_Cursor;
+        wxString edFilename;
+        long edPosn;
+        bool found = false;
+        for (int i = 0; i<count; ++i, ++cursor)
+        {
+            if (cursor > count-1) cursor = 0;
+            JumpData& jumpNext = m_ArrayOfJumpData.Item(cursor);
+            edFilename = jumpNext.GetFilename();
+            edPosn = jumpNext.GetPosition();
+            if (not edmgr->IsOpen(edFilename))
+                continue;
+            found = true;
+            break;
+        }
+        if (not found) break;
 
-    m_Cursor = cursor;
+        m_Cursor = cursor;
 
-    #if defined(LOGGING)
-    LOGIT( _T("JT OnMenuJumpNext [%s][%ld]curs[%d]"), edFilename.c_str(), edPosn, m_Cursor);
-    #endif
-    // activate editor
-    EditorBase* eb = edmgr->GetEditor(edFilename);
-    if (not eb) return;
+        #if defined(LOGGING)
+        LOGIT( _T("JT OnMenuJumpNext [%s][%ld]curs[%d]"), edFilename.c_str(), edPosn, m_Cursor);
+        #endif
+        // activate editor
+        EditorBase* eb = edmgr->GetEditor(edFilename);
+        if (not eb) break;
 
-    edmgr->SetActiveEditor(eb);
-    // position to editor line
-    cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
-    if (not cbed) return;
+        edmgr->SetActiveEditor(eb);
+        // position to editor line
+        cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+        if (not cbed) break;
 
-    cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
-    cbed->GetControl()->GotoPos(edPosn);
+        cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
+        cbed->GetControl()->GotoPos(edPosn);
+    }while(0);
 
+    m_bJumpInProgress = false;
     return;
 }
 // ----------------------------------------------------------------------------
@@ -542,7 +566,7 @@ void JumpTracker::OnMenuJumpClear(wxCommandEvent &event)
 void JumpTracker::OnMenuJumpDump(wxCommandEvent &event)
 // ----------------------------------------------------------------------------
 {
-    return; //debugging
+    //-return; //debugging
     #if defined(LOGGING)
 
     for (size_t count = 0; count < m_ArrayOfJumpData.GetCount(); ++count)

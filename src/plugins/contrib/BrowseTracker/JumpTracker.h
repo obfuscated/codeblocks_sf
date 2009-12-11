@@ -124,6 +124,7 @@ class JumpTracker : public cbPlugin
         int      m_Cursor;
         bool     m_bShuttingDown;
         bool     m_bProjectClosing;      // project close in progress
+        bool     m_bJumpInProgress;
 
         enum{ maxJumpEntries = 20};
         ArrayOfJumpData m_ArrayOfJumpData;

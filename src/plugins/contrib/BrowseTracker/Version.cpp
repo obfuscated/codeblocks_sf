@@ -230,13 +230,16 @@ AppVersion::~AppVersion()
 //       89) Record last deactivated editor; OnEditorClose activate last deactivated editor (vs. last tab)
 //       90) Fixed: loop in OnIdle() after svn 5939 changes
 // ----------------------------------------------------------------------------
+//  Commit 1.2.92 2009/12/11
+//       91) Clear m_bProjectClosing in OnProjectOpened() else no initial activation recorded after project closed.
+//       92) Fix JumpTracker inablility to switch between editors (caused by Editor Activation fix)
+// ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
 //          When CB reloads a changed editor, the marks are missing
 //       2) In one fell swoop: uninstall BrowseTracker, reInstall it,
 //              click on a project. CB::OnProjectHook call crashes.
-//       3) When second project loaded w/no editors to open, BT switches
-//          to previous editor of the first project. It should stay put.
+//       3) On first project load, browse/book marks dont set bec there's no active editor in arrays
 // ----------------------------------------------------------------------------
 //  //TODO:   All
 //          Config dialog: Max tracked editors Max tracked lines etc

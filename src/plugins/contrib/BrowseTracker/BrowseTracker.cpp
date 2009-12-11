@@ -1972,6 +1972,7 @@ void BrowseTracker::OnProjectOpened(CodeBlocksEvent& event)
 
     if ( not IsBrowseMarksEnabled() )
         return;
+    m_bProjectClosing = false;
 
     cbProject* pProject = event.GetProject();
 
