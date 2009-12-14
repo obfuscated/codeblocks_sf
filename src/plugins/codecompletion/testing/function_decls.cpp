@@ -13,9 +13,12 @@ extern "C"
 class TheClass
 {
 public:
-           TheClass()                 { ; };
-  virtual ~TheClass()                 { ; };
-  int      GetInt  (size_t idx) const { int i=0; return i; }
+                  TheClass  ()                   { ; }
+  virtual        ~TheClass  ()                   { ; }
+  int             GetInt    (size_t idx) const   { int i=0; return i; }
+  const TheClass* GetClass  (const TheClass& tc) { return this; }
+  static void     StaticVoid()                   { ; }
+  void            Void      (void* pVoid)        { ; }
 };
 
 extern int ExternInt(TheClass* the_class, int my_int);
@@ -51,6 +54,12 @@ static int StaticInt(const int& in_int)
   return i;
 }
 
+struct S
+{
+  int i;
+};
+S g_S;
+
 int main(void)
 {
 //  mai
@@ -62,5 +71,10 @@ int main(void)
 //  Con
 //  Sta
   TheClass tc;
-//  tc.Get
+//  tc.GetI
+//  tc.GetC
+//  tc.St
+//  tc.Vo
+//  g_
+//  g_S.
 }

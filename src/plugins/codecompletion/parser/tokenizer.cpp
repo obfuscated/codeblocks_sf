@@ -713,7 +713,6 @@ wxString Tokenizer::DoGetToken(bool bGetValue, bool bTemplate)
     }
     else if (CurrentChar() == '<' && bTemplate)
     {
-        wxChar match = _T('>');
         MoveToNextChar();
         if (!SkipToOneOfChars(_T(">\r\n")), false)
             return wxEmptyString;
@@ -884,7 +883,7 @@ wxString Tokenizer::MacroReplace(const wxString str)
             value = value.Remove(0,1);
             unsigned int lenValue = value.Len();
 
-            for (int i=1; i<=lenKey; i++)
+            for (unsigned int i=1; i<=lenKey; i++)
             {
                 if (i < lenValue)
                     m_Buffer[m_TokenIndex-i] = value[lenValue-i];

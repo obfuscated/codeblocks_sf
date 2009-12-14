@@ -35,64 +35,64 @@ int FILE_NEEDS_PARSING = wxNewId();
 
 namespace ParserConsts
 {
-    const wxString space(_T(" "));
-    const wxString spaced_colon(_T(" : "));
-    const wxString empty(_T(""));
-    const wxString equals(_T("="));
-    const wxString hash(_T("#"));
-    const wxString plus(_T("+"));
-    const wxString comma(_T(","));
-    const wxString commaclbrace(_T(",}"));
-    const wxString dash(_T("-"));
-    const wxString dot(_T("."));
-    const wxString colon(_T(":"));
-    const wxString dcolon(_T("::"));
-    const wxString semicolon(_T(";"));
+    const wxString space           (_T(" "));
+    const wxString spaced_colon    (_T(" : "));
+    const wxString empty           (_T(""));
+    const wxString equals          (_T("="));
+    const wxString hash            (_T("#"));
+    const wxString plus            (_T("+"));
+    const wxString comma           (_T(","));
+    const wxString commaclbrace    (_T(",}"));
+    const wxString dash            (_T("-"));
+    const wxString dot             (_T("."));
+    const wxString colon           (_T(":"));
+    const wxString dcolon          (_T("::"));
+    const wxString semicolon       (_T(";"));
     const wxString semicolonopbrace(_T(";{"));
     const wxString semicolonclbrace(_T(";}"));
-    const wxString lt(_T("<"));
-    const wxString gt(_T(">"));
-    const wxString gtsemicolon(_T(">;"));
-    const wxString unnamed(_T("Un-named"));
-    const wxString quot(_T("\""));
-    const wxString kw_C(_T("\"C\""));
-    const wxString kw__asm(_T("__asm"));
-    const wxString kw_class(_T("class"));
-    const wxString kw_const(_T("const"));
-    const wxString kw_define(_T("define"));
-    const wxString kw_delete(_T("delete"));
-    const wxString kw_do(_T("do"));
-    const wxString kw_else(_T("else"));
-    const wxString kw_enum(_T("enum"));
-    const wxString kw_extern(_T("extern"));
-    const wxString kw_for(_T("for"));
-    const wxString kw_friend(_T("friend"));
-    const wxString kw_if(_T("if"));
-    const wxString kw_ifdef(_T("ifdef"));
-    const wxString kw_ifndef(_T("ifndef"));
-    const wxString kw_elif(_T("elif"));
-    const wxString kw_endif(_T("endif"));
-    const wxString kw_include(_T("include"));
-    const wxString kw_inline(_T("inline"));
-    const wxString kw_namespace(_T("namespace"));
-    const wxString kw_operator(_T("operator"));
-    const wxString kw_private(_T("private"));
-    const wxString kw_protected(_T("protected"));
-    const wxString kw_public(_T("public"));
-    const wxString kw_return(_T("return"));
-    const wxString kw_static(_T("static"));
-    const wxString kw_struct(_T("struct"));
-    const wxString kw_switch(_T("switch"));
-    const wxString kw_template(_T("template"));
-    const wxString kw_typedef(_T("typedef"));
-    const wxString kw_union(_T("union"));
-    const wxString kw_using(_T("using"));
-    const wxString kw_virtual(_T("virtual"));
-    const wxString kw_while(_T("while"));
-    const wxString opbrace(_T("{"));
+    const wxString lt              (_T("<"));
+    const wxString gt              (_T(">"));
+    const wxString gtsemicolon     (_T(">;"));
+    const wxString unnamed         (_T("Unnamed"));
+    const wxString quot            (_T("\""));
+    const wxString kw_C            (_T("\"C\""));
+    const wxString kw__asm         (_T("__asm"));
+    const wxString kw_class        (_T("class"));
+    const wxString kw_const        (_T("const"));
+    const wxString kw_define       (_T("define"));
+    const wxString kw_delete       (_T("delete"));
+    const wxString kw_do           (_T("do"));
+    const wxString kw_else         (_T("else"));
+    const wxString kw_enum         (_T("enum"));
+    const wxString kw_extern       (_T("extern"));
+    const wxString kw_for          (_T("for"));
+    const wxString kw_friend       (_T("friend"));
+    const wxString kw_if           (_T("if"));
+    const wxString kw_ifdef        (_T("ifdef"));
+    const wxString kw_ifndef       (_T("ifndef"));
+    const wxString kw_elif         (_T("elif"));
+    const wxString kw_endif        (_T("endif"));
+    const wxString kw_include      (_T("include"));
+    const wxString kw_inline       (_T("inline"));
+    const wxString kw_namespace    (_T("namespace"));
+    const wxString kw_operator     (_T("operator"));
+    const wxString kw_private      (_T("private"));
+    const wxString kw_protected    (_T("protected"));
+    const wxString kw_public       (_T("public"));
+    const wxString kw_return       (_T("return"));
+    const wxString kw_static       (_T("static"));
+    const wxString kw_struct       (_T("struct"));
+    const wxString kw_switch       (_T("switch"));
+    const wxString kw_template     (_T("template"));
+    const wxString kw_typedef      (_T("typedef"));
+    const wxString kw_union        (_T("union"));
+    const wxString kw_using        (_T("using"));
+    const wxString kw_virtual      (_T("virtual"));
+    const wxString kw_while        (_T("while"));
+    const wxString opbrace         (_T("{"));
     const wxString opbracesemicolon(_T("{;"));
-    const wxString clbrace(_T("}"));
-    const wxString tilde(_T("~"));
+    const wxString clbrace         (_T("}"));
+    const wxString tilde           (_T("~"));
 };
 
 ParserThread::ParserThread(Parser* parent,
@@ -528,11 +528,11 @@ void ParserThread::DoParse()
         {
             SkipToOneOfChars(ParserConsts::semicolon, true);
         }
-        else if (token==ParserConsts::kw_static ||
-            token==ParserConsts::kw_virtual ||
-            token==ParserConsts::kw_inline)
+        else if (   token==ParserConsts::kw_static
+                 || token==ParserConsts::kw_virtual
+                 || token==ParserConsts::kw_inline)
         {
-            // do nothing (skip it)
+            // do nothing, just skip keyword "static" / "virtual" / "inline"
         }
         else if (token==ParserConsts::hash)
         {
@@ -655,8 +655,6 @@ void ParserThread::DoParse()
                         wxString arg = m_Tokenizer.GetToken(); // eat args ()
                         m_Str = token+arg;
                     }
-//                    wxString arg = m_Tokenizer.GetToken(); // eat args ()
-//                    m_Str = token+arg;
                 }
                 else if (peek.GetChar(0) == '(' && m_Options.handleFunctions)
                 {
@@ -847,9 +845,9 @@ Token* ParserThread::FindTokenFromQueue(std::queue<wxString>& q, Token* parent, 
             parentIfCreated->AddChild(newidx);
 
         TRACE(_T("FindTokenFromQueue() : Created unknown class/namespace %s (%d) under %s (%d)"),
-              ns.c_str(),
+              ns.wx_str(),
               newidx,
-              parent ? parent->m_Name.c_str() : _T("<globals>"),
+              parent ? parent->m_Name.wx_str() : _T("<globals>"),
               parent ? parent->GetSelf() : -1);
     }
 
@@ -1065,11 +1063,11 @@ Token* ParserThread::DoAddToken(TokenKind kind, const wxString& name, int line, 
         newToken->m_File = m_File;
         newToken->m_Line = line;
         TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"),
-              name.c_str(),
+              name.wx_str(),
               newToken->GetSelf(),
-              newToken->m_Type.c_str(),
-              newToken->m_ActualType.c_str(),
-              newToken->GetParentName().c_str(),
+              newToken->m_Type.wx_str(),
+              newToken->m_ActualType.wx_str(),
+              newToken->GetParentName().wx_str(),
               newToken->m_ParentIndex);
 
     }
@@ -1345,9 +1343,9 @@ void ParserThread::ReadVarNames()
         {
 
             TRACE(_T("ReadVarNames() : Adding variable '%s' as '%s' to '%s'"),
-                  current.c_str(),
-                  m_Str.c_str(),
-                  (m_pLastParent ? m_pLastParent->m_Name.c_str():_T("<no-parent>")));
+                  current.wx_str(),
+                  m_Str.wx_str(),
+                  (m_pLastParent ? m_pLastParent->m_Name.wx_str():_T("<no-parent>")));
             DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
         }
         else // unexpected
@@ -1370,7 +1368,7 @@ void ParserThread::HandleClass(EClassType ct, const wxString& templateArgs)
         wxString current = m_Tokenizer.GetToken(); // class name
         wxString next = m_Tokenizer.PeekToken();
 
-        TRACE(_T("HandleClass() : Found class '%s'"), current.c_str());
+        TRACE(_T("HandleClass() : Found class '%s'"), current.wx_str());
 
         // handle preprocessor directives in class definition, e.g.
         //
@@ -1398,7 +1396,7 @@ void ParserThread::HandleClass(EClassType ct, const wxString& templateArgs)
 
             if (next==ParserConsts::colon) // has ancestor(s)
             {
-                TRACE(_T("HandleClass() : Class '%s' has ancestors"), current.c_str());
+                TRACE(_T("HandleClass() : Class '%s' has ancestors"), current.wx_str());
                 m_Tokenizer.GetToken(); // eat ":"
                 while (1)
                 {
@@ -1445,7 +1443,8 @@ void ParserThread::HandleClass(EClassType ct, const wxString& templateArgs)
             {
                 static size_t num = 0;
                 wxString unnamedTmp;
-                unnamedTmp.Printf(_T("Unnamed%s%d"),
+                unnamedTmp.Printf(_T("%s%s%d"),
+                                  ParserConsts::unnamed.wx_str(),
                                   ct == ctClass ? _T("Class") :
                                   ct == ctUnion ? _T("Union") :
                                                   _T("Struct"), num++);
@@ -1618,9 +1617,9 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             std::queue<wxString> q = m_EncounteredTypeNamespaces; // preserve m_EncounteredTypeNamespaces; needed in DoAddToken()
             localParent = FindTokenFromQueue(q);
             TRACE(_T("HandleFunction() : Ctor? '%s',m_Str='%s', localParent='%s'"),
-                name.c_str(),
-                m_Str.c_str(),
-                localParent ? localParent->m_Name.c_str() : _T("<none>"));
+                name.wx_str(),
+                m_Str.wx_str(),
+                localParent ? localParent->m_Name.wx_str() : _T("<none>"));
         }
         else
         {
@@ -1634,9 +1633,9 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
         if (!isCtorOrDtor && m_Options.useBuffer)
             isCtorOrDtor = isCtor || isDtor;
         TRACE(_T("HandleFunction() : Adding function '%s', ': m_Str='%s', enc_ns='%s'."),
-              name.c_str(),
-              m_Str.c_str(),
-              m_EncounteredNamespaces.size() ? m_EncounteredNamespaces.front().c_str() : wxT("nil"));
+              name.wx_str(),
+              m_Str.wx_str(),
+              m_EncounteredNamespaces.size() ? m_EncounteredNamespaces.front().wx_str() : wxT("nil"));
         bool isImpl = false;
         bool isConst = false;
         while (!peek.IsEmpty()) // !eof
@@ -1655,15 +1654,17 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 lineStart = m_Tokenizer.GetLineNumber();
                 SkipBlock(); // skip  to matching }
                 lineEnd = m_Tokenizer.GetLineNumber();
+
 #if !PARSERTHREAD_DEBUG_OUTPUT
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
                 if (!m_IsBuffer && ((lineEnd-lineStart) > (int)(m_FileSize*0.1)))
+                    TRACE(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."),
+                          name.wx_str(),
+                          lineStart,
+                          lineEnd,
+                          m_Filename.wx_str(),
+                          m_FileSize);
 #endif
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."), name.wx_str(), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize));
-                    #else
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."), name.c_str(), lineStart, lineEnd, m_Filename.c_str(), m_FileSize));
-                    #endif
                 break;
             }
             else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
@@ -1709,7 +1710,7 @@ void ParserThread::HandleEnum()
         if (m_ParsingTypedef)
         {
             static size_t num = 0;
-            token.Printf(_T("UnnamedEnum%d"), num++);
+            token.Printf(_T("%sEnum%d"), ParserConsts::unnamed.wx_str(), num++);
             m_LastUnnamedTokenName = token;
         }
         else
@@ -1838,7 +1839,7 @@ void ParserThread::HandleTypedef()
     {
         token = m_Tokenizer.GetToken();
         peek = m_Tokenizer.PeekToken();
-        TRACE(_T("HandleTypedef() : token=%s, peek=%s"), token.c_str(), peek.c_str());
+        TRACE(_T("HandleTypedef() : token=%s, peek=%s"), token.wx_str(), peek.wx_str());
         if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
 
@@ -1847,12 +1848,12 @@ void ParserThread::HandleTypedef()
             || token == ParserConsts::kw_union)
         {
             // "typedef struct|class|union"
-            TRACE(_("HandleTypedef() : Before HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.c_str());
+            TRACE(_("HandleTypedef() : Before HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.wx_str());
             HandleClass(token == ParserConsts::kw_class ? ctClass :
                         token == ParserConsts::kw_union ? ctUnion :
                                                           ctStructure);
             token = m_LastUnnamedTokenName;
-            TRACE(_("HandleTypedef() : After HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.c_str());
+            TRACE(_("HandleTypedef() : After HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.wx_str());
         }
         else if (token == ParserConsts::kw_enum)
         {
@@ -1914,7 +1915,7 @@ void ParserThread::HandleTypedef()
             continue;
         }
 
-        TRACE(_T(" + '%s'"), token.c_str());
+        TRACE(_T(" + '%s'"), token.wx_str());
     }
     TRACE(_T("HandleTypedef() : Typedef done"));
     m_ParsingTypedef = false;
@@ -1939,7 +1940,7 @@ void ParserThread::HandleTypedef()
 
     // no return type
     m_Str.Clear();
-    TRACE(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s'"), components.front().c_str(), ancestor.c_str());
+    TRACE(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s'"), components.front().wx_str(), ancestor.wx_str());
 //    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
     Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
     if (tdef)
@@ -1980,9 +1981,9 @@ void ParserThread::ReadClsNames(wxString& ancestor)
                      || (m_Tokenizer.PeekToken() == ParserConsts::comma)) )
         {
             TRACE(_T("ReadClsNames() : Adding variable '%s' as '%s' to '%s'"),
-                  current.c_str(),
-                  m_Str.c_str(),
-                  (m_pLastParent ? m_pLastParent->m_Name.c_str():_T("<no-parent>")));
+                  current.wx_str(),
+                  m_Str.wx_str(),
+                  (m_pLastParent ? m_pLastParent->m_Name.wx_str():_T("<no-parent>")));
             Token* newToken = DoAddToken(tkTypedef, current, m_Tokenizer.GetLineNumber());
             if (!newToken)
                 break;
