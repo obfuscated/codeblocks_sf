@@ -1089,7 +1089,7 @@ Token* ParserThread::DoAddToken(TokenKind kind,
     {
         wxString tokenType       = m_Str;
         wxString actualTokenType = GetActualTokenType();
-        if (!actualTokenType.IsEmpty() && actualTokenType.Find(_T(' ')) == wxNOT_FOUND)
+        if (actualTokenType.Find(_T(' ')) == wxNOT_FOUND)
         {
             // token type must contain all namespaces
             wxString prepend;
