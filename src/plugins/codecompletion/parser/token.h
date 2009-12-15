@@ -107,9 +107,9 @@ class Token  : public BlockAllocated<Token, 10000>
         wxString m_Args;
         wxString m_RealArgs;
         wxString m_AncestorsString; // all ancestors comma-separated list
-        unsigned int m_File;
+        unsigned int m_FileIdx;
         unsigned int m_Line;
-        unsigned int m_ImplFile;
+        unsigned int m_ImplFileIdx;
         unsigned int m_ImplLine; // where the token was met
         unsigned int m_ImplLineStart; // if token is impl, opening brace line
         unsigned int m_ImplLineEnd; // if token is impl, closing brace line
@@ -180,18 +180,17 @@ class TokensTree
         void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
         void MarkFileTokensAsLocal(size_t file, bool local = true, void* userData = 0);
 
-        TokenList m_Tokens; /// Contains the pointers to all the tokens
-        TokenSearchTree m_Tree; /** Tree containing the indexes to the tokens
-          (the indexes will be used on m_Tokens) */
+        TokenList       m_Tokens; /** Contains the pointers to all the tokens */
+        TokenSearchTree m_Tree;   /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
 
-        TokenFilenamesMap m_FilenamesMap; /** Map: filenames -> file indexes */
-        TokenFilesMap m_FilesMap; /** Map: file indexes -> Sets of TokenIndexes */
-        TokenFilesSet m_FilesToBeReparsed; /** Set: file indexes */
-        TokenIdxList m_FreeTokens; /** List of all the deleted (and available) tokens */
+        TokenFilenamesMap m_FilenamesMap;      /** Map: filenames -> file indexes */
+        TokenFilesMap     m_FilesMap;          /** Map: file indexes -> Sets of TokenIndexes */
+        TokenFilesSet     m_FilesToBeReparsed; /** Set: file indexes */
+        TokenIdxList      m_FreeTokens;        /** List of all the deleted (and available) tokens */
 
         /** List of tokens belonging to the global namespace */
-        TokenIdxSet m_TopNameSpaces,
-        m_GlobalNameSpace;
+        TokenIdxSet  m_TopNameSpaces;
+        TokenIdxSet  m_GlobalNameSpace;
 
         TokenFilesStatus m_FilesStatus; /** Parse Status for each file */
         bool m_modified;

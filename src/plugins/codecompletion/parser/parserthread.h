@@ -218,9 +218,6 @@ class ParserThread : public cbThreadedTask
           */
         Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF);
 
-        /** NOTICE: clears the queue too*/
-        wxString GetQueueAsNamespaceString(std::queue<wxString>& q);
-
         /** TODO: describe this function */
         Token* FindTokenFromQueue(std::queue<wxString>& q,
                                   Token* parent = 0,
@@ -255,7 +252,7 @@ class ParserThread : public cbThreadedTask
         unsigned int         m_FileSize;
 
         /** source file index on the "file map tree" */
-        unsigned int         m_File;
+        unsigned int         m_FileIdx;
 
         /** determine whether we are parsing the local files or buffer already in memory */
         bool                 m_IsLocal;

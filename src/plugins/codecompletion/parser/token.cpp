@@ -64,9 +64,9 @@ bool LoadTokenIdxSetFromFile(wxInputStream* f,TokenIdxSet* data)
 
 Token::Token()
     :
-    m_File(0),
+    m_FileIdx(0),
     m_Line(0),
-    m_ImplFile(0),
+    m_ImplFileIdx(0),
     m_ImplLine(0),
     m_ImplLineStart(0),
     m_ImplLineEnd(0),
@@ -85,9 +85,9 @@ Token::Token()
 
 Token::Token(const wxString& name, unsigned int file, unsigned int line)
     : m_Name(name),
-    m_File(file),
+    m_FileIdx(file),
     m_Line(line),
-    m_ImplFile(0),
+    m_ImplFileIdx(0),
     m_ImplLine(0),
     m_ImplLineStart(0),
     m_ImplLineEnd(0),
@@ -186,24 +186,27 @@ wxString Token::GetFilename() const
 {
     if(!m_pTree)
         return wxString(_T(""));
-    return m_pTree->GetFilename(m_File);
+    return m_pTree->GetFilename(m_FileIdx);
 }
 
 wxString Token::GetImplFilename() const
 {
     if(!m_pTree)
         return wxString(_T(""));
-    return m_pTree->GetFilename(m_ImplFile);
+    return m_pTree->GetFilename(m_ImplFileIdx);
 }
 
 bool Token::MatchesFiles(const TokenFilesSet& files)
 {
     if(!files.size())
         return true;
-    if(!m_File && !m_ImplFile)
+
+    if(!m_FileIdx && !m_ImplFileIdx)
         return true;
-    if((m_File && files.count(m_File)) || (m_ImplFile && files.count(m_ImplFile)))
+
+    if((m_FileIdx && files.count(m_FileIdx)) || (m_ImplFileIdx && files.count(m_ImplFileIdx)))
         return true;
+
     return false;
 }
 
@@ -320,7 +323,7 @@ bool Token::SerializeIn(wxInputStream* f)
             result = false;
             break;
         }
-        if (!LoadIntFromFile(f, (int*)&m_File))
+        if (!LoadIntFromFile(f, (int*)&m_FileIdx))
         {
             result = false;
             break;
@@ -330,7 +333,7 @@ bool Token::SerializeIn(wxInputStream* f)
             result = false;
             break;
         }
-        if (!LoadIntFromFile(f, (int*)&m_ImplFile))
+        if (!LoadIntFromFile(f, (int*)&m_ImplFileIdx))
         {
             result = false;
             break;
@@ -388,9 +391,9 @@ bool Token::SerializeOut(wxOutputStream* f)
     SaveStringToFile(f, m_Name);
     SaveStringToFile(f, m_Args);
     SaveStringToFile(f, m_AncestorsString);
-    SaveIntToFile(f, m_File);
+    SaveIntToFile(f, m_FileIdx);
     SaveIntToFile(f, m_Line);
-    SaveIntToFile(f, m_ImplFile);
+    SaveIntToFile(f, m_ImplFileIdx);
     SaveIntToFile(f, m_ImplLine);
     SaveIntToFile(f, m_Scope);
     SaveIntToFile(f, m_TokenKind);
@@ -540,12 +543,14 @@ size_t TokensTree::FindTokensInFile(const wxString& file, TokenIdxSet& result, s
     // get file idx
     if (!m_FilenamesMap.HasItem(file))
         return 0;
+
     int idx = m_FilenamesMap.GetItemNo(file);
 
     // now get the tokens set matching this file idx
     TokenFilesMap::iterator itf = m_FilesMap.find(idx);
     if (itf == m_FilesMap.end())
         return 0;
+
     TokenIdxSet& tokens = itf->second;
 
     // loop all results and add to final result set after filtering on token kind
@@ -574,7 +579,7 @@ int TokensTree::AddToken(Token* newToken,int forceidx)
 
     int newitem = AddTokenToList(newToken,forceidx);
     curlist.insert(newitem);
-    m_FilesMap[newToken->m_File].insert(newitem);
+    m_FilesMap[newToken->m_FileIdx].insert(newitem);
 
     // Add Token (if applicable) to the namespaces indexes
     if(newToken->m_ParentIndex < 0)
@@ -727,7 +732,7 @@ void TokensTree::RemoveTokenFromList(int idx)
     {
         m_Tokens[idx] = 0;
         m_FreeTokens.push_back(idx);
-        m_FilesToBeReparsed.insert(oldToken->m_File);
+        m_FilesToBeReparsed.insert(oldToken->m_FileIdx);
         delete oldToken;
     }
 }
@@ -759,8 +764,8 @@ void TokensTree::RemoveFile(int index)
         // if one of those filenames do not match the above criteria
         // just clear the relevant info, leaving the token where it is...
 
-        bool match1 = the_token->m_File == 0 || (int)the_token->m_File == index;
-        bool match2 = the_token->m_ImplFile == 0 || (int)the_token->m_ImplFile == index;
+        bool match1 = the_token->m_FileIdx == 0 || (int)the_token->m_FileIdx == index;
+        bool match2 = the_token->m_ImplFileIdx == 0 || (int)the_token->m_ImplFileIdx == index;
         if (match1 && match2)
             RemoveToken(the_token); // safe to remove the token
         else
@@ -768,12 +773,12 @@ void TokensTree::RemoveFile(int index)
             // do not remove token, just clear the matching info
             if (match1)
             {
-                the_token->m_File = 0;
+                the_token->m_FileIdx = 0;
                 the_token->m_Line = 0;
             }
             else if (match2)
             {
-                the_token->m_ImplFile = 0;
+                the_token->m_ImplFileIdx = 0;
                 the_token->m_ImplLine = 0;
             }
         }
@@ -993,10 +998,11 @@ const wxString TokensTree::GetFilename(size_t idx) const
 bool TokensTree::IsFileParsed(const wxString& filename)
 {
     size_t index = GetFileIndex(filename);
-    bool parsed = (m_FilesMap.count(index) &&
-                   m_FilesStatus[index]!=fpsNotParsed &&
-                  !m_FilesToBeReparsed.count(index)
-                  );
+
+    bool parsed = (   m_FilesMap.count(index)
+                   && (m_FilesStatus[index]!=fpsNotParsed)
+                   && !m_FilesToBeReparsed.count(index) );
+
     return parsed;
 }
 
