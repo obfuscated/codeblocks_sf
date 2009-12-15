@@ -1449,6 +1449,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     int pos = caretPos == -1 ? editor->GetControl()->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > editor->GetControl()->GetLength())
         return 0;
+
     m_EditorStartWord = editor->GetControl()->WordStartPosition(pos, true);
     m_EditorEndWord = pos; //editor->GetControl()->WordEndPosition(pos, true);
     int line = editor->GetControl()->LineFromPosition(pos);
@@ -1592,17 +1593,14 @@ size_t NativeParser::AI(TokenIdxSet& result,
         FindAIMatches(parser, components, result, *it, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
     }
 
-
     if (result.size()<1) // found nothing in the search_scope, add global namespace
     {
         if (s_DebugSmartSense)
-        {
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() result is zero, so, add the Global namespace")));
-        }
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() result is zero. Adding global namespace.")));
+
         search_scope->insert(-1);
         FindAIMatches(parser, components, result, -1, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
     }
-
 
     cached_editor = editor;
     if (result.size() || (m_EditorEndWord - m_EditorStartWord))
@@ -1611,7 +1609,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     cached_results_count = result.size();
 
     if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() AI leave, returned %d results"),result.size()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() AI leave, returned %d results"),result.size()));
 
     return result.size();
 }
@@ -1682,16 +1680,15 @@ size_t NativeParser::BreakUpComponents(Parser* parser, const wxString& actual, s
 // It's called recursively for each component of the std::queue argument.
 // for example: objA.objB.function()
 // components is a queue of:  'objA'  'objB' 'function'. we deal with objA firstly.
-//
 size_t NativeParser::FindAIMatches(Parser* parser,
-                                std::queue<ParserComponent> components,
-                                TokenIdxSet& result,
-                                int parentTokenIdx,
-                                bool noPartialMatch,
-                                bool caseSensitive,
-                                bool use_inheritance,
-                                short int kindMask,
-                                TokenIdxSet* search_scope)
+                                   std::queue<ParserComponent> components,
+                                   TokenIdxSet& result,
+                                   int parentTokenIdx,
+                                   bool noPartialMatch,
+                                   bool caseSensitive,
+                                   bool use_inheritance,
+                                   short int kindMask,
+                                   TokenIdxSet* search_scope)
 {
     if (components.empty())
         return 0;
@@ -1706,7 +1703,7 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     components.pop();
 
     // handle the special keyword "this".
-    if (parentTokenIdx != -1 && parser_component.component == _T("this"))
+    if ((parentTokenIdx != -1) && (parser_component.component == _T("this")))
     {
         // this will make the AI behave like it's the previous scope (or the current if no previous scope)
 
@@ -1726,8 +1723,8 @@ size_t NativeParser::FindAIMatches(Parser* parser,
     // get a set of matches for the current token
     TokenIdxSet local_result;
     GenerateResultSet(tree, searchtext, parentTokenIdx, local_result,
-                      caseSensitive || !isLastComponent,
-                      isLastComponent && !noPartialMatch, kindMask);
+                      (caseSensitive || !isLastComponent),
+                      (isLastComponent && !noPartialMatch), kindMask);
 
     if (s_DebugSmartSense)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Looping %d results"), local_result.size()));
@@ -1740,7 +1737,11 @@ size_t NativeParser::FindAIMatches(Parser* parser,
 
         // sanity check
         if (!token)
+        {
+            if (s_DebugSmartSense)
+                Manager::Get()->GetLogManager()->DebugLog(_T("FindAIMatches() Token is NULL?!"));
             continue;
+        }
 
         // ignore operators
         if (token->m_IsOperator)
@@ -1751,14 +1752,16 @@ size_t NativeParser::FindAIMatches(Parser* parser,
         {
             // insert enum type
             result.insert(id);
+
             // insert enumerators
             for (TokenIdxSet::iterator it2 = token->m_Children.begin(); it2 != token->m_Children.end(); it2++)
                 result.insert(*it2);
+
             continue; // done with this token
         }
 
         if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Match: '%s' (%d) : '%s'"), token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"), token->m_Name.wx_str(), id, token->m_ActualType.wx_str()));
 
 
         // is the token a function or variable (i.e. is not a type)
@@ -2143,39 +2146,41 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
     int pos = caretPos == -1 ? control->GetCurrentPos() : caretPos;
     if (pos < 0 || pos > control->GetLength())
         return -1;
+
     int line = control->LineFromPosition(pos) + 1;
     if (line == s_LastLine && editor == s_LastEditor)
     {
         if (nameSpace) *nameSpace = s_LastNS;
-        if (procName) *procName = s_LastPROC;
+        if (procName)  *procName  = s_LastPROC;
+
+        if (s_DebugSmartSense)
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Cached namespace='%s', cached proc='%s'"),
+                                                        s_LastNS.wx_str(), s_LastPROC.wx_str()));
+
         return s_LastResult;
     }
+
     s_LastEditor = editor;
-    s_LastLine = line;
-
-    Parser parser(this);
-    parser.ParseBufferForFunctions(control->GetTextRange(0, pos));
-
-    wxArrayString funcs;
-    TokensTree* tmptree = parser.GetTempTokens();
-
-    // look for implementation functions that enclose our current line number
-    for(size_t i = 0; i < tmptree->size();i++)
+    s_LastLine   = line;
+    TokenIdxSet result;
+    m_Parser.FindTokensInFile(editor->GetFilename(), result, tkFunction|tkConstructor|tkDestructor);
+    TokensTree* tree = m_Parser.GetTokens();
+    for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
     {
-        Token* token = tmptree->at(i);
-        if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor))
+        Token* token = tree->at(*it);
+        if (token)
         {
             // found a function; check its bounds
             if (token->m_ImplLineStart <= (size_t)line && token->m_ImplLineEnd >= (size_t)line)
             {
                 // got it :)
                 if (s_DebugSmartSense)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Current function: %s (at line %d)"),
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Current function: '%s' (at line %d)"),
                                                                 token->DisplayName().wx_str(),
                                                                 token->m_ImplLine));
 
-                s_LastNS = token->GetNamespace();
-                s_LastPROC = token->m_Name;
+                s_LastNS     = token->GetNamespace();
+                s_LastPROC   = token->m_Name;
                 s_LastResult = control->PositionFromLine(token->m_ImplLine - 1);
 
                 // locate function's opening brace
@@ -2185,13 +2190,21 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
                     if (ch == _T('{'))
                         break;
                     else if (ch == 0)
+                    {
+                        if (s_DebugSmartSense)
+                            Manager::Get()->GetLogManager()->DebugLog(_T("FindCurrentFunctionStart() Can't determine functions opening brace..."));
                         return -1;
+                    }
+
                     ++s_LastResult;
                 }
 
                 if (nameSpace) *nameSpace = s_LastNS;
-                if (procName) *procName = s_LastPROC;
+                if (procName)  *procName  = s_LastPROC;
 
+                if (s_DebugSmartSense)
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Namespace='%s', proc='%s'"),
+                                                                s_LastNS.wx_str(), s_LastPROC.wx_str()));
                 return s_LastResult;
             }
         }

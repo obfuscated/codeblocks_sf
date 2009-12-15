@@ -172,7 +172,8 @@ CodeCompletion::CodeCompletion() :
     m_IsAutoPopup(false),
     m_ToolbarChanged(true),
     m_CurrentLine(0),
-    m_LastFile(wxEmptyString)
+    m_LastFile(wxEmptyString),
+    m_NeedReparse(false)
 {
     if(!Manager::LoadResource(_T("codecompletion.zip")))
     {
@@ -2069,7 +2070,11 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
         }
     }
-
+    if ((event.GetModificationType() & wxSCI_MOD_INSERTTEXT) ||
+        (event.GetModificationType() & wxSCI_MOD_DELETETEXT))
+    {
+        m_NeedReparse = true;
+    }
     if( control->GetCurrentLine() != m_CurrentLine)
     {
         m_CurrentLine = control->GetCurrentLine();
@@ -2092,6 +2097,16 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             {
                 m_Scope->SetSelection(wxNOT_FOUND);
             }
+        }
+
+        if (m_NeedReparse)
+        {
+            Parser* parser = m_NativeParser.FindParserFromActiveEditor();
+            if (parser)
+            {
+                parser->Reparse(editor->GetFilename());
+            }
+            m_NeedReparse= false;
         }
     }
 

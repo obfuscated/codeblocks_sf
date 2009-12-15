@@ -42,6 +42,7 @@ struct ParserThreadOptions
         handleTypedefs(true),
         loader(0)
         {}
+
     /* useBuffer specifies that we're not parsing a file,  but a temporary
      * buffer. The resulting tokens will be temporary, too,
      * and will be deleted when the next file is parsed.
@@ -72,12 +73,11 @@ class ParserThread : public cbThreadedTask
     public:
         /** ParserThread constructor.
           * @param parent the parent Parser object which contain the token tree.
-          * @param bufferOrFilename if isLocal is true, it's the filename to open, else it is a
-          * wxString already in memory buffer.
+          * @param bufferOrFilename if isLocal is true, it's the filename to open, else it is a wxString already in memory buffer.
           * @param isLocal determin whether this is a file in local disk or already in memory
           * @param parserThreadOptions parser therad options, see ParserThreadOptions for details.
-          * @param tokensTree it is the tree sturcture holding all the tokens, ParserThread will add
-          * every token when it parsed.*/
+          * @param tokensTree it is the tree sturcture holding all the tokens, ParserThread will add every token when it parsed.
+          */
         ParserThread(Parser* parent,
                     const wxString& bufferOrFilename,
                     bool isLocal,
@@ -89,7 +89,8 @@ class ParserThread : public cbThreadedTask
 
         /** Execute() is a virtual function in cbThreadedTask class, we should override it here. In
           * the batch parseing mode, the parsering taskes will be reserved in the thread pool, and
-          * be called automatically from the thread pool one by one.*/
+          * be called automatically from the thread pool one by one.
+          */
         int Execute(){ return Parse() ? 0 : 1; }
 
         /** Do the main job here */
@@ -115,8 +116,8 @@ class ParserThread : public cbThreadedTask
 
         /** skip until we meet one chracters in the wxString
           * @param chars wxString specifies all the ending charactors
-          * @param supportNesting if supportNesting is true, we need to record the "{" and "}"
-          * nesting levels when skipping.*/
+          * @param supportNesting if supportNesting is true, we need to record the "{" and "}" nesting levels when skipping.
+          */
         wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
 
         /** actually run the syntax analysis*/
@@ -129,41 +130,32 @@ class ParserThread : public cbThreadedTask
         void SkipAngleBraces();
 
         /** handle include <XXXX> or include "XXXX" directive. This will internally add another
-          * parserThead associate with the included file to parserthead pool*/
+          * parserThead associate with the included file to parserthead pool
+          */
         void HandleIncludes();
 
-        /** handle the statement: #define XXXXX  */
+        /** handle the statement: #define XXXXX */
         void HandleDefines();
 
         /** handle the proprocessor directive:
-          * #ifdef XXX or #endif or ...  */
+          * #ifdef XXX or #endif or ...
+          */
         void HandlePreprocessorBlocks(const wxString& preproc);
 
         /** handle the statement:
-          * namespace XXX {  */
+          * namespace XXX {
+          */
         void HandleNamespace();
 
-        /** eg: class ClassA{...} varA, varB, varC
-          * This function will read the "varA, varB, varC" */
-        void ReadVarNames();
-
-        /** handle class names
-          * @param ancestor define
-          * TODO: blueshake, can you add some comments here?*/
-        void ReadClsNames(wxString& ancestor);
-
         /** handle class declration
-          * @param ct specify class like type : struct or enum or class */
+          * @param ct specify class like type : struct or enum or class
+          */
         void HandleClass(EClassType ct, const wxString& template_args = _T(""));
-
-        /** handle macro definition
-          * @param token macro name
-          * @param peek macro body */
-        void HandleMacro(const wxString & token, const wxString & peek);
 
         /** handle function declearation or definition
           * @param name function name
-          * @param isOperator if true, means it is an operator overload function */
+          * @param isOperator if true, means it is an operator overload function
+          */
         void HandleFunction(const wxString& name, bool isOperator = false);
 
         /** handle enum declearation */
@@ -171,6 +163,23 @@ class ParserThread : public cbThreadedTask
 
         /** handle typedef directive */
         void HandleTypedef();
+
+        /** handle macro definition
+          * @param token macro name
+          * @param peek macro body
+          */
+        void HandleMacro(const wxString & token, const wxString & peek);
+
+        /** eg: class ClassA{...} varA, varB, varC
+          * This function will read the "varA, varB, varC"
+          */
+        void ReadVarNames();
+
+        /** handle class names
+          * @param ancestor define
+          * TODO: blueshake, can you add some comments here?
+          */
+        void ReadClsNames(wxString& ancestor);
 
         /** add one token to the token tree
           * @param kind Token type, see @TokenKind Emun for more details
@@ -180,7 +189,8 @@ class ParserThread : public cbThreadedTask
           * @param implLineEnd like the one above, it is the end line of the function body
           * @param args if the token type is a function, then this is the function arguments string
           * @param isOperator an operator override function or not
-          * @param isTmpl it is a function declearation or implememtation */
+          * @param isTmpl it is a function declearation or implememtation
+          */
         Token* DoAddToken(TokenKind kind,
                           const wxString& name,
                           int line,
@@ -192,7 +202,8 @@ class ParserThread : public cbThreadedTask
 
         /** return the actual token type.
           * eg: if the token type string is: "const wxString &"
-          * then, the actual token type is : "wxString" */
+          * then, the actual token type is : "wxString"
+          */
         wxString GetActualTokenType();
 
     private:
@@ -203,7 +214,8 @@ class ParserThread : public cbThreadedTask
         /** if parent is 0(which means global namespace), all tokens are searched
           * @param name the search key word
           * @param parent parent token pointer, we only search under the parent token scope
-          * @param kindMask filter for the result token, only the specified type of tokens were matched*/
+          * @param kindMask filter for the result token, only the specified type of tokens were matched
+          */
         Token* TokenExists(const wxString& name, Token* parent = 0, short int kindMask = 0xFFFF);
 
         /** NOTICE: clears the queue too*/
@@ -216,7 +228,8 @@ class ParserThread : public cbThreadedTask
                                   Token* parentIfCreated = 0);
 
         /** if we regard the parserThread class as a syntax anilyzer, then the Tokenizer class is
-          * regard as the lexer, which always feeds a wxString by calling m_Tokenizer.GetToken() */
+          * regard as the lexer, which always feeds a wxString by calling m_Tokenizer.GetToken()
+          */
         Tokenizer            m_Tokenizer;
 
         /** a pointer to its parent Parser object */
@@ -226,11 +239,13 @@ class ParserThread : public cbThreadedTask
         TokensTree*          m_pTokensTree;
 
         /** parent Token, for example, when you are parsing in the class member variables, m_pLastParent
-          * holds a pointer to the current context, which is a token holding class name */
+          * holds a pointer to the current context, which is a token holding class name
+          */
         Token*               m_pLastParent;
 
         /** this member define the scope type of member variables, which is: public or private
-          * protected or undefined */
+          * protected or undefined
+          */
         TokenScope           m_LastScope;
 
         /** the file name of the parsing source */
@@ -249,7 +264,8 @@ class ParserThread : public cbThreadedTask
           * eg: parsing the statement: "int wxString const varA;"
           * we determine 'varA' is a token variable, until we searching to the last semicolon.
           * every token before 'varA' will be pushed to m_Str, at this time
-          * m_Str = "int wxString const" */
+          * m_Str = "int wxString const"
+          */
         wxString             m_Str;
 
         /**  hold the previous token string */
@@ -260,13 +276,15 @@ class ParserThread : public cbThreadedTask
 
         /** for member funcs implementation or a function declaration below
           * eg: int ClassA::FunctionB();
-          * EncounteredNamespaces is 'ClassA' */
+          * EncounteredNamespaces is 'ClassA'
+          */
         std::queue<wxString> m_EncounteredNamespaces;
 
         /** namespaces in function return types
           * for a function declaration below:
           * eg: ClassC::returnValue ClassA::FunctionB();
-          * m_EncounteredTypeNamespaces is 'ClassC' */
+          * m_EncounteredTypeNamespaces is 'ClassC'
+          */
         std::queue<wxString> m_EncounteredTypeNamespaces;
 
         /** TODO: describe me here*/

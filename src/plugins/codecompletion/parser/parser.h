@@ -12,7 +12,9 @@
 #include <wx/timer.h>
 #include <wx/file.h>
 #include <wx/filefn.h> // wxPathList
+
 #include "parserthread.h"
+
 #include <cbthreadpool.h>
 #include <sdk_events.h>
 
@@ -153,6 +155,7 @@ class Parser : public wxEvtHandler
         Token* FindChildTokenByName(Token* parent, const wxString& name, bool useInheritance = false, short int kindMask = 0xFFFF) const;
         size_t FindMatches(const wxString& s, TokenList&   result, bool caseSensitive = true, bool is_prefix = true);
         size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive = true, bool is_prefix = true);
+        size_t FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask);
         ParserOptions& Options() { return m_Options; }
         BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
 

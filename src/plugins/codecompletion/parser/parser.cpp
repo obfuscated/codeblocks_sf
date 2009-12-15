@@ -14,8 +14,10 @@
 #include <wx/intl.h>
 #include <wx/progdlg.h>
 #include "parser.h"
+
 #include "../classbrowser.h"
 #include "../classbrowserbuilderthread.h"
+
 #ifndef STANDALONE
     #include <configmanager.h>
     #include <logmanager.h>
@@ -32,6 +34,13 @@
 #endif
 
 #define PARSER_DEBUG_OUTPUT 0
+
+#if PARSER_DEBUG_OUTPUT
+    #define TRACE(format, args...)\
+    Manager::Get()->GetLogManager()->DebugLog(F( format , ## args))
+#else
+    #define TRACE(format, args...)
+#endif
 
 static const char CACHE_MAGIC[] = "CCCACHE_1_3";
 static const int batch_timer_delay = 500;
@@ -167,7 +176,7 @@ Parser::Parser(wxEvtHandler* parent)
 Parser::~Parser()
 {
     m_ShuttingDown = true;
-    if(m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this)
+    if (m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this)
         m_pClassBrowser->UnlinkParser();
     m_TreeBuildingStatus = 0;
     m_pClassBrowser = NULL;
@@ -409,17 +418,17 @@ Token* Parser::FindChildTokenByName(Token* parent, const wxString& name, bool us
         result = m_pTokens->at(m_pTokens->TokenExists(name,parent->GetSelf(),kindMask));
         delete lock;
     }
-    if(!result && useInheritance)
+    if (!result && useInheritance)
     {
         // no reason for a critical section here:
         // it will only recurse to itself.
         // the critical section above is sufficient
         TokenIdxSet::iterator it;
-        for(it = parent->m_DirectAncestors.begin();it != parent->m_DirectAncestors.end();++it)
+        for (it = parent->m_DirectAncestors.begin(); it != parent->m_DirectAncestors.end(); ++it)
         {
             Token* ancestor = m_pTokens->at(*it);
             result = FindChildTokenByName(ancestor, name, true, kindMask);
-            if(result)
+            if (result)
                 break;
         }
     }
@@ -431,14 +440,14 @@ size_t Parser::FindMatches(const wxString& s,TokenList& result,bool caseSensitiv
     result.clear();
     TokenIdxSet tmpresult;
     wxCriticalSectionLocker lock(s_MutexProtection);
-    if(!m_pTokens->FindMatches(s,tmpresult,caseSensitive,is_prefix))
+    if (!m_pTokens->FindMatches(s,tmpresult,caseSensitive,is_prefix))
         return 0;
 
     TokenIdxSet::iterator it;
-    for(it = tmpresult.begin();it!=tmpresult.end();++it)
+    for (it = tmpresult.begin(); it != tmpresult.end(); ++it)
     {
         Token* token = m_pTokens->at(*it);
-        if(token)
+        if (token)
         result.push_back(token);
     }
     return result.size();
@@ -449,14 +458,14 @@ size_t Parser::FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensit
     result.clear();
     TokenIdxSet tmpresult;
     wxCriticalSectionLocker lock(s_MutexProtection);
-    if(!m_pTokens->FindMatches(s,tmpresult,caseSensitive,is_prefix))
+    if (!m_pTokens->FindMatches(s,tmpresult,caseSensitive,is_prefix))
         return 0;
 
     TokenIdxSet::iterator it;
-    for(it = tmpresult.begin();it!=tmpresult.end();++it)
+    for (it = tmpresult.begin(); it != tmpresult.end(); ++it)
     {
         Token* token = m_pTokens->at(*it);
-        if(token)
+        if (token)
         //result.push_back(token);
         result.insert(*it);
     }
@@ -532,18 +541,16 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
                 canparse = m_pTokens->ReserveFileForParsing(buffOrFile,true) != 0;
             if (!canparse)
             {
-               if(opts.loader) // if a loader is already open at this point, the caller must clean it up
+               if (opts.loader) // if a loader is already open at this point, the caller must clean it up
                    Manager::Get()->GetLogManager()->DebugLog(_T("Parse() : CodeCompletion Plugin: FileLoader memory leak likely loading file ")+bufferOrFilename);
                break;
             }
 
             if (!opts.loader) //this should always be true (memory will leak if a loader has already been initialized before this point)
-                opts.loader = Manager::Get()->GetFileManager()->Load(bufferOrFilename, false);
+                opts.loader = Manager::Get()->GetFileManager()->Load(bufferOrFilename, true);
         }
 
-#if PARSER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Parse() : Creating task for: %s"), buffOrFile.c_str()));
-#endif
+        TRACE(_T("Parse() : Creating task for: %s"), buffOrFile.wx_str());
         ParserThread* thread = new ParserThread(this,
                                                 buffOrFile,
                                                 isLocal,
@@ -564,11 +571,12 @@ bool Parser::Parse(const wxString& bufferOrFilename, bool isLocal, ParserThreadO
             m_IsBatch = true;
             m_Pool.BatchBegin();
         }
-#if PARSER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Parse() : Parsing %s"),buffOrFile.c_str()));
-#endif
+
+        TRACE(_T("Parse() : Parsing %s"), buffOrFile.wx_str());
+
         if (m_IgnoreThreadEvents)
             m_IgnoreThreadEvents = false;
+
         #ifdef CODECOMPLETION_PROFILING
         StartStopWatch();
         m_BatchTimer.Stop();
@@ -645,7 +653,7 @@ bool Parser::Reparse(const wxString& filename, bool isLocal)
         return false; // if still parsing, exit with error
 
     wxString file = UnixFilename(filename);
-    if(isLocal)
+    if (isLocal)
         m_LocalFiles.insert(filename);
     else
         m_LocalFiles.erase(filename);
@@ -672,7 +680,7 @@ void Parser::Clear()
     m_LocalFiles.clear();
     m_GlobalIncludes.clear();
 
-    if(!m_ShuttingDown)
+    if (!m_ShuttingDown)
     {
         Manager::ProcessPendingEvents();
         ConnectEvents();
@@ -774,7 +782,7 @@ bool Parser::ReadFromCache(wxInputStream* f)
 
 //  End loading process
 
-    if(result)
+    if (result)
         m_UsingCache = true;
     else
         m_pTokens->clear();
@@ -799,7 +807,7 @@ bool Parser::WriteToCache(wxOutputStream* f)
     SaveIntToFile(f, tcount); // num tokens
 
     // Filenames
-    for(i = 0; i < fcount; ++i)
+    for (i = 0; i < fcount; ++i)
     {
         SaveIntToFile(f,i);
         SaveStringToFile(f,m_pTokens->m_FilenamesMap.GetString(i));
@@ -809,12 +817,10 @@ bool Parser::WriteToCache(wxOutputStream* f)
 
     for (i = 0; i < tcount; ++i)
     {
-#if PARSER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("WriteToCache() : Token #%d, offset %d"),i,f->TellO()));
-#endif
+        TRACE(_T("WriteToCache() : Token #%d, offset %d"),i,f->TellO());
         Token* token = m_pTokens->at(i);
         SaveIntToFile(f,(token!=0) ? 1 : 0);
-        if(token)
+        if (token)
             token->SerializeOut(f);
     }
 
@@ -841,9 +847,7 @@ void Parser::AddIncludeDir(const wxString& file)
 
     if (m_IncludeDirs.Index(base) == wxNOT_FOUND)
     {
-#if PARSER_DEBUG_OUTPUT
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("AddIncludeDir() : Adding %s"), base.c_str()));
-#endif
+        TRACE(_T("AddIncludeDir() : Adding %s"), base.wx_str());
         m_IncludeDirs.Add(base);
     }
 }
@@ -879,10 +883,10 @@ wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
                 break;
         }
     }
-#if PARSER_DEBUG_OUTPUT
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindFileInIncludeDirs() : Searching %s"), file.c_str()));
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindFileInIncludeDirs() : Found %d"), FoundSet.GetCount()));
-#endif
+
+    TRACE(_T("FindFileInIncludeDirs() : Searching %s"), file.wx_str());
+    TRACE(_T("FindFileInIncludeDirs() : Found %d"), FoundSet.GetCount());
+
     return FoundSet;
 }
 
@@ -897,7 +901,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     wxPostEvent(m_pParent, evt);
 }
 
-wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool isGlobal)
+wxString Parser::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
 {
     wxCriticalSectionLocker lock(s_mutexListProtection);
     wxString fullname(_T("")); // Initialize with Empty String
@@ -925,10 +929,10 @@ wxString Parser::GetFullFileName(const wxString& src,const wxString& tgt, bool i
     {
         wxFileName fname(tgt);
         wxFileName source(src);
-        if(NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
+        if (NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
         {
             fullname = fname.GetFullPath();
-            if(!wxFileExists(fullname))
+            if (!wxFileExists(fullname))
                 fullname.Clear();
         }
     }
@@ -1007,7 +1011,7 @@ void Parser::OnBatchTimer(wxTimerEvent& event)
 
 bool Parser::ReparseModifiedFiles()
 {
-    if(!m_NeedsReparse || !m_Pool.Done())
+    if (!m_NeedsReparse || !m_Pool.Done())
         return false;
     Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing saved files..."));
     m_NeedsReparse = false;
@@ -1044,4 +1048,24 @@ bool Parser::ReparseModifiedFiles()
         files_list.pop();
     }
     return true;
+}
+
+size_t Parser::FindTokensInFile(const wxString& fileName,TokenIdxSet& result,short int kindMask)
+{
+    result.clear();
+    wxString file = UnixFilename(fileName);
+    TokenIdxSet tmpresult;
+    wxCriticalSectionLocker lock(s_MutexProtection);
+    if (!m_pTokens->FindTokensInFile(file,tmpresult,kindMask))
+        return 0;
+
+    TokenIdxSet::iterator it;
+    for (it = tmpresult.begin(); it != tmpresult.end(); ++it)
+    {
+        Token* token = m_pTokens->at(*it);
+        if (token)
+        //result.push_back(token);
+        result.insert(*it);
+    }
+    return result.size();
 }
