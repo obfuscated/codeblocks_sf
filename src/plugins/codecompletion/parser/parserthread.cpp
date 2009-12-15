@@ -19,7 +19,7 @@
 #include <cctype>
 #include <queue>
 
-#define PARSERTHREAD_DEBUG_OUTPUT 1
+#define PARSERTHREAD_DEBUG_OUTPUT 0
 
 #if PARSERTHREAD_DEBUG_OUTPUT
     #define TRACE(format, args...)\
@@ -456,6 +456,9 @@ void ParserThread::DoParse()
         if (token==ParserConsts::semicolon)
         {
             m_Str.Clear();
+            // Notice: clears the queue "m_EncounteredTypeNamespaces"
+            while (!m_EncounteredTypeNamespaces.empty())
+                m_EncounteredTypeNamespaces.pop();
         }
         else if (token==ParserConsts::kw_delete ||
                 (token==ParserConsts::dot) ||
