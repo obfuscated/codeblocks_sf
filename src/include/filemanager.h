@@ -145,6 +145,21 @@ public:
     void operator()(){};
 };
 
+// ***** class: EditorReuser *****
+class EditorReuser : public LoaderBase
+{
+public:
+    EditorReuser(const wxString& name, const wxString& s)
+    {
+        fileName = name;
+        len = strlen(s.mb_str(wxConvUTF8));
+        data = new char[len + 1];
+        strcpy(data, (const char*)s.mb_str(wxConvUTF8));
+        Ready();
+    }
+    void operator()(){};
+};
+
 // ***** class: FileManager *****
 class FileManager : public Mgr<FileManager>
 {

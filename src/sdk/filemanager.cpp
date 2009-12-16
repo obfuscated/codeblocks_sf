@@ -138,12 +138,7 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
                 cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
                 if(ed && fileName == ed->GetFilename())
                 {
-                    wxString s(ed->GetControl()->GetText());
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    NullLoader *nl = new NullLoader(file, (char*) s.wx_str(), s.length() * sizeof(wxChar));
-                    #else
-                    NullLoader *nl = new NullLoader(file, (char*) s.c_str(), s.length() * sizeof(wxChar));
-                    #endif
+                    EditorReuser *nl = new EditorReuser(file, ed->GetControl()->GetText());
                     return nl;
                 }
             }
