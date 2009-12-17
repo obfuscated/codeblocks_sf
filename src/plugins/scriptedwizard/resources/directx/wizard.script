@@ -42,10 +42,17 @@ function BeginWizard()
 // Direct/X's path page
 ////////////////////////////////////////////////////////////////////////////////
 
+function OnEnter_DirectXVersionPage(fwd)
+{
+    Wizard.SetListboxSelection(_T("GenericChoiceList"), DirectXSel);
+    return true;
+}
+
 function OnLeave_DirectXVersionPage(fwd)
 {
     if (fwd)
     {
+        DirectXSel = Wizard.GetListboxSelection(_T("GenericChoiceList"));
         switch (DirectXSel)
         {
             case 0:
@@ -73,8 +80,8 @@ function OnLeave_DirectXPath(fwd)
 {
     if (fwd)
     {
-        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
-        local dir_nomacro = ReplaceMacros(dir, true);
+        local dir            = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro    = ReplaceMacros(dir, true);
         local directX_header = _T("/include/d3d") + DirectXVerStr + _T(".h");
         if (!IO.FileExists(dir_nomacro + directX_header))
         {
@@ -124,6 +131,7 @@ function SetupProject(project)
     else
     {
         project.AddIncludeDir(DirectXPath + _T("/include"));
+        project.AddLibDir(DirectXPath + _T("/lib"));
         project.AddLibDir(DirectXPath + _T("/lib/x86"));
     }
 
