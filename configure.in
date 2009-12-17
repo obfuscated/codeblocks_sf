@@ -303,7 +303,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/d/Makefile
 	src/plugins/scriptedwizard/resources/d/console/Makefile
 	src/plugins/scriptedwizard/resources/directx/Makefile
-	src/plugins/scriptedwizard/resources/directx/files/Makefile
+	src/plugins/scriptedwizard/resources/directx/dx8/Makefile
+	src/plugins/scriptedwizard/resources/directx/dx9/Makefile
 	src/plugins/scriptedwizard/resources/dll/Makefile
 	src/plugins/scriptedwizard/resources/dll/files/Makefile
 	src/plugins/scriptedwizard/resources/empty/Makefile

@@ -102,7 +102,10 @@ function OnLeave_DirectXPath(fwd)
 // return the files this project contains
 function GetFilesDir()
 {
-    return _T("directx/files");
+    if ( DirectXVer==8 )
+        return _T("directx/dx8");
+
+    return _T("directx/dx9");
 }
 
 // setup the already created project
@@ -143,13 +146,13 @@ function SetupProject(project)
     project.AddLinkLib(_T("uuid"));
     project.AddLinkLib(_T("odbc32"));
     project.AddLinkLib(_T("odbccp32"));
-    if ( DirectXVer==9 )
+    if ( DirectXVer==8 )
     {
-        project.AddLinkLib(_T("d3d9"));
+        project.AddLinkLib(_T("d3d8"));
     }
     else
     {
-        project.AddLinkLib(_T("d3d8"));
+        project.AddLinkLib(_T("d3d9"));
     }
 
     // set additional path's for MS VC++ Toolkit
@@ -176,10 +179,10 @@ function SetupProject(project)
         {
             target.AddCompilerOption(_T("-D_DEBUG"));
             target.AddCompilerOption(_T("-ggdb")); // Build for GDB
-            if ( DirectXVer==9 )
-                target.AddLinkLib(_T("d3dx9"));
-            else
+            if ( DirectXVer==8 )
                 target.AddLinkLib(_T("d3dx8"));
+            else
+                target.AddLinkLib(_T("d3dx9"));
         }
     }
 
@@ -194,10 +197,10 @@ function SetupProject(project)
         OptimizationsOn(target, Wizard.GetCompilerID());
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc")))
         {
-            if ( DirectXVer==9 )
-                target.AddLinkLib(_T("d3dx9"));
-            else
+            if ( DirectXVer==8 )
                 target.AddLinkLib(_T("d3dx8"));
+            else
+                target.AddLinkLib(_T("d3dx9"));
         }
     }
 

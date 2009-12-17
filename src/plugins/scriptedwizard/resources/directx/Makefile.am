@@ -1,4 +1,4 @@
-SUBDIRS = files
+SUBDIRS = dx8 dx9
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/directx
 
