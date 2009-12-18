@@ -559,11 +559,20 @@ struct cbEditorInternalData
             {
                 m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
                 m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
+#ifndef wxHAVE_RAW_BITMAP
+                // If wxWidgets is build without rawbitmap-support, the indicators become opaque
+                // and hide the text, so we show them under the text.
+                // Not enabled as default, because the readability is a little bit worse.
+                m_pOwner->m_pControl->IndicatorSetUnder(theIndicator,true);
+#endif
             }
             if ( m_pOwner->m_pControl2 )
             {
                 m_pOwner->m_pControl2->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
                 m_pOwner->m_pControl2->IndicatorSetForeground(theIndicator, highlightColour );
+#ifndef wxHAVE_RAW_BITMAP
+                m_pOwner->m_pControl2->IndicatorSetUnder(theIndicator,true);
+#endif
             }
 
             int flag = 0;

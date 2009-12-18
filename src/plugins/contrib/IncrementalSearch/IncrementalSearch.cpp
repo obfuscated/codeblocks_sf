@@ -555,6 +555,12 @@ void IncrementalSearch::HighlightText()
         cbStyledTextCtrl* ctrlLeft = m_pEditor->GetLeftSplitViewControl();
         ctrlLeft->IndicatorSetForeground(m_IndicFound, colourTextFound);
         ctrlLeft->IndicatorSetStyle(m_IndicFound, wxSCI_INDIC_HIGHLIGHT);
+#ifndef wxHAVE_RAW_BITMAP
+        // If wxWidgets is build without rawbitmap-support, the indicators become opaque
+        // and hide the text, so we show them under the text.
+        // Not enabled as default, because the readability is a little bit worse.
+        ctrlLeft->IndicatorSetUnder(m_IndicFound,true);
+#endif
         ctrlLeft->SetIndicatorCurrent(m_IndicFound);
 
          cbStyledTextCtrl* ctrlRight = m_pEditor->GetRightSplitViewControl();
@@ -562,6 +568,9 @@ void IncrementalSearch::HighlightText()
         {
             ctrlRight->IndicatorSetForeground(m_IndicFound, colourTextFound);
             ctrlRight->IndicatorSetStyle(m_IndicFound, wxSCI_INDIC_HIGHLIGHT);
+#ifndef wxHAVE_RAW_BITMAP
+            ctrlRight->IndicatorSetUnder(m_IndicFound,true);
+#endif
             ctrlRight->SetIndicatorCurrent(m_IndicFound);
         }
         control->IndicatorFillRange(m_NewPos, m_LengthFound);
