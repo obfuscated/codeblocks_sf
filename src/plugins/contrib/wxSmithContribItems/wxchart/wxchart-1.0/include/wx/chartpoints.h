@@ -45,7 +45,7 @@ enum wxDISPLAY_LABEL
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartPoints
+class WXDLLIMPEXP_CHART wxChartPoints
 {
 
 public:

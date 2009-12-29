@@ -41,7 +41,7 @@ class wxChartSizes;
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartWindow : public wxWindow
+class WXDLLIMPEXP_CHART wxChartWindow : public wxWindow
 {
 public:
 

@@ -27,7 +27,7 @@
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartPointsTypes
+class WXDLLIMPEXP_CHART wxChartPointsTypes
 {
 private:
 	enum CHART_POINTS_TYPES

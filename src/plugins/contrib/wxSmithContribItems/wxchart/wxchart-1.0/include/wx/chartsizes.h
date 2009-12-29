@@ -40,7 +40,7 @@ const int MIN_GAP_WIDTH				= 3;		// pixels
 //  INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartSizes
+class WXDLLIMPEXP_CHART wxChartSizes
 {
 private:
     int m_numBar;

@@ -47,7 +47,7 @@ WX_DECLARE_OBJARRAY(wxChartPoints*, ListChartPoints);
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChart
+class WXDLLIMPEXP_CHART wxChart
 {
 public:
 	wxChart();

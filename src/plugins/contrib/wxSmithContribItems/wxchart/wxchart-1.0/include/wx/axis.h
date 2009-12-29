@@ -27,7 +27,7 @@ class wxChartSizes;
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxAxis
+class WXDLLIMPEXP_CHART wxAxis
 {
 public:
 	wxAxis(ChartValue max = 0, ChartValue min = 0);

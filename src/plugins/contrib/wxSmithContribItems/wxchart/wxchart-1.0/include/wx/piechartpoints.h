@@ -33,7 +33,7 @@ class wxChartSizes;
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxPieChartPoints : public wxChartPoints
+class WXDLLIMPEXP_CHART wxPieChartPoints : public wxChartPoints
 {
 public:
 

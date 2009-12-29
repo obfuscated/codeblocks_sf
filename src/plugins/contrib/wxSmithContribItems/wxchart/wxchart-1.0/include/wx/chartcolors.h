@@ -54,7 +54,7 @@ enum {
 //	INTERFACE:
 //
 //----------------------------------------------------------------------E-+++
-WXDLLIMPEXP_CHART class wxChartColors
+class WXDLLIMPEXP_CHART wxChartColors
 {
 
 public:
