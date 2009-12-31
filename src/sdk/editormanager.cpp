@@ -953,21 +953,72 @@ void EditorManager::CheckForExternallyModifiedFiles()
     m_isCheckingForExternallyModifiedFiles = false;
 }
 
+bool EditorManager::IsHeaderSource(const wxFileName& testedFileName, const wxFileName& activeFileName, FileType ftActive)
+{
+    if (testedFileName.GetName() == activeFileName.GetName())
+    {
+        FileType ftTested = FileTypeOf(testedFileName.GetFullName());
+        if (    ((ftActive == ftHeader) && (ftTested == ftSource))
+             || ((ftActive == ftSource) && (ftTested == ftHeader)) )
+        {
+            if (testedFileName.FileExists())
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate)
+{
+    FileType ftActive = FileTypeOf(activeFile.GetFullName());
+
+    // Because ftActive == ftHeader || ftSource, the extension has at least 1 character
+    bool extStartsWithCapital = wxIsupper(activeFile.GetExt()[0]);
+
+    wxFileName candidateFile;
+    for (unsigned i = 0; i < candidateFilesArray.GetCount(); ++i)
+    {
+        wxFileName currentCandidateFile(candidateFilesArray[i]);
+
+        if (IsHeaderSource(currentCandidateFile, activeFile, ftActive))
+        {
+            if (wxIsupper(currentCandidateFile.GetExt()[0]) == extStartsWithCapital)
+            {
+                // we definitely found the header/source we were searching for
+                isCandidate = false;
+                return currentCandidateFile;
+            }
+            else
+            {
+                // the header/source has a different capitalization of its extension
+                // use this if nothing better is found
+                candidateFile = currentCandidateFile;
+            }
+        }
+    }
+
+    isCandidate = true;
+
+    // may be invalid (empty) file name
+    return candidateFile;
+}
+
 bool EditorManager::SwapActiveHeaderSource()
 {
     cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
     if (!ed)
         return false;
 
+    ProjectManager *pm = Manager::Get()->GetProjectManager();
+    if (!pm)
+        return false;
+
     FileType ft = FileTypeOf(ed->GetFilename());
     if (ft != ftHeader && ft != ftSource)
         return false;
 
-    // because ft == ftHeader || ftSource, the extension has at least 1 character
-    bool extStartsWithCapital = wxIsupper(wxFileName(ed->GetFilename()).GetExt()[0]);
-
-    // create a list of search dirs
-    wxArrayString dirs;
     cbProject* project = 0;
 
     // if the file in question belongs to a different open project,
@@ -980,93 +1031,91 @@ bool EditorManager::SwapActiveHeaderSource()
 
     // if we didn't get a valid project, try the active one
     if (!project)
-        project = Manager::Get()->GetProjectManager()->GetActiveProject();
+        project = pm->GetActiveProject();
+
+    wxFileName theFile(ed->GetFilename());
+    wxFileName candidateFile;
+    bool isCandidate;
+    wxArrayString fileArray;
+
+    // find all files with the same name as the active file, but with possibly different extension
+    // search in the directory of the active file:
+    wxDir::GetAllFiles(theFile.GetPath(wxPATH_GET_VOLUME), &fileArray, theFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+
+    // try to find the header/source in the list
+    wxFileName currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+    if (isCandidate)
+    {
+        candidateFile = currentCandidateFile;
+    }
+    else if (currentCandidateFile.IsOk())
+    {
+        cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+        if (newEd!=0L) // we found and were able to open it
+            return true; // --> RETURN;
+    }
+
+    // try to find the file among the opened files
+
+    // build a list of opened files
+    fileArray.Clear();
+    for (int i = 0; i < GetEditorsCount(); ++i)
+    {
+        cbEditor* edit = GetBuiltinEditor(GetEditor(i));
+        if (!edit)
+            continue;
+
+        ProjectFile* pf = edit->GetProjectFile();
+        if (!pf)
+            continue;
+
+        fileArray.Add(pf->file.GetFullPath());
+    }
+
+    // try to find the header/source in the list
+    currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+    if (!isCandidate && currentCandidateFile.IsOk())
+    {
+        cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+        if (newEd!=0L) // we found and were able to open it
+            return true; // --> RETURN;
+    }
 
     if (project)
     {
+        // try to find in the project files
+
+        // build a list of project files
+        fileArray.Clear();
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
+            if (!pf)
+                continue;
+
+            fileArray.Add(pf->file.GetFullPath());
+        }
+
+        // try to find the header/source in the list
+        currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+        if (isCandidate && !candidateFile.IsOk())
+        {
+            candidateFile = currentCandidateFile;
+        }
+        else if (currentCandidateFile.IsOk())
+        {
+            cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+            if (newEd!=0L) // we found and were able to open it
+                return true; // --> RETURN;
+        }
+
+        // if not found, build the list of directories for further searching
+
         // get project's include dirs
-        dirs = project->GetIncludeDirs();
-
-        if (opf)
-        {
-            wxString const &activeName = opf->file.GetName();
-
-            // first try to find the file among the opened files
-            for (int i = 0; i < GetEditorsCount(); ++i)
-            {
-                cbEditor* edit = GetBuiltinEditor(GetEditor(i));
-                if (!edit)
-                    continue;
-
-                ProjectFile* pf = edit->GetProjectFile();
-                if (!pf)
-                    continue;
-
-                if (pf->file.GetName() == activeName)
-                {
-                    wxFileName const & fname = pf->file;
-                    FileType ft_other = FileTypeOf(fname.GetFullName());
-                    if (   (    ((ft == ftHeader) && (ft_other == ftSource))
-                             || ((ft == ftSource) && (ft_other == ftHeader)) )
-                        && (wxIsupper(fname.GetExt()[0]) == extStartsWithCapital) )
-                    {
-                        if (fname.FileExists())
-                        {
-                            cbEditor* newEd = Open(fname.GetFullPath());
-                            if (newEd!=0L) // we found and were able to open it
-                                return true; // --> RETURN
-                        }
-                    }
-                }
-            }
-
-            // second try to find in the project files - at the same time
-            // build the directory list for further searching if not
-            // successful now
-            for (int i = 0; i < project->GetFilesCount(); ++i)
-            {
-                ProjectFile* pf = project->GetFile(i);
-                if (!pf)
-                    continue;
-
-                wxString dir = pf->file.GetPath(wxPATH_GET_VOLUME);
-                if (dirs.Index(dir) == wxNOT_FOUND)
-                    dirs.Add(dir);
-
-                if (pf->file.GetName() == activeName)
-                {
-                    wxFileName const & fname = pf->file;
-                    FileType ft_other = FileTypeOf(fname.GetFullName());
-                    if (   (    ((ft == ftHeader) && (ft_other == ftSource))
-                             || ((ft == ftSource) && (ft_other == ftHeader)) )
-                        && (wxIsupper(fname.GetExt()[0]) == extStartsWithCapital) )
-                    {
-                        if (fname.FileExists())
-                        {
-                            cbEditor* newEd = Open(fname.GetFullPath());
-                            if (newEd!=0L) // we found and were able to open it
-                                return true; // --> RETURN
-                        }
-                    }
-                }
-            }
-        }
-        else // no opf
-        {
-            // build the directory list for further searching if opf not available
-            for (int i = 0; i < project->GetFilesCount(); ++i)
-            {
-                ProjectFile* pf = project->GetFile(i);
-                if (!pf)
-                    continue;
-
-                wxString dir = pf->file.GetPath(wxPATH_GET_VOLUME);
-                if (dirs.Index(dir) == wxNOT_FOUND)
-                    dirs.Add(dir);
-            }
-        }
-
-        // if not found, continue building the list of directories for further searching
+        wxArrayString dirs = project->GetIncludeDirs();
 
         // get targets include dirs
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
@@ -1083,44 +1132,44 @@ bool EditorManager::SwapActiveHeaderSource()
                 }
             }
         }
-    } // project
 
-    wxFileName fname;
-    wxFileName fn(ed->GetFilename());
-    dirs.Insert(fn.GetPath(wxPATH_GET_VOLUME), 0); // add file's dir
-
-    wxString HeaderSource;
-
-    for (unsigned int i = 0; i < dirs.GetCount(); ++i)
-    {
-        ProjectManager *pm = Manager::Get()->GetProjectManager();
-        if ( !pm )
-            break;
-
-        wxString dir = dirs[i]; // might contain macros -> replace them
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
-
-        fname.Assign(dir + wxFileName::GetPathSeparator() + fn.GetFullName());
-//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Looking for '%s', dir='%s'."), fname.GetFullPath().c_str(), dir.c_str()));
-        if (!fname.IsAbsolute() && project)
+        // go through the directories and try to find the header/source there
+        for (unsigned int i = 0; i < dirs.GetCount(); ++i)
         {
-            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
-//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to '%s'."), fname.GetFullPath().c_str()));
-        }
+            wxString dir = dirs[i]; // might contain macros -> replace them
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
-        HeaderSource = pm->GetHeaderSource(fname);
-        if (!HeaderSource.IsEmpty())
-        {
-            fname.SetFullName(HeaderSource);
-//            Manager::Get()->GetLogManager()->DebugLog(F(_T("Located '%s'."), fname.GetFullPath().c_str()));
-            break;
+            wxFileName dname(dir);
+            if (!dname.IsAbsolute())
+            {
+                dname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
+    //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to '%s'."), dname.GetFullPath().c_str()));
+            }
+
+            fileArray.Clear();
+            // find all files inside the directory with the same name as the active file, but with possibly different extension
+            wxDir::GetAllFiles(dname.GetPath(), &fileArray, theFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+            // try to find the header/source in the list
+            currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+            if (isCandidate)
+            {
+                candidateFile = currentCandidateFile;
+            }
+            else if (currentCandidateFile.IsOk())
+            {
+                cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+                if (newEd!=0L) // we found and were able to open it
+                    return true; // --> RETURN;
+            }
         }
     }
 
-    if (!HeaderSource.IsEmpty() && fname.FileExists())
+    // candidateFile is header/source whose extension does not match the capitalization of the active file
+    // - open it if nothing better is found
+    if (candidateFile.IsOk())
     {
-        //Manager::Get()->GetLogManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
-        cbEditor* newEd = Open(fname.GetFullPath());
+        cbEditor* newEd = Open(candidateFile.GetFullPath());
         if (newEd!=0L) // we found and were able to open it
             return true; // --> RETURN;
     }
@@ -1135,14 +1184,14 @@ bool EditorManager::SwapActiveHeaderSource()
             wxSetWorkingDirectory(project->GetBasePath());
 
         // Create a suggestion for the new file name:
-        if (ft == ftHeader)
-            fn.SetExt(FileFilters::CPP_EXT);
+        if      (ft == ftHeader)
+            theFile.SetExt(FileFilters::CPP_EXT);
         else if (ft == ftSource)
-            fn.SetExt(FileFilters::H_EXT);
+            theFile.SetExt(FileFilters::H_EXT);
         // else? Well, if the filename is not changed we could possibly
         // overwrite an existing file with our suggestion.
 
-        cbEditor* newEd = New(fn.GetFullPath());
+        cbEditor* newEd = New(theFile.GetFullPath());
         if (project)
         {
             if (cbMessageBox(_("Do you want to add this new file in the active project?"),

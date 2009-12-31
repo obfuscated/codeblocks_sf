@@ -432,69 +432,6 @@ void ProjectManager::ReleaseMenu(wxMenuBar* menuBar)
 {
 }
 
-wxString ProjectManager::GetHeaderSource(const wxFileName &fname)
-{
-    const FilesGroupsAndMasks* fg = GetFilesGroupsAndMasks();
-    if ( !fg )
-        return wxEmptyString;
-
-    FileType ft = FileTypeOf(fname.GetFullName());
-
-    // If header file provided, return source (if found)
-    if (ft == ftHeader)
-    {
-        for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
-        {
-            if ( fg->GetGroupName(i) == _("Sources") )
-            {
-                wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
-                while ( tkz.HasMoreTokens() )
-                {
-                    wxString token = tkz.GetNextToken();
-                    wxString ext;
-                    if ( token.StartsWith( _("*."), &ext ) )
-                    {
-                        wxFileName fn(fname);
-                        fn.SetExt(ext);
-//                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Trying to locate '%s'."), fn.GetFullPath().c_str()));
-                        if (fn.FileExists())
-                            return fn.GetFullPath();
-                    }
-                }
-                break;
-            }
-        }
-    }
-    // If source file provided, return header (if found)
-    else if (ft == ftSource)
-    {
-        for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
-        {
-            if ( fg->GetGroupName(i) == _("Headers") )
-            {
-                wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
-                while ( tkz.HasMoreTokens() )
-                {
-                    wxString token = tkz.GetNextToken();
-                    wxString ext;
-                    if ( token.StartsWith( _("*."), &ext ) )
-                    {
-                        wxFileName fn(fname);
-                        fn.SetExt(ext);
-//                        Manager::Get()->GetLogManager()->DebugLog(F(_T("Trying to locate '%s'."), fn.GetFullPath().c_str()));
-                        if (fn.FileExists())
-                            return fn.GetFullPath();
-                    }
-                }
-                break;
-            }
-        }
-    }
-
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("Cannot locate opposite of '%s'."), fname.GetFullPath().c_str()));
-    return wxEmptyString;
-}
-
 wxString ProjectManager::GetDefaultPath()
 {
     wxString path = Manager::Get()->GetConfigManager(_T("project_manager"))->Read(_T("default_path"), wxEmptyString);

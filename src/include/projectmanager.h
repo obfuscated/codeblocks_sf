@@ -65,11 +65,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         static void CreateMenu(wxMenuBar* menuBar);
         /// Application menu removal. Called by the application only.
         void ReleaseMenu(wxMenuBar* menuBar);
-        /** Try to locate the header for a given source file and vice versa
-          * @param fname The file to locate
-          * @return The path to the file in question; wxEmptyString if not found
-          */
-        wxString GetHeaderSource(const wxFileName &fname);
         /** Retrieve the default path for new projects.
           * @return The default path for new projects. Contains trailing path separator.
           * @note This might be empty if not configured before...

@@ -170,6 +170,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int FindInFiles(cbFindReplaceData* data);
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int ReplaceInFiles(cbFindReplaceData* data);
+        bool IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive);
+        wxFileName FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate);
 
         wxAuiNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
