@@ -36,8 +36,8 @@
 #include "filegroupsandmasks.h"
 
 #ifndef __WXMSW__
-	#include <unistd.h> // readlink
-	#include <sys/stat.h> // lstat
+    #include <unistd.h> // readlink
+    #include <sys/stat.h> // lstat
 #endif
 
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
@@ -55,54 +55,54 @@ const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
 
 int GetPlatformsFromString(const wxString& platforms)
 {
-	bool pW = platforms.Contains(_("Windows"));
-	bool pU = platforms.Contains(_("Unix"));
-	bool pM = platforms.Contains(_("Mac"));
-	bool pA = platforms.Contains(_("All"));
+    bool pW = platforms.Contains(_("Windows"));
+    bool pU = platforms.Contains(_("Unix"));
+    bool pM = platforms.Contains(_("Mac"));
+    bool pA = platforms.Contains(_("All"));
 
-	if (pA || (pW && pU && pM))
-		return spAll;
+    if (pA || (pW && pU && pM))
+        return spAll;
 
-	int p = 0;
-	if (pW)
-		p |= spWindows;
-	if (pU)
-		p |= spUnix;
-	if (pM)
-		p |= spMac;
-	return p;
+    int p = 0;
+    if (pW)
+        p |= spWindows;
+    if (pU)
+        p |= spUnix;
+    if (pM)
+        p |= spMac;
+    return p;
 }
 
 wxString GetStringFromPlatforms(int platforms, bool forceSeparate)
 {
-	wxString ret;
+    wxString ret;
 
-	if (!forceSeparate)
-	{
-		int tmpAll = spWindows | spUnix | spMac;
-		if (((platforms & tmpAll) == tmpAll) || ((platforms & spAll) == spAll))
-			return _("All");
-	}
+    if (!forceSeparate)
+    {
+        int tmpAll = spWindows | spUnix | spMac;
+        if (((platforms & tmpAll) == tmpAll) || ((platforms & spAll) == spAll))
+            return _("All");
+    }
 
-	if (platforms & spWindows)
-		ret << _("Windows;");
-	if (platforms & spUnix)
-		ret << _("Unix;");
-	if (platforms & spMac)
-		ret << _("Mac;");
-	return ret;
+    if (platforms & spWindows)
+        ret << _("Windows;");
+    if (platforms & spUnix)
+        ret << _("Unix;");
+    if (platforms & spMac)
+        ret << _("Mac;");
+    return ret;
 }
 
 /*
-	Killerbot : 6 Oktober 2007
-	The method has been extended with a bool to specify if the seperator should be appended at the end.
-	Ultimate goal : every client gives as a value : false.
-	Why : well a seperator should separate, there's nothing to separate at the end (like nothing to separate
-	at the begining, we don't put one there ...), but some client code is having problems when the separator is
-	not present at the end. So for compatibility issues we have as default value for the new argument true, so the
-	old code has the same behaviour as before [TODO: make those clients no longer dependent on this stupid final separator behaviour]
-	New code will specify false as the bool value, so hoping rather soon a search on this method will have all hits showing
-	false as the last argument ....
+    Killerbot : 6 Oktober 2007
+    The method has been extended with a bool to specify if the seperator should be appended at the end.
+    Ultimate goal : every client gives as a value : false.
+    Why : well a seperator should separate, there's nothing to separate at the end (like nothing to separate
+    at the begining, we don't put one there ...), but some client code is having problems when the separator is
+    not present at the end. So for compatibility issues we have as default value for the new argument true, so the
+    old code has the same behaviour as before [TODO: make those clients no longer dependent on this stupid final separator behaviour]
+    New code will specify false as the bool value, so hoping rather soon a search on this method will have all hits showing
+    false as the last argument ....
 */
 
 wxString GetStringFromArray(const wxArrayString& array, const wxString& separator, bool SeparatorAtEnd)
@@ -188,22 +188,22 @@ wxString UnixFilename(const wxString& filename)
 
 void QuoteStringIfNeeded(wxString& str)
 {
-	bool hasSpace = str.Find(_T(' ')) != -1;
-	bool hasParen = !platform::windows && (str.Find(_T('(')) != -1 || str.Find(_T(')')) != -1);
+    bool hasSpace = str.Find(_T(' ')) != -1;
+    bool hasParen = !platform::windows && (str.Find(_T('(')) != -1 || str.Find(_T(')')) != -1);
     if (!str.IsEmpty() && str.GetChar(0) != _T('"') && (hasSpace || hasParen))
         str = wxString(_T("\"")) + str + _T("\"");
 }
 
 wxString EscapeSpaces(const wxString& str)
 {
-	wxString ret = str;
-	if (!ret.IsEmpty() && ret[0] != _T('"') && ret[0] != _T('\''))
-	{
-		// TODO: make it faster
-		ret.Replace(_T(" "), _T("\\ "));
-		ret.Replace(_T("\t"), _T("\\\t"));
-	}
-	return ret;
+    wxString ret = str;
+    if (!ret.IsEmpty() && ret[0] != _T('"') && ret[0] != _T('\''))
+    {
+        // TODO: make it faster
+        ret.Replace(_T(" "), _T("\\ "));
+        ret.Replace(_T("\t"), _T("\\\t"));
+    }
+    return ret;
 }
 
 FileType FileTypeOf(const wxString& filename)
@@ -498,8 +498,8 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
     file.Close();
     buff[len]='\0';
 
-	DetectEncodingAndConvert(buff, st, encoding);
-	delete [] buff;
+    DetectEncodingAndConvert(buff, st, encoding);
+    delete [] buff;
 
     return true;
 } // end of cbRead
@@ -563,8 +563,8 @@ const wxWX2MBbuf cbU2C(const wxString& str)
 // utf8, system, default and iso8859-1 to iso8859-15
 wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxFontEncoding possibleEncoding)
 {
-	wxFontEncoding encoding = possibleEncoding;
-	strOut.Clear();
+    wxFontEncoding encoding = possibleEncoding;
+    strOut.Clear();
 
     if(platform::unicode)
     {
@@ -616,7 +616,7 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
     {
         strOut = (const wxChar*) strIn;
     }
-	return encoding;
+    return encoding;
 }
 
 wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so
@@ -665,6 +665,64 @@ bool NormalizePath(wxFileName& f,const wxString& base)
     return result;
 }
 
+// Checks whether 'suffix' could be a suffix of 'path' and therefore represents 
+// the same path. This is used to check whether a relative path could represent
+// the same path as absolute path. For instance, for 
+// suffix = sdk/globals.cpp
+// path = /home/user/codeblocks/trunk/src/sdk/globals.cpp
+// it returns true. The function expects that 'path' is normalized and compares
+// 'path' with 'suffix' starting from the end of the path. When it reaches .. in 
+// 'suffix' it gives up (there is no way to check relative filename names 
+// exactly) and if the path compared so far is identical, it returns true
+bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
+{
+    if (path.GetFullName() != suffix.GetFullName())
+    {
+        return false;
+    }
+
+    wxArrayString suffixDirArray = suffix.GetDirs();
+    wxArrayString pathDirArray = path.GetDirs();
+
+    int j = pathDirArray.GetCount() - 1;
+    for (int i = suffixDirArray.GetCount() - 1; i >= 0; i--)
+    {
+        if (suffixDirArray[i] == _T(".") || suffixDirArray[i] == _T(""))
+        {
+            // skip paths like /./././ and ////
+            continue;
+        }
+
+        if (j < 0)
+        {
+            // suffix has more directories than path - cannot represent the same path
+            return false;
+        }
+
+        if (suffixDirArray[i] == _T(".."))
+        {
+            // suffix contains ".." - from now on we cannot precisely determine 
+            // whether suffix and path match - we assume that they do
+            return true;
+        }
+        else if (suffixDirArray[i] != pathDirArray[j])
+        {
+            // the corresponding directories of the two paths differ
+            return false;
+        }
+
+        j--;
+    }
+
+    if (suffix.IsAbsolute() && (j >= 0 || suffix.GetVolume() != path.GetVolume()))
+    {
+        return false;
+    }
+
+    // 'suffix' is a suffix of 'path'
+    return true;
+}
+
 // function to check the common controls version
 // (should it be moved in sdk globals?)
 #ifdef __WXMSW__
@@ -705,8 +763,8 @@ bool UsesCommonControls6()
 #else
 bool UsesCommonControls6()
 {
-	// for non-windows platforms, return true
-	// as this is only used for knowing if bitmaps support transparency or not
+    // for non-windows platforms, return true
+    // as this is only used for knowing if bitmaps support transparency or not
     return true;
 }
 #endif
@@ -1012,46 +1070,46 @@ namespace platform
 wxString realpath(const wxString& path)
 {
 #ifdef __WXMSW__
-	// no symlinks support on windows
-	return path;
+    // no symlinks support on windows
+    return path;
 #else
-	char buf[2048] = {};
-	struct stat buffer;
-	std::string ret = (const char*)cbU2C(path);
-	size_t lastPos = 0;
-	size_t slashPos = ret.find('/', lastPos);
-	while (slashPos != std::string::npos)
-	{
-		if (lstat(ret.substr(0, slashPos).c_str(), &buffer) == 0)
-		{
-			if (S_ISLNK(buffer.st_mode))
-			{
-				int s = readlink(ret.substr(0, slashPos).c_str(), buf, sizeof(buf));
-				buf[s] = 0;
-				if (s > 0 && buf[0] != '/' && buf[0] != '~')
-				{
-					// relative
-					ret = ret.substr(0, lastPos) + buf + ret.substr(slashPos, ret.size() - slashPos);
-				}
-				else
-				{
-					// absolute
-					ret = buf + ret.substr(slashPos, ret.size() - slashPos);
+    char buf[2048] = {};
+    struct stat buffer;
+    std::string ret = (const char*)cbU2C(path);
+    size_t lastPos = 0;
+    size_t slashPos = ret.find('/', lastPos);
+    while (slashPos != std::string::npos)
+    {
+        if (lstat(ret.substr(0, slashPos).c_str(), &buffer) == 0)
+        {
+            if (S_ISLNK(buffer.st_mode))
+            {
+                int s = readlink(ret.substr(0, slashPos).c_str(), buf, sizeof(buf));
+                buf[s] = 0;
+                if (s > 0 && buf[0] != '/' && buf[0] != '~')
+                {
+                    // relative
+                    ret = ret.substr(0, lastPos) + buf + ret.substr(slashPos, ret.size() - slashPos);
+                }
+                else
+                {
+                    // absolute
+                    ret = buf + ret.substr(slashPos, ret.size() - slashPos);
 
-					// start again at the beginning in case the path returned also
-					// has symlinks. For example if using /etc/alternatives this will
-					// be the case
-					s = 0;
-				}
-				slashPos = s;
-			}
-		}
+                    // start again at the beginning in case the path returned also
+                    // has symlinks. For example if using /etc/alternatives this will
+                    // be the case
+                    s = 0;
+                }
+                slashPos = s;
+            }
+        }
 
-		while (ret[++slashPos] == '/')
-			;
-		lastPos = slashPos;
-		slashPos = ret.find('/', slashPos);
-	}
-	return cbC2U(ret.c_str());
+        while (ret[++slashPos] == '/')
+            ;
+        lastPos = slashPos;
+        slashPos = ret.find('/', slashPos);
+    }
+    return cbC2U(ret.c_str());
 #endif
 }

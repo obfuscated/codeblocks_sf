@@ -184,6 +184,7 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
                                           bool showCreateDirButton = false); // where supported
 
 extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
+extern DLLIMPORT bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path);
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 

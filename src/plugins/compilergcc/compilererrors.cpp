@@ -162,11 +162,51 @@ void CompilerErrors::DoGotoError(const CompileError& error)
 		}
 	}
 
-	// if we reached here and ed is NULL, either the error file doesn't belong to a project,
-	// or can't be found for any other reason.
-	// check if we can open it directly...
+	// if we reached here and ed is NULL, the filename in the output isn't relative
+    // to the project root directory or doesn't belong to the project
+
+	// first check if we can open it directly...
     if (!ed)
         ed = Manager::Get()->GetEditorManager()->Open(error.filename);
+
+    // check if we find the file among opened files (highly probable for error
+    // messages since we are getting error for something we have just screwed up)
+    if (!ed)
+    {
+        for (int i = 0; i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
+        {
+            cbEditor* edit = Manager::Get()->GetEditorManager()->GetBuiltinEditor(i);
+            if (!edit)
+                continue;
+
+            ProjectFile* pf = edit->GetProjectFile();
+            if (!pf)
+                continue;
+
+            if (IsSuffixOfPath(error.filename, pf->file.GetFullPath()))
+            {
+			    ed = Manager::Get()->GetEditorManager()->Open(pf->file.GetFullPath());
+			    break;
+            }
+        }
+    }
+
+    // finally go through the project files and try to find the file there
+    if (!ed && project)
+    {
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
+            if (!pf)
+                continue;
+
+            if (IsSuffixOfPath(error.filename, pf->file.GetFullPath()))
+            {
+			    ed = Manager::Get()->GetEditorManager()->Open(pf->file.GetFullPath());
+			    break;
+            }
+        }
+    }
 
     if (ed)
     {
