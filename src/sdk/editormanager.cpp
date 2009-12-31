@@ -991,7 +991,8 @@ wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesAr
 
         if (IsHeaderSource(currentCandidateFile, activeFile, ftActive))
         {
-            if (wxIsupper(currentCandidateFile.GetExt()[0]) == extStartsWithCapital)
+            bool isUpper = wxIsupper(currentCandidateFile.GetExt()[0]);
+            if (isUpper == extStartsWithCapital)
             {
                 // we definitely found the header/source we were searching for
                 isCandidate = false;
