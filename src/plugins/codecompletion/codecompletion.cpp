@@ -175,7 +175,7 @@ CodeCompletion::CodeCompletion() :
     m_LastFile(wxEmptyString),
     m_NeedReparse(false)
 {
-    if(!Manager::LoadResource(_T("codecompletion.zip")))
+    if (!Manager::LoadResource(_T("codecompletion.zip")))
     {
         NotifyMissingFile(_T("codecompletion.zip"));
     }
@@ -307,7 +307,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
 bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
 {
     bool ReturnValue = false;
-    if(cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
+    if (cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
     {
         cbStyledTextCtrl* control = ed->GetControl();
         const int pos = control->GetCurrentPos();
@@ -350,9 +350,9 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
     {
         wxString NameUnderCursor;
         bool IsInclude = false;
-        if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+        if (EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
         {
-            if(IsInclude)
+            if (IsInclude)
             {
                 wxString msg;
                 msg.Printf(_("Open #include file: '%s'"), NameUnderCursor.c_str());
@@ -701,15 +701,15 @@ int CodeCompletion::CodeComplete()
 bool TestIncludeLine(wxString const &line)
 {
     size_t index = line.find(_T('#'));
-    if(index == wxString::npos)
+    if (index == wxString::npos)
         return false;
     ++index;
 
     for(; index < line.length(); ++index)
     {
-        if(line[index] != _T(' ') && line[index] != _T('\t'))
+        if (line[index] != _T(' ') && line[index] != _T('\t'))
         {
-            if(line.Mid(index, 7) == _T("include"))
+            if (line.Mid(index, 7) == _T("include"))
                 return true;
             break;
         }
@@ -730,14 +730,14 @@ wxArrayString GetIncludeDirs(cbProject &project)
 
             wxString fullname = filename.GetFullPath();
             fullname.Replace(_T("\\"), _T("/"), true);
-            if(dirs.Index(fullname) == wxNOT_FOUND)
+            if (dirs.Index(fullname) == wxNOT_FOUND)
                 dirs.Add(fullname);
         }
     }
 
     wxString target_name = project.GetActiveBuildTarget();
     ProjectBuildTarget *target = project.GetBuildTarget(target_name);
-    if(target)
+    if (target)
     {
         wxArrayString target_dirs = target->GetIncludeDirs();
         for(size_t ii = 0; ii < target_dirs.GetCount(); ++ii)
@@ -747,7 +747,7 @@ wxArrayString GetIncludeDirs(cbProject &project)
 
             wxString fullname = filename.GetFullPath();
             fullname.Replace(_T("\\"), _T("/"), true);
-            if(dirs.Index(fullname) == wxNOT_FOUND)
+            if (dirs.Index(fullname) == wxNOT_FOUND)
                 dirs.Add(fullname);
         }
     }
@@ -786,9 +786,9 @@ void CodeCompletion::CodeCompleteIncludes()
         return;
 
     size_t quote_pos = line.find(_T('"'));
-    if(quote_pos == wxString::npos)
+    if (quote_pos == wxString::npos)
         quote_pos = line.find(_T('<'));
-    if(quote_pos == wxString::npos || quote_pos > static_cast<size_t>(pos - lineStartPos))
+    if (quote_pos == wxString::npos || quote_pos > static_cast<size_t>(pos - lineStartPos))
         return;
     ++quote_pos;
 
@@ -807,15 +807,15 @@ void CodeCompletion::CodeCompleteIncludes()
         {
             wxString current_filename = pf->relativeFilename;
             current_filename.Replace(_T("\\"), _T("/"), true);
-            if(current_filename.find(filename) != wxString::npos)
+            if (current_filename.find(filename) != wxString::npos)
             {
-                if(include_dirs.GetCount() > 0)
+                if (include_dirs.GetCount() > 0)
                 {
                     bool found = false;
                     for(size_t dir_index = 0; dir_index < include_dirs.GetCount(); ++dir_index)
                     {
                         wxString const &dir = include_dirs[dir_index];
-                        if(current_filename.StartsWith(dir))
+                        if (current_filename.StartsWith(dir))
                         {
                             files.Add(current_filename.substr(dir.length()));
                             found = true;
@@ -823,7 +823,7 @@ void CodeCompletion::CodeCompleteIncludes()
                         }
                     }
 
-                    if(!found)
+                    if (!found)
                         files.Add(current_filename);
                 }
                 else
@@ -1046,7 +1046,7 @@ int CodeCompletion::DoAllMethodsImpl()
             str << ed->GetLineIndentString(line - 1);
             str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
             str << token->m_Type << _T(" ") << token->GetParentName() << _T("::") << token->m_Name << token->m_Args;
-            if(token->m_IsConst)
+            if (token->m_IsConst)
             {
                 str << _T(" const");
             }
@@ -1160,7 +1160,7 @@ void CodeCompletion::ParseActiveProjects()
     for (unsigned int i = 0; i < prjMan->GetProjects()->GetCount(); ++i)
     {
         cbProject* curproject = prjMan->GetProjects()->Item(i);
-        if(m_ParsedProjects.find(curproject)==m_ParsedProjects.end())
+        if (m_ParsedProjects.find(curproject)==m_ParsedProjects.end())
         {
             m_ParsedProjects.insert(curproject);
             m_NativeParser.AddParser(curproject);
@@ -1279,7 +1279,7 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
 // compare method for the sort algorithm for our FunctionScope struct
 bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompletion::FunctionScope& fs2)
 {
-    if(fs1.Name == fs2.Name)
+    if (fs1.Name == fs2.Name)
     {
         return fs1.StartLine < fs2.StartLine;
     }
@@ -1386,7 +1386,7 @@ void CodeCompletion::GotoFunctionPrevNext(bool next /* = false */)
 void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 {
     EditorManager* edMan = Manager::Get()->GetEditorManager();
-    if(!edMan) // Closing the app?
+    if (!edMan) // Closing the app?
         return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
     if(!ed)
@@ -1398,12 +1398,12 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         return;
     }
     wxString filename = ed->GetFilename();
-    if(filename.IsEmpty())
+    if (filename.IsEmpty())
         return;
     FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
 
     // *** Part 1: Parse the file (if needed) ***
-    if(force || !funcdata->parsed)
+    if (force || !funcdata->parsed)
     {
         m_TimerFunctionsParsing.Stop();
         funcdata->m_FunctionsScope.clear();
@@ -1432,17 +1432,13 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
                 func.Name = result;
                 funcdata->m_FunctionsScope.push_back(func);
             }
-            else if(token && token->m_TokenKind == tkNamespace)
+            else if (token && token->m_TokenKind == tkNamespace)
             {
                 NameSpace Ns;
                 Ns.StartLine = token->m_ImplLine - 1;
                 Ns.EndLine = token->m_ImplLineEnd - 1;
                 Ns.Name = token->m_Name;
                 funcdata->m_NameSpaces.push_back(Ns);
-    //        Manager::Get()->GetLogManager()->DebugLog(_T("namespace ") + token->m_Name);
-    //       wxString Log;
-    //        Log.Printf(_("start %d and end %d"), token->m_ImplLine, token->m_ImplLineEnd);
-    //        Manager::Get()->GetLogManager()->DebugLog(Log);
             }
         }
         // sort the vector
@@ -1455,7 +1451,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     m_NameSpaces = funcdata->m_NameSpaces;
 
     // Does the toolbar need a refresh?
-    if(m_ToolbarChanged || m_LastFile!=filename)
+    if (m_ToolbarChanged || m_LastFile!=filename)
     {
 
         // Update the last editor and changed flag...
@@ -1484,7 +1480,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     // Finally, find the current function and update
     m_CurrentLine = ed->GetControl()->GetCurrentLine();
     int sel = FunctionPosition();
-    if(sel != -1)
+    if (sel != -1)
     {
         m_Function->SetSelection(sel);
         m_Scope->SetSelection(sel);
@@ -1494,7 +1490,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         m_Function->SetSelection(wxNOT_FOUND);
         // TO DO : set scope correctly
         int NsSel = NameSpacePosition();
-        if(NsSel != -1)
+        if (NsSel != -1)
         {
             m_Scope->SetSelection(NsSel + m_StartIdxNameSpaceInScope);
         }
@@ -1507,10 +1503,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
 
 void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 {
-    if(!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)
+    if (!Manager::IsAppShuttingDown() && IsAttached() && m_InitDone)
     {
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
-        if(ed)
+        if (ed)
         {
             wxString filename = ed->GetFilename();
             // wxString s_tmplog = _T("CC: OnEditorOpen... Filename: ");
@@ -1519,7 +1515,7 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
             FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[filename]);
             funcdata->parsed = false;
         }
-        if(!ProjectManager::IsBusy())
+        if (!ProjectManager::IsBusy())
             m_TimerFunctionsParsing.Start(50, wxTIMER_ONE_SHOT);
     }
     event.Skip();
@@ -1543,13 +1539,13 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 
     // we need to clear CC toolbar only when we are closing last editor
     // in other situations OnEditorActivated does this job
-    if(edm->GetEditorsCount() == 1)
+    if (edm->GetEditorsCount() == 1)
     {
         // clear toolbar when closing last editor
         m_Function->Clear();
         cbEditor* ed = edm->GetBuiltinEditor(event.GetEditor());
         wxString filename(wxEmptyString);
-        if(ed)
+        if (ed)
             filename = ed->GetFilename();
 
         m_AllFunctionsScopes[filename].m_FunctionsScope.clear();
@@ -1562,7 +1558,7 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 
 void CodeCompletion::OnStartParsingFunctions(wxTimerEvent& event)
 {
-    if(!ProjectManager::IsBusy())
+    if (!ProjectManager::IsBusy())
     {
         ParseFunctionsAndFillToolbar();
     }
@@ -1720,7 +1716,7 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
     {
         wxString sel = dlg.GetStringSelection();
         Token* token = tmpsearch.GetItem(sel);
-        if(token)
+        if (token)
         {
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Token found at line %d"), token->m_Line));
             ed->GotoLine(token->m_Line - 1);
@@ -1757,14 +1753,14 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     bool MoveOn = false;
     wxString NameUnderCursor;
     bool IsInclude = false;
-    if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+    if (EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
     {
-        if(!IsInclude)
+        if (!IsInclude)
         {   // alright move on
             MoveOn = true;
         }
     }
-    if(!MoveOn)
+    if (!MoveOn)
     {
         return;
     }
@@ -1837,7 +1833,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // do we have a token?
     if (token)
     {
-        if(isImpl)
+        if (isImpl)
         {
             if (cbEditor* ed = edMan->Open(token->GetImplFilename()))
             {
@@ -1878,14 +1874,14 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     bool MoveOn = false;
     wxString NameUnderCursor;
     bool IsInclude = false;
-    if(EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
+    if (EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
     {
-        if(IsInclude)
+        if (IsInclude)
         {
             MoveOn = true;
         }
     }
-    if(!MoveOn)
+    if (!MoveOn)
     { // nothing under cursor or thing under cursor is not an include
         return;
     }
@@ -1896,45 +1892,78 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
         parser = m_NativeParser.FindParserFromActiveProject(); // get parser of active project, then
     }
 
+    wxArrayString foundSet;
     if (parser)
     {
         // search in all parser's include dirs
-        wxString tmp;
-        wxArrayString FoundSet = parser->FindFileInIncludeDirs(NameUnderCursor);
-        if(FoundSet.GetCount() > static_cast<size_t>(1))
-        {    // more then 1 hit : let the user choose
-            SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
-            Dialog.AddListEntries(FoundSet);
-            PlaceWindow(&Dialog);
-            if(Dialog.ShowModal() == wxID_OK)
-            {
-              tmp = Dialog.GetIncludeFile();
-            }
-            else
-            {
-                return; // user cancelled the dialog...
-            }
-        }
-        else if(FoundSet.GetCount())
-        {
-            tmp = FoundSet[0];
-        }
-
-        if (!tmp.IsEmpty())
-        {
-            EditorManager* edMan = Manager::Get()->GetEditorManager();
-            edMan->Open(tmp);
-            return;
-        }
+        foundSet = parser->FindFileInIncludeDirs(NameUnderCursor);
     }
 
     // look in the same dir as the source file
     wxFileName fname = NameUnderCursor;
-    fname.Assign(wxFileName(LastIncludeFileFrom).GetPath(wxPATH_GET_SEPARATOR) + NameUnderCursor);
-    if (wxFileExists(fname.GetFullPath()))
+    NormalizePath(fname, LastIncludeFileFrom);
+    if (wxFileExists(fname.GetFullPath()) )
+    {
+        foundSet.Add(fname.GetFullPath());
+    }
+
+    // search for the file in project files
+	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+	if (project)
+	{
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+        {
+            ProjectFile* pf = project->GetFile(i);
+            if (!pf)
+                continue;
+
+            if (IsSuffixOfPath(NameUnderCursor, pf->file.GetFullPath()))
+            {
+                foundSet.Add(pf->file.GetFullPath());
+            }
+        }
+	}
+
+    // Remove duplicates
+    for (int i = 0; i < foundSet.Count() - 1; i++)
+    {
+        for (int j = i + 1; j < foundSet.Count(); )
+        {
+            if (foundSet.Item(i) == foundSet.Item(j))
+            {
+                foundSet.RemoveAt(j);
+            }
+            else
+            {
+                j++;
+            }
+        }
+    }
+
+    wxString selectedFile;
+    if (foundSet.GetCount() > 1)
+    {    // more than 1 hit : let the user choose
+        SelectIncludeFile Dialog(Manager::Get()->GetAppWindow());
+        Dialog.AddListEntries(foundSet);
+        PlaceWindow(&Dialog);
+        if(Dialog.ShowModal() == wxID_OK)
+        {
+            selectedFile = Dialog.GetIncludeFile();
+        }
+        else
+        {
+            return; // user cancelled the dialog...
+        }
+    }
+    else if (foundSet.GetCount() == 1)
+    {
+        selectedFile = foundSet[0];
+    }
+
+    if (!selectedFile.IsEmpty())
     {
         EditorManager* edMan = Manager::Get()->GetEditorManager();
-        edMan->Open(fname.GetFullPath());
+        edMan->Open(selectedFile);
         return;
     }
 
@@ -2070,12 +2099,12 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
         }
     }
-    if ((event.GetModificationType() & wxSCI_MOD_INSERTTEXT) ||
-        (event.GetModificationType() & wxSCI_MOD_DELETETEXT))
+    if (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
+	    || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) )
     {
         m_NeedReparse = true;
     }
-    if( control->GetCurrentLine() != m_CurrentLine)
+    if (control->GetCurrentLine() != m_CurrentLine)
     {
         m_CurrentLine = control->GetCurrentLine();
         int sel = FunctionPosition();
@@ -2117,7 +2146,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 {
     int sel = m_Function->GetSelection();
-    if(sel != -1 && sel < static_cast<int>(m_FunctionsScope.size()))
+    if (sel != -1 && sel < static_cast<int>(m_FunctionsScope.size()))
     {
         int Line = m_FunctionsScope[sel].StartLine;
         EditorManager* edMan = Manager::Get()->GetEditorManager();
