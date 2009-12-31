@@ -173,9 +173,9 @@ void EditorLexerLoader::DoSingleKeywordNode(HighlightLanguage language, TiXmlEle
     //    LOGSTREAM << "keyidx=" << keyidx << '\n';
         if (keyidx != -1)
         {
-            // the lexer file contains keywords indented - remove the extra spacing and EOLs 
+            // the lexer file contains keywords indented - remove the extra spacing and EOLs
             wxRegEx regex(_T("[[:space:]]+"));
-            wxString value = wxString(keywords->Attribute("value"), wxConvUTF8);
+            wxString value(keywords->Attribute("value"), wxConvUTF8);
             regex.Replace(&value, _T(" "));
 
             m_pTarget->SetKeywords(language, keyidx, wxString ( value, wxConvUTF8 ) );
