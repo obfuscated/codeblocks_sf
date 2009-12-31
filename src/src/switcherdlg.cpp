@@ -9,13 +9,13 @@
 // Licence:     wxWidgets licence
 /////////////////////////////////////////////////////////////////////////////
 
-#include "wx/wx.h"
+#include <wx/wx.h>
 
-#include "wx/settings.h"
-#include "wx/dcbuffer.h"
+#include <wx/settings.h>
+#include <wx/dcbuffer.h>
 
 #if defined(__WXMSW__) && wxUSE_UXTHEME
-#include "wx/msw/uxtheme.h"
+#include <wx/msw/uxtheme.h>
 #endif
 
 #include "switcherdlg.h"
@@ -24,7 +24,7 @@
 #define wxSWITCHER_TEXT_MARGIN_Y  2
 #define wxSWITCHER_USE_BUFFERED_PAINTING 1
 
-#include "wx/arrimpl.cpp"
+#include <wx/arrimpl.cpp>
 
 WX_DEFINE_OBJARRAY(wxSwitcherItemArray);
 
@@ -484,16 +484,49 @@ void wxMultiColumnListCtrl::OnPaint(wxPaintEvent& WXUNUSED(event))
 
 void wxMultiColumnListCtrl::OnMouseEvent(wxMouseEvent& event)
 {
-    if (event.LeftDown())
+    if (event.GetEventType() == wxEVT_MOUSEWHEEL)
     {
-        SetFocus();
+        int dir = event.GetWheelRotation();
 
+        if (dir > 0)
+        {
+            m_items.SetSelection(m_items.GetSelection() - 1);
+            if (m_items.GetSelection() < 0)
+                m_items.SetSelection(m_items.GetItemCount() - 1);
+
+            AdvanceToNextSelectableItem(-1);
+        }
+        else if (dir < 0)
+        {
+            m_items.SetSelection(m_items.GetSelection() + 1);
+            if (m_items.GetSelection() >= m_items.GetItemCount())
+                m_items.SetSelection(0);
+
+            AdvanceToNextSelectableItem(1);
+        }
+
+        GenerateSelectionEvent();
+
+        Refresh();
+    }
+    else
+    {
         int idx = m_items.HitTest(event.GetPosition());
+
         if (idx != wxNOT_FOUND)
         {
             m_items.SetSelection(idx);
 
+            GenerateSelectionEvent();
+
+            Refresh();
+        }
+
+        if (event.LeftDown())
+        {
             SendCloseEvent();
+
+            SetFocus();
         }
     }
 }
