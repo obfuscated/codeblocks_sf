@@ -365,8 +365,11 @@ int EditorManager::GetEditorsCount()
 
 EditorBase* EditorManager::InternalGetEditorBase(int page)
 {
-    EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(page));
-    return eb;
+    if (page < m_pNotebook->GetPageCount())
+    {
+        return static_cast<EditorBase*>(m_pNotebook->GetPage(page));
+    }
+    return 0;
 }
 
 cbEditor* EditorManager::InternalGetBuiltinEditor(int page)
@@ -518,7 +521,11 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
 
 EditorBase* EditorManager::GetActiveEditor()
 {
-    return InternalGetEditorBase(m_pNotebook->GetSelection());
+    if (m_pNotebook->GetPageCount() > 0)
+    {
+        return InternalGetEditorBase(m_pNotebook->GetSelection());
+    }
+    return 0;
 }
 
 void EditorManager::ActivateNext()
