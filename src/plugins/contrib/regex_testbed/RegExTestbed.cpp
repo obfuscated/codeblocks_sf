@@ -38,6 +38,7 @@ RegExTestbed::RegExTestbed()
 // destructor
 RegExTestbed::~RegExTestbed()
 {
+    RegExDlg::ReleaseAll();
 }
 
 void RegExTestbed::OnAttach()
@@ -57,15 +58,16 @@ void RegExTestbed::OnRelease(bool appShutDown)
 	// which means you must not use any of the SDK Managers
 	// NOTE: after this function, the inherited member variable
 	// m_IsAttached will be FALSE...
+	RegExDlg::ReleaseAll();
 }
 
 int RegExTestbed::Execute()
 {
     try
     {
-        RegExDlg dlg(0, -1);
-        PlaceWindow(&dlg);
-        dlg.ShowModal();
+        RegExDlg *dlg = new RegExDlg(0, -1);
+        PlaceWindow(dlg);
+        dlg->Show();
     }
     catch (...)
     {

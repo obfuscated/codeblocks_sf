@@ -37,6 +37,8 @@ BEGIN_EVENT_TABLE(RegExDlg,wxDialog)
 	EVT_UPDATE_UI(-1, RegExDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
+RegExDlg::VisibleDialogs RegExDlg::m_visible_dialogs;
+
 RegExDlg::RegExDlg(wxWindow* parent,wxWindowID id)
 {
     //(*Initialize(regex_dialog)
@@ -48,6 +50,8 @@ RegExDlg::RegExDlg(wxWindow* parent,wxWindowID id)
     m_newlines = (wxCheckBox*)FindWindow(XRCID("ID_NEWLINES"));
     m_text = (wxTextCtrl*)FindWindow(XRCID("ID_TEXT"));
     m_output = (wxHtmlWindow*)FindWindow(XRCID("ID_OUT"));
+
+    Connect(wxID_ANY,wxEVT_CLOSE_WINDOW,(wxObjectEventFunction)&RegExDlg::OnClose);
     //*)
 
     assert(m_regex);
@@ -58,15 +62,48 @@ RegExDlg::RegExDlg(wxWindow* parent,wxWindowID id)
     assert(m_text);
     assert(m_output);
 
+    m_text->MoveAfterInTabOrder(m_quoted);
+
     m_library->SetSelection(0);
     m_output->SetBorders(0);
     m_quoted->SetEditable(false);
+
+    m_visible_dialogs.insert(this);
 }
 
 RegExDlg::~RegExDlg()
 {
 }
 
+void RegExDlg::OnClose(wxCloseEvent& event)
+{
+    VisibleDialogs::iterator it = m_visible_dialogs.find(this);
+    if(it != m_visible_dialogs.end())
+    {
+        delete *it;
+        m_visible_dialogs.erase(it);
+    }
+}
+
+
+void RegExDlg::ReleaseAll()
+{
+    for(VisibleDialogs::iterator it = m_visible_dialogs.begin(); it != m_visible_dialogs.end(); ++it)
+        delete *it;
+    m_visible_dialogs.clear();
+}
+
+/**
+    @brief Makes the input string to be valid html string (replaces <,>,&," with &lt;,&gt;,&amp;,&quot; respectively)
+    @param [inout] s - string that will be escaped
+*/
+void cbEscapeHtml(wxString &s)
+{
+    s.Replace(wxT("&"), wxT("&amp;"));
+    s.Replace(wxT("<"), wxT("&lt;"));
+    s.Replace(wxT(">"), wxT("&gt;"));
+    s.Replace(wxT("\""), wxT("&quot;"));
+}
 
 void RegExDlg::OnUpdateUI(wxUpdateUIEvent& event)
 {
@@ -118,6 +155,7 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& event)
 
     for(size_t i = 0; i < as.GetCount(); ++i)
     {
+        cbEscapeHtml(as[i]);
         tmp.Printf(_T("<tr><td width=35><b>%d</b></td><td>%s</td></tr>"), i, as[i].c_str());
         s.append(tmp);
     }
