@@ -960,18 +960,20 @@ void EditorManager::CheckForExternallyModifiedFiles()
     m_isCheckingForExternallyModifiedFiles = false;
 }
 
-bool EditorManager::IsHeaderSource(const wxFileName& testedFileName, const wxFileName& activeFileName, FileType ftActive)
+bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive)
 {
-    if (testedFileName.GetName() == activeFileName.GetName())
+    // Verify the base name mathes
+    if (candidateFile.GetName() == activeFile.GetName())
     {
-        FileType ftTested = FileTypeOf(testedFileName.GetFullName());
+        // Verify:
+        // If looking for a header we have a source OR
+        // If looking for a source we have a header
+        FileType ftTested = FileTypeOf(candidateFile.GetFullName());
         if (    ((ftActive == ftHeader) && (ftTested == ftSource))
              || ((ftActive == ftSource) && (ftTested == ftHeader)) )
         {
-            if (testedFileName.FileExists())
-            {
+            if (candidateFile.FileExists())
                 return true;
-            }
         }
     }
     return false;
