@@ -179,13 +179,21 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
     || href.StartsWith(_T("http://developer.berlios.de/bugs/")))
     {
         wxTextDataObject *data = new wxTextDataObject(revInfo);
-        wxTheClipboard->SetData(data);
+        if (wxTheClipboard->Open())
+        {
+            wxTheClipboard->SetData(data);
+            wxTheClipboard->Close();
+        }
     }
 
     if(href.IsSameAs(_T("rev")))
     {
         wxTextDataObject *data = new wxTextDataObject(revInfo);
-        wxTheClipboard->SetData(data);
+        if (wxTheClipboard->Open())
+        {
+            wxTheClipboard->SetData(data);
+            wxTheClipboard->Close();
+        }
         return true;
     }
 
