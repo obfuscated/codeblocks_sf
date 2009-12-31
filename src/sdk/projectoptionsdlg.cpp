@@ -884,7 +884,7 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
         fname.Assign(paths[i]);
         fname.MakeRelativeTo(m_Project->GetBasePath());
         ctrl->Append(fname.GetFullPath());
-        ctrl->SetSelection(ctrl->GetCount());
+        ctrl->SetSelection(ctrl->GetCount()-1);
 
         wxTreeCtrl* tc = XRCCTRL(*this, "tcOverview", wxTreeCtrl);
         wxTreeItemId sel = tc->GetSelection();
