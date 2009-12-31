@@ -124,7 +124,7 @@ void MultiSelectDlg::SelectWildCard(const wxString& wild, bool select, bool clea
             bool MatchesWildCard = false;
 			for (unsigned int x = 0; x < wilds.GetCount(); ++x)
 			{
-				if (entry.Matches(wilds[x]))
+				if (entry.Matches(wilds[x].Lower()))
 				{
                     lst->Check(i, select);
                     MatchesWildCard = true;
