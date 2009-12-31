@@ -113,18 +113,9 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     if (platform::windows)
         m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
-
-    wxTreeCtrl* tmp = XRCCTRL(*this, "treeAll", CBTreeCtrl);
-    wxSplitterWindow* winTmp = (wxSplitterWindow*)tmp->GetParent();
-
-    m_Tree = new CBTreeCtrl(tmp->GetParent(), tmp->GetId(), tmp->GetPosition(), tmp->GetSize(), tmp->GetWindowStyleFlag());
-    winTmp->ReplaceWindow(tmp, m_Tree);
-    delete tmp;
-
-    tmp = XRCCTRL(*this, "treeMembers", CBTreeCtrl);
-    m_TreeBottom = new CBTreeCtrl(tmp->GetParent(), tmp->GetId(), tmp->GetPosition(), tmp->GetSize(), tmp->GetWindowStyleFlag());
-    winTmp->ReplaceWindow(tmp, m_TreeBottom);
-    delete tmp;
+    // Subclassed in XRC file, for reference see here: http://wiki.wxwidgets.org/Resource_Files
+	m_Tree       = XRCCTRL(*this, "treeAll", CBTreeCtrl);
+    m_TreeBottom = XRCCTRL(*this, "treeMembers", CBTreeCtrl);
 
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
