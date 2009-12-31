@@ -860,7 +860,12 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
                         wxTreeItemId next = tree->GetPrevSibling(existing);
 
                         if (tree->GetChildrenCount(existing) > 0)
+                        {
                             tree->SetItemBold(existing, true);
+                            // make existing the firstItem, because the former firstItem might get deleted
+                            // in the else-clause, if it has no children, what can lead to a crash
+                            firstItem=existing;
+                        }
                         else
                         {
                             tree->Delete(existing);
