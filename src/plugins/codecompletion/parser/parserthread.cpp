@@ -337,14 +337,21 @@ bool ParserThread::InitTokenizer()
     {
         if (!m_IsBuffer)
         {
-            m_Filename = m_Buffer;
-            m_FileSize = wxFile(m_Filename).Length();
+            wxFile file(m_Buffer);
+            
+            if (file.IsOpened())
+            {
+                m_Filename = m_Buffer;
+                m_FileSize = file.Length();
 
-            TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%d."), m_Filename.c_str(), m_FileSize);
+                TRACE(_T("InitTokenizer() : m_Filename='%s', m_FileSize=%d."), m_Filename.c_str(), m_FileSize);
 
-            bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
-            Delete(m_Options.loader);
-            return ret;
+                bool ret = m_Tokenizer.Init(m_Filename, m_Options.loader);
+                Delete(m_Options.loader);
+                return ret;
+            }
+            
+            return false;
         }
 
         return m_Tokenizer.InitFromBuffer(m_Buffer);
