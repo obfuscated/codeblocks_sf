@@ -182,9 +182,8 @@ bool EncodingDetector::ConvertToWxStr(const wxByte* buffer, size_t size)
         // wxFONTENCODING_ISO8859_1..15, wxFONTENCODING_CP1250..1257 and wxFONTENCODING_KOI8
         // but it's much, much faster than wxCSConv (at least on linux)
         wxEncodingConverter conv;
-        conv.Init(m_Encoding, wxFONTENCODING_UNICODE);
         wchar_t* tmp = new wchar_t[size + 4 - m_BOMSizeInBytes];
-        if(conv.Convert((char*)buffer, tmp))
+        if(conv.Init(m_Encoding, wxFONTENCODING_UNICODE) && conv.Convert((char*)buffer, tmp))
         {
             wideBuff = tmp;
             outlen = size + 4 - m_BOMSizeInBytes; // should be correct, because Convert has returned true
