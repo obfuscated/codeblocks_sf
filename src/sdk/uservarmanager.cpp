@@ -541,7 +541,10 @@ void UsrGlblMgrEditDialog::Load()
     for(unsigned int i = 0; i < builtinMembers.GetCount(); ++i)
     {
         ((wxTextCtrl*) FindWindow(builtinMembers[i]))->SetValue(cfg->Read(path + builtinMembers[i]));
-        knownMembers.RemoveAt(knownMembers.Index(builtinMembers[i], false));
+        
+        int index = knownMembers.Index(builtinMembers[i], false);
+        if (index != wxNOT_FOUND)
+            knownMembers.RemoveAt(index);
     }
 
     for(unsigned int i = 0; i < 7; ++i)
@@ -608,8 +611,7 @@ void UsrGlblMgrEditDialog::UpdateChoices()
     selVar->Clear();
     selVar->Append(vars);
 
-
-    if(currentVar.IsEmpty())
+    if(currentVar.IsEmpty() && selVar->GetCount() > 0)
         currentVar = selVar->GetString(0);
 
     selSet->SetStringSelection(currentSet);
