@@ -34,8 +34,8 @@ END_EVENT_TABLE()
 
 ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelection,
     bool findInFilesOnly, bool replaceInFilesActive)
-	: FindReplaceBase(parent, initial, hasSelection),
-	m_Complete(!replaceInFilesActive)
+    : FindReplaceBase(parent, initial, hasSelection),
+    m_Complete(!replaceInFilesActive)
 {
 	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgReplace"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
@@ -71,7 +71,7 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
     if (findInFilesOnly)
     {
         XRCCTRL(*this, "nbReplace", wxNotebook)->DeletePage(0); // no active editor, so only replace-in-files
-		XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
+        XRCCTRL(*this, "cmbFind2", wxComboBox)->SetFocus();
     }
 	else if (replaceInFilesActive)
 	{
@@ -243,22 +243,27 @@ int ReplaceDlg::GetScope() const
 
 void ReplaceDlg::OnFindChange(wxNotebookEvent& event)
 {
-    wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
-    wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
-
-    if (cmbFind1 && cmbFind2)
+    if (    (event.GetOldSelection() == 0 && event.GetSelection() == 1)
+         || (event.GetOldSelection() == 1 && event.GetSelection() == 0))
     {
-        if (XRCCTRL(*this, "nbReplace", wxNotebook)->GetSelection() == 1)
-        {
-            cmbFind2->SetValue(cmbFind1->GetValue());
-            cmbFind2->SetFocus();
-        }
-        else
+        wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
+        wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
+        wxComboBox* cmbReplace1 =XRCCTRL(*this, "cmbReplace1", wxComboBox);
+        wxComboBox* cmbReplace2 =XRCCTRL(*this, "cmbReplace2", wxComboBox);
+
+        if (event.GetSelection() == 0)
         {
             cmbFind1->SetValue(cmbFind2->GetValue());
-            cmbFind1->SetFocus();
+            cmbReplace1->SetValue(cmbReplace2->GetValue());
+            cmbFind1->SetFocus();            
         }
-    }
+        else if (event.GetSelection() == 1)
+        {
+            cmbFind2->SetValue(cmbFind1->GetValue());
+            cmbReplace2->SetValue(cmbReplace1->GetValue());
+            cmbFind2->SetFocus();            
+        }
+    }    
     event.Skip();
 }
 

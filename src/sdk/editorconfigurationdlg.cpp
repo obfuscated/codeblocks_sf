@@ -339,7 +339,11 @@ void EditorConfigurationDlg::UpdateListbookImages()
 
 void EditorConfigurationDlg::OnPageChanged(wxListbookEvent& event)
 {
-    UpdateListbookImages();
+    // update only on real change, not on dialog creation
+    if (event.GetOldSelection() != -1 && event.GetSelection() != -1)
+    {
+        UpdateListbookImages();
+    }
 }
 
 void EditorConfigurationDlg::CreateColoursSample()

@@ -289,20 +289,21 @@ void FindDlg::UpdateUI()
 
 void FindDlg::OnFindChange(wxNotebookEvent& event)
 {
-    wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
-    wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
-
-    if (cmbFind1 && cmbFind2)
+    if (    (event.GetOldSelection() == 0 && event.GetSelection() == 1)
+         || (event.GetOldSelection() == 1 && event.GetSelection() == 0))
     {
-        if (XRCCTRL(*this, "nbFind", wxNotebook)->GetSelection() == 1)
-        {
-            cmbFind2->SetValue(cmbFind1->GetValue());
-            cmbFind2->SetFocus();
-        }
-        else
+        wxComboBox* cmbFind1 = XRCCTRL(*this, "cmbFind1", wxComboBox);
+        wxComboBox* cmbFind2 = XRCCTRL(*this, "cmbFind2", wxComboBox);
+
+        if (event.GetSelection() == 0)
         {
             cmbFind1->SetValue(cmbFind2->GetValue());
-            cmbFind1->SetFocus();
+            cmbFind1->SetFocus();            
+        }
+        else if (event.GetSelection() == 1)
+        {
+            cmbFind2->SetValue(cmbFind1->GetValue());
+            cmbFind2->SetFocus();            
         }
     }
     event.Skip();
