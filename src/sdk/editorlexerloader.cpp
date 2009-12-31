@@ -172,7 +172,14 @@ void EditorLexerLoader::DoSingleKeywordNode(HighlightLanguage language, TiXmlEle
         int keyidx = keywords->Attribute("index") ? atol(keywords->Attribute("index")) : -1;
     //    LOGSTREAM << "keyidx=" << keyidx << '\n';
         if (keyidx != -1)
-            m_pTarget->SetKeywords(language, keyidx, wxString ( keywords->Attribute("value"), wxConvUTF8 ) );
+        {
+            // the lexer file contains keywords indented - remove the extra spacing and EOLs 
+            wxRegEx regex(_T("[[:space:]]+"));
+            wxString value = wxString(keywords->Attribute("value"), wxConvUTF8);
+            regex.Replace(&value, _T(" "));
+
+            m_pTarget->SetKeywords(language, keyidx, wxString ( value, wxConvUTF8 ) );
+        }
 
         keywords = keywords->NextSiblingElement(nodename.mb_str());
     }
