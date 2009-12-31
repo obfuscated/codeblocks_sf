@@ -1975,9 +1975,12 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
             ++i;
     }
 
-    // ask the user which files to add
-// TODO (mandrav#1#): Make these masks configurable
-    wxString wild = _T("*.c;*.cc;*.cpp;*.cxx;*.h;*.hh;*.hpp;*.hxx;*.inl;*.rc;*.xrc");
+    wxString wild;
+    for (unsigned i = 0; i < m_pFileGroups->GetGroupsCount(); i++)
+    {
+        wild += m_pFileGroups->GetFileMasks(i);
+    }
+    
     MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
