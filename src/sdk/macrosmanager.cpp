@@ -294,10 +294,13 @@ void MacrosManager::RecalcVars(cbProject* project,EditorBase* editor,ProjectBuil
 
         if(Compiler* c = CompilerFactory::GetCompiler(target->GetCompilerID()))
         {
+            wxFileName  MasterPath;
+            MasterPath.SetPath(c->GetMasterPath(), wxPATH_NATIVE);
             macros[_T("TARGET_CC")]   = c->GetPrograms().C;
             macros[_T("TARGET_CPP")]   = c->GetPrograms().CPP;
             macros[_T("TARGET_LD")]   = c->GetPrograms().LD;
             macros[_T("TARGET_LIB")]   = c->GetPrograms().LIB;
+            macros[_T("TARGET_COMPILER_DIR")] = MasterPath.GetPathWithSep(wxPATH_NATIVE);
         }
         macros[_T("TARGET_OBJECT_DIR")]   = target->GetObjectOutput();
     }
