@@ -1442,10 +1442,18 @@ void ConfigManager::InitPaths()
 #ifdef CB_AUTOCONF
     if (plugin_path_global.IsEmpty())
     {
-       if(platform::windows || platform::macosx)
-          ConfigManager::plugin_path_global = data_path_global;
-       else
-          ConfigManager::plugin_path_global = wxStandardPathsBase::Get().GetPluginsDir() + _T("/plugins");
+        if(platform::windows || platform::macosx)
+            ConfigManager::plugin_path_global = data_path_global;
+        else
+        {
+            ConfigManager::plugin_path_global = wxStandardPathsBase::Get().GetPluginsDir() + _T("/plugins");
+            // first assume, we use standard-paths
+            if(!wxDirExists(ConfigManager::plugin_path_global) && wxIsPlatform64Bit())
+            {
+                // if standard-path does not exist and we are on 64-bit system, use lib64 instead
+                ConfigManager::plugin_path_global = ((const wxStandardPaths&)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib64/codeblocks/plugins");
+            }
+        }
     }
 #endif
 
