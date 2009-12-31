@@ -920,11 +920,11 @@ static wxString GetRealArgs(const wxString & args)
                 if ( str.Mid(begin).Find(_T('('), begin) == -1)
                 {
                     str += *ptr;
-                    //find end
+                    // find end
                     int n = 0;
-                    while(*ptr != _T('\0'))
+                    ptr++; // next char
+                    while (*ptr != _T('\0'))
                     {
-                        ptr++;
                         if (*ptr == _T('('))
                             n++;
                         else if (*ptr == _T(')'))
@@ -939,6 +939,7 @@ static wxString GetRealArgs(const wxString & args)
                             skip = false;
                             break;
                         }
+                        ptr++; // next char
                     }
                 }
             }
@@ -952,7 +953,7 @@ static wxString GetRealArgs(const wxString & args)
             {
                 if (*ptr != _T(' '))
                     str += *ptr;
-                *ptr++;
+                ptr++; // next char
             }
             skip = true;
             sym  = true;
@@ -962,7 +963,7 @@ static wxString GetRealArgs(const wxString & args)
             {
                 if (*ptr != _T(' '))
                     str += *ptr;
-                *ptr++;
+                ptr++; // next char
             }
             skip = true;
             sym  = true;
@@ -980,17 +981,22 @@ static wxString GetRealArgs(const wxString & args)
 
         if (!skip || sym)
         {
-            str += *ptr;
-            if (wxIsalnum(*ptr))
-                word += *ptr;
+            if (*ptr != _T('\0'))
+            {
+                str += *ptr;
+                if (wxIsalnum(*ptr))
+                    word += *ptr;
+            }
         }
 
-        if (sym == true && skip == false)
+        if (sym && !skip)
         {
             while (*ptr != _T('\0') && *(ptr+1) == _T(' '))
-                ptr++;
+                ptr++; // next char
         }
-        ptr++;
+
+        if (*ptr != _T('\0'))
+            ptr++; // next char
     }
 
     return str;

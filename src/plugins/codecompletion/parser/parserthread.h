@@ -74,8 +74,8 @@ class ParserThread : public cbThreadedTask
         /** ParserThread constructor.
           * @param parent the parent Parser object which contain the token tree.
           * @param bufferOrFilename if isLocal is true, it's the filename to open, else it is a wxString already in memory buffer.
-          * @param isLocal determin whether this is a file in local disk or already in memory
-          * @param parserThreadOptions parser therad options, see ParserThreadOptions for details.
+          * @param isLocal determine whether this is a file in local disk or already in memory
+          * @param parserThreadOptions parser thread options, see ParserThreadOptions Class for details.
           * @param tokensTree it is the tree sturcture holding all the tokens, ParserThread will add every token when it parsed.
           */
         ParserThread(Parser* parent,
@@ -111,11 +111,11 @@ class ParserThread : public cbThreadedTask
         const wxString& GetFilename() const { return m_Filename; }
     protected:
 
-        /** enum to specify which "class type" we are handleing: struct or class or union*/
+        /** enum to specify which "class type" we are handling: struct or class or union*/
         enum EClassType { ctStructure = 0, ctClass = 1, ctUnion = 3 };
 
         /** skip until we meet one chracters in the wxString
-          * @param chars wxString specifies all the ending charactors
+          * @param chars wxString specifies all the ending characters
           * @param supportNesting if supportNesting is true, we need to record the "{" and "}" nesting levels when skipping.
           */
         wxChar SkipToOneOfChars(const wxString& chars, bool supportNesting = false);
@@ -130,7 +130,7 @@ class ParserThread : public cbThreadedTask
         void SkipAngleBraces();
 
         /** handle include <XXXX> or include "XXXX" directive. This will internally add another
-          * parserThead associate with the included file to parserthead pool
+          * parserThead object associate with the included file to parserthead pool
           */
         void HandleIncludes();
 
@@ -152,13 +152,13 @@ class ParserThread : public cbThreadedTask
           */
         void HandleClass(EClassType ct, const wxString& template_args = _T(""));
 
-        /** handle function declearation or definition
+        /** handle function declaration or definition
           * @param name function name
           * @param isOperator if true, means it is an operator overload function
           */
         void HandleFunction(const wxString& name, bool isOperator = false);
 
-        /** handle enum declearation */
+        /** handle enum declaration */
         void HandleEnum();
 
         /** handle typedef directive */
@@ -175,21 +175,25 @@ class ParserThread : public cbThreadedTask
           */
         void ReadVarNames();
 
-        /** handle class names
-          * @param ancestor define
-          * TODO: blueshake, can you add some comments here?
+        /** handle class names, eg, the code below
+          *typedef class AAA{
+          *   int m_a;
+          *   int m_b;
+          *} BBB,CCC;
+          * @param ancestor class name = 'AAA'
+          * this function reads the following 'BBB' and 'CCC', and regard them as derived classes of 'AAA'
           */
         void ReadClsNames(wxString& ancestor);
 
         /** add one token to the token tree
           * @param kind Token type, see @TokenKind Emun for more details
-          * @param name Token name, this is the keyword to search in the token tree
-          * @param line line number of the source file
+          * @param name Token name, this is the key string to be searched in the token tree
+          * @param line line number of the source file where the current Token locates
           * @param implLineStart if this is a function implementation, it is the start of function body
-          * @param implLineEnd like the one above, it is the end line of the function body
-          * @param args if the token type is a function, then this is the function arguments string
-          * @param isOperator an operator override function or not
-          * @param isTmpl it is a function declearation or implememtation
+          * @param implLineEnd like the one above, it is the end line of the function implementation body
+          * @param args if the token type is a function, this is the function arguments
+          * @param isOperator bool variable to determine an operator override function or not
+          * @param isTmpl bool variable to determine it is a function declearation or implememtation
           */
         Token* DoAddToken(TokenKind kind,
                           const wxString& name,
@@ -211,8 +215,8 @@ class ParserThread : public cbThreadedTask
         /** no usage atm */
         void Log(const wxString& log);
 
-        /** if parent is 0(which means global namespace), all tokens are searched
-          * @param name the search key word
+        /** if parent is 0(which means global namespace), all tokens under parent scope are searched
+          * @param name the search key string
           * @param parent parent token pointer, we only search under the parent token scope
           * @param kindMask filter for the result token, only the specified type of tokens were matched
           */
@@ -248,7 +252,7 @@ class ParserThread : public cbThreadedTask
         /** the file name of the parsing source */
         wxString             m_Filename;
 
-        /** file size */
+        /** file size, actually the length of the wxString */
         unsigned int         m_FileSize;
 
         /** source file index on the "file map tree" */
