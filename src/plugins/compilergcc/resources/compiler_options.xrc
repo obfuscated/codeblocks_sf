@@ -1056,7 +1056,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT22">
-														<label>Known variables: $$make, $$makefile, $$target, $$file</label>
+														<label>Known variables: $$make, $$makefile, $$target, $$file and all macro variables</label>
 														<fg>#800000</fg>
 													</object>
 													<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
