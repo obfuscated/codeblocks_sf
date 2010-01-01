@@ -149,7 +149,7 @@ wxString Token::DisplayName() const
         if (!m_Type.IsEmpty())
             result << _T(" ") << m_Type;
 
-        if (result.find('*', true) != wxNOT_FOUND)
+        if (result.Find('*', true) != wxNOT_FOUND)
         {
             result.RemoveLast();
             return result << m_Name << _T(")") <<  m_Args;

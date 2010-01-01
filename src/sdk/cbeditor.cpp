@@ -405,9 +405,9 @@ struct cbEditorInternalData
         int index = leftBrace.find(ch);
         const wxString unWant(_T(");\n\r\t\b "));
         #if wxCHECK_VERSION(2, 9, 0)
-        if ((index != wxNOT_FOUND) && (unWant.find(wxUniChar(control->GetCharAt(pos))) != wxNOT_FOUND))
+        if ((index != wxNOT_FOUND) && (unWant.Find(wxUniChar(control->GetCharAt(pos))) != wxNOT_FOUND))
         #else
-        if ((index != wxNOT_FOUND) && (unWant.find(control->GetCharAt(pos)) != wxNOT_FOUND))
+        if ((index != wxNOT_FOUND) && (unWant.Find(control->GetCharAt(pos)) != wxNOT_FOUND))
         #endif
         {
             control->AddText(rightBrace.GetChar(index));
