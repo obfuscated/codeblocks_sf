@@ -245,15 +245,17 @@ bool CheckRequirements(wxString& ExeTarget, wxString& CommandLineArguments)
 	return true;
 }  // end of CheckRequirements
 
-void Valgrind::DoValgrindVersion()
+long Valgrind::DoValgrindVersion()
 {
 	wxString CommandLine = _("valgrind --version");
 	WriteToLog(CommandLine);
 	wxArrayString Output, Errors;
 	wxExecute(CommandLine, Output, Errors);
 	int Count = Output.GetCount();
+	wxString ValgrindVersion;
 	for(int idxCount = 0; idxCount < Count; ++idxCount)
 	{
+		ValgrindVersion = Output[0];
 		AppendToLog(Output[idxCount]);
 	} // end for : idx: idxCount
 	Count = Errors.GetCount();
@@ -263,6 +265,14 @@ void Valgrind::DoValgrindVersion()
 	} // end for : idx: idxCount
 	// and clear the list
 	m_ListLog->Clear();
+	long VersionValue = 0;
+	wxString Version;
+	if(ValgrindVersion.StartsWith(_T("valgrind-"), &Version))
+	{
+		Version.Replace(_T("."), _T(""));
+		Version.ToLong(&VersionValue);
+	}
+	return VersionValue;
 } // end of DoValgrindVersion
 
 void Valgrind::OnMemCheck(wxCommandEvent& )
@@ -273,9 +283,16 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 	{
 		return;
 	}
-	DoValgrindVersion();
+	long Version = DoValgrindVersion();
+	const wxString XmlOutputFile = _T("ValgrindOut.xml");
+	wxString XmlOutputCommand;
+	if(Version >= 350)
+	{
+		XmlOutputCommand = _T(" --xml-file=") + XmlOutputFile;
+	}
 	const bool UseXml = true;
-	wxString CommandLine = _("valgrind --leak-check=yes --xml=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
+	wxString CommandLine = _T("valgrind --leak-check=yes --xml=yes") + XmlOutputCommand + _T(" \"")
+		+ ExeTarget + _T("\" ") + CommandLineArguments;
 //	CommandLine = _("valgrind --leak-check=yes \"") + ExeTarget + _("\" ") + CommandLineArguments;
 	AppendToLog(CommandLine);
 	wxArrayString Output, Errors;
@@ -301,7 +318,14 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 	if(UseXml)
 	{
 		TiXmlDocument Doc;
-		Doc.Parse(Xml.ToAscii());
+		if(Version >= 350)
+		{
+			Doc.LoadFile(XmlOutputFile.ToAscii());
+		}
+		else
+		{
+			Doc.Parse(Xml.ToAscii());
+		}
 		if(!Doc.Error())
 		{
 			bool ErrorsPresent = false;
@@ -345,7 +369,7 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 	}
 	DoValgrindVersion();
 //	wxString CommandLine = _("valgrind --tool=cachegrind --cachegrind-out-file=\"./") + ExeTarget + _(".cachegrind.out\" \"") + ExeTarget + _("\" ") + CommandLineArguments;
-	wxString CommandLine = _("valgrind --tool=cachegrind \"") + ExeTarget + _("\" ") + CommandLineArguments;
+	wxString CommandLine = _T("valgrind --tool=cachegrind \"") + ExeTarget + _T("\" ") + CommandLineArguments;
 	AppendToLog(CommandLine);
 	wxArrayString Output, Errors;
 	wxString CurrentDirName = ::wxGetCwd();
@@ -354,7 +378,7 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 	if(CurrentDir.IsOpened())
 	{
 		wxString File;
-		if(CurrentDir.GetFirst(&File, _("cachegrind.out.*"), wxDIR_FILES))
+		if(CurrentDir.GetFirst(&File, _T("cachegrind.out.*"), wxDIR_FILES))
 		{
 			CachegrindFiles.Add(File);
 			while(CurrentDir.GetNext(&File))
@@ -383,7 +407,7 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 	if(CurrentDir.IsOpened())
 	{
 		wxString File;
-		if(CurrentDir.GetFirst(&File, _("cachegrind.out.*"), wxDIR_FILES))
+		if(CurrentDir.GetFirst(&File, _T("cachegrind.out.*"), wxDIR_FILES))
 		{
 			if(CachegrindFiles.Index(File) == wxNOT_FOUND)
 			{
@@ -399,6 +423,6 @@ void Valgrind::OnCachegrind(wxCommandEvent& )
 			} // end while
 		}
 	}
-	CommandLine = _("kcachegrind ") + TheCachegrindFile;
+	CommandLine = _T("kcachegrind ") + TheCachegrindFile;
 	wxExecute(CommandLine);
 } // end of OnCachegrind

@@ -30,7 +30,7 @@ private:
 	void WriteToLog(const wxString& Text);
 	void AppendToLog(const wxString& Text);
 	void ProcessStack(const TiXmlElement& Stack, const wxString& What);
-	void DoValgrindVersion();
+	long DoValgrindVersion();
 	void OnMemCheck(wxCommandEvent& );
 	void OnCachegrind(wxCommandEvent& );
 
