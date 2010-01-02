@@ -14,6 +14,7 @@
     #include "manager.h"
     #include "logmanager.h"
     #include <wx/dynarray.h>
+    #include <wx/regex.h>
     #include <wx/wxscintilla.h>
 #endif
 
