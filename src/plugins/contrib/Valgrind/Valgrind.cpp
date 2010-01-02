@@ -336,7 +336,14 @@ void Valgrind::OnMemCheck(wxCommandEvent& )
 			{
 				ErrorsPresent = true;
 				wxString WhatValue;
-				if(const TiXmlElement* What = Error->FirstChildElement("what"))
+				if(const TiXmlElement* What = Error->FirstChildElement("xwhat"))
+				{	// style use since Valgrind 3.5.0
+					if(const TiXmlElement* Text = What->FirstChildElement("text"))
+					{
+						WhatValue = wxString::FromAscii(Text->GetText());
+					}
+				}
+				else if(const TiXmlElement* What = Error->FirstChildElement("what"))
 				{
 					WhatValue = wxString::FromAscii(What->GetText());
 				}
