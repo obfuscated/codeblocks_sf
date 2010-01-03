@@ -46,8 +46,7 @@ SQInteger sq_aux_invalidtype(HSQUIRRELVM v,SQObjectType type)
 HSQUIRRELVM sq_open(SQInteger initialstacksize)
 {
 	SQSharedState *ss;
-    // C::B patch: Initialise variable properly
-	SQVM *v = 0;
+	SQVM *v;
 	sq_new(ss, SQSharedState);
 	ss->Init();
 	v = (SQVM *)SQ_MALLOC(sizeof(SQVM));
@@ -289,12 +288,13 @@ SQRESULT sq_arrayresize(HSQUIRRELVM v,SQInteger idx,SQInteger newsize)
 	sq_aux_paramscheck(v,1);
 	SQObjectPtr *arr;
 	_GETSAFE_OBJ(v, idx, OT_ARRAY,arr);
-	if(_array(*arr)->Size() > 0) {
+	if(newsize >= 0) {
 		_array(*arr)->Resize(newsize);
 		return SQ_OK;
 	}
-	return SQ_OK;
+	return sq_throwerror(v,_SC("negative size"));
 }
+
 
 SQRESULT sq_arrayreverse(HSQUIRRELVM v,SQInteger idx)
 {
@@ -315,6 +315,25 @@ SQRESULT sq_arrayreverse(HSQUIRRELVM v,SQInteger idx)
 	}
 	return SQ_OK;
 }
+
+SQRESULT sq_arrayremove(HSQUIRRELVM v,SQInteger idx,SQInteger itemidx)
+{
+	sq_aux_paramscheck(v, 1);
+	SQObjectPtr *arr;
+	_GETSAFE_OBJ(v, idx, OT_ARRAY,arr);
+	return _array(*arr)->Remove(itemidx) ? SQ_OK : sq_throwerror(v,_SC("index out of range"));
+}
+
+SQRESULT sq_arrayinsert(HSQUIRRELVM v,SQInteger idx,SQInteger destpos)
+{
+	sq_aux_paramscheck(v, 1);
+	SQObjectPtr *arr;
+	_GETSAFE_OBJ(v, idx, OT_ARRAY,arr);
+	SQRESULT ret = _array(*arr)->Insert(destpos, v->GetUp(-1)) ? SQ_OK : sq_throwerror(v,_SC("index out of range"));
+	v->Pop();
+	return ret;
+}
+
 
 void sq_newclosure(HSQUIRRELVM v,SQFUNCTION func,SQUnsignedInteger nfreevars)
 {
@@ -401,6 +420,20 @@ SQRESULT sq_bindenv(HSQUIRRELVM v,SQInteger idx)
 	return SQ_OK;
 }
 
+SQRESULT sq_clear(HSQUIRRELVM v,SQInteger idx)
+{
+	SQObject &o=stack_get(v,idx);
+	switch(type(o)) {
+		case OT_TABLE: _table(o)->Clear();	break;
+		case OT_ARRAY: _array(o)->Resize(0); break;
+		default:
+			return sq_throwerror(v, _SC("clear only works on table and array"));
+		break;
+
+	}
+	return SQ_OK;
+}
+
 void sq_pushroottable(HSQUIRRELVM v)
 {
 	v->Push(v->_roottable);
@@ -409,6 +442,11 @@ void sq_pushroottable(HSQUIRRELVM v)
 void sq_pushregistrytable(HSQUIRRELVM v)
 {
 	v->Push(_ss(v)->_registry);
+}
+
+void sq_pushconsttable(HSQUIRRELVM v)
+{
+	v->Push(_ss(v)->_consts);
 }
 
 SQRESULT sq_setroottable(HSQUIRRELVM v)
@@ -420,6 +458,17 @@ SQRESULT sq_setroottable(HSQUIRRELVM v)
 		return SQ_OK;
 	}
 	return sq_throwerror(v, _SC("ivalid type"));
+}
+
+SQRESULT sq_setconsttable(HSQUIRRELVM v)
+{
+	SQObject o = stack_get(v, -1);
+	if(sq_istable(o)) {
+		_ss(v)->_consts = o;
+		v->Pop();
+		return SQ_OK;
+	}
+	return sq_throwerror(v, _SC("ivalid type, expected table"));
 }
 
 void sq_setforeignptr(HSQUIRRELVM v,SQUserPointer p)
@@ -441,6 +490,7 @@ SQObjectType sq_gettype(HSQUIRRELVM v,SQInteger idx)
 {
 	return type(stack_get(v, idx));
 }
+
 
 void sq_tostring(HSQUIRRELVM v,SQInteger idx)
 {
@@ -582,6 +632,16 @@ SQRESULT sq_setinstanceup(HSQUIRRELVM v, SQInteger idx, SQUserPointer p)
 	return SQ_OK;
 }
 
+SQRESULT sq_setclassudsize(HSQUIRRELVM v, SQInteger idx, SQInteger udsize)
+{
+	SQObjectPtr &o = stack_get(v,idx);
+	if(type(o) != OT_CLASS) return sq_throwerror(v,_SC("the object is not a class"));
+	if(_class(o)->_locked) return sq_throwerror(v,_SC("the class is locked"));
+	_class(o)->_udsize = udsize;
+	return SQ_OK;
+}
+
+
 SQRESULT sq_getinstanceup(HSQUIRRELVM v, SQInteger idx, SQUserPointer *p,SQUserPointer typetag)
 {
 	SQObjectPtr &o = stack_get(v,idx);
@@ -610,7 +670,7 @@ void sq_settop(HSQUIRRELVM v, SQInteger newtop)
 	if(top > newtop)
 		sq_pop(v, top - newtop);
 	else
-		while(top < newtop) sq_pushnull(v);
+		while(top++ < newtop) sq_pushnull(v);
 }
 
 void sq_pop(HSQUIRRELVM v, SQInteger nelemstopop)
@@ -650,19 +710,6 @@ SQRESULT sq_newslot(HSQUIRRELVM v, SQInteger idx, SQBool bstatic)
 	}
 	return SQ_OK;
 }
-
-/*SQRESULT sq_createslot(HSQUIRRELVM v, SQInteger idx)
-{
-	sq_aux_paramscheck(v, 3);
-	SQObjectPtr &self = stack_get(v, idx);
-	if(type(self) == OT_TABLE || type(self) == OT_CLASS) {
-		SQObjectPtr &key = v->GetUp(-2);
-		if(type(key) == OT_NULL) return sq_throwerror(v, _SC("null is not a valid key"));
-		v->NewSlot(self, key, v->GetUp(-1));
-		v->Pop(2);
-	}
-	return SQ_OK;
-}*/
 
 SQRESULT sq_deleteslot(HSQUIRRELVM v,SQInteger idx,SQBool pushval)
 {
@@ -719,7 +766,7 @@ SQRESULT sq_rawset(HSQUIRRELVM v,SQInteger idx)
 	break;
 	default:
 		v->Pop(2);
-		return sq_throwerror(v, _SC("rawset works only on array/table/calsse and instance"));
+		return sq_throwerror(v, _SC("rawset works only on array/table/class and instance"));
 	}
 	v->Raise_IdxError(v->GetUp(-2));return SQ_ERROR;
 }
@@ -761,8 +808,9 @@ SQRESULT sq_rawdeleteslot(HSQUIRRELVM v,SQInteger idx,SQBool pushval)
 	if(_table(*self)->Get(key,t)) {
 		_table(*self)->Remove(key);
 	}
-	if(pushval != 0) {
-	  if(pushval)	v->GetUp(-1) = t;
+	if(pushval != 0)
+	{
+	    if(pushval)	v->GetUp(-1) = t;
 	}
 	else
 		v->Pop(1);
@@ -905,7 +953,9 @@ SQRESULT sq_call(HSQUIRRELVM v,SQInteger params,SQBool retval,SQBool raiseerror)
 {
 	SQObjectPtr res;
 	if(v->Call(v->GetUp(-(params+1)),params,v->_top-params,res,raiseerror?true:false)){
-		v->Pop(params);//pop closure and args
+		if(!v->_suspended) {
+			v->Pop(params);//pop closure and args
+		}
 		if(retval){
 			v->Push(res); return SQ_OK;
 		}
@@ -925,7 +975,7 @@ SQRESULT sq_suspendvm(HSQUIRRELVM v)
 	return v->Suspend();
 }
 
-SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool wakeupret,SQBool retval,SQBool raiseerror)
+SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool wakeupret,SQBool retval,SQBool raiseerror,SQBool throwerror)
 {
 	SQObjectPtr ret;
 	if(!v->_suspended)
@@ -934,7 +984,7 @@ SQRESULT sq_wakeupvm(HSQUIRRELVM v,SQBool wakeupret,SQBool retval,SQBool raiseer
 		v->GetAt(v->_stackbase+v->_suspended_target)=v->GetUp(-1); //retval
 		v->Pop();
 	} else v->GetAt(v->_stackbase+v->_suspended_target)=_null_;
-	if(!v->Execute(_null_,v->_top,-1,-1,ret,raiseerror,SQVM::ET_RESUME_VM))
+	if(!v->Execute(_null_,v->_top,-1,-1,ret,raiseerror,throwerror?SQVM::ET_RESUME_THROW_VM : SQVM::ET_RESUME_VM))
 		return SQ_ERROR;
 	if(sq_getvmstate(v) == SQ_VMSTATE_IDLE) {
 		while (v->_top > 1) v->_stack[--v->_top] = _null_;
@@ -976,7 +1026,6 @@ SQRESULT sq_writeclosure(HSQUIRRELVM v,SQWRITEFUNC w,SQUserPointer up)
 
 SQRESULT sq_readclosure(HSQUIRRELVM v,SQREADFUNC r,SQUserPointer up)
 {
-	//SQObjectPtr func=SQFunctionProto::Create();
 	SQObjectPtr closure;
 
 	unsigned short tag;
@@ -1157,10 +1206,10 @@ SQRESULT sq_next(HSQUIRRELVM v,SQInteger idx)
 	if(type(o) == OT_GENERATOR) {
 		return sq_throwerror(v,_SC("cannot iterate a generator"));
 	}
-	bool finished;
-	if(!v->FOREACH_OP(o,realkey,val,refpos,0,finished))
+	int faketojump;
+	if(!v->FOREACH_OP(o,realkey,val,refpos,0,666,faketojump))
 		return SQ_ERROR;
-	if(!finished) {
+	if(faketojump != 666) {
 		v->Push(realkey);
 		v->Push(val);
 		return SQ_OK;
@@ -1214,6 +1263,7 @@ void *sq_realloc(void* p,SQUnsignedInteger oldsize,SQUnsignedInteger newsize)
 {
 	return SQ_REALLOC(p,oldsize,newsize);
 }
+
 void sq_free(void *p,SQUnsignedInteger size)
 {
 	SQ_FREE(p,size);

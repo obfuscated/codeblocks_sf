@@ -8,6 +8,23 @@
 #include "sqclosure.h"
 #include "sqstring.h"
 
+SQRESULT sq_getfunctioninfo(HSQUIRRELVM v,SQInteger level,SQFunctionInfo *fi)
+{
+	SQInteger cssize = v->_callsstacksize;
+	if (cssize > level) {
+		SQVM::CallInfo &ci = v->_callsstack[cssize-level-1];
+		if(sq_isclosure(ci._closure)) {
+			SQClosure *c = _closure(ci._closure);
+			SQFunctionProto *proto = _funcproto(c->_function);
+			fi->funcid = proto;
+			fi->name = type(proto->_name) == OT_STRING?_stringval(proto->_name):_SC("unknown");
+			fi->source = type(proto->_name) == OT_STRING?_stringval(proto->_sourcename):_SC("unknown");
+			return SQ_OK;
+		}
+	}
+	return sq_throwerror(v,_SC("the object is not a closure"));
+}
+
 SQRESULT sq_stackinfos(HSQUIRRELVM v, SQInteger level, SQStackInfos *si)
 {
 	SQInteger cssize = v->_callsstacksize;
@@ -57,8 +74,11 @@ SQString *SQVM::PrintObjVal(const SQObject &o)
 	switch(type(o)) {
 	case OT_STRING: return _string(o);
 	case OT_INTEGER:
-        // C::B patch: Build for 64bit: cast to long int
-		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%ld"), static_cast<long int>(_integer(o)));
+		#if defined(_WIN64)
+		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%I64d"), _integer(o));
+		#else
+		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%d"), _integer(o));
+		#endif
 		return SQString::Create(_ss(this), _spval);
 		break;
 	case OT_FLOAT:
@@ -86,7 +106,7 @@ void SQVM::Raise_CompareError(const SQObject &o1, const SQObject &o2)
 void SQVM::Raise_ParamTypeError(SQInteger nparam,SQInteger typemask,SQInteger type)
 {
 	SQObjectPtr exptypes = SQString::Create(_ss(this), _SC(""), -1);
-	SQInteger found = 0;	
+	SQInteger found = 0;
 	for(SQInteger i=0; i<16; i++)
 	{
 		SQInteger mask = 0x00000001 << i;

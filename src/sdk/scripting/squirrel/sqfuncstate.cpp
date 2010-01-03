@@ -63,6 +63,7 @@ SQInstructionDesc g_InstrDesc[]={
 	{_SC("_OP_YIELD")},
 	{_SC("_OP_RESUME")},
 	{_SC("_OP_FOREACH")},
+	{_SC("_OP_POSTFOREACH")},
 	{_SC("_OP_DELEGATE")},
 	{_SC("_OP_CLONE")},
 	{_SC("_OP_TYPEOF")},
@@ -78,9 +79,15 @@ void DumpLiteral(SQObjectPtr &o)
 	switch(type(o)){
 		case OT_STRING:	scprintf(_SC("\"%s\""),_stringval(o));break;
 		case OT_FLOAT: scprintf(_SC("{%f}"),_float(o));break;
-        // C::B patch: Build for 64bit: cast to long int
-		case OT_INTEGER: scprintf(_SC("{%ld}"), static_cast<long int>(_integer(o)));break;
-		default: assert(0); break; //shut up compiler
+		case OT_INTEGER:
+            #if defined(_WIN64)
+            scprintf(_SC("{%I64d}"),_integer(o));
+            #else
+            scprintf(_SC("{%d}"),_integer(o));
+            #endif
+            break;
+		case OT_BOOL: scprintf(_SC("%s"),_integer(o)?_SC("true"):_SC("false"));break;
+		default: scprintf(_SC("(%s %p)"),GetTypeName(o),_rawval(o));break; break; //shut up compiler
 	}
 }
 
@@ -159,7 +166,7 @@ void SQFuncState::Dump(SQFunctionProto *func)
 	for(i=0;i<_instructions.size();i++){
 		SQInstruction &inst=_instructions[i];
 		if(inst.op==_OP_LOAD || inst.op==_OP_DLOAD || inst.op==_OP_PREPCALLK || inst.op==_OP_GETK ){
-			
+
 			SQInteger lidx = inst._arg1;
 			scprintf(_SC("[%03d] %15s %d "),n,g_InstrDesc[inst.op].name,inst._arg0);
 			if(lidx >= 0xFFFFFFFF)
@@ -168,7 +175,7 @@ void SQFuncState::Dump(SQFunctionProto *func)
 				SQInteger refidx;
 				SQObjectPtr val,key,refo;
 				while(((refidx=_table(_literals)->Next(false,refo,key,val))!= -1) && (_integer(val) != lidx)) {
-					refo = refidx;	
+					refo = refidx;
 				}
 				DumpLiteral(key);
 			}
@@ -184,7 +191,7 @@ void SQFuncState::Dump(SQFunctionProto *func)
 					SQInteger refidx;
 					SQObjectPtr val,key,refo;
 					while(((refidx=_table(_literals)->Next(false,refo,key,val))!= -1) && (_integer(val) != lidx)) {
-						refo = refidx;	
+						refo = refidx;
 				}
 				DumpLiteral(key);
 				scprintf(_SC("\n"));
@@ -197,7 +204,7 @@ void SQFuncState::Dump(SQFunctionProto *func)
 		else if(inst.op==_OP_ARITH){
 			scprintf(_SC("[%03d] %15s %d %d %d %c\n"),n,g_InstrDesc[inst.op].name,inst._arg0,inst._arg1,inst._arg2,inst._arg3);
 		}
-		else 
+		else
 			scprintf(_SC("[%03d] %15s %d %d %d %d\n"),n,g_InstrDesc[inst.op].name,inst._arg0,inst._arg1,inst._arg2,inst._arg3);
 		n++;
 	}
@@ -310,6 +317,16 @@ void SQFuncState::SetStackSize(SQInteger n)
 	}
 }
 
+bool SQFuncState::IsConstant(const SQObject &name,SQObject &e)
+{
+	SQObjectPtr val;
+	if(_table(_sharedstate->_consts)->Get(name,val)) {
+		e = val;
+		return true;
+	}
+	return false;
+}
+
 bool SQFuncState::IsLocal(SQUnsignedInteger stkpos)
 {
 	if(stkpos>=_vlocals.size())return false;
@@ -326,7 +343,7 @@ SQInteger SQFuncState::PushLocalVariable(const SQObject &name)
 	lvi._pos=_vlocals.size();
 	_vlocals.push_back(lvi);
 	if(_vlocals.size()>((SQUnsignedInteger)_stacksize))_stacksize=_vlocals.size();
-	
+
 	return pos;
 }
 
@@ -355,7 +372,7 @@ SQInteger SQFuncState::GetOuterVariable(const SQObject &name)
 void SQFuncState::AddOuterValue(const SQObject &name)
 {
 	SQInteger pos=-1;
-	if(_parent) { 
+	if(_parent) {
 		pos = _parent->GetLocalVariable(name);
 		if(pos == -1) {
 			pos = _parent->GetOuterVariable(name);
@@ -368,7 +385,7 @@ void SQFuncState::AddOuterValue(const SQObject &name)
 			_outervalues.push_back(SQOuterVar(name,SQObjectPtr(SQInteger(pos)),otLOCAL)); //local
 			return;
 		}
-	}	
+	}
 	_outervalues.push_back(SQOuterVar(name,name,otSYMBOL)); //global
 }
 
@@ -406,7 +423,7 @@ void SQFuncState::AddInstruction(SQInstruction &i)
 				pi._arg2 = (unsigned char)i._arg1;
 				pi.op = _OP_GETK;
 				pi._arg0 = i._arg0;
-				
+
 				return;
 			}
 		break;
@@ -430,7 +447,7 @@ void SQFuncState::AddInstruction(SQInstruction &i)
 				return;
 			}
 			break;
-		case _OP_MOVE: 
+		case _OP_MOVE:
 			if((pi.op == _OP_GET || pi.op == _OP_ARITH || pi.op == _OP_BITW) && (pi._arg0 == i._arg1))
 			{
 				pi._arg0 = i._arg0;
@@ -467,7 +484,7 @@ void SQFuncState::AddInstruction(SQInstruction &i)
 			break;
 		case _OP_LOADNULLS:
 			if((pi.op == _OP_LOADNULLS && pi._arg0+pi._arg1 == i._arg0)) {
-				
+
 				pi._arg1 = pi._arg1 + 1;
 				pi.op = _OP_LOADNULLS;
 				return;
@@ -492,12 +509,19 @@ SQObject SQFuncState::CreateString(const SQChar *s,SQInteger len)
 	return ns;
 }
 
+SQObject SQFuncState::CreateTable()
+{
+	SQObjectPtr nt(SQTable::Create(_sharedstate,0));
+	_table(_strings)->NewSlot(nt,(SQInteger)1);
+	return nt;
+}
+
 SQFunctionProto *SQFuncState::BuildProto()
 {
 	SQFunctionProto *f=SQFunctionProto::Create(_instructions.size(),
 		_nliterals,_parameters.size(),_functions.size(),_outervalues.size(),
-		_lineinfos.size(),_localvarinfos.size());
-	//f->_literals.resize(_nliterals);
+		_lineinfos.size(),_localvarinfos.size(),_defaultparams.size());
+
 	SQObjectPtr refidx,key,val;
 	SQInteger idx;
 
@@ -511,23 +535,15 @@ SQFunctionProto *SQFuncState::BuildProto()
 		refidx=idx;
 	}
 
-	//f->_functions.resize(_functions.size());
-	//f->_functions.copy(_functions);
-	//f->_parameters.resize(_parameters.size());
 	for(SQUnsignedInteger nf = 0; nf < _functions.size(); nf++) f->_functions[nf] = _functions[nf];
 	for(SQUnsignedInteger np = 0; np < _parameters.size(); np++) f->_parameters[np] = _parameters[np];
 	for(SQUnsignedInteger no = 0; no < _outervalues.size(); no++) f->_outervalues[no] = _outervalues[no];
 	for(SQUnsignedInteger no = 0; no < _localvarinfos.size(); no++) f->_localvarinfos[no] = _localvarinfos[no];
 	for(SQUnsignedInteger no = 0; no < _lineinfos.size(); no++) f->_lineinfos[no] = _lineinfos[no];
-	//f->_outervalues.resize(_outervalues.size());
-	//f->_outervalues.copy(_outervalues);
-	//f->_instructions.resize(_instructions.size());
-	//f->_instructions.copy(_instructions);
+	for(SQUnsignedInteger no = 0; no < _defaultparams.size(); no++) f->_defaultparams[no] = _defaultparams[no];
+
 	memcpy(f->_instructions,&_instructions[0],_instructions.size()*sizeof(SQInstruction));
-	//f->_localvarinfos.resize(_localvarinfos.size());
-	//f->_localvarinfos.copy(_localvarinfos);
-	//f->_lineinfos.resize(_lineinfos.size());
-	//f->_lineinfos.copy(_lineinfos);
+
 	f->_varparams = _varparams;
 
 	return f;
