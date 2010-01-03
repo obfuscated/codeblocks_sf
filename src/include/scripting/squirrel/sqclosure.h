@@ -22,6 +22,7 @@ public:
 		SQClosure * ret = SQClosure::Create(_opt_ss(this),_funcproto(_function));
 		ret->_env = _env;
 		ret->_outervalues.copy(_outervalues);
+		ret->_defaultparams.copy(_defaultparams);
 		return ret;
 	}
 	~SQClosure()
@@ -37,13 +38,14 @@ public:
 	SQObjectPtr _env;
 	SQObjectPtr _function;
 	SQObjectPtrVec _outervalues;
+	SQObjectPtrVec _defaultparams;
 };
 //////////////////////////////////////////////
 struct SQGenerator : public CHAINABLE_OBJ 
 {
 	enum SQGeneratorState{eRunning,eSuspended,eDead};
 private:
-	SQGenerator(SQSharedState *ss,SQClosure *closure){_closure=closure;_state=eRunning;_ci._generator=_null_;INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);}
+	SQGenerator(SQSharedState *ss,SQClosure *closure){_closure=closure;_state=eRunning;_ci._generator=NULL;INIT_CHAIN();ADD_TO_CHAIN(&_ss(this)->_gc_chain,this);}
 public:
 	static SQGenerator *Create(SQSharedState *ss,SQClosure *closure){
 		SQGenerator *nc=(SQGenerator*)SQ_MALLOC(sizeof(SQGenerator));
@@ -92,7 +94,7 @@ public:
 		ret->_env = _env;
 		ret->_name = _name;
 		ret->_outervalues.copy(_outervalues);
-		ret->_typecheck = _typecheck;
+		ret->_typecheck.copy(_typecheck);
 		ret->_nparamscheck = _nparamscheck;
 		return ret;
 	}
@@ -107,12 +109,12 @@ public:
 	void Mark(SQCollectable **chain);
 	void Finalize(){_outervalues.resize(0);}
 #endif
+	SQInteger _nparamscheck;
+	SQIntVec _typecheck;
+	SQObjectPtrVec _outervalues;
 	SQObjectPtr _env;
 	SQFUNCTION _function;
 	SQObjectPtr _name;
-	SQObjectPtrVec _outervalues;
-	SQIntVec _typecheck;
-	SQInteger _nparamscheck;
 };
 
 
