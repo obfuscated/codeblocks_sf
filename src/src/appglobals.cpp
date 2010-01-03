@@ -49,9 +49,15 @@ namespace appglobals
       const wxString AppPlatform = _T("Unknown");
     #endif
 
-    const wxString AppWXAnsiUnicode = platform::unicode ? _T("unicode") : wxT("ANSI");
+    const wxString AppWXAnsiUnicode = platform::unicode ? wxT("unicode") : wxT("ANSI");
 
-    const wxString AppBuildTimestamp = (wxString(wxT(__DATE__)) + wxT(", ") + wxT(__TIME__) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + AppPlatform + wxT(", ") + AppWXAnsiUnicode + wxT(")") );
+    #if defined(_LP64) || defined(_WIN64)
+    const wxString bit_type = wxT(" - 64 bit");
+    #else
+    const wxString bit_type = wxT(" - 32 bit");
+    #endif
+
+    const wxString AppBuildTimestamp = (wxString(wxT(__DATE__)) + wxT(", ") + wxT(__TIME__) + wxT(" - wx") + wxString(wxT(wxVERSION_NUM_DOT_STRING)) + wxT(" (") + AppPlatform + wxT(", ") + AppWXAnsiUnicode + wxT(")") + bit_type );
 
     const wxString DefaultBatchBuildArgs = _T("-na -nd -ns --batch-build-notify");
 };

@@ -109,10 +109,16 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
         buf = _("<html><body><h1>Welcome to Code::Blocks!</h1><br>The default start page seems to be missing...</body></html>");
     delete fs;
 
+    #if defined(_LP64) || defined(_WIN64)
+    const int bit_type = 64;
+    #else
+    const int bit_type = 32;
+    #endif
+
 	#ifdef __GNUC__
-	revInfo.Printf(_T("%s (%s)   gcc %d.%d.%d %s/%s"),
+	revInfo.Printf(_T("%s (%s)   gcc %d.%d.%d %s/%s - %d bit"),
 					appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
-					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, appglobals::AppPlatform.c_str(), appglobals::AppWXAnsiUnicode.c_str());
+					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, appglobals::AppPlatform.c_str(), appglobals::AppWXAnsiUnicode.c_str(), bit_type);
 	#else
 	revInfo.Printf(_T("%s (%s)   %s/%s"),
 					appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
