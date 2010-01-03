@@ -402,7 +402,7 @@ struct cbEditorInternalData
             return;
         const wxString leftBrace(_T("([{"));
         const wxString rightBrace(_T(")]}"));
-        int index = leftBrace.find(ch);
+        int index = leftBrace.Find(ch);
         const wxString unWant(_T(");\n\r\t\b "));
         #if wxCHECK_VERSION(2, 9, 0)
         if ((index != wxNOT_FOUND) && (unWant.Find(wxUniChar(control->GetCharAt(pos))) != wxNOT_FOUND))
@@ -426,7 +426,7 @@ struct cbEditorInternalData
         }
         else
         {
-            index = rightBrace.find(ch);
+            index = rightBrace.Find(ch);
             if (index != wxNOT_FOUND)
             {
                 if (control->GetCharAt(pos) == ch)
