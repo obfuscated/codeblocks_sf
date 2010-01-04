@@ -82,6 +82,8 @@ void DumpLiteral(SQObjectPtr &o)
 		case OT_INTEGER:
             #if defined(_WIN64)
             scprintf(_SC("{%I64d}"),_integer(o));
+            #elif defined(_SQ64)
+            scprintf(_SC("{%ld}"),_integer(o));
             #else
             scprintf(_SC("{%d}"),_integer(o));
             #endif
