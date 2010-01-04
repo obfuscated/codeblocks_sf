@@ -228,6 +228,14 @@ class ParserThread : public cbThreadedTask
                                   bool createIfNotExist = false,
                                   Token* parentIfCreated = 0);
 
+        /** Converts a full argument list (including variable names) to argument types only and strips spaces.
+          * eg: if the argument list is like '(const TheClass* the_class, int my_int)'
+          * then, the returned argument list is '(const TheClass*,int)'
+          * @param args Full argument list
+          * @return Stripped argument list (argument types only)
+          */
+        wxString GetStrippedArgs(const wxString & args);
+
         /** if we regard the parserThread class as a syntax anilyzer, then the Tokenizer class is
           * regard as the lexer, which always feeds a wxString by calling m_Tokenizer.GetToken()
           */
@@ -305,6 +313,8 @@ class ParserThread : public cbThreadedTask
 
         /** initialze the m_Buffer, load from local file or use a buffer in memory */
         bool InitTokenizer();
+        /** a pointer indicator*/
+        bool m_IsPointer;
 };
 
 #endif // PARSERTHREAD_H

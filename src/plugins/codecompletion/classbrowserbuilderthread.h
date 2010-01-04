@@ -100,7 +100,7 @@ class ClassBrowserBuilderThread : public wxThread
                     const wxString& active_filename,
                     void* user_data, // active project
                     const BrowserOptions& options,
-                    TokensTree* pTokens,
+                    TokensTree* pTokensTree,
                     bool build_tree);
         void AbortBuilding();
         void ExpandItem(wxTreeItemId item);
@@ -129,7 +129,7 @@ class ClassBrowserBuilderThread : public wxThread
         wxString m_ActiveFilename;
         void* m_pUserData; // active project
         BrowserOptions m_Options;
-        TokensTree* m_pTokens;
+        TokensTree* m_pTokensTree;
         ClassBrowserBuilderThread** m_ppThreadVar;
 
         // pair of current-file-filter

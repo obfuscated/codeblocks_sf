@@ -13,16 +13,16 @@
 #endif
 
 //(*Headers(CCDebugInfo)
-#include <wx/notebook.h>
+#include <wx/combobox.h>
 #include <wx/sizer.h>
+#include <wx/notebook.h>
+#include <wx/button.h>
+#include <wx/panel.h>
+#include <wx/dialog.h>
+#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
-#include <wx/statline.h>
-#include <wx/panel.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-#include <wx/combobox.h>
 //*)
 
 class Parser;

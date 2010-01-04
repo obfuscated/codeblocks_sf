@@ -112,24 +112,24 @@ static const char * unknown_keyword_xpm[] = {
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
-int idMenuCodeComplete = wxNewId();
-int idMenuShowCallTip = wxNewId();
-int idMenuGotoFunction = wxNewId();
-int idMenuGotoPrevFunction = wxNewId();
-int idMenuGotoNextFunction = wxNewId();
-int idMenuGotoDeclaration = wxNewId();
-int idMenuGotoImplementation = wxNewId();
-int idMenuOpenIncludeFile = wxNewId();
-int idViewClassBrowser = wxNewId();
-int idEditorSubMenu = wxNewId();
-int idClassMethod = wxNewId();
+int idMenuCodeComplete          = wxNewId();
+int idMenuShowCallTip           = wxNewId();
+int idMenuGotoFunction          = wxNewId();
+int idMenuGotoPrevFunction      = wxNewId();
+int idMenuGotoNextFunction      = wxNewId();
+int idMenuGotoDeclaration       = wxNewId();
+int idMenuGotoImplementation    = wxNewId();
+int idMenuOpenIncludeFile       = wxNewId();
+int idViewClassBrowser          = wxNewId();
+int idEditorSubMenu             = wxNewId();
+int idClassMethod               = wxNewId();
 int idUnimplementedClassMethods = wxNewId();
-int idGotoDeclaration = wxNewId();
-int idGotoImplementation = wxNewId();
-int idOpenIncludeFile = wxNewId();
-int idStartParsingProjects = wxNewId();
-int idCodeCompleteTimer = wxNewId();
-int idFunctionsParsingTimer = wxNewId();
+int idGotoDeclaration           = wxNewId();
+int idGotoImplementation        = wxNewId();
+int idOpenIncludeFile           = wxNewId();
+int idStartParsingProjects      = wxNewId();
+int idCodeCompleteTimer         = wxNewId();
+int idFunctionsParsingTimer     = wxNewId();
 
 // milliseconds
 #define EDITOR_AND_LINE_INTERVAL 150
@@ -195,12 +195,12 @@ void CodeCompletion::LoadTokenReplacements()
     if (!cfg->Exists(_T("token_replacements")))
     {
         // first run; add default replacements string
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"), _T("std"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                    _T("std"));
         Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE"), _T("+namespace"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NESTED_NAMESPACE"), _T("}"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"), _T("}"));
-        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"), _T("-namespace tr1 {"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NESTED_NAMESPACE"),   _T("}"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"),        _T("+namespace"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"),      _T("}"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),    _T("-namespace tr1 {"));
     }
     else
         cfg->Read(_T("token_replacements"), &repl);
@@ -227,11 +227,6 @@ cbConfigurationPanel* CodeCompletion::GetProjectConfigurationPanel(wxWindow* par
 
 int CodeCompletion::Configure()
 {
-//    CCOptionsDlg dlg(Manager::Get()->GetAppWindow());
-//    if (dlg.ShowModal() == wxID_OK)
-//    {
-//        m_NativeParser.RereadParserOptions();
-//    }
     return 0;
 }
 
@@ -255,9 +250,6 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     // if not attached, exit
     if (!IsAttached())
         return;
-
-//    if (m_EditMenu)
-//        return; // already set-up
 
     int pos = menuBar->FindMenu(_("&Edit"));
     if (pos != wxNOT_FOUND)
@@ -411,13 +403,13 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 
 void CodeCompletion::OnAttach()
 {
-    m_PageIndex = -1;
-    m_InitDone = false;
-    m_EditMenu = 0;
+    m_PageIndex  = -1;
+    m_InitDone   = false;
+    m_EditMenu   = 0;
     m_SearchMenu = 0;
-    m_ViewMenu = 0;
-    m_Function = 0;
-    m_Scope = 0;
+    m_ViewMenu   = 0;
+    m_Function   = 0;
+    m_Scope      = 0;
     m_ParsedProjects.clear();
     m_FunctionsScope.clear();
     m_NameSpaces.clear();
@@ -1389,7 +1381,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     if (!edMan) // Closing the app?
         return;
     cbEditor* ed = edMan->GetBuiltinActiveEditor();
-    if(!ed)
+    if (!ed || !ed->GetControl())
     {
         if (m_Function)
             m_Function->Clear();
@@ -1410,16 +1402,16 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         funcdata->m_NameSpaces.clear();
         funcdata->parsed = true;
 
-        Parser parser(this);
-        TokensTree* tmptree = parser.GetTempTokens();
-        tmptree->clear();
-        parser.ParseBufferForFunctions(ed->GetControl()->GetText());
-
-        for(size_t i = 0; i < tmptree->size(); ++i)
+        Parser* parser = m_NativeParser.FindParserFromEditor(ed);
+        if (!parser)
+            return;
+        TokenIdxSet result;
+        TokensTree* tmptree = parser->GetTokens();
+        parser->FindTokensInFile(filename, result, tkFunction | tkConstructor | tkDestructor);
+        for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
         {
-            const Token* token = tmptree->at(i);
-            if (token && (token->m_TokenKind == tkFunction || token->m_TokenKind == tkConstructor || token->m_TokenKind == tkDestructor)
-                && token->m_ImplLine != 0)
+            const Token* token = tmptree->at(*it);
+            if (token && token->m_ImplLine != 0)
             {
                 FunctionScope func;
                 func.StartLine = token->m_ImplLine - 1;
@@ -1925,9 +1917,9 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 	}
 
     // Remove duplicates
-    for (int i = 0; i < foundSet.Count() - 1; i++)
+    for (int i = 0; i < (int)foundSet.Count() - 1; i++)
     {
-        for (int j = i + 1; j < foundSet.Count(); )
+        for (int j = i + 1; j < (int)foundSet.Count(); )
         {
             if (foundSet.Item(i) == foundSet.Item(j))
             {
@@ -2106,28 +2098,6 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     }
     if (control->GetCurrentLine() != m_CurrentLine)
     {
-        m_CurrentLine = control->GetCurrentLine();
-        int sel = FunctionPosition();
-        if(sel != -1 && sel != m_Function->GetSelection())
-        {
-            m_Function->SetSelection(sel);
-            m_Scope->SetSelection(sel);
-        }
-        else if(sel == -1)
-        {
-            m_Function->SetSelection(wxNOT_FOUND);
-            // TO DO : set scope correctly
-            int NsSel = NameSpacePosition();
-            if(NsSel != -1)
-            {
-                m_Scope->SetSelection(NsSel + m_StartIdxNameSpaceInScope);
-            }
-            else
-            {
-                m_Scope->SetSelection(wxNOT_FOUND);
-            }
-        }
-
         if (m_NeedReparse)
         {
             Parser* parser = m_NativeParser.FindParserFromActiveEditor();
@@ -2136,6 +2106,30 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                 parser->Reparse(editor->GetFilename());
             }
             m_NeedReparse= false;
+        }
+        else
+        {
+            m_CurrentLine = control->GetCurrentLine();
+            int sel = FunctionPosition();
+            if ( (sel != -1) && (sel != m_Function->GetSelection()) )
+            {
+                m_Function->SetSelection(sel);
+                m_Scope->SetSelection(sel);
+            }
+            else if (sel == -1)
+            {
+                m_Function->SetSelection(wxNOT_FOUND);
+                // TO DO : set scope correctly
+                int NsSel = NameSpacePosition();
+                if (NsSel != -1)
+                {
+                    m_Scope->SetSelection(NsSel + m_StartIdxNameSpaceInScope);
+                }
+                else
+                {
+                    m_Scope->SetSelection(wxNOT_FOUND);
+                }
+            }
         }
     }
 
@@ -2161,5 +2155,8 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
-    // nothing for now
+    if (!ProjectManager::IsBusy())
+    {
+        ParseFunctionsAndFillToolbar(true);
+	}
 }

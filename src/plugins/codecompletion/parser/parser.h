@@ -113,7 +113,6 @@ struct BrowserOptions
 };
 
 class ClassBrowser;
-class ClassBrowserBuilderThread;
 
 class Parser : public wxEvtHandler
 {
@@ -123,10 +122,10 @@ class Parser : public wxEvtHandler
         Parser(wxEvtHandler* parent);
         ~Parser();
 
-        void BatchParse(const wxArrayString& filenames);
-        bool Parse(const wxString& filename,         bool isLocal = true, LoaderBase* loader = 0);
-        bool Parse(const wxString& bufferOrFilename, bool isLocal,        ParserThreadOptions& opts);
-        bool ParseBuffer(const wxString& buffer, bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
+        void BatchParse (const wxArrayString& filenames);
+        bool Parse      (const wxString& filename,         bool isLocal = true, LoaderBase* loader = 0);
+        bool Parse      (const wxString& bufferOrFilename, bool isLocal,        ParserThreadOptions& opts);
+        bool ParseBuffer(const wxString& buffer,           bool isLocal = true, bool bufferSkipBlocks = false, bool isTemp = false);
         bool ParseBufferForFunctions(const wxString& buffer);
         bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result);
         bool Reparse(const wxString& filename, bool isLocal = true);
@@ -145,7 +144,7 @@ class Parser : public wxEvtHandler
         long LastParseTime();
 
 #ifndef STANDALONE
-        int GetTokenKindImage(Token* token);
+        int  GetTokenKindImage(Token* token);
         void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask = wxNullBitmap);
         void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
         void SetTokenKindImage(int kind, const wxIcon& icon);
@@ -166,8 +165,8 @@ class Parser : public wxEvtHandler
         wxString FindFirstFileInIncludeDirs(const wxString& file);
         wxArrayString FindFileInIncludeDirs(const wxString& file,bool firstonly = false);
 
-        TokensTree* GetTokens(){ return m_pTokens; }
-        TokensTree* GetTempTokens() { return m_pTempTokens; }
+        TokensTree* GetTokens(){ return m_pTokensTree; }
+        TokensTree* GetTempTokens() { return m_pTempTokensTree; }
         unsigned int GetFilesCount();
 
         bool Done();
@@ -201,8 +200,8 @@ class Parser : public wxEvtHandler
         bool m_UsingCache; // true if loaded from cache
 
         cbThreadPool                   m_Pool;
-        TokensTree*                    m_pTokens;
-        TokensTree*                    m_pTempTokens;
+        TokensTree*                    m_pTokensTree;
+        TokensTree*                    m_pTempTokensTree;
         set<wxString, less<wxString> > m_LocalFiles;
         bool                           m_NeedsReparse;
         bool                           m_IsBatch;
@@ -217,8 +216,6 @@ class Parser : public wxEvtHandler
         long                           m_LastStopWatchTime;
         bool                           m_IgnoreThreadEvents;
         bool                           m_ShuttingDown;
-
-        ClassBrowserBuilderThread*     m_pClassBrowserBuilderThread;
 
 #endif // STANDALONE
 

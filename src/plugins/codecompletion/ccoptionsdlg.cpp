@@ -147,7 +147,11 @@ void CCOptionsDlg::UpdateSliderLabel()
 
 bool CCOptionsDlg::ValidateReplacementToken(wxString& from, wxString& to)
 {
-    if (to.Trim().IsEmpty())
+    // cut off any leading / trailing spaces
+    from.Trim(true).Trim(false);
+    to.Trim(true).Trim(false);
+
+    if (to.IsEmpty())
     {
         // Allow removing a token, but ask the user if that's OK.
         if (cbMessageBox( _("This setup will replace the token with an empty string.\n"
@@ -159,15 +163,22 @@ bool CCOptionsDlg::ValidateReplacementToken(wxString& from, wxString& to)
             return true;
         }
     }
-    wxRegEx re(_T("[A-Za-z_]+[0-9]*[A-Za-z_]*"));
-    from.Trim(true).Trim(false);
-    to.Trim(true).Trim(false);
-    if (!re.Matches(from) || !re.Matches(to))
+    else if (to.Contains(from))
     {
-        cbMessageBox(_("Replacement tokens can only contain alphanumeric characters and underscores..."),
+        cbMessageBox(_("Replacement token cannot contain search token.\n"
+                       "This would cause an infinite loop otherwise."),
                      _("Error"), wxICON_ERROR);
         return false;
     }
+
+    wxRegEx re(_T("[A-Za-z_]+[0-9]*[A-Za-z_]*"));
+    if (!re.Matches(from) || !re.Matches(to))
+    {
+        cbMessageBox(_("Replacement tokens can only contain alphanumeric characters and underscores."),
+                     _("Error"), wxICON_ERROR);
+        return false;
+    }
+
     return true;
 }
 

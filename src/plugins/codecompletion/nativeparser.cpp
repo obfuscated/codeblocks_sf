@@ -588,7 +588,7 @@ void NativeParser::ReparseProject(cbProject* project)
     }
     if (!files.IsEmpty())
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Passing list of files to parse"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Passing list of files to batch-parser."));
         parser->BatchParse(files);
     }
 }
@@ -1140,17 +1140,19 @@ void NativeParser::BreakUpInLines(wxString& str, const wxString& original_str, i
     }
 }
 
+// convenient static funcs for fast access and improved readability
+
 static bool InsideToken(int startAt, const wxString& line)
 {
     return (   (startAt >= 0)
-            && (startAt < line.Len())
+            && ((size_t)startAt < line.Len())
             && (   (wxIsalnum(line.GetChar(startAt)))
                 || (line.GetChar(startAt) == '_') ) );
 }
 static int BeginOfToken(int startAt, const wxString& line)
 {
     while (   (startAt >= 0)
-           && (startAt < line.Len())
+           && ((size_t)startAt < line.Len())
            && (   (wxIsalnum(line.GetChar(startAt)))
                || (line.GetChar(startAt) == '_') ) )
         --startAt;
@@ -1159,7 +1161,7 @@ static int BeginOfToken(int startAt, const wxString& line)
 static int BeforeToken(int startAt, const wxString& line)
 {
     if (   (startAt > 0)
-        && (startAt < line.Len() + 1)
+        && ((size_t)startAt < line.Len() + 1)
         && (   (wxIsalnum(line.GetChar(startAt - 1)))
             || (line.GetChar(startAt - 1) == '_') ) )
         --startAt;
@@ -1168,7 +1170,7 @@ static int BeforeToken(int startAt, const wxString& line)
 static bool IsOperatorEnd(int startAt, const wxString& line)
 {
     return (   (startAt > 0)
-            && (startAt < line.Len())
+            && ((size_t)startAt < line.Len())
             && (   (   (line.GetChar(startAt) == '>')
                     && (line.GetChar(startAt - 1) == '-') )
                 || (   (line.GetChar(startAt) == ':')
@@ -1177,23 +1179,22 @@ static bool IsOperatorEnd(int startAt, const wxString& line)
 static bool IsOperatorBegin(int startAt, const wxString& line)
 {
     return (   (startAt > 0)
-            && (startAt + 1< line.Len())
+            && ((size_t)startAt + 1< line.Len())
             && (   (   (line.GetChar(startAt ) == '-')
                     && (line.GetChar(startAt + 1) == '>') )
                 || (   (line.GetChar(startAt) == ':')
                     && (line.GetChar(startAt + 1) == ':') ) ) );
 }
-
 static bool IsOperatorDot(int startAt, const wxString& line)
 {
     return (   (startAt >= 0)
-            && (startAt < line.Len())
+            && ((size_t)startAt < line.Len())
             && (line.GetChar(startAt) == '.') );
 }
 static int BeforeWhitespace(int startAt, const wxString& line)
 {
     while (   (startAt >= 0)
-           && (startAt < line.Len())
+           && ((size_t)startAt < line.Len())
            && (   (line.GetChar(startAt) == ' ')
                || (line.GetChar(startAt) == '\t') ) )
         --startAt;
@@ -1203,7 +1204,7 @@ static int AfterWhitespace(int startAt, const wxString& line)
 {
     if (startAt < 0)
         startAt = 0;
-    while (   (startAt < line.Len())
+    while (   ((size_t)startAt < line.Len())
            && (   (line.GetChar(startAt) == ' ')
                || (line.GetChar(startAt) == '\t') ) )
         ++startAt;
@@ -1211,7 +1212,7 @@ static int AfterWhitespace(int startAt, const wxString& line)
 }
 static bool IsOpeningBracket(int startAt, const wxString& line)
 {
-    return (   (startAt < line.Len())
+    return (   ((size_t)startAt < line.Len())
             && (   (line.GetChar(startAt) == '(')
                 || (line.GetChar(startAt) == '[') ) );
 }
@@ -1224,8 +1225,9 @@ static bool IsClosingBracket(int startAt, const wxString& line)
 
 unsigned int NativeParser::FindCCTokenStart(const wxString& line)
 {
+    // Careful: startAt can become negative, so it's defined as integer here!
     int startAt = line.Len() - 1;
-    int nest = 0;
+    int nest    = 0;
 
     bool repeat = true;
     while (repeat)

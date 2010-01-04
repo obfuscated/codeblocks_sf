@@ -137,7 +137,7 @@ wxString Token::DisplayName() const
 {
     wxString result;
     if      (m_TokenKind == tkClass)
-        return result << _T("class ")     << m_Name << m_RealArgs << _T(" {...}");
+        return result << _T("class ")     << m_Name << m_StrippedArgs << _T(" {...}");
     else if (m_TokenKind == tkNamespace)
         return result << _T("namespace ") << m_Name << _T(" {...}");
     else if (m_TokenKind == tkEnum)

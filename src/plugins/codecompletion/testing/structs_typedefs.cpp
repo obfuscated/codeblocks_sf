@@ -7,6 +7,7 @@ struct _s
 };
 typedef struct _s t_s;
 typedef _s (*t_ptr_s)(int a, int b);
+//typedef _s_ptr *(*ptr_t_ptr_s)(long l, int a, int b);
 
 typedef struct _s_inner
 {
@@ -32,6 +33,12 @@ typedef class _c_inner
   int   l;
   float m;
 } t_c_inner;
+
+typedef class _c_mult
+{
+    long  l;
+    float f;
+} t_c_mult, *p_t_c_mult;
 
 typedef unsigned int i_uinteger;
 
@@ -59,6 +66,9 @@ int main (void)
 //    t_ptr_s(
 //    t_ptr_s(3,3).
 
+//    ptr_t_ptr_s(
+//    ptr_t_ptr_s(100,3,3).
+
     t_s_outer  ts_outer;
     t_s_outer* pts_outer;
 
@@ -83,6 +93,12 @@ int main (void)
 //    tc_inner->
 //    ptc_inner.
 //    ptc_inner->
+
+    t_c_mult   tc_mult;
+    p_t_c_mult ptc_mult;
+
+//    tc_mult.
+//    ptc_mult->
 
 //    i_
 

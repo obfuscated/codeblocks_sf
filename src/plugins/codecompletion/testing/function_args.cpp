@@ -36,6 +36,12 @@ AClass* b_function(AClass c_class, const AClass& c_class_const)
   return &a_class; // oh dear...
 }
 
+void /* comment before */ c_function(int /* type_comment */ i_integer, float f_float /* default_value_comment */) // trailing comment
+{
+//  i_
+//  f_
+}
+
 int main (void)
 {
         int     i = 0;
@@ -46,4 +52,5 @@ int main (void)
 
           a_function(i, f);
   c_ret = b_function(c, c_const);
+          c_function(i, f);
 }

@@ -149,7 +149,7 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxSemaphore& sem, ClassBrow
     m_pTreeBottom(0),
     m_pUserData(0),
     m_Options(),
-    m_pTokens(0),
+    m_pTokensTree(0),
     m_ppThreadVar(threadVar)
 {
     //ctor
@@ -166,7 +166,7 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
                                     const wxString& active_filename,
                                     void* user_data, // active project
                                     const BrowserOptions& options,
-                                    TokensTree* pTokens,
+                                    TokensTree* pTokensTree,
                                     bool build_tree)
 {
     wxMutexLocker lock(m_BuildMutex);
@@ -176,7 +176,7 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
     m_ActiveFilename = active_filename;
     m_pUserData = user_data;
     m_Options = options;
-    m_pTokens = pTokens;
+    m_pTokensTree = pTokensTree;
 
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
@@ -281,7 +281,7 @@ void* ClassBrowserBuilderThread::Entry()
 
 void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
     if (!m_Options.expandNS || !node.IsOk())
@@ -305,7 +305,7 @@ void ClassBrowserBuilderThread::ExpandNamespaces(wxTreeItemId node)
 
 void ClassBrowserBuilderThread::BuildTree(bool useLock)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 //    wxMutexLocker lock(m_BuildMutex);
 
@@ -365,7 +365,7 @@ wxStopWatch sw;
 //#endif
     }
 
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 //#ifdef buildtree_measuring
 //Manager::Get()->GetLogManager()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
@@ -448,11 +448,11 @@ wxStopWatch sw;
 #if 1
 void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemId parent)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
         return;
 
     // recursively enters all existing nodes and deletes the node if the token it references
-    // is invalid (i.e. m_pTokens->at() != token_in_data)
+    // is invalid (i.e. m_pTokensTree->at() != token_in_data)
 
     // we 'll loop backwards so we can delete nodes without problems
     wxTreeItemId existing = tree->GetLastChild(parent);
@@ -469,7 +469,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
         else if (data && data->m_pToken)
         {
 
-            if (m_pTokens->at(data->m_TokenIndex) != data->m_pToken ||
+            if (m_pTokensTree->at(data->m_TokenIndex) != data->m_pToken ||
                 (data->m_Ticket && data->m_Ticket != data->m_pToken->GetTicket()) ||
                 !TokenMatchesFilter(data->m_pToken))
             {
@@ -511,11 +511,11 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
 #else
 void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemId parent)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || (!(parent.IsOk())))
         return;
 
     // recursively enters all existing nodes and deletes the node if the token it references
-    // is invalid (i.e. m_pTokens->at() != token_in_data)
+    // is invalid (i.e. m_pTokensTree->at() != token_in_data)
 
     // we 'll loop backwards so we can delete nodes without problems
     wxTreeItemId existing = tree->GetLastChild(parent);
@@ -528,7 +528,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
         CBTreeData* data = (CBTreeData*)tree->GetItemData(existing);
         if (data && data->m_pToken)
         {
-            if (m_pTokens->at(data->m_TokenIndex) != data->m_pToken ||
+            if (m_pTokensTree->at(data->m_TokenIndex) != data->m_pToken ||
                 data->m_TokenKind != data->m_pToken->m_TokenKind || // need to compare kinds: the token index might have been reused...
                 data->m_TokenName != data->m_pToken->m_Name || // same for the token name
                 !TokenMatchesFilter(data->m_pToken))
@@ -593,7 +593,7 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CBTreeCtrl* tree, wxTr
 
 bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask, int tokenScopeMask)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
     Token* parentToken = 0;
@@ -602,13 +602,13 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
     if (parentTokenIdx == -1)
     {
         if(m_Options.displayFilter >= bdfWorkspace)
-            tokens = &m_pTokens->m_GlobalNameSpace;
+            tokens = &m_pTokensTree->m_GlobalNameSpace;
         else
             tokens = &m_CurrentGlobalTokensSet;
     }
     else
     {
-        parentToken = m_pTokens->at(parentTokenIdx);
+        parentToken = m_pTokensTree->at(parentTokenIdx);
         if (!parentToken)
         {
 //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Token not found?!?")));
@@ -622,10 +622,10 @@ bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId par
 
 bool ClassBrowserBuilderThread::AddAncestorsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    Token* token = m_pTokens->at(tokenIdx);
+    Token* token = m_pTokensTree->at(tokenIdx);
     if (!token)
         return false;
 
@@ -634,10 +634,10 @@ bool ClassBrowserBuilderThread::AddAncestorsOf(CBTreeCtrl* tree, wxTreeItemId pa
 
 bool ClassBrowserBuilderThread::AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
 
-    Token* token = m_pTokens->at(tokenIdx);
+    Token* token = m_pTokensTree->at(tokenIdx);
     if (!token)
         return false;
 
@@ -675,7 +675,7 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
 
     for ( ; start != end; ++start)
     {
-        Token* token = m_pTokens->at(*start);
+        Token* token = m_pTokensTree->at(*start);
         if (token &&
             (token->m_TokenKind & tokenKindMask) &&
             (tokenScopeMask == 0 || token->m_Scope == tokenScopeMask) &&
@@ -745,7 +745,7 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(Token* token)
         // to see if any of them matches the filter...
         for (TokenIdxSet::iterator it = token->m_Children.begin(); it != token->m_Children.end(); ++it)
         {
-            if (TokenMatchesFilter(m_pTokens->at(*it)))
+            if (TokenMatchesFilter(m_pTokensTree->at(*it)))
                 return true;
         }
     }
@@ -773,7 +773,7 @@ bool ClassBrowserBuilderThread::TokenContainsChildrenOfKind(Token* token, int ki
 
 void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node)
 {
-   if (TestDestroy() || Manager::IsAppShuttingDown() || !node.IsOk())
+   if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown() || !node.IsOk())
         return;
 
     CBTreeData* data = (CBTreeData*)m_pTreeTop->GetItemData(node);
@@ -961,7 +961,7 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CBTreeCtrl* tree, wxTreeIte
 
 void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
 #ifdef buildtree_measuring
@@ -1027,7 +1027,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 
 void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
     if (useLock)
@@ -1043,7 +1043,7 @@ void ClassBrowserBuilderThread::CollapseItem(wxTreeItemId item, bool useLock)
 
 void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 #ifdef buildtree_measuring
     wxStopWatch sw;
@@ -1060,7 +1060,7 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 
 void ClassBrowserBuilderThread::SaveExpandedItems(CBTreeCtrl* tree, wxTreeItemId parent, int level)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
     wxTreeItemIdValue cookie;
@@ -1081,7 +1081,7 @@ void ClassBrowserBuilderThread::SaveExpandedItems(CBTreeCtrl* tree, wxTreeItemId
 
 void ClassBrowserBuilderThread::ExpandSavedItems(CBTreeCtrl* tree, wxTreeItemId parent, int level)
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
     wxTreeItemIdValue cookie;
@@ -1124,7 +1124,7 @@ void ClassBrowserBuilderThread::ExpandSavedItems(CBTreeCtrl* tree, wxTreeItemId 
 
 void ClassBrowserBuilderThread::SaveSelectedItem()
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
     m_SelectedPath.clear();
@@ -1141,7 +1141,7 @@ void ClassBrowserBuilderThread::SaveSelectedItem()
 
 void ClassBrowserBuilderThread::SelectSavedItem()
 {
-    if (TestDestroy() || Manager::IsAppShuttingDown())
+    if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
 
     wxTreeItemId parent = m_pTreeTop->GetRootItem();

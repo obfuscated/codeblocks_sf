@@ -105,7 +105,7 @@ class Token  : public BlockAllocated<Token, 10000>
         wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
         wxString m_Name;
         wxString m_Args;
-        wxString m_RealArgs;
+        wxString m_StrippedArgs;
         wxString m_AncestorsString; // all ancestors comma-separated list
         unsigned int m_FileIdx;
         unsigned int m_Line;

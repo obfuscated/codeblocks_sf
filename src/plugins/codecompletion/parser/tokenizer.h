@@ -10,6 +10,22 @@
 #include <configmanager.h>
 #include <filemanager.h>
 
+
+enum TokenizerState
+{
+    tsSkipEqual        = 0x0001,
+    tsSkipQuestion     = 0x0002,
+    tsSkipSubScrip     = 0x0004,
+    tsSingleAngleBrace = 0x0008,
+
+    tsSkipNone         = 0x1000,
+    // convenient masks
+    tsSkipUnWanted     = tsSkipEqual | tsSkipQuestion | tsSkipSubScrip,
+    tsTemplateArgument = tsSkipUnWanted|tsSingleAngleBrace
+
+};
+
+
 struct TokenizerOptions
 {
     bool wantPreprocessor;
@@ -23,28 +39,31 @@ public:
 
     bool Init(const wxString& filename = wxEmptyString, LoaderBase* loader = 0);
     bool InitFromBuffer(const wxString& buffer);
-    wxString GetToken(bool bGetValue = false, bool bTemplate = false);
-    wxString PeekToken(bool bGetValue = false, bool bTemplate = false);
-    void UngetToken();
 
-    void SetOperatorState(bool state)
-    {
-        m_IsOperator = state;
-    }
+
+    wxString GetToken();
+    wxString PeekToken();
+    void     UngetToken();
+
 
     void SetTokenizerOption(bool wantPreprocessor)
     {
       m_TokenizerOptions.wantPreprocessor = wantPreprocessor;
     };
 
-    void SetSkipUnwantedTokens(bool skip)
+    void SetState(TokenizerState state)
     {
-        m_SkipUnwantedTokens = skip;
+        m_State = state;
     };
+
+    TokenizerState GetState()
+    {
+        return m_State;
+    }
 
     bool IsSkippingUnwantedTokens() const
     {
-        return m_SkipUnwantedTokens;
+        return (m_State == tsSkipUnWanted);
     };
 
     const wxString& GetFilename() const
@@ -110,7 +129,8 @@ public:
 
 protected:
     void BaseInit();
-    wxString DoGetToken(bool bGetValue = false, bool bTemplate = false);
+
+    wxString DoGetToken();
     wxString FixArgument(wxString src);
     bool ReadFile();
     bool SkipWhiteSpace();
@@ -118,7 +138,7 @@ protected:
     bool SkipToChar(const wxChar& ch);
     bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false);
     bool SkipBlock(const wxChar& ch);
-    bool SkipUnwanted(bool bGetValue); // skips comments, assignments, preprocessor etc.
+    bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
     bool SkipComment(bool skipWhiteAtEnd = true);
     bool SkipString();
     bool SkipToStringEnd(const wxChar& ch);
@@ -253,9 +273,9 @@ private:
 
     bool             m_IsOK;
     bool             m_IsOperator;
-    bool             m_IsPreprocessor;
-    wxString         m_LastPreprocessor;
     bool             m_SkipUnwantedTokens;
+
+    TokenizerState   m_State;
 
     LoaderBase*      m_pLoader;
 
