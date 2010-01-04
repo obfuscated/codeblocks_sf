@@ -76,6 +76,8 @@ SQString *SQVM::PrintObjVal(const SQObject &o)
 	case OT_INTEGER:
 		#if defined(_WIN64)
 		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%I64d"), _integer(o));
+		#elif defined(_SQ64)
+		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%ld"), _integer(o));
 		#else
 		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)), _SC("%d"), _integer(o));
 		#endif
