@@ -52,6 +52,10 @@ typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
 typedef long long SQInteger;
 typedef unsigned long long SQUnsignedInteger;
 typedef unsigned long long SQHash; /*should be the same size of a pointer*/
+#else /* all other 64-bit platforms */
+typedef long SQInteger;
+typedef unsigned long SQUnsignedInteger;
+typedef unsigned long SQHash; /*should be the same size of a pointer*/
 #endif
 typedef int SQInt32;
 #else
