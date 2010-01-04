@@ -137,7 +137,7 @@ SQInteger SQLexer::Lex()
 			case _SC('*'):
 				NEXT();
 				LexBlockComment();
-				continue;	
+				continue;
 			case _SC('/'):
 				do { NEXT(); } while (CUR_CHAR != _SC('\n') && (!IS_EOB()));
 				continue;
@@ -167,8 +167,8 @@ SQInteger SQLexer::Lex()
 		case _SC('>'):
 			NEXT();
 			if (CUR_CHAR == _SC('=')){ NEXT(); RETURN_TOKEN(TK_GE);}
-			else if(CUR_CHAR == _SC('>')){ 
-				NEXT(); 
+			else if(CUR_CHAR == _SC('>')){
+				NEXT();
 				if(CUR_CHAR == _SC('>')){
 					NEXT();
 					RETURN_TOKEN(TK_USHIFTR);
@@ -182,7 +182,7 @@ SQInteger SQLexer::Lex()
 			else { NEXT(); RETURN_TOKEN(TK_NE); }
 		case _SC('@'): {
 			SQInteger stype;
-			NEXT(); 
+			NEXT();
 			if(CUR_CHAR != _SC('"'))
 				Error(_SC("string expected"));
 			if((stype=ReadString('"',true))!=-1) {
@@ -254,15 +254,15 @@ SQInteger SQLexer::Lex()
 					SQInteger c = CUR_CHAR;
 					if (sciscntrl((int)c)) Error(_SC("unexpected character(control)"));
 					NEXT();
-					RETURN_TOKEN(c);  
+					RETURN_TOKEN(c);
 				}
 				RETURN_TOKEN(0);
 			}
 		}
 	}
-	return 0;    
+	return 0;
 }
-	
+
 SQInteger SQLexer::GetIDType(SQChar *s)
 {
 	SQObjectPtr t;
@@ -284,20 +284,20 @@ SQInteger SQLexer::ReadString(SQInteger ndelim,bool verbatim)
 			case SQUIRREL_EOB:
 				Error(_SC("unfinished string"));
 				return -1;
-			case _SC('\n'): 
-				if(!verbatim) Error(_SC("newline in a constant")); 
-				APPEND_CHAR(CUR_CHAR); NEXT(); 
+			case _SC('\n'):
+				if(!verbatim) Error(_SC("newline in a constant"));
+				APPEND_CHAR(CUR_CHAR); NEXT();
 				_currentline++;
 				break;
 			case _SC('\\'):
 				if(verbatim) {
-					APPEND_CHAR('\\'); NEXT(); 
+					APPEND_CHAR('\\'); NEXT();
 				}
 				else {
 					NEXT();
 					switch(CUR_CHAR) {
 					case _SC('x'): NEXT(); {
-						if(!isxdigit(CUR_CHAR)) Error(_SC("hexadecimal number expected")); 
+						if(!isxdigit(CUR_CHAR)) Error(_SC("hexadecimal number expected"));
 						const SQInteger maxdigits = 4;
 						SQChar temp[maxdigits+1];
 						SQInteger n = 0;
@@ -421,7 +421,7 @@ SQInteger SQLexer::ReadNumber()
 		}
 	}
 	else {
-		APPEND_CHAR((int)firstchar);
+		APPEND_CHAR((char)firstchar); // C::B patch- to eliminate compiler warning
 		while (CUR_CHAR == _SC('.') || scisdigit(CUR_CHAR) || isexponent(CUR_CHAR)) {
             if(CUR_CHAR == _SC('.')) type = TFLOAT;
 			if(isexponent(CUR_CHAR)) {
@@ -435,7 +435,7 @@ SQInteger SQLexer::ReadNumber()
 				}
 				if(!scisdigit(CUR_CHAR)) Error(_SC("exponent expected"));
 			}
-			
+
 			APPEND_CHAR(CUR_CHAR);
 			NEXT();
 		}
