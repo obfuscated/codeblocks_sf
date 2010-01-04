@@ -21,7 +21,7 @@ struct SQExceptionTrap{
 	SQInteger _extarget;
 };
 
-#define _INLINE 
+#define _INLINE
 
 #define STK(a) _stack._vals[_stackbase+(a)]
 #define TARGET _stack._vals[_stackbase+arg0]
@@ -32,8 +32,11 @@ struct SQVM : public CHAINABLE_OBJ
 {
 	struct VarArgs {
 		VarArgs() { size = 0; base = 0; }
-		unsigned short size;
-		unsigned short base;
+		/*unsigned short size;
+		unsigned short base;*/
+		// C::B patch - to eliminate compiler warnings
+		SQInt32 size;
+		SQInt32 base;
 	};
 
 	struct CallInfo{
@@ -50,7 +53,7 @@ struct SQVM : public CHAINABLE_OBJ
 		SQBool _root;
 		VarArgs _vargs;
 	};
-	
+
 typedef sqvector<CallInfo> CallInfoVec;
 public:
 	enum ExecutionType { ET_CALL, ET_RESUME_GENERATOR, ET_RESUME_VM, ET_RESUME_THROW_VM };
@@ -81,7 +84,7 @@ public:
 	void ToString(const SQObjectPtr &o,SQObjectPtr &res);
 	SQString *PrintObjVal(const SQObject &o);
 
- 
+
 	void Raise_Error(const SQChar *s, ...);
 	void Raise_Error(SQObjectPtr &desc);
 	void Raise_IdxError(SQObject &o);
@@ -129,7 +132,7 @@ public:
 	void Remove(SQInteger n);
 
 	bool IsFalse(SQObjectPtr &o);
-	
+
 	void Pop();
 	void Pop(SQInteger n);
 	void Push(const SQObjectPtr &o);
@@ -148,7 +151,7 @@ public:
 	SQObjectPtr _debughook;
 
 	SQObjectPtr temp_reg;
-	
+
 
 	CallInfo* _callsstack;
 	SQInteger _callsstacksize;
