@@ -55,7 +55,7 @@ float CharDistributionAnalysis::GetConfidence(PRBool aIsPreferredLanguage)
   // number of frequent characters is below the minimum threshold, return
   // negative answer
   if (mTotalChars <= 0 ||
-      !aIsPreferredLanguage && mFreqChars <= MINIMUM_DATA_THRESHOLD)
+      (!aIsPreferredLanguage && mFreqChars <= MINIMUM_DATA_THRESHOLD))
     return SURE_NO;
 
   if (mTotalChars != mFreqChars) {

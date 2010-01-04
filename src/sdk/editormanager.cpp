@@ -365,7 +365,7 @@ int EditorManager::GetEditorsCount()
 
 EditorBase* EditorManager::InternalGetEditorBase(int page)
 {
-    if (page < m_pNotebook->GetPageCount())
+    if (page >= 0 && page < (int)m_pNotebook->GetPageCount())
     {
         return static_cast<EditorBase*>(m_pNotebook->GetPage(page));
     }
