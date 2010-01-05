@@ -249,8 +249,10 @@ void SQVM::ToString(const SQObjectPtr &o,SQObjectPtr &res)
 		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)),_SC("%g"),_float(o));
 		break;
 	case OT_INTEGER:
+		// C::B patch: Support for Windows 64 bit
         #if defined(_WIN64)
 		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)),_SC("%I64d"),_integer(o));
+		// C::B patch: Support for Linux 64 bit
 		#elif  defined(_SQ64)
 		scsprintf(_sp(rsl(NUMBER_MAX_CHAR+1)),_SC("%ld"),_integer(o));
 		#else
@@ -652,6 +654,7 @@ bool SQVM::IsEqual(SQObjectPtr &o1,SQObjectPtr &o2,bool &res)
 
 bool SQVM::IsFalse(SQObjectPtr &o)
 {
+	// C::B patch: Eliminate compiler warnings
 	if(( (type(o) & SQOBJECT_CANBEFALSE) && ( (type(o) == OT_FLOAT) && (_float(o) == SQFloat(0.0))) )
 		|| (_integer(o) == 0) ) { //OT_NULL|OT_INTEGER|OT_BOOL
 		return true;
@@ -694,6 +697,8 @@ bool SQVM::Execute(SQObjectPtr &closure, SQInteger target, SQInteger nargs, SQIn
 				return false;
 			}
 			if (_funcproto(_closure(temp_reg)->_function)->_bgenerator) {
+				// C::B patch: Eliminate compiler warnings
+				//SQFunctionProto *f = _funcproto(_closure(temp_reg)->_function);
 				SQGenerator *gen = SQGenerator::Create(_ss(this), _closure(temp_reg));
 				_GUARD(gen->Yield(this));
 				Return(1, ci->_target, temp_reg);

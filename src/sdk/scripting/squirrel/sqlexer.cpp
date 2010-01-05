@@ -421,7 +421,8 @@ SQInteger SQLexer::ReadNumber()
 		}
 	}
 	else {
-		APPEND_CHAR((char)firstchar); // C::B patch- to eliminate compiler warning
+		// C::B patch: Eliminate compiler warnings
+		APPEND_CHAR((char)firstchar);
 		while (CUR_CHAR == _SC('.') || scisdigit(CUR_CHAR) || isexponent(CUR_CHAR)) {
             if(CUR_CHAR == _SC('.')) type = TFLOAT;
 			if(isexponent(CUR_CHAR)) {

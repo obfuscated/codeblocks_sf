@@ -48,11 +48,13 @@ extern "C" {
 typedef __int64 SQInteger;
 typedef unsigned __int64 SQUnsignedInteger;
 typedef unsigned __int64 SQHash; /*should be the same size of a pointer*/
-#elif defined(__GNUC__) && defined(_WIN64) /* For Win64 build with GCC */
+// C::B patch: For Win64 build with GCC
+#elif defined(__GNUC__) && defined(_WIN64)
 typedef long long SQInteger;
 typedef unsigned long long SQUnsignedInteger;
-typedef unsigned long long SQHash; /*should be the same size of a pointer*/
-#else /* all other 64-bit platforms */
+typedef unsigned long long SQHash; /* should be the same size of a pointer */
+// C::B patch: All other 64-bit platforms
+#else
 typedef long SQInteger;
 typedef unsigned long SQUnsignedInteger;
 typedef unsigned long SQHash; /*should be the same size of a pointer*/

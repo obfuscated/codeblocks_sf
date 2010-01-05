@@ -80,8 +80,10 @@ void DumpLiteral(SQObjectPtr &o)
 		case OT_STRING:	scprintf(_SC("\"%s\""),_stringval(o));break;
 		case OT_FLOAT: scprintf(_SC("{%f}"),_float(o));break;
 		case OT_INTEGER:
+			// C::B patch: Support for Windows 64 bit
             #if defined(_WIN64)
             scprintf(_SC("{%I64d}"),_integer(o));
+			// C::B patch: Support for Linux 64 bit
             #elif defined(_SQ64)
             scprintf(_SC("{%ld}"),_integer(o));
             #else
@@ -89,6 +91,7 @@ void DumpLiteral(SQObjectPtr &o)
             #endif
             break;
 		case OT_BOOL: scprintf(_SC("%s"),_integer(o)?_SC("true"):_SC("false"));break;
+		// C::B patch: Eliminate compiler warnings
 		default: scprintf(_SC("(%s %p)"),GetTypeName(o),(void*)_rawval(o));break; break; //shut up compiler
 	}
 }

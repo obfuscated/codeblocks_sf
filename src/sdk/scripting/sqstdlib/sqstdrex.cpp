@@ -5,7 +5,8 @@
 #include <setjmp.h>
 #include "sqstdstring.h"
 
-#ifdef _UINCODE
+// C::B patch: Fix wrong spelling of UNICODE
+#ifdef _UNICODE
 #define scisprint iswprint
 #else
 #define scisprint isprint
@@ -483,6 +484,7 @@ static const SQChar *sqstd_rex_matchnode(SQRex* exp,SQRexNode *node,const SQChar
 			return cur;
 	}
 	case OP_WB:
+		// C::B patch: Eliminate compiler warnings
 		if( (str == exp->_bol && !isspace(*str))
 		 || ((str == exp->_eol && !isspace(*(str-1))))
 		 || ((!isspace(*str) && isspace(*(str+1))))

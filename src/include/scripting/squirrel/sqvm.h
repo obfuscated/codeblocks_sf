@@ -32,9 +32,11 @@ struct SQVM : public CHAINABLE_OBJ
 {
 	struct VarArgs {
 		VarArgs() { size = 0; base = 0; }
-		/*unsigned short size;
-		unsigned short base;*/
-		// C::B patch - to eliminate compiler warnings
+		// C::B patch: Eliminate compiler warnings
+		/*
+		unsigned short size;
+		unsigned short base;
+		*/
 		SQInt32 size;
 		SQInt32 base;
 	};
