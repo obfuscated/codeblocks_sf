@@ -16,8 +16,12 @@
 
 #include <wx/settings.h>
 #include <wx/utils.h>
+#ifdef buildtree_measuring
+    #include <wx/stopwatch.h>
+#endif
 
 #include <algorithm>
+
 
 namespace compatibility { typedef TernaryCondTypedef<wxMinimumVersion<2,5>::eval, wxTreeItemIdValue, long int>::eval tree_cookie_t; };
 
@@ -136,7 +140,7 @@ void CBTreeCtrl::RemoveDoubles(const wxTreeItemId& parent)
             existing = GetPrevSibling(existing);
     }
 #ifdef buildtree_measuring
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("RemoveDoubles took : %d"), (int)sw.Time()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("RemoveDoubles took : %ld"), sw.Time()));
 #endif
 }
 
@@ -170,13 +174,13 @@ void ClassBrowserBuilderThread::Init(Parser* parser,
                                     bool build_tree)
 {
     wxMutexLocker lock(m_BuildMutex);
-    m_pParser = parser;
-    m_pTreeTop = treeTop;
-    m_pTreeBottom = treeBottom;
+    m_pParser        = parser;
+    m_pTreeTop       = treeTop;
+    m_pTreeBottom    = treeBottom;
     m_ActiveFilename = active_filename;
-    m_pUserData = user_data;
-    m_Options = options;
-    m_pTokensTree = pTokensTree;
+    m_pUserData      = user_data;
+    m_Options        = options;
+    m_pTokensTree    = pTokensTree;
 
     m_CurrentFileSet.clear();
     m_CurrentTokenSet.clear();
@@ -244,7 +248,7 @@ void* ClassBrowserBuilderThread::Entry()
         if (TestDestroy() || Manager::IsAppShuttingDown())
             break;
 
-        if(platform::gtk)
+        if (platform::gtk)
         {
             // this code (PART 1/2) seems to be good on linux
             // because of it the libcairo crash on dualcore processors
@@ -257,13 +261,13 @@ void* ClassBrowserBuilderThread::Entry()
 
         BuildTree();
 
-        if(platform::gtk)
+        if (platform::gtk)
         {
-          // this code (PART 2/2) seems to be good on linux
-          // because of it the libcairo crash on dualcore processors
-          // is gone, but on windows it has very bad influence,
-          // henceforth the ifdef guard
-          // the questions remains if it is the correct solution
+            // this code (PART 2/2) seems to be good on linux
+            // because of it the libcairo crash on dualcore processors
+            // is gone, but on windows it has very bad influence,
+            // henceforth the ifdef guard
+            // the questions remains if it is the correct solution
             if(!::wxIsMainThread())
                 ::wxMutexGuiLeave();
         }
@@ -273,9 +277,6 @@ void* ClassBrowserBuilderThread::Entry()
     m_pTreeTop = 0;
     m_pTreeBottom = 0;
 
-
-    /*if (m_ppThreadVar)
-        *m_ppThreadVar = 0;*/
     return 0;
 }
 
@@ -307,10 +308,10 @@ void ClassBrowserBuilderThread::BuildTree(bool useLock)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
-//    wxMutexLocker lock(m_BuildMutex);
 
 #ifdef buildtree_measuring
-wxStopWatch sw;
+    wxStopWatch sw;
+    wxStopWatch sw_total;
 #endif
     m_pTreeTop->SetImageList(m_pParser->GetImageList());
     m_pTreeBottom->SetImageList(m_pParser->GetImageList());
@@ -328,16 +329,16 @@ wxStopWatch sw;
 
     m_ExpandedVect.clear();
     SaveExpandedItems(m_pTreeTop, root, 0);
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving expanded items took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving expanded items took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
 
     SaveSelectedItem();
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving selected items took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving selected items took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
 
     if (m_Options.treeMembers)
     {
@@ -347,30 +348,30 @@ wxStopWatch sw;
     m_pTreeTop->Hide();
     m_pTreeTop->Freeze();
 
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Hiding and freezing trees took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     RemoveInvalidNodes(m_pTreeTop, root);
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (top tree) took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     if (m_Options.treeMembers)
     {
         RemoveInvalidNodes(m_pTreeBottom, m_pTreeBottom->GetRootItem());
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing invalid nodes (bottom tree) took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     }
 
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return;
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("TestDestroy() took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
 
     // the tree is completely dynamic: it is populated when a node expands/collapses.
     // so, by expanding the root node, we already instruct it to fill the top level :)
@@ -380,68 +381,66 @@ wxStopWatch sw;
     // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
 
     CollapseItem(root, useLock);
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Collapsing root item took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     // Bottleneck: Takes ~4 secs on C::B workspace:
     m_pTreeTop->Expand(root);
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
 
     // seems like the "expand" event comes too late in wxGTK, so make it happen now
     if(platform::gtk)
         ExpandItem(root);
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding root item (gtk only) took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     ExpandSavedItems(m_pTreeTop, root, 0);
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding saved items took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     // Bottleneck: Takes ~4 secs on C::B workspace:
     SelectSavedItem();
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Selecting saved item took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Selecting saved item took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
 
     if (m_Options.treeMembers)
     {
         m_pTreeBottom->Thaw();
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Thaw bottom tree took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
         m_pTreeBottom->Show();
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Showing bottom tree took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
     }
 
     ExpandNamespaces(m_pTreeTop->GetRootItem());
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Expanding namespaces took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
 
     m_pTreeTop->Thaw();
-    // Bottleneck: Takes ~4 secs on C::B workspace:
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
-//sw.Start();
-//#endif
-    m_pTreeTop->Show();
-//#ifdef buildtree_measuring
-//Manager::Get()->GetLogManager()->DebugLog(F(_T("Show top tree took : %ld ms"),sw.Time()));
-//#endif
 #ifdef buildtree_measuring
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("BuildTree took : %ld ms"),sw.Time()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Thaw top tree took : %ld ms"),sw.Time()));
+    sw.Start();
+#endif
+    // Bottleneck: Takes ~4 secs on C::B workspace:
+    m_pTreeTop->Show();
+#ifdef buildtree_measuring
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Show top tree took : %ld ms"),sw.Time()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("BuildTree took : %ld ms in total"),sw_total.Time()));
 #endif
 }
 
@@ -560,9 +559,6 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemI
 
         existing = tree->GetPrevSibling(existing);
     }
-
-//    if (parent != tree->GetRootItem() && tree->GetChildrenCount(parent) == 0)
-//        tree->Delete(parent);
 }
 #endif
 
@@ -591,7 +587,7 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CBTreeCtrl* tree, wxTr
         return tree->AppendItem(parent, name, imgIndex, imgIndex, data);
 }
 
-bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask, int tokenScopeMask)
+bool ClassBrowserBuilderThread::AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, short int tokenKindMask, int tokenScopeMask)
 {
     if ((!::wxIsMainThread() && TestDestroy()) || Manager::IsAppShuttingDown())
         return false;
@@ -650,7 +646,7 @@ bool ClassBrowserBuilderThread::AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId 
     return ret;
 }
 
-bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, int tokenKindMask, int tokenScopeMask, bool allowGlobals)
+bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, short int tokenKindMask, int tokenScopeMask, bool allowGlobals)
 {
     int count = 0;
     set<unsigned long, less<unsigned long> > tickets;
@@ -689,10 +685,10 @@ bool ClassBrowserBuilderThread::AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, 
 
             wxString str = token->m_Name;
             if (   (token->m_TokenKind == tkFunction)
-			    || (token->m_TokenKind == tkConstructor)
-				|| (token->m_TokenKind == tkDestructor)
-				|| (token->m_TokenKind == tkMacro)
-				|| (token->m_TokenKind == tkClass) )
+                || (token->m_TokenKind == tkConstructor)
+                || (token->m_TokenKind == tkDestructor)
+                || (token->m_TokenKind == tkMacro)
+                || (token->m_TokenKind == tkClass) )
                 str << token->m_Args;
             // modification suggested by ollydbg in http://forums.codeblocks.org/index.php/topic,10242.msg70865.html#msg70865:
 //            if (!token->m_ActualType.IsEmpty())
@@ -782,27 +778,21 @@ void ClassBrowserBuilderThread::AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node
     if (bottom)
     {
 #ifdef buildtree_measuring
-    wxStopWatch sw;
+        wxStopWatch sw;
 #endif
-
         tree->Freeze();
-
-
 #ifdef buildtree_measuring
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->Freeze() took : %d ms"),sw.Time()));
-    sw.Start();
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->Freeze() took : %ld ms"),sw.Time()));
+        sw.Start();
 #endif
-
         tree->DeleteAllItems();
 #ifdef buildtree_measuring
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->DeleteAllItems() took : %d ms"),sw.Time()));
-    sw.Start();
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->DeleteAllItems() took : %ld ms"),sw.Time()));
+        sw.Start();
 #endif
-
         node = tree->AddRoot(_T("Members")); // not visible, so don't translate
-
 #ifdef buildtree_measuring
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->AddRoot() took : %d ms"),sw.Time()));
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("tree->AddRoot() took : %ld ms"),sw.Time()));
 #endif
     }
 
@@ -983,7 +973,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             case sfDerived: AddDescendantsOf(m_pTreeTop, item, data->m_pToken->GetSelf(), false); break;
             case sfToken:
             {
-                int kind = 0;
+                short int kind = 0;
                 switch (data->m_pToken->m_TokenKind)
                 {
                     case tkClass:
@@ -1018,7 +1008,6 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     {
         AddMembersOf(m_pTreeTop, item);
     }
-//    m_pTreeTop->SortChildren(item);
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("ExpandItems (internally) took : %ld ms"),sw.Time()));
 #endif

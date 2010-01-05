@@ -53,7 +53,7 @@ enum TokenScope
 
 enum TokenKind
 {
-    // changed order to reflect the priority
+    // changed in order to reflect the priority
     tkNamespace     = 0x0001,
     tkClass         = 0x0002,
     tkEnum          = 0x0004,
@@ -64,13 +64,14 @@ enum TokenKind
     tkVariable      = 0x0080,
     tkEnumerator    = 0x0100,
     tkPreprocessor  = 0x0200,
-    tkMacro 	    = 0x0400,
+    tkMacro         = 0x0400,
 
     // convenient masks
-    tkAnyContainer  = tkClass | tkNamespace | tkTypedef,
+    tkAnyContainer  = tkClass    | tkNamespace   | tkTypedef,
     tkAnyFunction   = tkFunction | tkConstructor | tkDestructor,
 
-    tkUndefined     = 0xFFFF,
+    // undefined or just "all"
+    tkUndefined     = 0xFFFF
 };
 
 
@@ -161,7 +162,7 @@ class TokensTree
         void RecalcFreeList();
         void RecalcData();
         int TokenExists(const wxString& name, int parent, short int kindMask);
-        size_t FindMatches(const wxString& s,TokenIdxSet& result,bool caseSensitive,bool is_prefix, int kindMask = 0xffff);
+        size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, short int kindMask = tkUndefined);
         size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
         void RemoveFile(const wxString& filename);
         void RemoveFile(int index);

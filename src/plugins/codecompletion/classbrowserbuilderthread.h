@@ -14,21 +14,21 @@
 
 enum SpecialFolder
 {
-    sfToken         = 0x0001, // token node
-    sfRoot          = 0x0002, // root node
-    sfGFuncs        = 0x0004, // global funcs node
-    sfGVars         = 0x0008, // global vars node
-    sfPreproc       = 0x0010, // preprocessor symbols node
-    sfTypedef       = 0x0020, // typedefs node
-    sfBase          = 0x0040, // base classes node
-    sfDerived       = 0x0080, // derived classes node
-    sfMacro         = 0x0100, // global macro node
+    sfToken   = 0x0001, // token node
+    sfRoot    = 0x0002, // root node
+    sfGFuncs  = 0x0004, // global funcs node
+    sfGVars   = 0x0008, // global vars node
+    sfPreproc = 0x0010, // preprocessor symbols node
+    sfTypedef = 0x0020, // typedefs node
+    sfBase    = 0x0040, // base classes node
+    sfDerived = 0x0080, // derived classes node
+    sfMacro   = 0x0100  // global macro node
 };
 
 class CBTreeData : public wxTreeItemData
 {
     public:
-        CBTreeData(SpecialFolder sf = sfToken, Token* token = 0, int kindMask = 0xffffffff, int parentIdx = -1)
+        CBTreeData(SpecialFolder sf = sfToken, Token* token = 0, short int kindMask = 0xffff, int parentIdx = -1)
             : m_pToken(token),
             m_KindMask(kindMask),
             m_SpecialFolder(sf),
@@ -40,7 +40,7 @@ class CBTreeData : public wxTreeItemData
         {
         }
         Token* m_pToken;
-        int m_KindMask;
+        short int m_KindMask;
         SpecialFolder m_SpecialFolder;
         int m_TokenIndex;
         TokenKind m_TokenKind;
@@ -51,20 +51,18 @@ class CBTreeData : public wxTreeItemData
 
 class CBExpandedItemData
 {
-	public:
-		CBExpandedItemData(const CBTreeData* data, const int level):
-			m_Data(*data),
-			m_Level(level)
-		{
-		}
-		int GetLevel() const { return m_Level; }
-		const CBTreeData& GetData() { return m_Data; }
-	private:
-		CBTreeData m_Data;	// copy of tree item data
-		int m_Level; 		// nesting level in the tree
+    public:
+        CBExpandedItemData(const CBTreeData* data, const int level):
+            m_Data(*data),
+            m_Level(level)
+        {
+        }
+        int GetLevel() const { return m_Level; }
+        const CBTreeData& GetData() { return m_Data; }
+    private:
+        CBTreeData m_Data;  // copy of tree item data
+        int        m_Level; // nesting level in the tree
 };
-
-
 
 
 typedef std::deque<CBExpandedItemData> ExpandedItemVect;
@@ -112,10 +110,10 @@ class ClassBrowserBuilderThread : public wxThread
         void BuildTree(bool useLock=true);
         void RemoveInvalidNodes(CBTreeCtrl* tree, wxTreeItemId parent);
         wxTreeItemId AddNodeIfNotThere(CBTreeCtrl* tree, wxTreeItemId parent, const wxString& name, int imgIndex = -1, CBTreeData* data = 0);
-        bool AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, int tokenKindMask = 0xffff, int tokenScopeMask = 0);
+        bool AddChildrenOf(CBTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, short int tokenKindMask = 0xffff, int tokenScopeMask = 0);
         bool AddAncestorsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
         bool AddDescendantsOf(CBTreeCtrl* tree, wxTreeItemId parent, int tokenIdx, bool allowInheritance = true);
-        bool AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false);
+        bool AddNodes(CBTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet& tokens, short int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false);
         void AddMembersOf(CBTreeCtrl* tree, wxTreeItemId node);
         bool TokenMatchesFilter(Token* token);
         bool TokenContainsChildrenOfKind(Token* token, int kind);

@@ -506,7 +506,7 @@ void Parser::BatchParse(const wxArrayString& filenames)
     m_IsBatch = true;
     m_Pool.BatchBegin();
 
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Batch-parsing %d files..."), filenames.GetCount()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("Batch-parsing %d file(s)..."), filenames.GetCount()));
     for (unsigned int i = 0; i < filenames.GetCount(); ++i)
         Parse(filenames[i]); // defer loading until later
 

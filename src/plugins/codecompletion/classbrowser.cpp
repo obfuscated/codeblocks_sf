@@ -66,17 +66,20 @@ int idCBBottomTree             = wxNewId();
 
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
-    EVT_TREE_ITEM_ACTIVATED(XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
+    EVT_TREE_ITEM_ACTIVATED  (XRCID("treeMembers"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeMembers"), ClassBrowser::OnTreeItemRightClick)
 
-    EVT_TREE_ITEM_ACTIVATED(XRCID("treeAll"), ClassBrowser::OnTreeItemDoubleClick)
+    EVT_TREE_ITEM_ACTIVATED  (XRCID("treeAll"), ClassBrowser::OnTreeItemDoubleClick)
     EVT_TREE_ITEM_RIGHT_CLICK(XRCID("treeAll"), ClassBrowser::OnTreeItemRightClick)
-    EVT_TREE_ITEM_EXPANDING(XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
-    EVT_TREE_ITEM_COLLAPSING(XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
-    EVT_TREE_SEL_CHANGED(XRCID("treeAll"), ClassBrowser::OnTreeItemSelected)
+    EVT_TREE_ITEM_EXPANDING  (XRCID("treeAll"), ClassBrowser::OnTreeItemExpanding)
+    EVT_TREE_ITEM_COLLAPSING (XRCID("treeAll"), ClassBrowser::OnTreeItemCollapsing)
+    EVT_TREE_SEL_CHANGED     (XRCID("treeAll"), ClassBrowser::OnTreeItemSelected)
 
     EVT_TEXT_ENTER(XRCID("cmbSearch"), ClassBrowser::OnSearch)
-    EVT_COMBOBOX(XRCID("cmbSearch"), ClassBrowser::OnSearch)
+    EVT_COMBOBOX  (XRCID("cmbSearch"), ClassBrowser::OnSearch)
+
+    EVT_CHOICE(XRCID("cmbView"), ClassBrowser::OnViewScope)
+    EVT_BUTTON(XRCID("btnSearch"), ClassBrowser::OnSearch)
 
     EVT_MENU(idMenuJumpToDeclaration, ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation, ClassBrowser::OnJumpTo)
@@ -91,8 +94,6 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idCBSortByKind, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByScope, ClassBrowser::OnSetSortType)
     EVT_MENU(idCBBottomTree, ClassBrowser::OnCBViewMode)
-    EVT_CHOICE(XRCID("cmbView"), ClassBrowser::OnViewScope)
-    EVT_BUTTON(XRCID("btnSearch"), ClassBrowser::OnSearch)
 
 END_EVENT_TABLE()
 
@@ -650,7 +651,7 @@ void ClassBrowser::OnSearch(wxCommandEvent& event)
             token = m_pParser->GetTokens()->at(int_selections[sel]);
         }
         else if (selections.GetCount() == 1)
-        {    // number of selections can be < result.size() due to the if tests, so in case we fall
+        {   // number of selections can be < result.size() due to the if tests, so in case we fall
             // back on 1 entry no need to show a selection
             token = m_pParser->GetTokens()->at(int_selections[0]);
         }
