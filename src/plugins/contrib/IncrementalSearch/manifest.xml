@@ -13,7 +13,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="IncrementalSearch">
         <Value title="IncrementalSearch" />
-        <Value version="0.7" />
+        <Value version="0.8" />
         <Value description="Searches and highlights a marked text incrementally within the open editor." />
         <Value author="Jens Lody" />
         <Value authorEmail="debian@jenslody.de" />

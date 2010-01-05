@@ -64,7 +64,8 @@ IncrementalSearch::IncrementalSearch():
         m_SelectedOnly(false),
         m_IndicFound(20),
         m_IndicHighlight(21),
-        m_LengthFound(0)
+        m_LengthFound(0),
+        m_LastInsertionPoint(0)
 
 {
     // Make sure our resources are available.
@@ -134,6 +135,9 @@ void IncrementalSearch::OnRelease(bool appShutDown)
     {
         cfg->Write(_T("/incremental_search/regex"),m_flags & wxSCI_FIND_REGEXP);
     }
+    m_pTextCtrl->Disconnect(wxEVT_KEY_DOWN);
+    m_pTextCtrl->Disconnect(wxEVT_KILL_FOCUS);
+
     // TODO : KILLERBOT : menu entries should be removed, right ?????
     // TODO : JENS : no, the menubar gets recreated after a plugin changes (install, uninstall or unload), see MainFrame::PluginsUpdated(plugin, status)
 }
@@ -247,8 +251,11 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     if (m_pTextCtrl)
     {
         m_pTextCtrl->Connect(wxEVT_KEY_DOWN,
-                              (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                              &IncrementalSearch::OnKeyDown , 0, this);
+                             (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
+                             &IncrementalSearch::OnKeyDown , 0, this);
+        m_pTextCtrl->Connect(wxEVT_KILL_FOCUS ,
+                               (wxObjectEventFunction)(wxEventFunction)(wxFocusEventFunction)
+                               &IncrementalSearch::OnKillFocus, 0, this);
         m_textCtrlBG_Default = m_pTextCtrl->GetBackgroundColour();
         m_pTextCtrl->Enable(m_pEditor && m_pEditor->GetControl());
         m_pToolbar->ToggleTool(XRCID("idIncSearchHighlight"),m_Highlight);
@@ -265,6 +272,11 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
 
 void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
 {
+    if(m_pTextCtrl)
+    {
+        m_LastInsertionPoint = m_pTextCtrl->GetInsertionPoint();
+    }
+
     if(!m_IsAttached || !m_pEditor || !m_pEditor->GetControl() )
     {
         event.Skip();
@@ -273,6 +285,11 @@ void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
     if(event.GetModifiers() == wxMOD_ALT && event.GetKeyCode() == WXK_DELETE)
     {
         DoClearText();
+    }
+    else if(event.GetModifiers() == wxMOD_SHIFT && event.GetKeyCode() == WXK_RETURN)
+    {
+        if(m_pToolbar->GetToolEnabled(XRCID("idIncSearchPrev")))
+           DoSearchPrev();
     }
     else if(event.GetModifiers() == wxMOD_NONE && event.GetKeyCode() == WXK_ESCAPE)
     {
@@ -306,6 +323,15 @@ void IncrementalSearch::OnFocusToolbar(wxCommandEvent& event)
         return;
     }
     DoFocusToolbar();
+
+    if(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/incremental_search/select_text_on_focus"), false))
+    {
+        m_pTextCtrl->SetSelection(-1,-1);
+    }
+    else
+    {
+        m_pTextCtrl->SetInsertionPoint(m_LastInsertionPoint);
+    }
 }
 
 void IncrementalSearch::DoFocusToolbar()
@@ -317,7 +343,6 @@ void IncrementalSearch::DoFocusToolbar()
         Manager::Get()->ProcessEvent(evt);
     }
     m_pTextCtrl->SetFocus();
-    m_pTextCtrl->SetInsertionPointEnd();
 }
 
 void IncrementalSearch::OnToggleHighlight(wxCommandEvent& event)
@@ -401,6 +426,14 @@ void IncrementalSearch::OnTextChanged(wxCommandEvent& event)
         return;
     }
     SearchText();
+}
+
+void IncrementalSearch::OnKillFocus(wxCommandEvent& event)
+{
+    if(m_pTextCtrl)
+    {
+        m_LastInsertionPoint = m_pTextCtrl->GetInsertionPoint();
+    }
 }
 
 void IncrementalSearch::VerifyPosition()

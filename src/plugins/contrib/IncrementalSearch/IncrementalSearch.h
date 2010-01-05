@@ -45,6 +45,7 @@ private:
     void OnKeyDown(wxKeyEvent& event);
     void OnFocusToolbar(wxCommandEvent& event);
     void OnTextChanged(wxCommandEvent& event);
+    void OnKillFocus(wxCommandEvent& event);
     void OnClearText(wxCommandEvent& event);
     void OnSearchPrev(wxCommandEvent& event);
     void OnSearchNext(wxCommandEvent& event);
@@ -84,6 +85,7 @@ private:
     const int m_IndicFound;
     const int m_IndicHighlight;
     int m_LengthFound;
+    long m_LastInsertionPoint;
 
     DECLARE_EVENT_TABLE()
 };

@@ -129,6 +129,14 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
+						<object class="wxCheckBox" name="idIncSearchSelectOnFocus">
+							<label>Select searchtext in toolbar if it gains the focus via menu or shortcut</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
 						<object class="wxStaticBoxSizer">
 							<label>Toolbar settings</label>
 							<orient>wxVERTICAL</orient>

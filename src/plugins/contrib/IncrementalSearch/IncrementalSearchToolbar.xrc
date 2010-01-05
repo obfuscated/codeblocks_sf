@@ -19,7 +19,7 @@
     </object>
     <object class="wxTextCtrl" name="idIncSearchText">
 	  <size>160,-1</size>
-	  <style>wxTE_PROCESS_ENTER</style>
+	  <style>wxTE_PROCESS_ENTER|wxTE_NOHIDESEL</style>
     </object>
     <object class="separator"/>
     <object class="tool" name="idIncSearchPrev">
@@ -65,7 +65,7 @@
     </object>
     <object class="wxTextCtrl" name="idIncSearchText">
 	  <size>160,-1</size>
-	  <style>wxTE_PROCESS_ENTER</style>
+	  <style>wxTE_PROCESS_ENTER|wxTE_NOHIDESEL</style>
     </object>
     <object class="separator"/>
     <object class="tool" name="idIncSearchPrev">
