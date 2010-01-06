@@ -330,7 +330,7 @@ bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
         }
     }
     return ReturnValue;
-} // end of EditorHasNameUnderCursor
+}
 
 void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
@@ -388,7 +388,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
             Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu!"));
         }
     }
-} // end of BuildModuleMenu
+}
 
 bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 {
@@ -1279,7 +1279,7 @@ bool LessFunctionScope(const CodeCompletion::FunctionScope& fs1, const CodeCompl
     {
         return fs1.Name < fs2.Name;
     }
-} // end of LessFunctionScope
+}
 
 
 // help method in finding the namespace position in the vector for the namespace containing the current line
@@ -1299,7 +1299,7 @@ int CodeCompletion::NameSpacePosition() const
             }
     } // end for : idx : idxNs
     return retValue;
-} // end of NameSpacePosition
+}
 
 // help method in finding the function position in the vector for the function containing the current line
 int CodeCompletion::FunctionPosition() const
@@ -1437,10 +1437,10 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
         sort(funcdata->m_FunctionsScope.begin(), funcdata->m_FunctionsScope.end(), LessFunctionScope);
         m_ToolbarChanged = true;
     }
-    // *** Part 2: Fill the toolbar ***
 
+    // *** Part 2: Fill the toolbar ***
     m_FunctionsScope = funcdata->m_FunctionsScope;
-    m_NameSpaces = funcdata->m_NameSpaces;
+    m_NameSpaces     = funcdata->m_NameSpaces;
 
     // Does the toolbar need a refresh?
     if (m_ToolbarChanged || m_LastFile!=filename)
@@ -1491,7 +1491,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
             m_Scope->SetSelection(wxNOT_FOUND);
         }
     }
-} // end of ParseFunctionsAndFillToolbar
+}
 
 void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
 {
@@ -1654,7 +1654,7 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
 
     // must do...
     event.Skip();
-} // end of OnUpdateUI
+}
 
 void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 {
@@ -1852,7 +1852,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     {
         cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
     }
-} // end of OnGotoDeclaration
+}
 
 void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
@@ -1960,7 +1960,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     }
 
     cbMessageBox(wxString::Format(_("Not found: %s"), NameUnderCursor.c_str()), _("Warning"), wxICON_WARNING);
-} // end of OnOpenIncludeFile
+}
 
 void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 {

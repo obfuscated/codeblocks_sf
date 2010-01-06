@@ -1,4 +1,5 @@
 #include <cstdarg>
+#include <string>
 
 struct _s
 {
@@ -8,6 +9,7 @@ struct _s
 typedef struct _s t_s;
 typedef _s (*t_ptr_s)(int a, int b);
 //typedef _s_ptr *(*ptr_t_ptr_s)(long l, int a, int b);
+typedef basic_string<char> my_string;
 
 typedef struct _s_inner
 {
@@ -62,6 +64,11 @@ int main (void)
 //    rts.
 //    pts.
 //    pts->
+
+    std::string ss;
+    my_string   ms;
+//    ss.
+//    ms.
 
 //    t_ptr_s(
 //    t_ptr_s(3,3).

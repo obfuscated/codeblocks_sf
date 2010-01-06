@@ -738,10 +738,14 @@ bool NativeParser::ParseFunctionArguments(cbEditor* ed, int caretPos)
             if (!token->m_Args.IsEmpty() && !token->m_Args.Matches(_T("()")))
             {
                 wxString buffer = token->m_Args;
-                buffer.Remove(0, 1); // remove (
-                buffer.RemoveLast(); // remove )
+                // Now we have something like "(int my_int, const TheClass* my_class, float f)"
+                buffer.Remove(0, 1);              // remove (
+                buffer.RemoveLast();              // remove )
+                // Now we have                "int my_int, const TheClass* my_class, float f"
                 buffer.Replace(_T(","), _T(";")); // replace commas with semi-colons
-                buffer << _T(';'); // aid parser ;)
+                // Now we have                "int my_int; const TheClass* my_class; float f"
+                buffer << _T(';');                // aid parser ;)
+                // Finally we have            "int my_int; const TheClass* my_class; float f;"
                 buffer.Trim();
 
                 if (s_DebugSmartSense)
@@ -2136,18 +2140,27 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
 {
     cbStyledTextCtrl* control = editor->GetControl();
     if (!control)
+    {
+        if (s_DebugSmartSense)
+            Manager::Get()->GetLogManager()->DebugLog(_T("FindCurrentFunctionStart() Cannot access control."));
         return -1;
+    }
 
-    static cbEditor* s_LastEditor = 0;
-    static int s_LastLine = -1;
-    static int s_LastResult = -1;
-    static wxString s_LastNS;
-    static wxString s_LastPROC;
+    static cbEditor* s_LastEditor =  0;
+    static int       s_LastLine   = -1;
+    static int       s_LastResult = -1;
+    static wxString  s_LastNS;
+    static wxString  s_LastPROC;
 
     // cache last result for optimization
     int pos = caretPos == -1 ? control->GetCurrentPos() : caretPos;
-    if (pos < 0 || pos > control->GetLength())
+    if ((pos < 0) || (pos > control->GetLength()))
+    {
+        if (s_DebugSmartSense)
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Cannot determine position. caretPos=%d, control=%d"),
+                                                        caretPos, control->GetCurrentPos()));
         return -1;
+    }
 
     int line = control->LineFromPosition(pos) + 1;
     if (line == s_LastLine && editor == s_LastEditor)
@@ -2156,23 +2169,34 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
         if (procName)  *procName  = s_LastPROC;
 
         if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Cached namespace='%s', cached proc='%s'"),
-                                                        s_LastNS.wx_str(), s_LastPROC.wx_str()));
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Cached namespace='%s', cached proc='%s' (returning %d)"),
+                                                        s_LastNS.wx_str(), s_LastPROC.wx_str(), s_LastResult));
 
         return s_LastResult;
     }
 
+    if (s_DebugSmartSense)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Looking for tokens in '%s'"),
+                                                    editor->GetFilename().wx_str()));
     s_LastEditor = editor;
     s_LastLine   = line;
     TokenIdxSet result;
-    m_Parser.FindTokensInFile(editor->GetFilename(), result, tkFunction|tkConstructor|tkDestructor);
+    size_t num_results = m_Parser.FindTokensInFile(editor->GetFilename(), result, tkFunction|tkConstructor|tkDestructor);
+    if (s_DebugSmartSense)
+        Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Found %d results"), num_results));
+
     TokensTree* tree = m_Parser.GetTokens();
     for (TokenIdxSet::iterator it = result.begin(); it != result.end(); ++it)
     {
+        if (s_DebugSmartSense)
+            Manager::Get()->GetLogManager()->DebugLog(_T("FindCurrentFunctionStart() (Next) Iteration..."));
         Token* token = tree->at(*it);
         if (token)
         {
-            // found a function; check its bounds
+            if (s_DebugSmartSense)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Iterating: tN='%s', tF='%s', tStart=%d, tEnd=%d"),
+                                                            token->DisplayName().wx_str(), token->GetFilename().wx_str(), token->m_ImplLineStart, token->m_ImplLineEnd));
+            // found a matching function; check its bounds
             if (token->m_ImplLineStart <= (size_t)line && token->m_ImplLineEnd >= (size_t)line)
             {
                 // got it :)
@@ -2205,10 +2229,13 @@ int NativeParser::FindCurrentFunctionStart(cbEditor* editor, wxString* nameSpace
                 if (procName)  *procName  = s_LastPROC;
 
                 if (s_DebugSmartSense)
-                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Namespace='%s', proc='%s'"),
-                                                                s_LastNS.wx_str(), s_LastPROC.wx_str()));
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Namespace='%s', proc='%s' (returning %d)"),
+                                                                s_LastNS.wx_str(), s_LastPROC.wx_str(), s_LastResult));
                 return s_LastResult;
             }
+            else if (s_DebugSmartSense)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("FindCurrentFunctionStart() Function out of bounds: tN='%s', tF='%s', tStart=%d, tEnd=%d, line=%d (size_t)line=%d"),
+                                                            token->DisplayName().wx_str(), token->GetFilename().wx_str(), token->m_ImplLineStart, token->m_ImplLineEnd, line, (size_t)line));
         }
     }
 
