@@ -559,6 +559,7 @@ void ParserThread::DoParse()
         {
             TokenizerState oldState = m_Tokenizer.GetState();
             m_Tokenizer.SetState(tsSkipNone);
+
             token = m_Tokenizer.GetToken();
             if (token==ParserConsts::kw_include)
                 HandleIncludes();
@@ -566,7 +567,9 @@ void ParserThread::DoParse()
                 HandleDefines();
             else
                 HandlePreprocessorBlocks(token);
+
             m_Str.Clear();
+
             m_Tokenizer.SetState(oldState);
 
         }
@@ -1108,7 +1111,7 @@ Token* ParserThread::DoAddToken(TokenKind kind,
             || (   (kind & tkAnyFunction)
                 && (newToken->m_StrippedArgs == strippedArgs) ) ) )
     {
-        m_pTokensTree->m_modified = true;
+        m_pTokensTree->m_Modified = true;
     }
     else
     {
@@ -1210,6 +1213,7 @@ void ParserThread::HandleIncludes()
     // < and will follow iostream.h, >
     if (TestDestroy())
         return;
+
     if (!token.IsEmpty())
     {
         if (token.GetChar(0) == '"')
@@ -1229,7 +1233,7 @@ void ParserThread::HandleIncludes()
         {
             isGlobal = true;
             // next token is filename, next is . (dot), next is extension
-            // basically we 'll loop until >
+            // basically we'll loop until >
             while (1)
             {
                 token = m_Tokenizer.GetToken();
@@ -1245,6 +1249,7 @@ void ParserThread::HandleIncludes()
 
     if (!filename.IsEmpty())
     {
+        TRACE(F(_T("HandleIncludes() : Found include file '%s'"), filename.wx_str()));
         do
         {
             // setting all #includes as global
@@ -1254,7 +1259,7 @@ void ParserThread::HandleIncludes()
             if (!(isGlobal ? m_Options.followGlobalIncludes : m_Options.followLocalIncludes))
                 break; // Nothing to do!
 
-            wxString real_filename = m_pParent->GetFullFileName(m_Filename,filename,isGlobal);
+            wxString real_filename = m_pParent->GetFullFileName(m_Filename, filename, isGlobal);
             // Parser::GetFullFileName is thread-safe :)
 
             if (real_filename.IsEmpty())
@@ -1266,10 +1271,11 @@ void ParserThread::HandleIncludes()
                     break; // Already being parsed elsewhere
             }
 
+            TRACE(F(_T("HandleIncludes() : Adding include file '%s'"), real_filename.wx_str()));
             // since we 'll be calling directly the parser's method, let's make it thread-safe
             {
                 wxCriticalSectionLocker lock2(s_mutexListProtection);
-                m_pParent->OnParseFile(real_filename, isGlobal ? 1 : 0);
+                m_pParent->DoParseFile(real_filename, isGlobal);
             }
         } while (false);
     }
@@ -2068,7 +2074,6 @@ void ParserThread::HandleTypedef()
 
     wxString actualAncestor = ancestor.BeforeFirst(_T('<'));
     actualAncestor.Trim();
-
 
     if (tdef)
     {

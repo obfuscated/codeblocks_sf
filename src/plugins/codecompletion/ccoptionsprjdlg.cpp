@@ -28,7 +28,7 @@ END_EVENT_TABLE()
 CCOptionsProjectDlg::CCOptionsProjectDlg(wxWindow* parent, cbProject* project, NativeParser* np)
 	: m_pProject(project),
 	m_pNativeParser(np),
-	m_pParser(m_pNativeParser->FindParserFromProject(project))
+	m_pParser(m_pNativeParser->GetParserPtr())
 {
 	wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlProjectCCOptions"));
     m_OldPaths = m_pNativeParser->GetProjectSearchDirs(m_pProject);

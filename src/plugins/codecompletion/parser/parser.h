@@ -178,7 +178,8 @@ class Parser : public wxEvtHandler
 
         void TerminateAllThreads();
     protected:
-        void OnParseFile(const wxString& filename,int flags);
+        void DoParseFile(const wxString& filename, bool isGlobal);
+
         void OnAllThreadsDone(CodeBlocksEvent& event);
         void OnTimer(wxTimerEvent& event);
         void OnBatchTimer(wxTimerEvent& event);

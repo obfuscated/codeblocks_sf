@@ -54,6 +54,7 @@ class NativeParser : public wxEvtHandler
         NativeParser();
         ~NativeParser();
 
+        Parser* GetParserPtr() { return &m_Parser; };
         void AddParser(cbProject* project, bool useCache = true);
         void RemoveParser(cbProject* project, bool useCache = true);
         void ClearParsers();
@@ -74,11 +75,6 @@ class NativeParser : public wxEvtHandler
         int GetEditorStartWord() const { return m_EditorStartWord; }
         int GetEditorEndWord() const { return m_EditorEndWord; }
 
-        Parser* FindParserFromActiveEditor();
-        Parser* FindParserFromEditor(EditorBase* editor);
-        Parser* FindParserFromActiveProject();
-        Parser* FindParserFromProject(cbProject* project);
-
         wxArrayString& GetProjectSearchDirs(cbProject* project);
 
         // returns the editor's position where the current function starts
@@ -98,13 +94,13 @@ class NativeParser : public wxEvtHandler
     protected:
     private:
         friend class CodeCompletion;
-        size_t AI(TokenIdxSet& result, cbEditor* editor, Parser* parser, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false, TokenIdxSet* search_scope = 0, int caretPos = -1);
+        size_t AI(TokenIdxSet& result, cbEditor* editor, const wxString& lineText = wxEmptyString, bool noPartialMatch = false, bool caseSensitive = false, TokenIdxSet* search_scope = 0, int caretPos = -1);
 
-        size_t FindAIMatches(Parser* parser, std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF, TokenIdxSet* search_scope = 0);
-        size_t BreakUpComponents(Parser* parser, const wxString& actual, std::queue<ParserComponent>& components);
+        size_t FindAIMatches(std::queue<ParserComponent> components, TokenIdxSet& result, int parentTokenIdx = -1, bool noPartialMatch = false, bool caseSensitive = false, bool use_inheritance = true, short int kindMask = 0xFFFF, TokenIdxSet* search_scope = 0);
+        size_t BreakUpComponents(const wxString& actual, std::queue<ParserComponent>& components);
         bool BelongsToParentOrItsAncestors(TokensTree* tree, Token* token, int parentIdx, bool use_inheritance = true);
         size_t GenerateResultSet(TokensTree* tree, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
-        size_t GenerateResultSet(Parser* parser, const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
+        size_t GenerateResultSet(const wxString& search, int parentIdx, TokenIdxSet& result, bool caseSens = true, bool isPrefix = false, short int kindMask = 0xFFFF);
         bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
         const wxString& LastAIGlobalSearch() const { return m_LastAIGlobalSearch; }
 
@@ -116,11 +112,11 @@ class NativeParser : public wxEvtHandler
         wxString GetNextCCToken(const wxString& line, unsigned int& startAt, bool& is_function);
         wxString GetCCToken(wxString& line, ParserTokenType& tokenType);
         void BreakUpInLines(wxString& str, const wxString& original_str, int chars_per_line = -1);
-        void AddCompilerDirs(Parser* parser, cbProject* project);
+        void AddCompilerDirs(cbProject* project);
         wxArrayString GetGCCCompilerDirs(const wxString &cpp_compiler, const wxString &base);
-        bool LoadCachedData(Parser* parser, cbProject* project);
-        bool SaveCachedData(Parser* parser, const wxString& projectFilename);
-        void DisplayStatus(Parser* parser);
+        bool LoadCachedData(cbProject* project);
+        bool SaveCachedData(const wxString& projectFilename);
+        void DisplayStatus();
         void OnThreadStart(wxCommandEvent& event);
         void OnThreadEnd(wxCommandEvent& event);
         void OnParserEnd(wxCommandEvent& event);

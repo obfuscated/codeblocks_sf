@@ -35,13 +35,13 @@ WX_DEFINE_ARRAY(Token*, TokensArray);
 
 typedef vector<Token*> TokenList;
 
-typedef deque<int> TokenIdxList;
-typedef set<int, less<int> > TokenIdxSet;
-typedef SearchTree<TokenIdxSet> TokenSearchTree;
-typedef BasicSearchTree TokenFilenamesMap;
-typedef map<size_t,TokenIdxSet,less<size_t> > TokenFilesMap;
-typedef map<size_t,FileParsingStatus,less<size_t> > TokenFilesStatus;
-typedef set<size_t,less<size_t> > TokenFilesSet;
+typedef deque<int>                                     TokenIdxList;
+typedef set< int, less<int> >                          TokenIdxSet;
+typedef SearchTree<TokenIdxSet>                        TokenSearchTree;
+typedef BasicSearchTree                                TokenFilenamesMap;
+typedef map< size_t, TokenIdxSet,       less<size_t> > TokenFilesMap;
+typedef map< size_t, FileParsingStatus, less<size_t> > TokenFilesStatus;
+typedef set< size_t, less<size_t> >                    TokenFilesSet;
 
 enum TokenScope
 {
@@ -75,7 +75,7 @@ enum TokenKind
 };
 
 
-class Token  : public BlockAllocated<Token, 10000>
+class Token : public BlockAllocated<Token, 10000>
 {
     friend class TokensTree;
     public:
@@ -97,112 +97,114 @@ class Token  : public BlockAllocated<Token, 10000>
 
         bool SerializeIn(wxInputStream* f);
         bool SerializeOut(wxOutputStream* f);
-        int GetSelf() { return m_Self; } // current index in the tree
+        int GetSelf()         { return m_Self; } // current index in the tree
         wxString GetParentName();
         Token* GetParentToken();
         TokensTree* GetTree() { return m_pTree; }
 
-        wxString m_Type; // this is the return value (if any): e.g. const wxString&
-        wxString m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
-        wxString m_Name;
-        wxString m_Args;
-        wxString m_StrippedArgs;
-        wxString m_AncestorsString; // all ancestors comma-separated list
-        unsigned int m_FileIdx;
-        unsigned int m_Line;
-        unsigned int m_ImplFileIdx;
-        unsigned int m_ImplLine; // where the token was met
-        unsigned int m_ImplLineStart; // if token is impl, opening brace line
-        unsigned int m_ImplLineEnd; // if token is impl, closing brace line
-        TokenScope m_Scope;
-        TokenKind m_TokenKind;
-        bool m_IsOperator;
-        bool m_IsLocal; // found in a local file?
-        bool m_IsTemp; // if true, the tree deletes it in FreeTemporaries()
-        bool m_IsConst;    // the member method is const (yes/no)
+        wxString      m_Type;       // this is the return value (if any): e.g. const wxString&
+        wxString      m_ActualType; // this is what the parser believes is the actual return value: e.g. wxString
+        wxString      m_Name;
+        wxString      m_Args;
+        wxString      m_StrippedArgs;
+        wxString      m_AncestorsString; // all ancestors comma-separated list
+        unsigned int  m_FileIdx;
+        unsigned int  m_Line;
+        unsigned int  m_ImplFileIdx;
+        unsigned int  m_ImplLine;      // where the token was met
+        unsigned int  m_ImplLineStart; // if token is impl, opening brace line
+        unsigned int  m_ImplLineEnd;   // if token is impl, closing brace line
+        TokenScope    m_Scope;
+        TokenKind     m_TokenKind;
+        bool          m_IsOperator;
+        bool          m_IsLocal;       // found in a local file?
+        bool          m_IsTemp;        // if true, the tree deletes it in FreeTemporaries()
+        bool          m_IsConst;       // the member method is const (yes/no)
 
-        int m_ParentIndex;
-        TokenIdxSet m_Children;
-        TokenIdxSet m_Ancestors;
-        TokenIdxSet m_DirectAncestors;
-        TokenIdxSet m_Descendants;
+        int           m_ParentIndex;
+        TokenIdxSet   m_Children;
+        TokenIdxSet   m_Ancestors;
+        TokenIdxSet   m_DirectAncestors;
+        TokenIdxSet   m_Descendants;
 
         wxArrayString m_Aliases; // used for namespace aliases
 
-        void* m_pUserData; // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
-    protected:
-        TokensTree* m_pTree;
-        int m_Self; // current index in the tree
-        unsigned long m_Ticket;
-        static unsigned long GetTokenTicket();
+        void*         m_pUserData; // custom user-data (the classbrowser expects it to be a pointer to a cbProject)
 
-    private:
+    protected:
+        TokensTree*   m_pTree;
+        int           m_Self; // current index in the tree
+        unsigned long m_Ticket;
+
+        static unsigned long GetTokenTicket();
 };
 
 class TokensTree
 {
     public:
         static const wxString s_version;
+
         TokensTree();
-        inline void Clear() { clear(); }
-
-        // STL compatibility functions
-        void clear();
-        inline Token* operator[](int idx) { return GetTokenAt(idx); }
-        inline Token* at(int idx) { return GetTokenAt(idx); }
-        size_t size();
-        size_t realsize();
-        inline bool empty() { return size()==0; }
-        int insert(Token* newToken);
-        int insert(int loc, Token* newToken);
-        int erase(int loc);
-        void erase(Token* oldToken);
-
-        // Token specific functions
-        void RecalcFreeList();
-        void RecalcData();
-        int TokenExists(const wxString& name, int parent, short int kindMask);
-        size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, short int kindMask = tkUndefined);
-        size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
-        void RemoveFile(const wxString& filename);
-        void RemoveFile(int index);
-        void FreeTemporaries();
         virtual ~TokensTree();
 
-        // Parsing related functions
+        inline void Clear()               { clear(); }
 
-        size_t GetFileIndex(const wxString& filename);
+        // STL compatibility functions
+        void          clear();
+        inline Token* operator[](int idx) { return GetTokenAt(idx); }
+        inline Token* at(int idx)         { return GetTokenAt(idx); }
+        size_t        size();
+        size_t        realsize();
+        inline bool   empty()             { return size()==0; }
+        int           insert(Token* newToken);
+        int           insert(int loc, Token* newToken);
+        int           erase(int loc);
+        void          erase(Token* oldToken);
+
+        // Token specific functions
+        void   RecalcFreeList();
+        void   RecalcData();
+        int    TokenExists(const wxString& name, int parent, short int kindMask);
+        size_t FindMatches(const wxString& s, TokenIdxSet& result, bool caseSensitive, bool is_prefix, short int kindMask = tkUndefined);
+        size_t FindTokensInFile(const wxString& file, TokenIdxSet& result, short int kindMask);
+        void   RemoveFile(const wxString& filename);
+        void   RemoveFile(int fileIndex);
+        void   FreeTemporaries();
+
+        // Parsing related functions
+        size_t         GetFileIndex(const wxString& filename);
         const wxString GetFilename(size_t idx) const;
-        size_t ReserveFileForParsing(const wxString& filename,bool preliminary = false);
-        void FlagFileForReparsing(const wxString& filename);
-        void FlagFileAsParsed(const wxString& filename);
-        bool IsFileParsed(const wxString& filename);
+        size_t         ReserveFileForParsing(const wxString& filename, bool preliminary = false);
+        void           FlagFileForReparsing(const wxString& filename);
+        void           FlagFileAsParsed(const wxString& filename);
+        bool           IsFileParsed(const wxString& filename);
 
         void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
         void MarkFileTokensAsLocal(size_t file, bool local = true, void* userData = 0);
 
-        TokenList       m_Tokens; /** Contains the pointers to all the tokens */
-        TokenSearchTree m_Tree;   /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
+        TokenList         m_Tokens;            /** Contains the pointers to all the tokens */
+        TokenSearchTree   m_Tree;              /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
 
-        TokenFilenamesMap m_FilenamesMap;      /** Map: filenames -> file indexes */
-        TokenFilesMap     m_FilesMap;          /** Map: file indexes -> Sets of TokenIndexes */
+        TokenFilenamesMap m_FilenamesMap;      /** Map: filenames    -> file indexes */
+        TokenFilesMap     m_FilesMap;          /** Map: file indexes -> sets of TokenIndexes */
         TokenFilesSet     m_FilesToBeReparsed; /** Set: file indexes */
         TokenIdxList      m_FreeTokens;        /** List of all the deleted (and available) tokens */
 
         /** List of tokens belonging to the global namespace */
-        TokenIdxSet  m_TopNameSpaces;
-        TokenIdxSet  m_GlobalNameSpace;
+        TokenIdxSet       m_TopNameSpaces;
+        TokenIdxSet       m_GlobalNameSpace;
 
-        TokenFilesStatus m_FilesStatus; /** Parse Status for each file */
-        bool m_modified;
+        TokenFilesStatus  m_FilesStatus;       /** Parse status for each file */
+        bool              m_Modified;
+
     protected:
         Token* GetTokenAt(int idx);
-        int AddToken(Token* newToken,int forceidx = -1);
+        int AddToken(Token* newToken, int fileIndex);
 
         void RemoveToken(int idx);
         void RemoveToken(Token* oldToken);
 
-        int AddTokenToList(Token* newToken,int forceidx = -1);
+        int  AddTokenToList(Token* newToken, int forceidx);
         void RemoveTokenFromList(int idx);
 
         void RecalcFullInheritance(int parentIdx, TokenIdxSet& result); // called by RecalcData
@@ -217,7 +219,10 @@ inline void SaveIntToFile(wxOutputStream* f, int i)
     and a constant int size */
 
     unsigned int const j = i; // rshifts aren't well-defined for negatives
-    wxChar c[4] = { (wxChar) (j>>0&0xFF), (wxChar) (j>>8&0xFF), (wxChar) (j>>16&0xFF), (wxChar) (j>>24&0xFF) };
+    wxChar c[4] = { (wxChar) (j>> 0&0xFF),
+                    (wxChar) (j>> 8&0xFF),
+                    (wxChar) (j>>16&0xFF),
+                    (wxChar) (j>>24&0xFF) };
     f->Write( c, 4 );
 }
 

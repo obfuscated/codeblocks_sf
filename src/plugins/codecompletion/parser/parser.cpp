@@ -178,7 +178,7 @@ Parser::~Parser()
     if (m_pClassBrowser && m_pClassBrowser->GetParserPtr() == this)
         m_pClassBrowser->UnlinkParser();
     m_TreeBuildingStatus = 0;
-    m_pClassBrowser = NULL;
+    m_pClassBrowser = 0;
 
     Clear(); // Clear also disconnects the events
 #ifndef STANDALONE
@@ -275,7 +275,7 @@ bool Parser::CacheNeedsUpdate()
     if (m_UsingCache)
     {
         wxCriticalSectionLocker lock(s_MutexProtection);
-        return m_pTokensTree->m_modified;
+        return m_pTokensTree->m_Modified;
     }
     return true;
 }
@@ -644,7 +644,7 @@ bool Parser::RemoveFile(const wxString& filename)
         m_pTokensTree->m_FilesMap.erase(index);
         m_pTokensTree->m_FilesStatus.erase(index);
         m_pTokensTree->m_FilesToBeReparsed.erase(index);
-        m_pTokensTree->m_modified = true;
+        m_pTokensTree->m_Modified = true;
     }
 
     return result;
@@ -792,7 +792,7 @@ bool Parser::ReadFromCache(wxInputStream* f)
     else
         m_pTokensTree->clear();
 
-    m_pTokensTree->m_modified = false;
+    m_pTokensTree->m_Modified = false;
 
     return result;
 }
@@ -834,7 +834,7 @@ bool Parser::WriteToCache(wxOutputStream* f)
     result = true;
 
     if (result)
-        m_pTokensTree->m_modified = false;
+        m_pTokensTree->m_Modified = false;
 
 //  End saving process
     return result;
@@ -868,7 +868,7 @@ wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
         if (FoundSet.GetCount())
         {
             FirstFound = UnixFilename(FoundSet[0]);
-            m_GlobalIncludes.AddItem(file,FirstFound);
+            m_GlobalIncludes.AddItem(file, FirstFound);
         }
     }
     return FirstFound;
@@ -948,17 +948,20 @@ wxString Parser::GetFullFileName(const wxString& src, const wxString& tgt, bool 
     return fullname;
 }
 
-void Parser::OnParseFile(const wxString& filename,int flags)
+void Parser::DoParseFile(const wxString& filename, bool isGlobal)
 {
     if (m_IgnoreThreadEvents)
         return;
-    if (   (flags == 0 && !m_Options.followLocalIncludes)
-        || (flags == 1 && !m_Options.followGlobalIncludes) )
+
+    if (   (!isGlobal && !m_Options.followLocalIncludes)
+        || ( isGlobal && !m_Options.followGlobalIncludes) )
         return;
+
     if (filename.IsEmpty())
         return;
-    LoaderBase* loader = NULL; //defer loading until later
-    Parse(filename, flags == 0, loader); // isLocal = (flags==0)
+
+    LoaderBase* loader = 0; // defer loading until later
+    Parse(filename, isGlobal, loader);
 }
 
 void Parser::StartStopWatch()
@@ -1059,17 +1062,18 @@ bool Parser::ReparseModifiedFiles()
     return true;
 }
 
-size_t Parser::FindTokensInFile(const wxString& fileName,TokenIdxSet& result,short int kindMask)
+size_t Parser::FindTokensInFile(const wxString& fileName, TokenIdxSet& result, short int kindMask)
 {
     result.clear();
     wxString file = UnixFilename(fileName);
     TokenIdxSet tmpresult;
+
     wxCriticalSectionLocker lock(s_MutexProtection);
-    if (!m_pTokensTree->FindTokensInFile(file, tmpresult, kindMask))
+    TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), file.wx_str());
+    if ( !m_pTokensTree->FindTokensInFile(file, tmpresult, kindMask) )
         return 0;
 
-    TokenIdxSet::iterator it;
-    for (it = tmpresult.begin(); it != tmpresult.end(); ++it)
+    for (TokenIdxSet::iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
     {
         Token* token = m_pTokensTree->at(*it);
         if (token)
