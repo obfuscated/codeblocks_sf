@@ -209,7 +209,7 @@ void OpenFilesListPlugin::RebuildOpenFilesTree()
 
 void OpenFilesListPlugin::RefreshOpenFilesTree(EditorBase* ed, bool remove)
 {
-    if(Manager::IsAppShuttingDown())
+    if(Manager::IsAppShuttingDown() || !ed)
         return;
 
     EditorManager* mgr = Manager::Get()->GetEditorManager();
