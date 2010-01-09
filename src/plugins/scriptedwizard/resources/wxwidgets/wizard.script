@@ -619,6 +619,7 @@ function SetupProject(project)
         {
             project.AddCompilerOption(_T("-pipe"));
             project.AddCompilerOption(_T("-mthreads"));
+            project.AddLinkerOption(_T("-mthreads"));
             project.AddCompilerOption(_T("-D__GNUWIN32__"));
             project.AddCompilerOption(_T("-D__WXMSW__"));
             if (IsDLL)
