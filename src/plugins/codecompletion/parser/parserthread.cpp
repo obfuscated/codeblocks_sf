@@ -339,7 +339,6 @@ bool ParserThread::InitTokenizer()
         if (!m_IsBuffer)
         {
             wxFile file(m_Buffer);
-
             if (file.IsOpened())
             {
                 m_Filename = m_Buffer;
@@ -352,6 +351,7 @@ bool ParserThread::InitTokenizer()
                 return ret;
             }
 
+            TRACE(_T("InitTokenizer() : Could not open file:\n%s"), m_Buffer.wx_str());
             return false;
         }
 
@@ -1170,17 +1170,11 @@ Token* ParserThread::DoAddToken(TokenKind kind,
 
     if (!isImpl)
     {
-
         newToken->m_FileIdx = m_FileIdx;
         newToken->m_Line    = line;
         TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), type '%s', actual '%s'. Parent is %s (%d)"),
-              name.wx_str(),
-              newToken->GetSelf(),
-              newToken->m_Type.wx_str(),
-              newToken->m_ActualType.wx_str(),
-              newToken->GetParentName().wx_str(),
-              newToken->m_ParentIndex);
-
+              name.wx_str(),                   newToken->GetSelf(),                newToken->m_Type.wx_str(),
+              newToken->m_ActualType.wx_str(), newToken->GetParentName().wx_str(), newToken->m_ParentIndex);
     }
     else
     {
@@ -1385,7 +1379,7 @@ void ParserThread::HandleNamespace()
         wxString next = m_Tokenizer.PeekToken(); // named namespace
         if (next==ParserConsts::opbrace)
         {
-            m_Tokenizer.SetState(tsSkipNone);
+            m_Tokenizer.SetState(tsSkipUnWanted);
 
             // use the existing copy (if any)
             Token* newToken = TokenExists(ns, m_pLastParent, tkNamespace);
@@ -1545,7 +1539,7 @@ void ParserThread::HandleClass(EClassType ct, const wxString& templateArgs)
                                   ct == ctUnion ? _T("Union") :
                                                   _T("Struct"), num++);
 
-                Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr, 0, 0,templateArgs);
+                Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr, 0, 0, templateArgs);
 
                 Token* lastParent = m_pLastParent;
                 TokenScope lastScope = m_LastScope;
@@ -1764,11 +1758,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 // Show message, if skipped buffer is more than 10% of whole buffer (might be a bug in the parser)
                 if (!m_IsBuffer && ((lineEnd-lineStart) > (int)(m_FileSize/10)))
                     TRACE(_T("HandleFunction() : Skipped function '%s' impl. from %d to %d (file name='%s', file size=%d)."),
-                          name.wx_str(),
-                          lineStart,
-                          lineEnd,
-                          m_Filename.wx_str(),
-                          m_FileSize);
+                          name.wx_str(), lineStart, lineEnd, m_Filename.wx_str(), m_FileSize);
 
                 break;
             }
@@ -1778,7 +1768,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
             }
             else if (peek == ParserConsts::kw_const)
             {
-                isConst= true;
+                isConst = true;
             }
             else
             {
@@ -1793,10 +1783,9 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
         TRACE(_T("HandleFunction() : Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'"));
         TokenKind tokenKind = !isCtorOrDtor ? tkFunction : (isDtor ? tkDestructor : tkConstructor);
         Token* newToken =  DoAddToken(tokenKind, name, lineNr, lineStart, lineEnd, args, isOperator, isImpl);
+
         if (newToken)
-        {
             newToken->m_IsConst = isConst;
-        }
     }
 }
 

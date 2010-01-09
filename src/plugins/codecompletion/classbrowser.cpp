@@ -115,7 +115,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
         m_Search->SetWindowStyle(wxTE_PROCESS_ENTER); // it's a must on windows to catch EVT_TEXT_ENTER
 
     // Subclassed in XRC file, for reference see here: http://wiki.wxwidgets.org/Resource_Files
-	m_Tree       = XRCCTRL(*this, "treeAll", CBTreeCtrl);
+    m_Tree       = XRCCTRL(*this, "treeAll", CBTreeCtrl);
     m_TreeBottom = XRCCTRL(*this, "treeMembers", CBTreeCtrl);
 
     int filter = cfg->ReadInt(_T("/browser_display_filter"), bdfWorkspace);
@@ -523,11 +523,11 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 
                 wxFocusEvent ev(wxEVT_SET_FOCUS);
                 ev.SetWindow(this);
-				#if wxCHECK_VERSION(2, 9, 0)
-				ed->GetControl()->GetEventHandler()->AddPendingEvent(ev);
-				#else
+                #if wxCHECK_VERSION(2, 9, 0)
+                ed->GetControl()->GetEventHandler()->AddPendingEvent(ev);
+                #else
                 ed->GetControl()->AddPendingEvent(ev);
-				#endif
+                #endif
             }
         }
     }

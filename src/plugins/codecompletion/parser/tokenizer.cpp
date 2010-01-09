@@ -514,7 +514,7 @@ wxString Tokenizer::GetToken()
     m_UndoLineNumber = m_LineNumber;
     m_UndoNestLevel  = m_NestLevel;
 
-    if(m_PeekAvailable)
+    if (m_PeekAvailable)
     {
         m_TokenIndex = m_PeekTokenIndex;
         m_LineNumber = m_PeekLineNumber;
@@ -531,7 +531,7 @@ wxString Tokenizer::GetToken()
 
 wxString Tokenizer::PeekToken()
 {
-    if(!m_PeekAvailable)
+    if (!m_PeekAvailable)
     {
         m_PeekAvailable = true;
 

@@ -45,7 +45,6 @@ public:
     wxString PeekToken();
     void     UngetToken();
 
-
     void SetTokenizerOption(bool wantPreprocessor)
     {
       m_TokenizerOptions.wantPreprocessor = wantPreprocessor;

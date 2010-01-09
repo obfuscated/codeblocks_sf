@@ -313,6 +313,7 @@ class ParserThread : public cbThreadedTask
 
         /** initialze the m_Buffer, load from local file or use a buffer in memory */
         bool InitTokenizer();
+
         /** a pointer indicator*/
         bool m_IsPointer;
 };

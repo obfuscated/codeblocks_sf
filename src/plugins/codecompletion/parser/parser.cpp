@@ -874,7 +874,7 @@ wxString Parser::FindFirstFileInIncludeDirs(const wxString& file)
     return FirstFound;
 }
 
-wxArrayString Parser::FindFileInIncludeDirs(const wxString& file,bool firstonly)
+wxArrayString Parser::FindFileInIncludeDirs(const wxString& file, bool firstonly)
 {
     wxArrayString FoundSet;
     for (size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)

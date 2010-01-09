@@ -370,10 +370,25 @@
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
-				<object class="wxStaticText" name="ID_STATICTEXT31" variable="lblInfo" member="yes">
-					<label>The parser contains 0 tokens found in 0 files</label>
+				<object class="wxBoxSizer" variable="BoxSizer10" member="no">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT31" variable="lblInfo" member="yes">
+							<label>The parser contains 0 tokens found in 0 files</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON6" variable="btnSave" member="yes">
+							<label>Save</label>
+							<handler function="OnSave" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">

@@ -13,16 +13,16 @@
 #endif
 
 //(*Headers(CCDebugInfo)
-#include <wx/combobox.h>
-#include <wx/sizer.h>
 #include <wx/notebook.h>
-#include <wx/button.h>
-#include <wx/panel.h>
-#include <wx/dialog.h>
-#include <wx/statline.h>
+#include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
+#include <wx/statline.h>
+#include <wx/panel.h>
+#include <wx/button.h>
+#include <wx/dialog.h>
+#include <wx/combobox.h>
 //*)
 
 class Parser;
@@ -97,6 +97,7 @@ class CCDebugInfo: public wxDialog
 		static const long ID_PANEL3;
 		static const long ID_NOTEBOOK1;
 		static const long ID_STATICTEXT31;
+		static const long ID_BUTTON6;
 		static const long ID_STATICLINE2;
 		//*)
 
@@ -109,6 +110,7 @@ class CCDebugInfo: public wxDialog
 		void OnGoDescClick(wxCommandEvent& event);
 		void OnGoParentClick(wxCommandEvent& event);
 		void OnGoChildrenClick(wxCommandEvent& event);
+		void OnSave(wxCommandEvent& event);
 		//*)
 
 		//(*Declarations(CCDebugInfo)
@@ -123,6 +125,7 @@ class CCDebugInfo: public wxDialog
 		wxBoxSizer* BoxSizer7;
 		wxStaticText* txtIsTemp;
 		wxBoxSizer* BoxSizer8;
+		wxButton* btnSave;
 		wxStaticText* StaticText13;
 		wxStaticText* StaticText30;
 		wxButton* btnGoAsc;

@@ -268,7 +268,7 @@ inline size_t SearchTreeNode::GetItemNo(size_t depth)
     return found->second;
 }
 
-size_t SearchTreeNode::AddItemNo(size_t depth,size_t itemno)
+size_t SearchTreeNode::AddItemNo(size_t depth, size_t itemno)
 {
     SearchTreeItemsMap::iterator found = m_Items.find(depth);
     if(found == m_Items.end())
@@ -473,7 +473,7 @@ wxString SearchTreeNode::Serialize(BasicSearchTree* tree,nSearchTreeNode node_id
     return result;
 }
 
-void SearchTreeNode::dump(BasicSearchTree* tree,nSearchTreeNode node_id,const wxString& prefix,wxString& result)
+void SearchTreeNode::dump(BasicSearchTree* tree, nSearchTreeNode node_id, const wxString& prefix, wxString& result)
 {
     wxString suffix(_T(""));
     suffix << _T("- \"") << SerializeString(GetLabel(tree)) << _T("\" (") << u2s(node_id) << _T(")");
@@ -814,7 +814,7 @@ size_t BasicSearchTree::insert(const wxString& s)
     size_t result = 0;
     SearchTreePoint resultpos;
     resultpos = AddNode(s, 0);
-    result = m_pNodes[resultpos.n]->AddItemNo(resultpos.depth,itemno);
+    result = m_pNodes[resultpos.n]->AddItemNo(resultpos.depth, itemno);
     if(m_Points.size() < result)
     {
         m_Points.resize(result,SearchTreePoint(0,0));
@@ -1020,6 +1020,7 @@ wxString SearchTreeNode::SerializeString(const wxString& s)
     }
     return result;
 }
+
 wxString BasicSearchTree::SerializeLabel(nSearchTreeLabel labelno)
 {
     wxString result(_T(""));

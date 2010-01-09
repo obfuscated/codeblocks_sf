@@ -80,13 +80,13 @@ class SearchTreeNode
     friend class BasicSearchTreeIterator;
     public:
         SearchTreeNode();
-        SearchTreeNode(unsigned int depth,nSearchTreeNode parent,nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
+        SearchTreeNode(unsigned int depth, nSearchTreeNode parent, nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
         virtual ~SearchTreeNode();
         nSearchTreeNode GetParent() const { return m_parent; }
         void SetParent(nSearchTreeNode newparent) { m_parent = newparent; }
         nSearchTreeNode GetChild(wxChar ch);
         size_t GetItemNo(size_t depth);
-        size_t AddItemNo(size_t depth,size_t itemno);
+        size_t AddItemNo(size_t depth, size_t itemno);
         SearchTreeNode* GetParent(const BasicSearchTree* tree) const;
         SearchTreeNode* GetChild(BasicSearchTree* tree,wxChar ch);
         wxString GetLabel(const BasicSearchTree* tree) const;
@@ -163,6 +163,7 @@ class BasicSearchTree
 
         /// Serializes the labels into an XML-compatible string
         wxString SerializeLabels();
+
         /// Dumps a graphical version of the tree
         wxString dump();
     protected:
@@ -221,7 +222,7 @@ class SearchTree: public BasicSearchTree
         wxString Serialize();
         T GetItem(const wxString& s); /// Gets the item at position defined by s
         T GetItem(const wxChar* s);
-        size_t AddItem(const wxString& s,T item,bool replaceexisting = false); /// Adds an item to position defined by s
+        size_t AddItem(const wxString& s, T item, bool replaceexisting = false); /// Adds an item to position defined by s
         T& GetItemAtPos(size_t i); /// Gets the item found at position i
         void SetItemAtPos(size_t i,T item); /// Replaces the item found at position i
 
@@ -307,15 +308,17 @@ T SearchTree<T>::GetItem(const wxString& s)
 }
 
 template <class T>
-size_t SearchTree<T>::AddItem(const wxString& s,T item,bool replaceexisting)
+size_t SearchTree<T>::AddItem(const wxString& s, T item, bool replaceexisting)
 {
     size_t itemno = insert(s);
+
     if(itemno > m_Items.size())
         m_Items.resize(itemno);
     else if(itemno == m_Items.size())
         m_Items.push_back(item);
     else if(replaceexisting)
         m_Items[itemno] = item;
+
     return itemno;
 }
 
@@ -355,7 +358,7 @@ T& SearchTree<T>::operator[](const wxString& s)
     if(!curpos)
     {
         T newitem;
-        curpos = AddItem(s,newitem);
+        curpos = AddItem(s, newitem);
     }
     return m_Items[curpos];
 }
