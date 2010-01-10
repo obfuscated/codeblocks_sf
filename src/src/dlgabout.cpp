@@ -141,6 +141,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
     font2.SetPointSize(10);
     XRCCTRL(*this, "txtLicense", wxTextCtrl)->SetFont(font2);
 #endif
+    Fit();
 }
 
 // class destructor
