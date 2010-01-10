@@ -40,20 +40,31 @@ SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/") + (toolbar_size?_T("16x16/"):_T("22x22/"));
 
     // create a dummy button to get the standard button-size,
-    // wxCustomButton does not do that properly (at least not on linux)
+    // wxCustomButton does not do that properly
+    // we have to force this size as MinSize to make it work
     wxBitmapButton dummyBtn(this, wxID_ANY, wxBitmap(prefix + wxT("openfiles.png"), wxBITMAP_TYPE_PNG));
     wxSize dummySize = dummyBtn.GetSize();
 
     m_pBtnSearchOpenFiles = new wxCustomButton(this, idBtnSearchOpenFiles, wxBitmap(prefix + wxT("openfiles.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
     m_pBtnSearchOpenFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("openfilesdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchOpenFiles->SetBitmapSelected(wxBitmap(prefix + wxT("openfilesselected.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchOpenFiles->SetMinSize(dummySize);
     m_pBtnSearchTargetFiles = new wxCustomButton(this, idBtnSearchTargetFiles, wxBitmap(prefix + wxT("target.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
     m_pBtnSearchTargetFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("targetdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchTargetFiles->SetBitmapSelected(wxBitmap(prefix + wxT("targetselected.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchTargetFiles->SetMinSize(dummySize);
     m_pBtnSearchProjectFiles = new wxCustomButton(this, idBtnSearchProjectFiles, wxBitmap(prefix + wxT("project.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
     m_pBtnSearchProjectFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("projectdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchProjectFiles->SetBitmapSelected(wxBitmap(prefix + wxT("projectselected.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchProjectFiles->SetMinSize(dummySize);
     m_pBtnSearchWorkspaceFiles = new wxCustomButton(this, idBtnSearchWorkspaceFiles, wxBitmap(prefix + wxT("workspace.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
     m_pBtnSearchWorkspaceFiles->SetBitmapDisabled(wxBitmap(prefix + wxT("workspacedisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchWorkspaceFiles->SetBitmapSelected(wxBitmap(prefix + wxT("workspaceselected.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchWorkspaceFiles->SetMinSize(dummySize);
     m_pBtnSearchDir = new wxCustomButton(this, idBtnSearchDirectoryFiles, wxBitmap(prefix + wxT("folder.png"), wxBITMAP_TYPE_PNG), wxDefaultPosition, dummySize);
     m_pBtnSearchDir->SetBitmapDisabled(wxBitmap(prefix + wxT("folderdisabled.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchDir->SetBitmapSelected(wxBitmap(prefix + wxT("folderselected.png"), wxBITMAP_TYPE_PNG));
+    m_pBtnSearchDir->SetMinSize(dummySize);
 
     set_properties();
     do_layout();

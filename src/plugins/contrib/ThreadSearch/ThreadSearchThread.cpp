@@ -94,7 +94,7 @@ void *ThreadSearchThread::Entry()
         int flags = wxDIR_FILES | wxDIR_DIRS | wxDIR_DOTDOT;
         flags    |= m_FindData.GetHiddenSearch() ? wxDIR_HIDDEN : 0;
 
-        wxDir Dir(m_FindData.GetSearchPath());
+        wxDir Dir(m_FindData.GetSearchPath(true));
         Dir.Traverse(*(static_cast<wxDirTraverser*>(this)), wxEmptyString, flags);
 
         // Tests thread stop (cancel search, app shutdown)

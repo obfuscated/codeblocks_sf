@@ -60,10 +60,10 @@ public:
     bool GetMatchCase()       const {return m_MatchCase;}
     bool GetRegEx()           const {return m_RegEx;}
     int GetScope()            const {return m_Scope;}
-    wxString GetSearchPath()  const {return m_SearchPath;}
     wxString GetSearchMask()  const {return m_SearchMask;}
     bool GetRecursiveSearch() const {return m_RecursiveSearch;}
     bool GetHiddenSearch()    const {return m_HiddenSearch;}
+    wxString GetSearchPath(bool expanded = false)  const;
 
 
 private:

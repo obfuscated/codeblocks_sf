@@ -12,6 +12,7 @@
  **************************************************************/
 
 #include "ThreadSearchFindData.h"
+#include "macrosmanager.h"
 
 ThreadSearchFindData::ThreadSearchFindData()
                      :m_FindText(wxEmptyString)
@@ -70,4 +71,12 @@ void ThreadSearchFindData::UpdateSearchScope(eSearchScope scope, bool bValue)
     {
         m_Scope &= ~scope;
     }
+}
+
+wxString ThreadSearchFindData::GetSearchPath(bool expanded)  const
+{
+    if(expanded)
+        return Manager::Get()->GetMacrosManager()->ReplaceMacros(m_SearchPath);
+    else
+        return m_SearchPath;
 }
