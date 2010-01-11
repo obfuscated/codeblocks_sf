@@ -147,6 +147,7 @@ function SetupProject(project)
         project.AddLinkerOption(_T("-Wl,--enable-runtime-pseudo-reloc"));
         project.AddLinkerOption(_T("-Wl,--enable-auto-image-base"));
         project.AddLinkerOption(_T("-Wl,--add-stdcall-alias"));
+        project.AddLinkerOption(_T("-mthreads"));
     }
     else
     {
