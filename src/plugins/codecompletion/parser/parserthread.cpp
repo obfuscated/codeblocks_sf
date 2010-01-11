@@ -430,15 +430,20 @@ void ParserThread::DoParse()
 
         if (token == ParserConsts::kw_template)
         {
+            // There are some template defintions that are not working like
+            // within gcc headers (NB: This syntax is a GNU extension):
+            // extern template
+            //    const codecvt<char, char, mbstate_t>&
+            //    use_facet<codecvt<char, char, mbstate_t> >(const locale&);
             m_Tokenizer.SetState(tsTemplateArgument);
             wxString args = m_Tokenizer.GetToken();
             token = m_Tokenizer.GetToken();
-            TRACE(_T("DoParse() : template argument='%s', token ='%s'"), args.wx_str(), token.wx_str());
+            TRACE(_T("DoParse() : Template argument='%s', token ='%s'"), args.wx_str(), token.wx_str());
             if (token==ParserConsts::kw_class)
             {
                 m_Str.Clear();
                 if (m_Options.handleClasses)
-                    HandleClass(ctClass,args);
+                    HandleClass(ctClass, args);
                 else
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
             }
@@ -446,7 +451,7 @@ void ParserThread::DoParse()
             {
                 m_Str.Clear();
                 if (m_Options.handleClasses)
-                    HandleClass(ctStructure,args);
+                    HandleClass(ctStructure, args);
                 else
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true);
             }
@@ -1899,9 +1904,9 @@ void ParserThread::HandleEnum()
 
 void ParserThread::HandleTypedef()
 {
-    // typedefs are handled as tkClass and we put the typedef'd type as the class's
-    // ancestor. this way, it will work through inheritance.
-    // function pointers are a different beast and are handled differently.
+    // typedefs are handled as tkClass and we put the typedef'd type as the
+    // class's ancestor. This way, it will work through inheritance.
+    // Function pointers are a different beast and are handled differently.
 
     // this is going to be tough :(
     // let's see some examples:
@@ -2011,7 +2016,9 @@ void ParserThread::HandleTypedef()
                     token.Remove(0, 1); // remove opening parenthesis
                 }
                 args = peek;
-                components.push(token);
+
+                TRACE(_("HandleTypedef() : Pushing component='%s' (typedef args='%s')"), token.Trim(true).Trim(false).wx_str(), args.wx_str());
+                components.push(token.Trim(true).Trim(false));
             }
             else
             {
@@ -2019,11 +2026,13 @@ void ParserThread::HandleTypedef()
 
                 // last component is already the name and this is the args
                 args = token;
+                TRACE(_("HandleTypedef() : Typedef args='%s'"), args.wx_str());
             }
             break;
         }
 
-        components.push(token);
+        TRACE(_("HandleTypedef() : Pushing component='%s', typedef args='%s'"), token.Trim(true).Trim(false).wx_str(), args.wx_str());
+        components.push(token.Trim(true).Trim(false));
 
         // skip templates <>
         if (peek == ParserConsts::lt)
@@ -2057,7 +2066,7 @@ void ParserThread::HandleTypedef()
 
     // no return type
     m_Str.Clear();
-    TRACE(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s'"), components.front().wx_str(), ancestor.wx_str());
+    TRACE(_("HandleTypedef() : Adding typedef: name='%s', ancestor='%s', args='%s'"), components.front().wx_str(), ancestor.wx_str(), args.wx_str());
 //    Token* tdef = DoAddToken(tkClass, components.front(), lineNr, 0, 0, args);
     Token* tdef = DoAddToken(tkTypedef, components.front(), lineNr, 0, 0, args);
 
@@ -2066,19 +2075,18 @@ void ParserThread::HandleTypedef()
 
     if (tdef)
     {
-        if (!is_function_pointer)
+        if (is_function_pointer)
         {
-            tdef->m_AncestorsString = ancestor;
+            tdef->m_Type            = ancestor + typ; // + args;
             tdef->m_ActualType      = actualAncestor;
-            tdef->m_Type            = ancestor;
+            tdef->m_AncestorsString = ancestor;
         }
         else
         {
+            tdef->m_Type            = ancestor;
             tdef->m_ActualType      = actualAncestor;
-            tdef->m_Type            = ancestor + typ; // + args;
             tdef->m_AncestorsString = ancestor;
         }
-
     }
 }
 
