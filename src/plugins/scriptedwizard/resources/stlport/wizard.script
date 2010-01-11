@@ -107,6 +107,8 @@ function SetupProject(project)
         project.AddLinkLib(_T("stlport.5.1.dll"));
         project.AddLinkLib(_T("stlportg.5.1.dll"));
         project.AddLinkLib(_T("stlportstlg.5.1.dll"));
+
+        project.AddLinkerOption(_T("-mthreads"));
     }
 
     // enable compiler warnings (project-wide)
