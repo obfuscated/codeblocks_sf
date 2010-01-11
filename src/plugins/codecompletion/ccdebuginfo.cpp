@@ -10,10 +10,12 @@
 #include <sdk.h>
 #include "ccdebuginfo.h"
 #include "parser/parser.h"
-#include <wx/utils.h>
+
+#include <wx/busyinfo.h>
 #include <wx/choicdlg.h> // wxGetSingleChoiceIndex
 #include <wx/file.h>
 #include <wx/filedlg.h>
+#include <wx/utils.h>    // wxWindowDisabler
 
 //(*InternalHeaders(CCDebugInfo)
 #include <wx/intl.h>
@@ -326,9 +328,9 @@ void CCDebugInfo::DisplayTokenInfo()
     txtType->SetLabel(ttype);
     txtActualType->SetLabel(m_pToken->m_ActualType);
     txtArgs->SetLabel(args);
-    txtIsOp->SetLabel(m_pToken->m_IsOperator ? _T("Yes") : _T("No"));
-    txtIsLocal->SetLabel(m_pToken->m_IsLocal ? _T("Yes") : _T("No"));
-    txtIsTemp->SetLabel(m_pToken->m_IsTemp ? _T("Yes") : _T("No"));
+    txtIsOp->SetLabel(m_pToken->m_IsOperator ? _("Yes") : _("No"));
+    txtIsLocal->SetLabel(m_pToken->m_IsLocal ? _("Yes") : _("No"));
+    txtIsTemp->SetLabel(m_pToken->m_IsTemp ? _("Yes") : _("No"));
     txtNamespace->SetLabel(m_pToken->GetNamespace());
     #if wxCHECK_VERSION(2, 9, 0)
     txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _T("<Global namespace>"), m_pToken->m_ParentIndex));
@@ -343,7 +345,7 @@ void CCDebugInfo::DisplayTokenInfo()
     else
         txtDeclFile->SetLabel(wxEmptyString);
     if (!m_pToken->GetImplFilename().IsEmpty())
-        txtImplFile->SetLabel(wxString::Format(_T("%s : %d (code lines: %d to %d)"), m_pToken->GetImplFilename().c_str(), m_pToken->m_ImplLine, m_pToken->m_ImplLineStart, m_pToken->m_ImplLineEnd));
+        txtImplFile->SetLabel(wxString::Format(_("%s : %d (code lines: %d to %d)"), m_pToken->GetImplFilename().c_str(), m_pToken->m_ImplLine, m_pToken->m_ImplLineStart, m_pToken->m_ImplLineEnd));
     else
         txtImplFile->SetLabel(wxEmptyString);
     txtUserData->SetLabel(wxString::Format(_T("0x%p"), m_pToken->m_pUserData));
@@ -357,9 +359,9 @@ void CCDebugInfo::FillChildren()
     {
         Token* child = tokens->at(*it);
         #if wxCHECK_VERSION(2, 9, 0)
-        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.wx_str() : _T("<invalid token>"), *it));
+        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.wx_str() : _("<invalid token>"), *it));
         #else
-        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.c_str() : _T("<invalid token>"), *it));
+        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.c_str() : _("<invalid token>"), *it));
         #endif
     }
     cmbChildren->SetSelection(0);
@@ -373,9 +375,9 @@ void CCDebugInfo::FillAncestors()
     {
         Token* ancestor = tokens->at(*it);
         #if wxCHECK_VERSION(2, 9, 0)
-        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.wx_str() : _T("<invalid token>"), *it));
+        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.wx_str() : _("<invalid token>"), *it));
         #else
-        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.c_str() : _T("<invalid token>"), *it));
+        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.c_str() : _("<invalid token>"), *it));
         #endif
     }
     cmbAncestors->SetSelection(0);
@@ -389,9 +391,9 @@ void CCDebugInfo::FillDescendants()
     {
         Token* descendant = tokens->at(*it);
         #if wxCHECK_VERSION(2, 9, 0)
-        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.wx_str() : _T("<invalid token>"), *it));
+        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.wx_str() : _("<invalid token>"), *it));
         #else
-        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.c_str() : _T("<invalid token>"), *it));
+        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.c_str() : _("<invalid token>"), *it));
         #endif
     }
     cmbDescendants->SetSelection(0);
@@ -404,7 +406,8 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& event)
 
     wxBusyCursor busy;
 
-    lblInfo->SetLabel(wxString::Format(_T("The parser contains %d tokens, found in %d files"), m_pParser->GetTokens()->size(), m_pParser->GetFilesCount()));
+    lblInfo->SetLabel(wxString::Format(_("The parser contains %d tokens, found in %d files"),
+                                       m_pParser->GetTokens()->size(), m_pParser->GetFilesCount()));
     DisplayTokenInfo();
     FillFiles();
     FillDirs();
@@ -580,7 +583,14 @@ void CCDebugInfo::OnSave(wxCommandEvent& event)
 
         case 0:
             {
-                SaveCCDebugInfo(_("Save tokens tree"), tokens->dump());
+                wxString tt;
+                { // life time of wxWindowDisabler/wxBusyInfo
+                    wxWindowDisabler disableAll;
+                    wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
+                                       Manager::Get()->GetAppWindow());
+                    tt = tokens->dump();
+                }
+                SaveCCDebugInfo(_("Save tokens tree"), tt);
             }
             break;
         case 1:
