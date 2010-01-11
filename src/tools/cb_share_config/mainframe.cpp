@@ -519,7 +519,16 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
 {
   wxString section((*node)->Value(), wxConvLocal);
 
-  if      (section.MakeLower().Matches(wxT("envvars")))     // envvar plugin variables
+  if      (section.MakeLower().Matches(wxT("code_completion"))) // code completion plugin token replacements
+  {
+    TiXmlNode* child = NULL;
+    for (child = (*node)->FirstChild(); child; child = child->NextSibling())
+    {
+      if (child->Type()==TiXmlNode::ELEMENT)
+        OfferNode(&child, listbox, nodes, wxT("<code_completion>")); // recursive call
+    }
+  }
+  else if (section.MakeLower().Matches(wxT("envvars")))     // envvar plugin variables
   {
     listbox->Append(wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
@@ -565,6 +574,16 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
       if (child->Type()==TiXmlNode::ELEMENT)
         OfferNode(&child, listbox, nodes, wxT("<project_manager>")); // recursive call
     }
+  }
+
+  // ----------------------------------------------------------
+  // 1st recursion level: code_completion -> token_replacements
+  // ----------------------------------------------------------
+  else if (   prefix.Matches(wxT("<code_completion>"))
+           && section.MakeLower().Matches(wxT("token_replacements")))// token replacements
+  {
+    listbox->Append(prefix + wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
   }
 
   // -----------------------------------------------
