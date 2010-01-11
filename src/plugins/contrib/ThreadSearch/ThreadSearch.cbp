@@ -58,6 +58,9 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\wxSmithContribItems\wxthings\wxthings\include" />
 		</Compiler>
+		<Linker>
+			<Add option="-mthreads" />
+		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel\share\codeblocks\ThreadSearch.zip manifest.xml" />
 			<Add after="update.bat" />

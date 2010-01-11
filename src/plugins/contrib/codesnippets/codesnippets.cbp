@@ -68,6 +68,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="txml" />
 			<Add library="wxscintilla" />

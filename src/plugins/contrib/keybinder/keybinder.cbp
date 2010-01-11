@@ -29,6 +29,9 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DwxUSE_UNICODE" />
 				</Compiler>
+				<Linker>
+					<Add option="-mthreads" />
+				</Linker>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />

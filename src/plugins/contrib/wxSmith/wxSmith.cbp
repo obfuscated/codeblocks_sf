@@ -85,6 +85,7 @@
 			<Add option="-Wl,--export-all-symbols" />
 			<Add option="-Wl,--add-stdcall-alias" />
 			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
 			<Add library="txml" />
 			<Add library="propgrid" />
 			<Add library="wxscintilla" />
