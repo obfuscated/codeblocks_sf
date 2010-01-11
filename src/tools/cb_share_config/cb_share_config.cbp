@@ -42,6 +42,7 @@
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
+			<Add option="-mthreads" />
 			<Add library="txml" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
