@@ -358,10 +358,11 @@ void CCDebugInfo::FillChildren()
     for (TokenIdxSet::iterator it = m_pToken->m_Children.begin(); it != m_pToken->m_Children.end(); ++it)
     {
         Token* child = tokens->at(*it);
+        const wxString msgInvalidToken = _("<invalid token>");
         #if wxCHECK_VERSION(2, 9, 0)
-        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.wx_str() : _("<invalid token>"), *it));
+        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.wx_str() : msgInvalidToken.wx_str(), *it));
         #else
-        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.c_str() : _("<invalid token>"), *it));
+        cmbChildren->Append(wxString::Format(_T("%s (%d)"), child ? child->m_Name.c_str() : msgInvalidToken.c_str(), *it));
         #endif
     }
     cmbChildren->SetSelection(0);
@@ -374,10 +375,11 @@ void CCDebugInfo::FillAncestors()
     for (TokenIdxSet::iterator it = m_pToken->m_Ancestors.begin(); it != m_pToken->m_Ancestors.end(); ++it)
     {
         Token* ancestor = tokens->at(*it);
+        const wxString msgInvalidToken = _("<invalid token>");
         #if wxCHECK_VERSION(2, 9, 0)
-        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.wx_str() : _("<invalid token>"), *it));
+        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.wx_str() : msgInvalidToken.wx_str(), *it));
         #else
-        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.c_str() : _("<invalid token>"), *it));
+        cmbAncestors->Append(wxString::Format(_T("%s (%d)"), ancestor ? ancestor->m_Name.c_str() : msgInvalidToken.c_str(), *it));
         #endif
     }
     cmbAncestors->SetSelection(0);
@@ -390,10 +392,11 @@ void CCDebugInfo::FillDescendants()
     for (TokenIdxSet::iterator it = m_pToken->m_Descendants.begin(); it != m_pToken->m_Descendants.end(); ++it)
     {
         Token* descendant = tokens->at(*it);
+        const wxString msgInvalidToken = _("<invalid token>");
         #if wxCHECK_VERSION(2, 9, 0)
-        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.wx_str() : _("<invalid token>"), *it));
+        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.wx_str() : msgInvalidToken.wx_str(), *it));
         #else
-        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.c_str() : _("<invalid token>"), *it));
+        cmbDescendants->Append(wxString::Format(_T("%s (%d)"), descendant ? descendant->m_Name.c_str() : msgInvalidToken.c_str(), *it));
         #endif
     }
     cmbDescendants->SetSelection(0);
