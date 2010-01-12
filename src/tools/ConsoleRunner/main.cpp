@@ -88,7 +88,7 @@ int main(int argc, char** argv)
     }
 
     // count size of arguments
-    int fullsize = 0;
+    size_t fullsize = 0;
     for (int i = 1; i < argc; ++i)
     {
         fullsize += strlen(argv[i]);
