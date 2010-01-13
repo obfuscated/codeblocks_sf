@@ -8,7 +8,10 @@ int main (void)
 //  std::
 
   std::string ss;
+  std::basic_string<char> bs;
+
 //  ss.
+//  bs.
 
   std::vector<int> v;
 //  v.

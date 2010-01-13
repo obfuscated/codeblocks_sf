@@ -150,7 +150,7 @@ class ParserThread : public cbThreadedTask
         /** handle class declration
           * @param ct specify class like type : struct or enum or class
           */
-        void HandleClass(EClassType ct, const wxString& template_args = _T(""));
+        void HandleClass(EClassType ct);
 
         /** handle function declaration or definition
           * @param name function name
@@ -211,6 +211,9 @@ class ParserThread : public cbThreadedTask
         wxString GetActualTokenType();
 
     private:
+
+        /** initialze the m_Buffer, load from local file or use a buffer in memory */
+        bool InitTokenizer();
 
         /** no usage atm */
         void Log(const wxString& log);
@@ -311,11 +314,11 @@ class ParserThread : public cbThreadedTask
         /**  a wxString holding the parsing buffer*/
         wxString             m_Buffer;
 
-        /** initialze the m_Buffer, load from local file or use a buffer in memory */
-        bool InitTokenizer();
-
         /** a pointer indicator*/
         bool m_IsPointer;
+
+        /** holds current template agrument(s) when a template occurs */
+        wxString m_TemplateArgument;
 };
 
 #endif // PARSERTHREAD_H

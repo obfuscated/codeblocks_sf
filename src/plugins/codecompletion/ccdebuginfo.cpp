@@ -591,7 +591,7 @@ void CCDebugInfo::OnSave(wxCommandEvent& event)
                     wxWindowDisabler disableAll;
                     wxBusyInfo running(_("Obtaining tokens tree... please wait (this may take several seconds)..."),
                                        Manager::Get()->GetAppWindow());
-                    tt = tokens->dump();
+                    tt = tokens->m_Tree.dump();
                 }
                 SaveCCDebugInfo(_("Save tokens tree"), tt);
             }

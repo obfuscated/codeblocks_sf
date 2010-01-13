@@ -57,7 +57,6 @@ Tokenizer::Tokenizer(const wxString& filename)
     m_PeekNestLevel(0),
     m_IsOK(false),
     m_IsOperator(false),
-    m_SkipUnwantedTokens(true),
     m_State(tsSkipUnWanted),
     m_pLoader(0)
 {
@@ -85,24 +84,24 @@ bool Tokenizer::Init(const wxString& filename, LoaderBase* loader)
     else
     {
         m_Filename = filename;
-        TRACE(_T("Init() : m_Filename='%s'"), m_Filename.c_str());
+        TRACE(_T("Init() : m_Filename='%s'"), m_Filename.wx_str());
     }
 
     if (!wxFileExists(m_Filename))
     {
-        TRACE(_T("Init() : File '%s' does not exist."), m_Filename.c_str());
+        TRACE(_T("Init() : File '%s' does not exist."), m_Filename.wx_str());
         return false;
     }
 
     if (!ReadFile())
     {
-        TRACE(_T("Init() : File '%s' could not be read."), m_Filename.c_str());
+        TRACE(_T("Init() : File '%s' could not be read."), m_Filename.wx_str());
         return false;
     }
 
     if (!m_BufferLen)
     {
-        TRACE(_T("Init() : File '%s' is empty."), m_Filename.c_str());
+        TRACE(_T("Init() : File '%s' is empty."), m_Filename.wx_str());
         return false;
     }
 
@@ -182,6 +181,18 @@ bool Tokenizer::ReadFile()
         fileName = m_Filename;
         success = true;
     }
+
+//    size_t replacements  = m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_D)"), _T("namespace std {"),       true);
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_P)"), _T("namespace std {"),       true);
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NESTED_NAMESPACE"),                        _T("}"),                     true);
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),                         _T("namespace tr1 {"),       true);
+//           // The following must be before replacing "_GLIBCXX_END_NAMESPACE"!!!
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE_TR1"),                           _T("}"),                     true);
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(__gnu_cxx)"),                  _T("namespace __gnu_cxx {"), true);
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(std)"),                        _T("namespace std {"),       true);
+//           replacements += m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE"),                               _T("}"),                     true);
+//
+//    if (replacements) TRACE(_T("Did %d replacements in buffer of '%s'."), replacements, fileName.wx_str());
 
     m_BufferLen = m_Buffer.Length();
 
@@ -685,7 +696,7 @@ wxString Tokenizer::FixArgument(wxString src)
 {
     wxString dst;
 
-    TRACE(_T("FixArgument() : src='%s'."), src.c_str());
+    TRACE(_T("FixArgument() : src='%s'."), src.wx_str());
 
     // str.Replace is massive overkill here since it has to allocate one new block per replacement
     { // this is much faster:
@@ -765,32 +776,21 @@ wxString Tokenizer::FixArgument(wxString src)
     dst << _T(')'); // add closing parenthesis (see "i < src.Length() - 1" in previous "for")
     // str.Replace is massive overkill here since it has to allocate one new block per replacement
 
-    TRACE(_T("FixArgument() : dst='%s'."), dst.c_str());
+    TRACE(_T("FixArgument() : dst='%s'."), dst.wx_str());
 
     return dst;
 }
 
-/*
-  Just do the macro replace like below:
-  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_D)"), _T("namespace std {"),       true);
-  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE(std, _GLIBCXX_STD_P)"), _T("namespace std {"),       true);
-  m_Buffer.Replace(_T("_GLIBCXX_END_NESTED_NAMESPACE"),                        _T("}"),                     true);
-  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),                         _T("namespace tr1 {"),       true);
-  // The following must be before replacing "_GLIBCXX_END_NAMESPACE"!!!
-  m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE_TR1"),                           _T("}"),                     true);
-  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(__gnu_cxx)"),                  _T("namespace __gnu_cxx {"), true);
-  m_Buffer.Replace(_T("_GLIBCXX_BEGIN_NAMESPACE(std)"),                        _T("namespace std {"),       true);
-  m_Buffer.Replace(_T("_GLIBCXX_END_NAMESPACE"),                               _T("}"),                     true);
-*/
 wxString Tokenizer::MacroReplace(const wxString str)
 {
-   ConfigManagerContainer::StringToStringMap::const_iterator it = s_Replacements.find(str);
+    ConfigManagerContainer::StringToStringMap::const_iterator it = s_Replacements.find(str);
 
     if (it != s_Replacements.end())
     {
         // match one!
         wxString key   = it->first;
         wxString value = it->second;
+        TRACE(_T("MacroReplace() : Replacing '%s' with '%s' (file='%s')."), key.wx_str(), value.wx_str(), m_ m_Filename.wx_str());
         if (value[0]=='+' && CurrentChar()=='(')
         {
             unsigned int start = m_TokenIndex;
@@ -832,6 +832,7 @@ wxString Tokenizer::MacroReplace(const wxString str)
         else
             return value;
     }
+
     return str;
 }
 

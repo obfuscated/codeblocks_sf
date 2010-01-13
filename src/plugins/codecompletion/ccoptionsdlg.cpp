@@ -172,11 +172,24 @@ bool CCOptionsDlg::ValidateReplacementToken(wxString& from, wxString& to)
     }
 
     wxRegEx re(_T("[A-Za-z_]+[0-9]*[A-Za-z_]*"));
-    if (!re.Matches(from) || !re.Matches(to))
+    if (!re.Matches(from))
     {
-        cbMessageBox(_("Replacement tokens can only contain alphanumeric characters and underscores."),
+        cbMessageBox(_("Search token can only contain alphanumeric characters and underscores."),
                      _("Error"), wxICON_ERROR);
         return false;
+    }
+    if (!re.Matches(to))
+    {
+        // Allow replacing with special characters only if the user says it's ok.
+        if (cbMessageBox( _("You are replacing a token with a string that contains\n"
+                            "characters other than alphanumeric and underscores.\n"
+                            "This could make parsing the file impossible.\n"
+                            "Are you sure?"),
+                          _("Confirmation"),
+                          wxICON_QUESTION | wxYES_NO ) != wxID_YES)
+        {
+            return false;
+        }
     }
 
     return true;

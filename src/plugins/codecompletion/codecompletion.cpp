@@ -196,9 +196,13 @@ void CodeCompletion::LoadTokenReplacements()
     {
         // first run; add default replacements string
         Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                    _T("std"));
+
         Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE"), _T("+namespace"));
         Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NESTED_NAMESPACE"),   _T("}"));
+
         Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"),        _T("+namespace"));
+        Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE"),          _T("}"));
+
         Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"),      _T("}"));
         Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),    _T("-namespace tr1 {"));
     }
@@ -347,17 +351,17 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
             if (IsInclude)
             {
                 wxString msg;
-                msg.Printf(_("Open #include file: '%s'"), NameUnderCursor.c_str());
+                msg.Printf(_("Open #include file: '%s'"), NameUnderCursor.wx_str());
                 menu->Insert(0, idOpenIncludeFile, msg);
                 menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
             }
             else
             {
                 wxString msg;
-                msg.Printf(_("Find declaration of: '%s'"), NameUnderCursor.c_str());
+                msg.Printf(_("Find declaration of: '%s'"), NameUnderCursor.wx_str());
                 menu->Insert(0, idGotoDeclaration, msg);
 
-                msg.Printf(_("Find implementation of: '%s'"), NameUnderCursor.c_str());
+                msg.Printf(_("Find implementation of: '%s'"), NameUnderCursor.wx_str());
                 menu->Insert(1, idGotoImplementation, msg);
 
                 menu->Insert(2, wxID_SEPARATOR, wxEmptyString);

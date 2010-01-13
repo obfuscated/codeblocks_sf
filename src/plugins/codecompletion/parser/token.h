@@ -108,6 +108,7 @@ class Token : public BlockAllocated<Token, 10000>
         wxString      m_Args;
         wxString      m_StrippedArgs;
         wxString      m_AncestorsString; // all ancestors comma-separated list
+        wxString      m_TemplateArgument;
         unsigned int  m_FileIdx;
         unsigned int  m_Line;
         unsigned int  m_ImplFileIdx;
@@ -181,8 +182,6 @@ class TokensTree
 
         void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
         void MarkFileTokensAsLocal(size_t file, bool local = true, void* userData = 0);
-
-        wxString dump() { return m_Tree.dump(); }
 
         TokenList         m_Tokens;            /** Contains the pointers to all the tokens */
         TokenSearchTree   m_Tree;              /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
