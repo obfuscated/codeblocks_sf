@@ -131,7 +131,11 @@ void HexEditor::BuildMenu(wxMenuBar* menuBar)
     for ( wxMenuItemList::iterator i = list.begin(); i != list.end(); ++i, ++pos )
     {
         wxMenuItem* item = *i;
+        #if wxCHECK_VERSION(2, 9, 0)
+        wxString label = item->GetItemLabelText();
+        #else
         wxString label = item->GetLabel();
+        #endif
         label.Replace( _T("_"), _T("") );
         if ( label.Contains( _("&Open...")) )
         {
