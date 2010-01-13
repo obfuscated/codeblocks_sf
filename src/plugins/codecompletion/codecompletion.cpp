@@ -172,8 +172,7 @@ CodeCompletion::CodeCompletion() :
     m_IsAutoPopup(false),
     m_ToolbarChanged(true),
     m_CurrentLine(0),
-    m_LastFile(wxEmptyString),
-    m_NeedReparse(false)
+    m_LastFile(wxEmptyString)
 {
     if (!Manager::LoadResource(_T("codecompletion.zip")))
     {
@@ -438,18 +437,18 @@ void CodeCompletion::OnAttach()
     // register event sinks
     Manager* pm = Manager::Get();
 
-    pm->RegisterEventSink(cbEVT_EDITOR_SAVE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnReparseActiveEditor));
-    pm->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
-    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
-    pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnValueTooltip));
-    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnReparseActiveEditor));
+    pm->RegisterEventSink(cbEVT_EDITOR_OPEN,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
+    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
+    pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,       new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnValueTooltip));
+    pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
 
-    pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnAppDoneStartup));
-    pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
-    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectActivated));
-    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectClosed));
-    pm->RegisterEventSink(cbEVT_PROJECT_SAVE, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectSaved));
-    pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
+    pm->RegisterEventSink(cbEVT_APP_STARTUP_DONE,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnAppDoneStartup));
+    pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnWorkspaceChanged));
+    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectActivated));
+    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE,        new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectClosed));
+    pm->RegisterEventSink(cbEVT_PROJECT_SAVE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectSaved));
+    pm->RegisterEventSink(cbEVT_PROJECT_FILE_ADDED,   new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileAdded));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
 }
 
@@ -1474,26 +1473,28 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     }
 
     // Finally, find the current function and update
-    m_CurrentLine = ed->GetControl()->GetCurrentLine();
+    FindFunctionAndUpdate(ed->GetControl()->GetCurrentLine());
+}
+
+void CodeCompletion::FindFunctionAndUpdate(int currentLine)
+{
+    // Find the current function and update
+    m_CurrentLine = currentLine;
     int sel = FunctionPosition();
-    if (sel != -1)
+    if ( (sel != -1) && (sel != m_Function->GetSelection()) )
     {
         m_Function->SetSelection(sel);
         m_Scope->SetSelection(sel);
     }
-    else
+    else if (sel == -1)
     {
         m_Function->SetSelection(wxNOT_FOUND);
-        // TO DO : set scope correctly
+        // TODO (Morten#5#): Set scope correctly
         int NsSel = NameSpacePosition();
         if (NsSel != -1)
-        {
             m_Scope->SetSelection(NsSel + m_StartIdxNameSpaceInScope);
-        }
         else
-        {
             m_Scope->SetSelection(wxNOT_FOUND);
-        }
     }
 }
 
@@ -1776,12 +1777,12 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     // one match
     if (result.size() == 1)
     {
-		Token* sel = parser->GetTokens()->at(*(result.begin()));
-		if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
-			(isDecl && !sel->GetFilename().IsEmpty()))
-		{
-			token = sel;
-		}
+        Token* sel = parser->GetTokens()->at(*(result.begin()));
+        if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
+            (isDecl && !sel->GetFilename().IsEmpty()))
+        {
+            token = sel;
+        }
     }
     // if more than one match, display a selection dialog
     else if (result.size() > 1)
@@ -1796,8 +1797,8 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             if (sel)
             {
                 // only match tokens that have filename info
-				if ((isImpl && !sel->GetImplFilename().IsEmpty()) ||
-					(isDecl && !sel->GetFilename().IsEmpty()))
+                if (   (isImpl && !sel->GetImplFilename().IsEmpty())
+                    || (isDecl && !sel->GetFilename().IsEmpty()) )
                 {
                     selections.Add(sel->DisplayName());
                     int_selections.Add(*it);
@@ -1891,9 +1892,9 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     }
 
     // search for the file in project files
-	cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-	if (project)
-	{
+    cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (project)
+    {
         for (int i = 0; i < project->GetFilesCount(); ++i)
         {
             ProjectFile* pf = project->GetFile(i);
@@ -1905,7 +1906,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
                 foundSet.Add(pf->file.GetFullPath());
             }
         }
-	}
+    }
 
     // Remove duplicates
     for (int i = 0; i < (int)foundSet.Count() - 1; i++)
@@ -2082,44 +2083,21 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
         }
     }
-    if (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
-	    || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) )
+
+    Parser* parser = m_NativeParser.GetParserPtr();
+    bool needReparse = false;
+    if (   parser && parser->Options().whileTyping
+        && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
+            || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) ) )
     {
-        m_NeedReparse = true;
+        needReparse = true;
     }
     if (control->GetCurrentLine() != m_CurrentLine)
     {
-        if (m_NeedReparse)
-        {
-            Parser* parser = m_NativeParser.GetParserPtr();
-            if (parser)
-                parser->Reparse(editor->GetFilename());
-            m_NeedReparse= false;
-        }
+        if (parser && needReparse)
+            parser->Reparse(editor->GetFilename());
         else
-        {
-            m_CurrentLine = control->GetCurrentLine();
-            int sel = FunctionPosition();
-            if ( (sel != -1) && (sel != m_Function->GetSelection()) )
-            {
-                m_Function->SetSelection(sel);
-                m_Scope->SetSelection(sel);
-            }
-            else if (sel == -1)
-            {
-                m_Function->SetSelection(wxNOT_FOUND);
-                // TO DO : set scope correctly
-                int NsSel = NameSpacePosition();
-                if (NsSel != -1)
-                {
-                    m_Scope->SetSelection(NsSel + m_StartIdxNameSpaceInScope);
-                }
-                else
-                {
-                    m_Scope->SetSelection(wxNOT_FOUND);
-                }
-            }
-        }
+            FindFunctionAndUpdate(control->GetCurrentLine());
     }
 
     // allow others to handle this event
@@ -2147,5 +2125,5 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
     if (!ProjectManager::IsBusy())
     {
         ParseFunctionsAndFillToolbar(true);
-	}
+    }
 }

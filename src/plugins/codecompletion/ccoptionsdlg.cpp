@@ -89,6 +89,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkPreprocessor", wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
     XRCCTRL(*this, "chkNoCC", wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_code_completion"), true));
     XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
+    XRCCTRL(*this, "chkTypeMode", wxCheckBox)->SetValue(m_Parser.Options().whileTyping);
     XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
     XRCCTRL(*this, "chkEvalTooltip", wxCheckBox)->SetValue(cfg->ReadBool(_T("/eval_tooltip"), true));
     XRCCTRL(*this, "chkAutoSelectOne", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"), false));
@@ -287,6 +288,7 @@ void CCOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "spnMaxMatches", wxSpinCtrl)->Enable(en);
     XRCCTRL(*this, "sliderDelay", wxSlider)->Enable(en);
     XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkTypeMode", wxCheckBox)->Enable(en);
     XRCCTRL(*this, "lblFillupChars", wxStaticText)->Enable(en);
     XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->Enable(en);
 
@@ -322,6 +324,7 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().caseSensitive = XRCCTRL(*this, "chkCaseSensitive", wxCheckBox)->GetValue();
     cfg->Write(_T("/eval_tooltip"), (bool)XRCCTRL(*this, "chkEvalTooltip", wxCheckBox)->GetValue());
     m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkSimpleMode", wxCheckBox)->GetValue();
+    m_Parser.Options().whileTyping = XRCCTRL(*this, "chkTypeMode", wxCheckBox)->GetValue();
 
     cfg->Write(_T("/use_symbols_browser"), (bool)!XRCCTRL(*this, "chkNoSB", wxCheckBox)->GetValue());
     cfg->Write(_T("/fillup_chars"), XRCCTRL(*this, "txtFillupChars", wxTextCtrl)->GetValue());

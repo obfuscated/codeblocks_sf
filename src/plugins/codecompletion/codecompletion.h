@@ -116,6 +116,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         void OnStartParsingFunctions(wxTimerEvent& event);
         void OnFunction(wxCommandEvent& event);
         void ParseFunctionsAndFillToolbar(bool force = false);
+        void FindFunctionAndUpdate(int currentLine);
 
         int                                m_PageIndex;
         bool                               m_InitDone;
@@ -146,7 +147,6 @@ class CodeCompletion : public cbCodeCompletionPlugin
         int                                m_CurrentLine;
         map<wxString, int>                 m_SearchItem;
         wxString                           m_LastFile;
-        bool                               m_NeedReparse;
         bool                               m_LexerKeywordsToInclude[9];
 
         DECLARE_EVENT_TABLE()

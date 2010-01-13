@@ -114,11 +114,14 @@ void NativeParser::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, 
         TiXmlElement* node = elem->FirstChildElement("code_completion");
         if (!node)
             node = elem->InsertEndChild(TiXmlElement("code_completion"))->ToElement();
-        node->Clear();
-        for (size_t i = 0; i < pdirs.GetCount(); ++i)
+        if (node)
         {
-            TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
-            path->SetAttribute("add", cbU2C(pdirs[i]));
+            node->Clear();
+            for (size_t i = 0; i < pdirs.GetCount(); ++i)
+            {
+                TiXmlElement* path = node->InsertEndChild(TiXmlElement("search_path"))->ToElement();
+                if (path) path->SetAttribute("add", cbU2C(pdirs[i]));
+            }
         }
     }
 }
@@ -765,7 +768,11 @@ bool NativeParser::ParseLocalBlock(cbEditor* ed, int caretPos)
         ++blockStart; // skip {
         int blockEnd = caretPos == -1 ? ed->GetControl()->GetCurrentPos() : caretPos;
         if (blockEnd < 0 || blockEnd > ed->GetControl()->GetLength())
+        {
+            if (s_DebugSmartSense)
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("ParseLocalBlock() ERROR blockEnd=%d and edLength=%d?!"), blockEnd, ed->GetControl()->GetLength()));
             return false;
+        }
 
         if (blockStart >= blockEnd)
             blockStart = blockEnd;

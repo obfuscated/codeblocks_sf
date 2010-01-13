@@ -85,6 +85,7 @@ struct ParserOptions
     bool caseSensitive;
     bool wantPreprocessor;
     bool useSmartSense;
+    bool whileTyping;
 };
 
 enum BrowserDisplayFilter

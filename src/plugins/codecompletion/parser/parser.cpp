@@ -216,6 +216,7 @@ void Parser::ReadOptions()
     m_Options.caseSensitive          = true;
     m_Options.wantPreprocessor       = false;
     m_Options.useSmartSense          = true;
+    m_Options.whileTyping            = true;
     m_BrowserOptions.showInheritance = false;
     m_BrowserOptions.expandNS        = false;
     m_BrowserOptions.viewFlat        = false;
@@ -240,6 +241,7 @@ void Parser::ReadOptions()
     m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
     m_Options.caseSensitive        = cfg->ReadBool(_T("/case_sensitive"), false);
     m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"), true);
+    m_Options.whileTyping          = cfg->ReadBool(_T("/while_typing"), true);
     m_Options.wantPreprocessor     = cfg->ReadBool(_T("/want_preprocessor"), true);
 
     m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"), false);
@@ -260,6 +262,7 @@ void Parser::WriteOptions()
     cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
     cfg->Write(_T("/case_sensitive"),                m_Options.caseSensitive);
     cfg->Write(_T("/use_SmartSense"),                m_Options.useSmartSense);
+    cfg->Write(_T("/while_typing"),                  m_Options.whileTyping);
     cfg->Write(_T("/want_preprocessor"),             m_Options.wantPreprocessor);
 
     cfg->Write(_T("/browser_show_inheritance"),      m_BrowserOptions.showInheritance);
