@@ -1,4 +1,4 @@
-SUBDIRS = files
+SUBDIRS = c cpp
 
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/sharedlib
 
