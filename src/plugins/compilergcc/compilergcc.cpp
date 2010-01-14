@@ -34,6 +34,7 @@
 #include <wx/statline.h>
 #include <wx/ffile.h>
 #include <wx/utils.h>
+#include <wx/uri.h>
 #include "makefilegenerator.h"
 #include "compileroptionsdlg.h"
 #include "directcommands.h"
@@ -3440,7 +3441,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
                     AskForActiveProject();
                     project = m_Project;
                 }
-                last_error_file.PrependDir(project->GetExecutionDir());
+                last_error_file = project->GetExecutionDir() + last_error_file.GetFullPath();
                 last_error_file.MakeRelativeTo(project->GetBasePath());
                 last_error_filename = last_error_file.GetFullPath();
             }
@@ -3594,6 +3595,8 @@ void CompilerGCC::SaveBuildLog()
     f.Write(_T("<html>\n"));
     f.Write(_T("<head>\n"));
     f.Write(_T("<title>") + m_BuildLogTitle + _T("</title>\n"));
+    f.Write(_T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />"));
+
     f.Write(_T("</head>\n"));
     f.Write(_T("<body>\n"));
 
@@ -3621,10 +3624,12 @@ void CompilerGCC::SaveBuildLog()
     f.Write(_T("</html>\n"));
 
     Manager::Get()->GetLogManager()->Log(_("Build log saved as: "), m_PageIndex);
+    wxURI tmpFilename = m_BuildLogFilename;
+
     #if wxCHECK_VERSION(2, 9, 0)
-    Manager::Get()->GetLogManager()->Log(F(_T("file://%s"), m_BuildLogFilename.wx_str()), m_PageIndex, Logger::warning);
+    Manager::Get()->GetLogManager()->Log(F(_T("file://%s"), tmpFilename.BuildURI().wx_str()), m_PageIndex, Logger::warning);
     #else
-    Manager::Get()->GetLogManager()->Log(F(_T("file://%s"), m_BuildLogFilename.c_str()), m_PageIndex, Logger::warning);
+    Manager::Get()->GetLogManager()->Log(F(_T("file://%s"), tmpFilename.BuildURI().c_str()), m_PageIndex, Logger::warning);
     #endif
 }
 
