@@ -148,6 +148,7 @@ class CodeCompletion : public cbCodeCompletionPlugin
         map<wxString, int>                 m_SearchItem;
         wxString                           m_LastFile;
         bool                               m_LexerKeywordsToInclude[9];
+        bool                               m_NeedReparse;
 
         DECLARE_EVENT_TABLE()
 };

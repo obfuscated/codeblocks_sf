@@ -172,7 +172,8 @@ CodeCompletion::CodeCompletion() :
     m_IsAutoPopup(false),
     m_ToolbarChanged(true),
     m_CurrentLine(0),
-    m_LastFile(wxEmptyString)
+    m_LastFile(wxEmptyString),
+    m_NeedReparse(false)
 {
     if (!Manager::LoadResource(_T("codecompletion.zip")))
     {
@@ -1221,6 +1222,7 @@ void CodeCompletion::OnProjectSaved(CodeBlocksEvent& event)
     // reparse project (compiler search dirs might have changed)
     if (IsAttached() && m_InitDone && event.GetProject())
     {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing project."));
         m_NativeParser.ReparseProject(event.GetProject());
     }
     event.Skip();
@@ -1265,6 +1267,8 @@ void CodeCompletion::OnReparseActiveEditor(CodeBlocksEvent& event)
         Parser* parser = m_NativeParser.GetParserPtr();
         if (!parser)
             return;
+
+        Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing active editor ") + ed->GetFilename());
         parser->Reparse(ed->GetFilename());
         ParseFunctionsAndFillToolbar(true);
     }
@@ -2085,17 +2089,20 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     }
 
     Parser* parser = m_NativeParser.GetParserPtr();
-    bool needReparse = false;
     if (   parser && parser->Options().whileTyping
         && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
             || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) ) )
     {
-        needReparse = true;
+        m_NeedReparse = true;
     }
     if (control->GetCurrentLine() != m_CurrentLine)
     {
-        if (parser && needReparse)
+        if (parser && m_NeedReparse)
+        {
+            Manager::Get()->GetLogManager()->DebugLog(_T("Reparsing while typing for editor ") + editor->GetFilename());
             parser->Reparse(editor->GetFilename());
+            m_NeedReparse = false;
+        }
         else
             FindFunctionAndUpdate(control->GetCurrentLine());
     }

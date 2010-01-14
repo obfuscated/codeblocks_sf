@@ -228,9 +228,9 @@ bool Tokenizer::IsEscapedChar()
     {
         // check for multiple backslashes, e.g. "\\"
         unsigned int numBackslash = 2; // for sure we have at least two at this point
-        while(   ((m_TokenIndex - numBackslash) >= 0)
-              && ((m_TokenIndex - numBackslash) <= m_BufferLen)
-              && (m_Buffer.GetChar(m_TokenIndex - numBackslash) == '\\') )
+        while (   ((m_TokenIndex - numBackslash) >= 0)
+               && ((m_TokenIndex - numBackslash) <= m_BufferLen)
+               && (m_Buffer.GetChar(m_TokenIndex - numBackslash) == '\\') )
             ++numBackslash; // another one...
 
         if ( (numBackslash%2) == 1) // number of backslashes (including current char) is odd
@@ -260,7 +260,7 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
 //  The double quote before H is a "C-escaped-character", We shouldn't quite from that
 bool Tokenizer::SkipToStringEnd(const wxChar& ch)
 {
-    while(true)
+    while (true)
     {
         while (CurrentChar() != ch && MoveToNextChar()) // don't check EOF when MoveToNextChar already does
             ;
@@ -298,7 +298,7 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting)
     {
         MoveToNextChar();
 
-        while(SkipString()||SkipComment())
+        while (SkipString()||SkipComment())
             ;
 
         // use 'while' here to cater for consecutive blocks to skip (e.g. sometemplate<foo>(bar)
@@ -345,7 +345,7 @@ bool Tokenizer::SkipToEOL(bool nestBraces, bool skippingComment)
     {
         while (NotEOF() && CurrentChar() != '\n')
         {
-            if(!skippingComment)
+            if (!skippingComment)
             {
                 if (CurrentChar() == '/' && NextChar() == '*')
                 {
@@ -399,7 +399,7 @@ bool Tokenizer::SkipBlock(const wxChar& ch)
     while (NotEOF())
     {
 
-        while(SkipString() || SkipComment())
+        while (SkipString() || SkipComment())
             ;
 
         if (CurrentChar() == ch)
@@ -441,7 +441,7 @@ bool Tokenizer::SkipComment(bool skipEndWhite)
 
 
     // Here, we are in the comment body
-    while(true)
+    while (true)
     {
         if (cstyle)      // C style comment
         {
@@ -451,7 +451,7 @@ bool Tokenizer::SkipComment(bool skipEndWhite)
                 MoveToNextChar();
                 break;
             }
-            if(!MoveToNextChar())
+            if (!MoveToNextChar())
                 break;
         }
         else             // C++ style comment
@@ -483,7 +483,7 @@ bool Tokenizer::SkipUnwanted()
     // skip [XXX][YYY]
     if (m_State&tsSkipSubScrip)
     {
-        while(c == _T('[') )
+        while (c == _T('[') )
         {
             SkipBlock('[');
             if (!SkipWhiteSpace())
@@ -493,11 +493,11 @@ bool Tokenizer::SkipUnwanted()
     }
 
     // skip the following = or ?
-    if(m_State&tsSkipEqual)
+    if (m_State&tsSkipEqual)
     {
-        if(c == _T('='))
+        if (c == _T('='))
         {
-            if (!SkipToOneOfChars(_T(";}"), true))
+            if (!SkipToOneOfChars(_T(",;}"), true))
                 return false;
         }
     }
@@ -584,7 +584,7 @@ wxString Tokenizer::DoGetToken()
     if (!SkipWhiteSpace())
         return wxEmptyString;
 
-    if(!SkipUnwanted())
+    if (!SkipUnwanted())
         return wxEmptyString;;
 
     int start = m_TokenIndex;
@@ -701,7 +701,7 @@ wxString Tokenizer::FixArgument(wxString src)
     // str.Replace is massive overkill here since it has to allocate one new block per replacement
     { // this is much faster:
         size_t i;
-        while((i = src.find_first_of(TokenizerConsts::tabcrlf)) != wxString::npos)
+        while ((i = src.find_first_of(TokenizerConsts::tabcrlf)) != wxString::npos)
             src[i] = _T(' ');
     }
 

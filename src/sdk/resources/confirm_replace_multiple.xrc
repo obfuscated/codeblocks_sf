@@ -33,7 +33,7 @@
           </object>
           <object class="sizeritem">
             <object class="wxButton" name="btnAllInFile">
-              <label>&amp;All in this file</label>
+              <label>All in &amp;this file</label>
             </object>
             <flag>wxRIGHT</flag>
             <border>4</border>
