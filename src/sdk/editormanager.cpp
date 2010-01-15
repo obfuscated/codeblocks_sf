@@ -576,6 +576,9 @@ cbEditor* EditorManager::New(const wxString& newFileName)
     wxString key;
     key.Printf(_T("/default_code/set%d"), (int)FileTypeOf(ed->GetFilename()));
     wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(key, wxEmptyString);
+    // Allow usage of macros
+    // TODO (Morten#5#): Is it worth making this configurable?!
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(code);
     ed->GetControl()->SetText(code);
 
     ed->SetColourSet(m_Theme);
