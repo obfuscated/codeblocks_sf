@@ -55,9 +55,9 @@
 								<object class="wxRadioBox" name="rbOpen">
 									<label>To open the file</label>
 									<content>
-										<item>launch an external program</item>
-										<item>launch the associated application</item>
-										<item>open it in a Code::Blocks editor</item>
+										<item>Launch an external program</item>
+										<item>Launch the associated application</item>
+										<item>Open it in a Code::Blocks editor</item>
 									</content>
 									<style>wxRA_SPECIFY_COLS</style>
 								</object>

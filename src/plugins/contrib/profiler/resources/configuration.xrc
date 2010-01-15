@@ -28,7 +28,7 @@ which prints a flat profile and call graph analysis for all functions</label>
                         <vgap>5</vgap>
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkAnnSource">
-                            <label>Annotated Source</label>
+                            <label>Annotated source</label>
                             <tooltip>This option causes gprof to print annotated source code</tooltip>
                           </object>
                           <flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -116,7 +116,7 @@ which prints a flat profile and call graph analysis for all functions</label>
                       <object class="wxBoxSizer">
                         <object class="sizeritem">
                           <object class="wxCheckBox" name="chkMinCount">
-                            <label>Minimum Count</label>
+                            <label>Minimum count</label>
                             <tooltip>This option affects execution count output only: Symbols that are executed less than num times are suppressed</tooltip>
                           </object>
                           <flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
