@@ -11,7 +11,8 @@
 #include "globals.h"
 
 ASStreamIterator::ASStreamIterator(cbEditor *cbe, const wxChar* in)
-: m_cbe(cbe), m_In(in), m_PeekStart(0), m_curline(0), m_foundBookmark(false)
+: m_cbe(cbe), m_In(in), m_PeekStart(0), m_curline(0), m_foundBookmark(false),
+m_foundBreakpoint(false)
 {
 	//ctor
 }
@@ -42,6 +43,10 @@ std::string ASStreamIterator::nextLine(bool emptyLineWasDeleted)
     if (m_cbe && m_curline && m_cbe->HasBookmark(m_curline))
     {
         m_foundBookmark = true;
+    }
+    if (m_cbe && m_curline && m_cbe->HasBreakpoint(m_curline))
+    {
+        m_foundBreakpoint = true;
     }
 
     return readLine();

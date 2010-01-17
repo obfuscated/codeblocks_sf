@@ -335,12 +335,17 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
 
     int lineCounter = 0;
     std::vector<int> new_bookmark;
+    std::vector<int> ed_breakpoints;
 
     // hack: we need to evaluate the special case of having a bookmark in the first line here
 
     if (ed->HasBookmark(0))
     {
         new_bookmark.push_back(0);
+    }
+    if (ed->HasBreakpoint(0))
+    {
+        ed_breakpoints.push_back(0);
     }
 
     wxSetCursor(*wxHOURGLASS_CURSOR);
@@ -361,6 +366,11 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
             new_bookmark.push_back(lineCounter);
             asi->ClearFoundBookmark();
         }
+        if (asi->FoundBreakpoint())
+        {
+            ed_breakpoints.push_back(lineCounter);
+            asi->ClearFoundBreakpoint();
+        }
     }
 
     int pos = ed->GetControl()->GetCurrentPos();
@@ -375,6 +385,11 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
         for (std::vector<int>::const_iterator i = new_bookmark.begin(); i != new_bookmark.end(); ++i)
         {
             ed->ToggleBookmark(*i);
+        }
+
+        for (std::vector<int>::const_iterator i = ed_breakpoints.begin(); i != ed_breakpoints.end(); ++i)
+        {
+            ed->ToggleBreakpoint(*i);
         }
 
         ed->GetControl()->EndUndoAction();

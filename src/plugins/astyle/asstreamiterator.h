@@ -24,6 +24,8 @@ class ASStreamIterator : public astyle::ASSourceIterator
         void peekReset();
         bool FoundBookmark() const { return m_foundBookmark; }
         void ClearFoundBookmark() { m_foundBookmark = false; }
+        bool FoundBreakpoint() const { return m_foundBreakpoint; }
+        void ClearFoundBreakpoint() { m_foundBreakpoint = false; }
 
     protected:
         bool IsEOL(wxChar ch);
@@ -33,6 +35,7 @@ class ASStreamIterator : public astyle::ASSourceIterator
         std::vector<wxChar> m_buffer;
         int m_curline;
         bool m_foundBookmark;
+        bool m_foundBreakpoint;
 
     private:
         std::string readLine();
