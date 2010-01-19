@@ -122,6 +122,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np)
     XRCCTRL(*this, "cmbView", wxChoice)->SetSelection(filter);
 
     int pos = cfg->ReadInt(_T("/splitter_pos"), 250);
+    XRCCTRL(*this, "splitterWin", wxSplitterWindow)->SetMinSize(wxSize(-1, 200));
     XRCCTRL(*this, "splitterWin", wxSplitterWindow)->SetSashPosition(pos, false);
 
     // if the classbrowser is put under the control of a wxFlatNotebook,

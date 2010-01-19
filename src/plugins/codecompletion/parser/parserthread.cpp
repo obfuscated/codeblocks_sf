@@ -534,6 +534,7 @@ void ParserThread::DoParse()
             {
                 // do nothing, just skip keyword "extern", otherwise uncomment:
                 //SkipToOneOfChars(ParserConsts::semicolon); // skip externs
+                m_Tokenizer.UngetToken();
             }
             m_Str.Clear();
         }
@@ -1778,7 +1779,8 @@ void ParserThread::HandleTypedef()
     while (true)
     {
         token = m_Tokenizer.GetToken();
-        peek = m_Tokenizer.PeekToken();
+        peek  = m_Tokenizer.PeekToken();
+
         TRACE(_T("HandleTypedef() : token=%s, peek=%s"), token.wx_str(), peek.wx_str());
         if (token.IsEmpty() || token == ParserConsts::semicolon)
             break;
@@ -1814,8 +1816,8 @@ void ParserThread::HandleTypedef()
                     if (!ancestor.IsEmpty())
                         ancestor << _T(' ');
                     ancestor << token;
-                    ReadClsNames(ancestor);
                 }
+                ReadClsNames(ancestor);
             }
         }
         else if (token == ParserConsts::kw_enum)

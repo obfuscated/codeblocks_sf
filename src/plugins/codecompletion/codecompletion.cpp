@@ -1519,6 +1519,7 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
         if (!ProjectManager::IsBusy())
             m_TimerFunctionsParsing.Start(50, wxTIMER_ONE_SHOT);
     }
+
     event.Skip();
 }
 
@@ -1590,18 +1591,20 @@ void CodeCompletion::OnValueTooltip(CodeBlocksEvent& event)
 
         // ignore comments, strings, preprocesor, etc
         int style = event.GetInt();
-        if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER)
+        if (   (style != wxSCI_C_DEFAULT)
+            && (style != wxSCI_C_OPERATOR)
+            && (style != wxSCI_C_IDENTIFIER) )
             return;
 
         int pos = ed->GetControl()->PositionFromPointClose(event.GetX(), event.GetY());
         if (pos < 0 || pos >= ed->GetControl()->GetLength())
             return;
-        int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
 
         Parser* parser = m_NativeParser.GetParserPtr();
         if (parser)
         {
             TokenIdxSet result;
+            int endOfWord = ed->GetControl()->WordEndPosition(pos, true);
             if (m_NativeParser.MarkItemsByAI(result, true, true, true, endOfWord))
             {
                 wxString msg;
