@@ -676,10 +676,10 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
             m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_NotFound);
         }
     }
-    if (m_NewPos != wxSCI_INVALID_POSITION && m_LengthFound > 0)
-    {
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("Text found at %d, length %d => "), m_NewPos, m_LengthFound) + control->GetTextRange(m_NewPos, m_NewPos + m_LengthFound));
-    }
+//    if (m_NewPos != wxSCI_INVALID_POSITION && m_LengthFound > 0)
+//    {
+//        Manager::Get()->GetLogManager()->DebugLog(F(_T("Text found at %d, length %d => "), m_NewPos, m_LengthFound) + control->GetTextRange(m_NewPos, m_NewPos + m_LengthFound));
+//    }
     // windows does not update the backgroundcolor immediately, so we have to force it here
     #ifdef __WXMSW__
     m_pTextCtrl->Refresh();
