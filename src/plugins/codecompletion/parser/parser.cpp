@@ -964,7 +964,7 @@ void Parser::DoParseFile(const wxString& filename, bool isGlobal)
         return;
 
     LoaderBase* loader = 0; // defer loading until later
-    Parse(filename, isGlobal, loader);
+    Parse(filename, !isGlobal, loader);
 }
 
 void Parser::StartStopWatch()
