@@ -1810,12 +1810,12 @@ void ParserThread::HandleTypedef()
                 wxString ancestor;
                 while (components.size() > 0)
                 {
-                    wxString token = components.front();
+                    wxString tempToken = components.front();
                     components.pop();
 
                     if (!ancestor.IsEmpty())
                         ancestor << _T(' ');
-                    ancestor << token;
+                    ancestor << tempToken;
                 }
                 ReadClsNames(ancestor);
             }
@@ -1942,32 +1942,39 @@ void ParserThread::ReadVarNames()
 {
     while (1)
     {
-        wxString current = m_Tokenizer.GetToken();
+        wxString token = m_Tokenizer.GetToken();
 
-        if (current.IsEmpty())
+        if (token.IsEmpty())                     // end of file / tokens
             break;
-        if (current==ParserConsts::comma)
+
+        if (token==ParserConsts::comma)          // another variable name
             continue;
-        else if (current==ParserConsts::semicolon)
+        else if (token==ParserConsts::semicolon) // end of variable name(s)
         {
             m_IsPointer = false;
             break;
         }
-        else if (current == _T("*"))
+        else if (token == _T("*"))               // variable is a pointer
         {
             m_IsPointer = true;
         }
-        else if (wxIsalpha(current.GetChar(0)))
+        else if (   wxIsalpha(token.GetChar(0))
+                 || (token.GetChar(0) == '_') )
         {
-
             TRACE(_T("ReadVarNames() : Adding variable '%s' as '%s' to '%s'"),
-                  current.wx_str(),
+                  token.wx_str(),
                   m_Str.wx_str(),
-                  (m_pLastParent ? m_pLastParent->m_Name.wx_str():_T("<no-parent>")));
-            DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
+                  (m_pLastParent ? m_pLastParent->m_Name.wx_str() : _T("<no-parent>")));
+
+            Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
+            if (!newToken)
+                break;
         }
         else // unexpected
+        {
+            TRACE(_T("ReadVarNames() : Unexpected token '%s'."), token.wx_str());
             break;
+        }
     }
 }
 
@@ -1975,37 +1982,36 @@ void ParserThread::ReadClsNames(wxString& ancestor)
 {
     while (1)
     {
-        wxString current = m_Tokenizer.GetToken();
+        wxString token = m_Tokenizer.GetToken();
 
-        if (current.IsEmpty())
+        if (token.IsEmpty())                     // end of file / tokens
             break;
 
-        if (current==ParserConsts::comma)
+        if (token==ParserConsts::comma)          // another class name
             continue;
-        else if (current==ParserConsts::semicolon)
+        else if (token==ParserConsts::semicolon) // end of class name(s)
         {
             m_Tokenizer.UngetToken();
             m_IsPointer = false;
             break;
         }
-        else if (current == _T("*"))
+        else if (token == _T("*"))               // variable is a pointer
         {
             m_IsPointer = true;
-            continue;
         }
-        else if (   wxIsalpha(current.GetChar(0))
-                 && (   (m_Tokenizer.PeekToken() == ParserConsts::semicolon)
-                     || (m_Tokenizer.PeekToken() == ParserConsts::comma)) )
+        else if (   wxIsalpha(token.GetChar(0))
+                 || (token.GetChar(0) == '_') )
         {
             TRACE(_T("ReadClsNames() : Adding variable '%s' as '%s' to '%s'"),
-                  current.wx_str(),
+                  token.wx_str(),
                   m_Str.wx_str(),
                   (m_pLastParent ? m_pLastParent->m_Name.wx_str() : _T("<no-parent>")));
 
             m_Str.clear();
             wxString tempAncestor = ancestor;
             m_Str = tempAncestor;
-            Token* newToken = DoAddToken(tkTypedef, current, m_Tokenizer.GetLineNumber());
+
+            Token* newToken = DoAddToken(tkTypedef, token, m_Tokenizer.GetLineNumber());
             if (!newToken)
                 break;
             else
@@ -2013,6 +2019,7 @@ void ParserThread::ReadClsNames(wxString& ancestor)
         }
         else // unexpected
         {
+            TRACE(_T("ReadClsNames() : Unexpected token '%s'."), token.wx_str());
             m_Tokenizer.UngetToken();
             break;
         }
@@ -2022,10 +2029,10 @@ void ParserThread::ReadClsNames(wxString& ancestor)
 wxString ParserThread::GetStrippedArgs(const wxString & args)
 {
     const wxChar * ptr = args; // pointer to current char in args string
-    wxString stripped_args;         // compiled stripped args
-    wxString word;                  // compiled word of last arg
-    bool skip = false;              // skip the next char (do not add to stripped args)
-    bool sym  = false;              // current char symbol
+    wxString stripped_args;    // compiled stripped args
+    wxString word;             // compiled word of last arg
+    bool skip = false;         // skip the next char (do not add to stripped args)
+    bool sym  = false;         // current char symbol
 
     TRACE(_T("GetStrippedArgs() : args='%s'."), args.wx_str());
 
