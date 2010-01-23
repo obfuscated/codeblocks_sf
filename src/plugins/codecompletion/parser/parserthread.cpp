@@ -247,6 +247,11 @@ void ParserThread::SkipAngleBraces()
             ++nestLvl;
         else if (tmp==ParserConsts::gt)
             --nestLvl;
+        else if (tmp==ParserConsts::hash)
+        {
+            tmp = m_Tokenizer.GetToken();
+            HandlePreprocessorBlocks(tmp);
+        }
         else if (tmp==ParserConsts::semicolon)
         {
             // unget token - leave ; on the stack
@@ -1189,7 +1194,7 @@ void ParserThread::HandlePreprocessorBlocks(const wxString& preproc)
     else
     {
         m_Tokenizer.SkipToEOL();
-        TRACE( _T("HandlePreprocessorBlocks() : Skip Unrecognized Proprocessor blocks")  );
+        TRACE( _T("HandlePreprocessorBlocks() : Skip Unrecognized Preprocessor blocks")  );
     }
 }
 
