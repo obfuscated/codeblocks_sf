@@ -19,6 +19,13 @@
 #endif
 
 //(*InternalHeaders(regex_dialog)
+#include <wx/bitmap.h>
+#include <wx/font.h>
+#include <wx/fontenum.h>
+#include <wx/fontmap.h>
+#include <wx/image.h>
+#include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/xrc/xmlres.h>
 //*)
 

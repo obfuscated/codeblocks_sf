@@ -1,8 +1,13 @@
 #include "projectmissinglibs.h"
 
 //(*InternalHeaders(ProjectMissingLibs)
-#include <wx/intl.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/panel.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/statline.h>
+#include <wx/stattext.h>
 //*)
 #include <wx/stattext.h>
 #include <wx/checkbox.h>
@@ -43,19 +48,19 @@ ProjectMissingLibs::ProjectMissingLibs(wxWindow* parent,wxArrayString& missingLi
 	//(*Initialize(ProjectMissingLibs)
 	wxStaticBoxSizer* StaticBoxSizer2;
 	wxStaticLine* StaticLine10;
-	wxStaticText* StaticText2;
-	wxStaticLine* StaticLine14;
+	wxFlexGridSizer* FlexGridSizer1;
 	wxFlexGridSizer* FlexGridSizer2;
-	wxStaticText* StaticText1;
-	wxStaticText* StaticText3;
 	wxStaticLine* StaticLine2;
+	wxStaticLine* StaticLine11;
+	wxStaticLine* StaticLine14;
 	wxStaticLine* StaticLine12;
 	wxStaticLine* StaticLine13;
+	wxStaticText* StaticText1;
+	wxStaticText* StaticText3;
 	wxStaticLine* StaticLine3;
+	wxStaticText* StaticText2;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	wxFlexGridSizer* FlexGridSizer1;
-	wxStaticLine* StaticLine11;
-
+	
 	Create(parent, wxID_ANY, _("Missing libraries definitions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer1->AddGrowableCol(0);
@@ -103,7 +108,7 @@ ProjectMissingLibs::ProjectMissingLibs(wxWindow* parent,wxArrayString& missingLi
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectMissingLibs::OnButton1Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ProjectMissingLibs::OnButton1Click1);
 	//*)

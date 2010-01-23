@@ -1263,7 +1263,7 @@ int CompilerGCC::DoRunQueue()
 
     // create a new process
     m_ProcessOutputFiles[procIndex] = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString();
-    m_Processes[procIndex] = new PipedProcess((void**)&m_Processes[procIndex], this, idGCCProcess1 + procIndex, pipe, dir, true);
+    m_Processes[procIndex] = new PipedProcess((void**)&m_Processes[procIndex], this, idGCCProcess1 + procIndex, pipe, dir);
     m_Pid[procIndex] = wxExecute(cmd->command, flags, m_Processes[procIndex]);
     if ( !m_Pid[procIndex] )
     {

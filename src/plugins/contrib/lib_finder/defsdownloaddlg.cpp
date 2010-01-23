@@ -2,8 +2,15 @@
 #include "defsdownloaddlg.h"
 
 //(*InternalHeaders(DefsDownloadDlg)
-#include <wx/intl.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/treectrl.h>
+#include <wx/listbox.h>
 //*)
 #include <wx/mstream.h>
 #include <wx/url.h>
@@ -30,17 +37,17 @@ END_EVENT_TABLE()
 DefsDownloadDlg::DefsDownloadDlg(wxWindow* parent)
 {
 	//(*Initialize(DefsDownloadDlg)
-	wxBoxSizer* BoxSizer4;
 	wxStaticBoxSizer* StaticBoxSizer2;
-	wxBoxSizer* BoxSizer6;
-	wxBoxSizer* BoxSizer5;
+	wxBoxSizer* BoxSizer3;
 	wxBoxSizer* BoxSizer7;
 	wxBoxSizer* BoxSizer2;
 	wxStaticBoxSizer* StaticBoxSizer3;
+	wxBoxSizer* BoxSizer4;
 	wxBoxSizer* BoxSizer1;
+	wxBoxSizer* BoxSizer6;
+	wxBoxSizer* BoxSizer5;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	wxBoxSizer* BoxSizer3;
-
+	
 	Create(parent, wxID_ANY, _("Download libraries definitions"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
