@@ -48,10 +48,11 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
-			<Add option="-DCB_PRECOMP" />
+			<Add option="-DNO_CB_PRECOMP" />
+			<Add option="-DNOPCH" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
-			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="wxPdfDocument/include" />
 		</Compiler>
 		<Linker>

@@ -15,6 +15,8 @@
 #include <wx/dynarray.h>
 #include <wx/html/htmlwin.h>
 
+#include "scrollingdialog.h"
+
 /*!
  * wxSwitcherItem
  * An object containing information about one item
@@ -248,7 +250,7 @@ DECLARE_EVENT_TABLE()
  * and tabs for the user to choose. Ctrl+Tab cycles through them.
  */
 
-class wxSwitcherDialog: public wxDialog
+class wxSwitcherDialog: public wxScrollingDialog
 {
 public:
     // constructors and destructors

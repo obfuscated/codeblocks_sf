@@ -24,16 +24,16 @@
 #define EXPRESSIONTESTER_H
 
 //(*Headers(ExpressionTester)
-#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
+#include "scrollingdialog.h"
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 //*)
 
 #include "FileContentBase.h"
 
-class ExpressionTester: public wxDialog
+class ExpressionTester: public wxScrollingDialog
 {
 	public:
 

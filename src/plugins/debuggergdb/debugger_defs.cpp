@@ -9,7 +9,7 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/font.h>
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
@@ -51,11 +51,11 @@ void DbgCmd_UpdateWatchesTree::Action()
 }
 
 // Custom window to display output of DebuggerInfoCmd
-class DebuggerInfoWindow : public wxDialog
+class DebuggerInfoWindow : public wxScrollingDialog
 {
     public:
         DebuggerInfoWindow(wxWindow *parent, const wxChar *title, const wxString& content)
-            : wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+            : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
             wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
             wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);

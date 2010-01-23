@@ -6,7 +6,7 @@
 #ifndef ASKTYPEDLG_H
 #define ASKTYPEDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 enum TypeCorrection
 {
@@ -15,7 +15,7 @@ enum TypeCorrection
     tcCpp2C, // switch to c style
 };
 
-class AskTypeDlg : public wxDialog
+class AskTypeDlg : public wxScrollingDialog
 {
     public:
         AskTypeDlg(wxWindow* parent);

@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="HexEditor (Windows)" />
+		<Option title="HexEditor" />
 		<Option platforms="Windows;" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
@@ -33,7 +33,7 @@
 					<Add directory="$(#WX.include)" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\include\wxscintilla\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
@@ -106,10 +106,10 @@
 			<wxsmith version="1">
 				<resources>
 					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
-					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
-					<wxDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<lib_finder disable_auto="1" />

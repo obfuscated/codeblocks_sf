@@ -7,7 +7,7 @@
 #define PROJECTOPTIONSDLG_H
 
 #include "settings.h"
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class wxTreeEvent;
 class wxSpinEvent;
@@ -17,7 +17,7 @@ class cbCompilerPlugin;
 /*
  * No description
  */
-class ProjectOptionsDlg : public wxDialog
+class ProjectOptionsDlg : public wxScrollingDialog
 {
     public:
         // class constructor

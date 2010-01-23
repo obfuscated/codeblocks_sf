@@ -8,6 +8,10 @@
 #ifndef SCINTILLABASE_H
 #define SCINTILLABASE_H
 
+/* C::B begin */
+#include "PropSetSimple.h"
+/* C::B end */
+
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif
@@ -41,7 +45,6 @@ protected:
 	CallTip ct;
 
 	int listType;			///< 0 is an autocomplete list
-	SString listSelected;	///< Receives listbox selected string
 	int maxListWidth;		/// Maximum width of list, in average character widths
 
 	bool performingStyle;	///< Prevent reentrance
@@ -49,7 +52,7 @@ protected:
 #ifdef SCI_LEXER
 	int lexLanguage;
 	const LexerModule *lexCurrent;
-	PropSet props;
+	PropSetSimple props;
 	enum {numWordLists=KEYWORDSET_MAX+1};
 	WordList *keyWordLists[numWordLists+1];
 	void SetLexer(uptr_t wParam);
@@ -73,6 +76,7 @@ protected:
 	void AutoCompleteCancel();
 	void AutoCompleteMove(int delta);
 	int AutoCompleteGetCurrent();
+	int AutoCompleteGetCurrentText(char *buffer);
 	void AutoCompleteCharacterAdded(char ch);
 	void AutoCompleteCharacterDeleted();
 	void AutoCompleteCompleted();

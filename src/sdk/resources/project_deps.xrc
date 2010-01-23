@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgConfigureProjectDeps">
+  <object class="wxScrollingDialog" name="dlgConfigureProjectDeps">
     <title>Setup project dependencies</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

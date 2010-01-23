@@ -46,7 +46,7 @@ const long LibSelectDlg::ID_RADIOBUTTON3 = wxNewId();
 const long LibSelectDlg::ID_CHECKBOX1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(LibSelectDlg,wxDialog)
+BEGIN_EVENT_TABLE(LibSelectDlg,wxScrollingDialog)
 	//(*EventTable(LibSelectDlg)
 	//*)
 	EVT_BUTTON(wxID_OK,LibSelectDlg::OnOk)

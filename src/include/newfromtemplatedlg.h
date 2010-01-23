@@ -6,7 +6,7 @@
 #ifndef NEWFROMTEMPLATEDLG_H
 #define NEWFROMTEMPLATEDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include "globals.h"
 #include "pluginmanager.h"
 #include "cbplugin.h"
@@ -16,7 +16,7 @@ class wxListCtrl;
 class wxListEvent;
 class ProjectTemplateLoader;
 
-class NewFromTemplateDlg : public wxDialog
+class NewFromTemplateDlg : public wxScrollingDialog
 {
 	public:
 		NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates);

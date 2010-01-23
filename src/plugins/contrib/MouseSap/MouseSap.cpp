@@ -654,7 +654,7 @@ void MMSapEvents::OnMiddleMouseDown(wxMouseEvent& event, cbStyledTextCtrl* ed)
     ed->InsertText(pos, selectedText);
     //-SetSelection(start, end);
     ed->GotoPos(pos);
-    ed->SetSelection(pos, pos+selectedText.length());
+    ed->SetSelectionVoid(pos, pos+selectedText.length());
     #if defined(LOGGING)
     LOGIT( _T("OnMiddleMouseDown[%s]"), selectedText.c_str());
     #endif
@@ -703,7 +703,7 @@ void MMSapEvents::PasteFromClipboard( wxMouseEvent& event, cbStyledTextCtrl* ed,
         else
         {
             ed->InsertText(pos, text);
-            ed->SetSelection(pos, pos + text.Length());
+            ed->SetSelectionVoid(pos, pos + text.Length());
         }
     }
 

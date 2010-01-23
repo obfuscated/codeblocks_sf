@@ -21,7 +21,7 @@
 #ifndef EDITSNIPPETFRAME_H
 #define EDITSNIPPETFRAME_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/stattext.h>
 #include <wx/button.h>
 #include <wx/frame.h>

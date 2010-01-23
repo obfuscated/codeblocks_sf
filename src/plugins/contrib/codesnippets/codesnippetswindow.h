@@ -26,7 +26,7 @@
 #include <wx/string.h>
 #include <wx/treectrl.h>
 #include <wx/datetime.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 #include "snippetsconfig.h"
 #include "codesnippetstreectrl.h"

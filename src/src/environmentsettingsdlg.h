@@ -6,14 +6,14 @@
 #ifndef ENVIRONMENTSETTINGSDLG_H
 #define ENVIRONMENTSETTINGSDLG_H
 
-#include <wx/dialog.h>
+#include <scrollingdialog.h>
 #include <pluginmanager.h>
 
 class wxAuiDockArt;
 class wxListbookEvent;
 class wxCheckListBox;
 
-class EnvironmentSettingsDlg : public wxDialog
+class EnvironmentSettingsDlg : public wxScrollingDialog
 {
 	public:
 		EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art);

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource>
-	<object class="wxDialog" name="ScriptingSecurityDlg">
+	<object class="wxScrollingDialog" name="ScriptingSecurityDlg">
 		<title>Security Warning!</title>
 		<centered>1</centered>
 		<object class="wxBoxSizer">

@@ -5,10 +5,11 @@
 #include <wx/sizer.h>
 #include <wx/grid.h>
 #include <wx/button.h>
-#include <wx/dialog.h>
 //*)
 
-class avChangesDlg: public wxDialog
+#include "scrollingdialog.h"
+
+class avChangesDlg: public wxScrollingDialog
 {
 	public:
 

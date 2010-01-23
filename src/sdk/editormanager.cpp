@@ -1531,7 +1531,7 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
         {
             control->GotoPos(pos);
             control->EnsureVisible(control->LineFromPosition(pos));
-            control->SetSelection(pos, pos + lengthFound);
+            control->SetSelectionVoid(pos, pos + lengthFound);
             data->start = pos;
             data->initialreplacing = false;  // special treatment only necessary the first time
         }
@@ -1910,7 +1910,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                 control->GotoPos(pos);
                 control->EnsureVisible(control->LineFromPosition(pos));
             }
-            control->SetSelection(pos, pos + lengthFound);
+            control->SetSelectionVoid(pos, pos + lengthFound);
             data->start = pos;
             data->initialreplacing = false;  // special treatment only necessary the first time
 
@@ -2130,7 +2130,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
             control->GotoLine(l1);          // center selection on screen
             control->GotoLine(l2);
             control->GotoLine(line);
-            control->SetSelection(pos, pos + lengthFound);
+            control->SetSelectionVoid(pos, pos + lengthFound);
             //            Manager::Get()->GetLogManager()->DebugLog("pos=%d, selLen=%d, length=%d", pos, data->end - data->start, lengthFound);
             data->start = pos;
             break; // done

@@ -46,7 +46,7 @@ const long ProcessingDlg::ID_GAUGE1 = wxNewId();
 const long ProcessingDlg::ID_BUTTON1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(ProcessingDlg,wxDialog)
+BEGIN_EVENT_TABLE(ProcessingDlg,wxScrollingDialog)
 	//(*EventTable(ProcessingDlg)
 	//*)
 END_EVENT_TABLE()

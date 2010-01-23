@@ -49,13 +49,13 @@
 // icons
 // ----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE(GenericMessageDialog, wxDialog)
+BEGIN_EVENT_TABLE(GenericMessageDialog, wxScrollingDialog)
         EVT_BUTTON(wxID_YES, GenericMessageDialog::OnYes)
         EVT_BUTTON(wxID_NO, GenericMessageDialog::OnNo)
         EVT_BUTTON(wxID_CANCEL, GenericMessageDialog::OnCancel)
 END_EVENT_TABLE()
 
-IMPLEMENT_CLASS(GenericMessageDialog, wxDialog)
+IMPLEMENT_CLASS(GenericMessageDialog, wxScrollingDialog)
 
 // ----------------------------------------------------------------------------
 GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
@@ -64,7 +64,7 @@ GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
                                                 long style,
                                                 const wxPoint& pos)
 // ----------------------------------------------------------------------------
-    : wxDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
+    : wxScrollingDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
 {
 
     SetMessageDialogStyle(style);

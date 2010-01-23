@@ -21,7 +21,7 @@
 #include "editarraystringdlg.h"
 #include <wx/textdlg.h>
 
-BEGIN_EVENT_TABLE(EditArrayStringDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditArrayStringDlg, wxScrollingDialog)
 	EVT_LISTBOX_DCLICK(XRCID("lstItems"), EditArrayStringDlg::OnEdit)
 	EVT_BUTTON(XRCID("btnAdd"), EditArrayStringDlg::OnAdd)
 	EVT_BUTTON(XRCID("btnEdit"), EditArrayStringDlg::OnEdit)
@@ -33,7 +33,7 @@ EditArrayStringDlg::EditArrayStringDlg(wxWindow* parent, wxArrayString& array)
 	: m_Array(array)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditArrayString"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),_T("wxScrollingDialog"));
 
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 	list->Clear();
@@ -59,7 +59,7 @@ void EditArrayStringDlg::EndModal(int retCode)
 			m_Array.Add(list->GetString(i));
 		}
 	}
-	wxDialog::EndModal(retCode);
+	wxScrollingDialog::EndModal(retCode);
 }
 
 // events

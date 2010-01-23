@@ -11,7 +11,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/arrstr.h>
 
-BEGIN_EVENT_TABLE(SelectIncludeFile,wxDialog)
+BEGIN_EVENT_TABLE(SelectIncludeFile,wxScrollingDialog)
 	//(*EventTable(SelectIncludeFile)
 	EVT_LISTBOX_DCLICK(XRCID("ID_LISTBOX1"),SelectIncludeFile::OnOk)
 	EVT_BUTTON(XRCID("wxID_CANCEL"),SelectIncludeFile::OnOk)
@@ -22,7 +22,7 @@ END_EVENT_TABLE()
 SelectIncludeFile::SelectIncludeFile(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(SelectIncludeFile)
-	wxXmlResource::Get()->LoadDialog(this,parent,_T("SelectIncludeFile"));
+	wxXmlResource::Get()->LoadObject(this,parent,_T("SelectIncludeFile"),_T("wxScrollingDialog"));
 	ListBox1 = XRCCTRL(*this,"ID_LISTBOX1",wxListBox);
 	//*)
 }

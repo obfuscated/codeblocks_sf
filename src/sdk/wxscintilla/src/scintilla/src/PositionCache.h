@@ -2,11 +2,15 @@
 /** @file PositionCache.h
  ** Classes for caching layout information.
  **/
-// Copyright 1998-2007 by Neil Hodgson <neilh@scintilla.org>
+// Copyright 1998-2009 by Neil Hodgson <neilh@scintilla.org>
 // The License.txt file describes the conditions under which this software may be distributed.
 
 #ifndef POSITIONCACHE_H
 #define POSITIONCACHE_H
+
+/* C::B begin */
+#include "Selection.h"
+/* C::B end */
 
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
@@ -30,11 +34,11 @@ public:
 	enum { wrapWidthInfinite = 0x7ffffff };
 	int maxLineLength;
 	int numCharsInLine;
+	int numCharsBeforeEOL;
 	enum validLevel { llInvalid, llCheckTextAndStyle, llPositions, llLines } validity;
 	int xHighlightGuide;
 	bool highlightColumn;
-	int selStart;
-	int selEnd;
+	Selection *psel;
 	bool containsCaret;
 	int edgeColumn;
 	char *chars;
@@ -51,6 +55,7 @@ public:
 	// Wrapped line support
 	int widthLine;
 	int lines;
+	int wrapIndent; // In pixels
 
 	LineLayout(int maxLineLength_);
 	virtual ~LineLayout();
@@ -65,6 +70,7 @@ public:
 		char bracesMatchStyle, int xHighlight);
 	void RestoreBracesHighlight(Range rangeLine, Position braces[]);
 	int FindBefore(int x, int lower, int upper) const;
+	int EndLineStyle() const;
 };
 
 /**
@@ -134,7 +140,7 @@ class BreakFinder {
 	int subBreak;
 	void Insert(int val);
 public:
-	BreakFinder(LineLayout *ll_, int lineStart_, int lineEnd_, int posLineStart_, bool utf8_, int xStart);
+	BreakFinder(LineLayout *ll_, int lineStart_, int lineEnd_, int posLineStart_, bool utf8_, int xStart, bool breakForSelection);
 	~BreakFinder();
 	int First();
 	int Next();

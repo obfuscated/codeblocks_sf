@@ -34,8 +34,10 @@
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
+			<Add option="-DNO_CB_PRECOMP" />
+			<Add option="-DNOPCH" />
 			<Add directory="../../../include" />
-			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add library="libcodeblocks.a" />

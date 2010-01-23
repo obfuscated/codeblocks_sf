@@ -39,6 +39,7 @@
 // headers
 //----------------------------------------------------------------------------
 
+#include "scrollingdialog.h"     // Dialogs
 
 //============================================================================
 // declarations
@@ -69,7 +70,7 @@ enum myFindReplaceDialogStyles {
 
 //----------------------------------------------------------------------------
 //! myFindReplaceDlg
-class myFindReplaceDlg: public wxDialog
+class myFindReplaceDlg: public wxScrollingDialog
 {
 public:
 
@@ -151,7 +152,7 @@ private:
 
 //----------------------------------------------------------------------------
 //! myGotoDlg
-class myGotoDlg: public wxDialog
+class myGotoDlg: public wxScrollingDialog
 {
 public:
 

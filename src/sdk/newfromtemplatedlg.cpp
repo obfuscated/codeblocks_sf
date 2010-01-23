@@ -46,7 +46,7 @@ static int idDiscardWizardScript = wxNewId();
 static int idInfoWizardScript = wxNewId();
 static int idEditGlobalWizardScript = wxNewId();
 
-BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxDialog)
+BEGIN_EVENT_TABLE(NewFromTemplateDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, NewFromTemplateDlg::OnUpdateUI)
 
     // projects
@@ -84,7 +84,7 @@ NewFromTemplateDlg::NewFromTemplateDlg(TemplateOutputType initial, const wxArray
 	m_WizardIndex(-1)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, 0L, _T("dlgNewFromTemplate"));
+	wxXmlResource::Get()->LoadObject(this, 0L, _T("dlgNewFromTemplate"),_T("wxScrollingDialog"));
 	m_Wizards = Manager::Get()->GetPluginManager()->GetOffersFor(ptWizard);
 
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
@@ -504,5 +504,5 @@ void NewFromTemplateDlg::EndModal(int retCode)
     Manager::Get()->GetConfigManager(_T("new_from_template"))->Write(_T("/view"), (int)sel);
 
     GetSelectedTemplate();
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

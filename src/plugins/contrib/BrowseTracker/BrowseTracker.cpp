@@ -93,7 +93,6 @@
 	#include <wx/fileconf.h>
     #include <wx/aui/auibook.h>
 
-//-#include "wx/wxFlatNotebook/wxFlatNotebook.h"
 #include "Version.h"
 #include "BrowseTracker.h"
 #include "BrowseSelector.h"
@@ -502,7 +501,11 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
     {
         wxMenuItem* item = pbtMenu->FindItemByPosition(i);
         int menuId = item->GetId();
+        #if wxCHECK_VERSION(2, 9, 0)
+        wxString menuLabel = item->GetItemLabelText();
+        #else
         wxString menuLabel = item->GetLabel();
+        #endif
         ///LOGIT( _T("BT OnContextMenu insert[%s]"),menuLabel.c_str() );
         wxMenuItem* pContextItem= new wxMenuItem(0, menuId, menuLabel);
         sub_menu->Append( pContextItem );
@@ -1148,7 +1151,7 @@ void BrowseTracker::OnMouseKeyEvent(wxMouseEvent& event)
                 {   //Clear all on Ctrl Double Click
                     ClearAllBrowse_Marks(/*clearScreenMarks*/true);
                     m_IsMouseDoubleClick = false;
-                    pControl->SetSelection (-1, pControl->GetCurrentPos()); //clear selection
+                    pControl->SetSelectionVoid (-1, pControl->GetCurrentPos()); //clear selection
                     break;
                 }
                 if (ctrlKeyIsDown && clearUsesSingleClick)
@@ -1170,7 +1173,7 @@ void BrowseTracker::OnMouseKeyEvent(wxMouseEvent& event)
                 {   //Clear all on Ctrl Double Click
                     ClearAllBrowse_Marks(/*clearScreenMarks*/true);
                     m_IsMouseDoubleClick = false;
-                    pControl->SetSelection (-1, pControl->GetCurrentPos()); //clear selection
+                    pControl->SetSelectionVoid (-1, pControl->GetCurrentPos()); //clear selection
                     break;
                 }
                 RecordBrowseMark(eb);
@@ -2856,23 +2859,4 @@ bool BrowseTracker::IsEditorBaseOpen(EditorBase* eb)
 //        else ++index;
 //    }//for
 //}
-////// ----------------------------------------------------------------------------
-////void BrowseTracker::OnPageChanged(wxFlatNotebookEvent& event)
-////// ----------------------------------------------------------------------------
-////{
-////    event.Skip(); // allow others to process it too
-////
-////    //-EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
-////    wxFlatNotebook* pNotebook = (wxFlatNotebook*)event.GetEventObject();
-////    int page = event.GetSelection();
-////    EditorBase* eb = static_cast<EditorBase*>(pNotebook->GetPage(page));
-////    LOGIT( _T("BT OnPageChanged eb[%p] title[%s]"), eb, eb ? eb->GetTitle().c_str() : _T(""));
-////
-////    // focus editor
-////    // The following still doesn't set focus to the new editor/page
-////    if (eb) eb->Show();
-////    if (eb) eb->SetFocus();
-////    // Try to focus the editor in UpdateUI;
-////    m_UpdateUIFocusEditor = true;
-////}
 // ----------------------------------------------------------------------------

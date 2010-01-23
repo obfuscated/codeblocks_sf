@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="ProcessingDlg">
+	<object class="wxScrollingDialog" name="ProcessingDlg">
 		<style>wxCAPTION</style>
 		<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
 			<cols>1</cols>

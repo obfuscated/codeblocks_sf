@@ -6,11 +6,11 @@
 #ifndef SPRINTDLG_H
 #define SPRINTDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include "printing_types.h"
 class SEditorManager;
 
-class SPrintDialog : public wxDialog
+class SPrintDialog : public wxScrollingDialog
 {
 	public:
 		SPrintDialog(wxWindow* parent, SEditorManager* edMgr);

@@ -6,12 +6,12 @@
 #ifndef SELECTTARGETDLG_H
 #define SELECTTARGETDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class cbProject;
 class ProjectBuildTarget;
 
-class SelectTargetDlg : public wxDialog
+class SelectTargetDlg : public wxScrollingDialog
 {
 	public:
 		SelectTargetDlg(wxWindow* parent, cbProject* project, int selected = 0);

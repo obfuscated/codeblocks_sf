@@ -22,14 +22,14 @@
 #include <wx/statbmp.h>
 #include "annoyingdialog.h"
 
-BEGIN_EVENT_TABLE(AnnoyingDialog, wxDialog)
+BEGIN_EVENT_TABLE(AnnoyingDialog, wxScrollingDialog)
     EVT_BUTTON(-1, AnnoyingDialog::OnButton)
 END_EVENT_TABLE()
 
 AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message, const wxArtID icon,
                                dStyle style, int defaultReturn, bool separate,
                                const wxString& b1, const wxString& b2, const wxString& b3)
-        : wxDialog(NULL, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
+        : wxScrollingDialog(NULL, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
         cb(0),
         dontAnnoy(false),
         defRet(defaultReturn)
@@ -169,5 +169,5 @@ int AnnoyingDialog::ShowModal()
     if(dontAnnoy)
         return defRet;
     PlaceWindow(this);
-    return wxDialog::ShowModal();
+    return wxScrollingDialog::ShowModal();
 };

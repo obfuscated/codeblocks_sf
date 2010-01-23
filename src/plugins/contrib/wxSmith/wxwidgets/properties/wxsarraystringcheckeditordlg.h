@@ -31,11 +31,11 @@
 #include <wx/checklst.h>
 #include <wx/statline.h>
 #include <wx/button.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 //*)
 
 
-class wxsArrayStringCheckEditorDlg: public wxDialog
+class wxsArrayStringCheckEditorDlg: public wxScrollingDialog
 {
 	public:
 

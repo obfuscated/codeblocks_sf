@@ -16,6 +16,8 @@
 #include <ctype.h>
 #include <time.h>
 
+#include <vector>
+
 #include "Platform.h"
 #include "Scintilla.h"
 #include "PlatMacOSX.h"
@@ -25,6 +27,7 @@
 #ifdef SCI_LEXER
 #include "SciLexer.h"
 #include "PropSet.h"
+#include "PropSetSimple.h"
 #include "Accessor.h"
 #include "KeyWords.h"
 #endif
@@ -45,9 +48,9 @@
 #include "CharClassify.h"
 #include "Decoration.h"
 #include "Document.h"
+#include "Selection.h"
 #include "PositionCache.h"
 #include "Editor.h"
-#include "SString.h"
 #include "ScintillaBase.h"
 #include "ScintillaCallTip.h"
 

@@ -16,16 +16,16 @@
     #include <configmanager.h>
     #include <logmanager.h>
     #include <wx/string.h>
+    #include "scrollingdialog.h"
 #endif
 
 #include <wx/xrc/xmlres.h>
-#include <wx/dialog.h>
 
 #include "sc_base_types.h"
 
 namespace ScriptBindings
 {
-    class XrcDialog : public wxDialog
+    class XrcDialog : public wxScrollingDialog
     {
             DECLARE_EVENT_TABLE()
             wxString m_CallBack;
@@ -33,7 +33,10 @@ namespace ScriptBindings
             XrcDialog(wxWindow* parent, const wxString& dlgName, const wxString& callback)
                 : m_CallBack(callback)
             {
-                if (!wxXmlResource::Get()->LoadDialog(this, parent, dlgName))
+                // first try to load dlgName as wxDialog, if that does not work, try to load it as wxScrollingDialog
+                // if both does not work, throw an exception
+                if (   !wxXmlResource::Get()->LoadDialog(this, parent, dlgName)
+				    && !wxXmlResource::Get()->LoadObject(this, parent, dlgName,_T("wxScrollingDialog")) )
                 {
                     cbThrow(wxEmptyString);
                 }
@@ -44,7 +47,7 @@ namespace ScriptBindings
 
     XrcDialog* s_ActiveDialog = 0;
 
-    BEGIN_EVENT_TABLE(XrcDialog, wxDialog)
+    BEGIN_EVENT_TABLE(XrcDialog, wxScrollingDialog)
         EVT_CHOICE(-1, XrcDialog::OnButton)
         EVT_COMBOBOX(-1, XrcDialog::OnButton)
         EVT_CHECKBOX(-1, XrcDialog::OnButton)

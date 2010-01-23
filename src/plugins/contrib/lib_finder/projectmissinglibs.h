@@ -7,7 +7,7 @@
 #include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/button.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 //*)
 
 #include <wx/stattext.h>
@@ -17,7 +17,7 @@
 #include "librarydetectionmanager.h"
 #include "webresourcesmanager.h"
 
-class ProjectMissingLibs: public wxDialog, public WebResourcesManager::ProgressHandler
+class ProjectMissingLibs: public wxScrollingDialog, public WebResourcesManager::ProgressHandler
 {
 	public:
 

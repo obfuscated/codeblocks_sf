@@ -1,7 +1,7 @@
 INCLUDES = $(WX_CXXFLAGS) \
         $(WX_GTK2_CFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/codesnippets \
 		-I$(top_srcdir)/src/plugins/contrib/codesnippets/Search \
  		-I$(top_srcdir)/src/plugins/contrib/codesnippets/editor \

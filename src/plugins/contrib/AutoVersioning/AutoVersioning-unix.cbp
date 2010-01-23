@@ -56,8 +56,8 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="avVersionEditorDlg.cpp" main="avVersionEditorDlg" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/avVersionEditorDlg.wxs" src="avVersionEditorDlg.cpp" hdr="avVersionEditorDlg.h" name="avVersionEditorDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/avChangesDlg.wxs" src="avChangesDlg.cpp" hdr="avChangesDlg.h" name="avChangesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/avVersionEditorDlg.wxs" src="avVersionEditorDlg.cpp" hdr="avVersionEditorDlg.h" name="avVersionEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/avChangesDlg.wxs" src="avChangesDlg.cpp" hdr="avChangesDlg.h" name="avChangesDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />

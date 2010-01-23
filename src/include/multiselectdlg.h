@@ -9,9 +9,9 @@
 #include <wx/intl.h>
 #include <wx/string.h>
 #include <wx/dynarray.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
-class MultiSelectDlg : public wxDialog
+class MultiSelectDlg : public wxScrollingDialog
 {
 	public:
 		MultiSelectDlg(wxWindow* parent,
@@ -25,10 +25,10 @@ class MultiSelectDlg : public wxDialog
                         const wxString& label = _("Select items:"),
                         const wxString& title = _("Multiple selection"));
 		virtual ~MultiSelectDlg();
-		
+
 		wxArrayString GetSelectedStrings() const;
 		wxArrayInt GetSelectedIndices() const;
-		
+
 		void SelectWildCard(const wxString& wild, bool select = true, bool clearOld = false);
 	protected:
         void Init(const wxArrayString& items, const wxString& wildcard);

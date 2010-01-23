@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="wxsNewWindowDlg">
+	<object class="wxScrollingDialog" name="wxsNewWindowDlg">
 		<id_arg>0</id_arg>
 		<object class="wxBoxSizer" variable="m_RootSizer" member="yes">
 			<orient>wxVERTICAL</orient>

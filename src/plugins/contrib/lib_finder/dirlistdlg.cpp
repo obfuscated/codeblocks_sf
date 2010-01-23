@@ -43,7 +43,7 @@ const long DirListDlg::ID_BUTTON3 = wxNewId();
 const long DirListDlg::ID_BUTTON4 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(DirListDlg,wxDialog)
+BEGIN_EVENT_TABLE(DirListDlg,wxScrollingDialog)
 	//(*EventTable(DirListDlg)
 	//*)
 END_EVENT_TABLE()

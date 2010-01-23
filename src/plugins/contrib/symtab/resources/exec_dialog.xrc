@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgSymTabExec">
+  <object class="wxScrollingDialog" name="dlgSymTabExec">
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
     <title>SymTab Results</title>
     <centered>1</centered>

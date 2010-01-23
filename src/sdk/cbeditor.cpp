@@ -1054,7 +1054,7 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
         wxEVT_SCI_HOTSPOT_CLICK,
         wxEVT_SCI_HOTSPOT_DCLICK,
         wxEVT_SCI_CALLTIP_CLICK,
-//        wxEVT_SCI_AUTOCOMP_SELECTION,
+        wxEVT_SCI_AUTOCOMP_SELECTION,
 //        wxEVT_SCI_INDICATOR_CLICK,
 //        wxEVT_SCI_INDICATOR_RELEASE,
 
@@ -1302,7 +1302,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
 
     control->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
-    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false)?wxSTI_IV_LOOKBOTH:wxSTI_IV_NONE);
+    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false)?wxSCI_IV_LOOKBOTH:wxSCI_IV_NONE);
     control->SetTabIndents(mgr->ReadBool(_T("/tab_indents"), true));
     control->SetBackSpaceUnIndents(mgr->ReadBool(_T("/backspace_unindents"), true));
     control->SetWrapMode(mgr->ReadBool(_T("/word_wrap"), false));
@@ -1426,6 +1426,17 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetMarginWidth(changebarMargin, 0);
 
     control->SetScrollWidthTracking(mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
+
+    control->SetMultipleSelection(mgr->ReadBool(_T("/selection/multi_select"), false));
+    control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"), false));
+    if(mgr->ReadBool(_T("/selection/use_vspace"), false))
+    {
+        control->SetVirtualSpaceOptions(wxSCI_SCVS_RECTANGULARSELECTION | wxSCI_SCVS_USERACCESSIBLE);
+    }
+    else
+    {
+        control->SetVirtualSpaceOptions(wxSCI_SCVS_NONE);
+    }
 }
 
 // static
@@ -1906,7 +1917,7 @@ void cbEditor::AutoComplete()
             control->BeginUndoAction();
 
             // delete keyword
-            control->SetSelection(wordStartPos, curPos);
+            control->SetSelectionVoid(wordStartPos, curPos);
             control->ReplaceSelection(_T(""));
             curPos = wordStartPos;
 
@@ -1920,7 +1931,7 @@ void cbEditor::AutoComplete()
             if (caretPos != -1)
             {
                 control->SetCurrentPos(curPos + caretPos);
-                control->SetSelection(curPos + caretPos, curPos + caretPos + 1);
+                control->SetSelectionVoid(curPos + caretPos, curPos + caretPos + 1);
                 control->ReplaceSelection(_T(""));
             }
 

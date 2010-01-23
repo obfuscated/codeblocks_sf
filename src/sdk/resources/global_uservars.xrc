@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource>
-	<object class="wxDialog" name="dlgGloabalUservars">
+	<object class="wxScrollingDialog" name="dlgGloabalUservars">
 		<title>Global Variable Editor</title>
 		<centered>1</centered>
 		<object class="wxFlexGridSizer">

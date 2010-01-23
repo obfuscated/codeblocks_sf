@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgEditWatches">
+  <object class="wxScrollingDialog" name="dlgEditWatches">
     <title>Edit debugger watches</title>
     <centered>1</centered>
     <object class="wxBoxSizer">
@@ -171,7 +171,7 @@
       </object>
     </object>
   </object>
-  <object class="wxDialog" name="dlgEditWatch">
+  <object class="wxScrollingDialog" name="dlgEditWatch">
     <title>Edit watch</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

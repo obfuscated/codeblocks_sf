@@ -7,7 +7,7 @@
 #define INSERTCLASSMETHODDLG_H
 
 #include <wx/arrstr.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/string.h>
 
 class Parser;
@@ -15,7 +15,7 @@ class Token;
 class wxCheckListBox;
 class wxCommandEvent;
 
-class InsertClassMethodDlg : public wxDialog
+class InsertClassMethodDlg : public wxScrollingDialog
 {
 	public:
 		InsertClassMethodDlg(wxWindow* parent, Parser* parser, const wxString& filename);

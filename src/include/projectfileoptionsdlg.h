@@ -6,12 +6,12 @@
 #ifndef PROJECTFILEOPTIONSDLG_H
 #define PROJECTFILEOPTIONSDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include "settings.h"
 
 class ProjectFile;
 
-class ProjectFileOptionsDlg : public wxDialog
+class ProjectFileOptionsDlg : public wxScrollingDialog
 {
     public:
         ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);

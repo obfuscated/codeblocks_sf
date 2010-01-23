@@ -17,7 +17,7 @@
 #include <wx/checkbox.h>
 #include <wx/spinctrl.h>
 
-BEGIN_EVENT_TABLE(EditBreakpointDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditBreakpointDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, EditBreakpointDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
@@ -25,7 +25,7 @@ EditBreakpointDlg::EditBreakpointDlg(DebuggerBreakpoint* bp, wxWindow* parent)
     : m_Bp(bp)
 {
     //ctor
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditBreakpoint"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditBreakpoint"),_T("wxScrollingDialog"));
 
     XRCCTRL(*this, "chkEnabled", wxCheckBox)->SetValue(bp->enabled);
     XRCCTRL(*this, "chkIgnore", wxCheckBox)->SetValue(bp->useIgnoreCount);
@@ -49,7 +49,7 @@ void EditBreakpointDlg::EndModal(int retCode)
         m_Bp->useCondition = XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked();
         m_Bp->condition = XRCCTRL(*this, "txtExpr", wxTextCtrl)->GetValue();
     }
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }
 
 void EditBreakpointDlg::OnUpdateUI(wxUpdateUIEvent& event)

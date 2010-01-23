@@ -1,5 +1,5 @@
 <wxsmith>
-    <object class="wxDialog" name="wxsFontFaceEditorDlg">
+    <object class="wxScrollingDialog" name="wxsFontFaceEditorDlg">
         <title>Selecting font face</title>
         <centered>1</centered>
         <style>wxDEFAULT_DIALOG_STYLE</style>

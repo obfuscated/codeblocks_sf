@@ -11,6 +11,7 @@
 
 #ifndef CB_PRECOMP
     #include "xtra_res.h"
+    #include "scrollingdialog.h"
     #include <wx/wx.h>
 #endif
 
@@ -261,4 +262,45 @@ bool wxToolBarAddOnXmlHandler::CanHandle(wxXmlNode *node)
     return ((!m_isInside && istbar) ||
             (m_isInside && istool) ||
             (m_isInside && issep));
+}
+
+
+
+IMPLEMENT_DYNAMIC_CLASS(wxScrollingDialogXmlHandler, wxDialogXmlHandler)
+
+wxScrollingDialogXmlHandler::wxScrollingDialogXmlHandler() : wxDialogXmlHandler()
+{
+}
+
+wxObject *wxScrollingDialogXmlHandler::DoCreateResource()
+{
+    XRC_MAKE_INSTANCE(dlg, wxScrollingDialog);
+
+    dlg->Create(m_parentAsWindow,
+                GetID(),
+                GetText(wxT("title")),
+                wxDefaultPosition, wxDefaultSize,
+                GetStyle(wxT("style"), wxDEFAULT_DIALOG_STYLE),
+                GetName());
+
+    if (HasParam(wxT("size")))
+        dlg->SetClientSize(GetSize(wxT("size"), dlg));
+    if (HasParam(wxT("pos")))
+        dlg->Move(GetPosition());
+    if (HasParam(wxT("icon")))
+        dlg->SetIcon(GetIcon(wxT("icon"), wxART_FRAME_ICON));
+
+    SetupWindow(dlg);
+
+    CreateChildren(dlg);
+
+    if (GetBool(wxT("centered"), false))
+        dlg->Centre();
+
+    return dlg;
+}
+
+bool wxScrollingDialogXmlHandler::CanHandle(wxXmlNode *node)
+{
+    return IsOfClass(node, wxT("wxScrollingDialog"));
 }

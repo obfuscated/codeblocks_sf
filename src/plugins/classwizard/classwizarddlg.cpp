@@ -33,7 +33,7 @@
 #include <wx/dirdlg.h>
 #include "classwizarddlg.h"
 
-BEGIN_EVENT_TABLE(ClassWizardDlg, wxDialog)
+BEGIN_EVENT_TABLE(ClassWizardDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1,                          ClassWizardDlg::OnUpdateUI)
     EVT_TEXT     (XRCID("txtName"),            ClassWizardDlg::OnNameChange)
     EVT_TEXT     (XRCID("txtInheritance"),     ClassWizardDlg::OnAncestorChange)
@@ -54,7 +54,7 @@ END_EVENT_TABLE()
 
 ClassWizardDlg::ClassWizardDlg(wxWindow* parent)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgNewClass"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgNewClass"),_T("wxScrollingDialog"));
 
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     cbProject* prj = prjMan->GetActiveProject();

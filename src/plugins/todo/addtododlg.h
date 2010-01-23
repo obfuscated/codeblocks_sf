@@ -6,8 +6,9 @@
 #ifndef ADDTODODLG_H
 #define ADDTODODLG_H
 
-#include <wx/dialog.h>
 #include <wx/string.h>
+
+#include "scrollingdialog.h"
 
 class wxArrayString;
 class wxWindow;
@@ -29,7 +30,7 @@ enum ToDoCommentType
     tdctError    // compiler error
 };
 
-class AddTodoDlg : public wxDialog
+class AddTodoDlg : public wxScrollingDialog
 {
     public:
         AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types);

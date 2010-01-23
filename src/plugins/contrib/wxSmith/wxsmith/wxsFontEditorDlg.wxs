@@ -1,5 +1,5 @@
 <wxsmith>
-    <object class="wxDialog" name="wxsFontEditorDlg">
+    <object class="wxScrollingDialog" name="wxsFontEditorDlg">
         <title>Advanced font settings</title>
         <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxBoxSizer" variable="BoxSizer1" member="yes">

@@ -22,7 +22,7 @@ const long DefsDownloadDlg::ID_CHECKBOX1 = wxNewId();
 const long DefsDownloadDlg::ID_BUTTON3 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(DefsDownloadDlg,wxDialog)
+BEGIN_EVENT_TABLE(DefsDownloadDlg,wxScrollingDialog)
 	//(*EventTable(DefsDownloadDlg)
 	//*)
 END_EVENT_TABLE()

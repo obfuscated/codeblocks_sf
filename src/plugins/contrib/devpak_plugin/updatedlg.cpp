@@ -31,7 +31,7 @@ int idPopupDownload = wxNewId();
 int idPopupDownloadAndInstall = wxNewId();
 int idPopupUninstall = wxNewId();
 
-BEGIN_EVENT_TABLE(UpdateDlg, wxDialog)
+BEGIN_EVENT_TABLE(UpdateDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, UpdateDlg::OnUpdateUI)
     EVT_TREE_SEL_CHANGED(XRCID("tvCategories"), UpdateDlg::OnTreeSelChanged)
     EVT_LIST_ITEM_SELECTED(XRCID("lvFiles"), UpdateDlg::OnFileSelected)
@@ -62,7 +62,7 @@ UpdateDlg::UpdateDlg(wxWindow* parent)
     m_Net(this, idNet, _T("http://devpaks.sourceforge.net/"))
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("MainFrame"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("MainFrame"),_T("wxScrollingDialog"));
 	CreateListColumns();
     FillServers();
 	UpdateStatus(_("Ready"), 0);
@@ -79,7 +79,7 @@ void UpdateDlg::EndModal(int retCode)
 {
     if (!m_Net.IsConnected() || retCode != wxID_CANCEL)
     {
-        wxDialog::EndModal(retCode);
+        wxScrollingDialog::EndModal(retCode);
         return;
     }
 

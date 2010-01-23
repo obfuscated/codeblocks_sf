@@ -33,7 +33,7 @@
 const long wxsArrayStringEditorDlg::ID_TEXTCTRL1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsArrayStringEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsArrayStringEditorDlg,wxScrollingDialog)
 	//(*EventTable(wxsArrayStringEditorDlg)
 	//*)
 END_EVENT_TABLE()

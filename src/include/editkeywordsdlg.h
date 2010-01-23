@@ -6,14 +6,14 @@
 #ifndef EDITKEYWORDSDLG_H
 #define EDITKEYWORDSDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include "globals.h"
 
 class wxSpinCtrl;
 class wxTextCtrl;
 class EditorColourSet;
 
-class EditKeywordsDlg : public wxDialog
+class EditKeywordsDlg : public wxScrollingDialog
 {
     public:
         EditKeywordsDlg(wxWindow* parent, EditorColourSet* theme, HighlightLanguage lang);

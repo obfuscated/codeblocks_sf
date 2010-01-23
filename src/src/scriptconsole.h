@@ -20,7 +20,6 @@
 #include <wx/bmpbuttn.h>
 #include <wx/combobox.h>
 //*)
-
 class ScriptConsole: public wxPanel
 {
 	public:

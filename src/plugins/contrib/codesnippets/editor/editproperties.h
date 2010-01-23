@@ -3,10 +3,11 @@
 
 
 class ScbEditor;
+class wxScrollingDialog;
 //----------------------------------------------------------------------------
 // EditProperties
 //----------------------------------------------------------------------------
-class EditProperties: public wxDialog {
+class EditProperties: public wxScrollingDialog {
 //----------------------------------------------------------------------------
 
 public:

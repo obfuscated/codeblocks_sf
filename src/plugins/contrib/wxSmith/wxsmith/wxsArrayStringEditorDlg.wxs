@@ -1,5 +1,5 @@
 <wxsmith>
-    <object class="wxDialog" name="wxsArrayStringEditorDlg">
+    <object class="wxScrollingDialog" name="wxsArrayStringEditorDlg">
         <title>Edit items</title>
         <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxBoxSizer" variable="BoxSizer1" member="no">

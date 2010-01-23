@@ -44,7 +44,7 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -71,7 +71,7 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/KodersDialog.wxs" src="kodersdialog.cpp" hdr="kodersdialog.h" name="KodersDialog" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/KodersDialog.wxs" src="kodersdialog.cpp" hdr="kodersdialog.h" name="KodersDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

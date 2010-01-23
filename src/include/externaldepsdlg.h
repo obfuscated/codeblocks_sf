@@ -7,25 +7,25 @@
 #define EXTERNALDEPSDLG_H
 
 #include "settings.h"
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class cbProject;
 class ProjectBuildTarget;
 
-class DLLIMPORT ExternalDepsDlg : public wxDialog
+class DLLIMPORT ExternalDepsDlg : public wxScrollingDialog
 {
 	public:
 		ExternalDepsDlg(wxWindow* parent, cbProject* project, ProjectBuildTarget* target);
 		virtual ~ExternalDepsDlg();
-		
+
 		void EndModal(int retCode);
 	protected:
         void FillAdditional();
         void FillExternal();
-        
+
         // BYO: Do___ functions xhanged to defines in .cpp because of incompatibilities
         // with unicode build
-        
+
         //void DoAdd(const wxString& listbox, const wxString& message);
         //void DoEdit(const wxString& listbox, const wxString& message);
         //void DoDel(const wxString& listbox);
@@ -39,7 +39,7 @@ class DLLIMPORT ExternalDepsDlg : public wxDialog
         void OnDelExternal(wxCommandEvent& event);
 
         void OnUpdateUI(wxUpdateUIEvent& event);
-        
+
         cbProject* m_pProject;
         ProjectBuildTarget* m_pTarget;
 	private:

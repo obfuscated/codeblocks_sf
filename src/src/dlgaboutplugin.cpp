@@ -22,7 +22,7 @@
 // class constructor
 dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAboutPlugin"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAboutPlugin"),_T("wxScrollingDialog"));
 
 	XRCCTRL(*this, "lblTitle", wxStaticText)->SetLabel(pi->title);
 	XRCCTRL(*this, "txtDescription", wxTextCtrl)->SetValue(pi->description);

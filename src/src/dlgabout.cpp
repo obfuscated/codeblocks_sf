@@ -32,7 +32,7 @@
 
 dlgAbout::dlgAbout(wxWindow* parent)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAbout"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAbout"),_T("wxScrollingDialog"));
 
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +

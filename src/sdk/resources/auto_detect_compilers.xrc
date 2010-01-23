@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgAutoDetectCompilers">
+  <object class="wxScrollingDialog" name="dlgAutoDetectCompilers">
     <title>Compilers auto-detection</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

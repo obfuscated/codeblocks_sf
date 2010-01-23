@@ -28,10 +28,6 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\app\" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="-DNO_LOGGING" />
-					<Add option="-DBUILDING_PLUGIN" />
-				</Compiler>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
@@ -55,8 +51,10 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DNO_LOGGING" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\src" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

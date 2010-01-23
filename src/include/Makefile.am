@@ -1,4 +1,4 @@
-SUBDIRS = scripting tinyxml wxscintilla
+SUBDIRS = scripting tinyxml
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(top_srcdir)/src/include/sdk.h.gch \
@@ -9,7 +9,7 @@ endif
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
-			-I$(top_srcdir)/src/include/wxscintilla/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/include/tinyxml \
 			-I$(top_srcdir)/src/include/scripting/include \
  			-I$(top_srcdir)/src/include/scripting/sqplus \
@@ -111,6 +111,7 @@ ALLHEADERS = annoyingdialog.h \
 				safedelete.h \
 				scriptingmanager.h \
 				scriptsecuritywarningdlg.h \
+				scrollingdialog.h \
 				sdk.h \
 				sdk_common.h \
 				sdk_precomp.h \

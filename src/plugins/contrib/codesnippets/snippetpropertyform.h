@@ -42,6 +42,7 @@
 #endif
 
 #include <wx/button.h>
+#include "scrollingdialog.h"
 //-#include "edit.h"
 
 ///////////////////////////////////////////////////////////////////////////
@@ -54,7 +55,7 @@ class wxScintilla;
 /**
  * Class SnippetPropertyForm
  */
-class SnippetPropertyForm : public wxDialog
+class SnippetPropertyForm : public wxScrollingDialog
 {
     friend class CodeSnippetsTreeCtrl;
 	private:

@@ -19,7 +19,7 @@
 
 AskTypeDlg::AskTypeDlg(wxWindow* parent)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAskType"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAskType"),_T("wxScrollingDialog"));
 }
 
 AskTypeDlg::~AskTypeDlg()

@@ -25,16 +25,16 @@
 
 //(*Headers(SearchDialog)
 #include <wx/combobox.h>
-#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/radiobut.h>
 #include <wx/radiobox.h>
+#include "scrollingdialog.h"
 //*)
 
 #include "FileContentBase.h"
 
-class SearchDialog: public wxDialog
+class SearchDialog: public wxScrollingDialog
 {
 	public:
 

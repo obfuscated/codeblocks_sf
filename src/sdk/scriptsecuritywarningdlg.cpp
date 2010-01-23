@@ -20,7 +20,7 @@
 ScriptSecurityWarningDlg::ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command)
 {
     //ctor
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("ScriptingSecurityDlg"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("ScriptingSecurityDlg"),_T("wxScrollingDialog"));
 
     wxColour c = wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE);
     XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetBackgroundColour(c);
@@ -41,5 +41,5 @@ ScriptSecurityResponse ScriptSecurityWarningDlg::GetResponse()
 
 void ScriptSecurityWarningDlg::EndModal(int retCode)
 {
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

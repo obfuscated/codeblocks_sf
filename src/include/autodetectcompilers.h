@@ -6,17 +6,17 @@
 #ifndef AUTODETECTCOMPILERS_H
 #define AUTODETECTCOMPILERS_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class wxCommandEvent;
 class wxUpdateUIEvent;
 
-class AutoDetectCompilers : public wxDialog
+class AutoDetectCompilers : public wxScrollingDialog
 {
 	public:
 		AutoDetectCompilers(wxWindow* parent);
 		virtual ~AutoDetectCompilers();
-		
+
 		void OnDefaultClick(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);
 	private:

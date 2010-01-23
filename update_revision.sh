@@ -1,14 +1,5 @@
 #!/bin/sh
 
-#
-# This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
-# http://www.gnu.org/licenses/gpl-3.0.html
-#
-# $Revision$
-# $Id$
-# $HeadURL: svn+ssh://jenslody@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/src/dlgaboutplugin.cpp $
-#
-
 REV_FILE=./revision.m4
 
 # let's import OLD_REV (if there)
@@ -31,12 +22,12 @@ fi
 
 if [ "x$REV" != "x$OLD_REV" -o ! -r $REV_FILE ]; then
 	echo "m4_define([SVN_REV], $REV)" > $REV_FILE
-	echo "m4_define([SVN_REVISION], 8.02svn$REV)" >> $REV_FILE
+	echo "m4_define([SVN_REVISION], 1.0svn$REV)" >> $REV_FILE
 	echo "m4_define([SVN_DATE], $LCD)" >> $REV_FILE
 
 	# Also change the revision number in debian/changelog for package versioning
 	mv debian/changelog debian/changelog.tmp
-	sed "1 s/(8.02svn[^-)]*/(8.02svn$REV/" < debian/changelog.tmp > debian/changelog
+	sed "1 s/(1.0svn[^-)]*/(1.0svn$REV/" < debian/changelog.tmp > debian/changelog
 	rm debian/changelog.tmp
 fi
 

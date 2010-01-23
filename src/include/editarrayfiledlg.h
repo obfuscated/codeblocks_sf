@@ -6,11 +6,11 @@
 #ifndef EDITARRAYFILEDLG_H
 #define EDITARRAYFILEDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/intl.h>
 #include "settings.h"
 
-class DLLIMPORT EditArrayFileDlg : public wxDialog
+class DLLIMPORT EditArrayFileDlg : public wxScrollingDialog
 {
 	public:
 		EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths = false, const wxString& basePath = _T(""));

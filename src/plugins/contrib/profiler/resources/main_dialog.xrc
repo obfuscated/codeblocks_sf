@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-  <object class="wxDialog" name="dlgCBProfilerExec">
+  <object class="wxScrollingDialog" name="dlgCBProfilerExec">
     <title>C::B Profiler Results</title>
     <centered>1</centered>
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>

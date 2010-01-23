@@ -11,7 +11,7 @@
 #define DLGFORMATTERSETTINGS_H
 
 #include "./astyle/astyle.h"
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class dlgFormatterSettings
 {

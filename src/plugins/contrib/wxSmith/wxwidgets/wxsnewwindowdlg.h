@@ -24,13 +24,13 @@
 #define WXSNEWWINDOWDLG_H
 
 //(*Headers(wxsNewWindowDlg)
+#include <wx/combobox.h>
+#include <wx/checkbox.h>
 #include <wx/sizer.h>
+#include <wx/button.h>
+#include "scrollingdialog.h"
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/checkbox.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
-#include <wx/combobox.h>
 //*)
 
 #include "wxsitemres.h"
@@ -38,7 +38,7 @@
 class wxsItemResData;
 class wxsProject;
 
-class wxsNewWindowDlg : public wxDialog
+class wxsNewWindowDlg : public wxScrollingDialog
 {
 	public:
 		wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsProject* Project);
@@ -112,50 +112,50 @@ class wxsNewWindowDlg : public wxDialog
         //*)
 
         //(*Declarations(wxsNewWindowDlg)
-        wxStaticText* StaticText10;
-        wxBoxSizer* m_RootSizer;
-        wxStaticText* StaticText9;
-        wxFlexGridSizer* FlexGridSizer4;
-        wxTextCtrl* m_Header;
-        wxCheckBox* m_UseFwdDecl;
-        wxTextCtrl* m_CtorCustom;
-        wxButton* m_ScopeHandlers;
-        wxTextCtrl* m_InitFunc;
-        wxTextCtrl* m_BaseClass;
-        wxCheckBox* m_CtorIdDef;
-        wxTextCtrl* m_Source;
-        wxCheckBox* m_CtorParent;
-        wxCheckBox* m_CtorId;
-        wxCheckBox* m_AddWxs;
-        wxFlexGridSizer* FlexGridSizer3;
-        wxStaticText* StaticText6;
-        wxStaticText* StaticText8;
-        wxStaticText* StaticText11;
-        wxTextCtrl* m_PchGuard;
-        wxTextCtrl* m_Class;
-        wxCheckBox* m_UsePCH;
-        wxFlexGridSizer* FlexGridSizer2;
-        wxStaticBoxSizer* m_AdvancedOptionsSizer;
-        wxCheckBox* m_CtorParentDef;
-        wxCheckBox* m_CtorSizeDef;
-        wxStaticBoxSizer* StaticBoxSizer3;
-        wxCheckBox* m_XRCAutoload;
-        wxStaticText* StaticText5;
-        wxStaticText* StaticText7;
-        wxTextCtrl* m_Xrc;
-        wxButton* m_ScopeIds;
-        wxButton* m_ScopeMembers;
-        wxBoxSizer* BoxSizer1;
-        wxCheckBox* m_UseXrc;
-        wxButton* m_AdvOps;
-        wxCheckBox* m_CtorPosDef;
-        wxFlexGridSizer* FlexGridSizer1;
-        wxStaticText* StaticText4;
-        wxCheckBox* m_CtorPos;
-        wxComboBox* m_Pch;
-        wxStdDialogButtonSizer* StdDialogButtonSizer1;
-        wxCheckBox* m_CtorSize;
         wxCheckBox* m_UseInitFunc;
+        wxTextCtrl* m_InitFunc;
+        wxFlexGridSizer* FlexGridSizer1;
+        wxFlexGridSizer* FlexGridSizer2;
+        wxCheckBox* m_CtorParentDef;
+        wxCheckBox* m_CtorSize;
+        wxTextCtrl* m_Xrc;
+        wxCheckBox* m_CtorIdDef;
+        wxButton* m_ScopeHandlers;
+        wxCheckBox* m_AddWxs;
+        wxButton* m_ScopeMembers;
+        wxCheckBox* m_UseFwdDecl;
+        wxCheckBox* m_CtorPos;
+        wxTextCtrl* m_CtorCustom;
+        wxFlexGridSizer* FlexGridSizer4;
+        wxStaticText* StaticText10;
+        wxStaticBoxSizer* StaticBoxSizer3;
+        wxBoxSizer* m_RootSizer;
+        wxCheckBox* m_CtorSizeDef;
+        wxComboBox* m_Pch;
+        wxFlexGridSizer* FlexGridSizer3;
+        wxStaticText* StaticText8;
+        wxStaticBoxSizer* m_AdvancedOptionsSizer;
+        wxStaticText* StaticText7;
+        wxCheckBox* m_CtorParent;
+        wxTextCtrl* m_PchGuard;
+        wxStaticText* StaticText4;
+        wxBoxSizer* BoxSizer1;
+        wxStaticText* StaticText5;
+        wxTextCtrl* m_Source;
+        wxTextCtrl* m_BaseClass;
+        wxStaticText* StaticText6;
+        wxCheckBox* m_CtorPosDef;
+        wxTextCtrl* m_Class;
+        wxCheckBox* m_XRCAutoload;
+        wxCheckBox* m_CtorId;
+        wxButton* m_AdvOps;
+        wxButton* m_ScopeIds;
+        wxCheckBox* m_UseXrc;
+        wxTextCtrl* m_Header;
+        wxStaticText* StaticText9;
+        wxStdDialogButtonSizer* StdDialogButtonSizer1;
+        wxStaticText* StaticText11;
+        wxCheckBox* m_UsePCH;
         //*)
 
         virtual bool PrepareResource(wxsItemRes* Res,wxsItemResData* Data);

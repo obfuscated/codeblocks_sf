@@ -6,8 +6,8 @@
 #ifndef ASSOCIATIONS_H
 #define ASSOCIATIONS_H
 
+#include "scrollingdialog.h"
 #include <wx/intl.h>
-#include <wx/dialog.h>
 #include <wx/string.h>
 #ifdef __WXMSW__
     #include <wx/msw/registry.h>
@@ -51,7 +51,7 @@ namespace Associations
     void UpdateChanges();
 };
 
-class ManageAssocsDialog : public wxDialog
+class ManageAssocsDialog : public wxScrollingDialog
 {
     wxCheckListBox* list;
 
@@ -65,7 +65,7 @@ class ManageAssocsDialog : public wxDialog
         DECLARE_EVENT_TABLE()
 };
 
-class AskAssocDialog : public wxDialog
+class AskAssocDialog : public wxScrollingDialog
 {
     public:
         AskAssocDialog(wxWindow* parent);

@@ -6,11 +6,11 @@
 #ifndef PROJECTDEPSDLG_H
 #define PROJECTDEPSDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class cbProject;
 
-class ProjectDepsDlg : public wxDialog
+class ProjectDepsDlg : public wxScrollingDialog
 {
     public:
         ProjectDepsDlg(wxWindow* parent, cbProject* sel = 0);

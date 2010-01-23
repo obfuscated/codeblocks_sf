@@ -1,7 +1,7 @@
 #ifndef BYOGAMESELECT_H
 #define BYOGAMESELECT_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class wxBoxSizer;
 class wxStaticText;
@@ -12,7 +12,7 @@ class wxButton;
 class wxStaticLine;
 class wxCommandEvent;
 
-class byoGameSelect: public wxDialog
+class byoGameSelect: public wxScrollingDialog
 {
 	public:
 

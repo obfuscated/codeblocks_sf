@@ -33,12 +33,13 @@
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 //*)
+
 
 class wxCommandEvent;
 
-class DirListDlg: public wxDialog
+class DirListDlg: public wxScrollingDialog
 {
 	public:
 

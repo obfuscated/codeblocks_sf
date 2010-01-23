@@ -6,13 +6,13 @@
 #ifndef EDITTOOLDLG_H
 #define EDITTOOLDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class cbTool;
 class wxCommandEvent;
 class wxUpdateUIEvent;
 
-class EditToolDlg : public wxDialog
+class EditToolDlg : public wxScrollingDialog
 {
 	public:
 		EditToolDlg(wxWindow* parent, cbTool* tool);

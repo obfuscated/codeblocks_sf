@@ -1,5 +1,5 @@
 <resource>
-    <object class="wxDialog" name="dlgEditLangKeywords">
+    <object class="wxScrollingDialog" name="dlgEditLangKeywords">
         <title>Edit keywords</title>
         <centered>1</centered>
         <object class="wxBoxSizer">

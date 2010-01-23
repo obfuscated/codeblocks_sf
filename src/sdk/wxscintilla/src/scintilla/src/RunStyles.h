@@ -10,7 +10,9 @@
 #ifndef RUNSTYLES_H
 #define RUNSTYLES_H
 
+/* C::B begin */
 #include "Partitioning.h"
+/* C::B end */
 
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
@@ -40,9 +42,11 @@ public:
 	void DeleteAll();
 	void DeleteRange(int position, int deleteLength);
  
+/* CHANGEBAR begin */
     char *PersistantForm() const; 
     void FromPersistant(const char *form); 
     static bool PersistantSame(const char *form1, const char *form2); 
+/* CHANGEBAR end */
 };
 
 #ifdef SCI_NAMESPACE

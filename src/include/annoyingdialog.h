@@ -4,7 +4,7 @@
  */
 
 #include "settings.h"
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/string.h>
 #include <wx/artprov.h>
 
@@ -16,7 +16,7 @@ Dialog that contains a "Don't annoy me" checkbox.
 Using this dialog, the user can select not to display this dialog again.
 The dialog can be then re-enabled in "Settings->Environment->Dialogs"...
 */
-class DLLIMPORT AnnoyingDialog : public wxDialog
+class DLLIMPORT AnnoyingDialog : public wxScrollingDialog
 {
     public:
         enum dStyle

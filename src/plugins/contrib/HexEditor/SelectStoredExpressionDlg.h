@@ -26,16 +26,17 @@
 #include <map>
 
 //(*Headers(SelectStoredExpressionDlg)
-#include <wx/dialog.h>
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/timer.h>
 #include <wx/listbox.h>
+#include "scrollingdialog.h"
 //*)
 
-class SelectStoredExpressionDlg: public wxDialog
+
+class SelectStoredExpressionDlg: public wxScrollingDialog
 {
 	public:
 

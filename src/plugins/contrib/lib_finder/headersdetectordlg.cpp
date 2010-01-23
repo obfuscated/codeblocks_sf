@@ -20,7 +20,7 @@ const long HeadersDetectorDlg::ID_GAUGE1 = wxNewId();
 const long HeadersDetectorDlg::ID_TIMER1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(HeadersDetectorDlg,wxDialog)
+BEGIN_EVENT_TABLE(HeadersDetectorDlg,wxScrollingDialog)
 	//(*EventTable(HeadersDetectorDlg)
 	//*)
 	EVT_BUTTON(wxID_CANCEL,HeadersDetectorDlg::Cancel)
@@ -38,7 +38,7 @@ HeadersDetectorDlg::HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArr
 	wxStaticBoxSizer* StaticBoxSizer1;
 	wxFlexGridSizer* FlexGridSizer1;
 	wxStdDialogButtonSizer* StdDialogButtonSizer1;
-	
+
 	Create(parent, wxID_ANY, _("Detecting missing libraries..."), wxDefaultPosition, wxDefaultSize, wxCAPTION, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Scanning:"));
@@ -66,7 +66,7 @@ HeadersDetectorDlg::HeadersDetectorDlg(wxWindow* parent,cbProject* project,wxArr
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
-	
+
 	Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&HeadersDetectorDlg::OnTimer1Trigger);
 	//*)
 

@@ -6,11 +6,11 @@
 #ifndef GENERICMULTILINENOTESDLG_H
 #define GENERICMULTILINENOTESDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/intl.h>
 
 
-class GenericMultiLineNotesDlg : public wxDialog
+class GenericMultiLineNotesDlg : public wxScrollingDialog
 {
     public:
         GenericMultiLineNotesDlg(wxWindow* parent, const wxString& caption = _("Notes"), const wxString& notes = wxEmptyString, bool readOnly = true);

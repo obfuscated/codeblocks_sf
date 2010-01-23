@@ -97,7 +97,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
    progress.Update(100);
 
    // Setting-up the statistics dialog box
-   wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCodeStatExec"));
+   wxXmlResource::Get()->LoadObject(this, parent, _T("dlgCodeStatExec"),_T("wxScrollingDialog"));
 
    wxStaticText* txt_num_files = XRCCTRL(*this, "txt_num_files", wxStaticText);
    txt_num_files->SetLabel(wxString::Format(_("%ld"), nb_files));
@@ -153,7 +153,7 @@ int CodeStatExecDlg::Execute(LanguageDef languages[NB_FILETYPES_MAX], int nb_lan
 
 void CodeStatExecDlg::EndModal(int retCode)
 {
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }
 
 /** This function analyses a given source file and count the lines of code, comments etc...

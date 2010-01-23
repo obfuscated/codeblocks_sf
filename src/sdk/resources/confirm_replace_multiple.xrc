@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-  <object class="wxDialog" name="dlgConfirmReplaceMultiple">
+  <object class="wxScrollingDialog" name="dlgConfirmReplaceMultiple">
     <title>Confirm replace multiple</title>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>

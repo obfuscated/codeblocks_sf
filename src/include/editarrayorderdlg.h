@@ -6,14 +6,14 @@
 #ifndef EDITARRAYORDERDLG_H
 #define EDITARRAYORDERDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/arrstr.h>
 #include "settings.h"
 
 /*
  * No description
  */
-class EditArrayOrderDlg : public wxDialog
+class EditArrayOrderDlg : public wxScrollingDialog
 {
 	public:
 		// class constructor

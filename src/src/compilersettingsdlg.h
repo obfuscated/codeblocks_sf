@@ -6,12 +6,12 @@
 #ifndef COMPILERSETTINGSDLG_H
 #define COMPILERSETTINGSDLG_H
 
-#include <wx/dialog.h>
+#include <scrollingdialog.h>
 #include <pluginmanager.h>
 
 class wxListbookEvent;
 
-class CompilerSettingsDlg : public wxDialog
+class CompilerSettingsDlg : public wxScrollingDialog
 {
 	public:
 		CompilerSettingsDlg(wxWindow* parent);

@@ -4,6 +4,7 @@
 #include <wx/wxscintilla.h>  // scintilla edit control
 
 #include "sdk.h"
+#include "scrollingdialog.h"
 #include "editproperties.h"
 #include "scbeditor.h"
 #include "cbstyledtextctrl.h"
@@ -17,7 +18,7 @@
 // ----------------------------------------------------------------------------
 EditProperties::EditProperties (wxWindow* pParent, ScbEditor* pEditor, long style)
 // ----------------------------------------------------------------------------
-        : wxDialog (pParent, -1, wxEmptyString,
+        : wxScrollingDialog (pParent, -1, wxEmptyString,
                     wxDefaultPosition, wxDefaultSize,
                     style | wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER)
 {

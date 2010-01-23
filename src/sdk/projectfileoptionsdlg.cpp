@@ -36,7 +36,7 @@
 #include <wx/notebook.h>
 #include <wx/textfile.h>
 
-BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxDialog)
+BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxScrollingDialog)
     EVT_CHECKBOX (-1, ProjectFileOptionsDlg::OnReadOnlyCheck)
     EVT_CHOICE   (-1, ProjectFileOptionsDlg::OnCompilerCombo)
     EVT_UPDATE_UI(-1, ProjectFileOptionsDlg::OnUpdateUI)
@@ -148,7 +148,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf) 
     m_FileName(),
     m_LastBuildStageCompilerSel(-1)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectFileOptions"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectFileOptions"),_T("wxScrollingDialog"));
 
     if (pf)
     {
@@ -199,7 +199,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& f
     m_FileName(),
     m_LastBuildStageCompilerSel(-1)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectFileOptions"),_T("wxDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectFileOptions"),_T("wxScrollingDialog"));
 
     FillGeneralProperties();
 
@@ -302,7 +302,7 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
         prj->SetModified(true);
     }
 
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }
 
 void ProjectFileOptionsDlg::FillGeneralProperties()

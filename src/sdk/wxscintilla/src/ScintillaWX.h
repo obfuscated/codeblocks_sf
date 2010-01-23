@@ -52,7 +52,6 @@
 
 #include <wx/wx.h>
 #include <wx/dataobj.h>
-#include <wx/clipbrd.h>
 #include <wx/dnd.h>
 
 //----------------------------------------------------------------------
@@ -65,6 +64,9 @@
     #define WXDLLIMPEXP_SCI
 #endif
 
+//----------------------------------------------------------------------
+
+
 class WXDLLIMPEXP_SCI wxScintilla;           // forward
 class ScintillaWX;
 
@@ -76,7 +78,7 @@ class ScintillaWX;
 class wxSCIDropTarget : public wxTextDropTarget {
 public:
     void SetScintilla(ScintillaWX* swx) {
-        this->swx = swx;
+        m_swx = swx;
     }
 
     bool OnDropText(wxCoord x, wxCoord y, const wxString& data);
@@ -85,7 +87,7 @@ public:
     void OnLeave();
 
 private:
-    ScintillaWX* swx;
+    ScintillaWX* m_swx;
 };
 #endif
 
@@ -96,6 +98,9 @@ public:
 
     ScintillaWX(wxScintilla* win);
     ~ScintillaWX();
+
+    static sptr_t DirectFunction( ScintillaWX *wxsci, unsigned int iMessage,
+                                  uptr_t wParam, sptr_t lParam);
 
     // base class virtuals
     virtual void Initialise();
@@ -117,13 +122,14 @@ public:
     virtual void AddToPopUp(const char *label, int cmd = 0, bool enabled = true);
     virtual void ClaimSelection();
 
-    virtual long DefWndProc(unsigned int iMessage,
-                            unsigned long wParam,
-                            long lParam);
-    virtual long WndProc(unsigned int iMessage,
-                         unsigned long wParam,
-                         long lParam);
+    virtual sptr_t DefWndProc(unsigned int iMessage,
+                              uptr_t wParam,
+                              sptr_t lParam);
+    virtual sptr_t WndProc(unsigned int iMessage,
+                           uptr_t wParam,
+                           sptr_t lParam);
 
+    virtual void NotifyFocus(bool focus);
     virtual void NotifyChange();
     virtual void NotifyParent(SCNotification scn);
 
@@ -148,7 +154,6 @@ public:
     int  DoKeyDown(const wxKeyEvent& event, bool* consumed);
     void DoTick() { Tick(); }
     void DoOnIdle(wxIdleEvent& evt);
-    void DoStartDrag();
 
 #if wxUSE_DRAG_AND_DROP
     bool DoDropText(long x, long y, const wxString& data);
@@ -169,19 +174,16 @@ public:
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
     void ClipChildren(wxDC& dc, PRectangle rect);
-    void SetUseAntiAliasing(bool useAA);
-    bool GetUseAntiAliasing();
 
 private:
     bool                capturedMouse;
     bool                focusEvent;
-    wxScintilla*   sci;
+    wxScintilla*        sci;
 
 #if wxUSE_DRAG_AND_DROP
     wxSCIDropTarget*    dropTarget;
     wxDragResult        dragResult;
     bool                dragRectangle;
-    wxTimer*            startDragTimer;
 #endif
 
     int                 wheelRotation;
@@ -191,14 +193,12 @@ private:
     bool CreateSystemCaret();
     bool DestroySystemCaret();
 #ifdef __WXMSW__
-#if wxCHECK_VERSION(2, 5, 0)
     HBITMAP sysCaretBitmap;
     int sysCaretWidth;
     int sysCaretHeight;
 #endif
-#endif
 
-    friend class wxSCICallTip;
+    friend class wxSCICallTipContent;
 };
 
 //----------------------------------------------------------------------

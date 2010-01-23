@@ -8,6 +8,7 @@
 
 #include <wx/wxprec.h>
 #include <wx/xrc/xmlres.h>
+#include <wx/xrc/xh_dlg.h>
 #include <wx/toolbar.h>
 
 #ifdef __BORLANDC__
@@ -32,6 +33,16 @@ class wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
         wxBitmap GetCenteredBitmap(const wxString& param = wxT("bitmap"),
             const wxArtClient& defaultArtClient = wxART_OTHER,
             wxSize size = wxDefaultSize);
+};
+
+class wxScrollingDialogXmlHandler : public wxDialogXmlHandler
+{
+    DECLARE_DYNAMIC_CLASS(wxScrollingDialogXmlHandler)
+
+public:
+    wxScrollingDialogXmlHandler();
+    virtual wxObject *DoCreateResource();
+    virtual bool CanHandle(wxXmlNode *node);
 };
 
 #endif

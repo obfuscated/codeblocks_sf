@@ -32,7 +32,7 @@
 // flag to know when to update the search-in-files custom path
 cbProject* g_LastUsedProject = 0;
 
-BEGIN_EVENT_TABLE(FindDlg, wxDialog)
+BEGIN_EVENT_TABLE(FindDlg, wxScrollingDialog)
     EVT_NOTEBOOK_PAGE_CHANGED(XRCID("nbFind"), FindDlg::OnFindChange)
     EVT_CHECKBOX(XRCID("chkRegEx1"),    FindDlg::OnRegEx)
     EVT_BUTTON(XRCID("btnBrowsePath"),  FindDlg::OnBrowsePath)
@@ -44,7 +44,7 @@ FindDlg::FindDlg(wxWindow* parent, const wxString& initial, bool hasSelection, b
     : FindReplaceBase(parent, initial, hasSelection),
     m_Complete(!findInFilesOnly)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgFind"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgFind"),_T("wxScrollingDialog"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
     // load last searches

@@ -20,7 +20,7 @@
 #include "editpairdlg.h"
 #include "filefilters.h"
 
-BEGIN_EVENT_TABLE(EditPairDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditPairDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnBrowse"), EditPairDlg::OnBrowse)
     EVT_UPDATE_UI(-1, EditPairDlg::OnUpdateUI)
 END_EVENT_TABLE()
@@ -31,7 +31,7 @@ EditPairDlg::EditPairDlg(wxWindow* parent, wxString& key, wxString& value, const
     m_BrowseMode(allowBrowse)
 {
     //ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditPair"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPair"),_T("wxScrollingDialog"));
 	SetTitle(title);
     XRCCTRL(*this, "btnBrowse", wxButton)->Enable(m_BrowseMode != bmDisable);
     XRCCTRL(*this, "txtKey", wxTextCtrl)->SetValue(key);
@@ -88,5 +88,5 @@ void EditPairDlg::EndModal(int retCode)
         m_Key = XRCCTRL(*this, "txtKey", wxTextCtrl)->GetValue();
         m_Value = XRCCTRL(*this, "txtValue", wxTextCtrl)->GetValue();
     }
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

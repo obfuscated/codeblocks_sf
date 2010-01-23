@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="avChangesDlg">
+	<object class="wxScrollingDialog" name="avChangesDlg">
 		<title>AutoVersioning :: Changes Log</title>
 		<size>700,300</size>
 		<id_arg>0</id_arg>

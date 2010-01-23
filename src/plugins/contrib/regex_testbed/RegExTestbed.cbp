@@ -18,7 +18,6 @@
 				<Option host_application=".\codeblocks.exe" />
 				<Compiler>
 					<Add option="-g" />
-					<Add option="-DcbDEBUG" />
 				</Compiler>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\codeblocks\RegExTestbed.zip manifest.xml *.xrc" />
@@ -47,12 +46,13 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DcbDEBUG" />
 			<Add option="-DSUPPORT_UTF8" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -76,7 +76,7 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/RegExDlg.wxs" src="regexdlg.cpp" hdr="regexdlg.h" xrc="regexdlg.xrc" name="regex_dialog" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/RegExDlg.wxs" src="regexdlg.cpp" hdr="regexdlg.h" xrc="regexdlg.xrc" name="regex_dialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

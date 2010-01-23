@@ -7,7 +7,7 @@
 #define CLASSWIZARDDLG_H
 
 #include <wx/arrstr.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/string.h>
 
 #include <vector>
@@ -15,7 +15,7 @@
 class wxCommandEvent;
 class wxUpdateUIEvent;
 
-class ClassWizardDlg : public wxDialog
+class ClassWizardDlg : public wxScrollingDialog
 {
     public:
         // livecycle

@@ -104,7 +104,7 @@
 					<Add directory="sdk\wxscintilla\src\scintilla\src" />
 				</Compiler>
 				<ResourceCompiler>
-					<Add directory="include\wxscintilla\include" />
+					<Add directory="sdk\wxscintilla\include" />
 				</ResourceCompiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-image-base" />
@@ -466,7 +466,7 @@
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Scripted wizard;To-do;Autosave;XP look &amp; feel;Projects-workspaces importer;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;Autosave;XP look &amp; feel;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Scripted wizard;To-do;XP look &amp; feel;" />
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
@@ -487,7 +487,7 @@
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#wx)\contrib\include" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="include\wxscintilla\include" />
+			<Add directory="sdk\wxscintilla\include" />
 			<Add directory="include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
@@ -960,6 +960,9 @@
 		<Unit filename="include\scriptsecuritywarningdlg.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\scrollingdialog.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\sdk.h">
 			<Option compile="1" />
 			<Option weight="0" />
@@ -1008,9 +1011,6 @@
 		</Unit>
 		<Unit filename="include\workspaceloader.h">
 			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include\wxscintilla\include\wx\wxscintilla.h">
-			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="include\xtra_res.h">
 			<Option target="sdk" />
@@ -3588,6 +3588,9 @@
 		<Unit filename="sdk\scriptsecuritywarningdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\scrollingdialog.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk\sdk_events.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -3612,6 +3615,9 @@
 		<Unit filename="sdk\workspaceloader.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\include\wx\wxscintilla.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\PlatWX.cpp">
 			<Option target="scintilla" />
 		</Unit>
@@ -3634,9 +3640,6 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\include\PropSet.h">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk\wxscintilla\src\scintilla\include\SString.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\include\SciLexer.h">
@@ -3855,6 +3858,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMagik.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMarkdown.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\LexMatlab.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3987,6 +3993,9 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\PropSet.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\PropSetSimple.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\RESearch.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -4006,6 +4015,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\ScintillaBase.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Selection.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\Selection.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\SplitVector.h">
@@ -4355,9 +4370,9 @@
 			<envvars />
 			<wxsmith version="1">
 				<resources>
-					<wxDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" name="VirtualBuildTargetsDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" name="DataBreakpointDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/ccdebuginfo.cpp" hdr="plugins/codecompletion/ccdebuginfo.h" name="CCDebugInfo" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/VirtualBuildTargetsDlg.wxs" src="sdk/virtualbuildtargetsdlg.cpp" hdr="include/virtualbuildtargetsdlg.h" xrc="sdk/resources/virtualbuildtargetsdlg.xrc" name="VirtualBuildTargetsDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/databreakpointdlg.wxs" src="plugins/debuggergdb/databreakpointdlg.cpp" hdr="plugins/debuggergdb/databreakpointdlg.h" name="DataBreakpointDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/CCDebugInfo.wxs" src="plugins/codecompletion/ccdebuginfo.cpp" hdr="plugins/codecompletion/ccdebuginfo.h" name="CCDebugInfo" language="CPP" />
 					<wxPanel wxs="wxsmith/ScriptConsole.wxs" src="src/scriptconsole.cpp" hdr="src/scriptconsole.h" name="ScriptConsole" language="CPP" />
 					<wxPanel wxs="wxsmith/BuildTargetPanel.wxs" src="plugins/scriptedwizard/buildtargetpanel.cpp" hdr="plugins/scriptedwizard/buildtargetpanel.h" name="BuildTargetPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/CompilerPanel.wxs" src="plugins/scriptedwizard/compilerpanel.cpp" hdr="plugins/scriptedwizard/compilerpanel.h" name="CompilerPanel" language="CPP" />

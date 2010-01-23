@@ -2,7 +2,7 @@ AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith/propgrid/contrib/include
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets_defitems.la
@@ -32,6 +32,7 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsspacer.cpp \
 ./wxsscrollbar.cpp \
 ./wxsdialog.cpp \
+./wxsscrollingdialog.cpp \
 ./wxsspinbutton.cpp \
 ./wxsbutton.cpp \
 ./wxslistbox.cpp \
@@ -92,6 +93,7 @@ noinst_HEADERS = \
 ./wxsdatepickerctrl.h \
 ./wxsstatictext.h \
 ./wxsdialog.h \
+./wxsscrollingdialog.h \
 ./wxslistctrl.h \
 ./wxsspinbutton.h \
 ./wxsbutton.h \

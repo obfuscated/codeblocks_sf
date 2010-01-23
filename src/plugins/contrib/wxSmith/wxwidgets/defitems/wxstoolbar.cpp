@@ -25,19 +25,20 @@
 #include "wxstoolbareditor.h"
 #include "../wxsitemresdata.h"
 #include <wx/toolbar.h>
+#include "scrollingdialog.h"
 
 namespace
 {
     wxsRegisterItem<wxsToolBar> Reg(_T("ToolBar"),wxsTTool,_T("Tools"),80);
 
-    class ToolBarEditorDialog: public wxDialog
+    class ToolBarEditorDialog: public wxScrollingDialog
     {
         public:
 
             wxsToolBarEditor* Editor;
 
             ToolBarEditorDialog(wxsToolBar* ToolBar):
-                wxDialog(0,-1,_("ToolBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
+                wxScrollingDialog(0,-1,_("ToolBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
             {
                 wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
                 Sizer->Add(Editor = new wxsToolBarEditor(this,ToolBar),1,wxEXPAND,0);
@@ -56,7 +57,7 @@ namespace
             DECLARE_EVENT_TABLE()
     };
 
-    BEGIN_EVENT_TABLE(ToolBarEditorDialog,wxDialog)
+    BEGIN_EVENT_TABLE(ToolBarEditorDialog,wxScrollingDialog)
         EVT_BUTTON(wxID_OK,ToolBarEditorDialog::OnOK)
     END_EVENT_TABLE()
 
@@ -208,6 +209,7 @@ bool wxsToolBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
         wxString ClassName = Item->GetClassName();
         if ( ClassName == _T("wxPanel") ||
              ClassName == _T("wxDialog") ||
+             ClassName == _T("wxScrollingDialog") ||
              ClassName == _T("wxFrame") )
         {
             if ( ShowMessage )

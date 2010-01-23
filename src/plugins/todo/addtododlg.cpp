@@ -21,7 +21,7 @@
 #include <wx/textdlg.h>
 #include "addtododlg.h"
 
-BEGIN_EVENT_TABLE(AddTodoDlg, wxDialog)
+BEGIN_EVENT_TABLE(AddTodoDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btAddUser"), AddTodoDlg::OnAddUser)
     EVT_BUTTON(XRCID("btDelUser"), AddTodoDlg::OnDelUser)
     EVT_BUTTON(XRCID("btAddType"), AddTodoDlg::OnAddType)
@@ -32,7 +32,7 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString type
     m_Users(users),
     m_Types(types)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAddToDo"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAddToDo"),_T("wxScrollingDialog"));
 
     wxString lastUser  = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_user"));
     wxString lastType  = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
@@ -175,7 +175,7 @@ void AddTodoDlg::EndModal(int retVal)
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_position"), cmb->GetStringSelection());
     }
 
-    wxDialog::EndModal(retVal);
+    wxScrollingDialog::EndModal(retVal);
 }
 
 void AddTodoDlg::OnAddUser(wxCommandEvent&)

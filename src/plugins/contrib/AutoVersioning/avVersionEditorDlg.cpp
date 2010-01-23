@@ -85,7 +85,7 @@ const long avVersionEditorDlg::ID_VALIDATE_TIMER = wxNewId();
 //}
 
 //{Events
-BEGIN_EVENT_TABLE(avVersionEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(avVersionEditorDlg,wxScrollingDialog)
     //(*EventTable(avVersionEditorDlg)
     //*)
 END_EVENT_TABLE()

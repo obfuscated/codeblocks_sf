@@ -91,7 +91,7 @@ static wxArrayString m_finddirHist;
 static wxArrayString m_findstrHist;
 static wxArrayString m_replacestrHist;
 
-BEGIN_EVENT_TABLE (myFindReplaceDlg, wxDialog)
+BEGIN_EVENT_TABLE (myFindReplaceDlg, wxScrollingDialog)
     EVT_BUTTON (wxID_CANCEL,     myFindReplaceDlg::OnCancel)
     EVT_BUTTON (wxID_OK,         myFindReplaceDlg::OnOkay)
     EVT_BUTTON (myID_REPLACE,    myFindReplaceDlg::OnReplace)
@@ -104,7 +104,7 @@ myFindReplaceDlg::myFindReplaceDlg (wxWindow *parent,
                                     const wxString &replacestr,
                                     wxUint32 flags,
                                     long style)
-               : wxDialog (parent, -1, _("Dialog"),
+               : wxScrollingDialog (parent, -1, _("Dialog"),
                            wxDefaultPosition, wxDefaultSize,
                            style | wxDEFAULT_DIALOG_STYLE) {
 
@@ -384,7 +384,7 @@ int myFindReplaceDlg::ShowModal (long style) {
     m_findstr->SetFocus();
     m_findstr->SetSelection (-1, -1);
     Fit ();
-    return wxDialog::ShowModal ();
+    return wxScrollingDialog::ShowModal ();
 }
 
 void myFindReplaceDlg::LoadDirHistory () {
@@ -536,13 +536,13 @@ void myFindReplaceDlg::UpdateReplaceHistory (wxString item)
 // myGotoDlg
 //----------------------------------------------------------------------------
 
-BEGIN_EVENT_TABLE (myGotoDlg, wxDialog)
+BEGIN_EVENT_TABLE (myGotoDlg, wxScrollingDialog)
     EVT_MENU   (wxID_HELP, myGotoDlg::OnHelp)
 END_EVENT_TABLE()
 
 myGotoDlg::myGotoDlg (wxWindow *parent,
                       long style)
-         : wxDialog (parent, -1, _("Goto line"),
+         : wxScrollingDialog (parent, -1, _("Goto line"),
                      wxDefaultPosition, wxDefaultSize,
                      style | wxDEFAULT_DIALOG_STYLE) {
 
@@ -605,5 +605,5 @@ void myGotoDlg::SetPosition (int position) {
 int myGotoDlg::ShowModal (long WXUNUSED(style)) {
     m_position->SetFocus();
     m_position->SetSelection (-1, -1);
-    return wxDialog::ShowModal ();
+    return wxScrollingDialog::ShowModal ();
 }

@@ -33,7 +33,7 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
-			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -94,10 +94,10 @@
 			<wxsmith version="1">
 				<resources>
 					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
-					<wxDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
-					<wxDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<lib_finder disable_auto="1" />

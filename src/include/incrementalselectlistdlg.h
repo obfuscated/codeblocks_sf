@@ -7,13 +7,13 @@
 #define INCREMENTALSELECTLISTDLG_H
 
 #include "settings.h"
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
 
 class myHandler; // forward decl
 
-class DLLIMPORT IncrementalSelectListDlg : public wxDialog
+class DLLIMPORT IncrementalSelectListDlg : public wxScrollingDialog
 {
 	public:
 		IncrementalSelectListDlg(wxWindow* parent, const wxArrayString& items, const wxString& caption = wxEmptyString, const wxString& message = wxEmptyString);
@@ -36,7 +36,7 @@ class DLLIMPORT IncrementalSelectListDlg : public wxDialog
 class myHandler : public wxEvtHandler
 {
 	public:
-		myHandler(wxDialog* parent, wxTextCtrl* text, wxListBox* list)
+		myHandler(wxScrollingDialog* parent, wxTextCtrl* text, wxListBox* list)
 			: m_pParent(parent),
 			m_pList(list),
 			m_pText(text)
@@ -50,7 +50,7 @@ class myHandler : public wxEvtHandler
 		}
 		void OnKeyDown(wxKeyEvent& event);
 	private:
-		wxDialog* m_pParent;
+		wxScrollingDialog* m_pParent;
 		wxListBox* m_pList;
 		wxTextCtrl* m_pText;
 		DECLARE_EVENT_TABLE();

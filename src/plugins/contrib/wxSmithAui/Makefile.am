@@ -2,7 +2,7 @@ AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith/propgrid/contrib/include \
 		-I$(srcdir)/wxAuiManager \

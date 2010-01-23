@@ -22,7 +22,7 @@
 #include <wx/msgdlg.h>
 #include "editpathdlg.h"
 
-BEGIN_EVENT_TABLE(ExternalDepsDlg, wxDialog)
+BEGIN_EVENT_TABLE(ExternalDepsDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, ExternalDepsDlg::OnUpdateUI)
     EVT_LISTBOX_DCLICK(XRCID("lstAdditionalFiles"), ExternalDepsDlg::OnEditAdditional)
     EVT_LISTBOX_DCLICK(XRCID("lstExternalFiles"), ExternalDepsDlg::OnEditExternal)
@@ -39,7 +39,7 @@ ExternalDepsDlg::ExternalDepsDlg(wxWindow* parent, cbProject* project, ProjectBu
     m_pTarget(target)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgExternalDeps"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgExternalDeps"),_T("wxScrollingDialog"));
 	FillAdditional();
 	FillExternal();
 }
@@ -89,7 +89,7 @@ void ExternalDepsDlg::EndModal(int retCode)
     }
     m_pTarget->SetAdditionalOutputFiles(files);
 
-	return wxDialog::EndModal(retCode);
+	return wxScrollingDialog::EndModal(retCode);
 }
 
 //void ExternalDepsDlg::DoAdd(const wxString& listbox, const wxString& message)

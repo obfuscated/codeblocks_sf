@@ -21,6 +21,7 @@
 */
 #include "wxwidgetsresfactory.h"
 #include "wxsdialogres.h"
+#include "wxsscrollingdialogres.h"
 #include "wxsframeres.h"
 #include "wxspanelres.h"
 #include "wxsnewwindowdlg.h"
@@ -41,6 +42,7 @@ namespace
     enum Resources
     {
         wxDialogId = 0,
+        wxScrollingDialogId,
         wxFrameId,
         wxPanelId,
         /*=========*/
@@ -50,6 +52,7 @@ namespace
     const wxChar* NamesPtr[ResourcesCount] =
     {
         _("wxDialog"),
+        _("wxScrollingDialog"),
         _("wxFrame"),
         _("wxPanel")
     };
@@ -193,6 +196,7 @@ wxsResource* wxWidgetsResFactory::OnCreate(int Number,wxsProject* Project)
     switch ( Number )
     {
         case wxDialogId: return new wxsDialogRes(Project);
+        case wxScrollingDialogId: return new wxsScrollingDialogRes(Project);
         case wxFrameId:  return new wxsFrameRes(Project);
         case wxPanelId:  return new wxsPanelRes(Project);
     }
@@ -256,6 +260,7 @@ wxsResource* wxWidgetsResFactory::OnBuildExternal(const wxString& FileName)
     switch ( Names.Index(Class) )
     {
         case wxDialogId: return new wxsDialogRes(FileName,Object);
+        case wxScrollingDialogId: return new wxsScrollingDialogRes(FileName,Object);
         case wxFrameId:  return new wxsFrameRes(FileName,Object);
         case wxPanelId:  return new wxsPanelRes(FileName,Object);
     }

@@ -6,11 +6,11 @@
 #ifndef EDITARRAYSTRINGDLG_H
 #define EDITARRAYSTRINGDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/arrstr.h>
 #include "settings.h"
 
-class DLLIMPORT EditArrayStringDlg : public wxDialog
+class DLLIMPORT EditArrayStringDlg : public wxScrollingDialog
 {
 	public:
 		EditArrayStringDlg(wxWindow* parent, wxArrayString& array);

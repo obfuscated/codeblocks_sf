@@ -52,7 +52,7 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNO_LOGGING" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

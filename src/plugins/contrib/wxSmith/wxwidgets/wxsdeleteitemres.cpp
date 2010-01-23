@@ -23,9 +23,9 @@
 #include "wxsdeleteitemres.h"
 
 //(*InternalHeaders(wxsDeleteItemRes)
-#include <wx/intl.h>
 #include <wx/button.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 //(*IdInit(wxsDeleteItemRes)
@@ -35,7 +35,7 @@ const long wxsDeleteItemRes::ID_CHECKBOX3 = wxNewId();
 const long wxsDeleteItemRes::ID_STATICTEXT1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsDeleteItemRes,wxDialog)
+BEGIN_EVENT_TABLE(wxsDeleteItemRes,wxScrollingDialog)
 	//(*EventTable(wxsDeleteItemRes)
 	//*)
 END_EVENT_TABLE()
@@ -67,7 +67,7 @@ wxsDeleteItemRes::wxsDeleteItemRes()
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-
+	
 	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsDeleteItemRes::Onm_DeleteSourcesClick);
 	//*)
 }

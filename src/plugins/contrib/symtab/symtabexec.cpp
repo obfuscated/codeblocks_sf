@@ -38,7 +38,7 @@
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-BEGIN_EVENT_TABLE(SymTabExecDlg, wxDialog)
+BEGIN_EVENT_TABLE(SymTabExecDlg, wxScrollingDialog)
   EVT_BUTTON         (XRCID("btnExport"),     SymTabExecDlg::OnWriteToFile)
   EVT_BUTTON         (XRCID("btnNext"),       SymTabExecDlg::OnNext)
   EVT_BUTTON         (XRCID("btnCancel"),     SymTabExecDlg::OnCancel)
@@ -119,7 +119,7 @@ void SymTabExecDlg::DoInitDialog()
   {
     // Instantiate and initialise dialog
     SymTabExecDlgLoaded =
-      wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgSymTabExec"));
+      wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabExec"),_T("wxScrollingDialog"));
 
     wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
 
@@ -145,7 +145,7 @@ void SymTabExecDlg::EndModal(int retCode)
 	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::EndModal"));
 #endif
 
-  wxDialog::EndModal(retCode);
+  wxScrollingDialog::EndModal(retCode);
 }// EndModal
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -180,7 +180,7 @@ void SymTabExecDlg::OnNext(wxCommandEvent& WXUNUSED(event))
 	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnNext"));
 #endif
 
-  wxDialog::EndModal(wxID_OK);
+  wxScrollingDialog::EndModal(wxID_OK);
 }// OnNext
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -191,7 +191,7 @@ void SymTabExecDlg::OnCancel(wxCommandEvent& WXUNUSED(event))
 	Manager::Get()->GetLogManager()->DebugLog(_T("SymTabExecDlg::OnCancel"));
 #endif
 
-  wxDialog::EndModal(wxID_CANCEL);
+  wxScrollingDialog::EndModal(wxID_CANCEL);
 }// OnCancel
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -345,7 +345,7 @@ int SymTabExecDlg::ExecuteMulti(struct_config &config, wxString cmd)
         if (i==(num_files-1))
           XRCCTRL(*this, "btnNext", wxButton)->Enable(false);
         XRCCTRL(*this, "stxtFile", wxStaticText)->SetLabel(_("File: ") + files[i]);
-        int retval = wxDialog::ShowModal();
+        int retval = wxScrollingDialog::ShowModal();
         if      (retval == wxID_OK)
           ;      // continue
         else if (retval == wxID_CANCEL)
@@ -395,7 +395,7 @@ int SymTabExecDlg::ExecuteSingle(struct_config &config, wxString cmd)
   {
     XRCCTRL(*this, "stxtFile", wxStaticText)->SetLabel(_("File: ") + the_library);
     XRCCTRL(*this, "btnNext",  wxButton)->Enable(false); // there is no next
-    wxDialog::ShowModal(); // Done on success only.
+    wxScrollingDialog::ShowModal(); // Done on success only.
   }
 
   return (wxID_OK); // always success.

@@ -22,7 +22,7 @@
 #include <wx/textdlg.h>
 #include "projectsfilemasksdlg.h"
 
-BEGIN_EVENT_TABLE(ProjectsFileMasksDlg, wxDialog)
+BEGIN_EVENT_TABLE(ProjectsFileMasksDlg, wxScrollingDialog)
     EVT_UPDATE_UI( -1, ProjectsFileMasksDlg::OnUpdateUI)
     EVT_BUTTON(XRCID("btnAdd"), ProjectsFileMasksDlg::OnAdd)
     EVT_BUTTON(XRCID("btnEdit"), ProjectsFileMasksDlg::OnEdit)
@@ -36,7 +36,7 @@ ProjectsFileMasksDlg::ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks
     m_pOrigFileGroups(fgam),
     m_LastListSelection(0)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgProjectsFileMasks"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectsFileMasks"),_T("wxScrollingDialog"));
 
     RebuildList();
 }
@@ -151,5 +151,5 @@ void ProjectsFileMasksDlg::EndModal(int retCode)
         m_pOrigFileGroups->CopyFrom(m_FileGroups);
     }
 
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

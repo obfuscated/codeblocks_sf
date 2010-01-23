@@ -33,6 +33,7 @@ class BrowseMarks;
 class ProjectData;
 class BrowseMarks;
 class cbStyledTextCtrl;
+class wxAuiNotebookEvent;
 class JumpTracker;
 
 // ----------------------------------------------------------------------------

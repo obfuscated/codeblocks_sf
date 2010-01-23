@@ -23,6 +23,7 @@
 #include "wxsnewwindowdlg.h"
 #include "wxwidgetsres.h"
 #include "wxsdialogres.h"
+#include "wxsscrollingdialogres.h"
 #include "wxsframeres.h"
 #include "wxspanelres.h"
 #include "wxwidgetsgui.h"
@@ -36,8 +37,8 @@
 #include <projectfile.h>
 
 //(*InternalHeaders(wxsNewWindowDlg)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 namespace
@@ -118,7 +119,7 @@ const long wxsNewWindowDlg::ID_CHECKBOX14 = wxNewId();
 const long wxsNewWindowDlg::ID_CHECKBOX13 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsNewWindowDlg,wxScrollingDialog)
     //(*EventTable(wxsNewWindowDlg)
     //*)
     EVT_BUTTON(wxID_OK,wxsNewWindowDlg::OnCreate)
@@ -135,10 +136,10 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     m_Project(Project)
 {
     //(*Initialize(wxsNewWindowDlg)
-    wxStaticText* StaticText2;
     wxStaticText* StaticText1;
     wxStaticText* StaticText3;
-
+    wxStaticText* StaticText2;
+    
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     m_RootSizer = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Options"));
@@ -266,7 +267,7 @@ wxsNewWindowDlg::wxsNewWindowDlg(wxWindow* parent,const wxString& ResType,wxsPro
     SetSizer(m_RootSizer);
     m_RootSizer->Fit(this);
     m_RootSizer->SetSizeHints(this);
-
+    
     Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnClassChanged);
     Connect(ID_TEXTCTRL2,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnHeaderChanged);
     Connect(ID_TEXTCTRL3,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&wxsNewWindowDlg::OnSourceChanged);
@@ -469,6 +470,10 @@ void wxsNewWindowDlg::OnCreate(wxCommandEvent& event)
     if ( m_Type == _T("wxDialog") )
     {
         NewResource = new wxsDialogRes(m_Project);
+    }
+    else if ( m_Type == _T("wxScrollingDialog") )
+    {
+        NewResource = new wxsScrollingDialogRes(m_Project);
     }
     else if ( m_Type == _T("wxFrame") )
     {

@@ -41,7 +41,7 @@ const long wxsArrayStringCheckEditorDlg::ID_BUTTON6 = wxNewId();
 const long wxsArrayStringCheckEditorDlg::ID_BUTTON7 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsArrayStringCheckEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsArrayStringCheckEditorDlg,wxScrollingDialog)
 	//(*EventTable(wxsArrayStringCheckEditorDlg)
 	//*)
 	EVT_LISTBOX(ID_CHECKLISTBOX1,wxsArrayStringCheckEditorDlg::OnStringListToggled)

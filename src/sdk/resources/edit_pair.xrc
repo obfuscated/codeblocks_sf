@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgEditPair">
+  <object class="wxScrollingDialog" name="dlgEditPair">
     <title>Edit pair</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

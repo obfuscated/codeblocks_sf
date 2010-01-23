@@ -1,13 +1,13 @@
 #ifndef UPDATEDLG_H
 #define UPDATEDLG_H
 
-#include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/treectrl.h>
+#include "scrollingdialog.h"
 #include "cbnetwork.h"
 #include "conf.h"
 
-class UpdateDlg : public wxDialog
+class UpdateDlg : public wxScrollingDialog
 {
 	public:
 		UpdateDlg(wxWindow* parent);

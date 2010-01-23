@@ -27,14 +27,14 @@
 
 //(*Headers(wxsSimpleFontEditorDlg)
 #include <wx/sizer.h>
+#include <wx/button.h>
+#include "scrollingdialog.h"
+#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/statline.h>
-#include <wx/button.h>
-#include <wx/dialog.h>
 //*)
 
-class wxsSimpleFontEditorDlg: public wxDialog
+class wxsSimpleFontEditorDlg: public wxScrollingDialog
 {
 	public:
 
@@ -63,24 +63,24 @@ class wxsSimpleFontEditorDlg: public wxDialog
 		//*)
 
 		//(*Declarations(wxsSimpleFontEditorDlg)
-		wxBoxSizer* BoxSizer4;
 		wxStaticBoxSizer* StaticBoxSizer2;
-		wxStaticText* StaticText2;
-		wxButton* Button1;
-		wxTextCtrl* TestArea;
+		wxFlexGridSizer* FlexGridSizer1;
 		wxFlexGridSizer* FlexGridSizer2;
+		wxBoxSizer* BoxSizer3;
+		wxStaticLine* StaticLine2;
+		wxButton* Button1;
+		wxButton* Button2;
+		wxButton* Button3;
 		wxBoxSizer* BoxSizer2;
 		wxStaticText* StaticText3;
-		wxButton* Button2;
-		wxStaticLine* StaticLine2;
-		wxStaticText* FontDescription;
-		wxButton* Button3;
 		wxStaticLine* StaticLine1;
+		wxBoxSizer* BoxSizer4;
+		wxStaticText* FontDescription;
 		wxBoxSizer* BoxSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
-		wxFlexGridSizer* FlexGridSizer1;
-		wxBoxSizer* BoxSizer3;
+		wxStaticText* StaticText2;
 		wxStdDialogButtonSizer* StdDialogButtonSizer1;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxTextCtrl* TestArea;
 		//*)
 
 		wxsFontData& m_Data;

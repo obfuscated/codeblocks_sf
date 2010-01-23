@@ -6,12 +6,12 @@
 #ifndef SYMTABCONFIG_H
 #define SYMTABCONFIG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class wxCommandEvent;
 class wxWindow;
 
-class SymTabConfigDlg : public wxDialog
+class SymTabConfigDlg : public wxScrollingDialog
 {
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 public:

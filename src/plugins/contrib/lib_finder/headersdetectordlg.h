@@ -4,7 +4,7 @@
 #include <wx/gauge.h>   // Fix MSW bug which forbids using fwd declaration for wxGauge
 
 //(*Headers(HeadersDetectorDlg)
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/timer.h>
 class wxGauge;
 class wxStdDialogButtonSizer;
@@ -16,7 +16,7 @@ class wxStaticBoxSizer;
 
 #include <cbproject.h>
 
-class HeadersDetectorDlg: public wxDialog
+class HeadersDetectorDlg: public wxScrollingDialog
 {
 	public:
 

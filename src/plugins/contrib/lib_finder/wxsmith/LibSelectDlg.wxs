@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="LibSelectDlg">
+	<object class="wxScrollingDialog" name="LibSelectDlg">
 		<title>Setting up libraries</title>
 		<centered>1</centered>
 		<id_arg>0</id_arg>

@@ -24,7 +24,7 @@
 //(*IdInit(VirtualBuildTargetsDlg)
 //*)
 
-BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxDialog)
+BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxScrollingDialog)
 	//(*EventTable(VirtualBuildTargetsDlg)
 	//*)
 	EVT_UPDATE_UI(-1, VirtualBuildTargetsDlg::OnUpdateUI)
@@ -39,7 +39,7 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, c
     m_pProject(project)
 {
 	//(*Initialize(VirtualBuildTargetsDlg)
-	wxXmlResource::Get()->LoadObject(this,parent,_T("VirtualBuildTargetsDlg"),_T("wxDialog"));
+	wxXmlResource::Get()->LoadObject(this,parent,_T("VirtualBuildTargetsDlg"),_T("wxScrollingDialog"));
 	lstAliases = (wxListBox*)FindWindow(XRCID("ID_LISTBOX1"));
 	btnAdd = (wxButton*)FindWindow(XRCID("ID_BUTTON1"));
 	btnEdit = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));

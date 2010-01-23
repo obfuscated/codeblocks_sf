@@ -10,12 +10,8 @@
 #include "protocol.h"
 
 //(*InternalHeaders(Protocol)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/intl.h>
-#include <wx/button.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 #include <wx/event.h>
@@ -33,7 +29,7 @@ const long Protocol::ID_TXT_PROTOCOL = wxNewId();
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-BEGIN_EVENT_TABLE(Protocol,wxDialog)
+BEGIN_EVENT_TABLE(Protocol,wxScrollingDialog)
   //(*EventTable(Protocol)
   //*)
 END_EVENT_TABLE()

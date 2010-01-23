@@ -29,7 +29,7 @@ const long ProjectMissingLibs::ID_BUTTON2 = wxNewId();
 const long ProjectMissingLibs::ID_STATICTEXT4 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(ProjectMissingLibs,wxDialog)
+BEGIN_EVENT_TABLE(ProjectMissingLibs,wxScrollingDialog)
 	//(*EventTable(ProjectMissingLibs)
 	//*)
 END_EVENT_TABLE()

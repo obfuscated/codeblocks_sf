@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-  <object class="wxDialog" name="dlgReplace">
+  <object class="wxScrollingDialog" name="dlgReplace">
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
     <title>Replace</title>
     <centered>1</centered>

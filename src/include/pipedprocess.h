@@ -18,7 +18,8 @@ class DLLIMPORT PipedProcess : public wxProcess
 {
 	public:
 		// class constructor
-		PipedProcess(void** pvThis, wxEvtHandler* parent, int id = wxID_ANY, bool pipe = true, const wxString& dir = wxEmptyString);
+        PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pipe,
+                     const wxString& dir, bool eatEOL);
 		// class destructor
 		~PipedProcess();
 		virtual int Launch(const wxString& cmd, unsigned int pollingInterval = 100);
@@ -34,6 +35,7 @@ class DLLIMPORT PipedProcess : public wxProcess
 		int m_Id;
 		int m_Pid;
 		wxTimer m_timerPollProcess;
+		bool m_eatEOL;
 	private:
 		void** m_pvThis;
 		DECLARE_EVENT_TABLE()

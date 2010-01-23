@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="HeadersDetectorDlg">
+	<object class="wxScrollingDialog" name="HeadersDetectorDlg">
 		<title>Detecting missing libraries...</title>
 		<centered>1</centered>
 		<id_arg>0</id_arg>

@@ -1852,7 +1852,7 @@ bool wxLongStringPropertyClass::OnButtonClick( wxPropertyGrid* propGrid, wxStrin
 {
     // launch editor dialog
     wxDialog* dlg = new wxDialog(propGrid,-1,m_label,wxDefaultPosition,wxDefaultSize,
-                                 wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLIP_CHILDREN);
+                                                   wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLIP_CHILDREN);
 
     dlg->SetFont(propGrid->GetFont()); // To allow entering chars of the same set as the propGrid
 

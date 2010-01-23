@@ -21,14 +21,14 @@
 #include <wx/statline.h>
 #include <wx/panel.h>
 #include <wx/button.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/combobox.h>
 //*)
 
 class Parser;
 class Token;
 
-class CCDebugInfo: public wxDialog
+class CCDebugInfo: public wxScrollingDialog
 {
 	public:
 

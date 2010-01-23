@@ -1,6 +1,6 @@
 <resource>
 
-<object class="wxDialog" name="dlgManageAssocs">
+<object class="wxScrollingDialog" name="dlgManageAssocs">
     <title>Manage associations</title>
     <object class="wxBoxSizer">
         <orient>wxVERTICAL</orient>

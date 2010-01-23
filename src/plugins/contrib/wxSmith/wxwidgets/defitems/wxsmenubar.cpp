@@ -25,19 +25,20 @@
 #include "wxsmenu.h"
 #include "../wxsitemresdata.h"
 #include <wx/menu.h>
+#include "scrollingdialog.h"
 
 namespace
 {
     wxsRegisterItem<wxsMenuBar> Reg(_T("MenuBar"),wxsTTool,_T("Tools"),90);
 
-    class MenuEditorDialog: public wxDialog
+    class MenuEditorDialog: public wxScrollingDialog
     {
         public:
 
             wxsMenuEditor* Editor;
 
             MenuEditorDialog(wxsMenuBar* MenuBar):
-                wxDialog(0,-1,_("MenuBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
+                wxScrollingDialog(0,-1,_("MenuBar editor"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
             {
                 wxBoxSizer* Sizer = new wxBoxSizer(wxVERTICAL);
                 Sizer->Add(Editor = new wxsMenuEditor(this,MenuBar),1,wxEXPAND,0);
@@ -56,7 +57,7 @@ namespace
             DECLARE_EVENT_TABLE()
     };
 
-    BEGIN_EVENT_TABLE(MenuEditorDialog,wxDialog)
+    BEGIN_EVENT_TABLE(MenuEditorDialog,wxScrollingDialog)
         EVT_BUTTON(wxID_OK,MenuEditorDialog::OnOK)
     END_EVENT_TABLE()
 }

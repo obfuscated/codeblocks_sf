@@ -36,7 +36,7 @@
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-BEGIN_EVENT_TABLE(SymTabConfigDlg, wxDialog)
+BEGIN_EVENT_TABLE(SymTabConfigDlg, wxScrollingDialog)
   EVT_BUTTON(XRCID("btnSearch"),      SymTabConfigDlg::OnSearch)
   EVT_BUTTON(XRCID("btnClose"),       SymTabConfigDlg::OnClose)
   EVT_CHOICE(XRCID("choWhatToDo"),    SymTabConfigDlg::OnWhatToDo)
@@ -65,11 +65,11 @@ int SymTabConfigDlg::Execute()
   {
     // Instantiate and initialise dialog
     SymTabConfigDlgLoaded =
-      wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgSymTabConfig"));
+      wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabConfig"),_T("wxScrollingDialog"));
   }
 
   LoadSettings();
-  return wxDialog::ShowModal();
+  return wxScrollingDialog::ShowModal();
 }// Execute
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -82,7 +82,7 @@ void SymTabConfigDlg::EndModal(int retCode)
 	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::EndModal")));
 #endif
 
-  wxDialog::EndModal(retCode);
+  wxScrollingDialog::EndModal(retCode);
 }// EndModal
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -158,7 +158,7 @@ void SymTabConfigDlg::OnSearch(wxCommandEvent& WXUNUSED(event))
     }
   }
 
-  wxDialog::EndModal(wxID_OK);
+  wxScrollingDialog::EndModal(wxID_OK);
 }// OnSearch
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -169,7 +169,7 @@ void SymTabConfigDlg::OnClose(wxCommandEvent& WXUNUSED(event))
 	Manager::Get()->GetLogManager()->DebugLog(F(_T("SymTabConfigDlg::OnClose")));
 #endif
 
-  wxDialog::EndModal(wxID_CANCEL);
+  wxScrollingDialog::EndModal(wxID_CANCEL);
 }// OnClose
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */

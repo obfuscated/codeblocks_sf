@@ -990,7 +990,7 @@ void ScbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
 
     control->SetUseTabs(mgr->ReadBool(_T("/use_tab"), false));
-    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false)?wxSTI_IV_LOOKBOTH:wxSTI_IV_NONE);
+    control->SetIndentationGuides(mgr->ReadBool(_T("/show_indent_guides"), false)?wxSCI_IV_LOOKBOTH:wxSCI_IV_NONE);
     control->SetTabIndents(mgr->ReadBool(_T("/tab_indents"), true));
     control->SetBackSpaceUnIndents(mgr->ReadBool(_T("/backspace_unindents"), true));
     control->SetWrapMode(mgr->ReadBool(_T("/word_wrap"), false));
@@ -1530,7 +1530,7 @@ void ScbEditor::AutoComplete()
             control->BeginUndoAction();
 
             // delete keyword
-            control->SetSelection(wordStartPos, curPos);
+            control->SetSelectionVoid(wordStartPos, curPos);
             control->ReplaceSelection(_T(""));
             curPos = wordStartPos;
 
@@ -1544,7 +1544,7 @@ void ScbEditor::AutoComplete()
             if (caretPos != -1)
             {
                 control->SetCurrentPos(curPos + caretPos);
-                control->SetSelection(curPos + caretPos, curPos + caretPos + 1);
+                control->SetSelectionVoid(curPos + caretPos, curPos + caretPos + 1);
                 control->ReplaceSelection(_T(""));
             }
 

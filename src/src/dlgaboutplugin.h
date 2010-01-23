@@ -6,14 +6,14 @@
 #ifndef DLGABOUTPLUGIN_H
 #define DLGABOUTPLUGIN_H
 
-#include <wx/dialog.h> // inheriting class's header file
+#include "scrollingdialog.h" // inheriting class's header file
 
 struct PluginInfo;
 class wxWindow;
 /*
  * No description
  */
-class dlgAboutPlugin : public wxDialog
+class dlgAboutPlugin : public wxScrollingDialog
 {
 	public:
 		// class constructor

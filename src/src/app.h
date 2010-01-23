@@ -78,7 +78,7 @@ class CodeBlocksApp : public wxApp
         wxString m_Script;
         wxString m_AutoFile; // --file foo.cpp[:line]
 
-        wxDialog* m_pBatchBuildDialog;
+        wxScrollingDialog* m_pBatchBuildDialog;
         MainFrame* m_Frame;
         wxSingleInstanceChecker* m_pSingleInstance;
 

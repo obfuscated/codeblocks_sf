@@ -28,7 +28,7 @@
 // remember last path, when supplied path is empty
 static wxString s_LastPath;
 
-BEGIN_EVENT_TABLE(EditPathDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditPathDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, EditPathDlg::OnUpdateUI)
     EVT_BUTTON(XRCID("btnBrowse"), EditPathDlg::OnBrowse)
 END_EVENT_TABLE()
@@ -43,10 +43,10 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
         const wxString& filter)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditPath"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
 
 	XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
-	XRCCTRL(*this, "dlgEditPath", wxDialog)->SetTitle(title);
+	XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);
 
 	if (!wantDir) {
         XRCCTRL(*this, "lblText", wxStaticText)->SetLabel(_("File:"));
@@ -182,5 +182,5 @@ void EditPathDlg::EndModal(int retCode)
 {
     // update m_Lib
     m_Path = XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue();
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

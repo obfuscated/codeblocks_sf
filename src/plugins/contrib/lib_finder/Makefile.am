@@ -2,7 +2,7 @@ SUBDIRS = lib_finder
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(srcdir)/../wxSmithContribItems/wxflatnotebook/wxFlatNotebook/include \
 		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \

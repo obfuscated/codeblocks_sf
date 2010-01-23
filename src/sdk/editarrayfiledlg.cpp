@@ -22,7 +22,7 @@
 #include "editarrayfiledlg.h"
 #include "filefilters.h"
 
-BEGIN_EVENT_TABLE(EditArrayFileDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditArrayFileDlg, wxScrollingDialog)
 	EVT_LISTBOX_DCLICK(XRCID("lstItems"), EditArrayFileDlg::OnEdit)
 	EVT_BUTTON(XRCID("btnAdd"), EditArrayFileDlg::OnAdd)
 	EVT_BUTTON(XRCID("btnEdit"), EditArrayFileDlg::OnEdit)
@@ -36,7 +36,7 @@ EditArrayFileDlg::EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool 
 	m_BasePath(basePath)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditArrayString"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),_T("wxScrollingDialog"));
 
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 	list->Clear();
@@ -69,7 +69,7 @@ void EditArrayFileDlg::EndModal(int retCode)
 			m_Array.Add(list->GetString(i));
 		}
 	}
-	wxDialog::EndModal(retCode);
+	wxScrollingDialog::EndModal(retCode);
 }
 
 // events

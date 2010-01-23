@@ -34,7 +34,7 @@
         <file name="include/sdk.h"/>
         <file name="include/cbplugin.h"/>
         <file name="include/tinyxml/tinyxml.h"/>
-        <file name="include/wxscintilla/include/wx/wxscintilla.h"/>
+        <file name="sdk/wxscintilla/include/wx/wxscintilla.h"/>
 
         <path include="$(BASE_DIR)/include"/>
         <path include="$(BASE_DIR)/sdk"/>

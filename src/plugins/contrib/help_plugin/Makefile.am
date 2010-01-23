@@ -9,7 +9,7 @@ endif
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/wxscintilla/include \
+		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/bindings \
 		-I$(top_srcdir)/src/include/scripting/sqplus

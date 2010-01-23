@@ -26,7 +26,7 @@
 #include <wx/filedlg.h>
 
 
-BEGIN_EVENT_TABLE(EditToolDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditToolDlg, wxScrollingDialog)
 	EVT_BUTTON(XRCID("btnBrowseCommand"), 	EditToolDlg::OnBrowseCommand)
 	EVT_BUTTON(XRCID("btnBrowseDir"), 		EditToolDlg::OnBrowseDir)
 	EVT_UPDATE_UI(-1,						EditToolDlg::OnUpdateUI)
@@ -38,7 +38,7 @@ EditToolDlg::EditToolDlg(wxWindow* parent, cbTool* tool)
     if (!tool)
         cbThrow(_T("Tool* parameter is mandatory in EditToolDlg()"));
 
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditTool"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditTool"),_T("wxScrollingDialog"));
 	XRCCTRL(*this, "txtName", wxTextCtrl)->SetValue(m_Tool->GetName());
 	XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(m_Tool->GetCommand());
 	XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(m_Tool->GetParams());
@@ -87,5 +87,5 @@ void EditToolDlg::EndModal(int retCode)
         m_Tool->SetLaunchOption(static_cast<cbTool::eLaunchOption>(XRCCTRL(*this, "rbLaunchOptions", wxRadioBox)->GetSelection()));
     }
 
-	wxDialog::EndModal(retCode);
+	wxScrollingDialog::EndModal(retCode);
 } // end of EndModal

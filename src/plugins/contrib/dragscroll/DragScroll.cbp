@@ -44,7 +44,7 @@
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\src" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-mthreads" />

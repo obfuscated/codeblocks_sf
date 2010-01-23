@@ -198,6 +198,8 @@
  *  matches:    foo-foo fo-fo fob-fob foobar-foobar ...
  */
 
+#include <stdlib.h>
+
 #include "CharClassify.h"
 #include "RESearch.h"
 
@@ -416,6 +418,7 @@ int RESearch::GetBackslashExpression(
 				ChSet(static_cast<unsigned char>(c));
 			}
 		}
+		break;
 	case 'w':
 		for (c = 0; c < MAXCHR; c++) {
 			if (iswordc(static_cast<unsigned char>(c))) {
@@ -870,10 +873,14 @@ int RESearch::PMatch(CharacterIndexer &ci, int lp, int endp, char *ap) {
 				return NOTFOUND;
 			break;
 		case BOT:
+/* C::B begin */
 			bopat[(int)(*ap++)] = lp;
+/* C::B end */
 			break;
 		case EOT:
+/* C::B begin */
 			eopat[(int)(*ap++)] = lp;
+/* C::B end */
 			break;
  		case BOW:
 			if ((lp!=bol && iswordc(ci.CharAt(lp-1))) || !iswordc(ci.CharAt(lp)))

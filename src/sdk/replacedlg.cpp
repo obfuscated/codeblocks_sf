@@ -26,7 +26,7 @@
 
 #define CONF_GROUP _T("/replace_options")
 
-BEGIN_EVENT_TABLE(ReplaceDlg, wxDialog)
+BEGIN_EVENT_TABLE(ReplaceDlg, wxScrollingDialog)
     EVT_NOTEBOOK_PAGE_CHANGED(XRCID("nbReplace"), ReplaceDlg::OnFindChange)
 	EVT_CHECKBOX(XRCID("chkRegEx1"), 	ReplaceDlg::OnRegEx)
 	EVT_ACTIVATE(                       ReplaceDlg::OnActivate)
@@ -37,7 +37,7 @@ ReplaceDlg::ReplaceDlg(wxWindow* parent, const wxString& initial, bool hasSelect
     : FindReplaceBase(parent, initial, hasSelection),
     m_Complete(!replaceInFilesActive)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgReplace"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgReplace"),_T("wxScrollingDialog"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
 	// load last searches

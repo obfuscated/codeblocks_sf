@@ -113,7 +113,7 @@ const long wxsBitmapIconEditorDlg::ID_STATICBITMAP1 = wxNewId();
 const long wxsBitmapIconEditorDlg::ID_BUTTON1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsBitmapIconEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsBitmapIconEditorDlg,wxScrollingDialog)
 	//(*EventTable(wxsBitmapIconEditorDlg)
 	//*)
 	EVT_TIMER(-1,wxsBitmapIconEditorDlg::OnTimer)

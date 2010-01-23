@@ -171,7 +171,7 @@ bool ToolsManager::Execute(const cbTool* tool)
     }
     else
     {
-        m_pProcess = new PipedProcess((void**)&m_pProcess, this, idToolProcess, pipe, dir);
+        m_pProcess = new PipedProcess((void**)&m_pProcess, this, idToolProcess, pipe, dir, true);
         m_Pid = wxExecute(cmdline, flags, m_pProcess);
 
         if (!m_Pid)

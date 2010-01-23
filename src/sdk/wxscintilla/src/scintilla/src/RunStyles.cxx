@@ -214,6 +214,7 @@ void RunStyles::DeleteRange(int position, int deleteLength) {
 	}
 }
 
+/* CHANGEBAR begin */
 char *RunStyles::PersistantForm() const { 
     int len = starts->Partitions(); 
     char *form = new char[(len * 2 + 1) * sizeof(int)]; 
@@ -254,3 +255,4 @@ bool RunStyles::PersistantSame(const char *form1, const char *form2) {
     } 
     return true; 
 } 
+/* CHANGEBAR end */

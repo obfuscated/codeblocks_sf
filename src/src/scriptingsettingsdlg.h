@@ -8,7 +8,7 @@
 
 #include <vector>
 #include <wx/listctrl.h> // wxListEvent
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class ScriptEntry// : public ISerializable (<-- can't make it work)
 {
@@ -36,7 +36,7 @@ public:
 };
 typedef std::vector<ScriptEntry> ScriptsVector;
 
-class ScriptingSettingsDlg : public wxDialog
+class ScriptingSettingsDlg : public wxScrollingDialog
 {
     public:
         ScriptingSettingsDlg(wxWindow* parent);

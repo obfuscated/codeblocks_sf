@@ -1,5 +1,5 @@
 <resource>
-<object class="wxDialog" name="askAssoc">
+<object class="wxScrollingDialog" name="askAssoc">
     <title>File associations</title>
     <object class="wxBoxSizer">
         <orient>wxVERTICAL</orient>

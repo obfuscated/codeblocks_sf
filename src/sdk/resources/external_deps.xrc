@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgExternalDeps">
+  <object class="wxScrollingDialog" name="dlgExternalDeps">
     <title>External dependencies</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

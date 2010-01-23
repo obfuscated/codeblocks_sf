@@ -16,6 +16,7 @@ namespace Scintilla {
 class PerLine {
 public:
 	virtual ~PerLine() {}
+	virtual void Init()=0;
 	virtual void InsertLine(int)=0;
 	virtual void RemoveLine(int)=0;
 };
@@ -72,7 +73,7 @@ public:
 	int Lines() const {
 		return starts.Partitions();
 	}
-	int LineFromPosition(int pos);
+	int LineFromPosition(int pos) const;
 	int LineStart(int line) const {
 		return starts.PositionFromPartition(line);
 	}
@@ -219,7 +220,7 @@ public:
 	void SetPerLine(PerLine *pl);
 	int Lines() const;
 	int LineStart(int line) const;
-	int LineFromPosition(int pos) { return lv.LineFromPosition(pos); }
+	int LineFromPosition(int pos) const { return lv.LineFromPosition(pos); }
 /* CHANGEBAR begin */
     void InsertLine(int line, int position, int edition, bool undoing);
     void RemoveLine(int line, bool undoing); 

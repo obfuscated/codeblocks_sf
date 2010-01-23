@@ -24,14 +24,16 @@ class cbTextInputStream : public wxTextInputStream
         bool m_allowMBconversion;
     public:
 #if wxUSE_UNICODE
-        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t"), wxMBConv& conv = wxConvLocal )
+        cbTextInputStream(wxInputStream& s, bool eatEOL,
+                          const wxString &sep = wxT(" \t"), wxMBConv& conv = wxConvLocal)
             : wxTextInputStream(s, sep, conv),
-            m_allowMBconversion(true)
+            m_allowMBconversion(true),
+            m_eatEOL(eatEOL)
         {
             memset((void*)m_lastBytes, 0, 10);
         }
 #else
-        cbTextInputStream(wxInputStream& s, const wxString &sep=wxT(" \t") )
+        cbTextInputStream(wxInputStream& s, bool eatEOL, const wxString &sep=wxT(" \t"))
             : wxTextInputStream(s, sep)
         {
             memset((void*)m_lastBytes, 0, 10);
@@ -94,13 +96,15 @@ class cbTextInputStream : public wxTextInputStream
                 if ( !m_input )
                     break;
 
-                if (EatEOL(c))
+                if (m_eatEOL && EatEOL(c))
                     break;
 
                 line += c;
             }
             return line;
         }
+    private:
+        bool m_eatEOL;
 };
 
 int idTimerPollProcess = wxNewId();
@@ -111,11 +115,12 @@ BEGIN_EVENT_TABLE(PipedProcess, wxProcess)
 END_EVENT_TABLE()
 
 // class constructor
-PipedProcess::PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
+PipedProcess::PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir, bool eatEOL)
     : wxProcess(parent, id),
 	m_Parent(parent),
 	m_Id(id),
 	m_Pid(0),
+	m_eatEOL(eatEOL),
 	m_pvThis(pvThis)
 {
 	wxSetWorkingDirectory(UnixFilename(dir));
@@ -173,7 +178,7 @@ bool PipedProcess::HasInput()
 {
     if (IsErrorAvailable())
     {
-        cbTextInputStream serr(*GetErrorStream());
+        cbTextInputStream serr(*GetErrorStream(), m_eatEOL);
 
         wxString msg;
         msg << serr.ReadLine();
@@ -188,7 +193,7 @@ bool PipedProcess::HasInput()
 
     if (IsInputAvailable())
     {
-        cbTextInputStream sout(*GetInputStream());
+        cbTextInputStream sout(*GetInputStream(), m_eatEOL);
 
         wxString msg;
         msg << sout.ReadLine();

@@ -1,5 +1,5 @@
 <wxsmith>
-    <object class="wxDialog" name="wxsArrayStringCheckEditorDlg">
+    <object class="wxScrollingDialog" name="wxsArrayStringCheckEditorDlg">
         <title>Choices:</title>
         <centered>1</centered>
         <style>wxDEFAULT_DIALOG_STYLE</style>

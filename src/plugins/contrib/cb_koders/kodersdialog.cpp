@@ -29,7 +29,7 @@ const long KodersDialog::ID_CHO_LANGUAGES = wxNewId();
 const long KodersDialog::ID_CHO_LICENSES = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(KodersDialog,wxDialog)
+BEGIN_EVENT_TABLE(KodersDialog,wxScrollingDialog)
 	//(*EventTable(KodersDialog)
 	//*)
 END_EVENT_TABLE()
@@ -37,7 +37,7 @@ END_EVENT_TABLE()
 KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(KodersDialog)
-	Create(parent,id,_("Koders query"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
+	Create(parent,id,_("Koders query"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxScrollingDialog"));
 	bszMain = new wxBoxSizer(wxVERTICAL);
 	bszIntro = new wxBoxSizer(wxHORIZONTAL);
 	lblIntro = new wxStaticText(this,ID_LBL_INTRO,_("Specify search to query the Koders webpage:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_INTRO"));

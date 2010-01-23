@@ -30,7 +30,7 @@ const long byoGameSelect::ID_LISTBOX1 = wxNewId();
 const long byoGameSelect::ID_STATICLINE1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(byoGameSelect,wxDialog)
+BEGIN_EVENT_TABLE(byoGameSelect,wxScrollingDialog)
 	//(*EventTable(byoGameSelect)
 	//*)
 END_EVENT_TABLE()
@@ -38,7 +38,7 @@ END_EVENT_TABLE()
 byoGameSelect::byoGameSelect(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(byoGameSelect)
-	Create(parent,id,_("Select game to play"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxDialog"));
+	Create(parent,id,_("Select game to play"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxScrollingDialog"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	Panel1 = new wxPanel(this,ID_PANEL1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("ID_PANEL1"));
 	Panel1->SetBackgroundColour(wxColour(0,0,128));

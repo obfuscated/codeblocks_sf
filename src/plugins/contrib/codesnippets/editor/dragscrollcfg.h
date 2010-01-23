@@ -10,14 +10,14 @@
 #include <wx/button.h>
 #include <wx/checkbox.h>
 #include <wx/choice.h>
-#include <wx/dialog.h>
 #include <wx/intl.h>
 #include <wx/radiobox.h>
 #include <wx/sizer.h>
 #include <wx/slider.h>
 #include <wx/stattext.h>
-
+#include "scrollingdialog.h"
 //*)
+
 #include "configurationpanel.h"
 #include <wx/settings.h>
 

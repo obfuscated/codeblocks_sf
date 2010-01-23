@@ -6,7 +6,7 @@
 #ifndef SCRIPTSECURITYWARNINGDLG_H
 #define SCRIPTSECURITYWARNINGDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 enum ScriptSecurityResponse
 {
@@ -17,7 +17,7 @@ enum ScriptSecurityResponse
     ssrTrustPermanently
 };
 
-class ScriptSecurityWarningDlg : public wxDialog
+class ScriptSecurityWarningDlg : public wxScrollingDialog
 {
     public:
         ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command);

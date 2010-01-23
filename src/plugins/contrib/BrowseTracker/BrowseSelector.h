@@ -21,16 +21,16 @@
 #ifndef BROWSE_SELECTOR_H
 #define BROWSE_SELECTOR_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <map>
 #include <wx/bitmap.h>
 
 class wxListBox;
-//class wxFlatNotebook;
+class wxAuiNotebook;
 class wxPanel;
 
 // ----------------------------------------------------------------------------
-class BrowseSelector : public wxDialog
+class BrowseSelector : public wxScrollingDialog
 // ----------------------------------------------------------------------------
 {
     protected:

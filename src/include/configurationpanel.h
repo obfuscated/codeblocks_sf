@@ -7,7 +7,7 @@
 #define CONFIGURATIONPANEL_H
 
 #include "settings.h"
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/panel.h>
 #include <wx/string.h>
 
@@ -32,7 +32,7 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
 };
 
 /// @brief A simple dialog that wraps a cbConfigurationPanel.
-class DLLIMPORT cbConfigurationDialog : public wxDialog
+class DLLIMPORT cbConfigurationDialog : public wxScrollingDialog
 {
 	public:
 		cbConfigurationDialog(wxWindow* parent, int id, const wxString& title);

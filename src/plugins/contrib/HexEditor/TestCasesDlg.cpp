@@ -33,7 +33,7 @@ const long TestCasesDlg::ID_BUTTON1 = wxNewId();
 const long TestCasesDlg::ID_TIMER1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(TestCasesDlg,wxDialog)
+BEGIN_EVENT_TABLE(TestCasesDlg,wxScrollingDialog)
 	//(*EventTable(TestCasesDlg)
 	//*)
 END_EVENT_TABLE()
@@ -49,7 +49,7 @@ void TestCasesDlg::BuildContent(wxWindow* parent)
 	//(*Initialize(TestCasesDlg)
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	
+
 	Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Test log:"));
@@ -63,7 +63,7 @@ void TestCasesDlg::BuildContent(wxWindow* parent)
 	Timer1.Start(50, false);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&TestCasesDlg::OnButton1Click);
 	Connect(ID_TIMER1,wxEVT_TIMER,(wxObjectEventFunction)&TestCasesDlg::OnTimer1Trigger);
 	Connect(wxID_ANY,wxEVT_CLOSE_WINDOW,(wxObjectEventFunction)&TestCasesDlg::OnClose);

@@ -1,5 +1,5 @@
 <resource>
-    <object class="wxDialog" name="SelectIncludeFile">
+    <object class="wxScrollingDialog" name="SelectIncludeFile">
         <title>Candidate include files</title>
         <centered>1</centered>
         <style>wxCAPTION|wxRESIZE_BORDER|wxSYSTEM_MENU|wxMAXIMIZE_BOX|wxCLOSE_BOX</style>

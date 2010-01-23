@@ -23,13 +23,14 @@
 #include "wxspanelres.h"
 #include "wxsitemresdata.h"
 #include "wxsflags.h"
+#include "scrollingdialog.h"
 #include <wx/button.h>
 
 using namespace wxsFlags;
 
 namespace
 {
-    class wxsPanelResPreview: public wxDialog
+    class wxsPanelResPreview: public wxScrollingDialog
     {
         public:
 
@@ -88,7 +89,7 @@ namespace
             DECLARE_EVENT_TABLE()
     };
 
-    BEGIN_EVENT_TABLE(wxsPanelResPreview,wxDialog)
+    BEGIN_EVENT_TABLE(wxsPanelResPreview,wxScrollingDialog)
         EVT_MENU(wxID_EXIT,wxsPanelResPreview::OnEscape)
         EVT_CLOSE(wxsPanelResPreview::OnClose)
         EVT_BUTTON(wxID_ANY,wxsPanelResPreview::OnButton)
@@ -99,7 +100,7 @@ const wxString wxsPanelRes::ResType = _T("wxPanel");
 
 wxWindow* wxsPanelRes::OnBuildExactPreview(wxWindow* Parent,wxsItemResData* Data)
 {
-    wxDialog* Dlg = new wxsPanelResPreview(Parent,Data);
+    wxScrollingDialog* Dlg = new wxsPanelResPreview(Parent,Data);
     Dlg->Show();
     return Dlg;
 }

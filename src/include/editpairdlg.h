@@ -7,9 +7,9 @@
 #define EDITPAIRDLG_H
 
 #include <wx/intl.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
-class EditPairDlg : public wxDialog
+class EditPairDlg : public wxScrollingDialog
 {
     public:
         enum BrowseMode

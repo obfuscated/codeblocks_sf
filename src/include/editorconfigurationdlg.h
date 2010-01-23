@@ -6,7 +6,7 @@
 #ifndef EDITORCONFIGURATION_H
 #define EDITORCONFIGURATION_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/arrstr.h>
 #include "settings.h"
 
@@ -15,7 +15,7 @@ class cbStyledTextCtrl;
 class EditorColourSet;
 class wxListbookEvent;
 
-class EditorConfigurationDlg : public wxDialog
+class EditorConfigurationDlg : public wxScrollingDialog
 {
     public:
         EditorConfigurationDlg(wxWindow* parent);
@@ -39,6 +39,7 @@ class EditorConfigurationDlg : public wxDialog
         void OnAutoCompDelete(wxCommandEvent& event);
         void OnDynamicCheck(wxCommandEvent& event);
         void OnHighlightOccurrences(wxCommandEvent& event);
+        void OnMultipleSelections(wxCommandEvent& event);
         void UpdateSampleFont(bool askForNewFont);
 
         void EndModal(int retCode);

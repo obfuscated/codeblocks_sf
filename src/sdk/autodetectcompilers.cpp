@@ -21,7 +21,7 @@
     #include <wx/xrc/xmlres.h>
 #endif
 
-BEGIN_EVENT_TABLE(AutoDetectCompilers, wxDialog)
+BEGIN_EVENT_TABLE(AutoDetectCompilers, wxScrollingDialog)
     EVT_UPDATE_UI(-1, AutoDetectCompilers::OnUpdateUI)
     EVT_BUTTON(XRCID("btnDefault"), AutoDetectCompilers::OnDefaultClick)
 END_EVENT_TABLE()
@@ -29,7 +29,7 @@ END_EVENT_TABLE()
 AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgAutoDetectCompilers"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
 
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     if (list)

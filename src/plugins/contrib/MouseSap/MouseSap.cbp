@@ -34,7 +34,7 @@
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="$(#WX)\contrib\include" />
 					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\include\wxscintilla\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />

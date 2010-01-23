@@ -25,7 +25,7 @@
 #define LIBSELECTDLG_H
 
 //(*Headers(LibSelectDlg)
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 class wxStdDialogButtonSizer;
 class wxCheckBox;
 class wxRadioButton;
@@ -35,7 +35,7 @@ class wxStaticBoxSizer;
 class wxCheckListBox;
 //*)
 
-class LibSelectDlg: public wxDialog
+class LibSelectDlg: public wxScrollingDialog
 {
 	public:
 

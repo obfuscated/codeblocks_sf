@@ -42,7 +42,7 @@ int wxCALLBACK sortByTitle(long item1, long item2, long sortData)
     return elem1->info.title.CompareTo(elem2->info.title);
 }
 
-BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxDialog)
+BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnEnable"), PluginsConfigurationDlg::OnToggle)
     EVT_BUTTON(XRCID("btnDisable"), PluginsConfigurationDlg::OnToggle)
     EVT_BUTTON(XRCID("btnInstall"), PluginsConfigurationDlg::OnInstall)
@@ -56,7 +56,7 @@ END_EVENT_TABLE()
 // class constructor
 PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
 {
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigurePlugins"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigurePlugins"),_T("wxScrollingDialog"));
     FillList();
 
     // install options
@@ -439,5 +439,5 @@ void PluginsConfigurationDlg::EndModal(int retCode)
     cfg->Write(_T("/install_globally"), XRCCTRL(*this, "chkInstallGlobally", wxCheckBox)->GetValue());
     cfg->Write(_T("/install_confirmation"), XRCCTRL(*this, "chkInstallConfirmation", wxCheckBox)->GetValue());
 
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

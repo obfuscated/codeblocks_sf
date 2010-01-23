@@ -26,8 +26,8 @@
 #include <wx/fontdlg.h>
 
 //(*InternalHeaders(wxsSimpleFontEditorDlg)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 //(*IdInit(wxsSimpleFontEditorDlg)
@@ -42,7 +42,7 @@ const long wxsSimpleFontEditorDlg::ID_STATICTEXT2 = wxNewId();
 const long wxsSimpleFontEditorDlg::ID_STATICTEXT3 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsSimpleFontEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsSimpleFontEditorDlg,wxScrollingDialog)
 	//(*EventTable(wxsSimpleFontEditorDlg)
 	//*)
 	EVT_BUTTON(wxID_OK,wxsSimpleFontEditorDlg::OnOK)
@@ -97,7 +97,7 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
 	Center();
-
+	
 	Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton1Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton3Click);
 	Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton2Click);

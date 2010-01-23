@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource>
-	<object class="wxDialog" name="dlgConfigureEditor">
+	<object class="wxScrollingDialog" name="dlgConfigureEditor">
 		<title>Configure editor</title>
 		<centered>1</centered>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
@@ -761,6 +761,45 @@
 										</object>
 									</object>
 									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<border>5</border>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticBoxSizer">
+										<label>Selections</label>
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkEnableVirtualSpace">
+												<label>Enable virtual space (space beyond the end of line)</label>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkEnableMultipleSelections">
+												<label>Allow multiple Selections</label>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="spacer">
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>6</border>
+													<size>15,6</size>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkEnableAdditionalSelectionTyping">
+														<label>Enable typing (and deleting) in multiple selections simultaneously</label>
+													</object>
+													<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<border>4</border>
+												</object>
+											</object>
+											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										</object>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									<border>5</border>
 								</object>
 							</object>

@@ -266,7 +266,7 @@ namespace ScriptBindings
         StackHandler sa(v);
         SQUserPointer up = 0;
         sq_getinstanceup(v, 1, &up, 0);
-        wxDialog* dlg = (wxDialog*)up;
+        wxScrollingDialog* dlg = (wxScrollingDialog*)up;
         return sa.Return(static_cast<SQInteger>(dlg->ShowModal()));
     }
 

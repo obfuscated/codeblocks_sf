@@ -6,14 +6,14 @@
 #ifndef ADVANCEDCOMPILEROPTIONSDLG_H
 #define ADVANCEDCOMPILEROPTIONSDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/string.h>
 #include "compiler.h"	// RegExArray, COMPILER_COMMAND_TYPES_COUNT
 
 class wxCommandEvent;
 class wxSpinEvent;
 
-class AdvancedCompilerOptionsDlg : public wxDialog
+class AdvancedCompilerOptionsDlg : public wxScrollingDialog
 {
 	public:
 		AdvancedCompilerOptionsDlg(wxWindow* parent, const wxString& compilerId);

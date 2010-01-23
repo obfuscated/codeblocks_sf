@@ -23,7 +23,7 @@
 #include "projectdepsdlg.h"
 
 
-BEGIN_EVENT_TABLE(ProjectDepsDlg, wxDialog)
+BEGIN_EVENT_TABLE(ProjectDepsDlg, wxScrollingDialog)
     EVT_COMBOBOX(XRCID("cmbProject"), ProjectDepsDlg::OnProjectChange)
 END_EVENT_TABLE()
 
@@ -31,7 +31,7 @@ ProjectDepsDlg::ProjectDepsDlg(wxWindow* parent, cbProject* sel)
     : m_LastSel(-1)
 {
     //ctor
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgConfigureProjectDeps"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureProjectDeps"),_T("wxScrollingDialog"));
 
     wxComboBox* cmb = XRCCTRL(*this, "cmbProject", wxComboBox);
 
@@ -143,5 +143,5 @@ void ProjectDepsDlg::OnProjectChange(wxCommandEvent& event)
 void ProjectDepsDlg::EndModal(int retCode)
 {
     if (SaveList())
-        return wxDialog::EndModal(retCode);
+        return wxScrollingDialog::EndModal(retCode);
 }

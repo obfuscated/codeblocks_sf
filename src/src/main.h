@@ -19,6 +19,7 @@
 #include "cbplugin.h"
 #include "sdk_events.h"
 #include "scripting/bindings/sc_base_types.h"
+#include "scrollingdialog.h"
 
 WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual, PluginIDsMap);
 WX_DECLARE_HASH_MAP(cbPlugin*, wxToolBar*, wxPointerHash, wxPointerEqual, PluginToolbarsMap);
@@ -50,7 +51,7 @@ class MainFrame : public wxFrame
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
         void ShowTips(bool forceShow = false);
 
-        wxDialog* GetBatchBuildDialog(){ return m_pBatchBuildDialog; }
+        wxScrollingDialog* GetBatchBuildDialog(){ return m_pBatchBuildDialog; }
 
         // show a file-open dialog and return the selection
         wxString ShowOpenFileDialog(const wxString& caption, const wxString& filter);
@@ -325,7 +326,7 @@ class MainFrame : public wxFrame
         typedef std::map<int, const wxString> MenuIDToScript; // script menuitem ID -> script function name
         MenuIDToScript m_MenuIDToScript;
 
-        wxDialog* m_pBatchBuildDialog;
+        wxScrollingDialog* m_pBatchBuildDialog;
         wxGauge* m_pProgressBar;
 
         DECLARE_EVENT_TABLE()

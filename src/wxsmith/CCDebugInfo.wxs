@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-	<object class="wxDialog" name="CCDebugInfo">
+	<object class="wxScrollingDialog" name="CCDebugInfo">
 		<title>Code-completion debug tool</title>
 		<centered>1</centered>
 		<id_arg>0</id_arg>

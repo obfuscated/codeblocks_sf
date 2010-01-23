@@ -10,7 +10,7 @@
 #ifndef CODESTATEXEC_H
 #define CODESTATEXEC_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/filename.h>
 #include "language_def.h"
 
@@ -19,7 +19,7 @@ class wxWindow;
 /** This class computes the statistics of the project's files and display them.
  *  @see CodeStat, CodeStatConfigDlg, CodeStatExecDlg, LanguageDef
  */
-class CodeStatExecDlg : public wxDialog
+class CodeStatExecDlg : public wxScrollingDialog
 {
 	public:
 		CodeStatExecDlg(wxWindow* parent) : parent(parent){}

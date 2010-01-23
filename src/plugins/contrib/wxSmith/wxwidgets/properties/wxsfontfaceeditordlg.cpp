@@ -33,7 +33,7 @@ const long wxsFontFaceEditorDlg::ID_TEXTCTRL1 = wxNewId();
 const long wxsFontFaceEditorDlg::ID_BUTTON1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsFontFaceEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsFontFaceEditorDlg,wxScrollingDialog)
 	//(*EventTable(wxsFontFaceEditorDlg)
 	//*)
 END_EVENT_TABLE()

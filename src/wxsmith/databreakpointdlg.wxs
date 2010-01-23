@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <object class="wxDialog" name="DataBreakpointDlg">
+    <object class="wxScrollingDialog" name="DataBreakpointDlg">
         <title>Data breakpoint</title>
         <centered>1</centered>
         <object class="wxBoxSizer" variable="BoxSizer1" member="yes">

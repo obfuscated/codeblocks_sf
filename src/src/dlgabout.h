@@ -6,11 +6,11 @@
 #ifndef DLGABOUT_H
 #define DLGABOUT_H
 
-#include <wx/dialog.h> // inheriting class's header file
+#include "scrollingdialog.h" // inheriting class's header file
 
 class wxWindow;
 
-class dlgAbout : public wxDialog
+class dlgAbout : public wxScrollingDialog
 {
     public:
         // class constructor

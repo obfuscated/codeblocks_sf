@@ -35,7 +35,7 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
-			<Add directory="../../../include/wxscintilla/include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

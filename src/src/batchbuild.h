@@ -3,7 +3,7 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#include <wx/dialog.h>
+#include <scrollingdialog.h>
 #include <manager.h>
 #include <configmanager.h>
 #include <pluginmanager.h>
@@ -12,11 +12,11 @@
 
 // Custom window to shutdown the app when closed.
 // used for batch builds only.
-class BatchLogWindow : public wxDialog
+class BatchLogWindow : public wxScrollingDialog
 {
     public:
         BatchLogWindow(wxWindow *parent, const wxChar *title)
-            : wxDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+            : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
             wxSize size;
             size.SetWidth(Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/batch_build_log/width"), wxDefaultSize.GetWidth()));
@@ -50,6 +50,6 @@ class BatchLogWindow : public wxDialog
 
             Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/width"), (int)GetSize().GetWidth());
             Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/batch_build_log/height"), (int)GetSize().GetHeight());
-            wxDialog::EndModal(retCode);
+            wxScrollingDialog::EndModal(retCode);
         }
 };

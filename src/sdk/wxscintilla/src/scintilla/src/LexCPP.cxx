@@ -295,12 +295,14 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 				if (sc.ch == '\r' || sc.ch == '\n' || sc.ch == ')') {
 					sc.SetState(SCE_C_DEFAULT);
 				}
+/* C::B begin */
 				break;
 			case SCE_C_WXSMITH:
 				if (sc.Match("//*)")) {
 					sc.Forward(); sc.Forward(); sc.Forward();
 					sc.ForwardSetState(SCE_C_DEFAULT);
 				}
+/* C::B end */
 		}
 
 		// Determine if a new state should be entered.
@@ -333,9 +335,11 @@ static void ColouriseCppDoc(unsigned int startPos, int length, int initStyle, Wo
 				if ((sc.Match("///") && !sc.Match("////")) || sc.Match("//!"))
 					// Support of Qt/Doxygen doc. style
 					sc.SetState(SCE_C_COMMENTLINEDOC);
+/* C::B begin */
 				else if (sc.Match("(*"))
 					// Support for wxSmith auto-generated code
 					sc.SetState(SCE_C_WXSMITH);
+/* C::B end */
 				else
 					sc.SetState(SCE_C_COMMENTLINE);
 			} else if (sc.ch == '/' && setOKBeforeRE.Contains(chPrevNonWhite) &&
@@ -403,7 +407,9 @@ static void FoldCppDoc(unsigned int startPos, int length, int initStyle,
 	// property fold.at.else 
 	//	This option enables C++ folding on a "} else {" line of an if statement. 
 	bool foldAtElse = styler.GetPropertyInt("fold.at.else", 0) != 0;
+/* C::B begin */
 	bool foldWxSmith = styler.GetPropertyInt("fold.wxsmith", 1) != 0;
+/* C::B end */
 	unsigned int endPos = startPos + length;
 	int visibleChars = 0;
 	int lineCurrent = styler.GetLine(startPos);
@@ -433,18 +439,23 @@ static void FoldCppDoc(unsigned int startPos, int length, int initStyle,
 		if (foldComment && (style == SCE_C_COMMENTLINE)) {
 			if ((ch == '/') && (chNext == '/')) {
 				char chNext2 = styler.SafeGetCharAt(i + 2);
+/* C::B begin */
 				char chNext3 = styler.SafeGetCharAt(i + 3);
+/* C::B end */
 				if (chNext2 == '{') {
 					levelNext++;
 				} else if (chNext2 == '}') {
 					levelNext--;
+/* C::B begin */
 				} else if (chNext2 == '(' && chNext3 == '*') {
 				    levelNext++;
 				} else if (chNext2 == '*' && chNext3 == ')') {
 				    levelNext--;
+/* C::B end */
 				}
 			}
 		}
+/* C::B begin */
 		if (foldWxSmith && (style == SCE_C_WXSMITH)) {
 			if (stylePrev != SCE_C_WXSMITH) {
 				levelNext++;
@@ -452,6 +463,7 @@ static void FoldCppDoc(unsigned int startPos, int length, int initStyle,
 				levelNext--;
 			}
 		}
+/* C::B end */
 		if (foldPreprocessor && (style == SCE_C_PREPROCESSOR)) {
 			if (ch == '#') {
 				unsigned int j = i + 1;
@@ -495,6 +507,10 @@ static void FoldCppDoc(unsigned int startPos, int length, int initStyle,
 			lineCurrent++;
 			levelCurrent = levelNext;
 			levelMinCurrent = levelCurrent;
+			if (atEOL && (i == static_cast<unsigned int>(styler.Length()-1))) {
+				// There is an empty line at end of file so give it same level and empty
+				styler.SetLevel(lineCurrent, (levelCurrent | levelCurrent << 16) | SC_FOLDLEVELWHITEFLAG);
+			}
 			visibleChars = 0;
 		}
 	}

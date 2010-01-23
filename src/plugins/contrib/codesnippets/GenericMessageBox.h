@@ -28,7 +28,7 @@
 #define GenericMessageDialog_h
 
 #include "wx/defs.h"
-#include "wx/dialog.h"
+#include "scrollingdialog.h"
 #include "wx/msgdlg.h"
 #include "wx/generic/msgdlgg.h"
 
@@ -38,7 +38,7 @@
 //-extern WXDLLEXPORT_DATA(const wxChar) wxMessageBoxCaptionStr[];
 
 // ----------------------------------------------------------------------------
-class GenericMessageDialog: public wxDialog, public wxMessageDialogBase
+class GenericMessageDialog: public wxScrollingDialog, public wxMessageDialogBase
 // ----------------------------------------------------------------------------
 {
 DECLARE_DYNAMIC_CLASS(GenericMessageDialog)

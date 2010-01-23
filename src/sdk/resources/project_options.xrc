@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource>
-	<object class="wxDialog" name="dlgProjectOptions">
+	<object class="wxScrollingDialog" name="dlgProjectOptions">
 		<title>Project/targets options</title>
 		<centered>1</centered>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>

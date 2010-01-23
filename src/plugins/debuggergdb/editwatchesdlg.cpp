@@ -19,7 +19,7 @@
 #include <wx/spinctrl.h>
 #include <wx/textdlg.h>
 
-BEGIN_EVENT_TABLE(EditWatchesDlg, wxDialog)
+BEGIN_EVENT_TABLE(EditWatchesDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnAdd"), EditWatchesDlg::OnAdd)
     EVT_BUTTON(XRCID("btnRemove"), EditWatchesDlg::OnRemove)
     EVT_LISTBOX(XRCID("lstWatches"), EditWatchesDlg::OnListboxClick)
@@ -31,7 +31,7 @@ EditWatchesDlg::EditWatchesDlg(WatchesArray& arr, wxWindow* parent)
     m_Watches(arr)
 {
     //ctor
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditWatches"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditWatches"),_T("wxScrollingDialog"));
     FillWatches();
     FillRecord(0);
 }
@@ -81,7 +81,7 @@ void EditWatchesDlg::FillRecord(int sel)
 void EditWatchesDlg::EndModal(int retCode)
 {
     FillRecord(XRCCTRL(*this, "lstWatches", wxListBox)->GetSelection());
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }
 
 void EditWatchesDlg::OnAdd(wxCommandEvent& event)

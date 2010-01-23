@@ -72,7 +72,7 @@ void myHandler::OnKeyDown(wxKeyEvent& event)
     }
 }
 
-BEGIN_EVENT_TABLE(IncrementalSelectListDlg, wxDialog)
+BEGIN_EVENT_TABLE(IncrementalSelectListDlg, wxScrollingDialog)
     EVT_TEXT(XRCID("txtSearch"), IncrementalSelectListDlg::OnSearch)
     EVT_LISTBOX_DCLICK(XRCID("lstItems"), IncrementalSelectListDlg::OnSelect)
 END_EVENT_TABLE()
@@ -83,7 +83,7 @@ IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const wxArr
     m_Text(0L),
     m_Items(items)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgIncrementalSelectList"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgIncrementalSelectList"),_T("wxScrollingDialog"));
     if (!caption.IsEmpty())
         SetTitle(caption);
     if (!message.IsEmpty())

@@ -42,7 +42,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
@@ -79,7 +79,7 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/byoGameSelect.wxs" src="byogameselect.cpp" hdr="byogameselect.h" name="byoGameSelect" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/byoGameSelect.wxs" src="byogameselect.cpp" hdr="byogameselect.h" name="byoGameSelect" language="CPP" />
 					<wxPanel wxs="wxsmith/byoConf.wxs" src="byoconf.cpp" hdr="byoconf.h" name="byoConf" language="CPP" />
 				</resources>
 			</wxsmith>

@@ -43,7 +43,7 @@ class TiXmlElement;
 //    #undef Absolute //wx Layout.h and STC conflicts
 //#endif
 
-WX_DEFINE_ARRAY(wxDialog*, DlgPtrArray);
+WX_DEFINE_ARRAY(wxScrollingDialog*, DlgPtrArray);
 //-WX_DEFINE_ARRAY(int, DlgRetcodeArray); //(stahta01 2007/4/21 for wxGTK2.8)
 WX_DEFINE_ARRAY_INT(int, DlgRetcodeArray);
 // ----------------------------------------------------------------------------
@@ -180,7 +180,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void            SetAssociatedItemID(wxTreeItemId id){m_MnuAssociatedItemID = id;}
         bool            EditSnippetProperties(wxTreeItemId& itemId);
         void            OpenSnippetAsFileLink();
-        int             ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem);
+        int             ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& waitSem);
 
         wxTreeItemId FindTreeItemByLabel(const wxString& searchTerms, const wxTreeItemId& node, int requestType);
         wxTreeItemId FindTreeItemByTreeId(const wxTreeItemId& itemToFind, const wxTreeItemId& startNode, int itemToFindType);
@@ -204,7 +204,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         bool                    m_MouseCtrlKeyDown;
    		wxTreeItemId            m_MnuAssociatedItemID;
    		bool                    m_bMouseLeftWindow;
-        wxDialog*               m_pPropertiesDialog;
+        wxScrollingDialog*               m_pPropertiesDialog;
    		CodeSnippetsTreeCtrl*   m_pSnippetsTreeCtrl;
    		// Snippet Window Parent could be floating wxAUI window or CodeBlocks.
    		wxWindow*               m_pSnippetWindowParent;

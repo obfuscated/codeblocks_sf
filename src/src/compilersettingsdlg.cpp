@@ -36,7 +36,7 @@ const wxString base_imgs[] =
 };
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
-BEGIN_EVENT_TABLE(CompilerSettingsDlg, wxDialog)
+BEGIN_EVENT_TABLE(CompilerSettingsDlg, wxScrollingDialog)
     EVT_LISTBOOK_PAGE_CHANGING(XRCID("nbMain"), CompilerSettingsDlg::OnPageChanging)
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), CompilerSettingsDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -47,7 +47,7 @@ END_EVENT_TABLE()
 
 CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 {
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCompilerSettings"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgCompilerSettings"),_T("wxScrollingDialog"));
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     wxImageList* images = new wxImageList(80, 80);
     lb->AssignImageList(images);
@@ -289,5 +289,5 @@ void CompilerSettingsDlg::EndModal(int retCode)
         }
     }
 
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

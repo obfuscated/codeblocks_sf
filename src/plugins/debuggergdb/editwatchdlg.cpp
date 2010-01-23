@@ -20,7 +20,7 @@ EditWatchDlg::EditWatchDlg(Watch* w, wxWindow* parent)
     : m_Watch(_T(""))
 {
     //ctor
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEditWatch"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditWatch"),_T("wxScrollingDialog"));
 
     if (w)
         m_Watch = *w;
@@ -29,7 +29,7 @@ EditWatchDlg::EditWatchDlg(Watch* w, wxWindow* parent)
     XRCCTRL(*this, "chkArray", wxCheckBox)->SetValue(m_Watch.is_array);
     XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->SetValue(m_Watch.array_start);
     XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->SetValue(m_Watch.array_count);
-    
+
     XRCCTRL(*this, "txtKeyword", wxTextCtrl)->SetFocus();
 }
 
@@ -48,5 +48,5 @@ void EditWatchDlg::EndModal(int retCode)
         m_Watch.array_start = XRCCTRL(*this, "spnArrStart", wxSpinCtrl)->GetValue();
         m_Watch.array_count = XRCCTRL(*this, "spnArrCount", wxSpinCtrl)->GetValue();
     }
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

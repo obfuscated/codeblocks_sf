@@ -31,7 +31,7 @@ const long avChangesDlg::ID_WRITE_BUTTON = wxNewId();
 const long avChangesDlg::ID_CANCEL_BUTTON = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(avChangesDlg,wxDialog)
+BEGIN_EVENT_TABLE(avChangesDlg,wxScrollingDialog)
     //(*EventTable(avChangesDlg)
     //*)
 END_EVENT_TABLE()
@@ -72,7 +72,7 @@ avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID id)
     BoxSizer1->Add(sizerConfirmation, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->SetSizeHints(this);
-    
+
     Connect(ID_ADD_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnAddClick);
     Connect(ID_EDIT_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnEditClick);
     Connect(ID_DELETE_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avChangesDlg::OnBtnDeleteClick);

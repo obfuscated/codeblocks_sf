@@ -45,7 +45,7 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX)\contrib\include" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\wxscintilla\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\tinyxml" />
 			<Add directory="..\..\..\include\scripting\include" />
 			<Add directory="..\..\..\include\scripting\sqplus" />
@@ -108,24 +108,27 @@
 		<Unit filename="resultmap.h" />
 		<Unit filename="webresourcesmanager.cpp" />
 		<Unit filename="webresourcesmanager.h" />
-		<Unit filename="wxsmith\DefsDownloadDlg1.wxs" />
+		<Unit filename="wxsmith\DefsDownloadDlg.wxs" />
+		<Unit filename="wxsmith\DirListDlg.wxs" />
 		<Unit filename="wxsmith\HeadersDetectorDlg.wxs" />
 		<Unit filename="wxsmith\LibSelectDlg.wxs" />
 		<Unit filename="wxsmith\LibrariesDlg.wxs" />
+		<Unit filename="wxsmith\ProcessingDlg.wxs" />
+		<Unit filename="wxsmith\ProjectConfigurationPanel.wxs" />
 		<Unit filename="wxsmith\ProjectMissingLibs.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" fwddecl="1" name="DirListDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" fwddecl="1" name="ProcessingDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" fwddecl="1" name="DirListDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" fwddecl="1" name="ProcessingDlg" language="CPP" />
 					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
-					<wxDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" fwddecl="1" name="DefsDownloadDlg" language="CPP" />
-					<wxDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" fwddecl="1" name="ProjectMissingLibs" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" fwddecl="1" name="DefsDownloadDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" fwddecl="1" name="ProjectMissingLibs" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

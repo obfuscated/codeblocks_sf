@@ -75,7 +75,7 @@ const long wxsFontEditorDlg::ID_BUTTON7 = wxNewId();
 const long wxsFontEditorDlg::ID_TEXTCTRL2 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(wxsFontEditorDlg,wxDialog)
+BEGIN_EVENT_TABLE(wxsFontEditorDlg,wxScrollingDialog)
 	//(*EventTable(wxsFontEditorDlg)
 	//*)
 	EVT_BUTTON(wxID_OK,wxsFontEditorDlg::OnButton2Click)

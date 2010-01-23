@@ -8,7 +8,9 @@
 #ifndef CONTRACTIONSTATE_H
 #define CONTRACTIONSTATE_H
 
+/* C::B begin */
 #include "RunStyles.h"
+/* C::B end */
 
 #ifdef SCI_NAMESPACE
 namespace Scintilla {

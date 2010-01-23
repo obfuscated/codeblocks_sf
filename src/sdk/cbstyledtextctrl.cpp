@@ -100,6 +100,6 @@ void cbStyledTextCtrl::OnGPM(wxMouseEvent& event)
         }
 
         InsertText(pos, s);
-        SetSelection(start, end);
+        SetSelectionVoid(start, end);
     }
 } // end of OnGPM

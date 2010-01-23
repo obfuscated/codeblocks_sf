@@ -12,10 +12,11 @@
     #pragma hdrstop
 #endif
 
+#include "scrollingdialog.h"
+
 #ifndef WX_PRECOMP
 	//(*Headers(SelectIncludeFile)
 	#include <wx/button.h>
-	#include <wx/dialog.h>
 	#include <wx/intl.h>
 	#include <wx/listbox.h>
 	#include <wx/sizer.h>
@@ -23,7 +24,7 @@
 	//*)
 #endif
 
-class SelectIncludeFile: public wxDialog
+class SelectIncludeFile: public wxScrollingDialog
 {
 	public:
 

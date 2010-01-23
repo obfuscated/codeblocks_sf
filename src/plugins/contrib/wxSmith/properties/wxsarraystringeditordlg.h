@@ -27,10 +27,11 @@
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 //*)
 
-class wxsArrayStringEditorDlg: public wxDialog
+
+class wxsArrayStringEditorDlg: public wxScrollingDialog
 {
 	public:
 

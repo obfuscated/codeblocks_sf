@@ -14,12 +14,12 @@
 
 //(*Headers(DataBreakpointDlg)
 #include <wx/checkbox.h>
-#include <wx/dialog.h>
-#include <wx/radiobox.h>
 #include <wx/sizer.h>
+#include "scrollingdialog.h"
+#include <wx/radiobox.h>
 //*)
 
-class DataBreakpointDlg: public wxDialog
+class DataBreakpointDlg: public wxScrollingDialog
 {
     public:
 
@@ -40,8 +40,8 @@ class DataBreakpointDlg: public wxDialog
         //*)
 
         //(*Declarations(DataBreakpointDlg)
-        wxBoxSizer* BoxSizer1;
         wxCheckBox* CheckBox1;
+		wxBoxSizer* BoxSizer1;
         wxRadioBox* RadioBox1;
         wxStdDialogButtonSizer* StdDialogButtonSizer1;
         //*)

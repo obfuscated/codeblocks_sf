@@ -1774,7 +1774,7 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
 
         if ( pdlg->Show() )
         {
-            m_aDlgPtrs.Add((wxDialog*)pdlg);
+            m_aDlgPtrs.Add((wxScrollingDialog*)pdlg);
         }
         else
             m_aDlgRetcodes.RemoveAt(m_aDlgRetcodes.GetCount());
@@ -1901,7 +1901,7 @@ void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
     return;
 }
 // ----------------------------------------------------------------------------
-int CodeSnippetsTreeCtrl::ExecuteDialog(wxDialog* pdlg, wxSemaphore& waitSem)
+int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& waitSem)
 // ----------------------------------------------------------------------------
 {
     if (m_pPropertiesDialog) return 0;

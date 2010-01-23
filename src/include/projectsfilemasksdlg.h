@@ -6,10 +6,10 @@
 #ifndef PROJECTSFILEMASKSDLG_H
 #define PROJECTSFILEMASKSDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include "filegroupsandmasks.h"
 
-class ProjectsFileMasksDlg : public wxDialog
+class ProjectsFileMasksDlg : public wxScrollingDialog
 {
     public:
         ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam);

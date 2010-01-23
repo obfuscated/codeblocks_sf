@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgEditArrayString">
+  <object class="wxScrollingDialog" name="dlgEditArrayString">
     <title>Edit array</title>
     <object class="wxBoxSizer">
       <orient>wxVERTICAL</orient>

@@ -6,10 +6,10 @@
 #ifndef EDITPATHDLG_H
 #define EDITPATHDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/intl.h>
 
-class EditPathDlg : public wxDialog
+class EditPathDlg : public wxScrollingDialog
 {
 	public:
 		EditPathDlg(wxWindow* parent,

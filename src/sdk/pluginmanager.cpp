@@ -103,7 +103,7 @@ namespace LibLoader
         Libs::iterator it = s_Libs.find(filename);
         if (it != s_Libs.end())
         {
-            // existing lib
+            // existing lib./codeblocks
             it->second.ref++;
             return it->second.lib;
         }

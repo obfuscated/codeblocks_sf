@@ -54,7 +54,7 @@ const wxString base_imgs[] =
 };
 const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 
-BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxDialog)
+BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnSetAssocs"), EnvironmentSettingsDlg::OnSetAssocs)
     EVT_BUTTON(XRCID("btnManageAssocs"), EnvironmentSettingsDlg::OnManageAssocs)
     EVT_BUTTON(XRCID("btnAuiCaptionColour"), EnvironmentSettingsDlg::OnChooseColour)
@@ -84,7 +84,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     ConfigManager *mcfg = Manager::Get()->GetConfigManager(_T("message_manager"));
     ConfigManager *acfg = Manager::Get()->GetConfigManager(_T("an_dlg"));
 
-    wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgEnvironmentSettings"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEnvironmentSettings"),_T("wxScrollingDialog"));
     int sel = cfg->ReadInt(_T("/environment/settings_size"), 0);
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
@@ -462,5 +462,5 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         }
     }
 
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }

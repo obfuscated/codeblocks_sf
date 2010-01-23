@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgCompilerSettings">
+  <object class="wxScrollingDialog" name="dlgCompilerSettings">
     <title>Compiler and debugger settings</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

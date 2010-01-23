@@ -29,7 +29,7 @@
 SPrintDialog::SPrintDialog(wxWindow* parent, SEditorManager* edMgr)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgPrint"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgPrint"),_T("wxScrollingDialog"));
 
 	//-cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
 	ScbEditor* ed = edMgr->GetBuiltinActiveEditor();
@@ -75,5 +75,5 @@ void SPrintDialog::EndModal(int retCode)
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/print_mode"), (int)mode);
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/print_line_numbers"), GetPrintLineNumbers());
     }
-    return wxDialog::EndModal(retCode);
+    return wxScrollingDialog::EndModal(retCode);
 }

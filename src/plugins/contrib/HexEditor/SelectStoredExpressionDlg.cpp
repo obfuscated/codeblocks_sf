@@ -40,7 +40,7 @@ const long SelectStoredExpressionDlg::ID_BUTTON4 = wxNewId();
 const long SelectStoredExpressionDlg::ID_TIMER1 = wxNewId();
 //*)
 
-BEGIN_EVENT_TABLE(SelectStoredExpressionDlg,wxDialog)
+BEGIN_EVENT_TABLE(SelectStoredExpressionDlg,wxScrollingDialog)
 	//(*EventTable(SelectStoredExpressionDlg)
 	//*)
 END_EVENT_TABLE()

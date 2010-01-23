@@ -1,5 +1,5 @@
 <resource>
-    <object class="wxDialog" name="dlgConfigurePlugins">
+    <object class="wxScrollingDialog" name="dlgConfigurePlugins">
         <title>Manage plugins</title>
         <centered>1</centered>
         <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>

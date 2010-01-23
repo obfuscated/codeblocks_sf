@@ -26,7 +26,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add directory="../../../include" />
-					<Add directory="../../../include/wxscintilla/include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --libs`" />
@@ -57,7 +57,7 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxDialog wxs="wxsmith/RegExDlg.wxs" src="regexdlg.cpp" hdr="regexdlg.h" xrc="regexdlg.xrc" name="regex_dialog" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/RegExDlg.wxs" src="regexdlg.cpp" hdr="regexdlg.h" xrc="regexdlg.xrc" name="regex_dialog" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

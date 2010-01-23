@@ -1,5 +1,5 @@
 <wxsmith>
-    <object class="wxDialog" name="DirListDlg">
+    <object class="wxScrollingDialog" name="DirListDlg">
         <title>List of directories with libraries</title>
         <style>wxDEFAULT_DIALOG_STYLE</style>
         <object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">

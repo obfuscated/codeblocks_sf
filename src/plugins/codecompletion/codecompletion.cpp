@@ -1095,7 +1095,7 @@ void CodeCompletion::DoInsertCodeCompleteToken(wxString tokName)
         return;
 
     int end = ed->GetControl()->GetCurrentPos() > m_NativeParser.GetEditorEndWord() ? ed->GetControl()->GetCurrentPos() : m_NativeParser.GetEditorEndWord();
-    ed->GetControl()->SetSelection(m_NativeParser.GetEditorStartWord(), end);
+    ed->GetControl()->SetSelectionVoid(m_NativeParser.GetEditorStartWord(), end);
     ed->GetControl()->ReplaceSelection(_T(""));
     ed->GetControl()->InsertText(m_NativeParser.GetEditorStartWord(), tokName);
     ed->GetControl()->GotoPos(m_NativeParser.GetEditorStartWord() + tokName.Length());

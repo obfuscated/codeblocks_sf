@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-  <object class="wxDialog" name="MainFrame">
+  <object class="wxScrollingDialog" name="MainFrame">
     <title>Dev-C++ DevPaks updater / installer</title>
     <centered>1</centered>
     <object class="wxBoxSizer">

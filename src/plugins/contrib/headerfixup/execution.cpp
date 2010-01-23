@@ -8,17 +8,10 @@
  */
 
 //(*InternalHeaders(Execution)
-#include <wx/sizer.h>
-#include <wx/radiobox.h>
-#include <wx/checklst.h>
-#include <wx/checkbox.h>
-#include <wx/intl.h>
-#include <wx/button.h>
 #include <wx/string.h>
-#include <wx/gauge.h>
+#include <wx/intl.h>
 //*)
 
-#include <wx/dialog.h>
 #include <wx/filename.h>
 #include <wx/gdicmn.h>
 #include <wx/utils.h>
@@ -58,7 +51,7 @@ const long Execution::ID_BTN_EXIT = wxNewId();
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-BEGIN_EVENT_TABLE(Execution,wxDialog)
+BEGIN_EVENT_TABLE(Execution,wxScrollingDialog)
   //(*EventTable(Execution)
   //*)
 END_EVENT_TABLE()
@@ -71,7 +64,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   Create(parent, id, _("Header Fixup"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizLeft = new wxBoxSizer(wxVERTICAL);
-  wxString __wxRadioBoxChoices_1[2] =
+  wxString __wxRadioBoxChoices_1[2] = 
   {
   	_("Scan source files in project"),
   	_("Scan source files in workspace")
@@ -80,7 +73,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_Scope->SetSelection(0);
   m_Scope->SetToolTip(_("This will setup on what files to operate: All from active project or whole workspace."));
   sizLeft->Add(m_Scope, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  wxString __wxRadioBoxChoices_2[2] =
+  wxString __wxRadioBoxChoices_2[2] = 
   {
   	_("Use \"include.h\" (quotation marks)"),
   	_("Use <include.h> (brackets)")
@@ -102,7 +95,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_ObsoleteLog->SetValue(false);
   m_ObsoleteLog->SetToolTip(_("This will show a list of included files in the log (protocol) which were found with unknown bindings that could *possibly* be removed."));
   sizAdvancedOptions->Add(m_ObsoleteLog, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  wxString __wxRadioBoxChoices_3[3] =
+  wxString __wxRadioBoxChoices_3[3] = 
   {
   	_("Process header files only"),
   	_("Process implementation files only"),
@@ -155,7 +148,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
   Center();
-
+  
   Connect(ID_CHK_SIMULATION,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Execution::OnChkSimulationClick);
   Connect(ID_BTN_SELECT_ALL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnSelectAllClick);
   Connect(ID_BTN_SELECT_NONE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnSelectNoneClick);

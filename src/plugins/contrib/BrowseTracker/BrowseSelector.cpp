@@ -65,7 +65,7 @@ BrowseSelector::BrowseSelector(wxWindow* parent, BrowseTracker* pBrowseTracker, 
 // ----------------------------------------------------------------------------
 BrowseSelector::BrowseSelector()
 // ----------------------------------------------------------------------------
-: wxDialog()
+: wxScrollingDialog()
 , m_listBox(NULL)
 , m_selectedItem(-1)
 , m_panel(NULL)
@@ -88,7 +88,7 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
     m_bDirection = bDirection;
 
 	long style = wxWANTS_CHARS;
-	if(  !wxDialog::Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, style) )
+	if(  !wxScrollingDialog::Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, style) )
 		return;
 
 	wxBoxSizer *sz = new wxBoxSizer( wxVERTICAL );

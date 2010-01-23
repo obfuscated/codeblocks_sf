@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <resource>
-  <object class="wxDialog" name="dlgNewClass">
+  <object class="wxScrollingDialog" name="dlgNewClass">
     <title>Create new class</title>
     <centered>1</centered>
     <style>wxDEFAULT_DIALOG_STYLE</style>

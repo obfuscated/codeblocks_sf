@@ -8,8 +8,9 @@
 
 #include <wx/dialog.h>
 #include "debugger_defs.h"
+#include "scrollingdialog.h"
 
-class EditBreakpointDlg : public wxDialog
+class EditBreakpointDlg : public wxScrollingDialog
 {
     public:
         EditBreakpointDlg(DebuggerBreakpoint* bp, wxWindow* parent = 0);

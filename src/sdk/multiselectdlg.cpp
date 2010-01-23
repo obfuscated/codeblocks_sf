@@ -21,7 +21,7 @@
 
 #include "multiselectdlg.h"
 
-BEGIN_EVENT_TABLE(MultiSelectDlg, wxDialog)
+BEGIN_EVENT_TABLE(MultiSelectDlg, wxScrollingDialog)
     EVT_CHECKLISTBOX(XRCID("lstItems"), MultiSelectDlg::OnItemToggle)
     EVT_BUTTON(XRCID("btnSelectWild"), MultiSelectDlg::OnWildcard)
     EVT_BUTTON(XRCID("btnToggle"), MultiSelectDlg::OnToggle)
@@ -36,7 +36,7 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
                                 const wxString& title)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgGenericMultiSelect"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));
 
 	SetTitle(title);
 	XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
@@ -50,7 +50,7 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
                                 const wxString& title)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgGenericMultiSelect"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));
 
 	SetTitle(title);
 	XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);

@@ -621,8 +621,7 @@ EXCLUDE                = ./include/propgrid/ \
                          ./include/scripting/sqplus/ \
                          ./include/scripting/sqstdlib/ \
                          ./include/scripting/squirrel/ \
-                         ./include/tinyxml/ \
-                         ./include/wxscintilla/
+                         ./include/tinyxml/
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or
 # directories that are symbolic links (a Unix filesystem feature) are excluded

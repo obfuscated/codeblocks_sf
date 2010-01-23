@@ -6,7 +6,7 @@
 #ifndef PLUGINSCONFIGURATIONDLG_H
 #define PLUGINSCONFIGURATIONDLG_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 
 class wxCommandEvent;
 class wxListEvent;
@@ -15,7 +15,7 @@ class wxUpdateUIEvent;
 /**
  * Dialog for Enabling/Disabling/Installing/Uninstalling a plug-in.
  */
-class PluginsConfigurationDlg : public wxDialog
+class PluginsConfigurationDlg : public wxScrollingDialog
 {
 	public:
 		// class constructor

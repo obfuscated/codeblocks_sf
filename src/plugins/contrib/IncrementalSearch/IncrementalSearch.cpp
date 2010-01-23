@@ -306,7 +306,7 @@ void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
             m_SelStart = m_NewPos;
             m_SelEnd = m_SelStart + m_LengthFound;
             m_OldPos = m_NewPos;
-            control->SetSelection(m_SelStart, m_SelEnd);
+            control->SetSelectionVoid(m_SelStart, m_SelEnd);
         }
         control->SetFocus();
     }

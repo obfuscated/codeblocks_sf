@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resource>
-  <object class="wxDialog" name="dlgProjectFileOptions">
+  <object class="wxScrollingDialog" name="dlgProjectFileOptions">
     <title>Project file options</title>
     <centered>1</centered>
     <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>

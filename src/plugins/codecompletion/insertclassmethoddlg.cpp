@@ -22,7 +22,7 @@
 #include "parser/parser.h"
 #include "insertclassmethoddlg.h"
 
-BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxDialog)
+BEGIN_EVENT_TABLE(InsertClassMethodDlg, wxScrollingDialog)
     EVT_LISTBOX(XRCID("lstClasses"), InsertClassMethodDlg::OnClassesChange)
     EVT_RADIOBOX(XRCID("rbCode"), InsertClassMethodDlg::OnCodeChange)
     EVT_CHECKBOX(XRCID("chkPrivate"), InsertClassMethodDlg::OnFilterChange)
@@ -36,7 +36,7 @@ InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, Parser* parser, con
     m_Filename(filename)
 {
 	//ctor
-	wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgInsertClassMethod"));
+	wxXmlResource::Get()->LoadObject(this, parent, _T("dlgInsertClassMethod"),_T("wxScrollingDialog"));
     XRCCTRL(*this, "rbCode", wxRadioBox)->SetSelection(0);
     FillClasses();
 }

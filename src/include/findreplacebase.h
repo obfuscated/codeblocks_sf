@@ -6,12 +6,12 @@
 #ifndef FINDREPLACEBASE_H
 #define FINDREPLACEBASE_H
 
-#include <wx/dialog.h>
+#include "scrollingdialog.h"
 #include <wx/string.h>
 
 class wxWindow;
 
-class FindReplaceBase : public wxDialog
+class FindReplaceBase : public wxScrollingDialog
 {
 	public:
 		FindReplaceBase(wxWindow* parent, const wxString& initial, bool hasSelection){}

@@ -28,7 +28,7 @@
 #include <wx/progdlg.h>
 #include "cbprofilerexec.h"
 
-BEGIN_EVENT_TABLE(CBProfilerExecDlg, wxDialog)
+BEGIN_EVENT_TABLE(CBProfilerExecDlg, wxScrollingDialog)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstFlatProfile"), CBProfilerExecDlg::FindInCallGraph)
     EVT_LIST_ITEM_ACTIVATED(XRCID("lstCallGraph"),   CBProfilerExecDlg::JumpInCallGraph)
     EVT_BUTTON             (XRCID("btnExport"),      CBProfilerExecDlg::WriteToFile)
@@ -73,7 +73,7 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     }
     else
     {
-        wxXmlResource::Get()->LoadDialog(this, parent, _T("dlgCBProfilerExec"));
+        wxXmlResource::Get()->LoadObject(this, parent, _T("dlgCBProfilerExec"),_T("wxScrollingDialog"));
         wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
         outputFlatProfileArea     = XRCCTRL(*this, "lstFlatProfile",     wxListCtrl);
         outputHelpFlatProfileArea = XRCCTRL(*this, "txtHelpFlatProfile", wxTextCtrl);
@@ -136,7 +136,7 @@ CBProfilerExecDlg::~CBProfilerExecDlg()
 
 void CBProfilerExecDlg::EndModal(int retCode)
 {
-    wxDialog::EndModal(retCode);
+    wxScrollingDialog::EndModal(retCode);
 }
 
 // Sorting function of the flat profile columns
