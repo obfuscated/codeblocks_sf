@@ -967,7 +967,8 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
             case sfRoot:
             {
                 CreateSpecialFolders(m_pTreeTop, item);
-                AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef | tkMacro));
+                if( ! (m_Options.displayFilter == bdfFile  && m_ActiveFilename.IsEmpty()))
+                    AddChildrenOf(m_pTreeTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef | tkMacro));
                 break;
             }
             case sfBase: AddAncestorsOf(m_pTreeTop, item, data->m_pToken->GetSelf()); break;
@@ -1041,7 +1042,10 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
     wxMutexLocker lock(m_BuildMutex);
 
     CBTreeCtrl* tree = (m_Options.treeMembers) ? m_pTreeBottom : m_pTreeTop;
-    AddMembersOf(tree, item);
+    if ( !(m_Options.displayFilter == bdfFile && m_ActiveFilename.IsEmpty()))
+    {
+        AddMembersOf(tree, item);
+    }
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Select ") + m_pTreeTop->GetItemText(item)));
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SelectItem (internally) took : %ld ms"),sw.Time()));

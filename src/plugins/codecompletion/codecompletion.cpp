@@ -1183,6 +1183,10 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
         // Update the class browser
         ProjectManager* prjMan = Manager::Get()->GetProjectManager();
         m_NativeParser.SetClassBrowserProject(prjMan->GetActiveProject());
+        if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfProject)
+        {
+            m_NativeParser.UpdateClassBrowser();
+        }
     }
     event.Skip();
 }
@@ -1197,6 +1201,13 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
     // triggered after everything's finished loading/closing.
 
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone)
+    {
+        m_NativeParser.SetClassBrowserProject(event.GetProject());
+        if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfProject)
+        {
+            m_NativeParser.UpdateClassBrowser();
+        }
+    }
         m_NativeParser.SetClassBrowserProject(event.GetProject());
     event.Skip();
 }
@@ -1541,9 +1552,10 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
 
     // we need to clear CC toolbar only when we are closing last editor
     // in other situations OnEditorActivated does this job
-    if (edm->GetEditorsCount() == 1)
+    if (edm->GetEditorsCount() == 0)
     {
         // clear toolbar when closing last editor
+        m_Scope->Clear();
         m_Function->Clear();
         cbEditor* ed = edm->GetBuiltinEditor(event.GetEditor());
         wxString filename(wxEmptyString);
@@ -1553,6 +1565,10 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
         m_AllFunctionsScopes[filename].m_FunctionsScope.clear();
         m_AllFunctionsScopes[filename].m_NameSpaces.clear();
         m_AllFunctionsScopes[filename].parsed = false;
+        if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfFile)
+        {
+            m_NativeParser.UpdateClassBrowser();
+        }
     }
 
     event.Skip();
