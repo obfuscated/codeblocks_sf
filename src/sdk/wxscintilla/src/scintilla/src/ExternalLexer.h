@@ -14,6 +14,10 @@
 #define EXT_LEXER_DECL
 #endif
 
+/* C::B begin */
+#include <string>
+/* C::B end */
+
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif

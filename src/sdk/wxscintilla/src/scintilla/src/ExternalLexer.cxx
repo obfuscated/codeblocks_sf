@@ -10,7 +10,9 @@
 #include <string.h>
 #include <ctype.h>
 
-#include <string>
+/* C::B begin */
+//#include <string>
+/* C::B end */
 
 #include "Platform.h"
 

@@ -1,4 +1,5 @@
 INCLUDES = $(WX_CXXFLAGS) \
+		-I$(top_srcdir)/src/include \
 		-I$(srcdir)/contrib/include
 
 AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID -DwxPG_USE_WXMODULE=0
