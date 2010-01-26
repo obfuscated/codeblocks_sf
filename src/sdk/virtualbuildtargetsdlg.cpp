@@ -31,11 +31,11 @@ BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxScrollingDialog)
 END_EVENT_TABLE()
 
 VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, cbProject* project)
-    : lstAliases(0),
-    btnAdd(0),
-    btnRemove(0),
+    : lstTargets(0),
     btnEdit(0),
-    lstTargets(0),
+    btnRemove(0),
+    btnAdd(0),
+    lstAliases(0),
     m_pProject(project)
 {
 	//(*Initialize(VirtualBuildTargetsDlg)
@@ -45,7 +45,7 @@ VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, c
 	btnEdit = (wxButton*)FindWindow(XRCID("ID_BUTTON2"));
 	btnRemove = (wxButton*)FindWindow(XRCID("ID_BUTTON3"));
 	lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_CHECKLISTBOX1"));
-	
+
 	Connect(XRCID("ID_LISTBOX1"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
 	Connect(XRCID("ID_BUTTON1"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
 	Connect(XRCID("ID_BUTTON2"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);
