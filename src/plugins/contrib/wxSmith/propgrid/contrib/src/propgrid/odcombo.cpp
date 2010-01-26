@@ -127,7 +127,7 @@
     #define INSTALL_TOPLEV_HANDLER       1
 
 #else
-
+    #include "scrollingdialog.h"
     #define wxPGComboPopupWindowBase wxScrollingDialog
     #if !ALLOW_FAKE_POPUP
         #define INSTALL_TOPLEV_HANDLER      0 // Doesn't need since can monitor active event
