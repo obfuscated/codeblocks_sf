@@ -84,6 +84,14 @@ namespace ScriptBindings
         }
         return Manager::Get()->GetPluginManager()->InstallPlugin(pluginName, allUsers, confirm);
     }
+    int ExecutePlugin(const wxString& pluginName)
+    {
+        return Manager::Get()->GetPluginManager()->ExecutePlugin(pluginName);
+    }
+    int ConfigurePlugin(const wxString& pluginName)
+    {
+        return Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
+    }
     void Include(const wxString& filename)
     {
         getSM()->LoadScript(filename);
@@ -162,6 +170,9 @@ namespace ScriptBindings
 
         SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
         SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");
+        
+        SqPlus::RegisterGlobal(ExecutePlugin, "ExecuteToolPlugin");
+        SqPlus::RegisterGlobal(ConfigurePlugin, "ConfigureToolPlugin");
         SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
 
         SqPlus::RegisterGlobal(Include, "Include");
