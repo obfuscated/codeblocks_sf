@@ -202,7 +202,7 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="wxscintilla" />
 					<Add directory="devel" />
 				</Linker>
@@ -240,7 +240,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="depslib" />
 					<Add directory="devel" />
 					<Add directory="plugins\compilergcc\depslib" />
@@ -265,7 +265,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -286,7 +286,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -307,7 +307,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -327,7 +327,7 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -348,7 +348,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -371,7 +371,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -393,7 +393,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -414,7 +414,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -434,7 +434,7 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -455,12 +455,13 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="28" />
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
@@ -497,7 +498,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="wxmsw28$(WX_SUFFIX)" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
