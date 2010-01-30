@@ -92,6 +92,62 @@ namespace ScriptBindings
     {
         return Manager::Get()->GetPluginManager()->ConfigurePlugin(pluginName);
     }
+    // locate and call a menu from string (e.g. "/Valgrind/Run Valgrind::MemCheck")
+	void CallMenu(const wxString& menuPath)
+	{
+		// this code is partially based on MenuItemsManager::CreateFromString()
+		wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+		wxMenu* menu = 0;
+		size_t pos = 0;
+		while (true)
+		{
+			// ignore consecutive slashes
+			while (pos < menuPath.Length() && menuPath.GetChar(pos) == _T('/'))
+			{
+				++pos;
+			}
+
+			// find next slash
+			size_t nextPos = pos;
+			while (nextPos < menuPath.Length() && menuPath.GetChar(++nextPos) != _T('/'))
+				;
+
+			wxString current = menuPath.Mid(pos, nextPos - pos);
+			if (current.IsEmpty())
+				break;
+			bool isLast = nextPos >= menuPath.Length();
+			// current holds the current search string
+
+			if (!menu) // no menu yet? look in menubar
+			{
+				int menuPos = mbar->FindMenu(current);
+				if (menuPos == wxNOT_FOUND)
+					break; // failed
+				else
+					menu = mbar->GetMenu(menuPos);
+			}
+			else
+			{
+				if (isLast)
+				{
+					int id = menu->FindItem(current);
+					if (id != wxNOT_FOUND)
+					{
+						wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
+						mbar->ProcessEvent(evt);
+						// done
+					}
+					break;
+				}
+				int existing = menu->FindItem(current);
+				if (existing != wxNOT_FOUND)
+					menu = menu->GetMenuItems()[existing]->GetSubMenu();
+				else
+					break; // failed
+			}
+			pos = nextPos; // prepare for next loop
+		}
+	}
     void Include(const wxString& filename)
     {
         getSM()->LoadScript(filename);
@@ -174,6 +230,8 @@ namespace ScriptBindings
         SqPlus::RegisterGlobal(ExecutePlugin, "ExecuteToolPlugin");
         SqPlus::RegisterGlobal(ConfigurePlugin, "ConfigureToolPlugin");
         SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
+        
+        SqPlus::RegisterGlobal(CallMenu, "CallMenu");
 
         SqPlus::RegisterGlobal(Include, "Include");
         SquirrelVM::CreateFunctionGlobal(Require, "Require", "*");
