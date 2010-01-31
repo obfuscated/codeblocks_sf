@@ -134,7 +134,11 @@ namespace ScriptBindings
 					if (id != wxNOT_FOUND)
 					{
 						wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
+						#if wxCHECK_VERSION(2, 9, 0)
+						mbar->GetEventHandler()->ProcessEvent(evt);
+						#else
 						mbar->ProcessEvent(evt);
+						#endif
 						// done
 					}
 					break;
@@ -226,11 +230,11 @@ namespace ScriptBindings
 
         SqPlus::RegisterGlobal(ConfigManager::GetFolder, "GetFolder");
         SqPlus::RegisterGlobal(ConfigManager::LocateDataFile, "LocateDataFile");
-        
+
         SqPlus::RegisterGlobal(ExecutePlugin, "ExecuteToolPlugin");
         SqPlus::RegisterGlobal(ConfigurePlugin, "ConfigureToolPlugin");
         SqPlus::RegisterGlobal(InstallPlugin, "InstallPlugin");
-        
+
         SqPlus::RegisterGlobal(CallMenu, "CallMenu");
 
         SqPlus::RegisterGlobal(Include, "Include");
