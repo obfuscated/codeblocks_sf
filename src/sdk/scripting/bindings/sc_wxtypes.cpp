@@ -220,7 +220,9 @@ namespace ScriptBindings
                 func(&wxColour::Blue, "Blue").
                 func(&wxColour::Green, "Green").
                 func(&wxColour::Red, "Red").
+#if wxVERSION_NUMBER < 2900 || !wxCOLOUR_IS_GDIOBJECT
                 func(&wxColour::IsOk, "IsOk").
+#endif
                 func<WXC_SET>(&wxColour::Set, "Set");
 
         ////////////////

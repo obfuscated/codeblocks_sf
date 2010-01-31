@@ -1563,9 +1563,15 @@ size_t NativeParser::AI(TokenIdxSet& result,
         if (s_DebugSmartSense)
         {
             Token* scopeToken = tree->at(*it);
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() Parent scope: '%s' (%d)"),
-                                                        scopeToken ? scopeToken->m_Name.wx_str() : _T("Global namespace"),
+#if wxCHECK_VERSION(2, 9, 0)
+            Manager::Get()->GetLogManager()->DebugLog(F(_("AI() Parent scope: '%s' (%d)"),
+                                                        scopeToken ? scopeToken->m_Name.wx_str() : _("Global namespace").wx_str(),
                                                         *it));
+#else
+            Manager::Get()->GetLogManager()->DebugLog(F(_("AI() Parent scope: '%s' (%d)"),
+                                                        scopeToken ? scopeToken->m_Name.wx_str() : _("Global namespace"),
+                                                        *it));
+#endif
         }
         FindAIMatches(components, result, *it, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
     }
@@ -1573,7 +1579,7 @@ size_t NativeParser::AI(TokenIdxSet& result,
     if (result.size()<1) // found nothing in the search_scope, add global namespace
     {
         if (s_DebugSmartSense)
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("AI() result is zero. Adding global namespace.")));
+            Manager::Get()->GetLogManager()->DebugLog(F(_("AI() result is zero. Adding global namespace.")));
 
         search_scope->insert(-1);
         FindAIMatches(components, result, -1, noPartialMatch, caseSensitive, true, 0xffff, search_scope);
@@ -1798,8 +1804,13 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
                 Token* parent = tree->at(*itsearch);
 
                 if (s_DebugSmartSense)
+#if wxCHECK_VERSION(2, 9, 0)
                     Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Now looking under '%s'"),
-                                                                parent ? parent->m_Name.wx_str() : _T("Global namespace")));
+                                                                parent ? parent->m_Name.wx_str() : _("Global namespace").wx_str()));
+#else
+                    Manager::Get()->GetLogManager()->DebugLog(F(_T("FindAIMatches() Now looking under '%s'"),
+                                                                parent ? parent->m_Name.wx_str() : _("Global namespace")));
+#endif
                 do
                 {
                     // types are searched as whole words, case sensitive and only classes/namespaces
@@ -1896,9 +1907,13 @@ size_t NativeParser::GenerateResultSet(TokensTree*     tree,
 
     Token* parent = tree->at(parentIdx);
     if (s_DebugSmartSense)
-        Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateResultSet() search '%s', parent='%s (id:%d, type:%s), isPrefix=%d'"),
+        Manager::Get()->GetLogManager()->DebugLog(F(_("GenerateResultSet() search '%s', parent='%s (id:%d, type:%s), isPrefix=%d'"),
                                                     search.wx_str(),
-                                                    parent ? parent->m_Name.wx_str() : _T("Global namespace"),
+#if wxCHECK_VERSION(2, 9, 0)
+                                                                                                        parent ? parent->m_Name.wx_str() : _("Global namespace").wx_str(),
+#else
+                                                    parent ? parent->m_Name.wx_str() : _("Global namespace"),
+#endif
                                                     parent ? parent->GetSelf() : 0,
                                                     parent ? parent->GetTokenKindString().wx_str():0,
                                                     isPrefix ? 1 : 0));

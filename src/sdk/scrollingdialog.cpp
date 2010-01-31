@@ -23,6 +23,7 @@
 #define wxEXTRA_DIALOG_HEIGHT 0
 #endif
 
+#if !wxCHECK_VERSION(2,9,0)
 IMPLEMENT_CLASS(wxDialogLayoutAdapter, wxObject)
 
 /*!
@@ -401,6 +402,7 @@ public:
 };
 
 IMPLEMENT_DYNAMIC_CLASS(wxDialogLayoutAdapterModule, wxModule)
+#endif //#if !wxCHECK_VERSION(2,9,0)
 
 /*!
  * wxScrollingDialog
@@ -408,6 +410,7 @@ IMPLEMENT_DYNAMIC_CLASS(wxDialogLayoutAdapterModule, wxModule)
 
 IMPLEMENT_CLASS(wxScrollingDialog, wxDialog)
 
+#if !wxCHECK_VERSION(2,9,0)
 void wxScrollingDialog::Init()
 {
     wxDialogHelper::SetDialog(this);
@@ -435,6 +438,7 @@ int wxScrollingDialog::ShowModal()
 
     return wxDialog::ShowModal();
 }
+#endif //#if !wxCHECK_VERSION(2,9,0)
 
 /*!
  * wxScrollingPropertySheetDialog
@@ -442,6 +446,7 @@ int wxScrollingDialog::ShowModal()
 
 IMPLEMENT_DYNAMIC_CLASS(wxScrollingPropertySheetDialog, wxPropertySheetDialog)
 
+#if !wxCHECK_VERSION(2,9,0)
 void wxScrollingPropertySheetDialog::Init()
 {
     wxDialogHelper::SetDialog(this);
@@ -470,4 +475,5 @@ int wxScrollingPropertySheetDialog::ShowModal()
 
     return wxPropertySheetDialog::ShowModal();
 }
+#endif //#if !wxCHECK_VERSION(2,9,0)
 

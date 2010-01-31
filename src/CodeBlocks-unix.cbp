@@ -394,6 +394,7 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
+			<Add option="`wx-config --libs aui`" />
 			<Add directory="base/tinyxml" />
 		</Linker>
 		<Unit filename="base/tinyxml/tinystr.cpp">

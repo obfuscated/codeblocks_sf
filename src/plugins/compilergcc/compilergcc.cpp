@@ -1610,10 +1610,10 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
                     Action.wx_str(),
                     target
                         ? target->GetTitle().wx_str()
-                        : _T("\"no target\""),
+                        : _("\"no target\"").wx_str(),
                     prj
                         ? prj->GetTitle().wx_str()
-                        : _T("\"no project\"")
+                        : _("\"no project\"").wx_str()
                 );
     #else
     banner.Printf(_("-------------- %s: %s in %s ---------------"),
@@ -2345,7 +2345,7 @@ void CompilerGCC::BuildStateManagement()
                 if(cleanOK)
                 {
                     #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _T("<all targets>")), m_PageIndex);
+                    Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
                     #else
                     Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
                     #endif
@@ -2353,7 +2353,7 @@ void CompilerGCC::BuildStateManagement()
                 else
                 {
                     #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _T("<all targets>")), m_PageIndex);
+                    Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
                     #else
                     Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
                     #endif
@@ -2364,7 +2364,7 @@ void CompilerGCC::BuildStateManagement()
                 wxArrayString clean = dc.GetCleanCommands(bt, true);
                 DoClean(clean);
                 #if wxCHECK_VERSION(2, 9, 0)
-                Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _T("<all targets>")), m_PageIndex);
+                Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
                 #else
                 Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
                 #endif

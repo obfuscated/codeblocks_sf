@@ -359,9 +359,9 @@ void CCDebugInfo::DisplayTokenInfo()
     txtIsConst->SetLabel(m_pToken->m_IsConst ? _("Yes") : _("No"));
     txtNamespace->SetLabel(m_pToken->GetNamespace());
     #if wxCHECK_VERSION(2, 9, 0)
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _T("<Global namespace>"), m_pToken->m_ParentIndex));
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.wx_str() : _("<Global namespace>").wx_str(), m_pToken->m_ParentIndex));
     #else
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _T("<Global namespace>"), m_pToken->m_ParentIndex));
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : _("<Global namespace>"), m_pToken->m_ParentIndex));
     #endif
     FillChildren();
     FillAncestors();

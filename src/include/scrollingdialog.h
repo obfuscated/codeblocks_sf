@@ -29,6 +29,7 @@ class wxBoxSizer;
 class wxButton;
 class wxScrolledWindow;
 
+#if !wxCHECK_VERSION(2,9,0)
 class wxDialogLayoutAdapter: public wxObject
 {
     DECLARE_CLASS(wxDialogLayoutAdapter)
@@ -152,17 +153,28 @@ protected:
     static wxDialogLayoutAdapter*       sm_layoutAdapter;
     static bool                         sm_layoutAdaptation;
 };
+#endif //#if !wxCHECK_VERSION(2,9,0)
 
 /*!
  * A class that makes its content scroll if necessary
  */
 
-class wxScrollingDialog: public wxDialog, public wxDialogHelper
+class wxScrollingDialog: public wxDialog
+#if !wxCHECK_VERSION(2,9,0)
+    , public wxDialogHelper
+#endif
 {
     DECLARE_CLASS(wxScrollingDialog)
 public:
 
-    wxScrollingDialog() { Init(); }
+    wxScrollingDialog()
+    {
+#if !wxCHECK_VERSION(2,9,0)
+        Init();
+#else
+        SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
+#endif
+    }
     wxScrollingDialog(wxWindow *parent,
              int id = wxID_ANY,
              const wxString& title = wxEmptyString,
@@ -171,9 +183,14 @@ public:
              long style = wxDEFAULT_DIALOG_STYLE,
              const wxString& name = _("dialogBox"))
     {
+#if !wxCHECK_VERSION(2,9,0)
         Init();
+#else
+        SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
+#endif
         Create(parent, id, title, pos, size, style, name);
     }
+#if !wxCHECK_VERSION(2,9,0)
     bool Create(wxWindow *parent,
              int id = wxID_ANY,
              const wxString& title = wxEmptyString,
@@ -189,16 +206,28 @@ public:
 
     /// Override ShowModal to rejig the control and sizer hierarchy if necessary
     virtual int ShowModal();
+#endif
 };
 
 /*!
  * A wxPropertySheetDialog class that makes its content scroll if necessary.
  */
 
-class wxScrollingPropertySheetDialog : public wxPropertySheetDialog, public wxDialogHelper
+class wxScrollingPropertySheetDialog : public wxPropertySheetDialog
+#if !wxCHECK_VERSION(2,9,0)
+    , public wxDialogHelper
+#endif
+
 {
 public:
-    wxScrollingPropertySheetDialog() : wxPropertySheetDialog() { Init(); }
+    wxScrollingPropertySheetDialog() : wxPropertySheetDialog()
+    {
+#if !wxCHECK_VERSION(2,9,0)
+        Init();
+#else
+        SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
+#endif
+    }
 
     wxScrollingPropertySheetDialog(wxWindow* parent, wxWindowID id,
                        const wxString& title,
@@ -207,10 +236,15 @@ public:
                        long style = wxDEFAULT_DIALOG_STYLE,
                        const wxString& name = wxDialogNameStr)
     {
+#if !wxCHECK_VERSION(2,9,0)
         Init();
+#else
+        SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
+#endif
         Create(parent, id, title, pos, sz, style, name);
     }
 
+#if !wxCHECK_VERSION(2,9,0)
 //// Accessors
 
     /// Returns the content window
@@ -226,6 +260,7 @@ public:
 
 private:
     void Init();
+#endif
 
 protected:
 
