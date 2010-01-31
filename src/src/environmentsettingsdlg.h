@@ -25,6 +25,7 @@ class EnvironmentSettingsDlg : public wxScrollingDialog
         void OnSetAssocs(wxCommandEvent& event);
         void OnManageAssocs(wxCommandEvent& event);
         void OnChooseColour(wxCommandEvent& event);
+        void OnResetDefaultColours(wxCommandEvent& event);
         void OnUseIpcCheck(wxCommandEvent& event);
         void OnPlaceCheck(wxCommandEvent& event);
         void OnHeadCheck(wxCommandEvent& event);
