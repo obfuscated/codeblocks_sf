@@ -44,7 +44,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add library="txml" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add library="wxflatnotebook" />

@@ -62,7 +62,6 @@
 			<Add option="-mthreads" />
 			<Add library="wxflatnotebook" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add library="txml" />
 			<Add library="codeblocks" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\..\devel" />
