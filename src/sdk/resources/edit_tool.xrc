@@ -106,6 +106,8 @@ $${PROJECT_FILENAME}
 $${PROJECT_NAME}
 $${PROJECT_DIR}
 $${ACTIVE_EDITOR_FILENAME}
+$${ACTIVE_EDITOR_LINE} ($${ACTIVE_EDITOR_LINE_0})
+$${ACTIVE_EDITOR_COLUMN} ($${ACTIVE_EDITOR_COLUMN_0})
 $${ALL_PROJECT_FILES}
 $${TARGET_OUTPUT_DIR}
 $${TARGET_NAME}
@@ -131,14 +133,14 @@ $${MAKEFILE}</label>
         <object class="wxStdDialogButtonSizer">
           <object class="button">
             <object class="wxButton" name="wxID_OK">
-              <label></label>
+              <label/>
               <label>&amp;Ok</label>
               <default>1</default>
             </object>
           </object>
           <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
-              <label></label>
+              <label/>
               <label>&amp;Cancel</label>
             </object>
           </object>
