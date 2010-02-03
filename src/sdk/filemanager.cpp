@@ -341,13 +341,15 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
         default:
             break;
         }
+
+        if(f.Write(mark, mark_length) != mark_length)
+            return false;
     }
 
-    if(f.Write(mark, mark_length) != mark_length)
-        return false;
-
-    if(data.length() == 0)
+    if (data.length() == 0)
         return true;
+
+#if defined(UNICODE) || defined(_UNICODE)
 
     size_t inlen = data.Len(), outlen = 0;
     wxCharBuffer mbBuff;
@@ -443,4 +445,11 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
     }
 
     return f.Write(buf, size);
+
+#else
+
+    // For ANSI builds, dump the char* to file.
+    return f.Write(data.c_str(), data.Length()) == data.Length();
+    
+#endif    
 }

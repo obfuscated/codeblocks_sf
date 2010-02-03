@@ -489,6 +489,9 @@ bool CodeBlocksApp::OnInit()
 
     wxTheClipboard->Flush();
 
+    wxCmdLineParser& parser = *Manager::GetCmdLineParser();
+    parser.SetDesc(cmdLineDesc);
+
     // NOTE: crash handler explicitly disabled because it causes problems
     //       with plugins loading/unloading...
     //
@@ -534,8 +537,6 @@ bool CodeBlocksApp::OnInit()
             if(connection)
             {
                 wxArrayString strFilesInCommandLine;
-                wxCmdLineParser& parser = *Manager::GetCmdLineParser();
-                parser.SetDesc(cmdLineDesc);
                 parser.SetCmdLine(argc, argv);
 
                 // search for valid filenames passed as argument on commandline
@@ -608,8 +609,8 @@ bool CodeBlocksApp::OnInit()
             {
 
                 /* NOTE: Due to a recent change in logging code, this visual warning got disabled.
-                   So the wxLogError() has been changed to a wxMessageBox(). */
-                wxMessageBox(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."),
+                   So the wxLogError() has been changed to a cbMessageBox(). */
+                cbMessageBox(_("Another program instance is already running.\nCode::Blocks is currently configured to only allow one running instance.\n\nYou can access this Setting under the menu item 'Environment'."),
                             _T("Code::Blocks"), wxOK | wxICON_ERROR);
                 return false;
             }
@@ -622,7 +623,8 @@ bool CodeBlocksApp::OnInit()
 
         Manager::SetBatchBuild(m_Batch || !m_Script.IsEmpty());
         Manager::Get()->GetScriptingManager();
-        MainFrame* frame = 0; frame = InitFrame();
+        MainFrame* frame = 0; 
+        frame = InitFrame();
         m_Frame = frame;
 
         if (m_SafeMode) wxLog::EnableLogging(true); // re-enable logging in safe-mode
@@ -1037,7 +1039,6 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
 
 #if wxUSE_CMDLINE_PARSER
     wxCmdLineParser& parser = *Manager::GetCmdLineParser();
-    parser.SetDesc(cmdLineDesc);
     parser.SetCmdLine(argc, argv);
     // wxApp::argc is a wxChar**
 

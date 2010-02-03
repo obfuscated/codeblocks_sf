@@ -64,21 +64,21 @@ void FilesGroupsAndMasks::SetDefault(bool do_clear)
 
     // only add default groups if none were loaded...
     unsigned int group = AddGroup(_("Sources"));
-    SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx;*.C;*.CPP;*.CC;*.CXX") );
+    SetFileMasks(group, _T("*.c;*.cpp;*.cc;*.cxx") );
     group = AddGroup(_("D Sources"));
-    SetFileMasks(group, _T("*.d;*.D") );
+    SetFileMasks(group, _T("*.d") );
     group = AddGroup(_("Fortran Sources"));
-    SetFileMasks(group, _T("*.f;*.f77;*.f90;*.f95;*.F;*.F77;*.F90;*.F95") );
+    SetFileMasks(group, _T("*.f;*.f77;*.f90;*.f95") );
     group = AddGroup(_("Java Sources"));
-    SetFileMasks(group, _T("*.java;*.JAVA") );
+    SetFileMasks(group, _T("*.java") );
     group = AddGroup(_("Headers"));
-    SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx;*.H;*.HPP;*.HH;*.HXX") );
+    SetFileMasks(group, _T("*.h;*.hpp;*.hh;*.hxx") );
     group = AddGroup(_("ASM Sources"));
-    SetFileMasks(group, _T("*.asm;*.ASM;*.s;*.S;*.ss;*.SS;*.s62;*.S62") );
+    SetFileMasks(group, _T("*.asm;*.s;*.ss;*.s62") );
     group = AddGroup(_("Resources"));
-    SetFileMasks(group, _T("*.res;*.xrc;*.rc;*.RES;*.XRC;*.RC") );
+    SetFileMasks(group, _T("*.res;*.xrc;*.rc") );
     group = AddGroup(_("Scripts"));
-    SetFileMasks(group, _T("*.script;*.SCRIPT") );
+    SetFileMasks(group, _T("*.script") );
 }
 
 void FilesGroupsAndMasks::Load()
@@ -186,7 +186,7 @@ bool FilesGroupsAndMasks::MatchesMask(const wxString& ext, unsigned int group) c
     const FileGroups* fg = m_Groups[group];
     for (unsigned int i = 0; i < fg->fileMasks.GetCount(); ++i)
     {
-        if (ext.Matches(fg->fileMasks[i]))
+        if (ext.Lower().Matches(fg->fileMasks[i].Lower()))
             return true;
     }
     return false;

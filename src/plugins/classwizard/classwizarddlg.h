@@ -24,6 +24,7 @@ class ClassWizardDlg : public wxScrollingDialog
 
         // access
         const wxString& GetHeaderFilename()         const { return m_Header;         }
+        bool  IsValidImplementationFilename()       const { return m_GenerateImplementation && m_Implementation != _T(""); }
         const wxString& GetImplementationFilename() const { return m_Implementation; }
 
     private:

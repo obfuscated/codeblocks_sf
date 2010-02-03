@@ -71,7 +71,7 @@ public:
     wxMyFileDropTarget(MainFrame *frame):m_frame(frame){}
     virtual bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames)
     {
-        if(!m_frame) return false;
+        if (!m_frame) return false;
         return m_frame->OnDropFiles(x,y,filenames);
     }
 private:
@@ -681,7 +681,7 @@ void MainFrame::SetupGUILogging()
 
     LogManager* mgr = Manager::Get()->GetLogManager();
 
-    if(!Manager::IsBatchBuild())
+    if (!Manager::IsBatchBuild())
     {
         m_pInfoPane = new InfoPane(this);
         m_LayoutManager.AddPane(m_pInfoPane, wxAuiPaneInfo().
@@ -693,7 +693,7 @@ void MainFrame::SetupGUILogging()
 
         for(size_t i = LogManager::app_log; i < ::max_logs; ++i)
         {
-            if((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
+            if ((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
                 m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
         }
     }
@@ -849,12 +849,12 @@ void MainFrame::CreateMenubar()
     if (!mbar)
         mbar = new wxMenuBar(); // Some error happened.
     if (mbar)
-	    SetMenuBar(mbar);
+        SetMenuBar(mbar);
 
     // Find Menus that we'll change later
 
     tmpidx=mbar->FindMenu(_("&Edit"));
-    if(tmpidx!=wxNOT_FOUND)
+    if (tmpidx!=wxNOT_FOUND)
     {
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
@@ -879,14 +879,14 @@ void MainFrame::CreateMenubar()
     }
 
     tmpidx=mbar->FindMenu(_("&Tools"));
-    if(tmpidx!=wxNOT_FOUND)
+    if (tmpidx!=wxNOT_FOUND)
         tools = mbar->GetMenu(tmpidx);
 
     tmpidx=mbar->FindMenu(_("P&lugins"));
-    if(tmpidx!=wxNOT_FOUND)
+    if (tmpidx!=wxNOT_FOUND)
         plugs = mbar->GetMenu(tmpidx);
 
-    if((tmpitem = mbar->FindItem(idHelpPlugins,NULL)))
+    if ((tmpitem = mbar->FindItem(idHelpPlugins,NULL)))
         pluginsM = tmpitem->GetSubMenu();
 
     m_ToolsMenu = tools ? tools : new wxMenu();
@@ -968,7 +968,7 @@ void MainFrame::CreateToolbars()
 
     wxString resPath = ConfigManager::GetDataFolder();
     wxString xrcToolbarName = _T("main_toolbar");
-    if(m_SmallToolBar) // Insert logic here
+    if (m_SmallToolBar) // Insert logic here
         xrcToolbarName += _T("_16x16");
     myres->Load(resPath + _T("/resources.zip#zip:*.xrc"));
     Manager::Get()->GetLogManager()->DebugLog(_T("Loading toolbar..."));
@@ -1063,9 +1063,9 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
     while(!item)
     {
         #if wxCHECK_VERSION(2, 9, 0)
-        if(!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetItemLabelText()) > 0)
+        if (!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetItemLabelText()) > 0)
         #else
-        if(!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetLabel()) > 0)
+        if (!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetLabel()) > 0)
         #endif
             item = menu->Insert(pos, id, title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
 
@@ -1093,7 +1093,7 @@ void MainFrame::AddPluginInPluginsMenu(cbPlugin* plugin)
 
 void MainFrame::AddPluginInSettingsMenu(cbPlugin* plugin)
 {
-//    if(!plugin)
+//    if (!plugin)
 //        return;
 //    if (!plugin->GetInfo()->hasConfigure)
 //        return;
@@ -1529,7 +1529,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
                 wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
                 ShowHideStartPage(true); // hide startherepage, so we can use full tab-range
                 bool ret = Manager::Get()->GetProjectManager()->LoadWorkspace(filename);
-                if(!ret)
+                if (!ret)
                 {
                     ShowHideStartPage(); // show/hide startherepage, dependant of settings, if loading failed
                 }
@@ -1709,6 +1709,7 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
     target->SetTabCtrlHeight(-1);
+
     long nbstyle = cfg->ReadInt(_T("/environment/tabs_style"), 0);
     switch (nbstyle)
     {
@@ -1732,6 +1733,9 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
     nbstyle = defaultStyle;
     if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
         nbstyle |= wxAUI_NB_BOTTOM;
+
+    if (cfg->ReadBool(_T("/environment/tabs_close_on_all")))
+        nbstyle |= wxAUI_NB_CLOSE_ON_ALL_TABS;
 
     if (cfg->ReadBool(_T("/environment/tabs_list")))
         nbstyle |= wxAUI_NB_WINDOWLIST_BUTTON;
@@ -1787,10 +1791,10 @@ void MainFrame::DoUpdateAppTitle()
 {
     EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0L;
     cbProject* prj = 0;
-    if(ed && ed->IsBuiltinEditor())
+    if (ed && ed->IsBuiltinEditor())
     {
         ProjectFile* prjf = ((cbEditor*)ed)->GetProjectFile();
-        if(prjf)
+        if (prjf)
             prj = prjf->GetParentProject();
     }
     else
@@ -1798,19 +1802,19 @@ void MainFrame::DoUpdateAppTitle()
     wxString projname;
     wxString edname;
     wxString fulltitle;
-    if(ed || prj)
+    if (ed || prj)
     {
-        if(prj)
+        if (prj)
         {
-            if(Manager::Get()->GetProjectManager()->GetActiveProject() == prj)
+            if (Manager::Get()->GetProjectManager()->GetActiveProject() == prj)
                 projname = wxString(_T(" [")) + prj->GetTitle() + _T("]");
             else
                 projname = wxString(_T(" (")) + prj->GetTitle() + _T(")");
         }
-        if(ed)
+        if (ed)
             edname = ed->GetTitle();
         fulltitle = edname + projname;
-        if(!fulltitle.IsEmpty())
+        if (!fulltitle.IsEmpty())
             fulltitle.Append(_T(" - "));
     }
     fulltitle.Append(appglobals::AppName);
@@ -1828,7 +1832,7 @@ void MainFrame::ShowHideStartPage(bool forceHasProject)
     // the EVT_PROJECT_OPEN event is fired *before* ProjectManager::GetProjects()
     // and ProjectManager::GetActiveProject() are updated...
 
-    if(m_InitiatedShutdown)
+    if (m_InitiatedShutdown)
     {
         EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
         if (sh)
@@ -1864,9 +1868,9 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
     wxCommandEvent evt;
     evt.SetId(idFileNewProject);
     wxString link = event.GetString();
-    if(link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
+    if (link.IsSameAs(_T("CB_CMD_NEW_PROJECT")))
         OnFileNewWhat(evt);
-    else if(link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
+    else if (link.IsSameAs(_T("CB_CMD_OPEN_PROJECT")))
         DoOnFileOpen(true);
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_ENVIRONMENT")))
 //        OnSettingsEnvironment(evt);
@@ -1874,13 +1878,13 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
 //        Manager::Get()->GetEditorManager()->Configure();
 //    else if (link.IsSameAs(_T("CB_CMD_CONF_COMPILER")))
 //        OnSettingsCompilerDebugger(evt);
-    else if(link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
+    else if (link.StartsWith(_T("CB_CMD_OPEN_HISTORY_")))
     {
         wxFileHistory* hist = link.StartsWith(_T("CB_CMD_OPEN_HISTORY_PROJECT_")) ? m_pProjectsHistory : m_pFilesHistory;
         unsigned long count;
         link.AfterLast(_T('_')).ToULong(&count);
         --count;
-        if(count < hist->GetCount())
+        if (count < hist->GetCount())
         {
             if (!OpenGeneric(hist->GetHistoryFile(count), true))
             {
@@ -1888,13 +1892,13 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
             }
         }
     }
-    else if(link.StartsWith(_T("CB_CMD_DELETE_HISTORY_")))
+    else if (link.StartsWith(_T("CB_CMD_DELETE_HISTORY_")))
     {
         wxFileHistory* hist = link.StartsWith(_T("CB_CMD_DELETE_HISTORY_PROJECT_")) ? m_pProjectsHistory : m_pFilesHistory;
         unsigned long count;
         link.AfterLast(_T('_')).ToULong(&count);
         --count;
-        if(count < hist->GetCount())
+        if (count < hist->GetCount())
         {
             AskToRemoveFileFromHistory(hist, count, false);
         }
@@ -1942,10 +1946,8 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     links << _T("</b></td></tr>\n");
     if (m_pProjectsHistory->GetCount())
     {
-        for (int i = 0; i < 9; ++i)
+        for (size_t i = 0; i < m_pProjectsHistory->GetCount(); ++i)
         {
-            if (i >= (int)m_pProjectsHistory->GetCount())
-                break;
             links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
             links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_PROJECT_%d\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       i + 1);
@@ -1967,10 +1969,8 @@ void MainFrame::OnStartHereVarSubst(wxCommandEvent& event)
     links <<_T("</b></td></tr>\n");
     if (m_pFilesHistory->GetCount())
     {
-        for (int i = 0; i < 9; ++i)
+        for (size_t i = 0; i < m_pFilesHistory->GetCount(); ++i)
         {
-            if (i >= (int)m_pFilesHistory->GetCount())
-                break;
             links << _T("<tr><td width=\"50\"><img alt=\"\" width=\"20\" src=\"blank.png\" />");
             links << wxString::Format(_T("<a href=\"CB_CMD_DELETE_HISTORY_FILE_%d\"><img alt=\"\" src=\"trash_16x16.png\" /></a>"),
                                       i + 1);
@@ -2022,7 +2022,7 @@ void MainFrame::InitializeRecentFilesHistory()
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_files"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
             {
-                if(wxFileExists(files[i]))
+                if (wxFileExists(files[i]))
                 {
                     m_pFilesHistory->AddFileToHistory(files[i]);
                 }
@@ -2046,7 +2046,7 @@ void MainFrame::InitializeRecentFilesHistory()
             wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(_T("/recent_projects"));
             for (int i = (int)files.GetCount() - 1; i >= 0; --i)
             {
-                if(wxFileExists(files[i]))
+                if (wxFileExists(files[i]))
                     m_pProjectsHistory->AddFileToHistory(files[i]);
             }
             if (m_pProjectsHistory->GetCount() > 0)
@@ -2359,7 +2359,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
     if (project)
         wxSetWorkingDirectory(project->GetBasePath());
     cbEditor* ed = Manager::Get()->GetEditorManager()->New();
-    if(ed)
+    if (ed)
     {
         // initially start change-collection if configured on empty files
         ed->GetControl()->SetChangeCollection(Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true));
@@ -2450,12 +2450,12 @@ void MainFrame::DoOnFileOpen(bool bProject)
     int StoredIndex = FileFilters::GetIndexForFilterAll();
     wxString Path;
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
-    if(mgr)
+    if (mgr)
     {
-        if(!bProject)
+        if (!bProject)
         {
             wxString Filter = mgr->Read(_T("/file_dialogs/file_new_open/filter"));
-            if(!Filter.IsEmpty())
+            if (!Filter.IsEmpty())
             {
                 FileFilters::GetFilterIndexFromName(Filters, Filter, StoredIndex);
             }
@@ -2479,11 +2479,11 @@ void MainFrame::DoOnFileOpen(bool bProject)
     {
         // store the last used filter and directory
         // as said : don't do this in case of an 'open project'
-        if(mgr && !bProject)
+        if (mgr && !bProject)
         {
             int Index = dlg.GetFilterIndex();
             wxString Filter;
-            if(FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
+            if (FileFilters::GetFilterNameFromIndex(Filters, Index, Filter))
             {
                 mgr->Write(_T("/file_dialogs/file_new_open/filter"), Filter);
             }
@@ -2767,10 +2767,10 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     Manager::BlockYields(true);
 
     ProjectManager* prjman = Manager::Get()->GetProjectManager();
-    if(prjman)
+    if (prjman)
     {
         cbProject* prj = prjman->GetActiveProject();
-        if(prj && prj->GetCurrentlyCompilingTarget())
+        if (prj && prj->GetCurrentlyCompilingTarget())
         {
             event.Veto();
             wxBell();
@@ -3085,11 +3085,11 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
         cbStyledTextCtrl* stc = ed->GetControl();
         CommentToken comment =
             Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-        if(comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
+        if (comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
             return;
 
         stc->BeginUndoAction();
-        if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
@@ -3111,7 +3111,7 @@ void MainFrame::OnEditCommentSelected(wxCommandEvent& event)
             while( curLine <= endLine )
             {
                 // For each line: comment.
-                if(comment.lineComment!=wxEmptyString)
+                if (comment.lineComment!=wxEmptyString)
                     stc->InsertText( stc->PositionFromLine( curLine ), comment.lineComment );
                 else // if the language doesn't support line comments use stream comments
                 {
@@ -3136,11 +3136,11 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
         CommentToken comment =
             Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
 
-        if(comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
+        if (comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
             return;
 
         stc->BeginUndoAction();
-        if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
@@ -3169,7 +3169,7 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
 
                 // check for line comment
                 startsWithComment = strLine.Strip( wxString::leading ).StartsWith( comment.lineComment );
-                if( startsWithComment )
+                if ( startsWithComment )
                 {      // we know the comment is there (maybe preceded by white space)
                     int Pos = strLine.Find(comment.lineComment);
                     int start = stc->PositionFromLine( curLine ) + Pos;
@@ -3182,7 +3182,7 @@ void MainFrame::OnEditUncommentSelected(wxCommandEvent& event)
                 // check for stream comment
                 startsWithComment = strLine.Strip( wxString::leading  ).StartsWith( comment.streamCommentStart ); // check for stream comment start
                 endsWithComment = strLine.Strip( wxString::trailing ).EndsWith( comment.streamCommentEnd); // check for stream comment end
-                if( startsWithComment && endsWithComment )
+                if ( startsWithComment && endsWithComment )
                 {
                     int Pos;
                     int start;
@@ -3221,11 +3221,11 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
         cbStyledTextCtrl* stc = ed->GetControl();
         wxString comment =
             Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() ).lineComment;
-        if(comment==wxEmptyString)
+        if (comment==wxEmptyString)
             return;
 
         stc->BeginUndoAction();
-        if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
@@ -3250,7 +3250,7 @@ void MainFrame::OnEditToggleCommentSelected(wxCommandEvent& event)
                 wxString strLine = stc->GetLine( curLine );
                 int commentPos = strLine.Strip( wxString::leading ).Find( comment );
 
-                if( -1 == commentPos || commentPos > 0 )
+                if ( -1 == commentPos || commentPos > 0 )
                 {
                     stc->InsertText( stc->PositionFromLine( curLine ), comment );
                 }
@@ -3279,11 +3279,11 @@ void MainFrame::OnEditStreamCommentSelected(wxCommandEvent& event)
         cbStyledTextCtrl* stc = ed->GetControl();
         CommentToken comment =
             Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-        if(comment.streamCommentStart==wxEmptyString)
+        if (comment.streamCommentStart==wxEmptyString)
             return;
 
         stc->BeginUndoAction();
-        if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startPos = stc->GetSelectionStart();
             int endPos   = stc->GetSelectionEnd();
@@ -3325,7 +3325,7 @@ void MainFrame::OnEditBoxCommentSelected(wxCommandEvent& event)
         cbStyledTextCtrl* stc = ed->GetControl();
         CommentToken comment =
             Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-        if(comment.boxCommentStart==wxEmptyString)
+        if (comment.boxCommentStart==wxEmptyString)
             return;
 
         wxString nlc;
@@ -3338,7 +3338,7 @@ void MainFrame::OnEditBoxCommentSelected(wxCommandEvent& event)
         }
 
         stc->BeginUndoAction();
-        if( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
         {
             int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
             int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
@@ -3599,7 +3599,7 @@ void MainFrame::OnViewScriptConsole(wxCommandEvent& event)
 void MainFrame::OnSearchFind(wxCommandEvent& event)
 {
     bool bDoMultipleFiles = (event.GetId() == idSearchFindInFiles);
-    if(!bDoMultipleFiles)
+    if (!bDoMultipleFiles)
     {
         bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     }
@@ -3615,7 +3615,7 @@ void MainFrame::OnSearchFindNext(wxCommandEvent& event)
 void MainFrame::OnSearchReplace(wxCommandEvent& event)
 {
     bool bDoMultipleFiles = (event.GetId() == idSearchReplaceInFiles);
-    if(!bDoMultipleFiles)
+    if (!bDoMultipleFiles)
     {
         bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     }
@@ -3653,19 +3653,15 @@ void MainFrame::OnSearchGotoLine(wxCommandEvent& event)
 void MainFrame::OnSearchGotoNextChanged(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(ed)
-    {
+    if (ed)
         ed->GotoNextChanged();
-    }
 }
 
 void MainFrame::OnSearchGotoPrevChanged(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if(ed)
-    {
+    if (ed)
         ed->GotoPreviousChanged();
-    }
 }
 
 void MainFrame::OnHelpAbout(wxCommandEvent& WXUNUSED(event))
@@ -3682,7 +3678,7 @@ void MainFrame::OnHelpTips(wxCommandEvent& event)
 
 void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
     {
         event.Skip();
         return;
@@ -3730,7 +3726,7 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
     {
         event.Skip();
         return;
@@ -3746,7 +3742,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     bool canSelAll = false;
     int eolMode = -1;
 
-    if(Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
+    if (Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
     {
         ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
@@ -3754,9 +3750,9 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
     wxMenuBar* mbar = GetMenuBar();
 
-    if(ed)
+    if (ed)
         eolMode = ed->GetControl()->GetEOLMode();
-    if(eb)
+    if (eb)
     {
         canUndo = eb->CanUndo();
         canRedo = eb->CanRedo();
@@ -3836,7 +3832,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
     {
         event.Skip();
         return;
@@ -3876,7 +3872,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
     {
         event.Skip();
         return;
@@ -3885,10 +3881,8 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 
     bool enableGotoChanged = false;
 
-    if(ed)
-    {
+    if (ed)
         enableGotoChanged = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/margin/use_changebar"), true) && (ed->CanUndo() || ed->CanRedo());
-    }
 
     wxMenuBar* mbar = GetMenuBar();
 
@@ -3913,7 +3907,7 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
     {
         event.Skip();
         return;
@@ -3934,15 +3928,15 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
 
 void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 {
-    if(Manager::isappShuttingDown())
+    if (Manager::isappShuttingDown())
     {
         event.Skip();
         return;
     }
+
     if (Manager::Get()->GetEditorManager() && event.GetEditor() == Manager::Get()->GetEditorManager()->GetActiveEditor())
-    {
         DoUpdateStatusBar();
-    }
+
     event.Skip();
 }
 
@@ -4026,7 +4020,7 @@ void MainFrame::OnSwitchTabs(wxCommandEvent& event)
     wxSwitcherDialog dlg(items, wxGetApp().GetTopWindow());
 
     // Ctrl+Tab workaround for non windows platforms:
-    if (platform::cocoa)
+    if      (platform::cocoa)
         dlg.SetModifierKey(WXK_ALT);
     else if (platform::gtk)
         dlg.SetExtraNavigationKey(wxT(','));
@@ -4039,7 +4033,7 @@ void MainFrame::OnSwitchTabs(wxCommandEvent& event)
     {
         wxSwitcherItem& item = items.GetItem(dlg.GetSelection());
         wxWindow* win = item.GetWindow();
-        if(win)
+        if (win)
         {
             nb->SetSelection(item.GetId());
             win->SetFocus();
@@ -4053,7 +4047,7 @@ void MainFrame::OnToggleFullScreen(wxCommandEvent& event)
                     | wxFULLSCREEN_NOBORDER | wxFULLSCREEN_NOCAPTION );
 
     // Create full screen-close button if we're in full screen
-    if( IsFullScreen() )
+    if ( IsFullScreen() )
     {
         //
         // Show the button to the bottom-right of the container
@@ -4230,7 +4224,7 @@ void MainFrame::OnPageChanged(wxNotebookEvent& event)
 void MainFrame::OnShiftTab(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor(); // Must make sure it's cbEditor and not EditorBase
-    if(ed)
+    if (ed)
         ed->DoUnIndent();
 }
 
@@ -4326,7 +4320,7 @@ void MainFrame::OnAddLogWindow(CodeBlocksLogEvent& event)
     else
     {
         p = event.logger->CreateControl(m_pInfoPane);
-        if(p)
+        if (p)
             m_pInfoPane->AddLogger(event.logger, p, event.title, event.icon);
     }
     Manager::Get()->GetLogManager()->NotifyUpdate();

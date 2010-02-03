@@ -116,7 +116,7 @@ void ClassWizard::OnLaunch(wxCommandEvent& event)
         {
             wxArrayInt targets;
             prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, targets);
-            if ((targets.GetCount() != 0) && (dlg.GetImplementationFilename() != _T("")) )
+            if ( (targets.GetCount() != 0) && (dlg.IsValidImplementationFilename()) )
                 prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, targets);
             prjMan->RebuildTree();
         }

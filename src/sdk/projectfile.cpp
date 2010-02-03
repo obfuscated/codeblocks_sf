@@ -102,7 +102,9 @@ void ProjectFile::RenameBuildTarget(const wxString& oldTargetName, const wxStrin
 
 void ProjectFile::RemoveBuildTarget(const wxString& targetName)
 {
-    buildTargets.Remove(targetName);
+    int idx = buildTargets.Index(targetName);
+    if (idx != wxNOT_FOUND)
+        buildTargets.RemoveAt(idx);
 
     // remove this file from the target's list of files
     if (project)
