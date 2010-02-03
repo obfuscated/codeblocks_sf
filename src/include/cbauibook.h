@@ -1,6 +1,3 @@
-#ifndef HEADER_82FF00E382BFC7D9
-#define HEADER_82FF00E382BFC7D9
-
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
@@ -34,5 +31,3 @@ class cbAuiNotebook : public wxAuiNotebook
 };
 
 #endif // CBAUIBOOK_H_INCLUDED
-
-#endif // header guard 
