@@ -28,7 +28,7 @@ WX_DECLARE_STRING_HASH_MAP(wxString, LayoutViewsMap);
 extern int idStartHerePageLink;
 extern int idStartHerePageVarSubst;
 
-class wxAuiNotebook;
+class cbAuiNotebook;
 class InfoPane;
 class wxGauge;
 
@@ -279,7 +279,7 @@ class MainFrame : public wxFrame
         void DoUpdateLayout();
         void DoUpdateLayoutColours();
         void DoUpdateEditorStyle();
-        void DoUpdateEditorStyle(wxAuiNotebook* target, const wxString& prefix, long defaultStyle);
+        void DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefix, long defaultStyle);
 
         void ShowHideStartPage(bool forceHasProject = false);
         void ShowHideScriptConsole();

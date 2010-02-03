@@ -42,7 +42,7 @@
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>
 #include <wx/fontutil.h>
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 #include "editorcolourset.h"
 #include "editorconfigurationdlg.h"
@@ -164,7 +164,7 @@ EditorManager::EditorManager()
 {
     m_pData = new EditorManagerInternalData(this);
 
-    m_pNotebook = new wxAuiNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pNotebook = new cbAuiNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize, wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
         m_pNotebook->SetWindowStyleFlag(m_pNotebook->GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
 
@@ -638,7 +638,8 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
             continue;
         pf->editorTopLine = ed->GetControl()->GetFirstVisibleLine();
         pf->editorPos = ed->GetControl()->GetCurrentPos();
-        pf->editorTabPos = i + 1;
+//        pf->editorTabPos = i + 1;
+        pf->editorTabPos = m_pNotebook->GetTabPositionFromIndex(i) + 1;
         pf->editorOpen = true;
     }
     return true;

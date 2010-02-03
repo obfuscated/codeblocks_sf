@@ -64,7 +64,7 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 
     wxString resPath = ConfigManager::ReadDataPath();
 
-    // avoid gtk-critical because of sizes less than -1 (can happen with wxAuiNotebook)
+    // avoid gtk-critical because of sizes less than -1 (can happen with wxAuiNotebook/cbAuiNotebook)
     wxSize size = GetSize();
     size.x = std::max(size.x, -1);
     size.y = std::max(size.y, -1);

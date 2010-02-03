@@ -21,7 +21,7 @@
 #include <wx/xrc/xmlres.h>
 #include <wx/dnd.h>
 #include <wx/utils.h>
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 
 #include <filefilters.h>

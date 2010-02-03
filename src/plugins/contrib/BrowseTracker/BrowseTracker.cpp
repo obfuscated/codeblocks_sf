@@ -78,6 +78,7 @@
 	#include "cbproject.h"
 	#include "configmanager.h"
 	#include "logmanager.h"
+	#include "cbauibook.h"
 #endif
 #include "projectloader_hooks.h"
 #include "configurationpanel.h"
@@ -2775,7 +2776,7 @@ wxString BrowseTracker::GetCBConfigDir()
 bool BrowseTracker::IsEditorBaseOpen(EditorBase* eb)
 // ----------------------------------------------------------------------------
 {
-    wxAuiNotebook* m_pNotebook = Manager::Get()->GetEditorManager()->GetNotebook();
+    cbAuiNotebook* m_pNotebook = Manager::Get()->GetEditorManager()->GetNotebook();
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
         //wxWindow* winPage = m_pNotebook->GetPage(i);

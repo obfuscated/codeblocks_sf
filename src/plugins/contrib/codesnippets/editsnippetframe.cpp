@@ -36,7 +36,7 @@
 #include "cbstyledtextctrl.h"
 //-#include "wxscintilla/include/wx/wxscintilla.h"  //svn5785
 #include <wx/wxscintilla.h>                         //svn5785
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 #include "defsext.h"
 #include "prefs.h"
@@ -583,7 +583,7 @@ void EditSnippetFrame::OnPageClose( wxAuiNotebookEvent event )
     // or window closed from title banner
 
     event.Skip();
-    wxAuiNotebook* pnb = (wxAuiNotebook*)event.GetEventObject();
+    cbAuiNotebook* pnb = (cbAuiNotebook*)event.GetEventObject();
     SEditorBase* eb = static_cast<SEditorBase*>(pnb->GetPage(event.GetSelection()));
     if (m_pScbEditor && (eb == m_pScbEditor) )
     {   // Save local XML data (snippet text)

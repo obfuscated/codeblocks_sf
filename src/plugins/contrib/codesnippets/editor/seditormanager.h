@@ -31,7 +31,7 @@
 
 // forward decls
 class SEditorBase;
-class wxAuiNotebook;
+class cbAuiNotebook;
 class wxAuiNotebookEvent;
 class wxMenuBar;
 class SEditorColourSet;
@@ -65,7 +65,7 @@ class SEditorManager : public wxEvtHandler
         SEditorManager(const SEditorManager& rhs) { cbThrow(_T("Can't call SEditorManager's copy ctor!!!")); }
         virtual void operator=(const SEditorManager& rhs){ cbThrow(_T("Can't assign an SEditorManager* !!!")); }
 
-        wxAuiNotebook* GetNotebook(){ return m_pNotebook; }
+        cbAuiNotebook* GetNotebook(){ return m_pNotebook; }
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
@@ -184,7 +184,7 @@ class SEditorManager : public wxEvtHandler
         int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
         int ReplaceInFiles(cbFindReplaceData* data);
 
-        wxAuiNotebook* m_pNotebook;
+        cbAuiNotebook* m_pNotebook;
         cbFindReplaceData* m_LastFindReplaceData;
         SEditorColourSet* m_Theme;
         ListCtrlLogger* m_pSearchLog;

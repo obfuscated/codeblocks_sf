@@ -30,7 +30,7 @@ namespace
     int idNB_TabBottom = wxNewId();
 };
 
-BEGIN_EVENT_TABLE(InfoPane, wxAuiNotebook)
+BEGIN_EVENT_TABLE(InfoPane, cbAuiNotebook)
     EVT_MENU(idClear,  InfoPane::OnClear)
     EVT_MENU_RANGE(idCopySelectedToClipboard, idCopyAllToClipboard,  InfoPane::OnCopy)
     EVT_MENU(wxID_ANY,  InfoPane::OnMenu)
@@ -41,7 +41,7 @@ BEGIN_EVENT_TABLE(InfoPane, wxAuiNotebook)
 END_EVENT_TABLE()
 
 
-InfoPane::InfoPane(wxWindow* parent) : wxAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
+InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
 {
     defaultBitmap = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/edit_16x16.png"), wxBITMAP_TYPE_PNG);
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))

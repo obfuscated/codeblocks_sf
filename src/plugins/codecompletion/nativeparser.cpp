@@ -28,7 +28,7 @@
 #include <projectloader_hooks.h>
 #include <tinyxml/tinyxml.h>
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include <wx/log.h> // for wxSafeShowMessage()
 #include <wx/regex.h>
 #include <wx/wfstream.h>

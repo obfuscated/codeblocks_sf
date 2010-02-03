@@ -26,7 +26,7 @@
 #include <wx/button.h>
 #include <wx/frame.h>
 #include <wx/treectrl.h>
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 //class Edit;
 class ScbEditor;

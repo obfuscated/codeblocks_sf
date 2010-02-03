@@ -430,6 +430,9 @@
 		<Unit filename="include/blockallocated.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/cbauibook.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/cbeditor.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1822,6 +1825,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/blockallocated.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/cbauibook.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbeditor.cpp">

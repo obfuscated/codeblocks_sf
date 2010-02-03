@@ -28,6 +28,7 @@ ALLHEADERS = annoyingdialog.h \
 				backgroundthread.h \
 				base64.h \
 				blockallocated.h \
+				cbauibook.h \
 				cbeditor.h \
 				cbeditorprintout.h \
 				cbexception.h \

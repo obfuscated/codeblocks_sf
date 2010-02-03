@@ -9,7 +9,7 @@
 #include <wx/string.h>
 #include <wx/settings.h>
 #include <wx/dcclient.h>
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include "notebookstyles.h"
 
 // Some general constants:

@@ -22,7 +22,7 @@
     #include <wx/wfstream.h>
 #endif
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 #include "cbstyledtextctrl.h"
 

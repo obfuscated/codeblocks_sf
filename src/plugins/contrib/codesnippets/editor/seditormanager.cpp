@@ -56,7 +56,7 @@
 #include "projectfileoptionsdlg.h"
 #include "filegroupsandmasks.h"
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include "snippetsconfig.h"
 #include "seditormanager.h" // class's header file
 #include "scbeditor.h"
@@ -183,7 +183,7 @@ void SEditorManager::InitSEditorManager(wxWindow* parent)
     GetConfig()->RegisterEditorManager( (wxFrame*)parent, this );
     m_pData = new EditorManagerInternalData(this);
 
-    m_pNotebook = new wxAuiNotebook( parent, ID_NBSEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pNotebook = new cbAuiNotebook( parent, ID_NBSEditorManager, wxDefaultPosition, wxDefaultSize, wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
     m_pNotebook->SetWindowStyleFlag(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/editor_tabs_style"), wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_MIDDLE_CLICK_CLOSE));
 
     Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));

@@ -1,3 +1,6 @@
+#ifndef HEADER_19D9D5F5947804F1
+#define HEADER_19D9D5F5947804F1
+
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
@@ -119,6 +122,7 @@
     #include "editorcolourset.h"
     #include "pipedprocess.h"
     #include "scrollingdialog.h"
+    #include "cbauibook.h"
 
 
     // managers
@@ -146,3 +150,5 @@
 #endif // CB_PRECOMP
 
 #endif // SDK_COMMON_H
+
+#endif // header guard 

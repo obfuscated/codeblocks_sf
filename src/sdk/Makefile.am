@@ -24,6 +24,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						autodetectcompilers.cpp \
 						base64.cpp \
 						blockallocated.cpp \
+						cbauibook.cpp \
 						cbexception.cpp \
 						cbeditor.cpp \
 						cbeditorprintout.cpp \

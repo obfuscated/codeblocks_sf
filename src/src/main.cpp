@@ -58,7 +58,7 @@
 #include "batchbuild.h"
 #include <wx/printdlg.h>
 #include <wx/filename.h>
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 #include "uservarmanager.h"
 #include "infowindow.h"
@@ -1702,7 +1702,7 @@ void MainFrame::DoUpdateStatusBar()
 #endif // wxUSE_STATUSBAR
 }
 
-void MainFrame::DoUpdateEditorStyle(wxAuiNotebook* target, const wxString& prefix, long defaultStyle)
+void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefix, long defaultStyle)
 {
     if (!target)
         return;
@@ -1741,7 +1741,7 @@ void MainFrame::DoUpdateEditorStyle(wxAuiNotebook* target, const wxString& prefi
 
 void MainFrame::DoUpdateEditorStyle()
 {
-    wxAuiNotebook* an = Manager::Get()->GetEditorManager()->GetNotebook();
+    cbAuiNotebook* an = Manager::Get()->GetEditorManager()->GetNotebook();
     DoUpdateEditorStyle(an, _T("editor"), wxAUI_NB_DEFAULT_STYLE | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 
     an = m_pInfoPane;
@@ -4002,7 +4002,7 @@ void MainFrame::OnFocusEditor(wxCommandEvent& event)
 void MainFrame::OnSwitchTabs(wxCommandEvent& event)
 {
     // Get the notebook from the editormanager:
-    wxAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+    cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
     if (!nb)
         return;
 

@@ -36,7 +36,7 @@
 
 #include "cbstyledtextctrl.h"
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include "snippetsconfig.h"
 // ----------------------------------------------------------------------------
 //  resources

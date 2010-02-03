@@ -35,7 +35,7 @@
     #include "cbexception.h"  // for cbassert
 #endif
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include <wx/busyinfo.h>
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
@@ -223,7 +223,7 @@ ProjectManager::ProjectManager()
     m_isCheckingForExternallyModifiedProjects(false),
     m_CanSendWorkspaceChanged(false)
 {
-    m_pNotebook = new wxAuiNotebook(Manager::Get()->GetAppWindow(), idNB, wxDefaultPosition, wxDefaultSize, wxAUI_NB_WINDOWLIST_BUTTON);
+    m_pNotebook = new cbAuiNotebook(Manager::Get()->GetAppWindow(), idNB, wxDefaultPosition, wxDefaultSize, wxAUI_NB_WINDOWLIST_BUTTON);
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/project_tabs_bottom"), false))
         m_pNotebook->SetWindowStyleFlag(m_pNotebook->GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
 

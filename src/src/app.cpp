@@ -22,7 +22,7 @@
 #include <wx/notebook.h>
 #include <wx/clipbrd.h>
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include <cbexception.h>
 #include <wx/debugrpt.h>
 #include <configmanager.h>

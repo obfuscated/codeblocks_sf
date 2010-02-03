@@ -6,7 +6,7 @@
 #ifndef NOTEBOOKSTYLES_H
 #define NOTEBOOKSTYLES_H
 
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 
 class wxDC;
 class wxWindow;

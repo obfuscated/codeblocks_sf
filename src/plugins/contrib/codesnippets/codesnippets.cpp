@@ -49,7 +49,7 @@
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
 #include "GenericMessageBox.h"
-#include <wx/aui/auibook.h>
+#include "cbauibook.h"
 #include "dragscrollevent.h"
 
 #if defined(__WXGTK__)
@@ -208,7 +208,7 @@ void CodeSnippets::OnAttach()
     // Set Drop targets so we can drag items in/out of the Project/Files Tree ctrls
     // memorize manager of Open files tree
     m_pProjectMgr = Manager::Get()->GetProjectManager();
-    // set a drop target for the project managers wxAuiNotebook
+    // set a drop target for the project managers wxAuiNotebook/cbAuiNotebook
     m_pProjectMgr->GetNotebook()->SetDropTarget(new DropTargets(this));
 
     //NB: On Linux, we don't enable dragging out of the file windows because of the drag/drop freeze bug

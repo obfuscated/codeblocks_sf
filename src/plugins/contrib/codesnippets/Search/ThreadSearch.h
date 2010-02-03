@@ -33,7 +33,7 @@ class wxComboBox;
 class FileTreeData;
 class wxCommandEvent;
 class wxUpdateUIEvent;
-class wxAuiNotebook;
+class cbAuiNotebook;
 
 class cbConfigurationPanel;
 class cbProject;
@@ -195,7 +195,7 @@ public:
     MainPanel*          m_pMainPanel;
     wxSplitterWindow*   m_pMainSplitter;
     //-wxTextCtrl*         m_pText;
-    wxAuiNotebook*      m_pEdNotebook;
+    cbAuiNotebook*      m_pEdNotebook;
     wxWindow*           m_pThreadSearchViewParentBak;
     wxWindow*           m_pEdNotebookParentBak;
     wxWindow*           m_pParent;           //parent window/frame //(pecan 2008/4/03)
