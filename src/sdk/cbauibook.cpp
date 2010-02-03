@@ -19,7 +19,11 @@ const int wxAuiBaseTabCtrlId = 5380;
 
 
 BEGIN_EVENT_TABLE(cbAuiNotebook, wxAuiNotebook)
+#if wxCHECK_VERSION(2, 9, 0)
+    EVT_NAVIGATION_KEY(cbAuiNotebook::OnNavigationKeyNotebook)
+#else
     EVT_NAVIGATION_KEY(cbAuiNotebook::OnNavigationKey)
+#endif
 END_EVENT_TABLE()
 
 cbAuiNotebook::cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style)
@@ -152,7 +156,11 @@ void cbAuiNotebook::AdvanceSelection(bool forward)
     }
 }
 
+#if wxCHECK_VERSION(2, 9, 0)
+void cbAuiNotebook::OnNavigationKeyNotebook(wxNavigationKeyEvent& event)
+#else
 void cbAuiNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
+#endif
 {
     // if we change window, we call our own AdvanceSelection
     if ( event.IsWindowChange() )
@@ -161,7 +169,11 @@ void cbAuiNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
     }
     else // otherwise we call the event-handler from the parent-class
     {
+#if wxCHECK_VERSION(2, 9, 0)
+        wxAuiNotebook::OnNavigationKeyNotebook(event);
+#else
         wxAuiNotebook::OnNavigationKey(event);
+#endif
     }
 }
 

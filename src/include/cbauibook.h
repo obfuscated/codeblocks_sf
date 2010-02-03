@@ -23,7 +23,11 @@ class cbAuiNotebook : public wxAuiNotebook
         int GetTabPositionFromIndex(int index);
 
     protected:
+#if wxCHECK_VERSION(2, 9, 0)
+        void OnNavigationKeyNotebook(wxNavigationKeyEvent& event);
+#else
         void OnNavigationKey(wxNavigationKeyEvent& event);
+#endif
         void UpdateTabControlsArray();
         cbAuiTabCtrlArray m_TabCtrls;
 
