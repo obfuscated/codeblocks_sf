@@ -4819,7 +4819,7 @@ wxScintillaEvent::wxScintillaEvent (wxEventType commandType, int id)
     m_listType = 0;
     m_x = 0;
     m_y = 0;
-    m_dragAllowMove = false;
+    m_dragAllowMove = wxDrag_CopyOnly;
 #if wxUSE_DRAG_AND_DROP
     m_dragResult = wxDragNone;
 #endif
@@ -4833,31 +4833,31 @@ bool wxScintillaEvent::GetAlt() const { return (m_modifiers & SCI_ALT) != 0; }
 wxScintillaEvent::wxScintillaEvent (const wxScintillaEvent& event):
   wxCommandEvent(event)
 {
-    m_position =      event.m_position;
-    m_key =           event.m_key;
-    m_modifiers =     event.m_modifiers;
-    m_modificationType = event.m_modificationType;
-    m_text =          event.m_text;
-    m_length =        event.m_length;
-    m_linesAdded =    event.m_linesAdded;
-    m_line =          event.m_line;
-    m_foldLevelNow =  event.m_foldLevelNow;
-    m_foldLevelPrev = event.m_foldLevelPrev;
+    m_position          = event.m_position;
+    m_key               = event.m_key;
+    m_modifiers         = event.m_modifiers;
+    m_modificationType  = event.m_modificationType;
+    m_text              = event.m_text;
+    m_length            = event.m_length;
+    m_linesAdded        = event.m_linesAdded;
+    m_line              = event.m_line;
+    m_foldLevelNow      = event.m_foldLevelNow;
+    m_foldLevelPrev     = event.m_foldLevelPrev;
 
-    m_margin =        event.m_margin;
+    m_margin            = event.m_margin;
 
-    m_message =       event.m_message;
-    m_wParam =        event.m_wParam;
-    m_lParam =        event.m_lParam;
+    m_message           = event.m_message;
+    m_wParam            = event.m_wParam;
+    m_lParam            = event.m_lParam;
 
-    m_listType =     event.m_listType;
-    m_x =            event.m_x;
-    m_y =            event.m_y;
+    m_listType          = event.m_listType;
+    m_x                 = event.m_x;
+    m_y                 = event.m_y;
 
-    m_dragText =     event.m_dragText;
-    m_dragAllowMove =event.m_dragAllowMove;
+    m_dragText          = event.m_dragText;
+    m_dragAllowMove     = event.m_dragAllowMove;
 #if wxUSE_DRAG_AND_DROP
-    m_dragResult =   event.m_dragResult;
+    m_dragResult        = event.m_dragResult;
 #endif
 }
 

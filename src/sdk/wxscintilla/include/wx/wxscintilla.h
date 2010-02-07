@@ -4215,7 +4215,7 @@ public:
     void SetX(int val)                    { m_x = val; }
     void SetY(int val)                    { m_y = val; }
     void SetDragText(const wxString& val) { m_dragText = val; }
-    void SetDragAllowMove(bool val)       { m_dragAllowMove = val; }
+    void SetDragAllowMove(int val)        { m_dragAllowMove = val; }
 #ifdef  SCI_USE_DND
     void SetDragResult(wxDragResult val)  { m_dragResult = val; }
 #endif
@@ -4238,7 +4238,7 @@ public:
     int  GetX() const                { return m_x; }
     int  GetY() const                { return m_y; }
     wxString GetDragText()           { return m_dragText; }
-    bool GetDragAllowMove()          { return wxDrag_DefaultMove; }
+    int GetDragAllowMove()           { return m_dragAllowMove; }
 #ifdef SCI_USE_DND
     wxDragResult GetDragResult()     { return m_dragResult; }
 #endif
@@ -4276,7 +4276,7 @@ private:
     int m_y;
 
     wxString m_dragText;        // wxEVT_SCI_START_DRAG, wxEVT_SCI_DO_DROP
-    bool     m_dragAllowMove;   // wxEVT_SCI_START_DRAG
+    int     m_dragAllowMove;   // wxEVT_SCI_START_DRAG
 
 #if wxUSE_DRAG_AND_DROP
     wxDragResult m_dragResult; // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
