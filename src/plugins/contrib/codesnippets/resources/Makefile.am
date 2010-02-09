@@ -131,6 +131,8 @@ dist_pkgdata_DATA = 	allsnippets.png \
             stopdisabled.png
 
 EXTRA_DIST = manifest.xml
+pkgdata_DATA = codesnippets.zip
+CLEANFILES = $(pkgdata_DATA)
 
 codesnippets.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/codesnippets.zip manifest.xml > /dev/null
