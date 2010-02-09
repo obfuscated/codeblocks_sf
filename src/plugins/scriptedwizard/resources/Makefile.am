@@ -6,6 +6,8 @@ dist_pkgdata_DATA = common_functions.script \
 					config.script
 
 EXTRA_DIST = manifest.xml
+pkgdata_DATA = scriptedwizard.zip
+CLEANFILES = $(pkgdata_DATA)
 
 scriptedwizard.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/scriptedwizard.zip manifest.xml > /dev/null
