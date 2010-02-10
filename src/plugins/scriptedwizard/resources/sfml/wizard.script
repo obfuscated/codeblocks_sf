@@ -1,0 +1,186 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// SFML project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals (used under windows only)
+SFMLPathDefault    <- _T("$(#sfml)");
+SFMLPathDefaultInc <- _T("$(#sfml.include)");
+SFMLPathDefaultLib <- _T("$(#sfml.lib)");
+SFMLPath           <- _T("");
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new SFML project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using the SFML multimedia library.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    local sfmlpath_descr = _T("Please select the location of SFML on your computer.\n" +
+                             "This is the top-level folder where SFML was installed (unpacked).\n" +
+                             "To help you, this folder must contain the subfolders\n" +
+                             "\"include\" and \"lib\".");
+
+    Wizard.AddInfoPage(_T("SFMLIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    if (PLATFORM == PLATFORM_MSW)
+        Wizard.AddGenericSelectPathPage(_T("SFMLPath"), sfmlpath_descr, _T("Please select SFML's location:"), SFMLPathDefault);
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// SFML's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_SFMLPath(fwd)
+{
+    if (fwd)
+    {
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, SFMLPathDefault, SFMLPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("Audio.hpp"), _T("SFML's include")))
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("Config.hpp"), _T("SFML's include")))
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("Graphics.hpp"), _T("SFML's include")))
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("Network.hpp"), _T("SFML's include")))
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("System.hpp"), _T("SFML's include")))
+            return false;
+        if (!VerifyFile(dir_nomacro_inc, _T("Window.hpp"), _T("SFML's include")))
+            return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, SFMLPathDefault, SFMLPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-audio"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-graphics"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-network"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-system"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-window"), _T("SFML's")))
+            return false;
+
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-audio.dll"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-graphics.dll"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-network.dll"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-system.dll"), _T("SFML's")))
+            return false;
+        if (!VerifyLibFile(dir_nomacro_lib, _T("sfml-window.dll"), _T("SFML's")))
+            return false;
+
+        SFMLPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, SFMLPathDefault, SFMLPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            SFMLPathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, SFMLPathDefault, SFMLPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            SFMLPathDefaultLib = dir_nomacro_lib;
+        }
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("sfml/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddIncludeDir(SFMLPathDefaultInc);
+        project.AddLibDir(SFMLPathDefaultLib);
+
+        // add link libraries
+        project.AddLinkLib(_T("mingw32"));
+        project.AddLinkLib(_T("sfml-audio.dll"));
+        project.AddLinkLib(_T("sfml-graphics.dll"));
+        project.AddLinkLib(_T("sfml-network.dll"));
+        project.AddLinkLib(_T("sfml-system.dll"));
+        project.AddLinkLib(_T("sfml-window.dll"));
+        project.AddLinkLib(_T("user32"));
+        project.AddLinkLib(_T("gdi32"));
+        project.AddLinkLib(_T("winmm"));
+        project.AddLinkLib(_T("dxguid"));
+    }
+    else if (PLATFORM == PLATFORM_MAC)
+    {
+        //project.AddCompilerOption(_T("-D_GNU_SOURCE=1 -D_THREAD_SAFE"));
+        project.AddLinkerOption(_T("-framework SFML"));
+        project.AddLinkLib(_T("sfml-audio"));
+        project.AddLinkLib(_T("sfml-graphics"));
+        project.AddLinkLib(_T("sfml-network"));
+        project.AddLinkLib(_T("sfml-system"));
+        project.AddLinkLib(_T("sfml-window"));
+    }
+    else
+    {
+        // unix way
+        project.AddLinkLib(_T("sfml-audio"));
+        project.AddLinkLib(_T("sfml-graphics"));
+        project.AddLinkLib(_T("sfml-network"));
+        project.AddLinkLib(_T("sfml-system"));
+        project.AddLinkLib(_T("sfml-window"));
+		// TODO: Enable these once SFML gets a sfml.pc
+		//project.AddCompilerOption(_T("`pkg-config sfml --cflags`"));
+        //project.AddLinkerOption(_T("`pkg-config sfml --libs`"));
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

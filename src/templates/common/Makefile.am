@@ -27,6 +27,11 @@ dist_pkgdata_DATA = console.cbp \
 		sdl-cb.bmp \
 		sdl-main.cpp \
 		sdl.png \
+		sfml.cbp \
+		sfml.png \
+		sfml.template \
+		sfml-cb.bmp \
+		sfml-main.cpp \
 		sharedlib.cbp \
 		sharedlib-sample.c \
 		sharedlib.template \
