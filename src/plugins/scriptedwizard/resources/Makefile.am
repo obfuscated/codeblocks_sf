@@ -6,8 +6,6 @@ dist_pkgdata_DATA = common_functions.script \
 					config.script
 
 EXTRA_DIST = manifest.xml
-pkgdata_DATA = scriptedwizard.zip
-CLEANFILES = $(pkgdata_DATA)
 
 scriptedwizard.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/scriptedwizard.zip manifest.xml > /dev/null
@@ -16,3 +14,12 @@ install-data-local: scriptedwizard.zip
 	$(mkinstalldirs) $(DESTDIR)$(datadir)/@PACKAGE@/; \
 	if test -f $(srcdir)/scriptedwizard.zip; then p=$(srcdir)/scriptedwizard.zip; else p=scriptedwizard.zip; fi; \
 	$(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/@PACKAGE@/scriptedwizard.zip
+
+clean-local:
+	if test -f $(srcdir)/scriptedwizard.zip; then rm $(srcdir)/scriptedwizard.zip; fi;
+
+distclean-local:
+	if test -f $(srcdir)/scriptedwizard.zip; then rm $(srcdir)/scriptedwizard.zip; fi;
+
+uninstall-local:
+	if test -f $(DESTDIR)$(datadir)/@PACKAGE@/scriptedwizard.zip; then rm $(DESTDIR)$(datadir)/@PACKAGE@/scriptedwizard.zip; fi;
