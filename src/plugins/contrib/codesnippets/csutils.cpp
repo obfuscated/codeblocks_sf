@@ -56,3 +56,53 @@ wxWindow* Utils::FindWindowRecursively(const wxWindow* parent, const wxString& p
     // Not found
     return NULL;
 }
+// ----------------------------------------------------------------------------
+wxWindow* Utils::FindWindowRecursively(const wxWindow* parent, const wxWindow* handle)
+// ----------------------------------------------------------------------------{
+{
+    if ( parent )
+    {
+        // see if this is the one we're looking for
+        if ( parent == handle )
+            return (wxWindow *)parent;
+
+        // It wasn't, so check all its children
+        for ( wxWindowList::compatibility_iterator node = parent->GetChildren().GetFirst();
+              node;
+              node = node->GetNext() )
+        {
+            // recursively check each child
+            wxWindow *win = (wxWindow *)node->GetData();
+            wxWindow *retwin = FindWindowRecursively(win, handle);
+            if (retwin)
+                return retwin;
+        }
+    }
+
+    // Not found
+    return NULL;
+}
+// ----------------------------------------------------------------------------
+wxWindow* Utils::WinExists(wxWindow *parent)
+// ----------------------------------------------------------------------------{
+{
+
+    if ( !parent )
+    {
+        return NULL;
+    }
+
+    // start at very top of wx's windows
+    for ( wxWindowList::compatibility_iterator node = wxTopLevelWindows.GetFirst();
+          node;
+          node = node->GetNext() )
+    {
+        // recursively check each window & its children
+        wxWindow* win = node->GetData();
+        wxWindow* retwin = FindWindowRecursively(win, parent);
+        if (retwin)
+            return retwin;
+    }
+
+    return NULL;
+}//winExists

@@ -53,6 +53,7 @@
 #include "snippetsconfig.h"
 #include "dragscrollevent.h"
 #include "FileImport.h"
+#include "csutils.h"
 #include "version.h"
 
 #if defined(__WXGTK__)
@@ -1742,24 +1743,37 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxStri
 // ----------------------------------------------------------------------------
 {
     // just focus any already open snippet items
+
+    Utils utils;
     int knt = m_aDlgRetcodes.GetCount();
     for (int i = 0; i<knt ; ++i )
     {   EditSnippetFrame* pesf = (EditSnippetFrame*)m_aDlgPtrs.Item(i);
         if (not pesf) continue;
+        if (not utils.WinExists(pesf))
+            continue;
+
         if ( pesf->GetSnippetId() == GetAssociatedItemID() )
     	{
+    	    // if return code has been set, this frame is set to terminate
+    	    if ( (int)m_aDlgRetcodes.GetCount() < i)
+                continue;
+            if ( m_aDlgRetcodes.Item(i) not_eq 0)
+                continue;
     	    m_aDlgPtrs.Item(i)->Iconize(false);
     	    m_aDlgPtrs.Item(i)->SetFocus();
             return;
     	}
     }//for
+
     // Create editor for snippet item
-    if (SnippetItemData* itemData = (SnippetItemData*)( GetItemData(GetAssociatedItemID() ))) 	{
+    if (SnippetItemData* itemData = (SnippetItemData*)( GetItemData(GetAssociatedItemID() )))
+    {
         wxString snippetText = itemData->GetSnippet();
-        m_aDlgRetcodes.Add(0);
+        m_aDlgRetcodes.Add(0);          // new slot for return code
         int* pRetcode = &m_aDlgRetcodes.Last();
 
         EditSnippetFrame* pdlg = new EditSnippetFrame( GetAssociatedItemID(), pRetcode );
+
         // cascade multiple editors
         int knt = m_aDlgPtrs.GetCount();
         if (pdlg && (knt > 0) ){
@@ -2025,7 +2039,7 @@ void CodeSnippetsTreeCtrl::SaveDataAndCloseEditorFrame()
     size_t editorsOpen = 0 ;
     size_t knt = m_aDlgPtrs.GetCount();
     for (size_t i = 0; i < knt; ++i )
-    	editorsOpen |= (size_t)m_aDlgPtrs.Item(i);
+    	editorsOpen += (size_t)m_aDlgPtrs.Item(i)?1:0;
     if ( knt && (not editorsOpen) )
     {   m_aDlgRetcodes.Clear();
         m_aDlgPtrs.Clear();

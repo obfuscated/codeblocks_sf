@@ -100,6 +100,8 @@ class SEditorManager : public wxEvtHandler
         void RemoveCustomEditor(SEditorBase* eb);
 
         bool UpdateSnippetFiles(cbProject* project);
+        bool IsHeaderSource(const wxFileName& testedFileName, const wxFileName& activeFileName, FileType ftActive);
+        wxFileName FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate);
         bool SwapActiveHeaderSource();
         bool CloseActive(bool dontsave = false);
         bool Close(const wxString& filename,bool dontsave = false);

@@ -32,6 +32,9 @@ class Utils
         virtual ~Utils();
 
     wxWindow* FindWindowRecursively(const wxWindow* parent, const wxString& partialLabel);
+    wxWindow* FindWindowRecursively(const wxWindow* parent, const wxWindow* handle);
+    wxWindow* WinExists(wxWindow *parent);
+
     protected:
     private:
 };

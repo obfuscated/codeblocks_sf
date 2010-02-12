@@ -405,8 +405,13 @@ int SEditorManager::GetEditorsCount()
 
 SEditorBase* SEditorManager::InternalGetEditorBase(int page)
 {
-    SEditorBase* eb = static_cast<SEditorBase*>(m_pNotebook->GetPage(page));
-    return eb;
+    //-5995 SEditorBase* eb = static_cast<SEditorBase*>(m_pNotebook->GetPage(page));
+    //-5995 return eb;
+    if (page < (int)m_pNotebook->GetPageCount())
+    {
+        return static_cast<SEditorBase*>(m_pNotebook->GetPage(page));
+    }
+    return 0;
 }
 
 ScbEditor* SEditorManager::InternalGetBuiltinEditor(int page)
@@ -553,7 +558,12 @@ ScbEditor* SEditorManager::Open(LoaderBase* fileLdr, const wxString& filename, i
 
 SEditorBase* SEditorManager::GetActiveEditor()
 {
-    return InternalGetEditorBase(m_pNotebook->GetSelection());
+    //-5995 return InternalGetEditorBase(m_pNotebook->GetSelection());
+    if (m_pNotebook->GetPageCount() > 0)
+    {
+        return InternalGetEditorBase(m_pNotebook->GetSelection());
+    }
+    return 0;
 }
 
 void SEditorManager::ActivateNext()
@@ -993,18 +1003,289 @@ void SEditorManager::CheckForExternallyModifiedFiles()
     m_isCheckingForExternallyModifiedFiles = false;
 } // end of CheckForExternallyModifiedFiles
 
+//bool SEditorManager::SwapActiveHeaderSource()
+//{
+//    ScbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+//    if (!ed)
+//        return false;
+//
+//    FileType ft = FileTypeOf(ed->GetFilename());
+//    if (ft != ftHeader && ft != ftSource)
+//        return 0L;
+//
+//    // create a list of search dirs
+//    wxArrayString dirs;
+//
+//    cbProject* project = 0;
+//
+//    // if the file in question belongs to a different open project,
+//    // then use that project instead.
+//    // this fixes locating the file's pair in a workspace when the active file
+//    // does not belong to the active project.
+//    ProjectFile* opf = ed->GetProjectFile();
+//    if (opf)
+//        project = opf->GetParentProject();
+//
+//    // if we didn't get a valid project, try the active one
+//    if (!project)
+//        project = Manager::Get()->GetProjectManager()->GetActiveProject();
+//
+//    // get project's include dirs
+//    if (project)
+//    {
+//        dirs = project->GetIncludeDirs();
+//
+//        // first add all paths that contain project files
+//        for (int i = 0; i < project->GetFilesCount(); ++i)
+//        {
+//            ProjectFile* pf = project->GetFile(i);
+//            if (pf)
+//            {
+//                wxString dir = pf->file.GetPath(wxPATH_GET_VOLUME);
+//                if (dirs.Index(dir) == wxNOT_FOUND)
+//                    dirs.Add(dir);
+//            }
+//        }
+//
+//        // get targets include dirs
+//        for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
+//        {
+//            ProjectBuildTarget* target = project->GetBuildTarget(i);
+//            if (target)
+//            {
+//                for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
+//                {
+//                    wxString dir = target->GetIncludeDirs()[ti];
+//                    if (dirs.Index(dir) == wxNOT_FOUND)
+//                        dirs.Add(dir);
+//                }
+//            }
+//        }
+//    }
+//
+//    wxFileName fname;
+//    wxFileName fn(ed->GetFilename());
+//    dirs.Insert(fn.GetPath(wxPATH_GET_VOLUME), 0); // add file's dir
+//
+//    for (unsigned int i = 0; i < dirs.GetCount(); ++i)
+//    {
+//        fname.Assign(dirs[i] + wxFileName::GetPathSeparator() + fn.GetFullName());
+//        if (!fname.IsAbsolute() && project)
+//        {
+//            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
+//        }
+//        //Manager::Get()->GetLogManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
+//        if (ft == ftHeader)
+//        {
+//            fname.SetExt(FileFilters::C_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::CC_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::CPP_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::CXX_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::INL_EXT);
+//            if (fname.FileExists())
+//                break;
+//
+//// DrewBoo: See if the project manager knows of other extensions
+////   (This could also outright replace the hard-coded extensions above)
+//// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
+//// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+//            ProjectManager *pm = Manager::Get()->GetProjectManager();
+//            if ( !pm )
+//                break;
+//
+//            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+//            if ( !fg )
+//                break;
+//
+//            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+//            {
+//                if ( fg->GetGroupName(i) == _("Sources") )
+//                {
+//                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
+//                    while ( tkz.HasMoreTokens() )
+//                    {
+//                        wxString token = tkz.GetNextToken();
+//                        wxString ext;
+//                        if ( token.StartsWith( _("*."), &ext ) )
+//                        {
+//                            fname.SetExt(ext);
+//                            if (fname.FileExists())
+//                                break;
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//        else if (ft == ftSource)
+//        {
+//            fname.SetExt(FileFilters::H_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::HH_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::HPP_EXT);
+//            if (fname.FileExists())
+//                break;
+//            fname.SetExt(FileFilters::HXX_EXT);
+//            if (fname.FileExists())
+//                break;
+//
+//// DrewBoo: See if the project manager knows of other extensions
+////   (This could also outright replace the hard-coded extensions above)
+//// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
+//// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+//            ProjectManager *pm = Manager::Get()->GetProjectManager();
+//            if ( !pm )
+//                break;
+//
+//            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
+//            if ( !fg )
+//                break;
+//
+//            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+//            {
+//                if ( fg->GetGroupName(i) == _("Headers") )
+//                {
+//                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
+//                    while ( tkz.HasMoreTokens() )
+//                    {
+//                        wxString token = tkz.GetNextToken();
+//                        wxString ext;
+//                        if ( token.StartsWith( _("*."), &ext ) )
+//                        {
+//                            fname.SetExt(ext);
+//                            if (fname.FileExists())
+//                                break;
+//                        }
+//                    }
+//                    break;
+//                }
+//            }
+//        }
+//    }
+//
+//    if (fname.FileExists())
+//    {
+//        //Manager::Get()->GetLogManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
+//        ScbEditor* newEd = Open(fname.GetFullPath());
+//        //if (newEd)
+//        //    newEd->SetProjectFile(ed->GetProjectFile());
+//        return newEd;
+//    }
+//
+//    // We couldn't find the file, maybe it does not exist. Ask the user if we
+//    // should create it:
+//    if (cbMessageBox(_("The file does not exist. Do you want to create it?"),
+//                _("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+//    {
+//        cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
+//        if (project)
+//            wxSetWorkingDirectory(project->GetBasePath());
+//
+//        // Create a suggestion for the new file name:
+//        if (ft == ftHeader)
+//            fn.SetExt(FileFilters::CPP_EXT);
+//        else if (ft == ftSource)
+//            fn.SetExt(FileFilters::H_EXT);
+//        // else? Well, if the filename is not changed we could possibly
+//        // overwrite an existing file with our suggestion.
+//
+//        ScbEditor* newEd = New(fn.GetFullPath());
+//        if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+//                    _("Add file to project"),
+//                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+//        {
+//            wxArrayInt targets;
+//            if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+//            {
+//                ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
+//                newEd->SetProjectFile(pf);
+//                Manager::Get()->GetProjectManager()->RebuildTree();
+//            }
+//        }
+//        // verify that the open files are still in sync
+//        // the new file might have overwritten an existing one)
+//        //-GetConfig()->GetEditorManager()->CheckForExternallyModifiedFiles();
+//        CheckForExternallyModifiedFiles();
+//    }
+//    return 0L;
+//}
+bool SEditorManager::IsHeaderSource(const wxFileName& testedFileName, const wxFileName& activeFileName, FileType ftActive)
+{
+    if (testedFileName.GetName() == activeFileName.GetName())
+    {
+        FileType ftTested = FileTypeOf(testedFileName.GetFullName());
+        if (    ((ftActive == ftHeader) && (ftTested == ftSource))
+             || ((ftActive == ftSource) && (ftTested == ftHeader)) )
+        {
+            if (testedFileName.FileExists())
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+wxFileName SEditorManager::FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate)
+{
+    FileType ftActive = FileTypeOf(activeFile.GetFullName());
+
+    // Because ftActive == ftHeader || ftSource, the extension has at least 1 character
+    bool extStartsWithCapital = wxIsupper(activeFile.GetExt()[0]);
+
+    wxFileName candidateFile;
+    for (unsigned i = 0; i < candidateFilesArray.GetCount(); ++i)
+    {
+        wxFileName currentCandidateFile(candidateFilesArray[i]);
+
+        if (IsHeaderSource(currentCandidateFile, activeFile, ftActive))
+        {
+            bool isUpper = wxIsupper(currentCandidateFile.GetExt()[0]);
+            if (isUpper == extStartsWithCapital)
+            {
+                // we definitely found the header/source we were searching for
+                isCandidate = false;
+                return currentCandidateFile;
+            }
+            else
+            {
+                // the header/source has a different capitalization of its extension
+                // use this if nothing better is found
+                candidateFile = currentCandidateFile;
+            }
+        }
+    }
+
+    isCandidate = true;
+
+    // may be invalid (empty) file name
+    return candidateFile;
+}
+
 bool SEditorManager::SwapActiveHeaderSource()
 {
     ScbEditor* ed = GetBuiltinEditor(GetActiveEditor());
     if (!ed)
         return false;
 
+    ProjectManager *pm = Manager::Get()->GetProjectManager();
+    if (!pm)
+        return false;
+
     FileType ft = FileTypeOf(ed->GetFilename());
     if (ft != ftHeader && ft != ftSource)
-        return 0L;
-
-    // create a list of search dirs
-    wxArrayString dirs;
+        return false;
 
     cbProject* project = 0;
 
@@ -1018,24 +1299,91 @@ bool SEditorManager::SwapActiveHeaderSource()
 
     // if we didn't get a valid project, try the active one
     if (!project)
-        project = Manager::Get()->GetProjectManager()->GetActiveProject();
+        project = pm->GetActiveProject();
 
-    // get project's include dirs
+    wxFileName theFile(ed->GetFilename());
+    wxFileName candidateFile;
+    bool isCandidate;
+    wxArrayString fileArray;
+
+    // find all files with the same name as the active file, but with possibly different extension
+    // search in the directory of the active file:
+    wxDir::GetAllFiles(theFile.GetPath(wxPATH_GET_VOLUME), &fileArray, theFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+
+    // try to find the header/source in the list
+    wxFileName currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+    if (isCandidate)
+    {
+        candidateFile = currentCandidateFile;
+    }
+    else if (currentCandidateFile.IsOk())
+    {
+        ScbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+        if (newEd!=0L) // we found and were able to open it
+            return true; // --> RETURN;
+    }
+
+    // try to find the file among the opened files
+
+    // build a list of opened files
+    fileArray.Clear();
+    for (int i = 0; i < GetEditorsCount(); ++i)
+    {
+        ScbEditor* edit = GetBuiltinEditor(GetEditor(i));
+        if (!edit)
+            continue;
+
+        ProjectFile* pf = edit->GetProjectFile();
+        if (!pf)
+            continue;
+
+        fileArray.Add(pf->file.GetFullPath());
+    }
+
+    // try to find the header/source in the list
+    currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+    if (!isCandidate && currentCandidateFile.IsOk())
+    {
+        ScbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+        if (newEd!=0L) // we found and were able to open it
+            return true; // --> RETURN;
+    }
+
     if (project)
     {
-        dirs = project->GetIncludeDirs();
+        // try to find in the project files
 
-        // first add all paths that contain project files
+        // build a list of project files
+        fileArray.Clear();
         for (int i = 0; i < project->GetFilesCount(); ++i)
         {
             ProjectFile* pf = project->GetFile(i);
-            if (pf)
-            {
-                wxString dir = pf->file.GetPath(wxPATH_GET_VOLUME);
-                if (dirs.Index(dir) == wxNOT_FOUND)
-                    dirs.Add(dir);
-            }
+            if (!pf)
+                continue;
+
+            fileArray.Add(pf->file.GetFullPath());
         }
+
+        // try to find the header/source in the list
+        currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
+
+        if (isCandidate && !candidateFile.IsOk())
+        {
+            candidateFile = currentCandidateFile;
+        }
+        else if (currentCandidateFile.IsOk())
+        {
+            ScbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+            if (newEd!=0L) // we found and were able to open it
+                return true; // --> RETURN;
+        }
+
+        // if not found, build the list of directories for further searching
+
+        // get project's include dirs
+        wxArrayString dirs = project->GetIncludeDirs();
 
         // get targets include dirs
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
@@ -1045,137 +1393,59 @@ bool SEditorManager::SwapActiveHeaderSource()
             {
                 for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
                 {
+                    // TODO (Morten#5#): target include dirs might override project include dirs, take append/prepend option into account
                     wxString dir = target->GetIncludeDirs()[ti];
                     if (dirs.Index(dir) == wxNOT_FOUND)
                         dirs.Add(dir);
                 }
             }
         }
-    }
 
-    wxFileName fname;
-    wxFileName fn(ed->GetFilename());
-    dirs.Insert(fn.GetPath(wxPATH_GET_VOLUME), 0); // add file's dir
-
-    for (unsigned int i = 0; i < dirs.GetCount(); ++i)
-    {
-        fname.Assign(dirs[i] + wxFileName::GetPathSeparator() + fn.GetFullName());
-        if (!fname.IsAbsolute() && project)
+        // go through the directories and try to find the header/source there
+        for (unsigned int i = 0; i < dirs.GetCount(); ++i)
         {
-            fname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
-        }
-        //Manager::Get()->GetLogManager()->DebugLog("Looking for '%s'", fname.GetFullPath().c_str());
-        if (ft == ftHeader)
-        {
-            fname.SetExt(FileFilters::C_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::CC_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::CPP_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::CXX_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::INL_EXT);
-            if (fname.FileExists())
-                break;
+            wxString dir = dirs[i]; // might contain macros -> replace them
+            //FIXME: MacrosManager is undefined
+            // Manager::Get()->GetMacrosManager()->ReplaceMacros(dir);
 
-// DrewBoo: See if the project manager knows of other extensions
-//   (This could also outright replace the hard-coded extensions above)
-// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
-// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
-            ProjectManager *pm = Manager::Get()->GetProjectManager();
-            if ( !pm )
-                break;
-
-            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
-            if ( !fg )
-                break;
-
-            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+            wxFileName dname(dir);
+            if (!dname.IsAbsolute())
             {
-                if ( fg->GetGroupName(i) == _("Sources") )
-                {
-                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
-                    while ( tkz.HasMoreTokens() )
-                    {
-                        wxString token = tkz.GetNextToken();
-                        wxString ext;
-                        if ( token.StartsWith( _("*."), &ext ) )
-                        {
-                            fname.SetExt(ext);
-                            if (fname.FileExists())
-                                break;
-                        }
-                    }
-                    break;
-                }
+                dname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
+    //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to '%s'."), dname.GetFullPath().c_str()));
             }
-        }
-        else if (ft == ftSource)
-        {
-            fname.SetExt(FileFilters::H_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::HH_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::HPP_EXT);
-            if (fname.FileExists())
-                break;
-            fname.SetExt(FileFilters::HXX_EXT);
-            if (fname.FileExists())
-                break;
 
-// DrewBoo: See if the project manager knows of other extensions
-//   (This could also outright replace the hard-coded extensions above)
-// TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
-// TODO (Morten#3#): This code should actually be a method of filegrous and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
-            ProjectManager *pm = Manager::Get()->GetProjectManager();
-            if ( !pm )
-                break;
+            fileArray.Clear();
+            // find all files inside the directory with the same name as the active file, but with possibly different extension
+            wxDir::GetAllFiles(dname.GetPath(), &fileArray, theFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+            // try to find the header/source in the list
+            currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
 
-            const FilesGroupsAndMasks* fg = pm->GetFilesGroupsAndMasks();
-            if ( !fg )
-                break;
-
-            for ( unsigned int i = 0; i != fg->GetGroupsCount(); ++i )
+            if (isCandidate)
             {
-                if ( fg->GetGroupName(i) == _("Headers") )
-                {
-                    wxStringTokenizer tkz( fg->GetFileMasks(i), _T(";") );
-                    while ( tkz.HasMoreTokens() )
-                    {
-                        wxString token = tkz.GetNextToken();
-                        wxString ext;
-                        if ( token.StartsWith( _("*."), &ext ) )
-                        {
-                            fname.SetExt(ext);
-                            if (fname.FileExists())
-                                break;
-                        }
-                    }
-                    break;
-                }
+                candidateFile = currentCandidateFile;
+            }
+            else if (currentCandidateFile.IsOk())
+            {
+                ScbEditor* newEd = Open(currentCandidateFile.GetFullPath());
+                if (newEd!=0L) // we found and were able to open it
+                    return true; // --> RETURN;
             }
         }
     }
 
-    if (fname.FileExists())
+    // candidateFile is header/source whose extension does not match the capitalization of the active file
+    // - open it if nothing better is found
+    if (candidateFile.IsOk())
     {
-        //Manager::Get()->GetLogManager()->DebugLog("ed=%s, pair=%s", ed->GetFilename().c_str(), pair.c_str());
-        ScbEditor* newEd = Open(fname.GetFullPath());
-        //if (newEd)
-        //    newEd->SetProjectFile(ed->GetProjectFile());
-        return newEd;
+        ScbEditor* newEd = Open(candidateFile.GetFullPath());
+        if (newEd!=0L) // we found and were able to open it
+            return true; // --> RETURN;
     }
 
     // We couldn't find the file, maybe it does not exist. Ask the user if we
     // should create it:
-    if (cbMessageBox(_("The file does not exist. Do you want to create it?"),
+    if (cbMessageBox(_("The file seems not to exist. Do you want to create it?"),
                 _("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
         cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -1183,32 +1453,37 @@ bool SEditorManager::SwapActiveHeaderSource()
             wxSetWorkingDirectory(project->GetBasePath());
 
         // Create a suggestion for the new file name:
-        if (ft == ftHeader)
-            fn.SetExt(FileFilters::CPP_EXT);
+        if      (ft == ftHeader)
+            theFile.SetExt(FileFilters::CPP_EXT);
         else if (ft == ftSource)
-            fn.SetExt(FileFilters::H_EXT);
+            theFile.SetExt(FileFilters::H_EXT);
         // else? Well, if the filename is not changed we could possibly
         // overwrite an existing file with our suggestion.
 
-        ScbEditor* newEd = New(fn.GetFullPath());
-        if (cbMessageBox(_("Do you want to add this new file in the active project?"),
-                    _("Add file to project"),
-                    wxYES_NO | wxICON_QUESTION) == wxID_YES)
+        ScbEditor* newEd = New(theFile.GetFullPath());
+        if (project)
         {
-            wxArrayInt targets;
-            if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+            if (cbMessageBox(_("Do you want to add this new file in the active project?"),
+                        _("Add file to project"),
+                        wxYES_NO | wxICON_QUESTION) == wxID_YES)
             {
-                ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
-                newEd->SetProjectFile(pf);
-                Manager::Get()->GetProjectManager()->RebuildTree();
+                wxArrayInt targets;
+                if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+                {
+                    ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
+                    newEd->SetProjectFile(pf);
+                    Manager::Get()->GetProjectManager()->RebuildTree();
+                }
             }
         }
+
         // verify that the open files are still in sync
         // the new file might have overwritten an existing one)
-        //-GetConfig()->GetEditorManager()->CheckForExternallyModifiedFiles();
+        //-Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
         CheckForExternallyModifiedFiles();
     }
-    return 0L;
+
+    return false;
 }
 
 int SEditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
