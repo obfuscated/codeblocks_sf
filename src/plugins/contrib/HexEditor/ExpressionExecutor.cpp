@@ -23,7 +23,7 @@
 #include "ExpressionExecutor.h"
 
 #include <wx/intl.h>
-#include <math.h>
+#include <cmath>
 
 namespace Expression
 {
@@ -200,25 +200,25 @@ namespace Expression
                 break;
 
             case Operation::fnSin:
-                ReplaceStack( Value( sinl( GetStack().GetFloat() ) ) );
+                ReplaceStack( Value( std::sin( GetStack().GetFloat() ) ) );
                 break;
 
             case Operation::fnCos:
-                ReplaceStack( Value( cosl( GetStack().GetFloat() ) ) );
+                ReplaceStack( Value( std::cos( GetStack().GetFloat() ) ) );
                 break;
 
             case Operation::fnTan:
-                ReplaceStack( Value( tanl( GetStack().GetFloat() ) ) );
+                ReplaceStack( Value( std::tan( GetStack().GetFloat() ) ) );
                 break;
 
             case Operation::fnLn:
-                ReplaceStack( Value( logl( GetStack().GetFloat() ) ) );
+                ReplaceStack( Value( std::log( GetStack().GetFloat() ) ) );
                 break;
 
             case Operation::fnPow:
             {
                 Value p = GetStack(); PopStack();
-                ReplaceStack( Value( powl( GetStack().GetFloat(), p.GetFloat() ) ) );
+                ReplaceStack( Value( std::pow( GetStack().GetFloat(), p.GetFloat() ) ) );
                 break;
             }
 
