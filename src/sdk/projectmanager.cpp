@@ -1980,7 +1980,7 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
     {
         wild += m_pFileGroups->GetFileMasks(i);
     }
-    
+
     MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
@@ -2864,7 +2864,8 @@ void ProjectManager::OnKeyDown(wxTreeEvent& event)
 {
     const wxKeyEvent& key_event = event.GetKeyEvent();
 
-    if(key_event.GetKeyCode() == WXK_DELETE || key_event.GetKeyCode() == WXK_NUMPAD_DELETE)
+    if( Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == 0 &&
+       (key_event.GetKeyCode() == WXK_DELETE || key_event.GetKeyCode() == WXK_NUMPAD_DELETE))
     {
         wxCommandEvent command(0, idMenuRemoveFilePopup);
         OnRemoveFileFromProject(command);

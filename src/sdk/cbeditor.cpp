@@ -2678,12 +2678,20 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
 
         if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
         {
+            bool isAddRemoveEnabled = true;
+            isAddRemoveEnabled = Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == 0;
             popup->AppendSeparator();
 
             if (m_pProjectFile)
+            {
                 popup->Append(idRemoveFileFromProject, _("Remove file from project"));
+                popup->Enable(idRemoveFileFromProject, isAddRemoveEnabled);
+            }
             else
+            {
                 popup->Append(idAddFileToProject, _("Add file to active project"));
+                popup->Enable(idAddFileToProject, isAddRemoveEnabled);
+            }
         }
         // remove "Insert/Empty" if more than one entry
         wxMenu* insert = 0;
