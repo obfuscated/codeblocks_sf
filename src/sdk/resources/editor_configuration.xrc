@@ -770,7 +770,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkEnableMultipleSelections">
-												<label>Allow multiple Selections</label>
+												<label>Allow multiple selections</label>
 											</object>
 											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											<border>4</border>
