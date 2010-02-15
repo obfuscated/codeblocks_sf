@@ -12,10 +12,13 @@
 #include <sys/time.h>
 #ifdef __WXMSW__
     #include <windows.h>
-	#include <conio.h>
-	#define wait_key getch
+    #include <conio.h>
+    #define wait_key getch
 #else
-	#define wait_key getchar
+    #define wait_key getchar
+#endif
+#if defined(__unix__) || defined(__unix)
+    #include <sys/wait.h>
 #endif
 #include <string.h>
 
@@ -25,14 +28,14 @@ int _CRT_glob = 0;
 
 bool hasSpaces(const char* str)
 {
-	char last = 0;
-	while (str && *str)
-	{
-		if ((*str == ' ' || *str == '\t') && last != '\\')
+    char last = 0;
+    while (str && *str)
+    {
+        if ((*str == ' ' || *str == '\t') && last != '\\')
             return true;
         last = *str++;
-	}
-	return false;
+    }
+    return false;
 }
 
 int execute_command(char *cmdline)
@@ -81,7 +84,7 @@ int execute_command(char *cmdline)
 
 int main(int argc, char** argv)
 {
-	if (argc < 2)
+    if (argc < 2)
     {
         printf("Usage: cb_console_runner <filename> <args ...>\n");
         return 1;
