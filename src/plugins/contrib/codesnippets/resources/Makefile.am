@@ -118,34 +118,23 @@ noinst_HEADERS =  	$(srcdir)/../version.h \
 		$(srcdir)/../snippetsconfig.h \
 		$(srcdir)/../snippetsimages.h
 
-pkgdatadir = $(datadir)/@PACKAGE@/images/codesnippets
+pkgdata_DATA = codesnippets.zip
+CLEANFILES = $(pkgdata_DATA)
 
-dist_pkgdata_DATA = 	allsnippets.png \
-			category.png \
-			snippet.png \
-			findf.png \
-			findfdisabled.png \
-			options.png \
-            optionsdisabled.png \
-            stop.png \
-            stopdisabled.png
+imagedir = $(pkgdatadir)/images/codesnippets
+
+dist_image_DATA =  allsnippets.png \
+		category.png \
+		snippet.png \
+		findf.png \
+		findfdisabled.png \
+		options.png \
+		optionsdisabled.png \
+		stop.png \
+		stopdisabled.png
 
 EXTRA_DIST = manifest.xml
 
-codesnippets.zip: manifest.xml
+codesnippets.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/codesnippets.zip manifest.xml > /dev/null
-
-install-data-local: codesnippets.zip
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/@PACKAGE@/; \
-	if test -f $(srcdir)/codesnippets.zip; then p=$(srcdir)/codesnippets.zip; else p=codesnippets.zip; fi; \
-	$(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/@PACKAGE@/codesnippets.zip
-
-clean-local:
-	if test -f $(srcdir)/codesnippets.zip; then rm $(srcdir)/codesnippets.zip; fi;
-
-distclean-local:
-	if test -f $(srcdir)/codesnippets.zip; then rm $(srcdir)/codesnippets.zip; fi;
-
-uninstall-local:
-	if test -f $(DESTDIR)$(datadir)/@PACKAGE@/codesnippets.zip; then rm $(DESTDIR)$(datadir)/@PACKAGE@/codesnippets.zip; fi;
 
