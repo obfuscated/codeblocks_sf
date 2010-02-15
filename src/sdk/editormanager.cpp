@@ -2513,7 +2513,7 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
 void EditorManager::OnPageChanging(wxAuiNotebookEvent& event)
 {
     int old_sel = event.GetOldSelection();
-    if (old_sel != -1)
+    if (old_sel != -1 && static_cast<size_t>(old_sel) < m_pNotebook->GetPageCount())
     {
         EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(old_sel));
         CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, 0, eb);
