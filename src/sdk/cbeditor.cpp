@@ -175,7 +175,7 @@ struct cbEditorInternalData
             }
             else if (c == _T('('))
             {
-				has_braces = true;
+                has_braces = true;
                 if(closing_braces > 0)
                     --closing_braces;
                 else if(!found_brace)
@@ -194,7 +194,7 @@ struct cbEditorInternalData
         if (!found_brace)
             return -1;
 
-		int tab_characters = 0;
+        int tab_characters = 0;
 
         while (position)
         {
@@ -414,15 +414,15 @@ struct cbEditorInternalData
             control->GotoPos(pos);
             if (ch == _T('{'))
             {
-                    const wxRegEx reg(_T("^[ \t]*{}[ \t]*"));
-                    if (reg.Matches(control->GetCurLine()))
-                    {
-                control->NewLine();
-                control->GotoPos(pos);
-                        control->NewLine();
-                return;
+                const wxRegEx reg(_T("^[ \t]*{}[ \t]*"));
+                if (reg.Matches(control->GetCurLine()))
+                {
+                    control->NewLine();
+                    control->GotoPos(pos);
+                    control->NewLine();
+                    return;
+                }
             }
-        }
         }
         else
         {
@@ -521,13 +521,13 @@ struct cbEditorInternalData
 
     void HighlightOccurrences()
     {
-        static int old_a;
-        static int old_b;
+        static long old_a;
+        static long old_b;
         // chosed a high value for indicator, in the hope not to interfere with the indicators used by some lexers (,
         // if they get updated from deprecated oldstyle indicators somedays.
         const int theIndicator = 10;
 
-        int a, b;
+        long a, b;
         m_pOwner->GetControl()->GetSelection(&a, &b);
 
         m_pOwner->GetControl()->SetIndicatorCurrent(theIndicator);
@@ -537,7 +537,7 @@ struct cbEditorInternalData
 
         old_a = a; old_b = b;
 
-		wxString selectedText(m_pOwner->GetControl()->GetTextRange(a, b));
+        wxString selectedText(m_pOwner->GetControl()->GetTextRange(a, b));
 
         int eof = m_pOwner->m_pControl->GetLength();
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
@@ -908,7 +908,7 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
         return; // we 've been here before ;)
 
     bool wasmodified = false;
-    if(preserve_modified)
+    if (preserve_modified)
         wasmodified = GetModified();
 
     m_pProjectFile = project_file;
@@ -944,7 +944,7 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
     dbg << _T("[ed] Project file: ") << (m_pProjectFile ? m_pProjectFile->relativeFilename : _T("unknown")) << _T('\n');
     Manager::Get()->GetLogManager()->DebugLog(dbg);
 #endif
-    if(preserve_modified)
+    if (preserve_modified)
         SetModified(wasmodified);
 }
 
@@ -1596,6 +1596,7 @@ bool cbEditor::Open(bool detectEncoding)
 
     // open file
     m_pControl->SetReadOnly(false);
+
     wxString st;
 
     m_pControl->ClearAll();
@@ -1647,6 +1648,7 @@ bool cbEditor::Open(bool detectEncoding)
     m_LastModified = fname.GetModificationTime();
 
     SetModified(false);
+
     NotifyPlugins(cbEVT_EDITOR_OPEN);
 
     m_pControl->SetZoom(Manager::Get()->GetEditorManager()->GetZoom());

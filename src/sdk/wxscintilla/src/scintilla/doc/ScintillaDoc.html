@@ -38,7 +38,7 @@
 
     <h1>Scintilla Documentation</h1>
 
-    <p>Last edited 20/January/2010 NH</p>
+    <p>Last edited 24/January/2010 NH</p>
 
     <p>There is <a class="jump" href="Design.html">an overview of the internal design of
     Scintilla</a>.<br />
@@ -70,6 +70,10 @@
 
     <p>The GTK+ version also uses messages in a similar way to the Windows version. This is
     different to normal GTK+ practice but made it easier to implement rapidly.</p>
+
+    <p>Scintilla does not properly support right-to-left languages like Arabic and Hebrew. 
+    While text in these languages may appear correct, it is not possible to interact with this text
+    as is normal with other editing components.</p>
 
     <p>This documentation describes the individual messages and notifications used by Scintilla. It
     does not describe how to link them together to form a useful editor. For now, the best way to
@@ -297,7 +301,7 @@
     languages, and three independent indicators so that, for example, syntax errors, deprecated
     names and bad indentation could all be displayed at once. The number of bits used for styles
     can be altered with <a class="message"
-    href="#SCI_SETSTYLEBITS"><code>SCI_SETSTYLEBITS</code></a> up to a maximum of 7 bits.
+    href="#SCI_SETSTYLEBITS"><code>SCI_SETSTYLEBITS</code></a> up to a maximum of 8 bits.
     The remaining bits can be used for indicators.</p>
 
     <p>In this document, 'character' normally refers to a byte even when multi-byte characters are used.
@@ -483,7 +487,7 @@
     <p><b id="SCI_SETSTYLEBITS">SCI_SETSTYLEBITS(int bits)</b><br />
      <b id="SCI_GETSTYLEBITS">SCI_GETSTYLEBITS</b><br />
      This pair of routines sets and reads back the number of bits in each cell to use for styling,
-    to a maximum of 7 style bits. The remaining bits can be used as indicators. The standard
+    to a maximum of 8 style bits. The remaining bits can be used as indicators. The standard
     setting is <code>SCI_SETSTYLEBITS(5)</code>.
     The number of styling bits needed by the current lexer can be found with
     <a class="message" href="#SCI_GETSTYLEBITSNEEDED">SCI_GETSTYLEBITSNEEDED</a>.</p>
@@ -1015,6 +1019,7 @@ struct TextToFind {
     <code><a class="message" href="#SCI_GETTEXTLENGTH">SCI_GETTEXTLENGTH</a><br />
      <a class="message" href="#SCI_GETLENGTH">SCI_GETLENGTH</a><br />
      <a class="message" href="#SCI_GETLINECOUNT">SCI_GETLINECOUNT</a><br />
+     <a class="message" href="#SCI_SETFIRSTVISIBLELINE">SCI_SETFIRSTVISIBLELINE(int lineDisplay)</a><br />
      <a class="message" href="#SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</a><br />
      <a class="message" href="#SCI_LINESONSCREEN">SCI_LINESONSCREEN</a><br />
      <a class="message" href="#SCI_GETMODIFY">SCI_GETMODIFY</a><br />
@@ -1074,8 +1079,9 @@ struct TextToFind {
      This returns the number of lines in the document. An empty document contains 1 line. A
     document holding only an end of line sequence has 2 lines.</p>
 
-    <p><b id="SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</b><br />
-     This returns the line number of the first visible line in the Scintilla view. The first line
+    <p><b id="SCI_SETFIRSTVISIBLELINE">SCI_SETFIRSTVISIBLELINE(int lineDisplay)</b><br />
+     <b id="SCI_GETFIRSTVISIBLELINE">SCI_GETFIRSTVISIBLELINE</b><br />
+     These messages retrieve and set the line number of the first visible line in the Scintilla view. The first line
     in the document is numbered 0. The value is a visible line rather than a document line.</p>
 
     <p><b id="SCI_LINESONSCREEN">SCI_LINESONSCREEN</b><br />
@@ -2018,8 +2024,8 @@ struct TextToFind {
 
      <b id="SCI_SETWHITESPACESIZE">SCI_SETWHITESPACESIZE(int size)</b><br />
      <b id="SCI_GETWHITESPACESIZE">SCI_GETWHITESPACESIZE</b><br />
-     SCI_SETWHITESPACESIZE sets the size of the dots used for mark space characters.
-     The SCI_GETWHITESPACESIZE message retrieves the current size.
+     <code>SCI_SETWHITESPACESIZE</code> sets the size of the dots used for mark space characters.
+     The <code>SCI_GETWHITESPACESIZE</code> message retrieves the current size.
     <p>
 
     <p>
@@ -2943,6 +2949,8 @@ struct TextToFind {
      <code>SC_EFF_QUALITY_NON_ANTIALIASED</code>,
      <code>SC_EFF_QUALITY_ANTIALIASED</code>,
      <code>SC_EFF_QUALITY_LCD_OPTIMIZED</code>.</p>
+     <p>In case it is necessary to squeeze more options into this property, only a limited number of bits defined
+     by SC_EFF_QUALITY_MASK (0xf) will be used for quality.</p>
 
     <p><b id="SCI_SETCODEPAGE">SCI_SETCODEPAGE(int codePage)</b><br />
      <b id="SCI_GETCODEPAGE">SCI_GETCODEPAGE</b><br />
@@ -3182,7 +3190,7 @@ struct TextToFind {
 
     <h2 id="Markers">Markers</h2>
 
-    <p>There are 32 markers, numbered 0 to 31, and you can assign any combination of them to each
+    <p>There are 32 markers, numbered 0 to <code>MARKER_MAX</code> (31), and you can assign any combination of them to each
     line in the document. Markers appear in the <a class="jump" href="#Margins">selection
     margin</a> to the left of the text. If the selection margin is set to zero width, the
     background colour of the whole line is changed instead. Marker numbers 25 to 31 are used by
@@ -3672,7 +3680,7 @@ struct TextToFind {
         when you are done.</p>
 
     <p>The number of bits used for styles can be altered with <a class="message"
-    href="#SCI_SETSTYLEBITS"><code>SCI_SETSTYLEBITS</code></a> from 0 to 7 bits. The remaining bits
+    href="#SCI_SETSTYLEBITS"><code>SCI_SETSTYLEBITS</code></a> from 0 to 8 bits. The remaining bits
     can be used for indicators, so there can be from 1 to 8 indicators. However, the
     <code>INDIC*_MASK</code> constants defined in <code>Scintilla.h</code> all assume 5 bits of
     styling information and 3 indicators. If you use a different arrangement, you must define your
@@ -4704,48 +4712,53 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <table cellpadding="1" cellspacing="2" border="0" summary="Fold flags">
       <tbody>
         <tr>
-          <th align="center">Value</th>
-
+          <th align="left">Symbol</th>
+          <th align="left">Value</th>
           <th align="left">Effect</th>
         </tr>
       </tbody>
 
       <tbody valign="top">
         <tr>
-          <td align="center">1</td>
-
-          <td align="left">Experimental - draw boxes if expanded</td>
+          <td align="left"></td>
+          <td align="left">1</td>
+          <td align="left">Experimental feature that has been removed.</td>
         </tr>
 
         <tr>
-          <td align="center">2</td>
+          <td align="left">SC_FOLDFLAG_LINEBEFORE_EXPANDED</td>
+          <td align="left">2</td>
 
           <td align="left">Draw above if expanded</td>
         </tr>
 
         <tr>
-          <td align="center">4</td>
+          <td align="left">SC_FOLDFLAG_LINEBEFORE_CONTRACTED</td>
+          <td align="left">4</td>
 
           <td align="left">Draw above if not expanded</td>
         </tr>
 
         <tr>
-          <td align="center">8</td>
+          <td align="left">SC_FOLDFLAG_LINEAFTER_EXPANDED</td>
+          <td align="left">8</td>
 
           <td align="left">Draw below if expanded</td>
         </tr>
 
         <tr>
-          <td align="center">16</td>
+          <td align="left">SC_FOLDFLAG_LINEAFTER_CONTRACTED</td>
+          <td align="left">16</td>
 
           <td align="left">Draw below if not expanded</td>
         </tr>
 
         <tr>
-          <td align="center">64</td>
+          <td align="left">SC_FOLDFLAG_LEVELNUMBERS</td>
+          <td align="left">64</td>
 
           <td align="left">display hexadecimal fold levels in line margin to aid debugging of
-          folding. This feature needs to be redesigned to be sensible.</td>
+          folding. The appearance of this feature may change in the future.</td>
         </tr>
       </tbody>
     </table>
@@ -5159,9 +5172,11 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <code>Fold</code>. See <code>externalLexer.cxx</code> for more.</p>
     <code><a class="message" href="#SCI_SETLEXER">SCI_SETLEXER(int lexer)</a><br />
      <a class="message" href="#SCI_GETLEXER">SCI_GETLEXER</a><br />
-     <a class="message" href="#SCI_SETLEXERLANGUAGE">SCI_SETLEXERLANGUAGE(&lt;unused&gt;, char
+     <a class="message" href="#SCI_SETLEXERLANGUAGE">SCI_SETLEXERLANGUAGE(&lt;unused&gt;, const char
     *name)</a><br />
-     <a class="message" href="#SCI_LOADLEXERLIBRARY">SCI_LOADLEXERLIBRARY(&lt;unused&gt;, char
+     <a class="message" href="#SCI_GETLEXERLANGUAGE">SCI_GETLEXERLANGUAGE(&lt;unused&gt;, char
+    *name)</a><br />
+     <a class="message" href="#SCI_LOADLEXERLIBRARY">SCI_LOADLEXERLIBRARY(&lt;unused&gt;, const char
     *path)</a><br />
      <a class="message" href="#SCI_COLOURISE">SCI_COLOURISE(int start, int end)</a><br />
      <a class="message" href="#SCI_SETPROPERTY">SCI_SETPROPERTY(const char *key, const char *value)</a><br />
@@ -5185,7 +5200,8 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     assigns unused lexer numbers to.</p>
 
     <p><b id="SCI_SETLEXERLANGUAGE">SCI_SETLEXERLANGUAGE(&lt;unused&gt;, const char *name)</b><br />
-     This message lets you select a lexer by name, and is the only method if you are using an
+    <b id="SCI_GETLEXERLANGUAGE">SCI_GETLEXERLANGUAGE(&lt;unused&gt;, char *name)</b><br />
+     <code>SCI_SETLEXERLANGUAGE</code> lets you select a lexer by name, and is the only method if you are using an
     external lexer or if you have written a lexer module for a language of your own and do not wish
     to assign it an explicit lexer number. To select an existing lexer, set <code>name</code> to
     match the (case sensitive) name given to the module, for example "ada" or "python", not "Ada"
@@ -5196,6 +5212,8 @@ sptr_t CallScintilla(unsigned int iMessage, uptr_t wParam, sptr_t lParam){
     <p>To test if your lexer assignment worked, use <a class="message"
     href="#SCI_GETLEXER"><code>SCI_GETLEXER</code></a> before and after setting the new lexer to
     see if the lexer number changed.</p>
+
+    <p><code>SCI_GETLEXERLANGUAGE</code> retrieves the name of the lexer.</p>
 
     <p><b id="SCI_LOADLEXERLIBRARY">SCI_LOADLEXERLIBRARY(&lt;unused&gt;, const char *path)</b><br />
      Load a lexer implemented in a shared library. This is a .so file on GTK+/Linux or a .DLL file on Windows.

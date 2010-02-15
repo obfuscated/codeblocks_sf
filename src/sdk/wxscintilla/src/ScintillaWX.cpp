@@ -787,6 +787,10 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
           char* defn = reinterpret_cast<char *>(lParam);
           AutoCompleteCancel();
           pt.y += vs.lineHeight;
+/* C::B begin */
+          /* This fix will allow you to actually modify the calltip font (it
+           * was hardcoded to STYLE_DEFAULT instead of allowing user to
+           * override it when STYLE_CALLTIP is set). */
           int ctStyle = ct.UseStyleCallTip() ? STYLE_CALLTIP : STYLE_DEFAULT;
           PRectangle rc = ct.CallTipStart(sel.MainCaret(), pt,
                                           defn,
@@ -795,6 +799,7 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
                                           CodePage(),
                                           vs.styles[ctStyle].characterSet,
                                           wMain);
+/* C::B end */
           // If the call-tip window would be out of the client
           // space, adjust so it displays above the text.
           PRectangle rcClient = GetClientRectangle();

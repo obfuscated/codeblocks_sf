@@ -103,8 +103,8 @@ public:
  */
 class Editor : public DocWatcher {
 	// Private so Editor objects can not be copied
-	Editor(const Editor &) : DocWatcher() {}
-	Editor &operator=(const Editor &) { return *this; }
+	Editor(const Editor &);
+	Editor &operator=(const Editor &);
 
 protected:	// ScintillaBase subclass needs access to much of Editor
 
@@ -288,6 +288,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	SelectionPosition SelectionStart();
 	SelectionPosition SelectionEnd();
 	void SetRectangularRange();
+	void ThinRectangularRange();
 	void InvalidateSelection(SelectionRange newMain, bool invalidateWholeSelection=false);
 	void SetSelection(SelectionPosition currentPos_, SelectionPosition anchor_);
 	void SetSelection(int currentPos_, int anchor_);

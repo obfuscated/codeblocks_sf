@@ -1010,7 +1010,7 @@ void wxScintilla::SetWhitespaceSize(int size)
 }
 
 // Get the size of the dots used to mark space characters.
-int wxScintilla::GetWhitespaceSize()
+int wxScintilla::GetWhitespaceSize() const
 {
     return SendMsg(SCI_GETWHITESPACESIZE, 0, 0);
 }
@@ -1557,10 +1557,16 @@ void wxScintilla::SetSelectionVoid(int startPos, int endPos)
 // Retrieve the selected text.
 wxString wxScintilla::GetSelectedText()
 {
+/* C::B begin */
+    /* Notice that this function used to use 'GetSelection(&start, &end);'
+     * to calculate the selected text length - which works fine when using
+     * simple selection, but when using multiple selection, or even rectangular
+     * selection it may cause a crash. */
     int len (0);
 
     // determine the selected text range
-    len = SendMsg (SCI_GETSELTEXT, 0, 0);
+    len = SendMsg(SCI_GETSELTEXT, 0, 0);
+/* C::B end */
     if (!len) return wxEmptyString;
 
     wxMemoryBuffer mbuf(len+2);
@@ -2175,6 +2181,12 @@ void wxScintilla::SetFontQuality(int fontQuality)
 int wxScintilla::GetFontQuality() const
 {
     return SendMsg(SCI_GETFONTQUALITY, 0, 0);
+}
+
+// Scroll so that a display line is at the top of the display.
+void wxScintilla::SetFirstVisibleLine(int lineDisplay)
+{
+    SendMsg(SCI_SETFIRSTVISIBLELINE, lineDisplay, 0);
 }
 
 // Make the target range start and end be the same as the selection range start and end.
@@ -3886,7 +3898,7 @@ wxString wxScintilla::GetProperty (const wxString& key)
 
     wxMemoryBuffer mbuf(len+1);
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
-    SendMsg(SCI_GETPROPERTY, (sptr_t)(const char*)wx2sci(key), (sptr_t)buf);
+    SendMsg(SCI_GETPROPERTY, (uptr_t)(const char*)wx2sci(key), (sptr_t)buf);
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
@@ -4186,11 +4198,24 @@ wxPoint wxScintilla::PointFromPosition(int pos)
 }
 
 // Retrieve the start and end positions of the current selection.
-void wxScintilla::GetSelection (int* startPos, int* endPos)
+void wxScintilla::GetSelection (long *from, long *to)
 {
-    if (startPos != NULL) *startPos = SendMsg(SCI_GETSELECTIONSTART);
-    if (endPos != NULL) *endPos = SendMsg(SCI_GETSELECTIONEND);
+    if ( from )
+        *from = GetSelectionStart();
+    if ( to )
+        *to = GetSelectionEnd();
 }
+
+// kept for compatibility only
+//void wxScintilla::GetSelection(int *from, int *to)
+//{
+//    long f, t;
+//    GetSelection(&f, &t);
+//    if ( from )
+//        *from = f;
+//    if ( to )
+//        *to = t;
+//}
 
 // Scroll enough to make the given line visible
 void wxScintilla::ScrollToLine (int line)
@@ -4338,11 +4363,16 @@ wxCharBuffer wxScintilla::GetLineRaw (int line)
 
 wxCharBuffer wxScintilla::GetSelectedTextRaw()
 {
-    int   start;
-    int   end;
+/* C::B begin */
+    /* Notice that this function used to use 'GetSelection(&start, &end);'
+     * to calculate the selected text length - which works fine when using
+     * simple selection, but when using multiple selection, or even rectangular
+     * selection it may cause a crash. */
+    int len (0);
 
-    GetSelection(&start, &end);
-    int   len  = end - start;
+    // determine the selected text range
+    len = SendMsg(SCI_GETSELTEXT, 0, 0);
+/* C::B end */
     if (!len) {
         wxCharBuffer empty;
         return empty;
@@ -4819,7 +4849,9 @@ wxScintillaEvent::wxScintillaEvent (wxEventType commandType, int id)
     m_listType = 0;
     m_x = 0;
     m_y = 0;
+/* C::B begin */
     m_dragAllowMove = wxDrag_CopyOnly;
+/* C::B end */
 #if wxUSE_DRAG_AND_DROP
     m_dragResult = wxDragNone;
 #endif

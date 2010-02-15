@@ -20,7 +20,7 @@
 #ifndef __WXSCINTILLA_H__
 #define __WXSCINTILLA_H__
 
-#define wxSCINTILLA_VERSION _T("2.02.0")
+#define wxSCINTILLA_VERSION _T("2.03.0")
 
 #include <wx/wx.h>
 #include <wx/dnd.h>
@@ -1252,8 +1252,19 @@
 #define wxSCI_ERLANG_CHARACTER 9
 #define wxSCI_ERLANG_MACRO 10
 #define wxSCI_ERLANG_RECORD 11
-#define wxSCI_ERLANG_SEPARATOR 12
+#define wxSCI_ERLANG_PREPROC 12
 #define wxSCI_ERLANG_NODE_NAME 13
+#define wxSCI_ERLANG_COMMENT_FUNCTION 14
+#define wxSCI_ERLANG_COMMENT_MODULE 15
+#define wxSCI_ERLANG_COMMENT_DOC 16
+#define wxSCI_ERLANG_COMMENT_DOC_MACRO 17
+#define wxSCI_ERLANG_ATOM_QUOTED 18
+#define wxSCI_ERLANG_MACRO_QUOTED 19
+#define wxSCI_ERLANG_RECORD_QUOTED 20
+#define wxSCI_ERLANG_NODE_NAME_QUOTED 21
+#define wxSCI_ERLANG_BIFS 22
+#define wxSCI_ERLANG_MODULES 23
+#define wxSCI_ERLANG_MODULES_ATT 24
 #define wxSCI_ERLANG_UNKNOWN 31
 
 // Lexical states for SCLEX_OCTAVE are identical to MatLab
@@ -1599,7 +1610,6 @@
 #define wxSCI_INNO_PARAMETER 3
 #define wxSCI_INNO_SECTION 4
 #define wxSCI_INNO_PREPROC 5
-#define wxSCI_INNO_PREPROC_INLINE 6
 #define wxSCI_INNO_INLINE_EXPANSION 6
 #define wxSCI_INNO_COMMENT_PASCAL 7
 #define wxSCI_INNO_KEYWORD_PASCAL 8
@@ -2331,7 +2341,7 @@ public:
 
     // Retrieve the text of the line containing the caret.
     // Returns the index of the caret on the line.
-    #ifdef SWIG
+#ifdef SWIG
     wxString GetCurLine(int* OUTPUT);
 #else
     wxString GetCurLine(int* linePos=NULL);
@@ -2593,7 +2603,7 @@ public:
     void SetWhitespaceSize(int size);
 
     // Get the size of the dots used to mark space characters.
-    int GetWhitespaceSize();
+    int GetWhitespaceSize() const;
 
     // Divide each styling byte into lexical class bits (default: 5) and indicator
     // bits (default: 3). If a lexer requires more than 32 lexical states, then this
@@ -3147,6 +3157,9 @@ public:
 
     // Retrieve the quality level for text.
     int GetFontQuality() const;
+
+    // Scroll so that a display line is at the top of the display.
+    void SetFirstVisibleLine(int lineDisplay);
 
     // Make the target range start and end be the same as the selection range start and end.
     void TargetFromSelection();
@@ -3713,10 +3726,10 @@ public:
     // Are keys always interpreted as Unicode?
     bool GetKeysUnicode() const;
 
-    // Set alpha value for an indicator to draw under text or over(default).
+    // Set the alpha fill colour of the given indicator.
     void IndicSetAlpha(int indicator, int alpha);
 
-    // Retrieve alpha value used for indicator drawn under or over text.
+    // Get the alpha fill colour of the given indicator.
     int IndicGetAlpha(int indicator) const;
 
     // Set extra ascent for each line
@@ -4014,9 +4027,11 @@ public:
 
     // Retrieve the start and end positions of the current selection.
 #ifdef SWIG
-    void GetSelection (int* OUTPUT, int* OUTPUT);
+    void GetSelection (long* OUTPUT, long* OUTPUT);
 #else
-    void GetSelection (int* startPos, int* endPos);
+    void GetSelection (long *from, long *to);
+    // kept for compatibility only
+//    void GetSelection(int *from, int *to)
 #endif
 
     // Retrieve the point in the window where a position is displayed.
@@ -4215,7 +4230,9 @@ public:
     void SetX(int val)                    { m_x = val; }
     void SetY(int val)                    { m_y = val; }
     void SetDragText(const wxString& val) { m_dragText = val; }
+/* C::B begin */
     void SetDragAllowMove(int val)        { m_dragAllowMove = val; }
+/* C::B end */
 #ifdef  SCI_USE_DND
     void SetDragResult(wxDragResult val)  { m_dragResult = val; }
 #endif
@@ -4238,7 +4255,9 @@ public:
     int  GetX() const                { return m_x; }
     int  GetY() const                { return m_y; }
     wxString GetDragText()           { return m_dragText; }
+/* C::B begin */
     int GetDragAllowMove()           { return m_dragAllowMove; }
+/* C::B end */
 #ifdef SCI_USE_DND
     wxDragResult GetDragResult()     { return m_dragResult; }
 #endif
@@ -4276,7 +4295,9 @@ private:
     int m_y;
 
     wxString m_dragText;        // wxEVT_SCI_START_DRAG, wxEVT_SCI_DO_DROP
-    int     m_dragAllowMove;   // wxEVT_SCI_START_DRAG
+/* C::B begin */
+    int     m_dragAllowMove;    // wxEVT_SCI_START_DRAG
+/* C::B end */
 
 #if wxUSE_DRAG_AND_DROP
     wxDragResult m_dragResult; // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
