@@ -1,8 +1,11 @@
 SUBDIRS = arm avr c_file console d directx dll empty empty_file fltk glfw glut gtk h_file irrlicht lf matlab_csf ogre opengl plugins ppc qt4 sdl sfml smartwin staticlib stlport sharedlib sys tricore win32gui wxwidgets
 
-pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard
+pkgdata_DATA = scriptedwizard.zip
+CLEANFILES = $(pkgdata_DATA)
 
-dist_pkgdata_DATA = common_functions.script \
+scriptdir = $(pkgdatadir)/templates/wizard
+
+dist_script_DATA = common_functions.script \
 					config.script
 
 EXTRA_DIST = manifest.xml
@@ -10,16 +13,3 @@ EXTRA_DIST = manifest.xml
 scriptedwizard.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/scriptedwizard.zip manifest.xml > /dev/null
 
-install-data-local: scriptedwizard.zip
-	$(mkinstalldirs) $(DESTDIR)$(datadir)/@PACKAGE@/; \
-	if test -f $(srcdir)/scriptedwizard.zip; then p=$(srcdir)/scriptedwizard.zip; else p=scriptedwizard.zip; fi; \
-	$(INSTALL_DATA) $$p $(DESTDIR)$(datadir)/@PACKAGE@/scriptedwizard.zip
-
-clean-local:
-	if test -f $(srcdir)/scriptedwizard.zip; then rm $(srcdir)/scriptedwizard.zip; fi;
-
-distclean-local:
-	if test -f $(srcdir)/scriptedwizard.zip; then rm $(srcdir)/scriptedwizard.zip; fi;
-
-uninstall-local:
-	if test -f $(DESTDIR)$(datadir)/@PACKAGE@/scriptedwizard.zip; then rm $(DESTDIR)$(datadir)/@PACKAGE@/scriptedwizard.zip; fi;
