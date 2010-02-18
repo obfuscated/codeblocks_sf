@@ -168,7 +168,7 @@ Code::Blocks SDK to develop your own plugins.
 %{_bindir}/cb_console_runner
 %{_libdir}/libcodeblocks.so.*
 %{_datadir}/applications/codeblocks.desktop
-%{_datadir}/icons/gnome/48x48/mimetypes/*
+%{_datadir}/icons/hicolor/48x48/mimetypes/*
 %{_datadir}/mime/packages/codeblocks.xml
 %{_datadir}/pixmaps/codeblocks.png
 %{pkgdata}/astyle.zip
@@ -285,6 +285,7 @@ Code::Blocks SDK to develop your own plugins.
 %changelog
 * Thu Feb 18 2010 Biplab <bkmodak@gmail.com>
 - Changed source tarball extension to .bz2
+- Fixed: broken rpm build due to path change from icons/gnome/* to icons/hicolor/*
 * Sun Dec 14 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - some fixes for changes in rev 5334
 * Sat Jul 26 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
