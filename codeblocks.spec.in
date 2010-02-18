@@ -49,7 +49,7 @@ Group:			Development/Tools/IDE
 License:		GPL
 URL:			http://www.codeblocks.org/
 Packager:		TheTuxKeeper <thetuxkeeper@googlemail.com>
-Source:			%{name}-@VERSION@.tar.gz
+Source:			%{name}-@VERSION@.tar.bz2
 BuildRoot:		%{_tmppath}/%{name}-%{version}-buildroot
 
 %if 0%{?mandriva_version}
@@ -283,6 +283,8 @@ Code::Blocks SDK to develop your own plugins.
 %{_includedir}/wxsmith/*
 
 %changelog
+* Thu Feb 18 2010 Biplab <bkmodak@gmail.com>
+- Changed source tarball extension to .bz2
 * Sun Dec 14 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - some fixes for changes in rev 5334
 * Sat Jul 26 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
