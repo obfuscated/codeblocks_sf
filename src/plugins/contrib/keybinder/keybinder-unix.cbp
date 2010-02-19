@@ -8,12 +8,11 @@
 		<Build>
 			<Target title="KeyBinder plugin">
 				<Option output="../../../devel/share/codeblocks/plugins/libkeybinder.so" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/keybinder" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log -ns -ni" />
-				<Option host_application="./codeblocks" />
+				<Option host_application="../../../devel/codeblocks" />
 				<Compiler>
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
