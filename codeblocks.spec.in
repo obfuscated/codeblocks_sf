@@ -83,7 +83,7 @@ BuildRequires:		update-desktop-files
 %endif
 
 %if 0%{?fedora_version}
-BuildRequires:  	lynx
+#BuildRequires:  	lynx
 %endif
 
 #{?_distribution:Distribution:%_distribution}
@@ -166,6 +166,8 @@ Code::Blocks SDK to develop your own plugins.
 
 %{_bindir}/codeblocks
 %{_bindir}/cb_console_runner
+%{_libdir}/libcodeblocks.so
+%{_libdir}/libcodeblocks.la
 %{_libdir}/libcodeblocks.so.*
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
@@ -192,7 +194,6 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/images/codecompletion/*
 %{pkgdata}/images/settings/*
 %{pkgdata}/lexers/*
-%{pkglib}
 %{pkglib}/plugins/libastyle.*
 %{pkglib}/plugins/libautosave.*
 %{pkglib}/plugins/libclasswizard.*
@@ -220,6 +221,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/cb_koders.zip
 %{pkgdata}/codesnippets.zip
 %{pkgdata}/codestat.zip
+%{pkgdata}/copystrings.zip
 %{pkgdata}/dragscroll.zip
 %{pkgdata}/envvars.zip
 %{pkgdata}/exporter.zip
@@ -234,14 +236,13 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/Valgrind.zip
 %{pkgdata}/wxsmith.zip
 %{pkgdata}/wxsmithcontribitems.zip
-%{pkgdata}/wxsmithaui.zip
+%{pkgdata}/wxSmithAui.zip
 %{pkgdata}/HexEditor.zip
 %{pkgdata}/IncrementalSearch.zip
 %{pkgdata}/MouseSap.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
 %{pkgdata}/images/ThreadSearch/*
-%{pkgdata}/images/IncrementalSearch/*
 %{pkgdata}/lib_finder/*
 %{pkglib}/plugins/libAutoVersioning.*
 %{pkglib}/plugins/libBrowseTracker.*
@@ -251,6 +252,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libcb_koders.*
 %{pkglib}/plugins/libcodesnippets.*
 %{pkglib}/plugins/libcodestat.*
+%{pkglib}/plugins/libcopystrings.*
 %{pkglib}/plugins/libdragscroll.*
 %{pkglib}/plugins/libenvvars.*
 %{pkglib}/plugins/libexporter.*
@@ -267,22 +269,31 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libValgrind.*
 %{pkglib}/plugins/libMouseSap.*
 %{pkglib}/plugins/libwxsmith.*
+%{_libdir}/libwxsmithlib.so
+%{_libdir}/libwxsmithlib.la
+%{_libdir}/wxSmithContribItems/*
 %{pkglib}/plugins/libwxsmithcontribitems.*
-%{pkglib}/plugins/libwxsmithaui.*
+%{pkglib}/plugins/libwxSmithAui.*
 %{_libdir}/libwxsmithlib.so.*
 
 %files devel
 %defattr(-,root,root)
-%{_libdir}/libcodeblocks.so
-%{_libdir}/libcodeblocks.la
-%{_libdir}/libwxsmithlib.so
-%{_libdir}/libwxsmithlib.la
 %{_libdir}/pkgconfig/codeblocks.pc
 %{_libdir}/pkgconfig/wxsmith.pc
+%{_libdir}/pkgconfig/wxsmith-contrib.pc
+%{_libdir}/pkgconfig/wxsmithaui.pc
 %{_includedir}/%{name}/*
 %{_includedir}/wxsmith/*
+%{_includedir}/wxSmithContribItems/*
 
 %changelog
+* Sun Dec 20 2010 Biplab <bkmodak@gmail.com>
+- Fixed typos: In wxSmithAui generated files.
+- Fixed: RPM build error due to inclusion of contrib plugins twice.
+- Fixed: Copystrings plugin was not included properly in rpm.
+- Fixed: Pkgconfig macros of wxsmithaui and wxsmith-contrib were not included.
+- Moved: libwxsmithlib.so to contrib package.
+- Removed: 'lynx' as a dependency.
 * Thu Feb 18 2010 Biplab <bkmodak@gmail.com>
 - Changed source tarball extension to .bz2
 - Fixed: broken rpm build due to path change from icons/gnome/* to icons/hicolor/*
