@@ -59,7 +59,7 @@ class BrowseTrackerConfPanel: public cbConfigurationPanel
 
   protected:
     ConfigPanel* m_pConfigPanel;
-
+    bool bEdMultiSelOn;
   private:
 
     // Virtual event handlers, overriden fron ConfigPanel.h

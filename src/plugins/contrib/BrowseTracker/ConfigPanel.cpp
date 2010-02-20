@@ -85,6 +85,10 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	
 	bSizer3->Add( bSizer10, 1, wxEXPAND, 5 );
 	
+	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("Note: The Ctrl-Left_Mouse key options are disabled when\nthe editors multi-selection option is enabled at:\nSettings/Editor/Margins/Allow Multiple Selections\n\nMenu items can be used to clear BrowseMarks.\n\n"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText3->Wrap( -1 );
+	bSizer3->Add( m_staticText3, 0, wxALL, 5 );
+	
 	this->SetSizer( bSizer3 );
 	this->Layout();
 	

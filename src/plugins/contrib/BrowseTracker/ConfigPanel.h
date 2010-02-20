@@ -33,6 +33,7 @@ class ConfigPanel : public wxPanel
 	protected:
 		wxStaticText* m_staticText2;
 		
+		wxStaticText* m_staticText3;
 		
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnEnableBrowseMarks( wxCommandEvent& event ){ event.Skip(); }
@@ -47,7 +48,7 @@ class ConfigPanel : public wxPanel
 		wxStaticText* m_staticText4;
 		wxSlider* Cfg_LeftMouseDelay;
 		wxRadioBox* Cfg_ClearAllKey;
-		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 383,569 ), long style = wxTAB_TRAVERSAL );
+		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 444,569 ), long style = wxTAB_TRAVERSAL );
 		~ConfigPanel();
 	
 };

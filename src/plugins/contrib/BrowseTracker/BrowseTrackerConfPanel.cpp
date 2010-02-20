@@ -55,6 +55,9 @@ BrowseTrackerConfPanel::BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugi
 
     // read current user options
     GetUserOptions( m_BrowseTrackerPlugin.GetBrowseTrackerCfgFilename() );
+    // get ctrl-key ownership if editor multi-selection is enabled
+    bEdMultiSelOn = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/selection/multi_select"), false);
+
     // enable/disable dialog options mapped to user options
     wxCommandEvent evt;
     OnEnableBrowseMarks( evt );
@@ -120,8 +123,15 @@ void BrowseTrackerConfPanel::OnEnableBrowseMarks( wxCommandEvent& event )
     {
         m_pConfigPanel->Cfg_MarkStyle->Enable(true);
         m_pConfigPanel->Cfg_ToggleKey->Enable(true);
-        m_pConfigPanel->Cfg_LeftMouseDelay->Enable(true); ;
+        m_pConfigPanel->Cfg_LeftMouseDelay->Enable(true);
         m_pConfigPanel->Cfg_ClearAllKey->Enable(true); ;
+        // if Ctrl-key belongs to editor multi-selection, disable here
+        if (bEdMultiSelOn)
+        {
+            m_pConfigPanel->Cfg_ToggleKey->Enable(false);
+            m_pConfigPanel->Cfg_ClearAllKey->Enable(false); ;
+
+        }
     }
     event.Skip();
 }
