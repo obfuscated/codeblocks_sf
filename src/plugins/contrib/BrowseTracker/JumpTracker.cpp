@@ -187,9 +187,6 @@ void JumpTracker::BuildMenu(wxMenuBar* menuBar)
     // Place the menu inside the View Menu
     wxMenu* pViewMenu = menuBar->GetMenu(viewPos);
     pViewMenu->Append(idMenuJumpView, _("Jump"), jump_submenu, _("Jump"));
-    //-pToolsMenu->Insert(0, idCBTortoiseSVN, _("TortoiseSVN"), TortoiseSVN_submenu, _("TortoiseSVN"));
-    // must insert at 0; it moves there after using "config tools..." anyway
-    //pToolsMenu->Insert(0, idMenuAVRStudioStart, _("AVRStudio"), _("AVR Studio Start"));
 
 }
 // ----------------------------------------------------------------------------
@@ -218,7 +215,6 @@ bool JumpTracker::BuildToolBar(wxToolBar* toolBar)
 void JumpTracker::OnEditorUpdateEvent(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    //asm("int3"); /*trap*/
     event.Skip();
 
     if ( m_bShuttingDown )

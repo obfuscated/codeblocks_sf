@@ -237,6 +237,9 @@ AppVersion::~AppVersion()
 //  Commit 1.2.93 2010/02/19
 //       93) Diable Ctrl-Left_Mouse key usage when user sets editor multi-selection enabled.
 // ----------------------------------------------------------------------------
+//  Commit 1.2.94 2010/02/25
+//       94) Apply patch 2886 by techy
+// ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
 //          When CB reloads a changed editor, the marks are missing

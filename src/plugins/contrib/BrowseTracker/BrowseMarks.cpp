@@ -65,9 +65,7 @@ BrowseMarks::BrowseMarks(wxString fullPath )
     //LOGIT( _T("BT BrowseMarks[%s][%s]"),m_filePath.c_str() ,m_fileShortName.c_str() );
     //#endif
 
-    m_EdPosnArray.Alloc(MaxEntries);
-    for (int i=0; i < MaxEntries; ++i )
-    	m_EdPosnArray[i] = -1;
+    m_EdPosnArray.SetCount(MaxEntries, -1);     //patch 2886
     m_currIndex = 0;    //index of current entry
     m_lastIndex = MaxEntries-1;    //index for insertion of new browse marks
     m_pEdMgr = Manager::Get()->GetEditorManager();

@@ -215,8 +215,7 @@ void BrowseTracker::OnAttach()
 	m_InitDone = false;
 	m_CurrEditorIndex = 0;
 	m_LastEditorIndex = MaxEntries-1;
-	m_apEditors.Alloc(MaxEntries);
-	for (int i=0; i<MaxEntries ; ++i ) m_apEditors[i] = 0;
+    m_apEditors.SetCount(MaxEntries, 0);    //patch 2886
 	m_nBrowsedEditorCount = 0;
 	m_UpdateUIFocusEditor = 0;
 	m_nRemoveEditorSentry = 0;
@@ -508,11 +507,11 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
         wxString menuLabel = item->GetLabel();
         #endif
         ///LOGIT( _T("BT OnContextMenu insert[%s]"),menuLabel.c_str() );
-        wxMenuItem* pContextItem= new wxMenuItem(0, menuId, menuLabel);
+        wxMenuItem* pContextItem= new wxMenuItem(sub_menu, menuId, menuLabel); //patch 2886
         sub_menu->Append( pContextItem );
     }
     popup->AppendSeparator();
-    pbtMenuItem = new wxMenuItem(0, wxID_ANY, _("Browse Tracker"), _T(""), wxITEM_NORMAL);
+    pbtMenuItem = new wxMenuItem(sub_menu, wxID_ANY, _("Browse Tracker"), _T(""), wxITEM_NORMAL);   //patch 2886
     pbtMenuItem->SetSubMenu(sub_menu);
     popup->Append(pbtMenuItem);
 
@@ -2192,7 +2191,8 @@ void BrowseTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
         tmpArray.Alloc(MaxEntries);
         // copy current editors & clear for compression
         for (int i = 0; i<MaxEntries; ++i)
-        {   tmpArray[i] = m_apEditors[i];
+        {
+            tmpArray.Add(m_apEditors[i]);   //patch 2886
             m_apEditors[i] = 0;
         }//for
         m_CurrEditorIndex = 0;
@@ -2537,7 +2537,7 @@ ProjectData* BrowseTracker::GetProjectDataByEditorName( wxString filePath)
 // ----------------------------------------------------------------------------
 {
     wxString reason = wxT("");
-    //asm("int3"); /*trap*/
+
     do {
         EditorBase* eb = m_pEdMgr->GetEditor( filePath );
         reason = wxT("eb");
