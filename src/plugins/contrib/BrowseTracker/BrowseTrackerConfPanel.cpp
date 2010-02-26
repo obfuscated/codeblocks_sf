@@ -11,6 +11,7 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
+#include "configmanager.h"
 #endif
 
 #include "manager.h"
