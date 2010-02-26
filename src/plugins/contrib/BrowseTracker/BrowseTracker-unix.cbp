@@ -19,8 +19,7 @@
 					<Add option="-fPIC" />
 					<Add option="-DPIC" />
 					<Add option="-DNO_LOGGING" />
-					<Add option="-DNO_CB_PRECOMP" />
-					<Add option="-DNOPCH" />
+					<Add option="-DCB_PRECOMP" />
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
