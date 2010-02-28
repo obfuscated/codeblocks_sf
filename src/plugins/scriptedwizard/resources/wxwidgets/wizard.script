@@ -801,14 +801,14 @@ function SetupTarget(target, is_debug)
 
     if (is_debug)
     {
-        if (ReleaseTarget == 0)
+        if (DebugTarget == 0)
             target.SetTargetType(ttConsoleOnly);
         else
             target.SetTargetType(ttExecutable);
     }
     else
     {
-        if (DebugTarget == 0)
+        if (ReleaseTarget == 0)
             target.SetTargetType(ttConsoleOnly);
         else
             target.SetTargetType(ttExecutable);
