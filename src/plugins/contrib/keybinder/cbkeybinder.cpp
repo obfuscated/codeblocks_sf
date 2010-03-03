@@ -1046,7 +1046,7 @@ void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
         // deleteing the EvtHandler here will crash CB
         // detach before removing the ed ptr
         DetachEditor(thisWindow, /*DeleteEvtHander*/false);
-        m_EditorPtrs.Remove(thisWindow);
+        //-m_EditorPtrs.Remove(thisWindow); //patch 2885, already removed by DetachEditor()
 
         #ifdef LOGGING
          LOGIT( _T("OnWindowDestroyEvent Removed %p"), thisWindow);

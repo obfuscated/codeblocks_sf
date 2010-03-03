@@ -621,7 +621,10 @@ wxCmd *wxCmd::CreateNew(wxString cmdName, int type, int id, bool updateMnu)
 
 	// create the wxCmd-derived class & init it
 	wxCmd* ret = fnc(cmdName, id);
-	wxASSERT(ret);			// for debug builds
+// ret == NULL can easily happen on runtime when dynamic menu entries are stored    //patch 2885
+// into the config file and upon reload during startup the same entries don't       //patch 2885
+// exist - usage of wxASSERT isn't probably a good idea here...                     //patch 2885
+//	wxASSERT(ret);			// for debug builds                                     //patch 2885
 	if (!ret) return NULL;	// for release builds
 	if (updateMnu) ret->Update();
 
@@ -2137,6 +2140,10 @@ wxTreeItemId wxKeyConfigPanel::GetSelCmdId() const
 	if (p == NULL)
 		return wxTreeItemId();		// an empty wxTreeItemId is always invalid...
 
+    // if tree item is a sub-menu don't allow key assignment
+    if (m_pCommandsTree->ItemHasChildren(selection))        //patch 2885
+        return wxTreeItemId();                              //patch 2885
+
 	return selection;
 }
 // ----------------------------------------------------------------------------
@@ -2167,16 +2174,10 @@ bool wxKeyConfigPanel::IsSelectedValidCmd() const
 ////		return GetSelCmdId().IsOk();
 
 	if (IsUsingTreeCtrl())
-	{
-	    // if tree item is a sub-menu don't allow key assignment //(pecan 2009/6/04)
-	    if (m_pCommandsTree->ItemHasChildren(m_pCommandsTree->GetSelection()))
-            return false;
 	    return GetSelCmdId().IsOk();
-	}
 	else
 		return m_pCommandsList->GetSelection() >= 0;
 }
-
 // ----------------------------------------------------------------------------
 wxKeyProfileArray wxKeyConfigPanel::GetProfiles() const
 // ----------------------------------------------------------------------------
