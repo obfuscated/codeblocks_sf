@@ -206,14 +206,23 @@ int CppCheck::Execute()
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
     ::wxSetWorkingDirectory(Project->GetBasePath());
     const long Files = Project->GetFilesCount();
-    wxString ListOfFileNames;
+    if(!Files)
+    {
+    	return 0;
+    }
+    wxFile Input;
+    const wxString InputFileName = _T("CppCheckInput.txt");
+    if(!Input.Create(InputFileName, true))
+    {
+    	return -1;
+    }
     for (int File = 0; File < Files; ++File)
     {
         ProjectFile* pf = Project->GetFile(File);
-        ListOfFileNames += _T("\"") + pf->relativeFilename + _T("\" ");
+        Input.Write(pf->relativeFilename + _T("\n"));
     }
-
-    const wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml ") + ListOfFileNames.Trim();
+    Input.Close();
+    const wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml --file-list=") + InputFileName;
     AppendToLog(CommandLine);
     wxArrayString Output, Errors;
     {
@@ -226,9 +235,11 @@ int CppCheck::Execute()
             wxString msg = _("Failed to lauch cppcheck.\nMake sure the application is in the path!");
             AppendToLog(msg);
             cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+            ::wxRemoveFile(InputFileName);
             return -1;
         }
     } // end lifetime of wxWindowDisabler, wxBusyInfo
+    ::wxRemoveFile(InputFileName);
     size_t Count = Output.GetCount();
     for (size_t idxCount = 0; idxCount < Count; ++idxCount)
     {
