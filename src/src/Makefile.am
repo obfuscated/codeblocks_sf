@@ -5,7 +5,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/include/scripting/include \
 			-I$(top_srcdir)/src/include/scripting/sqplus \
-			-I$(top_srcdir)/src/include\mozilla_chardet
+			-I$(top_srcdir)/src/include/mozilla_chardet
 
 if CODEBLOCKS_LINUX
 AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\""
