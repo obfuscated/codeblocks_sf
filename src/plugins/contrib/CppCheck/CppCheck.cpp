@@ -222,7 +222,19 @@ int CppCheck::Execute()
         Input.Write(pf->relativeFilename + _T("\n"));
     }
     Input.Close();
-    const wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml --file-list=") + InputFileName;
+
+    wxString IncludeList;
+    const wxArrayString& IncludeDirs = Project->GetIncludeDirs();
+    for (int Dir = 0; Dir < IncludeDirs.GetCount(); ++Dir)
+    {
+    	IncludeList += _T("-I\"") + IncludeDirs[Dir] + _T("\" ");
+    }
+
+    wxString CommandLine = m_CppCheckApp + _T(" --verbose --all --style --xml --file-list=") + InputFileName;
+    if(IncludeList.IsEmpty())
+    {
+		CommandLine += _T(" ") + IncludeList.Trim();
+    }
     AppendToLog(CommandLine);
     wxArrayString Output, Errors;
     {
