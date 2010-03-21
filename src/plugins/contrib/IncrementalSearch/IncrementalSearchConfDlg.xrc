@@ -21,7 +21,7 @@
 							<cols>2</cols>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT1">
-									<label>Colour to highlight found text</label>
+									<label>Current occurrence in active editor</label>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -37,7 +37,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT2">
-									<label>Colour to highlight additional occurrences</label>
+									<label>Additional occurrences in active editor</label>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -68,7 +68,7 @@
 							<cols>2</cols>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT3">
-									<label>Colour if text not found</label>
+									<label>No occurrences in active editor</label>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -84,7 +84,7 @@
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT4">
-									<label>Colour to indicate that search wrapped</label>
+									<label>Search wrapped at top or bottom</label>
 								</object>
 								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
@@ -113,7 +113,7 @@
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkIncSearchConfCenterText">
-							<label>Center the line containing the found text on screen</label>
+							<label>Center-align current occurrence in active editor</label>
 							<checked>1</checked>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -122,7 +122,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="idIncSearchSelectOnEscape">
-							<label>Select last found phrase when leaving Incremental Search with ESC</label>
+							<label>Leaving with ESC selects current occurrence</label>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -130,7 +130,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="idIncSearchSelectOnFocus">
-							<label>Select search string in toolbar if it gains the focus via menu or shortcut</label>
+							<label>Auto-select content of input field when starting incremental search</label>
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -145,12 +145,25 @@
 									<cols>2</cols>
 									<rows>4</rows>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT5">
-											<label>&quot;Highlight&quot;-button</label>
+										<object class="wxBoxSizer">
+											<object class="sizeritem">
+												<object class="wxBitmapButton" name="ID_BITMAPBUTTON1">
+													<bitmap>images/incsearchhighlight.png</bitmap>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT5">
+													<label>&quot;Highlight&quot;-button</label>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
-										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchHighlightDefault">
@@ -166,12 +179,26 @@
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT6">
-											<label>&quot;Selected text&quot;-button</label>
+										<object class="wxBoxSizer">
+											<object class="sizeritem">
+												<object class="wxBitmapButton" name="ID_BITMAPBUTTON2">
+													<bitmap>images/incsearchselectedonly.png</bitmap>
+													<default>1</default>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT6">
+													<label>&quot;Selected text&quot;-button</label>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
-										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchSelectedDefault">
@@ -187,12 +214,26 @@
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT7">
-											<label>&quot;Match case&quot;-button</label>
+										<object class="wxBoxSizer">
+											<object class="sizeritem">
+												<object class="wxBitmapButton" name="ID_BITMAPBUTTON3">
+													<bitmap>images/incsearchcase.png</bitmap>
+													<default>1</default>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT7">
+													<label>&quot;Match case&quot;-button</label>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
-										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchMatchCaseDefault">
@@ -208,12 +249,25 @@
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT8">
-											<label>&quot;Regular Expression&quot;-button</label>
+										<object class="wxBoxSizer">
+											<object class="sizeritem">
+												<object class="wxBitmapButton" name="ID_BITMAPBUTTON4">
+													<bitmap>images/incsearchregex.png</bitmap>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT8">
+													<label>&quot;Regular Expression&quot;-button</label>
+												</object>
+												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<border>5</border>
+												<option>1</option>
+											</object>
 										</object>
 										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 										<border>5</border>
-										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxChoice" name="idIncSearchRegExDefault">
