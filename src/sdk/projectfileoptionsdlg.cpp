@@ -343,24 +343,26 @@ void ProjectFileOptionsDlg::FillGeneralProperties()
             long int comment_lines = 0;
             long int codecomments_lines = 0;
             CountLines(m_FileName, langCPP, code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
-            XRCCTRL(*this, "staticTotalLines",   wxStaticText)->SetLabel(wxString::Format(_("%ld"), total_lines));
-            XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->SetLabel(wxString::Format(_("%ld"), empty_lines));
-            XRCCTRL(*this, "staticActualLines",  wxStaticText)->SetLabel(wxString::Format(_("%ld"), code_lines + codecomments_lines));
-            XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_("%ld"), comment_lines));
+            XRCCTRL(*this, "staticTotalLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), total_lines));
+            XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), empty_lines));
+            XRCCTRL(*this, "staticActualLines",  wxStaticText)->SetLabel(wxString::Format(_T("%ld"), code_lines + codecomments_lines));
+            XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_T("%ld"), comment_lines));
+            XRCCTRL(*this, "staticEmptyLines", wxStaticText)->GetContainingSizer()->Layout();
         }
         wxFile file(m_FileName.GetFullPath());
         if (file.IsOpened())
         {
             long length = static_cast<long>(file.Length());
-            XRCCTRL(*this, "staticFileSize", wxStaticText)->SetLabel(wxString::Format(_("%ld"), length));
+            XRCCTRL(*this, "staticFileSize", wxStaticText)->SetLabel(wxString::Format(_("%ld Bytes"), length));
+            XRCCTRL(*this, "staticFileSize", wxStaticText)->GetContainingSizer()->Layout();
             file.Close();
         }
         XRCCTRL(*this, "chkReadOnly", wxCheckBox)->SetValue(!m_FileName.IsFileWritable());
         wxDateTime modTime = m_FileName.GetModificationTime();
         XRCCTRL(*this, "staticDateTimeStamp", wxStaticText)->SetLabel(
-            wxString::Format(_("%ld/%ld/%ld %ld:%ld:%ld"), modTime.GetDay(),
+            wxString::Format(_("%02hd/%02hd/%d %02hd:%02hd:%02hd"), modTime.GetDay(),
             modTime.GetMonth() + 1, modTime.GetYear(), modTime.GetHour(), // seems I have to add 1 for the month ?
-            modTime.GetMinute(), modTime.GetSecond()));
+            modTime.GetMinute(), modTime.GetSecond()));                   // because the return value of GetMonth() is an enum
     }
 }
 
