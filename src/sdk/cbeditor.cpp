@@ -404,10 +404,11 @@ struct cbEditorInternalData
         const wxString rightBrace(_T(")]}"));
         int index = leftBrace.Find(ch);
         const wxString unWant(_T(");\n\r\t\b "));
+        const wxChar nextChar = control->GetCharAt(pos);
         #if wxCHECK_VERSION(2, 9, 0)
-        if ((index != wxNOT_FOUND) && (unWant.Find(wxUniChar(control->GetCharAt(pos))) != wxNOT_FOUND))
+        if ((index != wxNOT_FOUND) && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || nextChar == _T('\0')))
         #else
-        if ((index != wxNOT_FOUND) && (unWant.Find(control->GetCharAt(pos)) != wxNOT_FOUND))
+        if ((index != wxNOT_FOUND) && ((unWant.Find(nextChar) != wxNOT_FOUND) || nextChar == _T('\0')))
         #endif
         {
             control->AddText(rightBrace.GetChar(index));
