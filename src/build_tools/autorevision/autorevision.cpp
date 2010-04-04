@@ -122,7 +122,16 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
             if(d && d->GetText())
             {
                 date = d->GetText();
-            }
+                string::size_type pos = date.find('T');
+                if (pos != string::npos)
+                {
+                    date[pos] = ' ';
+                }
+                pos = date.rfind('.');
+                if (pos != string::npos)
+                {
+                    date = date.substr(0, pos);            }
+                }
             return 1;
         }
     }
