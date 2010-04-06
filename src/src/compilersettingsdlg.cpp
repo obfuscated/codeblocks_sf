@@ -236,6 +236,7 @@ void CompilerSettingsDlg::EndModal(int retCode)
             cfg->Write(_T("/batch_build_args"), bbargs);
             Associations::SetBatchBuildOnly();
         }
+#endif //#ifdef __WXMSW__
 
         // batch build plugins
         ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
@@ -270,7 +271,6 @@ void CompilerSettingsDlg::EndModal(int retCode)
                         _("Warning"), wxICON_WARNING);
         }
         bbcfg->Write(_T("/batch_build_plugins"), bbplugins);
-#endif
 
         // finally, apply settings in all plugins' panels
         for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
