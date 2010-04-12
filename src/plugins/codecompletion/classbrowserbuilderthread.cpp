@@ -1043,9 +1043,7 @@ void ClassBrowserBuilderThread::SelectItem(wxTreeItemId item)
 
     CBTreeCtrl* tree = (m_Options.treeMembers) ? m_pTreeBottom : m_pTreeTop;
     if ( !(m_Options.displayFilter == bdfFile && m_ActiveFilename.IsEmpty()))
-    {
         AddMembersOf(tree, item);
-    }
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Select ") + m_pTreeTop->GetItemText(item)));
 #ifdef buildtree_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("SelectItem (internally) took : %ld ms"),sw.Time()));

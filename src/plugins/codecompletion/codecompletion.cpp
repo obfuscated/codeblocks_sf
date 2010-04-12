@@ -176,9 +176,7 @@ CodeCompletion::CodeCompletion() :
     m_NeedReparse(false)
 {
     if (!Manager::LoadResource(_T("codecompletion.zip")))
-    {
         NotifyMissingFile(_T("codecompletion.zip"));
-    }
 }
 
 CodeCompletion::~CodeCompletion()
@@ -205,6 +203,10 @@ void CodeCompletion::LoadTokenReplacements()
 
         Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"),      _T("}"));
         Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),    _T("-namespace tr1 {"));
+
+        // for VC
+        Tokenizer::SetReplacementString(_T("_STD_BEGIN"),                      _T("-namespace std {"));
+        Tokenizer::SetReplacementString(_T("_STD_END"),                        _T("}"));
     }
     else
         cfg->Read(_T("token_replacements"), &repl);
@@ -265,6 +267,7 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     }
     else
         Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Edit menu!"));
+
     pos = menuBar->FindMenu(_("Sea&rch"));
     if (pos != wxNOT_FOUND)
     {
@@ -297,6 +300,8 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         // not found, just append
         m_ViewMenu->AppendCheckItem(idViewClassBrowser, _("Symbols browser"), _("Toggle displaying the symbols browser"));
     }
+    else
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not find View menu!"));
 }
 
 // invariant : on return true : NameUnderCursor is NOT empty
@@ -311,9 +316,8 @@ bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
         const wxRegEx reg(_T("^[ \t]*#[ \t]*include[ \t]+[\"<]([^\">]+)[\">]"));
         wxString inc;
         if (reg.Matches(line))
-        {
             inc = reg.GetMatch(line, 1);
-        }
+
         if (!inc.IsEmpty())
         {
             NameUnderCursor = inc;
@@ -378,25 +382,20 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                     subMenu->Append(idUnimplementedClassMethods, _("All class methods without implementation..."));
                 }
                 else
-                {
                     Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 3!"));
-                }
             }
             else
-            {
                 Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu 2!"));
-            }
         }
         else
-        {
             Manager::Get()->GetLogManager()->DebugLog(_T("Could not find Insert menu!"));
-        }
     }
 }
 
 bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 {
     Manager::Get()->AddonToolBar(toolBar,_T("codecompletion_toolbar"));
+
     m_Function = XRCCTRL(*toolBar, "chcCodeCompletionFunction", wxChoice);
     m_Scope = XRCCTRL(*toolBar, "chcCodeCompletionScope", wxChoice);
     m_Scope->Disable();
@@ -556,7 +555,8 @@ int CodeCompletion::CodeComplete()
             ed->GetControl()->ClearRegisteredImages();
 
             bool caseSens = parser ? parser->Options().caseSensitive : false;
-            wxArrayString items; items.Alloc(result.size());
+            wxArrayString items;
+            items.Alloc(result.size());
             int pos   = ed->GetControl()->GetCurrentPos();
             int start = ed->GetControl()->WordStartPosition(pos, true);
             wxArrayInt already_registered;
@@ -1184,9 +1184,7 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
         ProjectManager* prjMan = Manager::Get()->GetProjectManager();
         m_NativeParser.SetClassBrowserProject(prjMan->GetActiveProject());
         if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfProject)
-        {
             m_NativeParser.UpdateClassBrowser();
-        }
     }
     event.Skip();
 }
@@ -1204,9 +1202,7 @@ void CodeCompletion::OnProjectActivated(CodeBlocksEvent& event)
     {
         m_NativeParser.SetClassBrowserProject(event.GetProject());
         if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfProject)
-        {
             m_NativeParser.UpdateClassBrowser();
-        }
     }
         m_NativeParser.SetClassBrowserProject(event.GetProject());
     event.Skip();
@@ -1463,7 +1459,6 @@ void CodeCompletion::ParseFunctionsAndFillToolbar(bool force)
     // Does the toolbar need a refresh?
     if (m_ToolbarChanged || m_LastFile!=filename)
     {
-
         // Update the last editor and changed flag...
         m_ToolbarChanged = false;
         m_LastFile = filename;
@@ -1566,9 +1561,7 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
         m_AllFunctionsScopes[filename].m_NameSpaces.clear();
         m_AllFunctionsScopes[filename].parsed = false;
         if (m_NativeParser.GetParserPtr() && m_NativeParser.GetParserPtr()->ClassBrowserOptions().displayFilter == bdfFile)
-        {
             m_NativeParser.UpdateClassBrowser();
-        }
     }
 
     event.Skip();
@@ -1878,9 +1871,8 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
 {
     wxString LastIncludeFileFrom;
     if (const cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor())
-    {
         LastIncludeFileFrom = ed->GetFilename();
-    }
+
     // check one more time because menu entries are enabled only when it makes sense
     // but the shortcut accelerator can always be executed
     bool MoveOn = false;
@@ -1889,30 +1881,22 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
     if (EditorHasNameUnderCursor(NameUnderCursor, IsInclude))
     {
         if (IsInclude)
-        {
             MoveOn = true;
-        }
     }
+
     if (!MoveOn)
-    { // nothing under cursor or thing under cursor is not an include
-        return;
-    }
+        return; // nothing under cursor or thing under cursor is not an include
 
     wxArrayString foundSet;
     Parser* parser = m_NativeParser.GetParserPtr();
     if (parser)
-    {
-        // search in all parser's include dirs
-        foundSet = parser->FindFileInIncludeDirs(NameUnderCursor);
-    }
+        foundSet = parser->FindFileInIncludeDirs(NameUnderCursor); // search in all parser's include dirs
 
     // look in the same dir as the source file
     wxFileName fname = NameUnderCursor;
     NormalizePath(fname, LastIncludeFileFrom);
     if (wxFileExists(fname.GetFullPath()) )
-    {
         foundSet.Add(fname.GetFullPath());
-    }
 
     // search for the file in project files
     cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
@@ -1925,9 +1909,7 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
                 continue;
 
             if (IsSuffixOfPath(NameUnderCursor, pf->file.GetFullPath()))
-            {
                 foundSet.Add(pf->file.GetFullPath());
-            }
         }
     }
 
@@ -1937,13 +1919,9 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
         for (int j = i + 1; j < (int)foundSet.Count(); )
         {
             if (foundSet.Item(i) == foundSet.Item(j))
-            {
                 foundSet.RemoveAt(j);
-            }
             else
-            {
                 j++;
-            }
         }
     }
 
@@ -1954,18 +1932,12 @@ void CodeCompletion::OnOpenIncludeFile(wxCommandEvent& event)
         Dialog.AddListEntries(foundSet);
         PlaceWindow(&Dialog);
         if(Dialog.ShowModal() == wxID_OK)
-        {
             selectedFile = Dialog.GetIncludeFile();
-        }
         else
-        {
             return; // user cancelled the dialog...
-        }
     }
     else if (foundSet.GetCount() == 1)
-    {
         selectedFile = foundSet[0];
-    }
 
     if (!selectedFile.IsEmpty())
     {
@@ -2036,7 +2008,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         // if more than two chars have been typed, invoke CC
         int autoCCchars = cfg->ReadInt(_T("/auto_launch_chars"), 4);
         bool autoCC = cfg->ReadBool(_T("/auto_launch"), true) &&
-                    pos - wordstart >= autoCCchars;
+                      pos - wordstart >= autoCCchars;
 
         // update calltip highlight while we type
         if (control->CallTipActive())
@@ -2049,7 +2021,6 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                 ++m_ActiveCalltipsNest;
             ShowCallTip();
         }
-
         // end calltip
         else if (ch == _T(')'))
         {
@@ -2062,13 +2033,15 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
         }
 
-        else if (autoCC ||
-            (ch == _T('"')) || // this and the next one are for #include's completion
-            (ch == _T('<')) ||
-            (ch == _T('.')) ||
-            // we use -2 because the char has already been added and Pos is ahead of it...
-            ((ch == _T('>')) && (control->GetCharAt(pos - 2) == _T('-'))) ||
-            ((ch == _T(':')) && (control->GetCharAt(pos - 2) == _T(':'))))
+        else if (    autoCC
+                 || (ch == _T('"')) // this and the next one are for #include's completion
+                 || (ch == _T('<'))
+                 || (ch == _T('.'))
+                 // -2 is used next because the char has already been added and Pos is ahead of it...
+                 || (   (ch == _T('>'))
+                     && (control->GetCharAt(pos - 2) == _T('-')) )
+                 || (   (ch == _T(':'))
+                     && (control->GetCharAt(pos - 2) == _T(':')) ) )
         {
             int style = control->GetStyleAt(pos);
             //Manager::Get()->GetLogManager()->DebugLog(_T("Style at %d is %d (char '%c')"), pos, style, ch);
@@ -2149,7 +2122,5 @@ void CodeCompletion::OnFunction(wxCommandEvent& /*event*/)
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
     if (!ProjectManager::IsBusy())
-    {
         ParseFunctionsAndFillToolbar(true);
-    }
 }

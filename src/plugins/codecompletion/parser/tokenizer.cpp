@@ -292,7 +292,7 @@ bool Tokenizer::SkipString()
 }
 
 // expect we are not in a C-string.
-bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting, bool skipPreprocessor)
+bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting, bool skipPreprocessor, bool skipAngleBrace)
 {
     while (NotEOF() && !CharInString(CurrentChar(), chars))
     {
@@ -320,11 +320,15 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting, bool 
                 case '(': SkipBlock('('); break;
                 case '[': SkipBlock('['); break;
                 case '<': // don't skip if << operator
-                    if (NextChar() == '<')
-                        MoveToNextChar(2); // skip it and also the next '<' or the next '<' leads to a SkipBlock('<');
-                    else
-                        SkipBlock('<');
-                    break;
+                    if (skipAngleBrace)
+                    {
+                        if (NextChar() == '<')
+                            MoveToNextChar(2); // skip it and also the next '<' or the next '<' leads to a SkipBlock('<');
+                        else
+                            SkipBlock('<');
+                        break;
+                    }
+
                 default: done = true; break;
             }
         }
@@ -503,7 +507,7 @@ bool Tokenizer::SkipUnwanted()
     {
         if (c == _T('='))
         {
-            if (!SkipToOneOfChars(_T(",;}"), true, true))
+            if (!SkipToOneOfChars(_T(",;}"), true, true, false))
                 return false;
         }
     }

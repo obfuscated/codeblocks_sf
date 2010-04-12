@@ -361,10 +361,10 @@ void NativeParser::AddCompilerDirs(cbProject* project)
             }
             // get the compiler
             wxString CompilerIndex = target->GetCompilerID();
-            Compiler* myc = CompilerFactory::GetCompiler(CompilerIndex);
-            if (myc)
+            Compiler* tgtCompiler = CompilerFactory::GetCompiler(CompilerIndex);
+            if (tgtCompiler)
             {
-                Compilers[nCompilers] = myc;
+                Compilers[nCompilers] = tgtCompiler;
                 ++nCompilers;
             }
         } // if (target)
@@ -1759,7 +1759,7 @@ size_t NativeParser::FindAIMatches(std::queue<ParserComponent> components,
         // is the token a function or variable (i.e. is not a type)
         if (    !searchtext.IsEmpty()
              && (parser_component.token_type != pttSearchText)
-	         /* || m_GettingCalltips */ // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
+             /* || m_GettingCalltips */ // DISABLED! (crash in some cases) this allows calltips for typedef'd function pointers
              && !token->m_ActualType.IsEmpty() )
         {
             // the token is not a type

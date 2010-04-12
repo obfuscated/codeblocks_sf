@@ -134,7 +134,7 @@ protected:
     bool SkipWhiteSpace();
     bool IsEscapedChar();
     bool SkipToChar(const wxChar& ch);
-    bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false, bool skipPreprocessor = false);
+    bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false, bool skipPreprocessor = false, bool skipAngleBrace = true);
     bool SkipBlock(const wxChar& ch);
     bool SkipUnwanted(); // skips comments, assignments, preprocessor etc.
     bool SkipComment(bool skipWhiteAtEnd = true);
