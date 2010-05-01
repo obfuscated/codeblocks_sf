@@ -38,7 +38,8 @@ BEGIN_EVENT_TABLE(InfoPane, cbAuiNotebook)
     EVT_AUINOTEBOOK_TAB_RIGHT_UP(idNB, InfoPane::OnTabContextMenu)
     EVT_MENU(idNB_TabTop, InfoPane::OnTabPosition)
     EVT_MENU(idNB_TabBottom, InfoPane::OnTabPosition)
-END_EVENT_TABLE()
+    EVT_AUINOTEBOOK_PAGE_CLOSE(idNB, InfoPane::OnCloseClicked)
+ END_EVENT_TABLE()
 
 
 InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags), baseID(wxNewId())
@@ -192,6 +193,14 @@ void InfoPane::OnTabContextMenu(wxAuiNotebookEvent& event)
     // select the notebook that sends the event, because the context menu-entries act on the actual selected tab
     SetSelection(event.GetSelection());
     DoShowContextMenu();
+}
+
+void InfoPane::OnCloseClicked(wxAuiNotebookEvent& event)
+{
+    if (event.GetSelection() == -1)
+        return;
+    // toggle the notebook, that sends the event
+    Toggle(GetPageIndexByWindow(GetPage(event.GetSelection())));
 }
 
 void InfoPane::DoShowContextMenu()

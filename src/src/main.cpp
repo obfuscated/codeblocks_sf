@@ -1734,9 +1734,6 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
     if (cfg->ReadBool(_T("/environment/") + prefix + _T("_tabs_bottom")))
         nbstyle |= wxAUI_NB_BOTTOM;
 
-    if (cfg->ReadBool(_T("/environment/tabs_close_on_all")))
-        nbstyle |= wxAUI_NB_CLOSE_ON_ALL_TABS;
-
     if (cfg->ReadBool(_T("/environment/tabs_list")))
         nbstyle |= wxAUI_NB_WINDOWLIST_BUTTON;
 
@@ -1745,11 +1742,13 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
 
 void MainFrame::DoUpdateEditorStyle()
 {
+    long closestyle = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_close_on_all"))?wxAUI_NB_CLOSE_ON_ALL_TABS:0;
     cbAuiNotebook* an = Manager::Get()->GetEditorManager()->GetNotebook();
-    DoUpdateEditorStyle(an, _T("editor"), wxAUI_NB_DEFAULT_STYLE | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+
+    DoUpdateEditorStyle(an, _T("editor"), closestyle | wxAUI_NB_DEFAULT_STYLE | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 
     an = m_pInfoPane;
-    DoUpdateEditorStyle(an, _T("message"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE | wxAUI_NB_TAB_SPLIT);
+    DoUpdateEditorStyle(an, _T("message"), closestyle | wxAUI_NB_DEFAULT_STYLE);
 
     an = Manager::Get()->GetProjectManager()->GetNotebook();
     DoUpdateEditorStyle(an, _T("project"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE);
