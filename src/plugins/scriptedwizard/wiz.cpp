@@ -346,7 +346,10 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     }
 
     // now create the project
+    wxString defCompilerID = CompilerFactory::GetDefaultCompilerID();
+    CompilerFactory::SetDefaultCompiler(GetCompilerID());
     theproject = Manager::Get()->GetProjectManager()->NewProject(prjname);
+    CompilerFactory::SetDefaultCompiler(defCompilerID);
     if (!theproject)
     {
         cbMessageBox(_("Couldn't create the new project:\n") + prjdir, _("Error"), wxICON_ERROR);
