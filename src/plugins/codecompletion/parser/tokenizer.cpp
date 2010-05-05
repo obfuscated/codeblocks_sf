@@ -708,6 +708,16 @@ wxString Tokenizer::FixArgument(wxString src)
 
     TRACE(_T("FixArgument() : src='%s'."), src.wx_str());
 
+    // skip C++ comments
+    for (size_t i = 0; i < src.Length() - 1; ++i)
+    {
+        if (src.GetChar(i) == _T('/') && src.GetChar(i + 1) == _T('/'))
+        {
+            do src.SetChar(i, _T(' '));
+            while (src.GetChar(++i) != _T('\n') && i < src.Length() - 1);
+        }
+    }
+
     // str.Replace is massive overkill here since it has to allocate one new block per replacement
     { // this is much faster:
         size_t i;
