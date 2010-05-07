@@ -56,7 +56,7 @@ function BeginWizard()
 
     if (WizType == wizProject)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x /2.9.x(CVS)\nproject wizard!\n\n" +
+        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x /2.9.x(SVN)\nproject wizard!\n\n" +
                             "This wizard will guide you to create a new project using\n" +
                             "the wxWidgets cross-platform GUI library.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
@@ -67,7 +67,7 @@ function BeginWizard()
                                 "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (CVS Version)"), WxVersion); // select wxwidgets version
+        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (SVN Version)"), WxVersion); // select wxwidgets version
         Wizard.AddProjectPathPage();
         Wizard.AddPage(_T("WxProjDetails"));
         Wizard.AddPage(_T("WxGuiSelect"));
@@ -88,7 +88,7 @@ function BeginWizard()
     }
     else if (WizType == wizTarget)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x /2.9.x(CVS)\nTarget wizard!\n\n" +
+        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x /2.9.x(SVN)\nTarget wizard!\n\n" +
                             "This wizard will guide you to create a new target\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
@@ -98,7 +98,7 @@ function BeginWizard()
                                 "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (CVS Version)"), WxVersion); // select wxwidgets version
+        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (SVN Version)"), WxVersion); // select wxwidgets version
         if (PLATFORM == PLATFORM_MSW)
             Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
         // we need the compiler selection before wx settings, because we 'll have
