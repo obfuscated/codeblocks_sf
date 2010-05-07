@@ -226,7 +226,7 @@ function SetupTarget(target,is_debug)
         target.AddLinkerOption(_T("-mthreads"));
 
         target.AddIncludeDir(_T("$(#cb)\\include"));
-        target.AddIncludeDir(_T("$(#cb)\\include\\wxscintilla\\include"));
+        target.AddIncludeDir(_T("$(#cb)\\sdk\\wxscintilla\\include"));
         target.AddIncludeDir(_T("$(#wx.include)"));
         target.AddIncludeDir(_T("$(#wx.lib)\\gcc_dll\\mswu"));
 
