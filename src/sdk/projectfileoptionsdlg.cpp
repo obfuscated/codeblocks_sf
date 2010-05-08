@@ -23,6 +23,7 @@
     #include <wx/file.h>
     #include <wx/checklst.h>
     #include <wx/stattext.h>
+    #include <wx/sizer.h>
 #endif
 
 #if (__WXMSW__)
