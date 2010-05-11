@@ -374,7 +374,9 @@ void ProjectFileOptionsDlg::FillCompilers()
     cmb->Clear();
     for (unsigned int i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
     {
-        cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
+		Compiler* compiler = CompilerFactory::GetCompiler(i);
+		if (compiler)
+			cmb->Append(compiler->GetName());
     }
     // select project default compiler
     m_LastBuildStageCompilerSel = CompilerFactory::GetCompilerIndex(m_ProjectFile->GetParentProject()->GetCompilerID());
@@ -405,8 +407,11 @@ void ProjectFileOptionsDlg::UpdateBuildCommand()
 void ProjectFileOptionsDlg::SaveBuildCommandSelection()
 {
     Compiler* compiler = CompilerFactory::GetCompiler(m_LastBuildStageCompilerSel);
-    m_ProjectFile->customBuild[compiler->GetID()].useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
-    m_ProjectFile->customBuild[compiler->GetID()].buildCommand          = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
+	if (compiler)
+	{
+		m_ProjectFile->customBuild[compiler->GetID()].useCustomBuildCommand = XRCCTRL(*this, "chkBuildStage", wxCheckBox)->GetValue();
+		m_ProjectFile->customBuild[compiler->GetID()].buildCommand          = XRCCTRL(*this, "txtBuildStage", wxTextCtrl)->GetValue();
+	}
 }
 
 bool ProjectFileOptionsDlg::ToggleFileReadOnly(bool setReadOnly)
