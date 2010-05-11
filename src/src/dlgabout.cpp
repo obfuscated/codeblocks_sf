@@ -44,7 +44,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
                     "any kind of functionality to the core program, through the use of "
                     "plugins...\n");
 
-    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_new.png");
+    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_0802.png");
 
 
     wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
