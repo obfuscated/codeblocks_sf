@@ -1045,6 +1045,19 @@ wxString wxsItem::GetIdName()
     return Code;
 }
 
+wxSize wxsItem::Size(wxWindow* Parent)
+{
+    const wxSize minSize = GetBaseProps()->m_MinSize.GetSize(Parent);
+    if ( minSize != wxDefaultSize )
+    {
+        return minSize;
+    }
+    else
+    {
+        return GetBaseProps()->m_Size.GetSize(Parent);
+    }
+}
+
 bool wxsItem::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
 {
     // Search for first event (skip all categories)

@@ -514,7 +514,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
         inline wxPoint Pos(wxWindow* Parent) { return GetBaseProps()->m_Position.GetPosition(Parent); }
 
         /** \brief Easy access to size */
-        inline wxSize Size(wxWindow* Parent) { return GetBaseProps()->m_Size.GetSize(Parent); }
+        wxSize Size(wxWindow* Parent);
 
         /** \brief Easy access to style (can be used directly when generating preview) */
         inline long Style() { return m_BaseProperties.m_StyleSet ? m_BaseProperties.m_StyleSet->GetWxStyle(m_BaseProperties.m_StyleBits,false) : 0; }
