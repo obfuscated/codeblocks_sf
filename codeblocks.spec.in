@@ -287,7 +287,7 @@ Code::Blocks SDK to develop your own plugins.
 %{_includedir}/wxSmithContribItems/*
 
 %changelog
-* Sun Dec 20 2010 Biplab <bkmodak@gmail.com>
+* Sun Feb 20 2010 Biplab <bkmodak@gmail.com>
 - Fixed typos: In wxSmithAui generated files.
 - Fixed: RPM build error due to inclusion of contrib plugins twice.
 - Fixed: Copystrings plugin was not included properly in rpm.
