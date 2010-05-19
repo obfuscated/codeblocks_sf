@@ -59,7 +59,7 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     : EditorBase(parent, g_StartHereTitle),
     m_pOwner(owner)
 {
-	//ctor
+    //ctor
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
 
     wxString resPath = ConfigManager::ReadDataPath();
@@ -71,21 +71,21 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 
     m_pWin = new MyHtmlWin(this, idWin, wxPoint(0,0), size);
 
-	// set default font sizes based on system default font size
+    // set default font sizes based on system default font size
 
     /* NOTE (mandrav#1#): wxWidgets documentation on wxHtmlWindow::SetFonts(),
     states that the sizes array accepts values from -2 to +4.
     My tests (under linux at least) have showed that it actually
     expects real point sizes. */
 
-	wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-	int sizes[7] = {};
-	for (int i = 0; i < 7; ++i)
+    wxFont systemFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
+    int sizes[7] = {};
+    for (int i = 0; i < 7; ++i)
         sizes[i] = systemFont.GetPointSize();
-	m_pWin->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
+    m_pWin->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
 
     // must load the page this way because if we don't the image can't be found...
-	m_pWin->LoadPage(resPath + _T("/start_here.zip#zip:start_here.html"));
+    m_pWin->LoadPage(resPath + _T("/start_here.zip#zip:start_here.html"));
 
     // alternate way to read the file so we can perform some search and replace
     // the C::B image referenced in the default start page can be found now
@@ -95,14 +95,14 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     wxFSFile* f = fs->OpenFile(resPath + _T("/start_here.zip#zip:start_here.html"));
     if (f)
     {
-    	wxInputStream* is = f->GetStream();
-    	char tmp[1024] = {};
-    	while (!is->Eof() && is->CanRead())
-    	{
-    		memset(tmp, 0, sizeof(tmp));
-    		is->Read(tmp, sizeof(tmp) - 1);
-    		buf << cbC2U((const char*)tmp);
-    	}
+        wxInputStream* is = f->GetStream();
+        char tmp[1024] = {};
+        while (!is->Eof() && is->CanRead())
+        {
+            memset(tmp, 0, sizeof(tmp));
+            is->Read(tmp, sizeof(tmp) - 1);
+            buf << cbC2U((const char*)tmp);
+        }
         delete f;
     }
     else
@@ -115,15 +115,15 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
     const int bit_type = 32;
     #endif
 
-	#ifdef __GNUC__
-	revInfo.Printf(_T("%s (%s)   gcc %d.%d.%d %s/%s - %d bit"),
-					appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
-					__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, appglobals::AppPlatform.c_str(), appglobals::AppWXAnsiUnicode.c_str(), bit_type);
-	#else
-	revInfo.Printf(_T("%s (%s)   %s/%s"),
-					appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
-					appglobals::AppPlatform.c_str(), appglobals::AppWXAnsiUnicode.c_str());
-	#endif
+    #ifdef __GNUC__
+    revInfo.Printf(_T("%s (%s)   gcc %d.%d.%d %s/%s - %d bit"),
+                    appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
+                    __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__, appglobals::AppPlatform.c_str(), appglobals::AppWXAnsiUnicode.c_str(), bit_type);
+    #else
+    revInfo.Printf(_T("%s (%s)   %s/%s"),
+                    appglobals::AppActualVersionVerb.c_str(), ConfigManager::GetSvnDate().c_str(),
+                    appglobals::AppPlatform.c_str(), appglobals::AppWXAnsiUnicode.c_str());
+    #endif
     // perform var substitution
     buf.Replace(_T("CB_VAR_REVISION_INFO"), revInfo);
     buf.Replace(_T("CB_VAR_VERSION_VERB"), appglobals::AppActualVersionVerb);
@@ -141,8 +141,8 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, wxWindow* parent)
 
 StartHerePage::~StartHerePage()
 {
-	//dtor
-	//m_pWin->Destroy();
+    //dtor
+    //m_pWin->Destroy();
 }
 
 void StartHerePage::Reload()
@@ -181,8 +181,8 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
         return true;
     }
 
-    if(href.IsSameAs(_T("http://www.codeblocks.org/"))
-    || href.StartsWith(_T("http://developer.berlios.de/bugs/")))
+    if (   href.IsSameAs(_T("http://www.codeblocks.org/"))
+        || href.StartsWith(_T("http://developer.berlios.de/bugs/")) )
     {
         wxTextDataObject *data = new wxTextDataObject(revInfo);
         if (wxTheClipboard->Open())

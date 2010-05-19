@@ -234,7 +234,7 @@ class Splash
         {
             if (show)
             {
-                wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_0802.png"));
+                wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_1005.png"));
                 m_pSplash = new cbSplashScreen(bmp, -1, 0, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED);
                 Manager::Yield();
             }
@@ -623,7 +623,7 @@ bool CodeBlocksApp::OnInit()
 
         Manager::SetBatchBuild(m_Batch || !m_Script.IsEmpty());
         Manager::Get()->GetScriptingManager();
-        MainFrame* frame = 0; 
+        MainFrame* frame = 0;
         frame = InitFrame();
         m_Frame = frame;
 
@@ -741,36 +741,36 @@ int CodeBlocksApp::OnExit()
 }
 
 #ifdef __WXMSW__
-	inline void EnableLFH()
-	{
-		typedef BOOL  (WINAPI *HeapSetInformation_t)(HANDLE, HEAP_INFORMATION_CLASS, PVOID, SIZE_T);
-		typedef DWORD (WINAPI *GetProcessHeaps_t)(DWORD, PHANDLE);
+    inline void EnableLFH()
+    {
+        typedef BOOL  (WINAPI *HeapSetInformation_t)(HANDLE, HEAP_INFORMATION_CLASS, PVOID, SIZE_T);
+        typedef DWORD (WINAPI *GetProcessHeaps_t)(DWORD, PHANDLE);
 
-		HINSTANCE kh = GetModuleHandle(TEXT("kernel32.dll"));
-		HeapSetInformation_t  HeapSetInformation_func = (HeapSetInformation_t)  GetProcAddress(kh, "HeapSetInformation");
-		GetProcessHeaps_t     GetProcessHeaps_func    = (GetProcessHeaps_t)     GetProcAddress(kh, "GetProcessHeaps");
+        HINSTANCE kh = GetModuleHandle(TEXT("kernel32.dll"));
+        HeapSetInformation_t  HeapSetInformation_func = (HeapSetInformation_t)  GetProcAddress(kh, "HeapSetInformation");
+        GetProcessHeaps_t     GetProcessHeaps_func    = (GetProcessHeaps_t)     GetProcAddress(kh, "GetProcessHeaps");
 
-		if(GetProcessHeaps_func && HeapSetInformation_func)
-		{
-			ULONG  HeapFragValue = 2;
+        if(GetProcessHeaps_func && HeapSetInformation_func)
+        {
+            ULONG  HeapFragValue = 2;
 
-			int n = GetProcessHeaps_func(0, 0);
-			HANDLE *h = new HANDLE[n];
-			GetProcessHeaps_func(n, h);
+            int n = GetProcessHeaps_func(0, 0);
+            HANDLE *h = new HANDLE[n];
+            GetProcessHeaps_func(n, h);
 
-			for(int i = 0; i < n; ++i)
-				HeapSetInformation_func(h[i], HeapCompatibilityInformation, &HeapFragValue, sizeof(HeapFragValue));
+            for(int i = 0; i < n; ++i)
+                HeapSetInformation_func(h[i], HeapCompatibilityInformation, &HeapFragValue, sizeof(HeapFragValue));
 
-			delete[] h;
-		}
-	}
+            delete[] h;
+        }
+    }
 #else
-	inline void EnableLFH() {}
+    inline void EnableLFH() {}
 #endif
 
 int CodeBlocksApp::OnRun()
 {
-	EnableLFH();
+    EnableLFH();
     try
     {
         int retval = wxApp::OnRun();
@@ -1167,29 +1167,29 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
     // --file foo.cpp[:line]
     if (!m_AutoFile.IsEmpty())
     {
-    	wxString linePart;
+        wxString linePart;
         // wxString::Last is deprecated
         long linePos = m_AutoFile.Find(_T(':'), true);
-    	if (linePos != wxNOT_FOUND)
-    	{
-			linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);
-			m_AutoFile.Remove(linePos);
-    	}
+        if (linePos != wxNOT_FOUND)
+        {
+            linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);
+            m_AutoFile.Remove(linePos);
+        }
 
-//    	Manager::Get()->GetLogManager()->Log(m_AutoFile);
-//    	Manager::Get()->GetLogManager()->Log(linePart);
+//        Manager::Get()->GetLogManager()->Log(m_AutoFile);
+//        Manager::Get()->GetLogManager()->Log(linePart);
 
-    	if (frame->Open(m_AutoFile, false) && linePos != wxNOT_FOUND)
-		{
-			long line;
-			if (linePart.ToLong(&line))
-			{
-				EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(Manager::Get()->GetEditorManager()->GetEditorsCount() - 1);
-//				Manager::Get()->GetLogManager()->Log(F(_T("%p"), eb));
-				if (eb)
-					eb->GotoLine(line - 1, true);
-			}
-    	}
+        if (frame->Open(m_AutoFile, false) && linePos != wxNOT_FOUND)
+        {
+            long line;
+            if (linePart.ToLong(&line))
+            {
+                EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(Manager::Get()->GetEditorManager()->GetEditorsCount() - 1);
+//                Manager::Get()->GetLogManager()->Log(F(_T("%p"), eb));
+                if (eb)
+                    eb->GotoLine(line - 1, true);
+            }
+        }
     }
 }
 

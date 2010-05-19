@@ -9,6 +9,8 @@
 #include <wx/string.h>
 #include <wx/intl.h>
 
+//#define RELEASE "10.05"
+
 #ifndef RELEASE
     #define RELEASE "svn"
     #define SVN_BUILD 1

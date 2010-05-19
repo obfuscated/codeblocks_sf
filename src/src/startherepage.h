@@ -17,22 +17,22 @@ class wxHtmlLinkInfo;
 
 class StartHerePage : public EditorBase
 {
-	wxString revInfo;
+    wxString revInfo;
 
-	public:
-		StartHerePage(wxEvtHandler* owner, wxWindow* parent);
-		virtual ~StartHerePage();
+    public:
+        StartHerePage(wxEvtHandler* owner, wxWindow* parent);
+        virtual ~StartHerePage();
 
-		bool LinkClicked(const wxHtmlLinkInfo& link);
-		void SetPageContent(const wxString& buffer); // set the HTML content
+        bool LinkClicked(const wxHtmlLinkInfo& link);
+        void SetPageContent(const wxString& buffer); // set the HTML content
         virtual bool VisibleToTree() const { return false; }
         void Reload();
-	protected:
+    protected:
 
         wxEvtHandler* m_pOwner;
         wxHtmlWindow* m_pWin;
         wxString m_OriginalPageContent;
-	private:
+    private:
         DECLARE_EVENT_TABLE()
 };
 

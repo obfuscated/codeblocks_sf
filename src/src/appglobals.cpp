@@ -18,20 +18,20 @@
 namespace appglobals
 {
     const wxString AppVendor              = _T("Code::Blocks");
-    const wxString AppName			    = _T("Code::Blocks");
+    const wxString AppName                = _T("Code::Blocks");
 
     #if SVN_BUILD
-        const wxString AppVersion				= _T("svn build");
-        const wxString AppActualVersionVerb	= _T("svn build  rev ") +  ConfigManager::GetRevisionString();
-        const wxString AppActualVersion		= _T("svn-r") +  ConfigManager::GetRevisionString();
+        const wxString AppVersion           = _T("svn build");
+        const wxString AppActualVersionVerb = _T("svn build  rev ") +  ConfigManager::GetRevisionString();
+        const wxString AppActualVersion     = _T("svn-r") +  ConfigManager::GetRevisionString();
     #else
-        const wxString AppVersion				= _T(RELEASE);
-        const wxString AppActualVersionVerb	= _T("Release " RELEASE "  rev ") + ConfigManager::GetRevisionString();
-        const wxString AppActualVersion		= _T(RELEASE "-r") + ConfigManager::GetRevisionString();
+        const wxString AppVersion           = _T(RELEASE);
+        const wxString AppActualVersionVerb = _T("Release " RELEASE "  rev ") + ConfigManager::GetRevisionString();
+        const wxString AppActualVersion     = _T(RELEASE "-r") + ConfigManager::GetRevisionString();
     #endif
 
-    const wxString AppUrl					= _T("http://www.codeblocks.org");
-    const wxString AppContactEmail		= _T("info@codeblocks.org");
+    const wxString AppUrl                   = _T("http://www.codeblocks.org");
+    const wxString AppContactEmail          = _T("info@codeblocks.org");
 
     #if defined(__WXMSW__)
       const wxString AppPlatform = _T("Windows");

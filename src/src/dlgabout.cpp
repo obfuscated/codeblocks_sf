@@ -37,14 +37,14 @@ dlgAbout::dlgAbout(wxWindow* parent)
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
                                  _(" is a full-featured IDE (Integrated Development Environment) "
-                    "aiming to make the individual developer (and the development team) "
-                    "work in a nice programming environment offering everything he/they "
-                    "would ever need from a program of that kind.\n"
-                    "Its pluggable architecture allows you, the developer, to add "
-                    "any kind of functionality to the core program, through the use of "
-                    "plugins...\n");
+                                   "aiming to make the individual developer (and the development team) "
+                                   "work in a nice programming environment offering everything he/they "
+                                   "would ever need from a program of that kind.\n"
+                                   "Its pluggable architecture allows you, the developer, to add "
+                                   "any kind of functionality to the core program, through the use of "
+                                   "plugins...\n");
 
-    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_0802.png");
+    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1005.png");
 
 
     wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
@@ -53,29 +53,41 @@ dlgAbout::dlgAbout(wxWindow* parent)
     im.LoadFile(file, wxBITMAP_TYPE_PNG );
     im.ConvertAlphaToMask();
     wxBitmap bmp(im);
+    wxMemoryDC dc;
+    dc.SelectObject(bmp);
 
-    {   // copied from splashscreen.cpp
-        const wxString release(wxT(RELEASE));
-        const wxString revision = ConfigManager::GetRevisionString();
-
-        wxMemoryDC dc;
-        dc.SelectObject(bmp);
+    {  // keep this (kind of) in sync with splashscreen.cpp!
+        static const wxString release(wxT(RELEASE));
+        static const wxString revision = ConfigManager::GetRevisionString();
 
         wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
         wxFont smallFont(9,  wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 
-        wxCoord a, b, c, d;
+        wxCoord lf_width, lf_heigth, sf_width, sf_heigth, sm_width, sm_height;
 
-        dc.GetTextExtent(release,  &a, &b, 0, 0, &largeFont);
-        dc.GetTextExtent(revision, &c, &d, 0, 0, &smallFont);
+        dc.GetTextExtent(release,  &lf_width, &lf_heigth, 0, 0, &largeFont);
+        dc.GetTextExtent(revision, &sf_width, &sf_heigth, 0, 0, &smallFont);
 
-        a >>= 1; c >>=1;
-        int y = 180 - ((b + d + 8)>>1);
+        dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, 0, 0, &largeFont);
+
+        int x_offset = 310;
+        int y_offset = 150;
+
+        lf_width >>= 1;
+        sf_width >>= 1;
+        int y      = y_offset - ((lf_heigth + sf_heigth + 8) >> 1);
+
+        dc.SetTextForeground(*wxBLACK);
 
         dc.SetFont(largeFont);
-        dc.DrawText(release,  92 - a, y);
+#if SVN_BUILD
+        dc.DrawText(release,  x_offset - lf_width, y);
+        // only render SVN revision when not building official release
         dc.SetFont(smallFont);
-        dc.DrawText(revision, 92 - c, y + b);
+        dc.DrawText(revision, x_offset - sf_width, y +  lf_heigth);
+#else
+        dc.DrawText(release,  x_offset - lf_width, y + (lf_heigth >> 1));
+#endif
     }
 
     bmpControl->SetBitmap(bmp);
