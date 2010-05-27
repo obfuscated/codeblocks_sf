@@ -359,7 +359,7 @@ void ProjectConfigurationPanel::FillKnownLibraries()
     }
 
     // Ok, let's present all results
-    m_KnownLibrariesTree->ExpandAll();
+//    m_KnownLibrariesTree->ExpandAll();
     m_KnownLibrariesTree->Thaw();
 }
 
