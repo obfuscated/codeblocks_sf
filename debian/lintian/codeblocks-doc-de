@@ -1,0 +1,2 @@
+codeblocks-doc-de: postinst-has-useless-call-to-install-docs
+codeblocks-doc-de: prerm-has-useless-call-to-install-docs

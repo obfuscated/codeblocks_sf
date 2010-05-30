@@ -1,0 +1,11 @@
+Document: codeblocks-doc-en
+Title: The English Code::Blocks Manual
+Abstract: This manual describes the Code::Blocks IDE.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/codeblocks-doc-en/html/main_codeblocks_en.html
+Files: /usr/share/doc/codeblocks-doc-en/html/*
+
+Format: PDF
+Files: /usr/share/doc/codeblocks-doc-en/pdf/manual_en.pdf.gz

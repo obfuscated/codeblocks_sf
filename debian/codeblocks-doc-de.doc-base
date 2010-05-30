@@ -1,0 +1,11 @@
+Document: codeblocks-doc-de
+Title: The German Code::Blocks manual
+Abstract: This manual describes the Code::Blocks IDE.
+Section: Programming
+
+Format: HTML
+Index: /usr/share/doc/codeblocks-doc-de/html/main_codeblocks_de.html
+Files: /usr/share/doc/codeblocks-doc-de/html/*
+
+Format: PDF
+Files: /usr/share/doc/codeblocks-doc-de/pdf/manual_de.pdf.gz

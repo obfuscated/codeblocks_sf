@@ -1,3 +1,17 @@
+codeblocks (10.05svn6286) unstable; urgency=low
+
+  * tagged svn to 10.05
+  * added automatically update-script for docs
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 30 May 2010 16:40:18 +0200
+
+codeblocks (10.05-1) unstable; urgency=low
+
+  * new upstream release
+  * includes the official manual in english and german
+
+ -- Jens Lody <jens@codeblocks.org>  Thu, 27 May 2010 12:51:19 +0200
+
 codeblocks (8.02svn5933) unstable; urgency=low
 
   * more fixes to debian build system, sources and packages are now

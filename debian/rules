@@ -20,6 +20,9 @@ package_core_debug		:= codeblocks-dbg
 package_core_dev_libs		:= codeblocks-dev
 package_core_dev_headers	:= codeblocks-headers
 
+package_doc_en			:= codeblocks-doc-en
+package_doc_de			:= codeblocks-doc-de
+
 package_contrib_bin		:= codeblocks-contrib
 package_contrib_data		:= codeblocks-contrib-common
 package_contrib_debug		:= codeblocks-contrib-dbg
@@ -31,6 +34,8 @@ package_wxsmith_dev_headers	:= wxsmith-headers
 packages_core		:= $(package_core_bin) $(package_core_data) \
 			   $(package_core_lib) $(package_core_dev_libs) \
 			   $(package_core_dev_headers)
+
+packages_doc		:= $(package_doc_en) $(package_doc_de)
 
 packages_contrib	:= $(package_contrib_bin) $(package_contrib_data) \
 			   $(package_wxsmith_lib) $(package_wxsmith_dev_libs) \
@@ -56,6 +61,7 @@ config-stamp:
 	# Add here commands to configure the package.
 	[ -x configure ] || ./bootstrap
 	./updateChangeLog.sh
+	./updateDocs.sh
 	CFLAGS="$(CFLAGS)" \
 		./configure \
 		--with-contrib-plugins=all \

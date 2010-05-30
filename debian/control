@@ -3,8 +3,8 @@ Section: devel
 Priority: optional
 Maintainer: Jens Lody <jens@codeblocks.org>
 Homepage: http://www.codeblocks.org
-Build-Depends: debhelper (>= 5.0.51~), autotools-dev, libstdc++6-4.1-dev | libstdc++6-4.2-dev | libstdc++6-4.3-dev, libwxgtk2.8-dev, wx-common, zip, libgtk2.0-dev, libtool, automake, subversion, xsltproc
-Standards-Version: 3.8.2
+Build-Depends: debhelper (>= 5.0.51~), autotools-dev, libstdc++6-4.1-dev | libstdc++6-4.2-dev | libstdc++6-4.3-dev, libwxgtk2.8-dev, wx-common, zip, libgtk2.0-dev, libtool, automake, subversion, xsltproc, pngnq, wget
+Standards-Version: 3.8.4
 
 Package: codeblocks
 Architecture: any
@@ -46,6 +46,28 @@ Description: common files for Code::Blocks IDE
  Code::Blocks is the open-source, cross-platform Integrated Development
  Environment (IDE).
  This package contains the architecture-independent files of codeblocks.
+ It's a svn-download and may contain bugs.
+
+Package: codeblocks-doc-de
+Architecture: all
+Conflicts: codeblocks (<< ${binary:Version})
+Depends: ${misc:Depends}
+Description: German manual for the Code::Blocks IDE
+ Code::Blocks is the open-source, cross-platform Integrated Development
+ Environment (IDE).
+ This package contains the German version of the manual for codeblocks
+ in HTML- and PDF-format
+ It's a svn-download and may contain bugs.
+
+Package: codeblocks-doc-en
+Architecture: all
+Conflicts: codeblocks (<< ${binary:Version})
+Depends: ${misc:Depends}
+Description: English manual for the Code::Blocks IDE
+ Code::Blocks is the open-source, cross-platform Integrated Development
+ Environment (IDE).
+ This package contains the English version of the manual for codeblocks
+ in HTML- and PDF-format
  It's a svn-download and may contain bugs.
 
 Package: codeblocks-dbg

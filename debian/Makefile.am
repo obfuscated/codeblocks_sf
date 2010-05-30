@@ -19,4 +19,5 @@ EXTRA_DIST = 	changelog \
 		libwxsmithlib0.install \
 		wxsmith-dev.install \
 		wxsmith-headers.install \
-		source.lintian-overrides
+		source.lintian-overrides \
+		source/format
