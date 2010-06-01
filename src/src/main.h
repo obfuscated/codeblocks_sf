@@ -267,6 +267,7 @@ class MainFrame : public wxFrame
         void AddEditorInWindowMenu(const wxString& filename, const wxString& title);
         void RemoveEditorFromWindowMenu(const wxString& filename);
         int IsEditorInWindowMenu(const wxString& filename);
+        wxString GetEditorDescription(EditorBase* eb);
 
         bool DoCloseCurrentWorkspace();
         bool DoOpenProject(const wxString& filename, bool addToHistory = true);

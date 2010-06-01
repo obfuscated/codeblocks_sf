@@ -96,7 +96,7 @@ bool wxSwitcherItems::operator== (const wxSwitcherItems& items) const
 
     if (m_backgroundColour != items.m_backgroundColour || m_textColour != items.m_textColour ||
         m_selectionColour != items.m_selectionColour || m_selectionOutlineColour != items.m_selectionOutlineColour ||
-        m_itemFont != items.m_itemFont)
+        m_selectionTextColour != items.m_selectionTextColour || m_itemFont != items.m_itemFont)
         return false;
 
     size_t i;
@@ -117,10 +117,12 @@ void wxSwitcherItems::Init()
 
 #if defined(__WXMSW__) && wxUSE_UXTHEME
     // If on Windows XP/Vista, use more appropriate colours.
+    // Alatar: What for??? Why should we use fixed colours?
     if (wxUxThemeEngine::GetIfActive())
     {
         SetSelectionOutlineColour(wxColour(49, 106, 197));
         SetSelectionColour(wxColour(193,210, 238));
+        SetSelectionTextColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
     }
 #endif
 }
@@ -143,6 +145,7 @@ void wxSwitcherItems::Copy(const wxSwitcherItems& items)
     m_textColour = items.m_textColour;
     m_selectionColour = items.m_selectionColour;
     m_selectionOutlineColour = items.m_selectionOutlineColour;
+    m_selectionTextColour = items.m_selectionTextColour;
     m_itemFont = items.m_itemFont;
 }
 
@@ -151,6 +154,18 @@ wxSwitcherItem& wxSwitcherItems::AddItem(const wxString& title, const wxString& 
     wxSwitcherItem item;
     item.SetTitle(title);
     item.SetName(name);
+    item.SetId(id);
+    item.SetBitmap(bitmap);
+
+    return AddItem(item);
+}
+
+wxSwitcherItem& wxSwitcherItems::AddItem(const wxString& title, const wxString& name, const wxString& descr, int id, const wxBitmap& bitmap)
+{
+    wxSwitcherItem item;
+    item.SetTitle(title);
+    item.SetName(name);
+    item.SetDescription(descr);
     item.SetId(id);
     item.SetBitmap(bitmap);
 
@@ -228,6 +243,7 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
     wxColour standardTextColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     wxColour selectionColour = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHT);
     wxColour selectionOutlineColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    wxColour selectionTextColour = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
     wxFont standardFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     wxFont groupFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     groupFont.SetWeight(wxBOLD);
@@ -243,6 +259,9 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
 
     if (GetSelectionOutlineColour().Ok())
         selectionOutlineColour = GetSelectionOutlineColour();
+
+    if (GetSelectionTextColour().Ok())
+        selectionTextColour = GetSelectionTextColour();
 
     if (GetItemFont().Ok())
     {
@@ -277,7 +296,9 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
 
         dc.SetClippingRegion(clippingRect);
 
-        if (item.GetTextColour().Ok())
+        if (selected)
+            dc.SetTextForeground(selectionTextColour);
+        else if (item.GetTextColour().Ok())
             dc.SetTextForeground(item.GetTextColour());
         else
             dc.SetTextForeground(standardTextColour);
@@ -509,25 +530,40 @@ void wxMultiColumnListCtrl::OnMouseEvent(wxMouseEvent& event)
 
         Refresh();
     }
-    else
+    else if (event.GetButton() == wxMOUSE_BTN_NONE)
+    {   // Mouse move
+        bool bCanSelectItem = true;
+        if (m_ptMouse.x != -2 && m_ptMouse.y != -2)
+        {   // If ==-2 => Don't select item on mouse pointer : used when user select the window with keyboard
+            if (m_ptMouse.x != -1 && m_ptMouse.y != -1)
+            {   // If ==-1 => The client already move the mouse, select the item under the mouse cursor
+                wxPoint ptCurrent = ClientToScreen(event.GetPosition());
+                if (abs(ptCurrent.x - m_ptMouse.x) >= 3 || abs(ptCurrent.y - m_ptMouse.y) >= 3)
+                {   // the user has moved the mouse over a 3 pixels square
+                    m_ptMouse.x = m_ptMouse.y = -1; // Accept to select an item
+                }
+                else
+                {   // Select this item is not allowed for the moment, the user must move the mouse
+                    bCanSelectItem = false;
+                }
+            }
+            if (bCanSelectItem)
+            {
+                int idx = m_items.HitTest(event.GetPosition());
+                if (idx != wxNOT_FOUND)
+                {
+                    m_items.SetSelection(idx);
+                    GenerateSelectionEvent();
+                    Refresh();
+                }
+            }
+        }
+    }
+    else if (event.LeftDown())
     {
-        int idx = m_items.HitTest(event.GetPosition());
-
-        if (idx != wxNOT_FOUND)
-        {
-            m_items.SetSelection(idx);
-
-            GenerateSelectionEvent();
-
-            Refresh();
-        }
-
-        if (event.LeftDown())
-        {
-            SendCloseEvent();
-
-            SetFocus();
-        }
+        m_ptMouse.x = m_ptMouse.y = -1; // Accept to select an item
+        SendCloseEvent();
+        SetFocus();
     }
 }
 
@@ -541,6 +577,8 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
     {
         if (event.GetKeyCode() == GetModifierKey())
         {
+            // The window will close, don't select the item under mouse pointer
+            m_ptMouse.x = m_ptMouse.y = -2;
             SendCloseEvent();
         }
         event.Skip();
@@ -549,6 +587,9 @@ void wxMultiColumnListCtrl::OnKey(wxKeyEvent& event)
 
     if (event.GetKeyCode() == WXK_ESCAPE || event.GetKeyCode() == WXK_RETURN)
     {
+        // The window will close, don't select the item under mouse pointer
+        m_ptMouse.x = m_ptMouse.y = -2;
+
         if (event.GetKeyCode() == WXK_ESCAPE)
             m_items.SetSelection(-1);
 
@@ -802,6 +843,7 @@ void wxMultiColumnListCtrl::Init()
     m_overallSize = wxSize(200, 100);
     m_modifierKey = WXK_CONTROL;
     m_extraNavigationKey = 0;
+    m_ptMouse = wxGetMousePosition();
 }
 
 /*!

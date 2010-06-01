@@ -112,7 +112,7 @@
                 <object class="sizeritem">
                   <object class="wxCheckBox" name="chkInvalidTargets">
                     <label>Ignore invalid targets</label>
-                    <tooltip>When checked the user will not be prompted to deal with invalid targets, 
+                    <tooltip>When checked the user will not be prompted to deal with invalid targets,
 during the build process they will be ignored (example : the target's compiler is not installed)</tooltip>
                   </object>
                   <flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -402,6 +402,13 @@ during the build process they will be ignored (example : the target's compiler i
                 <object class="sizeritem">
                   <object class="wxCheckBox" name="chkListTabs">
                     <label>Use drop-down tab list</label>
+                  </object>
+                  <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+                  <border>8</border>
+                </object>
+                <object class="sizeritem">
+                  <object class="wxCheckBox" name="chkStackedBasedTabSwitching">
+                    <label>Use stacked based tab-switching</label>
                   </object>
                   <flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
                   <border>8</border>

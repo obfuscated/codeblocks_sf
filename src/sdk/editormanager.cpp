@@ -201,6 +201,9 @@ END_EVENT_TABLE()
 
 EditorManager::EditorManager()
         : m_pNotebook(0L),
+        m_pNotebookStackHead(new cbNotebookStack),
+        m_pNotebookStackTail(m_pNotebookStackHead),
+        m_nNotebookStackSize(0),
         m_LastFindReplaceData(0L),
         m_pSearchLog(0),
         m_SearchLogIndex(-1),
@@ -232,10 +235,85 @@ EditorManager::~EditorManager()
     CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pSearchLog);
     Manager::Get()->ProcessEvent(evt);
 
+    DeleteNotebookStack();
+    delete m_pNotebookStackHead;
     delete m_Theme;
     delete m_LastFindReplaceData;
     delete m_pData;
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/zoom"), m_Zoom);
+}
+
+cbNotebookStack* EditorManager::GetNotebookStack()
+{
+    bool found = false;
+    wxWindow* wnd;
+    cbNotebookStack* body;
+    cbNotebookStack* prev_body;
+
+    while (m_nNotebookStackSize != m_pNotebook->GetPageCount()) // Sync stack with Notebook
+    {
+        if (m_nNotebookStackSize < m_pNotebook->GetPageCount())
+        {
+            for (size_t i = 0; i<m_pNotebook->GetPageCount(); ++i)
+            {
+                wnd = m_pNotebook->GetPage(i);
+                found = false;
+                for (body = m_pNotebookStackHead->next; body != NULL; body = body->next)
+                {
+                    if(wnd == body->window)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    m_pNotebookStackTail->next = new cbNotebookStack(wnd);
+                    m_pNotebookStackTail = m_pNotebookStackTail->next;
+                    ++m_nNotebookStackSize;
+                }
+            }
+        }
+        if (m_nNotebookStackSize > m_pNotebook->GetPageCount())
+        {
+            for (prev_body = m_pNotebookStackHead, body = prev_body->next; body != NULL; prev_body = body, body = body->next)
+            {
+                if(m_pNotebook->GetPageIndex(body->window) == wxNOT_FOUND)
+                {
+                    prev_body->next = body->next;
+                    delete body;
+                    --m_nNotebookStackSize;
+                    body = prev_body;
+                }
+            }
+        }
+    }
+
+    return m_pNotebookStackHead->next;
+}
+
+void EditorManager::DeleteNotebookStack()
+{
+    cbNotebookStack* tmp;
+    while(m_pNotebookStackHead->next)
+    {
+        tmp = m_pNotebookStackHead->next;
+        m_pNotebookStackHead->next = tmp->next;
+        delete tmp;
+    }
+    m_pNotebookStackTail = m_pNotebookStackHead;
+    m_nNotebookStackSize = 0;
+}
+
+void EditorManager::RebuildNotebookStack()
+{
+    DeleteNotebookStack();
+    for(size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+    {
+        m_pNotebookStackTail->next = new cbNotebookStack(m_pNotebook->GetPage(i));
+        m_pNotebookStackTail = m_pNotebookStackTail->next;
+        ++m_nNotebookStackSize;
+    }
 }
 
 void EditorManager::CreateMenu(wxMenuBar* menuBar)
@@ -2611,6 +2689,35 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
     CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
 
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))
+    {
+        wxWindow*        wnd;
+        cbNotebookStack* body;
+        cbNotebookStack* tmp;
+        wnd = m_pNotebook->GetPage(event.GetSelection());
+        for (body = m_pNotebookStackHead; body->next != 0; body = body->next)
+        {
+            if (wnd == body->next->window)
+            {
+                if (m_pNotebookStackTail == body->next)
+                    m_pNotebookStackTail = body;
+                tmp = body->next;
+                body->next = tmp->next;
+                tmp->next = m_pNotebookStackHead->next;
+                m_pNotebookStackHead->next = tmp;
+                break;
+            }
+        }
+        if (   (m_pNotebookStackHead->next == 0)
+            || (wnd != m_pNotebookStackHead->next->window) )
+        {
+            body = new cbNotebookStack(wnd);
+            body->next = m_pNotebookStackHead->next;
+            m_pNotebookStackHead->next = body;
+            ++m_nNotebookStackSize;
+        }
+    }
+
     // focus editor on next update event
     m_pData->m_SetFocusFlag = true;
 
@@ -2638,6 +2745,26 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         if (!QueryClose(eb))
             event.Veto();
     }
+
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))
+    {
+        wxWindow* wnd;
+        cbNotebookStack* body;
+        cbNotebookStack* tmp;
+        wnd = m_pNotebook->GetPage(event.GetSelection());
+        for (body = m_pNotebookStackHead; body->next != 0; body = body->next)
+        {
+            if (wnd == body->next->window)
+            {
+                tmp = body->next;
+                body->next = tmp->next;
+                delete tmp;
+                --m_nNotebookStackSize;
+                break;
+            }
+        }
+    }
+
     event.Skip(); // allow others to process it too
 }
 

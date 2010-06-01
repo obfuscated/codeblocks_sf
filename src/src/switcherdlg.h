@@ -118,6 +118,7 @@ public:
     // Public API
 
     wxSwitcherItem& AddItem(const wxString& title, const wxString& name, int id = 0, const wxBitmap& bitmap = wxNullBitmap);
+    wxSwitcherItem& AddItem(const wxString& title, const wxString& name, const wxString& descr, int id = 0, const wxBitmap& bitmap = wxNullBitmap);
     wxSwitcherItem& AddItem(const wxSwitcherItem& item);
     wxSwitcherItem& AddGroup(const wxString& title, const wxString& name, int id = 0, const wxBitmap& bitmap = wxNullBitmap);
 
@@ -159,6 +160,9 @@ public:
     void SetSelectionOutlineColour(const wxColour& colour) { m_selectionOutlineColour = colour; }
     const wxColour& GetSelectionOutlineColour() const { return m_selectionOutlineColour; }
 
+    void SetSelectionTextColour(const wxColour& colour) { m_selectionTextColour = colour; }
+    const wxColour& GetSelectionTextColour() const { return m_selectionTextColour; }
+
     void SetItemFont(const wxFont& font) { m_itemFont = font; }
     const wxFont& GetItemFont() const { return m_itemFont; }
 
@@ -178,6 +182,7 @@ protected:
     wxColour            m_textColour;
     wxColour            m_selectionColour;
     wxColour            m_selectionOutlineColour;
+    wxColour            m_selectionTextColour;
 
     wxFont              m_itemFont;
 };
@@ -236,6 +241,15 @@ public:
 
 protected:
 
+    /**
+     * Mouse point initialized on Init function.
+     *
+     * Used because if the mouse is over the dialog when it's opened, it automatically
+     * select the item under the mouse pointer.
+     * Recording the mouse pointer position when the dialog is opened prevent this :
+     * select the item only if the user move the mouse.
+    */
+    wxPoint             m_ptMouse;
     wxSwitcherItems     m_items;
     wxSize              m_overallSize;
     int                 m_extraNavigationKey;

@@ -45,6 +45,20 @@ WX_DECLARE_STRING_HASH_MAP(wxString, AutoCompleteMap);
 struct cbFindReplaceData;
 
 /*
+ * Struct for store tabs stack info
+ */
+struct cbNotebookStack
+{
+    cbNotebookStack(wxWindow* a_pWindow = 0)
+        : window (a_pWindow),
+          next (0)
+   {}
+
+    wxWindow*           window;
+    cbNotebookStack*    next;
+};
+
+/*
  * No description
  */
 class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
@@ -59,6 +73,10 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         virtual void operator=(const EditorManager& rhs){ cbThrow(_T("Can't assign an EditorManager* !!!")); }
 
         cbAuiNotebook* GetNotebook() { return m_pNotebook; }
+        cbNotebookStack* GetNotebookStack();
+        void DeleteNotebookStack();
+        void RebuildNotebookStack();
+
         void CreateMenu(wxMenuBar* menuBar);
         void ReleaseMenu(wxMenuBar* menuBar);
         void Configure();
@@ -95,16 +113,16 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         bool UpdateProjectFiles(cbProject* project);
         bool SwapActiveHeaderSource();
         bool CloseActive(bool dontsave = false);
-        bool Close(const wxString& filename,bool dontsave = false);
-        bool Close(EditorBase* editor,bool dontsave = false);
-        bool Close(int index,bool dontsave = false);
+        bool Close(const wxString& filename, bool dontsave = false);
+        bool Close(EditorBase* editor, bool dontsave = false);
+        bool Close(int index, bool dontsave = false);
 
         // If file is modified, queries to save (yes/no/cancel).
         // Returns false on "cancel".
         bool QueryClose(EditorBase* editor);
         bool QueryCloseAll();
         bool CloseAll(bool dontsave=false);
-        bool CloseAllExcept(EditorBase* editor,bool dontsave=false);
+        bool CloseAllExcept(EditorBase* editor, bool dontsave=false);
         bool Save(const wxString& filename);
         bool Save(int index);
         bool SaveActive();
@@ -174,6 +192,9 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         wxFileName FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate);
 
         cbAuiNotebook*             m_pNotebook;
+        cbNotebookStack*           m_pNotebookStackHead;
+        cbNotebookStack*           m_pNotebookStackTail;
+        size_t                     m_nNotebookStackSize;
         cbFindReplaceData*         m_LastFindReplaceData;
         EditorColourSet*           m_Theme;
         ListCtrlLogger*            m_pSearchLog;
