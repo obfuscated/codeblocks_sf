@@ -18,7 +18,7 @@ codesnippets_LDFLAGS = $(WX_GTK2_LIBS)
 ##codesnippets_LDADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
 codesnippets_LDADD =  -L../../../../base/tinyxml -ltinyxml \
             -L../../../../sdk ../../../../sdk/libcodeblocks.la \
-			$(PLUGIN_WX_LIBS) $(WX_LIBS)
+			$(PLUGIN_WX_LIBS) $(WX_LIBS) -lX11
 
 codesnippets_SOURCES =	$(srcdir)/../version.cpp \
 		$(srcdir)/../Search/DirectoryParamsPanel.cpp \
