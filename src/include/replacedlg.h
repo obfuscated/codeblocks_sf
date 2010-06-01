@@ -19,10 +19,14 @@ class ReplaceDlg : public FindReplaceBase
 		wxString GetFindString() const;
 		wxString GetReplaceString() const;
 		bool IsFindInFiles() const;
+		bool IsMultiLine() const;
 		bool GetDeleteOldSearches() const;
 		bool GetMatchWord() const;
 		bool GetStartWord() const;
 		bool GetMatchCase() const;
+        bool GetStartFile() const;
+        bool GetFixEOLs() const;
+
 		bool GetRegEx() const;
 		bool GetAutoWrapSearch() const;
 		bool GetFindUsesSelectedText() const;
@@ -34,7 +38,10 @@ class ReplaceDlg : public FindReplaceBase
 		wxString GetSearchPath() const{ return wxEmptyString; }
 		wxString GetSearchMask() const{ return wxEmptyString; }
 
+		void OnSize(wxSizeEvent& event);
 		void OnFindChange(wxNotebookEvent& event);
+        void OnMultiChange(wxCommandEvent& event);
+        void OnLimitToChange(wxCommandEvent& event);
 		void OnRegEx(wxCommandEvent& event);
 		void OnActivate(wxActivateEvent& event);
 

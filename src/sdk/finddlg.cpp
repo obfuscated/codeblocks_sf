@@ -275,6 +275,18 @@ wxString FindDlg::GetSearchMask() const
     return XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->GetValue();
 }
 
+bool FindDlg::GetStartFile() const
+{
+// TODO (rick#1#): Implement FindDlg::GetStartFile()
+    return false;
+}
+
+bool FindDlg::GetFixEOLs() const
+{
+    // Fixing EOLs only applicable in "Replace"
+    return false;
+}
+
 void FindDlg::UpdateUI()
 {
     bool on = XRCCTRL(*this, "rbScope2", wxRadioBox)->GetSelection() == 3; // find in search path

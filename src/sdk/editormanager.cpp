@@ -76,6 +76,7 @@ struct cbFindReplaceData
     bool delOldSearches;
     bool matchWord;
     bool startWord;
+    bool startFile; //!< To be implemented.
     bool matchCase;
     bool regEx;
     bool directionDown;
@@ -90,7 +91,51 @@ struct cbFindReplaceData
     int SearchInSelectionEnd;  //!< keep track of the end of a 'search' selection
     bool autoWrapSearch;
     bool findUsesSelectedText;
+    bool fixEOLs; //!< for multi-line S&R. Fixes EOLs in all the files searched.
+    int eolMode; //!< for multi-line S&R
+
+    void ConvertEOLs(int newmode);
+    bool IsMultiLine();
+
+    cbFindReplaceData()
+    {
+        eolMode = wxSCI_EOL_LF;
+        fixEOLs = false;
+    }
 };
+
+void cbFindReplaceData::ConvertEOLs(int newmode)
+{
+    if (eolMode != newmode)
+    {
+        const wxChar* eol_lf = _T("\n");
+        const wxChar* eol_crlf = _T("\r\n");
+        const wxChar* eol_cr = _T("\r");
+
+        const wxChar* eol_from = eol_lf;
+        const wxChar* eol_to = eol_lf;
+        switch(eolMode)
+        {
+            case wxSCI_EOL_CR: eol_from = eol_cr; break;
+            case wxSCI_EOL_CRLF: eol_from = eol_crlf; break;
+            default: ;
+        }
+        switch(newmode)
+        {
+            case wxSCI_EOL_CR: eol_to = eol_cr; break;
+            case wxSCI_EOL_CRLF: eol_to = eol_crlf; break;
+            default: newmode = wxSCI_EOL_LF;
+        }
+        findText.Replace(eol_from, eol_to, true);
+        replaceText.Replace(eol_from, eol_to, true);
+        eolMode = newmode;
+    }
+}
+
+bool cbFindReplaceData::IsMultiLine()
+{
+    return  ((findText.Find(_T("\n")) != wxNOT_FOUND) || (findText.Find(_T("\r")) != wxNOT_FOUND));
+}
 
 static const int idNBTabSplitHorz = wxNewId();
 static const int idNBTabSplitVert = wxNewId();
@@ -611,7 +656,7 @@ void EditorManager::AddEditorBase(EditorBase* eb)
 void EditorManager::RemoveEditorBase(EditorBase* eb, bool deleteObject)
 {
     int page = FindPageFromEditor(eb);
-   if (page != -1 && !Manager::isappShuttingDown())
+    if (page != -1 && !Manager::isappShuttingDown())
         m_pNotebook->RemovePage(page);
 
     //    if (deleteObject)
@@ -632,7 +677,6 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
             continue;
         pf->editorTopLine = ed->GetControl()->GetFirstVisibleLine();
         pf->editorPos = ed->GetControl()->GetCurrentPos();
-//        pf->editorTabPos = i + 1;
         pf->editorTabPos = m_pNotebook->GetTabPositionFromIndex(i) + 1;
         pf->editorOpen = true;
     }
@@ -641,7 +685,6 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 
 bool EditorManager::CloseAll(bool dontsave)
 {
-    //return CloseAllExcept(0L,dontsave);
     return CloseAllExcept(GetEditor(_("Start here")), dontsave);
 }
 
@@ -656,7 +699,7 @@ bool EditorManager::QueryCloseAll()
     return true;
 }
 
-bool EditorManager::CloseAllExcept(EditorBase* editor,bool dontsave)
+bool EditorManager::CloseAllExcept(EditorBase* editor, bool dontsave)
 {
     if (!dontsave)
     {
@@ -682,7 +725,7 @@ bool EditorManager::CloseAllExcept(EditorBase* editor,bool dontsave)
 
 bool EditorManager::CloseActive(bool dontsave)
 {
-    return Close(GetActiveEditor(),dontsave);
+    return Close(GetActiveEditor(), dontsave);
 }
 
 bool EditorManager::QueryClose(EditorBase *ed)
@@ -724,12 +767,12 @@ int EditorManager::FindPageFromEditor(EditorBase* eb)
     return -1;
 }
 
-bool EditorManager::Close(const wxString& filename,bool dontsave)
+bool EditorManager::Close(const wxString& filename, bool dontsave)
 {
-    return Close(IsOpen(filename),dontsave);
+    return Close(IsOpen(filename), dontsave);
 }
 
-bool EditorManager::Close(EditorBase* editor,bool dontsave)
+bool EditorManager::Close(EditorBase* editor, bool dontsave)
 {
     if (editor)
     {
@@ -739,28 +782,25 @@ bool EditorManager::Close(EditorBase* editor,bool dontsave)
             if (!dontsave)
                 if (!QueryClose(editor))
                     return false;
-            wxString filename = editor->GetFilename();
             m_pNotebook->DeletePage(idx);
         }
     }
     return true;
 }
 
-bool EditorManager::Close(int index,bool dontsave)
+bool EditorManager::Close(int index, bool dontsave)
 {
     EditorBase* ed = InternalGetEditorBase(index);
     if (ed)
-        return Close(ed,dontsave);
+        return Close(ed, dontsave);
     return false;
 }
 
 bool EditorManager::Save(const wxString& filename)
 {
-    //    cbEditor* ed = GetBuiltinEditor(IsOpen(filename));
     EditorBase* ed = IsOpen(filename);
     if (ed)
     {
-        wxString oldname = ed->GetFilename();
         if (!ed->Save())
             return false;
         return true;
@@ -773,7 +813,6 @@ bool EditorManager::Save(int index)
     EditorBase* ed = InternalGetEditorBase(index);
     if (ed)
     {
-        wxString oldname = ed->GetFilename();
         if (!ed->Save())
             return false;
         return true;
@@ -786,7 +825,6 @@ bool EditorManager::SaveActive()
     EditorBase* ed = GetActiveEditor();
     if (ed)
     {
-        wxString oldname = ed->GetFilename();
         if (!ed->Save())
             return false;
         return true;
@@ -1283,6 +1321,9 @@ int EditorManager::ShowFindDialog(bool replace, bool explicitly_find_in_files)
     m_LastFindReplaceData->end = 0;
     m_LastFindReplaceData->findText = dlg->GetFindString();
     m_LastFindReplaceData->replaceText = dlg->GetReplaceString();
+    m_LastFindReplaceData->eolMode = wxSCI_EOL_LF;
+    m_LastFindReplaceData->fixEOLs = dlg->GetFixEOLs();
+    m_LastFindReplaceData->startFile = dlg->GetStartFile();
 
     m_LastFindReplaceData->findInFiles = dlg->IsFindInFiles();
     if (!m_LastFindReplaceData->findInFiles)
@@ -1347,8 +1388,15 @@ void EditorManager::CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFi
 {
     if (!control || !data)
         return;
+    if (data->startFile) // Beginning-of-file needs the entire scope
+    {
+        int clen = control->GetLength();
+        int slen = data->findText.Len();
 
-    if (!data->findInFiles)   // Find in current Editor
+        data->start = 0;
+        data->end = std::min(slen, clen);
+    }
+    else if (!data->findInFiles)   // Find in current Editor
     {
         int ssta = control->GetSelectionStart();
         int send = control->GetSelectionEnd();
@@ -1453,6 +1501,25 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     int replacecount=0;
     int foundcount=0;
     int flags = 0;
+
+    {
+        int eolMode = control->GetEOLMode();
+        data->ConvertEOLs(eolMode); // Convert our S&R data to the file's EOL mode.
+        if (data->IsMultiLine() && data->fixEOLs)
+        {
+
+            // First we must ensure that the file has consistent line endings.
+            // As all the file's lines are affected, we disable change history for this step.
+
+            control->BeginUndoAction();
+            control->SetChangeCollection(false);
+            control->ConvertEOLs(eolMode);
+            control->SetChangeCollection(true);
+            control->EndUndoAction();
+        }
+    }
+    control->BeginUndoAction(); // The undo is set at this point in case we need to convert the EOLs.
+
     CalculateFindReplaceStartEnd(control, data);
 
     if (data->matchWord)
@@ -1482,7 +1549,6 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     }
     #endif
 
-    control->BeginUndoAction();
     int pos = -1;
     bool replace = false;
     bool confirm = true;
@@ -1521,6 +1587,10 @@ int EditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
             } else
                 pos=-1;
         }
+
+        if (data->startFile && pos > 0)
+            pos = -1; // Not found at the beginning of file
+
         if (pos != -1 && data->start!=data->end)
         {
             control->GotoPos(pos);
@@ -1673,6 +1743,8 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
 {
     if (!data) return 0;
     if (data->findText.IsEmpty()) return 0;
+
+    bool IsMultiLine = data->IsMultiLine();
 
     // let's make a list of all the files to search in
     wxArrayString filesList;
@@ -1852,9 +1924,31 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
         }
 
         SetActiveEditor(ed);
-        control->BeginUndoAction(); //undo
 
         *data = dataCopy;
+
+        bool replacementsWereMade = false;
+        // If we fix the file's EOLs for multi-line S&R, we're actually modifying it.
+        // What we really want to know is whether we actually did a replacement.
+        // If not (and the file was not open in the first place), we can safely close the file.
+
+        {
+            // We should be checking if the data has EOLs before converting them. But searching is
+            // just as expensive as doing the conversion itself, so we just convert.
+            int eolMode = control->GetEOLMode();
+            data->ConvertEOLs(eolMode);
+
+            if (IsMultiLine && data->fixEOLs)
+            {
+                control->BeginUndoAction(); //undo
+                control->SetChangeCollection(false);
+                control->ConvertEOLs(eolMode);
+                control->SetChangeCollection(true);
+                control->EndUndoAction();
+            }
+        }
+
+        control->BeginUndoAction(); // undo
         CalculateFindReplaceStartEnd(control, data, true);
 
         //reset bools
@@ -1891,6 +1985,9 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
                 } else
                     pos=-1;
             }
+
+            if (data->startFile && pos > 0)
+                pos = -1; // Not found at the beginning of file
 
             if (pos == -1 || data->start==data->end)
                 break;
@@ -1967,6 +2064,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
             {
                 if (replace)
                 {
+                    replacementsWereMade = true;
                     int lengthReplace = data->replaceText.Length();
                     if (data->regEx)
                     {
@@ -2015,7 +2113,7 @@ int EditorManager::ReplaceInFiles(cbFindReplaceData* data)
 
         //If i opened the file and no replacement was made,
         //close the editor
-        if (!ed->GetModified() && fileWasNotOpen)
+        if (!replacementsWereMade && fileWasNotOpen)
             Close(ed, true);
     }// for
 
@@ -2041,6 +2139,7 @@ int EditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
 
     bool AdvRegex=false;
     int flags = 0;
+    data->ConvertEOLs(control->GetEOLMode());
     CalculateFindReplaceStartEnd(control, data);
 
     if (data->matchWord)
@@ -2307,6 +2406,13 @@ int EditorManager::FindInFiles(cbFindReplaceData* data)
             wxDir::GetAllFiles(data->searchPath, &filesList, masks[i], flags);
         }
     }
+    else if (data->scope == 4) // find in current file only
+    {
+        cbEditor* ed = GetBuiltinActiveEditor();
+        if (ed)
+            filesList.Add(ed->GetFilename());
+    }
+
 
     // if the list is empty, leave
     if (filesList.GetCount() == 0)
@@ -2445,13 +2551,14 @@ int EditorManager::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRep
         if (ed)
             control = ed->GetControl();
     }
+
     if (!control)
         return -1;
 
     if (!data)
     {
         data = m_LastFindReplaceData;
-        //FindNext/Previous called from Search menu (F3/Shift-F3)
+        // FindNext/Previous called from Search menu (F3/Shift-F3)
         if (data) data->findInFiles = false;
     }
 
