@@ -32,25 +32,25 @@
             <object class="wxPanel" name="tabBatchBuilds">
               <object class="wxBoxSizer">
                 <orient>wxVERTICAL</orient>
-                  <object class="sizeritem">
-                    <option>0</option>
-                      <object class="wxBoxSizer">
-                        <orient>wxVERTICAL</orient>
-                        <object class="sizeritem">
-                          <object class="wxStaticText" name="">
-                            <label>Extra command-line arguments for batch-builds through shell extensions:</label>
-                          </object>
-                          <flag>wxLEFT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxTextCtrl" name="txtBatchBuildsCmdLine"/>
-                          <flag>wxLEFT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
-                        <object class="sizeritem">
-                          <object class="wxStaticText" name="">
-                            <label>If you right-click a Code::Blocks project/workspace in explorer, you will see
+                <object class="sizeritem">
+                  <option>0</option>
+                  <object class="wxBoxSizer">
+                    <orient>wxVERTICAL</orient>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="">
+                        <label>Extra command-line arguments for batch-builds through shell extensions:</label>
+                      </object>
+                      <flag>wxLEFT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxTextCtrl" name="txtBatchBuildsCmdLine"/>
+                      <flag>wxLEFT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
+                    <object class="sizeritem">
+                      <object class="wxStaticText" name="">
+                        <label>If you right-click a Code::Blocks project/workspace in explorer, you will see
 two extensions: &quot;Build&quot; and &quot;Rebuild (clean)&quot; (windows only).
 The arguments configured here, are used by those two extensions.
 You could specify, for example, a profile/personality to use for batch builds.
@@ -65,12 +65,12 @@ The relevant command-line arguments are (all are optional):
 --target: work only on &lt;target&gt; for &quot;Build&quot; or &quot;Rebuild (clean)&quot;
 --no-batch-window-close: do not auto-close log window when batch build is done
 --batch-build-notify: show message when batch build is done</label>
-                          </object>
-                          <flag>wxLEFT|wxEXPAND</flag>
-                          <border>8</border>
-                        </object>
                       </object>
+                      <flag>wxLEFT|wxEXPAND</flag>
+                      <border>8</border>
+                    </object>
                   </object>
+                </object>
                 <object class="sizeritem">
                   <option>1</option>
                   <object class="wxStaticBoxSizer">
@@ -133,14 +133,14 @@ http://wiki.codeblocks.org/index.php?title=Personalities</label>
         <object class="wxStdDialogButtonSizer">
           <object class="button">
             <object class="wxButton" name="wxID_OK">
-              <label></label>
+              <label/>
               <label>&amp;Ok</label>
               <default>1</default>
             </object>
           </object>
           <object class="button">
             <object class="wxButton" name="wxID_CANCEL">
-              <label></label>
+              <label/>
               <label>&amp;Cancel</label>
             </object>
           </object>

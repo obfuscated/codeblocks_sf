@@ -319,8 +319,8 @@ private:
 	Surface(const Surface &) {}
 	Surface &operator=(const Surface &) { return *this; }
 public:
-	Surface() {};
-	virtual ~Surface() {};
+	Surface() {}
+	virtual ~Surface() {}
 	static Surface *Allocate();
 
 	virtual void Init(WindowID wid)=0;
@@ -479,7 +479,7 @@ public:
  */
 class DynamicLibrary {
 public:
-	virtual ~DynamicLibrary() {};
+	virtual ~DynamicLibrary() {}
 
 	/// @return Pointer to function "name", or NULL on failure.
 	virtual Function FindFunction(const char *name) = 0;

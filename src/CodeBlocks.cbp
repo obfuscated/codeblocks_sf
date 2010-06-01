@@ -847,6 +847,9 @@
 		<Unit filename="include\replacedlg.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include\safedelete.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include\scripting\bindings\sc_base_types.h">
 			<Option target="sdk" />
 		</Unit>
@@ -970,7 +973,7 @@
 		<Unit filename="include\sdk.h">
 			<Option compile="1" />
 			<Option weight="0" />
-			<Option target="src" />
+			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include\sdk_common.h">
 			<Option target="sdk" />
@@ -1085,7 +1088,6 @@
 			<Option target="Autosave" />
 		</Unit>
 		<Unit filename="plugins\autosave\manifest.xml">
-			<Option compilerVar="CC" />
 			<Option target="Autosave" />
 		</Unit>
 		<Unit filename="plugins\classwizard\classwizard.cpp">
@@ -3655,9 +3657,6 @@
 		<Unit filename="sdk\wxscintilla\src\scintilla\include\Scintilla.h">
 			<Option target="scintilla" />
 		</Unit>
-		<Unit filename="sdk\wxscintilla\src\scintilla\include\Scintilla.iface">
-			<Option target="scintilla" />
-		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\include\ScintillaWidget.h">
 			<Option target="scintilla" />
 		</Unit>
@@ -3725,6 +3724,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\ExternalLexer.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk\wxscintilla\src\scintilla\src\FontQuality.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk\wxscintilla\src\scintilla\src\Indicator.cxx">

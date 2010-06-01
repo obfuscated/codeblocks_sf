@@ -343,6 +343,10 @@
       </tr><tr>
 	<td>Oliver Kiddle</td>
 	<td>Etienne Girondel</td>
+	<td>Haimag Ren</td>
+	<td>Andrey Moskalyov</td>
+      </tr><tr>
+	<td>Xavi</td>
     </tr>
     </table>
     <p>
@@ -353,6 +357,203 @@
         <a href="http://sourceforge.net/projects/icon-collection/">
         Icons</a> Copyright(C) 1998 by Dean S. Jones<br />
       </li>
+    </ul>
+    <h3>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite212.zip?download">Release 2.12</a>
+    </h3>
+    <ul>
+	<li>
+	Released 1 June 2010.
+	</li>
+	<li>
+	Drawing optimizations improve speed and fix some visible flashing when scrolling.
+	</li>
+	<li>
+	Copy Path command added to File menu in SciTE.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2986745&group_id=2439">Feature #2986745.</a>
+	</li>
+	<li>
+	Optional warning displayed by SciTE when saving a file which has been modified by another process.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2975041&group_id=2439">Feature #2975041.</a>
+	</li>
+	<li>
+	Flagship lexer for xBase languages updated to follow the language much more closely.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2992689&group_id=2439">Feature #2992689.</a>
+	</li>
+	<li>
+	HTML lexer highlights Django templates in more regions.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=3002874&group_id=2439">Feature #3002874.</a>
+	</li>
+	<li>
+	Dropping files on SciTE on Windows, releases the drag object earlier and opens the files asynchronously,
+	leading to smoother user experience.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2986724&group_id=2439">Feature #2986724.</a>
+	</li>
+	<li>
+	SciTE HTML exports take the Use Monospaced Font setting into account.
+	</li>
+	<li>
+	SciTE window title "[n of m]" localised.
+	</li>
+	<li>
+	When new line inserted at start of line, markers are moved down.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2986727&group_id=2439">Bug #2986727.</a>
+	</li>
+	<li>
+	On Windows, dropped text has its line ends converted, similar to pasting.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3005328&group_id=2439">Bug #3005328.</a>
+	</li>
+	<li>
+	Fixed bug with middle-click paste in block select mode where text was pasted next to selection rather than at cursor.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2984460&group_id=2439">Bug #2984460.</a>
+	</li>
+	<li>
+	Fixed SciTE crash where a style had a size parameter without a value.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3003834&group_id=2439">Bug #3003834.</a>
+	</li>
+	<li>
+	Debug assertions in multiple lexers fixed.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3000566&group_id=2439">Bug #3000566.</a>
+	</li>
+	<li>
+	CSS lexer fixed bug where @font-face displayed incorrectly
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2994224&group_id=2439">Bug #2994224.</a>
+	</li>
+	<li>
+	CSS lexer fixed bug where open comment caused highlighting error.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=1683672&group_id=2439">Bug #1683672.</a>
+	</li>
+	<li>
+	Shell file lexer fixed highlight glitch with here docs where the first line is a comment.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2830239&group_id=2439">Bug #2830239.</a>
+	</li>
+	<li>
+	Bug fixed in SciTE openpath property that caused Open Selected File to fail to open the selected file.
+	</li>
+	<li>
+	Bug fixed in SciTE FileExt property when file name with no extension evaluated to whole path.
+	</li>
+	<li>
+	Fixed SciTE on Windows printing bug where the $(CurrentTime), $(CurrentPage) variables were not expanded.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2994612&group_id=2439">Bug #2994612.</a>
+	</li>
+	<li>
+	SciTE compiles for 64-bit Windows and runs without crashing.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2986312&group_id=2439">Bug #2986312.</a>
+	</li>
+	<li>
+	Full Screen mode in Windows Vista/7 improved to hide Start button and size borders a little better.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=3002813&group_id=2439">Bug #3002813.</a>
+	</li>
+    </ul>
+    <h3>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite211.zip?download">Release 2.11</a>
+    </h3>
+    <ul>
+	<li>
+	Released 9 April 2010.
+	</li>
+	<li>
+	Fixes compatibility of Scintilla.h with the C language.
+	</li>
+	<li>
+	With a rectangular selection SCI_GETSELECTIONSTART and SCI_GETSELECTIONEND return limits of the
+	rectangular selection rather than the limits of the main selection.
+	</li>
+	<li>
+	When SciTE on Windows is minimized to tray, only takes a single click to restore rather than a double click.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=981917&group_id=2439">Feature #981917.</a>
+	</li>
+    </ul>
+    <h3>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite210.zip?download">Release 2.10</a>
+    </h3>
+    <ul>
+	<li>
+	Released 4 April 2010.
+	</li>
+	<li>
+	Version 1.x of GTK+ is no longer supported.
+	</li>
+	<li>
+	SciTE is no longer supported on Windows 95, 98 or ME.
+	</li>
+	<li>
+	Case-insensitive search works for non-ASCII characters in UTF-8 and 8-bit encodings.
+	Non-regex search in DBCS encodings is always case-sensitive.
+	</li>
+	<li>
+	Non-ASCII characters may be changed to upper and lower case.
+	</li>
+	<li>
+	SciTE on Windows can access all files including those with names outside the user's preferred character encoding.
+	</li>
+	<li>
+	SciTE may be extended with lexers written in Lua.
+	</li>
+	<li>
+	When there are multiple selections, the paste command can go either to the main selection or to each
+	selection. This is controlled with SCI_SETMULTIPASTE.
+	</li>
+	<li>
+	More forms of bad UTF-8 are detected including overlong sequences, surrogates, and characters outside
+	the valid range. Bad UTF-8 bytes are now displayed as 2 hex digits preceded by 'x'.
+	</li>
+	<li>
+	SCI_GETTAG retrieves the value of captured expressions within regular expression searches.
+	</li>
+	<li>
+	Django template highlighting added to the HTML lexer.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2974889&group_id=2439">Feature #2974889.</a>
+	</li>
+	<li>
+	Verilog line comments can be folded.
+	</li>
+	<li>
+	SciTE on Windows allows specifying a filter for the Save As dialog.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2943445&group_id=2439">Feature #2943445.</a>
+	</li>
+	<li>
+	Bug fixed when multiple selection disabled where rectangular selections could be expanded into multiple selections.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2948260&group_id=2439">Bug #2948260.</a>
+	</li>
+	<li>
+	Bug fixed when document horizontally scrolled and up/down-arrow did not return to the same
+	column after horizontal scroll occurred.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2950799&group_id=2439">Bug #2950799.</a>
+	</li>
+	<li>
+	Bug fixed to remove hotspot highlight when mouse is moved out of the document. Windows only fix.
+	<a href="https://sourceforge.net/tracker/?func=detail&aid=2951353&group_id=2439&atid=102439">Bug #2951353.</a>
+	</li>
+	<li>
+	R lexer now performs case-sensitive check for keywords.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2956543&group_id=2439">Bug #2956543.</a>
+	</li>
+	<li>
+	Bug fixed on GTK+ where text disappeared when a wrap occurred.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2958043&group_id=2439">Bug #2958043.</a>
+	</li>
+	<li>
+	Bug fixed where regular expression replace cannot escape the '\' character by using '\\'.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2959876&group_id=2439">Bug #2959876.</a>
+	</li>
+	<li>
+	Bug fixed on GTK+ when virtual space disabled, middle-click could still paste text beyond end of line.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2971618&group_id=2439">Bug #2971618.</a>
+	</li>
+	<li>
+	SciTE crash fixed when double clicking on a malformed error message in the output pane.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2976551&group_id=2439">Bug #2976551.</a>
+	</li>
+	<li>
+	Improved performance on GTK+ when changing parameters associated with scroll bars to the same value.
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=352439&aid=2964357&group_id=2439">Bug #2964357.</a>
+	</li>
+	<li>
+	Fixed bug with pressing Shift+Tab with a rectangular selection so that it performs an un-indent
+	similar to how Tab performs an indent.
+	</li>
     </ul>
     <h3>
        <a href="http://prdownloads.sourceforge.net/scintilla/scite203.zip?download">Release 2.03</a>
@@ -856,8 +1057,8 @@
 	</li>
 	<li>
 	Incorrect memory freeing fixed on OS X.
-	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2354098&group_id=2439">Bug #2354098,</a>
-	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2671749&group_id=2439">#2671749.</a>
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2354098&group_id=2439">Bug #2354098</a>,
+	<a href="https://sourceforge.net/tracker/?func=detail&atid=102439&aid=2671749&group_id=2439">Bug #2671749.</a>
 	</li>
 	<li>
 	SciTE on GTK+ crash fixed on startup when child process exits before initialisation complete.

@@ -938,15 +938,12 @@
 		<Unit filename="plugins/astyle/astyle/astyle.h">
 			<Option target="AStyle" />
 		</Unit>
-		<Unit filename="plugins/astyle/astyle/astyle.html">
-			<Option target="AStyle" />
-		</Unit>
 		<Unit filename="plugins/astyle/astyle/astyle_main.cpp">
 			<Option compile="0" />
 			<Option link="0" />
 			<Option target="AStyle" />
 		</Unit>
-		<Unit filename="plugins/astyle/astyle/license.html">
+		<Unit filename="plugins/astyle/astyle/astyle_main.h">
 			<Option target="AStyle" />
 		</Unit>
 		<Unit filename="plugins/astyle/astyleconfigdlg.cpp">
@@ -2625,6 +2622,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/ExternalLexer.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/FontQuality.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/Indicator.cxx">

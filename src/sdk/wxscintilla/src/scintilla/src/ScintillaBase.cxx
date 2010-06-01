@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <ctype.h>
 
+#include <string>
 #include <vector>
 
 #include "Platform.h"
@@ -56,7 +57,7 @@ ScintillaBase::ScintillaBase() {
 	lexLanguage = SCLEX_CONTAINER;
 	performingStyle = false;
 	lexCurrent = 0;
-	for (int wl = 0;wl < numWordLists;wl++)
+	for (int wl = 0; wl < numWordLists; wl++)
 		keyWordLists[wl] = new WordList;
 	keyWordLists[numWordLists] = 0;
 #endif
@@ -64,7 +65,7 @@ ScintillaBase::ScintillaBase() {
 
 ScintillaBase::~ScintillaBase() {
 #ifdef SCI_LEXER
-	for (int wl = 0;wl < numWordLists;wl++)
+	for (int wl = 0; wl < numWordLists; wl++)
 		delete keyWordLists[wl];
 #endif
 }
@@ -202,8 +203,8 @@ int ScintillaBase::KeyCommand(unsigned int iMessage) {
 	return Editor::KeyCommand(iMessage);
 }
 
-void ScintillaBase::AutoCompleteDoubleClick(void* p) {
-	ScintillaBase* sci = reinterpret_cast<ScintillaBase*>(p);
+void ScintillaBase::AutoCompleteDoubleClick(void *p) {
+	ScintillaBase *sci = reinterpret_cast<ScintillaBase *>(p);
 	sci->AutoCompleteCompleted();
 }
 
@@ -336,7 +337,7 @@ void ScintillaBase::AutoCompleteCharacterDeleted() {
 		AutoCompleteMoveToCurrentWord();
 	}
 /* C::B begin */
-    SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
+	SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
 /* C::B end */
 	scn.nmhdr.code = SCN_AUTOCCHARDELETED;
 	scn.wParam = 0;
@@ -358,7 +359,7 @@ void ScintillaBase::AutoCompleteCompleted() {
 	ac.Show(false);
 
 /* C::B begin */
-    SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
+	SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
 /* C::B end */
 	scn.nmhdr.code = listType > 0 ? SCN_USERLISTSELECTION : SCN_AUTOCSELECTION;
 	scn.message = 0;
@@ -448,7 +449,7 @@ void ScintillaBase::CallTipShow(Point pt, const char *defn) {
 
 void ScintillaBase::CallTipClick() {
 /* C::B begin */
-    SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
+	SCNotification scn; memset((void*)&scn, 0, sizeof(scn));
 /* C::B end */
 	scn.nmhdr.code = SCN_CALLTIPCLICK;
 	scn.position = ct.clickPlace;

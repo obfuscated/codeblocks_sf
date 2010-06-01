@@ -11,18 +11,14 @@
 #ifndef SCINTILLA_H
 #define SCINTILLA_H
 
-#if LCCWIN
-typedef BOOL bool;
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#if PLAT_WIN
+#if defined(_WIN32)
 /* Return false on failure: */
-bool Scintilla_RegisterClasses(void *hInstance);
-bool Scintilla_ReleaseResources();
+int Scintilla_RegisterClasses(void *hInstance);
+int Scintilla_ReleaseResources();
 #endif
 int Scintilla_LinkLexers();
 
@@ -131,8 +127,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARK_UNDERLINE 29
 #define SC_MARK_CHARACTER 10000
 /* CHANGEBAR begin */
-#define SC_MARKNUM_CHANGEUNSAVED 23 
-#define SC_MARKNUM_CHANGESAVED 24 
+#define SC_MARKNUM_CHANGEUNSAVED 23
+#define SC_MARKNUM_CHANGESAVED 24
 /* CHANGEBAR end */
 #define SC_MARKNUM_FOLDEREND 25
 #define SC_MARKNUM_FOLDEROPENMID 26
@@ -142,7 +138,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARKNUM_FOLDER 30
 #define SC_MARKNUM_FOLDEROPEN 31
 /* CHANGEBAR begin */
-#define SC_MASK_FOLDERS 0xFF800000 
+#define SC_MASK_FOLDERS 0xFF800000
 /* CHANGEBAR end */
 #define SCI_MARKERDEFINE 2040
 #define SCI_MARKERSETFORE 2041
@@ -502,6 +498,11 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_SETFONTQUALITY 2611
 #define SCI_GETFONTQUALITY 2612
 #define SCI_SETFIRSTVISIBLELINE 2613
+#define SC_MULTIPASTE_ONCE 0
+#define SC_MULTIPASTE_EACH 1
+#define SCI_SETMULTIPASTE 2614
+#define SCI_GETMULTIPASTE 2615
+#define SCI_GETTAG 2616
 #define SCI_TARGETFROMSELECTION 2287
 #define SCI_LINESJOIN 2288
 #define SCI_LINESSPLIT 2289
@@ -917,22 +918,27 @@ struct Sci_TextToFind {
 #define TextRange Sci_TextRange
 #define TextToFind Sci_TextToFind
 
-#ifdef PLATFORM_H
+typedef void *Sci_SurfaceID;
+
+struct Sci_Rectangle {
+	int left;
+	int top;
+	int right;
+	int bottom;
+};
 
 /* This structure is used in printing and requires some of the graphics types
  * from Platform.h.  Not needed by most client code. */
 
 struct Sci_RangeToFormat {
-	SurfaceID hdc;
-	SurfaceID hdcTarget;
-	PRectangle rc;
-	PRectangle rcPage;
-	Sci_CharacterRange chrg;
+	Sci_SurfaceID hdc;
+	Sci_SurfaceID hdcTarget;
+	struct Sci_Rectangle rc;
+	struct Sci_Rectangle rcPage;
+	struct Sci_CharacterRange chrg;
 };
 
 #define RangeToFormat Sci_RangeToFormat
-
-#endif
 
 struct Sci_NotifyHeader {
 	/* Compatible with Windows NMHDR.

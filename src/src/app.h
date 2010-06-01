@@ -12,10 +12,7 @@
     #pragma hdrstop
 #endif
 
-/**
-@remarks VC++ 6 requires the following headers to compile correctly, so I added a check for it
-*/
-#if !defined(WX_PRECOMP) || defined(_MSC_VER)
+#if !defined(WX_PRECOMP)
     #include <wx/wx.h>
     #include <wx/intl.h>
     #include <wx/laywin.h>

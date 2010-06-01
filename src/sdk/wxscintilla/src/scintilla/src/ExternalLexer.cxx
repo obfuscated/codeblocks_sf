@@ -42,7 +42,7 @@ char **WordListsToStrings(WordList *val[]) {
 	while (val[dim])
 		dim++;
 	char **wls = new char * [dim + 1];
-	for (int i = 0;i < dim;i++) {
+	for (int i = 0; i < dim; i++) {
 		std::string words;
 		words = "";
 		for (int n = 0; n < val[i]->len; n++) {
@@ -116,7 +116,7 @@ void ExternalLexerModule::SetExternal(ExtLexerFunction fLexer, ExtFoldFunction f
 //
 //------------------------------------------
 
-LexerLibrary::LexerLibrary(const char* ModuleName) {
+LexerLibrary::LexerLibrary(const char *ModuleName) {
 	// Initialise some members...
 	first = NULL;
 	last = NULL;
@@ -197,18 +197,15 @@ void LexerLibrary::Release() {
 
 /// Return the single LexerManager instance...
 LexerManager *LexerManager::GetInstance() {
-	if(!theInstance)
+	if (!theInstance)
 		theInstance = new LexerManager;
 	return theInstance;
 }
 
 /// Delete any LexerManager instance...
-void LexerManager::DeleteInstance()
-{
-	if(theInstance) {
-		delete theInstance;
-		theInstance = NULL;
-	}
+void LexerManager::DeleteInstance() {
+	delete theInstance;
+	theInstance = NULL;
 }
 
 /// protected constructor - this is a singleton...
@@ -221,13 +218,15 @@ LexerManager::~LexerManager() {
 	Clear();
 }
 
-void LexerManager::Load(const char* path)
-{
+void LexerManager::Load(const char *path) {
 	LoadLexerLibrary(path);
 }
 
-void LexerManager::LoadLexerLibrary(const char* module)
-{
+void LexerManager::LoadLexerLibrary(const char *module) {
+	for (LexerLibrary *ll = first; ll; ll= ll->next) {
+		if (strcmp(ll->m_sModuleName.c_str(), module) == 0)
+			return;
+	}
 	LexerLibrary *lib = new LexerLibrary(module);
 	if (NULL != first) {
 		last->next = lib;
@@ -238,8 +237,7 @@ void LexerManager::LoadLexerLibrary(const char* module)
 	}
 }
 
-void LexerManager::Clear()
-{
+void LexerManager::Clear() {
 	if (NULL != first) {
 		LexerLibrary *cur = first;
 		LexerLibrary *next;
@@ -259,8 +257,7 @@ void LexerManager::Clear()
 //
 //------------------------------------------
 
-LMMinder::~LMMinder()
-{
+LMMinder::~LMMinder() {
 	LexerManager::DeleteInstance();
 }
 

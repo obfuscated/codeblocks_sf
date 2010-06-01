@@ -64,7 +64,7 @@ for %%i in (de fr it es cs da nl ga hu pl ru sk jp tr) do (
 goto TheEnd
 
 :Error
-echo Error: At least one requited tools was not found.
+echo Error: At least one required tool was not found.
 echo Make sure you have the following tools in the PATH:
 echo - grep, xargs, xgettext, msginit
 echo They are all part of the GnuWin32 tools (package gettext).
