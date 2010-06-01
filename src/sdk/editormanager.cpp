@@ -412,10 +412,6 @@ void EditorManager::LoadAutoComplete()
         wxString code = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/auto_complete/") + list[i] + _T("/code"), wxEmptyString);
         if (name.IsEmpty() || code.IsEmpty())
             continue;
-        // convert non-printable chars to printable
-        code.Replace(_T("\\n"), _T("\n"));
-        code.Replace(_T("\\r"), _T("\r"));
-        code.Replace(_T("\\t"), _T("\t"));
         m_AutoCompleteMap[name] = code;
     }
 
@@ -465,11 +461,6 @@ void EditorManager::SaveAutoComplete()
     for (it = m_AutoCompleteMap.begin(); it != m_AutoCompleteMap.end(); ++it)
     {
         wxString code = it->second;
-        // convert non-printable chars to printable
-        code.Replace(_T("\n"), _T("\\n"));
-        code.Replace(_T("\r"), _T("\\r"));
-        code.Replace(_T("\t"), _T("\\t"));
-
         ++count;
         wxString key;
         key.Printf(_T("/auto_complete/entry%d/name"), count);
