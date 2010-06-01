@@ -137,6 +137,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/src/DocumentAccessor.h \
 			src/scintilla/src/Editor.h \
 			src/scintilla/src/ExternalLexer.h \
+			src/scintilla/src/FontQuality.h \
 			src/scintilla/src/Indicator.h \
 			src/scintilla/src/KeyMap.h \
 			src/scintilla/src/LineMarker.h \
