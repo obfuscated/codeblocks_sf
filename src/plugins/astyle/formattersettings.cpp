@@ -39,7 +39,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       break;
 
     case aspsKr: // K&R
-      formatter.setFormattingStyle(astyle::STYLE_KandR);
+      formatter.setFormattingStyle(astyle::STYLE_KR);
       break;
 
     case aspsStroustrup: // Stroustrup
@@ -137,6 +137,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setOperatorPaddingMode(cfg->ReadBool(_T("/pad_operators")));
       formatter.setParensOutsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_out")));
       formatter.setParensInsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_in")));
+      formatter.setParensHeaderPaddingMode(cfg->ReadBool(_T("/pad_header")));
       formatter.setParensUnPaddingMode(cfg->ReadBool(_T("/unpad_parentheses")));
       formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
       formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));

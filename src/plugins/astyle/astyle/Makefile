@@ -15,14 +15,14 @@ vpath %.h   ../src
 # NOTE for java compiles the environment variable $JAVA_HOME must be set
 # example: export JAVA_HOME=/usr/lib/jvm/java-6-sun-1.6.0.00
 ifndef JAVA_HOME
-#	JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.10
-JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.13
+    JAVA_HOME = /usr/lib/jvm/java-6-sun-1.6.0.16
 endif
 
 # set prefix if not defined on the command line
 ifndef prefix
     prefix=/usr
 endif
+SYSCONF_PATH=$(prefix)/share/astyle
 
 # define macros
 bindir = bin
@@ -160,8 +160,15 @@ cleanobj:
 	rm -f $(objdir)/*.o
 	
 install:
-	@ $(INSTALL) -m 755 -d $(ipath)
-	$(INSTALL) -m 755 $(bindir)/astyle  $(ipath)
+	$(INSTALL) -m 755 -d $(ipath)
+	@$(INSTALL) -m 755 $(bindir)/astyle  $(ipath)
+
+	$(INSTALL) -m 755 -d $(SYSCONF_PATH)
+	@for files in ../../doc/*.html  ../../doc/*.css; \
+	do \
+		$(INSTALL)  -m 644  $$files  $(SYSCONF_PATH); \
+	done
 
 uninstall:
 	rm -f $(ipath)/astyle
+	rm -rf $(SYSCONF_PATH)

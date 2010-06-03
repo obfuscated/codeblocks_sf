@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- *   Copyright (C) 2006-2009 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 2006-2010 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
@@ -61,6 +61,9 @@ const string ASResource::AS_WHERE = string("where");
 const string ASResource::AS_NEW = string("new");
 
 const string ASResource::AS_ASM = string("asm");
+const string ASResource::AS__ASM__ = string("__asm__");
+const string ASResource::AS_MS_ASM = string("_asm");
+const string ASResource::AS_MS__ASM = string("__asm");
 
 const string ASResource::AS_BAR_DEFINE = string("#define");
 const string ASResource::AS_BAR_INCLUDE = string("#include");
@@ -111,8 +114,6 @@ const string ASResource::AS_ARROW = string("->");
 const string ASResource::AS_AND = string("&&");
 const string ASResource::AS_OR = string("||");
 const string ASResource::AS_COLON_COLON = string("::");
-const string ASResource::AS_PAREN_PAREN = string("()");
-const string ASResource::AS_BLPAREN_BLPAREN = string("[]");
 
 const string ASResource::AS_PLUS = string("+");
 const string ASResource::AS_MINUS = string("-");
@@ -177,27 +178,27 @@ bool sortOnName(const string *a, const string *b)
  *
  * @param assignmentOperators   a reference to the vector to be built.
  */
-void ASResource::buildAssignmentOperators(vector<const string*> &assignmentOperators)
+void ASResource::buildAssignmentOperators(vector<const string*>* assignmentOperators)
 {
-	assignmentOperators.push_back(&AS_ASSIGN);
-	assignmentOperators.push_back(&AS_PLUS_ASSIGN);
-	assignmentOperators.push_back(&AS_MINUS_ASSIGN);
-	assignmentOperators.push_back(&AS_MULT_ASSIGN);
-	assignmentOperators.push_back(&AS_DIV_ASSIGN);
-	assignmentOperators.push_back(&AS_MOD_ASSIGN);
-	assignmentOperators.push_back(&AS_OR_ASSIGN);
-	assignmentOperators.push_back(&AS_AND_ASSIGN);
-	assignmentOperators.push_back(&AS_XOR_ASSIGN);
+	assignmentOperators->push_back(&AS_ASSIGN);
+	assignmentOperators->push_back(&AS_PLUS_ASSIGN);
+	assignmentOperators->push_back(&AS_MINUS_ASSIGN);
+	assignmentOperators->push_back(&AS_MULT_ASSIGN);
+	assignmentOperators->push_back(&AS_DIV_ASSIGN);
+	assignmentOperators->push_back(&AS_MOD_ASSIGN);
+	assignmentOperators->push_back(&AS_OR_ASSIGN);
+	assignmentOperators->push_back(&AS_AND_ASSIGN);
+	assignmentOperators->push_back(&AS_XOR_ASSIGN);
 
 	// Java
-	assignmentOperators.push_back(&AS_GR_GR_GR_ASSIGN);
-	assignmentOperators.push_back(&AS_GR_GR_ASSIGN);
-	assignmentOperators.push_back(&AS_LS_LS_ASSIGN);
+	assignmentOperators->push_back(&AS_GR_GR_GR_ASSIGN);
+	assignmentOperators->push_back(&AS_GR_GR_ASSIGN);
+	assignmentOperators->push_back(&AS_LS_LS_ASSIGN);
 
 	// Unknown
-	assignmentOperators.push_back(&AS_LS_LS_LS_ASSIGN);
+	assignmentOperators->push_back(&AS_LS_LS_LS_ASSIGN);
 
-	sort(assignmentOperators.begin(), assignmentOperators.end(), sortOnLength);
+	sort(assignmentOperators->begin(), assignmentOperators->end(), sortOnLength);
 }
 
 /**
@@ -206,12 +207,12 @@ void ASResource::buildAssignmentOperators(vector<const string*> &assignmentOpera
  *
  * @param castOperators     a reference to the vector to be built.
  */
-void ASResource::buildCastOperators(vector<const string*> &castOperators)
+void ASResource::buildCastOperators(vector<const string*>* castOperators)
 {
-	castOperators.push_back(&AS_CONST_CAST);
-	castOperators.push_back(&AS_DYNAMIC_CAST);
-	castOperators.push_back(&AS_REINTERPRET_CAST);
-	castOperators.push_back(&AS_STATIC_CAST);
+	castOperators->push_back(&AS_CONST_CAST);
+	castOperators->push_back(&AS_DYNAMIC_CAST);
+	castOperators->push_back(&AS_REINTERPRET_CAST);
+	castOperators->push_back(&AS_STATIC_CAST);
 }
 
 /**
@@ -220,53 +221,53 @@ void ASResource::buildCastOperators(vector<const string*> &castOperators)
  *
  * @param headers       a reference to the vector to be built.
  */
-void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool beautifier)
+void ASResource::buildHeaders(vector<const string*>* headers, int fileType, bool beautifier)
 {
-	headers.push_back(&AS_IF);
-	headers.push_back(&AS_ELSE);
-	headers.push_back(&AS_FOR);
-	headers.push_back(&AS_WHILE);
-	headers.push_back(&AS_DO);
-	headers.push_back(&AS_SWITCH);
-	headers.push_back(&AS_TRY);
-	headers.push_back(&AS_CATCH);
+	headers->push_back(&AS_IF);
+	headers->push_back(&AS_ELSE);
+	headers->push_back(&AS_FOR);
+	headers->push_back(&AS_WHILE);
+	headers->push_back(&AS_DO);
+	headers->push_back(&AS_SWITCH);
+	headers->push_back(&AS_TRY);
+	headers->push_back(&AS_CATCH);
 
 	if (fileType == JAVA_TYPE)
 	{
-		headers.push_back(&AS_FINALLY);
-		headers.push_back(&AS_SYNCHRONIZED);
+		headers->push_back(&AS_FINALLY);
+		headers->push_back(&AS_SYNCHRONIZED);
 	}
 
 	if (fileType == SHARP_TYPE)
 	{
-		headers.push_back(&AS_FINALLY);
-		headers.push_back(&AS_FOREACH);
-		headers.push_back(&AS_LOCK);
-//      headers.push_back(&AS_UNSAFE);
-		headers.push_back(&AS_FIXED);
-		headers.push_back(&AS_GET);
-		headers.push_back(&AS_SET);
-		headers.push_back(&AS_ADD);
-		headers.push_back(&AS_REMOVE);
+		headers->push_back(&AS_FINALLY);
+		headers->push_back(&AS_FOREACH);
+		headers->push_back(&AS_LOCK);
+//      headers->push_back(&AS_UNSAFE);
+		headers->push_back(&AS_FIXED);
+		headers->push_back(&AS_GET);
+		headers->push_back(&AS_SET);
+		headers->push_back(&AS_ADD);
+		headers->push_back(&AS_REMOVE);
 	}
 
 	if (beautifier)
 	{
-		headers.push_back(&AS_CASE);
-		headers.push_back(&AS_DEFAULT);
+		headers->push_back(&AS_CASE);
+		headers->push_back(&AS_DEFAULT);
 
 		if (fileType == C_TYPE)
 		{
-			headers.push_back(&AS_CONST);
-			headers.push_back(&AS_TEMPLATE);
+			headers->push_back(&AS_CONST);
+			headers->push_back(&AS_TEMPLATE);
 		}
 
 		if (fileType == JAVA_TYPE)
 		{
-			headers.push_back(&AS_STATIC);         // for static constructor
+			headers->push_back(&AS_STATIC);         // for static constructor
 		}
 	}
-	sort(headers.begin(), headers.end(), sortOnName);
+	sort(headers->begin(), headers->end(), sortOnName);
 }
 
 /**
@@ -275,14 +276,14 @@ void ASResource::buildHeaders(vector<const string*> &headers, int fileType, bool
  *
  * @param indentableHeaders     a reference to the vector to be built.
  */
-void ASResource::buildIndentableHeaders(vector<const string*> &indentableHeaders)
+void ASResource::buildIndentableHeaders(vector<const string*>* indentableHeaders)
 {
-	indentableHeaders.push_back(&AS_RETURN);
-	indentableHeaders.push_back(&AS_COUT);
-	indentableHeaders.push_back(&AS_CERR);
-	indentableHeaders.push_back(&AS_CIN);
+	indentableHeaders->push_back(&AS_RETURN);
+//	indentableHeaders->push_back(&AS_COUT);
+//	indentableHeaders->push_back(&AS_CERR);
+//	indentableHeaders->push_back(&AS_CIN);
 
-	sort(indentableHeaders.begin(), indentableHeaders.end(), sortOnName);
+	sort(indentableHeaders->begin(), indentableHeaders->end(), sortOnName);
 }
 
 /**
@@ -291,23 +292,24 @@ void ASResource::buildIndentableHeaders(vector<const string*> &indentableHeaders
  *
  * @param nonAssignmentOperators       a reference to the vector to be built.
  */
-void ASResource::buildNonAssignmentOperators(vector<const string*> &nonAssignmentOperators)
+void ASResource::buildNonAssignmentOperators(vector<const string*>* nonAssignmentOperators)
 {
-	nonAssignmentOperators.push_back(&AS_EQUAL);
-	nonAssignmentOperators.push_back(&AS_PLUS_PLUS);
-	nonAssignmentOperators.push_back(&AS_MINUS_MINUS);
-	nonAssignmentOperators.push_back(&AS_NOT_EQUAL);
-	nonAssignmentOperators.push_back(&AS_GR_EQUAL);
-	nonAssignmentOperators.push_back(&AS_GR_GR_GR);
-	nonAssignmentOperators.push_back(&AS_GR_GR);
-	nonAssignmentOperators.push_back(&AS_LS_EQUAL);
-	nonAssignmentOperators.push_back(&AS_LS_LS_LS);
-	nonAssignmentOperators.push_back(&AS_LS_LS);
-	nonAssignmentOperators.push_back(&AS_ARROW);
-	nonAssignmentOperators.push_back(&AS_AND);
-	nonAssignmentOperators.push_back(&AS_OR);
+	nonAssignmentOperators->push_back(&AS_EQUAL);
+	nonAssignmentOperators->push_back(&AS_PLUS_PLUS);
+	nonAssignmentOperators->push_back(&AS_MINUS_MINUS);
+	nonAssignmentOperators->push_back(&AS_NOT_EQUAL);
+	nonAssignmentOperators->push_back(&AS_GR_EQUAL);
+	nonAssignmentOperators->push_back(&AS_GR_GR_GR);
+	nonAssignmentOperators->push_back(&AS_GR_GR);
+	nonAssignmentOperators->push_back(&AS_LS_EQUAL);
+	nonAssignmentOperators->push_back(&AS_LS_LS_LS);
+	nonAssignmentOperators->push_back(&AS_LS_LS);
+	nonAssignmentOperators->push_back(&AS_ARROW);
+	nonAssignmentOperators->push_back(&AS_AND);
+	nonAssignmentOperators->push_back(&AS_OR);
+	nonAssignmentOperators->push_back(&AS_EQUAL_GR);
 
-	sort(nonAssignmentOperators.begin(), nonAssignmentOperators.end(), sortOnLength);
+	sort(nonAssignmentOperators->begin(), nonAssignmentOperators->end(), sortOnLength);
 }
 
 /**
@@ -316,43 +318,43 @@ void ASResource::buildNonAssignmentOperators(vector<const string*> &nonAssignmen
  *
  * @param nonParenHeaders       a reference to the vector to be built.
  */
-void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, int fileType, bool beautifier)
+void ASResource::buildNonParenHeaders(vector<const string*>* nonParenHeaders, int fileType, bool beautifier)
 {
-	nonParenHeaders.push_back(&AS_ELSE);
-	nonParenHeaders.push_back(&AS_DO);
-	nonParenHeaders.push_back(&AS_TRY);
+	nonParenHeaders->push_back(&AS_ELSE);
+	nonParenHeaders->push_back(&AS_DO);
+	nonParenHeaders->push_back(&AS_TRY);
 
 	if (fileType == JAVA_TYPE)
 	{
-		nonParenHeaders.push_back(&AS_FINALLY);
+		nonParenHeaders->push_back(&AS_FINALLY);
 	}
 
 	if (fileType == SHARP_TYPE)
 	{
-		nonParenHeaders.push_back(&AS_CATCH);       // can be a paren or non-paren header
-		nonParenHeaders.push_back(&AS_FINALLY);
-//      nonParenHeaders.push_back(&AS_UNSAFE);
-		nonParenHeaders.push_back(&AS_GET);
-		nonParenHeaders.push_back(&AS_SET);
-		nonParenHeaders.push_back(&AS_ADD);
-		nonParenHeaders.push_back(&AS_REMOVE);
+		nonParenHeaders->push_back(&AS_CATCH);       // can be a paren or non-paren header
+		nonParenHeaders->push_back(&AS_FINALLY);
+//      nonParenHeaders->push_back(&AS_UNSAFE);
+		nonParenHeaders->push_back(&AS_GET);
+		nonParenHeaders->push_back(&AS_SET);
+		nonParenHeaders->push_back(&AS_ADD);
+		nonParenHeaders->push_back(&AS_REMOVE);
 	}
 
 	if (beautifier)
 	{
-		nonParenHeaders.push_back(&AS_CASE);
-		nonParenHeaders.push_back(&AS_DEFAULT);
+		nonParenHeaders->push_back(&AS_CASE);
+		nonParenHeaders->push_back(&AS_DEFAULT);
 		if (fileType == C_TYPE)
 		{
-			nonParenHeaders.push_back(&AS_CONST);
-			nonParenHeaders.push_back(&AS_TEMPLATE);
+			nonParenHeaders->push_back(&AS_CONST);
+			nonParenHeaders->push_back(&AS_TEMPLATE);
 		}
 		if (fileType == JAVA_TYPE)
 		{
-			nonParenHeaders.push_back(&AS_STATIC);
+			nonParenHeaders->push_back(&AS_STATIC);
 		}
 	}
-	sort(nonParenHeaders.begin(), nonParenHeaders.end(), sortOnName);
+	sort(nonParenHeaders->begin(), nonParenHeaders->end(), sortOnName);
 }
 
 /**
@@ -361,55 +363,55 @@ void ASResource::buildNonParenHeaders(vector<const string*> &nonParenHeaders, in
  *
  * @param operators             a reference to the vector to be built.
  */
-void ASResource::buildOperators(vector<const string*> &operators)
+void ASResource::buildOperators(vector<const string*>* operators)
 {
-	operators.push_back(&AS_PLUS_ASSIGN);
-	operators.push_back(&AS_MINUS_ASSIGN);
-	operators.push_back(&AS_MULT_ASSIGN);
-	operators.push_back(&AS_DIV_ASSIGN);
-	operators.push_back(&AS_MOD_ASSIGN);
-	operators.push_back(&AS_OR_ASSIGN);
-	operators.push_back(&AS_AND_ASSIGN);
-	operators.push_back(&AS_XOR_ASSIGN);
-	operators.push_back(&AS_EQUAL);
-	operators.push_back(&AS_PLUS_PLUS);
-	operators.push_back(&AS_MINUS_MINUS);
-	operators.push_back(&AS_NOT_EQUAL);
-	operators.push_back(&AS_GR_EQUAL);
-	operators.push_back(&AS_GR_GR_GR_ASSIGN);
-	operators.push_back(&AS_GR_GR_ASSIGN);
-	operators.push_back(&AS_GR_GR_GR);
-	operators.push_back(&AS_GR_GR);
-	operators.push_back(&AS_LS_EQUAL);
-	operators.push_back(&AS_LS_LS_LS_ASSIGN);
-	operators.push_back(&AS_LS_LS_ASSIGN);
-	operators.push_back(&AS_LS_LS_LS);
-	operators.push_back(&AS_LS_LS);
-	operators.push_back(&AS_QUESTION_QUESTION);
-	operators.push_back(&AS_EQUAL_GR);
-	operators.push_back(&AS_GCC_MIN_ASSIGN);
-	operators.push_back(&AS_GCC_MAX_ASSIGN);
-	operators.push_back(&AS_ARROW);
-	operators.push_back(&AS_AND);
-	operators.push_back(&AS_OR);
-	operators.push_back(&AS_COLON_COLON);
-	operators.push_back(&AS_PLUS);
-	operators.push_back(&AS_MINUS);
-	operators.push_back(&AS_MULT);
-	operators.push_back(&AS_DIV);
-	operators.push_back(&AS_MOD);
-	operators.push_back(&AS_QUESTION);
-	operators.push_back(&AS_COLON);
-	operators.push_back(&AS_ASSIGN);
-	operators.push_back(&AS_LS);
-	operators.push_back(&AS_GR);
-	operators.push_back(&AS_NOT);
-	operators.push_back(&AS_BIT_OR);
-	operators.push_back(&AS_BIT_AND);
-	operators.push_back(&AS_BIT_NOT);
-	operators.push_back(&AS_BIT_XOR);
+	operators->push_back(&AS_PLUS_ASSIGN);
+	operators->push_back(&AS_MINUS_ASSIGN);
+	operators->push_back(&AS_MULT_ASSIGN);
+	operators->push_back(&AS_DIV_ASSIGN);
+	operators->push_back(&AS_MOD_ASSIGN);
+	operators->push_back(&AS_OR_ASSIGN);
+	operators->push_back(&AS_AND_ASSIGN);
+	operators->push_back(&AS_XOR_ASSIGN);
+	operators->push_back(&AS_EQUAL);
+	operators->push_back(&AS_PLUS_PLUS);
+	operators->push_back(&AS_MINUS_MINUS);
+	operators->push_back(&AS_NOT_EQUAL);
+	operators->push_back(&AS_GR_EQUAL);
+	operators->push_back(&AS_GR_GR_GR_ASSIGN);
+	operators->push_back(&AS_GR_GR_ASSIGN);
+	operators->push_back(&AS_GR_GR_GR);
+	operators->push_back(&AS_GR_GR);
+	operators->push_back(&AS_LS_EQUAL);
+	operators->push_back(&AS_LS_LS_LS_ASSIGN);
+	operators->push_back(&AS_LS_LS_ASSIGN);
+	operators->push_back(&AS_LS_LS_LS);
+	operators->push_back(&AS_LS_LS);
+	operators->push_back(&AS_QUESTION_QUESTION);
+	operators->push_back(&AS_EQUAL_GR);
+	operators->push_back(&AS_GCC_MIN_ASSIGN);
+	operators->push_back(&AS_GCC_MAX_ASSIGN);
+	operators->push_back(&AS_ARROW);
+	operators->push_back(&AS_AND);
+	operators->push_back(&AS_OR);
+	operators->push_back(&AS_COLON_COLON);
+	operators->push_back(&AS_PLUS);
+	operators->push_back(&AS_MINUS);
+	operators->push_back(&AS_MULT);
+	operators->push_back(&AS_DIV);
+	operators->push_back(&AS_MOD);
+	operators->push_back(&AS_QUESTION);
+	operators->push_back(&AS_COLON);
+	operators->push_back(&AS_ASSIGN);
+	operators->push_back(&AS_LS);
+	operators->push_back(&AS_GR);
+	operators->push_back(&AS_NOT);
+	operators->push_back(&AS_BIT_OR);
+	operators->push_back(&AS_BIT_AND);
+	operators->push_back(&AS_BIT_NOT);
+	operators->push_back(&AS_BIT_XOR);
 
-	sort(operators.begin(), operators.end(), sortOnLength);
+	sort(operators->begin(), operators->end(), sortOnLength);
 }
 
 /**
@@ -419,28 +421,28 @@ void ASResource::buildOperators(vector<const string*> &operators)
  *
  * @param preBlockStatements        a reference to the vector to be built.
  */
-void ASResource::buildPreBlockStatements(vector<const string*> &preBlockStatements, int fileType)
+void ASResource::buildPreBlockStatements(vector<const string*>* preBlockStatements, int fileType)
 {
-	preBlockStatements.push_back(&AS_CLASS);
+	preBlockStatements->push_back(&AS_CLASS);
 	if (fileType == C_TYPE)
 	{
-		preBlockStatements.push_back(&AS_STRUCT);
-		preBlockStatements.push_back(&AS_UNION);
-		preBlockStatements.push_back(&AS_NAMESPACE);
+		preBlockStatements->push_back(&AS_STRUCT);
+		preBlockStatements->push_back(&AS_UNION);
+		preBlockStatements->push_back(&AS_NAMESPACE);
 	}
 	if (fileType == JAVA_TYPE)
 	{
-		preBlockStatements.push_back(&AS_INTERFACE);
-		preBlockStatements.push_back(&AS_THROWS);
+		preBlockStatements->push_back(&AS_INTERFACE);
+		preBlockStatements->push_back(&AS_THROWS);
 	}
 	if (fileType == SHARP_TYPE)
 	{
-		preBlockStatements.push_back(&AS_INTERFACE);
-		preBlockStatements.push_back(&AS_NAMESPACE);
-		preBlockStatements.push_back(&AS_WHERE);
-		preBlockStatements.push_back(&AS_STRUCT);
+		preBlockStatements->push_back(&AS_INTERFACE);
+		preBlockStatements->push_back(&AS_NAMESPACE);
+		preBlockStatements->push_back(&AS_WHERE);
+		preBlockStatements->push_back(&AS_STRUCT);
 	}
-	sort(preBlockStatements.begin(), preBlockStatements.end(), sortOnName);
+	sort(preBlockStatements->begin(), preBlockStatements->end(), sortOnName);
 }
 
 /**
@@ -449,24 +451,24 @@ void ASResource::buildPreBlockStatements(vector<const string*> &preBlockStatemen
  *
  * @param preCommandHeaders     a reference to the vector to be built.
  */
-void ASResource::buildPreCommandHeaders(vector<const string*> &preCommandHeaders, int fileType)
+void ASResource::buildPreCommandHeaders(vector<const string*>* preCommandHeaders, int fileType)
 {
 	if (fileType == C_TYPE)
 	{
-		preCommandHeaders.push_back(&AS_CONST);
+		preCommandHeaders->push_back(&AS_CONST);
 	}
 
 	if (fileType == JAVA_TYPE)
 	{
-		preCommandHeaders.push_back(&AS_THROWS);
+		preCommandHeaders->push_back(&AS_THROWS);
 	}
 
 	if (fileType == SHARP_TYPE)
 	{
-		preCommandHeaders.push_back(&AS_WHERE);
+		preCommandHeaders->push_back(&AS_WHERE);
 	}
 
-	sort(preCommandHeaders.begin(), preCommandHeaders.end(), sortOnName);
+	sort(preCommandHeaders->begin(), preCommandHeaders->end(), sortOnName);
 }
 
 /**
@@ -477,26 +479,26 @@ void ASResource::buildPreCommandHeaders(vector<const string*> &preCommandHeaders
  *
  * @param preDefinitionHeaders      a reference to the vector to be built.
  */
-void ASResource::buildPreDefinitionHeaders(vector<const string*> &preDefinitionHeaders, int fileType)
+void ASResource::buildPreDefinitionHeaders(vector<const string*>* preDefinitionHeaders, int fileType)
 {
-	preDefinitionHeaders.push_back(&AS_CLASS);
+	preDefinitionHeaders->push_back(&AS_CLASS);
 	if (fileType == C_TYPE)
 	{
-		preDefinitionHeaders.push_back(&AS_STRUCT);
-		preDefinitionHeaders.push_back(&AS_UNION);
-		preDefinitionHeaders.push_back(&AS_NAMESPACE);
+		preDefinitionHeaders->push_back(&AS_STRUCT);
+		preDefinitionHeaders->push_back(&AS_UNION);
+		preDefinitionHeaders->push_back(&AS_NAMESPACE);
 	}
 	if (fileType == JAVA_TYPE)
 	{
-		preDefinitionHeaders.push_back(&AS_INTERFACE);
+		preDefinitionHeaders->push_back(&AS_INTERFACE);
 	}
 	if (fileType == SHARP_TYPE)
 	{
-		preDefinitionHeaders.push_back(&AS_STRUCT);
-		preDefinitionHeaders.push_back(&AS_INTERFACE);
-		preDefinitionHeaders.push_back(&AS_NAMESPACE);
+		preDefinitionHeaders->push_back(&AS_STRUCT);
+		preDefinitionHeaders->push_back(&AS_INTERFACE);
+		preDefinitionHeaders->push_back(&AS_NAMESPACE);
 	}
-	sort(preDefinitionHeaders.begin(), preDefinitionHeaders.end(), sortOnName);
+	sort(preDefinitionHeaders->begin(), preDefinitionHeaders->end(), sortOnName);
 }
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -527,18 +529,18 @@ bool ASBase::findKeyword(const string &line, int i, const string &keyword) const
 }
 
 // get the current word on a line
-// i must point to the beginning of the word
-string ASBase::getCurrentWord(const string& line, size_t charNum) const
+// index must point to the beginning of the word
+string ASBase::getCurrentWord(const string& line, size_t index) const
 {
-	assert(isCharPotentialHeader(line, charNum));
+	assert(isCharPotentialHeader(line, index));
 	size_t lineLength = line.length();
 	size_t i;
-	for (i = charNum; i < lineLength; i++)
+	for (i = index; i < lineLength; i++)
 	{
 		if (!isLegalNameChar(line[i]))
 			break;
 	}
-	return line.substr(charNum, i - charNum);
+	return line.substr(index, i - index);
 }
 
 }   // end namespace astyle

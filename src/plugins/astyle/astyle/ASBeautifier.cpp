@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *
- *   Copyright (C) 2006-2009 by Jim Pattee <jimp03@email.com>
+ *   Copyright (C) 2006-2010 by Jim Pattee <jimp03@email.com>
  *   Copyright (C) 1998-2002 by Tal Davidson
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
@@ -34,38 +34,13 @@ namespace astyle
 {
 // static member variables
 int ASBeautifier::beautifierFileType = 9;		// initialized with an invalid type
-vector<const string*> ASBeautifier::headers;
-vector<const string*> ASBeautifier::nonParenHeaders;
-vector<const string*> ASBeautifier::preBlockStatements;
-vector<const string*> ASBeautifier::assignmentOperators;
-vector<const string*> ASBeautifier::nonAssignmentOperators;
-vector<const string*> ASBeautifier::indentableHeaders;
+vector<const string*>* ASBeautifier::headers = NULL;
+vector<const string*>* ASBeautifier::nonParenHeaders = NULL;
+vector<const string*>* ASBeautifier::preBlockStatements;
+vector<const string*>* ASBeautifier::assignmentOperators = NULL;
+vector<const string*>* ASBeautifier::nonAssignmentOperators;
+vector<const string*>* ASBeautifier::indentableHeaders;
 
-
-/*
- * initialize the static vars
- */
-void ASBeautifier::initStatic()
-{
-	if (fileType == beautifierFileType)    // don't build unless necessary
-		return;
-
-	beautifierFileType = fileType;
-
-	headers.clear();
-	nonParenHeaders.clear();
-	assignmentOperators.clear();
-	nonAssignmentOperators.clear();
-	preBlockStatements.clear();
-	indentableHeaders.clear();
-
-	ASResource::buildHeaders(headers, fileType, true);
-	ASResource::buildNonParenHeaders(nonParenHeaders, fileType, true);
-	ASResource::buildAssignmentOperators(assignmentOperators);
-	ASResource::buildNonAssignmentOperators(nonAssignmentOperators);
-	ASResource::buildPreBlockStatements(preBlockStatements, fileType);
-	ASResource::buildIndentableHeaders(indentableHeaders);
-}
 
 /**
  * ASBeautifier's constructor
@@ -87,11 +62,12 @@ ASBeautifier::ASBeautifier()
 	inStatementIndentStackSizeStack = NULL;
 	parenIndentStack = NULL;
 	sourceIterator = NULL;
-
-	isMinimalConditinalIndentSet = false;
+	isIndentManuallySet = false;
+	isMinConditionalManuallySet = false;
+	isModeManuallySet = false;
 	shouldForceTabIndentation = false;
-
 	setSpaceIndentation(4);
+	setMinConditionalIndentOption(MINCOND_TWO);
 	setMaxInStatementIndentLength(40);
 	classInitializerTabs = 1;
 	setClassIndent(false);
@@ -102,9 +78,17 @@ ASBeautifier::ASBeautifier()
 	setNamespaceIndent(false);
 	setLabelIndent(false);
 	setEmptyLineFill(false);
-	fileType = C_TYPE;
 	setCStyle();
 	setPreprocessorIndent(false);
+
+	// initialize ASBeautifier static member vectors
+	beautifierFileType = 9;		// reset to an invalid type
+	initVector(headers);
+	initVector(nonParenHeaders);
+	initVector(assignmentOperators);
+	initVector(nonAssignmentOperators);
+	initVector(preBlockStatements);
+	initVector(indentableHeaders);
 }
 
 /**
@@ -124,16 +108,8 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other) : ASBase(other)
 	headerStack  = new vector<const string*>;
 	*headerStack = *other.headerStack;
 
-	tempStacks = new vector<vector<const string*>*>;
-	vector<vector<const string*>*>::iterator iter;
-	for (iter = other.tempStacks->begin();
-	        iter != other.tempStacks->end();
-	        ++iter)
-	{
-		vector<const string*> *newVec = new vector<const string*>;
-		*newVec = **iter;
-		tempStacks->push_back(newVec);
-	}
+	tempStacks = copyTempStacks(other);
+
 	blockParenDepthStack = new vector<int>;
 	*blockParenDepthStack = *other.blockParenDepthStack;
 
@@ -168,7 +144,8 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other) : ASBase(other)
 	isSharpAccessor = other.isSharpAccessor;
 	isSharpDelegate = other.isSharpDelegate;
 	isInExtern = other.isInExtern;
-	isInEnum = other.isInEnum;
+	isInBeautifySQL = other.isInBeautifySQL;
+	isInIndentableStruct = other.isInIndentableStruct;
 
 	// private variables
 	indentString = other.indentString;
@@ -178,7 +155,11 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other) : ASBase(other)
 	isInQuote = other.isInQuote;
 	isInVerbatimQuote = other.isInVerbatimQuote;
 	haveLineContinuationChar = other.haveLineContinuationChar;
+	isInAsm = other.isInAsm;
+	isInAsmOneLine = other.isInAsmOneLine;
+	isInAsmBlock = other.isInAsmBlock;
 	isInComment = other.isInComment;
+	isInHorstmannComment = other.isInHorstmannComment;
 	isInCase = other.isInCase;
 	isInQuestion = other.isInQuestion;
 	isInStatement = other.isInStatement;
@@ -187,8 +168,9 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other) : ASBase(other)
 	isInDefine = other.isInDefine;
 	isInDefineDefinition = other.isInDefineDefinition;
 	classIndent = other.classIndent;
-	isInClassHeader = other.isInClassHeader;
+	isInClassInitializer = other.isInClassInitializer;
 	isInClassHeaderTab = other.isInClassHeaderTab;
+	isInEnum = other.isInEnum;
 	switchIndent = other.switchIndent;
 	caseIndent = other.caseIndent;
 	namespaceIndent = other.namespaceIndent;
@@ -197,7 +179,9 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other) : ASBase(other)
 	labelIndent = other.labelIndent;
 	preprocessorIndent = other.preprocessorIndent;
 	isInConditional = other.isInConditional;
-	isMinimalConditinalIndentSet = other.isMinimalConditinalIndentSet;
+	isIndentManuallySet = other.isIndentManuallySet;
+	isMinConditionalManuallySet = other.isMinConditionalManuallySet;
+	isModeManuallySet = other.isModeManuallySet;
 	shouldForceTabIndentation = other.shouldForceTabIndentation;
 	emptyLineFill = other.emptyLineFill;
 	lineOpensComment = other.lineOpensComment;
@@ -206,6 +190,7 @@ ASBeautifier::ASBeautifier(const ASBeautifier &other) : ASBase(other)
 	blockCommentNoBeautify = other.blockCommentNoBeautify;
 	previousLineProbationTab = other.previousLineProbationTab;
 	fileType = other.fileType;
+	minConditionalOption = other.minConditionalOption;
 	minConditionalIndent = other.minConditionalIndent;
 	parenDepth = other.parenDepth;
 	indentLength = other.indentLength;
@@ -248,12 +233,10 @@ ASBeautifier::~ASBeautifier()
  *
  * init() should be called every time a ABeautifier object is to start
  * beautifying a NEW source file.
- * init() recieves a pointer to a DYNAMICALLY CREATED ASSourceIterator object
- * that will be used to iterate through the source code. This object will be
- * deleted during the ASBeautifier's destruction, and thus should not be
- * deleted elsewhere.
+ * init() recieves a pointer to a ASSourceIterator object that will be
+ * used to iterate through the source code.
  *
- * @param iter     a pointer to the DYNAMICALLY CREATED ASSourceIterator object.
+ * @param iter     a pointer to the ASSourceIterator or ASStreamIterator object.
  */
 void ASBeautifier::init(ASSourceIterator *iter)
 {
@@ -298,15 +281,21 @@ void ASBeautifier::init()
 	isInQuote = false;
 	isInVerbatimQuote = false;
 	haveLineContinuationChar = false;
+	isInAsm = false;
+	isInAsmOneLine = false;
+	isInAsmBlock = false;
 	isInComment = false;
+	isInHorstmannComment = false;
 	isInStatement = false;
 	isInCase = false;
 	isInQuestion = false;
-	isInClassHeader = false;
+	isInClassInitializer = false;
 	isInClassHeaderTab = false;
+	isInEnum = false;
 	isInHeader = false;
 	isInTemplate = false;
 	isInConditional = false;
+
 	templateDepth = 0;
 	parenDepth = 0;
 	blockTabCount = 0;
@@ -331,10 +320,36 @@ void ASBeautifier::init()
 	isSharpAccessor = false;
 	isSharpDelegate = false;
 	isInExtern = false;
-	isInEnum = false;
+	isInBeautifySQL = false;
+	isInIndentableStruct = false;
 	inLineNumber = 0;
 	horstmannIndentInStatement = 0;
 	nonInStatementBracket = 0;
+}
+
+/*
+ * initialize the static vars
+ */
+void ASBeautifier::initStatic()
+{
+	if (fileType == beautifierFileType)    // don't build unless necessary
+		return;
+
+	beautifierFileType = fileType;
+
+	headers->clear();
+	nonParenHeaders->clear();
+	assignmentOperators->clear();
+	nonAssignmentOperators->clear();
+	preBlockStatements->clear();
+	indentableHeaders->clear();
+
+	ASResource::buildHeaders(headers, fileType, true);
+	ASResource::buildNonParenHeaders(nonParenHeaders, fileType, true);
+	ASResource::buildAssignmentOperators(assignmentOperators);
+	ASResource::buildNonAssignmentOperators(nonAssignmentOperators);
+	ASResource::buildPreBlockStatements(preBlockStatements, fileType);
+	ASResource::buildIndentableHeaders(indentableHeaders);
 }
 
 /**
@@ -362,6 +377,14 @@ void ASBeautifier::setSharpStyle()
 }
 
 /**
+ * set mode manually set flag
+ */
+void ASBeautifier::setModeManuallySet(bool state)
+{
+	isModeManuallySet = state;
+}
+
+/**
  * indent using one tab per indentation
  */
 void ASBeautifier::setTabIndentation(int length, bool forceTabs)
@@ -369,9 +392,6 @@ void ASBeautifier::setTabIndentation(int length, bool forceTabs)
 	indentString = "\t";
 	indentLength = length;
 	shouldForceTabIndentation = forceTabs;
-
-	if (!isMinimalConditinalIndentSet)
-		minConditionalIndent = indentLength * 2;
 }
 
 /**
@@ -383,9 +403,14 @@ void ASBeautifier::setSpaceIndentation(int length)
 {
 	indentString = string(length, ' ');
 	indentLength = length;
+}
 
-	if (!isMinimalConditinalIndentSet)
-		minConditionalIndent = indentLength * 2;
+/**
+ * set indent manually set flag
+ */
+void ASBeautifier::setIndentManuallySet(bool state)
+{
+	isIndentManuallySet = state;
 }
 
 /**
@@ -399,14 +424,28 @@ void ASBeautifier::setMaxInStatementIndentLength(int max)
 }
 
 /**
- * set the minimum indentation between two lines in a multi-line condition.
+ * set the minimum conditional indentation option.
  *
- * @param   min     minimal indentation length.
+ * @param   min     minimal indentation option.
  */
-void ASBeautifier::setMinConditionalIndentLength(int min)
+void ASBeautifier::setMinConditionalIndentOption(int min)
 {
-	minConditionalIndent = min;
-	isMinimalConditinalIndentSet = true;
+	minConditionalOption = min;
+}
+
+/**
+ * set minConditionalIndent from the minConditionalOption.
+ */
+void ASBeautifier::setMinConditionalIndentLength()
+{
+	if (minConditionalOption == MINCOND_ZERO)
+		minConditionalIndent = 0;
+	else if (minConditionalOption == MINCOND_ONE)
+		minConditionalIndent = indentLength;
+	else if (minConditionalOption == MINCOND_ONEHALF)
+		minConditionalIndent = indentLength / 2;
+	// minConditionalOption = INDENT_TWO
+	else minConditionalIndent = indentLength * 2;
 }
 
 /**
@@ -543,6 +582,22 @@ string ASBeautifier::getIndentString(void)
 }
 
 /**
+ * get indent manually set flag
+ */
+bool ASBeautifier::getIndentManuallySet()
+{
+	return isIndentManuallySet;
+}
+
+/**
+ * get mode manually set flag
+ */
+bool ASBeautifier::getModeManuallySet()
+{
+	return isModeManuallySet;
+}
+
+/**
  * get the state of the force tab indentation option.
  *
  * @return   state of force tab indentation.
@@ -619,26 +674,6 @@ bool ASBeautifier::getEmptyLineFill(void)
 }
 
 /**
- * check if there are any indented lines ready to be read by nextLine()
- *
- * @return    are there any indented lines ready?
- */
-bool ASBeautifier::hasMoreLines() const
-{
-	return sourceIterator->hasMoreLines();
-}
-
-/**
- * get the next indented line.
- *
- * @return    indented line.
- */
-string ASBeautifier::nextLine()
-{
-	return beautify(sourceIterator->nextLine());
-}
-
-/**
  * beautify a line of source code.
  * every line of source code in a source code file should be sent
  * one after the other to the beautify method.
@@ -656,6 +691,7 @@ string ASBeautifier::beautify(const string &originalLine)
 	bool isInOperator = false;
 	bool isSpecialChar = false;
 	bool haveCaseIndent = false;
+	bool haveAssignmentThisLine = false;
 	bool lineBeginsWithBracket = false;
 	bool closingBracketReached = false;
 	bool shouldIndentBrackettedLine = true;
@@ -677,6 +713,7 @@ string ASBeautifier::beautify(const string &originalLine)
 	currentHeader = NULL;
 	lineStartsInComment = isInComment;
 	blockCommentNoBeautify = blockCommentNoIndent;
+	isInAsmOneLine = false;
 	lineOpensComment = false;
 	previousLineProbationTab = false;
 	haveLineContinuationChar = false;
@@ -691,19 +728,9 @@ string ASBeautifier::beautify(const string &originalLine)
 		if (!(originalLine.length() == 1 && originalLine[0] == ' '))
 			line = originalLine;
 	}
-	else if (!isInComment)
+	else if (isInComment || isInBeautifySQL)
 	{
-		line = trim(originalLine);
-		if (line.length() > 0 && line[0] == '{')
-			lineBeginsWithBracket = true;
-
-		size_t j = line.find_first_not_of(" \t{");
-		if (j != string::npos && line.compare(j, 2, "/*") == 0)
-			lineOpensComment = true;
-	}
-	else
-	{
-		// trim the end of comment lines
+		// trim the end of comment and SQL lines
 		line = originalLine;
 		size_t trimEnd = line.find_last_not_of(" \t");
 		if (trimEnd == string::npos)
@@ -712,6 +739,22 @@ string ASBeautifier::beautify(const string &originalLine)
 			trimEnd++;
 		if (trimEnd < line.length())
 			line.erase(trimEnd);
+	}
+	else
+	{
+		line = trim(originalLine);
+		if (line.length() > 0 && line[0] == '{')
+			lineBeginsWithBracket = true;
+
+		isInHorstmannComment = false;
+		size_t j = line.find_first_not_of(" \t{");
+		if (j != string::npos && line.compare(j, 2, "/*") == 0)
+		{
+			lineOpensComment = true;
+			size_t k = line.find_first_not_of(" \t");
+			if (k != string::npos && line.compare(k, 1, "{") == 0)
+				isInHorstmannComment = true;
+		}
 	}
 
 	if (line.length() == 0)
@@ -821,8 +864,6 @@ string ASBeautifier::beautify(const string &originalLine)
 		// check if the last char is a backslash
 		if (line.length() > 0)
 			backslashEndsPrevLine = (line[line.length() - 1] == '\\');
-		else
-			backslashEndsPrevLine = false;
 
 		// check if this line ends a multi-line #define
 		// if so, use the #define's cloned beautifier for the line's indentation
@@ -858,11 +899,15 @@ string ASBeautifier::beautify(const string &originalLine)
 		activeBeautifierStack->back()->isNonInStatementArray = isNonInStatementArray;
 		activeBeautifierStack->back()->isSharpAccessor = isSharpAccessor;
 		activeBeautifierStack->back()->isSharpDelegate = isSharpDelegate;
+		activeBeautifierStack->back()->isInExtern = isInExtern;
+		activeBeautifierStack->back()->isInBeautifySQL = isInBeautifySQL;
+		activeBeautifierStack->back()->isInIndentableStruct = isInIndentableStruct;
 		// must return originalLine not the trimmed line
 		return activeBeautifierStack->back()->beautify(originalLine);
 	}
 
 	// calculate preliminary indentation based on data from past lines
+
 	if (!inStatementIndentStack->empty())
 		spaceTabCount = inStatementIndentStack->back();
 
@@ -910,7 +955,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			isInSwitch = true;
 		}
 
-	}
+	}	// end of for loop * end of for loop * end of for loop * end of for loop * end of for loop *
 
 	iPrelim = i;
 
@@ -934,7 +979,7 @@ string ASBeautifier::beautify(const string &originalLine)
 	         && line[0] == '}')
 		--tabCount;
 
-	if (isInClassHeader)
+	if (isInClassInitializer)
 	{
 		if (lineStartsInComment || lineOpensComment)
 		{
@@ -952,6 +997,18 @@ string ASBeautifier::beautify(const string &originalLine)
 				tabCount++;
 		}
 	}
+	// handle special case of indented horstmann brackets
+	else if (lineStartsInComment && isInHorstmannComment && bracketIndent)
+		tabCount++;
+
+	// handle special case of horstmann comment in an indented class statement
+	if (isInClass
+	        && classIndent
+	        && isInHorstmannComment
+	        && !lineOpensComment
+	        && headerStack->size() >= 2
+	        && (*headerStack)[headerStack->size()-2] == &AS_CLASS)
+		--tabCount;
 
 	if (isInConditional)
 	{
@@ -968,6 +1025,9 @@ string ASBeautifier::beautify(const string &originalLine)
 		tempCh = line[i];
 		prevCh = ch;
 		ch = tempCh;
+
+		if (isInBeautifySQL)
+			continue;
 
 		if (isWhiteSpace(ch))
 		{
@@ -1067,7 +1127,6 @@ string ASBeautifier::beautify(const string &originalLine)
 		         (line.compare(i, 7, "#region") == 0 || line.compare(i, 10, "#endregion") == 0))
 		{
 			isInLineComment = true;
-//			continue;
 		}
 
 		if (isInComment || isInLineComment)
@@ -1138,10 +1197,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			{
 				if (--templateDepth <= 0)
 				{
-					if (isInTemplate)
-						ch = ';';
-					else
-						ch = 't';
+					ch = ';';
 					isInTemplate = false;
 					templateDepth = 0;
 				}
@@ -1156,13 +1212,13 @@ string ASBeautifier::beautify(const string &originalLine)
 				isInOperator = false;
 				// if have a struct header, this is a declaration not a definition
 				if (ch == '('
-				        && (isInClassHeader || isInClassHeaderTab)
+				        && (isInClassInitializer || isInClassHeaderTab)
 				        && headerStack->size() > 0
 				        && headerStack->back() == &AS_STRUCT)
 				{
 					headerStack->pop_back();
-					isInClassHeader = false;
-					// -1 for isInClassHeader, -2 for isInClassHeaderTab
+					isInClassInitializer = false;
+					// -1 for isInClassInitializer, -2 for isInClassHeaderTab
 					if (isInClassHeaderTab)
 					{
 						tabCount -= (1 + classInitializerTabs);
@@ -1197,6 +1253,7 @@ string ASBeautifier::beautify(const string &originalLine)
 						parenStatementStack->pop_back();
 					}
 					ch = ' ';
+					isInAsm = false;
 					isInConditional = false;
 				}
 
@@ -1230,7 +1287,7 @@ string ASBeautifier::beautify(const string &originalLine)
 			                      || prevNonSpaceCh == ')'
 			                      || prevNonSpaceCh == ';'
 			                      || peekNextChar(line, i) == '{'
-			                      || isInClassHeader
+			                      || isInClassInitializer
 			                      || isNonInStatementArray
 			                      || isSharpAccessor
 			                      || isSharpDelegate
@@ -1239,29 +1296,26 @@ string ASBeautifier::beautify(const string &originalLine)
 			                          (prevNonSpaceCh == '('
 			                           || isLegalNameChar(prevNonSpaceCh))));
 
-			//if (isNonInStatementArray
-			//        && prevNonSpaceCh != ')'
-			//        && prevNonSpaceCh != '='
-			//        && !isInEnum
-			//        && i == nonInStatementBracket)
-			//	isBlockOpener = false;
-
-			isInClassHeader = false;
+			// remove inStatementIndent for C++ class initializer
+			if (isInClassInitializer)
+			{
+				if (inStatementIndentStack->size() > 0)
+					inStatementIndentStack->pop_back();
+				isInStatement = false;
+				if (lineBeginsWithBracket)
+					spaceTabCount = 0;
+				isInClassInitializer = false;
+			}
 
 			if (!isBlockOpener && currentHeader != NULL)
 			{
-				for (size_t n = 0; n < nonParenHeaders.size(); n++)
-					if (currentHeader == nonParenHeaders[n])
+				for (size_t n = 0; n < nonParenHeaders->size(); n++)
+					if (currentHeader == (*nonParenHeaders)[n])
 					{
 						isBlockOpener = true;
 						break;
 					}
 			}
-
-			// TODO: TEMPORARY??? fix to give C# }) statements a full indent
-			// check for anonymous method
-			//if (isBlockOpener && isSharpStyle() && !parenIndentStack->empty())
-			//	isBlockOpener = false;
 
 			bracketBlockStateStack->push_back(isBlockOpener);
 
@@ -1308,12 +1362,11 @@ string ASBeautifier::beautify(const string &originalLine)
 				tabCount--;
 			}
 
-			// do not allow inStatementIndent - should occur for Java files only
-			//if (inStatementIndentStack->size() > 0)
-			//{
-			//	spaceTabCount = 0;
-			//	inStatementIndentStack->back() = 0;
-			//}
+			// an indentable struct is treated like a class in the header stack
+			if (headerStack->size() > 0
+			        && (*headerStack).back() == &AS_STRUCT
+			        && isInIndentableStruct)
+				(*headerStack).back() = &AS_CLASS;
 
 			blockParenDepthStack->push_back(parenDepth);
 			blockStatementStack->push_back(isInStatement);
@@ -1342,23 +1395,6 @@ string ASBeautifier::beautify(const string &originalLine)
 		if (isPotentialHeader)
 		{
 			const string *newHeader = findHeader(line, i, headers);
-
-			if (newHeader != NULL)
-			{
-				char peekChar = peekNextChar(line, i + newHeader->length() - 1);
-
-				// is not a header if part of a definition
-				if (peekChar == ',' || peekChar == ')')
-					newHeader = NULL;
-				// the following accessor definitions are NOT headers
-				// goto default; is NOT a header
-				// default(int) keyword in C# is NOT a header
-				else if ((newHeader == &AS_GET || newHeader == &AS_SET || newHeader == &AS_DEFAULT)
-				         && (peekChar == ';' ||  peekChar == '('))
-				{
-					newHeader = NULL;
-				}
-			}
 
 			if (newHeader != NULL)
 			{
@@ -1501,7 +1537,7 @@ string ASBeautifier::beautify(const string &originalLine)
 				{
 					headerStack->push_back(newHeader);
 					isInStatement = false;
-					if (indexOf(nonParenHeaders, newHeader) == -1)
+					if (indexOf(*nonParenHeaders, newHeader) == -1)
 					{
 						isInConditional = true;
 					}
@@ -1515,6 +1551,10 @@ string ASBeautifier::beautify(const string &originalLine)
 
 				continue;
 			}  // newHeader != NULL
+
+			if (isCStyle() && findKeyword(line, i, AS_ENUM))
+				isInEnum = true;
+
 		}   // isPotentialHeader
 
 		if (ch == '?')
@@ -1536,10 +1576,16 @@ string ASBeautifier::beautify(const string &originalLine)
 				isInQuestion = false;
 			}
 
-			else if (isCStyle() && isInClassHeader)
+			else if (isCStyle() && isInClassInitializer)
 			{
 				// found a 'class A : public B' definition
 				// so do nothing special
+			}
+
+			else if (isCStyle()
+			         && (isInAsm || isInAsmOneLine || isInAsmBlock))
+			{
+				// do nothing special
 			}
 
 			else if (isCStyle() && isdigit(peekNextChar(line, i)))
@@ -1554,18 +1600,19 @@ string ASBeautifier::beautify(const string &originalLine)
 				--tabCount;
 			}
 
+			else if (isCStyle() && prevNonSpaceCh == ')' && !isInCase)
+			{
+				isInClassInitializer = true;
+				if (i == 0)
+					tabCount += classInitializerTabs;
+			}
+
 			else if (isJavaStyle() && lastLineHeader == &AS_FOR)
 			{
 				// found a java for-each statement
 				// so do nothing special
 			}
 
-			else if (isCStyle() && prevNonSpaceCh == ')' && !isInCase)
-			{
-				isInClassHeader = true;
-				if (i == 0)
-					tabCount += classInitializerTabs;
-			}
 			else
 			{
 				currentNonSpaceCh = ';'; // so that brackets after the ':' will appear as block-openers
@@ -1589,9 +1636,49 @@ string ASBeautifier::beautify(const string &originalLine)
 			        < (int) inStatementIndentStack->size())
 				inStatementIndentStack->pop_back();
 
+		// handle commas
+		// previous "isInStatement" will be from an assignment operator or class initializer
+		if (ch == ',' && parenDepth == 0 && !isInStatement && !isNonInStatementArray)
+		{
+			// is comma at end of line
+			size_t nextChar = line.find_first_not_of(" \t", i + 1);
+			if (nextChar != string::npos)
+			{
+				if (line.compare(nextChar, 2, "//") == 0
+				        || line.compare(nextChar, 2, "/*") == 0)
+					nextChar = string::npos;
+			}
+			// register indent
+			if (nextChar == string::npos)
+			{
+				// register indent at first word after the colon of a C++ class initializer
+				if (isInClassInitializer)
+				{
+					size_t firstChar = line.find_first_not_of(" \t");
+					if (firstChar != string::npos && line[firstChar] == ':')
+					{
+						size_t firstWord = line.find_first_not_of(" \t", firstChar + 1);
+						if (firstChar != string::npos)
+						{
+							int inStatementIndent = firstWord + spaceTabCount + tabIncrementIn;
+							inStatementIndentStack->push_back(inStatementIndent);
+							isInStatement = true;
+						}
+					}
+				}
+				// register indent at previous word
+				else
+				{
+					int prevWord = getInStatementIndentComma(line, i);
+					int inStatementIndent = prevWord + spaceTabCount + tabIncrementIn;
+					inStatementIndentStack->push_back(inStatementIndent);
+					isInStatement = true;
+				}
+			}
+		}
 
 		// handle ends of statements
-		if ((ch == ';' && parenDepth == 0) || ch == '}'/* || (ch == ',' && parenDepth == 0)*/)
+		if ((ch == ';' && parenDepth == 0) || ch == '}')
 		{
 			if (ch == '}')
 			{
@@ -1645,6 +1732,16 @@ string ASBeautifier::beautify(const string &originalLine)
 				}
 
 				closingBracketReached = true;
+				isInAsmOneLine = false;
+
+				// added for release 1.24
+				// TODO: remove at the appropriate time
+				assert(isInAsm == false);
+				assert(isInAsmOneLine == false);
+				assert(isInQuote == false);
+				isInAsm = isInAsmOneLine = isInQuote = false;
+				// end remove
+
 				int headerPlace = indexOf(*headerStack, &AS_OPEN_BRACKET);
 				if (headerPlace != -1)
 				{
@@ -1695,7 +1792,8 @@ string ASBeautifier::beautify(const string &originalLine)
 				isInStatement = false;
 
 			previousLastLineHeader = NULL;
-			isInClassHeader = false;
+			isInClassInitializer = false;
+			isInEnum = false;
 			isInQuestion = false;
 
 			continue;
@@ -1708,9 +1806,10 @@ string ASBeautifier::beautify(const string &originalLine)
 			if (!isInTemplate && !(isCStyle() && parenDepth > 0))
 			{
 				const string *newHeader = findHeader(line, i, preBlockStatements);
-				if (newHeader != NULL)
+				if (newHeader != NULL
+				        && !(isCStyle() && newHeader == &AS_CLASS && isInEnum))	// is it 'enum class'
 				{
-					isInClassHeader = true;
+					isInClassInitializer = true;
 
 					if (!isSharpStyle())
 						headerStack->push_back(newHeader);
@@ -1752,6 +1851,28 @@ string ASBeautifier::beautify(const string &originalLine)
 					inStatementIndentStack->back() = 0;
 			}
 
+			if (isCStyle())
+			{
+				if (findKeyword(line, i, AS_ASM)
+				        || findKeyword(line, i, AS__ASM__))
+				{
+					isInAsm = true;
+				}
+				else if (findKeyword(line, i, AS_MS_ASM)		// microsoft specific
+				         || findKeyword(line, i, AS_MS__ASM))
+				{
+					int index = 4;
+					if (peekNextChar(line, i) == '_')		// check for __asm
+						index = 5;
+
+					char peekedChar = ASBase::peekNextChar(line, i + index);
+					if (peekedChar == '{' || peekedChar == ' ')
+						isInAsmBlock = true;
+					else
+						isInAsmOneLine = true;
+				}
+			}
+
 			// append the entire name for all others
 			string name = getCurrentWord(line, i);
 			outBuffer.append(name.substr(1));
@@ -1788,6 +1909,22 @@ string ASBeautifier::beautify(const string &originalLine)
 					outBuffer.append(foundNonAssignmentOp->substr(1));
 					i += foundNonAssignmentOp->length() - 1;
 				}
+
+				// For C++ input/output, operator<< and >> should be
+				// aligned, if we are not in a statement already and
+				// also not in the "operator<<(...)" header line
+				if (!isInOperator
+				        && inStatementIndentStack->empty()
+				        && isCStyle()
+				        && (foundNonAssignmentOp == &AS_GR_GR ||
+				            foundNonAssignmentOp == &AS_LS_LS))
+				{
+					// this will be true if the line begins with the operator
+					if (i < 2 && spaceTabCount == 0)
+						spaceTabCount += 2 * indentLength;
+					// align to the beginning column of the operator
+					registerInStatementIndent(line, i - foundNonAssignmentOp->length(), spaceTabCount, tabIncrementIn, 0, false);
+				}
 			}
 
 			else if (foundAssignmentOp != NULL)
@@ -1800,12 +1937,28 @@ string ASBeautifier::beautify(const string &originalLine)
 
 				if (!isInOperator && !isInTemplate && !isNonInStatementArray)
 				{
-					registerInStatementIndent(line, i, spaceTabCount, tabIncrementIn, 0, false);
+					// if multiple assignments, align on the previous word
+					if (foundAssignmentOp == &AS_ASSIGN
+					        && prevNonSpaceCh != ']'		// an array
+					        && statementEndsWithComma(line, i))
+					{
+						if (!haveAssignmentThisLine)		// only one assignment indent per line
+						{
+							// register indent at previous word
+							haveAssignmentThisLine = true;
+							int prevWordIndex = getInStatementIndentAssign(line, i);
+							int inStatementIndent = prevWordIndex + spaceTabCount + tabIncrementIn;
+							inStatementIndentStack->push_back(inStatementIndent);
+						}
+					}
+					else
+						registerInStatementIndent(line, i, spaceTabCount, tabIncrementIn, 0, false);
+
 					isInStatement = true;
 				}
 			}
 		}
-	}   // end of for loop  *  end of for loop  *  end of for loop  *  end of for loop
+	}	// end of for loop * end of for loop * end of for loop * end of for loop * end of for loop *
 
 	// handle special cases of unindentation:
 
@@ -2064,14 +2217,14 @@ int ASBeautifier::getNextProgramCharDistance(const string &line, int i) const
 
 // check if a specific line position contains a header.
 const string* ASBeautifier::findHeader(const string &line, int i,
-                                       const vector<const string*> &possibleHeaders) const
+                                       const vector<const string*>* possibleHeaders) const
 {
 	assert(isCharPotentialHeader(line, i));
 	// check the word
-	size_t maxHeaders = possibleHeaders.size();
+	size_t maxHeaders = possibleHeaders->size();
 	for (size_t p = 0; p < maxHeaders; p++)
 	{
-		const string* header = possibleHeaders[p];
+		const string* header = (*possibleHeaders)[p];
 		const size_t wordEnd = i + header->length();
 		if (wordEnd > line.length())
 			continue;
@@ -2085,32 +2238,37 @@ const string* ASBeautifier::findHeader(const string &line, int i,
 			return header;
 		if (isLegalNameChar(line[wordEnd]))
 			continue;
-		// is not a header if part of a definition
 		const char peekChar = peekNextChar(line, wordEnd - 1);
+		// is not a header if part of a definition
 		if (peekChar == ',' || peekChar == ')')
+			break;
+		// the following accessor definitions are NOT headers
+		// goto default; is NOT a header
+		// default(int) keyword in C# is NOT a header
+		else if ((header == &AS_GET || header == &AS_SET || header == &AS_DEFAULT)
+		         && (peekChar == ';' ||  peekChar == '('))
 			break;
 		return header;
 	}
 	return NULL;
 }
 
-
 // check if a specific line position contains an operator.
 const string* ASBeautifier::findOperator(const string &line, int i,
-        const vector<const string*> &possibleOperators) const
+        const vector<const string*>* possibleOperators) const
 {
 	assert(isCharPotentialOperator(line[i]));
 	// find the operator in the vector
 	// the vector contains the LONGEST operators first
 	// must loop thru the entire vector
-	size_t maxOperators = possibleOperators.size();
+	size_t maxOperators = possibleOperators->size();
 	for (size_t p = 0; p < maxOperators; p++)
 	{
-		const size_t wordEnd = i + (*possibleOperators[p]).length();
+		const size_t wordEnd = i + (*(*possibleOperators)[p]).length();
 		if (wordEnd > line.length())
 			continue;
-		if (line.compare(i, (*possibleOperators[p]).length(), *possibleOperators[p]) == 0)
-			return possibleOperators[p];
+		if (line.compare(i, (*(*possibleOperators)[p]).length(), *(*possibleOperators)[p]) == 0)
+			return (*possibleOperators)[p];
 	}
 	return NULL;
 }
@@ -2118,7 +2276,7 @@ const string* ASBeautifier::findOperator(const string &line, int i,
 /**
  * find the index number of a string element in a container of strings
  *
- * @return              the index number of element in the ocntainer. -1 if element not found.
+ * @return              the index number of element in the container. -1 if element not found.
  * @param container     a vector of strings.
  * @param element       the element to find .
  */
@@ -2168,24 +2326,36 @@ string ASBeautifier::trim(const string &str)
 }
 
 /**
- * delete a static member vector object using swap
- * to eliminate memory leak reporting for the vector
+ * Copy tempStacks for the copy constructor.
+ * The value of the vectors must also be copied.
+ */
+vector<vector<const string*>*>* ASBeautifier::copyTempStacks(const ASBeautifier &other) const
+{
+	vector<vector<const string*>*> *tempStacksNew = new vector<vector<const string*>*>;
+	vector<vector<const string*>*>::iterator iter;
+	for (iter = other.tempStacks->begin();
+	        iter != other.tempStacks->end();
+	        ++iter)
+	{
+		vector<const string*> *newVec = new vector<const string*>;
+		*newVec = **iter;
+		tempStacksNew->push_back(newVec);
+	}
+	return tempStacksNew;
+}
+
+/**
+ * delete a static member vector to eliminate memory leak reporting for the vector
  */
 void ASBeautifier::deleteStaticVectors()
 {
 	beautifierFileType = 9;		// reset to an invalid type
-	vector<const string*> headersClear;
-	headers.swap(headersClear);
-	vector<const string*> nonParenHeadersClear;
-	nonParenHeaders.swap(nonParenHeadersClear);
-	vector<const string*> preBlockStatementsClear;
-	preBlockStatements.swap(preBlockStatementsClear);
-	vector<const string*> assignmentOperatorsClear;
-	assignmentOperators.swap(assignmentOperatorsClear);
-	vector<const string*> nonAssignmentOperatorsClear;
-	nonAssignmentOperators.swap(nonAssignmentOperatorsClear);
-	vector<const string*> indentableHeadersClear;
-	indentableHeaders.swap(indentableHeadersClear);
+	deleteVector(headers);
+	deleteVector(nonParenHeaders);
+	deleteVector(preBlockStatements);
+	deleteVector(assignmentOperators);
+	deleteVector(nonAssignmentOperators);
+	deleteVector(indentableHeaders);
 }
 
 /**
@@ -2225,6 +2395,16 @@ void ASBeautifier::deleteContainer(vector<vector<const string*>*>* &container)
 }
 
 /**
+ * delete a vector<const string*>* object
+ */
+void ASBeautifier::deleteVector(vector<const string*>*& container)
+{
+	assert(container != NULL);
+	delete container;
+	container = NULL;
+}
+
+/**
  * initialize a vector object
  * T is the type of vector
  * used for all vectors
@@ -2237,6 +2417,180 @@ void ASBeautifier::initContainer(T &container, T value)
 	if (container != NULL )
 		deleteContainer(container);
 	container = value;
+}
+
+/**
+ * initialize a vector<const string*>* object
+ */
+void ASBeautifier::initVector(vector<const string*>*& container)
+{
+	assert(container == NULL);
+	container = new vector<const string*>;
+}
+
+/**
+ * Determine if an assignment statement ends with a comma
+ *     that is not in a function argument. It ends with a
+ *     comma if a comma is the last char on the line.
+ *
+ * @return  true if line ends with a comma, otherwise false.
+ */
+bool ASBeautifier::statementEndsWithComma(string &line, int index)
+{
+	assert(line[index] == '=');
+
+	bool isInComment = false;
+	bool isInQuote = false;
+	int parenCount = 0;
+	size_t lineLength = line.length();
+	size_t i = 0;
+	char quoteChar = ' ';
+
+	for (i = index + 1; i < lineLength; ++i)
+	{
+		char ch = line[i];
+
+		if (isInComment)
+		{
+			if (line.compare(i, 2, "*/") == 0)
+			{
+				isInComment = false;
+				++i;
+			}
+			continue;
+		}
+
+		if (ch == '\\')
+		{
+			++i;
+			continue;
+		}
+
+		if (isInQuote)
+		{
+			if (ch == quoteChar)
+				isInQuote = false;
+			continue;
+		}
+
+		if (ch == '"' || ch == '\'')
+		{
+			isInQuote = true;
+			quoteChar = ch;
+			continue;
+		}
+
+		if (line.compare(i, 2, "//") == 0)
+			break;
+
+		if (line.compare(i, 2, "/*") == 0)
+		{
+			if (isLineEndComment(line, i))
+				break;
+			else
+			{
+				isInComment = true;
+				++i;
+				continue;
+			}
+		}
+
+		if (ch == '(')
+			parenCount++;
+		if (ch == ')')
+			parenCount--;
+	}
+	if (isInComment
+	        || isInQuote
+	        || parenCount > 0)
+		return false;
+
+	size_t lastChar = line.find_last_not_of(" \t", i - 1);
+
+	if (lastChar == string::npos || line[lastChar] != ',')
+		return false;
+
+	return true;
+}
+
+/**
+ * check if current comment is a line-end comment
+ *
+ * @return     is before a line-end comment.
+ */
+bool ASBeautifier::isLineEndComment(string& line, int startPos) const
+{
+	assert(line.compare(startPos, 2, "/*") == 0);
+
+	// comment must be closed on this line with nothing after it
+	size_t endNum = line.find("*/", startPos + 2);
+	if (endNum != string::npos)
+	{
+		size_t nextChar = line.find_first_not_of(" \t", endNum + 2);
+		if (nextChar == string::npos)
+			return true;
+	}
+	return false;
+}
+
+/**
+ * get the previous word index for an assignment operator
+ *
+ * @return is the index to the previous word (the in statement indent).
+ */
+int ASBeautifier::getInStatementIndentAssign(const string& line, size_t currPos) const
+{
+	assert(line[currPos] == '=');
+
+	if (currPos == 0)
+		return 0;
+
+	// get the last legal word (may be a number)
+	size_t end = line.find_last_not_of(" \t", currPos-1);
+	if (end == string::npos || !isLegalNameChar(line[end]))
+		return 0;
+
+	int start;          // start of the previous word
+	for (start = end; start > -1; start--)
+	{
+		if (!isLegalNameChar(line[start]) || line[start] == '.')
+			break;
+	}
+	start++;
+
+	return start;
+}
+
+/**
+ * get the instatement indent for a comma
+ *
+ * @return is the indent to the second word on the line (the in statement indent).
+ */
+int ASBeautifier::getInStatementIndentComma(const string& line, size_t currPos) const
+{
+	assert(line[currPos] == ',');
+
+	// get first word on a line
+	size_t indent = line.find_first_not_of(" \t");
+	if (indent == string::npos || !isLegalNameChar(line[indent]))
+		return 0;
+
+	// bypass first word
+	for (; indent < currPos; indent++)
+	{
+		if (!isLegalNameChar(line[indent]))
+			break;
+	}
+	indent++;
+	if (indent >= currPos)
+		return 0;
+
+	// point to second word or assignment operator
+	indent = line.find_last_not_of(" \t", indent);
+	if (indent == string::npos || indent >= currPos)
+		return 0;
+
+	return indent;
 }
 
 

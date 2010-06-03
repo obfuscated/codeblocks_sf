@@ -325,6 +325,13 @@
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkPadHeader">
+												<label>Insert space padding after paren headers only</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkUnpadParens">
 												<label>Remove extra space padding around parenthesis</label>
 											</object>
