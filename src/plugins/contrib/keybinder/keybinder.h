@@ -75,7 +75,7 @@ class wxKeyBind
 {
 protected:
 
-    //! One of wxACCEL_ALT, wxACCEL_CTRL or wxACCEL_SHIFT flags.
+    //! One of wxACCEL_ALT, wxACCEL_CTRL, wxACCEL_SHIFT, or wxACCEL_CMD flags.
     int m_nFlags;
 
     //! One of the wxWidgets key code which defines the key shortcut.
@@ -1171,7 +1171,7 @@ public:
         const wxValidator& validator = wxDefaultValidator,
         const wxString& name = wxTextCtrlNameStr) :
         wxTextCtrl(parent, id, value, pos, size, style, validator, name)
-        { validCmdPrefixes = wxT("Ctrl-Alt-Shift-");}
+        { validCmdPrefixes = wxT("Ctrl-XCtrl-Alt-Shift-");}
 
     virtual ~wxKeyMonitorTextCtrl() {}
 

@@ -482,9 +482,14 @@ wxString wxKeyBind::KeyModifierToString(int keyModifier)
 {
     wxString result;
 
-    if (keyModifier & wxACCEL_CTRL)
+    if (keyModifier & wxACCEL_CMD)
         //result += wxT("Ctrl+");   //CB uses dashes
         result += wxT("Ctrl-");
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+    if (keyModifier & wxACCEL_CTRL)
+        //result += wxT("XCtrl+");   //CB uses dashes
+        result += wxT("XCtrl-");
+#endif
     if (keyModifier & wxACCEL_ALT)
         //result += wxT("Alt+");   //CB uses dashes
         result += wxT("Alt-");
@@ -509,7 +514,11 @@ int wxKeyBind::StringToKeyModifier(const wxString &keyModifier)
         mod |= wxACCEL_ALT;
 
     if (str.Contains(wxT("CTRL")))
+        mod |= wxACCEL_CMD;
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+    if (str.Contains(wxT("XCTRL")))
         mod |= wxACCEL_CTRL;
+#endif
 
     if (str.Contains(wxT("SHIFT")))
         mod |= wxACCEL_SHIFT;
@@ -536,6 +545,11 @@ int wxKeyBind::GetKeyModifier(wxKeyEvent &event)
     if (event.ShiftDown())
         mod |= wxACCEL_SHIFT;
 
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+    if (event.CmdDown())
+        mod |= wxACCEL_CMD;
+#endif
+
     return mod;
 }
 
@@ -560,6 +574,9 @@ bool wxKeyBind::MatchKey(const wxKeyEvent &key) const
 	b &= (key.AltDown() == ((m_nFlags & wxACCEL_ALT) != 0));
 	b &= (key.ControlDown() == ((m_nFlags & wxACCEL_CTRL) != 0));
 	b &= (key.ShiftDown() == ((m_nFlags & wxACCEL_SHIFT) != 0));
+#if defined(__WXMAC__) || defined(__WXCOCOA__)
+	b &= (key.CmdDown() == ((m_nFlags & wxACCEL_CMD) != 0));
+#endif
 
 	return b;
 }
