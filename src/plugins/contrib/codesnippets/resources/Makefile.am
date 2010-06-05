@@ -1,5 +1,6 @@
 INCLUDES = $(WX_CXXFLAGS) \
         $(WX_GTK2_CFLAGS) \
+        $(WX_X11_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/codesnippets \
@@ -12,13 +13,11 @@ pluginlibdir = $(pkglibdir)/plugins
 ##pluginlib_LTLIBRARIES = codesnippets
 bin_PROGRAMS = codesnippets
 
-codesnippets_LDFLAGS = $(WX_GTK2_LIBS)
-
 ##codesnippets_LIBADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
 ##codesnippets_LDADD = $(PLUGIN_WX_LIBS) ../../../../sdk/libcodeblocks.la
 codesnippets_LDADD =  -L../../../../base/tinyxml -ltinyxml \
             -L../../../../sdk ../../../../sdk/libcodeblocks.la \
-			$(PLUGIN_WX_LIBS) $(WX_LIBS) -lX11
+			$(PLUGIN_WX_LIBS) $(WX_LIBS) $(WX_GTK2_LIBS) $(WX_X11_LIBS)
 
 codesnippets_SOURCES =	$(srcdir)/../version.cpp \
 		$(srcdir)/../Search/DirectoryParamsPanel.cpp \

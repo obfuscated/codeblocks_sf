@@ -2,6 +2,7 @@ SUBDIRS = resources
 
 INCLUDES = $(WX_CXXFLAGS) \
         $(WX_GTK2_CFLAGS) \
+        $(WX_X11_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/codesnippets \
@@ -13,7 +14,7 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libcodesnippets.la
 
-libcodesnippets_la_LDFLAGS = $(WX_GTK2_LIBS) -lX11 -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libcodesnippets_la_LDFLAGS = $(WX_GTK2_LIBS) $(WX_X11_LIBS) -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
 libcodesnippets_la_LIBADD = $(PLUGIN_WX_LIBS) ../../../sdk/libcodeblocks.la
 
