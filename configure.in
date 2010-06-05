@@ -109,6 +109,8 @@ AC_SUBST(LIBS)
 
 WX_GTK2_CFLAGS=
 WX_GTK2_LIBS=
+WX_X11_CFLAGS=
+WX_X11_LIBS=
 
 dnl default value is to (silently) do nothing in the makefile
 POSTLINK_COMMAND="@true"
@@ -136,6 +138,12 @@ case $WX_BASENAME in
         fi
         WX_GTK2_CFLAGS="$GTK2_CFLAGS"
         WX_GTK2_LIBS="$GTK2_LIBS"
+        AC_PATH_XTRA
+        WX_X11_CFLAGS="`echo $X_CFLAGS | sed 's/ -INONE//'`"
+        WX_X11_LIBS="`echo $X_LIBS | sed 's/ -LNONE//' | sed 's/ -RNONE//'`"
+        if test "$no_x" != yes; then
+            WX_X11_LIBS="$WX_X11_LIBS -lX11 $X_EXTRA_LIBS"
+        fi
     ;;
     *wx_msw*)
         AC_MSG_RESULT(wxMSW)
@@ -154,6 +162,8 @@ esac
 
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
+AC_SUBST(WX_X11_CFLAGS)
+AC_SUBST(WX_X11_LIBS)
 
 AC_SUBST(POSTLINK_COMMAND)
 AC_SUBST(MACSETFILE)
