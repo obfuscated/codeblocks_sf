@@ -34,7 +34,7 @@ wxsBoolProperty::wxsBoolProperty(const wxString& PGName,const wxString& DataName
 
 void wxsBoolProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    wxPGId ID = Grid->AppendIn(Parent,wxBoolProperty(GetPGName(),wxPG_LABEL,VALUE));
+    wxPGId ID = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxBoolProperty(GetPGName(),wxPG_LABEL,VALUE));
     Grid->SetPropertyAttribute(ID,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
     PGRegister(Object,Grid,ID);
 }

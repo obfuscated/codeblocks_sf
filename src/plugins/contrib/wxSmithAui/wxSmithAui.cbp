@@ -82,16 +82,17 @@
 			<Add option="-g" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add option="-DWXMAKINGLIB_PROPGRID" />
+			<Add option="-DWXMAKINGDLL_PROPGRID" />
 			<Add option="-DwxPG_USE_WXMODULE=0" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
-			<Add directory="..\wxSmith" />
+			<Add directory="..\..\..\sdk\wxpropgrid\include" />
 			<Add directory="..\wxSmith\propgrid\contrib\include" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
 			<Add library="wxsmithlib" />
+			<Add library="wxpropgrid" />
 			<Add directory="..\..\..\devel" />
 		</Linker>
 		<Unit filename="manifest.xml" />

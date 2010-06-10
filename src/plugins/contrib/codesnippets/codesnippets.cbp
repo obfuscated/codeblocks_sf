@@ -15,8 +15,8 @@
 				<Option parameters="--debug-log -na -ns -nd" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DNO_LOGGING" />
+					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=0" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />

@@ -1,0 +1,144 @@
+# wxPropertyGrid message catalog.
+# Copyright (C) 2010 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.4.10\n"
+"Report-Msgid-Bugs-To: jmsalli@users.sourceforge.net\n"
+"POT-Creation-Date: 2010-01-03 21:46+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/advprops.cpp:660
+msgid "Point Size"
+msgstr ""
+
+#: src/advprops.cpp:663
+msgid "Family"
+msgstr ""
+
+#: src/advprops.cpp:673
+msgid "Face Name"
+msgstr ""
+
+#: src/advprops.cpp:680
+msgid "Style"
+msgstr ""
+
+#: src/advprops.cpp:683
+msgid "Weight"
+msgstr ""
+
+#: src/advprops.cpp:686
+msgid "Underlined"
+msgstr ""
+
+#: src/advprops.cpp:1922
+msgid "Make a selection:"
+msgstr ""
+
+#: src/manager.cpp:1332
+msgid "Categorized Mode"
+msgstr ""
+
+#: src/manager.cpp:1333
+msgid "Alphabetic Mode"
+msgstr ""
+
+#: src/propgrid.cpp:542
+msgid "False"
+msgstr ""
+
+#: src/propgrid.cpp:543
+msgid "True"
+msgstr ""
+
+#: src/propgrid.cpp:3231
+msgid "Unspecified"
+msgstr ""
+
+#: src/propgrid.cpp:4863
+#, c-format
+msgid ""
+"Type operation \"%s\" failed: Property labeled \"%s\" is of type \"%s\", NOT "
+"\"%s\"."
+msgstr ""
+
+#: src/propgrid.cpp:13357
+#, c-format
+msgid "Error in resource: %s"
+msgstr ""
+
+#: src/props.cpp:463 src/props.cpp:477
+#, c-format
+msgid "Value must be %lld or higher"
+msgstr ""
+
+#: src/props.cpp:647
+#, c-format
+msgid "Value must be %llu or higher"
+msgstr ""
+
+#: src/props.cpp:657
+#, c-format
+msgid "Value must be %llu or less"
+msgstr ""
+
+#: src/props.cpp:831
+#, c-format
+msgid "Value must be %f or higher"
+msgstr ""
+
+#: src/props.cpp:846
+#, c-format
+msgid "Value must be %f or less"
+msgstr ""
+
+#: src/props.cpp:930
+#, c-format
+msgid "Not %s"
+msgstr ""
+
+#: src/props.cpp:1717
+msgid "Choose a directory:"
+msgstr ""
+
+#: src/props.cpp:1772
+msgid "Choose a file"
+msgstr ""
+
+#: src/props.cpp:1775 src/props.cpp:1804
+msgid "All files (*.*)|*.*"
+msgstr ""
+
+#: src/props.cpp:2282
+msgid "Add"
+msgstr ""
+
+#: src/props.cpp:2310
+msgid "Update"
+msgstr ""
+
+#: src/props.cpp:2313
+msgid "Remove"
+msgstr ""
+
+#: src/props.cpp:2316
+msgid "Up"
+msgstr ""
+
+#: src/props.cpp:2319
+msgid "Down"
+msgstr ""
+
+#: src/xh_propgrid.cpp:267
+#, c-format
+msgid "Page %i"
+msgstr ""

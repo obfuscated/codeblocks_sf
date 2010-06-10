@@ -121,7 +121,11 @@ namespace
     {
         public:
 
+            #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+            virtual wxString GetValueType() const
+            #else
             virtual wxPG_VALUETYPE_MSGVAL GetValueType() const
+            #endif
             {
                 return wxPG_VALUETYPE(wxColourPropertyValue);
             }
@@ -151,7 +155,9 @@ namespace
         const wxColourPropertyValue& value )
         : wxEnumPropertyClass( label, name, wxsColourLabels, wxsColourValues, wxsColourCount )
     {
+        #if !(wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0))
         wxPG_INIT_REQUIRED_TYPE(wxColourPropertyValue)
+        #endif
         m_value.m_type = value.m_type;
         m_value.m_colour = value.m_colour.Ok() ? value.m_colour : *wxWHITE;
         m_flags |= wxPG_PROP_STATIC_CHOICES;
@@ -177,17 +183,29 @@ namespace
         if ( m_value.m_type < wxPG_COLOUR_WEB_BASE )
         {
             m_value.m_colour = wxSystemSettings::GetColour((wxSystemColour)m_value.m_type);
+            #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+            wxEnumProperty::SetValue((long)m_value.m_type);
+            #else
             wxEnumPropertyClass::DoSetValue((long)m_value.m_type);
+            #endif
         }
         else if ( m_value.m_type == wxsCOLOUR_DEFAULT )
         {
+            #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+            wxEnumProperty::SetValue((long)m_value.m_type);
+            #else
             wxEnumPropertyClass::DoSetValue((long)m_value.m_type);
+            #endif
         }
     }
 
     wxPGVariant wxsMyColourPropertyClass::DoGetValue () const
     {
+        #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+        return wxVariant(&m_value);
+        #else
         return wxPGVariantCreator(&m_value);
+        #endif
     }
 
     wxString wxsMyColourPropertyClass::GetValueAsString ( int ) const
@@ -199,7 +217,13 @@ namespace
                 (int)m_value.m_colour.Red(),(int)m_value.m_colour.Green(),(int)m_value.m_colour.Blue());
             return temp;
         }
+        #if wxCHECK_VERSION(2, 9, 0)
+        return m_choices.GetLabel(GetChoiceSelection());
+        #elif wxCHECK_PROPGRID_VERSION(1, 4, 0)
+        return m_choices.GetLabel(GetIndex());
+        #else
         return m_choices.GetLabel(m_index);
+        #endif
     }
 
     wxSize wxsMyColourPropertyClass::GetImageSize() const
@@ -232,14 +256,22 @@ namespace
                 {
                     wxColourData retData = dialog.GetColourData();
                     m_value.m_colour = retData.GetColour();
+                    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+                    wxsMyColourPropertyClass::DoSetValue(wxPGVariant(&m_value));
+                    #else
                     wxsMyColourPropertyClass::DoSetValue(m_value);
+                    #endif
                     Ret = true;
                 }
 
                 // Update text in combo box (so it is "(R,G,B)" not "Custom").
                 if ( primary )
                 {
+                    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+                    DoGetEditorClass()->SetControlStringValue(this, primary,GetValueAsString(0));
+                    #else
                     GetEditorClass()->SetControlStringValue(primary,GetValueAsString(0));
+                    #endif
                 }
 
                 return Ret;
@@ -251,7 +283,11 @@ namespace
 
                 if ( primary )
                 {
+                    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+                    DoGetEditorClass()->SetControlStringValue(this, primary,GetValueAsString(0));
+                    #else
                     GetEditorClass()->SetControlStringValue(primary,GetValueAsString(0));
+                    #endif
                 }
 
                 return true;
@@ -329,7 +365,13 @@ namespace
             bool res = wxEnumPropertyClass::SetValueFromString(text,flags);
             if ( res )
             {
+                #if wxCHECK_VERSION(2, 9, 0)
+                val.m_type = wxsColourValues[GetChoiceSelection()];
+                #elif wxCHECK_PROPGRID_VERSION(1, 4, 0)
+                val.m_type = wxsColourValues[GetIndex()];
+                #else
                 val.m_type = wxsColourValues[m_index];
+                #endif
 
                 // Get proper colour for type.
                 if ( val.m_type == wxsCOLOUR_DEFAULT )

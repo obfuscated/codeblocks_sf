@@ -49,7 +49,7 @@ echo Packing core UI bitmaps
 cd src/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png > /dev/null
 #cd ../../sdk/resources
-#${ZIPCMD} -0 ../../${RESDIR}/manager_resources.zip images/*.png > /dev/null
+#${ZIPCMD} -0 ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png > /dev/null
 echo Packing plugins UI bitmaps
 cd ../../plugins/compilergcc/resources
 ${ZIPCMD} -0 -qu ../../../${RESDIR}/compiler.zip images/*.png images/16x16/*.png > /dev/null

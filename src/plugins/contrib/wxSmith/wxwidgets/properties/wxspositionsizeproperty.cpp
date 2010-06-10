@@ -105,10 +105,10 @@ wxsPositionSizeProperty::wxsPositionSizeProperty(
 
 void wxsPositionSizeProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    wxPGId DefId = Grid->AppendIn(Parent,wxBoolProperty(GetPGName(),wxPG_LABEL,DEFVALUE));
-    wxPGId XId = Grid->AppendIn(Parent,wxIntProperty(PGXName,wxPG_LABEL,XVALUE));
-    wxPGId YId = Grid->AppendIn(Parent,wxIntProperty(PGYName,wxPG_LABEL,YVALUE));
-    wxPGId DUId = Grid->AppendIn(Parent,wxBoolProperty(PGDUName,wxPG_LABEL,DUVALUE));
+    wxPGId DefId = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxBoolProperty(GetPGName(),wxPG_LABEL,DEFVALUE));
+    wxPGId XId = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxIntProperty(PGXName,wxPG_LABEL,XVALUE));
+    wxPGId YId = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxIntProperty(PGYName,wxPG_LABEL,YVALUE));
+    wxPGId DUId = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxBoolProperty(PGDUName,wxPG_LABEL,DUVALUE));
 
     Grid->SetPropertyAttribute(DefId,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
     Grid->SetPropertyAttribute(DUId,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);

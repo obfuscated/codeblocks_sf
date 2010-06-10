@@ -59,10 +59,9 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
-					<Add option="-DWXMAKINGLIB_PROPGRID" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
-					<Add directory="..\wxSmith\propgrid\contrib\include" />
+					<Add directory="..\..\..\sdk\wxpropgrid\include" />
 					<Add directory="..\wxSmith" />
 					<Add directory="wxchart\wxchart-1.0\include" />
 					<Add directory="wxthings\wxthings\include" />
@@ -101,12 +100,15 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DWXMAKINGDLL_PROPGRID" />
+			<Add option="-DwxPG_USE_WXMODULE=0" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="wxflatnotebook\wxFlatNotebook\include" />
 		</Compiler>
 		<Linker>
 			<Add option="-mthreads" />
+			<Add library="wxpropgrid" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="..\..\..\devel" />
 			<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />

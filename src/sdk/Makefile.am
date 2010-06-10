@@ -1,8 +1,9 @@
-SUBDIRS = scripting wxscintilla resources
+SUBDIRS = scripting wxscintilla wxpropgrid resources
 
 INCLUDES = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(top_srcdir)/src/sdk/wxpropgrid/include \
 			-I$(top_srcdir)/src/include/tinyxml \
 			-I$(top_srcdir)/src/include/scripting/include \
  			-I$(top_srcdir)/src/include/scripting/sqplus \
@@ -18,7 +19,8 @@ libcodeblocks_la_LIBADD =  $(WX_LIBS) \
 			scripting/sqstdlib/libsqstdlib.la \
 			scripting/squirrel/libsquirrel.la \
 			../base/tinyxml/libtinyxml.la \
-			wxscintilla/libwxscintilla.la
+			wxscintilla/libwxscintilla.la \
+			wxpropgrid/libwxpropgrid.la
 
 libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						autodetectcompilers.cpp \

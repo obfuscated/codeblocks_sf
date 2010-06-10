@@ -1,15 +1,15 @@
 SUBDIRS = defitems icons properties
 
-AM_CPPFLAGS = -DWXMAKINGLIB_PROPGRID
+AM_CPPFLAGS = -DWXMAKINGDLL_PROPGRID -DwxPG_USE_WXMODULE=0
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
+		-I$(top_srcdir)/src/sdk/wxpropgrid/include \
 		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/squirrel \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
-		-I$(top_srcdir)/src/include/scripting/bindings \
-		-I$(top_srcdir)/src/plugins/contrib/wxSmith/propgrid/contrib/include
+		-I$(top_srcdir)/src/include/scripting/bindings
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets.la
 

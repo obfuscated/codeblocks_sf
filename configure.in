@@ -232,6 +232,7 @@ AC_CONFIG_FILES([Makefile
 	src/include/scripting/squirrel/Makefile
 	src/include/tinyxml/Makefile
 	src/sdk/Makefile
+	src/sdk/wxpropgrid/Makefile
 	src/sdk/scripting/Makefile
 	src/sdk/scripting/bindings/Makefile
 	src/sdk/scripting/squirrel/Makefile
@@ -462,7 +463,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/Valgrind/resources/Makefile
 	src/plugins/contrib/wxSmith/Makefile
 	src/plugins/contrib/wxSmith/wxsmith.pc
-	src/plugins/contrib/wxSmith/propgrid/Makefile
 	src/plugins/contrib/wxSmith/plugin/Makefile
 	src/plugins/contrib/wxSmith/properties/Makefile
 	src/plugins/contrib/wxSmith/wxwidgets/Makefile

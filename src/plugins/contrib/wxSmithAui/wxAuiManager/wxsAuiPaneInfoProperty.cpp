@@ -44,7 +44,7 @@ void wxsAuiDockableProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGri
     PGC1.Add(_("Left"), LeftDockable);
     PGC1.Add(_("Right"), RightDockable);
     PGC1.Add(_("Dockable (All)"), Dockable);
-    PGRegister(Object,Grid,ID1 = Grid->AppendIn(Parent,wxFlagsProperty(_("AUI Dockable"),wxPG_LABEL,PGC1,DOCKABLEFLAGS&(DockableMask))),DOCKABLEIND);
+    PGRegister(Object,Grid,ID1 = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxFlagsProperty(_("AUI Dockable"),wxPG_LABEL,PGC1,DOCKABLEFLAGS&(DockableMask))),DOCKABLEIND);
 
     Grid->SetPropertyAttribute(ID1,wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
 }

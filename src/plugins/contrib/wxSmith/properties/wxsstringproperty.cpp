@@ -46,11 +46,11 @@ void wxsStringProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMana
     wxPGId Id;
     if ( IsLongString )
     {
-        Id = Grid->AppendIn(Parent,wxLongStringProperty(GetPGName(),wxPG_LABEL,Fixed));
+        Id = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxLongStringProperty(GetPGName(),wxPG_LABEL,Fixed));
     }
     else
     {
-        Id = Grid->AppendIn(Parent,wxStringProperty(GetPGName(),wxPG_LABEL,Fixed));
+        Id = Grid->AppendIn(Parent,NEW_IN_WXPG14X wxStringProperty(GetPGName(),wxPG_LABEL,Fixed));
     }
     PGRegister(Object,Grid,Id);
 }

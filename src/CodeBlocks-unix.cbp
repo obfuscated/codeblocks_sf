@@ -102,6 +102,20 @@
 					<Add directory="sdk/wxscintilla/include" />
 				</ResourceCompiler>
 			</Target>
+			<Target title="wxpropgrid">
+				<Option output="devel/libwxpropgrid" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add option="-DWXMAKINGLIB_PROPGRID" />
+					<Add option="-DwxPG_USE_WXMODULE=0" />
+					<Add directory="sdk/wxpropgrid/include" />
+					<Add directory="include" />
+				</Compiler>
+			</Target>
 			<Target title="sdk">
 				<Option output="devel/libcodeblocks.so" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="devel" />
@@ -117,10 +131,12 @@
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
 					<Add directory="include/mozilla_chardet" />
+					<Add directory="sdk/wxpropgrid/include" />
 				</Compiler>
 				<Linker>
 					<Add library="txml" />
 					<Add library="wxscintilla" />
+					<Add library="wxpropgrid" />
 					<Add library="sqplus" />
 					<Add library="sqstdlib" />
 					<Add library="squirrel" />
@@ -152,6 +168,7 @@
 				<Linker>
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
+					<Add library="wxpropgrid" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -374,9 +391,9 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxpropgrid;sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Projects-workspaces importer;Scripted wizard;Open files list;To-do;Autosave;" />
-			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std library;SqPlus;scintilla;wxpropgrid;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -1809,6 +1826,9 @@
 		<Unit filename="plugins/todo/todosettingsdlg.h">
 			<Option target="To-do" />
 		</Unit>
+		<Unit filename="scripts/gdb_types.script">
+			<Option target="Debugger" />
+		</Unit>
 		<Unit filename="sdk.doxy">
 			<Option target="sdk" />
 		</Unit>
@@ -2521,6 +2541,57 @@
 		</Unit>
 		<Unit filename="sdk/workspaceloader.cpp">
 			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/advprops.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/editors.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/extras.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/manager.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/odcombo.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/propdev.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/propgrid.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/props.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/include/wx/propgrid/xh_propgrid.h">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/advprops.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/editors.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/extras.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/manager.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/odcombo.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/propgrid.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/props.cpp">
+			<Option target="wxpropgrid" />
+		</Unit>
+		<Unit filename="sdk/wxpropgrid/src/xh_propgrid.cpp">
+			<Option target="wxpropgrid" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/include/wx/wxscintilla.h">
 			<Option target="sdk" />
