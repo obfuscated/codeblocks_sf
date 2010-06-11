@@ -87,7 +87,7 @@
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\sdk\wxpropgrid\include" />
-			<Add directory="..\wxSmith\" />
+			<Add directory="..\wxSmith" />
 		</Compiler>
 		<Linker>
 			<Add library="codeblocks" />
