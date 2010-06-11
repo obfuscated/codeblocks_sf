@@ -3749,7 +3749,6 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     bool canPaste = false;
     bool canCut = false;
     bool canSelAll = false;
-    int eolMode = -1;
 
     if (Manager::Get()->GetEditorManager() && !Manager::isappShuttingDown())
     {
@@ -3759,8 +3758,6 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
 
     wxMenuBar* mbar = GetMenuBar();
 
-    if (ed)
-        eolMode = ed->GetControl()->GetEOLMode();
     if (eb)
     {
         canUndo = eb->CanUndo();
@@ -3802,9 +3799,19 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         // you enter an endless message loop eating 100% CPU...
         // DARN!
         // This fixes the dreaded 'linux-hang-on-close-project' bug.
-        mbar->Check(idEditEOLCRLF, eolMode == wxSCI_EOL_CRLF);
-        mbar->Check(idEditEOLCR, eolMode == wxSCI_EOL_CR);
-        mbar->Check(idEditEOLLF, eolMode == wxSCI_EOL_LF);
+
+        switch (ed->GetControl()->GetEOLMode())
+        {
+            case wxSCI_EOL_CRLF:
+                mbar->Check(idEditEOLCRLF, true);
+                break;
+            case wxSCI_EOL_CR:
+                mbar->Check(idEditEOLCR, true);
+                break;
+            case wxSCI_EOL_LF:
+                mbar->Check(idEditEOLLF, true);
+                break;
+        }
 
         bool defenc = ed && (ed->GetEncoding() == wxFONTENCODING_SYSTEM || ed->GetEncoding() == wxLocale::GetSystemEncoding());
 
