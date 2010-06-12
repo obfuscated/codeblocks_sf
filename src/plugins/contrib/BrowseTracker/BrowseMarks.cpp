@@ -317,7 +317,7 @@ void BrowseMarks::RecordMarksFrom(BrowseMarks& otherBrowse_Marks)
     }
 }
 // ----------------------------------------------------------------------------
-void BrowseMarks::GetBook_MarksFromEditor(wxString filename)
+void BrowseMarks::GetBook_MarksFromEditor(wxString /*filename*/)
 // ----------------------------------------------------------------------------
 {
     ImportBook_Marks();

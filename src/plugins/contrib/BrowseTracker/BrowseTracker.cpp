@@ -472,7 +472,7 @@ void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
 	m_InitDone = true;
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const FileTreeData* data)
+void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const FileTreeData* /*data*/)
 // ----------------------------------------------------------------------------
 {
 	//Some library module is ready to display a pop-up menu.
@@ -850,14 +850,14 @@ void BrowseTracker::OnMenuBrowseMarkNext(wxCommandEvent& event)
 
 }//OnMenuBrowseMarkNext
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuRecordBrowseMark(wxCommandEvent& event)
+void BrowseTracker::OnMenuRecordBrowseMark(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (eb) RecordBrowseMark(eb);
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuClearBrowseMark(wxCommandEvent& event)
+void BrowseTracker::OnMenuClearBrowseMark(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     //LOGIT( _T("BT ClearBrowseMark") );
@@ -935,7 +935,7 @@ void BrowseTracker::SetBrowseMarksStyle( int userStyle)
     }//for
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuSortBrowse_Marks( wxCommandEvent& event)
+void BrowseTracker::OnMenuSortBrowse_Marks( wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     // sort the BrowseMarks by simply importing them from scintilla
@@ -945,7 +945,7 @@ void BrowseTracker::OnMenuSortBrowse_Marks( wxCommandEvent& event)
     if (eb && pBrowse_Marks) pBrowse_Marks->ImportBrowse_Marks();
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuSettings( wxCommandEvent& event)
+void BrowseTracker::OnMenuSettings( wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     Configure();
@@ -988,7 +988,7 @@ void BrowseTracker::OnConfigApply( )
     }
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuClearAllBrowse_Marks(wxCommandEvent& event)
+void BrowseTracker::OnMenuClearAllBrowse_Marks(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     ClearAllBrowse_Marks(/*clearScreenMarks*/true);
@@ -1318,7 +1318,7 @@ void BrowseTracker::RecordBrowseMark(EditorBase* eb)
 ////    }while(0);//if do
 ////}//RecordBrowseMarkPosition
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuTrackerDump(wxCommandEvent& event)
+void BrowseTracker::OnMenuTrackerDump(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     // For debugging. Dump arrays and pointers
@@ -1364,7 +1364,7 @@ void BrowseTracker::OnMenuTrackerDump(wxCommandEvent& event)
 }
 
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnMenuTrackerClear(wxCommandEvent& event)
+void BrowseTracker::OnMenuTrackerClear(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     // Clear the editor array of pointers (History)
@@ -1803,7 +1803,7 @@ void BrowseTracker::OnEditorClosed(CodeBlocksEvent& event)
 
 }//OnEditorClosed
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnWindowSetFocus(wxFocusEvent& event)
+void BrowseTracker::OnWindowSetFocus(wxFocusEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
@@ -2232,7 +2232,7 @@ void BrowseTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
 
 }//OnProjectActivatedEvent
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading)
+void BrowseTracker::OnProjectLoadingHook(cbProject* project, TiXmlElement* /*elem*/, bool loading)
 // ----------------------------------------------------------------------------
 {
     // This turned out to be a problem. It isn't always called for old type projects
@@ -2394,7 +2394,7 @@ void BrowseTracker::OnBook_MarksToggle(wxCommandEvent& event)
     ToggleBook_Mark(GetCurrentEditor() );
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::AddBook_Mark(EditorBase* eb, int line/*=-1*/)
+void BrowseTracker::AddBook_Mark(EditorBase* eb, int /*line*/ /*=-1*/)
 // ----------------------------------------------------------------------------
 {
     // Stow a Book mark by EditorBase current line
@@ -2512,7 +2512,7 @@ void BrowseTracker::ClearLineBookMark()
     }
 }//ClearLineBookMark
 // ----------------------------------------------------------------------------
-void BrowseTracker::RebuildBrowse_Marks(cbEditor* pcbEditor, bool addedLines)
+void BrowseTracker::RebuildBrowse_Marks(cbEditor* /*pcbEditor*/, bool addedLines)
 // ----------------------------------------------------------------------------
 {
     // Adjust BrowseMarks from scintilla moved markers
@@ -2661,7 +2661,7 @@ BrowseMarks* BrowseTracker::GetBook_MarksFromHash( wxString filePath)
     return 0;
 }
 // ----------------------------------------------------------------------------
-void BrowseTracker::DumpHash( const wxString hashType)
+void BrowseTracker::DumpHash( const wxString /*hashType*/)
 // ----------------------------------------------------------------------------
 {
 

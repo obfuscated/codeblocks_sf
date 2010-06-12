@@ -206,7 +206,7 @@ void BrowseSelector::OnNavigationKey(wxKeyEvent &event)
 	LOGIT( _T("OnNavigationKey Selection[%d]"), itemToSelect );
 }
 // ----------------------------------------------------------------------------
-int BrowseSelector::PopulateListControl(EditorBase* pEditor)
+int BrowseSelector::PopulateListControl(EditorBase* /*pEditor*/)
 // ----------------------------------------------------------------------------
 {
     wxString editorFilename;

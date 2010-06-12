@@ -89,7 +89,7 @@ class BrowseTracker : public cbPlugin
 		 * @param project The project that is being edited.
 		 * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		*/
-		cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+		cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* /*parent*/, cbProject* /*project*/){ return 0; }
 
 		/** This method is called by Code::Blocks and is used by the plugin
 		 * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -125,7 +125,7 @@ class BrowseTracker : public cbPlugin
 		 * @param toolBar the wxToolBar to create items on
 		 * @return The plugin should return true if it needed the toolbar, false if not
 		*/
-		bool BuildToolBar(wxToolBar* toolBar){ return false; }
+		bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
 	protected:
 		/** Any descendent plugin should override this virtual method and
 		 * perform any necessary initialization. This method is called by

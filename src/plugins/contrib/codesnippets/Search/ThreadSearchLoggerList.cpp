@@ -165,7 +165,7 @@ void ThreadSearchLoggerList::OnLoggerListDoubleClick(wxListEvent& event)
 }
 
 
-bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& event, wxString& filepath, long &line)
+bool ThreadSearchLoggerList::GetFileLineFromListEvent(wxListEvent& /*event*/, wxString& filepath, long &line)
 {
 	bool success = false;
 	wxListItem listItem;
