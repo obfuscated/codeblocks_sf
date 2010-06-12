@@ -28,8 +28,8 @@ public: //Constructor and Destructor
     //Functions
     int Configure(){ return -1; }
     void BuildMenu(wxMenuBar* menuBar);
-    void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-    bool BuildToolBar(wxToolBar* toolBar){return false;}
+    void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
+    bool BuildToolBar(wxToolBar* /*toolBar*/){return false;}
     void UpdateVersionHeader();
 
     //Events

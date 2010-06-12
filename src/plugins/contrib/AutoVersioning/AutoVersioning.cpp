@@ -96,7 +96,7 @@ void AutoVersioning::OnAttach()
     //NOTE : all those registered through EventSink don't need to call event.skip() [that is only needed when going through wx]
 }
 
-void AutoVersioning::OnRelease(bool appShutDown)
+void AutoVersioning::OnRelease(bool /*appShutDown*/)
 {
     if (m_timerStatus->IsRunning())
     {
@@ -334,7 +334,7 @@ void AutoVersioning::OnCompilerFinished(CodeBlocksEvent& event)
     }
 } // end of OnCompilerFinished
 
-void AutoVersioning::OnTimerVerify(wxTimerEvent& event)
+void AutoVersioning::OnTimerVerify(wxTimerEvent& WXUNUSED(event))
 {
     if (m_Project && IsAttached() && m_IsVersioned[m_Project])
     {

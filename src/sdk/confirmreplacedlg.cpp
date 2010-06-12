@@ -41,32 +41,32 @@ ConfirmReplaceDlg::~ConfirmReplaceDlg()
 {
 }
 
-void ConfirmReplaceDlg::OnYes(wxCommandEvent& event)
+void ConfirmReplaceDlg::OnYes(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(crYes);
 }
 
-void ConfirmReplaceDlg::OnNo(wxCommandEvent& event)
+void ConfirmReplaceDlg::OnNo(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(crNo);
 }
 
-void ConfirmReplaceDlg::OnAllInFile(wxCommandEvent& event)
+void ConfirmReplaceDlg::OnAllInFile(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(crAllInFile);
 }
 
-void ConfirmReplaceDlg::OnSkipFile(wxCommandEvent& event)
+void ConfirmReplaceDlg::OnSkipFile(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(crSkipFile);
 }
 
-void ConfirmReplaceDlg::OnAll(wxCommandEvent& event)
+void ConfirmReplaceDlg::OnAll(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(crAll);
 }
 
-void ConfirmReplaceDlg::OnCancel(wxCommandEvent& event)
+void ConfirmReplaceDlg::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
     EndModal(crCancel);
 }

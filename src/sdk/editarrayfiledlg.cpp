@@ -74,7 +74,7 @@ void EditArrayFileDlg::EndModal(int retCode)
 
 // events
 
-void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
+void EditArrayFileDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
     wxFileDialog dlg(this,
                     _("Select file"),
@@ -92,7 +92,7 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& event)
     XRCCTRL(*this, "lstItems", wxListBox)->Append(fname.GetFullPath());
 }
 
-void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
+void EditArrayFileDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
 {
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     wxFileDialog dlg(this,
@@ -111,7 +111,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& event)
 	list->SetString(list->GetSelection(), fname.GetFullPath());
 }
 
-void EditArrayFileDlg::OnDelete(wxCommandEvent& event)
+void EditArrayFileDlg::OnDelete(wxCommandEvent& WXUNUSED(event))
 {
 	if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxID_YES)
 	{
@@ -120,7 +120,7 @@ void EditArrayFileDlg::OnDelete(wxCommandEvent& event)
 	}
 }
 
-void EditArrayFileDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void EditArrayFileDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
 	bool en = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection() != -1;
 	XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);

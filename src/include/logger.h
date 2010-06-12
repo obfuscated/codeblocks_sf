@@ -49,10 +49,10 @@ public:
 
 
     virtual void Clear(){};
-    virtual void CopyContentsToClipboard(bool selectionOnly = false) {};
+    virtual void CopyContentsToClipboard(bool /*selectionOnly = false*/) {};
 
     virtual void UpdateSettings() {};
-	virtual wxWindow* CreateControl(wxWindow* parent) { return 0; };
+	virtual wxWindow* CreateControl(wxWindow* /*parent*/) { return 0; };
 };
 
 
@@ -60,7 +60,7 @@ public:
 class DLLIMPORT NullLogger : public Logger
 {
 public:
-    virtual void Append(const wxString& msg, Logger::level lv){};
+    virtual void Append(const wxString& /*msg*/, Logger::level /*lv*/){};
 };
 
 

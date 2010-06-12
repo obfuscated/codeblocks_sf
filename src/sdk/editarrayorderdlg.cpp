@@ -45,7 +45,7 @@ void EditArrayOrderDlg::DoFillList()
         list->Append(m_Array[i]);
 }
 
-void EditArrayOrderDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void EditArrayOrderDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 
@@ -53,7 +53,7 @@ void EditArrayOrderDlg::OnUpdateUI(wxUpdateUIEvent& event)
     XRCCTRL(*this, "btnMoveDown", wxButton)->Enable(list->GetSelection() >= 0 && list->GetSelection() < (int)list->GetCount() - 1);
 }
 
-void EditArrayOrderDlg::OnMoveUp(wxCommandEvent& event)
+void EditArrayOrderDlg::OnMoveUp(wxCommandEvent& WXUNUSED(event))
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     int sel = list->GetSelection();
@@ -67,7 +67,7 @@ void EditArrayOrderDlg::OnMoveUp(wxCommandEvent& event)
     }
 }
 
-void EditArrayOrderDlg::OnMoveDown(wxCommandEvent& event)
+void EditArrayOrderDlg::OnMoveDown(wxCommandEvent& WXUNUSED(event))
 {
     wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
     int sel = list->GetSelection();

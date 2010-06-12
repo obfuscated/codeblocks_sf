@@ -106,7 +106,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @param parent The parent window.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
-        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
+        virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/){ return 0; }
 
 		/** Return plugin's configuration panel for projects.
 		  * The panel returned from this function will be added in the project's
@@ -115,7 +115,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  * @param project The project that is being edited.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* /*parent*/, cbProject* /*project*/){ return 0; }
 
 		/** This method is called by Code::Blocks and is used by the plugin
 		  * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -196,7 +196,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
 		  *         case *don't* use Manager::Get()->Get...() functions or the
 		  *         behaviour is undefined...
 		  */
-        virtual void OnRelease(bool appShutDown){}
+        virtual void OnRelease(bool /*appShutDown*/){}
 
 		/** This method logs a "Not implemented" message and is provided for
 		  * convenience only.
@@ -445,11 +445,11 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         virtual int Execute() = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbToolPlugin
-        void BuildMenu(wxMenuBar* menuBar){}
-        void RemoveMenu(wxMenuBar* menuBar){}
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-        bool BuildToolBar(wxToolBar* toolBar){ return false; }
-        void RemoveToolBar(wxToolBar* toolBar){}
+        void BuildMenu(wxMenuBar* /*menuBar*/){}
+        void RemoveMenu(wxMenuBar* /*menuBar*/){}
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
+        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
+        void RemoveToolBar(wxToolBar* /*toolBar*/){}
 };
 
 /** @brief Base class for mime plugins
@@ -492,7 +492,7 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbMimePlugin
         void BuildMenu(wxMenuBar* /*menuBar*/){}
         void RemoveMenu(wxMenuBar* /*menuBar*/){}
-        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data = 0*/){}
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
         bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
         void RemoveToolBar(wxToolBar* /*toolBar*/){}
 };
@@ -566,7 +566,7 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
         void BuildMenu(wxMenuBar* /*menuBar*/){}
         void RemoveMenu(wxMenuBar* /*menuBar*/){}
-        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data = 0*/){}
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){}
         bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
         void RemoveToolBar(wxToolBar* /*toolBar*/){}
 };

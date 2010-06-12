@@ -64,14 +64,14 @@ void EditArrayStringDlg::EndModal(int retCode)
 
 // events
 
-void EditArrayStringDlg::OnAdd(wxCommandEvent& event)
+void EditArrayStringDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
 	wxString w = wxGetTextFromUser(_("Add item"), _("Enter the new item:"));
 	if (!w.IsEmpty())
 		XRCCTRL(*this, "lstItems", wxListBox)->Append(w);
 }
 
-void EditArrayStringDlg::OnEdit(wxCommandEvent& event)
+void EditArrayStringDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
 {
 	wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 
@@ -81,7 +81,7 @@ void EditArrayStringDlg::OnEdit(wxCommandEvent& event)
 		list->SetString(list->GetSelection(), w);
 }
 
-void EditArrayStringDlg::OnDelete(wxCommandEvent& event)
+void EditArrayStringDlg::OnDelete(wxCommandEvent& WXUNUSED(event))
 {
 	if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxID_YES)
 	{
@@ -90,9 +90,9 @@ void EditArrayStringDlg::OnDelete(wxCommandEvent& event)
 	}
 }
 
-void EditArrayStringDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void EditArrayStringDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
-	bool en = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection() != -1;
+	const bool en = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection() != -1;
 	XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);
 	XRCCTRL(*this, "btnDelete", wxButton)->Enable(en);
 }

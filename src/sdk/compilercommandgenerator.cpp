@@ -821,7 +821,7 @@ wxString CompilerCommandGenerator::SetupLinkLibraries(Compiler* compiler, Projec
 } // end of SetupLinkLibraries
 
 /// Setup resource compiler flags for build target.
-wxString CompilerCommandGenerator::SetupResourceCompilerOptions(Compiler* compiler, ProjectBuildTarget* target)
+wxString CompilerCommandGenerator::SetupResourceCompilerOptions(Compiler* /*compiler*/, ProjectBuildTarget* /*target*/)
 {
     // resource compiler options are not implemented in C::B yet
     return wxEmptyString;
