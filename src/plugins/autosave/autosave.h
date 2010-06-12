@@ -26,9 +26,9 @@ class Autosave : public cbPlugin
 		int Configure();
 		int GetConfigurationPriority() const{ return  50; }
 		int GetConfigurationGroup() const{ return  cgUnknown; }
-		void BuildMenu(wxMenuBar* menuBar){ return ; }
-		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){ return ; }
-		bool BuildToolBar(wxToolBar* toolBar){ return false; }
+		void BuildMenu(wxMenuBar* /*menuBar*/){ return ; }
+		void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data = 0/*){ return ; }
+		bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
 		void OnAttach(); // fires when the plugin is attached to the application
 		void Start();
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
