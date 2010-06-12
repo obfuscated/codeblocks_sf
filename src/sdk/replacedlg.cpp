@@ -19,6 +19,7 @@
     #include <wx/button.h>
     #include <wx/notebook.h>
     #include <wx/radiobox.h>
+    #include <wx/sizer.h>
 #endif
 
 #include "replacedlg.h"
