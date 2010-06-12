@@ -33,7 +33,7 @@ public:
     FileLogger(const wxString& filename) : f(filename, _T("wb")) {};
     FileLogger() {};
 
-    virtual void Append(const wxString& msg, Logger::level lv)
+    virtual void Append(const wxString& msg, Logger::level /*lv*/)
     {
         fputs(wxSafeConvertWX2MB(msg), f.fp());
         fputs(::newline_string.mb_str(), f.fp());

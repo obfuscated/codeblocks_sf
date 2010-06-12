@@ -87,7 +87,7 @@ void CppCheck::OnAttach()
     }
 } // end of OnAttach
 
-void CppCheck::OnRelease(bool appShutDown)
+void CppCheck::OnRelease(bool /*appShutDown*/)
 {
     // do de-initialization for your plugin
     // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
@@ -225,7 +225,7 @@ int CppCheck::Execute()
 
     wxString IncludeList;
     const wxArrayString& IncludeDirs = Project->GetIncludeDirs();
-    for (int Dir = 0; Dir < IncludeDirs.GetCount(); ++Dir)
+    for (unsigned int Dir = 0; Dir < IncludeDirs.GetCount(); ++Dir)
     {
     	IncludeList += _T("-I\"") + IncludeDirs[Dir] + _T("\" ");
     }
