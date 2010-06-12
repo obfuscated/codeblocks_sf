@@ -52,8 +52,8 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         friend class Mgr<ProjectManager>;
         friend class Manager; // give Manager access to our private members
 
-        ProjectManager(const ProjectManager& rhs) { cbThrow(_T("Can't call ProjectManager's copy ctor!!!")); }
-        virtual void operator=(const ProjectManager& rhs){ cbThrow(_T("Can't assign an ProjectManager* !!!")); }
+        ProjectManager(const ProjectManager& /*rhs*/) { cbThrow(_T("Can't call ProjectManager's copy ctor!!!")); }
+        virtual void operator=(const ProjectManager& /*rhs*/){ cbThrow(_T("Can't assign an ProjectManager* !!!")); }
 
         cbAuiNotebook* GetNotebook() { return m_pNotebook; }
 

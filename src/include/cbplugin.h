@@ -490,11 +490,11 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         virtual bool HandlesEverything() const = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbMimePlugin
-        void BuildMenu(wxMenuBar* menuBar){}
-        void RemoveMenu(wxMenuBar* menuBar){}
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-        bool BuildToolBar(wxToolBar* toolBar){ return false; }
-        void RemoveToolBar(wxToolBar* toolBar){}
+        void BuildMenu(wxMenuBar* /*menuBar*/){}
+        void RemoveMenu(wxMenuBar* /*menuBar*/){}
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data = 0*/){}
+        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
+        void RemoveToolBar(wxToolBar* /*toolBar*/){}
 };
 
 /** @brief Base class for code-completion plugins
@@ -564,11 +564,11 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         virtual CompileTargetBase* Launch(int index, wxString* createdFilename = 0) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
-        void BuildMenu(wxMenuBar* menuBar){}
-        void RemoveMenu(wxMenuBar* menuBar){}
-        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
-        bool BuildToolBar(wxToolBar* toolBar){ return false; }
-        void RemoveToolBar(wxToolBar* toolBar){}
+        void BuildMenu(wxMenuBar* /*menuBar*/){}
+        void RemoveMenu(wxMenuBar* /*menuBar*/){}
+        void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data = 0*/){}
+        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
+        void RemoveToolBar(wxToolBar* /*toolBar*/){}
 };
 
 /** @brief Plugin registration object.

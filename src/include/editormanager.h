@@ -69,8 +69,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
 
-        EditorManager(const EditorManager& rhs) { cbThrow(_T("Can't call EditorManager's copy ctor!!!")); }
-        virtual void operator=(const EditorManager& rhs){ cbThrow(_T("Can't assign an EditorManager* !!!")); }
+        EditorManager(const EditorManager& /*rhs*/) { cbThrow(_T("Can't call EditorManager's copy ctor!!!")); }
+        virtual void operator=(const EditorManager& /*rhs*/){ cbThrow(_T("Can't assign an EditorManager* !!!")); }
 
         cbAuiNotebook* GetNotebook() { return m_pNotebook; }
         cbNotebookStack* GetNotebookStack();
