@@ -302,7 +302,7 @@ public:
 
     }
 
-    void OnEntryCommand(wxCommandEvent& event)
+    void OnEntryCommand(wxCommandEvent& WXUNUSED(event))
     {
         assert(m_command_entry);
         wxString cmd = m_command_entry->GetValue();
@@ -321,7 +321,7 @@ public:
         }
     }
 
-    void OnClearLog(wxCommandEvent& event)
+    void OnClearLog(wxCommandEvent& WXUNUSED(event))
     {
         assert(m_command_entry);
         assert(m_text_control_logger);
@@ -329,7 +329,7 @@ public:
         m_command_entry->SetFocus();
     }
 
-    void OnLoadFile(wxCommandEvent& event)
+    void OnLoadFile(wxCommandEvent& WXUNUSED(event))
     {
         if(!m_debugger_state.HasDriver())
             return;
@@ -534,7 +534,7 @@ void DebuggerGDB::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<DebuggerGDB, CodeBlocksEvent>(this, &DebuggerGDB::OnBuildTargetSelected));
 }
 
-void DebuggerGDB::OnRelease(bool appShutDown)
+void DebuggerGDB::OnRelease(bool /*appShutDown*/)
 {
     ProjectLoaderHooks::UnregisterHook(m_HookId, true);
 
@@ -714,7 +714,7 @@ void DebuggerGDB::BuildMenu(wxMenuBar* menuBar)
 //    }
 }
 
-void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void DebuggerGDB::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (!IsAttached())
@@ -1866,7 +1866,7 @@ bool DebuggerGDB::RemoveBreakpoint(const wxString& file, int line)
     return true;
 } // end of RemoveBreakpoint
 
-bool DebuggerGDB::RemoveBreakpoint(const wxString& functionSignature)
+bool DebuggerGDB::RemoveBreakpoint(const wxString& /*functionSignature*/)
 {
 //    const bool debuggerIsRunning = !IsStopped();
 //    if (debuggerIsRunning)
@@ -2276,7 +2276,7 @@ void DebuggerGDB::OnUpdateUI(wxUpdateUIEvent& event)
     event.Skip();
 }
 
-void DebuggerGDB::OnDebug(wxCommandEvent& event)
+void DebuggerGDB::OnDebug(wxCommandEvent& WXUNUSED(event))
 {
     if (!m_pProcess)
         Debug();
@@ -2287,22 +2287,22 @@ void DebuggerGDB::OnDebug(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnContinue(wxCommandEvent& event)
+void DebuggerGDB::OnContinue(wxCommandEvent& WXUNUSED(event))
 {
     Continue();
 }
 
-void DebuggerGDB::OnNext(wxCommandEvent& event)
+void DebuggerGDB::OnNext(wxCommandEvent& WXUNUSED(event))
 {
     Next();
 }
 
-void DebuggerGDB::OnNextInstr(wxCommandEvent& event)
+void DebuggerGDB::OnNextInstr(wxCommandEvent& WXUNUSED(event))
 {
     NextInstr();
 }
 
-void DebuggerGDB::OnStep(wxCommandEvent& event)
+void DebuggerGDB::OnStep(wxCommandEvent& WXUNUSED(event))
 {
     if (!m_pProcess)
     {
@@ -2314,22 +2314,22 @@ void DebuggerGDB::OnStep(wxCommandEvent& event)
         Step();
 }
 
-void DebuggerGDB::OnStepOut(wxCommandEvent& event)
+void DebuggerGDB::OnStepOut(wxCommandEvent& WXUNUSED(event))
 {
     StepOut();
 }
 
-void DebuggerGDB::OnRunToCursor(wxCommandEvent& event)
+void DebuggerGDB::OnRunToCursor(wxCommandEvent& WXUNUSED(event))
 {
     RunToCursor();
 }
 
-void DebuggerGDB::OnToggleBreakpoint(wxCommandEvent& event)
+void DebuggerGDB::OnToggleBreakpoint(wxCommandEvent& WXUNUSED(event))
 {
     ToggleBreakpoint();
 }
 
-void DebuggerGDB::OnRemoveAllBreakpoints(wxCommandEvent& event)
+void DebuggerGDB::OnRemoveAllBreakpoints(wxCommandEvent& WXUNUSED(event))
 {
     if (IsStopped()) // Code from BreakpointsDlg has been used
     {
@@ -2347,12 +2347,12 @@ void DebuggerGDB::OnRemoveAllBreakpoints(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnAddDataBreakpoint(wxCommandEvent& event)
+void DebuggerGDB::OnAddDataBreakpoint(wxCommandEvent& WXUNUSED(event))
 {
     AddDataBreakpoint();
 }
 
-void DebuggerGDB::OnStop(wxCommandEvent& event)
+void DebuggerGDB::OnStop(wxCommandEvent& WXUNUSED(event))
 {
     if (!IsStopped())
         Break();
@@ -2360,7 +2360,7 @@ void DebuggerGDB::OnStop(wxCommandEvent& event)
         Stop();
 }
 
-void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)
+void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& WXUNUSED(event))
 {
     wxString cmd = wxGetTextFromUser(_("Enter command for GDB:"), _("Send command to GDB:"), m_LastCmd);
     if (cmd.IsEmpty())
@@ -2369,7 +2369,7 @@ void DebuggerGDB::OnSendCommandToGDB(wxCommandEvent& event)
     m_State.GetDriver()->QueueCommand(new DebuggerCmd(m_State.GetDriver(), cmd, true));
 }
 
-void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& event)
+void DebuggerGDB::OnAddSymbolFile(wxCommandEvent& WXUNUSED(event))
 {
     wxString file = wxFileSelector(_("Choose file to read symbols from"),
                                     _T(""),
@@ -2458,7 +2458,7 @@ void DebuggerGDB::OnRunningThreads(wxCommandEvent& event)
         RunningThreads();
 }
 
-void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
+void DebuggerGDB::OnEditWatches(wxCommandEvent& WXUNUSED(event))
 {
     WatchesArray watches = m_pTree->GetWatches();
     EditWatchesDlg dlg(watches);
@@ -2469,7 +2469,7 @@ void DebuggerGDB::OnEditWatches(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnDebugWindows(wxCommandEvent& event)
+void DebuggerGDB::OnDebugWindows(wxCommandEvent& WXUNUSED(event))
 {
     wxMenu m;
 
@@ -2493,7 +2493,7 @@ void DebuggerGDB::OnDebugWindows(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->PopupMenu(&m);
 }
 
-void DebuggerGDB::OnToolInfo(wxCommandEvent& event)
+void DebuggerGDB::OnToolInfo(wxCommandEvent& WXUNUSED(event))
 {
     wxMenu m;
     m.Append(idMenuInfoFrame,   _("Current stack frame"));
@@ -2504,7 +2504,7 @@ void DebuggerGDB::OnToolInfo(wxCommandEvent& event)
     Manager::Get()->GetAppWindow()->PopupMenu(&m);
 }
 
-void DebuggerGDB::OnInfoFrame(wxCommandEvent& event)
+void DebuggerGDB::OnInfoFrame(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
     {
@@ -2512,7 +2512,7 @@ void DebuggerGDB::OnInfoFrame(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnInfoDLL(wxCommandEvent& event)
+void DebuggerGDB::OnInfoDLL(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
     {
@@ -2520,7 +2520,7 @@ void DebuggerGDB::OnInfoDLL(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnInfoFiles(wxCommandEvent& event)
+void DebuggerGDB::OnInfoFiles(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
     {
@@ -2528,7 +2528,7 @@ void DebuggerGDB::OnInfoFiles(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnInfoFPU(wxCommandEvent& event)
+void DebuggerGDB::OnInfoFPU(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
     {
@@ -2536,7 +2536,7 @@ void DebuggerGDB::OnInfoFPU(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnInfoSignals(wxCommandEvent& event)
+void DebuggerGDB::OnInfoSignals(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
     {
@@ -2605,7 +2605,7 @@ void DebuggerGDB::OnGDBTerminated(wxCommandEvent& event)
     ///killerbot : run there the post shell commands ?
 }
 
-void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& event)
+void DebuggerGDB::OnBreakpointAdd(CodeBlocksEvent& WXUNUSED(event))
 {
 //    EditorBase* base = event.GetEditor();
 //    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
@@ -2633,7 +2633,7 @@ void DebuggerGDB::OnBreakpointEdit(CodeBlocksEvent& event)
         m_pBreakpointsWindow->Refresh();
 }
 
-void DebuggerGDB::OnBreakpointDelete(CodeBlocksEvent& event)
+void DebuggerGDB::OnBreakpointDelete(CodeBlocksEvent& WXUNUSED(event))
 {
 //    m_State.RemoveBreakpoint(event.GetString(), event.GetInt());
 //    if (m_pBreakpointsWindow)
@@ -2801,7 +2801,7 @@ void DebuggerGDB::OnIdle(wxIdleEvent& event)
         event.Skip();
 }
 
-void DebuggerGDB::OnTimer(wxTimerEvent& event)
+void DebuggerGDB::OnTimer(wxTimerEvent& WXUNUSED(event))
 {
     // send any buffered (previous) output
     ParseOutput(wxEmptyString);
@@ -2809,7 +2809,7 @@ void DebuggerGDB::OnTimer(wxTimerEvent& event)
     wxWakeUpIdle();
 }
 
-void DebuggerGDB::OnWatchesChanged(wxCommandEvent& event)
+void DebuggerGDB::OnWatchesChanged(wxCommandEvent& WXUNUSED(event))
 {
     DoWatches();
 }
@@ -2819,7 +2819,7 @@ void DebuggerGDB::OnShowFile(wxCommandEvent& event)
 	SyncEditor(event.GetString(), event.GetInt(), false);
 }
 
-void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
+void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
 {
     if (m_State.HasDriver())
     {
@@ -2868,12 +2868,12 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnAddWatch(wxCommandEvent& event)
+void DebuggerGDB::OnAddWatch(wxCommandEvent& WXUNUSED(event))
 {
     m_pTree->AddWatch(GetEditorWordAtCaret());
 }
 
-void DebuggerGDB::OnAttachToProcess(wxCommandEvent& event)
+void DebuggerGDB::OnAttachToProcess(wxCommandEvent& WXUNUSED(event))
 {
     wxString pidStr = wxGetTextFromUser(_("PID to attach to:"));
     if (!pidStr.IsEmpty())
@@ -2883,13 +2883,13 @@ void DebuggerGDB::OnAttachToProcess(wxCommandEvent& event)
     }
 }
 
-void DebuggerGDB::OnDetach(wxCommandEvent& event)
+void DebuggerGDB::OnDetach(wxCommandEvent& WXUNUSED(event))
 {
     m_State.GetDriver()->Detach();
     m_State.GetDriver()->Stop();
 }
 
-void DebuggerGDB::OnSettings(wxCommandEvent& event)
+void DebuggerGDB::OnSettings(wxCommandEvent& WXUNUSED(event))
 {
     Configure();
 }
@@ -3009,12 +3009,12 @@ wxString DebuggerGDB::GetConsoleTty(int ConsolePid)
     return wxEmptyString;
 }
 
-void DebuggerGDB::OnCompilerStarted(CodeBlocksEvent& event)
+void DebuggerGDB::OnCompilerStarted(CodeBlocksEvent& WXUNUSED(event))
 {
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerGDB::OnCompilerStarted")));
 }
 
-void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& event)
+void DebuggerGDB::OnCompilerFinished(CodeBlocksEvent& WXUNUSED(event))
 {
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("DebuggerGDB::OnCompilerFinished")));
 

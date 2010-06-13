@@ -114,7 +114,7 @@ class CdbCmd_SetArguments : public DebuggerCmd
         {
             m_Cmd << _T("set args ") << args;
         }
-        void ParseOutput(const wxString& output)
+        void ParseOutput(const wxString& /*output*/)
         {
             // No output
         }

@@ -148,7 +148,7 @@ void DisassemblyDlg::SetActiveAddress(unsigned long int addr)
     }
 }
 
-void DisassemblyDlg::OnSave(wxCommandEvent& event)
+void DisassemblyDlg::OnSave(wxCommandEvent& WXUNUSED(event))
 {
     wxFileDialog dlg(this,
                      _("Save as text file"),
@@ -177,7 +177,7 @@ void DisassemblyDlg::OnSave(wxCommandEvent& event)
         cbMessageBox(_("Could not save file..."), _("Error"), wxICON_ERROR);
 }
 
-void DisassemblyDlg::OnRefresh(wxCommandEvent& event)
+void DisassemblyDlg::OnRefresh(wxCommandEvent& WXUNUSED(event))
 {
     m_pDbg->Disassemble();
 }

@@ -122,7 +122,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual wxString GetWorkingDir(); ///< Read the target's working dir for execution (valid only for executable targets)
         virtual wxString GetObjectOutput() const; ///< Read the target's objects output dir
         virtual wxString GetDepsOutput() const; ///< Read the target's dependencies output dir
-        virtual wxString GetOutputFilename() ; ///< Read the target's output filename
+        virtual wxString GetOutputFilename(); ///< Read the target's output filename
         virtual wxString SuggestOutputFilename(); ///< Suggest a filename based on the target's type
         virtual wxString GetExecutableFilename() const; ///< Read the target's executable filename (produced if target type is ttExecutable)
         virtual wxString GetDynamicLibFilename(); ///< Read the target's dynamic library filename (produced if target type is ttDynamicLib)
@@ -146,7 +146,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 
         wxString m_Filename;
         wxString m_Title;
-        wxString m_OutputFilename;
+        mutable wxString m_OutputFilename;
         wxString m_WorkingDir;
         wxString m_ObjectOutput;
         wxString m_DepsOutput;

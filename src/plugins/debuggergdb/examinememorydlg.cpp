@@ -124,7 +124,7 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
     }
 }
 
-void ExamineMemoryDlg::OnGo(wxCommandEvent& event)
+void ExamineMemoryDlg::OnGo(wxCommandEvent& WXUNUSED(event))
 {
     m_pDbg->MemoryDump();
 }

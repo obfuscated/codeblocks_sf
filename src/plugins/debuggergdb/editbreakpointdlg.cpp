@@ -52,7 +52,7 @@ void EditBreakpointDlg::EndModal(int retCode)
     wxScrollingDialog::EndModal(retCode);
 }
 
-void EditBreakpointDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void EditBreakpointDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
     bool en = XRCCTRL(*this, "chkEnabled", wxCheckBox)->IsChecked();
     XRCCTRL(*this, "chkIgnore", wxCheckBox)->Enable(en && !XRCCTRL(*this, "chkExpr", wxCheckBox)->IsChecked());

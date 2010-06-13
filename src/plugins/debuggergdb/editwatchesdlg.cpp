@@ -84,7 +84,7 @@ void EditWatchesDlg::EndModal(int retCode)
     wxScrollingDialog::EndModal(retCode);
 }
 
-void EditWatchesDlg::OnAdd(wxCommandEvent& event)
+void EditWatchesDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
     wxString item = wxGetTextFromUser(_("Please enter the new watch keyword:"), _("Add watch"));
     if (!item.IsEmpty())
@@ -95,7 +95,7 @@ void EditWatchesDlg::OnAdd(wxCommandEvent& event)
     }
 }
 
-void EditWatchesDlg::OnRemove(wxCommandEvent& event)
+void EditWatchesDlg::OnRemove(wxCommandEvent& WXUNUSED(event))
 {
     int sel = XRCCTRL(*this, "lstWatches", wxListBox)->GetSelection();
     m_Watches.RemoveAt(sel);
@@ -108,12 +108,12 @@ void EditWatchesDlg::OnRemove(wxCommandEvent& event)
     FillRecord(sel);
 }
 
-void EditWatchesDlg::OnListboxClick(wxCommandEvent& event)
+void EditWatchesDlg::OnListboxClick(wxCommandEvent& WXUNUSED(event))
 {
     FillRecord(XRCCTRL(*this, "lstWatches", wxListBox)->GetSelection());
 }
 
-void EditWatchesDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void EditWatchesDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
     bool en = XRCCTRL(*this, "lstWatches", wxListBox)->GetSelection() != -1;
     XRCCTRL(*this, "btnRemove", wxButton)->Enable(en);

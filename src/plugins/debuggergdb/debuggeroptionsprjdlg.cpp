@@ -150,7 +150,7 @@ void DebuggerOptionsProjectDlg::OnBuildTargetRenamed(CodeBlocksEvent& event)
         // if we renamed it, just break, there can only be one map per target
         break;
     }
-    
+
     wxListBox* lstBox = XRCCTRL(*this, "lstTargets", wxListBox);
     int idx = lstBox->FindString(oldTarget);
     if (idx == wxNOT_FOUND)
@@ -224,14 +224,14 @@ void DebuggerOptionsProjectDlg::SaveCurrentRemoteDebuggingRecord()
     rd.additionalShellCmdsBefore = XRCCTRL(*this, "txtShellCmdsBefore", wxTextCtrl)->GetValue();
 }
 
-void DebuggerOptionsProjectDlg::OnTargetSel(wxCommandEvent& event)
+void DebuggerOptionsProjectDlg::OnTargetSel(wxCommandEvent& WXUNUSED(event))
 {
     // update remote debugging controls
     SaveCurrentRemoteDebuggingRecord();
     LoadCurrentRemoteDebuggingRecord();
 }
 
-void DebuggerOptionsProjectDlg::OnAdd(wxCommandEvent& event)
+void DebuggerOptionsProjectDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
 {
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
 
@@ -248,7 +248,7 @@ void DebuggerOptionsProjectDlg::OnAdd(wxCommandEvent& event)
     }
 }
 
-void DebuggerOptionsProjectDlg::OnEdit(wxCommandEvent& event)
+void DebuggerOptionsProjectDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
 {
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     int sel = control->GetSelection();
@@ -268,7 +268,7 @@ void DebuggerOptionsProjectDlg::OnEdit(wxCommandEvent& event)
     }
 }
 
-void DebuggerOptionsProjectDlg::OnDelete(wxCommandEvent& event)
+void DebuggerOptionsProjectDlg::OnDelete(wxCommandEvent& WXUNUSED(event))
 {
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     int sel = control->GetSelection();
@@ -278,7 +278,7 @@ void DebuggerOptionsProjectDlg::OnDelete(wxCommandEvent& event)
     control->Delete(sel);
 }
 
-void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void DebuggerOptionsProjectDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
 {
     wxListBox* control = XRCCTRL(*this, "lstSearchDirs", wxListBox);
     bool en = control->GetSelection() >= 0;

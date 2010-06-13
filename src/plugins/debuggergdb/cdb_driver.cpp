@@ -102,12 +102,12 @@ wxString CDB_driver::GetCommandLine(const wxString& debugger, int pid)
     return cmd;
 }
 
-void CDB_driver::Prepare(ProjectBuildTarget* target, bool isConsole)
+void CDB_driver::Prepare(ProjectBuildTarget* /*target*/, bool /*isConsole*/)
 {
     // default initialization
 }
 
-void CDB_driver::Start(bool breakOnEntry)
+void CDB_driver::Start(bool /*breakOnEntry*/)
 {
     // start the process
     QueueCommand(new DebuggerCmd(this, _T("l+t"))); // source mode
@@ -178,12 +178,12 @@ void CDB_driver::CPURegisters()
     QueueCommand(new CdbCmd_InfoRegisters(this, m_pCPURegisters));
 }
 
-void CDB_driver::SwitchToFrame(size_t number)
+void CDB_driver::SwitchToFrame(size_t /*number*/)
 {
     NOT_IMPLEMENTED();
 }
 
-void CDB_driver::SetVarValue(const wxString& var, const wxString& value)
+void CDB_driver::SetVarValue(const wxString& /*var*/, const wxString& /*value*/)
 {
     NOT_IMPLEMENTED();
 }
@@ -238,7 +238,7 @@ void CDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
     QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipRect));
 }
 
-void CDB_driver::UpdateWatches(bool doLocals, bool doArgs, DebuggerTree* tree)
+void CDB_driver::UpdateWatches(bool doLocals, bool /*doArgs*/, DebuggerTree* tree)
 {
     // start updating watches tree
     tree->BeginUpdateTree();

@@ -40,7 +40,7 @@ class CDB_driver : public DebuggerDriver
         void InfoFPU();
         void InfoSignals();
 
-        virtual void SwitchThread(size_t threadIndex){} // not implemented
+        virtual void SwitchThread(size_t /*threadIndex*/){} // not implemented
 
         virtual void AddBreakpoint(DebuggerBreakpoint* bp);
         virtual void RemoveBreakpoint(DebuggerBreakpoint* bp);
