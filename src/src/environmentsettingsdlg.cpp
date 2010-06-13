@@ -13,6 +13,7 @@
 #include <wx/xrc/xmlres.h>
 #include <manager.h>
 #include <configmanager.h>
+#include <editormanager.h>
 #include <pluginmanager.h>
 #include <wx/intl.h>
 #include <wx/listbook.h>
