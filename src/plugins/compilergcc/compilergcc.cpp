@@ -2225,7 +2225,19 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             if (m_pBuildingProject)
                 m_pBuildingProject->SetCurrentlyCompilingTarget(0);
             m_NextBuildState = bsProjectPreBuild;
-            return DoBuild(clean, build) >= 0 ? bsProjectPreBuild : bsNone;
+//          DoBuild runs ProjectPreBuild, next step has to be TargetClean or TargetPreBuild
+            if(DoBuild(clean, build) >= 0)
+            {
+                if (clean && !build)
+                {
+                    return bsTargetClean;
+                }
+                return bsTargetPreBuild;
+            }
+            else
+            {
+                return bsNone;
+            }
         }
 
         default:
@@ -2306,9 +2318,9 @@ void CompilerGCC::BuildStateManagement()
     {
         case bsProjectPreBuild:
         {
-            // don't run project pre-build steps if we only clan it
+            // don't run project pre-build steps if we only clean it
             if(m_Build)
-            cmds = dc.GetPreBuildCommands(0);
+                cmds = dc.GetPreBuildCommands(0);
             break;
         }
 
