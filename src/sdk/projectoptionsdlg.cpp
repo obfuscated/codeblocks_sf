@@ -374,7 +374,7 @@ void ProjectOptionsDlg::DoBeforeTargetChange(bool force)
 
 // events
 
-void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
+void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& /*event*/)
 {
     ProjectBuildTarget* target = m_Project->GetBuildTarget(m_Current_Sel);
     if (!target)
@@ -471,7 +471,7 @@ void ProjectOptionsDlg::OnProjectTypeChanged(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnBuildTargetChanged(wxCommandEvent& event)
+void ProjectOptionsDlg::OnBuildTargetChanged(wxCommandEvent& /*event*/)
 {
     DoTargetChange();
     CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
@@ -479,7 +479,7 @@ void ProjectOptionsDlg::OnBuildTargetChanged(wxCommandEvent& event)
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
-void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& /*event*/)
 {
     wxArrayString array;
     for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
@@ -500,18 +500,18 @@ void ProjectOptionsDlg::OnBuildOrderClick(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnProjectDepsClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnProjectDepsClick(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetProjectManager()->ConfigureProjectDependencies(m_Project);
 }
 
-void ProjectOptionsDlg::OnProjectBuildOptionsClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnProjectBuildOptionsClick(wxCommandEvent& /*event*/)
 {
     if (m_pCompiler)
         m_pCompiler->Configure(m_Project);
 }
 
-void ProjectOptionsDlg::OnTargetBuildOptionsClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnTargetBuildOptionsClick(wxCommandEvent& /*event*/)
 {
     if (m_pCompiler)
     {
@@ -524,7 +524,7 @@ void ProjectOptionsDlg::OnTargetBuildOptionsClick(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& /*event*/)
 {
     wxString targetName = wxGetTextFromUser(_("Enter the new build target name:"),
                                             _("New build target"));
@@ -551,7 +551,7 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& event)
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
-void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
@@ -581,7 +581,7 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& event)
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
-void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
@@ -616,7 +616,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& event)
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
-void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
@@ -643,13 +643,13 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& event)
     Manager::Get()->GetPluginManager()->NotifyPlugins(e);
 }
 
-void ProjectOptionsDlg::OnVirtualTargets(wxCommandEvent& event)
+void ProjectOptionsDlg::OnVirtualTargets(wxCommandEvent& /*event*/)
 {
     VirtualBuildTargetsDlg dlg(this, -1, m_Project);
     dlg.ShowModal();
 }
 
-void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
@@ -661,7 +661,7 @@ void ProjectOptionsDlg::OnEditDepsClick(wxCommandEvent& event)
     dlg.ShowModal();
 }
 
-void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
@@ -710,7 +710,7 @@ void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
     targettext->SetValue(path);
 }
 
-void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& /*event*/)
 {
     wxFileName fname;
     fname.Assign(XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->GetValue());
@@ -730,7 +730,7 @@ void ProjectOptionsDlg::OnBrowseOutputFilenameClick(wxCommandEvent& event)
     XRCCTRL(*this, "txtOutputFilename", wxTextCtrl)->SetValue(fname.GetFullPath());
 }
 
-void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& /*event*/)
 {
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
 
@@ -742,7 +742,7 @@ void ProjectOptionsDlg::OnFileOptionsClick(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
+void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
@@ -760,7 +760,7 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& event)
+void ProjectOptionsDlg::OnScriptsOverviewSelChanged(wxTreeEvent& /*event*/)
 {
     FillScripts();
 }
@@ -839,7 +839,7 @@ bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
     return true;
 }
 
-void ProjectOptionsDlg::OnCheckScripts(wxCommandEvent& event)
+void ProjectOptionsDlg::OnCheckScripts(wxCommandEvent& /*event*/)
 {
     if (!DoCheckScripts(m_Project))
         return;
@@ -853,7 +853,7 @@ void ProjectOptionsDlg::OnCheckScripts(wxCommandEvent& event)
     cbMessageBox(_("All scripts seem to be valid!"), _("Information"), wxICON_INFORMATION);
 }
 
-void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
+void ProjectOptionsDlg::OnAddScript(wxCommandEvent& /*event*/)
 {
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
     if (!ctrl)
@@ -895,7 +895,7 @@ void ProjectOptionsDlg::OnAddScript(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& event)
+void ProjectOptionsDlg::OnRemoveScript(wxCommandEvent& /*event*/)
 {
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
     if (!ctrl || ctrl->GetSelection() == -1)
@@ -946,7 +946,7 @@ void ProjectOptionsDlg::OnPlatform(wxCommandEvent& event)
     }
 }
 
-void ProjectOptionsDlg::OnScriptMoveUp(wxSpinEvent& event)
+void ProjectOptionsDlg::OnScriptMoveUp(wxSpinEvent& /*event*/)
 {
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
     if (!ctrl || ctrl->GetSelection() <= 0)
@@ -970,7 +970,7 @@ void ProjectOptionsDlg::OnScriptMoveUp(wxSpinEvent& event)
     base->SetBuildScripts(scripts);
 }
 
-void ProjectOptionsDlg::OnScriptMoveDown(wxSpinEvent& event)
+void ProjectOptionsDlg::OnScriptMoveDown(wxSpinEvent& /*event*/)
 {
     wxListBox* ctrl = XRCCTRL(*this, "lstPreScripts", wxListBox);
     if (!ctrl || ctrl->GetSelection() == (int)(ctrl->GetCount()) - 1)
@@ -994,7 +994,7 @@ void ProjectOptionsDlg::OnScriptMoveDown(wxSpinEvent& event)
     base->SetBuildScripts(scripts);
 }
 
-void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void ProjectOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);

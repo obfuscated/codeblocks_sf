@@ -316,11 +316,11 @@ void EditorManager::RebuildNotebookStack()
     }
 }
 
-void EditorManager::CreateMenu(wxMenuBar* menuBar)
+void EditorManager::CreateMenu(wxMenuBar* /*menuBar*/)
 {
 }
 
-void EditorManager::ReleaseMenu(wxMenuBar* menuBar)
+void EditorManager::ReleaseMenu(wxMenuBar* /*menuBar*/)
 {
 }
 
@@ -541,7 +541,7 @@ cbEditor* EditorManager::Open(const wxString& filename, int pos, ProjectFile* da
     return Open(0, filename, pos, data);
 }
 
-cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int pos,ProjectFile* data)
+cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int /*pos*/, ProjectFile* data)
 {
     bool can_updateui = !GetActiveEditor() || !Manager::Get()->GetProjectManager()->IsLoading();
     wxFileName fn(realpath(filename));
@@ -722,7 +722,7 @@ void EditorManager::AddEditorBase(EditorBase* eb)
     }
 }
 
-void EditorManager::RemoveEditorBase(EditorBase* eb, bool deleteObject)
+void EditorManager::RemoveEditorBase(EditorBase* eb, bool /*deleteObject*/)
 {
     int page = FindPageFromEditor(eb);
     if (page != -1 && !Manager::isappShuttingDown())
@@ -2829,32 +2829,32 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     delete pop;
 }
 
-void EditorManager::OnClose(wxCommandEvent& event)
+void EditorManager::OnClose(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->Close(GetActiveEditor());
 }
 
-void EditorManager::OnCloseAll(wxCommandEvent& event)
+void EditorManager::OnCloseAll(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->CloseAll();
 }
 
-void EditorManager::OnCloseAllOthers(wxCommandEvent& event)
+void EditorManager::OnCloseAllOthers(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->CloseAllExcept(GetActiveEditor());
 }
 
-void EditorManager::OnSave(wxCommandEvent& event)
+void EditorManager::OnSave(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->Save(m_pNotebook->GetSelection());
 }
 
-void EditorManager::OnSaveAll(wxCommandEvent& event)
+void EditorManager::OnSaveAll(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->SaveAll();
 }
 
-void EditorManager::OnSwapHeaderSource(wxCommandEvent& event)
+void EditorManager::OnSwapHeaderSource(wxCommandEvent& /*event*/)
 {
     Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
 }
@@ -2873,7 +2873,7 @@ void EditorManager::OnTabPosition(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"),       (bool)(style & wxAUI_NB_BOTTOM));
 }
 
-void EditorManager::OnProperties(wxCommandEvent& event)
+void EditorManager::OnProperties(wxCommandEvent& /*event*/)
 {
     cbEditor* ed = GetBuiltinActiveEditor();
     ProjectFile* pf = 0;
@@ -2889,7 +2889,7 @@ void EditorManager::OnProperties(wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnAddFileToProject(wxCommandEvent& event)
+void EditorManager::OnAddFileToProject(wxCommandEvent& /*event*/)
 {
     cbProject *project = Manager::Get()->GetProjectManager()->GetActiveProject();
     wxString fname = GetBuiltinActiveEditor()->GetFilename();
@@ -2903,7 +2903,7 @@ void EditorManager::OnAddFileToProject(wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnRemoveFileFromProject(wxCommandEvent& event)
+void EditorManager::OnRemoveFileFromProject(wxCommandEvent& /*event*/)
 {
     ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
     if (pf) // should be in any case, otherwise something went wrong between popup menu creation and here
@@ -2924,7 +2924,7 @@ void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
     event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& event)
+void EditorManager::OnCheckForModifiedFiles(wxCommandEvent& /*event*/)
 {
     CheckForExternallyModifiedFiles();
 }

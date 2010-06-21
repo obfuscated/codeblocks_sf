@@ -38,10 +38,10 @@ SQSharedState::SQSharedState()
 bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
 {
 	SQInteger i = 0;
-	
+
 	SQInteger mask = 0;
 	while(typemask[i] != 0) {
-		
+
 		switch(typemask[i]){
 				case 'o': mask |= _RT_NULL; break;
 				case 'i': mask |= _RT_INTEGER; break;
@@ -65,15 +65,15 @@ bool CompileTypemask(SQIntVec &res,const SQChar *typemask)
 					return false;
 		}
 		i++;
-		if(typemask[i] == '|') { 
-			i++; 
+		if(typemask[i] == '|') {
+			i++;
 			if(typemask[i] == 0)
 				return false;
-			continue; 
+			continue;
 		}
 		res.push_back(mask);
 		mask = 0;
-		
+
 	}
 	return true;
 }
@@ -95,7 +95,7 @@ SQTable *CreateDefaultDelegate(SQSharedState *ss,SQRegFunction *funcz)
 }
 
 void SQSharedState::Init()
-{	
+{
 	_scratchpad=NULL;
 	_scratchpadsize=0;
 #ifndef NO_GARBAGE_COLLECTOR
@@ -241,12 +241,12 @@ void SQSharedState::MarkObject(SQObjectPtr &o,SQCollectable **chain)
 }
 
 
-SQInteger SQSharedState::CollectGarbage(SQVM *vm)
+SQInteger SQSharedState::CollectGarbage(SQVM * /*vm*/)
 {
 	SQInteger n=0;
 	SQCollectable *tchain=NULL;
 	SQVM *vms = _thread(_root_vm);
-	
+
 	vms->Mark(&tchain);
 	SQInteger x = _table(_thread(_root_vm)->_roottable)->CountUsed();
 	_refs_table.Mark(&tchain);
@@ -263,7 +263,7 @@ SQInteger SQSharedState::CollectGarbage(SQVM *vm)
 	MarkObject(_class_default_delegate,&tchain);
 	MarkObject(_instance_default_delegate,&tchain);
 	MarkObject(_weakref_default_delegate,&tchain);
-	
+
 	SQCollectable *t = _gc_chain;
 	SQCollectable *nx = NULL;
 	while(t) {
@@ -407,7 +407,7 @@ void RefTable::Resize(SQUnsignedInteger size)
 			//add back;
 			assert(t->refs != 0);
 			RefNode *nn = Add(::HashObj(t->obj)&(_numofslots-1),t->obj);
-			nn->refs = t->refs; 
+			nn->refs = t->refs;
 			t->obj = _null_;
 			nfound++;
 		}
@@ -552,7 +552,7 @@ void StringTable::Remove(SQString *bs)
 	SQString *s;
 	SQString *prev=NULL;
 	SQHash h = bs->_hash&(_numofslots - 1);
-	
+
 	for (s = _strings[h]; s; ){
 		if(s == bs){
 			if(prev)

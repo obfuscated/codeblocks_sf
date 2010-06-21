@@ -40,7 +40,7 @@ template<> bool  Mgr<ScriptingManager>::isShutdown = false;
 static wxString s_ScriptErrors;
 static wxString capture;
 
-static void ScriptsPrintFunc(HSQUIRRELVM v, const SQChar * s, ...)
+static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
     static SQChar temp[2048];
     va_list vl;
@@ -53,7 +53,7 @@ static void ScriptsPrintFunc(HSQUIRRELVM v, const SQChar * s, ...)
     s_ScriptErrors << msg;
 }
 
-static void CaptureScriptOutput(HSQUIRRELVM v, const SQChar * s, ...)
+static void CaptureScriptOutput(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
     static SQChar temp[2048];
     va_list vl;
@@ -256,7 +256,7 @@ int ScriptingManager::Configure()
     return -1;
 }
 
-bool ScriptingManager::RegisterScriptPlugin(const wxString& name, const wxArrayInt& ids)
+bool ScriptingManager::RegisterScriptPlugin(const wxString& /*name*/, const wxArrayInt& ids)
 {
     // attach this event handler in the main window (one-time run)
     if (!m_AttachedToMainWindow)
@@ -311,7 +311,7 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxStri
     return false;
 }
 
-bool ScriptingManager::UnRegisterScriptMenu(const wxString& menuPath)
+bool ScriptingManager::UnRegisterScriptMenu(const wxString& /*menuPath*/)
 {
     // TODO: not implemented
     Manager::Get()->GetLogManager()->DebugLog(_T("ScriptingManager::UnRegisterScriptMenu() not implemented"));

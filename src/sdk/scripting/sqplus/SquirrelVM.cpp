@@ -82,7 +82,7 @@ void SquirrelVM::Shutdown()
   } // if
 }
 
-void SquirrelVM::PrintFunc(HSQUIRRELVM v,const SQChar* s,...)
+void SquirrelVM::PrintFunc(HSQUIRRELVM /*v*/,const SQChar* s,...)
 {
 	static SQChar temp[2048];
 	va_list vl;

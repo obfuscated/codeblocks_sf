@@ -52,11 +52,11 @@ MacrosManager::~MacrosManager()
 {
 }
 
-void MacrosManager::CreateMenu(wxMenuBar* menuBar)
+void MacrosManager::CreateMenu(wxMenuBar* /*menuBar*/)
 {
 }
 
-void MacrosManager::ReleaseMenu(wxMenuBar* menuBar)
+void MacrosManager::ReleaseMenu(wxMenuBar* /*menuBar*/)
 {
 }
 

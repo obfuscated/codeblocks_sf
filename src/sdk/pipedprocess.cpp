@@ -129,7 +129,7 @@ PipedProcess::~PipedProcess()
 	// insert your code here
 }
 
-int PipedProcess::Launch(const wxString& cmd, unsigned int pollingInterval)
+int PipedProcess::Launch(const wxString& cmd, unsigned int /*pollingInterval*/)
 {
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, this);
 	if (m_Pid)
@@ -204,7 +204,7 @@ bool PipedProcess::HasInput()
     return false;
 }
 
-void PipedProcess::OnTerminate(int pid, int status)
+void PipedProcess::OnTerminate(int /*pid*/, int status)
 {
     // show the rest of the output
     while ( HasInput() )
@@ -220,12 +220,12 @@ void PipedProcess::OnTerminate(int pid, int status)
     delete this;
 }
 
-void PipedProcess::OnTimer(wxTimerEvent& event)
+void PipedProcess::OnTimer(wxTimerEvent& /*event*/)
 {
     wxWakeUpIdle();
 }
 
-void PipedProcess::OnIdle(wxIdleEvent& event)
+void PipedProcess::OnIdle(wxIdleEvent& /*event*/)
 {
     while (HasInput())
 		;

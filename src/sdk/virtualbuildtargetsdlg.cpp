@@ -30,7 +30,7 @@ BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxScrollingDialog)
 	EVT_UPDATE_UI(-1, VirtualBuildTargetsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, cbProject* project)
+VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*/, cbProject* project)
     : lstTargets(0),
     btnEdit(0),
     btnRemove(0),
@@ -100,7 +100,7 @@ void VirtualBuildTargetsDlg::CheckTargets()
 	}
 }
 
-void VirtualBuildTargetsDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void VirtualBuildTargetsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
     bool hasSel = lstAliases->GetSelection() != -1;
     btnEdit->Enable(hasSel);
@@ -108,7 +108,7 @@ void VirtualBuildTargetsDlg::OnUpdateUI(wxUpdateUIEvent& event)
     lstTargets->Enable(hasSel);
 }
 
-void VirtualBuildTargetsDlg::OnAddClick(wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnAddClick(wxCommandEvent& /*event*/)
 {
     wxString targetName = wxGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("New virtual build target"));
@@ -137,7 +137,7 @@ void VirtualBuildTargetsDlg::OnAddClick(wxCommandEvent& event)
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnEditClick(wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnEditClick(wxCommandEvent& /*event*/)
 {
     wxString targetName = wxGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("Edit virtual build target"),
@@ -168,7 +168,7 @@ void VirtualBuildTargetsDlg::OnEditClick(wxCommandEvent& event)
     SetVirtualTarget(targetName);
 }
 
-void VirtualBuildTargetsDlg::OnRemoveClick(wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnRemoveClick(wxCommandEvent& /*event*/)
 {
     if (cbMessageBox(_("Are you sure you want to remove this virtual build target?"), _("Confirmation"), wxYES_NO | wxICON_QUESTION) == wxID_NO)
         return;
@@ -178,12 +178,12 @@ void VirtualBuildTargetsDlg::OnRemoveClick(wxCommandEvent& event)
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnAliasesSelect(wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnAliasesSelect(wxCommandEvent& /*event*/)
 {
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnTargetsToggled(wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnTargetsToggled(wxCommandEvent& /*event*/)
 {
     SetVirtualTarget(lstAliases->GetStringSelection());
 }

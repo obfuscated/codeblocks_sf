@@ -142,12 +142,12 @@ void IncrementalSelectListDlg::FillList()
 
 // events
 
-void IncrementalSelectListDlg::OnSearch(wxCommandEvent& event)
+void IncrementalSelectListDlg::OnSearch(wxCommandEvent& /*event*/)
 {
     FillList();
 }
 
-void IncrementalSelectListDlg::OnSelect(wxCommandEvent& event)
+void IncrementalSelectListDlg::OnSelect(wxCommandEvent& /*event*/)
 {
     EndModal(wxID_OK);
 }

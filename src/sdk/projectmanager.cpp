@@ -428,7 +428,7 @@ It is duplicated in ShowMenu() */
     }
 }
 
-void ProjectManager::ReleaseMenu(wxMenuBar* menuBar)
+void ProjectManager::ReleaseMenu(wxMenuBar* /*menuBar*/)
 {
 }
 
@@ -1213,7 +1213,7 @@ void ProjectManager::FreezeTree()
     m_pTree->Freeze();
 }
 
-void ProjectManager::UnfreezeTree(bool force)
+void ProjectManager::UnfreezeTree(bool /*force*/)
 {
     if (!m_pTree)
         return;
@@ -1659,7 +1659,7 @@ void ProjectManager::ConfigureProjectDependencies(cbProject* base)
 
 // events
 
-void ProjectManager::OnTabContextMenu(wxAuiNotebookEvent& event)
+void ProjectManager::OnTabContextMenu(wxAuiNotebookEvent& /*event*/)
 {
     wxMenu* NBmenu = new wxMenu();
     NBmenu->Append(idNB_TabTop, _("Tabs at top"));
@@ -1774,13 +1774,13 @@ void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
         DoOpenSelectedFile();
 }
 
-void ProjectManager::OnExecParameters(wxCommandEvent& event)
+void ProjectManager::OnExecParameters(wxCommandEvent& /*event*/)
 {
     if (m_pActiveProject)
         m_pActiveProject->SelectTarget(0, true);
 }
 
-void ProjectManager::OnRightClick(wxCommandEvent& event)
+void ProjectManager::OnRightClick(wxCommandEvent& /*event*/)
 {
     //Manager::Get()->GetLogManager()->DebugLog("OnRightClick");
 
@@ -1823,7 +1823,7 @@ void ProjectManager::OnTreeItemRightClick(wxTreeEvent& event)
     ShowMenu(event.GetItem(), event.GetPoint());
 }
 
-void ProjectManager::OnRenameWorkspace(wxCommandEvent& event)
+void ProjectManager::OnRenameWorkspace(wxCommandEvent& /*event*/)
 {
     if (m_pWorkspace)
     {
@@ -1836,7 +1836,7 @@ void ProjectManager::OnRenameWorkspace(wxCommandEvent& event)
     }
 }
 
-void ProjectManager::OnSaveWorkspace(wxCommandEvent& event)
+void ProjectManager::OnSaveWorkspace(wxCommandEvent& /*event*/)
 {
     if (m_pWorkspace)
     {
@@ -1844,7 +1844,7 @@ void ProjectManager::OnSaveWorkspace(wxCommandEvent& event)
     }
 }
 
-void ProjectManager::OnSaveAsWorkspace(wxCommandEvent& event)
+void ProjectManager::OnSaveAsWorkspace(wxCommandEvent& /*event*/)
 {
     if (m_pWorkspace)
     {
@@ -1852,7 +1852,7 @@ void ProjectManager::OnSaveAsWorkspace(wxCommandEvent& event)
     }
 }
 
-void ProjectManager::OnCloseWorkspace(wxCommandEvent& event)
+void ProjectManager::OnCloseWorkspace(wxCommandEvent& /*event*/)
 {
     if (m_pWorkspace)
     {
@@ -2322,7 +2322,7 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
     }
 }
 
-void ProjectManager::OnGotoFile(wxCommandEvent& event)
+void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
 {
     if (!m_pActiveProject)
     {
@@ -2362,7 +2362,7 @@ void ProjectManager::OnViewUseFolders(wxCommandEvent& event)
     RebuildTree();
 }
 
-void ProjectManager::OnViewFileMasks(wxCommandEvent& event)
+void ProjectManager::OnViewFileMasks(wxCommandEvent& /*event*/)
 {
     ProjectsFileMasksDlg dlg(Manager::Get()->GetAppWindow(), m_pFileGroups);
     PlaceWindow(&dlg);
@@ -2398,7 +2398,7 @@ wxTreeItemId ProjectManager::FindItem( wxTreeItemId Node, const wxString& Search
     return notFound;
 } // end of FindItem
 
-void ProjectManager::OnFindFile(wxCommandEvent& event)
+void ProjectManager::OnFindFile(wxCommandEvent& /*event*/)
 {
     wxString text = wxGetTextFromUser(_("Please enter the name of the file you are searching:"), _("Find file..."));
     if( !text.IsEmpty() )
@@ -2419,7 +2419,7 @@ void ProjectManager::OnFindFile(wxCommandEvent& event)
     }
 } // end of OnFindFile
 
-void ProjectManager::OnAddVirtualFolder(wxCommandEvent& event)
+void ProjectManager::OnAddVirtualFolder(wxCommandEvent& /*event*/)
 {
     wxString fld = wxGetTextFromUser(_("Please enter the new virtual folder path:"), _("New virtual folder"));
     if (fld.IsEmpty())
@@ -2437,7 +2437,7 @@ void ProjectManager::OnAddVirtualFolder(wxCommandEvent& event)
 //    RebuildTree();
 }
 
-void ProjectManager::OnDeleteVirtualFolder(wxCommandEvent& event)
+void ProjectManager::OnDeleteVirtualFolder(wxCommandEvent& /*event*/)
 {
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
@@ -2513,7 +2513,7 @@ void ProjectManager::OnAppDoneStartup(CodeBlocksEvent& event)
     event.Skip();
 }
 
-void ProjectManager::OnRenameFile(wxCommandEvent& event)
+void ProjectManager::OnRenameFile(wxCommandEvent& /*event*/)
 {
     wxTreeItemId sel = m_pTree->GetSelection();
     FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);

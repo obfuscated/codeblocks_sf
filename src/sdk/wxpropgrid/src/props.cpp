@@ -1041,11 +1041,17 @@ int wxBaseEnumProperty::GetIndexForValue( int value ) const
 void wxBaseEnumProperty::OnSetValue()
 {
     if ( wxPGIsVariantType(m_value, long) )
+    {
         ValueFromInt_( m_value, m_value.GetLong(), wxPG_FULL_VALUE );
+    }
     else if ( wxPGIsVariantType(m_value, string) )
+    {
         ValueFromString_( m_value, m_value.GetString(), 0 );
+    }
     else
+    {
         wxASSERT( false );
+    }
 
     if ( ms_nextIndex != -2 )
     {

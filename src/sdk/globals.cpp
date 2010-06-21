@@ -665,14 +665,14 @@ bool NormalizePath(wxFileName& f,const wxString& base)
     return result;
 }
 
-// Checks whether 'suffix' could be a suffix of 'path' and therefore represents 
+// Checks whether 'suffix' could be a suffix of 'path' and therefore represents
 // the same path. This is used to check whether a relative path could represent
-// the same path as absolute path. For instance, for 
+// the same path as absolute path. For instance, for
 // suffix = sdk/globals.cpp
 // path = /home/user/codeblocks/trunk/src/sdk/globals.cpp
 // it returns true. The function expects that 'path' is normalized and compares
-// 'path' with 'suffix' starting from the end of the path. When it reaches .. in 
-// 'suffix' it gives up (there is no way to check relative filename names 
+// 'path' with 'suffix' starting from the end of the path. When it reaches .. in
+// 'suffix' it gives up (there is no way to check relative filename names
 // exactly) and if the path compared so far is identical, it returns true
 bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
 {
@@ -701,7 +701,7 @@ bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
 
         if (suffixDirArray[i] == _T(".."))
         {
-            // suffix contains ".." - from now on we cannot precisely determine 
+            // suffix contains ".." - from now on we cannot precisely determine
             // whether suffix and path match - we assume that they do
             return true;
         }

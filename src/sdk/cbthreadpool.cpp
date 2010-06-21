@@ -160,7 +160,7 @@ bool cbThreadPool::WaitingThread()
   return true;
 }
 
-void cbThreadPool::TaskDone(cbWorkerThread *thread)
+void cbThreadPool::TaskDone(cbWorkerThread * /*thread*/)
 {
   // notify the owner that the task has ended
   CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ENDED, m_ID);

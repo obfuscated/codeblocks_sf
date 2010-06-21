@@ -137,37 +137,37 @@ void ExternalDepsDlg::EndModal(int retCode)
     lst->Delete(sel);                                       \
 }
 
-void ExternalDepsDlg::OnAddAdditional(wxCommandEvent& event)
+void ExternalDepsDlg::OnAddAdditional(wxCommandEvent& /*event*/)
 {
 	DoAdd("lstAdditionalFiles", _("Add additional output file"));
 }
 
-void ExternalDepsDlg::OnEditAdditional(wxCommandEvent& event)
+void ExternalDepsDlg::OnEditAdditional(wxCommandEvent& /*event*/)
 {
 	DoEdit("lstAdditionalFiles", _("Edit additional output file"));
 }
 
-void ExternalDepsDlg::OnDelAdditional(wxCommandEvent& event)
+void ExternalDepsDlg::OnDelAdditional(wxCommandEvent& /*event*/)
 {
 	DoDel("lstAdditionalFiles");
 }
 
-void ExternalDepsDlg::OnAddExternal(wxCommandEvent& event)
+void ExternalDepsDlg::OnAddExternal(wxCommandEvent& /*event*/)
 {
 	DoAdd("lstExternalFiles", _("Add external dependency file"));
 }
 
-void ExternalDepsDlg::OnEditExternal(wxCommandEvent& event)
+void ExternalDepsDlg::OnEditExternal(wxCommandEvent& /*event*/)
 {
 	DoEdit("lstExternalFiles", _("Edit external dependency file"));
 }
 
-void ExternalDepsDlg::OnDelExternal(wxCommandEvent& event)
+void ExternalDepsDlg::OnDelExternal(wxCommandEvent& /*event*/)
 {
 	DoDel("lstExternalFiles");
 }
 
-void ExternalDepsDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void ExternalDepsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
 	int selAdd = XRCCTRL(*this, "lstAdditionalFiles", wxListBox)->GetSelection();
 	int selExt = XRCCTRL(*this, "lstExternalFiles", wxListBox)->GetSelection();

@@ -27,7 +27,7 @@ BEGIN_EVENT_TABLE(AnnoyingDialog, wxScrollingDialog)
 END_EVENT_TABLE()
 
 AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message, const wxArtID icon,
-                               dStyle style, int defaultReturn, bool separate,
+                               dStyle style, int defaultReturn, bool /*separate*/,
                                const wxString& b1, const wxString& b2, const wxString& b3)
         : wxScrollingDialog(NULL, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
         cb(0),

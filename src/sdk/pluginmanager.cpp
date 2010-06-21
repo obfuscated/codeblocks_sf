@@ -176,11 +176,11 @@ PluginManager::~PluginManager()
     UnloadAllPlugins();
 }
 
-void PluginManager::CreateMenu(wxMenuBar* menuBar)
+void PluginManager::CreateMenu(wxMenuBar* /*menuBar*/)
 {
 }
 
-void PluginManager::ReleaseMenu(wxMenuBar* menuBar)
+void PluginManager::ReleaseMenu(wxMenuBar* /*menuBar*/)
 {
 }
 

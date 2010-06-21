@@ -310,24 +310,24 @@ void FindDlg::OnFindChange(wxNotebookEvent& event)
         if (event.GetSelection() == 0)
         {
             cmbFind1->SetValue(cmbFind2->GetValue());
-            cmbFind1->SetFocus();            
+            cmbFind1->SetFocus();
         }
         else if (event.GetSelection() == 1)
         {
             cmbFind2->SetValue(cmbFind1->GetValue());
-            cmbFind2->SetFocus();            
+            cmbFind2->SetFocus();
         }
     }
     event.Skip();
 }
 
-void FindDlg::OnRegEx(wxCommandEvent& event)
+void FindDlg::OnRegEx(wxCommandEvent& /*event*/)
 {
     if (m_Complete)
         XRCCTRL(*this, "rbDirection", wxRadioBox)->Enable(!XRCCTRL(*this, "chkRegEx1", wxCheckBox)->GetValue());
 }
 
-void FindDlg::OnBrowsePath(wxCommandEvent& event)
+void FindDlg::OnBrowsePath(wxCommandEvent& /*event*/)
 {
     wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
     wxString dir = ChooseDirectory(0, _("Select search path"), txtSearchPath);
