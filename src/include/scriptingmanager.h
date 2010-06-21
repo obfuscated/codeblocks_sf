@@ -63,10 +63,6 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         /// Script trusts container struct
         typedef std::map<wxString, TrustedScriptProps> TrustedScripts;
 
-        // needed for SqPlus bindings
-        ScriptingManager(const ScriptingManager& /*rhs*/) { cbThrow(_T("Can't call ScriptingManager's copy ctor!!!")); }
-        void operator=(const ScriptingManager& /*rhs*/){ cbThrow(_T("Can't assign an ScriptingManager* !!!")); }
-
         /** @brief Loads a script.
           *
           * @param filename The filename of the script to run.
@@ -218,7 +214,17 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           * @return The script trusts container.
           */
         const TrustedScripts& GetTrustedScripts();
+
+        // needed for SqPlus bindings
+        ScriptingManager& operator=(const ScriptingManager& /*rhs*/) // prevent assignment operator
+        {
+        	cbThrow(_T("Can't assign a ScriptingManager* !!!"));
+        	return *this;
+		}
     private:
+        // needed for SqPlus bindings
+        ScriptingManager(const ScriptingManager& /*rhs*/); // prevent copy construction
+
         void OnScriptMenu(wxCommandEvent& event);
         void OnScriptPluginMenu(wxCommandEvent& event);
         void RegisterScriptFunctions();

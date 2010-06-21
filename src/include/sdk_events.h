@@ -104,7 +104,8 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent, public BlockAllocated<Code
         {
         }
         CodeBlocksDockEvent(const CodeBlocksDockEvent& rhs)
-            : name(rhs.name),
+            : wxEvent(rhs),
+            name(rhs.name),
             title(rhs.title),
             pWindow(rhs.pWindow),
             desiredSize(rhs.desiredSize),
@@ -152,7 +153,7 @@ class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent, public BlockAllocated<Co
             layout(layout_name)
         {}
         CodeBlocksLayoutEvent(const CodeBlocksLayoutEvent& rhs)
-            : layout(rhs.layout)
+            : wxEvent(rhs), layout(rhs.layout)
         {}
 		virtual wxEvent *Clone() const { return new CodeBlocksLayoutEvent(*this); }
 

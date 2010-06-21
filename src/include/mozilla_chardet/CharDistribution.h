@@ -48,7 +48,7 @@ public:
   CharDistributionAnalysis() {Reset();}
 
   //feed a block of data and do distribution analysis
-  void HandleData(const char* aBuf, PRUint32 aLen) {}
+  void HandleData(const char* /*aBuf*/, PRUint32 /*aLen*/) {}
 
   //Feed a character with known length
   void HandleOneChar(const char* aStr, PRUint32 aCharLen)
@@ -93,7 +93,7 @@ protected:
   //we do not handle character base on its original encoding string, but
   //convert this encoding string to a number, here called order.
   //This allow multiple encoding of a language to share one frequency table
-  virtual PRInt32 GetOrder(const char* str) {return -1;}
+  virtual PRInt32 GetOrder(const char* /*str*/) {return -1;}
 
   //If this flag is set to PR_TRUE, detection is done and conclusion has been made
   PRBool   mDone;

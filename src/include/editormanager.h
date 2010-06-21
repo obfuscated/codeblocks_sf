@@ -66,11 +66,14 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         friend class Mgr<EditorManager>;
         static bool s_CanShutdown;
     public:
+        EditorManager& operator=(const EditorManager& /*rhs*/) // prevent assignment operator
+        {
+        	cbThrow(_T("Can't assign an EditorManager* !!!"));
+        	return *this;
+		}
+
         friend class Manager; // give Manager access to our private members
         static bool CanShutdown(){ return s_CanShutdown; }
-
-        EditorManager(const EditorManager& /*rhs*/) { cbThrow(_T("Can't call EditorManager's copy ctor!!!")); }
-        virtual void operator=(const EditorManager& /*rhs*/){ cbThrow(_T("Can't assign an EditorManager* !!!")); }
 
         cbAuiNotebook* GetNotebook() { return m_pNotebook; }
         cbNotebookStack* GetNotebookStack();
@@ -180,6 +183,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
 
         AutoCompleteMap m_AutoCompleteMap;
     private:
+        EditorManager(const EditorManager& /*rhs*/); // prevent copy construction
+
         EditorManager();
         ~EditorManager();
         void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace = false);

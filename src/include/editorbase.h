@@ -32,9 +32,6 @@ class DLLIMPORT EditorBase : public wxPanel
         virtual ~EditorBase();
 
         /** Don't use this. It throws an exception if you do. */
-        EditorBase(const EditorBase& /*rhs*/) { cbThrow(_T("Can't call EditorBase's copy ctor!!!")); }
-
-        /** Don't use this. It throws an exception if you do. */
         virtual void operator=(const EditorBase& /*rhs*/){ cbThrow(_T("Can't assign an EditorBase* !!!")); }
 
         /** @brief Get the editor's filename (if applicable).
@@ -325,6 +322,7 @@ class DLLIMPORT EditorBase : public wxPanel
         wxString m_Filename;
         EditorBaseInternalData* m_pData; ///< Use this to add new vars/functions w/out breaking the ABI
     private:
+        EditorBase(const EditorBase& /*rhs*/); // prevent copy construction
 
         /** one event handler for all popup menu entries */
         void OnContextMenuEntry(wxCommandEvent& event);
