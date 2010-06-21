@@ -44,7 +44,7 @@ const long ScriptConsole::ID_PANEL1 = wxNewId();
 static ScriptConsole* s_Console = 0;
 static SQPRINTFUNCTION s_OldPrintFunc = 0;
 
-static void ScriptConsolePrintFunc(HSQUIRRELVM v, const SQChar * s, ...)
+static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
     static SQChar temp[2048];
     va_list vl;
@@ -68,7 +68,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	//(*Initialize(ScriptConsole)
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
-	
+
 	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
@@ -102,7 +102,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
-	
+
 	Connect(ID_COMBOBOX1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnExecuteClick);
 	Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ScriptConsole::OnbtnLoadClick);
@@ -142,7 +142,7 @@ void ScriptConsole::Log(const wxString& msg)
 	Manager::ProcessPendingEvents();
 }
 
-void ScriptConsole::OnbtnExecuteClick(wxCommandEvent& event)
+void ScriptConsole::OnbtnExecuteClick(wxCommandEvent& /*event*/)
 {
     wxString cmd = txtCommand->GetValue();
     cmd.Trim(false);
@@ -165,7 +165,7 @@ void ScriptConsole::OnbtnExecuteClick(wxCommandEvent& event)
 	txtCommand->SetFocus();
 }
 
-void ScriptConsole::OnbtnLoadClick(wxCommandEvent& event)
+void ScriptConsole::OnbtnLoadClick(wxCommandEvent& /*event*/)
 {
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("app"));
     wxString path = mgr->Read(_T("/file_dialogs/file_run_script/directory"), wxEmptyString);
@@ -189,7 +189,7 @@ void ScriptConsole::OnbtnLoadClick(wxCommandEvent& event)
 	txtCommand->SetFocus();
 }
 
-void ScriptConsole::OnbtnClearClick(wxCommandEvent& event)
+void ScriptConsole::OnbtnClearClick(wxCommandEvent& /*event*/)
 {
     txtConsole->Clear();
 	txtCommand->SetFocus();

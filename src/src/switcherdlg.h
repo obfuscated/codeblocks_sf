@@ -27,7 +27,11 @@ class wxSwitcherItem: public wxObject
     DECLARE_CLASS(wxSwitcherItem)
 public:
     wxSwitcherItem() { Init(); }
-    wxSwitcherItem(const wxSwitcherItem& item) { Init(); Copy(item); }
+    wxSwitcherItem(const wxSwitcherItem& item) : wxObject(item)
+    {
+    	Init();
+    	Copy(item);
+	}
 
     bool operator== (const wxSwitcherItem& item) const;
 
@@ -105,7 +109,11 @@ class wxSwitcherItems: public wxObject
     DECLARE_CLASS(wxSwitcherItems)
 public:
     wxSwitcherItems() { Init(); }
-    wxSwitcherItems(const wxSwitcherItems& items) { Init(); Copy(items); }
+    wxSwitcherItems(const wxSwitcherItems& items) : wxObject(items)
+    {
+    	Init();
+    	Copy(items);
+	}
 
     bool operator== (const wxSwitcherItems& items) const;
 

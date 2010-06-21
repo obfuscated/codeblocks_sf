@@ -104,7 +104,7 @@ wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
     return topic == DDE_TOPIC ? new DDEConnection(m_Frame) : 0L;
 }
 
-bool DDEConnection::OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format)
+bool DDEConnection::OnExecute(const wxString& /*topic*/, wxChar *data, int /*size*/, wxIPCFormat /*format*/)
 {
     wxString strData(data);
 

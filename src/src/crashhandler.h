@@ -28,7 +28,7 @@ public:
 class CrashHandler
 {
 public:
-    CrashHandler(bool bDisabled){};
+    CrashHandler(bool /*bDisabled*/){};
     ~CrashHandler(){};
 };
 

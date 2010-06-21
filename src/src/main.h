@@ -34,7 +34,16 @@ class wxGauge;
 
 class MainFrame : public wxFrame
 {
+	public:
+        // needed for binding with SqPlus
+        MainFrame& operator=(const MainFrame& /*rhs*/) // prevent assignement operator
+        {
+        	cbThrow(_T("Can't use MainFrame's operator="));
+        	return *this;
+		}
     private:
+        MainFrame(const MainFrame& /*rhs*/); // prevent copy construction
+
         wxAuiManager m_LayoutManager;
         LayoutViewsMap m_LayoutViews;
         bool LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter=_("|"));
@@ -42,10 +51,6 @@ class MainFrame : public wxFrame
         wxAcceleratorTable* m_pAccel;
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
         ~MainFrame();
-
-        // needed for binding with SqPlus
-        MainFrame(const MainFrame& rhs){ cbThrow(_T("Can't use MainFrame's copy constructor")); }
-        MainFrame& operator=(const MainFrame& rhs){ cbThrow(_T("Can't use MainFrame's operator=")); }
 
         bool Open(const wxString& filename, bool addToHistory = true);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& filenames);
