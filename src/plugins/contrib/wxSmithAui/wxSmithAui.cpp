@@ -38,7 +38,7 @@ void wxSmithAui::OnAttach()
     // (see: does not need) this plugin...
 }
 
-void wxSmithAui::OnRelease(bool appShutDown)
+void wxSmithAui::OnRelease(bool /*appShutDown*/)
 {
     // do de-initialization for your plugin
     // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,

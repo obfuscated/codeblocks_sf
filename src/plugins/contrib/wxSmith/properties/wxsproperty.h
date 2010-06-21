@@ -109,7 +109,7 @@ class wxsProperty
          * \param Grid grid where properties must be added
          * \param Parent id of parent property which MUST be passed to AppendIn function
          */
-        virtual void PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent) {}
+        virtual void PGCreate(wxsPropertyContainer* /*Object*/, wxPropertyGridManager* /*Grid*/, wxPGId /*Parent*/) {}
 
         /** \brief Function reading value from property grid.
          *

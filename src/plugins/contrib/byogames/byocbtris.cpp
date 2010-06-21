@@ -106,7 +106,7 @@ byoCBTris::byoCBTris(wxWindow* parent,const wxString& Name):
     RecalculateSizeHints(bricksHoriz+2*bricksMargin,bricksVert+1);
 }
 
-void byoCBTris::OnPaint(wxPaintEvent& event)
+void byoCBTris::OnPaint(wxPaintEvent& /*event*/)
 {
     wxSize size = GetClientSize();
     wxBitmap buffer(wxImage(size.GetWidth(),size.GetHeight()));
@@ -165,7 +165,7 @@ void byoCBTris::OnKeyUp(wxKeyEvent& event)
     if ( event.GetKeyCode() == WXK_DOWN  ) m_IsDown = false;
 }
 
-void byoCBTris::OnLeftRightTimer(wxTimerEvent& event)
+void byoCBTris::OnLeftRightTimer(wxTimerEvent& /*event*/)
 {
     if ( IsPaused() ) return;
     LOCK_START();
@@ -174,7 +174,7 @@ void byoCBTris::OnLeftRightTimer(wxTimerEvent& event)
     LOCK_END();
 }
 
-void byoCBTris::OnUpTimer(wxTimerEvent& event)
+void byoCBTris::OnUpTimer(wxTimerEvent& /*event*/)
 {
     if ( IsPaused() ) return;
     LOCK_START();
@@ -183,7 +183,7 @@ void byoCBTris::OnUpTimer(wxTimerEvent& event)
     LOCK_END();
 }
 
-void byoCBTris::OnDownTimer(wxTimerEvent& event)
+void byoCBTris::OnDownTimer(wxTimerEvent& /*event*/)
 {
     if ( IsPaused() ) return;
     LOCK_START();
@@ -192,7 +192,7 @@ void byoCBTris::OnDownTimer(wxTimerEvent& event)
     LOCK_END();
 }
 
-void byoCBTris::OnSpeedTimer(wxTimerEvent& event)
+void byoCBTris::OnSpeedTimer(wxTimerEvent& /*event*/)
 {
     if ( IsPaused() ) return;
     LOCK_START();
@@ -208,7 +208,7 @@ void byoCBTris::OnSpeedTimer(wxTimerEvent& event)
     LOCK_END();
 }
 
-void byoCBTris::OnEraseBack(wxEraseEvent& event)
+void byoCBTris::OnEraseBack(wxEraseEvent& /*event*/)
 {
 }
 

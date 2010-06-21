@@ -548,7 +548,7 @@ cbConfigurationPanel* CompilerGCC::GetConfigurationPanel(wxWindow* parent)
     return dlg;
 }
 
-void CompilerGCC::OnConfig(wxCommandEvent& event)
+void CompilerGCC::OnConfig(wxCommandEvent& /*event*/)
 {
     Configure(NULL);
 }
@@ -2047,7 +2047,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
     return 0;
 }
 
-void CompilerGCC::OnExportMakefile(wxCommandEvent& event)
+void CompilerGCC::OnExportMakefile(wxCommandEvent& /*event*/)
 {
     cbMessageBox(_("This functionality has been temporarily removed from Code::Blocks.\n"
                     "With all the updates from the last couple of months, the makefile exporter "
@@ -3000,18 +3000,18 @@ void CompilerGCC::OnIdle(wxIdleEvent& event)
         event.Skip();
 }
 
-void CompilerGCC::OnTimer(wxTimerEvent& event)
+void CompilerGCC::OnTimer(wxTimerEvent& /*event*/)
 {
     wxWakeUpIdle();
 }
 
-void CompilerGCC::OnRun(wxCommandEvent& event)
+void CompilerGCC::OnRun(wxCommandEvent& /*event*/)
 {
     if (Run() == 0)
         DoRunQueue();
 }
 
-void CompilerGCC::OnCompileAndRun(wxCommandEvent& event)
+void CompilerGCC::OnCompileAndRun(wxCommandEvent& /*event*/)
 {
     ProjectBuildTarget* target = 0;//DoAskForTarget();
     m_RunAfterCompile = true;
@@ -3121,12 +3121,12 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
     m_RealTargetIndex = bak;
 }
 
-void CompilerGCC::OnCompileAll(wxCommandEvent& event)
+void CompilerGCC::OnCompileAll(wxCommandEvent& /*event*/)
 {
     BuildWorkspace();
 }
 
-void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
+void CompilerGCC::OnRebuildAll(wxCommandEvent& /*event*/)
 {
     AnnoyingDialog dlg(_("Rebuild workspace"),
                         _("Rebuilding ALL the open projects will cause the deletion of all "
@@ -3145,7 +3145,7 @@ void CompilerGCC::OnRebuildAll(wxCommandEvent& event)
     RebuildWorkspace();
 }
 
-void CompilerGCC::OnCleanAll(wxCommandEvent& event)
+void CompilerGCC::OnCleanAll(wxCommandEvent& /*event*/)
 {
     AnnoyingDialog dlg(_("Clean project"),
                         _("Cleaning ALL the open projects will cause the deletion "
@@ -3198,7 +3198,7 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
     m_RealTargetIndex = bak;
 }
 
-void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
+void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& /*event*/)
 {
     wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
     wxTreeItemId sel = tree->GetSelection();
@@ -3223,7 +3223,7 @@ void CompilerGCC::OnProjectCompilerOptions(wxCommandEvent& event)
     }
 } // end of OnProjectCompilerOptions
 
-void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& event)
+void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& /*event*/)
 {
     int bak = m_RealTargetIndex;
     // we 're called from a menu in ProjectManager
@@ -3240,7 +3240,7 @@ void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& event)
     Configure(m_Project, target);
 }
 
-void CompilerGCC::OnKillProcess(wxCommandEvent& event)
+void CompilerGCC::OnKillProcess(wxCommandEvent& /*event*/)
 {
     KillProcess();
 }
@@ -3259,17 +3259,17 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
     }
 } // end of OnSelectTarget
 
-void CompilerGCC::OnNextError(wxCommandEvent& event)
+void CompilerGCC::OnNextError(wxCommandEvent& /*event*/)
 {
     DoGotoNextError();
 }
 
-void CompilerGCC::OnPreviousError(wxCommandEvent& event)
+void CompilerGCC::OnPreviousError(wxCommandEvent& /*event*/)
 {
     DoGotoPreviousError();
 }
 
-void CompilerGCC::OnClearErrors(wxCommandEvent& event)
+void CompilerGCC::OnClearErrors(wxCommandEvent& /*event*/)
 {
     DoClearErrors();
 }
@@ -3342,7 +3342,7 @@ void CompilerGCC::OnProjectActivated(CodeBlocksEvent& event)
         UpdateProjectTargets(event.GetProject());
 }
 
-void CompilerGCC::OnProjectLoaded(CodeBlocksEvent& event)
+void CompilerGCC::OnProjectLoaded(CodeBlocksEvent& /*event*/)
 {
 }
 

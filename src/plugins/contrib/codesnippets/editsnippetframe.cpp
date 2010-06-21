@@ -148,7 +148,7 @@ class EditFrameDropTextTarget : public wxTextDropTarget
 		EditSnippetFrame* m_Window;
 };
 // ----------------------------------------------------------------------------
-bool EditFrameDropTextTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
+bool EditFrameDropTextTarget::OnDropText(wxCoord /*x*/, wxCoord /*y*/, const wxString& data)
 // ----------------------------------------------------------------------------
 {
     // Put dragged text into TextCtrl
@@ -429,7 +429,7 @@ wxString EditSnippetFrame::GetText()
 ////	//-EndModal(wxID_CANCEL);
 ////}
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnHelp(wxCommandEvent& event)
+void EditSnippetFrame::OnHelp(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
 	// Link to the Wiki which contains information about the available macros
@@ -653,7 +653,7 @@ void EditSnippetFrame::OnCloseFrameOrWindow(wxCloseEvent &event)
 //    #endif
 //}
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnMenuFileClose (wxCommandEvent &event)
+void EditSnippetFrame::OnMenuFileClose (wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
     if ( GetEditorManager()->GetEditorsCount()) //sanity or crash
@@ -721,7 +721,7 @@ void EditSnippetFrame::OnFileCheckModified()
 // ----------------------------------------------------------------------------
 // properties event handlers
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnProperties (wxCommandEvent& event)
+void EditSnippetFrame::OnProperties (wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     //?if (!m_pEdit) return;
@@ -1159,7 +1159,7 @@ wxRect EditSnippetFrame::DeterminePrintSize ()
     return rect;
 }
 // ----------------------------------------------------------------------------
-void EditSnippetFrame::OnFilePrint(wxCommandEvent& event)
+void EditSnippetFrame::OnFilePrint(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     GetEditorManager()->FilePrint(this);

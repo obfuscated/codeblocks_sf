@@ -131,7 +131,7 @@ void JumpTracker::OnAttach()
 
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::OnRelease(bool appShutDown)
+void JumpTracker::OnRelease(bool /*appShutDown*/)
 // ----------------------------------------------------------------------------
 {
     // do de-initialization for your plugin
@@ -190,7 +190,7 @@ void JumpTracker::BuildMenu(wxMenuBar* menuBar)
 
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void JumpTracker::BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/)
 // ----------------------------------------------------------------------------
 {
     //Some library module is ready to display a pop-up menu.
@@ -200,7 +200,7 @@ void JumpTracker::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     //-NotImplemented(_T("JumpTracker::BuildModuleMenu()"));
 }
 // ----------------------------------------------------------------------------
-bool JumpTracker::BuildToolBar(wxToolBar* toolBar)
+bool JumpTracker::BuildToolBar(wxToolBar* /*toolBar*/)
 // ----------------------------------------------------------------------------
 {
     //The application is offering its toolbar for your plugin,
@@ -314,7 +314,7 @@ void JumpTracker::OnEditorActivated(CodeBlocksEvent& event)
     return;
 }//OnEditorActivated
 // ----------------------------------------------------------------------------
-void JumpTracker::OnStartShutdown(CodeBlocksEvent& event)
+void JumpTracker::OnStartShutdown(CodeBlocksEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     m_bShuttingDown = true;
@@ -430,7 +430,7 @@ int JumpTracker::JumpDataContains(const wxString& filename, const long posn)
     return wxNOT_FOUND;
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::OnMenuJumpBack(wxCommandEvent &event)
+void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
@@ -495,7 +495,7 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &event)
     return;
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::OnMenuJumpNext(wxCommandEvent &event)
+void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
@@ -552,14 +552,14 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &event)
     return;
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::OnMenuJumpClear(wxCommandEvent &event)
+void JumpTracker::OnMenuJumpClear(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
     m_Cursor = maxJumpEntries;
     m_ArrayOfJumpData.Clear();
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::OnMenuJumpDump(wxCommandEvent &event)
+void JumpTracker::OnMenuJumpDump(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
     //-return; //debugging

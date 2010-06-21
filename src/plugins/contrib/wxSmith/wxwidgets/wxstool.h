@@ -70,7 +70,7 @@ class wxsTool: public wxsParent
          * All QPPChild panels will be added before additional panels
          * generic for tools.
          */
-        virtual void OnAddToolQPP(wxsAdvQPP* QPP) { }
+        virtual void OnAddToolQPP(wxsAdvQPP* /*QPP*/) { }
 
         /** \brief Checking if this tool can be added to given resource
          *
@@ -105,7 +105,7 @@ class wxsTool: public wxsParent
         virtual wxsTool* ConvertToTool() { return this; }
 
         /** \brief Tools don't generate preview */
-        virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags) { return 0; }
+        virtual wxObject* OnBuildPreview(wxWindow* /*Parent*/, long /*Flags*/) { return 0; }
 };
 
 

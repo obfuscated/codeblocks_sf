@@ -170,13 +170,13 @@ class wxsResource: public wxObject
         virtual int OnGetTreeIcon() { return -1; }
 
         /** \brief Filling extra entries in popup menu invoked from resource browser */
-        virtual void OnFillPopupMenu(wxMenu* Menu) {}
+        virtual void OnFillPopupMenu(wxMenu* /*Menu*/) {}
 
         /** \brief Reacting on popup menu event */
-        virtual bool OnPopupMenu(long Id) { return false; }
+        virtual bool OnPopupMenu(long /*Id*/) { return false; }
 
         /** \brief Cleaning up before deleting this resource from project */
-        virtual bool OnDeleteCleanup(bool ShowDialog) { return true; }
+        virtual bool OnDeleteCleanup(bool /*ShowDialog*/) { return true; }
 
     private:
 

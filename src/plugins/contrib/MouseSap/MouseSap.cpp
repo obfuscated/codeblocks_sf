@@ -166,7 +166,7 @@ void MouseSap::OnAttach()
 	return ;
 }
 // ----------------------------------------------------------------------------
-void MouseSap::OnRelease(bool appShutDown)
+void MouseSap::OnRelease(bool /*appShutDown*/)
 // ----------------------------------------------------------------------------
 {
 	// do de-initialization for your plugin
@@ -188,7 +188,7 @@ void MouseSap::OnRelease(bool appShutDown)
     m_bMouseSapEnabled = false;
 }
 // ----------------------------------------------------------------------------
-cbConfigurationPanel* MouseSap::GetConfigurationPanel(wxWindow* parent)
+cbConfigurationPanel* MouseSap::GetConfigurationPanel(wxWindow* /*parent*/)
 // ----------------------------------------------------------------------------
 {
 	//create and display the configuration dialog for your plugin

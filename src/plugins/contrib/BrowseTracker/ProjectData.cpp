@@ -109,7 +109,7 @@ wxString ProjectData::GetProjectFilename()
     return m_ProjectFilename;
 }
 // ----------------------------------------------------------------------------
-void ProjectData::AddEditor( wxString filePath )
+void ProjectData::AddEditor( wxString /*filePath */)
 // ----------------------------------------------------------------------------
 {
 ////    // Don't stow duplicates
@@ -272,7 +272,11 @@ void ProjectData::SaveLayout()
 
 }
 // ----------------------------------------------------------------------------
-void ProjectData::DumpHash( const wxString hashType)
+void ProjectData::DumpHash( const wxString
+#if defined(LOGGING)
+	hashType
+#endif
+)
 // ----------------------------------------------------------------------------
 {
 

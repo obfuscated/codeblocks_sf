@@ -54,8 +54,11 @@ class Wiz : public cbWizardPlugin
 		Wiz();
 		~Wiz();
 
-        Wiz(const Wiz& rhs) { cbThrow(_T("Can't call Wiz's copy ctor!!!")); }
-        virtual void operator=(const Wiz& rhs){ cbThrow(_T("Can't assign an Wiz* !!!")); }
+        Wiz& operator=(const Wiz& /*rhs*/)  // prevent assignment operator
+        {
+        	cbThrow(_T("Can't assign an Wiz* !!!"));
+        	return *this;
+		}
 
 		int Configure(){ return 0; }
 		int GetCount() const;
@@ -189,6 +192,7 @@ class Wiz : public cbWizardPlugin
         wxString m_ReleaseOutputDir;
         wxString m_ReleaseObjOutputDir;
 	private:
+        Wiz(const Wiz& /*rhs*/); // prevent copy construction
 };
 
 #endif // WIZ_H

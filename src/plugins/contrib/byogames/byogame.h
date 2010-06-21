@@ -72,7 +72,7 @@ class byoEditorBase: public EditorBase
 
     private:
 
-        void OnSetFocus(wxFocusEvent& event) { if (m_Content) m_Content->SetFocus(); }
+        void OnSetFocus(wxFocusEvent& /*event*/) { if (m_Content) m_Content->SetFocus(); }
 
         byoGameBase* m_Content;
         DECLARE_EVENT_TABLE()

@@ -136,7 +136,7 @@ class wxsParent: public wxsItem
          * \param ShowMessage if true and item can not be added, show message
          *        explaining why it can not be done
          */
-        virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage) { return true; }
+        virtual bool OnCanAddChild(wxsItem* /*Item*/, bool /*ShowMessage*/) { return true; }
 
         /** \brief Function adding panels for child to wxsAdvQPP class
          *
@@ -209,7 +209,7 @@ class wxsParent: public wxsItem
          * \note This function does not make sure that parent is visible
          * \return false if nothing has changed, true if preview must be refreshed
          */
-        virtual bool OnEnsureChildPreviewVisible(wxsItem* Child) { return false; }
+        virtual bool OnEnsureChildPreviewVisible(wxsItem* /*Child*/) { return false; }
 
     private:
 

@@ -37,7 +37,7 @@ class wxsMenu: public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
         virtual bool OnIsPointer();
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage) { return true; }
+        virtual bool OnCanAddToResource(wxsItemResData* /*Data*/, bool /*ShowMessage*/) { return true; }
         virtual bool OnMouseDClick(wxWindow* Preview,int PosX,int PosY);
         virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
         virtual bool OnCanAddToParent(wxsParent* Item,bool ShowMessage);

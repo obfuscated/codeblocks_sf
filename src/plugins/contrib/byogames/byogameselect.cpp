@@ -89,12 +89,12 @@ byoGameSelect::~byoGameSelect()
 }
 
 
-void byoGameSelect::OnCancel(wxCommandEvent& event)
+void byoGameSelect::OnCancel(wxCommandEvent& /*event*/)
 {
     EndModal(-1);
 }
 
-void byoGameSelect::OnPlay(wxCommandEvent& event)
+void byoGameSelect::OnPlay(wxCommandEvent& /*event*/)
 {
     if ( m_GamesList->GetSelection() == wxNOT_FOUND ) return;
     EndModal(m_GamesList->GetSelection());

@@ -65,7 +65,7 @@ namespace
 
         private:
 
-            void OnPaint(wxPaintEvent& event)
+            void OnPaint(wxPaintEvent& /*event*/)
             {
                 // Drawing additional border around te panel
                 wxPaintDC DC(this);
@@ -102,7 +102,7 @@ namespace
     WXS_EV_END()
 }
 
-void wxsAuiPaneInfoExtra::OnEnumProperties(long Flags)
+void wxsAuiPaneInfoExtra::OnEnumProperties(long /*Flags*/)
 {
     //Name
     WXS_SHORT_STRING_P(wxsAuiPaneInfoExtra,m_Name,_("AUI Name"),_T("name"),_(""),false,1002);
@@ -697,7 +697,7 @@ wxString wxsAuiManager::OnXmlGetExtraObjectClass()
     return _T("AuiManagerItem");
 }
 
-void wxsAuiManager::OnEnumItemProperties(long Flags)
+void wxsAuiManager::OnEnumItemProperties(long /*Flags*/)
 {
 }
 

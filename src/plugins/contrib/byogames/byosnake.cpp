@@ -75,7 +75,7 @@ void byoSnake::OnKeyDown(wxKeyEvent& event)
     }
 }
 
-void byoSnake::OnPaint(wxPaintEvent& event)
+void byoSnake::OnPaint(wxPaintEvent& /*event*/)
 {
     wxSize size = GetClientSize();
     wxBitmap buffer(wxImage(size.GetWidth(),size.GetHeight()));
@@ -86,11 +86,11 @@ void byoSnake::OnPaint(wxPaintEvent& event)
     DrawStats(&DC);
 }
 
-void byoSnake::OnEraseBack(wxEraseEvent& event)
+void byoSnake::OnEraseBack(wxEraseEvent& /*event*/)
 {
 }
 
-void byoSnake::OnTimer(wxTimerEvent& event)
+void byoSnake::OnTimer(wxTimerEvent& /*event*/)
 {
     Move();
 }

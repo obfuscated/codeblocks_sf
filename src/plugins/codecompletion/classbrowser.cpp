@@ -519,12 +519,12 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     }
 }
 
-void ClassBrowser::OnRefreshTree(wxCommandEvent& event)
+void ClassBrowser::OnRefreshTree(wxCommandEvent& /*event*/)
 {
     UpdateView();
 }
 
-void ClassBrowser::OnForceReparse(wxCommandEvent& event)
+void ClassBrowser::OnForceReparse(wxCommandEvent& /*event*/)
 {
     if (m_NativeParser)
         m_NativeParser->ForceReparseActiveProject();

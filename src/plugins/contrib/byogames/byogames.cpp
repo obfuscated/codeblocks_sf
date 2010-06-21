@@ -45,7 +45,7 @@ void BYOGames::OnAttach()
     byoGameBase::ReloadFromConfig();
 }
 
-void BYOGames::OnRelease(bool appShutDown)
+void BYOGames::OnRelease(bool /*appShutDown*/)
 {
 }
 
@@ -59,11 +59,11 @@ int BYOGames::Execute()
 
 int BYOGames::SelectGame()
 {
-    byoGameSelect Select(NULL);
+    byoGameSelect Select(0);
     return Select.ShowModal();
 }
 
-void BYOGames::OnTimer(wxTimerEvent& event)
+void BYOGames::OnTimer(wxTimerEvent& /*event*/)
 {
     byoGameBase::BackToWorkTimer();
     SecondTick.Start(-1,true);

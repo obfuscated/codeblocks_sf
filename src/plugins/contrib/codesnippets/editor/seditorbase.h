@@ -153,7 +153,7 @@ class SEditorBase : public wxPanel
           *                       of the editor's area (if possible). If false,
           *                       it will be just made visible.
           */
-        virtual void GotoLine(int line, bool centerOnScreen = true){}
+        virtual void GotoLine(int l/*ine*/, bool /*centerOnScreen*/ = true){}
 
         /** Toggle breakpoint at specified line.
           * @param line The line to toggle the breakpoint on. If @c line is -1,
@@ -161,13 +161,13 @@ class SEditorBase : public wxPanel
           * @param notifyDebugger If true (and a debugger plugin is loaded),
           *                       tell the debugger about this breakpoint.
           */
-        virtual void ToggleBreakpoint(int line = -1, bool notifyDebugger = true){}
+        virtual void ToggleBreakpoint(int /*line*/ = -1, bool /*notifyDebugger*/ = true){}
 
         /** Does @c line has breakpoint?
           * @param line The line to check for breakpoint existence.
           * @return True if there is a breakpoint on this line, false if not.
           */
-        virtual bool HasBreakpoint(int line) const { return false; }
+        virtual bool HasBreakpoint(int /*line*/) const { return false; }
 
         /** Go to next breakpoint. */
         virtual void GotoNextBreakpoint(){}
@@ -179,13 +179,13 @@ class SEditorBase : public wxPanel
           * @param line The line to toggle the bookmark on. If @c line is -1,
           *             use current line.
           */
-        virtual void ToggleBookmark(int line = -1){}
+        virtual void ToggleBookmark(int /*line*/ = -1){}
 
         /** Does @c line has bookmark?
           * @param line The line to check for bookmark existence.
           * @return True if there is a bookmark on this line, false if not.
           */
-        virtual bool HasBookmark(int line) const { return false; }
+        virtual bool HasBookmark(int /*line*/) const { return false; }
 
         /** Go to next bookmark. */
         virtual void GotoNextBookmark(){}
@@ -198,14 +198,14 @@ class SEditorBase : public wxPanel
           * Highlight the line the debugger will execute next.
           * @param line The line in question.
           */
-        virtual void SetDebugLine(int line){}
+        virtual void SetDebugLine(int /*line*/){}
 
         /** @brief Mark line as error.
           *
           * Highlight the specified line as compiler error.
           * @param line The line in question.
           */
-        virtual void SetErrorLine(int line){}
+        virtual void SetErrorLine(int /*line*/){}
 
         /** Undo changes. */
         virtual void Undo(){}
@@ -276,7 +276,7 @@ class SEditorBase : public wxPanel
           * @param type The module's type.
           * @param pluginsdone True if plugin menus have been created, false if not.
           */
-        virtual void AddToContextMenu(wxMenu* popup, ModuleType type, bool pluginsdone) {}
+        virtual void AddToContextMenu(wxMenu* /*popup*/, ModuleType /*type*/, bool /*pluginsdone*/) {}
 
         /** Creates unique filename when asking to save the file.
           * @return A unique filename suggestion.
@@ -289,13 +289,13 @@ class SEditorBase : public wxPanel
           * @param type specifies the "ModuleType" popup menu.
           * @return If the editor returns false, the context menu creation is aborted.
           */
-        virtual bool OnBeforeBuildContextMenu(const wxPoint& position, ModuleType type){ return true; }
+        virtual bool OnBeforeBuildContextMenu(const wxPoint& /*position*/, ModuleType /*type*/){ return true; }
 
         /** Informs the editor we 're done creating the context menu (just about to display it).
           * Default implementation does nothing.
           * @param type specifies the "ModuleType" context popup menu.
           */
-        virtual void OnAfterBuildContextMenu(ModuleType type){}
+        virtual void OnAfterBuildContextMenu(ModuleType /*type*/){}
 
         virtual SEditorManager* GetEditorManager() const {return m_pEditorManager;}
         virtual wxWindow* GetEditorParent(){return m_pParent;}

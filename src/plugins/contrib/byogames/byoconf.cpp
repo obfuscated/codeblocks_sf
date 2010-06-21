@@ -170,7 +170,7 @@ void byoConf::OnApply()
     byoGameBase::ReloadFromConfig();
 }
 
-void byoConf::BTWSRefresh(wxCommandEvent& event)
+void byoConf::BTWSRefresh(wxCommandEvent& /*event*/)
 {
     if ( m_MaxPlaytimeChk->GetValue() )
     {

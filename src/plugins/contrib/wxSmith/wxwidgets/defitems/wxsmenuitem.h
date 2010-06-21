@@ -38,9 +38,9 @@ class wxsMenuItem: public wxsTool
 
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
-        virtual void OnEnumDeclFiles(wxArrayString& Decl,wxArrayString& Def,wxsCodingLang Language) {}
+        virtual void OnEnumDeclFiles(wxArrayString& /*Decl*/, wxArrayString& /*Def*/, wxsCodingLang /*Language*/) {}
         virtual bool OnIsPointer() { return true; }
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage) { return false; }
+        virtual bool OnCanAddToResource(wxsItemResData* /*Data*/, bool /*ShowMessage*/) { return false; }
         virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);

@@ -105,7 +105,9 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
     if (elem)
     {
         if (elem->Attribute("name"))
+        {
             ;//m_pProject->SetActiveBuildTarget(cbC2U(elem->Attribute("name")));
+        }
     }
 
     elem = root->FirstChildElement("File");
@@ -136,14 +138,18 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
             int top = 0;
             int tabpos = 0;
             if (elem->QueryIntAttribute("open", &open) == TIXML_SUCCESS)
+            {
                 ;//pf->editorOpen = open != 0;
+            }
             if (elem->QueryIntAttribute("top", &top) == TIXML_SUCCESS)
             {
                 if(top)
                     m_TopProjectFile = pf;
             }
             if (elem->QueryIntAttribute("tabpos", &tabpos) == TIXML_SUCCESS)
+            {
 				;//pf->editorTabPos = tabpos;
+            }
 
             TiXmlElement* cursor = elem->FirstChildElement();
             if (cursor)
@@ -151,9 +157,13 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
                 int pos = 0;
                 int topline = 0;
                 if (cursor->QueryIntAttribute("position", &pos) == TIXML_SUCCESS)
+                {
                     ;//pf->editorPos = pos;
+                }
                 if (cursor->QueryIntAttribute("topLine", &topline) == TIXML_SUCCESS)
+                {
                     ;//pf->editorTopLine = topline;
+                }
             }
 
             #if defined(LOGGING)

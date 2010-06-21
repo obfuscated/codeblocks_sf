@@ -136,7 +136,7 @@ class wxsAuiManager: public wxsParent
          * to Quick Props panel. This should be used to properties
          * that are used in AuiManager.
          */
-        virtual void OnAddAuiMangagerQPP(wxsAdvQPP* QPP) {}
+        virtual void OnAddAuiMangagerQPP(wxsAdvQPP* /*QPP*/) {}
 
     private:
 
@@ -184,7 +184,7 @@ class wxsAuiManager: public wxsParent
 
         long StyleFlags;
 
-        void OnClose(const wxCloseEvent &event) { wxMessageBox(_("AuiManager Closed"), _("Debug Me"), wxICON_INFORMATION); /*UnInit();*/ }
+        void OnClose(const wxCloseEvent & /*event*/) { wxMessageBox(_("AuiManager Closed"), _("Debug Me"), wxICON_INFORMATION); /*UnInit();*/ }
 };
 
 #endif

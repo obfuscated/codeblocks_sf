@@ -428,7 +428,7 @@ void CCDebugInfo::FillDescendants()
     cmbDescendants->SetSelection(0);
 }
 
-void CCDebugInfo::OnInit(wxInitDialogEvent& event)
+void CCDebugInfo::OnInit(wxInitDialogEvent& /*event*/)
 {
     if (!m_pParser)
         return;
@@ -444,7 +444,7 @@ void CCDebugInfo::OnInit(wxInitDialogEvent& event)
     txtFilter->SetFocus();
 }
 
-void CCDebugInfo::OnFindClick(wxCommandEvent& event)
+void CCDebugInfo::OnFindClick(wxCommandEvent& /*event*/)
 {
     TokensTree* tokens = m_pParser->GetTokens();
     wxString search = txtFilter->GetValue();
@@ -495,7 +495,7 @@ void CCDebugInfo::OnFindClick(wxCommandEvent& event)
     DisplayTokenInfo();
 }
 
-void CCDebugInfo::OnGoAscClick(wxCommandEvent& event)
+void CCDebugInfo::OnGoAscClick(wxCommandEvent& /*event*/)
 {
     int idx = cmbAncestors->GetSelection();
     if (!m_pToken || idx == -1)
@@ -515,7 +515,7 @@ void CCDebugInfo::OnGoAscClick(wxCommandEvent& event)
     }
 }
 
-void CCDebugInfo::OnGoDescClick(wxCommandEvent& event)
+void CCDebugInfo::OnGoDescClick(wxCommandEvent& /*event*/)
 {
     int idx = cmbDescendants->GetSelection();
     if (!m_pToken || idx == -1)
@@ -535,7 +535,7 @@ void CCDebugInfo::OnGoDescClick(wxCommandEvent& event)
     }
 }
 
-void CCDebugInfo::OnGoParentClick(wxCommandEvent& event)
+void CCDebugInfo::OnGoParentClick(wxCommandEvent& /*event*/)
 {
     if (!m_pToken || m_pToken->m_ParentIndex == -1)
         return;
@@ -544,7 +544,7 @@ void CCDebugInfo::OnGoParentClick(wxCommandEvent& event)
     DisplayTokenInfo();
 }
 
-void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& event)
+void CCDebugInfo::OnGoChildrenClick(wxCommandEvent& /*event*/)
 {
     int idx = cmbChildren->GetSelection();
     if (!m_pToken || idx == -1)
@@ -591,7 +591,7 @@ void SaveCCDebugInfo(const wxString& fileDesc, const wxString& content)
         cbMessageBox(_("Cannot create file ") + fname, _("CC Debug Info"));
 }
 
-void CCDebugInfo::OnSave(wxCommandEvent& event)
+void CCDebugInfo::OnSave(wxCommandEvent& /*event*/)
 {
     TokensTree* tokens = m_pParser->GetTokens();
     if (!tokens)
