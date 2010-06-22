@@ -8,7 +8,10 @@
  * License:   GPL
  **************************************************************/
 
-#include <sdk.h> // Code::Blocks SDK
+#if defined(CB_PRECOMP)
+#include "sdk.h"
+#endif
+//#include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
 	#include <wx/xrc/xmlres.h>
 	//-#include "cbeditor.h"

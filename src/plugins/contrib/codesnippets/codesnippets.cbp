@@ -16,6 +16,7 @@
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Compiler>
 					<Add option="-DWXMAKINGDLL_PROPGRID" />
+					<Add option="-DCB_PRECOMP" />
 					<Add option="-DwxPG_USE_WXMODULE=0" />
 				</Compiler>
 				<Linker>
@@ -48,7 +49,6 @@
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />

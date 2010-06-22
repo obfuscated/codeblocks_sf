@@ -14,7 +14,10 @@
  * License:   GPL
  **************************************************************/
 
+#if defined(CB_PRECOMP)
 #include "sdk.h"
+#endif
+//#include "sdk.h"
 #ifndef CB_PRECOMP
 	#include "cbeditor.h"
 #endif

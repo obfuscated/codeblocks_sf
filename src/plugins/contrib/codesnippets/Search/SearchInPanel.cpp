@@ -15,7 +15,10 @@
  * License:   GPL
  **************************************************************/
 
+#if defined(CB_PRECOMP)
 #include "sdk.h"
+#endif
+
 #ifndef CB_PRECOMP
 	#include <wx/checkbox.h>
 	#include <wx/sizer.h>

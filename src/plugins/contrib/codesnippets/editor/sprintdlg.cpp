@@ -7,7 +7,10 @@
  * $HeadURL: https://svn.berlios.de/svnroot/repos/codeblocks/trunk/src/src/printdlg.cpp $
  */
 
+#if defined(CB_PRECOMP)
 #include "sdk.h"
+#endif
+//#include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/intl.h>
 #include <wx/checkbox.h>
