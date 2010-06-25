@@ -1733,7 +1733,7 @@ void MainFrame::DoUpdateEditorStyle()
     DoUpdateEditorStyle(an, _T("editor"), closestyle | wxAUI_NB_DEFAULT_STYLE | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 
     an = m_pInfoPane;
-    DoUpdateEditorStyle(an, _T("message"), closestyle | wxAUI_NB_DEFAULT_STYLE);
+    DoUpdateEditorStyle(an, _T("infopane"), closestyle | wxAUI_NB_DEFAULT_STYLE);
 
     an = Manager::Get()->GetProjectManager()->GetNotebook();
     DoUpdateEditorStyle(an, _T("project"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE);
