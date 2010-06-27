@@ -20,8 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *****************************************************************************/
-#include <wx/fileconf.h>
 #include "Config.h"
+
+#include "sdk.h"
+#ifndef CB_PRECOMP
+#include <wx/filename.h>
+#include "manager.h"
+#include "configmanager.h"
+#include "personalitymanager.h"
+#endif //CB_PRECOMP
+#include <wx/fileconf.h>
+
 
 /*! \brief Constructor.
  */
@@ -271,9 +280,9 @@ bool DoxyBlocksConfig::ReadPrefsTemplate()
 wxString DoxyBlocksConfig::GetCBConfigDir()
 {
     PersonalityManager* PersMan = Manager::Get()->GetPersonalityManager();
-    wxString personality = PersMan->GetPersonality();
+    const wxString personality = PersMan->GetPersonality();
     ConfigManager* CfgMan = Manager::Get()->GetConfigManager(_T("app"));
-    wxFileName fnConf(CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown));
+    const wxFileName fnConf(CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown));
     return fnConf.GetPathWithSep();
 }
 

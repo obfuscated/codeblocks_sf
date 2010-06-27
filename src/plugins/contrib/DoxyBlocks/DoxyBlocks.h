@@ -23,13 +23,7 @@
 #ifndef DOXYBLOCKS_H_INCLUDED
 #define DOXYBLOCKS_H_INCLUDED
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
-
+#include "cbplugin.h"
 #include <cbstyledtextctrl.h>
 #include <tinyxml/tinyxml.h>
 #include "Config.h"

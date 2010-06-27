@@ -23,7 +23,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include "sdk.h"
+#include <wx/string.h>
 
 /*! \brief DoxyBlocks' configuration class.
  */
@@ -65,7 +65,7 @@ class DoxyBlocksConfig
 		/** Set m_sProjectNumber
 		 * \param val New value to set
 		 */
-		void SetProjectNumber(wxString val) { m_sProjectNumber = val; }
+		void SetProjectNumber(const wxString& val) { m_sProjectNumber = val; }
 
 		/** Access m_sOutputDirectory
 		 * \return The current value of m_sOutputDirectory
@@ -75,7 +75,7 @@ class DoxyBlocksConfig
 		/** Set m_sOutputDirectory
 		 * \param val New value to set
 		 */
-		void SetOutputDirectory(wxString val) { m_sOutputDirectory = val; }
+		void SetOutputDirectory(const wxString& val) { m_sOutputDirectory = val; }
 
 		/** Access m_sOutputLanguage
 		 * \return The current value of m_sOutputLanguage
@@ -85,7 +85,7 @@ class DoxyBlocksConfig
 		/** Set m_sOutputLanguage
 		 * \param val New value to set
 		 */
-		void SetOutputLanguage(wxString val) { m_sOutputLanguage = val; }
+		void SetOutputLanguage(const wxString& val) { m_sOutputLanguage = val; }
 
 		/** Access m_bUseAutoVersion
 		 * \return The current value of m_bUseAutoVersion
@@ -322,7 +322,7 @@ class DoxyBlocksConfig
 		/** Set m_sPathDoxygen
 		 * \param val New value to set
 		 */
-		void SetPathDoxygen(wxString val) { m_sPathDoxygen = val; }
+		void SetPathDoxygen(const wxString& val) { m_sPathDoxygen = val; }
 
 		/** Access m_sPathDoxywizard
 		 * \return The current value of m_sPathDoxywizard
@@ -332,7 +332,7 @@ class DoxyBlocksConfig
 		/** Set m_sPathDoxywizard
 		 * \param val New value to set
 		 */
-		void SetPathDoxywizard(wxString val) { m_sPathDoxywizard = val; }
+		void SetPathDoxywizard(const wxString& val) { m_sPathDoxywizard = val; }
 
 		/** Access m_sPathHHC
 		 * \return The current value of m_sPathHHC
@@ -342,7 +342,7 @@ class DoxyBlocksConfig
 		/** Set m_sPathHHC
 		 * \param val New value to set
 		 */
-		void SetPathHHC(wxString val) { m_sPathHHC = val; }
+		void SetPathHHC(const wxString& val) { m_sPathHHC = val; }
 
 		/** Access m_sPathDot
 		 * \return The current value of m_sPathDot
@@ -352,7 +352,7 @@ class DoxyBlocksConfig
 		/** Set m_sPathDot
 		 * \param val New value to set
 		 */
-		void SetPathDot(wxString val) { m_sPathDot = val; }
+		void SetPathDot(const wxString& val) { m_sPathDot = val; }
 
 		/** Access m_sPathCHMViewer
 		 * \return The current value of m_sPathCHMViewer
@@ -362,7 +362,7 @@ class DoxyBlocksConfig
 		/** Set m_sPathCHMViewer
 		 * \param val New value to set
 		 */
-		void SetPathCHMViewer(wxString val) { m_sPathCHMViewer = val; }
+		void SetPathCHMViewer(const wxString& val) { m_sPathCHMViewer = val; }
 
 		// General Options
 		/** Access m_bOverwriteDoxyfile
