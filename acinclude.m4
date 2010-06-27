@@ -224,12 +224,16 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [false])
 	AM_CONDITIONAL([BUILD_CODESTAT], [false])
 	AM_CONDITIONAL([BUILD_COPYSTRINGS], [false])
+	AM_CONDITIONAL([BUILD_CSCOPE], [false])
+	AM_CONDITIONAL([BUILD_DOXYBLOCKS], [false])
 	AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
+	AM_CONDITIONAL([BUILD_EDITORTWEAKS], [false])
 	AM_CONDITIONAL([BUILD_ENVVARS], [false])
 	AM_CONDITIONAL([BUILD_HEADERFIXUP], [false])
 	AM_CONDITIONAL([BUILD_HELP], [false])
 	AM_CONDITIONAL([BUILD_KEYBINDER], [false])
 	AM_CONDITIONAL([BUILD_LIBFINDER], [false])
+	AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [false])
 	AM_CONDITIONAL([BUILD_PROFILER], [false])
 	AM_CONDITIONAL([BUILD_REGEX], [false])
 	AM_CONDITIONAL([BUILD_EXPORTER], [false])
@@ -254,12 +258,16 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_CODESNIPPETS], [true])
 	AM_CONDITIONAL([BUILD_CODESTAT], [true])
 	AM_CONDITIONAL([BUILD_COPYSTRINGS], [true])
+	AM_CONDITIONAL([BUILD_CSCOPE], [true])
+	AM_CONDITIONAL([BUILD_DOXYBLOCKS], [true])
 	AM_CONDITIONAL([BUILD_DRAGSCROLL], [true])
+	AM_CONDITIONAL([BUILD_EDITORTWEAKS], [true])
 	AM_CONDITIONAL([BUILD_ENVVARS], [true])
 	AM_CONDITIONAL([BUILD_HEADERFIXUP], [true])
 	AM_CONDITIONAL([BUILD_HELP], [true])
 	AM_CONDITIONAL([BUILD_KEYBINDER], [true])
 	AM_CONDITIONAL([BUILD_LIBFINDER], [true])
+	AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [true])
 	AM_CONDITIONAL([BUILD_PROFILER], [true])
 	AM_CONDITIONAL([BUILD_REGEX], [true])
 	AM_CONDITIONAL([BUILD_EXPORTER], [true])
@@ -286,10 +294,10 @@ AC_ARG_WITH(contrib-plugins,
   [                        "all" compiles all contrib plugins ]
   [                        "all,-help" compiles all contrib plugins except the help plugin ]
   [                        By default, no contrib plugins are compiled ]
-  [                        Plugin names are: AutoVersioning,BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,]
-  [                        		     codestat,copystrings, dragscroll,envvars,headerfixup, ]
+  [                        Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets,]
+  [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorTweaks, envvars,headerfixup, ]
   [                        		     help,hexeditor,incsearch,keybinder,libfinder,MouseSap, ]
-  [                        		     profiler,regex,exporter,symtab,ThreadSearch,Valgrind,wxsmith, ]
+  [                        		     NassiShneiderman, profiler,regex,exporter,symtab,ThreadSearch,Valgrind,wxsmith, ]
   [                        		     wxsmithcontrib,wxsmithaui ],
   plugins="$withval", plugins="none")
 
@@ -321,8 +329,17 @@ do
 	copystrings)
 		AM_CONDITIONAL([BUILD_COPYSTRINGS], [true])
 		;;
+	Cscope)
+		AM_CONDITIONAL([BUILD_CSCOPE], [true])
+		;;
+	DoxyBlocks)
+		AM_CONDITIONAL([BUILD_DOXYBLOCKS], [true])
+		;;
 	dragscroll)
 		AM_CONDITIONAL([BUILD_DRAGSCROLL], [true])
+		;;
+	EditorTweaks)
+		AM_CONDITIONAL([BUILD_EDITORTWEAKS], [true])
 		;;
 	envvars)
 		AM_CONDITIONAL([BUILD_ENVVARS], [true])
@@ -338,6 +355,9 @@ do
 		;;
 	libfinder)
 		AM_CONDITIONAL([BUILD_LIBFINDER], [true])
+		;;
+	NassiShneiderman)
+		AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [true])
 		;;
 	profiler)
 		AM_CONDITIONAL([BUILD_PROFILER], [true])
@@ -402,8 +422,17 @@ do
 	-copystrings)
 		AM_CONDITIONAL([BUILD_COPYSTRINGS], [false])
 		;;
+	-Cscope)
+		AM_CONDITIONAL([BUILD_CSCOPE], [false])
+		;;
+	-DoxyBlocks)
+		AM_CONDITIONAL([BUILD_DOXYBLOCKS], [false])
+		;;
 	-dragscroll)
 		AM_CONDITIONAL([BUILD_DRAGSCROLL], [false])
+		;;
+	-EditorTweaks)
+		AM_CONDITIONAL([BUILD_EDITORTWEAKS], [false])
 		;;
 	-envvars)
 		AM_CONDITIONAL([BUILD_ENVVARS], [false])
@@ -419,6 +448,9 @@ do
 		;;
 	-libfinder)
 		AM_CONDITIONAL([BUILD_LIBFINDER], [false])
+		;;
+	-NassiShneiderman)
+		AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [false])
 		;;
 	-profiler)
 		AM_CONDITIONAL([BUILD_PROFILER], [false])
@@ -477,12 +509,16 @@ AC_SUBST(BUILD_CBKODERS)
 AC_SUBST(BUILD_CODESNIPPETS)
 AC_SUBST(BUILD_CODESTAT)
 AC_SUBST(BUILD_COPYSTRINGS)
+AC_SUBST(BUILD_CSCOPE)
+AC_SUBST(BUILD_DOXYBLOCKS)
 AC_SUBST(BUILD_DRAGSCROLL)
+AC_SUBST(BUILD_EDITORTWEAKS)
 AC_SUBST(BUILD_ENVVARS)
 AC_SUBST(BUILD_HEADERFIXUP)
 AC_SUBST(BUILD_HELP)
 AC_SUBST(BUILD_KEYBINDER)
 AC_SUBST(BUILD_LIBFINDER)
+AC_SUBST(BUILD_NASSISHNEIDERMAN)
 AC_SUBST(BUILD_PROFILER)
 AC_SUBST(BUILD_REGEX)
 AC_SUBST(BUILD_EXPORTER)

@@ -1,0 +1,69 @@
+/**************************************************************************//**
+ * \file		DoxyBlocks.rc
+ * \author	Gary Harris
+ * \date		01-02-2010
+ *
+ * DoxyBlocks - doxygen integration for Code::Blocks.					\n
+ * Copyright (C) 2010 Gary Harris.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *****************************************************************************/
+#include "version.h"
+#include "wx/msw/wx.rc"
+
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+VS_VERSION_INFO		VERSIONINFO
+  FILEVERSION				RC_FILEVERSION
+  PRODUCTVERSION	RC_FILEVERSION
+  FILEFLAGSMASK		0x3fL // VS_FFI_FILEFLAGSMASK
+#ifdef __WXDEBUG__
+  FILEFLAGS        		0x1L  // VS_FF_DEBUG|VS_FF_PRIVATEBUILD|VS_FF_PRERELEASE
+#else
+  FILEFLAGS        		0x0L  // final version
+#endif
+  FILEOS           			VOS_NT_WINDOWS32
+  FILETYPE         			VFT_APP
+  FILESUBTYPE      		VFT2_UNKNOWN // not used
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
+    {
+      VALUE "Build",					"March 2010\0"
+      VALUE "Comments",			"Free to all.\0"
+      VALUE "CompanyName",	"\0"
+      VALUE "Developer",				"Gary Harris\0"
+      VALUE "FileDescription",		"Doxygen integration for Code::Blocks.\0"
+	  VALUE "FileVersion",			RC_FILEVERSION_STRING
+      VALUE "InternalName",		"DoxyBlocks\0"
+      VALUE "LegalCopyright",		"Copyright 2010 Gary Harris.\0"
+      VALUE "LegalTrademarks",	"All rights reserved.\0"
+      VALUE "OriginalFilename",	"DoxyBlocks.dll\0"
+      VALUE "PrivateBuild",			"\0"
+      VALUE "ProductName",		"DoxyBlocks\0"
+      VALUE "ProductVersion",	RC_FILEVERSION_STRING
+      VALUE "SpecialBuild",			"\0"
+      VALUE "Support",				"http://doxyblocks.sourceforge.net/\0"
+      VALUE "Users",					"Unlimited.\0"
+    } // BLOCK "040904E4"
+  } // BLOCK "StringFileInfo"
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x409, 1252 // 1252 = 0x04E4
+  } // BLOCK "VarFileInfo"
+}
+
+

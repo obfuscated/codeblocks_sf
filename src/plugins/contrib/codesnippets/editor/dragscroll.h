@@ -63,7 +63,7 @@ class cbDragScroll : public cbPlugin
         int GetConfigurationGroup() const { return cgEditor; }
 		void BuildMenu(wxMenuBar* menuBar){ return; }
         void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data){ return; }
-        bool BuildToolBar(wxToolBar* toolBar){ return false; }
+        bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
      virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);

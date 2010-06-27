@@ -8,8 +8,11 @@
 		<Project filename="plugins\contrib\codesnippets\codesnippets.cbp" />
 		<Project filename="plugins\contrib\codestat\codestat.cbp" />
 		<Project filename="plugins\contrib\copystrings\copystrings.cbp" />
+		<Project filename="plugins\contrib\Cscope\Cscope.cbp" />
 		<Project filename="plugins\contrib\devpak_plugin\DevPakPlugin.cbp" />
+		<Project filename="plugins\contrib\DoxyBlocks\DoxyBlocks.cbp" />
 		<Project filename="plugins\contrib\dragscroll\dragscroll.cbp" />
+		<Project filename="plugins\contrib\EditorTweaks\EditorTweaks.cbp" />
 		<Project filename="plugins\contrib\envvars\envvars.cbp" />
 		<Project filename="plugins\contrib\source_exporter\Exporter.cbp" />
 		<Project filename="plugins\contrib\byogames\byogames.cbp" />
@@ -23,6 +26,7 @@
 			<Depends filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems.cbp" />
 		</Project>
 		<Project filename="plugins\contrib\MouseSap\MouseSap.cbp" />
+		<Project filename="plugins\contrib\NassiShneiderman\NassiShneiderman.cbp" />
 		<Project filename="plugins\contrib\profiler\cbprofiler.cbp" />
 		<Project filename="plugins\contrib\regex_testbed\RegExTestbed.cbp" />
 		<Project filename="plugins\contrib\symtab\symtab.cbp" />

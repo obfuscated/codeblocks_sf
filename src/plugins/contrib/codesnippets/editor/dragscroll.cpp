@@ -273,7 +273,7 @@ void cbDragScroll::OnAttach()
 	return ;
 }
 // ----------------------------------------------------------------------------
-void cbDragScroll::OnRelease(bool appShutDown)
+void cbDragScroll::OnRelease(bool /*appShutDown*/)
 // ----------------------------------------------------------------------------
 {
 	// do de-initialization for your plugin
@@ -398,7 +398,7 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
 
 }//OnDialogDone
 // ----------------------------------------------------------------------------
-void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& event)
+void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     // This is an event triggered by OnDialogDone() to update config settings
@@ -590,7 +590,7 @@ void cbDragScroll::OnDragScrollEventRescan(wxCommandEvent& event )
     #endif
 }
 // ----------------------------------------------------------------------------
-void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& event )
+void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& /*event*/ )
 // ----------------------------------------------------------------------------
 {
 
@@ -650,7 +650,7 @@ void cbDragScroll::OnDragScrollEvent_InvokeConfig(wxCommandEvent& event )
     Configure( parent );
 }
 // ----------------------------------------------------------------------------
-void cbDragScroll::OnDragScrollTestRescan(wxCommandEvent& event )
+void cbDragScroll::OnDragScrollTestRescan(wxCommandEvent& /*event*/ )
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
@@ -1070,7 +1070,7 @@ void cbDragScroll::SetWindowZoom(wxWindow* pWxWindow)
 }
 
 // ----------------------------------------------------------------------------
-void cbDragScroll::OnProjectClose(CodeBlocksEvent& event)
+void cbDragScroll::OnProjectClose(CodeBlocksEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     // Ask DragScoll to clean up any orphaned windows and rescan for
@@ -1094,7 +1094,7 @@ void cbDragScroll::OnProjectClose(CodeBlocksEvent& event)
     return;
 }
 // ----------------------------------------------------------------------------
-void cbDragScroll::OnStartShutdown(CodeBlocksEvent& event)
+void cbDragScroll::OnStartShutdown(CodeBlocksEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     //NOTE: CB is invoking this event TWICE

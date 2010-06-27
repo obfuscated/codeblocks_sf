@@ -8,7 +8,10 @@ usr/bin/codesnippets
 usr/lib/codeblocks/plugins/libcodesnippets.* 
 usr/lib/codeblocks/plugins/libcodestat.* 
 usr/lib/codeblocks/plugins/libcopystrings.* 
+usr/lib/codeblocks/plugins/libCscope.* 
+usr/lib/codeblocks/plugins/libDoxyBlocks.* 
 usr/lib/codeblocks/plugins/libdragscroll.* 
+usr/lib/codeblocks/plugins/libEditorTweaks.* 
 usr/lib/codeblocks/plugins/libenvvars.* 
 usr/lib/codeblocks/plugins/libexporter.* 
 usr/lib/codeblocks/plugins/libheaderfixup.* 
@@ -17,6 +20,7 @@ usr/lib/codeblocks/plugins/libHexEditor.*
 usr/lib/codeblocks/plugins/libIncrementalSearch.* 
 usr/lib/codeblocks/plugins/libkeybinder.* 
 usr/lib/codeblocks/plugins/liblib_finder.* 
+usr/lib/codeblocks/plugins/libNassiShneiderman.* 
 usr/lib/codeblocks/plugins/libProfiler.* 
 usr/lib/codeblocks/plugins/libRegExTestbed.* 
 usr/lib/codeblocks/plugins/libSymTab.* 

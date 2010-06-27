@@ -26,6 +26,18 @@ if BUILD_COPYSTRINGS
 MAYBE_COPYSTRINGS=copystrings
 endif
 
+if BUILD_CSCOPE
+MAYBE_CSCOPE=Cscope
+endif
+
+if BUILD_EDITORTWEAKS
+MAYBE_EDITORTWEAKS=EditorTweaks
+endif
+
+if BUILD_DOXYBLOCKS
+MAYBE_DOXYBLOCKS=DoxyBlocks
+endif
+
 if BUILD_DRAGSCROLL
 MAYBE_DRAGSCROLL=dragscroll
 endif
@@ -98,6 +110,10 @@ if BUILD_MOUSESAP
 MAYBE_MOUSESAP=MouseSap
 endif
 
+if BUILD_NASSISHNEIDERMAN
+MAYBE_NASSISHNEIDERMAN=NassiShneiderman
+endif
+
 if BUILD_CCCC
 MAYBE_CCCC=Cccc
 endif
@@ -113,7 +129,10 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_CODESNIPPETS) \
 		$(MAYBE_CODESTAT) \
 		$(MAYBE_COPYSTRINGS) \
+		$(MAYBE_CSCOPE) \
+		$(MAYBE_DOXYBLOCKS) \
 		$(MAYBE_DRAGSCROLL) \
+		$(MAYBE_EDITORTWEAKS) \
 		$(MAYBE_ENVVARS) \
 		$(MAYBE_HELP) \
 		$(MAYBE_HEADERFIXUP) \
@@ -131,6 +150,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_HEXEDITOR) \
 		$(MAYBE_INCSEARCH) \
 		$(MAYBE_MOUSESAP) \
+		$(MAYBE_NASSISHNEIDERMAN) \
 		$(MAYBE_CCCC) \
 		$(MAYBE_CPPCHECK)
 
@@ -141,8 +161,11 @@ DIST_SUBDIRS = AutoVersioning \
 		codesnippets \
 		codestat \
 		copystrings \
+		Cscope \
 		devpak_plugin \
+		DoxyBlocks \
 		dragscroll \
+		EditorTweaks \
 		envvars \
 		help_plugin \
 		headerfixup \
@@ -160,6 +183,7 @@ DIST_SUBDIRS = AutoVersioning \
 		HexEditor \
 		IncrementalSearch \
 		MouseSap \
+		NassiShneiderman \
 		Cccc \
 		CppCheck
 

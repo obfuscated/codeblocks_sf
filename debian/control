@@ -100,7 +100,10 @@ Description: contrib plugins for Code::Blocks IDE
     * Code profiler (based on gprof)
     * Code statistics (SLOCs etc)
     * Copy strings
+    * Cscope
+    * DoxyBlocks
     * DragScroll (enhances mouse operations)
+    * EditorTweaks
     * Setting of environment variables
     * Source exporter to PDF/HTML/ODT/RTF
     * Header fixup
@@ -124,6 +127,7 @@ Description: contrib plugins for Code::Blocks IDE
     * MouseSap
     * Cccc
     * CppCheck
+    * NassiShneiderman
  It's a svn-download and may contain bugs.
 
 Package: codeblocks-contrib-common

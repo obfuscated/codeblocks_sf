@@ -222,13 +222,17 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/codesnippets.zip
 %{pkgdata}/codestat.zip
 %{pkgdata}/copystrings.zip
+%{pkgdata}/Cscope.zip
+%{pkgdata}/DoxyBlocks.zip
 %{pkgdata}/dragscroll.zip
+%{pkgdata}/EditorTweaks.zip
 %{pkgdata}/envvars.zip
 %{pkgdata}/exporter.zip
 %{pkgdata}/headerfixup.zip
 %{pkgdata}/help_plugin.zip
 %{pkgdata}/keybinder.zip
 %{pkgdata}/lib_finder.zip
+%{pkgdata}/NassiShneiderman.zip
 %{pkgdata}/Profiler.zip
 %{pkgdata}/RegExTestbed.zip
 %{pkgdata}/SymTab.zip
@@ -242,6 +246,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkgdata}/MouseSap.zip
 %{pkgdata}/images/wxsmith/*
 %{pkgdata}/images/codesnippets/*
+%{pkgdata}/images/DoxyBlocks/*
 %{pkgdata}/images/ThreadSearch/*
 %{pkgdata}/lib_finder/*
 %{pkglib}/plugins/libAutoVersioning.*
@@ -253,7 +258,10 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libcodesnippets.*
 %{pkglib}/plugins/libcodestat.*
 %{pkglib}/plugins/libcopystrings.*
+%{pkglib}/plugins/libCscope.*
+%{pkglib}/plugins/libDoxyBlocks.*
 %{pkglib}/plugins/libdragscroll.*
+%{pkglib}/plugins/libEditorTweaks.*
 %{pkglib}/plugins/libenvvars.*
 %{pkglib}/plugins/libexporter.*
 %{pkglib}/plugins/libheaderfixup.*
@@ -262,6 +270,7 @@ Code::Blocks SDK to develop your own plugins.
 %{pkglib}/plugins/libIncrementalSearch.*
 %{pkglib}/plugins/libkeybinder.*
 %{pkglib}/plugins/liblib_finder.*
+%{pkglib}/plugins/libNassiShneiderman.*
 %{pkglib}/plugins/libProfiler.*
 %{pkglib}/plugins/libRegExTestbed.*
 %{pkglib}/plugins/libSymTab.*
