@@ -147,7 +147,7 @@ MainFrame::~MainFrame()
 
 //***********************************************************************
 
-void MainFrame::OnBtnFileSrcClick(wxCommandEvent& event)
+void MainFrame::OnBtnFileSrcClick(wxCommandEvent& /*event*/)
 {
   wxString filename = FileSelector();
   if (filename.IsEmpty() || SameConfig(filename, txtFileDst))
@@ -169,7 +169,7 @@ void MainFrame::OnBtnFileSrcClick(wxCommandEvent& event)
 
 //***********************************************************************
 
-void MainFrame::OnBtnFileDstClick(wxCommandEvent& event)
+void MainFrame::OnBtnFileDstClick(wxCommandEvent& /*event*/)
 {
   wxString filename = FileSelector();
   if (filename.IsEmpty() || SameConfig(filename, txtFileSrc))
@@ -191,7 +191,7 @@ void MainFrame::OnBtnFileDstClick(wxCommandEvent& event)
 
 //***********************************************************************
 
-void MainFrame::OnBtnTransferClick(wxCommandEvent& event)
+void MainFrame::OnBtnTransferClick(wxCommandEvent& /*event*/)
 {
   if (mCfgSrcValid && mCfgDstValid)
   {
@@ -200,9 +200,9 @@ void MainFrame::OnBtnTransferClick(wxCommandEvent& event)
     {
       // Set all (checked) variables of lstEnvVars
       int items_selected = 0;
-      for (int i=0; i<clbCfgSrc->GetCount(); ++i)
+      for (int i = 0; i < static_cast<int>(clbCfgSrc->GetCount()); ++i)
       {
-        if (clbCfgSrc->IsChecked(i) && (mNodesSrc.size()>i))
+        if (clbCfgSrc->IsChecked(i) && (static_cast<int>(mNodesSrc.size()) > i))
         {
           items_selected++;
 
@@ -245,15 +245,15 @@ void MainFrame::OnBtnTransferClick(wxCommandEvent& event)
 
 //***********************************************************************
 
-void MainFrame::OnBtnUncheckClick(wxCommandEvent& event)
+void MainFrame::OnBtnUncheckClick(wxCommandEvent& /*event*/)
 {
-  for (int i=0; i<clbCfgSrc->GetCount(); ++i)
+  for (int i=0; i < static_cast<int>(clbCfgSrc->GetCount()); ++i)
     clbCfgSrc->Check(i, false);
 }// OnBtnUncheckClick
 
 //***********************************************************************
 
-void MainFrame::OnBtnExportClick(wxCommandEvent& event)
+void MainFrame::OnBtnExportClick(wxCommandEvent& /*event*/)
 {
   TiXmlDocument* doc = new TiXmlDocument();
 
@@ -276,9 +276,9 @@ void MainFrame::OnBtnExportClick(wxCommandEvent& event)
 
       // Save all (checked) variables of lstEnvVars
       int items_selected = 0;
-      for (int i=0; i<clbCfgSrc->GetCount(); ++i)
+      for (int i=0; i < static_cast<int>(clbCfgSrc->GetCount()); ++i)
       {
-        if (clbCfgSrc->IsChecked(i) && (mNodesSrc.size()>i))
+        if (clbCfgSrc->IsChecked(i) && (static_cast<int>(mNodesSrc.size()) > i))
         {
           items_selected++;
 
@@ -385,7 +385,7 @@ void MainFrame::OnBtnExportClick(wxCommandEvent& event)
 
 //***********************************************************************
 
-void MainFrame::OnBtnSaveClick(wxCommandEvent& event)
+void MainFrame::OnBtnSaveClick(wxCommandEvent& /*event*/)
 {
   if (wxMessageBox(wxT("Are you sure to save destination configuration file?"),
                    wxT("Question"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT ) == wxYES)
@@ -405,7 +405,7 @@ void MainFrame::OnBtnSaveClick(wxCommandEvent& event)
 
 //***********************************************************************
 
-void MainFrame::OnBtnCloseClick(wxCommandEvent& event)
+void MainFrame::OnBtnCloseClick(wxCommandEvent& /*event*/)
 {
 	Close();
 }// OnBtnCloseClick
@@ -416,7 +416,7 @@ wxString MainFrame::FileSelector()
 {
 #ifdef __WXMSW__
   TCHAR szPath[MAX_PATH];
-  SHGetFolderPath(NULL, CSIDL_APPDATA, NULL, 0, szPath);
+  SHGetFolderPath(NULL, CSIDL_APPDATA, 0, 0, szPath);
   wxString config_folder = wxString(szPath) + wxT("\\codeblocks");
 #else
   wxFileName f;
@@ -655,7 +655,6 @@ bool MainFrame::TransferNode(TiXmlNode** node, const wxArrayString& path)
 {
   if (!path.IsEmpty())
   {
-    int           level     = 0;
     TiXmlElement* element   = mCfgDst->FirstChildElement("CodeBlocksConfig");
     TiXmlNode*    node_copy = (*node)->Clone();
 
