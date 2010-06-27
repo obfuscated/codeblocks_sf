@@ -299,7 +299,11 @@ void ProjectData::DumpHash( const wxString
 }
 
 // ----------------------------------------------------------------------------
-void ProjectData::DumpBrowse_Marks( const wxString hashType )
+void ProjectData::DumpBrowse_Marks( const wxString
+#if defined(LOGGING)
+	hashType
+#endif
+)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)

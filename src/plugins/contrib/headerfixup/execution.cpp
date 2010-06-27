@@ -64,7 +64,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   Create(parent, id, _("Header Fixup"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizLeft = new wxBoxSizer(wxVERTICAL);
-  wxString __wxRadioBoxChoices_1[2] = 
+  wxString __wxRadioBoxChoices_1[2] =
   {
   	_("Scan source files in project"),
   	_("Scan source files in workspace")
@@ -73,7 +73,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_Scope->SetSelection(0);
   m_Scope->SetToolTip(_("This will setup on what files to operate: All from active project or whole workspace."));
   sizLeft->Add(m_Scope, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  wxString __wxRadioBoxChoices_2[2] = 
+  wxString __wxRadioBoxChoices_2[2] =
   {
   	_("Use \"include.h\" (quotation marks)"),
   	_("Use <include.h> (brackets)")
@@ -95,7 +95,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   m_ObsoleteLog->SetValue(false);
   m_ObsoleteLog->SetToolTip(_("This will show a list of included files in the log (protocol) which were found with unknown bindings that could *possibly* be removed."));
   sizAdvancedOptions->Add(m_ObsoleteLog, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  wxString __wxRadioBoxChoices_3[3] = 
+  wxString __wxRadioBoxChoices_3[3] =
   {
   	_("Process header files only"),
   	_("Process implementation files only"),
@@ -148,7 +148,7 @@ Execution::Execution(wxWindow* parent,wxWindowID id)
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
   Center();
-  
+
   Connect(ID_CHK_SIMULATION,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&Execution::OnChkSimulationClick);
   Connect(ID_BTN_SELECT_ALL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnSelectAllClick);
   Connect(ID_BTN_SELECT_NONE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Execution::OnBtnSelectNoneClick);
@@ -184,7 +184,7 @@ void Execution::OnChkSimulationClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OnBtnSelectAllClick(wxCommandEvent& event)
+void Execution::OnBtnSelectAllClick(wxCommandEvent& /*event*/)
 {
   for ( size_t i=0; i<m_Sets->GetCount(); i++ )
     m_Sets->Check(i,true);
@@ -192,23 +192,23 @@ void Execution::OnBtnSelectAllClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OnBtnSelectNoneClick(wxCommandEvent& event)
+void Execution::OnBtnSelectNoneClick(wxCommandEvent& /*event*/)
 {
-  for ( size_t i=0; i<m_Sets->GetCount(); i++ )
+  for ( size_t i=0; i<m_Sets->GetCount(); ++i )
     m_Sets->Check(i,false);
 }// OnBtnSelectNoneClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OnBtnInvertClick(wxCommandEvent& event)
+void Execution::OnBtnInvertClick(wxCommandEvent& /*event*/)
 {
-  for ( size_t i=0; i<m_Sets->GetCount(); i++ )
+  for ( size_t i=0; i<m_Sets->GetCount(); ++i )
     m_Sets->Check(i,!m_Sets->IsChecked(i));
 }// OnBtnInvertClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OnBtnRunClick(wxCommandEvent& event)
+void Execution::OnBtnRunClick(wxCommandEvent& /*event*/)
 {
   ToggleControls(true);
 
@@ -313,7 +313,7 @@ void Execution::OnBtnRunClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Execution::OnBtnExitClick(wxCommandEvent& event)
+void Execution::OnBtnExitClick(wxCommandEvent& /*event*/)
 {
   SaveSettings();
   EndModal(wxID_CANCEL);
@@ -705,7 +705,7 @@ void Execution::OperateToken(const wxString&      Token,
                              const wxChar&        Ch,
                              const wxString&      Line,
                              wxArrayString&       RequiredHeaders,
-                             wxArrayString&       RequiredFwdDecls)
+                             wxArrayString&       /*RequiredFwdDecls*/)
 {
   // if header file: filter forward declarations
   if (   m_FileAnalysis.IsHeaderFile()

@@ -193,7 +193,7 @@ SearchDialog::~SearchDialog()
 	//*)
 }
 
-void SearchDialog::OnOk(wxCommandEvent& event)
+void SearchDialog::OnOk(wxCommandEvent& /*event*/)
 {
     if ( m_SearchTypeString->GetValue() )
     {
@@ -555,7 +555,7 @@ void SearchDialog::Cancel()
     EndModal( wxID_CANCEL );
 }
 
-void SearchDialog::OnButton1Click(wxCommandEvent& event)
+void SearchDialog::OnButton1Click(wxCommandEvent& /*event*/)
 {
     cbMessageBox(
         _( "Search for string:\n"

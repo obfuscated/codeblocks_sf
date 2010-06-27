@@ -181,7 +181,7 @@ void SelectStoredExpressionDlg::RecreateExpressionsList( const wxString& selecti
     }
 }
 
-void SelectStoredExpressionDlg::OnButton1Click(wxCommandEvent& event)
+void SelectStoredExpressionDlg::OnButton1Click(wxCommandEvent& /*event*/)
 {
     AddingExpression( wxEmptyString, m_Expression );
 }
@@ -243,7 +243,7 @@ void SelectStoredExpressionDlg::AddingExpression( const wxString& defaultName, c
 	RecreateExpressionsList( name );
 }
 
-void SelectStoredExpressionDlg::Onm_ExpressionsSelect(wxCommandEvent& event)
+void SelectStoredExpressionDlg::Onm_ExpressionsSelect(wxCommandEvent& /*event*/)
 {
 }
 
@@ -282,7 +282,7 @@ void SelectStoredExpressionDlg::StoreExpressionsQuery()
     m_CacheChanged = false;
 }
 
-void SelectStoredExpressionDlg::OnButton2Click(wxCommandEvent& event)
+void SelectStoredExpressionDlg::OnButton2Click(wxCommandEvent& /*event*/)
 {
     ListData* data = GetSelection();
     if ( !data ) return;
@@ -297,7 +297,7 @@ SelectStoredExpressionDlg::ListData * SelectStoredExpressionDlg::GetSelection()
 }
 
 
-void SelectStoredExpressionDlg::OnButton3Click(wxCommandEvent& event)
+void SelectStoredExpressionDlg::OnButton3Click(wxCommandEvent& /*event*/)
 {
     ListData* data = GetSelection();
     if ( !data ) return;
@@ -328,17 +328,17 @@ void SelectStoredExpressionDlg::OnButton3Click(wxCommandEvent& event)
 }
 
 
-void SelectStoredExpressionDlg::Onm_FilterText(wxCommandEvent& event)
+void SelectStoredExpressionDlg::Onm_FilterText(wxCommandEvent& /*event*/)
 {
     Timer1.Start( 1000, true );
 }
 
-void SelectStoredExpressionDlg::Onm_FilterTextEnter(wxCommandEvent& event)
+void SelectStoredExpressionDlg::Onm_FilterTextEnter(wxCommandEvent& /*event*/)
 {
     FilterUpdated();
 }
 
-void SelectStoredExpressionDlg::OnTimer1Trigger(wxTimerEvent& event)
+void SelectStoredExpressionDlg::OnTimer1Trigger(wxTimerEvent& /*event*/)
 {
     FilterUpdated();
 }
@@ -352,7 +352,7 @@ void SelectStoredExpressionDlg::FilterUpdated()
     RecreateExpressionsList( name );
 }
 
-void SelectStoredExpressionDlg::OnButton4Click(wxCommandEvent& event)
+void SelectStoredExpressionDlg::OnButton4Click(wxCommandEvent& /*event*/)
 {
     ListData* data = GetSelection();
     if ( !data ) return;

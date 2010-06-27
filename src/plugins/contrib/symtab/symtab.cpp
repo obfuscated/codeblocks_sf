@@ -70,7 +70,7 @@ void SymTab::OnAttach()
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
 
-void SymTab::OnRelease(bool appShutDown)
+void SymTab::OnRelease(bool /*appShutDown*/)
 {
   // do de-initialization for your plugin
   // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,

@@ -36,7 +36,7 @@ BEGIN_EVENT_TABLE(avChangesDlg,wxScrollingDialog)
     //*)
 END_EVENT_TABLE()
 
-avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID id)
+avChangesDlg::avChangesDlg(wxWindow* parent,wxWindowID /*id*/)
 {
     //(*Initialize(avChangesDlg)
     wxBoxSizer* sizerButtons;
@@ -94,7 +94,7 @@ avChangesDlg::~avChangesDlg()
 }
 
 //{Event Functions
-void avChangesDlg::OnBtnAddClick(wxCommandEvent& event)
+void avChangesDlg::OnBtnAddClick(wxCommandEvent& /*event*/)
 {
     grdChanges->AppendRows(1);
     grdChanges->SetCellEditor(grdChanges->GetNumberRows()-1, 0, new wxGridCellChoiceEditor(g_TypesArray,true));
@@ -102,12 +102,12 @@ void avChangesDlg::OnBtnAddClick(wxCommandEvent& event)
     grdChanges->EnableCellEditControl(true);
 }
 
-void avChangesDlg::OnBtnEditClick(wxCommandEvent& event)
+void avChangesDlg::OnBtnEditClick(wxCommandEvent& /*event*/)
 {
     grdChanges->EnableCellEditControl(true);
 }
 
-void avChangesDlg::OnBtnDeleteClick(wxCommandEvent& event)
+void avChangesDlg::OnBtnDeleteClick(wxCommandEvent& /*event*/)
 {
     if (grdChanges->GetNumberRows() > 0)
     {
@@ -119,7 +119,7 @@ void avChangesDlg::OnBtnDeleteClick(wxCommandEvent& event)
     }
 }
 
-void avChangesDlg::OnBtnSaveClick(wxCommandEvent& event)
+void avChangesDlg::OnBtnSaveClick(wxCommandEvent& /*event*/)
 {
     if (grdChanges->GetNumberRows() > 0)
     {
@@ -146,7 +146,7 @@ void avChangesDlg::OnBtnSaveClick(wxCommandEvent& event)
     }
 }
 
-void avChangesDlg::OnBtnWriteClick(wxCommandEvent& event)
+void avChangesDlg::OnBtnWriteClick(wxCommandEvent& /*event*/)
 {
     if (grdChanges->GetNumberRows() > 0)
     {
@@ -174,7 +174,7 @@ void avChangesDlg::OnBtnWriteClick(wxCommandEvent& event)
     }
 }
 
-void avChangesDlg::OnBtnCancelClick(wxCommandEvent& event)
+void avChangesDlg::OnBtnCancelClick(wxCommandEvent& /*event*/)
 {
     EndModal(0);
 }

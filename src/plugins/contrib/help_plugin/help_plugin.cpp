@@ -258,7 +258,7 @@ void HelpPlugin::Reload()
     BuildHelpMenu();
 }
 
-void HelpPlugin::OnRelease(bool appShutDown)
+void HelpPlugin::OnRelease(bool /*appShutDown*/)
 {
     Manager::Get()->GetConfigManager(_T("help_plugin"))->Write(_T("/base_font_size"), m_manFrame->GetBaseFontSize());
     CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
@@ -318,7 +318,7 @@ void HelpPlugin::BuildMenu(wxMenuBar *menuBar)
     }
 }
 
-void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data)
+void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* /*data*/)
 {
   if (!menu || !IsAttached() || !m_Vector.size())
   {
@@ -349,12 +349,16 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
   }
 }
 
-bool HelpPlugin::BuildToolBar(wxToolBar *toolBar)
+bool HelpPlugin::BuildToolBar(wxToolBar * /*toolBar*/)
 {
 	return false;
 }
 
-void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool fromIni)
+void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool
+#ifdef __WXMSW__
+	fromIni
+#endif
+)
 {
   if (!m_pMenuBar)
   {
@@ -389,7 +393,7 @@ void HelpPlugin::AddToHelpMenu(int id, const wxString &help, bool fromIni)
   }
 }
 
-void HelpPlugin::RemoveFromHelpMenu(int id, const wxString &help)
+void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
 {
   if (!m_pMenuBar)
   {
@@ -423,7 +427,11 @@ void HelpPlugin::RemoveFromHelpMenu(int id, const wxString &help)
   }
 }
 
-void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool fromIni)
+void HelpPlugin::AddToPopupMenu(wxMenu *menu, int id, const wxString &help, bool
+#ifdef __WXMSW__
+	fromIni
+#endif
+)
 {
   if (!help.IsEmpty())
   {
@@ -477,7 +485,7 @@ void HelpPlugin::ShowMANViewer(bool show)
     Manager::Get()->GetConfigManager(_T("help_plugin"))->Write(_T("/show_man_viewer"), show);
 }
 
-void HelpPlugin::OnUpdateUI(wxUpdateUIEvent& event)
+void HelpPlugin::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
     wxMenuBar* pbar = Manager::Get()->GetAppFrame()->GetMenuBar();
 
@@ -589,7 +597,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
     msg << _("Couldn't find the help file:\n")
         << the_helpfile.GetFullPath() << _("\n")
         << _("Do you want to run the associated program anyway?");
-    if (!(cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES));
+    if (!(cbMessageBox(msg, _("Warning"), wxICON_WARNING | wxYES_NO | wxNO_DEFAULT) == wxID_YES))
         return;
   }
 

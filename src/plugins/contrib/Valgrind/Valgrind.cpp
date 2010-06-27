@@ -88,7 +88,7 @@ void Valgrind::OnAttach()
 	}
 } // end of OnAttach
 
-void Valgrind::OnRelease(bool appShutDown)
+void Valgrind::OnRelease(bool /*appShutDown*/)
 {
     // do de-initialization for your plugin
     // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,

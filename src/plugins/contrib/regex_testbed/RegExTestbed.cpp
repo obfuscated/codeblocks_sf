@@ -51,7 +51,7 @@ void RegExTestbed::OnAttach()
 	// (see: does not need) this plugin...
 }
 
-void RegExTestbed::OnRelease(bool appShutDown)
+void RegExTestbed::OnRelease(bool /*appShutDown*/)
 {
 	// do de-initialization for your plugin
 	// if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,

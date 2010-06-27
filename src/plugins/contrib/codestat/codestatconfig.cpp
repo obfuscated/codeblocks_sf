@@ -160,7 +160,7 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
 
 /** Add configuration for a new language.
  */
-void CodeStatConfigDlg::Add(wxCommandEvent& event)
+void CodeStatConfigDlg::Add(wxCommandEvent& /*event*/)
 {
    wxTextEntryDialog dialog(this, _("Enter name of the new language:"), _("New language"), _T(""), wxOK|wxCANCEL);
    if (dialog.ShowModal() == wxID_OK)
@@ -189,7 +189,7 @@ void CodeStatConfigDlg::Add(wxCommandEvent& event)
 
 /** Remove the selected language from the list.
  */
-void CodeStatConfigDlg::Remove(wxCommandEvent& event)
+void CodeStatConfigDlg::Remove(wxCommandEvent& /*event*/)
 {
     if (nb_languages > 0)
     {
@@ -208,7 +208,7 @@ void CodeStatConfigDlg::Remove(wxCommandEvent& event)
 
 /** Restore the default settings.
  */
-void CodeStatConfigDlg::RestoreDefault(wxCommandEvent& event)
+void CodeStatConfigDlg::RestoreDefault(wxCommandEvent& /*event*/)
 {
     nb_languages = LoadDefaultSettings(languages);
     ReInitDialog();

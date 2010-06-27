@@ -162,7 +162,7 @@ wxString KodersDialog::GetLicense() const
   return license;
 }
 
-void KodersDialog::OnBtnSearchClick(wxCommandEvent& event)
+void KodersDialog::OnBtnSearchClick(wxCommandEvent& /*event*/)
 {
   EndModal(wxID_OK);
 }

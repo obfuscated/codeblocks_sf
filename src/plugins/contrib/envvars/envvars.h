@@ -77,16 +77,16 @@ private:
                                                               cbProject* project);
 
   /// hooks into the menu build process to allow the plugin to add menu entries
-  void     BuildMenu(wxMenuBar* menuBar)
+  void     BuildMenu(wxMenuBar* /*menuBar*/)
   { return; }
 
   /// hooks into the module menu build process to allow the plugin to add menu entries
-  void     BuildModuleMenu(const ModuleType type, wxMenu* menu,
-                           const FileTreeData* data = 0)
+  void     BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/,
+                           const FileTreeData* /*data */= 0)
   { return; }
 
   /// hooks into the toolbar build process to allow the plugin to add an own toolbar
-  bool     BuildToolBar(wxToolBar* toolBar)
+  bool     BuildToolBar(wxToolBar* /*toolBar*/)
   { return false; }
 
   /// issues a warning if an activated project has a reference to an envvar set that does not exist

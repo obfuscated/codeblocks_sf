@@ -34,9 +34,9 @@ class Exporter : public cbPlugin
     void ExportFile(BaseExporter *exp, const wxString &default_extension, const wxString &wildcard);
     void OnUpdateUI(wxUpdateUIEvent &event);
   private:
-    void BuildModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData* data = 0) {}
-    bool BuildToolBar(wxToolBar *toolBar) { return false; }
-    void RemoveToolBar(wxToolBar *toolBar) {}
+    void BuildModuleMenu(const ModuleType /*type*/, wxMenu * /*menu*/, const FileTreeData* /*data*/ = 0) {}
+    bool BuildToolBar(wxToolBar * /*toolBar*/) { return false; }
+    void RemoveToolBar(wxToolBar * /*toolBar*/) {}
 
     DECLARE_EVENT_TABLE();
 };

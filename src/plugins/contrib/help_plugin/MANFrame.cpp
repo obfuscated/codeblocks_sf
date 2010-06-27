@@ -102,7 +102,7 @@ namespace
                 return wxDIR_CONTINUE;
             }
 
-            wxDirTraverseResult OnDir(const wxString &dirname)
+            wxDirTraverseResult OnDir(const wxString & /*dirname*/)
             {
                 return wxDIR_CONTINUE;
             }
@@ -211,7 +211,7 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
     }
 }
 
-void MANFrame::OnSearch(wxCommandEvent &event)
+void MANFrame::OnSearch(wxCommandEvent &/*event*/)
 {
     SearchManPage(wxEmptyString, m_entry->GetValue());
 }

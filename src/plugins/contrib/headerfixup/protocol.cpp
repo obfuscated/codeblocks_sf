@@ -36,7 +36,7 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-Protocol::Protocol(wxWindow* parent,wxWindowID id)
+Protocol::Protocol(wxWindow* parent,wxWindowID /*id*/)
 {
   //(*Initialize(Protocol)
   Create(parent, wxID_ANY, _("Header Fixup - Protocol"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
@@ -56,14 +56,14 @@ Protocol::Protocol(wxWindow* parent,wxWindowID id)
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
   Center();
-  
+
   Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Protocol::OnBtnOKClick);
   //*)
 }// Protocol
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Protocol::OnBtnOKClick(wxCommandEvent& event)
+void Protocol::OnBtnOKClick(wxCommandEvent& /*event*/)
 {
   EndModal(wxID_OK);
 }// OnBtnOkClick

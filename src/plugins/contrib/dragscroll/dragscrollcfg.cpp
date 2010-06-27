@@ -8,7 +8,7 @@ BEGIN_EVENT_TABLE(cbDragScrollCfg,cbConfigurationPanel)
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
-cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindowID id)
+cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindowID /*id*/)
 // ----------------------------------------------------------------------------
     :pOwnerClass(pOwner)
 {
@@ -149,7 +149,7 @@ cbDragScrollCfg::~cbDragScrollCfg()
 {
 }
 // ----------------------------------------------------------------------------
-void cbDragScrollCfg::OnDoneButtonClick(wxCommandEvent& event)
+void cbDragScrollCfg::OnDoneButtonClick(wxCommandEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     //EndModal(0);

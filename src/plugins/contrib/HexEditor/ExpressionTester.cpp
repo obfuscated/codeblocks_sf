@@ -71,7 +71,7 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 	wxBoxSizer* BoxSizer2;
 	wxBoxSizer* BoxSizer1;
 	wxStaticBoxSizer* StaticBoxSizer1;
-	
+
 	Create(parent, wxID_ANY, _("ExpressionTester"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, wxEmptyString);
@@ -115,7 +115,7 @@ void ExpressionTester::BuildContent(wxWindow* parent)
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);
 	Center();
-	
+
 	Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&ExpressionTester::OnButton1Click);
 	Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton3Click);
 	Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ExpressionTester::OnButton4Click);
@@ -131,7 +131,7 @@ ExpressionTester::~ExpressionTester()
 }
 
 
-void ExpressionTester::OnButton1Click(wxCommandEvent& event)
+void ExpressionTester::OnButton1Click(wxCommandEvent& /*event*/)
 {
     Expression::Parser parser;
     Expression::Preprocessed code;
@@ -181,7 +181,7 @@ void ExpressionTester::OnButton1Click(wxCommandEvent& event)
     }
 }
 
-void ExpressionTester::OnButton2Click(wxCommandEvent& event)
+void ExpressionTester::OnButton2Click(wxCommandEvent& /*event*/)
 {
     cbMessageBox( Expression::Parser::GetHelpString() );
 
@@ -197,7 +197,7 @@ void ExpressionTester::OnButton3Click(wxCommandEvent& event)
     }
 }
 
-void ExpressionTester::OnButton4Click(wxCommandEvent& event)
+void ExpressionTester::OnButton4Click(wxCommandEvent& /*event*/)
 {
     TestCasesDlg( this, Expression::GetTests() ).ShowModal();
 }

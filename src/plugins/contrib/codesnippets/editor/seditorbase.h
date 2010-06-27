@@ -73,7 +73,7 @@ class SEditorBase : public wxPanel
           *
           * @param modified If true, mark as modified. If false, mark as clean (unmodified).
           */
-        virtual void SetModified(bool modified = true) {}
+        virtual void SetModified(bool /*modified*/ = true) {}
 
         /** @brief The editor's title.
           *

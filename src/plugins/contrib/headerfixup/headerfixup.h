@@ -30,7 +30,7 @@ public:
   virtual int GetConfigurationGroup() const
   { return cgUnknown; }
   virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-  virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
+  virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* /*parent*/, cbProject* /*project*/)
   { return 0; }
   virtual int Execute();
 

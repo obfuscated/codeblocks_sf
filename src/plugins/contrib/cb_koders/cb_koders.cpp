@@ -91,7 +91,7 @@ int CB_Koders::Execute()
 	return 0;
 }
 
-void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
 {
 	if (!menu || !IsAttached())
 		return;
@@ -119,7 +119,7 @@ bool CB_Koders::IsReady()
   return false;
 }
 
-void CB_Koders::OnSearchKoders(wxCommandEvent& event)
+void CB_Koders::OnSearchKoders(wxCommandEvent& /*event*/)
 {
   if (IsReady())
   {

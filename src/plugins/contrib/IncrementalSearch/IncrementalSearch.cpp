@@ -111,7 +111,7 @@ void IncrementalSearch::OnAttach()
     m_flags |= ((sel == 1) || ((sel == 2) && cfg->ReadInt(_T("/incremental_search/regex"),false)))?wxSCI_FIND_REGEXP:0;
 }
 
-void IncrementalSearch::OnRelease(bool appShutDown)
+void IncrementalSearch::OnRelease(bool /*appShutDown*/)
 {
     // do de-initialization for your plugin
     // if appShutDown is true, the plugin is unloaded because Code::Blocks is being shut down,
@@ -316,7 +316,7 @@ void IncrementalSearch::OnKeyDown(wxKeyEvent& event)
     }
 }
 
-void IncrementalSearch::OnFocusToolbar(wxCommandEvent& event)
+void IncrementalSearch::OnFocusToolbar(wxCommandEvent& /*event*/)
 {
     if (!m_IsAttached)
     {
@@ -345,7 +345,7 @@ void IncrementalSearch::DoFocusToolbar()
     m_pTextCtrl->SetFocus();
 }
 
-void IncrementalSearch::OnToggleHighlight(wxCommandEvent& event)
+void IncrementalSearch::OnToggleHighlight(wxCommandEvent& /*event*/)
 {
     DoToggleHighlight(m_pToolbar->GetToolState(XRCID("idIncSearchHighlight")));
 }
@@ -360,7 +360,7 @@ void IncrementalSearch::DoToggleHighlight(bool checked)
     SearchText();
 }
 
-void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent& event)
+void IncrementalSearch::OnToggleSelectedOnly(wxCommandEvent& /*event*/)
 {
     DoToggleSelectedOnly(m_pToolbar->GetToolState(XRCID("idIncSearchSelectOnly")));
 }
@@ -375,7 +375,7 @@ void IncrementalSearch::DoToggleSelectedOnly(bool checked)
     SearchText();
 }
 
-void IncrementalSearch::OnToggleMatchCase(wxCommandEvent& event)
+void IncrementalSearch::OnToggleMatchCase(wxCommandEvent& /*event*/)
 {
     DoToggleMatchCase(m_pToolbar->GetToolState(XRCID("idIncSearchMatchCase")));
 }
@@ -397,7 +397,7 @@ void IncrementalSearch::DoToggleMatchCase(bool checked)
     SearchText();
 }
 
-void IncrementalSearch::OnToggleUseRegex(wxCommandEvent& event)
+void IncrementalSearch::OnToggleUseRegex(wxCommandEvent& /*event*/)
 {
     DoToggleUseRegex(m_pToolbar->GetToolState(XRCID("idIncSearchUseRegex")));
 }
@@ -419,7 +419,7 @@ void IncrementalSearch::DoToggleUseRegex(bool checked)
     SearchText();
 }
 
-void IncrementalSearch::OnTextChanged(wxCommandEvent& event)
+void IncrementalSearch::OnTextChanged(wxCommandEvent& /*event*/)
 {
     if (!m_pEditor || !m_pEditor->GetControl())
     {
@@ -428,7 +428,7 @@ void IncrementalSearch::OnTextChanged(wxCommandEvent& event)
     SearchText();
 }
 
-void IncrementalSearch::OnKillFocus(wxCommandEvent& event)
+void IncrementalSearch::OnKillFocus(wxCommandEvent& /*event*/)
 {
     if(m_pTextCtrl)
     {
@@ -506,7 +506,7 @@ void IncrementalSearch::SearchText()
     HighlightText();
 }
 
-void IncrementalSearch::OnClearText(wxCommandEvent& event)
+void IncrementalSearch::OnClearText(wxCommandEvent& /*event*/)
 {
     DoClearText();
 }
@@ -517,7 +517,7 @@ void IncrementalSearch::DoClearText()
     SearchText();
 }
 
-void IncrementalSearch::OnSearchPrev(wxCommandEvent& event)
+void IncrementalSearch::OnSearchPrev(wxCommandEvent& /*event*/)
 {
     DoSearchPrev();
 }
@@ -532,7 +532,7 @@ void IncrementalSearch::DoSearchPrev()
     HighlightText();
 }
 
-void IncrementalSearch::OnSearchNext(wxCommandEvent& event)
+void IncrementalSearch::OnSearchNext(wxCommandEvent& /*event*/)
 {
     DoSearchNext();
 }

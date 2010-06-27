@@ -58,7 +58,7 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
 {
   //(*Initialize(Configuration)
   wxBoxSizer* sizDefaults;
-  
+
   Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
   sizMain = new wxBoxSizer(wxHORIZONTAL);
   sizGroups = new wxStaticBoxSizer(wxVERTICAL, this, _("Groups"));
@@ -115,7 +115,7 @@ Configuration::Configuration(wxWindow* parent,wxWindowID id)
   SetSizer(sizMain);
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);
-  
+
   Connect(ID_LST_GROUPS,wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&Configuration::OnGroupsSelect);
   Connect(ID_LST_GROUPS,wxEVT_COMMAND_LISTBOX_DOUBLECLICKED,(wxObjectEventFunction)&Configuration::OnRenameGroup);
   Connect(ID_BTN_ADD_GROUP,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&Configuration::OnBtnAddGroupClick);
@@ -161,7 +161,7 @@ void Configuration::SelectGroup(int Number)
   if ( m_Groups->GetSelection() != Number )
     m_Groups->SetSelection(Number);
 
-  if ( Number<0 || Number>=m_Groups->GetCount() )
+  if ( Number<0 || Number >= static_cast<int>(m_Groups->GetCount()))
   {
     m_RenameGroup->Disable();
     m_DeleteGroup->Disable();
@@ -193,7 +193,7 @@ void Configuration::SelectIdentifier(int Number)
     m_Identifiers->SetSelection(Number);
 
   m_BlockHeadersText = true;
-  if ( Number<0 || Number>=m_Identifiers->GetCount() )
+  if ( Number<0 || Number>= static_cast<int>(m_Identifiers->GetCount()))
   {
     m_ChangeIdentifier->Disable();
     m_DeleteIdentifier->Disable();
@@ -223,7 +223,7 @@ void Configuration::OnApply()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnBtnAddGroupClick(wxCommandEvent& event)
+void Configuration::OnBtnAddGroupClick(wxCommandEvent& /*event*/)
 {
   wxString GroupName = ::wxGetTextFromUser(_("Enter name for new group"));
   if ( GroupName.IsEmpty() )
@@ -250,7 +250,7 @@ void Configuration::OnBtnAddGroupClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnBtnDeleteGroupClick(wxCommandEvent& event)
+void Configuration::OnBtnDeleteGroupClick(wxCommandEvent& /*event*/)
 {
   if ( cbMessageBox(_("Are you sure?"),_("Deleting group"),wxYES|wxNO) != wxID_YES )
     return;
@@ -264,7 +264,7 @@ void Configuration::OnBtnDeleteGroupClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnRenameGroup(wxCommandEvent& event)
+void Configuration::OnRenameGroup(wxCommandEvent& /*event*/)
 {
   wxString GroupName = m_Groups->GetStringSelection();
   wxString OldName = GroupName;
@@ -299,7 +299,7 @@ void Configuration::OnRenameGroup(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnBtnDefaultsClick(wxCommandEvent& event)
+void Configuration::OnBtnDefaultsClick(wxCommandEvent& /*event*/)
 {
   if ( cbMessageBox(_("Are you really sure?"),_("Setting defaults"),wxYES|wxNO) != wxID_YES )
     return;
@@ -313,14 +313,14 @@ void Configuration::OnBtnDefaultsClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnGroupsSelect(wxCommandEvent& event)
+void Configuration::OnGroupsSelect(wxCommandEvent& /*event*/)
 {
   SelectGroup(m_Groups->GetSelection());
 }// OnGroupsSelect
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& event)
+void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& /*event*/)
 {
   wxString Identifier = ::wxGetTextFromUser(_("Enter new identifier"));
   if ( Identifier.IsEmpty() )
@@ -354,7 +354,7 @@ void Configuration::OnBtnAddIdentifierClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnBtnDeleteIdentifierClick(wxCommandEvent& event)
+void Configuration::OnBtnDeleteIdentifierClick(wxCommandEvent& /*event*/)
 {
   if ( cbMessageBox(_("Are you sure?"),_("Deleting identifier"),wxYES|wxNO) != wxID_YES )
     return;
@@ -370,7 +370,7 @@ void Configuration::OnBtnDeleteIdentifierClick(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnChangeIdentifier(wxCommandEvent& event)
+void Configuration::OnChangeIdentifier(wxCommandEvent& /*event*/)
 {
   wxString Identifier = m_Identifiers->GetStringSelection();
   wxString OldIdent = Identifier;
@@ -413,14 +413,14 @@ void Configuration::OnChangeIdentifier(wxCommandEvent& event)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnIdentifiersSelect(wxCommandEvent& event)
+void Configuration::OnIdentifiersSelect(wxCommandEvent& /*event*/)
 {
   SelectIdentifier(m_Identifiers->GetSelection());
 }// OnIdentifiersSelect
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void Configuration::OnHeadersText(wxCommandEvent& event)
+void Configuration::OnHeadersText(wxCommandEvent& /*event*/)
 {
   if ( m_BlockHeadersText )
     return;

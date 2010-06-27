@@ -348,7 +348,11 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
     return cbSaveTinyXMLDocument(&doc, filename);
 }
 // ----------------------------------------------------------------------------
+#if defined(LOGGING)
 void BrowseTrackerLayout::DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive, FileBrowse_MarksHash& m_FileBook_MarksArchive )
+#else
+void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBrowse_MarksHash& /*m_FileBrowse_MarksArchive*/, FileBrowse_MarksHash& /*m_FileBook_MarksArchive*/ )
+#endif
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)

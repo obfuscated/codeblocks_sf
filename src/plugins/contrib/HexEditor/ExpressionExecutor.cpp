@@ -51,7 +51,7 @@ namespace Expression
 
         template<> struct Moduler< long double >
         {
-            inline long double operator()( const long double& val1, const long double& val2 ) { throw errorOperation; }
+            inline long double operator()( const long double& /*val1*/, const long double& /*val2*/ ) { throw errorOperation; }
         };
 
         template< typename T > struct Negation
@@ -227,7 +227,7 @@ namespace Expression
         }
     }
 
-    inline void Executor::PushArgument( const Operation& op, long long address )
+    inline void Executor::PushArgument( const Operation& /*op*/, long long address )
     {
         PushStack( m_Code->GetArgument( address ) );
     }

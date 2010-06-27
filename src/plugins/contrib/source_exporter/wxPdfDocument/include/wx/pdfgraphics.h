@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfgraphics.h
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2006-08-24
@@ -85,7 +85,7 @@ public:
   int  GetObjIndex() { return m_n; }
 
   /// Get the gradient type
-  const wxPdfGradientType GetType() const { return m_type; };
+  wxPdfGradientType GetType() const { return m_type; };
 
 protected:
   wxPdfGradientType m_type;      ///< Gradient type
@@ -171,7 +171,7 @@ public:
   virtual ~wxPdfCoonsPatchGradient();
 
   wxPdfColourType GetColorType() { return m_colorType; }
-  wxMemoryOutputStream* GetBuffer() { return &m_buffer; } 
+  wxMemoryOutputStream* GetBuffer() { return &m_buffer; }
 
 private:
   wxPdfColourType      m_colorType;

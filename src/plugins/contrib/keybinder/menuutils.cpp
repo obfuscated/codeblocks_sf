@@ -891,7 +891,7 @@ void *wxMenuComboListWalker::OnMenuItemWalk(wxMenuBar *, wxMenuItem *m, void *da
 }
 
 // ----------------------------------------------------------------------------
-void wxMenuComboListWalker::OnMenuExit(wxMenuBar *, wxMenu *m, void *)
+void wxMenuComboListWalker::OnMenuExit(wxMenuBar *, wxMenu * /*m*/, void *)
 // ----------------------------------------------------------------------------
 {
     //-wxLogDebug(wxT("wxMenuWalker::OnMenuExit - walking on [%s]"), m->GetTitle().c_str());

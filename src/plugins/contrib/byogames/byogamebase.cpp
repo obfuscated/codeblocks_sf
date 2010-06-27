@@ -267,12 +267,12 @@ wxString byoGameBase::GetBackToWorkString() const
     return wxString::Format(_("Please wait... %d:%d left"),left/60,left%60);
 }
 
-void byoGameBase::OnSize(wxSizeEvent& event)
+void byoGameBase::OnSize(wxSizeEvent& /*event*/)
 {
     RecalculateSizeHints(m_MinCellsHoriz,m_MinCellsVert);
 }
 
-void byoGameBase::OnKillFocus(wxFocusEvent& event)
+void byoGameBase::OnKillFocus(wxFocusEvent& /*event*/)
 {
     SetPause(true);
 }

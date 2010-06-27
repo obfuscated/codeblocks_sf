@@ -417,7 +417,7 @@ void CBProfilerExecDlg::ParseFlatProfile(const wxArrayString& msg, wxProgressDia
 }
 
 // This function writes the gprof output to a file
-void CBProfilerExecDlg::WriteToFile(wxCommandEvent& event)
+void CBProfilerExecDlg::WriteToFile(wxCommandEvent& /*event*/)
 {
     wxFileDialog filedialog(parent,
                             _("Save gprof output to file"),

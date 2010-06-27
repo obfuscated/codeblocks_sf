@@ -47,7 +47,7 @@ namespace Expression
     {
     }
 
-    wxArrayString Parser::GetSuggestions(const wxString& expression, int pos)
+    wxArrayString Parser::GetSuggestions(const wxString& /*expression*/, int /*pos*/)
     {
         // TODO: Code this
         return wxArrayString();

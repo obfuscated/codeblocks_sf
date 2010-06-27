@@ -34,7 +34,7 @@ void CharacterView::OnActivate( bool )
 }
 
 void CharacterView::OnOffsetChange(
-    OffsetT  screenStartOffset,
+    OffsetT  /*screenStartOffset*/,
     OffsetT  currentOffset,
     OffsetT blockStart,
     OffsetT blockEnd )

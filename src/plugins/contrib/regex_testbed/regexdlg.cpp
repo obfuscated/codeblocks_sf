@@ -39,7 +39,7 @@ END_EVENT_TABLE()
 
 RegExDlg::VisibleDialogs RegExDlg::m_visible_dialogs;
 
-RegExDlg::RegExDlg(wxWindow* parent,wxWindowID id)
+RegExDlg::RegExDlg(wxWindow* parent,wxWindowID /*id*/)
 {
     //(*Initialize(regex_dialog)
     wxXmlResource::Get()->LoadObject(this,parent,_T("regex_dialog"),_T("wxScrollingDialog"));
@@ -75,7 +75,7 @@ RegExDlg::~RegExDlg()
 {
 }
 
-void RegExDlg::OnClose(wxCloseEvent& event)
+void RegExDlg::OnClose(wxCloseEvent& /*event*/)
 {
     VisibleDialogs::iterator it = m_visible_dialogs.find(this);
     if(it != m_visible_dialogs.end())
@@ -105,7 +105,7 @@ void cbEscapeHtml(wxString &s)
     s.Replace(wxT("\""), wxT("&quot;"));
 }
 
-void RegExDlg::OnUpdateUI(wxUpdateUIEvent& event)
+void RegExDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
 {
     static wxString regex;
     static wxString text;
@@ -165,7 +165,7 @@ void RegExDlg::OnUpdateUI(wxUpdateUIEvent& event)
 }
 
 
-void RegExDlg::RunBenchmark(wxCommandEvent& event)
+void RegExDlg::RunBenchmark(wxCommandEvent& /*event*/)
 {
 }
 
@@ -175,11 +175,11 @@ void RegExDlg::EndModal(int retCode)
     wxScrollingDialog::EndModal(retCode);
 }
 
-void RegExDlg::OnInit(wxInitDialogEvent& event)
+void RegExDlg::OnInit(wxInitDialogEvent& /*event*/)
 {
 }
 
-void RegExDlg::OnRegExItemActivated(wxListEvent& event)
+void RegExDlg::OnRegExItemActivated(wxListEvent& /*event*/)
 {
     //
 }
@@ -207,7 +207,7 @@ wxArrayString RegExDlg::GetBuiltinMatches(const wxString& text)
     return ret;
 }
 
-wxArrayString RegExDlg::GetPregMatches(const wxString& text)
+wxArrayString RegExDlg::GetPregMatches(const wxString& /*text*/)
 {
     wxArrayString ret;
 

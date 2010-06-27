@@ -107,7 +107,7 @@ void TestCasesDlg::AddLog( const wxString& logLine )
     m_NewLogs.Add( logLine );
 }
 
-void TestCasesDlg::OnButton1Click(wxCommandEvent& event)
+void TestCasesDlg::OnButton1Click(wxCommandEvent& /*event*/)
 {
     if ( m_Running )
     {
@@ -121,7 +121,7 @@ void TestCasesDlg::OnButton1Click(wxCommandEvent& event)
     }
 }
 
-void TestCasesDlg::OnTimer1Trigger(wxTimerEvent& event)
+void TestCasesDlg::OnTimer1Trigger(wxTimerEvent& /*event*/)
 {
     if ( !m_Running && !m_BtnChanged )
     {

@@ -31,12 +31,12 @@ public:
         return cgEditor;
     }
     cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-    cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project)
+    cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow*  /*parent*/, cbProject* /*project*/)
     {
         return 0;
     }
     void BuildMenu(wxMenuBar* menuBar);
-    void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0) {}
+    void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0) {}
     bool BuildToolBar(wxToolBar* toolBar);
 
 private:

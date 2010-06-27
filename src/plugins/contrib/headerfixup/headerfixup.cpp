@@ -50,7 +50,7 @@ void HeaderFixup::OnAttach()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void HeaderFixup::OnRelease(bool appShutDown)
+void HeaderFixup::OnRelease(bool /*appShutDown*/)
 {
 }// OnRelease
 

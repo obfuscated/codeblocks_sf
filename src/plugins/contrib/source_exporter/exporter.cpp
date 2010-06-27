@@ -63,7 +63,7 @@ void Exporter::OnAttach()
   // (see: does not need) this plugin...
 }
 
-void Exporter::OnRelease(bool appShutDown)
+void Exporter::OnRelease(bool /*appShutDown*/)
 {
   // do de-initialization for your plugin
   // if appShutDown is false, the plugin is unloaded because Code::Blocks is being shut down,
@@ -151,26 +151,26 @@ void Exporter::OnUpdateUI(wxUpdateUIEvent &event)
   event.Skip();
 }
 
-void Exporter::OnExportHTML(wxCommandEvent &event)
+void Exporter::OnExportHTML(wxCommandEvent & /*event*/)
 {
   HTMLExporter exp;
   ExportFile(&exp, _T("html"), _("HTML files|*.html;*.htm"));
 }
 
-void Exporter::OnExportRTF(wxCommandEvent &event)
+void Exporter::OnExportRTF(wxCommandEvent & /*event*/)
 {
   RTFExporter exp;
   ExportFile(&exp, _T("rtf"), _("RTF files|*.rtf"));
 }
 
 
-void Exporter::OnExportODT(wxCommandEvent &event)
+void Exporter::OnExportODT(wxCommandEvent & /*event*/)
 {
   ODTExporter exp;
   ExportFile(&exp, _T("odt"), _("ODT files|*.odt"));
 }
 
-void Exporter::OnExportPDF(wxCommandEvent &event)
+void Exporter::OnExportPDF(wxCommandEvent & /*event*/)
 {
   PDFExporter exp;
   ExportFile(&exp, _T("pdf"), _("PDF files|*.pdf"));

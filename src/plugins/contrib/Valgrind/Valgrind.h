@@ -22,8 +22,8 @@ public:
 	Valgrind();
 	~Valgrind();
 	void BuildMenu(wxMenuBar* menuBar);
-	void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){};
-	bool BuildToolBar(wxToolBar* toolBar){ return false; }
+	void BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, const FileTreeData* /*data*/ = 0){};
+	bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
 	void OnAttach(); // fires when the plugin is attached to the application
 	void OnRelease(bool appShutDown); // fires when the plugin is released from the application
 private:

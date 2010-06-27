@@ -214,7 +214,7 @@ void EnvVars::OnAttach()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void EnvVars::OnRelease(bool appShutDown)
+void EnvVars::OnRelease(bool /*appShutDown*/)
 {
   // Nothing to do (so far...)
 }// OnRelease

@@ -582,7 +582,7 @@ void HexEditPanel::RecalculateCoefs()
         thumbLines );
 }
 
-void HexEditPanel::OnContentPaint( wxPaintEvent& event )
+void HexEditPanel::OnContentPaint( wxPaintEvent& /*event*/ )
 {
     wxAutoBufferedPaintDC dc( m_DrawArea );
     dc.SetBrush( GetBackgroundColour() );
@@ -650,7 +650,7 @@ void HexEditPanel::OnContentPaint( wxPaintEvent& event )
     delete[] content;
 }
 
-void HexEditPanel::OnContentScroll( wxScrollEvent& event )
+void HexEditPanel::OnContentScroll( wxScrollEvent& /*event*/ )
 {
     if ( !m_Content || !m_Content->GetSize() )
     {
@@ -1130,11 +1130,11 @@ void HexEditPanel::PropagateOffsetChange( int flagsForCurrentView )
     }
 }
 
-void HexEditPanel::OnDrawAreaEraseBackground(wxEraseEvent& event)
+void HexEditPanel::OnDrawAreaEraseBackground(wxEraseEvent& /*event*/)
 {
 }
 
-void HexEditPanel::OnForwardFocus(wxFocusEvent& event)
+void HexEditPanel::OnForwardFocus(wxFocusEvent& /*event*/)
 {
     m_DrawArea->SetFocus();
 }
@@ -1294,7 +1294,7 @@ void HexEditPanel::OnDrawAreaLeftDown(wxMouseEvent& event)
     }
 }
 
-void HexEditPanel::OnDrawAreaLeftUp(wxMouseEvent& event)
+void HexEditPanel::OnDrawAreaLeftUp(wxMouseEvent& /*event*/)
 {
     m_MouseDown = false;
 }
@@ -1307,7 +1307,7 @@ void HexEditPanel::OnDrawAreaMouseMove(wxMouseEvent& event)
     }
 }
 
-void HexEditPanel::OnCheckBox1Click(wxCommandEvent& event)
+void HexEditPanel::OnCheckBox1Click(wxCommandEvent& /*event*/)
 {
     if ( !m_Content ) return;
     BoxSizer1->Show( PreviewSizer, CheckBox1->GetValue() );
@@ -1523,7 +1523,7 @@ void HexEditPanel::ProcessSearch()
     m_DrawArea->SetFocus();
 }
 
-void HexEditPanel::OnButton1Click(wxCommandEvent& event)
+void HexEditPanel::OnButton1Click(wxCommandEvent& /*event*/)
 {
     ExpressionTester( 0, m_Content, m_Current).ShowModal();
 }
@@ -1542,23 +1542,23 @@ void HexEditPanel::ReparseExpression()
     }
 }
 
-void HexEditPanel::OnReparseTimerTrigger(wxTimerEvent& event)
+void HexEditPanel::OnReparseTimerTrigger(wxTimerEvent& /*event*/)
 {
     ReparseExpression();
     RefreshStatus();
 }
 
-void HexEditPanel::Onm_ExpressionText(wxCommandEvent& event)
+void HexEditPanel::Onm_ExpressionText(wxCommandEvent& /*event*/)
 {
     ReparseTimer.Start( 1000, wxTIMER_ONE_SHOT );
 }
 
-void HexEditPanel::OnButton2Click(wxCommandEvent& event)
+void HexEditPanel::OnButton2Click(wxCommandEvent& /*event*/)
 {
     cbMessageBox( Expression::Parser::GetHelpString() );
 }
 
-void HexEditPanel::OnExpressionTextEnter(wxCommandEvent& event)
+void HexEditPanel::OnExpressionTextEnter(wxCommandEvent& /*event*/)
 {
     ReparseExpression();
     RefreshStatus();
@@ -1575,18 +1575,18 @@ void HexEditPanel::OnButton3Click1(wxCommandEvent& event)
     }
 }
 
-void HexEditPanel::OnButton4Click(wxCommandEvent& event)
+void HexEditPanel::OnButton4Click(wxCommandEvent& /*event*/)
 {
     PopupMenu( &m_BaseMenu );
 }
 
-void HexEditPanel::OnSetBaseHex(wxCommandEvent& event)
+void HexEditPanel::OnSetBaseHex(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetDigitBits( 4 );
     DisplayChanged();
 }
 
-void HexEditPanel::OnSetBaseBin(wxCommandEvent& event)
+void HexEditPanel::OnSetBaseBin(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetDigitBits( 1 );
     DisplayChanged();
@@ -1601,165 +1601,165 @@ void HexEditPanel::DisplayChanged()
     m_DrawArea->SetFocus();
 }
 
-void HexEditPanel::Onm_EndianessClick(wxCommandEvent& event)
+void HexEditPanel::Onm_EndianessClick(wxCommandEvent& /*event*/)
 {
     PopupMenu( &m_EndianessMenu );
 }
 
-void HexEditPanel::OnSetEndianessBig(wxCommandEvent& event)
+void HexEditPanel::OnSetEndianessBig(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetLittleEndian( false );
     DisplayChanged();
 }
 
-void HexEditPanel::OnSetEndianessLittle(wxCommandEvent& event)
+void HexEditPanel::OnSetEndianessLittle(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetLittleEndian( true );
     DisplayChanged();
 }
 
-void HexEditPanel::Onm_BlockSizeClick(wxCommandEvent& event)
+void HexEditPanel::Onm_BlockSizeClick(wxCommandEvent& /*event*/)
 {
     PopupMenu( &m_BlockSizeMenu );
 }
 
-void HexEditPanel::OnSetBlockSize1(wxCommandEvent& event)
+void HexEditPanel::OnSetBlockSize1(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetBlockBytes( 1 );
     DisplayChanged();
 }
 
-void HexEditPanel::OnSetBlockSize2(wxCommandEvent& event)
+void HexEditPanel::OnSetBlockSize2(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetBlockBytes( 2 );
     DisplayChanged();
 }
 
-void HexEditPanel::OnSetBlockSize4(wxCommandEvent& event)
+void HexEditPanel::OnSetBlockSize4(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetBlockBytes( 4 );
     DisplayChanged();
 }
 
-void HexEditPanel::OnSetBlockSize8(wxCommandEvent& event)
+void HexEditPanel::OnSetBlockSize8(wxCommandEvent& /*event*/)
 {
     m_DigitView->SetBlockBytes( 8 );
     DisplayChanged();
 }
 
-void HexEditPanel::Onm_ColsModeClick(wxCommandEvent& event)
+void HexEditPanel::Onm_ColsModeClick(wxCommandEvent& /*event*/)
 {
     PopupMenu( &m_ColsModeMenu );
 }
 
-void HexEditPanel::OnSetColsMul1(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul1(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 1 );
 }
 
-void HexEditPanel::OnSetColsMul2(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul2(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 2 );
 }
 
-void HexEditPanel::OnSetColsMul3(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul3(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 3 );
 }
 
-void HexEditPanel::OnSetColsMul4(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul4(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 4 );
 }
 
-void HexEditPanel::OnSetColsMul5(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul5(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 5 );
 }
 
-void HexEditPanel::OnSetColsMul6(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul6(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 6 );
 }
 
-void HexEditPanel::OnSetColsMul7(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul7(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 7 );
 }
 
-void HexEditPanel::OnSetColsMul8(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMul8(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_MULT, 8 );
 }
 
-void HexEditPanel::OnSetColsMulOther(wxCommandEvent& event)
+void HexEditPanel::OnSetColsMulOther(wxCommandEvent& /*event*/)
 {
     long val = ::wxGetNumberFromUser( _("Enter number"), _("Enter number"), _("Colums setting"), 2, 2, 100, this );
     if ( val > 0 ) ColsMode( CM_MULT, val );
 }
 
-void HexEditPanel::OnSetColsValue1(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue1(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 1 );
 }
 
-void HexEditPanel::OnSetColsValue2(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue2(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 2 );
 }
 
-void HexEditPanel::OnSetColsValue3(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue3(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 3 );
 }
 
-void HexEditPanel::OnSetColsValue4(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue4(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 4 );
 }
 
-void HexEditPanel::OnSetColsValue5(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue5(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 5 );
 }
 
-void HexEditPanel::OnSetColsValue6(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue6(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 6 );
 }
 
-void HexEditPanel::OnSetColsValue7(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue7(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 7 );
 }
 
-void HexEditPanel::OnSetColsValue8(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValue8(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_SPECIFIED, 8 );
 }
 
-void HexEditPanel::OnSetColsValueOther(wxCommandEvent& event)
+void HexEditPanel::OnSetColsValueOther(wxCommandEvent& /*event*/)
 {
     long val = ::wxGetNumberFromUser( _("Enter number"), _("Enter number"), _("Colums setting"), 1, 1, 100, this );
     if ( val > 0 ) ColsMode( CM_SPECIFIED, val );
 }
 
-void HexEditPanel::OnSetColsPower2(wxCommandEvent& event)
+void HexEditPanel::OnSetColsPower2(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_POWER, 2 );
 }
 
-void HexEditPanel::OnSetColsPower4(wxCommandEvent& event)
+void HexEditPanel::OnSetColsPower4(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_POWER, 4 );
 }
 
-void HexEditPanel::OnSetColsPower8(wxCommandEvent& event)
+void HexEditPanel::OnSetColsPower8(wxCommandEvent& /*event*/)
 {
     ColsMode( CM_POWER, 8 );
 }
 
-void HexEditPanel::OnSetColsPowerOther(wxCommandEvent& event)
+void HexEditPanel::OnSetColsPowerOther(wxCommandEvent& /*event*/)
 {
     long val = ::wxGetNumberFromUser( _("Enter number"), _("Enter number"), _("Colums setting"), 2, 2, 100, this );
     if ( val > 0 ) ColsMode( CM_POWER, val );
@@ -1801,7 +1801,7 @@ bool HexEditPanel::MatchColumnsCount(int colsCount)
     }
 }
 
-void HexEditPanel::OnButton4Click1(wxCommandEvent& event)
+void HexEditPanel::OnButton4Click1(wxCommandEvent& /*event*/)
 {
     wxString tests[] =
     {
@@ -1824,12 +1824,12 @@ void HexEditPanel::OnButton4Click1(wxCommandEvent& event)
 }
 
 
-void HexEditPanel::OnButton6Click(wxCommandEvent& event)
+void HexEditPanel::OnButton6Click(wxCommandEvent& /*event*/)
 {
     ProcessGoto();
 }
 
-void HexEditPanel::OnButton5Click(wxCommandEvent& event)
+void HexEditPanel::OnButton5Click(wxCommandEvent& /*event*/)
 {
     ProcessSearch();
 }

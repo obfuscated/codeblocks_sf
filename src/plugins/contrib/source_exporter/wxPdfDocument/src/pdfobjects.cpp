@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Name:        pdfobjects.cpp
-// Purpose:     
+// Purpose:
 // Author:      Ulrich Telle
 // Modified by:
 // Created:     2006-07-13
@@ -212,7 +212,7 @@ wxPdfArray::Add(double value)
 wxPdfObject*
 wxPdfArray::Get(size_t index)
 {
-  wxPdfObject* obj = NULL;
+  wxPdfObject* obj = 0;
   if (index >= 0 && index < m_array.GetCount())
   {
     obj = (wxPdfObject*) m_array.Item(index);
@@ -297,7 +297,7 @@ wxPdfStream::Get(const wxString& key)
   return obj;
 }
 
-  
+
 int
 wxPdfStream::GetObjOffset(int index) const
 {

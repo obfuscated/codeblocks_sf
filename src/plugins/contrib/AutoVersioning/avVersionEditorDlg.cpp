@@ -92,7 +92,7 @@ END_EVENT_TABLE()
 //}
 
 //{Constructor and Destructor
-avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID id)
+avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
 {
     //(*Initialize(avVersionEditorDlg)
     wxBoxSizer* BoxSizer15;
@@ -792,17 +792,17 @@ void avVersionEditorDlg::ValidateInput()
     }
 }
 
-void avVersionEditorDlg::OnTmrValidateInputTrigger(wxTimerEvent& event)
+void avVersionEditorDlg::OnTmrValidateInputTrigger(wxTimerEvent& /*event*/)
 {
     ValidateInput();
 }
 
-void avVersionEditorDlg::OnMouseEnter(wxMouseEvent& event)
+void avVersionEditorDlg::OnMouseEnter(wxMouseEvent& /*event*/)
 {
     tmrValidateInput.Start(250, false);
 }
 
-void avVersionEditorDlg::OnHeaderPathClick(wxCommandEvent& event)
+void avVersionEditorDlg::OnHeaderPathClick(wxCommandEvent& /*event*/)
 {
     wxString path, filename, extension;
     wxFileName::SplitPath(m_headerPath, &path, &filename, &extension);
@@ -819,7 +819,7 @@ void avVersionEditorDlg::OnHeaderPathClick(wxCommandEvent& event)
     }
 }
 
-void avVersionEditorDlg::OnChangesLogPathClick(wxCommandEvent& event)
+void avVersionEditorDlg::OnChangesLogPathClick(wxCommandEvent& /*event*/)
 {
     wxString path, filename, extension;
     wxFileName::SplitPath(m_changesLogPath, &path, &filename, &extension);
