@@ -476,7 +476,7 @@ void CompilerOptionsDlg::DoFillOthers()
 {
     if (m_pProject)
         return; // projects don't have Other tab
-        
+
     wxCheckBox* chk = XRCCTRL(*this, "chkIncludeFileCwd", wxCheckBox);
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false));
@@ -1739,7 +1739,7 @@ void CompilerOptionsDlg::OnAddLibClick(wxCommandEvent& /*event*/)
     }
 } // OnAddLibClick
 
-void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& event)
+void CompilerOptionsDlg::OnEditLibClick(wxCommandEvent& /*event*/)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs)
@@ -2199,7 +2199,7 @@ void CompilerOptionsDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)
     XRCCTRL(*this, "cmbResDirsPolicy",  wxChoice)->Enable(en);
 
     // compiler set buttons
-    if (!m_pProject) 
+    if (!m_pProject)
     {
         en = !data; // global options selected
         int idx   = XRCCTRL(*this, "cmbCompiler", wxChoice)->GetSelection();

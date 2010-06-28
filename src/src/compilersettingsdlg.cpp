@@ -210,7 +210,7 @@ void CompilerSettingsDlg::UpdateListbookImages()
     XRCCTRL(*this, "lblBigTitle", wxStaticText)->SetLabel(label);
 }
 
-void CompilerSettingsDlg::OnPageChanging(wxListbookEvent& event)
+void CompilerSettingsDlg::OnPageChanging(wxListbookEvent& /*event*/)
 {
 }
 

@@ -647,7 +647,7 @@ void MakefileGenerator::DoGetMakefileLDFlags(wxString& buffer, ProjectBuildTarge
     buffer << _T(" $(") + target->GetTitle() + _T("_GLOBAL_LDFLAGS)");
 }
 
-void MakefileGenerator::DoAddVarsSet(wxString& buffer, CustomVars& vars)
+void MakefileGenerator::DoAddVarsSet(wxString& /*buffer*/, CustomVars& /*vars*/)
 {
 //    const VarsArray& v = vars.GetVars();
 //    for (unsigned int i = 0; i < v.GetCount(); ++i)
@@ -660,7 +660,7 @@ void MakefileGenerator::DoAddVarsSet(wxString& buffer, CustomVars& vars)
 //    }
 }
 
-void MakefileGenerator::DoAddMakefileVars(wxString& buffer)
+void MakefileGenerator::DoAddMakefileVars(wxString& /*buffer*/)
 {
 //    buffer << _T("### Variables used in this Makefile") << _T('\n');
 //

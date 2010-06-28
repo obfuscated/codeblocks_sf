@@ -222,10 +222,10 @@ void GDBTipWindow::OnMouseClick(wxMouseEvent& WXUNUSED(event))
     Close();
 }
 
-void GDBTipWindow::OnKey(wxKeyEvent& event)
+void GDBTipWindow::OnKey(wxKeyEvent& /*event*/)
 {
     Close();
-    
+
     // not using event.Skip() here to save us from a bad crash...
 }
 

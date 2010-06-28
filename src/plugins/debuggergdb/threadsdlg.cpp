@@ -68,7 +68,7 @@ void ThreadsDlg::AddThread(const wxString& active_mark, const wxString& thread_n
     lst->Thaw();
 }
 
-void ThreadsDlg::OnListRightClick(wxListEvent& event)
+void ThreadsDlg::OnListRightClick(wxListEvent& /*event*/)
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstThreads", wxListCtrl);
 
@@ -77,7 +77,7 @@ void ThreadsDlg::OnListRightClick(wxListEvent& event)
     lst->PopupMenu(&m);
 }
 
-void ThreadsDlg::OnSwitchThread(wxCommandEvent& event)
+void ThreadsDlg::OnSwitchThread(wxCommandEvent& /*event*/)
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstThreads", wxListCtrl);
     if (lst->GetSelectedItemCount() == 0)

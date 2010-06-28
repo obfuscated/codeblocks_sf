@@ -95,7 +95,7 @@ void BacktraceDlg::AddFrame(const StackFrame& frame)
     }
 }
 
-void BacktraceDlg::OnListRightClick(wxListEvent& event)
+void BacktraceDlg::OnListRightClick(wxListEvent& /*event*/)
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
 
@@ -108,13 +108,13 @@ void BacktraceDlg::OnListRightClick(wxListEvent& event)
     lst->PopupMenu(&m);
 }
 
-void BacktraceDlg::OnJump(wxCommandEvent& event)
+void BacktraceDlg::OnJump(wxCommandEvent& /*event*/)
 {
     wxListEvent evt;
     OnDblClick(evt);
 }
 
-void BacktraceDlg::OnDblClick(wxListEvent& event)
+void BacktraceDlg::OnDblClick(wxListEvent& /*event*/)
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
     if (lst->GetSelectedItemCount() == 0)
@@ -136,7 +136,7 @@ void BacktraceDlg::OnDblClick(wxListEvent& event)
         m_pDbg->SyncEditor(file, atoi(wxSafeConvertWX2MB(line)), false);
 }
 
-void BacktraceDlg::OnSave(wxCommandEvent& event)
+void BacktraceDlg::OnSave(wxCommandEvent& /*event*/)
 {
     wxFileDialog dlg(this,
                         _("Save as text file"),
@@ -175,7 +175,7 @@ void BacktraceDlg::OnSave(wxCommandEvent& event)
     cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
-void BacktraceDlg::OnSwitchFrame(wxCommandEvent& event)
+void BacktraceDlg::OnSwitchFrame(wxCommandEvent& /*event*/)
 {
     wxListCtrl* lst = XRCCTRL(*this, "lstTrace", wxListCtrl);
     if (lst->GetSelectedItemCount() == 0)

@@ -30,7 +30,7 @@ bool str2num(const SQChar *s,SQObjectPtr &res)
 	}
 }
 
-static SQInteger base_dummy(HSQUIRRELVM v)
+static SQInteger base_dummy(HSQUIRRELVM /*v*/)
 {
 	return 0;
 }
@@ -474,7 +474,7 @@ static SQInteger array_resize(HSQUIRRELVM v)
 
 
 //QSORT ala Sedgewick
-bool _qsort_compare(HSQUIRRELVM v,SQObjectPtr &arr,SQObjectPtr &a,SQObjectPtr &b,SQInteger func,SQInteger &ret)
+bool _qsort_compare(HSQUIRRELVM v,SQObjectPtr & /*arr*/,SQObjectPtr &a,SQObjectPtr &b,SQInteger func,SQInteger &ret)
 {
 	if(func < 0) {
 		if(!v->ObjCmp(a,b,ret)) return false;
@@ -486,7 +486,7 @@ bool _qsort_compare(HSQUIRRELVM v,SQObjectPtr &arr,SQObjectPtr &a,SQObjectPtr &b
 		v->Push(a);
 		v->Push(b);
 		if(SQ_FAILED(sq_call(v, 3, SQTrue, SQFalse))) {
-			if(!sq_isstring( v->_lasterror)) 
+			if(!sq_isstring( v->_lasterror))
 				v->Raise_Error(_SC("compare func failed"));
 			return false;
 		}
@@ -507,8 +507,8 @@ bool _qsort(HSQUIRRELVM v,SQObjectPtr &arr, SQInteger l, SQInteger r,SQInteger f
 		i = l; j = r+1;
 		while(1){
 			SQInteger ret;
-			do { 
-				++i; 
+			do {
+				++i;
 				if(i > r) break;
 				if(!_qsort_compare(v,arr,a->_values[i],pivot,func,ret))
 					return false;
@@ -516,8 +516,8 @@ bool _qsort(HSQUIRRELVM v,SQObjectPtr &arr, SQInteger l, SQInteger r,SQInteger f
 			do {
 				--j;
 				if ( j < 0 ) {
-					v->Raise_Error( _SC("Invalid qsort, probably compare function defect") ); 
-					return false; 
+					v->Raise_Error( _SC("Invalid qsort, probably compare function defect") );
+					return false;
 				}
 				if(!_qsort_compare(v,arr,a->_values[j],pivot,func,ret))
 					return false;
@@ -565,7 +565,7 @@ static SQInteger array_slice(HSQUIRRELVM v)
 	}
 	v->Push(arr);
 	return 1;
-	
+
 }
 
 SQRegFunction SQSharedState::_array_default_delegate_funcz[]={
@@ -714,7 +714,7 @@ static SQInteger closure_getinfos(HSQUIRRELVM v) {
 		res->NewSlot(SQString::Create(_ss(v),_SC("parameters"),-1),params);
 		res->NewSlot(SQString::Create(_ss(v),_SC("varargs"),-1),f->_varparams);
 	}
-	else { //OT_NATIVECLOSURE 
+	else { //OT_NATIVECLOSURE
 		SQNativeClosure *nc = _nativeclosure(o);
 		res->NewSlot(SQString::Create(_ss(v),_SC("native"),-1),true);
 		res->NewSlot(SQString::Create(_ss(v),_SC("name"),-1),nc->_name);
@@ -769,7 +769,7 @@ SQRegFunction SQSharedState::_generator_default_delegate_funcz[]={
 
 static SQInteger thread_call(HSQUIRRELVM v)
 {
-	
+
 	SQObjectPtr o = stack_get(v,1);
 	if(type(o) == OT_THREAD) {
 		SQInteger nparams = sq_gettop(v);
@@ -803,7 +803,7 @@ static SQInteger thread_wakeup(HSQUIRRELVM v)
 				break;
 			}
 		}
-			
+
 		SQInteger wakeupret = sq_gettop(v)>1?1:0;
 		if(wakeupret) {
 			sq_move(thread,v,2);

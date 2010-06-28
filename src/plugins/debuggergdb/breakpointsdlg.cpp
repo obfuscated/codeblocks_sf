@@ -142,7 +142,7 @@ void BreakpointsDlg::RemoveBreakpoint(int sel)
 	}
 }
 
-void BreakpointsDlg::OnRemove(wxCommandEvent& event)
+void BreakpointsDlg::OnRemove(wxCommandEvent& /*event*/)
 {
     long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item == -1)
@@ -150,7 +150,7 @@ void BreakpointsDlg::OnRemove(wxCommandEvent& event)
     RemoveBreakpoint(item);
 }
 
-void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
+void BreakpointsDlg::OnRemoveAll(wxCommandEvent& /*event*/)
 {
     // if debugger is running and is not paused, return
 //    if (m_State.HasDriver() && !m_State.GetDriver()->IsStopped())
@@ -169,7 +169,7 @@ void BreakpointsDlg::OnRemoveAll(wxCommandEvent& event)
     FillBreakpoints();
 }
 
-void BreakpointsDlg::OnProperties(wxCommandEvent& event)
+void BreakpointsDlg::OnProperties(wxCommandEvent& /*event*/)
 {
     long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item == -1 || item > (int)m_State.GetBreakpoints().GetCount())
@@ -208,7 +208,7 @@ void BreakpointsDlg::OnProperties(wxCommandEvent& event)
     }
 }
 
-void BreakpointsDlg::OnOpen(wxCommandEvent& event)
+void BreakpointsDlg::OnOpen(wxCommandEvent& /*event*/)
 {
     long item = m_pList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item < 0 || item >= (int)m_State.GetBreakpoints().GetCount())
@@ -222,7 +222,7 @@ void BreakpointsDlg::OnOpen(wxCommandEvent& event)
     }
 }
 
-void BreakpointsDlg::OnRightClick(wxListEvent& event)
+void BreakpointsDlg::OnRightClick(wxListEvent& /*event*/)
 {
     wxMenu menu;
     menu.Append(idOpen, _("Open in editor"));
@@ -233,7 +233,7 @@ void BreakpointsDlg::OnRightClick(wxListEvent& event)
     PopupMenu(&menu);
 }
 
-void BreakpointsDlg::OnDoubleClick(wxListEvent& event)
+void BreakpointsDlg::OnDoubleClick(wxListEvent& /*event*/)
 {
     wxCommandEvent evt;
     OnOpen(evt);

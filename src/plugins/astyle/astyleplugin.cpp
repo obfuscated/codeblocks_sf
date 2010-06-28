@@ -70,7 +70,7 @@ AStylePlugin::~AStylePlugin()
 void AStylePlugin::OnAttach()
 {}
 
-void AStylePlugin::OnRelease(bool appShutDown)
+void AStylePlugin::OnRelease(bool /*appShutDown*/)
 {
 	// do de-initialization for your plugin
 	// NOTE: after this function, the inherited member variable
@@ -129,7 +129,7 @@ void AStylePlugin::BuildModuleMenu( const ModuleType type, wxMenu* menu, const F
 	}
 }
 
-void AStylePlugin::OnFormatProject( wxCommandEvent& event )
+void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
 {
 	wxTreeCtrl *tree = Manager::Get()->GetProjectManager()->GetTree();
 
@@ -182,7 +182,7 @@ void AStylePlugin::OnFormatProject( wxCommandEvent& event )
 	}
 }
 
-void AStylePlugin::OnFormatActiveFile( wxCommandEvent& event )
+void AStylePlugin::OnFormatActiveFile( wxCommandEvent& /*event*/ )
 {
 		Execute();
 }

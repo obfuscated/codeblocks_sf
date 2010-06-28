@@ -238,7 +238,7 @@ void ScriptingSettingsDlg::OnListDeselection(wxListEvent& event)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnScriptChanged(wxCommandEvent& event)
+void ScriptingSettingsDlg::OnScriptChanged(wxCommandEvent& /*event*/)
 {
     if (m_IgnoreTextEvents)
         return;
@@ -266,7 +266,7 @@ void ScriptingSettingsDlg::OnEnable(wxCommandEvent& /*event*/)
     UpdateState();
 }
 
-void ScriptingSettingsDlg::OnRegister(wxCommandEvent& event)
+void ScriptingSettingsDlg::OnRegister(wxCommandEvent& /*event*/)
 {
     wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
