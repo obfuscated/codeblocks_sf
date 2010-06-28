@@ -29,7 +29,6 @@
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add option="-DUSE_SVG" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
 					<Add directory="$(#wx.include)" />
@@ -42,7 +41,6 @@
 					<Add library="codeblocks" />
 					<Add library="wxscintilla" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)_svg" />
 					<Add directory="..\..\..\devel" />
 					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
