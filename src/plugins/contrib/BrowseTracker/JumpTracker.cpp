@@ -245,12 +245,13 @@ void JumpTracker::OnEditorUpdateEvent(CodeBlocksEvent& event)
     //LOGIT( _T("JT \ttopLine[%ld] botLine[%ld] OnScrn[%ld] "), topLine, botLine, edstc->LinesOnScreen());
     #endif
 
+    // New editor activated?
     if (m_FilenameLast not_eq edFilename)
     {
         m_PosnLast = edPosn;
         m_FilenameLast = edFilename;
         //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
-            JumpDataAdd(edFilename, edPosn);
+            JumpDataAdd(edFilename, edPosn, edLine);
     }
 
     // If new line within half screen of old line, don't record current line
@@ -266,7 +267,7 @@ void JumpTracker::OnEditorUpdateEvent(CodeBlocksEvent& event)
     m_PosnLast = edPosn;
     m_FilenameLast = edFilename;
     //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
-        JumpDataAdd(edFilename, edPosn);
+        JumpDataAdd(edFilename, edPosn, edLine);
 
     return;
 }//OnEditorUpdateEvent
@@ -310,7 +311,7 @@ void JumpTracker::OnEditorActivated(CodeBlocksEvent& event)
 
     long edPosn = edstc->GetCurrentPos();
     //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
-        JumpDataAdd(edFilename, edPosn);
+        JumpDataAdd(edFilename, edPosn, edstc->GetCurrentLine());
     return;
 }//OnEditorActivated
 // ----------------------------------------------------------------------------
@@ -356,13 +357,20 @@ void JumpTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
 
 }//OnProjectActivatedEvent
 // ----------------------------------------------------------------------------
-void JumpTracker::JumpDataAdd(const wxString& filename, const long posn)
+void JumpTracker::JumpDataAdd(const wxString& filename, const long posn, const long lineNum)
 // ----------------------------------------------------------------------------
 {
     // Do not record old jump locations when a jump is in progress
     // Caused by activating an editor inside the jump routines
     if (m_bJumpInProgress)
         return;
+
+    // Dont record position if line number is < 1 since a newly loaded
+    // file always reports an event for line 0
+     if (lineNum < 1)       // user requested feature 2010/06/1
+     {
+        return;
+     }
 
     // if current entry is identical, return
     if (m_Cursor == JumpDataContains(filename, posn))

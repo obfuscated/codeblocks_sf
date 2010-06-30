@@ -239,6 +239,8 @@ AppVersion::~AppVersion()
 // ----------------------------------------------------------------------------
 //  Commit 1.2.94 2010/02/25
 //       94) Apply patch 2886 by techy
+//  Commit 1.2.95 2010/06/30
+//       95) Do not record firt source line in JumpTracker
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

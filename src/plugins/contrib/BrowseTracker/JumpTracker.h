@@ -115,7 +115,7 @@ class JumpTracker : public cbPlugin
         //bool m_IsAttached;
 
     private:
-        void JumpDataAdd(const wxString& filename, const long posn);
+        void JumpDataAdd(const wxString& filename, const long posn, const long edlineNum);
         int  JumpDataContains(const wxString& filename, const long posn);
 
         wxLogWindow*    m_pPlgnLog;
