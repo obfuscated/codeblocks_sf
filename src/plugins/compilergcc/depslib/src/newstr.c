@@ -9,7 +9,7 @@
  * This file is part of jam.
  *
  * License is hereby granted to use this software and distribute it
- * freely, as long as this copyright notice is retained and modifications 
+ * freely, as long as this copyright notice is retained and modifications
  * are clearly marked.
  *
  * ALL WARRANTIES ARE HEREBY DISCLAIMED.
@@ -36,7 +36,7 @@
  *
  * Once a string is passed to newstr(), the returned string is readonly.
  *
- * This implementation builds a hash table of all strings, so that multiple 
+ * This implementation builds a hash table of all strings, so that multiple
  * calls of newstr() on the same string allocate memory for the string once.
  * Strings are never actually freed.
  *
@@ -107,7 +107,7 @@ copystr( const char *s )
  */
 
 void
-freestr( const char *s )
+freestr( const char * )
 {
 }
 
