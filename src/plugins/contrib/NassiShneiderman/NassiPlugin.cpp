@@ -3,6 +3,9 @@
 
 
 #include <sdk.h> // Code::Blocks SDK
+#ifndef CB_PRECOMP
+    #include <cbeditor.h>
+#endif
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
 #include "NassiPlugin.h"

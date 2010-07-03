@@ -1,4 +1,5 @@
 #include <sdk.h> // Code::Blocks SDK
+#include <algorithm> // std::sort
 #include <configurationpanel.h>
 #include "EditorTweaks.h"
 

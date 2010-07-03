@@ -25,12 +25,15 @@
 #include "DoxyBlocks.h"
 
 #ifndef CB_PRECOMP
+	#include <wx/process.h>
 	#include <wx/xrc/xmlres.h>
 	#include <configmanager.h>
 	#include <editormanager.h>
 	#include <cbeditor.h>
 	#include <logmanager.h>
 	#include <projectmanager.h>
+	#include <cbproject.h>
+	#include <macrosmanager.h>
 #endif
 #include "projectloader_hooks.h"
 #include <cbstyledtextctrl.h>

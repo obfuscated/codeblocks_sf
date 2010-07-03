@@ -1,4 +1,13 @@
 #include <sdk.h> // Code::Blocks SDK
+#ifndef CB_PRECOMP
+    #include <wx/process.h>
+
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "editormanager.h"
+    #include "logmanager.h"
+    #include "projectmanager.h"
+#endif
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
 #include "CscopePlugin.h"

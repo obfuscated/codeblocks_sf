@@ -38,7 +38,9 @@
     #include "projectfile.h"
     #include "cbproject.h"
     #include "projectmanager.h"
+    #include "macrosmanager.h"
 #endif
+#include <wx/ffile.h>
 #include <wx/utils.h>
 #include <wx/busyinfo.h>
 #include "DoxyBlocks.h"
