@@ -68,6 +68,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+		</Compiler>
 		<Unit filename="AutoDoc.cpp" />
 		<Unit filename="ChangeLog.txt" />
 		<Unit filename="Config.cpp" />

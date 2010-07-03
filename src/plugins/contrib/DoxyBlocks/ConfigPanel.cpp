@@ -765,7 +765,7 @@ wxString ConfigPanel::GetBitmapBaseName() const
  * \param 	event	A wxCommandEvent reference.
  *
  */
-void ConfigPanel::OnButtonBrowseDoxygenClick(wxCommandEvent& WXUNUSED(event))
+void ConfigPanel::OnButtonBrowseDoxygenClick(wxCommandEvent& /*event*/)
 {
 	wxString sPathDoxygen = GetApplicationPath();
     if(!sPathDoxygen.empty()){
@@ -778,7 +778,7 @@ void ConfigPanel::OnButtonBrowseDoxygenClick(wxCommandEvent& WXUNUSED(event))
  * \param 	event	wxCommandEvent&	A wxCommandEvent object.
  *
  */
-void ConfigPanel::OnButtonBrowseDoxywizardClick(wxCommandEvent& WXUNUSED(event))
+void ConfigPanel::OnButtonBrowseDoxywizardClick(wxCommandEvent& /*event*/)
 {
 	wxString sPathDoxywizard = GetApplicationPath();
     if(!sPathDoxywizard.empty()){
@@ -791,7 +791,7 @@ void ConfigPanel::OnButtonBrowseDoxywizardClick(wxCommandEvent& WXUNUSED(event))
  * \param 	event	wxCommandEvent&	A wxCommandEvent object.
  *
  */
-void ConfigPanel::OnButtonBrowseHHCClick(wxCommandEvent& WXUNUSED(event))
+void ConfigPanel::OnButtonBrowseHHCClick(wxCommandEvent& /*event*/)
 {
 	wxString sPathHHC = GetApplicationPath();
     if(!sPathHHC.empty()){
@@ -804,7 +804,7 @@ void ConfigPanel::OnButtonBrowseHHCClick(wxCommandEvent& WXUNUSED(event))
  * \param 	event	wxCommandEvent&	A wxCommandEvent object.
  *
  */
-void ConfigPanel::OnButtonBrowseDotClick(wxCommandEvent& WXUNUSED(event))
+void ConfigPanel::OnButtonBrowseDotClick(wxCommandEvent& /*event*/)
 {
 	wxString sPathDot = GetApplicationPath();
     if(!sPathDot.empty()){
@@ -817,7 +817,7 @@ void ConfigPanel::OnButtonBrowseDotClick(wxCommandEvent& WXUNUSED(event))
  * \param 	event	wxCommandEvent&	A wxCommandEvent object.
  *
  */
-void ConfigPanel::OnButtonBrowseCHMViewerClick(wxCommandEvent& WXUNUSED(event))
+void ConfigPanel::OnButtonBrowseCHMViewerClick(wxCommandEvent& /*event*/)
 {
 	wxString sPathCHMViewer = GetApplicationPath();
     if(!sPathCHMViewer.empty()){
@@ -948,7 +948,7 @@ void ConfigPanel::OnCheckBoxUseAutoversionClick(wxCommandEvent& event)
  * \return 	void
  *
  */
-void ConfigPanel::OnCheckBoxUseAtInTagsClick(wxCommandEvent& WXUNUSED(event))
+void ConfigPanel::OnCheckBoxUseAtInTagsClick(wxCommandEvent& /*event*/)
 {
 	bool bUseAltInTags = CheckBoxUseAtInTags->IsChecked();
 	int iBlockComment = RadioBoxBlockComments->GetSelection();
