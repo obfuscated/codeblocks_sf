@@ -49,7 +49,7 @@ const long ConfigPanel::ID_STATICTEXT8 = wxNewId();
 const long ConfigPanel::ID_TEXTCTRLOUTPUT_DIRECTORY = wxNewId();
 const long ConfigPanel::ID_STATICTEXT5 = wxNewId();
 const long ConfigPanel::ID_CHOICE_OUTPUT_LANGUAGE = wxNewId();
-const long ConfigPanel::ID_CHECKBOX_EXTRACT_AL = wxNewId();
+const long ConfigPanel::ID_CHECKBOX_EXTRACT_ALL = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_EXTRACTPRIVATE = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_EXTRACTSTATIC = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_WARNINGS = wxNewId();
@@ -90,6 +90,7 @@ const long ConfigPanel::ID_BUTTON_BROWSECHMVIEWER = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_OVERWRITEDOXYFILE = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_PROMPTB4OVERWRITING = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_USEATINTAGS = wxNewId();
+const long ConfigPanel::ID_CHECKBOX_LOADTEMPLATE = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_USEINTERNALVIEWER = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_RUNHTML = wxNewId();
 const long ConfigPanel::ID_CHECKBOX_RUNCHM = wxNewId();
@@ -119,26 +120,43 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	wxBoxSizer* BoxSizer15;
 	wxBoxSizer* BoxSizer20;
 	wxBoxSizer* BoxSizer5;
+	wxBoxSizer* BoxSizer10;
 	wxBoxSizer* BoxSizer7;
 	wxStaticBoxSizer* StaticBoxSizer12;
 	wxBoxSizer* BoxSizer8;
+	wxBoxSizer* BoxSizer21;
 	wxStaticText* StaticText2;
+	wxPanel* Panel4;
 	wxBoxSizer* BoxSizer13;
 	wxStaticBoxSizer* StaticBoxSizer4;
+	wxStaticText* StaticText6;
+	wxNotebook* NotebookPrefs;
+	wxStaticText* StaticText8;
+	wxPanel* Panel1;
+	wxStaticText* StaticText1;
 	wxStaticBoxSizer* StaticBoxSizer9;
+	wxBoxSizer* BoxSizer2;
+	wxStaticText* StaticText3;
 	wxBoxSizer* BoxSizer11;
 	wxBoxSizer* BoxSizer16;
 	wxStaticBoxSizer* StaticBoxSizer7;
 	wxBoxSizer* BoxSizer12;
 	wxBoxSizer* BoxSizer18;
+	wxPanel* Panel3;
 	wxStaticBoxSizer* StaticBoxSizer10;
 	wxBoxSizer* BoxSizer14;
 	wxStaticBoxSizer* StaticBoxSizer8;
+	wxStaticBoxSizer* StaticBoxSizer3;
 	wxStaticBoxSizer* StaticBoxSizer6;
+	wxStaticText* StaticText5;
+	wxStaticText* StaticText7;
 	wxBoxSizer* BoxSizer17;
 	wxStaticBoxSizer* StaticBoxSizer11;
 	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* BoxSizer9;
+	wxPanel* Panel2;
+	wxStaticBoxSizer* StaticBoxSizer1;
+	wxBoxSizer* BoxSizer22;
 	wxBoxSizer* BoxSizer3;
 	wxStaticBoxSizer* StaticBoxSizer5;
 	wxStaticText* StaticText4;
@@ -211,9 +229,9 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	BoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
 	StaticText8 = new wxStaticText(Panel3, ID_STATICTEXT8, _("OUTPUT_DIRECTORY"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
 	BoxSizer18->Add(StaticText8, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	TextCtrlOutputDirectory = new wxTextCtrl(Panel3, ID_TEXTCTRLOUTPUT_DIRECTORY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRLOUTPUT_DIRECTORY"));
-	TextCtrlOutputDirectory->SetToolTip(_("The OUTPUT_DIRECTORY tag is used to specify the (relative or\nabsolute) base path where the generated documentation will be put.\nIf a relative path is entered, it will be relative to the location\nwhere doxygen was started. If left blank the current directory will be used.\n\nDoxyBlocks will use the path name entered here to create a directory\nrelative to <project dir>/doxygen. This allows you to\ncreate separate doxygen directories for projects that reside in the\nsame directory, or just use a different directory name. If this field\nis blank, documents will be created in <project dir>/doxygen.\nYou can enter a directory name without separators, etc.\nDoxyBlocks does validation on the path name and will strip dots,\nslashes, etc."));
-	BoxSizer18->Add(TextCtrlOutputDirectory, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	TextCtrlOutputDirectory = new wxTextCtrl(Panel3, ID_TEXTCTRLOUTPUT_DIRECTORY, wxEmptyString, wxDefaultPosition, wxSize(252,21), 0, wxDefaultValidator, _T("ID_TEXTCTRLOUTPUT_DIRECTORY"));
+	TextCtrlOutputDirectory->SetToolTip(_("The OUTPUT_DIRECTORY tag is used to specify the (relative or\nabsolute) base path where the generated documentation will be put.\nIf a relative path is entered, it will be relative to the location\nwhere doxygen was started. If left blank the current directory will be used.\n\nDoxyBlocks will use the path name entered here to create a directory\nrelative to <project dir>. This allows you to create separate doxygen\ndirectories for projects that reside in the same directory, or just use a\ndifferent directory name. If this field is blank, documents will be created\nin <project dir>/doxygen. Enter directory names without dots, \nleading separators, volume names, etc. DoxyBlocks does validation on\nthe path name and will strip extraneous characters.\n\nExamples:\n[blank]                     -> <project dir>/doxygen.\n\"docs\"                      -> <project dir>/docs.\n\"docs/sub1/sub2\"  -> <project dir>/docs/sub1/sub2.\n\"doxygen/docs\"     -> <project dir>/doxygen/docs.\n"));
+	BoxSizer18->Add(TextCtrlOutputDirectory, 2, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer2->Add(BoxSizer18, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	BoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
 	StaticText5 = new wxStaticText(Panel3, ID_STATICTEXT5, _("OUTPUT_LANGUAGE"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
@@ -263,7 +281,7 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	StaticBoxSizer2->Add(BoxSizer20, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	BoxSizer4->Add(StaticBoxSizer2, 2, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	StaticBoxSizer5 = new wxStaticBoxSizer(wxHORIZONTAL, Panel3, _("Build"));
-	CheckBoxExtractAll = new wxCheckBox(Panel3, ID_CHECKBOX_EXTRACT_AL, _("EXTRACT_ALL"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_EXTRACT_AL"));
+	CheckBoxExtractAll = new wxCheckBox(Panel3, ID_CHECKBOX_EXTRACT_ALL, _("EXTRACT_ALL"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_EXTRACT_ALL"));
 	CheckBoxExtractAll->SetValue(false);
 	CheckBoxExtractAll->SetToolTip(_("If the EXTRACT_ALL tag is set to YES doxygen will assume all entities in\ndocumentation are documented, even if no documentation was available.\nPrivate class members and static file members will be hidden unless\nthe EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES"));
 	StaticBoxSizer5->Add(CheckBoxExtractAll, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -327,7 +345,7 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	CheckBoxBinaryTOC->SetToolTip(_("If the GENERATE_HTMLHELP tag is set to YES, the BINARY_TOC flag\ncontrols whether a binary table of contents is generated (YES) or a\nnormal table of contents (NO) in the .chm file."));
 	BoxSizer17->Add(CheckBoxBinaryTOC, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer12->Add(BoxSizer17, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-	StaticBoxSizer7->Add(BoxSizer12, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	StaticBoxSizer7->Add(BoxSizer12, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	BoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
 	CheckBoxGenerateLatex = new wxCheckBox(Panel4, ID_CHECKBOX_GENERATE_LATEX, _("GENERATE_LATEX"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_GENERATE_LATEX"));
 	CheckBoxGenerateLatex->SetValue(false);
@@ -341,7 +359,7 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	CheckBoxGenerateMan->SetValue(true);
 	CheckBoxGenerateMan->SetToolTip(_("If the GENERATE_MAN tag is set to YES (the default) Doxygen will\ngenerate man pages"));
 	BoxSizer14->Add(CheckBoxGenerateMan, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer7->Add(BoxSizer14, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	StaticBoxSizer7->Add(BoxSizer14, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	BoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
 	CheckBoxGenerateXML = new wxCheckBox(Panel4, ID_CHECKBOX_GENERATE_XML, _("GENERATE_XML"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_GENERATE_XML"));
 	CheckBoxGenerateXML->SetValue(false);
@@ -355,7 +373,7 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	CheckBoxGeneratePerlMod->SetValue(false);
 	CheckBoxGeneratePerlMod->SetToolTip(_("If the GENERATE_PERLMOD tag is set to YES Doxygen will\ngenerate a Perl module file that captures the structure of\nthe code including all documentation. Note that this\nfeature is still experimental and incomplete at the\nmoment."));
 	BoxSizer15->Add(CheckBoxGeneratePerlMod, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer7->Add(BoxSizer15, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	StaticBoxSizer7->Add(BoxSizer15, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	BoxSizer16->Add(StaticBoxSizer7, 3, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	StaticBoxSizer8 = new wxStaticBoxSizer(wxHORIZONTAL, Panel4, _("Pre-processor"));
 	CheckBoxEnablePreprocessing = new wxCheckBox(Panel4, ID_CHECKBOX_ENABLE_PREPROCESSING, _("ENABLE_PREPROCESSING"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_ENABLE_PREPROCESSING"));
@@ -430,19 +448,27 @@ ConfigPanel::ConfigPanel(wxWindow* parent, DoxyBlocks *pOwner, wxWindowID /*id*/
 	BoxSizer19->Add(ButtonBrowseCHMViewer, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	StaticBoxSizer4->Add(BoxSizer19, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	BoxSizer7->Add(StaticBoxSizer4, 3, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-	StaticBoxSizer11 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("General Options"));
+	StaticBoxSizer11 = new wxStaticBoxSizer(wxVERTICAL, Panel1, _("General Options"));
+	BoxSizer21 = new wxBoxSizer(wxHORIZONTAL);
 	CheckBoxOverwriteDoxyfile = new wxCheckBox(Panel1, ID_CHECKBOX_OVERWRITEDOXYFILE, _("Overwrite Doxyfile"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_OVERWRITEDOXYFILE"));
 	CheckBoxOverwriteDoxyfile->SetValue(false);
 	CheckBoxOverwriteDoxyfile->SetToolTip(_("Allow DoxyBlocks to overwrite the doxyfile.\nBy default, if a doxyfile already exists it is not overwritten to protect\nany changes that have been made outside DoxyBlocks however this\nbehaviour prevents changes made within DoxyBlocks being written to\nan existing doxyfile."));
-	StaticBoxSizer11->Add(CheckBoxOverwriteDoxyfile, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer21->Add(CheckBoxOverwriteDoxyfile, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	CheckBoxPromptBeforeOverwriting = new wxCheckBox(Panel1, ID_CHECKBOX_PROMPTB4OVERWRITING, _("Prompt Before Overwriting"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_PROMPTB4OVERWRITING"));
 	CheckBoxPromptBeforeOverwriting->SetValue(false);
 	CheckBoxPromptBeforeOverwriting->SetToolTip(_("Prompt before overwriting an existing doxyfile.\nWhen used in conjunction with \"Overwrite doxyfile\" this setting forces\nDoxyBlocks to prompt you before overwriting an existing doxyfile."));
-	StaticBoxSizer11->Add(CheckBoxPromptBeforeOverwriting, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer21->Add(CheckBoxPromptBeforeOverwriting, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	CheckBoxUseAtInTags = new wxCheckBox(Panel1, ID_CHECKBOX_USEATINTAGS, _("Use \"@\" In Tags"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_USEATINTAGS"));
 	CheckBoxUseAtInTags->SetValue(false);
 	CheckBoxUseAtInTags->SetToolTip(_("Use \"@\" in document tags instead of \"\\\".\nThis option causes DoxyBlocks to create document tags like\n\"@brief\" and \"@param\" rather than \"\\brief\" and \"\\param\"."));
-	StaticBoxSizer11->Add(CheckBoxUseAtInTags, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer21->Add(CheckBoxUseAtInTags, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer11->Add(BoxSizer21, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	BoxSizer22 = new wxBoxSizer(wxHORIZONTAL);
+	CheckBoxLoadTemplate = new wxCheckBox(Panel1, ID_CHECKBOX_LOADTEMPLATE, _("Load Settings Template If No Saved Settings Exist"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_LOADTEMPLATE"));
+	CheckBoxLoadTemplate->SetValue(false);
+	CheckBoxLoadTemplate->SetToolTip(_("This option allows you to use your preferred settings as the default settings by loading a previously saved settings template, if one exists, rather than using the system default settings when loading a project that doesn\'t contain saved DoxyBlocks settings. DoxyBlocks falls back to the default settings if a template is not found."));
+	BoxSizer22->Add(CheckBoxLoadTemplate, 1, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer11->Add(BoxSizer22, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
 	BoxSizer7->Add(StaticBoxSizer11, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
 	StaticBoxSizer12 = new wxStaticBoxSizer(wxHORIZONTAL, Panel1, _("HTML"));
 	CheckBoxUseInternalViewer = new wxCheckBox(Panel1, ID_CHECKBOX_USEINTERNALVIEWER, _("Use Internal Viewer"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX_USEINTERNALVIEWER"));
@@ -959,8 +985,3 @@ void ConfigPanel::OnCheckBoxUseAtInTagsClick(wxCommandEvent& /*event*/)
 	TextCtrlBlockComment->SetReadOnly(true);
 }
 
-
-//void ConfigPanel::OnButtonLoadDefaultSettingsClick(wxCommandEvent& event)
-//{
-//
-//}

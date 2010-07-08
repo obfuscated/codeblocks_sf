@@ -175,7 +175,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		wxString sHaveDot = BoolToString(m_pConfig->GetHaveDot());
 		wxString sPathDot = pMacMngr->ReplaceMacros(m_pConfig->GetPathDot());
 
-        // Create a full doxygen 1.6.3 config file without comments.
+        // Create a full doxygen 1.7.1 config file without comments.
         wxString sText;
 		wxString nl = wxT("\n");
 		wxString qnl = wxT("\"\n");
@@ -184,7 +184,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
         sText +=  wxString(wxT("# ")) + _("You may change these defaults to suit your purposes") + wxT(".\n");
         sText +=  wxT("#******************************************************************************\n\n");
 
-		sText +=  wxT("# Doxyfile 1.6.3\n");
+		sText +=  wxT("# Doxyfile 1.7.1\n");
 		sText +=  wxT("\n");
 		sText +=  wxT("#---------------------------------------------------------------------------\n");
 		sText +=  wxT("# Project related configuration options\n");
@@ -271,7 +271,7 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("WARN_IF_DOC_ERROR      = ") + sWarnIfDocError + nl;
 		sText +=  wxT("WARN_NO_PARAMDOC       = ") + sWarnNoParamDoc + nl;
 		sText +=  wxT("WARN_FORMAT            = \"$file:$line: $text\"\n");
-        sText +=  wxT("WARN_LOGFILE 	      = \"") + fnDoxygenLog.GetFullPath() + qnl;
+        sText +=  wxT("WARN_LOGFILE 	       = \"") + fnDoxygenLog.GetFullPath() + qnl;
 
 		sText +=  wxT("#---------------------------------------------------------------------------\n");
 		sText +=  wxT("# configuration options related to the input files\n");
@@ -320,12 +320,17 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("HTML_HEADER            =\n");
 		sText +=  wxT("HTML_FOOTER            =\n");
 		sText +=  wxT("HTML_STYLESHEET        =\n");
+		sText +=  wxT("HTML_COLORSTYLE_HUE    = 220\n");
+		sText +=  wxT("HTML_COLORSTYLE_SAT    = 100\n");
+		sText +=  wxT("HTML_COLORSTYLE_GAMMA  = 80\n");
 		sText +=  wxT("HTML_TIMESTAMP         = YES\n");
 		sText +=  wxT("HTML_ALIGN_MEMBERS     = YES\n");
 		sText +=  wxT("HTML_DYNAMIC_SECTIONS  = NO\n");
 		sText +=  wxT("GENERATE_DOCSET        = NO\n");
 		sText +=  wxT("DOCSET_FEEDNAME        = \"Doxygen generated docs\"\n");
 		sText +=  wxT("DOCSET_BUNDLE_ID       = org.doxygen.Project\n");
+		sText +=  wxT("DOCSET_PUBLISHER_ID    = org.doxygen.Publisher\n");
+		sText +=  wxT("DOCSET_PUBLISHER_NAME  = Publisher\n");
 		sText +=  wxT("GENERATE_HTMLHELP      = ") + sGenerateHTMLHelp + nl;
         sText +=  wxT("CHM_FILE               = \"") + sChmFile    + qnl;
 		if(!sPathHHC.IsEmpty()){
@@ -353,7 +358,9 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("GENERATE_TREEVIEW      = YES\n");
 		sText +=  wxT("USE_INLINE_TREES       = NO\n");
 		sText +=  wxT("TREEVIEW_WIDTH         = 250\n");
+		sText +=  wxT("EXT_LINKS_IN_WINDOW    = NO\n");
 		sText +=  wxT("FORMULA_FONTSIZE       = 10\n");
+		sText +=  wxT("FORMULA_TRANSPARENT    = YES\n");
 		sText +=  wxT("SEARCHENGINE           = YES\n");
 		sText +=  wxT("SERVER_BASED_SEARCH    = NO\n");
 
@@ -418,12 +425,12 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("# Configuration options related to the preprocessor\n");
 		sText +=  wxT("#---------------------------------------------------------------------------\n");
 		sText +=  wxT("ENABLE_PREPROCESSING   = ") + sEnablePreproc + nl;
-		sText +=  wxT("MACRO_EXPANSION        = NO\n");
-		sText +=  wxT("EXPAND_ONLY_PREDEF     = NO\n");
+		sText +=  wxT("MACRO_EXPANSION        = YES\n");
+		sText +=  wxT("EXPAND_ONLY_PREDEF     = YES\n");
 		sText +=  wxT("SEARCH_INCLUDES        = YES\n");
 		sText +=  wxT("INCLUDE_PATH           =\n");
 		sText +=  wxT("INCLUDE_FILE_PATTERNS  =\n");
-		sText +=  wxT("PREDEFINED             =\n");
+		sText +=  wxT("PREDEFINED             = WXUNUSED()=\n");		/// TODO (Gary#1#): I should look at other macros for inclusion here.
 		sText +=  wxT("EXPAND_AS_DEFINED      =\n");
 		sText +=  wxT("SKIP_FUNCTION_MACROS   = YES\n");
 
@@ -443,7 +450,8 @@ void DoxyBlocks::WriteConfigFiles(cbProject *prj, wxString sPrjName, wxString /*
 		sText +=  wxT("MSCGEN_PATH            =\n");
 		sText +=  wxT("HIDE_UNDOC_RELATIONS   = YES\n");
 		sText +=  wxT("HAVE_DOT               = ") + sHaveDot + nl;
-		sText +=  wxT("DOT_FONTNAME           = FreeSans\n");
+		sText +=  wxT("DOT_NUM_THREADS        = 0\n");
+		sText +=  wxT("DOT_FONTNAME           = FreeSans.ttf\n");
 		sText +=  wxT("DOT_FONTSIZE           = 10\n");
 		sText +=  wxT("DOT_FONTPATH           =\n");
 		sText +=  wxT("CLASS_GRAPH            = YES\n");
@@ -513,7 +521,7 @@ int DoxyBlocks::GenerateDocuments(cbProject *prj)
 		wxMkdir(sDoxygenDir);
 	}
 	if(!sOutputDir.IsEmpty()){
-		sDoxygenDir = sDoxygenDir + wxT("/") + sOutputDir;
+		sDoxygenDir = sOutputDir;
 		// Create the sub-dir.
 		if(!wxDirExists(sDoxygenDir)){
 			wxMkdir(sDoxygenDir);

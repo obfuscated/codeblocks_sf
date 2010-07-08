@@ -35,13 +35,11 @@
 
 #include <wx/regex.h>
 
-//
-
 /** \brief The regex for a class declaration.
 */
 wxRegEx reClass(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
-	"class[[:space:]]+"					// The word class, followed by some space (at least one).
+	"class[[:space:]]+"				// The word class, followed by some space (at least one).
 	"([^[:space:]\\:]+)"					// The class name (made of no space and no colon).
 	));
 
@@ -60,7 +58,7 @@ wxRegEx reStruct(wxT(
 */
 wxRegEx reTypedef(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
-	"typedef[[:space:]]+"				// The typedef word followed by at least one space.
+	"typedef[[:space:]]+"			// The typedef word followed by at least one space.
 	"(.+)[[:space:]]+"					// The original type, followed by at least one space.
 	"([^\\{[:space:];]+)"					// The new type, not made of any space nor braces, nor semicolon.
 	));
@@ -69,49 +67,52 @@ wxRegEx reTypedef(wxT(
 */
 wxRegEx reEnum(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
-	"enum[[:space:]]+"					// The word class, followed by some space (at least one).
+	"enum[[:space:]]+"				// The word class, followed by some space (at least one).
 	"([^[:space:]\\:]+)"					// The class name (made of no space and no colon).
 	));
 
 /** \brief The regex for a function declaration.
  *
  * Matches: return_type function(type param, type param, ...)
+ * \note This declaration generates a false warning in doxygen regarding undocumented return type.
  */
 wxRegEx reFunction(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
-	"((.+)[[:space:]])"						// The return type of the function.
+	"((.+)[[:space:]])"					// The return type of the function.
 	"([[:space:]]*)"						// Possibly some space after the name.
 	"([^[:space:]]+)\\("					// The name of the function, followed by a "(".
-	"([^)]*)?"								// The function's parameters.
-	"\\)"										// The closing parenthesis.
+	"([^)]*)?"									// The function's parameters.
+	"\\)"											// The closing parenthesis.
 	),
 	wxRE_ADVANCED);
 
 /** \brief The regex for a class function declaration.
  *
  * Matches: return_type class::function(type param, type param, ...)
+ * \note This declaration generates a false warning in doxygen regarding undocumented return type.
  */
 wxRegEx reClassFunction(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
-	"((.+)[[:space:]])"						// The return type of the function.
+	"((.+)[[:space:]])"					// The return type of the function.
 	"([[:space:]]*)"						// Some space after the return type.
 	"([^[:space:]]+)\\::"					// The class name followed by "::".
 	"([^[:space:]]+)\\("					// The name of the function, followed by a "(".
-	"([^)]*)?"								// The function's parameters.
-	"\\)"										// The closing parenthesis.
+	"([^)]*)?"									// The function's parameters.
+	"\\)"											// The closing parenthesis.
 	),
 	wxRE_ADVANCED);
 
 /** \brief The regex for a class function declaration without a return value, such as a constructor.
  *
  * Matches: class::function(type param, type param, ...)
+ * \note This declaration generates a false warning in doxygen regarding undocumented return type.
  */
 wxRegEx reClassFunctionNoRet(wxT(
 	"^[[:space:]]*"						// Space at the beginning of the line.
 	"([^[:space:]]+)\\::"					// The class name followed by "::".
 	"([^[:space:]]+)\\("					// The name of the function, followed by a "(".
-	"([^)]*)?"								// The function's parameters.
-	"\\)"										// The closing parenthesis.
+	"([^)]*)?"									// The function's parameters.
+	"\\)"											// The closing parenthesis.
 	));
 
 

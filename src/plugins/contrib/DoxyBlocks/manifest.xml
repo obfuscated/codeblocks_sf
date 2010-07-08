@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="11"  release="12" />
     <Plugin name="DoxyBlocks">
         <Value title="DoxyBlocks" />
-        <Value version="1.5.511" />
+        <Value version="1.6.596" />
         <Value description="Doxygen integration for Code::Blocks." />
         <Value author="Gary Harris" />
         <Value authorEmail="garyjharris@sourceforge.net" />

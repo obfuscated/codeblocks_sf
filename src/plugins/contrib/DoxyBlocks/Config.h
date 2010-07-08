@@ -400,6 +400,16 @@ class DoxyBlocksConfig
 		 */
 		bool GetUseInternalViewer() const { return m_bUseInternalViewer; }
 
+		/** Set m_bLoadTemplate
+		 * \param val New value to set
+		 */
+		void SetLoadTemplate(bool val) { m_bLoadTemplate = val; }
+
+		/** Access m_bLoadTemplate
+		 * \return The current value of m_bLoadTemplate
+		 */
+		bool GetLoadTemplate() const { return m_bLoadTemplate; }
+
 		/** Set m_bUseInternalViewer
 		 * \param val New value to set
 		 */
@@ -437,40 +447,41 @@ class DoxyBlocksConfig
 		wxString 	m_sProjectNumber; 				//!< Project Number.
 		wxString	m_sOutputDirectory;				//!< Output Directory.
 		wxString	m_sOutputLanguage; 			//!< Output Language.
-		bool 		m_bUseAutoVersion; 			//!< Use AutoVersion version number.
-		bool 		m_bExtractAll; 						//!< Extract All.
-		bool 		m_bExtractPrivate;				//!< Extract Private.
-		bool 		m_bExtractStatic;					//!< Extract Static.
-		bool 		m_bWarnings; 						//!< Warnings.
-		bool 		m_bWarnIfDocError; 				//!< Warn If Doc Error.
+		bool 		m_bUseAutoVersion; 				//!< Use AutoVersion version number.
+		bool 		m_bExtractAll; 								//!< Extract All.
+		bool 		m_bExtractPrivate;						//!< Extract Private.
+		bool 		m_bExtractStatic;						//!< Extract Static.
+		bool 		m_bWarnings; 							//!< Warnings.
+		bool 		m_bWarnIfDocError; 					//!< Warn If Doc Error.
 		bool 		m_bWarnIfUndocumented; 		//!< Warn If Undocumented.
 		bool 		m_bWarnNoParamdoc; 			//!< Warn No Paramdoc.
-		bool 		m_bAlphabeticalIndex; 			//!< Alphabetical Index.
-		bool 		m_bGenerateHTML; 				//!< Generate HTML.
-		bool 		m_bGenerateHTMLHelp; 		//!< Generate HTML Help.
-		bool 		m_bGenerateCHI; 					//!< Generate CHI.
-		bool 		m_bBinaryTOC; 					//!< Generate Binary TOC.
-		bool 		m_bGenerateLatex; 				//!< Generate Latex.
-		bool 		m_bGenerateRTF; 				//!< Generate RTF.
-		bool 		m_bGenerateMan; 				//!< Generate Man.
-		bool 		m_bGenerateXML; 				//!< Generate XML.
+		bool 		m_bAlphabeticalIndex; 				//!< Alphabetical Index.
+		bool 		m_bGenerateHTML; 					//!< Generate HTML.
+		bool 		m_bGenerateHTMLHelp; 			//!< Generate HTML Help.
+		bool 		m_bGenerateCHI; 						//!< Generate CHI.
+		bool 		m_bBinaryTOC; 							//!< Generate Binary TOC.
+		bool 		m_bGenerateLatex; 					//!< Generate Latex.
+		bool 		m_bGenerateRTF; 						//!< Generate RTF.
+		bool 		m_bGenerateMan; 						//!< Generate Man.
+		bool 		m_bGenerateXML; 						//!< Generate XML.
 		bool 		m_bGenerateAutogenDef; 		//!< Generate Autogen Def.
-		bool 		m_bGeneratePerlMod; 			//!< Generate Perl Mod.
+		bool 		m_bGeneratePerlMod; 				//!< Generate Perl Mod.
 		bool 		m_bEnablePreprocessing; 		//!< Enable Preprocessing.
 		bool 		m_bClassDiagrams; 				//!< Class Diagrams.
-		bool 		m_bHaveDot; 						//!< Have Dot.
+		bool 		m_bHaveDot; 								//!< Have Dot.
 		// General.
-		wxString 	m_sPathDoxygen; 				//!< Path to Doxygen.
-		wxString 	m_sPathDoxywizard; 			//!< Path to Doxywizard.
+		wxString 	m_sPathDoxygen; 					//!< Path to Doxygen.
+		wxString 	m_sPathDoxywizard; 				//!< Path to Doxywizard.
 		wxString 	m_sPathHHC; 						//!< Path to HHC.
-		wxString 	m_sPathDot; 						//!< Path to Dot.
+		wxString 	m_sPathDot; 							//!< Path to Dot.
 		wxString 	m_sPathCHMViewer;				//!< Path to CHM viewer.
-		bool 		m_bOverwriteDoxyfile; 			//!< Overwrite the doxyfile.
+		bool 		m_bOverwriteDoxyfile; 				//!< Overwrite the doxyfile.
 		bool 		m_bPromptBeforeOverwriting;	//!< Prompt before overwriting the doxyfile.
-		bool 		m_bUseAtInTags; 					//!< Use @ in tags.
+		bool 		m_bUseAtInTags; 						//!< Use @ in tags.
+		bool		m_bLoadTemplate;					//!< Load settings template instead of using default settings.
 		bool 		m_bUseInternalViewer; 			//!< Use internal viewer to display HTML.
-		bool 		m_bRunHTML; 						//!< Run HTML after compilation.
-		bool 		m_bRunCHM; 						//!< Run CHM after compilation.
+		bool 		m_bRunHTML; 							//!< Run HTML after compilation.
+		bool 		m_bRunCHM; 								//!< Run CHM after compilation.
 
 		// Config. defaults.
 		//-------------------------
@@ -651,6 +662,11 @@ class DoxyBlocksConfig
 		 * \return The default value.
 		 */
 		bool GetDefaultUseAtInTags() const { return false; }
+
+		/** Get the default value for m_bLoadTemplate.
+		 * \return The default value.
+		 */
+		bool GetDefaultLoadTemplate() const { return false; }
 
 		/** Get the default value for m_bUseInternalViewer.
 		 * \return The default value.

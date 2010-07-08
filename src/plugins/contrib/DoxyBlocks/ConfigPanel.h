@@ -340,6 +340,14 @@ class ConfigPanel: public cbConfigurationPanel
 		 * \param val New value to set
 		 */
 		void SetUseAtInTags(bool val) { CheckBoxUseAtInTags->SetValue(val); }
+		/** Access CheckBoxLoadTemplate
+		 * \return The current value of CheckBoxLoadTemplate
+		 */
+		bool GetLoadTemplate() { return CheckBoxLoadTemplate->GetValue(); }
+		/** Set CheckBoxLoadTemplate
+		 * \param val New value to set
+		 */
+		void SetLoadTemplate(bool val) { CheckBoxLoadTemplate->SetValue(val); }
 		/** Access CheckBoxUseInternalViewer
 		 * \return The current value of CheckBoxUseInternalViewer
 		 */
@@ -374,28 +382,18 @@ class ConfigPanel: public cbConfigurationPanel
 		cbStyledTextCtrl* TextCtrlBlockComment;
 		wxCheckBox* CheckBoxGenerateHTML;
 		wxButton* ButtonBrowseHHC;
-		wxBoxSizer* BoxSizer10;
 		wxCheckBox* CheckBoxGenerateLatex;
-		wxPanel* Panel4;
 		wxCheckBox* CheckBoxOverwriteDoxyfile;
 		wxButton* ButtonBrowseCHMViewer;
-		wxStaticText* StaticText6;
 		wxCheckBox* CheckBoxClassDiagrams;
-		wxNotebook* NotebookPrefs;
 		wxTextCtrl* TextCtrlOutputDirectory;
 		wxButton* ButtonBrowseDoxywizard;
-		wxStaticText* StaticText8;
 		wxCheckBox* CheckBoxGenerateHTMLHelp;
 		wxTextCtrl* TextCtrlPathHHC;
-		wxPanel* Panel1;
-		wxStaticText* StaticText1;
 		wxRadioBox* RadioBoxBlockComments;
-		wxBoxSizer* BoxSizer2;
-		wxStaticText* StaticText3;
 		wxChoice* ChoiceOutputLanguage;
 		wxCheckBox* CheckBoxRunHTML;
 		wxTextCtrl* TextCtrlPathDot;
-		wxPanel* Panel3;
 		wxCheckBox* CheckBoxUseInternalViewer;
 		wxCheckBox* CheckBoxGenerateCHI;
 		wxCheckBox* CheckBoxGenerateRTF;
@@ -406,11 +404,8 @@ class ConfigPanel: public cbConfigurationPanel
 		wxTextCtrl* TextCtrlPathDoxygen;
 		wxCheckBox* CheckBoxWarnings;
 		wxTextCtrl* TextCtrlProjectNumber;
-		wxStaticBoxSizer* StaticBoxSizer3;
 		wxTextCtrl* TextCtrlPathDoxywizard;
 		wxCheckBox* CheckBoxAlphabeticalIndex;
-		wxStaticText* StaticText5;
-		wxStaticText* StaticText7;
 		wxCheckBox* CheckBoxRunCHM;
 		wxCheckBox* CheckBoxWarnIfDocError;
 		wxCheckBox* CheckBoxGeneratePerlMod;
@@ -424,12 +419,11 @@ class ConfigPanel: public cbConfigurationPanel
 		wxCheckBox* CheckBoxBinaryTOC;
 		wxRadioBox* RadioBoxLineComments;
 		wxCheckBox* CheckBoxGenerateMan;
-		wxPanel* Panel2;
 		wxCheckBox* CheckBoxUseAutoVersion;
-		wxStaticBoxSizer* StaticBoxSizer1;
 		wxCheckBox* CheckBoxEnablePreprocessing;
 		wxTextCtrl* TextCtrlPathCHMViewer;
 		wxCheckBox* CheckBoxExtractPrivate;
+		wxCheckBox* CheckBoxLoadTemplate;
 		wxCheckBox* CheckBoxPromptBeforeOverwriting;
 		//*)
 
@@ -448,7 +442,7 @@ class ConfigPanel: public cbConfigurationPanel
 		static const long ID_TEXTCTRLOUTPUT_DIRECTORY;
 		static const long ID_STATICTEXT5;
 		static const long ID_CHOICE_OUTPUT_LANGUAGE;
-		static const long ID_CHECKBOX_EXTRACT_AL;
+		static const long ID_CHECKBOX_EXTRACT_ALL;
 		static const long ID_CHECKBOX_EXTRACTPRIVATE;
 		static const long ID_CHECKBOX_EXTRACTSTATIC;
 		static const long ID_CHECKBOX_WARNINGS;
@@ -489,6 +483,7 @@ class ConfigPanel: public cbConfigurationPanel
 		static const long ID_CHECKBOX_OVERWRITEDOXYFILE;
 		static const long ID_CHECKBOX_PROMPTB4OVERWRITING;
 		static const long ID_CHECKBOX_USEATINTAGS;
+		static const long ID_CHECKBOX_LOADTEMPLATE;
 		static const long ID_CHECKBOX_USEINTERNALVIEWER;
 		static const long ID_CHECKBOX_RUNHTML;
 		static const long ID_CHECKBOX_RUNCHM;
@@ -511,7 +506,6 @@ class ConfigPanel: public cbConfigurationPanel
 		void OnCheckBoxUseAutoversionClick(wxCommandEvent& event);
 		void OnCheckBoxUseAtInTagsClick(wxCommandEvent& event);
 		void OnButtonBrowseCHMViewerClick(wxCommandEvent& event);
-//		void OnButtonLoadDefaultSettingsClick(wxCommandEvent& event);
 		//*)
 
         // virtual routines required by cbConfigurationPanel
@@ -538,11 +532,335 @@ class ConfigPanel: public cbConfigurationPanel
         // Pointer to owner of the configuration dialog needed to complete the OnApply/OnCancel EndModal() logic
         DoxyBlocks* m_pOwnerClass;	//!< The class that owns this dialogue. Used for calling OnDialogueDone().
 
-		bool m_bAutoVersioning;			//!< Whether AutoVersioning is active for the current project.
+		bool m_bAutoVersioning;				//!< Whether AutoVersioning is active for the current project.
 		bool m_bUseAutoVersion;			//!< Whether to to use the AutoVersion-generated version string.
 
 
 		DECLARE_EVENT_TABLE()
+
+		// These comments show how to document the variables declared by wxSmith. They can't be documented in place because the will
+		// be overwritten by the next change, so I use remote documentation. While these comments don't contribute a great deal they do prevent
+		// the variables from remaining undocumented, show how to get documentation into the extracted docs and allow you to run doxygen with
+		// all warnings active without receiving a warning for each one.
+		/*! \var ButtonBrowseCHMViewer
+		 *	\brief A pointer to the CHM viewer Browse wxButton.
+		 */
+		/*! \var ButtonBrowseDoxywizard
+		 *	\brief A pointer to the Doxywizard Browse wxButton.
+		 */
+		/*! \var ButtonBrowseDot
+		 *	\brief A pointer to the Dot Browse wxButton.
+		 */
+		/*! \var ButtonBrowseDoxygen
+		 *	\brief A pointer to the Doxygen Browse wxButton.
+		 */
+		/*! \var ButtonBrowseHHC
+		 *	\brief A pointer to the HHC Browse wxButton.
+		 */
+		/*! \var CheckBoxAlphabeticalIndex
+		 *	\brief A pointer to the Alphabetical Index wxCheckBox.
+		 */
+		/*! \var CheckBoxBinaryTOC
+		 *	\brief A pointer to the Binary TOC wxCheckBox.
+		 */
+		/*! \var CheckBoxClassDiagrams
+		 *	\brief A pointer to the Class Diagrams wxCheckBox.
+		 */
+		/*! \var CheckBoxEnablePreprocessing
+		 *	\brief A pointer to the Enable Preprocessing wxCheckBox.
+		 */
+		/*! \var CheckBoxExtractAll
+		 *	\brief A pointer to Extract All wxCheckBox.
+		 */
+		/*! \var CheckBoxExtractPrivate
+		 *	\brief A pointer to the Extract Private wxCheckBox.
+		 */
+		/*! \var CheckBoxExtractStatic
+		 *	\brief A pointer to the Extract Static wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateAutogenDef
+		 *	\brief A pointer to the Generate Autogen Def wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateCHI
+		 *	\brief A pointer to the Generate CHI wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateHTML
+		 *	\brief A pointer to the Generate HTML wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateHTMLHelp
+		 *	\brief A pointer to the Generate HTML Help wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateLatex
+		 *	\brief A pointer to the Generate Latex wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateMan
+		 *	\brief A pointer to the Generate Man wxCheckBox.
+		 */
+		/*! \var CheckBoxGeneratePerlMod
+		 *	\brief A pointer to the Generate PerlMod wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateRTF
+		 *	\brief A pointer to the Generate RTF wxCheckBox.
+		 */
+		/*! \var CheckBoxGenerateXML
+		 *	\brief A pointer to the Generate XML wxCheckBox.
+		 */
+		/*! \var CheckBoxHaveDot
+		 *	\brief A pointer to the Have Dot wxCheckBox.
+		 */
+		/*! \var CheckBoxLoadTemplate
+		 *	\brief A pointer to the Load Template wxCheckBox.
+		 */
+		/*! \var CheckBoxOverwriteDoxyfile
+		 *	\brief A pointer to the Overwrite Doxyfile wxCheckBox.
+		 */
+		/*! \var CheckBoxPromptBeforeOverwriting
+		 *	\brief A pointer to the Prompt Before Overwriting wxCheckBox.
+		 */
+		/*! \var CheckBoxRunCHM
+		 *	\brief A pointer to the Run CHM wxCheckBox.
+		 */
+		/*! \var CheckBoxRunHTML
+		 *	\brief A pointer to the Run HTML wxCheckBox.
+		 */
+		/*! \var CheckBoxUseAtInTags
+		 *	\brief A pointer to the Use At In Tags wxCheckBox.
+		 */
+		/*! \var CheckBoxUseAutoVersion
+		 *	\brief A pointer to the Use Auto Version wxCheckBox.
+		 */
+		/*! \var CheckBoxUseInternalViewer
+		 *	\brief A pointer to the Use Internal Viewer wxCheckBox.
+		 */
+		/*! \var CheckBoxWarnIfDocError
+		 *	\brief A pointer to the Warn If Doc Error wxCheckBox.
+		 */
+		/*! \var CheckBoxWarnIfUndocumented
+		 *	\brief A pointer to the Warn If Undocumented wxCheckBox.
+		 */
+		/*! \var CheckBoxWarnings
+		 *	\brief A pointer to the Warnings wxCheckBox.
+		 */
+		/*! \var CheckBoxWarnNoParamdoc
+		 *	\brief A pointer to the Warn No Paramdoc wxCheckBox.
+		 */
+		/*! \var ChoiceOutputLanguage
+		 *	\brief A pointer to a wxChoice control listing the language options.
+		 */
+		/*! \var RadioBoxBlockComments
+		 *	\brief A pointer to the Block Comment types wxRadioBox.
+		 */
+		/*! \var RadioBoxLineComments
+		 *	\brief A pointer to the Line Comment types wxRadioBox.
+		 */
+		/*! \var CheckBoxWarnNoParamdoc
+		 *	\brief A pointer to the Warn No Paramdoc wxCheckBox.
+		 */
+		/*! \var TextCtrlBlockComment
+		 *	\brief A pointer to a cbStyledTextCtrl containing the sample block comment.
+		*/
+		/*! \var TextCtrlLineComment
+		 *	\brief A pointer to a cbStyledTextCtrl containing the sample line comment.
+		*/
+		/*! \var TextCtrlOutputDirectory
+		 *	\brief A pointer to the Output Directory wxTextCtrl.
+		 */
+		/*! \var TextCtrlPathCHMViewer
+		 *	\brief A pointer to the CHM Viewer Path wxTextCtrl.
+		 */
+		/*! \var TextCtrlPathDot
+		 *	\brief A pointer to the Dot Path wxTextCtrl.
+		 */
+		/*! \var TextCtrlPathDoxygen
+		 *	\brief A pointer to the Doxygen Path wxTextCtrl.
+		 */
+		/*! \var TextCtrlPathDoxywizard
+		 *	\brief A pointer to the Doxywizard Path wxTextCtrl.
+		 */
+		/*! \var TextCtrlPathHHC
+		 *	\brief A pointer to the HHC Path wxTextCtrl.
+		 */
+		/*! \var TextCtrlProjectNumber
+		 *	\brief A pointer to the Project Number wxTextCtrl.
+		 */
+		 // IDs
+		/*! \var ID_BUTTON_BROWSECHMVIEWER
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_BUTTON_BROWSEDOT
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_BUTTON_BROWSEDOXYGEN
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_BUTTON_BROWSEDOXYWIZARD
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_BUTTON_BROWSEHHC
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_ALPHABETICAL_INDEX
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_BINARY_TOC
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_CLASS_DIAGRAMS
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_ENABLE_PREPROCESSING
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_EXTRACT_ALL
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_EXTRACTPRIVATE
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_EXTRACTSTATIC
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_AUTOGEN_DEF
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_CHI
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_HTML
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_HTMLHELP
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_LATEX
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_MAN
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_PERLMOD
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_RTF
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_GENERATE_XML
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_HAVE_DOT
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_LOADTEMPLATE
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_OVERWRITEDOXYFILE
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_PROMPTB4OVERWRITING
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_RUNCHM
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_RUNHTML
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_USEATINTAGS
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_USEAUTOVERSION
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_USEINTERNALVIEWER
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_WARN_IF_DOC_ERROR
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_WARN_IF_UNDOCUMENTED
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_WARN_NO_PARAMDOC
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHECKBOX_WARNINGS
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_CHOICE_OUTPUT_LANGUAGE
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_NOTEBOOK_PREFS
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_PANEL1
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_PANEL2
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_PANEL3
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_PANEL4
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_RADIOBOX_BLOCKCOMMENTS
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_RADIOBOX_LINECOMMENTS
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT1
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT2
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT3
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT4
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT5
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT6
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT7
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_STATICTEXT8
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_BLOCKCOMMENT
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_LINECOMMENT
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_PATHCHMVIEWER
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_PATHDOT
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_PATHDOXYGEN
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_PATHDOXYWIZARD
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_PATHHHC
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRL_PROJECTNUMBER
+		 *	\brief Control ID.
+		 */
+		/*! \var ID_TEXTCTRLOUTPUT_DIRECTORY
+		 *	\brief Control ID.
+		 */
 };
 
 #endif

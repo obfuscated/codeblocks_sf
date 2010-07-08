@@ -1,3 +1,15 @@
+05 July 2010
+   released version 1.6.596 of DoxyBlocks
+
+     Change log:
+        -Fixed: Bugs that caused DoxyBlocks to crash when importing a Visual Studio solution.
+        -Added: Feature that allows you to load a saved template instead of the default settings, if no saved settings exist when loading a project. Requested by Codeur.
+        -Updated: Doxyfile output to doxygen 1.7.1.
+        -New: Prevented doxygen parse errors when using WXUNUSED() by adding it to doxygen's pre-processor settings.
+        -Updated: The document directory functionality to allow the use of directories other than "doxygen" as the root folder.
+        -Cleaned: The documentation to parse as cleanly as possible with all warnings enabled.
+        -Updated: Doxywizard's icon.
+
 19 May 2010
    released version 1.5.511 of DoxyBlocks
 

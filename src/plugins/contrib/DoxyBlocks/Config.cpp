@@ -75,6 +75,7 @@ DoxyBlocksConfig::DoxyBlocksConfig()
 	m_bOverwriteDoxyfile = GetDefaultOverwriteDoxyfile();
 	m_bPromptBeforeOverwriting = GetDefaultPromptBeforeOverwriting();
 	m_bUseAtInTags = GetDefaultUseAtInTags();
+	m_bLoadTemplate = GetDefaultLoadTemplate();
 	m_bUseInternalViewer = GetDefaultUseInternalViewer();
 	m_bRunHTML = GetDefaultRunHTML();
 	m_bRunCHM = GetDefaultRunCHM();

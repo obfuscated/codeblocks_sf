@@ -301,6 +301,7 @@ cbConfigurationPanel *DoxyBlocks::GetConfigurationPanel(wxWindow *parent)
 	pDlg->SetOverwriteDoxyfile(m_pConfig->GetOverwriteDoxyfile());
 	pDlg->SetPromptBeforeOverwriting(m_pConfig->GetPromptBeforeOverwriting());
 	pDlg->SetUseAtInTags(m_pConfig->GetUseAtInTags());
+	pDlg->SetLoadTemplate(m_pConfig->GetLoadTemplate());
 	pDlg->SetUseInternalViewer(m_pConfig->GetUseInternalViewer());
 	pDlg->SetRunHTML(m_pConfig->GetRunHTML());
 	pDlg->SetRunCHM(m_pConfig->GetRunCHM());
@@ -308,6 +309,11 @@ cbConfigurationPanel *DoxyBlocks::GetConfigurationPanel(wxWindow *parent)
 	pDlg->Init();
     // when the configuration panel is closed with OK, OnDialogDone() will be called
     return pDlg;
+}
+
+cbConfigurationPanel* DoxyBlocks::GetProjectConfigurationPanel(wxWindow* /*parent*/, cbProject* /*project*/)
+{
+	return 0;
 }
 
 int DoxyBlocks::Configure()
@@ -376,6 +382,7 @@ void DoxyBlocks::OnDialogueDone(ConfigPanel* pDlg)
 	m_pConfig->SetOverwriteDoxyfile(pDlg->GetOverwriteDoxyfile());
 	m_pConfig->SetPromptBeforeOverwriting(pDlg->GetPromptBeforeOverwriting());
 	m_pConfig->SetUseAtInTags(pDlg->GetUseAtInTags());
+	m_pConfig->SetLoadTemplate(pDlg->GetLoadTemplate());
 	m_pConfig->SetUseInternalViewer(pDlg->GetUseInternalViewer());
 	m_pConfig->SetRunHTML(pDlg->GetRunHTML());
 	m_pConfig->SetRunCHM(pDlg->GetRunCHM());
@@ -406,7 +413,7 @@ void DoxyBlocks::BuildMenu(wxMenuBar *menuBar)
 		wxString prefix = sDataFolder + wxT("/images/DoxyBlocks/16x16/");
 
 		wxMenuItem *MenuItemDoxywizard = new wxMenuItem(submenu, ID_MENU_DOXYWIZARD, _("&Doxywizard...\tCtrl-Alt-D"), _("Run doxywizard."));
-		MenuItemDoxywizard->SetBitmap(wxBitmap(prefix + wxT("wizard.png"), wxBITMAP_TYPE_PNG));
+		MenuItemDoxywizard->SetBitmap(wxBitmap(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG));
 		submenu->Append(MenuItemDoxywizard);
 		wxMenuItem *MenuItemExtract = new wxMenuItem(submenu, ID_MENU_EXTRACTPROJECT, _("&Extract documentation\tCtrl-Alt-E"), _("Extract documentation for the current project."));
 		MenuItemExtract->SetBitmap(wxBitmap(prefix + wxT("extract.png"), wxBITMAP_TYPE_PNG));
@@ -491,7 +498,7 @@ bool DoxyBlocks::BuildToolBar(wxToolBar *toolBar)
         m_pToolbar->SetToolBitmapSize(wxSize(22, 22));
     }
 
-    m_pToolbar->AddTool(ID_TB_WIZARD, _("Doxywizard"), wxBitmap(prefix + wxT("wizard.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Run doxywizard"));
+    m_pToolbar->AddTool(ID_TB_WIZARD, _("Doxywizard"), wxBitmap(prefix + wxT("doxywizard.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Run doxywizard"));
     m_pToolbar->AddTool(ID_TB_EXTRACTPROJECT, _("Document project"), wxBitmap(prefix + wxT("extract.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Extract documentation for the current project"));
 	m_pToolbar->AddSeparator();
     m_pToolbar->AddTool(ID_TB_BLOCKCOMMENT, _("Block Comment"), wxBitmap(prefix + wxT("comment_block.png"), wxBITMAP_TYPE_PNG), wxNullBitmap, wxITEM_NORMAL, _("Insert a comment block at the current line"));
@@ -785,21 +792,23 @@ void DoxyBlocks::CheckForAutoVersioning()
 	m_sVersionHeader = wxEmptyString;
     cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
 	TiXmlNode *node, *child;
-	node = project->GetExtensionsNode();
-	child = 0;
-	while((child = node->IterateChildren(child))){
-		wxString sNodeValue = wxString(child->Value(), wxConvUTF8);
-		if(sNodeValue.Cmp(wxT("AutoVersioning")) == 0){
-			m_bAutoVersioning = true;
-			// Get the version header path while we're here.
-            TiXmlHandle Handle(child);
-            if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement()){
-                m_sVersionHeader = wxString(pElem->Attribute("header_path"), wxConvUTF8);
-            }
-            else{
-            	AppendToLog(_("Unable to get the AutoVersion header path."), LOG_ERROR);
-            }
-            break;
+	if(project){
+		node = project->GetExtensionsNode();
+		child = 0;
+		while((child = node->IterateChildren(child))){
+			wxString sNodeValue = wxString(child->Value(), wxConvUTF8);
+			if(sNodeValue.Cmp(wxT("AutoVersioning")) == 0){
+				m_bAutoVersioning = true;
+				// Get the version header path while we're here.
+				TiXmlHandle Handle(child);
+				if(const TiXmlElement* pElem = Handle.FirstChildElement("Settings").ToElement()){
+					m_sVersionHeader = wxString(pElem->Attribute("header_path"), wxConvUTF8);
+				}
+				else{
+					AppendToLog(_("Unable to get the AutoVersion header path."), LOG_ERROR);
+				}
+				break;
+			}
 		}
 	}
 }
@@ -853,113 +862,122 @@ void DoxyBlocks::LoadSettings()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
 	int val = 0;
 	cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-	TiXmlElement *elem = prj->GetExtensionsNode()->ToElement();
-	const TiXmlElement* node = elem->FirstChildElement("DoxyBlocks");
-	if(node){
-		TiXmlHandle handle(const_cast<TiXmlElement*>(node));
-		if(const TiXmlElement* pElem = handle.FirstChildElement("comment_style").ToElement()){
-			if(pElem->QueryIntAttribute("block", &val) == TIXML_SUCCESS){
-				m_pConfig->SetBlockComment(static_cast<long>(val));
+	if(prj){
+		TiXmlElement *elem = prj->GetExtensionsNode()->ToElement();
+		const TiXmlElement* node = elem->FirstChildElement("DoxyBlocks");
+		if(node){
+			TiXmlHandle handle(const_cast<TiXmlElement*>(node));
+			if(const TiXmlElement* pElem = handle.FirstChildElement("comment_style").ToElement()){
+				if(pElem->QueryIntAttribute("block", &val) == TIXML_SUCCESS){
+					m_pConfig->SetBlockComment(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("line", &val) == TIXML_SUCCESS){
+					m_pConfig->SetLineComment(static_cast<long>(val));
+				}
 			}
-			if(pElem->QueryIntAttribute("line", &val) == TIXML_SUCCESS){
-				m_pConfig->SetLineComment(static_cast<long>(val));
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_project").ToElement()){
+				wxString s = wxString(pElem->Attribute("project_number", &val), wxConvUTF8);
+				if(!s.IsEmpty()){
+					m_pConfig->SetProjectNumber(s);
+				}
+				s = wxString(pElem->Attribute("output_directory", &val), wxConvUTF8);
+				if(!s.IsEmpty()){
+					m_pConfig->SetOutputDirectory(s);
+				}
+				s = wxString(pElem->Attribute("output_language", &val), wxConvUTF8);
+				if(!s.IsEmpty()){
+					m_pConfig->SetOutputLanguage(s);
+				}
+				if(pElem->QueryIntAttribute("use_auto_version", &val) == TIXML_SUCCESS){
+					m_pConfig->SetUseAutoVersion(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_build").ToElement()){
+				if(pElem->QueryIntAttribute("extract_all", &val) == TIXML_SUCCESS){
+					m_pConfig->SetExtractAll(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("extract_private", &val) == TIXML_SUCCESS){
+					m_pConfig->SetExtractPrivate(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("extract_static", &val) == TIXML_SUCCESS){
+					m_pConfig->SetExtractStatic(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_warnings").ToElement()){
+				if(pElem->QueryIntAttribute("warnings", &val) == TIXML_SUCCESS){
+					m_pConfig->SetWarnings(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("warn_if_doc_error", &val) == TIXML_SUCCESS){
+					m_pConfig->SetWarnIfDocError(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("warn_if_undocumented", &val) == TIXML_SUCCESS){
+					m_pConfig->SetWarnIfUndocumented(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("warn_no_param_doc", &val) == TIXML_SUCCESS){
+					m_pConfig->SetWarnNoParamdoc(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_alpha_index").ToElement()){
+				if(pElem->QueryIntAttribute("alphabetical_index", &val) == TIXML_SUCCESS){
+					m_pConfig->SetAlphabeticalIndex(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_output").ToElement()){
+				if(pElem->QueryIntAttribute("html", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateHTML(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("html_help", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateHTMLHelp(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("chi", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateCHI(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("binary_toc", &val) == TIXML_SUCCESS){
+					m_pConfig->SetBinaryTOC(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("latex", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateLatex(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("rtf", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateRTF(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("man", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateMan(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("xml", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateXML(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("autogen_def", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGenerateAutogenDef(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("perl_mod", &val) == TIXML_SUCCESS){
+					m_pConfig->SetGeneratePerlMod(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_preprocessor").ToElement()){
+				if(pElem->QueryIntAttribute("enable_preprocessing", &val) == TIXML_SUCCESS){
+					m_pConfig->SetEnablePreprocessing(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_dot").ToElement()){
+				if(pElem->QueryIntAttribute("class_diagrams", &val) == TIXML_SUCCESS){
+					m_pConfig->SetClassDiagrams(static_cast<long>(val));
+				}
+				if(pElem->QueryIntAttribute("have_dot", &val) == TIXML_SUCCESS){
+					m_pConfig->SetHaveDot(static_cast<long>(val));
+				}
+			}
+			if(const TiXmlElement* pElem = handle.FirstChildElement("general").ToElement()){
+				if(pElem->QueryIntAttribute("use_at_in_tags", &val) == TIXML_SUCCESS){
+					m_pConfig->SetUseAtInTags(static_cast<long>(val));
+				}
 			}
 		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_project").ToElement()){
-			wxString s = wxString(pElem->Attribute("project_number", &val), wxConvUTF8);
-			if(!s.IsEmpty()){
-				m_pConfig->SetProjectNumber(s);
-			}
-			s = wxString(pElem->Attribute("output_directory", &val), wxConvUTF8);
-			if(!s.IsEmpty()){
-				m_pConfig->SetOutputDirectory(s);
-			}
-			s = wxString(pElem->Attribute("output_language", &val), wxConvUTF8);
-			if(!s.IsEmpty()){
-				m_pConfig->SetOutputLanguage(s);
-			}
-			if(pElem->QueryIntAttribute("use_auto_version", &val) == TIXML_SUCCESS){
-				m_pConfig->SetUseAutoVersion(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_build").ToElement()){
-			if(pElem->QueryIntAttribute("extract_all", &val) == TIXML_SUCCESS){
-				m_pConfig->SetExtractAll(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("extract_private", &val) == TIXML_SUCCESS){
-				m_pConfig->SetExtractPrivate(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("extract_static", &val) == TIXML_SUCCESS){
-				m_pConfig->SetExtractStatic(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_warnings").ToElement()){
-			if(pElem->QueryIntAttribute("warnings", &val) == TIXML_SUCCESS){
-				m_pConfig->SetWarnings(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("warn_if_doc_error", &val) == TIXML_SUCCESS){
-				m_pConfig->SetWarnIfDocError(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("warn_if_undocumented", &val) == TIXML_SUCCESS){
-				m_pConfig->SetWarnIfUndocumented(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("warn_no_param_doc", &val) == TIXML_SUCCESS){
-				m_pConfig->SetWarnNoParamdoc(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_alpha_index").ToElement()){
-			if(pElem->QueryIntAttribute("alphabetical_index", &val) == TIXML_SUCCESS){
-				m_pConfig->SetAlphabeticalIndex(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_output").ToElement()){
-			if(pElem->QueryIntAttribute("html", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateHTML(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("html_help", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateHTMLHelp(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("chi", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateCHI(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("binary_toc", &val) == TIXML_SUCCESS){
-				m_pConfig->SetBinaryTOC(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("latex", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateLatex(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("rtf", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateRTF(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("man", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateMan(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("xml", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateXML(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("autogen_def", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGenerateAutogenDef(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("perl_mod", &val) == TIXML_SUCCESS){
-				m_pConfig->SetGeneratePerlMod(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_preprocessor").ToElement()){
-			if(pElem->QueryIntAttribute("enable_preprocessing", &val) == TIXML_SUCCESS){
-				m_pConfig->SetEnablePreprocessing(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("doxyfile_dot").ToElement()){
-			if(pElem->QueryIntAttribute("class_diagrams", &val) == TIXML_SUCCESS){
-				m_pConfig->SetClassDiagrams(static_cast<long>(val));
-			}
-			if(pElem->QueryIntAttribute("have_dot", &val) == TIXML_SUCCESS){
-				m_pConfig->SetHaveDot(static_cast<long>(val));
-			}
-		}
-		if(const TiXmlElement* pElem = handle.FirstChildElement("general").ToElement()){
-			if(pElem->QueryIntAttribute("use_at_in_tags", &val) == TIXML_SUCCESS){
-				m_pConfig->SetUseAtInTags(static_cast<long>(val));
+		else{
+			// If the DoxyBlocks entry doesn't exist in the project file and "Load Settings Template If No Saved Settings Exist" is set,
+			// try loading saved template settings.
+			if(cfg->ReadBool(wxT("doxyblocks/load_template"))){
+				ReadPrefsTemplate();
 			}
 		}
 	}
@@ -970,6 +988,7 @@ void DoxyBlocks::LoadSettings()
 	m_pConfig->SetPathCHMViewer(cfg->Read(wxT("doxyblocks/path_chm_viewer")));
 	m_pConfig->SetOverwriteDoxyfile(cfg->ReadBool(wxT("doxyblocks/overwrite_doxyfile"), false));
 	m_pConfig->SetPromptBeforeOverwriting(cfg->ReadBool(wxT("doxyblocks/prompt_before_overwriting"), false));
+	m_pConfig->SetLoadTemplate(cfg->ReadBool(wxT("doxyblocks/load_template"), false));
 	m_pConfig->SetUseInternalViewer(cfg->ReadBool(wxT("doxyblocks/use_internal_viewer"), false));
 	m_pConfig->SetRunHTML(cfg->ReadBool(wxT("doxyblocks/run_html"), false));
 	m_pConfig->SetRunCHM(cfg->ReadBool(wxT("doxyblocks/run_chm"), false));
@@ -1137,13 +1156,14 @@ void DoxyBlocks::SaveSettings()
 	if(bVal){
 		General.SetAttribute("use_at_in_tags", bVal);
 	}
+    cfg->Write(wxT("doxyblocks/load_template"), m_pConfig->GetLoadTemplate());
     cfg->Write(wxT("doxyblocks/use_internal_viewer"), m_pConfig->GetUseInternalViewer());
     cfg->Write(wxT("doxyblocks/run_html"), m_pConfig->GetRunHTML());
     cfg->Write(wxT("doxyblocks/run_chm"), m_pConfig->GetRunCHM());
 	node->InsertEndChild(General);
 }
 
-/*! \brief Validate the doxygen sub-directory name, Removes dots, slashes, colons and tildes.
+/*! \brief Validate the doxygen sub-directory name, removing dots, slashes, colons and tildes.
  *
  * \param path wxString	The string to validate.
  * \return wxString
@@ -1151,11 +1171,14 @@ void DoxyBlocks::SaveSettings()
  */
 wxString DoxyBlocks::ValidateRelativePath(wxString path)
 {
-	path.Replace(wxT("/"), wxT(""), true);
-	path.Replace(wxT("\\"), wxT(""), true);
 	path.Replace(wxT("."), wxT(""), true);
-	path.Replace(wxT(":"), wxT(""), true);
 	path.Replace(wxT("~"), wxT(""), true);
+	wxFileName fn(path, wxEmptyString);
+	path = fn.GetPath(0);
+	if(path.StartsWith(wxT("/")) || path.StartsWith(wxT("\\"))){
+		path.Remove(0, 1);
+	}
+
 	return path;
 }
 

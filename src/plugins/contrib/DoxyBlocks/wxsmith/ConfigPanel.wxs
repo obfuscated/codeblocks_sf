@@ -5,13 +5,13 @@
 		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxNotebook" name="ID_NOTEBOOK_PREFS" variable="NotebookPrefs" member="yes">
+				<object class="wxNotebook" name="ID_NOTEBOOK_PREFS" variable="NotebookPrefs" member="no">
 					<object class="notebookpage">
-						<object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="yes">
+						<object class="wxPanel" name="ID_PANEL2" variable="Panel2" member="no">
 							<object class="wxBoxSizer" variable="BoxSizer6" member="no">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
-									<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
+									<object class="wxBoxSizer" variable="BoxSizer2" member="no">
 										<object class="sizeritem">
 											<object class="wxRadioBox" name="ID_RADIOBOX_BLOCKCOMMENTS" variable="RadioBoxBlockComments" member="yes">
 												<label>Block Comment Style</label>
@@ -33,7 +33,7 @@
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="yes">
+											<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
 												<label>Block Comment Sample</label>
 												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
@@ -56,7 +56,7 @@
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
-									<object class="wxBoxSizer" variable="BoxSizer10" member="yes">
+									<object class="wxBoxSizer" variable="BoxSizer10" member="no">
 										<object class="sizeritem">
 											<object class="wxRadioBox" name="ID_RADIOBOX_LINECOMMENTS" variable="RadioBoxLineComments" member="yes">
 												<label>Line Comment Style</label>
@@ -76,7 +76,7 @@
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="yes">
+											<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
 												<label>Line Comment Sample</label>
 												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
@@ -103,7 +103,7 @@
 						<label>Comment Style</label>
 					</object>
 					<object class="notebookpage">
-						<object class="wxPanel" name="ID_PANEL3" variable="Panel3" member="yes">
+						<object class="wxPanel" name="ID_PANEL3" variable="Panel3" member="no">
 							<object class="wxBoxSizer" variable="BoxSizer4" member="no">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
@@ -113,7 +113,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer5" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+													<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
 														<label>PROJECT__NUMBER</label>
 													</object>
 													<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -147,7 +147,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer18" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="yes">
+													<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="no">
 														<label>OUTPUT__DIRECTORY</label>
 													</object>
 													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -156,11 +156,12 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="ID_TEXTCTRLOUTPUT_DIRECTORY" variable="TextCtrlOutputDirectory" member="yes">
-														<tooltip>The OUTPUT__DIRECTORY tag is used to specify the (relative or&#x0A;absolute) base path where the generated documentation will be put.&#x0A;If a relative path is entered, it will be relative to the location&#x0A;where doxygen was started. If left blank the current directory will be used.&#x0A;&#x0A;DoxyBlocks will use the path name entered here to create a directory&#x0A;relative to &lt;project dir&gt;/doxygen. This allows you to&#x0A;create separate doxygen directories for projects that reside in the&#x0A;same directory, or just use a different directory name. If this field&#x0A;is blank, documents will be created in &lt;project dir&gt;/doxygen.&#x0A;You can enter a directory name without separators, etc.&#x0A;DoxyBlocks does validation on the path name and will strip dots,&#x0A;slashes, etc.</tooltip>
+														<size>252,21</size>
+														<tooltip>The OUTPUT__DIRECTORY tag is used to specify the (relative or&#x0A;absolute) base path where the generated documentation will be put.&#x0A;If a relative path is entered, it will be relative to the location&#x0A;where doxygen was started. If left blank the current directory will be used.&#x0A;&#x0A;DoxyBlocks will use the path name entered here to create a directory&#x0A;relative to &lt;project dir&gt;. This allows you to create separate doxygen&#x0A;directories for projects that reside in the same directory, or just use a&#x0A;different directory name. If this field is blank, documents will be created&#x0A;in &lt;project dir&gt;/doxygen. Enter directory names without dots, &#x0A;leading separators, volume names, etc. DoxyBlocks does validation on&#x0A;the path name and will strip extraneous characters.&#x0A;&#x0A;Examples:&#x0A;[blank]                     -&gt; &lt;project dir&gt;/doxygen.&#x0A;&quot;docs&quot;                      -&gt; &lt;project dir&gt;/docs.&#x0A;&quot;docs/sub1/sub2&quot;  -&gt; &lt;project dir&gt;/docs/sub1/sub2.&#x0A;&quot;doxygen/docs&quot;     -&gt; &lt;project dir&gt;/doxygen/docs.&#x0A;</tooltip>
 													</object>
 													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
-													<option>1</option>
+													<option>2</option>
 												</object>
 											</object>
 											<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -170,7 +171,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer20" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
+													<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="no">
 														<label>OUTPUT__LANGUAGE</label>
 													</object>
 													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -240,7 +241,7 @@
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="no">
 										<label>Build</label>
 										<object class="sizeritem">
-											<object class="wxCheckBox" name="ID_CHECKBOX_EXTRACT_AL" variable="CheckBoxExtractAll" member="yes">
+											<object class="wxCheckBox" name="ID_CHECKBOX_EXTRACT_ALL" variable="CheckBoxExtractAll" member="yes">
 												<label>EXTRACT__ALL</label>
 												<tooltip>If the EXTRACT__ALL tag is set to YES doxygen will assume all entities in&#x0A;documentation are documented, even if no documentation was available.&#x0A;Private class members and static file members will be hidden unless&#x0A;the EXTRACT__PRIVATE and EXTRACT__STATIC tags are set to YES</tooltip>
 											</object>
@@ -347,7 +348,7 @@
 						<label>Doxyfile Defaults</label>
 					</object>
 					<object class="notebookpage">
-						<object class="wxPanel" name="ID_PANEL4" variable="Panel4" member="yes">
+						<object class="wxPanel" name="ID_PANEL4" variable="Panel4" member="no">
 							<object class="wxBoxSizer" variable="BoxSizer16" member="no">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
@@ -403,7 +404,7 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -438,7 +439,7 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -472,7 +473,7 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -529,7 +530,7 @@
 						<label>Doxyfile Defaults 2</label>
 					</object>
 					<object class="notebookpage">
-						<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+						<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="no">
 							<object class="wxBoxSizer" variable="BoxSizer7" member="no">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
@@ -605,7 +606,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer3" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
+													<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="no">
 														<label>Path To HHC</label>
 													</object>
 													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -638,7 +639,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer13" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
+													<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="no">
 														<label>Path To Dot</label>
 													</object>
 													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -671,7 +672,7 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer19" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="yes">
+													<object class="wxStaticText" name="ID_STATICTEXT7" variable="StaticText7" member="no">
 														<label>Path To CHM Viewer</label>
 													</object>
 													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -709,34 +710,61 @@
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer11" member="no">
 										<label>General Options</label>
+										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
-											<object class="wxCheckBox" name="ID_CHECKBOX_OVERWRITEDOXYFILE" variable="CheckBoxOverwriteDoxyfile" member="yes">
-												<label>Overwrite Doxyfile</label>
-												<tooltip>Allow DoxyBlocks to overwrite the doxyfile.&#x0A;By default, if a doxyfile already exists it is not overwritten to protect&#x0A;any changes that have been made outside DoxyBlocks however this&#x0A;behaviour prevents changes made within DoxyBlocks being written to&#x0A;an existing doxyfile.</tooltip>
-												<handler function="OnCheckBoxOverwriteDoxyfileClick" entry="EVT_CHECKBOX" />
+											<object class="wxBoxSizer" variable="BoxSizer21" member="no">
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_CHECKBOX_OVERWRITEDOXYFILE" variable="CheckBoxOverwriteDoxyfile" member="yes">
+														<label>Overwrite Doxyfile</label>
+														<tooltip>Allow DoxyBlocks to overwrite the doxyfile.&#x0A;By default, if a doxyfile already exists it is not overwritten to protect&#x0A;any changes that have been made outside DoxyBlocks however this&#x0A;behaviour prevents changes made within DoxyBlocks being written to&#x0A;an existing doxyfile.</tooltip>
+														<handler function="OnCheckBoxOverwriteDoxyfileClick" entry="EVT_CHECKBOX" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_CHECKBOX_PROMPTB4OVERWRITING" variable="CheckBoxPromptBeforeOverwriting" member="yes">
+														<label>Prompt Before Overwriting</label>
+														<tooltip>Prompt before overwriting an existing doxyfile.&#x0A;When used in conjunction with &quot;Overwrite doxyfile&quot; this setting forces&#x0A;DoxyBlocks to prompt you before overwriting an existing doxyfile.</tooltip>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_CHECKBOX_USEATINTAGS" variable="CheckBoxUseAtInTags" member="yes">
+														<label>Use &quot;@&quot; In Tags</label>
+														<tooltip>Use &quot;@&quot; in document tags instead of &quot;\\&quot;.&#x0A;This option causes DoxyBlocks to create document tags like&#x0A;&quot;@brief&quot; and &quot;@param&quot; rather than &quot;\\brief&quot; and &quot;\\param&quot;.</tooltip>
+														<handler function="OnCheckBoxUseAtInTagsClick" entry="EVT_CHECKBOX" />
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+												</object>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>5</border>
 											<option>1</option>
+											<cellspan>0,-1053824649d</cellspan>
 										</object>
 										<object class="sizeritem">
-											<object class="wxCheckBox" name="ID_CHECKBOX_PROMPTB4OVERWRITING" variable="CheckBoxPromptBeforeOverwriting" member="yes">
-												<label>Prompt Before Overwriting</label>
-												<tooltip>Prompt before overwriting an existing doxyfile.&#x0A;When used in conjunction with &quot;Overwrite doxyfile&quot; this setting forces&#x0A;DoxyBlocks to prompt you before overwriting an existing doxyfile.</tooltip>
+											<object class="wxBoxSizer" variable="BoxSizer22" member="no">
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_CHECKBOX_LOADTEMPLATE" variable="CheckBoxLoadTemplate" member="yes">
+														<label>Load Settings Template If No Saved Settings Exist</label>
+														<tooltip>This option allows you to use your preferred settings as the default settings by loading a previously saved settings template, if one exists, rather than using the system default settings when loading a project that doesn&apos;t contain saved DoxyBlocks settings. DoxyBlocks falls back to the default settings if a template is not found.</tooltip>
+													</object>
+													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>5</border>
+													<option>1</option>
+													<cellspan>0,-1054036905d</cellspan>
+												</object>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>5</border>
 											<option>1</option>
-										</object>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="ID_CHECKBOX_USEATINTAGS" variable="CheckBoxUseAtInTags" member="yes">
-												<label>Use &quot;@&quot; In Tags</label>
-												<tooltip>Use &quot;@&quot; in document tags instead of &quot;\\&quot;.&#x0A;This option causes DoxyBlocks to create document tags like&#x0A;&quot;@brief&quot; and &quot;@param&quot; rather than &quot;\\brief&quot; and &quot;\\param&quot;.</tooltip>
-												<handler function="OnCheckBoxUseAtInTagsClick" entry="EVT_CHECKBOX" />
-											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-											<border>5</border>
-											<option>1</option>
+											<cellspan>0,-1053512425d</cellspan>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
