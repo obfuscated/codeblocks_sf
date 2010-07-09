@@ -10,15 +10,9 @@
 #ifndef EDITORTWEAKS_H_INCLUDED
 #define EDITORTWEAKS_H_INCLUDED
 
-// For compilers that support precompilation, includes <wx/wx.h>
-#include <wx/wxprec.h>
-
-#ifndef WX_PRECOMP
-    #include <wx/wx.h>
-#endif
-
 #include <cbplugin.h> // for "class cbPlugin"
-
+#include <vector>
+#include <wx/string.h>
 
 class AlignerMenuEntry
 {
@@ -128,8 +122,9 @@ class EditorTweaks : public cbPlugin
 
 //        void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
     private:
-        void OnAlign(wxCommandEvent& event);
+		void OnAlign(wxCommandEvent& event);
 		void OnAlignOthers(wxCommandEvent& event);
+		void OnSuppressInsert(wxCommandEvent& event);
 		void AlignToString(const wxString AlignmentString);
 		wxString GetPadding(const wxString& Padding, const int Count);
 		bool GetSelectionLines(int& LineStart, int& LineEnd);
@@ -138,6 +133,7 @@ class EditorTweaks : public cbPlugin
 
     private:
         int m_EditorHookId;
+        int m_suppress_insert;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
 

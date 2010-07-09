@@ -58,8 +58,7 @@ int id_et_Unfold3= wxNewId();
 int id_et_Unfold4= wxNewId();
 int id_et_Unfold5= wxNewId();
 int id_et_align_others= wxNewId();
-
-
+int id_et_SuppressInsertKey= wxNewId();
 
 // events handling
 BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
@@ -104,6 +103,7 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_Unfold4, EditorTweaks::OnUnfold)
     EVT_MENU(id_et_Unfold5, EditorTweaks::OnUnfold)
 
+    EVT_MENU(id_et_SuppressInsertKey, EditorTweaks::OnSuppressInsert)
     EVT_MENU(id_et_align_others, EditorTweaks::OnAlignOthers)
 END_EVENT_TABLE()
 
@@ -169,7 +169,7 @@ void EditorTweaks::OnAttach()
         AlignerMenuEntries.push_back (e);
         Connect(e.id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
-
+    m_suppress_insert=cfg->ReadBool(_("SuppressInsertKey"),false);
 }
 
 void EditorTweaks::OnRelease(bool /*appShutDown*/)
@@ -203,6 +203,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     {
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
+    cfg->Write(_("SuppressInsertKey"),m_suppress_insert);
 }
 
 void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
@@ -256,6 +257,7 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     submenu->Append( id_et_StripTrailingBlanks, _( "Strip Trailing Blanks Now" ), _( "Strip trailing blanks from each line" ) );
     submenu->Append( id_et_EnsureConsistentEOL, _( "Make EOLs Consistent Now" ), _( "Convert End-of-Line Characters to the Active Setting" ) );
     submenu->AppendSeparator();
+    submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"), _("Disable toggle between insert and overwrite mode using the insert key") );
 
 
     wxMenu *foldmenu = 0;
@@ -299,7 +301,11 @@ void EditorTweaks::UpdateUI()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if(!ed || !ed->GetControl())
-        return;
+    {
+        m_tweakmenuitem->Enable(false);
+         return;
+    }
+    m_tweakmenuitem->Enable(true);
 
     wxMenu *submenu=m_tweakmenu; //_("Editor Tweaks") TODO: Retrieve actual menu
 
@@ -315,13 +321,15 @@ void EditorTweaks::UpdateUI()
     submenu->Check(id_et_EOLCR,ed->GetControl()->GetEOLMode()==wxSCI_EOL_CR);
     submenu->Check(id_et_EOLLF,ed->GetControl()->GetEOLMode()==wxSCI_EOL_LF);
     submenu->Check(id_et_ShowEOL,ed->GetControl()->GetViewEOL());
+    submenu->Check(id_et_SuppressInsertKey,m_suppress_insert);
 }
 
 void EditorTweaks::OnEditorUpdateUI(CodeBlocksEvent& /*event*/)
 {
     Manager::Get()->GetLogManager()->DebugLog(wxString::Format(_("Editor Update UI")));
     if(!m_IsAttached || !m_tweakmenu)
-        return;    return;
+        return;
+    return;
     UpdateUI();
 }
 
@@ -372,18 +380,28 @@ void EditorTweaks::OnEditorClose(CodeBlocksEvent& /*event*/)
         return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if(ed && ed->GetControl())
-        return;
+    {
+        return;        
+    }
     m_tweakmenuitem->Enable(false);
 }
 
 void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 {
-    if(event.GetKeyCode()==WXK_INSERT)
+    if(m_suppress_insert && event.GetKeyCode()==WXK_INSERT && event.GetModifiers()==wxMOD_NONE)
+    {
         event.Skip(false);
+    }
     else
+    {
         event.Skip(true);
+    }
 }
 
+void EditorTweaks::OnSuppressInsert(wxCommandEvent& event)
+{
+    m_suppress_insert = event.IsChecked();
+}
 
 //void EditorTweaks::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 //{
