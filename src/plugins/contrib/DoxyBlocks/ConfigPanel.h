@@ -863,4 +863,5 @@ class ConfigPanel: public cbConfigurationPanel
 		 */
 };
 
+
 #endif

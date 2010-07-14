@@ -20,17 +20,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *****************************************************************************/
+
 #include "Config.h"
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/filename.h>
-#include "manager.h"
-#include "configmanager.h"
-#include "personalitymanager.h"
+	#include <wx/filename.h>
+	#include "manager.h"
+	#include "configmanager.h"
+	#include "personalitymanager.h"
 #endif //CB_PRECOMP
 #include <wx/fileconf.h>
-
 
 /*! \brief Constructor.
  */
