@@ -71,11 +71,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-pg" />
 		</Compiler>
-		<Linker>
-			<Add option="-pg -lgmon" />
-		</Linker>
 		<Unit filename="AutoDoc.cpp" />
 		<Unit filename="ChangeLog.txt" />
 		<Unit filename="Config.cpp" />
