@@ -17,7 +17,7 @@ class EditArrayOrderDlg : public wxScrollingDialog
 {
 	public:
 		// class constructor
-		EditArrayOrderDlg(wxWindow* parent, const wxArrayString& array = 0L);
+		EditArrayOrderDlg(wxWindow* parent, const wxArrayString& array);
 		// class destructor
 		~EditArrayOrderDlg();
 		EditArrayOrderDlg& operator=(const EditArrayOrderDlg&){ return *this; } // just to satisfy script bindings (never used)
