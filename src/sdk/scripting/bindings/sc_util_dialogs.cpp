@@ -78,7 +78,7 @@ namespace ScriptBindings
         EditArrayOrderDlg* dlg = 0;
 
         if (sa.GetParamCount() == 1)
-            dlg = new EditArrayOrderDlg(0);
+            dlg = new EditArrayOrderDlg(0, wxArrayString());
         else if (sa.GetParamCount() == 2)
             dlg = new EditArrayOrderDlg(0, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         else
