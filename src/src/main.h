@@ -46,7 +46,9 @@ class MainFrame : public wxFrame
 
         wxAuiManager m_LayoutManager;
         LayoutViewsMap m_LayoutViews;
+        LayoutViewsMap m_LayoutMessagePane;
         bool LayoutDifferent(const wxString& layout1,const wxString& layout2,const wxString& delimiter=_("|"));
+        bool LayoutMessagePaneDifferent(const wxString& layout1,const wxString& layout2, bool checkSelection=false);
     public:
         wxAcceleratorTable* m_pAccel;
         MainFrame(wxWindow* parent = (wxWindow*)NULL);
@@ -262,7 +264,7 @@ class MainFrame : public wxFrame
         void RemovePluginFromMenus(const wxString& pluginName);
 
         void LoadViewLayout(const wxString& name, bool isTemp = false);
-        void SaveViewLayout(const wxString& name, const wxString& layout, bool select = false);
+        void SaveViewLayout(const wxString& name, const wxString& layout, const wxString& layoutMP, bool select = false);
         void DoSelectLayout(const wxString& name);
         void DoFixToolbarsLayout();
         bool DoCheckCurrentLayoutForChanges(bool canCancel = true);
@@ -325,6 +327,7 @@ class MainFrame : public wxFrame
 
         wxString m_LastLayoutName;
         wxString m_LastLayoutData;
+        wxString m_LastMessagePaneLayoutData;
         bool m_LastLayoutIsTemp;
 
         wxWindow* m_pScriptConsole;

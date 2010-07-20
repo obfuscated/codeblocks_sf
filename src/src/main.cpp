@@ -73,6 +73,7 @@ private:
 
 const static wxString gDefaultLayout = _T("Code::Blocks default");
 static wxString gDefaultLayoutData; // this will keep the "hardcoded" default layout
+static wxString gDefaultMessagePaneLayoutData; // this will keep default layout
 
 int wxID_FILE10 = wxNewId();
 int wxID_FILE11 = wxNewId();
@@ -518,7 +519,8 @@ MainFrame::MainFrame(wxWindow* parent)
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/default"), gDefaultLayout);
     DoFixToolbarsLayout();
     gDefaultLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
-    SaveViewLayout(gDefaultLayout, gDefaultLayoutData);
+    gDefaultMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
+    SaveViewLayout(gDefaultLayout, gDefaultLayoutData,gDefaultMessagePaneLayoutData);
     LoadWindowState();
 
     ShowHideStartPage();
@@ -814,7 +816,7 @@ void MainFrame::RecreateMenuBar()
     {
         if (it->first.IsEmpty())
             continue;
-        SaveViewLayout(it->first, it->second, it->first == m_LastLayoutName);
+        SaveViewLayout(it->first, it->second, m_LayoutMessagePane[it->first], it->first == m_LastLayoutName);
     }
 
     Thaw();
@@ -1138,7 +1140,8 @@ void MainFrame::LoadWindowState()
     {
         wxString name = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/") + subs[i] + _T("/name"));
         wxString layout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/") + subs[i] + _T("/data"));
-        SaveViewLayout(name, layout);
+        wxString layoutMP = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/") + subs[i] + _T("/dataMessagePane"));
+        SaveViewLayout(name, layout, layoutMP);
     }
     wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
     LoadViewLayout(deflayout);
@@ -1189,6 +1192,10 @@ void MainFrame::SaveWindowState()
         wxString key = wxString::Format(_T("/main_frame/layout/view%d/"), count);
         Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("name"), it->first);
         Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("data"), it->second);
+        if(m_LayoutMessagePane[it->first])
+        {
+            Manager::Get()->GetConfigManager(_T("app"))->Write(key + _T("dataMessagePane"), m_LayoutMessagePane[it->first]);
+        }
     }
 
     // save manager and messages selected page
@@ -1214,6 +1221,11 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     m_LastLayoutIsTemp = isTemp;
 
     wxString layout = m_LayoutViews[name];
+    wxString layoutMP = m_LayoutMessagePane[name];
+    if (layoutMP.IsEmpty())
+    {
+        layoutMP = m_LayoutMessagePane[gDefaultLayout];
+    }
     if (layout.IsEmpty())
     {
         layout = m_LayoutViews[gDefaultLayout];
@@ -1222,23 +1234,27 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     else
         DoSelectLayout(name);
 
+    // first load taborder of MessagePane, so LoadPerspective can restore the last selected tab
+    m_pInfoPane->LoadTabOrder(layoutMP);
     m_LayoutManager.LoadPerspective(layout, false);
     DoFixToolbarsLayout();
     DoUpdateLayout();
 
     m_LastLayoutName = name;
     m_LastLayoutData = layout;
+    m_LastMessagePaneLayoutData = layoutMP;
 
     CodeBlocksLayoutEvent evt(cbEVT_SWITCHED_VIEW_LAYOUT);
     evt.layout = name;
     Manager::Get()->ProcessEvent(evt);
 }
 
-void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, bool select)
+void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, const wxString& layoutMP, bool select)
 {
     if (name.IsEmpty())
         return;
     m_LayoutViews[name] = layout;
+    m_LayoutMessagePane[name] = layoutMP;
     wxMenu* viewLayouts = 0;
     GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
     if (viewLayouts && viewLayouts->FindItem(name) == wxNOT_FOUND)
@@ -1305,11 +1321,43 @@ bool MainFrame::LayoutDifferent(const wxString& layout1,const wxString& layout2,
     return arLayout1 != arLayout2;
 }
 
+bool MainFrame::LayoutMessagePaneDifferent(const wxString& layout1,const wxString& layout2, bool checkSelection)
+{
+    wxStringTokenizer strTok;
+    wxArrayString arLayout1;
+    wxArrayString arLayout2;
+
+    strTok.SetString(layout1.BeforeLast('|'), _T(";"));
+    while(strTok.HasMoreTokens())
+    {
+        arLayout1.Add(strTok.GetNextToken());
+    }
+
+    strTok.SetString(layout2.BeforeLast('|'), _T(";"));
+    while(strTok.HasMoreTokens())
+    {
+        arLayout2.Add(strTok.GetNextToken());
+    }
+
+    if(checkSelection)
+    {
+        arLayout1.Add(layout1.AfterLast('|'));
+        arLayout2.Add(layout2.AfterLast('|'));
+    }
+    arLayout1.Sort();
+    arLayout2.Sort();
+
+    return arLayout1 != arLayout2;
+}
+
 bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 {
     DoFixToolbarsLayout();
     wxString lastlayout = m_LayoutManager.SavePerspective();
-    if (!m_LastLayoutName.IsEmpty() && LayoutDifferent(lastlayout, m_LastLayoutData))
+    wxString lastmessagepanelayout = m_pInfoPane->SaveTabOrder();
+    if (!m_LastLayoutName.IsEmpty() &&
+        (LayoutDifferent(lastlayout, m_LastLayoutData) ||
+         LayoutMessagePaneDifferent(lastmessagepanelayout, m_LastMessagePaneLayoutData, Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/save_selection_change_in_mp"), true)) ))
     {
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The perspective '%s' has changed. Do you want to save it?"), m_LastLayoutName.c_str()),
@@ -1319,7 +1367,7 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
         switch (dlg.ShowModal())
         {
             case wxID_YES:
-                SaveViewLayout(m_LastLayoutName, lastlayout, false);
+                SaveViewLayout(m_LastLayoutName, lastlayout, lastmessagepanelayout, false);
                 break;
             case wxID_CANCEL:
                 DoSelectLayout(m_LastLayoutName);
@@ -3549,7 +3597,7 @@ void MainFrame::OnViewLayoutSave(wxCommandEvent& /*event*/)
     if (!name.IsEmpty())
     {
         DoFixToolbarsLayout();
-        SaveViewLayout(name, m_LayoutManager.SavePerspective(), true);
+        SaveViewLayout(name, m_LayoutManager.SavePerspective(), m_pInfoPane->SaveTabOrder(), true);
     }
 }
 
@@ -3563,6 +3611,7 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& /*event*/)
                         wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
         {
             m_LayoutViews[gDefaultLayout] = gDefaultLayoutData;
+            m_LayoutMessagePane[gDefaultLayout] = gDefaultMessagePaneLayoutData;
             LoadViewLayout(gDefaultLayout);
         }
         return;
@@ -3576,6 +3625,9 @@ void MainFrame::OnViewLayoutDelete(wxCommandEvent& /*event*/)
         LayoutViewsMap::iterator it = m_LayoutViews.find(m_LastLayoutName);
         if (it != m_LayoutViews.end())
             m_LayoutViews.erase(it);
+        it = m_LayoutMessagePane.find(m_LastLayoutName);
+        if (it != m_LayoutMessagePane.end())
+            m_LayoutMessagePane.erase(it);
 
         // now delete the menu item too
         wxMenu* viewLayouts = 0;
