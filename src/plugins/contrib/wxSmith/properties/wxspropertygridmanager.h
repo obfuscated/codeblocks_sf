@@ -59,7 +59,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
             wxWindowID id = -1,
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize,
-            long style = wxPGMAN_DEFAULT_STYLE,
+            long style = wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER,
             #if wxCHECK_VERSION(2, 9, 0)
             const char* name = wxPropertyGridManagerNameStr);
             #else

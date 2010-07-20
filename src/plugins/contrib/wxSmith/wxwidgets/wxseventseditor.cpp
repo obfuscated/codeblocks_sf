@@ -124,6 +124,9 @@ void wxsEventsEditor::BuildEvents(wxsItem* Item,wxsPropertyGridManager* Grid)
 
         m_Ids.Add(Grid->Append(NEW_IN_WXPG14X wxEnumProperty(Event->Entry,wxPG_LABEL,Const,Index)));
 	}
+    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+    Grid->SelectPage(0);
+    #endif
 }
 
 void wxsEventsEditor::PGChanged(wxsItem* Item,wxsPropertyGridManager* Grid,wxPGId Id)
