@@ -74,6 +74,7 @@
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add directory="bzip2" />

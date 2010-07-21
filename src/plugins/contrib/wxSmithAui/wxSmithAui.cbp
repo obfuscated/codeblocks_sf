@@ -47,12 +47,8 @@
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
-					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DWX_PRECOMP" />
-					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
-					<Add option="-DWXUSINGDLL" />
 					<Add directory="$(#wx.include)" />
 					<Add directory="$(#wx.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 				</Compiler>
@@ -80,8 +76,12 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-g" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
 			<Add option="-DWXMAKINGDLL_PROPGRID" />
 			<Add option="-DwxPG_USE_WXMODULE=0" />
 			<Add directory="..\..\..\include" />

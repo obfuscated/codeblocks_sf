@@ -51,6 +51,7 @@
 			<Add directory="$(#WX.include)" />
 		</ResourceCompiler>
 		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />

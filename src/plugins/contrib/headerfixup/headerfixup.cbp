@@ -37,10 +37,6 @@
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
 				</Compiler>
 				<Linker>
-					<Add option="-mthreads" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
-					<Add library="codeblocks" />
-					<Add library="wxscintilla" />
 					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 					<Add directory="..\..\..\devel" />
 				</Linker>
@@ -57,6 +53,13 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw28$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add library="wxscintilla" />
+		</Linker>
 		<Unit filename="bindings.cpp" />
 		<Unit filename="bindings.h" />
 		<Unit filename="configuration.cpp" />

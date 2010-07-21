@@ -21,7 +21,7 @@
 				</Linker>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools\autorevision\autorevision.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="build_tools\autorevision\autorevision" prefix_auto="0" extension_auto="1" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -35,7 +35,7 @@
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools\ConsoleRunner\cb_console_runner.exe" prefix_auto="0" extension_auto="0" />
+				<Option output="tools\ConsoleRunner\cb_console_runner" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="tools\ConsoleRunner" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -133,7 +133,7 @@
 				</Linker>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel\codeblocks.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option external_deps="base\tinyxml\libtxml.a;sdk\scripting\lib\libsquirrel.a;sdk\scripting\lib\libsqstdlib.a;sdk\scripting\lib\libsqplus.a;" />
 				<Option type="3" />
@@ -212,7 +212,7 @@
 				</Linker>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel\share\CodeBlocks\plugins\astyle.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\astyle" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -248,7 +248,7 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel\share\CodeBlocks\plugins\compiler.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\compiler" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option external_deps="plugins\compilergcc\depslib\libdepslib.a;" />
 				<Option type="3" />
@@ -277,7 +277,7 @@
 				</Linker>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel\share\CodeBlocks\plugins\debugger.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\debugger" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -302,7 +302,7 @@
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel\share\CodeBlocks\plugins\codecompletion.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\codecompletion" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -325,7 +325,7 @@
 				</Linker>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel\share\CodeBlocks\plugins\classwizard.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\classwizard" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -348,7 +348,7 @@
 				</Linker>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\defaultmimehandler" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -370,7 +370,7 @@
 				</Linker>
 			</Target>
 			<Target title="Open files list">
-				<Option output="devel\share\CodeBlocks\plugins\openfileslist.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\openfileslist" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\codeblocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -393,7 +393,7 @@
 				</Linker>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\scriptedwizard" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -418,7 +418,7 @@
 				</Linker>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel\share\CodeBlocks\plugins\todo.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\todo" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -442,7 +442,7 @@
 				</Linker>
 			</Target>
 			<Target title="Autosave">
-				<Option output="devel\share\CodeBlocks\plugins\autosave.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\autosave" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -465,7 +465,7 @@
 				</Linker>
 			</Target>
 			<Target title="XP look &amp; feel">
-				<Option output="devel\share\CodeBlocks\plugins\xpmanifest.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\xpmanifest" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -487,7 +487,7 @@
 				</Linker>
 			</Target>
 			<Target title="Projects-workspaces importer">
-				<Option output="devel\share\CodeBlocks\plugins\projectsimporter.dll" prefix_auto="0" extension_auto="0" />
+				<Option output="devel\share\CodeBlocks\plugins\projectsimporter" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="devel\share\CodeBlocks\plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />

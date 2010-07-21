@@ -59,12 +59,12 @@
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\sdk\wxpropgrid\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\scripting\include" />
 			<Add directory="..\..\..\include\scripting\squirrel" />
 			<Add directory="..\..\..\include\scripting\sqplus" />
 			<Add directory="..\..\..\include\scripting\bindings" />
-			<Add directory="..\..\..\sdk\wxpropgrid\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
 		</Compiler>
 		<ResourceCompiler>
