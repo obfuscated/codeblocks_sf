@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsScrollBar> Reg(_T("ScrollBar"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsScrollBar> Reg(_T("ScrollBar"),wxsTWidget,_T("Standard"),150);
 
     WXS_ST_BEGIN(wxsScrollBarStyles,_T(""))
         WXS_ST_CATEGORY("wxScrollBar")

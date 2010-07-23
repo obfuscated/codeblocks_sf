@@ -1,4 +1,5 @@
-/*
+/** \file wxsdirdialog.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2007  Bartlomiej Swiecki
 *
@@ -26,7 +27,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsDirDialog> Reg(_T("DirDialog"),wxsTTool,_T("Dialogs"),50,false);
+    wxsRegisterItem<wxsDirDialog> Reg(_T("DirDialog"),wxsTTool,_T("Dialogs"),190,false);
 
     WXS_ST_BEGIN(wxsDirDialogStyles,_T("wxDD_DEFAULT_STYLE"))
         WXS_ST_CATEGORY("wxDirDialog")

@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsButton> Reg(_T("Button"),wxsTWidget,_T("Standard"),90);
+    wxsRegisterItem<wxsButton> Reg(_T("Button"),wxsTWidget,_T("Standard"),340);
 
     WXS_ST_BEGIN(wxsButtonStyles,_T(""))
         WXS_ST_CATEGORY("wxButton")

@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsBoxSizer> Reg(_T("BoxSizer"), wxsTSizer, _T("Layout"), 70);
+    wxsRegisterItem<wxsBoxSizer> Reg(_T("BoxSizer"), wxsTSizer, _T("Layout"), 90);
 }
 
 wxsBoxSizer::wxsBoxSizer(wxsItemResData* Data):

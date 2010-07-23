@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"),wxsTWidget,_T("Standard"),75);
+    wxsRegisterItem<wxsTextCtrl> Reg(_T("TextCtrl"),wxsTWidget,_T("Standard"),40);
 
     WXS_ST_BEGIN(wxsTextCtrlStyles,_T(""))
         WXS_ST(wxTE_NO_VSCROLL)
@@ -48,8 +48,6 @@ namespace
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 
-
-
     WXS_EV_BEGIN(wxsTextCtrlEvents)
         WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,Text)
         WXS_EVI(EVT_TEXT_ENTER,wxEVT_COMMAND_TEXT_ENTER,wxCommandEvent,TextEnter)
@@ -68,7 +66,6 @@ wxsTextCtrl::wxsTextCtrl(wxsItemResData* Data):
     Text(_("Text")),
     MaxLength(0)
 {}
-
 
 void wxsTextCtrl::OnBuildCreatingCode()
 {
@@ -94,13 +91,11 @@ void wxsTextCtrl::OnBuildCreatingCode()
     }
 }
 
-
 wxObject* wxsTextCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxTextCtrl* Preview = new wxTextCtrl(Parent,GetId(),Text,Pos(Parent),Size(Parent),Style());
     return SetupWindow(Preview,Flags);
 }
-
 
 void wxsTextCtrl::OnEnumWidgetProperties(long Flags)
 {

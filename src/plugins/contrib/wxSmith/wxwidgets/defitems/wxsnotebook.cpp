@@ -45,7 +45,7 @@ using namespace wxsFlags;
 // TODO: Add notebook images
 namespace
 {
-    wxsRegisterItem<wxsNotebook> Reg(_T("Notebook"),wxsTContainer,_T("Standard"),61);
+    wxsRegisterItem<wxsNotebook> Reg(_T("Notebook"),wxsTContainer,_T("Standard"),200);
 
     /** \brief Extra parameters for notebook's children */
     class wxsNotebookExtra: public wxsPropertyContainer

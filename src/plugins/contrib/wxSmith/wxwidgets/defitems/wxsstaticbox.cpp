@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticBox> Reg(_T("StaticBox"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsStaticBox> Reg(_T("StaticBox"),wxsTWidget,_T("Standard"),70);
 
     WXS_ST_BEGIN(wxsStaticBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxStaticBox")

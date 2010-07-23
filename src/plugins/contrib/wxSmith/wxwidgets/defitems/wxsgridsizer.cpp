@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGridSizer> Reg(_T("GridSizer"),wxsTSizer,_T("Layout"),80);
+    wxsRegisterItem<wxsGridSizer> Reg(_T("GridSizer"),wxsTSizer,_T("Layout"),60);
 }
 
 wxsGridSizer::wxsGridSizer(wxsItemResData* Data):

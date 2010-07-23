@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),80);
+    wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),50);
 
     WXS_ST_BEGIN(wxsStaticTextStyles,_T(""))
         WXS_ST_CATEGORY("wxStaticText")

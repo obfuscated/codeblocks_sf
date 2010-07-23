@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGauge> Reg(_T("Gauge"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsGauge> Reg(_T("Gauge"),wxsTWidget,_T("Standard"),270);
 
     WXS_ST_BEGIN(wxsGaugeStyles,_T(""))
         WXS_ST(wxGA_HORIZONTAL)

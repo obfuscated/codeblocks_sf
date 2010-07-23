@@ -30,7 +30,7 @@ namespace
         wxsTWidget,
         _T(""),_T(""),_T(""),_T(""),
         _T("Standard"),
-        10,
+        380,
         _T("Custom"),
         wxsCPP,
         0,0,

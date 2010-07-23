@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsPanel> Reg(_T("Panel"),wxsTContainer, _T("Standard"), 75);
+    wxsRegisterItem<wxsPanel> Reg(_T("Panel"),wxsTContainer, _T("Standard"), 190);
 
     WXS_ST_BEGIN(wxsPanelStyles,_T("wxTAB_TRAVERSAL"))
         WXS_ST_CATEGORY("wxPanel")

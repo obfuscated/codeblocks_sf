@@ -74,7 +74,33 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxssingleinstancechecker.cpp \
 ./wxsstopwatch.cpp \
 ./wxssymbolpickerdialog.cpp \
-./wxsglcanvas.cpp
+./wxsglcanvas.cpp \
+./wxshyperlinkctrl.cpp \
+./wxsanimationctrl.cpp \
+./wxsmediactrl.cpp \
+./wxsfindreplacedialog.cpp \
+./wxsfontdialog.cpp \
+./wxsmessagedialog.cpp \
+./wxspagesetupdialog.cpp \
+./wxspasswordentrydialog.cpp \
+./wxsprintdialog.cpp \
+./wxsprogressdialog.cpp \
+./wxsrichtextformattingdialog.cpp \
+./wxsrichtextstyleorganiserdialog.cpp \
+./wxstextentrydialog.cpp \
+./wxscolourpickerctrl.cpp \
+./wxsdirpickerctrl.cpp \
+./wxsfilepickerctrl.cpp \
+./wxsfontpickerctrl.cpp \
+./wxsbitmapcombobox.cpp \
+./wxscontexthelpbutton.cpp \
+./wxsdialupmanager.cpp \
+./wxshtmleasyprinting.cpp \
+./wxslistview.cpp \
+./wxsrichtextctrl.cpp \
+./wxssearchctrl.cpp \
+./wxssimplehtmllistbox.cpp \
+./wxstreebook.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -139,5 +165,32 @@ noinst_HEADERS = \
 ./wxssingleinstancechecker.h \
 ./wxsstopwatch.h \
 ./wxssymbolpickerdialog.h \
-./wxsglcanvas.h
+./wxsglcanvas.h \
+./wxshyperlinkctrl.h \
+./wxsanimationctrl.h \
+./wxsmediactrl.h \
+./wxsfindreplacedialog.h \
+./wxsfontdialog.h \
+./wxsmessagedialog.h \
+./wxspagesetupdialog.h \
+./wxspasswordentrydialog.h \
+./wxsprintdialog.h \
+./wxsprogressdialog.h \
+./wxsrichtextformattingdialog.h \
+./wxsrichtextstyleorganiserdialog.h \
+./wxstextentrydialog.h \
+./wxscolourpickerctrl.h \
+./wxsdirpickerctrl.h \
+./wxsfilepickerctrl.h \
+./wxsfontpickerctrl.h \
+./wxsbitmapcombobox.h \
+./wxscontexthelpbutton.h \
+./wxsdialupmanager.h \
+./wxshtmleasyprinting.h \
+./wxslistview.h \
+./wxsrichtextctrl.h \
+./wxssearchctrl.h \
+./wxssimplehtmllistbox.h \
+./wxstreebook.h
+
 

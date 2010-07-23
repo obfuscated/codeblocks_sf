@@ -1,4 +1,5 @@
-/*
+/** \file wxscolourdialog.h
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2007  Bartlomiej Swiecki
 *

@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsToggleButton> Reg(_T("ToggleButton"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsToggleButton> Reg(_T("ToggleButton"),wxsTWidget,_T("Standard"),30);
 
     WXS_ST_BEGIN(wxsToggleButtonStyles,_T(""))
         WXS_ST_CATEGORY("wxToggleButton")

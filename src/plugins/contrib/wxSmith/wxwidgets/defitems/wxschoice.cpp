@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsChoice> Reg(_T("Choice"),wxsTWidget,_T("Standard"),70);
+    wxsRegisterItem<wxsChoice> Reg(_T("Choice"),wxsTWidget,_T("Standard"),310);
 
     WXS_ST_BEGIN(wxsChoiceStyles,_T(""))
         WXS_ST_CATEGORY("wxChoice")

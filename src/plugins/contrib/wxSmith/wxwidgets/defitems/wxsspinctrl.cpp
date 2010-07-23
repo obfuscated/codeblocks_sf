@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSpinCtrl> Reg(_T("SpinCtrl"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsSpinCtrl> Reg(_T("SpinCtrl"),wxsTWidget,_T("Standard"),90);
 
     WXS_ST_BEGIN(wxsSpinCtrlStyles,_T(""))
         WXS_ST_CATEGORY("wxSpinCtrl")

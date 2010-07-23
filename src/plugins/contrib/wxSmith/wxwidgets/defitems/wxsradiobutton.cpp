@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsRadioButton> Reg(_T("RadioButton"),wxsTWidget,_T("Standard"),60);
+    wxsRegisterItem<wxsRadioButton> Reg(_T("RadioButton"),wxsTWidget,_T("Standard"),170);
 
     WXS_ST_BEGIN(wxsRadioButtonStyles,_T(""))
         WXS_ST_CATEGORY("wxRadioButton")

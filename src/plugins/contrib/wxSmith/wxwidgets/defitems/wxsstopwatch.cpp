@@ -30,7 +30,7 @@ namespace
         _T("StopWatch"),                // Class base name
         wxsTTool,                       // Item type
         _T("Tools"),                    // Category in palette
-        75,                             // Priority in palette
+        30,                             // Priority in palette
         false);                         // We do not allow this item inside XRC files
 
 

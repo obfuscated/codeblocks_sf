@@ -1,4 +1,5 @@
-/*
+/** \file wxsfiledialog.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2007  Bartlomiej Swiecki
 *
@@ -26,7 +27,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsFileDialog> Reg(_T("FileDialog"),wxsTTool,_T("Dialogs"),50,false);
+    wxsRegisterItem<wxsFileDialog> Reg(_T("FileDialog"),wxsTTool,_T("Dialogs"),180,false);
 
     WXS_ST_BEGIN(wxsFileDialogStyles,_T("wxFD_DEFAULT_STYLE"))
         WXS_ST_CATEGORY("wxFileDialog")

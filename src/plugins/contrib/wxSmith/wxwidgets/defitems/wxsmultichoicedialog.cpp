@@ -1,4 +1,5 @@
-/*
+/** \file wxsmultichoicedialog.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2007  Bartlomiej Swiecki
 *
@@ -26,7 +27,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMultiChoiceDialog> Reg(_T("MultiChoiceDialog"),wxsTTool,_T("Dialogs"),50,false);
+    wxsRegisterItem<wxsMultiChoiceDialog> Reg(_T("MultiChoiceDialog"),wxsTTool,_T("Dialogs"),140,false);
 
     WXS_ST_BEGIN(wxsMultiChoiceDialogStyles,_T("wxCHOICEDLG_STYLE"))
         WXS_ST_CATEGORY("wxMultiChoiceDialog")

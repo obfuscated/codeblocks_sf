@@ -28,7 +28,7 @@ namespace
         _T("SashWindow"),
         wxsTContainer,
         _T("Layout"),                   // Category in palette
-        11,                             // Priority in palette
+        40,                             // Priority in palette
         false);                         // We do not allow this item inside XRC files
 
 

@@ -1,4 +1,5 @@
-/*
+/**  \file wxshtmlwindow.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
@@ -25,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsHtmlWindow> Reg(_T("HtmlWindow"),wxsTWidget,_T("Advanced"),50);
+    wxsRegisterItem<wxsHtmlWindow> Reg(_T("HtmlWindow"),wxsTWidget,_T("Advanced"),60);
 
     WXS_ST_BEGIN(wxsHtmlWindowStyles,_T("wxHW_SCROLLBAR_AUTO"))
         WXS_ST_CATEGORY("wxHtmlWindow")

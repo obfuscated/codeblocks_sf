@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsListCtrl> Reg(_T("ListCtrl"),wxsTWidget,_T("Standard"),60);
+    wxsRegisterItem<wxsListCtrl> Reg(_T("ListCtrl"),wxsTWidget,_T("Standard"),230);
 
     WXS_ST_BEGIN(wxsListCtrlStyles,_T(""))
         WXS_ST_CATEGORY("wxListCtrl")

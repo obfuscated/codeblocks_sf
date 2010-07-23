@@ -1,4 +1,5 @@
-/*
+/** \file wxssinglechoicedialog.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2007  Bartlomiej Swiecki
 *
@@ -26,7 +27,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsSingleChoiceDialog> Reg(_T("SingleChoiceDialog"),wxsTTool,_T("Dialogs"),50,false);
+    wxsRegisterItem<wxsSingleChoiceDialog> Reg(_T("SingleChoiceDialog"),wxsTTool,_T("Dialogs"),70,false);
 
     WXS_ST_BEGIN(wxsSingleChoiceDialogStyles,_T("wxCHOICEDLG_STYLE"))
         WXS_ST_CATEGORY("wxSingleChoiceDialog")

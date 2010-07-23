@@ -29,7 +29,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,_T("Tools"),90,false);
+    wxsRegisterItem<wxsMenu> Reg(_T("Menu"),wxsTTool,_T("Tools"),70,false);
 
     class MenuEditorDialog: public wxScrollingDialog
     {

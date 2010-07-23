@@ -40,7 +40,7 @@
 // TODO: Add images
 namespace
 {
-    wxsRegisterItem<wxsListbook> Reg(_T("Listbook"),wxsTContainer,_T("Standard"),61);
+    wxsRegisterItem<wxsListbook> Reg(_T("Listbook"),wxsTContainer,_T("Standard"),250);
 
     /** \brief Extra parameters for notebook's children */
     class wxsListbookExtra: public wxsPropertyContainer

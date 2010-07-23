@@ -34,7 +34,7 @@ namespace
         _T(""),
         _T("www.wxwidgets.org"),
         _T("Layout"),
-        30,
+        100,
         _T(""),
         wxsCPP,
         2,6,

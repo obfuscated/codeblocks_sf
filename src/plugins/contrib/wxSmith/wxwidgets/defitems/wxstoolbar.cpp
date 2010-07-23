@@ -29,7 +29,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsToolBar> Reg(_T("ToolBar"),wxsTTool,_T("Tools"),80);
+    wxsRegisterItem<wxsToolBar> Reg(_T("ToolBar"),wxsTTool,_T("Tools"),10);
 
     class ToolBarEditorDialog: public wxScrollingDialog
     {

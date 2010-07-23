@@ -32,7 +32,7 @@ namespace
         _T("SashLayoutWindow"),
         wxsTContainer,
         _T("Layout"),
-        10,
+        50,
         false);
 
 

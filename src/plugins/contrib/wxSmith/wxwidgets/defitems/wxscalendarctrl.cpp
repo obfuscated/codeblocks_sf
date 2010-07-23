@@ -1,4 +1,5 @@
-/*
+/**  \file wxscalendarctrl.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
@@ -21,12 +22,11 @@
 */
 
 #include "wxscalendarctrl.h"
-
 #include <wx/calctrl.h>
 
 namespace
 {
-    wxsRegisterItem<wxsCalendarCtrl> Reg(_T("CalendarCtrl"),wxsTWidget,_T("Advanced"),30);
+    wxsRegisterItem<wxsCalendarCtrl> Reg(_T("CalendarCtrl"),wxsTWidget,_T("Advanced"),150);
 
     WXS_ST_BEGIN(wxsCalendarCtrlStyles,_T(""))
         WXS_ST_CATEGORY("wxCalendarCtrl")

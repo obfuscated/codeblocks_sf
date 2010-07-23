@@ -1,4 +1,5 @@
-/*
+/** \file wxscombobox.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
@@ -25,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsComboBox> Reg(_T("ComboBox"),wxsTWidget,_T("Standard"),70);
+    wxsRegisterItem<wxsComboBox> Reg(_T("ComboBox"),wxsTWidget,_T("Standard"),290);
 
 
     WXS_ST_BEGIN(wxsComboBoxStyles,_T(""))
@@ -39,8 +40,8 @@ namespace
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsComboBoxEvents)
-        WXS_EVI(EVT_COMBOBOX,wxEVT_COMMAND_COMBOBOX_SELECTED,wxCommandEvent,Select)
-        WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,Text)
+        WXS_EVI(EVT_COMBOBOX,wxEVT_COMMAND_COMBOBOX_SELECTED,wxCommandEvent,Selected)
+        WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,TextUpdated)
         WXS_EVI(EVT_TEXT_ENTER,wxEVT_COMMAND_TEXT_ENTER,wxCommandEvent,TextEnter)
     WXS_EV_END()
 }

@@ -1,4 +1,5 @@
-/*
+/**  \file wxsglcanvas.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2008 Ron Collins
 *
@@ -53,7 +54,7 @@ namespace
         _T("GLCanvas"),                 // Class name
         wxsTWidget,                     // Item type
         _T("Advanced"),                 // Category in palette
-        75,                             // Priority in palette
+        80,                             // Priority in palette
         false);                         // We do not allow this item inside XRC files
 
 

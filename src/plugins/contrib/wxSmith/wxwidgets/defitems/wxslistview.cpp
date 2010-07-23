@@ -1,0 +1,131 @@
+/*
+* This file is part of wxSmith plugin for Code::Blocks Studio
+* Copyright (C) 2006-2010 Gary Harris
+*
+* wxSmith is free software; you can redistribute it and/or modify
+* it under the terms of the GNU General Public License as published by
+* the Free Software Foundation; either version 3 of the License, or
+* (at your option) any later version.
+*
+* wxSmith is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+* GNU General Public License for more details.
+*
+* You should have received a copy of the GNU General Public License
+* along with wxSmith. If not, see <http://www.gnu.org/licenses/>.
+*
+*/
+
+#include "wxslistview.h"
+#include <wx/listctrl.h>
+
+namespace
+{
+    wxsRegisterItem<wxsListView> Reg(_T("ListView"),wxsTWidget,_T("Standard"),220);
+
+    WXS_ST_BEGIN(wxsListViewStyles,_T(""))
+        WXS_ST_CATEGORY("wxListView")
+        WXS_ST(wxLC_LIST);
+        WXS_ST(wxLC_REPORT)
+        WXS_ST(wxLC_ICON)
+        WXS_ST(wxLC_SMALL_ICON)
+        WXS_ST(wxLC_ALIGN_TOP)
+        WXS_ST(wxLC_ALIGN_LEFT)
+        WXS_ST(wxLC_AUTOARRANGE)
+        WXS_ST(wxLC_USER_TEXT)
+        WXS_ST(wxLC_EDIT_LABELS)
+        WXS_ST(wxLC_NO_HEADER)
+        WXS_ST(wxLC_SINGLE_SEL)
+        WXS_ST(wxLC_SORT_ASCENDING)
+        WXS_ST(wxLC_SORT_DESCENDING)
+        WXS_ST(wxLC_VIRTUAL)
+        WXS_ST(wxLC_HRULES)
+        WXS_ST(wxLC_VRULES)
+        WXS_ST(wxLC_NO_SORT_HEADER)
+        WXS_ST_DEFAULTS()
+    WXS_ST_END()
+
+    WXS_EV_BEGIN(wxsListViewEvents)
+        WXS_EVI(EVT_LIST_BEGIN_DRAG,wxEVT_COMMAND_LIST_BEGIN_DRAG,wxListEvent,BeginDrag)
+        WXS_EVI(EVT_LIST_BEGIN_RDRAG,wxEVT_COMMAND_LIST_BEGIN_RDRAG,wxListEvent,BeginRDrag)
+        WXS_EVI(EVT_LIST_BEGIN_LABEL_EDIT,wxEVT_COMMAND_LIST_BEGIN_LABEL_EDIT,wxListEvent,BeginLabelEdit)
+        WXS_EVI(EVT_LIST_END_LABEL_EDIT,wxEVT_COMMAND_LIST_END_LABEL_EDIT,wxListEvent,EndLabelEdit)
+        WXS_EVI(EVT_LIST_DELETE_ITEM,wxEVT_COMMAND_LIST_DELETE_ITEM,wxListEvent,DeleteItem)
+        WXS_EVI(EVT_LIST_DELETE_ALL_ITEMS,wxEVT_COMMAND_LIST_DELETE_ALL_ITEMS,wxListEvent,DeleteAllItems)
+        WXS_EVI(EVT_LIST_ITEM_SELECTED,wxEVT_COMMAND_LIST_ITEM_SELECTED,wxListEvent,ItemSelect)
+        WXS_EVI(EVT_LIST_ITEM_DESELECTED,wxEVT_COMMAND_LIST_ITEM_DESELECTED,wxListEvent,ItemDeselect)
+        WXS_EVI(EVT_LIST_ITEM_ACTIVATED,wxEVT_COMMAND_LIST_ITEM_ACTIVATED,wxListEvent,ItemActivated)
+        WXS_EVI(EVT_LIST_ITEM_FOCUSED,wxEVT_COMMAND_LIST_ITEM_FOCUSED,wxListEvent,ItemFocused)
+        WXS_EVI(EVT_LIST_ITEM_MIDDLE_CLICK,wxEVT_COMMAND_LIST_ITEM_MIDDLE_CLICK,wxListEvent,ItemMClick)
+        WXS_EVI(EVT_LIST_ITEM_RIGHT_CLICK,wxEVT_COMMAND_LIST_ITEM_RIGHT_CLICK,wxListEvent,ItemRClick)
+        WXS_EVI(EVT_LIST_KEY_DOWN,wxEVT_COMMAND_LIST_KEY_DOWN,wxListEvent,KeyDown)
+        WXS_EVI(EVT_LIST_INSERT_ITEM,wxEVT_COMMAND_LIST_INSERT_ITEM,wxListEvent,InsertItem)
+        WXS_EVI(EVT_LIST_COL_CLICK,wxEVT_COMMAND_LIST_COL_CLICK,wxListEvent,ColumnClick)
+        WXS_EVI(EVT_LIST_COL_RIGHT_CLICK,wxEVT_COMMAND_LIST_COL_RIGHT_CLICK,wxListEvent,ColumnRClick)
+        WXS_EVI(EVT_LIST_COL_BEGIN_DRAG,wxEVT_COMMAND_LIST_COL_BEGIN_DRAG,wxListEvent,ColumnBeginDrag)
+        WXS_EVI(EVT_LIST_COL_DRAGGING,wxEVT_COMMAND_LIST_COL_DRAGGING,wxListEvent,ColumnDragging)
+        WXS_EVI(EVT_LIST_COL_END_DRAG,wxEVT_COMMAND_LIST_COL_END_DRAG,wxListEvent,ColumnEndDrag)
+        WXS_EVI(EVT_LIST_CACHE_HINT,wxEVT_COMMAND_LIST_CACHE_HINT,wxListEvent,CacheHint)
+    WXS_EV_END()
+}
+
+/*! \brief Ctor
+ *
+ * \param Data wxsItemResData*	The control's resource data.
+ *
+ */
+wxsListView::wxsListView(wxsItemResData* Data):
+    wxsWidget(
+        Data,
+        &Reg.Info,
+        wxsListViewEvents,
+        wxsListViewStyles)
+{}
+
+/*! \brief Create the initial control.
+ *
+ * \return void
+ *
+ */
+void wxsListView::OnBuildCreatingCode()
+{
+    switch ( GetLanguage() )
+    {
+        case wxsCPP:
+        {
+            AddHeader(_T("<wx/listctrl.h>"),GetInfo().ClassName,hfInPCH);
+            Codef(_T("%C(%W, %I, %P, %S, %T, %V, %N);\n"));
+            BuildSetupWindowCode();
+            return;
+        }
+
+        default:
+        {
+            wxsCodeMarks::Unknown(_T("wxsListView::OnBuildCreatingCode"),GetLanguage());
+        }
+    }
+}
+
+/*! \brief	Build the control preview.
+ *
+ * \param parent wxWindow*	The parent window.
+ * \param flags long				The control flags.
+ * \return wxObject* 				The constructed control.
+ *
+ */
+wxObject* wxsListView::OnBuildPreview(wxWindow* Parent,long Flags)
+{
+    wxListView* Preview = new wxListView(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    return SetupWindow(Preview,Flags);
+}
+
+/*! \brief Enumerate the control's properties.
+ *
+ * \param flags long	The control flags.
+ * \return void
+ *
+ */
+void wxsListView::OnEnumWidgetProperties(long Flags)
+{
+}

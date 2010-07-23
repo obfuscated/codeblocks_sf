@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsTimer> Reg(_T("Timer"),wxsTTool,_T("Tools"),80,false);
+    wxsRegisterItem<wxsTimer> Reg(_T("Timer"),wxsTTool,_T("Tools"),20,false);
 
     WXS_EV_BEGIN(wxsTimerEvents)
         WXS_EVI(EVT_TIMER,wxEVT_TIMER,wxTimerEvent,Trigger)
@@ -43,7 +43,7 @@ wxsTimer::wxsTimer(wxsItemResData* Data):
         flVariable|flId|flSubclass|flExtraCode)
 {
     m_Interval = 0;
-    m_OneShoot = false;
+    m_OneShot = false;
 }
 
 void wxsTimer::OnBuildCreatingCode()
@@ -54,7 +54,7 @@ void wxsTimer::OnBuildCreatingCode()
         {
             AddHeader(_T("<wx/timer.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%ASetOwner(this, %I);\n"));
-            if ( m_Interval > 0 ) Codef(_T("%AStart(%d, %b);\n"),m_Interval,m_OneShoot);
+            if ( m_Interval > 0 ) Codef(_T("%AStart(%d, %b);\n"),m_Interval,m_OneShot);
             BuildSetupWindowCode();
             return;
         }
@@ -69,5 +69,5 @@ void wxsTimer::OnBuildCreatingCode()
 void wxsTimer::OnEnumToolProperties(long Flags)
 {
     WXS_LONG(wxsTimer,m_Interval,_("Interval"),_T("interval"),0);
-    WXS_BOOL(wxsTimer,m_OneShoot,_("One Shoot"),_T("oneshoot"),false);
+    WXS_BOOL(wxsTimer,m_OneShot,_("One Shot"),_T("oneshot"),false);
 }

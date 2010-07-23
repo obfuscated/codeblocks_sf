@@ -25,7 +25,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsCheckBox> Reg(_T("CheckBox"),wxsTWidget,_T("Standard"),60);
+    wxsRegisterItem<wxsCheckBox> Reg(_T("CheckBox"),wxsTWidget,_T("Standard"),330);
 
     WXS_ST_BEGIN(wxsCheckBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxCheckBox")

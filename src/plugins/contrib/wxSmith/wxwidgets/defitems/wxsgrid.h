@@ -1,4 +1,5 @@
-/*
+/**  \file wxsgrid.h
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2006-2008  Bartlomiej Swiecki
 * Copyright (C) 2008 Ron Collins

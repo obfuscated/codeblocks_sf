@@ -27,7 +27,7 @@
 // TODO: Add some flag like "Using Selection range" to note when using selmin / selmax (current comparision to 0 isn't enough)
 namespace
 {
-    wxsRegisterItem<wxsSlider> Reg(_T("Slider"),wxsTWidget,_T("Standard"),50);
+    wxsRegisterItem<wxsSlider> Reg(_T("Slider"),wxsTWidget,_T("Standard"),110);
 
     WXS_ST_BEGIN(wxsSliderStyles,_T(""))
         WXS_ST(wxSL_HORIZONTAL)

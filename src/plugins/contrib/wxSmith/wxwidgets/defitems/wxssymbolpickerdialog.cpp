@@ -1,4 +1,5 @@
-/*
+/** \file wxssymbolpickerdialog.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2008 Ron Collins
 *
@@ -29,7 +30,7 @@ namespace
         _T("SymbolPickerDialog"),       // Class base name
         wxsTTool,                       // Item type
         _T("Dialogs"),                  // Category in palette
-        40,                             // Priority in palette
+        60,                             // Priority in palette
         false);                         // We do not allow this item inside XRC files
 
 

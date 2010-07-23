@@ -1,4 +1,5 @@
-/*
+/**  \file wxsgenericdirctrl.cpp
+*
 * This file is part of wxSmith plugin for Code::Blocks Studio
 * Copyright (C) 2006-2007  Bartlomiej Swiecki
 *
@@ -26,7 +27,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsGenericDirCtrl> Reg(_T("GenericDirCtrl"),wxsTWidget,_T("Advanced"),30);
+    wxsRegisterItem<wxsGenericDirCtrl> Reg(_T("GenericDirCtrl"),wxsTWidget,_T("Advanced"),90);
 
     WXS_ST_BEGIN(wxsGenericDirCtrlStyles,_T(""))
         WXS_ST_CATEGORY("wxGenericDirCtrl")

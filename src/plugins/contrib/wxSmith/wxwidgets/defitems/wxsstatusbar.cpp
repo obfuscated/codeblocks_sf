@@ -26,7 +26,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsStatusBar> Reg(_T("StatusBar"),wxsTTool,_T("Tools"),50);
+    wxsRegisterItem<wxsStatusBar> Reg(_T("StatusBar"),wxsTTool,_T("Tools"),40);
 
     WXS_ST_BEGIN(wxsStatusBarStyles,_T(""))
         WXS_ST_CATEGORY("wxStatusBar")

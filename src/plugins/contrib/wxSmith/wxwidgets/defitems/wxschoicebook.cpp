@@ -39,7 +39,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsChoicebook> Reg(_T("Choicebook"),wxsTContainer,_T("Standard"),61);
+    wxsRegisterItem<wxsChoicebook> Reg(_T("Choicebook"),wxsTContainer,_T("Standard"),300);
 
     /** \brief Extra parameters for notebook's children */
     class wxsChoicebookExtra: public wxsPropertyContainer

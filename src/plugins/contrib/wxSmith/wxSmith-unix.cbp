@@ -270,10 +270,22 @@
 		<Unit filename="wxsversionconverter.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsanimationctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsanimationctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsbitmapbutton.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsbitmapbutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsbitmapcombobox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsbitmapcombobox.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsboxsizer.cpp">
@@ -324,10 +336,22 @@
 		<Unit filename="wxwidgets/defitems/wxscolourdialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxscolourpickerctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxscolourpickerctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxscombobox.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxscombobox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxscontexthelpbutton.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxscontexthelpbutton.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxscustomwidget.cpp">
@@ -348,6 +372,12 @@
 		<Unit filename="wxwidgets/defitems/wxsdialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsdialupmanager.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsdialupmanager.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsdirdialog.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -360,10 +390,34 @@
 		<Unit filename="wxwidgets/defitems/wxsfiledialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfilepickerctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfilepickerctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfindreplacedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfindreplacedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsflexgridsizer.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsflexgridsizer.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfontdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfontdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfontpickerctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsfontpickerctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsframe.cpp">
@@ -402,10 +456,22 @@
 		<Unit filename="wxwidgets/defitems/wxsgridsizer.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxshtmleasyprinting.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxshtmleasyprinting.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxshtmlwindow.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxshtmlwindow.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxshyperlinkctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxshyperlinkctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxslistbook.cpp">
@@ -424,6 +490,18 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxslistctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxslistview.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxslistview.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsmediactrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsmediactrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsmenu.cpp">
@@ -450,6 +528,12 @@
 		<Unit filename="wxwidgets/defitems/wxsmenuitem.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsmessagedialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsmessagedialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsmultichoicedialog.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -462,10 +546,34 @@
 		<Unit filename="wxwidgets/defitems/wxsnotebook.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxspagesetupdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxspagesetupdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxspanel.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxspanel.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxspasswordentrydialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxspasswordentrydialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsprintdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsprintdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsprogressdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsprogressdialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsradiobox.cpp">
@@ -478,6 +586,24 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsradiobutton.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextformattingdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextformattingdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstyleorganiserdialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstyleorganiserdialog.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxssashlayoutwindow.cpp">
@@ -508,6 +634,18 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsscrollingdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxssearchctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxssearchctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxssimplehtmllistbox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxssimplehtmllistbox.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxssinglechoicedialog.cpp">
@@ -612,6 +750,12 @@
 		<Unit filename="wxwidgets/defitems/wxstextctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxstextentrydialog.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxstextentrydialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxstimer.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -640,6 +784,12 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxstoolbaritem.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxstreebook.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxstreebook.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxstreectrl.cpp">

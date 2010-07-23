@@ -38,7 +38,7 @@ class wxsTimer: public wxsTool
         virtual bool OnIsPointer() { return false; }
 
         long m_Interval;
-        bool m_OneShoot;
+        bool m_OneShot;
 };
 
 #endif

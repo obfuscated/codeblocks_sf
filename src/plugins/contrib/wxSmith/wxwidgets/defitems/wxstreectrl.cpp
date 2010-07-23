@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsTreeCtrl> Reg(_T("TreeCtrl"),wxsTWidget,_T("Standard"),70);
+    wxsRegisterItem<wxsTreeCtrl> Reg(_T("TreeCtrl"),wxsTWidget,_T("Standard"),10);
 
     WXS_ST_BEGIN(wxsTreeCtrlStyles,_T("wxTR_DEFAULT_STYLE"))
         WXS_ST_CATEGORY("wxTreeCtrl")

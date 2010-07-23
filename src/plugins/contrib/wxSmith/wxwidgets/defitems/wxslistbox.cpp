@@ -24,7 +24,7 @@
 
 namespace
 {
-    wxsRegisterItem<wxsListBox> Reg(_T("ListBox"),wxsTWidget,_T("Standard"),70);
+    wxsRegisterItem<wxsListBox> Reg(_T("ListBox"),wxsTWidget,_T("Standard"),240);
 
     WXS_ST_BEGIN(wxsListBoxStyles,_T(""))
         WXS_ST_CATEGORY("wxListBox")
