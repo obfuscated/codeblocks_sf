@@ -771,7 +771,8 @@ void HexEditPanel::RefreshStatus()
     }
     else
     {
-        m_Status->SetLabel( F( _("Position: %llX / %llX ( %lld%% )"), m_Current, size-1, ( m_Current * 100 / (size-1) ) ) );
+        unsigned long long current_pos = m_Current + 1; // OffsetT = unsigned long long
+        m_Status->SetLabel( F( _("Position: %llX / %llX ( %lld%% )"), current_pos, size, ( current_pos * 100 / (size) ) ) );
     }
 
     FileContentBase::OffsetT left = size - m_Current;
