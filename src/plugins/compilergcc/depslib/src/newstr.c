@@ -107,9 +107,9 @@ copystr( const char *s )
  */
 
 void
-freestr( const char * s)
+freestr( const char * s )
 {
-	s;
+    (void)s;
 }
 
 /*
