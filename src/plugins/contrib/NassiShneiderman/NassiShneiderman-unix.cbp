@@ -27,6 +27,7 @@
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DBUILDING_PLUGIN" />
+					<Add directory="/usr/lib/boost" />
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
