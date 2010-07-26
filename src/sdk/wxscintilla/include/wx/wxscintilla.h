@@ -2227,7 +2227,7 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 
 /* C::B begin */
 #if !wxCHECK_VERSION(2, 9, 0)
-typedef size_t wxIntPtr;
+typedef long wxIntPtr;
 #endif
 
 typedef wxIntPtr (* wxSciFnDirect) (wxIntPtr ptr, unsigned int iMessage,
