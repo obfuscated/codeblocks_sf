@@ -24,10 +24,10 @@
 #define WXSDELETEITEMRES_H
 
 //(*Headers(wxsDeleteItemRes)
-#include <wx/checkbox.h>
 #include <wx/sizer.h>
-#include "scrollingdialog.h"
 #include <wx/stattext.h>
+#include <wx/checkbox.h>
+#include "scrollingdialog.h"
 //*)
 
 class wxsDeleteItemRes: public wxScrollingDialog
@@ -49,13 +49,13 @@ class wxsDeleteItemRes: public wxScrollingDialog
 		//*)
 
 		//(*Declarations(wxsDeleteItemRes)
-		wxCheckBox* m_PhisDeleteWXS;
 		wxStaticText* StaticText1;
+		wxCheckBox* m_PhysDeleteSources;
 		wxBoxSizer* BoxSizer1;
-		wxCheckBox* m_PhisDeleteSources;
-		wxStdDialogButtonSizer* StdDialogButtonSizer1;
-		wxStaticBoxSizer* StaticBoxSizer1;
 		wxCheckBox* m_DeleteSources;
+		wxStaticBoxSizer* StaticBoxSizer1;
+		wxCheckBox* m_PhysDeleteWXS;
+		wxStdDialogButtonSizer* StdDialogButtonSizer1;
 		//*)
 
 	private:

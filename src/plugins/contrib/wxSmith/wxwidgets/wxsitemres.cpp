@@ -516,9 +516,9 @@ wxsItemResData* wxsItemRes::BuildResData(wxsItemEditor* Editor)
 
 bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
 {
-    bool PhisDeleteWXS = true;
+    bool PhysDeleteWXS = true;
     bool DeleteSources = false;
-    bool PhisDeleteSources = false;
+    bool PhysDeleteSources = false;
 
     if ( ShowDialog )
     {
@@ -527,9 +527,9 @@ bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
         {
             return false;
         }
-        PhisDeleteWXS = Dlg.m_PhisDeleteWXS->GetValue();
+        PhysDeleteWXS = Dlg.m_PhysDeleteWXS->GetValue();
         DeleteSources = Dlg.m_DeleteSources->GetValue();
-        PhisDeleteSources = Dlg.m_PhisDeleteSources->GetValue();
+        PhysDeleteSources = Dlg.m_PhysDeleteSources->GetValue();
     }
 
     ProjectFile* Wxs = GetProject()->GetCBProject()->GetFileByFilename(m_WxsFileName,true);
@@ -538,7 +538,7 @@ bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
         GetProject()->GetCBProject()->RemoveFile(Wxs);
     }
 
-    if ( PhisDeleteWXS )
+    if ( PhysDeleteWXS )
     {
         wxRemoveFile(GetProjectPath() + m_WxsFileName);
     }
@@ -556,7 +556,7 @@ bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
             GetProject()->GetCBProject()->RemoveFile(Pf);
         }
 
-        if ( PhisDeleteSources )
+        if ( PhysDeleteSources )
         {
             wxRemoveFile(GetProjectPath() + m_SrcFileName);
             wxRemoveFile(GetProjectPath() + m_HdrFileName);
