@@ -34,7 +34,11 @@
 
 #include "pluginsconfigurationdlg.h" // class's header file
 
+#if wxCHECK_VERSION(2, 9, 1)
+int wxCALLBACK sortByTitle(long item1, long item2, wxIntPtr /*sortData*/)
+#else
 int wxCALLBACK sortByTitle(long item1, long item2, long /*sortData*/)
+#endif
 {
     const PluginElement* elem1 = (const PluginElement*)item1;
     const PluginElement* elem2 = (const PluginElement*)item2;
