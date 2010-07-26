@@ -2226,7 +2226,9 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 //----------------------------------------------------------------------
 
 /* C::B begin */
-typedef long wxIntPtr; // FIXME: back-port from wx29 (svn) to wx289
+#if !wxCHECK_VERSION(2, 9, 0)
+typedef size_t wxIntPtr;
+#endif
 
 typedef wxIntPtr (* wxSciFnDirect) (wxIntPtr ptr, unsigned int iMessage,
                                     wxUIntPtr wParam, wxIntPtr lParam);
