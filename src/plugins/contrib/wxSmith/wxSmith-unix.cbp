@@ -56,7 +56,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add option="`wx-config --libs media`" />
 			<Add library="codeblocks" />
 			<Add library="wxscintilla" />
 			<Add library="wxpropgrid" />
@@ -500,10 +499,10 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsmediactrl.cpp">
-			<Option target="wxSmithLib" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsmediactrl.h">
-			<Option target="wxSmithLib" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsmenu.cpp">
 			<Option target="wxSmithLib" />

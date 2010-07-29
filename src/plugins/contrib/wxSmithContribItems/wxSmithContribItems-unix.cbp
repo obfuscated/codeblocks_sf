@@ -90,7 +90,6 @@
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
-			<Add option="`wx-config --libs media`" />
 		</Linker>
 		<Unit filename="manifest.xml">
 			<Option target="wxSmithContribItems" />

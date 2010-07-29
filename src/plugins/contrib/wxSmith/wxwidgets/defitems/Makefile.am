@@ -77,7 +77,6 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsglcanvas.cpp \
 ./wxshyperlinkctrl.cpp \
 ./wxsanimationctrl.cpp \
-./wxsmediactrl.cpp \
 ./wxsfindreplacedialog.cpp \
 ./wxsfontdialog.cpp \
 ./wxsmessagedialog.cpp \
@@ -168,7 +167,6 @@ noinst_HEADERS = \
 ./wxsglcanvas.h \
 ./wxshyperlinkctrl.h \
 ./wxsanimationctrl.h \
-./wxsmediactrl.h \
 ./wxsfindreplacedialog.h \
 ./wxsfontdialog.h \
 ./wxsmessagedialog.h \

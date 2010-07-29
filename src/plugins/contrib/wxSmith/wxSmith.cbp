@@ -528,10 +528,10 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsmediactrl.cpp">
-			<Option target="wxSmithLib" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsmediactrl.h">
-			<Option target="wxSmithLib" />
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="wxwidgets\defitems\wxsmenu.cpp">
 			<Option target="wxSmithLib" />
