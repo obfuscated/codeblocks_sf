@@ -577,12 +577,12 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 //    }
 
     // quick test
-    ProjectFile* f = m_ProjectFilesMap[UnixFilename(filename)];
-    if (f)
-        return f;
+    ProjectFile* pf = m_ProjectFilesMap[UnixFilename(filename)];
+    if (pf)
+        return pf;
 
     // create file
-    f = new ProjectFile(this);
+    pf = new ProjectFile(this);
     bool localCompile, localLink;
     wxFileName fname(filename);
     wxString ext;
@@ -591,11 +591,11 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
     ext = filename.AfterLast(_T('.')).Lower();
     if (ext.IsSameAs(FileFilters::C_EXT))
-        f->compilerVar = _T("CC");
+        pf->compilerVar = _T("CC");
     else if (platform::windows && ext.IsSameAs(FileFilters::RESOURCE_EXT))
-        f->compilerVar = _T("WINDRES");
+        pf->compilerVar = _T("WINDRES");
     else
-        f->compilerVar = _T("CPP"); // default
+        pf->compilerVar = _T("CPP"); // default
 
     if (!m_Targets.GetCount())
     {
@@ -603,7 +603,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         AddDefaultBuildTarget();
         if (!m_Targets.GetCount())
         {
-            delete f;
+            delete pf;
             return 0L; // if that failed, fail addition of file...
         }
     }
@@ -665,21 +665,21 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
     // add the build target
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
-        f->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
+        pf->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
-    localCompile = compile &&
-                    (ft == ftSource ||
-                    ft == ftResource ||
-                    !GenFilesHackMap.empty());
-    localLink = link &&
-                (ft == ftSource ||
-                ft == ftResource ||
-                ft == ftObject ||
-                ft == ftResourceBin ||
-                ft == ftStaticLib);
+    localCompile =    compile
+                   && (   ft == ftSource
+                       || ft == ftResource
+                       || !GenFilesHackMap.empty() );
+    localLink =    link
+                && (   ft == ftSource
+                    || ft == ftResource
+                    || ft == ftObject
+                    || ft == ftResourceBin
+                    || ft == ftStaticLib );
 
-    f->compile = localCompile;
-    f->link = localLink;
+    pf->compile = localCompile;
+    pf->link = localLink;
 
     wxString local_filename = filename;
 
@@ -705,21 +705,21 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, GetBasePath());
 
     wxString fullFilename = realpath(fname.GetFullPath());
-    f->file = fullFilename;
-    f->relativeFilename = UnixFilename(local_filename);
+    pf->file = fullFilename;
+    pf->relativeFilename = UnixFilename(local_filename);
 
     // now check if we have already added this file
     // if we have, return the existing file, but add the specified target
-    ProjectFile* existing = GetFileByFilename(f->relativeFilename, true, true);
-    if (existing == f)
+    ProjectFile* existing = GetFileByFilename(pf->relativeFilename, true, true);
+    if (existing == pf)
     {
-        delete f;
+        delete pf;
         if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
             existing->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
         return existing;
     }
 
-    m_Files.Append(f);
+    m_Files.Append(pf);
     if (!m_CurrentlyLoading)
     {
         // check if we really need to recalculate the common top-level path for the project
@@ -728,35 +728,35 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         else
         {
             // set f->relativeToCommonTopLevelPath
-            f->relativeToCommonTopLevelPath = fullFilename.Right(fullFilename.Length() - m_CommonTopLevelPath.Length());
+            pf->relativeToCommonTopLevelPath = fullFilename.Right(fullFilename.Length() - m_CommonTopLevelPath.Length());
         }
     }
     SetModified(true);
-    m_ProjectFilesMap[UnixFilename(f->relativeFilename)] = f; // add to hashmap
+    m_ProjectFilesMap[UnixFilename(pf->relativeFilename)] = pf; // add to hashmap
 
     if (!wxFileExists(fullFilename))
-        f->SetFileState(fvsMissing);
+        pf->SetFileState(fvsMissing);
     else if (!wxFile::Access(fullFilename.c_str(), wxFile::write)) // readonly
-        f->SetFileState(fvsReadOnly);
+        pf->SetFileState(fvsReadOnly);
 
     if (!GenFilesHackMap.empty())
     {
         // auto-generated files!
-        wxFileName tmp = f->file;
+        wxFileName tmp = pf->file;
         for (std::map<Compiler*, const CompilerTool*>::const_iterator it = GenFilesHackMap.begin(); it != GenFilesHackMap.end(); ++it)
         {
             const CompilerTool* tool = it->second;
             for (size_t i = 0; i < tool->generatedFiles.GetCount(); ++i)
             {
                 tmp.SetFullName(tool->generatedFiles[i]);
-                wxString tmps = tmp.GetFullPath();
+                wxString tmps = tmp.GetFullName();
                 // any macro replacements here, should also be done in
                 // CompilerCommandGenerator::GenerateCommandLine !!!
-                tmps.Replace(_T("$file_basename"), f->file.GetName()); // old way - remove later
-                tmps.Replace(_T("$file_name"), f->file.GetName());
-                tmps.Replace(_T("$file_dir"), f->file.GetPath());
-                tmps.Replace(_T("$file_ext"), f->file.GetExt());
-                tmps.Replace(_T("$file"), f->file.GetFullName());
+                tmps.Replace(_T("$file_basename"), pf->file.GetName()); // old way - remove later
+                tmps.Replace(_T("$file_name"),     pf->file.GetName());
+                tmps.Replace(_T("$file_dir"),      pf->file.GetPath());
+                tmps.Replace(_T("$file_ext"),      pf->file.GetExt());
+                tmps.Replace(_T("$file"),          pf->file.GetFullName());
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(tmps);
 
                 ProjectFile* pfile = AddFile(targetIndex, UnixFilename(tmps));
@@ -764,14 +764,14 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
                     Manager::Get()->GetLogManager()->DebugLog(_T("Can't add auto-generated file ") + tmps);
                 else
                 {
-                    f->generatedFiles.push_back(pfile);
-                    pfile->SetAutoGeneratedBy(f);
+                    pf->generatedFiles.push_back(pfile);
+                    pfile->SetAutoGeneratedBy(pf);
                 }
             }
         }
     }
 
-    return f;
+    return pf;
 }
 
 bool cbProject::RemoveFile(ProjectFile* pf)
@@ -1045,7 +1045,6 @@ wxTreeItemId cbProject::AddTreeNode(wxTreeCtrl* tree,
             int idx = folders_kind != FileTreeData::ftdkVirtualFolder ? fldIdx : vfldIdx;
             newparent = tree->InsertItem(parent, newparent, folder, idx, idx, ftd);
         }
-        //tree->SortChildren(parent);
         ret = AddTreeNode(tree, path, newparent, true, folders_kind, compiles, image, data);
     }
     else

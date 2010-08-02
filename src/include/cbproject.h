@@ -358,7 +358,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * @return True if succesfull, false otherwise.
           */
         bool LoadLayout();
-        
+
         /** Notify that file(s) will be added shortly.
           * This function should be called before calling AddFile().
           * When done calling AddFile() as many times as needed, call
@@ -439,13 +439,13 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /** Convenience function for remembering the project's tree state when refreshing it.
           * @return An array of strings containing the tree-path names of expanded nodes.
           */
-        const wxArrayString& ExpandedNodes(){ return m_ExpandedNodes; }
+        const wxArrayString& ExpandedNodes() { return m_ExpandedNodes; }
 
         /** Convenience function for remembering the project's tree state when refreshing it.
           * Adds an expanded node in this internal list.
           * @param path The tree-path to add.
           */
-        void AddExpandedNode(const wxString& path){ m_ExpandedNodes.Add(path); }
+        void AddExpandedNode(const wxString& path) { m_ExpandedNodes.Add(path); }
 
         /** Convenience function for remembering the project's tree state when refreshing it.
           * @param tree The tree control to save its expanded state.
@@ -678,7 +678,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * instead of re-using the existing one (if any).
           */
         virtual void AddToExtensions(const wxString& stringDesc);
-        
+
         /** Internal use only.
           * Updates the internal hashmap of project files.
           */
