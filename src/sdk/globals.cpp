@@ -318,6 +318,57 @@ FileType FileTypeOf(const wxString& filename)
     return ftOther;
 }
 
+void DoRememberSelectedNode(wxTreeCtrl* tree, wxString& selectedItemPath)
+{
+    wxTreeItemId item = tree->GetSelection();
+    while(item.IsOk())
+    {
+        selectedItemPath = _T("/") + tree->GetItemText(item) + selectedItemPath;
+        item = tree->GetItemParent(item);
+    }
+}
+
+void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxString& selectedItemPath)
+{
+    if (tree && !selectedItemPath.IsEmpty())
+    {
+        wxString tmpPath;
+        wxString folder;
+        tmpPath = selectedItemPath;
+        int pos = tmpPath.Find(_T('/'));
+        while (pos == 0)
+        {
+            tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
+            pos = tmpPath.Find(_T('/'));
+        }
+
+        folder = tmpPath.Left(pos);
+        tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
+        wxTreeItemId item = parent;
+        compatibility::tree_cookie_t cookie = 0;
+
+        while (item.IsOk())
+        {
+            if(tree->GetItemText(item) != folder)
+                item = tree->GetNextSibling(item);
+            else
+            {
+                if(pos < 0)
+                {
+                    tree->SelectItem(item);
+                    break;
+                }
+                else
+                {
+                    item=tree->GetNextChild(item, cookie);
+                    DoSelectRememberedNode(tree, item, tmpPath);
+                }
+            }
+        }
+
+    }
+}
+
 bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& path)
 {
     // remember expanded tree nodes of this tree
@@ -390,7 +441,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
     }
 }
 
-void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths)
+void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& selectedItemPath)
 {
     nodePaths.Clear();
     if (!parent.IsOk() || !tree || !tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
@@ -398,9 +449,12 @@ void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& 
     wxString tmp;
     if (!DoRememberExpandedNodes(tree, parent, nodePaths, tmp))
         nodePaths.Add(tmp); // just the tree root
+
+    selectedItemPath.clear();
+    DoRememberSelectedNode(tree, selectedItemPath);
 }
 
-void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths)
+void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& selectedItemPath)
 {
     if (!parent.IsOk() || !tree)
         return;
@@ -412,6 +466,8 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
     for (unsigned int i = 0; i < nodePaths.GetCount(); ++i)
         DoExpandRememberedNode(tree, parent, nodePaths[i]);
     nodePaths.Clear();
+    DoSelectRememberedNode(tree, tree->GetRootItem(), selectedItemPath);
+    selectedItemPath.clear();
 }
 
 bool CreateDirRecursively(const wxString& full_path, int perms)

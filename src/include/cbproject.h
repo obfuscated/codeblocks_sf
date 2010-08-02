@@ -708,6 +708,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         FilesList m_Files;
         wxArrayString m_ExpandedNodes;
+        wxString m_SelectedNode;
         bool m_Loaded;
         wxTreeItemId m_ProjectNode;
 
