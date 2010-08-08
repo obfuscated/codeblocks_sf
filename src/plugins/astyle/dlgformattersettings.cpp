@@ -122,5 +122,6 @@ void dlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setBreakOneLineBlocksMode(!XRCCTRL(*m_dlg, "chkKeepBlocks", wxCheckBox)->GetValue());
         formatter.setTabSpaceConversionMode(XRCCTRL(*m_dlg, "chkConvertTabs", wxCheckBox)->GetValue());
         formatter.setEmptyLineFill(XRCCTRL(*m_dlg, "chkFillEmptyLines", wxCheckBox)->GetValue());
+        formatter.setAddBracketsMode(XRCCTRL(*m_dlg, "chkAddBrackets", wxCheckBox)->GetValue());
     }
 }

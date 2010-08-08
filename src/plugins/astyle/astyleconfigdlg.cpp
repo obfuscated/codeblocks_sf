@@ -230,6 +230,7 @@ int Foo(bool isBar)\n\
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->Enable(!en);
   XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->Enable(!en);
+  XRCCTRL(*this, "chkAddBrackets", wxCheckBox)->Enable(!en);
 }
 
 void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
@@ -317,6 +318,7 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_blocks"), false));
   XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->SetValue(cfg->ReadBool(_T("/convert_tabs"), false));
   XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->SetValue(cfg->ReadBool(_T("/fill_empty_lines"), false));
+  XRCCTRL(*this, "chkAddBrackets", wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_brackets"), false));
 
   SetStyle((AStylePredefinedStyle)style);
 }
@@ -373,4 +375,5 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/keep_blocks"), XRCCTRL(*this, "chkKeepBlocks", wxCheckBox)->GetValue());
   cfg->Write(_T("/convert_tabs"), XRCCTRL(*this, "chkConvertTabs", wxCheckBox)->GetValue());
   cfg->Write(_T("/fill_empty_lines"), XRCCTRL(*this, "chkFillEmptyLines", wxCheckBox)->GetValue());
+  cfg->Write(_T("/add_brackets"), XRCCTRL(*this, "chkAddBrackets", wxCheckBox)->GetValue());
 }

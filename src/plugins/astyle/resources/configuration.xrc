@@ -366,6 +366,15 @@
 											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
 										</object>
+										<object class="sizeritem">
+											<option>0</option>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP|wxTOP</flag>
+											<border>8</border>
+											<object class="wxCheckBox" name="chkAddBrackets">
+												<label>Add brackets to unbracketed one line conditional statements</label>
+												<checked>0</checked>
+											</object>
+										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>

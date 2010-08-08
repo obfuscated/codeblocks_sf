@@ -143,6 +143,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
       formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
       formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
+      formatter.setAddBracketsMode(cfg->ReadBool(_T("/add_brackets")));
       break;
     }
   }
