@@ -21,11 +21,12 @@ bool MyApp::OnInit()
 
 	//(*AppInitialize
 	bool wxsOK = true;
-	::wxInitAllImageHandlers();
+	wxInitAllImageHandlers();
 	if ( wxsOK )
 	{
-	  MainFrame* MainResource = new MainFrame(0L);
-	  if ( MainResource ) MainResource->Show();
+		MainFrame* Frame = new MainFrame(0);
+		Frame->Show();
+		SetTopWindow(Frame);
 	}
 	//*)
 

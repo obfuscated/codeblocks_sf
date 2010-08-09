@@ -1,6 +1,5 @@
 /*
 www.sourceforge.net/projects/tinyxml
-Original file by Yves Berquin.
 
 This software is provided 'as-is', without any express or implied
 warranty. In no event will the authors be held liable for any
@@ -22,17 +21,6 @@ must not be misrepresented as being the original software.
 distribution.
 */
 
-/*
- * THIS FILE WAS ALTERED BY Tyge Lovset, 7. April 2005.
- *
- * - completely rewritten. compact, clean, and fast implementation.
- * - sizeof(TiXmlString) = pointer size (4 bytes on 32-bit systems)
- * - fixed reserve() to work as per specification.
- * - fixed buggy compares operator==(), operator<(), and operator>()
- * - fixed operator+=() to take a const ref argument, following spec.
- * - added "copy" constructor with length, and most compare operators.
- * - added swap(), clear(), size(), capacity(), operator+().
- */
 
 #ifndef TIXML_USE_STL
 
@@ -106,16 +94,16 @@ class TiXmlString
 		quit();
 	}
 
-	// = operator
 	TiXmlString& operator = (const char * copy)
 	{
-		return assign( copy, (size_type)strlen(copy));
+		assign( copy, (size_type)strlen(copy));
+		return *this;
 	}
 
-	// = operator
 	TiXmlString& operator = (const TiXmlString & copy)
 	{
-		return assign(copy.start(), copy.length());
+		assign(copy.start(), copy.length());
+		return *this;
 	}
 
 
@@ -238,7 +226,7 @@ class TiXmlString
 			// to the normal allocation, although use an 'int' for systems
 			// that are overly picky about structure alignment.
 			const size_type bytesNeeded = sizeof(Rep) + cap;
-			const size_type intsNeeded = ( bytesNeeded + sizeof(int) - 1 ) / sizeof( int ); 
+			const size_type intsNeeded = ( bytesNeeded + sizeof(int) - 1 ) / sizeof( int );
 			rep_ = reinterpret_cast<Rep*>( new int[ intsNeeded ] );
 
 			rep_->str[ rep_->size = sz ] = '\0';
@@ -252,7 +240,7 @@ class TiXmlString
 
 	void quit()
 	{
-		if (rep_ != &nullrep_)
+		if (rep_ && rep_ != &nullrep_)
 		{
 			// The rep_ is really an array of ints. (see the allocator, above).
 			// Cast it back before delete, so the compiler won't incorrectly call destructors.
