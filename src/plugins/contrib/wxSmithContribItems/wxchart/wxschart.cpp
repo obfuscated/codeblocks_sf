@@ -105,9 +105,9 @@ void wxsChart::OnBuildCreatingCode()
             else                       StyleCode.RemoveLast();
 
             #if wxCHECK_VERSION(2, 9, 0)
-            Codef(_T("%C(%W,%I,(STYLE)(%s),%P,%S,%T);\n"),StyleCode.wx_str());
+            Codef(_T("%C(%W,%I,(wxChartStyle)(%s),%P,%S,%T);\n"),StyleCode.wx_str());
             #else
-            Codef(_T("%C(%W,%I,(STYLE)(%s),%P,%S,%T);\n"),StyleCode.c_str());
+            Codef(_T("%C(%W,%I,(wxChartStyle)(%s),%P,%S,%T);\n"),StyleCode.c_str());
             #endif
 
             Codef(_T("{\n"));

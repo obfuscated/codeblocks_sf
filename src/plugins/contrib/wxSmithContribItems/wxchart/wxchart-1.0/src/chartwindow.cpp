@@ -43,13 +43,13 @@ END_EVENT_TABLE()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxWindow* parent
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxChartWindow::wxChartWindow(
 	wxScrolledWindow *parent,
-    bool usegrid   
+    bool usegrid
 ):  wxWindow(parent, -1, wxDefaultPosition, wxDefaultSize/*, wxSIMPLE_BORDER*/),
 	m_WinParent(parent),
     m_UseGrid(usegrid)
@@ -83,7 +83,7 @@ void wxChartWindow::Draw(
     // Set Background
     //-----------------------------------------------------------------------
 
-#if 0    
+#if 0
     hp->SetBrush( wxBrush(0xecf1f1, wxSOLID) ); //fcfdd8, *wxLIGHT_GREY_BRUSH
     hp->SetPen( *wxTRANSPARENT_PEN );
     hp->DrawRectangle(
@@ -93,13 +93,13 @@ void wxChartWindow::Draw(
         r.h - 5
     );
 #endif
-    
+
     //-----------------------------------------------------------------------
     // Draw horizontal lines
     //-----------------------------------------------------------------------
     if ( m_UseGrid )
         DrawHLines( hp, &r );
-    
+
 	//-----------------------------------------------------------------------
 	// Draw all charts
 	//-----------------------------------------------------------------------
@@ -123,22 +123,22 @@ void wxChartWindow::DrawHLines(
         double range = GetVirtualMaxY();
         double start = 0;
         double end = range;
-        
+
         int int_log_range = (int)floor( log10( range ) );
         double step = 1.0;
         if (int_log_range > 0)
         {
             for (int i = 0; i < int_log_range; i++)
-                step *= 10; 
+                step *= 10;
         }
         if (int_log_range < 0)
         {
             for (int i = 0; i < -int_log_range; i++)
-                step /= 10; 
+                step /= 10;
         }
         double lower = ceil(start / step) * step;
         double upper = floor(end / step) * step;
-        
+
         // if too few values, shrink size
         if ((range/step) < 4)
         {
@@ -146,7 +146,7 @@ void wxChartWindow::DrawHLines(
             if (lower-step > start) lower -= step;
             if (upper+step < end) upper += step;
         }
-        
+
         // if still too few, again
         if ((range/step) < 4)
         {
@@ -154,11 +154,16 @@ void wxChartWindow::DrawHLines(
             if (lower-step > start) lower -= step;
             if (upper+step < end) upper += step;
         }
-        
+
         wxChartSizes *sizes = GetSizes();
-        
+/* C::B begin */
+        // avoid crashes if style contains USE_GRID and no charts are added to chartctrl
+        if(!sizes)
+            return;
+/* C::B end */
+
         hp->SetPen( *wxBLACK_DASHED_PEN );
-        
+
         double current = lower;
         while (current < upper+(step/2))
         {
@@ -166,12 +171,12 @@ void wxChartWindow::DrawHLines(
                     range * ((double)hr->h - sizes->GetSizeHeight())) - 1;
             if ((y > 10) && (y < hr->h - 7 - sizes->GetSizeHeight()))
             {
-                hp->DrawLine( hr->x, 
-                              y + sizes->GetSizeHeight() + hr->y, 
-                    hr->x + static_cast<int>(GetVirtualWidth()), 
+                hp->DrawLine( hr->x,
+                              y + sizes->GetSizeHeight() + hr->y,
+                    hr->x + static_cast<int>(GetVirtualWidth()),
                     y + sizes->GetSizeHeight() + hr->y );
             }
-            
+
             current += step;
         }
     }
@@ -179,7 +184,7 @@ void wxChartWindow::DrawHLines(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetVirtualWidth()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: NOne
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
@@ -187,12 +192,12 @@ ChartValue wxChartWindow::GetVirtualWidth() const
 {
     int iNodes = static_cast<int>(ceil( GetVirtualMaxX() ));
     wxChartSizes *sizes = GetSizes();
-    
+
     ChartValue x = 0;
 
     for ( int iNode = 0; iNode <= iNodes; ++ iNode )
     {
-        x +=  GetZoom() * ( sizes->GetWidthBar() * sizes->GetNumBar() + 
+        x +=  GetZoom() * ( sizes->GetWidthBar() * sizes->GetNumBar() +
                 sizes->GetWidthBar3d() * sizes->GetNumBar3d() +
                 sizes->GetGap() );
     }
@@ -202,7 +207,7 @@ ChartValue wxChartWindow::GetVirtualWidth() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnPaint()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxPaintEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -221,7 +226,7 @@ void wxChartWindow::OnPaint(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnMouse()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxMouseEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
