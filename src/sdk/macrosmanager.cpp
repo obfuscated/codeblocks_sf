@@ -155,6 +155,27 @@ void MacrosManager::ClearProjectKeys()
     m_Macros[_T("WORKSPACEDIRECTORY")]  = m_WorkspaceDir;
 }
 
+wxString GetSelectedText()
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        cbStyledTextCtrl* stc = ed->GetControl();
+        wxString text = stc->GetSelectedText();
+        if ( text.size() )
+        {
+            return text;
+        }
+        else
+        {
+            int iCurrentPos = stc->GetCurrentPos();
+            return stc->GetTextRange(stc->WordStartPosition(iCurrentPos, true), stc->WordEndPosition(iCurrentPos, true));
+        }
+    }
+
+    return wxT("");
+}
+
 void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBuildTarget* target)
 {
     m_ActiveEditorFilename = wxEmptyString; // invalidate
@@ -339,6 +360,8 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     m_Macros[_T("ACTIVE_EDITOR_COLUMN")]   = temp_str;
     temp_str.Printf(_T("%d"), (m_ActiveEditorColumn>0) ? m_ActiveEditorColumn-1 : -1); // zero based, but keep value for "invalid"
     m_Macros[_T("ACTIVE_EDITOR_COLUMN_0")] = temp_str;
+
+    m_Macros[_T("ACTIVE_EDITOR_SELECTION")]=GetSelectedText();
 
     wxDateTime now(wxDateTime::Now());
     m_Macros[_T("TDAY")]        = now.Format(_T("%Y%m%d"));

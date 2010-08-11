@@ -8,6 +8,7 @@
 #endif
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
+#include <filefilters.h>
 #include "NassiPlugin.h"
 
 #include "NassiEditorPanel.h"
@@ -149,6 +150,8 @@ void NassiPlugin::OnAttach()
     for ( int i = 0 ; i < MaxInsertMenuEntries ; i++ )
         Connect(insertCFromDiagram[i], wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NassiPlugin::OnInsertCFromDiagram), 0, this);
     Connect(idParseC, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NassiPlugin::ParseC), 0, this);
+
+    FileFilters::Add(_("Nassi Shneiderman diagram"), _T("*.nsd") );
 }
 
 void NassiPlugin::OnRelease(bool appShutDown)

@@ -236,6 +236,7 @@ namespace ScriptBindings
 #else
         typedef bool(wxFileName::*WXFN_SETCWD)();
 #endif
+	typedef bool(wxFileName::*WXFN_ISFILEWRITEABLE)()const;
 
         SqPlus::SQClassDef<wxFileName>("wxFileName").
                 emptyCtor().
@@ -278,7 +279,8 @@ namespace ScriptBindings
                 func(&wxFileName::SetEmptyExt, "SetEmptyExt").
                 func(&wxFileName::SetFullName, "SetFullName").
                 func(&wxFileName::SetName, "SetName").
-                func(&wxFileName::SetVolume, "SetVolume");
+                func(&wxFileName::SetVolume, "SetVolume").
+                func<WXFN_ISFILEWRITEABLE>(&wxFileName::IsFileWritable,"IsFileWritable");
 
         /////////////
         // wxPoint //
