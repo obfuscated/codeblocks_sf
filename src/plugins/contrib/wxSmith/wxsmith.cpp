@@ -203,7 +203,7 @@ void wxSmith::BuildBrowsers()
 
     // Adding properties / events browser
     Sizer = new wxGridSizer(1);
-    wxsPropertyGridManager* PGManager = new wxsPropertyGridManager(m_PropertyBrowserParent,-1,wxDefaultPosition,wxDefaultSize,wxPG_TOOLBAR|wxTAB_TRAVERSAL);
+    wxsPropertyGridManager* PGManager = new wxsPropertyGridManager(m_PropertyBrowserParent,-1,wxDefaultPosition,wxDefaultSize,wxPG_TOOLBAR|wxTAB_TRAVERSAL|wxPG_SPLITTER_AUTO_CENTER);
     PGManager->AddPage(_("Properties"));
     PGManager->AddPage(_("Events"),wxBitmap(Events_xpm));
     PGManager->SelectPage(0);
