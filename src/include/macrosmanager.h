@@ -58,6 +58,7 @@ protected:
     wxString            m_TargetOutputDir;
     wxString            m_TargetName;
     wxString            m_TargetOutputBaseName;
+    wxString            m_TargetOutputFilename;
     wxString            m_TargetFilename;
 
     MacrosMap           m_Macros;

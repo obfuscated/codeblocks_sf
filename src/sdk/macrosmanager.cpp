@@ -161,19 +161,20 @@ wxString GetSelectedText()
     if (ed)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
-        wxString text = stc->GetSelectedText();
-        if ( text.size() )
+        if (stc)
         {
-            return text;
-        }
-        else
-        {
-            int iCurrentPos = stc->GetCurrentPos();
-            return stc->GetTextRange(stc->WordStartPosition(iCurrentPos, true), stc->WordEndPosition(iCurrentPos, true));
+            wxString text = stc->GetSelectedText();
+            if ( text.size() )
+                return text;
+            else
+            {
+                int iCurrentPos = stc->GetCurrentPos();
+                return stc->GetTextRange(stc->WordStartPosition(iCurrentPos, true), stc->WordEndPosition(iCurrentPos, true));
+            }
         }
     }
 
-    return wxT("");
+    return wxEmptyString;
 }
 
 void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBuildTarget* target)
@@ -308,6 +309,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_TargetOutputDir      = wxEmptyString;
         m_TargetName           = wxEmptyString;
         m_TargetOutputBaseName = wxEmptyString;
+        m_TargetOutputFilename = wxEmptyString;
         m_TargetFilename       = wxEmptyString;
         m_LastTarget           = 0;
     }
@@ -317,6 +319,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_TargetOutputDir      = UnixFilename(tod.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
         m_TargetName           = UnixFilename(target->GetTitle());
         m_TargetOutputBaseName = wxFileName(target->GetOutputFilename()).GetName();
+        m_TargetOutputFilename = wxFileName(target->GetOutputFilename()).GetFullName();
         m_TargetFilename       = UnixFilename(target->GetOutputFilename());
         m_LastTarget           = target;
     }
@@ -343,6 +346,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     m_Macros[_T("TARGET_OUTPUT_DIR")]      = m_TargetOutputDir;
     m_Macros[_T("TARGET_NAME")]            = m_TargetName;
     m_Macros[_T("TARGET_OUTPUT_BASENAME")] = m_TargetOutputBaseName;
+    m_Macros[_T("TARGET_OUTPUT_FILENAME")] = m_TargetOutputFilename;
     m_Macros[_T("TARGET_OUTPUT_FILE")]     = m_TargetFilename;
 
     m_Macros[_T("ACTIVE_EDITOR_FILENAME")] = UnixFilename(m_ActiveEditorFilename);
@@ -360,8 +364,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     m_Macros[_T("ACTIVE_EDITOR_COLUMN")]   = temp_str;
     temp_str.Printf(_T("%d"), (m_ActiveEditorColumn>0) ? m_ActiveEditorColumn-1 : -1); // zero based, but keep value for "invalid"
     m_Macros[_T("ACTIVE_EDITOR_COLUMN_0")] = temp_str;
-
-    m_Macros[_T("ACTIVE_EDITOR_SELECTION")]=GetSelectedText();
+    m_Macros[_T("ACTIVE_EDITOR_SELECTION")] = GetSelectedText();
 
     wxDateTime now(wxDateTime::Now());
     m_Macros[_T("TDAY")]        = now.Format(_T("%Y%m%d"));
