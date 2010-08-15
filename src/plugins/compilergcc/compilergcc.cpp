@@ -2544,7 +2544,7 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
             if (!CompilerValid(tgt))
             {
                 wxString msg;
-                msg.Printf(_T("\"%s - %s\" uses an invalid compiler. Probably the toolchain path within the compiler options is not setup correctly?! Skipping..."),
+                msg.Printf(_T("\"%s - %s\": The compiler's setup is invalid so Code::Blocks cannot find/run the compiler. Probably the toolchain path within the compiler options is not setup correctly?! Skipping..."),
                 #if wxCHECK_VERSION(2, 9, 0)
                             prj->GetTitle().wx_str(), tlist[x].wx_str());
                 #else
