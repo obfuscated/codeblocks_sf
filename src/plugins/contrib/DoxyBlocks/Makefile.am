@@ -30,7 +30,7 @@ noinst_HEADERS = Config.h \
 EXTRA_DIST = 	$(srcdir)/*.cbp \
 		$(srcdir)/wxsmith/ConfigPanel.wxs \
 		manifest.xml \
-		ChangesLog.txt \
+		ChangeLog.txt \
 		update \
 		update.bat \
 		$(srcdir)/images/*.png \
