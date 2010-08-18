@@ -13,6 +13,7 @@
     #include "cbproject.h"
     #include "compilerfactory.h"
     #include "logmanager.h"
+    #include "projectmanager.h"
     #include <wx/xrc/xmlres.h>
     #include <wx/intl.h>
     #include <wx/choice.h>
