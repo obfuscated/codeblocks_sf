@@ -229,6 +229,7 @@ ProjectManager::ProjectManager()
 
     m_InitialDir=wxFileName::GetCwd();
     m_pActiveProject = 0L;
+    m_pProjectToActivate = 0L;
     m_pProjects = new ProjectsArray;
     m_pProjects->Clear();
     // m_pPanel = new wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL | wxCLIP_CHILDREN);
@@ -801,7 +802,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         {
             // postpone call of SetProject() until EndLoadingWorkspace() is called
             // (we must call RebuildTree() before SetProject() is called)
-            m_pActiveProject = result;
+            m_pProjectToActivate = result;
         }
         else
             SetProject(result, true);
@@ -1095,7 +1096,10 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     m_pWorkspace = new cbWorkspace(filename);
     EndLoadingWorkspace();
 
-    return m_pWorkspace && m_pWorkspace->IsOK();
+    if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
+        SetProject(m_pProjects->Item(0), false);
+
+return m_pWorkspace && m_pWorkspace->IsOK();
 }
 
 bool ProjectManager::SaveWorkspace()
@@ -2860,9 +2864,13 @@ void ProjectManager::EndLoadingWorkspace()
     if (m_pWorkspace->IsOK())
     {
         RebuildTree();
-        if (m_pActiveProject)
+        if (m_pActiveProject || m_pProjectToActivate)
         {
-            SetProject(m_pActiveProject, true);
+            if (m_pProjectToActivate)
+            {
+                SetProject(m_pProjectToActivate, true);
+                m_pProjectToActivate = 0L;
+            }
             m_pTree->Expand(m_pActiveProject->GetProjectNode());
         }
         m_pTree->Expand(m_TreeRoot); // make sure the root node is open

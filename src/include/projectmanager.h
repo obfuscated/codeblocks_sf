@@ -494,6 +494,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         wxTreeCtrl* m_pTree;
         wxTreeItemId m_TreeRoot;
         cbProject* m_pActiveProject;
+        cbProject* m_pProjectToActivate;
         wxImageList* m_pImages;
         ProjectsArray* m_pProjects;
         DepsMap m_ProjectDeps;
