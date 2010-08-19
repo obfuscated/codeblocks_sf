@@ -30,6 +30,7 @@ END_EVENT_TABLE()
 
 const wxColour titleBackground(96,96,96); // dark grey
 const wxColour textBackground(255,255,160); // yellowish
+const wxColour textForeground(0, 0, 0); // black for the text color
 
 
 const char *iBitmap[] = {
@@ -165,6 +166,7 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
 
         ForwardingTextControl *text = new ForwardingTextControl(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);
         text->SetBackgroundColour(textBackground);
+        text->SetForegroundColour(textForeground);
         bs->Add(text, 0, wxALIGN_CENTER|wxALL, 12);
         SetBackgroundColour(textBackground);
         SetSizer(bs);

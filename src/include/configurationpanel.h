@@ -6,6 +6,7 @@
 #ifndef CONFIGURATIONPANEL_H
 #define CONFIGURATIONPANEL_H
 
+#include "globals.h"
 #include "settings.h"
 #include "scrollingdialog.h"
 #include <wx/panel.h>
@@ -18,7 +19,7 @@ class wxWindow;
 class DLLIMPORT cbConfigurationPanel : public wxPanel
 {
     public:
-        cbConfigurationPanel(){}
+        cbConfigurationPanel() : m_parentDialog(0) { ; }
         virtual ~cbConfigurationPanel(){}
 
         /// @return the panel's title.
@@ -29,6 +30,28 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
         virtual void OnApply() = 0;
         /// Called when the user chooses to cancel the configuration.
         virtual void OnCancel() = 0;
+
+        /// Sets the panel's parent dialog
+        void SetParentDialog(wxWindow* dialog)
+        {
+            m_parentDialog = dialog;
+        }
+        /// Gets the panel's parent dialog
+        wxWindow* SetParentDialog()
+        {
+            return m_parentDialog;
+        }
+        /** Call global cbMessageBox with m_parentDialog as parent window when
+            no parent window specified */
+        int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1)
+        {
+            if (parent)
+                return ::cbMessageBox(message, caption, style, parent, x, y);
+            else
+                return ::cbMessageBox(message, caption, style, m_parentDialog, x, y);
+        }
+    private:
+        wxWindow* m_parentDialog;
 };
 
 /// @brief A simple dialog that wraps a cbConfigurationPanel.

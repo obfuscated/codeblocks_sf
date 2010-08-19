@@ -506,9 +506,7 @@ wxString CompilerCommandGenerator::SetupIncludeDirs(Compiler* compiler, ProjectB
         searchDirs = GetOrderedOptions(target, ortIncludeDirs, prjSearchDirs, tgtSearchDirs);
         // replace vars
         for (unsigned int x = 0; x < searchDirs.GetCount(); ++x)
-        {
             Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
-        }
         // respect include dirs set by specific options (helps dependency tracking)
         bool incPrjDir = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false);
         if (incPrjDir)

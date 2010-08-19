@@ -118,12 +118,7 @@ void ProjectsFileMasksDlg::OnDelete(wxCommandEvent& /*event*/)
     wxString name = pList->GetStringSelection();
     wxString caption;
     caption.Printf(_("Are you sure you want to delete the group \"%s\"?"), name.c_str());
-    wxMessageDialog dlg(this,
-                        caption,
-                        _("Confirmation"),
-                        wxYES_NO | wxNO_DEFAULT | wxCENTRE | wxICON_QUESTION);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_NO)
+    if (cbMessageBox(caption, _("Confirmation"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION, this) == wxID_NO)
         return;
     m_FileGroups.DeleteGroup(pList->GetSelection());
     RebuildList();

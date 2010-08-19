@@ -21,7 +21,7 @@ class CompilerPanel: public wxPanel
 {
 	public:
 
-		CompilerPanel(wxWindow* parent,wxWindowID id = -1);
+		CompilerPanel(wxWindow* parent, wxWindow* parentDialog);
 		virtual ~CompilerPanel();
 
         wxComboBox* GetCompilerCombo(){ return cmbCompiler; }
@@ -86,6 +86,8 @@ class CompilerPanel: public wxPanel
 		wxTextCtrl* txtRelOut;
 		wxTextCtrl* txtRelObjOut;
 		//*)
+
+        wxWindow* m_parentDialog;
 
 		DECLARE_EVENT_TABLE()
 };

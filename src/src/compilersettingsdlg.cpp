@@ -131,6 +131,7 @@ void CompilerSettingsDlg::AddPluginPanels()
     for (size_t i = 0; i < local.GetCount(); ++i)
     {
         cbConfigurationPanel* panel = local[i];
+        panel->SetParentDialog(this);
         lb->AddPage(panel, panel->GetTitle());
 
         wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
@@ -166,6 +167,7 @@ void CompilerSettingsDlg::AddPluginPanels()
     for (size_t i = 0; i < local.GetCount(); ++i)
     {
         cbConfigurationPanel* panel = local[i];
+        panel->SetParentDialog(this);
         lb->AddPage(panel, panel->GetTitle());
 
         wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
@@ -268,7 +270,7 @@ void CompilerSettingsDlg::EndModal(int retCode)
             bbplugins.Add(compiler);
             cbMessageBox(_("The compiler plugin must always be loaded for batch builds!\n"
                         "Automatically re-enabled."),
-                        _("Warning"), wxICON_WARNING);
+                        _("Warning"), wxICON_WARNING, this);
         }
         bbcfg->Write(_T("/batch_build_plugins"), bbplugins);
 

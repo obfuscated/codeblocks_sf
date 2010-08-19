@@ -346,9 +346,12 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     }
 
     // now create the project
+    // make sure to respect the compiler chosen by the user for the project, too
     wxString defCompilerID = CompilerFactory::GetDefaultCompilerID();
     CompilerFactory::SetDefaultCompiler(GetCompilerID());
+    // create the project with the (probably) updated compiler
     theproject = Manager::Get()->GetProjectManager()->NewProject(prjname);
+    // setup the old default compiler again
     CompilerFactory::SetDefaultCompiler(defCompilerID);
     if (!theproject)
     {

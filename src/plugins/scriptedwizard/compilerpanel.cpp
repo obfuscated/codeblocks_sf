@@ -38,7 +38,8 @@ BEGIN_EVENT_TABLE(CompilerPanel,wxPanel)
 	//*)
 END_EVENT_TABLE()
 
-CompilerPanel::CompilerPanel(wxWindow* parent,wxWindowID id)
+CompilerPanel::CompilerPanel(wxWindow* parent, wxWindow* parentDialog) :
+    m_parentDialog(parentDialog)
 {
 	//(*Initialize(CompilerPanel)
 	wxBoxSizer* BoxSizer1;
@@ -51,8 +52,8 @@ CompilerPanel::CompilerPanel(wxWindow* parent,wxWindowID id)
 	wxFlexGridSizer* FlexGridSizer2;
 	wxStaticText* StaticText7;
 	wxStaticText* StaticText8;
-	
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
+
+	Create(parent,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("Please select the compiler to use and which configurations\nyou want enabled in your project."),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
 	BoxSizer1->Add(StaticText1,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,8);
@@ -123,7 +124,7 @@ void CompilerPanel::OnDebugChange(wxCommandEvent& event)
 {
     if (!event.IsChecked() && !chkConfRelease->IsChecked())
     {
-        cbMessageBox(_("At least one configuration must be set..."), _("Notice"), wxICON_WARNING);
+        cbMessageBox(_("At least one configuration must be set..."), _("Notice"), wxICON_WARNING, m_parentDialog);
         chkConfDebug->SetValue(true);
         return;
     }
@@ -136,7 +137,7 @@ void CompilerPanel::OnReleaseChange(wxCommandEvent& event)
 {
     if (!event.IsChecked() && !chkConfDebug->IsChecked())
     {
-        cbMessageBox(_("At least one configuration must be set..."), _("Notice"), wxICON_WARNING);
+        cbMessageBox(_("At least one configuration must be set..."), _("Notice"), wxICON_WARNING, m_parentDialog);
         chkConfRelease->SetValue(true);
         return;
     }

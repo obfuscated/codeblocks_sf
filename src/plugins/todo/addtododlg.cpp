@@ -198,7 +198,7 @@ void AddTodoDlg::OnDelUser(wxCommandEvent&)
         return;
 
     wxString msg; msg.Printf(_T("Are you sure you want to delete the user '%s'?"), cmb->GetString(sel).c_str());
-    if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
+    if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
        return;
 
     cmb->Delete(sel);
@@ -210,7 +210,7 @@ void AddTodoDlg::OnDelUser(wxCommandEvent&)
 void AddTodoDlg::OnAddType(wxCommandEvent&)
 {
     // ask for the new type to be added to the "choice" list
-    wxTextEntryDialog dlg(this, _T("Enter the user you wish to add"), _T("Add type"), _T(""), wxOK|wxCANCEL);
+    wxTextEntryDialog dlg(this, _T("Enter the type you wish to add"), _T("Add type"), _T(""), wxOK|wxCANCEL);
     if(dlg.ShowModal() == wxID_OK)
     {
         wxString Type = dlg.GetValue();
@@ -227,7 +227,7 @@ void AddTodoDlg::OnDelType(wxCommandEvent&)
         return;
 
     wxString msg; msg.Printf(_T("Are you sure you want to delete the type '%s'?"), cmb->GetString(sel).c_str());
-    if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
+    if (cbMessageBox(msg, _T("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
        return;
 
     cmb->Delete(sel);

@@ -164,14 +164,14 @@ void ClassWizardDlg::OnAddMemberVar(wxCommandEvent& event)
     if (memtyp.IsEmpty())
     {
         cbMessageBox(_T("Please specify a valid variable type to continue."),
-                     _T("Error"), wxOK | wxICON_ERROR);
+                     _T("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
 
     if (memvar.IsEmpty())
     {
         cbMessageBox(_T("Please specify a valid variable name to continue."),
-                     _T("Error"), wxOK | wxICON_ERROR);
+                     _T("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
 
@@ -181,7 +181,7 @@ void ClassWizardDlg::OnAddMemberVar(wxCommandEvent& event)
         if (DoMemVarRepr((*it).Typ, (*it).Var) == DoMemVarRepr(memtyp, memvar))
         {
             cbMessageBox(_T("This variable does already exist."),
-                         _T("Error"), wxOK | wxICON_ERROR);
+                         _T("Error"), wxOK | wxICON_ERROR, this);
             return;
         }
         it++;
@@ -207,7 +207,7 @@ void ClassWizardDlg::OnRemoveMemberVar(wxCommandEvent& event)
     if (selection.IsEmpty())
     {
         cbMessageBox(_T("Please select a variable to remove."),
-                     _T("Error"), wxOK | wxICON_ERROR);
+                     _T("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
 
@@ -289,7 +289,7 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     if (m_Name.IsEmpty())
     {
         cbMessageBox(_T("Please specify a class name to continue."),
-                     _T("Error"), wxOK | wxICON_ERROR);
+                     _T("Error"), wxOK | wxICON_ERROR, this);
         return;
     }
     // Extract namespaces from class name
@@ -402,7 +402,7 @@ bool ClassWizardDlg::DoHeader()
         cbMessageBox(_T("Class wizard can't continue.\n"
                         "Possibly the header file name is invalid.\n"
                         "Please check the entered file name."),
-                     _T("Error"), wxICON_ERROR);
+                     _T("Error"), wxICON_ERROR, this);
         return false;
     }
 
@@ -574,7 +574,7 @@ bool ClassWizardDlg::DoHeader()
     {
         wxString msg;
         msg.Printf(_("Could not save header file %s.\nAborting..."), headerFname.GetFullPath().c_str());
-        cbMessageBox(msg, _("Error"), wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxICON_ERROR, this);
         return false;
     }
 
@@ -597,7 +597,7 @@ bool ClassWizardDlg::DoImpl()
         cbMessageBox(_T("Class wizard can't continue.\n"
                         "Possibly the implementation file name is invalid.\n"
                         "Please check the entered file name."),
-                     _T("Error"), wxICON_ERROR);
+                     _T("Error"), wxICON_ERROR, this);
         return false;
     }
 
@@ -665,7 +665,7 @@ bool ClassWizardDlg::DoImpl()
     {
         wxString msg;
         msg.Printf(_("Could not save implementation file %s.\nAborting..."), implementationFname.GetFullPath().c_str());
-        cbMessageBox(msg, _("Error"), wxICON_ERROR);
+        cbMessageBox(msg, _("Error"), wxICON_ERROR, this);
         return false;
     }
 

@@ -905,11 +905,11 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 
 
     static MonitorFromWindow_t MonitorFromWindowProc = (MonitorFromWindow_t) GetProcAddress(GetModuleHandle(_T("user32.dll")), "MonitorFromWindow");
-    static GetMonitorInfo_t GetMonitorInfoProc = (GetMonitorInfo_t) GetProcAddress(GetModuleHandle(_T("user32.dll")), "GetMonitorInfoA");
+    static GetMonitorInfo_t    GetMonitorInfoProc    = (GetMonitorInfo_t)    GetProcAddress(GetModuleHandle(_T("user32.dll")), "GetMonitorInfoA");
     int monitorWidth;
     int monitorHeight;
 
-    if(GetMonitorInfoProc)
+    if (GetMonitorInfoProc)
     {
         hMonitor = MonitorFromWindowProc((HWND) referenceWindow->GetHandle(), MONITOR_DEFAULTTONEAREST);
 
@@ -1168,4 +1168,38 @@ wxString realpath(const wxString& path)
     }
     return cbC2U(ret.c_str());
 #endif
+}
+
+int cbMessageBox(const wxString& message, const wxString& caption, int style, wxWindow *parent, int x, int y)
+{
+    if (!parent)
+    {
+        parent = Manager::Get()->GetAppWindow();
+    }
+
+    // Cannot create a wxMessageDialog with a NULL as parent
+    if (!parent)
+    {
+      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
+      int answer = wxMessageBox(message, caption, style, parent, x, y);
+      switch (answer)
+      {
+        // map answer to the one of wxMessage*Dialog* to ensure compatibility
+        case (wxOK):
+          return wxID_OK;
+        case (wxCANCEL):
+          return wxID_CANCEL;
+        case (wxYES):
+          return wxID_YES;
+        case (wxNO):
+          return wxID_NO;
+        default:
+          return -1; // NOTE: Cannot happen unless wxWidgets API changes
+      }
+    }
+
+    wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
+    PlaceWindow(&dlg);
+    // wxMessage*Dialog* returns any of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO
+    return dlg.ShowModal();
 }

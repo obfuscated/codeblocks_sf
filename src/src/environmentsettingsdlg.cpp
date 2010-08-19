@@ -231,6 +231,7 @@ void EnvironmentSettingsDlg::AddPluginPanels()
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
         cbConfigurationPanel* panel = m_PluginPanels[i];
+        panel->SetParentDialog(this);
         lb->AddPage(panel, panel->GetTitle());
 
         wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
@@ -308,7 +309,7 @@ void EnvironmentSettingsDlg::OnSetAssocs(wxCommandEvent& /*event*/)
 {
 #ifdef __WXMSW__
     Associations::SetCore();
-    //cbMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION);
+    //cbMessageBox(_("Code::Blocks associated with C/C++ files."), _("Information"), wxICON_INFORMATION, this);
 #endif
 }
 

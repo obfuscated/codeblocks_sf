@@ -366,7 +366,7 @@ void NewFromTemplateDlg::EditScript(const wxString& filename)
         EndModal(wxID_CANCEL);
         return;
     }
-    cbMessageBox(_("Couldn't open script:\n") + script, _("Error"), wxICON_ERROR);
+    cbMessageBox(_("Couldn't open script:\n") + script, _("Error"), wxICON_ERROR, this);
 }
 
 void NewFromTemplateDlg::ChangeView()
@@ -454,7 +454,7 @@ void NewFromTemplateDlg::OnDiscardScript(wxCommandEvent& /*event*/)
 	if (wxFileExists(script))
 	{
 		if (cbMessageBox(_("Are you sure you want to discard all local modifications to this script?"),
-						_("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+						_("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
 		{
 			if (wxRemoveFile(script))
 				list->SetItemTextColour(index, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
@@ -466,7 +466,7 @@ void NewFromTemplateDlg::OnEditGlobalScript(wxCommandEvent& /*event*/)
 {
     cbMessageBox(_("Any changes you make to the global wizard registration script will "
                     "take effect after you restart Code::Blocks."),
-                    _("Information"), wxICON_INFORMATION);
+                    _("Information"), wxICON_INFORMATION, this);
     EditScript(_T("config.script"));
 }
 
@@ -490,7 +490,7 @@ void NewFromTemplateDlg::OnHelp(wxCommandEvent& /*event*/)
                     "On this computer, the customized scripts are located under:\n") +
                     ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/"),
                     _("Help"),
-                    wxICON_INFORMATION);
+                    wxICON_INFORMATION, this);
 }
 
 void NewFromTemplateDlg::OnUpdateUI(wxUpdateUIEvent& /*event*/)

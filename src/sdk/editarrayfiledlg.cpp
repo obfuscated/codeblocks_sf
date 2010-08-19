@@ -113,7 +113,7 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
 
 void EditArrayFileDlg::OnDelete(wxCommandEvent& WXUNUSED(event))
 {
-	if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO) == wxID_YES)
+	if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO, this) == wxID_YES)
 	{
 		wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
 		list->Delete(list->GetSelection());

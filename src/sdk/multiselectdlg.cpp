@@ -152,7 +152,7 @@ void MultiSelectDlg::OnWildcard(wxCommandEvent& /*event*/)
 
     bool clear = cbMessageBox(_("Do you want to clear the previous selections?"),
                             _("Question"),
-                            wxICON_QUESTION | wxYES_NO) == wxID_YES;
+                            wxICON_QUESTION | wxYES_NO, this) == wxID_YES;
     SelectWildCard(wild, true, clear);
 } // end of OnWildcard
 

@@ -132,7 +132,7 @@ void ExternalDepsDlg::EndModal(int retCode)
 	int sel = lst->GetSelection();                          \
 	if (sel == -1)                                          \
         return;                                             \
-    if (cbMessageBox(_("Are you sure you want to remove this file?"), _("Remove file"), wxYES_NO | wxNO_DEFAULT) == wxID_NO)   \
+    if (cbMessageBox(_("Are you sure you want to remove this file?"), _("Remove file"), wxYES_NO | wxNO_DEFAULT, this) == wxID_NO)   \
         return;                                             \
     lst->Delete(sel);                                       \
 }

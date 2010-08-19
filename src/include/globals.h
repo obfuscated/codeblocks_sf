@@ -252,34 +252,7 @@ extern DLLIMPORT void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = 
   * @note The return value for wxOK would be wxID_OK and so on for other buttons.
   * So, read wxMessageDialog 's documentation, *not* wxMessageBox 's...
   */
-inline int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1)
-{
-    // Cannot create a wxMessageDialog with a NULL as parent
-    if (!parent)
-    {
-      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
-      int answer = wxMessageBox(message, caption, style, parent, x, y);
-      switch (answer)
-      {
-        // map answer to the one of wxMessage*Dialog* to ensure compatibility
-        case (wxOK):
-          return wxID_OK;
-        case (wxCANCEL):
-          return wxID_CANCEL;
-        case (wxYES):
-          return wxID_YES;
-        case (wxNO):
-          return wxID_NO;
-        default:
-          return -1; // NOTE: Cannot happen unless wxWidgets API changes
-      }
-    }
-
-    wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
-    PlaceWindow(&dlg);
-    // wxMessage*Dialog* returns any of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO
-    return dlg.ShowModal();
-};
+extern DLLIMPORT int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1);
 
 inline void NotifyMissingFile(const wxString &name)
 {

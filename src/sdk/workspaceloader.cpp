@@ -30,12 +30,12 @@
 
 WorkspaceLoader::WorkspaceLoader()
 {
-	//ctor
+    //ctor
 }
 
 WorkspaceLoader::~WorkspaceLoader()
 {
-	//dtor
+    //dtor
 }
 
 inline ProjectManager* GetpMan() { return Manager::Get()->GetProjectManager(); }

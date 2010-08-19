@@ -133,7 +133,7 @@ void EditPathDlg::OnBrowse(wxCommandEvent& /*event*/)
         // ask the user if he wants it to be kept as relative
         if (cbMessageBox(_("Keep this as a relative path?"),
                         _("Question"),
-                        wxICON_QUESTION | wxYES_NO) == wxID_YES)
+                        wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
         {
             if (m_AllowMultiSel)
             {

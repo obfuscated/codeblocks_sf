@@ -21,6 +21,25 @@
 
 #include "loggers.h"
 
+wxColour BlendTextColour(wxColour col)
+{
+    wxColour fgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
+    wxColour bgCol = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
+    int dist=
+        (fgCol.Red()*fgCol.Red() + fgCol.Green()*fgCol.Green() + fgCol.Blue()*fgCol.Blue()) -
+        (bgCol.Red()*bgCol.Red() + bgCol.Green()*bgCol.Green() + bgCol.Blue()*bgCol.Blue());
+    if(dist > 0)
+    {
+        // If foreground color is brighter than background color, this is a dark theme, so
+        // brighten the text colour.
+        // I would use wxColour::changeLightness(), but it's only available in v2.9.0 or later.
+        int d= int(sqrt(dist)/4);
+        int r= col.Red()+d, g= col.Green()+d, b= col.Blue()+d;
+        return wxColour( r>255? 255: r, g>255? 255: g, b>255? 255: b );
+    }
+    return col;
+}
+
 TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont)
     : control(0), fixed(fixedPitchFont)
 {
@@ -40,7 +59,7 @@ void TextCtrlLogger::UpdateSettings()
     if (!control)
         return;
 
-    control->SetBackgroundColour(*wxWHITE);
+	control->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
     int size = Manager::Get()->GetConfigManager(_T("message_manager"))->ReadInt(_T("/log_font_size"), platform::macosx ? 10 : 8);
 
@@ -61,12 +80,13 @@ void TextCtrlLogger::UpdateSettings()
     // might try alternatively
     //italic_font.SetStyle(wxFONTSTYLE_SLANT);
 
+    wxColour default_text_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     for(unsigned int i = 0; i < num_levels; ++i)
     {
         style[i].SetFont(default_font);
         style[i].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
-        style[i].SetTextColour(*wxBLACK);
-        style[i].SetBackgroundColour(*wxWHITE);
+        style[i].SetTextColour(default_text_colour);
+        style[i].SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW));
 
         // is it necessary to do that?
         //style[i].SetFlags(...);
@@ -76,16 +96,16 @@ void TextCtrlLogger::UpdateSettings()
     bigger_font.SetUnderlined(true);
     style[caption].SetFont(bigger_font);
 
-    style[success].SetTextColour(*wxBLUE);
+    style[success].SetTextColour(BlendTextColour(*wxBLUE));
 
     style[warning].SetFont(italic_font);
 
     style[error].SetFont(bold_font);
-    style[error].SetTextColour(*wxRED);
+    style[error].SetTextColour(BlendTextColour(*wxRED));
 
     style[critical].SetFont(bold_font);
-    style[critical].SetTextColour(*wxWHITE);
-    style[critical].SetBackgroundColour(*wxRED);
+    style[critical].SetTextColour(*wxWHITE);        // we're setting both fore and background colors here
+    style[critical].SetBackgroundColour(*wxRED);    // so we don't have to mix in default colors
     style[spacer].SetFont(small_font);
 
     // Tell control about the font change
@@ -217,23 +237,24 @@ void ListCtrlLogger::UpdateSettings()
 
     italic_font.SetStyle(wxFONTSTYLE_ITALIC);
 
+    wxColour default_text_colour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     for(unsigned int i = 0; i < num_levels; ++i)
     {
         style[i].font = default_font;
-        style[i].colour = *wxBLACK;
+        style[i].colour = default_text_colour;
     }
 
     style[caption].font = bigger_font;
-    style[success].colour = *wxBLUE;
-    style[failure].colour = wxColour(0x00, 0x00, 0xa0);
+	style[success].colour = BlendTextColour(*wxBLUE);
+    style[failure].colour = BlendTextColour(wxColour(0x00, 0x00, 0xa0));
 
     style[warning].font = italic_font;
-    style[warning].colour = wxColour(0x00, 0x00, 0xa0); // navy blue
+    style[warning].colour = BlendTextColour(wxColour(0x00, 0x00, 0xa0));    // navy blue
 
-    style[error].colour = *wxRED;
+	style[error].colour = BlendTextColour(*wxRED);
 
     style[critical].font = bold_font;
-    style[critical].colour = wxColour(0x0a, 0x00, 0x00); // maroon
+    style[critical].colour = BlendTextColour(wxColour(0x0a, 0x00, 0x00));   // maroon
 
     style[spacer].font = small_font;
     style[pagetitle] = style[caption];

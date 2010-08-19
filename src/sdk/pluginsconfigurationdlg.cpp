@@ -250,7 +250,7 @@ void PluginsConfigurationDlg::OnInstall(wxCommandEvent& /*event*/)
 
     FillList();
     if (!failure.IsEmpty())
-        cbMessageBox(_("One or more plugins were not installed succesfully:\n\n") + failure, _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("One or more plugins were not installed succesfully:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
 void PluginsConfigurationDlg::OnUninstall(wxCommandEvent& /*event*/)
@@ -279,7 +279,7 @@ void PluginsConfigurationDlg::OnUninstall(wxCommandEvent& /*event*/)
 
     FillList();
     if (!failure.IsEmpty())
-        cbMessageBox(_("One or more plugins were not uninstalled succesfully:\n\n") + failure, _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("One or more plugins were not uninstalled succesfully:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
 void PluginsConfigurationDlg::OnExport(wxCommandEvent& /*event*/)
@@ -381,7 +381,7 @@ void PluginsConfigurationDlg::OnExport(wxCommandEvent& /*event*/)
     }
 
     if (!failure.IsEmpty())
-        cbMessageBox(_("Failed exporting one or more plugins:\n\n") + failure, _("Warning"), wxICON_WARNING);
+        cbMessageBox(_("Failed exporting one or more plugins:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
 void PluginsConfigurationDlg::OnSelect(wxListEvent& /*event*/)

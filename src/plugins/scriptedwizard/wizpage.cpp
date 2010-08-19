@@ -273,7 +273,7 @@ void WizFilePathPanel::OnPageChanging(wxWizardEvent& event)
 
         if (m_Filename.IsEmpty() || !wxDirExists(wxPathOnly(m_Filename)))
         {
-            cbMessageBox(_("Please select a filename with full path for your new file..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Please select a filename with full path for your new file..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
@@ -347,19 +347,19 @@ void WizProjectPathPanel::OnPageChanging(wxWizardEvent& event)
         wxString title = m_pProjectPathPanel->GetTitle();
 //        if (!wxDirExists(dir))
 //        {
-//            cbMessageBox(_("Please select a valid path to create your project..."), _("Error"), wxICON_ERROR);
+//            cbMessageBox(_("Please select a valid path to create your project..."), _("Error"), wxICON_ERROR, GetParent());
 //            event.Veto();
 //            return;
 //        }
         if (title.IsEmpty())
         {
-            cbMessageBox(_("Please select a title for your project..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Please select a title for your project..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
         if (name.IsEmpty())
         {
-            cbMessageBox(_("Please select a name for your project..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Please select a name for your project..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
@@ -368,10 +368,10 @@ void WizProjectPathPanel::OnPageChanging(wxWizardEvent& event)
             if (cbMessageBox(_("A project with the same name already exists in the project folder.\n"
                         "Are you sure you want to use this directory (files may be OVERWRITTEN)?"),
                         _("Confirmation"),
-                        wxICON_QUESTION | wxYES_NO) != wxID_YES)
+                        wxICON_QUESTION | wxYES_NO, GetParent()) != wxID_YES)
             {
 //                cbMessageBox(_("A project with the same name already exists in the project folder.\n"
-//                            "Please select a different project name..."), _("Warning"), wxICON_WARNING);
+//                            "Please select a different project name..."), _("Warning"), wxICON_WARNING, GetParent());
                 event.Veto();
                 return;
             }
@@ -436,7 +436,7 @@ void WizGenericSelectPathPanel::OnPageChanging(wxWizardEvent& event)
         wxString dir = Manager::Get()->GetMacrosManager()->ReplaceMacros(m_pGenericSelectPath->txtFolder->GetValue());
         if (!wxDirExists(dir))
         {
-            cbMessageBox(_("Please select a valid location..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Please select a valid location..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
@@ -458,7 +458,7 @@ WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& v
     : WizPageBase(_T("CompilerPage"), parent, bitmap),
     m_AllowConfigChange(allowConfigChange)
 {
-    m_pCompilerPanel = new CompilerPanel(this);
+    m_pCompilerPanel = new CompilerPanel(this, GetParent());
 
     wxArrayString valids = GetArrayFromString(validCompilerIDs, _T(";"), true);
     wxString def = compilerID;
@@ -568,13 +568,13 @@ void WizCompilerPanel::OnPageChanging(wxWizardEvent& event)
     {
         if (GetCompilerID().IsEmpty())
         {
-            wxMessageBox(_("You must select a compiler for your project..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("You must select a compiler for your project..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
         if (m_AllowConfigChange && !GetWantDebug() && !GetWantRelease())
         {
-            wxMessageBox(_("You must select at least one configuration..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("You must select at least one configuration..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
@@ -688,7 +688,7 @@ void WizBuildTargetPanel::OnPageChanging(wxWizardEvent& event)
     {
         if (m_pBuildTargetPanel->GetCompilerCombo()->IsShown() && GetCompilerID().IsEmpty())
         {
-            wxMessageBox(_("You must select a compiler for your build target..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("You must select a compiler for your build target..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }
@@ -696,7 +696,7 @@ void WizBuildTargetPanel::OnPageChanging(wxWizardEvent& event)
         cbProject* theproject = Manager::Get()->GetProjectManager()->GetActiveProject(); // can't fail; if no project, the wizard didn't even run
         if (theproject->GetBuildTarget(m_pBuildTargetPanel->GetTargetName()))
         {
-            wxMessageBox(_("A build target with that name already exists in the active project..."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("A build target with that name already exists in the active project..."), _("Error"), wxICON_ERROR, GetParent());
             event.Veto();
             return;
         }

@@ -176,6 +176,7 @@ void ProjectOptionsDlg::AddPluginPanels()
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
         cbConfigurationPanel* panel = m_PluginPanels[i];
+        panel->SetParentDialog(this);
         nb->AddPage(panel, panel->GetTitle());
     }
 }
@@ -534,9 +535,10 @@ void ProjectOptionsDlg::OnAddBuildTargetClick(wxCommandEvent& /*event*/)
     ProjectBuildTarget* target = m_Project->AddBuildTarget(targetName);
     if (!target)
     {
-        wxMessageDialog(this, _("The new target could not be added..."),
-                                _("Error"),
-                                wxOK | wxCENTRE | wxICON_ERROR);
+        cbMessageBox(_("The new target could not be added..."),
+                     _("Error"),
+                     wxOK | wxICON_ERROR,
+                     this);
         return;
     }
 
@@ -559,9 +561,10 @@ void ProjectOptionsDlg::OnEditBuildTargetClick(wxCommandEvent& /*event*/)
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
     if (!target)
     {
-        wxMessageDialog(this, _("Could not locate target..."),
-                                _("Error"),
-                                wxOK | wxCENTRE | wxICON_ERROR);
+        cbMessageBox(_("Could not locate target..."),
+                     _("Error"),
+                     wxOK | wxICON_ERROR,
+                     this);
         return;
     }
 
@@ -589,9 +592,10 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& /*event*/)
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
     if (!target)
     {
-        wxMessageDialog(this, _("Could not locate target..."),
-                                _("Error"),
-                                wxOK | wxCENTRE | wxICON_ERROR);
+        cbMessageBox(_("Could not locate target..."),
+                     _("Error"),
+                     wxOK | wxICON_ERROR,
+                     this);
         return;
     }
 
@@ -602,7 +606,7 @@ void ProjectOptionsDlg::OnCopyBuildTargetClick(wxCommandEvent& /*event*/)
         return;
     if (!m_Project->DuplicateBuildTarget(targetIdx, newTargetName))
     {
-        cbMessageBox(_("Failed to duplicate this build target..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Failed to duplicate this build target..."), _("Error"), wxICON_ERROR, this);
         return;
     }
 
@@ -623,12 +627,7 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(wxCommandEvent& /*event*/)
 
     wxString caption;
     caption.Printf(_("Are you sure you want to delete build target \"%s\"?"), lstTargets->GetStringSelection().c_str());
-    wxMessageDialog dlg(this,
-                        caption,
-                        _("Confirmation"),
-                        wxYES_NO | wxNO_DEFAULT | wxCENTRE | wxICON_QUESTION);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_NO)
+    if (cbMessageBox(caption, _("Confirmation"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION, this) == wxID_NO)
         return;
 
     lstTargets->Delete(targetIdx);
@@ -678,7 +677,7 @@ void ProjectOptionsDlg::OnExportTargetClick(wxCommandEvent& /*event*/)
     if (dlg.ShowModal() == wxID_YES)
     {
         if (m_Project->ExportTargetAsProject(target->GetTitle()))
-            cbMessageBox(_("New project created succesfully!"), _("Information"), wxICON_INFORMATION);
+            cbMessageBox(_("New project created succesfully!"), _("Information"), wxICON_INFORMATION, this);
     }
 }
 
@@ -797,7 +796,7 @@ bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
     {
         cbMessageBox(_("A target with this name already exists in this project!"),
                         _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR);
+                        wxOK | wxCENTRE | wxICON_ERROR, this);
         return false;
     }
 
@@ -805,7 +804,7 @@ bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
     {
         cbMessageBox(_("A virtual target with this name already exists in this project!"),
                         _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR);
+                        wxOK | wxCENTRE | wxICON_ERROR, this);
         return false;
     }
 
@@ -814,7 +813,7 @@ bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)
     {
         cbMessageBox(_("The name contains at least one invalid character:\n\n") + forbidden,
                         _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR);
+                        wxOK | wxCENTRE | wxICON_ERROR, this);
         return false;
     }
 
@@ -832,7 +831,7 @@ bool ProjectOptionsDlg::DoCheckScripts(CompileTargetBase* base)
             wxString msg;
             msg << _("Invalid build script: ") + scripts[i] << _T('\n');
             msg << _("First seen in: ") + base->GetTitle() << _T('\n');
-            cbMessageBox(msg, _("Error"), wxICON_ERROR);
+            cbMessageBox(msg, _("Error"), wxICON_ERROR, this);
             return false;
         }
     }
@@ -850,7 +849,7 @@ void ProjectOptionsDlg::OnCheckScripts(wxCommandEvent& /*event*/)
             return;
     }
 
-    cbMessageBox(_("All scripts seem to be valid!"), _("Information"), wxICON_INFORMATION);
+    cbMessageBox(_("All scripts seem to be valid!"), _("Information"), wxICON_INFORMATION, this);
 }
 
 void ProjectOptionsDlg::OnAddScript(wxCommandEvent& /*event*/)
@@ -1048,7 +1047,7 @@ void ProjectOptionsDlg::OnOK(wxCommandEvent& event)
     if (XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue().Trim().IsEmpty())
     {
         cbMessageBox(_("The project title (name) cannot be empty."), _("Error"),
-                     wxOK | wxCENTRE | wxICON_ERROR);
+                     wxOK | wxCENTRE | wxICON_ERROR, this);
         return; // Stop propagating the event
     }
     event.Skip();

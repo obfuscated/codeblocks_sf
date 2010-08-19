@@ -58,31 +58,31 @@ const int IMAGES_COUNT = sizeof(base_imgs) / sizeof(wxString);
 const FileType IdxToFileType[] = { ftSource, ftHeader };
 
 BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
-    EVT_BUTTON(XRCID("btnChooseEditorFont"),    EditorConfigurationDlg::OnChooseFont)
-    EVT_BUTTON(XRCID("btnKeywords"),            EditorConfigurationDlg::OnEditKeywords)
-    EVT_BUTTON(XRCID("btnFilemasks"),           EditorConfigurationDlg::OnEditFilemasks)
-    EVT_BUTTON(XRCID("btnColoursReset"),        EditorConfigurationDlg::OnColoursReset)
-    EVT_BUTTON(XRCID("btnCaretColour"),             EditorConfigurationDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnGutterColour"),        EditorConfigurationDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnColoursFore"),             EditorConfigurationDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnColoursBack"),             EditorConfigurationDlg::OnChooseColour)
-    EVT_BUTTON(XRCID("btnColoursAddTheme"),         EditorConfigurationDlg::OnAddColourTheme)
-    EVT_BUTTON(XRCID("btnColoursDeleteTheme"),  EditorConfigurationDlg::OnDeleteColourTheme)
-    EVT_BUTTON(XRCID("btnColoursRenameTheme"),  EditorConfigurationDlg::OnRenameColourTheme)
-    EVT_CHECKBOX(XRCID("chkColoursBold"),       EditorConfigurationDlg::OnBoldItalicUline)
-    EVT_CHECKBOX(XRCID("chkColoursItalics"),        EditorConfigurationDlg::OnBoldItalicUline)
-    EVT_CHECKBOX(XRCID("chkColoursUnderlined"), EditorConfigurationDlg::OnBoldItalicUline)
-    EVT_LISTBOX(XRCID("lstComponents"),         EditorConfigurationDlg::OnColourComponent)
-    EVT_COMBOBOX(XRCID("cmbLangs"),             EditorConfigurationDlg::OnChangeLang)
-    EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),   EditorConfigurationDlg::OnChangeDefCodeFileType)
-    EVT_COMBOBOX(XRCID("cmbThemes"),            EditorConfigurationDlg::OnColourTheme)
-    EVT_LISTBOX(XRCID("lstAutoCompKeyword"),    EditorConfigurationDlg::OnAutoCompKeyword)
-    EVT_BUTTON(XRCID("btnAutoCompAdd"),         EditorConfigurationDlg::OnAutoCompAdd)
-    EVT_BUTTON(XRCID("btnAutoCompDelete"),      EditorConfigurationDlg::OnAutoCompDelete)
-    EVT_CHECKBOX(XRCID("chkDynamicWidth"),      EditorConfigurationDlg::OnDynamicCheck)
-    EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),  EditorConfigurationDlg::OnHighlightOccurrences)
-    EVT_CHECKBOX(XRCID("chkEnableMultipleSelections"),  EditorConfigurationDlg::OnMultipleSelections)
-    EVT_BUTTON(XRCID("btnHighlightColour"),         EditorConfigurationDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnChooseEditorFont"),           EditorConfigurationDlg::OnChooseFont)
+    EVT_BUTTON(XRCID("btnKeywords"),                   EditorConfigurationDlg::OnEditKeywords)
+    EVT_BUTTON(XRCID("btnFilemasks"),                  EditorConfigurationDlg::OnEditFilemasks)
+    EVT_BUTTON(XRCID("btnColoursReset"),               EditorConfigurationDlg::OnColoursReset)
+    EVT_BUTTON(XRCID("btnCaretColour"),                EditorConfigurationDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnGutterColour"),               EditorConfigurationDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnColoursFore"),                EditorConfigurationDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnColoursBack"),                EditorConfigurationDlg::OnChooseColour)
+    EVT_BUTTON(XRCID("btnColoursAddTheme"),            EditorConfigurationDlg::OnAddColourTheme)
+    EVT_BUTTON(XRCID("btnColoursDeleteTheme"),         EditorConfigurationDlg::OnDeleteColourTheme)
+    EVT_BUTTON(XRCID("btnColoursRenameTheme"),         EditorConfigurationDlg::OnRenameColourTheme)
+    EVT_CHECKBOX(XRCID("chkColoursBold"),              EditorConfigurationDlg::OnBoldItalicUline)
+    EVT_CHECKBOX(XRCID("chkColoursItalics"),           EditorConfigurationDlg::OnBoldItalicUline)
+    EVT_CHECKBOX(XRCID("chkColoursUnderlined"),        EditorConfigurationDlg::OnBoldItalicUline)
+    EVT_LISTBOX(XRCID("lstComponents"),                EditorConfigurationDlg::OnColourComponent)
+    EVT_COMBOBOX(XRCID("cmbLangs"),                    EditorConfigurationDlg::OnChangeLang)
+    EVT_COMBOBOX(XRCID("cmbDefCodeFileType"),          EditorConfigurationDlg::OnChangeDefCodeFileType)
+    EVT_COMBOBOX(XRCID("cmbThemes"),                   EditorConfigurationDlg::OnColourTheme)
+    EVT_LISTBOX(XRCID("lstAutoCompKeyword"),           EditorConfigurationDlg::OnAutoCompKeyword)
+    EVT_BUTTON(XRCID("btnAutoCompAdd"),                EditorConfigurationDlg::OnAutoCompAdd)
+    EVT_BUTTON(XRCID("btnAutoCompDelete"),             EditorConfigurationDlg::OnAutoCompDelete)
+    EVT_CHECKBOX(XRCID("chkDynamicWidth"),             EditorConfigurationDlg::OnDynamicCheck)
+    EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),     EditorConfigurationDlg::OnHighlightOccurrences)
+    EVT_CHECKBOX(XRCID("chkEnableMultipleSelections"), EditorConfigurationDlg::OnMultipleSelections)
+    EVT_BUTTON(XRCID("btnHighlightColour"),            EditorConfigurationDlg::OnChooseColour)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
 END_EVENT_TABLE()
@@ -304,6 +304,7 @@ void EditorConfigurationDlg::AddPluginPanels()
     for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
     {
         cbConfigurationPanel* panel = m_PluginPanels[i];
+        panel->SetParentDialog(this);
         lb->AddPage(panel, panel->GetTitle());
 
         wxString onFile = ConfigManager::LocateDataFile(base + panel->GetBitmapBaseName() + _T(".png"), sdDataGlobal | sdDataUser);
@@ -566,7 +567,7 @@ bool EditorConfigurationDlg::AskToSaveTheme()
     {
         wxString msg;
         msg.Printf(_("The colour theme \"%s\" is modified.\nDo you want to save the changes?"), m_Theme->GetName().c_str());
-        int ret = cbMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL);
+        int ret = cbMessageBox(msg, _("Save"), wxYES_NO | wxCANCEL, this);
         switch (ret)
         {
             case wxID_YES: m_Theme->Save(); break;
@@ -660,7 +661,7 @@ void EditorConfigurationDlg::OnAddColourTheme(wxCommandEvent& /*event*/)
 
 void EditorConfigurationDlg::OnDeleteColourTheme(wxCommandEvent& /*event*/)
 {
-    if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO) == wxID_YES)
+    if (cbMessageBox(_("Are you sure you want to delete this theme?"), _("Confirmation"), wxYES_NO, this) == wxID_YES)
     {
         Manager::Get()->GetConfigManager(_T("editor"))->DeleteSubPath(_T("/colour_sets/") + m_Theme->GetName());
         wxComboBox* cmbThemes = XRCCTRL(*this, "cmbThemes", wxComboBox);
@@ -724,7 +725,7 @@ void EditorConfigurationDlg::OnColoursReset(wxCommandEvent& /*event*/)
         wxString tmp;
         tmp.Printf(_("Are you sure you want to reset all settings to defaults for \"%s\"?"),
                     m_Theme->GetLanguageName(m_Lang).c_str());
-        if (cbMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+        if (cbMessageBox(tmp, _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
         {
             m_Theme->Reset(m_Lang);
             ApplyColours();
@@ -809,7 +810,7 @@ void EditorConfigurationDlg::OnAutoCompAdd(wxCommandEvent& /*event*/)
         AutoCompleteMap::iterator it = m_AutoCompMap.find(key);
         if (it != m_AutoCompMap.end())
         {
-            cbMessageBox(_("This keyword already exists!"), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("This keyword already exists!"), _("Error"), wxICON_ERROR, this);
             return;
         }
         m_AutoCompMap[key] = _T("");
@@ -828,7 +829,7 @@ void EditorConfigurationDlg::OnAutoCompDelete(wxCommandEvent& /*event*/)
     if (lstKeyword->GetSelection() == -1)
         return;
 
-    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_NO)
+    if (cbMessageBox(_("Are you sure you want to delete this keyword?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO, this) == wxID_NO)
         return;
 
     int sel = lstKeyword->GetSelection();
@@ -875,36 +876,36 @@ void EditorConfigurationDlg::EndModal(int retCode)
 
         cfg->Write(_T("/font"), XRCCTRL(*this, "lblEditorFont", wxStaticText)->GetFont().GetNativeFontInfoDesc());
 
-        cfg->Write(_T("/auto_indent"),          XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->GetValue());
-        cfg->Write(_T("/smart_indent"),         XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->GetValue());
-        cfg->Write(_T("/brace_completion"),     XRCCTRL(*this, "chkBraceCompletion", wxCheckBox)->GetValue());
-        cfg->Write(_T("/use_tab"),              XRCCTRL(*this, "chkUseTab", wxCheckBox)->GetValue());
-        cfg->Write(_T("/show_indent_guides"),   XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->GetValue());
-        cfg->Write(_T("/tab_indents"),          XRCCTRL(*this, "chkTabIndents", wxCheckBox)->GetValue());
-        cfg->Write(_T("/backspace_unindents"),  XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->GetValue());
-        cfg->Write(_T("/word_wrap"),            XRCCTRL(*this, "chkWordWrap", wxCheckBox)->GetValue());
-        cfg->Write(_T("/use_posix_style_regexes"),XRCCTRL(*this, "chkPosixRegex", wxCheckBox)->GetValue());
+        cfg->Write(_T("/auto_indent"),                         XRCCTRL(*this, "chkAutoIndent", wxCheckBox)->GetValue());
+        cfg->Write(_T("/smart_indent"),                        XRCCTRL(*this, "chkSmartIndent", wxCheckBox)->GetValue());
+        cfg->Write(_T("/brace_completion"),                    XRCCTRL(*this, "chkBraceCompletion", wxCheckBox)->GetValue());
+        cfg->Write(_T("/use_tab"),                             XRCCTRL(*this, "chkUseTab", wxCheckBox)->GetValue());
+        cfg->Write(_T("/show_indent_guides"),                  XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->GetValue());
+        cfg->Write(_T("/tab_indents"),                         XRCCTRL(*this, "chkTabIndents", wxCheckBox)->GetValue());
+        cfg->Write(_T("/backspace_unindents"),                 XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->GetValue());
+        cfg->Write(_T("/word_wrap"),                           XRCCTRL(*this, "chkWordWrap", wxCheckBox)->GetValue());
+        cfg->Write(_T("/use_posix_style_regexes"),             XRCCTRL(*this, "chkPosixRegex", wxCheckBox)->GetValue());
         #ifdef wxHAS_REGEX_ADVANCED
-        cfg->Write(_T("/use_advanced_regexes"), XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->GetValue());
+        cfg->Write(_T("/use_advanced_regexes"),                XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->GetValue());
         #endif
 
-        cfg->Write(_T("/show_line_numbers"),    XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->GetValue());
-        cfg->Write(_T("/highlight_caret_line"), XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
-        cfg->Write(_T("/simplified_home"),      XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->GetValue());
-        cfg->Write(_T("/tab_size"),             XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/view_whitespace"),      XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
-        cfg->Write(_T("/tab_text_relative"),    XRCCTRL(*this, "rbTabText", wxRadioBox)->GetSelection() ? true : false);
-        cfg->Write(_T("/highlight_occurrence/enabled"),XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
+        cfg->Write(_T("/show_line_numbers"),                   XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->GetValue());
+        cfg->Write(_T("/highlight_caret_line"),                XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
+        cfg->Write(_T("/simplified_home"),                     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->GetValue());
+        cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS", wxComboBox)->GetSelection());
+        cfg->Write(_T("/tab_text_relative"),                   XRCCTRL(*this, "rbTabText", wxRadioBox)->GetSelection() ? true : false);
+        cfg->Write(_T("/highlight_occurrence/enabled"),        XRCCTRL(*this, "chkHighlightOccurrences", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());
-        cfg->Write(_T("/highlight_occurrence/whole_word"), XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->GetValue());
-        cfg->Write(_T("/highlight_occurrence/colour"),XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/highlight_occurrence/whole_word"),     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->GetValue());
+        cfg->Write(_T("/highlight_occurrence/colour"),         XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour());
 
         // find & replace, regex searches
 
         //caret
-        cfg->Write(_T("/caret/width"), XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/caret/colour"), XRCCTRL(*this, "btnCaretColour", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/caret/period"), XRCCTRL(*this, "slCaretPeriod", wxSlider)->GetValue());
+        cfg->Write(_T("/caret/width"),                         XRCCTRL(*this, "spnCaretWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/caret/colour"),                        XRCCTRL(*this, "btnCaretColour", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/caret/period"),                        XRCCTRL(*this, "slCaretPeriod", wxSlider)->GetValue());
 
         //folding
         bool enableFolding = XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue();
@@ -921,44 +922,44 @@ void EditorConfigurationDlg::EndModal(int retCode)
             }
         }
 
-        cfg->Write(_T("/folding/show_folds"),           enableFolding);
-        cfg->Write(_T("/folding/fold_all_on_open"),     XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->GetValue());
-        cfg->Write(_T("/folding/fold_preprocessor"),    XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->GetValue());
-        cfg->Write(_T("/folding/fold_comments"),        XRCCTRL(*this, "chkFoldComments", wxCheckBox)->GetValue());
-        cfg->Write(_T("/folding/fold_xml"),             XRCCTRL(*this, "chkFoldXml", wxCheckBox)->GetValue());
-        cfg->Write(_T("/folding/underline_folded_line"), XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->GetValue());
-        cfg->Write(_T("/folding/indicator"),            XRCCTRL(*this, "lstIndicators", wxChoice)->GetSelection());
-        cfg->Write(_T("/folding/limit"),                XRCCTRL(*this, "chkFoldLimit", wxCheckBox)->GetValue());
-        cfg->Write(_T("/folding/limit_level"),          XRCCTRL(*this, "spnFoldLimitLevel", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/folding/show_folds"), enableFolding);
+        cfg->Write(_T("/folding/fold_all_on_open"),        XRCCTRL(*this, "chkFoldOnOpen", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/fold_preprocessor"),       XRCCTRL(*this, "chkFoldPreprocessor", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/fold_comments"),           XRCCTRL(*this, "chkFoldComments", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/fold_xml"),                XRCCTRL(*this, "chkFoldXml", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/underline_folded_line"),   XRCCTRL(*this, "chkUnderlineFoldedLine", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/indicator"),               XRCCTRL(*this, "lstIndicators", wxChoice)->GetSelection());
+        cfg->Write(_T("/folding/limit"),                   XRCCTRL(*this, "chkFoldLimit", wxCheckBox)->GetValue());
+        cfg->Write(_T("/folding/limit_level"),             XRCCTRL(*this, "spnFoldLimitLevel", wxSpinCtrl)->GetValue());
 
         //eol
-        cfg->Write(_T("/show_eol"),                     XRCCTRL(*this, "chkShowEOL", wxCheckBox)->GetValue());
-        cfg->Write(_T("/eol/strip_trailing_spaces"),    XRCCTRL(*this, "chkStripTrailings", wxCheckBox)->GetValue());
-        cfg->Write(_T("/eol/ensure_final_line_end"),    XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->GetValue());
+        cfg->Write(_T("/show_eol"),                        XRCCTRL(*this, "chkShowEOL", wxCheckBox)->GetValue());
+        cfg->Write(_T("/eol/strip_trailing_spaces"),       XRCCTRL(*this, "chkStripTrailings", wxCheckBox)->GetValue());
+        cfg->Write(_T("/eol/ensure_final_line_end"),       XRCCTRL(*this, "chkEnsureFinalEOL", wxCheckBox)->GetValue());
         cfg->Write(_T("/eol/ensure_consistent_line_ends"), XRCCTRL(*this, "chkEnsureConsistentEOL", wxCheckBox)->GetValue());
-        cfg->Write(_T("/eol/eolmode"),                  (int)XRCCTRL(*this, "cmbEOLMode", wxComboBox)->GetSelection());
+        cfg->Write(_T("/eol/eolmode"),                (int)XRCCTRL(*this, "cmbEOLMode", wxComboBox)->GetSelection());
 
         //gutter
-        cfg->Write(_T("/gutter/mode"),          XRCCTRL(*this, "lstGutterMode", wxChoice)->GetSelection());
-        cfg->Write(_T("/gutter/colour"),        XRCCTRL(*this, "btnGutterColour", wxButton)->GetBackgroundColour());
-        cfg->Write(_T("/gutter/column"),        XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/gutter/mode"),                     XRCCTRL(*this, "lstGutterMode", wxChoice)->GetSelection());
+        cfg->Write(_T("/gutter/colour"),                   XRCCTRL(*this, "btnGutterColour", wxButton)->GetBackgroundColour());
+        cfg->Write(_T("/gutter/column"),                   XRCCTRL(*this, "spnGutterColumn", wxSpinCtrl)->GetValue());
 
         //margin
-        cfg->Write(_T("/margin/width_chars"),       XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
-        cfg->Write(_T("/margin/dynamic_width"),     XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
-        cfg->Write(_T("/margin_1_sensitive"), (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
+        cfg->Write(_T("/margin/width_chars"),              XRCCTRL(*this, "spnMarginWidth", wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/margin/dynamic_width"),            XRCCTRL(*this, "chkDynamicWidth", wxCheckBox)->GetValue());
+        cfg->Write(_T("/margin_1_sensitive"),        (bool)XRCCTRL(*this, "chkAddBPByLeftClick", wxCheckBox)->GetValue());
 
         //selections
-        cfg->Write(_T("/selection/use_vspace"), (bool)XRCCTRL(*this, "chkEnableVirtualSpace", wxCheckBox)->GetValue());
-        cfg->Write(_T("/selection/multi_select"), (bool)XRCCTRL(*this, "chkEnableMultipleSelections", wxCheckBox)->GetValue());
-        cfg->Write(_T("/selection/multi_typing"), (bool)XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->GetValue());
+        cfg->Write(_T("/selection/use_vspace"),      (bool)XRCCTRL(*this, "chkEnableVirtualSpace", wxCheckBox)->GetValue());
+        cfg->Write(_T("/selection/multi_select"),    (bool)XRCCTRL(*this, "chkEnableMultipleSelections", wxCheckBox)->GetValue());
+        cfg->Write(_T("/selection/multi_typing"),    (bool)XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->GetValue());
 
         //scrollbar
-        cfg->Write(_T("/margin/scroll_width_tracking"),     XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->GetValue());
+        cfg->Write(_T("/margin/scroll_width_tracking"),    XRCCTRL(*this, "chkScrollWidthTracking", wxCheckBox)->GetValue());
 
         //changebar
         bool enableChangebar = XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->GetValue();
-        cfg->Write(_T("/margin/use_changebar"),        enableChangebar);
+        cfg->Write(_T("/margin/use_changebar"), enableChangebar);
         if (enableChangebar != m_EnableChangebar)
         {
             EditorManager *em = Manager::Get()->GetEditorManager();
@@ -1002,9 +1003,9 @@ void EditorConfigurationDlg::EndModal(int retCode)
         {
             cfg->Write(_T("/default_encoding"), cmbEnc->GetStringSelection());
         }
-        cfg->Write(_T("/default_encoding/use_option"), XRCCTRL(*this, "rbEncodingUseOption", wxRadioBox)->GetSelection());
+        cfg->Write(_T("/default_encoding/use_option"),  XRCCTRL(*this, "rbEncodingUseOption", wxRadioBox)->GetSelection());
         cfg->Write(_T("/default_encoding/find_latin2"), XRCCTRL(*this, "chkEncodingFindLatin2", wxCheckBox)->GetValue());
-        cfg->Write(_T("/default_encoding/use_system"), XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->GetValue());
+        cfg->Write(_T("/default_encoding/use_system"),  XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->GetValue());
 
         // save any changes in auto-completion
         wxListBox* lstKeyword = XRCCTRL(*this, "lstAutoCompKeyword", wxListBox);

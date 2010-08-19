@@ -212,7 +212,7 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
                     control != NULL &&
                     control != toolbar)
                 {
-                    wxLogDebug(_T("control=%p, parent=%p, toolbar=%p"), control, control->GetParent(), toolbar);
+                    //Manager::Get()->GetLogManager()->DebugLog(F(_T("control=%p, parent=%p, toolbar=%p"), control, control->GetParent(), toolbar));
                     toolbar->AddControl(control);
                 }
             }

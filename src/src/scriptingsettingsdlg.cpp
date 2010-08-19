@@ -366,5 +366,5 @@ void ScriptingSettingsDlg::OnValidateTrusts(wxCommandEvent& /*event*/)
     }
 
     if (check)
-        cbMessageBox(_("All script trusts are valid!"), _("Information"), wxICON_INFORMATION);
+        cbMessageBox(_("All script trusts are valid!"), _("Information"), wxICON_INFORMATION, this);
 }
