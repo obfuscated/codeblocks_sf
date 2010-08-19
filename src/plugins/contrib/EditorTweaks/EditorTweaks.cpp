@@ -381,7 +381,7 @@ void EditorTweaks::OnEditorClose(CodeBlocksEvent& /*event*/)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if(ed && ed->GetControl())
     {
-        return;        
+        return;
     }
     m_tweakmenuitem->Enable(false);
 }
@@ -419,7 +419,11 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
         return;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if(!ed || !ed->GetControl())
+    {
+        m_tweakmenuitem->Enable(false);
         return;
+    }
+    m_tweakmenuitem->Enable(true);
 
     // build aligner menu and items
     wxMenu* alignerMenu = new wxMenu();
@@ -729,7 +733,6 @@ void EditorTweaks::DoFoldAboveLevel(int level, int fold)
         ed->GetControl()->ToggleFold(line);
     }
 }
-
 
 void EditorTweaks::OnAlign(wxCommandEvent& event)
 {

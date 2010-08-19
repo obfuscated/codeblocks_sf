@@ -1466,6 +1466,27 @@ void CompilerGCC::DoPrepareQueue(bool clearLog)
     Manager::Yield();
 }
 
+void CompilerGCC::NotifyCleanProject(const wxString& target)
+{
+    if (m_CommandQueue.GetCount() == 0)
+    {
+        CodeBlocksEvent evt(cbEVT_CLEAN_PROJECT_STARTED, 0, m_Project, 0, this);
+        evt.SetBuildTargetName(target);
+        Manager::Get()->ProcessEvent(evt);
+    }
+    Manager::Yield();
+}
+
+void CompilerGCC::NotifyCleanWorkspace()
+{
+    if (m_CommandQueue.GetCount() == 0)
+    {
+        CodeBlocksEvent evt(cbEVT_CLEAN_WORKSPACE_STARTED, 0, 0, 0, this);
+        Manager::Get()->ProcessEvent(evt);
+    }
+    Manager::Yield();
+}
+
 ProjectBuildTarget* CompilerGCC::DoAskForTarget()
 {
     if (!CheckProject())
@@ -2225,8 +2246,8 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             if (m_pBuildingProject)
                 m_pBuildingProject->SetCurrentlyCompilingTarget(0);
             m_NextBuildState = bsProjectPreBuild;
-//          DoBuild runs ProjectPreBuild, next step has to be TargetClean or TargetPreBuild
-            if(DoBuild(clean, build) >= 0)
+            // DoBuild runs ProjectPreBuild, next step has to be TargetClean or TargetPreBuild
+            if (DoBuild(clean, build) >= 0)
             {
                 if (clean && !build)
                 {
@@ -2722,8 +2743,9 @@ int CompilerGCC::DoBuild(const wxString& target, bool clean, bool build, bool cl
     {
         DoClearErrors();
         InitBuildLog(false);
-//    if (!m_IsWorkspaceOperation)
         DoPrepareQueue(clearLog);
+        if (clean)
+            NotifyCleanProject(realTarget);
     }
 
     PreprocessJob(m_Project, realTarget);
@@ -2779,6 +2801,8 @@ int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build
         return -1;
 
     DoPrepareQueue(clearLog);
+    if (clean)
+        NotifyCleanWorkspace();
     m_IsWorkspaceOperation = true;
 
     InitBuildLog(true);
@@ -2808,6 +2832,7 @@ int CompilerGCC::DoWorkspaceBuild(const wxString& target, bool clean, bool build
 
     DoBuild(clean,build);
     m_IsWorkspaceOperation = false;
+
     return DoRunQueue();
 }
 
@@ -3016,9 +3041,6 @@ void CompilerGCC::OnCompileAndRun(wxCommandEvent& /*event*/)
     ProjectBuildTarget* target = 0;//DoAskForTarget();
     m_RunAfterCompile = true;
     Build(target);
-//    if (m_CommandQueue.GetCount()) // if we have build commands, use the flag to run
-//    else // else make it a "Run" command
-//        OnRun(event);
 }
 
 void CompilerGCC::OnCompile(wxCommandEvent& event)
@@ -3030,7 +3052,7 @@ void CompilerGCC::OnCompile(wxCommandEvent& event)
         // let's check the selected project...
         DoSwitchProjectTemporarily();
     }
-    ProjectBuildTarget* target = 0;//DoAskForTarget();
+    ProjectBuildTarget* target = 0;
     Build(target);
     m_RealTargetIndex = bak;
 }
@@ -3046,10 +3068,8 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
         FileTreeData* ftd = DoSwitchProjectTemporarily();
         ProjectFile* pf = m_Project->GetFile(ftd->GetFileIndex());
         if (!pf)
-        {
-//            wxLogError("File index=%d", ftd->GetFileIndex());
             return;
-        }
+
         file = pf->file;
         CheckProject();
     }
@@ -3116,7 +3136,7 @@ void CompilerGCC::OnRebuild(wxCommandEvent& event)
         // let's check the selected project...
         DoSwitchProjectTemporarily();
     }
-    ProjectBuildTarget* target = 0;//DoAskForTarget();
+    ProjectBuildTarget* target = 0;
     Rebuild(target);
     m_RealTargetIndex = bak;
 }
@@ -3193,7 +3213,7 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
         // let's check the selected project...
         DoSwitchProjectTemporarily();
     }
-    ProjectBuildTarget* target = 0;//DoAskForTarget();
+    ProjectBuildTarget* target = 0;
     Clean(target);
     m_RealTargetIndex = bak;
 }
@@ -3232,10 +3252,11 @@ void CompilerGCC::OnTargetCompilerOptions(wxCommandEvent& /*event*/)
         return;
     else
         m_RealTargetIndex = idx; // TODO: check
-       // let's check the selected project...
-       DoSwitchProjectTemporarily();
 
-    ProjectBuildTarget* target = 0;//DoAskForTarget();
+    // let's check the selected project...
+    DoSwitchProjectTemporarily();
+
+    ProjectBuildTarget* target = 0;
     m_RealTargetIndex = bak;
     Configure(m_Project, target);
 }
@@ -3636,7 +3657,9 @@ void CompilerGCC::SaveBuildLog()
     f.Write(_T("</html>\n"));
 
     Manager::Get()->GetLogManager()->Log(_("Build log saved as: "), m_PageIndex);
-    wxURI tmpFilename = m_BuildLogFilename;
+    wxString tempBuildLogFilename = m_BuildLogFilename;
+    tempBuildLogFilename.Replace(_("\\"), _("/"));
+    wxURI tmpFilename = tempBuildLogFilename;
 
     #if wxCHECK_VERSION(2, 9, 0)
     Manager::Get()->GetLogManager()->Log(F(_T("file://%s"), tmpFilename.BuildURI().wx_str()), m_PageIndex, Logger::warning);

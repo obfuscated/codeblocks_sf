@@ -174,6 +174,8 @@ class CompilerGCC : public cbCompilerPlugin
         void SaveOptions();
         void LoadOptions();
         void DoPrepareQueue(bool clearLog=true);
+        void NotifyCleanProject(const wxString& target);
+        void NotifyCleanWorkspace();
         int DoRunQueue();
         bool DoCreateMakefile(bool temporary = true, const wxString& makefile = _T(""));
         void DoDeleteTempMakefile();

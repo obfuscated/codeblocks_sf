@@ -654,12 +654,24 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
         return;
     int page = FindPageFromEditor(ed);
     if (page != -1)
+    {
+        // Previously the Activated event was only sent for built-in editors, which makes no sense
+        int sel = m_pNotebook->GetSelection();
         m_pNotebook->SetSelection(page);
+        EditorBase* eb_old = 0;
+        if (sel>=0)
+            eb_old = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
+
+        CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, ed, 0, eb_old);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+
+        CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, 0, ed);
+        Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
+    }
+
     if (ed->IsBuiltinEditor())
     {
         static_cast<cbEditor*>(ed)->GetControl()->SetFocus();
-        CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, ed);
-        Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     }
 }
 
@@ -2677,8 +2689,15 @@ void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
 void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
 {
     EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
-    CodeBlocksEvent evt(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
+    EditorBase* eb_old = 0;
+    if (event.GetOldSelection()!=-1)
+        eb_old = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetOldSelection()));
+
+    CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, eb, 0, eb_old);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+
+    CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
 
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))
     {
@@ -2735,6 +2754,14 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
         if (!QueryClose(eb))
             event.Veto();
+        else
+        {
+            if (m_pNotebook->GetPageCount()<=1)
+            {
+                CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, 0, 0, eb);
+                Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
+            }
+        }
     }
 
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))

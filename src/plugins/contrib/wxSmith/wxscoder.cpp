@@ -32,6 +32,10 @@
 #include <wx/file.h>
 #include <wx/intl.h>
 #include "cbstyledtextctrl.h"
+#include <editormanager.h>
+#include <projectmanager.h>
+#include <pluginmanager.h>
+#include "sdk_events.h"
 
 //namespace
 //{
@@ -319,6 +323,13 @@ void wxsCoder::FlushFile(const wxString& FileName)
                 #else
                 Manager::Get()->GetLogManager()->Log(F(_("wxSmith: Couldn't write data to file '%s'"),FileName.c_str()));
                 #endif
+            }
+            else
+            {
+                CodeBlocksEvent event(cbEVT_PROJECT_FILE_CHANGED);
+                event.SetProject(Manager::Get()->GetProjectManager()->GetActiveProject());
+                event.SetString(FileName);
+                Manager::Get()->GetPluginManager()->NotifyPlugins(event);
             }
             //Manager::Get()->GetLogManager()->DebugLog(F(_T("File write time: %d ms"),SW.Time()));
         }

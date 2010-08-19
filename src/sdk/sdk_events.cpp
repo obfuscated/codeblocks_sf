@@ -74,6 +74,7 @@ const wxEventType cbEVT_PLUGIN_UNINSTALLED = wxNewEventType();
 // editor events
 const wxEventType cbEVT_EDITOR_CLOSE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_OPEN = wxNewEventType();
+const wxEventType cbEVT_EDITOR_SWITCHED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_ACTIVATED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_DEACTIVATED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_BEFORE_SAVE = wxNewEventType();
@@ -96,6 +97,7 @@ const wxEventType cbEVT_PROJECT_BEGIN_REMOVE_FILES = wxNewEventType();
 const wxEventType cbEVT_PROJECT_END_REMOVE_FILES = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_ADDED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_FILE_REMOVED = wxNewEventType();
+const wxEventType cbEVT_PROJECT_FILE_CHANGED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_POPUP_MENU = wxNewEventType();
 const wxEventType cbEVT_PROJECT_TARGETS_MODIFIED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_RENAMED = wxNewEventType();
@@ -134,6 +136,8 @@ const wxEventType cbEVT_MENUBAR_CREATE_END = wxNewEventType();
 const wxEventType cbEVT_COMPILER_STARTED = wxNewEventType();
 const wxEventType cbEVT_COMPILER_FINISHED = wxNewEventType();
 const wxEventType cbEVT_COMPILER_SET_BUILD_OPTIONS = wxNewEventType();
+const wxEventType cbEVT_CLEAN_PROJECT_STARTED = wxNewEventType();
+const wxEventType cbEVT_CLEAN_WORKSPACE_STARTED = wxNewEventType();
 // debugger-related events
 const wxEventType cbEVT_DEBUGGER_STARTED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_PAUSED = wxNewEventType();
