@@ -34,7 +34,7 @@ function BeginWizard()
     Wizard.AddInfoPage(_T("DirectXIntro"), intro_msg);
     Wizard.AddGenericSingleChoiceListPage(_T("DirectXVersionPage"), _T("Please select the DirectX version you want to use."), _T("DirectX 8;DirectX 9"), DirectXSel); // select wxwidgets version
     Wizard.AddProjectPathPage();
-    Wizard.AddCompilerPage(_T(""), _T("gcc;msvctk"), true, true);
+    Wizard.AddCompilerPage(_T(""), _T("gcc*;msvc*"), true, true);
     Wizard.AddGenericSelectPathPage(_T("DirectXPath"), dxpath_descr, _T("Please select Direct/X's location:"), _T("$(#dx)"));
 }
 

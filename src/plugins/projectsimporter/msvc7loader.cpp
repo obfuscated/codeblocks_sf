@@ -287,13 +287,16 @@ bool MSVC7Loader::DoImport(TiXmlElement* conf)
             if (bt->GetTargetType() == ttStaticLib) {
                 // convert the lib name
                 Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
-                wxString prefix = compiler->GetSwitches().libPrefix;
-                wxString suffix = compiler->GetSwitches().libExtension;
-                wxFileName fname = tmp;
-                if (!fname.GetName().StartsWith(prefix))
-                    fname.SetName(prefix + fname.GetName());
-                fname.SetExt(suffix);
-                tmp = fname.GetFullPath();
+                if (compiler)
+                {
+                    wxString prefix = compiler->GetSwitches().libPrefix;
+                    wxString suffix = compiler->GetSwitches().libExtension;
+                    wxFileName fname = tmp;
+                    if (!fname.GetName().StartsWith(prefix))
+                        fname.SetName(prefix + fname.GetName());
+                    fname.SetExt(suffix);
+                    tmp = fname.GetFullPath();
+                }
             }
             bt->SetOutputFilename(tmp);
             m_TargetPath = wxFileName(tmp).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);

@@ -589,11 +589,14 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     wxMenu menu(wxEmptyString);
 
     // if we right-clicked on a pointer, add a "dereference pointer" entry
-    wxString itemtext = m_pTree->GetItemText(id);
-    if (itemtext.Find(_T('*')) != wxNOT_FOUND)
+    if (id.IsOk())
     {
-        menu.Append(idDereferenceValue, wxString::Format(_("Dereference pointer '%s'"), itemtext.BeforeFirst(_T('=')).c_str()));
-        menu.AppendSeparator();
+        wxString itemtext = m_pTree->GetItemText(id);
+        if (itemtext.Find(_T('*')) != wxNOT_FOUND)
+        {
+            menu.Append(idDereferenceValue, wxString::Format(_("Dereference pointer '%s'"), itemtext.BeforeFirst(_T('=')).c_str()));
+            menu.AppendSeparator();
+        }
     }
 
     // add watch always visible
@@ -601,12 +604,14 @@ void DebuggerTree::ShowMenu(wxTreeItemId id, const wxPoint& pt)
     menu.Append(idWatchThis, _("Watch '*&this'"));
 
     // we have to have a valid id for the following to be enabled
-    WatchTreeData* data = dynamic_cast<WatchTreeData*>(m_pTree->GetItemData(id));
-    if (id.IsOk() && // valid item
-        data && data->m_pWatch) // *is* a watch
+    if (id.IsOk()) // valid item
     {
-        menu.Append(idEditWatch, _("&Edit watch"));
-        menu.Append(idDeleteWatch, _("&Delete watch"));
+        WatchTreeData* data = dynamic_cast<WatchTreeData*>(m_pTree->GetItemData(id));
+        if (data && data->m_pWatch) // *is* a watch
+        {
+            menu.Append(idEditWatch, _("&Edit watch"));
+            menu.Append(idDeleteWatch, _("&Delete watch"));
+        }
     }
     menu.AppendSeparator();
     menu.Append(idChangeValue, _("&Change value..."));

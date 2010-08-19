@@ -652,11 +652,14 @@ void MSVCLoader::ProcessLinkerOptions(ProjectBuildTarget* target, const wxString
                 if (newf.IsRelative())
                     newf.MakeAbsolute(m_pProject->GetBasePath());
                 Compiler* compiler = CompilerFactory::GetCompiler(m_pProject->GetCompilerID());
-                newf.SetExt(compiler->GetSwitches().libExtension);
-                wxString name = newf.GetName();
-                wxString prefix = compiler->GetSwitches().libPrefix;
-                if (!prefix.IsEmpty() && !name.StartsWith(prefix))
-                    newf.SetName(prefix + name);
+                if (compiler)
+                {
+                    newf.SetExt(compiler->GetSwitches().libExtension);
+                    wxString name = newf.GetName();
+                    wxString prefix = compiler->GetSwitches().libPrefix;
+                    if (!prefix.IsEmpty() && !name.StartsWith(prefix))
+                        newf.SetName(prefix + name);
+                }
                 target->SetOutputFilename(newf.GetFullPath());
             }
             else

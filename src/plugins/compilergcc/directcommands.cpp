@@ -168,6 +168,8 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     const pfDetails& pfd = pf->GetFileDetails(target);
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
+    if (!compiler)
+        return ret;
     wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
 
     // lookup file's type
@@ -295,6 +297,9 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
     QuoteStringIfNeeded(o_filename);
 
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
+    if (!compiler)
+        return ret;
+
     wxString compilerCmd = compiler->GetCommand(ctCompileObjectCmd, srcExt);
     compiler->GenerateCommandLine(compilerCmd,
                                      0,
@@ -465,10 +470,13 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
         wxArrayString tmp;
         for (size_t i = 0; i < buildcmds.GetCount(); ++i)
         {
-            if(target)
-                compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
-            else
-                compiler->GenerateCommandLine(buildcmds[i], m_pProject->GetCurrentlyCompilingTarget(), 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+            if (compiler)
+            {
+                if (target)
+                    compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+                else
+                    compiler->GenerateCommandLine(buildcmds[i], m_pProject->GetCurrentlyCompilingTarget(), 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+            }
 
             tmp.Add(wxString(COMPILER_WAIT)); // all commands should wait for queue to empty first
             tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
@@ -479,7 +487,7 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target)
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target pre-build steps"), 0);
         else
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project pre-build steps"), 0);
-        if(m_doYield)
+        if (m_doYield)
             Manager::Yield();
     }
     return buildcmds;
@@ -495,10 +503,13 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
         wxArrayString tmp;
         for (size_t i = 0; i < buildcmds.GetCount(); ++i)
         {
-            if(target)
-                compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
-            else
-                compiler->GenerateCommandLine(buildcmds[i], m_pProject->GetCurrentlyCompilingTarget(), 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+            if (compiler)
+            {
+                if (target)
+                    compiler->GenerateCommandLine(buildcmds[i], target, 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+                else
+                    compiler->GenerateCommandLine(buildcmds[i], m_pProject->GetCurrentlyCompilingTarget(), 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
+            }
 
             tmp.Add(wxString(COMPILER_WAIT)); // all commands should wait for queue to empty first
             tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
@@ -509,7 +520,7 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target)
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target post-build steps"), 0);
         else
             buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project post-build steps"), 0);
-        if(m_doYield)
+        if (m_doYield)
             Manager::Yield();
     }
     return buildcmds;
@@ -572,7 +583,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         //
         // So, we first scan the command for this special case and, if found,
         // set a flag so that the linkfiles array is filled with the correct options
-        wxString compilerCmd = compiler->GetCommand(ctLinkStaticCmd);
+        wxString compilerCmd = compiler ? compiler->GetCommand(ctLinkStaticCmd) : wxString(wxEmptyString);
         wxRegEx re(_T("\\$([-+]+)link_objects"));
         if (re.Matches(compilerCmd))
             prependHack = re.GetMatch(compilerCmd, 1);
@@ -766,19 +777,21 @@ wxArrayString DirectCommands::GetTargetCleanCommands(ProjectBuildTarget* target,
         ProjectFile* pf = files[i];
         const pfDetails& pfd = pf->GetFileDetails(target);
         Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
-        wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat_absolute_native:pfd.object_file_absolute_native;
-        ret.Add(ObjectAbs);
-        // if this is an auto-generated file, delete it
-        if (pf->AutoGeneratedBy())
+        if (compiler)
         {
-            ret.Add(pf->file.GetFullPath());
+            wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects) ? pfd.object_file_flat_absolute_native
+                                                                          : pfd.object_file_absolute_native;
+            ret.Add(ObjectAbs);
+            // if this is an auto-generated file, delete it
+            if (pf->AutoGeneratedBy())
+            {
+                ret.Add(pf->file.GetFullPath());
+            }
+            if (distclean)
+            {
+                ret.Add(pfd.dep_file_absolute_native);
+            }
         }
-        if (distclean)
-        {
-            ret.Add(pfd.dep_file_absolute_native);
-        }
-//        if(m_doYield)
-//            Manager::Yield();
     }
 
     // add target output
@@ -887,7 +900,11 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
     // there is no need to scan the source file for headers.
     time_t timeObj;
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
-    wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat_absolute_native:pfd.object_file_absolute_native;
+    if (!compiler)
+        return false;
+
+    wxString ObjectAbs = (compiler->GetSwitches().UseFlatObjects) ? pfd.object_file_flat_absolute_native
+                                                                  : pfd.object_file_absolute_native;
     depsTimeStamp(ObjectAbs.mb_str(), &timeObj);
     if (!timeObj)
         return true;

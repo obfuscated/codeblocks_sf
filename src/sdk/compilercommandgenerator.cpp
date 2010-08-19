@@ -214,6 +214,12 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString& macro,
     Compiler* compiler = target
                             ? CompilerFactory::GetCompiler(target->GetCompilerID())
                             : CompilerFactory::GetDefaultCompiler();
+    if (!compiler)
+    {
+        macro.Clear();
+        return;
+    }
+
     wxString compilerStr;
     if (pf)
     {

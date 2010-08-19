@@ -290,6 +290,8 @@ void ProjectLoader::ConvertLibraries(CompileTargetBase* object)
 
     wxString compilerId = object->GetCompilerID();
     Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
+    if (!compiler)
+        return;
     wxString linkLib = compiler->GetSwitches().linkLibs;
     wxString libExt = compiler->GetSwitches().libExtension;
     size_t libExtLen = libExt.Length();

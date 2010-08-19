@@ -470,15 +470,18 @@ WizCompilerPanel::WizCompilerPanel(const wxString& compilerID, const wxString& v
     for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(i);
-        for (size_t n = 0; n < valids.GetCount(); ++n)
+        if (compiler)
         {
-            // match not only if IDs match, but if ID inherits from it too
-            if (CompilerFactory::CompilerInheritsFrom(compiler, valids[n]))
+            for (size_t n = 0; n < valids.GetCount(); ++n)
             {
-                cmb->Append(compiler->GetName());
-                if (compiler->GetID().IsSameAs(def))
-                    id = (cmb->GetCount() - 1) < 0 ? 0 : (cmb->GetCount() - 1);
-                break;
+                // match not only if IDs match, but if ID inherits from it too
+                if (CompilerFactory::CompilerInheritsFrom(compiler, valids[n]))
+                {
+                    cmb->Append(compiler->GetName());
+                    if (compiler->GetID().IsSameAs(def))
+                        id = (cmb->GetCount() - 1) < 0 ? 0 : (cmb->GetCount() - 1);
+                    break;
+                }
             }
         }
     }
@@ -626,12 +629,16 @@ WizBuildTargetPanel::WizBuildTargetPanel(const wxString& targetName, bool isDebu
         {
             for (size_t n = 0; n < valids.GetCount(); ++n)
             {
-                if (CompilerFactory::GetCompiler(i)->GetID().Matches(valids[n]))
+                Compiler* compiler = CompilerFactory::GetCompiler(i);
+                if (compiler)
                 {
-                    cmb->Append(CompilerFactory::GetCompiler(i)->GetName());
-                    if (CompilerFactory::GetCompiler(i)->GetID().IsSameAs(def))
-                        id = cmb->GetCount();
-                    break;
+                    if (compiler->GetID().Matches(valids[n]))
+                    {
+                        cmb->Append(compiler->GetName());
+                        if (compiler->GetID().IsSameAs(def))
+                            id = cmb->GetCount();
+                        break;
+                    }
                 }
             }
         }

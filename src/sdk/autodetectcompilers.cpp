@@ -41,6 +41,9 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
         for (size_t i = 0; i < CompilerFactory::GetCompilersCount(); ++i)
         {
             Compiler* compiler = CompilerFactory::GetCompiler(i);
+            if (!compiler)
+                continue;
+
             list->InsertItem(list->GetItemCount(), compiler->GetName());
 
             int idx = list->GetItemCount() - 1;

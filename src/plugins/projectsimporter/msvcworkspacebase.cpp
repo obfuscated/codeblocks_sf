@@ -169,11 +169,14 @@ void MSVCWorkspaceBase::updateProjects() {
                     if (type==ttDynamicLib) {
                         // targetDep->GetStaticLibFilename() do not work since it uses the filename instead of output filename
                         Compiler* compiler = CompilerFactory::GetCompiler(depIt->second._project->GetCompilerID());
-                        wxString prefix = compiler->GetSwitches().libPrefix;
-                        wxString suffix = compiler->GetSwitches().libExtension;
-                        fname = targetDep->GetOutputFilename();
-                        fname.SetName(prefix + fname.GetName());
-                        fname.SetExt(suffix);
+                        if (compiler)
+                        {
+                            wxString prefix = compiler->GetSwitches().libPrefix;
+                            wxString suffix = compiler->GetSwitches().libExtension;
+                            fname = targetDep->GetOutputFilename();
+                            fname.SetName(prefix + fname.GetName());
+                            fname.SetExt(suffix);
+                        }
                     }
                     else if (type==ttStaticLib) fname = targetDep->GetOutputFilename();
                     targetProj->AddLinkLib(fname.GetFullPath());

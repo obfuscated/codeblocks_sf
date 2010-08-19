@@ -87,6 +87,8 @@ AdvancedCompilerOptionsDlg::~AdvancedCompilerOptionsDlg()
 void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
 {
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (!compiler)
+        return;
 
     wxChoice* lst = XRCCTRL(*this, "lstCommands", wxChoice);
     lst->Clear();
@@ -128,6 +130,8 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
 void AdvancedCompilerOptionsDlg::WriteCompilerOptions()
 {
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (!compiler)
+        return;
 
     for (int i = 0; i < ctCount; ++i)
     {
@@ -325,7 +329,7 @@ void AdvancedCompilerOptionsDlg::OnAddExt(wxCommandEvent& WXUNUSED(event))
 
 void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent& WXUNUSED(event))
 {
-	if (cbMessageBox(_("Are you sure you want to remove this extension set from the list?"), _T("Confirmation"), wxYES_NO) == wxID_YES)
+	if (cbMessageBox(_("Are you sure you want to remove this extension set from the list?"), _T("Confirmation"), wxYES_NO, this) == wxID_YES)
 	{
 		int nr = XRCCTRL(*this, "lstCommands", wxChoice)->GetSelection();
 		wxChoice* cmb = XRCCTRL(*this, "lstExt", wxChoice);
@@ -340,7 +344,7 @@ void AdvancedCompilerOptionsDlg::OnDelExt(wxCommandEvent& WXUNUSED(event))
 			DisplayCommand(nr,0);
 		}
 		else
-			cbMessageBox(_("Can't remove default commands!"), _("Error"));
+			cbMessageBox(_("Can't remove default commands!"), _("Error"), wxICON_ERROR, this);
 	}
 }
 
@@ -365,7 +369,7 @@ void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& WXUNUSED(event))
 
 void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& WXUNUSED(event))
 {
-    if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
+    if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
     {
         m_Regexes.RemoveAt(m_SelectedRegex);
         if (m_SelectedRegex >= (int)m_Regexes.Count())
@@ -380,9 +384,11 @@ void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& WXUNUSED(event)
                     "for this compiler?\n"
                     "ALL regular expressions will be erased and replaced with their default "
                     "counterparts!\n\n"
-                    "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT) == wxID_YES)
+                    "Are you REALLY sure?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        if (!compiler)
+            return
         compiler->LoadDefaultRegExArray();
         m_Regexes = compiler->GetRegExArray();
         while (m_SelectedRegex >= (int)m_Regexes.Count())
@@ -422,11 +428,13 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
     wxString text = XRCCTRL(*this, "txtRegexTest", wxTextCtrl)->GetValue();
     if (text.IsEmpty())
     {
-        cbMessageBox(_("Please enter a compiler line in the \"Compiler output\" text box..."), _("Error"), wxICON_ERROR);
+        cbMessageBox(_("Please enter a compiler line in the \"Compiler output\" text box..."), _("Error"), wxICON_ERROR, this);
         return;
     }
 
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (!compiler)
+        return;
 
     // backup regexes
     RegExArray regex_copy = m_Regexes;
@@ -458,14 +466,14 @@ void AdvancedCompilerOptionsDlg::OnRegexTest(wxCommandEvent& WXUNUSED(event))
             #endif
                 );
 
-    cbMessageBox(msg, _("Test results"), wxICON_INFORMATION);
+    cbMessageBox(msg, _("Test results"), wxICON_INFORMATION, this);
 }
 
 void AdvancedCompilerOptionsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
-    	m_bDirty = true;
+        m_bDirty = true;
         Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
 
         // make sure we update the first command, if it changed
@@ -474,7 +482,8 @@ void AdvancedCompilerOptionsDlg::EndModal(int retCode)
         WriteCompilerOptions();
         // save regexes
         SaveRegexDetails(m_SelectedRegex);
-        compiler->SetRegExArray(m_Regexes);
+        if (compiler)
+            compiler->SetRegExArray(m_Regexes);
     }
     wxScrollingDialog::EndModal(retCode);
 } // end of EndModal
