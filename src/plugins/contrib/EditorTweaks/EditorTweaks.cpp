@@ -185,7 +185,6 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
             ed->GetControl()->Disconnect(wxEVT_NULL,(wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)&EditorTweaks::OnKeyPress);
     }
 
-
     AlignerMenuEntry e;
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("EditorTweaks"));

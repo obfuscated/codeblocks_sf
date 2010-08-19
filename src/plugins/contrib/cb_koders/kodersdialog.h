@@ -17,7 +17,6 @@
 #include "scrollingdialog.h"
 //*)
 
-
 class KodersDialog: public wxScrollingDialog
 {
 	public:

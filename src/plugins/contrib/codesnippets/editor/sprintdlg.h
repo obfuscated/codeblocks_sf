@@ -8,6 +8,7 @@
 
 #include "scrollingdialog.h"
 #include "printing_types.h"
+
 class SEditorManager;
 
 class SPrintDialog : public wxScrollingDialog

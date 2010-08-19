@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <wx/listctrl.h> // wxListEvent
+
 #include "scrollingdialog.h"
 
 class ScriptEntry// : public ISerializable (<-- can't make it work)

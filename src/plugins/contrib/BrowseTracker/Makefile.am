@@ -18,8 +18,8 @@ libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 			BrowseTrackerLayout.cpp \
 			ConfigPanel.cpp \
 			ProjectData.cpp \
-            JumpTracker.cpp \
-            JumpData.cpp
+			JumpTracker.cpp \
+			JumpData.cpp
 
 noinst_HEADERS =  	BrowseTracker.h \
 			BrowseSelector.h \
@@ -32,8 +32,8 @@ noinst_HEADERS =  	BrowseTracker.h \
 			BrowseTrackerLayout.h \
 			ConfigPanel.h \
 			ProjectData.h \
-            JumpTracker.h \
-            JumpData.h
+			JumpTracker.h \
+			JumpData.h
 
 EXTRA_DIST = 	BrowseTracker.cbp \
 		BrowseTracker-unix.cbp \

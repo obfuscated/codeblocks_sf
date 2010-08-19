@@ -113,43 +113,43 @@ END_EVENT_TABLE()
 // class constructor
 PipedProcess::PipedProcess(void** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
     : wxProcess(parent, id),
-	m_Parent(parent),
-	m_Id(id),
-	m_Pid(0),
-	m_pvThis(pvThis)
+    m_Parent(parent),
+    m_Id(id),
+    m_Pid(0),
+    m_pvThis(pvThis)
 {
-	wxSetWorkingDirectory(UnixFilename(dir));
-	if (pipe)
-		Redirect();
+    wxSetWorkingDirectory(UnixFilename(dir));
+    if (pipe)
+        Redirect();
 }
 
 // class destructor
 PipedProcess::~PipedProcess()
 {
-	// insert your code here
+    // insert your code here
 }
 
 int PipedProcess::Launch(const wxString& cmd, unsigned int /*pollingInterval*/)
 {
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, this);
-	if (m_Pid)
-	{
-//		m_timerPollProcess.SetOwner(this, idTimerPollProcess);
-//		m_timerPollProcess.Start(pollingInterval);
-	}
-	return m_Pid;
+    if (m_Pid)
+    {
+//        m_timerPollProcess.SetOwner(this, idTimerPollProcess);
+//        m_timerPollProcess.Start(pollingInterval);
+    }
+    return m_Pid;
 }
 
 void PipedProcess::SendString(const wxString& text)
 {
-	//Manager::Get()->GetLogManager()->Log(m_PageIndex, cmd);
-	wxOutputStream* pOut = GetOutputStream();
-	if (pOut)
-	{
-		wxTextOutputStream sin(*pOut);
-		wxString msg = text + _T('\n');
-		sin.WriteString(msg);
-	}
+    //Manager::Get()->GetLogManager()->Log(m_PageIndex, cmd);
+    wxOutputStream* pOut = GetOutputStream();
+    if (pOut)
+    {
+        wxTextOutputStream sin(*pOut);
+        wxString msg = text + _T('\n');
+        sin.WriteString(msg);
+    }
 }
 
 void PipedProcess::ForfeitStreams()
@@ -178,10 +178,10 @@ bool PipedProcess::HasInput()
         wxString msg;
         msg << serr.ReadLine();
 
-		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
+        CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
         event.SetString(msg);
-		wxPostEvent(m_Parent, event);
-// 		m_Parent->ProcessEvent(event);
+        wxPostEvent(m_Parent, event);
+//         m_Parent->ProcessEvent(event);
 
         return true;
     }
@@ -193,10 +193,10 @@ bool PipedProcess::HasInput()
         wxString msg;
         msg << sout.ReadLine();
 
-		CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
+        CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
         event.SetString(msg);
-		wxPostEvent(m_Parent, event);
-// 		m_Parent->ProcessEvent(event);
+        wxPostEvent(m_Parent, event);
+//         m_Parent->ProcessEvent(event);
 
         return true;
     }
@@ -210,13 +210,13 @@ void PipedProcess::OnTerminate(int /*pid*/, int status)
     while ( HasInput() )
         ;
 
-	CodeBlocksEvent event(cbEVT_PIPEDPROCESS_TERMINATED, m_Id);
+    CodeBlocksEvent event(cbEVT_PIPEDPROCESS_TERMINATED, m_Id);
     event.SetInt(status);
-//   	m_Parent->ProcessEvent(event);
-	wxPostEvent(m_Parent, event);
+//       m_Parent->ProcessEvent(event);
+    wxPostEvent(m_Parent, event);
 
-	if (m_pvThis)
-		*m_pvThis = 0L;
+    if (m_pvThis)
+        *m_pvThis = 0L;
     delete this;
 }
 
@@ -228,5 +228,5 @@ void PipedProcess::OnTimer(wxTimerEvent& /*event*/)
 void PipedProcess::OnIdle(wxIdleEvent& /*event*/)
 {
     while (HasInput())
-		;
+        ;
 }

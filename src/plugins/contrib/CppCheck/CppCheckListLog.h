@@ -17,15 +17,15 @@ class wxWindow;
 class CppCheckListLog : public ListCtrlLogger, public wxEvtHandler
 {
 public:
-	CppCheckListLog(const wxArrayString& Titles, wxArrayInt& Widths);
-	~CppCheckListLog();
-	wxWindow* CreateControl(wxWindow* Parent);
+    CppCheckListLog(const wxArrayString& Titles, wxArrayInt& Widths);
+    ~CppCheckListLog();
+    wxWindow* CreateControl(wxWindow* Parent);
 
 private:
-	void OnDoubleClick(wxCommandEvent& Event);
-	void SyncEditor(int selIndex);
+    void OnDoubleClick(wxCommandEvent& Event);
+    void SyncEditor(int selIndex);
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // CPPCHECKLISTLOG_H
