@@ -796,7 +796,17 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
 
     EndLoadingProject(result);
     if (activateIt)
-        SetProject(result, !m_IsLoadingWorkspace);
+    {
+        if (m_IsLoadingWorkspace)
+        {
+            // postpone call of SetProject() until EndLoadingWorkspace() is called
+            // (we must call RebuildTree() before SetProject() is called)
+            m_pActiveProject = result;
+        }
+        else
+            SetProject(result, true);
+    }
+
     return result;
 }
 
@@ -1084,6 +1094,9 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
         return false;
     m_pWorkspace = new cbWorkspace(filename);
     EndLoadingWorkspace();
+
+    if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
+        SetProject(m_pProjects->Item(0), false);
 
     return m_pWorkspace && m_pWorkspace->IsOK();
 }
@@ -1624,7 +1637,10 @@ void ProjectManager::RemoveProjectFromAllDependencies(cbProject* base)
             continue;
         }
 
-        arr->Remove(base);
+        int index = arr->Index(base);
+        if (index != wxNOT_FOUND)
+            arr->RemoveAt(index);
+
         if (m_pWorkspace)
             m_pWorkspace->SetModified(true);
 
@@ -2848,7 +2864,10 @@ void ProjectManager::EndLoadingWorkspace()
     {
         RebuildTree();
         if (m_pActiveProject)
+        {
+            SetProject(m_pActiveProject, true);
             m_pTree->Expand(m_pActiveProject->GetProjectNode());
+        }
         m_pTree->Expand(m_TreeRoot); // make sure the root node is open
         m_pTree->SetItemText(m_TreeRoot, m_pWorkspace->GetTitle());
 
