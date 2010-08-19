@@ -1095,9 +1095,6 @@ bool ProjectManager::LoadWorkspace(const wxString& filename)
     m_pWorkspace = new cbWorkspace(filename);
     EndLoadingWorkspace();
 
-    if (m_pProjects->GetCount() > 0 && !m_pActiveProject)
-        SetProject(m_pProjects->Item(0), false);
-
     return m_pWorkspace && m_pWorkspace->IsOK();
 }
 
