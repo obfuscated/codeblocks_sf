@@ -77,11 +77,12 @@ BEGIN_EVENT_TABLE(IncrementalSelectListDlg, wxScrollingDialog)
     EVT_LISTBOX_DCLICK(XRCID("lstItems"), IncrementalSelectListDlg::OnSelect)
 END_EVENT_TABLE()
 
-IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const wxArrayString& items, const wxString& caption, const wxString& message)
+IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const IncrementalSelectIterator& iterator,
+                                                   const wxString& caption, const wxString& message)
     : m_pMyEvtHandler(0L),
     m_List(0L),
     m_Text(0L),
-    m_Items(items)
+    m_Iterator(iterator)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgIncrementalSelectList"),_T("wxScrollingDialog"));
     if (!caption.IsEmpty())
@@ -112,9 +113,13 @@ wxString IncrementalSelectListDlg::GetStringSelection()
     return m_List->GetStringSelection();
 }
 
-int IncrementalSelectListDlg::GetSelection()
+long IncrementalSelectListDlg::GetSelection()
 {
-    return m_List->GetSelection();
+    int selection = m_List->GetSelection();
+    if (selection == wxNOT_FOUND)
+        return wxNOT_FOUND;
+
+    return reinterpret_cast<long>(m_List->GetClientData(selection));
 }
 
 void IncrementalSelectListDlg::FillList()
@@ -125,18 +130,23 @@ void IncrementalSelectListDlg::FillList()
     wxString search(wxT("*") + m_Text->GetValue().Lower() + wxT("*"));
 
     wxArrayString result;
-    //Manager::Get()->GetLogManager()->Log(mltDevDebug, "FillList(): '%s'", search.c_str());
+    wxArrayLong indexes;
+
     m_List->Clear();
-    for (unsigned int i = 0; i < m_Items.GetCount(); ++i)
+    for (int i = 0; i < m_Iterator.GetCount(); ++i)
     {
+        wxString const &item = m_Iterator.GetItem(i);
         // 2 for before and after stars =~ empty string
-        if ((search.Length()==2) || m_Items[i].Lower().Matches(search.c_str()))
-            result.Add(m_Items[i]);
-//          m_List->Append(m_Items[i]);
+        if ((search.Length()==2) || item.Lower().Matches(search.c_str()))
+        {
+            result.Add(item);
+            indexes.Add(i);
+        }
     }
-    m_List->Set(result);
+    m_List->Set(result, reinterpret_cast<void**>(&indexes[0]));
     if (m_List->GetCount())
         m_List->SetSelection(0);
+
     Thaw();
 }
 

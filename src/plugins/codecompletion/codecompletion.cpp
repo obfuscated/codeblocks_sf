@@ -1723,7 +1723,9 @@ void CodeCompletion::OnGotoFunction(wxCommandEvent& event)
             tmpsearch.AddItem(token->DisplayName(), token);
         }
     }
-    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), tokens, _("Select function..."), _("Please select function to go to:"));
+    IncrementalSelectIteratorStringArray iterator(tokens);
+    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
+                                 _("Select function..."), _("Please select function to go to:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {

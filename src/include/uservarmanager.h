@@ -19,9 +19,10 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
         friend class Manager;
         friend class Mgr<UserVariableManager>;
         friend class MacrosManager;
+
         ConfigManager * cfg;
-        wxString activeSet;
-        wxArrayString preempted;
+        wxString        activeSet;
+        wxArrayString   preempted;
 
     public:
         UserVariableManager();

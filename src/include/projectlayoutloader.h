@@ -12,16 +12,16 @@ class cbProject;
 
 class DLLIMPORT ProjectLayoutLoader
 {
-	public:
-		ProjectLayoutLoader(cbProject* project);
-		virtual ~ProjectLayoutLoader();
+    public:
+        ProjectLayoutLoader(cbProject* project);
+        virtual ~ProjectLayoutLoader();
 
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
-        
+
         ProjectFile* GetTopProjectFile(){ return m_TopProjectFile; }
-	protected:
-	private:
+    protected:
+    private:
         cbProject* m_pProject;
         ProjectFile* m_TopProjectFile;
 };

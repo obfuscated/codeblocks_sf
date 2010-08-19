@@ -465,13 +465,16 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
     }
     else
         return; // already active
+
     if (m_pActiveProject)
         m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), false);
+
     m_pActiveProject = project;
-    if (m_pActiveProject){
-        wxTreeItemId tid = m_pActiveProject->GetProjectNode();      //pecan 2006/2/28
-        if (tid)                                                    //pecan 2006/2/28
-        m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), true);
+    if (m_pActiveProject)
+    {
+        wxTreeItemId tid = m_pActiveProject->GetProjectNode();
+        if (tid)
+            m_pTree->SetItemBold(m_pActiveProject->GetProjectNode(), true);
     }
     if (refresh)
         RebuildTree();
@@ -1237,14 +1240,14 @@ void ProjectManager::RebuildTree()
     m_pTree->DeleteAllItems();
     wxString title;
     bool read_only = false;
-    if(m_pWorkspace)
+    if (m_pWorkspace)
     {
         title = m_pWorkspace->GetTitle();
         wxString ws_file = m_pWorkspace->GetFilename();
         read_only = (   !ws_file.IsEmpty() && wxFile::Exists(ws_file.c_str())
                      && !wxFile::Access(ws_file.c_str(), wxFile::write) );
     }
-    if(title.IsEmpty())
+    if (title.IsEmpty())
         title = _("Workspace");
     m_TreeRoot = m_pTree->AddRoot(title, WorkspaceIconIndex(read_only), WorkspaceIconIndex(read_only));
     for (int i = 0; i < count; ++i)
@@ -1683,9 +1686,6 @@ void ProjectManager::OnTabPosition(wxCommandEvent& event)
 
 void ProjectManager::OnTreeBeginDrag(wxTreeEvent& event)
 {
-//    wxString text = m_pTree->GetItemText(event.GetItem());
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("BeginDrag: %s"), text.c_str()));
-
     // what item do we start dragging?
     wxTreeItemId id = event.GetItem();
     if (!id.IsOk())
@@ -1712,10 +1712,6 @@ void ProjectManager::OnTreeBeginDrag(wxTreeEvent& event)
 
 void ProjectManager::OnTreeEndDrag(wxTreeEvent& event)
 {
-//    wxString text = m_pTree->GetItemText(event.GetItem());
-//    wxString oldtext = m_pTree->GetItemText(m_DraggingItem);
-//    Manager::Get()->GetLogManager()->DebugLog(F(_T("EndDrag: %s to %s"), oldtext.c_str(), text.c_str()));
-
     wxTreeItemId from = m_DraggingItem;
     wxTreeItemId to = event.GetItem();
     m_DraggingItem.Unset();
@@ -1977,9 +1973,7 @@ void ProjectManager::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 
     wxString wild;
     for (unsigned i = 0; i < m_pFileGroups->GetGroupsCount(); i++)
-    {
         wild += m_pFileGroups->GetFileMasks(i);
-    }
 
     MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
     PlaceWindow(&dlg);
@@ -2102,7 +2096,7 @@ void ProjectManager::OnRemoveFileFromProject(wxCommandEvent& event)
     else if (event.GetId() == idMenuRemoveFilePopup)
     {
         ProjectFile *prjfile = ftd->GetProjectFile();
-		if(prjfile)
+        if (prjfile)
         {
             // remove single file
             prj->BeginRemoveFiles();
@@ -2322,6 +2316,24 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
     }
 }
 
+struct ProjectFileRelativePathCmp
+{
+    bool operator()(ProjectFile* f1, ProjectFile* f2)
+    { return f1->relativeFilename.Cmp(f2->relativeFilename) < 0; }
+};
+
+struct ProjectFileAbsolutePathCmp
+{
+    bool operator()(ProjectFile* f1, ProjectFile* f2)
+    { return f1->file.GetFullPath().Cmp(f2->file.GetFullPath()) < 0; }
+};
+
+struct ProjectFileAbsolutePathEqual
+{
+    bool operator()(ProjectFile* f1, ProjectFile* f2)
+    { return f1->file.GetFullPath() == f2->file.GetFullPath(); }
+};
+
 void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
 {
     if (!m_pActiveProject)
@@ -2330,19 +2342,50 @@ void ProjectManager::OnGotoFile(wxCommandEvent& /*event*/)
         return;
     }
 
-    wxArrayString files;
-    for (int i = 0; i < m_pActiveProject->GetFilesCount(); ++i)
-        files.Add(m_pActiveProject->GetFile(i)->relativeFilename);
+    typedef std::vector<ProjectFile*> ProjectFiles;
+    ProjectFiles files;
+    for (size_t proj_index = 0; proj_index < m_pProjects->GetCount(); ++proj_index)
+    {
+        cbProject *project = (*m_pProjects)[proj_index];
+        for (int i = 0; i < project->GetFilesCount(); ++i)
+            files.push_back(project->GetFile(i));
+    }
 
-    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), files, _("Select file..."), _("Please select file to open:"));
+    if (!files.empty())
+    {
+        std::sort(files.begin(), files.end(), ProjectFileAbsolutePathCmp());
+        ProjectFiles::iterator last = std::unique(files.begin(), files.end(), ProjectFileAbsolutePathEqual());
+
+        if (last != files.end())
+        {
+            files.erase(last, files.end());
+        }
+
+        std::sort(files.begin(), files.end(), ProjectFileRelativePathCmp());
+    }
+
+    class Iterator : public IncrementalSelectIterator
+    {
+        public:
+            Iterator(ProjectFiles &files) : m_Files(files)
+            { ; }
+            virtual long GetCount() const
+            { return m_Files.size(); }
+            virtual wxString GetItem(long index) const
+            { return m_Files[index]->relativeFilename; }
+        private:
+            ProjectFiles &m_Files;
+    };
+
+    Iterator iterator(files);
+    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
+                                 _("Select file..."), _("Please select file to open:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        ProjectFile* pf = m_pActiveProject->GetFileByFilename(dlg.GetStringSelection(), true);
-        if (pf)
-        {
-            DoOpenFile(pf, pf->file.GetFullPath());
-        }
+        long selection = dlg.GetSelection();
+        if (selection != -1)
+            DoOpenFile(files[selection], files[selection]->file.GetFullPath());
     }
 }
 
