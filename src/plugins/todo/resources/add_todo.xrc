@@ -127,7 +127,8 @@
               <content>
                 <item>C++ style comment</item>
                 <item>C style comment</item>
-                <item>Doxygen style comment</item>
+				<item>Doxygen C style comment (in block)</item>
+				<item>Doxygen C++ style comment</item>
                 <item>Compiler warning</item>
                 <item>Compiler error</item>
               </content>

@@ -9,26 +9,26 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
-  #include <wx/arrstr.h>
-  #include <wx/button.h>
-  #include <wx/combobox.h>
-  #include <wx/event.h>
-  #include <wx/file.h>
-  #include <wx/intl.h>
-  #include <wx/listctrl.h>
-  #include <wx/sizer.h>
-  #include <wx/stattext.h>
-  #include <wx/utils.h>
+    #include <wx/arrstr.h>
+    #include <wx/button.h>
+    #include <wx/combobox.h>
+    #include <wx/event.h>
+    #include <wx/file.h>
+    #include <wx/intl.h>
+    #include <wx/listctrl.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
+    #include <wx/utils.h>
 
-  #include "cbeditor.h"
-  #include "cbproject.h"
-  #include "editormanager.h"
-  #include "filemanager.h"
-  #include "globals.h"
-  #include "manager.h"
-  #include "projectfile.h"
-  #include "projectmanager.h"
-  //#include "logmanager.h"
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "editormanager.h"
+    #include "filemanager.h"
+    #include "globals.h"
+    #include "manager.h"
+    #include "projectfile.h"
+    #include "projectmanager.h"
+    #include "logmanager.h"
 #endif
 
 #include <wx/progdlg.h>
@@ -44,12 +44,14 @@ namespace
     int idSource = wxNewId();
     int idUser = wxNewId();
     int idButtonRefresh = wxNewId();
+    int idButtonTypes = wxNewId();
 };
 
 BEGIN_EVENT_TABLE(ToDoListView, wxEvtHandler)
     EVT_COMBOBOX(idSource, ToDoListView::OnComboChange)
     EVT_COMBOBOX(idUser, ToDoListView::OnComboChange)
     EVT_BUTTON(idButtonRefresh, ToDoListView::OnButtonRefresh)
+    EVT_BUTTON(idButtonTypes, ToDoListView::OnButtonTypes)
 END_EVENT_TABLE()
 
 ToDoListView::ToDoListView(const wxArrayString& titles, const wxArrayInt& widths, const wxArrayString& m_Types) :
@@ -118,9 +120,15 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     m_pRefresh = new wxButton(m_pPanel, idButtonRefresh, _("Refresh"));
     hbs->Add(m_pRefresh, 0, wxLEFT, 4);
 
+    m_pAllowedTypes = new wxButton(m_pPanel, idButtonTypes, _("Types"));
+    hbs->Add(m_pAllowedTypes, 0, wxLEFT, 4);
+
     bs->Add(hbs, 0, wxGROW | wxALL, 4);
     m_pPanel->SetSizer(bs);
 
+    m_pPanel->SetSizer(bs);
+
+    m_pAllowedTypesDlg = new CheckListDialog(m_pPanel);
     return m_pPanel;
 }
 
@@ -387,100 +395,78 @@ void ToDoListView::ParseFile(const wxString& filename)
 
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
-    // this is the actual workhorse...
 
-    // ok, we look for two basic kinds of todo entries in the text
-    // our version...
-    // TODO (mandrav#0#): Implement code to do this and the other...
-    // and a generic version...
+    // this is the actual workhorse...
 
     m_ItemsMap[filename].clear();
 
-    for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
+    //initialize one Comment class and reuse it
+    Comment current;
+
+    wxArrayString allowedTypes;
+    size_t t = 0;
+    while(t < m_Types.Count())
     {
-//Manager::Get()->GetLogManager()->DebugLog("Looking for %s", m_Types[i].c_str());
-        int pos = buffer.find(m_Types[i], 0);
-
-        while (pos > 0)
+        if(m_pAllowedTypesDlg->IsChecked(m_Types.Item(t)))
         {
+            allowedTypes.Add(m_Types.Item(t));
+        }
+        t++;
+    }
+
+    //find parse for comments
+    while (FindNextComment(buffer, &current))
+    {
+
+        // ok, we look for two basic kinds of todo entries in the text
+        // our version...
+        // TODO (mandrav#0#): Implement code to do this and the other...
+        // and a generic version...
+        // TODO: Implement code to do this and the other...
+
+        for (unsigned int i = 0; i < allowedTypes.GetCount(); ++i)
+        {
+            //Manager::Get()->GetLogManager()->DebugLog(allowedTypes.Item(i));
+
             // ok, start parsing now...
-            // keep a temp copy of pos to work with
-            int idx = pos;
-            bool isValid = false; // found it in a comment?
-            bool isC = false; // C or C++ style comment?
-
-            // first check what type of comment we have
-            wxString allowedChars = _T(" \t/*");
-            wxChar lastChar = _T('\0');
-            while (idx >= 0)
+            int pos = current.m_comment.find(allowedTypes[i], 0);
+            while (pos != -1)
             {
-                // Check for special cases: compiler warnings, errors
-                if      ((idx>=8) && buffer.Mid(idx-8, 8).IsSameAs(_T("#warning")))
-                {
-                    isValid = true;
-                    break;
-                }
-                else if ((idx>=6) && buffer.Mid(idx-6, 6).IsSameAs(_T("#error")))
-                {
-                    isValid = true;
-                    break;
-                }
+                // keep a temp copy of pos to work with
+                int idx = pos;
 
-                wxChar c = buffer.GetChar(--idx);
-                // Check for EOL's and terminate early (saving time)
-                if (c == _T('\r') || c == _T('\n'))
-                    break;
+                //#warning TODO (mandrav#1#): Make viewtododlg understand and display todo notes that are compiler warnings/errors...
 
-                if ((int)allowedChars.Index(c) != wxNOT_FOUND)
-                {
-                    if (c == _T('/') && (lastChar == _T('/') || lastChar == _T('*')))
-                    {
-                        isValid = true;
-                        isC = lastChar == _T('*');
-                        break;
-                    }
-                }
-                else
-                    break;
 
-                lastChar = c;
-            }
+                //Manager::Get()->GetLogManager()->DebugLog("Found %s %s style %s at %d", isValid ? "valid" : "invalid", m_isC ? "C" : "C++", allowedTypes[i].c_str(), pos);
 
-//wxString msg;
-//msg.Printf(_T("Found %s %s style %s at %d"),
-//           isValid ? _T("valid") : _T("invalid"),
-//           isC     ? _T("C")     : _T("C++"),
-//           m_Types[i].c_str(),
-//           pos);
-//Manager::Get()->GetLogManager()->DebugLog(msg);
-
-            if (isValid)
-            {
                 ToDoItem item;
-                item.type = m_Types[i];
+                item.type = allowedTypes[i];
                 item.filename = filename;
 
-                idx = pos + m_Types[i].Length();
+                idx = pos + allowedTypes[i].Length();
+
+                wxString allowedChars = _T(" \t/*");
                 wxChar c = _T('\0');
 
-//Manager::Get()->GetLogManager()->DebugLog("1");
+                //Manager::Get()->GetLogManager()->DebugLog("1");
                 // skip to next non-blank char
-                while (idx < (int)buffer.Length())
+                while (idx < (int)current.m_comment.Length())
                 {
-                    c = buffer.GetChar(idx);
-                    if (c != _T(' ') && c != _T('\t'))
+                    c = current.m_comment.GetChar(idx);
+                    if (c != _T(' ') && c != _T('\t') && c != _T('\n'))
                         break;
                     ++idx;
                 }
-//Manager::Get()->GetLogManager()->DebugLog("2");
+                //Manager::Get()->GetLogManager()->DebugLog("2");
                 // is it ours or generic todo?
                 if (c == _T('('))
                 {
                     // it's ours, find user and/or priority
                     ++idx; // skip (
-                    while (idx < (int)buffer.Length())
+                    while (idx < (int)current.m_comment.Length())
                     {
-                        wxChar c1 = buffer.GetChar(idx);
+                        wxChar c1 = current.m_comment.GetChar(idx);
                         if (c1 != _T('#') && c1 != _T(')'))
                         {
                             // a little logic doesn't hurt ;)
@@ -497,14 +483,14 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                         else if (c1 == _T('#'))
                         {
                             // look for priority
-                            c1 = buffer.GetChar(++idx);
+                            c1 = current.m_comment.GetChar(++idx);
                             allowedChars = _T("0123456789");
                             if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
                                 item.priorityStr << c1;
                             // skip to start of text
-                            while (idx < (int)buffer.Length())
+                            while (idx < (int)current.m_comment.Length())
                             {
-                                wxChar c2 = buffer.GetChar(idx++);
+                                wxChar c2 = current.m_comment.GetChar(idx++);
                                 if (c2 == _T(')') || c2 == _T('\r') || c2 == _T('\n'))
                                     break;
                             }
@@ -515,18 +501,18 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                         ++idx;
                     }
                 }
-//Manager::Get()->GetLogManager()->DebugLog("3");
+                //Manager::Get()->GetLogManager()->DebugLog("3");
                 // ok, we 've reached the actual todo text :)
-                // take everything up to the end of line or end of comment (if isC)
+                // take everything up to the end of line or end of comment (if m_isC)
                 wxChar lastChar = _T('\0');
-                if (buffer.GetChar(idx) == _T(':'))
+                if (current.m_comment.GetChar(idx) == _T(':'))
                     ++idx;
-                while (idx < (int)buffer.Length())
+                while (idx < (int)current.m_comment.Length())
                 {
-                    wxChar c1 = buffer.GetChar(idx++);
+                    wxChar c1 = current.m_comment.GetChar(idx++);
                     if (c1 == _T('\r') || c1 == _T('\n'))
                         break;
-                    if (isC && c1 == _T('/') && lastChar == _T('*'))
+                    if (current.m_isC && c1 == _T('/') && lastChar == _T('*'))
                     {
                         // remove last char '*'
                         item.text.RemoveLast();
@@ -542,23 +528,24 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                         item.text << c1;
                     lastChar = c1;
                 }
-//Manager::Get()->GetLogManager()->DebugLog("4");
+                //Manager::Get()->GetLogManager()->DebugLog("4");
                 // do some clean-up
                 item.text.Trim();
                 item.text.Trim(false);
                 item.user.Trim();
                 item.user.Trim(false);
-                item.line = CalculateLineNumber(buffer, pos);
+                item.line = CalculateLineNumber(buffer, current.m_posBegin + pos);
                 item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
                 m_ItemsMap[filename].push_back(item);
-                // m_Items.Add(item);
-            }
-            else
-                break; // invalid style...
+                m_Items.Add(item);
 
-            pos = buffer.find(m_Types[i], idx);
+                pos = current.m_comment.find(allowedTypes[i], idx);
+                //Manager::Get()->GetLogManager()->DebugLog("Found it at %d", pos);
+            }
+
         }
-//        Manager::Get()->GetLogManager()->DebugLog("Found it at %d", pos);
+
+        //current.logFile.Write();
     }
 }
 
@@ -585,6 +572,71 @@ void ToDoListView::FocusEntry(size_t index)
     }
 }
 
+
+bool ToDoListView::FindNextComment(const wxString& buffer, Comment * previous)
+{
+    wxString Str;
+    bool valid = false;
+    while(!valid)
+    {
+        // find beginning of next comment, aka "/"
+        Str = _("/");
+        previous->m_posBegin = buffer.find(Str, previous->m_posEnd);
+        if (previous->m_posBegin != -1)
+        {
+            //Test for C++ style
+            Str = _("/");
+            if (buffer.GetChar(previous->m_posBegin + 1) == Str)
+            {
+                // is is Single line so find the end
+                Str = _("\n");
+                previous->m_posEnd = buffer.find(Str, previous->m_posBegin);
+                if (previous->m_posEnd == -1)
+                {
+                    //file ended without newline
+                    previous->m_posEnd = buffer.Len() - 2;
+                }
+                previous->m_isC = false;
+                valid = true;
+            }
+            //Test for C style
+            else
+            {
+                Str = _("*");
+                if (buffer.GetChar(previous->m_posBegin + 1) == Str)
+                {
+                    // is is Multiline so find the end
+                    Str = _("*/");
+                    previous->m_posEnd = buffer.find(Str, previous->m_posBegin);
+                    if (previous->m_posEnd == -1)
+                    {
+                        //comment end not found
+                        return false;
+                    }
+                    previous->m_isC = true;
+                    previous->m_posEnd = previous->m_posEnd + 1;
+                    valid = true;
+                }
+                //It is not a valid comment so search some more
+                else
+                {
+                    previous->m_posEnd = previous->m_posBegin + 1;
+                    valid = false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+    previous->m_comment = buffer.Mid(previous->m_posBegin, (previous->m_posEnd - previous->m_posBegin) + 1);
+    return true;
+}
+
+
+
 void ToDoListView::OnComboChange(wxCommandEvent& event)
 {
     Manager::Get()->GetConfigManager( _T("todo_list"))->Write(_T("source"), m_pSource->GetSelection() );
@@ -594,11 +646,16 @@ void ToDoListView::OnComboChange(wxCommandEvent& event)
 void ToDoListView::OnListItemSelected(wxCommandEvent& event)
 {
     long index = control->GetNextItem(-1,
-                                     wxLIST_NEXT_ALL,
-                                     wxLIST_STATE_SELECTED);
+                                      wxLIST_NEXT_ALL,
+                                      wxLIST_STATE_SELECTED);
     if (index == -1)
         return;
     FocusEntry(index);
+}
+
+void ToDoListView::OnButtonTypes(wxCommandEvent& event)
+{
+    m_pAllowedTypesDlg->Show(!m_pAllowedTypesDlg->IsShown());
 }
 
 void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
@@ -642,4 +699,69 @@ void ToDoListView::OnColClick( wxListEvent& event )
 
     m_SortColumn = event.GetColumn();
     FillList();
+}
+
+
+CheckListDialog::CheckListDialog( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxDialog( parent, id, title, pos, size, style )
+{
+    this->SetSizeHints( wxDefaultSize, wxDefaultSize );
+
+    wxBoxSizer* bSizer122;
+    bSizer122 = new wxBoxSizer( wxVERTICAL );
+
+    wxArrayString m_checkList1Choices;
+    m_checkList1 = new wxCheckListBox( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_checkList1Choices, 0 );
+    bSizer122->Add( m_checkList1, 1, wxEXPAND, 5 );
+
+    m_okBtn = new wxButton( this, wxID_ANY, wxT("OK"), wxDefaultPosition, wxDefaultSize, 0 );
+    bSizer122->Add( m_okBtn, 0, wxALIGN_CENTER_HORIZONTAL|wxTOP|wxBOTTOM, 5 );
+
+    this->SetSizer( bSizer122 );
+    this->Layout();
+
+    // Connect Events
+    m_okBtn->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this );
+}
+
+CheckListDialog::~CheckListDialog()
+{
+    // Disconnect Events
+    m_okBtn->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( CheckListDialog::OkOnButtonClick ), NULL, this );
+}
+
+void CheckListDialog::OkOnButtonClick(wxCommandEvent& event)
+{
+    Show(false);
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types_selected"), GetChecked());
+}
+
+bool CheckListDialog::IsChecked(wxString item)
+{
+    return m_checkList1->IsChecked(m_checkList1->FindString(item, true));
+}
+
+wxArrayString CheckListDialog::GetChecked()
+{
+    size_t item = 0;
+    wxArrayString items;
+    while(item < m_checkList1->GetCount())
+    {
+        if(m_checkList1->IsChecked(item))
+        {
+            items.Add(m_checkList1->GetString(item));
+        }
+        item++;
+    }
+    return items;
+}
+
+void CheckListDialog::SetChecked(wxArrayString items)
+{
+
+    size_t item = 0;
+    while(item < items.GetCount())
+    {
+        m_checkList1->Check(m_checkList1->FindString(items.Item(item), true));
+        item++;
+    }
 }

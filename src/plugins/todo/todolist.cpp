@@ -66,7 +66,6 @@ ToDoList::ToDoList() :
 
 ToDoList::~ToDoList()
 {
-    //dtor
 }
 
 void ToDoList::OnAttach()
@@ -77,7 +76,7 @@ void ToDoList::OnAttach()
     titles.Add(_("Type"));
     titles.Add(_("Text"));
     titles.Add(_("User"));
-    titles.Add(_("Prio."));
+    titles.Add(_("Prio"));
     titles.Add(_("Line"));
     titles.Add(_("File"));
     widths.Add(64);
@@ -96,7 +95,7 @@ void ToDoList::OnAttach()
     {
         LogManager* msgMan = Manager::Get()->GetLogManager();
         m_ListPageIndex = msgMan->SetLog(m_pListLog);
-        msgMan->Slot(m_ListPageIndex).title = _("Todo");
+        msgMan->Slot(m_ListPageIndex).title = _("To Do");
 
         CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pListLog, msgMan->Slot(m_ListPageIndex).title, msgMan->Slot(m_ListPageIndex).icon);
         Manager::Get()->ProcessEvent(evt);
@@ -242,6 +241,13 @@ void ToDoList::LoadTypes()
         m_Types.Add(_T("@note"));
         m_Types.Add(_T("\\note"));
     }
+    m_pListLog->m_pAllowedTypesDlg->Clear();
+    m_pListLog->m_pAllowedTypesDlg->AddItem(m_Types);
+
+    wxArrayString selectedTypes;
+    Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("types_selected"), &selectedTypes);
+
+    m_pListLog->m_pAllowedTypesDlg->SetChecked(selectedTypes);
     SaveTypes();
 }
 
@@ -370,7 +376,10 @@ void ToDoList::OnAddItem(wxCommandEvent& event)
         case tdctCpp:
             buffer << _T("// ");
             break;
-        case tdctDoxygen:
+        case tdctDoxygenC:
+            buffer << _T(" * ");
+            break;
+        case tdctDoxygenCPP:
             buffer << _T("/// ");
             break;
         case tdctWarning:

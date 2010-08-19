@@ -25,7 +25,8 @@ enum ToDoCommentType
 {
     tdctCpp = 0, // C++ style,
     tdctC,       // C style
-    tdctDoxygen, // Doxygen style
+    tdctDoxygenC, // Doxygen C style
+    tdctDoxygenCPP, // Doxygen CPP style
     tdctWarning, // compiler warning
     tdctError    // compiler error
 };
