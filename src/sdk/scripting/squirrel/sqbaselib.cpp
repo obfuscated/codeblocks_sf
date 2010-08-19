@@ -30,6 +30,7 @@ bool str2num(const SQChar *s,SQObjectPtr &res)
 	}
 }
 
+// C::B patch: Make the compiler happy by commenting unused variables
 static SQInteger base_dummy(HSQUIRRELVM /*v*/)
 {
 	return 0;
@@ -474,6 +475,7 @@ static SQInteger array_resize(HSQUIRRELVM v)
 
 
 //QSORT ala Sedgewick
+// C::B patch: Make the compiler happy by commenting unused variables
 bool _qsort_compare(HSQUIRRELVM v,SQObjectPtr & /*arr*/,SQObjectPtr &a,SQObjectPtr &b,SQInteger func,SQInteger &ret)
 {
 	if(func < 0) {

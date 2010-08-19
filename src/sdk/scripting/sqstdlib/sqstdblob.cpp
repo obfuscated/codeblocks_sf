@@ -112,6 +112,7 @@ static SQInteger _blob__typeof(HSQUIRRELVM v)
 	return 1;
 }
 
+// C::B patch: Make the compiler happy by commenting unused variables
 static SQInteger _blob_releasehook(SQUserPointer p, SQInteger /*size*/)
 {
 	SQBlob *self = (SQBlob*)p;

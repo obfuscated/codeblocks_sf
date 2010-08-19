@@ -241,6 +241,7 @@ void SQSharedState::MarkObject(SQObjectPtr &o,SQCollectable **chain)
 }
 
 
+// C::B patch: Make the compiler happy by commenting unused variables
 SQInteger SQSharedState::CollectGarbage(SQVM * /*vm*/)
 {
 	SQInteger n=0;

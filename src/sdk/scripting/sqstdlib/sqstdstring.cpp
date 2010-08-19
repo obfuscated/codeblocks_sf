@@ -88,6 +88,7 @@ SQRESULT sqstd_format(HSQUIRRELVM v,SQInteger nformatstringidx,SQInteger *outlen
 		else {
 			n++;
 			if( nparam > sq_gettop(v) )
+                // C::B patch: Correct misspelled "parameters"
 				return sq_throwerror(v,_SC("not enough parameters for the given format string"));
 			n = validate_format(v,fmt,format,n,w);
 			if(n < 0) return -1;
@@ -217,6 +218,7 @@ static SQInteger _string_split(HSQUIRRELVM v)
 	SQRex *self = NULL; \
 	sq_getinstanceup(v,1,(SQUserPointer *)&self,0);
 
+// C::B patch: Make the compiler happy by commenting unused variables
 static SQInteger _rexobj_releasehook(SQUserPointer p, SQInteger /*size*/)
 {
 	SQRex *self = ((SQRex *)p);

@@ -114,6 +114,7 @@ static SQInteger _file__typeof(HSQUIRRELVM v)
 	return 1;
 }
 
+// C::B patch: Make the compiler happy by commenting unused variables
 static SQInteger _file_releasehook(SQUserPointer p, SQInteger /*size*/)
 {
 	SQFile *self = (SQFile*)p;

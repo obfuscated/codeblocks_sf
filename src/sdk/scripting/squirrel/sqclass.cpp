@@ -173,6 +173,7 @@ SQInstance::~SQInstance()
 	if(_class){ Finalize(); } //if _class is null it was already finalized by the GC
 }
 
+// C::B patch: Make the compiler happy by commenting unused variables
 bool SQInstance::GetMetaMethod(SQVM * /*v*/,SQMetaMethod mm,SQObjectPtr &res)
 {
 	if(type(_class->_metamethods[mm]) != OT_NULL) {
