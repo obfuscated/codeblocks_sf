@@ -147,14 +147,15 @@ void CDB_driver::StepInstruction()
 void CDB_driver::StepIn()
 {
     ResetCursor();
-//    QueueCommand(new DebuggerCmd(this, _T("step")));
-    NOT_IMPLEMENTED();
+    QueueCommand(new DebuggerCmd(this, _T("t")));
+    Step();
 }
 
 void CDB_driver::StepOut()
 {
     ResetCursor();
-    NOT_IMPLEMENTED();
+    QueueCommand(new DebuggerCmd(this, _T("gu")));
+    Step();
 }
 
 void CDB_driver::Backtrace()
