@@ -1399,7 +1399,7 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
-        if (plug)
+        if (plug && plug->IsAttached())
         {
             try
             {
