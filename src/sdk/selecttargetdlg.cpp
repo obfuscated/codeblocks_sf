@@ -47,7 +47,12 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 	if (selected != -1)
 		list->SetSelection(selected);
 	else
-		list->SetSelection(list->FindString(m_pProject->GetDefaultExecuteTarget()));
+	{
+	    int item = list->FindString(m_pProject->GetActiveBuildTarget());
+	    if (item == wxNOT_FOUND)
+            item = list->FindString(m_pProject->GetDefaultExecuteTarget());
+		list->SetSelection(item);
+	}
 
 	UpdateSelected();
 	XRCCTRL(*this, "wxID_OK", wxButton)->MoveBeforeInTabOrder (XRCCTRL(*this, "lstItems", wxListBox));

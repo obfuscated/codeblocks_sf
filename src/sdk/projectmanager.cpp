@@ -1791,7 +1791,7 @@ void ProjectManager::OnProjectFileActivated(wxTreeEvent& event)
 void ProjectManager::OnExecParameters(wxCommandEvent& /*event*/)
 {
     if (m_pActiveProject)
-        m_pActiveProject->SelectTarget(0, true);
+        m_pActiveProject->SelectTarget(-1, true);
 }
 
 void ProjectManager::OnRightClick(wxCommandEvent& /*event*/)
