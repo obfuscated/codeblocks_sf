@@ -3765,12 +3765,15 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
         LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
         if (!m_CommandQueue.LastCommandWasRun())
         {
-            wxString msg = wxString::Format(_("%d errors, %d warnings"), m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning));
+            wxString msg = wxString::Format(_("%d errors, %d warnings (%d minutes, %d seconds)"),
+                                            m_Errors.GetCount(cltError), m_Errors.GetCount(cltWarning), mins, secs);
             LogMessage(msg, exitCode == 0 ? cltWarning : cltError, ltAll, exitCode != 0);
             #if wxCHECK_VERSION(2, 9, 0)
-            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.wx_str()));
+            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
+                              wxString::Format(_("=== Build finished: %s ==="), msg.wx_str()));
             #else
-            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString, wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
+            LogWarningOrError(cltNormal, 0, wxEmptyString, wxEmptyString,
+                              wxString::Format(_("=== Build finished: %s ==="), msg.c_str()));
             #endif
             SaveBuildLog();
         }
