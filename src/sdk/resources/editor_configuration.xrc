@@ -292,6 +292,12 @@
 															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 														</object>
 														<object class="sizeritem">
+															<object class="wxCheckBox" name="chkBraceSmartIndent">
+																<label>Brace Smart Indent</label>
+															</object>
+															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+														</object>
+														<object class="sizeritem">
 															<object class="wxBoxSizer">
 																<object class="sizeritem">
 																	<object class="wxStaticText" name="ID_STATICTEXT3">

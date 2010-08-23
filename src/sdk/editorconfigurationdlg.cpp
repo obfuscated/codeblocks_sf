@@ -114,6 +114,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     m_EnableChangebar = cfg->ReadBool(_T("/margin/use_changebar"), true);
     XRCCTRL(*this, "chkUseChangebar", wxCheckBox)->SetValue(m_EnableChangebar);
     XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_indent_guides"), false));
+    XRCCTRL(*this, "chkBraceSmartIndent", wxCheckBox)->SetValue(cfg->ReadBool(_T("/brace_smart_indent"), true));
     XRCCTRL(*this, "chkTabIndents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/tab_indents"), true));
     XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->SetValue(cfg->ReadBool(_T("/backspace_unindents"), true));
     XRCCTRL(*this, "chkWordWrap", wxCheckBox)->SetValue(cfg->ReadBool(_T("/word_wrap"), false));
@@ -881,6 +882,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/brace_completion"),                    XRCCTRL(*this, "chkBraceCompletion", wxCheckBox)->GetValue());
         cfg->Write(_T("/use_tab"),                             XRCCTRL(*this, "chkUseTab", wxCheckBox)->GetValue());
         cfg->Write(_T("/show_indent_guides"),                  XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->GetValue());
+        cfg->Write(_T("/brace_smart_indent"),                  XRCCTRL(*this, "chkBraceSmartIndent", wxCheckBox)->GetValue());
         cfg->Write(_T("/tab_indents"),                         XRCCTRL(*this, "chkTabIndents", wxCheckBox)->GetValue());
         cfg->Write(_T("/backspace_unindents"),                 XRCCTRL(*this, "chkBackspaceUnindents", wxCheckBox)->GetValue());
         cfg->Write(_T("/word_wrap"),                           XRCCTRL(*this, "chkWordWrap", wxCheckBox)->GetValue());

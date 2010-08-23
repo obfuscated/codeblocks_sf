@@ -3038,19 +3038,24 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
                     case wxSCI_LEX_CPP:
                     case wxSCI_LEX_D:
                         {
-                            int string_style = control->GetLexer() == wxSCI_LEX_CPP ? wxSCI_C_STRING : wxSCI_D_STRING;
-
-                            int brace_position = m_pData->GetFirstBraceInLine(string_style);
-                            if (brace_position >= 0)
+                            ConfigManager* configManager = Manager::Get()->GetConfigManager(_T("editor"));
+                            bool braceIndent = configManager->ReadBool(_T("/brace_smart_indent"), true);
+                            if (braceIndent)
                             {
-                                if(control->GetUseTabs())
+                                int style = control->GetLexer() == wxSCI_LEX_CPP ? wxSCI_C_STRING : wxSCI_D_STRING;
+
+                                int brace_position = m_pData->GetFirstBraceInLine(style);
+                                if (brace_position >= 0)
                                 {
-                                    brace_position /= control->GetTabWidth();
-                                    indent = wxString(_T('\t'), brace_position);
+                                    if (control->GetUseTabs())
+                                    {
+                                        brace_position /= control->GetTabWidth();
+                                        indent = wxString(_T('\t'), brace_position);
+                                    }
+                                    else
+                                        indent = wxString(_T(' '), brace_position); // n spaces
+                                    break;
                                 }
-                                else
-                                    indent = wxString(_T(' '), brace_position); // n spaces
-                                break;
                             }
                         }
 
