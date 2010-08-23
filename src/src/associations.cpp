@@ -372,6 +372,8 @@ void ManageAssocsDialog::OnClearAll(wxCommandEvent& event)
 
 BEGIN_EVENT_TABLE(AskAssocDialog, wxScrollingDialog)
     EVT_BUTTON(XRCID("wxID_OK"), AskAssocDialog::OnOK)
+    EVT_BUTTON(wxID_CANCEL, AskAssocDialog::OnESC)
+    EVT_CHAR_HOOK(AskAssocDialog::OnCharHook)
 END_EVENT_TABLE()
 
 
@@ -379,9 +381,29 @@ END_EVENT_TABLE()
 AskAssocDialog::AskAssocDialog(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("askAssoc"),_T("wxScrollingDialog"));
+    SetEscapeId(wxID_NONE);
 }
 
 void AskAssocDialog::OnOK(wxCommandEvent& event)
 {
     EndModal(XRCCTRL(*this, "choice", wxRadioBox)->GetSelection());
+}
+
+void AskAssocDialog::OnESC(wxCommandEvent& event)
+{
+    EndModal(ASC_ASSOC_DLG_NO_ONLY_NOW);
+}
+
+void AskAssocDialog::OnCharHook(wxKeyEvent& event)
+{
+    if ( event.GetKeyCode() == WXK_ESCAPE )
+    {
+        Close(); //wxDialog::Close() send button event with id wxID_CANCEL (wxWidgets 2.8)
+    }
+    else if( event.GetKeyCode() == WXK_RETURN )
+    {
+        EndModal(XRCCTRL(*this, "choice", wxRadioBox)->GetSelection());
+    }
+
+    event.Skip();
 }

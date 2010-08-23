@@ -343,15 +343,15 @@ void CodeBlocksApp::InitAssociations()
 
             switch(dlg.ShowModal())
             {
-            case 0:
+            case ASC_ASSOC_DLG_NO_DONT_ASK:
                 Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/check_associations"), false);
                 break;
-            case 1:
+            case ASC_ASSOC_DLG_NO_ONLY_NOW:
                 break;
-            case 2:
+            case ASC_ASSOC_DLG_YES_C_FILES:
                 Associations::SetCore();
                 break;
-            case 3:
+            case ASC_ASSOC_DLG_YES_ALL_FILES:
                 Associations::SetAll();
                 break;
             };

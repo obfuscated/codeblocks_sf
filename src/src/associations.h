@@ -65,12 +65,19 @@ class ManageAssocsDialog : public wxScrollingDialog
         DECLARE_EVENT_TABLE()
 };
 
+#define ASC_ASSOC_DLG_NO_DONT_ASK       0
+#define ASC_ASSOC_DLG_NO_ONLY_NOW       1
+#define ASC_ASSOC_DLG_YES_C_FILES       2
+#define ASC_ASSOC_DLG_YES_ALL_FILES     3
+
 class AskAssocDialog : public wxScrollingDialog
 {
     public:
         AskAssocDialog(wxWindow* parent);
     protected:
         void OnOK(wxCommandEvent& event);
+        void OnESC(wxCommandEvent& event);
+        void OnCharHook(wxKeyEvent& event);
     private:
         DECLARE_EVENT_TABLE()
 };
