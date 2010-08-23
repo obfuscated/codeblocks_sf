@@ -665,11 +665,12 @@ void ToDoListView::OnButtonRefresh(wxCommandEvent& event)
 
 void ToDoListView::OnDoubleClick( wxCommandEvent& event )
 {    // pecan 1/2/2006 12PM : Switched with OnListItemSelected by Rick 20/07/2007
-    long idx = control->GetNextItem(-1,
+    long item = control->GetNextItem(-1,
                                      wxLIST_NEXT_ALL,
                                      wxLIST_STATE_SELECTED);
-    if (idx == -1)
+    if (item == -1)
         return;
+    long idx = control->GetItemData(item);
 
     wxString file = m_Items[idx].filename;
     long int line = m_Items[idx].line;
