@@ -108,7 +108,7 @@ public:
 
         style[caption].SetAlignment(wxTEXT_ALIGNMENT_DEFAULT);
         style[caption].SetFont(style[error].GetFont());
-        style[warning].SetTextColour(*wxBLUE);
+        style[warning].SetTextColour(BlendTextColour(*wxBLUE));
         style[error].SetFont(style[info].GetFont());
     }
 
@@ -524,6 +524,7 @@ int CompilerGCC::Configure(cbProject* project, ProjectBuildTarget* target)
 {
     cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Project build options"));
     cbConfigurationPanel* panel = new CompilerOptionsDlg(&dlg, this, project, target);
+    panel->SetParentDialog(&dlg);
     dlg.AttachConfigurationPanel(panel);
     PlaceWindow(&dlg);
     if(dlg.ShowModal() == wxID_OK)
@@ -758,10 +759,10 @@ void CompilerGCC::SetupEnvironment()
 
 void CompilerGCC::SetEnvironmentForCompiler(const wxString& id, wxString& envPath)
 {
-    if (!CompilerFactory::GetCompiler(id))
+    Compiler* compiler = CompilerFactory::GetCompiler(id);
+    if (!compiler)
         return;
 
-    Compiler* compiler = CompilerFactory::GetCompiler(id);
     wxString sep = wxFileName::GetPathSeparator();
 
     wxString masterPath = compiler->GetMasterPath();
@@ -1974,8 +1975,9 @@ wxString CompilerGCC::GetMakeCommandFor(MakeCommand cmd, cbProject* project, Pro
     wxString command = target && !target->GetMakeCommandFor(cmd).empty() ?
                        target->GetMakeCommandFor(cmd) : project->GetMakeCommandFor(cmd);
 
+    Compiler* compiler = CompilerFactory::GetCompiler(compilerId);
     command.Replace(_T("$makefile"), project->GetMakefile());
-    command.Replace(_T("$make"), CompilerFactory::GetCompiler(compilerId)->GetPrograms().MAKE);
+    command.Replace(_T("$make"), compiler ? compiler->GetPrograms().MAKE : _T("make"));
     command.Replace(_T("$target"), target ? target->GetTitle() : _T(""));
     Manager::Get()->GetMacrosManager()->ReplaceMacros(command);
 
@@ -2052,7 +2054,9 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 
     if (m_Project)
         wxSetWorkingDirectory(m_Project->GetBasePath());
-    CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (compiler)
+        compiler->Init(m_Project);
 
     if (UseMake())
     {
@@ -2308,8 +2312,9 @@ void CompilerGCC::BuildStateManagement()
         {
             m_pLastBuildingProject = m_pBuildingProject;
             wxSetWorkingDirectory(m_pBuildingProject->GetBasePath());
-            CompilerFactory::GetCompiler(m_CompilerId)->Init(m_pBuildingProject);
             initCompiler = CompilerFactory::GetCompiler(m_CompilerId);
+            if (initCompiler)
+                initCompiler->Init(m_pBuildingProject);
         }
         if (bt != m_pLastBuildingTarget)
         {
@@ -2361,35 +2366,39 @@ void CompilerGCC::BuildStateManagement()
             {
                 wxString cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
                 bool cleanOK = false;
-                switch (CompilerFactory::GetCompiler(bt->GetCompilerID())->GetSwitches().logging)
+                Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+                if (tgtCompiler)
                 {
-                    case clogFull:
-                        cleanOK = DoCleanWithMake(cmd, true);
-                        break;
+                    switch (tgtCompiler->GetSwitches().logging)
+                    {
+                        case clogFull:
+                            cleanOK = DoCleanWithMake(cmd, true);
+                            break;
 
-                    case clogSimple:
-                    case clogNone:
-                        cleanOK = DoCleanWithMake(cmd);
-                        break;
+                        case clogSimple:
+                        case clogNone:
+                            cleanOK = DoCleanWithMake(cmd);
+                            break;
 
-                    default:
-                        break;
-                }
-                if(cleanOK)
-                {
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
-                    #else
-                    Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
-                    #endif
-                }
-                else
-                {
-                    #if wxCHECK_VERSION(2, 9, 0)
-                    Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
-                    #else
-                    Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
-                    #endif
+                        default:
+                            break;
+                    }
+                    if(cleanOK)
+                    {
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
+                        #else
+                        Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
+                        #endif
+                    }
+                    else
+                    {
+                        #if wxCHECK_VERSION(2, 9, 0)
+                        Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
+                        #else
+                        Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().c_str(), bt ? bt->GetTitle().c_str() : _("<all targets>")), m_PageIndex);
+                        #endif
+                    }
                 }
             }
             else
@@ -2416,21 +2425,25 @@ void CompilerGCC::BuildStateManagement()
                 wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
                 if(wxExecute(GetMakeCommandFor(mcAskRebuildNeeded, m_pBuildingProject, bt), output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
                 {
-                    switch (CompilerFactory::GetCompiler(bt->GetCompilerID())->GetSwitches().logging)
+                    Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+                    if (tgtCompiler)
                     {
-                        case clogFull:
-                            cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Running command: ") + GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
-                            cmds.Add(GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
-                            break;
+                        switch (tgtCompiler->GetSwitches().logging)
+                        {
+                            case clogFull:
+                                cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Running command: ") + GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
+                                cmds.Add(GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
+                                break;
 
-                        case clogSimple:
-                            cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
-                        case clogNone:
-                            cmds.Add(GetMakeCommandFor(mcSilentBuild, m_pBuildingProject, bt));
-                            break;
+                            case clogSimple:
+                                cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
+                            case clogNone:
+                                cmds.Add(GetMakeCommandFor(mcSilentBuild, m_pBuildingProject, bt));
+                                break;
 
-                        default:
-                            break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }
@@ -2966,8 +2979,11 @@ int CompilerGCC::CompileFile(const wxString& file)
         SwitchCompiler(CompilerFactory::GetDefaultCompilerID());
 //        Manager::Get()->GetMessageManager()->DebugLog("-----CompileFile [if(!pf)]-----"));
         Manager::Get()->GetMacrosManager()->Reset();
-        CompilerFactory::GetCompiler(m_CompilerId)->Init(0);
+        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        if (compiler)
+            compiler->Init(0);
 
+        // TODO (Morten#5#): Why is m_CompilerID iused for initialisation, but the default compiler for compiling (DirectCommands)???
         // get compile commands for file (always linked as console-executable)
         DirectCommands dc(this, CompilerFactory::GetDefaultCompiler(), 0, m_PageIndex);
         wxArrayString compile = dc.GetCompileSingleFileCommand(file);
@@ -2997,7 +3013,9 @@ int CompilerGCC::CompileFile(const wxString& file)
     }
     else
     {
-        CompilerFactory::GetCompiler(m_CompilerId)->Init(m_Project);
+        Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+        if (compiler)
+            compiler->Init(m_Project);
 
         DirectCommands dc(this, CompilerFactory::GetCompiler(bt->GetCompilerID()), m_Project, m_PageIndex);
         wxArrayString compile = dc.CompileFile(bt, pf);
@@ -3038,7 +3056,7 @@ void CompilerGCC::OnRun(wxCommandEvent& /*event*/)
 
 void CompilerGCC::OnCompileAndRun(wxCommandEvent& /*event*/)
 {
-    ProjectBuildTarget* target = 0;//DoAskForTarget();
+    ProjectBuildTarget* target = 0;
     m_RunAfterCompile = true;
     Build(target);
 }
@@ -3415,6 +3433,8 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
     }
 
     Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    if (!compiler)
+        return;
     CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
     // if max_errors reached, display a one-time message and do not log anymore
