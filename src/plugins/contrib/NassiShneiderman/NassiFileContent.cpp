@@ -1,6 +1,8 @@
 #include "NassiFileContent.h"
 #include "bricks.h"
 
+#include <wx/intl.h>
+
 NassiFileContent::NassiFileContent():
 m_firstbrick(0)
 {
