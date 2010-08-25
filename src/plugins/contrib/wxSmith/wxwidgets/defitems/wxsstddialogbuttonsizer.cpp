@@ -31,7 +31,7 @@ using namespace wxsFlags;
 
 namespace
 {
-    wxsRegisterItem<wxsStdDialogButtonSizer> Reg(_("StdDialogButtonSizer"),wxsTSizer,_T("Layout"),10);
+    wxsRegisterItem<wxsStdDialogButtonSizer> Reg(_T("StdDialogButtonSizer"),wxsTSizer,_T("Layout"),10);
 
     class wxsSizerPreview: public wxPanel
     {
