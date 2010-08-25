@@ -33,7 +33,7 @@ wxDragResult NassiDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
 {
     if ( !GetData() )
     {
-        wxMessageBox(_T("Failed to get drag and drop data") );
+        wxMessageBox(_("Failed to get drag and drop data") );
         return wxDragNone;
     }
 

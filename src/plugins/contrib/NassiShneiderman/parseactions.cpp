@@ -195,7 +195,7 @@ void CreateNassiBlockBrick::DoCreate() const
     m_brick = brick;
 
     brick = new NassiInstructionBrick();
-    brick->SetTextByNumber( _T("created by CreateNassiBlockBrick"), 0);
+    brick->SetTextByNumber( _("created by CreateNassiBlockBrick"), 0);
     m_brick->SetChild(brick);
     m_brick = brick;
 }

@@ -26,7 +26,7 @@ wxInputStream& NassiFileContent::LoadObject(wxInputStream& stream)
 
 wxString NassiFileContent::GetWildcard()
 {
-    return _T("Nassi Shneiderman diagram, (*.nsd)|*.nsd");
+    return _("Nassi Shneiderman diagram, (*.nsd)|*.nsd");
 }
 
 NassiBrick *NassiFileContent::GetFirstBrick(void)

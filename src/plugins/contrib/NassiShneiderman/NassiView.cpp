@@ -386,7 +386,7 @@ void NassiView::UpdateSize()
     GraphNassiBrick *gbrick = this->GetGraphBrick(m_nfc->GetFirstBrick());
     if ( !gbrick )
     {
-        wxString str(_T("Insert your code here."));
+        wxString str(_("Insert your code here."));
         wxCoord w, h;
         dc->GetTextExtent(str, &w, &h);
         m_diagramwindow->SetVirtualSize(40 + 2*dc->GetCharWidth() + w, 20 + 2*dc->GetCharHeight() + h );
@@ -448,7 +448,7 @@ void NassiView::DrawDiagram(wxDC *dc)
     {
         //draw a field to place a new Brick into
         // there is no brick at the moment
-        wxString str(_T("Insert your code here."));
+        wxString str(_("Insert your code here."));
         wxCoord w, h, desc;
         dc->GetTextExtent(str, &w, &h, &desc);
         dc->SetBrush(*wxLIGHT_GREY_BRUSH);
@@ -954,42 +954,42 @@ NassiBrick *NassiView::GenerateNewBrick(NassiTools tool)
             break;
         case NASSI_TOOL_RETURN:
             brick = new NassiReturnBrick();
-            brick->SetTextByNumber( _T("returning 0"), 0);
-            brick->SetTextByNumber( _T("NULL"), 1);
+            brick->SetTextByNumber( _("returning 0"), 0);
+            brick->SetTextByNumber( _("NULL"), 1);
             break;
         case NASSI_TOOL_WHILE:
             brick = new NassiWhileBrick();
-            brick->SetTextByNumber( _T("as long as"), 0);
-            brick->SetTextByNumber( _T("condition"), 1);
+            brick->SetTextByNumber( _("as long as"), 0);
+            brick->SetTextByNumber( _("condition"), 1);
             break;
         case NASSI_TOOL_DOWHILE:
             brick = new NassiDoWhileBrick();
-            brick->SetTextByNumber( _T("as long as"), 0);
-            brick->SetTextByNumber( _T("condition"), 1);
+            brick->SetTextByNumber( _("as long as"), 0);
+            brick->SetTextByNumber( _("condition"), 1);
             break;
         case NASSI_TOOL_FOR:
             brick = new NassiForBrick();
-            brick->SetTextByNumber( _T("every element in vec"), 0);
-            brick->SetTextByNumber( _T("uint i = 0 ; i < vec.size() ; i++"), 1);
+            brick->SetTextByNumber( _("every element in vec"), 0);
+            brick->SetTextByNumber( _("uint i = 0 ; i < vec.size() ; i++"), 1);
             break;
         case NASSI_TOOL_BLOCK:
             brick = new NassiBlockBrick();
             break;
         case NASSI_TOOL_IF:
             brick = new NassiIfBrick();
-            brick->SetTextByNumber( _T("check that ..."), 0);
-            brick->SetTextByNumber( _T("condition"), 1);
+            brick->SetTextByNumber( _("check that ..."), 0);
+            brick->SetTextByNumber( _("condition"), 1);
             break;
         case NASSI_TOOL_SWITCH:
             brick = new NassiSwitchBrick();
-            brick->SetTextByNumber( _T("switch to"), 0);
-            brick->SetTextByNumber( _T("expression"), 1);
+            brick->SetTextByNumber( _("switch to"), 0);
+            brick->SetTextByNumber( _("expression"), 1);
             break;
         default:
         case NASSI_TOOL_INSTRUCTION:
             brick = new NassiInstructionBrick();
             brick->SetTextByNumber( _T("..."), 0);
-            brick->SetTextByNumber( _T("foo();"), 1);
+            brick->SetTextByNumber( _("foo();"), 1);
             break;
     }
     return brick;
@@ -1169,7 +1169,7 @@ HooverDrawlet *NassiView::OnDragOver(const wxPoint &pos, wxDragResult &def, bool
 }
 void NassiView::ExportCSource()
 {
-    wxFileDialog dlg( m_diagramwindow, _T("Choose a file to exporting into"), _T(""), _T(""), _T("C sources (*.c)|*.c"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""), _("C sources (*.c)|*.c"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1232,7 +1232,7 @@ void NassiView::ExportVHDLSource()
 }
 void NassiView::ExportStrukTeX()
 {
-    wxFileDialog dlg( m_diagramwindow, _T("Choose a file to exporting into"), _T(""), _T(""), _T("LaTeX files (*.tex)|*.tex"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""), _("LaTeX files (*.tex)|*.tex"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1304,7 +1304,7 @@ void NassiView::ExportStrukTeX()
 #if wxUSE_POSTSCRIPT
 void NassiView::ExportPS()
 {
-    wxFileDialog dlg( m_diagramwindow, _T("Choose a file to exporting into"), _T(""), _T(""), _T("PostScript files (*.ps)|*.ps"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"), _T(""), _T(""), _("PostScript files (*.ps)|*.ps"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1346,7 +1346,7 @@ void NassiView::ExportPS()
     g_printData.SetFilename(filename);
     wxPostScriptDC *psdc = new wxPostScriptDC(g_printData);
 
-    psdc->StartDoc(_T("Printing PS"));
+    psdc->StartDoc(_("Printing PS"));
     psdc->Clear();
     psdc->SetBackgroundMode(wxTRANSPARENT);
 
@@ -1390,7 +1390,7 @@ void NassiView::ExportPS()
 #ifdef USE_SVG
 void NassiView::ExportSVG()
 {
-    wxFileDialog dlg( m_diagramwindow, _T("Choose a file to exporting into"),_T(""),_T(""),_T("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),_("SVG files (*.SVG)|*.SVG"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;
@@ -1472,7 +1472,7 @@ void NassiView::ExportSVG()
 #endif
 void NassiView::ExportBitmap()
 {
-    wxFileDialog dlg( m_diagramwindow, _T("Choose a file to exporting into"),_T(""),_T(""),_T("PNG files (*.png)|*.png"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
+    wxFileDialog dlg( m_diagramwindow, _("Choose a file to exporting into"),_T(""),_T(""),_("PNG files (*.png)|*.png"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT );
     if ( dlg.ShowModal() != wxID_OK ) return;
     wxString filename = dlg.GetPath();
     if ( filename.empty() ) return;

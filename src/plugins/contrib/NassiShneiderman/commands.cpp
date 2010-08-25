@@ -24,7 +24,7 @@
 /// - the brick is the first of a diagram.
 
 NassiInsertBrickBefore::NassiInsertBrickBefore(NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick)
-        :wxCommand(true, _T("Insert Brick") )
+        :wxCommand(true, _("Insert Brick") )
 {
     m_nfc = nfc;
     m_brick = brick;
@@ -170,7 +170,7 @@ bool NassiInsertBrickBefore::Undo(void)
 /// this command will insert a brick after another brick
 /// nothing to check
 NassiInsertBrickAfter::NassiInsertBrickAfter( NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick)
-        : wxCommand(true, _T("Insert Brick") )
+        : wxCommand(true, _("Insert Brick") )
 {
     m_nfc = nfc;
     m_brick = brick;
@@ -233,7 +233,7 @@ bool NassiInsertBrickAfter::Undo(void)
 
 ///this command will insert a brick as the first of a diagram
 NassiInsertFirstBrick::NassiInsertFirstBrick( NassiFileContent *nfc, NassiBrick *InsrBrick,  bool CanUndo)
-        :wxCommand(CanUndo, _T("Insert Brick") )
+        :wxCommand(CanUndo, _("Insert Brick") )
 {
     m_nfc = nfc;
     //m_tool = tool;
@@ -284,7 +284,7 @@ bool NassiInsertFirstBrick::Undo(void)
 
 ///this command will add a child a new case of a switch command
 NassiAddChildIndicatorCommand::NassiAddChildIndicatorCommand( NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick, wxUint32 ChildAddNumber, wxString _strc, wxString _strs )
-    :wxCommand(true, _T("Insert Brick") ),
+    :wxCommand(true, _("Insert Brick") ),
     m_nfc(nfc),
     m_brick(brick),
     m_done(false),
@@ -329,7 +329,7 @@ bool NassiAddChildIndicatorCommand::Undo(void)
 }
 
 NassiInsertChildBrickCommand::NassiInsertChildBrickCommand( NassiFileContent *nfc, NassiBrick *brick, NassiBrick *InsrBrick, wxUint32 ChildNumber):
-    wxCommand(true, _T("Insert Brick") ),
+    wxCommand(true, _("Insert Brick") ),
     m_nfc(nfc),
     m_brick(brick),
     m_done(false),
@@ -377,7 +377,7 @@ bool NassiInsertChildBrickCommand::Undo(void)
 
 /// used command to change text
 NassiEditTextCommand::NassiEditTextCommand( NassiFileContent *nfc, NassiBrick *brick, const wxString &str, wxInt32 nmbr)
-        :wxCommand(true, _T("Change Text") )
+        :wxCommand(true, _("Change Text") )
 {
     m_nfc = nfc;
     m_str = str;
@@ -410,7 +410,7 @@ bool NassiEditTextCommand::Undo(void)
 
 /// will delete a brick (and the following ,first till (including) last )
 NassiDeleteCommand::NassiDeleteCommand( NassiFileContent *nfc, NassiBrick *first, NassiBrick *last)
-        :   wxCommand(true, _T("Delete selected bricks"))
+        :   wxCommand(true, _("Delete selected bricks"))
 {
     m_nfc = nfc;
     m_first = first;
@@ -538,7 +538,7 @@ bool NassiDeleteCommand::Undo(void)
 
 NassiDeleteChildRootCommand::NassiDeleteChildRootCommand(
 NassiFileContent *nfc, NassiBrick *parent, wxInt32 childNumber):
-    wxCommand(true, _T("Delete selected bricks")),
+    wxCommand(true, _("Delete selected bricks")),
     m_nfc(nfc),
     m_parent(parent),
     m_done(false),
@@ -601,7 +601,7 @@ bool NassiDeleteChildRootCommand::Undo(void)
 /// deletes the original brick.
 ///////////////////////////
 NassiMoveBrick::NassiMoveBrick( wxCommand *addCmd, wxCommand *delCmd)
-    :wxCommand(true, _T("Drag n Drop Brick"))
+    :wxCommand(true, _("Drag n Drop Brick"))
 {
     m_delCmd = delCmd;
     m_addCmd = addCmd;
@@ -639,7 +639,7 @@ bool NassiMoveBrick::Undo(void)
 
 
 /*NassiAddFunctionCommand::NassiAddFunctionCommand( NassiDocument *doc, wxInt32 nmbr):
-    wxCommand(true, _T("Add Function") )
+    wxCommand(true, _("Add Function") )
 {
     m_nfc = doc;
     functionNumber = nmbr;
@@ -664,7 +664,7 @@ bool NassiAddFunctionCommand::Undo(void)
 }*/
 
 /*NassiRenameFunctionCommand::NassiRenameFunctionCommand( NassiDocument *doc, wxInt32 nmbr, wxString newName)
-    :wxCommand(true, _T("Rename function"))
+    :wxCommand(true, _("Rename function"))
 {
     m_nfc = doc;
     fname = newName;
@@ -694,7 +694,7 @@ bool NassiRenameFunctionCommand::Undo(void)
 */
 
 /*NassiDeleteFunctionCommand::NassiDeleteFunctionCommand(NassiDocument *doc, wxInt32 nmbr)
-    : wxCommand(true,  _T("Remove Function"))
+    : wxCommand(true,  _("Remove Function"))
 {
     m_nfc = doc;
     m_done = false;
