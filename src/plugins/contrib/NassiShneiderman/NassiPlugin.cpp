@@ -209,19 +209,19 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
     //if ( !exportmenu->FindItem(NASSI_ID_EXPORT_VHDL) )
     //    exportmenu->Append(NASSI_ID_EXPORT_VHDL, _T("VHDL"), _T("export to VHDL format"));
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_STRUKTEX) )
-        exportmenu->Append(NASSI_ID_EXPORT_STRUKTEX, _("StrukTeX"), _("export to StrukTeX format"));
+        exportmenu->Append(NASSI_ID_EXPORT_STRUKTEX, _T("StrukTeX"), _("export to StrukTeX format"));
 
     #ifdef USE_SVG
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_SVG) )
-        exportmenu->Append(NASSI_ID_EXPORT_SVG, _("SVG"), _T"export to SVG format"));
+        exportmenu->Append(NASSI_ID_EXPORT_SVG, _T("SVG"), _("export to SVG format"));
     #endif
 
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_BITMAP) )
-        exportmenu->Append(NASSI_ID_EXPORT_BITMAP, _("PNG"), _("export to PNG format"));
+        exportmenu->Append(NASSI_ID_EXPORT_BITMAP, _T("PNG"), _("export to PNG format"));
 
     #if wxUSE_POSTSCRIPT
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_PS) )
-        exportmenu->Append(NASSI_ID_EXPORT_PS, _("PS"), _("export to PS"));
+        exportmenu->Append(NASSI_ID_EXPORT_PS, _T("PS"), _("export to PS"));
     #endif
 
 

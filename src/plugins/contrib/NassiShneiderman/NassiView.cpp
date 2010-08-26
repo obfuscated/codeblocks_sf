@@ -970,7 +970,7 @@ NassiBrick *NassiView::GenerateNewBrick(NassiTools tool)
         case NASSI_TOOL_FOR:
             brick = new NassiForBrick();
             brick->SetTextByNumber( _("every element in vec"), 0);
-            brick->SetTextByNumber( _("uint i = 0 ; i < vec.size() ; i++"), 1);
+            brick->SetTextByNumber( _T("uint i = 0 ; i < vec.size() ; i++"), 1);
             break;
         case NASSI_TOOL_BLOCK:
             brick = new NassiBlockBrick();
@@ -989,7 +989,7 @@ NassiBrick *NassiView::GenerateNewBrick(NassiTools tool)
         case NASSI_TOOL_INSTRUCTION:
             brick = new NassiInstructionBrick();
             brick->SetTextByNumber( _T("..."), 0);
-            brick->SetTextByNumber( _("foo();"), 1);
+            brick->SetTextByNumber( _T("foo();"), 1);
             break;
     }
     return brick;
