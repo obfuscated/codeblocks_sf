@@ -208,7 +208,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
 void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 {
     Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: Building menu"));
-    int i=menuBar->FindMenu(_T("Edit"));
+    int i=menuBar->FindMenu(_("Edit"));
     if(i==wxNOT_FOUND)
     {
         Manager::Get()->GetLogManager()->DebugLog(_("Editor Tweaks plugin: edit menu not found"));
