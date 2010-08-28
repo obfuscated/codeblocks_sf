@@ -3,9 +3,6 @@
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
 
-#if defined(_WIN32) || defined(__linux__)
-// this compiler is valid only in windows and linux
-
 #ifndef COMPILERDMD_H
 #define COMPILERDMD_H
 
@@ -25,5 +22,3 @@ class CompilerDMD : public Compiler
 };
 
 #endif // COMPILERDMD_H
-
-#endif // _WIN32 || linux

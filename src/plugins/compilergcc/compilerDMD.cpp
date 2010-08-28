@@ -7,9 +7,6 @@
  * $HeadURL$
  */
 
-#if defined(_WIN32) || defined(__linux__)
-// this compiler is valid only in windows and linux
-
 #include <sdk.h>
 #include <prep.h>
 #include <wx/intl.h>
@@ -182,5 +179,3 @@ AutoDetectResult CompilerDMD::AutoDetectInstallationDir()
 
     return wxFileExists(m_MasterPath + sep + _T("bin") + sep + m_Programs.C) ? adrDetected : adrGuessed;
 }
-
-#endif // _WIN32 || linux

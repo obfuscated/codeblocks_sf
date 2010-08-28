@@ -394,8 +394,8 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
     CompilerFactory::RegisterCompiler(new CompilerGDC);
-#if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerDMD);
+#if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
     CompilerFactory::RegisterCompiler(new CompilerGNUAVR);
     CompilerFactory::RegisterCompiler(new CompilerGNUPOWERPC);
