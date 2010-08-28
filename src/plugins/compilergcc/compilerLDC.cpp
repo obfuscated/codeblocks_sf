@@ -49,8 +49,8 @@ void CompilerLDC::Reset()
     m_Programs.MAKE = _T("make");
 
     m_Switches.includeDirs = _T("-I");
-    m_Switches.libDirs = _T("-L");
-    m_Switches.linkLibs = _T("-l");
+    m_Switches.libDirs = _T("-L-L");
+    m_Switches.linkLibs = _T("-L-l");
     m_Switches.defines = _T("-d-version=");
     m_Switches.genericSwitch = _T("-");
     m_Switches.objectExtension = _T("o");
