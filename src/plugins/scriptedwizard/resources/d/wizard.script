@@ -17,7 +17,7 @@ function BeginWizard()
     // add builtin pages
     Wizard.AddInfoPage(_T("DIntro"), intro_msg); // intro
     Wizard.AddProjectPathPage(); // select project name and path
-    Wizard.AddCompilerPage(_T(""), _T("dmd;gdc"), true, true); // select compiler and configurations
+    Wizard.AddCompilerPage(_T(""), _T("dmd;gdc;ldc"), true, true); // select compiler and configurations
     // nothing more needs to be done here
 }
 
