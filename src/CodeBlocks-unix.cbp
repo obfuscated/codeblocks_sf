@@ -1158,6 +1158,12 @@
 		<Unit filename="plugins/compilergcc/compilerGDC.h">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/compilerLDC.cpp">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/compilerLDC.h">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/compilerGNUARM.cpp">
 			<Option target="Compiler" />
 		</Unit>

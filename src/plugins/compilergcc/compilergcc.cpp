@@ -67,6 +67,7 @@
 #include "compilerSDCC.h"
 #include "compilerTcc.h"
 #include "compilerGDC.h"
+#include "compilerLDC.h"
 #include "compilerGNUPOWERPC.h"
 #include "compilerGNUTRICORE.h"
 
@@ -394,6 +395,7 @@ void CompilerGCC::OnAttach()
     CompilerFactory::RegisterCompiler(new CompilerSDCC);
     CompilerFactory::RegisterCompiler(new CompilerTcc);
     CompilerFactory::RegisterCompiler(new CompilerGDC);
+    CompilerFactory::RegisterCompiler(new CompilerLDC);
     CompilerFactory::RegisterCompiler(new CompilerDMD);
 #if defined(__WIN32__) || defined(__linux__)
     CompilerFactory::RegisterCompiler(new CompilerGNUARM);
