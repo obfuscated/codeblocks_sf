@@ -79,6 +79,36 @@ static const char * cpp_keyword_xpm[] = {
 "  .......       ",
 "                "};
 
+// bitmap for use as D keywords icon in code-completion list
+/* XPM */
+static const char *d_keyword_xpm[] = {
+/* width height num_colors chars_per_pixel */
+"    14    14      6            1",
+/* colors */
+"  c none",
+". c #fefefe",
+"# c #e43a3a",
+"a c #e40000",
+"b c #e48f8f",
+"c c #8f0000",
+/* pixels */
+"              ",
+"              ",
+"  .#aaaa#b.   ",
+"  baabb#aa#   ",
+"  ba#   baa#  ",
+"  ba#    bcab ",
+"  ba#     #a# ",
+"  ba#     bac ",
+"  ba#     ba# ",
+"  ba#     bc# ",
+"  ba#     #cb ",
+"  bcc    ac#  ",
+"  #aa###ac#   ",
+"  cccccc#b    "
+};
+
+
 // bitmap for other-than-C++ keywords
 // it's pretty nice actually :)
 /* XPM */
@@ -614,9 +644,16 @@ int CodeCompletion::CodeComplete()
                     wxString lastSearch = m_NativeParser.LastAIGlobalSearch().Lower();
                     int iidx = ilist->GetImageCount();
                     bool isC = ft == ftHeader || ft == ftSource;
-                    ed->GetControl()->RegisterImage(iidx, wxBitmap(isC ? cpp_keyword_xpm : unknown_keyword_xpm));
                     // theme keywords
                     HighlightLanguage lang = theme->GetLanguageForFilename(_T(".")+wxFileName(ed->GetFilename()).GetExt());
+                    wxString strLang = theme->GetLanguageName(lang);
+                    // if its sourcecode/header file and a known fileformat, show the corresponding icon
+                    if (isC && strLang==_T("C/C++"))
+                        ed->GetControl()->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
+                    else if (isC && strLang==_T("D"))
+                        ed->GetControl()->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
+                    else
+                        ed->GetControl()->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
                     // but this is now configurable in global settings
                     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
