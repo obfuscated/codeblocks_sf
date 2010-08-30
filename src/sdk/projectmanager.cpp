@@ -8,7 +8,6 @@
  */
 
 #include "sdk_precomp.h"
-#include <vector>
 
 #ifndef CB_PRECOMP
     #include <wx/datetime.h>
@@ -34,6 +33,9 @@
     #include "globals.h"
     #include "cbexception.h"  // for cbassert
 #endif
+
+#include <vector>
+#include <algorithm>
 
 #include "cbauibook.h"
 #include <wx/busyinfo.h>
