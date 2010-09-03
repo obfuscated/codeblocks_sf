@@ -6,9 +6,9 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.4.10\n"
+"Project-Id-Version: 1.4.13\n"
 "Report-Msgid-Bugs-To: jmsalli@users.sourceforge.net\n"
-"POT-Creation-Date: 2010-01-03 21:46+0200\n"
+"POT-Creation-Date: 2010-08-22 12:30+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,7 +40,7 @@ msgstr ""
 msgid "Underlined"
 msgstr ""
 
-#: src/advprops.cpp:1922
+#: src/advprops.cpp:1927
 msgid "Make a selection:"
 msgstr ""
 
@@ -60,81 +60,99 @@ msgstr ""
 msgid "True"
 msgstr ""
 
-#: src/propgrid.cpp:3231
+#: src/propgrid.cpp:3289
 msgid "Unspecified"
 msgstr ""
 
-#: src/propgrid.cpp:4863
+#: src/propgrid.cpp:4930
 #, c-format
 msgid ""
 "Type operation \"%s\" failed: Property labeled \"%s\" is of type \"%s\", NOT "
 "\"%s\"."
 msgstr ""
 
-#: src/propgrid.cpp:13357
+#: src/propgrid.cpp:6630 src/propgrid.cpp:6757
+msgid "Property Error"
+msgstr ""
+
+#: src/propgrid.cpp:6739
+msgid "You have entered invalid value. Press ESC to cancel editing."
+msgstr ""
+
+#: src/propgrid.cpp:13669
 #, c-format
 msgid "Error in resource: %s"
 msgstr ""
 
-#: src/props.cpp:463 src/props.cpp:477
+#: src/props.cpp:467
 #, c-format
 msgid "Value must be %lld or higher"
 msgstr ""
 
-#: src/props.cpp:647
+#: src/props.cpp:470 src/props.cpp:494
+#, c-format
+msgid "Value must be between %lld and %lld."
+msgstr ""
+
+#: src/props.cpp:491
+#, c-format
+msgid "Value must be %lld or lower."
+msgstr ""
+
+#: src/props.cpp:668
 #, c-format
 msgid "Value must be %llu or higher"
 msgstr ""
 
-#: src/props.cpp:657
+#: src/props.cpp:678
 #, c-format
 msgid "Value must be %llu or less"
 msgstr ""
 
-#: src/props.cpp:831
+#: src/props.cpp:852
 #, c-format
 msgid "Value must be %f or higher"
 msgstr ""
 
-#: src/props.cpp:846
+#: src/props.cpp:867
 #, c-format
 msgid "Value must be %f or less"
 msgstr ""
 
-#: src/props.cpp:930
+#: src/props.cpp:951
 #, c-format
 msgid "Not %s"
 msgstr ""
 
-#: src/props.cpp:1717
+#: src/props.cpp:1738
 msgid "Choose a directory:"
 msgstr ""
 
-#: src/props.cpp:1772
+#: src/props.cpp:1793
 msgid "Choose a file"
 msgstr ""
 
-#: src/props.cpp:1775 src/props.cpp:1804
+#: src/props.cpp:1796 src/props.cpp:1825
 msgid "All files (*.*)|*.*"
 msgstr ""
 
-#: src/props.cpp:2282
+#: src/props.cpp:2303
 msgid "Add"
 msgstr ""
 
-#: src/props.cpp:2310
+#: src/props.cpp:2331
 msgid "Update"
 msgstr ""
 
-#: src/props.cpp:2313
+#: src/props.cpp:2334
 msgid "Remove"
 msgstr ""
 
-#: src/props.cpp:2316
+#: src/props.cpp:2337
 msgid "Up"
 msgstr ""
 
-#: src/props.cpp:2319
+#: src/props.cpp:2340
 msgid "Down"
 msgstr ""
 

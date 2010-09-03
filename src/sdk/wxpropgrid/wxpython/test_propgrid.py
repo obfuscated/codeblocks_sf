@@ -1,8 +1,10 @@
 
 
 import sys, time, math, os, os.path, pdb
+import datetime
 
 import wx
+_ = wx.GetTranslation
 import wx.propgrid as wxpg
 import wx.stc
 
@@ -47,6 +49,40 @@ class Display:
 class ValueObject:
     def __init__(self):
         pass
+
+
+class RectProperty(wxpg.PyProperty):
+    """ This custom property has private children, similar to
+        SizeProperty, PointProperty and FontProperty.
+    """
+    def __init__(self, label, name = wxpg.LABEL_AS_NAME, value = wx.Rect()):
+        super(RectProperty, self).__init__(label, name)
+        self.SetValue(value)
+        self.AddPrivateChild(wxpg.IntProperty(_("X"),
+                             wxpg.LABEL_AS_NAME, value.x))
+        self.AddPrivateChild(wxpg.IntProperty(_("Y"),
+                             wxpg.LABEL_AS_NAME, value.y))
+        self.AddPrivateChild(wxpg.IntProperty(_("Width"),
+                             wxpg.LABEL_AS_NAME, value.width))
+        self.AddPrivateChild(wxpg.IntProperty(_("Height"),
+                             wxpg.LABEL_AS_NAME, value.height))
+
+    def ChildChanged(self, value, index, child_value):
+        """ Take the initial value, modify it based on the changes in a
+            child, and finally return it.
+        """
+        value[index] = child_value
+        return value
+
+    def RefreshChildren(self):
+        """ Here we should refresh those private child properties based on
+            the current value.
+        """
+        value = self.GetValue()
+        self.Item(0).SetValue(value[0])
+        self.Item(1).SetValue(value[1])
+        self.Item(2).SetValue(value[2])
+        self.Item(3).SetValue(value[3])
 
 
 class IntProperty2(wxpg.PyProperty):
@@ -561,6 +597,8 @@ class TestPropertyGridPanel(wx.Panel):
 
         pg.Append( wxpg.PropertyCategory("5 - Custom Properties") )
         pg.Append( IntProperty2("IntProperty2", value=1024) )
+        pg.Append( RectProperty("RectProperty", value=wx.Rect(100, 200,
+                                                              300, 400)) )
 
         pg.Append( ShapeProperty("ShapeProperty", value=0) )
         pg.Append( PyObjectProperty("PyObjectProperty") )
@@ -662,7 +700,8 @@ class TestPropertyGridPanel(wx.Panel):
                 '\n'.join(ss))  # default_object_content1
 
             if dlg.ShowModal() == wx.ID_OK:
-                sandbox = {'object':ValueObject(),'wx':wx}
+                sandbox = {'object':ValueObject(),'wx':wx,
+                           'datetime':datetime}
                 exec dlg.tc.GetValue() in sandbox
                 t_start = time.time()
                 #print(sandbox['object'].__dict__)

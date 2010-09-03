@@ -5,7 +5,7 @@
 projname = 'propgrid'
 longprojname = 'wxPropertyGrid'
 branch = 'stable'  # Must be either '', 'stable' or 'dev'
-version = '1.4.12'
+version = '1.4.14'
 author = 'Jaakko Salli'
 author_email = 'jmsalli@users.sourceforge.net'
 homepage = 'http://wxpropgrid.sourceforge.net/'

@@ -372,7 +372,7 @@ static void wxPGDrawFocusRect( wxDC& dc, const wxRect& rect )
 // provided pointer if it is not NULL, otherwise return false
 bool wxPG_String_EndsWith(const wxString& str, const wxChar *suffix, wxString *rest)
 {
-    wxASSERT_MSG( suffix, _T("invalid parameter in wxString::EndssWith") );
+    wxASSERT_MSG( suffix, wxT("invalid parameter in wxString::EndssWith") );
 
     int start = str.length() - wxStrlen(suffix);
     if ( start < 0 || wxStrcmp(str.c_str() + start, suffix) != 0 )
@@ -1151,6 +1151,15 @@ wxPGVariantAndBool wxPGProperty::PyIntToValue( int number, int argFlags ) const
         vab.m_valueValid = true;
     return vab;
 }
+
+wxVariant
+wxPGProperty::PyChildChanged( wxVariant& thisValue,
+                              int WXUNUSED(childIndex),
+                              wxVariant& WXUNUSED(childValue) ) const
+{
+    return thisValue;
+}
+
 #endif
 
 bool wxPGProperty::SetValueFromString( const wxString& text, int argFlags )
@@ -2160,7 +2169,7 @@ void wxPGProperty::AdaptListToValue( wxVariant& list, wxVariant* value ) const
             }
 
             if ( allChildrenSpecified )
-                ChildChanged(*value, i, childValue);
+                ActualChildChanged(*value, i, childValue);
             n++;
             if ( n == (unsigned int)list.GetCount() )
                 break;
@@ -3219,6 +3228,7 @@ void wxPropertyGrid::Init1()
     m_inDoPropertyChanged = 0;
     m_inCommitChangesFromEditor = 0;
     m_inDoSelectProperty = false;
+    m_inOnValidationFailure = false;
     m_permanentValidationFailureBehavior = wxPG_VFB_DEFAULT;
     m_dragStatus = 0;
     m_mouseSide = 16;
@@ -3922,7 +3932,14 @@ void wxPropertyGrid::OnLabelEditorKeyPress( wxKeyEvent& event )
     }
     else
     {
-        event.Skip();
+        // Do not block key presses, except left and right (to allow
+        // normal wxTextCtrl usage)
+        int secondAction;
+        if ( KeyEventToActions(event, &secondAction) != wxPG_ACTION_INVALID &&
+             keycode != WXK_LEFT && keycode != WXK_RIGHT)
+            HandleKeyEvent(event);
+        else
+            event.Skip();
     }
 }
 
@@ -6453,6 +6470,7 @@ bool wxPropertyGrid::PerformValidation( wxPGProperty* p, wxVariant& pendingValue
     //wxLogDebug(wxT("wxPropertyGrid::PerformValidation(p=%s)"),p->GetName().c_str());
 
     m_validationInfo.m_failureBehavior = m_permanentValidationFailureBehavior;
+    m_validationInfo.m_isFailing = true;
 
     if ( !wxPGIsVariantType(pendingValue, list) )
     {
@@ -6570,8 +6588,25 @@ bool wxPropertyGrid::PerformValidation( wxPGProperty* p, wxVariant& pendingValue
     if ( SendEvent( wxEVT_PG_CHANGING, evtChangingProperty, &evtChangingValue ) )
         return false;
 
+    m_validationInfo.m_isFailing = false;
     return true;
 }
+
+// -----------------------------------------------------------------------
+
+#if wxUSE_STATUSBAR
+wxStatusBar* wxPropertyGrid::GetStatusBar()
+{
+    wxWindow* topWnd = ::wxGetTopLevelParent(this);
+    if ( topWnd && topWnd->IsKindOf(CLASSINFO(wxFrame)) )
+    {
+        wxFrame* pFrame = wxStaticCast(topWnd, wxFrame);
+        if ( pFrame )
+            return pFrame->GetStatusBar();
+    }
+    return NULL;
+}
+#endif
 
 // -----------------------------------------------------------------------
 
@@ -6583,24 +6618,33 @@ void wxPropertyGrid::DoShowPropertyError( wxPGProperty* WXUNUSED(property), cons
 #if wxUSE_STATUSBAR
     if ( !wxPGGlobalVars->m_offline )
     {
-        wxWindow* topWnd = ::wxGetTopLevelParent(this);
-        if ( topWnd )
+        wxStatusBar* pStatusBar = GetStatusBar();
+        if ( pStatusBar )
         {
-            wxFrame* pFrame = wxDynamicCast(topWnd, wxFrame);
-            if ( pFrame )
-            {
-                wxStatusBar* pStatusBar = pFrame->GetStatusBar();
-                if ( pStatusBar )
-                {
-                    pStatusBar->SetStatusText(msg);
-                    return;
-                }
-            }
+            pStatusBar->SetStatusText(msg);
+            return;
         }
     }
 #endif
 
-    ::wxMessageBox(msg, _T("Property Error"));
+    ::wxMessageBox(msg, _("Property Error"));
+}
+
+// -----------------------------------------------------------------------
+
+void wxPropertyGrid::DoHidePropertyError( wxPGProperty* WXUNUSED(property) )
+{
+#if wxUSE_STATUSBAR
+    if ( !wxPGGlobalVars->m_offline )
+    {
+        wxStatusBar* pStatusBar = GetStatusBar();
+        if ( pStatusBar )
+        {
+            pStatusBar->SetStatusText(wxEmptyString);
+            return;
+        }
+    }
+#endif
 }
 
 // -----------------------------------------------------------------------
@@ -6608,7 +6652,26 @@ void wxPropertyGrid::DoShowPropertyError( wxPGProperty* WXUNUSED(property), cons
 bool wxPropertyGrid::OnValidationFailure( wxPGProperty* property,
                                           wxVariant& invalidValue )
 {
+    if ( m_inOnValidationFailure )
+        return true;
+
+    m_inOnValidationFailure = true;
+
     wxWindow* editor = GetEditorControl();
+    int vfb = m_validationInfo.m_failureBehavior;
+
+    if ( m_inDoSelectProperty )
+    {
+        // When property selection is being changed, do not display any
+        // messages, if some were already shown for this property.
+        if ( property->HasFlag(wxPG_PROP_INVALID_VALUE) )
+        {
+            m_validationInfo.m_failureBehavior =
+                vfb & ~(wxPG_VFB_SHOW_MESSAGE |
+                        wxPG_VFB_SHOW_MESSAGEBOX |
+                        wxPG_VFB_SHOW_MESSAGE_ON_STATUSBAR);
+        }
+    }
 
     // First call property's handler
     property->OnValidationFailure(invalidValue);
@@ -6625,6 +6688,9 @@ bool wxPropertyGrid::OnValidationFailure( wxPGProperty* property,
 
     property->SetFlag(wxPG_PROP_INVALID_VALUE);
 
+    m_validationInfo.m_failureBehavior = vfb;
+    m_inOnValidationFailure = false;
+
     return res;
 }
 
@@ -6640,9 +6706,6 @@ bool wxPropertyGrid::DoOnValidationFailure( wxPGProperty* property, wxVariant& W
     if ( (vfb & wxPG_VFB_MARK_CELL) &&
          !property->HasFlag(wxPG_PROP_INVALID_VALUE) )
     {
-        wxASSERT_MSG( !property->GetCell(0) && !property->GetCell(1),
-                      wxT("Currently wxPG_VFB_MARK_CELL only works with properties with standard first two cells") );
-
         if ( !property->GetCell(0) && !property->GetCell(1) )
         {
             wxColour vfbFg = *wxWHITE;
@@ -6666,14 +6729,32 @@ bool wxPropertyGrid::DoOnValidationFailure( wxPGProperty* property, wxVariant& W
         }
     }
 
-    if ( vfb & wxPG_VFB_SHOW_MESSAGE )
+    if ( vfb & (wxPG_VFB_SHOW_MESSAGE |
+                wxPG_VFB_SHOW_MESSAGEBOX |
+                wxPG_VFB_SHOW_MESSAGE_ON_STATUSBAR) )
     {
         wxString msg = m_validationInfo.m_failureMessage;
 
         if ( !msg.length() )
-            msg = _T("You have entered invalid value. Press ESC to cancel editing.");
+            msg = _("You have entered invalid value. Press ESC to cancel editing.");
 
-        DoShowPropertyError(property, msg);
+    #if wxUSE_STATUSBAR
+        if ( vfb & wxPG_VFB_SHOW_MESSAGE_ON_STATUSBAR )
+        {
+            if ( !wxPGGlobalVars->m_offline )
+            {
+                wxStatusBar* pStatusBar = GetStatusBar();
+                if ( pStatusBar )
+                    pStatusBar->SetStatusText(msg);
+            }
+        }
+    #endif
+
+        if ( vfb & wxPG_VFB_SHOW_MESSAGE )
+            DoShowPropertyError(property, msg);
+
+        if ( vfb & wxPG_VFB_SHOW_MESSAGEBOX )
+            ::wxMessageBox(msg, _("Property Error"));
     }
 
     return (vfb & wxPG_VFB_STAY_IN_PROPERTY) ? false : true;
@@ -6702,6 +6783,25 @@ void wxPropertyGrid::DoOnValidationFailureReset( wxPGProperty* property )
             DrawItemAndChildren(property);
         }
     }
+
+#if wxUSE_STATUSBAR
+    if ( vfb & wxPG_VFB_SHOW_MESSAGE_ON_STATUSBAR )
+    {
+        if ( !wxPGGlobalVars->m_offline )
+        {
+            wxStatusBar* pStatusBar = GetStatusBar();
+            if ( pStatusBar )
+                pStatusBar->SetStatusText(wxEmptyString);
+        }
+    }
+#endif
+
+    if ( vfb & wxPG_VFB_SHOW_MESSAGE )
+    {
+        DoHidePropertyError(property);
+    }
+
+    m_validationInfo.m_isFailing = false;
 }
 
 // -----------------------------------------------------------------------
@@ -6724,6 +6824,9 @@ bool wxPropertyGrid::DoPropertyChanged( wxPGProperty* p, unsigned int selFlags )
     m_pState->m_anyModified = 1;
 
     m_inDoPropertyChanged = 1;
+
+    // If property's value is being changed, assume it is valid
+    OnValidationFailureReset(selected);
 
     // Maybe need to update control
     wxASSERT( m_chgInfo_changedProperty != NULL );
@@ -6944,6 +7047,7 @@ void wxPropertyGrid::OnCustomEditorEvent( wxCommandEvent &event )
 
     if ( m_iFlags & wxPG_FL_IN_ONCUSTOMEDITOREVENT ||
          m_inDoSelectProperty ||
+         m_inOnValidationFailure ||
          // Also don't handle editor event if wxEVT_PG_CHANGED or
          // similar is currently doing something (showing a
          // message box, for instance).
@@ -7025,6 +7129,13 @@ void wxPropertyGrid::OnCustomEditorEvent( wxCommandEvent &event )
                                                             selected,
                                                             wnd ) )
                         valueIsPending = true;
+
+                    // Mark value always as pending if validation is currently
+                    // failing and value was not unspecified
+                    if ( !valueIsPending &&
+                         !pendingValue.IsNull() &&
+                         m_validationInfo.m_isFailing )
+                         valueIsPending = true;
                 }
                 else
                 {
@@ -7389,9 +7500,6 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
         // First, deactivate previous
         if ( prevFirstSel )
         {
-
-            OnValidationFailureReset(prevFirstSel);
-
             // Must double-check if this is an selected in case of forceswitch
             if ( p != prevFirstSel )
             {
@@ -7404,6 +7512,11 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
                     return false;
                 }
             }
+
+            // This should be called after CommitChangesFromEditor(), so that
+            // OnValidationFailure() still has information on property's
+            // validation state.
+            OnValidationFailureReset(prevFirstSel);
 
             FreeEditors();
 
@@ -7623,14 +7736,7 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
 
     if ( !(GetExtraStyle() & wxPG_EX_HELP_AS_TOOLTIPS) )
     {
-        wxStatusBar* statusbar = (wxStatusBar*) NULL;
-        if ( !(m_iFlags & wxPG_FL_NOSTATUSBARHELP) )
-        {
-            wxFrame* frame = wxDynamicCast(::wxGetTopLevelParent(this),wxFrame);
-            if ( frame )
-                statusbar = frame->GetStatusBar();
-        }
-
+        wxStatusBar* statusbar = GetStatusBar();
         if ( statusbar )
         {
             const wxString* pHelpString = (const wxString*) NULL;

@@ -1,5 +1,54 @@
 
 
+Version 1.4.14 ( ?-?-2010 )
+
+  Bugs Fixed:
+
+  - wxPython Bindings: Custom properties did not properly support wxRect
+    as a value.
+
+
+
+Version 1.4.13 ( Aug-22-2010 )
+
+  New Features:
+
+  - Added two new validation failure behavior flags:
+      wxPG_VFB_SHOW_MESSAGEBOX and
+      wxPG_VFB_SHOW_MESSAGE_ON_STATUSBAR
+
+    These allow defining exactly how the message display behavior works,
+    unlike the old wxPG_VFB_SHOW_MESSAGE which had inconsistent (default)
+    behavior (see bug #3024332).
+
+  - wxPython Bindings: Python 2.7 is now supported.
+
+
+  Bugs Fixed:
+
+  - Linking the library could fail if the program used wxPGProperty::Hide().
+
+  - Property label editor blocked basically all other keyboard activity.
+
+  - Validation failure was not (always) reset when a valid value was
+    entered after an invalid one (see bug #3024332).
+
+  - Validation failure message for wxIntProperty's min/max constraints
+    was sometimes incorrect (see bug #3024332).
+
+  - Redundant validation failure message boxes should no longer be shown
+    (see bug #3024332).
+
+  - wxPython bindings: Fixed DateProperty value conversion. Month was
+    off by one and it did not accept datetime.date as input (only accepted
+    datetime.datetime).
+
+  - wxPython Bindings: ChildChanged() was not properly implemented, so it was
+    not possible to create custom properties with private children (i.e.
+    things similar to SizeProperty and FontProperty).
+
+
+
 Version 1.4.12 ( May-30-2010 )
 
   Bugs Fixed:

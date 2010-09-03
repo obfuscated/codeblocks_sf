@@ -460,7 +460,17 @@ bool wxIntProperty::DoValidation( const wxPGProperty* property, wxLongLong_t& va
         if ( value < min )
         {
             if ( mode == wxPG_PROPERTY_VALIDATION_ERROR_MESSAGE )
-                pValidationInfo->m_failureMessage = wxString::Format(_("Value must be %lld or higher"),min);
+            {
+                wxString msg;
+                if ( !maxOk )
+                    msg = wxString::Format(
+                                _("Value must be %lld or higher"), min);
+                else
+                    msg = wxString::Format(
+                                _("Value must be between %lld and %lld."),
+                                min, max);
+                pValidationInfo->m_failureMessage = msg;
+            }
             else if ( mode == wxPG_PROPERTY_VALIDATION_SATURATE )
                 value = min;
             else
@@ -474,7 +484,17 @@ bool wxIntProperty::DoValidation( const wxPGProperty* property, wxLongLong_t& va
         if ( value > max )
         {
             if ( mode == wxPG_PROPERTY_VALIDATION_ERROR_MESSAGE )
-                pValidationInfo->m_failureMessage = wxString::Format(_("Value must be %lld or higher"),min);
+            {
+                wxString msg;
+                if ( !minOk )
+                    msg = wxString::Format(
+                                _("Value must be %lld or lower."), max);
+                else
+                    msg = wxString::Format(
+                                _("Value must be between %lld and %lld."),
+                                min, max);
+                pValidationInfo->m_failureMessage = msg;
+            }
             else if ( mode == wxPG_PROPERTY_VALIDATION_SATURATE )
                 value = max;
             else
@@ -482,6 +502,7 @@ bool wxIntProperty::DoValidation( const wxPGProperty* property, wxLongLong_t& va
             return false;
         }
     }
+
     return true;
 }
 
@@ -1041,17 +1062,11 @@ int wxBaseEnumProperty::GetIndexForValue( int value ) const
 void wxBaseEnumProperty::OnSetValue()
 {
     if ( wxPGIsVariantType(m_value, long) )
-    {
         ValueFromInt_( m_value, m_value.GetLong(), wxPG_FULL_VALUE );
-    }
     else if ( wxPGIsVariantType(m_value, string) )
-    {
         ValueFromString_( m_value, m_value.GetString(), 0 );
-    }
     else
-    {
         wxASSERT( false );
-    }
 
     if ( ms_nextIndex != -2 )
     {

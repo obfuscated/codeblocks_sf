@@ -2535,7 +2535,7 @@ void wxPGComboControlBase::OnPopupDismiss()
 void wxPGComboControlBase::HidePopup()
 {
     // Should be able to call this without popup interface
-    //wxCHECK_RET( m_popupInterface, _T("no popup interface") );
+    //wxCHECK_RET( m_popupInterface, wxT("no popup interface") );
     if ( !m_isPopupShown )
         return;
 
@@ -3726,7 +3726,7 @@ void wxPGOwnerDrawnComboBox::Clear()
 
 void wxPGOwnerDrawnComboBox::Delete(wxODCIndex n)
 {
-    wxCHECK_RET( (n >= 0) && (n < GetCount()), _T("invalid index in wxPGOwnerDrawnComboBox::Delete") );
+    wxCHECK_RET( (n >= 0) && (n < GetCount()), wxT("invalid index in wxPGOwnerDrawnComboBox::Delete") );
 
     if ( GetSelection() == (int) n )
         SetValue(wxEmptyString);
@@ -3742,13 +3742,13 @@ wxODCCount wxPGOwnerDrawnComboBox::GetCount() const
 
 wxString wxPGOwnerDrawnComboBox::GetString(wxODCIndex n) const
 {
-    wxCHECK_MSG( (n >= 0) && (n < GetCount()), wxEmptyString, _T("invalid index in wxPGOwnerDrawnComboBox::GetString") );
+    wxCHECK_MSG( (n >= 0) && (n < GetCount()), wxEmptyString, wxT("invalid index in wxPGOwnerDrawnComboBox::GetString") );
     return m_popupInterface->GetString(n);
 }
 
 void wxPGOwnerDrawnComboBox::SetString(wxODCIndex n, const wxString& s)
 {
-    wxCHECK_RET( (n >= 0) && (n < GetCount()), _T("invalid index in wxPGOwnerDrawnComboBox::SetString") );
+    wxCHECK_RET( (n >= 0) && (n < GetCount()), wxT("invalid index in wxPGOwnerDrawnComboBox::SetString") );
     m_popupInterface->SetString(n,s);
 }
 
@@ -3760,7 +3760,7 @@ int wxPGOwnerDrawnComboBox::FindString(const wxString& s) const
 
 void wxPGOwnerDrawnComboBox::Select(int n)
 {
-    wxCHECK_RET( (n >= -1) && (n < (int)GetCount()), _T("invalid index in wxPGOwnerDrawnComboBox::Select") );
+    wxCHECK_RET( (n >= -1) && (n < (int)GetCount()), wxT("invalid index in wxPGOwnerDrawnComboBox::Select") );
     wxASSERT( m_popupInterface );
 
     m_popupInterface->SetSelection(n);

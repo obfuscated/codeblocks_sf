@@ -2876,7 +2876,7 @@ void FormMain::OnAbout(wxCommandEvent& WXUNUSED(event))
             wxT("Jaakko Salli"), wxT("jmsalli@users.sourceforge.net"), wxVERSION_STRING
             );
 
-    wxMessageBox(msg, _T("About"), wxOK | wxICON_INFORMATION, this);
+    wxMessageBox(msg, wxT("About"), wxOK | wxICON_INFORMATION, this);
 }
 
 // -----------------------------------------------------------------------

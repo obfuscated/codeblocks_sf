@@ -3,7 +3,7 @@
 
     wxPropertyGrid for wxPython
 
-    Version:   1.4.12
+    Version:   1.4.14
 
       By Jaakko Salli (jmsalli@users.sourceforge.net)
 

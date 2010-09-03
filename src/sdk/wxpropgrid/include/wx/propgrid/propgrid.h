@@ -84,7 +84,7 @@
 // for "configure" scripts under unix, use them.
 #define wxPROPGRID_MAJOR          1
 #define wxPROPGRID_MINOR          4
-#define wxPROPGRID_RELEASE        12
+#define wxPROPGRID_RELEASE        14
 
 // For non-Unix systems (i.e. when building without a configure script),
 // users of this component can use the following macro to check if the
@@ -454,6 +454,7 @@ public:
 // -----------------------------------------------------------------------
 
 #ifndef SWIG
+
 class WXDLLIMPEXP_PG wxPGEditor;
 class WXDLLIMPEXP_PG wxPGProperty;
 class WXDLLIMPEXP_PG wxPropertyCategory;
@@ -469,9 +470,11 @@ class WXDLLIMPEXP_PG wxPGOwnerDrawnComboBox;
 class WXDLLIMPEXP_PG wxPGCustomComboControl;
 class WXDLLIMPEXP_PG wxPGEditorDialogAdapter;
 
+class WXDLLIMPEXP_FWD_CORE wxStatusBar;
+
 extern WXDLLIMPEXP_PG const wxChar *wxPropertyGridNameStr;
 
-struct wxPGValidationInfo;
+struct WXDLLIMPEXP_PG wxPGValidationInfo;
 
 #endif // #ifndef SWIG
 
@@ -2251,7 +2254,21 @@ public:
     virtual wxPGVariantAndBool PyValidateValue( const wxVariant& value, wxPGValidationInfo& validationInfo ) const;
     virtual wxPGVariantAndBool PyStringToValue( const wxString& text, int argFlags = 0 ) const;
     virtual wxPGVariantAndBool PyIntToValue( int number, int argFlags = 0 ) const;
+    virtual wxVariant PyChildChanged( wxVariant& thisValue, int childIndex, wxVariant& childValue ) const;
 #endif
+
+    void ActualChildChanged( wxVariant& thisValue, int childIndex, wxVariant& childValue ) const
+    {
+#ifdef __WXPYTHON__
+        if ( m_scriptObject )
+        {
+            thisValue = PyChildChanged(thisValue, childIndex, childValue);
+            return;
+        }
+#endif
+
+        ChildChanged(thisValue, childIndex, childValue);
+    }
 
     bool ActualValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const
     {
@@ -2852,7 +2869,7 @@ public:
         @param flags
         By default changes are applied recursively. Set this paramter wxPG_DONT_RECURSE to prevent this.
     */
-    inline bool Hide( bool hide, int flags = wxPG_RECURSE );
+    bool Hide( bool hide, int flags = wxPG_RECURSE );
 
     bool IsExpanded() const { return (!(m_flags & wxPG_PROP_COLLAPSED) && GetChildCount()); }
 
@@ -4303,9 +4320,25 @@ wxPG_VFB_BEEP                       = 0x02,
 */
 wxPG_VFB_MARK_CELL                  = 0x04,
 
-/** Display customizable text message explaining the situation.
+/** Display a customizable text message explaining the situation. 
+
+    To customize the way the message is displayed, you need to
+    reimplement wxPropertyGrid::DoShowPropertyError() in a
+    derived class. Default behavior is to display the text on
+    the top-level frame's status bar, if present, and otherwise
+    using wxMessageBox.
 */
 wxPG_VFB_SHOW_MESSAGE               = 0x08,
+
+/** Similar to wxPG_VFB_SHOW_MESSAGE, except always display the
+    message using wxMessageBox.
+*/
+wxPG_VFB_SHOW_MESSAGEBOX           = 0x10,
+
+/** Similar to wxPG_VFB_SHOW_MESSAGE, except always display the
+    message on the status bar.
+*/
+wxPG_VFB_SHOW_MESSAGE_ON_STATUSBAR = 0x20,
 
 /** Defaults. */
 wxPG_VFB_DEFAULT                    = wxPG_VFB_STAY_IN_PROPERTY|wxPG_VFB_BEEP,
@@ -4327,7 +4360,7 @@ wxPG_VFB_UNDEFINED                  = 0x80
     Used to convey validation information to and from functions that
     actually perform validation.
 */
-struct wxPGValidationInfo
+struct WXDLLIMPEXP_PG wxPGValidationInfo
 {
     /** Value to be validated.
     */
@@ -4340,6 +4373,19 @@ struct wxPGValidationInfo
     /** Validation failure behavior. Use wxPG_VFB_XXX flags.
     */
     wxPGVFBFlags    m_failureBehavior;
+
+    /** @true when validation is failing. */
+    bool            m_isFailing;
+
+    wxPGValidationInfo()
+    {
+        m_failureBehavior = 0;
+        m_isFailing = false;
+    }
+
+    ~wxPGValidationInfo()
+    {
+    }
 
     wxPGVFBFlags GetFailureBehavior() const { return m_failureBehavior; }
 
@@ -7576,6 +7622,38 @@ public:
     void SetInternalFlag( long flag ) { m_iFlags |= flag; }
     void ClearInternalFlag( long flag ) { m_iFlags &= ~(flag); }
 
+    /**
+        Override in derived class to display error messages in custom manner
+        (these message usually only result from validation failure).
+
+        @remarks If you implement this, then you also need to implement
+                 DoHidePropertyError() - possibly to do nothing, if error
+                 does not need hiding (e.g. it was logged or shown in a
+                 message box).
+
+        @see DoHidePropertyError()
+    */
+    virtual void DoShowPropertyError( wxPGProperty* property,
+                                      const wxString& msg );
+
+    /**
+        Override in derived class to hide an error displayed by
+        DoShowPropertyError().
+
+        @see DoShowPropertyError()
+    */
+    virtual void DoHidePropertyError( wxPGProperty* property );
+
+#if wxUSE_STATUSBAR
+    /**
+        Return wxStatusBar that is used by this wxPropertyGrid. You can
+        reimplement this member function in derived class to override
+        the default behavior of using the top-level wxFrame's status
+        bar, if any.
+    */
+    virtual wxStatusBar* GetStatusBar();
+#endif
+
 #ifndef SWIG
 
     /** Generates contents for string dst based on the convetents of wxArrayString
@@ -7673,11 +7751,6 @@ public:
         }
         m_validationInfo.m_failureMessage.clear();
     }
-
-    /** Override in derived class to display error messages in custom manner
-        (these message usually only result from validation failure).
-    */
-    virtual void DoShowPropertyError( wxPGProperty* property, const wxString& msg );
 
     /** Override to customize property validation failure behavior.
         @param invalidValue
@@ -7904,6 +7977,9 @@ protected:
 
     /** 1 if in DoSelectProperty() */
     bool                m_inDoSelectProperty;
+
+    /** @true if in OnValidationFailure() */
+    bool                m_inOnValidationFailure;
 
     wxPGVFBFlags        m_permanentValidationFailureBehavior;  // Set by app
 
