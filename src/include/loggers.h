@@ -87,6 +87,7 @@ protected:
 
 public:
     TextCtrlLogger(bool fixedPitchFont = false);
+    ~TextCtrlLogger();
 
     virtual void CopyContentsToClipboard(bool selectionOnly = false);
     virtual void UpdateSettings();
@@ -122,6 +123,7 @@ protected:
 public:
 
     ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont = false);
+    ~ListCtrlLogger();
 
     virtual void CopyContentsToClipboard(bool selectionOnly = false);
     virtual void UpdateSettings();
