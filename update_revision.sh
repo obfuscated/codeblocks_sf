@@ -35,9 +35,18 @@ if [ "x$REV" != "x$OLD_REV" -o ! -r $REV_FILE ]; then
 	echo "m4_define([SVN_DATE], $LCD)" >> $REV_FILE
 
 	# Also change the revision number in debian/changelog for package versioning
-	mv debian/changelog debian/changelog.tmp
-	sed "1 s/(10.05svn[^-)]*/(10.05svn$REV/" < debian/changelog.tmp > debian/changelog
-	rm debian/changelog.tmp
+	if [ -x `which dch` ]; then
+		AKT_REV=`sed -e 's/.*svn\([0-9]*\).*/\1/' -e 'q' < debian/changelog`
+		if [ $REV -gt $AKT_REV ]; then
+			dch -v 10.05svn$REV "New svn revision"
+		fi
+	else
+		echo 'ups'
+
+		mv debian/changelog debian/changelog.tmp
+		sed "1 s/(10.05svn[^-)]*/(10.05svn$REV/" < debian/changelog.tmp > debian/changelog
+		rm debian/changelog.tmp
+	fi
 fi
 
 echo "OLD_REV=$REV" > ./.last_revision

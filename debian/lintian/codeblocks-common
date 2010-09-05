@@ -1,2 +1,5 @@
 codeblocks-common binary: desktop-command-not-in-package /usr/share/applications/codeblocks.desktop codeblocks
+# This lintian override is here because lexer_bash.sample is a test for the 
+# bash lexer in the IDE. It is not susposed to be run as it only serves as a 
+# test file, and not an actual program.
 codeblocks-common binary: script-not-executable ./usr/share/codeblocks/lexers/lexer_bash.sample

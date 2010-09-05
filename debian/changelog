@@ -1,3 +1,37 @@
+codeblocks (10.05svn6571) unstable; urgency=low
+
+  * New svn revision
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 05 Sep 2010 09:58:05 +0000
+
+codeblocks (10.05svn6570) unstable; urgency=low
+
+  * New svn revision
+   - Add debian/get-orig-source  and debian/get-orig-source-from-svn
+     scripts that create orig-tarballs and remove Windows prebuilt
+     binaries
+  * Bump Standards-Version to 3.9.1
+   - Stop shipping *.la files
+  * Removed doc-packages, because they can not be build directly from
+    svn-sources, a standalone package might come.
+  * debian/control
+   - Add cdbs package as Build-Depend
+   - Add libbz2-dev and zlib1g-dev packages as
+     Build-Depends (needed by libhelp_plugin.so)
+   - Add libboost-dev (>=1.40) as Build-Depends (needed
+     for Nassi-Shneiderman-plugin)
+   - Removed Build-Depends for pngnq, wget (was only needed for
+     the removed doc-packages)
+  * debian/rules
+   - Switch to CDBS rules system
+   - Add parallel build support
+   - Use lzma compression
+  * Added option to keep (or remove) winodows dll's from dist-tarball
+  * Some of the changes are based on the work of the ubuntu maintainers,
+    especially Michael Casadevall.
+
+ -- Jens Lody <jens@codeblocks.org>  Fri, 03 Sep 2010 20:38:29 +0000
+
 codeblocks (10.05svn6372) unstable; urgency=low
 
   * tagged svn to 10.05

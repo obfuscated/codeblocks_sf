@@ -197,6 +197,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to keep prebuild windows dll's in dist-tarball)
+keep_dlls_default="yes"
+AC_ARG_ENABLE(keep-dlls, [AC_HELP_STRING([--enable-keep-dlls], [keep prebuild windows dll's in dist-tarball (default YES)])],,
+                       enable_keep_dlls=$keep_dlls_default)
+AM_CONDITIONAL([KEEP_DLLS], [test "x$enable_keep_dlls" = "xyes"])
+if test "x$enable_keep_dlls" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 
 case $host in
 	*-*-cygwin* | *-*-mingw*)

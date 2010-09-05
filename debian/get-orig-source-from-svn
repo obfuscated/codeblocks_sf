@@ -1,0 +1,103 @@
+#! /bin/sh
+
+# This script is used to generate the codeblocks orig tarball used for this
+# package.
+# It is based on ubuntus get-orig-source script.
+# Modified by Jens Lody (jens@codeblocks.org) to fetch an orig tarball from codeblocks
+# subversion archive.
+
+# Some variables to make maintaining this script easier
+CODEBLOCKS_BASE_VERSION="10.05svn"
+CODEBLOCKS_SVN_URL="svn://svn.berlios.de/codeblocks/trunk"
+CODEBLOCKS_LOCAL_DIR="../codeblocks-$CODEBLOCKS_BASE_VERSION-download"
+OLD_DIR=`pwd`
+
+USAGE='This script is used to generate the orig tarball used in building 
+Debian packages from codeblocks svn (HEAD). 
+Usage: get-orig-source-from-svn [OPTION] 
+ 
+ -h, --help                 Display this help message. 
+ --remove-upstream-dir      Remove downloaded files.
+'
+
+while [ "$#" -gt "0" ]
+do
+    case "$1" in
+        --remove-upstream-dir)
+            REMOVE_UPSTREAM_DIR=1
+            shift
+            ;;
+        -h|--help|*)
+            echo >&2 "${USAGE}"
+            exit 1
+            ;;
+    esac
+done
+
+set -e
+
+# Function to download files. Takes two parameters, the directory name of the
+# url to use, and the filename of the file.
+download() {
+    local url="$1"
+    local target="$2"
+    svn co $1 $2 --non-interactive
+}
+
+# The rest is our main functions.
+#Download the files
+echo "Now downloading svn sources"
+download $CODEBLOCKS_SVN_URL $CODEBLOCKS_LOCAL_DIR
+
+# cd to source-dir
+echo "change directory to $CODEBLOCKS_LOCAL_DIR"
+cd $CODEBLOCKS_LOCAL_DIR
+
+# update Changelog
+echo "update Changelog"
+./updateChangeLog.sh
+
+# run bootstrap
+echo "update/create Makefile's and configure-script"
+./bootstrap
+
+# fetching actual svn-revision
+if svn --xml info >/dev/null 2>&1; then
+	SVN_REV=`svn --xml info | tr -d '\r\n' | sed -e 's/.*<commit.*revision="\([0-9]*\)".*<\/commit>.*/\1/'`
+elif svn --version --quiet >/dev/null 2>&1; then
+	SVN_REV=`svn info | grep "^Revision:" | cut -d" " -f2`
+else
+	SVN_REV=0
+fi
+
+if [ "$SVN_REV" -eq "0" ]; then
+    echo "Error retrieving svn version, can not continue !"
+    exit 1
+fi
+
+CODEBLOCKS_ORIG_TARBALL=codeblocks_$CODEBLOCKS_BASE_VERSION$SVN_REV.orig.tar.bz2
+CODEBLOCKS_DIST_TARBALL=codeblocks-$CODEBLOCKS_BASE_VERSION$SVN_REV.tar.bz2
+
+if [ -f ../$CODEBLOCKS_TARBALL_STUB.orig.tar.gz ]; then
+    echo "We already have the newest revision in $CODEBLOCKS_ORIG_TARBALL ."
+    exit 0
+fi
+
+
+# Create source tarball
+echo "Create sources tarball"
+./configure --enable-keep-dlls=no
+make dist
+
+# Rename tarball
+echo "Renaming  tarball"
+mv $CODEBLOCKS_DIST_TARBALL ../$CODEBLOCKS_ORIG_TARBALL
+
+cd $OLD_DIR
+dch -v 10.05svn$SVN_REV-1 "New svn revision"
+
+# Perform cleanup
+if [ ! -z "$REMOVE_UPSTREAM_DIR" ]; then
+    echo "Removing upstream files."
+    rm -rf $CODEBLOCKS_LOCAL_DIR
+fi

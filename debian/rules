@@ -1,146 +1,20 @@
 #!/usr/bin/make -f
-# -*- makefile -*-
-# Sample debian/rules that uses debhelper.
-# This file was originally written by Joey Hess and Craig Small.
-# As a special exception, when this file is copied by dh-make into a
-# dh-make output file, you may use that output file without restriction.
-# This special exception was added by Craig Small in version 0.37 of dh-make.
+include /usr/share/cdbs/1/class/autotools.mk
+include /usr/share/cdbs/1/rules/debhelper.mk
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
+DEB_BUILD_PARALLEL= yes
+DEB_PARALLEL_JOBS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
 
-
-
-#----------------------------------------------------------------------------
-#Packages to build
-package_core_bin		:= codeblocks
-package_core_data		:= codeblocks-common
-package_core_lib		:= libcodeblocks0
-package_core_debug		:= codeblocks-dbg
-package_core_dev_libs		:= codeblocks-dev
-package_core_dev_headers	:= codeblocks-headers
-
-package_doc_en			:= codeblocks-doc-en
-package_doc_de			:= codeblocks-doc-de
-
-package_contrib_bin		:= codeblocks-contrib
-package_contrib_data		:= codeblocks-contrib-common
-package_contrib_debug		:= codeblocks-contrib-dbg
-
-package_wxsmith_lib		:= libwxsmithlib0
-package_wxsmith_dev_libs	:= wxsmith-dev
-package_wxsmith_dev_headers	:= wxsmith-headers
-
-packages_core		:= $(package_core_bin) $(package_core_data) \
-			   $(package_core_lib) $(package_core_dev_libs) \
-			   $(package_core_dev_headers)
-
-packages_doc		:= $(package_doc_en) $(package_doc_de)
-
-packages_contrib	:= $(package_contrib_bin) $(package_contrib_data) \
-			   $(package_wxsmith_lib) $(package_wxsmith_dev_libs) \
-			   $(package_wxsmith_dev_headers)
-#----------------------------------------------------------------------------
-# These are used for cross-compiling and for saving the configure script
-# from having to guess our platform (since we know it already)
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-
-CFLAGS = -Wall -g
-
-ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
+ifneq (,$(filter $(DEB_PARALLEL_JOBS),-1 0))
+	DEB_PARALLEL_JOBS:=1
 endif
 
-config.status: config-stamp 
- 
-config-stamp: 
-	dh_testdir
-	# Add here commands to configure the package.
-	[ -x configure ] || ./bootstrap
-	./updateChangeLog.sh
-	./updateDocs.sh
-	CFLAGS="$(CFLAGS)" \
-		./configure \
-		--with-contrib-plugins=all \
-		--host=$(DEB_HOST_GNU_TYPE) \
-		--build=$(DEB_BUILD_GNU_TYPE) \
-		--prefix=/usr \
-		--mandir=\$${prefix}/share/man \
-		--infodir=\$${prefix}/share/info
+DEB_CONFIGURE_EXTRA_FLAGS=--with-contrib-plugins=all --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
 
-	touch config-stamp 
+DEB_INSTALL_CHANGELOGS_ALL= ChangeLog
+DEB_DBG_PACKAGE_libcodeblocks0= codeblocks-dbg
+DEB_DBG_PACKAGE_libwxsmithlib0= codeblocks-contrib-dbg
 
+DEB_DH_MAKESHLIBS_ARGS_codeblocks-contrib= -Ncodeblocks-contrib
+DEB_DH_BUILDDEB_ARGS= -- -Zlzma
 
-build: build-stamp
-
-build-stamp:  config.status
-	dh_testdir
-
-	# Add here commands to compile the package.
-	$(MAKE)
-	#docbook-to-man debian/codeblocks.sgml > codeblocks.1
-
-	touch build-stamp
-
-clean: 
-	dh_testdir
-	dh_testroot
-	rm -f *-stamp 
-
-	# Add here commands to clean up after the build process.
-	#-$(MAKE) distclean 
-	[ ! -f Makefile ] || $(MAKE) distclean 
- 
- 
-ifneq "$(wildcard /usr/share/misc/config.sub)" ""
-	cp -f /usr/share/misc/config.sub config.sub
-endif
-ifneq "$(wildcard /usr/share/misc/config.guess)" ""
-	cp -f /usr/share/misc/config.guess config.guess
-endif
-
-
-	dh_clean 
-
-install: build
-	dh_testdir
-	dh_testroot
-	dh_clean -k 
-	dh_installdirs -ptmp usr/share/doc
-	dpkg-gensymbols -p$(package_core_lib) -Odebian/$(package_core_lib).symbols
-	dpkg-gensymbols -p$(package_wxsmith_lib) -Odebian/$(package_wxsmith_lib).symbols
-
-	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
-
-# Build architecture-independent files here.
-binary-indep: build install
-# We have nothing to do by default.
-
-# Build architecture-dependent files here.
-binary-arch: build install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs ChangeLog
-	dh_installdocs
-	dh_install --fail-missing --sourcedir=debian/tmp
-	dh_installmenu
-	dh_installmime
-	dh_installman
-	dh_icons
-	dh_link
-	dh_strip $(addprefix -p,$(packages_core)) --dbg-package=$(package_core_debug)
-	dh_strip $(addprefix -p,$(packages_contrib)) --dbg-package=$(package_contrib_debug)
-	dh_compress
-	dh_fixperms
-	dh_makeshlibs -N$(package_contrib_bin)
-	dh_installdeb
-	dh_shlibdeps
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
-
-binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install 

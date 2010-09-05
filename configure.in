@@ -500,8 +500,6 @@ AC_CONFIG_FILES([Makefile
 	codeblocks.pc
 	codeblocks.spec
 	codeblocks.plist
-	debian/Makefile
-	debian/lintian/Makefile
 ])
 
 AC_OUTPUT

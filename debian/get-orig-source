@@ -1,0 +1,103 @@
+#! /bin/sh
+
+# This script is used to generate the codeblocks orig tarball for a release build used for this
+# package.
+# It is copied from ubuntus codeblocks-package.
+
+# Some variables to make maintaining this script easier
+CODEBLOCKS_VERSION="10.05svn6557-1"
+CODEBLOCKS_URL_DIR="http://download.berlios.de/codeblocks"
+CODEBLOCKS_TARBALL="codeblocks-$CODEBLOCKS_VERSION-src.tar.bz2"
+CODEBLOCKS_TARBALL_CHECKSUM="ab077d562e98b0586f2f86c14cb773ba"
+
+USAGE='This script is used to generate the orig tarball used in building \
+Debian packages for codeblocks-$CODEBLOCKS_VERSION. \
+Usage: get-orig-source [OPTION] \
+ \
+ -h, --help                 Display this help message. \
+ --keep-upstream-files      Keep downloaded files. \
+ --keep-orig-dir            Keep the generated orig directory.
+'
+
+while [ "$#" -gt "0" ]
+do
+    case "$1" in
+        --keep-upstream-files)
+            KEEP_UPSTREAM_FILES=1
+            shift
+            ;;
+        --keep-orig-dir)
+            KEEP_ORIG_DIR=1
+            shift
+            ;;
+        -h|--help|*)
+            echo >&2 "${USAGE}"
+            exit 1
+            ;;
+    esac
+done
+
+set -e
+
+# Function to download files. Takes two parameters, the directory name of the
+# url to use, and the filename of the file.
+download() {
+    local url="$1/$2"
+    if [ ! -f $2 ] ; then
+        # Download the tarball
+        wget $url
+    fi
+}
+
+# Function to verify the checksum. Takes two parameters, the file to compute the
+# checksum for and the checksum it should be.
+verify_checksum() {
+    local checksum=`md5sum $1 | cut -d ' ' -f 1`
+
+    if [ $2 != $checksum ] ; then
+        echo "Checksum verification failed. Checksum was $checksum
+    Expected checksum $2"
+        exit 1
+    else
+        echo "Checksum verified. Checksum is $2"
+    fi
+}
+
+# The rest is our main functions.
+#Download the files
+download $CODEBLOCKS_URL_DIR $CODEBLOCKS_TARBALL
+
+# Verify the checksums
+#verify_checksum $CODEBLOCKS_TARBALL $CODEBLOCKS_TARBALL_CHECKSUM
+
+# Unpack the upstream source
+if [ ! -d codeblocks-$CODEBLOCKS_VERSION-release -a ! -d codeblocks-$CODEBLOCKS_VERSION ]; then
+    echo "Unpacking upstream source."
+    tar jxf $CODEBLOCKS_TARBALL
+#    mv codeblocks-$CODEBLOCKS_VERSION-release codeblocks-$CODEBLOCKS_VERSION
+else
+    echo -n "Please remove or move codeblocks-$CODEBLOCKS_VERSION-release and codeblocks-$CODEBLOCKS_VERSION "
+    echo "directory."
+    exit 1
+fi
+
+# Pack into a gzipped tarball
+if [ ! -f codeblocks-$CODEBLOCKS_VERSION ]; then
+		echo "Removing all prebuilt windows binaries"
+		find codeblocks-$CODEBLOCKS_VERSION -name "*.dll" | xargs rm -f
+    echo "Creating codeblocks_$CODEBLOCKS_VERSION orig tarball."
+    tar --owner=root --group=root -cjf codeblocks_$CODEBLOCKS_VERSION.orig.tar.bz2 codeblocks-$CODEBLOCKS_VERSION
+else
+    echo "Please remove or move codeblocks_$CODEBLOCKS_VERSION.orig.tar.gz."
+    exit 1
+fi
+
+# Perform cleanup
+if [ -z "$KEEP_ORIG_DIR" ]; then
+    echo "Removing extracted directory."
+    rm -rf codeblocks-$CODEBLOCKS_VERSION
+fi
+if [ -z "$KEEP_UPSTREAM_FILES" ]; then
+    echo "Removing upstream files."
+    rm $CODEBLOCKS_TARBALL
+fi
