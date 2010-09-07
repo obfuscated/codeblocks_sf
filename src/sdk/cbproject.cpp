@@ -749,7 +749,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
             for (size_t i = 0; i < tool->generatedFiles.GetCount(); ++i)
             {
                 tmp.SetFullName(tool->generatedFiles[i]);
-                wxString tmps = tmp.GetFullName();
+                wxString tmps = tmp.GetFullPath();
                 // any macro replacements here, should also be done in
                 // CompilerCommandGenerator::GenerateCommandLine !!!
                 tmps.Replace(_T("$file_basename"), pf->file.GetName()); // old way - remove later
