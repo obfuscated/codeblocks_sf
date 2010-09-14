@@ -41,11 +41,11 @@ public:
 	void InsertSpace(int position, int insertLength);
 	void DeleteAll();
 	void DeleteRange(int position, int deleteLength);
- 
+
 /* CHANGEBAR begin */
-    char *PersistantForm() const; 
-    void FromPersistant(const char *form); 
-    static bool PersistantSame(const char *form1, const char *form2); 
+    char *PersistantForm() const;
+    void FromPersistant(const char *form);
+    static bool PersistantSame(const char *form1, const char *form2);
 /* CHANGEBAR end */
 };
 

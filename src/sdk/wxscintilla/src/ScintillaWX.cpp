@@ -348,7 +348,7 @@ void ScintillaWX::StartDrag() {
         if (result == wxDragMove && dropWentOutside)
             ClearSelection();
         inDragDrop = ddNone;
-        SetDragPosition (SelectionPosition(invalidPosition));
+        SetDragPosition(SelectionPosition(invalidPosition));
 /* C::B begin */
         wxScintillaEvent evt(wxEVT_SCI_FINISHED_DRAG, sci->GetId());
         evt.SetEventObject (sci);
@@ -721,7 +721,7 @@ void ScintillaWX::UpdateSystemCaret() {
             DestroySystemCaret();
             CreateSystemCaret();
         }
-        Point pos = LocationFromPosition(CurrentPosition());
+        Point pos = PointMainCaret();
         ::SetCaretPos(pos.x, pos.y);
     }
 #endif
@@ -797,7 +797,8 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
            * was hardcoded to STYLE_DEFAULT instead of allowing user to
            * override it when STYLE_CALLTIP is set). */
           int ctStyle = ct.UseStyleCallTip() ? STYLE_CALLTIP : STYLE_DEFAULT;
-          PRectangle rc = ct.CallTipStart(sel.MainCaret(), pt,
+          int caretMain = sel.MainCaret();
+          PRectangle rc = ct.CallTipStart(caretMain, pt,
                                           defn,
                                           vs.styles[ctStyle].fontName,
                                           vs.styles[ctStyle].sizeZoomed,
@@ -1013,8 +1014,9 @@ void ScintillaWX::DoMiddleButtonUp(Point pt) {
         data.SetText(wxEmptyString); // free the data object content
         wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
         int        len = strlen(buf);
-        pdoc->InsertString(CurrentPosition(), buf, len);
-        SetEmptySelection(CurrentPosition() + len);
+        int caretMain = sel.MainCaret();
+        pdoc->InsertString(caretMain, buf, len);
+        SetEmptySelection(caretMain + len);
     }
     NotifyChange();
     Redraw();
@@ -1151,7 +1153,8 @@ void ScintillaWX::DoOnIdle(wxIdleEvent& evt) {
 bool ScintillaWX::DoDropText(long x, long y, const wxString& data) {
     SetDragPosition(SelectionPosition(invalidPosition));
 
-    wxString text = wxTextBuffer::Translate (data, wxConvertEOLMode(pdoc->eolMode));
+    wxString text = wxTextBuffer::Translate(data,
+                                            wxConvertEOLMode(pdoc->eolMode));
 
     // Send an event to allow the drag details to be changed
     wxScintillaEvent evt(wxEVT_SCI_DO_DROP, sci->GetId());

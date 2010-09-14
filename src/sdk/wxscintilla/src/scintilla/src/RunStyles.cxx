@@ -215,44 +215,44 @@ void RunStyles::DeleteRange(int position, int deleteLength) {
 }
 
 /* CHANGEBAR begin */
-char *RunStyles::PersistantForm() const { 
-    int len = starts->Partitions(); 
-    char *form = new char[(len * 2 + 1) * sizeof(int)]; 
-    int *data = reinterpret_cast<int *>(form); 
-    data[0] = len; 
-    for (int i=0;i<len;i++) { 
-        data[i*2+1] =     starts->PositionFromPartition(i+1) - starts->PositionFromPartition(i); 
-        data[i*2+2] = styles->ValueAt(i); 
-    } 
-    return form; 
+char *RunStyles::PersistantForm() const {
+    int len = starts->Partitions();
+    char *form = new char[(len * 2 + 1) * sizeof(int)];
+    int *data = reinterpret_cast<int *>(form);
+    data[0] = len;
+    for (int i=0;i<len;i++) {
+        data[i*2+1] =     starts->PositionFromPartition(i+1) - starts->PositionFromPartition(i);
+        data[i*2+2] = styles->ValueAt(i);
+    }
+    return form;
 }
- 
-void RunStyles::FromPersistant(const char *form) { 
-    DeleteAll(); 
-    const int *data = reinterpret_cast<const int *>(form); 
-    int len = data[0]; 
-    int pos = 0; 
-    for (int i=0;i<len;i++) { 
-        int runLength = data[i*2+1]; 
-        int value = data[i*2+2]; 
-        InsertSpace(pos, runLength); 
-        int posTemp = pos; 
-        int fillLength = runLength; 
-        FillRange(posTemp, value, fillLength); 
-        pos += runLength; 
-    } 
+
+void RunStyles::FromPersistant(const char *form) {
+    DeleteAll();
+    const int *data = reinterpret_cast<const int *>(form);
+    int len = data[0];
+    int pos = 0;
+    for (int i=0;i<len;i++) {
+        int runLength = data[i*2+1];
+        int value = data[i*2+2];
+        InsertSpace(pos, runLength);
+        int posTemp = pos;
+        int fillLength = runLength;
+        FillRange(posTemp, value, fillLength);
+        pos += runLength;
+    }
 }
- 
-bool RunStyles::PersistantSame(const char *form1, const char *form2) { 
-    const int *data1 = reinterpret_cast<const int *>(form1); 
-    const int *data2 = reinterpret_cast<const int *>(form2); 
-    if (data1[0] != data2[0])  
-        return false; 
-    int len = data1[0]; 
-    for (int i=1;i<len*2+1;i++) { 
-        if (data1[i] != data2[i])  
-            return false; 
-    } 
-    return true; 
-} 
+
+bool RunStyles::PersistantSame(const char *form1, const char *form2) {
+    const int *data1 = reinterpret_cast<const int *>(form1);
+    const int *data2 = reinterpret_cast<const int *>(form2);
+    if (data1[0] != data2[0])
+        return false;
+    int len = data1[0];
+    for (int i=1;i<len*2+1;i++) {
+        if (data1[i] != data2[i])
+            return false;
+    }
+    return true;
+}
 /* CHANGEBAR end */

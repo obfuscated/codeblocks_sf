@@ -30,9 +30,7 @@
 #include "XPM.h"
 #ifdef SCI_LEXER
 #include "SciLexer.h"
-#include "PropSet.h"
 #include "Accessor.h"
-#include "KeyWords.h"
 #endif
 #include "ContractionState.h"
 #include "SVector.h"

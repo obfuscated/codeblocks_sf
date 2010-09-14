@@ -900,11 +900,9 @@ public:
     }
 
     void OnSize(wxSizeEvent& event) {
-        // resize the child
-        wxSize sz = GetSize();
-        sz.x -= 2;
-        sz.y -= 2;
-        lv->SetSize(1, 1, sz.x, sz.y);
+        // resize the child to fill the popup
+        wxSize sz = GetClientSize();
+        lv->SetSize(0, 0, sz.x, sz.y);
         // reset the column widths
         lv->SetColumnWidth(0, IconWidth()+4);
         lv->SetColumnWidth(1, sz.x - 2 - lv->GetColumnWidth(0) -

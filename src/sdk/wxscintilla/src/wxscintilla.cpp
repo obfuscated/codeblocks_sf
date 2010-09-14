@@ -363,7 +363,7 @@ void wxScintilla::SetChangeCollection (bool collectChange)
     SendMsg(SCI_SETCHANGECOLLECTION, collectChange, 0);
 }
 
-    // Find a changed line, if fromLine > toLine search is performed backwards.
+// Find a changed line, if fromLine > toLine search is performed backwards.
 int wxScintilla::FindChangedLine (const int fromLine, const int toLine) const
 {
     return SendMsg(SCI_GETCHANGEDLINE, fromLine, toLine);
@@ -1718,7 +1718,7 @@ void wxScintilla::SetText (const wxString& text)
 // Retrieve all the text in the document.
 wxString wxScintilla::GetText() const
 {
-    int len  = GetTextLength();
+    int len = GetTextLength();
     wxMemoryBuffer mbuf(len+1);   // leave room for the null...
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
     SendMsg(SCI_GETTEXT, len+1, (sptr_t)buf);
@@ -3214,13 +3214,13 @@ int wxScintilla::FindColumn (int line, int column)
 }
 
 // Can the caret preferred x position only be changed by explicit movement commands?
-bool wxScintilla::GetCaretSticky () const
+int wxScintilla::GetCaretSticky () const
 {
-    return SendMsg(SCI_GETCARETSTICKY, 0, 0) != 0;
+    return SendMsg(SCI_GETCARETSTICKY, 0, 0);
 }
 
 // Stop the caret preferred x position changing when the user types.
-void wxScintilla::SetCaretSticky (bool useCaretStickyBehaviour)
+void wxScintilla::SetCaretSticky (int useCaretStickyBehaviour)
 {
     SendMsg(SCI_SETCARETSTICKY, useCaretStickyBehaviour, 0);
 }
@@ -3904,7 +3904,7 @@ wxString wxScintilla::GetProperty (const wxString& key)
 
     wxMemoryBuffer mbuf(len+1);
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
-    SendMsg(SCI_GETPROPERTY, (uptr_t)(const char*)wx2sci(key), (sptr_t)buf);
+    SendMsg(SCI_GETPROPERTY, (sptr_t)(const char*)wx2sci(key), (sptr_t)buf);
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
@@ -3914,12 +3914,12 @@ wxString wxScintilla::GetProperty (const wxString& key)
 // with '$()' variable replacement on returned buffer.
 wxString wxScintilla::GetPropertyExpanded (const wxString& key)
 {
-    int len = SendMsg(SCI_GETPROPERTYEXPANDED, (uptr_t)(const char*)wx2sci(key), 0);
+    int len = SendMsg(SCI_GETPROPERTYEXPANDED, (sptr_t)(const char*)wx2sci(key), 0);
     if (!len) return wxEmptyString;
 
     wxMemoryBuffer mbuf(len+1);
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
-    SendMsg(SCI_GETPROPERTYEXPANDED, (uptr_t)(const char*)wx2sci(key), (uptr_t)buf);
+    SendMsg(SCI_GETPROPERTYEXPANDED, (sptr_t)(const char*)wx2sci(key), (sptr_t)buf);
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
@@ -3936,6 +3936,60 @@ int wxScintilla::GetPropertyInt (const wxString& key) const
 int wxScintilla::GetStyleBitsNeeded () const
 {
     return SendMsg(SCI_GETSTYLEBITSNEEDED, 0, 0);
+}
+
+// For private communication between an application and a known lexer.
+int wxScintilla::PrivateLexerCall(int operation, int pointer)
+{
+    return SendMsg(SCI_PRIVATELEXERCALL, operation, pointer);
+}
+
+// Retrieve a '\n' separated list of properties understood by the current lexer.
+wxString wxScintilla::PropertyNames()
+{
+    int len = SendMsg(SCI_PROPERTYNAMES, 0, 0);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_PROPERTYNAMES, 0, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Retrieve the type of a property.
+int wxScintilla::PropertyType(const wxString& name)
+{
+    return SendMsg(SCI_PROPERTYTYPE, (sptr_t)(const char*)wx2sci(name), 0);
+}
+
+// Describe a property.
+wxString wxScintilla::DescribeProperty(const wxString& name)
+{
+    int len = SendMsg(SCI_DESCRIBEPROPERTY, (sptr_t)(const char*)wx2sci(name), 0);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_DESCRIBEPROPERTY, (sptr_t)(const char*)wx2sci(name), (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
+}
+
+// Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
+wxString wxScintilla::DescribeKeyWordSets()
+{
+    int len = SendMsg(SCI_DESCRIBEKEYWORDSETS, 0, 0);
+    if (!len) return wxEmptyString;
+
+    wxMemoryBuffer mbuf(len+1);
+    char* buf = (char*)mbuf.GetWriteBuf(len+1);
+    SendMsg(SCI_DESCRIBEKEYWORDSETS, 0, (sptr_t)buf);
+    mbuf.UngetWriteBuf(len);
+    mbuf.AppendByte(0);
+    return sci2wx(buf);
 }
 
 /* C::B begin */
