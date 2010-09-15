@@ -479,6 +479,9 @@
 #define wxSCI_LEX_SML 97
 #define wxSCI_LEX_MARKDOWN 98
 #define wxSCI_LEX_TXT2TAGS 99
+/* C::B begin */
+#define wxSCI_LEX_LAST wxSCI_LEX_TXT2TAGS // update if the above gets extended!
+/* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
 // value assigned in sequence from SCLEX_AUTOMATIC+1.

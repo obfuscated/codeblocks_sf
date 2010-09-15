@@ -181,9 +181,9 @@ void EditorColourSet::LoadAvailableSets()
 
 HighlightLanguage EditorColourSet::AddHighlightLanguage(int lexer, const wxString& name)
 {
-    if (lexer <= wxSCI_LEX_NULL ||
-        lexer > wxSCI_LEX_MARKDOWN ||
-        name.IsEmpty())
+    if (   lexer <= wxSCI_LEX_NULL
+        || lexer >  wxSCI_LEX_LAST // this is a C::B extension to wxscintilla.h
+        || name.IsEmpty())
     {
         return HL_NONE;
     }
