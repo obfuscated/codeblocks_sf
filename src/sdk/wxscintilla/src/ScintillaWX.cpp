@@ -796,7 +796,11 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
           /* This fix will allow you to actually modify the calltip font (it
            * was hardcoded to STYLE_DEFAULT instead of allowing user to
            * override it when STYLE_CALLTIP is set). */
-          int ctStyle = ct.UseStyleCallTip() ? STYLE_CALLTIP : STYLE_DEFAULT;
+          int ctStyle = STYLE_DEFAULT;
+          if (ct.UseStyleCallTip()) {
+            ctStyle = STYLE_CALLTIP;
+            ct.SetForeBack(vs.styles[STYLE_CALLTIP].fore, vs.styles[STYLE_CALLTIP].back);
+          }
           int caretMain = sel.MainCaret();
           PRectangle rc = ct.CallTipStart(caretMain, pt,
                                           defn,

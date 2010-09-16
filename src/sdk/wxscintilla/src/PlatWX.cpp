@@ -828,7 +828,7 @@ public:
         SetBackgroundColour(*wxBLACK);  // for our simple border
 
         lv = new wxSCIListBox(parent, id, wxDefaultPosition, wxDefaultSize,
-                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
+                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxSIMPLE_BORDER);
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
@@ -954,7 +954,7 @@ public:
     {
 
         lv = new wxSCIListBox(this, id, wxDefaultPosition, wxDefaultSize,
-                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxNO_BORDER);
+                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxSIMPLE_BORDER);
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
