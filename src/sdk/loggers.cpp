@@ -11,6 +11,7 @@
 #ifndef CB_PRECOMP
     #include <wx/listctrl.h>
     #include <wx/textctrl.h>
+    #include <wx/settings.h>
     #include "cbexception.h"
     #include "manager.h"
     #include "configmanager.h"
