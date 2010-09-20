@@ -19,7 +19,6 @@
 				<Linker>
 					<Add library="bfd" />
 					<Add library="iberty" />
-					<Add library="intl" />
 					<Add directory="base\exchndl\lib" />
 				</Linker>
 			</Target>
@@ -589,6 +588,10 @@
 			<Option target="exchndl" />
 		</Unit>
 		<Unit filename="base\exchndl\include\libiberty.h">
+			<Option target="exchndl" />
+		</Unit>
+		<Unit filename="base\exchndl\intlimpl.c">
+			<Option compilerVar="CC" />
 			<Option target="exchndl" />
 		</Unit>
 		<Unit filename="base\tinyxml\tinystr.cpp">
