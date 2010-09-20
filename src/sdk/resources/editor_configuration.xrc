@@ -364,6 +364,12 @@
 															<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 														</object>
 														<object class="sizeritem">
+															<object class="wxCheckBox" name="chkTtrackPreprocessor">
+																<label>Interpret #if, #else, #endif to grey out inactive preprocessor-code</label>
+															</object>
+															<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+														</object>
+														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkHighlightCaretLine">
 																<label>Highlight line under caret</label>
 																<checked>1</checked>

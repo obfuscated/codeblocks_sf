@@ -1369,49 +1369,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     control->SetEOLMode(mgr->ReadInt(_T("/eol/eolmode"), default_eol));
 
-    // folding margin
-    control->SetProperty(_T("fold"), mgr->ReadBool(_T("/folding/show_folds"), true) ? _T("1") : _T("0"));
-    control->SetProperty(_T("fold.html"), mgr->ReadBool(_T("/folding/fold_xml"), true) ? _T("1") : _T("0"));
-    control->SetProperty(_T("fold.comment"), mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
-    control->SetProperty(_T("fold.compact"), _T("0"));
-    control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
-    if (mgr->ReadBool(_T("/folding/show_folds"), true))
-    {
-        control->SetFoldFlags(16);
-        control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
-        control->SetMarginWidth(foldingMargin, 16);
-        // use "|" here or we might break plugins that use the margin (none at the moment)
-        control->SetMarginMask(foldingMargin, control->GetMarginMask(foldingMargin) |
-                                              (wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED))));
-        control->SetMarginSensitive(foldingMargin, 1);
-
-        /*Default behaviour
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDEROPEN, wxSCI_MARK_BOXMINUS);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDEROPEN, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDEROPEN, wxColour(0x80, 0x80, 0x80));
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDER, wxSCI_MARK_BOXPLUS);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDER, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDER, wxColour(0x80, 0x80, 0x80));
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDERSUB, wxSCI_MARK_VLINE);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDERSUB, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDERSUB, wxColour(0x80, 0x80, 0x80));
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDERTAIL, wxSCI_MARK_LCORNER);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDERTAIL, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDERTAIL, wxColour(0x80, 0x80, 0x80));
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDEREND, wxSCI_MARK_BOXPLUSCONNECTED);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDEREND, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDEREND, wxColour(0x80, 0x80, 0x80));
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDEROPENMID, wxSCI_MARK_BOXMINUSCONNECTED);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDEROPENMID, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDEROPENMID, wxColour(0x80, 0x80, 0x80));
-        control->MarkerDefine(wxSCI_MARKNUM_FOLDERMIDTAIL, wxSCI_MARK_TCORNER);
-        control->MarkerSetForeground(wxSCI_MARKNUM_FOLDERMIDTAIL, wxColour(0xff, 0xff, 0xff));
-        control->MarkerSetBackground(wxSCI_MARKNUM_FOLDERMIDTAIL, wxColour(0x80, 0x80, 0x80));
-        */
-    }
-    else
-        control->SetMarginWidth(foldingMargin, 0);
-
     // changebar margin
     if (mgr->ReadBool(_T("/margin/use_changebar"), true))
     {
@@ -1449,7 +1406,33 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
     if (!control)
         return;
 
-    // line numbering
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+
+// Interpret #if/#else/#endif to grey out code that is not active
+    control->SetProperty(_T("lexer.cpp.track.preprocessor"), mgr->ReadBool(_T("/track_preprocessor"), false) ? _T("1") : _T("0"));
+
+// code folding
+    control->SetProperty(_T("fold"), mgr->ReadBool(_T("/folding/show_folds"), true) ? _T("1") : _T("0"));
+    control->SetProperty(_T("fold.html"), mgr->ReadBool(_T("/folding/fold_xml"), true) ? _T("1") : _T("0"));
+    control->SetProperty(_T("fold.comment"), mgr->ReadBool(_T("/folding/fold_comments"), false) ? _T("1") : _T("0"));
+    control->SetProperty(_T("fold.compact"), _T("0"));
+    control->SetProperty(_T("fold.preprocessor"), mgr->ReadBool(_T("/folding/fold_preprocessor"), false) ? _T("1") : _T("0"));
+    if (mgr->ReadBool(_T("/folding/show_folds"), true))
+    {
+        control->Colourise(0, -1);
+        control->SetFoldFlags(16);
+        control->SetMarginType(foldingMargin, wxSCI_MARGIN_SYMBOL);
+        control->SetMarginWidth(foldingMargin, 16);
+        // use "|" here or we might break plugins that use the margin (none at the moment)
+        control->SetMarginMask(foldingMargin, control->GetMarginMask(foldingMargin) |
+                                              (wxSCI_MASK_FOLDERS - ((1 << wxSCI_MARKNUM_CHANGEUNSAVED) | (1 << wxSCI_MARKNUM_CHANGESAVED))));
+        control->SetMarginSensitive(foldingMargin, 1);
+
+    }
+    else
+        control->SetMarginWidth(foldingMargin, 0);
+
+// line numbering
     control->SetMarginType(lineMargin, wxSCI_MARGIN_NUMBER);
 }
 

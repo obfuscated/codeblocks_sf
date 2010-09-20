@@ -126,6 +126,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkAdvancedRegex", wxCheckBox)->Enable(false);
     #endif
     XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_line_numbers"), true));
+    XRCCTRL(*this, "chkTtrackPreprocessor", wxCheckBox)->SetValue(cfg->ReadBool(_T("/track_preprocessor"), false));
     XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_caret_line"), false));
     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->SetValue(cfg->ReadBool(_T("/simplified_home"), false));
     XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"), 4));
@@ -892,6 +893,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         #endif
 
         cfg->Write(_T("/show_line_numbers"),                   XRCCTRL(*this, "chkShowLineNumbers", wxCheckBox)->GetValue());
+        cfg->Write(_T("/track_preprocessor"),                  XRCCTRL(*this, "chkTtrackPreprocessor", wxCheckBox)->GetValue());
         cfg->Write(_T("/highlight_caret_line"),                XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue());
         cfg->Write(_T("/simplified_home"),                     XRCCTRL(*this, "chkSimplifiedHome", wxCheckBox)->GetValue());
         cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize", wxSpinCtrl)->GetValue());
