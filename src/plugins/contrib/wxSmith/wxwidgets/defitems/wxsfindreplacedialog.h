@@ -23,7 +23,9 @@
 
 #include "../wxstool.h"
 
-/** \brief Class for wxFindReplaceDialog dialogue. */
+/** \brief Class for wxFindReplaceDialog dialogue.
+	\note In order for events to connect properly you must set the ID of your wxFindReplaceDialog to -1 in wxSmith.
+*/
 class wxsFindReplaceDialog: public wxsTool
 {
     public:

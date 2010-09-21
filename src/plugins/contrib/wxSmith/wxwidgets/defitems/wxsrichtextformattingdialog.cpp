@@ -96,9 +96,9 @@ void wxsRichTextFormattingDialog::OnBuildCreatingCode()
             }
 
 			#if wxCHECK_VERSION(2, 9, 0)
-            Codef(_T("%C(%s, %W, %t, %I, %P, %S, %T);\n"), sFlags.wx_str(), m_sTitle.wx_str());
+            Codef(_T("%C(%s, %W, %t, %I, %P, %S);\n"), sFlags.wx_str(), m_sTitle.wx_str());
 			#else
-            Codef(_T("%C(%s, %W, %t, %I, %P, %S, %T);\n"), sFlags.c_str(), m_sTitle.c_str());
+            Codef(_T("%C(%s, %W, %t, %I, %P, %S);\n"), sFlags.c_str(), m_sTitle.c_str());
 			#endif
 
             BuildSetupWindowCode();

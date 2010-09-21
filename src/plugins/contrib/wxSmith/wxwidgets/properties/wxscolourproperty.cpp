@@ -121,7 +121,7 @@ namespace
 
     static wxPGChoices gs_wxsColourProperty_choicesCache;
 
-// This is based on the code of wxSystemColourProperty in advprops.h|cpp of wxPropertyGrid
+    // This is based on the code of wxSystemColourProperty in advprops.h|cpp of wxPropertyGrid
     class wxsMyColourPropertyClass : public wxEnumProperty
     {
         WX_PG_DECLARE_PROPERTY_CLASS(wxsMyColourPropertyClass)
