@@ -1,7 +1,7 @@
 /** \file wxsbitmapcombobox.h
 *
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006-2010 Gary Harris
+* Copyright (C) 2010 Gary Harris
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -38,24 +38,12 @@ class wxsBitmapComboBox: public wxsWidget
         virtual void OnBuildCreatingCode();
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
         virtual void OnEnumWidgetProperties(long Flags);
-        virtual void OnAddExtraProperties(wxsPropertyGridManager* Grid);
-        virtual void OnExtraPropertyChanged(wxsPropertyGridManager* Grid,wxPGId Id);
-        virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
-        virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
 
-		void UpdateArraySizes(int size);
+        wxArrayString 	m_arrChoices;											//!< Array of entries for the choice list.
+        long 					m_defaultSelection;									//!< The item selected by default.
+		wxString    		m_sImageList;                     						//!< The selected image list .
+		wxString    		m_arrImageListNames[128];					//!< Array of image list names.
 
-        wxArrayString 									m_arrChoices;			//!< Array of entries for the choice list.
-        long 													m_defaultSelection;	//!< The item selected by default.
-		BmpComboBitmapDataArray		m_arrBmps;					//!< Array of bitmaps for entries.
-
-		WX_DEFINE_ARRAY(wxPGId, IdsArray);							//!< Define an array of property IDs.
-
-		int											m_iNumImages;						//!< The number of images.
-		wxPGId     								m_idNumImages;					//!< The ID of the field containing the number of images.
-		wxPGId     								m_idImages;							//!< The ID of the image parent field.
-		wxArrayString						m_arrImagePaths;					//!< An array of paths to images.
-		IdsArray   								m_arrBitmapIds;						//!< An array of IDs of the image path fields.
 };
 
 #endif

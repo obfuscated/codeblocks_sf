@@ -1,7 +1,7 @@
 /** \file wxsbitmapcombobox.cpp
 *
 * This file is part of wxSmith plugin for Code::Blocks Studio
-* Copyright (C) 2006-2010 Gary Harris
+* Copyright (C) 2010 Gary Harris
 *
 * wxSmith is free software; you can redistribute it and/or modify
 * it under the terms of the GNU General Public License as published by
@@ -20,9 +20,8 @@
 
 #include <wx/bmpcbox.h>
 #include "wxsbitmapcombobox.h"
-
-#include <wx/arrimpl.cpp> // This is a magic incantation which must be done!
-WX_DEFINE_OBJARRAY(BmpComboBitmapDataArray);
+#include "wxsimagelist.h"
+#include "../properties/wxsimagelistdlg.h"
 
 
 namespace
@@ -56,10 +55,8 @@ wxsBitmapComboBox::wxsBitmapComboBox(wxsItemResData *Data):
         &Reg.Info,
         wxsBitmapComboBoxEvents,
         wxsBitmapComboBoxStyles),
-    m_defaultSelection(-1),
-    m_iNumImages(0)
+    m_defaultSelection(-1)
 {
-    UpdateArraySizes(m_iNumImages);
 }
 
 /*! \brief Create the initial control.
@@ -93,12 +90,38 @@ void wxsBitmapComboBox::OnBuildCreatingCode()
                     }
                     Codef(_T(";\n"));
                 }
-				// SetItemBitmap() uses an unsigned int.
-				for(unsigned int i = 0;i < m_arrImagePaths.GetCount();i++){
-                    Codef(_T("%ASetItemBitmap(%d, wxBitmap(%n, wxBITMAP_TYPE_ANY));\n"), i, m_arrImagePaths[i].c_str());
+
+				// Find the image list.
+				wxsImageList *imageList = (wxsImageList *) wxsImageListDlg::FindTool(this, m_sImageList);
+				int iItemcount = m_arrChoices.GetCount();
+
+				wxString vv = GetVarName();
+				if(imageList){
+					wxString tt;
+					wxString ss = imageList->GetVarName();
+					int iImgCount = imageList->GetCount();
+					if(iImgCount > 0){
+						AddEventCode(_("\n"));
+					}
+					for(int i = 0;i < iImgCount;i++){
+						// Keep within the size limits of the combo box.
+						if(i >= iItemcount){
+							break;
+						}
+#if wxCHECK_VERSION(2, 9, 0)
+						tt.Printf(_("%s->SetItemBitmap(%d, %s->GetBitmap(%d));\n"), vv.wx_str(), i, ss.wx_str(), i);
+#else
+						tt.Printf(_("%s->SetItemBitmap(%d, %s->GetBitmap(%d));\n"), vv.c_str(), i, ss.c_str(), i);
+#endif
+						// add all the bitmaps at the bottom of the code... after the wxsImage's and wxsImageList's have been coded
+						AddEventCode(tt);
+					}
+					if(iImgCount > 0){
+						AddEventCode(_("\n"));
+					}
 				}
 
-                BuildSetupWindowCode();
+               BuildSetupWindowCode();
                 return;
             }
 
@@ -119,10 +142,22 @@ void wxsBitmapComboBox::OnBuildCreatingCode()
 wxObject *wxsBitmapComboBox::OnBuildPreview(wxWindow *Parent, long Flags)
 {
     wxBitmapComboBox *preview = new wxBitmapComboBox(Parent, GetId(), wxEmptyString, Pos(Parent), Size(Parent), m_arrChoices, Style());
-    // SetItemBitmap() uses an unsigned int.
-    for(unsigned int i = 0;i < m_arrImagePaths.GetCount();i++){
-		preview->SetItemBitmap(i, wxBitmap(m_arrImagePaths[i], wxBITMAP_TYPE_ANY));
-    }
+
+	// Find the image list.
+	wxsImageList *imageList = (wxsImageList *) wxsImageListDlg::FindTool(this, m_sImageList);
+
+	int count = preview->GetCount();
+	if(imageList){
+		for(int i = 0;i < imageList->GetCount();i++){
+			// Keep within the size limits of the combo box.
+			if(i >= count){
+				break;
+			}
+			// SetItemBitmap() uses an unsigned int.
+			preview->SetItemBitmap((unsigned)i, imageList->GetPreview(i));
+		}
+	}
+
     if(m_defaultSelection != -1){
 		preview->SetSelection(m_defaultSelection);
     }
@@ -140,180 +175,41 @@ void wxsBitmapComboBox::OnEnumWidgetProperties(long Flags)
 {
     WXS_ARRAYSTRING(wxsBitmapComboBox, m_arrChoices, _("Choices"), _T("content"), _T("item"))
     WXS_LONG(wxsBitmapComboBox, m_defaultSelection, _("Selection"), _T("selection"), -1)
-}
 
-/*! \brief Add extra control properties.
- *
- * \param Grid wxsPropertyGridManager*	A PropertyGridManager object.
- * \return void
- *
- */
- void wxsBitmapComboBox::OnAddExtraProperties(wxsPropertyGridManager *Grid)
-{
-    const wxString sPriorTo(_("Selection"));
-    wxString sImage(_("Image"));
-    wxString sImages(_("Images"));
+	static const wxChar	*pImageNames[128];
+	static long 					iImageNames[128];
+	int									i, n, iResCount;
+	wxsItemResData         *resData;
+	wxsTool                			*tool;
+	wxString						s;
+	wxsImageList           	*imageList;
+	static const wxString	sNone(_("<none>"));
 
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-    Grid->SelectPage(0);
-#else
-    Grid->SetTargetPage(0);
-#endif
-    m_idNumImages = Grid->GetGrid()->Insert(sPriorTo, NEW_IN_WXPG14X wxIntProperty(_("Number of images"), wxPG_LABEL, m_iNumImages));
+	// find available images, and pointer to current imagelist
+    imageList = NULL;
+    resData = GetResourceData();
+    n = 0;
+    m_arrImageListNames[n] = sNone;
+    pImageNames[n] = (const wxChar *) m_arrImageListNames[n];
+    n += 1;
+    iResCount = resData->GetToolsCount();
+    for(i = 0;i < iResCount;i++){
+        tool = resData->GetTool(i);
+        s = tool->GetUserClass();
 
-    if(m_iNumImages > 0) {
-        m_idImages = Grid->GetGrid()->Insert(sPriorTo, NEW_IN_WXPG14X wxParentProperty(sImages.c_str(), wxPG_LABEL));
-	}
-    for(int i = 0; i < m_iNumImages; i++) {
-        m_arrBitmapIds[i] = Grid->GetGrid()->AppendIn(m_idImages, NEW_IN_WXPG14X wxImageFileProperty(wxString::Format(wxT("%s %d"), sImage.c_str(), i + 1), wxPG_LABEL));
-		Grid->SetPropertyValue(m_arrBitmapIds[i], m_arrImagePaths[i]);
-    }
+        if((s == _T("wxImageList")) && (n < 127)){
+            s = tool->GetVarName();
+            m_arrImageListNames[n] = s;
+            pImageNames[n] = (const wxChar *) m_arrImageListNames[n];
+            iImageNames[n] = n;
+            n += 1;
 
-    wxsWidget::OnAddExtraProperties(Grid);
-}
-
-/*! \brief One of the control's extra properties changed.
- *
- * \param Grid 	wxsPropertyGridManager*	A PropertyGridManager object.
- * \param id 		wxPGId										The property's ID.
- * \return void
- *
- */
-void wxsBitmapComboBox::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId Id)
-{
-    const wxString sPriorTo(_("Selection"));
-    wxString sImage(_("Image"));
-    wxString sImages(_("Images"));
-
-    // The "Number of images" field has changed.
-    if(Id == m_idNumImages) {
-        // Number of fields is going to change...
-        int iNewFields = Grid->GetPropertyValueAsInt(Id);
-        if(iNewFields < 0) {
-            iNewFields = 0;
-            Grid->SetPropertyValue(Id, iNewFields);
-        }
-
-        // Now it's time to delete / add properties for fields
-        if(iNewFields < m_iNumImages) {
-            for(int i = iNewFields;i < m_iNumImages;i++){
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-                Grid->DeleteProperty(m_arrBitmapIds[i]);
-#else
-                Grid->Delete(m_arrBitmapIds[i]);
-#endif
-			}
-            // If there are no images, delete the parent field.
-            if(iNewFields == 0) {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-                Grid->DeleteProperty(m_idImages);
-#else
-                Grid->Delete(m_idImages);
-#endif
-                m_idImages = NULL;
+            if(s == m_sImageList){
+            	imageList = (wxsImageList *) tool;
             }
         }
-        else if(iNewFields > m_iNumImages){
-            // Adding new properties
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
-			Grid->SelectPage(0);
-#else
-			Grid->SetTargetPage(0);
-#endif
-			UpdateArraySizes(iNewFields);
-            // If the parent field was previously deleted, recreate it.
-            if(!m_idImages) {
-                m_idImages = Grid->GetGrid()->Insert(sPriorTo, NEW_IN_WXPG14X wxParentProperty(sImages.c_str(), wxPG_LABEL));
-            }
-            for(int i = m_iNumImages; i < iNewFields; i++) {
-                m_arrBitmapIds[i] = Grid->GetGrid()->AppendIn(m_idImages, NEW_IN_WXPG14X wxImageFileProperty(wxString::Format(wxT("%s %d"), sImage.c_str(), i + 1), wxPG_LABEL));
-            }
-        }
-
-        m_iNumImages = iNewFields;
-        NotifyPropertyChange(true);
-        return;
     }
-
-    // One of the image paths has changed.
-    for(int i = 0; i < m_iNumImages; i++) {
-        if(m_arrBitmapIds[i] == Id) {
-            m_arrImagePaths[i] = Grid->GetPropertyValueAsString(Id);
-            NotifyPropertyChange(true);
-            return;
-        }
-    }
-
-    wxsWidget::OnExtraPropertyChanged(Grid,Id);
+    pImageNames[n] = NULL;
+    WXS_EDITENUM(wxsBitmapComboBox, m_sImageList, _("Image List"), _T("image_list"), pImageNames, sNone)
 }
 
-/*! \brief Read XML control data.
- *
- * \param Element 	TiXmlElement*	A pointer to the parent node of the XML block.
- * \param IsXRC 		bool						Whether this is an XRC file.
- * \param IsExtra 		bool						Whether the data is extra information not conforming to the XRC standard.
- * \return bool											Success or failure.
- *
- */
- bool wxsBitmapComboBox::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
-{
-    if(IsXRC)
-    {
-        TiXmlElement *FieldsCnt = Element->FirstChildElement("num_images");
-        if(!FieldsCnt){
-            m_iNumImages = 0;
-        }
-        else{
-            m_iNumImages = wxAtoi(cbC2U(FieldsCnt->GetText()));
-        }
-
-        if(m_iNumImages < 0){
-			m_iNumImages = 0;
-        }
-        UpdateArraySizes(m_iNumImages);
-
-        for(int i = 0;i < m_iNumImages;i++){
-			wxString s = wxString::Format(_T("image_%d"), i);
-			if(TiXmlElement *ImageElem = Element->FirstChildElement(cbU2C(s))){
-				m_arrImagePaths[i] = cbC2U(ImageElem->GetText());
-			}
-        }
-    }
-
-    return wxsWidget::OnXmlRead(Element, IsXRC, IsExtra);
-}
-
-/*! \brief Write XML data.
- *
- * \param Element 	TiXmlElement*	A pointer to the parent node of the XML block.
- * \param IsXRC 		bool						Whether this is an XRC file.
- * \param IsExtra 		bool						Whether the data is extra information not conforming to the XRC standard.
- * \return bool											Success or failure.
- *
- */
- bool wxsBitmapComboBox::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
-{
-    if(IsXRC)
-    {
-        Element->InsertEndChild(TiXmlElement("num_images"))->InsertEndChild(TiXmlText(cbU2C(wxString::Format(_T("%d"), m_iNumImages))));
-
-        for(int i = 0;i < m_iNumImages;i++){
-			wxString s = wxString::Format(_T("image_%d"), i);
-			Element->InsertEndChild(TiXmlElement(cbU2C(s)))->InsertEndChild(TiXmlText(cbU2C(m_arrImagePaths[i])));
-        }
-    }
-
-    return wxsWidget::OnXmlWrite(Element, IsXRC, IsExtra);
-}
-
-/*! \brief Update arrays sizes to match changes in the properties.
- *
- * \param 	size 	int	The new array size.
- * \return 	void
- *
- */
-void wxsBitmapComboBox::UpdateArraySizes(int size)
-{
-    m_arrBitmapIds.SetCount(size);
-    m_arrImagePaths.SetCount(size);
-}
