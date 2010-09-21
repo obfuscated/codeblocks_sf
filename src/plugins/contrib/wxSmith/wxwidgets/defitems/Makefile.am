@@ -77,6 +77,7 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsglcanvas.cpp \
 ./wxshyperlinkctrl.cpp \
 ./wxsanimationctrl.cpp \
+./wxsmediactrl.cpp \
 ./wxsfindreplacedialog.cpp \
 ./wxsfontdialog.cpp \
 ./wxsmessagedialog.cpp \
@@ -99,7 +100,12 @@ libwxsmith_wxwidgets_defitems_la_SOURCES = \
 ./wxsrichtextctrl.cpp \
 ./wxssearchctrl.cpp \
 ./wxssimplehtmllistbox.cpp \
-./wxstreebook.cpp
+./wxstreebook.cpp \
+./wxsimage.cpp \
+./wxsimagelist.cpp \
+./wxsrichtextstylecomboctrl.cpp \
+./wxsrichtextstylelistbox.cpp \
+./wxsrichtextstylelistctrl.cpp
 
 noinst_HEADERS = \
 ./wxsgauge.h \
@@ -167,6 +173,7 @@ noinst_HEADERS = \
 ./wxsglcanvas.h \
 ./wxshyperlinkctrl.h \
 ./wxsanimationctrl.h \
+./wxsmediactrl.h \
 ./wxsfindreplacedialog.h \
 ./wxsfontdialog.h \
 ./wxsmessagedialog.h \
@@ -189,6 +196,11 @@ noinst_HEADERS = \
 ./wxsrichtextctrl.h \
 ./wxssearchctrl.h \
 ./wxssimplehtmllistbox.h \
-./wxstreebook.h
+./wxstreebook.h \
+./wxsimage.h \
+./wxsimagelist.h \
+./wxsrichtextstylecomboctrl.h \
+./wxsrichtextstylelistbox.h \
+./wxsrichtextstylelistctrl.h
 
 

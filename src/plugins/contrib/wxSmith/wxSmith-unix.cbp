@@ -46,13 +46,12 @@
 			<Add option="-DwxPG_USE_WXMODULE=0" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../sdk/wxpropgrid/include" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/squirrel" />
 			<Add directory="../../../include/scripting/sqplus" />
 			<Add directory="../../../include/scripting/bindings" />
-			<Add directory="propgrid/contrib/include" />
 			<Add directory="../../../include/mozilla_chardet" />
-			<Add directory="../../../sdk/wxpropgrid/include" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />
@@ -474,6 +473,18 @@
 		<Unit filename="wxwidgets/defitems/wxshyperlinkctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsimage.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsimage.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsimagelist.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsimagelist.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/defitems/wxslistbook.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -598,6 +609,24 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsrichtextformattingdialog.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstylecomboctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstylecomboctrl.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstylelistbox.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstylelistbox.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstylelistctrl.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/defitems/wxsrichtextstylelistctrl.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/defitems/wxsrichtextstyleorganiserdialog.cpp">
@@ -834,6 +863,12 @@
 		<Unit filename="wxwidgets/properties/wxsdimensionproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxwidgets/properties/wxseditenumproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxseditenumproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="wxwidgets/properties/wxsfonteditordlg.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -850,6 +885,24 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxsfontproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagelistdlg.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagelistdlg.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagelistproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimagelistproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimageproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="wxwidgets/properties/wxsimageproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxspositionsizeproperty.cpp">
